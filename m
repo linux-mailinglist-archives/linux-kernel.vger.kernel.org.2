@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E743963DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4E2396587
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbhEaPgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46050 "EHLO mail.kernel.org"
+        id S234723AbhEaQj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233854AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E718C619D1;
-        Mon, 31 May 2021 13:45:13 +0000 (UTC)
+        id S232847AbhEaOuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7244461C9C;
+        Mon, 31 May 2021 13:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468714;
-        bh=5jCj7ShKUHLuCxrfqjXLVm7ckSK63N275HJHVpGtBaE=;
+        s=korg; t=1622469453;
+        bh=BCFSwPzx2HxKv/p9u44M95JwdRo+S1eHf49eYFKdEJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=erW/FEK7ZklIxluSZbSmXTGN//qnzEX24ITtbRPbEMR5MumnJxNPWPaHHSkObxeKI
-         kbCDi4FoW8U7w4j2lMCLziqhagm9qPA5/KlHm15vt/sJfawroEMskbTAZobTa2X9Kv
-         Xf/9LXYPqvybAaRtJ3Y4w3oU1EXgOB9HP60J/LnQ=
+        b=AUAQkIYMZrYsfluG9Bla4RHA6Y/j4+bra/+ACrBj7fG6dB2YKMP7A/ldjaAmujwQ/
+         KNhjmjtKlL3phR1mHhQgLcYvRNo3VNC7tEPwvkRMWFzBNAKgjxhWIKangD+KvaPEzf
+         hqvLaY3Sycth3g2UbA7pKcp3V8yxT6rXzWKyfTnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Atul Gopinathan <atulgopinathan@gmail.com>,
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        Matt Wang <wwentao@vmware.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 099/177] ALSA: sb8: Add a comment note regarding an unused pointer
-Date:   Mon, 31 May 2021 15:14:16 +0200
-Message-Id: <20210531130651.315666007@linuxfoundation.org>
+Subject: [PATCH 5.12 202/296] scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
+Date:   Mon, 31 May 2021 15:14:17 +0200
+Message-Id: <20210531130710.674106812@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Matt Wang <wwentao@vmware.com>
 
-[ Upstream commit a28591f61b60fac820c6de59826ffa710e5e314e ]
+[ Upstream commit 56f396146af278135c0ff958c79b5ee1bd22453d ]
 
-The field "fm_res" of "struct snd_sb8" is never used/dereferenced
-throughout the sb8.c code. Therefore there is no need for any null value
-check after the "request_region()".
+Commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit")
+introduced a serious issue for 64-bit systems.  With this commit,
+64-bit kernel will enumerate 8*15 non-existing disks.  This is caused
+by the broken CCB structure.  The change from u32 data to void *data
+increased CCB length on 64-bit system, which introduced an extra 4
+byte offset of the CDB.  This leads to incorrect response to INQUIRY
+commands during enumeration.
 
-Add a comment note to make developers know about this and prevent any
-"NULL check" patches on this part of code.
+Fix disk enumeration failure by reverting the portion of the commit
+above which switched the data pointer from u32 to void.
 
-Cc: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-36-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/C325637F-1166-4340-8F0F-3BCCD59D4D54@vmware.com
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Matt Wang <wwentao@vmware.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb8.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/scsi/BusLogic.c | 6 +++---
+ drivers/scsi/BusLogic.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/isa/sb/sb8.c b/sound/isa/sb/sb8.c
-index 6f1fc8789676..4386c24d2dcc 100644
---- a/sound/isa/sb/sb8.c
-+++ b/sound/isa/sb/sb8.c
-@@ -94,7 +94,11 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
- 	acard = card->private_data;
- 	card->private_free = snd_sb8_free;
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index ccb061ab0a0a..7231de2767a9 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3078,11 +3078,11 @@ static int blogic_qcmd_lck(struct scsi_cmnd *command,
+ 		ccb->opcode = BLOGIC_INITIATOR_CCB_SG;
+ 		ccb->datalen = count * sizeof(struct blogic_sg_seg);
+ 		if (blogic_multimaster_type(adapter))
+-			ccb->data = (void *)((unsigned int) ccb->dma_handle +
++			ccb->data = (unsigned int) ccb->dma_handle +
+ 					((unsigned long) &ccb->sglist -
+-					(unsigned long) ccb));
++					(unsigned long) ccb);
+ 		else
+-			ccb->data = ccb->sglist;
++			ccb->data = virt_to_32bit_virt(ccb->sglist);
  
--	/* block the 0x388 port to avoid PnP conflicts */
-+	/*
-+	 * Block the 0x388 port to avoid PnP conflicts.
-+	 * No need to check this value after request_region,
-+	 * as we never do anything with it.
-+	 */
- 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
- 
- 	if (port[dev] != SNDRV_AUTO_PORT) {
+ 		scsi_for_each_sg(command, sg, count, i) {
+ 			ccb->sglist[i].segbytes = sg_dma_len(sg);
+diff --git a/drivers/scsi/BusLogic.h b/drivers/scsi/BusLogic.h
+index 6182cc8a0344..e081ad47d1cf 100644
+--- a/drivers/scsi/BusLogic.h
++++ b/drivers/scsi/BusLogic.h
+@@ -814,7 +814,7 @@ struct blogic_ccb {
+ 	unsigned char cdblen;				/* Byte 2 */
+ 	unsigned char sense_datalen;			/* Byte 3 */
+ 	u32 datalen;					/* Bytes 4-7 */
+-	void *data;					/* Bytes 8-11 */
++	u32 data;					/* Bytes 8-11 */
+ 	unsigned char:8;				/* Byte 12 */
+ 	unsigned char:8;				/* Byte 13 */
+ 	enum blogic_adapter_status adapter_status;	/* Byte 14 */
 -- 
 2.30.2
 
