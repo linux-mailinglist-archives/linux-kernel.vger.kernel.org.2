@@ -2,152 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF5139578E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FD9395793
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhEaIzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        id S230491AbhEaI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhEaIzn (ORCPT
+        with ESMTP id S230143AbhEaI51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:55:43 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4469C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:54:02 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id t15so2583533eju.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:54:02 -0700 (PDT)
+        Mon, 31 May 2021 04:57:27 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21F7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:55:46 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id u33so5172156qvf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:55:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A3Sgy9lxSE/4rJC7tRGP/6YuIFQCgMKdTyw9mrcVWZg=;
-        b=fVUmkh6qSAPFNWHN9AX7ozHUcGgip/SzRcHJQBb2bTY9rqgCOJOmmFGLdIdG6r0KYX
-         LVAFS3jnCyjU7sZttDAO3hdRRylr2G/mbcM49VydpOPQ2ptxHESXNnJUx1VVe4zKGUrM
-         bGGDTr0G2qR2vDIRC6KLCwYWbhA1SZ4ntmc/g=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3gNFG9ThfJffLDJZEurhBCfvsdn1oohta4PrcOHBIO8=;
+        b=MGJsovRl/lgaZogYpniaQh2IKwAMrLzrTfFVlLgdeUfRQFiv+rod/Wkb4sHScHKUm3
+         4Ir/nJD6jPTFZUD6XCn7Ee6KqbkNnRuyZLxLCPcC15ktW9Cmoqd/fAr1vX9/TyrgqWnb
+         cw9WtdOFEze74JjhP6JYrn3Sf7WT+rJPA9SW+QrBLevZEf/EXCzZ3U7T7sbjeIo8nIZ+
+         3pG+lLA/RED/QXZqMSzR42Z+4wuowoSH9VhtH6G1jS49UayZ4eeP85NYF1eF0VEzn+1m
+         tqUs66JmG16zly+t0NkMjE0Qi0o2mRokQefwbpsWVHr57EeIElzo/9NIqmhwgFNpYeUN
+         NdvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A3Sgy9lxSE/4rJC7tRGP/6YuIFQCgMKdTyw9mrcVWZg=;
-        b=q4oLBEdGy0qWMdBeBznhzQIuDA8k95HzZyHafLKwsBCzX5hS671xXpvrEDPpR9Zb8i
-         yB8tgrfou3aVFeRwyMqXbEKTlVntdFVAnJrR491S+4+tplh6wvtdygjgMnskl4ypJd5w
-         ln7W02EXti1ZF/KSfJ/HbbftmwggoYo8JD+GQ6abhco0oMJKXo9j/vWZVRiNVYtASwEA
-         wpbFKMBM/8Ie064oogJuC0NlEa2WWVv0PwB9Kqg+G9mup684je86vUrJgjTeQ3+TEfol
-         AbDSo5YXi5lbh4hsGzfkpURkzI1BThq5Iw3AjUIueeVn0ZPmNyHr+ubo0pJu/qzhiGON
-         V75Q==
-X-Gm-Message-State: AOAM531x5G0PMASrWjT5FA0yYNBziugkZlrS2gIR8vxh4Mtz7OLh932x
-        dRQD3gX3QSlYF5DVCtMPA5nmLi0XjUvV20tY3Gc=
-X-Google-Smtp-Source: ABdhPJzkVghUA2l7j4wGR9CmhK24v5IJsEEEwSjLdIcvpqYMumWzIrfDITP3PgVWDLeaIKbAubzduA==
-X-Received: by 2002:a17:906:b748:: with SMTP id fx8mr12586650ejb.477.1622451241210;
-        Mon, 31 May 2021 01:54:01 -0700 (PDT)
-Received: from lootbox.konsulko.bg (lan.nucleusys.com. [92.247.61.126])
-        by smtp.gmail.com with ESMTPSA id c19sm1663683edw.10.2021.05.31.01.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 01:54:00 -0700 (PDT)
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-To:     linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>, Alex Ghiti <alex@ghiti.fr>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Subject: [PATCH] riscv: xip: support runtime trap patching
-Date:   Mon, 31 May 2021 11:53:42 +0300
-Message-Id: <20210531085342.17494-1-vitaly.wool@konsulko.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3gNFG9ThfJffLDJZEurhBCfvsdn1oohta4PrcOHBIO8=;
+        b=tng5CAzxHxBXCknVGt6xol7Yje5m7q/hQfPvRBunhSofobtU4zIYq/q6vUGQA2Sdb/
+         bmMiYJ1IfCjMSVFYc7R19e9si5oiig2spL38hWaARwXIlkQb/24LBRWsHKBpbEE239d/
+         ZrIaaauB5a0VkgAwZw4o0cOI4wdi9w0uAm9Zk1sw/t0+dHTSqYVwEMgU+cQhbFIPtxBx
+         IdgXrzny+nGJycr/LBIqEF6c5lPtAgNP4YboBOe88bkw6wj9gguzNGvJxC6G7j5lr2m8
+         fLgktQj9Y+8/l4/SbNUdBwNoM8AxcVLVtUNM88jBRHxBAei4bKlnbYtFu0k/r6yaYtig
+         9pjg==
+X-Gm-Message-State: AOAM5319QhpbJfYQy0y/WVs+eU/y9v7QMgkSGDqnB9RAaoujE8JipwmD
+        Vrs6Jo+kpHAgtWRFG7+BGJCIy9X1BdQW6DvZdRpSMg==
+X-Google-Smtp-Source: ABdhPJx4P0pcgnL0rpLAZYSL+qbuUbusa0mIqFZq6/uoPfwHjkiT2W05PwwKO3aVYpWC3ouSnj8tvH2fNbOykZW9nJ4=
+X-Received: by 2002:a05:6214:6f1:: with SMTP id bk17mr15932892qvb.37.1622451345749;
+ Mon, 31 May 2021 01:55:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <000000000000f9136f05c39b84e4@google.com> <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+In-Reply-To: <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 31 May 2021 10:55:34 +0200
+Message-ID: <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
+Subject: Re: [syzbot] kernel BUG in assertfail
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RISCV_ERRATA_ALTERNATIVE patches text at runtime which is currently
-not possible when the kernel is executed from the flash in XIP mode.
-Since runtime patching concerns only traps at the moment, let's just
-have all the traps reside in RAM anyway if RISCV_ERRATA_ALTERNATIVE
-is set. Thus, these functions will be patch-able even when the .text
-section is in flash.
+On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
+<syzkaller-bugs@googlegroups.com> wrote:
+> On 31.05.21 =D0=B3. 10:53, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.ker=
+nel..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D162843f3d00=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D9f3da44a018=
+82e99
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Da6bf271c02e4f=
+e66b4e4
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the co=
+mmit:
+> > Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+> >
+> > assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_cop=
+y->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
+>
+> This means a device contains a btrfs filesystem which has a different
+> FSID in its superblock than the fsid which all devices part of the same
+> fs_devices should have. This can happen in 2 ways - memory corruption
+> where either of the ->fsid member are corrupted or if there was a crash
+> while a filesystem's fsid was being changed. We need more context about
+> what the test did?
 
-Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
----
- arch/riscv/kernel/traps.c           | 13 +++++++++----
- arch/riscv/kernel/vmlinux-xip.lds.S | 15 ++++++++++++++-
- 2 files changed, 23 insertions(+), 5 deletions(-)
+Hi Nikolay,
 
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index 0721b9798595..7bc88d8aab97 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -86,8 +86,13 @@ static void do_trap_error(struct pt_regs *regs, int signo, int code,
- 	}
- }
- 
-+#if defined (CONFIG_XIP_KERNEL) && defined (CONFIG_RISCV_ERRATA_ALTERNATIVE)
-+#define __trap_section		__section(".xip.traps")
-+#else
-+#define __trap_section
-+#endif
- #define DO_ERROR_INFO(name, signo, code, str)				\
--asmlinkage __visible void name(struct pt_regs *regs)			\
-+asmlinkage __visible __trap_section void name(struct pt_regs *regs)	\
- {									\
- 	do_trap_error(regs, signo, code, regs->epc, "Oops - " str);	\
- }
-@@ -111,7 +116,7 @@ DO_ERROR_INFO(do_trap_store_misaligned,
- int handle_misaligned_load(struct pt_regs *regs);
- int handle_misaligned_store(struct pt_regs *regs);
- 
--asmlinkage void do_trap_load_misaligned(struct pt_regs *regs)
-+asmlinkage void __trap_section do_trap_load_misaligned(struct pt_regs *regs)
- {
- 	if (!handle_misaligned_load(regs))
- 		return;
-@@ -119,7 +124,7 @@ asmlinkage void do_trap_load_misaligned(struct pt_regs *regs)
- 		      "Oops - load address misaligned");
- }
- 
--asmlinkage void do_trap_store_misaligned(struct pt_regs *regs)
-+asmlinkage void __trap_section do_trap_store_misaligned(struct pt_regs *regs)
- {
- 	if (!handle_misaligned_store(regs))
- 		return;
-@@ -146,7 +151,7 @@ static inline unsigned long get_break_insn_length(unsigned long pc)
- 	return GET_INSN_LENGTH(insn);
- }
- 
--asmlinkage __visible void do_trap_break(struct pt_regs *regs)
-+asmlinkage __visible __trap_section void do_trap_break(struct pt_regs *regs)
- {
- #ifdef CONFIG_KPROBES
- 	if (kprobe_single_step_handler(regs))
-diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
-index 4b29b9917f99..a3ff09c4c3f9 100644
---- a/arch/riscv/kernel/vmlinux-xip.lds.S
-+++ b/arch/riscv/kernel/vmlinux-xip.lds.S
-@@ -99,9 +99,22 @@ SECTIONS
- 	}
- 	PERCPU_SECTION(L1_CACHE_BYTES)
- 
--	. = ALIGN(PAGE_SIZE);
-+	. = ALIGN(8);
-+	.alternative : {
-+		__alt_start = .;
-+		*(.alternative)
-+		__alt_end = .;
-+	}
- 	__init_end = .;
- 
-+	. = ALIGN(16);
-+	.xip.traps : {
-+		__xip_traps_start = .;
-+		*(.xip.traps)
-+		__xip_traps_end = .;
-+	}
-+
-+	. = ALIGN(PAGE_SIZE);
- 	.sdata : {
- 		__global_pointer$ = . + 0x800;
- 		*(.sdata*)
--- 
-2.29.2
-
+From a semantic point of view we can consider that it just mounts /dev/rand=
+om.
+If syzbot comes up with a reproducer it will post it, but you seem to
+already figure out what happened, so I assume you can write a unit
+test for this.
