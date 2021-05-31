@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C78395CE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DC7396560
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhEaNkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:40:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
+        id S232132AbhEaQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231823AbhEaN1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:27:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B56E4613D1;
-        Mon, 31 May 2021 13:21:47 +0000 (UTC)
+        id S233560AbhEaOrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:47:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84F9D6191F;
+        Mon, 31 May 2021 13:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467308;
-        bh=WbgCRhAVx7iZ3E9vlSR2yRnYlVjOHNzcl0kNpFNah0Y=;
+        s=korg; t=1622469376;
+        bh=jj3v9yY4nDuM1X98v83chT6tSYrukE9hwOdA1Q/gagw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CbP6y4BCnu7J8CbYbSS9moPyhYhU8QJZEk/Ch3Zuks8KxuSMFAbBcLAMEa9kxQQ+F
-         uibZ1vq88z9GVhvtBuC2s2TBz7fYvAte+Imsn+hOCHxMVQ3aYICdfE+FJNam8lZ1gU
-         hmDoz0S+oUjQ1hBLM+PKAyBrasejbn8A1BnvHgSg=
+        b=skKCtunRy9wQxqinbg4rofjXUB6/zEiOuGVvYZ8M5r8Su4thXy8YKpWim0GbsO++2
+         FzkWE3fI0ga2ibm+5eacQNfFot4YuL6D5HDxCsuwFzM+wwgrfEadzeoohqdP/MZST8
+         M/PsIVCanHm/Mpo7U0PEXY/c9nUg7FX0/ps0lqaw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.19 017/116] mac80211: check defrag PN against current frame
-Date:   Mon, 31 May 2021 15:13:13 +0200
-Message-Id: <20210531130640.735817638@linuxfoundation.org>
+        stable@vger.kernel.org, Roi Dayan <roid@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.12 139/296] netfilter: flowtable: Remove redundant hw refresh bit
+Date:   Mon, 31 May 2021 15:13:14 +0200
+Message-Id: <20210531130708.555869339@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,120 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Roi Dayan <roid@nvidia.com>
 
-commit bf30ca922a0c0176007e074b0acc77ed345e9990 upstream.
+commit c07531c01d8284aedaf95708ea90e76d11af0e21 upstream.
 
-As pointed out by Mathy Vanhoef, we implement the RX PN check
-on fragmented frames incorrectly - we check against the last
-received PN prior to the new frame, rather than to the one in
-this frame itself.
+Offloading conns could fail for multiple reasons and a hw refresh bit is
+set to try to reoffload it in next sw packet.
+But it could be in some cases and future points that the hw refresh bit
+is not set but a refresh could succeed.
+Remove the hw refresh bit and do offload refresh if requested.
+There won't be a new work entry if a work is already pending
+anyway as there is the hw pending bit.
 
-Prior patches addressed the security issue here, but in order
-to be able to reason better about the code, fix it to really
-compare against the current frame's PN, not the last stored
-one.
-
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210511200110.bfbc340ff071.Id0b690e581da7d03d76df90bb0e3fd55930bc8a0@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 8b3646d6e0c4 ("net/sched: act_ct: Support refreshing the flow table entries")
+Signed-off-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/ieee80211_i.h |   11 +++++++++--
- net/mac80211/rx.c          |    5 ++---
- net/mac80211/wpa.c         |   13 +++++++++----
- 3 files changed, 20 insertions(+), 9 deletions(-)
+ include/net/netfilter/nf_flow_table.h |    1 -
+ net/netfilter/nf_flow_table_core.c    |    3 +--
+ net/netfilter/nf_flow_table_offload.c |    7 ++++---
+ 3 files changed, 5 insertions(+), 6 deletions(-)
 
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -225,8 +225,15 @@ struct ieee80211_rx_data {
- 	 */
- 	int security_idx;
- 
--	u32 tkip_iv32;
--	u16 tkip_iv16;
-+	union {
-+		struct {
-+			u32 iv32;
-+			u16 iv16;
-+		} tkip;
-+		struct {
-+			u8 pn[IEEE80211_CCMP_PN_LEN];
-+		} ccm_gcm;
-+	};
+--- a/include/net/netfilter/nf_flow_table.h
++++ b/include/net/netfilter/nf_flow_table.h
+@@ -130,7 +130,6 @@ enum nf_flow_flags {
+ 	NF_FLOW_HW,
+ 	NF_FLOW_HW_DYING,
+ 	NF_FLOW_HW_DEAD,
+-	NF_FLOW_HW_REFRESH,
+ 	NF_FLOW_HW_PENDING,
  };
  
- struct ieee80211_csa_settings {
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2192,7 +2192,6 @@ ieee80211_rx_h_defragment(struct ieee802
- 	if (entry->check_sequential_pn) {
- 		int i;
- 		u8 pn[IEEE80211_CCMP_PN_LEN], *rpn;
--		int queue;
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -259,8 +259,7 @@ void flow_offload_refresh(struct nf_flow
+ {
+ 	flow->timeout = nf_flowtable_time_stamp + NF_FLOW_TIMEOUT;
  
- 		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
-@@ -2207,8 +2206,8 @@ ieee80211_rx_h_defragment(struct ieee802
- 			if (pn[i])
- 				break;
- 		}
--		queue = rx->security_idx;
--		rpn = rx->key->u.ccmp.rx_pn[queue];
+-	if (likely(!nf_flowtable_hw_offload(flow_table) ||
+-		   !test_and_clear_bit(NF_FLOW_HW_REFRESH, &flow->flags)))
++	if (likely(!nf_flowtable_hw_offload(flow_table)))
+ 		return;
+ 
+ 	nf_flow_offload_add(flow_table, flow);
+--- a/net/netfilter/nf_flow_table_offload.c
++++ b/net/netfilter/nf_flow_table_offload.c
+@@ -753,10 +753,11 @@ static void flow_offload_work_add(struct
+ 
+ 	err = flow_offload_rule_add(offload, flow_rule);
+ 	if (err < 0)
+-		set_bit(NF_FLOW_HW_REFRESH, &offload->flow->flags);
+-	else
+-		set_bit(IPS_HW_OFFLOAD_BIT, &offload->flow->ct->status);
++		goto out;
+ 
++	set_bit(IPS_HW_OFFLOAD_BIT, &offload->flow->ct->status);
 +
-+		rpn = rx->ccm_gcm.pn;
- 		if (memcmp(pn, rpn, IEEE80211_CCMP_PN_LEN))
- 			return RX_DROP_UNUSABLE;
- 		memcpy(entry->last_pn, pn, IEEE80211_CCMP_PN_LEN);
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -2,6 +2,7 @@
-  * Copyright 2002-2004, Instant802 Networks, Inc.
-  * Copyright 2008, Jouni Malinen <j@w1.fi>
-  * Copyright (C) 2016-2017 Intel Deutschland GmbH
-+ * Copyright (C) 2020-2021 Intel Corporation
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 as
-@@ -170,8 +171,8 @@ ieee80211_rx_h_michael_mic_verify(struct
++out:
+ 	nf_flow_offload_destroy(flow_rule);
+ }
  
- update_iv:
- 	/* update IV in key information to be able to detect replays */
--	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip_iv32;
--	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip_iv16;
-+	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip.iv32;
-+	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip.iv16;
- 
- 	return RX_CONTINUE;
- 
-@@ -297,8 +298,8 @@ ieee80211_crypto_tkip_decrypt(struct iee
- 					  key, skb->data + hdrlen,
- 					  skb->len - hdrlen, rx->sta->sta.addr,
- 					  hdr->addr1, hwaccel, rx->security_idx,
--					  &rx->tkip_iv32,
--					  &rx->tkip_iv16);
-+					  &rx->tkip.iv32,
-+					  &rx->tkip.iv16);
- 	if (res != TKIP_DECRYPT_OK)
- 		return RX_DROP_UNUSABLE;
- 
-@@ -556,6 +557,8 @@ ieee80211_crypto_ccmp_decrypt(struct iee
- 		}
- 
- 		memcpy(key->u.ccmp.rx_pn[queue], pn, IEEE80211_CCMP_PN_LEN);
-+		if (unlikely(ieee80211_is_frag(hdr)))
-+			memcpy(rx->ccm_gcm.pn, pn, IEEE80211_CCMP_PN_LEN);
- 	}
- 
- 	/* Remove CCMP header and MIC */
-@@ -784,6 +787,8 @@ ieee80211_crypto_gcmp_decrypt(struct iee
- 		}
- 
- 		memcpy(key->u.gcmp.rx_pn[queue], pn, IEEE80211_GCMP_PN_LEN);
-+		if (unlikely(ieee80211_is_frag(hdr)))
-+			memcpy(rx->ccm_gcm.pn, pn, IEEE80211_CCMP_PN_LEN);
- 	}
- 
- 	/* Remove GCMP header and MIC */
 
 
