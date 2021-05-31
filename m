@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B228339680C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99FF39680E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhEaSpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 14:45:33 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:32334 "EHLO
+        id S231637AbhEaSqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 14:46:19 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:53795 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhEaSp1 (ORCPT
+        with ESMTP id S231997AbhEaSqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 14:45:27 -0400
+        Mon, 31 May 2021 14:46:08 -0400
 Received: from [192.168.1.18] ([86.243.172.93])
         by mwinf5d55 with ME
-        id BWjm2500621Fzsu03WjmAx; Mon, 31 May 2021 20:43:46 +0200
+        id BWkQ2500Y21Fzsu03WkQDY; Mon, 31 May 2021 20:44:25 +0200
 X-ME-Helo: [192.168.1.18]
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 31 May 2021 20:43:46 +0200
+X-ME-Date: Mon, 31 May 2021 20:44:25 +0200
 X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH 4.9 54/66] net: netcp: Fix an error message
+Subject: Re: [PATCH 4.19 096/116] net: netcp: Fix an error message
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>,
         Dan Carpenter <dan.carpenter@oracle.com>
-References: <20210531130636.254683895@linuxfoundation.org>
- <20210531130637.965032742@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
+ <20210531130643.385993582@linuxfoundation.org>
 From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <147b24c6-be5e-1dc2-505b-2d4d88ad725b@wanadoo.fr>
-Date:   Mon, 31 May 2021 20:43:45 +0200
+Message-ID: <fa84d084-5157-96a1-b8eb-e1c9a05b277e@wanadoo.fr>
+Date:   Mon, 31 May 2021 20:44:23 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210531130637.965032742@linuxfoundation.org>
+In-Reply-To: <20210531130643.385993582@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: fr
@@ -62,10 +62,10 @@ Le 31/05/2021 à 15:14, Greg Kroah-Hartman a écrit :
 >   1 file changed, 2 insertions(+), 2 deletions(-)
 >
 > diff --git a/drivers/net/ethernet/ti/netcp_core.c b/drivers/net/ethernet/ti/netcp_core.c
-> index 32516661f180..a55e83a0946a 100644
+> index a1d335a3c5e4..60d411bbbdc6 100644
 > --- a/drivers/net/ethernet/ti/netcp_core.c
 > +++ b/drivers/net/ethernet/ti/netcp_core.c
-> @@ -1325,8 +1325,8 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
+> @@ -1364,8 +1364,8 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
 >   	tx_pipe->dma_queue = knav_queue_open(name, tx_pipe->dma_queue_id,
 >   					     KNAV_QUEUE_SHARED);
 >   	if (IS_ERR(tx_pipe->dma_queue)) {
@@ -76,6 +76,7 @@ Le 31/05/2021 à 15:14, Greg Kroah-Hartman a écrit :
 >   		ret = PTR_ERR(tx_pipe->dma_queue);
 >   		goto err;
 >   	}
+
 
 Hi,
 
