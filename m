@@ -2,135 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFDF3967FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A383967FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhEaSeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 14:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbhEaSeG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 14:34:06 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209E4C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 11:32:26 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so11882104otl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 11:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BLVV9QZIDXqsvRH7Xti8i3IEgU5Yp6iFY14v7IM7JtI=;
-        b=MZPdaaqoKg5pgZ4tp20ZwnC/hrb4QzW8pbCBBwy9OcoE+kkw5Ec4IkjFjCxFA2Fba5
-         PnnhAKfZz2ginjK+mnQY1QvG29aCxN6JniWAC35aNnas1yzBQumAL26pOWr9qx7cXx1c
-         tDDl5JJ+SJDcfwBRrZZv08ouUk0Y9cWa1zt4Zl/KgsY5shL7m4Ojil9u2k5Aq226JGNc
-         B/7zP3Vmyl94ltaPNgN6bOPYY0fpctqUELcZtj+WSCKbUoQ+pBtPVeGsIAmpOHbanXMG
-         cVd8yXCzA9Bcxgf4H+w1KiU8WyX+r+2hQQMpo2wEKjzVB7gNmRHVprn3Kh97PJtgx2IE
-         BkFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BLVV9QZIDXqsvRH7Xti8i3IEgU5Yp6iFY14v7IM7JtI=;
-        b=ksv2sDyhVv3oRvI7Ivufv546Zc8hGFWJrlbxn7s0WBFmFcERzNq9LIc0gWBCkT/OUr
-         3jhz9jvNmB3MKY9VVO8NNmCT6bojqZlGvAaz2V+IH45mqxlZbChZnkqxN6q51NCjlN6j
-         h+xuZmYwyHiMx+bJIPzWuNpngTBi71NTLoolaWPfyQrylTH5Z6QWvS39A8VScyhX+k4u
-         wdcC0p+y6s5BtlmWT9W/TyfwowMp5gxdqMGxoB+GoMWzm0VX+UFu/IX6K8nt5NTbG48L
-         e2yGgsSCg5i6gTLJtdM+JBBeX8w5ZU/xQtgOk1+SWRNcD9JQnLl7hpmGyhCiQQj1d9sf
-         6Sdg==
-X-Gm-Message-State: AOAM531F2QIzmvPhjk3xvcmxR9zy3ZWGseMzi6rEElVokccS9QbY/wR/
-        J4ub/FApcg7CIgPnCxWWRC3KtA==
-X-Google-Smtp-Source: ABdhPJy3RxUiZyO4Jq6TccXwQv3j1QISvvAoai3BTT05OZNvSnYVKmbFz13tjj6gBZLJ0uE7KqpD9w==
-X-Received: by 2002:a05:6830:4009:: with SMTP id h9mr18320460ots.313.1622485945260;
-        Mon, 31 May 2021 11:32:25 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id d1sm3274856otu.9.2021.05.31.11.32.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 11:32:24 -0700 (PDT)
-Date:   Mon, 31 May 2021 13:32:23 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sujit Kautkar <sujitka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sc7180: trogdor: SD-card GPIO
- pin set bias-pull up
-Message-ID: <YLUrtzDWn8HnSZ9L@builder.lan>
-References: <20210521215841.2017349-1-sujitka@chromium.org>
- <20210521145824.v2.2.I52f30ddfe62041b7e6c3c362f0ad8f695ac28224@changeid>
+        id S232185AbhEaSk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 14:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231997AbhEaSkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 14:40:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9106F610A0;
+        Mon, 31 May 2021 18:39:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622486355;
+        bh=8rX4IxNCvzcy69LrHZsd3l74PlDl84Y02iuH5yw/QWc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RRekc59WlsrhLZ/VYABxxgrKBHNtqkj2Zn9bxI8XA6tjQj5gulfe5GmPuoH2J6cA5
+         89pRbyj4pfrwU1ZBJtxdHH7UMMmSn1b427Ee8SUM+98wA6iMAgQ0zLIIQdXrmiSt99
+         DrHd+zieXGIgGVmPU9emiANcyGZfpFshie2cZiaKqwmgk1Vi4P9tTG/+EONkcrdGOx
+         rLH5SB3vfNICxsTKP3RDMCj5Yt7ma9YBT3F5WMbasslKBD12KvIqGKNDCQLTOUpD8+
+         WVhc6/pNGQqakLF2H7B5gHXFpmqCTIJHhk/Dh9oF8DTU0WWl47kIGwKQw6TSVrgBRh
+         KeqfUUFSCl6MA==
+Date:   Mon, 31 May 2021 11:39:13 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>
+Cc:     samitolvanen@google.com, wcw@google.com, ndesaulniers@google.com,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 2/6] pgo: modules Add definitions in pgo/pgo.h for modules
+Message-ID: <YLUtUV3ZSIqPZbX+@Ryzen-9-3900X.localdomain>
+References: <20210528200432.459120-1-jarmo.tiitto@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210521145824.v2.2.I52f30ddfe62041b7e6c3c362f0ad8f695ac28224@changeid>
+In-Reply-To: <20210528200432.459120-1-jarmo.tiitto@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 21 May 16:58 CDT 2021, Sujit Kautkar wrote:
+On Fri, May 28, 2021 at 11:04:32PM +0300, Jarmo Tiitto wrote:
+> Add new function and struct definitions to pgo/pgo.h
+> Few functions are shared by the new machinery so mark them as extern.
 
-> Trogdor board does not have external pull-up for cd-gpio. Set this pin
+This patch probably belongs in 3/6 since these changes are only needed
+because of that and this patch is self contained to 'kernel/pgo'.
 
-This says "Trogdor" specifically, but the diffstats says "all 7180
-devices".
-
-> to internal pull-up for sleep config to avoid frequent regulator toggle
-> events.
-> 
-> This change is aligned with Qualcomm's DT change posted at:
-> https://patchwork.kernel.org/patch/11675347/
-> 
-
-I'm sorry, but afacit this says that your v2 is Qualcomm's v2 but with
-the change I asked for. If this is the case, then your patch is either
-v3 or you could just mention this below the '---', as I don't see any
-benefit of carrying this in the git history.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
 > ---
-> Changes in v2:
-> - added pull-up for IDP
+>  kernel/pgo/fs.c  | 13 ++++++++-----
+>  kernel/pgo/pgo.h | 39 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 47 insertions(+), 5 deletions(-)
 > 
-> (no changes since v1)
-> 
->  arch/arm64/boot/dts/qcom/sc7180-idp.dts      | 2 +-
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-> index 07133e0af581a..0c255edb7f3c3 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-> @@ -696,7 +696,7 @@ pinconf-data {
+> diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
+> index 1678df3b7d64..575142735273 100644
+> --- a/kernel/pgo/fs.c
+> +++ b/kernel/pgo/fs.c
+> @@ -26,7 +26,7 @@
+>  #include <linux/vmalloc.h>
+>  #include "pgo.h"
 >  
->  		pinconf-sd-cd {
->  			pins = "gpio69";
-> -			bias-disable;
-> +			bias-pull-up;
->  			drive-strength = <2>;
->  		};
->  	};
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> index d128a0ed6ad3a..330deb4967ca2 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -1638,7 +1638,7 @@ pinconf-data {
+> -static struct dentry *directory;
+> +struct dentry *directory;
 >  
->  		pinconf-sd-cd {
->  			pins = "gpio69";
-> -			bias-disable;
-> +			bias-pull-up;
->  			drive-strength = <2>;
->  		};
->  	};
+>  struct prf_private_data {
+>  	void *buffer;
+> @@ -82,7 +82,7 @@ static void prf_copy_to_buffer(void **buffer, void *src, unsigned long size)
+>  	*buffer += size;
+>  }
+>  
+> -static u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds)
+> +u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds)
+>  {
+>  	struct llvm_prf_value_node **nodes =
+>  		(struct llvm_prf_value_node **)p->values;
+> @@ -140,7 +140,7 @@ static u32 prf_get_value_size(void)
+>  }
+>  
+>  /* Serialize the profiling's value. */
+> -static void prf_serialize_value(struct llvm_prf_data *p, void **buffer)
+> +void prf_serialize_value(struct llvm_prf_data *p, void **buffer)
+>  {
+>  	struct llvm_prf_value_data header;
+>  	struct llvm_prf_value_node **nodes =
+> @@ -254,7 +254,10 @@ static int prf_serialize(struct prf_private_data *p)
+>  	return err;
+>  }
+>  
+> -/* open() implementation for PGO. Creates a copy of the profiling data set. */
+> +/*
+> + * open() implementation for PGO.
+> + * Creates a copy of the profiling data set.
+> + */
+>  static int prf_open(struct inode *inode, struct file *file)
+>  {
+>  	struct prf_private_data *data;
+> @@ -292,7 +295,7 @@ static ssize_t prf_read(struct file *file, char __user *buf, size_t count,
+>  	BUG_ON(!data);
+>  
+>  	return simple_read_from_buffer(buf, count, ppos, data->buffer,
+> -				       data->size);
+> +					   data->size);
+>  }
+>  
+>  /* release() implementation for PGO. Release resources allocated by open(). */
+> diff --git a/kernel/pgo/pgo.h b/kernel/pgo/pgo.h
+> index ddc8d3002fe5..a9ff51abbfd5 100644
+> --- a/kernel/pgo/pgo.h
+> +++ b/kernel/pgo/pgo.h
+> @@ -19,6 +19,11 @@
+>  #ifndef _PGO_H
+>  #define _PGO_H
+>  
+> +#include <linux/kernel.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/fs.h>
+> +#include <linux/module.h>
+> +
+>  /*
+>   * Note: These internal LLVM definitions must match the compiler version.
+>   * See llvm/include/llvm/ProfileData/InstrProfData.inc in LLVM's source code.
+> @@ -200,4 +205,38 @@ __DEFINE_PRF_SIZE(vnds);
+>  
+>  #undef __DEFINE_PRF_SIZE
+>  
+> +/* debugfs directory */
+> +extern struct dentry *directory;
+> +
+> +struct prf_mod_private_data {
+> +	struct list_head link;
+> +	struct rcu_head rcu;
+> +
+> +	void *buffer;
+> +	unsigned long size;
+> +
+> +	char mod_name[MODULE_NAME_LEN];
+> +	struct module *mod;
+> +	struct dentry *file;
+> +
+> +	int current_node;
+> +};
+> +
+> +/* Mutex protecting the prf_mod_list and entries */
+> +extern struct mutex prf_mod_lock;
+> +
+> +/* List of modules profiled */
+> +extern struct list_head prf_mod_list;
+> +
+> +extern void prf_modules_init(void);
+> +extern void prf_modules_exit(void);
+> +
+> +/* Update each modules snapshot of the profiling data. */
+> +extern int prf_modules_snapshot(void);
+> +
+> +/* below funcs are required by prf_modules_snapshot() */
+> +extern u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds);
+> +
+> +extern void prf_serialize_value(struct llvm_prf_data *p, void **buffer);
+> +
+>  #endif /* _PGO_H */
 > -- 
-> 2.31.1.818.g46aad6cb9e-goog
-> 
+> 2.31.1
