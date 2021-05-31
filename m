@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0297E3964D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A884D396093
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233827AbhEaQMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33236 "EHLO mail.kernel.org"
+        id S233153AbhEaO2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:28:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233963AbhEaOhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:37:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0DB161C59;
-        Mon, 31 May 2021 13:52:05 +0000 (UTC)
+        id S232805AbhEaNws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:52:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EE4461435;
+        Mon, 31 May 2021 13:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469126;
-        bh=XNc7gbAIvDHuE840Jlwhk0t4yaSnPloCG7GiueXbCrg=;
+        s=korg; t=1622467975;
+        bh=ynVL04ift/6egESuTKn/Fk2adUED9rKiBWSXS2RVsvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fHl+SfJq56fChkLk56bOFVVtCxjUCIZuXWTN6txDQhqbbP/LFytDaAiNv5DP5TGoG
-         6sybG/ToavZ0xJtu+XsOEfef6ZfPuHaGlbXyQLoykWLgXgDKFa8TUE3C7V8gArEX7S
-         smEkvNMnB60Md394p0xakYJfQQt30x1VhzAm2fGU=
+        b=iAxOknIv8cDiIF3xn+JkhwiESqtoXM0+W+xLxmucZSSMse4K8vQ6neawdcyIdjZTs
+         TiR2zG0jwe9jDyj5zwG2v/BPCjjConqYYSahxccOBaxku3WuUhCoZyrflXTeh5LIaR
+         Ur/H5pwsjqjyDCS/wYYSCD1eLjHQ8QVtnvrMxdb4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
         Alexandru Ardelean <aardelean@deviqon.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Stable@vger.kernel.org
-Subject: [PATCH 5.12 079/296] iio: adc: ad7124: Fix missbalanced regulator enable / disable on error.
+Subject: [PATCH 5.10 069/252] iio: adc: ad7192: handle regulator voltage error first
 Date:   Mon, 31 May 2021 15:12:14 +0200
-Message-Id: <20210531130706.513142831@linuxfoundation.org>
+Message-Id: <20210531130700.334230098@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,99 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Alexandru Ardelean <aardelean@deviqon.com>
 
-commit 4573472315f0fa461330545ff2aa2f6da0b1ae76 upstream.
+commit b0f27fca5a6c7652e265aae6a4452ce2f2ed64da upstream.
 
-If the devm_regulator_get() call succeeded but not the regulator_enable()
-then regulator_disable() would be called on a regulator that was not
-enabled.
+This change fixes a corner-case, where for a zero regulator value, the
+driver would exit early, initializing the driver only partially.
+The driver would be in an unknown state.
 
-Fix this by moving regulator enabling / disabling over to
-devm_ management via devm_add_action_or_reset.
+This change reworks the code to check regulator_voltage() return value
+for negative (error) first, and return early. This is the more common
+idiom.
 
-Alexandru's sign-off here because he pulled Jonathan's patch into
-a larger set which Jonathan then applied.
+Also, this change is removing the 'voltage_uv' variable and using the 'ret'
+value directly. The only place where 'voltage_uv' is being used is to
+compute the internal reference voltage, and the type of this variable is
+'int' (same are for 'ret'). Using only 'ret' avoids having to assign it on
+the error path.
 
-Fixes: b3af341bbd96 ("iio: adc: Add ad7124 support")
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: ab0afa65bbc7 ("staging: iio: adc: ad7192: fail probe on get_voltage")
+Cc: Alexandru Tachici <alexandru.tachici@analog.com>
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/ad7124.c |   29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ drivers/iio/adc/ad7192.c |   11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
---- a/drivers/iio/adc/ad7124.c
-+++ b/drivers/iio/adc/ad7124.c
-@@ -707,6 +707,11 @@ static int ad7124_setup(struct ad7124_st
- 	return ret;
- }
- 
-+static void ad7124_reg_disable(void *r)
-+{
-+	regulator_disable(r);
-+}
-+
- static int ad7124_probe(struct spi_device *spi)
+--- a/drivers/iio/adc/ad7192.c
++++ b/drivers/iio/adc/ad7192.c
+@@ -912,7 +912,7 @@ static int ad7192_probe(struct spi_devic
  {
- 	const struct ad7124_chip_info *info;
-@@ -752,17 +757,20 @@ static int ad7124_probe(struct spi_devic
- 		ret = regulator_enable(st->vref[i]);
- 		if (ret)
- 			return ret;
-+
-+		ret = devm_add_action_or_reset(&spi->dev, ad7124_reg_disable,
-+					       st->vref[i]);
-+		if (ret)
-+			return ret;
+ 	struct ad7192_state *st;
+ 	struct iio_dev *indio_dev;
+-	int ret, voltage_uv = 0;
++	int ret;
+ 
+ 	if (!spi->irq) {
+ 		dev_err(&spi->dev, "no IRQ?\n");
+@@ -949,15 +949,12 @@ static int ad7192_probe(struct spi_devic
+ 		goto error_disable_avdd;
  	}
  
- 	st->mclk = devm_clk_get(&spi->dev, "mclk");
--	if (IS_ERR(st->mclk)) {
--		ret = PTR_ERR(st->mclk);
--		goto error_regulator_disable;
--	}
-+	if (IS_ERR(st->mclk))
-+		return PTR_ERR(st->mclk);
- 
- 	ret = clk_prepare_enable(st->mclk);
- 	if (ret < 0)
--		goto error_regulator_disable;
-+		return ret;
- 
- 	ret = ad7124_soft_reset(st);
- 	if (ret < 0)
-@@ -792,11 +800,6 @@ error_remove_trigger:
- 	ad_sd_cleanup_buffer_and_trigger(indio_dev);
- error_clk_disable_unprepare:
- 	clk_disable_unprepare(st->mclk);
--error_regulator_disable:
--	for (i = ARRAY_SIZE(st->vref) - 1; i >= 0; i--) {
--		if (!IS_ERR_OR_NULL(st->vref[i]))
--			regulator_disable(st->vref[i]);
--	}
- 
- 	return ret;
- }
-@@ -805,17 +808,11 @@ static int ad7124_remove(struct spi_devi
- {
- 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
- 	struct ad7124_state *st = iio_priv(indio_dev);
--	int i;
- 
- 	iio_device_unregister(indio_dev);
- 	ad_sd_cleanup_buffer_and_trigger(indio_dev);
- 	clk_disable_unprepare(st->mclk);
- 
--	for (i = ARRAY_SIZE(st->vref) - 1; i >= 0; i--) {
--		if (!IS_ERR_OR_NULL(st->vref[i]))
--			regulator_disable(st->vref[i]);
--	}
+-	voltage_uv = regulator_get_voltage(st->avdd);
 -
- 	return 0;
- }
+-	if (voltage_uv > 0) {
+-		st->int_vref_mv = voltage_uv / 1000;
+-	} else {
+-		ret = voltage_uv;
++	ret = regulator_get_voltage(st->avdd);
++	if (ret < 0) {
+ 		dev_err(&spi->dev, "Device tree error, reference voltage undefined\n");
+ 		goto error_disable_avdd;
+ 	}
++	st->int_vref_mv = ret / 1000;
  
+ 	spi_set_drvdata(spi, indio_dev);
+ 	st->chip_info = of_device_get_match_data(&spi->dev);
 
 
