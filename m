@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209EF3965A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737DD395F2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhEaQn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47900 "EHLO mail.kernel.org"
+        id S232358AbhEaOIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234043AbhEaOxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:53:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4BFE61940;
-        Mon, 31 May 2021 13:58:30 +0000 (UTC)
+        id S232182AbhEaNnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:43:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 642E361490;
+        Mon, 31 May 2021 13:28:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469511;
-        bh=SlQlGdBtKRw7QmtPK5kNIhIjbhgwVireYQ+K5Wcy4v4=;
+        s=korg; t=1622467727;
+        bh=eThF42QgHM2ceyuUbfHXSeQsf1W1pocY7rix57lF/sE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X2DkRd0YdR8mBBGxdmO/PFc3iEF1ibDhEk4Xa+4uFY/Dd6tq7rYZK3gR+GDbcreD3
-         RklpzlMeBU3yqqzDkeEkY12Mr+DVhYKhNvoYDSWp3KpHu9VAsovhLEIIQq0Gpe96oR
-         Sc9LSAxpEdb9vBoeuDhpZpwaMBqQTlu2ZzP/iUMk=
+        b=hGkcCl6HXonP6E6TK7abKk/wO+fXHVnWIDmD3dxDmQbt9GRrROLvAkZDeC9cf9GtK
+         DJf4pJPeE9Mmh6cjPlUdWC5/gD4U8YGAlyfy46h1f4+zccc6nfz51LIwOj9qApotLU
+         5vf/bll0o147wQ50g39yP7dVChbRrSNRjNkooGek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Stafford Horne <shorne@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 226/296] ASoC: cs42l42: Regmap must use_single_read/write
-Date:   Mon, 31 May 2021 15:14:41 +0200
-Message-Id: <20210531130711.425494788@linuxfoundation.org>
+Subject: [PATCH 4.14 57/79] openrisc: Define memory barrier mb
+Date:   Mon, 31 May 2021 15:14:42 +0200
+Message-Id: <20210531130637.826860384@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 0fad605fb0bdc00d8ad78696300ff2fbdee6e048 ]
+[ Upstream commit 8b549c18ae81dbc36fb11e4aa08b8378c599ca95 ]
 
-cs42l42 does not support standard burst transfers so the use_single_read
-and use_single_write flags must be set in the regmap config.
+This came up in the discussion of the requirements of qspinlock on an
+architecture.  OpenRISC uses qspinlock, but it was noticed that the
+memmory barrier was not defined.
 
-Because of this bug, the patch:
+Peter defined it in the mail thread writing:
 
-commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
+    As near as I can tell this should do. The arch spec only lists
+    this one instruction and the text makes it sound like a completion
+    barrier.
 
-broke cs42l42 probe() because without the use_single_* flags it causes
-regmap to issue a burst read.
+This is correct so applying this patch.
 
-However, the missing use_single_* could cause problems anyway because the
-regmap cache can attempt burst transfers if these flags are not set.
-
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210511132855.27159-1-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+[shorne@gmail.com:Turned the mail into a patch]
+Signed-off-by: Stafford Horne <shorne@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/openrisc/include/asm/barrier.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+ create mode 100644 arch/openrisc/include/asm/barrier.h
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 811b7b1c9732..323a4f7f384c 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -398,6 +398,9 @@ static const struct regmap_config cs42l42_regmap = {
- 	.reg_defaults = cs42l42_reg_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(cs42l42_reg_defaults),
- 	.cache_type = REGCACHE_RBTREE,
+diff --git a/arch/openrisc/include/asm/barrier.h b/arch/openrisc/include/asm/barrier.h
+new file mode 100644
+index 000000000000..7538294721be
+--- /dev/null
++++ b/arch/openrisc/include/asm/barrier.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ASM_BARRIER_H
++#define __ASM_BARRIER_H
 +
-+	.use_single_read = true,
-+	.use_single_write = true,
- };
- 
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
++#define mb() asm volatile ("l.msync" ::: "memory")
++
++#include <asm-generic/barrier.h>
++
++#endif /* __ASM_BARRIER_H */
 -- 
 2.30.2
 
