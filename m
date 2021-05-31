@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0983965FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0CA396336
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234384AbhEaQyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:54:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51030 "EHLO mail.kernel.org"
+        id S234418AbhEaPKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234364AbhEaO7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:59:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5CB061CCB;
-        Mon, 31 May 2021 14:01:05 +0000 (UTC)
+        id S233507AbhEaOJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:09:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 669E461463;
+        Mon, 31 May 2021 13:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469666;
-        bh=axbQtkHkmQkY/6FFV2XT5OQQCjxcrmW1aUc3aVnA2rA=;
+        s=korg; t=1622468427;
+        bh=nk4yxqwhuy0fshY82HCpICQe/4osT6W/KMcAUXyxtyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wRojZQZ8HE3gykAGWEAxqnWC9/ReVgFtGjBX4J82ey/6MjDYg0SlJQRRFHLon6Ufk
-         /BuoZIzPA8Zztv3FStInooU9ex7bkMZNE2jbPekFoGrrlNdEQ7/lvW53W8f3lYjt1u
-         21Ls8zQsC7/SbCEg6bw8PudzhQjt5Q4z0DnOFx6I=
+        b=Z8EzPOTeCCEV2TtVMqon5yr80IrQ5Wedrud4iR+estoRFSNkAMmBaMK3IRUQVGrxs
+         HJSs79ULTafR2d7HMo18Fyr1Ld+knoZ1kNOjnXFxQgRI6uFeKZ9DkNQdUke+5pMUUi
+         4TQxFqKRQyReLILH4rotYKP5jrvYD+okXWLbDhDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Manuel Lauss <manuel.lauss@googlemail.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Manuel Lauss <manuel.lauss@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 249/296] mld: fix panic in mld_newpack()
+Subject: [PATCH 5.10 239/252] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
 Date:   Mon, 31 May 2021 15:15:04 +0200
-Message-Id: <20210531130712.142915735@linuxfoundation.org>
+Message-Id: <20210531130706.125564066@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,110 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 020ef930b826d21c5446fdc9db80fd72a791bc21 ]
+[ Upstream commit ff4cff962a7eedc73e54b5096693da7f86c61346 ]
 
-mld_newpack() doesn't allow to allocate high order page,
-only order-0 allocation is allowed.
-If headroom size is too large, a kernel panic could occur in skb_put().
+board-xxs1500.c references 2 functions without declaring them, so add
+the header file to placate the build.
 
-Test commands:
-    ip netns del A
-    ip netns del B
-    ip netns add A
-    ip netns add B
-    ip link add veth0 type veth peer name veth1
-    ip link set veth0 netns A
-    ip link set veth1 netns B
+../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
+../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
+   56 |  alchemy_gpio1_input_enable();
+../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
+   57 |  alchemy_gpio2_enable();
 
-    ip netns exec A ip link set lo up
-    ip netns exec A ip link set veth0 up
-    ip netns exec A ip -6 a a 2001:db8:0::1/64 dev veth0
-    ip netns exec B ip link set lo up
-    ip netns exec B ip link set veth1 up
-    ip netns exec B ip -6 a a 2001:db8:0::2/64 dev veth1
-    for i in {1..99}
-    do
-        let A=$i-1
-        ip netns exec A ip link add ip6gre$i type ip6gre \
-	local 2001:db8:$A::1 remote 2001:db8:$A::2 encaplimit 100
-        ip netns exec A ip -6 a a 2001:db8:$i::1/64 dev ip6gre$i
-        ip netns exec A ip link set ip6gre$i up
-
-        ip netns exec B ip link add ip6gre$i type ip6gre \
-	local 2001:db8:$A::2 remote 2001:db8:$A::1 encaplimit 100
-        ip netns exec B ip -6 a a 2001:db8:$i::2/64 dev ip6gre$i
-        ip netns exec B ip link set ip6gre$i up
-    done
-
-Splat looks like:
-kernel BUG at net/core/skbuff.c:110!
-invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.12.0+ #891
-Workqueue: ipv6_addrconf addrconf_dad_work
-RIP: 0010:skb_panic+0x15d/0x15f
-Code: 92 fe 4c 8b 4c 24 10 53 8b 4d 70 45 89 e0 48 c7 c7 00 ae 79 83
-41 57 41 56 41 55 48 8b 54 24 a6 26 f9 ff <0f> 0b 48 8b 6c 24 20 89
-34 24 e8 4a 4e 92 fe 8b 34 24 48 c7 c1 20
-RSP: 0018:ffff88810091f820 EFLAGS: 00010282
-RAX: 0000000000000089 RBX: ffff8881086e9000 RCX: 0000000000000000
-RDX: 0000000000000089 RSI: 0000000000000008 RDI: ffffed1020123efb
-RBP: ffff888005f6eac0 R08: ffffed1022fc0031 R09: ffffed1022fc0031
-R10: ffff888117e00187 R11: ffffed1022fc0030 R12: 0000000000000028
-R13: ffff888008284eb0 R14: 0000000000000ed8 R15: 0000000000000ec0
-FS:  0000000000000000(0000) GS:ffff888117c00000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8b801c5640 CR3: 0000000033c2c006 CR4: 00000000003706f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ? ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
- ? ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
- skb_put.cold.104+0x22/0x22
- ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
- ? rcu_read_lock_sched_held+0x91/0xc0
- mld_newpack+0x398/0x8f0
- ? ip6_mc_hdr.isra.26.constprop.46+0x600/0x600
- ? lock_contended+0xc40/0xc40
- add_grhead.isra.33+0x280/0x380
- add_grec+0x5ca/0xff0
- ? mld_sendpack+0xf40/0xf40
- ? lock_downgrade+0x690/0x690
- mld_send_initial_cr.part.34+0xb9/0x180
- ipv6_mc_dad_complete+0x15d/0x1b0
- addrconf_dad_completed+0x8d2/0xbb0
- ? lock_downgrade+0x690/0x690
- ? addrconf_rs_timer+0x660/0x660
- ? addrconf_dad_work+0x73c/0x10e0
- addrconf_dad_work+0x73c/0x10e0
-
-Allowing high order page allocation could fix this problem.
-
-Fixes: 72e09ad107e7 ("ipv6: avoid high order allocations")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/mcast.c | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/mips/alchemy/board-xxs1500.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index 6c8604390266..2cab0c563214 100644
---- a/net/ipv6/mcast.c
-+++ b/net/ipv6/mcast.c
-@@ -1601,10 +1601,7 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, unsigned int mtu)
- 		     IPV6_TLV_PADN, 0 };
+diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
+index b184baa4e56a..f175bce2987f 100644
+--- a/arch/mips/alchemy/board-xxs1500.c
++++ b/arch/mips/alchemy/board-xxs1500.c
+@@ -18,6 +18,7 @@
+ #include <asm/reboot.h>
+ #include <asm/setup.h>
+ #include <asm/mach-au1x00/au1000.h>
++#include <asm/mach-au1x00/gpio-au1000.h>
+ #include <prom.h>
  
- 	/* we assume size > sizeof(ra) here */
--	/* limit our allocations to order-0 page */
--	size = min_t(int, size, SKB_MAX_ORDER(0, 0));
- 	skb = sock_alloc_send_skb(sk, size, 1, &err);
--
- 	if (!skb)
- 		return NULL;
- 
+ const char *get_system_type(void)
 -- 
 2.30.2
 
