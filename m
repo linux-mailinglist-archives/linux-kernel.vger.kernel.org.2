@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED44A3963A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F103963A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234777AbhEaP2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43970 "EHLO mail.kernel.org"
+        id S234880AbhEaPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:30:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233486AbhEaOTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233490AbhEaOTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 10:19:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DBB8619B6;
-        Mon, 31 May 2021 13:44:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F3B96141B;
+        Mon, 31 May 2021 13:44:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468664;
-        bh=7QXqn94zqFD8tTPdbHgKtZQt7uJTtmRjqr/4mq2F30k=;
+        s=korg; t=1622468666;
+        bh=iKyYyDpShslT+5GNriDpMu/Gpkxx0at5Xw/695kRCUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k9GYcn8B2PbSYqDLvdi5yWOJv0iqXaBMlW29bdaqeVLiuxOGD1JmQi4dC06FqTonj
-         fGFd9qAJE0EkgoYEQ9tzkygjD0DL5DIce0KqLsUcWL0pxrLGExFKd2hpOr0HKYsa87
-         IDdNjURaFcfRHmm6FyAryIW+0AG2XpBw1QViZVG0=
+        b=CDefkMS3ffRpEioOv5I01dlfvQxrkhm8IpuhfatBsRczWIFboACT68xYupFPhi9+v
+         cz4hQ+Ha+va6M1itPY2jcGZXRBGjY36tuIEHThGSY/DiWvmIISvV4U13hxcQQJxQnC
+         6S/RSCpH8naV7QNLLoU7dr0L/Yrw7mJRVTqJSwqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Shuang <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 077/177] tipc: skb_linearize the head skb when reassembling msgs
-Date:   Mon, 31 May 2021 15:13:54 +0200
-Message-Id: <20210531130650.556523855@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 078/177] spi: spi-fsl-dspi: Fix a resource leak in an error handling path
+Date:   Mon, 31 May 2021 15:13:55 +0200
+Message-Id: <20210531130650.595202706@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
 References: <20210531130647.887605866@linuxfoundation.org>
@@ -40,95 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit b7df21cf1b79ab7026f545e7bf837bd5750ac026 upstream.
+commit 680ec0549a055eb464dce6ffb4bfb736ef87236e upstream.
 
-It's not a good idea to append the frag skb to a skb's frag_list if
-the frag_list already has skbs from elsewhere, such as this skb was
-created by pskb_copy() where the frag_list was cloned (all the skbs
-in it were skb_get'ed) and shared by multiple skbs.
+'dspi_request_dma()' should be undone by a 'dspi_release_dma()' call in the
+error handling path of the probe function, as already done in the remove
+function
 
-However, the new appended frag skb should have been only seen by the
-current skb. Otherwise, it will cause use after free crashes as this
-appended frag skb are seen by multiple skbs but it only got skb_get
-called once.
-
-The same thing happens with a skb updated by pskb_may_pull() with a
-skb_cloned skb. Li Shuang has reported quite a few crashes caused
-by this when doing testing over macvlan devices:
-
-  [] kernel BUG at net/core/skbuff.c:1970!
-  [] Call Trace:
-  []  skb_clone+0x4d/0xb0
-  []  macvlan_broadcast+0xd8/0x160 [macvlan]
-  []  macvlan_process_broadcast+0x148/0x150 [macvlan]
-  []  process_one_work+0x1a7/0x360
-  []  worker_thread+0x30/0x390
-
-  [] kernel BUG at mm/usercopy.c:102!
-  [] Call Trace:
-  []  __check_heap_object+0xd3/0x100
-  []  __check_object_size+0xff/0x16b
-  []  simple_copy_to_iter+0x1c/0x30
-  []  __skb_datagram_iter+0x7d/0x310
-  []  __skb_datagram_iter+0x2a5/0x310
-  []  skb_copy_datagram_iter+0x3b/0x90
-  []  tipc_recvmsg+0x14a/0x3a0 [tipc]
-  []  ____sys_recvmsg+0x91/0x150
-  []  ___sys_recvmsg+0x7b/0xc0
-
-  [] kernel BUG at mm/slub.c:305!
-  [] Call Trace:
-  []  <IRQ>
-  []  kmem_cache_free+0x3ff/0x400
-  []  __netif_receive_skb_core+0x12c/0xc40
-  []  ? kmem_cache_alloc+0x12e/0x270
-  []  netif_receive_skb_internal+0x3d/0xb0
-  []  ? get_rx_page_info+0x8e/0xa0 [be2net]
-  []  be_poll+0x6ef/0xd00 [be2net]
-  []  ? irq_exit+0x4f/0x100
-  []  net_rx_action+0x149/0x3b0
-
-  ...
-
-This patch is to fix it by linearizing the head skb if it has frag_list
-set in tipc_buf_append(). Note that we choose to do this before calling
-skb_unshare(), as __skb_linearize() will avoid skb_copy(). Also, we can
-not just drop the frag_list either as the early time.
-
-Fixes: 45c8b7b175ce ("tipc: allow non-linear first fragment buffer")
-Reported-by: Li Shuang <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 90ba37033cb9 ("spi: spi-fsl-dspi: Add DMA support for Vybrid")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Link: https://lore.kernel.org/r/d51caaac747277a1099ba8dea07acd85435b857e.1620587472.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/spi/spi-fsl-dspi.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -141,18 +141,13 @@ int tipc_buf_append(struct sk_buff **hea
- 		if (unlikely(head))
- 			goto err;
- 		*buf = NULL;
-+		if (skb_has_frag_list(frag) && __skb_linearize(frag))
-+			goto err;
- 		frag = skb_unshare(frag, GFP_ATOMIC);
- 		if (unlikely(!frag))
- 			goto err;
- 		head = *headbuf = frag;
- 		TIPC_SKB_CB(head)->tail = NULL;
--		if (skb_is_nonlinear(head)) {
--			skb_walk_frags(head, tail) {
--				TIPC_SKB_CB(head)->tail = tail;
--			}
--		} else {
--			skb_frag_list_init(head);
--		}
- 		return 0;
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -1142,11 +1142,13 @@ poll_mode:
+ 	ret = spi_register_controller(ctlr);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Problem registering DSPI ctlr\n");
+-		goto out_free_irq;
++		goto out_release_dma;
  	}
  
+ 	return ret;
+ 
++out_release_dma:
++	dspi_release_dma(dspi);
+ out_free_irq:
+ 	if (dspi->irq)
+ 		free_irq(dspi->irq, dspi);
 
 
