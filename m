@@ -2,85 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FE33954A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761033954A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhEaEb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 00:31:59 -0400
-Received: from ni.piap.pl ([195.187.100.5]:37872 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhEaEby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 00:31:54 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id 67CBC4441AA;
-        Mon, 31 May 2021 06:30:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 67CBC4441AA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1622435411; bh=l4NPvVhYwcCMSvsz+fATcKqeBrkYke26i4Qu64Bnbw8=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Ck8rmuk1u2sqYDwFInX8OlXhOPW+/tfZY0HhLdclfnCwdpYo+3B4J/eGu3kfBKruT
-         36bLdfAE5uWq3BpJs7JnTtXMqoCfw00tklJC6ARLEoRAIZn+safgRUNa09+nOfjDG5
-         uY9PTFbKSQvxXsWi9FKKZmXqZhuRZKu0sygnXm+E=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Data corruption on i.MX6 IPU in arm_copy_from_user()
-References: <m3y2c1uchh.fsf@t19.piap.pl>
-        <20210526100843.GD30436@shell.armlinux.org.uk>
-        <m3r1htu19o.fsf@t19.piap.pl>
-        <20210526131853.GE30436@shell.armlinux.org.uk>
-        <m3h7intbub.fsf@t19.piap.pl>
-        <20210528143544.GQ30436@shell.armlinux.org.uk>
-Sender: khalasa@piap.pl
-Date:   Mon, 31 May 2021 06:30:10 +0200
-In-Reply-To: <20210528143544.GQ30436@shell.armlinux.org.uk> (Russell King's
-        message of "Fri, 28 May 2021 15:35:44 +0100")
-Message-ID: <m35yyzttil.fsf@t19.piap.pl>
+        id S230013AbhEaEhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 00:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhEaEgs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 00:36:48 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6CBC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 21:35:07 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id u7so4587950plq.4
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 21:35:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EHs8c9vGdjXi2giuywOaumDo2EmlRLA/sn7ZfRaihIo=;
+        b=ZjaTTsW7dChI/1TWMdqo+HJVQgeE4uuo5w5gyenkQ3Ftwqh1OzRaAUqWB6964K/nNT
+         AfeIGJmPE+rEujTOE+nn8NIAHBn8pUCDOM0LtqyT7hXmVgpHjPtLul19Y2wGrk5dNztp
+         XV/o7yASeg5tXM5SjNTFm+P5kpidpK79TJk+g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EHs8c9vGdjXi2giuywOaumDo2EmlRLA/sn7ZfRaihIo=;
+        b=dpKBXNAB0WNp50QM7TLnIWwA7eK4QJG7vnS5cOeZpc2oQM0XWJiCxPpGZEC2OJDVe8
+         KghOFyK0rTn6DEDEW78+ZOcElFgCZNELxojkeJJEDSS3ie3eY4x9cYT7gorDSJuLDcnU
+         /Ope4xXBZtKJml35mSc6RQWcyBTFkir3MUZ2W+GB8XZBtk+HMhKvj4PRzF7XBpnyWxbX
+         2nD1GFx80DeRAk8TNJnahxWB7ycQmspK9wAAAuo140WiZpe23ak08UISykIAbXhOAy29
+         m1eFS49rYHuRRbXmfkZibB7d8aJ00WCwxT/RF7KZz4wOPKg+Zu056xLfr6t7Av/XW0J4
+         6/SQ==
+X-Gm-Message-State: AOAM533chS6Z9Drnn9tk358ckAsa6cLgyvOkHSPIIGrfs2RgW1nokDSr
+        pZvfPUQDer4xDtPNeYikyvOtng==
+X-Google-Smtp-Source: ABdhPJxxgSMWMTn772k1ysuWnGkE1QOeHgmac5qTvTSd6ojr5RCWo9CeIZwcl08Tbiyh7nLDB3cKVQ==
+X-Received: by 2002:a17:90a:5d93:: with SMTP id t19mr17272027pji.116.1622435706373;
+        Sun, 30 May 2021 21:35:06 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:c929:9e58:1e99:bfb5])
+        by smtp.gmail.com with ESMTPSA id a9sm9366811pfo.69.2021.05.30.21.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 May 2021 21:35:06 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        chun-jie.chen@mediatek.corp-partner.google.com,
+        Yong Wu <yong.wu@mediatek.com>
+Subject: [PATCH 1/3] soc: mtk-pm-domains: Fix the clock prepared issue
+Date:   Mon, 31 May 2021 12:35:00 +0800
+Message-Id: <20210531043502.2702645-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Russell King (Oracle)" <linux@armlinux.org.uk> writes:
+From: Weiyi Lu <weiyi.lu@mediatek.com>
 
->> LDM12: 1 3 4 5 6 7 8 9 A B C D
->
-> That's rather sad, and does look very much like a hardware bug.
->
-> The question is what to do about it... there's Linus' "do not break
-> userspace" edict and that's exactly what this change has done. So I
-> suppose we're going to have to revert the change and put up with
-> everything being slightly slower on arm32 than it otherwise would
-> have been. That probably means we'll end up with almost every kernel
-> tree out there carrying a revert of the revert to work around the
-> fact that seemingly NXP broke their hardware - which itself is not
-> a good idea. I guess we're just going to have to put up with that.
+In this new power domain driver, when adding one power domain
+it will prepare the depenedent clocks at the same.
+So we only do clk_bulk_enable/disable control during power ON/OFF.
+When system suspend, the pm runtime framework will forcely power off
+power domains. However, the dependent clocks are disabled but kept
+preapred.
 
-For userspace, it's quite a corner case, basically development-only -
-and I guess there are very few people who will do things like this.
+In MediaTek clock drivers, PLL would be turned ON when we do
+clk_bulk_prepare control.
 
-The same problem can manifest itself without any kernel involvement -
-it's enough to mmap /dev/mem and use LDM on in completely in userspace.
-This can't be fixed - unless we disallow IPU mmap.
+Clock hierarchy:
+PLL -->
+       DIV_CK -->
+                 CLK_MUX
+                 (may be dependent clocks)
+                         -->
+                             SUBSYS_CG
+                             (may be dependent clocks)
 
-Perhaps making sure the bug is clearly documented is better than doing
-a partial fix. Ideally NXP should document it in their papers, and we
-should add notes to IPU driver code.
+It will lead some unexpected clock states during system suspend.
+This patch will fix by doing prepare_enable/disable_unprepare on
+dependent clocks at the same time while we are going to power on/off
+any power domain.
 
-The last one - I guess I can do.
---=20
-Krzysztof Ha=C5=82asa
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ drivers/soc/mediatek/mtk-pm-domains.c | 31 +++++++--------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+index 0af00efa0ef8..536d8c64b2b4 100644
+--- a/drivers/soc/mediatek/mtk-pm-domains.c
++++ b/drivers/soc/mediatek/mtk-pm-domains.c
+@@ -211,7 +211,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = clk_bulk_enable(pd->num_clks, pd->clks);
++	ret = clk_bulk_prepare_enable(pd->num_clks, pd->clks);
+ 	if (ret)
+ 		goto err_reg;
+ 
+@@ -229,7 +229,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ 	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_ISO_BIT);
+ 	regmap_set_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+ 
+-	ret = clk_bulk_enable(pd->num_subsys_clks, pd->subsys_clks);
++	ret = clk_bulk_prepare_enable(pd->num_subsys_clks, pd->subsys_clks);
+ 	if (ret)
+ 		goto err_pwr_ack;
+ 
+@@ -246,9 +246,9 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ err_disable_sram:
+ 	scpsys_sram_disable(pd);
+ err_disable_subsys_clks:
+-	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
++	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+ err_pwr_ack:
+-	clk_bulk_disable(pd->num_clks, pd->clks);
++	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+ err_reg:
+ 	scpsys_regulator_disable(pd->supply);
+ 	return ret;
+@@ -269,7 +269,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
++	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+ 
+ 	/* subsys power off */
+ 	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+@@ -284,7 +284,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	clk_bulk_disable(pd->num_clks, pd->clks);
++	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+ 
+ 	scpsys_regulator_disable(pd->supply);
+ 
+@@ -405,14 +405,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		pd->subsys_clks[i].clk = clk;
+ 	}
+ 
+-	ret = clk_bulk_prepare(pd->num_clks, pd->clks);
+-	if (ret)
+-		goto err_put_subsys_clocks;
+-
+-	ret = clk_bulk_prepare(pd->num_subsys_clks, pd->subsys_clks);
+-	if (ret)
+-		goto err_unprepare_clocks;
+-
+ 	/*
+ 	 * Initially turn on all domains to make the domains usable
+ 	 * with !CONFIG_PM and to get the hardware in sync with the
+@@ -427,7 +419,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		ret = scpsys_power_on(&pd->genpd);
+ 		if (ret < 0) {
+ 			dev_err(scpsys->dev, "%pOF: failed to power on domain: %d\n", node, ret);
+-			goto err_unprepare_clocks;
++			goto err_put_subsys_clocks;
+ 		}
+ 	}
+ 
+@@ -435,7 +427,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		ret = -EINVAL;
+ 		dev_err(scpsys->dev,
+ 			"power domain with id %d already exists, check your device-tree\n", id);
+-		goto err_unprepare_subsys_clocks;
++		goto err_put_subsys_clocks;
+ 	}
+ 
+ 	if (!pd->data->name)
+@@ -455,10 +447,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 
+ 	return scpsys->pd_data.domains[id];
+ 
+-err_unprepare_subsys_clocks:
+-	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+-err_unprepare_clocks:
+-	clk_bulk_unprepare(pd->num_clks, pd->clks);
+ err_put_subsys_clocks:
+ 	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+ err_put_clocks:
+@@ -537,10 +525,7 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
+ 			"failed to remove domain '%s' : %d - state may be inconsistent\n",
+ 			pd->genpd.name, ret);
+ 
+-	clk_bulk_unprepare(pd->num_clks, pd->clks);
+ 	clk_bulk_put(pd->num_clks, pd->clks);
+-
+-	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+ 	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+ }
+ 
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
+
