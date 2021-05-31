@@ -2,125 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C9B3957D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FF33957DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhEaJIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:08:34 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:25578 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230337AbhEaJIP (ORCPT
+        id S230527AbhEaJIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:08:45 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51018 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230206AbhEaJI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:08:15 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V96NSM014845;
-        Mon, 31 May 2021 02:06:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=vJD3FC7L7Iq4KIkXJn86baeDLcjGa8hZW/EM6OIxen4=;
- b=freR52Z/V6uNlyR3JwDFIkQsYL1R5LW9QH0toDBPu1bfvPQcju1gHQdhyxU+5m9VJhTZ
- Jhsmfc/sg65zO1XG+tVpakQByYEyDbsXKNAGBzqPNQ/OcVYfDvsMEWvAHeUan+HLx0Ca
- fnaZFAtMQOhkN6e6oYgxQuPxLpVhIIZGHFE66WoNr6Yy4HvmVqJtlq42l2kyV/eUvoZ4
- kiU5jKYenb2RkmkEqQgDPKAt8SZ0RpcZFS/cIqkniQk1kSdQPCb/aj9kyyErtrcVs0wX
- akXZdj6gvDVSNgXaemIU5sGIFG9Py6puapNVojPPajZIfH8y92pOZs2AnKkJMtoUJfvT gA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 38vtnj8cyu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 31 May 2021 02:06:27 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 31 May
- 2021 02:06:25 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 31 May 2021 02:06:26 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id B577D3F703F;
-        Mon, 31 May 2021 02:06:25 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 14V96O82001639;
-        Mon, 31 May 2021 02:06:25 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Mon, 31 May 2021 02:06:24 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     <linux-scsi@vger.kernel.org>,
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        <linux-kernel@vger.kernel.org>, Nilesh Javali <njavali@marvell.com>
-Subject: Re: [EXT] [RFC 0/2] Serialize timeout handling and done callback.
-In-Reply-To: <20210507123103.10265-1-dwagner@suse.de>
-Message-ID: <alpine.LRH.2.21.9999.2105310148300.17918@irv1user01.caveonetworks.com>
-References: <20210507123103.10265-1-dwagner@suse.de>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        Mon, 31 May 2021 05:08:26 -0400
+X-UUID: f55c5c59fb404821854a59d59c51b813-20210531
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=bS+/yrXs2fjTD4HJUy9q0nG4d3SEQmTaKJc1kPQr/lY=;
+        b=P2Y6uW/39UPevtRmui2W//ilgxzx3tSjua7XqutfffxKluzJ8b5putOPTmJMowkFsFsD6HLu6vhE/vAKQUYNr9uV+nF4idwvO1oxMA19KiJO9aFR2ZFvZ1VHOYkhHyZLjqS5WPsy3IYFZKhTSNGVVh/ntOMgU3loB3m0P1nrfbY=;
+X-UUID: f55c5c59fb404821854a59d59c51b813-20210531
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <landen.chao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1479349101; Mon, 31 May 2021 17:06:42 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 31 May 2021 17:06:40 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 31 May 2021 17:06:40 +0800
+Message-ID: <1903cbd39afb96a9f6ab72ac45d830918e3b5982.camel@mediatek.com>
+Subject: Re: [PATCH net] net: Update MAINTAINERS for MediaTek switch driver
+From:   Landen Chao <landen.chao@mediatek.com>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "dqfext@gmail.com" <dqfext@gmail.com>,
+        Sean Wang <Sean.Wang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "frank-w@public-files.de" <frank-w@public-files.de>,
+        Steven Liu =?UTF-8?Q?=28=E5=8A=89=E4=BA=BA=E8=B1=AA=29?= 
+        <steven.liu@mediatek.com>
+Date:   Mon, 31 May 2021 17:06:40 +0800
+In-Reply-To: <20210531162342.339635bb@xhacker.debian>
+References: <49e67daeadace13a9fa3f4553f1ec14c6a93bdc8.1622445132.git.landen.chao@mediatek.com>
+         <20210531162342.339635bb@xhacker.debian>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-GUID: UXdAua8R7xiGaB5RyXsu5-vHqQymrCUx
-X-Proofpoint-ORIG-GUID: UXdAua8R7xiGaB5RyXsu5-vHqQymrCUx
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-31_07:2021-05-31,2021-05-31 signatures=0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021, 5:31am, Daniel Wagner wrote:
+T24gTW9uLCAyMDIxLTA1LTMxIGF0IDE2OjIzICswODAwLCBKaXNoZW5nIFpoYW5nIHdyb3RlOg0K
+PiBPbiBNb24sIDMxIE1heSAyMDIxIDE1OjU5OjM5ICswODAwDQo+IExhbmRlbiBDaGFvIDxsYW5k
+ZW4uY2hhb0BtZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gDQo+ID4gDQo+ID4gDQo+ID4gVXBk
+YXRlIG1haW50YWluZXJzIGZvciBNZWRpYVRlayBzd2l0Y2ggZHJpdmVyIHdpdGggRGVuZyBRaW5n
+ZmFuZw0KPiA+IHdobw0KPiA+IGNvbnRyaWJ1dGVzIG1hbnkgdXNlZnVsIHBhdGNoZXMgKGludGVy
+cnVwdCwgVkxBTiwgR1BJTywgYW5kIGV0Yy4pDQo+ID4gdG8NCj4gPiBlbmhhbmNlIE1lZGlhVGVr
+IHN3aXRjaCBkcml2ZXIgYW5kIHdpbGwgaGVscCBtYWludGVuYW5jZS4NCj4gPiANCj4gPiBDaGFu
+Z2UtSWQ6IElmMzcyYzFhMGRmNmUzYmE5ZjkzYjE2OTlkYmRhODFmMWZkNTAxYTdjDQo+IA0KPiBk
+byB3ZSBuZWVkIHRvIHJlbW92ZSB0aGlzIENoYW5nZS1JZCB0YWc/DQpTb3JyeSwgSSB3aWxsIHJl
+bW92ZSBDaGFuZ2UtSWQgaW4gdjIuDQoNCj4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTGFuZGVuIENo
+YW8gPGxhbmRlbi5jaGFvQG1lZGlhdGVrLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBERU5HIFFp
+bmdmYW5nIDxkcWZleHRAZ21haWwuY29tPg0KPiA+IC0tLQ0KPiA+ICBNQUlOVEFJTkVSUyB8IDEg
+Kw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPiANCj4gPiBkaWZmIC0t
+Z2l0IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJTkVSUw0KPiA+IGluZGV4IGJkN2FmZjBjMTIwZi4u
+MzMxNTYyN2ViYjZiIDEwMDY0NA0KPiA+IC0tLSBhL01BSU5UQUlORVJTDQo+ID4gKysrIGIvTUFJ
+TlRBSU5FUlMNCj4gPiBAQCAtMTE1ODgsNiArMTE1ODgsNyBAQCBGOiAgICAgIGRyaXZlcnMvY2hh
+ci9od19yYW5kb20vbXRrLXJuZy5jDQo+ID4gIE1FRElBVEVLIFNXSVRDSCBEUklWRVINCj4gPiAg
+TTogICAgIFNlYW4gV2FuZyA8c2Vhbi53YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiAgTTogICAgIExh
+bmRlbiBDaGFvIDxsYW5kZW4uY2hhb0BtZWRpYXRlay5jb20+DQo+ID4gK006ICAgICBERU5HIFFp
+bmdmYW5nIDxkcWZleHRAZ21haWwuY29tPg0KPiA+ICBMOiAgICAgbmV0ZGV2QHZnZXIua2VybmVs
+Lm9yZw0KPiA+ICBTOiAgICAgTWFpbnRhaW5lZA0KPiA+ICBGOiAgICAgZHJpdmVycy9uZXQvZHNh
+L210NzUzMC4qDQo+ID4gLS0NCj4gPiAyLjI5LjINCg==
 
-> External Email
-> 
-> ----------------------------------------------------------------------
-> Hi,
-> 
-> We got a customer report where qla2xxx was crashing only if the kernel
-> was booting and ql2xextended_error_logging was set. Loading the module
-> with the log option didn't trigger the crash.
-> 
-> After starring for a long time at the crash report I figured the
-> problem might be a race between the timeout handler and done callback.
-> I've come up with these patches here but unfortunatly, our customer is
-> not able to reproduce the problem in the lab anymore (it was caused by
-> a hardware issue which got fixed). So for these patches I don't have
-> any feedback.
-
-Thanks Daniel for the report and your effort here. Agree, this needs to be 
-fixed.
-
-> 
-> Maybe they make sense to add the driver even if I don't have prove it
-> really address the mentioned bug hence this is marked as RFC.
-
-If you do not mind, can I take this from here? This touches quite a 
-number of paths, and I would like to have this go through a full 
-regression cycle before this is merged.
-
-That said, I had some general comments:
-
-1. I see sp->lock was introduced, but could not locate where it was used.
-2. I did not see a release of lock after a successful kref_put_lock, maybe 
-   that piece was missed out.
-3. The sp->done should be invoked only once, and I do not see if this is
-   taken care of.
-4. sp->cmd_sp could be a SCSI IO too, where sp is not allocated 
-   separately, so qla2x00_sp_release shall not be called for it.
-
-Regards,
--Arun
-
-> 
-> Thanks,
-> Daniel
-> 
-> Daniel Wagner (2):
->   qla2xxx: Refactor asynchronous command initialization
->   qla2xxx: Do not free resource to early in qla24xx_async_gpsc_sp_done()
-> 
->  drivers/scsi/qla2xxx/qla_def.h    |  5 ++
->  drivers/scsi/qla2xxx/qla_gbl.h    |  4 +-
->  drivers/scsi/qla2xxx/qla_gs.c     | 86 ++++++++++-------------------
->  drivers/scsi/qla2xxx/qla_init.c   | 91 +++++++++++++------------------
->  drivers/scsi/qla2xxx/qla_iocb.c   | 54 +++++++++++++-----
->  drivers/scsi/qla2xxx/qla_mbx.c    | 11 ++--
->  drivers/scsi/qla2xxx/qla_mid.c    |  5 +-
->  drivers/scsi/qla2xxx/qla_mr.c     |  7 +--
->  drivers/scsi/qla2xxx/qla_target.c |  6 +-
->  9 files changed, 127 insertions(+), 142 deletions(-)
-> 
-> 
