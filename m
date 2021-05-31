@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12B739638D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95408395D12
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhEaPUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43306 "EHLO mail.kernel.org"
+        id S232285AbhEaNlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233781AbhEaOPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C493C619A1;
-        Mon, 31 May 2021 13:42:50 +0000 (UTC)
+        id S232294AbhEaN2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:28:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2615561376;
+        Mon, 31 May 2021 13:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468571;
-        bh=SLvqaojeofwp8GZw65DhfTi37SwMU3e5Yhve4mFHEco=;
+        s=korg; t=1622467324;
+        bh=oRToud7KoChH4nC6fVZXtwAHXTLxa9slLHXrdvWlHGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ar3+hJZ3TzM5Mis9Wg0tTa3kijCVn1H4LMQFArObMWAzHAAHG4DiH3rg6zZsKuyfb
-         DMwsmNatPDPZcAsM26BXhgGLgqCCDGJMhLeP1nwLghrVuERkHHK4cjWJP8CiuI6El6
-         R4OWmRqiiz4/0yl6V5ER44qI0GGIsL7J6MMKoCfE=
+        b=alpzgHdRKSzX96djwcXPGKg5PvK7DeEphiTG/qAq5+wxq/G1/5/u3NmGSkAAwf32J
+         tkf9F0jiM8IZkVZ02rW6I5rtl+weo5xdU/9Rwcfkr00ZjbAG0We0q6+phgQt1RAj/h
+         K0ybCjn+U5/X+I0+DKVjBKW5H77tCDI5ca0bkYz0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-Subject: [PATCH 5.4 040/177] misc/uss720: fix memory leak in uss720_probe
-Date:   Mon, 31 May 2021 15:13:17 +0200
-Message-Id: <20210531130649.313099268@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 022/116] dm snapshot: properly fix a crash when an origin has no snapshots
+Date:   Mon, 31 May 2021 15:13:18 +0200
+Message-Id: <20210531130640.904356684@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit dcb4b8ad6a448532d8b681b5d1a7036210b622de upstream.
+commit 7e768532b2396bcb7fbf6f82384b85c0f1d2f197 upstream.
 
-uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
-Fix this by decreasing the refcount of usbdev by usb_put_dev.
+If an origin target has no snapshots, o->split_boundary is set to 0.
+This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
 
-BUG: memory leak
-unreferenced object 0xffff888101113800 (size 2048):
-  comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
-  hex dump (first 32 bytes):
-    ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
-    00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
-  backtrace:
-    [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
-    [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
-    [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
-    [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
-    [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
-    [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
-    [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
-    [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
-    [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
-    [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Fix this by initializing chunk_size, and in turn split_boundary, to
+rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
+into "unsigned" type.
 
-Fixes: 0f36163d3abe ("[PATCH] usb: fix uss720 schedule with interrupts off")
-Cc: stable <stable@vger.kernel.org>
-Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Link: https://lore.kernel.org/r/20210514124348.6587-1-mudongliangabcd@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/misc/uss720.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/md/dm-snap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/misc/uss720.c
-+++ b/drivers/usb/misc/uss720.c
-@@ -736,6 +736,7 @@ static int uss720_probe(struct usb_inter
- 	parport_announce_port(pp);
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -794,7 +794,7 @@ static int dm_add_exception(void *contex
+ static uint32_t __minimum_chunk_size(struct origin *o)
+ {
+ 	struct dm_snapshot *snap;
+-	unsigned chunk_size = 0;
++	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
  
- 	usb_set_intfdata(intf, pp);
-+	usb_put_dev(usbdev);
- 	return 0;
- 
- probe_abort:
+ 	if (o)
+ 		list_for_each_entry(snap, &o->snapshots, list)
 
 
