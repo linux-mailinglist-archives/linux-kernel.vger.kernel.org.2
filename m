@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F069639632A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAED395BB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhEaPHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:07:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41002 "EHLO mail.kernel.org"
+        id S232106AbhEaNYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:24:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233097AbhEaOJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:09:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E9BB61977;
-        Mon, 31 May 2021 13:40:04 +0000 (UTC)
+        id S231777AbhEaNTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A1D2613AF;
+        Mon, 31 May 2021 13:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468405;
-        bh=3sQMk0epr6E0X7al4cR/3xUgG5Bj/7N9ASpnMkjs0QI=;
+        s=korg; t=1622467086;
+        bh=nErmVLyr1tlj/n+cc0pBDyAqBB0N06DTGmAaHj+iXNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kpkHWWam73BPi1YfZ+Cv3+h+T7nGbHgBlwTJp+m+LHW8ZCpbSfsvd9jxQl4VJ8lJC
-         NgoOW4W19/NysKwTdOSUU59+pmkLvPT4rZL3bIFFU+9bIb9OCTWekV/qAJONJtgTIL
-         rNpTjyPkfWgFGJzhme9yf9tGOeDplPmRFauN0fFg=
+        b=QR2y76CQxUk30szaSUFFZzyE55BQw0xaf7u36kEPN111vRrsF384BxAVNQoL5FV0v
+         YiSzeQCDDBzhJNGHBSCvc6dmfYRkGPqPi2PK40bjj4lE0bRJN4Lu3RnDbqvmdekCAZ
+         1cz8PrHe7U04N2Pi3gj8lM/NgMN9yw14IIzhyV3g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 195/252] net: ipa: memory region array is variable size
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 4.4 54/54] usb: core: reduce power-on-good delay time of root hub
 Date:   Mon, 31 May 2021 15:14:20 +0200
-Message-Id: <20210531130704.636600929@linuxfoundation.org>
+Message-Id: <20210531130636.756816902@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-[ Upstream commit 440c3247cba3d9433ac435d371dd7927d68772a7 ]
+commit 90d28fb53d4a51299ff324dede015d5cb11b88a2 upstream.
 
-IPA configuration data includes an array of memory region
-descriptors.  That was a fixed-size array at one time, but
-at some point we started defining it such that it was only
-as big as required for a given platform.  The actual number
-of entries in the array is recorded in the configuration data
-along with the array.
+Return the exactly delay time given by root hub descriptor,
+this helps to reduce resume time etc.
 
-A loop in ipa_mem_config() still assumes the array has entries
-for all defined memory region IDs.  As a result, this loop can
-go past the end of the actual array and attempt to write
-"canary" values based on nonsensical data.
+Due to the root hub descriptor is usually provided by the host
+controller driver, if there is compatibility for a root hub,
+we can fix it easily without affect other root hub
 
-Fix this, by stashing the number of entries in the array, and
-using that rather than IPA_MEM_COUNT in the initialization loop
-found in ipa_mem_config().
-
-The only remaining use of IPA_MEM_COUNT is in a validation check
-to ensure configuration data doesn't have too many entries.
-That's fine for now.
-
-Fixes: 3128aae8c439a ("net: ipa: redefine struct ipa_mem_data")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ipa/ipa.h     | 2 ++
- drivers/net/ipa/ipa_mem.c | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/usb/core/hub.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
-index 6c2371084c55..da862db09d7b 100644
---- a/drivers/net/ipa/ipa.h
-+++ b/drivers/net/ipa/ipa.h
-@@ -56,6 +56,7 @@ enum ipa_flag {
-  * @mem_virt:		Virtual address of IPA-local memory space
-  * @mem_offset:		Offset from @mem_virt used for access to IPA memory
-  * @mem_size:		Total size (bytes) of memory at @mem_virt
-+ * @mem_count:		Number of entries in the mem array
-  * @mem:		Array of IPA-local memory region descriptors
-  * @imem_iova:		I/O virtual address of IPA region in IMEM
-  * @imem_size;		Size of IMEM region
-@@ -102,6 +103,7 @@ struct ipa {
- 	void *mem_virt;
- 	u32 mem_offset;
- 	u32 mem_size;
-+	u32 mem_count;
- 	const struct ipa_mem *mem;
+--- a/drivers/usb/core/hub.h
++++ b/drivers/usb/core/hub.h
+@@ -140,8 +140,10 @@ static inline unsigned hub_power_on_good
+ {
+ 	unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
  
- 	unsigned long imem_iova;
-diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-index 2d45c444a67f..a78d66051a17 100644
---- a/drivers/net/ipa/ipa_mem.c
-+++ b/drivers/net/ipa/ipa_mem.c
-@@ -181,7 +181,7 @@ int ipa_mem_config(struct ipa *ipa)
- 	 * for the region, write "canary" values in the space prior to
- 	 * the region's base address.
- 	 */
--	for (mem_id = 0; mem_id < IPA_MEM_COUNT; mem_id++) {
-+	for (mem_id = 0; mem_id < ipa->mem_count; mem_id++) {
- 		const struct ipa_mem *mem = &ipa->mem[mem_id];
- 		u16 canary_count;
- 		__le32 *canary;
-@@ -488,6 +488,7 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
- 	ipa->mem_size = resource_size(res);
+-	/* Wait at least 100 msec for power to become stable */
+-	return max(delay, 100U);
++	if (!hub->hdev->parent)	/* root hub */
++		return delay;
++	else /* Wait at least 100 msec for power to become stable */
++		return max(delay, 100U);
+ }
  
- 	/* The ipa->mem[] array is indexed by enum ipa_mem_id values */
-+	ipa->mem_count = mem_data->local_count;
- 	ipa->mem = mem_data->local;
- 
- 	ret = ipa_imem_init(ipa, mem_data->imem_addr, mem_data->imem_size);
--- 
-2.30.2
-
+ static inline int hub_port_debounce_be_connected(struct usb_hub *hub,
 
 
