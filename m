@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB419395B4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCCA395E6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhEaNTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:19:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53662 "EHLO mail.kernel.org"
+        id S232982AbhEaN6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231691AbhEaNSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 333506135C;
-        Mon, 31 May 2021 13:16:43 +0000 (UTC)
+        id S232327AbhEaNib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:38:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77AA661458;
+        Mon, 31 May 2021 13:26:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467003;
-        bh=rwBrV/Kt9NkPQJ18K7sO6VBaCn6N3+qHMVU/GcKZ438=;
+        s=korg; t=1622467598;
+        bh=kAE0rhCtO0vDbtEirYevNQkq5fuEIxemTEc7mcPZ5GI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ftj2HzChMc75k2H1gKM94p95NfN58wmiMsWTn59e+GJNkqhDu/vx8AZhDw7ch/Bez
-         nAQs7RZoS0tl9x8tRllkuPnKhfGDlImgD821KWcvuFjJ6NPDdGVGJI/5bNWS3Qy0Hn
-         eFi0DlT3Zs4kjxt+mfm/6/UN9dj8hvVkYQ+TNF5M=
+        b=1gYgN/9ou+7W2Gy7HTEkNUk78vYMK8xqJFRDkAingU7FzHtoKKiV7Gls8/Ml2vC8H
+         bI41rwVZpFnmwTmZv4XxiEuOqlFYB1VhInd9VK9lM3cMTQU9mxqsXwZ76OR0W7U+UP
+         l/WIgY7pTGtBvBy2F+tKFnFjA2jk2vzOjnNP4liA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "William A. Kennington III" <wak@google.com>,
-        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 4.4 20/54] spi: Fix use-after-free with devm_spi_alloc_*
+        Stephen Brennan <stephen.s.brennan@oracle.com>,
+        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>
+Subject: [PATCH 4.14 01/79] mm, vmstat: drop zone->lock in /proc/pagetypeinfo
 Date:   Mon, 31 May 2021 15:13:46 +0200
-Message-Id: <20210531130635.728966293@linuxfoundation.org>
+Message-Id: <20210531130636.050413785@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,91 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William A. Kennington III <wak@google.com>
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
 
-commit 794aaf01444d4e765e2b067cba01cc69c1c68ed9 upstream.
+Commit 93b3a674485f6a4b8ffff85d1682d5e8b7c51560 upstream
 
-We can't rely on the contents of the devres list during
-spi_unregister_controller(), as the list is already torn down at the
-time we perform devres_find() for devm_spi_release_controller. This
-causes devices registered with devm_spi_alloc_{master,slave}() to be
-mistakenly identified as legacy, non-devm managed devices and have their
-reference counters decremented below 0.
+Commit 93b3a674485f ("mm,vmstat: reduce zone->lock holding time by
+/proc/pagetypeinfo") upstream caps the number of iterations over each
+free_list at 100,000, and also drops the zone->lock in between each
+migrate type. Capping the iteration count alters the file contents in
+some cases, which means this approach may not be suitable for stable
+backports.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x108/0x174
-[<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x90/0x98)
-[<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
- r4:b6700140
-[<b0447b2c>] (put_device) from [<b07515e8>] (devm_spi_release_controller+0x3c/0x40)
-[<b07515ac>] (devm_spi_release_controller) from [<b045343c>] (release_nodes+0x84/0xc4)
- r5:b6700180 r4:b6700100
-[<b04533b8>] (release_nodes) from [<b0454160>] (devres_release_all+0x5c/0x60)
- r8:b1638c54 r7:b117ad94 r6:b1638c10 r5:b117ad94 r4:b163dc10
-[<b0454104>] (devres_release_all) from [<b044e41c>] (__device_release_driver+0x144/0x1ec)
- r5:b117ad94 r4:b163dc10
-[<b044e2d8>] (__device_release_driver) from [<b044f70c>] (device_driver_detach+0x84/0xa0)
- r9:00000000 r8:00000000 r7:b117ad94 r6:b163dc54 r5:b1638c10 r4:b163dc10
-[<b044f688>] (device_driver_detach) from [<b044d274>] (unbind_store+0xe4/0xf8)
+However, dropping zone->lock in between migrate types (and, as a result,
+page orders) will not change the /proc/pagetypeinfo file contents. It
+can significantly reduce the length of time spent with IRQs disabled,
+which can prevent missed interrupts or soft lockups which we have
+observed on systems with particularly large memory.
 
-Instead, determine the devm allocation state as a flag on the
-controller which is guaranteed to be stable during cleanup.
+Thus, this commit is a modified version of the upstream one which only
+drops the lock in between migrate types.
 
-Fixes: 5e844cc37a5c ("spi: Introduce device-managed SPI controller allocation")
-Signed-off-by: William A. Kennington III <wak@google.com>
-Link: https://lore.kernel.org/r/20210407095527.2771582-1-wak@google.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to v4.4.270]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Fixes: 467c996c1e19 ("Print out statistics in relation to fragmentation avoidance to /proc/pagetypeinfo")
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+Reviewed-by: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi.c       |    9 ++-------
- include/linux/spi/spi.h |    3 +++
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ mm/vmstat.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1762,6 +1762,7 @@ struct spi_master *devm_spi_alloc_master
- 
- 	master = spi_alloc_master(dev, size);
- 	if (master) {
-+		master->devm_allocated = true;
- 		*ptr = master;
- 		devres_add(dev, ptr);
- 	} else {
-@@ -1951,11 +1952,6 @@ int devm_spi_register_master(struct devi
- }
- EXPORT_SYMBOL_GPL(devm_spi_register_master);
- 
--static int devm_spi_match_master(struct device *dev, void *res, void *master)
--{
--	return *(struct spi_master **)res == master;
--}
--
- static int __unregister(struct device *dev, void *null)
- {
- 	spi_unregister_device(to_spi_device(dev));
-@@ -1994,8 +1990,7 @@ void spi_unregister_master(struct spi_ma
- 	/* Release the last reference on the master if its driver
- 	 * has not yet been converted to devm_spi_alloc_master().
- 	 */
--	if (!devres_find(master->dev.parent, devm_spi_release_master,
--			 devm_spi_match_master, master))
-+	if (!master->devm_allocated)
- 		put_device(&master->dev);
- 
- 	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -425,6 +425,9 @@ struct spi_master {
- #define SPI_MASTER_MUST_RX      BIT(3)		/* requires rx */
- #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
- 
-+	/* flag indicating this is a non-devres managed controller */
-+	bool			devm_allocated;
-+
- 	/* lock and mutex for SPI bus locking */
- 	spinlock_t		bus_lock_spinlock;
- 	struct mutex		bus_lock_mutex;
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1313,6 +1313,9 @@ static void pagetypeinfo_showfree_print(
+ 			list_for_each(curr, &area->free_list[mtype])
+ 				freecount++;
+ 			seq_printf(m, "%6lu ", freecount);
++			spin_unlock_irq(&zone->lock);
++			cond_resched();
++			spin_lock_irq(&zone->lock);
+ 		}
+ 		seq_putc(m, '\n');
+ 	}
 
 
