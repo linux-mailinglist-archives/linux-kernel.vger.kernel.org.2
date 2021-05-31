@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A16395ED1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F9639658F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbhEaOD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:03:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43908 "EHLO mail.kernel.org"
+        id S234072AbhEaQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232271AbhEaNk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:40:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB41613D1;
-        Mon, 31 May 2021 13:27:49 +0000 (UTC)
+        id S233193AbhEaOvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AA3A61C9E;
+        Mon, 31 May 2021 13:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467669;
-        bh=MSDdwLgqXfSX0xnV9EaZQyWnNiZCGjU8vudd2Vy++EI=;
+        s=korg; t=1622469458;
+        bh=YZdjdvbmdTz5Fwy5bEjqDiN+V6oQ4S0iDBQsYYdQba0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uw9tM0kSuau7nNaIzb1f3yP3PRiGwDCEwRiBM/WvinduHq6FXs3tFN4+KSnToeoHY
-         R6Jac0AkMw1LLd50O8z4ThmlgDXjKAReRlm4nL7xmJM191e+5bex8ZRGv+lp1Ob9/n
-         kUTVR+Pipa6+5sR7IDsoQl7diyNeTWteknGeRNFY=
+        b=M+AdPqd6owjMPfnoLDWZR9pPmrnarxpd2memyznj0jUu/JuhKnVFMJxIwidmtBRLU
+         2lQuY3GjTiSPzDeAU3qQs008rykEspjHfm37tjKVD6X/BBXmtW/D2SGXnRJsdnPifI
+         X6POLf1RLoaVFUll4sd91lRfWm39DJFNbRpIGXYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.14 34/79] Bluetooth: cmtp: fix file refcount when cmtp_attach_device fails
+        stable@vger.kernel.org, Ajish Koshy <ajish.koshy@microchip.com>,
+        Viswas G <viswas.g@microchip.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 204/296] scsi: pm80xx: Fix drives missing during rmmod/insmod loop
 Date:   Mon, 31 May 2021 15:14:19 +0200
-Message-Id: <20210531130637.105718148@linuxfoundation.org>
+Message-Id: <20210531130710.736374396@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+From: Ajish Koshy <ajish.koshy@microchip.com>
 
-commit 8da3a0b87f4f1c3a3bbc4bfb78cf68476e97d183 upstream.
+[ Upstream commit d1acd81bd6eb685aa9fef25624fb36d297f6404e ]
 
-When cmtp_attach_device fails, cmtp_add_connection returns the error value
-which leads to the caller to doing fput through sockfd_put. But
-cmtp_session kthread, which is stopped in this path will also call fput,
-leading to a potential refcount underflow or a use-after-free.
+When driver is loaded after rmmod some drives are not showing up during
+discovery.
 
-Add a refcount before we signal the kthread to stop. The kthread will try
-to grab the cmtp_session_sem mutex before doing the fput, which is held
-when get_file is called, so there should be no races there.
+SATA drives are directly attached to the controller connected phys.  During
+device discovery, the IDENTIFY command (qc timeout (cmd 0xec)) is timing out
+during revalidation. This will trigger abort from host side and controller
+successfully aborts the command and returns success. Post this successful
+abort response ATA library decides to mark the disk as NODEV.
 
-Reported-by: Ryota Shiga
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To overcome this, inside pm8001_scan_start() after phy_start() call, add get
+start response and wait for few milliseconds to trigger next phy start.
+This millisecond delay will give sufficient time for the controller state
+machine to accept next phy start.
+
+Link: https://lore.kernel.org/r/20210505120103.24497-1-ajish.koshy@microchip.com
+Signed-off-by: Ajish Koshy <ajish.koshy@microchip.com>
+Signed-off-by: Viswas G <viswas.g@microchip.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/cmtp/core.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/scsi/pm8001/pm8001_hwi.c  | 10 ++++++----
+ drivers/scsi/pm8001/pm8001_init.c |  2 +-
+ drivers/scsi/pm8001/pm8001_sas.c  |  7 ++++++-
+ drivers/scsi/pm8001/pm80xx_hwi.c  | 12 ++++++------
+ 4 files changed, 19 insertions(+), 12 deletions(-)
 
---- a/net/bluetooth/cmtp/core.c
-+++ b/net/bluetooth/cmtp/core.c
-@@ -391,6 +391,11 @@ int cmtp_add_connection(struct cmtp_conn
- 	if (!(session->flags & BIT(CMTP_LOOPBACK))) {
- 		err = cmtp_attach_device(session);
- 		if (err < 0) {
-+			/* Caller will call fput in case of failure, and so
-+			 * will cmtp_session kthread.
-+			 */
-+			get_file(session->sock->file);
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index 1b1a57f46989..c2a38a172904 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -3709,11 +3709,13 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+ 	case HW_EVENT_PHY_START_STATUS:
+ 		pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PHY_START_STATUS status = %x\n",
+ 			   status);
+-		if (status == 0) {
++		if (status == 0)
+ 			phy->phy_state = 1;
+-			if (pm8001_ha->flags == PM8001F_RUN_TIME &&
+-					phy->enable_completion != NULL)
+-				complete(phy->enable_completion);
 +
- 			atomic_inc(&session->terminate);
- 			wake_up_interruptible(sk_sleep(session->sock->sk));
- 			up_write(&cmtp_session_sem);
++		if (pm8001_ha->flags == PM8001F_RUN_TIME &&
++				phy->enable_completion != NULL) {
++			complete(phy->enable_completion);
++			phy->enable_completion = NULL;
+ 		}
+ 		break;
+ 	case HW_EVENT_SAS_PHY_UP:
+diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
+index bd626ef876da..4f3ec2bba8c9 100644
+--- a/drivers/scsi/pm8001/pm8001_init.c
++++ b/drivers/scsi/pm8001/pm8001_init.c
+@@ -1144,8 +1144,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
+ 		goto err_out_shost;
+ 	}
+ 	list_add_tail(&pm8001_ha->list, &hba_list);
+-	scsi_scan_host(pm8001_ha->shost);
+ 	pm8001_ha->flags = PM8001F_RUN_TIME;
++	scsi_scan_host(pm8001_ha->shost);
+ 	return 0;
+ 
+ err_out_shost:
+diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
+index a98d4496ff8b..0a637609504e 100644
+--- a/drivers/scsi/pm8001/pm8001_sas.c
++++ b/drivers/scsi/pm8001/pm8001_sas.c
+@@ -264,12 +264,17 @@ void pm8001_scan_start(struct Scsi_Host *shost)
+ 	int i;
+ 	struct pm8001_hba_info *pm8001_ha;
+ 	struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
++	DECLARE_COMPLETION_ONSTACK(completion);
+ 	pm8001_ha = sha->lldd_ha;
+ 	/* SAS_RE_INITIALIZATION not available in SPCv/ve */
+ 	if (pm8001_ha->chip_id == chip_8001)
+ 		PM8001_CHIP_DISP->sas_re_init_req(pm8001_ha);
+-	for (i = 0; i < pm8001_ha->chip->n_phy; ++i)
++	for (i = 0; i < pm8001_ha->chip->n_phy; ++i) {
++		pm8001_ha->phy[i].enable_completion = &completion;
+ 		PM8001_CHIP_DISP->phy_start_req(pm8001_ha, i);
++		wait_for_completion(&completion);
++		msleep(300);
++	}
+ }
+ 
+ int pm8001_scan_finished(struct Scsi_Host *shost, unsigned long time)
+diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
+index c6b0834e3806..5de7adfabd57 100644
+--- a/drivers/scsi/pm8001/pm80xx_hwi.c
++++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+@@ -3485,13 +3485,13 @@ static int mpi_phy_start_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
+ 	pm8001_dbg(pm8001_ha, INIT,
+ 		   "phy start resp status:0x%x, phyid:0x%x\n",
+ 		   status, phy_id);
+-	if (status == 0) {
++	if (status == 0)
+ 		phy->phy_state = PHY_LINK_DOWN;
+-		if (pm8001_ha->flags == PM8001F_RUN_TIME &&
+-				phy->enable_completion != NULL) {
+-			complete(phy->enable_completion);
+-			phy->enable_completion = NULL;
+-		}
++
++	if (pm8001_ha->flags == PM8001F_RUN_TIME &&
++			phy->enable_completion != NULL) {
++		complete(phy->enable_completion);
++		phy->enable_completion = NULL;
+ 	}
+ 	return 0;
+ 
+-- 
+2.30.2
+
 
 
