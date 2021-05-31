@@ -2,194 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12654395A7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F334395A77
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhEaM0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        id S231475AbhEaMYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhEaM0S (ORCPT
+        with ESMTP id S231377AbhEaMYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:26:18 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE4FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:24:36 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id f12so14785209ljp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:24:36 -0700 (PDT)
+        Mon, 31 May 2021 08:24:33 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE5FC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:22:53 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id b17so13333366ede.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:22:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z5fvqFTRPpxVQWhJsuDY6GA7XdfgvLDTB5Muui5R4sc=;
-        b=eJF242mB5AndVCjHvS4JQARLqxgPTVICpNtWtO3MkAAAmdPG/hIf4lu05E0U/ft2rq
-         MIOJ1R6vczTze4QPg8uCiBNRx1JEI8t/QXAgt9ClX60p2C0ZBaepaF/U2C+0Ku3ZpNLQ
-         YW9RzyrQJAA1O6Ifzf0h2LhFCbfA87+kjHm3PSYFBBe72CADKd1TbeFHQKYdpSAijHgI
-         3c2R51SGS8fw3kA7SmlqZlyLKXv0f3Hk6lCUKy6fQ3sThRtYJhgowxJ7sQ14jmVqxzCu
-         GyS6j5JUBTR+va03GTNCbqWpAZ435zrx1Bi3UJq0E6xbpNoChk7qYX5leF/7vNLxBJTY
-         a7+w==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LNYYJ0npItOg2aTRTp7BxB+oXnJtRa8V64w9pv94XTA=;
+        b=BHx2yJ09rgOe6v6dVSNygRU9t2d6Vu6d+uRhC65wPtYXAx5Da+lU/j2IBvKBmohbdt
+         lFd2NWJhb4KwAr27ENIyyhL2ctK6MaYZThu7MJ6BPKgfXfHEisqnD/GEB8pO/sAMWPTZ
+         0KqxhzCajwS2POmzmRZgCDfRqs4oe/FUt3pQMiX6tlfn8+sBmH0N1lRqtXetInkFu0+m
+         /ADt1l/3RZI4qVbU4dsm60EllA5JGoDr3IE5BX7HTWbyE7gJWCnyxwfSLd5BH9qTfeAn
+         uolbOwdJyezVYWtpdV+37vpEUoNQahsz0ADnkuOroyE4dMLtV2Uwjx5uM5dJNgUHzho5
+         87ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=z5fvqFTRPpxVQWhJsuDY6GA7XdfgvLDTB5Muui5R4sc=;
-        b=kdNnqkGL4TeQ1Pa+8Cj+hNI5e6qXJXZZSJ825ykYKjy9NP7qKHgi8VQTDxDTjhWzda
-         OeIlsDM4+RGsykSpUAaK1EhHynKLOkH0niE366KxmNo5YKn76MmwDqeQXvRFvwXlodhx
-         5R3zLffunCijca1DDikImdqOoF18ZseQyQkHDMK5ZxILSyVROub5qfmlVw6TXF0DkcIP
-         nby0m3J9J6EzTWOFLb1eDRWAnV0/fTWdAfk0oR0v1W5gQo004+Z/kMWS45UkaMR2Hq79
-         eQW3sHe2RydJUDyWE/ZBw9hrjYRAhhtS72MLNkgdxEeoB88eJ34EQAO6gzg3dTvGRyC4
-         d6uA==
-X-Gm-Message-State: AOAM531dlDg2QIZquknAtM9dpUHRhAL/MQj531LdYoraXfkeaO+LRP/4
-        Y/Kdjuu3T4XdEf8H+pIIIqluH3NosKrY7A==
-X-Google-Smtp-Source: ABdhPJxvuP3tuckLOMaFd3GAkQqVd4RwPfkJEHCV+jwrGsyMnq8liEbfbGlpm7G1XhVXfQetvQiUXA==
-X-Received: by 2002:a2e:94e:: with SMTP id 75mr9475872ljj.258.1622463875148;
-        Mon, 31 May 2021 05:24:35 -0700 (PDT)
-Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id d20sm1328345lfm.175.2021.05.31.05.24.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 05:24:34 -0700 (PDT)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        grzegorz.jaszczyk@linaro.org
-Subject: [PATCH] usb: phy: introduce usb_phy device type with its own uevent handler
-Date:   Mon, 31 May 2021 14:22:22 +0200
-Message-Id: <20210531122222.453628-1-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.29.0
+        bh=LNYYJ0npItOg2aTRTp7BxB+oXnJtRa8V64w9pv94XTA=;
+        b=YJlGCqIy+8h2AtfW4DDRRlL3TNK7AyRLLW/7/MdcFE2ooYcXFB/rmCvyWJImGjZYzT
+         SH1K9aDsmaCbFTsq2ZAEqXYLOf2+dJ5jevhl74uQJ7w6sY/b8ngW+Yf9YdLVwHK7Jki7
+         C6qN/mIjp/CcWhzu1JOk/12YdMZRl/X7LZ48cZg9+u7mmI1eu+29N7G6fBODFaytxRK/
+         Fp2z2eH8H33413Hcndf3TdcSt8XhC0igLtF2RNaRVHXux0e6+b5GSsnfLaRFfaISQ4sQ
+         zyEkNGNdxDzKEtoE6h2paC0NnxffTV7Dp16t9RtqfRTvUZ5ZOLayo3iPAbJdQYFw1WNj
+         vFrA==
+X-Gm-Message-State: AOAM533P/BVMmRScY9NET5JpnN6mdHOEvH1IiKylVGE52ZJzDSEusLZt
+        od3p3jXOKn+xinVaH1/omFQV1Q==
+X-Google-Smtp-Source: ABdhPJxMGAvE/AgLesq42O2yn1hoVTHsf6fV2XFs7RBODpYAuyE4hnridU5RIU2SJj1z36K2K6NYIg==
+X-Received: by 2002:aa7:d786:: with SMTP id s6mr24668971edq.239.1622463772286;
+        Mon, 31 May 2021 05:22:52 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
+        by smtp.gmail.com with ESMTPSA id lb23sm4000220ejb.73.2021.05.31.05.22.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 05:22:51 -0700 (PDT)
+Subject: Re: [PATCH] microblaze: Remove unused functions
+To:     guoren@kernel.org, arnd@arndb.de
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+References: <1621701994-27650-1-git-send-email-guoren@kernel.org>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <75cc31aa-6fe8-f3d7-94a8-4f43d95f1255@monstr.eu>
+Date:   Mon, 31 May 2021 14:22:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1621701994-27650-1-git-send-email-guoren@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB charger type and status was already propagated to userspace
-through kobject_uevent_env during charger notify work. Nevertheless the
-uevent could be lost e.g. because it could be fired at an early kernel
-boot stage, way before udev daemon or any other user-space app was able
-to catch it. Registering uevent hook for introduced usb_phy_dev_type
-will allow to query sysfs 'uevent' file to restore that information at
-any time.
 
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
----
- drivers/usb/phy/phy.c | 55 ++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 47 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/phy/phy.c b/drivers/usb/phy/phy.c
-index b47285f023cf..83ed5089475a 100644
---- a/drivers/usb/phy/phy.c
-+++ b/drivers/usb/phy/phy.c
-@@ -42,6 +42,12 @@ static const char *const usb_chger_type[] = {
- 	[ACA_TYPE]			= "USB_CHARGER_ACA_TYPE",
- };
- 
-+static const char *const usb_chger_state[] = {
-+	[USB_CHARGER_DEFAULT]	= "USB_CHARGER_DEFAULT",
-+	[USB_CHARGER_PRESENT]	= "USB_CHARGER_PRESENT",
-+	[USB_CHARGER_ABSENT]	= "USB_CHARGER_ABSENT",
-+};
-+
- static struct usb_phy *__usb_find_phy(struct list_head *list,
- 	enum usb_phy_type type)
- {
-@@ -74,6 +80,18 @@ static struct usb_phy *__of_usb_find_phy(struct device_node *node)
- 	return ERR_PTR(-EPROBE_DEFER);
- }
- 
-+static struct usb_phy *__device_to_usb_phy(struct device *dev)
-+{
-+	struct usb_phy *usb_phy;
-+
-+	list_for_each_entry(usb_phy, &phy_list, head) {
-+		if (usb_phy->dev == dev)
-+			break;
-+	}
-+
-+	return usb_phy;
-+}
-+
- static void usb_phy_set_default_current(struct usb_phy *usb_phy)
- {
- 	usb_phy->chg_cur.sdp_min = DEFAULT_SDP_CUR_MIN;
-@@ -105,9 +123,6 @@ static void usb_phy_set_default_current(struct usb_phy *usb_phy)
- static void usb_phy_notify_charger_work(struct work_struct *work)
- {
- 	struct usb_phy *usb_phy = container_of(work, struct usb_phy, chg_work);
--	char uchger_state[50] = { 0 };
--	char uchger_type[50] = { 0 };
--	char *envp[] = { uchger_state, uchger_type, NULL };
- 	unsigned int min, max;
- 
- 	switch (usb_phy->chg_state) {
-@@ -115,15 +130,11 @@ static void usb_phy_notify_charger_work(struct work_struct *work)
- 		usb_phy_get_charger_current(usb_phy, &min, &max);
- 
- 		atomic_notifier_call_chain(&usb_phy->notifier, max, usb_phy);
--		snprintf(uchger_state, ARRAY_SIZE(uchger_state),
--			 "USB_CHARGER_STATE=%s", "USB_CHARGER_PRESENT");
- 		break;
- 	case USB_CHARGER_ABSENT:
- 		usb_phy_set_default_current(usb_phy);
- 
- 		atomic_notifier_call_chain(&usb_phy->notifier, 0, usb_phy);
--		snprintf(uchger_state, ARRAY_SIZE(uchger_state),
--			 "USB_CHARGER_STATE=%s", "USB_CHARGER_ABSENT");
- 		break;
- 	default:
- 		dev_warn(usb_phy->dev, "Unknown USB charger state: %d\n",
-@@ -131,9 +142,30 @@ static void usb_phy_notify_charger_work(struct work_struct *work)
- 		return;
- 	}
- 
-+	kobject_uevent(&usb_phy->dev->kobj, KOBJ_CHANGE);
-+}
-+
-+static int usb_phy_uevent(struct device *dev, struct kobj_uevent_env *env)
-+{
-+	struct usb_phy *usb_phy;
-+	char uchger_state[50] = { 0 };
-+	char uchger_type[50] = { 0 };
-+
-+	usb_phy = __device_to_usb_phy(dev);
-+
-+	snprintf(uchger_state, ARRAY_SIZE(uchger_state),
-+		 "USB_CHARGER_STATE=%s", usb_chger_state[usb_phy->chg_state]);
-+
- 	snprintf(uchger_type, ARRAY_SIZE(uchger_type),
- 		 "USB_CHARGER_TYPE=%s", usb_chger_type[usb_phy->chg_type]);
--	kobject_uevent_env(&usb_phy->dev->kobj, KOBJ_CHANGE, envp);
-+
-+	if (add_uevent_var(env, uchger_state))
-+		return -ENOMEM;
-+
-+	if (add_uevent_var(env, uchger_type))
-+		return -ENOMEM;
-+
-+	return 0;
- }
- 
- static void __usb_phy_get_charger_type(struct usb_phy *usb_phy)
-@@ -661,6 +693,11 @@ int usb_add_phy(struct usb_phy *x, enum usb_phy_type type)
- }
- EXPORT_SYMBOL_GPL(usb_add_phy);
- 
-+static struct device_type usb_phy_dev_type = {
-+	.name = "usb_phy",
-+	.uevent = usb_phy_uevent,
-+};
-+
- /**
-  * usb_add_phy_dev - declare the USB PHY
-  * @x: the USB phy to be used; or NULL
-@@ -684,6 +721,8 @@ int usb_add_phy_dev(struct usb_phy *x)
- 	if (ret)
- 		return ret;
- 
-+	x->dev->type = &usb_phy_dev_type;
-+
- 	ATOMIC_INIT_NOTIFIER_HEAD(&x->notifier);
- 
- 	spin_lock_irqsave(&phy_lock, flags);
+On 5/22/21 6:46 PM, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> PAGE_UP/DOWN are never used in linux, then the patch remove them
+> in asm/page.h.
+> 
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Michal Simek <monstr@monstr.eu>
+> ---
+>  arch/microblaze/include/asm/page.h | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
+> index bf681f2..ce55097 100644
+> --- a/arch/microblaze/include/asm/page.h
+> +++ b/arch/microblaze/include/asm/page.h
+> @@ -35,9 +35,6 @@
+>  
+>  #define ARCH_SLAB_MINALIGN	L1_CACHE_BYTES
+>  
+> -#define PAGE_UP(addr)	(((addr)+((PAGE_SIZE)-1))&(~((PAGE_SIZE)-1)))
+> -#define PAGE_DOWN(addr)	((addr)&(~((PAGE_SIZE)-1)))
+> -
+>  /*
+>   * PAGE_OFFSET -- the first address of the first page of memory. With MMU
+>   * it is set to the kernel start address (aligned on a page boundary).
+> 
+
+Applied.
+
+Thanks,
+Michal
+
 -- 
-2.29.0
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
