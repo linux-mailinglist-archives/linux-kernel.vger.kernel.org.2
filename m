@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B7B3963DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B09D39657B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhEaPg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
+        id S234160AbhEaQhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233853AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F196E61574;
-        Mon, 31 May 2021 13:44:57 +0000 (UTC)
+        id S233995AbhEaOtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:49:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 719E561466;
+        Mon, 31 May 2021 13:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468698;
-        bh=abyuK/7cMoBIHEFpK1YB4Eo1c7OwGPxpWxUKdGzQR+E=;
+        s=korg; t=1622469408;
+        bh=eneXgJadla0FXNynniX2GwEnmQwZmwoZoySbbR2JdRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EsSPhuVSfVHOyS9ImKyD6Cesy/yuDzdviJSLS5yWfCU2S16w3RJJ6pdh3TstExU/X
-         rHr1+SeGjyDT16jKE5yaGW+PkOM73oCpeJr8hlFZy/gnKLsn6Qjf1L9BJrtwgyakYf
-         5yRs5D/3zK68TVOqRuBErjYpJ9TdS0OvoaxOUPwk=
+        b=PmYr/xhlvTsgbE0KmTZ9FvWLAiy7uhcZ+rUQu1fnFvQhzBbDNx4cA4+40c0Gr69GS
+         sqhxx9XS/8wqvqSdSPtxnPVIpm+ccwpDwdkUDs5jJ3R648ZzCMWgcszhMQMLe0gh63
+         fJd6uBNXtYnkEGcXM/Jrqsgua9VEgoZH3bcZddWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.4 085/177] perf jevents: Fix getting maximum number of fds
+        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 187/296] libertas: register sysfs groups properly
 Date:   Mon, 31 May 2021 15:14:02 +0200
-Message-Id: <20210531130650.838648032@linuxfoundation.org>
+Message-Id: <20210531130710.159096271@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +39,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 75ea44e356b5de8c817f821c9dd68ae329e82add upstream.
+[ Upstream commit 7e79b38fe9a403b065ac5915465f620a8fb3de84 ]
 
-On some hosts, rlim.rlim_max can be returned as RLIM_INFINITY.
-By casting it to int, it is interpreted as -1, which will cause get_maxfds
-to return 0, causing "Invalid argument" errors in nftw() calls.
-Fix this by casting the second argument of min() to rlim_t instead.
+The libertas driver was trying to register sysfs groups "by hand" which
+causes them to be created _after_ the device is initialized and
+announced to userspace, which causes races and can prevent userspace
+tools from seeing the sysfs files correctly.
 
-Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Link: http://lore.kernel.org/lkml/20210525160758.97829-1-nbd@nbd.name
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fix this up by using the built-in sysfs_groups pointers in struct
+net_device which were created for this very reason, fixing the race
+condition, and properly allowing for any error that might have occured
+to be handled properly.
+
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-54-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/pmu-events/jevents.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/marvell/libertas/mesh.c | 28 +++-----------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -862,7 +862,7 @@ static int get_maxfds(void)
- 	struct rlimit rlim;
+diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
+index c611e6668b21..c68814841583 100644
+--- a/drivers/net/wireless/marvell/libertas/mesh.c
++++ b/drivers/net/wireless/marvell/libertas/mesh.c
+@@ -801,19 +801,6 @@ static const struct attribute_group mesh_ie_group = {
+ 	.attrs = mesh_ie_attrs,
+ };
  
- 	if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
--		return min((int)rlim.rlim_max / 2, 512);
-+		return min(rlim.rlim_max / 2, (rlim_t)512);
+-static void lbs_persist_config_init(struct net_device *dev)
+-{
+-	int ret;
+-	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
+-	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
+-}
+-
+-static void lbs_persist_config_remove(struct net_device *dev)
+-{
+-	sysfs_remove_group(&(dev->dev.kobj), &boot_opts_group);
+-	sysfs_remove_group(&(dev->dev.kobj), &mesh_ie_group);
+-}
+-
  
- 	return 512;
- }
+ /***************************************************************************
+  * Initializing and starting, stopping mesh
+@@ -1009,6 +996,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
+ 	SET_NETDEV_DEV(priv->mesh_dev, priv->dev->dev.parent);
+ 
+ 	mesh_dev->flags |= IFF_BROADCAST | IFF_MULTICAST;
++	mesh_dev->sysfs_groups[0] = &lbs_mesh_attr_group;
++	mesh_dev->sysfs_groups[1] = &boot_opts_group;
++	mesh_dev->sysfs_groups[2] = &mesh_ie_group;
++
+ 	/* Register virtual mesh interface */
+ 	ret = register_netdev(mesh_dev);
+ 	if (ret) {
+@@ -1016,19 +1007,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
+ 		goto err_free_netdev;
+ 	}
+ 
+-	ret = sysfs_create_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
+-	if (ret)
+-		goto err_unregister;
+-
+-	lbs_persist_config_init(mesh_dev);
+-
+ 	/* Everything successful */
+ 	ret = 0;
+ 	goto done;
+ 
+-err_unregister:
+-	unregister_netdev(mesh_dev);
+-
+ err_free_netdev:
+ 	free_netdev(mesh_dev);
+ 
+@@ -1049,8 +1031,6 @@ void lbs_remove_mesh(struct lbs_private *priv)
+ 
+ 	netif_stop_queue(mesh_dev);
+ 	netif_carrier_off(mesh_dev);
+-	sysfs_remove_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
+-	lbs_persist_config_remove(mesh_dev);
+ 	unregister_netdev(mesh_dev);
+ 	priv->mesh_dev = NULL;
+ 	kfree(mesh_dev->ieee80211_ptr);
+-- 
+2.30.2
+
 
 
