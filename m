@@ -2,177 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E402439671E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9719A396676
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhEaRd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbhEaRdm (ORCPT
+        id S232043AbhEaRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:07:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55514 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233721AbhEaQc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:33:42 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B05BC021990
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 09:30:48 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id w15so15661722ljo.10
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 09:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dD1cRRRxJ2EzPfJboyLphgi4kVVClR9Hk5LXwRtjq5E=;
-        b=gR2e7GWNWXNfbMIlZg3sJ5r6uzjbQprXL315nC/CWrnzpu9R9fj+gWh9tvlJ5F+x+4
-         7I+usEyEWCvJPoR2K7gdkYVyfnuxfbdcWEFddqNlZDHTC5lZbZ0o9+kXUV+GllmkLpXp
-         RiWVYgthIGZir2tXKR7P815ZOu6sYxpwf6IRU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dD1cRRRxJ2EzPfJboyLphgi4kVVClR9Hk5LXwRtjq5E=;
-        b=AyPTOc+901deVOqGdFcmxlwoVnav93ah/UE5iwaohdXf3WFhP8QGINEhKw0Sz8pDtX
-         hRZPIlJv5BcFg+7/R7/S2/nvDjTYzzz7PQijRIVWhU9HCGHyUMJgmQhY0a6xnI4Pea6I
-         TndaB4H3FIv2Jiz7Ua5r5PnzmSRVBWP0RdDqbkBOuERlkZVw9WQQSBLisXqNKQUfTdKH
-         WEoBB6pcPULVdyDAdd9b58L0Nmk0A0gS+Z5+qxGbOC/7m8hYzZaMw0xCoqhN1HtRM1vS
-         K97GZNImZtzr1KNdsCXaAAiEv8UR3paPP0TDW286XcDPRaOEZFFF8LsCOwYy29yBzEuh
-         umVg==
-X-Gm-Message-State: AOAM533DV36H34aLzJizITlaI2Su5hIZx9V7iZC2oiqyrP828WaszUsl
-        skzJPaLNPVt6BnxRoqqeXtnmI27oFDJV6jw4
-X-Google-Smtp-Source: ABdhPJw8wScA396Ct3qSUfwDLWkgfBFonsLXyjItbDjbYp8HsW2Br/IRLjq2h7Uyr7KapefeMeFiiw==
-X-Received: by 2002:a05:651c:2121:: with SMTP id a33mr16954601ljq.281.1622478646647;
-        Mon, 31 May 2021 09:30:46 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id 18sm372092lft.211.2021.05.31.09.30.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 09:30:42 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id q1so17607656lfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 09:30:41 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr14981484lfs.377.1622478640992;
- Mon, 31 May 2021 09:30:40 -0700 (PDT)
+        Mon, 31 May 2021 12:32:28 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622478644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cefR/DtEcUyRZ8qc11g2NcI+aJPhU+kuvC8iQhInVMA=;
+        b=Mk/taBgxowuo4I3RBEs+YxImg4/sI6Zr4+03Zx+d/LpWbdEMBYUa2TQF5IPIEnWqD8K4sR
+        rmwewO+kYXUdcfT0fDRR83TP+yPI33o8yq/3r2Ud6S3eHEtLpMHDPbrMA0OyGBZyfc28as
+        ai983E+pkcci1wPmFcIWtdC1QM8XFOluLt1kFDjBMS1+726dCSdb/bHe3DKqVP8dOJJR3v
+        YaSUqyeq036LwYOJSsQidq1Sw4m4KZnc0KByZSTRW81VU/dT05rRdQRwwPBeMcTAcVWkMb
+        ztNn2yNHfxVnV8aCj1NgTKKcTn+3wHagtNRYBaYCwz1UNCBS3VGXXgdclIjQKA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622478644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cefR/DtEcUyRZ8qc11g2NcI+aJPhU+kuvC8iQhInVMA=;
+        b=SZh3BUGPPABae9lerayRXuLT/DGm3svJi1sw8XUyfOFIRBxKnZdsCuGOlvpMse4wn7jSEP
+        odIoz9/KJ5SpFrAA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH next v1 1/2] dump_stack: move cpu lock to printk.c
+In-Reply-To: <20210531162051.2325-2-john.ogness@linutronix.de>
+References: <20210531162051.2325-1-john.ogness@linutronix.de> <20210531162051.2325-2-john.ogness@linutronix.de>
+Date:   Mon, 31 May 2021 18:30:43 +0200
+Message-ID: <87mtsayifg.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20210531105606.228314-1-agruenba@redhat.com>
-In-Reply-To: <20210531105606.228314-1-agruenba@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 May 2021 06:30:25 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wj8EWr_D65i4oRSj2FTbrc6RdNydNNCGxeabRnwtoU=3Q@mail.gmail.com>
-Message-ID: <CAHk-=wj8EWr_D65i4oRSj2FTbrc6RdNydNNCGxeabRnwtoU=3Q@mail.gmail.com>
-Subject: Re: [GIT PULL] gfs2 fixes for v5.13-rc5
-To:     Andreas Gruenbacher <agruenba@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     cluster-devel <cluster-devel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Adding fsdevel, because this is not limited to gfs2 ]
+On 2021-05-31, John Ogness <john.ogness@linutronix.de> wrote:
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 114e9963f903..98feead621ff 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3531,4 +3531,96 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
+>  }
+>  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
+>  
+> +#ifdef CONFIG_SMP
+> +static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
+> +
+> +/*
+> + * printk_cpu_lock: Acquire the printk cpu-reentrant spinning lock.
+> + * @cpu_store: A buffer to store lock state.
+> + * @flags: A buffer to store irq state.
+> + *
+> + * If no processor has the lock, the calling processor takes the lock and
+> + * becomes the owner. If the calling processor is already the owner of the
+> + * lock, this function succeeds immediately. If the lock is locked by another
+> + * processor, that function spins until the calling processor becomes the
+> + * owner.
+> + *
+> + * It is safe to call this function from any context and state.
+> + */
+> +void printk_cpu_lock(unsigned int *cpu_store, unsigned long *flags)
+> +{
+> +	unsigned int cpu;
+> +
+> +	for (;;) {
+> +		cpu = get_cpu();
+> +
+> +		*cpu_store = atomic_read(&printk_cpulock_owner);
+> +
+> +		if (*cpu_store == -1) {
+> +			local_irq_save(*flags);
+> +
+> +			/*
+> +			 * Guarantee loads an stores from the previous lock
+> +			 * owner are visible to this CPU once it is the lock
+> +			 * owner. This pairs with cpu_lock:A.
 
-On Mon, May 31, 2021 at 12:56 AM Andreas Gruenbacher
-<agruenba@redhat.com> wrote:
->
-> Andreas Gruenbacher (2):
->       gfs2: Fix mmap locking for write faults
+The above paragraph is totally broken. It should read:
 
-This is bogus.
+  +			 * Guarantee loads and stores from the previous lock
+  +			 * owner are visible to this CPU once it is the lock
+  +			 * owner. This pairs with cpu_unlock:B.
 
-I've pulled it, but this is just wrong.
+John Ogness
 
-A write fault on a mmap IS NOT A WRITE to the filesystem.
-
-It's a read.
-
-Yes, it will later then allow writes to the page, but that's entirely
-immaterial - because the write is going to happen not at fault time,
-but long *after* the fault, and long *after* the filesystem has
-installed the page.
-
-The actual write will happen when the kernel returns from the user space.
-
-And no, the explanation in that commit makes no sense either:
-
-   "When a write fault occurs, we need to take the inode glock of the underlying
-    inode in exclusive mode.  Otherwise, there's no guarantee that the
-dirty page
-    will be written back to disk"
-
-the thing is, FAULT_FLAG_WRITE only says that the *currently* pending
-access that triggered the fault was a write. That's entirely
-irrelevant to a filesystem, because
-
- (a) it might be a private mapping, and a write to a page will cause a
-COW by the VM layer, and it's not actually a filesystem write at all
-
-AND
-
- (b) if it's a shared mapping, the first access that paged things in
-is likely a READ, and the page will be marked writable (because it's a
-shared mapping!) and subsequent writes will not cause any faults at
-all.
-
-In other words, a filesystem that checks for FAULT_FLAG_WRITE is
-_doubly_ wrong. It's absolutely never the right thing to do. It
-*cannot* be the right thing to do.
-
-And yes, some other filesystems do this crazy thing too. If your
-friends jumped off a bridge, would you jump too?
-
-The xfs and ext3/ext4 cases are wrong too - but at least they spent
-five seconds (but no more) thinking about it, and they added the check
-for VM_SHARED. So they are only wrong for reason (b)
-
-But wrong is wrong. The new code is not right in gfs2, and the old
-code in xfs/ext4 is not right either.
-
-Yeah, yeah, you can - and people do - do things like "always mark the
-page readable on initial page fault, use mkwrite to catch when it
-becomes writable, and do timestamps carefully, at at least have full
-knowledge of "something might become dirty"
-
-But even then it is ENTIRELY BOGUS to do things like write locking.
-
-Really.
-
-Because the actual write HASN'T HAPPENED YET, AND YOU WILL RELEASE THE
-LOCK BEFORE IT EVER DOES! So the lock? It does nothing. If you think
-it protects anything at all, you're wrong.
-
-So don't do write locking. At an absolute most, you can do things like
-
- - update file times (and honestly, that's quite questionable -
-because again - THE WRITE HASN'T HAPPENED YET - so any tests that
-depend on exact file access times to figure out when the last write
-was done is not being helped by your extra code, because you're
-setting the WRONG time.
-
- - set some "this inode will have dirty pages" flag just for some
-possible future use. But honestly, if this is about consistency etc,
-you need to do it not for a fault, but across the whole mmap/munmap.
-
-So some things may be less bogus - but still very very questionable.
-
-But locking? Bogus. Reads and writes aren't really any different from
-a timestamp standpoint (if you think you need to mtime for write
-accesses, you should do atime for reads, so from a filesystem
-timestamp standpoint read and write faults are exactly the same - and
-both are bogus, because by definition for a mmap both the reads and
-the writes can then happen long long long afterwards, and repeatedly).
-
-And if that "set some flag" thing needs a write lock, but a read
-doesn't, you're doing something wrong and odd.
-
-Look at the VM code. The VM code does this right. The mmap_sem is
-taken for writing for mmap and for munmap. But a page fault is always
-a read lock, even if the access that caused the page fault is a write.
-
-The actual real honest-to-goodness *write* happens much later, and the
-only time the filesystem really knows when it is done is at writeback
-time. Not at fault time. So if you take locks, logically you should
-take them when the fault happens, and release them when the writeback
-is done.
-
-Are you doing that? No. So don't do the write lock over the read
-portion of the page fault. It is not a sensible operation.
-
-             Linus
+> +			 *
+> +			 * Memory barrier involvement:
+> +			 *
+> +			 * If cpu_lock:A reads from cpu_unlock:B, then
+> +			 * cpu_lock:B reads from cpu_unlock:A.
+> +			 *
+> +			 * Relies on:
+> +			 *
+> +			 * RELEASE from cpu_unlock:A to cpu_unlock:B
+> +			 *    matching
+> +			 * ACQUIRE from cpu_lock:A to cpu_lock:B
+> +			 */
+> +			if (atomic_try_cmpxchg_acquire(&printk_cpulock_owner,
+> +						       cpu_store, cpu)) { /* LMM(cpu_lock:A) */
+> +
+> +				/* This CPU begins loading/storing data: LMM(cpu_lock:B) */
+> +				break;
+> +			}
+> +
+> +			local_irq_restore(*flags);
+> +
+> +		} else if (*cpu_store == cpu) {
+> +			break;
+> +		}
+> +
+> +		put_cpu();
+> +		cpu_relax();
+> +	}
+> +}
+> +EXPORT_SYMBOL(printk_cpu_lock);
+> +
+> +/*
+> + * printk_cpu_unlock: Release the printk cpu-reentrant spinning lock.
+> + * @cpu_store: The current lock state.
+> + * @flags: The current irq state.
+> + *
+> + * Release the lock. The calling processor must be the owner of the lock.
+> + *
+> + * It is safe to call this function from any context and state.
+> + */
+> +void printk_cpu_unlock(unsigned int cpu_store, unsigned long flags)
+> +{
+> +	if (cpu_store == -1) {
+> +		/* This CPU is finished loading/storing data: LMM(cpu_unlock:A) */
+> +
+> +		/*
+> +		 * Guarantee loads an stores from this CPU when it is the lock
+> +		 * owner are visible to the next lock owner. This pairs with
+> +		 * cpu_lock:A.
+> +		 */
+> +		atomic_set_release(&printk_cpulock_owner, cpu_store); /* LMM(cpu_unlock:B) */
+> +
+> +		local_irq_restore(flags);
+> +	}
+> +
+> +	put_cpu();
+> +}
+> +EXPORT_SYMBOL(printk_cpu_unlock);
+> +#endif /* CONFIG_SMP */
+> +
+>  #endif
