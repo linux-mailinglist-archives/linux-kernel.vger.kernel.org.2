@@ -2,199 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5913955A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED403955A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhEaGxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 02:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhEaGxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 02:53:04 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8617AC061574;
-        Sun, 30 May 2021 23:51:24 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id v5so13622954ljg.12;
-        Sun, 30 May 2021 23:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pGbvjsQ37+jhwoTwXSRVtiv0VjHlEBl/iAsUrS7UtXI=;
-        b=hXg5TLxR35V+P8DOvRVcEG4fZVvvgkMDgSuSOBMcnTn80GvFnFcgszCDhOxSY77mw/
-         LUSPlemcexvlbiNL1snPeDN9CvhQXvvrHzVgt79+eJNG8hgV8M8qETubw6zHUNny+pAu
-         xFHMP0u5g6C6hsq77JSYrj+99H6ZLvxNrY41Kw5Ak3ooMouzL4KFS1wprWhfU9wZ2FE2
-         2z+deGsQm+N65n1+0wqxNEmg8sCDq8Fzo8w8oHVUP7jDRPkPGUpgSqmeBd5Z6uZrfvzF
-         GyxJPIuBIccSc0P1C6S1Z5Q3qAZAIvXdGSVXloijnHOGft7zD5mwe69o70ifUlIg1eQt
-         yW3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pGbvjsQ37+jhwoTwXSRVtiv0VjHlEBl/iAsUrS7UtXI=;
-        b=rht8F4vdlEqimqwJJA8dNOrHrl29st6fkrYPy7WZX/64H5RwzjeA8FU7wPzwy6rQnC
-         kmtmQLzwGYjY7s0jgSHbhJg+vI9fFkgcSQh0qrJYRAHLA3L9+m/l9G5C5Nq0Qb3CCLRs
-         uOJm3HiV5JTJBJGSP8GD0xhkAD5AQyl5kAKFUZBQpDNXqmX4Mxy4nZR/p9h/euLblC+y
-         31U5lBVjgjJh5jd4vIPLY6tLIVLHx4flhsvzQbrCIqHwDrwtyE3WzjD66Vq4FZuKKE7Y
-         RXE3Zgcsbx3AEJqy87POC6NkZ1ZNSSqCSIBTMeDIFZnB4LBvNKNnlju0Pn/FD/06N69x
-         l2SA==
-X-Gm-Message-State: AOAM532165oNvz1WGLt+T2DVAkocl6kV2CUoGSLYxsKEW94cg2XIkOoL
-        vwbMvpdm0DcD+3KhHw58X9I=
-X-Google-Smtp-Source: ABdhPJxjBVD5611rqLkegv8AKexDzJznggK21Mrdxoh24WU8L/02VVAqivz6BhHz4YuOiypc0whS5A==
-X-Received: by 2002:a2e:b0d6:: with SMTP id g22mr15634459ljl.349.1622443882778;
-        Sun, 30 May 2021 23:51:22 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id 12sm1477053lju.41.2021.05.30.23.51.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 May 2021 23:51:22 -0700 (PDT)
-Subject: Re: [PATCH v2 11/18] dmaengine: ti: k3-psil-j721e: Add entry for
- CSI2RX
-To:     Pratyush Yadav <p.yadav@ti.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20210526152308.16525-1-p.yadav@ti.com>
- <20210526152308.16525-12-p.yadav@ti.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <916ef8c9-e444-afa4-d544-8fa672690fdb@gmail.com>
-Date:   Mon, 31 May 2021 09:51:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S230143AbhEaG5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:57:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44466 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhEaG5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 02:57:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622444134; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=mr/UQhEDVHVlbjHaYkilt71pM3p94jqivYSMdvW31M8=; b=VZOquo7vRFLPzZEkyk5O75RCxKrf2AeRv36o6YEA6LFn9JLulWdKTlKTrWL58O3j2zTLvMDX
+ OlsCpuiXSX2YtucEqYO3qOe95wWx0FMJbi06Q7NGpy7yox69GGrTE8Yp5rwhqnljBBKBcA/r
+ Jeo9a+Nn/ByyT/xFDZH317whXVA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60b48855e27c0cc77f4d5868 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 06:55:17
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ECF7AC4360C; Mon, 31 May 2021 06:55:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.105] (unknown [49.204.182.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1DC93C433F1;
+        Mon, 31 May 2021 06:55:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1DC93C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+Subject: Re: [PATCH v7] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+To:     Vlastimil Babka <vbabka@suse.cz>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com
+Cc:     vinmenon@codeaurora.org
+References: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
+ <86d843f0-bbef-7c3b-6b6a-5d6b32434bee@suse.cz>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <b43fad97-5f40-c94a-7cb4-9a31edd6668f@codeaurora.org>
+Date:   Mon, 31 May 2021 12:25:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210526152308.16525-12-p.yadav@ti.com>
+In-Reply-To: <86d843f0-bbef-7c3b-6b6a-5d6b32434bee@suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 26/05/2021 18:23, Pratyush Yadav wrote:
-> The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
-> have up to 32 threads but the current driver only supports using one. So
-> add an entry for that one thread.
+On 5/26/2021 5:08 PM, Vlastimil Babka wrote:
+> On 5/25/21 9:38 AM, Faiyaz Mohammed wrote:
+>> alloc_calls and free_calls implementation in sysfs have two issues,
+>> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+>> to "one value per file" rule.
+>>
+>> To overcome this issues, move the alloc_calls and free_calls implemeation
+>> to debugfs.
+>>
+>> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+>> to be inline with what it does.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> These were IIRC bot reports for some bugs in the previous versions, so keeping
+> the Reported-by: for the whole patch is misleading - these were not reports for
+> the sysfs issues this patch fixes by moving the files to debugfs.
 > 
-> ---
+Yes, I will update in next patch version.
+>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>> ---
+>> changes in V7:
+>>         - Drop the older alloc_calls and free_calls interface.
+>> changes in v6:
+>>         - https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
+>>
+>> changes in v5:
+>>         - https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
+>>
+>> changes in v4:
+>>         - https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
+>>
+>> changes in v3:
+>>         - https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
+>>
+>> changes in v2:
+>>         - https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
+>>
+>> changes in v1:
+>>         - https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
+>>
+>>  include/linux/slub_def.h |   8 ++
+>>  mm/slab_common.c         |   9 ++
+>>  mm/slub.c                | 353 ++++++++++++++++++++++++++++++++++-------------
+>>  3 files changed, 276 insertions(+), 94 deletions(-)
 > 
-> Changes in v2:
-> - Add all 64 threads, instead of having only the one thread being
->   currently used by the driver.
-
-How many threads CSI2RX have? 32 (as per commit message) or 64? If I
-recall right, it is 32.
-
-> 
->  drivers/dma/ti/k3-psil-j721e.c | 73 ++++++++++++++++++++++++++++++++++
->  1 file changed, 73 insertions(+)
-> 
-> diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
-> index 7580870ed746..34e3fc565a37 100644
-> --- a/drivers/dma/ti/k3-psil-j721e.c
-> +++ b/drivers/dma/ti/k3-psil-j721e.c
-> @@ -58,6 +58,14 @@
->  		},					\
->  	}
->  
-> +#define PSIL_CSI2RX(x)					\
-> +	{						\
-> +		.thread_id = x,				\
-> +		.ep_config = {				\
-> +			.ep_type = PSIL_EP_NATIVE,	\
-> +		},					\
-> +	}
-> +
->  /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
->  static struct psil_ep j721e_src_ep_map[] = {
->  	/* SA2UL */
-> @@ -138,6 +146,71 @@ static struct psil_ep j721e_src_ep_map[] = {
->  	PSIL_PDMA_XY_PKT(0x4707),
->  	PSIL_PDMA_XY_PKT(0x4708),
->  	PSIL_PDMA_XY_PKT(0x4709),
-> +	/* CSI2RX */
-> +	PSIL_CSI2RX(0x4940),
-> +	PSIL_CSI2RX(0x4941),
-> +	PSIL_CSI2RX(0x4942),
-> +	PSIL_CSI2RX(0x4943),
-> +	PSIL_CSI2RX(0x4944),
-> +	PSIL_CSI2RX(0x4945),
-> +	PSIL_CSI2RX(0x4946),
-> +	PSIL_CSI2RX(0x4947),
-> +	PSIL_CSI2RX(0x4948),
-> +	PSIL_CSI2RX(0x4949),
-> +	PSIL_CSI2RX(0x494a),
-> +	PSIL_CSI2RX(0x494b),
-> +	PSIL_CSI2RX(0x494c),
-> +	PSIL_CSI2RX(0x494d),
-> +	PSIL_CSI2RX(0x494e),
-> +	PSIL_CSI2RX(0x494f),
-> +	PSIL_CSI2RX(0x4950),
-> +	PSIL_CSI2RX(0x4951),
-> +	PSIL_CSI2RX(0x4952),
-> +	PSIL_CSI2RX(0x4953),
-> +	PSIL_CSI2RX(0x4954),
-> +	PSIL_CSI2RX(0x4955),
-> +	PSIL_CSI2RX(0x4956),
-> +	PSIL_CSI2RX(0x4957),
-> +	PSIL_CSI2RX(0x4958),
-> +	PSIL_CSI2RX(0x4959),
-> +	PSIL_CSI2RX(0x495a),
-> +	PSIL_CSI2RX(0x495b),
-> +	PSIL_CSI2RX(0x495c),
-> +	PSIL_CSI2RX(0x495d),
-> +	PSIL_CSI2RX(0x495e),
-> +	PSIL_CSI2RX(0x495f),
-> +	PSIL_CSI2RX(0x4960),
-> +	PSIL_CSI2RX(0x4961),
-> +	PSIL_CSI2RX(0x4962),
-> +	PSIL_CSI2RX(0x4963),
-> +	PSIL_CSI2RX(0x4964),
-> +	PSIL_CSI2RX(0x4965),
-> +	PSIL_CSI2RX(0x4966),
-> +	PSIL_CSI2RX(0x4967),
-> +	PSIL_CSI2RX(0x4968),
-> +	PSIL_CSI2RX(0x4969),
-> +	PSIL_CSI2RX(0x496a),
-> +	PSIL_CSI2RX(0x496b),
-> +	PSIL_CSI2RX(0x496c),
-> +	PSIL_CSI2RX(0x496d),
-> +	PSIL_CSI2RX(0x496e),
-> +	PSIL_CSI2RX(0x496f),
-> +	PSIL_CSI2RX(0x4970),
-> +	PSIL_CSI2RX(0x4971),
-> +	PSIL_CSI2RX(0x4972),
-> +	PSIL_CSI2RX(0x4973),
-> +	PSIL_CSI2RX(0x4974),
-> +	PSIL_CSI2RX(0x4975),
-> +	PSIL_CSI2RX(0x4976),
-> +	PSIL_CSI2RX(0x4977),
-> +	PSIL_CSI2RX(0x4978),
-> +	PSIL_CSI2RX(0x4979),
-> +	PSIL_CSI2RX(0x497a),
-> +	PSIL_CSI2RX(0x497b),
-> +	PSIL_CSI2RX(0x497c),
-> +	PSIL_CSI2RX(0x497d),
-> +	PSIL_CSI2RX(0x497e),
-> +	PSIL_CSI2RX(0x497f),
->  	/* CPSW9 */
->  	PSIL_ETHERNET(0x4a00),
->  	/* CPSW0 */
+> I don't see any of the symlinks under /sys/kernel/debug/slab/, so I think the
+> aliases handling code is wrong, and I can see at least two reasons why it could be:
 > 
 
--- 
-Péter
+I think I missed one thing, when CONFIG_SLUB_DEBUG_ON enable or
+slub_debug is pass through command line __kmem_cache_alias() will return
+null, so no symlinks will be created even if CONFIG_SLAB_MERGE_DEFAULT
+is enable and to store user data we need to enable CONFIG_SLUB_DEBUG_ON
+or pass slub_debug through command line.
+
+>> @@ -4525,6 +4535,8 @@ __kmem_cache_alias(const char *name, unsigned int size, unsigned int align,
+>>  			s->refcount--;
+>>  			s = NULL;
+>>  		}
+>> +
+>> +		debugfs_slab_alias(s, name);
+> 
+> Here you might be calling debugfs_slab_alias() with NULL if the
+> sysfs_slab_alias() above returned true.
+> 
+I think we can drop debugfs_slab_alias implementation.
+>>  	}
+>>  
+>>  	return s;
+> 
+> ...
+> 
+>> +static int __init slab_debugfs_init(void)
+>> +{
+>> +	struct kmem_cache *s;
+>> +
+>> +	slab_debugfs_root = debugfs_create_dir("slab", NULL);
+>> +
+>> +	slab_state = FULL;
+>> +
+>> +	list_for_each_entry(s, &slab_caches, list)
+>> +		debugfs_slab_add(s);
+>> +
+>> +	while (alias_list) {
+>> +		struct saved_alias *al = alias_list;
+> 
+> alias_list a single list and both slab_sysfs_init() and slab_debugfs_init()
+> flush it. So only the init call that happens to be called first, does actually
+> find an unflushed list. I think you
+> need to use a separate list for debugfs (simpler) or a shared list with both
+> sysfs and debugfs processing (probably more complicated).
+> 
+same here, I think we can drop the debugfs alias change.
+
+> And finally a question, perhaps also for Greg. With sysfs, we hand out the
+> lifecycle of struct kmem_cache to sysfs, to ensure we are not reading sysfs
+> files of a cache that has been removed.
+> 
+> But with debugfs, what are the guarantees that things won't blow up when a
+> debugfs file is being read while somebody calls kmem_cache_destroy() on the cache?
+> 
+>> +
+>> +		alias_list = alias_list->next;
+>> +
+>> +		debugfs_slab_alias(al->s, al->name);
+>> +
+>> +		kfree(al);
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +}
+>> +__initcall(slab_debugfs_init);
+>> +#endif
+>>  /*
+>>   * The /proc/slabinfo ABI
+>>   */
+>>
+> 
