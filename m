@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F423963E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70745396326
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234780AbhEaPjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:39:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48850 "EHLO mail.kernel.org"
+        id S232651AbhEaPHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:07:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233861AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40CB0619CB;
-        Mon, 31 May 2021 13:45:16 +0000 (UTC)
+        id S232702AbhEaOI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:08:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 776D561973;
+        Mon, 31 May 2021 13:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468716;
-        bh=YMUIRBqPsKnP1v3cJ/Dw9pNi02k97cYZ5bin7a9UhRc=;
+        s=korg; t=1622468400;
+        bh=76XuVbRWhN8OSJsHxRs/L7tqxCczGr7lxbkxUHGVui4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=13P3syLVuRdV+IfHtmowW3KIvPcs0SszUqId4rfbukpLHkBkl4S7QawNyC3I7BQzi
-         74/jewcPkyMTx85amAztwOSfrV13yAQBULrYa6sCEKbZnBFXVSGn1oIv6Dl90dR1Fh
-         qSUizHixHmkuDtenos5eq6bdTmY378i9mV9AJu5A=
+        b=EGZ7fiZ8iU/WQCeUkI49drZa5XjGUFTWwN2Qr4WzmfhmWsHqhSa7a8nPMsnmxE2/0
+         hv1e4yGZPTc0WgMZcNEPCAg35H735YcbneJwUnJu3iIGao1gGMEGwCmsUsIiaUPmee
+         h5NzMotKmXWTP09iCcSnoORi88LDF+Zb/XjUXarM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 100/177] Revert "ALSA: usx2y: Fix potential NULL pointer dereference"
-Date:   Mon, 31 May 2021 15:14:17 +0200
-Message-Id: <20210531130651.352230755@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 193/252] ASoC: cs42l42: Regmap must use_single_read/write
+Date:   Mon, 31 May 2021 15:14:18 +0200
+Message-Id: <20210531130704.567381652@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 4667a6fc1777ce071504bab570d3599107f4790f ]
+[ Upstream commit 0fad605fb0bdc00d8ad78696300ff2fbdee6e048 ]
 
-This reverts commit a2c6433ee5a35a8de6d563f6512a26f87835ea0f.
+cs42l42 does not support standard burst transfers so the use_single_read
+and use_single_write flags must be set in the regmap config.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Because of this bug, the patch:
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
 
-The original patch was incorrect, and would leak memory if the error
-path the patch added was hit.
+broke cs42l42 probe() because without the use_single_* flags it causes
+regmap to issue a burst read.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210503115736.2104747-37-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However, the missing use_single_* could cause problems anyway because the
+regmap cache can attempt burst transfers if these flags are not set.
+
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210511132855.27159-1-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/usx2y/usb_stream.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index 091c071b270a..6bba17bf689a 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -91,12 +91,7 @@ static int init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 4d82d24c7828..7c6b10bc0b8c 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -398,6 +398,9 @@ static const struct regmap_config cs42l42_regmap = {
+ 	.reg_defaults = cs42l42_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(cs42l42_reg_defaults),
+ 	.cache_type = REGCACHE_RBTREE,
++
++	.use_single_read = true,
++	.use_single_write = true,
+ };
  
- 	for (u = 0; u < USB_STREAM_NURBS; ++u) {
- 		sk->inurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
--		if (!sk->inurb[u])
--			return -ENOMEM;
--
- 		sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
--		if (!sk->outurb[u])
--			return -ENOMEM;
- 	}
- 
- 	if (init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe) ||
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
 -- 
 2.30.2
 
