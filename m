@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FD4396562
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBAA396390
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhEaQd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:33:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
+        id S232138AbhEaPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:20:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233815AbhEaOrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E63606191E;
-        Mon, 31 May 2021 13:56:17 +0000 (UTC)
+        id S233754AbhEaOPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:15:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23B876147E;
+        Mon, 31 May 2021 13:42:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469378;
-        bh=f7xo5Baq/NNGrrGMaFEX6Kfo0QCLpjcjety3hgUcbks=;
+        s=korg; t=1622468566;
+        bh=axbAyOi48Hmr3K74CrPJHT6/KFmTBpUvIncWdwiQ5Hk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iVOlVO9J/Qn4tBLkWasIj8/eQMj+oqqOBOTiflyg4viykXSH/z04W0nqNZrSp+1jw
-         IdVmyFFbLaoGx5CRrgqEa3BOMIP+1RGtlnOf+EqY/6FXpHtRatC1j2Dd0yx1kMwSjb
-         XvcYliLbPDj8z6PMmpk+xe7aOUn7vEoceF3AVGFE=
+        b=lqPi9lCECghzAY6Kvk3y67xkkluC/CWtxzTpHkDEdTmLixPEkV7+6swBI+BmH8ldF
+         drAO+SMKpEgwyyUG417kw+YYdIh8la+hTG1WA1KmMGFxpDkIVmgLR+wmcwkaQV6xl4
+         vBHCb3EjKA194/163l8A/arGc6g9ZF4K/8bi3yE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.12 140/296] net: dsa: mt7530: fix VLAN traffic leaks
+        stable@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 038/177] Documentation: seccomp: Fix user notification documentation
 Date:   Mon, 31 May 2021 15:13:15 +0200
-Message-Id: <20210531130708.586422546@linuxfoundation.org>
+Message-Id: <20210531130649.242377413@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Sargun Dhillon <sargun@sargun.me>
 
-commit 474a2ddaa192777522a7499784f1d60691cd831a upstream.
+commit aac902925ea646e461c95edc98a8a57eb0def917 upstream.
 
-PCR_MATRIX field was set to all 1's when VLAN filtering is enabled, but
-was not reset when it is disabled, which may cause traffic leaks:
+The documentation had some previously incorrect information about how
+userspace notifications (and responses) were handled due to a change
+from a previously proposed patchset.
 
-	ip link add br0 type bridge vlan_filtering 1
-	ip link add br1 type bridge vlan_filtering 1
-	ip link set swp0 master br0
-	ip link set swp1 master br1
-	ip link set br0 type bridge vlan_filtering 0
-	ip link set br1 type bridge vlan_filtering 0
-	# traffic in br0 and br1 will start leaking to each other
-
-As port_bridge_{add,del} have set up PCR_MATRIX properly, remove the
-PCR_MATRIX write from mt7530_port_set_vlan_aware.
-
-Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+Acked-by: Tycho Andersen <tycho@tycho.pizza>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210517193908.3113-2-sargun@sargun.me
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mt7530.c |    8 --------
- 1 file changed, 8 deletions(-)
+ Documentation/userspace-api/seccomp_filter.rst |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1214,14 +1214,6 @@ mt7530_port_set_vlan_aware(struct dsa_sw
- {
- 	struct mt7530_priv *priv = ds->priv;
+--- a/Documentation/userspace-api/seccomp_filter.rst
++++ b/Documentation/userspace-api/seccomp_filter.rst
+@@ -250,14 +250,14 @@ Users can read via ``ioctl(SECCOMP_IOCTL
+ seccomp notification fd to receive a ``struct seccomp_notif``, which contains
+ five members: the input length of the structure, a unique-per-filter ``id``,
+ the ``pid`` of the task which triggered this request (which may be 0 if the
+-task is in a pid ns not visible from the listener's pid namespace), a ``flags``
+-member which for now only has ``SECCOMP_NOTIF_FLAG_SIGNALED``, representing
+-whether or not the notification is a result of a non-fatal signal, and the
+-``data`` passed to seccomp. Userspace can then make a decision based on this
+-information about what to do, and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a
+-response, indicating what should be returned to userspace. The ``id`` member of
+-``struct seccomp_notif_resp`` should be the same ``id`` as in ``struct
+-seccomp_notif``.
++task is in a pid ns not visible from the listener's pid namespace). The
++notification also contains the ``data`` passed to seccomp, and a filters flag.
++The structure should be zeroed out prior to calling the ioctl.
++
++Userspace can then make a decision based on this information about what to do,
++and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a response, indicating what should be
++returned to userspace. The ``id`` member of ``struct seccomp_notif_resp`` should
++be the same ``id`` as in ``struct seccomp_notif``.
  
--	/* The real fabric path would be decided on the membership in the
--	 * entry of VLAN table. PCR_MATRIX set up here with ALL_MEMBERS
--	 * means potential VLAN can be consisting of certain subset of all
--	 * ports.
--	 */
--	mt7530_rmw(priv, MT7530_PCR_P(port),
--		   PCR_MATRIX_MASK, PCR_MATRIX(MT7530_ALL_MEMBERS));
--
- 	/* Trapped into security mode allows packet forwarding through VLAN
- 	 * table lookup. CPU port is set to fallback mode to let untagged
- 	 * frames pass through.
+ It is worth noting that ``struct seccomp_data`` contains the values of register
+ arguments to the syscall, but does not contain pointers to memory. The task's
 
 
