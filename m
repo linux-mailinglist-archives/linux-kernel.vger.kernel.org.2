@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A5939652B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC0B3960E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhEaQZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:25:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
+        id S233914AbhEaOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:32:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233223AbhEaOni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:43:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74E1A61923;
-        Mon, 31 May 2021 13:54:33 +0000 (UTC)
+        id S233193AbhEaNyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:54:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BD36143B;
+        Mon, 31 May 2021 13:33:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469274;
-        bh=S78sY9r90rEsJwTbMjaIObNTqewgKcIdJn/MlXV7X9A=;
+        s=korg; t=1622468033;
+        bh=7aU17wpJD5FM3EuHAtTb3q/DPaJl6R++Mh/lZDtvag0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bBAAFcXC9r0mHEl6D9mwDjJ1WP4cmy+3U2jHFJ3c6wN3NkHjpxxZaTTfxKMlNkhrI
-         0eZf7EEmUS2t3P17dbK8fo6hArKc+2j4CRpWzbfei3DacpxkqU2SvZnkH4WMi+8jZ5
-         Nj+YOfqRN9JxWHjo363nOIRvmGCt82IuOc4xLjNY=
+        b=N2wC98wt4AaiNu/N+2gg/L0LoS360nXhwgA+fvHpraplglpq2WStAW0hQ/ZJKGRUb
+         5iFU2tByuE4kYFI8+e6pwxDFn5xtigC6SOm1zan5aP9nNn0blEvQClbZ+cHo68Mzl1
+         RCuXUev6QyLTtaHGJhLqNLhwdWI2fB8iNeXugBCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zolton Jheng <s6668c2t@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.12 101/296] USB: serial: pl2303: add device id for ADLINK ND-6530 GC
-Date:   Mon, 31 May 2021 15:12:36 +0200
-Message-Id: <20210531130707.318860809@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.10 092/252] NFS: fix an incorrect limit in filelayout_decode_layout()
+Date:   Mon, 31 May 2021 15:12:37 +0200
+Message-Id: <20210531130701.095374234@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zolton Jheng <s6668c2t@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit f8e8c1b2f782e7391e8a1c25648ce756e2a7d481 upstream.
+commit 769b01ea68b6c49dc3cde6adf7e53927dacbd3a8 upstream.
 
-This adds the device id for the ADLINK ND-6530 which is a PL2303GC based
-device.
+The "sizeof(struct nfs_fh)" is two bytes too large and could lead to
+memory corruption.  It should be NFS_MAXFHSIZE because that's the size
+of the ->data[] buffer.
 
-Signed-off-by: Zolton Jheng <s6668c2t@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+I reversed the size of the arguments to put the variable on the left.
+
+Fixes: 16b374ca439f ("NFSv4.1: pnfs: filelayout: add driver's LAYOUTGET and GETDEVICEINFO infrastructure")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/pl2303.c |    1 +
- drivers/usb/serial/pl2303.h |    1 +
- 2 files changed, 2 insertions(+)
+ fs/nfs/filelayout/filelayout.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -113,6 +113,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(SONY_VENDOR_ID, SONY_QN3USB_PRODUCT_ID) },
- 	{ USB_DEVICE(SANWA_VENDOR_ID, SANWA_PRODUCT_ID) },
- 	{ USB_DEVICE(ADLINK_VENDOR_ID, ADLINK_ND6530_PRODUCT_ID) },
-+	{ USB_DEVICE(ADLINK_VENDOR_ID, ADLINK_ND6530GC_PRODUCT_ID) },
- 	{ USB_DEVICE(SMART_VENDOR_ID, SMART_PRODUCT_ID) },
- 	{ USB_DEVICE(AT_VENDOR_ID, AT_VTKIT3_PRODUCT_ID) },
- 	{ }					/* Terminating entry */
---- a/drivers/usb/serial/pl2303.h
-+++ b/drivers/usb/serial/pl2303.h
-@@ -158,6 +158,7 @@
- /* ADLINK ND-6530 RS232,RS485 and RS422 adapter */
- #define ADLINK_VENDOR_ID		0x0b63
- #define ADLINK_ND6530_PRODUCT_ID	0x6530
-+#define ADLINK_ND6530GC_PRODUCT_ID	0x653a
- 
- /* SMART USB Serial Adapter */
- #define SMART_VENDOR_ID	0x0b8c
+--- a/fs/nfs/filelayout/filelayout.c
++++ b/fs/nfs/filelayout/filelayout.c
+@@ -718,7 +718,7 @@ filelayout_decode_layout(struct pnfs_lay
+ 		if (unlikely(!p))
+ 			goto out_err;
+ 		fl->fh_array[i]->size = be32_to_cpup(p++);
+-		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
++		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
+ 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
+ 			       i, fl->fh_array[i]->size);
+ 			goto out_err;
 
 
