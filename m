@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F071396505
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDB33960FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhEaQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37856 "EHLO mail.kernel.org"
+        id S234003AbhEaOd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231810AbhEaOlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:41:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D7561C65;
-        Mon, 31 May 2021 13:53:15 +0000 (UTC)
+        id S231860AbhEaNzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:55:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E5FC6143C;
+        Mon, 31 May 2021 13:34:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469195;
-        bh=ejMJuLJ0WEYbmwOOtAcmZbty7rI2OOc8/VA/+lJBxP8=;
+        s=korg; t=1622468046;
+        bh=evehsWDgrtvFFAaGhdrJiBjBwlzESMfUFXRcxpCubt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D7fZA/hitc8KD1ASnSMB7z2qFNIN4CTbAitMilBCmsgvOHo2u6Unp8TBqV+qppCfU
-         zfSHLfwIow6CEIj4GrBScS9HD7pjcSQTM2y/B4x/FTP8T7R60ZfT8b5K5ahvGkKRQv
-         TsWeI/b8Il0WO2Zx3ICX6spVJ7H6KrF190WUB43Y=
+        b=1lmgLH2iWbOapZbC5VC6NAbC7qHXiNlICYs+KYGlJqY6Rqf9R3OgUh6gjJxSP2hB0
+         x1UfiPHPICB2UQG3YX3y+GuAV3C05UwdqkRSux4ZIyWj+OvDycEmu0XnpP3Jl/XAAg
+         5KyQjrePChaUHqIxBW2bDUjSYElsoubu63TqC9hc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.12 106/296] usb: typec: ucsi: Clear pending after acking connector change
+        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 5.10 096/252] drm/meson: fix shutdown crash when component not probed
 Date:   Mon, 31 May 2021 15:12:41 +0200
-Message-Id: <20210531130707.501215780@linuxfoundation.org>
+Message-Id: <20210531130701.241539455@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-commit 8c9b3caab3ac26db1da00b8117901640c55a69dd upstream.
+commit 7cfc4ea78fc103ea51ecbacd9236abb5b1c490d2 upstream.
 
-It's possible that the interrupt handler for the UCSI driver signals a
-connector changes after the handler clears the PENDING bit, but before
-it has sent the acknowledge request. The result is that the handler is
-invoked yet again, to ack the same connector change.
+When main component is not probed, by example when the dw-hdmi module is
+not loaded yet or in probe defer, the following crash appears on shutdown:
 
-At least some versions of the Qualcomm UCSI firmware will not handle the
-second - "spurious" - acknowledgment gracefully. So make sure to not
-clear the pending flag until the change is acknowledged.
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000038
+...
+pc : meson_drv_shutdown+0x24/0x50
+lr : platform_drv_shutdown+0x20/0x30
+...
+Call trace:
+meson_drv_shutdown+0x24/0x50
+platform_drv_shutdown+0x20/0x30
+device_shutdown+0x158/0x360
+kernel_restart_prepare+0x38/0x48
+kernel_restart+0x18/0x68
+__do_sys_reboot+0x224/0x250
+__arm64_sys_reboot+0x24/0x30
+...
 
-Any connector changes coming in after the acknowledgment, that would
-have the pending flag incorrectly cleared, would afaict be covered by
-the subsequent connector status check.
+Simply check if the priv struct has been allocated before using it.
 
-Fixes: 217504a05532 ("usb: typec: ucsi: Work around PPM losing change information")
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Acked-By: Benjamin Berg <bberg@redhat.com>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210516040953.622409-1-bjorn.andersson@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: fa0c16caf3d7 ("drm: meson_drv add shutdown function")
+Reported-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210430082744.3638743-1-narmstrong@baylibre.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/ucsi/ucsi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/meson/meson_drv.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -717,8 +717,8 @@ static void ucsi_handle_connector_change
- 	ucsi_send_command(con->ucsi, command, NULL, 0);
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -485,11 +485,12 @@ static int meson_probe_remote(struct pla
+ static void meson_drv_shutdown(struct platform_device *pdev)
+ {
+ 	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
+-	struct drm_device *drm = priv->drm;
  
- 	/* 3. ACK connector change */
--	clear_bit(EVENT_PENDING, &ucsi->flags);
- 	ret = ucsi_acknowledge_connector_change(ucsi);
-+	clear_bit(EVENT_PENDING, &ucsi->flags);
- 	if (ret) {
- 		dev_err(ucsi->dev, "%s: ACK failed (%d)", __func__, ret);
- 		goto out_unlock;
+-	DRM_DEBUG_DRIVER("\n");
+-	drm_kms_helper_poll_fini(drm);
+-	drm_atomic_helper_shutdown(drm);
++	if (!priv)
++		return;
++
++	drm_kms_helper_poll_fini(priv->drm);
++	drm_atomic_helper_shutdown(priv->drm);
+ }
+ 
+ static int meson_drv_probe(struct platform_device *pdev)
 
 
