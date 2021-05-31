@@ -2,186 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419993956B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F1B39568A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhEaIPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:15:14 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:12348 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230070AbhEaIPM (ORCPT
+        id S230312AbhEaH4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:56:52 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:31183 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhEaH4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:15:12 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V896qW016699;
-        Mon, 31 May 2021 08:12:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=lRJRTZ3laV3GoLDi0o2E94yWZ3oakyIGXMdmbNSd5MM=;
- b=bFK4Mu7gkcGogrWzNA1FetNDuwidRBjoJ5/1GOHu7IRJG6UsE0Hvb6Ew2dKBfSMctcNl
- 6ErX17UVAGGdQG88ApsMADBgbZ3MqkokQbZTDB62eErDmkMLsMPRtXxa5hDrlqabHF4T
- +DskapPpokZKhnIeRg5AdyqKIoBFJ+YmIm9Xh8HSlwZ55mXPYEKUJ0XykndhtcG/p2Pi
- CXzfO8LsyNzzrUNnzkEEMtcfAqVfVIIVs5mvXkSVyTMd9aWcTb/+J+UI7mNUeRlpBq4E
- DVW/f1GzFeULNJOKyd75sF2sMpoW8VsSzE5vpURi/8+2ci+5yIBlRTGPdm9xUFv4Q0xc MQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38vjar04ur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 08:12:49 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14V8C9GY071320;
-        Mon, 31 May 2021 08:12:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38ude5r1qs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 08:12:48 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V8ClmO076772;
-        Mon, 31 May 2021 08:12:47 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 38ude5r1q0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 08:12:47 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14V8CfJX008658;
-        Mon, 31 May 2021 08:12:45 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 31 May 2021 08:12:40 +0000
-Date:   Mon, 31 May 2021 11:12:33 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-Message-ID: <20210531081233.GW24442@kadam>
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210528133309.GR24442@kadam>
- <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
- <20210528140500.GS24442@kadam>
- <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
- <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
- <20210531044022.GU24442@kadam>
- <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
- <20210531070337.GV24442@kadam>
- <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
+        Mon, 31 May 2021 03:56:49 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210531075508epoutp01322beab45a219cd3f1e43e8b4c65e22d~EF5gt-wws0888508885epoutp012
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 07:55:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210531075508epoutp01322beab45a219cd3f1e43e8b4c65e22d~EF5gt-wws0888508885epoutp012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1622447708;
+        bh=Vj8hRqbR1C1cKwt8NAB/INFdikKtaqmGX/SzMeC8K/0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=OoSYxIZKd8s48BwOFKVK971rtGuZA0Huo/zrKqDePiTvyFFGEqJCVRs3YiBmhQbNJ
+         tqa5RY1QaaG27uGCiTjm9RD+WWDLqnWz5koO0hTuA0XDeHfIBpCCqJCmvfo/O1wqIB
+         LDW/22Y2//P35BSoCLnq6ANMzakrzfj4ovkFRRfY=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210531075506epcas1p433b2a501642967f044d73170f644e646~EF5fh_Vuz3217532175epcas1p4q;
+        Mon, 31 May 2021 07:55:06 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.155]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4FtndN5XyYz4x9Q7; Mon, 31 May
+        2021 07:55:04 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A4.F1.09701.55694B06; Mon, 31 May 2021 16:55:01 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210531075500epcas1p250d5252aa5ecd54c0c5ca4e6874ef1e4~EF5Z_Eylk0159601596epcas1p2t;
+        Mon, 31 May 2021 07:55:00 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210531075500epsmtrp12d2729c5a0dec68d9fb942244482e2ce~EF5Z8_w9-1539815398epsmtrp1F;
+        Mon, 31 May 2021 07:55:00 +0000 (GMT)
+X-AuditID: b6c32a36-631ff700000025e5-46-60b496557c0d
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F5.74.08163.45694B06; Mon, 31 May 2021 16:55:00 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210531075500epsmtip1b6bbf16c135572726a2aa444e9f6450f~EF5ZiCMYe3070730707epsmtip1K;
+        Mon, 31 May 2021 07:55:00 +0000 (GMT)
+Subject: Re: [PATCH V8 1/8] PM / devfreq: Add cpu based scaling support to
+ passive_governor
+To:     Hsin-Yi Wang <hsinyi@google.com>
+Cc:     "andrew-sh.cheng" <andrew-sh.cheng@mediatek.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com, Sibi Sankar <sibis@codeaurora.org>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <16412023-9c28-f47b-7719-7d836319b6da@samsung.com>
+Date:   Mon, 31 May 2021 17:13:47 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CACb=7PUkpMkDOJ6dDHXhJ5ep4e9u8ZVYM8M2iC-iwHXn13t3DQ@mail.gmail.com>
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: -ArnX23L9dwA5q8lRZD5b8UZLhX4zWz_
-X-Proofpoint-GUID: -ArnX23L9dwA5q8lRZD5b8UZLhX4zWz_
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc27b2xaH3FWQM8wcXJ2JbDxKKRwQzBaZXMfCMG5kL1IauCuP
+        0tZeuiE4h4KCDTJQ1NAKqDxE6GboCmg3RLGK1SJDhOEcywyPIfNBQEwDzq2lNeO/7+93Pr98
+        z/ec/HgsgR3342Uqcmm1QioncQ92x5WNwUEfHzOlhv7U/jbqPDfFQUfvj+OoznKLg7rMIyzU
+        t+8hFz27U4oh49gwBw2aT+BosGgAoLlDFoAafx3A0L5iEbq3txlHD+19GLLdvM1B+7ssXPRi
+        uI2Nhk894aDjowLUNk+9400Zag2AGiw/hFEXdKNc6qRRQxlbDuLU78M/49SPDd9SxdZuNmUa
+        KmFT5aYWQPWOdGLUnHFt0iufZcdk0NJ0Wu1PK9KU6ZkKWSyZsEOyRSKOCBUGCaNQJOmvkObQ
+        sWTcB0lBWzPljpSk/1dSucbRSpIyDBmyOUat1OTS/hlKJjeWpFXpclWUKpiR5jAahSw4TZkT
+        LQwNDRM7wNTsjLY7ZRzV9cS8vZf72YVgJFoL+DxIhMPTlyY4WuDBExDnAXxa/QK4ilkA79a0
+        slzFHICTU/dYL0ee1VS5KTOAD/4ucRdPADSfesR1UquIFLjQ/wfbqb2J9bCpq5PrhFhENwcW
+        Lt5dgnAiEHZPjeBO7UUEwCH7GHBqT2IznO60Yk7NJt6ER6cWlhgfIhlaO4rdzKvQWj3uMODx
+        +MR2aG/Oc7ZZhC/8bbwOc+k3YFG7fikCJFr5sPTMRcwVIQ4eH7jmjrMKTveauC7tBx98d8Ct
+        C+BZqwV3DZcCaOr+heM6EMHuxiOY05hFbITnzCGudgC8sFgDXMYr4eP5Mo4TgYQnLD0gcCHr
+        4OCfo+4rvAbrSw7iFYDULUujWxZBtyyC7n+zk4DdAlbTKiZHRjNCVdjy7zaCpRUIjDgPDj+a
+        Ce4BGA/0AMhjkd6etry2VIFnunRXPq1WStQaOc30ALHjfStZfj5pSscOKXIlQnGYSCRC4cII
+        sVBI+nrKthSkCgiZNJfOpmkVrX45h/H4foXY94mLR3z16jOBvlrTikbbzJo9ya+3xOWlpuzI
+        s637K8qrprLj5ie9RfVNfTEBOnlTo0wkLKjdsKeg9xLWpf33va/D36L+ObZTYl+5s3/T0xse
+        q7FOQUj8/c/zt22/zPsmvqOnVfTc53FCxYmUrMQvJc3brFM5G37IzicZfNrQMJFoC5udfN/n
+        +uQunca4Ij2L4cv3G+wVhWsYqDl8O2JMuztEW4vy115trT7Ni68kAy8WhZrFGT3JxtmP6n0s
+        A1kzs2Ucfljkwu40lkH/RVVklX7iGgOC8m3tz4e8JryvGBLW+0d76D9tjtgUUHtWV4fhA/ra
+        2Fs3rjaUvyvdKp5P+JBkMxlSYSBLzUj/AzBwD1SLBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTURiAOd/Nz9Hoa648KikOwxCyXDNOknZR4euPFF1+BKkjPy/ldGxp
+        2sXU2cWhKzSTVjozKzNpuVzT0i5eUsvysjS7CbkVIlpaWV5q1TYC/z287/Nwzo+XxgUjhCed
+        lHKQU6RIk0UUj7jbKvJetfN8fewalWYVMulHSVTywUohXdsLEjXfG8LR89xxF/Tj5WkMGSyD
+        JDLfu0Qhs6oPoG+FbQBdfdWHody8tehtTjWFxmeeY6j7WT+JTjS3uSDbYB2BBi9/IVHpewGq
+        m2Y3Cdna8lrAmjWFGNuofe/CVhjSWENNPsW+G2yi2DtVx9m8rocEWz9wimA19TWA7RgyYew3
+        g/e2RXt4G+K45KR0TrE6LJaXWPeygJR3RmXkPO4hssFQiBq40pCRwB9l54Aa8GgB0wBgnspG
+        ORce8HxfO64G9D92g62tSqczAeBYezlhd9yYvXCuZ9jBQsYPXms2udglnGkloa72FOks7lPw
+        0qwe2C2KCYAPR4ccLyxmfOHAjMUx5zNhcMzUhdmZYFbAktE5h7OU2Q0bqyyY01kCuy5YCfuP
+        XJntcKY6wz7GGX/4q7wfd7I7fGPVYU72gSrjRfwscNMuqLULEu2CRLsgqQBEDfDg5EpZgkwZ
+        JBencIcClVKZMi0lIXBfqswAHGcQENAAmmomA1sARoMWAGlcJOR3Z9TFCvhx0szDnCI1RpGW
+        zClbgBdNiNz5vequGAGTID3IHeA4Oaf4v8VoV89srCBuXZZ/cVlZ0Xe/iY3mrFn68tHtc73L
+        mm75PhXl+A/w18vnr0gmK59KtlpXtKhOuo/4xcuqIyaiu73ISostsZMTR2ae2ZdkrChnP4q1
+        obk+keH9tzcE2uJ7L7bPl4ampgdPBxU1bvEyPObCu2OGh91ro/ebxU82Ga9Pzo9ZEpPn9dGK
+        9D/WBz4XpvRxD0KNFSPFo9T1T8sLo7G8KJn3/mOmSN6Tn7teU8PbZjMfmWxkQuViv5X3cXnY
+        i5IdVOlnS/zp/OnM2R36Q0ckms7G8bCbnpUdxWrVFGYN7xCGmLNXy4uEX29s/h0iJpuqJMYb
+        Ok18UESUruOTR85k8HSDiFAmSoMCcIVS+hfzDc3QdQMAAA==
+X-CMS-MailID: 20210531075500epcas1p250d5252aa5ecd54c0c5ca4e6874ef1e4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210323113411epcas1p3b4367563007ca91c30201d7fc225bb67
+References: <1616499241-4906-1-git-send-email-andrew-sh.cheng@mediatek.com>
+        <CGME20210323113411epcas1p3b4367563007ca91c30201d7fc225bb67@epcas1p3.samsung.com>
+        <1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com>
+        <233a3bd6-7ab1-5da2-9184-a745eb253d86@samsung.com>
+        <1617177820.15067.1.camel@mtksdaap41>
+        <2ae8604d-0da6-4243-1b92-81b3917d7d48@samsung.com>
+        <cad52436-b291-05bf-236f-7b7cb1fdbbff@samsung.com>
+        <1617195800.18432.3.camel@mtksdaap41>
+        <fbb6c44b-eb77-14ce-9175-3f06030e6e0c@samsung.com>
+        <cfdd3973-e4a7-8c09-8a7e-57118a7a3b9b@samsung.com>
+        <1621995727.29827.1.camel@mtksdaap41>
+        <dd58c29a-35b1-b853-bc4a-3225b21b082a@samsung.com>
+        <1622431376.14423.5.camel@mtksdaap41>
+        <316af76d-fc63-eeff-7419-cb4b44ee62fe@samsung.com>
+        <CACb=7PUkpMkDOJ6dDHXhJ5ep4e9u8ZVYM8M2iC-iwHXn13t3DQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 03:34:09PM +0800, Dongliang Mu wrote:
-> On Mon, May 31, 2021 at 3:03 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > On Mon, May 31, 2021 at 02:20:37PM +0800, Dongliang Mu wrote:
-> > > On Mon, May 31, 2021 at 12:40 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > >
-> > > > On Mon, May 31, 2021 at 11:03:36AM +0800, Dongliang Mu wrote:
-> > > > > On Sat, May 29, 2021 at 5:35 AM 慕冬亮 <mudongliangabcd@gmail.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > > > > >
-> > > > > > > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
-> > > > > > >>
-> > > > > > >> Can you please give some advise on how to fix this WARN issue?
-> > > > > > >
-> > > > > > > But it feels like it spoils the fun if I write the commit...  Anyway:
-> > > > > >
-> > > > > > It’s fine. I am still in the learning process. It’s also good to learn experience by comparing your patch and my patch.
-> > > > > >
-> > > > > > >
-> > > > > > > regards,
-> > > > > > > dan carpenter
-> > > > > > >
-> > > > > > > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> > > > > > > index 25f57c14f294..dd357abc1b58 100644
-> > > > > > > --- a/sound/core/control_led.c
-> > > > > > > +++ b/sound/core/control_led.c
-> > > > > > > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
-> > > > > > >                       for (; group > 0; group--) {
-> > > > > > >                               led = &snd_ctl_leds[group - 1];
-> > > > > > >                               device_del(&led->dev);
-> > > > > > > +                             device_put(&led->dev);
-> > > > > > >                       }
-> > > > > > >                       device_del(&snd_ctl_led_dev);
-> > > > > > >                       return -ENOMEM;
-> > > > > > > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
-> > > > > > >       for (group = 0; group < MAX_LED; group++) {
-> > > > > > >               led = &snd_ctl_leds[group];
-> > > > > > >               device_del(&led->dev);
-> > > > > > > +             device_put(&led->dev);
-> > > > > > >       }
-> > > > > > >       device_del(&snd_ctl_led_dev);
-> > > > > > >       snd_ctl_led_clean(NULL);
-> > > > >
-> > > > > Hi Dan,
-> > > > >
-> > > > > I tried this patch, and it still triggers the memleak.
-> > > >
-> > > > Did your patch fix the leak?  Because my patch should have been
-> > > > equivalent except for it fixes an additional leak in the snd_ctl_led_init()
-> > > > error path.
-> > >
-> > > The syzbot link is [1]. I have tested my patch in the syzbot dashboard
-> > > and my local workspace.
-> > >
-> > > I think the reason why your patch did not work should be
-> > > led_card(struct snd_ctl_led_card) is already freed before returning in
-> > > snd_ctl_led_sysfs_remove, rather than led(struct snd_ctl_led). See the
-> > > implementation of snd_ctl_led_sysfs_remove for some details. Please
-> > > correct me if I make any mistakes.
-> > >
-> > > static void snd_ctl_led_sysfs_remove(struct snd_card *card)
-> > > {
-> > >         unsigned int group;
-> > >         struct snd_ctl_led_card *led_card;
-> > >         struct snd_ctl_led *led;
-> > >         char link_name[32];
-> > >
-> > >         for (group = 0; group < MAX_LED; group++) {
-> > >                 led = &snd_ctl_leds[group];
-> > >                 led_card = led->cards[card->number];
-> > >                 if (!led_card)
-> > >                         continue;
-> > >                 snprintf(link_name, sizeof(link_name), "led-%s", led->name);
-> > >                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
-> > >                 sysfs_remove_link(&led_card->dev.kobj, "card");
-> > >                 device_del(&led_card->dev);
-> > >                 put_device(&led_card->dev);
-> > >                 kfree(led_card);
-> > >                 led->cards[card->number] = NULL;
-> > >         }
-> > > }
-> >
-> > This is frustrating to look at because it's not a diff so it doesn't
-> > show what you changed.  I think you are saying that you added the
-> > put_device(&led_card->dev);.  That's true.  There are some other leaks
-> > as well.  We should just fix them all.  Use device_unregister() because
-> > it's cleaner.
+On 5/31/21 4:42 PM, Hsin-Yi Wang wrote:
 > 
-> Oh, I see your point. Yeah, we should fix these memory leaks all. I
-> agree with device_unregister.
 > 
-> >
-> > If both device_initialize() and device_add() succeed then call
-> > device_unregister() to unwind.
+> On Mon, May 31, 2021 at 3:37 PM Chanwoo Choi <cw00.choi@samsung.com <mailto:cw00.choi@samsung.com>> wrote:
 > 
-> BTW, have you tested this new patch on two memory leaks?
+>     Hi,
+> 
+>     On 5/31/21 12:22 PM, andrew-sh.cheng wrote:
+>     > On Wed, 2021-05-26 at 12:08 +0900, Chanwoo Choi wrote:
+>     >> Hi,
+>     >> On 5/26/21 11:22 AM, andrew-sh.cheng wrote:
+>     >>> On Thu, 2021-04-08 at 11:47 +0900, Chanwoo Choi wrote:
+>     >>>> On 4/1/21 9:16 AM, Chanwoo Choi wrote:
+>     >>>>> On 3/31/21 10:03 PM, andrew-sh.cheng wrote:
+>     >>>>>> On Wed, 2021-03-31 at 17:35 +0900, Chanwoo Choi wrote:
+>     >>>>>>> On 3/31/21 5:27 PM, Chanwoo Choi wrote:
+>     >>>>>>>> Hi,
+>     >>>>>>>>
+>     >>>>>>>> On 3/31/21 5:03 PM, andrew-sh.cheng wrote:
+>     >>>>>>>>> On Thu, 2021-03-25 at 17:14 +0900, Chanwoo Choi wrote:
+>     >>>>>>>>>> Hi,
+>     >>>>>>>>>>
+>     >>>>>>>>>> You are missing to add these patches to linux-pm mailing list.
+>     >>>>>>>>>> Need to send them to linu-pm ML.
+>     >>>>>>>>>>
+>     >>>>>>>>>> Also, before received this series, I tried to clean-up these patches
+>     >>>>>>>>>> on testing branch[1]. So that I add my comment with my clean-up case.
+>     >>>>>>>>>> [1] https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!zIrzeDp9vPnm1_SDzVPuzqdHn3zWie9DnfBXaA-j9-CSrVc6aR9_rJQQiw81_CgAPh9XRRs$
+>     >>>>>>>>>>
+>     >>>>>>>>>> And 'Saravana Kannan <skannan@codeaurora.org <mailto:skannan@codeaurora.org>>' is wrong email address.
+>     >>>>>>>>>> Please update the email or drop this email.
+>     >>>>>>>>>
+>     >>>>>>>>> Hi Chanwoo,
+>     >>>>>>>>>
+>     >>>>>>>>> Thank you for the advices.
+>     >>>>>>>>> I will resend patch v9 (add to linux-pm ML), remove this patch, and note
+>     >>>>>>>>> that my patch set base on
+>     >>>>>>>>> https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJ8WFhg_g$
+>     >>>>>>>>
+>     >>>>>>>> I has not yet test this patch[1] on devfreq-testing-passive-gov branch.
+>     >>>>>>>> So that if possible, I'd like you to test your patches with this patch[1]
+>     >>>>>>>> and then if there is no problem, could you send the next patches with patch[1]?
+>     >>>>>>>>
+>     >>>>>>>> [1]https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/commit/?h=devfreq-testing-passive-gov&id=39c80d11a8f42dd63ecea1e0df595a0ceb83b454__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJR2cQqZs$
+>     >>>>>>>
+>     >>>>>>>
+>     >>>>>>> Sorry for the confusion. I make the devfreq-testing-passive-gov[1]
+>     >>>>>>> branch based on latest devfreq-next branch.
+>     >>>>>>> [1] https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJ8WFhg_g$
+>     >>>>>>>
+>     >>>>>>> First of all, if possible, I want to test them[1] with your patches in this series.
+>     >>>>>>> And then if there are no any problem, please let me know. After confirmed from you,
+>     >>>>>>> I'll send the patches of devfreq-testing-passive-gov[1] branch.
+>     >>>>>>> How about that?
+>     >>>>>>>
+>     >>>>>> Hi Chanwoo~
+>     >>>>>>
+>     >>>>>> We will use this on Google Chrome project.
+>     >>>>>> Google Hsin-Yi has test your patch + my patch set v8 [2~8]
+>     >>>>>>
+>     >>>>>>     make sure cci devfreqs runs with cpufreq.
+>     >>>>>>     suspend resume
+>     >>>>>>     speedometer2 benchmark
+>     >>>>>> It is okay.
+>     >>>>>>
+>     >>>>>> Please send the patches of devfreq-testing-passive-gov[1] branch.
+>     >>>>>>
+>     >>>>>> I will send patch v9 base on yours latter.
+>     >>>>>
+>     >>>>> Thanks for your test. I'll send the patches today.
+>     >>>>
+>     >>>> I'm sorry for delay because when I tested the patches
+>     >>>> for devfreq parent type on Odroid-xu3, there are some problem
+>     >>>> related to lazy linking of OPP. So I'm trying to analyze them.
+>     >>>> Unfortunately, we need to postpone these patches to next linux
+>     >>>> version.
+>     >>>>
+>     >>> Hi Chanwoo Choi~
+>     >>>
+>     >>> It is said that you are busy on another task recently.
+>     >>> May I know your plan on this patch?
+>     >>> Thank you.
+>     >>
+>     >> Sorry for late work. I have a question.
+>     >> When I tested exynos-bus.c with adding the 'required-opp' property
+>     >> on odroid-xu3 board. I got some fail about
+>     >>
+>     >> When calling _set_required_opps(), always _set_required_opp() returns
+>     >> -EBUSY error because of following lazy linking case[1].
+>     >>
+>     >> [1] https://urldefense.com/v3/__https://elixir.bootlin.com/linux/v5.13-rc3/source/drivers/opp/core.c*L896__;Iw!!CTRNKA9wMg0ARbw!3eNxwDZRy-Ev5BHGxT-BxCz4qrNy0NZohQuBGW36krkwOkl_WX8yBmxlqSk9hxp_kxspMJI$
+>     >>
+>     >> /* required-opps not fully initialized yet */
+>     >> if (lazy_linking_pending(opp_table))
+>     >>      return -EBUSY; 
+>     >>
+>     >>
+>     >> For calling dev_pm_opp_of_add_table(), lazy_link_required_opp_table() function
+>     >> will be called. But, there is constraint[2]. If is_genpd of opp_table is false,
+>     >> driver/opp/of.c cannot resolve the lazy linking issue.
+>     >>
+>     >> [2]  https://urldefense.com/v3/__https://elixir.bootlin.com/linux/v5.13-rc3/source/drivers/opp/of.c*L386__;Iw!!CTRNKA9wMg0ARbw!3eNxwDZRy-Ev5BHGxT-BxCz4qrNy0NZohQuBGW36krkwOkl_WX8yBmxlqSk9hxp_QFUVY9E$
+>     >>
+>     >> /* Link required OPPs for all OPPs of the newly added OPP table */
+>     >> static void lazy_link_required_opp_table(struct opp_table *new_table)
+>     >> {
+>     >>      struct opp_table *opp_table, *temp, **required_opp_tables;
+>     >>      struct device_node *required_np, *opp_np, *required_table_np;
+>     >>      struct dev_pm_opp *opp;
+>     >>      int i, ret;
+>     >>
+>     >>      /*
+>     >>       * We only support genpd's OPPs in the "required-opps" for now,
+>     >>       * as we don't know much about other cases.
+>     >>       */
+>     >>      if (!new_table->is_genpd)
+>     >>              return;
+>     >>
+>     >> Even if this case, there are no problem on your test case?
+>     >>
+>     >
+>     > Hi Chanwoo~
+>     > Sorry for late reply.
+>     > Yes, we meet similar issue.
+>     > Google member Hsin-Yi had helped deal with this issue on Chrome project.
+>     >
+>     > Patch segment:
+>     > @ /drivers/opp/of.c
+>     >
+>     > /* Link required OPPs for all OPPs of the newly added OPP table */
+>     > static void lazy_link_required_opp_table(struct opp_table *new_table)
+>     > {
+>     >       struct opp_table *opp_table, *temp, **required_opp_tables;
+>     >       struct device_node *required_np, *opp_np, *required_table_np;
+>     >       struct dev_pm_opp *opp;
+>     >       int i, ret;
+>     >
+>     > +     /*
+>     > +      * We only support genpd's OPPs in the "required-opps" for now,
+>     > +      * as we don't know much about other cases.
+>     > +      */
+>     > +     if (!new_table->is_genpd)
+>     > +             return;
+>     >
+>     >
+>     > Hsin-Yi replied this issue in the discussion list in the original lazy
+>     > link thread:
+>     > https://patchwork.kernel.org/project/linux-pm/patch/20190717222340.137578-4-saravanak@google.com/#23932203
+>     >
+>     > Loop Hsin-YI here.
+>     > You can discuss with her if needing more detail.
+>     >
+>     > Thank you both.
+>     >
+> 
+>     Thanks. First of all, we need to resolve and discuss this issue.
+> 
+> 
+> Hi Chanwoo, 
+> 
+> We think removing the genpd check is sufficient for our use case since we only use the lazy link for opp table translation.
 
-No I have not tested it at all, and I don't remember if I even compiled
-it.
+Hi Hsin-Yi,
 
-regards,
-dan carpenter
+IMHO, I think 'is_genpd' checking should be removed for devices except for genpd
+like as following:
 
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index c582a9ca397b..b54d3a985515 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
+                        lazy = true;
+                        continue;
+                }
+-
+-               /*
+-                * We only support genpd's OPPs in the "required-opps" for now,
+-                * as we don't know how much about other cases. Error out if the
+-                * required OPP doesn't belong to a genpd.
+-                */
+-               if (!required_opp_tables[i]->is_genpd) {
+-                       dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
+-                               required_np);
+-                       goto free_required_tables;
+-               }
+        }
+ 
+        /* Let's do the linking later on */
+@@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
+        struct dev_pm_opp *opp;
+        int i, ret;
+ 
+-       /*
+-        * We only support genpd's OPPs in the "required-opps" for now,
+-        * as we don't know much about other cases.
+-        */
+-       if (!new_table->is_genpd)
+-               return;
+-
+        mutex_lock(&opp_table_lock);
+ 
+        list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
+@@ -874,7 +856,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
+                return ERR_PTR(-ENOMEM);
+ 
+        ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
+-       if (ret < 0 && !opp_table->is_genpd) {
++       if (ret < 0) {
+                dev_err(dev, "%s: opp key field not found\n", __func__);
+                goto free_opp;
+        }
+
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
