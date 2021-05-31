@@ -2,109 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C897839679F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2B63967A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbhEaSMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 14:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhEaSMC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 14:12:02 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A14C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 11:10:22 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id a4so16002757ljd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 11:10:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RqDyoSo09lPZO7GbOVPgOTHVdV/YSSWYh+JNDnVcsAM=;
-        b=vy0uLjUP4b9/AdZSWCBIJkGYi4KqsFzlAguK9G1kq10RuG2QJ9SaCin/z40CAuN9N1
-         Ny/vrCiMNiRFhNLvJpQsZYZINHFf3EaQct9tsqIhk5tAUsuxyy09Jt+MFTo1pb2DxMnI
-         1mhuGM8ZMFNvXLG2phlK9NzBPLb3Sc3JtSvvZKZm+MyP/a9uTs2m53y9gSdGz1FPy9Zp
-         irfZkJPLzEw5eyrLgj7PQlgSEwbb6I7tSu/8WspO4dXuoX2ho+xANIhvHef5g176dFCi
-         3lou3RZZLIaFfJeZfbA0ikQgl/ZH1MLhSjVh8yTZE2in8m24BXFIdgP66V1SntHfTsA6
-         U1mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RqDyoSo09lPZO7GbOVPgOTHVdV/YSSWYh+JNDnVcsAM=;
-        b=DqTdo3wy8VGIuUFKLEzrr9aiYQjNRsVzECQp0WpOmRedJa0QGuEVg4MUeJ06WzfA/0
-         Mr/Pa5kYsGtNULQ2cHIRkDLMMQ6OYVtifsco8XRm47P7tXiV9FdzqRpnn2QIwxXKjaL9
-         NGbEblhxT7Iu9iGi80Ou4Mxg9JzhIRpyJaG04G6i+JS5lA6HDDQ7q2bJsmA+ZLus+6xI
-         pTheG/IoBdtbrW4poSgqAFnJIWrY9QCx00lEey1oEV8NFcJTbkFeOIvanKop2YJAKVBE
-         QonFVGa/J+syEkqqIyxDW+BlTAT/smtug1IW4I6H2fdlMi1jeEaABpAaxiSCHtbFOHxj
-         NtGQ==
-X-Gm-Message-State: AOAM531bdLNLgeaFmshzfO+DZppMxaHXM741YgVnMqBg9ph4eRF/lRZM
-        K+WN5c3pok+RozseWUPaRrBq7w==
-X-Google-Smtp-Source: ABdhPJx3O6rn5NqZMzkPeijKZJM/6wPEQfnrs07M3tXIRXQouQa/sGsKJEEBs84ooxP684SBQE0Vag==
-X-Received: by 2002:a2e:bf20:: with SMTP id c32mr17459713ljr.311.1622484620655;
-        Mon, 31 May 2021 11:10:20 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id y1sm1331962lfl.68.2021.05.31.11.10.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 11:10:20 -0700 (PDT)
-Subject: Re: [Freedreno] [PATCH v2 2/2] dt-bindings: display: msm/dsi: add
- qcom, dsi-phy-cphy-mode option
-To:     Jonathan Marek <jonathan@marek.ca>, Rob Herring <robh@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, David Airlie <airlied@linux.ie>,
-        freedreno@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>
-References: <20210423172450.4885-1-jonathan@marek.ca>
- <20210423172450.4885-3-jonathan@marek.ca>
- <20210503171139.GA2011901@robh.at.kernel.org>
- <0e083e31-d349-6d5c-048f-258414492b2c@marek.ca>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <4e623554-bbe4-4d4a-7b14-0ca4f684c7fb@linaro.org>
-Date:   Mon, 31 May 2021 21:10:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232045AbhEaSOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 14:14:30 -0400
+Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:40256
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230288AbhEaSO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 14:14:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PMrRBq7kQaCSTPBhWQ3iMBc+5jiJTXaNKdDCxTPmeRPgL3qoJa9h1GsDimhpJyDHb+BIqi7OaQ9vsw2eszCeEwfOiQbdqPKR3zJ8zuVB4vRY+QnwHMDHtArxzZ+u9gKIJDNxBjcQ92c6ZpCfvEtC/KpoYsSsu9HEQmJZ29Bx13rhWVrtcphm0JReNZZlUxxkrJdDBqr/G0AKE021i54Vs3u80KNlf0x9Yk5r5TYwRNgp59MHpbhHm5U3h7/gxIDjDXSAdAbiL7GeMyc637egl5r+E7F3+cHNqFmq6x7gxSgJgdVUrdK/qhYPZht3UjgtEN4RvsUMOEuIw3v3Ldfvug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GF1QE1MToHriJPAqkPIyvgYFZfgekNjoqRsg0DNFx8g=;
+ b=V42aSnyOIYMuy/DERgdde3DceafvUqogyoFZIObOvHpxuG1mSaXcK9q4zntDrLAtU6eQMBiX2iYuUQ7WxFxdm0eGLSdAK900iJvYywkY1pXaatQj6k/fblkLcCppBzilWHQICK1FlENkDnPAX1DN5IaRnjkHuQsoiDNFG4qPbnHNCDjZfPcJuiev/P5jhvM8vC1gqNB05khkoHd1vq/DgFsftl4qL5n+lPMWpxTkGu9wMAglr6p+1/sB+xb+iYYYon1NeC7fczDQu4T8rUGboow/DQUVw9SYOzA2cod7zdYQDimcgtNrsBU/qOquQQHVwSIDnIeJVpaDJMXlBTgxKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GF1QE1MToHriJPAqkPIyvgYFZfgekNjoqRsg0DNFx8g=;
+ b=LESRi6aq/vWsF8pMzT8MjG++ecLVLJwAen/RK7nt1gOqEralUMq0szYvirpoL1wHSG52To1rapB4i+ncFwWS+SBcex/MK4LmQ+0aqvoqwLfC/CbYmzYgrgifvet54U1ht+HEG8okAOrZ11pNL9GQy5vGAu8y2zCQU9XBfptk6d9WakSV4CE1CYj6DD1XXSFVt+8JitCTlD7rjBwczzfaKdcebpCCxhF0gG1q5BMVlrhWaw3IxKSJtOFdx32fnXKeX1mu1U9HEz8DM7wtNElgHAgiPynuUErQrF6vdkyJ5b0lZSsnGNhb/QU1x3u1aMLTQsKk+wnd7CyeH7yg4btonQ==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5190.namprd12.prod.outlook.com (2603:10b6:208:31c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Mon, 31 May
+ 2021 18:12:45 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.030; Mon, 31 May 2021
+ 18:12:45 +0000
+Date:   Mon, 31 May 2021 15:12:43 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210531181243.GY1002214@nvidia.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <PH0PR12MB5481C1B2249615257A461EEDDC3F9@PH0PR12MB5481.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR12MB5481C1B2249615257A461EEDDC3F9@PH0PR12MB5481.namprd12.prod.outlook.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0229.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::24) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <0e083e31-d349-6d5c-048f-258414492b2c@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0229.namprd13.prod.outlook.com (2603:10b6:208:2bf::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.10 via Frontend Transport; Mon, 31 May 2021 18:12:44 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lnmP5-00HD5i-V6; Mon, 31 May 2021 15:12:43 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: efde8504-a71a-47d4-5295-08d9245fb04e
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5190:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5190DCD9BA74A88EE3BE2CE0C23F9@BL1PR12MB5190.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RZoFOPzX0QcdMK6GCEFI5me7Vz+mdaNR2Q17eGouVCkzPVRtYDR/wqMgZ95pa3wSQt0LRYofpeC1ZmuGrAGFz+bcTmZDnJ4KUH5wQhhlmz8gKKm+JWvHgV0rAbdjEEZcUfJIiC8J7wFm/WFmp0MyXKcWsRcvna3oXLCqxS5BEQYjB9Knd0gD6bb4aCZE7sz+TViAkVnbBNTgNT6Mfsxpq5OKIU0ahUSb+YS0yph8bsZ7rx5+W1FyjCqbraUyn0PbREGuA4NliNNFZM2hJvJAY/uU7nxWrJ3BdNow+pdqu+cqpQyYYrZRKewUJpKlpW9WLRrw5q+yHv48rxJOPZ/3OXsI7Lc4AQ0h+g5q59yVUL7PAdYNtBOcIed20ECxyf4CNGUvQNL5lHsydQjluyepLR//srhMvxwOV+jSTsWXQBErgXfn4+EIrtlrjqKKIxSAuKe3ssJ9/fMtk1mZRoCWVRqmzAiyKhBQfIzy+AqsSwQQhYyUV+nj8T33p7jL/fz8VBbPy9KLjpUXL9KDhsUqlmdLTsnxv47VNWQdrYso0QVl7HCixupYIIzChU+aNu2WOZG38ZtpQskjXDINiLCDoIIUzxvILWVr5VOokJZJMVM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(136003)(376002)(346002)(26005)(54906003)(8936002)(86362001)(9786002)(316002)(9746002)(5660300002)(37006003)(6636002)(33656002)(1076003)(7416002)(66476007)(4744005)(66556008)(478600001)(38100700002)(186003)(4326008)(426003)(2906002)(6862004)(66946007)(36756003)(8676002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?b7Yd3SBS0mk0L+qTeZnTXkaG3CqhvuyWHE0veBcpoWIaRA5SflhYzZ8JMJsA?=
+ =?us-ascii?Q?9eI9MDL91a61cPtWiG3wyRpCBs1le1lLgf+wVNl8L3xFpQaNsy/ixZyWE4Z4?=
+ =?us-ascii?Q?i0npSYTPj9Br3R+qrisd2rFxvO/zF7qXFR5bD8Nt9vXGO6Hl5pjbmLwx0HkV?=
+ =?us-ascii?Q?w1Lz/alxGQ5Cxd2PV6fmDqXi7wqEMh9/945i0x8JFdg6fgDJT5Q9lo+JjAZH?=
+ =?us-ascii?Q?Cs45jarsml8FkDJZbgHklnDKw5fkLELw0LMaMFFBb6l8yXQN1CXvia2Fvp9G?=
+ =?us-ascii?Q?Pnm5EZ0oapHb/wPgcX9puCq2jICYjGxJrFD0owzioWW367PzE4lToXAB6J5R?=
+ =?us-ascii?Q?pIJGz7pJVSfsjL3Pjibx5+g2IPWfD+XVscqb5GiElYoaJ+kDmpWEHTQ93wVW?=
+ =?us-ascii?Q?L2Hsv72tx/j3ve9hNQ6izHe0biHlKssXE8DpsBDucWBqwAqd+3Ymbvf4Cngc?=
+ =?us-ascii?Q?7O0B85uO2NePnBXVXtKWFRBU91A45E7941+MbgGkqnUWfugKkldB+MKAi4Y/?=
+ =?us-ascii?Q?ko70PTkCihnjJV/gGGM6Yvov8VkDJDmshCNu9cksU8I9Kr6pdbAyL6fcqLaI?=
+ =?us-ascii?Q?nlIpkoWCce46ck0T+HIUuhaEX6YqcvIEgZ80fRbk8vFcVAVvk/oeUs1CrnRl?=
+ =?us-ascii?Q?XXZfWTxbrKgGFWs9lNaQOK961lSlMlxOsl1hNvPDSahf5GafenP5B9Xy+GXA?=
+ =?us-ascii?Q?f4+lhMv5B5KNyDDdX778ddD4vABaiRqFIZ32lm29cGkSe//alxyeI8kwS6xn?=
+ =?us-ascii?Q?3ArHpXHANL4VHNOCaZ6CyI17at3nlQkedSjAzBYaIeBHUqWa568VpOYAKrzs?=
+ =?us-ascii?Q?FLlN6/4KBO5yYUkzSy87wQmxVXj7cTA5ldSoenAG/RcWV6BK07mHuKRQ2c65?=
+ =?us-ascii?Q?x9pM8YqHLM4FKOlvYpQRj83VgHjTRF1c3z9un0z5PZQx5j8YmVbSovJ75535?=
+ =?us-ascii?Q?AWxbE8mhilO2jLdYpXdL2Uwutxzk+hnBZRiT6vG+wG8RtiLYq6sqTT7pfXnQ?=
+ =?us-ascii?Q?5xCnNPiOzzWmqdpnJDwXdea9ktAKxDQI2hx5hlQBfPE8b1IHfFe2ZnLnRJ89?=
+ =?us-ascii?Q?Ivvv0Djb3SStWfaAindL7dGHq02vGoqbilITDAWJEmi65aQsDkbankCm+rwq?=
+ =?us-ascii?Q?tsg6LreQldjkHB4hvbSHpbYGWRbGC/3IQ6QxluhaNjyXGwOPQFEJYZmbC/wa?=
+ =?us-ascii?Q?d36sZtmnLxuWN1Jlay2+zW/gK0ZKKBRxU1hL/9vFQ20YXOCM0v9kNrva15DY?=
+ =?us-ascii?Q?wMWujSF9WTtgA+CrHWuurbNmT+uhu6Po/MJPaN398qyml9tM3jRsbt4IyVWI?=
+ =?us-ascii?Q?qaosSZ6ChgS1Ksb+Q8nNZCRq?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: efde8504-a71a-47d4-5295-08d9245fb04e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 18:12:45.0998
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vihKYf1dLWLw0b1ZqaPQCq8XHW8THdKJttYm1D5dLGfB6WkHThWiqxG/G3NJNfjP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5190
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/2021 15:57, Jonathan Marek wrote:
-> On 5/3/21 1:11 PM, Rob Herring wrote:
->> On Fri, Apr 23, 2021 at 01:24:40PM -0400, Jonathan Marek wrote:
->>> Document qcom,dsi-phy-cphy-mode option, which can be used to control
->>> whether DSI will operate in D-PHY (default) or C-PHY mode.
->>
->> Given this is a standard MIPI thing, I think this needs to be a common
->> property. We already have phy bindings that use the phy cells to set the
->> phy type which I think you should use here. See
->> include/dt-bindings/phy/phy.h.
->>
-> 
-> Is it OK to simply change the option to something like "phy-mode = 
-> <PHY_TYPE_DSI_CPHY>;"?
-> 
-> (using phy-cells would be annoying to implement, with no benefit IMO)
+On Mon, May 31, 2021 at 05:37:35PM +0000, Parav Pandit wrote:
 
+> In that case, can it be a new system call? Why does it have to be under /dev/ioasid?
+> For example few years back such system call mpin() thought was proposed in [1].
 
-To add another feather to the balance scales:
+Reference counting of the overall pins are required
 
-- `phys = <&dsi0_phy PHY_TYPE_DSI_CPHY>;` would bring knowledge about 
-PHY mode to the DSI host (which does not really care about PHY mode)
+So when a pinned pages is incorporated into an IOASID page table in a
+later IOCTL it means it cannot be unpinned while the IOASID page table
+is using it.
 
-- `phy-mode = <PHY_TYPE_DSI_CPHY>;` would stay in the PHY node, where 
-this information belongs.
+This is some trick to organize the pinning into groups and then
+refcount each group, thus avoiding needing per-page refcounts.
 
--- 
-With best wishes
-Dmitry
+The data structure would be an interval tree of pins in general
+
+The ioasid itself would have an interval tree of its own mappings,
+each entry in this tree would reference count against an element in
+the above tree
+
+Then the ioasid's interval tree would be mapped into a page table tree
+in HW format.
+
+The redundant storages are needed to keep track of the refencing and
+the CPU page table values for later unpinning.
+
+Jason
