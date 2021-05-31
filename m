@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CE5395CC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E003963EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbhEaNh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:37:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34112 "EHLO mail.kernel.org"
+        id S234948AbhEaPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:40:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231836AbhEaN0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:26:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED22361405;
-        Mon, 31 May 2021 13:21:20 +0000 (UTC)
+        id S233561AbhEaOXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:23:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07B9261554;
+        Mon, 31 May 2021 13:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467281;
-        bh=WCY1tsQHs0qPaWWClyBnYNlp7D6WjJ9ssswyl7No6Yc=;
+        s=korg; t=1622468728;
+        bh=VB4Y1FojBfYAa5ucDtj+uTAZT4JTj8xqxuUainiCfUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Erd4WCTZ7TZqZLgdm1puqtr2wtQ9nXdcwtIAhRWl6HMnId6FLfGT94JNp6mArtyuc
-         0x1aVzmJ6jSCHYSRsgMHOh3LLzwNkkGEJcoqgz506EDErcFFRxObGGHeKIR74didqV
-         Ekr7yrdAXcodGOmiF9W3Ut9ABX9SBA56gU2aZgnA=
+        b=JsvWAmaxBj/qtc3gzpoJMoPdFAg6ykTn+8Ie7xdg0Z8YSj73kriqyhRz0qpwYOdbZ
+         GTP5rhzY/BL9hvDVZlLlSxF0rCFNLWN0WMy45/kyasW0KiFiLuFx9rJhSs6j2AvfE8
+         ByoASPjImwY+aeMJHPdwgfzqSwT14Da23y1CNTOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        stable@vger.kernel.org, Anirudh Rayabharam <mail@anirudhrb.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 48/66] media: gspca: properly check for errors in po1030_probe()
+Subject: [PATCH 5.4 104/177] ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()
 Date:   Mon, 31 May 2021 15:14:21 +0200
-Message-Id: <20210531130637.780858124@linuxfoundation.org>
+Message-Id: <20210531130651.501755649@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-[ Upstream commit dacb408ca6f0e34df22b40d8dd5fae7f8e777d84 ]
+[ Upstream commit 54433367840b46a1555c8ed36c4c0cfc5dbf1358 ]
 
-If m5602_write_sensor() or m5602_write_bridge() fail, do not continue to
-initialize the device but return the error to the calling funtion.
+Propagate error code from failure of ath6kl_wmi_cmd_send() to the
+caller.
 
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-64-gregkh@linuxfoundation.org
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-44-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/m5602/m5602_po1030.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath6kl/debug.c | 5 ++++-
+ drivers/net/wireless/ath/ath6kl/wmi.c   | 4 +---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/m5602/m5602_po1030.c b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-index a0a90dd34ca8..a098aeb290c3 100644
---- a/drivers/media/usb/gspca/m5602/m5602_po1030.c
-+++ b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-@@ -159,6 +159,7 @@ static const struct v4l2_ctrl_config po1030_greenbal_cfg = {
- int po1030_probe(struct sd *sd)
+diff --git a/drivers/net/wireless/ath/ath6kl/debug.c b/drivers/net/wireless/ath/ath6kl/debug.c
+index 54337d60f288..085a134069f7 100644
+--- a/drivers/net/wireless/ath/ath6kl/debug.c
++++ b/drivers/net/wireless/ath/ath6kl/debug.c
+@@ -1027,14 +1027,17 @@ static ssize_t ath6kl_lrssi_roam_write(struct file *file,
  {
- 	u8 dev_id_h = 0, i;
-+	int err;
- 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
+ 	struct ath6kl *ar = file->private_data;
+ 	unsigned long lrssi_roam_threshold;
++	int ret;
  
- 	if (force_sensor) {
-@@ -177,10 +178,13 @@ int po1030_probe(struct sd *sd)
- 	for (i = 0; i < ARRAY_SIZE(preinit_po1030); i++) {
- 		u8 data = preinit_po1030[i][2];
- 		if (preinit_po1030[i][0] == SENSOR)
--			m5602_write_sensor(sd,
--				preinit_po1030[i][1], &data, 1);
-+			err = m5602_write_sensor(sd, preinit_po1030[i][1],
-+						 &data, 1);
- 		else
--			m5602_write_bridge(sd, preinit_po1030[i][1], data);
-+			err = m5602_write_bridge(sd, preinit_po1030[i][1],
-+						 data);
-+		if (err < 0)
-+			return err;
- 	}
+ 	if (kstrtoul_from_user(user_buf, count, 0, &lrssi_roam_threshold))
+ 		return -EINVAL;
  
- 	if (m5602_read_sensor(sd, PO1030_DEVID_H, &dev_id_h, 1))
+ 	ar->lrssi_roam_threshold = lrssi_roam_threshold;
+ 
+-	ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
++	ret = ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
+ 
++	if (ret)
++		return ret;
+ 	return count;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
+index d27b4088b874..c610fe21c85c 100644
+--- a/drivers/net/wireless/ath/ath6kl/wmi.c
++++ b/drivers/net/wireless/ath/ath6kl/wmi.c
+@@ -776,10 +776,8 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
+ 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
+ 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
+ 
+-	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
++	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
+ 			    NO_SYNC_WMIFLAG);
+-
+-	return 0;
+ }
+ 
+ int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
 -- 
 2.30.2
 
