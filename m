@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859C2396812
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8223C396813
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhEaSrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 14:47:20 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:20773 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhEaSqo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 14:46:44 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d55 with ME
-        id BWl22500F21Fzsu03Wl3FP; Mon, 31 May 2021 20:45:03 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 31 May 2021 20:45:03 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH 4.14 63/79] net: netcp: Fix an error message
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20210531130636.002722319@linuxfoundation.org>
- <20210531130638.013062405@linuxfoundation.org>
-From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <dbc2fdf6-af63-3a15-3ec5-8fade9eb2685@wanadoo.fr>
-Date:   Mon, 31 May 2021 20:45:01 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231695AbhEaSri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 14:47:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:34493 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230289AbhEaSrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 14:47:25 -0400
+IronPort-SDR: Ok0YDylm7h1mxN2s6cvVxdVELk3quZOnKrJ1p7jKXD311HMu5hIPLqusRL+TEu1btIX1rGF71B
+ 5q02xm1eSXZg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190763030"
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="190763030"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 11:45:42 -0700
+IronPort-SDR: fnFuQmT91kZAG44h98dzGgalB8CuzVfMS9sa3zqNAPh03psxpvr9Ux6GCASDj/UX5ac8W0Ab5q
+ XSt/9ToNubfA==
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="616602078"
+Received: from unknown (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.251.152.221])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 11:45:41 -0700
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <YJm5QY8omAvdpBO9@google.com> <YJpP/S8MajKNhBl4@zn.tnic>
+ <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
+ <YKfPLlulaqwypNkO@zn.tnic> <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
+ <YKgA1od/SqycWWds@zn.tnic> <86b4d995-9619-81fa-5ef4-86f48ab01e96@amd.com>
+ <a94e1fb8-50bf-ef69-6553-237937029c5d@linux.intel.com>
+ <YLT9AGodkvct8YTO@zn.tnic>
+ <96a63ddf-98f9-7095-f7bb-100bf56a4d10@linux.intel.com>
+ <YLUjCqdPu/8eWuB+@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <280669ec-d43a-83af-55ba-ad03411538b5@linux.intel.com>
+Date:   Mon, 31 May 2021 11:45:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210531130638.013062405@linuxfoundation.org>
+In-Reply-To: <YLUjCqdPu/8eWuB+@zn.tnic>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: fr
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Le 31/05/2021 à 15:14, Greg Kroah-Hartman a écrit :
-> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->
-> [ Upstream commit ddb6e00f8413e885ff826e32521cff7924661de0 ]
->
-> 'ret' is known to be 0 here.
-> The expected error code is stored in 'tx_pipe->dma_queue', so use it
-> instead.
->
-> While at it, switch from %d to %pe which is more user friendly.
->
-> Fixes: 84640e27f230 ("net: netcp: Add Keystone NetCP core ethernet driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   drivers/net/ethernet/ti/netcp_core.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/ti/netcp_core.c b/drivers/net/ethernet/ti/netcp_core.c
-> index 437d36289786..67167bc49a3a 100644
-> --- a/drivers/net/ethernet/ti/netcp_core.c
-> +++ b/drivers/net/ethernet/ti/netcp_core.c
-> @@ -1364,8 +1364,8 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
->   	tx_pipe->dma_queue = knav_queue_open(name, tx_pipe->dma_queue_id,
->   					     KNAV_QUEUE_SHARED);
->   	if (IS_ERR(tx_pipe->dma_queue)) {
-> -		dev_err(dev, "Could not open DMA queue for channel \"%s\": %d\n",
-> -			name, ret);
-> +		dev_err(dev, "Could not open DMA queue for channel \"%s\": %pe\n",
-> +			name, tx_pipe->dma_queue);
->   		ret = PTR_ERR(tx_pipe->dma_queue);
->   		goto err;
->   	}
+
+On 5/31/21 10:55 AM, Borislav Petkov wrote:
+> On Mon, May 31, 2021 at 10:32:44AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>> I think above requirement is satisfied in following implementation.
+> 
+> Well, I suggested a single protected_guest_has() function which does:
+> 
+>          if (AMD)
+>                  amd_protected_guest_has(...)
+>          else if (Intel)
+>                  intel_protected_guest_has(...)
+>          else
+>                  WARN()
+> 
+> where amd_protected_guest_has() is implemented in arch/x86/kernel/sev.c
+> and intel_protected_guest_has() is implemented in, as far as I can
+> follow your paths in the diff, in arch/x86/kernel/tdx.c.
+> 
+> No is_protected_guest() 
+
+is_protected_guest() is a helper function added to check for VM guest type
+(protected or normal). Andi is going to add some security hardening code in
+virto and other some other generic drivers. He wants a helper function to
+selective enable them for all protected guests. Since these are generic
+drivers we need generic (non arch specific) helper call. is_protected_guest()
+is proposed for this purpose.
+
+We can also use protected_guest_has(VM_VIRTIO_SECURE_FIX) or something
+similar for this purpose. Andi, any comments?
+
+> and no ARCH_HAS_PROTECTED_GUEST.
+
+IMHO, its better to use above generic config option in common header
+file (linux/protected_guest.h). Any architecture that implements
+protected guest feature can enable it. This will help is hide arch
+specific config options in arch specific header file.
+
+This seems to be a cleaner solution than including ARCH specific
+CONFIG option options in common header file (linux/protected_guest.h)
+
+#ifdef CONFIG_ARCH_HAS_PROTECTED_GUEST
+#include <asm/protected_guest.h>
+#else
+blah
+#endif
+
+is better than
+
+#ifdef (AMD)
+amd_call()
+#endif
+
+#ifdef (INTEL)
+intel_call()
+#endif
+
+#ifdef (ARM)
+arm_call()
+#endif
 
 
-Hi,
+> 
+> Just the above controlled by CONFIG_INTEL_TDX_GUEST or whatever
+> the TDX config item is gonna end up being and on the AMD side by
+> CONFIG_AMD_MEM_ENCRYPT.
+> 
+> Thx.
+> 
 
-Apparently %pe is only supported up to (including) 5.5. It is not part 
-of 5.4.123.
-
-So this patch should not be backported here or should be backported 
-differently, ie:
-    leave dev_err as-is
-    move "ret = PTR_ERR(tx_pipe->dma_queue);" 1 line above
-
-(or %pe should be backported first)
-
-
-PS: adding Dan Carpenter because we had a small discussion about some 
-potential backport issue when, using %pe
-
-CJ
-
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
