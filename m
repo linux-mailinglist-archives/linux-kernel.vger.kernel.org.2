@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1357D395F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674CD3962A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhEaOL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:11:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
+        id S234406AbhEaO73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:59:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232704AbhEaNpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:45:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DEE261554;
-        Mon, 31 May 2021 13:29:36 +0000 (UTC)
+        id S232561AbhEaOFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:05:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A2D661960;
+        Mon, 31 May 2021 13:38:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467776;
-        bh=BtcRDFD3vQY69KcF0ngjTnoDLzUx6XPQZsUYIpHsIZc=;
+        s=korg; t=1622468320;
+        bh=ROmstazyoaFNN3theMl0eig7ltzXRdcQMLKvT3gtATw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hX6d2B779aKXvbyMmXb0goBjv8ZOe4Xf2ho0sTPklGrVWYn5Y3Maq9E8WWBZP8ob4
-         SuakhFp0NT4uWTs4fgF0DPEncdF4dJBqpCZvjL/utD6vMeDu5CirLaOiwtmECAwKqo
-         L9gA3ENIzuVkoUF2NENxWScnTI1s42rhcxeF9/Gc=
+        b=ISkvwxMLAKdhf5XGIDJiXFV9c/0NyVS4cy5l7ca3QrZN89uBYOQd/rjK9LVF88gTs
+         WEMAn5fFasLiNyXSgf0fV6gmpTtlcT2zEnpODUYsv3kLq2WsgQsIwDnWQ6h4YCesaw
+         UN8SsVwFirvHH0cGNoSI2EzqImJF/5eyKsNiazAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 40/79] Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
+        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 200/252] net: fec: fix the potential memory leak in fec_enet_init()
 Date:   Mon, 31 May 2021 15:14:25 +0200
-Message-Id: <20210531130637.297953768@linuxfoundation.org>
+Message-Id: <20210531130704.811954649@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-commit 75016891357a628d2b8acc09e2b9b2576c18d318 upstream.
+[ Upstream commit 619fee9eb13b5d29e4267cb394645608088c28a8 ]
 
-This reverts commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046.
-Above fix is not correct and caused memory leak issue.
+If the memory allocated for cbd_base is failed, it should
+free the memory allocated for the queues, otherwise it causes
+memory leak.
 
-Fixes: 6bf24dc0cc0c ("net:tipc: Fix a double free in tipc_sk_mcast_rcv")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Acked-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+And if the memory allocated for the queues is failed, it can
+return error directly.
+
+Fixes: 59d0f7465644 ("net: fec: init multi queue date structure")
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/fec_main.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -840,7 +840,10 @@ void tipc_sk_mcast_rcv(struct net *net,
- 		spin_lock_bh(&inputq->lock);
- 		if (skb_peek(arrvq) == skb) {
- 			skb_queue_splice_tail_init(&tmpq, inputq);
--			__skb_dequeue(arrvq);
-+			/* Decrease the skb's refcnt as increasing in the
-+			 * function tipc_skb_peek
-+			 */
-+			kfree_skb(__skb_dequeue(arrvq));
- 		}
- 		spin_unlock_bh(&inputq->lock);
- 		__skb_queue_purge(&tmpq);
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 55c28fbc5f9e..960def41cc55 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -3277,7 +3277,9 @@ static int fec_enet_init(struct net_device *ndev)
+ 		return ret;
+ 	}
+ 
+-	fec_enet_alloc_queue(ndev);
++	ret = fec_enet_alloc_queue(ndev);
++	if (ret)
++		return ret;
+ 
+ 	bd_size = (fep->total_tx_ring_size + fep->total_rx_ring_size) * dsize;
+ 
+@@ -3285,7 +3287,8 @@ static int fec_enet_init(struct net_device *ndev)
+ 	cbd_base = dmam_alloc_coherent(&fep->pdev->dev, bd_size, &bd_dma,
+ 				       GFP_KERNEL);
+ 	if (!cbd_base) {
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto free_queue_mem;
+ 	}
+ 
+ 	/* Get the Ethernet address */
+@@ -3363,6 +3366,10 @@ static int fec_enet_init(struct net_device *ndev)
+ 		fec_enet_update_ethtool_stats(ndev);
+ 
+ 	return 0;
++
++free_queue_mem:
++	fec_enet_free_queue(ndev);
++	return ret;
+ }
+ 
+ #ifdef CONFIG_OF
+-- 
+2.30.2
+
 
 
