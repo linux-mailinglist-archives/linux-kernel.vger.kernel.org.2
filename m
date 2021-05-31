@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8888A39656D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A782E3963BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbhEaQgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:36:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        id S232131AbhEaPbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:31:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232972AbhEaOrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6136E6143C;
-        Mon, 31 May 2021 13:55:49 +0000 (UTC)
+        id S232971AbhEaORg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:17:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1AD8613E4;
+        Mon, 31 May 2021 13:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469349;
-        bh=sVg6SB/8K3yyZdgO0ZP29Rf+pPOA/vY5LIPQHKTVJMw=;
+        s=korg; t=1622468619;
+        bh=aEFSvsSsem7Qli/Aw9qGJLdRqG0zPZdwFN513yQQtiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lM7VUeaRzVoNVGzgYPJUXVXOLo4XbZ73yxxCz3NLPF7SJhn+fdX688kzcyOExHDUR
-         WjEHKQrbhqR+P3aL/y0TyUGN61LvRPOdbJH1O1HFCZkVx/EReS8L/pTG/QRNwIC1ST
-         5gRoozbjqpJk/wpFcUwwu7aLdWOYUNaIUW4x0hvg=
+        b=g53RDwfxhemh0J2JkgSK6NFmY/rouRaXJ3vxBjkz/E1BTX4MSVcxw7YaZI/BN9/AD
+         MS6Utqi/F8Skc6/AW5s8VyqerAjxw/ilgJnKwDVBQ2osbjXf4j6kOtSe7d9xJoAQUG
+         d5sAbPrU7BqHWw0FUXsNZrbdxESW19fMR50eoLLo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 163/296] Revert "media: usb: gspca: add a missed check for goto_low_power"
+        stable@vger.kernel.org,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: [PATCH 5.4 061/177] usb: dwc3: gadget: Properly track pending and queued SG
 Date:   Mon, 31 May 2021 15:13:38 +0200
-Message-Id: <20210531130709.337822932@linuxfoundation.org>
+Message-Id: <20210531130650.013959872@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-[ Upstream commit fd013265e5b5576a74a033920d6c571e08d7c423 ]
+commit 25dda9fc56bd90d45f9a4516bcfa5211e61b4290 upstream.
 
-This reverts commit 5b711870bec4dc9a6d705d41e127e73944fa3650.
+The driver incorrectly uses req->num_pending_sgs to track both the
+number of pending and queued SG entries. It only prepares the next
+request if the previous is done, and it doesn't update num_pending_sgs
+until there is TRB completion interrupt. This may starve the controller
+of more TRBs until the num_pending_sgs is decremented.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Fix this by decrementing the num_pending_sgs after they are queued and
+properly track both num_mapped_sgs and num_queued_sgs.
 
-Upon review, this commit was found to do does nothing useful as a user
-can do nothing with this information and if an error did happen, the
-code would continue on as before.  Because of this, just revert it.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-7-gregkh@linuxfoundation.org
+Fixes: c96e6725db9d ("usb: dwc3: gadget: Correct the logic for queuing sgs")
+Cc: <stable@vger.kernel.org>
+Reported-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Link: https://lore.kernel.org/r/ba24591dbcaad8f244a3e88bd449bb7205a5aec3.1620874069.git.Thinh.Nguyen@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/gspca/cpia1.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/usb/dwc3/gadget.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
-index a4f7431486f3..d93d384286c1 100644
---- a/drivers/media/usb/gspca/cpia1.c
-+++ b/drivers/media/usb/gspca/cpia1.c
-@@ -1424,7 +1424,6 @@ static int sd_config(struct gspca_dev *gspca_dev,
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1162,6 +1162,7 @@ static void dwc3_prepare_one_trb_sg(stru
+ 			req->start_sg = sg_next(s);
+ 
+ 		req->num_queued_sgs++;
++		req->num_pending_sgs--;
+ 
+ 		/*
+ 		 * The number of pending SG entries may not correspond to the
+@@ -1169,7 +1170,7 @@ static void dwc3_prepare_one_trb_sg(stru
+ 		 * don't include unused SG entries.
+ 		 */
+ 		if (length == 0) {
+-			req->num_pending_sgs -= req->request.num_mapped_sgs - req->num_queued_sgs;
++			req->num_pending_sgs = 0;
+ 			break;
+ 		}
+ 
+@@ -2602,15 +2603,15 @@ static int dwc3_gadget_ep_reclaim_trb_sg
+ 	struct dwc3_trb *trb = &dep->trb_pool[dep->trb_dequeue];
+ 	struct scatterlist *sg = req->sg;
+ 	struct scatterlist *s;
+-	unsigned int pending = req->num_pending_sgs;
++	unsigned int num_queued = req->num_queued_sgs;
+ 	unsigned int i;
+ 	int ret = 0;
+ 
+-	for_each_sg(sg, s, pending, i) {
++	for_each_sg(sg, s, num_queued, i) {
+ 		trb = &dep->trb_pool[dep->trb_dequeue];
+ 
+ 		req->sg = sg_next(s);
+-		req->num_pending_sgs--;
++		req->num_queued_sgs--;
+ 
+ 		ret = dwc3_gadget_ep_reclaim_completed_trb(dep, req,
+ 				trb, event, status, true);
+@@ -2633,7 +2634,7 @@ static int dwc3_gadget_ep_reclaim_trb_li
+ 
+ static bool dwc3_gadget_ep_request_completed(struct dwc3_request *req)
  {
- 	struct sd *sd = (struct sd *) gspca_dev;
- 	struct cam *cam;
--	int ret;
+-	return req->num_pending_sgs == 0;
++	return req->num_pending_sgs == 0 && req->num_queued_sgs == 0;
+ }
  
- 	sd->mainsFreq = FREQ_DEF == V4L2_CID_POWER_LINE_FREQUENCY_60HZ;
- 	reset_camera_params(gspca_dev);
-@@ -1436,10 +1435,7 @@ static int sd_config(struct gspca_dev *gspca_dev,
- 	cam->cam_mode = mode;
- 	cam->nmodes = ARRAY_SIZE(mode);
+ static int dwc3_gadget_ep_cleanup_completed_request(struct dwc3_ep *dep,
+@@ -2642,7 +2643,7 @@ static int dwc3_gadget_ep_cleanup_comple
+ {
+ 	int ret;
  
--	ret = goto_low_power(gspca_dev);
--	if (ret)
--		gspca_err(gspca_dev, "Cannot go to low power mode: %d\n",
--			  ret);
-+	goto_low_power(gspca_dev);
- 	/* Check the firmware version. */
- 	sd->params.version.firmwareVersion = 0;
- 	get_version_information(gspca_dev);
--- 
-2.30.2
-
+-	if (req->num_pending_sgs)
++	if (req->request.num_mapped_sgs)
+ 		ret = dwc3_gadget_ep_reclaim_trb_sg(dep, req, event,
+ 				status);
+ 	else
 
 
