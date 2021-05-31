@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22293396504
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10714396106
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhEaQUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:20:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36376 "EHLO mail.kernel.org"
+        id S231968AbhEaOfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:35:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233571AbhEaOlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:41:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2016961C69;
-        Mon, 31 May 2021 13:53:22 +0000 (UTC)
+        id S231985AbhEaNzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:55:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B8161922;
+        Mon, 31 May 2021 13:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469203;
-        bh=jFKVi9XL6ixV0hbqfoPYTOQJnIaF9QxvbHICEOH5Dn8=;
+        s=korg; t=1622468054;
+        bh=LsoKiz0LgUvPdMrttrhSxXoUXHbqGH7qU/UCtULSC+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ltHowRXi9PDEigMVmg4ePToab6FNMgbwipF316mNLvz9+tZXfZLmIm08Zpvi5/CHk
-         2rcfZdnOt8wqNkKGWAJT1EtubmkKap8XdTcJZUuYkbPZd6h+OO8cSnCrU9k7y58soj
-         SRmBX9Ws0UxGnMGhbSCNl64D+VR27e8BIdadkxbo=
+        b=QIjswZTpKJNp13pwS0f6Rjlhy5SGFktXYTmHTyyBSzHuIlHoiBlkyMFUaZk0FRzbu
+         I0Dgv/FXen8cMMIFzHPi4EhiIHYS+xDICRscS80jGTMvDX+UcWAi2W0+9M+wEtXUg9
+         paHqLl6zw6HuYaJ4vh+WEw7+ES3LiTAh7EEiTlrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Kyle Tso <kyletso@google.com>
-Subject: [PATCH 5.12 109/296] usb: typec: tcpm: Respond Not_Supported if no snk_vdo
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.10 099/252] net/mlx5e: Fix error path of updating netdev queues
 Date:   Mon, 31 May 2021 15:12:44 +0200
-Message-Id: <20210531130707.603616914@linuxfoundation.org>
+Message-Id: <20210531130701.350912511@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyle Tso <kyletso@google.com>
+From: Aya Levin <ayal@nvidia.com>
 
-commit a20dcf53ea9836387b229c4878f9559cf1b55b71 upstream.
+commit 5e7923acbd86d0ff29269688d8a9c47ad091dd46 upstream.
 
-If snk_vdo is not populated from fwnode, it implies the port does not
-support responding to SVDM commands. Not_Supported Message shall be sent
-if the contract is in PD3. And for PD2, the port shall ignore the
-commands.
+Avoid division by zero in the error flow. In the driver TC number can be
+either 1 or 8. When TC count is set to 1, driver zero netdev->num_tc.
+Hence, need to convert it back from 0 to 1 in the error flow.
 
-Fixes: 193a68011fdc ("staging: typec: tcpm: Respond to Discover Identity commands")
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Kyle Tso <kyletso@google.com>
-Link: https://lore.kernel.org/r/20210523015855.1785484-3-kyletso@google.com
+Fixes: fa3748775b92 ("net/mlx5e: Handle errors from netif_set_real_num_{tx,rx}_queues")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/tcpm/tcpm.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -2410,7 +2410,10 @@ static void tcpm_pd_data_request(struct
- 					   NONE_AMS);
- 		break;
- 	case PD_DATA_VENDOR_DEF:
--		tcpm_handle_vdm_request(port, msg->payload, cnt);
-+		if (tcpm_vdm_ams(port) || port->nr_snk_vdo)
-+			tcpm_handle_vdm_request(port, msg->payload, cnt);
-+		else if (port->negotiated_rev > PD_REV20)
-+			tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
- 		break;
- 	case PD_DATA_BIST:
- 		port->bist_request = le32_to_cpu(msg->payload[0]);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -2920,7 +2920,7 @@ static int mlx5e_update_netdev_queues(st
+ 	int err;
+ 
+ 	old_num_txqs = netdev->real_num_tx_queues;
+-	old_ntc = netdev->num_tc;
++	old_ntc = netdev->num_tc ? : 1;
+ 
+ 	nch = priv->channels.params.num_channels;
+ 	ntc = priv->channels.params.num_tc;
 
 
