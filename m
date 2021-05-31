@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E1E3965BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65119395F86
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhEaQq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
+        id S232777AbhEaOMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:12:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhEaOzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 650AC61CB5;
-        Mon, 31 May 2021 13:59:27 +0000 (UTC)
+        id S232757AbhEaNpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:45:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD46261415;
+        Mon, 31 May 2021 13:29:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469567;
-        bh=iP6DUxWfATu6isZ8a35AHOw79kmKV9EKH10uabLKLFA=;
+        s=korg; t=1622467782;
+        bh=SOIkqthu+jcwGxaEf1kbni/BuJeajPxGrKkNdiRXLYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s0eZ+S2bF66cMPY+smvO3GQwmgZBK1ERzmA4wPZjQUoGQlybgT8RoaBRjLHGqfHkv
-         4MTQHFF06M17rRtcKz27WLj9l9U/tP5a7wd86YZCUAXvxVtC6IeziVWa1g5Z5oTFZf
-         uTZ/leHZVR2zc35w8/D/cX4ryDhMEfHYqdUc66Hk=
+        b=r02g0xGEsjFvP/qKOOGHnouRHMYeHi35iePbJUcRnCPo/k5qqYr4tP0dOmvT4bD0u
+         1IUisZfPwqw5Fi0vmpII1Qw5ELuoG+hUKGJAEXdat87umWFNbZ8xF/vuwntkxmvba7
+         y+Iyn47i352rI6wYzvOAkd9mX3ZCZrDxDlBVOtYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Park <Chris.Park@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 212/296] drm/amd/display: Disconnect non-DP with no EDID
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.14 42/79] i2c: s3c2410: fix possible NULL pointer deref on read message after write
 Date:   Mon, 31 May 2021 15:14:27 +0200
-Message-Id: <20210531130710.983646372@linuxfoundation.org>
+Message-Id: <20210531130637.360477622@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Park <Chris.Park@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 080039273b126eeb0185a61c045893a25dbc046e ]
+commit 24990423267ec283b9d86f07f362b753eb9b0ed5 upstream.
 
-[Why]
-Active DP dongles return no EDID when dongle
-is connected, but VGA display is taken out.
-Current driver behavior does not remove the
-active display when this happens, and this is
-a gap between dongle DTP and dongle behavior.
+Interrupt handler processes multiple message write requests one after
+another, till the driver message queue is drained.  However if driver
+encounters a read message without preceding START, it stops the I2C
+transfer as it is an invalid condition for the controller.  At least the
+comment describes a requirement "the controller forces us to send a new
+START when we change direction".  This stop results in clearing the
+message queue (i2c->msg = NULL).
 
-[How]
-For active DP dongles and non-DP scenario,
-disconnect sink on detection when no EDID
-is read due to timeout.
+The code however immediately jumped back to label "retry_write" which
+dereferenced the "i2c->msg" making it a possible NULL pointer
+dereference.
 
-Signed-off-by: Chris Park <Chris.Park@amd.com>
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Acked-by: Stylon Wang <stylon.wang@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The Coverity analysis:
+1. Condition !is_msgend(i2c), taking false branch.
+   if (!is_msgend(i2c)) {
+
+2. Condition !is_lastmsg(i2c), taking true branch.
+   } else if (!is_lastmsg(i2c)) {
+
+3. Condition i2c->msg->flags & 1, taking true branch.
+   if (i2c->msg->flags & I2C_M_RD) {
+
+4. write_zero_model: Passing i2c to s3c24xx_i2c_stop, which sets i2c->msg to NULL.
+   s3c24xx_i2c_stop(i2c, -EINVAL);
+
+5. Jumping to label retry_write.
+   goto retry_write;
+
+6. var_deref_model: Passing i2c to is_msgend, which dereferences null i2c->msg.
+   if (!is_msgend(i2c)) {"
+
+All previous calls to s3c24xx_i2c_stop() in this interrupt service
+routine are followed by jumping to end of function (acknowledging
+the interrupt and returning).  This seems a reasonable choice also here
+since message buffer was entirely emptied.
+
+Addresses-Coverity: Explicit null dereferenced
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/i2c/busses/i2c-s3c2410.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-index 440bf0a0e12a..204928479c95 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-@@ -1067,6 +1067,24 @@ static bool dc_link_detect_helper(struct dc_link *link,
- 			    dc_is_dvi_signal(link->connector_signal)) {
- 				if (prev_sink)
- 					dc_sink_release(prev_sink);
-+				link_disconnect_sink(link);
-+
-+				return false;
-+			}
-+			/*
-+			 * Abort detection for DP connectors if we have
-+			 * no EDID and connector is active converter
-+			 * as there are no display downstream
-+			 *
-+			 */
-+			if (dc_is_dp_sst_signal(link->connector_signal) &&
-+				(link->dpcd_caps.dongle_type ==
-+						DISPLAY_DONGLE_DP_VGA_CONVERTER ||
-+				link->dpcd_caps.dongle_type ==
-+						DISPLAY_DONGLE_DP_DVI_CONVERTER)) {
-+				if (prev_sink)
-+					dc_sink_release(prev_sink);
-+				link_disconnect_sink(link);
+--- a/drivers/i2c/busses/i2c-s3c2410.c
++++ b/drivers/i2c/busses/i2c-s3c2410.c
+@@ -495,7 +495,10 @@ static int i2c_s3c_irq_nextbyte(struct s
+ 					 * forces us to send a new START
+ 					 * when we change direction
+ 					 */
++					dev_dbg(i2c->dev,
++						"missing START before write->read\n");
+ 					s3c24xx_i2c_stop(i2c, -EINVAL);
++					break;
+ 				}
  
- 				return false;
- 			}
--- 
-2.30.2
-
+ 				goto retry_write;
 
 
