@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E7A396479
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD080395FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhEaQAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32786 "EHLO mail.kernel.org"
+        id S233695AbhEaOO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233944AbhEaOdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:33:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45C4061C39;
-        Mon, 31 May 2021 13:49:52 +0000 (UTC)
+        id S231984AbhEaNrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:47:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E429D61613;
+        Mon, 31 May 2021 13:30:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468992;
-        bh=MdXx8nvefx0CsVv8KljOMYZO5YFzTnvk+ckz98B0Rd4=;
+        s=korg; t=1622467841;
+        bh=ZriBpfqZx+VdzBDKFmZ5z/xlbGXCH2QH075GN56+CV0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uJYonJheKUryZoEQP+ybEBiQjTvQiwdmxMHraL4RjOrZuExBr2PtGEW+hnt7S4C0/
-         X3rhqPpcV1AmRz3mpTORQeHeL5jIgBWtlD+m9mZRZugaDHYAV3A0ZXk2ZuiZxUx5i1
-         51dF1MdCRFyXi0dPbhdz0xZZGTSsy1dKJnyKOCZM=
+        b=jhdI/oiLGSncuNSlhkLX9fmUrXvQAGhOmKac8Ec3wl+6NloCqRoG72jTiIJPPSObw
+         ssbLyGeqMJh7YEK6NFeS8ChSjDoRCQRBfpwbUFlL/TqpWSwTjn4h4CR+4boWKN+1vr
+         lng/7qPbDVw2Ut7ggJqRu0K28i/WZP2ANMFh26pk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.12 029/296] perf scripts python: exported-sql-viewer.py: Fix warning display
-Date:   Mon, 31 May 2021 15:11:24 +0200
-Message-Id: <20210531130704.773620786@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 020/252] net/sched: fq_pie: re-factor fix for fq_pie endless loop
+Date:   Mon, 31 May 2021 15:11:25 +0200
+Message-Id: <20210531130658.667709190@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Davide Caratti <dcaratti@redhat.com>
 
-commit f56299a9c998e0bfbd4ab07cafe9eb8444512448 upstream.
+commit 3a62fed2fd7b6fea96d720e779cafc30dfb3a22e upstream.
 
-Deprecation warnings are useful only for the developer, not an end user.
-Display warnings only when requested using the python -W option. This
-stops the display of warnings like:
+the patch that fixed an endless loop in_fq_pie_init() was not considering
+that 65535 is a valid class id. The correct bugfix for this infinite loop
+is to change 'idx' to become an u32, like Colin proposed in the past [1].
 
- tools/perf/scripts/python/exported-sql-viewer.py:5102: DeprecationWarning:
-         an integer is required (got type PySide2.QtCore.Qt.AlignmentFlag).
-         Implicit conversion to integers using __int__ is deprecated, and
-         may be removed in a future version of Python.
-    err = app.exec_()
+Fix this as follows:
+ - restore 65536 as maximum possible values of 'flows_cnt'
+ - use u32 'idx' when iterating on 'q->flows'
+ - fix the TDC selftest
 
-Since the warning can be fixed only in PySide2, we must wait for it to
-be finally fixed there.
+This reverts commit bb2f930d6dd708469a587dc9ed1efe1ef969c0bf.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: stable@vger.kernel.org      # v5.3+
-Link: http://lore.kernel.org/lkml/20210521092053.25683-4-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+[1] https://lore.kernel.org/netdev/20210407163808.499027-1-colin.king@canonical.com/
+
+CC: Colin Ian King <colin.king@canonical.com>
+CC: stable@vger.kernel.org
+Fixes: bb2f930d6dd7 ("net/sched: fix infinite loop in sch_fq_pie")
+Fixes: ec97ecf1ebe4 ("net: sched: add Flow Queue PIE packet scheduler")
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/scripts/python/exported-sql-viewer.py |    5 +++++
- 1 file changed, 5 insertions(+)
+ net/sched/sch_fq_pie.c                                         |   10 +++++-----
+ tools/testing/selftests/tc-testing/tc-tests/qdiscs/fq_pie.json |    8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
---- a/tools/perf/scripts/python/exported-sql-viewer.py
-+++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -91,6 +91,11 @@
- from __future__ import print_function
+--- a/net/sched/sch_fq_pie.c
++++ b/net/sched/sch_fq_pie.c
+@@ -297,9 +297,9 @@ static int fq_pie_change(struct Qdisc *s
+ 			goto flow_error;
+ 		}
+ 		q->flows_cnt = nla_get_u32(tb[TCA_FQ_PIE_FLOWS]);
+-		if (!q->flows_cnt || q->flows_cnt >= 65536) {
++		if (!q->flows_cnt || q->flows_cnt > 65536) {
+ 			NL_SET_ERR_MSG_MOD(extack,
+-					   "Number of flows must range in [1..65535]");
++					   "Number of flows must range in [1..65536]");
+ 			goto flow_error;
+ 		}
+ 	}
+@@ -367,7 +367,7 @@ static void fq_pie_timer(struct timer_li
+ 	struct fq_pie_sched_data *q = from_timer(q, t, adapt_timer);
+ 	struct Qdisc *sch = q->sch;
+ 	spinlock_t *root_lock; /* to lock qdisc for probability calculations */
+-	u16 idx;
++	u32 idx;
  
- import sys
-+# Only change warnings if the python -W option was not used
-+if not sys.warnoptions:
-+	import warnings
-+	# PySide2 causes deprecation warnings, ignore them.
-+	warnings.filterwarnings("ignore", category=DeprecationWarning)
- import argparse
- import weakref
- import threading
+ 	root_lock = qdisc_lock(qdisc_root_sleeping(sch));
+ 	spin_lock(root_lock);
+@@ -388,7 +388,7 @@ static int fq_pie_init(struct Qdisc *sch
+ {
+ 	struct fq_pie_sched_data *q = qdisc_priv(sch);
+ 	int err;
+-	u16 idx;
++	u32 idx;
+ 
+ 	pie_params_init(&q->p_params);
+ 	sch->limit = 10 * 1024;
+@@ -500,7 +500,7 @@ static int fq_pie_dump_stats(struct Qdis
+ static void fq_pie_reset(struct Qdisc *sch)
+ {
+ 	struct fq_pie_sched_data *q = qdisc_priv(sch);
+-	u16 idx;
++	u32 idx;
+ 
+ 	INIT_LIST_HEAD(&q->new_flows);
+ 	INIT_LIST_HEAD(&q->old_flows);
+--- a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/fq_pie.json
++++ b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/fq_pie.json
+@@ -9,11 +9,11 @@
+         "setup": [
+             "$IP link add dev $DUMMY type dummy || /bin/true"
+         ],
+-        "cmdUnderTest": "$TC qdisc add dev $DUMMY root fq_pie flows 65536",
+-        "expExitCode": "2",
++        "cmdUnderTest": "$TC qdisc add dev $DUMMY handle 1: root fq_pie flows 65536",
++        "expExitCode": "0",
+         "verifyCmd": "$TC qdisc show dev $DUMMY",
+-        "matchPattern": "qdisc",
+-        "matchCount": "0",
++        "matchPattern": "qdisc fq_pie 1: root refcnt 2 limit 10240p flows 65536",
++        "matchCount": "1",
+         "teardown": [
+             "$IP link del dev $DUMMY"
+         ]
 
 
