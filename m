@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924D0396564
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA36B395B67
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhEaQdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40794 "EHLO mail.kernel.org"
+        id S232123AbhEaNUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:20:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233838AbhEaOrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1BF161927;
-        Mon, 31 May 2021 13:56:28 +0000 (UTC)
+        id S231840AbhEaNSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:18:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E836138C;
+        Mon, 31 May 2021 13:17:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469389;
-        bh=o2UOksS0HVOeLjuz84GvooEFiCHXaNV0PYRXLcFFWmA=;
+        s=korg; t=1622467026;
+        bh=qKEPIZC1aD5Hikv72Ippbm7jAl58Gkqm3leAD309B3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bk1iPLbpcIRGJf7pevJYGnFlNM++REgcRz2tGja+cLXX7hnZVnlvFhVX3qkY04iNX
-         x/mpF1BZmeColD+IqzlDHWWNWnJ+4z3uS5IXJFl2AaY6MeUmoqu5MtUGY/Um8K2sVz
-         HIK7NOnvbSmt054VJqiS8YXIegMNSPn1+GSPvUPo=
+        b=xEhYrMIOcxn/VNI7sXTjxAk61LauOR/63dltll4rEitHyHQO2zSykkQxN8x7HukOS
+         Y4/B/nchdJGXqU7+VesurDdW1cPvjKSnJm8aSfDigAjdhtTJofuFOMQMFsvetN0oMs
+         4nex+QmfPlRDJQp13zVGfPu/2hKCqPGlxmHg5im0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 180/296] Revert "ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()"
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.4 29/54] i2c: s3c2410: fix possible NULL pointer deref on read message after write
 Date:   Mon, 31 May 2021 15:13:55 +0200
-Message-Id: <20210531130709.914038808@linuxfoundation.org>
+Message-Id: <20210531130635.999800334@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit efba106f89fc6848726716c101f4c84e88720a9c ]
+commit 24990423267ec283b9d86f07f362b753eb9b0ed5 upstream.
 
-This reverts commit fc6a6521556c8250e356ddc6a3f2391aa62dc976.
+Interrupt handler processes multiple message write requests one after
+another, till the driver message queue is drained.  However if driver
+encounters a read message without preceding START, it stops the I2C
+transfer as it is an invalid condition for the controller.  At least the
+comment describes a requirement "the controller forces us to send a new
+START when we change direction".  This stop results in clearing the
+message queue (i2c->msg = NULL).
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+The code however immediately jumped back to label "retry_write" which
+dereferenced the "i2c->msg" making it a possible NULL pointer
+dereference.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+The Coverity analysis:
+1. Condition !is_msgend(i2c), taking false branch.
+   if (!is_msgend(i2c)) {
 
-The change being reverted does NOTHING as the caller to this function
-does not even look at the return value of the call.  So the "claim" that
-this fixed an an issue is not true.  It will be fixed up properly in a
-future patch by propagating the error up the stack correctly.
+2. Condition !is_lastmsg(i2c), taking true branch.
+   } else if (!is_lastmsg(i2c)) {
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-43-gregkh@linuxfoundation.org
+3. Condition i2c->msg->flags & 1, taking true branch.
+   if (i2c->msg->flags & I2C_M_RD) {
+
+4. write_zero_model: Passing i2c to s3c24xx_i2c_stop, which sets i2c->msg to NULL.
+   s3c24xx_i2c_stop(i2c, -EINVAL);
+
+5. Jumping to label retry_write.
+   goto retry_write;
+
+6. var_deref_model: Passing i2c to is_msgend, which dereferences null i2c->msg.
+   if (!is_msgend(i2c)) {"
+
+All previous calls to s3c24xx_i2c_stop() in this interrupt service
+routine are followed by jumping to end of function (acknowledging
+the interrupt and returning).  This seems a reasonable choice also here
+since message buffer was entirely emptied.
+
+Addresses-Coverity: Explicit null dereferenced
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/wmi.c | 4 +++-
+ drivers/i2c/busses/i2c-s3c2410.c |    4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index b137e7f34397..aca9732ec1ee 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -776,8 +776,10 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
- 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
- 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
+--- a/drivers/i2c/busses/i2c-s3c2410.c
++++ b/drivers/i2c/busses/i2c-s3c2410.c
+@@ -499,8 +499,10 @@ static int i2c_s3c_irq_nextbyte(struct s
+ 					/* cannot do this, the controller
+ 					 * forces us to send a new START
+ 					 * when we change direction */
+-
++					dev_dbg(i2c->dev,
++						"missing START before write->read\n");
+ 					s3c24xx_i2c_stop(i2c, -EINVAL);
++					break;
+ 				}
  
--	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
-+	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
- 			    NO_SYNC_WMIFLAG);
-+
-+	return 0;
- }
- 
- int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
--- 
-2.30.2
-
+ 				goto retry_write;
 
 
