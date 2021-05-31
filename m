@@ -2,142 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2C539541C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 05:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3362939541E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 05:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhEaDEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 23:04:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55674 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229952AbhEaDEL (ORCPT
+        id S230073AbhEaDFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 23:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhEaDFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 23:04:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622430151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RlzLP9cDBuypH+co4NfKjwM55SCL4ZjJRzPsMReFNRo=;
-        b=WsLtgt9aRC9XWv5eEj2myKMYMjutDFTt7mNgkwW4sexxA2G1DArT97yskaOj7sRzSOjbQX
-        maJPO8SAe0sStcXK6QlmXZymyzkawqI9ItZdOcLqaxMOJTix5/klWla9Guloi5Qg2a/CJz
-        Yfc/hsjbbZLiGietuaDgNnt9NdZll7M=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-80-cWNUQVaTPDWo6IvBzxALMQ-1; Sun, 30 May 2021 23:02:30 -0400
-X-MC-Unique: cWNUQVaTPDWo6IvBzxALMQ-1
-Received: by mail-pf1-f198.google.com with SMTP id h185-20020a6283c20000b02902d40a248917so5208252pfe.0
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 20:02:30 -0700 (PDT)
+        Sun, 30 May 2021 23:05:45 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D242C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 20:04:04 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ss26so14415402ejb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 20:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9zncGjWI/Ti8X4PcYn2LTWv6/sQeOvT3E+T4zzv3al4=;
+        b=ZpqMb5pLMC57T5ge9mI5wiScA0lilfWuOW/WzS/iOL/Pobi10ictGNHq7So1K580xE
+         t6evHt86l5Sp49kkm6XqGBAzK8M8H47X62rQ6zJ1QVuZid/NhxgwKV7hnYtqNHE8SH7n
+         3dpFSHiJzHhVc1wyl3Vf8unKF1Nc9uWTTDeX6sHDzNqI0Q0r4dvv8BhVZpBUIUP/+7pP
+         LwmVv+cfs0pcO6mG5VPZFkPjGyzhwCtX86UgN2r718AxHZydoQOy8U5NdHrRAf3H7lOP
+         HtDmRlKaY7lD9jlScOo0NWYWo+kcuTeLR0IafCzd59/Y46A+rR6ShPlGHHLcj0mVODKm
+         JphA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RlzLP9cDBuypH+co4NfKjwM55SCL4ZjJRzPsMReFNRo=;
-        b=FZQulVP+ZCv0TtFBwaZmHGoWVNj2tjnBKcgRqCxIw80N0VxIGH1rtLyPO/IcfvF7Xk
-         3ZM5CizGaJlgZaNsA9VLULnhYGJfb0D46BVk5urijy1H2uokTXcA78wl402MmYLPa/gj
-         86HtMX4czyAh416g/9GBfGp6uGiqmiI+DF5P+OMTlQD+pPfccL2RRQy/GSJjAeG5quPw
-         KhIwBPG54TYpdJaJStnfiHGJ7RvdZbNpgTuOr8yUl617X6sF4wscc0jd6vMvryGBbRDo
-         6umSyqirq2CDIzi+0VVnzKvRsnaOxx02X3s/car+zolzNCe8WsfM1RX/VPNmNVhorltJ
-         XbQw==
-X-Gm-Message-State: AOAM533HYnKqCdmpWIWB6bpz2y4Af5uJntgMXITfmZibzVxaMxRXm7j0
-        +F/aXXm+p08K5FtU13n/dELzXTiD3MKZNtwzirFMuipuIZaFlsefuLis9+KjbPO7ZIOxveNKfpJ
-        ImTQRGSHyFy4U8k+L5Bm1yGN1YCucjfKqoBhwQdHDxsMNaiV3w8jtMMnvXa71K0fWNx5DifO4UX
-        1K
-X-Received: by 2002:a17:90a:b294:: with SMTP id c20mr16794750pjr.236.1622430148855;
-        Sun, 30 May 2021 20:02:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzjtTbccwyZv6xn0V6J4JGVL5xRVBUofxiR5wbmsLL5CF8elClM8l9yQI5vGTq+9Jo/DURJQw==
-X-Received: by 2002:a17:90a:b294:: with SMTP id c20mr16794708pjr.236.1622430148409;
-        Sun, 30 May 2021 20:02:28 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id h24sm9669974pfn.180.2021.05.30.20.02.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 May 2021 20:02:27 -0700 (PDT)
-Subject: Re: [PATCH 1/2] vdpa/mlx5: Support creating resources with uid == 0
-To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210530075415.4644-1-elic@nvidia.com>
- <20210530075415.4644-2-elic@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7e4f741e-e595-fe19-91ef-e6faeec765d4@redhat.com>
-Date:   Mon, 31 May 2021 11:02:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9zncGjWI/Ti8X4PcYn2LTWv6/sQeOvT3E+T4zzv3al4=;
+        b=LM5bgl6OTmoU5Ywih7oJJ5mG4C96pwvxuLnMsMjlE1n5jrz+/FVhqDe4r2RVhVae39
+         bbg2I7U4TSbVdrg2c+GyIArIej7rMlZAjH687IC74RhzWF1c0RWM9lEFfyGPCbwIORH8
+         ausNEBbs7repQ9iMXJvqBjkEiEWoyBo4RLhAZptaNcvqVuD1cRjPlLqGoI6yjBG0gZGE
+         6A1wlad/6y2mU1QNPC3tcZ0RwD8n3SStUR8TsQvCBaazZHCMyhflmoV6YzIr13CA1WnT
+         EFxU8YaHgwYLtYIx90GEmd02fQDXp3OgxyqNWK0A+OPv1eOWinrMvYM1ts9GlPLxWvge
+         61Dw==
+X-Gm-Message-State: AOAM531O5pJeUz20xos0AtZfi2nCGcHqau9rPosqEkXyckZFZL16Bsu8
+        e0XOiNAX76FzHNzBRt1iOWiFOpEYTfb45Qjqo24=
+X-Google-Smtp-Source: ABdhPJxDEPa3T5UAc0cyhX2pJM3u681kMN50f7+D2IiLhhsuHCNZDsnnuQO0O7X+CyydTBL9Se8gyDjJEZsWpjQ1m5o=
+X-Received: by 2002:a17:906:6d17:: with SMTP id m23mr21254158ejr.73.1622430242956;
+ Sun, 30 May 2021 20:04:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210530075415.4644-2-elic@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
+ <20210528133309.GR24442@kadam> <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
+ <20210528140500.GS24442@kadam> <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+In-Reply-To: <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 31 May 2021 11:03:36 +0800
+Message-ID: <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/5/30 ÏÂÎç3:54, Eli Cohen Ð´µÀ:
-> Currently all resources must be created with uid != 0 which is essential
-> userspace processes allocating virtquueue resources. Since this is a
-> kernel implementation, it is perfectly legal to open resources with
-> uid == 0.
+On Sat, May 29, 2021 at 5:35 AM =E6=85=95=E5=86=AC=E4=BA=AE <mudongliangabc=
+d@gmail.com> wrote:
 >
-> In case frimware supports, avoid allocating user context.
+>
+>
+> > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> =
+wrote:
+> >
+> > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
+> >>
+> >> Can you please give some advise on how to fix this WARN issue?
+> >
+> > But it feels like it spoils the fun if I write the commit...  Anyway:
+>
+> It=E2=80=99s fine. I am still in the learning process. It=E2=80=99s also =
+good to learn experience by comparing your patch and my patch.
+>
+> >
+> > regards,
+> > dan carpenter
+> >
+> > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> > index 25f57c14f294..dd357abc1b58 100644
+> > --- a/sound/core/control_led.c
+> > +++ b/sound/core/control_led.c
+> > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
+> >                       for (; group > 0; group--) {
+> >                               led =3D &snd_ctl_leds[group - 1];
+> >                               device_del(&led->dev);
+> > +                             device_put(&led->dev);
+> >                       }
+> >                       device_del(&snd_ctl_led_dev);
+> >                       return -ENOMEM;
+> > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
+> >       for (group =3D 0; group < MAX_LED; group++) {
+> >               led =3D &snd_ctl_leds[group];
+> >               device_del(&led->dev);
+> > +             device_put(&led->dev);
+> >       }
+> >       device_del(&snd_ctl_led_dev);
+> >       snd_ctl_led_clean(NULL);
 
+Hi Dan,
 
-Typo "frimware".
-
-Otherwise.
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-(I don't see any code to check the firmware capability, is this intended?)
-
-Thanks
-
+I tried this patch, and it still triggers the memleak. My
+understanding is that the device object is already freed in the
+snd_ctl_led_sysfs_remove.
 
 >
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> ---
->   drivers/vdpa/mlx5/core/resources.c | 6 ++++++
->   include/linux/mlx5/mlx5_ifc.h      | 4 +++-
->   2 files changed, 9 insertions(+), 1 deletion(-)
+> Does this patch mean I should add device_put in the init and exit functio=
+n other than snd_ctl_led_sysfs_remove? This will cause device_release bypas=
+s the release method checking?
 >
-> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
-> index 6521cbd0f5c2..836ab9ef0fa6 100644
-> --- a/drivers/vdpa/mlx5/core/resources.c
-> +++ b/drivers/vdpa/mlx5/core/resources.c
-> @@ -54,6 +54,9 @@ static int create_uctx(struct mlx5_vdpa_dev *mvdev, u16 *uid)
->   	void *in;
->   	int err;
->   
-> +	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0))
-> +		return 0;
-> +
->   	/* 0 means not supported */
->   	if (!MLX5_CAP_GEN(mvdev->mdev, log_max_uctx))
->   		return -EOPNOTSUPP;
-> @@ -79,6 +82,9 @@ static void destroy_uctx(struct mlx5_vdpa_dev *mvdev, u32 uid)
->   	u32 out[MLX5_ST_SZ_DW(destroy_uctx_out)] = {};
->   	u32 in[MLX5_ST_SZ_DW(destroy_uctx_in)] = {};
->   
-> +	if (!uid)
-> +		return;
-> +
->   	MLX5_SET(destroy_uctx_in, in, opcode, MLX5_CMD_OP_DESTROY_UCTX);
->   	MLX5_SET(destroy_uctx_in, in, uid, uid);
->   
-> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-> index 9c68b2da14c6..606d2aeacad4 100644
-> --- a/include/linux/mlx5/mlx5_ifc.h
-> +++ b/include/linux/mlx5/mlx5_ifc.h
-> @@ -1487,7 +1487,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
->   	u8         uar_4k[0x1];
->   	u8         reserved_at_241[0x9];
->   	u8         uar_sz[0x6];
-> -	u8         reserved_at_250[0x8];
-> +	u8         reserved_at_248[0x2];
-> +	u8         umem_uid_0[0x1];
-> +	u8         reserved_at_250[0x5];
->   	u8         log_pg_sz[0x8];
->   
->   	u8         bf[0x1];
-
