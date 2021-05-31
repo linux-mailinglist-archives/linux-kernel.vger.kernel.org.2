@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5DF396394
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895DA395D18
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhEaPVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:21:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
+        id S232153AbhEaNlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233832AbhEaOPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BCD16199E;
-        Mon, 31 May 2021 13:43:03 +0000 (UTC)
+        id S231873AbhEaN21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E3CE6141A;
+        Mon, 31 May 2021 13:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468583;
-        bh=piYdyNL1WQOyltnBpIV83mNDkIEQloyOxsth3vJvFG8=;
+        s=korg; t=1622467334;
+        bh=ghJlHISIwMV6ckKz9tND7oFq3ItGdIrmuf7LwbT+Pus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WSODk3LqPvQh1V4jbyAsqqVdc27eDN2ScWzhGh8dT58h24wx1LNPAfKR5cI0NN/AT
-         kDIyWKa6rY1x2JYheCWywFTD6SsTIXBYlEwhL8L2Wep2RMHQ/rdVkvysRpurrEbyrt
-         RSt6HZRzWuwOkCrg/Ab2hAy9UsqxcSLxzdElr+hQ=
+        b=JvYqaXAgIZvNId2++M23BsgiDoLTFOP/2JAva7GyBahHMWUm/ofEqfOdhXceDBESq
+         3uCJAKqe93+fvd+Dx4PPaLTgioAewSh/AEdqLHXGL9o7D2R8yI7MAPAB7Sp0R1Icb+
+         FHnGmD5orwFaeKhVfm8vzEaIaY58nMWTeGHiz8tQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 5.4 045/177] iio: adc: ad7768-1: Fix too small buffer passed to iio_push_to_buffers_with_timestamp()
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH 4.19 026/116] mei: request autosuspend after sending rx flow control
 Date:   Mon, 31 May 2021 15:13:22 +0200
-Message-Id: <20210531130649.469463176@linuxfoundation.org>
+Message-Id: <20210531130641.053432241@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-commit a1caeebab07e9d72eec534489f47964782b93ba9 upstream.
+commit bbf0a94744edfeee298e4a9ab6fd694d639a5cdf upstream.
 
-Add space for the timestamp to be inserted.  Also ensure correct
-alignment for passing to iio_push_to_buffers_with_timestamp()
+A rx flow control waiting in the control queue may block autosuspend.
+Re-request autosuspend after flow control been sent to unblock
+the transition to the low power state.
 
-Fixes: a5f8c7da3dbe ("iio: adc: Add AD7768-1 ADC basic support")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501165314.511954-2-jic23@kernel.org
-Cc: <Stable@vger.kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Link: https://lore.kernel.org/r/20210526193334.445759-1-tomas.winkler@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/ad7768-1.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/misc/mei/interrupt.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/iio/adc/ad7768-1.c
-+++ b/drivers/iio/adc/ad7768-1.c
-@@ -166,6 +166,10 @@ struct ad7768_state {
- 	 * transfer buffers to live in their own cache lines.
- 	 */
- 	union {
-+		struct {
-+			__be32 chan;
-+			s64 timestamp;
-+		} scan;
- 		__be32 d32;
- 		u8 d8[2];
- 	} data ____cacheline_aligned;
-@@ -459,11 +463,11 @@ static irqreturn_t ad7768_trigger_handle
+--- a/drivers/misc/mei/interrupt.c
++++ b/drivers/misc/mei/interrupt.c
+@@ -224,6 +224,9 @@ static int mei_cl_irq_read(struct mei_cl
+ 		return ret;
+ 	}
  
- 	mutex_lock(&st->lock);
++	pm_runtime_mark_last_busy(dev->dev);
++	pm_request_autosuspend(dev->dev);
++
+ 	list_move_tail(&cb->list, &cl->rd_pending);
  
--	ret = spi_read(st->spi, &st->data.d32, 3);
-+	ret = spi_read(st->spi, &st->data.scan.chan, 3);
- 	if (ret < 0)
- 		goto err_unlock;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, &st->data.d32,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &st->data.scan,
- 					   iio_get_time_ns(indio_dev));
- 
- 	iio_trigger_notify_done(indio_dev->trig);
+ 	return 0;
 
 
