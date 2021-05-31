@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DF73964F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1909396377
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhEaQSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37968 "EHLO mail.kernel.org"
+        id S231563AbhEaPSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233606AbhEaOlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:41:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99DD961C73;
-        Mon, 31 May 2021 13:53:31 +0000 (UTC)
+        id S233102AbhEaOOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:14:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E1A261997;
+        Mon, 31 May 2021 13:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469212;
-        bh=NmajkwAUErgh7ORHx1VP5JA7EmeSO4Cym94XZ5/sbXk=;
+        s=korg; t=1622468537;
+        bh=6zMg2Uwm/5KXUwjM/b5LE+GC0zql9G7//5mQH1dEFmU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sELenWbBdJvtwEq/yBb4hLjiagsvVwnLp6Rg/lqho/HSnRc2PkDz9u1SRQikhOxlY
-         QgA3FIbJ7ZcT6kP5uicU9+10Zo1NJu9G8tm9U3/ATAoZQnR05znSTUFN/blvqUOonB
-         jcyRhEslKeqqXx213Wc1j+ufxAYEy+BfkkX6pP38=
+        b=mWPNUIY++yVvhjE1nnS3udSZ9FdFAyxP3NKXDt5UsSFNG6bTLUpVeChYH+Q2PoQY1
+         pKJO4G9jb0gGadpdzLlfcdJe72wuk56GxA9CJhDJHqeW2NptnP4XbKKERWmTQB4Iu0
+         V+GXbhaN10ePcWAmKfGQa0oxILvwJAytlLoC3Ppg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhouchuangao <zhouchuangao@vivo.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.12 112/296] fs/nfs: Use fatal_signal_pending instead of signal_pending
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.4 010/177] perf scripts python: exported-sql-viewer.py: Fix Array TypeError
 Date:   Mon, 31 May 2021 15:12:47 +0200
-Message-Id: <20210531130707.696742094@linuxfoundation.org>
+Message-Id: <20210531130648.259354482@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhouchuangao <zhouchuangao@vivo.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit bb002388901151fe35b6697ab116f6ed0721a9ed upstream.
+commit fd931b2e234a7cc451a7bbb1965d6ce623189158 upstream.
 
-We set the state of the current process to TASK_KILLABLE via
-prepare_to_wait(). Should we use fatal_signal_pending() to detect
-the signal here?
+The 'Array' class is present in more than one python standard library.
+In some versions of Python 3, the following error occurs:
 
-Fixes: b4868b44c562 ("NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE")
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Traceback (most recent call last):
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4702, in <lambda>
+    reports_menu.addAction(CreateAction(label, "Create a new window displaying branch events", lambda a=None,x=dbid: self.NewBranchView(x), self))
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4727, in NewBranchView
+    BranchWindow(self.glb, event_id, ReportVars(), self)
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3208, in __init__
+    self.model = LookupCreateModel(model_name, lambda: BranchModel(glb, event_id, report_vars.where_clause))
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 343, in LookupCreateModel
+    model = create_fn()
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3208, in <lambda>
+    self.model = LookupCreateModel(model_name, lambda: BranchModel(glb, event_id, report_vars.where_clause))
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3124, in __init__
+    self.fetcher = SQLFetcher(glb, sql, prep, self.AddSample)
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 2658, in __init__
+    self.buffer = Array(c_char, self.buffer_size, lock=False)
+TypeError: abstract class
+
+This apparently happens because Python can be inconsistent about which
+class of the name 'Array' gets imported. Fix by importing explicitly by
+name so that only the desired 'Array' gets imported.
+
+Fixes: 8392b74b575c3 ("perf scripts python: exported-sql-viewer.py: Add ability to display all the database tables")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: stable@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20210521092053.25683-3-adrian.hunter@intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/nfs4proc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/scripts/python/exported-sql-viewer.py |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -1682,7 +1682,7 @@ static void nfs_set_open_stateid_locked(
- 		rcu_read_unlock();
- 		trace_nfs4_open_stateid_update_wait(state->inode, stateid, 0);
+--- a/tools/perf/scripts/python/exported-sql-viewer.py
++++ b/tools/perf/scripts/python/exported-sql-viewer.py
+@@ -122,8 +122,9 @@ if pyside_version_1:
+ 	from PySide.QtGui import *
+ 	from PySide.QtSql import *
  
--		if (!signal_pending(current)) {
-+		if (!fatal_signal_pending(current)) {
- 			if (schedule_timeout(5*HZ) == 0)
- 				status = -EAGAIN;
- 			else
-@@ -3458,7 +3458,7 @@ static bool nfs4_refresh_open_old_statei
- 		write_sequnlock(&state->seqlock);
- 		trace_nfs4_close_stateid_update_wait(state->inode, dst, 0);
+-from decimal import *
+-from ctypes import *
++from decimal import Decimal, ROUND_HALF_UP
++from ctypes import CDLL, Structure, create_string_buffer, addressof, sizeof, \
++		   c_void_p, c_bool, c_byte, c_char, c_int, c_uint, c_longlong, c_ulonglong
+ from multiprocessing import Process, Array, Value, Event
  
--		if (signal_pending(current))
-+		if (fatal_signal_pending(current))
- 			status = -EINTR;
- 		else
- 			if (schedule_timeout(5*HZ) != 0)
+ # xrange is range in Python3
 
 
