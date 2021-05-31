@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5867395F20
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A6E3965A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhEaOIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:08:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49452 "EHLO mail.kernel.org"
+        id S233849AbhEaQoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232672AbhEaNmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:42:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B9DB61474;
-        Mon, 31 May 2021 13:28:37 +0000 (UTC)
+        id S234035AbhEaOxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:53:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BB4D61CA8;
+        Mon, 31 May 2021 13:58:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467718;
-        bh=WCY1tsQHs0qPaWWClyBnYNlp7D6WjJ9ssswyl7No6Yc=;
+        s=korg; t=1622469508;
+        bh=KehBeMlUcm4nj9j+kHyJww7Flwp46LChGWKgxp7iCQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0TJAW6X8KbkQvargg1s0gMWZaQ3P0Fm4RtCixUeyeyi3zq/1gyOxC77NoYcCuo9Qd
-         D76bLDgrIXP6hx/ee4SmM4A0Cz3YWNm2yRBChlJc0JS3K04poOrdsjOb1KcM9j+WtM
-         nK2Yzm57QiSd3IL0zZ63lcSR9QI7anUnex2sBEwY=
+        b=wbjqZRdd8e2V/rFimnzDYIER0bo2dxwG4w94Eak7Q4lWycdgM3sMXxeVgq0I/axPh
+         JyBQgWWdFhdxLCv0v0J/e9wNgd00Txahf2tRoanYf2CKb4PI7l8yQzL8+FKIgh5421
+         feOU4Sr7tX4NCEiqRmliZBtU5rBFHlmGtoozQmYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        stable@vger.kernel.org, Pawel Laszczak <pawell@cadence.com>,
+        Peter Chen <peter.chen@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 55/79] media: gspca: properly check for errors in po1030_probe()
+Subject: [PATCH 5.12 225/296] usb: cdnsp: Fix lack of removing request from pending list.
 Date:   Mon, 31 May 2021 15:14:40 +0200
-Message-Id: <20210531130637.763124921@linuxfoundation.org>
+Message-Id: <20210531130711.387687081@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Pawel Laszczak <pawell@cadence.com>
 
-[ Upstream commit dacb408ca6f0e34df22b40d8dd5fae7f8e777d84 ]
+[ Upstream commit 3b414d1b0107fa51ad6063de9752d4b2a8063980 ]
 
-If m5602_write_sensor() or m5602_write_bridge() fail, do not continue to
-initialize the device but return the error to the calling funtion.
+Patch fixes lack of removing request from ep->pending_list on failure
+of the stop endpoint command. Driver even after failing this command
+must remove request from ep->pending_list.
+Without this fix driver can stuck in cdnsp_gadget_ep_disable function
+in loop:
+        while (!list_empty(&pep->pending_list)) {
+                preq = next_request(&pep->pending_list);
+                cdnsp_ep_dequeue(pep, preq);
+        }
 
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-64-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+Link: https://lore.kernel.org/r/20210420042813.34917-1-pawell@gli-login.cadence.com
+Signed-off-by: Peter Chen <peter.chen@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/m5602/m5602_po1030.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/usb/cdns3/cdnsp-gadget.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/m5602/m5602_po1030.c b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-index a0a90dd34ca8..a098aeb290c3 100644
---- a/drivers/media/usb/gspca/m5602/m5602_po1030.c
-+++ b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-@@ -159,6 +159,7 @@ static const struct v4l2_ctrl_config po1030_greenbal_cfg = {
- int po1030_probe(struct sd *sd)
+diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
+index 56707b6b0f57..c083985e387b 100644
+--- a/drivers/usb/cdns3/cdnsp-gadget.c
++++ b/drivers/usb/cdns3/cdnsp-gadget.c
+@@ -422,17 +422,17 @@ unmap:
+ int cdnsp_ep_dequeue(struct cdnsp_ep *pep, struct cdnsp_request *preq)
  {
- 	u8 dev_id_h = 0, i;
-+	int err;
- 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
+ 	struct cdnsp_device *pdev = pep->pdev;
+-	int ret;
++	int ret_stop = 0;
++	int ret_rem;
  
- 	if (force_sensor) {
-@@ -177,10 +178,13 @@ int po1030_probe(struct sd *sd)
- 	for (i = 0; i < ARRAY_SIZE(preinit_po1030); i++) {
- 		u8 data = preinit_po1030[i][2];
- 		if (preinit_po1030[i][0] == SENSOR)
--			m5602_write_sensor(sd,
--				preinit_po1030[i][1], &data, 1);
-+			err = m5602_write_sensor(sd, preinit_po1030[i][1],
-+						 &data, 1);
- 		else
--			m5602_write_bridge(sd, preinit_po1030[i][1], data);
-+			err = m5602_write_bridge(sd, preinit_po1030[i][1],
-+						 data);
-+		if (err < 0)
-+			return err;
- 	}
+ 	trace_cdnsp_request_dequeue(preq);
  
- 	if (m5602_read_sensor(sd, PO1030_DEVID_H, &dev_id_h, 1))
+-	if (GET_EP_CTX_STATE(pep->out_ctx) == EP_STATE_RUNNING) {
+-		ret = cdnsp_cmd_stop_ep(pdev, pep);
+-		if (ret)
+-			return ret;
+-	}
++	if (GET_EP_CTX_STATE(pep->out_ctx) == EP_STATE_RUNNING)
++		ret_stop = cdnsp_cmd_stop_ep(pdev, pep);
++
++	ret_rem = cdnsp_remove_request(pdev, preq, pep);
+ 
+-	return cdnsp_remove_request(pdev, preq, pep);
++	return ret_rem ? ret_rem : ret_stop;
+ }
+ 
+ static void cdnsp_zero_in_ctx(struct cdnsp_device *pdev)
 -- 
 2.30.2
 
