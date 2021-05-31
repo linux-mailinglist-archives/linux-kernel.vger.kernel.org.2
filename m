@@ -2,87 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1729395619
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD2A395621
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhEaHcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230291AbhEaHcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:32:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44624 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230294AbhEaHcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 03:32:11 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60476 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhEaHcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:32:01 -0400
-Received: from mail-wm1-f70.google.com ([209.85.128.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lncNR-0002F0-9Y
-        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 07:30:21 +0000
-Received: by mail-wm1-f70.google.com with SMTP id x20-20020a1c7c140000b029018f49a7efb7so4427550wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:30:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cAlI26tnTTG5mkLy5nypjSlUByQ/kCeC+Y7Gnr7Dwj8=;
-        b=ToGP+OwEVeVRbFs2prekf1N7ZFddaBgJ6lnbvD4rRW0hGO+KilaHoU29zHXveMOyPe
-         2gOM09tFu12rsuot3a2ZzZfSvcw4k2zk1tXjugw6uWQYqpwE7h/xvI4pcwrddkNXvK49
-         F906lYIbldBn9JzENr5sn1fMydrj9IXDzIrIRzGQk61OZpEYofXTi0kevPLnMMtA9ics
-         FRuif54prNHv01H/uPUg/1LrHQYJ/athdIdlMvOj1xILkXlquoildBoMUo0y0VpJqEqg
-         yCL1tir3h0tI6nPeJ+xP2TJjnvdwGySNgYqj08t7CwaucdWkCt/pvCD+h5OSUqwnE4Lb
-         JoEw==
-X-Gm-Message-State: AOAM531cxvu+qRXZd9KGi1BNI8Lb9d5FaS5TIZLzoDRB1ZATDWXbLsMg
-        2b5lt/9voMOFHL0X8CuNOmDt8VcXuu8wOnXfjSVvRNWzSC2/VbZxmugj4u9jUQl/4tun6JirjXH
-        A492hZb3NGMLc9GHAz68t5X33dOFnCrSGcgwxNOC9OA==
-X-Received: by 2002:a7b:c084:: with SMTP id r4mr19400395wmh.102.1622446221039;
-        Mon, 31 May 2021 00:30:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGn2RwHbI3WaJdd8bqimsKztQEfvYoe5ivVyqd/sUnbSsNPwopPg2sBXTTyFD3lrJGA4eoOw==
-X-Received: by 2002:a7b:c084:: with SMTP id r4mr19400386wmh.102.1622446220937;
-        Mon, 31 May 2021 00:30:20 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id v15sm22303365wmj.39.2021.05.31.00.30.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 00:30:20 -0700 (PDT)
-Subject: Re: [PATCH 01/11] nfc: fdp: drop ftrace-like debugging messages
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Randy Dunlap <rdunlap@infradead.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
- <20210528151340.7ea69c15@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <4f44c25c-c296-ba3e-7c6d-bc1016574231@canonical.com>
-Date:   Mon, 31 May 2021 09:30:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+IronPort-SDR: CkU6A60l8mrrDHVYqewOs1dnPuB3I1YOhMTAV4P+BH9Vuh8tFnC4IqYNdLYhj1blz7hVELfwc1
+ X0cd7bWjoLnw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190675158"
+X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
+   d="scan'208";a="190675158"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 00:30:30 -0700
+IronPort-SDR: SZzBJuKQD0HxWaGhu2yzpe3QbxO+h8ghMOqgvxAESyh39LMhymrtbHzKJBCnTVNrA5KAxfj+Gv
+ oWNJc2NCZ4lw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
+   d="scan'208";a="549330770"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 31 May 2021 00:30:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 31 May 2021 10:30:27 +0300
+Date:   Mon, 31 May 2021 10:30:27 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>, Li Jun <jun.li@nxp.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: typec: mux: Use device type instead of device
+ name for matching
+Message-ID: <YLSQkynoJO2+hYGW@kuha.fi.intel.com>
+References: <20210526153548.61276-1-heikki.krogerus@linux.intel.com>
+ <20210526153548.61276-2-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528151340.7ea69c15@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526153548.61276-2-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/05/2021 00:13, Jakub Kicinski wrote:
-> On Fri, 28 May 2021 10:53:20 -0400 Krzysztof Kozlowski wrote:
->> Now that the kernel has ftrace, any debugging calls that just do "made
->> it to this function!" and "leaving this function!" can be removed.
->> Better to use standard debugging tools.
->>
->> This allows also to remove several local variables and entire
->> fdp_nci_recv_frame() function (whose purpose was only to log).
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On Wed, May 26, 2021 at 06:35:47PM +0300, Heikki Krogerus wrote:
+> Both the USB Type-C switch and mux have already a device
+> type defined for them. We can use those types instead of the
+> device name to differentiate the two.
+
+This should still be OK, right?
+
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/usb/typec/mux.c | 26 ++++++++++----------------
+>  drivers/usb/typec/mux.h |  6 ++++++
+>  2 files changed, 16 insertions(+), 16 deletions(-)
 > 
-> Hi! Would you mind reposting these 11 fixes? build bots don't
-> understand series dependencies and the last patch here depends 
-> on the previous clean up set.
+> diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
+> index 8514bec7e1b89..e40a555724fb6 100644
+> --- a/drivers/usb/typec/mux.c
+> +++ b/drivers/usb/typec/mux.c
+> @@ -17,21 +17,12 @@
+>  #include "class.h"
+>  #include "mux.h"
+>  
+> -static bool dev_name_ends_with(struct device *dev, const char *suffix)
+> -{
+> -	const char *name = dev_name(dev);
+> -	const int name_len = strlen(name);
+> -	const int suffix_len = strlen(suffix);
+> -
+> -	if (suffix_len > name_len)
+> -		return false;
+> -
+> -	return strcmp(name + (name_len - suffix_len), suffix) == 0;
+> -}
+> -
+>  static int switch_fwnode_match(struct device *dev, const void *fwnode)
+>  {
+> -	return dev_fwnode(dev) == fwnode && dev_name_ends_with(dev, "-switch");
+> +	if (!is_typec_switch(dev))
+> +		return 0;
+> +
+> +	return dev_fwnode(dev) == fwnode;
+>  }
+>  
+>  static void *typec_switch_match(struct fwnode_handle *fwnode, const char *id,
+> @@ -90,7 +81,7 @@ static void typec_switch_release(struct device *dev)
+>  	kfree(to_typec_switch(dev));
+>  }
+>  
+> -static const struct device_type typec_switch_dev_type = {
+> +const struct device_type typec_switch_dev_type = {
+>  	.name = "orientation_switch",
+>  	.release = typec_switch_release,
+>  };
+> @@ -180,7 +171,10 @@ EXPORT_SYMBOL_GPL(typec_switch_get_drvdata);
+>  
+>  static int mux_fwnode_match(struct device *dev, const void *fwnode)
+>  {
+> -	return dev_fwnode(dev) == fwnode && dev_name_ends_with(dev, "-mux");
+> +	if (!is_typec_mux(dev))
+> +		return 0;
+> +
+> +	return dev_fwnode(dev) == fwnode;
+>  }
+>  
+>  static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
+> @@ -295,7 +289,7 @@ static void typec_mux_release(struct device *dev)
+>  	kfree(to_typec_mux(dev));
+>  }
+>  
+> -static const struct device_type typec_mux_dev_type = {
+> +const struct device_type typec_mux_dev_type = {
+>  	.name = "mode_switch",
+>  	.release = typec_mux_release,
+>  };
+> diff --git a/drivers/usb/typec/mux.h b/drivers/usb/typec/mux.h
+> index 4fd9426ee44f6..b1d6e837cb747 100644
+> --- a/drivers/usb/typec/mux.h
+> +++ b/drivers/usb/typec/mux.h
+> @@ -18,4 +18,10 @@ struct typec_mux {
+>  #define to_typec_switch(_dev_) container_of(_dev_, struct typec_switch, dev)
+>  #define to_typec_mux(_dev_) container_of(_dev_, struct typec_mux, dev)
+>  
+> +extern const struct device_type typec_switch_dev_type;
+> +extern const struct device_type typec_mux_dev_type;
+> +
+> +#define is_typec_switch(dev) ((dev)->type == &typec_switch_dev_type)
+> +#define is_typec_mux(dev) ((dev)->type == &typec_mux_dev_type)
+> +
+>  #endif /* __USB_TYPEC_MUX__ */
+> -- 
+> 2.30.2
 
-Sure, no problem.
-
-
-Best regards,
-Krzysztof
+-- 
+heikki
