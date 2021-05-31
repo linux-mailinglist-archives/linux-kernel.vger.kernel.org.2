@@ -2,873 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17887396655
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48456396508
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhEaRD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233744AbhEaPxr (ORCPT
+        id S233200AbhEaQUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:20:49 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:19726 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233028AbhEaOkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:53:47 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B78C08EAC9
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 07:35:34 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f080f0041f75464688c3931.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:41f7:5464:688c:3931])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1192B1EC04DE;
-        Mon, 31 May 2021 16:35:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622471732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=GMtWUeOffUMWp6OzJdnjKi4kZ2inaeN6SSvY7j7g8PM=;
-        b=aVtYGAbTkLp2lb+vOGYP/vf0UgMzs2mTnoj4giG9yID1tf3FTUc2c43MMIf+PT+/RW1gRV
-        Dp3zS4eJFLC+5ChZvl/iSzL4MMeoLQh6l/t4PbtoQJBgiwi+yoMD7YmH1EyMguYYt0/8Cf
-        l+aGLTpZ2aa+OsRrg2C08cMA1pNI2f0=
-Date:   Mon, 31 May 2021 16:35:30 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Documentation/submitting-patches: Document RESEND tag on
- patches
-Message-ID: <YLT0MjAIO/8u4cjY@zn.tnic>
-References: <20201217183756.GE23634@zn.tnic>
- <20210413113834.GE16519@zn.tnic>
- <87pmyxsxsy.fsf@meer.lwn.net>
- <20210415060505.GC6318@zn.tnic>
+        Mon, 31 May 2021 10:40:52 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14VEbXgp014890;
+        Mon, 31 May 2021 14:39:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Wy9ArUsczV3pwK2KZGGyBmN44rJP+oxWDN9BSsDhWUc=;
+ b=LY7N5s3rvCUE0VuYdkSWfaBqtO+iTb7qXz5uzSlR945CZX5Cy3nryfKxqAUcZ+pvGvmi
+ F6syFmp2aeyQewmz8FrwSpjiOH3ghXajWArY/hNMCBz26WbZ3ZPvHy+HiADvkMpVgE0A
+ IufXL8YaSRJMnWUGjS+W1PMzRne6IyyIRY0WF8biJw4eMrutk/GmrEfR2a8cuFMdkC+s
+ g0qXPjoaarGe3lCpyPBWouSlIbbi97wNhLaf8sMPHrDuT9tvf9QpNLWraYMJk0sb1EbR
+ 49KQpbsZrL653DPV4x8HpKSP+BMKCfTSIx9W25giO6RRT1oMaiKsGoXXqPob9lYcTxtF 2w== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vmrgr7xr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 14:39:05 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14VEd4xc134396;
+        Mon, 31 May 2021 14:39:04 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by userp3020.oracle.com with ESMTP id 38uycqefk7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 14:39:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dm8g8oeecTdNqSe4adoO1ya2L56ESqM7Tc0oxi0zJCdtEvJyHPcBOwmONKDpk4Ggbkhj+Uz5DWtN3OYSA4PVGAgypk0bBvGpVGMv0Yy/ahoBzAd93qhGByf4yztyevFN+dOcyTcvcgA8wfo0a1gefN4aRcE1H7YKrXekNw8ScL0BIWLQO2sKQd2cR2r0OPJSxaotjSayFFguuYtiUY4U4qvQIrXKWAI5LMRzoC3hpE6nF/19UC2zzojqnu0KLLpoxJHlB4Jew1YtEs7QB6vRFqVdFO2Ohwcb8rUfUDCmO1G1f/QRB+P2pWA+/z0g2axOzqb2+6tgTZXJuhRTgbapOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wy9ArUsczV3pwK2KZGGyBmN44rJP+oxWDN9BSsDhWUc=;
+ b=kkXoGptbt+MhvHLV6WdsTS9UOpgnHjbKhkouvIunAGuSCUx7SNg7FSIkXYBvbJ5KOGSkpc6RzD6QWoYrfMli77GJX8U4INIbooImHSSgMMtOVeRqA5X3MuN5IvVye1kg808bocDPrzlxTswuJf2A6xtR8943exLk+EBrmfMfvcXE9iHIZFYp9kFqih50imDeXSYVRMN62AQXGYm6Zuf0fpS0WarT22+q91T1Ujs54s3hF09J3jUhM/yv0Geu0uooqaYm86Daxc1RZWi63uGwduMPOzKYu50usabdsbJRfrZKWcm0XUWzDFXr7/3VaOwX6wKlBxBoK8akoimQwBXlfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wy9ArUsczV3pwK2KZGGyBmN44rJP+oxWDN9BSsDhWUc=;
+ b=Nzlv9ko41ZfqcNuQaTQlTMDeDEQp5ZraVIjHGbwdT4WefvPPuDF7NdhtCCJg7Yk7+ImIVWXm/MnyoxcVlaRtuQo2Qlbk+D9wSGdKtiiOrT03xZWaDGJoTHdo8nx4Im5l6x0Tas9l5YwPh6bEjKOFxHvzolCu6iVk8wCzG17NqNg=
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
+ by CO1PR10MB4529.namprd10.prod.outlook.com (2603:10b6:303:96::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Mon, 31 May
+ 2021 14:39:02 +0000
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4173.030; Mon, 31 May 2021
+ 14:39:02 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     Dong Aisheng <aisheng.dong@nxp.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dongas86@gmail.com" <dongas86@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH V2 3/6] mm/sparse: move mem_sections allocation out of
+ memory_present()
+Thread-Topic: [PATCH V2 3/6] mm/sparse: move mem_sections allocation out of
+ memory_present()
+Thread-Index: AQHXVf4xy73mQIlGwE2q08XomPgdeqr9qV0A
+Date:   Mon, 31 May 2021 14:39:02 +0000
+Message-ID: <20210531143852.h226vpjrgpyo2eqw@revolver>
+References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
+ <20210531091908.1738465-4-aisheng.dong@nxp.com>
+In-Reply-To: <20210531091908.1738465-4-aisheng.dong@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [23.233.25.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 624bcea5-6d23-42a5-52e9-08d92441d582
+x-ms-traffictypediagnostic: CO1PR10MB4529:
+x-microsoft-antispam-prvs: <CO1PR10MB4529562A1B71196CB856CDAEFD3F9@CO1PR10MB4529.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:813;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vfiM7N903F+PiDO43luKwAGNn+n792TT2+NttYpQbjDsO+2ZDNNlOeDWLokhMA7NDdickXPnQ10IdYl5N1Oordf7VKcjrpffeLFRvoLpOJE6eTLZ/dciPHJTboOF8HYcLpOmANvb4t8xHFFKRIp/SFpNnWGOT9sm3Xgejac4STw7jyuR/6pI/YN0MdZz2kE+yyoBjTtn/KybaJ0QVrYNYb2CvLRP74LwjXym2s3gVIR6jeLFmJRwKZZ7F844uNE4fAeKCaMB2q9+eJGx/wFD1gvFjcsUD8xWJ88vpa4WrIPc8Afefn28lTiEhpXDLG7hkhGQO3dZfNDyc94yYxgXC3Ywt6v9g7lvNiyjqp8QMy6tasqaNOpy4njFpTA/BrQQliLn4cjxo+gtWCQqeHmppqBlpiEzz1OrvyEfG7RRTL9guHoWUZkiGyB3hKl3I2ar3c+ZRsm+87e6TP2M9Pi1edrtrNEYL82igcspkiJXL3CTx8CWoBZins3rE5m/1m83t+45LhrVcptGzdohVxmvbIuaaNcBI2b/ROcpuiDtdhIs54CR2vohspTfjkaJ1eKaAw0tCTEhvN7hgerlalG0M5/JG/b9vOKyXC/KWQ23E7o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(376002)(346002)(39860400002)(366004)(136003)(396003)(5660300002)(4326008)(71200400001)(1076003)(86362001)(26005)(6506007)(478600001)(6916009)(6486002)(38100700002)(44832011)(6512007)(2906002)(186003)(33716001)(8676002)(8936002)(54906003)(9686003)(91956017)(76116006)(66946007)(66476007)(66556008)(66446008)(83380400001)(64756008)(316002)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?hmTZ9NMFPeqYnojrxd3bUJqjz0eHQjG0Ofy56/Xqvn/3+dJhjWmNVOaFCafJ?=
+ =?us-ascii?Q?IlOBmIk2f2m3cIyJoZKrWCuLbPBifXcT1IXYqchtE5DCl1Gip0qbMJBMAXYD?=
+ =?us-ascii?Q?2nPyH3DKROyhdAS8alWJENQXzs6lnC3WLmwxYFX/3pUet0BoWMv9sRHUFRj7?=
+ =?us-ascii?Q?AdTHPaYjMp8QwWQs5cvWPcW4j01EpDkeGJFvvFfq3JQ10GU9A3uklVzCOuRg?=
+ =?us-ascii?Q?LOyJLfKYXzEd+H8+j3osUkA+qRAPzOXBqw9MOiR+njHh77x/oF2SD0NF1gOY?=
+ =?us-ascii?Q?Vy/zUiY7zMrupy9sk4bthDEy/PZyyqocZAjXrS6WduTJ+fOhu6wwBUmQO6jV?=
+ =?us-ascii?Q?G5Pu8UDEMQHuDqGr+Xh24/EIbJy/dxNgKEkR2NE9VmqltX0ogNqgkl+0yW6E?=
+ =?us-ascii?Q?Tuu7kOcqw/TNf3jWG8w5jmzd70j7VvO1Ck7b+9VUyNbV4JWzHQBraZ1/Hibe?=
+ =?us-ascii?Q?OXOMEOjpgCBh3sbWQEnVe6UHWawZhXovoB+pWVjUmxlyIUOanRFw85qP23U6?=
+ =?us-ascii?Q?En2UcVydNwngAdy7fCAxy3cTgMCAOkbApbQgjeVq4MTKvFlogZ1r13CLrSaW?=
+ =?us-ascii?Q?AiYDreqN99oJvhRG3WBj6/CFW9aLEhp9IPLEl4uPHF9TIPReps4Nfg2OtMuS?=
+ =?us-ascii?Q?93zMrOjsy5BZJIQ6c6hFGyTZYlv5aJTpoZakzUfnu+5SdhcZEyVxyYowHKD7?=
+ =?us-ascii?Q?pK0NbRZ/mvDpi7+SaOiybrgUJEhLeFtPKD31HjEKueXQ2DECmAs09r0hFxqo?=
+ =?us-ascii?Q?9uVni3Qus4+gML99TQZgsMt0ky9MGlSVtne/aTAeJ8OtfhzwBu6qPNRZ0e6k?=
+ =?us-ascii?Q?hq6NM2rCfJtD//L+IKWeeMFGgGxxPDYDuxcH/Mah1FtGGqRwKtOGOEZbzF4l?=
+ =?us-ascii?Q?w+mZXqxygv4atlIX/dmeiIiqwP8P0Yrnlo37pVFXredJHwTONHPsijwdkbPQ?=
+ =?us-ascii?Q?BoOfyobLoXYvrrotVKtlSU/jVAfu7IQlY8LlT6v88hB7TWHUSqI3WnTN8HFk?=
+ =?us-ascii?Q?iTfeAFNXnn6/OoAarzxet/Sdg6HK5ZTgFiy244uwRqsB8eWD/a+L0m92Kx2r?=
+ =?us-ascii?Q?DPQap8XeTFr7b6EGIsaVZeMucOTrvWRDxYdnEjiy3nz7gSi15sVJGjoKKJdB?=
+ =?us-ascii?Q?8TFJnxUfsQ2rZabl8lMpmKEZ8EKy14P6w5d/9TnUdGgDKmq3K/MK9ct6Q40h?=
+ =?us-ascii?Q?y2DaIq4phaVOfTxRh7CDx1oIUCnhLLC4uvSYL+QbfdsQ7DmdrwJhiqK7Qwen?=
+ =?us-ascii?Q?FBhTjHe5XjLFtOpGqM6Xb+qzziiZPAzb/bcUCc4i+5zXknv4LHMPDvwrSZiW?=
+ =?us-ascii?Q?b6Y7yY1atuo7U/KNLqyoKQBI?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <494497392C46B0449C0A1D4850CA6D18@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210415060505.GC6318@zn.tnic>
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 624bcea5-6d23-42a5-52e9-08d92441d582
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2021 14:39:02.2378
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7r6yRDMVoeZUrCCrM/viD1jVw9+tRuVczeiEX930B25ihbt6+IcWjlRanfmO76jGheH0p1PTqKt4R7BOoWFNxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4529
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10001 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105310106
+X-Proofpoint-GUID: HaWhxSf_DV_yAWo5F_NhcRl-ZaQ7oJXV
+X-Proofpoint-ORIG-GUID: HaWhxSf_DV_yAWo5F_NhcRl-ZaQ7oJXV
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wow, time flies. :-\
-
-A month and a half later, Jon, how about it?
-
-Thx.
-
-On Thu, Apr 15, 2021 at 08:05:05AM +0200, Borislav Petkov wrote:
-> On Tue, Apr 13, 2021 at 03:02:21PM -0600, Jonathan Corbet wrote:
-> > For future installments, could you send them in their own thread as an
-> > ordinary patch so I don't need to edit in the changelog after applying
-> > them?
-> 
-> Ok, sure but I might not need to anymore because, AFAICT, what is left
-> is really tip-tree specific and that can finally be the tip-tree doc
-> file.
-> 
-> I'm pasting the whole thing below, if you think something's still
-> generic enough, lemme know and I'll carve it out.
-> 
-> Thx.
-> 
+* Dong Aisheng <aisheng.dong@nxp.com> [210531 05:20]:
+> The only path to call memory_present() is from memblocks_present().
+> The struct mem_section **mem_section only needs to be initialized once,
+> so no need put the initialization/allocation code in memory_present()
+> which will be called multiple times for each section.
+>=20
+> After moving, the 'unlikely' condition statement becomes to be
+> meaningless as it's only initialized one time, so dropped as well.
+>=20
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 > ---
-> .. SPDX-License-Identifier: GPL-2.0
-> 
-> The tip tree handbook
-> =====================
-> 
-> What is the tip tree?
-> ---------------------
-> 
-> The tip tree is a collection of several subsystems and areas of
-> development. The tip tree is both a direct development tree and a
-> aggregation tree for several sub-maintainer trees. The tip tree gitweb URL
-> is: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-> 
-> The tip tree contains the following subsystems:
-> 
->    - **x86 architecture**
-> 
->      The x86 architecture development takes place in the tip tree except
->      for the x86 KVM and XEN specific parts which are maintained in the
->      corresponding subsystems and routed directly to mainline from
->      there. It's still good practice to Cc the x86 maintainers on
->      x86-specific KVM and XEN patches.
-> 
->      Some x86 subsystems have their own maintainers in addition to the
->      overall x86 maintainers.  Please Cc the overall x86 maintainers on
->      patches touching files in arch/x86 even when they are not called out
->      by the MAINTAINER file.
-> 
->      Note, that ``x86@kernel.org`` is not a mailing list. It is merely a
->      mail alias which distributes mails to the x86 top-level maintainer
->      team. Please always Cc the Linux Kernel mailing list (LKML)
->      ``linux-kernel@vger.kernel.org``, otherwise your mail ends up only in
->      the private inboxes of the maintainers.
-> 
->    - **Scheduler**
-> 
->      Scheduler development takes place in the -tip tree, in the
->      sched/core branch - with occasional sub-topic trees for
->      work-in-progress patch-sets.
-> 
->    - **Locking and atomics**
-> 
->      Locking development (including atomics and other synchronization
->      primitives that are connected to locking) takes place in the -tip
->      tree, in the locking/core branch - with occasional sub-topic trees
->      for work-in-progress patch-sets.
-> 
->    - **Generic interrupt subsystem and interrupt chip drivers**:
-> 
->      - interrupt core development happens in the irq/core branch
-> 
->      - interrupt chip driver development also happens in the irq/core
->        branch, but the patches are usually applied in a separate maintainer
->        tree and then aggregated into irq/core
-> 
->    - **Time, timers, timekeeping, NOHZ and related chip drivers**:
-> 
->      - timekeeping, clocksource core, NTP and alarmtimer development
->        happens in the timers/core branch, but patches are usually applied in
->        a separate maintainer tree and then aggregated into timers/core
-> 
->      - clocksource/event driver development happens in the timers/core
->        branch, but patches are mostly applied in a separate maintainer tree
->        and then aggregated into timers/core
-> 
->    - **Performance counters core, architecture support and tooling**:
-> 
->      - perf core and architecture support development happens in the
->        perf/core branch
-> 
->      - perf tooling development happens in the perf tools maintainer
->        tree and is aggregated into the tip tree.
-> 
->    - **CPU hotplug core**
-> 
->    - **RAS core**
-> 
->    - **EFI core**
-> 
->      EFI development in the efi git tree. The collected patches are
->      aggregated in the tip efi/core branch.
-> 
->    - **RCU**
-> 
->      RCU development happens in the linux-rcu tree. The resulting changes
->      are aggregated into the tip core/rcu branch.
-> 
->    - **Various core code components**:
-> 
->        - debugobjects
-> 
->        - objtool
-> 
->        - random bits and pieces
-> 
-> 
-> Patch submission notes
-> ----------------------
-> 
-> Selecting the tree/branch
-> ^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> In general, development against the head of the tip tree master branch is
-> fine, but for the subsystems which are maintained separately, have their
-> own git tree and are only aggregated into the tip tree, development should
-> take place against the relevant subsystem tree or branch.
-> 
-> Bug fixes which target mainline should always be applicable against the
-> mainline kernel tree. Potential conflicts against changes which are already
-> queued in the tip tree are handled by the maintainers.
-> 
-> Patch subject
-> ^^^^^^^^^^^^^
-> 
-> The tip tree preferred format for patch subject prefixes is
-> 'subsys/component:', e.g. 'x86/apic:', 'x86/mm/fault:', 'sched/fair:',
-> 'genirq/core:'. Please do not use file names or complete file paths as
-> prefix. 'git log path/to/file' should give you a reasonable hint in most
-> cases.
-> 
-> The condensed patch description in the subject line should start with a
-> uppercase letter and should be written in imperative tone.
-> 
-> 
-> Changelog
-> ^^^^^^^^^
-> 
-> The general rules about changelogs in the process documentation, see
-> :ref:`Documentation/process/ <submittingpatches>`, apply.
-> 
-> The tip tree maintainers set value on following these rules, especially on
-> the request to write changelogs in imperative mood and not impersonating
-> code or the execution of it. This is not just a whim of the
-> maintainers. Changelogs written in abstract words are more precise and
-> tend to be less confusing than those written in the form of novels.
-> 
-> It's also useful to structure the changelog into several paragraphs and not
-> lump everything together into a single one. A good structure is to explain
-> the context, the problem and the solution in separate paragraphs and this
-> order.
-> 
-> Examples for illustration:
-> 
->   Example 1::
-> 
->     x86/intel_rdt/mbm: Fix MBM overflow handler during hot cpu
-> 
->     When a CPU is dying, we cancel the worker and schedule a new worker on a
->     different CPU on the same domain. But if the timer is already about to
->     expire (say 0.99s) then we essentially double the interval.
-> 
->     We modify the hot cpu handling to cancel the delayed work on the dying
->     cpu and run the worker immediately on a different cpu in same domain. We
->     donot flush the worker because the MBM overflow worker reschedules the
->     worker on same CPU and scans the domain->cpu_mask to get the domain
->     pointer.
-> 
->   Improved version::
-> 
->     x86/intel_rdt/mbm: Fix MBM overflow handler during CPU hotplug
-> 
->     When a CPU is dying, the overflow worker is canceled and rescheduled on a
->     different CPU in the same domain. But if the timer is already about to
->     expire this essentially doubles the interval which might result in a non
->     detected overflow.
-> 
->     Cancel the overflow worker and reschedule it immediately on a different CPU
->     in the same domain. The work could be flushed as well, but that would
->     reschedule it on the same CPU.
-> 
->   Example 2::
-> 
->     time: POSIX CPU timers: Ensure that variable is initialized
-> 
->     If cpu_timer_sample_group returns -EINVAL, it will not have written into
->     *sample. Checking for cpu_timer_sample_group's return value precludes the
->     potential use of an uninitialized value of now in the following block.
->     Given an invalid clock_idx, the previous code could otherwise overwrite
->     *oldval in an undefined manner. This is now prevented. We also exploit
->     short-circuiting of && to sample the timer only if the result will
->     actually be used to update *oldval.
-> 
->   Improved version::
-> 
->     posix-cpu-timers: Make set_process_cpu_timer() more robust
-> 
->     Because the return value of cpu_timer_sample_group() is not checked,
->     compilers and static checkers can legitimately warn about a potential use
->     of the uninitialized variable 'now'. This is not a runtime issue as all
->     call sites hand in valid clock ids.
-> 
->     Also cpu_timer_sample_group() is invoked unconditionally even when the
->     result is not used because *oldval is NULL.
-> 
->     Make the invocation conditional and check the return value.
-> 
->   Example 3::
-> 
->     The entity can also be used for other purposes.
-> 
->     Let's rename it to be more generic.
-> 
->   Improved version::
-> 
->     The entity can also be used for other purposes.
-> 
->     Rename it to be more generic.
-> 
-> 
-> For complex scenarios, especially race conditions and memory ordering
-> issues, it is valuable to depict the scenario with a table which shows
-> the parallelism and the temporal order of events. Here is an example::
-> 
->     CPU0                            CPU1
->     free_irq(X)                     interrupt X
->                                     spin_lock(desc->lock)
->                                     wake irq thread()
->                                     spin_unlock(desc->lock)
->     spin_lock(desc->lock)
->     remove action()
->     shutdown_irq()
->     release_resources()             thread_handler()
->     spin_unlock(desc->lock)           access released resources.
->                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
->     synchronize_irq()
-> 
-> Lockdep provides similar useful output to depict a possible deadlock
-> scenario::
-> 
->     CPU0                                    CPU1
->     rtmutex_lock(&rcu->rt_mutex)
->       spin_lock(&rcu->rt_mutex.wait_lock)
->                                             local_irq_disable()
->                                             spin_lock(&timer->it_lock)
->                                             spin_lock(&rcu->mutex.wait_lock)
->     --> Interrupt
->         spin_lock(&timer->it_lock)
-> 
-> 
-> Function references in changelogs
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> When a function is mentioned in the changelog, either the text body or the
-> subject line, please use the format 'function_name()'. Omitting the
-> brackets after the function name can be ambiguous::
-> 
->   Subject: subsys/component: Make reservation_count static
-> 
->   reservation_count is only used in reservation_stats. Make it static.
-> 
-> The variant with brackets is more precise::
-> 
->   Subject: subsys/component: Make reservation_count() static
-> 
->   reservation_count() is only called from reservation_stats(). Make it
->   static.
-> 
-> 
-> Backtraces in changelogs
-> ^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> (XXX: Add link to Documentation/process/submitting-patches.rst's section)
-> 
-> Ordering of commit tags
-> ^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> To have a uniform view of the commit tags, the tip maintainers use the
-> following tag ordering scheme:
-> 
->  - Fixes: 12char-SHA1 ("sub/sys: Original subject line")
-> 
->    A Fixes tag should be added even for changes which do not need to be
->    backported to stable kernels, i.e. when addressing a recently introduced
->    issue which only affects tip or the current head of mainline. These tags
->    are helpful to identify the original commit and are much more valuable
->    than prominently mentioning the commit which introduced a problem in the
->    text of the changelog itself because they can be automatically
->    extracted.
-> 
->    The following example illustrates the difference::
-> 
->      Commit
-> 
->        abcdef012345678 ("x86/xxx: Replace foo with bar")
-> 
->      left an unused instance of variable foo around. Remove it.
-> 
->      Signed-off-by: J.Dev <j.dev@mail>
-> 
->    Please say instead::
-> 
->      The recent replacement of foo with bar left an unused instance of
->      variable foo around. Remove it.
-> 
->      Fixes: abcdef012345678 ("x86/xxx: Replace foo with bar")
->      Signed-off-by: J.Dev <j.dev@mail>
-> 
->    The latter puts the information about the patch into the focus and
->    amends it with the reference to the commit which introduced the issue
->    rather than putting the focus on the original commit in the first place.
-> 
->  - Reported-by: ``Reporter <reporter@mail>``
-> 
->  - Originally-by: ``Original author <original-author@mail>``
-> 
->  - Suggested-by: ``Suggester <suggester@mail>``
-> 
->  - Co-developed-by: ``Co-author <co-author@mail>``
-> 
->    Signed-off: ``Co-author <co-author@mail>``
-> 
->    Note, that Co-developed-by and Signed-off-by of the co-author(s) must
->    come in pairs.
-> 
->  - Signed-off-by: ``Author <author@mail>``
-> 
->    The first Signed-off-by (SOB) after the last Co-developed-by/SOB pair is the
->    author SOB, i.e. the person flagged as author by git.
-> 
->  - Signed-off-by: ``Patch handler <handler@mail>``
-> 
->    SOBs after the author SOB are from people handling and transporting
->    the patch, but were not involved in development. SOB chains should
->    reflect the **real** route a patch took as it was propagated to us,
->    with the first SOB entry signalling primary authorship of a single
->    author. Acks should be given as Acked-by lines and review approvals
->    as Reviewed-by lines.
-> 
->    If the handler made modifications to the patch or the changelog, then
->    this should be mentioned **after** the changelog text and **above**
->    all commit tags in the following format::
-> 
->      ... changelog text ends.
-> 
->      [ handler: Replaced foo by bar and updated changelog ]
-> 
->      First-tag: .....
-> 
->    Note the two empty new lines which separate the changelog text and the
->    commit tags from that notice.
-> 
->    If a patch is sent to the mailing list by a handler then the author has
->    to be noted in the first line of the changelog with::
-> 
->      From: Author <author@mail>
-> 
->      Changelog text starts here....
-> 
->    so the authorship is preserved. The 'From:' line has to be followed
->    by a empty newline. If that 'From:' line is missing, then the patch
->    would be attributed to the person who sent (transported, handled) it.
->    The 'From:' line is automatically removed when the patch is applied
->    and does not show up in the final git changelog. It merely affects
->    the authorship information of the resulting Git commit.
-> 
->  - Tested-by: ``Tester <tester@mail>``
-> 
->  - Reviewed-by: ``Reviewer <reviewer@mail>``
-> 
->  - Acked-by: ``Acker <acker@mail>``
-> 
->  - Cc: ``cc-ed-person <person@mail>``
-> 
->    If the patch should be backported to stable, then please add a '``Cc:
->    stable@vger.kernel.org``' tag, but do not Cc stable when sending your
->    mail.
-> 
->  - Link: ``https://link/to/information``
-> 
->    For referring to an email on LKML or other kernel mailing lists,
->    please use the lkml.kernel.org redirector URL::
-> 
->      https://lkml.kernel.org/r/email-message@id
-> 
->    The kernel.org redirector is considered a stable URL, unlike other email
->    archives.
-> 
->    Maintainers will add a Link tag referencing the email of the patch
->    submission when they apply a patch to the tip tree. This tag is useful
->    for later reference and is also used for commit notifications.
-> 
-> Please do not use combined tags, e.g. ``Reported-and-tested-by``, as
-> they just complicate automated extraction of tags.
-> 
-> 
-> Links to documentation
-> ^^^^^^^^^^^^^^^^^^^^^^
-> 
-> Providing links to documentation in the changelog is a great help to later
-> debugging and analysis.  Unfortunately, URLs often break very quickly
-> because companies restructure their websites frequently.  Non-'volatile'
-> exceptions include the Intel SDM and the AMD APM.
-> 
-> Therefore, for 'volatile' documents, please create an entry in the kernel
-> bugzilla https://bugzilla.kernel.org and attach a copy of these documents
-> to the bugzilla entry. Finally, provide the URL of the bugzilla entry in
-> the changelog.
-> 
-> 
-> Patch version information
-> ^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> (XXX: Add link to Documentation/process/submitting-patches.rst's section)
-> 
-> Patch resend or reminders
-> ^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> (XXX: point this to "Don't get discouraged - or impatient" section in
-> Documentation/process/submitting-patches.rst)
-> 
-> 
-> Merge window
-> ^^^^^^^^^^^^
-> 
-> Please do not expect large patch series to be handled during the merge
-> window or even during the week before.  Such patches should be submitted in
-> mergeable state *at* *least* a week before the merge window opens.
-> Exceptions are made for bug fixes and *sometimes* for small standalone
-> drivers for new hardware or minimally invasive patches for hardware
-> enablement.
-> 
-> During the merge window, the maintainers instead focus on following the
-> upstream changes, fixing merge window fallout, collecting bug fixes, and
-> allowing themselves a breath. Please respect that.
-> 
-> The release candidate -rc1 is the starting point for new patches to be
-> applied which are targeted for the next merge window.
-> 
-> 
-> Git
-> ^^^
-> 
-> The tip maintainers accept git pull requests from maintainers who provide
-> subsystem changes for aggregation in the tip tree.
-> 
-> Pull requests for new patch submissions are usually not accepted and do not
-> replace proper patch submission to the mailing list. The main reason for
-> this is that the review workflow is email based.
-> 
-> If you submit a larger patch series it is helpful to provide a git branch
-> in a private repository which allows interested people to easily pull the
-> series for testing. The usual way to offer this is a git URL in the cover
-> letter of the patch series.
-> 
-> 
-> Coding style notes
-> ------------------
-> 
-> Comment style
-> ^^^^^^^^^^^^^
-> 
-> Sentences in comments start with an uppercase letter.
-> 
-> Single line comments::
-> 
-> 	/* This is a single line comment */
-> 
-> Multi-line comments::
-> 
-> 	/*
-> 	 * This is a properly formatted
-> 	 * multi-line comment.
-> 	 *
-> 	 * Larger multi-line comments should be split into paragraphs.
-> 	 */
-> 
-> No tail comments:
-> 
->   Please refrain from using tail comments. Tail comments disturb the
->   reading flow in almost all contexts, but especially in code::
-> 
-> 	if (somecondition_is_true) /* Don't put a comment here */
-> 		dostuff(); /* Neither here */
-> 
-> 	seed = MAGIC_CONSTANT; /* Nor here */
-> 
->   Use freestanding comments instead::
-> 
-> 	/* This condition is not obvious without a comment */
-> 	if (somecondition_is_true) {
-> 		/* This really needs to be documented */
-> 		dostuff();
-> 	}
-> 
-> 	/* This magic initialization needs a comment. Maybe not? */
-> 	seed = MAGIC_CONSTANT;
-> 
-> Comment the important things:
-> 
->   Comments should be added where the operation is not obvious. Documenting
->   the obvious is just a distraction::
-> 
-> 	/* Decrement refcount and check for zero */
-> 	if (refcount_dec_and_test(&p->refcnt)) {
-> 		do;
-> 		lots;
-> 		of;
-> 		magic;
-> 		things;
-> 	}
-> 
->   Instead, comments should explain the non-obvious details and document
->   constraints::
-> 
-> 	if (refcount_dec_and_test(&p->refcnt)) {
-> 		/*
-> 		 * Really good explanation why the magic things below
-> 		 * need to be done, ordering and locking constraints,
-> 		 * etc..
-> 		 */
-> 		do;
-> 		lots;
-> 		of;
-> 		magic;
-> 		/* Needs to be the last operation because ... */
-> 		things;
-> 	}
-> 
-> Function documentation comments:
-> 
->   To document functions and their arguments please use kernel-doc format
->   and not free form comments::
-> 
-> 	/**
-> 	 * magic_function - Do lots of magic stuff
-> 	 * @magic:	Pointer to the magic data to operate on
-> 	 * @offset:	Offset in the data array of @magic
-> 	 *
-> 	 * Deep explanation of mysterious things done with @magic along
->          * with documentation of the return values.
-> 	 *
-> 	 * Note, that the argument descriptors above are arranged
-> 	 * in a tabular fashion.
-> 	 */
-> 
->   This applies especially to globally visible functions and inline
->   functions in public header files. It might be overkill to use kernel-doc
->   format for every (static) function which needs a tiny explanation. The
->   usage of descriptive function names often replaces these tiny comments.
->   Apply common sense as always.
-> 
->  
-> Documenting locking requirements
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->   Documenting locking requirements is a good thing, but comments are not
->   necessarily the best choice. Instead of writing::
-> 
-> 	/* Caller must hold foo->lock */
-> 	void func(struct foo *foo)
-> 	{
-> 		...
-> 	}
-> 
->   Please use::
-> 
-> 	void func(struct foo *foo)
-> 	{
-> 		lockdep_assert_held(&foo->lock);
-> 		...
-> 	}
-> 
->   In PROVE_LOCKING kernels, lockdep_assert_held() emits a warning
->   if the caller doesn't hold the lock.  Comments can't do that.
-> 
-> Bracket rules
-> ^^^^^^^^^^^^^
-> 
-> Brackets should be omitted only if the statement which follows 'if', 'for',
-> 'while' etc. is truly a single line::
-> 
-> 	if (foo)
-> 		do_something();
-> 
-> The following is not considered to be a single line statement even
-> though C does not require brackets::
-> 
-> 	for (i = 0; i < end; i++)
-> 		if (foo[i])
-> 			do_something(foo[i]);
-> 
-> Adding brackets around the outer loop enhances the reading flow::
-> 
-> 	for (i = 0; i < end; i++) {
-> 		if (foo[i])
-> 			do_something(foo[i]);
-> 	}
-> 
-> 
-> Variable declarations
-> ^^^^^^^^^^^^^^^^^^^^^
-> 
-> The preferred ordering of variable declarations at the beginning of a
-> function is reverse fir tree order::
-> 
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned long foo, bar;
-> 	unsigned int tmp;
-> 	int ret;
-> 
-> The above is faster to parse than the reverse ordering::
-> 
-> 	int ret;
-> 	unsigned int tmp;
-> 	unsigned long foo, bar;
-> 	struct long_struct_name *descriptive_name;
-> 
-> And even more so than random ordering::
-> 
-> 	unsigned long foo, bar;
-> 	int ret;
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned int tmp;
-> 
-> Also please try to aggregate variables of the same type into a single
-> line. There is no point in wasting screen space::
-> 
-> 	unsigned long a;
-> 	unsigned long b;
-> 	unsigned long c;
-> 	unsigned long d;
-> 
-> It's really sufficient to do::
-> 
-> 	unsigned long a, b, c, d;
-> 
-> Please also refrain from introducing line splits in variable declarations::
-> 
-> 	struct long_struct_name *descriptive_name = container_of(bar,
-> 						      struct long_struct_name,
-> 	                                              member);
-> 	struct foobar foo;
-> 
-> It's way better to move the initialization to a separate line after the
-> declarations::
-> 
-> 	struct long_struct_name *descriptive_name;
-> 	struct foobar foo;
-> 
-> 	descriptive_name = container_of(bar, struct long_struct_name, member);
-> 
-> 
-> Variable types
-> ^^^^^^^^^^^^^^
-> 
-> Please use the proper u8, u16, u32, u64 types for variables which are meant
-> to describe hardware or are used as arguments for functions which access
-> hardware. These types are clearly defining the bit width and avoid
-> truncation, expansion and 32/64-bit confusion.
-> 
-> u64 is also recommended in code which would become ambiguous for 32-bit
-> kernels when 'unsigned long' would be used instead. While in such
-> situations 'unsigned long long' could be used as well, u64 is shorter
-> and also clearly shows that the operation is required to be 64 bits wide
-> independent of the target CPU.
-> 
-> Please use 'unsigned int' instead of 'unsigned'.
-> 
-> 
-> Constants
-> ^^^^^^^^^
-> 
-> Please do not use literal (hexa)decimal numbers in code or initializers.
-> Either use proper defines which have descriptive names or consider using
-> an enum.
-> 
-> 
-> Struct declarations and initializers
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> Struct declarations should align the struct member names in a tabular
-> fashion::
-> 
-> 	struct bar_order {
-> 		unsigned int	guest_id;
-> 		int		ordered_item;
-> 		struct menu	*menu;
-> 	};
-> 
-> Please avoid documenting struct members within the declaration, because
-> this often results in strangely formatted comments and the struct members
-> become obfuscated::
-> 
-> 	struct bar_order {
-> 		unsigned int	guest_id; /* Unique guest id */
-> 		int		ordered_item;
-> 		/* Pointer to a menu instance which contains all the drinks */
-> 		struct menu	*menu;
-> 	};
-> 
-> Instead, please consider using the kernel-doc format in a comment preceding
-> the struct declaration, which is easier to read and has the added advantage
-> of including the information in the kernel documentation, for example, as
-> follows::
-> 
-> 
-> 	/**
-> 	 * struct bar_order - Description of a bar order
-> 	 * @guest_id:		Unique guest id
-> 	 * @ordered_item:	The item number from the menu
-> 	 * @menu:		Pointer to the menu from which the item
-> 	 *  			was ordered
-> 	 *
-> 	 * Supplementary information for using the struct.
-> 	 *
-> 	 * Note, that the struct member descriptors above are arranged
-> 	 * in a tabular fashion.
-> 	 */
-> 	struct bar_order {
-> 		unsigned int	guest_id;
-> 		int		ordered_item;
-> 		struct menu	*menu;
-> 	};
-> 
-> Static struct initializers must use C99 initializers and should also be
-> aligned in a tabular fashion::
-> 
-> 	static struct foo statfoo = {
-> 		.a		= 0,
-> 		.plain_integer	= CONSTANT_DEFINE_OR_ENUM,
-> 		.bar		= &statbar,
-> 	};
-> 
-> Note that while C99 syntax allows the omission of the final comma,
-> we recommend the use of a comma on the last line because it makes
-> reordering and addition of new lines easier, and makes such future
-> patches slightly easier to read as well.
-> 
-> Line breaks
-> ^^^^^^^^^^^
-> 
-> Restricting line length to 80 characters makes deeply indented code hard to
-> read.  Consider breaking out code into helper functions to avoid excessive
-> line breaking.
-> 
-> The 80 character rule is not a strict rule, so please use common sense when
-> breaking lines. Especially format strings should never be broken up.
-> 
-> When splitting function declarations or function calls, then please align
-> the first argument in the second line with the first argument in the first
-> line::
-> 
->   static int long_function_name(struct foobar *barfoo, unsigned int id,
-> 				unsigned int offset)
->   {
-> 
-> 	if (!id) {
-> 		ret = longer_function_name(barfoo, DEFAULT_BARFOO_ID,
-> 					   offset);
-> 	...
-> 
-> Namespaces
-> ^^^^^^^^^^
-> 
-> Function/variable namespaces improve readability and allow easy
-> grepping. These namespaces are string prefixes for globally visible
-> function and variable names, including inlines. These prefixes should
-> combine the subsystem and the component name such as 'x86_comp\_',
-> 'sched\_', 'irq\_', and 'mutex\_'.
-> 
-> This also includes static file scope functions that are immediately put
-> into globally visible driver templates - it's useful for those symbols
-> to carry a good prefix as well, for backtrace readability.
-> 
-> Namespace prefixes may be omitted for local static functions and
-> variables. Truly local functions, only called by other local functions,
-> can have shorter descriptive names - our primary concern is greppability
-> and backtrace readability.
-> 
-> Please note that 'xxx_vendor\_' and 'vendor_xxx_` prefixes are not
-> helpful for static functions in vendor-specific files. After all, it
-> is already clear that the code is vendor-specific. In addition, vendor
-> names should only be for truly vendor-specific functionality.
-> 
-> As always apply common sense and aim for consistency and readability.
-> 
-> 
-> Commit notifications
-> --------------------
-> 
-> The tip tree is monitored by a bot for new commits. The bot sends an email
-> for each new commit to a dedicated mailing list
-> (``linux-tip-commits@vger.kernel.org``) and Cc's all people who are
-> mentioned in one of the commit tags. It uses the email message ID from the
-> Link tag at the end of the tag list to set the In-Reply-To email header so
-> the message is properly threaded with the patch submission email.
-> 
-> The tip maintainers and submaintainers try to reply to the submitter
-> when merging a patch, but they sometimes forget or it does not fit the
-> workflow of the moment. While the bot message is purely mechanical, it
-> also implies a 'Thank you! Applied.'.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+> ChangeLog:
+> v1->v2:
+>  * split into a helper function and called directly from sparse_init
+> ---
+>  mm/sparse.c | 29 ++++++++++++++++-------------
+>  1 file changed, 16 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index 408b737e168e..d02ee6bb7cbc 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -60,6 +60,18 @@ static inline void set_section_nid(unsigned long secti=
+on_nr, int nid)
+>  #endif
+> =20
+>  #ifdef CONFIG_SPARSEMEM_EXTREME
+> +static void __init sparse_alloc_section_roots(void)
+> +{
+> +	unsigned long size, align;
+> +
+> +	size =3D sizeof(struct mem_section *) * NR_SECTION_ROOTS;
+> +	align =3D 1 << (INTERNODE_CACHE_SHIFT);
+> +	mem_section =3D memblock_alloc(size, align);
+> +	if (!mem_section)
+> +		panic("%s: Failed to allocate %lu bytes align=3D0x%lx\n",
+> +		      __func__, size, align);
+> +}
+> +
+>  static noinline struct mem_section __ref *sparse_index_alloc(int nid)
+>  {
+>  	struct mem_section *section =3D NULL;
+> @@ -107,6 +119,8 @@ static inline int sparse_index_init(unsigned long sec=
+tion_nr, int nid)
+>  {
+>  	return 0;
+>  }
+> +
+> +static inline void sparse_alloc_section_roots(void) {}
+>  #endif
+> =20
+>  #ifdef CONFIG_SPARSEMEM_EXTREME
+> @@ -254,19 +268,6 @@ static void __init memory_present(int nid, unsigned =
+long start, unsigned long en
+>  {
+>  	unsigned long pfn;
+> =20
+> -#ifdef CONFIG_SPARSEMEM_EXTREME
+> -	if (unlikely(!mem_section)) {
+> -		unsigned long size, align;
+> -
+> -		size =3D sizeof(struct mem_section *) * NR_SECTION_ROOTS;
+> -		align =3D 1 << (INTERNODE_CACHE_SHIFT);
+> -		mem_section =3D memblock_alloc(size, align);
+> -		if (!mem_section)
+> -			panic("%s: Failed to allocate %lu bytes align=3D0x%lx\n",
+> -			      __func__, size, align);
+> -	}
+> -#endif
+> -
+>  	start &=3D PAGE_SECTION_MASK;
+>  	mminit_validate_memmodel_limits(&start, &end);
+>  	for (pfn =3D start; pfn < end; pfn +=3D PAGES_PER_SECTION) {
+> @@ -582,6 +583,8 @@ void __init sparse_init(void)
+>  	unsigned long pnum_end, pnum_begin, map_count =3D 1;
+>  	int nid_begin;
+> =20
+> +	sparse_alloc_section_roots();
 
--- 
-Regards/Gruss,
-    Boris.
+nit: The newline below is unnecessary
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +
+>  	memblocks_present();
+> =20
+>  	pnum_begin =3D first_present_section_nr();
+> --=20
+> 2.25.1
+>=20
+> =
