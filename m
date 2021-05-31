@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FBB396424
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981D4396358
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhEaPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55732 "EHLO mail.kernel.org"
+        id S232045AbhEaPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:14:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233625AbhEaO1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:27:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EC4F61C17;
-        Mon, 31 May 2021 13:47:03 +0000 (UTC)
+        id S233354AbhEaOLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:11:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B8FC61988;
+        Mon, 31 May 2021 13:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468823;
-        bh=cUkw0qjG7kiX+pmn/gAfEEiyJM1R+QsQ4474B0sxByE=;
+        s=korg; t=1622468479;
+        bh=UNlO1fM6zCSxN2GOwmtuEV0qOlY3BkYmF6gkGidp3oE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YLTiOkBcipXJxiR1fwDHLHBLe3ld8jjKgtGBSRE/0mdWPTJSCV2gsGRvoC3+hTCuH
-         ccwZd50RW0wwX8Ajc5P43cVUjA9ZsXqWkaZQozlg+9x1hCZmVTTYq5tL0r/rayecDq
-         f6c6SBGxHM2+WvcU0bHnKHvJvfYx8kwOtrdL9z8k=
+        b=S0x+eGVraK+yyrNqfIyOY2nn7sAigZCl2n7mUsOYtOake30dIOApk5hvdWYshQ7Kf
+         khWUC7s3tC5FQXi9gUds3siiG4YdZIUdNrdf8INmpLD2A2rzfRa/yr080TVgLdi8/5
+         mHqtqLg0cM2dJxYcFlMeW9eQn8jpr4Or6QYOkCpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Francesco Ruggeri <fruggeri@arista.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 142/177] net: mdio: octeon: Fix some double free issues
+Subject: [PATCH 5.10 234/252] ipv6: record frag_max_size in atomic fragments in input path
 Date:   Mon, 31 May 2021 15:14:59 +0200
-Message-Id: <20210531130652.846779246@linuxfoundation.org>
+Message-Id: <20210531130705.953755666@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Francesco Ruggeri <fruggeri@arista.com>
 
-[ Upstream commit e1d027dd97e1e750669cdc0d3b016a4f54e473eb ]
+[ Upstream commit e29f011e8fc04b2cdc742a2b9bbfa1b62518381a ]
 
-'bus->mii_bus' has been allocated with 'devm_mdiobus_alloc_size()' in the
-probe function. So it must not be freed explicitly or there will be a
-double free.
+Commit dbd1759e6a9c ("ipv6: on reassembly, record frag_max_size")
+filled the frag_max_size field in IP6CB in the input path.
+The field should also be filled in case of atomic fragments.
 
-Remove the incorrect 'mdiobus_free' in the error handling path of the
-probe function and in remove function.
-
-Suggested-By: Andrew Lunn <andrew@lunn.ch>
-Fixes: 35d2aeac9810 ("phy: mdio-octeon: Use devm_mdiobus_alloc_size()")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: dbd1759e6a9c ('ipv6: on reassembly, record frag_max_size')
+Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio-octeon.c | 2 --
- 1 file changed, 2 deletions(-)
+ net/ipv6/reassembly.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/mdio-octeon.c b/drivers/net/phy/mdio-octeon.c
-index 8327382aa568..088c73731652 100644
---- a/drivers/net/phy/mdio-octeon.c
-+++ b/drivers/net/phy/mdio-octeon.c
-@@ -72,7 +72,6 @@ static int octeon_mdiobus_probe(struct platform_device *pdev)
+diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
+index 47a0dc46cbdb..28e44782c94d 100644
+--- a/net/ipv6/reassembly.c
++++ b/net/ipv6/reassembly.c
+@@ -343,7 +343,7 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
+ 	hdr = ipv6_hdr(skb);
+ 	fhdr = (struct frag_hdr *)skb_transport_header(skb);
  
- 	return 0;
- fail_register:
--	mdiobus_free(bus->mii_bus);
- 	smi_en.u64 = 0;
- 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
- 	return err;
-@@ -86,7 +85,6 @@ static int octeon_mdiobus_remove(struct platform_device *pdev)
- 	bus = platform_get_drvdata(pdev);
+-	if (!(fhdr->frag_off & htons(0xFFF9))) {
++	if (!(fhdr->frag_off & htons(IP6_OFFSET | IP6_MF))) {
+ 		/* It is not a fragmented frame */
+ 		skb->transport_header += sizeof(struct frag_hdr);
+ 		__IP6_INC_STATS(net,
+@@ -351,6 +351,8 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
  
- 	mdiobus_unregister(bus->mii_bus);
--	mdiobus_free(bus->mii_bus);
- 	smi_en.u64 = 0;
- 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
- 	return 0;
+ 		IP6CB(skb)->nhoff = (u8 *)fhdr - skb_network_header(skb);
+ 		IP6CB(skb)->flags |= IP6SKB_FRAGMENTED;
++		IP6CB(skb)->frag_max_size = ntohs(hdr->payload_len) +
++					    sizeof(struct ipv6hdr);
+ 		return 1;
+ 	}
+ 
 -- 
 2.30.2
 
