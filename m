@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2129395F37
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC009395E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233498AbhEaOJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50118 "EHLO mail.kernel.org"
+        id S232854AbhEaN5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:57:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232294AbhEaNni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:43:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71E176141A;
-        Mon, 31 May 2021 13:28:59 +0000 (UTC)
+        id S232583AbhEaNhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:37:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13C4161450;
+        Mon, 31 May 2021 13:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467740;
-        bh=uezxJvycNkTzWWdG2Ib8ONvFnB0mypIVT8Dl0Jn9muc=;
+        s=korg; t=1622467584;
+        bh=AGDQ7EhDEKWLNEGK3KULBHI5AROZPAykwWkmLbXLINI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x6Z7MHnZW/iIXJZwmgULYpN5FHcS34gNEISV6otDE1ofIl3yn2HMMMzkfhmGcBT5y
-         f6ZYXSMFaMOZoJofqesOr+JHzvh8ruWilW4AEIWm4BkHoeDjtKYUNdz5FCGhFX59an
-         YCtgEAHuase5exTVUeJx8nYBqelvoPRd1wU/K+bo=
+        b=QuttTQYd8luIeR0wvgM9NfKKCUJ8DkICIE8TTU/JvBVupJcedMxarWggkd7fS/K9G
+         5b/hPyMoTPKT6u7JSaLkGbDlASXI09RtBVwGsuPz8m/AEmpgN1rsNGjT3sB9pNTwig
+         tFId7EMBvDnH4wUB0PdSGki7wYMOWBU3P0s8/JbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Manuel Lauss <manuel.lauss@googlemail.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Manuel Lauss <manuel.lauss@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 62/79] drm/amdgpu: Fix a use-after-free
+Subject: [PATCH 4.19 111/116] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
 Date:   Mon, 31 May 2021 15:14:47 +0200
-Message-Id: <20210531130637.981012920@linuxfoundation.org>
+Message-Id: <20210531130643.878727518@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xinhui pan <xinhui.pan@amd.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 1e5c37385097c35911b0f8a0c67ffd10ee1af9a2 ]
+[ Upstream commit ff4cff962a7eedc73e54b5096693da7f86c61346 ]
 
-looks like we forget to set ttm->sg to NULL.
-Hit panic below
+board-xxs1500.c references 2 functions without declaring them, so add
+the header file to placate the build.
 
-[ 1235.844104] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b7b4b: 0000 [#1] SMP DEBUG_PAGEALLOC NOPTI
-[ 1235.989074] Call Trace:
-[ 1235.991751]  sg_free_table+0x17/0x20
-[ 1235.995667]  amdgpu_ttm_backend_unbind.cold+0x4d/0xf7 [amdgpu]
-[ 1236.002288]  amdgpu_ttm_backend_destroy+0x29/0x130 [amdgpu]
-[ 1236.008464]  ttm_tt_destroy+0x1e/0x30 [ttm]
-[ 1236.013066]  ttm_bo_cleanup_memtype_use+0x51/0xa0 [ttm]
-[ 1236.018783]  ttm_bo_release+0x262/0xa50 [ttm]
-[ 1236.023547]  ttm_bo_put+0x82/0xd0 [ttm]
-[ 1236.027766]  amdgpu_bo_unref+0x26/0x50 [amdgpu]
-[ 1236.032809]  amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x7aa/0xd90 [amdgpu]
-[ 1236.040400]  kfd_ioctl_alloc_memory_of_gpu+0xe2/0x330 [amdgpu]
-[ 1236.046912]  kfd_ioctl+0x463/0x690 [amdgpu]
+../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
+../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
+   56 |  alchemy_gpio1_input_enable();
+../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
+   57 |  alchemy_gpio2_enable();
 
-Signed-off-by: xinhui pan <xinhui.pan@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
+ arch/mips/alchemy/board-xxs1500.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index d057bc29bf4c..b84ef2295d4f 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -1010,6 +1010,7 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_tt *ttm)
+diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
+index 5f05b8714385..b968cff5baa7 100644
+--- a/arch/mips/alchemy/board-xxs1500.c
++++ b/arch/mips/alchemy/board-xxs1500.c
+@@ -31,6 +31,7 @@
+ #include <asm/reboot.h>
+ #include <asm/setup.h>
+ #include <asm/mach-au1x00/au1000.h>
++#include <asm/mach-au1x00/gpio-au1000.h>
+ #include <prom.h>
  
- 	if (gtt && gtt->userptr) {
- 		kfree(ttm->sg);
-+		ttm->sg = NULL;
- 		ttm->page_flags &= ~TTM_PAGE_FLAG_SG;
- 		return;
- 	}
+ const char *get_system_type(void)
 -- 
 2.30.2
 
