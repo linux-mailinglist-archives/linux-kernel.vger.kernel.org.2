@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2693239592F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8EB395930
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbhEaKp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbhEaKpG (ORCPT
+        id S231285AbhEaKqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:46:35 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:59058 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230521AbhEaKqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:45:06 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CA9C061760;
-        Mon, 31 May 2021 03:43:25 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id lz27so15964043ejb.11;
-        Mon, 31 May 2021 03:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QJR89/55KXiudMnlzBPyQOfHeATecr68iMPdF7Lg45k=;
-        b=K1CXkY67aICkk8XQVHakyjkkVxcPKI0OgTVvMhRn0798culLJyaL453W0qgY4Uhk6N
-         vTR7zkfwIqMcFLegI0Yf3/meTKtrU/yDDQFU5qTytk9RaRgqM1Mfa2fQX3glxfM2EOID
-         Y5Gs3ZIcqC/NO72M0Olou7LZ0FQJwekMhY+90afE9JRtLgAPPCpfQZAEVcqZ8tDBtIsN
-         jTXMX9H524WiujyAW4oOXDo0g/c5JOYcsSAZEuPRVIeDGcPqXN2sclbF60Ya4KmDF9m1
-         Q5bgMdFWTGDSlBFZWNybZB3Iy96ksD9XKpa+auj4FXGP186ORO8gtrqaqXIM5e9pYqZd
-         +Z1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QJR89/55KXiudMnlzBPyQOfHeATecr68iMPdF7Lg45k=;
-        b=SVY/3lNHV6UGLn3DPi0dKIs6RV4OPwINjl19efFUESDSNKLn1L/q4DuR5FuOfJRrIV
-         VvUjqi/CBtRV+HUcfb228Lt7U1jcC38ObDn126Z1Mzqjpb61/I9An/lnut4MvcHz49zE
-         RM/WwvgGLgjA+UUWvsgmWRHtk4tmhhe+XRoJ3BwIRJMQTWTSQ1hcxL2RN7vnRVTaTZw7
-         TMl5BJPZQDxpnZvSwSUsqBdRsblriI0cYtjZfyH6JZTwqIQamPmx5vGqBrWbLSVeYd6i
-         oAw3TkZdzDyhcA/JQuEQEkgNgblPU38o+svGgI4WV/EoX3/CGMIo/QyTcKlbXpXu5oKp
-         7zZA==
-X-Gm-Message-State: AOAM5317d1Irl0CO+Cd1ZZpuc3XyysJBt9gZZlMQH9/yAMmlJ5MD05IX
-        lAAYNuk/CEeuISWpSCM9l20=
-X-Google-Smtp-Source: ABdhPJxDJvrgYdIK8f0tjjYwr6p6Uz/eVz7Ds1pKwC2HivAzFIfzlLx594swmbjxCRutv/Gr/5IFmw==
-X-Received: by 2002:a17:906:c0c6:: with SMTP id bn6mr21272637ejb.436.1622457803973;
-        Mon, 31 May 2021 03:43:23 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.gmail.com with ESMTPSA id dk9sm5741035ejb.91.2021.05.31.03.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 03:43:23 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] scsi: ufs: Use UPIU query trace in devman_upiu_cmd
-Date:   Mon, 31 May 2021 12:43:08 +0200
-Message-Id: <20210531104308.391842-5-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210531104308.391842-1-huobean@gmail.com>
-References: <20210531104308.391842-1-huobean@gmail.com>
+        Mon, 31 May 2021 06:46:33 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14VAemX0005914;
+        Mon, 31 May 2021 10:44:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=SVAol3IkzdCV9rAUTFwVdAtE3YampEO4twUVPgNA/0w=;
+ b=UG44VNpiXS9cO57AK+hh6Y9kh1z51yxMC/y4tPff4QNHl44Ip0XS2TvMgw9WIN1igflA
+ +XkZnEjs5D95NjdAsbPeO+gDFJxPlSh42aIc9MZgjc9X7kxqiaQ6ZhWajQ4BRS3jPtXe
+ ZK+uZBkYPIidiJXhNvTFM1kv5YgygtLp1FzYuoLyilLyDr0ZVElvPF0H1tb4+rcbVshv
+ wYo5U0+cy7S7Fm4MFLQEHhjVAOhCzPOE6LQJqKduyb5m/B/qCcTc2bqv97wiuUu7DS8g
+ bYRrbo8wOkIYTY1HjANiVZNbiEBNe/aNquQEt5tYmgMoC4t2ZMsfnQEAL6dWmQLClcgB 7g== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vng405eb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 10:44:10 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14VAdwXn071944;
+        Mon, 31 May 2021 10:44:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38ude61en4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 10:44:09 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14VAi9L8096696;
+        Mon, 31 May 2021 10:44:09 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 38ude61em3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 10:44:09 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14VAi3EC025081;
+        Mon, 31 May 2021 10:44:06 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 May 2021 03:44:02 -0700
+Date:   Mon, 31 May 2021 13:43:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in
+ snd_ctl_led_register
+Message-ID: <20210531104355.GZ24442@kadam>
+References: <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+ <20210531044022.GU24442@kadam>
+ <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
+ <20210531070337.GV24442@kadam>
+ <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
+ <CAD-N9QW5C2ssA7H_U+eiM=SbsPj29Ooo6Sk=r4d1qELbZQjuPA@mail.gmail.com>
+ <20210531084613.GX24442@kadam>
+ <CAD-N9QVAdaitDcM6BGfwvNR=gMf7G6DK00n0Ev6ucXc6xNFFpw@mail.gmail.com>
+ <20210531093817.GY24442@kadam>
+ <CAD-N9QUTZ49CvrhW76pTUDOp8y=29JXxR45Z_W53qVz0PJHVLw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD-N9QUTZ49CvrhW76pTUDOp8y=29JXxR45Z_W53qVz0PJHVLw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: XCihNY3fDneTXD-F4HpgD00nJDfkn9H2
+X-Proofpoint-GUID: XCihNY3fDneTXD-F4HpgD00nJDfkn9H2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Mon, May 31, 2021 at 06:35:33PM +0800, Dongliang Mu wrote:
+> On Mon, May 31, 2021 at 5:38 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > On Mon, May 31, 2021 at 05:10:49PM +0800, Dongliang Mu wrote:
+> > > Hi Dan,
+> > >
+> > > I wonder if we shall split the current patch into two patches, one
+> > > patch for each memory leak. It is better to satisfy the rule - "one
+> > > patch only fixes one issue".
+> > >
+> > > We should absolutely fix all these memory leaks. But one patch for two
+> > > different bugs with different objects and different paths is not very
+> > > suitable.
+> > >
+> >
+> > I would just send one patch, because I only see it as one bug.  But you
+> > do what you think is best.
+> 
+> If you think they are the same bug, that's great. Just send and apply
+> only one patch as it is. I will not send version v2.
 
-Since devman_upiu_cmd is not COMMAND UPIU, and doesn't have
-CDB, it is better to use UPIU query trace, which provides more
-helpful information for issue shooting.
+Sorry for the miscommunication.  That's not what I meant at all.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufshcd.c | 3 +++
- 1 file changed, 3 insertions(+)
+Your patch only introduces one put_device().  We need all five to fix
+the bug, and we'll have to change the kfree(link_whatever).  Use
+device_unregister() instead put_device().  Include a Reported-by with
+the correct syzkaller information.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index c84bd8e045f6..deb9e232b349 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6701,6 +6701,7 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
- 
- 	hba->dev_cmd.complete = &wait;
- 
-+	ufshcd_add_query_upiu_trace(hba, UFS_QUERY_SEND, lrbp->ucd_req_ptr);
- 	/* Make sure descriptors are ready before ringing the doorbell */
- 	wmb();
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-@@ -6732,6 +6733,8 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
- 			err = -EINVAL;
- 		}
- 	}
-+	ufshcd_add_query_upiu_trace(hba, err ? UFS_QUERY_ERR : UFS_QUERY_COMP,
-+				    (struct utp_upiu_req *)lrbp->ucd_rsp_ptr);
- 
- out:
- 	blk_put_request(req);
--- 
-2.25.1
+> 
+> BTW, could you please show me the syzbot link for the bug you tried to
+> resolve? If it is not from syzbot dashboard, can you please show the
+> bug report?
 
+What are you talking about?  I'm not trying to fix a syzkaller bug.  I'm
+just reviewing your patch.
+
+regards,
+dan carpenter
