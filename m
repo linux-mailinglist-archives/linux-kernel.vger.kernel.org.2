@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A8C395F50
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A143965C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhEaOKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:10:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50844 "EHLO mail.kernel.org"
+        id S232112AbhEaQsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233024AbhEaNoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:44:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DA0C6148E;
-        Mon, 31 May 2021 13:29:14 +0000 (UTC)
+        id S234091AbhEaOxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:53:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDE461CB2;
+        Mon, 31 May 2021 13:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467755;
-        bh=9OkA6C1b4toyGNfdPwPuomEDTENyBWcRtxdmU9HDPDk=;
+        s=korg; t=1622469546;
+        bh=pBUucN1CUmgv4k81TvkPDg3hIErTW1iRDuFbp3Yj5vw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qWHdisYN64V3au4MbyTmGCLmg2OYohKeLg4shEttqMblkbVIxAGAtiZPGcd8M84nl
-         mKOd9SRz43IA40CpjY3AHr0IdymFAENzG5Aja+vzU29bNFT9goX59dQ2yg2O9vy4cI
-         KzaBmiofHP/LRtrTALCMKr6QXynT6+y5jD1y/eDE=
+        b=pXEYY/ofeG7zzZ2f4qgsaSlT1oT7HdeMuGmbPJtMjvvg9T0n5cXoRQySm6CGE7zfI
+         TalZR0UWAg5/6OToGiCF5Lm4QtD2eG8m9KRLspK9zUsngj00b5xUNv0kLR2Jg6AmZC
+         Eq45jJocaHhglg4/aD1zcqSXWbz8P2QqFl5pMBqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 67/79] mld: fix panic in mld_newpack()
+Subject: [PATCH 5.12 237/296] net: mdio: thunder: Fix a double free issue in the .remove function
 Date:   Mon, 31 May 2021 15:14:52 +0200
-Message-Id: <20210531130638.134648749@linuxfoundation.org>
+Message-Id: <20210531130711.769463303@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,110 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 020ef930b826d21c5446fdc9db80fd72a791bc21 ]
+[ Upstream commit a93a0a15876d2a077a3bc260b387d2457a051f24 ]
 
-mld_newpack() doesn't allow to allocate high order page,
-only order-0 allocation is allowed.
-If headroom size is too large, a kernel panic could occur in skb_put().
+'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+probe function. So it must not be freed explicitly or there will be a
+double free.
 
-Test commands:
-    ip netns del A
-    ip netns del B
-    ip netns add A
-    ip netns add B
-    ip link add veth0 type veth peer name veth1
-    ip link set veth0 netns A
-    ip link set veth1 netns B
+Remove the incorrect 'mdiobus_free' in the remove function.
 
-    ip netns exec A ip link set lo up
-    ip netns exec A ip link set veth0 up
-    ip netns exec A ip -6 a a 2001:db8:0::1/64 dev veth0
-    ip netns exec B ip link set lo up
-    ip netns exec B ip link set veth1 up
-    ip netns exec B ip -6 a a 2001:db8:0::2/64 dev veth1
-    for i in {1..99}
-    do
-        let A=$i-1
-        ip netns exec A ip link add ip6gre$i type ip6gre \
-	local 2001:db8:$A::1 remote 2001:db8:$A::2 encaplimit 100
-        ip netns exec A ip -6 a a 2001:db8:$i::1/64 dev ip6gre$i
-        ip netns exec A ip link set ip6gre$i up
-
-        ip netns exec B ip link add ip6gre$i type ip6gre \
-	local 2001:db8:$A::2 remote 2001:db8:$A::1 encaplimit 100
-        ip netns exec B ip -6 a a 2001:db8:$i::2/64 dev ip6gre$i
-        ip netns exec B ip link set ip6gre$i up
-    done
-
-Splat looks like:
-kernel BUG at net/core/skbuff.c:110!
-invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.12.0+ #891
-Workqueue: ipv6_addrconf addrconf_dad_work
-RIP: 0010:skb_panic+0x15d/0x15f
-Code: 92 fe 4c 8b 4c 24 10 53 8b 4d 70 45 89 e0 48 c7 c7 00 ae 79 83
-41 57 41 56 41 55 48 8b 54 24 a6 26 f9 ff <0f> 0b 48 8b 6c 24 20 89
-34 24 e8 4a 4e 92 fe 8b 34 24 48 c7 c1 20
-RSP: 0018:ffff88810091f820 EFLAGS: 00010282
-RAX: 0000000000000089 RBX: ffff8881086e9000 RCX: 0000000000000000
-RDX: 0000000000000089 RSI: 0000000000000008 RDI: ffffed1020123efb
-RBP: ffff888005f6eac0 R08: ffffed1022fc0031 R09: ffffed1022fc0031
-R10: ffff888117e00187 R11: ffffed1022fc0030 R12: 0000000000000028
-R13: ffff888008284eb0 R14: 0000000000000ed8 R15: 0000000000000ec0
-FS:  0000000000000000(0000) GS:ffff888117c00000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8b801c5640 CR3: 0000000033c2c006 CR4: 00000000003706f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ? ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
- ? ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
- skb_put.cold.104+0x22/0x22
- ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
- ? rcu_read_lock_sched_held+0x91/0xc0
- mld_newpack+0x398/0x8f0
- ? ip6_mc_hdr.isra.26.constprop.46+0x600/0x600
- ? lock_contended+0xc40/0xc40
- add_grhead.isra.33+0x280/0x380
- add_grec+0x5ca/0xff0
- ? mld_sendpack+0xf40/0xf40
- ? lock_downgrade+0x690/0x690
- mld_send_initial_cr.part.34+0xb9/0x180
- ipv6_mc_dad_complete+0x15d/0x1b0
- addrconf_dad_completed+0x8d2/0xbb0
- ? lock_downgrade+0x690/0x690
- ? addrconf_rs_timer+0x660/0x660
- ? addrconf_dad_work+0x73c/0x10e0
- addrconf_dad_work+0x73c/0x10e0
-
-Allowing high order page allocation could fix this problem.
-
-Fixes: 72e09ad107e7 ("ipv6: avoid high order allocations")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/mcast.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/mdio/mdio-thunder.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index 959057515fc9..f3a291a9b2f8 100644
---- a/net/ipv6/mcast.c
-+++ b/net/ipv6/mcast.c
-@@ -1580,10 +1580,7 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, unsigned int mtu)
- 		     IPV6_TLV_PADN, 0 };
+diff --git a/drivers/net/mdio/mdio-thunder.c b/drivers/net/mdio/mdio-thunder.c
+index 3d7eda99d34e..dd7430c998a2 100644
+--- a/drivers/net/mdio/mdio-thunder.c
++++ b/drivers/net/mdio/mdio-thunder.c
+@@ -126,7 +126,6 @@ static void thunder_mdiobus_pci_remove(struct pci_dev *pdev)
+ 			continue;
  
- 	/* we assume size > sizeof(ra) here */
--	/* limit our allocations to order-0 page */
--	size = min_t(int, size, SKB_MAX_ORDER(0, 0));
- 	skb = sock_alloc_send_skb(sk, size, 1, &err);
--
- 	if (!skb)
- 		return NULL;
- 
+ 		mdiobus_unregister(bus->mii_bus);
+-		mdiobus_free(bus->mii_bus);
+ 		oct_mdio_writeq(0, bus->register_base + SMI_EN);
+ 	}
+ 	pci_release_regions(pdev);
 -- 
 2.30.2
 
