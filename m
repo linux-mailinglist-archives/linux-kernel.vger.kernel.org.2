@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5924395540
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8C2395545
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhEaGLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 02:11:37 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3298 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhEaGL0 (ORCPT
+        id S230150AbhEaGNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:13:16 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2479 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230013AbhEaGNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 02:11:26 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FtlBS3Rggz1BGpV;
-        Mon, 31 May 2021 14:05:04 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 14:09:41 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 14:09:40 +0800
-Subject: Re: [PATCH -next v2] cifsd: check return value of
- ksmbd_vfs_getcasexattr() correctly
-To:     Hyunchul Lee <hyc.lee@gmail.com>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        linux-cifsd-devel <linux-cifsd-devel@lists.sourceforge.net>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
-        Steve French <sfrench@samba.org>
-References: <20210531030550.1708816-1-yangyingliang@huawei.com>
- <CANFS6bbZysgZ2Wv7_FqmeBC0e34h5uiBLFdeiDvOxHFd2XGTSg@mail.gmail.com>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <0d4edde6-f8e8-5100-5c06-54ff2e0a7378@huawei.com>
-Date:   Mon, 31 May 2021 14:09:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 31 May 2021 02:13:14 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FtlGY4D2jz67NS;
+        Mon, 31 May 2021 14:08:37 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 14:11:23 +0800
+Received: from [10.174.179.129] (10.174.179.129) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 31 May 2021 14:11:22 +0800
+Subject: Re: [PATCH 2/3] dmaengine: usb-dmac: Fix PM reference leak in
+ usb_dmac_probe()
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <michal.simek@xilinx.com>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <yi.zhang@huawei.com>
+References: <20210517081826.1564698-1-yukuai3@huawei.com>
+ <20210517081826.1564698-3-yukuai3@huawei.com>
+ <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
+Date:   Mon, 31 May 2021 14:11:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CANFS6bbZysgZ2Wv7_FqmeBC0e34h5uiBLFdeiDvOxHFd2XGTSg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
+In-Reply-To: <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.129]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/5/31 13:38, Hyunchul Lee wrote:
-> 2021년 5월 31일 (월) 오후 12:01, Yang Yingliang <yangyingliang@huawei.com>님이 작성:
->> If ksmbd_vfs_getcasexattr() returns -ENOMEM, stream_buf is NULL,
->> it will cause null-ptr-deref when using it to copy memory. So we
->> need check the return value of ksmbd_vfs_getcasexattr() by comparing
->> with 0.
+On 2021/05/31 12:00, Vinod Koul wrote:
+> On 17-05-21, 16:18, Yu Kuai wrote:
+>> pm_runtime_get_sync will increment pm usage counter even it failed.
+>> Forgetting to putting operation will result in reference leak here.
+>> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+>> counter balanced.
 >>
->> Fixes: f44158485826 ("cifsd: add file operations")
->> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 >> ---
->> v2:
->>    Handle the case ksmbd_vfs_getcasexattr() returns 0.
->> ---
->>   fs/cifsd/vfs.c | 10 ++++------
->>   1 file changed, 4 insertions(+), 6 deletions(-)
+>>   drivers/dma/sh/usb-dmac.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> diff --git a/fs/cifsd/vfs.c b/fs/cifsd/vfs.c
->> index 97d5584ec870..2a9cc0bc7726 100644
->> --- a/fs/cifsd/vfs.c
->> +++ b/fs/cifsd/vfs.c
->> @@ -274,7 +274,6 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_t *pos,
->>   {
->>          ssize_t v_len;
->>          char *stream_buf = NULL;
->> -       int err;
->>
->>          ksmbd_debug(VFS, "read stream data pos : %llu, count : %zd\n",
->>                      *pos, count);
->> @@ -283,10 +282,9 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_t *pos,
->>                                         fp->stream.name,
->>                                         fp->stream.size,
->>                                         &stream_buf);
->> -       if (v_len == -ENOENT) {
->> +       if ((int)v_len <= 0) {
->>                  ksmbd_err("not found stream in xattr : %zd\n", v_len);
->> -               err = -ENOENT;
->> -               return err;
->> +               return v_len == 0 ? -ENOENT : (int)v_len;
-> How about making ksmbd_vfs_getcasexattr return -ENONENT instead of
-> returning 0 to
-> remove duplicate error handling code?
-Yes, I think it's ok, I will send a v3 later.
+>> diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
+>> index 8f7ceb698226..2a6c8fd8854e 100644
+>> --- a/drivers/dma/sh/usb-dmac.c
+>> +++ b/drivers/dma/sh/usb-dmac.c
+>> @@ -796,7 +796,7 @@ static int usb_dmac_probe(struct platform_device *pdev)
+>>   
+>>   	/* Enable runtime PM and initialize the device. */
+>>   	pm_runtime_enable(&pdev->dev);
+>> -	ret = pm_runtime_get_sync(&pdev->dev);
+>> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+> 
+> This does not seem to fix anything.. the below goto goes and disables
+> the runtime_pm for this device and thus there wont be any leak
+Hi,
 
-Thanks,
-Yang
->
-> Thanks,
-> Hyunchul
->
->>          }
->>
->>          memcpy(buf, &stream_buf[*pos], count);
->> @@ -415,9 +413,9 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *fp, char *buf, loff_t *pos,
->>                                         fp->stream.name,
->>                                         fp->stream.size,
->>                                         &stream_buf);
->> -       if (v_len == -ENOENT) {
->> +       if ((int)v_len <= 0) {
->>                  ksmbd_err("not found stream in xattr : %zd\n", v_len);
->> -               err = -ENOENT;
->> +               err = v_len == 0 ? -ENOENT : (int)v_len;
->>                  goto out;
->>          }
->>
->> --
->> 2.25.1
->>
-> .
+If pm_runtime_get_sync() fails and increments the pm.usage_count
+variable, pm_runtime_disable() does not reset the counter, and
+we still need to decrement the usage count when pm_runtime_get_sync()
+fails. Do I miss anthing?
+
+Thansk!
+Yu Kuai
+> 
+>>   	if (ret < 0) {
+>>   		dev_err(&pdev->dev, "runtime PM get sync failed (%d)\n", ret);
+>>   		goto error_pm;
+>> -- 
+>> 2.25.4
+> 
