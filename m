@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83D2395C85
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA6D3963EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhEaNd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S234994AbhEaPkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232201AbhEaNYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:24:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 733DA613EE;
-        Mon, 31 May 2021 13:20:25 +0000 (UTC)
+        id S233472AbhEaOXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:23:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71173619C8;
+        Mon, 31 May 2021 13:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467225;
-        bh=LOYDeiLrhcDP4zwaZTt1168ZKju0XGi4RobW7B2KpGU=;
+        s=korg; t=1622468739;
+        bh=Pla75ePXqOjm6vomz35pFb74Fd8RlTdglMiFbCbmQ5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IwKSSCZrUStSUwshn9kBRPk2CgOHfuoRDgpWmarvlawqYY0ZNbhg+ytzIkq+yAZDh
-         fgQyLm/lh4VkcOCrRMOoxIW9nRlg3fTbiu7pa7IP2nIje13RLCjbdta2ZtN2OHe7+f
-         Aw7uuivmIS2ROKEJgu+5NLT38DrVpIo55Qfsu9kg=
+        b=nVfUf5pjJ7zG94ATpEpxKByWu+312iJjCzaa9hP055om9SjwHyMXTfMH9isgdbBVd
+         sv5shcOyEQw7Ys286QirZOcxH/LFPaH0cAYvxZuGvIGTnrcn7nMq3YZO+LRWg5QaMl
+         mYdOBKnKPm9beFHkzBsptoYwwr5MzOH7vv/hXYoI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 53/66] drm/amdgpu: Fix a use-after-free
+Subject: [PATCH 5.4 109/177] Revert "libertas: add checks for the return value of sysfs_create_group"
 Date:   Mon, 31 May 2021 15:14:26 +0200
-Message-Id: <20210531130637.935427397@linuxfoundation.org>
+Message-Id: <20210531130651.676252546@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xinhui pan <xinhui.pan@amd.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 1e5c37385097c35911b0f8a0c67ffd10ee1af9a2 ]
+[ Upstream commit 46651077765c80a0d6f87f3469129a72e49ce91b ]
 
-looks like we forget to set ttm->sg to NULL.
-Hit panic below
+This reverts commit 434256833d8eb988cb7f3b8a41699e2fe48d9332.
 
-[ 1235.844104] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b7b4b: 0000 [#1] SMP DEBUG_PAGEALLOC NOPTI
-[ 1235.989074] Call Trace:
-[ 1235.991751]  sg_free_table+0x17/0x20
-[ 1235.995667]  amdgpu_ttm_backend_unbind.cold+0x4d/0xf7 [amdgpu]
-[ 1236.002288]  amdgpu_ttm_backend_destroy+0x29/0x130 [amdgpu]
-[ 1236.008464]  ttm_tt_destroy+0x1e/0x30 [ttm]
-[ 1236.013066]  ttm_bo_cleanup_memtype_use+0x51/0xa0 [ttm]
-[ 1236.018783]  ttm_bo_release+0x262/0xa50 [ttm]
-[ 1236.023547]  ttm_bo_put+0x82/0xd0 [ttm]
-[ 1236.027766]  amdgpu_bo_unref+0x26/0x50 [amdgpu]
-[ 1236.032809]  amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x7aa/0xd90 [amdgpu]
-[ 1236.040400]  kfd_ioctl_alloc_memory_of_gpu+0xe2/0x330 [amdgpu]
-[ 1236.046912]  kfd_ioctl+0x463/0x690 [amdgpu]
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Signed-off-by: xinhui pan <xinhui.pan@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit was incorrect, the error needs to be propagated back
+to the caller AND if the second group call fails, the first needs to be
+removed.  There are much better ways to solve this, the driver should
+NOT be calling sysfs_create_group() on its own as it is racing userspace
+and loosing.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-53-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/marvell/libertas/mesh.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 7271e3f32d82..ab041ae58b20 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -886,6 +886,7 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_tt *ttm)
+diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
+index 2747c957d18c..a21c86d446fa 100644
+--- a/drivers/net/wireless/marvell/libertas/mesh.c
++++ b/drivers/net/wireless/marvell/libertas/mesh.c
+@@ -805,12 +805,7 @@ static void lbs_persist_config_init(struct net_device *dev)
+ {
+ 	int ret;
+ 	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
+-	if (ret)
+-		pr_err("failed to create boot_opts_group.\n");
+-
+ 	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
+-	if (ret)
+-		pr_err("failed to create mesh_ie_group.\n");
+ }
  
- 	if (gtt && gtt->userptr) {
- 		kfree(ttm->sg);
-+		ttm->sg = NULL;
- 		ttm->page_flags &= ~TTM_PAGE_FLAG_SG;
- 		return;
- 	}
+ static void lbs_persist_config_remove(struct net_device *dev)
 -- 
 2.30.2
 
