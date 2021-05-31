@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6FC395D71
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D52395B60
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhEaNpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:45:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39186 "EHLO mail.kernel.org"
+        id S231827AbhEaNUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:20:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232161AbhEaNbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:31:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A25D613B6;
-        Mon, 31 May 2021 13:23:35 +0000 (UTC)
+        id S231823AbhEaNSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:18:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAEC160FE8;
+        Mon, 31 May 2021 13:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467416;
-        bh=vRqAwUqYtFJ1JEWXTPZFIsAOh+Kh2rbyILSszCFx2fw=;
+        s=korg; t=1622467021;
+        bh=w3/GKWvF3YoRzibKiLpzRRg5LpdhtsVnBLC8UcgKUeM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oeEfACIamPmDRERrZIpYbCC+/ustdhrmWCF2YRlNFZRsRpnl9cxDmrLqJLn6U8F/D
-         rjUHToqtT8mEFc5JN6CE8xLHv6t97oa/OA5Ke8r7hUkwDgz0PuMlXWnSqMO7oZi/5w
-         JUYxUbNwVj14v/mi9I254UNRaihGqOyUIddK2+Jc=
+        b=Cs+pWkX3o4k57ufVhhcon/4RuzmS0k7wS959IW9rrcfqWi3BhhXA2ZAyhzTp2XoZ5
+         XjipNtUM6Kbe2DhPAvdxjIk/613/TGTi1ZmPmNUrr+K97i2wOlbG8M2nrq4mWZjvOT
+         d/jErX+7OFPEMDplr2fQwd27NOhT4aV65dxCMIps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Piotr Krysiuk <piotras@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 057/116] bpf: Fix mask direction swap upon off reg sign change
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 27/54] Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
 Date:   Mon, 31 May 2021 15:13:53 +0200
-Message-Id: <20210531130642.106387425@linuxfoundation.org>
+Message-Id: <20210531130635.937727747@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,75 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-commit bb01a1bba579b4b1c5566af24d95f1767859771e upstream
+commit 75016891357a628d2b8acc09e2b9b2576c18d318 upstream.
 
-Masking direction as indicated via mask_to_left is considered to be
-calculated once and then used to derive pointer limits. Thus, this
-needs to be placed into bpf_sanitize_info instead so we can pass it
-to sanitize_ptr_alu() call after the pointer move. Piotr noticed a
-corner case where the off reg causes masking direction change which
-then results in an incorrect final aux->alu_limit.
+This reverts commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046.
+Above fix is not correct and caused memory leak issue.
 
-Fixes: 7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic mask")
-Reported-by: Piotr Krysiuk <piotras@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Fixes: 6bf24dc0cc0c ("net:tipc: Fix a double free in tipc_sk_mcast_rcv")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Acked-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |   22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ net/tipc/socket.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2738,18 +2738,10 @@ enum {
- };
- 
- static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
--			      const struct bpf_reg_state *off_reg,
--			      u32 *alu_limit, u8 opcode)
-+			      u32 *alu_limit, bool mask_to_left)
- {
--	bool off_is_neg = off_reg->smin_value < 0;
--	bool mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
--			    (opcode == BPF_SUB && !off_is_neg);
- 	u32 max = 0, ptr_limit = 0;
- 
--	if (!tnum_is_const(off_reg->var_off) &&
--	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
--		return REASON_BOUNDS;
--
- 	switch (ptr_reg->type) {
- 	case PTR_TO_STACK:
- 		/* Offset 0 is out-of-bounds, but acceptable start for the
-@@ -2817,6 +2809,7 @@ static bool sanitize_needed(u8 opcode)
- 
- struct bpf_sanitize_info {
- 	struct bpf_insn_aux_data aux;
-+	bool mask_to_left;
- };
- 
- static int sanitize_ptr_alu(struct bpf_verifier_env *env,
-@@ -2848,7 +2841,16 @@ static int sanitize_ptr_alu(struct bpf_v
- 	if (vstate->speculative)
- 		goto do_sim;
- 
--	err = retrieve_ptr_limit(ptr_reg, off_reg, &alu_limit, opcode);
-+	if (!commit_window) {
-+		if (!tnum_is_const(off_reg->var_off) &&
-+		    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
-+			return REASON_BOUNDS;
-+
-+		info->mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
-+				     (opcode == BPF_SUB && !off_is_neg);
-+	}
-+
-+	err = retrieve_ptr_limit(ptr_reg, &alu_limit, info->mask_to_left);
- 	if (err < 0)
- 		return err;
- 
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -763,7 +763,10 @@ void tipc_sk_mcast_rcv(struct net *net,
+ 		spin_lock_bh(&inputq->lock);
+ 		if (skb_peek(arrvq) == skb) {
+ 			skb_queue_splice_tail_init(&tmpq, inputq);
+-			__skb_dequeue(arrvq);
++			/* Decrease the skb's refcnt as increasing in the
++			 * function tipc_skb_peek
++			 */
++			kfree_skb(__skb_dequeue(arrvq));
+ 		}
+ 		spin_unlock_bh(&inputq->lock);
+ 		__skb_queue_purge(&tmpq);
 
 
