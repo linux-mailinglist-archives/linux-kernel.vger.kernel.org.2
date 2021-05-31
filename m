@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6C439632C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D827395DAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbhEaPHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:07:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40090 "EHLO mail.kernel.org"
+        id S232661AbhEaNt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:49:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233240AbhEaOJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:09:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5BF761975;
-        Mon, 31 May 2021 13:40:07 +0000 (UTC)
+        id S232708AbhEaNeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:34:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83396613EE;
+        Mon, 31 May 2021 13:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468408;
-        bh=ZVRUcOSvAINhYD9WrYhTBPu86cPPOFC09xaeCR1Yfh8=;
+        s=korg; t=1622467489;
+        bh=NVhnBFxxbsod3bZ71tcKvqdmuRUUR+JQxC8nBsemxoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fk2EfZElJuatrLZOcraQCzq/4VSlzjYJw9zzR4ifXDoCbt4mOpXFyVX9GhLjPXsZ8
-         gfeNmURyHfHPcK1smgAbvHuel5ve3b4V/Vm7lOhyuY0ghwxV7PbYEcvbJ8yuNj17CF
-         Ojh642mxssRj466HVozh2WwZ6lrPiMJY+9QAy1WE=
+        b=yOMBNZcleDlUyUMShTXu7y6Tr8O+TTkNrVNKyBhtiNZQQ+dRf7e3plpmM6tkoAXPV
+         Hggp1O33Ur2FqC7T/L9/DsG55hBOsGHxtLaL5wiJqYDM2A/3C8qA7EZ+zN/PUshZS2
+         N7PEKloboCRcc2Uh7FccxM1EpGHbqJLVanlryNfM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Farman <farman@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
+        stable@vger.kernel.org, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Alaa Emad <alaaemadhossney.ae@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 196/252] vfio-ccw: Check initialized flag in cp_init()
+Subject: [PATCH 4.19 085/116] media: dvb: Add check on sp8870_readreg return
 Date:   Mon, 31 May 2021 15:14:21 +0200
-Message-Id: <20210531130704.677269763@linuxfoundation.org>
+Message-Id: <20210531130643.030295334@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Farman <farman@linux.ibm.com>
+From: Alaa Emad <alaaemadhossney.ae@gmail.com>
 
-[ Upstream commit c6c82e0cd8125d30f2f1b29205c7e1a2f1a6785b ]
+[ Upstream commit c6d822c56e7fd29e6fa1b1bb91b98f6a1e942b3c ]
 
-We have a really nice flag in the channel_program struct that
-indicates if it had been initialized by cp_init(), and use it
-as a guard in the other cp accessor routines, but not for a
-duplicate call into cp_init(). The possibility of this occurring
-is low, because that flow is protected by the private->io_mutex
-and FSM CP_PROCESSING state. But then why bother checking it
-in (for example) cp_prefetch() then?
+The function sp8870_readreg returns a negative value when i2c_transfer
+fails so properly check for this and return the error if it happens.
 
-Let's just be consistent and check for that in cp_init() too.
-
-Fixes: 71189f263f8a3 ("vfio-ccw: make it safe to access channel programs")
-Signed-off-by: Eric Farman <farman@linux.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Acked-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Message-Id: <20210511195631.3995081-2-farman@linux.ibm.com>
-Signed-off-by: Cornelia Huck <cohuck@redhat.com>
+Cc: Sean Young <sean@mess.org>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-60-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/cio/vfio_ccw_cp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/dvb-frontends/sp8870.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/s390/cio/vfio_ccw_cp.c b/drivers/s390/cio/vfio_ccw_cp.c
-index b9febc581b1f..8d1b2771c1aa 100644
---- a/drivers/s390/cio/vfio_ccw_cp.c
-+++ b/drivers/s390/cio/vfio_ccw_cp.c
-@@ -638,6 +638,10 @@ int cp_init(struct channel_program *cp, struct device *mdev, union orb *orb)
- 	static DEFINE_RATELIMIT_STATE(ratelimit_state, 5 * HZ, 1);
- 	int ret;
+diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
+index 8d31cf3f4f07..3a577788041d 100644
+--- a/drivers/media/dvb-frontends/sp8870.c
++++ b/drivers/media/dvb-frontends/sp8870.c
+@@ -293,7 +293,9 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
+ 	sp8870_writereg(state, 0xc05, reg0xc05);
  
-+	/* this is an error in the caller */
-+	if (cp->initialized)
-+		return -EBUSY;
-+
- 	/*
- 	 * We only support prefetching the channel program. We assume all channel
- 	 * programs executed by supported guests likewise support prefetching.
+ 	// read status reg in order to clear pending irqs
+-	sp8870_readreg(state, 0x200);
++	err = sp8870_readreg(state, 0x200);
++	if (err < 0)
++		return err;
+ 
+ 	// system controller start
+ 	sp8870_microcontroller_start(state);
 -- 
 2.30.2
 
