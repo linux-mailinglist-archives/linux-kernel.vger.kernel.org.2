@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D827395DAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55ADB395F8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhEaNt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:49:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
+        id S233389AbhEaOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232708AbhEaNeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:34:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83396613EE;
-        Mon, 31 May 2021 13:24:48 +0000 (UTC)
+        id S232814AbhEaNpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:45:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C35EF61428;
+        Mon, 31 May 2021 13:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467489;
-        bh=NVhnBFxxbsod3bZ71tcKvqdmuRUUR+JQxC8nBsemxoY=;
+        s=korg; t=1622467792;
+        bh=yeK4QSIuwQInUo50dTdpiX7O1gfAmxoFGOPlZSDNhgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yOMBNZcleDlUyUMShTXu7y6Tr8O+TTkNrVNKyBhtiNZQQ+dRf7e3plpmM6tkoAXPV
-         Hggp1O33Ur2FqC7T/L9/DsG55hBOsGHxtLaL5wiJqYDM2A/3C8qA7EZ+zN/PUshZS2
-         N7PEKloboCRcc2Uh7FccxM1EpGHbqJLVanlryNfM=
+        b=nWoZNc7kcaRsIkIXcaj6ZXepoYeNEKucmEOCgyoAG5XVPaWRLOLsIAEH9CEldFQ3h
+         SZ0Vu9Z4STQIED7pLdmDaoVQufBjA7odwRN0k6GiMbYx2pLL/EhXLfHO7rksGkSCC5
+         afeonylm+yUd09jpXZJJRvRcTSJtt8+Uc/rLpN4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 085/116] media: dvb: Add check on sp8870_readreg return
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.14 36/79] NFS: Dont corrupt the value of pg_bytes_written in nfs_do_recoalesce()
 Date:   Mon, 31 May 2021 15:14:21 +0200
-Message-Id: <20210531130643.030295334@linuxfoundation.org>
+Message-Id: <20210531130637.167248150@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alaa Emad <alaaemadhossney.ae@gmail.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit c6d822c56e7fd29e6fa1b1bb91b98f6a1e942b3c ]
+commit 0d0ea309357dea0d85a82815f02157eb7fcda39f upstream.
 
-The function sp8870_readreg returns a negative value when i2c_transfer
-fails so properly check for this and return the error if it happens.
+The value of mirror->pg_bytes_written should only be updated after a
+successful attempt to flush out the requests on the list.
 
-Cc: Sean Young <sean@mess.org>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-60-gregkh@linuxfoundation.org
+Fixes: a7d42ddb3099 ("nfs: add mirroring support to pgio layer")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/sp8870.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/nfs/pagelist.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
-index 8d31cf3f4f07..3a577788041d 100644
---- a/drivers/media/dvb-frontends/sp8870.c
-+++ b/drivers/media/dvb-frontends/sp8870.c
-@@ -293,7 +293,9 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
- 	sp8870_writereg(state, 0xc05, reg0xc05);
+--- a/fs/nfs/pagelist.c
++++ b/fs/nfs/pagelist.c
+@@ -986,17 +986,16 @@ static void nfs_pageio_doio(struct nfs_p
+ {
+ 	struct nfs_pgio_mirror *mirror = nfs_pgio_current_mirror(desc);
  
- 	// read status reg in order to clear pending irqs
--	sp8870_readreg(state, 0x200);
-+	err = sp8870_readreg(state, 0x200);
-+	if (err < 0)
-+		return err;
+-
+ 	if (!list_empty(&mirror->pg_list)) {
+ 		int error = desc->pg_ops->pg_doio(desc);
+ 		if (error < 0)
+ 			desc->pg_error = error;
+-		else
++		if (list_empty(&mirror->pg_list)) {
+ 			mirror->pg_bytes_written += mirror->pg_count;
+-	}
+-	if (list_empty(&mirror->pg_list)) {
+-		mirror->pg_count = 0;
+-		mirror->pg_base = 0;
++			mirror->pg_count = 0;
++			mirror->pg_base = 0;
++			mirror->pg_recoalesce = 0;
++		}
+ 	}
+ }
  
- 	// system controller start
- 	sp8870_microcontroller_start(state);
--- 
-2.30.2
-
+@@ -1094,7 +1093,6 @@ static int nfs_do_recoalesce(struct nfs_
+ 
+ 	do {
+ 		list_splice_init(&mirror->pg_list, &head);
+-		mirror->pg_bytes_written -= mirror->pg_count;
+ 		mirror->pg_count = 0;
+ 		mirror->pg_base = 0;
+ 		mirror->pg_recoalesce = 0;
 
 
