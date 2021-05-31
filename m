@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7295F395CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A03396378
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhEaNjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:39:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32884 "EHLO mail.kernel.org"
+        id S232545AbhEaPSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:18:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231626AbhEaN1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:27:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65DAA6140B;
-        Mon, 31 May 2021 13:21:31 +0000 (UTC)
+        id S233537AbhEaOOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:14:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 268F66199B;
+        Mon, 31 May 2021 13:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467292;
-        bh=jYjWdxGle6NuNLuxROdtIqxVjIKIfmoY5UTauMyD3Do=;
+        s=korg; t=1622468544;
+        bh=+AnYopkoo2JAvurKoTnNndHvZirtU9zs5Jxey1oteq0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mUHJFta++F/rIoVhUYxMdzKg+YY/mhtumaFerX/FZ8idyy5BQEivQ5Fvkjo1I0TpH
-         L6a34aHrh0L5SelRImnAGa8lmgIT1bs+iWWYVutFgOqc6MNKDY/pgj/fWQBIF/CwJa
-         WC87a391MGsIg/RSl5EuZ9iRO0pYgpBVfHyJOfOQ=
+        b=Im6CphXdEjLmF75R//0+xUcbyUffMWFoQ0UdsQmyjGKcmd9e90XbBlQ9Onb+XiNxL
+         jm4pbfAgYkxb/AHuKTCQwRvHO2ZWaSqbKg2POdvDeiWQC3Hz4+ePCL5AAqDUoCcmwZ
+         IqRSBsuSDPWnKP33usCHOB4PZwokM0gN1wsQ/LEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.19 011/116] mac80211: assure all fragments are encrypted
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 030/177] dm snapshot: properly fix a crash when an origin has no snapshots
 Date:   Mon, 31 May 2021 15:13:07 +0200
-Message-Id: <20210531130640.526630328@linuxfoundation.org>
+Message-Id: <20210531130648.958720109@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 965a7d72e798eb7af0aa67210e37cf7ecd1c9cad upstream.
+commit 7e768532b2396bcb7fbf6f82384b85c0f1d2f197 upstream.
 
-Do not mix plaintext and encrypted fragments in protected Wi-Fi
-networks. This fixes CVE-2020-26147.
+If an origin target has no snapshots, o->split_boundary is set to 0.
+This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
 
-Previously, an attacker was able to first forward a legitimate encrypted
-fragment towards a victim, followed by a plaintext fragment. The
-encrypted and plaintext fragment would then be reassembled. For further
-details see Section 6.3 and Appendix D in the paper "Fragment and Forge:
-Breaking Wi-Fi Through Frame Aggregation and Fragmentation".
+Fix this by initializing chunk_size, and in turn split_boundary, to
+rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
+into "unsigned" type.
 
-Because of this change there are now two equivalent conditions in the
-code to determine if a received fragment requires sequential PNs, so we
-also move this test to a separate function to make the code easier to
-maintain.
-
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
-Link: https://lore.kernel.org/r/20210511200110.30c4394bb835.I5acfdb552cc1d20c339c262315950b3eac491397@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/rx.c |   23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/md/dm-snap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2078,6 +2078,16 @@ ieee80211_reassemble_find(struct ieee802
- 	return NULL;
- }
- 
-+static bool requires_sequential_pn(struct ieee80211_rx_data *rx, __le16 fc)
-+{
-+	return rx->key &&
-+		(rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP_256 ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP_256) &&
-+		ieee80211_has_protected(fc);
-+}
-+
- static ieee80211_rx_result debug_noinline
- ieee80211_rx_h_defragment(struct ieee80211_rx_data *rx)
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -854,7 +854,7 @@ static int dm_add_exception(void *contex
+ static uint32_t __minimum_chunk_size(struct origin *o)
  {
-@@ -2122,12 +2132,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 		/* This is the first fragment of a new frame. */
- 		entry = ieee80211_reassemble_add(rx->sdata, frag, seq,
- 						 rx->seqno_idx, &(rx->skb));
--		if (rx->key &&
--		    (rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP_256 ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP_256) &&
--		    ieee80211_has_protected(fc)) {
-+		if (requires_sequential_pn(rx, fc)) {
- 			int queue = rx->security_idx;
+ 	struct dm_snapshot *snap;
+-	unsigned chunk_size = 0;
++	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
  
- 			/* Store CCMP/GCMP PN so that we can verify that the
-@@ -2169,11 +2174,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 		u8 pn[IEEE80211_CCMP_PN_LEN], *rpn;
- 		int queue;
- 
--		if (!rx->key ||
--		    (rx->key->conf.cipher != WLAN_CIPHER_SUITE_CCMP &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_CCMP_256 &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_GCMP &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_GCMP_256))
-+		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
- 		memcpy(pn, entry->last_pn, IEEE80211_CCMP_PN_LEN);
- 		for (i = IEEE80211_CCMP_PN_LEN - 1; i >= 0; i--) {
+ 	if (o)
+ 		list_for_each_entry(snap, &o->snapshots, list)
 
 
