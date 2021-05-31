@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34553955BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171BE3955C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhEaHIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        id S230165AbhEaHKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbhEaHIB (ORCPT
+        with ESMTP id S230070AbhEaHKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:08:01 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E3FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:06:21 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id mq2-20020a17090b3802b0290162428291f5so2986752pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:06:21 -0700 (PDT)
+        Mon, 31 May 2021 03:10:25 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DB9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:08:46 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id l12so409416uai.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OXNljNLjDHh35jBsdEQkJoC/0R7Ygjho6Qqcywt3z/w=;
-        b=dDqYXJO++yROCI3CgDkyBgmQ+UMv0xeBTOST4xv3e9EqW5aBBQf5OOyuh3Rb9ZPfwK
-         azuSDeNzX8Gipj79OZsJ3IcrNvRlPPbK0ZE8rHa8gRrR0KCFWg8s8tNIoIFB8abyEn8O
-         Xe4lsHC7wjxDYbIQek1+ciDhVt4jiAomh1H+bRNqJdcqy14VcrpAozzP9TEBSv1+a9Ia
-         qjAMq+IBMhe7Kf3GqsW5GUdJ4msVKJ4g/szcF7StIPOxidK4EPUaYhMI5vLCeNaXoHpz
-         JiFnbjSmyqJhsd/pfrLGehgaahq/TBafVIBfr4unRdfPVuwED0Qp1lX5SVVFT/9ji0Ji
-         r94w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1vUcOLOLJFvqTx0Q1+alN5ka8ZC+o11y2paCA+C3hD8=;
+        b=S2UNFqxEhgyn5voEcAQ5yYLEXfKVM2XwBNQgOUuhiwcTjPFzIfdtCZ4Yvj7mDRJSeG
+         GDGUB0fLTUyYVPw25QdBjMlLftuN8zV0eLOH+bRziHVmayRjeAwUy9YTYl+QBGJ0taUg
+         VMerwRBPrcWxjU2kKN2y2litigUU+LidXGKJfcGdTHpU7bal0AR64t8iq17b8g1KHJkE
+         GAMQU1+BnASUYJbx317ew5z8+0Hd/DU2+g+0UczzK4+AssS9z1mOzBw0zwT0ADvKazdg
+         W6uFCvdLj5ZywyQ+nPT2cDTjKM7XLcZjF2B0uDxzeNQHqbT3KGFoCJcCT1d9IfyUZQrR
+         y5ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OXNljNLjDHh35jBsdEQkJoC/0R7Ygjho6Qqcywt3z/w=;
-        b=eaDAktk8ZJmBGtGEWU4J18l+I5dAX/GGXWJgj5bbFhbgpo7mKpd+ON7RSmS4FUDqqL
-         nszpaHvf8WQNoV9GVmqaWws1v2PJ3zSW2BY1YdJ5kI1L0yxYMqPpRl3nGJQ5IcfS+zN9
-         BkwvshnDUKNy27L5l9jB74EmfZwctZh8x1vuuyw573kInKInxc8qo7ze3wv8aQ9KeMco
-         Jsjcg/2jlDljnHAynDGsf6XN4kryxlZl69rd8MzKVzpdxoIjx+GV6j4ggRkwyS6If+mZ
-         VTtbrAbdjvLDby8Fd9e+CNeRY2wP0WneoTMiRUs9lMGd2MWbREOlFqQNk8OEa7XqCjq7
-         wZDg==
-X-Gm-Message-State: AOAM532t32uYzBbjUJrwIDm/ftbO/s0bpiH/RDKIGn2nmK6se58yULlL
-        iOyWxc4dMZYwagN/8EieRCvPTg==
-X-Google-Smtp-Source: ABdhPJyPacGRbE5FRfISO20CeCikp02u9bsm2NO9TlNeNOKUtAw0orr9NXDF+N9yUBqJqfnXY/l/Ng==
-X-Received: by 2002:a17:90a:288:: with SMTP id w8mr17922895pja.111.1622444781398;
-        Mon, 31 May 2021 00:06:21 -0700 (PDT)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:425f:73d:12c3:3b24])
-        by smtp.gmail.com with ESMTPSA id d15sm4037384pjr.47.2021.05.31.00.06.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 00:06:20 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Max Merchel <Max.Merchel@tq-group.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH] dt-bindings: add StarFive Technology Co. Ltd.
-Date:   Mon, 31 May 2021 00:04:18 -0700
-Message-Id: <20210531070415.269667-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1vUcOLOLJFvqTx0Q1+alN5ka8ZC+o11y2paCA+C3hD8=;
+        b=ehwsOTPDXQibVgAJp0L4dmpOkYtS+LSYDOOsaKqj1H/puxgpGbOWSi1E7ExuklGc/g
+         TnkmA5pYZJt0OGAgZfX2WJJVB1BmkwlueZYpfwk7FjlAKeTntxU73Hp5y8hGkd+SqvOB
+         qpguC5/G5XwtPyxzhBHjnRAKfbbcVV+Gz4AvDRwlP2frEsag1DFSYGXssrEXd6aewlnq
+         ZSsnz1hgXvdMzdM7fEaPrmewsEQnMMdQ6AlOIgGo+NAA57Xqscbcvinv/tiZ0gHNEyMI
+         qJARe0TVhPOViMEbdf3l3Hlb64bg2FTjVA0OkVBlL62ASJ06d/4T/gq4xcRD9v3ZrsqT
+         V4Pw==
+X-Gm-Message-State: AOAM532Osp7V7IEgw4QPKNFA3b9Z38C3O6NbfzVakmhCe7lbKN3MQ/8l
+        zTIoDPQCUrgfRgvnsNTi0N/GhQYQNMoK93sBlyhafQ==
+X-Google-Smtp-Source: ABdhPJzdcPknYIKY/HoFuBEvjeUrSBKGHjI3+ZdgXz4b7AY9qOCV+Wcz1GkCQofBeEC/XrGOEZA5hdhnC18QdgQMdNw=
+X-Received: by 2002:ab0:100f:: with SMTP id f15mr9827076uab.100.1622444924930;
+ Mon, 31 May 2021 00:08:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210528091202.11603-1-ulf.hansson@linaro.org> <20210528152719.GA1473569@rowland.harvard.edu>
+In-Reply-To: <20210528152719.GA1473569@rowland.harvard.edu>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 31 May 2021 09:08:08 +0200
+Message-ID: <CAPDyKFp14pnSsaV3bnbW2FVTbtqTb5z39nZ0+NQM0YRv00W4JQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: runtime: Allow unassigned ->runtime_suspend|resume
+ callbacks
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vendor prefix for StarFive Technology Co. Ltd [1]. StarFive was
-formed in 2018 and has now produced their first SoC, the JH7100, which
-contains 64-bit RISC-V cores [2]. It used in the BeagleV Starlight [3].
+On Fri, 28 May 2021 at 17:27, Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Fri, May 28, 2021 at 11:12:02AM +0200, Ulf Hansson wrote:
+> > We are currently allowing ->rpm_idle() callbacks to be unassigned without
+> > returning an error code from rpm_idle(). This has been useful to avoid
+> > boilerplate code in drivers. Let's take this approach a step further, by
+> > allowing unassigned ->runtime_suspend|resume() callbacks as well.
+> >
+> > In this way, a consumer/supplier device link can be used to let a consumer
+> > device be power managed through its supplier device, without requiring
+> > assigned ->runtime_suspend|resume() callbacks for the consumer device, for
+> > example.
+> >
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > ---
+> >  drivers/base/power/runtime.c | 8 +++-----
+> >  1 file changed, 3 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > index 68bebbf81347..8a66eaf731e4 100644
+> > --- a/drivers/base/power/runtime.c
+> > +++ b/drivers/base/power/runtime.c
+> > @@ -345,7 +345,7 @@ static void rpm_suspend_suppliers(struct device *dev)
+> >  static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+> >       __releases(&dev->power.lock) __acquires(&dev->power.lock)
+> >  {
+> > -     int retval, idx;
+> > +     int retval = 0, idx;
+> >       bool use_links = dev->power.links_count > 0;
+> >
+> >       if (dev->power.irq_safe) {
+> > @@ -373,7 +373,8 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+> >               }
+> >       }
+> >
+> > -     retval = cb(dev);
+> > +     if (cb)
+> > +             retval = cb(dev);
+> >
+> >       if (dev->power.irq_safe) {
+> >               spin_lock(&dev->power.lock);
+> > @@ -484,9 +485,6 @@ static int rpm_callback(int (*cb)(struct device *), struct device *dev)
+> >  {
+> >       int retval;
+> >
+> > -     if (!cb)
+> > -             return -ENOSYS;
+>
+> This is a change in behavior, right?  What about drivers or subsystems
+> that don't support runtime PM and consequently don't have any RPM
+> callbacks assigned?
 
-[1] https://starfivetech.com/site/company
-[2] https://github.com/starfive-tech/beaglev_doc
-[3] https://github.com/beagleboard/beaglev-starlight
+Yes, you are right.
 
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+However, drivers/subsystems that support runtime PM should also call
+pm_runtime_enable() and if they don't, the rpm_callback() should not
+get called for them.
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index b868cefc7c55..3dd6a42fbbad 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1085,6 +1085,8 @@ patternProperties:
-       (formerly part of MStar Semiconductor, Inc.)
-   "^st,.*":
-     description: STMicroelectronics
-+  "^starfive,.*":
-+    description: StarFive Technology Co. Ltd.
-   "^starry,.*":
-     description: Starry Electronic Technology (ShenZhen) Co., LTD
-   "^startek,.*":
--- 
-2.27.0
+Then, at least to me, I think it would be quite odd that a
+subsystem/driver that calls pm_runtime_enable(), would be checking
+return values from pm_runtime_get|put_*() for -ENOSYS? I mean, why
+bother calling pm_runtime_enable() in the first place?
 
+>
+> Also, assuming Rafael accepts this change, don't you also need to update
+> the runtime-PM documentation?
+
+Good point, thanks! Let me add a patch updating the docs.
+
+>
+> Alan Stern
+>
+
+Kind regards
+Uffe
