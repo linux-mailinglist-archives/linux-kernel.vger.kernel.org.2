@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56E23964EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3663964EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhEaQQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
+        id S234115AbhEaQQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:16:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234187AbhEaOjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:39:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25448613EB;
-        Mon, 31 May 2021 13:52:53 +0000 (UTC)
+        id S234194AbhEaOjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6C4861C5E;
+        Mon, 31 May 2021 13:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469174;
-        bh=axbAyOi48Hmr3K74CrPJHT6/KFmTBpUvIncWdwiQ5Hk=;
+        s=korg; t=1622469177;
+        bh=Y7gPqA2FJ85axZFS15qE4ple5UmOcKAzqJuaDpE6BSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EMNtBZ/628Os5i9ObpVAxjFOMH/1FXXKt5RLq2gmnuXtg5bCB4FhTYgUzTVxC4OQQ
-         AH8+vg92qJu7rf1cAdYCM06KhgJAIeOMmFB6C6gpvf/Wr4di9N98DTDiLQZ8gbo5Fc
-         fAyytcvcs8OB0CY6/qs7eldLScE9AIAruMcf4si8=
+        b=Dj/fZ5y0RmagtFpGQS0BUCJgvugIy743GMdXcDUXYEuxPNZWjr/CG1oOs3Pfu/9sc
+         spMATJgakBbExBmNwGZ+QmQ3uCF21qqZ+cOO466LSI1AFAWqpNDAsaeohwiDat4Bjx
+         rnJBNL+UhqYziFlGbXR3yNR8h0HzbONj90ElynJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.12 062/296] Documentation: seccomp: Fix user notification documentation
-Date:   Mon, 31 May 2021 15:11:57 +0200
-Message-Id: <20210531130705.925373382@linuxfoundation.org>
+        stable@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH 5.12 063/296] riscv: stacktrace: fix the riscv stacktrace when CONFIG_FRAME_POINTER enabled
+Date:   Mon, 31 May 2021 15:11:58 +0200
+Message-Id: <20210531130705.961214426@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
 References: <20210531130703.762129381@linuxfoundation.org>
@@ -41,50 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sargun Dhillon <sargun@sargun.me>
+From: Chen Huang <chenhuang5@huawei.com>
 
-commit aac902925ea646e461c95edc98a8a57eb0def917 upstream.
+commit eac2f3059e02382d91f8c887462083841d6ea2a3 upstream.
 
-The documentation had some previously incorrect information about how
-userspace notifications (and responses) were handled due to a change
-from a previously proposed patchset.
+As [1] and [2] said, the arch_stack_walk should not to trace itself, or it will
+leave the trace unexpectedly when called. The example is when we do "cat
+/sys/kernel/debug/page_owner", all pages' stack is the same.
 
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-Acked-by: Tycho Andersen <tycho@tycho.pizza>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
+arch_stack_walk+0x18/0x20
+stack_trace_save+0x40/0x60
+register_dummy_stack+0x24/0x5e
+init_page_owner+0x2e
+
+So we use __builtin_frame_address(1) as the first frame to be walked. And mark
+the arch_stack_walk() noinline.
+
+We found that pr_cont will affact pages' stack whose task state is RUNNING when
+testing "echo t > /proc/sysrq-trigger". So move the place of pr_cont and mark
+the function dump_backtrace() noinline.
+
+Also we move the case when task == NULL into else branch, and test for it in
+"echo c > /proc/sysrq-trigger".
+
+[1] https://lore.kernel.org/lkml/20210319184106.5688-1-mark.rutland@arm.com/
+[2] https://lore.kernel.org/lkml/20210317142050.57712-1-chenjun102@huawei.com/
+
+Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+Fixes: 5d8544e2d007 ("RISC-V: Generic library routines and assembly")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210517193908.3113-2-sargun@sargun.me
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/userspace-api/seccomp_filter.rst |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/riscv/kernel/stacktrace.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/Documentation/userspace-api/seccomp_filter.rst
-+++ b/Documentation/userspace-api/seccomp_filter.rst
-@@ -250,14 +250,14 @@ Users can read via ``ioctl(SECCOMP_IOCTL
- seccomp notification fd to receive a ``struct seccomp_notif``, which contains
- five members: the input length of the structure, a unique-per-filter ``id``,
- the ``pid`` of the task which triggered this request (which may be 0 if the
--task is in a pid ns not visible from the listener's pid namespace), a ``flags``
--member which for now only has ``SECCOMP_NOTIF_FLAG_SIGNALED``, representing
--whether or not the notification is a result of a non-fatal signal, and the
--``data`` passed to seccomp. Userspace can then make a decision based on this
--information about what to do, and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a
--response, indicating what should be returned to userspace. The ``id`` member of
--``struct seccomp_notif_resp`` should be the same ``id`` as in ``struct
--seccomp_notif``.
-+task is in a pid ns not visible from the listener's pid namespace). The
-+notification also contains the ``data`` passed to seccomp, and a filters flag.
-+The structure should be zeroed out prior to calling the ioctl.
-+
-+Userspace can then make a decision based on this information about what to do,
-+and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a response, indicating what should be
-+returned to userspace. The ``id`` member of ``struct seccomp_notif_resp`` should
-+be the same ``id`` as in ``struct seccomp_notif``.
+--- a/arch/riscv/kernel/stacktrace.c
++++ b/arch/riscv/kernel/stacktrace.c
+@@ -27,10 +27,10 @@ void notrace walk_stackframe(struct task
+ 		fp = frame_pointer(regs);
+ 		sp = user_stack_pointer(regs);
+ 		pc = instruction_pointer(regs);
+-	} else if (task == NULL || task == current) {
+-		fp = (unsigned long)__builtin_frame_address(0);
+-		sp = sp_in_global;
+-		pc = (unsigned long)walk_stackframe;
++	} else if (task == current) {
++		fp = (unsigned long)__builtin_frame_address(1);
++		sp = (unsigned long)__builtin_frame_address(0);
++		pc = (unsigned long)__builtin_return_address(0);
+ 	} else {
+ 		/* task blocked in __switch_to */
+ 		fp = task->thread.s[0];
+@@ -106,15 +106,15 @@ static bool print_trace_address(void *ar
+ 	return true;
+ }
  
- It is worth noting that ``struct seccomp_data`` contains the values of register
- arguments to the syscall, but does not contain pointers to memory. The task's
+-void dump_backtrace(struct pt_regs *regs, struct task_struct *task,
++noinline void dump_backtrace(struct pt_regs *regs, struct task_struct *task,
+ 		    const char *loglvl)
+ {
+-	pr_cont("%sCall Trace:\n", loglvl);
+ 	walk_stackframe(task, regs, print_trace_address, (void *)loglvl);
+ }
+ 
+ void show_stack(struct task_struct *task, unsigned long *sp, const char *loglvl)
+ {
++	pr_cont("%sCall Trace:\n", loglvl);
+ 	dump_backtrace(NULL, task, loglvl);
+ }
+ 
+@@ -139,7 +139,7 @@ unsigned long get_wchan(struct task_stru
+ 
+ #ifdef CONFIG_STACKTRACE
+ 
+-void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
++noinline void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+ 		     struct task_struct *task, struct pt_regs *regs)
+ {
+ 	walk_stackframe(task, regs, consume_entry, cookie);
 
 
