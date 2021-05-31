@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A8F3963BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018CF395D8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbhEaPcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
+        id S232771AbhEaNre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:47:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233617AbhEaOVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89534619B9;
-        Mon, 31 May 2021 13:44:33 +0000 (UTC)
+        id S231690AbhEaNc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:32:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14891613DD;
+        Mon, 31 May 2021 13:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468674;
-        bh=gG6HC9ah17z0IQSAObJ8OUJHcUi6DQ8G3ViJkwYZNzc=;
+        s=korg; t=1622467435;
+        bh=2uHQSuBtQrpPAeM3h7B7iaCFgz3x0WTe7FSIOTqt+Us=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ew75sL0wO3DbyMY+9ySNo9yAkho3hQd4BQMKeHLf3/bAi/l/TIRvUi24kZGqM2999
-         /uqQ4qxrnkhPfj7FabC2kj9Yn6GOcbW0toc8xkNV9fLPW6N5Sx8u2dZhvHyjUE0PXT
-         M407P7ROvqHpZBsgiL8b+9BnujYOtA1kQ7ksk4RA=
+        b=Hi3gi/CLQTteS2jrUvir9c5SpLqqsdudZHfjWMZsjeFyf0uEGbTrMFcGJtj9698Gs
+         AiUKZB7HwhNcSeJPB0AZ2AwwVu7+MgkdkFFWC84VEmjtC47L5RwL9l4Cjln6U+aWG/
+         vYsanlkOid7nX94uG5QJjrnS55OZy4UQuVuNQmsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 081/177] net: dsa: sja1105: error out on unsupported PHY mode
-Date:   Mon, 31 May 2021 15:13:58 +0200
-Message-Id: <20210531130650.706192588@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.19 063/116] NFS: fix an incorrect limit in filelayout_decode_layout()
+Date:   Mon, 31 May 2021 15:13:59 +0200
+Message-Id: <20210531130642.301511141@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 6729188d2646709941903052e4b78e1d82c239b9 upstream.
+commit 769b01ea68b6c49dc3cde6adf7e53927dacbd3a8 upstream.
 
-The driver continues probing when a port is configured for an
-unsupported PHY interface type, instead it should stop.
+The "sizeof(struct nfs_fh)" is two bytes too large and could lead to
+memory corruption.  It should be NFS_MAXFHSIZE because that's the size
+of the ->data[] buffer.
 
-Fixes: 8aa9ebccae87 ("net: dsa: Introduce driver for NXP SJA1105 5-port L2 switch")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+I reversed the size of the arguments to put the variable on the left.
+
+Fixes: 16b374ca439f ("NFSv4.1: pnfs: filelayout: add driver's LAYOUTGET and GETDEVICEINFO infrastructure")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/nfs/filelayout/filelayout.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -178,6 +178,7 @@ static int sja1105_init_mii_settings(str
- 		default:
- 			dev_err(dev, "Unsupported PHY mode %s!\n",
- 				phy_modes(ports[i].phy_mode));
-+			return -EINVAL;
- 		}
- 
- 		mii->phy_mac[i] = ports[i].role;
+--- a/fs/nfs/filelayout/filelayout.c
++++ b/fs/nfs/filelayout/filelayout.c
+@@ -717,7 +717,7 @@ filelayout_decode_layout(struct pnfs_lay
+ 		if (unlikely(!p))
+ 			goto out_err;
+ 		fl->fh_array[i]->size = be32_to_cpup(p++);
+-		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
++		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
+ 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
+ 			       i, fl->fh_array[i]->size);
+ 			goto out_err;
 
 
