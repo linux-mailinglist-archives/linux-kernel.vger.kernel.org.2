@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCD6395ED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40E3395CC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhEaOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
+        id S232565AbhEaNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:37:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232267AbhEaNk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:40:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9461F6136D;
-        Mon, 31 May 2021 13:27:46 +0000 (UTC)
+        id S232334AbhEaN0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:26:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1498861407;
+        Mon, 31 May 2021 13:21:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467667;
-        bh=pkENjceWvvQTLhaUKmJP3HeNrQDY+i5ko6l6lM1M2HA=;
+        s=korg; t=1622467273;
+        bh=sFBDKRlr2yCxCkhrMba95+PZDRbdIVMxsq7Qo0+qhxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LKLKg9CM+dc3Fp5xAOQQq27t1fpAk7zsiYcfic9OVNDPiWlEkLO5T5GRU/jk4xLJ6
-         ykHT3yXIbYI6RNSuyIRmTGJaetN2/t4nOFGgZKC/q4APF8zRlKi/xmkgW/sFTmZ2hh
-         rNDqyEKVMTzFbw5xU+3O8nBjS6dPAqiwW2ErbEPw=
+        b=ByaG3N+ohvquVAka9DRT26wJQ8DYC6kimEdBnTa0cYVY4ItyaEwW6fgkL/9KUnIKl
+         eWpozI88sIa87wqow31hplRPkalm8zSS+heRlNCYEP5e+FU7SxKY6R3+2xKb/etW3t
+         pfYX5Wx3oSvsjnZPJy7M1zbdVZw6wIDL7Hb2zmuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.vger.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 33/79] net: usb: fix memory leak in smsc75xx_bind
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Sinan Kaya <okaya@kernel.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 45/66] dmaengine: qcom_hidma: comment platform_driver_register call
 Date:   Mon, 31 May 2021 15:14:18 +0200
-Message-Id: <20210531130637.065761218@linuxfoundation.org>
+Message-Id: <20210531130637.680450875@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-commit 46a8b29c6306d8bbfd92b614ef65a47c900d8e70 upstream.
+[ Upstream commit 4df2a8b0ad634d98a67e540a4e18a60f943e7d9f ]
 
-Syzbot reported memory leak in smsc75xx_bind().
-The problem was is non-freed memory in case of
-errors after memory allocation.
+Place a comment in hidma_mgmt_init explaining why success must
+currently be assumed, due to the cleanup issue that would need to
+be considered were this module ever to be unloadable or were this
+platform_driver_register call ever to fail.
 
-backtrace:
-  [<ffffffff84245b62>] kmalloc include/linux/slab.h:556 [inline]
-  [<ffffffff84245b62>] kzalloc include/linux/slab.h:686 [inline]
-  [<ffffffff84245b62>] smsc75xx_bind+0x7a/0x334 drivers/net/usb/smsc75xx.c:1460
-  [<ffffffff82b5b2e6>] usbnet_probe+0x3b6/0xc30 drivers/net/usb/usbnet.c:1728
-
-Fixes: d0cad871703b ("smsc75xx: SMSC LAN75xx USB gigabit ethernet adapter driver")
-Cc: stable@kernel.vger.org
-Reported-and-tested-by: syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Acked-By: Vinod Koul <vkoul@kernel.org>
+Acked-By: Sinan Kaya <okaya@kernel.org>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-52-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/smsc75xx.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/dma/qcom/hidma_mgmt.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/drivers/net/usb/smsc75xx.c
-+++ b/drivers/net/usb/smsc75xx.c
-@@ -1495,7 +1495,7 @@ static int smsc75xx_bind(struct usbnet *
- 	ret = smsc75xx_wait_ready(dev, 0);
- 	if (ret < 0) {
- 		netdev_warn(dev->net, "device not ready in smsc75xx_bind\n");
--		return ret;
-+		goto err;
+diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+index 82f36e466083..143ea7cad756 100644
+--- a/drivers/dma/qcom/hidma_mgmt.c
++++ b/drivers/dma/qcom/hidma_mgmt.c
+@@ -398,6 +398,20 @@ static int __init hidma_mgmt_init(void)
+ 		of_node_put(child);
  	}
+ #endif
++	/*
++	 * We do not check for return value here, as it is assumed that
++	 * platform_driver_register must not fail. The reason for this is that
++	 * the (potential) hidma_mgmt_of_populate_channels calls above are not
++	 * cleaned up if it does fail, and to do this work is quite
++	 * complicated. In particular, various calls of of_address_to_resource,
++	 * of_irq_to_resource, platform_device_register_full, of_dma_configure,
++	 * and of_msi_configure which then call other functions and so on, must
++	 * be cleaned up - this is not a trivial exercise.
++	 *
++	 * Currently, this module is not intended to be unloaded, and there is
++	 * no module_exit function defined which does the needed cleanup. For
++	 * this reason, we have to assume success here.
++	 */
+ 	platform_driver_register(&hidma_mgmt_driver);
  
- 	smsc75xx_init_mac_address(dev);
-@@ -1504,7 +1504,7 @@ static int smsc75xx_bind(struct usbnet *
- 	ret = smsc75xx_reset(dev);
- 	if (ret < 0) {
- 		netdev_warn(dev->net, "smsc75xx_reset error %d\n", ret);
--		return ret;
-+		goto err;
- 	}
- 
- 	dev->net->netdev_ops = &smsc75xx_netdev_ops;
-@@ -1514,6 +1514,10 @@ static int smsc75xx_bind(struct usbnet *
- 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
- 	dev->net->max_mtu = MAX_SINGLE_PACKET_SIZE;
  	return 0;
-+
-+err:
-+	kfree(pdata);
-+	return ret;
- }
- 
- static void smsc75xx_unbind(struct usbnet *dev, struct usb_interface *intf)
+-- 
+2.30.2
+
 
 
