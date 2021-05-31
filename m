@@ -2,131 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D84395685
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC0239568E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhEaHzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:55:14 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:36661 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhEaHzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:55:02 -0400
-Received: by mail-il1-f198.google.com with SMTP id w10-20020a056e021c8ab02901bb7c1adfa1so7615561ill.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:53:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=EgiaXci6eJq+ZRh12qkaGAM8/xieX4YfRCbdrEPwN4I=;
-        b=QCuPbsJ5uUxDyj2MXrSj7biZJtg/ImvIAjo95ppZLNKfEkvE9PPFCXW7oiSM4EMYEj
-         dBVTC7gi7uPyLe+ySIaG6oQPNhk0ftxoogzUzl2F89mPnr7EzYJAU/vp6LEW5AMabRRy
-         8GFFU9pprlJyxsN3jlHkTmu16E63xZ8f4+iFDbLV9eLQn3ArEncdQQ3P1XQ/uSk7TDgl
-         Se/6nC60Ari7/21WHNvyy/lreiYaKkNV9CvajmIRz/Ovg/sOp78Txf4va4tELgFZPfDE
-         YPRBX9dBPO4boAR7CxsRXyDJsWJhan33Un9ipI8p/XnSn3S8oFsuvVYAMADAYpXIoAmi
-         zDtw==
-X-Gm-Message-State: AOAM532Q3myhckPQMZ4KO1fhvITUvm1UKS78OWsiLvNylQtJ+fj2iE1g
-        UH2FPEO4PiLMZYy7SMcHjpP+y9QVUd5gwhIAx25sl0Hspnu2
-X-Google-Smtp-Source: ABdhPJz8kiJrOUM8DXQB7fMfK1FYOmlzfp8+V4lp0wITkK+41VYJ2j2MpCyFJO8RJP64WvtTXq6LHlzbnC6MYxzqTvF5MSCLR6Dm
+        id S230334AbhEaH52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:57:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhEaH5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 03:57:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E41160FE3;
+        Mon, 31 May 2021 07:55:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622447744;
+        bh=0ZC9aSJd/5NSxSjCmt2ElwwzNfea3SyLmaaN0sdtbaw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SwrTWBapC8LTkHRLOHLM6zvqWwT8hwbcssM6KpafgaqeeMvFTGdq8w7QFBsOohxvl
+         PRPPzrv/5+L3hm1sq6Jtz+FCvkhRjUEIDFuP+q5pUaJQEiARWG+up/v781ppvEWXkj
+         IXoD5XiL6b7pTb91xw/YBzRgyUcrul4evF1PXnWOt7nth+gygVFdvpqZ8xQOiBZ/Nm
+         E23+JYxdVIEMzd6mRDmN7QUz7UFcFSiFNXmVG02uRaa7ASekd4wR9Yvnd52AnvyQnu
+         QswJjaPNHj4fWdc0xa0q6CeLoeetimeojfqdUeD+91DtEZgkmMwGNOPSLdQgRXx0Ly
+         yAEg2ISzfSrRA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lnclv-0000aq-AX; Mon, 31 May 2021 09:55:39 +0200
+Date:   Mon, 31 May 2021 09:55:39 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com,
+        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>
+Subject: Re: [PATCH 3/3] media: rtl28xxu: fix zero-length control request
+Message-ID: <YLSWeyy1skooTmqD@hovoldconsulting.com>
+References: <20210524110920.24599-1-johan@kernel.org>
+ <20210524110920.24599-4-johan@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c906:: with SMTP id t6mr11871237ilp.10.1622447601815;
- Mon, 31 May 2021 00:53:21 -0700 (PDT)
-Date:   Mon, 31 May 2021 00:53:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f9136f05c39b84e4@google.com>
-Subject: [syzbot] kernel BUG in assertfail
-From:   syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524110920.24599-4-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, May 24, 2021 at 01:09:20PM +0200, Johan Hovold wrote:
+> The direction of the pipe argument must match the request-type direction
+> bit or control requests may fail depending on the host-controller-driver
+> implementation.
+> 
+> Control transfers without a data stage are treated as OUT requests by
+> the USB stack and should be using usb_sndctrlpipe(). Failing to do so
+> will now trigger a warning.
+> 
+> Fix the zero-length i2c-read request used for type detection by
+> attempting to read a single byte instead.
+> 
+> Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
+> Fixes: d0f232e823af ("[media] rtl28xxu: add heuristic to detect chip type")
+> Cc: stable@vger.kernel.org      # 4.0
+> Cc: Antti Palosaari <crope@iki.fi>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/media/usb/dvb-usb-v2/rtl28xxu.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+> index 97ed17a141bb..2c04ed8af0e4 100644
+> --- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+> +++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+> @@ -612,8 +612,9 @@ static int rtl28xxu_read_config(struct dvb_usb_device *d)
+>  static int rtl28xxu_identify_state(struct dvb_usb_device *d, const char **name)
+>  {
+>  	struct rtl28xxu_dev *dev = d_to_priv(d);
+> +	u8 buf[1];
+>  	int ret;
+> -	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 0, NULL};
+> +	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 1, buf};
+>  
+>  	dev_dbg(&d->intf->dev, "\n");
 
-syzbot found the following issue on:
+As reported here
 
-HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
-dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
+	https://lore.kernel.org/r/YLSVsrhMZ2oOL1vM@hovoldconsulting.com
 
-Unfortunately, I don't have any reproducer for this issue yet.
+this patch is causing the chip type to no longer be detected correctly,
+so please drop this one for now until this has been resolved.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-
-assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/ctree.h:3419!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 23125 Comm: syz-executor.5 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:assertfail.constprop.0+0x27/0x29 fs/btrfs/ctree.h:3419
-Code: 3c 54 fa 41 54 41 89 f4 55 48 89 fd e8 d5 90 94 f8 44 89 e1 48 89 ee 48 c7 c2 00 92 b1 89 48 c7 c7 40 92 b1 89 e8 ab 1f f6 ff <0f> 0b 41 56 41 55 41 54 55 53 48 89 fb e8 aa 90 94 f8 48 8d 7b 48
-RSP: 0018:ffffc9000e8b7848 EFLAGS: 00010286
-RAX: 000000000000007c RBX: 0000000000000027 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815c1445 RDI: fffff52001d16efb
-RBP: ffffffff89b1bf40 R08: 000000000000007c R09: 0000000000000000
-R10: ffffffff815bb27e R11: 0000000000000000 R12: 0000000000000cd2
-R13: ffff888035849000 R14: 0000000000000001 R15: ffff88803b8e0000
-FS:  00007fde076e9700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000568000 CR3: 000000008c97f000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- open_ctree+0xdae/0x411f fs/btrfs/disk-io.c:3282
- btrfs_fill_super fs/btrfs/super.c:1382 [inline]
- btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1749
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- fc_mount fs/namespace.c:993 [inline]
- vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1023
- vfs_kern_mount+0x3c/0x60 fs/namespace.c:1010
- btrfs_mount+0x234/0xa20 fs/btrfs/super.c:1809
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2905 [inline]
- path_mount+0x132a/0x1fa0 fs/namespace.c:3235
- do_mount fs/namespace.c:3248 [inline]
- __do_sys_mount fs/namespace.c:3456 [inline]
- __se_sys_mount fs/namespace.c:3433 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3433
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x467afa
-Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fde076e8fa8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 0000000000467afa
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fde076e9000
-RBP: 00007fde076e9040 R08: 00007fde076e9040 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
-R13: 0000000020000100 R14: 00007fde076e9000 R15: 0000000020000040
-Modules linked in:
----[ end trace 5e4a13f31c27e3bb ]---
-RIP: 0010:assertfail.constprop.0+0x27/0x29 fs/btrfs/ctree.h:3419
-Code: 3c 54 fa 41 54 41 89 f4 55 48 89 fd e8 d5 90 94 f8 44 89 e1 48 89 ee 48 c7 c2 00 92 b1 89 48 c7 c7 40 92 b1 89 e8 ab 1f f6 ff <0f> 0b 41 56 41 55 41 54 55 53 48 89 fb e8 aa 90 94 f8 48 8d 7b 48
-RSP: 0018:ffffc9000e8b7848 EFLAGS: 00010286
-RAX: 000000000000007c RBX: 0000000000000027 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815c1445 RDI: fffff52001d16efb
-RBP: ffffffff89b1bf40 R08: 000000000000007c R09: 0000000000000000
-R10: ffffffff815bb27e R11: 0000000000000000 R12: 0000000000000cd2
-R13: ffff888035849000 R14: 0000000000000001 R15: ffff88803b8e0000
-FS:  00007fde076e9700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb2751c7000 CR3: 000000008c97f000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Johan
