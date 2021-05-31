@@ -2,198 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA1739597A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5398439597D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhEaLNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhEaLNr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:13:47 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B856C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:12:06 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id x10so4146055plg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:12:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x/l5Ktt9uOtgP8qHkFSa6STZdcx8c0/6ABhZ+2M/nSw=;
-        b=Wz4I7tWJccqyGeNNUm6ml2yW+9pRmBZixk7i7oSXQYnuwzRHJj4UHRQ9bbvDWY0LEm
-         ct4EW3Afd4V6nvnvuBWVpSkkF+4XoMYSgFzxy0q7k3TxjI7+bSKFhskGTjxw3KQYd2BW
-         B1xy5hMWT5WcOjSvSZKXiUFO28bD82JU5gVDpVBgT65pqdpgPVeAP+TQ6Ze++irdH84s
-         w7gk+TpR4QyRo6+5knp4+SVSV2WXAPGDANxug0DemPEA76goKCxeKTE2vvKeRE1rgExI
-         ukUKzBJaPNVw86pFwACCgmvJKj2kUnnq1e3XOOcEZZpkOAWDNK+NIcBMYKqowFs8RdAP
-         JXfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x/l5Ktt9uOtgP8qHkFSa6STZdcx8c0/6ABhZ+2M/nSw=;
-        b=EZWtsjYOABx6vlItYryGJo6oiE3rVwfcbqHImhE8/8H57eFuZYO49/DRY8VEeAVaUa
-         nGT5Bm5v4RxbkzM1ZDEP3S12XVMDbeCVXJ5Z6thTymnSgKjQf/AMZycOCJIwYCB+0IKV
-         adH/JTfTNd82EU7h4DfZrUFYAGWoksT1+aQgQv3son0O4nGKyEZf7psv67Lpa4PTwVxs
-         6xYbOSgPrPBIjrFUPPtNj6QLFkvqnkOx84Sc+StKzL/DOnsptYjZXLWs7mjRzi6TRLkj
-         /pqj7Uhr11jMLrGIx8MWz0glU6xLijWzJ/ztuYjGK3DSplJ9Kna8h+GEhDokTEueYH+q
-         vBng==
-X-Gm-Message-State: AOAM531Xk+jhicbkFhV7hQeaUHof7hAVABIazVAzZaLn+px8+M+yqBbv
-        3dCsQKe7z6rT/P5IrAgbf0AzDbJi/yPUzWzjBpb3Xg==
-X-Google-Smtp-Source: ABdhPJzfyWJyhV6SKME/dlvUc0Z4q1bm2l1mQxVZjQAKFk7H9k9yZUpGqoAzKG6G/qyStHd5XonEZDZl8L6SoK+RD4w=
-X-Received: by 2002:a17:902:d104:b029:105:fff1:74ad with SMTP id
- w4-20020a170902d104b0290105fff174admr1808669plw.69.1622459525786; Mon, 31 May
- 2021 04:12:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-13-jonathan@marek.ca>
-In-Reply-To: <20210511180728.23781-13-jonathan@marek.ca>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 31 May 2021 13:11:55 +0200
-Message-ID: <CAG3jFyvOtEoTGVp8WaqNgeHB20PSmEXR6mJykyridAG55aa9rw@mail.gmail.com>
-Subject: Re: [PATCH 12/17] media: camss: vfe-170: clean up some dead code
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231389AbhEaLOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:14:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53794 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231377AbhEaLN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 07:13:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622459537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQUgSY4rz3LNiUb//EzzPEIDd2bYGy4SsdKMO2yKhCk=;
+        b=Jg8TkqpJmPxnzwU9nLy5k2ZkyDxpxUcbnHV3oQ3GYLXGL6DACgAA6bILLxAVOpQGDI2e0Z
+        /wd1RSFT0hMbwO1lxOiYCd1XV3p0Jyj+K5LTeHtzBQ/nlHEw6qEi3gUDGwlIGld2F6hcts
+        jB6gp9Z5xMDDTv6EomWEsU3zLd22LUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622459537;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQUgSY4rz3LNiUb//EzzPEIDd2bYGy4SsdKMO2yKhCk=;
+        b=ehBUeAVypuyQEwZ6y+FElGFCj0XnqTwHWEcfY+UrDlPQYSHfNXMAvWpHPih5M8GaQKQc4k
+        VGqKY71C72V3u3DQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99925AFC4;
+        Mon, 31 May 2021 11:12:17 +0000 (UTC)
+Date:   Mon, 31 May 2021 13:12:17 +0200
+Message-ID: <s5hzgwb17ji.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
+        Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 05/12] ASoC: hdmi-codec: Add a prepare hook
+In-Reply-To: <20210531094213.kuuunk7ytu3q6sq6@gilmour>
+References: <20210525132354.297468-1-maxime@cerno.tech>
+        <20210525132354.297468-6-maxime@cerno.tech>
+        <YK4lWaB6Lx+SPjpF@sirena.org.uk>
+        <20210531094213.kuuunk7ytu3q6sq6@gilmour>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> vfe_isr_read()/vfe_isr_halt_ack()/vfe_reg_clr() are never called.
->
-> vfe_isr_sof() does nothing, remove it.
->
-> The only vfe_reg_set() usage can be easily replaced with a writel.
->
-> Fixes: 7319cdf189bb ("media: camss: Add support for VFE hardware version Titan 170")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  .../media/platform/qcom/camss/camss-vfe-170.c | 53 +------------------
->  1 file changed, 2 insertions(+), 51 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> index 8594d275b41d..076ca082e107 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> @@ -188,20 +188,6 @@ static void vfe_hw_version_read(struct vfe_device *vfe, struct device *dev)
->         dev_err(dev, "VFE HW Version = %u.%u.%u\n", gen, rev, step);
->  }
->
-> -static inline void vfe_reg_clr(struct vfe_device *vfe, u32 reg, u32 clr_bits)
-> -{
-> -       u32 bits = readl_relaxed(vfe->base + reg);
-> -
-> -       writel_relaxed(bits & ~clr_bits, vfe->base + reg);
-> -}
-> -
-> -static inline void vfe_reg_set(struct vfe_device *vfe, u32 reg, u32 set_bits)
-> -{
-> -       u32 bits = readl_relaxed(vfe->base + reg);
-> -
-> -       writel_relaxed(bits | set_bits, vfe->base + reg);
-> -}
-> -
->  static void vfe_global_reset(struct vfe_device *vfe)
->  {
->         u32 reset_bits = GLOBAL_RESET_CMD_CORE          |
-> @@ -305,32 +291,14 @@ static inline void vfe_reg_update_clear(struct vfe_device *vfe,
->
->  static void vfe_enable_irq_common(struct vfe_device *vfe)
->  {
-> -       vfe_reg_set(vfe, VFE_IRQ_MASK_0, ~0u);
-> -       vfe_reg_set(vfe, VFE_IRQ_MASK_1, ~0u);
-> +       writel_relaxed(~0u, vfe->base + VFE_IRQ_MASK_0);
-> +       writel_relaxed(~0u, vfe->base + VFE_IRQ_MASK_1);
->
->         writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(0));
->         writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(1));
->         writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(2));
->  }
->
-> -static void vfe_isr_halt_ack(struct vfe_device *vfe)
-> -{
-> -       complete(&vfe->halt_complete);
-> -}
-> -
-> -static void vfe_isr_read(struct vfe_device *vfe, u32 *status0, u32 *status1)
-> -{
-> -       *status0 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_0);
-> -       *status1 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_1);
-> -
-> -       writel_relaxed(*status0, vfe->base + VFE_IRQ_CLEAR_0);
-> -       writel_relaxed(*status1, vfe->base + VFE_IRQ_CLEAR_1);
-> -
-> -       /* Enforce ordering between IRQ Clear and Global IRQ Clear */
-> -       wmb();
-> -       writel_relaxed(CMD_GLOBAL_CLEAR, vfe->base + VFE_IRQ_CMD);
-> -}
-> -
->  static void vfe_violation_read(struct vfe_device *vfe)
->  {
->         u32 violation = readl_relaxed(vfe->base + VFE_VIOLATION_STATUS);
-> @@ -375,10 +343,6 @@ static irqreturn_t vfe_isr(int irq, void *dev)
->                 if (status0 & STATUS_0_RDI_REG_UPDATE(i))
->                         vfe->isr_ops.reg_update(vfe, i);
->
-> -       for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
-> -               if (status0 & STATUS_1_RDI_SOF(i))
-> -                       vfe->isr_ops.sof(vfe, i);
-> -
->         for (i = 0; i < MSM_VFE_COMPOSITE_IRQ_NUM; i++)
->                 if (vfe_bus_status[0] & STATUS0_COMP_BUF_DONE(i))
->                         vfe->isr_ops.comp_done(vfe, i);
-> @@ -607,16 +571,6 @@ static int vfe_disable(struct vfe_line *line)
->         return 0;
->  }
->
-> -/*
-> - * vfe_isr_sof - Process start of frame interrupt
-> - * @vfe: VFE Device
-> - * @line_id: VFE line
-> - */
-> -static void vfe_isr_sof(struct vfe_device *vfe, enum vfe_line_id line_id)
-> -{
-> -       /* nop */
-> -}
-> -
->  /*
->   * vfe_isr_reg_update - Process reg update interrupt
->   * @vfe: VFE Device
-> @@ -749,9 +703,7 @@ static int vfe_queue_buffer(struct camss_video *vid,
->
->  static const struct vfe_isr_ops vfe_isr_ops_170 = {
->         .reset_ack = vfe_isr_reset_ack,
-> -       .halt_ack = vfe_isr_halt_ack,
->         .reg_update = vfe_isr_reg_update,
-> -       .sof = vfe_isr_sof,
->         .comp_done = vfe_isr_comp_done,
->         .wm_done = vfe_isr_wm_done,
->  };
-> @@ -772,7 +724,6 @@ static void vfe_subdev_init(struct device *dev, struct vfe_device *vfe)
->  const struct vfe_hw_ops vfe_ops_170 = {
->         .global_reset = vfe_global_reset,
->         .hw_version_read = vfe_hw_version_read,
-> -       .isr_read = vfe_isr_read,
->         .isr = vfe_isr,
->         .pm_domain_off = vfe_pm_domain_off,
->         .pm_domain_on = vfe_pm_domain_on,
+On Mon, 31 May 2021 11:42:13 +0200,
+Maxime Ripard wrote:
+> 
+> Hi Mark, Takashi,
+> 
+> On Wed, May 26, 2021 at 11:39:21AM +0100, Mark Brown wrote:
+> > On Tue, May 25, 2021 at 03:23:47PM +0200, Maxime Ripard wrote:
+> > > The IEC958 status bit is usually set by the userspace after hw_params
+> > > has been called, so in order to use whatever is set by the userspace, we
+> > > need to implement the prepare hook. Let's add it to the hdmi_codec_ops,
+> > > and mandate that either prepare or hw_params is implemented.
+> > 
+> > Acked-by: Mark Brown <broonie@kernel.org>
+> 
+> It looks like you're both happy with the ALSA/ASoC side, how do you want
+> to get this merged?
+> 
+> There's a build dependency between the DRM bits and the new hook
+> introduced in hdmi-codec, would you be ok with merging it through the
+> drm tree?
 
-Gen1 & gen2 seem to diverge in terms of which ISR & helpers are
-needed. Should the vfe_isr_ops & vfe_hw_ops structs have generation
-based versions? I'm fine with a no here. There are diminishing returns
-to this pedantism.
+Speaking of ALSA core changes, I'm fine with that.
 
-With ^^^ covered, feel free to add my r-b.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+thanks,
+
+Takashi
