@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C24396298
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E00639656C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhEaO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:58:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38074 "EHLO mail.kernel.org"
+        id S234854AbhEaQfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:35:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233444AbhEaOE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:04:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B801561451;
-        Mon, 31 May 2021 13:38:15 +0000 (UTC)
+        id S232912AbhEaOrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:47:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF66761C8D;
+        Mon, 31 May 2021 13:55:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468296;
-        bh=FjffVfX7ZHBpMoEV5UGia/iEkAw5C7P7xXuBqUhqT+g=;
+        s=korg; t=1622469355;
+        bh=3sJWlWwJts/OZe86uPzAEUSOBxJPp9sIBwTodNo2VCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VURsmjU66kViCnDMJXAmo5FUajxsYLarQ0aLtXSA75hsNE343ExCCkBvG7+e+HLHJ
-         XVfseScrGn9ddIhVZJkhStAfntDuQ2GULEumH3ya4ndSji72y6By9HCgU2erPyld9j
-         5VqYR41DMdkok/nX55w38admAE5HB473xhTgpuIs=
+        b=NZ580y8UFqIsaPJtoWTjGwLizQ94Aj85AZyGGhk6rsVuq2IZzcgH1j6CraGolnuv1
+         RAKqTJDeN2iuAcrtB7RuN/BYZJhXgSWpxcbIB+mDCZK1lqdF/eDiGpKIcm4LXQng6r
+         k2NbKyjUUoFgw0WJaQ7F9Yto46aJrAOjuzisMJJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Sinan Kaya <okaya@kernel.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Jiri Slaby <jirislaby@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 155/252] dmaengine: qcom_hidma: comment platform_driver_register call
+Subject: [PATCH 5.12 165/296] Revert "serial: max310x: pass return value of spi_register_driver"
 Date:   Mon, 31 May 2021 15:13:40 +0200
-Message-Id: <20210531130703.273282204@linuxfoundation.org>
+Message-Id: <20210531130709.411875449@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 4df2a8b0ad634d98a67e540a4e18a60f943e7d9f ]
+[ Upstream commit b0a85abbe92e1a6f3e8580a4590fa7245de7090b ]
 
-Place a comment in hidma_mgmt_init explaining why success must
-currently be assumed, due to the cleanup issue that would need to
-be considered were this module ever to be unloadable or were this
-platform_driver_register call ever to fail.
+This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
-Acked-By: Sinan Kaya <okaya@kernel.org>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210503115736.2104747-52-gregkh@linuxfoundation.org
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+This change did not properly unwind from the error condition, so it was
+not correct.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-11-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/qcom/hidma_mgmt.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/tty/serial/max310x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
-index fe87b01f7a4e..62026607f3f8 100644
---- a/drivers/dma/qcom/hidma_mgmt.c
-+++ b/drivers/dma/qcom/hidma_mgmt.c
-@@ -418,6 +418,20 @@ static int __init hidma_mgmt_init(void)
- 		hidma_mgmt_of_populate_channels(child);
- 	}
- #endif
-+	/*
-+	 * We do not check for return value here, as it is assumed that
-+	 * platform_driver_register must not fail. The reason for this is that
-+	 * the (potential) hidma_mgmt_of_populate_channels calls above are not
-+	 * cleaned up if it does fail, and to do this work is quite
-+	 * complicated. In particular, various calls of of_address_to_resource,
-+	 * of_irq_to_resource, platform_device_register_full, of_dma_configure,
-+	 * and of_msi_configure which then call other functions and so on, must
-+	 * be cleaned up - this is not a trivial exercise.
-+	 *
-+	 * Currently, this module is not intended to be unloaded, and there is
-+	 * no module_exit function defined which does the needed cleanup. For
-+	 * this reason, we have to assume success here.
-+	 */
- 	platform_driver_register(&hidma_mgmt_driver);
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 1b61d26bb7af..93f69b66b896 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1518,10 +1518,10 @@ static int __init max310x_uart_init(void)
+ 		return ret;
  
- 	return 0;
+ #ifdef CONFIG_SPI_MASTER
+-	ret = spi_register_driver(&max310x_spi_driver);
++	spi_register_driver(&max310x_spi_driver);
+ #endif
+ 
+-	return ret;
++	return 0;
+ }
+ module_init(max310x_uart_init);
+ 
 -- 
 2.30.2
 
