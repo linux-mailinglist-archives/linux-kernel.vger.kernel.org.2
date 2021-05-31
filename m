@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F736395DA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A393963AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhEaNsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:48:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39080 "EHLO mail.kernel.org"
+        id S234309AbhEaPa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:30:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232114AbhEaNdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:33:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 677B6613F0;
-        Mon, 31 May 2021 13:24:21 +0000 (UTC)
+        id S232848AbhEaORn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:17:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB5F9619B0;
+        Mon, 31 May 2021 13:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467462;
-        bh=wLTcEg0Z9vVBFyBZ+RfAbUKqhMeJpZDMSjpBxZ40i/Y=;
+        s=korg; t=1622468631;
+        bh=hGubpCKZPgrK5s3MemOHKJXhP02/GL9Hd5ohu+KxcPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iM6wzOQ6QfWJCXz0PEQha9491SJNo7nLDT9smu1/dCban0g9EOqlBYoN3mQ9mE1LX
-         J97VVE4R5aigIwdUVqHtvNFweVUkfse9n6eTvGqZiPzRtm9Z2jqdadwzxrxx7NDUHS
-         dZTwU0kwHayrU3JTAJCPIm3ORwQPmKY1+jpcKAVY=
+        b=YYsrImr7kLv0LsMhVWEzuy+THnY3UW6p7om/1udjMqDgEmqDH/JsUNNviaIqmEwm7
+         dRZz6f1woKvBu5zHI8vqiAhHbBtKdPjpWLKq5slaBrFp8vfkeOmBnvxl2LQjD/A9yi
+         FqXuXWXvcZAHR1rOYLTqTRoBA2FUHePU0FnKKkrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 029/116] USB: trancevibrator: fix control-request direction
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 048/177] iio: adc: ad7793: Add missing error code in ad7793_setup()
 Date:   Mon, 31 May 2021 15:13:25 +0200
-Message-Id: <20210531130641.153387826@linuxfoundation.org>
+Message-Id: <20210531130649.582445660@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,39 +40,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit 746e4acf87bcacf1406e05ef24a0b7139147c63e upstream.
+commit 4ed243b1da169bcbc1ec5507867e56250c5f1ff9 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+Set error code while device ID query failed.
 
-Fix the set-speed request which erroneously used USB_DIR_IN and update
-the default timeout argument to match (same value).
-
-Fixes: 5638e4d92e77 ("USB: add PlayStation 2 Trance Vibrator driver")
-Cc: stable@vger.kernel.org      # 2.6.19
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210521133109.17396-1-johan@kernel.org
+Fixes: 88bc30548aae ("IIO: ADC: New driver for AD7792/AD7793 3 Channel SPI ADC")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/misc/trancevibrator.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/adc/ad7793.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/misc/trancevibrator.c
-+++ b/drivers/usb/misc/trancevibrator.c
-@@ -59,9 +59,9 @@ static ssize_t speed_store(struct device
- 	/* Set speed */
- 	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
- 				 0x01, /* vendor request: set speed */
--				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-+				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
- 				 tv->speed, /* speed value */
--				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
-+				 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
- 	if (retval) {
- 		tv->speed = old;
- 		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);
+--- a/drivers/iio/adc/ad7793.c
++++ b/drivers/iio/adc/ad7793.c
+@@ -278,6 +278,7 @@ static int ad7793_setup(struct iio_dev *
+ 	id &= AD7793_ID_MASK;
+ 
+ 	if (id != st->chip_info->id) {
++		ret = -ENODEV;
+ 		dev_err(&st->sd.spi->dev, "device ID query failed\n");
+ 		goto out;
+ 	}
 
 
