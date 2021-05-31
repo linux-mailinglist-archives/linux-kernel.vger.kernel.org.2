@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEF43966CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB2B3966D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhEaRXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
+        id S233208AbhEaRXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbhEaRXa (ORCPT
+        with ESMTP id S233202AbhEaRXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:23:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C15EC06F0FB;
-        Mon, 31 May 2021 08:48:41 -0700 (PDT)
+        Mon, 31 May 2021 13:23:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC3CC0467D0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lE1hDy09j0KTbLLoUxbq+EnHpIMPD9qqZ9pibZXYJSo=; b=cdbrjCofYVR4z6XzntlRc1H8if
-        KOb7UEPFcTKzI0bvgdDUPGOygzYUWpZ9wmdZUVCXXW04uerqFjYiXw+3J5oQpSaJ2bmryxZvHkp3D
-        /9i8qnXS29fU8M7Pvep/rFS1rvOEeATQYowxNjzdcsXZhYimlo5VKHSVH5qzjeIvULUy/XEIVDtAc
-        DU0OO7O0OrTZBfrkXTlwGd4DJjLRqHHYTOoj4+TBMFaWHK1CAIfun6U0MgefBpbNVxfSwn7UDGKU2
-        l4l5V1MknQl1W+DfrK/cI04fPOZnh5nq6wQTH6V7s36kFZZq0cLznduB6fbRJOftWhS/txBYDHnGh
-        K4PSRk3g==;
+        bh=WyW/lgrXio1io+DdNIzucbTsMb/tqw0RVBeZR+N/DxI=; b=kVButqd6qa8XUaZiEQJ2AHwgSm
+        Oll0ADKUMrhHydehguXaRtm4DssUmGVJk74wdmb184v6QQdladqtxbfwxKY6SNNO0vF6LgM9AYe+V
+        GrDUHgQjJ1qxelecxOB/AMN3/binSj5N8KDiwxvcMP0NgZwRKo5VRwmA9RNBrzOW6qKOaBO3lUfRk
+        ocVKqxDuYIfBJw/z3xJNsdZ5nsY/a3iUwa/Lqg5serIkzk4PY9dLYTCv2BITPxeVmRlxipKWLlljx
+        HX9lUIKFRT9n70mv0bbfn/zhUJx3gZkgSo+WRRtlsQN3fwpqKEtQ6oZS3BcXgFSRot3cNqdA0Tz2o
+        DXmO1iww==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lnk97-009AEz-22; Mon, 31 May 2021 15:48:07 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lnk9X-002JEO-Sm; Mon, 31 May 2021 15:48:38 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9581A300223;
-        Mon, 31 May 2021 17:48:03 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F3BEC300223;
+        Mon, 31 May 2021 17:48:36 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 742B020126D07; Mon, 31 May 2021 17:48:03 +0200 (CEST)
-Date:   Mon, 31 May 2021 17:48:03 +0200
+        id E437F2C45692F; Mon, 31 May 2021 17:48:36 +0200 (CEST)
+Date:   Mon, 31 May 2021 17:48:36 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+To:     Hailong Liu <liuhailongg6@163.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Change to use SMP memory barriers
-Message-ID: <YLUFMzxin1PpgIdZ@hirez.programming.kicks-ass.net>
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
- <d1fc3dd3-e79a-4e93-1083-6b08e0cabe59@intel.com>
- <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
- <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
- <7cdc3578-a50e-89ef-477a-3dc1f84f96bb@intel.com>
- <YK9tEQmk4Q+M5yJh@hirez.programming.kicks-ass.net>
- <20210531145302.GC9324@leoy-ThinkPad-X240s>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-kernel@vger.kernel.org, Hailong Liu <liu.hailong6@zte.com.cn>
+Subject: Re: [PATCH] sched/debug:fix stale comments of sched_debug
+Message-ID: <YLUFVBJgaQBSsbAM@hirez.programming.kicks-ass.net>
+References: <20210530025145.13527-1-liuhailongg6@163.com>
+ <YLSUw2Kkq946LQam@smile.fi.intel.com>
+ <48a36f92-e8cf-d62b-e4d5-bf6911bcbbcf@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210531145302.GC9324@leoy-ThinkPad-X240s>
+In-Reply-To: <48a36f92-e8cf-d62b-e4d5-bf6911bcbbcf@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 10:53:02PM +0800, Leo Yan wrote:
-> Hi Peter, Adrian,
-> 
-> On Thu, May 27, 2021 at 11:57:37AM +0200, Peter Zijlstra wrote:
-> > On Thu, May 27, 2021 at 12:24:15PM +0300, Adrian Hunter wrote:
-> > 
-> > > > If all we want is a compiler barrier, then shouldn't that be what we use?
-> > > > i.e. barrier()
-> 
-> Sorry for a bit late.  Just bring up one question before I respin
-> this patch set.
-> 
-> > > I guess you are saying we still need to stop potential re-ordering across
-> > > CPUs, so please ignore my comments.
-> > 
-> > Right; so the ordering issue is real, consider:
-> > 
-> > 	CPU0 (kernel)		CPU1 (user)
-> > 
-> > 	write data		read head
-> > 	smp_wmb()		smp_rmb()
-> > 	write head		read data
-> 
-> One thing should be mentioned is the Linux kernel has _not_ used an
-> explict "smb_wmb()" between writing AUX trace data and updating header
-> "aux_head".  Please see the function perf_aux_output_end():
+On Mon, May 31, 2021 at 10:09:36PM +0800, Hailong Liu wrote:
+> Based on your suggestion, I checked and it turned out that PROC_FS is not
+> the correct dependency, but DEBUG_FS. 
 
-I think we pushed that into the driver. There is nothing the generic
-code can do here.
-
-It is the drivers responsibility of ensuring the data is stable before
-calling perf_aux_output_end() or something along those lines.
+You should check again...
