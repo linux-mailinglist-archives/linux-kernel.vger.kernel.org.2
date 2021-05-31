@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BBB396555
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9346E396296
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhEaQb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:31:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40316 "EHLO mail.kernel.org"
+        id S233459AbhEaO6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:58:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233589AbhEaOrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D84661C8B;
-        Mon, 31 May 2021 13:55:57 +0000 (UTC)
+        id S233445AbhEaOE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:04:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F66F61453;
+        Mon, 31 May 2021 13:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469358;
-        bh=N6QBhbaoixqNSH7hQZQXy04G9OzUiSPwdaXmmotnH0I=;
+        s=korg; t=1622468299;
+        bh=oDyXkmvx+gQobzupFPp7+JRAht8mlIefsNOkh3GbdPw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RSTdotlYRfWKePpI7h4+Ex04WN4XZnD2U/bK4KAaK4UtHKuvFt5lhCg+RoNq8bXa6
-         e/F3SCYt/r5U5F9IBXpZXZsE2BIRW8FfuLTJSKTCvYO7mvw1KjLzVLcB596+drN7S/
-         E+wXoxQOF3GimrksqD1SxOfaotYX1iZXM+UJLfdo=
+        b=Mhmp807TLF54eNeepjPSeeqSmEK3n1qpt4ScHSau1wBhWgTfEL96rPvbUi31f+/bI
+         lFcfOTBy9kwzNs0p22bPj3d4/jUCsjwol5vPDxkqJyGI0lZG3ddq/tEKT/cM9bBOT4
+         GBtGTNo5OX+sNR9dOIIsq8NO/UQEJ9B7QO3JTOQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Atul Gopinathan <atulgopinathan@gmail.com>,
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 166/296] serial: max310x: unregister uart driver in case of failure and abort
+Subject: [PATCH 5.10 156/252] Revert "libertas: add checks for the return value of sysfs_create_group"
 Date:   Mon, 31 May 2021 15:13:41 +0200
-Message-Id: <20210531130709.452194626@linuxfoundation.org>
+Message-Id: <20210531130703.304071429@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 3890e3dea315f1a257d1b940a2a4e2fa16a7b095 ]
+[ Upstream commit 46651077765c80a0d6f87f3469129a72e49ce91b ]
 
-The macro "spi_register_driver" invokes the function
-"__spi_register_driver()" which has a return type of int and can fail,
-returning a negative value in such a case. This is currently ignored and
-the init() function yields success even if the spi driver failed to
-register.
+This reverts commit 434256833d8eb988cb7f3b8a41699e2fe48d9332.
 
-Fix this by collecting the return value of "__spi_register_driver()" and
-also unregister the uart driver in case of failure.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-12-gregkh@linuxfoundation.org
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit was incorrect, the error needs to be propagated back
+to the caller AND if the second group call fails, the first needs to be
+removed.  There are much better ways to solve this, the driver should
+NOT be calling sysfs_create_group() on its own as it is racing userspace
+and loosing.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-53-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/marvell/libertas/mesh.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 93f69b66b896..43e55e6abea6 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1518,10 +1518,12 @@ static int __init max310x_uart_init(void)
- 		return ret;
- 
- #ifdef CONFIG_SPI_MASTER
--	spi_register_driver(&max310x_spi_driver);
-+	ret = spi_register_driver(&max310x_spi_driver);
-+	if (ret)
-+		uart_unregister_driver(&max310x_uart);
- #endif
- 
--	return 0;
-+	return ret;
+diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
+index f5b78257d551..c611e6668b21 100644
+--- a/drivers/net/wireless/marvell/libertas/mesh.c
++++ b/drivers/net/wireless/marvell/libertas/mesh.c
+@@ -805,12 +805,7 @@ static void lbs_persist_config_init(struct net_device *dev)
+ {
+ 	int ret;
+ 	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
+-	if (ret)
+-		pr_err("failed to create boot_opts_group.\n");
+-
+ 	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
+-	if (ret)
+-		pr_err("failed to create mesh_ie_group.\n");
  }
- module_init(max310x_uart_init);
  
+ static void lbs_persist_config_remove(struct net_device *dev)
 -- 
 2.30.2
 
