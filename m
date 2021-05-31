@@ -2,151 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2B63967A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6F33967A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhEaSOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 14:14:30 -0400
-Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:40256
+        id S232186AbhEaSPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 14:15:42 -0400
+Received: from mail-bn8nam11on2081.outbound.protection.outlook.com ([40.107.236.81]:46145
         "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230288AbhEaSO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 14:14:27 -0400
+        id S230288AbhEaSPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 14:15:35 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PMrRBq7kQaCSTPBhWQ3iMBc+5jiJTXaNKdDCxTPmeRPgL3qoJa9h1GsDimhpJyDHb+BIqi7OaQ9vsw2eszCeEwfOiQbdqPKR3zJ8zuVB4vRY+QnwHMDHtArxzZ+u9gKIJDNxBjcQ92c6ZpCfvEtC/KpoYsSsu9HEQmJZ29Bx13rhWVrtcphm0JReNZZlUxxkrJdDBqr/G0AKE021i54Vs3u80KNlf0x9Yk5r5TYwRNgp59MHpbhHm5U3h7/gxIDjDXSAdAbiL7GeMyc637egl5r+E7F3+cHNqFmq6x7gxSgJgdVUrdK/qhYPZht3UjgtEN4RvsUMOEuIw3v3Ldfvug==
+ b=eO4Sbb53EiJQ+FOYAsCz03wx0Bkr0p4+xqORfcVWKZ2I3bg6XJxyX6DMwQ/JYxqX8IOjZExgdaJrWCOJxmVHYBkEGGnLre7QdO2zJuIm1ifeB64oHxsuffHtCJ2eyub4sZa481vn/7Tf/aruSQidm+IsBHW9aBM4h4JHob/vTs47uvRaJWduT/rVaL6qOxV7ssE46ZueBxScdKLXl999ZnZ7g1OwWCHU9eCDHP3ryX2YwoEpY44FHvq3bmbaJD0EJAhD+eYE1OQeVawVPPEWMmnwiCGBTGX8M6vdNzwPc72G1Vpzen7Xfnv5xHcICVhJIZkReSX0GB9qsXMHLkaVRg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GF1QE1MToHriJPAqkPIyvgYFZfgekNjoqRsg0DNFx8g=;
- b=V42aSnyOIYMuy/DERgdde3DceafvUqogyoFZIObOvHpxuG1mSaXcK9q4zntDrLAtU6eQMBiX2iYuUQ7WxFxdm0eGLSdAK900iJvYywkY1pXaatQj6k/fblkLcCppBzilWHQICK1FlENkDnPAX1DN5IaRnjkHuQsoiDNFG4qPbnHNCDjZfPcJuiev/P5jhvM8vC1gqNB05khkoHd1vq/DgFsftl4qL5n+lPMWpxTkGu9wMAglr6p+1/sB+xb+iYYYon1NeC7fczDQu4T8rUGboow/DQUVw9SYOzA2cod7zdYQDimcgtNrsBU/qOquQQHVwSIDnIeJVpaDJMXlBTgxKg==
+ bh=OiiW9LyeA8IjjVaRkKbvVS/Nk7qMiwEFDw9orSRMxQ8=;
+ b=EE1EUvb+78U599UjaG8a4Do/1k2gtiAUsY2pkMnV8F3zlQPkZy6Fm2TKJe6Zr7RFa42AS3TIw045w9kUKXctJUy2blGPT/+vGcmyCfPVIbbBGq5bc9Me2EG04EMyHFF5XYXvmUmcs0/XQ7rvfS00ZG7JAIPaFrnsOAyK1mP2nwj73baIBIW1QRLZdIgDxTPE++WYLtnX1leCUrBooDcbYv2RgE097QcbA534QJDllVc0W4REwrPZ5xYuXfySJrjY5ieZKEP/NmD+Nd+hoeXC2wiRVIrDzG02vAXE0P6vW8dv0wXu+YWmr/+RHdFswWKMbeVNRUCrLe5HQL2L1p0vhQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GF1QE1MToHriJPAqkPIyvgYFZfgekNjoqRsg0DNFx8g=;
- b=LESRi6aq/vWsF8pMzT8MjG++ecLVLJwAen/RK7nt1gOqEralUMq0szYvirpoL1wHSG52To1rapB4i+ncFwWS+SBcex/MK4LmQ+0aqvoqwLfC/CbYmzYgrgifvet54U1ht+HEG8okAOrZ11pNL9GQy5vGAu8y2zCQU9XBfptk6d9WakSV4CE1CYj6DD1XXSFVt+8JitCTlD7rjBwczzfaKdcebpCCxhF0gG1q5BMVlrhWaw3IxKSJtOFdx32fnXKeX1mu1U9HEz8DM7wtNElgHAgiPynuUErQrF6vdkyJ5b0lZSsnGNhb/QU1x3u1aMLTQsKk+wnd7CyeH7yg4btonQ==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+ bh=OiiW9LyeA8IjjVaRkKbvVS/Nk7qMiwEFDw9orSRMxQ8=;
+ b=mx47gQvZZhgmDmiXImGyxbkcpR5TJ/fxjD6h8LVrHtfHZB/WeccqY9oe9oVeRcJbGtomiwgr36SA83UCVhY7Pi2XPBqwo2Y1ZZXZ+4NBIev66vlS9Thszd+B9EUfqDlnkuLZHQBUTrckv1bAHHU6yY1b9jDUkl5A7ISlR2FoM6LWP3gRp+sOrMo4t9MQ81KUlQjpZFwDsqEAs9yPccrxTe41IG9IilYATM8hqm3/YiJ+FcrCTFMQOeRADRtOorb5eIh1isjM6fXPb7LU5zL3ntxC3pxUDp7TigM1Hp00am/GPWHi/X2tpfurFmWTSB9ERTPKMf6z2XT+EjiTCIwQ8Q==
+Authentication-Results: ACULAB.COM; dkim=none (message not signed)
+ header.d=none;ACULAB.COM; dmarc=none action=none header.from=nvidia.com;
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
  by BL1PR12MB5190.namprd12.prod.outlook.com (2603:10b6:208:31c::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Mon, 31 May
- 2021 18:12:45 +0000
+ 2021 18:13:53 +0000
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.030; Mon, 31 May 2021
- 18:12:45 +0000
-Date:   Mon, 31 May 2021 15:12:43 -0300
+ 18:13:53 +0000
+Date:   Mon, 31 May 2021 15:13:52 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210531181243.GY1002214@nvidia.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <PH0PR12MB5481C1B2249615257A461EEDDC3F9@PH0PR12MB5481.namprd12.prod.outlook.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH rdma-next v1 0/2] Enable relaxed ordering for ULPs
+Message-ID: <20210531181352.GZ1002214@nvidia.com>
+References: <cover.1621505111.git.leonro@nvidia.com>
+ <20210526193021.GA3644646@nvidia.com>
+ <5ae77009a18a4ea2b309f3ca4e4095f9@AcuMS.aculab.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR12MB5481C1B2249615257A461EEDDC3F9@PH0PR12MB5481.namprd12.prod.outlook.com>
+In-Reply-To: <5ae77009a18a4ea2b309f3ca4e4095f9@AcuMS.aculab.com>
 X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0229.namprd13.prod.outlook.com
- (2603:10b6:208:2bf::24) To BL0PR12MB5506.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL0PR1501CA0013.namprd15.prod.outlook.com
+ (2603:10b6:207:17::26) To BL0PR12MB5506.namprd12.prod.outlook.com
  (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0229.namprd13.prod.outlook.com (2603:10b6:208:2bf::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.10 via Frontend Transport; Mon, 31 May 2021 18:12:44 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lnmP5-00HD5i-V6; Mon, 31 May 2021 15:12:43 -0300
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR1501CA0013.namprd15.prod.outlook.com (2603:10b6:207:17::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Mon, 31 May 2021 18:13:53 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lnmQC-00HD74-Nj; Mon, 31 May 2021 15:13:52 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: efde8504-a71a-47d4-5295-08d9245fb04e
+X-MS-Office365-Filtering-Correlation-Id: 58a9dcb7-7f9e-4401-7c9b-08d9245fd956
 X-MS-TrafficTypeDiagnostic: BL1PR12MB5190:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5190DCD9BA74A88EE3BE2CE0C23F9@BL1PR12MB5190.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5190A63E8FA823EB24477226C23F9@BL1PR12MB5190.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RZoFOPzX0QcdMK6GCEFI5me7Vz+mdaNR2Q17eGouVCkzPVRtYDR/wqMgZ95pa3wSQt0LRYofpeC1ZmuGrAGFz+bcTmZDnJ4KUH5wQhhlmz8gKKm+JWvHgV0rAbdjEEZcUfJIiC8J7wFm/WFmp0MyXKcWsRcvna3oXLCqxS5BEQYjB9Knd0gD6bb4aCZE7sz+TViAkVnbBNTgNT6Mfsxpq5OKIU0ahUSb+YS0yph8bsZ7rx5+W1FyjCqbraUyn0PbREGuA4NliNNFZM2hJvJAY/uU7nxWrJ3BdNow+pdqu+cqpQyYYrZRKewUJpKlpW9WLRrw5q+yHv48rxJOPZ/3OXsI7Lc4AQ0h+g5q59yVUL7PAdYNtBOcIed20ECxyf4CNGUvQNL5lHsydQjluyepLR//srhMvxwOV+jSTsWXQBErgXfn4+EIrtlrjqKKIxSAuKe3ssJ9/fMtk1mZRoCWVRqmzAiyKhBQfIzy+AqsSwQQhYyUV+nj8T33p7jL/fz8VBbPy9KLjpUXL9KDhsUqlmdLTsnxv47VNWQdrYso0QVl7HCixupYIIzChU+aNu2WOZG38ZtpQskjXDINiLCDoIIUzxvILWVr5VOokJZJMVM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(136003)(376002)(346002)(26005)(54906003)(8936002)(86362001)(9786002)(316002)(9746002)(5660300002)(37006003)(6636002)(33656002)(1076003)(7416002)(66476007)(4744005)(66556008)(478600001)(38100700002)(186003)(4326008)(426003)(2906002)(6862004)(66946007)(36756003)(8676002)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?b7Yd3SBS0mk0L+qTeZnTXkaG3CqhvuyWHE0veBcpoWIaRA5SflhYzZ8JMJsA?=
- =?us-ascii?Q?9eI9MDL91a61cPtWiG3wyRpCBs1le1lLgf+wVNl8L3xFpQaNsy/ixZyWE4Z4?=
- =?us-ascii?Q?i0npSYTPj9Br3R+qrisd2rFxvO/zF7qXFR5bD8Nt9vXGO6Hl5pjbmLwx0HkV?=
- =?us-ascii?Q?w1Lz/alxGQ5Cxd2PV6fmDqXi7wqEMh9/945i0x8JFdg6fgDJT5Q9lo+JjAZH?=
- =?us-ascii?Q?Cs45jarsml8FkDJZbgHklnDKw5fkLELw0LMaMFFBb6l8yXQN1CXvia2Fvp9G?=
- =?us-ascii?Q?Pnm5EZ0oapHb/wPgcX9puCq2jICYjGxJrFD0owzioWW367PzE4lToXAB6J5R?=
- =?us-ascii?Q?pIJGz7pJVSfsjL3Pjibx5+g2IPWfD+XVscqb5GiElYoaJ+kDmpWEHTQ93wVW?=
- =?us-ascii?Q?L2Hsv72tx/j3ve9hNQ6izHe0biHlKssXE8DpsBDucWBqwAqd+3Ymbvf4Cngc?=
- =?us-ascii?Q?7O0B85uO2NePnBXVXtKWFRBU91A45E7941+MbgGkqnUWfugKkldB+MKAi4Y/?=
- =?us-ascii?Q?ko70PTkCihnjJV/gGGM6Yvov8VkDJDmshCNu9cksU8I9Kr6pdbAyL6fcqLaI?=
- =?us-ascii?Q?nlIpkoWCce46ck0T+HIUuhaEX6YqcvIEgZ80fRbk8vFcVAVvk/oeUs1CrnRl?=
- =?us-ascii?Q?XXZfWTxbrKgGFWs9lNaQOK961lSlMlxOsl1hNvPDSahf5GafenP5B9Xy+GXA?=
- =?us-ascii?Q?f4+lhMv5B5KNyDDdX778ddD4vABaiRqFIZ32lm29cGkSe//alxyeI8kwS6xn?=
- =?us-ascii?Q?3ArHpXHANL4VHNOCaZ6CyI17at3nlQkedSjAzBYaIeBHUqWa568VpOYAKrzs?=
- =?us-ascii?Q?FLlN6/4KBO5yYUkzSy87wQmxVXj7cTA5ldSoenAG/RcWV6BK07mHuKRQ2c65?=
- =?us-ascii?Q?x9pM8YqHLM4FKOlvYpQRj83VgHjTRF1c3z9un0z5PZQx5j8YmVbSovJ75535?=
- =?us-ascii?Q?AWxbE8mhilO2jLdYpXdL2Uwutxzk+hnBZRiT6vG+wG8RtiLYq6sqTT7pfXnQ?=
- =?us-ascii?Q?5xCnNPiOzzWmqdpnJDwXdea9ktAKxDQI2hx5hlQBfPE8b1IHfFe2ZnLnRJ89?=
- =?us-ascii?Q?Ivvv0Djb3SStWfaAindL7dGHq02vGoqbilITDAWJEmi65aQsDkbankCm+rwq?=
- =?us-ascii?Q?tsg6LreQldjkHB4hvbSHpbYGWRbGC/3IQ6QxluhaNjyXGwOPQFEJYZmbC/wa?=
- =?us-ascii?Q?d36sZtmnLxuWN1Jlay2+zW/gK0ZKKBRxU1hL/9vFQ20YXOCM0v9kNrva15DY?=
- =?us-ascii?Q?wMWujSF9WTtgA+CrHWuurbNmT+uhu6Po/MJPaN398qyml9tM3jRsbt4IyVWI?=
- =?us-ascii?Q?qaosSZ6ChgS1Ksb+Q8nNZCRq?=
+X-Microsoft-Antispam-Message-Info: 1Uzg0oR1vW/VffJi2/nYCRimcNgKPmvkA1xQdHaVfhToN6GKqBwZtQCBZigRDjEPSwPdvNYSGyPI3KFaQXx2IX2I4EUZHvGQOVYYcEax6KhDhK2rZgAmVdyN/ZSNeI0slR72luzYNaikHAtpi0y1VnRhIrJjuqNisz446y/rj5elY/22vU/1lO+z8tlzuC5DCuBqOeVoUsACBijy6MxMPxZYnmyT8cwM9xr5aFiDd3Z9MLxbQZlLmkzSz/9toLTjBATagz+Gsge8RW2sEbKW0mcyYm7gvKlh9YxCTsj3WkZlN/RA0KN9r0xoPUeDaWHMKPT5IzzXdF+URIjtbKIDI5lITH4GdAnPV90POHP8KqRRUGXVHrD8g6heJWc162L48nOZcinHm5Iha3sQVB6g0T7XKknL3s2gtGCeFQk7hSaZZNhLD1ClmrnXZ1p4vor0GO5eCaWDPJauIbfXPG+lTk4N5kvFuE530+totKo/sZYCrKElplK34t7R2VLq0VjVK1dXT9J0seE75oKeYhNWzZjHs2ztmWpXSGUf7SNfSzkNTU6j6LWgRMNbwPAIOUkKl/f/eqmG4bbVPf76miLjUsmHfgU8rJsRhSqAXqQZdAekdo/yz4HF9mXn7EKg0fVwpq+TZx79aKk1JPBmtmahgWumTUfcgPJ7m+bLZIRU/x3gur0NVlFQj/GqI1s1l1iQX0CLSFKp5YSt5SJaxBRy1O66dghadnmQH7egXNN3MDA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(54906003)(8936002)(86362001)(498600001)(9786002)(9746002)(5660300002)(33656002)(1076003)(7416002)(66476007)(4744005)(66556008)(38100700002)(186003)(83380400001)(4326008)(426003)(6916009)(107886003)(2906002)(66946007)(36756003)(8676002)(2616005)(966005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?YXF9FBDtlcf0gkCApFKNorsbul/c/XEbnmAcc79KWDvP28hyxhjawvVf+OcV?=
+ =?us-ascii?Q?pzK39jwCH0KuMD9EvN649wKmALmHmr5RQsFBTu4EpRLE1p8Zd07odn0NZtc9?=
+ =?us-ascii?Q?k0T3HuENvNqL07GjF0V8sf7UYD1tVgA1P77ii1iPkNp8zLiY2LR/1iDYGQkb?=
+ =?us-ascii?Q?kInkjg4uR9Lx08AJYgs/OxY4z7JS9w7UMN9LGotQEvJswPZUTICiRcxgi2dV?=
+ =?us-ascii?Q?YUxDgj61CdD82EKoeTkjBxsdQSBZlIV/vl/+BAO+kML+CcZuEjMGisWTijti?=
+ =?us-ascii?Q?9h2HkRfMTbXs9PNE1YMSnLBIDvqZW7QgTQsSwCP7TwZZ9fz0F8ZM62MDQy71?=
+ =?us-ascii?Q?K8EAOYVXgfQ5awNB9S7l8/aH53TQnB5sfr2MfgL4etej8wArV3fEb3IFdyF7?=
+ =?us-ascii?Q?GRqZMYODk5wa5iCJ9rjoxggzVPMUbmxr0gd7mBfLnOCk0dSM4lKi3DLGz4HG?=
+ =?us-ascii?Q?Y0Vw+l++vslZC7BPZgwni+vZMmJi6ciCBfsUB8IeeEsSSy9DDtelKAHF12ZS?=
+ =?us-ascii?Q?9VrUPBT77gIgF/OeJx7rs9fCXdiGRIqCWEu0r7UX2W0BK9SZTiLQn9/3gfpK?=
+ =?us-ascii?Q?TjlR+W02IaP62+wgEpzSIQBO+j7OU3s+mz7OXls8bhesrc5IB/X2RCUZoYi6?=
+ =?us-ascii?Q?e2NlkJhtDj34Gjgr3flOPpm7ws8b2LpqwojrsI0ShlMiNCO4kqSr3pNkcnSk?=
+ =?us-ascii?Q?e3khApMO25bT/vEv3dKZNACyxtErWssDAHpWl4BmcuDkv4haFVDiZNy6DxF5?=
+ =?us-ascii?Q?YllFILvA7Gxgv2XKzsTiCQoVtw6HAB0frge9MIXCqc96XnfttKKyWjECWLwd?=
+ =?us-ascii?Q?oIxGQCLfhpxd2N9hQCxETyafQWK0xfm6Y0azTaen5ixNr5KRZkU+B3l7i4SK?=
+ =?us-ascii?Q?RendSrZwSqqeI8yTlHRO5KzZbshB6RgevO1GWLNbrbQdir8BFjI0T95Pxlr9?=
+ =?us-ascii?Q?gFvXMVPc4hkzhXvCAEU16PiuOn30i/PS35U2lFtIf0CGvArTZctxN8bKD4/n?=
+ =?us-ascii?Q?YGPUcL6jPxQaA2+zuz2cnUH7Mz7R+B9htbU6CTgPOyytR5eiUTGF+1BM4YXB?=
+ =?us-ascii?Q?VuPHmSoKZdD7gRUYzyho498lNIUT9et3BzJkw1Kn8TQM+SSn1uQQ8eoxgYpI?=
+ =?us-ascii?Q?2LWLFZspLvDjEoLIz62NJpaoRgAzXJCC2PuZJ+KBsgHuz0jC2ELHWamu/ZAU?=
+ =?us-ascii?Q?6SxV44JvltnAB1MBnA3x0kJsSkQHnIBsHeOIBjMzkIRkewGzrBEiPoBSnd2L?=
+ =?us-ascii?Q?2g2xL3v6r9jwvQkhtYOYoHF0zB2wM4J96FHGpYhylcqNz97T4DR2jUjC5TF9?=
+ =?us-ascii?Q?qjzf0wYI/f41rwCVHMlGPOsD?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: efde8504-a71a-47d4-5295-08d9245fb04e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58a9dcb7-7f9e-4401-7c9b-08d9245fd956
 X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 18:12:45.0998
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 18:13:53.8892
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vihKYf1dLWLw0b1ZqaPQCq8XHW8THdKJttYm1D5dLGfB6WkHThWiqxG/G3NJNfjP
+X-MS-Exchange-CrossTenant-UserPrincipalName: JQDEWw0R/o+1ukJggZwHFn5in2wDDVN2npR+xsL0xXJ9dDfCFSpXiW8IZ2/iZhCt
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5190
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 05:37:35PM +0000, Parav Pandit wrote:
+On Thu, May 27, 2021 at 08:11:14AM +0000, David Laight wrote:
+> > There was such a big discussion on the last version I wondered why
+> > this was so quiet. I guess because the cc list isn't very big..
+> > 
+> > Adding the people from the original thread, here is the patches:
+> > 
+> > https://lore.kernel.org/linux-rdma/cover.1621505111.git.leonro@nvidia.com/
+> > 
+> > I think this is the general approach that was asked for, to special case
+> > uverbs and turn it on in kernel universally
+> 
+> I'm still not sure which PCIe transactions you are enabling relaxed
+> ordering for.  Nothing has ever said that in layman's terms.
+>
+> IIRC PCIe targets (like ethernet chips) can use relaxed ordered
+> writes for frame contents but must use strongly ordered writes
+> for the corresponding ring (control structure) updates.
 
-> In that case, can it be a new system call? Why does it have to be under /dev/ioasid?
-> For example few years back such system call mpin() thought was proposed in [1].
+Right, it is exactly like this, just not expressed in ethernet
+specific terms.
 
-Reference counting of the overall pins are required
-
-So when a pinned pages is incorporated into an IOASID page table in a
-later IOCTL it means it cannot be unpinned while the IOASID page table
-is using it.
-
-This is some trick to organize the pinning into groups and then
-refcount each group, thus avoiding needing per-page refcounts.
-
-The data structure would be an interval tree of pins in general
-
-The ioasid itself would have an interval tree of its own mappings,
-each entry in this tree would reference count against an element in
-the above tree
-
-Then the ioasid's interval tree would be mapped into a page table tree
-in HW format.
-
-The redundant storages are needed to keep track of the refencing and
-the CPU page table values for later unpinning.
+Data transfer TLPs are relaxed ordered and control structure TLPs are
+normal ordered.
 
 Jason
