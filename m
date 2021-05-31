@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A20395BE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3FA395E36
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbhEaNZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56434 "EHLO mail.kernel.org"
+        id S231592AbhEaNza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:55:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232119AbhEaNUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:20:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E43E0613AB;
-        Mon, 31 May 2021 13:18:28 +0000 (UTC)
+        id S232438AbhEaNgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:36:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48F916144E;
+        Mon, 31 May 2021 13:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467109;
-        bh=0YJD7e276oFcntbIk5vyUhDA1WT+W8oEXfACavlAbxg=;
+        s=korg; t=1622467555;
+        bh=wT0KiccDgL3YqGubO7STzSzHp7Ml/7GG+9c2IcX3nXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XQBQMXxl/ittqjv4NzfIqGS9GSUSM9Wj9QNBiOo8ed1jy7d4uTmAaS2HMuw1AVma+
-         taHWwIddGjn/bqYMIdbIRwhwDCiGWybXjsFq5Aix9MjIUdE/aXm5AN1eKd9po3tWJo
-         rs1OxZ6ENGSuWXXbg/ymJvd8NVbg2xWyF4LGxpaY=
+        b=rIQR+c1J2HcxKoq4lJEUndn7xVZoW9m/iB/8ImPsNApMlpch9Sr0CCFckqGiZ8ztz
+         HEj/55SR3VEvLmz0s/w15D5kBGquQDr2NmlPBL2oLJKqVFwe3uIKAYcqKy2SHTh3wa
+         xUPSoObHPu3FCgQDqWdfQhDWcPHOUQ/NnuoeQjhA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 44/54] net: netcp: Fix an error message
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 4.19 074/116] perf jevents: Fix getting maximum number of fds
 Date:   Mon, 31 May 2021 15:14:10 +0200
-Message-Id: <20210531130636.453755600@linuxfoundation.org>
+Message-Id: <20210531130642.661939901@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit ddb6e00f8413e885ff826e32521cff7924661de0 ]
+commit 75ea44e356b5de8c817f821c9dd68ae329e82add upstream.
 
-'ret' is known to be 0 here.
-The expected error code is stored in 'tx_pipe->dma_queue', so use it
-instead.
+On some hosts, rlim.rlim_max can be returned as RLIM_INFINITY.
+By casting it to int, it is interpreted as -1, which will cause get_maxfds
+to return 0, causing "Invalid argument" errors in nftw() calls.
+Fix this by casting the second argument of min() to rlim_t instead.
 
-While at it, switch from %d to %pe which is more user friendly.
-
-Fixes: 84640e27f230 ("net: netcp: Add Keystone NetCP core ethernet driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+Link: http://lore.kernel.org/lkml/20210525160758.97829-1-nbd@nbd.name
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ti/netcp_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/pmu-events/jevents.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ti/netcp_core.c b/drivers/net/ethernet/ti/netcp_core.c
-index 37b9b39192ec..8f7610805dda 100644
---- a/drivers/net/ethernet/ti/netcp_core.c
-+++ b/drivers/net/ethernet/ti/netcp_core.c
-@@ -1284,8 +1284,8 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
- 	tx_pipe->dma_queue = knav_queue_open(name, tx_pipe->dma_queue_id,
- 					     KNAV_QUEUE_SHARED);
- 	if (IS_ERR(tx_pipe->dma_queue)) {
--		dev_err(dev, "Could not open DMA queue for channel \"%s\": %d\n",
--			name, ret);
-+		dev_err(dev, "Could not open DMA queue for channel \"%s\": %pe\n",
-+			name, tx_pipe->dma_queue);
- 		ret = PTR_ERR(tx_pipe->dma_queue);
- 		goto err;
- 	}
--- 
-2.30.2
-
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -858,7 +858,7 @@ static int get_maxfds(void)
+ 	struct rlimit rlim;
+ 
+ 	if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
+-		return min((int)rlim.rlim_max / 2, 512);
++		return min(rlim.rlim_max / 2, (rlim_t)512);
+ 
+ 	return 512;
+ }
 
 
