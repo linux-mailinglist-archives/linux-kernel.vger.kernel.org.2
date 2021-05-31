@@ -2,159 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318BF39665A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCF139665F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234915AbhEaREc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:04:32 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34020 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhEaQCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 12:02:40 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14VG0f4L088390;
-        Mon, 31 May 2021 11:00:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622476841;
-        bh=vnWFPHz+nHDKi1o49MLpJkwWMgq1Vhx/5uo3qsnHzYk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Z0ga/5N1RWzO0Tdn5z/gw7bGBlPnQagEKgBnzwVQMIkBo1+Y0kn/xV6RAtWhPezZw
-         Ajt5A6fqV0SuR5/3HFcUxd1h5Ke/HUZyDkoThCLAVEFZIIu2izqfMolxn8Z/+abYX7
-         q5LdizoHTP3DKLJLcKEvL0Uvr/y04lOYOATdI624=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14VG0fcJ092636
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 May 2021 11:00:41 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 31
- May 2021 11:00:41 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 31 May 2021 11:00:41 -0500
-Received: from [10.250.233.152] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14VG0YgG008762;
-        Mon, 31 May 2021 11:00:35 -0500
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-To:     Luca Ceresoli <luca@lucaceresoli.net>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20210531090540.2663171-1-luca@lucaceresoli.net>
- <20210531133211.llyiq3jcfy25tmz4@pali>
- <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
-Date:   Mon, 31 May 2021 21:30:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230308AbhEaREw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:04:52 -0400
+Received: from mail-mw2nam12on2056.outbound.protection.outlook.com ([40.107.244.56]:40161
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233059AbhEaQFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 12:05:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eMH029IErqAJTOsd0u1LR8rgRtZbd3bNtG4fvP+71OMgDxi6Yi/j/CfYigktPg8uJ3/XGyjPFWCNl7aLIBLlSZKY0HKw5ugz/75M09CWvB0hzID+8S0uxkwGkLNpeRG2mHmkzLK0Ju5eFjsSwZQlMG6TShxgover0wTkuq1Z+5BlHJMxFEpEm8CTqFJsAsgWRvBwlwSZ8mD/yMXTt/4BjfyZdcZdqN8A4IphIdr4cSDzJlYff8VPJjyknUfRyp3VIQSquzkwKmQAzqrhNcXUb6LfaHlcYrV+KuVS4BrGQ4phj/nMmcq5vdStDchR1qzVOrPdDUM3/nB7inwotV3RwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zcIwwEwUqkoCxyFwDM30FQAhuRiD7oqVspCoogaH6wc=;
+ b=YjBG9FYaofRAdb4+0F/cBxjHW7CEMbIvAPv5w43lM9zorh++sMRNQOJiGqUkIu9zjIDgHgqg79oM2Sx+wK2gtWdKT/PMuax8uHUUIa8z/h20E6GOUsP+dpMRWyELcr0R24+ZJ5ZIdN2jEv5PD1nru/r7gwrEn6bLikag9GK5SiV3BIuTiuF2t/Yuzjgvsn9eI87WGOFQP470jLl9DYLCamBBk5fyCmh5MPsRyOqa81XHxjKrTiOqVmzPld2W3aPKeptsSz5lunnX87DAb+NEVk6luSY/CNflhM0Z6dhyAu7CdZdpnodMI0/PYheQv+6Aun+/7K5ySq+fHneraacSrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zcIwwEwUqkoCxyFwDM30FQAhuRiD7oqVspCoogaH6wc=;
+ b=hGBrE4TqeMY1Xs1wtEl/o7DmthnKGWxP9fFRQ/y1HZkNqcKUzFiaxfpO0SIsY4vAbq0nbJa9tq4QZ/+GyL/vgtIpfnM2eVcJREz5wRB6Od5FUSQvOcJ2XDKEk8N+PqJIEJ5rJjtdHJ5Uf2Tl84rscS9NMA5LKhVsHbLw+i6XL6hGNptOpDf6W1KZx8tyygBLdqhyvPckbGooTnEczTWibC91sSG3i3EOUz4MbZ9t04zdTsY1lg9i8hrZvZsDkB3ChmjMydrFeBJHZyMBI08tXC62xbzHDGe3+2WcrOQ0ykczN5+z8Xw4/N9s33kdhIXaJXIP/VbkdspSHkBCnXk/Zw==
+Received: from BN0PR02CA0022.namprd02.prod.outlook.com (2603:10b6:408:e4::27)
+ by BN6PR1201MB0004.namprd12.prod.outlook.com (2603:10b6:404:ac::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Mon, 31 May
+ 2021 16:04:12 +0000
+Received: from BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e4:cafe::54) by BN0PR02CA0022.outlook.office365.com
+ (2603:10b6:408:e4::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Mon, 31 May 2021 16:04:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT061.mail.protection.outlook.com (10.13.177.144) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4150.30 via Frontend Transport; Mon, 31 May 2021 16:04:12 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 31 May
+ 2021 09:04:11 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 31 May
+ 2021 16:04:10 +0000
+Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 31 May 2021 16:04:06 +0000
+From:   Eli Cohen <elic@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <elic@nvidia.com>
+Subject: [PATCH v1 1/2] vdpa/mlx5: Support creating resources with uid == 0
+Date:   Mon, 31 May 2021 19:04:04 +0300
+Message-ID: <20210531160404.31368-1-elic@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 60507f26-d2c8-47f5-0fa5-08d9244dbb53
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0004:
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB00040A5A93103E5EA04B0467AB3F9@BN6PR1201MB0004.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dy6wH/eLjRJyLFeEnT7Qi3+/QOyrOBaAoIB6Sf9Q2Nvxq+ZIbld0dpZg8qI21P4Ho9gK1BURtgfDoi9B1JNyzhGB54QMHL4oWQqfoEylEMonpVO6kL4rwaHT+d/sNwuNkLlxMFvi7wEGvbu6rnx4hk0dlvfoNOXZNcwGUp94EEC8GiV7I0Wrha/4zEgRUFFXtr+S8bu/Ulr+AebuQw4C/8PzAX/eOgMcCafxe2KURoMIjGhui5mq5oYk9w9w6fHziJvHV8sVpQ7bDeG4P42JdqZ2qAhDD7kNv7ZynGCiLnzQCVC1ICPWlRtI8EBck77KJn3g6KrsGzSyY2ibjpdRCwl8eslQ5Ao8+fXzR9sVxmQ4OWNnqzNQ1O+QZWGcXJSHXwDAVATkhscqWc2148vpJmFH6hri/DcfCCU9s2St6OycIAbr03y5gyJiQzf++y9LwW0R5RaPlBSUA7DlwTVlyElwzT5B+ZzIEhArTks8rExmWX/lpXpqwb97OqmbhmdjKyI9sm+3hLRIF8RxAUthSvBmCJHrCBtkl5snKWRCaPHf9rfMIR4ToAoW5kdBpU71elAeR3ufiv/frtfmvCjrOAhvvJ6OLvGuWjTxYDmTgj1w0dUri7P74jENR9x4Ugj4yXZMYKEi60vws2pHsAWzg/AT9j0QHGyT6PBNqWUvTf8=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(46966006)(36840700001)(83380400001)(5660300002)(336012)(426003)(186003)(1076003)(70586007)(356005)(82310400003)(70206006)(107886003)(2616005)(2906002)(26005)(316002)(110136005)(7696005)(36756003)(36860700001)(86362001)(47076005)(8676002)(4326008)(8936002)(7636003)(478600001)(82740400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 16:04:12.1681
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60507f26-d2c8-47f5-0fa5-08d9244dbb53
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0004
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently all resources must be created with uid != 0 which is essential
+when userspace processes are allocating virtquueue resources. Since this
+is a kernel implementation, it is perfectly legal to open resources with
+uid == 0.
 
-On 31/05/21 7:24 pm, Luca Ceresoli wrote:
-> Hi Pali,
-> 
-> On 31/05/21 15:32, Pali Rohár wrote:
->> On Monday 31 May 2021 11:05:40 Luca Ceresoli wrote:
->>> The PCIe PERSTn reset pin is active low and should be asserted, then
->>> deasserted.
->>>
->>> The current implementation only drives the pin once in "HIGH" position,
->>> thus presumably it was intended to deassert the pin. This has two problems:
->>>
->>>   1) it assumes the pin was asserted by other means before loading the
->>>      driver
->>>   2) it has the wrong polarity, since "HIGH" means "active", and the pin is
->>>      presumably configured as active low coherently with the PCIe
->>>      convention, thus it is driven physically to 0, keeping the device
->>>      under reset unless the pin is configured as active high.
->>>
->>> Fix both problems by:
->>>
->>>   1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
->>>      assuming the pin is correctly configured as "active low" this now
->>>      becomes a reset assertion
->>>   2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
->>>
->>> Fixes: 78bdcad05ea1 ("PCI: dra7xx: Add support to make GPIO drive PERST# line")
->>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->>>
->>> ---
->>>
->>> Changes v1 -> v2:
->>>  - No changes to the patch
->>>  - Reword commit message according to suggestions from Bjorn Helgaas (from
->>>    another patchset)
->>>  - Add Fixes: tag
->>> ---
->>>  drivers/pci/controller/dwc/pci-dra7xx.c | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
->>> index cb5d4c245ff6..11f392b7a9a2 100644
->>> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
->>> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
->>> @@ -801,6 +801,8 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
->>>  		dev_err(&pdev->dev, "gpio request failed, ret %d\n", ret);
->>>  		goto err_gpio;
->>>  	}
->>> +	usleep_range(1000, 2000);
->>
->> Hello! Just a note that this is again a new code pattern in another
->> driver for different wait value of PCIe Warm Reset timeout. I sent email
->> about these issues:
->> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
->>
->> Luca, how did you choose value 1000-2000 us? Do you have some reference
->> or specification which says that this value needs to be used?
-> 
-> Sadly I haven't access to the PCIe specification.
-> 
-> I'd be very happy to know what a correct value should be and update my
-> patch.
+In case firmware supports, avoid allocating user context.
 
-I had given the timing mentioned in the specification here
-https://lore.kernel.org/r/023c9b59-70bb-ed8d-a4c0-76eae726b574@ti.com
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+---
+v0 --> v1:
+  Fix typo and modify phrasing
 
-The PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION defines the Power
-Sequencing and Reset Signal Timings in Table 2-4. Please also refer Figure
-2-10: Power Up of the CEM.
+ drivers/vdpa/mlx5/core/resources.c | 6 ++++++
+ include/linux/mlx5/mlx5_ifc.h      | 4 +++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-╔═════════════╤══════════════════════════════════════╤═════╤═════╤═══════╗
-║ Symbol      │ Parameter                            │ Min │ Max │ Units ║
-╠═════════════╪══════════════════════════════════════╪═════╪═════╪═══════╣
-║ T PVPERL    │ Power stable to PERST# inactive      │ 100 │     │ ms    ║
-╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-║ T PERST-CLK │ REFCLK stable before PERST# inactive │ 100 │     │ μs    ║
-╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-║ T PERST     │ PERST# active time                   │ 100 │     │ μs    ║
-╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-║ T FAIL      │ Power level invalid to PERST# active │     │ 500 │ ns    ║
-╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-║ T WKRF      │ WAKE# rise – fall time               │     │ 100 │ ns    ║
-╚═════════════╧══════════════════════════════════════╧═════╧═════╧═══════╝
+diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+index 6521cbd0f5c2..836ab9ef0fa6 100644
+--- a/drivers/vdpa/mlx5/core/resources.c
++++ b/drivers/vdpa/mlx5/core/resources.c
+@@ -54,6 +54,9 @@ static int create_uctx(struct mlx5_vdpa_dev *mvdev, u16 *uid)
+ 	void *in;
+ 	int err;
+ 
++	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0))
++		return 0;
++
+ 	/* 0 means not supported */
+ 	if (!MLX5_CAP_GEN(mvdev->mdev, log_max_uctx))
+ 		return -EOPNOTSUPP;
+@@ -79,6 +82,9 @@ static void destroy_uctx(struct mlx5_vdpa_dev *mvdev, u32 uid)
+ 	u32 out[MLX5_ST_SZ_DW(destroy_uctx_out)] = {};
+ 	u32 in[MLX5_ST_SZ_DW(destroy_uctx_in)] = {};
+ 
++	if (!uid)
++		return;
++
+ 	MLX5_SET(destroy_uctx_in, in, opcode, MLX5_CMD_OP_DESTROY_UCTX);
+ 	MLX5_SET(destroy_uctx_in, in, uid, uid);
+ 
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index 9c68b2da14c6..606d2aeacad4 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -1487,7 +1487,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+ 	u8         uar_4k[0x1];
+ 	u8         reserved_at_241[0x9];
+ 	u8         uar_sz[0x6];
+-	u8         reserved_at_250[0x8];
++	u8         reserved_at_248[0x2];
++	u8         umem_uid_0[0x1];
++	u8         reserved_at_250[0x5];
+ 	u8         log_pg_sz[0x8];
+ 
+ 	u8         bf[0x1];
+-- 
+2.31.1
 
-The de-assertion of #PERST is w.r.t both power stable and refclk stable.
-
-I'm yet to validate this patch, but IIRC devm_gpiod_get_optional(dev,
-NULL, GPIOD_OUT_HIGH) will already de-assert the PERST line. Please note
-the board here can have various combinations of NOT gate before the gpio
-line is actually connected to the connector.
-
-Thanks
-Kishon
