@@ -2,162 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB63395EDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4748A396351
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhEaOFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:05:00 -0400
-Received: from mail-eopbgr70117.outbound.protection.outlook.com ([40.107.7.117]:64673
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232641AbhEaNl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:41:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BGwau/B+/IEJtbNoXbc/uCseMZgxCbJu0B4+hOLJN4n4nTFxlyNbT2b2QXL0bgxR2UBVcQVUVvq2Fz3TYUalRxyy4wVtG/Z4FjJfinrDsT8eUCtF9DQsltrDkGkJzVamenAAiXgCPrlFugmFS/GY6j20hP/wCLBSiruB20zRT6LcyUvXZERsXaT0EttOe1thHEaqm9SAaTC51ooHm7Q5pSLaV/DcH+L4M8kuuQ+aLIxZ9jQaA+bZ2s1YbCZwH8id1Jt0K7tMJWqfrr7NeYWdNNFs8ZsXPLxzepLczaPaFkvo1MfLJhfTcTOQ+6xHXmVp6C6fSQjjRac8JTAMdHoSxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s9DozSxuznmP/ieyOKWei5Ak+stFx6gcrL1mX/juuDY=;
- b=L1+OivQIkIKvlz6X2nDQgMYV7CcxpCDqhNucBMn+XX75OZMefD8tXFkooSi+wSezIMAmWT4UlqI1mXOcHNVvOevKEeDmRenl0oYurwciKJ5HMFI4rEwHQvfizxGeJ9vZnAHBaPnFb6+I7+3ooOijOosce10kbGYRYQFunmxEknwIqoQyNaI/asonoV+0LinOh7vV9sMkI9qXbyleTFqmK95A7xxMh1nDcIAsnvJXj9vnlhAkzVSdRUVtEc2I69COlz2g6tJ7z9y26uHcVQZE3OceYT9P6XRVWOLrOUiJd+jo8h/aoYFFD2zyuA2vuNTf4JY4z1h9Uq9hl+4QucN1bA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s9DozSxuznmP/ieyOKWei5Ak+stFx6gcrL1mX/juuDY=;
- b=mXSQhL49JF7YIkPmSwU5LJdKz8yhEL8F+lfOmo2r7AuZ2GqRP0kLlFfDQQCISlSV02L3Cp06kt43fYvZ91E0qFukLqIUcuYCuFsKwE7fIrShxh+5q3YJ2a0OddgVGmf++y8ScR6jSoD1LrLEJVTLu3I2yMVyXX0ZRJJRMtUInso=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB7PR02MB4476.eurprd02.prod.outlook.com (2603:10a6:10:2f::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Mon, 31 May
- 2021 13:39:43 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::d47d:ca8c:4fe6:3908]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::d47d:ca8c:4fe6:3908%3]) with mapi id 15.20.4173.030; Mon, 31 May 2021
- 13:39:43 +0000
-Subject: Re: [PATCH v1 1/9] iio: inkern: always apply scale requested by
- consumer
-To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
-        lars@metafoo.de, pmeerw@pmeerw.net
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-References: <20210530005917.20953-1-liambeguin@gmail.com>
- <20210530005917.20953-2-liambeguin@gmail.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <4c0628c1-765c-2544-66cc-d5ea5a7703fd@axentia.se>
-Date:   Mon, 31 May 2021 15:39:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-In-Reply-To: <20210530005917.20953-2-liambeguin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: sv-SE
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [85.229.94.233]
-X-ClientProxiedBy: HE1PR0102CA0045.eurprd01.prod.exchangelabs.com
- (2603:10a6:7:7d::22) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S234426AbhEaPNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233145AbhEaOLX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:11:23 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB46C035433;
+        Mon, 31 May 2021 06:40:07 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so11084485otp.11;
+        Mon, 31 May 2021 06:40:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ozF7Nw0gMrrvzPjGZChhJPIjE3+nOGNmHfCPhJPHLRQ=;
+        b=AnpSaFAXu0Lf0o787EGCw9Q4WRtBu2uEFo9T3b5CSo+FlZFV4Z7ooh8U9B81yPaMhl
+         1rF05/vSgb0CmLrTmbUykug3Sa7TTVmyYOGQeax7aDnUQ6fBkqFGViKZwAWeOmqzXspv
+         6/HfRqagSQ2G0ZYzATf1HPcZikDpx5IUy9u7vpMq9GmuLToyRSR4Rade8EwrJvfbkaJJ
+         Q7ejJYb76pKVePyQF17TG7i/+k0QHdn2fH2Ifhg3/jPzrSFYGZ4a8a/W37MpeAXEfcLF
+         H3e6fmXYaHs1MnDiMWx/hLvg7LUQvePyZJKCaP2K7+zpVOWJLsfsdjV3hwhEl6hHPDfg
+         GyQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ozF7Nw0gMrrvzPjGZChhJPIjE3+nOGNmHfCPhJPHLRQ=;
+        b=pICcOiF5M1KMGZ1PhBxmg3A54NT9rLiydxQ796/rR7vNwaQSAGpDP7W3Tp4psj9nFV
+         h0G+ueLN3zZrisvGLahlYjQXyrAyaTMc5VaEeanjqLODnKVXDrDPMBZ2RT80PbE8gGyJ
+         LOxn7OQgQ2lD3MJp5+7fRfedSOfhlrpqW2pzxDprueP8d8knUoJguoaFxzfWjNzAWc02
+         uiFpZxv/h2ETjzeXQWijiNA1hSzTDabvt3GNk2wGB0cWG4wf/8Pg8UQHxTsyQrqzLxrM
+         yy4kPitNYijZPZQzyCLSOTHnRpqIGGI26sarTSJnPDTGhJnyQNnS1o6HWOajCERuznNG
+         MC7w==
+X-Gm-Message-State: AOAM531JPznnn2+GaYQNSyVqhJyuJZKdo8vO2DVP3wcs8ajq4bwqvvHl
+        XMBVrTcHBCcv+yCb8MTqVOdMBZV+0mSlysAo36UWyesMmuWqO/bA
+X-Google-Smtp-Source: ABdhPJzqgggxS8X7nyAo0DAvgmmlEzBHLmjc2yp0dBZreoZQ8hJGpTy1Bhx84M9jYQwuR3EsrX0b409L5yEU267ChAs=
+X-Received: by 2002:a9d:4592:: with SMTP id x18mr7969267ote.74.1622468406360;
+ Mon, 31 May 2021 06:40:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.229.94.233) by HE1PR0102CA0045.eurprd01.prod.exchangelabs.com (2603:10a6:7:7d::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Mon, 31 May 2021 13:39:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32282497-0567-4a4e-1443-08d924398c02
-X-MS-TrafficTypeDiagnostic: DB7PR02MB4476:
-X-Microsoft-Antispam-PRVS: <DB7PR02MB4476E804C9EDFA79AC3A8732BC3F9@DB7PR02MB4476.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7XeeafPqgt8+qoifAF2Tc9fcDyuinh7ftXnoR1ffXLllBTNX02tlwjn8aufl1UFFU8xv0vQc8ql45xFLGNioWHajnnW/OIgG+4V7ufEMNZIQkOZVtdleaagGsHRzVfL7qFWzeqfvx1i0ftVR+kTSZFF0jbGdyvJX1QfFUGyGSYDMN1rDZSp/kVc7qpob2Zv2wadt1sdRRs7J6CjNV0FaXA4AJJt3bPOX5MDkVmVwHj6WNPASU3hB2B8E/KfvSj/+2iA7zvTkypTQ26udiDoqBumGpTKYbxOtyPtYGylTs+ffkGbx+9Yh+TdZ0KWy8q8Cj4XQXTw50n6shDORMokPbJkKjIzTB1NlAWWl1w6N1tlGMAgcKfHWa6eyKx6Ao/dLbEEBAaTCrc5qHGgTMSxveNQpCPLMuInYaweuLgvVZmpQFcIKfcfeBGecSFImNrt1tyImacejYF70irUpFfT+gE3sAJejdk4YvR2dFfn/59JYjdtP4SwDaHoYdmbGDcDZ3Qu1xHf6Ja5hJsLTRH5F3JgnyAle4SmiJFEnTvxXesQ3bTOAKTZRImCf6zPFG9Zws+UlqyOtw7Wm3OtoY7VOJ/4N4nLJBDUreIVnNkRw2az8FQk2PZh/ZfeQOz/vMa/caUySTLMiQlkyh2Uzl/MdPw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(366004)(346002)(39830400003)(38100700002)(31686004)(2616005)(83380400001)(66946007)(4326008)(316002)(26005)(36756003)(86362001)(66556008)(478600001)(16576012)(956004)(31696002)(2906002)(53546011)(8936002)(6486002)(186003)(16526019)(8676002)(36916002)(66476007)(5660300002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWo2cGJyNHgxenRSV0kzOVZJbWNtQkEyUWlrcEJjWG5MdFhHQytkVFA1dS94?=
- =?utf-8?B?dEVvYW1XZXV5TlcxTi8zbFR2V3NjUlJ3M0lwcmJSM1oyMVNaUWcyVUpxc21N?=
- =?utf-8?B?c21WVXlTeHBCSHF6Q3JXczh2L0lNcGdNMUpLLzRYNHcxMk1FSUlJQnhMVUtL?=
- =?utf-8?B?OHZML1pPWVVjNW9hSGxHN3g5TldrcEdKeFlvMjVJL1ZLVG8xU2NXQWpsUkJF?=
- =?utf-8?B?N0NVbmNuVUdranpwa3UzZzYwRjdqOFUxd3poRFhDRGpGQUwwUGcrNVdxTURj?=
- =?utf-8?B?S2s1enNDSzVJMHBObGZxZ3lqU1htdjRjeGlxYmR5SU1qMWZyekY0SXNHQ0NB?=
- =?utf-8?B?YkxhckR4dHRvZ0svM1FjbVZmalZ4Yk56WXFLUWNtUFlKOUh3OFhsMDJiRzRu?=
- =?utf-8?B?WWZmWXgyR0FVZ2htNEtKb3ZKblI2WGpMMHl3TytlcStkVmJiUDFBMDNXSFp4?=
- =?utf-8?B?QlNHMGdtUndBNm1RQjQ3UTNUR1dlUUZqRU5Gd2ZqZ1BnYzN3aStrK2VDbS84?=
- =?utf-8?B?Sk9KT0RJS3ZuRVJzNmRodEEvYUZIZjJjWjFqUjg5VGcvU3BCR1FkbkFvOU9F?=
- =?utf-8?B?eDRlcUhRNW5la09qRmVrSXBKQlBjdGpBUlF3Q1Iyb3RSOWkvZ3N5bndGUGR1?=
- =?utf-8?B?aXFwMWpEbEtNMjZuenFNRDVZaktEd1JmanBSWndRQWltc2NsdmM2dEVjaGRw?=
- =?utf-8?B?S0FnVzkyRVAzU2tGU21GdHRqbWE4UFRzL01VOTJ1TGlwdXd1RmpzSnZuSzE5?=
- =?utf-8?B?NklrbXU1ekhsVkE2TVdxaC85Sk1CMVRXL3A0dnJlZlpUZzI2Tm54UTRObHox?=
- =?utf-8?B?c0NXNklLZHZjeUx1eTd6OFhlMjdPYk9NY21xOVIzd2gxZDhuaFRqNjZFQUd4?=
- =?utf-8?B?VDNsSHJwa2pSbjBENzhzTVZFOHA2WFF3TVZnd0haQXZSbE9vRk41UzhPSWhN?=
- =?utf-8?B?MWxGZWZhdEs4dXhZZTJ0NldNTEJTSU5kZkpmdWRUMGpGNjc1NlUzWEg5UzJu?=
- =?utf-8?B?VmhLc0pnZDQ5cExyL1h3ZmZDNXFtYlk3ekUzRXdPeEtZQVZDaFI4ZTB2ZEdD?=
- =?utf-8?B?Znl6dVUyeVlBNkRxVWhhMHZaZmtzcWlxMnhHQWo4V29xOG8ybjJnSnE3ZzIz?=
- =?utf-8?B?Yy9kTk95VlZxSHZvN3hLcEtQTUJEUWZVbFF0a2lIY3QwYWFKdUswbDFYNFYx?=
- =?utf-8?B?aFViK1loNVJLTWp0dVVULzZrSTBNRFN6d2JQemlUU2hRVnFKeGpDYXA1WnYv?=
- =?utf-8?B?RUVhcllJT1AwUDEzK0JZdlcwOGlSU2g4NTMzN09UVlFTUExocG5GSnl1TjhZ?=
- =?utf-8?Q?koPBwANzOp?=
-X-MS-Exchange-AntiSpam-MessageData-1: 4Mv/U0Mg3ikWI+7AzIaQ24VDEyMssjFs7Xidro+Z+nRZcqECMo1FvPoYo72HOxYhpJCPHNkLrpmaGXq91qkiTFgmRGU6fWzlo66nXu19qc2CU3weVGfLuM0rSyYqSiPoPItdAmr2lOL+6OqMVnC8GH2hiy4bA2vV5wng/cLrnqCw/GGk+an/3PqjbLclkOkkmmdNow2xhQo7LfiXWME+IZMDvuZlfnahu/XBj0eoA9fcWWreKljrOIc5YObwaXl80bf1A93EpIFds41ZbJFWh/LkJ/dX4eUeeWMsg+tLcqUpf1oE6kfMMqYtxXXWB3y564+cZ2c6XCCstPKeQUwbSp8i
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32282497-0567-4a4e-1443-08d924398c02
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 13:39:43.2147
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G/hPrgFg7EbX4dxvPFtD5XLWTMdN8FlwEsp6cWr/kmTIXhDPL8bWOw7Na2BpBgoW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB4476
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
+ <20210515124055.22225-3-sergio.paracuellos@gmail.com> <20210531131431.bzsvmefqdyawmeo2@pali>
+In-Reply-To: <20210531131431.bzsvmefqdyawmeo2@pali>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 31 May 2021 15:39:55 +0200
+Message-ID: <CAMhs-H80=7jctPT70rOmcwcqPw+9iUF84_ZCgGr-TKwJ4eB2Lg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] MIPS: pci: Add driver for MT7621 PCIe controller
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi Pali,
 
-On 2021-05-30 02:59, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
-> 
-> When a consumer calls iio_read_channel_processed() and no scaling is
-> available on the channel, it's assumed that the scale is one and the raw
-> value is returned as expected.
-> 
-> On the other hand, if the consumer calls iio_convert_raw_to_processed()
-> the scaling factor requested by the consumer is not applied.
-> This for example causes the consumer to process mV when expecting uV.
-> 
-> Make sure to always apply the scaling factor requested by the consumer.
-> 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> ---
->  drivers/iio/inkern.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
-> index db77a2d4a56b..4b6a8e11116a 100644
-> --- a/drivers/iio/inkern.c
-> +++ b/drivers/iio/inkern.c
-> @@ -601,11 +601,7 @@ static int iio_convert_raw_to_processed_unlocked(struct iio_channel *chan,
->  	scale_type = iio_channel_read(chan, &scale_val, &scale_val2,
->  					IIO_CHAN_INFO_SCALE);
->  	if (scale_type < 0) {
-> -		/*
-> -		 * Just pass raw values as processed if no scaling is
-> -		 * available.
-> -		 */
-> -		*processed = raw;
-> +		*processed = raw * scale;
+Thanks for your comments.
 
-I would keep the comment. Sure, it's now completely confusing since it's from
-before the function had a scale parameter. Perhaps reword it to talk about
-"no channel scaling" instead of plain old "no scaling"?
+On Mon, May 31, 2021 at 3:14 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Saturday 15 May 2021 14:40:53 Sergio Paracuellos wrote:
+> > This patch adds a driver for the PCIe controller of MT7621 SoC.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  arch/mips/pci/Makefile     |   1 +
+> >  arch/mips/pci/pci-mt7621.c | 624 +++++++++++++++++++++++++++++++++++++
+> >  arch/mips/ralink/Kconfig   |   9 +-
+> >  3 files changed, 633 insertions(+), 1 deletion(-)
+> >  create mode 100644 arch/mips/pci/pci-mt7621.c
+> >
+> > diff --git a/arch/mips/pci/Makefile b/arch/mips/pci/Makefile
+> > index f3eecc065e5c..178c550739c4 100644
+> > --- a/arch/mips/pci/Makefile
+> > +++ b/arch/mips/pci/Makefile
+> > @@ -24,6 +24,7 @@ obj-$(CONFIG_PCI_AR2315)    +=3D pci-ar2315.o
+> >  obj-$(CONFIG_SOC_AR71XX)     +=3D pci-ar71xx.o
+> >  obj-$(CONFIG_PCI_AR724X)     +=3D pci-ar724x.o
+> >  obj-$(CONFIG_PCI_XTALK_BRIDGE)       +=3D pci-xtalk-bridge.o
+> > +obj-$(CONFIG_PCI_MT7621)     +=3D pci-mt7621.o
+> >  #
+> >  # These are still pretty much in the old state, watch, go blind.
+> >  #
+> > diff --git a/arch/mips/pci/pci-mt7621.c b/arch/mips/pci/pci-mt7621.c
+> > new file mode 100644
+> > index 000000000000..fe1945819d25
+> > --- /dev/null
+> > +++ b/arch/mips/pci/pci-mt7621.c
+> ...
+> > +static int mt7621_pcie_enable_ports(struct mt7621_pcie *pcie)
+> > +{
+> > +     struct device *dev =3D pcie->dev;
+> > +     struct mt7621_pcie_port *port;
+> > +     u8 num_slots_enabled =3D 0;
+> > +     u32 slot;
+> > +     u32 val;
+> > +     int err;
+> > +
+> > +     /* Setup MEMWIN and IOWIN */
+> > +     pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE);
+> > +     pcie_write(pcie, pcie->io.start, RALINK_PCI_IOBASE);
+> > +
+> > +     list_for_each_entry(port, &pcie->ports, list) {
+> > +             if (port->enabled) {
+> > +                     err =3D clk_prepare_enable(port->clk);
+> > +                     if (err) {
+> > +                             dev_err(dev, "enabling clk pcie%d\n", slo=
+t);
+> > +                             return err;
+> > +                     }
+> > +
+> > +                     mt7621_pcie_enable_port(port);
+> > +                     dev_info(dev, "PCIE%d enabled\n", port->slot);
+> > +                     num_slots_enabled++;
+> > +             }
+> > +     }
+> > +
+> > +     for (slot =3D 0; slot < num_slots_enabled; slot++) {
+> > +             val =3D read_config(pcie, slot, PCI_COMMAND);
+> > +             val |=3D PCI_COMMAND_MASTER;
+> > +             write_config(pcie, slot, PCI_COMMAND, val);
+>
+> Hello! Is this part of code correct? Because it looks strange if PCIe
+> controller driver automatically enables PCI bus mastering, prior device
+> driver initialize itself.
+>
+> Moreover kernel has already function pci_set_master() for this purpose
+> which is used by device drivers.
+>
+> So I think this code can confuse some device drivers...
 
-Also, this looks like a bugfix, no more, no less, and should perhaps have a
-fixes tag?
+I agree that we have pci_set_master() to be used in pci device driver
+code. Original controller driver set this bit for enabled slots. Since
+there is no documentation at all for the PCI in this SoC I have
+maintained the setting in the driver in a cleaner way. See original
+driver code and the setting here [0]. There is no other reason than
+that. I am ok with removing this from here and testing with my two
+devices that everything is still ok if having this setting in the pci
+controller driver is a real problem.
 
-Cheers,
-Peter
+[0]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/tre=
+e/drivers/staging/mt7621-pci/pci-mt7621.c?h=3Dv4.18#n676
 
->  		return 0;
->  	}
->  
-> 
+Best regards,
+    Sergio Paracuellos
+>
+> > +             /* configure RC FTS number to 250 when it leaves L0s */
+> > +             val =3D read_config(pcie, slot, PCIE_FTS_NUM);
+> > +             val &=3D ~PCIE_FTS_NUM_MASK;
+> > +             val |=3D PCIE_FTS_NUM_L0(0x50);
+> > +             write_config(pcie, slot, PCIE_FTS_NUM, val);
+> > +     }
+> > +
+> > +     return 0;
+> > +}
