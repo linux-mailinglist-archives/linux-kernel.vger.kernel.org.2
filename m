@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC71395B69
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914C63963CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhEaNUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:20:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53778 "EHLO mail.kernel.org"
+        id S232384AbhEaPfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:35:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231714AbhEaNSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D02E86124C;
-        Mon, 31 May 2021 13:17:10 +0000 (UTC)
+        id S233630AbhEaOV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:21:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B744619B8;
+        Mon, 31 May 2021 13:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467031;
-        bh=fluzT7fwjIXE+lJDPa2Bk62kZPmj+6G7s/3PJo2b+/0=;
+        s=korg; t=1622468671;
+        bh=OnKk4J0rJiPuHFiwNihNYM0eQogylE7E2JYfh02LAe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xg7Exj5qRp792foaXJHFzc8huqjKvy7mRJUWfjHJDNy4ZTwW4dsfBWH8//zQDgYxN
-         fI3dtypldQMM27FGFznLWSzpSyFW0u7wWus1yTGCRIgyePLX48wLBw9CUSXCqU/cXX
-         LdXnN+aP5Wn7oqUASzihuHow50HfBG4irvgyr8R8=
+        b=BltVo9jdc/WnHqQX8V2ij/jGMzHj89ryCckdvZ2ekb+EOUdsUbyILVQ8wwJSfJPsq
+         DobpPPe5p26Vcn31bLWqaV2pPwjkkyjMLA2RwWWefKu+foZqgnkgLs+m7UF368SVCE
+         zMZwUCZsbp6qtdrH3HP++5qbume/i1XQFBhoaIq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        =?UTF-8?q?=C3=89ric=20Piel?= <eric.piel@trempplin-utc.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 31/54] platform/x86: hp_accel: Avoid invoking _INI to speed up resume
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 080/177] net: dsa: fix a crash if ->get_sset_count() fails
 Date:   Mon, 31 May 2021 15:13:57 +0200
-Message-Id: <20210531130636.058797805@linuxfoundation.org>
+Message-Id: <20210531130650.674754658@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,92 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 79d341e26ebcdbc622348aaaab6f8f89b6fdb25f ]
+commit a269333fa5c0c8e53c92b5a28a6076a28cde3e83 upstream.
 
-hp_accel can take almost two seconds to resume on some HP laptops.
+If ds->ops->get_sset_count() fails then it "count" is a negative error
+code such as -EOPNOTSUPP.  Because "i" is an unsigned int, the negative
+error code is type promoted to a very high value and the loop will
+corrupt memory until the system crashes.
 
-The bottleneck is on evaluating _INI, which is only needed to run once.
+Fix this by checking for error codes and changing the type of "i" to
+just int.
 
-Resolve the issue by only invoking _INI when it's necessary. Namely, on
-probe and on hibernation restore.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Acked-by: Éric Piel <eric.piel@trempplin-utc.net>
-Link: https://lore.kernel.org/r/20210430060736.590321-1-kai.heng.feng@canonical.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: badf3ada60ab ("net: dsa: Provide CPU port statistics to master netdev")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
- drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ net/dsa/master.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
-index c439c827eea8..0ef759671b54 100644
---- a/drivers/misc/lis3lv02d/lis3lv02d.h
-+++ b/drivers/misc/lis3lv02d/lis3lv02d.h
-@@ -284,6 +284,7 @@ struct lis3lv02d {
- 	int			regs_size;
- 	u8                      *reg_cache;
- 	bool			regs_stored;
-+	bool			init_required;
- 	u8                      odr_mask;  /* ODR bit mask */
- 	u8			whoami;    /* indicates measurement precision */
- 	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
-diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
-index 10ce6cba4455..a06262e91a93 100644
---- a/drivers/platform/x86/hp_accel.c
-+++ b/drivers/platform/x86/hp_accel.c
-@@ -101,6 +101,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
- static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
- {
- 	struct acpi_device *dev = lis3->bus_priv;
-+	if (!lis3->init_required)
-+		return 0;
-+
- 	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
- 				 NULL, NULL) != AE_OK)
- 		return -EINVAL;
-@@ -361,6 +364,7 @@ static int lis3lv02d_add(struct acpi_device *device)
- 	}
+--- a/net/dsa/master.c
++++ b/net/dsa/master.c
+@@ -147,8 +147,7 @@ static void dsa_master_get_strings(struc
+ 	struct dsa_switch *ds = cpu_dp->ds;
+ 	int port = cpu_dp->index;
+ 	int len = ETH_GSTRING_LEN;
+-	int mcount = 0, count;
+-	unsigned int i;
++	int mcount = 0, count, i;
+ 	uint8_t pfx[4];
+ 	uint8_t *ndata;
  
- 	/* call the core layer do its init */
-+	lis3_dev.init_required = true;
- 	ret = lis3lv02d_init_device(&lis3_dev);
- 	if (ret)
- 		return ret;
-@@ -408,11 +412,27 @@ static int lis3lv02d_suspend(struct device *dev)
- 
- static int lis3lv02d_resume(struct device *dev)
- {
-+	lis3_dev.init_required = false;
-+	lis3lv02d_poweron(&lis3_dev);
-+	return 0;
-+}
-+
-+static int lis3lv02d_restore(struct device *dev)
-+{
-+	lis3_dev.init_required = true;
- 	lis3lv02d_poweron(&lis3_dev);
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
-+static const struct dev_pm_ops hp_accel_pm = {
-+	.suspend = lis3lv02d_suspend,
-+	.resume = lis3lv02d_resume,
-+	.freeze = lis3lv02d_suspend,
-+	.thaw = lis3lv02d_resume,
-+	.poweroff = lis3lv02d_suspend,
-+	.restore = lis3lv02d_restore,
-+};
-+
- #define HP_ACCEL_PM (&hp_accel_pm)
- #else
- #define HP_ACCEL_PM NULL
--- 
-2.30.2
-
+@@ -178,6 +177,8 @@ static void dsa_master_get_strings(struc
+ 		 */
+ 		ds->ops->get_strings(ds, port, stringset, ndata);
+ 		count = ds->ops->get_sset_count(ds, port, stringset);
++		if (count < 0)
++			return;
+ 		for (i = 0; i < count; i++) {
+ 			memmove(ndata + (i * len + sizeof(pfx)),
+ 				ndata + i * len, len - sizeof(pfx));
 
 
