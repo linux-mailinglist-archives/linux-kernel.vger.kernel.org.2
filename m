@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C9D39630E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2693E395C9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhEaPEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:04:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40220 "EHLO mail.kernel.org"
+        id S231670AbhEaNfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233149AbhEaOHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:07:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CF5461408;
-        Mon, 31 May 2021 13:39:18 +0000 (UTC)
+        id S232047AbhEaNZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:25:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 997C06135C;
+        Mon, 31 May 2021 13:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468358;
-        bh=KLSH0nHP6iWM/iZlyTw+XyKElfMnEL1/zIgwuEG1xsk=;
+        s=korg; t=1622467260;
+        bh=0ctFWL4093UdTLuZGJN21vegAHSAgkacxllsZn20GM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=psCFEJnK8JH0Z5xrcuHP4Zy/1VuiEdqhzBDNTx/VE80sjX7CXCLSITSDMjSJPwoMJ
-         cNxpbwmYzbR632tbhQ0PQIcQe2+Rdwm/zmsqML/HWhfCn52YmArRvLwP3UT+YoXsJ0
-         HOFUkyrH+j1jj35UeVvMUEtJ7El/LyLSO/rQdyws=
+        b=Jl/OcM1sYvDHHYmJuBi+Keil+fk4kf83WADkFXkmICI25XsVO5NcHNrfjMMCQC/rH
+         cGqxkXiDhCeG5STTouECCuO33KqeZESP1VnFNlNWp4usNaWN0l0dR/rhqzwY6VobOm
+         70SntMkHTqCyFjPDDcK1WAYQ017nrUz0WXX29/X4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 213/252] bnxt_en: Fix context memory setup for 64K page size.
+        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        David Bolvansky <david.bolvansky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 65/66] hugetlbfs: hugetlb_fault_mutex_hash() cleanup
 Date:   Mon, 31 May 2021 15:14:38 +0200
-Message-Id: <20210531130705.251104887@linuxfoundation.org>
+Message-Id: <20210531130638.307899456@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +45,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-[ Upstream commit 702279d2ce4650000bb6302013630304e359dc13 ]
+commit 552546366a30d88bd1d6f5efe848b2ab50fd57e5 upstream.
 
-There was a typo in the code that checks for 64K BNXT_PAGE_SHIFT in
-bnxt_hwrm_set_pg_attr().  Fix it and make the code more understandable
-with a new macro BNXT_SET_CTX_PAGE_ATTR().
+A new clang diagnostic (-Wsizeof-array-div) warns about the calculation
+to determine the number of u32's in an array of unsigned longs.
+Suppress warning by adding parentheses.
 
-Fixes: 1b9394e5a2ad ("bnxt_en: Configure context memory on new devices.")
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+While looking at the above issue, noticed that the 'address' parameter
+to hugetlb_fault_mutex_hash is no longer used.  So, remove it from the
+definition and all callers.
+
+No functional change.
+
+Link: http://lkml.kernel.org/r/20190919011847.18400-1-mike.kravetz@oracle.com
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Ilie Halip <ilie.halip@gmail.com>
+Cc: David Bolvansky <david.bolvansky@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |  9 +--------
- drivers/net/ethernet/broadcom/bnxt/bnxt.h | 10 ++++++++++
- 2 files changed, 11 insertions(+), 8 deletions(-)
+ fs/hugetlbfs/inode.c    |    4 ++--
+ include/linux/hugetlb.h |    2 +-
+ mm/hugetlb.c            |    8 ++++----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index ff86324c7fb8..adfaa9a850dd 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -6834,14 +6834,7 @@ ctx_err:
- static void bnxt_hwrm_set_pg_attr(struct bnxt_ring_mem_info *rmem, u8 *pg_attr,
- 				  __le64 *pg_dir)
- {
--	u8 pg_size = 0;
--
--	if (BNXT_PAGE_SHIFT == 13)
--		pg_size = 1 << 4;
--	else if (BNXT_PAGE_SIZE == 16)
--		pg_size = 2 << 4;
--
--	*pg_attr = pg_size;
-+	BNXT_SET_CTX_PAGE_ATTR(*pg_attr);
- 	if (rmem->depth >= 1) {
- 		if (rmem->depth == 2)
- 			*pg_attr |= 2;
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index e4e926c65118..a95c5afa2f01 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -1440,6 +1440,16 @@ struct bnxt_ctx_pg_info {
- #define BNXT_MAX_TQM_RINGS		\
- 	(BNXT_MAX_TQM_SP_RINGS + BNXT_MAX_TQM_FP_RINGS)
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -451,7 +451,7 @@ static void remove_inode_hugepages(struc
+ 			if (next >= end)
+ 				break;
  
-+#define BNXT_SET_CTX_PAGE_ATTR(attr)					\
-+do {									\
-+	if (BNXT_PAGE_SIZE == 0x2000)					\
-+		attr = FUNC_BACKING_STORE_CFG_REQ_SRQ_PG_SIZE_PG_8K;	\
-+	else if (BNXT_PAGE_SIZE == 0x10000)				\
-+		attr = FUNC_BACKING_STORE_CFG_REQ_QPC_PG_SIZE_PG_64K;	\
-+	else								\
-+		attr = FUNC_BACKING_STORE_CFG_REQ_QPC_PG_SIZE_PG_4K;	\
-+} while (0)
-+
- struct bnxt_ctx_mem_info {
- 	u32	qp_max_entries;
- 	u16	qp_min_qp1_entries;
--- 
-2.30.2
-
+-			hash = hugetlb_fault_mutex_hash(h, mapping, next, 0);
++			hash = hugetlb_fault_mutex_hash(h, mapping, next);
+ 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 			/*
+@@ -634,7 +634,7 @@ static long hugetlbfs_fallocate(struct f
+ 		addr = index * hpage_size;
+ 
+ 		/* mutex taken here, fault path and hole punch */
+-		hash = hugetlb_fault_mutex_hash(h, mapping, index, addr);
++		hash = hugetlb_fault_mutex_hash(h, mapping, index);
+ 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 		/* See if already present in mapping to avoid alloc/free */
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -93,7 +93,7 @@ void free_huge_page(struct page *page);
+ void hugetlb_fix_reserve_counts(struct inode *inode);
+ extern struct mutex *hugetlb_fault_mutex_table;
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-				pgoff_t idx, unsigned long address);
++				pgoff_t idx);
+ 
+ pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
+ 
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3887,7 +3887,7 @@ backout_unlocked:
+ 
+ #ifdef CONFIG_SMP
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-			    pgoff_t idx, unsigned long address)
++			    pgoff_t idx)
+ {
+ 	unsigned long key[2];
+ 	u32 hash;
+@@ -3895,7 +3895,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
+ 	key[0] = (unsigned long) mapping;
+ 	key[1] = idx;
+ 
+-	hash = jhash2((u32 *)&key, sizeof(key)/sizeof(u32), 0);
++	hash = jhash2((u32 *)&key, sizeof(key)/(sizeof(u32)), 0);
+ 
+ 	return hash & (num_fault_mutexes - 1);
+ }
+@@ -3905,7 +3905,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
+  * return 0 and avoid the hashing overhead.
+  */
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-			    pgoff_t idx, unsigned long address)
++			    pgoff_t idx)
+ {
+ 	return 0;
+ }
+@@ -3950,7 +3950,7 @@ int hugetlb_fault(struct mm_struct *mm,
+ 	 * get spurious allocation failures if two CPUs race to instantiate
+ 	 * the same page in the page cache.
+ 	 */
+-	hash = hugetlb_fault_mutex_hash(h, mapping, idx, address);
++	hash = hugetlb_fault_mutex_hash(h, mapping, idx);
+ 	mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 	entry = huge_ptep_get(ptep);
 
 
