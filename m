@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8FB39665B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BDC396537
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234959AbhEaREe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234386AbhEaQEX (ORCPT
+        id S234139AbhEaQ1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:27:05 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:21408 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234192AbhEaOpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 12:04:23 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96589C061351;
-        Mon, 31 May 2021 07:41:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=euB7BL2XuW3HoSpXnWIwx0mLzMjhawHcBqDGg751C3g=; b=tDWS4hOZfgY456Ivm/TAoCqAi
-        kwzSbsxZzymv6NNi44bQffd7ZVRueqJlNBszDtH/qddj46tkhS/3Fuw+g8KWvQi6JsUHe4dq/Kwc+
-        9YJrjaDlUyrlg1ENb0GZqTSnR8QXlZ0aakBYMTkeDqJ5SEqj+IrsOnUF/DdY9lHOzkLkGzV08kV7a
-        8h+GklEje69BI1jShscsHfdMkfebBoWOLNr7s3SllPMQAkFQqMilwb2dvauJcsy4MlG5Vm17JS1l8
-        mSG6Dfl1lID8lL4zgtQt1eM+fdGEbG6Pqm1pUw4u+Qct3o4zWw7vkf0cqlmthZbmhe2cSV0uXZ+WL
-        B5HbFDzdA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44520)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lnj6r-0002p9-Al; Mon, 31 May 2021 15:41:41 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lnj6m-0007d2-9u; Mon, 31 May 2021 15:41:36 +0100
-Date:   Mon, 31 May 2021 15:41:36 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Ondrej Jirman <megous@megous.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Josh Triplett <josh@joshtriplett.org>, tuxd3v@sapo.pt
-Subject: Re: sunxi: Bluetooth broken since 5.6-rc1
-Message-ID: <20210531144136.GS30436@shell.armlinux.org.uk>
-References: <20210530173454.5ab1dcf5@slackpad.fritz.box>
- <YLTi8iYdLiKNeaLC@kroah.com>
+        Mon, 31 May 2021 10:45:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1622472196; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=pdx5kWR3ZwW4ErUT94+FZPObYCFadP5ETYHs+u0NEhhGMBQyHpUBBOtnAcTcmkl/Nw
+    AfErtxSzExzYIkNrBxFQnKhhBabU+n+Ig/o3UdC7Ei764VZAFgZQKznVB+KNytoCefvS
+    5VwB/8CkUPlrw4vC+BoXhr6y3DSX931nxfYD3dVHb5cNjlDTkMvRtBnqR0VvnSpAt4m7
+    TVduW96XIjxEKBUoL4g+P9zAxBBmiYZh8W2FHpveBi6nngDTE2Sw6cXdyEuM62N/AuNI
+    JNxX0vdgT33VSvbNdF7BrZ6a1UGGMJWcHjhE1DYUFVPLm90LHSA5QRT9750d3xnVZ6Hh
+    p0Jw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622472196;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Jg2H/1U2Rc29N+b/uXCyre5UMUQOhLUihSa0cmLxZHY=;
+    b=sstw1Fb35nWuKZaxRk5Ygu8fdf5lfd3zuRryVyU3i8mIHsw6Rky0UbB9/p1d6C0Yb2
+    OxMCrKATnwqiZtbtRNZLoInVerTq5dXKqlUX9SYsvV1xrn+i1qyf95KWuU6clLhCurTy
+    f7zYq2GM5HW3REp2R7DB/sSErtu6oxsG24/47U0KRAtdGdESzFi0mkZbAXXgSwj+3HKY
+    uY48iW7W/UJNq48+ZyNF00rqWSSON06u5V+cBrLPmkorIL1dSdC09HKTUHVazQ3NxEdP
+    gNEPbw4akdzTt6xJpkYz+1/s6herNNWOhfHExfV0EFIk0SVkU4U8hm4icYfqfBiRp0/5
+    fy9w==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622472196;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Jg2H/1U2Rc29N+b/uXCyre5UMUQOhLUihSa0cmLxZHY=;
+    b=JKjt6WmatMwO7xveKf716GY6Qwz0GSjcNuHvoGJXWnLv/M6bTColeiX5biq77hOwCQ
+    9APlAsm9hRjLwddt2aCc/LqwSJIK8CQyt9/SVtnuRz3GsjdD3TeCkympSLKnhmuV5zD1
+    AfopwoRSFF8geC5fpL/MSyOOFKFxeS0XUzl5bP/Uo4w339PK8M9ZOTIY0yAWxuMJGy0u
+    xXfAQXpW2A+Pkg9Gw+39KTSDlfjWytVgOaDhn44xccnSpF5dv2muHOK/naZ36ZHG5T0F
+    g7CFrtkRO4lDJEJWmpICBDommKAbphhOuhwslQoxYj68U5054I9gLFPaJWkxdWVwu4XW
+    UxGQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j9IcjHBg=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
+    with ESMTPSA id U0b2c9x4VEhFLpE
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 31 May 2021 16:43:15 +0200 (CEST)
+Date:   Mon, 31 May 2021 16:43:11 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        David Sterba <dsterba@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] cpuidle: qcom: Add SPM register data for MSM8226
+Message-ID: <YLT18iBg20DZYyA4@gerhold.net>
+References: <20210530121803.13102-1-bartosz.dudziak@snejp.pl>
+ <20210530121803.13102-3-bartosz.dudziak@snejp.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLTi8iYdLiKNeaLC@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210530121803.13102-3-bartosz.dudziak@snejp.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 03:21:54PM +0200, Greg Kroah-Hartman wrote:
-> On Sun, May 30, 2021 at 05:34:54PM +0100, Andre Przywara wrote:
-> > An obvious easy hack-fix is to just define
-> > CONFIG_SERIAL_8250_16550A_VARIANTS, which brings the delays back and
-> > seems to avoid the problem for me.
-> > Another hack which seems to mitigate the problem is to avoid switching
-> > the baudrate to something faster than 115200.
-> > 
-> > I observed this on a BananaPi-M64 (Allwinner A64 SoC with AP6212 WiFi/BT
-> > chip), but others reported the same issue on a NanoPi Air (Allwinner H3
-> > with 6212), but also other SoCs and devices (at least one AP6210).
-> > 
-> > Obviously those workarounds are not real solutions, and I was
-> > wondering if anybody has an idea how to properly fix this?
-> > What puzzles me is that the delay is happening during the *UART*
-> > probe, so before we even start dealing with the Bluetooth device.
+On Sun, May 30, 2021 at 02:18:03PM +0200, Bartosz Dudziak wrote:
+> Add MSM8226 register data to SPM AVS Wrapper 2 (SAW2) power controller
+> driver.
 > 
-> What type of bluetooth device is this, and what does it have to do with
-> the serial port?  Is the SoC device using the same IP blocks for both?
+> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
 
-Many bluetooth "devices" (I mean the interface from the local machine
-to the BT world, not as in remote devices) are connected through a
-standard UART. Pictorially, it's:
+I checked that the values added here match the ones I see in
+msm8226-pm-v2.dtsi in the downstream kernel, so FWIW:
 
-  CPU <---> UART <---> BT chip <---> Bluetooth RF world
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
 
-The reporter seems to be saying is that a change to the UART driver now
-means that the bluetooth chip wired to that UART no longer functions due
-to slightly different initialisation timings of the host UART.
+Thanks,
+Stephan
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> ---
+>  drivers/cpuidle/cpuidle-qcom-spm.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
+> index adf91a6e4d..c0e7971da2 100644
+> --- a/drivers/cpuidle/cpuidle-qcom-spm.c
+> +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+> @@ -87,6 +87,18 @@ static const struct spm_reg_data spm_reg_8974_8084_cpu  = {
+>  	.start_index[PM_SLEEP_MODE_SPC] = 3,
+>  };
+>  
+> +/* SPM register data for 8226 */
+> +static const struct spm_reg_data spm_reg_8226_cpu  = {
+> +	.reg_offset = spm_reg_offset_v2_1,
+> +	.spm_cfg = 0x0,
+> +	.spm_dly = 0x3C102800,
+> +	.seq = { 0x60, 0x03, 0x60, 0x0B, 0x0F, 0x20, 0x10, 0x80, 0x30, 0x90,
+> +		0x5B, 0x60, 0x03, 0x60, 0x3B, 0x76, 0x76, 0x0B, 0x94, 0x5B,
+> +		0x80, 0x10, 0x26, 0x30, 0x0F },
+> +	.start_index[PM_SLEEP_MODE_STBY] = 0,
+> +	.start_index[PM_SLEEP_MODE_SPC] = 5,
+> +};
+> +
+>  static const u8 spm_reg_offset_v1_1[SPM_REG_NR] = {
+>  	[SPM_REG_CFG]		= 0x08,
+>  	[SPM_REG_SPM_CTL]	= 0x20,
+> @@ -259,6 +271,8 @@ static struct spm_driver_data *spm_get_drv(struct platform_device *pdev,
+>  }
+>  
+>  static const struct of_device_id spm_match_table[] = {
+> +	{ .compatible = "qcom,msm8226-saw2-v2.1-cpu",
+> +	  .data = &spm_reg_8226_cpu },
+>  	{ .compatible = "qcom,msm8974-saw2-v2.1-cpu",
+>  	  .data = &spm_reg_8974_8084_cpu },
+>  	{ .compatible = "qcom,apq8084-saw2-v2.1-cpu",
+> -- 
+> 2.25.1
+> 
