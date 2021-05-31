@@ -2,153 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9269539690F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951A8396917
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhEaUjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 16:39:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhEaUji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 16:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EBD9611CB;
-        Mon, 31 May 2021 20:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622493478;
-        bh=GK7h9fk/CXJpmmpAdZO37HIYc4XszrgUo8eFRVrvFbA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EsuB0/Oq4wO8mDqGFoCv+juOz7gcg6BFAC59OTYC7pfthUiibesrVuSdPe7167Fm9
-         8BC+tFXOUwNAx1FSPZT4UYoibIj2cVttwzJWLMHyZRfniadYipjKt7MbS0stLiZPgY
-         CVMXfTbLI6CCiS9hPN4NRa1cxUk2z8J/TdZklyHIlqbSlT7QbbI3R9HptRaYQjpYje
-         P1uw0QJq+UWyeJfnGOehu3WxXBwNUl6jGsAG7Mm+lNYKHJGeIiSFYsifik50y1bTbw
-         xKKnALZsoJ+xrTFWMWpkqtRnGmlnBPgfLaoyle4ziNtOLsyvk0r4/bBpCsJxODpMy5
-         TjtUJmR36yhKA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lnofb-000hsx-Jb; Mon, 31 May 2021 22:37:55 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Brad Love <brad@nextdimension.cc>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxim Plotnikov <wgh@torlan.ru>, Sean Young <sean@mess.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH] media: sp8870: move it to staging
-Date:   Mon, 31 May 2021 22:37:54 +0200
-Message-Id: <5e694bc1b0670b58b93a9fea5712ed0f306e6050.1622493461.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S232183AbhEaUrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 16:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhEaUrE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 16:47:04 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DCCC061574;
+        Mon, 31 May 2021 13:45:22 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id x38so18385737lfa.10;
+        Mon, 31 May 2021 13:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YpLgNIlN9zUDIYH0mV8WgJZT7MsWTFoWZDLaovOIqJI=;
+        b=S3Ha6nVeIUHrpIvzMzZE+KBEp/ZIjHOJdYjZf0oOdOadt6nYTYFicrxq5so/PkOiqu
+         flFInMfV4xzQ5ju9Z8ELg9aF/U/VtLBllv6HU49dUyZ4HvJzMbpFHqaKEgMcerTTupUK
+         mBDGECeqG/cT/D5Nwm6+v8R8+3dK1SRC1Evgj7sy3p1y24Y2aCscaAkwsqiaXGrDwdyz
+         98w8gdsHQL0p3B2acrwOfQE4jFw5ioCbtkl9EaRHLUHqZzejnAING/dVsLPKgUBREdF7
+         qRSk7MRpqpE0ipna5xUuloWjI8W81FGymYe3zlt8vmxn+b/Y63tKd4Qpu+ZqmIOQE/eU
+         YF0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YpLgNIlN9zUDIYH0mV8WgJZT7MsWTFoWZDLaovOIqJI=;
+        b=E2bChE4KEBIIEuap7pTVZ/sew0cbUgwAypbxyZ7Y7OLB1/eLXXGkuENMnuPaIA5I20
+         b/ZWVFk5O3ojDu5SZ5haDT/Kjj6f55shQKFfhbxS8EVgRfW39vltnykwOwUM/Oc7uao7
+         Td1RoIN6V7n9BsCfifKElGcqNb9osUdS2D1Uk0vgE0uaiefL3sQE5sCc0TTQSln/3Pxv
+         XfYtux8hgIAJMfkAhX0UuX9lzHyO/TyU/5UD53BIIQ8FIBrgzB1qZbRwrOPP/MzkWC9N
+         GrbARIdbNVzPOFSNw09mUaf9lyNtVvZkAvrJ/sjqvs+HhEPPCTVf5TJYpyv52iH+CumM
+         KPXg==
+X-Gm-Message-State: AOAM533ZS1VFlyNfngT1p2s0vn2QcEF2VDHJVLWqs6owZIXKlwa2JJeD
+        CD2QDjhSV516jvJB3SAGYUypYzS+NJ0=
+X-Google-Smtp-Source: ABdhPJxmIIxwpw1aitfI+vqs9IcP0Vp3iCoqAkkJhD3SyeEGhAaOOYRb0bN07pTTz+TonUK9HthIZw==
+X-Received: by 2002:ac2:4ec6:: with SMTP id p6mr15637151lfr.645.1622493920577;
+        Mon, 31 May 2021 13:45:20 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id c9sm1448651lfb.207.2021.05.31.13.45.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 13:45:20 -0700 (PDT)
+Subject: Re: [PATCH v1 04/10] ARM: tegra: Add reg property to Tegra20 EMC
+ table device-tree nodes
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210510202600.12156-1-digetx@gmail.com>
+ <20210510202600.12156-5-digetx@gmail.com> <YLSpCXNtut3z8U9a@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1ab11cc8-b45a-0c2d-c0c4-fa5779756c05@gmail.com>
+Date:   Mon, 31 May 2021 23:45:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <YLSpCXNtut3z8U9a@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is used only ba av7110, which is preparing for
-its retirement. So, move this ancillary driver to stay together
-with av7110.
+31.05.2021 12:14, Thierry Reding пишет:
+> On Mon, May 10, 2021 at 11:25:54PM +0300, Dmitry Osipenko wrote:
+>> The reg property is now specified for the emc-tables nodes in the Tegra20
+>> device-tree binding. Add reg property to the EMC table device-tree nodes
+>> of Tegra20 board device-trees in order to silence dt_binding_check warning
+>> about the missing property.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 4 ++++
+>>  arch/arm/boot/dts/tegra20-paz00.dts             | 1 +
+>>  2 files changed, 5 insertions(+)
+> 
+> In retrospect we should've just used "reg" in the first place rather
+> than adding the custom "nvidia,ram-code". It's a bit redundant to have
+> both of them with the same value. I wonder if we should deprecate the
+> use of "nvidia,ram-code" and at least make the code look at the "reg"
+> property first and only fall back to "nvidia,ram-code" if "reg" does
+> not exist. We probably won't ever be able to get rid of the fallback
+> for backwards-compatibility reasons, but at least that would make the
+> intent a bit clearer.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/dvb-frontends/Kconfig           | 12 -----------
- drivers/media/dvb-frontends/Makefile          |  1 -
- drivers/staging/media/av7110/Kconfig          | 20 +++++++++++++++++++
- drivers/staging/media/av7110/Makefile         |  2 ++
- .../media/av7110}/sp8870.c                    |  0
- .../media/av7110}/sp8870.h                    |  0
- 6 files changed, 22 insertions(+), 13 deletions(-)
- rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.c (100%)
- rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.h (100%)
+This may be not doable. We have Asus TF101 which doesn't use RAM code
+for the memory identification, instead it uses LPDDR chip info [1]. I
+will send the LPDDR patches later on.
 
-diff --git a/drivers/media/dvb-frontends/Kconfig b/drivers/media/dvb-frontends/Kconfig
-index 3468b07b62fe..2c1ed98d43c5 100644
---- a/drivers/media/dvb-frontends/Kconfig
-+++ b/drivers/media/dvb-frontends/Kconfig
-@@ -323,18 +323,6 @@ config DVB_TDA10071
- comment "DVB-T (terrestrial) frontends"
- 	depends on DVB_CORE
- 
--config DVB_SP8870
--	tristate "Spase sp8870 based"
--	depends on DVB_CORE && I2C
--	default m if !MEDIA_SUBDRV_AUTOSELECT
--	help
--	  A DVB-T tuner module. Say Y when you want to support this frontend.
--
--	  This driver needs external firmware. Please use the command
--	  "<kerneldir>/scripts/get_dvb_firmware sp8870" to
--	  download/extract it, and then copy it to /usr/lib/hotplug/firmware
--	  or /lib/firmware (depending on configuration of firmware hotplug).
--
- config DVB_SP887X
- 	tristate "Spase sp887x based"
- 	depends on DVB_CORE && I2C
-diff --git a/drivers/media/dvb-frontends/Makefile b/drivers/media/dvb-frontends/Makefile
-index b9f47d68e14e..d32e4c0be576 100644
---- a/drivers/media/dvb-frontends/Makefile
-+++ b/drivers/media/dvb-frontends/Makefile
-@@ -20,7 +20,6 @@ obj-$(CONFIG_DVB_PLL) += dvb-pll.o
- obj-$(CONFIG_DVB_STV0299) += stv0299.o
- obj-$(CONFIG_DVB_STB0899) += stb0899.o
- obj-$(CONFIG_DVB_STB6100) += stb6100.o
--obj-$(CONFIG_DVB_SP8870) += sp8870.o
- obj-$(CONFIG_DVB_CX22700) += cx22700.o
- obj-$(CONFIG_DVB_S5H1432) += s5h1432.o
- obj-$(CONFIG_DVB_CX24110) += cx24110.o
-diff --git a/drivers/staging/media/av7110/Kconfig b/drivers/staging/media/av7110/Kconfig
-index e19d24bf2eb4..f2d706acc131 100644
---- a/drivers/staging/media/av7110/Kconfig
-+++ b/drivers/staging/media/av7110/Kconfig
-@@ -72,3 +72,23 @@ config DVB_BUDGET_PATCH
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called budget-patch.
-+
-+if DVB_AV7110
-+
-+# frontend drivers that are used only by AV7110 driver
-+# While those are technically independent, it doesn't make sense to keep
-+# them if we drop support for AV7110
-+
-+config DVB_SP8870
-+	tristate "Spase sp8870 based"
-+	depends on DVB_CORE && I2C
-+	default m if !MEDIA_SUBDRV_AUTOSELECT
-+	help
-+	  A DVB-T tuner module. Say Y when you want to support this frontend.
-+
-+	  This driver needs external firmware. Please use the command
-+	  "<kerneldir>/scripts/get_dvb_firmware sp8870" to
-+	  download/extract it, and then copy it to /usr/lib/hotplug/firmware
-+	  or /lib/firmware (depending on configuration of firmware hotplug).
-+
-+endif
-diff --git a/drivers/staging/media/av7110/Makefile b/drivers/staging/media/av7110/Makefile
-index dcabecf1abde..307b267598ea 100644
---- a/drivers/staging/media/av7110/Makefile
-+++ b/drivers/staging/media/av7110/Makefile
-@@ -14,6 +14,8 @@ obj-$(CONFIG_DVB_BUDGET_PATCH) += budget-patch.o
- 
- obj-$(CONFIG_DVB_AV7110) += dvb-ttpci.o
- 
-+obj-$(CONFIG_DVB_SP8870) += sp8870.o
-+
- ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
- ccflags-y += -I $(srctree)/drivers/media/tuners
- ccflags-y += -I $(srctree)/drivers/media/pci/ttpci
-diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/staging/media/av7110/sp8870.c
-similarity index 100%
-rename from drivers/media/dvb-frontends/sp8870.c
-rename to drivers/staging/media/av7110/sp8870.c
-diff --git a/drivers/media/dvb-frontends/sp8870.h b/drivers/staging/media/av7110/sp8870.h
-similarity index 100%
-rename from drivers/media/dvb-frontends/sp8870.h
-rename to drivers/staging/media/av7110/sp8870.h
--- 
-2.31.1
+[1]
+https://github.com/grate-driver/linux/blob/master/arch/arm/boot/dts/tegra20-asus-tf101.dts#L1115
 
+The TF101 support mostly in a completed state now, we still need to try
+to figure out why upstream kernel doesn't work using a stock Android
+bootloader, so far bootloader replacement to u-boot is required.
