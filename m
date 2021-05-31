@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A503395C23
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6B7396575
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhEaN2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:28:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55358 "EHLO mail.kernel.org"
+        id S233165AbhEaQhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:37:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231569AbhEaNWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:22:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A89E96139A;
-        Mon, 31 May 2021 13:19:26 +0000 (UTC)
+        id S233750AbhEaOtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:49:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1426661929;
+        Mon, 31 May 2021 13:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467167;
-        bh=ZPfS/GznChWa3LRt9cYciiQLaUzC8vIO5v/yBWzozOs=;
+        s=korg; t=1622469410;
+        bh=w6PHIeP+6wvAl57XhxGtKV/10eR+mrKICHgDdT2CgXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=McDV8GtmZIO3PW1eCjJ19nMiqvfThkUCkGyOcg7jQGEw//LZW1xMxDaarOAR4hYpe
-         iB5NyW/S2/AqbaXavSaZ8AznqrbsUTq2SH6wAO48Jrd/tyqzS2d9E/fOiyMgWOgsT3
-         U4xMfFiuWP6Cb3+5HJnS+HHwloiGdIOVF0MVah10=
+        b=Akv/mH4qS/LPMjQt9WMiwxUZDCCvIweOQUHfJdHKkipvlO5epgIpTw78YAg8sQUuW
+         s7vgURHvprwUlJ+JIlQibLd5UQNfv0VMHAYeSDBIj+rJ8aU+Oh3A1AGOwjKY4oZ5kT
+         hD+XNNgVkI2Ro0hif5+2sC9x0VBgk6bobn580crA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.9 29/66] NFS: fix an incorrect limit in filelayout_decode_layout()
-Date:   Mon, 31 May 2021 15:14:02 +0200
-Message-Id: <20210531130637.193334463@linuxfoundation.org>
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 188/296] Revert "ASoC: cs43130: fix a NULL pointer dereference"
+Date:   Mon, 31 May 2021 15:14:03 +0200
+Message-Id: <20210531130710.189634689@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 769b01ea68b6c49dc3cde6adf7e53927dacbd3a8 upstream.
+[ Upstream commit fdda0dd2686ecd1f2e616c9e0366ea71b40c485d ]
 
-The "sizeof(struct nfs_fh)" is two bytes too large and could lead to
-memory corruption.  It should be NFS_MAXFHSIZE because that's the size
-of the ->data[] buffer.
+This reverts commit a2be42f18d409213bb7e7a736e3ef6ba005115bb.
 
-I reversed the size of the arguments to put the variable on the left.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: 16b374ca439f ("NFSv4.1: pnfs: filelayout: add driver's LAYOUTGET and GETDEVICEINFO infrastructure")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original patch here is not correct, sysfs files that were created
+are not unwound.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-57-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/filelayout/filelayout.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs43130.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---- a/fs/nfs/filelayout/filelayout.c
-+++ b/fs/nfs/filelayout/filelayout.c
-@@ -726,7 +726,7 @@ filelayout_decode_layout(struct pnfs_lay
- 		if (unlikely(!p))
- 			goto out_err;
- 		fl->fh_array[i]->size = be32_to_cpup(p++);
--		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
-+		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
- 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
- 			       i, fl->fh_array[i]->size);
- 			goto out_err;
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 80bc7c10ed75..c2b6f0ae6d57 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -2319,8 +2319,6 @@ static int cs43130_probe(struct snd_soc_component *component)
+ 			return ret;
+ 
+ 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
+-		if (!cs43130->wq)
+-			return -ENOMEM;
+ 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
+ 	}
+ 
+-- 
+2.30.2
+
 
 
