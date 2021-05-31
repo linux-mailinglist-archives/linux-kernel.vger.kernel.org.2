@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5418F395E08
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B3739630D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhEaNxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39364 "EHLO mail.kernel.org"
+        id S232446AbhEaPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232069AbhEaNfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:35:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF76461441;
-        Mon, 31 May 2021 13:25:33 +0000 (UTC)
+        id S231610AbhEaOHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:07:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC0EC61452;
+        Mon, 31 May 2021 13:39:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467534;
-        bh=4wBO4HH5W5Gu4Lso9HS7zxZEbBiamO6rRNPgJ3RIF9E=;
+        s=korg; t=1622468356;
+        bh=TnT+fP6GtvsPoXUtUAtO2vjAMKV4Hgg9EQS4ZAGobCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JiEcqqlOHzaRP1N4e+Wtk1PZHNtFo53LVNb74nCFvuzCzMbt3IYVp/BF7Q5jX/PMS
-         KksA+AR4hsawQezGV6XuKQXjaQkaieTGriiW7zixQBHfKGc9l4EHCnA1Gf/ZJTaxm7
-         kRVhe+M35YqmWxv1Dhcf1q6imZBGI/RhpbgtMTY0=
+        b=glmlu7OWwMDz/U+ZQUqFM/zg4HZC+EXBUnWVH0kzX+aHLOLZ8Rj4RUJRNZreKur1y
+         +wCgEdBZ88xmAWupALkfyc7lquY6ZtqVLuwxPrY0FHIHwC5eeCP7P2DBoGlqAqKXkf
+         MDPeq4XD9Ecwcfq4U5tZ7BcuiCKixCQs+8Apdbis=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+        Andy Gospodarek <gospo@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 100/116] net: mdio: octeon: Fix some double free issues
-Date:   Mon, 31 May 2021 15:14:36 +0200
-Message-Id: <20210531130643.523849263@linuxfoundation.org>
+Subject: [PATCH 5.10 212/252] bnxt_en: Include new P5 HV definition in VF check.
+Date:   Mon, 31 May 2021 15:14:37 +0200
+Message-Id: <20210531130705.218942704@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Andy Gospodarek <gospo@broadcom.com>
 
-[ Upstream commit e1d027dd97e1e750669cdc0d3b016a4f54e473eb ]
+[ Upstream commit ab21494be9dc7d62736c5fcd06be65d49df713ee ]
 
-'bus->mii_bus' has been allocated with 'devm_mdiobus_alloc_size()' in the
-probe function. So it must not be freed explicitly or there will be a
-double free.
+Otherwise, some of the recently added HyperV VF IDs would not be
+recognized as VF devices and they would not initialize properly.
 
-Remove the incorrect 'mdiobus_free' in the error handling path of the
-probe function and in remove function.
-
-Suggested-By: Andrew Lunn <andrew@lunn.ch>
-Fixes: 35d2aeac9810 ("phy: mdio-octeon: Use devm_mdiobus_alloc_size()")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 7fbf359bb2c1 ("bnxt_en: Add PCI IDs for Hyper-V VF devices.")
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio-octeon.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/mdio-octeon.c b/drivers/net/phy/mdio-octeon.c
-index ab6914f8bd50..1da104150f44 100644
---- a/drivers/net/phy/mdio-octeon.c
-+++ b/drivers/net/phy/mdio-octeon.c
-@@ -75,7 +75,6 @@ static int octeon_mdiobus_probe(struct platform_device *pdev)
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 4385b42a2b63..ff86324c7fb8 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -280,7 +280,8 @@ static bool bnxt_vf_pciid(enum board_idx idx)
+ {
+ 	return (idx == NETXTREME_C_VF || idx == NETXTREME_E_VF ||
+ 		idx == NETXTREME_S_VF || idx == NETXTREME_C_VF_HV ||
+-		idx == NETXTREME_E_VF_HV || idx == NETXTREME_E_P5_VF);
++		idx == NETXTREME_E_VF_HV || idx == NETXTREME_E_P5_VF ||
++		idx == NETXTREME_E_P5_VF_HV);
+ }
  
- 	return 0;
- fail_register:
--	mdiobus_free(bus->mii_bus);
- 	smi_en.u64 = 0;
- 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
- 	return err;
-@@ -89,7 +88,6 @@ static int octeon_mdiobus_remove(struct platform_device *pdev)
- 	bus = platform_get_drvdata(pdev);
- 
- 	mdiobus_unregister(bus->mii_bus);
--	mdiobus_free(bus->mii_bus);
- 	smi_en.u64 = 0;
- 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
- 	return 0;
+ #define DB_CP_REARM_FLAGS	(DB_KEY_CP | DB_IDX_VALID)
 -- 
 2.30.2
 
