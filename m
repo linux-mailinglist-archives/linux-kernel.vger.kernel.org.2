@@ -2,128 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C52395605
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED6439560B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhEaH0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:26:21 -0400
-Received: from mga01.intel.com ([192.55.52.88]:15403 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhEaH0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:26:16 -0400
-IronPort-SDR: faWAdosKWOr2j3fnMnwGFkLhoyyvdyfEkuRe479N0mqx1BooIBVoj7Ry5xBSmSvDSIUiWBxHct
- aXyRH0576u8Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="224579964"
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="224579964"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 00:24:34 -0700
-IronPort-SDR: 5mCjVwBtiV3M+fkTUXd1gBdyjpQRkPKVFBDDKL/kf2RIV59Rwm9Tnj03BkeYQBQyvlyyvC8AzT
- z9Ys9jbgxBLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="549328989"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 31 May 2021 00:24:32 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 31 May 2021 10:24:31 +0300
-Date:   Mon, 31 May 2021 10:24:31 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Jun Li <jun.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] usb: typec: mux: Remove requirement for the
- "orientation-switch" device property
-Message-ID: <YLSPLxfyavO+AkLY@kuha.fi.intel.com>
-References: <20210526153548.61276-1-heikki.krogerus@linux.intel.com>
- <20210526153548.61276-3-heikki.krogerus@linux.intel.com>
- <VI1PR04MB59350F5BC9129F9E0B21773889229@VI1PR04MB5935.eurprd04.prod.outlook.com>
+        id S230243AbhEaH1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230206AbhEaH1B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 03:27:01 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD59C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:25:21 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id y2so15274491ybq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7BHnZIGW8dlfXz29SYi4Txt2W/u/uTvUIzT8Fl03vi4=;
+        b=qg7s9p4d8oAYIvK8vQlIe5pB3OADZbEcHuASyXCVSwoyOsOZXuYOhMbrAD/CpWl5dL
+         ctl2bynl4Ns8RgSs9FU2OK61z+lOrI1rl55ZcwmZDg0pXhqU2jaCjGskZ1Yn2+60ctP4
+         ULF+xM0ZzJuOYLjZJYoYba7igcY1FVaFpsPpd5Xel/+TILWj0UvT5uJT9aSEjSyE2BMg
+         A2m/+oZVPPLtCBPWOWhIIfZIe7643jFe4i6oll+DnwVZ10uACOv03JNG2m3feYyk545F
+         67f/MNR+fQDCQuR5m9QgWihJokEZ4HatboLAEy7cfu2mq19iLQxdO43wttertsVBFdYI
+         KuGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7BHnZIGW8dlfXz29SYi4Txt2W/u/uTvUIzT8Fl03vi4=;
+        b=lmq9hT2AIOVVtf7CS9KTYaxrO7Rux1LuqXed9NWj9uz9PXMCUE2NnOxV+ZL/WJnjoJ
+         zzvSMFUNcnJSedCHnuR2A5MfMX5f72iMQtApmrRroCpnPCqZm2Pf/er6CqBpOiwanY+l
+         ozUd0P21Pt3aorKO7DO70lAmRk0kj7mbABpnURqly+C6MMTUdiuYr/3IBriN2s/e+/IC
+         bFlMzj+bd+pZ6OOZUw/q+vtEMa81licOqP5oaZnGiSGICIzAtoQvidH7Ko7ln5JQ+wG5
+         ULuEpb3SWFraeM4isXq1PEzrDJvkUC6z4Hv2PzUMn1h8SbCy9yqgLzglCOw6HXszm7Tf
+         I2Sw==
+X-Gm-Message-State: AOAM5331CqxBtBg434R37CfFktw2EDqSJenPLXRNU3XCpRq2ggJjQrSq
+        3cElEAXUZN2nlF91G1eX3fzwxeiPwQpR4fMxKIGd5Q==
+X-Google-Smtp-Source: ABdhPJwgpwJ30Eu6qeDlGXWgZ0BQupK700HoL7AwsmZ6px0iYtASUH8pCuuNNu8HM+R4kX2wy0xooczc3cbX8G+l2e0=
+X-Received: by 2002:a05:6902:1026:: with SMTP id x6mr27757748ybt.23.1622445920359;
+ Mon, 31 May 2021 00:25:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1PR04MB59350F5BC9129F9E0B21773889229@VI1PR04MB5935.eurprd04.prod.outlook.com>
+References: <cover.1621809029.git.sander@svanheule.net> <be5ffefa007ee4ebd7d4cec88f5f2fb7cd5b689e.1621809029.git.sander@svanheule.net>
+In-Reply-To: <be5ffefa007ee4ebd7d4cec88f5f2fb7cd5b689e.1621809029.git.sander@svanheule.net>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 31 May 2021 09:25:09 +0200
+Message-ID: <CAMpxmJX8gw_A36YAg4hTx3bT4-7NGk_KCoEHrKfeVXnJ-01Vsw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] gpio: regmap: Add quirk for output data register
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 07:26:43AM +0000, Jun Li wrote:
-> Hi,
-> > -----Original Message-----
-> > From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > Sent: Wednesday, May 26, 2021 11:36 PM
-> > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Hans de Goede
-> > <hdegoede@redhat.com>; Jun Li <jun.li@nxp.com>
-> > Cc: linux-usb@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: [PATCH 2/2] usb: typec: mux: Remove requirement for the
-> > "orientation-switch" device property
-> > 
-> > The additional boolean device property "orientation-switch"
-> > is not needed when the connection is described with device graph, so removing
-> > the check and the requirement for it.
-> > 
-> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > ---
-> >  drivers/usb/typec/mux.c | 3 ---
-> >  1 file changed, 3 deletions(-)
-> > 
-> > diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c index
-> > e40a555724fb6..603f3e698cc0b 100644
-> > --- a/drivers/usb/typec/mux.c
-> > +++ b/drivers/usb/typec/mux.c
-> > @@ -30,9 +30,6 @@ static void *typec_switch_match(struct fwnode_handle
-> > *fwnode, const char *id,  {
-> >  	struct device *dev;
-> > 
-> > -	if (id && !fwnode_property_present(fwnode, id))
-> > -		return NULL;
-> > -
-> 
-> May this change the result of fwnode_connection_find_match()
-> if there are multiple remote-endpoint node?
-> 
-> After the 2 patches change, typec_switch_match() will never
-> return NULL, so
-> 
->   17 static void *
->   18 fwnode_graph_devcon_match(struct fwnode_handle *fwnode, const char *con_id,
->   19                           void *data, devcon_match_fn_t match)
->   20 {               
->   21         struct fwnode_handle *node;
->   22         struct fwnode_handle *ep;
->   23         void *ret;
->   24                         
->   25         fwnode_graph_for_each_endpoint(fwnode, ep) {
->   26                 node = fwnode_graph_get_remote_port_parent(ep);
->   27                 if (!fwnode_device_is_available(node))
->   28                         continue;
->   29 
->   30                 ret = match(node, con_id, data);// ret can't be NULL;
->   31                 fwnode_handle_put(node); 
->   32                 if (ret) {
-> 							 /*
-> 							  * So loop will go to here and stop
-> 							  * checking next ep, even this ep
-> 							  * actually is not for typec_switch
-> 							  */
->   33                         fwnode_handle_put(ep);
->   34                         return ret;
->   35                 }
->   36         }
->   37         return NULL;
->   38 }
-> 
-> fwnode_graph_devcon_match() Will return ERR_PTR(-EPROBE_DEFER)
-> even this ep's remote parent already probed but it's not for
-> typec_switch.
+On Mon, May 24, 2021 at 12:34 AM Sander Vanheule <sander@svanheule.net> wrote:
+>
+> GPIO chips may not support setting the output value when a pin is
+> configured as an input, although the current implementation assumes this
+> is always possible.
+>
+> Add support for setting pin direction before value. The order defaults
+> to setting the value first, but this can be reversed by setting the
+> GPIO_REGMAP_QUIRK_SET_DIRECTION_FIRST flag in regmap_config.quirks.
+>
+> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> ---
 
-You are correct. With device graph I guess we really always need the
-extra device property after all.
-
-So let's forget about this one.
-
-
-thanks,
-
--- 
-heikki
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
