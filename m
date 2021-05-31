@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D9C3965C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F8C3965CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhEaQsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48408 "EHLO mail.kernel.org"
+        id S232448AbhEaQsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:48:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232364AbhEaOzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:55:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C3261935;
-        Mon, 31 May 2021 13:59:47 +0000 (UTC)
+        id S232212AbhEaOzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:55:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB84661938;
+        Mon, 31 May 2021 13:59:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469587;
-        bh=I3MFQZEYwlfs0WAgyazAsru7RkY9wmdUF6WGBdOVvN4=;
+        s=korg; t=1622469590;
+        bh=KV0Xdxu8Dkl/vXMKiCns9Jvm8GcHeLevV3LpsKI29eY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FWiVZySAWZLjIVSYVXDtTkDP36zCS49dMNPQZfoZ6WPAPDoHcnxuDMNAVtQlfGWvZ
-         XMa4wkTzTXpZGuOHrQPZ0sr0BpSC57K1GNUC9teYJpHE59Cab/eH6gM6V1VNXDgddY
-         5Qn7IzChjdAPGfuzCQVDgYFJgIWkIzi1ZL6iGQwQ=
+        b=Qy00dyjmdjAGFTZ6oRdecipoOOKS7dPaqLjtOiAB/z64akfcRxfh3yfe9oQZpO+wG
+         Opf61la3YLUySbUNJ7DBary2DCdP72SWkqx9qbjQ2dF7zYyR/90lOcC+DxrPt2E7lW
+         ZVEGOdIcmjma47XqrU/GiBLFrLzmdkm17QwEL45A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
         Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 256/296] iommu/amd: Clear DMA ops when switching domain
-Date:   Mon, 31 May 2021 15:15:11 +0200
-Message-Id: <20210531130712.363990117@linuxfoundation.org>
+Subject: [PATCH 5.12 257/296] iommu/virtio: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 31 May 2021 15:15:12 +0200
+Message-Id: <20210531130712.394435405@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
 References: <20210531130703.762129381@linuxfoundation.org>
@@ -40,53 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit d6177a6556f853785867e2ec6d5b7f4906f0d809 ]
+[ Upstream commit 382d91fc0f4f1b13f8a0dcbf7145f4f175b71a18 ]
 
-Since commit 08a27c1c3ecf ("iommu: Add support to change default domain
-of an iommu group") a user can switch a device between IOMMU and direct
-DMA through sysfs. This doesn't work for AMD IOMMU at the moment because
-dev->dma_ops is not cleared when switching from a DMA to an identity
-IOMMU domain. The DMA layer thus attempts to use the dma-iommu ops on an
-identity domain, causing an oops:
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-  # echo 0000:00:05.0 > /sys/sys/bus/pci/drivers/e1000e/unbind
-  # echo identity > /sys/bus/pci/devices/0000:00:05.0/iommu_group/type
-  # echo 0000:00:05.0 > /sys/sys/bus/pci/drivers/e1000e/bind
-   ...
-  BUG: kernel NULL pointer dereference, address: 0000000000000028
-   ...
-   Call Trace:
-    iommu_dma_alloc
-    e1000e_setup_tx_resources
-    e1000e_open
-
-Since iommu_change_dev_def_domain() calls probe_finalize() again, clear
-the dma_ops there like Vt-d does.
-
-Fixes: 08a27c1c3ecf ("iommu: Add support to change default domain of an iommu group")
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Link: https://lore.kernel.org/r/20210422094216.2282097-1-jean-philippe@linaro.org
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Fixes: fa4afd78ea12 ("iommu/virtio: Build virtio-iommu as module")
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Link: https://lore.kernel.org/r/20210508031451.53493-1-cuibixuan@huawei.com
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd/iommu.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iommu/virtio-iommu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index a69a8b573e40..7de7a260706b 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -1747,6 +1747,8 @@ static void amd_iommu_probe_finalize(struct device *dev)
- 	domain = iommu_get_domain_for_dev(dev);
- 	if (domain->type == IOMMU_DOMAIN_DMA)
- 		iommu_setup_dma_ops(dev, IOVA_START_PFN << PAGE_SHIFT, 0);
-+	else
-+		set_dma_ops(dev, NULL);
- }
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index 2bfdd5734844..81dea4caf561 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -1138,6 +1138,7 @@ static struct virtio_device_id id_table[] = {
+ 	{ VIRTIO_ID_IOMMU, VIRTIO_DEV_ANY_ID },
+ 	{ 0 },
+ };
++MODULE_DEVICE_TABLE(virtio, id_table);
  
- static void amd_iommu_release_device(struct device *dev)
+ static struct virtio_driver virtio_iommu_drv = {
+ 	.driver.name		= KBUILD_MODNAME,
 -- 
 2.30.2
 
