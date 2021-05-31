@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2B5396570
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A265395B40
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhEaQga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:36:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40320 "EHLO mail.kernel.org"
+        id S231838AbhEaNSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:18:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233316AbhEaOrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B63961438;
-        Mon, 31 May 2021 13:55:59 +0000 (UTC)
+        id S231627AbhEaNSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:18:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFEEC6135C;
+        Mon, 31 May 2021 13:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469360;
-        bh=xDh8vqmsD0PqY7lkpUvW7q/+AmZ23MBZFO5QElc9QaU=;
+        s=korg; t=1622466994;
+        bh=0a4NtUaRwsttjvtiHpSuUZHtN0o8mYZWa44xbUKnBbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hEaCDU0tuTr+sk7GP57CQEtUKQmTwpeAqv2WGd+tm4mODqh86lonPNrE4J3Nl2VEP
-         JOid0caZP+RXi2PgZSR3F/6be404UrnJhkyD+doyFvxEs6QbP2tBfxZ51DnsFVFlvJ
-         CZi4RFcGd7pHrciSSJWv28esm62FFyMC/10e4OVE=
+        b=1xwEXUqx6A9IWPVhh9PKXwNCaS5owuhoTOUFnIJi+2+1t/1qYYeOOQf2fKL1Tt6PK
+         gayifFa9oDe/nrxG9WxwvgGvcEQeN5+VbKxMKE739pBeI5RCIJtI9900lTp54GBzH6
+         7kWSg0043AKpzQQ3Ey4X2zDl03bHeWkL41E5i3ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 167/296] Revert "net: fujitsu: fix a potential NULL pointer dereference"
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 16/54] USB: serial: option: add Telit LE910-S1 compositions 0x7010, 0x7011
 Date:   Mon, 31 May 2021 15:13:42 +0200
-Message-Id: <20210531130709.484133072@linuxfoundation.org>
+Message-Id: <20210531130635.598075616@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-[ Upstream commit 5f94eaa4ee23e80841fa359a372f84cfe25daee1 ]
+commit e467714f822b5d167a7fb03d34af91b5b6af1827 upstream.
 
-This reverts commit 9f4d6358e11bbc7b839f9419636188e4151fb6e4.
+Add support for the following Telit LE910-S1 compositions:
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+0x7010: rndis, tty, tty, tty
+0x7011: ecm, tty, tty, tty
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original change does not change any behavior as the caller of this
-function onlyu checks for "== -1" as an error condition so this error is
-not handled properly.  Remove this change and it will be fixed up
-properly in a later commit.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Reviewed-by: Dominik Brodowski <linux@dominikbrodowski.net>
-Link: https://lore.kernel.org/r/20210503115736.2104747-15-gregkh@linuxfoundation.org
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20210428072634.5091-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/fujitsu/fmvj18x_cs.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/usb/serial/option.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
-index a7b7a4aace79..dc90c61fc827 100644
---- a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
-+++ b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
-@@ -547,11 +547,6 @@ static int fmvj18x_get_hwinfo(struct pcmcia_device *link, u_char *node_id)
- 	return -1;
- 
-     base = ioremap(link->resource[2]->start, resource_size(link->resource[2]));
--    if (!base) {
--	    pcmcia_release_window(link, link->resource[2]);
--	    return -ENOMEM;
--    }
--
-     pcmcia_map_mem_page(link, link->resource[2], 0);
- 
-     /*
--- 
-2.30.2
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1222,6 +1222,10 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1901, 0xff),	/* Telit LN940 (MBIM) */
+ 	  .driver_info = NCTRL(0) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x7010, 0xff),	/* Telit LE910-S1 (RNDIS) */
++	  .driver_info = NCTRL(2) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x7011, 0xff),	/* Telit LE910-S1 (ECM) */
++	  .driver_info = NCTRL(2) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, 0x9010),				/* Telit SBL FN980 flashing device */
+ 	  .driver_info = NCTRL(0) | ZLP },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, ZTE_PRODUCT_MF622, 0xff, 0xff, 0xff) }, /* ZTE WCDMA products */
 
 
