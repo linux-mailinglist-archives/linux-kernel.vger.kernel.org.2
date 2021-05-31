@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C396339640D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4989139624E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbhEaPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54450 "EHLO mail.kernel.org"
+        id S232345AbhEaOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:54:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232252AbhEaOZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:25:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29CC961A1D;
-        Mon, 31 May 2021 13:46:29 +0000 (UTC)
+        id S231521AbhEaODX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:03:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A56061454;
+        Mon, 31 May 2021 13:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468789;
-        bh=szfQwQ6TG9bJQID2vn9M14Gfw/Jx1GOvFCQrvjG7zrE=;
+        s=korg; t=1622468261;
+        bh=++Gvob/5i3UQSKep7Q0P08CfuIhWyKIUp8gYkapj0vE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+/U3heVf/r56z3tltmqu/UA2cSB7OzKpi9zdavi4Pi4CbB8HKIUDw4tYmtCmBZ5/
-         csL+JC7LFVDWAAFZtluiB2h5h/zJzLGb13BtzV8sY0XGzvRLRLxnjATcYo4sxHZmIW
-         UsY7SWLkJilS7KJNhgOJFHCSvTocXW0SpWszusGA=
+        b=zpZ24gk0ZKkFMtMVkJMWsqGogeiUXPCrJBROicd2Lbhlx+Mj4XsnmwZHa7c4qGa5a
+         s8tkROKKesZ1xzkH6Opw5JEKA6HkjvQzamN9bfKxaq7YXNwrHigVHuzaEkh62xSzfw
+         nihUyxu/DQ+ATg0qV2R+N2bfmvOUWELD44VCuqK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.4 084/177] i2c: sh_mobile: Use new clock calculation formulas for RZ/G2E
-Date:   Mon, 31 May 2021 15:14:01 +0200
-Message-Id: <20210531130650.806796465@linuxfoundation.org>
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 177/252] platform/x86: hp-wireless: add AMDs hardware id to the supported list
+Date:   Mon, 31 May 2021 15:14:02 +0200
+Message-Id: <20210531130704.024786818@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-commit c4740e293c93c747e65d53d9aacc2ba8521d1489 upstream.
+[ Upstream commit f048630bdd55eb5379ef35f971639fe52fabe499 ]
 
-When switching the Gen3 SoCs to the new clock calculation formulas, the
-match entry for RZ/G2E added in commit 51243b73455f2d12 ("i2c:
-sh_mobile: Add support for r8a774c0 (RZ/G2E)") was forgotten.
+Newer AMD based laptops uses AMDI0051 as the hardware id to support the
+airplane mode button. Adding this to the supported list.
 
-Fixes: e8a27567509b2439 ("i2c: sh_mobile: use new clock calculation formulas for Gen3")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Link: https://lore.kernel.org/r/20210514180047.1697543-1-Shyam-sundar.S-k@amd.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-sh_mobile.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/hp-wireless.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/i2c/busses/i2c-sh_mobile.c
-+++ b/drivers/i2c/busses/i2c-sh_mobile.c
-@@ -813,7 +813,7 @@ static const struct sh_mobile_dt_config
- static const struct of_device_id sh_mobile_i2c_dt_ids[] = {
- 	{ .compatible = "renesas,iic-r8a73a4", .data = &fast_clock_dt_config },
- 	{ .compatible = "renesas,iic-r8a7740", .data = &r8a7740_dt_config },
--	{ .compatible = "renesas,iic-r8a774c0", .data = &fast_clock_dt_config },
-+	{ .compatible = "renesas,iic-r8a774c0", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7790", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7791", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7792", .data = &v2_freq_calc_dt_config },
+diff --git a/drivers/platform/x86/hp-wireless.c b/drivers/platform/x86/hp-wireless.c
+index 12c31fd5d5ae..0753ef18e721 100644
+--- a/drivers/platform/x86/hp-wireless.c
++++ b/drivers/platform/x86/hp-wireless.c
+@@ -17,12 +17,14 @@ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Alex Hung");
+ MODULE_ALIAS("acpi*:HPQ6001:*");
+ MODULE_ALIAS("acpi*:WSTADEF:*");
++MODULE_ALIAS("acpi*:AMDI0051:*");
+ 
+ static struct input_dev *hpwl_input_dev;
+ 
+ static const struct acpi_device_id hpwl_ids[] = {
+ 	{"HPQ6001", 0},
+ 	{"WSTADEF", 0},
++	{"AMDI0051", 0},
+ 	{"", 0},
+ };
+ 
+-- 
+2.30.2
+
 
 
