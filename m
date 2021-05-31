@@ -2,92 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38ABB396625
+	by mail.lfdr.de (Postfix) with ESMTP id AF4CB396626
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234299AbhEaQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:59:15 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:33610 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbhEaPLP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:11:15 -0400
-Received: by mail-ua1-f46.google.com with SMTP id l12so1082647uai.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:09:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yDHmcyistBdxzTCj/rQXFMQ+e1348tVECqgbMcOh0lI=;
-        b=FtGFqVUCajIOQuVo65fnwQE+HXKK+MVRjOkM6wBjHEW1UhdQkyh0DeRMY5ypbGoI1z
-         vwjQF5/ttNTPhtsqyn+clxcJsu/xBLycYm0Wa+wSp8ydFUbD1L+C1QeONd1+q8t6kj7O
-         Tp2ka8ETz5ijEsBlYCDbpGG2JwV4yEzGDQs/pdSu2BhJVyKRSyZw9gJAA46Ag0iaWEBR
-         ALWT7lqkC1MkbC/S2ILIj6ov9ZHqlxh1gw6uI8ij1NwdLrrevgXZ9dofC4YyIsFBPpfw
-         lAupET0+KSU7C7tEb0q93qQ1IvuFNir0oOfVt0cW3ADjRZRZcwB68owebc+HE0Si6mE1
-         IAFA==
-X-Gm-Message-State: AOAM5301U7u+BkZF2DxE5iZY1WBkJGn2WtmhC2ys08wJ/TaCe7M6PJyi
-        iqQwih+apCAx9VAQOTSQBP0Lk2Wp2/KsLoU0bLvxaDz0
-X-Google-Smtp-Source: ABdhPJwsiZr034Ntauqo8b7p9u3b5V/1+t1FlO73bHXRWtHbsV3vz9OuH/SI+S7AMAImYR+tnAK58hjNIzhhXf8iL7A=
-X-Received: by 2002:ab0:708c:: with SMTP id m12mr1422550ual.4.1622473773562;
- Mon, 31 May 2021 08:09:33 -0700 (PDT)
+        id S234424AbhEaQ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:59:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45428 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233386AbhEaPMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:12:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622473838; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=RDPiykZKxUArsqfr+HyfBzTx4txXnTuaKCrbS8HsMz0=; b=nCXfCgzpe2bU7jCYzm1c4Y3SOjXDRpOmbBotz6UP47mu/qeELsi+UgKAEjfCHwKNG9HARgLx
+ z8twH5wEquNVKbym1GAMFUSB9e0vCPspN2w9T1V62UQAhoTCT66Bkgp3hyVKOhVLz6IkbFC+
+ 9aaD6dO4vpyBTqbRJgP+LtbRQYw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60b4fc64265e7370f711485a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 15:10:28
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C0BDEC43151; Mon, 31 May 2021 15:10:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [117.210.184.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DA67C433D3;
+        Mon, 31 May 2021 15:10:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6DA67C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH v2 8/8] drm/msm/a6xx: add a660 hwcg table
+To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210513171431.18632-1-jonathan@marek.ca>
+ <20210513171431.18632-9-jonathan@marek.ca>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <9c87a69d-3af4-db3d-3481-7dc158d1b380@codeaurora.org>
+Date:   Mon, 31 May 2021 20:40:17 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <202105300736.7wVLvXHr-lkp@intel.com> <a0edf640-ec05-524e-9125-44decba27bbb@infradead.org>
- <d4c47108-f4d2-4850-14fd-b4c4bd0e0591@infradead.org> <CAMuHMdW1xZ-vJe2eOehNSKCP3T=-eq7ji4MBo3D6oGJyPNXGDw@mail.gmail.com>
- <0717b3a5-d838-e1ed-a4ac-80cf14f3a6aa@infradead.org> <YLT2vB0GwC1sJesL@lunn.ch>
-In-Reply-To: <YLT2vB0GwC1sJesL@lunn.ch>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 31 May 2021 17:09:22 +0200
-Message-ID: <CAMuHMdVVGVdtzbnZUNTe1qGCb8nq+6jvNNWw8U3_A=KcXmO3mA@mail.gmail.com>
-Subject: Re: ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        David Daney <david.daney@cavium.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210513171431.18632-9-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On 5/13/2021 10:44 PM, Jonathan Marek wrote:
+> Add a660 hwcg table, ported over from downstream.
+> 
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 53 ++++++++++++++++++++++
+>   drivers/gpu/drm/msm/adreno/adreno_device.c |  1 +
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  2 +-
+>   3 files changed, 55 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index ec66a24fc37e..2713f69e916d 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -427,6 +427,59 @@ const struct adreno_reglist a650_hwcg[] = {
+>   	{},
+>   };
+>   
+> +const struct adreno_reglist a660_hwcg[] = {
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_SP0, 0x02222222},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL2_SP0, 0x02222220},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_SP0, 0x00000080},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_SP0, 0x0000F3CF},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_TP0, 0x22222222},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL2_TP0, 0x22222222},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL3_TP0, 0x22222222},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL4_TP0, 0x00022222},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_TP0, 0x11111111},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY2_TP0, 0x11111111},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY3_TP0, 0x11111111},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY4_TP0, 0x00011111},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_TP0, 0x77777777},
+> +	{REG_A6XX_RBBM_CLOCK_HYST2_TP0, 0x77777777},
+> +	{REG_A6XX_RBBM_CLOCK_HYST3_TP0, 0x77777777},
+> +	{REG_A6XX_RBBM_CLOCK_HYST4_TP0, 0x00077777},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_RB0, 0x22222222},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL2_RB0, 0x01002222},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_CCU0, 0x00002220},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_RB_CCU0, 0x00040F00},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_RAC, 0x25222022},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL2_RAC, 0x00005555},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_RAC, 0x00000011},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_RAC, 0x00445044},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_TSE_RAS_RBBM, 0x04222222},
+> +	{REG_A6XX_RBBM_CLOCK_MODE_VFD, 0x00002222},
+> +	{REG_A6XX_RBBM_CLOCK_MODE_GPC, 0x00222222},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ_2, 0x00000002},
+> +	{REG_A6XX_RBBM_CLOCK_MODE_HLSQ, 0x00002222},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_TSE_RAS_RBBM, 0x00004000},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_VFD, 0x00002222},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_GPC, 0x00000200},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ, 0x00000000},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_TSE_RAS_RBBM, 0x00000000},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_VFD, 0x00000000},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_GPC, 0x04104004},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_HLSQ, 0x00000000},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_TEX_FCHE, 0x00000222},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_TEX_FCHE, 0x00000111},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_TEX_FCHE, 0x00000000},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_UCHE, 0x22222222},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_UCHE, 0x00000004},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_UCHE, 0x00000002},
+> +	{REG_A6XX_RBBM_ISDB_CNT, 0x00000182},
+> +	{REG_A6XX_RBBM_RAC_THRESHOLD_CNT, 0x00000000},
+> +	{REG_A6XX_RBBM_SP_HYST_CNT, 0x00000000},
+> +	{REG_A6XX_RBBM_CLOCK_CNTL_GMU_GX, 0x00000222},
+> +	{REG_A6XX_RBBM_CLOCK_DELAY_GMU_GX, 0x00000111},
+> +	{REG_A6XX_RBBM_CLOCK_HYST_GMU_GX, 0x00000555},
+> +	{},
+> +};
+> +
+>   static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+>   {
+>   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> index e4db0683d381..6dad8015c9a1 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> @@ -299,6 +299,7 @@ static const struct adreno_info gpulist[] = {
+>   		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>   		.init = a6xx_gpu_init,
+>   		.zapfw = "a660_zap.mdt",
+> +		.hwcg = a660_hwcg,
+>   	},
+>   };
+>   
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> index 63c050919d85..e6b11e6ec82d 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -55,7 +55,7 @@ struct adreno_reglist {
+>   	u32 value;
+>   };
+>   
+> -extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
+> +extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[], a660_hwcg[];
+>   
+>   struct adreno_info {
+>   	struct adreno_rev rev;
+> 
+squash with previous one?
 
-On Mon, May 31, 2021 at 4:46 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> > > No, we should just fix the driver instead.
-> > >
-> > > +               /* Wait 1000 clocks so we don't saturate the RSL bus
-> > > +                * doing reads.
-> > > +                */
-> > > +               __delay(1000);
-> > >
-> > > As this is used only on Cavium Octeon and Thunder SoCs, running
-> > > at 400-600 MHz resp. 1800-2000 Mhz, what about replacing the __delay()
-> > > call by a call to udelay(1) or udelay(2)?
-> >
-> > Yeah, I was planning to look into that change this week,
-> > but it would probably be better for David to do it.
->
-> If you look at the bigger picture, using linux/iopoll.h would be a
-> better solution.
-
-Sure, but doing that conversion[*] needs even more involvement from
-the original author (who has been quiet w.r.t. to this issue ever
-since the first time it was reported ca. 18 months ago), or someone
-with access to the hardware.
-
-[*] The driver doesn't use plain readq(), but a custom
-    oct_mdio_readq().  Hence it cannot be used with readq_*poll*()
-   as-is.
-
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-Akhil
