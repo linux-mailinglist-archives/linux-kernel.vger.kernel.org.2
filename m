@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4872396158
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D043964E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbhEaOjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:39:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59814 "EHLO mail.kernel.org"
+        id S233933AbhEaQPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:15:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232834AbhEaN5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:57:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3AFF6192A;
-        Mon, 31 May 2021 13:34:59 +0000 (UTC)
+        id S234157AbhEaOjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:39:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B34261C64;
+        Mon, 31 May 2021 13:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468100;
-        bh=zLd87GVsB9Bvtf45Zjo2w1uiZ53JhlIRv2HhH8552eA=;
+        s=korg; t=1622469163;
+        bh=IIXP4rILIB9WbdcFuN8WG8aqTxMgdHBoZdvAbZ7rP6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kO47X1eTimUvqj+HeyGjMF7IdM57kzDVBalZ6byqPdo/ieoYWEExMPbFrk91b5uEy
-         OgWCWi0hXnJ8SOH+vcF8a34AfIIU7WWzRng7jbeQ2Esrypp6obZhcfdSnSZV5Dj49m
-         BbBLYBz46WkfOolxH8ofPEz7ui4Yf2wNRImYx6M4=
+        b=G9BfRCPIAOQhI+RRsz+ofl86nJNXQIyHJ0r+A8O3ZhXrkjEHczgaQI0G8n5O+WFDi
+         U83jvN+jIpaPbDEkBMjk22WI9e7f+E+ZsQUspwIM26dQKy0jPJJQCGKp9NZ4ZVgnR9
+         kmckptkX+eYlPSZPrBn/S8SDhVb2mq5jCvxH4ZIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean MacLennan <seanm@seanm.ca>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 081/252] USB: serial: ti_usb_3410_5052: add startech.com device id
-Date:   Mon, 31 May 2021 15:12:26 +0200
-Message-Id: <20210531130700.742456632@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Peter Ganzhorn <peter.ganzhorn@googlemail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.12 092/296] xhci: fix giving back URB with incorrect status regression in 5.12
+Date:   Mon, 31 May 2021 15:12:27 +0200
+Message-Id: <20210531130706.991685783@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean MacLennan <seanm@seanm.ca>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit 89b1a3d811e6f8065d6ae8a25e7682329b4a31e2 upstream.
+commit a80c203c3f1c06d2201c19ae071d0ae770a2b1ca upstream.
 
-This adds support for the Startech.com generic serial to USB converter.
-It seems to be a bone stock TI_3410. I have been using this patch for
-years.
+5.12 kernel changes how xhci handles cancelled URBs and halted
+endpoints. Among these changes cancelled and stalled URBs are no longer
+given back before they are cleared from xHC hardware cache.
 
-Signed-off-by: Sean MacLennan <seanm@seanm.ca>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+These changes unfortunately cleared the -EPIPE status of a stalled
+transfer in one case before giving bak the URB, causing a USB card reader
+to fail from working.
+
+Fixes: 674f8438c121 ("xhci: split handling halted endpoints into two steps")
+Cc: <stable@vger.kernel.org> # 5.12
+Reported-by: Peter Ganzhorn <peter.ganzhorn@googlemail.com>
+Tested-by: Peter Ganzhorn <peter.ganzhorn@googlemail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210525074100.1154090-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/ti_usb_3410_5052.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/host/xhci-ring.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
---- a/drivers/usb/serial/ti_usb_3410_5052.c
-+++ b/drivers/usb/serial/ti_usb_3410_5052.c
-@@ -37,6 +37,7 @@
- /* Vendor and product ids */
- #define TI_VENDOR_ID			0x0451
- #define IBM_VENDOR_ID			0x04b3
-+#define STARTECH_VENDOR_ID		0x14b0
- #define TI_3410_PRODUCT_ID		0x3410
- #define IBM_4543_PRODUCT_ID		0x4543
- #define IBM_454B_PRODUCT_ID		0x454b
-@@ -372,6 +373,7 @@ static const struct usb_device_id ti_id_
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
-+	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
- 	{ }	/* terminator */
- };
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -829,14 +829,10 @@ static void xhci_giveback_invalidated_td
+ 	list_for_each_entry_safe(td, tmp_td, &ep->cancelled_td_list,
+ 				 cancelled_td_list) {
  
-@@ -410,6 +412,7 @@ static const struct usb_device_id ti_id_
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
-+	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
- 	{ }	/* terminator */
- };
+-		/*
+-		 * Doesn't matter what we pass for status, since the core will
+-		 * just overwrite it (because the URB has been unlinked).
+-		 */
+ 		ring = xhci_urb_to_transfer_ring(ep->xhci, td->urb);
  
+ 		if (td->cancel_status == TD_CLEARED)
+-			xhci_td_cleanup(ep->xhci, td, ring, 0);
++			xhci_td_cleanup(ep->xhci, td, ring, td->status);
+ 
+ 		if (ep->xhci->xhc_state & XHCI_STATE_DYING)
+ 			return;
 
 
