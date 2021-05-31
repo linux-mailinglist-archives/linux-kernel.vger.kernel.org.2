@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A64396152
+	by mail.lfdr.de (Postfix) with ESMTP id AA39C396153
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbhEaOj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:39:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32912 "EHLO mail.kernel.org"
+        id S234180AbhEaOjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232754AbhEaN4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:56:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C86D6613F6;
-        Mon, 31 May 2021 13:34:51 +0000 (UTC)
+        id S232801AbhEaN45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:56:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 849DD61400;
+        Mon, 31 May 2021 13:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468092;
-        bh=nSzoqu+NssTticyvB1cXi2h4UsL4r0RVT9Va9UZIwcM=;
+        s=korg; t=1622468095;
+        bh=OnKk4J0rJiPuHFiwNihNYM0eQogylE7E2JYfh02LAe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A7iq2VmTbfRB7YEvU8D8yAKeXR6Fb9RHF9XJiAjdsCpvM6NsuiOQS9P+OzXKRU77U
-         nLhFhYN+r9bUSHJZymmlTITnSADkz8HmOXOIXACh8qhwX3BqylsqqErCpAxv05gYpX
-         1r73rFg2QwG80E8uKQq9ieO7J8STEXh0re4dyCWQ=
+        b=0s9psv500/B3tS+hus5eGOZbPQKgrlXDc5lKNBWZib4YuJvTXYcCj6mF2gNyWTGvg
+         SeLDRgWlhEPZKCGXfhaYfLogjQsJkCcHKwmzt9RC3MVX3HxZ7bniO09qb7JImBxglP
+         jPLGsCiLen9yn3QeaINpwZOw4viAaMHF/712Jens=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 112/252] net: dsa: mt7530: fix VLAN traffic leaks
-Date:   Mon, 31 May 2021 15:12:57 +0200
-Message-Id: <20210531130701.777457173@linuxfoundation.org>
+Subject: [PATCH 5.10 113/252] net: dsa: fix a crash if ->get_sset_count() fails
+Date:   Mon, 31 May 2021 15:12:58 +0200
+Message-Id: <20210531130701.809011402@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -40,49 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 474a2ddaa192777522a7499784f1d60691cd831a upstream.
+commit a269333fa5c0c8e53c92b5a28a6076a28cde3e83 upstream.
 
-PCR_MATRIX field was set to all 1's when VLAN filtering is enabled, but
-was not reset when it is disabled, which may cause traffic leaks:
+If ds->ops->get_sset_count() fails then it "count" is a negative error
+code such as -EOPNOTSUPP.  Because "i" is an unsigned int, the negative
+error code is type promoted to a very high value and the loop will
+corrupt memory until the system crashes.
 
-	ip link add br0 type bridge vlan_filtering 1
-	ip link add br1 type bridge vlan_filtering 1
-	ip link set swp0 master br0
-	ip link set swp1 master br1
-	ip link set br0 type bridge vlan_filtering 0
-	ip link set br1 type bridge vlan_filtering 0
-	# traffic in br0 and br1 will start leaking to each other
+Fix this by checking for error codes and changing the type of "i" to
+just int.
 
-As port_bridge_{add,del} have set up PCR_MATRIX properly, remove the
-PCR_MATRIX write from mt7530_port_set_vlan_aware.
-
-Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Fixes: badf3ada60ab ("net: dsa: Provide CPU port statistics to master netdev")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mt7530.c |    8 --------
- 1 file changed, 8 deletions(-)
+ net/dsa/master.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1128,14 +1128,6 @@ mt7530_port_set_vlan_aware(struct dsa_sw
- {
- 	struct mt7530_priv *priv = ds->priv;
+--- a/net/dsa/master.c
++++ b/net/dsa/master.c
+@@ -147,8 +147,7 @@ static void dsa_master_get_strings(struc
+ 	struct dsa_switch *ds = cpu_dp->ds;
+ 	int port = cpu_dp->index;
+ 	int len = ETH_GSTRING_LEN;
+-	int mcount = 0, count;
+-	unsigned int i;
++	int mcount = 0, count, i;
+ 	uint8_t pfx[4];
+ 	uint8_t *ndata;
  
--	/* The real fabric path would be decided on the membership in the
--	 * entry of VLAN table. PCR_MATRIX set up here with ALL_MEMBERS
--	 * means potential VLAN can be consisting of certain subset of all
--	 * ports.
--	 */
--	mt7530_rmw(priv, MT7530_PCR_P(port),
--		   PCR_MATRIX_MASK, PCR_MATRIX(MT7530_ALL_MEMBERS));
--
- 	/* Trapped into security mode allows packet forwarding through VLAN
- 	 * table lookup. CPU port is set to fallback mode to let untagged
- 	 * frames pass through.
+@@ -178,6 +177,8 @@ static void dsa_master_get_strings(struc
+ 		 */
+ 		ds->ops->get_strings(ds, port, stringset, ndata);
+ 		count = ds->ops->get_sset_count(ds, port, stringset);
++		if (count < 0)
++			return;
+ 		for (i = 0; i < count; i++) {
+ 			memmove(ndata + (i * len + sizeof(pfx)),
+ 				ndata + i * len, len - sizeof(pfx));
 
 
