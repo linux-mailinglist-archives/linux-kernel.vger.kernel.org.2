@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCDA395D33
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795EF396379
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232900AbhEaNmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:42:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33238 "EHLO mail.kernel.org"
+        id S232366AbhEaPSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:18:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232459AbhEaN3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:29:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7636561419;
-        Mon, 31 May 2021 13:22:38 +0000 (UTC)
+        id S233536AbhEaOOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:14:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F3A661465;
+        Mon, 31 May 2021 13:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467359;
-        bh=EGD0u8mNwFcILzWgZPts147+KspdzfGd7F9Qd+p8OYI=;
+        s=korg; t=1622468540;
+        bh=4eTbK71wXiAy9iR8F5TQTcOGUOabaygBHcmgKZtBN4k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U8weXFWeiyuP8VFOZROole1wZDFnyyXdPPhoyodx8OvAstQmL+2MVw67c8xON/5IJ
-         tKpzN+65z7zoPjHm6+yGRe0LogMNluMDBollf7YcjZwPEf925bFbd27J69kSgtsNlv
-         WaeZLWUfVg7uiAmcioMpRJMPhDUw45u4pqWSyRec=
+        b=tdIOtdty9K1FxoNG3cHkAizg9HGktUerDhybfNp2C5ar0FwazJNovFoxwlsB3GWHK
+         EtCMfcpqYjlZcHoMHQVlXclNVPDGoRSTwXSrfU8jkJHKIKm89E1M4DNua2UfRLNw8d
+         MvSE4XUprbb+kSQiBIvjkJ32AQHzW2Rv+GoTuJqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 009/116] proc: Check /proc/$pid/attr/ writes against file opener
+        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 028/177] ath10k: Fix TKIP Michael MIC verification for PCIe
 Date:   Mon, 31 May 2021 15:13:05 +0200
-Message-Id: <20210531130640.462218641@linuxfoundation.org>
+Message-Id: <20210531130648.887525257@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Wen Gong <wgong@codeaurora.org>
 
-commit bfb819ea20ce8bbeeba17e1a6418bf8bda91fc28 upstream.
+commit 0dc267b13f3a7e8424a898815dd357211b737330 upstream.
 
-Fix another "confused deputy" weakness[1]. Writes to /proc/$pid/attr/
-files need to check the opener credentials, since these fds do not
-transition state across execve(). Without this, it is possible to
-trick another process (which may have different credentials) to write
-to its own /proc/$pid/attr/ files, leading to unexpected and possibly
-exploitable behaviors.
+TKIP Michael MIC was not verified properly for PCIe cases since the
+validation steps in ieee80211_rx_h_michael_mic_verify() in mac80211 did
+not get fully executed due to unexpected flag values in
+ieee80211_rx_status.
 
-[1] https://www.kernel.org/doc/html/latest/security/credentials.html?highlight=confused#open-file-credentials
+Fix this by setting the flags property to meet mac80211 expectations for
+performing Michael MIC validation there. This fixes CVE-2020-26141. It
+does the same as ath10k_htt_rx_proc_rx_ind_hl() for SDIO which passed
+MIC verification case. This applies only to QCA6174/QCA9377 PCIe.
 
-Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
+Link: https://lore.kernel.org/r/20210511200110.c3f1d42c6746.I795593fcaae941c471425b8c7d5f7bb185d29142@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/proc/base.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2564,6 +2564,10 @@ static ssize_t proc_pid_attr_write(struc
- 	void *page;
- 	int rv;
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1967,6 +1967,11 @@ static void ath10k_htt_rx_h_mpdu(struct
+ 		}
  
-+	/* A task may only write when it was the opener. */
-+	if (file->f_cred != current_real_cred())
-+		return -EPERM;
+ 		ath10k_htt_rx_h_csum_offload(msdu);
 +
- 	rcu_read_lock();
- 	task = pid_task(proc_pid(inode), PIDTYPE_PID);
- 	if (!task) {
++		if (frag && !fill_crypt_header &&
++		    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
++			status->flag &= ~RX_FLAG_MMIC_STRIPPED;
++
+ 		ath10k_htt_rx_h_undecap(ar, msdu, status, first_hdr, enctype,
+ 					is_decrypted);
+ 
+@@ -1984,6 +1989,11 @@ static void ath10k_htt_rx_h_mpdu(struct
+ 
+ 		hdr = (void *)msdu->data;
+ 		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_FCTL_PROTECTED);
++
++		if (frag && !fill_crypt_header &&
++		    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
++			status->flag &= ~RX_FLAG_IV_STRIPPED &
++					~RX_FLAG_MMIC_STRIPPED;
+ 	}
+ }
+ 
 
 
