@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCF1395E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963C7396268
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbhEaN7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:59:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40218 "EHLO mail.kernel.org"
+        id S233622AbhEaO4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:56:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232222AbhEaNgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:36:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE3726138C;
-        Mon, 31 May 2021 13:25:49 +0000 (UTC)
+        id S231726AbhEaOEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:04:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FDDC6145E;
+        Mon, 31 May 2021 13:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467550;
-        bh=b71SBhQkLUOf6GBO37cJl0H9l5cJbYbHDn/ybg4UNOo=;
+        s=korg; t=1622468279;
+        bh=vzRtq7W+5Gr3V2A6lBxrmmAgXkBMLq/lOSIWT4Bm3f0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vN35TSvXaQs1vNzb6qVVXWkzFE+b+e5qquh1YoA7FPecIERKp/MXfoJRnKM0SKnAO
-         HxHMoNBxk1gx2i3VRA0aNr3uQsPDjCB+KYtAJiSWVYNubCjERPjxa1oFmcFsVL8C8o
-         rN2iIx2IciyGXhoQ7S/BtRTSJURf8FoH+6vcKDWM=
+        b=RyABLmkAGYMmpZxvh6pqVNU17NQz9wg42lMsEVpRjPN7pKpvlICzWaT9y5be/nvVf
+         58KybDiIYOHAkmkPTBPkOjjlIDvXSYoQQLJH1a2GsCYwqQ/RS/NQ75vZKbEVuW1QS/
+         VhUkNMeAoVgzDec1BpBOfTVjZvtOLJrfP7gsTpY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 4.19 072/116] i2c: s3c2410: fix possible NULL pointer deref on read message after write
+        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 183/252] drm/amdgpu: Fix a use-after-free
 Date:   Mon, 31 May 2021 15:14:08 +0200
-Message-Id: <20210531130642.595831487@linuxfoundation.org>
+Message-Id: <20210531130704.227893979@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: xinhui pan <xinhui.pan@amd.com>
 
-commit 24990423267ec283b9d86f07f362b753eb9b0ed5 upstream.
+[ Upstream commit 1e5c37385097c35911b0f8a0c67ffd10ee1af9a2 ]
 
-Interrupt handler processes multiple message write requests one after
-another, till the driver message queue is drained.  However if driver
-encounters a read message without preceding START, it stops the I2C
-transfer as it is an invalid condition for the controller.  At least the
-comment describes a requirement "the controller forces us to send a new
-START when we change direction".  This stop results in clearing the
-message queue (i2c->msg = NULL).
+looks like we forget to set ttm->sg to NULL.
+Hit panic below
 
-The code however immediately jumped back to label "retry_write" which
-dereferenced the "i2c->msg" making it a possible NULL pointer
-dereference.
+[ 1235.844104] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b7b4b: 0000 [#1] SMP DEBUG_PAGEALLOC NOPTI
+[ 1235.989074] Call Trace:
+[ 1235.991751]  sg_free_table+0x17/0x20
+[ 1235.995667]  amdgpu_ttm_backend_unbind.cold+0x4d/0xf7 [amdgpu]
+[ 1236.002288]  amdgpu_ttm_backend_destroy+0x29/0x130 [amdgpu]
+[ 1236.008464]  ttm_tt_destroy+0x1e/0x30 [ttm]
+[ 1236.013066]  ttm_bo_cleanup_memtype_use+0x51/0xa0 [ttm]
+[ 1236.018783]  ttm_bo_release+0x262/0xa50 [ttm]
+[ 1236.023547]  ttm_bo_put+0x82/0xd0 [ttm]
+[ 1236.027766]  amdgpu_bo_unref+0x26/0x50 [amdgpu]
+[ 1236.032809]  amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x7aa/0xd90 [amdgpu]
+[ 1236.040400]  kfd_ioctl_alloc_memory_of_gpu+0xe2/0x330 [amdgpu]
+[ 1236.046912]  kfd_ioctl+0x463/0x690 [amdgpu]
 
-The Coverity analysis:
-1. Condition !is_msgend(i2c), taking false branch.
-   if (!is_msgend(i2c)) {
-
-2. Condition !is_lastmsg(i2c), taking true branch.
-   } else if (!is_lastmsg(i2c)) {
-
-3. Condition i2c->msg->flags & 1, taking true branch.
-   if (i2c->msg->flags & I2C_M_RD) {
-
-4. write_zero_model: Passing i2c to s3c24xx_i2c_stop, which sets i2c->msg to NULL.
-   s3c24xx_i2c_stop(i2c, -EINVAL);
-
-5. Jumping to label retry_write.
-   goto retry_write;
-
-6. var_deref_model: Passing i2c to is_msgend, which dereferences null i2c->msg.
-   if (!is_msgend(i2c)) {"
-
-All previous calls to s3c24xx_i2c_stop() in this interrupt service
-routine are followed by jumping to end of function (acknowledging
-the interrupt and returning).  This seems a reasonable choice also here
-since message buffer was entirely emptied.
-
-Addresses-Coverity: Explicit null dereferenced
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-s3c2410.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/i2c/busses/i2c-s3c2410.c
-+++ b/drivers/i2c/busses/i2c-s3c2410.c
-@@ -493,7 +493,10 @@ static int i2c_s3c_irq_nextbyte(struct s
- 					 * forces us to send a new START
- 					 * when we change direction
- 					 */
-+					dev_dbg(i2c->dev,
-+						"missing START before write->read\n");
- 					s3c24xx_i2c_stop(i2c, -EINVAL);
-+					break;
- 				}
- 
- 				goto retry_write;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 532250c2b19e..5207ad654f18 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -1381,6 +1381,7 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_bo_device *bdev, struct ttm_tt *
+ 	if (gtt && gtt->userptr) {
+ 		amdgpu_ttm_tt_set_user_pages(ttm, NULL);
+ 		kfree(ttm->sg);
++		ttm->sg = NULL;
+ 		ttm->page_flags &= ~TTM_PAGE_FLAG_SG;
+ 		return;
+ 	}
+-- 
+2.30.2
+
 
 
