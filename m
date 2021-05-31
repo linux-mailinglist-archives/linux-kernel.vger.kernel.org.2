@@ -2,126 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D665395815
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC75395818
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhEaJ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:29:52 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48188 "EHLO mail.skyhub.de"
+        id S231235AbhEaJ37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:29:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47118 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230423AbhEaJ3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:29:48 -0400
-Received: from zn.tnic (p200300ec2f080f0029ca4f7a5f3cda43.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:29ca:4f7a:5f3c:da43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 70C4F1EC0532;
-        Mon, 31 May 2021 11:28:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622453287;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7PenAKHDdLWOjeesd4KyjeK3ihp5+SXpQ6FYI+hgFp0=;
-        b=Nfo2HPJZ/jYVQzSD5VeV47PvfovWml86nJFhrAPkd3PWhzq3zeptxDmJuzGJUBhA1keycr
-        6gcc1Kv2z+cYrsZMbbguGlqvvPx0idhvK/E459YvLrkun1CvPOUaMBE77A9bqh7KJv+DTS
-        geiDFemr2F7wczWGNdyM9Mxyy8jSsuU=
-Date:   Mon, 31 May 2021 11:28:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     syzbot <syzbot+545dc60af42828d1e70b@syzkaller.appspotmail.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- drm_fb_helper_damage_work (2)
-Message-ID: <YLSsJTgCOHjrsiQg@zn.tnic>
-References: <000000000000f7b23005c39af5c1@google.com>
+        id S230500AbhEaJ3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:29:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622453288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IdqpIq+SDyP8HVjXR5DhTfzIhC3G2cPGrbMBOJ//1+k=;
+        b=H0023+TBXSBeXBhRivrp0gyePNqiJMPyLdoEKwdAbOfuhBfWWLhctnxePeJrZuVobW1xiq
+        dL3bbW8N1qkbIH81eOhUBCNE1Fu5QJ6Id9KrVTe1OEETEwhWVj6HkYSi8dpf3NhDF0kRn8
+        kcO3M8ImSHQw1OgjosdO+VYzKendne8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8FD68AE72;
+        Mon, 31 May 2021 09:28:08 +0000 (UTC)
+Date:   Mon, 31 May 2021 11:28:07 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 4/4] slub: Force on no_hash_pointers when slub_debug
+ is enabled
+Message-ID: <YLSsJ/QRuHXLEMQ4@alley>
+References: <20210526025625.601023-1-swboyd@chromium.org>
+ <20210526025625.601023-5-swboyd@chromium.org>
+ <555eaf8b-deb2-fa49-ddef-a74645848159@suse.cz>
+ <YK5Rayu+nOoI2QZ4@alley>
+ <CAE-0n50PogTpc8G9DR23DnX2K2pkvz-1vrO+iNAFOkhrzAOong@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000f7b23005c39af5c1@google.com>
+In-Reply-To: <CAE-0n50PogTpc8G9DR23DnX2K2pkvz-1vrO+iNAFOkhrzAOong@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks DRM to me. CCed...
+On Wed 2021-05-26 15:27:37, Stephen Boyd wrote:
+> Quoting Petr Mladek (2021-05-26 06:47:23)
+> > On Wed 2021-05-26 12:48:47, Vlastimil Babka wrote:
+> > > On 5/26/21 4:56 AM, Stephen Boyd wrote:
+> > > > Obscuring the pointers that slub shows when debugging makes for some
+> > > > confusing slub debug messages:
+> > > >
+> > > >  Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
+> > > >
+> > > > I opted for extern because I guess we don't want to advertise
+> > > > no_hash_pointers_enable() in some sort of header file? It can be put in
+> > > > a header file
+> > >
+> > > Hm looks like the bots disagree. I suppose a declaration right above definition
+> > > in lib/vsprintf.c would silence them, but I'll leave it to printk maintainers if
+> > > they would prefer that way or traditionally
+> > > include/linux/kernel.h
+> >
+> > I slightly prefer to put it into kernel.h. I expect that some more
+> > debugging facilities would want to enable this in the future.
+> > But I would accept even the "ugly" declaration in vsprintf.c.
+> 
+> Ok no problem. Would printk.h be more appropriate?
 
-On Mon, May 31, 2021 at 12:13:22AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    7ac3a1c1 Merge tag 'mtd/fixes-for-5.13-rc4' of git://git.k..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1619b4b5d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=266cda122a0b56c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=545dc60af42828d1e70b
-> userspace arch: i386
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+545dc60af42828d1e70b@syzkaller.appspotmail.com
-> 
-> BUG: unable to handle page fault for address: ffffc9000dc68008
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 11000067 P4D 11000067 PUD 111b3067 PMD 1ba2c067 PTE 0
-> Oops: 0002 [#1] PREEMPT SMP KASAN
-> CPU: 2 PID: 16890 Comm: kworker/2:36 Not tainted 5.13.0-rc3-syzkaller #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> Workqueue: events drm_fb_helper_damage_work
-> RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
-> RIP: 0010:memcpy_toio+0x83/0xe0 arch/x86/lib/iomem.c:57
-> Code: 8c fd 49 89 dd 31 ff 41 83 e5 02 4c 89 ee e8 c4 c2 8c fd 4d 85 ed 75 2e e8 9a ba 8c fd 48 89 e9 48 89 df 4c 89 e6 48 c1 e9 02 <f3> a5 40 f6 c5 02 74 02 66 a5 40 f6 c5 01 74 01 a4 5b 5d 41 5c 41
-> RSP: 0018:ffffc9000e73fbc8 EFLAGS: 00010202
-> RAX: 0000000000000000 RBX: ffffc9000dc68008 RCX: 00000000000000fe
-> RDX: ffff888015340000 RSI: ffffc9000bdd9008 RDI: ffffc9000dc68008
-> RBP: 00000000000003f8 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff83e81e1c R11: 0000000000000000 R12: ffffc9000bdd9008
-> R13: 0000000000000000 R14: ffffc9000bdd9008 R15: 0000000000000001
-> FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffc9000dc68008 CR3: 000000006c062000 CR4: 0000000000152ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  dma_buf_map_memcpy_to include/linux/dma-buf-map.h:245 [inline]
->  drm_fb_helper_damage_blit_real drivers/gpu/drm/drm_fb_helper.c:388 [inline]
->  drm_fb_helper_damage_blit drivers/gpu/drm/drm_fb_helper.c:419 [inline]
->  drm_fb_helper_damage_work+0x733/0xac0 drivers/gpu/drm/drm_fb_helper.c:450
->  process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> Modules linked in:
-> CR2: ffffc9000dc68008
-> ---[ end trace 7f8625a9b15be223 ]---
-> RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
-> RIP: 0010:memcpy_toio+0x83/0xe0 arch/x86/lib/iomem.c:57
-> Code: 8c fd 49 89 dd 31 ff 41 83 e5 02 4c 89 ee e8 c4 c2 8c fd 4d 85 ed 75 2e e8 9a ba 8c fd 48 89 e9 48 89 df 4c 89 e6 48 c1 e9 02 <f3> a5 40 f6 c5 02 74 02 66 a5 40 f6 c5 01 74 01 a4 5b 5d 41 5c 41
-> RSP: 0018:ffffc9000e73fbc8 EFLAGS: 00010202
-> RAX: 0000000000000000 RBX: ffffc9000dc68008 RCX: 00000000000000fe
-> RDX: ffff888015340000 RSI: ffffc9000bdd9008 RDI: ffffc9000dc68008
-> RBP: 00000000000003f8 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff83e81e1c R11: 0000000000000000 R12: ffffc9000bdd9008
-> R13: 0000000000000000 R14: ffffc9000bdd9008 R15: 0000000000000001
-> FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffc9000dc68008 CR3: 000000006c062000 CR4: 0000000000152ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+kernel.h looks more appropriate to me. vsprintf-related are there and
+no_hash_pointers is implemented and handled in vsprintf.c.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best Regards,
+Petr
