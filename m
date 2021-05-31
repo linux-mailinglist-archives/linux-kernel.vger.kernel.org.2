@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0813962E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C270C395C8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhEaPCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37786 "EHLO mail.kernel.org"
+        id S232778AbhEaNee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:34:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233157AbhEaOGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:06:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E26BB61458;
-        Mon, 31 May 2021 13:38:56 +0000 (UTC)
+        id S232248AbhEaNZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:25:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0FD061402;
+        Mon, 31 May 2021 13:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468337;
-        bh=dPH8jfCynb71gmIZShaBaJy5/X+Me3+uHCk3gGdP82U=;
+        s=korg; t=1622467239;
+        bh=yb5Xf1z3SWvqk67D/Wj20NRIwy1J3f0q0fEgacQn9Ng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DZ+qMPeu2dzWK3lWhE+cftPvVt/tyw98qjcKjCWF/faawR/FxNaTwRTJIa78835BC
-         Hav9MexMnspr1V4a7BcHeLulbvo1Xk6eh5XncEWu7HEQr8ABmVgus0fa4SVRmTWZLH
-         N/9tUWvMcideypjRvtN/q4dSCHT8SmKc1dnNYhW4=
+        b=zyC4IDrcJM3HQa+ZD0VoNMXBD97+xBCLi75VxOQseyTIaEgre0yjhJECC/eNA4XKX
+         hcRSyPome+WCxDwmZnm5QAOS8oZw4oxU4vIelhOkstpccHEbYGuVjJxMRELWpLydk+
+         wU3UMuQHiWFqLXlTwhVWSE6+/RYDd/SMbIjwy0kQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Ma <majinjing3@gmail.com>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 206/252] tls splice: check SPLICE_F_NONBLOCK instead of MSG_DONTWAIT
+Subject: [PATCH 4.9 58/66] mld: fix panic in mld_newpack()
 Date:   Mon, 31 May 2021 15:14:31 +0200
-Message-Id: <20210531130705.013320213@linuxfoundation.org>
+Message-Id: <20210531130638.093786977@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +40,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Ma <majinjing3@gmail.com>
+From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit 974271e5ed45cfe4daddbeb16224a2156918530e ]
+[ Upstream commit 020ef930b826d21c5446fdc9db80fd72a791bc21 ]
 
-In tls_sw_splice_read, checkout MSG_* is inappropriate, should use
-SPLICE_*, update tls_wait_data to accept nonblock arguments instead
-of flags for recvmsg and splice.
+mld_newpack() doesn't allow to allocate high order page,
+only order-0 allocation is allowed.
+If headroom size is too large, a kernel panic could occur in skb_put().
 
-Fixes: c46234ebb4d1 ("tls: RX path for ktls")
-Signed-off-by: Jim Ma <majinjing3@gmail.com>
+Test commands:
+    ip netns del A
+    ip netns del B
+    ip netns add A
+    ip netns add B
+    ip link add veth0 type veth peer name veth1
+    ip link set veth0 netns A
+    ip link set veth1 netns B
+
+    ip netns exec A ip link set lo up
+    ip netns exec A ip link set veth0 up
+    ip netns exec A ip -6 a a 2001:db8:0::1/64 dev veth0
+    ip netns exec B ip link set lo up
+    ip netns exec B ip link set veth1 up
+    ip netns exec B ip -6 a a 2001:db8:0::2/64 dev veth1
+    for i in {1..99}
+    do
+        let A=$i-1
+        ip netns exec A ip link add ip6gre$i type ip6gre \
+	local 2001:db8:$A::1 remote 2001:db8:$A::2 encaplimit 100
+        ip netns exec A ip -6 a a 2001:db8:$i::1/64 dev ip6gre$i
+        ip netns exec A ip link set ip6gre$i up
+
+        ip netns exec B ip link add ip6gre$i type ip6gre \
+	local 2001:db8:$A::2 remote 2001:db8:$A::1 encaplimit 100
+        ip netns exec B ip -6 a a 2001:db8:$i::2/64 dev ip6gre$i
+        ip netns exec B ip link set ip6gre$i up
+    done
+
+Splat looks like:
+kernel BUG at net/core/skbuff.c:110!
+invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
+CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.12.0+ #891
+Workqueue: ipv6_addrconf addrconf_dad_work
+RIP: 0010:skb_panic+0x15d/0x15f
+Code: 92 fe 4c 8b 4c 24 10 53 8b 4d 70 45 89 e0 48 c7 c7 00 ae 79 83
+41 57 41 56 41 55 48 8b 54 24 a6 26 f9 ff <0f> 0b 48 8b 6c 24 20 89
+34 24 e8 4a 4e 92 fe 8b 34 24 48 c7 c1 20
+RSP: 0018:ffff88810091f820 EFLAGS: 00010282
+RAX: 0000000000000089 RBX: ffff8881086e9000 RCX: 0000000000000000
+RDX: 0000000000000089 RSI: 0000000000000008 RDI: ffffed1020123efb
+RBP: ffff888005f6eac0 R08: ffffed1022fc0031 R09: ffffed1022fc0031
+R10: ffff888117e00187 R11: ffffed1022fc0030 R12: 0000000000000028
+R13: ffff888008284eb0 R14: 0000000000000ed8 R15: 0000000000000ec0
+FS:  0000000000000000(0000) GS:ffff888117c00000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8b801c5640 CR3: 0000000033c2c006 CR4: 00000000003706f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ? ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
+ ? ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
+ skb_put.cold.104+0x22/0x22
+ ip6_mc_hdr.isra.26.constprop.46+0x12a/0x600
+ ? rcu_read_lock_sched_held+0x91/0xc0
+ mld_newpack+0x398/0x8f0
+ ? ip6_mc_hdr.isra.26.constprop.46+0x600/0x600
+ ? lock_contended+0xc40/0xc40
+ add_grhead.isra.33+0x280/0x380
+ add_grec+0x5ca/0xff0
+ ? mld_sendpack+0xf40/0xf40
+ ? lock_downgrade+0x690/0x690
+ mld_send_initial_cr.part.34+0xb9/0x180
+ ipv6_mc_dad_complete+0x15d/0x1b0
+ addrconf_dad_completed+0x8d2/0xbb0
+ ? lock_downgrade+0x690/0x690
+ ? addrconf_rs_timer+0x660/0x660
+ ? addrconf_dad_work+0x73c/0x10e0
+ addrconf_dad_work+0x73c/0x10e0
+
+Allowing high order page allocation could fix this problem.
+
+Fixes: 72e09ad107e7 ("ipv6: avoid high order allocations")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tls/tls_sw.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/ipv6/mcast.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index 845c628ac1b2..3abe5257f757 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -37,6 +37,7 @@
+diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+index f904b9b24027..9a78b89690bd 100644
+--- a/net/ipv6/mcast.c
++++ b/net/ipv6/mcast.c
+@@ -1580,10 +1580,7 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, unsigned int mtu)
+ 		     IPV6_TLV_PADN, 0 };
  
- #include <linux/sched/signal.h>
- #include <linux/module.h>
-+#include <linux/splice.h>
- #include <crypto/aead.h>
- 
- #include <net/strparser.h>
-@@ -1282,7 +1283,7 @@ int tls_sw_sendpage(struct sock *sk, struct page *page,
- }
- 
- static struct sk_buff *tls_wait_data(struct sock *sk, struct sk_psock *psock,
--				     int flags, long timeo, int *err)
-+				     bool nonblock, long timeo, int *err)
- {
- 	struct tls_context *tls_ctx = tls_get_ctx(sk);
- 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
-@@ -1307,7 +1308,7 @@ static struct sk_buff *tls_wait_data(struct sock *sk, struct sk_psock *psock,
- 		if (sock_flag(sk, SOCK_DONE))
- 			return NULL;
- 
--		if ((flags & MSG_DONTWAIT) || !timeo) {
-+		if (nonblock || !timeo) {
- 			*err = -EAGAIN;
- 			return NULL;
- 		}
-@@ -1787,7 +1788,7 @@ int tls_sw_recvmsg(struct sock *sk,
- 		bool async_capable;
- 		bool async = false;
- 
--		skb = tls_wait_data(sk, psock, flags, timeo, &err);
-+		skb = tls_wait_data(sk, psock, flags & MSG_DONTWAIT, timeo, &err);
- 		if (!skb) {
- 			if (psock) {
- 				int ret = __tcp_bpf_recvmsg(sk, psock,
-@@ -1991,9 +1992,9 @@ ssize_t tls_sw_splice_read(struct socket *sock,  loff_t *ppos,
- 
- 	lock_sock(sk);
- 
--	timeo = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
-+	timeo = sock_rcvtimeo(sk, flags & SPLICE_F_NONBLOCK);
- 
--	skb = tls_wait_data(sk, NULL, flags, timeo, &err);
-+	skb = tls_wait_data(sk, NULL, flags & SPLICE_F_NONBLOCK, timeo, &err);
+ 	/* we assume size > sizeof(ra) here */
+-	/* limit our allocations to order-0 page */
+-	size = min_t(int, size, SKB_MAX_ORDER(0, 0));
+ 	skb = sock_alloc_send_skb(sk, size, 1, &err);
+-
  	if (!skb)
- 		goto splice_read_end;
+ 		return NULL;
  
 -- 
 2.30.2
