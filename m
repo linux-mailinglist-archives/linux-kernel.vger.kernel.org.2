@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8043B395D43
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F04D395B94
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhEaNnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:43:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
+        id S231981AbhEaNWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:22:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232507AbhEaN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:29:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59FA7613EF;
-        Mon, 31 May 2021 13:22:46 +0000 (UTC)
+        id S231996AbhEaNT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A14FF61370;
+        Mon, 31 May 2021 13:17:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467366;
-        bh=pkENjceWvvQTLhaUKmJP3HeNrQDY+i5ko6l6lM1M2HA=;
+        s=korg; t=1622467066;
+        bh=QiJfQQ2lGAhjue+n+IK7CmDXRyJYeulPWGflo0C2kKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VpNGJb1A03qWvrFZAfsVIum8t5m1vA1YKx3RFoI891K9oytZ+VzXLUJhvnEfK7CZu
-         cAr4G/fqTqw8HeQxFla2dewM7xwdItT69NAnSlshNPDSJMr9ijKfdGRc0clCbEznqd
-         3M0XPoV9DOoVXL7CqGV1qT+WuttJoVOP0UxWJlLQ=
+        b=dpDE/OyjOjNatyxWb7AY1YqKPBRbG2TeadOFj6o592/SCdvwgDM3AGAcFdFtwJHb9
+         eJcdtg7DRcng4ZgqOocXHQ1xnpEpJCn3NcOHjOxE9HF7zNJZmm9JyGB5IZeemxpRNX
+         X4hdJCsgLbCrwXzqQQ0VNftPTbPpkw2RPIze2ZRo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.vger.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 039/116] net: usb: fix memory leak in smsc75xx_bind
-Date:   Mon, 31 May 2021 15:13:35 +0200
-Message-Id: <20210531130641.490394948@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Subject: [PATCH 4.4 10/54] misc/uss720: fix memory leak in uss720_probe
+Date:   Mon, 31 May 2021 15:13:36 +0200
+Message-Id: <20210531130635.408957459@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit 46a8b29c6306d8bbfd92b614ef65a47c900d8e70 upstream.
+commit dcb4b8ad6a448532d8b681b5d1a7036210b622de upstream.
 
-Syzbot reported memory leak in smsc75xx_bind().
-The problem was is non-freed memory in case of
-errors after memory allocation.
+uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
+Fix this by decreasing the refcount of usbdev by usb_put_dev.
 
-backtrace:
-  [<ffffffff84245b62>] kmalloc include/linux/slab.h:556 [inline]
-  [<ffffffff84245b62>] kzalloc include/linux/slab.h:686 [inline]
-  [<ffffffff84245b62>] smsc75xx_bind+0x7a/0x334 drivers/net/usb/smsc75xx.c:1460
-  [<ffffffff82b5b2e6>] usbnet_probe+0x3b6/0xc30 drivers/net/usb/usbnet.c:1728
+BUG: memory leak
+unreferenced object 0xffff888101113800 (size 2048):
+  comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
+  hex dump (first 32 bytes):
+    ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
+    00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
+  backtrace:
+    [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
+    [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
+    [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
+    [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
+    [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+    [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
+    [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
+    [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
+    [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
+    [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Fixes: d0cad871703b ("smsc75xx: SMSC LAN75xx USB gigabit ethernet adapter driver")
-Cc: stable@kernel.vger.org
-Reported-and-tested-by: syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 0f36163d3abe ("[PATCH] usb: fix uss720 schedule with interrupts off")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Link: https://lore.kernel.org/r/20210514124348.6587-1-mudongliangabcd@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/smsc75xx.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/usb/misc/uss720.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/usb/smsc75xx.c
-+++ b/drivers/net/usb/smsc75xx.c
-@@ -1495,7 +1495,7 @@ static int smsc75xx_bind(struct usbnet *
- 	ret = smsc75xx_wait_ready(dev, 0);
- 	if (ret < 0) {
- 		netdev_warn(dev->net, "device not ready in smsc75xx_bind\n");
--		return ret;
-+		goto err;
- 	}
+--- a/drivers/usb/misc/uss720.c
++++ b/drivers/usb/misc/uss720.c
+@@ -753,6 +753,7 @@ static int uss720_probe(struct usb_inter
+ 	parport_announce_port(pp);
  
- 	smsc75xx_init_mac_address(dev);
-@@ -1504,7 +1504,7 @@ static int smsc75xx_bind(struct usbnet *
- 	ret = smsc75xx_reset(dev);
- 	if (ret < 0) {
- 		netdev_warn(dev->net, "smsc75xx_reset error %d\n", ret);
--		return ret;
-+		goto err;
- 	}
- 
- 	dev->net->netdev_ops = &smsc75xx_netdev_ops;
-@@ -1514,6 +1514,10 @@ static int smsc75xx_bind(struct usbnet *
- 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
- 	dev->net->max_mtu = MAX_SINGLE_PACKET_SIZE;
+ 	usb_set_intfdata(intf, pp);
++	usb_put_dev(usbdev);
  	return 0;
-+
-+err:
-+	kfree(pdata);
-+	return ret;
- }
  
- static void smsc75xx_unbind(struct usbnet *dev, struct usb_interface *intf)
+ probe_abort:
 
 
