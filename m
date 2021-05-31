@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2663396433
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE745396338
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbhEaPuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:50:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54450 "EHLO mail.kernel.org"
+        id S234489AbhEaPKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:10:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232757AbhEaO1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:27:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61A7B61C1D;
-        Mon, 31 May 2021 13:47:19 +0000 (UTC)
+        id S232475AbhEaOJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:09:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E46761971;
+        Mon, 31 May 2021 13:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468840;
-        bh=Djkmej6t9239FeJByM1Gz+iloEPMHMs4iUz1dVvLAkY=;
+        s=korg; t=1622468429;
+        bh=1hTUnAuEtZd3tinnFT/q6OSKEpQDZ08WXxy2j2oPjDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nAGzp9q+udLzvT+Cv6Rc6dwBXP94J+jKeQZNJAgsUQXq1vVfZ+OPIzC6kuVALkx/t
-         7zas/fG6tRvyYNedCGdJIW36BPc7yWiLtYwwKSiuVkuQxJqm957OphuDWOR3YGKqto
-         /b3bHxLNlqykUtOH7D4k6+fIikbFPd/nQkVxkCbw=
+        b=fyK7YX0eQPiyDcklCMKUyqT7tRp+Hbjv//nYNz0pKVoxRPUWbssOtHAN/AGsBUM2g
+         qPsHGIH5GNTWLbto6pAOewcrBGeh8KPrMtMMUnsyhOYvpSr7TnWthnBIiku1S7gjH2
+         OGI4jWADC95T/u+P/4AJZThWQewMI2N56m15WeC4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@iguana.be>,
+        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 148/177] net: hso: check for allocation failure in hso_create_bulk_serial_device()
+Subject: [PATCH 5.10 240/252] MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
 Date:   Mon, 31 May 2021 15:15:05 +0200
-Message-Id: <20210531130653.042459928@linuxfoundation.org>
+Message-Id: <20210531130706.159826423@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,87 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 31db0dbd72444abe645d90c20ecb84d668f5af5e ]
+[ Upstream commit fef532ea0cd871afab7d9a7b6e9da99ac2c24371 ]
 
-In current kernels, small allocations never actually fail so this
-patch shouldn't affect runtime.
+rt2880_wdt.c uses (well, attempts to use) rt_sysc_membase. However,
+when this watchdog driver is built as a loadable module, there is a
+build error since the rt_sysc_membase symbol is not exported.
+Export it to quell the build error.
 
-Originally this error handling code written with the idea that if
-the "serial->tiocmget" allocation failed, then we would continue
-operating instead of bailing out early.  But in later years we added
-an unchecked dereference on the next line.
+ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
 
-	serial->tiocmget->serial_state_notification = kzalloc();
-        ^^^^^^^^^^^^^^^^^^
-
-Since these allocations are never going fail in real life, this is
-mostly a philosophical debate, but I think bailing out early is the
-correct behavior that the user would want.  And generally it's safer to
-bail as soon an error happens.
-
-Fixes: af0de1303c4e ("usb: hso: obey DMA rules in tiocmget")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 473cf939ff34 ("watchdog: add ralink watchdog driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Wim Van Sebroeck <wim@iguana.be>
+Cc: John Crispin <john@phrozen.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-watchdog@vger.kernel.org
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c | 37 ++++++++++++++++++-------------------
- 1 file changed, 18 insertions(+), 19 deletions(-)
+ arch/mips/ralink/of.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
-index 8c2c6d7921f4..0436e1661096 100644
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2619,29 +2619,28 @@ static struct hso_device *hso_create_bulk_serial_device(
- 		num_urbs = 2;
- 		serial->tiocmget = kzalloc(sizeof(struct hso_tiocmget),
- 					   GFP_KERNEL);
-+		if (!serial->tiocmget)
-+			goto exit;
- 		serial->tiocmget->serial_state_notification
- 			= kzalloc(sizeof(struct hso_serial_state_notification),
- 					   GFP_KERNEL);
--		/* it isn't going to break our heart if serial->tiocmget
--		 *  allocation fails don't bother checking this.
--		 */
--		if (serial->tiocmget && serial->tiocmget->serial_state_notification) {
--			tiocmget = serial->tiocmget;
--			tiocmget->endp = hso_get_ep(interface,
--						    USB_ENDPOINT_XFER_INT,
--						    USB_DIR_IN);
--			if (!tiocmget->endp) {
--				dev_err(&interface->dev, "Failed to find INT IN ep\n");
--				goto exit;
--			}
--
--			tiocmget->urb = usb_alloc_urb(0, GFP_KERNEL);
--			if (tiocmget->urb) {
--				mutex_init(&tiocmget->mutex);
--				init_waitqueue_head(&tiocmget->waitq);
--			} else
--				hso_free_tiomget(serial);
-+		if (!serial->tiocmget->serial_state_notification)
-+			goto exit;
-+		tiocmget = serial->tiocmget;
-+		tiocmget->endp = hso_get_ep(interface,
-+					    USB_ENDPOINT_XFER_INT,
-+					    USB_DIR_IN);
-+		if (!tiocmget->endp) {
-+			dev_err(&interface->dev, "Failed to find INT IN ep\n");
-+			goto exit;
- 		}
-+
-+		tiocmget->urb = usb_alloc_urb(0, GFP_KERNEL);
-+		if (tiocmget->urb) {
-+			mutex_init(&tiocmget->mutex);
-+			init_waitqueue_head(&tiocmget->waitq);
-+		} else
-+			hso_free_tiomget(serial);
- 	}
- 	else
- 		num_urbs = 1;
+diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
+index cbae9d23ab7f..a971f1aca096 100644
+--- a/arch/mips/ralink/of.c
++++ b/arch/mips/ralink/of.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/io.h>
+ #include <linux/clk.h>
++#include <linux/export.h>
+ #include <linux/init.h>
+ #include <linux/sizes.h>
+ #include <linux/of_fdt.h>
+@@ -25,6 +26,7 @@
+ 
+ __iomem void *rt_sysc_membase;
+ __iomem void *rt_memc_membase;
++EXPORT_SYMBOL_GPL(rt_sysc_membase);
+ 
+ __iomem void *plat_of_remap_node(const char *node)
+ {
 -- 
 2.30.2
 
