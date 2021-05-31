@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC5C39686E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB8E39688A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhEaTtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 15:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhEaTtU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 15:49:20 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:47:40 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so11999721otp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3lF6MoSj2wY9eDfl/0ZlHspX4t/Cc1wkZeLHSfsMxRw=;
-        b=SrSHMGkcG7/IFFCtZHfMZ/VjcoSKWtPB4oDc7ZIRfafUvkDyz1IbLLyiHb572jUQ04
-         o5d5NmgymWh2n074gHJEyLGLVp190Xt0QYwDJJJRHL/fiFLsV6KjMYH7HKGMVqsFt7Es
-         aKtYB8MxDA/walyUzgdCrON+VSPOLO3Hm59vg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3lF6MoSj2wY9eDfl/0ZlHspX4t/Cc1wkZeLHSfsMxRw=;
-        b=Irjfh1UNKv7qNz2sJ8UIONsxzgNwVrYIpKnNS8t4QGue8ZNHo+gRRaFMbVyP/f023A
-         KpFn+iG0q0uK1ntrC4lB0x4fAD7jqe58C8MzwNARIQywxjsrdUiVJHY+5rsmHKpwVdt/
-         eyOhE+bR1aaSAXdprq+9SJf5XRa/kj7VVoCqdE7uVQFCycMNHx9ZHxPpcLELCj6poyO2
-         GZn33IRPY6N6AVsDsnZxd0CryWPRVQULoDmL4vewjVCJDb5SsAMa47XcAaJ7DQ84YBQX
-         3B2H403cXEVi/eoF+s43awjF9WXJ72oV3GGesE4rwyCJyvA1DSiXOdFzS9ymvUkspuzK
-         r0fg==
-X-Gm-Message-State: AOAM5303QgHY7oX0fDyaM4WzQJTnH8eISywvDX2ZOnOb2mTOc4xp2A/T
-        xx3SHvzBqMPqLaiDDck9ApT7Nw==
-X-Google-Smtp-Source: ABdhPJz9JU40RWd5fZXozCP8eoT6CNpk99Olq7W7dcXpIic/IJIWDc6+qVE0lH6ZMkNPOYqJWHUDPg==
-X-Received: by 2002:a05:6830:40a8:: with SMTP id x40mr6741102ott.364.1622490459378;
-        Mon, 31 May 2021 12:47:39 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id a5sm3486343otb.41.2021.05.31.12.47.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 12:47:38 -0700 (PDT)
-Date:   Mon, 31 May 2021 14:47:37 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/296] 5.12.9-rc1 review
-Message-ID: <YLU9WWjyVm+WRihm@fedora64.linuxtx.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+        id S232237AbhEaTvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 15:51:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:32368 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231418AbhEaTvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 15:51:18 -0400
+IronPort-SDR: FwF/s4PBsTufMwmPP8C3JKsKh27fNOun/vVBJ4ztz0s6/DtSiwQk363B+U28EngKyDYjG9+C7Z
+ E5Q66H05+Jdg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="200396761"
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="200396761"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 12:49:30 -0700
+IronPort-SDR: tr++MuEQ1FbwlylOLS9zb64sl8VUaVMcrSnE/6dTPNGmaBGbVPW8w5SPq0ag1DsK9ymEYeWRHf
+ fPUWwjnf2p+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="482206806"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 31 May 2021 12:49:28 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id F326F11D; Mon, 31 May 2021 22:49:50 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, Lee Jones <lee.jones@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: [PATCH v2 1/7] docs: firmware-guide: ACPI: Add a PWM example
+Date:   Mon, 31 May 2021 22:49:41 +0300
+Message-Id: <20210531194947.10770-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 03:10:55PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.9 release.
-> There are 296 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.9-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+When PWM support for ACPI has been added into the kernel, it missed
+the documentation update. Hence update documentation here.
 
-Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
+Fixes: 4a6ef8e37c4d ("pwm: Add support referencing PWMs from ACPI")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: updated example to use 600 ms instead of 600 us (looks saner)
+ .../firmware-guide/acpi/enumeration.rst       | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
+index 9f0d5c854fa4..f588663ba906 100644
+--- a/Documentation/firmware-guide/acpi/enumeration.rst
++++ b/Documentation/firmware-guide/acpi/enumeration.rst
+@@ -258,6 +258,38 @@ input driver::
+ 		.id_table	= mpu3050_ids,
+ 	};
+ 
++Reference to PWM device
++=======================
++
++Sometimes a device can be a consumer of PWM channel. Obviously OS would like
++to know which one. To provide this mapping the special property has been
++introduced, i.e.::
++
++    Device (DEV)
++    {
++        Name (_DSD, Package ()
++        {
++            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
++            Package () {
++                Package () { "compatible", Package () { "pwm-leds" } },
++                Package () { "label", "alarm-led" },
++                Package () { "pwms",
++                    Package () {
++                        "\\_SB.PCI0.PWM",  // <PWM device reference>
++                        0,                 // <PWM index>
++                        600000000,         // <PWM period>
++                        0,                 // <PWM flags>
++                    }
++                }
++            }
++
++        })
++        ...
++
++In the above example the PWM-based LED driver references to the PWM channel 0
++of \_SB.PCI0.PWM device with initial period setting equal to 600 ms (note that
++value is given in nanoseconds).
++
+ GPIO support
+ ============
+ 
+-- 
+2.30.2
+
