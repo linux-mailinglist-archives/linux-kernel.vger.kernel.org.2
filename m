@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAF7395C63
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CF239655B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbhEaNb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:31:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54726 "EHLO mail.kernel.org"
+        id S233939AbhEaQcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:32:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232006AbhEaNX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:23:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD796613EB;
-        Mon, 31 May 2021 13:19:56 +0000 (UTC)
+        id S233062AbhEaOrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:47:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0578061924;
+        Mon, 31 May 2021 13:55:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467197;
-        bh=WdFcZprQndjTYS/SxBiIeNcjRD9TVeMtArvFYsCVERE=;
+        s=korg; t=1622469352;
+        bh=m8pxgX3jyd09QtonB3c6BbI83zDGq8E496xVR/zB8OQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y+Rd0BsLYk9opyHc9ShsLo5HMexw6zhc/q8lw1pCIddq3A31J6zB+DunQxt2QcbTg
-         ZIJwupbSI3Npr8Ev5Yxs4ZyUFWPdF36EwFj0wRjef4UbDx3YEcVbF+L+0A6GwKEL1n
-         3AI8qS98eBSikl9s325lkP8A8IHGEjViFTageTq4=
+        b=KlLVb+4Hs4eP3YFtsyf/E6SCSMzA7IB7ltaFG83Xim4CUAwxtcVxpMHxfeufsXVZf
+         Bfbs0kiKKwNAcW9Dflw67JYWXevLwmzhJLbFZ5oPuK+Mxep34iIW4tjfhzv1jJLUS1
+         vmyjFDFSExEONYOe9XbVjVLhIY9hnm5EnW0OFHbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.9 06/66] NFSv4: Fix a NULL pointer dereference in pnfs_mark_matching_lsegs_return()
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 164/296] Revert "ALSA: sb: fix a missing check of snd_ctl_add"
 Date:   Mon, 31 May 2021 15:13:39 +0200
-Message-Id: <20210531130636.470565621@linuxfoundation.org>
+Message-Id: <20210531130709.368957885@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit a421d218603ffa822a0b8045055c03eae394a7eb upstream.
+[ Upstream commit 4b059ce1f4b368208c2310925f49be77f15e527b ]
 
-Commit de144ff4234f changes _pnfs_return_layout() to call
-pnfs_mark_matching_lsegs_return() passing NULL as the struct
-pnfs_layout_range argument. Unfortunately,
-pnfs_mark_matching_lsegs_return() doesn't check if we have a value here
-before dereferencing it, causing an oops.
+This reverts commit beae77170c60aa786f3e4599c18ead2854d8694d.
 
-I'm able to hit this crash consistently when running connectathon basic
-tests on NFS v4.1/v4.2 against Ontap.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: de144ff4234f ("NFSv4: Don't discard segments marked for return in _pnfs_return_layout()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It is safe to ignore this error as the
+mixer element is optional, and the driver is very legacy.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210503115736.2104747-8-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pnfs.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ sound/isa/sb/sb16_main.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -1070,6 +1070,11 @@ _pnfs_return_layout(struct inode *ino)
- {
- 	struct pnfs_layout_hdr *lo = NULL;
- 	struct nfs_inode *nfsi = NFS_I(ino);
-+	struct pnfs_layout_range range = {
-+		.iomode		= IOMODE_ANY,
-+		.offset		= 0,
-+		.length		= NFS4_MAX_UINT64,
-+	};
- 	LIST_HEAD(tmp_list);
- 	nfs4_stateid stateid;
- 	int status = 0, empty;
-@@ -1088,16 +1093,10 @@ _pnfs_return_layout(struct inode *ino)
- 	pnfs_get_layout_hdr(lo);
- 	empty = list_empty(&lo->plh_segs);
- 	pnfs_clear_layoutcommit(ino, &tmp_list);
--	pnfs_mark_matching_lsegs_return(lo, &tmp_list, NULL, 0);
-+	pnfs_mark_matching_lsegs_return(lo, &tmp_list, &range, 0);
+diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
+index 38dc1fde25f3..aa4870531023 100644
+--- a/sound/isa/sb/sb16_main.c
++++ b/sound/isa/sb/sb16_main.c
+@@ -846,14 +846,10 @@ int snd_sb16dsp_pcm(struct snd_sb *chip, int device)
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sb16_playback_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_sb16_capture_ops);
  
--	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range) {
--		struct pnfs_layout_range range = {
--			.iomode		= IOMODE_ANY,
--			.offset		= 0,
--			.length		= NFS4_MAX_UINT64,
--		};
-+	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range)
- 		NFS_SERVER(ino)->pnfs_curr_ld->return_range(lo, &range);
+-	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16) {
+-		err = snd_ctl_add(card, snd_ctl_new1(
+-					&snd_sb16_dma_control, chip));
+-		if (err)
+-			return err;
+-	} else {
++	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
++		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
++	else
+ 		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
 -	}
  
- 	/* Don't send a LAYOUTRETURN if list was initially empty */
- 	if (empty) {
+ 	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 				       card->dev, 64*1024, 128*1024);
+-- 
+2.30.2
+
 
 
