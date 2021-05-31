@@ -2,140 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EF73955AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710393955B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhEaHCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:02:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58480 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230107AbhEaHCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:02:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622444427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aaImCG7lMKKcTS5zB6FcuyY1eMwzb6NwX61cgjXmtpw=;
-        b=tiHomxzhGPHSU+9YpxgHa64BJq+et+Qh3qxdBbkGyyjbrc+QSqT6mk3fG8/Smc+gwVJDv0
-        SpqyLgVd3q7LRRCAi+R4btgsHOsF23N2MAf2LKChkq0gPb16B5RcbKGD2x9vFbl5nceSsy
-        DNWm3GXkWPxiTYqlJbdEY681VRpwAdg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8303EB2E3;
-        Mon, 31 May 2021 07:00:27 +0000 (UTC)
-Date:   Mon, 31 May 2021 09:00:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v1 4/4] mm/mempolicy: kill MPOL_F_LOCAL bit
-Message-ID: <YLSJiV0tLPvCTnjG@dhcp22.suse.cz>
-References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
- <1622005302-23027-5-git-send-email-feng.tang@intel.com>
- <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
- <20210527121041.GA7743@shbuild999.sh.intel.com>
- <YK+P8GDH2kn4FDsA@dhcp22.suse.cz>
- <20210527133436.GD7743@shbuild999.sh.intel.com>
- <YK+8IAphFzbCweHI@dhcp22.suse.cz>
- <20210528043954.GA32292@shbuild999.sh.intel.com>
+        id S230178AbhEaHGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:06:18 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:63672 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230104AbhEaHGR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 03:06:17 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V71LCx018282;
+        Mon, 31 May 2021 07:03:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=qvoKJptC2ahk0qShqs9BtNk99vLgP96BCsP8aKRRTUY=;
+ b=IhrILeOHaf21U7vxeXhCaGsesmLRntotCA1gnvduPCcuFj/TlEwLvFDyRF5UvCiJXlSy
+ 9ez8KoI9niejKUxzTiMCQ6Gr4jf3kPF34x2a5Z2CEiE5bSlP2FBbXUlhoHIYvgvcztAR
+ 6s9wXBiMO2eIfaXyejtj1gxGB7ijyFC2jEUEKjygUqlNfRkbOEd7ImLAMJc82u4oShCG
+ XdS5FPc/5oDWHz/ZV15VM7PrpOQPlbOSeC/9XD9I4ScDDbJdcysX/4XW8flXeZoDY35m
+ aXqhr4T4YX2w/EMpmiMJ+j7tKNB9UeuoNAnLkgzQ0uI4wfgf8AS/NSoVWgfNxPBsuCyU EQ== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vtymg027-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 07:03:50 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14V73nxO192652;
+        Mon, 31 May 2021 07:03:49 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38uaqv6224-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 07:03:49 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V73mK1192633;
+        Mon, 31 May 2021 07:03:48 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 38uaqv621u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 07:03:48 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14V73jAS001775;
+        Mon, 31 May 2021 07:03:46 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 May 2021 00:03:44 -0700
+Date:   Mon, 31 May 2021 10:03:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in
+ snd_ctl_led_register
+Message-ID: <20210531070337.GV24442@kadam>
+References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
+ <20210528133309.GR24442@kadam>
+ <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
+ <20210528140500.GS24442@kadam>
+ <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+ <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+ <20210531044022.GU24442@kadam>
+ <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210528043954.GA32292@shbuild999.sh.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: _Gq3qF_EJaeG1F0E0HDttu6e7rzxnp-J
+X-Proofpoint-ORIG-GUID: _Gq3qF_EJaeG1F0E0HDttu6e7rzxnp-J
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 28-05-21 12:39:54, Feng Tang wrote:
-> On Thu, May 27, 2021 at 05:34:56PM +0200, Michal Hocko wrote:
-> > On Thu 27-05-21 21:34:36, Feng Tang wrote:
-> > > On Thu, May 27, 2021 at 02:26:24PM +0200, Michal Hocko wrote:
-> > > > On Thu 27-05-21 20:10:41, Feng Tang wrote:
-> > > > > On Thu, May 27, 2021 at 10:20:08AM +0200, Michal Hocko wrote:
-> > > > > > On Wed 26-05-21 13:01:42, Feng Tang wrote:
-> > > > > > > Now the only remaining case of a real 'local' policy faked by
-> > > > > > > 'prefer' policy plus MPOL_F_LOCAL bit is:
-> > > > > > > 
-> > > > > > > A valid 'prefer' policy with a valid 'preferred' node is 'rebind'
-> > > > > > > to a nodemask which doesn't contains the 'preferred' node, then it
-> > > > > > > will handle allocation with 'local' policy.
-> > > > > > > 
-> > > > > > > Add a new 'MPOL_F_LOCAL_TEMP' bit for this case, and kill the
-> > > > > > > MPOL_F_LOCAL bit, which could simplify the code much.
-> > > > > > 
-> > > > > > As I've pointed out in the reply to the previous patch. It would have
-> > > > > > been much better if most of the MPOL_F_LOCAL usage was gone by this
-> > > > > > patch.
-> > > > > > 
-> > > > > > I also dislike a new MPOL_F_LOCAL_TEMP. This smells like sneaking the
-> > > > > > hack back in after you have painstakingly removed it. So this looks like
-> > > > > > a step backwards to me. I also do not understand why do we need the
-> > > > > > rebind callback for local policy at all. There is no node mask for local
-> > > > > > so what is going on here?
-> > > > > 
-> > > > > This is the special case 4 for 'perfer' policy with MPOL_F_STATIC_NODES
-> > > > > flag set, say it prefer node 1, when it is later 'refind' to a new
-> > > > > nodemask node 2-3, according to current code it will be add the
-> > > > > MPOL_F_LOCAL bit and performs 'local' policy acctually. And in future
-> > > > > it is 'rebind' again with a nodemask 1-2, it will be restored back
-> > > > > to 'prefer' policy with preferred node 1.
-> > > > 
-> > > > Honestly I still do not follow the actual problem. 
-> > > 
-> > > I was confused too, and don't know the original thought behind it. This
-> > > case 4 was just imagined by reading the code.
-> > > 
-> > > > A preferred node is a
-> > > > _hint_. If you rebind the task to a different cpuset then why should we
-> > > > actually care? The allocator will fallback to the closest node according
-> > > > to the distance metric. Maybe the original code was trying to handle
-> > > > that in some way but I really do fail to understand that code and I
-> > > > strongly suspect it is more likely to overengineered rather than backed
-> > > > by a real usecase. I might be wrong here but then this is an excellent
-> > > > opportunity to clarify all those subtleties.
-> > > 
-> > > From the code, the original special handling may be needed in 3 cases:
-> > >     get_policy_nodemask()
-> > >     policy_node()
-> > >     mempolicy_slab_node()
-> > > to not return the preset prefer_nid.
-> > 
-> > I am sorry but I do not follow. What is actually wrong if the preferred
-> > node is outside of the cpuset nodemask?
+On Mon, May 31, 2021 at 02:20:37PM +0800, Dongliang Mu wrote:
+> On Mon, May 31, 2021 at 12:40 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > On Mon, May 31, 2021 at 11:03:36AM +0800, Dongliang Mu wrote:
+> > > On Sat, May 29, 2021 at 5:35 AM 慕冬亮 <mudongliangabcd@gmail.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > > > >
+> > > > > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
+> > > > >>
+> > > > >> Can you please give some advise on how to fix this WARN issue?
+> > > > >
+> > > > > But it feels like it spoils the fun if I write the commit...  Anyway:
+> > > >
+> > > > It’s fine. I am still in the learning process. It’s also good to learn experience by comparing your patch and my patch.
+> > > >
+> > > > >
+> > > > > regards,
+> > > > > dan carpenter
+> > > > >
+> > > > > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> > > > > index 25f57c14f294..dd357abc1b58 100644
+> > > > > --- a/sound/core/control_led.c
+> > > > > +++ b/sound/core/control_led.c
+> > > > > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
+> > > > >                       for (; group > 0; group--) {
+> > > > >                               led = &snd_ctl_leds[group - 1];
+> > > > >                               device_del(&led->dev);
+> > > > > +                             device_put(&led->dev);
+> > > > >                       }
+> > > > >                       device_del(&snd_ctl_led_dev);
+> > > > >                       return -ENOMEM;
+> > > > > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
+> > > > >       for (group = 0; group < MAX_LED; group++) {
+> > > > >               led = &snd_ctl_leds[group];
+> > > > >               device_del(&led->dev);
+> > > > > +             device_put(&led->dev);
+> > > > >       }
+> > > > >       device_del(&snd_ctl_led_dev);
+> > > > >       snd_ctl_led_clean(NULL);
+> > >
+> > > Hi Dan,
+> > >
+> > > I tried this patch, and it still triggers the memleak.
+> >
+> > Did your patch fix the leak?  Because my patch should have been
+> > equivalent except for it fixes an additional leak in the snd_ctl_led_init()
+> > error path.
 > 
-> Sorry, I didn't make it clear. With current code logic, it will perform
-> as 'local' policy, but its mode is kept as 'prefer', so the code still
-> has these tricky bit checking when these APIs are called for this policy.
-> I agree with you that these ping-pong rebind() may be over engineering,
-> so for this case can we just change the policy from 'prefer' to 'local',
-> and drop the tricky bit manipulation, as the 'prefer' is just a hint,
-> if these rebind misses the target node, there is no need to stick with
-> the 'prefer' policy?
+> The syzbot link is [1]. I have tested my patch in the syzbot dashboard
+> and my local workspace.
+> 
+> I think the reason why your patch did not work should be
+> led_card(struct snd_ctl_led_card) is already freed before returning in
+> snd_ctl_led_sysfs_remove, rather than led(struct snd_ctl_led). See the
+> implementation of snd_ctl_led_sysfs_remove for some details. Please
+> correct me if I make any mistakes.
+> 
+> static void snd_ctl_led_sysfs_remove(struct snd_card *card)
+> {
+>         unsigned int group;
+>         struct snd_ctl_led_card *led_card;
+>         struct snd_ctl_led *led;
+>         char link_name[32];
+> 
+>         for (group = 0; group < MAX_LED; group++) {
+>                 led = &snd_ctl_leds[group];
+>                 led_card = led->cards[card->number];
+>                 if (!led_card)
+>                         continue;
+>                 snprintf(link_name, sizeof(link_name), "led-%s", led->name);
+>                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
+>                 sysfs_remove_link(&led_card->dev.kobj, "card");
+>                 device_del(&led_card->dev);
+>                 put_device(&led_card->dev);
+>                 kfree(led_card);
+>                 led->cards[card->number] = NULL;
+>         }
+> }
 
-Again. I really do not understand why we should rebind or mark as local
-anything here. Is this a documented/expected behavior? What if somebody
-just changes the cpuset to include the preferred node again. Is it
-expected to have local preference now?
+This is frustrating to look at because it's not a diff so it doesn't
+show what you changed.  I think you are saying that you added the
+put_device(&led_card->dev);.  That's true.  There are some other leaks
+as well.  We should just fix them all.  Use device_unregister() because
+it's cleaner.
 
-I can see you have posted a newer version which I haven't seen yet but
-this is really better to get resolved before building up more on top.
-And let me be explicit. I do believe that rebinding preferred policy is
-just bogus and it should be dropped altogether on the ground that a 
-preference is a mere hint from userspace where to start the allocation. 
-Unless I am missing something cpusets will be always authoritative for
-the final placement. The preferred node just acts as a starting point
-and it should be really preserved when cpusets changes. Otherwise we
-have a very subtle behavior corner cases.
--- 
-Michal Hocko
-SUSE Labs
+If both device_initialize() and device_add() succeed then call
+device_unregister() to unwind.
+
+diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+index 25f57c14f294..561fe45e4449 100644
+--- a/sound/core/control_led.c
++++ b/sound/core/control_led.c
+@@ -700,7 +700,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
+ 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
+ 		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
+ 		sysfs_remove_link(&led_card->dev.kobj, "card");
+-		device_del(&led_card->dev);
++		device_unregister(&led_card->dev);
+ 		kfree(led_card);
+ 		led->cards[card->number] = NULL;
+ 	}
+@@ -739,9 +739,9 @@ static int __init snd_ctl_led_init(void)
+ 			put_device(&led->dev);
+ 			for (; group > 0; group--) {
+ 				led = &snd_ctl_leds[group - 1];
+-				device_del(&led->dev);
++				device_unregister(&led->dev);
+ 			}
+-			device_del(&snd_ctl_led_dev);
++			device_unregister(&snd_ctl_led_dev);
+ 			return -ENOMEM;
+ 		}
+ 	}
+@@ -767,9 +767,9 @@ static void __exit snd_ctl_led_exit(void)
+ 	}
+ 	for (group = 0; group < MAX_LED; group++) {
+ 		led = &snd_ctl_leds[group];
+-		device_del(&led->dev);
++		device_unregister(&led->dev);
+ 	}
+-	device_del(&snd_ctl_led_dev);
++	device_unregister(&snd_ctl_led_dev);
+ 	snd_ctl_led_clean(NULL);
+ }
+ 
