@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C3239685E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C6A396863
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhEaTcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 15:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhEaTb5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 15:31:57 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0ECEC061574;
-        Mon, 31 May 2021 12:30:15 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id q25so1853518pfh.7;
-        Mon, 31 May 2021 12:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=I2yhzivGSYJwC2Jt9lkfIkUrKLXKvMaTyAMZKWM7ooo=;
-        b=UUn+4vUea7q/bSqwu5h5P7rYN+t0++cugdmEPb5F64WxhFUxdMgqcg+5Io2HKqSaI/
-         SNAs27u5G/eraR+E831SrS+UmVCklPVEzidi4prA2wOses/8AMPtAcKXvL3gApYCvoAw
-         2s0iRz1YrQOtJOcaesuP/budC1Zq5sFO5/8eNRpblTsZoDVNzAGVaAcqaXUEwY7Rc5tl
-         Tnt/QcnwsYOk5E8oWm2IK/KoMCNnPjbWsAYKKdjbotbQg5hx9s9i859hgLmPV+zDa/Lj
-         8unMCUEPvt8VIF1ppJZEHTNv6MFO0Mx31rFIbp9T3NGTcC9RtZ7MMCeppa8LksJeDwc3
-         VCBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=I2yhzivGSYJwC2Jt9lkfIkUrKLXKvMaTyAMZKWM7ooo=;
-        b=FOuepRpjUw+1bkrtMlMrjI1gFlTefb9Obo8lSQllThQGl8dXd78tN6J1ZetXdTmjvX
-         Zk8qtfNPXW3P/ZfuyRgKCCQXjZlZT5xamuEchFMapqttqfS5mtt+lqACeApKnvAPiY8c
-         HhyFOLnyGrBv6lxixnQjUiU5oacJCPBMB4llEyCof7sj92u1KABhi94RH/3Wrr+MqxAf
-         QOxDcE2Jn+20h+9y1vSqQODELAMprWtI4MTlidtFYVIsz68NNhNpn96bvwVJvtClxGqY
-         Z+iXzyhWyQPtJXTmYbbyUEdTp2rocMhGyK4e7m9YFVEPkeLdGDCZI306kwDf2xDV0XjC
-         n//g==
-X-Gm-Message-State: AOAM532mxCgzJu29uy6914j4qlgAfNdCjY1OHegZmmWiYWsyhgUjcX1+
-        vgN5Lu8JWE+8KsqfJtmW9tMRtN4RuRoduWSCeg4=
-X-Google-Smtp-Source: ABdhPJzJL6bh+NfD86E3MTbBnzMshBap5ysb2bfxntvROnbn8j6gzVTL5+ZvIJ+uKZQfyqou9VTBUQ==
-X-Received: by 2002:a63:6f4e:: with SMTP id k75mr24475396pgc.434.1622489415064;
-        Mon, 31 May 2021 12:30:15 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id x13sm13210315pja.3.2021.05.31.12.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 12:30:14 -0700 (PDT)
-Message-ID: <60b53946.1c69fb81.ad18b.99e5@mx.google.com>
-Date:   Mon, 31 May 2021 12:30:14 -0700 (PDT)
-X-Google-Original-Date: Mon, 31 May 2021 19:30:13 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-Subject: RE: [PATCH 5.12 000/296] 5.12.9-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        id S232023AbhEaTi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 15:38:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231144AbhEaTiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 15:38:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA546128A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622489805;
+        bh=CLLhfPrGUsh9JYNXiGJiXeJ+RJ6r+AscuPI1NBWlG5w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c2Dqg7GWLB84YPc3RL/DZS2dSv7b9DnrLUt+9fQ39YNaqog0T1BRyqHF0g99W/kG4
+         kVZ2XwUlRKsEIdx3mu2+3VBOJV8ERpcYo0mrC94IQiLva95SgBBp9B84zfRJj27GRv
+         ojWggEuAFssJPXf7SX/WGfLbqLvN+5taWwME07vHN8rPO8Cs3vmIkLsgtQB4uSv2K4
+         x+kuBVsQKYxzTRqw/QD3+CLa6W8Hl6YbVPU+Q9yQ2t1t0zYWvA70gFdNyUICubMVIe
+         WNt2Z5qkqMTkFH7sgRjoLPbnxgJntQjII1S+M7qpFXc36/23B8X7VdTqJPBE96ezo4
+         MHbcM+yzWdVSw==
+Received: by mail-ot1-f43.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso12026681ote.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:36:45 -0700 (PDT)
+X-Gm-Message-State: AOAM53032Lja9GrU7l7c2U2BMndMgtZATh9qba8EfsWYWSC5nlxMHFf9
+        agLyspU9hGrKi2OOTALkadbNaJiEaPHwKChUwtg=
+X-Google-Smtp-Source: ABdhPJzKQ18se19IrtZo2HMHS0JyPFh2MzBsqtIx1KLprlO2Vao7wxsnqsNC4IogO3uIkDgHCuM8VB9hhwigwiULMks=
+X-Received: by 2002:a9d:7cd8:: with SMTP id r24mr18604847otn.90.1622489804839;
+ Mon, 31 May 2021 12:36:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210531095720.77469-1-maz@kernel.org>
+In-Reply-To: <20210531095720.77469-1-maz@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 31 May 2021 21:36:34 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFjsdnNy=7yMwCQsAyKrratU0_9eemviHug6VeGbSEmOg@mail.gmail.com>
+Message-ID: <CAMj1kXFjsdnNy=7yMwCQsAyKrratU0_9eemviHug6VeGbSEmOg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] arm64: Make kexec_file_load honor iomem reservations
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kexec@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Bhupesh SHARMA <bhupesh.sharma@linaro.org>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Dave Young <dyoung@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 15:10:55 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.12.9 release.
-> There are 296 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.9-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, 31 May 2021 at 11:57, Marc Zyngier <maz@kernel.org> wrote:
+>
+> This series is a complete departure from the approach I initially sent
+> almost a month ago[0]. Instead of trying to teach EFI, ACPI and other
+> subsystem to use memblock, I've decided to stick with the iomem
+> resource tree and use that exclusively for arm64.
+>
+> This means that my current approach is (despite what I initially
+> replied to both Dave and Catalin) to provide an arm64-specific
+> implementation of arch_kexec_locate_mem_hole() which walks the
+> resource tree and excludes ranges of RAM that have been registered for
+> any odd purpose. This is exactly what the userspace implementation
+> does, and I don't really see a good reason to diverge from it.
+>
+> Again, this allows my Synquacer board to reliably use kexec_file_load
+> with as little as 256M, something that would always fail before as it
+> would overwrite most of the reserved tables.
+>
+> Although this series still targets 5.14, the initial patch is a
+> -stable candidate, and disables non-kdump uses of kexec_file_load. I
+> have limited it to 5.10, as earlier kernels will require a different,
+> probably more invasive approach.
+>
+> Catalin, Ard: although this series has changed a bit compared to v1,
+> I've kept your AB/RB tags. Should anything seem odd, please let me
+> know and I'll drop them.
+>
 
-5.12.9-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Fine with me.
 
+> Thanks,
+>
+>         M.
+>
+> * From v1 [1]:
+>   - Move the overlap exclusion into find_next_iomem_res()
+>   - Handle child resource not overlapping with parent
+>   - Provide walk_system_ram_excluding_child_res() as a top level
+>     walker
+>   - Simplify arch-specific code
+>   - Add initial patch disabling non-crash kernels
+>
+> [0] https://lore.kernel.org/r/20210429133533.1750721-1-maz@kernel.org
+> [1] https://lore.kernel.org/r/20210526190531.62751-1-maz@kernel.org
+>
+> Marc Zyngier (5):
+>   arm64: kexec_file: Forbid non-crash kernels
+>   kexec_file: Make locate_mem_hole_callback global
+>   kernel/resource: Allow find_next_iomem_res() to exclude overlapping
+>     child resources
+>   kernel/resource: Introduce walk_system_ram_excluding_child_res()
+>   arm64: kexec_image: Restore full kexec functionnality
+>
+>  arch/arm64/kernel/kexec_image.c | 39 ++++++++++++++++
+>  include/linux/ioport.h          |  3 ++
+>  include/linux/kexec.h           |  1 +
+>  kernel/kexec_file.c             |  6 +--
+>  kernel/resource.c               | 82 +++++++++++++++++++++++++++++----
+>  5 files changed, 119 insertions(+), 12 deletions(-)
+>
+> --
+> 2.30.2
+>
