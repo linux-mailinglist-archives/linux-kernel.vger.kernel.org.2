@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CA6395B47
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDD83962A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhEaNS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:18:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53602 "EHLO mail.kernel.org"
+        id S234354AbhEaO7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231633AbhEaNSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F041B6135F;
-        Mon, 31 May 2021 13:16:40 +0000 (UTC)
+        id S231670AbhEaOFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:05:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BAF261954;
+        Mon, 31 May 2021 13:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467001;
-        bh=eIWzEVNi6rH2kM5wH5iDnN9ASrTF1msKGpgP01Y9xBE=;
+        s=korg; t=1622468309;
+        bh=jLKy2fs+izQ6dpIvDbWD8/SxmqacVqGQoXpuCfbhMlc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yMIEyGS8p2fnARIm7+zZHIx4lRL3CseEVArKd0AMFBFRaQmj1U7Wr2s7i9Hb0Uodq
-         9Rq2T48u0o5bc58qRrShgF2SrMMd9+GZDDRFPne8daoKC2WzDD5sZb2zigK/xfOoPt
-         oG4fynHCF9EuvPGlqd+RbWwuNO0HJWQI31yvhNWY=
+        b=NZ75mE+mtIsTp0StiOrARYamw8SBmP49Grxbhd9lyMPbUPL4RcjsI4maW0NBDw8xy
+         MOg6qXELWjHYl27WgqRNOG/I5w0l2mfngy+gxjFNflu5vRSkG3jIIe7/WtcAAqVTDk
+         f/H9teBroSWiIDvgLJ/Bw4nyNqDLleBR3S5dkZyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.vger.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 19/54] net: usb: fix memory leak in smsc75xx_bind
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 160/252] Revert "media: dvb: Add check on sp8870_readreg"
 Date:   Mon, 31 May 2021 15:13:45 +0200
-Message-Id: <20210531130635.698454665@linuxfoundation.org>
+Message-Id: <20210531130703.456789726@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 46a8b29c6306d8bbfd92b614ef65a47c900d8e70 upstream.
+[ Upstream commit 47e4ff06fa7f5ba4860543a2913bbd0c164640aa ]
 
-Syzbot reported memory leak in smsc75xx_bind().
-The problem was is non-freed memory in case of
-errors after memory allocation.
+This reverts commit 467a37fba93f2b4fe3ab597ff6a517b22b566882.
 
-backtrace:
-  [<ffffffff84245b62>] kmalloc include/linux/slab.h:556 [inline]
-  [<ffffffff84245b62>] kzalloc include/linux/slab.h:686 [inline]
-  [<ffffffff84245b62>] smsc75xx_bind+0x7a/0x334 drivers/net/usb/smsc75xx.c:1460
-  [<ffffffff82b5b2e6>] usbnet_probe+0x3b6/0xc30 drivers/net/usb/usbnet.c:1728
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: d0cad871703b ("smsc75xx: SMSC LAN75xx USB gigabit ethernet adapter driver")
-Cc: stable@kernel.vger.org
-Reported-and-tested-by: syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+This commit is not properly checking for an error at all, so if a
+read succeeds from this device, it will error out.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Sean Young <sean@mess.org>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-59-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/smsc75xx.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/dvb-frontends/sp8870.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/net/usb/smsc75xx.c
-+++ b/drivers/net/usb/smsc75xx.c
-@@ -1485,7 +1485,7 @@ static int smsc75xx_bind(struct usbnet *
- 	ret = smsc75xx_wait_ready(dev, 0);
- 	if (ret < 0) {
- 		netdev_warn(dev->net, "device not ready in smsc75xx_bind\n");
--		return ret;
-+		goto err;
- 	}
+diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
+index 655db8272268..ee893a2f2261 100644
+--- a/drivers/media/dvb-frontends/sp8870.c
++++ b/drivers/media/dvb-frontends/sp8870.c
+@@ -280,9 +280,7 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
+ 	sp8870_writereg(state, 0xc05, reg0xc05);
  
- 	smsc75xx_init_mac_address(dev);
-@@ -1494,7 +1494,7 @@ static int smsc75xx_bind(struct usbnet *
- 	ret = smsc75xx_reset(dev);
- 	if (ret < 0) {
- 		netdev_warn(dev->net, "smsc75xx_reset error %d\n", ret);
--		return ret;
-+		goto err;
- 	}
+ 	// read status reg in order to clear pending irqs
+-	err = sp8870_readreg(state, 0x200);
+-	if (err)
+-		return err;
++	sp8870_readreg(state, 0x200);
  
- 	dev->net->netdev_ops = &smsc75xx_netdev_ops;
-@@ -1503,6 +1503,10 @@ static int smsc75xx_bind(struct usbnet *
- 	dev->net->hard_header_len += SMSC75XX_TX_OVERHEAD;
- 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
- 	return 0;
-+
-+err:
-+	kfree(pdata);
-+	return ret;
- }
- 
- static void smsc75xx_unbind(struct usbnet *dev, struct usb_interface *intf)
+ 	// system controller start
+ 	sp8870_microcontroller_start(state);
+-- 
+2.30.2
+
 
 
