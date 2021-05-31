@@ -2,142 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BA0396789
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D962A396794
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhEaR7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232370AbhEaR7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:59:20 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF3CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:57:37 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 131so15976359ljj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=333dg+4T08AjdOad74NZzvWXFUaJwUvbt5gSjRnF5Bk=;
-        b=ccMoi6YQw2A/Dh6PUhcIIvNzDlKney868O40tFPLo84ubnWU8VScD1X9CBEKTyE5XO
-         Yh+SHXnbPnuqA9+Ghy3ynubdRRy+jSFRn79EQBi9pwHec4qv5wwoBOclbqgqs8fyK55B
-         zupywCtm05sPDGpxWJDQg746m1fKE6urgKNzHwOmHk1PL1fbcfaqG+eGIdT51q+CzDfB
-         NTEjNnELQ19r0DpxySRgK67FoUKSDA1/7AdPjM5vO6087hF+TKXw2UssWzU5hP5Hsqy8
-         YOw/23vkQoPxOYG2sk9vg+DjVnmMJygaxW2cZlupCxu+8n5gehEHwbDIYtpI92h+Txz3
-         ksTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=333dg+4T08AjdOad74NZzvWXFUaJwUvbt5gSjRnF5Bk=;
-        b=dRYTNG4LLm9/hhKAX5uwvPv3qpVXu7cLOj3NLm5Vc6Z9EpjJZRVpSLgFiIqB5UzhVE
-         IGcs2ZA8iP/W3Zlx7KI82kJzBci9+BekUAHPBdNGoPAtmF+CDc/NAO9NHs1Iue+YeZEN
-         Dv7SE2bcoxpO/IqgNI8Bep2FDkr/MQhjHMNCSOtfznpEybxLu6AnYJDxR5EyP8mS4d/S
-         ivmTkf7Hp48mzd2B42A13IVLGUVmWvnApdjFRiM2nJ+eoSGFkUNzXfqJ1KwqIEF5Fw9i
-         CKfq1PIf5k4eo3jsmL8gmmrk7vMYQ/r+uqtRVFj921gQ8hL0VCpfa0Hmkb8PmI2Hjra7
-         1GhA==
-X-Gm-Message-State: AOAM530XqceFmR16N1bdMD1psIPwP0MeNhBHFFgNTSjOrwWM8lm3CCI9
-        2FQm3Gjph48EmQINMrHFi093Sw==
-X-Google-Smtp-Source: ABdhPJwM7suewNJq5pRVK78PJGYgETOZsCEtDogRNSid13ZhqbxxIXaSRw6HS7Ifcco0SiiLzzZsag==
-X-Received: by 2002:a2e:8653:: with SMTP id i19mr17547012ljj.11.1622483856102;
-        Mon, 31 May 2021 10:57:36 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id o2sm943808lfu.89.2021.05.31.10.57.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 10:57:35 -0700 (PDT)
-Subject: Re: [v1 3/3] drm/msm/dsi: Add DSI support for SC7280
-To:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
-        robh+dt@kernel.org, abhinavk@codeaurora.org,
-        kalyan_t@codeaurora.org, mkrishn@codeaurora.org, jonathan@marek.ca
-References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
- <1622468035-8453-4-git-send-email-rajeevny@codeaurora.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <03dd0cb1-433c-2bb8-6859-39e7c679dee2@linaro.org>
-Date:   Mon, 31 May 2021 20:57:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231377AbhEaSJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 14:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhEaSJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 14:09:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEFAD611CA;
+        Mon, 31 May 2021 18:07:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622484479;
+        bh=M3OgetQba/UVAsB4M/CF8dyqe0zb+kxHEdtALs37FxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZYn6Cm7R32o3ShYLIszlUD7o92/Uml5sSRlzX0qasDSeFYQ8nJiQtauxL/tGVcDKf
+         UDxUf+rs8GZz7nfmUFH5a/Hs+jHYOKkTu4GV/HM4B3XxjEzNZnKUt6sPIiEmp7fR2W
+         RD0yR3k2lMuSk+OlBCOHOWktiNq2tePYCArWgonbUKv7s40SorJ1j48bp5Rw2hQQXv
+         UcRsHGZBoYw9PyrDVoytPeq6ClOn3fRjx3s9jBbkFa78QreuTl0Q7bwgxpKVGXXWu7
+         f1jjbf+emNkA3tmy6WIX+mYiNz6QYifhIR4U1tQEYTi2vkW2TypROxEx9apQ3lETO1
+         dB5yKqQkBFM4g==
+Date:   Mon, 31 May 2021 11:07:57 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>
+Cc:     samitolvanen@google.com, jeyu@kernel.org, ndesaulniers@google.com,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        wcw@google.com
+Subject: Re: [PATCH 1/6] pgo: modules Expose module sections for clang PGO
+ instumentation.
+Message-ID: <YLUl/eQ1EzMFSb9F@Ryzen-9-3900X.localdomain>
+References: <20210528200133.459022-1-jarmo.tiitto@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1622468035-8453-4-git-send-email-rajeevny@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528200133.459022-1-jarmo.tiitto@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/05/2021 16:33, Rajeev Nandan wrote:
-> Add support for v2.5.0 DSI block in the SC7280 SoC.
+Hi Jarmo!
+
+I do not really have much input on the code side of things aside from
+style changes, which I will comment on in each individual patch. I do
+have some comments around process, hopefully they are helpful to you for
+the future :)
+
+My first comment is around the threading of the series. It seems like
+you sent this series as individual patches when they really should have
+been threaded together so they are all grouped together in our inboxes.
+You can pass multiple patch files to 'git send-email' so they will be be
+automatically threaded.
+
+$ git send-email --to=... --cc=... *.patch
+
+That way, everyone stays CC'd on the full series. You left Bill off of
+this patch, which is important for the rest of the series. Bill,
+original patch is here so you do not have to read my marked message.
+
+https://lore.kernel.org/r/20210528200133.459022-1-jarmo.tiitto@gmail.com/
+
+On Fri, May 28, 2021 at 11:01:33PM +0300, Jarmo Tiitto wrote:
+> This patch series enables reading PGO profile data for
+> modules. It also contains some changes to instrumentation
+> code to fixup flaws when profile data is serialized from loaded modules.
 > 
-> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> To be able to export clang PGO profile data from modules into user space
+> we need to expose __llvm_prf_xxx sections from loaded modules.
+> This data is used by pgo/instrument.c and pgo/fs_mod.c in following patches.
+> 
+> ====
+> The patch is based on Sami Tolvanen's earlier code: [1]
+> Patch https://lore.kernel.org/linux-doc/20210407211704.367039-1-morbo@google.com/
+> and kernel v5.13-rc3 was used as starting point for my changes.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+This is general advice since it is not relevant for this particular
+series: when submitting a patch series, it is best to work against
+linux-next or a maintainer's tree so that you have the latest version of
+the code that has been accepted:
 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
+https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo
+
+I would base future revisions on Kees's tree above as that is the final
+version that will go upstream. You can even include the commit that you based it on with 'git format-patch --base=<base_hash>'
+
+$ git fetch https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/pgo
+
+$ git checkout -b kees/for-next/clang/pgo FETCH_HEAD
+
+$ git format-patch --base=e1af496cbe9b4517428601a4e44fee3602dd3c15 e1af496cbe9b4517428601a4e44fee3602dd3c15..
+
+> Be kind, I'm an kernel newbie and this is my first git send-mail. :-)
+> 
+> [1] https://patchwork.kernel.org/project/linux-kbuild/patch/20210407211704.367039-1-morbo@google.com/
+> ====
+
+This entire commit message belongs in a cover letter, which allows you
+to tell the reviewers what your series is doing at a higher level, without it
+being applied to the final commit.
+
+https://kernelnewbies.org/PatchSeries
+
+You can generate this with 'git format-patch' via the '--cover-letter'
+option, which will add a 0000 patch file that you can use for that
+purpose, and it will be the top message of your thread.
+
+The commit message for this patch should describe what is being done and
+why it is being done.
+
+> Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
 > ---
->   drivers/gpu/drm/msm/dsi/dsi_cfg.c | 20 ++++++++++++++++++++
->   drivers/gpu/drm/msm/dsi/dsi_cfg.h |  1 +
->   2 files changed, 21 insertions(+)
+>  include/linux/module.h | 12 +++++++++++-
+>  kernel/module.c        |  8 +++++++-
+>  2 files changed, 18 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.c b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-> index f3f1c03..d76a680 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
-> @@ -200,6 +200,24 @@ static const struct msm_dsi_config sc7180_dsi_cfg = {
->   	.num_dsi = 1,
->   };
->   
-> +static const char * const dsi_sc7280_bus_clk_names[] = {
-> +	"iface", "bus",
-> +};
-> +
-> +static const struct msm_dsi_config sc7280_dsi_cfg = {
-> +	.io_offset = DSI_6G_REG_SHIFT,
-> +	.reg_cfg = {
-> +		.num = 1,
-> +		.regs = {
-> +			{"vdda", 8350, 0 },	/* 1.2 V */
-> +		},
-> +	},
-> +	.bus_clk_names = dsi_sc7280_bus_clk_names,
-> +	.num_bus_clks = ARRAY_SIZE(dsi_sc7280_bus_clk_names),
-> +	.io_start = { 0xae94000 },
-> +	.num_dsi = 1,
-> +};
-> +
->   static const struct msm_dsi_host_cfg_ops msm_dsi_v2_host_ops = {
->   	.link_clk_set_rate = dsi_link_clk_set_rate_v2,
->   	.link_clk_enable = dsi_link_clk_enable_v2,
-> @@ -267,6 +285,8 @@ static const struct msm_dsi_cfg_handler dsi_cfg_handlers[] = {
->   		&sdm845_dsi_cfg, &msm_dsi_6g_v2_host_ops},
->   	{MSM_DSI_VER_MAJOR_6G, MSM_DSI_6G_VER_MINOR_V2_4_1,
->   		&sc7180_dsi_cfg, &msm_dsi_6g_v2_host_ops},
-> +	{MSM_DSI_VER_MAJOR_6G, MSM_DSI_6G_VER_MINOR_V2_5_0,
-> +		&sc7280_dsi_cfg, &msm_dsi_6g_v2_host_ops},
->   };
->   
->   const struct msm_dsi_cfg_handler *msm_dsi_cfg_get(u32 major, u32 minor)
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.h b/drivers/gpu/drm/msm/dsi/dsi_cfg.h
-> index ade9b60..b2c4d5e 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_cfg.h
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.h
-> @@ -24,6 +24,7 @@
->   #define MSM_DSI_6G_VER_MINOR_V2_3_0	0x20030000
->   #define MSM_DSI_6G_VER_MINOR_V2_4_0	0x20040000
->   #define MSM_DSI_6G_VER_MINOR_V2_4_1	0x20040001
-> +#define MSM_DSI_6G_VER_MINOR_V2_5_0	0x20050000
->   
->   #define MSM_DSI_V2_VER_MINOR_8064	0x0
->   
-> 
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index 8100bb477d86..2aa1e1fe4afa 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -504,7 +504,6 @@ struct module {
+>  	/* Elf information */
+>  	struct klp_modinfo *klp_info;
+>  #endif
+> -
+>  #ifdef CONFIG_MODULE_UNLOAD
+>  	/* What modules depend on me? */
+>  	struct list_head source_list;
+> @@ -527,6 +526,17 @@ struct module {
+>  	struct error_injection_entry *ei_funcs;
+>  	unsigned int num_ei_funcs;
+>  #endif
+> +#ifdef CONFIG_PGO_CLANG
+> +	/* Clang PGO llvm_prf_xxx sections */
 
+This probably deserves a comment such as:
 
--- 
-With best wishes
-Dmitry
+"Should to be kept in sync with the data sections in include/asm-generic/vmlinux.lds.h"
+
+> +	void *prf_data; /* struct llvm_prf_data */
+> +	int prf_data_size;
+> +	u64 *prf_cnts;
+> +	int prf_cnts_num;
+> +	const char *prf_names;
+> +	int prf_names_num;
+> +	void *prf_vnds; /* struct llvm_prf_value_node */
+> +	int prf_vnds_size;
+> +#endif
+>  } ____cacheline_aligned __randomize_layout;
+>  #ifndef MODULE_ARCH_INIT
+>  #define MODULE_ARCH_INIT {}
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 7e78dfabca97..e49de3b95d87 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -3342,7 +3342,13 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+>  
+>  	info->debug = section_objs(info, "__dyndbg",
+>  				   sizeof(*info->debug), &info->num_debug);
+> -
+
+I would shuffle this section to be between the 'mod->static_call_sites'
+and 'mod->extable' above, as it looks better to me to have all of the
+conditional sections grouped together.
+
+> +#ifdef CONFIG_PGO_CLANG
+> +    /* Grab module sections for Clang PGO profiler to hook into */
+
+I think you can just drop this comment, none of the other conditional
+preprocessor blocks have a comment in this function. Otherwise, tabs instead of
+spaces.
+
+> +	mod->prf_data = section_objs(info, "__llvm_prf_data", 1, &mod->prf_data_size);
+> +	mod->prf_cnts = section_objs(info, "__llvm_prf_cnts", sizeof(u64), &mod->prf_cnts_num);
+> +	mod->prf_names = section_objs(info, "__llvm_prf_names", sizeof(char), &mod->prf_names_num);
+> +	mod->prf_vnds = section_objs(info, "__llvm_prf_vnds", 1, &mod->prf_vnds_size);
+> +#endif
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.31.1
+
+Overall, good job on your first submission! :)
+
+Cheers,
+Nathan
