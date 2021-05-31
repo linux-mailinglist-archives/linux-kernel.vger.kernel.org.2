@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DE5396936
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54203396937
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhEaVOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 17:14:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhEaVOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 17:14:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DA1F61260;
-        Mon, 31 May 2021 21:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622495572;
-        bh=TQ7g+t1TJl7Xuj2apj2QBNz7adir/QisC080h7vhsYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cGb59gez0RAsmz0o6pqUA10TarQHMoiANuJ+HKp4Y9CPUOpqz3gAaQtzzj6A3NN8W
-         Xip/zpCZIJX9IvBZYoPe97ExhoD/5zhBaF93rHLsAfdSwjHfSIG59IMPUkk4qLsJ5J
-         ztWR4I4GcxLpOBclr885mIH/LFXSPVNRxITm7a5oLxweinqgPuZdIAbstBSEAyc1qu
-         LT/OflQcxdNpnqE9TiN5aJxGwj5MXbKGWMR6QOMgtVpCV9+lm2fF8Dpuft1ecm6KNB
-         XjTS5A/xpgQPsWGt3eqtW20GhLba8SQ40SaGYpGRJ9XqePb+BZtXTXBmrwQE9pqRHc
-         wd9GjeOTjJ9tQ==
-Date:   Mon, 31 May 2021 14:12:46 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Bill Wendling <morbo@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
- infrastructure
-Message-ID: <YLVRTilQ5k5n+Vmz@archlinux-ax161>
-References: <20210111081821.3041587-1-morbo@google.com>
- <20210407211704.367039-1-morbo@google.com>
- <202105191422.2E6748C4E0@keescook>
+        id S232035AbhEaVPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 17:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhEaVPQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 17:15:16 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7274C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:13:35 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id i22so590467pju.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LW0vl/hPnVGSly3VDkGIzhu2V9/k+bcQNfCUTpERlgM=;
+        b=YWhF1lBk/tLmGWtD5cy8ck7UqSAiRSXGygv3obAjb1C3oRikFyW6m29zQJxQeMzorV
+         N2QTxnSTXrYkgZS7lL3QkLFHjBEnmD45o4fvJGHwlyAAowgUvXGf0PEWnADScA6sBlBR
+         cJrG87p6Fry51970S10NjqiSUuh+QZNkJpFHEw8b5BOnk//6FbnAxK3TBIpLe1QdaHUA
+         UqM7KPQWZXaak6TQwY/XDDNYXDYnMqcc1Cwa78QBG937BZNzZyZ+LM/EEBbnb5uN/sU3
+         xnYbaPUPnoI6NphARwkya9+ZmxoHTL4kO+EbP2+PFsUcgXS3ENNB0e9l1WiRicW56kuL
+         njxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LW0vl/hPnVGSly3VDkGIzhu2V9/k+bcQNfCUTpERlgM=;
+        b=KuAbrvgNZYLIEKVuZ7eOzmCus0jN1i0d42B6FgnshgFkOyK9t8GUOtBoJakYJjdpqh
+         t0AB+xb4GJzg7KHBEFudphxpzQ+es+UN0FK3F7RFkS1dYHFHaHI2HnzmzKuO8WbvYgPP
+         IkISuL/UoLRUfTxWTDNv59/bJI5MzOAM82yDPwZDodgNiJjmVXOsuqDPkMIt9ggfWJ/9
+         L4XFq6IaFVzfbvH0uS8It/PfS6RL1Ym6gcqJwIHdknoCz3XDSGq5rDUjipeppiLYmh1p
+         ANhv/QNRn7u4ZO9UZCN4lPY69YzUa0cuStHAvJ1naMWOSD35YmFJM6QHBBBlTeMcb69Q
+         oajA==
+X-Gm-Message-State: AOAM530+psxmNNhyh3WUlv2E9nEKxlLa71dZFiR4Kw2bSoL6vaaHB8S/
+        uq2GFMxaWQnrLMz63mCsXkY=
+X-Google-Smtp-Source: ABdhPJxCLtShnBPDLXPOGS1BZnwVS2Ie+0dADGTjOIXza/EKKNfRoepruWQQGHjOfOb9NJx3fP47sg==
+X-Received: by 2002:a17:90a:80c5:: with SMTP id k5mr1004969pjw.129.1622495615154;
+        Mon, 31 May 2021 14:13:35 -0700 (PDT)
+Received: from [192.168.0.15] (c-73-158-171-241.hsd1.ca.comcast.net. [73.158.171.241])
+        by smtp.gmail.com with ESMTPSA id bv3sm501772pjb.1.2021.05.31.14.13.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 14:13:34 -0700 (PDT)
+Subject: Re: Sealed memfd & no-fault mmap
+From:   Ming Lin <minggr@gmail.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Simon Ser <contact@emersion.fr>
+Cc:     Peter Xu <peterx@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Herrmann <dh.herrmann@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        "tytso@mit.edu" <tytso@mit.edu>
+References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
+ <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
+ <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1>
+ <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr>
+ <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
+ <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
+ <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com>
+ <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com>
+ <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com>
+ <80c87e6b-6050-bf23-2185-ded408df4d0f@gmail.com>
+ <CAHk-=whSGS=R8PtrfNcDTkCKOengEqygqeWjOZa2b8QkuOueDg@mail.gmail.com>
+ <alpine.LSU.2.11.2105291315330.25425@eggly.anvils>
+ <36fc2485-11f1-5252-904d-f26b63a6cd58@gmail.com>
+Message-ID: <e7454046-c071-888d-f673-276f9c24d9d3@gmail.com>
+Date:   Mon, 31 May 2021 14:13:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202105191422.2E6748C4E0@keescook>
+In-Reply-To: <36fc2485-11f1-5252-904d-f26b63a6cd58@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 02:37:26PM -0700, Kees Cook wrote:
-> I've added this to patch to my -next tree now:
+On 5/29/2021 4:36 PM, Ming Lin wrote:
+> On 5/29/2021 1:15 PM, Hugh Dickins wrote:
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/clang/pgo&id=e1af496cbe9b4517428601a4e44fee3602dd3c15
-> 
+>>
+>> I believe the correct behaviour would be to unmap the nofault page
+>> then, allowing the proper page to be faulted in after.  That is
+>> certainly doable (the old mm/filemap_xip.c used to do so), but might
+>> get into some awkward race territory, with filesystem dependence
+>> (reminiscent of hole punch, in reverse).  shmem could operate that
+>> way, and be the better for it: but I wouldn't want to add that,
+>> without also cleaning away all the shmem_recalc_inode() stuff.
 
-Would this be appropriate to send? Someone sent some patches based on
-this work so it would be nice to solidify how they will get to Linus
-if/when the time comes :)
+OK, I borrowed code from filemap_xip.c and implemented this behavior.
 
-https://lore.kernel.org/r/20210528200133.459022-1-jarmo.tiitto@gmail.com/
-https://lore.kernel.org/r/20210528200432.459120-1-jarmo.tiitto@gmail.com/
-https://lore.kernel.org/r/20210528200821.459214-1-jarmo.tiitto@gmail.com/
-https://lore.kernel.org/r/20210528201006.459292-1-jarmo.tiitto@gmail.com/
-https://lore.kernel.org/r/20210528201107.459362-1-jarmo.tiitto@gmail.com/
-https://lore.kernel.org/r/20210528201213.459483-1-jarmo.tiitto@gmail.com/
+Simon,
 
-Cheers,
-Nathan
+Before I send out the patches for review, would you mind have a quick test?
+https://github.com/minggr/linux, branch shmem_no_sigbus
 
-======================================
+In Wayland compositors, you only need to pass in MAP_NOSIGBUS in mmap().
+For example,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c45613c30803..0d03f6ccdb70 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14378,9 +14378,13 @@ F:	include/uapi/linux/personality.h
- PGO BASED KERNEL PROFILING
- M:	Sami Tolvanen <samitolvanen@google.com>
- M:	Bill Wendling <wcw@google.com>
-+M:	Kees Cook <keescook@chromium.org>
- R:	Nathan Chancellor <nathan@kernel.org>
- R:	Nick Desaulniers <ndesaulniers@google.com>
-+L:	clang-built-linux@googlegroups.com
- S:	Supported
-+B:	https://github.com/ClangBuiltLinux/linux/issues
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/pgo
- F:	Documentation/dev-tools/pgo.rst
- F:	kernel/pgo/
- 
+//fd should be received from Wayland compositors client
+#define MAP_NOSIGBUS    0x200000
+addr = mmap(NULL, size, PROT_READ, MAP_SHARED|MAP_NOSIGBUS, fd, offset)
+
+Thanks,
+Ming
+
