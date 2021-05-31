@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5F639646A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17200395FA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhEaP6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:58:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
+        id S232470AbhEaONa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232939AbhEaOb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:31:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72DB861C33;
-        Mon, 31 May 2021 13:49:05 +0000 (UTC)
+        id S232355AbhEaNq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:46:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5121C61582;
+        Mon, 31 May 2021 13:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468946;
-        bh=HZ7PRnxunKxxhOBAuhM/r/Gt2HPb3aY6VXxzx1wKkOQ=;
+        s=korg; t=1622467808;
+        bh=LIeUETAqjCaD7D1hU95MpgwlUM7UXyBG0fj42aJQ5Gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBrc5CXyq+eLweMQ+J3JR8VHWl15TbGt1Kqv19laROq5Vz8UNaClPHaavWbhv+vaE
-         FsYJMU0cRN05SGlQsPR4XtAeogr4QWKj9H91U+8/c1gT3ucjEySUxm61xxnTh9XAOP
-         OLPC5V9etBivDVMGVH+GLoffHjbzEom5uhlRAHwY=
+        b=rBGV7eA5lBDEwv9fkoaMyCLjA6AeVUlHrGbwDf0GwzbtDeG9cpdqB0NHNX1buaLh2
+         TxLGEY9gJlZ+cm714IzUwgBG370YPjtT+SDVtAWzmoiAhRIeHwRrAqPn1jgR9XOs46
+         gty8z/bLNkiTkvi4yUz7iC8G3Eb/RlBC3qL8suoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shyam Prasad N <sprasad@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.12 011/296] cifs: fix string declarations and assignments in tracepoints
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 001/252] ALSA: hda/realtek: the bass speaker cant output sound on Yoga 9i
 Date:   Mon, 31 May 2021 15:11:06 +0200
-Message-Id: <20210531130704.142136798@linuxfoundation.org>
+Message-Id: <20210531130658.021807971@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,123 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Prasad N <sprasad@microsoft.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit eb0688180549e3b72464e9f78df58cb7a5592c7f upstream.
+commit 9ebaef0540a981093bce5df15af32354d32391d9 upstream.
 
-We missed using the variable length string macros in several
-tracepoints. Fixed them in this change.
+The Lenovo Yoga 9i has bass speaker, but the bass speaker can't work,
+that is because there is an i2s amplifier on that speaker, need to
+run ideapad_s740_coef() to initialize the amplifier.
 
-There's probably more useful macros that we can use to print
-others like flags etc. But I'll submit sepawrate patches for
-those at a future date.
+And also needs to apply ALC285_FIXUP_THINKPAD_HEADSET_JACK to rename
+the speaker's mixer control name, otherwise the PA can't handle them.
 
-Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-Cc: <stable@vger.kernel.org> # v5.12
-Signed-off-by: Steve French <stfrench@microsoft.com>
+BugLink: http://bugs.launchpad.net/bugs/1926165
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210522042645.14221-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/trace.h |   29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ sound/pci/hda/patch_realtek.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/fs/cifs/trace.h
-+++ b/fs/cifs/trace.h
-@@ -12,6 +12,11 @@
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6535,6 +6535,7 @@ enum {
+ 	ALC295_FIXUP_ASUS_DACS,
+ 	ALC295_FIXUP_HP_OMEN,
+ 	ALC285_FIXUP_HP_SPECTRE_X360,
++	ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
+ };
  
- #include <linux/tracepoint.h>
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8095,6 +8096,12 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
+ 	},
++	[ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_ideapad_s740_coef,
++		.chained = true,
++		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
++	},
+ };
  
-+/*
-+ * Please use this 3-part article as a reference for writing new tracepoints:
-+ * https://lwn.net/Articles/379903/
-+ */
-+
- /* For logging errors in read or write */
- DECLARE_EVENT_CLASS(smb3_rw_err_class,
- 	TP_PROTO(unsigned int xid,
-@@ -529,16 +534,16 @@ DECLARE_EVENT_CLASS(smb3_exit_err_class,
- 	TP_ARGS(xid, func_name, rc),
- 	TP_STRUCT__entry(
- 		__field(unsigned int, xid)
--		__field(const char *, func_name)
-+		__string(func_name, func_name)
- 		__field(int, rc)
- 	),
- 	TP_fast_assign(
- 		__entry->xid = xid;
--		__entry->func_name = func_name;
-+		__assign_str(func_name, func_name);
- 		__entry->rc = rc;
- 	),
- 	TP_printk("\t%s: xid=%u rc=%d",
--		__entry->func_name, __entry->xid, __entry->rc)
-+		__get_str(func_name), __entry->xid, __entry->rc)
- )
- 
- #define DEFINE_SMB3_EXIT_ERR_EVENT(name)          \
-@@ -583,14 +588,14 @@ DECLARE_EVENT_CLASS(smb3_enter_exit_clas
- 	TP_ARGS(xid, func_name),
- 	TP_STRUCT__entry(
- 		__field(unsigned int, xid)
--		__field(const char *, func_name)
-+		__string(func_name, func_name)
- 	),
- 	TP_fast_assign(
- 		__entry->xid = xid;
--		__entry->func_name = func_name;
-+		__assign_str(func_name, func_name);
- 	),
- 	TP_printk("\t%s: xid=%u",
--		__entry->func_name, __entry->xid)
-+		__get_str(func_name), __entry->xid)
- )
- 
- #define DEFINE_SMB3_ENTER_EXIT_EVENT(name)        \
-@@ -857,16 +862,16 @@ DECLARE_EVENT_CLASS(smb3_reconnect_class
- 	TP_STRUCT__entry(
- 		__field(__u64, currmid)
- 		__field(__u64, conn_id)
--		__field(char *, hostname)
-+		__string(hostname, hostname)
- 	),
- 	TP_fast_assign(
- 		__entry->currmid = currmid;
- 		__entry->conn_id = conn_id;
--		__entry->hostname = hostname;
-+		__assign_str(hostname, hostname);
- 	),
- 	TP_printk("conn_id=0x%llx server=%s current_mid=%llu",
- 		__entry->conn_id,
--		__entry->hostname,
-+		__get_str(hostname),
- 		__entry->currmid)
- )
- 
-@@ -891,7 +896,7 @@ DECLARE_EVENT_CLASS(smb3_credit_class,
- 	TP_STRUCT__entry(
- 		__field(__u64, currmid)
- 		__field(__u64, conn_id)
--		__field(char *, hostname)
-+		__string(hostname, hostname)
- 		__field(int, credits)
- 		__field(int, credits_to_add)
- 		__field(int, in_flight)
-@@ -899,7 +904,7 @@ DECLARE_EVENT_CLASS(smb3_credit_class,
- 	TP_fast_assign(
- 		__entry->currmid = currmid;
- 		__entry->conn_id = conn_id;
--		__entry->hostname = hostname;
-+		__assign_str(hostname, hostname);
- 		__entry->credits = credits;
- 		__entry->credits_to_add = credits_to_add;
- 		__entry->in_flight = in_flight;
-@@ -907,7 +912,7 @@ DECLARE_EVENT_CLASS(smb3_credit_class,
- 	TP_printk("conn_id=0x%llx server=%s current_mid=%llu "
- 			"credits=%d credit_change=%d in_flight=%d",
- 		__entry->conn_id,
--		__entry->hostname,
-+		__get_str(hostname),
- 		__entry->currmid,
- 		__entry->credits,
- 		__entry->credits_to_add,
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8462,6 +8469,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x17aa, 0x3178, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
+ 	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
++	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
+ 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+@@ -8677,6 +8685,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
+ 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
+ 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
++	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
 
 
