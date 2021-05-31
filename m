@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85988395F27
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F65395DB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhEaOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:08:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
+        id S233073AbhEaNtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:49:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231863AbhEaNnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:43:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA4CE61483;
-        Mon, 31 May 2021 13:28:40 +0000 (UTC)
+        id S232713AbhEaNeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:34:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 920CD613F3;
+        Mon, 31 May 2021 13:24:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467721;
-        bh=/AR6sw5pzaS0ed642hqWFyYDQ9w5U8GATj9I4hP0v1I=;
+        s=korg; t=1622467497;
+        bh=r2zlUh1pZXvCNhM+q9Rg6U2Q68hTUG+6yv5YzOkjEZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vZ15utYCJcgcv4W9y3AeRK95nYN1q06+5d7j0wRgqPANSu9fHI6El57whIUQ0MJ2v
-         EfHj/y2sSqAcJMxywcPoIJumZFYqtLacUrgATxeJO4EOsSAengWrSM2tvfFcvVivgT
-         wdygLm6pMB5hWQ30iaQYk1Xsu6tEMteRXfMOqja0=
+        b=pN1OcWZ1AuMtp3tMCDuM8z646RmzwYFztjtqfg//sHklbUjHL2xLOx77JMbGWlwvz
+         dqvfYQZFIjNrQSiSidZkQY3DehT2Cb4QJSrkAzBmyre9OB/IaZ+C84POnW38TOD+on
+         sbWpdjsz1CIMKgApQxt2au0+nzTxbOCoEnEZ0SAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 4.14 38/79] drm/meson: fix shutdown crash when component not probed
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        Matt Wang <wwentao@vmware.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 087/116] scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
 Date:   Mon, 31 May 2021 15:14:23 +0200
-Message-Id: <20210531130637.235108218@linuxfoundation.org>
+Message-Id: <20210531130643.097819206@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: Matt Wang <wwentao@vmware.com>
 
-commit 7cfc4ea78fc103ea51ecbacd9236abb5b1c490d2 upstream.
+[ Upstream commit 56f396146af278135c0ff958c79b5ee1bd22453d ]
 
-When main component is not probed, by example when the dw-hdmi module is
-not loaded yet or in probe defer, the following crash appears on shutdown:
+Commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit")
+introduced a serious issue for 64-bit systems.  With this commit,
+64-bit kernel will enumerate 8*15 non-existing disks.  This is caused
+by the broken CCB structure.  The change from u32 data to void *data
+increased CCB length on 64-bit system, which introduced an extra 4
+byte offset of the CDB.  This leads to incorrect response to INQUIRY
+commands during enumeration.
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000038
-...
-pc : meson_drv_shutdown+0x24/0x50
-lr : platform_drv_shutdown+0x20/0x30
-...
-Call trace:
-meson_drv_shutdown+0x24/0x50
-platform_drv_shutdown+0x20/0x30
-device_shutdown+0x158/0x360
-kernel_restart_prepare+0x38/0x48
-kernel_restart+0x18/0x68
-__do_sys_reboot+0x224/0x250
-__arm64_sys_reboot+0x24/0x30
-...
+Fix disk enumeration failure by reverting the portion of the commit
+above which switched the data pointer from u32 to void.
 
-Simply check if the priv struct has been allocated before using it.
-
-Fixes: fa0c16caf3d7 ("drm: meson_drv add shutdown function")
-Reported-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210430082744.3638743-1-narmstrong@baylibre.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/C325637F-1166-4340-8F0F-3BCCD59D4D54@vmware.com
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Matt Wang <wwentao@vmware.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/meson/meson_drv.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/scsi/BusLogic.c | 6 +++---
+ drivers/scsi/BusLogic.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/meson/meson_drv.c
-+++ b/drivers/gpu/drm/meson/meson_drv.c
-@@ -364,11 +364,12 @@ static int meson_probe_remote(struct pla
- static void meson_drv_shutdown(struct platform_device *pdev)
- {
- 	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
--	struct drm_device *drm = priv->drm;
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index 0d4ffe0ae306..79b5c5457cc2 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3081,11 +3081,11 @@ static int blogic_qcmd_lck(struct scsi_cmnd *command,
+ 		ccb->opcode = BLOGIC_INITIATOR_CCB_SG;
+ 		ccb->datalen = count * sizeof(struct blogic_sg_seg);
+ 		if (blogic_multimaster_type(adapter))
+-			ccb->data = (void *)((unsigned int) ccb->dma_handle +
++			ccb->data = (unsigned int) ccb->dma_handle +
+ 					((unsigned long) &ccb->sglist -
+-					(unsigned long) ccb));
++					(unsigned long) ccb);
+ 		else
+-			ccb->data = ccb->sglist;
++			ccb->data = virt_to_32bit_virt(ccb->sglist);
  
--	DRM_DEBUG_DRIVER("\n");
--	drm_kms_helper_poll_fini(drm);
--	drm_atomic_helper_shutdown(drm);
-+	if (!priv)
-+		return;
-+
-+	drm_kms_helper_poll_fini(priv->drm);
-+	drm_atomic_helper_shutdown(priv->drm);
- }
- 
- static int meson_drv_probe(struct platform_device *pdev)
+ 		scsi_for_each_sg(command, sg, count, i) {
+ 			ccb->sglist[i].segbytes = sg_dma_len(sg);
+diff --git a/drivers/scsi/BusLogic.h b/drivers/scsi/BusLogic.h
+index 8d47e2c88d24..1a33a4b28d45 100644
+--- a/drivers/scsi/BusLogic.h
++++ b/drivers/scsi/BusLogic.h
+@@ -821,7 +821,7 @@ struct blogic_ccb {
+ 	unsigned char cdblen;				/* Byte 2 */
+ 	unsigned char sense_datalen;			/* Byte 3 */
+ 	u32 datalen;					/* Bytes 4-7 */
+-	void *data;					/* Bytes 8-11 */
++	u32 data;					/* Bytes 8-11 */
+ 	unsigned char:8;				/* Byte 12 */
+ 	unsigned char:8;				/* Byte 13 */
+ 	enum blogic_adapter_status adapter_status;	/* Byte 14 */
+-- 
+2.30.2
+
 
 
