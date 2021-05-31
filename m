@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FC039659D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B50B395E1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhEaQm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:42:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45938 "EHLO mail.kernel.org"
+        id S232115AbhEaNyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:54:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233605AbhEaOvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:51:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E44EB6192F;
-        Mon, 31 May 2021 13:58:14 +0000 (UTC)
+        id S232482AbhEaNfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:35:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FF2561448;
+        Mon, 31 May 2021 13:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469495;
-        bh=CIfVlU3+wV0uj2rS+MlMz+qHMLRWBkF6CLZxdql3ps0=;
+        s=korg; t=1622467531;
+        bh=DbpjfWwOX5w4DXwVz2QROu43Vb5DxDjYUSn+itNusMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFDmEmEnxX1+Klh3NTe7TiEUpBR/a5Gpbr2irQ6ThVyHCrhE18vcrypZYjHPxnqOI
-         PH9P7ySOs687KlxXN+9WVPjX/tSeyOONsVsZgzn2HPfUWN8v3qQhHTVROwMIbGBAAN
-         qaxLBikPNVIlTbKjdJ944AZziabFEz3dmv0Ag8Lg=
+        b=iGvvlqNcn6s/DZlxirqiOZL+6FRTBsKW8e3ChhkFdWRW4xFCv7/MZGuTthMK88tff
+         xbA8QveuVsTnCsDm+NcE9tReiDyasORsiiCPH+uTnhJPgj10Ud3FDMNk0iBFLfms31
+         0UkLia+GGYCK6//s1I2QDRywJL0NAQKqp3BfI1zQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leilk Liu <leilk.liu@mediatek.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 220/296] spi: take the SPI IO-mutex in the spi_set_cs_timing method
+Subject: [PATCH 4.19 099/116] net: mdio: thunder: Fix a double free issue in the .remove function
 Date:   Mon, 31 May 2021 15:14:35 +0200
-Message-Id: <20210531130711.230929777@linuxfoundation.org>
+Message-Id: <20210531130643.493455174@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leilk Liu <leilk.liu@mediatek.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit dc5fa590273890a8541ce6e999d606bfb2d73797 ]
+[ Upstream commit a93a0a15876d2a077a3bc260b387d2457a051f24 ]
 
-this patch takes the io_mutex to prevent an unprotected HW
-register modification in the set_cs_timing callback.
+'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+probe function. So it must not be freed explicitly or there will be a
+double free.
 
-Fixes: 4cea6b8cc34e ("spi: add power control when set_cs_timing")
-Signed-off-by: Leilk Liu <leilk.liu@mediatek.com>
-Link: https://lore.kernel.org/r/20210508060214.1485-1-leilk.liu@mediatek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Remove the incorrect 'mdiobus_free' in the remove function.
+
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/phy/mdio-thunder.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 8da4fe475b84..5495138c257e 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -3463,9 +3463,12 @@ int spi_set_cs_timing(struct spi_device *spi, struct spi_delay *setup,
+diff --git a/drivers/net/phy/mdio-thunder.c b/drivers/net/phy/mdio-thunder.c
+index 564616968cad..c0c922eff760 100644
+--- a/drivers/net/phy/mdio-thunder.c
++++ b/drivers/net/phy/mdio-thunder.c
+@@ -129,7 +129,6 @@ static void thunder_mdiobus_pci_remove(struct pci_dev *pdev)
+ 			continue;
  
- 	if (spi->controller->set_cs_timing &&
- 	    !(spi->cs_gpiod || gpio_is_valid(spi->cs_gpio))) {
-+		mutex_lock(&spi->controller->io_mutex);
-+
- 		if (spi->controller->auto_runtime_pm) {
- 			status = pm_runtime_get_sync(parent);
- 			if (status < 0) {
-+				mutex_unlock(&spi->controller->io_mutex);
- 				pm_runtime_put_noidle(parent);
- 				dev_err(&spi->controller->dev, "Failed to power device: %d\n",
- 					status);
-@@ -3476,11 +3479,13 @@ int spi_set_cs_timing(struct spi_device *spi, struct spi_delay *setup,
- 								hold, inactive);
- 			pm_runtime_mark_last_busy(parent);
- 			pm_runtime_put_autosuspend(parent);
--			return status;
- 		} else {
--			return spi->controller->set_cs_timing(spi, setup, hold,
-+			status = spi->controller->set_cs_timing(spi, setup, hold,
- 							      inactive);
- 		}
-+
-+		mutex_unlock(&spi->controller->io_mutex);
-+		return status;
+ 		mdiobus_unregister(bus->mii_bus);
+-		mdiobus_free(bus->mii_bus);
+ 		oct_mdio_writeq(0, bus->register_base + SMI_EN);
  	}
- 
- 	if ((setup && setup->unit == SPI_DELAY_UNIT_SCK) ||
+ 	pci_set_drvdata(pdev, NULL);
 -- 
 2.30.2
 
