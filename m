@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E00639656C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B623963C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234854AbhEaQfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:35:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40310 "EHLO mail.kernel.org"
+        id S234694AbhEaPed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232912AbhEaOrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF66761C8D;
-        Mon, 31 May 2021 13:55:54 +0000 (UTC)
+        id S233086AbhEaORk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:17:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7E8561416;
+        Mon, 31 May 2021 13:43:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469355;
-        bh=3sJWlWwJts/OZe86uPzAEUSOBxJPp9sIBwTodNo2VCs=;
+        s=korg; t=1622468624;
+        bh=VwB1v0Ir/EDDvDAd/knyzwsehag3a40nMAVmm/IYTJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NZ580y8UFqIsaPJtoWTjGwLizQ94Aj85AZyGGhk6rsVuq2IZzcgH1j6CraGolnuv1
-         RAKqTJDeN2iuAcrtB7RuN/BYZJhXgSWpxcbIB+mDCZK1lqdF/eDiGpKIcm4LXQng6r
-         k2NbKyjUUoFgw0WJaQ7F9Yto46aJrAOjuzisMJJw=
+        b=WUJj0hsB9WlEaOPq6eMwTFp9UomlxYoXdQV0jnimliswd1nfXkmOFaYwdOZfUf0F4
+         ZH4Gy2AWcKeZR+y3Ws2iGjb9uC1cxV0YOqF9OYtOB70EBi+ftF9pp+CbW/lH22q2Ej
+         ea7w+AlPok5ZWa0TIa//UbSa8H3shQXqV47pCKwA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 165/296] Revert "serial: max310x: pass return value of spi_register_driver"
+        stable@vger.kernel.org, stable@kernel.vger.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 063/177] net: usb: fix memory leak in smsc75xx_bind
 Date:   Mon, 31 May 2021 15:13:40 +0200
-Message-Id: <20210531130709.411875449@linuxfoundation.org>
+Message-Id: <20210531130650.078858716@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit b0a85abbe92e1a6f3e8580a4590fa7245de7090b ]
+commit 46a8b29c6306d8bbfd92b614ef65a47c900d8e70 upstream.
 
-This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
+Syzbot reported memory leak in smsc75xx_bind().
+The problem was is non-freed memory in case of
+errors after memory allocation.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+backtrace:
+  [<ffffffff84245b62>] kmalloc include/linux/slab.h:556 [inline]
+  [<ffffffff84245b62>] kzalloc include/linux/slab.h:686 [inline]
+  [<ffffffff84245b62>] smsc75xx_bind+0x7a/0x334 drivers/net/usb/smsc75xx.c:1460
+  [<ffffffff82b5b2e6>] usbnet_probe+0x3b6/0xc30 drivers/net/usb/usbnet.c:1728
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-This change did not properly unwind from the error condition, so it was
-not correct.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Acked-by: Jiri Slaby <jirislaby@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-11-gregkh@linuxfoundation.org
+Fixes: d0cad871703b ("smsc75xx: SMSC LAN75xx USB gigabit ethernet adapter driver")
+Cc: stable@kernel.vger.org
+Reported-and-tested-by: syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/usb/smsc75xx.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 1b61d26bb7af..93f69b66b896 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1518,10 +1518,10 @@ static int __init max310x_uart_init(void)
- 		return ret;
+--- a/drivers/net/usb/smsc75xx.c
++++ b/drivers/net/usb/smsc75xx.c
+@@ -1482,7 +1482,7 @@ static int smsc75xx_bind(struct usbnet *
+ 	ret = smsc75xx_wait_ready(dev, 0);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "device not ready in smsc75xx_bind\n");
+-		return ret;
++		goto err;
+ 	}
  
- #ifdef CONFIG_SPI_MASTER
--	ret = spi_register_driver(&max310x_spi_driver);
-+	spi_register_driver(&max310x_spi_driver);
- #endif
+ 	smsc75xx_init_mac_address(dev);
+@@ -1491,7 +1491,7 @@ static int smsc75xx_bind(struct usbnet *
+ 	ret = smsc75xx_reset(dev);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "smsc75xx_reset error %d\n", ret);
+-		return ret;
++		goto err;
+ 	}
  
--	return ret;
-+	return 0;
+ 	dev->net->netdev_ops = &smsc75xx_netdev_ops;
+@@ -1501,6 +1501,10 @@ static int smsc75xx_bind(struct usbnet *
+ 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
+ 	dev->net->max_mtu = MAX_SINGLE_PACKET_SIZE;
+ 	return 0;
++
++err:
++	kfree(pdata);
++	return ret;
  }
- module_init(max310x_uart_init);
  
--- 
-2.30.2
-
+ static void smsc75xx_unbind(struct usbnet *dev, struct usb_interface *intf)
 
 
