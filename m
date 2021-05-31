@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53E1396559
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F221239617C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhEaQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40318 "EHLO mail.kernel.org"
+        id S233567AbhEaOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233479AbhEaOrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E6F861C8E;
-        Mon, 31 May 2021 13:56:04 +0000 (UTC)
+        id S232897AbhEaN56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:57:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AC7861940;
+        Mon, 31 May 2021 13:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469365;
-        bh=eRBxc7NHp9jocJUg3QklbHyB/j/9smgc35aa0U9yAME=;
+        s=korg; t=1622468124;
+        bh=R7fGHLtuHqWMQLf1kTqQdOKEvzKXPfzIK9wJtXAntKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PYfkEIihU3ieB8Xz1n0aZfDCpQ1Jc0b1roJhdl3H/2Pbk6bEG7I9tAhGrM6dCOmM3
-         jSl4yEpfmmUbXlaFUWxF5XFiSeWxlYOoWQY7dtb4GG5/c0n0H6OoKEP2gaYUkihlZg
-         WtCCV+omVlMlIgMcU4DeGVj6YA+CjEpSf9dW0h2g=
+        b=JY9roNVD4HQr3VfMLHuUQALxnJP1blIIERakKrYVE/nCNkMNUgFden0nvV/czpXUK
+         uQFyGz2F8V5JxvQAjh2vzY7kYrEq8tud1Bf1EhgjAQanmlfP2uw4BUThJAnupuqNKS
+         h+zbYPKd2kYqcC1u8CWSj8unPKNIWXdsVkjoiwrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Shuang <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.12 135/296] tipc: skb_linearize the head skb when reassembling msgs
-Date:   Mon, 31 May 2021 15:13:10 +0200
-Message-Id: <20210531130708.427730238@linuxfoundation.org>
+        stable@vger.kernel.org, Hou Pu <houpu.main@gmail.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.10 126/252] nvmet-tcp: fix inline data size comparison in nvmet_tcp_queue_response
+Date:   Mon, 31 May 2021 15:13:11 +0200
+Message-Id: <20210531130702.293479967@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,95 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Hou Pu <houpu.main@gmail.com>
 
-commit b7df21cf1b79ab7026f545e7bf837bd5750ac026 upstream.
+commit 25df1acd2d36eb72b14c3d00f6b861b1e00b3aab upstream.
 
-It's not a good idea to append the frag skb to a skb's frag_list if
-the frag_list already has skbs from elsewhere, such as this skb was
-created by pskb_copy() where the frag_list was cloned (all the skbs
-in it were skb_get'ed) and shared by multiple skbs.
+Using "<=" instead "<" to compare inline data size.
 
-However, the new appended frag skb should have been only seen by the
-current skb. Otherwise, it will cause use after free crashes as this
-appended frag skb are seen by multiple skbs but it only got skb_get
-called once.
-
-The same thing happens with a skb updated by pskb_may_pull() with a
-skb_cloned skb. Li Shuang has reported quite a few crashes caused
-by this when doing testing over macvlan devices:
-
-  [] kernel BUG at net/core/skbuff.c:1970!
-  [] Call Trace:
-  []  skb_clone+0x4d/0xb0
-  []  macvlan_broadcast+0xd8/0x160 [macvlan]
-  []  macvlan_process_broadcast+0x148/0x150 [macvlan]
-  []  process_one_work+0x1a7/0x360
-  []  worker_thread+0x30/0x390
-
-  [] kernel BUG at mm/usercopy.c:102!
-  [] Call Trace:
-  []  __check_heap_object+0xd3/0x100
-  []  __check_object_size+0xff/0x16b
-  []  simple_copy_to_iter+0x1c/0x30
-  []  __skb_datagram_iter+0x7d/0x310
-  []  __skb_datagram_iter+0x2a5/0x310
-  []  skb_copy_datagram_iter+0x3b/0x90
-  []  tipc_recvmsg+0x14a/0x3a0 [tipc]
-  []  ____sys_recvmsg+0x91/0x150
-  []  ___sys_recvmsg+0x7b/0xc0
-
-  [] kernel BUG at mm/slub.c:305!
-  [] Call Trace:
-  []  <IRQ>
-  []  kmem_cache_free+0x3ff/0x400
-  []  __netif_receive_skb_core+0x12c/0xc40
-  []  ? kmem_cache_alloc+0x12e/0x270
-  []  netif_receive_skb_internal+0x3d/0xb0
-  []  ? get_rx_page_info+0x8e/0xa0 [be2net]
-  []  be_poll+0x6ef/0xd00 [be2net]
-  []  ? irq_exit+0x4f/0x100
-  []  net_rx_action+0x149/0x3b0
-
-  ...
-
-This patch is to fix it by linearizing the head skb if it has frag_list
-set in tipc_buf_append(). Note that we choose to do this before calling
-skb_unshare(), as __skb_linearize() will avoid skb_copy(). Also, we can
-not just drop the frag_list either as the early time.
-
-Fixes: 45c8b7b175ce ("tipc: allow non-linear first fragment buffer")
-Reported-by: Li Shuang <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bdaf13279192 ("nvmet-tcp: fix a segmentation fault during io parsing error")
+Signed-off-by: Hou Pu <houpu.main@gmail.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/nvme/target/tcp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -149,18 +149,13 @@ int tipc_buf_append(struct sk_buff **hea
- 		if (unlikely(head))
- 			goto err;
- 		*buf = NULL;
-+		if (skb_has_frag_list(frag) && __skb_linearize(frag))
-+			goto err;
- 		frag = skb_unshare(frag, GFP_ATOMIC);
- 		if (unlikely(!frag))
- 			goto err;
- 		head = *headbuf = frag;
- 		TIPC_SKB_CB(head)->tail = NULL;
--		if (skb_is_nonlinear(head)) {
--			skb_walk_frags(head, tail) {
--				TIPC_SKB_CB(head)->tail = tail;
--			}
--		} else {
--			skb_frag_list_init(head);
--		}
- 		return 0;
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -538,7 +538,7 @@ static void nvmet_tcp_queue_response(str
+ 		 * nvmet_req_init is completed.
+ 		 */
+ 		if (queue->rcv_state == NVMET_TCP_RECV_PDU &&
+-		    len && len < cmd->req.port->inline_data_size &&
++		    len && len <= cmd->req.port->inline_data_size &&
+ 		    nvme_is_write(cmd->req.cmd))
+ 			return;
  	}
- 
 
 
