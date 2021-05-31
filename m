@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5923961F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298AA395CDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234167AbhEaOtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:49:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36868 "EHLO mail.kernel.org"
+        id S232689AbhEaNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:39:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232770AbhEaOBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:01:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C546144C;
-        Mon, 31 May 2021 13:36:43 +0000 (UTC)
+        id S231907AbhEaN1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:27:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E05161370;
+        Mon, 31 May 2021 13:21:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468203;
-        bh=+BsTtVc6PdfMc7tMiicVr3+MQ3VK3Pq81j3/C0zPQWI=;
+        s=korg; t=1622467289;
+        bh=Lzrkg51/zdkICsxNGmS7m40Lh5JxWAu4KtGcjtG+1lo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m6uBKTNInp/onGOy05Ukn2C6A5Jc8jvrj3iKsAgKqfaUErMS/5KnYe4ZYgoF/SnrC
-         7eso2YlZfLzXjwflsJaB4ZDdDUS5wK9QxZ4tz+NLsKmsD/Mcx4S3KeBK/aVxKbkIsP
-         Z8++6JeHn6Kawi3D2IU3c4h0JMPPXUTb2E+4yhV8=
+        b=MLHPIAHXBLjJVteKMMy4RdZ7DkeQQWSKpTef1WQLOXfzVr7csXQIONnJSxmiQ1mp8
+         P5i93ugHHa8+RDkKLaxncSpZKcc0dRd+9jgCY+cvHR1O4XQJ5cwEUw8JYy55Gu/wP4
+         9G4OOVAWTMeWdLHozHaASvKG75Kh08AQUSc8pOBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.10 121/252] i2c: mediatek: Disable i2c start_en and clear intr_stat brfore reset
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 010/116] net: hso: fix control-request directions
 Date:   Mon, 31 May 2021 15:13:06 +0200
-Message-Id: <20210531130702.103473057@linuxfoundation.org>
+Message-Id: <20210531130640.493040506@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qii Wang <qii.wang@mediatek.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit fed1bd51a504eb96caa38b4f13ab138fc169ea75 upstream.
+commit 1a6e9a9c68c1f183872e4bcc947382111c2e04eb upstream.
 
-The i2c controller driver do dma reset after transfer timeout,
-but sometimes dma reset will trigger an unexpected DMA_ERR irq.
-It will cause the i2c controller to continuously send interrupts
-to the system and cause soft lock-up. So we need to disable i2c
-start_en and clear intr_stat to stop i2c controller before dma
-reset when transfer timeout.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-Fixes: aafced673c06("i2c: mediatek: move dma reset before i2c reset")
-Signed-off-by: Qii Wang <qii.wang@mediatek.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fix the tiocmset and rfkill requests which erroneously used
+usb_rcvctrlpipe().
+
+Fixes: 72dc1c096c70 ("HSO: add option hso driver")
+Cc: stable@vger.kernel.org      # 2.6.27
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/usb/hso.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -478,6 +478,11 @@ static void mtk_i2c_clock_disable(struct
- static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- {
- 	u16 control_reg;
-+	u16 intr_stat_reg;
-+
-+	mtk_i2c_writew(i2c, I2C_CHN_CLR_FLAG, OFFSET_START);
-+	intr_stat_reg = mtk_i2c_readw(i2c, OFFSET_INTR_STAT);
-+	mtk_i2c_writew(i2c, intr_stat_reg, OFFSET_INTR_STAT);
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -1703,7 +1703,7 @@ static int hso_serial_tiocmset(struct tt
+ 	spin_unlock_irqrestore(&serial->serial_lock, flags);
  
- 	if (i2c->dev_comp->apdma_sync) {
- 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
+ 	return usb_control_msg(serial->parent->usb,
+-			       usb_rcvctrlpipe(serial->parent->usb, 0), 0x22,
++			       usb_sndctrlpipe(serial->parent->usb, 0), 0x22,
+ 			       0x21, val, if_num, NULL, 0,
+ 			       USB_CTRL_SET_TIMEOUT);
+ }
+@@ -2450,7 +2450,7 @@ static int hso_rfkill_set_block(void *da
+ 	if (hso_dev->usb_gone)
+ 		rv = 0;
+ 	else
+-		rv = usb_control_msg(hso_dev->usb, usb_rcvctrlpipe(hso_dev->usb, 0),
++		rv = usb_control_msg(hso_dev->usb, usb_sndctrlpipe(hso_dev->usb, 0),
+ 				       enabled ? 0x82 : 0x81, 0x40, 0, 0, NULL, 0,
+ 				       USB_CTRL_SET_TIMEOUT);
+ 	mutex_unlock(&hso_dev->mutex);
 
 
