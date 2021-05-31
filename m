@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66132395D37
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B709396522
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhEaNm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:42:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33262 "EHLO mail.kernel.org"
+        id S234793AbhEaQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:24:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232467AbhEaN3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:29:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98FF96141E;
-        Mon, 31 May 2021 13:22:35 +0000 (UTC)
+        id S232233AbhEaOnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:43:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C0466191C;
+        Mon, 31 May 2021 13:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467356;
-        bh=ONFhqZotYwOTGryO8adXe6Fe90MUm7ufkRVFMThU7qs=;
+        s=korg; t=1622469260;
+        bh=Y882HNBr82OTL23SUJr6boE7FkGWUjsNDSEkPdh/7vg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hh3DUQO4w8ZU9SnyEDoU7OkgmPsrmgkHzDkmc4np+eCV2oP4BPPsrV41IxDbYQMFZ
-         5ULeUJlBZmJkxOmB9U2+EQCDgCJdL+Wb6BPorh/TxzVB9726RVLWl3+2DooFCHGvvG
-         pPAD++B7RikTpvbnTJdcm8HNGf8g0vrWIw2F6Isw=
+        b=yTLn2v41vHqwg2t/D+ULgl10iQI5NunsV719rda6LEt3QcegpUxQ1+HjIfqXDr+2v
+         U1l+73yCdFH66RDRNxcX1R2lY2ir7odEdFg74RYr3+ZbtMDGLaJVBShBW+t2Zepk4K
+         BzfgDNiyXitbP7vKz1tLpGkHhtQrcnfmoLK3E9aA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4.19 008/116] perf intel-pt: Fix transaction abort handling
+        stable@vger.kernel.org,
+        syzbot+71271244f206d17f6441@syzkaller.appspotmail.com,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH 5.12 129/296] KVM: X86: Fix warning caused by stale emulation context
 Date:   Mon, 31 May 2021 15:13:04 +0200
-Message-Id: <20210531130640.430978660@linuxfoundation.org>
+Message-Id: <20210531130708.232443333@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,103 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
-commit cb7987837c31b217b28089bbc78922d5c9187869 upstream.
+commit da6393cdd8aaa354b3a2437cd73ebb34cac958e3 upstream.
 
-When adding support for power events, some handling of FUP packets was
-unified. That resulted in breaking reporting of TSX aborts, by not
-considering the associated TIP packet. Fix that.
+Reported by syzkaller:
 
-Example:
+  WARNING: CPU: 7 PID: 10526 at linux/arch/x86/kvm//x86.c:7621 x86_emulate_instruction+0x41b/0x510 [kvm]
+  RIP: 0010:x86_emulate_instruction+0x41b/0x510 [kvm]
+  Call Trace:
+   kvm_mmu_page_fault+0x126/0x8f0 [kvm]
+   vmx_handle_exit+0x11e/0x680 [kvm_intel]
+   vcpu_enter_guest+0xd95/0x1b40 [kvm]
+   kvm_arch_vcpu_ioctl_run+0x377/0x6a0 [kvm]
+   kvm_vcpu_ioctl+0x389/0x630 [kvm]
+   __x64_sys_ioctl+0x8e/0xd0
+   do_syscall_64+0x3c/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-A machine that supports TSX is required. It will have flag "rtm". Kernel
-parameter tsx=on may be required.
+Commit 4a1e10d5b5d8 ("KVM: x86: handle hardware breakpoints during emulation())
+adds hardware breakpoints check before emulation the instruction and parts of
+emulation context initialization, actually we don't have the EMULTYPE_NO_DECODE flag
+here and the emulation context will not be reused. Commit c8848cee74ff ("KVM: x86:
+set ctxt->have_exception in x86_decode_insn()) triggers the warning because it
+catches the stale emulation context has #UD, however, it is not during instruction
+decoding which should result in EMULATION_FAILED. This patch fixes it by moving
+the second part emulation context initialization into init_emulate_ctxt() and
+before hardware breakpoints check. The ctxt->ud will be dropped by a follow-up
+patch.
 
- # for w in `cat /proc/cpuinfo | grep -m1 flags `;do echo $w | grep rtm ; done
- rtm
+syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
 
-Test program:
-
- #include <stdio.h>
- #include <immintrin.h>
-
- int main()
- {
-        int x = 0;
-
-        if (_xbegin() == _XBEGIN_STARTED) {
-                x = 1;
-                _xabort(1);
-        } else {
-                printf("x = %d\n", x);
-        }
-        return 0;
- }
-
-Compile with -mrtm i.e.
-
- gcc -Wall -Wextra -mrtm xabort.c -o xabort
-
-Record:
-
- perf record -e intel_pt/cyc/u --filter 'filter main @ ./xabort' ./xabort
-
-Before:
-
- # perf script --itrace=be -F+flags,+addr,-period,-event --ns
-          xabort  1478 [007] 92161.431348552:   tr strt                             0 [unknown] ([unknown]) =>           400b6d main+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431348624:   jmp                            400b96 main+0x29 (/root/xabort) =>           400bae main+0x41 (/root/xabort)
-          xabort  1478 [007] 92161.431348624:   return                         400bb4 main+0x47 (/root/xabort) =>           400b87 main+0x1a (/root/xabort)
-          xabort  1478 [007] 92161.431348637:   jcc                            400b8a main+0x1d (/root/xabort) =>           400b98 main+0x2b (/root/xabort)
-          xabort  1478 [007] 92161.431348644:   tr end  call                   400ba9 main+0x3c (/root/xabort) =>           40f690 printf+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431360859:   tr strt                             0 [unknown] ([unknown]) =>           400bae main+0x41 (/root/xabort)
-          xabort  1478 [007] 92161.431360882:   tr end  return                 400bb4 main+0x47 (/root/xabort) =>           401139 __libc_start_main+0x309 (/root/xabort)
-
-After:
-
- # perf script --itrace=be -F+flags,+addr,-period,-event --ns
-          xabort  1478 [007] 92161.431348552:   tr strt                             0 [unknown] ([unknown]) =>           400b6d main+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431348624:   tx abrt                        400b93 main+0x26 (/root/xabort) =>           400b87 main+0x1a (/root/xabort)
-          xabort  1478 [007] 92161.431348637:   jcc                            400b8a main+0x1d (/root/xabort) =>           400b98 main+0x2b (/root/xabort)
-          xabort  1478 [007] 92161.431348644:   tr end  call                   400ba9 main+0x3c (/root/xabort) =>           40f690 printf+0x0 (/root/xabort)
-          xabort  1478 [007] 92161.431360859:   tr strt                             0 [unknown] ([unknown]) =>           400bae main+0x41 (/root/xabort)
-          xabort  1478 [007] 92161.431360882:   tr end  return                 400bb4 main+0x47 (/root/xabort) =>           401139 __libc_start_main+0x309 (/root/xabort)
-
-Fixes: a472e65fc490a ("perf intel-pt: Add decoder support for ptwrite and power event packets")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20210519074515.9262-2-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
+Fixes: 4a1e10d5b5d8 (KVM: x86: handle hardware breakpoints during emulation)
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <1622160097-37633-1-git-send-email-wanpengli@tencent.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kvm/x86.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -1063,6 +1063,8 @@ static bool intel_pt_fup_event(struct in
- 		decoder->set_fup_tx_flags = false;
- 		decoder->tx_flags = decoder->fup_tx_flags;
- 		decoder->state.type = INTEL_PT_TRANSACTION;
-+		if (decoder->fup_tx_flags & INTEL_PT_ABORT_TX)
-+			decoder->state.type |= INTEL_PT_BRANCH;
- 		decoder->state.from_ip = decoder->ip;
- 		decoder->state.to_ip = 0;
- 		decoder->state.flags = decoder->fup_tx_flags;
-@@ -1129,8 +1131,10 @@ static int intel_pt_walk_fup(struct inte
- 			return 0;
- 		if (err == -EAGAIN ||
- 		    intel_pt_fup_with_nlip(decoder, &intel_pt_insn, ip, err)) {
-+			bool no_tip = decoder->pkt_state != INTEL_PT_STATE_FUP;
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7115,6 +7115,11 @@ static void init_emulate_ctxt(struct kvm
+ 	BUILD_BUG_ON(HF_SMM_MASK != X86EMUL_SMM_MASK);
+ 	BUILD_BUG_ON(HF_SMM_INSIDE_NMI_MASK != X86EMUL_SMM_INSIDE_NMI_MASK);
+ 
++	ctxt->interruptibility = 0;
++	ctxt->have_exception = false;
++	ctxt->exception.vector = -1;
++	ctxt->perm_ok = false;
 +
- 			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
--			if (intel_pt_fup_event(decoder))
-+			if (intel_pt_fup_event(decoder) && no_tip)
- 				return 0;
- 			return -EAGAIN;
- 		}
+ 	init_decode_cache(ctxt);
+ 	vcpu->arch.emulate_regs_need_sync_from_vcpu = false;
+ }
+@@ -7450,11 +7455,6 @@ int x86_decode_emulated_instruction(stru
+ 	    kvm_vcpu_check_breakpoint(vcpu, &r))
+ 		return r;
+ 
+-	ctxt->interruptibility = 0;
+-	ctxt->have_exception = false;
+-	ctxt->exception.vector = -1;
+-	ctxt->perm_ok = false;
+-
+ 	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+ 
+ 	r = x86_decode_insn(ctxt, insn, insn_len);
 
 
