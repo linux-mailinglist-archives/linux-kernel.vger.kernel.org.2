@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969713962EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676063963FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234394AbhEaPCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:02:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37788 "EHLO mail.kernel.org"
+        id S232029AbhEaPnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233136AbhEaOGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:06:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5503F61965;
-        Mon, 31 May 2021 13:39:02 +0000 (UTC)
+        id S233287AbhEaOXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:23:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F809619D0;
+        Mon, 31 May 2021 13:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468342;
-        bh=Ia3nPDGKWRBoEz9tcmGdK7lrM14lqOyjrfghGEnu1YU=;
+        s=korg; t=1622468759;
+        bh=lGqqaLBNP/9QRAroFbTLl3k3cLDdzW2qBzFiLQ2qiP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kTi3mrhXH0GsJlGKjFcPsv5CW4Khs96oO1/C9PelQPYWV/oUGijAZFH4AODyns+It
-         BuNPhxfp0bLfqJqVllwh5XV0j/eNVAX1gWQg+ns1sdt19ypXc8tNUOBGhwPHGLEm0n
-         3lisdc9r5yDgv6mJNGo4xb6+ZYTd/VE8gpyPv+no=
+        b=e6ZBiu5jkc6mDzo1M3xkJ+TOydAH+xQjUR+9zZgu+bRchd0OI/bxoUKI6bexELeQZ
+         +Dv/oSK+7JcJzvEmKIHOuJdc9ey0PdExtlKxN/rZzFrgj1wqbcD0JtNzlB0knAqg5p
+         Mf26OTKtVGVxkLVCGu9JdSm3N5aqJtWH7BbTHHqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Alaa Emad <alaaemadhossney.ae@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 208/252] net: sched: fix tx action rescheduling issue during deactivation
+Subject: [PATCH 5.4 116/177] media: gspca: mt9m111: Check write_bridge for timeout
 Date:   Mon, 31 May 2021 15:14:33 +0200
-Message-Id: <20210531130705.087684659@linuxfoundation.org>
+Message-Id: <20210531130651.918846570@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,171 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+From: Alaa Emad <alaaemadhossney.ae@gmail.com>
 
-[ Upstream commit 102b55ee92f9fda4dde7a45d2b20538e6e3e3d1e ]
+[ Upstream commit e932f5b458eee63d013578ea128b9ff8ef5f5496 ]
 
-Currently qdisc_run() checks the STATE_DEACTIVATED of lockless
-qdisc before calling __qdisc_run(), which ultimately clear the
-STATE_MISSED when all the skb is dequeued. If STATE_DEACTIVATED
-is set before clearing STATE_MISSED, there may be rescheduling
-of net_tx_action() at the end of qdisc_run_end(), see below:
+If m5602_write_bridge times out, it will return a negative error value.
+So properly check for this and handle the error correctly instead of
+just ignoring it.
 
-CPU0(net_tx_atcion)  CPU1(__dev_xmit_skb)  CPU2(dev_deactivate)
-          .                   .                     .
-          .            set STATE_MISSED             .
-          .           __netif_schedule()            .
-          .                   .           set STATE_DEACTIVATED
-          .                   .                qdisc_reset()
-          .                   .                     .
-          .<---------------   .              synchronize_net()
-clear __QDISC_STATE_SCHED  |  .                     .
-          .                |  .                     .
-          .                |  .            some_qdisc_is_busy()
-          .                |  .               return *false*
-          .                |  .                     .
-  test STATE_DEACTIVATED   |  .                     .
-__qdisc_run() *not* called |  .                     .
-          .                |  .                     .
-   test STATE_MISS         |  .                     .
- __netif_schedule()--------|  .                     .
-          .                   .                     .
-          .                   .                     .
-
-__qdisc_run() is not called by net_tx_atcion() in CPU0 because
-CPU2 has set STATE_DEACTIVATED flag during dev_deactivate(), and
-STATE_MISSED is only cleared in __qdisc_run(), __netif_schedule
-is called at the end of qdisc_run_end(), causing tx action
-rescheduling problem.
-
-qdisc_run() called by net_tx_action() runs in the softirq context,
-which should has the same semantic as the qdisc_run() called by
-__dev_xmit_skb() protected by rcu_read_lock_bh(). And there is a
-synchronize_net() between STATE_DEACTIVATED flag being set and
-qdisc_reset()/some_qdisc_is_busy in dev_deactivate(), we can safely
-bail out for the deactived lockless qdisc in net_tx_action(), and
-qdisc_reset() will reset all skb not dequeued yet.
-
-So add the rcu_read_lock() explicitly to protect the qdisc_run()
-and do the STATE_DEACTIVATED checking in net_tx_action() before
-calling qdisc_run_begin(). Another option is to do the checking in
-the qdisc_run_end(), but it will add unnecessary overhead for
-non-tx_action case, because __dev_queue_xmit() will not see qdisc
-with STATE_DEACTIVATED after synchronize_net(), the qdisc with
-STATE_DEACTIVATED can only be seen by net_tx_action() because of
-__netif_schedule().
-
-The STATE_DEACTIVATED checking in qdisc_run() is to avoid race
-between net_tx_action() and qdisc_reset(), see:
-commit d518d2ed8640 ("net/sched: fix race between deactivation
-and dequeue for NOLOCK qdisc"). As the bailout added above for
-deactived lockless qdisc in net_tx_action() provides better
-protection for the race without calling qdisc_run() at all, so
-remove the STATE_DEACTIVATED checking in qdisc_run().
-
-After qdisc_reset(), there is no skb in qdisc to be dequeued, so
-clear the STATE_MISSED in dev_reset_queue() too.
-
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-V8: Clearing STATE_MISSED before calling __netif_schedule() has
-    avoid the endless rescheduling problem, but there may still
-    be a unnecessary rescheduling, so adjust the commit log.
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-62-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/pkt_sched.h |  7 +------
- net/core/dev.c          | 26 ++++++++++++++++++++++----
- net/sched/sch_generic.c |  4 +++-
- 3 files changed, 26 insertions(+), 11 deletions(-)
+ drivers/media/usb/gspca/m5602/m5602_mt9m111.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index 4ed32e6b0201..2be90a54a404 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -123,12 +123,7 @@ void __qdisc_run(struct Qdisc *q);
- static inline void qdisc_run(struct Qdisc *q)
+diff --git a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
+index 50481dc928d0..bf1af6ed9131 100644
+--- a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
++++ b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
+@@ -195,7 +195,7 @@ static const struct v4l2_ctrl_config mt9m111_greenbal_cfg = {
+ int mt9m111_probe(struct sd *sd)
  {
- 	if (qdisc_run_begin(q)) {
--		/* NOLOCK qdisc must check 'state' under the qdisc seqlock
--		 * to avoid racing with dev_qdisc_reset()
--		 */
--		if (!(q->flags & TCQ_F_NOLOCK) ||
--		    likely(!test_bit(__QDISC_STATE_DEACTIVATED, &q->state)))
--			__qdisc_run(q);
-+		__qdisc_run(q);
- 		qdisc_run_end(q);
- 	}
- }
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 2f17a4ac82f0..76a932c52255 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4910,25 +4910,43 @@ static __latent_entropy void net_tx_action(struct softirq_action *h)
- 		sd->output_queue_tailp = &sd->output_queue;
- 		local_irq_enable();
+ 	u8 data[2] = {0x00, 0x00};
+-	int i;
++	int i, err;
+ 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
  
-+		rcu_read_lock();
-+
- 		while (head) {
- 			struct Qdisc *q = head;
- 			spinlock_t *root_lock = NULL;
- 
- 			head = head->next_sched;
- 
--			if (!(q->flags & TCQ_F_NOLOCK)) {
--				root_lock = qdisc_lock(q);
--				spin_lock(root_lock);
--			}
- 			/* We need to make sure head->next_sched is read
- 			 * before clearing __QDISC_STATE_SCHED
- 			 */
- 			smp_mb__before_atomic();
-+
-+			if (!(q->flags & TCQ_F_NOLOCK)) {
-+				root_lock = qdisc_lock(q);
-+				spin_lock(root_lock);
-+			} else if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED,
-+						     &q->state))) {
-+				/* There is a synchronize_net() between
-+				 * STATE_DEACTIVATED flag being set and
-+				 * qdisc_reset()/some_qdisc_is_busy() in
-+				 * dev_deactivate(), so we can safely bail out
-+				 * early here to avoid data race between
-+				 * qdisc_deactivate() and some_qdisc_is_busy()
-+				 * for lockless qdisc.
-+				 */
-+				clear_bit(__QDISC_STATE_SCHED, &q->state);
-+				continue;
-+			}
-+
- 			clear_bit(__QDISC_STATE_SCHED, &q->state);
- 			qdisc_run(q);
- 			if (root_lock)
- 				spin_unlock(root_lock);
+ 	if (force_sensor) {
+@@ -213,15 +213,17 @@ int mt9m111_probe(struct sd *sd)
+ 	/* Do the preinit */
+ 	for (i = 0; i < ARRAY_SIZE(preinit_mt9m111); i++) {
+ 		if (preinit_mt9m111[i][0] == BRIDGE) {
+-			m5602_write_bridge(sd,
+-				preinit_mt9m111[i][1],
+-				preinit_mt9m111[i][2]);
++			err = m5602_write_bridge(sd,
++					preinit_mt9m111[i][1],
++					preinit_mt9m111[i][2]);
+ 		} else {
+ 			data[0] = preinit_mt9m111[i][2];
+ 			data[1] = preinit_mt9m111[i][3];
+-			m5602_write_sensor(sd,
+-				preinit_mt9m111[i][1], data, 2);
++			err = m5602_write_sensor(sd,
++					preinit_mt9m111[i][1], data, 2);
  		}
-+
-+		rcu_read_unlock();
++		if (err < 0)
++			return err;
  	}
  
- 	xfrm_dev_backlog(sd);
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 8c6b97cc5e41..e6844d3567ca 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1177,8 +1177,10 @@ static void dev_reset_queue(struct net_device *dev,
- 	qdisc_reset(qdisc);
- 
- 	spin_unlock_bh(qdisc_lock(qdisc));
--	if (nolock)
-+	if (nolock) {
-+		clear_bit(__QDISC_STATE_MISSED, &qdisc->state);
- 		spin_unlock_bh(&qdisc->seqlock);
-+	}
- }
- 
- static bool some_qdisc_is_busy(struct net_device *dev)
+ 	if (m5602_read_sensor(sd, MT9M111_SC_CHIPVER, data, 2))
 -- 
 2.30.2
 
