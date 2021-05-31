@@ -2,148 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36F639559E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5913955A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhEaGvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 02:51:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21176 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230107AbhEaGu5 (ORCPT
+        id S230206AbhEaGxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhEaGxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 02:50:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622443758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Yc0uSlr7grz8BAG5Bx+sZyGCLVXp2CTrZfFPky/9/w=;
-        b=gZVFTso8CQ2qC9cp2DRumIL1/lDDCAD/G+S+iDvtWR5G1En6mx/UoSEhO3a0IhK8bX5xS6
-        xLqV8Pv3rWdpPYHk1iBILTEu4XimGqlDbuoQUf9EZBap93OJmycxWkgWstnKTarzGvOkqz
-        KzGnaq0iTEj1oiyvIh7399ScoIymVOo=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-197-l6_JO9dBN2iHbZtCYobZ8A-1; Mon, 31 May 2021 02:49:16 -0400
-X-MC-Unique: l6_JO9dBN2iHbZtCYobZ8A-1
-Received: by mail-pf1-f197.google.com with SMTP id g21-20020aa787550000b02902db9841d2a1so5399050pfo.15
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 23:49:16 -0700 (PDT)
+        Mon, 31 May 2021 02:53:04 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8617AC061574;
+        Sun, 30 May 2021 23:51:24 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id v5so13622954ljg.12;
+        Sun, 30 May 2021 23:51:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pGbvjsQ37+jhwoTwXSRVtiv0VjHlEBl/iAsUrS7UtXI=;
+        b=hXg5TLxR35V+P8DOvRVcEG4fZVvvgkMDgSuSOBMcnTn80GvFnFcgszCDhOxSY77mw/
+         LUSPlemcexvlbiNL1snPeDN9CvhQXvvrHzVgt79+eJNG8hgV8M8qETubw6zHUNny+pAu
+         xFHMP0u5g6C6hsq77JSYrj+99H6ZLvxNrY41Kw5Ak3ooMouzL4KFS1wprWhfU9wZ2FE2
+         2z+deGsQm+N65n1+0wqxNEmg8sCDq8Fzo8w8oHVUP7jDRPkPGUpgSqmeBd5Z6uZrfvzF
+         GyxJPIuBIccSc0P1C6S1Z5Q3qAZAIvXdGSVXloijnHOGft7zD5mwe69o70ifUlIg1eQt
+         yW3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=6Yc0uSlr7grz8BAG5Bx+sZyGCLVXp2CTrZfFPky/9/w=;
-        b=kIwhgSwOo5OhVOn7jMRpE413F1+JbkqhXwz28YfyGptRg4TntKZCL7BIQ8S3R3TN2z
-         wBgbCjQbzkZ+coXTScQ0tYWaNEcGVp7b1Helq9aszN7jwcaPzFdOlP7g5nBALcsL6V/c
-         cjgadGJ/Pyx/n5LsnTYqhARA6vEU/anGSDxkzlqwA4b9ZBjM2oZynY5Bon2k7sGdi22z
-         M/iz1L3MwVG4xXuFRiLBpn+nZKoct2FGKrMo94cmR98QUbB48jQXjbHIWfTVNBzp0QmW
-         vglQVQZ12FS0We/fo5d8rB/NhgHqQJffOd76krSKEzNLhDxPl87WNE1XgN17r5U3HpFW
-         9G2A==
-X-Gm-Message-State: AOAM531agD9N5ZNjiLqtSD1//Hnazh2+gUMe1szUTS3fbPJSqbPI47o2
-        4iWA9+ADeIOeh/nQJC3yYpMH94lBDi7J4yYPFTV6HeuJJzCIpglGZZ7nYhKWVae4AH72qcBincu
-        V+4rWOc6hQBo2MjAslNjoCy9f3aVjHMpALtC9E2XDIiy+Bfsqz2/c9rDDf5hVXb+kOjqKm/YpvT
-        JP
-X-Received: by 2002:a17:90b:3796:: with SMTP id mz22mr1584926pjb.177.1622443755448;
-        Sun, 30 May 2021 23:49:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9RAl2ySCS8IqAypdqHE7XJCr0ttp2qTK+ufr0FDlpClMk1kWxyYqhd7HsscFqocSEmZPnrg==
-X-Received: by 2002:a17:90b:3796:: with SMTP id mz22mr1584900pjb.177.1622443755124;
-        Sun, 30 May 2021 23:49:15 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id o139sm2519738pfd.96.2021.05.30.23.49.12
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pGbvjsQ37+jhwoTwXSRVtiv0VjHlEBl/iAsUrS7UtXI=;
+        b=rht8F4vdlEqimqwJJA8dNOrHrl29st6fkrYPy7WZX/64H5RwzjeA8FU7wPzwy6rQnC
+         kmtmQLzwGYjY7s0jgSHbhJg+vI9fFkgcSQh0qrJYRAHLA3L9+m/l9G5C5Nq0Qb3CCLRs
+         uOJm3HiV5JTJBJGSP8GD0xhkAD5AQyl5kAKFUZBQpDNXqmX4Mxy4nZR/p9h/euLblC+y
+         31U5lBVjgjJh5jd4vIPLY6tLIVLHx4flhsvzQbrCIqHwDrwtyE3WzjD66Vq4FZuKKE7Y
+         RXE3Zgcsbx3AEJqy87POC6NkZ1ZNSSqCSIBTMeDIFZnB4LBvNKNnlju0Pn/FD/06N69x
+         l2SA==
+X-Gm-Message-State: AOAM532165oNvz1WGLt+T2DVAkocl6kV2CUoGSLYxsKEW94cg2XIkOoL
+        vwbMvpdm0DcD+3KhHw58X9I=
+X-Google-Smtp-Source: ABdhPJxjBVD5611rqLkegv8AKexDzJznggK21Mrdxoh24WU8L/02VVAqivz6BhHz4YuOiypc0whS5A==
+X-Received: by 2002:a2e:b0d6:: with SMTP id g22mr15634459ljl.349.1622443882778;
+        Sun, 30 May 2021 23:51:22 -0700 (PDT)
+Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id 12sm1477053lju.41.2021.05.30.23.51.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 May 2021 23:49:14 -0700 (PDT)
-Subject: Re: [PATCH v3] virtio-net: Add validation for used length
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        kuba@kernel.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210528121157.105-1-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <49ab3d41-c5d8-a49d-3ff4-28ebfdba0181@redhat.com>
-Date:   Mon, 31 May 2021 14:49:07 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Sun, 30 May 2021 23:51:22 -0700 (PDT)
+Subject: Re: [PATCH v2 11/18] dmaengine: ti: k3-psil-j721e: Add entry for
+ CSI2RX
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <20210526152308.16525-12-p.yadav@ti.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Message-ID: <916ef8c9-e444-afa4-d544-8fa672690fdb@gmail.com>
+Date:   Mon, 31 May 2021 09:51:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210528121157.105-1-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210526152308.16525-12-p.yadav@ti.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-ÔÚ 2021/5/28 ÏÂÎç8:11, Xie Yongji Ð´µÀ:
-> This adds validation for used length (might come
-> from an untrusted device) to avoid data corruption
-> or loss.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+
+On 26/05/2021 18:23, Pratyush Yadav wrote:
+> The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
+> have up to 32 threads but the current driver only supports using one. So
+> add an entry for that one thread.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> 
 > ---
->   drivers/net/virtio_net.c | 28 +++++++++++++++++++++-------
->   1 file changed, 21 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 073fec4c0df1..01f15b65824c 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -732,6 +732,17 @@ static struct sk_buff *receive_small(struct net_device *dev,
->   
->   	rcu_read_lock();
->   	xdp_prog = rcu_dereference(rq->xdp_prog);
-> +	if (unlikely(len > GOOD_PACKET_LEN)) {
-> +		pr_debug("%s: rx error: len %u exceeds max size %d\n",
-> +			 dev->name, len, GOOD_PACKET_LEN);
-> +		dev->stats.rx_length_errors++;
-> +		if (xdp_prog)
-> +			goto err_xdp;
-> +
-> +		rcu_read_unlock();
-> +		put_page(page);
-> +		return NULL;
+> 
+> Changes in v2:
+> - Add all 64 threads, instead of having only the one thread being
+>   currently used by the driver.
+
+How many threads CSI2RX have? 32 (as per commit message) or 64? If I
+recall right, it is 32.
+
+> 
+>  drivers/dma/ti/k3-psil-j721e.c | 73 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+> 
+> diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
+> index 7580870ed746..34e3fc565a37 100644
+> --- a/drivers/dma/ti/k3-psil-j721e.c
+> +++ b/drivers/dma/ti/k3-psil-j721e.c
+> @@ -58,6 +58,14 @@
+>  		},					\
+>  	}
+>  
+> +#define PSIL_CSI2RX(x)					\
+> +	{						\
+> +		.thread_id = x,				\
+> +		.ep_config = {				\
+> +			.ep_type = PSIL_EP_NATIVE,	\
+> +		},					\
 > +	}
->   	if (xdp_prog) {
->   		struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
->   		struct xdp_frame *xdpf;
-> @@ -888,6 +899,16 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   
->   	rcu_read_lock();
->   	xdp_prog = rcu_dereference(rq->xdp_prog);
-> +	if (unlikely(len > truesize)) {
-> +		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-> +			 dev->name, len, (unsigned long)ctx);
-> +		dev->stats.rx_length_errors++;
-> +		if (xdp_prog)
-> +			goto err_xdp;
 > +
-> +		rcu_read_unlock();
-> +		goto err_skb;
-> +	}
+>  /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
+>  static struct psil_ep j721e_src_ep_map[] = {
+>  	/* SA2UL */
+> @@ -138,6 +146,71 @@ static struct psil_ep j721e_src_ep_map[] = {
+>  	PSIL_PDMA_XY_PKT(0x4707),
+>  	PSIL_PDMA_XY_PKT(0x4708),
+>  	PSIL_PDMA_XY_PKT(0x4709),
+> +	/* CSI2RX */
+> +	PSIL_CSI2RX(0x4940),
+> +	PSIL_CSI2RX(0x4941),
+> +	PSIL_CSI2RX(0x4942),
+> +	PSIL_CSI2RX(0x4943),
+> +	PSIL_CSI2RX(0x4944),
+> +	PSIL_CSI2RX(0x4945),
+> +	PSIL_CSI2RX(0x4946),
+> +	PSIL_CSI2RX(0x4947),
+> +	PSIL_CSI2RX(0x4948),
+> +	PSIL_CSI2RX(0x4949),
+> +	PSIL_CSI2RX(0x494a),
+> +	PSIL_CSI2RX(0x494b),
+> +	PSIL_CSI2RX(0x494c),
+> +	PSIL_CSI2RX(0x494d),
+> +	PSIL_CSI2RX(0x494e),
+> +	PSIL_CSI2RX(0x494f),
+> +	PSIL_CSI2RX(0x4950),
+> +	PSIL_CSI2RX(0x4951),
+> +	PSIL_CSI2RX(0x4952),
+> +	PSIL_CSI2RX(0x4953),
+> +	PSIL_CSI2RX(0x4954),
+> +	PSIL_CSI2RX(0x4955),
+> +	PSIL_CSI2RX(0x4956),
+> +	PSIL_CSI2RX(0x4957),
+> +	PSIL_CSI2RX(0x4958),
+> +	PSIL_CSI2RX(0x4959),
+> +	PSIL_CSI2RX(0x495a),
+> +	PSIL_CSI2RX(0x495b),
+> +	PSIL_CSI2RX(0x495c),
+> +	PSIL_CSI2RX(0x495d),
+> +	PSIL_CSI2RX(0x495e),
+> +	PSIL_CSI2RX(0x495f),
+> +	PSIL_CSI2RX(0x4960),
+> +	PSIL_CSI2RX(0x4961),
+> +	PSIL_CSI2RX(0x4962),
+> +	PSIL_CSI2RX(0x4963),
+> +	PSIL_CSI2RX(0x4964),
+> +	PSIL_CSI2RX(0x4965),
+> +	PSIL_CSI2RX(0x4966),
+> +	PSIL_CSI2RX(0x4967),
+> +	PSIL_CSI2RX(0x4968),
+> +	PSIL_CSI2RX(0x4969),
+> +	PSIL_CSI2RX(0x496a),
+> +	PSIL_CSI2RX(0x496b),
+> +	PSIL_CSI2RX(0x496c),
+> +	PSIL_CSI2RX(0x496d),
+> +	PSIL_CSI2RX(0x496e),
+> +	PSIL_CSI2RX(0x496f),
+> +	PSIL_CSI2RX(0x4970),
+> +	PSIL_CSI2RX(0x4971),
+> +	PSIL_CSI2RX(0x4972),
+> +	PSIL_CSI2RX(0x4973),
+> +	PSIL_CSI2RX(0x4974),
+> +	PSIL_CSI2RX(0x4975),
+> +	PSIL_CSI2RX(0x4976),
+> +	PSIL_CSI2RX(0x4977),
+> +	PSIL_CSI2RX(0x4978),
+> +	PSIL_CSI2RX(0x4979),
+> +	PSIL_CSI2RX(0x497a),
+> +	PSIL_CSI2RX(0x497b),
+> +	PSIL_CSI2RX(0x497c),
+> +	PSIL_CSI2RX(0x497d),
+> +	PSIL_CSI2RX(0x497e),
+> +	PSIL_CSI2RX(0x497f),
+>  	/* CPSW9 */
+>  	PSIL_ETHERNET(0x4a00),
+>  	/* CPSW0 */
+> 
 
-
-Patch looks correct but I'd rather not bother XDP here. It would be 
-better if we just do the check before rcu_read_lock() and use err_skb 
-directly() to avoid RCU/XDP stuffs.
-
-Thanks
-
-
->   	if (xdp_prog) {
->   		struct xdp_frame *xdpf;
->   		struct page *xdp_page;
-> @@ -1012,13 +1033,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   	}
->   	rcu_read_unlock();
->   
-> -	if (unlikely(len > truesize)) {
-> -		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-> -			 dev->name, len, (unsigned long)ctx);
-> -		dev->stats.rx_length_errors++;
-> -		goto err_skb;
-> -	}
-> -
->   	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
->   			       metasize, !!headroom);
->   	curr_skb = head_skb;
-
+-- 
+PÃ©ter
