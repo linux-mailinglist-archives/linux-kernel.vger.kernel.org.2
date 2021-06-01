@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB72E397C6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B84397C73
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235081AbhFAWb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:31:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235025AbhFAWbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:31:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AA72E613D0;
-        Tue,  1 Jun 2021 22:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622586604;
-        bh=2rj5jU+vp+4LP/aYOfB4WlwrY2qxKktHVYHjCSZEuHA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hvSU90Zl9Un4jdScYE0HcunmJu45QWVeo7hlM04HWygmwm0UkJFE366I6+2HPfbjj
-         2SrqAVsh+ft0jQi2ttAxudzA5ccatGT5rQjYspJj7t5Zvd+bfJS71j7zZTOSOD+bgU
-         5/nR3BAc0pwR2qIyrPmdywpy95TRqdm1Jw1Es3hxYPquxYNBa2evrTPyB418QZEElC
-         v5DwalEBKvHiY7FUqAh9AQfqUvTRaWY+0+E/5rru2aOjkRinUyiEekAaOewB7stSNj
-         Em+RYZva6M+VJ8GsDjQkasD2P7CmBIVgm6G3pf5lZ7o02c/5BzanSQBgsb5CKqo+D/
-         r8ehNZlDCl8HQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A58C0609F8;
-        Tue,  1 Jun 2021 22:30:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235007AbhFAWcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234890AbhFAWcs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:32:48 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FD4C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 15:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=JfQxsQSwLRkTvVCqQ194WGxZnDo+4CsYEwA+VphB24o=; b=ozU2SH19tsz7HwfRUL5adVrx4L
+        tyDmsWrq76+cKslv/RYS56QyuYDAx6OMts1HbAsxz5LNsaFXz22+poNrBmb6pIT54ewtuhBtR0x37
+        GUTvPqC3yU1tddRn9Nh1EcNkCYMDJyY3vwzNdKjEaLWa4vldEB50Bw9w5bqZkxxfVROuqSC5tJ3aT
+        at1/5AQ2To12uj8V38OZVZM6P1XERaqzxn1DSDn0m93Cwikji4nfHzJYFbW192hXkMB7Ax1j8mUO0
+        BBbNW7rEMhUM0khhl1Y5E+tqoM3AZC4aVL34GU/frcto/mWcP+ChSgtgvkN8NNLJzTDxEOoz9GYAU
+        JN051X1w==;
+Received: from [2601:1c0:6280:3f0::ce7d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1loCuf-0012wm-O7; Tue, 01 Jun 2021 22:31:05 +0000
+Subject: Re: [PATCH] Documentation/submitting-patches: Document RESEND tag on
+ patches
+To:     Jonathan Corbet <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+References: <20201217183756.GE23634@zn.tnic> <20210413113834.GE16519@zn.tnic>
+ <87pmyxsxsy.fsf@meer.lwn.net> <20210415060505.GC6318@zn.tnic>
+ <YLT0MjAIO/8u4cjY@zn.tnic> <87zgw98blq.fsf@meer.lwn.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <452a0c53-8dae-870b-fd7b-807ade28701c@infradead.org>
+Date:   Tue, 1 Jun 2021 15:31:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] r8152: support pauseparam of ethtool_ops
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162258660467.12532.6997577324265829721.git-patchwork-notify@kernel.org>
-Date:   Tue, 01 Jun 2021 22:30:04 +0000
-References: <1394712342-15778-366-Taiwan-albertk@realtek.com>
-In-Reply-To: <1394712342-15778-366-Taiwan-albertk@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, linux-kernel@vger.kernel.org
+In-Reply-To: <87zgw98blq.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 1 Jun 2021 15:37:12 +0800 you wrote:
-> Support get_pauseparam and set_pauseparam of ethtool_ops.
+On 6/1/21 3:27 PM, Jonathan Corbet wrote:
+> Borislav Petkov <bp@alien8.de> writes:
 > 
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-> ---
->  drivers/net/usb/r8152.c | 75 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 75 insertions(+)
+>> Wow, time flies. :-\
+>>
+>> A month and a half later, Jon, how about it?
+> 
+> Oops...somehow I missed the fact that there was something there for me
+> to look at and respond to, sorry.
+> 
+> I've just read it through...  if it were me, I would find a way to
+> reduce its bulk in the hope that people would actually read it; much of
+> what's there is in coding-style.rst (or should be).  But it's not me,
+> and if you want to keep it I won't whine (much).  Except about reverse
+> fir tree, perhaps, but nobody listens to me on that...:)  I'd say
+> package it up as a maintainer-guide entry and go for it.
 
-Here is the summary with links:
-  - [net-next] r8152: support pauseparam of ethtool_ops
-    https://git.kernel.org/netdev/net-next/c/163d01c56e80
+Yes, as a maintainer-profile/guide/whatever, please,
+for X86/tip.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Same for several other feedback comments on patches that
+are destined for the tip tree.
 
+thanks.
+-- 
+~Randy
 
