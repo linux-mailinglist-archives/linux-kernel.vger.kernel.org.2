@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D43397515
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB16397518
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhFAOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:09:45 -0400
-Received: from out28-73.mail.aliyun.com ([115.124.28.73]:59720 "EHLO
-        out28-73.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234188AbhFAOJc (ORCPT
+        id S234346AbhFAOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:10:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21185 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234294AbhFAOKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:09:32 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1111761|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.432646-0.00042108-0.566933;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.KM.eRxy_1622556466;
-Received: from 192.168.0.103(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KM.eRxy_1622556466)
-          by smtp.aliyun-inc.com(10.147.41.121);
-          Tue, 01 Jun 2021 22:07:47 +0800
-Subject: Re: [PATCH v2 4/6] clk: ingenic: Remove pll_info.no_bypass_bit
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        list@opendingux.net
-References: <20210530164923.18134-1-paul@crapouillou.net>
- <20210530164923.18134-5-paul@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <dd9a3581-1391-962e-c5b3-e8bed90f3087@wanyeetech.com>
-Date:   Tue, 1 Jun 2021 22:07:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Tue, 1 Jun 2021 10:10:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622556506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4ZBYz8sTwcymT4m7/VsSlUijuy4ubxvglEedfFP9Ajg=;
+        b=ZoSn3FQKEjJGjlryuAotGK2kHwEq7nH9ZT7pTn1vAyXyxIu52h3HSKBE8LlTuJSDhqbCrX
+        aEYRX/QDEAAhmj8CG3co8F646e2A0T94K05uiefu58jnm95JJOhmykQ4zYr7uBTv1/sVg2
+        wbq1JWArJ93IzSU2vQ2us+CpwCJtsEI=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-iwJEbaDfOZiIV3o4K0KJIg-1; Tue, 01 Jun 2021 10:08:25 -0400
+X-MC-Unique: iwJEbaDfOZiIV3o4K0KJIg-1
+Received: by mail-oi1-f197.google.com with SMTP id 23-20020aca11170000b02901f182d8a121so2551638oir.19
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:08:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4ZBYz8sTwcymT4m7/VsSlUijuy4ubxvglEedfFP9Ajg=;
+        b=KV8pfXoL+PwwCq+gidtiFYNTpBrZY+yt/EdNApn1VwGtQS0aNSegID0GPfT/hMvVUW
+         8woi38w7pW+Jz1euHCv8Y4ozGUJPNQCKplWkpx8cpVR4INlL2lkH6NYXlxv8X267Eme6
+         +OgHMCr0kAZ6oM6JfV/VFew3KVoE7zV8IJxFdUGgdtUnQd/jJYGgQV4s1zTKbg7TpaRQ
+         NV5lubdTepcqgpdpMxAOd3PxCKqR4v50KkKx9EYkKKHv24IK4GCnoQOTo5iFO/eoIPUT
+         TtyocHCUUg2rVDxYjLYLGcGz9+hzxtjkY4B1HRd8ZQwKM2GPJKDIzWBZlKKEt8phLFu+
+         +XKQ==
+X-Gm-Message-State: AOAM531MKWQkSptUhTprWyQDDHxlvfVH+SENv3h3uB5SDxoUGFsxe9ZH
+        RCOnKOLFgq4mU+3lp4CZe3kUEFy13OzMMuBysD5jxtLI3rf6J7oF9oySk9bB3nXxln6pqu62cEt
+        rq+XKu+kuYR4R2eBbPvfR9hs4
+X-Received: by 2002:a9d:6b84:: with SMTP id b4mr21378162otq.152.1622556504760;
+        Tue, 01 Jun 2021 07:08:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGPDkeZ++PYbJQDkh2NlAHEbqcgkMjVVtiLuOsHdoiVMz/rUtG45Zur3MFSbt6Qc3Q6Af0EA==
+X-Received: by 2002:a9d:6b84:: with SMTP id b4mr21378149otq.152.1622556504596;
+        Tue, 01 Jun 2021 07:08:24 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id p5sm3433756oip.35.2021.06.01.07.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 07:08:24 -0700 (PDT)
+From:   trix@redhat.com
+To:     dhowells@redhat.com, marc.dionne@auristor.com
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] afs: add a return to afs_dir_set_page_dirty()
+Date:   Tue,  1 Jun 2021 07:08:20 -0700
+Message-Id: <20210601140820.2626615-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <20210530164923.18134-5-paul@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
-On 2021/5/31 上午12:49, Paul Cercueil wrote:
-> We can express that a PLL has no bypass bit by simply setting the
-> .bypass_bit field to a negative value.
->
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->   drivers/clk/ingenic/cgu.c        | 4 ++--
->   drivers/clk/ingenic/cgu.h        | 7 +++----
->   drivers/clk/ingenic/jz4770-cgu.c | 3 +--
->   3 files changed, 6 insertions(+), 8 deletions(-)
+With gcc 10.3, this compile error is reported
+dir.c: In function 'afs_dir_set_page_dirty':
+dir.c:51:1: error: no return statement in function
+  returning non-void [-Werror=return-type]
 
+Even though the code is unreachable, add a return
+to silence the error.
 
-Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>    # on CU1830-neo/X1830
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/afs/dir.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 78719f2f567e..988766f88d8b 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -48,6 +48,7 @@ static void afs_dir_invalidatepage(struct page *page, unsigned int offset,
+ static int afs_dir_set_page_dirty(struct page *page)
+ {
+ 	BUG(); /* This should never happen. */
++	return -EINVAL;
+ }
+ 
+ const struct file_operations afs_dir_file_operations = {
+-- 
+2.26.3
 
->
-> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
-> index 7686072aff8f..58f7ab5cf0fe 100644
-> --- a/drivers/clk/ingenic/cgu.c
-> +++ b/drivers/clk/ingenic/cgu.c
-> @@ -99,7 +99,7 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
->   	od_enc = ctl >> pll_info->od_shift;
->   	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
->   
-> -	if (!pll_info->no_bypass_bit) {
-> +	if (pll_info->bypass_bit >= 0) {
->   		ctl = readl(cgu->base + pll_info->bypass_reg);
->   
->   		bypass = !!(ctl & BIT(pll_info->bypass_bit));
-> @@ -226,7 +226,7 @@ static int ingenic_pll_enable(struct clk_hw *hw)
->   	u32 ctl;
->   
->   	spin_lock_irqsave(&cgu->lock, flags);
-> -	if (!pll_info->no_bypass_bit) {
-> +	if (pll_info->bypass_bit >= 0) {
->   		ctl = readl(cgu->base + pll_info->bypass_reg);
->   
->   		ctl &= ~BIT(pll_info->bypass_bit);
-> diff --git a/drivers/clk/ingenic/cgu.h b/drivers/clk/ingenic/cgu.h
-> index 44d97a259692..10521d1b7b12 100644
-> --- a/drivers/clk/ingenic/cgu.h
-> +++ b/drivers/clk/ingenic/cgu.h
-> @@ -39,10 +39,10 @@
->    *               their encoded values in the PLL control register, or -1 for
->    *               unsupported values
->    * @bypass_reg: the offset of the bypass control register within the CGU
-> - * @bypass_bit: the index of the bypass bit in the PLL control register
-> + * @bypass_bit: the index of the bypass bit in the PLL control register, or
-> + *              -1 if there is no bypass bit
->    * @enable_bit: the index of the enable bit in the PLL control register
->    * @stable_bit: the index of the stable bit in the PLL control register
-> - * @no_bypass_bit: if set, the PLL has no bypass functionality
->    */
->   struct ingenic_cgu_pll_info {
->   	unsigned reg;
-> @@ -52,10 +52,9 @@ struct ingenic_cgu_pll_info {
->   	u8 n_shift, n_bits, n_offset;
->   	u8 od_shift, od_bits, od_max;
->   	unsigned bypass_reg;
-> -	u8 bypass_bit;
-> +	s8 bypass_bit;
->   	u8 enable_bit;
->   	u8 stable_bit;
-> -	bool no_bypass_bit;
->   };
->   
->   /**
-> diff --git a/drivers/clk/ingenic/jz4770-cgu.c b/drivers/clk/ingenic/jz4770-cgu.c
-> index 381a27f20b51..2321742b3471 100644
-> --- a/drivers/clk/ingenic/jz4770-cgu.c
-> +++ b/drivers/clk/ingenic/jz4770-cgu.c
-> @@ -139,8 +139,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
->   			.od_bits = 2,
->   			.od_max = 8,
->   			.od_encoding = pll_od_encoding,
-> -			.bypass_reg = CGU_REG_CPPCR1,
-> -			.no_bypass_bit = true,
-> +			.bypass_bit = -1,
->   			.enable_bit = 7,
->   			.stable_bit = 6,
->   		},
