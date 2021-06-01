@@ -2,141 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A445F3974B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2E73974B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhFAN5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:57:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:50822 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234017AbhFAN5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:57:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 567F96D;
-        Tue,  1 Jun 2021 06:55:41 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.0.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6ABEF3F719;
-        Tue,  1 Jun 2021 06:55:37 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 14:55:26 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 3/5] arm64: perf: Enable PMU counter userspace access
- for perf event
-Message-ID: <20210601135526.GA3326@C02TD0UTHF1T.local>
-References: <20210517195405.3079458-1-robh@kernel.org>
- <20210517195405.3079458-4-robh@kernel.org>
+        id S234143AbhFAN5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234116AbhFAN53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:57:29 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A750C061574;
+        Tue,  1 Jun 2021 06:55:46 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f11so13070906lfq.4;
+        Tue, 01 Jun 2021 06:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y1/x96UHDOyz4mo8Dx52Cylgiw8juPxSALX40n8TPCk=;
+        b=u1GjTSS+Wsu8wRn3z2JByj4bKIT74WoOKBq//n+U/Dg2jQs1SWiqyT9sedwtjKVqRn
+         0U1z9V8gPco4dM/w+iW9pFs0wo/Lkh/1cr38e+B29rx+lPiMDdRaXesVDUPlmVWZTZXj
+         dbsIQTwUXWefxOL/wGtJDGx9+GV9FEG1vbMzqyROZXIH+tSCWP5W2m5kNjKgacRWjjvn
+         YXD02UZsCKZ/D9uH+nNFFGRAM1RtjXTTcMYu0cDlU03CqLMqO2JQoWDNrGPl7aI+lmUy
+         WZOZ4lFC7uGYjsQ+zIc8lLhozYYISZjYtoXWO49en/A4/8w7CWXtwYB+wqoxeKYkwzvx
+         E3yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y1/x96UHDOyz4mo8Dx52Cylgiw8juPxSALX40n8TPCk=;
+        b=XXVoV8ZEDwcsC9BBY8okkkIpD4WZvfL5wMt4+cF171XrTYLRv+uExyXctUgtyr4iRL
+         xbdR7zdURvT9NAS5k2Iw4FsIo4D8ibFLgheaVpLD9qWi1dvNyfLIr5BBPOC478x6BGxO
+         c1yyWzCY3xCGiJkb9Pob5tFx+I7H9YPNgm5ullb9Jgft7yVo2riwhYV1VXYhXIEAZkSb
+         PVsiUweEpnsktfJJc3Rvaq2gvIXZwVpKyu7p0eW/X4O4S5pq3czBHA1Jx87ZQLgdLa3G
+         M0T/ac8NENDe95/1uA6rlyy6LyhidqaQrs7Wq+Lo8r4L59ZM3qiYrNrLEv6aRu6xNXmc
+         z17A==
+X-Gm-Message-State: AOAM531aZJQ/utWUtBnJ6wngdv7BTIrsjCReqxcPTWG7rqHwLH28UykI
+        PPeVhEBnB58od4mtiq3bgyYQJBoYZcsfKEV4Qbs=
+X-Google-Smtp-Source: ABdhPJz2QveIKeaW5IevsO5kSbKCgvt8JDrTYlMlKizZr9/AJ1PzvSVbuMQp68gL1DzLMoLI9FrvpV/w/SKJRM/U0x8=
+X-Received: by 2002:a05:6512:3772:: with SMTP id z18mr18821229lft.423.1622555744932;
+ Tue, 01 Jun 2021 06:55:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210517195405.3079458-4-robh@kernel.org>
+References: <20210528143802.78635-1-dong.menglong@zte.com.cn> <20210529112638.b3a9ec5475ca8e4f51648ff0@kernel.org>
+In-Reply-To: <20210529112638.b3a9ec5475ca8e4f51648ff0@kernel.org>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Tue, 1 Jun 2021 21:55:33 +0800
+Message-ID: <CADxym3Ya3Jv_tUMJyq+ymd8m1_S-KezqNDfsLtMcJCXtDytBzA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] init/initramfs.c: make initramfs support pivot_root
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, ojeda@kernel.org,
+        johan@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>, joe@perches.com,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        hare@suse.de, tj@kernel.org, gregkh@linuxfoundation.org,
+        song@kernel.org, NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        f.fainelli@gmail.com, wangkefeng.wang@huawei.com, arnd@arndb.de,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Barret Rhoden <brho@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
+        pmladek@suse.com, Alexander Potapenko <glider@google.com>,
+        Chris Down <chris@chrisdown.name>, jojing64@gmail.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>, mingo@kernel.org,
+        terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 02:54:03PM -0500, Rob Herring wrote:
-> Arm PMUs can support direct userspace access of counters which allows for
-> low overhead (i.e. no syscall) self-monitoring of tasks. The same feature
-> exists on x86 called 'rdpmc'. Unlike x86, userspace access will only be
-> enabled for thread bound events. This could be extended if needed, but
-> simplifies the implementation and reduces the chances for any
-> information leaks (which the x86 implementation suffers from).
-> 
-> When an event is capable of userspace access and has been mmapped, userspace
-> access is enabled when the event is scheduled on a CPU's PMU. There's some
-> additional overhead clearing counters when disabled in order to prevent
-> leaking disabled counter data from other tasks.
-> 
-> Unlike x86, enabling of userspace access must be requested with a new
-> attr bit: config1:1. If the user requests userspace access and 64-bit
-> counters, then chaining will be disabled and the user will get the
-> maximum size counter the underlying h/w can support. The modes for
-> config1 are as follows:
-> 
-> config1 = 0 : user access disabled and always 32-bit
-> config1 = 1 : user access disabled and always 64-bit (using chaining if needed)
-> config1 = 2 : user access enabled and always 32-bit
-> config1 = 3 : user access enabled and counter size matches underlying counter.
-> 
-> Based on work by Raphael Gault <raphael.gault@arm.com>, but has been
-> completely re-written.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hello!
 
-[...]
+What's the status or fate of this patch? Does anyone do an in-depth
+study of this field? Knock-knock~
 
-> +static void armv8pmu_enable_user_access(struct arm_pmu *cpu_pmu)
-> +{
-> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
-> +
-> +	if (!bitmap_empty(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS)) {
-> +		int i;
-> +		/* Don't need to clear assigned counters. */
-> +		bitmap_xor(cpuc->dirty_mask, cpuc->dirty_mask, cpuc->used_mask, ARMPMU_MAX_HWEVENTS);
-> +
-> +		for_each_set_bit(i, cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS) {
-> +			if (i == ARMV8_IDX_CYCLE_COUNTER)
-> +				write_sysreg(0, pmccntr_el0);
-> +			else
-> +				armv8pmu_write_evcntr(i, 0);
-> +		}
-> +		bitmap_zero(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS);
-> +	}
-> +
-> +	write_sysreg(ARMV8_PMU_USERENR_ER | ARMV8_PMU_USERENR_CR, pmuserenr_el0);
-> +}
+On Sat, May 29, 2021 at 10:26 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hi Menglong,
+>
+> On Fri, 28 May 2021 22:37:59 +0800
+> menglong8.dong@gmail.com wrote:
+>
+> > From: Menglong Dong <dong.menglong@zte.com.cn>
+> >
+> > As Luis Chamberlain suggested, I split the patch:
+> > [init/initramfs.c: make initramfs support pivot_root]
+> > (https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
+> > into three.
+> >
+> > The goal of the series patches is to make pivot_root() support initramfs.
+> >
+> > In the first patch, I introduce the function ramdisk_exec_exist(), which
+> > is used to check the exist of 'ramdisk_execute_command' in LOOKUP_DOWN
+> > lookup mode.
+> >
+> > In the second patch, I create a second mount, which is called
+> > 'user root', and make it become the root. Therefore, the root has a
+> > parent mount, and it can be umounted or pivot_root.
+> >
+> > In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
+> > directly any more, and it make no sense to switch it between ramfs and
+> > tmpfs, just fix it with ramfs to simplify the code.
+> >
+> >
+> > Changes since V2:
+> >
+> > In the first patch, I use vfs_path_lookup() in init_eaccess() to make the
+> > path lookup follow the mount on '/'. After this, the problem reported by
+> > Masami Hiramatsu is solved. Thanks for your report :/
+>
+> Thank you for the fix, I confirmed that the issue has been solved with this.
+>
+> Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+>
+> for this series.
+>
+> Regards,
+>
+>
+> >
+> >
+> > Changes since V1:
+> >
+> > In the first patch, I add the flag LOOKUP_DOWN to init_eaccess(), to make
+> > it support the check of filesystem mounted on '/'.
+> >
+> > In the second patch, I control 'user root' with kconfig option
+> > 'CONFIG_INITRAMFS_USER_ROOT', and add some comments, as Luis Chamberlain
+> > suggested.
+> >
+> > In the third patch, I make 'rootfs_fs_type' in control of
+> > 'CONFIG_INITRAMFS_USER_ROOT'.
+> >
+> >
+> >
+> > Menglong Dong (3):
+> >   init/main.c: introduce function ramdisk_exec_exist()
+> >   init/do_cmounts.c: introduce 'user_root' for initramfs
+> >   init/do_mounts.c: fix rootfs_fs_type with ramfs
+> >
+> >  fs/init.c            |  11 ++++-
+> >  include/linux/init.h |   5 ++
+> >  init/do_mounts.c     | 109 +++++++++++++++++++++++++++++++++++++++++++
+> >  init/do_mounts.h     |  18 ++++++-
+> >  init/initramfs.c     |  10 ++++
+> >  init/main.c          |   7 ++-
+> >  usr/Kconfig          |  10 ++++
+> >  7 files changed, 166 insertions(+), 4 deletions(-)
+> >
+> > --
+> > 2.32.0.rc0
+> >
+>
+>
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
 
-This still leaks the values of CPU-bound events, or task-bound events
-owned by others, right?
-
-[...]
-
-> +static void armv8pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
-> +{
-> +	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR) || (atomic_read(&event->mmap_count) != 1))
-> +		return;
-> +
-> +	if (atomic_inc_return(&event->ctx->nr_user) == 1) {
-> +		unsigned long flags;
-> +		atomic_inc(&event->pmu->sched_cb_usage);
-> +		local_irq_save(flags);
-> +		armv8pmu_enable_user_access(to_arm_pmu(event->pmu));
-> +		local_irq_restore(flags);
-> +	}
-> +}
-> +
-> +static void armv8pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
-> +{
-> +	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR) || (atomic_read(&event->mmap_count) != 1))
-> +		return;
-> +
-> +	if (atomic_dec_and_test(&event->ctx->nr_user)) {
-> +		atomic_dec(&event->pmu->sched_cb_usage);
-> +		armv8pmu_disable_user_access();
-> +	}
->  }
-
-We can open an event for task A, but call mmap()/munmap() for that event
-from task B, which will do the enable/disable on task B rather than task
-A. The core doesn't enforce that the mmap is performed on the same core,
-so I don't think this is quite right, unfortunately.
-
-I reckon we need to do something with task_function_call() to make this
-happen in the context of the expected task.
-
-Thanks,
-Mark.
+Thanks!
+Menglong Dong
