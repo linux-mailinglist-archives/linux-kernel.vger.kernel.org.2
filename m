@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965D839786A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E0039786B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234628AbhFAQuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
+        id S234610AbhFAQuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234443AbhFAQt4 (ORCPT
+        with ESMTP id S234562AbhFAQt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:49:56 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD96EC061756;
-        Tue,  1 Jun 2021 09:48:14 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id dj8so5956528edb.6;
-        Tue, 01 Jun 2021 09:48:14 -0700 (PDT)
+        Tue, 1 Jun 2021 12:49:59 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E00C061574;
+        Tue,  1 Jun 2021 09:48:16 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id b9so22687326ejc.13;
+        Tue, 01 Jun 2021 09:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=N9ujW2Qt+Tu2jJvNcfLPCqaX9eDRsnHYASEY0yw0Dq8=;
-        b=o7quV5jp4VzQYkV7ItBmk0LigYxjpvV6MOinQgyohY4XXi5LdDpu0ymP6oziCl67Of
-         2OzhfYIRj3/q9if9B0aS0fMUiPWeBulFoxJQ1qr+bAoUqqrQdnjU/GvpjUTnRufsiSHu
-         vV6p7YTEki7WP9MdVdvMRWt+VuEBWSKbHtnttveATcXSHiI1jTZq3uCWXpXEMh1VTVH7
-         zhT9mHlCCvgMkqRXP+9j0vNnMBdhXz1OePQ9C95vXd9L0W7w2JA6k6CIYHGzq3gcEUzY
-         ND/H5qSQv0rZ5OTmJq+U5D6tXcxH0PaXlrYd5C6EajDjus0DKaZo7RZpDUGLfykUG8bG
-         uAIQ==
+        bh=DHH8YHAlTPU5T8bDwFoNt/piYkwaeBsEh0BIqwvr1v8=;
+        b=UWfVn7196iEf7L184gwllFhn6rdJEIWyjJCbY5n2WJCVE3/0likbwUcU+ZHcNxJ5C9
+         zzfZqKJJUvFzjm49sXA5z3F2EAoUJIBPIht6iz/Ws2OKkKoSMbHO17MUMNE3tYrz2bwg
+         MfXqeEekBVhSH+SAlYqynKa5PbySth8XWvmy2n6gmb24HNn6Qs5zAqFfHRj+j+tYDGHt
+         iroOJJcYKWLV/VwUm7q1W1qgKEFMeN2S0qF2WYtjHLUQFW373EIJSyh7Nj1EMERGt6vt
+         THXONO63VvoMJsl9CpM/jm97wHpnWKsddcNZcCcAwInnzG8q2Vn8TFk735K30ALmBlsZ
+         w8Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=N9ujW2Qt+Tu2jJvNcfLPCqaX9eDRsnHYASEY0yw0Dq8=;
-        b=ihI6zeayA0HikJzpe62Lo2gbirzSuAK70pOwotWL44VBMaISuwx5nKqyGQyM15BJmn
-         dh/Ba4FdvA2NdkFtpeKKg16lMuQKq7F7ggo12n3HxKVj9R9z7eilXUrmHsltkoxHMx7s
-         Uupo68aqfLFbB/XnYbmArtpEi54gp7WtCp6S6SBWlQbnYAeolVEEpZCYEAoqLo2U6HfK
-         qDNJ1TiMQQ+1tTrhwRTg5QrkvsgkYsRGjz/Tt0Rv7pRr1wft1oaIuYPuKrzxssiZeb7n
-         HYJRe7g8xaYNXNMUWoLdEfdlgsEHNhPph8CX8n0ItsKJiQ57Qvm972wErZGZuWGsMApy
-         bexg==
-X-Gm-Message-State: AOAM533t2Ou8pkwCXYp/Ck+gStzxue4U4oFax+3NZ5bCIOk0EtupDISc
-        r+3B9IEKPY3m60UqKyDUedPQmjdTk38IGA==
-X-Google-Smtp-Source: ABdhPJwmFvPqwCyzRBI5mROfF8pb56oDh+5wBx1i0BuLG+wDCDFurbvvYZ0imlKFHyr9o+d+tqIAog==
-X-Received: by 2002:a05:6402:510b:: with SMTP id m11mr33229905edd.26.1622566093458;
-        Tue, 01 Jun 2021 09:48:13 -0700 (PDT)
+        bh=DHH8YHAlTPU5T8bDwFoNt/piYkwaeBsEh0BIqwvr1v8=;
+        b=gri6e+rXmhMZypBmy0GZ1r3UyVrqqK+NQqvwVs2KipMm7925qh8UKQ9I6d5qtH2uy7
+         P4pFKoS3EAt9f2kNywgUvyi8m59hhWPhux3qPw5Uq6r42FNPxJiFEoSVM4iEawi+Xgph
+         ja6RaCJvFm5ps0JTGjV9PgQECVUe9jr/s/re+y6K80lnS8UCqB+ENQW6AYhRlx9PoN0m
+         uVQoVM9WV3C/VK//8bXpWdnftC3LrjgzFL18HNEzQNuTuYe4MBgs+xvBE5WUcNnw1At1
+         2BjeAjyVFudBj67FKt7s9lp3OXQuobk1VM0V/pzJrvaaox4sGftSO+PBNQg4kWZz1Ie0
+         9mgg==
+X-Gm-Message-State: AOAM532v+aLi4PUBdoorH2aHieN2yHlovHGXTFlCuUzKKxbwFrymIZJA
+        VRdfokry4Mq183gtzHS4ItQ=
+X-Google-Smtp-Source: ABdhPJxn8fLUrUgadCnTVAG5yqfmlbvyD3qqaRyr7KxYhhdmAgyN9kCwnpKervVuHajee3iAm0dALw==
+X-Received: by 2002:a17:906:1dc2:: with SMTP id v2mr30584241ejh.8.1622566094887;
+        Tue, 01 Jun 2021 09:48:14 -0700 (PDT)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id q18sm8327750edd.3.2021.06.01.09.48.12
+        by smtp.gmail.com with ESMTPSA id q18sm8327750edd.3.2021.06.01.09.48.13
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Jun 2021 09:48:13 -0700 (PDT)
+        Tue, 01 Jun 2021 09:48:14 -0700 (PDT)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, kishon@ti.com, vkoul@kernel.org,
         t.schramm@manjaro.org, linux-phy@lists.infradead.org,
         linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/5] ARM: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
-Date:   Tue,  1 Jun 2021 18:47:58 +0200
-Message-Id: <20210601164800.7670-4-jbx6244@gmail.com>
+Subject: [PATCH v7 4/5] arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
+Date:   Tue,  1 Jun 2021 18:47:59 +0200
+Message-Id: <20210601164800.7670-5-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210601164800.7670-1-jbx6244@gmail.com>
 References: <20210601164800.7670-1-jbx6244@gmail.com>
@@ -69,51 +69,65 @@ The "phy-cells" in rockchip-inno-usb2 nodes are located in subnodes.
 Rename the nodename to pattern "usb2phy@[0-9a-f]+$" to prevent
 notifications.
 
-make ARCH=arm dtbs_check
+make ARCH=arm64 dtbs_check
 DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/schemas/
 phy/phy-provider.yaml
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- arch/arm/boot/dts/rk322x.dtsi | 4 ++--
- arch/arm/boot/dts/rv1108.dtsi | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/rockchip/px30.dtsi   | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
-index 5774bc309..cffd7acfb 100644
---- a/arch/arm/boot/dts/rk322x.dtsi
-+++ b/arch/arm/boot/dts/rk322x.dtsi
-@@ -190,7 +190,7 @@
- 			status = "disabled";
- 		};
- 
--		u2phy0: usb2-phy@760 {
-+		u2phy0: usb2phy@760 {
- 			compatible = "rockchip,rk3228-usb2phy";
- 			reg = <0x0760 0x0c>;
- 			clocks = <&cru SCLK_OTGPHY0>;
-@@ -217,7 +217,7 @@
- 			};
- 		};
- 
--		u2phy1: usb2-phy@800 {
-+		u2phy1: usb2phy@800 {
- 			compatible = "rockchip,rk3228-usb2phy";
- 			reg = <0x0800 0x0c>;
- 			clocks = <&cru SCLK_OTGPHY1>;
-diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
-index 884872ca5..9bd0acf3b 100644
---- a/arch/arm/boot/dts/rv1108.dtsi
-+++ b/arch/arm/boot/dts/rv1108.dtsi
-@@ -265,7 +265,7 @@
+diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
+index 4e243d72e..248ebb61a 100644
+--- a/arch/arm64/boot/dts/rockchip/px30.dtsi
++++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+@@ -822,7 +822,7 @@
  		#address-cells = <1>;
  		#size-cells = <1>;
  
 -		u2phy: usb2-phy@100 {
 +		u2phy: usb2phy@100 {
- 			compatible = "rockchip,rv1108-usb2phy";
- 			reg = <0x100 0x0c>;
- 			clocks = <&cru SCLK_USBPHY>;
+ 			compatible = "rockchip,px30-usb2phy";
+ 			reg = <0x100 0x20>;
+ 			clocks = <&pmucru SCLK_USBPHY_REF>;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index bc0bdc3d8..8c821acb2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -819,7 +819,7 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 
+-		u2phy: usb2-phy@100 {
++		u2phy: usb2phy@100 {
+ 			compatible = "rockchip,rk3328-usb2phy";
+ 			reg = <0x100 0x10>;
+ 			clocks = <&xin24m>;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index a2eba5357..c1a253507 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1418,7 +1418,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		u2phy0: usb2-phy@e450 {
++		u2phy0: usb2phy@e450 {
+ 			compatible = "rockchip,rk3399-usb2phy";
+ 			reg = <0xe450 0x10>;
+ 			clocks = <&cru SCLK_USB2PHY0_REF>;
+@@ -1445,7 +1445,7 @@
+ 			};
+ 		};
+ 
+-		u2phy1: usb2-phy@e460 {
++		u2phy1: usb2phy@e460 {
+ 			compatible = "rockchip,rk3399-usb2phy";
+ 			reg = <0xe460 0x10>;
+ 			clocks = <&cru SCLK_USB2PHY1_REF>;
 -- 
 2.11.0
 
