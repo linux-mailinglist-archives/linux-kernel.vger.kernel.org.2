@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E220396E6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDEA396E6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbhFAIBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:01:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37476 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233069AbhFAIBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:01:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622534361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ETA/uZ3RYpkBUVga1GOnLXdkl/xa1dO7W1HIUnISUfo=;
-        b=qxjixrjODsCX8O311V2pZ4XZDFroeVhUc0n5yOMyNYPrPiS+hTiuZdT172p2qKvPFnby2q
-        J7PWibYVNItSjk7JFRNi+Nnn6QHfMSiUvVowo0UrLojZpcpczmzvHFxC122Y345WfeXU6q
-        k8fw73HXt03kPkdUM/TDEdLuvzAShZ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622534361;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ETA/uZ3RYpkBUVga1GOnLXdkl/xa1dO7W1HIUnISUfo=;
-        b=wHR0OVOHiig4z3YxtYJ7jszKfMePoHoZDi8xUstskenJ7l0QPdZ5wvDBMWIGv1UrjF+hAZ
-        pJo3cv94Cc7vRVBw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35272AD54;
-        Tue,  1 Jun 2021 07:59:21 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 08:59:18 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        tangchengchang <tangchengchang@huawei.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH] sched: fair: don't depend on wake_wide if waker and
- wakee are already in same LLC
-Message-ID: <20210601075918.GP3672@suse.de>
-References: <20210526091057.1800-1-song.bao.hua@hisilicon.com>
- <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
- <7dd00a98d6454d5e92a7d9b936d1aa1c@hisilicon.com>
- <20210527121409.GK3672@suse.de>
- <07e4ba63a19c451ab47e6a636c400f4a@hisilicon.com>
+        id S233284AbhFAIBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:01:37 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:56258 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233069AbhFAIBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:01:35 -0400
+Received: by mail-wm1-f42.google.com with SMTP id g204so4309796wmf.5;
+        Tue, 01 Jun 2021 00:59:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CILQ1E8wrD9Jkbinxx/OfXZKHdfMjq3mWMgjEeM1HzA=;
+        b=NbGXncsrCFRoKuJsUL4Ji7KkegeDuCvEteEZMJM4mJrzvDyR4dlgngYtYNfOFK95/E
+         OugetM6pkDsAP8jqguHnv5s8Z2y18jwNGVcB44g7sUsUx5K4im2YIcpimcnSwCbC8SUp
+         yn4WJc4i0x9gFHFtYCBWM+sDa8qBH0r+Md5xzMxkSoFV2kFXJOIhGBME6yNRpBT+foQi
+         J0hzNYaLknoJCp4HJx+2mCScj4nC+iB66iiK7sU1xmGdrkvcPJgBhIJjufAAp+B4akxY
+         BMIpipYtpAXzqniXz4hQoQlpZ0HaONG24mUpW67BocJWclMLS+nSKVEX8x9eYk/hZ9dZ
+         SWKw==
+X-Gm-Message-State: AOAM530t5DvGiwPmN4g1b1pvprurclAhFAIeQLNHsjwx8PYYa5Mqoh21
+        OStEa9I+bQiBffRJJKANLCE=
+X-Google-Smtp-Source: ABdhPJwLtKyeA1XzzRsDVWWVRmDoWsG9VPEDykA2DI96Z+qwBn6RfxeP/dleUCPBEnMA+JD2J+ThPA==
+X-Received: by 2002:a05:600c:3545:: with SMTP id i5mr3195750wmq.43.1622534393312;
+        Tue, 01 Jun 2021 00:59:53 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n6sm16546787wmq.34.2021.06.01.00.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 00:59:52 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 07:59:51 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
+        kys@microsoft.com
+Subject: Re: [PATCH 06/19] drivers/hv: create, initialize, finalize, delete
+ partition hypercalls
+Message-ID: <20210601075951.2ssgwaajo53x2tna@liuwe-devbox-debian-v2>
+References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1622241819-21155-7-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <07e4ba63a19c451ab47e6a636c400f4a@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1622241819-21155-7-git-send-email-nunodasneves@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 10:21:55PM +0000, Song Bao Hua (Barry Song) wrote:
-> The benchmark of tbenchs is still positive:
-> 
-> tbench4
-> 
->                            5.13-rc4               5.13-rc4
->                                      disable-llc-wakewide/
-> 
-> Hmean     1       514.87 (   0.00%)      505.17 *  -1.88%*
-> Hmean     2       914.45 (   0.00%)      918.45 *   0.44%*
-> Hmean     4      1483.81 (   0.00%)     1485.38 *   0.11%*
-> Hmean     8      2211.62 (   0.00%)     2236.02 *   1.10%*
-> Hmean     16     2129.80 (   0.00%)     2450.81 *  15.07%*
-> Hmean     32     5098.35 (   0.00%)     5085.20 *  -0.26%*
-> Hmean     64     4797.62 (   0.00%)     4801.34 *   0.08%*
-> Hmean     80     4802.89 (   0.00%)     4780.40 *  -0.47%*
-> 
-> I guess something which work across several LLC domains
-> cause performance regression.
-> 
-> I wonder how your test will be like if you pin the testing
-> to CPUs within one LLC?
-> 
+On Fri, May 28, 2021 at 03:43:26PM -0700, Nuno Das Neves wrote:
+[...]
+> diff --git a/arch/x86/include/uapi/asm/hyperv-tlfs.h b/arch/x86/include/uapi/asm/hyperv-tlfs.h
+> index 72150c25ffe6..8a5fc59bb33a 100644
+> --- a/arch/x86/include/uapi/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/uapi/asm/hyperv-tlfs.h
+> @@ -101,7 +101,7 @@ union hv_partition_processor_features {
+>  		__u64 fsrep_stosb:1;
+>  		__u64 fsrep_cmpsb:1;
+>  		__u64 reserved_bank1:42;
+> -	};
+> +	} __packed;
+>  	__u64 as_uint64[HV_PARTITION_PROCESSOR_FEATURE_BANKS];
+>  };
+>  
+> @@ -111,7 +111,7 @@ union hv_partition_processor_xsave_features {
+>  		__u64 xsaveopt_support : 1;
+>  		__u64 avx_support : 1;
+>  		__u64 reserved1 : 61;
+> -	};
+> +	} __packed;
+>  	__u64 as_uint64;
+>  };
+>  
+> @@ -119,6 +119,6 @@ struct hv_partition_creation_properties {
+>  	union hv_partition_processor_features disabled_processor_features;
+>  	union hv_partition_processor_xsave_features
+>  		disabled_processor_xsave_features;
+> -};
+> +} __packed;
 
-While I could do this, what would be the benefit? Running within one LLC
-would be running the test in one small fraction of the entire machine as
-the machine has multiple LLCs per NUMA node. A patch dealing with how the
-scheduler works with respect to LLC should take different configurations
-into consideration as best as possible.
+These hunks should have been squashed to the previous patch. They don't
+belong here.
 
--- 
-Mel Gorman
-SUSE Labs
+Wei.
