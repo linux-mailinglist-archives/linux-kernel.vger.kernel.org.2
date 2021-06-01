@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537B7396E8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4203396E8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233360AbhFAIIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:08:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233162AbhFAIIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:08:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ECF86136E;
-        Tue,  1 Jun 2021 08:06:57 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 10:06:54 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        stable@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>
-Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
-Message-ID: <20210601080654.cl7caplm7rsagl6u@wittgenstein>
-References: <20210531153410.93150-1-changbin.du@gmail.com>
- <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        id S233272AbhFAIKy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Jun 2021 04:10:54 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3314 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233056AbhFAIKx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:10:53 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FvPnm4SyMz19S3m;
+        Tue,  1 Jun 2021 16:04:28 +0800 (CST)
+Received: from dggpeml100021.china.huawei.com (7.185.36.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 16:09:09 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpeml100021.china.huawei.com (7.185.36.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 16:09:09 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Tue, 1 Jun 2021 16:09:09 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Mel Gorman <mgorman@suse.de>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        tangchengchang <tangchengchang@huawei.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH] sched: fair: don't depend on wake_wide if waker and wakee
+ are already in same LLC
+Thread-Topic: [PATCH] sched: fair: don't depend on wake_wide if waker and
+ wakee are already in same LLC
+Thread-Index: AQHXUhAXdUizMfoReUmU6BSpTsz4hqr1J2iAgAEbn9CAAHZUgIAHdICQgAAf8wCAAIRPEA==
+Date:   Tue, 1 Jun 2021 08:09:09 +0000
+Message-ID: <75ec9e490d1d4854ae2be4ad5b3b24b9@hisilicon.com>
+References: <20210526091057.1800-1-song.bao.hua@hisilicon.com>
+ <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
+ <7dd00a98d6454d5e92a7d9b936d1aa1c@hisilicon.com>
+ <20210527121409.GK3672@suse.de>
+ <07e4ba63a19c451ab47e6a636c400f4a@hisilicon.com>
+ <20210601075918.GP3672@suse.de>
+In-Reply-To: <20210601075918.GP3672@suse.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.217]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 10:01:28PM -0700, Jakub Kicinski wrote:
-> On Mon, 31 May 2021 23:34:10 +0800 Changbin Du wrote:
-> > We should not create inode for disabled namespace. A disabled namespace
-> > sets its ns->ops to NULL. Kernel could panic if we try to create a inode
-> > for such namespace.
-> > 
-> > Here is an example oops in socket ioctl cmd SIOCGSKNS when NET_NS is
-> > disabled. Kernel panicked wherever nsfs trys to access ns->ops since the
-> > proc_ns_operations is not implemented in this case.
-> > 
-> > [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
-> > [7.670268] pgd = 32b54000
-> > [7.670544] [00000010] *pgd=00000000
-> > [7.671861] Internal error: Oops: 5 [#1] SMP ARM
-> > [7.672315] Modules linked in:
-> > [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
-> > [7.673309] Hardware name: Generic DT based system
-> > [7.673642] PC is at nsfs_evict+0x24/0x30
-> > [7.674486] LR is at clear_inode+0x20/0x9c
-> > 
-> > So let's reject such request for disabled namespace.
-> > 
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> > Cc: <stable@vger.kernel.org>
-> > Cc: Cong Wang <xiyou.wangcong@gmail.com>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: David Laight <David.Laight@ACULAB.COM>
-> > ---
-> >  fs/nsfs.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/fs/nsfs.c b/fs/nsfs.c
-> > index 800c1d0eb0d0..6c055eb7757b 100644
-> > --- a/fs/nsfs.c
-> > +++ b/fs/nsfs.c
-> > @@ -62,6 +62,10 @@ static int __ns_get_path(struct path *path, struct ns_common *ns)
-> >  	struct inode *inode;
-> >  	unsigned long d;
-> >  
-> > +	/* In case the namespace is not actually enabled. */
-> > +	if (!ns->ops)
-> > +		return -EOPNOTSUPP;
-> > +
-> >  	rcu_read_lock();
-> >  	d = atomic_long_read(&ns->stashed);
-> >  	if (!d)
+
+
+> -----Original Message-----
+> From: Mel Gorman [mailto:mgorman@suse.de]
+> Sent: Tuesday, June 1, 2021 7:59 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>; vincent.guittot@linaro.org;
+> mingo@redhat.com; dietmar.eggemann@arm.com; rostedt@goodmis.org;
+> bsegall@google.com; valentin.schneider@arm.com; juri.lelli@redhat.com;
+> bristot@redhat.com; linux-kernel@vger.kernel.org; guodong.xu@linaro.org;
+> yangyicong <yangyicong@huawei.com>; tangchengchang
+> <tangchengchang@huawei.com>; Linuxarm <linuxarm@huawei.com>
+> Subject: Re: [PATCH] sched: fair: don't depend on wake_wide if waker and wakee
+> are already in same LLC
 > 
-> I'm not sure why we'd pick runtime checks for something that can be
-> perfectly easily solved at compilation time. Networking should not
-> be asking for FDs for objects which don't exist.
+> On Mon, May 31, 2021 at 10:21:55PM +0000, Song Bao Hua (Barry Song) wrote:
+> > The benchmark of tbenchs is still positive:
+> >
+> > tbench4
+> >
+> >                            5.13-rc4               5.13-rc4
+> >                                      disable-llc-wakewide/
+> >
+> > Hmean     1       514.87 (   0.00%)      505.17 *  -1.88%*
+> > Hmean     2       914.45 (   0.00%)      918.45 *   0.44%*
+> > Hmean     4      1483.81 (   0.00%)     1485.38 *   0.11%*
+> > Hmean     8      2211.62 (   0.00%)     2236.02 *   1.10%*
+> > Hmean     16     2129.80 (   0.00%)     2450.81 *  15.07%*
+> > Hmean     32     5098.35 (   0.00%)     5085.20 *  -0.26%*
+> > Hmean     64     4797.62 (   0.00%)     4801.34 *   0.08%*
+> > Hmean     80     4802.89 (   0.00%)     4780.40 *  -0.47%*
+> >
+> > I guess something which work across several LLC domains
+> > cause performance regression.
+> >
+> > I wonder how your test will be like if you pin the testing
+> > to CPUs within one LLC?
+> >
+> 
+> While I could do this, what would be the benefit? Running within one LLC
+> would be running the test in one small fraction of the entire machine as
+> the machine has multiple LLCs per NUMA node. A patch dealing with how the
+> scheduler works with respect to LLC should take different configurations
+> into consideration as best as possible.
 
-Agreed!
-This should be fixable by sm like:
+I do agree with this. And I do admit this patch is lacking of
+consideration and testing of supporting various configurations.
+But more input of numbers will be helpful on figuring out a better
+solution which can either extend to wider configurations or shrink
+to some specific machines like those whose whole numa share
+LLC or desktops whose all cpus share LLC in v2. eg:
+My pc with the newest i9 intel has all 10 cpus(20 threads) sharing
+LLC.
 
-diff --git a/net/socket.c b/net/socket.c
-index 27e3e7d53f8e..2484466d96ad 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1150,10 +1150,12 @@ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
-                        break;
-                case SIOCGSKNS:
-                        err = -EPERM;
-+#ifdef CONFIG_NET_NS
-                        if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
-                                break;
+> 
+> --
+> Mel Gorman
+> SUSE Labs
 
-                        err = open_related_ns(&net->ns, get_net_ns);
-+#endif
-                        break;
-                case SIOCGSTAMP_OLD:
-                case SIOCGSTAMPNS_OLD:
+Thanks
+Barry
+
