@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0EC3979FC
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6EA3979FD
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234763AbhFASX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S234784AbhFASX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234718AbhFASXu (ORCPT
+        with ESMTP id S234704AbhFASXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:23:50 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5168AC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:22:09 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id j12so33347pgh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:22:09 -0700 (PDT)
+        Tue, 1 Jun 2021 14:23:52 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA15C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:22:10 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id g6so176084pfq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+4kopGrPpDmNYqodYUvkjETu0gKLYPPcKDiSzcCSolk=;
-        b=FdH1YFBnQgCff+7rGQ6EQDjWOQlazi5AGW5irmxbWACfjKF3jf3HzEcxIWIK/D69An
-         71EwfeSug2avMa2n9ao3JFsMQkXHL4Eg3EVtoSxKvCxhgjCY1PS0YKWV9Cq1shXJqsb1
-         g9ZkXirTMKZlH7yAO8UtAV9ojzlMdJAKJiAks=
+        bh=XPjY3p17RpdUxmvaUzvStFXowgAqs5bSM8U5J4753tM=;
+        b=JdKbC5WayUy2DBLywV0jSbrlIjP/2nSMm9wzijAMUyrJfbt/taBTudIdXt9r2Q7J8+
+         LlAwIX8W7OjgLZCIgQ21bDoc7TAkhJOOynZgop0OLwTDkaFFdBIk//n7/kuf514UU4Vq
+         RLKf6Fw9Ep1MDXX/3JOCXAt0xQL2GN94FRDk0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+4kopGrPpDmNYqodYUvkjETu0gKLYPPcKDiSzcCSolk=;
-        b=RgKNaaE62iJxFH1sSDih3dwXkz1FZU9YUi3LYMPuZ23L74mPo7WLVwhhxbCknqmO1y
-         swB/RpjD6ru7cMNnxIPXx6kqy5LsEDGWjgPM5pyc6ep0OQlnNsCG8I1RBGMVlnswKOFM
-         LCxVsyhODe+pf0B7G/J6TV1sraX/6jK6L6tC0hVKfZRyLw2LprVxXcpcz4zSPwRt5Oj8
-         BstWH/NuAXIR8pvmBhM5dHrZUE74dKz4TrVUpgMxh/bO7utgyyLMsUwcPWPSojp0x03a
-         voNugZvru8K0NyB4jos1uwiLm1BkjALY2sjYBdNd3HO5JySOTg4/G/IO6Xr010Dq6cMw
-         j0hw==
-X-Gm-Message-State: AOAM532hTeDw7/CuoDgQnd2kcjvRI42g79CqMNzYzOJSziGOaC11x3cm
-        82QQ5ebAKqRpEiRv6fNi5E5nsA==
-X-Google-Smtp-Source: ABdhPJx26aWTFfzLyGpF4prhXg+t+dlc0PPGGBZjuc0JwvcXYW9VyW07WF5AIG38G74nnkzD7F2i6w==
-X-Received: by 2002:a63:5218:: with SMTP id g24mr28883071pgb.309.1622571728889;
-        Tue, 01 Jun 2021 11:22:08 -0700 (PDT)
+        bh=XPjY3p17RpdUxmvaUzvStFXowgAqs5bSM8U5J4753tM=;
+        b=MdwYUTy6Q9Z2Kg7Ch3Cs9la/e3N9znYMrS2Nk156peD4GUq1m0qAMk9kQl2iYV8XGl
+         JbCQLgLmg6Dc9uAhjLmfWTmSPurzDTGOoP9XmCUZxEB54xa9m1ieIer8DI9rzgzhgcY5
+         W4EEkFa6s7Q90z4UyejXKXuHBMeHkihNwOPp0mdK1m/ZLNg7mbnRg2iW91tsR21OgLMl
+         xSWyzzR6pNg2zrh2X0Pplqeznz4saT2BsgNeeakserorZrnAyjxFlZV2+GcthhtZBrz2
+         Wc1ICv0C8/f/pZRFtAvOE98LALbV/zb6JllvFgG+eHDKNUugUOTMVXf5e+EAKifWM5i9
+         Ee0g==
+X-Gm-Message-State: AOAM530Pg2T54nHZUQIeByd5P29V9EyHwKkpnIQ+FnWyOH33F2KT32Ur
+        uP8+Em7hp2SJlKrgRS4iwcMXJg==
+X-Google-Smtp-Source: ABdhPJw35jzyT/JFV/F68qpD5e6asH7oVRjLNYleVcXFqZXGe2B72Cc7Y+nPOxbvoNAkIjfZYCR+ZQ==
+X-Received: by 2002:aa7:82c6:0:b029:2d8:9160:5942 with SMTP id f6-20020aa782c60000b02902d891605942mr22919323pfn.78.1622571730084;
+        Tue, 01 Jun 2021 11:22:10 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:ee82:b2a7:c8bd:18e7])
-        by smtp.gmail.com with ESMTPSA id g29sm14510982pgm.11.2021.06.01.11.22.07
+        by smtp.gmail.com with ESMTPSA id g29sm14510982pgm.11.2021.06.01.11.22.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 11:22:08 -0700 (PDT)
+        Tue, 01 Jun 2021 11:22:09 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        Petr Mladek <pmladek@suse.com>
-Subject: [PATCH v3 3/4] slub: Indicate slab_fix() uses printf formats
-Date:   Tue,  1 Jun 2021 11:22:01 -0700
-Message-Id: <20210601182202.3011020-4-swboyd@chromium.org>
+        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
+Subject: [PATCH v3 4/4] slub: Force on no_hash_pointers when slub_debug is enabled
+Date:   Tue,  1 Jun 2021 11:22:02 -0700
+Message-Id: <20210601182202.3011020-5-swboyd@chromium.org>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 In-Reply-To: <20210601182202.3011020-1-swboyd@chromium.org>
 References: <20210601182202.3011020-1-swboyd@chromium.org>
@@ -66,56 +65,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches <joe@perches.com>
+Obscuring the pointers that slub shows when debugging makes for some
+confusing slub debug messages:
 
-Ideally, slab_fix() would be marked with __printf and the format here
-would not use \n as that's emitted by the slab_fix(). Make these
-changes.
+ Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
 
-Signed-off-by: Joe Perches <joe@perches.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Those addresses are hashed for kernel security reasons. If we're trying
+to be secure with slub_debug on the commandline we have some big
+problems given that we dump whole chunks of kernel memory to the kernel
+logs. Let's force on the no_hash_pointers commandline flag when
+slub_debug is on the commandline. This makes slub debug messages more
+meaningful and if by chance a kernel address is in some slub debug
+object dump we will have a better chance of figuring out what went
+wrong.
+
+Note that we don't use %px in the slub code because we want to reduce
+the number of places that %px is used in the kernel. This also nicely
+prints a big fat warning at kernel boot if slub_debug is on the
+commandline so that we know that this kernel shouldn't be used on
+production systems.
+
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- mm/slub.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ include/linux/kernel.h | 2 ++
+ lib/vsprintf.c         | 2 +-
+ mm/slub.c              | 4 ++++
+ 3 files changed, 7 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 15d8bad3d2f2..bf950621febf 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -357,6 +357,8 @@ int sscanf(const char *, const char *, ...);
+ extern __scanf(2, 0)
+ int vsscanf(const char *, const char *, va_list);
+ 
++extern int no_hash_pointers_enable(char *str);
++
+ extern int get_option(char **str, int *pint);
+ extern char *get_options(const char *str, int nints, int *ints);
+ extern unsigned long long memparse(const char *ptr, char **retptr);
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index f0c35d9b65bf..cc281f5895f9 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2186,7 +2186,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+ bool no_hash_pointers __ro_after_init;
+ EXPORT_SYMBOL_GPL(no_hash_pointers);
+ 
+-static int __init no_hash_pointers_enable(char *str)
++int __init no_hash_pointers_enable(char *str)
+ {
+ 	if (no_hash_pointers)
+ 		return 0;
 diff --git a/mm/slub.c b/mm/slub.c
-index 6168b3ce1b3e..bf4949115412 100644
+index bf4949115412..a722794f1dbd 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -672,6 +672,7 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
- 	va_end(args);
- }
+@@ -4460,6 +4460,10 @@ void __init kmem_cache_init(void)
+ 	if (debug_guardpage_minorder())
+ 		slub_max_order = 0;
  
-+__printf(2, 3)
- static void slab_fix(struct kmem_cache *s, char *fmt, ...)
- {
- 	struct va_format vaf;
-@@ -777,7 +778,7 @@ static void init_object(struct kmem_cache *s, void *object, u8 val)
- static void restore_bytes(struct kmem_cache *s, char *message, u8 data,
- 						void *from, void *to)
- {
--	slab_fix(s, "Restoring %s 0x%p-0x%p=0x%x\n", message, from, to - 1, data);
-+	slab_fix(s, "Restoring %s 0x%p-0x%p=0x%x", message, from, to - 1, data);
- 	memset(from, data, to - from);
- }
++	/* Print slub debugging pointers without hashing */
++	if (static_branch_unlikely(&slub_debug_enabled))
++		no_hash_pointers_enable(NULL);
++
+ 	kmem_cache_node = &boot_kmem_cache_node;
+ 	kmem_cache = &boot_kmem_cache;
  
-@@ -1026,13 +1027,13 @@ static int on_freelist(struct kmem_cache *s, struct page *page, void *search)
- 		slab_err(s, page, "Wrong number of objects. Found %d but should be %d",
- 			 page->objects, max_objects);
- 		page->objects = max_objects;
--		slab_fix(s, "Number of objects adjusted.");
-+		slab_fix(s, "Number of objects adjusted");
- 	}
- 	if (page->inuse != page->objects - nr) {
- 		slab_err(s, page, "Wrong object count. Counter is %d but counted were %d",
- 			 page->inuse, page->objects - nr);
- 		page->inuse = page->objects - nr;
--		slab_fix(s, "Object count adjusted.");
-+		slab_fix(s, "Object count adjusted");
- 	}
- 	return search == NULL;
- }
 -- 
 https://chromeos.dev
 
