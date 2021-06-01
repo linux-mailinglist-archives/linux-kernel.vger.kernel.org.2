@@ -2,161 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFDA39701E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A02397023
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233479AbhFAJRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:17:37 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63288 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhFAJRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:17:34 -0400
-IronPort-SDR: n/O5j2G822giEhSf58PoeGvby5D8hBcqNTmZQx3xBa3H2akwE/Te5zhl+wZTQfmEmVkFh8kjMt
- /PnybT8vQ1OQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="203542540"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="203542540"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 02:15:52 -0700
-IronPort-SDR: Bw0tk3C7d1eONPubV8f1kyR9bZ+TSKu8KpyNrFseCA1eadASP2wH92/dAbzFseIm9hc6Hhv/pw
- A19f5nJPi4nw==
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="416411726"
-Received: from deancarp-mobl.ger.corp.intel.com (HELO [10.213.232.28]) ([10.213.232.28])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 02:15:50 -0700
-Subject: Re: [Intel-gfx] [PATCH -next] drm/i915: use DEVICE_ATTR_RO macro
-To:     YueHaibing <yuehaibing@huawei.com>, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, chris@chris-wilson.co.uk,
-        tvrtko.ursulin@intel.com
-Cc:     intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20210528100403.21548-1-yuehaibing@huawei.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <7e60320b-3a1b-0cdc-136d-29c139b27af7@linux.intel.com>
-Date:   Tue, 1 Jun 2021 10:15:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233577AbhFAJSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:18:04 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:54205 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233218AbhFAJRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:17:55 -0400
+Date:   Tue, 01 Jun 2021 09:16:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1622538970;
+        bh=zEBoQZuXbcl3vg0AJIfdTRqG2/JwXZI7r5xWwCgFELM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=aj8sw0MJvu7B7j34QaU2xex28JPvliA57kkKQuZ0mp38/shxMqPZj1oLtKjBdpsFx
+         5pqBSKkhgIV4doqk8drQHzY8EBZ4/nTozFeSSqBxouKHkgXW3n95kwORJodqSXL4dU
+         mb+VEmWv7ageYdxf9jzPDW+IZiz38Z3KA4ya1lhs=
+To:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "phone-devel@vger.kernel.org" <phone-devel@vger.kernel.org>,
+        "~postmarketos/upstreaming@lists.sr.ht" 
+        <~postmarketos/upstreaming@lists.sr.ht>
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: Re: [PATCH 1/2] Input: cypress-sf - Add Cypress StreetFighter touchkey driver
+Message-ID: <bj_bmlxlyRbM5zdpsUEqvPyby_NWhFH95Y9wn9b7EIpvi2N48e6x6dBFY9EpyS4mxJhuRRJeC4ReVM3YMawD44RBZDHdSKftdbV6E8AMuoo=@protonmail.com>
+In-Reply-To: <ocb1SNCqWH2dOajA4VYTx5jo9jZ67pS6FTejJN82OnPIUdmqBXL62kjGDQ-ZIMPnmhm3C16FCJz94cs82kGFmFBq7mERwqtHhwr7BgZC_w0=@protonmail.com>
+References: <ocb1SNCqWH2dOajA4VYTx5jo9jZ67pS6FTejJN82OnPIUdmqBXL62kjGDQ-ZIMPnmhm3C16FCJz94cs82kGFmFBq7mERwqtHhwr7BgZC_w0=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528100403.21548-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Any comments on this patch?
 
-On 28/05/2021 11:04, YueHaibing wrote:
-> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
-> which makes the code a bit shorter and easier to read.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->   drivers/gpu/drm/i915/i915_pmu.c   |  8 +++-----
->   drivers/gpu/drm/i915/i915_sysfs.c | 30 +++++++++++++++---------------
->   2 files changed, 18 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/i915_pmu.c b/drivers/gpu/drm/i915/i915_pmu.c
-> index 41651ac255fa..fb215929b05b 100644
-> --- a/drivers/gpu/drm/i915/i915_pmu.c
-> +++ b/drivers/gpu/drm/i915/i915_pmu.c
-> @@ -834,15 +834,13 @@ static ssize_t i915_pmu_event_show(struct device *dev,
->   	return sprintf(buf, "config=0x%lx\n", eattr->val);
->   }
->   
-> -static ssize_t
-> -i915_pmu_get_attr_cpumask(struct device *dev,
-> -			  struct device_attribute *attr,
-> -			  char *buf)
-> +static ssize_t cpumask_show(struct device *dev,
-> +			    struct device_attribute *attr, char *buf)
->   {
->   	return cpumap_print_to_pagebuf(true, buf, &i915_pmu_cpumask);
->   }
->   
-> -static DEVICE_ATTR(cpumask, 0444, i915_pmu_get_attr_cpumask, NULL);
-> +static DEVICE_ATTR_RO(cpumask);
->   
->   static struct attribute *i915_cpumask_attrs[] = {
->   	&dev_attr_cpumask.attr,
-> diff --git a/drivers/gpu/drm/i915/i915_sysfs.c b/drivers/gpu/drm/i915/i915_sysfs.c
-> index 4c6b5d52b5ca..183517d1a73d 100644
-> --- a/drivers/gpu/drm/i915/i915_sysfs.c
-> +++ b/drivers/gpu/drm/i915/i915_sysfs.c
-> @@ -58,8 +58,8 @@ static u32 calc_residency(struct drm_i915_private *dev_priv,
->   	return DIV_ROUND_CLOSEST_ULL(res, 1000);
->   }
->   
-> -static ssize_t
-> -show_rc6_mask(struct device *kdev, struct device_attribute *attr, char *buf)
-> +static ssize_t rc6_enable_show(struct device *kdev,
-> +			       struct device_attribute *attr, char *buf)
->   {
->   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->   	unsigned int mask;
-> @@ -75,43 +75,43 @@ show_rc6_mask(struct device *kdev, struct device_attribute *attr, char *buf)
->   	return sysfs_emit(buf, "%x\n", mask);
->   }
->   
-> -static ssize_t
-> -show_rc6_ms(struct device *kdev, struct device_attribute *attr, char *buf)
-> +static ssize_t rc6_residency_ms_show(struct device *kdev,
-> +				     struct device_attribute *attr, char *buf)
->   {
->   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->   	u32 rc6_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6);
->   	return sysfs_emit(buf, "%u\n", rc6_residency);
->   }
->   
-> -static ssize_t
-> -show_rc6p_ms(struct device *kdev, struct device_attribute *attr, char *buf)
-> +static ssize_t rc6p_residency_ms_show(struct device *kdev,
-> +				      struct device_attribute *attr, char *buf)
->   {
->   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->   	u32 rc6p_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6p);
->   	return sysfs_emit(buf, "%u\n", rc6p_residency);
->   }
->   
-> -static ssize_t
-> -show_rc6pp_ms(struct device *kdev, struct device_attribute *attr, char *buf)
-> +static ssize_t rc6pp_residency_ms_show(struct device *kdev,
-> +				       struct device_attribute *attr, char *buf)
->   {
->   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->   	u32 rc6pp_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6pp);
->   	return sysfs_emit(buf, "%u\n", rc6pp_residency);
->   }
->   
-> -static ssize_t
-> -show_media_rc6_ms(struct device *kdev, struct device_attribute *attr, char *buf)
-> +static ssize_t media_rc6_residency_ms_show(struct device *kdev,
-> +					   struct device_attribute *attr, char *buf)
->   {
->   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->   	u32 rc6_residency = calc_residency(dev_priv, VLV_GT_MEDIA_RC6);
->   	return sysfs_emit(buf, "%u\n", rc6_residency);
->   }
->   
-> -static DEVICE_ATTR(rc6_enable, S_IRUGO, show_rc6_mask, NULL);
-> -static DEVICE_ATTR(rc6_residency_ms, S_IRUGO, show_rc6_ms, NULL);
-> -static DEVICE_ATTR(rc6p_residency_ms, S_IRUGO, show_rc6p_ms, NULL);
-> -static DEVICE_ATTR(rc6pp_residency_ms, S_IRUGO, show_rc6pp_ms, NULL);
-> -static DEVICE_ATTR(media_rc6_residency_ms, S_IRUGO, show_media_rc6_ms, NULL);
-> +static DEVICE_ATTR_RO(rc6_enable);
-> +static DEVICE_ATTR_RO(rc6_residency_ms);
-> +static DEVICE_ATTR_RO(rc6p_residency_ms);
-> +static DEVICE_ATTR_RO(rc6pp_residency_ms);
-> +static DEVICE_ATTR_RO(media_rc6_residency_ms);
->   
->   static struct attribute *rc6_attrs[] = {
->   	&dev_attr_rc6_enable.attr,
-> 
-
-Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-
-Regards,
-
-Tvrtko
+Yassine
