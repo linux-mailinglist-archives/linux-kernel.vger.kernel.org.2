@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B716339772C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0E6397732
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234336AbhFAPvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233301AbhFAPvs (ORCPT
+        id S234177AbhFAPxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:53:18 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3120 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhFAPxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:51:48 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14ECC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:50:05 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id h3so8510064wmq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WdETsCRKY4os9kllNCB4jSefDrVkhrCY6bqwrR0XeTw=;
-        b=gddUDKq8PpQrhDh2XK3F6MMe5HbMGjC6l9SoxQ5sC9Fd30FUCB08CWBakDshCYQmBM
-         6lWGK2tDdV1rv/WXjuohz8XG/DMY+Jf6Y83nchdRii0wJXQrv0eQVflubk0ql4/7bcLY
-         xqSSkNniR2rBTb9x/zdj3Dh4uNAGRYc8hfbmvH6PdW1l4a7LYPAzb6q2OeRnjLyKBMFe
-         nA2gCXwbqhU8l2NrYAsjlAcL2ki0tC7Pzl3TK9XJsIOTppPyY9Gs+FNKm84rj+nBRiZk
-         1YqejYf24mcrGKFS2cHx+z4LiX+jKYmRCVzzpRFA1fimvl6AFG3heEFkfWjMRESu67l4
-         Nkuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WdETsCRKY4os9kllNCB4jSefDrVkhrCY6bqwrR0XeTw=;
-        b=uBQUK4roeAzX7bsFC+sVu6erOzmLQQjih0MM6577C5E2s+U4jaRuKNiUA3KHbKqvBM
-         1TsEMdpKud3QwNMIDmxkJAmTIFpERi09tDg+7PzT86E3HtcHdMW449Rzl3sIBRXAJpNU
-         o62+6SX17AG1d0PwsjxJ15OhM7A0vmhBW1YuedsacssUJCoZHXVW0vpeCdSJVv97LayI
-         38DL0HNupBGwMHdy2BlapEWtQwH7Oz4yUfCr+3KjCI9EQwTQaxCXpyvtGg6fD01w8yLZ
-         82ua1jdv7jVVruxqg2jmnXmH53HEOm4nglnjlwqr2l3zJQN7z1mr2wJXydOSsEs5nVoI
-         xpEg==
-X-Gm-Message-State: AOAM530GvtHSYsGF/Wq4dpqyYdlKy/srjwTpaDsosYnXDuXPWMgLL4ri
-        4iRbC9xxnb8UqZZtePKwZYKyOw==
-X-Google-Smtp-Source: ABdhPJxm/6kOzJAMLbPyTQnHiUuT3hRimVa19PcjdNU3xnm14yvjNYHVap2PwllbKoR3LOA/NjtnIA==
-X-Received: by 2002:a05:600c:2054:: with SMTP id p20mr562349wmg.165.1622562604490;
-        Tue, 01 Jun 2021 08:50:04 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id 25sm2949103wmk.20.2021.06.01.08.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 08:50:03 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 16:50:02 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: mfd: ti,j721e-system-controller: Fix
- mux node errors
-Message-ID: <20210601155002.GB2165650@dell>
-References: <20210526184839.2937899-1-robh@kernel.org>
- <20210526184839.2937899-2-robh@kernel.org>
+        Tue, 1 Jun 2021 11:53:14 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fvc195RKCz6Q3Df;
+        Tue,  1 Jun 2021 23:45:01 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 17:51:31 +0200
+Received: from [10.47.91.52] (10.47.91.52) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 16:51:30 +0100
+Subject: Re: [PATCH] iommu: Print default strict or lazy mode at init time
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <will@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>
+References: <1622209074-37899-1-git-send-email-john.garry@huawei.com>
+ <3ee986a0-29c1-100c-c72f-360f919caf7d@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e478aea8-54d3-bfc6-1bc8-b0c7709e353a@huawei.com>
+Date:   Tue, 1 Jun 2021 16:50:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <3ee986a0-29c1-100c-c72f-360f919caf7d@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210526184839.2937899-2-robh@kernel.org>
+X-Originating-IP: [10.47.91.52]
+X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021, Rob Herring wrote:
-
-> The ti,j721e-system-controller binding does not follow the standard mux
-> controller node name 'mux-controller' and the example is incomplete. Fix
-> these to avoid schema errors before the mux controller binding is
-> converted to schema.
+On 01/06/2021 10:09, Robin Murphy wrote:
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 808ab70d5df5..f25fae62f077 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -138,6 +138,11 @@ static int __init iommu_subsys_init(void)
+>>           (iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
+>>               "(set via kernel command line)" : "");
+>> +    pr_info("Default DMA domain mode: %s %s\n",
 > 
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../mfd/ti,j721e-system-controller.yaml       | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
+> Nit: I think this might be a little unclear for end-users - *I'm* not 
+> even sure whether "Default" here is meant to refer to the mode setting 
+> itself or to default domains (of DMA type). Maybe something like "DMA 
+> domain TLB invalidation policy"? Certainly it seems like a good idea to 
+> explicitly mention invalidation to correlate with the documentation of 
+> the "iommu.strict" parameter.
+> 
+> Ack to the general idea though.
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+ok, so I'll go with this:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+pr_info("DMA domain default TLB invalidation policy: %s mode %s\n",
+               iommu_dma_strict ? "strict" : "lazy",
+                (iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
+                        "(set via kernel command line)" : "");
+
+I think it's worth mentioning "default" somewhere, as not all IOMMUs or 
+devices will use lazy mode even if it's default.
+
+Thanks,
+John
