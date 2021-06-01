@@ -2,200 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F714397005
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BE539700C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhFAJMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhFAJMM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:12:12 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4729C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:10:30 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id r6so4838699ilj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cm1zKdzH5luYSV4zfueSOrqr8qzCXCW4+Xq8BpmqA7Q=;
-        b=G1EOnFwzlUcOj+mQ2hVnmDrnG4jV6IaWiG/hy1cVgvwY8heUh+zr4yQb1GnsUe04e3
-         Yd8Es1UscpvrVh9kjJNxCyFcjYubC1q36c4AyxYNOSfMSDhBQXl2hAf+lfLWueLJagxP
-         Z+sxRrWtwqeXmuPc/d2weCwfIZ3MMzZ08Jva6zMZQFkMPW616M75TwdW4U43+z+S6AY5
-         rcMlBzjafz6zHA1YfpJoF3zfEuYUAxrG4sEbPF5xCjSwNO2v/PewrNSXfSj2pzBiCVi7
-         VBPyPGpNCOmwG3O4cw2BbXl/aEVC1M1VPuraUdmXOK+RTW9RmGcpCI505QKihdxCje60
-         k7LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cm1zKdzH5luYSV4zfueSOrqr8qzCXCW4+Xq8BpmqA7Q=;
-        b=S5qfx/+6YaqAzgcy4HN98epq3nfDmhW48CvQDKUERQ7aNnVyQTdCLDIfE3YBcqOFTg
-         XnO1P6cGvEAXFqylSMPfep1TgvtQ0s5Io1Y2Z9lGXUC0jvl4o6q5eAtmViAZKKLW3lkT
-         OlAit2L0UEYIQcXdBOt8iAY/XW2k5IFhtYdjg+XUnUr4WVoXdIBIZDDbo/GOme5Hn6p4
-         pJjOsxpE5rmFI1FczzHfE3HAhS4UbIz/vTDI0NqVnTiZrcnAtkpQuqjxncvgR7qQrL1A
-         AQsZNXZJAjfiCItMqJ5h2OsBVA7CrRWDyV44VeIAv2VBdyCwMpBD7sDvbWWrZ/K0rmD6
-         d8fA==
-X-Gm-Message-State: AOAM533LrK152gNTNr4DMGxPqD8EOqQ3sj3rXMvRP/gZh296xqgCRUph
-        7WyJWejpAjyWPeFP8DIvE4imPBNmiXENwkrxNu7dSw==
-X-Google-Smtp-Source: ABdhPJx4Nd1+PVFLw0K7RiEnDfXvuR5hb0Eor8DBxwJ9aKS6tRpKO5WzBcuIXJE63Zw4MQi4lvk0qhEH/abkgwD+WBY=
-X-Received: by 2002:a05:6e02:1393:: with SMTP id d19mr20354035ilo.90.1622538630053;
- Tue, 01 Jun 2021 02:10:30 -0700 (PDT)
+        id S233713AbhFAJNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:13:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233609AbhFAJMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:12:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 740A461396;
+        Tue,  1 Jun 2021 09:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622538668;
+        bh=KHbaP0oThoyIuyvZgIxcywmbQIVlr7bH6FIPBbBUg+E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LjJW+CAVSRZP4LpPQE/e/LMhLd3PoiCpDmPP6z+EL0Q/08vk8zugVMOgRoEdXpFos
+         2ahO0FaJ81HmgsS0JW1BVTA/UcS9/3/Um0ovXkULEz4PsazRjfK2YwhAjUTp+zAR/+
+         tmg5tg4Oo/ejmdM2iryYkyKMAFotTShs0HICSGBQPz/fLfYB11g2eY7iRLNbZldweQ
+         uNtukRZdBHPckCUyB14lNRPP1uVlSMmseLdCNgtnB7yQ2N98BRz1yDqgT8lrzt05Ey
+         e71YXBnuCNuCzOrqHM7kLcTqb6dnR93xBtkUql5O2xbli9Cf1+RfI8nFs4cSripfrj
+         H6faVBc57iJug==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lo0QT-000vRf-Uy; Tue, 01 Jun 2021 11:11:05 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH v2 0/3] Move av7110 driver to staging
+Date:   Tue,  1 Jun 2021 11:11:01 +0200
+Message-Id: <cover.1622537534.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr> <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell> <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
- <20210526075255.GG4005783@dell> <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
- <20210601081933.GU543307@dell> <20210601082226.GV543307@dell>
-In-Reply-To: <20210601082226.GV543307@dell>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 1 Jun 2021 11:10:19 +0200
-Message-ID: <CA+HBbNEHgUxE-F4iiAbCyt3ffypUJf2nePUsOmCjpFoJNkpCJw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 10:22 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Tue, 01 Jun 2021, Lee Jones wrote:
->
-> > On Mon, 31 May 2021, Robert Marko wrote:
-> >
-> > > On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrot=
-e:
-> > > >
-> > > > On Tue, 25 May 2021, Robert Marko wrote:
-> > > >
-> > > > > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> =
-wrote:
-> > > > > >
-> > > > > > On Mon, 24 May 2021, Rob Herring wrote:
-> > > > > >
-> > > > > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > > > > > > > Add binding documents for the Delta TN48M CPLD drivers.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > > > > > ---
-> > > > > > > > Changes in v2:
-> > > > > > > > * Implement MFD as a simple I2C MFD
-> > > > > > > > * Add GPIO bindings as separate
-> > > > > > >
-> > > > > > > I don't understand why this changed. This doesn't look like a=
-n MFD to
-> > > > > > > me. Make your binding complete if there are missing functions=
-.
-> > > > > > > Otherwise, stick with what I already ok'ed.
-> > > > > >
-> > > > > > Right.  What else, besides GPIO, does this do?
-> > > > >
-> > > > > It currently does not do anything else as hwmon driver was essent=
-ially
-> > > > > NACK-ed for not exposing standard attributes.
-> > > >
-> > > > Once this provides more than GPIO capabilities i.e. becomes a prope=
-r
-> > > > Multi-Function Device, then it can use the MFD framework.  Until th=
-en,
-> > > > it's a GPIO device I'm afraid.
-> > > >
-> > > > Are you going to re-author the HWMON driver to conform?
-> > > hwmon cannot be reathored as it has no standard hwmon attributes.
-> > >
-> > > >
-> > > > > The CPLD itself has PSU status-related information, bootstrap rel=
-ated
-> > > > > information,
-> > > > > various resets for the CPU-s, OOB ethernet PHY, information on th=
-e exact board
-> > > > > model it's running etc.
-> > > > >
-> > > > > PSU and model-related info stuff is gonna be exposed via a misc d=
-river
-> > > > > in debugfs as
-> > > > > we have user-space SW depending on that.
-> > > > > I thought we agreed on that as v1 MFD driver was exposing those d=
-irectly and
-> > > > > not doing anything else.
-> > > >
-> > > > Yes, we agreed that creating an MFD driver just to expose chip
-> > > > attributes was not an acceptable solution.
-> > > >
-> > > > > So I moved to use the simple I2C MFD driver, this is all modeled =
-on the sl28cpld
-> > > > > which currently uses the same driver and then GPIO regmap as I do=
-.
-> > > > >
-> > > > > Other stuff like the resets is probably gonna get exposed later w=
-hen
-> > > > > it's required
-> > > > > to control it directly.
-> > > >
-> > > > In order for this driver to tick the MFD box, it's going to need mo=
-re
-> > > > than one function.
-> > >
-> > > Understood, would a debug driver count or I can expose the resets via
-> > > a reset driver
-> > > as we have a future use for them?
-> >
-> > CPLDs and FPGAs are funny ones and are often difficult to support in
-> > Linux.  Especially if they can change their behaviour.
-> >
-> > It's hard to make a solid suggestion as to how your device is handled
-> > without knowing the intricacies of the device.
-> >
-> > Why do you require one single Regmap anyway?  Are they register banks
-> > not neatly separated on a per-function basis?
->
-> Also, if this is really just a GPIO expander, can't the GPIO driver
-> output something to /sysfs that identifies it to userspace instead?
+This driver was written for a hardware manufactured by TI from
+a design made by Convergence. Such hardware supports only
+MPEG2, which doesn't fit most of the current DVB transmissions.
 
-I replied to your previous reply instead of this one directly.
-It's not just a GPIO expander, it also provides resets to all of the HW
-and a lot of debugging information.
-Note that other switches use the same CPLD but with more features
-so I want to just extend these drivers and add for example hwmon.
+It stopped being manufactured more than a decade ago.
 
-It's not just about it identifying itself, it offers a lot of various
-debug info,
-quite literally down to what CPU has access to the serial console on the
-front and their bootstrap pins.
+Also, recent checks identified that a frontend used by such driver
+was broken for sometime without nobody noticing it.
 
-So, I want to expose the CPLD version, code version, switch model,
-PSU status pins and a lot more using a separate driver as they
-don't really belong to any other subsystem than misc using debugfs.
+It means that it is time to retire it for good.
 
-I hope this clears things up,
-Robert
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+This series move both av7110 and sp8870 frontend drivers (which
+is used only by av7110) to staging, while keeping the remaining
+ttpci support upstream.
+
+It also moves ttpci-eeprom to a common place, as it is used by
+both a PCI and an USB driver.
+
+---
+
+v2:
+  - Fix a typo at the TODO file;
+  - Add a note at TODO that cleanup patches won't be accepted;
+  - Changed the description of the second patch.
+
+Mauro Carvalho Chehab (3):
+  media: move ttpci-eeprom to common
+  media: av7110: move driver to staging
+  media: sp8870: move it to staging
+
+ drivers/media/common/Kconfig                  |  4 +
+ drivers/media/common/Makefile                 |  1 +
+ .../{pci/ttpci => common}/ttpci-eeprom.c      |  0
+ .../{pci/ttpci => common}/ttpci-eeprom.h      |  0
+ drivers/media/dvb-frontends/Kconfig           | 12 ---
+ drivers/media/dvb-frontends/Makefile          |  1 -
+ drivers/media/pci/ttpci/Kconfig               | 74 ---------------
+ drivers/media/pci/ttpci/Makefile              | 11 +--
+ drivers/media/pci/ttpci/budget.h              |  2 +-
+ drivers/media/usb/Kconfig                     |  5 -
+ drivers/media/usb/dvb-usb/Makefile            |  2 +-
+ drivers/staging/media/Kconfig                 |  2 +
+ drivers/staging/media/Makefile                |  1 +
+ drivers/staging/media/av7110/Kconfig          | 94 +++++++++++++++++++
+ drivers/staging/media/av7110/Makefile         | 22 +++++
+ drivers/staging/media/av7110/TODO             |  3 +
+ .../ttpci => staging/media/av7110}/av7110.c   |  0
+ .../ttpci => staging/media/av7110}/av7110.h   |  0
+ .../media/av7110}/av7110_av.c                 |  0
+ .../media/av7110}/av7110_av.h                 |  0
+ .../media/av7110}/av7110_ca.c                 |  0
+ .../media/av7110}/av7110_ca.h                 |  0
+ .../media/av7110}/av7110_hw.c                 |  0
+ .../media/av7110}/av7110_hw.h                 |  0
+ .../media/av7110}/av7110_ipack.c              |  0
+ .../media/av7110}/av7110_ipack.h              |  0
+ .../media/av7110}/av7110_ir.c                 |  0
+ .../media/av7110}/av7110_v4l.c                |  0
+ .../media/av7110}/budget-patch.c              |  0
+ .../media/av7110}/dvb_filter.c                |  0
+ .../media/av7110}/dvb_filter.h                |  0
+ .../media/av7110}/sp8870.c                    |  0
+ .../media/av7110}/sp8870.h                    |  0
+ 33 files changed, 130 insertions(+), 104 deletions(-)
+ rename drivers/media/{pci/ttpci => common}/ttpci-eeprom.c (100%)
+ rename drivers/media/{pci/ttpci => common}/ttpci-eeprom.h (100%)
+ create mode 100644 drivers/staging/media/av7110/Kconfig
+ create mode 100644 drivers/staging/media/av7110/Makefile
+ create mode 100644 drivers/staging/media/av7110/TODO
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110.h (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_av.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_av.h (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_ca.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_ca.h (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_hw.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_hw.h (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_ipack.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_ipack.h (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_ir.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/av7110_v4l.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/budget-patch.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/dvb_filter.c (100%)
+ rename drivers/{media/pci/ttpci => staging/media/av7110}/dvb_filter.h (100%)
+ rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.c (100%)
+ rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.h (100%)
+
+-- 
+2.31.1
 
 
-
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
