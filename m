@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173FC397AF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A8D397AF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234721AbhFAUHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 16:07:02 -0400
-Received: from mga17.intel.com ([192.55.52.151]:35476 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234638AbhFAUG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 16:06:58 -0400
-IronPort-SDR: Ku4Wsti7BHZ8oKdQGAk0DAPaW8yzPVBBc6ILFzewisoqnkoNzFpS3WSIHUfiEHpXO3CKj+J46E
- /S4cNbHtc/bw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="183994635"
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="183994635"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 13:05:16 -0700
-IronPort-SDR: DjJfAB4g7QXJ7aEB/ShUAQrmmdVPyObelpyuK5Mn5Ut6LxPLpxrPP8uGIqaJ9E9lr6keeCZcsM
- 6SqsAgorXNPA==
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="479418474"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 13:05:15 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Christopher BeSerra <beserra@amazon.com>, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] x86/mce: Provide sysfs interface to show CMCI storm state
-Date:   Tue,  1 Jun 2021 13:05:05 -0700
-Message-Id: <20210601200505.966849-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
+        id S234698AbhFAUHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 16:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234836AbhFAUHN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 16:07:13 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CD7C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 13:05:27 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id r1so256080pgk.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 13:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=unxYYUIJtzBYSX4MANGuQqbleLprmVLiT5PFu/4IgM8=;
+        b=I4Y2WG6Fm0u56jprweWhvuUHM1OeSnYiQyyVI2kWvbTGhM22BtdsOkQBPkjs31huYB
+         Mmzi/aCBh+wLAEaOlC30D+9T8IItdg638U/Poy1jQVG4vIMrqd8BLVayZfriNqFUWcoK
+         KKhO7ietySBL41WRLIdm0WigKvuKY7tnkbb2lafcRFNZbvEQ5r8N3pzoBH/JPoX3Ux1R
+         bpcyWADATVqSHOW07R3fQYLATcL1Tfsfeb4Ry3toczn+qmm4tgYpcLnmw3MtV+oJ2vHI
+         fXqk6QJsgD7g04fmJW9t3TY/4eT4k167TNOJX05Q7kUErUl6ewk72PRaenwmnUS1x6+0
+         Og5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=unxYYUIJtzBYSX4MANGuQqbleLprmVLiT5PFu/4IgM8=;
+        b=BhNLeZwxmcnDeXma+LK9JyOatbkVjxrlaWJggV8wPjn3dnHnClNDy/kGFZf3r/S5DN
+         um/KauORVf5ZlnpYQNmL0ew5Lot5ppd/1DF8lmmoPsLNyJk1aND2j4j/YpeeqshCwfvU
+         CaUmOIYgqpxzhbWx82QtcYTaiqYlBIa7Zt7xkY2az/H/4ybGX4wQJHvFCt3TLcLhHpQx
+         McMYpDgk25qweNOgHTM7oe/wrEJvnzEoSfrS2R4h/6LMLOZ8ZDl8IQfSdbQb99TqWQvs
+         CCS/3UkMShZih+bXkowgpB9lJNzJUxEsIAd6mmMPrxZROJHuHX20v41vumTmWEYgbi22
+         WTRA==
+X-Gm-Message-State: AOAM5328P/6muE9KJ09EJq7QYSavV/OOOtzvKNXHQyv4NLolt9rel1tR
+        Vjs5TJYSm8Cv4JgBHa/vi/8=
+X-Google-Smtp-Source: ABdhPJwxegWvJ6SacBtxU7EltgrnbygfeJpMF1B4eYwaVNQ9R7wOaR6qDVUnnGdIsdi4HMskObkOyg==
+X-Received: by 2002:a63:1559:: with SMTP id 25mr30519910pgv.384.1622577926897;
+        Tue, 01 Jun 2021 13:05:26 -0700 (PDT)
+Received: from ojas ([2405:204:130c:d068:69c0:20e2:ff2e:7df0])
+        by smtp.gmail.com with ESMTPSA id z19sm2747045pjq.11.2021.06.01.13.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 13:05:26 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 01:35:13 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     nsaenz@kernel.org
+Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: staging: vc04_services: Need suggestions on trying to fix sparse
+ warning in vchiq_arm.c
+Message-ID: <20210601200513.GA10204@ojas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Scripts that process error logs can do better if they know whether
-Linux is executing in CMCI storm mode (only polling and reporting
-some errors instead of trying to report them all). While it is possible
-to parse the console log for:
+Hello,
 
-	CMCI storm detected: switching to poll mode
-	CMCI storm subsided: switching to interrupt mode
+I was trying to address the following TODO item in
+"drivers/staging/vc04_services/interface/TODO" and would love some comments and
+suggestions on this:
 
-messages, that is error prone.
+>  14) Clean up Sparse warnings from __user annotations. See
+>  vchiq_irq_queue_bulk_tx_rx(). Ensure that the address of "&waiter->bulk_waiter"
+>  is never disclosed to userspace.
 
-Add a new file to sysfs to report the current storm count.
+More specifically, I was looking at ways to fix the following sparse warning:
 
-Reported-by: Christopher BeSerra <beserra@amazon.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
+	drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c:1001:26:
 
-RFC questions:
-1) Is there a better way to do this?
-2) Maybe just return 0 or 1 instead of the count?
-3) Is there a cleaner way to handle the CONFIG_X86_MCE_INTEL dependency
+	warning: incorrect type in assignment (different address spaces)
+	expected void *[assigned] userdata
+	got void [noderef] __user *userdata
 
- arch/x86/kernel/cpu/mce/core.c  | 20 ++++++++++++++++++++
- arch/x86/kernel/cpu/mce/intel.c |  5 +++++
- 2 files changed, 25 insertions(+)
+From my understanding, the issue seems to be that the (void *)userdata local
+variable in vchiq_irq_queue_bulk_tx_rx() can be assigned a (void __user *) or a
+(struct bulk_waiter *). This makes the assignment tricky since it can either be
+a userspace pointer or a kernel pointer.
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index bf7fe87a7e88..4c4d6b1ec120 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -2431,6 +2431,20 @@ static ssize_t store_int_with_restart(struct device *s,
- 	return ret;
- }
- 
-+#ifndef CONFIG_X86_MCE_INTEL
-+static int cmci_storm_value(void)
-+{
-+	return 0;
-+}
-+#else
-+int cmci_storm_value(void);
-+#endif
-+
-+static ssize_t show_storm(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	return sysfs_emit(buf, "%d\n", cmci_storm_value());
-+}
-+
- static DEVICE_INT_ATTR(tolerant, 0644, mca_cfg.tolerant);
- static DEVICE_INT_ATTR(monarch_timeout, 0644, mca_cfg.monarch_timeout);
- static DEVICE_BOOL_ATTR(dont_log_ce, 0644, mca_cfg.dont_log_ce);
-@@ -2451,6 +2465,11 @@ static struct dev_ext_attribute dev_attr_cmci_disabled = {
- 	&mca_cfg.cmci_disabled
- };
- 
-+static struct dev_ext_attribute dev_attr_show_storm = {
-+	__ATTR(show_storm, 0444, show_storm, NULL),
-+	NULL
-+};
-+
- static struct device_attribute *mce_device_attrs[] = {
- 	&dev_attr_tolerant.attr,
- 	&dev_attr_check_interval.attr,
-@@ -2462,6 +2481,7 @@ static struct device_attribute *mce_device_attrs[] = {
- 	&dev_attr_print_all.attr,
- 	&dev_attr_ignore_ce.attr,
- 	&dev_attr_cmci_disabled.attr,
-+	&dev_attr_show_storm.attr,
- 	NULL
- };
- 
-diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
-index acfd5d9f93c6..4edaa0608de3 100644
---- a/arch/x86/kernel/cpu/mce/intel.c
-+++ b/arch/x86/kernel/cpu/mce/intel.c
-@@ -73,6 +73,11 @@ enum {
- 
- static atomic_t cmci_storm_on_cpus;
- 
-+int cmci_storm_value(void)
-+{
-+	return atomic_read(&cmci_storm_on_cpus);
-+}
-+
- static int cmci_supported(int *banks)
- {
- 	u64 cap;
--- 
-2.29.2
+Right now, we are just ignoring the sparse warning which is essentially
+resulting in the __user attribute being lost when we assign args->userdata to
+userdata. This can be dangerous as it might result in illegal access of
+userspace memory, without any sparse warning, down the line. 
 
+Further, this issue seems to boil down to the fact that the (void *)userdata
+field in struct vchiq_bulk (in vc04_services/interface/vchiq_arm/vchiq_core.h)
+can, again, either be a (stuct bulk_waiter *) or a (void __user *). To fix this,
+I was playing with the idea of modifying this userdata field of struct
+vchiq_bulk to be something like the following:
+
+	diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h 
+	b/ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+
+	--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+	+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
+
+	@@ -227,10 +227,16 @@ enum vchiq_bulk_dir {
+	 
+	 typedef void (*vchiq_userdata_term)(void *userdata);
+	 
+	+struct vchiq_userdata_or_waiter {
+	+		void __user *userdata;
+	+		struct bulk_waiter *bulk_waiter;
+	+               
+	+};
+	+
+	 struct vchiq_bulk {
+			short mode;
+			short dir;
+	-		void *userdata;
+	+		struct vchiq_userdata_or_waiter *userdata_or_waiter;
+			dma_addr_t data;
+			int size;
+			void *remote_data;
+
+I was then planning on modifying all the code that works with
+vchiq_bulk->userdata accordingly. I believe this can help us overcome the sparse
+warnings, as well as preserve the __user attribute in cases when the userspace
+pointer does get assigned here. 
+
+However, since I'm not very familiar with the codebase, I just wanted to confirm
+if this is an acceptable workaround and to make sure I'm not breaking anything
+or overlooked anything here. I noticed that we also want to make sure that 
+bulk_waiter's address is not exposed to userspace. Will it be possible to provide
+some pointers on how/where this might happen, so I can see if I can try to extend 
+this patch to avoid that.
+
+I would love to hear you suggestions and thoughts on this.
+
+PS: I'm new here so please do correct me incase I missed anything.
+
+Regards,
+Ojaswin
