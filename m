@@ -2,334 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B47396C8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DB1396C95
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhFAFAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:00:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229477AbhFAFAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:00:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8729461376;
-        Tue,  1 Jun 2021 04:58:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622523529;
-        bh=VhNwzY5lJyWAku2CssRypWW3KL2DKl/s0q1R3YBX3ak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QgZ/vdtG9Th8Vp+QZblGdWXavdZg19sMGxxbaqQKwgitt3hEjrrYAQjiklY0Gbf4v
-         mC4kIe5w9ggBchWG0HqGmrv2P56RrxBG0X+WQPOcCbEswKczqWwX92CZjf8l/tKE4h
-         AOvNPfdNZHz9hozXZ/pcjTJGvILIenmrSYSNC5Z0=
-Date:   Tue, 1 Jun 2021 06:58:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        song.bao.hua@hisilicon.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
-Message-ID: <YLW+hZwoImx2wjwS@kroah.com>
-References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
- <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
+        id S232850AbhFAFCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:02:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57908 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231375AbhFAFCK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:02:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622523629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JJIU1bGNGgmVCYMPmOdU1mFXlFN7cBTWtHqGqP0FxvQ=;
+        b=O5pUHUOngJtgCF4PMhHi5S+hXHP0LVff4V7v8wcehdsFtKL6hGYryBBiIYme3QMHMUML+p
+        EPrXY5jJpV08aHCOx6zk+5NtwLJTR40WF5NpVtlXi43IHrYZunUls3GcqDaU2VPE8yYYSb
+        AbkUJ8Dj9BE9WbdtfDgFyIoIK94N4aY=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-fz0WRTQNNWO2nsxJxnsGWw-1; Tue, 01 Jun 2021 01:00:27 -0400
+X-MC-Unique: fz0WRTQNNWO2nsxJxnsGWw-1
+Received: by mail-pl1-f197.google.com with SMTP id u14-20020a170903304eb02900ec9757f3dbso3964816pla.17
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:00:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JJIU1bGNGgmVCYMPmOdU1mFXlFN7cBTWtHqGqP0FxvQ=;
+        b=E7Sqf90qnPnpaAS6fwQaJG03+rU/d3w9j+nN5FpC5VbjP4WnaFTEDvUkXDSmBUPERv
+         cIdtZh+JlO2RlwYz0pgtOEVgiEJFv84NjOUrc1wiWhtoK1ZOz8UnV/lGn5JNqgqbJMBW
+         hyOWiOOKTLS+5RtVZeSMg7PwVO9x3RjIkalh+Sek/eb4KD8uN0+pkKa+EwF6La6yNO78
+         h0dIbwskYoBIIOsoEpTVczwx0RsV9keQwP9lVPzbe21mfULFlz9CjWSGec/TtSiyZMl8
+         HNSmOvM9F6xN433Z4WAjlbNgMvs4XnfXXDAi4wFJFGAhJBRL0Ydk66kqJYOfKZP9cy8K
+         Th1g==
+X-Gm-Message-State: AOAM530iE3w7FiOUrHHDc7Z9e9qv7vTMFGZDlLwu2UXCdG9r4uUsSuWQ
+        Qs9az6wRk858wFRtS0UBVSo/tKFgjFX28nb1AYCVrjF3qF+XgIFbVXbkYToCfBO/uL6Vmt0Bz/Y
+        8rKTTkaBh8sSjLDN10RZcYu5j4cyXPyWTicNMvQwsZLFBII59aiRAuSOdA9Ox7AMRXifHvUM1eC
+        /K
+X-Received: by 2002:a65:6549:: with SMTP id a9mr25920007pgw.213.1622523625740;
+        Mon, 31 May 2021 22:00:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyDcuBG7OX6ZlZjFBQUP3ylce11K8CFZG5T9OPDSqZg3c1DzxTHGFbzXnbEzbBtPt/xrJJTDg==
+X-Received: by 2002:a65:6549:: with SMTP id a9mr25919956pgw.213.1622523625268;
+        Mon, 31 May 2021 22:00:25 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 189sm6637140pfu.84.2021.05.31.22.00.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 22:00:24 -0700 (PDT)
+Subject: Re: [PATCH v1] vdpa/mlx5: Add support for running with virtio_vdpa
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210531160428.31454-1-elic@nvidia.com>
+ <117f8549-85c5-6603-c941-77c63b596bdd@redhat.com>
+ <20210601034018.GA203469@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <cd1aee86-86df-b7df-e6da-5402f9525ce5@redhat.com>
+Date:   Tue, 1 Jun 2021 13:00:05 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <20210601034018.GA203469@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 10:56:49AM +0800, Tian Tao wrote:
-> Reading sys/devices/system/cpu/cpuX/topology/ returns cpu topology.
-> However, the size of this file is limited to PAGE_SIZE because of the
-> limitation for sysfs attribute. so we use bin_attribute instead of
-> attribute to avoid NR_CPUS too big to cause buff overflow.
-> 
-> This patch is based on the following discussion.
-> https://www.spinics.net/lists/linux-doc/msg95921.html
 
-Please use lore.kernel.org for links as we have no control over other
-sites to ensure that they will work in the future.  Use the message id
-in the link as well, so that if something were to happen to lore, we can
-figure it out.
+在 2021/6/1 上午11:40, Eli Cohen 写道:
+> On Tue, Jun 01, 2021 at 10:09:45AM +0800, Jason Wang wrote:
+>> 在 2021/6/1 上午12:04, Eli Cohen 写道:
+>>> In order to support running vdpa using vritio_vdpa driver, we need  to
+>>> create a different kind of MR, one that has 1:1 mapping, since the
+>>> addresses referring to virtqueues are dma addresses.
+>>>
+>>> We create the 1:1 MR in mlx5_vdpa_dev_add() only in case firmware
+>>> supports the general capability umem_uid_0. The reason for that is that
+>>> 1:1 MRs must be created with uid == 0 while virtqueue objects can be
+>>> created with uid == 0 only when the firmware capability is on.
+>>>
+>>> If the set_map() callback is called with new translations provided
+>>> through iotlb, the driver will destroy the 1:1 MR and create a regular
+>>> one.
+>>>
+>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>> ---
+>>> v0 --> v1:
+>>>     1. Clear user_mr after successful creation of DMA MR
+>>>     2. Check return code of mlx5_vdpa_create_mr() and emit warning if
+>>>        failed.
+>>>
+>>>    drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+>>>    drivers/vdpa/mlx5/core/mr.c        | 84 +++++++++++++++++++++++++-----
+>>>    drivers/vdpa/mlx5/net/mlx5_vnet.c  | 15 +++++-
+>>>    3 files changed, 85 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>> index b6cc53ba980c..09a16a3d1b2a 100644
+>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>> @@ -35,6 +35,7 @@ struct mlx5_vdpa_mr {
+>>>    	/* serialize mkey creation and destruction */
+>>>    	struct mutex mkey_mtx;
+>>> +	bool user_mr;
+>>>    };
+>>>    struct mlx5_vdpa_resources {
+>>> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+>>> index 800cfd1967ad..3c6c1d846f5e 100644
+>>> --- a/drivers/vdpa/mlx5/core/mr.c
+>>> +++ b/drivers/vdpa/mlx5/core/mr.c
+>>> @@ -360,7 +360,7 @@ static int add_direct_chain(struct mlx5_vdpa_dev *mvdev, u64 start, u64 size, u8
+>>>     * indirect memory key that provides access to the enitre address space given
+>>>     * by iotlb.
+>>>     */
+>>> -static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+>>> +static int create_user_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+>>>    {
+>>>    	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+>>>    	struct mlx5_vdpa_direct_mr *dmr;
+>>> @@ -374,9 +374,6 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
+>>>    	int err = 0;
+>>>    	int nnuls;
+>>> -	if (mr->initialized)
+>>> -		return 0;
+>>> -
+>>>    	INIT_LIST_HEAD(&mr->head);
+>>>    	for (map = vhost_iotlb_itree_first(iotlb, start, last); map;
+>>>    	     map = vhost_iotlb_itree_next(map, start, last)) {
+>>> @@ -414,7 +411,7 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
+>>>    	if (err)
+>>>    		goto err_chain;
+>>> -	mr->initialized = true;
+>>> +	mr->user_mr = true;
+>>>    	return 0;
+>>>    err_chain:
+>>> @@ -426,33 +423,92 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
+>>>    	return err;
+>>>    }
+>>> -int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+>>> +static int create_dma_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+>>> +{
+>>> +	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+>>> +	void *mkc;
+>>> +	u32 *in;
+>>> +	int err;
+>>> +
+>>> +	in = kzalloc(inlen, GFP_KERNEL);
+>>> +	if (!in)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+>>> +
+>>> +	MLX5_SET(mkc, mkc, access_mode_1_0, MLX5_MKC_ACCESS_MODE_PA);
+>>> +	MLX5_SET(mkc, mkc, length64, 1);
+>>> +	MLX5_SET(mkc, mkc, lw, 1);
+>>> +	MLX5_SET(mkc, mkc, lr, 1);
+>>> +	MLX5_SET(mkc, mkc, pd, mvdev->res.pdn);
+>>> +	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+>>> +
+>>> +	err = mlx5_vdpa_create_mkey(mvdev, &mr->mkey, in, inlen);
+>>> +	if (!err)
+>>> +		mr->user_mr = false;
+>>
+>> Rethink about this. I wonder this is correct when we fail to create memory
+>> key.
+>>
+>> In this case, user_mr is true but user_mr is already destroyed. Can this
+>> lead double free for user mr?
+> mr->user_mr is a binary flag and its sole purpose is to tell the flavour
+> of the MR but is valid only when mr->initialized is true. MR won't be
+> freed if mr->initialized is false.
 
-Also, you are modifying a bunch of different files here, do you mean to
-do it for all of them?
 
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> ---
->  drivers/base/topology.c | 115 ++++++++++++++++++++++++++----------------------
->  include/linux/bitmap.h  |   3 ++
->  include/linux/cpumask.h |  25 +++++++++++
->  lib/bitmap.c            |  34 ++++++++++++++
->  4 files changed, 125 insertions(+), 52 deletions(-)
-> 
-> diff --git a/drivers/base/topology.c b/drivers/base/topology.c
-> index 4d254fc..013edbb 100644
-> --- a/drivers/base/topology.c
-> +++ b/drivers/base/topology.c
-> @@ -21,25 +21,27 @@ static ssize_t name##_show(struct device *dev,				\
->  	return sysfs_emit(buf, "%d\n", topology_##name(dev->id));	\
->  }
->  
-> -#define define_siblings_show_map(name, mask)				\
-> -static ssize_t name##_show(struct device *dev,				\
-> -			   struct device_attribute *attr, char *buf)	\
-> -{									\
-> -	return cpumap_print_to_pagebuf(false, buf, topology_##mask(dev->id));\
-> +#define define_siblings_read_func(name, mask)					\
-> +static ssize_t name##_read(struct file *file, struct kobject *kobj,		\
-> +				  struct bin_attribute *attr, char *buf,	\
-> +				  loff_t off, size_t count)			\
-> +{										\
-> +	struct device *dev = kobj_to_dev(kobj);                                 \
-> +										\
-> +	return cpumap_print_to_buf(false, buf, topology_##mask(dev->id),	\
-> +				   off, count);                                 \
-> +}										\
-> +										\
-> +static ssize_t name##_list_read(struct file *file, struct kobject *kobj,	\
-> +				  struct bin_attribute *attr, char *buf,	\
-> +				  loff_t off, size_t count)			\
-> +{										\
-> +	struct device *dev = kobj_to_dev(kobj);					\
-> +										\
-> +	return cpumap_print_to_buf(true, buf, topology_##mask(dev->id),		\
-> +				   off, count);					\
->  }
->  
-> -#define define_siblings_show_list(name, mask)				\
-> -static ssize_t name##_list_show(struct device *dev,			\
-> -				struct device_attribute *attr,		\
-> -				char *buf)				\
-> -{									\
-> -	return cpumap_print_to_pagebuf(true, buf, topology_##mask(dev->id));\
-> -}
-> -
-> -#define define_siblings_show_func(name, mask)	\
-> -	define_siblings_show_map(name, mask);	\
-> -	define_siblings_show_list(name, mask)
-> -
->  define_id_show_func(physical_package_id);
->  static DEVICE_ATTR_RO(physical_package_id);
->  
-> @@ -49,71 +51,80 @@ static DEVICE_ATTR_RO(die_id);
->  define_id_show_func(core_id);
->  static DEVICE_ATTR_RO(core_id);
->  
-> -define_siblings_show_func(thread_siblings, sibling_cpumask);
-> -static DEVICE_ATTR_RO(thread_siblings);
-> -static DEVICE_ATTR_RO(thread_siblings_list);
-> +define_siblings_read_func(thread_siblings, sibling_cpumask);
-> +static BIN_ATTR_RO(thread_siblings, 0);
-> +static BIN_ATTR_RO(thread_siblings_list, 0);
->  
-> -define_siblings_show_func(core_cpus, sibling_cpumask);
-> -static DEVICE_ATTR_RO(core_cpus);
-> -static DEVICE_ATTR_RO(core_cpus_list);
-> +define_siblings_read_func(core_cpus, sibling_cpumask);
-> +static BIN_ATTR_RO(core_cpus, 0);
-> +static BIN_ATTR_RO(core_cpus_list, 0);
->  
-> -define_siblings_show_func(core_siblings, core_cpumask);
-> -static DEVICE_ATTR_RO(core_siblings);
-> -static DEVICE_ATTR_RO(core_siblings_list);
-> +define_siblings_read_func(core_siblings, core_cpumask);
-> +static BIN_ATTR_RO(core_siblings, 0);
-> +static BIN_ATTR_RO(core_siblings_list, 0);
->  
-> -define_siblings_show_func(die_cpus, die_cpumask);
-> -static DEVICE_ATTR_RO(die_cpus);
-> -static DEVICE_ATTR_RO(die_cpus_list);
-> +define_siblings_read_func(die_cpus, die_cpumask);
-> +static BIN_ATTR_RO(die_cpus, 0);
-> +static BIN_ATTR_RO(die_cpus_list, 0);
->  
-> -define_siblings_show_func(package_cpus, core_cpumask);
-> -static DEVICE_ATTR_RO(package_cpus);
-> -static DEVICE_ATTR_RO(package_cpus_list);
-> +define_siblings_read_func(package_cpus, core_cpumask);
-> +static BIN_ATTR_RO(package_cpus, 0);
-> +static BIN_ATTR_RO(package_cpus_list, 0);
->  
->  #ifdef CONFIG_SCHED_BOOK
->  define_id_show_func(book_id);
->  static DEVICE_ATTR_RO(book_id);
-> -define_siblings_show_func(book_siblings, book_cpumask);
-> -static DEVICE_ATTR_RO(book_siblings);
-> -static DEVICE_ATTR_RO(book_siblings_list);
-> +define_siblings_read_func(book_siblings, book_cpumask);
-> +static BIN_ATTR_RO(book_siblings, 0);
-> +static BIN_ATTR_RO(book_siblings_list, 0);
->  #endif
->  
->  #ifdef CONFIG_SCHED_DRAWER
->  define_id_show_func(drawer_id);
->  static DEVICE_ATTR_RO(drawer_id);
-> -define_siblings_show_func(drawer_siblings, drawer_cpumask);
-> -static DEVICE_ATTR_RO(drawer_siblings);
-> -static DEVICE_ATTR_RO(drawer_siblings_list);
-> +define_siblings_read_func(drawer_siblings, drawer_cpumask);
-> +static BIN_ATTR_RO(drawer_siblings, 0);
-> +static BIN_ATTR_RO(drawer_siblings_list, 0);
->  #endif
->  
-> +static struct bin_attribute *bin_attrs[] = {
-> +	&bin_attr_core_cpus,
-> +	&bin_attr_core_cpus_list,
-> +	&bin_attr_thread_siblings,
-> +	&bin_attr_thread_siblings_list,
-> +	&bin_attr_core_siblings,
-> +	&bin_attr_core_siblings_list,
-> +	&bin_attr_die_cpus,
-> +	&bin_attr_die_cpus_list,
-> +	&bin_attr_package_cpus,
-> +	&bin_attr_package_cpus_list,
-> +#ifdef CONFIG_SCHED_BOOK
-> +	&bin_attr_book_siblings,
-> +	&bin_attr_book_siblings_list,
-> +#endif
-> +#ifdef CONFIG_SCHED_DRAWER
-> +	&bin_attr_drawer_siblings,
-> +	&bin_attr_drawer_siblings_list,
-> +#endif
-> +	NULL,
-> +};
-> +
->  static struct attribute *default_attrs[] = {
->  	&dev_attr_physical_package_id.attr,
->  	&dev_attr_die_id.attr,
->  	&dev_attr_core_id.attr,
-> -	&dev_attr_thread_siblings.attr,
-> -	&dev_attr_thread_siblings_list.attr,
-> -	&dev_attr_core_cpus.attr,
-> -	&dev_attr_core_cpus_list.attr,
-> -	&dev_attr_core_siblings.attr,
-> -	&dev_attr_core_siblings_list.attr,
-> -	&dev_attr_die_cpus.attr,
-> -	&dev_attr_die_cpus_list.attr,
-> -	&dev_attr_package_cpus.attr,
-> -	&dev_attr_package_cpus_list.attr,
->  #ifdef CONFIG_SCHED_BOOK
->  	&dev_attr_book_id.attr,
-> -	&dev_attr_book_siblings.attr,
-> -	&dev_attr_book_siblings_list.attr,
->  #endif
->  #ifdef CONFIG_SCHED_DRAWER
->  	&dev_attr_drawer_id.attr,
-> -	&dev_attr_drawer_siblings.attr,
-> -	&dev_attr_drawer_siblings_list.attr,
->  #endif
->  	NULL
->  };
->  
->  static const struct attribute_group topology_attr_group = {
->  	.attrs = default_attrs,
-> +	.bin_attrs = bin_attrs,
->  	.name = "topology"
->  };
->  
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 70a9324..bc401bd9b 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -219,6 +219,9 @@ extern unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int
->  extern int bitmap_print_to_pagebuf(bool list, char *buf,
->  				   const unsigned long *maskp, int nmaskbits);
->  
-> +extern int bitmap_print_to_buf(bool list, char *buf,
-> +			       const unsigned long *maskp, int nmaskbits, loff_t off, size_t count);
-> +
->  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
->  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
->  
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index 383684e..e4810b3e 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -928,6 +928,31 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
->  				      nr_cpu_ids);
->  }
->  
-> +/**
-> + * cpumap_print_to_buf  - copies the cpumask into the buffer either
-> + *      as comma-separated list of cpus or hex values of cpumask
-> + * @list: indicates whether the cpumap must be list
-> + * @mask: the cpumask to copy
-> + * @buf: the buffer to copy into
-> + * @off: the offset that buffer to copy into
-> + * @count: the count thatbuffer to copy into
-> + *
-> + * the role of cpumap_print_to_buf and cpumap_print_to_pagebuf is
-> + * the same, the difference is that the second parameter of
-> + * bitmap_print_to_buf can be more than one pagesize.
-> + *
-> + * Returns the length of the (null-terminated) @buf string, zero if
-> + * nothing is copied.
-> + */
-> +
-> +static inline ssize_t
-> +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
-> +		    loff_t off, size_t count)
-> +{
-> +	return bitmap_print_to_buf(list, buf, cpumask_bits(mask),
-> +				   nr_cpu_ids, off, count);
-> +}
-> +
->  #if NR_CPUS <= BITS_PER_LONG
->  #define CPU_MASK_ALL							\
->  (cpumask_t) { {								\
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index 75006c4..5bf89f1 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -460,6 +460,40 @@ int bitmap_parse_user(const char __user *ubuf,
->  EXPORT_SYMBOL(bitmap_parse_user);
->  
->  /**
-> + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
-> + * @list: indicates whether the bitmap must be list
-> + * @buf: page aligned buffer into which string is placed
-> + * @maskp: pointer to bitmap to convert
-> + * @nmaskbits: size of bitmap, in bits
-> + * @off: offset in buf
-> + * @count: count that already output
-> + *
-> + * the role of bitmap_print_to_buf and bitmap_print_to_pagebuf is
-> + * the same, the difference is that the second parameter of
-> + * bitmap_print_to_buf can be more than one pagesize.
-> + */
-> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> +			int nmaskbits, loff_t off, size_t count)
-> +{
-> +	int len, size;
-> +	void *data;
-> +	char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> +
-> +	len = snprintf(NULL, 0, fmt, nmaskbits, maskp);
-> +
-> +	data = kvmalloc(len+1, GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	size = scnprintf(data, len+1, fmt, nmaskbits, maskp);
-> +	size = memory_read_from_buffer(buf, count, &off, data, size);
-> +	kvfree(data);
-> +
-> +	return size;
+So we have:
 
-Why is this so different from bitmap_print_to_pagebuf()?  Can't you just
-use this function as the "real" function and then change
-bitmap_print_to_pagebuf() to call it with a size of PAGE_SIZE?
+static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct 
+vhost_iotlb *iotlb)
+{
+         struct mlx5_vdpa_mr *mr = &mvdev->mr;
+         int err;
 
-Can you add the new function as the first patch in the series and then
-use it in the later ones?  That makes it easier to review on its own.
+         if (mr->initialized)
+                 return 0;
 
-thanks,
+         if (iotlb)
+                 err = create_user_mr(mvdev, iotlb);
+         else
+                 err = create_dma_mr(mvdev, mr);
 
-greg k-h
+         mr->initialized = true;
+         return err;
+}
+
+It looks to me we need to check err before set mr->initialized.
+
+Thanks
+
+
+>
+>> Thanks
+>>
+>>
+>>> +
+>>> +	kfree(in);
+>>> +	return err;
+>>> +}
+>>> +
+>>> +static void destroy_dma_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+>>> +{
+>>> +	mlx5_vdpa_destroy_mkey(mvdev, &mr->mkey);
+>>> +}
+>>> +
+>>> +static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+>>>    {
+>>>    	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+>>>    	int err;
+>>> -	mutex_lock(&mr->mkey_mtx);
+>>> +	if (mr->initialized)
+>>> +		return 0;
+>>> +
+>>> +	if (iotlb)
+>>> +		err = create_user_mr(mvdev, iotlb);
+>>> +	else
+>>> +		err = create_dma_mr(mvdev, mr);
+>>> +
+>>> +	mr->initialized = true;
+>>> +	return err;
+>>> +}
+>>> +
+>>> +int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+>>> +{
+>>> +	int err;
+>>> +
+>>> +	mutex_lock(&mvdev->mr.mkey_mtx);
+>>>    	err = _mlx5_vdpa_create_mr(mvdev, iotlb);
+>>> -	mutex_unlock(&mr->mkey_mtx);
+>>> +	mutex_unlock(&mvdev->mr.mkey_mtx);
+>>>    	return err;
+>>>    }
+>>> -void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+>>> +static void destroy_user_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+>>>    {
+>>> -	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+>>>    	struct mlx5_vdpa_direct_mr *dmr;
+>>>    	struct mlx5_vdpa_direct_mr *n;
+>>> -	mutex_lock(&mr->mkey_mtx);
+>>> -	if (!mr->initialized)
+>>> -		goto out;
+>>> -
+>>>    	destroy_indirect_key(mvdev, mr);
+>>>    	list_for_each_entry_safe_reverse(dmr, n, &mr->head, list) {
+>>>    		list_del_init(&dmr->list);
+>>>    		unmap_direct_mr(mvdev, dmr);
+>>>    		kfree(dmr);
+>>>    	}
+>>> +}
+>>> +
+>>> +void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+>>> +{
+>>> +	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+>>> +
+>>> +	mutex_lock(&mr->mkey_mtx);
+>>> +	if (!mr->initialized)
+>>> +		goto out;
+>>> +
+>>> +	if (mr->user_mr)
+>>> +		destroy_user_mr(mvdev, mr);
+>>> +	else
+>>> +		destroy_dma_mr(mvdev, mr);
+>>> +
+>>>    	memset(mr, 0, sizeof(*mr));
+>>>    	mr->initialized = false;
+>>>    out:
+>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> index fdf3e74bffbd..02a05492204c 100644
+>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> @@ -1780,6 +1780,10 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>>>    		ndev->mvdev.status = 0;
+>>>    		ndev->mvdev.mlx_features = 0;
+>>>    		++mvdev->generation;
+>>> +		if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
+>>> +			if (mlx5_vdpa_create_mr(mvdev, NULL))
+>>> +				mlx5_vdpa_warn(mvdev, "create MR failed\n");
+>>> +		}
+>>>    		return;
+>>>    	}
+>>> @@ -1859,6 +1863,7 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
+>>>    	ndev = to_mlx5_vdpa_ndev(mvdev);
+>>>    	free_resources(ndev);
+>>> +	mlx5_vdpa_destroy_mr(mvdev);
+>>>    	mlx5_vdpa_free_resources(&ndev->mvdev);
+>>>    	mutex_destroy(&ndev->reslock);
+>>>    }
+>>> @@ -2023,9 +2028,15 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+>>>    	if (err)
+>>>    		goto err_mtu;
+>>> +	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
+>>> +		err = mlx5_vdpa_create_mr(mvdev, NULL);
+>>> +		if (err)
+>>> +			goto err_res;
+>>> +	}
+>>> +
+>>>    	err = alloc_resources(ndev);
+>>>    	if (err)
+>>> -		goto err_res;
+>>> +		goto err_mr;
+>>>    	mvdev->vdev.mdev = &mgtdev->mgtdev;
+>>>    	err = _vdpa_register_device(&mvdev->vdev, 2 * mlx5_vdpa_max_qps(max_vqs));
+>>> @@ -2037,6 +2048,8 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+>>>    err_reg:
+>>>    	free_resources(ndev);
+>>> +err_mr:
+>>> +	mlx5_vdpa_destroy_mr(mvdev);
+>>>    err_res:
+>>>    	mlx5_vdpa_free_resources(&ndev->mvdev);
+>>>    err_mtu:
+
