@@ -2,82 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C617C396DCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FAF396DD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhFAHPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 03:15:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229984AbhFAHPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 03:15:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D254610A8;
-        Tue,  1 Jun 2021 07:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622531610;
-        bh=dkkqEZ46ygeb8R6c460uRo7VIXi3q12IgWL/Sj2VTsw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jA2lpEdAC+eZixkGMXlCI7EmbgwV0TP5dmW1+yNGHrOM/shogRyaTLKBztC5OCyQz
-         Vo0gtCVB5S0n5sOy9ioc2PCl8ZYCgyUVuYSkdtNEPbyvebR0ZO4epjYyQNabBmQZL8
-         OUSVqJCqi/4X2sMe4CmaWtJecQGlXiLhPviO/Y6s=
-Date:   Tue, 1 Jun 2021 09:13:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "tiantao (H)" <tiantao6@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
-Message-ID: <YLXeF8oxHgIxl2iF@kroah.com>
-References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
- <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
- <YLW+hZwoImx2wjwS@kroah.com>
- <cb90096ab76d4a55a59d0682fa786ba5@hisilicon.com>
+        id S233030AbhFAHRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 03:17:48 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2925 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhFAHRp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 03:17:45 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvNfR6PWhz670K;
+        Tue,  1 Jun 2021 15:13:03 +0800 (CST)
+Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 15:16:00 +0800
+Received: from [10.174.185.220] (10.174.185.220) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 15:15:59 +0800
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>
+CC:     Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "Kirti Wankhede" <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Zenghui Yu" <yuzenghui@huawei.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <c9c066ae-2a25-0799-51a7-0ca47fff41a1@huawei.com>
+ <aa1624bf-e472-2b66-1d20-54ca23c19fd2@linux.intel.com>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <ed4f6e57-4847-3ed2-75de-cea80b2fbdb8@huawei.com>
+Date:   Tue, 1 Jun 2021 15:15:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cb90096ab76d4a55a59d0682fa786ba5@hisilicon.com>
+In-Reply-To: <aa1624bf-e472-2b66-1d20-54ca23c19fd2@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.185.220]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 07:04:33AM +0000, Song Bao Hua (Barry Song) wrote:
+On 2021/6/1 13:10, Lu Baolu wrote:
+> Hi Shenming,
 > 
+> On 6/1/21 12:31 PM, Shenming Lu wrote:
+>> On 2021/5/27 15:58, Tian, Kevin wrote:
+>>> /dev/ioasid provides an unified interface for managing I/O page tables for
+>>> devices assigned to userspace. Device passthrough frameworks (VFIO, vDPA,
+>>> etc.) are expected to use this interface instead of creating their own logic to
+>>> isolate untrusted device DMAs initiated by userspace.
+>>>
+>>> This proposal describes the uAPI of /dev/ioasid and also sample sequences
+>>> with VFIO as example in typical usages. The driver-facing kernel API provided
+>>> by the iommu layer is still TBD, which can be discussed after consensus is
+>>> made on this uAPI.
+>>>
+>>> It's based on a lengthy discussion starting from here:
+>>>     https://lore.kernel.org/linux-iommu/20210330132830.GO2356281@nvidia.com/
+>>>
+>>> It ends up to be a long writing due to many things to be summarized and
+>>> non-trivial effort required to connect them into a complete proposal.
+>>> Hope it provides a clean base to converge.
+>>>
+>>
+>> [..]
+>>
+>>>
+>>> /*
+>>>    * Page fault report and response
+>>>    *
+>>>    * This is TBD. Can be added after other parts are cleared up. Likely it
+>>>    * will be a ring buffer shared between user/kernel, an eventfd to notify
+>>>    * the user and an ioctl to complete the fault.
+>>>    *
+>>>    * The fault data is per I/O address space, i.e.: IOASID + faulting_addr
+>>>    */
+>>
+>> Hi,
+>>
+>> It seems that the ioasid has different usage in different situation, it could
+>> be directly used in the physical routing, or just a virtual handle that indicates
+>> a page table or a vPASID table (such as the GPA address space, in the simple
+>> passthrough case, the DMA input to IOMMU will just contain a Stream ID, no
+>> Substream ID), right?
+>>
+>> And Baolu suggested that since one device might consume multiple page tables,
+>> it's more reasonable to have one fault handler per page table. By this, do we
+>> have to maintain such an ioasid info list in the IOMMU layer?
 > 
-> > -----Original Message-----
-> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > Sent: Tuesday, June 1, 2021 4:59 PM
-> > To: tiantao (H) <tiantao6@hisilicon.com>
-> > Cc: linux-kernel@vger.kernel.org; akpm@linux-foundation.org; Song Bao Hua
-> > (Barry Song) <song.bao.hua@hisilicon.com>; Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com>; Rafael J. Wysocki <rafael@kernel.org>
-> > Subject: Re: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
-> > 
-> > On Tue, Jun 01, 2021 at 10:56:49AM +0800, Tian Tao wrote:
-> > > Reading sys/devices/system/cpu/cpuX/topology/ returns cpu topology.
-> > > However, the size of this file is limited to PAGE_SIZE because of the
-> > > limitation for sysfs attribute. so we use bin_attribute instead of
-> > > attribute to avoid NR_CPUS too big to cause buff overflow.
-> > >
-> > > This patch is based on the following discussion.
-> > > https://www.spinics.net/lists/linux-doc/msg95921.html
-> > 
-> > Please use lore.kernel.org for links as we have no control over other
-> > sites to ensure that they will work in the future.  Use the message id
-> > in the link as well, so that if something were to happen to lore, we can
-> > figure it out.
-> > 
-> > Also, you are modifying a bunch of different files here, do you mean to
-> > do it for all of them?
+> As discussed earlier, the I/O page fault and cache invalidation paths
+> will have "device labels" so that the information could be easily
+> translated and routed.
 > 
-> The plan is providing a common wrapper similar with cpumap_print_to_pagebuf
-> so that all modules which have bitmap and list topology ABI can move to use
-> it.
+> So it's likely the per-device fault handler registering API in iommu
+> core can be kept, but /dev/ioasid will be grown with a layer to
+> translate and propagate I/O page fault information to the right
+> consumers.
 
-Ok, then create the new function and then convert to use it, do not
-bundle it together in the same patch.
+Yeah, having a general preprocessing of the faults in IOASID seems to be
+a doable direction. But since there may be more than one consumer at the
+same time, who is responsible for registering the per-device fault handler?
 
-thanks,
+Thanks,
+Shenming
 
-greg k-h
+> 
+> If things evolve in this way, probably the SVA I/O page fault also needs
+> to be ported to /dev/ioasid.
+> 
+>>
+>> Then if we add host IOPF support (for the GPA address space) in the future
+>> (I have sent a series for this but it aimed for VFIO, I will convert it for
+>> IOASID later [1] :-)), how could we find the handler for the received fault
+>> event which only contains a Stream ID... Do we also have to maintain a
+>> dev(vPASID)->ioasid mapping in the IOMMU layer?
+>>
+>> [1] https://lore.kernel.org/patchwork/cover/1410223/
+> 
+> Best regards,
+> baolu
+> .
