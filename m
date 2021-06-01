@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1912396FC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11A8396FC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbhFAJDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233539AbhFAJDg (ORCPT
+        id S233603AbhFAJED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:04:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55222 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233542AbhFAJEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:03:36 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CFEC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:01:55 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id o2-20020a05600c4fc2b029019a0a8f959dso1434060wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5IwYtF72UjHa9iHdNpTtLmTlD6+WFBrg2eN19aC9Omk=;
-        b=OfHfr2YXdaik4HKexBimsUEZCrWe/vMas3BTeQo75Ubex1ai0ml+iFJUOW0SlBQsty
-         qy0yBRbXnatJv9JiqrN44w+xgkP2NABvzTKh34RjnuKF09ocolSaZGoFVj5br5TT0utJ
-         qLx4psENsGYhXwZ9zGm1odrUfe8ctjMdkJR+9qWCBVRRvsWbUMzh8OUshjVSbc8x7e5G
-         tKKGPv5cUwJv5PWAdheSFcfDEPI5QH/TIbcDyIT2zTuh8EIXNcDddzM5p0lHFs16Z7nO
-         Wed3cRXItq1DqC4sksn74Q+qlCGOrbGLLxGaJcimxO2O4hIWiMPoIHQsM7M6BtEu6xKv
-         WOxg==
+        Tue, 1 Jun 2021 05:04:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622538140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lTj0e2ix7Em5ReRBGmBE8UcFjJXaGmDtfxA9DwPKs3Y=;
+        b=hl5WtER7JX53dBcKImZjoE4E6KN9LoXwoMyigbxWhzWkOWPZpdeAiu+PmU/q0+IunsoGhN
+        Yo66ulpzstSzLhhTrtXenzpOU7dgAvXVUxsEbekOoe20CEKuba75uU6PStmzEGMitZe29N
+        Alxkuqq1//928qwfQ4rZUCgxtdhPy1Y=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-8EqqgNVSMiGVcZfATiL7mg-1; Tue, 01 Jun 2021 05:02:19 -0400
+X-MC-Unique: 8EqqgNVSMiGVcZfATiL7mg-1
+Received: by mail-wr1-f70.google.com with SMTP id x10-20020adfc18a0000b029010d83c83f2aso4603675wre.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:02:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5IwYtF72UjHa9iHdNpTtLmTlD6+WFBrg2eN19aC9Omk=;
-        b=lCNtFPX9SCMV7HZj1PbiYiTefDABKiM4ukqSbH+vJVqQnYFBqa3tAa9WO9ISoW3prH
-         j2QVfuZWNaf1H9J4Vs3VxXNPHN8r3q/piP21WdCtnER90BHgp9xlgSlSPDTAi5Xp93W6
-         QSir+9qbA+ZJ4RCuFP/B5faXuwgEtQhBqTOfbarWkf0oB5IoTqIUVKL4pDPslBkiYViF
-         SiJaAVZI++T5dQLnsGOhsf/KDqdOJ7KI0UdjttMzby2Nddm6/HwIEcGAvQO3iLDuvTKa
-         XHwINfAXKrKdgrXZbJNhXDeSfzjh4oAKwiLnhDOxtoRDllTUXcuP6p4ZJjrwpPMWA7gf
-         uPLA==
-X-Gm-Message-State: AOAM533Awodf6C7CbDSOqqmh2bSf2wK/1Kn9oXi5AfPBjC7nZjejL6UI
-        ZoGcLJe5OqZ/NW41Va/nN9JSKA==
-X-Google-Smtp-Source: ABdhPJw937YIFZ3Mgv/DYBbwiziumbrHOQVmBQ3enRfvTw+ZjCIAI3CQUIO+DpKL0u1MnzrsSMqu4A==
-X-Received: by 2002:a1c:6782:: with SMTP id b124mr3412909wmc.159.1622538113518;
-        Tue, 01 Jun 2021 02:01:53 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:a3a:d001:6a80:207a])
-        by smtp.gmail.com with ESMTPSA id e17sm2668199wre.79.2021.06.01.02.01.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 02:01:53 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tobetter@gmail.com, Christian Hewitt <christianshewitt@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 6/6] arm64: dts: meson-sm1-odroid-hc4: add spifc node to ODROID-HC4
-Date:   Tue,  1 Jun 2021 11:01:40 +0200
-Message-Id: <20210601090140.261768-7-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210601090140.261768-1-narmstrong@baylibre.com>
-References: <20210601090140.261768-1-narmstrong@baylibre.com>
+        h=x-gm-message-state:from:to:cc:references:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=lTj0e2ix7Em5ReRBGmBE8UcFjJXaGmDtfxA9DwPKs3Y=;
+        b=OBIVHroF48aDChNOf5eGYTAPq0lIrq3/PYluVTv83bLdjOEUTsvE6I4O9UHDQcJBXY
+         6IWkxZqX1TzLOB3U+AZ7e1isiJiM8LkwWgPQDlNMByRdaJrgMeL8kTnbu48jeABD2Rvl
+         u+bGh6S0Nk5L8p0bZ7qy0jvuE4Iab/n+dqUJePxsrDnszL9C8GNkp6IAXqJ2GXBz0RJM
+         t5rahCooty9cQwVNrok7v3JwbjYNTXK7g9jF80EATqhaUgfcSWU1KQEZP6zaO+5zxsXK
+         fZYrLEzmxtdvyP8SQN5I28PThaBUYsc1sivaFO4x54yt3X9vHhHWQv+py9+0Y7JBSEJj
+         wGNQ==
+X-Gm-Message-State: AOAM530rS6EzW0xxjE48XkLOzQ50o/qKKnVrOhWJRhmfBM3mcJYfPisN
+        fGrbqqE5J6CzF5peElmG5srM7WC8RFrzQZBKHBj9uD3P8NTN/f8Cs17soLQqy47CBc1zRXR1y6a
+        bMFK1KoIwVfwNjHggtXDFFLa3
+X-Received: by 2002:a05:600c:47c4:: with SMTP id l4mr3421514wmo.145.1622538138338;
+        Tue, 01 Jun 2021 02:02:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzye8Yw+0bLOb0SBvbHwXC4HYmyiMFfH3IyzfuxKInF6JuzngzXM+aezXKoW/iZU7+Z69Ow5A==
+X-Received: by 2002:a05:600c:47c4:: with SMTP id l4mr3421493wmo.145.1622538138179;
+        Tue, 01 Jun 2021 02:02:18 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c69ce.dip0.t-ipconnect.de. [91.12.105.206])
+        by smtp.gmail.com with ESMTPSA id 11sm17960058wmo.24.2021.06.01.02.02.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 02:02:17 -0700 (PDT)
+From:   David Hildenbrand <david@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org
+References: <20210531122959.23499-1-rppt@kernel.org>
+ <20210531122959.23499-2-rppt@kernel.org>
+ <1efc386c-2cb4-164f-7194-497f142f969f@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC/RFT PATCH 1/5] s390: make crashk_res resource a child of
+ "System RAM"
+Message-ID: <f6cd0c41-d7e2-65f5-94eb-9a21514df799@redhat.com>
+Date:   Tue, 1 Jun 2021 11:02:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=997; i=narmstrong@baylibre.com;
- h=from:subject; bh=4Apj0m6+83jroquluYgqns8V8hJcFEuKMqCVi55Btpk=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBgtfc89atbVaTE3uafIleEYxQ46PDSj92zOM1wRlkq
- xyAYr5CJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYLX3PAAKCRB33NvayMhJ0aP2EA
- DOy817Oo3Aw84S+Vq02JvA9hnzMVgdWOH2Xwq8XXi21rpRxxEh3wCNcd7TR4zXAipgkWmsrAlnCQHV
- gYnk3Kzqi45QnjCLQFg84z/AySFoj3xYPXZcAnXD0EcjZhxDYJp7eO1Q3THuMl+3KyEl+ggQZUFwxn
- Eu8MKw0nss4YCdEX3MPGzP7gQaWRdfh5oEXHFGNvUiVDQauiIRBi0CMKDR5LkarQv8QQItSjX0VRaF
- RHWzQgAKhDwQEEI5I9TzPgnV+vnEGKhdwa3tn0g7qVc5wEgGkO3D/nwL9bx+ZsaQrbDs/E4srkbN23
- P0L32/DxrxqIZ9x/lMmPnmAG85gWZ4uqRjyWMonZdk5LF1VxH/gcdw4DV7dcmU1jXvUdlcAKtUnAW1
- EK5AK8luOn/JkXoqFNtLQK4peojuEEjT3XVYN6WuO4K9eo5ihFKyyiQfAOttb2XM66Vqz5D9QVdwRy
- NklDye6BtHYHHtqIf+YUIuUFB1/3CPda9YEOuqkbnyFKbelSyHDt30c3W30mpihcJZ1UhfrCPADIUj
- IKrlfhgf2xXuzuLNJtM1gETqRiAS3wx7qfLDuV2LIAwQvBEMDNDPNCUxi6r4Lu4CMaLJu57e9NoaxQ
- bolmEBvHycxccGDNqm38g0kBao4zf5f++xXwU1c9G17H9Nx7YNvl4du2hs0w==
-X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+In-Reply-To: <1efc386c-2cb4-164f-7194-497f142f969f@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Hewitt <christianshewitt@gmail.com>
+On 01.06.21 10:45, David Hildenbrand wrote:
+> On 31.05.21 14:29, Mike Rapoport wrote:
+>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>
+>> Commit 4e042af463f8 ("s390/kexec: fix crash on resize of reserved memory")
+>> added a comment that says "crash kernel resource should not be part of the
+>> System RAM resource" but never explained why. As it looks from the code in
+>> the kernel and in kexec there is no actual reason for that.
+> 
+> Are you sure?
+> 
+> Looking at kexec-tools: kexec/arch/s390/kexec-s390.c
+> 
+> get_memory_ranges_s390() wants "System RAM" and Crash kernel only with
+> "with_crashk=1". Your patch would change that. "Crash kernel" would
+> always be included if you make it a child of "System RAM".
+> 
+> Further, get_memory_ranges() and is_crashkernel_mem_reserved() look out
+> for "Crash kernel\n" via parse_iomem_single().
+> 
+> However, parse_iomem_single() does not care about ranges that start with
+> spaces IIRC via
+>     sscanf(line, "%llx-%llx : %n" ...
 
-Add a node for the XT25F128B SPI-NOR flash to make it accessible
-from Linux.
+I think I'm wrong about that one because I read
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- .../boot/dts/amlogic/meson-sm1-odroid-hc4.dts      | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+"Input white-space characters (as specified by the isspace function) are 
+skipped, unless the specification includes a [ , c , or n specifier"
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-index d36c25b5b690..3c2ebc7333a1 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-@@ -116,6 +116,20 @@ &sd_emmc_c {
- 	status = "disabled";
- };
- 
-+&spifc {
-+	status = "okay";
-+	pinctrl-0 = <&nor_pins>;
-+	pinctrl-names = "default";
-+
-+	spi-flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <104000000>;
-+	};
-+};
-+
- &usb {
- 	phys = <&usb2_phy1>;
- 	phy-names = "usb2-phy1";
+So having it as a child won't affect parse_iomem_single().
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
