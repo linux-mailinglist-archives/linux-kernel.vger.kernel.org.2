@@ -2,150 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219A3396E30
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5771396DFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhFAHt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 03:49:28 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52156 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhFAHt0 (ORCPT
+        id S233240AbhFAHgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 03:36:05 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3312 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhFAHgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 03:49:26 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 81B8B1FD2D;
-        Tue,  1 Jun 2021 07:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622533664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QKUWHbN2cryxRpWGCysEGcdBOB1MXEIxNS6COFYpH98=;
-        b=GiJvMgTmkvfRlp0JIy3maL9IwPN+9pF2Lr86hIURcpPxMtX+4clQRo6N3XTEZWYh2y4JH4
-        OFs4d+KWKMpjh2AtKKWvK4Nd7KpiIk/s0FvK01pU0DAqhZpl560BfTV4GsAwlH0Wyazu7c
-        4BQPsb6iu56sq+xymqtIAc11zHn/0/Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622533664;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QKUWHbN2cryxRpWGCysEGcdBOB1MXEIxNS6COFYpH98=;
-        b=C219fcOmkjZbIRb7kVzo5YcF8jRCd5D0bF+RuYRK8PGqYUxXUFGa4G/oT7om9rZbMZ70Lo
-        pxxSZjr7UKg42MBw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id DB67D118DD;
-        Tue,  1 Jun 2021 07:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622533664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QKUWHbN2cryxRpWGCysEGcdBOB1MXEIxNS6COFYpH98=;
-        b=GiJvMgTmkvfRlp0JIy3maL9IwPN+9pF2Lr86hIURcpPxMtX+4clQRo6N3XTEZWYh2y4JH4
-        OFs4d+KWKMpjh2AtKKWvK4Nd7KpiIk/s0FvK01pU0DAqhZpl560BfTV4GsAwlH0Wyazu7c
-        4BQPsb6iu56sq+xymqtIAc11zHn/0/Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622533664;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QKUWHbN2cryxRpWGCysEGcdBOB1MXEIxNS6COFYpH98=;
-        b=C219fcOmkjZbIRb7kVzo5YcF8jRCd5D0bF+RuYRK8PGqYUxXUFGa4G/oT7om9rZbMZ70Lo
-        pxxSZjr7UKg42MBw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id TPU+Mh/mtWC3MAAALh3uQQ
-        (envelope-from <osalvador@suse.de>); Tue, 01 Jun 2021 07:47:43 +0000
-Date:   Tue, 1 Jun 2021 09:47:42 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm,memory_hotplug: Drop unneeded locking
-Message-ID: <20210601074737.GA30768@linux>
-References: <20210531093958.15021-1-osalvador@suse.de>
- <679d311a-8ad4-bb53-18f0-11190a2bf1b5@arm.com>
+        Tue, 1 Jun 2021 03:36:04 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FvP1c1Jbnz19MNF;
+        Tue,  1 Jun 2021 15:29:40 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 15:34:20 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <jdmason@kudzu.us>, Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: vxge: Remove unused variable
+Date:   Tue, 1 Jun 2021 15:47:44 +0800
+Message-ID: <20210601074744.4079327-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <679d311a-8ad4-bb53-18f0-11190a2bf1b5@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -0.50
-X-Spamd-Result: default: False [-0.50 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 10:47:31AM +0530, Anshuman Khandual wrote:
-> Should also just drop zone_span_write[lock|unlock]() helpers as there
-> are no users left ?
+Removes this annoying warning:
 
-Yes, definitely.
-Andrew, can you squash this on top? Thanks:
+drivers/net/ethernet/neterion/vxge/vxge-main.c:1609:22: warning: unused variable ‘status’ [-Wunused-variable]
+ 1609 |  enum vxge_hw_status status;
 
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index a7fd2c3ccb77..27d8ba1d32cb 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -67,10 +67,6 @@ struct range mhp_get_pluggable_range(bool need_mapping);
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/neterion/vxge/vxge-main.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+index 21bc4d6662e4..297bce5f635f 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
++++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+@@ -1606,7 +1606,6 @@ static void vxge_config_ci_for_tti_rti(struct vxgedev *vdev)
  
- /*
-  * Zone resizing functions
-- *
-- * Note: any attempt to resize a zone should has pgdat_resize_lock()
-- * zone_span_writelock() both held. This ensure the size of a zone
-- * can't be changed while pgdat_resize_lock() held.
-  */
- static inline unsigned zone_span_seqbegin(struct zone *zone)
+ static int do_vxge_reset(struct vxgedev *vdev, int event)
  {
-@@ -80,14 +76,6 @@ static inline int zone_span_seqretry(struct zone *zone, unsigned iv)
- {
- 	return read_seqretry(&zone->span_seqlock, iv);
- }
--static inline void zone_span_writelock(struct zone *zone)
--{
--	write_seqlock(&zone->span_seqlock);
--}
--static inline void zone_span_writeunlock(struct zone *zone)
--{
--	write_sequnlock(&zone->span_seqlock);
--}
- static inline void zone_seqlock_init(struct zone *zone)
- {
- 	seqlock_init(&zone->span_seqlock);
-@@ -233,8 +221,6 @@ static inline int zone_span_seqretry(struct zone *zone, unsigned iv)
- {
- 	return 0;
- }
--static inline void zone_span_writelock(struct zone *zone) {}
--static inline void zone_span_writeunlock(struct zone *zone) {}
- static inline void zone_seqlock_init(struct zone *zone) {}
+-	enum vxge_hw_status status;
+ 	int ret = 0, vp_id, i;
  
- static inline int try_online_node(int nid)
-
-
+ 	vxge_debug_entryexit(VXGE_TRACE, "%s:%d", __func__, __LINE__);
 -- 
-Oscar Salvador
-SUSE L3
+2.25.1
+
