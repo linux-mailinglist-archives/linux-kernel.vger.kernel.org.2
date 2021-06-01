@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4AA397015
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB8D39701A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhFAJPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhFAJPg (ORCPT
+        id S233450AbhFAJRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:17:18 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:47288 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231139AbhFAJRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:15:36 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93232C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:13:55 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x73so3685210pfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Blkz6MwWzhLd82jPxQi8FhWdjjdnUZ/dGYCljF9EbEc=;
-        b=bhde+OHqnT0v64c17V3Jd0pDnluYjeBi1qoqnycKMFl+I+fqaVVWYK/eLNd14WrsdK
-         Czawj7dmWGvMqmoVNWJ0+++qDsnmN2bhVkMXtABcKWOqk53KBHlNcV97gD/y7AUCJG+V
-         g6npT2APgp1GjcmFuv4sG6FxMq0Ls4hCYuhVMVB5F5Pbu1Ysx7zksGvT1yF5lVHi3jS2
-         8LXUHdQvrdaSi9Vq5rRkYtwKhCqWCP5vlLXlSowSd3xnOPPvcX+g5jt6XPT5zmZ0vEgz
-         ZokyeFm9zpEx8qqQb68eTetLkd3Oa7LjlaHf+Z+dWx3WP74viKWJrIH2cGMqjpFGU9HJ
-         KEFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Blkz6MwWzhLd82jPxQi8FhWdjjdnUZ/dGYCljF9EbEc=;
-        b=ctJNN9+sY9jrSARXAZ3KUxWr1Mm7RB0ODlx8xr/cOmlXu3amR8Hylv3o5OPF78R2Tm
-         8oHzGYHBKZKI4qkNqV3IJWyVUwIVOe6isIDvQVpkTwVHkfZhDxB77TkqsTmoBMchbovd
-         s5spVjg6F2U06BWrTf28cWdjDCN8lKuBOLhMfx7YeCLw/G7ADH5dbTeI2qwCPEqcAJVg
-         L3lqkCIUqE/Gq4HJDUNJ/TS4eideXvbimBXwAMrtnorIl+bBL6Qv1QWyAjxQHdhTPdEa
-         XUwz2TQmWr5LkqzfFJaf9/OjZUL3Hnq7gSiMbViZ+u5WgLdpQeWUdJEN1zFb25imfWSQ
-         mebg==
-X-Gm-Message-State: AOAM532Y4U3tKpo+a5XXInrXi+BiJejkJvfiZixu3WbIZcXATrJmEGuQ
-        4+Kdb02okOtx1JFNOgFfoldR7A==
-X-Google-Smtp-Source: ABdhPJwTrV9IwmKmRBnKVQO7gRMlGilJ1uboOjBOvBcKnpbfihh4TyP1ZT2JTuxGxFUj5QnB2IEKIw==
-X-Received: by 2002:a62:5483:0:b029:2e9:ff82:95e3 with SMTP id i125-20020a6254830000b02902e9ff8295e3mr2427343pfb.29.1622538835175;
-        Tue, 01 Jun 2021 02:13:55 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id hk15sm1581632pjb.53.2021.06.01.02.13.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 02:13:54 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 14:43:52 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
-Message-ID: <20210601091352.7tthvv6hygtisprm@vireshk-i7>
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
- <YKy516IKPfsZj3cY@hirez.programming.kicks-ass.net>
- <20210528050934.muji5bv7ed4k4t6j@vireshk-i7>
- <20210601084725.GA223449@e120877-lin.cambridge.arm.com>
- <20210601085628.75atoc4e34uttqqw@vireshk-i7>
- <YLX43QT+5r/4zHoP@google.com>
+        Tue, 1 Jun 2021 05:17:17 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1519DOvn012202;
+        Tue, 1 Jun 2021 09:15:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=AMzMC6WVaFSkjgPnsMYkeiLg88Ox0rk4fBCHhz3nMU0=;
+ b=cjHZ8IANNdBYUlgMX5+xUYr0SRbKktNKSC+E572PM4zalHe5eF7Ta8kxyPj3o5gk++tB
+ I2dfrARyQfnjI6FZ81g/wj1n17IhKLvCD4urz47wgZJ467a2K9aZFww/OBRUZr2SJVi0
+ vEXz6xyJkwQyEhZ1J+lj1mMffdZbnY6BOdKM+A3TfCuBJfkhEOiPeM1xtEWuGGh72zbz
+ 3ooYO4/veGwfaTThvivWzqB36RdUcHO+Jxfo+ZSIT+tcj3e3LkOijtRvCUSKvJw2hWG0
+ gliX9fA1fWyHPxxtb2yixbVC/dnDnfOWEXBAK9sLA1CraGVPPTDaPLokqlwOWrNMt4ty uw== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vj1krhws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 09:15:32 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1519BRe3005688;
+        Tue, 1 Jun 2021 09:15:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38ude8dk48-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 09:15:31 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1519FU8O035633;
+        Tue, 1 Jun 2021 09:15:30 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 38ude8dk3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 09:15:30 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1519FTP4026485;
+        Tue, 1 Jun 2021 09:15:29 GMT
+Received: from mwanda (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Jun 2021 02:15:29 -0700
+Date:   Tue, 1 Jun 2021 12:15:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Matt Porter <mporter@kernel.crashing.org>
+Cc:     Alexandre Bounine <alex.bou9@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] rapidio: potential overflow in riocm_ch_send()
+Message-ID: <YLX6p+NXg2w+UqRq@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLX43QT+5r/4zHoP@google.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: QBjpSKkFcV6F-Sk7eCVz14jMFJzaHfpI
+X-Proofpoint-GUID: QBjpSKkFcV6F-Sk7eCVz14jMFJzaHfpI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-06-21, 09:07, Quentin Perret wrote:
-> Just to reiterate here what was discussed on IRC the other day, I still
-> feel that the choice of an efficient OPP or not is a policy decision,
-> and should be left to the governor.
+The "buf" variable has "len" bytes, and the size is controlled by the
+user in cm_chan_msg_send().  If the length is fewer than sizeof(*hdr)
+then it could lead to memory corruption.
 
-I agree. cpufreq core shouldn't always do this.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Strictly speaking the last two bytes of length are reserved and not
+written to but it's simpler and better to check "< sizeof(*hdr)" instead
+of "< sizeof(*hdr) - 2".  This is better for future proofing.
 
-> It's not obvious to me that the userspace govenor for instance wants any
-> of this. Same thing with e.g. the powersave governor if the lowest OPPs
-> are inefficient (yes skipping them will not impact energy, but it will
-> impact instantaneous power).
+ drivers/rapidio/rio_cm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Yes, these governors shouldn't end up using the efficient only stuff.
-
-> So if we're going to move that logic to the cpufreq core, then we'll
-> probably want two separate APIs and make sure to use the effiency-aware
-> one is used only from the places where that makes sense.
-
-Yeah, we need another API or parameter "bool efficient" or something.
-
+diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
+index db4c265287ae..5c332b9867e1 100644
+--- a/drivers/rapidio/rio_cm.c
++++ b/drivers/rapidio/rio_cm.c
+@@ -784,7 +784,8 @@ static int riocm_ch_send(u16 ch_id, void *buf, int len)
+ 	struct rio_ch_chan_hdr *hdr;
+ 	int ret;
+ 
+-	if (buf == NULL || ch_id == 0 || len == 0 || len > RIO_MAX_MSG_SIZE)
++	if (buf == NULL || ch_id == 0 ||
++	    len < sizeof(*hdr) || len > RIO_MAX_MSG_SIZE)
+ 		return -EINVAL;
+ 
+ 	ch = riocm_get_channel(ch_id);
 -- 
-viresh
+2.30.2
+
