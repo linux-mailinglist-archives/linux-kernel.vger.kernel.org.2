@@ -2,322 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D743975F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08783975F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbhFAPBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:01:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46743 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234386AbhFAPBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:01:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622559568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gmQ5sapNm/J3W6mK4f4jmCWQiczf9fEBrpQYFqEuvNI=;
-        b=BBQ/HprJ5D573XrQI/9nbc4GmcrUlDfiEqvIUjaz2RPxNZWN7lJoRVkmYzgNdqLEp5Nlhf
-        iNZ6DfMk5pCj5FHIjU4t7dC+B64v9+5YXqtQAOGhW+XybIemyIa2PNk5pFBeXrIY7dH06R
-        F4MxJvpEquuXLUwS4CeaurJQQyLSJRk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-dydR0-0VPI6VHAwKw_wqzQ-1; Tue, 01 Jun 2021 10:59:27 -0400
-X-MC-Unique: dydR0-0VPI6VHAwKw_wqzQ-1
-Received: by mail-wr1-f70.google.com with SMTP id x9-20020adfffc90000b02901178add5f60so973629wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:59:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gmQ5sapNm/J3W6mK4f4jmCWQiczf9fEBrpQYFqEuvNI=;
-        b=ARLR6W1SoBh2nd2XLORJzfADqaUtJorjLirx3/NLoeZix5ZNtLReT3kekqqC39YmpC
-         AaBHfbIrsmuYebgdCcj4QfExdToUp2ZWTZz4j78QPjlbVjba6JYhUORG5l8z48ZrMNpP
-         2Ml1DhkK2vPi0G6v/WKzs86BW8/LXsKAxIhyNT2fcNMa5pY6uwKufqKkRpNlL9K9G6h7
-         hY4YAfgLOm1e3cAQLSnZDZUQzZARRQ4saYVBIe8WbdBSUGpSlqqc1Tm9xUnoUn+LE2Jp
-         5zB2ak4/G0wY1p4OL2hEolrDl7zgjlY/ZWDnvrrE+OYjF7ceB0JOFeRj4VAkxd6pAlYA
-         TNUw==
-X-Gm-Message-State: AOAM533fHxi245+ukztxVlBvu3jF2CpIMCbR+zlCLqi9SeClXp849cF4
-        8WPAj38VhzIZLuiHbpjBP8XkvCJBeLUKyBt5tKlOO61Us2SV/Xm5ixRZfi3isb8l+bIKU7WdxCo
-        lJx7cZN+Yi1jFe55reQD197OZ6lCNBQRlLnRChIrc4Xh26nE6isopZsAOldsSTn2XCA69XDQ3Rp
-        E=
-X-Received: by 2002:adf:8bd4:: with SMTP id w20mr15579547wra.310.1622559566313;
-        Tue, 01 Jun 2021 07:59:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQHrKdO567c3olyoWc4lzbbNuTy4CMdhBLpG2aYelB09sF8IxFHqikVKvNNAfTaXCw3YhB1Q==
-X-Received: by 2002:adf:8bd4:: with SMTP id w20mr15579486wra.310.1622559565948;
-        Tue, 01 Jun 2021 07:59:25 -0700 (PDT)
-Received: from minerva.redhat.com ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id h6sm3533153wrt.6.2021.06.01.07.59.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 07:59:25 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Chester Lin <clin@suse.com>, Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-efi@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v2 1/2] drivers/firmware: move x86 Generic System Framebuffers support
-Date:   Tue,  1 Jun 2021 16:59:11 +0200
-Message-Id: <20210601145912.774054-2-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210601145912.774054-1-javierm@redhat.com>
-References: <20210601145912.774054-1-javierm@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234462AbhFAPBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:01:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234386AbhFAPBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 11:01:49 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 482B9613A9;
+        Tue,  1 Jun 2021 15:00:08 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lo5sD-004qCS-QS; Tue, 01 Jun 2021 16:00:06 +0100
+Date:   Tue, 01 Jun 2021 16:00:04 +0100
+Message-ID: <87im2x1vgr.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     will@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        catalin.marinas@arm.com, suzuki.poulose@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] KVM: arm64: Remove hyp_pool pointer from struct hyp_page
+In-Reply-To: <20210527125134.2116404-6-qperret@google.com>
+References: <20210527125134.2116404-1-qperret@google.com>
+        <20210527125134.2116404-6-qperret@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: qperret@google.com, will@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com, catalin.marinas@arm.com, suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kernel-team@android.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The x86 architecture has generic support to register a system framebuffer
-platform device. It either registers a "simple-framebuffer" if the config
-option CONFIG_X86_SYSFB is enabled, or a legacy VGA/VBE/EFI FB device.
+On Thu, 27 May 2021 13:51:32 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> Each struct hyp_page currently contains a pointer to a hyp_pool struct
+> where the page should be freed if its refcount reaches 0. However, this
+> information can always be inferred from the context in the EL2 code, so
+> drop the pointer to save a few bytes in the vmemmap.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/hyp/include/nvhe/gfp.h    |  4 ++--
+>  arch/arm64/kvm/hyp/include/nvhe/memory.h |  2 --
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c    | 13 +++++++++++--
+>  arch/arm64/kvm/hyp/nvhe/page_alloc.c     |  7 ++-----
+>  arch/arm64/kvm/hyp/nvhe/setup.c          | 14 ++++++++++++--
+>  5 files changed, 27 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/include/nvhe/gfp.h b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+> index aada4d97de49..9ed374648364 100644
+> --- a/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+> +++ b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+> @@ -42,8 +42,8 @@ static inline void hyp_set_page_refcounted(struct hyp_page *p)
+>  
+>  /* Allocation */
+>  void *hyp_alloc_pages(struct hyp_pool *pool, unsigned int order);
+> -void hyp_get_page(void *addr);
+> -void hyp_put_page(void *addr);
+> +void hyp_get_page(void *addr, struct hyp_pool *pool);
+> +void hyp_put_page(void *addr, struct hyp_pool *pool);
 
-But the code is generic enough to be reused by other architectures and can
-be moved out of the arch/x86 directory.
+It'd be good to be consistent with __hyp_put_page(), which has these
+arguments in the opposite order. See below for an example.
 
-This will allow to also support the simple{fb,drm} drivers on non-x86 EFI
-platforms, such as aarch64 where these drivers are only supported with DT.
+>  
+>  /* Used pages cannot be freed */
+>  int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsigned int nr_pages,
+> diff --git a/arch/arm64/kvm/hyp/include/nvhe/memory.h b/arch/arm64/kvm/hyp/include/nvhe/memory.h
+> index 7691ab495eb4..991636be2f46 100644
+> --- a/arch/arm64/kvm/hyp/include/nvhe/memory.h
+> +++ b/arch/arm64/kvm/hyp/include/nvhe/memory.h
+> @@ -7,11 +7,9 @@
+>  
+>  #include <linux/types.h>
+>  
+> -struct hyp_pool;
+>  struct hyp_page {
+>  	unsigned int refcount;
+>  	unsigned int order;
+> -	struct hyp_pool *pool;
+>  };
+>  
+>  extern u64 __hyp_vmemmap;
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index fdd5b5702e8a..3603311eb41c 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -42,6 +42,15 @@ static void *host_s2_zalloc_page(void *pool)
+>  {
+>  	return hyp_alloc_pages(pool, 0);
+>  }
+> +static void host_s2_get_page(void *addr)
 
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
+nit: missing blank line.
 
-Changes in v2:
-- Use default y and depends on X86 instead doing a select in arch/x86/Kconfig.
-- Also enable the SYSFB Kconfig option when COMPILE_TEST.
-- Improve commit message to explain why is useful for other arches to use this.
+> +{
+> +	hyp_get_page(addr, &host_s2_pool);
+> +}
+> +
+> +static void host_s2_put_page(void *addr)
+> +{
+> +	hyp_put_page(addr, &host_s2_pool);
+> +}
+>  
+>  static int prepare_s2_pool(void *pgt_pool_base)
+>  {
+> @@ -60,8 +69,8 @@ static int prepare_s2_pool(void *pgt_pool_base)
+>  		.phys_to_virt = hyp_phys_to_virt,
+>  		.virt_to_phys = hyp_virt_to_phys,
+>  		.page_count = hyp_page_count,
+> -		.get_page = hyp_get_page,
+> -		.put_page = hyp_put_page,
+> +		.get_page = host_s2_get_page,
+> +		.put_page = host_s2_put_page,
+>  	};
+>  
+>  	return 0;
+> diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> index ce7379f1480b..e453108a2d95 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> @@ -150,20 +150,18 @@ static void __hyp_put_page(struct hyp_pool *pool, struct hyp_page *p)
+>  		__hyp_attach_page(pool, p);
+>  }
+>  
+> -void hyp_put_page(void *addr)
+> +void hyp_put_page(void *addr, struct hyp_pool *pool)
+>  {
+>  	struct hyp_page *p = hyp_virt_to_page(addr);
+> -	struct hyp_pool *pool = hyp_page_to_pool(p);
+>  
+>  	hyp_spin_lock(&pool->lock);
+>  	__hyp_put_page(pool, p);
 
- arch/x86/Kconfig                              | 26 ---------------
- arch/x86/kernel/Makefile                      |  3 --
- drivers/firmware/Kconfig                      | 32 +++++++++++++++++++
- drivers/firmware/Makefile                     |  2 ++
- drivers/firmware/efi/Makefile                 |  2 ++
- .../firmware/efi}/sysfb_efi.c                 |  2 +-
- {arch/x86/kernel => drivers/firmware}/sysfb.c |  2 +-
- .../firmware}/sysfb_simplefb.c                |  2 +-
- .../x86/include/asm => include/linux}/sysfb.h |  6 ++--
- 9 files changed, 42 insertions(+), 35 deletions(-)
- rename {arch/x86/kernel => drivers/firmware/efi}/sysfb_efi.c (99%)
- rename {arch/x86/kernel => drivers/firmware}/sysfb.c (98%)
- rename {arch/x86/kernel => drivers/firmware}/sysfb_simplefb.c (99%)
- rename {arch/x86/include/asm => include/linux}/sysfb.h (95%)
+When I see this, my eyes get crossed, and I don't know what I'm
+reading anymore! ;-) In general, I like the "container" as a first
+argument, followed by the element that can be contained.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 39175aa072e..9907d4bed70 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2796,32 +2796,6 @@ config AMD_NB
- 	def_bool y
- 	depends on CPU_SUP_AMD && PCI
- 
--config X86_SYSFB
--	bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
--	help
--	  Firmwares often provide initial graphics framebuffers so the BIOS,
--	  bootloader or kernel can show basic video-output during boot for
--	  user-guidance and debugging. Historically, x86 used the VESA BIOS
--	  Extensions and EFI-framebuffers for this, which are mostly limited
--	  to x86.
--	  This option, if enabled, marks VGA/VBE/EFI framebuffers as generic
--	  framebuffers so the new generic system-framebuffer drivers can be
--	  used on x86. If the framebuffer is not compatible with the generic
--	  modes, it is advertised as fallback platform framebuffer so legacy
--	  drivers like efifb, vesafb and uvesafb can pick it up.
--	  If this option is not selected, all system framebuffers are always
--	  marked as fallback platform framebuffers as usual.
--
--	  Note: Legacy fbdev drivers, including vesafb, efifb, uvesafb, will
--	  not be able to pick up generic system framebuffers if this option
--	  is selected. You are highly encouraged to enable simplefb as
--	  replacement if you select this option. simplefb can correctly deal
--	  with generic system framebuffers. But you should still keep vesafb
--	  and others enabled as fallback if a system framebuffer is
--	  incompatible with simplefb.
--
--	  If unsure, say Y.
--
- endmenu
- 
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 0f66682ac02..4114ea47def 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -135,9 +135,6 @@ obj-$(CONFIG_X86_CHECK_BIOS_CORRUPTION) += check.o
- obj-$(CONFIG_SWIOTLB)			+= pci-swiotlb.o
- obj-$(CONFIG_OF)			+= devicetree.o
- obj-$(CONFIG_UPROBES)			+= uprobes.o
--obj-y					+= sysfb.o
--obj-$(CONFIG_X86_SYSFB)			+= sysfb_simplefb.o
--obj-$(CONFIG_EFI)			+= sysfb_efi.o
- 
- obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o
- obj-$(CONFIG_TRACING)			+= tracepoint.o
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index b53ac9fc770..4392fc57cf3 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -251,6 +251,38 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
- 
- 	  Say Y here to enable "download mode" by default.
- 
-+config SYSFB
-+	bool
-+	default y
-+	depends on X86 || COMPILE_TEST
-+
-+config X86_SYSFB
-+	bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
-+	depends on SYSFB
-+	help
-+	  Firmwares often provide initial graphics framebuffers so the BIOS,
-+	  bootloader or kernel can show basic video-output during boot for
-+	  user-guidance and debugging. Historically, x86 used the VESA BIOS
-+	  Extensions and EFI-framebuffers for this, which are mostly limited
-+	  to x86.
-+	  This option, if enabled, marks VGA/VBE/EFI framebuffers as generic
-+	  framebuffers so the new generic system-framebuffer drivers can be
-+	  used on x86. If the framebuffer is not compatible with the generic
-+	  modes, it is advertised as fallback platform framebuffer so legacy
-+	  drivers like efifb, vesafb and uvesafb can pick it up.
-+	  If this option is not selected, all system framebuffers are always
-+	  marked as fallback platform framebuffers as usual.
-+
-+	  Note: Legacy fbdev drivers, including vesafb, efifb, uvesafb, will
-+	  not be able to pick up generic system framebuffers if this option
-+	  is selected. You are highly encouraged to enable simplefb as
-+	  replacement if you select this option. simplefb can correctly deal
-+	  with generic system framebuffers. But you should still keep vesafb
-+	  and others enabled as fallback if a system framebuffer is
-+	  incompatible with simplefb.
-+
-+	  If unsure, say Y.
-+
- config TI_SCI_PROTOCOL
- 	tristate "TI System Control Interface (TISCI) Message Protocol"
- 	depends on TI_MESSAGE_MANAGER
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 546ac8e7f6d..946dda07443 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -18,6 +18,8 @@ obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
- obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
- obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_SYSFB)		+= sysfb.o
-+obj-$(CONFIG_X86_SYSFB)		+= sysfb_simplefb.o
- obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
- obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
- obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-index 467e9425967..c02ff25dd47 100644
---- a/drivers/firmware/efi/Makefile
-+++ b/drivers/firmware/efi/Makefile
-@@ -36,6 +36,8 @@ obj-$(CONFIG_LOAD_UEFI_KEYS)		+= mokvar-table.o
- fake_map-y				+= fake_mem.o
- fake_map-$(CONFIG_X86)			+= x86_fake_mem.o
- 
-+obj-$(CONFIG_SYSFB)			+= sysfb_efi.o
-+
- arm-obj-$(CONFIG_EFI)			:= efi-init.o arm-runtime.o
- obj-$(CONFIG_ARM)			+= $(arm-obj-y)
- obj-$(CONFIG_ARM64)			+= $(arm-obj-y)
-diff --git a/arch/x86/kernel/sysfb_efi.c b/drivers/firmware/efi/sysfb_efi.c
-similarity index 99%
-rename from arch/x86/kernel/sysfb_efi.c
-rename to drivers/firmware/efi/sysfb_efi.c
-index 8a56a6d8009..9f035b15501 100644
---- a/arch/x86/kernel/sysfb_efi.c
-+++ b/drivers/firmware/efi/sysfb_efi.c
-@@ -21,10 +21,10 @@
- #include <linux/mm.h>
- #include <linux/pci.h>
- #include <linux/screen_info.h>
-+#include <linux/sysfb.h>
- #include <video/vga.h>
- 
- #include <asm/efi.h>
--#include <asm/sysfb.h>
- 
- enum {
- 	OVERRIDE_NONE = 0x0,
-diff --git a/arch/x86/kernel/sysfb.c b/drivers/firmware/sysfb.c
-similarity index 98%
-rename from arch/x86/kernel/sysfb.c
-rename to drivers/firmware/sysfb.c
-index 014ebd8ca86..1337515963d 100644
---- a/arch/x86/kernel/sysfb.c
-+++ b/drivers/firmware/sysfb.c
-@@ -32,7 +32,7 @@
- #include <linux/platform_data/simplefb.h>
- #include <linux/platform_device.h>
- #include <linux/screen_info.h>
--#include <asm/sysfb.h>
-+#include <linux/sysfb.h>
- 
- static __init int sysfb_init(void)
- {
-diff --git a/arch/x86/kernel/sysfb_simplefb.c b/drivers/firmware/sysfb_simplefb.c
-similarity index 99%
-rename from arch/x86/kernel/sysfb_simplefb.c
-rename to drivers/firmware/sysfb_simplefb.c
-index 298fc1edd9c..df892444ea1 100644
---- a/arch/x86/kernel/sysfb_simplefb.c
-+++ b/drivers/firmware/sysfb_simplefb.c
-@@ -18,7 +18,7 @@
- #include <linux/platform_data/simplefb.h>
- #include <linux/platform_device.h>
- #include <linux/screen_info.h>
--#include <asm/sysfb.h>
-+#include <linux/sysfb.h>
- 
- static const char simplefb_resname[] = "BOOTFB";
- static const struct simplefb_format formats[] = SIMPLEFB_FORMATS;
-diff --git a/arch/x86/include/asm/sysfb.h b/include/linux/sysfb.h
-similarity index 95%
-rename from arch/x86/include/asm/sysfb.h
-rename to include/linux/sysfb.h
-index 9834eef7f03..3e5355769dc 100644
---- a/arch/x86/include/asm/sysfb.h
-+++ b/include/linux/sysfb.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
--#ifndef _ARCH_X86_KERNEL_SYSFB_H
--#define _ARCH_X86_KERNEL_SYSFB_H
-+#ifndef _LINUX_SYSFB_H
-+#define _LINUX_SYSFB_H
- 
- /*
-  * Generic System Framebuffers on x86
-@@ -91,4 +91,4 @@ static inline int create_simplefb(const struct screen_info *si,
- 
- #endif /* CONFIG_X86_SYSFB */
- 
--#endif /* _ARCH_X86_KERNEL_SYSFB_H */
-+#endif /* _LINUX_SYSFB_H */
+>  	hyp_spin_unlock(&pool->lock);
+>  }
+>  
+> -void hyp_get_page(void *addr)
+> +void hyp_get_page(void *addr, struct hyp_pool *pool)
+>  {
+>  	struct hyp_page *p = hyp_virt_to_page(addr);
+> -	struct hyp_pool *pool = hyp_page_to_pool(p);
+>  
+>  	hyp_spin_lock(&pool->lock);
+>  	hyp_page_ref_inc(p);
+> @@ -212,7 +210,6 @@ int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsigned int nr_pages,
+>  	/* Init the vmemmap portion */
+>  	p = hyp_phys_to_page(phys);
+>  	for (i = 0; i < nr_pages; i++) {
+> -		p[i].pool = pool;
+>  		p[i].order = 0;
+>  		hyp_set_page_refcounted(&p[i]);
+>  	}
+> diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
+> index 709cb3d19eb7..bf61abd4a330 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/setup.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/setup.c
+> @@ -137,6 +137,16 @@ static void *hyp_zalloc_hyp_page(void *arg)
+>  	return hyp_alloc_pages(&hpool, 0);
+>  }
+>  
+> +static void hpool_get_page(void *addr)
+> +{
+> +	hyp_get_page(addr, &hpool);
+> +}
+> +
+> +static void hpool_put_page(void *addr)
+> +{
+> +	hyp_put_page(addr, &hpool);
+> +}
+> +
+>  void __noreturn __pkvm_init_finalise(void)
+>  {
+>  	struct kvm_host_data *host_data = this_cpu_ptr(&kvm_host_data);
+> @@ -160,8 +170,8 @@ void __noreturn __pkvm_init_finalise(void)
+>  		.zalloc_page = hyp_zalloc_hyp_page,
+>  		.phys_to_virt = hyp_phys_to_virt,
+>  		.virt_to_phys = hyp_virt_to_phys,
+> -		.get_page = hyp_get_page,
+> -		.put_page = hyp_put_page,
+> +		.get_page = hpool_get_page,
+> +		.put_page = hpool_put_page,
+>  	};
+>  	pkvm_pgtable.mm_ops = &pkvm_pgtable_mm_ops;
+>  
+> -- 
+> 2.31.1.818.g46aad6cb9e-goog
+> 
+> 
+
+Thanks,
+
+	M.
+
 -- 
-2.31.1
-
+Without deviation from the norm, progress is not possible.
