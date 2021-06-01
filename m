@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD323974F5
+	by mail.lfdr.de (Postfix) with ESMTP id BFB663974F7
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbhFAOGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:06:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33158 "EHLO
+        id S234370AbhFAOHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:07:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33174 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234191AbhFAOGj (ORCPT
+        with ESMTP id S234206AbhFAOGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:06:39 -0400
-Date:   Tue, 01 Jun 2021 14:04:56 -0000
+        Tue, 1 Jun 2021 10:06:40 -0400
+Date:   Tue, 01 Jun 2021 14:04:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622556297;
+        s=2020; t=1622556298;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=85oWepKuBZhquuUtAM41JTzu8qQtxv0Ix5BcI0/vp4w=;
-        b=ZdBEALaJv3aRcFerkAXP4pAuSmW0LdS6Y498TRzWCO+xWE/c6SbzHBwXy18k8PjJWOfNb8
-        is+dLhlNN6GeZBVgqpzIxRtbJQuezXxH3Q1UeNRKAoqfaiw59AZciLZFdlZ6ah5dOagBbo
-        leBJtjqRMq+42ebr6/KE8fI/kofXUgdwAcHOLjRndnbN2Uif4OE5n7M0zmBGR1HuvEIvPY
-        1SWrWGPymBOSOaik3APRs5uh9BeBt/mb/BgYy3Q90l4iMU51e+4PeQLjY7N/Ury632NIJc
-        Hq0lMWuY2vQ4fDEj3ipFF2tpzyqnmTbkVkIBNJSMWwhi/ikMeZtHOg4I2+8DNw==
+        bh=rYC9ZduJnAjuxjdLWAeAQnaSva6G2B+jOPkc7wyTFOY=;
+        b=SGc8aCWzbWV1eBXFYkbzxj55GJIDuoyBJ1TTgScwuwAPoVBxaBDksl9uVfkFxdrjWeP+MQ
+        Av+0bCwPG3t7XBPPF9ysOsOGm7NDycCx21m7xWpM37puU5CBhFhE2Vxw/HikBgyS1evbYT
+        ux0WfC4hv8jK94Zvap8w9BMH1Oj4Ju/uDMCPbDsIOSrJSUjJgOrzpviPC36lZNNOO337gu
+        p1i6/2iOVoRZpSADoM9T6YU4/rGGzsTJhRlpxZpObqG6mNiwG8QZNWc4G9am1iaYRgzVb+
+        zZPOcX1gOuP6Oh6zmVmmVmSEMOKn+wf2iVWW9H9Fcl3OaT1UU/ZTW+JZGrd5Fg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622556297;
+        s=2020e; t=1622556298;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=85oWepKuBZhquuUtAM41JTzu8qQtxv0Ix5BcI0/vp4w=;
-        b=O1vjBbWDmqp77/FCAo/+0Ef3t+G5sFv1tH3EIVvx4KXterONSHqDWkFn8jJ60q426YaE5x
-        uj7VLZHXJAk1I6AQ==
-From:   "tip-bot2 for Odin Ugedal" <tip-bot2@linutronix.de>
+        bh=rYC9ZduJnAjuxjdLWAeAQnaSva6G2B+jOPkc7wyTFOY=;
+        b=YtfrKRWFRSudy2wXh4rU+7Ok5+D2lq9JbJ0OIlV8USAtwmPne3BJurPdswvBoOEdvpMo6o
+        bFx9JLaBlMcFU1DA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Fix ascii art by relpacing tabs
-Cc:     Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched: Add CONFIG_SCHED_CORE help text
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Hugh Dickins <hughd@google.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210518125202.78658-4-odin@uged.al>
-References: <20210518125202.78658-4-odin@uged.al>
+In-Reply-To: <YKyhtwhEgvtUDOyl@hirez.programming.kicks-ass.net>
+References: <YKyhtwhEgvtUDOyl@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <162255629652.29796.7294465727073405136.tip-bot2@tip-bot2>
+Message-ID: <162255629757.29796.5663233849330605967.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,64 +59,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     08f7c2f4d0e9f4283f5796b8168044c034a1bfcb
-Gitweb:        https://git.kernel.org/tip/08f7c2f4d0e9f4283f5796b8168044c034a1bfcb
-Author:        Odin Ugedal <odin@uged.al>
-AuthorDate:    Tue, 18 May 2021 14:52:02 +02:00
+Commit-ID:     7b419f47facd286c6723daca6ad69ec355473f78
+Gitweb:        https://git.kernel.org/tip/7b419f47facd286c6723daca6ad69ec355473f78
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 25 May 2021 08:53:28 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 01 Jun 2021 16:00:11 +02:00
+CommitterDate: Tue, 01 Jun 2021 16:00:10 +02:00
 
-sched/fair: Fix ascii art by relpacing tabs
+sched: Add CONFIG_SCHED_CORE help text
 
-When using something other than 8 spaces per tab, this ascii art
-makes not sense, and the reader might end up wondering what this
-advanced equation "is".
+Hugh noted that the SCHED_CORE Kconfig option could do with a help
+text.
 
-Signed-off-by: Odin Ugedal <odin@uged.al>
+Requested-by: Hugh Dickins <hughd@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210518125202.78658-4-odin@uged.al
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+Link: https://lkml.kernel.org/r/YKyhtwhEgvtUDOyl@hirez.programming.kicks-ass.net
 ---
- kernel/sched/fair.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/Kconfig.preempt | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 161b92a..a2c30e5 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3093,7 +3093,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------               (1)
-- *			  \Sum grq->load.weight
-+ *                       \Sum grq->load.weight
-  *
-  * Now, because computing that sum is prohibitively expensive to compute (been
-  * there, done that) we approximate it with this average stuff. The average
-@@ -3107,7 +3107,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->avg.load_avg
-  *   ge->load.weight = ------------------------------              (3)
-- *				tg->load_avg
-+ *                             tg->load_avg
-  *
-  * Where: tg->load_avg ~= \Sum grq->avg.load_avg
-  *
-@@ -3123,7 +3123,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = ----------------------------- = tg->weight   (4)
-- *			    grp->load.weight
-+ *                         grp->load.weight
-  *
-  * That is, the sum collapses because all other CPUs are idle; the UP scenario.
-  *
-@@ -3142,7 +3142,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------		   (6)
-- *				tg_load_avg'
-+ *                             tg_load_avg'
-  *
-  * Where:
-  *
+diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+index ea1e333..bd7c414 100644
+--- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -104,4 +104,18 @@ config SCHED_CORE
+ 	bool "Core Scheduling for SMT"
+ 	default y
+ 	depends on SCHED_SMT
++	help
++	  This option permits Core Scheduling, a means of coordinated task
++	  selection across SMT siblings. When enabled -- see
++	  prctl(PR_SCHED_CORE) -- task selection ensures that all SMT siblings
++	  will execute a task from the same 'core group', forcing idle when no
++	  matching task is found.
++
++	  Use of this feature includes:
++	   - mitigation of some (not all) SMT side channels;
++	   - limiting SMT interference to improve determinism and/or performance.
++
++	  SCHED_CORE is default enabled when SCHED_SMT is enabled -- when
++	  unused there should be no impact on performance.
++
+ 
