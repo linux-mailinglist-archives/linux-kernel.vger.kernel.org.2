@@ -2,207 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B07396ED5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52299396ED6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhFAIYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233364AbhFAIYe (ORCPT
+        id S233530AbhFAIYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:24:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233529AbhFAIYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:24:34 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF45C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:22:53 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d16so10778362pfn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Cmtbv533T+lIcgmnYXDQIYlfDlz/3dP+vNE0ksXaWFg=;
-        b=j+wd4DLtohlBcCHNl1RZQ/Ih+s3QZ9YjLM/SkASYaUI9tMKnyfQH0jA2IQDMut7am/
-         F18ajErF8iOReZlQvEeMZs3TL9fs5o1gIk9sHL2eo8SdQoXsqs7HMZXmpVQCT4CI6hFG
-         TjgieFCVQ0R9J9Mbp4JFZCo4qScT5uneVZ8kSriR9i0eT4yTqaLMCTP01joxgTrXk3vh
-         tXR2OLNu03J8gkFlEz1dgwbvsyb7gW/ww0VARqyBkZKkP2XqAQ+eaKaVhk/91RGkSO3e
-         R9xuJdYJTyG2KfZLpsnP6pNaS1XnT6Pfmp0vt4MBqs+j/MrYEoj+aBw3V/bGgv7pTO3x
-         isXA==
+        Tue, 1 Jun 2021 04:24:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622535781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qko+6OLUI0ASBUaG2AM+FeVy91xdoIP6u9Dh5KlRzDM=;
+        b=UFvN4ygYZOzPlidMBpVUmHEKfS79l1xt4IJjKtjrcBv0EeKeaF2LtyWBnLpTLVnLWqAsg/
+        L//CZHmF33DLT0hTdKcSVsWUO9e0FnWQkbZvPWRK8PKFR2mSlpQBnA0bZmGw3vD1i1VeNR
+        P+E8ILLSWoaukVMcjOKk0cCSQRwSUXY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-5dQD8ZGYPhmT_gmsg70eTQ-1; Tue, 01 Jun 2021 04:22:57 -0400
+X-MC-Unique: 5dQD8ZGYPhmT_gmsg70eTQ-1
+Received: by mail-wr1-f69.google.com with SMTP id j33-20020adf91240000b029010e4009d2ffso4582020wrj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:22:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Cmtbv533T+lIcgmnYXDQIYlfDlz/3dP+vNE0ksXaWFg=;
-        b=V5qBNiwhBdKHR4jiOB5cVmPEljzR/j8bkYTJqQHexcRKZ1zsBAeotPEv101vkzKZsY
-         qPr2WCTGpF4UCsxDjrtPddfvgj4JfMEfN5Ebwttl9UeADR45ouNzDTgaaK4K1nco+lJ2
-         OmdVfJbSVUMoruFZDEwYbnnoA+dQq4Zkb0Tv3NTbMJEkaCP+sRDqmafLCXSoWTyb9nCl
-         ucDHSIG91OukDx5LVk3NqHjCriUvueD5Pkalq4MpFiy0xJWzvsPF5LVQEGoD85ht5eck
-         5sYBXNIpzPPQduVHxl+yXnH/Gpsu92tAFNxqiQ50dOu1ysiclCk1FYjMwe/HDGomHiTb
-         bk0Q==
-X-Gm-Message-State: AOAM531ku1dU9sKEKzCIXfeMnHS0kynCw45/lRGnsZg4F0A++XCK71FQ
-        RcZ9NaK3IFoKbINeF2q8sYYwGQ==
-X-Google-Smtp-Source: ABdhPJxqYIztjAiH2O3UXaLiF5pofSZstUQEhihvG513bJN2IQj26dsDk5GPVwZCHwtnEcF1YCXOhA==
-X-Received: by 2002:a63:594f:: with SMTP id j15mr8436110pgm.244.1622535772563;
-        Tue, 01 Jun 2021 01:22:52 -0700 (PDT)
-Received: from FVFX41FWHV2J.bytedance.net ([139.177.225.224])
-        by smtp.gmail.com with ESMTPSA id g19sm1485193pjl.24.2021.06.01.01.22.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Jun 2021 01:22:51 -0700 (PDT)
-From:   Feng zhou <zhoufeng.zf@bytedance.com>
-To:     adobriyan@gmail.com, akpm@linux-foundation.org, rppt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        songmuchun@bytedance.com, zhouchengming@bytedance.com,
-        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com,
-        zhoufeng.zf@bytedance.com
-Subject: [PATCH v2] fs/proc/kcore.c: add mmap interface
-Date:   Tue,  1 Jun 2021 16:22:41 +0800
-Message-Id: <20210601082241.13378-1-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=qko+6OLUI0ASBUaG2AM+FeVy91xdoIP6u9Dh5KlRzDM=;
+        b=gfdM0ot5OZg1ilQRoZyWcr4G6VqYx/gTkvzTks3EggaOuNNP9P3hSrCYAUzqiEVQvo
+         OfOQ9Bng9tP/oafeeywvMKlBRcAyn6jnl/jr/58PF0B+SnzrCbe+dSDkltYcULd6POnH
+         RHmFXq8XvVP1v8PXrSk1Lq0NWQhD8ZXx1B6LcB31Di/CYb/7J6TLbTrky/8hd7ludpmE
+         Qq3+hMmyR1NoAmTKmtpcP2VEyK04zpDL/SfII8OTtnsrvev4i4G89T6PqtjpBI6ZJBKP
+         iy7iUkcYZFuk94+O4WOV9MBAu2JDy0C57Fhz3QwoD2wXVoeygYR5IhTO6PquAb2qoRXR
+         8olA==
+X-Gm-Message-State: AOAM5320+Dt6mURPySEvL/TvklZdJtm6kev15jXoKQMowOamKgpAmisa
+        7Netx0NniJmBL82ZVM55mUkq17LMomuaXD04dJNkAGAmomjt7Wzd5r2jnFqX+ZnHz7fkAL/Km17
+        xHjGy9tD98fzJ9SofQtmdb3CH
+X-Received: by 2002:adf:e3c8:: with SMTP id k8mr26044475wrm.212.1622535776735;
+        Tue, 01 Jun 2021 01:22:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw12KgcgZ8BBy3UXy4SYPbp+iNY/jg5z1LMDTYyJdmcpHn2xiuwKa6oYIoF0d0arEpT0pG4GA==
+X-Received: by 2002:adf:e3c8:: with SMTP id k8mr26044457wrm.212.1622535776531;
+        Tue, 01 Jun 2021 01:22:56 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c69ce.dip0.t-ipconnect.de. [91.12.105.206])
+        by smtp.gmail.com with ESMTPSA id v18sm2485369wrb.10.2021.06.01.01.22.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 01:22:56 -0700 (PDT)
+Subject: Re: [PATCH V2 4/6] mm: rename the global section array to
+ mem_sections
+To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
+ <20210531091908.1738465-5-aisheng.dong@nxp.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <42617372-c846-85fe-4739-abbe55eca8f6@redhat.com>
+Date:   Tue, 1 Jun 2021 10:22:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210531091908.1738465-5-aisheng.dong@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ZHOUFENG <zhoufeng.zf@bytedance.com>
+On 31.05.21 11:19, Dong Aisheng wrote:
+> In order to distinguish the struct mem_section for a better code
+> readability and align with kernel doc [1] name below, change the
+> global mem section name to 'mem_sections' from 'mem_section'.
+> 
+> [1] Documentation/vm/memory-model.rst
+> "The `mem_section` objects are arranged in a two-dimensional array
+> called `mem_sections`."
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: kexec@lists.infradead.org
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> ---
+> v1->v2:
+>   * no changes
+> ---
+>   include/linux/mmzone.h | 10 +++++-----
+>   kernel/crash_core.c    |  4 ++--
+>   mm/sparse.c            | 16 ++++++++--------
+>   3 files changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index a6bfde85ddb0..0ed61f32d898 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1302,9 +1302,9 @@ struct mem_section {
+>   #define SECTION_ROOT_MASK	(SECTIONS_PER_ROOT - 1)
+>   
+>   #ifdef CONFIG_SPARSEMEM_EXTREME
+> -extern struct mem_section **mem_section;
+> +extern struct mem_section **mem_sections;
+>   #else
+> -extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+> +extern struct mem_section mem_sections[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+>   #endif
+>   
+>   static inline unsigned long *section_to_usemap(struct mem_section *ms)
+> @@ -1315,12 +1315,12 @@ static inline unsigned long *section_to_usemap(struct mem_section *ms)
+>   static inline struct mem_section *__nr_to_section(unsigned long nr)
+>   {
+>   #ifdef CONFIG_SPARSEMEM_EXTREME
+> -	if (!mem_section)
+> +	if (!mem_sections)
+>   		return NULL;
+>   #endif
+> -	if (!mem_section[SECTION_NR_TO_ROOT(nr)])
+> +	if (!mem_sections[SECTION_NR_TO_ROOT(nr)])
+>   		return NULL;
+> -	return &mem_section[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
+> +	return &mem_sections[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
+>   }
+>   extern unsigned long __section_nr(struct mem_section *ms);
+>   extern size_t mem_section_usage_size(void);
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 29cc15398ee4..fb1180d81b5a 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -414,8 +414,8 @@ static int __init crash_save_vmcoreinfo_init(void)
+>   	VMCOREINFO_SYMBOL(contig_page_data);
+>   #endif
+>   #ifdef CONFIG_SPARSEMEM
+> -	VMCOREINFO_SYMBOL_ARRAY(mem_section);
+> -	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
+> +	VMCOREINFO_SYMBOL_ARRAY(mem_sections);
+> +	VMCOREINFO_LENGTH(mem_sections, NR_SECTION_ROOTS);
+>   	VMCOREINFO_STRUCT_SIZE(mem_section);
+>   	VMCOREINFO_OFFSET(mem_section, section_mem_map);
+>   	VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index d02ee6bb7cbc..6412010478f7 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -24,12 +24,12 @@
+>    * 1) mem_section	- memory sections, mem_map's for valid memory
+>    */
+>   #ifdef CONFIG_SPARSEMEM_EXTREME
+> -struct mem_section **mem_section;
+> +struct mem_section **mem_sections;
+>   #else
+> -struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT]
+> +struct mem_section mem_sections[NR_SECTION_ROOTS][SECTIONS_PER_ROOT]
+>   	____cacheline_internodealigned_in_smp;
+>   #endif
+> -EXPORT_SYMBOL(mem_section);
+> +EXPORT_SYMBOL(mem_sections);
+>   
+>   #ifdef NODE_NOT_IN_PAGE_FLAGS
+>   /*
+> @@ -66,8 +66,8 @@ static void __init sparse_alloc_section_roots(void)
+>   
+>   	size = sizeof(struct mem_section *) * NR_SECTION_ROOTS;
+>   	align = 1 << (INTERNODE_CACHE_SHIFT);
+> -	mem_section = memblock_alloc(size, align);
+> -	if (!mem_section)
+> +	mem_sections = memblock_alloc(size, align);
+> +	if (!mem_sections)
+>   		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
+>   		      __func__, size, align);
+>   }
+> @@ -103,14 +103,14 @@ static int __meminit sparse_index_init(unsigned long section_nr, int nid)
+>   	 *
+>   	 * The mem_hotplug_lock resolves the apparent race below.
+>   	 */
+> -	if (mem_section[root])
+> +	if (mem_sections[root])
+>   		return 0;
+>   
+>   	section = sparse_index_alloc(nid);
+>   	if (!section)
+>   		return -ENOMEM;
+>   
+> -	mem_section[root] = section;
+> +	mem_sections[root] = section;
+>   
+>   	return 0;
+>   }
+> @@ -145,7 +145,7 @@ unsigned long __section_nr(struct mem_section *ms)
+>   #else
+>   unsigned long __section_nr(struct mem_section *ms)
+>   {
+> -	return (unsigned long)(ms - mem_section[0]);
+> +	return (unsigned long)(ms - mem_sections[0]);
+>   }
+>   #endif
+>   
+> 
 
-When we do the kernel monitor, use the DRGN
-(https://github.com/osandov/drgn) access to kernel data structures,
-found that the system calls a lot. DRGN is implemented by reading
-/proc/kcore. After looking at the kcore code, it is found that kcore
-does not implement mmap, resulting in frequent context switching
-triggered by read. Therefore, we want to add mmap interface to optimize
-performance. Since vmalloc and module areas will change with allocation
-and release, consistency cannot be guaranteed, so mmap interface only
-maps KCORE_TEXT and KCORE_RAM.
+I repeat: unnecessary code churn IMHO.
 
-The test results:
-1. the default version of kcore
-real 11.00
-user 8.53
-sys 3.59
-
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
-99.64  128.578319          12  11168701           pread64
-...
------- ----------- ----------- --------- --------- ----------------
-100.00  129.042853              11193748       966 total
-
-2. added kcore for the mmap interface
-real 6.44
-user 7.32
-sys 0.24
-
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
-32.94    0.130120          24      5317       315 futex
-11.66    0.046077          21      2231         1 lstat
- 9.23    0.036449         177       206           mmap
-...
------- ----------- ----------- --------- --------- ----------------
-100.00    0.395077                 25435       971 total
-
-The test results show that the number of system calls and time
-consumption are significantly reduced.
-
-Thanks to Andrew Morton for your advice.
-
-Co-developed-by: CHENYING <chenying.kernel@bytedance.com>
-Signed-off-by: CHENYING <chenying.kernel@bytedance.com>
-Signed-off-by: ZHOUFENG <zhoufeng.zf@bytedance.com>
----
-Updates since v1:
-- Replace EAGAIN with the return value of remap_pfn_range(). more details
-can be seen from here:
-https://lore.kernel.org/patchwork/patch/1436352/
-
- fs/proc/kcore.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
-
-diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-index 4d2e64e9016c..91b19f63a298 100644
---- a/fs/proc/kcore.c
-+++ b/fs/proc/kcore.c
-@@ -573,11 +573,78 @@ static int release_kcore(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static vm_fault_t mmap_kcore_fault(struct vm_fault *vmf)
-+{
-+	return VM_FAULT_SIGBUS;
-+}
-+
-+static const struct vm_operations_struct kcore_mmap_ops = {
-+	.fault = mmap_kcore_fault,
-+};
-+
-+static int mmap_kcore(struct file *file, struct vm_area_struct *vma)
-+{
-+	size_t size = vma->vm_end - vma->vm_start;
-+	u64 start, pfn;
-+	int nphdr;
-+	size_t data_offset;
-+	size_t phdrs_len, notes_len;
-+	struct kcore_list *m = NULL;
-+	int ret = 0;
-+
-+	down_read(&kclist_lock);
-+
-+	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
-+
-+	start = kc_offset_to_vaddr(((u64)vma->vm_pgoff << PAGE_SHIFT) -
-+		((data_offset >> PAGE_SHIFT) << PAGE_SHIFT));
-+
-+	list_for_each_entry(m, &kclist_head, list) {
-+		if (start >= m->addr && size <= m->size)
-+			break;
-+	}
-+
-+	if (&m->list == &kclist_head) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
-+		ret = -EPERM;
-+		goto out;
-+	}
-+
-+	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
-+	vma->vm_flags |= VM_MIXEDMAP;
-+	vma->vm_ops = &kcore_mmap_ops;
-+
-+	if (kern_addr_valid(start)) {
-+		if (m->type == KCORE_RAM || m->type == KCORE_REMAP)
-+			pfn = __pa(start) >> PAGE_SHIFT;
-+		else if (m->type == KCORE_TEXT)
-+			pfn = __pa_symbol(start) >> PAGE_SHIFT;
-+		else {
-+			ret = -EFAULT;
-+			goto out;
-+		}
-+
-+		ret = remap_pfn_range(vma, vma->vm_start, pfn, size,
-+				vma->vm_page_prot);
-+	} else {
-+		ret = -EFAULT;
-+	}
-+
-+out:
-+	up_read(&kclist_lock);
-+	return ret;
-+}
-+
- static const struct proc_ops kcore_proc_ops = {
- 	.proc_read	= read_kcore,
- 	.proc_open	= open_kcore,
- 	.proc_release	= release_kcore,
- 	.proc_lseek	= default_llseek,
-+	.proc_mmap	= mmap_kcore,
- };
- 
- /* just remember that we have to update kcore */
 -- 
-2.11.0
+Thanks,
+
+David / dhildenb
 
