@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0BF39731E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC44397321
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbhFAMYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:24:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20390 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhFAMYe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:24:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622550173; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JAcNP7Uo9zJKWgXCjvCXGiHUwrw7I6s+Af9UbfhFRic=;
- b=LcEwrfCjEUGcZwmIWdqTs6QCWgrA7709mTA/KNQeQFjK0Cb784h1Di3bTXb2GWf4AzC0Bn8q
- 5iF37dvSIeC9QzfA9rM7zbEIiT/1Q/QgNnXmt3aKObX8eBdJJcVLrGLoz1pZyiCyPvkL2Cu+
- 5j/E1tp2bvcl9gdJWCQA6T7V2ng=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60b62695ed59bf69cceb7187 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Jun 2021 12:22:45
- GMT
-Sender: rajeevny=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0A672C43460; Tue,  1 Jun 2021 12:22:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S233823AbhFAMYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233797AbhFAMYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 08:24:42 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: rajeevny)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B0A4C433F1;
-        Tue,  1 Jun 2021 12:22:44 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Jun 2021 17:52:44 +0530
-From:   rajeevny@codeaurora.org
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
-        robh+dt@kernel.org, abhinavk@codeaurora.org,
-        kalyan_t@codeaurora.org, mkrishn@codeaurora.org, jonathan@marek.ca
-Subject: Re: [v1 2/3] drm/msm/dsi: Add PHY configuration for SC7280
-In-Reply-To: <7a3facb5-d118-f81b-65f8-381b0d56a23b@linaro.org>
-References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
- <1622468035-8453-3-git-send-email-rajeevny@codeaurora.org>
- <7a3facb5-d118-f81b-65f8-381b0d56a23b@linaro.org>
-Message-ID: <b37617c61fbdb11dc2c903878c05e0ac@codeaurora.org>
-X-Sender: rajeevny@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        by mail.kernel.org (Postfix) with ESMTPSA id E9693613AD;
+        Tue,  1 Jun 2021 12:23:00 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lo3QA-004oP5-RK; Tue, 01 Jun 2021 13:22:58 +0100
+Date:   Tue, 01 Jun 2021 13:22:57 +0100
+Message-ID: <87r1hl22qm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        madvenka@linux.microsoft.com
+Subject: Re: [PATCH 03/18] arm64: hyp-stub: Move elx_sync into the vectors
+In-Reply-To: <CA+CK2bDvsFX_s-G5tRcE1GreNW_xLTognosUFbPPgaUK7-cafQ@mail.gmail.com>
+References: <20210527150526.271941-1-pasha.tatashin@soleen.com>
+        <20210527150526.271941-4-pasha.tatashin@soleen.com>
+        <87sg28rx3c.wl-maz@kernel.org>
+        <CA+CK2bDvsFX_s-G5tRcE1GreNW_xLTognosUFbPPgaUK7-cafQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org, ebiederm@xmission.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, corbet@lwn.net, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, vladimir.murzin@arm.com, matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com, steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de, selindag@gmail.com, tyhicks@linux.microsoft.com, kernelfans@gmail.com, akpm@linux-foundation.org, madvenka@linux.microsoft.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-05-2021 23:27, Dmitry Baryshkov wrote:
-> On 31/05/2021 16:33, Rajeev Nandan wrote:
+On Thu, 27 May 2021 22:23:22 +0100,
+Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
+> 
+> On Thu, May 27, 2021 at 11:54 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 27 May 2021 16:05:11 +0100,
+> > Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
+> > >
+> > > The hyp-stub's elx_sync code fits in the vector.
+> > >
+> > > With this, all of the hyp-stubs behaviour is contained in its vectors.
+> > > This lets kexec and hibernate copy the hyp-stub when they need its
+> > > behaviour, instead of re-implementing it.
+> > >
+> > > Co-developed-by: James Morse <james.morse@arm.com>
+> > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > > ---
+> > >  arch/arm64/kernel/hyp-stub.S | 64 +++++++++++++++++++-----------------
+> > >  1 file changed, 33 insertions(+), 31 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> > > index 18a97bee3779..86af6c4e52b9 100644
+> > > --- a/arch/arm64/kernel/hyp-stub.S
+> > > +++ b/arch/arm64/kernel/hyp-stub.S
+> > > @@ -21,6 +21,37 @@ SYM_CODE_START_LOCAL(\label)
+> > >       .align 7
+> > >       b       \label
+> > >  SYM_CODE_END(\label)
+> > > +.endm
+> > > +
+> > > +.macro elx_sync_vector       label
+> > > +SYM_CODE_START_LOCAL(\label)
+> > > +     .align 7
+> > > +     cmp     x0, #HVC_SET_VECTORS
+> > > +     b.ne    1f
+> > > +     msr     vbar_el2, x1
+> > > +     b       9f
+> > > +
+> > > +1:   cmp     x0, #HVC_VHE_RESTART
+> > > +     b.eq    mutate_to_vhe
+> >
+> > Now that this has turned into a macro, what are the guarantees that
+> > mutate_to_vhe will be within reach of the site where this macro is
+> > expanded? It does work here, but what about the other expansion sites
+> > that will show up later in the series?
+> >
+> > What was wrong with directly branching to the original call site?
+> > Nothing in the commit message explains it.
+> 
+> Hi Marc,
+> 
+> I need to explain this better in the commit log. Later in the series
+> we create our own vector copy that is outside of the old and new
+> kernel so it does not get overwritten during kexec relocation. When
+> VHE is enabled, the vector is passed so we can switch to el2 before
+> jumping to the new kernel.
+> 
+> arm64_relocate_new_kernel() which performs the relocation runs with
+> MMU being enabled until relocation is done, after that disables MMU
+> and if vectors are passed performs:
+> 
+>          mov     x0, #HVC_SOFT_RESTART
+>          hvc     #0         /* Jumps from el2 */
+> 
+> It cannot call mutate_to_vhe because #HVC_VHE_RESTART is not used
+> here. But, if it had to it would not work as we cannot return to the
+> old kernel text after relocation.
 
+OK, so you are happy with having a dangling branch pointing to
+nowhere? Something in me screams that it isn't a good idea, in
+general.
 
->> +	.min_pll_rate = 600000000UL,
->> +	.max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000ULL : 
->> ULONG_MAX,
-> 
-> Could you please follow the patch by Arnd here?
-> https://lore.kernel.org/linux-arm-msm/20210514213032.575161-1-arnd@kernel.org/
-> 
-> 
-> 
->> +	.io_start = { 0xae94400, 0xae96400 },
->> +	.num_dsi_phy = 2,
-> 
-> Judging from the next patch, you have one DSI host and one DSI PHY.
-> Could you please correct io_start / num_dsi_phy here?
-> 
->> +	.quirks = DSI_PHY_7NM_QUIRK_V4_1,
->> +};
-> 
-> 
-> With these two issues fixed:
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-Thank you very much for your review :) I have incorporated the
-review comments. I am waiting for comments on my DT bindings patch (1/3) 
-and
-will send v2 in a day or two.
+If HVC_SOFT_RESTART is all you need, I'd rather you have a small stub
+that implements exactly that and nothing else. Feel free to extract it
+as a reusable macro if you want.
 
 Thanks,
-Rajeev
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
