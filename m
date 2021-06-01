@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 554933972AD
+	by mail.lfdr.de (Postfix) with ESMTP id E79B53972AF
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhFALqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233821AbhFALqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:46:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233703AbhFALqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Jun 2021 07:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhFALqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:46:11 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291A0C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:44:29 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 6so10471696pgk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zUuBlevDml1RsQmUcJ3i0Xl7Pbt1BMQJv/H4BpeTbs4=;
-        b=wJB/xCUiFi4akZMhxo2B7DlgwZfFQIEYn4N/AW59AMcymGly3G9+wq3KBOcIh0jyEg
-         jaw119dClX+VlreibdlDHU998M2zPLm4P3UkG4FYFoR7Gs6ZTxkdstOjQO81WEO3/66E
-         D43hTf1Zv1DWu39wy8e+HIOPYxfcIKBr95dtcQIbxbkN40GSzZjVc+7djlK3PK+BNJTP
-         yhgq9oRRkDTosR33WVGAzemSjkYhcQYvmZDm1oEBHqta/Jw5FjPebpxkHFTlxDAdbFx8
-         Mjx5ms/A18kQyTzW3AJD2Y5d2D47s1chlk/iwX7Uz5+YcSbfiWSBSB7Qu+Hrs5dsnsDC
-         tNKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zUuBlevDml1RsQmUcJ3i0Xl7Pbt1BMQJv/H4BpeTbs4=;
-        b=KTifRvSkL+ueVGKOTITU3JEorWnvmZsc3TvjCYsFZdUdfXczfMi8PMd8EFXR/9gcy0
-         I5Vo+J1Jh0Q0L7AlW30QbIxY4Cf0dJIGrcRWDfivC14oGUprm4Inl/X1/97psRDeebZN
-         Y/AVrVSmWENjPYKE1uTVK/BwG0kYePa4WTqj+exQeiRpMz2BB5mkcSz1xEwrqiC/Gaxo
-         LDI+fPbKy+XhHgqKxmO7k2XrBqKqom8zEY9enuEA0di/pyaAujXnaBKtXTnk6CFjGwGG
-         LtPnHKqsIKMY3+Avp6iYH4qIFpFBn8yHNBO0Zy3CYE6+NNoOgkc9HfNihMQIG9bVH+D0
-         j6Qg==
-X-Gm-Message-State: AOAM532XpfU6KWh8Uj5OzbSo5FnE2Zy/bqaH8CvrOMip5baCSmHUr6Zy
-        iI78tOKtfxv0RF0ooXt/w1mnqQ==
-X-Google-Smtp-Source: ABdhPJzGgQOKQeJuHCotgvJ/qS4B4/iYGR2HD+vCofFVAcj+a5E+3QEYwRq58t171wWXWNbFZ49CGw==
-X-Received: by 2002:a63:5c4e:: with SMTP id n14mr27752883pgm.192.1622547868703;
-        Tue, 01 Jun 2021 04:44:28 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id s123sm13088954pfb.78.2021.06.01.04.44.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 04:44:28 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 17:14:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, rojay@codeaurora.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce
- 'assigned-performance-states' property
-Message-ID: <20210601114426.3vhh2twocqx254b6@vireshk-i7>
-References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org>
- <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
- <YLYV3ov/iBffZMg4@gerhold.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLYV3ov/iBffZMg4@gerhold.net>
-User-Agent: NeoMutt/20180716-391-311a52
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A177610A0;
+        Tue,  1 Jun 2021 11:44:31 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lo2ov-004o6Y-3K; Tue, 01 Jun 2021 12:44:29 +0100
+Date:   Tue, 01 Jun 2021 12:44:28 +0100
+Message-ID: <87v96x24ir.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <sashal@kernel.org>,
+        <alexandru.elisei@arm.com>, <wanghaibin.wang@huawei.com>
+Subject: Re: [PATCH stable-5.12.y backport 1/2] KVM: arm64: Commit pending PC adjustemnts before returning to userspace
+In-Reply-To: <20210601111238.1059-2-yuzenghui@huawei.com>
+References: <20210601111238.1059-1-yuzenghui@huawei.com>
+        <20210601111238.1059-2-yuzenghui@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, stable@vger.kernel.org, linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org, sashal@kernel.org, alexandru.elisei@arm.com, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-06-21, 13:12, Stephan Gerhold wrote:
-> > +    child4: consumer@12341000 {
-> > +        compatible = "foo,consumer";
-> > +        reg = <0x12341000 0x1000>;
-> > +        power-domains = <&parent4>, <&parent5>;
-> > +        assigned-performance-states = <0>, <256>;
-> > +    };
-> 
-> Bjorn already asked this in v1 [1]:
-> 
-> > May I ask how this is different from saying something like:
-> >
-> > 	required-opps = <&??>, <&rpmpd_opp_svs>;
-> 
-> and maybe this was already discussed further elsewhere. But I think at
-> the very least we need some clarification in the commit message + the
-> binding documentation how your new property relates to the existing
-> "required-opps" binding.
-> 
-> Because even if it might not be implemented at the moment,
-> Documentation/devicetree/bindings/power/power_domain.txt actually also
-> specifies "required-opps" for device nodes e.g. with the following example:
-> 
-> 	leaky-device0@12350000 {
-> 		compatible = "foo,i-leak-current";
-> 		reg = <0x12350000 0x1000>;
-> 		power-domains = <&power 0>;
-> 		required-opps = <&domain0_opp_0>;
-> 	};
-> 
-> It looks like Viresh added that in commit e856f078bcf1
-> ("OPP: Introduce "required-opp" property").
-> 
-> And in general I think it's a bit inconsistent that we usually refer to
-> performance states with phandles into the OPP table, but the
-> assigned-performance-states suddenly use "raw numbers".
+Hi Zenghui,
 
-I must have missed that discussion, sorry about that.
+Thanks for having a go at the backport.
 
-The required-opps property, when present in device's node directly, is about the
-(default) OPPs to choose for that device's normal functioning as they may not do
-DVFS.
+On Tue, 01 Jun 2021 12:12:37 +0100,
+Zenghui Yu <yuzenghui@huawei.com> wrote:
+> 
+> From: Marc Zyngier <maz@kernel.org>
+> 
+> commit 26778aaa134a9aefdf5dbaad904054d7be9d656d upstream.
+> 
+> KVM currently updates PC (and the corresponding exception state)
+> using a two phase approach: first by setting a set of flags,
+> then by converting these flags into a state update when the vcpu
+> is about to enter the guest.
+> 
+> However, this creates a disconnect with userspace if the vcpu thread
+> returns there with any exception/PC flag set. In this case, the exposed
+> context is wrong, as userspace doesn't have access to these flags
+> (they aren't architectural). It also means that these flags are
+> preserved across a reset, which isn't expected.
+> 
+> To solve this problem, force an explicit synchronisation of the
+> exception state on vcpu exit to userspace. As an optimisation
+> for nVHE systems, only perform this when there is something pending.
+> 
+> Reported-by: Zenghui Yu <yuzenghui@huawei.com>
+> Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
+> Tested-by: Zenghui Yu <yuzenghui@huawei.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Cc: stable@vger.kernel.org # 5.11
+> [yuz: stable-5.12.y backport: add __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc
+>  macro manually and keep it consistent with mainline]
 
-Good point Stephan.
+I'd rather you allocated a new number here, irrespective of what
+mainline has (rational below).
+
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> ---
+>  arch/arm64/include/asm/kvm_asm.h   |  1 +
+>  arch/arm64/kvm/arm.c               | 11 +++++++++++
+>  arch/arm64/kvm/hyp/exception.c     |  4 ++--
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c |  8 ++++++++
+>  4 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> index a8578d650bb6..d7f769bb6c9c 100644
+> --- a/arch/arm64/include/asm/kvm_asm.h
+> +++ b/arch/arm64/include/asm/kvm_asm.h
+> @@ -57,6 +57,7 @@
+>  #define __KVM_HOST_SMCCC_FUNC___kvm_get_mdcr_el2		12
+>  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_save_aprs		13
+>  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_restore_aprs		14
+> +#define __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc			21
+
+This is going to generate a larger than necessary host_hcall array in
+hyp/nvhe/hyp-main.c, which we're trying to keep tightly packed for
+obvious reasons.
+
+With this nit fixed:
+
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+
+Thanks,
+
+	M.
 
 -- 
-viresh
+Without deviation from the norm, progress is not possible.
