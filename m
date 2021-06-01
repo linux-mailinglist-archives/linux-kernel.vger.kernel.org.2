@@ -2,76 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5644A3970F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E413970FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhFAKKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:10:41 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59028 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbhFAKKd (ORCPT
+        id S232845AbhFAKLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232046AbhFAKLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:10:33 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 306761FD2D;
-        Tue,  1 Jun 2021 10:08:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622542131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k20dQdDrZBQgdj1Stp+JsXCNuIAKAaJIRdQZLUfTaAo=;
-        b=Bu6hV+SeLHNwiCFRzZ7zKG26Zb0NRoFtZhLV1AiOsEMgkZxZYjyg1oOTNIoxzE/XjJA+NQ
-        2Wf7h6snU8rYo7QS45aiMHbRT/2QsyZECrbPis//NbHcs/gsjqloT4R9t+KnPB8ZZ7O6ry
-        FBs9PqrxkLpxRpyPnmqDi8yUbe7FCiM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622542131;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k20dQdDrZBQgdj1Stp+JsXCNuIAKAaJIRdQZLUfTaAo=;
-        b=9dm/f41xQT3PueXGRTr+xM3bqSRlwZfCVWcjS5Lt6Z37VnybA+4DF7LPuGrdACo4U8D8p9
-        yqr58su+MEkx7dBg==
-Received: from suse.de (unknown [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C9700A3B87;
-        Tue,  1 Jun 2021 10:08:50 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 11:08:49 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mm: thp: fix a double unlock bug
-Message-ID: <20210601100849.GQ3672@suse.de>
-References: <YLX8uYN01JmfLnlK@mwanda>
+        Tue, 1 Jun 2021 06:11:06 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD83C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:09:24 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id h7so541436iok.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:09:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DLBEbUNXUeLvCZwFV4exIHsYyNPtftd/N147joyMJKc=;
+        b=K1kOVFBaSiDKTJxudPss/sqXKK8z8upccHvruXZqXXb44gAkhseuHLHsmOKU4lCt8P
+         2Jll90i7+F3k9bVbwjn8kumj1LduMINyUqfvz7XBCx8v4oHOdn9Hgde3GG/bpfYGXNAK
+         fbfEleyiOk1ZnNqjjkBfkuVrcpG+BLlc9eiiIWNIUfMWSka5diKugyEMQu77Gvaw3CBC
+         hq3A2t1yUYWmZ+ZFJ5eVpQYzXhz8dmFOCs0pJmqj02krtbOp60Md6INd0fErxAtj7rt+
+         lon2ZwvC2x43QRNPEVJaAJB6lEUYR5lkNjXv1Lq/QYvS2Sa5qBAichuHdZDxIX+ImvJx
+         PBbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DLBEbUNXUeLvCZwFV4exIHsYyNPtftd/N147joyMJKc=;
+        b=F/xUKSwQKRlkLvb0h0GbVSme1VsyM33WFf8CrM7y4SXtOOUPS9wbR9V3RpVMrtqiam
+         SVM3QTsERrH+0sJD+3ZXYMFGl3w2ch6Ig0o9BGkvnl5AZERrCWO+5tnYWnGp8IldvLkb
+         AJHR1NGrJ8LqKk+/7Duc8QlswdUJUMpK5MeUZ2oV6gTOc+4iIXlsDoMQyAsw55Vizo0+
+         px0+gn7+42+8OUlo5DmOVXGfpRRpADjnWcse/OPslFdGcTar4Psz2qVXRSK8PR9CKcUf
+         Cu+3oiX6pzOjIlQi1Hb9qnm9qCTMSTIgBo6aleoWL8zWziMR8pcHK0vibiN5olfVgsUM
+         27Sg==
+X-Gm-Message-State: AOAM533te0+AmWpD+PBRYTdRQNk1vAcaDJT0/G1bur5ZRbRJuzXhrwpF
+        UhzTycV16yVlNIwFTkkvUMmBPefc86LuUpGeLeDnRQ==
+X-Google-Smtp-Source: ABdhPJxzQQtP0OzkqZs7a5hDfasWwF5GPgvG66W6P8oW0WitaBhboQFv7Vb33Ervk+ESo1r722E0Y9JK161dKsxO9tU=
+X-Received: by 2002:a05:6638:634:: with SMTP id h20mr6057368jar.14.1622542164126;
+ Tue, 01 Jun 2021 03:09:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YLX8uYN01JmfLnlK@mwanda>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210524120539.3267145-1-robert.marko@sartura.hr>
+ <20210524120539.3267145-3-robert.marko@sartura.hr> <20210524230940.GA1350504@robh.at.kernel.org>
+ <20210525074649.GC4005783@dell> <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+ <20210526075255.GG4005783@dell> <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
+ <20210601081933.GU543307@dell> <20210601082226.GV543307@dell>
+ <CA+HBbNEHgUxE-F4iiAbCyt3ffypUJf2nePUsOmCjpFoJNkpCJw@mail.gmail.com> <20210601093104.GE543307@dell>
+In-Reply-To: <20210601093104.GE543307@dell>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 1 Jun 2021 12:09:13 +0200
+Message-ID: <CA+HBbNH1D-1Jfv0NRT0FLPDf1r_Uy4EVCAVCx6x64pMAQkVjZA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 12:24:09PM +0300, Dan Carpenter wrote:
-> We're supposed to be holding the "vmf->ptl" spin_lock when we goto
-> out_map.  The lock is dropped after if finishes cleaning up.
-> 
-> Fixes: 9aff7b33c74a ("mm: thp: refactor NUMA fault handling")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Tue, Jun 1, 2021 at 11:31 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Tue, 01 Jun 2021, Robert Marko wrote:
+>
+> > On Tue, Jun 1, 2021 at 10:22 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Tue, 01 Jun 2021, Lee Jones wrote:
+> > >
+> > > > On Mon, 31 May 2021, Robert Marko wrote:
+> > > >
+> > > > > On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> =
+wrote:
+> > > > > >
+> > > > > > On Tue, 25 May 2021, Robert Marko wrote:
+> > > > > >
+> > > > > > > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.o=
+rg> wrote:
+> > > > > > > >
+> > > > > > > > On Mon, 24 May 2021, Rob Herring wrote:
+> > > > > > > >
+> > > > > > > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wr=
+ote:
+> > > > > > > > > > Add binding documents for the Delta TN48M CPLD drivers.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > > > > > > > ---
+> > > > > > > > > > Changes in v2:
+> > > > > > > > > > * Implement MFD as a simple I2C MFD
+> > > > > > > > > > * Add GPIO bindings as separate
+> > > > > > > > >
+> > > > > > > > > I don't understand why this changed. This doesn't look li=
+ke an MFD to
+> > > > > > > > > me. Make your binding complete if there are missing funct=
+ions.
+> > > > > > > > > Otherwise, stick with what I already ok'ed.
+> > > > > > > >
+> > > > > > > > Right.  What else, besides GPIO, does this do?
+> > > > > > >
+> > > > > > > It currently does not do anything else as hwmon driver was es=
+sentially
+> > > > > > > NACK-ed for not exposing standard attributes.
+> > > > > >
+> > > > > > Once this provides more than GPIO capabilities i.e. becomes a p=
+roper
+> > > > > > Multi-Function Device, then it can use the MFD framework.  Unti=
+l then,
+> > > > > > it's a GPIO device I'm afraid.
+> > > > > >
+> > > > > > Are you going to re-author the HWMON driver to conform?
+> > > > > hwmon cannot be reathored as it has no standard hwmon attributes.
+> > > > >
+> > > > > >
+> > > > > > > The CPLD itself has PSU status-related information, bootstrap=
+ related
+> > > > > > > information,
+> > > > > > > various resets for the CPU-s, OOB ethernet PHY, information o=
+n the exact board
+> > > > > > > model it's running etc.
+> > > > > > >
+> > > > > > > PSU and model-related info stuff is gonna be exposed via a mi=
+sc driver
+> > > > > > > in debugfs as
+> > > > > > > we have user-space SW depending on that.
+> > > > > > > I thought we agreed on that as v1 MFD driver was exposing tho=
+se directly and
+> > > > > > > not doing anything else.
+> > > > > >
+> > > > > > Yes, we agreed that creating an MFD driver just to expose chip
+> > > > > > attributes was not an acceptable solution.
+> > > > > >
+> > > > > > > So I moved to use the simple I2C MFD driver, this is all mode=
+led on the sl28cpld
+> > > > > > > which currently uses the same driver and then GPIO regmap as =
+I do.
+> > > > > > >
+> > > > > > > Other stuff like the resets is probably gonna get exposed lat=
+er when
+> > > > > > > it's required
+> > > > > > > to control it directly.
+> > > > > >
+> > > > > > In order for this driver to tick the MFD box, it's going to nee=
+d more
+> > > > > > than one function.
+> > > > >
+> > > > > Understood, would a debug driver count or I can expose the resets=
+ via
+> > > > > a reset driver
+> > > > > as we have a future use for them?
+> > > >
+> > > > CPLDs and FPGAs are funny ones and are often difficult to support i=
+n
+> > > > Linux.  Especially if they can change their behaviour.
+> > > >
+> > > > It's hard to make a solid suggestion as to how your device is handl=
+ed
+> > > > without knowing the intricacies of the device.
+> > > >
+> > > > Why do you require one single Regmap anyway?  Are they register ban=
+ks
+> > > > not neatly separated on a per-function basis?
+> > >
+> > > Also, if this is really just a GPIO expander, can't the GPIO driver
+> > > output something to /sysfs that identifies it to userspace instead?
+> >
+> > I replied to your previous reply instead of this one directly.
+> > It's not just a GPIO expander, it also provides resets to all of the HW
+> > and a lot of debugging information.
+> > Note that other switches use the same CPLD but with more features
+> > so I want to just extend these drivers and add for example hwmon.
+> >
+> > It's not just about it identifying itself, it offers a lot of various
+> > debug info,
+> > quite literally down to what CPU has access to the serial console on th=
+e
+> > front and their bootstrap pins.
+> >
+> > So, I want to expose the CPLD version, code version, switch model,
+> > PSU status pins and a lot more using a separate driver as they
+> > don't really belong to any other subsystem than misc using debugfs.
+>
+> drivers/soc is also an option for devices like these.
 
-Ouch.
+I have completely forgotten about that, it's a potential place.
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+Regards,
+Robert
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
 
-However, that git commit is not stable. Instead of Fixes: I would
-suggest renaming the patch to "mm: thp: refactor NUMA fault handling
--fix" and replacing Fixes with "This patch is a fix to the mmotm patch
-mm-thp-refactor-numa-fault-handling.patch". Andrew usually slots that
-into the correct place in his quilt series and collapses the fixes before
-sending to Linus which works better with bisection.
 
--- 
-Mel Gorman
-SUSE Labs
+
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
