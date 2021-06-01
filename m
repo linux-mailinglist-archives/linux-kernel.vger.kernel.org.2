@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD2139717C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD90639719D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhFAKbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230262AbhFAKbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:31:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2952A6139A;
-        Tue,  1 Jun 2021 10:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622543405;
-        bh=kNAwLTC/vYzJzA7/OMnucxDZFPGz19LT0a5jL1f44lI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZfWrQ4xU5t4rNRZGYcTmWiq/f4QjWfNpaG/etiMivb8+dEWpYrx//MIO4lGjHFR71
-         AYJw+hi0eK61uZmTKiShHFN0RZ1lqyP1MFWNmkV+RigeKXzqXw56KTy8CdqmDTqV0E
-         t56eZ5hq2l7owkxSi+tjzYnXzCNJXDKwlkFYqQss=
-Date:   Tue, 1 Jun 2021 12:30:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        glittao@gmail.com, vinmenon@codeaurora.org
-Subject: Re: [PATCH v8] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <YLYMK65WocBy3qG6@kroah.com>
-References: <1622542057-14632-1-git-send-email-faiyazm@codeaurora.org>
+        id S232694AbhFAKli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:41:38 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:17522 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230170AbhFAKlh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 06:41:37 -0400
+X-UUID: 22bd144d035e4b1f8241e3ee549ea738-20210601
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=DoywdP/w1rKs6wXh5ZMYNkbDujOKch0ZiIWy/6BtozU=;
+        b=QwwTad0vUA2gf30+0t6F/gI2CgmKccO/50+6leyiKT5ROM7L+ejS1hwyz3+uA6zQB48w8jihG5kbwZ5lpYCjRGEYkDOkTKh3YbcLH8hpf/R5pxr52KklWQGhPqgN7246uOv5IcEj5go7gs7Dgh6kDWAjGUpK6/l36fNO5Jqaoww=;
+X-UUID: 22bd144d035e4b1f8241e3ee549ea738-20210601
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1979514290; Tue, 01 Jun 2021 18:39:54 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ MTKMBS32N1.mediatek.inc (172.27.4.71) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 1 Jun 2021 18:39:51 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 1 Jun 2021 18:39:50 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH] ipv6: align code with context
+Date:   Tue, 1 Jun 2021 18:26:01 +0800
+Message-ID: <20210601102601.26572-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <162252480501.23898.10631295560871610587.git-patchwork-notify@kernel.org>
+References: <162252480501.23898.10631295560871610587.git-patchwork-notify@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622542057-14632-1-git-send-email-faiyazm@codeaurora.org>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 4C097B9DB0F4F99EA584198AA322CE9524DFFD805E93584CB724ECE6E2F257D72000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 03:37:37PM +0530, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
-> 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
-> 
-> Debugfs cache will be created if SLAB_STORE_USER flag is set.
-> 
-> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-> to be inline with what it does.
-> 
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+T24gVHVlLCAyMDIxLTA2LTAxIGF0IDA1OjIwICswMDAwLCBwYXRjaHdvcmstYm90K25ldGRldmJw
+ZkBrZXJuZWwub3JnIHdyb3RlOg0KSGVsbG86DQo+IA0KPiBUaGlzIHBhdGNoIHdhcyBhcHBsaWVk
+IHRvIG5ldGRldi9uZXQtbmV4dC5naXQgKHJlZnMvaGVhZHMvbWFzdGVyKToNCj4gDQo+IE9uIFN1
+biwgMzAgTWF5IDIwMjEgMTk6Mzg6MTEgKzA4MDAgeW91IHdyb3RlOg0KPiA+IFRoZSBUYWIga2V5
+IGlzIHVzZWQgdGhyZWUgdGltZXMsIGNhdXNpbmcgdGhlIGNvZGUgYmxvY2sgdG8NCj4gPiBiZSBv
+dXQgb2YgYWxpZ25tZW50IHdpdGggdGhlIGNvbnRleHQuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1i
+eTogUm9jY28gWXVlIDxyb2Njby55dWVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBuZXQv
+aXB2Ni9hZGRyY29uZi5jIHwgOCArKysrLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNl
+cnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiANCj4gSGVyZSBpcyB0aGUgc3VtbWFyeSB3aXRo
+IGxpbmtzOg0KPiAgIC0gaXB2NjogYWxpZ24gY29kZSB3aXRoIGNvbnRleHQNCj4gICAgIGh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvbmV0ZGV2L25ldC1uZXh0L2MvMTJlNjRiM2JiOWE4DQo+IA0KPiBZ
+b3UgYXJlIGF3ZXNvbWUsIHRoYW5rIHlvdSENCj4gLS0NCj4gRGVldC1kb290LWRvdCwgSSBhbSBh
+IGJvdC4NCj4gaHR0cHM6Ly9rb3JnLmRvY3Mua2VybmVsLm9yZy9wYXRjaHdvcmsvcHdib3QuaHRt
+bA0KDQpUaGFua3M=
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
