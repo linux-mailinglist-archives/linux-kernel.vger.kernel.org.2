@@ -2,163 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0703976B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C016B3976B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbhFAPct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:32:49 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:25708 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230288AbhFAPcr (ORCPT
+        id S234283AbhFAPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:32:59 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47730 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234260AbhFAPc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:32:47 -0400
-Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151FOKew009540;
-        Tue, 1 Jun 2021 15:30:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=iCUWAj7frxQI7LsZaRn7UF3u6PLCoOjGUA7u8YvVpOY=;
- b=DE0K03P+3llubk1hTeCxo/m2cleU7WrD5yK/sXNitoj6Obtsrh+kKX+m7F4Xb/Q5mP1Z
- TGfBVdVULZBym+3kwCWmJvMwjpzRCQs+aNhrpEnZjeTnKQ5C8ZJnRaR2BgKi+o5yMulE
- gSTlfeqbcKphzaJkw1fRkWfYgvFZzLzlerMnVG7Q//Ixc0mJU9+a5GEOSFJkjoTCswc5
- ImsbfIFJoGPTIbegBsSf67FpGNj7WkbHFjhYsYBZpMGLtSE4wy6FwSvMz0DG9dlQLdFf
- Ldl6iRdBifQ03cNKSv2bZs0HjDV14AArCOxDZNUgMXgMLnwb05ofbCftHnQkbKs1HwmD CQ== 
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0a-002e3701.pphosted.com with ESMTP id 38w2ctrp1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 15:30:32 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g9t5008.houston.hpe.com (Postfix) with ESMTP id B4D3D59;
-        Tue,  1 Jun 2021 15:30:31 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.99.164.36])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id C881448;
-        Tue,  1 Jun 2021 15:30:29 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 10:30:29 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Qiheng Lin <linqiheng@huawei.com>
-Cc:     mike.travis@hpe.com, dimitri.sivanich@hpe.com,
-        russ.anderson@hpe.com, dvhart@infradead.org, andy@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, steve.wahl@hpe.com,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 -next] x86/platform/uv: Remove the unneeded extern
- keyword
-Message-ID: <YLZSlQnGETqw1da6@swahl-home.5wahls.com>
-References: <20210601063034.27433-1-linqiheng@huawei.com>
+        Tue, 1 Jun 2021 11:32:57 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151FUJGS128223;
+        Tue, 1 Jun 2021 15:30:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=VrzulyZpEph92htIJFeZlMPUmowtTPctjF/roRFKleQ=;
+ b=fBaNhazqViPHKl9Fv0BXlHDthegAmlJeblSJ5LWk/y+hWkbbhRpJXsZYw0HOCoE+SFv4
+ x2sSoAz7vekX/FXhlRvCHipOAGkIBb3J6CZJBE3Q1qLsBx4KKPXLPEFM4MS46yssWl0h
+ ISoLEuRSjxU2jLqQHDyWIZEwencXnhs/bo5NSPwUO7EUJ3oz/gUVAec0p4VBz8N8GKpP
+ tWA3PlBPTRYeGnvE27DZNS0nBwMXVQ8wfns6kp+Q5oHPEiegGBq9Hnw4pMePL5aDXV4+
+ KHtco5gVB6BaupIq2rJChf8bT7nUJJnpwExpuGCdga17uRQ9lfUHMzaJWEYVg2L1ZRAW QQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 38udjmnxcw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 15:30:55 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151FGSmD051942;
+        Tue, 1 Jun 2021 15:30:54 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+        by aserp3030.oracle.com with ESMTP id 38ubnd94k1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 15:30:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G2vzVFJMZnAcAxwViANPJYUGf0HodMq3nsK7OaqURY4QuLYqe8htsloEKlrCkSQ0imYBkezAH1u+uupIpBgvAb6VKjqx8s7bpMxw509RevZpXclk1gBDHZiPr36U2bLwcpGtPRfYTxseil72EgiPV+ZS+uoMh0pyuxqeaWfQHx5S+xrxiHsqHGzoRYd0Rv3fJV/CidgwZMUpGH5newDhAuAAkbhhGkw7hcjPQmzdpc6LSDOCe6+pJFliapOX6+mFUQyFA8+XPBRLzI17X8wat7tPTMOpnplo8TzfX1HfL8AbfvontMtl+Zly13NQOi5UIXnew9/nebRa5lAKoqeF1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VrzulyZpEph92htIJFeZlMPUmowtTPctjF/roRFKleQ=;
+ b=hbj0VQF89AewAKKou9J33N1HON1dyHVocVkOSz8y+mXSHbtYLunRVod5+RJNTd2pRcereiO7mmOL2yhKTfR+NDsjVnDThkUK+dcL06T2jClf/zIZIW7UOlLoF5R+pQz6jaXa6633sL3/WrvUIsSrmzDiY0dq1swEo44Kz8/UlLsi4uavJN18PgYIETgnKKCFIbpEzbg4VX3qu2UJBkAKcawYeH/JJY1Spc5MVzdtdgNpYXSjqbjLS9AZ6yvR+f6qSDgcozAbp10ciGnZqZ++k6UNUGOC0R9JKwx51rvUUxROr8+UH3K94svap5k8dQmPwlvOgymo54v5FEyIFsQ3Dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VrzulyZpEph92htIJFeZlMPUmowtTPctjF/roRFKleQ=;
+ b=ae2TlrlChcoCnbSnJ1//pJ2yKdXSvL2HsPlQuMnUpiqn1cOpd5VogmZKg4jzr4DWVya+LVF95n/Avmz5Euxotzmw2XAISMqLYFCfioM0AljZApIr8rxAA6W7P3Crfg1FT03h+F8OxvEoSdmPH84hd7O0sfS+l5pj9vo0FssgemE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8)
+ by CH2PR10MB4072.namprd10.prod.outlook.com (2603:10b6:610:c::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.24; Tue, 1 Jun
+ 2021 15:30:52 +0000
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::5d0c:35a5:182d:4517]) by CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::5d0c:35a5:182d:4517%5]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
+ 15:30:52 +0000
+Subject: Re: [PATCH] fs/jfs: Fix missing error code in lmLogInit()
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <1622545630-19745-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+Message-ID: <103f7053-409a-72c6-aae2-613d80b521d7@oracle.com>
+Date:   Tue, 1 Jun 2021 10:30:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
+In-Reply-To: <1622545630-19745-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [68.201.65.98]
+X-ClientProxiedBy: SN1PR12CA0068.namprd12.prod.outlook.com
+ (2603:10b6:802:20::39) To CH2PR10MB4118.namprd10.prod.outlook.com
+ (2603:10b6:610:a4::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601063034.27433-1-linqiheng@huawei.com>
-X-Proofpoint-GUID: YVHJYEDfOUpNWLZyyJeWvmMPjmiPeqYW
-X-Proofpoint-ORIG-GUID: YVHJYEDfOUpNWLZyyJeWvmMPjmiPeqYW
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_07:2021-06-01,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=953 mlxscore=0
- malwarescore=0 adultscore=0 clxscore=1011 priorityscore=1501
- suspectscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106010104
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.190] (68.201.65.98) by SN1PR12CA0068.namprd12.prod.outlook.com (2603:10b6:802:20::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 1 Jun 2021 15:30:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a7c4c953-6383-43e6-a883-08d925123d9e
+X-MS-TrafficTypeDiagnostic: CH2PR10MB4072:
+X-Microsoft-Antispam-PRVS: <CH2PR10MB40722D0A6AAAD77C60181320873E9@CH2PR10MB4072.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MN9ByP9rrOqXl2LQjToxEvVTCpnb2S7eLY4i6nQOLmTqlkiKlYXC7DsAguR/nNfx3t4NhrVhCEVnxduG8y0GsZkZtD7GZvRjj0kBeNJLg8zIfCBgCLkFdd2mxzfsnfm0dhzGtHqvUBVIs/z+3qcyZeojjwK/pd/789trbXsdtM/ApMPaWsE9IKMxTxbFGD/Vf4CEsWbeV80Gk5npogkXYp5Oqvsfd4Wb2N/QVEL0vP9v5AL0ciYlkG2pcq/KxYNMMNt/t8Nd16nYMt54/zjozFkNaXd8BP+xZgFo0w9+JGO2krVeA31gbpGaosR2Oj/WAktF+lTWvR9Ks5RCXVbHqPrfjoKJYD5lu7f6hXbLNen1HEKeI3YV9dNGnF1aEKCsqOxjB+ajuEyIJOv9b29ObCRuXoG+PlWoHEpd19Nrmwx5M7/wciD/TVJh+x6dEo71c9CV1s8NGhPQIFI5QX3FZSbVOyTeCiLnHoVkmh7+eo93GKIYxxlKjvkLVjFhhZybLKdhcI04E3UBxPIpxI/lptgOiFUgvldWg6FiIcGmnTsznb6k24GtUdiW1Ilhx/tae/O63bdWKognaM5RU+2aCCaZRYYkYtEWhimrKWX6hrJGyaW3gD/Zs1drlkUa4Ir1+20P38ZgZ/Gf1assLLlD6QNBjA8kQ62W9Qpjo0LB3jP7LX8VwMhvQ1Mo7y4w51Uh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4118.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(376002)(136003)(346002)(53546011)(2616005)(5660300002)(6486002)(956004)(38100700002)(31686004)(16526019)(186003)(4744005)(44832011)(36756003)(2906002)(8936002)(83380400001)(31696002)(86362001)(6916009)(8676002)(66476007)(26005)(66946007)(16576012)(4326008)(316002)(66556008)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NDBHaUVEQkw5N2NuVGptaWxvOFFLellwRnFXRFIvWUtZamwwSUozSWh3MWhR?=
+ =?utf-8?B?VldSUDlscUI4WldrSjJrRXN0aVJwWHc4dkRKNDNQYWJCTk9oSGFSSmhXS3pi?=
+ =?utf-8?B?M21RcTVObTlNMTJhemFLU0UxTTNiRzdPREY5U0dtMHczNGRCRTlvbTdDSkVC?=
+ =?utf-8?B?eVN3TWU0NDhVdlM4RHVra2lWMmk2VG92QnJQQU0yaEJjbXlWWXo2WlFKZndR?=
+ =?utf-8?B?MXR3K1NzSHlOYVVXTEtNSkFULzJBUm5rV3d5bTNUTjNxUitHbWk5WkhITlJ1?=
+ =?utf-8?B?UlBNSW0wVXBraUZKK2k1cnYvUVJhSWJBV1VoQVJidVdiNUdYV0puNEYwaGhX?=
+ =?utf-8?B?Q0Ztd2x2T3FwWmpoclVaL0p2eVRUYjR6a0lKQ1hYdHgyRHlnSTlKSUV6eXNy?=
+ =?utf-8?B?Tkx1Y1BVU1NmcEFUaHl6bFpKZ1pQWlc2eVRHNVZZcFp0STNob01RdG9aSFlK?=
+ =?utf-8?B?ZnhVQTNkb0ZyZUVzRFIzN0pBVTZndVluQVUvNEdaa1VKU2MzME9pWUpxMi9s?=
+ =?utf-8?B?UzM1ZkZ6ZzF5UEFoRzd2YU1YbmdyL0poaWhrcTA4bDZySENIbGhjWEVmZWxW?=
+ =?utf-8?B?ejNLTGwreXpDUWRhQi9YOEFod2s5SERCUUxSQ1psOEJRVURvL2hpUzNGU29s?=
+ =?utf-8?B?Yi85MlNkZ2Z2RmVBMHFqOTBlZjYxSGlVb2xPanNqaFdWdDVuVUZrZ3RweFRj?=
+ =?utf-8?B?K3krTSt2M2dsTENEOGZWaGIyMlJ3WVA2aGVZUy9haVpqSzVta2kzSXN3NXR2?=
+ =?utf-8?B?QTMrRlBtbVFVRCtDUXFMVDRJYlNVVVlja29QY0kzVTZKemZsNko3cW9GTURK?=
+ =?utf-8?B?cGorTVhHd3R3VVNtbW5zWG1aeGtNU2JyejhSdVBua282dlFMWkphTGJmUUt4?=
+ =?utf-8?B?V2lMcmthQ21zSm1uNWQ2T2RTbGx4eWIwSStYZ0ExMUpXS0E4djFueVowMDBs?=
+ =?utf-8?B?UUZqSk5FejZ6V1BtUEZjQ3h6dHJmSkQySktsNXcxU2l1VmsrNTBFb093UWEz?=
+ =?utf-8?B?eDZSVUsxb1BsQUJRd2xSUnE3TUxwMTA0c3RNdUp0OGE4aU1OU1hMazQwczd4?=
+ =?utf-8?B?V3RMNjZWSXVYeEpCU05qOHZibHhlSzMwSG9MWmxndlhGaStOcGN2c28xV3Bp?=
+ =?utf-8?B?WThTRXEycitpVHhrL2JXd2dVS210dDJ2ZmdHdTZScDBMdlNIbU05R0xSUUt4?=
+ =?utf-8?B?SmZxWUNLL1NSazJBUFAvL0pUR2lHRUNvWlBJaWFraVVrYkJWQWxxQ2REV1Fm?=
+ =?utf-8?B?YjY3N2RaZGpPaUx1OThVWVd4aEpvaVdxZ1lPKzc0aGZwaG1Xdmt1QzQ2cXA3?=
+ =?utf-8?B?SlFlbWJMdnJrcHc4cXpwbmdQNlB5TC9qYU44R3YzRnFUMEM5NElkMks1bTVn?=
+ =?utf-8?B?czk5WldFS2RnUWNIK1BET0FsUkI2dVJyTEVjcStEQ2p5YUNwMFFLL2RHV3BC?=
+ =?utf-8?B?dURUWHBqOU9GYjhlUzVab0E3Qkl6OXZNNVR5cVBHejlBRlpLTi90SlV0USt5?=
+ =?utf-8?B?ZWRFTk5La3NEWUVodXFTN2hSOFhtdUNldTdVSHdFYVh1SCtxTExRU2VwUEtF?=
+ =?utf-8?B?SVlVUU0rVFM0MXpjV25qUVRNcU9ka2EwT3J1eE16NElyV2g5akp3L25VRENp?=
+ =?utf-8?B?STE2QWgyc2ViTmxERUczdzkyMkE4NUJjd3dZODFtVUY0enNyeHB4d3hVMVg5?=
+ =?utf-8?B?ODlQU0tXYWNhc2FFeHpQMFcwUXhwSk9lcDlDWTNUb01MaE43eDgxZGVMeSs4?=
+ =?utf-8?Q?vtUg9y5URbcmEBkZqZq8HN1RfjcDlSSOH6wlTwq?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7c4c953-6383-43e6-a883-08d925123d9e
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4118.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 15:30:52.5790
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +AZC5wcR+lQOysxHO7/wzv9QXaDnkQVXjdqpMaf7h+mw58vE2OfIdNsuSjH6afEp0db/7rRqhD+gq+QK1MKmEUwP4256hBfpHz3NxLxlr8w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4072
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106010104
+X-Proofpoint-GUID: TAfMDaLUOagKk2_Fp9WxGGUn6TbeNF7z
+X-Proofpoint-ORIG-GUID: TAfMDaLUOagKk2_Fp9WxGGUn6TbeNF7z
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106010104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 02:30:34PM +0800, Qiheng Lin wrote:
-> The function declarations in bios.h are already marked extern, so remove
-> them in the definition.
-> 
-> This problem was caught by the sparse tool:
->  function 'uv_bios_get_master_nasid' with external linkage has definition
->  function 'uv_bios_get_heapsize' with external linkage has definition
->  function 'uv_bios_install_heap' with external linkage has definition
->  function 'uv_bios_obj_count' with external linkage has definition
->  function 'uv_bios_enum_objs' with external linkage has definition
->  function 'uv_bios_enum_ports' with external linkage has definition
->  function 'uv_bios_get_geoinfo' with external linkage has definition
->  function 'uv_bios_get_pci_topology' with external linkage has definition
-> 
-> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+Good catch. I'll push this in the next merge window.
 
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Thanks,
+Shaggy
 
+On 6/1/21 6:07 AM, Jiapeng Chong wrote:
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'rc.
+> 
+> Eliminate the follow smatch warning:
+> 
+> fs/jfs/jfs_logmgr.c:1327 lmLogInit() warn: missing error code 'rc'.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
-> Changes in v2:
->  - adjust the subject and commit message
+>   fs/jfs/jfs_logmgr.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
->  arch/x86/platform/uv/bios_uv.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+> index 9330eff21..78fd136 100644
+> --- a/fs/jfs/jfs_logmgr.c
+> +++ b/fs/jfs/jfs_logmgr.c
+> @@ -1324,6 +1324,7 @@ int lmLogInit(struct jfs_log * log)
+>   		} else {
+>   			if (!uuid_equal(&logsuper->uuid, &log->uuid)) {
+>   				jfs_warn("wrong uuid on JFS log device");
+> +				rc = -EINVAL;
+>   				goto errout20;
+>   			}
+>   			log->size = le32_to_cpu(logsuper->size);
 > 
-> diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
-> index bf31af3d32d6..7e7634c8be62 100644
-> --- a/arch/x86/platform/uv/bios_uv.c
-> +++ b/arch/x86/platform/uv/bios_uv.c
-> @@ -172,55 +172,55 @@ int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus)
->  				(u64)decode, (u64)domain, (u64)bus, 0, 0);
->  }
->  
-> -extern s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
-> +s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
->  {
->  	return uv_bios_call(UV_BIOS_EXTRA, 0, UV_BIOS_EXTRA_MASTER_NASID, 0,
->  				size, (u64)master_nasid);
->  }
->  EXPORT_SYMBOL_GPL(uv_bios_get_master_nasid);
->  
-> -extern s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
-> +s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
->  {
->  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_GET_HEAPSIZE,
->  				0, size, (u64)heap_size);
->  }
->  EXPORT_SYMBOL_GPL(uv_bios_get_heapsize);
->  
-> -extern s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
-> +s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
->  {
->  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_INSTALL_HEAP,
->  				0, heap_size, (u64)bios_heap);
->  }
->  EXPORT_SYMBOL_GPL(uv_bios_install_heap);
->  
-> -extern s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
-> +s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
->  {
->  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_OBJECT_COUNT,
->  				0, size, (u64)objcnt);
->  }
->  EXPORT_SYMBOL_GPL(uv_bios_obj_count);
->  
-> -extern s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
-> +s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
->  {
->  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_OBJECTS,
->  				0, size, (u64)objbuf);
->  }
->  EXPORT_SYMBOL_GPL(uv_bios_enum_objs);
->  
-> -extern s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
-> +s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
->  {
->  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_PORTS,
->  				obj_id, size, (u64)portbuf);
->  }
->  EXPORT_SYMBOL_GPL(uv_bios_enum_ports);
->  
-> -extern s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
-> +s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
->  {
->  	return uv_bios_call(UV_BIOS_GET_GEOINFO, nasid, (u64)buf, size, 0, 0);
->  }
->  EXPORT_SYMBOL_GPL(uv_bios_get_geoinfo);
->  
-> -extern s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
-> +s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
->  {
->  	return uv_bios_call(UV_BIOS_GET_PCI_TOPOLOGY, (u64)buf, size, 0, 0, 0);
->  }
-> -- 
-> 2.31.1
-> 
-
--- 
-Steve Wahl, Hewlett Packard Enterprise
