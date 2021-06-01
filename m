@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A8E3973A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8322E3973A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhFAMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:54:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:49266 "EHLO foss.arm.com"
+        id S233797AbhFAM6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:58:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232965AbhFAMyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:54:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61F926D;
-        Tue,  1 Jun 2021 05:52:32 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6CDB3F719;
-        Tue,  1 Jun 2021 05:52:30 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] PCI: of: Improvements to handle 64-bit attribute
- for non-prefetchable ranges
-To:     Punit Agrawal <punitagrawal@gmail.com>,
-        linux-rockchip@lists.infradead.org, linux-pci@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wqu@suse.com, robin.murphy@arm.com, pgwipeout@gmail.com,
-        ardb@kernel.org, briannorris@chromium.org,
-        shawn.lin@rock-chips.com, helgaas@kernel.org, robh+dt@kernel.org
-References: <20210531221057.3406958-1-punitagrawal@gmail.com>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <75da0524-7588-4ace-a135-69236f2d1d5e@arm.com>
-Date:   Tue, 1 Jun 2021 13:53:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S233064AbhFAM6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 08:58:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1D856135D;
+        Tue,  1 Jun 2021 12:56:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622552178;
+        bh=2Cl6MC1zMLi1wVlxtabUNKw40xMLYyr3h9FF5PfzyX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CnvVCbpOOeN9rkItCc/yoTJVnjIYphOmRUyy31lUnBN16ztG508cC6bnbwExyyPfz
+         4frf2pAynhv11HOAms0oRJEahYMeG0tJWXOcmnXyaYSyI5zbD90fISxnTj4ZD6Zrsu
+         4KHdr3lui/UR2XVz30gQggHNZhJS55ocfbFdK16AfxECbi+7onftdTHdC+8eHRpC82
+         GWlAQENZUjuDWUGrWnwevhodDw/4bAXrNsXQkb3paumbXLiPRNnt3HSl2qklurQNhy
+         3q5C+9yipXhvNBsOICFkwI5+XJgxlaAX54znzWYBKxd9gnLFPnGUHNcCqiwrtgL6xa
+         WhMI/9Tmb8M+Q==
+Date:   Tue, 1 Jun 2021 13:56:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rudi Heitbaum <rudi@heitbaum.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, ezequiel@collabora.com,
+        chenjh@rock-chips.com, pgwipeout@gmail.com
+Subject: Re: [PATCH v2] regulator: fan53555: add tcs4526
+Message-ID: <20210601125608.GC4089@sirena.org.uk>
+References: <20210526162342.GA20@8bbba9ba63a4>
+ <20210528101946.GA418765@96e513df87d1>
 MIME-Version: 1.0
-In-Reply-To: <20210531221057.3406958-1-punitagrawal@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Q0rSlbzrZN6k9QnT"
+Content-Disposition: inline
+In-Reply-To: <20210528101946.GA418765@96e513df87d1>
+X-Cookie: Sic Transit Gloria Thursdi.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Punit,
 
-On 5/31/21 11:10 PM, Punit Agrawal wrote:
-> Hi,
->
-> Here's an updated version of changes to improve handling of the 64-bit
-> attribute on non-prefetchable host bridge ranges. Previous version can
-> be found at [0].
->
-> The series addresses Rob and Bjorn's comments on the previous version
-> and updates the checks for 32-bit non-prefetchable window size to only
-> apply to non 64-bit ranges.
+--Q0rSlbzrZN6k9QnT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Many thanks for the series. I've tested it on my rockpro64, and the NVME works as
-expected:
+On Fri, May 28, 2021 at 10:19:50AM +0000, Rudi Heitbaum wrote:
 
-Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+>  drivers/regulator/fan53555.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>=20
 
-Thanks,
+This is adding a new DT binding, it needs to update the binding document
+too.
 
-Alex
+--Q0rSlbzrZN6k9QnT
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
-> Thanks,
-> Punit
->
-> Changes:
-> v2:
-> * Check ranges PCI / bus addresses rather than CPU addresses
-> * (new) Restrict 32-bit size warnings on ranges that don't have the 64-bit attribute set
-> * Refactor the 32-bit size warning to the range parsing loop. This
->   change also prints the warnings right after the window mappings are
->   logged.
->
->
-> [0] https://lore.kernel.org/linux-arm-kernel/20210527150541.3130505-1-punitagrawal@gmail.com/
->
-> Punit Agrawal (4):
->   PCI: of: Override 64-bit flag for non-prefetchable memory below 4GB
->   PCI: of: Relax the condition for warning about non-prefetchable memory
->     aperture size
->   PCI: of: Refactor the check for non-prefetchable 32-bit window
->   arm64: dts: rockchip: Update PCI host bridge window to 32-bit address
->     memory
->
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi |  2 +-
->  drivers/pci/of.c                         | 17 ++++++++++++-----
->  2 files changed, 13 insertions(+), 6 deletions(-)
->
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC2LmcACgkQJNaLcl1U
+h9BzHAf9G464dHNtQknzDW/5kAgdMbejI7xxx5QTf4tseVQ6XY22i3ThsC5iivxi
+5OiLoEmJJ62CFt4fcej2+g9xrtqlrML+fU+D1YwIV4JnBKcNwf1PUKsufpxZdlOl
+jVRFThjrGk8ZXaYnuVu+U+9FbnoYGzidvMT8xdWqcDCUhGT0mUpMcQP3jAsRWXIh
+XqsJpBQrLyCoZE188rbXZN5PEyRHKymDKzSCgJalshiSxReexKZpeJNgZ8IEFcaE
+LZOQNJv01ie/uh7h1Y+5C0bDNlHM6HE89egEY+ATVbx5uHpH2r3GN8wMtBHJk5Hx
+s9+s5oOePen3qqty+jum80ZePycKGg==
+=8JU/
+-----END PGP SIGNATURE-----
+
+--Q0rSlbzrZN6k9QnT--
