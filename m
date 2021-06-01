@@ -2,149 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AAE397610
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BF6397616
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234238AbhFAPI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:08:57 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:21692 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233924AbhFAPIz (ORCPT
+        id S234344AbhFAPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:09:39 -0400
+Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:54914 "EHLO
+        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234227AbhFAPJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:08:55 -0400
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151EwxeW005456;
-        Tue, 1 Jun 2021 15:06:51 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2171.outbound.protection.outlook.com [104.47.73.171])
-        by mx0a-0064b401.pphosted.com with ESMTP id 38wm1ur4wc-1
+        Tue, 1 Jun 2021 11:09:35 -0400
+Received: from pps.filterd (m0127837.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151F2Noq021206;
+        Tue, 1 Jun 2021 08:07:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint20171006;
+ bh=SyNEDVJLptiUED/dSHVeY6blVSIAv1Vco+VmRDq3674=;
+ b=Pv6/poknI3Q+uaVUTF2b175ExIH05WNzEtLG+6kLA/3b+8mKtXlqslPLul/q61lCgDts
+ y0jkmtUjPwBuZuBxYZHmN55PhefqBLUiX4BJMoMMSdZqIvbxHqtmgl3jOECOQ6j1JFmv
+ 1wG+eQ+VnQXo6U4SlDalAnfOH4WPNLw+GIvQdnFYT3MhMniT96dtB837kI94Mk5EITPK
+ 5GjPGbi/6FE4VYV3q+aeUm6khHeK7nMPpIS1cDouAUPPzrfhVAlquAFYzPgb7epnc+Ua
+ XoKLSA/oWixomkqeh3NN1edH8dt2t71N0Es7nNmodgRcwCtWCMKrmixnBUpSuOeph2CH hg== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-002c1b01.pphosted.com with ESMTP id 38wn2kraex-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 15:06:51 +0000
+        Tue, 01 Jun 2021 08:07:52 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PE5INtmJ9RbAQxns4WQjTWM86dosqPRCRSEgfwHGRoPv9DRAUEEjCOYC4oI01Y8G4zzyQAOCDtrG2GREueHC7ELECF9qK5tJ1gh9sV05DzG5nZI604XJtEfWbXd4YzfYNMkWLyw2xIXbe6qg7NuvY3ih3F6bgPxzHhdBtP3SLr9ygTfgG/xZ3drSlTc6j+wiUWmkeug3HVV7VdoUb3y3kn/gA7ijbCqhGQLtIsRWlq8gmos7/drcjnfX4xtDg8Udi+NoUur/I26QxOCe5+QBgFJgBzQAUb9HLMb1KsaESEcPfulf7o1IKOiJL2k2JXxSSY6YRbLXz7/3/t+zawMEbw==
+ b=jlct9PBif1JkIFiWNDSl39JLA4CyExDUspn/RcNXu9DyUJqJAK+7uEMHIP1J/yFqkEuiI8lMjwFienLCX6mOD2ESWe/uwFe1Es6WqWYLCgYVDpey/i/UGLhhraglfZOe+jHa7iaWpVY2mlBHW9DT/Sb2GWrn6qjhnVAndK9p5gBlOCwcbT4mkzhDx18YsZUuquuADqf2eej/RMBYKrKZJjLEhWU5ZqqTW6LLvopyVKT9uWlFiRgqYMGOx6/SClJx6MjSgyJa4fjkow9sRC7J7Oyvef/6fAsb0KO6NpCYa7jRf30Oz35D7P5AYKhP/ysEjiesbJSCJEsAncBCS4ZcJg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q6tutHu1KIhe/RxjbyrQmF+ieKWyEBarwHzNEdbkzgw=;
- b=enYt80l/QfNdukZoFPfuElIlP4/SyxhbtYmVYibL+ZLiWwgkyZSGy3pX3trGwh8bmsraemsvY3x+obOgPDVGI45YnvYRG3r9MHXPuQsh5BqNiBYtoXP3xa0Fap/ywBzz2zlVtt6BmtBxFMydVKPCB0VqY752Jl77jRMkIqmjzE/ZB++2Dbgzp9v3EQFG6TmZx2I9q/qRIp+bGd7S7JxyJwjNylqt1hR+fFhftGYpz6gXeXxuWk4MvUAMd9sUVociQwkPfQ2dRqpkzXiBM6cTek6bvTy9J7AVRgvE/NxAkc2fgGRLnh3wgVjYOY9Vi2XUA6C33DSa3HL83CSSFBTbMA==
+ bh=SyNEDVJLptiUED/dSHVeY6blVSIAv1Vco+VmRDq3674=;
+ b=FPxuLSbMJaEHvS4vzGKxt/jRnILTdqG6wvsL5s+6VRQD9zSdFrInNM3md+CDKxhbHCZMF5/Mj/sgTykn55fedhY6ol5RVtVhRxktxopnd89FcxJqEcMk+r5qATbUobostiUEKq8m/VnnckSepgTIZBNFG+tH6gcAeeoBJAmjkWnffskCkJIUdBUY9qduZZA8Vf4QGOpiUV4UsvEy2yWVPnP8jHDwlU8J97kRaTf0lt69X+XgPvPLGIuFxuOGrgn7G34pPlJCEbJoTAwthJhcoPyVsyDvrSuMQacUrEX7b3j4lzZkAj17gXzDjHrVlgyn5DR3AAqOB5zMXyd0jpx48Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q6tutHu1KIhe/RxjbyrQmF+ieKWyEBarwHzNEdbkzgw=;
- b=NwGXXjehv/fX/8jNI1qSNGnvbiQg96UeOI6W8u57VBOGpMyxdFbQQXAfQmre3VWOx/elT9j/iSUV4Ws9fVFV11lJQdkEJZTvB+S/2RpfFOt6oY/axt6W+NM5sQq92p+2kwN1tqh16cIYnvRxW1CWtHMazbW6aMXX3xRgnpfNiiw=
-Authentication-Results: iogearbox.net; dkim=none (message not signed)
- header.d=none;iogearbox.net; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3223.namprd11.prod.outlook.com (2603:10b6:a03:1b::26) with
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from CH0PR02MB7898.namprd02.prod.outlook.com (2603:10b6:610:113::5)
+ by CH0PR02MB8194.namprd02.prod.outlook.com (2603:10b6:610:ff::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.24; Tue, 1 Jun
- 2021 15:06:44 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::34b3:17c2:b1ad:286c]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::34b3:17c2:b1ad:286c%5]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
- 15:06:44 +0000
-From:   Yanfei Xu <yanfei.xu@windriver.com>
-To:     daniel@iogearbox.net, ast@kernel.org, zlim.lnx@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] bpf: avoid unnecessary IPI in bpf_flush_icache
-Date:   Tue,  1 Jun 2021 23:06:25 +0800
-Message-Id: <20210601150625.37419-2-yanfei.xu@windriver.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210601150625.37419-1-yanfei.xu@windriver.com>
-References: <20210601150625.37419-1-yanfei.xu@windriver.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR02CA0199.apcprd02.prod.outlook.com
- (2603:1096:201:20::11) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 1 Jun
+ 2021 15:07:50 +0000
+Received: from CH0PR02MB7898.namprd02.prod.outlook.com
+ ([fe80::a91d:ad88:5b1f:c981]) by CH0PR02MB7898.namprd02.prod.outlook.com
+ ([fe80::a91d:ad88:5b1f:c981%7]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
+ 15:07:50 +0000
+From:   Thanos Makatos <thanos.makatos@nutanix.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     "vfio-users@redhat.com" <vfio-users@redhat.com>,
+        John Levon <john.levon@nutanix.com>,
+        Swapnil Ingle <swapnil.ingle@nutanix.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: RE: semantics of VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP
+Thread-Topic: semantics of VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP
+Thread-Index: AddW7IO1+z3RMVhGQnuoufV73IrJRwAA+gCAAAHZb7A=
+Date:   Tue, 1 Jun 2021 15:07:50 +0000
+Message-ID: <CH0PR02MB7898A86F3A4720DCD07BFC8A8B3E9@CH0PR02MB7898.namprd02.prod.outlook.com>
+References: <CH0PR02MB7898402DC183E37BF74FF8868B3E9@CH0PR02MB7898.namprd02.prod.outlook.com>
+ <20210601081423.47689d7a.alex.williamson@redhat.com>
+In-Reply-To: <20210601081423.47689d7a.alex.williamson@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nutanix.com;
+x-originating-ip: [78.149.4.199]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ef03eae3-b9cb-4cb5-5f1a-08d9250f05de
+x-ms-traffictypediagnostic: CH0PR02MB8194:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CH0PR02MB8194FD9FEA61A9579C6FEA6C8B3E9@CH0PR02MB8194.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:901;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1cKS7hAhqwvq77V2pFwv9NK/MpumYD5QVp0o0Wvpd6mpuzfxDzABeU3W76LzzOudQxHfmsAC3MitqWWp9otn6eepWrU4uIeMwaGDWjh7yxzjK7jOZmcgd6xPCSOqhJOgNxTgfgP8E8gFDymmZkoVcCcj5WjKXkmw5htPHhOI1zMcn7z505fuufLgLK1Ev1I5ySlKmPn5YH+YqH+2Trvbt17N7jXoAiDQXd0niMn2Mwme6rIR/d8/tHiSE7mDVhdw2UfbxNq7gxo1vACtX2jI8V22GvNR1yfNjnxf2vA6a1DSySn5a2E9h1qodNVLEaPz4zbrs1znRbFFMCQ7RecmpcsgPOL+jxyLX+UOZhC18HW/OmVoPV8TJB5BK5fcQ5FSdohFQlizZ6Ywiox2TPz6yjVvZpSVHpLTS1SvB0GYvoZd6guBxFQkcitVJ1XwEfMtCphgbEpr3LMrHG3pQcb4s8+hIM88uA3kM4H74Fa4M3XS/SVWshs0QCYP9J2PSGYT93nZj6KmL2Mx89V9SgJj3yaJAYiz0+VsmSxNvBHHquTjgiLr7LJP3x/UywVD0ic9u3itAZPPXAXiRzNVfYTh8JApPLX/Z80311JWcLzvJKFd5NBZ/TEU2QRwoGDkMiztwwufPoxBi9z9cZrmXTUUFNqNSmQ3UiGfhQdJS4Tsqnula6xBB0yGAbDDBVIpO6ntacfUDCmK8JwSpewzpjI8y+4GwNSjLXLicHlB9K9+O7znXecfOf0O3tHr2oCWtytEG7ppCPZpLMKXHTKx/BD+MA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR02MB7898.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(39860400002)(366004)(136003)(376002)(478600001)(2906002)(4326008)(6506007)(44832011)(7116003)(71200400001)(38100700002)(55236004)(66446008)(66556008)(66476007)(76116006)(6916009)(316002)(8936002)(7696005)(55016002)(64756008)(83380400001)(52536014)(9686003)(26005)(5660300002)(122000001)(966005)(186003)(8676002)(53546011)(19627235002)(86362001)(66946007)(54906003)(33656002)(14143004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uTAj2IAGeLmLPoZTJQZXM7fW6Ya10ohVsCh4NoNjx5CVty9NBI/aP1azskdL?=
+ =?us-ascii?Q?Ozf/n72iTUqVL/6vfaDMfUD1L2L9NXC+FkhTeWh/sCnL/YtsCTZfqR+bD4PD?=
+ =?us-ascii?Q?1kJ1wtJRWdYJgVrwt+sHfoNQU9GqCVbwyv/wPfMjfALtiqRUme8dZE1MATB4?=
+ =?us-ascii?Q?Y10h4Azk5dlltSAbh5bvvQ/H+ftMCEt3b28L64+EYcJ/2uP9aeaJhAzFeXeD?=
+ =?us-ascii?Q?RPbjxrybL9C8Isqs9MxxaX53CNDcdO0ROu7orwFzzAfPckt0bkbH/thnTvD6?=
+ =?us-ascii?Q?RedsYbdf1ywJjNDV1YXk0Xz7UJrAswMT3izooLkRV6J1oxXaHEHePQpgAL9t?=
+ =?us-ascii?Q?qsxEIzZ2AcZg/cGaxSx0fV7pC4oHbUIGc/+fwhD1si0Ht9aLx0z9Sl0ERw/8?=
+ =?us-ascii?Q?hnisNbgQehSuDUOhXRF9PPCFJ2FS9PCrt0njz1FUZ3coeMKH4WHfr90AhmTH?=
+ =?us-ascii?Q?28NAT+LDm8cZFYRbLdRTZ9yO/sQCJ2R1gFQM1abh1yb+VVFjuX+/bS4dbyCe?=
+ =?us-ascii?Q?5B5V1rxSOX6ozRfMVgRMtqCG2aqzaTH5EvrIyw09+rTqK197kLW/puB5160a?=
+ =?us-ascii?Q?1p/TY3njcQqcyFa1bfF+bh58Ofdj3Sqhdtx7JnOyn5VDV9ETYnzarnjrsqGQ?=
+ =?us-ascii?Q?HsafbEDnGUSs8NLQxQGjoAj+yfB0XUc6usQADYbkRyU623GG5bt5ZPBrDztS?=
+ =?us-ascii?Q?OHaH0NCOjxDV71+pQEO4yvlNjQpYYLcjYLqX35lE4p8ExqL8dkEC5tWlTCuB?=
+ =?us-ascii?Q?axNHsFYj1FGbCsf9lxuHkxX+7yMMDe/aXK8p3CpJVnBpsIbPj7RqdEn+pEzf?=
+ =?us-ascii?Q?Q26ozaGZyZvkOb/y+vha1oUPoKEE02ty3Ofgcz/7UwcLLlMXVvm+YPfUi/Yj?=
+ =?us-ascii?Q?pitwev93Af+AThMXKAg1Wj55t1pGdSgNqtHKnEkQMDGEL8nUx1PF1L/UvJZ7?=
+ =?us-ascii?Q?Y5uMuUN/+8UPWN1XD7KM7jsacl5w2OkjaNXkHw3G?=
+x-ms-exchange-antispam-messagedata-1: PqdnIJmdSKCCDdPZUobDumeUJMTZzSE6YrTfMQR5iUaW5TYne4OisnSmHoxdUzw4waogAZluQx6ThuiSu2trs45VRlniz6KZs57qgPq65LT79QpRh/EvIlO39664cOOhnJ737yf9LJr5sEQaBiomIo7XqkrLJOdicclXhXgzkjgaEjgF5nbLtkWBFz5+tPW8ep3c1zxwmFngSCF41gY5fVUCw6uh9AkojLCl4s89nD3mZ4KLd7StUgCZgWblzpjJbzWOHPrSTPiOiUwLNsWd7MwkTJSAS6t/Iv3i7wQhYbaPA7xMEFL+kVTV3iR8nsCUahE=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpggp1.wrs.com (60.247.85.82) by HK2PR02CA0199.apcprd02.prod.outlook.com (2603:1096:201:20::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 1 Jun 2021 15:06:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 41de9d90-25f4-4c76-230a-08d9250ede3a
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3223:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB322391E997C6F2F73DCBFB3BE43E9@BYAPR11MB3223.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ijsKhq16wVfpgZa4ihh4T/26pHJ7opOILW05IvXa+uX9+waZR0Db7gekGejHoGPWVIaPeCZ4yDeTa/BdDhfN3S6bT4AaNGcBE/DQ6PNwtaOGIugU28Aa7Wxm7XBFtM1JFjygfzqlD678kjJQ+3nbj86dkBEhq1m4yo1dOghQV2uZ3QCVIcj1kgYHG+wuF5Nz02cFwhRRlgFuNAS5wbIku724mbzYrqUHWiJbL6Z+i5P8blywETcsG/fc28IG5TMEgiOUJ4DXLOuP3iQ7ZRjMw/5SRpmxUQZhC7qGFEUBuT+UUUb6ezNA5ZzUAFTTlxK6cDny6yZyqsg0nO3OwInV+ESF+qx4B2Wxn+xphHL5QzOXIiz0EUBl09VhVHa8NfOyOz2zoSqax+G4wJCmy8Gb0XacVIsNkVG3xgSeWw+Miphvt3Uu0xVKbHtGsnUB8FFn8grOCebjFvCdMbpt10hfypjS/JOXxUqyS5qUAkLrW34nRZDUx0uVXnXsV7fJq5418jI+La4QunRtOKA7ir+EMlAc+idOXsqeJJtG7fEmgHjKhkML7Uim3o9XM5iY7aPdRhlFVPpp2zduO2r+PN0CpMiCPBtkdUsddOXXhLxybzdg3tIEBlnFQYpDIQkTR2oXB1y8p6Oyybbhe9vNBDLmzi8NOluoo2F6baGhl+kvDEk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(86362001)(44832011)(5660300002)(66556008)(2616005)(498600001)(83380400001)(6486002)(2906002)(36756003)(1076003)(16526019)(7416002)(4326008)(52116002)(26005)(6666004)(8676002)(66476007)(66946007)(38100700002)(8936002)(38350700002)(4744005)(186003)(6512007)(921005)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ktd/mDkyVn1RUQSR0VwWgkHGl84T9xbjGaFeyWRuMMkji4BNsHkcsUWZb0rv?=
- =?us-ascii?Q?TR+KUQ95xbiQCN4o6GipweX1O2DLjNQszjzOAyumhSuLPgicJgWRfQe8bMK+?=
- =?us-ascii?Q?a8Qhh3Cy19Rb8SDfqChw+N+RmpYzo77yzogHVHSiWepMbkVR1QeeAwpXa5+m?=
- =?us-ascii?Q?C58sXSTmhbJ1b98fPhU4ag4iuwOJwEzPwYxKSlKMiM8CK/zNU6bHkdeK1/uq?=
- =?us-ascii?Q?CjnyGNH7HncUr6WeziPAnt0X6yUofFtYIqekhj6dxTA4L9YhQ5wE70V4OEQc?=
- =?us-ascii?Q?eTfgS3hELQ9pNH1I9v3PtK7PMhsPwGjp9DdtHec2XPp7zbHHFnkH2CMbX03F?=
- =?us-ascii?Q?oTRpScCaK99aTfW37HOLlRtccmE09llXalgKmUui26Xpi29T7vAEcf4lEmGP?=
- =?us-ascii?Q?t+pgckpOC0yqr/ouGFbno33IrQk7VKeDwcu2IdQB5G0h4bc0eVIUUSuHW74j?=
- =?us-ascii?Q?8xsDQ/j2qxdc2EfXeu9NNcjpYPNISCGv301KWLDC/SHgLwZ2rxkSerLlx0Cj?=
- =?us-ascii?Q?/fP1oDTXknTz0GnhteaH+MqxWdl9WZ//VLIt9I1vEIldEJnlbeiL9BwCHv8G?=
- =?us-ascii?Q?rR3X6bUzNAyi3UMPX0kK7eRJ6y7n468jCZbynw1AqHPcyf8jexnXCYQpLgd3?=
- =?us-ascii?Q?SAvj/qF8CaPMVC5EU4ZS/P+4yyqZ9bFGoBZ0rhb1PXQXuD65FaPPL650oqTq?=
- =?us-ascii?Q?21ETRvLy6rplLXsdC1AYqKQZr2NISoxa0v2sAM3zJObidGEClN60eRubxxLn?=
- =?us-ascii?Q?CmGE8gPzvbhxw/buSdZWVjEix2hz98J67JcXP7KMRXQLZgjPOj6tNFbm9FjK?=
- =?us-ascii?Q?PK0dwuVVfAr3Ad+iqdF+buy1DjE9NMDo/p2JnVrrwgLUQ2cyzvgOeVGGUzw8?=
- =?us-ascii?Q?Rm+nHkyesDNFMjwGh30RjUSlBo/vEvFmkp/eZlnwr3lMEfZVPWVjV5t8/NJV?=
- =?us-ascii?Q?NmAyInrvi4LpW214mXYyb2mTLnUr91SfFOATw27IWMKb/EHSV9+Q7n4x/qvU?=
- =?us-ascii?Q?AVanmU2bkk13xKwSQthK+syGHwtCG3AOtbC+fNHz6sqkx8J6DBaUj2s5AWZ1?=
- =?us-ascii?Q?crO79zom+XoPZipEn8zTTv+qc1sIeN1uGk0tHX8j6LD2u4xZQvMqC3K14QVD?=
- =?us-ascii?Q?iGuvJEB5i0vUzdCWxeOQ+lRTHNlTV5VvkLSL2brQDPq9HQWggnGEolbBYp9O?=
- =?us-ascii?Q?2xnILF25F1YYiO+kpWfEwpY/57ulLswdD07vPXmmkfV1xGYX8XT6DMjMPO9n?=
- =?us-ascii?Q?sxUqAM8Coy1M5x5HLZ4B495fJS5ne208k52E29Oa/vIpEHTf4faw5TIZ6gZD?=
- =?us-ascii?Q?X7lG0JktYq+fYhafYolI15Uw?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41de9d90-25f4-4c76-230a-08d9250ede3a
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-OriginatorOrg: nutanix.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 15:06:44.0985
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR02MB7898.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef03eae3-b9cb-4cb5-5f1a-08d9250f05de
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2021 15:07:50.1707
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6lV8h0hgM77YAh7jnTAtMzvCQ++juqv4VC5seq4e4oaJSmUb8ZjZU7wDoA4bKXa971Uq5RR+CW6M/mMVlwnH0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3223
-X-Proofpoint-ORIG-GUID: KvOHrvp-QcMoEVrpJ5bTLjtPLb_1GwVC
-X-Proofpoint-GUID: KvOHrvp-QcMoEVrpJ5bTLjtPLb_1GwVC
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XqmtvNS3cC7yhNJ5NKgaoaZpfgon5w54WNjzyxpJ3HRBYBZm2c+hZiIrnqgHqYj8WcFsXqJFuCS8+MKYerBnP8XEIP5rrSraB/tUFhUQcUg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR02MB8194
+X-Proofpoint-GUID: rpoYqLPuszX2dWYk7zCvoY6ILrj_0SKK
+X-Proofpoint-ORIG-GUID: rpoYqLPuszX2dWYk7zCvoY6ILrj_0SKK
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-06-01_07:2021-06-01,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015 malwarescore=0
- mlxscore=0 mlxlogscore=906 suspectscore=0 priorityscore=1501 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106010102
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's no need to trigger IPI for keeping pipeline fresh in bpf case.
 
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
----
- arch/arm64/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index f7b194878a99..5311f8be4ba4 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -974,7 +974,7 @@ static int validate_code(struct jit_ctx *ctx)
- 
- static inline void bpf_flush_icache(void *start, void *end)
- {
--	flush_icache_range((unsigned long)start, (unsigned long)end);
-+	__flush_icache_range((unsigned long)start, (unsigned long)end);
- }
- 
- struct arm64_jit_data {
--- 
-2.27.0
+> -----Original Message-----
+> From: Alex Williamson <alex.williamson@redhat.com>
+> Sent: 01 June 2021 15:14
+> To: Thanos Makatos <thanos.makatos@nutanix.com>
+> Cc: vfio-users@redhat.com; John Levon <john.levon@nutanix.com>; Swapnil
+> Ingle <swapnil.ingle@nutanix.com>; linux-kernel@vger.kernel.org;
+> kvm@vger.kernel.org
+> Subject: Re: semantics of VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP
+>=20
+> On Tue, 1 Jun 2021 13:48:22 +0000
+> Thanos Makatos <thanos.makatos@nutanix.com> wrote:
+>=20
+> > (sending here as I can't find a relevant list in
+> > https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__vger.kernel.org_v=
+g
+> > er-
+> 2Dlists.html&d=3DDwICAg&c=3Ds883GpUCOChKOHiocYtGcg&r=3DXTpYsh5Ps2zJvtw
+> 6og
+> >
+> tti46atk736SI4vgsJiUKIyDE&m=3DE6G0G_Z_M2cIQvruwQk6NRrha3NkW8gdO11
+> pPUm8vg
+> > k&s=3D-7KcTuEYFphAcU1aya0t_Jh4aP9jVPq2N2YxVu9Lu84&e=3D )
+>=20
+> $ ./scripts/get_maintainer.pl include/uapi/linux/vfio.h Alex Williamson
+> <alex.williamson@redhat.com> (maintainer:VFIO DRIVER) Cornelia Huck
+> <cohuck@redhat.com> (reviewer:VFIO DRIVER) kvm@vger.kernel.org (open
+> list:VFIO DRIVER) linux-kernel@vger.kernel.org (open list)
+>=20
+> > I'm trying to understand the semantics of
+> > VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP. My (very rough)
+> understanding
+> > so far is that once a page gets pinned then it's considered dirty and
+> > if the page is still pinned then it remains dirty even after we're
+> > done serving VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP. Is my
+> > understanding correct?
+>=20
+> This is the current type1 implementation, but the semantics only require =
+that
+> a page is reported dirty if it's actually been written.
+> Without support for tracking DMA writes, we assume that any page
+> accessible to the device is constantly dirty.  This will be refined over =
+time as
+> software and hardware support improves, but we currently error on the sid=
+e
+> of assuming all pinned pages are always dirty.
+> Thanks,=09
+
+Makes sense, thanks.
+
+>=20
+> Alex
 
