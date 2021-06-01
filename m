@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935253972C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCCA3972C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhFALsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
+        id S233628AbhFALua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbhFALsw (ORCPT
+        with ESMTP id S230288AbhFALu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:48:52 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38016C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:47:10 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id s25so18749121ljo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ItCVrZoVYv1v/xorZesjCk9X9iKX2f1cF8KOjlONSD8=;
-        b=dHa0W5r/jaxOkqLf8O4d5U3XeqmOyFo1o+aqIJiY0wAu40HLt7tkxoxI+zOcdmDliA
-         /JkYXVhVXUR1hmY7dqM5DeN00yMMBlKNR+7KW2ZxB9kHoIGfuhtwYzVkm6a7aZ4gc7mT
-         0YZ9GHPty3nMIuOgIChlhaXCEX182EeCC1R3zGBckqTjM6KpfDpfPDid0QFvoaq6RbZj
-         0d4UodeiOLi7iLIxrBpTvBrfuhUUnA/Kmc8E7Ad+GRSWTNzI9tLcHbxxWWQQUbO6rPY5
-         VPzod4tqQZksgFGDr5xuqCraD+nTWQi+0t9NTGohzgS4CDy5jnOjHuTfFGGAp3Vs0bdu
-         l2Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ItCVrZoVYv1v/xorZesjCk9X9iKX2f1cF8KOjlONSD8=;
-        b=SdQNwJU3PsfQ7maMM6Oft8xM0bbGPlO8LQKn+ZF34iD9GbNSsrOaP0OdxjtwzorNIl
-         6Z8Mxa98iYPluxRxarcVIOGKZPAH8WoOBGRaqO+lPqxRkK4wM8Y4ZIHRRr17fi0yy2Hk
-         ZGfvl2VKrUg+WDKUuN3HQTKVSGfuhoGp2MD4j1pwqsYL/IWYk56tVm7vqMx4AkVFntY/
-         4HWnKd5HzDZ6+7zHRWFcxM+2/Hs6MiL8TSPVT2V1PcMaZZb6z20XyBqXzepsEMJcn4JS
-         7owXrWIBCtnEFcKVe6xeayn+JACEE8vkTilkzTUfh2UliElNqsmS1g+fbGdbmVq5E4qC
-         TZYw==
-X-Gm-Message-State: AOAM531p2NsFcHJnOt5rtR8NC+wzOeLQ36LK1+4BkJo97pqk6dnWwK26
-        EIhAPpjxMDpORdi+3k5zkvru9bpyuapSFfRYtHleMQ==
-X-Google-Smtp-Source: ABdhPJzphdDpBI1vj78e5QFB4+8vwKRJMltmceYRijPXZT1d0zYnBwy8BBP/GtL4PeK1itYSd4lMv/4xJ1YfDgZ7PwI=
-X-Received: by 2002:a2e:1319:: with SMTP id 25mr20764012ljt.200.1622548028522;
- Tue, 01 Jun 2021 04:47:08 -0700 (PDT)
+        Tue, 1 Jun 2021 07:50:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88781C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FG8QsXBT9RwonVdLjIFuZXWFVzP4Jy7oyS+/HVeFnwk=; b=U8zo4BcNXFspX345/GEHZU/xcq
+        O1pN3s1GYhzCNlGlH7kB+2/c/YQys3SXLbhl7xrZBY8y5cPTpOKbfdARhdOxdQn8nWMpWNSlc5k8y
+        yq9rl3VuvQdiI9nyJMMyx/pMovjihUJRfTvRRVQc3hYjUn/BucuiqrAh7WDsj5rryy8ayhNrr2wIg
+        XtD2nv5CI/bzn0BLPc8lVsY91HXtWuFCeq0c74iFJeYL+Ezf55KnazeRgoXLmRzKxG07bNeL+nYJa
+        x4D27m85R0mEJ4PbSyn+7gtBDG7DeWVtHrNQ5Il4BlE/hcREg0yn25CgnMgp9escsGZ4tvt30m+2A
+        XPFZI+1w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lo2sZ-009zEi-JF; Tue, 01 Jun 2021 11:48:19 +0000
+Date:   Tue, 1 Jun 2021 12:48:15 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH] mm: free idle swap cache page after COW
+Message-ID: <YLYef3i2OGseGbsS@casper.infradead.org>
+References: <20210601053143.1380078-1-ying.huang@intel.com>
 MIME-Version: 1.0
-References: <20210531120753.719381-1-iwamatsu@nigauri.org>
-In-Reply-To: <20210531120753.719381-1-iwamatsu@nigauri.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Jun 2021 13:46:57 +0200
-Message-ID: <CACRpkdaqhMk-0mjUhENWODSjdc1uTSnVJ3E923kRe9t-nq33+g@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: zynq: convert bindings to YAML
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Soren Brinkmann <soren.brinkmann@xilinx.com>,
-        Harini Katakam <harinik@xilinx.com>,
-        Anurag Kumar Vulisha <anuragku@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601053143.1380078-1-ying.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 2:08 PM Nobuhiro Iwamatsu <iwamatsu@nigauri.org> wrote:
+On Tue, Jun 01, 2021 at 01:31:43PM +0800, Huang Ying wrote:
+> With commit 09854ba94c6a ("mm: do_wp_page() simplification"), after
+> COW, the idle swap cache page (neither the page nor the corresponding
+> swap entry is mapped by any process) will be left in the LRU list,
+> even if it's in the active list or the head of the inactive list.  So,
+> the page reclaimer may take quite some overhead to reclaim these
+> actually unused pages.
+> 
+> To help the page reclaiming, in this patch, after COW, the idle swap
+> cache page will be tried to be freed.  To avoid to introduce much
+> overhead to the hot COW code path,
+> 
+> a) there's almost zero overhead for non-swap case via checking
+>    PageSwapCache() firstly.
+> 
+> b) the page lock is acquired via trylock only.
+> 
+> To test the patch, we used pmbench memory accessing benchmark with
+> working-set larger than available memory on a 2-socket Intel server
+> with a NVMe SSD as swap device.  Test results shows that the pmbench
+> score increases up to 23.8% with the decreased size of swap cache and
+> swapin throughput.
 
-> Convert gpio for Xilinx Zynq SoC bindings documentation to YAML.
->
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+So 2 percentage points better than my original idea?  Sweet.
 
-Looks good to me!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 2b7ffcbca175..d44425820240 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3104,6 +3104,8 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+>  				munlock_vma_page(old_page);
+>  			unlock_page(old_page);
+>  		}
+> +		if (page_copied)
+> +			free_swap_cache(old_page);
+>  		put_page(old_page);
+>  	}
+>  	return page_copied ? VM_FAULT_WRITE : 0;
 
-Yours,
-Linus Walleij
+Why not ...
+
+		if (page_copied)
+			free_page_and_swap_cache(old_page);
+		else
+			put_page(old_page);
+
+then you don't need to expose free_swap_cache().  Or does the test for
+huge_zero_page mess this up?
+
