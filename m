@@ -2,72 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A044397557
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638D439756B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbhFAOXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:23:24 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2831 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbhFAOXX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:23:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvZ3Z57dwzWqZX;
-        Tue,  1 Jun 2021 22:16:58 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 22:21:40 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 22:21:40 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>,
-        <Michael.Hennerich@analog.com>
-Subject: [PATCH -next] iio: frequency: adf4350: disable reg and clk on error in adf4350_probe()
-Date:   Tue, 1 Jun 2021 22:26:05 +0800
-Message-ID: <20210601142605.3613605-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        id S234111AbhFAObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233797AbhFAOa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 10:30:59 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA72261209;
+        Tue,  1 Jun 2021 14:29:17 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lo5ON-004puP-Ra; Tue, 01 Jun 2021 15:29:15 +0100
+Date:   Tue, 01 Jun 2021 15:29:14 +0100
+Message-ID: <87lf7t1ww5.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 00/39] irqdomain: Simplify interrupt handling
+In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
+References: <20210520163751.27325-1-maz@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable reg and clk when devm_gpiod_get_optional() fails in adf4350_probe().
+On Thu, 20 May 2021 17:37:12 +0100,
+Marc Zyngier <maz@kernel.org> wrote:
+> 
+> Although most device drivers only deal with an interrupt number, the
+> core IRQ code is mostly concerned with the irq_desc structure that
+> describes the full interrupt context (hierarchy, handlers, state).
+> 
+> However, the low-level interrupt handling code that relies on the
+> irqdomain abstraction has to perform an annoying dance to eventually
+> get the core code to invoke interrupt handlers: the irqdomain code
+> converts a low-level identifier to the unique Linux interrupt number,
+> and the core code resolves this into an irq_desc pointer.
+> 
+> Each of these two lookups ends-up parsing a radix tree (although the
+> irqdomain code can use a linear mapping for the smallest domains),
+> which is obviously one too many. Wouldn't it be nice if the irqdomain
+> would cache the irq_desc instead of forcing the core code to look it
+> up on each and every interrupt? This is what this long series is all
+> about.
+> 
+> There is roughly 3 parts here:
+> 
+> - a substantial amount of massaging for some architectures (nios, mips
+>   and powerpc) to disentangle weird include constructs (asm/irq.h
+>   including linux/irqdomain.h is pretty bad...) and simplify bits of
+>   the irqdomain code
+> 
+> - some rework of the irqdomain code to allow the caching of a irq_data
+>   pointer, unify the RCU behaviour and offer new APIs.
+> 
+> - Perform a bulk of conversions that turn constructs similar to
+>   generic_handle_irq(irq_find_mapping(domain, hwirq)) into a simpler
+>   call to generic_handle_domain_irq(domain, hwirq). Yes, this is a
+>   mouthful.
+> 
+> I've kept most of the conversions per-subsystem/per-arch in order to
+> keep the number of patches low (though it is debatable whether I have
+> succeeded).
+> 
+> This ends up with a negative diffstat, so it can't be completely bad!
+> Given the breadth of the changes, I do expect some breakage, although
+> I've extensively compile-tested it and the kbuild robot has been
+> invaluable in helping with the coverage.
 
-Fixes:4a89d2f47ccd ("iio: adf4350: Convert to use GPIO descriptor")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/iio/frequency/adf4350.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Slight nudge in the direction of the cc'd arch maintainers. I'd like
+to take the core of this series into -next (in practice, patches #1
+through to #27). Any comment on the early, arch-specific patches would
+be most welcome.
 
-diff --git a/drivers/iio/frequency/adf4350.c b/drivers/iio/frequency/adf4350.c
-index 1462a6a5bc6d..3d9eba716b69 100644
---- a/drivers/iio/frequency/adf4350.c
-+++ b/drivers/iio/frequency/adf4350.c
-@@ -563,8 +563,10 @@ static int adf4350_probe(struct spi_device *spi)
- 
- 	st->lock_detect_gpiod = devm_gpiod_get_optional(&spi->dev, NULL,
- 							GPIOD_IN);
--	if (IS_ERR(st->lock_detect_gpiod))
--		return PTR_ERR(st->lock_detect_gpiod);
-+	if (IS_ERR(st->lock_detect_gpiod)) {
-+		ret = PTR_ERR(st->lock_detect_gpiod);
-+		goto error_disable_reg;
-+	}
- 
- 	if (pdata->power_up_frequency) {
- 		ret = adf4350_set_freq(st, pdata->power_up_frequency);
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
