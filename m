@@ -2,132 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1F2396EF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0DF396F5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhFAIao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:30:44 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:41782 "EHLO inva021.nxp.com"
+        id S233700AbhFAItd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:49:33 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14824 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233465AbhFAIak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:30:40 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D3DA20186F;
-        Tue,  1 Jun 2021 10:28:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com 6D3DA20186F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
-        s=nselector4; t=1622536135;
-        bh=Vp/YVFqiOklhN/F6UxgOeg6zBvCd93y8gqG1jloJHJo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g0X0ybUEt7kfjH+qJ500hs8MyqwY2G9SwgJKnUN0NubZBFRlWX2O8TPSktbV5Nqs2
-         mAPgqamFNO+or8y5a3Na7IvodgtnnlSQ6djNUpI8STQg6tHSZmlJ+Jb2uuWG0N92+z
-         Gs4TKtI2HGr1ywV+ZKBWXlTWQ7MrcPUc81D5WIFHhU/f0gBlPOqiX5wJU0zoH9qGDv
-         e5y5er+TtjlJP5fYACKsI6oLJMiXETrlQ5xqWplByehAaoQpw/6UeR43zuaR3VACMz
-         +Gji5ibfKOKp0zBirmjxuceGyywrJXFaJheM4/rQWRIPsEVmtjskrDUKLkgnc37tui
-         0RH14zWoCmvwA==
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 364C4200D1F;
-        Tue,  1 Jun 2021 10:28:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com 364C4200D1F
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 48222402F1;
-        Tue,  1 Jun 2021 16:28:36 +0800 (+08)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, joabreu@synopsys.com, kuba@kernel.org,
-        alexandre.torgue@st.com, peppe.cavallaro@st.com,
-        mcoquelin.stm32@gmail.com
-Cc:     netdev@vger.kernel.org, boon.leong.ong@intel.com,
-        weifeng.voon@intel.com, vee.khee.wong@intel.com,
-        tee.min.tan@intel.com, mohammad.athari.ismail@intel.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
-        qiangqing.zhang@nxp.com, rui.sousa@nxp.com, mingkai.hu@nxp.com,
-        yangbo.lu@nxp.com, xiaoliang.yang_1@nxp.com
-Subject: [PATCH v1 net-next 3/3] net: stmmac: ptp: update tas basetime after ptp adjust
-Date:   Tue,  1 Jun 2021 16:38:13 +0800
-Message-Id: <20210601083813.1078-4-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210601083813.1078-1-xiaoliang.yang_1@nxp.com>
-References: <20210601083813.1078-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S233740AbhFAIt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:49:27 -0400
+IronPort-SDR: oDX2CV2AxwF6Jru6iacTS1bTpCsVC2Y9zmpbJd45gnnycxe/vOk5hYXDElPFJhZiNgXXMZN9OO
+ 1P0e/DgmKwJw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="201635972"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="asc'?scan'208";a="201635972"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 01:47:46 -0700
+IronPort-SDR: LxtEFyZT6oTvdwGLVd1a0Onta12b4d1TAxSK0eoTLxy8TUX2UjkylYbL6xaqoHIiknf/mJHAWA
+ +y7Jka9r+yOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="asc'?scan'208";a="474169308"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Jun 2021 01:47:44 -0700
+Date:   Tue, 1 Jun 2021 16:28:04 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org
+Subject: Re: [PATCH v2] drm/i915/gem: Use list_entry to access list members
+Message-ID: <20210601082804.GS27293@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20210523172304.3033229-1-linux@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Bqc0IY4JZZt50bUr"
+Content-Disposition: inline
+In-Reply-To: <20210523172304.3033229-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After adjusting the ptp time, the Qbv base time may be the past time
-of the new current time. dwmac5 hardware limited the base time cannot
-be set as past time. This patch calculate the base time and reset the
-Qbv configuration after ptp time adjust.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  | 41 ++++++++++++++++++-
- 1 file changed, 40 insertions(+), 1 deletion(-)
+--Bqc0IY4JZZt50bUr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-index 4e86cdf2bc9f..c573bc8b2595 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-@@ -62,7 +62,8 @@ static int stmmac_adjust_time(struct ptp_clock_info *ptp, s64 delta)
- 	u32 sec, nsec;
- 	u32 quotient, reminder;
- 	int neg_adj = 0;
--	bool xmac;
-+	bool xmac, est_rst = false;
-+	int ret;
- 
- 	xmac = priv->plat->has_gmac4 || priv->plat->has_xgmac;
- 
-@@ -75,10 +76,48 @@ static int stmmac_adjust_time(struct ptp_clock_info *ptp, s64 delta)
- 	sec = quotient;
- 	nsec = reminder;
- 
-+	/* If EST is enabled, disabled it before adjust ptp time. */
-+	if (priv->plat->est && priv->plat->est->enable) {
-+		est_rst = true;
-+		mutex_lock(&priv->plat->est->lock);
-+		priv->plat->est->enable = false;
-+		stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
-+				     priv->plat->clk_ptp_rate);
-+		mutex_unlock(&priv->plat->est->lock);
-+	}
-+
- 	spin_lock_irqsave(&priv->ptp_lock, flags);
- 	stmmac_adjust_systime(priv, priv->ptpaddr, sec, nsec, neg_adj, xmac);
- 	spin_unlock_irqrestore(&priv->ptp_lock, flags);
- 
-+	/* Caculate new basetime and re-configured EST after PTP time adjust. */
-+	if (est_rst) {
-+		struct timespec64 current_time, time;
-+		ktime_t current_time_ns, basetime;
-+		u64 cycle_time;
-+
-+		priv->ptp_clock_ops.gettime64(&priv->ptp_clock_ops, &current_time);
-+		current_time_ns = timespec64_to_ktime(current_time);
-+		time.tv_nsec = priv->plat->est->btr[0];
-+		time.tv_sec = priv->plat->est->btr[1];
-+		basetime = timespec64_to_ktime(time);
-+		cycle_time = priv->plat->est->ctr[1] * NSEC_PER_SEC +
-+			     priv->plat->est->ctr[0];
-+		time = stmmac_calc_tas_basetime(basetime,
-+						current_time_ns,
-+						cycle_time);
-+
-+		mutex_lock(&priv->plat->est->lock);
-+		priv->plat->est->btr[0] = (u32)time.tv_nsec;
-+		priv->plat->est->btr[1] = (u32)time.tv_sec;
-+		priv->plat->est->enable = true;
-+		ret = stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
-+					   priv->plat->clk_ptp_rate);
-+		mutex_unlock(&priv->plat->est->lock);
-+		if (ret)
-+			netdev_err(priv->dev, "failed to configure EST\n");
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.17.1
+On 2021.05.23 10:23:04 -0700, Guenter Roeck wrote:
+> Use list_entry() instead of container_of() to access list members.
+> Also drop unnecessary and misleading NULL checks on the result of
+> list_entry().
+>=20
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> v2: Checkpatch fixes:
+>     - Fix alignment
+>     - Replace comparison against NULL with !
+>=20
+>  drivers/gpu/drm/i915/gvt/dmabuf.c | 18 +++++-------------
+>  1 file changed, 5 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/i915/gvt/dmabuf.c b/drivers/gpu/drm/i915/gvt=
+/dmabuf.c
+> index d4f883f35b95..e3f488681484 100644
+> --- a/drivers/gpu/drm/i915/gvt/dmabuf.c
+> +++ b/drivers/gpu/drm/i915/gvt/dmabuf.c
+> @@ -148,8 +148,7 @@ static void dmabuf_gem_object_free(struct kref *kref)
+> =20
+>  	if (vgpu && vgpu->active && !list_empty(&vgpu->dmabuf_obj_list_head)) {
+>  		list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
+> -			dmabuf_obj =3D container_of(pos,
+> -					struct intel_vgpu_dmabuf_obj, list);
+> +			dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
+>  			if (dmabuf_obj =3D=3D obj) {
+>  				list_del(pos);
+>  				intel_gvt_hypervisor_put_vfio_device(vgpu);
+> @@ -357,10 +356,8 @@ pick_dmabuf_by_info(struct intel_vgpu *vgpu,
+>  	struct intel_vgpu_dmabuf_obj *ret =3D NULL;
+> =20
+>  	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
+> -		dmabuf_obj =3D container_of(pos, struct intel_vgpu_dmabuf_obj,
+> -						list);
+> -		if ((dmabuf_obj =3D=3D NULL) ||
+> -		    (dmabuf_obj->info =3D=3D NULL))
+> +		dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
+> +		if (!dmabuf_obj->info)
+>  			continue;
+> =20
+>  		fb_info =3D (struct intel_vgpu_fb_info *)dmabuf_obj->info;
+> @@ -387,11 +384,7 @@ pick_dmabuf_by_num(struct intel_vgpu *vgpu, u32 id)
+>  	struct intel_vgpu_dmabuf_obj *ret =3D NULL;
+> =20
+>  	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
+> -		dmabuf_obj =3D container_of(pos, struct intel_vgpu_dmabuf_obj,
+> -						list);
+> -		if (!dmabuf_obj)
+> -			continue;
+> -
+> +		dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
+>  		if (dmabuf_obj->dmabuf_id =3D=3D id) {
+>  			ret =3D dmabuf_obj;
+>  			break;
+> @@ -600,8 +593,7 @@ void intel_vgpu_dmabuf_cleanup(struct intel_vgpu *vgp=
+u)
+> =20
+>  	mutex_lock(&vgpu->dmabuf_lock);
+>  	list_for_each_safe(pos, n, &vgpu->dmabuf_obj_list_head) {
+> -		dmabuf_obj =3D container_of(pos, struct intel_vgpu_dmabuf_obj,
+> -						list);
+> +		dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
+>  		dmabuf_obj->vgpu =3D NULL;
+> =20
+>  		idr_remove(&vgpu->object_idr, dmabuf_obj->dmabuf_id);
+> --=20
 
+Sorry for late reply! Looks good to me.
+
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+
+--Bqc0IY4JZZt50bUr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYLXviAAKCRCxBBozTXgY
+JwG7AJ9Pr/tLAdoR3m14OG9PG9UnCCEW9gCcDSBRdzRBnLpNffd7NifoU6gF4+0=
+=aKMJ
+-----END PGP SIGNATURE-----
+
+--Bqc0IY4JZZt50bUr--
