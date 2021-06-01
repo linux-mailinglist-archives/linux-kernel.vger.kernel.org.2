@@ -2,149 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC323972D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333E73972DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233729AbhFALzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:55:53 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46770 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230288AbhFALzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:55:51 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxkOLVH7Zge0QIAA--.5303S2;
-        Tue, 01 Jun 2021 19:53:57 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] perf tools: Copy uapi/asm/perf_regs.h from the kernel for MIPS
-Date:   Tue,  1 Jun 2021 19:53:56 +0800
-Message-Id: <1622548436-12472-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9BxkOLVH7Zge0QIAA--.5303S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF45uF4xGF1UGrWfGry3Arb_yoW5Zry7pF
-        ZrC34rJw4v93yak3yFyFyUWr13trWxXFZFv3yfCry7ZF42yF1rXwn7Kr13Kw1xJr4xta17
-        CFyxWr4UAF10yw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUsyCJUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S233758AbhFAL4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:56:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:48252 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233409AbhFAL4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 07:56:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C1C26D;
+        Tue,  1 Jun 2021 04:54:38 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F06A3F73D;
+        Tue,  1 Jun 2021 04:54:37 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Yejune Deng <yejune.deng@gmail.com>, x86@kernel.org
+Subject: Re: [PATCH] sched,init: Fix DEBUG_PREEMPT vs early boot
+In-Reply-To: <YLS4mbKUrA3Gnb4t@hirez.programming.kicks-ass.net>
+References: <20210510151024.2448573-3-valentin.schneider@arm.com> <162141495460.29796.4438792168641232595.tip-bot2@tip-bot2> <YLS4mbKUrA3Gnb4t@hirez.programming.kicks-ass.net>
+Date:   Tue, 01 Jun 2021 12:54:35 +0100
+Message-ID: <87mts9g5qc.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To allow the build to complete on older systems, where those files are
-either not uptodate, lacking some recent additions or not present at
-all.
+On 31/05/21 12:21, Peter Zijlstra wrote:
+> On Wed, May 19, 2021 at 09:02:34AM -0000, tip-bot2 for Yejune Deng wrote:
+>> @@ -19,11 +19,7 @@ unsigned int check_preemption_disabled(const char *what1, const char *what2)
+>>      if (irqs_disabled())
+>>              goto out;
+>>
+>> -	/*
+>> -	 * Kernel threads bound to a single CPU can safely use
+>> -	 * smp_processor_id():
+>> -	 */
+>> -	if (current->nr_cpus_allowed == 1)
+>> +	if (is_percpu_thread())
+>>              goto out;
+>
+> So my test box was unhappy with all this and started spewing lots of
+> DEBUG_PREEMPT warns on boot.
+>
 
-And check if the copy drifts from the kernel.
+I get these too, though can't recall getting them when testing the
+above. I think it's tied with what Frederic found out with copy_process()
+copying PF_NO_SETAFFINITY, which it now no longer does.
 
-This commit is similar with
-commit 12f020338a2c ("tools: Copy uapi/asm/perf_regs.h from the kernel")
+> This extends 8fb12156b8db6 to cover the new requirement.
+>
+> ---
+> Subject: sched,init: Fix DEBUG_PREEMPT vs early boot
+>
+> Extend 8fb12156b8db ("init: Pin init task to the boot CPU, initially")
+> to cover the new PF_NO_SETAFFINITY requirement.
+>
+> While there, move wait_for_completion(&kthreadd_done) into kernel_init()
+> to make it absolutely clear it is the very first thing done by the init
+> thread.
+>
+> Fixes: 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-With this commit, we can avoid the following build error in any case:
-
-tools/perf/arch/mips/include/perf_regs.h:7:10:
-fatal error: asm/perf_regs.h: No such file or directory
- #include <asm/perf_regs.h>
-          ^~~~~~~~~~~~~~~~~
-compilation terminated.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/arch/mips/include/uapi/asm/perf_regs.h | 40 ++++++++++++++++++++++++++++
- tools/perf/Makefile.config                   |  1 -
- tools/perf/check-headers.sh                  |  1 +
- 3 files changed, 41 insertions(+), 1 deletion(-)
- create mode 100644 tools/arch/mips/include/uapi/asm/perf_regs.h
-
-diff --git a/tools/arch/mips/include/uapi/asm/perf_regs.h b/tools/arch/mips/include/uapi/asm/perf_regs.h
-new file mode 100644
-index 0000000..d0f4ecd
---- /dev/null
-+++ b/tools/arch/mips/include/uapi/asm/perf_regs.h
-@@ -0,0 +1,40 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _ASM_MIPS_PERF_REGS_H
-+#define _ASM_MIPS_PERF_REGS_H
-+
-+enum perf_event_mips_regs {
-+	PERF_REG_MIPS_PC,
-+	PERF_REG_MIPS_R1,
-+	PERF_REG_MIPS_R2,
-+	PERF_REG_MIPS_R3,
-+	PERF_REG_MIPS_R4,
-+	PERF_REG_MIPS_R5,
-+	PERF_REG_MIPS_R6,
-+	PERF_REG_MIPS_R7,
-+	PERF_REG_MIPS_R8,
-+	PERF_REG_MIPS_R9,
-+	PERF_REG_MIPS_R10,
-+	PERF_REG_MIPS_R11,
-+	PERF_REG_MIPS_R12,
-+	PERF_REG_MIPS_R13,
-+	PERF_REG_MIPS_R14,
-+	PERF_REG_MIPS_R15,
-+	PERF_REG_MIPS_R16,
-+	PERF_REG_MIPS_R17,
-+	PERF_REG_MIPS_R18,
-+	PERF_REG_MIPS_R19,
-+	PERF_REG_MIPS_R20,
-+	PERF_REG_MIPS_R21,
-+	PERF_REG_MIPS_R22,
-+	PERF_REG_MIPS_R23,
-+	PERF_REG_MIPS_R24,
-+	PERF_REG_MIPS_R25,
-+	PERF_REG_MIPS_R26,
-+	PERF_REG_MIPS_R27,
-+	PERF_REG_MIPS_R28,
-+	PERF_REG_MIPS_R29,
-+	PERF_REG_MIPS_R30,
-+	PERF_REG_MIPS_R31,
-+	PERF_REG_MIPS_MAX = PERF_REG_MIPS_R31 + 1,
-+};
-+#endif /* _ASM_MIPS_PERF_REGS_H */
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 406a951..73df23d 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -90,7 +90,6 @@ endif
- ifeq ($(ARCH),mips)
-   NO_PERF_REGS := 0
-   CFLAGS += -I$(OUTPUT)arch/mips/include/generated
--  CFLAGS += -I../../arch/mips/include/uapi -I../../arch/mips/include/generated/uapi
-   LIBUNWIND_LIBS = -lunwind -lunwind-mips
- endif
- 
-diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-index dd8ff28..c783558 100755
---- a/tools/perf/check-headers.sh
-+++ b/tools/perf/check-headers.sh
-@@ -39,6 +39,7 @@ arch/x86/lib/x86-opcode-map.txt
- arch/x86/tools/gen-insn-attr-x86.awk
- arch/arm/include/uapi/asm/perf_regs.h
- arch/arm64/include/uapi/asm/perf_regs.h
-+arch/mips/include/uapi/asm/perf_regs.h
- arch/powerpc/include/uapi/asm/perf_regs.h
- arch/s390/include/uapi/asm/perf_regs.h
- arch/x86/include/uapi/asm/perf_regs.h
--- 
-2.1.0
-
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
