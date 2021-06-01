@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1883974E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6783974EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhFAOGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbhFAOGQ (ORCPT
+        id S234194AbhFAOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:06:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33110 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234145AbhFAOGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:06:16 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BCDC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 07:04:35 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id e11so19349488ljn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+XU4vzQB0ErM5xzFAql1V2srdsu5siUWOeZiFIJbDSA=;
-        b=JcB0QHJIBgCBzrXdQPP0+QjfzfghPxqbxPHwiwO+hCfZfPsBImvk6i0AXxZrOWdjuq
-         jdbvqPr1Eedlno91fEFLOwJViYUgwYveq2xzvYt1M4FFvpYy9uIXQbjP22n2AxsuGEJR
-         whj7GrSsWLA8ehBOC0raOvp2VJ3drEIzYIerGCJ2lheLIi6jMryv1j/N2YNvauji/4jS
-         83MzvvjWzF4jX0scThsjgcgHl13Wr6sk+6k5vraUTIqgqy3npMz6aWX92hHJ1vV7HL5/
-         /oTrfPvU6OYc4zOHi+hQPd4GxDUVBHrpoHqFzpzJPzkwmmrjl42uLfCl9V8aErOk4Ubt
-         5RKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+XU4vzQB0ErM5xzFAql1V2srdsu5siUWOeZiFIJbDSA=;
-        b=haItE9Q0ZCRCM8f72H0mnnxSyeo2cdaviMpUahM5mzCrPrjNId83UoHcyk4Zdnpplf
-         NWbaGWhV1IXNPPO1zn5xaMYwZgTiUiLfmhI6aTeeHeanpUFv/qk1nXxq3bMvTlKgRZdJ
-         pybBM5V7IQmsDrenuyTKs2z3FalhqNgatOfxe4URUM1jfzHvXFal6bnqlm4R6MWtioiz
-         fBtwtB/zY0wtyhw1+MZUG0ITa4RV2sLXZgRhStFk/vsLXoU6+rjD88DrcEf1P8yyq3Hb
-         dtKFnE3oRGP0mGtfXqoJa8ZK5IYP5tp9/t++eJHTI6tVzP6eWz0au1evdJBJfYc026vk
-         7x+Q==
-X-Gm-Message-State: AOAM530yOxOuEQYeK8fLBWUkUpBlTMyWtGhfRTrFN5+6cE5F2bPbhn7N
-        b2tAB+VkF9nD/C7Chs1AKklsLXU7Y6nsv2HfK5t3TiBnY7w=
-X-Google-Smtp-Source: ABdhPJxZCACE4lw5r0ugg9a6xINh5KYdHUgF5y5rascxASPQEfOUBFqflDZO3XuvwiAaKFfsMBNZNyYM2h9544/tVvM=
-X-Received: by 2002:a2e:824c:: with SMTP id j12mr21271911ljh.490.1622556273122;
- Tue, 01 Jun 2021 07:04:33 -0700 (PDT)
+        Tue, 1 Jun 2021 10:06:37 -0400
+Date:   Tue, 01 Jun 2021 14:04:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622556292;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AWI2L6s1F7+MymY4K+fcX9pXcbXpSqNZ2j3qDVj4Dco=;
+        b=MSP7vHCTraz3zC3FhN3pyE+IrFMV+t540n6loMFszQfitLIjMblmebr6NtJ3u4MKxNn2wF
+        1mxqqJl1cnEU77c+vBHyYx1DJtsSkn7lN18Bbm2pDsb1qkfBvz6LVAI8uDW0SdSsGGt00O
+        szCNjdf5fKschoGTzqazBdwPfzZ/HKGP6OJ0O1E36lYDkfhHgo1+U2YNyawR7ZEyAVaL5L
+        LhVMscT0nREX6dHRaxShwuFT/zhkO6PoGeDbo1+WP/SC4ayYVwzYB7r+YV9Fj9OfpDlIWY
+        WaOoXpHrtjlttdUvjyUL7bKhJQ+77wdIGUxkNdjdnZYbxRfDgZwR321QYO0CSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622556292;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AWI2L6s1F7+MymY4K+fcX9pXcbXpSqNZ2j3qDVj4Dco=;
+        b=CWPndis6hbGnBSAGthhW9ircbFYk4bgnQ5paNfsUgTwxZy1rIpcaLfx+WdPMHRO2vj6uYY
+        yO8MSmYfvtNIIdDQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] x86,kprobes: WARN if kprobes tries to handle a fault
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210525073213.660594073@infradead.org>
+References: <20210525073213.660594073@infradead.org>
 MIME-Version: 1.0
-References: <20210601100256.70030-1-tongtiangen@huawei.com> <DBBPR04MB7930A304416458880D69E1C7873E9@DBBPR04MB7930.eurprd04.prod.outlook.com>
-In-Reply-To: <DBBPR04MB7930A304416458880D69E1C7873E9@DBBPR04MB7930.eurprd04.prod.outlook.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 1 Jun 2021 11:04:21 -0300
-Message-ID: <CAOMZO5CKW5n4P9X5tTHGcS-MkN=gmCkyS1+bkwn98kaK2vL3-w@mail.gmail.com>
-Subject: Re: [PATCH -next] soc: imx: gpc: add check for of_match_device in imx_gpc_old_dt_init
-To:     Jacky Bai <ping.bai@nxp.com>
-Cc:     Tong Tiangen <tongtiangen@huawei.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <162255629094.29796.13447590338407313221.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 7:11 AM Jacky Bai <ping.bai@nxp.com> wrote:
+The following commit has been merged into the perf/core branch of tip:
 
-> I think there is no chance to pass 'invalid of_id' and 'of_id_data' to the probe function.
-> Such check seems not really necessary.
+Commit-ID:     00afe83098f59d3091a800d0db188ca495b2bc02
+Gitweb:        https://git.kernel.org/tip/00afe83098f59d3091a800d0db188ca495b2bc02
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 25 May 2021 09:25:20 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 01 Jun 2021 16:00:09 +02:00
 
-I agree. The only way this driver can probe is via device tree.
+x86,kprobes: WARN if kprobes tries to handle a fault
+
+With the removal of kprobe::handle_fault there is no reason left that
+kprobe_page_fault() would ever return true on x86, make sure it
+doesn't happen by accident.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lore.kernel.org/r/20210525073213.660594073@infradead.org
+---
+ arch/x86/mm/fault.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 1c548ad..362255b 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1186,7 +1186,7 @@ do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
+ 		return;
+ 
+ 	/* kprobes don't want to hook the spurious faults: */
+-	if (kprobe_page_fault(regs, X86_TRAP_PF))
++	if (WARN_ON_ONCE(kprobe_page_fault(regs, X86_TRAP_PF)))
+ 		return;
+ 
+ 	/*
+@@ -1239,7 +1239,7 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 	}
+ 
+ 	/* kprobes don't want to hook the spurious faults: */
+-	if (unlikely(kprobe_page_fault(regs, X86_TRAP_PF)))
++	if (WARN_ON_ONCE(kprobe_page_fault(regs, X86_TRAP_PF)))
+ 		return;
+ 
+ 	/*
