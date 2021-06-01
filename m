@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB44396FF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53625396FF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbhFAJJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233193AbhFAJJ2 (ORCPT
+        id S233393AbhFAJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:10:46 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6108 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233160AbhFAJKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:09:28 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D30C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:07:46 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so1051731wmk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zEt3HFPe09o0ckZsYClTr0bQexAxs0o1KqTS66rUt2k=;
-        b=Ms1+vTOLxPIDbCVEtqKP/81D25pVmVzkG6ZBvL3jBz5SbnjQXhENBBAe10jUp23Q9L
-         uu+pKMcryhb7fxcqf0YDWjSXz+txEQZQ6ZM3mjSmAlo38fk7ZrkBl6RzPLZwRsdyuo7G
-         hqJG7M17a0W6iCMIgIBR77Bmh7cXLtibBQAutqq8T4Qgsfcl1ib/J0U87R1IsOGl/Xkf
-         0m6p05hJyssvOju92ku2FYnlAGg70jHuSSQdlHEZTWeLhGjGEOOyyb8e6cXnNgTVZRmI
-         JtCLmDYmAW25+ZOafAknmXWNBgYjqOpcD3dfz3vceqgxGy75nBYfOLANCNhLXIsGEAm6
-         RE5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zEt3HFPe09o0ckZsYClTr0bQexAxs0o1KqTS66rUt2k=;
-        b=S5DQeplFF3Ubee6eGLBtnfB0PUnvPQ4RaCRWUWa3MMSCjNKR1X+UKMpUupXuiLy3Qq
-         ymKk5vEzfF/ARIcmRWL/Itos7wqJOmq0J54LLTdCQvFV8T8d1AvH3BQDdMJj81Nngvd1
-         CpLfILcqTWSeB1NRcXKG5Bt3e+DZAGOJSh8dEM5npNNHgcUGsI4uW/B2ORHKDFnB0MdH
-         ShNYNTdjy9S/qfg2AH7g26SxNGWTwCFpFRN1+rP20pbhDNZBexHyYtKL2KOVIoHijpy7
-         1Sub90AHB3HK7EyFl3rpHebfNtxHasMc32RQdJCeapm9u5eaeYRLczkMdT6Gi0vdHfgY
-         AG1g==
-X-Gm-Message-State: AOAM533fflxjkeishQHJxJ3rJEQryo4KefJ4ouKqWzYa1hPvOEwc6Vo6
-        8GweCausVfUaikqE7EvWG2wbiA==
-X-Google-Smtp-Source: ABdhPJxk5PNDiLkv3H83jVwq9zMK6clxpGewQUlMMJ+GzyN5TfeyhjT/ic08DFR7dKkW/z7fJdxWcg==
-X-Received: by 2002:a1c:e354:: with SMTP id a81mr9583848wmh.98.1622538464647;
-        Tue, 01 Jun 2021 02:07:44 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id n6sm16726370wmq.34.2021.06.01.02.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 02:07:44 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 09:07:41 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
-Message-ID: <YLX43QT+5r/4zHoP@google.com>
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
- <YKy516IKPfsZj3cY@hirez.programming.kicks-ass.net>
- <20210528050934.muji5bv7ed4k4t6j@vireshk-i7>
- <20210601084725.GA223449@e120877-lin.cambridge.arm.com>
- <20210601085628.75atoc4e34uttqqw@vireshk-i7>
+        Tue, 1 Jun 2021 05:10:44 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvR954gkWzYnSM;
+        Tue,  1 Jun 2021 17:06:17 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 17:09:01 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 17:09:00 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        "Signed-off-by : Wolfram Sang" <wsa@the-dreams.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-fbdev <linux-fbdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] video: fbdev: mb862xx: use DEVICE_ATTR_RO macro
+Date:   Tue, 1 Jun 2021 17:08:52 +0800
+Message-ID: <20210601090852.10531-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601085628.75atoc4e34uttqqw@vireshk-i7>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 01 Jun 2021 at 14:26:28 (+0530), Viresh Kumar wrote:
-> On 01-06-21, 09:47, Vincent Donnefort wrote:
-> > Seems like no one has been really convinced about the arguments in favor of
-> > keeping inefficiencies into EM :) Let me then give a shot with marking the OPPs
-> > for the next version.
-> 
-> Right, I think this is what you should do:
-> 
-> - Add another flag for OPP entries, and mark them inefficient.
-> 
-> - Whoever traverses the list to find the next frequency (cpufreq here), checks
->   that flag somehow (or replicates that to its own table) and get the right
->   frequency out.
+Use DEVICE_ATTR_RO helper instead of plain DEVICE_ATTR, which makes the
+code a bit shorter and easier to read.
 
-Just to reiterate here what was discussed on IRC the other day, I still
-feel that the choice of an efficient OPP or not is a policy decision,
-and should be left to the governor.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/video/fbdev/mb862xx/mb862xxfbdrv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-It's not obvious to me that the userspace govenor for instance wants any
-of this. Same thing with e.g. the powersave governor if the lowest OPPs
-are inefficient (yes skipping them will not impact energy, but it will
-impact instantaneous power).
+diff --git a/drivers/video/fbdev/mb862xx/mb862xxfbdrv.c b/drivers/video/fbdev/mb862xx/mb862xxfbdrv.c
+index 52755b591c1489f..63721337a37787b 100644
+--- a/drivers/video/fbdev/mb862xx/mb862xxfbdrv.c
++++ b/drivers/video/fbdev/mb862xx/mb862xxfbdrv.c
+@@ -542,8 +542,8 @@ static int mb862xxfb_init_fbinfo(struct fb_info *fbi)
+ /*
+  * show some display controller and cursor registers
+  */
+-static ssize_t mb862xxfb_show_dispregs(struct device *dev,
+-				       struct device_attribute *attr, char *buf)
++static ssize_t dispregs_show(struct device *dev,
++			     struct device_attribute *attr, char *buf)
+ {
+ 	struct fb_info *fbi = dev_get_drvdata(dev);
+ 	struct mb862xxfb_par *par = fbi->par;
+@@ -577,7 +577,7 @@ static ssize_t mb862xxfb_show_dispregs(struct device *dev,
+ 	return ptr - buf;
+ }
+ 
+-static DEVICE_ATTR(dispregs, 0444, mb862xxfb_show_dispregs, NULL);
++static DEVICE_ATTR_RO(dispregs);
+ 
+ static irqreturn_t mb862xx_intr(int irq, void *dev_id)
+ {
+-- 
+2.26.0.106.g9fadedd
 
-So if we're going to move that logic to the cpufreq core, then we'll
-probably want two separate APIs and make sure to use the effiency-aware
-one is used only from the places where that makes sense.
 
-Thanks,
-Quentin
