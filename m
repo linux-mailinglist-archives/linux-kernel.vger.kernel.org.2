@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0269C397751
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2B539775A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhFAQAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFAQAP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:00:15 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F6BC061574;
-        Tue,  1 Jun 2021 08:58:33 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id z8so9787956wrp.12;
-        Tue, 01 Jun 2021 08:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BrgqyCEt8bgKgbuweog7fGLbyNRK5WZlLkrdHFGteoY=;
-        b=tk1vS40M/iuFNpl2m3N4uP1bYv4WBYNe/nMHv6sfeV9UeISzXkXN1TGSPq6QX7GWR7
-         XAhrXJx8cL6ynZ/2UuDUkAUL9I00Z5fCiVCY/3+XElDdpTTEtsiw6ANzWWUad0FIH7o7
-         M3PQfU1/OlClSK6ZgQpVWITRk8dIL8oEKeaYvu2aVAMr4bZVFLbd7qUt3yHP6b0sWcgO
-         Fmv+HVRn++na14GA8TqOgFwuqvoow1FEOruxZ5zHB6Q5POebetg+sE+pLO6TjheVgbRg
-         cxGJgbHXHCyzuji5kBZFVd/h8jn6H0PPqcrVY+AXfpgt/mOKT3IrmAIEIxpSkmkilcoP
-         efUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BrgqyCEt8bgKgbuweog7fGLbyNRK5WZlLkrdHFGteoY=;
-        b=sK6XafMmnqoTnET7IP6ERn5+Y9TR3xgtAY3CJeWWSLh3ai90IhhDBaliP84CJ4QUP2
-         +Jbu22P2evuZcIibFHKuWwL1BaBdTUm9BoxAXV744b9dV/u4efN1uPNhu/LfblGEJuG9
-         tg4AKDzn/DpDrQEvlo6fuYhrlthc5uIOZO3y60LE/uQTiq5PRK3CmB1+43FSt0s3CgUS
-         ummsK71r0Tu4KSgIhLwle4147Oc/MfVXCW4S/PJEKQEx+S+7rtV8TeDbFUtGYgCzfFjT
-         W1yhhOfMZz2c4F625jPs05dbLBPjj3YB6xG3bPBXWM//YO1JZDv12RQWd0S+sLckSCyd
-         qf/Q==
-X-Gm-Message-State: AOAM531nOkUpwkguXmR8FE7BmatmSpx2WSmhp2bCWEg/Lu0eoV9B5trA
-        612GI8pVh+/mZILdq8+LDdgSjuPSdg9KMw==
-X-Google-Smtp-Source: ABdhPJw2AN3Yjjm2+FQnelUHEMloiXSFvgf1nviGdM3vWhPjxkM3I92u+O75pTIeszCKWANXtP1j2Q==
-X-Received: by 2002:a5d:68ca:: with SMTP id p10mr4557011wrw.65.1622563111576;
-        Tue, 01 Jun 2021 08:58:31 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.237.139])
-        by smtp.gmail.com with ESMTPSA id a4sm18779928wme.45.2021.06.01.08.58.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 08:58:31 -0700 (PDT)
-Subject: Re: [RFC 4/4] io_uring: implement futex wait
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     Andres Freund <andres@anarazel.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org
-References: <cover.1622558659.git.asml.silence@gmail.com>
- <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
- <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
-Date:   Tue, 1 Jun 2021 16:58:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S234346AbhFAQBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:01:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:53250 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232490AbhFAQBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 12:01:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53C1C101E;
+        Tue,  1 Jun 2021 08:59:35 -0700 (PDT)
+Received: from [10.57.73.64] (unknown [10.57.73.64])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 356943F719;
+        Tue,  1 Jun 2021 08:59:34 -0700 (PDT)
+Subject: Re: [PATCH 3/4] iommu/amd: Do not sync on page size changes
+To:     Nadav Amit <nadav.amit@gmail.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, Nadav Amit <namit@vmware.com>,
+        Jiajun Cao <caojiajun@vmware.com>, linux-kernel@vger.kernel.org
+References: <20210502070001.1559127-1-namit@vmware.com>
+ <20210502070001.1559127-5-namit@vmware.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <f00bd0ce-e4a7-93c6-39ae-db19779b9331@arm.com>
+Date:   Tue, 1 Jun 2021 16:59:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210502070001.1559127-5-namit@vmware.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 4:45 PM, Jens Axboe wrote:
-> On 6/1/21 8:58 AM, Pavel Begunkov wrote:
->> Add futex wait requests, those always go through io-wq for simplicity.
+On 2021-05-02 07:59, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
 > 
-> Not a huge fan of that, I think this should tap into the waitqueue
-> instead and just rely on the wakeup callback to trigger the event. That
-> would be a lot more efficient than punting to io-wq, both in terms of
-> latency on trigger, but also for efficiency if the app is waiting on a
-> lot of futexes.
+> Some IOMMU architectures perform invalidations regardless of the page
+> size. In such architectures there is no need to sync when the page size
+> changes or to regard pgsize when making interim flush in
+> iommu_iotlb_gather_add_page().
+> 
+> Add a "ignore_gather_pgsize" property for each IOMMU-ops to decide
+> whether gather's pgsize is tracked and triggers a flush.
 
-Yes, that would be preferable, but looks futexes don't use
-waitqueues but some manual enqueuing into a plist_node, see
-futex_wait_queue_me() or mark_wake_futex().
-Did I miss it somewhere?
+I've objected before[1], and I'll readily object again ;)
 
--- 
-Pavel Begunkov
+I still think it's very silly to add a bunch of indirection all over the 
+place to make a helper function not do the main thing it's intended to 
+help with. If you only need trivial address gathering then it's far 
+simpler to just implement trivial address gathering. I suppose if you 
+really want to you could factor out another helper to share the 5 lines 
+of code which ended up in mtk-iommu (see commit f21ae3b10084).
+
+Robin.
+
+[1] 
+https://lore.kernel.org/linux-iommu/49bae447-d662-e6cf-7500-ab78e3b75dc4@arm.com/
+
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Jiajun Cao <caojiajun@vmware.com>
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> ---
+>   drivers/iommu/amd/iommu.c | 1 +
+>   include/linux/iommu.h     | 3 ++-
+>   2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index b8cabbbeed71..1849b53f2149 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -2215,6 +2215,7 @@ const struct iommu_ops amd_iommu_ops = {
+>   	.put_resv_regions = generic_iommu_put_resv_regions,
+>   	.is_attach_deferred = amd_iommu_is_attach_deferred,
+>   	.pgsize_bitmap	= AMD_IOMMU_PGSIZES,
+> +	.ignore_gather_pgsize = true,
+>   	.flush_iotlb_all = amd_iommu_flush_iotlb_all,
+>   	.iotlb_sync = amd_iommu_iotlb_sync,
+>   	.def_domain_type = amd_iommu_def_domain_type,
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 32d448050bf7..1fb2695418e9 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -284,6 +284,7 @@ struct iommu_ops {
+>   	int (*def_domain_type)(struct device *dev);
+>   
+>   	unsigned long pgsize_bitmap;
+> +	bool ignore_gather_pgsize;
+>   	struct module *owner;
+>   };
+>   
+> @@ -508,7 +509,7 @@ static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
+>   	 * a different granularity, then sync the TLB so that the gather
+>   	 * structure can be rewritten.
+>   	 */
+> -	if (gather->pgsize != size ||
+> +	if ((gather->pgsize != size && !domain->ops->ignore_gather_pgsize) ||
+>   	    end + 1 < gather->start || start > gather->end + 1) {
+>   		if (gather->pgsize)
+>   			iommu_iotlb_sync(domain, gather);
+> 
