@@ -2,167 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54803970C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505793970AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbhFAJ7p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Jun 2021 05:59:45 -0400
-Received: from smtp.asem.it ([151.1.184.197]:53860 "EHLO smtp.asem.it"
+        id S232924AbhFAJy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:54:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:45498 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232173AbhFAJ7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:59:42 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Jun 2021 05:59:41 EDT
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 8.0.0)
-        with ESMTP id 83bc53ab63c74599b705a2029c7a2fe7.MSG
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:52:55 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
- 2021 11:52:55 +0200
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.2176.009; Tue, 1 Jun 2021 11:52:55 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Michael Walle <michael@walle.cc>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-        "richard@nod.at" <richard@nod.at>,
-        "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
-        "vigneshr@ti.com" <vigneshr@ti.com>,
-        "Pratyush Yadav" <p.yadav@ti.com>
-Subject: RE: [PATCH v1] mtd: spi-nor: add ACPI support for non-JEDEC SPI-NOR
-Thread-Topic: [PATCH v1] mtd: spi-nor: add ACPI support for non-JEDEC SPI-NOR
-Thread-Index: AQHW8/DSQFilXQ1vXUSgmqjMFBEDbqr92CQAgAHUbcA=
-Date:   Tue, 1 Jun 2021 09:52:55 +0000
-Message-ID: <67ad7c365fa749209eab5ddae7f8ce80@asem.it>
-References: <20210126143748.1546187-1-f.suligoi@asem.it>
- <20210531074424.16086-1-michael@walle.cc>
-In-Reply-To: <20210531074424.16086-1-michael@walle.cc>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S230323AbhFAJyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:54:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DBD011D4;
+        Tue,  1 Jun 2021 02:53:14 -0700 (PDT)
+Received: from [10.57.9.215] (unknown [10.57.9.215])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B215B3F73D;
+        Tue,  1 Jun 2021 02:53:11 -0700 (PDT)
+Subject: Re: [PATCH v1 1/3] coresight: etm-perf: Correct buffer syncing for
+ snapshot
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20210528161552.654907-1-leo.yan@linaro.org>
+ <20210528161552.654907-2-leo.yan@linaro.org>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <f29d2d68-2735-dddf-b872-6163d1dbc8f0@arm.com>
+Date:   Tue, 1 Jun 2021 12:53:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F24.60B60377.0096,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+In-Reply-To: <20210528161552.654907-2-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
 
-...
-> 
-> > In a x86 machine, an additional device can be described
-> > inside the BIOS ACPI tables.
-> > For example, an I2C GPIO expander, a LED, etc.,
-> > can be successfully declared in ACPI, so that the related
-> > device driver can start automatically at the boot.
-> >
-> > But for the SPI NOR devices, the ACPI description works
-> > for JEDEC-compatible devices only.
-> >
-> > For example, an Everspin MR25H40 MRAM device (non-JEDEC
-> > compatible), declared using the following table,
-> > does not work:
-> >
-> >     Scope (\_SB.SPI1)
-> >     {
-> >         Device (NVR0)
-> >         {
-> >             Name (_HID, "PRP0001")
-> >             Name (_DDN, "Everspin MR25H40 MRAM")
-> >             Name (_CRS, ResourceTemplate () {
-> >                 SpiSerialBus (
-> >                 1,                      // Chip select
-> >                 PolarityLow,            // Chip select is active low
-> >                 FourWireMode,           // Full duplex
-> >                 8,                      // Bits per word is 8 (byte)
-> >                 ControllerInitiated,    // Don't care
-> >                 10000000,               // 10 MHz
-> >                 ClockPolarityLow,       // SPI mode 0 ClockPolarityLow
-> >                 ClockPhaseFirst,        // SPI mode 0 ClockPhaseFirst
-> >                 "\\_SB.SPI1",           // SPI host controller
-> >                 0,                      // Must be 0
-> >                 ResourceConsumer,
-> >                 ,
-> >                 )
-> >             })
-> >
-> >             Name (_DSD, Package () {
-> >                 ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> >                 Package () {
-> >                     Package () {"compatible", "mr25h40"},
-> >                 }
-> >             })
-> >         }
-> >     }
-> 
-> This isn't the correct compatible string, according to the devicetree
-> binding [1], there is no compatible = "mr25h40" binding. The correct entry
-> would be
->  compatible = "everspin,mr25h40", "jedec,spi-nor";
-> 
-> I'm not familiar with ACPI and don't know wether you can specify a list,
-> nor am I convinced that it will work then. But it should be worth a try.
 
-It works on our board with our custom BIOS.
-I'm currently use this patch for the kernel of our x86 machines.
-And that's is the only way I've found to describe the mr25h40 MRAM
-presence in our BIOS.
-Obviously, it works because of the above ACPI description is built-in
-inside the custom BIOS of our boards.
-Note that the mr25h40 is NOT jedec compatible.
-
+On 28/05/2021 19:15, Leo Yan wrote:
+> The perf tool records the Arm CoreSight trace data with snapshot mode
+> with the option '-S', when receiving USR2 signal, it is observed the
+> captured trace data size is very varied: from several MBs to ~20MBs.
+> This can be reproduced with the command:
 > 
-> [1] Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+>   perf record -e cs_etm// -S \
+> 	-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
+>   PERFPID=$!
+>   sleep 1
+>   kill -USR2 $PERFPID
 > 
-> >
-> > To enable the detection of a non-JEDEC device described
-> > in a BIOS ACPI table, it is necessary to add its id name
-> > in the spi_nor_of_table structure.
-> > With this change, all the SPI NOR devices (JEDEC and
-> > non-JEDEC) can be detected by the kernel (and the above
-> > example of ACPI table finally works).
-> >
-> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 6ae7d4c2d2b6..b6fb8b15c439 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -3755,6 +3755,19 @@ static const struct of_device_id
-> spi_nor_of_table[] = {
-> >  	 * JEDEC READ ID opcode (0x9F). Use this, if possible.
-> >  	 */
-> >  	{ .compatible = "jedec,spi-nor" },
-> > +	{ .compatible = "m25p05-nonjedec" },
-> > +	{ .compatible = "m25p10-nonjedec" },
-> > +	{ .compatible = "m25p20-nonjedec" },
-> > +	{ .compatible = "m25p40-nonjedec" },
-> > +	{ .compatible = "m25p80-nonjedec" },
-> > +	{ .compatible = "m25p16-nonjedec" },
-> > +	{ .compatible = "m25p32-nonjedec" },
-> > +	{ .compatible = "m25p64-nonjedec" },
-> > +	{ .compatible = "m25p128-nonjedec" },
-> > +	{ .compatible = "mr25h128" },
-> > +	{ .compatible = "mr25h256" },
-> > +	{ .compatible = "mr25h10" },
-> > +	{ .compatible = "mr25h40" },
-> >  	{ /* sentinel */ },
-> >  };
-> >  MODULE_DEVICE_TABLE(of, spi_nor_of_table);
-> > --
-> > 2.25.1
+> It's different for only specifying option '-S' than options '-a -S'.  If
+> without option '-a', perf tool creates separate AUX buffers for every
+> CPU, but the tracer will be enabled only when the profiled program is
+> scheduled onto the corresponding CPU, this might lead to record very
+> old trace data when snapshot.
+> 
+> Let's see below diagram:
+>                                                             snapshot
+>   CPU0: ______###P1###__________________________________________|
+>   CPU1: __________________________###P3###____________###P5###__|
+>   CPU2: ____________________________________###P4###____________|
+>   CPU3: ________________###P2###________________________________V
+> 
+> In this diagram, the program runs for 5 periods (from P1 to P5), these 5
+> periods show the task run on different CPUs, e.g. during P1 period the
+> program runs on CPU0, and during P2 period the program is migrated to
+> CPU1, and so on.  At the end of P1 period when the program is switched
+> out from CPU0, the ETR trace data is saved into AUX trace buffer, this
+> AUX buffer is a dedicated buffer for CPU0's tracer.  With the same
+> logic, P2's trace data is saved into CPU3's tracer buffer, P4's trace
+> data is saved into CPU2's buffer, P3 and P5's trace data is saved into
+> CPU1's.  Therefore, when snapshot, it saves the trace data from all AUX
+> ring buffers (in this case, it have total 4 AUX ring buffers) into perf
+> data file.
 
-Thank you very much for your suggestions,
-Flavio
+Hi Leo,
+
+I was testing out snapshot mode (without your patch) and I noticed that it
+only ever collects from the last CPU. For example on a 4 core system,
+the CPU ID of the AUX records and the AUXTRACE buffers is always 3.
+
+This is with systemwide tracing, and running "stress -m 2 -c 2".
+Is this something that your patch fixes, or am I doing something wrong, or
+is it just a coincidence?
+
+Here's a snippet of the output:
+
+	./perf report -D | grep AUX
+	0 0 0x200 [0x168]: PERF_RECORD_AUXTRACE_INFO type: 3
+	0 0 0x152248 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0  ref: 0x75e0bdc44ea1bb65  idx: 3  tid: -1  cpu: 3
+	3 583600975364460 0x152160 [0x40]: PERF_RECORD_AUX offset: 0x400000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x55c950 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x400000  ref: 0x6f506d2d02841da4  idx: 3  tid: -1  cpu: 3
+	3 583602209157460 0x55c908 [0x40]: PERF_RECORD_AUX offset: 0x800000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x9624d8 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x800000  ref: 0x2d83d30161e1117a  idx: 3  tid: -1  cpu: 3
+	3 583602526365800 0x962490 [0x40]: PERF_RECORD_AUX offset: 0xc00000 size: 0x400000 flags: 0x2 [O]
+	0 0 0xd65f00 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0xc00000  ref: 0x5013e6e2a3c97c9  idx: 3  tid: -1  cpu: 3
+	3 583602714310320 0xd65eb8 [0x40]: PERF_RECORD_AUX offset: 0x1000000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x1169be8 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1000000  ref: 0x67b37e157f843269  idx: 3  tid: -1  cpu: 3
+	3 583602874193840 0x1169ba0 [0x40]: PERF_RECORD_AUX offset: 0x1400000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x156d550 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1400000  ref: 0x3cb268b926f22d41  idx: 3  tid: -1  cpu: 3
+	3 583603044203980 0x156d508 [0x40]: PERF_RECORD_AUX offset: 0x1800000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x1971238 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1800000  ref: 0x4905e0a21d5d35d7  idx: 3  tid: -1  cpu: 3
+	3 583603211393440 0x19711f0 [0x40]: PERF_RECORD_AUX offset: 0x1c00000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x1d747e0 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1c00000  ref: 0x4f8f48007f7d70e7  idx: 3  tid: -1  cpu: 3
+	3 583603362643100 0x1d74798 [0x40]: PERF_RECORD_AUX offset: 0x2000000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x2178368 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x2000000  ref: 0x770d07213be2d29a  idx: 3  tid: -1  cpu: 3
+	3 583603526029900 0x2178320 [0x40]: PERF_RECORD_AUX offset: 0x2400000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x257bfb0 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x2400000  ref: 0x2e4ed1454815c13e  idx: 3  tid: -1  cpu: 3
+	3 583603687951260 0x257bf68 [0x40]: PERF_RECORD_AUX offset: 0x2800000 size: 0x400000 flags: 0x2 [O]
+	0 0 0x297fb18 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x2800000  ref: 0x644eba01d391129  idx: 3  tid: -1  cpu: 3
+
+Thanks
+James
