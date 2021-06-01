@@ -2,138 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5BF396EBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B30E396EB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhFAIVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:21:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233406AbhFAIVQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:21:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622535575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S233421AbhFAIVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:21:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55264 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233295AbhFAIVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:21:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622535566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7PN8OYvVf5PYlxGFSvbIGKPtNNYZewqVjzezwL1VmKA=;
-        b=H/IrEUeSwuCMt7XOdptFpIv3WhXniDQBjHEDfmFxYerie4QHh8AJta0dSXhwKso5Yi/4yt
-        qGo7L9ny+MBlIG5QhnGj8j0CEtWpxbtUOFFjpGtYQF80W78Lis9k7D60W31QgZAg26Db+b
-        uG4iAm4EfOQ/mgKY9q9hU+qDGpU5u3g=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-okcQSou3MzmTO_EcxcT3IA-1; Tue, 01 Jun 2021 04:19:34 -0400
-X-MC-Unique: okcQSou3MzmTO_EcxcT3IA-1
-Received: by mail-wm1-f71.google.com with SMTP id z25-20020a1c4c190000b029019f15b0657dso287742wmf.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:19:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=7PN8OYvVf5PYlxGFSvbIGKPtNNYZewqVjzezwL1VmKA=;
-        b=I49JhfCjBTyFwl+3UwQSd0kwKoE4eHRsMd03N0xbmFPu/GkQO/+mMBsX0gOq9RLjyX
-         c9hJY7OFdPhREFRH/N9QZU+jYAsqi3/6TuDyvxL7EXX4g88AdJWm1Af9sA6DviPr0+4K
-         pVb9H7VqXYk9VWJLDG9iCSdNTIGKOMZDgdY66yjyUybC5b6I8eJwBGsxCp1KAkenhv4M
-         CM3FJLsn1lypr1lNJwNncTcuiCsr4YFO0Iv/UXE8xZL0+c/9Buu9mRSOAvvMY4YIknfR
-         PzmAd7gU2UwNvS/0pk3lOp/zzEQvAAOjc3NqW8i4eq8ppTdTBlf6r1ZIovuGxomQuwCY
-         8v8A==
-X-Gm-Message-State: AOAM532xcUbr0bDW9rz7P5LtAG93ofq0H8I6JVK/gogROUaFqEnvbuzB
-        T/vfXUAoKcbD0BEqHNYPetFornM3KIWTIr/jzWJUDX6/Jtc1bojd1WjCzx4At65v54LptuE8dDW
-        TUQ2nRNzVEEWtvlBn4rqYn8XH
-X-Received: by 2002:adf:a28c:: with SMTP id s12mr27767491wra.105.1622535572881;
-        Tue, 01 Jun 2021 01:19:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRcEWrovG4h2mJ73cBwCYtUMmKAdj1CXv3zAIs/79bVgymoxh5ufpS3HJPneHupP7bqrV9Nw==
-X-Received: by 2002:adf:a28c:: with SMTP id s12mr27767482wra.105.1622535572730;
-        Tue, 01 Jun 2021 01:19:32 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c69ce.dip0.t-ipconnect.de. [91.12.105.206])
-        by smtp.gmail.com with ESMTPSA id m132sm903398wmf.10.2021.06.01.01.19.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 01:19:32 -0700 (PDT)
-Subject: Re: [PATCH V2 2/6] mm/sparse: free section usage memory in case
- populate_section_memmap failed
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
- <20210531091908.1738465-3-aisheng.dong@nxp.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <953557a5-f5cf-8780-ec60-73bff418650e@redhat.com>
-Date:   Tue, 1 Jun 2021 10:19:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=l0j051AAXi+uzGkChemQvG7BEpNZnRrIFj2OzSLlI3Y=;
+        b=cmrRZE9cjm8oKpwXCtF/3k4iwcLAKZFAziGXWMUjBo6zBfNDeVb3Gnub6dVHzBJ4s76mfo
+        Z1JebDGI1ePsKrGx9/JwmJHszkB131LelEGxekAXJtIRMHpZkZcPdw5h4EbtFnzmDIenaM
+        28DwnIwvUZqcm64/8Cxs1fgzHrSgJcU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ED39EACB1;
+        Tue,  1 Jun 2021 08:19:25 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 10:19:25 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [v3 PATCH 1/3] mm/mempolicy: cleanup nodemask intersection check
+ for oom
+Message-ID: <YLXtjRYUcaXcYfua@dhcp22.suse.cz>
+References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
+ <1622469956-82897-2-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210531091908.1738465-3-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622469956-82897-2-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.05.21 11:19, Dong Aisheng wrote:
-> Free section usage memory in case populate_section_memmap failed.
-> We use map_count to track the remain unused memory to be freed.
+On Mon 31-05-21 22:05:54, Feng Tang wrote:
+> mempolicy_nodemask_intersects() is used in oom case to check if a
+> task may have memory allocated on some memory nodes.
 > 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
-> ChangeLog:
-> v1->v2:
->   * using goto + lable according to Mike's suggestion
-> ---
->   mm/sparse.c | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
+> As it's only used by OOM check, rename it to mempolicy_in_oom_domain()
+> to reduce confusion.
 > 
-> diff --git a/mm/sparse.c b/mm/sparse.c
-> index 7ac481353b6b..408b737e168e 100644
-> --- a/mm/sparse.c
-> +++ b/mm/sparse.c
-> @@ -533,7 +533,7 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
->   			mem_section_usage_size() * map_count);
->   	if (!usage) {
->   		pr_err("%s: node[%d] usemap allocation failed", __func__, nid);
-> -		goto failed;
-> +		goto failed1;
->   	}
->   	sparse_buffer_init(map_count * section_map_size(), nid);
->   	for_each_present_section_nr(pnum_begin, pnum) {
-> @@ -548,17 +548,20 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
->   			pr_err("%s: node[%d] memory map backing failed. Some memory will not be available.",
->   			       __func__, nid);
->   			pnum_begin = pnum;
-> -			sparse_buffer_fini();
-> -			goto failed;
-> +			goto failed2;
->   		}
->   		check_usemap_section_nr(nid, usage);
->   		sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
->   				SECTION_IS_EARLY);
->   		usage = (void *) usage + mem_section_usage_size();
-> +		map_count--;
->   	}
->   	sparse_buffer_fini();
->   	return;
-> -failed:
-> +failed2:
-> +	sparse_buffer_fini();
-> +	memblock_free_early(__pa(usage), map_count * mem_section_usage_size());
-> +failed1:
->   	/* We failed to allocate, mark all the following pnums as not present */
->   	for_each_present_section_nr(pnum_begin, pnum) {
->   		struct mem_section *ms;
-> 
+> As only for 'bind' policy, the nodemask is a force requirement for
+> from where to allocate memory, only do the intesection check for it,
+> and return true for all other policies.
 
-I still don't think we need this. Did you even manage to trigger this to 
-test your patch?
+I would slightly rephrase the above to
+"
+mempolicy_nodemask_intersects seem to be a general purpose mempolicy
+function. In fact it is partially tailored for the OOM purpose instead.
+The oom proper is the only existing user so rename the function to make
+that purpose explicit.
+
+While at it drop the MPOL_INTERLEAVE as those allocations never has a
+nodemask defined (see alloc_page_interleave) so this is a dead code
+and a confusing one because MPOL_INTERLEAVE is a hint rather than a hard
+requirement so it shouldn't be considered during the OOM.
+
+The final code can be reduced to a check for MPOL_BIND which is the only
+memory policy that is a hard requirement and thus relevant to a
+constrained OOM logic.
+"
+
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
+
+To the change itself
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  include/linux/mempolicy.h |  2 +-
+>  mm/mempolicy.c            | 34 +++++++++-------------------------
+>  mm/oom_kill.c             |  2 +-
+>  3 files changed, 11 insertions(+), 27 deletions(-)
+> 
+> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+> index 5f1c74d..8773c55 100644
+> --- a/include/linux/mempolicy.h
+> +++ b/include/linux/mempolicy.h
+> @@ -150,7 +150,7 @@ extern int huge_node(struct vm_area_struct *vma,
+>  				unsigned long addr, gfp_t gfp_flags,
+>  				struct mempolicy **mpol, nodemask_t **nodemask);
+>  extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
+> -extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+> +extern bool mempolicy_in_oom_domain(struct task_struct *tsk,
+>  				const nodemask_t *mask);
+>  extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
+>  
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index d79fa29..6795a6a 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -2094,16 +2094,16 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+>  #endif
+>  
+>  /*
+> - * mempolicy_nodemask_intersects
+> + * mempolicy_in_oom_domain
+>   *
+> - * If tsk's mempolicy is "default" [NULL], return 'true' to indicate default
+> - * policy.  Otherwise, check for intersection between mask and the policy
+> - * nodemask for 'bind' or 'interleave' policy.  For 'preferred' or 'local'
+> - * policy, always return true since it may allocate elsewhere on fallback.
+> + * If tsk's mempolicy is "bind", check for intersection between mask and
+> + * the policy nodemask. Otherwise, return true for all other policies
+> + * including "interleave", as a tsk with "interleave" policy may have
+> + * memory allocated from all nodes in system.
+>   *
+>   * Takes task_lock(tsk) to prevent freeing of its mempolicy.
+>   */
+> -bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+> +bool mempolicy_in_oom_domain(struct task_struct *tsk,
+>  					const nodemask_t *mask)
+>  {
+>  	struct mempolicy *mempolicy;
+> @@ -2111,29 +2111,13 @@ bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+>  
+>  	if (!mask)
+>  		return ret;
+> +
+>  	task_lock(tsk);
+>  	mempolicy = tsk->mempolicy;
+> -	if (!mempolicy)
+> -		goto out;
+> -
+> -	switch (mempolicy->mode) {
+> -	case MPOL_PREFERRED:
+> -		/*
+> -		 * MPOL_PREFERRED and MPOL_F_LOCAL are only preferred nodes to
+> -		 * allocate from, they may fallback to other nodes when oom.
+> -		 * Thus, it's possible for tsk to have allocated memory from
+> -		 * nodes in mask.
+> -		 */
+> -		break;
+> -	case MPOL_BIND:
+> -	case MPOL_INTERLEAVE:
+> +	if (mempolicy && mempolicy->mode == MPOL_BIND)
+>  		ret = nodes_intersects(mempolicy->v.nodes, *mask);
+> -		break;
+> -	default:
+> -		BUG();
+> -	}
+> -out:
+>  	task_unlock(tsk);
+> +
+>  	return ret;
+>  }
+>  
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index eefd3f5..fcc29e9 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -104,7 +104,7 @@ static bool oom_cpuset_eligible(struct task_struct *start,
+>  			 * mempolicy intersects current, otherwise it may be
+>  			 * needlessly killed.
+>  			 */
+> -			ret = mempolicy_nodemask_intersects(tsk, mask);
+> +			ret = mempolicy_in_oom_domain(tsk, mask);
+>  		} else {
+>  			/*
+>  			 * This is not a mempolicy constrained oom, so only
+> -- 
+> 2.7.4
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Michal Hocko
+SUSE Labs
