@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DD5396D42
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F72396D45
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232906AbhFAGYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 02:24:46 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3363 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhFAGYn (ORCPT
+        id S232997AbhFAGY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 02:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232516AbhFAGYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 02:24:43 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FvMSQ16pDz67Qt;
-        Tue,  1 Jun 2021 14:19:18 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 14:22:59 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 14:22:58 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] of: unittest: Use DEFINE_RES_MEM() to simplify code
-Date:   Tue, 1 Jun 2021 14:22:23 +0800
-Message-ID: <20210601062223.9724-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Tue, 1 Jun 2021 02:24:53 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73BEC061574;
+        Mon, 31 May 2021 23:23:11 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id 11so2816913plk.12;
+        Mon, 31 May 2021 23:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9w3VBsyynBzvrOKhGUnor+2tF9n4dKvU0meQmd4evY=;
+        b=W4LHJGrOxmR9j6iCI+qXHFE0u44HsMkEPSrrEziVpXFsxYWySDL75LZQzT+eozQx6/
+         P8LxHQ5OcolPa8nnCg84G8q8lEuhN3sQtaXAEoIMKiECXWrX5Vuw3h4AHSktWZjfXT3k
+         GOKZ0H0zkcANaZBcbker5dcVfOvLYKdCyfXLoDJp37S9pO8j43wTpw0HSoIiilA472e8
+         lUiH99RrUo829uszk+oFNeq6ezF9ZkpTUWhsSaQGJb0GLvo4XJD5RW65i1NKgEZ5dLdC
+         5TQBZGZWAP2c+ZS749kKFePyP69Nwzx2DPvyhAXBMdUg1OrSZQXOMSJ2NweUTxt6SIg+
+         3ANQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9w3VBsyynBzvrOKhGUnor+2tF9n4dKvU0meQmd4evY=;
+        b=j38q2CoWws7g3rZfysiUDgmaiIrCYMAGzeQG6PFKJeTIlAfAvA4lhSL2yzuFMlg9vm
+         5ELTXOngZyXK4x8pDssqAR7TQcZ8qZzWLw63Pz2znoZiXINo6vCBwOiAe+1rCLrekBtu
+         x4VDFXrHGNowZYttZe2YBr9ieP4fQFeampUclaB3Gcb5j0wuDZKCB2g7MXxvp1wR1Cfo
+         sL77gw0mGI03Z7EsDtiA7ewEwghI9TAV0jYcBCSraV1xxh0WGvyI81UO2yTaCWbWPFBe
+         F6HggYbJPkumXQQeQQq9VnKeZWkWrqlyBqSC2IUTozdmp9KGtqBbjwRb0Ff0Jhae1jhL
+         GJvg==
+X-Gm-Message-State: AOAM53147+NnAPb8qZN6L+jaYIaazjFexQfedBBM4vm5SZcD6lqoRZk8
+        SIAJ1HPD6wYkH5yaudVQoNk=
+X-Google-Smtp-Source: ABdhPJxdBCBt6kjcsuYhTACpiaI01k2nCclazEEWA4VvIVS22YbO1VZ/TPZyZ/KCQQgJxi56faaOqw==
+X-Received: by 2002:a17:902:f68c:b029:102:e6b5:f8c8 with SMTP id l12-20020a170902f68cb0290102e6b5f8c8mr12494108plg.70.1622528591450;
+        Mon, 31 May 2021 23:23:11 -0700 (PDT)
+Received: from bobo.ibm.com (60-241-69-122.static.tpgi.com.au. [60.241.69.122])
+        by smtp.gmail.com with ESMTPSA id h1sm12519100pfh.72.2021.05.31.23.23.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 23:23:11 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        Anton Blanchard <anton@ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v3 0/4] shoot lazy tlbs
+Date:   Tue,  1 Jun 2021 16:22:59 +1000
+Message-Id: <20210601062303.3932513-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional change.
+There haven't been objections to the series since last posting, this
+is just a rebase and tidies up a few comments minor patch rearranging.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/of/unittest.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Thanks,
+Nick
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index 819a20acaa93986..8c056972a6ddc72 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -1209,11 +1209,7 @@ static void __init of_unittest_match_node(void)
- 	}
- }
- 
--static struct resource test_bus_res = {
--	.start = 0xfffffff8,
--	.end = 0xfffffff9,
--	.flags = IORESOURCE_MEM,
--};
-+static struct resource test_bus_res = DEFINE_RES_MEM(0xfffffff8, 2);
- static const struct platform_device_info test_bus_info = {
- 	.name = "unittest-bus",
- };
+Nicholas Piggin (4):
+  lazy tlb: introduce lazy mm refcount helper functions
+  lazy tlb: allow lazy tlb mm switching to be configurable
+  lazy tlb: shoot lazies, a non-refcounting lazy tlb option
+  powerpc/64s: enable MMU_LAZY_TLB_SHOOTDOWN
+
+ arch/Kconfig                         | 38 ++++++++++++
+ arch/arm/mach-rpc/ecard.c            |  2 +-
+ arch/powerpc/Kconfig                 |  1 +
+ arch/powerpc/kernel/smp.c            |  2 +-
+ arch/powerpc/mm/book3s64/radix_tlb.c |  4 +-
+ fs/exec.c                            |  4 +-
+ include/linux/sched/mm.h             | 20 +++++++
+ kernel/cpu.c                         |  2 +-
+ kernel/exit.c                        |  2 +-
+ kernel/fork.c                        | 52 ++++++++++++++++
+ kernel/kthread.c                     | 11 ++--
+ kernel/sched/core.c                  | 88 ++++++++++++++++++++--------
+ kernel/sched/sched.h                 |  4 +-
+ 13 files changed, 192 insertions(+), 38 deletions(-)
+
 -- 
-2.26.0.106.g9fadedd
-
+2.23.0
 
