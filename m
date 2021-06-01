@@ -2,99 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7DA397130
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93306397141
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhFAKSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhFAKSV (ORCPT
+        id S232752AbhFAKSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:18:38 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39572 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhFAKSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:18:21 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208CBC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:16:40 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id a5so20969892lfm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9JgJKLG77oA4fsPfmhV/22/+J8paV7JGFmptd3FIW44=;
-        b=sl+L5T4gBDijTK/6PvXm02T1i8WN8JiAWYOScypKiijXgVP6N1crIeVt+wWGBXXFDH
-         3bj7Vv2phMrmsLD6ekzlzlzgtg2MgXSKL/DL63Y3EGZnDOsTqKgLIRO7b2umrlTw7std
-         GWGZhhGmbTAdUS6Dv8FSjCuGB7AjPT0R9XNIoF13jT7jKHHc1epZX0edVkf0ldfOuGMo
-         w0hFrTRebe8kTg5hCXmkUHuC/HgJQqiM6NB06D1hzudz1sJotMH4RxG6uEuf/CvkMs/+
-         oQe44XFiI/94UDn7W448kquuUxis6Cae4rc3z8SkQmHKh30VUpteVsP4C5Lh02HTEguu
-         g3tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9JgJKLG77oA4fsPfmhV/22/+J8paV7JGFmptd3FIW44=;
-        b=ZUC5SUdGecmbcey5hsiYOSnNBs2++2HUz0QqkkPsRDVMdDbae05mwWkwijIQajHJ/v
-         DbrQoAN9Y8wBxvP0PiACVXm92sW6pzOBN7V3qgynvDBJbG1ndZzApRo9UVSkmyo8A6fX
-         w2PELGSB5nqhlLbBonvV9b8xkHRiiObQ88w3yFZhG5grum5liWhpAj75/eOcYIlIYmHe
-         kSQUWf5SFqjYgrkDCX8CwjF2Zn/gGCtPDS4xmPQuHX1kW/jHK+1HF3A6KmxAJgISyh6d
-         ajUDBqgMQ6nyptU2Bu5WHXn2QNZDuSS2/CXBR3g1DdspJ7mqh72Yqr9wFferJfdtwZQU
-         nYKQ==
-X-Gm-Message-State: AOAM530dwumKMCMGUP05hA0M1oXet6Pm09Y1urTrNHj+c4MhDR1bAGvJ
-        0LxdztT9LCmS4gPxKE+zLwBmGAIxSyNu/HlQv9m+Sw==
-X-Google-Smtp-Source: ABdhPJy/xrCcERW+957lXcvVNGT5zyGBGdADRSZbatHeuqcKcxbF4gcIYsCn4wfFQ5npF9r30qUpQIoF7hiIHQTgIxE=
-X-Received: by 2002:a19:5503:: with SMTP id n3mr9973147lfe.649.1622542598494;
- Tue, 01 Jun 2021 03:16:38 -0700 (PDT)
+        Tue, 1 Jun 2021 06:18:32 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lo1S4-0007H2-EC; Tue, 01 Jun 2021 10:16:48 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] KVM: selftests: Fix spelling mistake "UFFDIO_CONINUE" -> "UFFDIO_CONTINUE"
+Date:   Tue,  1 Jun 2021 11:16:48 +0100
+Message-Id: <20210601101648.8244-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
- <20210527005455.25758-2-steven_lee@aspeedtech.com> <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
- <20210528040934.GA28403@aspeedtech.com> <CACRpkdYnvzOW_86QgLAsNpNXWZXpaMiE7g9_jHZ0ZsFyhOjjAg@mail.gmail.com>
- <20210531052318.GA3973@aspeedtech.com>
-In-Reply-To: <20210531052318.GA3973@aspeedtech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Jun 2021 12:16:27 +0200
-Message-ID: <CACRpkdbq5me7erKdzaDHrPP5QjY4-Oxqz20tg2rSn3yrWDrhYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 7:23 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> The parameter max-ngpios is the maxmum number of gpio pins that SoC supported,
-> ngpios is the maximum number of gpio pins that sgpio devices(e.g. sgpio cards) supported.
+There is a spelling mistake in a debug message. Fix it.
 
-When you put it like that you really make it sound like you already
-know, just looking at the compatible string, what max-ngpios is?
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ tools/testing/selftests/kvm/demand_paging_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I.e. do you know for these three:
+diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+index b74704305835..874dc8f7248f 100644
+--- a/tools/testing/selftests/kvm/demand_paging_test.c
++++ b/tools/testing/selftests/kvm/demand_paging_test.c
+@@ -230,7 +230,7 @@ static void setup_demand_paging(struct kvm_vm *vm,
+ 
+ 	PER_PAGE_DEBUG("Userfaultfd %s mode, faults resolved with %s\n",
+ 		       is_minor ? "MINOR" : "MISSING",
+-		       is_minor ? "UFFDIO_CONINUE" : "UFFDIO_COPY");
++		       is_minor ? "UFFDIO_CONTINUE" : "UFFDIO_COPY");
+ 
+ 	/* In order to get minor faults, prefault via the alias. */
+ 	if (is_minor) {
+-- 
+2.31.1
 
-aspeed,ast2400-sgpiom
-aspeed,ast2500-sgpiom
-aspeed,ast2600-sgpiom
-
-the unique number of slots for each? A 1-to-1 correspondance?
-
-Then just add code to set this value from looking at the compatible
-in the driver. You can write some text in description in these bindings
-about how many slots each SoC has but there is no need to add any
-extra parameter if you already know this from the SoC.
-
-Yours,
-Linus Walleij
