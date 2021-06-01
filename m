@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C812397248
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E4F39724D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhFAL1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:27:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62258 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230308AbhFAL1m (ORCPT
+        id S233782AbhFAL2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230308AbhFAL2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:27:42 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151B2teK116967;
-        Tue, 1 Jun 2021 07:25:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=g3SnxyIN5/jUzx1WFoWZHmL+DiWvwkp/44ekH6M3gZc=;
- b=T9pAgf3NCa1H8nANmbXs5SCl7v0fCIy6b5AJlhgeHEMt/I7YgoyaTYxkuswMJ4tXe0PL
- XkTLc20kqvZ7zlhGeqNABAGqi1BXdb40A9ezcV2wxXA97uW2bWRvI8NxulmVwEMmTxcN
- 6JHTrZdDri1CdFeR/NZs9eihghkJ+PfvEj6mva0SkklLnxzRfSVBgwFSZr9ktvxeC4kg
- kSxKI/35xg6nPRzVPNAjYEzJkIDGsLwhzcZIfoOeNLoLfsm1sW6+Nq/2NcncSRR1NOJz
- nQpEsPKiTaESapN2tnRL3V4dnsYIqWpEg3JCDaYeSv0mBIryTj2+5xEfC2F0JPn0gtW0 8Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38whnn40t9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 07:25:58 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 151B2waM117341;
-        Tue, 1 Jun 2021 07:25:58 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38whnn40t1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 07:25:58 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151BH5sd032294;
-        Tue, 1 Jun 2021 11:25:57 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma02dal.us.ibm.com with ESMTP id 38ud89c3vw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 11:25:57 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151BPuG637683558
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Jun 2021 11:25:56 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EFCDF124054;
-        Tue,  1 Jun 2021 11:25:55 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88D5E124055;
-        Tue,  1 Jun 2021 11:25:55 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.178.155])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Jun 2021 11:25:55 +0000 (GMT)
-Subject: Re: [PATCH v16 06/14] s390/vfio-ap: refresh guest's APCB by filtering
- APQNs assigned to mdev
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com, freude@linux.ibm.com,
-        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com
-References: <20210510164423.346858-1-akrowiak@linux.ibm.com>
- <20210510164423.346858-7-akrowiak@linux.ibm.com>
- <20210524181548.4dbe52bc.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <25ddf7f5-3d70-7e9d-14b1-76f753e64d00@linux.ibm.com>
-Date:   Tue, 1 Jun 2021 07:25:55 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 1 Jun 2021 07:28:07 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE1AC061574;
+        Tue,  1 Jun 2021 04:26:25 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id c3so13875981wrp.8;
+        Tue, 01 Jun 2021 04:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Bbmxczt86n0ZwIeh1oB7JRebdsVVoIdB9E1KItxrw4s=;
+        b=DPfEsUAHlnHg4WJ7JnUtE9C6esdr8UrSGmf8qN4BP4UyRAs/p8/i/8xs1oQ3j+0J94
+         n1O/kn+/Is2Fvt52OLksJif9sCL898o1rmIDnhwuxT2zX0CdtCezKHiBLFRxAoK+r2JV
+         ToEaU8ES+sjkZPbts5aLWPL0jN6EaiaddCQN0xMrVeM0wA15Osran1Sw6NpIyyxbr757
+         Gr6MGZN4jo9IsDMLbqz2grbZi0UjqSyCnHm5ubO8+a5mO4yJO9DBlKf7zZ9tEL3bA2Ny
+         9y3o314HD/iNZeSe9CVJNZC8l60jNZoaCBSnLrNAZ9wAZV5MwK3Jmpg+KsZyOfh/Hpyw
+         +khw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Bbmxczt86n0ZwIeh1oB7JRebdsVVoIdB9E1KItxrw4s=;
+        b=mPOytGcAnjc9dSZd2+8CPwmMDqsf1vPIMLGpkl1FhOjnhViczsdrWCClUHhJZelOOU
+         IEy/GL1mnE3EX6iFi5oLi/Rg8DcGQwaGdJb9JYEERt6CgX3SpKPj60mcqq8fj7rJtYTX
+         934Vfz85X8wSieZEwT3nAIqQgX4PIVx2RJV6zJka193IwZg0mQfEnmRoYh8gBIOJ7xgH
+         efiPP/47nkKRqyW4A36ZTm56jJ0qCfSahQXf340Jx0smM0IoBGviEZZXTaBde4eXJmST
+         K10Ki+oy69M5CM6sj8gOWPWRKgtO9BVJNOwhEXNl48zqxTcnf+beZl2x3elsmoJRGMWL
+         3n8A==
+X-Gm-Message-State: AOAM531H4kd9rKNpT6PVmaX0b7jrjC1PPWw/j6IkBWk0Zek/6NMN0mzl
+        Gh5LLqTjle1mdtnRCM4jPIo=
+X-Google-Smtp-Source: ABdhPJzhKoFglUVq4+ZSesu4iSZ4DfjnhebLMTYDt/o3mF+bM+jx9ZpiAcxZ8VziMIAyv3M2ey4F1A==
+X-Received: by 2002:a5d:538c:: with SMTP id d12mr849200wrv.116.1622546783198;
+        Tue, 01 Jun 2021 04:26:23 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id 6sm9208524wmg.17.2021.06.01.04.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 04:26:20 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 13:27:56 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Nikola =?utf-8?Q?Milosavljevi=C4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v6 00/14] NVIDIA Tegra memory and power management
+ changes for 5.14
+Message-ID: <YLYZvFPyJFJgxI56@orome.fritz.box>
+References: <20210601023119.22044-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210524181548.4dbe52bc.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: OkgP8otBoMFt2Lvf0N75nG-NCjXsSUyg
-X-Proofpoint-GUID: v1Xa7Uq9UVn1hDyeFfUGrfA8bZeOjRZK
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_06:2021-05-31,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0
- clxscore=1015 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106010075
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jQ9XooBwh3CMbl+E"
+Content-Disposition: inline
+In-Reply-To: <20210601023119.22044-1-digetx@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--jQ9XooBwh3CMbl+E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 5/24/21 12:15 PM, Halil Pasic wrote:
-> On Mon, 10 May 2021 12:44:15 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> @@ -1601,8 +1676,10 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
->>   	mutex_lock(&matrix_dev->lock);
->>   	q = dev_get_drvdata(&apdev->device);
->>   
->> -	if (q->matrix_mdev)
->> +	if (q->matrix_mdev) {
->>   		vfio_ap_mdev_unlink_queue_fr_mdev(q);
->> +		vfio_ap_mdev_refresh_apcb(q->matrix_mdev);
->> +	}
->>   
->>   	vfio_ap_mdev_reset_queue(q, 1);
->>   	dev_set_drvdata(&apdev->device, NULL);
-> At this point we don't know if !!kvm_busy or kvm_busy AFAICT. If
-> !!kvm_busy, then we may end up changing a shadow_apcb while an other
-> thread is in the middle of committing it to the SD satellite. That
-> would be no good.
+On Tue, Jun 01, 2021 at 05:31:05AM +0300, Dmitry Osipenko wrote:
+> This series:
+>=20
+>   1. Adds CPU/core voltage bump before system is rebooted.
+>   2. Adds new devm_tegra_core_dev_init_opp_table() helper and switches
+>      Tegra memory drivers to use it.
+>   3. Adds compile-testing support to the Tegra memory drivers.
+>   4. Adds Tegra SoC core power domain support.
+>=20
+> Changelog:
+>=20
+> v6: - Fixed another compile-test trouble reported for v5. I double checked
+>       the clk stubs this time and compiled them locally.
 
-No, that would not be a good thing, we should check for
-that.
+Heh... I just fixed those locally on top of your v5. Let me see if I can
+roll back the changes and apply this new set instead.
 
->
-> Regards,
-> Halil
+Thierry
 
+--jQ9XooBwh3CMbl+E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC2GbwACgkQ3SOs138+
+s6GZcxAAwAW383JhE5y+j756zxk2eJtP2L4sR43pP2ukgez2S3EWAgQJTCKqLxtM
+5WyvDsokxqCwFPxruVTCvVS71wM8m0elkiAcXmchDtCjUinqg9SinaExAewJYekB
+5nTnylFaw5jnjTX8xkSndSfnfoyChNHIvg+xewCdQY72XMHEgc/jpCZ9xBU5vB0t
+24FZvU95JzNFkhFbVvBiTbCfYhH26aZpnH0WO2ZqfCwKpkf9EPiB9icriPt6Lz9u
+jUdbydwS2kHNndXpGk7MJVjm6BxIo2gdLmYHOg4S59ijjHqaho39Zd+yl6z/yD+W
+5MrRluQCTD4yJZKj3JspXJiOhRRowXLKcGpdh3ZpTghmfgx7+Z5IjClPHgrOrt7I
+ZhEf7OqIPvrh6jEj8RYRfBWjFr3w5bvUTYAKJ7Hpu6bvL0YnRZB0jiTWSsFbqomQ
+5bLre67BJSYS9kpACvl6D/CD1B1+oMqgHaMQF13IjNzWWPYyakakkQNx3uNdeY0Q
+V3Hnu8axNrp3J8c/xNv5VN5PxFyQA7ESO2mQMWs5YBCP2mqbLljn7KPVp283BiVe
+r/GiUxBNrJCnK3zH5kmWKRPJZ+9YtN7cJCmD1d9w/E88EjyZm3zoxmt1cMEx5DXC
+uvkKktKhav1ObzX2MUC/mTr2NWaDKh/+kgi2HkJ6PKhUHrnQLj0=
+=D53B
+-----END PGP SIGNATURE-----
+
+--jQ9XooBwh3CMbl+E--
