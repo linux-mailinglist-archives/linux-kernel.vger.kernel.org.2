@@ -2,102 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8461B397D0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3DA397D14
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbhFAXeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234766AbhFAXeI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 19:34:08 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1947BC061574;
-        Tue,  1 Jun 2021 16:32:25 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id c20so638364qkm.3;
-        Tue, 01 Jun 2021 16:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=n5qUxNhebxhh1o4S5RsRDnpxOezOtNelOWi74JiDkls=;
-        b=cHpjBW28CEKIdPIP96wHCabTM6ov5/xmVJdjvgmDpseY7daumngEmz1fwlBpplgxnY
-         FRwdeP94Y8Jg4q3RNDNCV2jkN4elQWGcipiidgSZtRGnG/F7FUtuyU0Ws6W+yf6+RasW
-         C/c5sfTswWi8ITgypSmV6IufK5q37mRkjZs6ZZEYo9dUhhs3QpUgIYwsSZ7ZsuN+rbYx
-         Sca47SADPVOjfK/aXZgbIFh9iLLX01EkxW95RohaUDLLazl7iDUSjnUF5kkMwbZqHBJ2
-         HUoEfJKpcnl9RDRgcBkO+XcPkMCBvfAJ7SlKKQoga4D2ralI7P1B0kjTR1jVs9E34wlm
-         Jlpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n5qUxNhebxhh1o4S5RsRDnpxOezOtNelOWi74JiDkls=;
-        b=nNpM49kCUOaq19pekM8jFGb/NQjANARmsAh7DycV7AgDvbSLOksoqqr/A+zQVSPuJ2
-         /9TRaMZ1iCvxutFKc2tQCk3KDkiK/VQKy0+o1TBf1hTUzb7rXEZllR9P8UlyM44B9xdP
-         eEmcXpuQHietKUPOuiqY6tdaQ0yadzNRysH18STmm0PKcdps4HGKnNFP4l8hdJTaI4PW
-         vw6orR17qOAvGkIWcnxKWoUT5t8bJp2ZD6CLx4/lzggdRhx9uw7nx8obExcu8HpiGxwO
-         Qxq5T15O3KQpOvtuz2IqIQGom6rnn0PpFPXkP+SgIkFolMw4mS971vAX0hSr4YAB+uTx
-         2amA==
-X-Gm-Message-State: AOAM5319h16x20G7EZIgDoUrETlTs46sMOm1QlYwXj2UdhpzAZIzkkHv
-        /Cm7j0xliohgO0gjTnNgDQVam0MrywA=
-X-Google-Smtp-Source: ABdhPJxBdDt7Cc0D9SHrdNBpxahBph5JPuVp2VNMKdcHmGJ5OgCruLRtn00LXh0CFyQXb4aQ5JHtwA==
-X-Received: by 2002:ae9:e716:: with SMTP id m22mr25307355qka.217.1622590344161;
-        Tue, 01 Jun 2021 16:32:24 -0700 (PDT)
-Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
-        by smtp.gmail.com with ESMTPSA id t196sm1573728qke.50.2021.06.01.16.32.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 16:32:23 -0700 (PDT)
-Subject: Re: docs: Convert the Speakup guide to rst
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        speakup@linux-speakup.org, corbet@lwn.net,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210531215737.8431-1-igormtorrente@gmail.com>
- <20210531220754.h4ep2dj65wl6hejf@begin>
- <b8769ad4-9188-a735-3ac4-4a79b9b06487@gmail.com>
- <20210601215536.5rhnbwwt66uyqhze@begin>
-From:   Igor Torrente <igormtorrente@gmail.com>
-Message-ID: <85969150-6e00-12b8-b56d-5f161436777d@gmail.com>
-Date:   Tue, 1 Jun 2021 20:32:20 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S235191AbhFAXgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:36:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234766AbhFAXgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 19:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4FE613AD;
+        Tue,  1 Jun 2021 23:34:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622590472;
+        bh=3N9Ow6RjNZiK6n6O0U9afn11SS+zfLMQUpx7lSRKRcw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=i1Tu1RIxkip2sYDnBwJ8JuCYXzA9Dlso/mo0yiLaOD3ufgDzcs8ihTzQGnIy07uKk
+         GRFNiRDTzZMRJrtJldsgnqd94JVk2I2+sSbICEn/fDya7bKMZ0DWA0qqAWkJpSsmNR
+         C1SsrPbLz+uhcaiUzxITY0rkGRFWJARG12/L/e2M56bw7VWDy/4CczFaKXBvSMdeqz
+         H1PX/kJX5NTNplvEKEGrMk4aO91SlsdDpUxd11l71sKeMR9g0hgCB3fgvbkScoPl9X
+         afDpGlhTUcuX0gzfQVP6wXCK6QBw/xnLlDnHpxI8C8M0VtCr0TJF4Lr902CvVVC+iC
+         GWumhpyVBjMwA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210601215536.5rhnbwwt66uyqhze@begin>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YJotlJBJ1CVAgvMT@mwanda>
+References: <YJotlJBJ1CVAgvMT@mwanda>
+Subject: Re: [PATCH] clk: qcom: cleanup some dev_err_probe() calls
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Tue, 01 Jun 2021 16:34:31 -0700
+Message-ID: <162259047131.4130789.3552758881567534695@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
+Quoting Dan Carpenter (2021-05-11 00:09:08)
+> The dev_err_probe() function prints an error message if the error
+> code is not -EPROBE_DEFER.  If we know the error code in is -ENODEV
+> then there is no reason to check.  Conversely, we do not need to
+> check for -EPROBE_DEFER before calling.
+>=20
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
 
-On 6/1/21 6:55 PM, Samuel Thibault wrote:
-> Hello,
-> 
-> Igor Torrente, le mar. 01 juin 2021 12:39:01 -0300, a ecrit:
->> I was reading all the emails sent in this thread, but I'm not sure how I
->> should proceed. Do think should I continue to improve the patch with the
->> Jani Nikula suggestions? Or abandon it? Or keep both versions?
-> 
-> It seems that people are fine with the switch to the .rst format, and
-> it'll indeed allow much better distribution of its content, so please
-> continue improving the patch with the suggestions from Jani, you have an
-> 
-> Acked-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-> 
-> and the review will probably come from Jani, who seems to actually know
-> a bit about the rst syntax :)
-
-OK, I will keep improving it.
-
-> 
-> Samuel
-> 
-
-Thanks,
----
-Igor M. A. Torrente
+Applied to clk-next with some manual effort
