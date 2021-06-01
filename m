@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A369397CD9
+	by mail.lfdr.de (Postfix) with ESMTP id 6407B397CDA
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhFAXBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:01:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40932 "EHLO mail.kernel.org"
+        id S235165AbhFAXB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:01:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234766AbhFAXBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235040AbhFAXBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Jun 2021 19:01:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 715B0613C5;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 814A5613CE;
         Tue,  1 Jun 2021 23:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622588403;
-        bh=iLhyLUw2mYamC6iFH0dPrfhONhGrSeaNEsfGwlmJ4Uo=;
+        bh=OqGPkzz/q3IdeDGGfpXB0hBPjlvI7VdxcI004GqH/tM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LB8Qzv0NirOeYUdEqU0/+H3GnPGLTrKCl43R6VhgfOgfd9sbrgcihRi/617NeG1Hr
-         yg37gj6XUVQS+aoWXe7HI8OEgptrxW79VR8K5QSkJZJV5QXIkBAIaOpiEd1CCg8bUT
-         uPSUeX/9iqNyaL1Ni6F4R5vmg2mZYV0cTiNKmpHAZUTEj0WZrTwjN2T9nphrNmbwZL
-         6neb88jkGvyRjhRshnCCf6wgoiuVmTmC7PIESh7gUUsIBuILFMLxS+V0N8+31VOwFX
-         cPARS7qg00oqNnQSN7uVYKoyBsnnEgyLTyE1uBrntpR7srhGzIUjyI5Hg9EwlIuLOl
-         ueViBfTgRQprw==
+        b=OOJT8aYMlDV3TqYcQHOf14/IoWcxAZhfAX6YejGdRJ0h3eNCzBf0C0IcOHIYaAfvs
+         ardPKK9TPo5N6yzrbEdUerp/R8FgqQq8xNI98XgtDT0sPLvKuTpJpq+9ktL88raxBK
+         XourpPd1zcvC+Usv9RQRvP7vhAyau+cYt8TGfOOd4Jp2a8Y10mTG9eQEczhg/CJaak
+         2LqVVkKovUWsbqlvb807pyHMwoOVT97VaxRB8I/A7M3kHPg7A9UQxVl4nJv+c7Q/S3
+         EZWi3YWSOYVQRTaJKybZVwz3NCL9SXOhdt1RoTZRrdPY2DxfmJjIVsS9GcSbZ0GmgG
+         f9SiRtK+ogl/A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6B4D6609F8;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 76A7260BFB;
         Tue,  1 Jun 2021 23:00:03 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] octeontx2-af: Fix spelling mistake "vesion" ->
- "version"
+Subject: Re: [PATCH] NFC: nci: Remove redundant assignment to len
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162258840343.25475.840773037649617405.git-patchwork-notify@kernel.org>
+Message-Id: <162258840347.25475.11870620814207718768.git-patchwork-notify@kernel.org>
 Date:   Tue, 01 Jun 2021 23:00:03 +0000
-References: <20210601103144.9213-1-colin.king@canonical.com>
-In-Reply-To: <20210601103144.9213-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1622540990-102660-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1622540990-102660-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
+        kuba@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,19 +48,21 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue,  1 Jun 2021 11:31:44 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue,  1 Jun 2021 17:49:50 +0800 you wrote:
+> Variable 'len' is set to conn_info->max_pkt_payload_len but this
+> value is never read as it is overwritten with a new value later on,
+> hence it is a redundant assignment and can be removed.
 > 
-> There is a spelling mistake in a dev_warning message. Fix it.
+> Clean up the following clang-analyzer warning:
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> net/nfc/nci/hci.c:164:3: warning: Value stored to 'len' is never read
+> [clang-analyzer-deadcode.DeadStores]
+> 
+> [...]
 
 Here is the summary with links:
-  - [next] octeontx2-af: Fix spelling mistake "vesion" -> "version"
-    https://git.kernel.org/netdev/net-next/c/b934b6d1d933
+  - NFC: nci: Remove redundant assignment to len
+    https://git.kernel.org/netdev/net-next/c/7cf85f8caa04
 
 You are awesome, thank you!
 --
