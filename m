@@ -2,108 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDAD3972C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101B93972C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhFALuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S233835AbhFALuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFALui (ORCPT
+        with ESMTP id S233064AbhFALuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:50:38 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF45C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:48:56 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x38so21290027lfa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6zj02qXAAuk1QMJQIoOzaeU/P0x5I8fbdsNIO3pGtyM=;
-        b=GCM7TqzsCQfMbmkRYl1ltBptIKp+x5Qk014ppmBUTtp150nlx088axbmbXi54EYEJs
-         6mEGIZOKLnyzs1jt1wMaf4KOlMe3yCHfXXpLFdWB+VhWAzC9DsYKfmOK9iyh4uiW9ZXM
-         UPffTgBYvAeMgv1MSPKtvFAFcI20GiYHjJh02wNDnOTqk7XsXL8h7+73mOVpvHrrBe1z
-         7yuT6pmonFwXsXn0DW1jC03q3BXXuZKSUl+XfSVgxFiTvAWmSadKCkguWLltWa75Gk+F
-         HVlyOLt2dlf1Ogd0HGlSc2b+Ev3Qlp9roPuwyJV0Pze1yj3rTINevD5wK5+QYs2AKeRa
-         SjCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6zj02qXAAuk1QMJQIoOzaeU/P0x5I8fbdsNIO3pGtyM=;
-        b=jmVYq9w4Q8gH7eu309OJy+YyG6MS4Gj2ehkOzjpUYPHxOB0bmUvHq/H02ZsLjY06DJ
-         0KbfLwKbhelWY6iTpM7N3ER7t9M95PySOdZwRxXOH4GAZv29dvOH5U0TiLdnrbJEi9NL
-         jNKtOCr84RmByrmL4GOs8FAE9AryEimpIQTBYs3BYsxF6G2SFPy8U3VaEea05oTgVfkq
-         ThiIVHMbPmlNe3DfG33t2NiO9Dwraf3dXUJVgFkwJbpbYbuH4tY8xZu99kWBc8wQeJPB
-         TSfFFDx/9ySuXeW2LIsh2S3FVLIylbnXk6Cg+uAMZz8cnD+iHDpjCdXwyL3i5QTN/Fgp
-         C0lw==
-X-Gm-Message-State: AOAM533AlY07HHe9hsoD+789FUI5neTFYKiRuWnYndK2kBzMosXRdkOq
-        yPCrl3N26uQQ0GR/VpSZL8trGLma/YgrfDbZTBkUBQ==
-X-Google-Smtp-Source: ABdhPJzF8H83uaZnzZpe08/0yXw6XupwStZHCxUKdO+/s/bThQc8z/xGZtqpykumfoLGGvPGtwEdFRNbALwP1zVytAM=
-X-Received: by 2002:a19:f616:: with SMTP id x22mr18138502lfe.291.1622548135157;
- Tue, 01 Jun 2021 04:48:55 -0700 (PDT)
+        Tue, 1 Jun 2021 07:50:51 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D89AC061574;
+        Tue,  1 Jun 2021 04:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=H/HM1WVJ7mnoqRbkGOWXXNo3F/vveMrIh8BwkNykNIE=; b=QQgc3cFyzWZ7FkAx+KCVEPR1y
+        xwt54wMQEr7wwSoPlSfX09YV6iuZV+BwNTUSxd31JaJKthxV6cYW4trItZftUl778oqgfUHlXLjof
+        MJvfBK+fadvitjy+7KHzoV4+o9hkyPnfAGJvqZPAfCJXVHpZth6NPYkiqhym+zzkNozkpd/QE9Mvx
+        YrYa/O3oTt1NspqU23b6JWUd+QSTev6Ekl+XDcIqXEhmrE7QYdeitvXTwmUs0/e/3iiUrI//RLcrv
+        p0hLhMDyH7HaZkPjJjNnMKCofxVNKkx3IccSPhki6fc5qF2FdJOMTE/r+gAxzN6jG1hKtdkvhy3My
+        EcanDoHbA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44562)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lo2tE-0003vr-W7; Tue, 01 Jun 2021 12:48:57 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lo2tC-0008Vi-Ao; Tue, 01 Jun 2021 12:48:54 +0100
+Date:   Tue, 1 Jun 2021 12:48:54 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, f.fainelli@gmail.com,
+        linux-imx@nxp.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/4] net: phy: realtek: add dt property to
+ disable CLKOUT clock
+Message-ID: <20210601114854.GT30436@shell.armlinux.org.uk>
+References: <20210601090408.22025-1-qiangqing.zhang@nxp.com>
+ <20210601090408.22025-3-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-References: <cover.1620735871.git.sander@svanheule.net> <cover.1621809029.git.sander@svanheule.net>
- <YKr9G3EfrM34gCsL@lunn.ch> <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
- <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
- <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc> <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
- <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com> <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
- <CACRpkda+m5mOzMJ8KcPmojFGWkUpCrbmY0ySPTVx72RtWwf89A@mail.gmail.com>
- <e10c8ef7f758b4f7fa0fcbc992c84125@walle.cc> <CACRpkdb4j6krXwdZGtth9b2W2bAdy9_StGbse_YbBY86-AWdLg@mail.gmail.com>
- <401805ef27bb273d7aca4f3377b53b07@walle.cc>
-In-Reply-To: <401805ef27bb273d7aca4f3377b53b07@walle.cc>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Jun 2021 13:48:43 +0200
-Message-ID: <CACRpkdYSMjDaRY2chbFyBTJ4jeAjPtXX3+VW7MHu-wH2QoAfPA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-To:     Michael Walle <michael@walle.cc>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sander Vanheule <sander@svanheule.net>,
-        Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601090408.22025-3-qiangqing.zhang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 1:41 PM Michael Walle <michael@walle.cc> wrote:
-> Am 2021-06-01 12:51, schrieb Linus Walleij:
-> > On Tue, Jun 1, 2021 at 12:18 PM Michael Walle <michael@walle.cc> wrote:
-> >> Am 2021-06-01 11:59, schrieb Linus Walleij:
-> >
-> >> > Just regarding all registers/memory cells in a register page
-> >> > as default volatile (which is what we do a lot of the time)
-> >> > has its upsides: bugs like this doesn't happen.
-> >>
-> >> I don't think this is the bug here. If it is really a write-only
-> >> register
-> >> the problem is the read in RMW. Because reading the register will
-> >> return
-> >> the input value instead of the (previously written) output value.
-> >
-> > True that. Write and read semantics differ on the register.
-> >
-> > Volatile is used for this and some other things,
-> > like for example interrupts being cleared when a register
-> > is read so it is strictly read-once.
->
-> Isn't that what precious is for?
+On Tue, Jun 01, 2021 at 05:04:06PM +0800, Joakim Zhang wrote:
+> Add "rtl821x,clkout-disable" property for user to disable CLKOUT clock
+> to save PHY power.
+> 
+> Per RTL8211F guide, a PHY reset should be issued after setting these
+> bits in PHYCR2 register. After this patch, CLKOUT clock output to be
+> disabled.
+> 
+> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+>  drivers/net/phy/realtek.c | 48 ++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 47 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+> index 821e85a97367..4219c23ff2b0 100644
+> --- a/drivers/net/phy/realtek.c
+> +++ b/drivers/net/phy/realtek.c
+> @@ -8,6 +8,7 @@
+>   * Copyright (c) 2004 Freescale Semiconductor, Inc.
+>   */
+>  #include <linux/bitops.h>
+> +#include <linux/of.h>
+>  #include <linux/phy.h>
+>  #include <linux/module.h>
+>  #include <linux/delay.h>
+> @@ -27,6 +28,7 @@
+>  #define RTL821x_PAGE_SELECT			0x1f
+>  
+>  #define RTL8211F_PHYCR1				0x18
+> +#define RTL8211F_PHYCR2				0x19
+>  #define RTL8211F_INSR				0x1d
+>  
+>  #define RTL8211F_TX_DELAY			BIT(8)
+> @@ -40,6 +42,8 @@
+>  #define RTL8211E_TX_DELAY			BIT(12)
+>  #define RTL8211E_RX_DELAY			BIT(11)
+>  
+> +#define RTL8211F_CLKOUT_EN			BIT(0)
+> +
+>  #define RTL8201F_ISR				0x1e
+>  #define RTL8201F_ISR_ANERR			BIT(15)
+>  #define RTL8201F_ISR_DUPLEX			BIT(13)
+> @@ -67,10 +71,17 @@
+>  
+>  #define RTL_GENERIC_PHYID			0x001cc800
+>  
+> +/* quirks for realtek phy */
+> +#define RTL821X_CLKOUT_DISABLE_FEATURE		BIT(0)
+> +
+>  MODULE_DESCRIPTION("Realtek PHY driver");
+>  MODULE_AUTHOR("Johnson Leung");
+>  MODULE_LICENSE("GPL");
+>  
+> +struct rtl821x_priv {
+> +	u32 quirks;
+> +};
+> +
+>  static int rtl821x_read_page(struct phy_device *phydev)
+>  {
+>  	return __phy_read(phydev, RTL821x_PAGE_SELECT);
+> @@ -81,6 +92,23 @@ static int rtl821x_write_page(struct phy_device *phydev, int page)
+>  	return __phy_write(phydev, RTL821x_PAGE_SELECT, page);
+>  }
+>  
+> +static int rtl821x_probe(struct phy_device *phydev)
+> +{
+> +	struct device *dev = &phydev->mdio.dev;
+> +	struct rtl821x_priv *priv;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	if (of_property_read_bool(dev->of_node, "rtl821x,clkout-disable"))
+> +		priv->quirks |= RTL821X_CLKOUT_DISABLE_FEATURE;
+> +
+> +	phydev->priv = priv;
+> +
+> +	return 0;
+> +}
+> +
+>  static int rtl8201_ack_interrupt(struct phy_device *phydev)
+>  {
+>  	int err;
+> @@ -291,6 +319,7 @@ static int rtl8211c_config_init(struct phy_device *phydev)
+>  
+>  static int rtl8211f_config_init(struct phy_device *phydev)
+>  {
+> +	struct rtl821x_priv *priv = phydev->priv;
+>  	struct device *dev = &phydev->mdio.dev;
+>  	u16 val_txdly, val_rxdly;
+>  	u16 val;
+> @@ -354,7 +383,23 @@ static int rtl8211f_config_init(struct phy_device *phydev)
+>  			val_rxdly ? "enabled" : "disabled");
+>  	}
+>  
+> -	return 0;
+> +	if (priv->quirks & RTL821X_CLKOUT_DISABLE_FEATURE) {
+> +		ret = phy_modify_paged(phydev, 0xa43, RTL8211F_PHYCR2,
+> +				       RTL8211F_CLKOUT_EN, 0);
+> +		if (ret < 0) {
+> +			dev_err(&phydev->mdio.dev, "clkout disable failed\n");
 
-I never figured that one out. But I assume you are right.
+You already have "dev" above, so this can be simplified to:
 
-Proper regmap semantics documentation is forthcoming! ;)
+			dev_err(dev, "clkout disable failed\n");
 
-Yours,
-Linus Walleij
+> +			return ret;
+> +		}
+> +	} else {
+> +		ret = phy_modify_paged(phydev, 0xa43, RTL8211F_PHYCR2,
+> +				       RTL8211F_CLKOUT_EN, RTL8211F_CLKOUT_EN);
+> +		if (ret < 0) {
+> +			dev_err(&phydev->mdio.dev, "clkout enable failed\n");
+
+Same here.
+
+> +			return ret;
+> +		}
+> +	}
+
+Do you really need to distinguish between the enable and disable
+operation? Would the following be better?
+
+	if (priv->quirks & RTL821X_CLKOUT_DISABLE_FEATURE)
+		clkout = 0;
+	else
+		clkout = RTL8211_CLKOUT_EN;
+
+	ret = phy_modify_paged(phydev, 0xa43, RTL8211F_PHYCR2,
+			       RTL8211_CLKOUT_EN, clkout);
+	if (ret < 0) {
+		dev_err(dev, "clkout configuration failed: %pe\n",
+			ERR_PTR(ret));
+		return ret;
+	}
+
+Other questions:
+- Does the clock output default to enabled or disabled during kernel
+  boot without this patch? Does this state depend on the boot loader?
+- Do we really need the use of negative logic here (which depends on
+  the answer to the above question)?
+- Could other bits in the RTL8211F_PHYCR2 register also require future
+  configuration? Would it be better to store the desired PHYCR2
+  register value in "priv" rather than using "quirks". Quirks can become
+  very unweildy over time.
+
+By way of example on the last point... probe() would become:
+
+	priv->phycr2 = RTL8211_CLKOUT_EN;
+
+	if (of_property_read_bool(dev->of_node, "rtl821x,clkout-disable"))
+		priv->phycr2 &= ~RTL8211_CLKOUT_EN;
+
+and config_init():
+
+	ret = phy_modify_paged(phydev, 0xa43, RTL8211F_PHYCR2,
+			       RTL8211_CLKOUT_EN, priv->phycr2);
+	if (ret < 0) {
+		dev_err(dev, "clkout configuration failed: %pe\n",
+			ERR_PTR(ret));
+		return ret;
+	}
+
+Note that phycr2 would be a u16 value.
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
