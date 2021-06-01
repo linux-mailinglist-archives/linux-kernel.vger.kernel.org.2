@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D6D397089
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C28C39708C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhFAJq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:46:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:35689 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233160AbhFAJqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:46:50 -0400
-IronPort-SDR: lRITwuc9Eus0Ru30hdX9YpoW0E0RiD7RBHaN/jNujtgwSXo+lhnQ6RQ4mqHELmR566FLbB+vrk
- FhDmZjaUvymA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="224786592"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="224786592"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 02:44:58 -0700
-IronPort-SDR: g2+fB+JR3DhXT9ruYZpdncTPbD29JQZsnRj86xjNT71H1xcQ23sY9HKJc8szCumHNMXb1PUQlj
- ivxrAvlxcLAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="482420276"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Jun 2021 02:44:55 -0700
-Subject: Re: [PATCH v1 2/2] perf auxtrace: Optimize barriers with load-acquire
- and store-release
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
- <20210519140319.1673043-2-leo.yan@linaro.org>
- <20210531151049.GE9324@leoy-ThinkPad-X240s>
- <cc3810cd-5edc-26d3-9c77-8bb6479152c1@intel.com>
- <20210601063342.GB10026@leoy-ThinkPad-X240s>
- <71b0e395-0e20-fdd1-b105-0ca1706c8ed1@intel.com>
- <YLX7OhK37QmfeOwu@hirez.programming.kicks-ass.net>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <4af1a96d-e03c-f1b4-ebce-ca869318c8cf@intel.com>
-Date:   Tue, 1 Jun 2021 12:45:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233480AbhFAJtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:49:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47094 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233160AbhFAJs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:48:56 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A3A4121928;
+        Tue,  1 Jun 2021 09:47:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622540834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9G3Kpyx+CwhO/99NFfmbRZHrvD5QiFT32bQzKFAn7/Q=;
+        b=GvuEo/HOq76opQ8mc4wpz1Gm/ff1RvdFOyFKZY6AuVdL3EJuyOJmt4yLa4EJeL3USQGsnx
+        9CyqtlrdlltWBFJoKbOLuFcXrX6KszlWbDapfZRV9Zmi94n3TVjx3S9qNWIuyVQ5OZXcgi
+        XMpuqWbv+kiIBs+1XcmqxwPrRhkw48s=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 53E7FA3B84;
+        Tue,  1 Jun 2021 09:47:14 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 11:47:13 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm,memory_hotplug: Drop unneeded locking
+Message-ID: <YLYCIZ5XNXGoE95p@dhcp22.suse.cz>
+References: <20210531093958.15021-1-osalvador@suse.de>
+ <679d311a-8ad4-bb53-18f0-11190a2bf1b5@arm.com>
+ <20210601074737.GA30768@linux>
+ <f655ced2-281e-33ee-e1ea-89a0e13fc7a3@redhat.com>
+ <20210601081250.GA32364@linux>
 MIME-Version: 1.0
-In-Reply-To: <YLX7OhK37QmfeOwu@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601081250.GA32364@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/06/21 12:17 pm, Peter Zijlstra wrote:
-> On Tue, Jun 01, 2021 at 12:07:31PM +0300, Adrian Hunter wrote:
->> __sync_xxx_compare_and_swap is out-of-date now. This page:
->>
->> https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html#g_t_005f_005fsync-Builtins
->>
->> recommends '__atomic' builtins instead.
+On Tue 01-06-21 10:12:54, Oscar Salvador wrote:
+> On Tue, Jun 01, 2021 at 10:02:54AM +0200, David Hildenbrand wrote:
+> > If there is no writer anymore, why do we have to protect readers?
 > 
-> perf doesn't seem to use that.
+> Yeah, you are right. 
+> Let me prepare a v2 as this is getting too sloppy.
 
-I guess we could drop support for the compat case; add validation:
+While you are touching this and want to drill all the way down then it
+would be reasonable to drop pgdat resize locks as well.
+It is only used in the early boot code and we have one executing thread
+context per numa node during the deferred initialization. I haven't
+checked all potential side effects the lock might have but it sounds
+like there is quite some clean up potential over there.
 
-"Error, 32-bit perf cannot record AUX area traces from a 64-bit kernel.
-Please use a 64-bit version of perf instead."
-
-> 
->> Since atomics are needed only for the "compat" case (i.e. 32-bit perf with 64-bit kernel)
->> you could try to find an elegant way to check for a 64-bit kernel, and avoid the atomics
->> for a 32-bit perf with 32-bit kernel.
-> 
-> Most 32bit archs cannot do 64bit atomics. I suppose the only reason this
-> doesn't explode is because the aux stuff isn't supported on many
-> architectures?
-> 
-
-Yes but presumably the race itself is unlikely since the upper byte changes only once every 4GiB.
-
+-- 
+Michal Hocko
+SUSE Labs
