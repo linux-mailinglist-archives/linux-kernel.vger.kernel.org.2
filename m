@@ -2,79 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023CC397C76
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C38397C78
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhFAWjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:39:13 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:34950 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234714AbhFAWjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:39:09 -0400
-Received: from zn.tnic (p200300ec2f111d0093004df6f0d27e9c.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1d00:9300:4df6:f0d2:7e9c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B245F1EC04DE;
-        Wed,  2 Jun 2021 00:37:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622587046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=GqP0+T23mTprX4YAEpRg+N2kSe5+fCX/w4EtyzFEnHk=;
-        b=bSaJztAL6vxO3lbvu32w2txgbnnzs0OzAvhU5II0CbPChc5swPmwTfM8VFYlOcQJmtuKMm
-        WC2l7CdKxywU+81ro7ZyDbeXaf1VjBERyw2XxWH+lwfqKV6OOpAynCcwN+4eDPG/j3fh4S
-        6S+wB+vwKPkvZw0tl2bKziy8fig8rrk=
-Date:   Wed, 2 Jun 2021 00:37:20 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Documentation/submitting-patches: Document RESEND tag on
- patches
-Message-ID: <YLa2oDQHqiQr9XhJ@zn.tnic>
-References: <20201217183756.GE23634@zn.tnic>
- <20210413113834.GE16519@zn.tnic>
- <87pmyxsxsy.fsf@meer.lwn.net>
- <20210415060505.GC6318@zn.tnic>
- <YLT0MjAIO/8u4cjY@zn.tnic>
- <87zgw98blq.fsf@meer.lwn.net>
+        id S234994AbhFAWjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:39:33 -0400
+Received: from hera.aquilenet.fr ([185.233.100.1]:50244 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234714AbhFAWja (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:39:30 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id F0E49899;
+        Wed,  2 Jun 2021 00:37:45 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xtQRWJTpljHk; Wed,  2 Jun 2021 00:37:45 +0200 (CEST)
+Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id EE20E170;
+        Wed,  2 Jun 2021 00:37:44 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.94.2)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1loD15-005WbP-QT; Wed, 02 Jun 2021 00:37:43 +0200
+Date:   Wed, 2 Jun 2021 00:37:43 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Christopher Brannon <cmbrannon@cox.net>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        collins@gene3.ait.iastate.edu,
+        Steve Holmes <steve.holmes88@gmail.com>
+Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
+Message-ID: <20210601223743.carif4gkzcz5jo7j@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Christopher Brannon <cmbrannon@cox.net>,
+        William Hubbs <w.d.hubbs@gmail.com>, collins@gene3.ait.iastate.edu,
+        Steve Holmes <steve.holmes88@gmail.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <875yyxbenm.fsf@meer.lwn.net>
+ <20210601220643.uzep2ju2zlcmpa57@begin>
+ <874keh9qk9.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87zgw98blq.fsf@meer.lwn.net>
+In-Reply-To: <874keh9qk9.fsf@meer.lwn.net>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: --
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Server: hera
+X-Rspamd-Queue-Id: F0E49899
+X-Spamd-Result: default: False [-2.50 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[cox.net,gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[gmail.com];
+         BAYES_HAM(-3.00)[100.00%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 04:27:13PM -0600, Jonathan Corbet wrote:
-> Oops...somehow I missed the fact that there was something there for me
-> to look at and respond to, sorry.
+Jonathan Corbet, le mar. 01 juin 2021 16:18:46 -0600, a ecrit:
+> The problem is that the kernel docs, when built, include a great deal of
+> code and text taken directly from the kernel source.  The built docs are
+> thus a derived product of the kernel and the result needs to carry a
+> GPL-compatible license.
 
-No worries, thanks for taking the time!
+Ah...
 
-> I've just read it through...  if it were me, I would find a way to
-> reduce its bulk in the hope that people would actually read it; much of
-> what's there is in coding-style.rst (or should be). 
+> I've spent some time talking with lawyers about
+> this, and they have confirmed that view of things.
 
-Right, the idea is to point to sections in it during review where the
-topic in question is dealt with a greater detail so that we don't have
-to type it each time.
+Yes, sure.
 
-I'll take a look at coding-style.rst and see if I can cross-link
-sections so that there's no repetition.
+> As a standalone .txt file there is probably no legal problem, but that
+> changes as soon as you bring it into RST TOC tree.
 
-> But it's not me, and if you want to keep it I won't whine (much).
-> Except about reverse fir tree, perhaps, but nobody listens to me on
-> that...:)
+Yes.
 
-Yeah, that is the only correct way! :-)
+> >> What are the chances that we can get the authors to agree on a change to
+> >> a GPL-compatible license for this file?
+> >
+> > I don't know about Collins' opinion on this, Cc-ing him with the latest
+> > mail my archives know for him (which dates 2008...)
+> >
+> > The copyright "the Speakup Team" is a more complex thing to look for.
+> 
+> Do you have a history of contributors to the file in its previous home?
 
-> I'd say package it up as a maintainer-guide entry and go for it.
+Checking more closely, it seems we have it. The detail is in
+git@github.com:linux-speakup/speakup.git in ./doc/spkguide.txt, but that
+seems relatively simple:
 
-Thanks, will do so!
+- The initial import of the file (bddef0d280cd) wears only the Gene
+  Collins copyright notice.
+- I made some changes and added my copyright notice.
+- Christopher Brannon (now in Cc) made various changes and added the
+  "the Speakup Team" copyright notice.
+- William Hubbs (now in Cc) made some changes.
+- Steve Holmes (now in Cc) added one sentence.
 
--- 
-Regards/Gruss,
-    Boris.
+So we'd need Gene's, Christopher's, William's, and Steve's ack on adding
+the GPL alternative to the GFDL-1.2 licence.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Samuel
