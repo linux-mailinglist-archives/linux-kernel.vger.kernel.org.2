@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610C33979DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20A03979B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhFASQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:16:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34714 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhFASQR (ORCPT
+        id S234513AbhFASEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231726AbhFASEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:16:17 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622571273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ONZTNvHfCInTdRpK2+6FPfc2/xcAyhA+vFwR7fck3So=;
-        b=2jBZKwhKvZ3I9OMlunAJE7Z6BxDuhuAvm6K+jj9ACTcJcYMt/5QTsiXUURo8lVizfwyQfN
-        jMnnXZuTUnSFfeQOe7/sdfHvWrWfAnvF3EiQF7Q3KsNusMIyxGIwIZvPzJ1/9P//a1KzRs
-        xKLnbNF23sde9t10WmWXiQ2QZ9mTanTxhi+Kvg1gkBXVDRC8NeVcTZUJ+NRasUjlhLrM8p
-        O4qUXNMnJjyZsyCp0QTSk+asAbsue67ruUPj3T1o95q3xKxZ52eMOIZhesKairQhvgsMJM
-        Pa2stRHAWJlpgctRsuklBPtbxDORLqsaZPypFZFhGn6jge1+7Te7LG2qeERQ1g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622571273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ONZTNvHfCInTdRpK2+6FPfc2/xcAyhA+vFwR7fck3So=;
-        b=4Aqo0PQDo0riJz6+LIJYM3gzoR7CsaRjMa0I9HwrzUCJ+eE3psp96HjGucLZ2z7i8mK8+g
-        DtdGqgx3kfL064BQ==
-To:     Will Deacon <will@kernel.org>
-Cc:     Xin Hao <xhao@linux.alibaba.com>, fweisbec@gmail.com,
-        john.stultz@linaro.org, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lorenzo@google.com, maz@kernel.org, mika.penttila@nextfour.com,
-        sboyd@kernel.org
-Subject: Re: [PATCH v2 2/5] tick/broadcast: Split __tick_broadcast_oneshot_control() into a helper
-In-Reply-To: <20210601121351.GA27832@willie-the-truck>
-References: <20210524221818.15850-3-will@kernel.org> <c3573cd8-a4c8-43c2-be66-8b74d688a406@linux.alibaba.com> <20210527082219.GA21311@willie-the-truck> <e0f6523f-36f8-188c-da99-4dcb51375522@linux.alibaba.com> <20210527115646.GD22019@willie-the-truck> <87k0nf3rjz.ffs@nanos.tec.linutronix.de> <20210601121351.GA27832@willie-the-truck>
-Date:   Tue, 01 Jun 2021 20:14:33 +0200
-Message-ID: <8735u13112.ffs@nanos.tec.linutronix.de>
+        Tue, 1 Jun 2021 14:04:54 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81451C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:03:11 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id s19so227903oic.7
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fBK7i8eOCWD7bhsE5M2Uc/50Bg2gXfvHWSF0m3uzUmM=;
+        b=LnrSeewa+v24qnBzJliqTIX8159l+VdnoAsvT4KHaU5f8k8D6lD428BufJUiXBBw5j
+         wH4z6NKEncrcfV82RLY3MbBz8g3P3kPOlQyGNRNDph4hYhKZikfx3XuukA6Ei/NuMVqS
+         WbcA9mp6ey51P5OCGeE1KXU0Kt5rMYexrs59F1dnnCbTJSP8Soh+f3/fyCPsQk60oyfQ
+         Lgrn1vcJdM9dLnz2Am/ndB+s+XtoYf0UmViHFXRZswELtuLIwrfIaGU2vsOSBIH3uudz
+         KmUo8iBJy65UbiJN8Uao08H9Crm8jRm5CujkLR3NEAp/99RRcN9x/1r4kvs+5mMg0d/g
+         QEqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fBK7i8eOCWD7bhsE5M2Uc/50Bg2gXfvHWSF0m3uzUmM=;
+        b=W9hOQ9wf/aGaOK4B1qtmZHRtS7bQhKTHf9ZFpliQR1zQkwqA0tunX+zW/QDH7KjjTH
+         DE09++kKMrirfS9HkjinUDJUfGXpQLS/Fga9DvKJ22MpQ7U0abQtS4iHIQebtMhUeS7r
+         2TLJtcmMwDng1QkTXCdfbP2PW/XvigLbbDAeP8X6aWyChdqBYFT6e3OYThWhAvauouXb
+         BVyGEsgnDZbU/e2tbyoAU3VnAVP701oxIX1kv6O6SdUYgVSVvZgVid5BdKEdbnxVPI2G
+         XgxfeqjZt/coM6v0QrazciZXD+AINGhMrHxnsX1FK2uwsMWpuurxURZk24GoUbhiKh1c
+         BYzQ==
+X-Gm-Message-State: AOAM533KuQqZScHS1ptpQFrQu0kgIwK7IcVLnaLDMWW57xgyVtTFdOke
+        smjn+2lXEmsodpacBpcPj8q9RbAyoXvldyHP
+X-Google-Smtp-Source: ABdhPJyVPnUkCmmFwHeHSJkQyiP8pFVashqQQa5tEsHea86rjeVsxiTYqAFDUT1H33rToJ3vgvGJjg==
+X-Received: by 2002:a05:6808:a97:: with SMTP id q23mr3076754oij.39.1622570590479;
+        Tue, 01 Jun 2021 11:03:10 -0700 (PDT)
+Received: from [192.168.86.140] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id w10sm3727739ott.75.2021.06.01.11.03.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 11:03:09 -0700 (PDT)
+Subject: Re: [PATCH] Replace use of perl with sed and tr in s390x build.
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Philipp Rudo <prudo@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <a48c51f8-5fe4-87e7-284e-c96e2381801a@landley.net>
+ <your-ad-here.call-01622498121-ext-5758@work.hours>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <91e7a6bd-847b-3cbc-9ebf-b73921d456f0@landley.net>
+Date:   Tue, 1 Jun 2021 13:19:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <your-ad-here.call-01622498121-ext-5758@work.hours>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01 2021 at 13:13, Will Deacon wrote:
-> On Mon, May 31, 2021 at 04:29:20PM +0200, Thomas Gleixner wrote:
->> On Thu, May 27 2021 at 12:56, Will Deacon wrote:
->>=20
->> > On Thu, May 27, 2021 at 07:35:03PM +0800, Xin Hao wrote:
->> >>=20
->> >> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=884:22, Will Deacon =E5=86=99=E9=
-=81=93:
->> >> > On Thu, May 27, 2021 at 03:23:06PM +0800, Xin Hao wrote:
->> >> > >  =C2=A0=C2=A0=C2=A0=C2=A0 I=C2=A0 had backport you=C2=A0 tick/bro=
-adcast: Prefer per-cpu relatives patches,
->> >> > >=20
->> >> > > but i did not get the true result,=C2=A0 the Wakeup Devices are a=
-ll null, why?
->> >> > Probably because you don't have any suitable per-cpu timers to act =
-as a
->> >> > wakeup. Do you have a per-cpu timer registered with CLOCK_EVT_FEAT_=
-PERCPU
->> >>=20
->> >> Yes, you are right, but i want to know why the timer do not support=
-=C2=A0
->> >> CLOCK_EVT_FEAT_PERCPU.
->> >
->> > I defer to Thomas on this one.
->>=20
->> How should I know what kind of timers this hardware has?
->
-> Duh, sorry, I replied to the wrong question. I meant to defer the decision
-> about whether to print "<NULL>" if the wakeup timer is absent, or whether=
- to
-> omit the line entirely.
->
-> I went with the former in the patches you queued as it's both consistent
-> with the rest of the code and probably (?) easier to parse.
+On 5/31/21 4:55 PM, Vasily Gorbik wrote:
+> On Mon, May 17, 2021 at 11:46:44PM -0500, Rob Landley wrote:
+>> From: Rob Landley <rob@landley.net>
+>>
+>> Commit 246218962e21 in November added a perl dependency to the s390x vmlinux
+>> build, complicating the "countering trusting trust" build approach ala
+>> http://lists.landley.net/pipermail/toybox-landley.net/2020-July/011898.html
+>>
+>> Signed-off-by: Rob Landley <rob@landley.net>
+>> ---
+>>
+>>  arch/s390/boot/compressed/Makefile |    2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/s390/boot/compressed/Makefile b/arch/s390/boot/compressed/Makefile
+>> index de18dab518bb..e941b165bd4f 100644
+>> --- a/arch/s390/boot/compressed/Makefile
+>> +++ b/arch/s390/boot/compressed/Makefile
+>> @@ -33,7 +33,7 @@ $(obj)/vmlinux.syms: $(obj)/vmlinux.lds $(objtree)/arch/s390/boot/startup.a $(OB
+>>  
+>>  quiet_cmd_dumpsyms = DUMPSYMS $<
+>>  define cmd_dumpsyms
+>> -	$(NM) -n -S --format=bsd "$<" | $(PERL) -ne '/(\w+)\s+(\w+)\s+[tT]\s+(\w+)/ and printf "%x %x %s\0",hex $$1,hex $$2,$$3' > "$@"
+>> +	$(NM) -n -S --format=bsd "$<" | sed -nE 's/^0*([0-9a-fA-F]+) 0*([0-9a-fA-F]+) [tT] ([^ ]*)$$/\1 \2 \3/p' | tr '\n' '\0' > "$@"
+>>  endef
+> 
+> The change itself is fine. Yields the same result as before with
+> binutils/llvm/elfutils versions of nm.
 
-That makes more sense. I just kept it as is. The <NULL> is fine.
+...
+
+> So, would you mind if I pick your patch changing the commit message
+> like the following?
+> """
+> s390/decompressor: replace use of perl with simple sed/tr
+> 
+> Use simple sed/tr instead of perl to generate decompressor symbols
+> file with the same result.
+
+Works for me.
+
+> Signed-off-by: Rob Landley <rob@landley.net>
+> """
 
 Thanks,
 
-        tglx
+Rob
