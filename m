@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F03396ECC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124B6396EEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbhFAIX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:23:28 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2817 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233490AbhFAIXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:23:24 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvQ4D3SldzWqLq;
-        Tue,  1 Jun 2021 16:17:00 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 16:21:42 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
- 2021 16:21:41 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
-        <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH] remoteproc: pru: Remove redundant dev_err call in pru_rproc_probe()
-Date:   Tue, 1 Jun 2021 16:31:00 +0800
-Message-ID: <20210601083100.130776-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+        id S233439AbhFAIab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:30:31 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:46876 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232963AbhFAIa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:30:29 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B06841A3C1C;
+        Tue,  1 Jun 2021 10:28:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com B06841A3C1C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+        s=nselector3; t=1622536127;
+        bh=vWCv+MeGTvvz1WVA73qZXjvvuHB4aTe/cxgc3hg+kwE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VG9n6A0RyiNUtHUejUzAqLT6FnL31SuW+5En8RdNlio7+Y0PmJ3tVfjJalxhgLygs
+         G/xxWi3y0zAfVgCJycJnYYtViDyjbbQVucutgzgGxk2xpy1kfOBC3wgO9q1POWYg7C
+         ZHsgS0oGff0HFORc9UGDQ05MKhzocTfeBo7/x7JmTz2a8gajtJPOknYugnFjhWw7wE
+         izxOkhL1zmzsHMnTHvB9KoYRgrpF9BXVrEtTN+86L7YWB0Cm5WQt6D41vmIPdNbTg5
+         HQceHZ3s+/lic1fx1PkR2z9tH37P/sq9tdtxkuF8rcxrV4FhzqZ1ZOdkd8Y03YYuyj
+         Q2Y95HtdTmlog==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7C5FE1A3C23;
+        Tue,  1 Jun 2021 10:28:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 7C5FE1A3C23
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 75AF2402E9;
+        Tue,  1 Jun 2021 16:28:28 +0800 (+08)
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     davem@davemloft.net, joabreu@synopsys.com, kuba@kernel.org,
+        alexandre.torgue@st.com, peppe.cavallaro@st.com,
+        mcoquelin.stm32@gmail.com
+Cc:     netdev@vger.kernel.org, boon.leong.ong@intel.com,
+        weifeng.voon@intel.com, vee.khee.wong@intel.com,
+        tee.min.tan@intel.com, mohammad.athari.ismail@intel.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
+        qiangqing.zhang@nxp.com, rui.sousa@nxp.com, mingkai.hu@nxp.com,
+        yangbo.lu@nxp.com, xiaoliang.yang_1@nxp.com
+Subject: [PATCH v1 net-next 0/3] net: stmmac: re-configure tas basetime after ptp time adjust
+Date:   Tue,  1 Jun 2021 16:38:10 +0800
+Message-Id: <20210601083813.1078-1-xiaoliang.yang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+If the DWMAC Ethernet device has already set the Qbv EST configuration
+before using ptp to synchronize the time adjustment, the Qbv base time
+may change to be the past time of the new current time. This is not
+allowed by hardware.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/remoteproc/pru_rproc.c | 2 --
- 1 file changed, 2 deletions(-)
+This patch calculates and re-configures the Qbv basetime after ptp time
+adjustment.
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index e5778e476245..6491c731c6e2 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -822,8 +822,6 @@ static int pru_rproc_probe(struct platform_device *pdev)
- 						   mem_names[i]);
- 		pru->mem_regions[i].va = devm_ioremap_resource(dev, res);
- 		if (IS_ERR(pru->mem_regions[i].va)) {
--			dev_err(dev, "failed to parse and map memory resource %d %s\n",
--				i, mem_names[i]);
- 			ret = PTR_ERR(pru->mem_regions[i].va);
- 			return ret;
- 		}
+Xiaoliang Yang (3):
+  net: stmmac: separate the tas basetime calculation function
+  net: stmmac: add mutex lock to protect est parameters
+  net: stmmac: ptp: update tas basetime after ptp adjust
+
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  | 41 ++++++++++++++++-
+ .../net/ethernet/stmicro/stmmac/stmmac_tc.c   | 46 +++++++++++++------
+ include/linux/stmmac.h                        |  1 +
+ 4 files changed, 77 insertions(+), 14 deletions(-)
+
 -- 
-2.31.1
+2.17.1
 
