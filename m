@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92724396E09
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF18396DF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhFAHnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 03:43:20 -0400
-Received: from server.lespinasse.org ([63.205.204.226]:48667 "EHLO
-        server.lespinasse.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhFAHnS (ORCPT
+        id S233227AbhFAHe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 03:34:59 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2813 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230326AbhFAHe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 03:43:18 -0400
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-18-ed;
- t=1622533297; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : in-reply-to : from;
- bh=Pr1dogb2hhjVOwbkgIiWfu0YAuMoqxLdY7YfUv+oFLw=;
- b=Ov3ls7rVLNHWPnI1vs/cZijyudcYLW0N+4ltvG5YBaGdhCM9M3p7XtxrRxZb6QaWfxsC0
- HGqydB92/Ha5RSjBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
- i=@lespinasse.org; q=dns/txt; s=srv-18-rsa; t=1622533297; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : in-reply-to : from;
- bh=Pr1dogb2hhjVOwbkgIiWfu0YAuMoqxLdY7YfUv+oFLw=;
- b=rsaGoHtWqZD2TnXEGwqSRp5R8uNAVwpF58WMJCLETn0ZemeSG5xX1NuZ7wYvS9vRX/5qW
- gEguumXaUPolKBs0sKgHOZWgRdCxbZgZr6QaSTnYIN3L7kX+fa5y2HWHSlGRh3/RitOJ6d0
- E3b7NY6IvAi/es7MNsV4TTsnVrdnyZef6mr4xMdn9LKprb+mZnEPUlu8JEsOJE3B2z2GRTR
- wTIFXB4akEyGNwtUE0FtEJQsLiMgJUF6HzXloxbt1TI/aSHxO+TAWl8M9UNBhcQXcbn7weH
- xY106YkOKHIZihXqg67s16al+Bk27i8lxFkjmBlVe362L+Zr+IkESAM7gG9A==
-Received: by server.lespinasse.org (Postfix, from userid 1000)
-        id A48C8160564; Tue,  1 Jun 2021 00:41:37 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 00:41:37 -0700
-From:   Michel Lespinasse <michel@lespinasse.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-Kernel <linux-kernel@vger.kernel.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joel Fernandes <joelaf@google.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH 00/29] Speculative page faults (anon vmas only)
-Message-ID: <20210601074137.GC13530@lespinasse.org>
-References: <20210430195232.30491-1-michel@lespinasse.org>
- <20210430224649.GA29203@lespinasse.org>
- <20210503181118.GA21048@lespinasse.org>
- <20210517175750.GJ4441@paulmck-ThinkPad-P17-Gen-1>
- <CAJuCfpHD=GN2UMhbAhpp+UfvF0doBWcZDNx+u4RzcDezUW2+0g@mail.gmail.com>
+        Tue, 1 Jun 2021 03:34:57 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvP0J4bRLzWpsH;
+        Tue,  1 Jun 2021 15:28:32 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 15:33:12 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] iavf: Declare the function iavf_shutdown_adminq as void
+Date:   Tue, 1 Jun 2021 15:46:50 +0800
+Message-ID: <20210601074650.4078830-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpHD=GN2UMhbAhpp+UfvF0doBWcZDNx+u4RzcDezUW2+0g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 03:10:24PM -0700, Suren Baghdasaryan wrote:
-> Hi Paul,
-> I promised you to look into this but somehow forgot to reply, sorry
-> about that. The issue is the new "#include <linux/mm_types.h>" in mm.h
-> which causes page_pgdat() usage before it is defined:
-> 
-> mm.h includes mm_types.h
-> mm_types.h includes vmstat.h
-> vmstat.h uses page_pgdat()
-> mm.h defines page_pgdat()
-> 
-> Not sure if this is the best way to fix it but this worked fine for me:
-> 
-> ---
->  include/linux/mmap_lock.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-> index 98f24a9910a9..13d4a706c0eb 100644
-> --- a/include/linux/mmap_lock.h
-> +++ b/include/linux/mmap_lock.h
-> @@ -7,7 +7,7 @@
->  #include <linux/rwsem.h>
->  #include <linux/tracepoint-defs.h>
->  #include <linux/types.h>
-> -#include <linux/vmstat.h>
-> +#include <linux/vm_event_item.h>
+variable 'ret_code' is unneeded and it's noneed to check the
+return value of function iavf_shutdown_adminq,so declare
+it as void.
 
-Thanks for looking into this.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/intel/iavf/iavf_adminq.c    | 6 +-----
+ drivers/net/ethernet/intel/iavf/iavf_prototype.h | 2 +-
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-I have to say, C's handling of header files is one of my least
-favourite features, it tends to be very unmaintainable when there are
-multiple configs involved :/
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_adminq.c b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
+index 9fa3fa99b4c2..23612c15b111 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_adminq.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
+@@ -549,17 +549,13 @@ enum iavf_status iavf_init_adminq(struct iavf_hw *hw)
+  *  iavf_shutdown_adminq - shutdown routine for the Admin Queue
+  *  @hw: pointer to the hardware structure
+  **/
+-enum iavf_status iavf_shutdown_adminq(struct iavf_hw *hw)
++void iavf_shutdown_adminq(struct iavf_hw *hw)
+ {
+-	enum iavf_status ret_code = 0;
+-
+ 	if (iavf_check_asq_alive(hw))
+ 		iavf_aq_queue_shutdown(hw, true);
+ 
+ 	iavf_shutdown_asq(hw);
+ 	iavf_shutdown_arq(hw);
+-
+-	return ret_code;
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_prototype.h b/drivers/net/ethernet/intel/iavf/iavf_prototype.h
+index edebfbbcffdc..29486aaad116 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_prototype.h
++++ b/drivers/net/ethernet/intel/iavf/iavf_prototype.h
+@@ -17,7 +17,7 @@
+ 
+ /* adminq functions */
+ enum iavf_status iavf_init_adminq(struct iavf_hw *hw);
+-enum iavf_status iavf_shutdown_adminq(struct iavf_hw *hw);
++void iavf_shutdown_adminq(struct iavf_hw *hw);
+ void iavf_adminq_init_ring_data(struct iavf_hw *hw);
+ enum iavf_status iavf_clean_arq_element(struct iavf_hw *hw,
+ 					struct iavf_arq_event_info *e,
+-- 
+2.25.1
 
-I haven't spent any time trying to reproduce the issue yet.
-Paul, could you send your .config file to give me a starting point ?
-Or maybe Suren already figured out what combination of config options
-triggers the issue ?
-
-Thanks,
-
---
-Michel "walken" Lespinasse
