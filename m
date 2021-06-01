@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD60397CC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDBD397CC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235102AbhFAW41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:56:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24830 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234766AbhFAW4Z (ORCPT
+        id S235120AbhFAW5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234766AbhFAW5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:56:25 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151MmHuZ169830;
-        Tue, 1 Jun 2021 18:54:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=+wWzQP9rjd2CHTXRY5GoVE+0wcUvqFNy3Jyzv3lkdHE=;
- b=TSK7Z63wtUrrWNIj/b5fV4ZrQRQoBF5D+s4kN/kLVbQfbnGfND78eodJEHgExIVJrUVZ
- 0Psa3FRBORWrWsVeGwyEeqnbSjS30XRMnUXht0Awd1FCnkL4uS64F4TFv7dvr2Pmp2Kg
- 1IUZsVaBPUdv2euAVHgvmEnshlh7rNN0SXH6RhznXTm1B2pzKanNmX0WLgVY8EUcDhi/
- u8Zq2F+P8hG93u47Reqbjd4+7E9zT4bZf7EzljDVC+txM1Nw7pfNmjVyEkwGzRKWGbyq
- a7NWQVGGu3N6Ox+iXuvzejAUJ1fFKoS1qoEec2ig753oUki2vYWhR70ZuPwfZkMVC8Ky xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38wx0hg2rg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 18:54:36 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 151Mpje7193367;
-        Tue, 1 Jun 2021 18:54:36 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38wx0hg2qy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 18:54:36 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151Mnaal009160;
-        Tue, 1 Jun 2021 22:54:33 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 38ud88132f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 22:54:33 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151MsVIJ33751436
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Jun 2021 22:54:31 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7915EA407E;
-        Tue,  1 Jun 2021 22:54:31 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9329A4083;
-        Tue,  1 Jun 2021 22:54:29 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.20.75])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Jun 2021 22:54:29 +0000 (GMT)
-Message-ID: <1bb738125345283693fb41ea188e934b3d33ae75.camel@linux.ibm.com>
-Subject: Re: linux-next: Fixes tag needs some work in the integrity tree
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Date:   Tue, 01 Jun 2021 18:54:28 -0400
-In-Reply-To: <20210602080742.1832f12c@canb.auug.org.au>
-References: <20210602080742.1832f12c@canb.auug.org.au>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: M0wqmwW3InNGAISZxhDvFgOeAmKTtZrQ
-X-Proofpoint-ORIG-GUID: QEa9AiUv7kOCYyL1L9W_xtUDW8TiYUmm
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_12:2021-06-01,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 adultscore=0
- spamscore=0 impostorscore=0 clxscore=1011 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106010150
+        Tue, 1 Jun 2021 18:57:16 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBF4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 15:55:33 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id k15so670498pfp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 15:55:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q4W+RK/UiZcP5P0EH3Iqdu3xr4J+8uHojy7d0BiHPOs=;
+        b=K4sAZIjojCaVRqT19cKzjJjekM/E2k55Fz+Lx+6O2Gj8Bhhtk4dxz+77Ls/pahp8nc
+         C5FG0KnJGCq/A2tw3323CuxbBIAsfE0CvdIMyUQLWCBovrSpK8DGHD4IEH0ERo6JZnY5
+         H3EWjFP5YcYR1aicQH6gMgF2spNmUHE+rvSMU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q4W+RK/UiZcP5P0EH3Iqdu3xr4J+8uHojy7d0BiHPOs=;
+        b=WFJSBTgVhvvh4ZGy9J5mVFO6qoIEMWB2Nm0Ff1Rh4VPUY++uDwC4CIwWfhrYjuKds/
+         2FT9707v29TNDJjo8LLnJrVmYChVXWeRpbr9BOUaAetK8UOWA2rxXfSau3pqKXtxkO3v
+         Uf0eeenlLygU7TliLLW4kE1NimeKkLuYavybM4Fh5sfe6hLjgwCa0dIa/spAtw6vWiNW
+         Kd1wNWYGl0cdjS9aN0KgOxot5hH+hkXr5UKXNy2qbAULlZHDDW/RH16v8nlYUQGhObOx
+         5bhtM8vKUKwanJjLmAXmlG8/83EhtwqMO+LY+ZLLjJwRzgwXBDegqUIgEq569pskdhhg
+         RnIQ==
+X-Gm-Message-State: AOAM5311dJWjohM2FKULCVBWzAlzfv+5AVFKh+03uP4Wl2n5FkTGtdNk
+        JH3Moo9VbF09PWZ4LnfJW1xpWA==
+X-Google-Smtp-Source: ABdhPJx8FpHqSYgzol9QT15ojGrsHfNzwUaj1kBbAcwXHulg3MUjckG3puKaVYgVqxrnbR60BRtUSg==
+X-Received: by 2002:a62:5285:0:b029:2e9:e0d5:67dc with SMTP id g127-20020a6252850000b02902e9e0d567dcmr9839597pfb.79.1622588133205;
+        Tue, 01 Jun 2021 15:55:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g11sm2784904pgh.24.2021.06.01.15.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 15:55:32 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 15:55:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     jarmo.tiitto@gmail.com
+Cc:     Bill Wendling <morbo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH] pgo: rename the raw profile file to vmlinux.profraw
+Message-ID: <202106011555.A7E9BE38@keescook>
+References: <20210531202044.426578-1-morbo@google.com>
+ <CAGG=3QVdXxLf0T9+n9FidrRcfdWY36m-i=4kPRJjOojWhjiywg@mail.gmail.com>
+ <202106011210.B5A8881214@keescook>
+ <5615959.Mqr2uNrfH2@hyperiorarchmachine>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5615959.Mqr2uNrfH2@hyperiorarchmachine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-02 at 08:07 +1000, Stephen Rothwell wrote:
-> Hi all,
+On Wed, Jun 02, 2021 at 12:40:25AM +0300, jarmo.tiitto@gmail.com wrote:
+> Yes, my future intention is that there will be one *.profraw file per module.
+> And curiously I would also have renamed the current profile data file to 
+> "vmlinux.profraw" to disambiguate it from what part of kernel generated it.
 > 
-> In commit
+> I already wrote an small fix up that I think should be part of the upstream 
+> code so that profiling the vmlinux works better.
+> It filters out any module originated content from vmlinux.profraw.
 > 
->   9eea2904292c ("evm: Execute evm_inode_init_security() only when an HMAC key is loaded")
+> Above will be probably a good exercise for me.
 > 
-> Fixes tag
-> 
->   Fixes: 26ddabfe96b ("evm: enable EVM when X509 certificate is loaded")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
-> 
-> Probably not worth rebasing for, but can be avoided in the future by
-> setting core.abbrev to 12 (or more) or (for git v2.11 or later) just
-> making sure it is not set (or set to "auto").
+> Next, my future v2 module profiling machinery
+> would probably follow on top of your work.
 
-Stephen, thank you for catching the short hash.  It would be nice if
-checkpatch would be updated to catch it.  I recently noticed
-Documentation/process/submitting-patches.rst has directions for setting
-up "--pretty=fixes".
+Okay, great; thanks for digging into it! :)
 
-thanks,
-
-Mimi
-
+-- 
+Kees Cook
