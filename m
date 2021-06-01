@@ -2,176 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6481C397437
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A015397439
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbhFANcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:32:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234001AbhFANcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:32:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31FCA613AB;
-        Tue,  1 Jun 2021 13:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622554228;
-        bh=u3ILEWTeiysuA4cfXkP54DqJof+Ly4Pxun8uzn4hxys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M1KENGQC9GCnydeaUAPkpZ0e7xBL8BNiVn+zyL0/MQJDzedIqI18QjMGYEsxSkgKd
-         rJQd7RHi48RHwNttJUwWNX/fNTSGrzBARDJJZ0MD//nPShggrDHEdDz5d5Wq5XvKz4
-         3rDmcEbrIPqFt66IHdhhXKpGyumEBPSVNgmG3Rm2Wm54Iaxw6DN0Wb7v8ddg9RXFyh
-         fmXntPOLCG5OUW27JXDgArRoUXSdZe9XbHuVzal33xnvdBhLx+BTI7pohCTklyG4K7
-         zKei7vpv5wJ9XG74VJLRiu1T5vWJU98BXXD05lyrsZCCESv/e4Qn+wWMoc44WqzVIK
-         xhXZYshmuNN4Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 695E74011C; Tue,  1 Jun 2021 10:30:25 -0300 (-03)
-Date:   Tue, 1 Jun 2021 10:30:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH] perf tools: Move probing cgroup sampling support
-Message-ID: <YLY2cdeQec5bH5Jc@kernel.org>
-References: <20210527182835.1634339-1-namhyung@kernel.org>
+        id S234043AbhFANc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233993AbhFANcU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:32:20 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171F2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:30:38 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id g8so13281081ejx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:30:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kKOh4wrNyJe362NzAi1yzZCGJgSv/lcLZ6R5aT0OAQE=;
+        b=oli0AEGTibHr+X4BBq6ryNZ6kU6+VTDFuoYIpRqB62OJRMQPVRJKaYesaAqA07M4EM
+         EdbvchSzKuzv0e22u0bfHBN5cMcR3lPKE+rBI6lCeHJTYRNtBeX8ZRc+QpiZzReF7DL5
+         gCrikxlDOKXZrjcaPJNbpuVmjS9YxDBGVJ9vDyjYFX0prY0IXvzDHp/Lclf2WS+oAaRx
+         u+mPeMNB0zAngRuTxcBw8A+Iro+ieWOou+tu6BWsSwox08tRHNVXiaQ0j8qGTPUdCqVv
+         X1PnI5INMdch0RywVA3kNZ7+TzygZktxeqrqJ0gc9atCIiLLcojQPHrLH7bH/YONKGo8
+         /LWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kKOh4wrNyJe362NzAi1yzZCGJgSv/lcLZ6R5aT0OAQE=;
+        b=YF0q062SGPlwB/4QMazaFlWuARD6vufVxc9yykf+l3zUGuqnfyybzSbGk+tfu/8ah6
+         7mSV09sCMoaTlCKOxi8zhvNiXwmwV1Tq63EfaA92pc9JkUAVbWjED925MaqDous9iCFg
+         n+sFUFi3ZE9O5VlHEPyIhM8gjnWBZ/1dI/PMQUTmDASabkTFzK85Uic6GfrGJBLv72mR
+         cCeuUKIANDZns4HOuMuQQwRgykLwAePseALs7dtGKO4zYlfcjCq1yxPuxiqjFJMetyDA
+         LZr88L6aEr0AliHvpN7ik3bmjTiul9HufXigfMPmx4d4ogxQy0p9/x8a4m4b9IKs6TsN
+         1zlA==
+X-Gm-Message-State: AOAM531YZgMi3zTVnKXWlr516YhiIHhn4CqakhBV5u3GdbV2tzCx42gY
+        zYqUbhZlyVoAcjWukWnCz0pnllsEnObeONO54PiQvg==
+X-Google-Smtp-Source: ABdhPJz7rEw5+UuX6nNDwDbflC7I8zzwHvfk2Ad0RKiQ0Uw6pCAFxoyqfG9E6wADau5iuq+9j0y7qHlzZuEYbWu9GyI=
+X-Received: by 2002:a17:906:8394:: with SMTP id p20mr26473972ejx.170.1622554236515;
+ Tue, 01 Jun 2021 06:30:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527182835.1634339-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20210601072913.387837810@linuxfoundation.org>
+In-Reply-To: <20210601072913.387837810@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 1 Jun 2021 19:00:25 +0530
+Message-ID: <CA+G9fYtaDQWR9ir0QX9R-n_+G+8n8p0LnuoBbo6fsxFQK8j9MA@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/84] 4.14.235-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 27, 2021 at 11:28:35AM -0700, Namhyung Kim escreveu:
-> I found that checking cgroup sampling support using the missing
-> features doesn't work on old kernels.  Because it added both
-> attr.cgroup bit and PERF_SAMPLE_CGROUP bit, it needs to check
-> whichever comes first (usually the actual event, not dummy).
-> 
-> But it only checks the attr.cgroup bit which is set only in the dummy
-> event so cannot detect failtures due the sample bits.  Also we don't
-> ignore the missing feature and retry, it'd be better checking it with
-> the API probing logic.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/builtin-record.c      |  6 ++++++
->  tools/perf/util/evsel.c          |  6 +-----
->  tools/perf/util/evsel.h          |  1 -
->  tools/perf/util/perf_api_probe.c | 10 ++++++++++
->  tools/perf/util/perf_api_probe.h |  1 +
->  5 files changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
-> index 829af17a0867..020411682a3c 100644
-> --- a/tools/perf/util/perf_api_probe.c
-> +++ b/tools/perf/util/perf_api_probe.c
-> @@ -103,6 +103,11 @@ static void perf_probe_build_id(struct evsel *evsel)
->  	evsel->core.attr.build_id = 1;
->  }
->  
-> +static void perf_probe_cgroup(struct evsel *evsel)
-> +{
-> +	evsel->core.attr.cgroup = 1;
-> +}
-> +
->  bool perf_can_sample_identifier(void)
->  {
->  	return perf_probe_api(perf_probe_sample_identifier);
-> @@ -182,3 +187,8 @@ bool perf_can_record_build_id(void)
->  {
->  	return perf_probe_api(perf_probe_build_id);
->  }
-> +
-> +bool perf_can_record_cgroup(void)
-> +{
-> +	return perf_probe_api(perf_probe_cgroup);
-> +}
-> diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_probe.h
-> index f12ca55f509a..b104168efb15 100644
-> --- a/tools/perf/util/perf_api_probe.h
-> +++ b/tools/perf/util/perf_api_probe.h
-> @@ -12,5 +12,6 @@ bool perf_can_record_switch_events(void);
->  bool perf_can_record_text_poke_events(void);
->  bool perf_can_sample_identifier(void);
->  bool perf_can_record_build_id(void);
-> +bool perf_can_record_cgroup(void);
->  
->  #endif // __PERF_API_PROBE_H
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index bc3dd379eb67..71efe6573ee7 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -2733,6 +2733,12 @@ int cmd_record(int argc, const char **argv)
->  		rec->no_buildid = true;
->  	}
->  
-> +	if (rec->opts.record_cgroup && !perf_can_record_cgroup()) {
-> +		pr_err("Kernel has no cgroup sampling support.\n");
-> +		err = -EINVAL;
-> +		goto out_opts;
-> +	}
-> +
->  	if (rec->opts.kcore)
->  		rec->data.is_dir = true;
->  
+On Tue, 1 Jun 2021 at 14:04, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.235 release.
+> There are 84 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 03 Jun 2021 07:28:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.235-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-The above is perf/urgent material and should fix your issue, right?
+This set of results are from 4.14.235-rc2.
 
-The part below is a separate patch and can be left for later, or maybe
-remain in the codebase, as simple tools that use just one evsel and
-request a cgroup will continue probing the kernel, etc. I.e. it
-shouldn't get in the way for cases with dummies, etc.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Simple tools then won't have to get that !perf_can_record_cgroup() call.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-- Arnaldo
+## Build
+* kernel: 4.14.235-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: 709fde45859bbcf6ad058f7f29761df9adfc26b4
+* git describe: v4.14.234-85-g709fde45859b
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.234-85-g709fde45859b
 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 4a3cd1b5bb33..2462584d0ee5 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1217,7 +1217,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
->  		attr->namespaces  = track;
->  
->  	if (opts->record_cgroup) {
-> -		attr->cgroup = track && !perf_missing_features.cgroup;
-> +		attr->cgroup = track;
->  		evsel__set_sample_bit(evsel, CGROUP);
->  	}
->  
-> @@ -1933,10 +1933,6 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		perf_missing_features.data_page_size = true;
->  		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
->  		goto out_close;
-> -	} else if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
-> -		perf_missing_features.cgroup = true;
-> -		pr_debug2_peo("Kernel has no cgroup sampling support, bailing out\n");
-> -		goto out_close;
->          } else if (!perf_missing_features.branch_hw_idx &&
->  	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX)) {
->  		perf_missing_features.branch_hw_idx = true;
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 75cf5dbfe208..fecf13c0e4da 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -168,7 +168,6 @@ struct perf_missing_features {
->  	bool bpf;
->  	bool aux_output;
->  	bool branch_hw_idx;
-> -	bool cgroup;
->  	bool data_page_size;
->  	bool code_page_size;
->  	bool weight_struct;
-> -- 
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
-> 
+## No regressions (compared to v4.14.233-38-g535f9ea88cc8)
 
--- 
+## Fixes (compared to v4.14.233-38-g535f9ea88cc8)
+* ltp-mm-tests
+  - ksm03
+  - ksm03_1
 
-- Arnaldo
+NOTE: The LTP test suite upgraded to latest release version LTP 20210524.
+
+## Test result summary
+ total: 64130, pass: 51268, fail: 1497, skip: 10559, xfail: 806,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
