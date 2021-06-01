@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56193975CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202433975D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234283AbhFAOwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
+        id S234164AbhFAOzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234043AbhFAOwS (ORCPT
+        with ESMTP id S233797AbhFAOzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:52:18 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A4EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 07:50:35 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id c5so3470509wrq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:50:35 -0700 (PDT)
+        Tue, 1 Jun 2021 10:55:05 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776E6C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 07:53:23 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so2094351wmh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:53:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=fiX9yiBNX+zZ1kE/XRKiD14Uy6lLFGjkKYDmuZqizOM=;
-        b=n+OPwKb1kAJTjuQvvGIw9YDsHRKdYbDS5xSlDwqoYoirPYSA1nWXwyUauKcJflxAQg
-         tKZvQw3CrIcjXjb8Cm/kTvQzCvpq6RPm3JZq2UU3p1CgfrtpvMAmlLk0hSRfPf00+u9C
-         CP4Fs1I7n//dlZ5/0Oz8Le1vKn1Tkd/H6zocfxHTKGUYYRv1I2ujSJV66WbDX0mgVOkH
-         bBNTJdcjcv2it4bdNRzn/v2ksxuT3XEnmOMxQ1gLrU0oEvy/KoSqtyDjx96GrizGKIb6
-         WBVHkkinzAd9/3iMFTBtJbh401blDjk066yo6oc40eE3b2nCE1Z+amWfiXbiDLCa6Oel
-         Snvg==
+        bh=W2kyomq6HBL5TPAwM9hsMfHIspmq5b2l1+yMyreGJzo=;
+        b=TEg21JhDUFVCafPPe9rtcG74SEu6TXV4OvdopaJQb+OjnboON7V+hy3twxJEL6EC+Z
+         guj2+clNdkKivngAf/yeFgN554G9qcTO5VkztWsgQ/jJLrqTFvTl2UHZzBqrjM2EvVQQ
+         QI/QyjvLkTsvaIVEWfLQcE6VVxHQ2jBq0J/ZuWmEg4w0kYKHsRZ+/ienMfT+etUon2tY
+         6/h7i1V+YyLqXL16T9wBklzf502S2w9eoB04VN8uUUwu+Rj/eOTqRmMo1bEPPIoPtu+k
+         xwOIOWyWxR8YUqFtjjE0yx/Lh0Heb49GqDNfUc8ahMJBqzwMHlasq00y5B9mlutSVzJb
+         uHNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=fiX9yiBNX+zZ1kE/XRKiD14Uy6lLFGjkKYDmuZqizOM=;
-        b=NUaCYEBNWV4CBnIfSEs9rIQ01EtoS/Mas9vs1WCVefXN3IgpPQE2KGy6GanDhI1ZDM
-         9mKHbV8Bsu+umffM2aPiLVfQGlvXZsksR0jFVYky+UwEuEYyOgCwivTXhWCRsW63WxB4
-         kKo+rqo6GA6hS/ifP5+CMBmpvxVcslQYWg3jYvJMeAG2I6uKVd0KSoutSZSE872Iuis8
-         NFmzJgQ89iWBHZwqr6+Sh8HT41NqMzxBKNoWFWru/oLf8rpKoFII21+wTrBl0OtpNsG3
-         fuDkINyTT9xLnE6muleY+m6w77sRThpUPqVOHJIyCriCT69r89hImBJz14LtywPpnBKx
-         CQEA==
-X-Gm-Message-State: AOAM533ski5tIkQpXzdSw9d7BaUKCnKpI1JcKQtr2BMWeQcTghM4zZHr
-        CAG0jymDUdfjxOuzF2i4sC9r+g==
-X-Google-Smtp-Source: ABdhPJzfsLg/GOaS5q9dH68xf309SiGEIiSBWSqUJbsFz867TbDfwV361wLM3kGNCHrf73lHDtfYyQ==
-X-Received: by 2002:a5d:4dd1:: with SMTP id f17mr27680158wru.160.1622559033925;
-        Tue, 01 Jun 2021 07:50:33 -0700 (PDT)
+        bh=W2kyomq6HBL5TPAwM9hsMfHIspmq5b2l1+yMyreGJzo=;
+        b=I3/mezy9Obo3RO5NoC0g2WrKFe4wjTNst1/P3TMV6JJnVWiyfyf3ExAoXFkz17vfOZ
+         BY9T3OF0+/8eyk1zBtpdpSJfI8TyzJ0+mC0qfBhcykcLL/l9QoSt1TdkuLZVKM/3mkuk
+         kkNh3MsCwmT9aFEMwkd2DU/qNVFuTh9jy6oOa1wsxxGISOXgiG73Qf1OCNJfROnuUaU/
+         v4hEXyTaf/ps9jbI2S3gPXuSgXhb1garp4ZjxMVBfXd4a0dOY9kt3lTMQPlv6OTwRiEK
+         F/iSLtcdssNG5WNgRutvKVM3KOLZhDqwRZjmYv3cWuLfzoK/VPHdukgQV3/4kxgR1OL/
+         JP3A==
+X-Gm-Message-State: AOAM530X7yA6vm9yfCJjWhnJLR3WdhYXWiW0iOu+GQtTvtAFExkNWvL7
+        KRD14p8PAQs8eMR6IX4t7O4t1w==
+X-Google-Smtp-Source: ABdhPJxnBgbZtAB1MlRP6uBEbzjBrOwMOwCbmGXHa+pkO19wrKIRJ28Pumactjmp/3FqEjyHVYLdBg==
+X-Received: by 2002:a05:600c:2284:: with SMTP id 4mr12558069wmf.146.1622559201249;
+        Tue, 01 Jun 2021 07:53:21 -0700 (PDT)
 Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id f6sm4125726wru.72.2021.06.01.07.50.33
+        by smtp.gmail.com with ESMTPSA id h15sm18681785wmq.1.2021.06.01.07.53.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 07:50:33 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 15:50:31 +0100
+        Tue, 01 Jun 2021 07:53:20 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 15:53:19 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>
-Subject: Re: [RESEND 1/1] clk: versatile: remove dependency on ARCH_*
-Message-ID: <20210601145031.GK543307@dell>
-References: <20210520161702.3746174-1-lee.jones@linaro.org>
- <CACRpkdZgpFL4ALGr16hua-uSnM-5SrOZ1KGMkzTEDrZmwh_1=w@mail.gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] mfd: arizona: Allow building arizona MFD-core as module
+Message-ID: <20210601145319.GL543307@dell>
+References: <20210521135023.192688-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdZgpFL4ALGr16hua-uSnM-5SrOZ1KGMkzTEDrZmwh_1=w@mail.gmail.com>
+In-Reply-To: <20210521135023.192688-1-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021, Linus Walleij wrote:
+On Fri, 21 May 2021, Hans de Goede wrote:
 
-> On Thu, May 20, 2021 at 6:17 PM Lee Jones <lee.jones@linaro.org> wrote:
+> There is no reason why the arizona core,irq and codec model specific
+> regmap bits cannot be build as a module. All they do is export symbols
+> which are used by the arizona-spi/i2c and arizona-codec modules, which
+> themselves can be built as module.
 > 
-> > From: Peter Collingbourne <pcc@google.com>
-> >
-> > It is now possible to build a modular kernel for vexpress by
-> > not setting CONFIG_ARCH_VEXPRESS=y and instead setting =m on the
-> > drivers that it normally implies. This is with the exception of
-> > CLK_VEXPRESS_OSC which is currently hidden behind a dependency on
-> > one of several ARCH_* variables. Remove that dependency so that
-> > CLK_VEXPRESS_OSC may be enabled without it.
-> >
-> > Signed-off-by: Peter Collingbourne <pcc@google.com>
-> > Link: https://linux-review.googlesource.com/id/I435a21e2e5f6187db54f4ef2079b60028ab2ea69
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
+> can be built as a module.
 > 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> This is especially useful on x86 platforms with a WM5102 codec, this
+> allows the arizona MFD driver necessary for the WM5102 codec to be
+> enabled in generic distro-kernels without growing the base kernel-image
+> size.
+> 
+> Note this also adds an explicit "depends on MFD_ARIZONA" to all the
+> arizona codec Kconfig options. The codec drivers use functions from mfd
+> arizona-core. These new depends are necessary to disallow the codec
+> drivers being builtin when the arizona-core is build as a module,
+> otherwise we end up with missing symbol errors when building vmlinuz.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+> Changes in v2:
+> - Add explicit "depends on MFD_ARIZONA" to all the arizona codec Kconfigs
+> ---
+>  drivers/mfd/Kconfig        |  2 +-
+>  drivers/mfd/Makefile       | 14 +++++++-------
+>  drivers/mfd/arizona-core.c |  2 ++
+>  sound/soc/codecs/Kconfig   | 10 +++++-----
+>  4 files changed, 15 insertions(+), 13 deletions(-)
 
-Still not in -next.
-
-Who will take this please?
+Applied, thanks.
 
 -- 
 Lee Jones [李琼斯]
