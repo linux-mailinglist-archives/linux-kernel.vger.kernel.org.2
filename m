@@ -2,138 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B75B397467
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB18139746D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbhFANgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:36:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233797AbhFANgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:36:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8B861159;
-        Tue,  1 Jun 2021 13:34:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622554494;
-        bh=csoc1f4pPPdREvTk3g6EFKsFTV8ISl9/45FduPUi1BE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VO5EG9ul97MoVTLedsST7fxQ3BXlgx768xOE5p1DSWzCskpkzvHrbUhe1REhn11/q
-         Pa8YWU20adH8y7z3r+DQSLXjmdqNB6XkGrcabuVqPZX5c6e5Dy/QzjQnxgNSQ8iJ7z
-         CSRSliBGWh4lr6mThwIt8wC8gAWTt9IQ/4OrrDguEKAxV4GwFefEu6c+9tEUSJOoPD
-         mLJVwvKfpxA15YzhGnvmKNips0S4sDNWz0rsAq14cqFhrZ99dwbx+238d+inALzsav
-         0u6s92GdyLmdN91LAQu218uINhMnEBMw18EL4DUkVIS9iBBcwDZKM/hpUEw5fuG8Q5
-         5oOkfW0+9pI5w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0965A4011C; Tue,  1 Jun 2021 10:34:52 -0300 (-03)
-Date:   Tue, 1 Jun 2021 10:34:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH] perf tools: Move probing cgroup sampling support
-Message-ID: <YLY3fOxkKsKi/iIS@kernel.org>
-References: <20210527182835.1634339-1-namhyung@kernel.org>
- <YLY2cdeQec5bH5Jc@kernel.org>
+        id S234047AbhFANhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:37:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44675 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234003AbhFANht (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:37:49 -0400
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lo4Yx-0005Ji-0S
+        for linux-kernel@vger.kernel.org; Tue, 01 Jun 2021 13:36:07 +0000
+Received: by mail-ed1-f71.google.com with SMTP id d8-20020a0564020008b0290387d38e3ce0so7837932edu.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:36:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KHWmh1TQs4IjrJsBdCyrsWcpBXc8c+PRPRjkAmTTzg0=;
+        b=Xf/aMSuOvqMmgP9t9wks9hOqliUqQE31YvSspC5fsdDrOcaL3ItGSYnCjHMry16N5T
+         48XwTnZemd6YU+eiZL+H4fEtk7JFd9nDwebD+71a3DitoQZpu9gmmuW++B4j8aZd6nlW
+         qyaFVdx7DVWr8y9ab/RAULHpDa9soS4+xzO5eZavevNGGXOLj5GEzwLvB+HpdP3fk3xg
+         lbIpnPPrmwhwVNuB4sgyPeDCNDArIitleLf9ORaCrC0kSdqLJ6KC7fDKz1HBCIX6QQGm
+         6sKQ1fOffjw7K04JhsGhgGtAglZGqXNnfc6DTe/CSWRewlpq80iMJsEQCqxhxVwFKhif
+         n6fg==
+X-Gm-Message-State: AOAM530xvycpbZZ18IxPuLjT+UYteWzBGUkadgVfs+tuJsILX2uMTC1z
+        +RinBa0PFlNxRRYyQ+T5k1/EvYvDe0YwgK9Nx3haOb7htHRbKGK1wNRPdPVpTwvVA5RNxPgq1lg
+        bdKLNH8yg6TjOfiLhk8SFZVzGMYLdlcO1GWIRV38hOw==
+X-Received: by 2002:a17:906:1299:: with SMTP id k25mr28989401ejb.139.1622554566541;
+        Tue, 01 Jun 2021 06:36:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/VSMw2nbk3tEDQKwI/OYfBmyMHCXNfN4G1xSI/KwZZwFSS1p/ytfWzCAebqN51mY4eVfQbw==
+X-Received: by 2002:a17:906:1299:: with SMTP id k25mr28989374ejb.139.1622554566352;
+        Tue, 01 Jun 2021 06:36:06 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id p5sm7210941ejm.115.2021.06.01.06.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 06:36:06 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 1/2] power: ab8500: remove unused header
+Date:   Tue,  1 Jun 2021 15:35:59 +0200
+Message-Id: <20210601133600.285452-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLY2cdeQec5bH5Jc@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 01, 2021 at 10:30:25AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, May 27, 2021 at 11:28:35AM -0700, Namhyung Kim escreveu:
-> > I found that checking cgroup sampling support using the missing
-> > features doesn't work on old kernels.  Because it added both
-> > attr.cgroup bit and PERF_SAMPLE_CGROUP bit, it needs to check
-> > whichever comes first (usually the actual event, not dummy).
-> > 
-> > But it only checks the attr.cgroup bit which is set only in the dummy
-> > event so cannot detect failtures due the sample bits.  Also we don't
-> > ignore the missing feature and retry, it'd be better checking it with
-> > the API probing logic.
-> > 
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/builtin-record.c      |  6 ++++++
-> >  tools/perf/util/evsel.c          |  6 +-----
-> >  tools/perf/util/evsel.h          |  1 -
-> >  tools/perf/util/perf_api_probe.c | 10 ++++++++++
-> >  tools/perf/util/perf_api_probe.h |  1 +
-> >  5 files changed, 18 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
-> > index 829af17a0867..020411682a3c 100644
-> > --- a/tools/perf/util/perf_api_probe.c
-> > +++ b/tools/perf/util/perf_api_probe.c
-> > @@ -103,6 +103,11 @@ static void perf_probe_build_id(struct evsel *evsel)
-> >  	evsel->core.attr.build_id = 1;
-> >  }
-> >  
-> > +static void perf_probe_cgroup(struct evsel *evsel)
-> > +{
-> > +	evsel->core.attr.cgroup = 1;
-> > +}
-> > +
-> >  bool perf_can_sample_identifier(void)
-> >  {
-> >  	return perf_probe_api(perf_probe_sample_identifier);
-> > @@ -182,3 +187,8 @@ bool perf_can_record_build_id(void)
-> >  {
-> >  	return perf_probe_api(perf_probe_build_id);
-> >  }
-> > +
-> > +bool perf_can_record_cgroup(void)
-> > +{
-> > +	return perf_probe_api(perf_probe_cgroup);
-> > +}
-> > diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_probe.h
-> > index f12ca55f509a..b104168efb15 100644
-> > --- a/tools/perf/util/perf_api_probe.h
-> > +++ b/tools/perf/util/perf_api_probe.h
-> > @@ -12,5 +12,6 @@ bool perf_can_record_switch_events(void);
-> >  bool perf_can_record_text_poke_events(void);
-> >  bool perf_can_sample_identifier(void);
-> >  bool perf_can_record_build_id(void);
-> > +bool perf_can_record_cgroup(void);
-> >  
-> >  #endif // __PERF_API_PROBE_H
-> > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> > index bc3dd379eb67..71efe6573ee7 100644
-> > --- a/tools/perf/builtin-record.c
-> > +++ b/tools/perf/builtin-record.c
-> > @@ -2733,6 +2733,12 @@ int cmd_record(int argc, const char **argv)
-> >  		rec->no_buildid = true;
-> >  	}
-> >  
-> > +	if (rec->opts.record_cgroup && !perf_can_record_cgroup()) {
-> > +		pr_err("Kernel has no cgroup sampling support.\n");
-> > +		err = -EINVAL;
-> > +		goto out_opts;
-> > +	}
-> > +
-> >  	if (rec->opts.kcore)
-> >  		rec->data.is_dir = true;
-> >  
-> 
-> The above is perf/urgent material and should fix your issue, right?
-> 
-> The part below is a separate patch and can be left for later, or maybe
-> remain in the codebase, as simple tools that use just one evsel and
-> request a cgroup will continue probing the kernel, etc. I.e. it
-> shouldn't get in the way for cases with dummies, etc.
-> 
-> Simple tools then won't have to get that !perf_can_record_cgroup() call.
+The ab8500.h header in linux/power is not referenced/included, so can be
+safely removed.
 
-I did it tentatively in my local branch, i.e. removed the removal of the
-fallback part, thus is just for it to be tested by the containers setup,
-etc, we can change this before it hits acme/perf/core externally.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ include/linux/power/ab8500.h | 16 ----------------
+ 1 file changed, 16 deletions(-)
+ delete mode 100644 include/linux/power/ab8500.h
 
-- Arnaldo
+diff --git a/include/linux/power/ab8500.h b/include/linux/power/ab8500.h
+deleted file mode 100644
+index 51976b52f373..000000000000
+--- a/include/linux/power/ab8500.h
++++ /dev/null
+@@ -1,16 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (C) ST-Ericsson 2013
+- * Author: Hongbo Zhang <hongbo.zhang@linaro.com>
+- */
+-
+-#ifndef PWR_AB8500_H
+-#define PWR_AB8500_H
+-
+-extern const struct abx500_res_to_temp ab8500_temp_tbl_a_thermistor[];
+-extern const int ab8500_temp_tbl_a_size;
+-
+-extern const struct abx500_res_to_temp ab8500_temp_tbl_b_thermistor[];
+-extern const int ab8500_temp_tbl_b_size;
+-
+-#endif /* PWR_AB8500_H */
+-- 
+2.27.0
+
