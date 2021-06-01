@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6ED6397316
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0BF39731E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbhFAMTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:19:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2822 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhFAMTw (ORCPT
+        id S233741AbhFAMYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:24:37 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:20390 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233336AbhFAMYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:19:52 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvWK15brGzWqPw;
-        Tue,  1 Jun 2021 20:13:25 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 20:18:07 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 20:18:07 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>
-CC:     <jarkko@kernel.org>
-Subject: [PATCH -next] tpm: fix  some doc warnings in tpm1-cmd.c
-Date:   Tue, 1 Jun 2021 20:22:30 +0800
-Message-ID: <20210601122230.3205331-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Jun 2021 08:24:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622550173; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=JAcNP7Uo9zJKWgXCjvCXGiHUwrw7I6s+Af9UbfhFRic=;
+ b=LcEwrfCjEUGcZwmIWdqTs6QCWgrA7709mTA/KNQeQFjK0Cb784h1Di3bTXb2GWf4AzC0Bn8q
+ 5iF37dvSIeC9QzfA9rM7zbEIiT/1Q/QgNnXmt3aKObX8eBdJJcVLrGLoz1pZyiCyPvkL2Cu+
+ 5j/E1tp2bvcl9gdJWCQA6T7V2ng=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60b62695ed59bf69cceb7187 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Jun 2021 12:22:45
+ GMT
+Sender: rajeevny=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0A672C43460; Tue,  1 Jun 2021 12:22:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajeevny)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B0A4C433F1;
+        Tue,  1 Jun 2021 12:22:44 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 01 Jun 2021 17:52:44 +0530
+From:   rajeevny@codeaurora.org
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
+        robh+dt@kernel.org, abhinavk@codeaurora.org,
+        kalyan_t@codeaurora.org, mkrishn@codeaurora.org, jonathan@marek.ca
+Subject: Re: [v1 2/3] drm/msm/dsi: Add PHY configuration for SC7280
+In-Reply-To: <7a3facb5-d118-f81b-65f8-381b0d56a23b@linaro.org>
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
+ <1622468035-8453-3-git-send-email-rajeevny@codeaurora.org>
+ <7a3facb5-d118-f81b-65f8-381b0d56a23b@linaro.org>
+Message-ID: <b37617c61fbdb11dc2c903878c05e0ac@codeaurora.org>
+X-Sender: rajeevny@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following make W=1 warnings:
+On 31-05-2021 23:27, Dmitry Baryshkov wrote:
+> On 31/05/2021 16:33, Rajeev Nandan wrote:
 
-  drivers/char/tpm/tpm1-cmd.c:325: warning: expecting prototype for tpm_startup(). Prototype was for tpm1_startup() instead
-  drivers/char/tpm/tpm1-cmd.c:621: warning: expecting prototype for tpm_continue_selftest(). Prototype was for tpm1_continue_selftest() instead
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/char/tpm/tpm1-cmd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>> +	.min_pll_rate = 600000000UL,
+>> +	.max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000ULL : 
+>> ULONG_MAX,
+> 
+> Could you please follow the patch by Arnd here?
+> https://lore.kernel.org/linux-arm-msm/20210514213032.575161-1-arnd@kernel.org/
+> 
+> 
+> 
+>> +	.io_start = { 0xae94400, 0xae96400 },
+>> +	.num_dsi_phy = 2,
+> 
+> Judging from the next patch, you have one DSI host and one DSI PHY.
+> Could you please correct io_start / num_dsi_phy here?
+> 
+>> +	.quirks = DSI_PHY_7NM_QUIRK_V4_1,
+>> +};
+> 
+> 
+> With these two issues fixed:
+> 
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-diff --git a/drivers/char/tpm/tpm1-cmd.c b/drivers/char/tpm/tpm1-cmd.c
-index ca7158fa6e6c..f7dc986fa4a0 100644
---- a/drivers/char/tpm/tpm1-cmd.c
-+++ b/drivers/char/tpm/tpm1-cmd.c
-@@ -312,7 +312,7 @@ unsigned long tpm1_calc_ordinal_duration(struct tpm_chip *chip, u32 ordinal)
- #define TPM_ST_CLEAR 1
- 
- /**
-- * tpm_startup() - turn on the TPM
-+ * tpm1_startup() - turn on the TPM
-  * @chip: TPM chip to use
-  *
-  * Normally the firmware should start the TPM. This function is provided as a
-@@ -611,7 +611,7 @@ int tpm1_pcr_read(struct tpm_chip *chip, u32 pcr_idx, u8 *res_buf)
- 
- #define TPM_ORD_CONTINUE_SELFTEST 83
- /**
-- * tpm_continue_selftest() - run TPM's selftest
-+ * tpm1_continue_selftest() - run TPM's selftest
-  * @chip: TPM chip to use
-  *
-  * Returns 0 on success, < 0 in case of fatal error or a value > 0 representing
--- 
-2.25.1
+Thank you very much for your review :) I have incorporated the
+review comments. I am waiting for comments on my DT bindings patch (1/3) 
+and
+will send v2 in a day or two.
 
+Thanks,
+Rajeev
