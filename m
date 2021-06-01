@@ -2,252 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDAC397A6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F72397A6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhFATI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 15:08:29 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54498 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbhFATI2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 15:08:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622574407; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RLJZcAic9n4wt3SI64JCzsrj0R3LMnnmYmskqIV6rjc=;
- b=WWd4ftYXTOdwzEvwlrWJtVZkWcqfhiguo0SuOFfULTIe3v1E0SYtt8FsaIciTtJHYNm6AY1F
- tYddC2N1ZHXaGEpdDQZ79VmHkg8rcm2zkpY8tmT60NSq4q0ME+EWQ5+6ymhGHbMZCoAjISea
- YbhDhTWk60BA7S3qjP6ndGo74HE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60b68533ea2aacd729dc3c34 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Jun 2021 19:06:27
- GMT
-Sender: sharathv=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C8B77C433D3; Tue,  1 Jun 2021 19:06:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sharathv)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3377C4338A;
-        Tue,  1 Jun 2021 19:06:25 +0000 (UTC)
+        id S234746AbhFATI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 15:08:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233397AbhFATI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 15:08:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C72AD61287;
+        Tue,  1 Jun 2021 19:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622574435;
+        bh=lDMpMfNCZ2MTzjxr62K2HQLSkk5cdQjeJfMGQh+qJ3M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=BWVJnjnGuMNc5jl7Uw2vAZaiPrR3tsBC8GrDuLC6UJ1cxAagUwSTgrXTQ66oKL1+f
+         3XEo6yhk0r5lYyadND0Zfa2laaPU8EQltsNC1hVh9b3U8uuYn59WDY7INQ93CCfJZE
+         hykt566I+W6vnlKk3k8q4K5x1ULSnddvJdsgSp6gCiuohMb9pI+NgcIoY+RwiFgFk5
+         RDbSWLxdiHKaWqAbeKqXXuhA/CjiucxBA9phQ8QDhg9KUQ7q6lWDx7Saey4ZA0+nMJ
+         jW1g8n6MJpilatlIdAGt1VYSTFuZK4/V5EcTDUdq8IM7pfJiQVuT7VIdG8ogjAhYH6
+         8ZT/iQQfgoQYw==
+Subject: Re: [PATCH] MAINTAINERS: Expand and relocate PGO entry
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <wcw@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+References: <20210601190541.1446239-1-keescook@chromium.org>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <75a5aefd-084f-ef59-ceff-0f3856dcce71@kernel.org>
+Date:   Tue, 1 Jun 2021 12:07:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210601190541.1446239-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 02 Jun 2021 00:36:25 +0530
-From:   sharathv@codeaurora.org
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, elder@kernel.org, cpratapa@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v7 2/3] net: ethernet: rmnet: Support for ingress
- MAPv5 checksum offload
-In-Reply-To: <20210528155800.0514d249@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <1622105322-2975-1-git-send-email-sharathv@codeaurora.org>
- <1622105322-2975-3-git-send-email-sharathv@codeaurora.org>
- <20210528155800.0514d249@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Message-ID: <c843c5923929761e092fddbab29412be@codeaurora.org>
-X-Sender: sharathv@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-29 04:28, Jakub Kicinski wrote:
-> On Thu, 27 May 2021 14:18:41 +0530 Sharath Chandra Vurukala wrote:
->> Adding support for processing of MAPv5 downlink packets.
->> It involves parsing the Mapv5 packet and checking the csum header
->> to know whether the hardware has validated the checksum and is
->> valid or not.
->> 
->> Based on the checksum valid bit the corresponding stats are
->> incremented and skb->ip_summed is marked either CHECKSUM_UNNECESSARY
->> or left as CHEKSUM_NONE to let network stack revalidate the checksum
->> and update the respective snmp stats.
->> 
->> Current MAPV1 header has been modified, the reserved field in the
->> Mapv1 header is now used for next header indication.
->> 
->> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
+On 6/1/2021 12:05 PM, Kees Cook wrote:
+> This expands the "PGO" acronym and adds additional metadata to help have
+> patches get directed correctly.
 > 
->> @@ -300,8 +301,11 @@ struct rmnet_map_header 
->> *rmnet_map_add_map_header(struct sk_buff *skb,
->>  struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
->>  				      struct rmnet_port *port)
->>  {
->> +	struct rmnet_map_v5_csum_header *next_hdr = NULL;
->> +	void *data = skb->data;
->>  	struct rmnet_map_header *maph;
-> 
-> Please maintain reverse xmas tree ordering
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: Bill Wendling <wcw@google.com>
+> Cc: clang-built-linux@googlegroups.com
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Thanks Jakub for the review, I will address all the comments that you 
-gave in the next subsequent patch.
+Acked-by: Nathan Chancellor <nathan@kernel.org>
+
+> ---
+> as seen in: https://lore.kernel.org/lkml/YLVRTilQ5k5n+Vmz@archlinux-ax161/
+> ---
+>   MAINTAINERS | 22 +++++++++++++---------
+>   1 file changed, 13 insertions(+), 9 deletions(-)
 > 
->>  	struct sk_buff *skbn;
->> +	u8 nexthdr_type;
->>  	u32 packet_len;
->> 
->>  	if (skb->len == 0)
->> @@ -310,8 +314,18 @@ struct sk_buff *rmnet_map_deaggregate(struct 
->> sk_buff *skb,
->>  	maph = (struct rmnet_map_header *)skb->data;
->>  	packet_len = ntohs(maph->pkt_len) + sizeof(*maph);
->> 
->> -	if (port->data_format & RMNET_FLAGS_INGRESS_MAP_CKSUMV4)
->> +	if (port->data_format & RMNET_FLAGS_INGRESS_MAP_CKSUMV4) {
->>  		packet_len += sizeof(struct rmnet_map_dl_csum_trailer);
->> +	} else if (port->data_format & RMNET_FLAGS_INGRESS_MAP_CKSUMV5) {
->> +		if (!(maph->flags & MAP_CMD_FLAG)) {
->> +			packet_len += sizeof(*next_hdr);
->> +			if (maph->flags & MAP_NEXT_HEADER_FLAG)
->> +				next_hdr = (data + sizeof(*maph));
-> 
-> brackets unnecessary
-> 
-Will take care in next patch.
->> +			else
->> +				/* Mapv5 data pkt without csum hdr is invalid */
->> +				return NULL;
->> +		}
->> +	}
->> 
->>  	if (((int)skb->len - (int)packet_len) < 0)
->>  		return NULL;
->> @@ -320,6 +334,13 @@ struct sk_buff *rmnet_map_deaggregate(struct 
->> sk_buff *skb,
->>  	if (!maph->pkt_len)
->>  		return NULL;
->> 
->> +	if (next_hdr) {
->> +		nexthdr_type = u8_get_bits(next_hdr->header_info,
->> +					   MAPV5_HDRINFO_HDR_TYPE_FMASK);
->> +		if (nexthdr_type != RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD)
->> +			return NULL;
->> +	}
->> +
->>  	skbn = alloc_skb(packet_len + RMNET_MAP_DEAGGR_SPACING, GFP_ATOMIC);
->>  	if (!skbn)
->>  		return NULL;
->> @@ -414,3 +435,37 @@ void rmnet_map_checksum_uplink_packet(struct 
->> sk_buff *skb,
->> 
->>  	priv->stats.csum_sw++;
->>  }
->> +
->> +/* Process a MAPv5 packet header */
->> +int rmnet_map_process_next_hdr_packet(struct sk_buff *skb,
->> +				      u16 len)
->> +{
->> +	struct rmnet_priv *priv = netdev_priv(skb->dev);
->> +	struct rmnet_map_v5_csum_header *next_hdr;
->> +	u8 nexthdr_type;
->> +	int rc = 0;
-> 
-> rc is not meaningfully used
-> 
->> +	next_hdr = (struct rmnet_map_v5_csum_header *)(skb->data +
->> +			sizeof(struct rmnet_map_header));
->> +
->> +	nexthdr_type = u8_get_bits(next_hdr->header_info,
->> +				   MAPV5_HDRINFO_HDR_TYPE_FMASK);
->> +
->> +	if (nexthdr_type == RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD) {
->> +		if (unlikely(!(skb->dev->features & NETIF_F_RXCSUM))) {
->> +			priv->stats.csum_sw++;
->> +		} else if (next_hdr->csum_info & MAPV5_CSUMINFO_VALID_FLAG) {
->> +			priv->stats.csum_ok++;
->> +			skb->ip_summed = CHECKSUM_UNNECESSARY;
->> +		} else {
->> +			priv->stats.csum_valid_unset++;
->> +		}
->> +
->> +		/* Pull csum v5 header */
->> +		skb_pull(skb, sizeof(*next_hdr));
->> +	} else {
->> +		return -EINVAL;
-> 
-> flip condition, return early
-> 
-Sure will take care in next patch.
->> +	}
->> +
->> +	return rc;
->> +}
->> diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
->> index 4efb537..8502ccc 100644
->> --- a/include/linux/if_rmnet.h
->> +++ b/include/linux/if_rmnet.h
->> @@ -1,5 +1,5 @@
->>  /* SPDX-License-Identifier: GPL-2.0-only
->> - * Copyright (c) 2013-2019, The Linux Foundation. All rights 
->> reserved.
->> + * Copyright (c) 2013-2019, 2021 The Linux Foundation. All rights 
->> reserved.
->>   */
->> 
->>  #ifndef _LINUX_IF_RMNET_H_
->> @@ -14,8 +14,10 @@ struct rmnet_map_header {
->>  /* rmnet_map_header flags field:
->>   *  PAD_LEN:	number of pad bytes following packet data
->>   *  CMD:	1 = packet contains a MAP command; 0 = packet contains data
->> + *  NEXT_HEADER	1 = packet contains V5 CSUM header 0 = no V5 CSUM 
->> header
-> 
-> Colon missing?
-> 
->>   */
->>  #define MAP_PAD_LEN_MASK		GENMASK(5, 0)
->> +#define MAP_NEXT_HEADER_FLAG		BIT(6)
->>  #define MAP_CMD_FLAG			BIT(7)
->> 
->>  struct rmnet_map_dl_csum_trailer {
->> @@ -45,4 +47,26 @@ struct rmnet_map_ul_csum_header {
->>  #define MAP_CSUM_UL_UDP_FLAG		BIT(14)
->>  #define MAP_CSUM_UL_ENABLED_FLAG	BIT(15)
->> 
->> +/* MAP CSUM headers */
->> +struct rmnet_map_v5_csum_header {
->> +	u8 header_info;
->> +	u8 csum_info;
->> +	__be16 reserved;
->> +} __aligned(1);
-> 
-> __aligned() seems rather pointless here but ok.
-> 
->> +/* v5 header_info field
->> + * NEXT_HEADER:  Represents whether there is any other header
-> 
-> double space
-> 
->> + * HEADER TYPE: represents the type of this header
-> 
-> On previous line you used _ for a space, and started from capital
-> letter. Please be consistent.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fd7d34fcd95c..2030cd9593cf 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4448,6 +4448,19 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/cla
+>   F:	include/linux/cfi.h
+>   F:	kernel/cfi.c
+>   
+> +CLANG PROFILE GUIDED OPTIMIZATION SUPPORT
+> +M:	Sami Tolvanen <samitolvanen@google.com>
+> +M:	Bill Wendling <wcw@google.com>
+> +M:	Kees Cook <keescook@chromium.org>
+> +R:	Nathan Chancellor <nathan@kernel.org>
+> +R:	Nick Desaulniers <ndesaulniers@google.com>
+> +L:	clang-built-linux@googlegroups.com
+> +S:	Supported
+> +B:	https://github.com/ClangBuiltLinux/linux/issues
+> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/features
+> +F:	Documentation/dev-tools/pgo.rst
+> +F:	kernel/pgo/
+> +
+>   CLEANCACHE API
+>   M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+>   L:	linux-kernel@vger.kernel.org
+> @@ -14387,15 +14400,6 @@ S:	Maintained
+>   F:	include/linux/personality.h
+>   F:	include/uapi/linux/personality.h
+>   
+> -PGO BASED KERNEL PROFILING
+> -M:	Sami Tolvanen <samitolvanen@google.com>
+> -M:	Bill Wendling <wcw@google.com>
+> -R:	Nathan Chancellor <nathan@kernel.org>
+> -R:	Nick Desaulniers <ndesaulniers@google.com>
+> -S:	Supported
+> -F:	Documentation/dev-tools/pgo.rst
+> -F:	kernel/pgo/
+> -
+>   PHOENIX RC FLIGHT CONTROLLER ADAPTER
+>   M:	Marcus Folkesson <marcus.folkesson@gmail.com>
+>   L:	linux-input@vger.kernel.org
 > 
 
-Sure, will take care in next patch.
-
->> + *
->> + * csum_info field
->> + * CSUM_VALID_OR_REQ:
->> + * 1 = for UL, checksum computation is requested.
->> + * 1 = for DL, validated the checksum and has found it valid
->> + */
->> +
->> +#define MAPV5_HDRINFO_NXT_HDR_FLAG	BIT(0)
->> +#define MAPV5_HDRINFO_HDR_TYPE_FMASK	GENMASK(7, 1)
->> +#define MAPV5_CSUMINFO_VALID_FLAG	BIT(7)
->> +
->> +#define RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD 2
->>  #endif /* !(_LINUX_IF_RMNET_H_) */
