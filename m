@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7483972A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061BC3972A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhFALod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhFALob (ORCPT
+        id S233795AbhFALpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:45:03 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:42816 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231219AbhFALpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:44:31 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1E5C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:42:49 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id d9so8792017ioo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=psPAB9NqHofPPQuOtyDnz2jywzmWciM0sLALrIheAbI=;
-        b=oWB9VREBzenyW3LLR7LLy+bhrONuvWzAVRchXRYWFhBPdnTFvAHwhBpq0gbDscQLfn
-         UJ9rdp4D3SGz8YKUF+trqOSfeV6GHj0jF8UxKqwyxWjCzzYW06q8FVSNBaoJExoVEke5
-         HcdnzwJ9s3ntfI1opLOqHMoLE0eXAa4Eo7+ql3SSd/h7j6Kv1RY+Eguc4x3ZxgzN4msu
-         EEXNS1Pm+E22v6/DDX5gEs34g88CBbEttP9af9z9opnz1SZk2upSMAEzRIJfSUjkj5bi
-         wPSIX4UXTStSwgpVX7lwjHRerxnB5Zn26U/DRdlvoG/nTOsyTRR1FiNDpeE+AXzNieYK
-         8aKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=psPAB9NqHofPPQuOtyDnz2jywzmWciM0sLALrIheAbI=;
-        b=bKatfje30Bf8OceRfvpF6zDW685HFHj+JiSPlqlS6B5NI6kzq1T2LzfRWnWbpYJAa3
-         LA+exymcgIsM2oBVpf6fS5FI53fEPMZuhirtSCa0yZCOCfHlBgK6YEPXyBAmFeaT0E1T
-         U2UpwpdcOG0JnY+oqfsxHxCwvWWmU+tGIvD2zfzA2a7oSJ23AEwwDvbHMAI80PcOyszL
-         4zZVD401wsx4ok5vMLBThWKlFvZN4542SfCONUpG2ERt0EA1TYAILj6fFhlIK3gudb3u
-         dTbhFahRkTiYM216QYK8KCevEwxBfrZYb+iYEyNS+vBf8L/geqVDn7Xa2QwDG5eo0sGr
-         el5A==
-X-Gm-Message-State: AOAM531RapIvDUl5ay0RACG51GBXhFuyzrYzPJMdWUXVsgdzQAsgFHrk
-        z6BtqJNvqcZHQAyD3t+0PChNopsvAiK8jrK8b60=
-X-Google-Smtp-Source: ABdhPJxByS5/pWQ1SIv88JzwJsdaSTsYhq85MNk4hM/rnpv/V/bw25/4G54zwAZy6QRtYlP03K0X9kLcXrtW3Oc9j2U=
-X-Received: by 2002:a05:6638:2728:: with SMTP id m40mr25090602jav.55.1622547768765;
- Tue, 01 Jun 2021 04:42:48 -0700 (PDT)
+        Tue, 1 Jun 2021 07:45:00 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151BbeKb027852;
+        Tue, 1 Jun 2021 13:43:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=DJ37+M79ssVG9Eilaezkix8osS0akg3oQ3Ki2TOqVeY=;
+ b=ZGHghPaIfg/tu/QIF6uNwBws0V1i6sPtyFGFy5E2Ot1NEdWGFElIDqvAUDitDGpRg8ql
+ No/SgMp74lDNIGjUKQph+xOwOBbDURjsR7g/sozAGcWM29FD9+/O/9IP5U4v48ZlCYVQ
+ F/aBr8/NCu/x8Pkv0YziT73BIfoHVUWbtrjjf2qTNQkTme0hAahUjueTlXQblQW29xST
+ X9nd73N5Zn6JL8djS3kvoKkapMvQE9VHTUSk0451Yx2eLQ2DjgXAmRq7sZZrcYDie7ui
+ U4bP1Sm1JXtwZylCvOCmgK0tJS27KEyZ11i1Ay8oZSZbIiyEU+5SmRTCPoY0c3irHSIp gg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38wjdg0mpa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 13:43:02 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A3E0010002A;
+        Tue,  1 Jun 2021 13:43:01 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 846AA21E17B;
+        Tue,  1 Jun 2021 13:43:01 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 1 Jun
+ 2021 13:43:00 +0200
+Subject: Re: [PATCH 2/4] i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
+To:     <dillon.minfei@gmail.com>, <pierre-yves.mordret@foss.st.com>,
+        <alain.volmat@foss.st.com>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@foss.st.com>, <sumit.semwal@linaro.org>,
+        <christian.koenig@amd.com>, <mturquette@baylibre.com>
+CC:     <sboyd@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>, <linux-clk@vger.kernel.org>
+References: <1620990152-19255-1-git-send-email-dillon.minfei@gmail.com>
+ <1620990152-19255-3-git-send-email-dillon.minfei@gmail.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <f30d5a1d-5acc-e756-5883-6c3d0173d643@foss.st.com>
+Date:   Tue, 1 Jun 2021 13:43:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Reply-To: patzengu@outlook.com
-Sender: jamesmarcus570@gmail.com
-Received: by 2002:a4f:612:0:0:0:0:0 with HTTP; Tue, 1 Jun 2021 04:42:48 -0700 (PDT)
-From:   Patrice Zengu <rm2568590@gmail.com>
-Date:   Tue, 1 Jun 2021 13:42:48 +0200
-X-Google-Sender-Auth: j9GB33snZ0LVJo0OYevnKFj52wc
-Message-ID: <CAB5Sy2iGQWBJ3JLAqjiPJdA11vm7=T3k-KPRbeZO_CcXX_+GNg@mail.gmail.com>
-Subject: Please co-operate with me
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1620990152-19255-3-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-01_06:2021-05-31,2021-06-01 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Dear Friend,
+Hi Dillon
 
-I am Mr.Patrice Zengu ,from Burkina Faso and i am the new bank telex
-manager of our bank here in Africa.
+On 5/14/21 1:02 PM, dillon.minfei@gmail.com wrote:
+> From: Dillon Min <dillon.minfei@gmail.com>
+> 
+> As stm32f429's internal flash is 2Mbytes and compiled kernel
+> image bigger than 2Mbytes, so we have to load kernel image
+> to sdram on stm32f429-disco board which has 8Mbytes sdram space.
+> 
+> based on above context, as you knows kernel running on external
+> sdram is more slower than internal flash. besides, we need read 4
+> bytes to get touch screen xyz(x, y, pressure) coordinate data in
+> stmpe811 interrupt.
+> 
+> so, in stm32f4_i2c_handle_rx_done, as i2c read slower than running
+> in xip mode, have to adjust 'STOP/START bit set position' from last
+> two bytes to last one bytes. else, will get i2c timeout in reading
+> touch screen coordinate.
+> 
+> to not bring in side effect, introduce IIC_LAST_BYTE_POS to support xip
+> kernel or zImage.
+> 
+> Fixes: 62817fc8d282 ("i2c: stm32f4: add driver")
+> Link: https://lore.kernel.org/lkml/1591709203-12106-5-git-send-email-dillon.minfei@gmail.com/
+> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-stm32f4.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
+> index 4933fc8ce3fd..2e41231b9037 100644
+> --- a/drivers/i2c/busses/i2c-stm32f4.c
+> +++ b/drivers/i2c/busses/i2c-stm32f4.c
+> @@ -93,6 +93,12 @@
+>  #define STM32F4_I2C_MAX_FREQ		46U
+>  #define HZ_TO_MHZ			1000000
+>  
+> +#if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
+> +#define IIC_LAST_BYTE_POS 1
+> +#else
+> +#define IIC_LAST_BYTE_POS 2
+> +#endif
+> +
+>  /**
+>   * struct stm32f4_i2c_msg - client specific data
+>   * @addr: 8-bit slave addr, including r/w bit
+> @@ -439,7 +445,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+>  	int i;
+>  
+>  	switch (msg->count) {
+> -	case 2:
+> +	case IIC_LAST_BYTE_POS:
+>  		/*
+>  		 * In order to correctly send the Stop or Repeated Start
+>  		 * condition on the I2C bus, the STOP/START bit has to be set
+> @@ -454,7 +460,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+>  		else
+>  			stm32f4_i2c_set_bits(reg, STM32F4_I2C_CR1_START);
+>  
+> -		for (i = 2; i > 0; i--)
+> +		for (i = IIC_LAST_BYTE_POS; i > 0; i--)
+>  			stm32f4_i2c_read_msg(i2c_dev);
+>  
+>  		reg = i2c_dev->base + STM32F4_I2C_CR2;
+> @@ -463,7 +469,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+>  
+>  		complete(&i2c_dev->complete);
+>  		break;
+> -	case 3:
+> +	case (IIC_LAST_BYTE_POS+1):
+>  		/*
+>  		 * In order to correctly generate the NACK pulse after the last
+>  		 * received data byte, we have to enable NACK before reading N-2
+> 
 
-I have the opportunity to transfer the sum of US$ 10.5Million to your
-bank account which i personally placed on an Escrow account without a
-name.
+I tested this patch on STM32F429-Disco, it fixes the issue described by Dillon.
+But i think it's not a good idea to make usage of #if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
+inside the driver code.
 
-I must tell you that after revision of files both old and new as the
-new telex manager ,i discovered that if these funds remains here
-without transferring it offshore,it will be lawfully recovered
-andmoved to the  Government of Burkina Faso treasury as an abandoned
-funds without any name.
+Pierre-Yves, Alain, as i am not I2C expert, can you have a look at this patch and propose another solution 
+to fix the original issue described by Dillon ?
 
-I want to let you know that a Burkinabe cannot stand as the depositor
-of these US dollars  since we are not allowed to operate on foreign
-currrency.I do not intend to work  and stay in Africa till the rest of
-my life.
-
-Moreso,i will not want my bank to know about these funds and if they
-happens to know probably,the funds will be moved to the Burkina Faso
-Government public treasury as an abandoned funds.
-
-I will furnish you with more details of this transfer and how it ca
-nbe perfectly and legally executed without any hitch since i am now in
-control.
-
-I am waiting to hear from you urgently to proceed.
-
-
-Yours sincerely,
-Mr.Patrice Zengu.
+Thanks
+Patrice
