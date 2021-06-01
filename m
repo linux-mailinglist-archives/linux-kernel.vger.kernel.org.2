@@ -2,191 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A71396BB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD831396BB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhFAC7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 22:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S232846AbhFAC7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 22:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232699AbhFAC67 (ORCPT
+        with ESMTP id S232599AbhFAC7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 22:58:59 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC80C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:57:18 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so577440pjp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:57:18 -0700 (PDT)
+        Mon, 31 May 2021 22:59:21 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261FFC061574;
+        Mon, 31 May 2021 19:57:39 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id a4so10476541ljq.9;
+        Mon, 31 May 2021 19:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=g1PHDhhxCS5yi9x7VR5tTU+yhTRifgFTSodvUZspY38=;
-        b=gu3h0aceBpPFczJDv9Pi+fQSM09xTOA591JpnjzIQVDiyd0d7iN0pU3mknLbA87WW/
-         dg0IOl6q8OLmHiER0Q+/3cBhbECxfmbvnC9XJaUmKL27cpvPEx7bu8odCgOTHxJ3ignP
-         vcQNwSNLSZhSt1QMB/TIJ3wIHAb7speMs+X3GmErM/YIBVoypH/C/NFqrgy9F7Ob8XHn
-         QwX4qsTc7p/N1JQ4PynIQH72F1ffsvA8EowqbmaEJnwI6yOzolSroeUTihAAfeKDfCsW
-         zVq243bZjcqaov2YGV7wT8+Pjw7l/duVKbeKh/7hwrTSxwAamVDl7JEAjzyt9XXOI8bH
-         ZNzw==
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6bOV0m6bSjQMs9q5FTLo+p3ePrCrQFEL1VNEEZU4fPo=;
+        b=GUPERjIbHS3D7MX08jzX2BDddBEcJ4Ya+keANzt9dkaR5SZRsIWM0U7iEZ+MF6+S80
+         UQu8apb/tJPzN7IUrx48FeR6bqfYApZ1uRbcFH2Jjt+kb6RncNMPoWzxnXBSkMQOXWmM
+         sBvO+BMKTaRMKNkiZp3tYPk5XON/cG+jKLGjsUlOyoiJjzxvCxrDRdFdl0/m8d8yJE5W
+         oB80wAY4E3FQb67qY6eo/ah2Wkg/t568VTtp3640CbH+rRtRXFwQfUHAwX3qjZO7KQ6+
+         XNiS3Ec9s4WF8G+cc4zhVEMa3h8+PtJ7xXszvFQbBFaRtaP/goGUFyJ8snO2E5BncwOz
+         SOow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=g1PHDhhxCS5yi9x7VR5tTU+yhTRifgFTSodvUZspY38=;
-        b=jBIGZiTKaJVqN7pQS/g9UP1Dq8Ez+g5Pd2+xY00jvX0va7NvcF8xVExEhU96nYTLjQ
-         WgfHM5Yrt+3sB+xCFEIaur/E7NPA7J6XCKmTmYBOBOkwE0cvOvWG2KJVu18Av9ks+ZlC
-         QOuTKUlRzARMwyFC9IJuRV3uQBPac4aV6wGn32UlCV/3O6RBCjrETfwKtqSL2OE7wDcS
-         hwZ5gqeJr5IGv3EgcYb23KzKlITcqEKHihyUrv6sDpnn1cWR3B0uxVrFc360JFrG8I+L
-         qYupTbtYqdhBqzA3CYVvFKnp4dRyUZDBImNJUZdZM+b9V5EAKMjRXlRgSXkaRr1Te0Ee
-         QpbA==
-X-Gm-Message-State: AOAM533D0jZwsgx+EiPzQfYyWNTrwqimC4RKoca50OJPEhnW9us4Jga6
-        idJxrA3w7mt6MTiTAinlPd0XYA==
-X-Google-Smtp-Source: ABdhPJw5se7nGmi1mY4jYYGJgMtQfC0d2xDPLu0O23svfDmLl1Fh+jQphNvKrqTQp4FUhtKilfqG4Q==
-X-Received: by 2002:a17:90a:bd08:: with SMTP id y8mr2298232pjr.8.1622516237963;
-        Mon, 31 May 2021 19:57:17 -0700 (PDT)
-Received: from [10.86.119.121] ([139.177.225.224])
-        by smtp.gmail.com with ESMTPSA id f16sm12057659pju.12.2021.05.31.19.57.13
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6bOV0m6bSjQMs9q5FTLo+p3ePrCrQFEL1VNEEZU4fPo=;
+        b=raX+skxXjGFzAnEXUHwzRp4IKzHnLelH9oKTN5ptYfaANMN7zcBGZoNrRo2JM0nddE
+         Pjjrpr1/7phpiaDEugwqMOruKj3Lx9ySdTkiQeOKE90AwgkzzGFG7cfnzR4h8LTTzN4X
+         99FWImeq7/mTLnzH+5Z//zuaAdW0uydHdOhJsI1eKO+oXmrekDd4v/dlFaB8g8FgKCtP
+         2fwym2tBnlYbdXEG3mAIjkEyDr5ir24S/9BDJApfgIhm0tcIQcqBvQcuFTw3vg+FpGnM
+         xX37oP+otDVxrRGFZqEGaUN2ALExOry9nMgVrYMGUFUb26P5vH0lYAPabSxOdXARgbix
+         dAyQ==
+X-Gm-Message-State: AOAM532UoKLcNHkuPFl0l5RaVvsYXiVR0+1MlyhsfE/aoj9W2W46/dpi
+        g3d3GrqSmHN6O8jFChSxbhu1kljz8fQ=
+X-Google-Smtp-Source: ABdhPJxb1vITG1iHfDRYnxSrmsnpr+JAGM/ttvgJyF8OrUfmvOdhTugOUmcbJoLwvrEw56BKoH+ZjQ==
+X-Received: by 2002:a2e:9708:: with SMTP id r8mr18899000lji.126.1622516256884;
+        Mon, 31 May 2021 19:57:36 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id n1sm656492lfi.208.2021.05.31.19.57.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 19:57:17 -0700 (PDT)
-Subject: Re: [External] Re: [PATCH] fs/proc/kcore.c: add mmap interface
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     adobriyan@gmail.com, rppt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com
-References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
- <20210531182344.e9692132981a5bf9bf6d4583@linux-foundation.org>
-From:   zhoufeng <zhoufeng.zf@bytedance.com>
-Message-ID: <06da9f61-3003-078a-4e44-722e978cecd3@bytedance.com>
-Date:   Tue, 1 Jun 2021 10:57:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Mon, 31 May 2021 19:57:36 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] dt-bindings: devfreq: tegra30-actmon: Convert to
+ schema
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210601022319.17938-1-digetx@gmail.com>
+ <CGME20210601022420epcas1p3bc087871724a7a9e7cc1569daa2631ab@epcas1p3.samsung.com>
+ <20210601022319.17938-2-digetx@gmail.com>
+ <6bfdbc0c-bda0-3d43-e103-4d0611966b47@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b7fecb2c-c59a-52ce-1cdf-ae71ee509132@gmail.com>
+Date:   Tue, 1 Jun 2021 05:57:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210531182344.e9692132981a5bf9bf6d4583@linux-foundation.org>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <6bfdbc0c-bda0-3d43-e103-4d0611966b47@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-ÔÚ 2021/6/1 ÉÏÎç9:23, Andrew Morton Ð´µÀ:
-> On Wed, 26 May 2021 15:51:42 +0800 Feng zhou <zhoufeng.zf@bytedance.com> wrote:
-> 
->> From: ZHOUFENG <zhoufeng.zf@bytedance.com>
+01.06.2021 05:55, Chanwoo Choi Ð¿Ð¸ÑˆÐµÑ‚:
+> On 6/1/21 11:23 AM, Dmitry Osipenko wrote:
+>> Convert NVIDIA Tegra ACTMON binding to schema.
 >>
->> When we do the kernel monitor, use the DRGN
->> (https://github.com/osandov/drgn) access to kernel data structures,
->> found that the system calls a lot. DRGN is implemented by reading
->> /proc/kcore. After looking at the kcore code, it is found that kcore
->> does not implement mmap, resulting in frequent context switching
->> triggered by read. Therefore, we want to add mmap interface to optimize
->> performance. Since vmalloc and module areas will change with allocation
->> and release, consistency cannot be guaranteed, so mmap interface only
->> maps KCORE_TEXT and KCORE_RAM.
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  .../arm/tegra/nvidia,tegra30-actmon.txt       |  57 ---------
+>>  .../devfreq/nvidia,tegra30-actmon.yaml        | 121 ++++++++++++++++++
+>>  2 files changed, 121 insertions(+), 57 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
+>>  create mode 100644 Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
 >>
->> ...
+>> diff --git a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
+>> deleted file mode 100644
+>> index 897eedfa2bc8..000000000000
+>> --- a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
+>> +++ /dev/null
+>> @@ -1,57 +0,0 @@
+>> -NVIDIA Tegra Activity Monitor
+>> -
+>> -The activity monitor block collects statistics about the behaviour of other
+>> -components in the system. This information can be used to derive the rate at
+>> -which the external memory needs to be clocked in order to serve all requests
+>> -from the monitored clients.
+>> -
+>> -Required properties:
+>> -- compatible: should be "nvidia,tegra<chip>-actmon"
+>> -- reg: offset and length of the register set for the device
+>> -- interrupts: standard interrupt property
+>> -- clocks: Must contain a phandle and clock specifier pair for each entry in
+>> -clock-names. See ../../clock/clock-bindings.txt for details.
+>> -- clock-names: Must include the following entries:
+>> -  - actmon
+>> -  - emc
+>> -- resets: Must contain an entry for each entry in reset-names. See
+>> -../../reset/reset.txt for details.
+>> -- reset-names: Must include the following entries:
+>> -  - actmon
+>> -- operating-points-v2: See ../bindings/opp/opp.txt for details.
+>> -- interconnects: Should contain entries for memory clients sitting on
+>> -                 MC->EMC memory interconnect path.
+>> -- interconnect-names: Should include name of the interconnect path for each
+>> -                      interconnect entry. Consult TRM documentation for
+>> -                      information about available memory clients, see MEMORY
+>> -                      CONTROLLER section.
+>> -
+>> -For each opp entry in 'operating-points-v2' table:
+>> -- opp-supported-hw: bitfield indicating SoC speedo ID mask
+>> -- opp-peak-kBps: peak bandwidth of the memory channel
+>> -
+>> -Example:
+>> -	dfs_opp_table: opp-table {
+>> -		compatible = "operating-points-v2";
+>> -
+>> -		opp@12750000 {
+>> -			opp-hz = /bits/ 64 <12750000>;
+>> -			opp-supported-hw = <0x000F>;
+>> -			opp-peak-kBps = <51000>;
+>> -		};
+>> -		...
+>> -	};
+>> -
+>> -	actmon@6000c800 {
+>> -		compatible = "nvidia,tegra124-actmon";
+>> -		reg = <0x0 0x6000c800 0x0 0x400>;
+>> -		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+>> -		clocks = <&tegra_car TEGRA124_CLK_ACTMON>,
+>> -			 <&tegra_car TEGRA124_CLK_EMC>;
+>> -		clock-names = "actmon", "emc";
+>> -		resets = <&tegra_car 119>;
+>> -		reset-names = "actmon";
+>> -		operating-points-v2 = <&dfs_opp_table>;
+>> -		interconnects = <&mc TEGRA124_MC_MPCORER &emc>;
+>> -		interconnect-names = "cpu";
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+>> new file mode 100644
+>> index 000000000000..ba938eed28ee
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+>> @@ -0,0 +1,121 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: https://protect2.fireeye.com/v1/url?k=c852e9c6-97c9d0fb-c8536289-0cc47a31309a-748d620b8cc48f8b&q=1&e=c1b6a671-e53d-468c-81f5-3e23bd2e67d9&u=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fdevfreq%2Fnvidia%2Ctegra30-actmon.yaml%23
+>> +$schema: https://protect2.fireeye.com/v1/url?k=1abc12fa-45272bc7-1abd99b5-0cc47a31309a-ca738d567d90525e&q=1&e=c1b6a671-e53d-468c-81f5-3e23bd2e67d9&u=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23
+>> +
+>> +title: NVIDIA Tegra30 Activity Monitor
+>> +
+>> +maintainers:
+>> +  - Dmitry Osipenko <digetx@gmail.com>
+>> +  - Jon Hunter <jonathanh@nvidia.com>
+>> +  - Thierry Reding <thierry.reding@gmail.com>
+>> +
+>> +description: |
+>> +  The activity monitor block collects statistics about the behaviour of other
+>> +  components in the system. This information can be used to derive the rate at
+>> +  which the external memory needs to be clocked in order to serve all requests
+>> +  from the monitored clients.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - nvidia,tegra30-actmon
+>> +      - nvidia,tegra114-actmon
+>> +      - nvidia,tegra124-actmon
+>> +      - nvidia,tegra210-actmon
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 2
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: actmon
+>> +      - const: emc
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  reset-names:
+>> +    items:
+>> +      - const: actmon
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  interconnects:
+>> +    minItems: 1
+>> +    maxItems: 12
+>> +
+>> +  interconnect-names:
+>> +    minItems: 1
+>> +    maxItems: 12
+>> +    description:
+>> +      Should include name of the interconnect path for each interconnect
+>> +      entry. Consult TRM documentation for information about available
+>> +      memory clients, see MEMORY CONTROLLER and ACTIVITY MONITOR sections.
+>> +
+>> +  operating-points-v2:
+>> +    description:
+>> +      Should contain freqs and voltages and opp-supported-hw property, which
+>> +      is a bitfield indicating SoC speedo ID mask.
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - clock-names
+>> +  - resets
+>> +  - reset-names
+>> +  - interrupts
+>> +  - interconnects
+>> +  - interconnect-names
+>> +  - operating-points-v2
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/memory/tegra30-mc.h>
+>> +
+>> +    mc: memory-controller@7000f000 {
+>> +        compatible = "nvidia,tegra30-mc";
+>> +        reg = <0x7000f000 0x400>;
+>> +        clocks = <&clk 32>;
+>> +        clock-names = "mc";
+>> +
+>> +        interrupts = <0 77 4>;
+>> +
+>> +        #iommu-cells = <1>;
+>> +        #reset-cells = <1>;
+>> +        #interconnect-cells = <1>;
+>> +    };
+>> +
+>> +    emc: external-memory-controller@7000f400 {
+>> +        compatible = "nvidia,tegra30-emc";
+>> +        reg = <0x7000f400 0x400>;
+>> +        interrupts = <0 78 4>;
+>> +        clocks = <&clk 57>;
+>> +
+>> +        nvidia,memory-controller = <&mc>;
+>> +        operating-points-v2 = <&dvfs_opp_table>;
+>> +        power-domains = <&domain>;
+>> +
+>> +        #interconnect-cells = <0>;
+>> +    };
+>> +
+>> +    actmon@6000c800 {
+>> +        compatible = "nvidia,tegra30-actmon";
+>> +        reg = <0x6000c800 0x400>;
+>> +        interrupts = <0 45 4>;
+>> +        clocks = <&clk 119>, <&clk 57>;
+>> +        clock-names = "actmon", "emc";
+>> +        resets = <&rst 119>;
+>> +        reset-names = "actmon";
+>> +        operating-points-v2 = <&dvfs_opp_table>;
+>> +        interconnects = <&mc TEGRA30_MC_MPCORER &emc>;
+>> +        interconnect-names = "cpu-read";
+>> +    };
 >>
->> --- a/fs/proc/kcore.c
->> +++ b/fs/proc/kcore.c
->> @@ -573,11 +573,81 @@ static int release_kcore(struct inode *inode, struct file *file)
->>   	return 0;
->>   }
->>   
->> +static vm_fault_t mmap_kcore_fault(struct vm_fault *vmf)
->> +{
->> +	return VM_FAULT_SIGBUS;
->> +}
->> +
->> +static const struct vm_operations_struct kcore_mmap_ops = {
->> +	.fault = mmap_kcore_fault,
->> +};
->> +
->> +static int mmap_kcore(struct file *file, struct vm_area_struct *vma)
->> +{
->> +	size_t size = vma->vm_end - vma->vm_start;
->> +	u64 start, pfn;
->> +	int nphdr;
->> +	size_t data_offset;
->> +	size_t phdrs_len, notes_len;
->> +	struct kcore_list *m = NULL;
->> +	int ret = 0;
->> +
->> +	down_read(&kclist_lock);
->> +
->> +	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
->> +
->> +	start = kc_offset_to_vaddr(((u64)vma->vm_pgoff << PAGE_SHIFT) -
->> +		((data_offset >> PAGE_SHIFT) << PAGE_SHIFT));
->> +
->> +	list_for_each_entry(m, &kclist_head, list) {
->> +		if (start >= m->addr && size <= m->size)
->> +			break;
->> +	}
->> +
->> +	if (&m->list == &kclist_head) {
->> +		ret = -EINVAL;
->> +		goto out;
->> +	}
->> +
->> +	if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
->> +		ret = -EPERM;
->> +		goto out;
->> +	}
->> +
->> +	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
->> +	vma->vm_flags |= VM_MIXEDMAP;
->> +	vma->vm_ops = &kcore_mmap_ops;
->> +
->> +	if (kern_addr_valid(start)) {
->> +		if (m->type == KCORE_RAM || m->type == KCORE_REMAP)
->> +			pfn = __pa(start) >> PAGE_SHIFT;
->> +		else if (m->type == KCORE_TEXT)
->> +			pfn = __pa_symbol(start) >> PAGE_SHIFT;
->> +		else {
->> +			ret = -EFAULT;
->> +			goto out;
->> +		}
->> +
->> +		if (remap_pfn_range(vma, vma->vm_start, pfn, size,
->> +				vma->vm_page_prot)) {
->> +			ret = -EAGAIN;
 > 
-> EAGAIN seems a strange errno for this case.   The mmap manpage says
-> 
->         EAGAIN The file has been locked, or too much  memory  has  been  locked
->                (see setrlimit(2)).
-> 
-> 
-> remap_pfn_range() already returns an errno - why not return whatever
-> that code was?
-> 
+> If tegra maintainer confirms this patch, I'll take it.
 
-   yes, that's a good idea.
+Okay, thank you.
 
->> +			goto out;
->> +		}
->> +	} else {
->> +		ret = -EFAULT;
->> +	}
->> +
->> +out:
->> +	up_read(&kclist_lock);
->> +	return ret;
->> +}
->> +
->>   static const struct proc_ops kcore_proc_ops = {
->>   	.proc_read	= read_kcore,
->>   	.proc_open	= open_kcore,
->>   	.proc_release	= release_kcore,
->>   	.proc_lseek	= default_llseek,
->> +	.proc_mmap	= mmap_kcore,
->>   };
->>   
->>   /* just remember that we have to update kcore */
-> 
-> Otherwise looks OK to me.  Please update the changelog to reflect the
-> discussion thus far and send a v2?
-> 
-   OK, I am very happy to do so, I will send a v2 in two days.
