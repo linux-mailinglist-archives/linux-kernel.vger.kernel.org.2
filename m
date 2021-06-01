@@ -2,95 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804EF397710
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8FF39771C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbhFAPsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
+        id S234438AbhFAPtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234457AbhFAPsh (ORCPT
+        with ESMTP id S234294AbhFAPtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:48:37 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE39C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:46:55 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id m18so14861368wrv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:46:55 -0700 (PDT)
+        Tue, 1 Jun 2021 11:49:50 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DA2C061761
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:48:08 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id n2so14924748wrm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:48:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=exFIxZuOrD7Plr1Np3AS/tQawGwgEP79Gok5C1va520=;
-        b=Sjx9YHyswPIyxritg2eQKQLwWxgZcxEjPBd1aoPRJx2iVjp8I4s7B2xEcC0qChfNs6
-         8oXfF7L7nZ2PrCZTD2bsNk1ohhgRp5nEv/rIS6rN3kvm9S21t+YfU3gplobwvWxIpCrW
-         kfH4ajPSDEkTfn2ozzy6+7muVP9uK0diLv4k7hYHKLfvJ41av+52MQ4P+J4PASOO7pJG
-         h5BuNxJ9aoiljsBK7yFfV4KnnhHOvqHSHzs2+9wa9uv23ryXn24sO5zvwnCf0aT1Og0z
-         ALzEwl+zrozYTSRE/AySTHxZ0oWTkA+TeMfMbxkMOyQHY4M7K+WGL4eQ6HCgRBaIysiA
-         gSEA==
+        bh=KONWqLG6CUXaRV5hwllfvFmPWL0Jl8cb7j10mpIM550=;
+        b=cnK0ZkWs2/SewuH/NKxorjIyIkfEUPQUTZehAPoW6IoPQBKoMAWIelEfE5N22he+Gc
+         ry06rfEAkFOH8dlo6LWXrBLW6aQBSrP9WxOem+QtD80sVfiHcXKP1XXe/xo5SvidJqSV
+         sgxYV21GkcOlI5/fE9IU1kRGYWbIIpv5cqwg9V1foYeo5bs76GQqyqk1830N0Xju50lm
+         M1lY/NGtba0vUnD7CvUmjigyMAN9qwPcw4j6OyQd/2ytRjOHSQie+uyAXO4qJzd8K6An
+         C+q/oLNV1Emikd/WHxe4lXYioh4kU/qnLTOSfk+eJ/a5ntcg7QS88R3z2yHaMpiLsQS6
+         /qBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=exFIxZuOrD7Plr1Np3AS/tQawGwgEP79Gok5C1va520=;
-        b=uDMMBGsxGYYXMqMyYXueueJrHWRMDuzgevvsPzqV5evJ7UTNmAmzux2RS0xaqafEEq
-         Z46JBsTPnRlyYhQW6zri0cK83b4YR7KCYmpZ/217a3FOUmxIDaIaiQOg7uWH2rXuhHtA
-         RGhKkjcFi9XEGTlD/VtMuq33ZDFmRKkCMYpR0UkPFMFRTLPWLtY+v4Q49WLDFHOx/whP
-         02ZOludyhaGJmkoa7IkHQBha8uzol0rSw0E59ow2Tc6ZS7zZ3ydRXxeV2YB5iOHBjIXV
-         XPiy2YDB94Nuu2YL1bjVTJ0iX5zXxXf+1HhL5SyYcDosX2hWcRAMsCwzEDQ5jVazalnE
-         OHCQ==
-X-Gm-Message-State: AOAM5302jKjqJeP3hbCYwTsGKvPrhgt9pT9eM8/iIyD4nXQvx5xJdyMy
-        +0m0EWl934U74r7PogP73ocYHA==
-X-Google-Smtp-Source: ABdhPJxF67vbMP6BSXVX7i7BEayuWA1qe+1M9Gi9KHneZ4+6CHVCj6+4FxBdy6cgFyCIxJV3874yLQ==
-X-Received: by 2002:a5d:4a4b:: with SMTP id v11mr14929357wrs.246.1622562414194;
-        Tue, 01 Jun 2021 08:46:54 -0700 (PDT)
+        bh=KONWqLG6CUXaRV5hwllfvFmPWL0Jl8cb7j10mpIM550=;
+        b=LGKvyxflKlvTJOwcWYylFSuaZXxYxDMmm5dkfbEeS29nYdePAfSF59kLMH6FbrnnD6
+         fIPEClV/kdK7JAoiNkl2eWcZFZ8stTvYQaVwjtm1woY5OIhUFh4969PMohiezHsn9z21
+         gNaFnNIyfeBJ7vnhn2XCn3kksdNMENdz5raDmlgFmSwH0BQwWr4IGK/7sa6D2fU/XY4F
+         tmrDicNTqBaPO4AKs165ZvZ/btmVyo0zYuT7BRRCQYZZcUAbpW16V+9SMQo2AYS7yJhi
+         PAOg5+EDevnZVHtc4nqBV8mPz6CqIkkFWwRVouHuXyONjDajlIeY52TGo1NzKRvXd1mF
+         5WaQ==
+X-Gm-Message-State: AOAM532wlDsD3436BlQcYZxjoEw8DQpllQ1bH/TCXHInUc4O6prtTN2Z
+        4wuKxzouytMkXAm/aR1lQ8PR3Q==
+X-Google-Smtp-Source: ABdhPJxcoVIpBA7C0tcHpkh8NoySQOCYDJ7uWohpbQ/QLRGQQmfdrpzXTq1Wc4+T7riMjaVVR4+/Tw==
+X-Received: by 2002:adf:f044:: with SMTP id t4mr16812609wro.73.1622562487446;
+        Tue, 01 Jun 2021 08:48:07 -0700 (PDT)
 Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id u8sm2738305wmq.29.2021.06.01.08.46.53
+        by smtp.gmail.com with ESMTPSA id r7sm2872895wmq.3.2021.06.01.08.48.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 08:46:53 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 16:46:51 +0100
+        Tue, 01 Jun 2021 08:48:06 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 16:48:04 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/12] dt-bindings: mfd: syscon: add Rockchip
- RK3036/RK3228 qos compatibles
-Message-ID: <20210601154651.GE2159518@dell>
-References: <20210525152225.154302-1-knaerzche@gmail.com>
- <20210527154455.358869-1-knaerzche@gmail.com>
- <20210527154455.358869-2-knaerzche@gmail.com>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 8/9] mfd: bd70528: Drop BD70528 support
+Message-ID: <20210601154804.GA2165650@dell>
+References: <cover.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
+ <d4e4213ffea09525814e4b55518fd689b5c3bf87.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210527154455.358869-2-knaerzche@gmail.com>
+In-Reply-To: <d4e4213ffea09525814e4b55518fd689b5c3bf87.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021, Alex Bee wrote:
+On Tue, 25 May 2021, Matti Vaittinen wrote:
 
-> Document Rockchip RK3036/RK3228 qos compatibles
+> The only known BD70528 use-cases are such that the PMIC is controlled
+> from separate MCU which is not running Linux. I am not aware of
+> any Linux driver users. Furthermore, it seems there is no demand for
+> this IC. Let's ease the maintenance burden and drop the driver. We can
+> always add it back if there is sudden need for it.
 > 
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> 
 > ---
-> 
->  Changes in v2:
->  - collect Reviewed tag
-> 
->  Documentation/devicetree/bindings/mfd/syscon.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+> Please let me know if some of you think the driver is needed.
+> ---
+>  drivers/mfd/Kconfig              |  17 --
+>  drivers/mfd/Makefile             |   1 -
+>  drivers/mfd/rohm-bd70528.c       | 314 -------------------------
+>  include/linux/mfd/rohm-bd70528.h | 391 -------------------------------
+>  include/linux/mfd/rohm-generic.h |   1 -
+>  5 files changed, 724 deletions(-)
+>  delete mode 100644 drivers/mfd/rohm-bd70528.c
+>  delete mode 100644 include/linux/mfd/rohm-bd70528.h
 
-Applied, thanks.
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
 -- 
 Lee Jones [李琼斯]
