@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F192397947
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FA339794E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbhFARlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:41:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234716AbhFARkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:40:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79E7A61042;
-        Tue,  1 Jun 2021 17:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622569138;
-        bh=+nPjaSYf2jAkLUxPL/kyjKJJSVXdCLkfPNaKAIs/mdI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JzMx62HNQLZme4iBjeeNaEbpRg12XN8fLoWrjqdL7sc2+ulm0seM749m+u1a9awXx
-         3MwOqYkC5iyAhVIGcN6TQOnNp3iVVQERzYRl7Zy62CuTPc7NHOiGBmQytmTQ2lVxan
-         w67MavJV7o3E5vmbWGh9KCvcAUUJudnL/PQnJJax1JMi7Lcmixx/Wgi6D0s+XjHxQd
-         /lJX9PmsdKQljvzB/rZb0dCqCt5cdDfMdQhsPuG/h7J95Zl97Qjr++4XWwgwHLE2/Z
-         Vp59mHpBQKj3qzqc/KKM4d7mkmEc8kRtlkiUApYWYhJtXovFnGc6udVcG7N1dxWXko
-         dAGGdf2OuVqOw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Timur Tabi <timur@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolas Cavallari <nicolas.cavallari@green-communications.fr>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Set .owner attribute when registering card.
-Date:   Tue,  1 Jun 2021 18:38:12 +0100
-Message-Id: <162256892744.19919.16538295874685762857.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210527163409.22049-1-nicolas.cavallari@green-communications.fr>
-References: <20210527163409.22049-1-nicolas.cavallari@green-communications.fr>
+        id S234641AbhFARmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231726AbhFARmD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:42:03 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3E9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 10:40:21 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id a2so23056143lfc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 10:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HzpG2mS3klA1VmO0XTe5j7flLzAb8Ei6Y9bSAVhIPY0=;
+        b=BQeStbGqRqfaZQTatesVaXUFU7q7jGK8/h3S8s/n4L1EYp+DQRKegAYudAGZZJwmh/
+         HD40rIpJmLOgdc8+UC4ZsWwaBUsO96SAIctpyB8jiEMRcOhq8nyd/1IO3eMdK79W2QHE
+         clu/SdKKUo+pHt0XaZOTsItqekoQU9JeobVaj8af/bfZMPUIRgqtUBfXlDoUM4/BDpZS
+         5Vs6oPV7URtRrA/ci+kXSbYoQcR3gCUlTWbIGruz2h84Gh4taGAMq9Wk1iwO2H5PSraU
+         NPtbrrfvxP88aKLpUIqP+cifQXzfbs0G9FWSn9o9p0/egdH8zOsngD3C0DsS+HNjOIy9
+         S9vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HzpG2mS3klA1VmO0XTe5j7flLzAb8Ei6Y9bSAVhIPY0=;
+        b=XhNR5wAkaxGNerf0HPSjxKCOTi/ahPXtmuw4nTCpIPuVq/vIY4za+DiLGBT+VWlVdn
+         3gjXXi/6lL1Iu4MTUIqihIAbAxTRjg4Ma5nWJzdmYm0M8pzwvDX+j1ZmdVkldGXy+RKg
+         Ehna/AtCtRmH+XJ2ZH6eM+PzfsMBcfTyIWrnXl2l/CUjsQzcsUYAyasTIT3vkECW+8yT
+         7QvvkWgQfrxxa+O9ohfN/hBnPVHlJCbAZlcmsSuwkY5tBFQR70MJNwpgLQnXWoah0cgs
+         x6j8FmBjDcvcEMhVVACRlGtYt9h8+QIOZ4UzwCws+b0r/3TX/ROjydFMgibcAdt/Wijo
+         NTEQ==
+X-Gm-Message-State: AOAM531VJv/yA3ajzrIOdSr2HzQr22UZyoSfnf8MjwuJdj/xHcc/5jj/
+        eJJidacLK0LZxCgHXQpxB3wAfUqFyPsRmzJWNoroFxxlA1I6mg==
+X-Google-Smtp-Source: ABdhPJyJAhOJrzT29ukFcKuikSBG+AGooLG/BfxPhyU2dkfzF5uhC1zGelS2+5NUMcPoit3+unRhD2aQB+e2MgRfqEQ=
+X-Received: by 2002:a19:f706:: with SMTP id z6mr5395570lfe.122.1622569219194;
+ Tue, 01 Jun 2021 10:40:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210601183002.26176586@canb.auug.org.au>
+In-Reply-To: <20210601183002.26176586@canb.auug.org.au>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Tue, 1 Jun 2021 10:39:42 -0700
+Message-ID: <CACK8Z6Fp-_oRkC-dQ4U5y6ZUrr7Q3U084PiP+Q9daYstpps+aA@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the usb tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Greg KH <greg@kroah.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 18:34:09 +0200, Nicolas Cavallari wrote:
-> Otherwise, when compiled as module, a WARN_ON is triggered:
-> 
-> WARNING: CPU: 0 PID: 5 at sound/core/init.c:208 snd_card_new+0x310/0x39c [snd]
-> [...]
-> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.39 #1
-> Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> Workqueue: events deferred_probe_work_func
-> [<c0111988>] (unwind_backtrace) from [<c010c8ac>] (show_stack+0x10/0x14)
-> [<c010c8ac>] (show_stack) from [<c092784c>] (dump_stack+0xdc/0x104)
-> [<c092784c>] (dump_stack) from [<c0129710>] (__warn+0xd8/0x114)
-> [<c0129710>] (__warn) from [<c0922a48>] (warn_slowpath_fmt+0x5c/0xc4)
-> [<c0922a48>] (warn_slowpath_fmt) from [<bf0496f8>] (snd_card_new+0x310/0x39c [snd])
-> [<bf0496f8>] (snd_card_new [snd]) from [<bf1d7df8>] (snd_soc_bind_card+0x334/0x9c4 [snd_soc_core])
-> [<bf1d7df8>] (snd_soc_bind_card [snd_soc_core]) from [<bf1e9cd8>] (devm_snd_soc_register_card+0x30/0x6c [snd_soc_core])
-> [<bf1e9cd8>] (devm_snd_soc_register_card [snd_soc_core]) from [<bf22d964>] (fsl_asoc_card_probe+0x550/0xcc8 [snd_soc_fsl_asoc_card])
-> [<bf22d964>] (fsl_asoc_card_probe [snd_soc_fsl_asoc_card]) from [<c060c930>] (platform_drv_probe+0x48/0x98)
-> [...]
+Hello,
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, Jun 1, 2021 at 1:30 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the usb tree, today's linux-next build (htmldocs) produced
+> this warning:
+>
+> Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected indentation.
+> Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-Thanks!
+I'd be happy to send a patch to fix this, but I didn't really
+understand what needs to be done.
 
-[1/1] ASoC: fsl-asoc-card: Set .owner attribute when registering card.
-      commit: a8437f05384cb472518ec21bf4fffbe8f0a47378
+Here is the relevant documentation update in the patch:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
++What:          /sys/devices/.../removable
++Date:          May 2021
++Contact:       Rajat Jain <rajatxjain@gmail.com>
++Description:
++               Information about whether a given device can be removed from the
++               platform by the user. This is determined by its subsystem in a
++               bus / platform-specific way. This attribute is only present for
++               devices that can support determining such information:
++
++               "removable": device can be removed from the platform by the user
++               "fixed":     device is fixed to the platform / cannot be removed
++                            by the user.
++               "unknown":   The information is unavailable / cannot be deduced.
++
++               Currently this is only supported by USB (which infers the
++               information from a combination of hub descriptor bits and
++               platform-specific data such as ACPI).
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I'd be happy to send a patch if you can point me what needs to be done
+(or let Stephen / Greg / some one else do it if it is easier to just
+do it instead of guiding me).
 
 Thanks,
-Mark
+
+Rajat
+
+>
+> Introduced by commit
+>
+>   70f400d4d957 ("driver core: Move the "removable" attribute from USB to core")
+>
+> --
+> Cheers,
+> Stephen Rothwell
