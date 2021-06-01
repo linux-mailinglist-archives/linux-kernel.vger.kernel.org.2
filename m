@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA439397517
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881E8397558
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234393AbhFAOKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:10:01 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6123 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234312AbhFAOJg (ORCPT
+        id S234305AbhFAOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:23:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33426 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234072AbhFAOXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:09:36 -0400
-Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvYnx4BGFzYpfC;
-        Tue,  1 Jun 2021 22:05:09 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 1 Jun 2021 22:07:52 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <pjones@redhat.com>, <konrad@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] ibft: Remove unneeded semicolon
-Date:   Tue, 1 Jun 2021 22:21:32 +0800
-Message-ID: <20210601142132.4132319-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Jun 2021 10:23:35 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622557313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vp14N/OtaMF+++0wwMO+RMeYGWaezhP3Asy6f5kCSiY=;
+        b=dQ3Qr2xLrInFujZweW0uOi/0bPl/QQmCnqjY3PasqzgTbxZeOHGTOA1YXIcgA/plFhpmmD
+        I5W83k4/J+TFA+sN54iVDaTIUQDOin4NXj3B6Z7JovKiBy4hXv6AyUe07v0wV7qRetzJzT
+        sKtg3eyxg7oiYJ2UY2+gJynza+tQUGrst7hgV8A3zlBNtM0Sjliv0W79c3gBKvOpnlCa2p
+        48IG5B3ElWMMAJ5r8m6w+X7tzDLMUlSRTmCs0PXOHAGaeVjeJ3TQl6uIK5ajebtAxhkx+p
+        muvWuhCIvVDjbIrrBSj31XRNuQT3IY0hkxzP/AsKaeOyZB7cFymrHHqSD7E2OA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622557313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vp14N/OtaMF+++0wwMO+RMeYGWaezhP3Asy6f5kCSiY=;
+        b=bpd8tDXFmchE4Qy8+jl68q+K/V6FS+USo8rtLPnct77soC6keBBmO/gGqFIjMLqKaz/12o
+        fA1H6FXpwp/Hx9Aw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH next v1 1/2] dump_stack: move cpu lock to printk.c
+In-Reply-To: <YLY9NR7C1IFuNI4A@alley>
+References: <20210531162051.2325-1-john.ogness@linutronix.de> <20210531162051.2325-2-john.ogness@linutronix.de> <YLY9NR7C1IFuNI4A@alley>
+Date:   Tue, 01 Jun 2021 16:21:52 +0200
+Message-ID: <874keh3bsv.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme760-chm.china.huawei.com (10.3.19.106)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneeded semicolon.
+On 2021-06-01, Petr Mladek <pmladek@suse.com> wrote:
+>> +void printk_cpu_lock(unsigned int *cpu_store, unsigned long *flags)
+>
+> I think about calling this printk_cpu_lock_irqsave() to make it clear
+> that it disables interrupts.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/firmware/iscsi_ibft.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Agreed.
 
-diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
-index 7127a04bca19..d46da640f484 100644
---- a/drivers/firmware/iscsi_ibft.c
-+++ b/drivers/firmware/iscsi_ibft.c
-@@ -802,7 +802,7 @@ static void ibft_unregister(void)
- 		ibft_kobj = boot_kobj->data;
- 		if (ibft_kobj->hdr && ibft_kobj->hdr->id == id_nic)
- 			sysfs_remove_link(&boot_kobj->kobj, "device");
--	};
-+	}
- }
- 
- static void ibft_cleanup(void)
--- 
-2.25.1
+> Strictly speaking, it should be enough to disable preemption. If it is
+> safe when interrupted by NMI, it must be safe also when interrupted
+> by a normal interrupt.
+>
+> I guess that the interrupts are disabled because it reduces the risk
+> of nested (messed) backtraces.
 
+If it was just about synchronizing output triggered by sysreq, then it
+probably would be acceptable to leave interrupts active. But when atomic
+consoles are involved, we are talking about a crashing machine that is
+trying to get log messages out. Any interrupt is a risk that the machine
+may not survive long enough to return from that interruption.
+
+John Ogness
