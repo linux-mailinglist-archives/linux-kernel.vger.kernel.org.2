@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED06397291
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F197D39729B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbhFALjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:39:47 -0400
-Received: from relay.smtp-ext.broadcom.com ([192.19.11.229]:38874 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233409AbhFALjn (ORCPT
+        id S233669AbhFALnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:43:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41694 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFALnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:39:43 -0400
-Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 3A7C5829D;
-        Tue,  1 Jun 2021 04:38:01 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 3A7C5829D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1622547481;
-        bh=A7DViLzhSSmk++S9KSFL1GRI7XxOsNHRI9z60MGz1zw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Bxwbgz/205KnBPTpWMrQIYHlRNlywbla8G5vLdUvYZVgjA9StBtnydwBRPdIRUs4m
-         hiil/PzpEiJqXrmJ3XdGhrfqC6RbYfrNsvPW46pJQgdF9gRi8hRFtB9d4/5+5uiTBQ
-         KuWHSJqlhA64kjfJVXa1ltvQQVp+feVBW1xr1S/8=
-Received: from [10.230.42.155] (unknown [10.230.42.155])
-        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 16ACE1874BE;
-        Tue,  1 Jun 2021 04:37:56 -0700 (PDT)
-Subject: Re: [PATCH -next] brcmfmac: Fix a double-free in brcmf_sdio_bus_reset
-To:     Tong Tiangen <tongtiangen@huawei.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210601100128.69561-1-tongtiangen@huawei.com>
-From:   Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <224ed779-5d68-9f67-9b17-75e1e1b4250c@broadcom.com>
-Date:   Tue, 1 Jun 2021 13:37:53 +0200
+        Tue, 1 Jun 2021 07:43:18 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lo2m7-0008G4-O5; Tue, 01 Jun 2021 11:41:35 +0000
+To:     Suganath Prabu S <suganath-prabu.subramani@broadcom.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: scsi: mpt3sas: Handle firmware faults during second half of IOC
+ init
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        MPT-FusionLinux.pdl@broadcom.com,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Message-ID: <78ceab25-cc36-ac43-1e5a-5e38c22eab21@canonical.com>
+Date:   Tue, 1 Jun 2021 12:41:35 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210601100128.69561-1-tongtiangen@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-06-2021 12:01, Tong Tiangen wrote:
-> brcmf_sdiod_remove has been called inside brcmf_sdiod_probe when fails,
-> so there's no need to call another one. Otherwise, sdiodev->freezer
-> would be double freed.
-> 
-> Fixes: 7836102a750a ("brcmfmac: reset SDIO bus on a firmware crash")
-Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
-> ---
->   drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 -
->   1 file changed, 1 deletion(-)
+Hi,
+
+Static analysis with Coverity on linux-next has detected an issue in
+drivers/scsi/mpt3sas/mpt3sas_base.c with the following commit:
+
+commit a0815c45c89f544861eae55d85ccee6b1b1451e8
+Author: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
+Date:   Tue May 18 10:46:25 2021 +0530
+
+    scsi: mpt3sas: Handle firmware faults during second half of IOC init
+
+The analysis is as follows:
+
+7208        if (ioc->port_enable_cmds.status & MPT3_CMD_COMPLETE_ASYNC) {
+7209                if (ioc_status == MPI2_IOCSTATUS_SUCCESS) {
+7210                        mpt3sas_port_enable_complete(ioc);
+7211                        return 1;
+7212                } else {
+7213                        ioc->start_scan_failed = ioc_status;
+7214                        ioc->start_scan = 0;
+7215                        return 1;
+7216                }
+
+Structurally dead code (UNREACHABLE)
+unreachable: This code cannot be reached:
+
+7217                ioc->port_enable_cmds.status &=
+~MPT3_CMD_COMPLETE_ASYNC;
+7218        }
+
+The return 1 statements in either parts of the proceeding if statement
+end up with the ioc->port_enable_cmds.status masking assignment never
+being reached.
+
+Colin
