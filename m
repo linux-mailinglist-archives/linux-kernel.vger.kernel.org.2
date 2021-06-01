@@ -2,68 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AD0396A9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 03:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EBD396A9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 03:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhFABa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 21:30:59 -0400
-Received: from m12-12.163.com ([220.181.12.12]:60708 "EHLO m12-12.163.com"
+        id S232532AbhFAB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 21:29:58 -0400
+Received: from mga04.intel.com ([192.55.52.120]:3203 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231714AbhFABa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 21:30:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=TD8tt
-        DRjkoIh5GipXEh5UOfa9zr6wYIAwrcv6LbbEQQ=; b=jDcI3ldYfFIWJE73onAQN
-        dPdSXiakmfvG26Bkh6HlFpj8qEeI2tDucp220sdDHVz0dR8xEEtS9HBYWEwS4vnH
-        APvsgT7WdKdViFeQ4HSQUjLSCmbZAuntBuLUxZm51Jn8Zl5xy5hbKri+rR7+kOtG
-        q0IpTxepz1DjXYO6nId8mc=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowADHu_dhjbVgHw2AHQ--.8323S2;
-        Tue, 01 Jun 2021 09:29:06 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        id S231714AbhFAB35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 21:29:57 -0400
+IronPort-SDR: v5u3useogAbn07TsB0wy6tmSRllfL+G1JqHlkr4/IIfDP/AgKkjhMqBIg1KBkj7p54/8dADw+d
+ rmCCP6VQ+X7Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="201581159"
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="201581159"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 18:28:16 -0700
+IronPort-SDR: LdflEPn/pqMd1nuxECE8lFxsc4K+3L/1UEpfsLCaBHPxYmMv31o8M4L3UIabZ/T24I7C0K3/1z
+ icAgTLaEa5Zg==
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="548894154"
+Received: from mjdelaro-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.3.23])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 18:28:15 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Cc:     lijian <lijian@yulong.com>
-Subject: [PATCH] video: fbdev: atyfb: mach64_cursor.c: deleted the repeated word
-Date:   Tue,  1 Jun 2021 09:27:47 +0800
-Message-Id: <20210601012747.38884-1-lijian_8010a29@163.com>
+Subject: [RFC v2-fix-v3 1/1] x86/tdx: ioapic: Add shared bit for IOAPIC base address
+Date:   Mon, 31 May 2021 18:28:05 -0700
+Message-Id: <20210601012805.3559-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210524232940.801877-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210524232940.801877-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowADHu_dhjbVgHw2AHQ--.8323S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JryxtF4kAryfArW3CFykZrb_yoWDXrX_Cr
-        srZ39Yqryvyw4vqrn3Jw4fWFyqq3WkXFWDX3s2qrWSk34UXr45Xr1Dur10gFyUWryUZFZ8
-        Zwna9rWvv3yfujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5b_-JUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBLAOkUF++MAqd8QAAss
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-deleted the repeated word 'be' in the comments.
+The kernel interacts with each bare-metal IOAPIC with a special
+MMIO page. When running under KVM, the guest's IOAPICs are
+emulated by KVM.
 
-Signed-off-by: lijian <lijian@yulong.com>
+When running as a TDX guest, the guest needs to mark each IOAPIC
+mapping as "shared" with the host.  This ensures that TDX private
+protections are not applied to the page, which allows the TDX host
+emulation to work.
+
+Earlier patches in this series modified ioremap() so that
+ioremap()-created mappings such as virtio will be marked as
+shared. However, the IOAPIC code does not use ioremap() and instead
+uses the fixmap mechanism.
+
+Introduce a special fixmap helper just for the IOAPIC code.  Ensure
+that it marks IOAPIC pages as "shared".  This replaces
+set_fixmap_nocache() with __set_fixmap() since __set_fixmap()
+allows custom 'prot' values.
+
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- drivers/video/fbdev/aty/mach64_cursor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/aty/mach64_cursor.c b/drivers/video/fbdev/aty/mach64_cursor.c
-index b06fa6e42e6e..4ad0331a8c57 100644
---- a/drivers/video/fbdev/aty/mach64_cursor.c
-+++ b/drivers/video/fbdev/aty/mach64_cursor.c
-@@ -46,7 +46,7 @@
-  * The Screen position of the top left corner of the displayed
-  * cursor is specificed by CURS_HORZ_VERT_POSN. Care must be taken
-  * when the cursor hot spot is not the top left corner and the
-- * physical cursor position becomes negative. It will be be displayed
-+ * physical cursor position becomes negative. It will be displayed
-  * if either the horizontal or vertical cursor position is negative
-  *
-  * If x becomes negative the cursor manager must adjust the CURS_HORZ_OFFSET
+Changes since RFC v2-fix-v2:
+ * Replaced is_tdx_guest() call with protected_guest_has() call.
+ * Used pgprot_protected_guest() instead of prot_tdg_shared().
+
+Changes since RFC v2:
+ * Fixed commit log and comment as per review comment
+
+ arch/x86/kernel/apic/io_apic.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index 73ff4dd426a8..9c0dff0d7aa4 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -49,6 +49,7 @@
+ #include <linux/slab.h>
+ #include <linux/memblock.h>
+ #include <linux/msi.h>
++#include <linux/protected_guest.h>
+ 
+ #include <asm/irqdomain.h>
+ #include <asm/io.h>
+@@ -2675,6 +2676,18 @@ static struct resource * __init ioapic_setup_resources(void)
+ 	return res;
+ }
+ 
++static void io_apic_set_fixmap_nocache(enum fixed_addresses idx,
++				       phys_addr_t phys)
++{
++	pgprot_t flags = FIXMAP_PAGE_NOCACHE;
++
++	/* Set TDX guest shared bit in pgprot flags */
++	if (protected_guest_has(VM_SHARED_MAPPING_INIT))
++		flags = pgprot_protected_guest(flags);
++
++	__set_fixmap(idx, phys, flags);
++}
++
+ void __init io_apic_init_mappings(void)
+ {
+ 	unsigned long ioapic_phys, idx = FIX_IO_APIC_BASE_0;
+@@ -2707,7 +2720,7 @@ void __init io_apic_init_mappings(void)
+ 				      __func__, PAGE_SIZE, PAGE_SIZE);
+ 			ioapic_phys = __pa(ioapic_phys);
+ 		}
+-		set_fixmap_nocache(idx, ioapic_phys);
++		io_apic_set_fixmap_nocache(idx, ioapic_phys);
+ 		apic_printk(APIC_VERBOSE, "mapped IOAPIC to %08lx (%08lx)\n",
+ 			__fix_to_virt(idx) + (ioapic_phys & ~PAGE_MASK),
+ 			ioapic_phys);
+@@ -2836,7 +2849,7 @@ int mp_register_ioapic(int id, u32 address, u32 gsi_base,
+ 	ioapics[idx].mp_config.flags = MPC_APIC_USABLE;
+ 	ioapics[idx].mp_config.apicaddr = address;
+ 
+-	set_fixmap_nocache(FIX_IO_APIC_BASE_0 + idx, address);
++	io_apic_set_fixmap_nocache(FIX_IO_APIC_BASE_0 + idx, address);
+ 	if (bad_ioapic_register(idx)) {
+ 		clear_fixmap(FIX_IO_APIC_BASE_0 + idx);
+ 		return -ENODEV;
 -- 
 2.25.1
-
 
