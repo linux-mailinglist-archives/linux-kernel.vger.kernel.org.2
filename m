@@ -2,105 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD5C397C61
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16009397C64
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbhFAWXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:23:45 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:39728 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234905AbhFAWXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:23:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=CsnPtThWLybNzTBvLNc9eaF3rItMTUPI+K/z2tQukKA=; b=uvn8r/aROG7HiY8DYbNpSzBKQl
-        EOiXVdSCniSkUupurOqYnS5e2fAyEFGqhLNcrN73OUsJLZ4qz+VdgTQq48BzCLj7Kjq9xeNdfAWqG
-        9qlj3Lrj8LuRA/tQTkxcMhB7sLybk+XTJpLJ8BjHlLtz5wgXSrbG9AxiHy5hponaHLT4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1loClr-007M6J-0I; Wed, 02 Jun 2021 00:21:59 +0200
-Date:   Wed, 2 Jun 2021 00:21:58 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
-Message-ID: <YLazBrpXbpsb6aXI@lunn.ch>
-References: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
- <YKz86iMwoP3VT4uh@lunn.ch>
- <20210601104734.GA18984@linux.intel.com>
- <YLYwcx3aHXFu4n5C@lunn.ch>
- <20210601154423.GA27463@linux.intel.com>
+        id S235039AbhFAWYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:24:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47540 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234890AbhFAWYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:24:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622586152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QQ6OOCiaBJ+Tmwz5+IKCbPSSgkslxV7sVjnAnThBj/I=;
+        b=iYW4l/ye/20fA3QsGFfc+xYd8NHpoyaVYYaPcJyftRCfBy11bbVc11FJ0VIgNxIR54gHtO
+        1IL6d89qvYydAgcjri4m6JHfQiNOFdYRYDiPpUs/iWnxy59NYB52dnVloYsKemBbp7cBv+
+        XgAw2M3VyBEURbkBlPs94Dj3feHCJ3E=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-95-zsuddzURMbq_ran-qb7wkw-1; Tue, 01 Jun 2021 18:22:30 -0400
+X-MC-Unique: zsuddzURMbq_ran-qb7wkw-1
+Received: by mail-oi1-f198.google.com with SMTP id k18-20020a05680808d2b02901edfe86c6dcso439600oij.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 15:22:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QQ6OOCiaBJ+Tmwz5+IKCbPSSgkslxV7sVjnAnThBj/I=;
+        b=I1wbz/16+wrsyrOI8htiNOgtH/Je6JbBPwdIWMHPl/mcq8PiYWF97p2BZ4xcHCV5U0
+         OUkU09/TTqukercd36lOC1K1LwPmgswVc8/UXqNLdlt4CveC1kaX+gg0E3xxsaUKs8lH
+         Xd5sTaUo7uEpcVC1FrepTmakKqk9Zvu/SxZSDhJT2Mxlk2VFch4snoGxN4p4DsNyrfD3
+         gYzdzT5vdWi2gqqufiuy67hJkKsgIWjBRMok73SnAag84bpXlNNn91tqk7179VrNt372
+         Ctz1+opxP9hD6xxbMzPcd7986COsMmdKpcxd2dmoJ0XB+g52AnQ8qTbXyMMz7CM/4o7Q
+         j3sQ==
+X-Gm-Message-State: AOAM530DnJV8URn7T3wFggD8IxO8uxFryuQ2irefhk8ZqjReLbVAyKGb
+        SY4NUHkWRLumjRHVm/EfVQ2H+Q8szn54Cn8/HJqstoJeq/2uOIsaixmbC6TYuCgyMeu+j46wt/P
+        4Ski7pqTWgkNGY3tmMBygGg49
+X-Received: by 2002:aca:6505:: with SMTP id m5mr18776740oim.93.1622586150037;
+        Tue, 01 Jun 2021 15:22:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxi5D5R/YKBkpuFV42WBo2g+RPZt7CRIoVFlvzPv1SWguiDXnA+px3cN3uoGLgwkwtxnkMPhw==
+X-Received: by 2002:aca:6505:: with SMTP id m5mr18776727oim.93.1622586149841;
+        Tue, 01 Jun 2021 15:22:29 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id w10sm3658007oou.35.2021.06.01.15.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 15:22:29 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 16:22:25 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Robin Murphy" <robin.murphy@arm.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210601162225.259923bc.alex.williamson@redhat.com>
+In-Reply-To: <MWHPR11MB188685D57653827B566BF9B38C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210528200311.GP1002214@nvidia.com>
+        <MWHPR11MB188685D57653827B566BF9B38C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601154423.GA27463@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 11:44:23PM +0800, Wong Vee Khee wrote:
-> On Tue, Jun 01, 2021 at 03:04:51PM +0200, Andrew Lunn wrote:
-> > On Tue, Jun 01, 2021 at 06:47:34PM +0800, Wong Vee Khee wrote:
-> > > On Tue, May 25, 2021 at 03:34:34PM +0200, Andrew Lunn wrote:
-> > > > On Tue, May 25, 2021 at 01:58:03PM +0800, Wong Vee Khee wrote:
-> > > > > Synopsys MAC controller is capable of pairing with external PHY devices
-> > > > > that accessible via Clause-22 and Clause-45.
-> > > > > 
-> > > > > There is a problem when it is paired with Marvell 88E2110 which returns
-> > > > > PHY ID of 0 using get_phy_c22_id(). We can add this check in that
-> > > > > function, but this will break swphy, as swphy_reg_reg() return 0. [1]
-> > > > 
-> > > > Is it possible to identify it is a Marvell PHY? Do any of the other
-> > > > C22 registers return anything unique? I'm wondering if adding
-> > > > .match_phy_device to genphy would work to identify it is a Marvell PHY
-> > > > and not bind to it. Or we can turn it around, make the
-> > > > .match_phy_device specifically look for the fixed-link device by
-> > > > putting a magic number in one of the vendor registers.
-> > > >
-> > > 
-> > > I checked the Marvell and did not see any unique register values.
-> > > Also, since get_phy_c22_id() returns a *phy_id== 0, it is not bind to
-> > > any PHY driver, so I don't think adding the match_phy_device check in
-> > > getphy would help.
-> > 
-> > It has a Marvell ID in C45 space. So maybe we need to special case for
-> > ID 0. If we get that, go look in C45 space. If we find a valid ID, use
-> > it. If we get EOPNOTSUP because the MDIO bus is not C45 capable, or we
-> > don't find a vendor ID in C45 space, keep with id == 0 and load
-> > genphy?
-> >
+On Tue, 1 Jun 2021 07:01:57 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 > 
-> Make sense for me.
-> Let me what you think of adding the checks in *get_phy_device():
+> I summarized five opens here, about:
 > 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 1539ea021ac0..ad9a87fadea1 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -862,11 +862,21 @@ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
->         c45_ids.mmds_present = 0;
->         memset(c45_ids.device_ids, 0xff, sizeof(c45_ids.device_ids));
+> 1)  Finalizing the name to replace /dev/ioasid;
+> 2)  Whether one device is allowed to bind to multiple IOASID fd's;
+> 3)  Carry device information in invalidation/fault reporting uAPI;
+> 4)  What should/could be specified when allocating an IOASID;
+> 5)  The protocol between vfio group and kvm;
 > 
-> -       if (is_c45)
-> +       if (is_c45) {
->                 r = get_phy_c45_ids(bus, addr, &c45_ids);
-> -       else
-> +       } else {
->                 r = get_phy_c22_id(bus, addr, &phy_id);
+...
 > 
-> +               if (phy_id == 0) {
-> +                       r = get_phy_c45_ids(bus, addr, &c45_ids);
-> +                       if (r == -ENOTSUPP || r == -ENODEV)
-> +                               return 0;
+> For 5), I'd expect Alex to chime in. Per my understanding looks the
+> original purpose of this protocol is not about I/O address space. It's
+> for KVM to know whether any device is assigned to this VM and then
+> do something special (e.g. posted interrupt, EPT cache attribute, etc.).
 
-This bit is not correct. I said 'or we don't find a vendor ID in C45
-space, keep with id == 0'. We need to keep backwards compatibility. If
-get_phy_c22_id() did not return an error we should create a device
-with phy_id 0, if get_phy_c45_ids() returns an error.
+Right, the original use case was for KVM to determine whether it needs
+to emulate invlpg, so it needs to be aware when an assigned device is
+present and be able to test if DMA for that device is cache coherent.
+The user, QEMU, creates a KVM "pseudo" device representing the vfio
+group, providing the file descriptor of that group to show ownership.
+The ugly symbol_get code is to avoid hard module dependencies, ie. the
+kvm module should not pull in or require the vfio module, but vfio will
+be present if attempting to register this device.
 
-     Andrew
+With kvmgt, the interface also became a way to register the kvm pointer
+with vfio for the translation mentioned elsewhere in this thread.
+
+The PPC/SPAPR support allows KVM to associate a vfio group to an IOMMU
+page table so that it can handle iotlb programming from pre-registered
+memory without trapping out to userspace.
+
+> Because KVM deduces some policy based on the fact of assigned device, 
+> it needs to hold a reference to related vfio group. this part is irrelevant
+> to this RFC. 
+
+All of these use cases are related to the IOMMU, whether DMA is
+coherent, translating device IOVA to GPA, and an acceleration path to
+emulate IOMMU programming in kernel... they seem pretty relevant.
+
+> But ARM's VMID usage is related to I/O address space thus needs some
+> consideration. Another strange thing is about PPC. Looks it also leverages
+> this protocol to do iommu group attach: kvm_spapr_tce_attach_iommu_
+> group. I don't know why it's done through KVM instead of VFIO uAPI in
+> the first place.
+
+AIUI, IOMMU programming on PPC is done through hypercalls, so KVM needs
+to know how to handle those for in-kernel acceleration.  Thanks,
+
+Alex
+
