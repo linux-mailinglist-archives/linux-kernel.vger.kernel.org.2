@@ -2,64 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E89397A43
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4576D397A48
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhFASz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233397AbhFASz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:55:28 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0E5C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:53:45 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id q15so84281pgg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=MHR82u4ojdl9g2U3dRKAkiZwMnhIgA4/mtysswjttjY=;
-        b=cycELX4SwEwpMQPJjEY1GnMlGHSIr1u4TbrzIxt+MDHDXhKjxUx1CH3MPdN/6GSijh
-         IRfWSzXhLIVCkHdkDlsIRoAl5kys7DQBv06hTnWj3NUCueTK4d70YQZWzxAQUvJFl2Ze
-         bW/ykTQe47A6oaOfGiyLx3aDLTaJ0EQtVIitc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=MHR82u4ojdl9g2U3dRKAkiZwMnhIgA4/mtysswjttjY=;
-        b=mCj8bdQp4HJwnwvxdDVskYCxx5yErsRbfYXp/mM3RicOwwpr3H1RYM3F0LixAoUInT
-         KnxPlzKVjrfwCAFUFCFfZCiroyIu1RPrn0780AOfxr2s0byxJhsiUWIGk6ZimfKwBc/o
-         0FgdZ+9iHeF3yExJtTxGSFAZaTciwCvu+I45rBPuOhgoPAxvbci0B0/qr9m9rCKBxtQ6
-         R1LRecNsBD1gJriYsrozNvlPg5xIR7aDxfzfly5kvvZfrSR660hH1+AvbUUDNfuMWBxh
-         Je+C2NLWfXCvCmZegpLhuVI1iyhu1lB8MkClyu47NbFyRgly3q2Y/X0EWiWqloD95XoG
-         Hmog==
-X-Gm-Message-State: AOAM530EQ7381ES5zwr8maU0g1mO//YnItqpA7GMl//e9DLWdQ03PMSK
-        GGVeuLcpuYlnS3FfyhmYC8mWEg==
-X-Google-Smtp-Source: ABdhPJyuvcjD+Ug/ybnwiv6lI+9T0QlXBQsVK/Ep0NLhGg923v6S8iOI9JjZ17MkYoLYePoVSrZQMA==
-X-Received: by 2002:a63:dd12:: with SMTP id t18mr29542213pgg.361.1622573625331;
-        Tue, 01 Jun 2021 11:53:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d13sm13536941pfn.136.2021.06.01.11.53.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 11:53:44 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 11:53:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Bill Wendling <morbo@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization
- infrastructure
-Message-ID: <202106011152.9E91FF6@keescook>
+        id S234692AbhFAS41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233397AbhFAS40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 14:56:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F85F610CB;
+        Tue,  1 Jun 2021 18:54:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622573684;
+        bh=4iiEd5l4m2/Ori1jLtEYI+2KE4P8L7ttrQhdycPrOOk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nBekMZtwL/tRKQOe4vtdXvaTrO24vkHhYK381uoJS+i1eTKvmYoxcgvoBPkN8w0nt
+         K4ZT1NwbQU7huhXgV1L+6OUpuaC5xdTF6NiRZKIA210U3nf5kwDVjddWSzxh+ndPXc
+         YITb2XKQQD0dsUb9WIYApAdzHbhYbSJfe4E7Nr6ER/2sQvNLtec4RBTFpljUDf+K0n
+         An8RZFY+SvJ0TIkvxGNWUE9tXq6Euzos2WbMrHfnx7f3BPrTiWO8aAUvS3jN9xBx0g
+         TU0fXiT1Un7SB3LEsguqnmi1y/vaxsAU0fswm49xaioOzHOnQ6T1PAUHnOZIObA+6q
+         LfSmJVqeGj4Ag==
+Date:   Tue, 1 Jun 2021 13:55:50 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2][venus-for-next-v5.14] media: venus: hfi_cmds: Fix packet
+ size calculation
+Message-ID: <20210601185550.GA39330@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -67,92 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 02:12:46PM -0700, Nathan Chancellor wrote:
-> On Wed, May 19, 2021 at 02:37:26PM -0700, Kees Cook wrote:
-> > I've added this to patch to my -next tree now:
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/clang/pgo&id=e1af496cbe9b4517428601a4e44fee3602dd3c15
-> > 
-> 
-> Would this be appropriate to send? Someone sent some patches based on
-> this work so it would be nice to solidify how they will get to Linus
-> if/when the time comes :)
+Now that a one-element array was replaced with a flexible-array member
+in struct hfi_sys_set_property_pkt, use the struct_size() helper to
+correctly calculate the packet size.
 
-Yeah, good idea.
+Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array with flexible-array member")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Include linux/overflow.h
 
-> https://lore.kernel.org/r/20210528200133.459022-1-jarmo.tiitto@gmail.com/
-> https://lore.kernel.org/r/20210528200432.459120-1-jarmo.tiitto@gmail.com/
-> https://lore.kernel.org/r/20210528200821.459214-1-jarmo.tiitto@gmail.com/
-> https://lore.kernel.org/r/20210528201006.459292-1-jarmo.tiitto@gmail.com/
-> https://lore.kernel.org/r/20210528201107.459362-1-jarmo.tiitto@gmail.com/
-> https://lore.kernel.org/r/20210528201213.459483-1-jarmo.tiitto@gmail.com/
+BTW... it seems that a similar problem is present in[1] and that is
+what is causing the regression. I will send v2 of that patch,
+shortly. Thanks.
 
-BTW, Jarmo, if you haven't had this suggested yet, I'd recommend using
-this kind of a script for your email sending workflow to get a set of
-threaded patches:
+[1] https://lore.kernel.org/linux-hardening/20210211001044.GA69612@embeddedor/
 
-#!/bin/sh
-set -x
+ drivers/media/platform/qcom/venus/hfi_cmds.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-MYSELF="Your Name <and.email@goes.here>"
-prefix="PATCH"
-#	or
-#prefix="PATCH v2"
-#	etc...
-SHA="SHA your series is based on"
-
-
-format_args="--cover-letter -n -o outgoing/"
-maint_args="--norolestats"
-
-mkdir -p outgoing
-git format-patch $format_args --subject-prefix "$prefix" "$SHA"
-
-./scripts/checkpatch.pl "$@" --codespell outgoing/0*patch
-
-${EDITOR:-vi} outgoing/*
-
-# Send patches
-git send-email --transfer-encoding=8bit --8bit-encoding=UTF-8 \
-	--no-chain-reply-to --thread \
-	--from="$MYSELF" --cc="$MYSELF" \
-	--to-cmd="./scripts/get_maintainer.pl $maint_args -m" \
-	--cc-cmd="./scripts/get_maintainer.pl $maint_args --nom" \
-	outgoing/*
-
-
-> 
-> Cheers,
-> Nathan
-> 
-> ======================================
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c45613c30803..0d03f6ccdb70 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14378,9 +14378,13 @@ F:	include/uapi/linux/personality.h
->  PGO BASED KERNEL PROFILING
->  M:	Sami Tolvanen <samitolvanen@google.com>
->  M:	Bill Wendling <wcw@google.com>
-> +M:	Kees Cook <keescook@chromium.org>
->  R:	Nathan Chancellor <nathan@kernel.org>
->  R:	Nick Desaulniers <ndesaulniers@google.com>
-> +L:	clang-built-linux@googlegroups.com
->  S:	Supported
-> +B:	https://github.com/ClangBuiltLinux/linux/issues
-> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/pgo
-
-I think I'm going to keep things combined in a single tree for now since the patch rate
-is low:
-
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/features
-
->  F:	Documentation/dev-tools/pgo.rst
->  F:	kernel/pgo/
->  
-
-I should likely do the same entry for CFI.
-
+diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
+index 4b9dea7f6940..a4fec1c563bb 100644
+--- a/drivers/media/platform/qcom/venus/hfi_cmds.c
++++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
+@@ -5,6 +5,7 @@
+  */
+ #include <linux/errno.h>
+ #include <linux/hash.h>
++#include <linux/overflow.h>
+ 
+ #include "hfi_cmds.h"
+ 
+@@ -27,7 +28,7 @@ void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
+ {
+ 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
+ 
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_IDLE_INDICATOR;
+@@ -39,7 +40,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
+ {
+ 	struct hfi_debug_config *hfi;
+ 
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_DEBUG_CONFIG;
+@@ -50,7 +51,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
+ 
+ void pkt_sys_coverage_config(struct hfi_sys_set_property_pkt *pkt, u32 mode)
+ {
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_CONFIG_COVERAGE;
+@@ -116,7 +117,7 @@ void pkt_sys_power_control(struct hfi_sys_set_property_pkt *pkt, u32 enable)
+ {
+ 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
+ 
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_CODEC_POWER_PLANE_CTRL;
 -- 
-Kees Cook
+2.27.0
+
