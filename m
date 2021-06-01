@@ -2,155 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9F539700B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C520397010
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhFAJNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:13:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233627AbhFAJMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:12:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78FFD613AB;
-        Tue,  1 Jun 2021 09:11:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622538668;
-        bh=7Bq5BexlVK9T8fkTBp8wKN4Dq7W5jstexvuIXnyTpQc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oOun13lYV2AnXJQuzudIT4j2IEdN/wzH067SMKvSOHx6ui0cxGZaPk+IfqB733x30
-         PaC75lgP8/4j1Hhui15awCZ0fDdmgoCrSlTUj3KOk0nWigderTQFnvQMqmheaafjWn
-         Hw5t1NQ16+4hKhA2NC22Mstp0f8uuob+JD9e+DcpJfAgSy4gRpiu9RorMJOsUZ16wL
-         ePaint4rEvudwMxHrgMEtbRHUgXHTSLmE3OsIrroP3sUbysnsJFdscSTDKou0jiD9/
-         VQIBNyeIE65SCi7H71E6rn41ZD81v8ZBDDShlzYvuJzfGRf4ChH5zXxVcVtNSkHqjr
-         XRuJTifzeUbmA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lo0QU-000vRq-2E; Tue, 01 Jun 2021 11:11:06 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Brad Love <brad@nextdimension.cc>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxim Plotnikov <wgh@torlan.ru>, Sean Young <sean@mess.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH v2 3/3] media: sp8870: move it to staging
-Date:   Tue,  1 Jun 2021 11:11:04 +0200
-Message-Id: <2113b7c773a5fe55d5d04082ee3c6873a29f71e9.1622537534.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1622537534.git.mchehab+huawei@kernel.org>
-References: <cover.1622537534.git.mchehab+huawei@kernel.org>
+        id S233500AbhFAJOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233193AbhFAJNz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:13:55 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852D5C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:12:11 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id j14so13446873wrq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hswWG3k76XjsOAY7hr4YP59a7cKj8iPzOH2k8wJsCIA=;
+        b=E3SCPq2jLbOJ+6oYBMsbGdcBNMoG/P7rv8+TpusKtqDwT2/yE/U3nEsPOoFUZKC61R
+         MwtvitPLMnlfT3+pcPLk4+MmxSvBFOnzx/VUKOUpoHT9dIZYOIcNQJw42huYXiq9MzZi
+         gAw+7NcYpepe67W/CYjTK99Bpa1EeItub4RyJp0X4Ykbez7KFn1ovfIb6Z1ekwGs90A+
+         +8QAVRnPKq10VU+jluRzHzNsyfZ3VHSJCDgMBVC9Q69omw+ywPSTHrO2AfICM4JIlRrV
+         R2JycltvZMp17/a144Kiq7K7Yutk/Krni6+dRTJEQq28XIwH4Ezm9paFSOj2GanWdRdw
+         EZ+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hswWG3k76XjsOAY7hr4YP59a7cKj8iPzOH2k8wJsCIA=;
+        b=brrVV9TSrK0FVXQTWHyFy2T3NHDM/5s3nzmHwlWFrDleOa4BRt9ns2odm6xU6e+7/k
+         xrexED7BUmCYw0Z8Y7gdS834e1w9kLLchn+37tW0DlRfmpxIbV/D4s6XP50XZvYAaTVk
+         NQY/HaIdVNr3i+htjJuYbZZ1IjQQxLDtn71tVcIKLjUEnF6sui/4g3aC1+bjOfIn9Orq
+         XOJpI5+3Gxe4ZuuUQidDtyjjTeqi4Nm/Uy7iDyGpb3iGkSbhQz4NBNuDjghyRiwvrFMH
+         ID+A6UwqtBeBtvKpyX6gwojhRwqrECXd3KIie1+YoI6lidLOovCIEcOM+coQWH0dag3G
+         EDGA==
+X-Gm-Message-State: AOAM5325oa+Lm6+6x5N/F6rYFx1SL3Ldr9o7SvQE3cGgaT3AUkBwlZ6S
+        EajfggXJnYxKFJX3UlyOtgHOcR3SwPGWsw==
+X-Google-Smtp-Source: ABdhPJxGoTYw8ikTT5yUvmARYAs7FCvUQKUJOk95afL5fffk1+XwewafibHRCb9uaKs0zntRxXnRYg==
+X-Received: by 2002:adf:dd8a:: with SMTP id x10mr7238454wrl.225.1622538730170;
+        Tue, 01 Jun 2021 02:12:10 -0700 (PDT)
+Received: from dell ([91.110.221.249])
+        by smtp.gmail.com with ESMTPSA id y22sm2310852wma.36.2021.06.01.02.12.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 02:12:09 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 10:12:08 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <20210601091208.GB543307@dell>
+References: <20210524120539.3267145-1-robert.marko@sartura.hr>
+ <20210524120539.3267145-3-robert.marko@sartura.hr>
+ <20210524230940.GA1350504@robh.at.kernel.org>
+ <20210525074649.GC4005783@dell>
+ <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+ <20210526075255.GG4005783@dell>
+ <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
+ <20210601081933.GU543307@dell>
+ <CA+HBbNFW4NHpcEt7Xa+qC2HVvhuKu1O+PUo_rSE03qtSsBCehg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CA+HBbNFW4NHpcEt7Xa+qC2HVvhuKu1O+PUo_rSE03qtSsBCehg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is used only by av7110, which is preparing for
-its retirement. So, move this ancillary driver to stay together
-with av7110.
+On Tue, 01 Jun 2021, Robert Marko wrote:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/dvb-frontends/Kconfig           | 12 -----------
- drivers/media/dvb-frontends/Makefile          |  1 -
- drivers/staging/media/av7110/Kconfig          | 20 +++++++++++++++++++
- drivers/staging/media/av7110/Makefile         |  2 ++
- .../media/av7110}/sp8870.c                    |  0
- .../media/av7110}/sp8870.h                    |  0
- 6 files changed, 22 insertions(+), 13 deletions(-)
- rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.c (100%)
- rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.h (100%)
+> On Tue, Jun 1, 2021 at 10:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Mon, 31 May 2021, Robert Marko wrote:
+> >
+> > > On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > On Tue, 25 May 2021, Robert Marko wrote:
+> > > >
+> > > > > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > > >
+> > > > > > On Mon, 24 May 2021, Rob Herring wrote:
+> > > > > >
+> > > > > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
+> > > > > > > > Add binding documents for the Delta TN48M CPLD drivers.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > > > > > ---
+> > > > > > > > Changes in v2:
+> > > > > > > > * Implement MFD as a simple I2C MFD
+> > > > > > > > * Add GPIO bindings as separate
+> > > > > > >
+> > > > > > > I don't understand why this changed. This doesn't look like an MFD to
+> > > > > > > me. Make your binding complete if there are missing functions.
+> > > > > > > Otherwise, stick with what I already ok'ed.
+> > > > > >
+> > > > > > Right.  What else, besides GPIO, does this do?
+> > > > >
+> > > > > It currently does not do anything else as hwmon driver was essentially
+> > > > > NACK-ed for not exposing standard attributes.
+> > > >
+> > > > Once this provides more than GPIO capabilities i.e. becomes a proper
+> > > > Multi-Function Device, then it can use the MFD framework.  Until then,
+> > > > it's a GPIO device I'm afraid.
+> > > >
+> > > > Are you going to re-author the HWMON driver to conform?
+> > > hwmon cannot be reathored as it has no standard hwmon attributes.
+> > >
+> > > >
+> > > > > The CPLD itself has PSU status-related information, bootstrap related
+> > > > > information,
+> > > > > various resets for the CPU-s, OOB ethernet PHY, information on the exact board
+> > > > > model it's running etc.
+> > > > >
+> > > > > PSU and model-related info stuff is gonna be exposed via a misc driver
+> > > > > in debugfs as
+> > > > > we have user-space SW depending on that.
+> > > > > I thought we agreed on that as v1 MFD driver was exposing those directly and
+> > > > > not doing anything else.
+> > > >
+> > > > Yes, we agreed that creating an MFD driver just to expose chip
+> > > > attributes was not an acceptable solution.
+> > > >
+> > > > > So I moved to use the simple I2C MFD driver, this is all modeled on the sl28cpld
+> > > > > which currently uses the same driver and then GPIO regmap as I do.
+> > > > >
+> > > > > Other stuff like the resets is probably gonna get exposed later when
+> > > > > it's required
+> > > > > to control it directly.
+> > > >
+> > > > In order for this driver to tick the MFD box, it's going to need more
+> > > > than one function.
+> > >
+> > > Understood, would a debug driver count or I can expose the resets via
+> > > a reset driver
+> > > as we have a future use for them?
+> >
+> > CPLDs and FPGAs are funny ones and are often difficult to support in
+> > Linux.  Especially if they can change their behaviour.
+> >
+> > It's hard to make a solid suggestion as to how your device is handled
+> > without knowing the intricacies of the device.
+> 
+> Yeah, I understand.
+> This one is a generic CPLD used in multiple switch models, however in this
+> switch model, it has the smallest set of features.
+> Things that are usable for the kernel and userspace it provides are SFP pins,
+> resets and debug information.
+> Debug information is quite detailed actually.
+> 
+> I have added the reset driver in v3 as that is something that was gonna get
+> added later as well as it exposes resets for the ethernet PHY-s and U-boot
+> messes with the OOB PHY configuration.
+> 
+> >
+> > Why do you require one single Regmap anyway?  Are they register banks
+> > not neatly separated on a per-function basis?
+> 
+> For GPIO and reset drivers, I could get away with each of them
+> registering a regmap
+> but the debug driver will require accessing certain registers from their space.
 
-diff --git a/drivers/media/dvb-frontends/Kconfig b/drivers/media/dvb-frontends/Kconfig
-index 3468b07b62fe..2c1ed98d43c5 100644
---- a/drivers/media/dvb-frontends/Kconfig
-+++ b/drivers/media/dvb-frontends/Kconfig
-@@ -323,18 +323,6 @@ config DVB_TDA10071
- comment "DVB-T (terrestrial) frontends"
- 	depends on DVB_CORE
- 
--config DVB_SP8870
--	tristate "Spase sp8870 based"
--	depends on DVB_CORE && I2C
--	default m if !MEDIA_SUBDRV_AUTOSELECT
--	help
--	  A DVB-T tuner module. Say Y when you want to support this frontend.
--
--	  This driver needs external firmware. Please use the command
--	  "<kerneldir>/scripts/get_dvb_firmware sp8870" to
--	  download/extract it, and then copy it to /usr/lib/hotplug/firmware
--	  or /lib/firmware (depending on configuration of firmware hotplug).
--
- config DVB_SP887X
- 	tristate "Spase sp887x based"
- 	depends on DVB_CORE && I2C
-diff --git a/drivers/media/dvb-frontends/Makefile b/drivers/media/dvb-frontends/Makefile
-index b9f47d68e14e..d32e4c0be576 100644
---- a/drivers/media/dvb-frontends/Makefile
-+++ b/drivers/media/dvb-frontends/Makefile
-@@ -20,7 +20,6 @@ obj-$(CONFIG_DVB_PLL) += dvb-pll.o
- obj-$(CONFIG_DVB_STV0299) += stv0299.o
- obj-$(CONFIG_DVB_STB0899) += stb0899.o
- obj-$(CONFIG_DVB_STB6100) += stb6100.o
--obj-$(CONFIG_DVB_SP8870) += sp8870.o
- obj-$(CONFIG_DVB_CX22700) += cx22700.o
- obj-$(CONFIG_DVB_S5H1432) += s5h1432.o
- obj-$(CONFIG_DVB_CX24110) += cx24110.o
-diff --git a/drivers/staging/media/av7110/Kconfig b/drivers/staging/media/av7110/Kconfig
-index e19d24bf2eb4..9faf9d2d4001 100644
---- a/drivers/staging/media/av7110/Kconfig
-+++ b/drivers/staging/media/av7110/Kconfig
-@@ -72,3 +72,23 @@ config DVB_BUDGET_PATCH
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called budget-patch.
-+
-+if DVB_AV7110
-+
-+# Frontend driver that it is used only by AV7110 driver
-+# While technically independent, it doesn't make sense to keep
-+# it if we drop support for AV7110, as no other driver will use it.
-+
-+config DVB_SP8870
-+	tristate "Spase sp8870 based"
-+	depends on DVB_CORE && I2C
-+	default m if !MEDIA_SUBDRV_AUTOSELECT
-+	help
-+	  A DVB-T tuner module. Say Y when you want to support this frontend.
-+
-+	  This driver needs external firmware. Please use the command
-+	  "<kerneldir>/scripts/get_dvb_firmware sp8870" to
-+	  download/extract it, and then copy it to /usr/lib/hotplug/firmware
-+	  or /lib/firmware (depending on configuration of firmware hotplug).
-+
-+endif
-diff --git a/drivers/staging/media/av7110/Makefile b/drivers/staging/media/av7110/Makefile
-index dcabecf1abde..307b267598ea 100644
---- a/drivers/staging/media/av7110/Makefile
-+++ b/drivers/staging/media/av7110/Makefile
-@@ -14,6 +14,8 @@ obj-$(CONFIG_DVB_BUDGET_PATCH) += budget-patch.o
- 
- obj-$(CONFIG_DVB_AV7110) += dvb-ttpci.o
- 
-+obj-$(CONFIG_DVB_SP8870) += sp8870.o
-+
- ccflags-y += -I $(srctree)/drivers/media/dvb-frontends
- ccflags-y += -I $(srctree)/drivers/media/tuners
- ccflags-y += -I $(srctree)/drivers/media/pci/ttpci
-diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/staging/media/av7110/sp8870.c
-similarity index 100%
-rename from drivers/media/dvb-frontends/sp8870.c
-rename to drivers/staging/media/av7110/sp8870.c
-diff --git a/drivers/media/dvb-frontends/sp8870.h b/drivers/staging/media/av7110/sp8870.h
-similarity index 100%
-rename from drivers/media/dvb-frontends/sp8870.h
-rename to drivers/staging/media/av7110/sp8870.h
+> Also, I see using a single regmap that is provided by a generic driver
+> much simpler and cleaner than doing that in each of the child drivers.
+
+Obviously not. :)
+
 -- 
-2.31.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
