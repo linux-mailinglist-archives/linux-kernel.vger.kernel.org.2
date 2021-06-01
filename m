@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FC5397449
+	by mail.lfdr.de (Postfix) with ESMTP id 9A90039744A
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhFANeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:34:02 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:33294 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234041AbhFANd4 (ORCPT
+        id S234054AbhFANeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:34:04 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:45651 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234072AbhFANd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:33:56 -0400
-Received: by mail-oi1-f176.google.com with SMTP id b25so15523730oic.0;
-        Tue, 01 Jun 2021 06:32:14 -0700 (PDT)
+        Tue, 1 Jun 2021 09:33:59 -0400
+Received: by mail-ot1-f47.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so14085599otc.12;
+        Tue, 01 Jun 2021 06:32:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=sUvFSbu0LjfUEV8j0+FO3g9Nw0MVO+tbGa4afn92YVM=;
-        b=l4aJDF2f84s6OwTDg7ekXNVatCHWbL+QdFuV2ZPqnF5Bl6CMNyNrqA7UtrwyXwgsWS
-         VXnZ+Jdj39FFKQWMNl4fcqaq2s0dEjSaMMiNm/8+4e5k6FWwV2h6yfTWXb8T66dNYvUs
-         tSKxOXwIe1oW/IzyGovM2GoJ/Q4Yxllw/Pp+7NVN7YyfiY4th2EuPPyZy8bMeO0jUbwQ
-         uAfpN4BuZgWcC//RdkstyVgHglfW1TQNs6nRc4Tw/igrTYpKfDPBtDkBdpFUq2uXyDY1
-         IBz18iHSR6FazTkr+XoypwcD249A31B4ltrF1QPBkguLRY5j6kkFWgijX7Q6/2phMFua
-         JAOQ==
-X-Gm-Message-State: AOAM5316wMSJ1tgvTYAEXBxzaRQ9XnGTaL1KSNvsKA2li8GUNSazdwL7
-        aAtlKFri2IAYyRJCEUQDcg==
-X-Google-Smtp-Source: ABdhPJxIQ4UNHJiSMIQurjA4OqwlMFcM1ZeS8iht1dzB0oheLg8yrxOc5sZ0cAHYtcMx3as29NSRpA==
-X-Received: by 2002:a05:6808:4cf:: with SMTP id a15mr3193906oie.78.1622554334167;
-        Tue, 01 Jun 2021 06:32:14 -0700 (PDT)
+        bh=IF8cURsxp/nq12oY6C7u3w5i8JCScdi+M9TktNMYd80=;
+        b=Xn9EHlsLo2pczsM3o56zKgfezj17w41zJwEWMLFJ0kcAruPBT8Ek+cQIQgplMaRy+1
+         yiOjTFtUREC3R0kT4Jy68Py52pGrrI7R9pyCjeVup5SJ+nuQW/DWAuqV/Q+H4T22Dk9V
+         e+CC96knU/7RpSq5XgWhkkCgyBTgMsdc0Wjqg+VnSGCm6gK4rY+dH80FJ6JadLkhZ4Km
+         eG8M4G2B+4k8HtyUpmwj7owMLBsRAXxm5KSt6hQc8H/E/oVq4YcmW+IcqIdDoQpyPq/I
+         t9oGL4NwBLv1IxKuLRSTo9+7Rulv3ccoWwUZ5iOYpD884zEUqGb8+3VWVnZcJenQqaRE
+         NMhg==
+X-Gm-Message-State: AOAM533ewaPn74M7vzkMV5+WDqsrORgZJ9K0NaVF3gcK7aq5WkIWYUEd
+        OD/zS6Su2FKrTDEOstyc5wC+y+MljQ==
+X-Google-Smtp-Source: ABdhPJz4xciBUKg1F9JwW4F2bxxsL5pPZ0AN6DWxHNCVLbAW4YpRKYkvBjAvTiiEBQvMSROtatt/yg==
+X-Received: by 2002:a9d:4801:: with SMTP id c1mr12072880otf.278.1622554337277;
+        Tue, 01 Jun 2021 06:32:17 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m66sm3438918oia.28.2021.06.01.06.32.12
+        by smtp.gmail.com with ESMTPSA id e21sm3423981oie.32.2021.06.01.06.32.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 06:32:13 -0700 (PDT)
-Received: (nullmailer pid 242371 invoked by uid 1000);
+        Tue, 01 Jun 2021 06:32:15 -0700 (PDT)
+Received: (nullmailer pid 242365 invoked by uid 1000);
         Tue, 01 Jun 2021 13:32:10 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Rajeev Nandan <rajeevny@codeaurora.org>
-Cc:     robh+dt@kernel.org, mkrishn@codeaurora.org,
-        kalyan_t@codeaurora.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        abhinavk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        jonathan@marek.ca, dri-devel@lists.freedesktop.org,
-        robdclark@gmail.com, sean@poorly.run
-In-Reply-To: <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
-References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org> <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
-Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
+In-Reply-To: <20210531052426.695576-1-iwamatsu@nigauri.org>
+References: <20210531052426.695576-1-iwamatsu@nigauri.org>
+Subject: Re: [PATCH] dt-bindings: rtc: zynqmp: convert bindings to YAML
 Date:   Tue, 01 Jun 2021 08:32:10 -0500
-Message-Id: <1622554330.075037.242370.nullmailer@robh.at.kernel.org>
+Message-Id: <1622554330.044320.242364.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 19:03:53 +0530, Rajeev Nandan wrote:
-> Add YAML schema for the device tree bindings for MSM 7nm DSI PHY driver.
+On Mon, 31 May 2021 14:24:26 +0900, Nobuhiro Iwamatsu wrote:
+> Convert Real Time Clock for Xilinx Zynq MPSoC SoC bindings documentation
+> to YAML schemas.
 > 
-> Cc: Jonathan Marek <jonathan@marek.ca>
-> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
 > ---
->  .../bindings/display/msm/dsi-phy-7nm.yaml          | 68 ++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
+>  .../bindings/rtc/xlnx,zynqmp-rtc.yaml         | 58 +++++++++++++++++++
+>  .../devicetree/bindings/rtc/xlnx-rtc.txt      | 25 --------
+>  2 files changed, 58 insertions(+), 25 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/rtc/xlnx-rtc.txt
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -70,17 +73,14 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/display/msm/dsi-phy-common.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dts:19:18: fatal error: dt-bindings/clock/qcom,dispcc-sc7280.h: No such file or directory
-   19 |         #include <dt-bindings/clock/qcom,dispcc-sc7280.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dt.yaml] Error 1
+Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.example.dts:16.9-30: ERROR (duplicate_property_names): /example-0:#address-cells: Duplicate property name
+Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.example.dts:17.9-27: ERROR (duplicate_property_names): /example-0:#size-cells: Duplicate property name
+ERROR: Input tree has errors, aborting (use -f to force output)
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.example.dt.yaml] Error 2
 make[1]: *** Waiting for unfinished jobs....
 make: *** [Makefile:1416: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1485686
+See https://patchwork.ozlabs.org/patch/1485555
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
