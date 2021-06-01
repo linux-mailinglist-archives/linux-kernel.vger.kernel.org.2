@@ -2,88 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8442397B28
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2568397B27
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhFAUZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 16:25:23 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:48356 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234513AbhFAUZW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 16:25:22 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151KGZVC006875;
-        Tue, 1 Jun 2021 20:23:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=ZfE7SpF3zwKpmWzVzP/aV3gFN8HgkKhmsX/IkQ5NQ90=;
- b=HGk4jkzeRVehwabYfdWDMotWuzuHXfIwtdhfrcw5Rw+WiAvM4hy4sCgH8ooEehQPrQvo
- yHu9iUmWSAJYYZY4bNiVcUCg8HGiVFnJ53bLFYC88QqtQ/UTwISDRANK+T13qeubmlKi
- CBVxU00pUEx1rrjCdbbLrtH5DqfQtTXr8GO3VLhZUHcyjJ855lUyWSmREO7jjVjg9aC+
- 9H49FHZf1wMzcDiCR9YgUtbWDS1AsyzdvXNFH+oQplOlWL8+hV5qz3So57GwNLC9P+5g
- RKLrh3xXBFFm/BFSmIdn09HAh7g7dF42zkjuZ1v0vUcWI7ln5AF9tzHEBH+vP2ut9GyC tw== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38wu57r0em-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 20:23:25 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 151KKnrg040277;
-        Tue, 1 Jun 2021 20:23:24 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38ubndfdck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 20:23:24 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 151KKCNk039093;
-        Tue, 1 Jun 2021 20:23:24 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 38ubndfdbv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 20:23:23 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 151KNLOU030306;
-        Tue, 1 Jun 2021 20:23:21 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Jun 2021 13:23:20 -0700
-Date:   Tue, 1 Jun 2021 23:23:07 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Ojaswin Mujoo <ojaswin98@gmail.com>
-Cc:     nsaenz@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
-        phil@raspberrypi.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: staging: vc04_services: Need suggestions on trying to fix sparse
- warning in vchiq_arm.c
-Message-ID: <20210601202307.GC1955@kadam>
-References: <20210601200513.GA10204@ojas>
+        id S234793AbhFAUZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 16:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234513AbhFAUZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 16:25:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 769F761263;
+        Tue,  1 Jun 2021 20:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622579014;
+        bh=OSwdNRzwRbWoTBeR6z7tuCW+yTASw0qoelX/HIVXYeU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rObePwv7mCgt459xM3WZXZBXTPP0E5F6Uqj8m1aFtwi0jpmV0OztZ+Z2rybHcXEB1
+         0AhAsDQlAtuoFJ4tbslprigLzqbJTM3iSWi8+cw0VOChNEfl3p9VDJmX+TgOwt86lB
+         03iQDd7Z7JTCkW8Ktxu48unmLPyJvkJVmjufenY9qaSe9Kg4lLcyIq9C5V96DBTxRh
+         FvJ6fGAjVjkmdBhTawLEdiL3CqCLplpaCV5Oypg/QfeprkGbMR4GRDNqBFuAN5LiBf
+         0odv7HDW61pqpp0phaysRD4nbg8U5XaEO4hcgKZBkDhELNzz2ugCQjq6mbJQhArJKM
+         RIjg65ZG3IRmg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 433A35C08EB; Tue,  1 Jun 2021 13:23:34 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 13:23:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joel Fernandes <joelaf@google.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 00/29] Speculative page faults (anon vmas only)
+Message-ID: <20210601202334.GS4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210430195232.30491-1-michel@lespinasse.org>
+ <20210430224649.GA29203@lespinasse.org>
+ <20210503181118.GA21048@lespinasse.org>
+ <20210517175750.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+ <CAJuCfpHD=GN2UMhbAhpp+UfvF0doBWcZDNx+u4RzcDezUW2+0g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210601200513.GA10204@ojas>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: 2HUnrfun4ratf_ZYcNbEft3H1aqRaMtl
-X-Proofpoint-ORIG-GUID: 2HUnrfun4ratf_ZYcNbEft3H1aqRaMtl
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJuCfpHD=GN2UMhbAhpp+UfvF0doBWcZDNx+u4RzcDezUW2+0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem is not the Sparse warning, the problem is that this code is
-a mess.  It used to very clearly buggy and I reported the bug.  I think
-Arnd found the bug again independently and fixed it.
+On Thu, May 20, 2021 at 03:10:24PM -0700, Suren Baghdasaryan wrote:
+> On Mon, May 17, 2021 at 10:57 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Mon, May 03, 2021 at 11:11:18AM -0700, Michel Lespinasse wrote:
+> > > On Fri, Apr 30, 2021 at 03:46:49PM -0700, Michel Lespinasse wrote:
+> > > > I- Maple tree
+> > > >
+> > > > I do not think there is any fundamental conflict between the maple
+> > > > tree patches currently being considered, and this patchset.
+> > > > I actually have a (very lightly tested) tree merging the two together,
+> > > > which was a fairly easy merge. For those interested, I made this
+> > > > available at my github, as the v5.12-maple-spf branch.
+> > >
+> > > People were still confused about it, so the instructions to fetch this are:
+> > > git fetch https://github.com/lespinasse/linux.git v5.12-maple-spf
+> >
+> > Finally getting around to actually testing this, apologies for the
+> > delay!
+> >
+> > Just checking to see if I am in the right place.  The warning below is
+> > easily fixed, but I figured that I should check.
+> >
+> >                                                         Thanx, Paul
+> >
+> > ------------------------------------------------------------------------
+> >
+> >   CC      arch/x86/kernel/asm-offsets.s
+> > In file included from ./include/linux/mmap_lock.h:10,
+> >                  from ./include/linux/mm.h:18,
+> >                  from ./include/linux/kallsyms.h:12,
+> >                  from ./include/linux/bpf.h:20,
+> >                  from ./include/linux/bpf-cgroup.h:5,
+> >                  from ./include/linux/cgroup-defs.h:22,
+> >                  from ./include/linux/cgroup.h:28,
+> >                  from ./include/linux/memcontrol.h:13,
+> >                  from ./include/linux/swap.h:9,
+> >                  from ./include/linux/suspend.h:5,
+> >                  from arch/x86/kernel/asm-offsets.c:13:
+> > ./include/linux/vmstat.h: In function ‘__mod_lruvec_page_state’:
+> > ./include/linux/vmstat.h:504:24: error: implicit declaration of function ‘page_pgdat’; did you mean ‘page_private’? [-Werror=implicit-function-declaration]
+> >   __mod_node_page_state(page_pgdat(page), idx, val);
+> >                         ^~~~~~~~~~
+> >                         page_private
+> > ./include/linux/vmstat.h:504:24: warning: passing argument 1 of ‘__mod_node_page_state’ makes pointer from integer without a cast [-Wint-conversion]
+> >   __mod_node_page_state(page_pgdat(page), idx, val);
+> >                         ^~~~~~~~~~~~~~~~
+> > ./include/linux/vmstat.h:267:28: note: expected ‘struct pglist_data *’ but argument is of type ‘int’
+> >  void __mod_node_page_state(struct pglist_data *, enum node_stat_item item, long);
+> >                             ^~~~~~~~~~~~~~~~~~~~
+> > ./include/linux/vmstat.h: In function ‘mod_lruvec_page_state’:
+> > ./include/linux/vmstat.h:510:22: warning: passing argument 1 of ‘mod_node_page_state’ makes pointer from integer without a cast [-Wint-conversion]
+> >   mod_node_page_state(page_pgdat(page), idx, val);
+> >                       ^~~~~~~~~~~~~~~~
+> > ./include/linux/vmstat.h:275:26: note: expected ‘struct pglist_data *’ but argument is of type ‘int’
+> >  void mod_node_page_state(struct pglist_data *, enum node_stat_item, long);
+> >                           ^~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/linux/kallsyms.h:12,
+> >                  from ./include/linux/bpf.h:20,
+> >                  from ./include/linux/bpf-cgroup.h:5,
+> >                  from ./include/linux/cgroup-defs.h:22,
+> >                  from ./include/linux/cgroup.h:28,
+> >                  from ./include/linux/memcontrol.h:13,
+> >                  from ./include/linux/swap.h:9,
+> >                  from ./include/linux/suspend.h:5,
+> >                  from arch/x86/kernel/asm-offsets.c:13:
+> > ./include/linux/mm.h: At top level:
+> > ./include/linux/mm.h:1568:26: error: conflicting types for ‘page_pgdat’
+> >  static inline pg_data_t *page_pgdat(const struct page *page)
+> >                           ^~~~~~~~~~
+> > In file included from ./include/linux/mmap_lock.h:10,
+> >                  from ./include/linux/mm.h:18,
+> >                  from ./include/linux/kallsyms.h:12,
+> >                  from ./include/linux/bpf.h:20,
+> >                  from ./include/linux/bpf-cgroup.h:5,
+> >                  from ./include/linux/cgroup-defs.h:22,
+> >                  from ./include/linux/cgroup.h:28,
+> >                  from ./include/linux/memcontrol.h:13,
+> >                  from ./include/linux/swap.h:9,
+> >                  from ./include/linux/suspend.h:5,
+> >                  from arch/x86/kernel/asm-offsets.c:13:
+> > ./include/linux/vmstat.h:504:24: note: previous implicit declaration of ‘page_pgdat’ was here
+> >   __mod_node_page_state(page_pgdat(page), idx, val);
+> >                         ^~~~~~~~~~
+> > cc1: some warnings being treated as errors
+> 
+> Hi Paul,
+> I promised you to look into this but somehow forgot to reply, sorry
+> about that. The issue is the new "#include <linux/mm_types.h>" in mm.h
+> which causes page_pgdat() usage before it is defined:
+> 
+> mm.h includes mm_types.h
+> mm_types.h includes vmstat.h
+> vmstat.h uses page_pgdat()
+> mm.h defines page_pgdat()
+> 
+> Not sure if this is the best way to fix it but this worked fine for me:
 
-A couple weeks ago Al Viro looked at this code.  Here is his write up:
+And it did fix the build error for me as well, thank you!
 
-https://www.spinics.net/lists/kernel/msg3952745.html
+							Thanx, Paul
 
-It shouldn't take Al Viro dozens of pages of detailed analysis to try
-figure out if the code is safe or not.  Your idea silences the warning
-but would make the code even more subtle and complicated.
-
-The right thing to do is to re-write the code to be simpler.
-
-regards,
-dan carpenter
-
+> ---
+>  include/linux/mmap_lock.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+> index 98f24a9910a9..13d4a706c0eb 100644
+> --- a/include/linux/mmap_lock.h
+> +++ b/include/linux/mmap_lock.h
+> @@ -7,7 +7,7 @@
+>  #include <linux/rwsem.h>
+>  #include <linux/tracepoint-defs.h>
+>  #include <linux/types.h>
+> -#include <linux/vmstat.h>
+> +#include <linux/vm_event_item.h>
+> 
+>  #ifdef CONFIG_SPECULATIVE_PAGE_FAULT
+>  #define MMAP_LOCK_SEQ_INITIALIZER(name) \
+> @@ -113,6 +113,8 @@ static inline bool __mmap_seq_read_check(struct
+> mm_struct *mm,
+>  }
+> 
+>  #ifdef CONFIG_SPECULATIVE_PAGE_FAULT_STATS
+> +static inline void count_vm_event(enum vm_event_item item);
+> +
+>  static inline bool mmap_seq_read_check(struct mm_struct *mm, unsigned long seq,
+>          enum vm_event_item fail_event)
+>  {
+> --
+> 
+> Thanks,
+> Suren.
