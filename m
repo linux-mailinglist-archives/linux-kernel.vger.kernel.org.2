@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FA6397001
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F7A396FFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbhFAJLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhFAJLp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:11:45 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4598DC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:10:04 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id h7so384453iok.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=1EQ7MJidus+zd1vSi36boWoSco2HUCYyNMAuhLySHdo=;
-        b=nAqGW0rv0vLb/EEjZ9CGKdRvJYzioH/TkKipmvva9d1weHd96fZy5/UMXiUFy21A5D
-         Kau+N2HOeAygpGrZ3k2uI1JxhnRTx79j4kat57E4sAGqGJaxF7xnpDXpfUJ/+G0Z70P+
-         KgMxj5H/MWx1On8FgVGTc48quuPGuLdFuo+hQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=1EQ7MJidus+zd1vSi36boWoSco2HUCYyNMAuhLySHdo=;
-        b=WBMrQRp/jVlw8ECg35fwAmvAFS3Ttz7BS5k8dYHfZ3hJhMOmOJOVJK06PcHAGmmbs+
-         nK8PR5kcZFVGjfyDO49n+r3bl7SqwqSCha/pZ+CO35t77WDaTjoqv1rW/7z8k9QGNykH
-         oQyAQpbE6bNKem/4WfTZKjWvKeB/+j0Kvl5vXD4zATORxQEoQYd3cVV4xhirEd9Oiu0s
-         iUsRE1Zmyo5aUCUgUyi1pK0wg5jy7YsrzvyGntIXOIHrXTu1MYCmecuwI+V6ALUXQ53a
-         0Wxg8G7vUXR/EC79qrMngfLcwGyGz9vlW0EMhn4HLY5MCVn3uuiyj2eOVbwL5bXDX65n
-         DrUw==
-X-Gm-Message-State: AOAM532YaLR6X5yUid6kfZj8xEKvlGZmjCRJFvTiOmVLmDfYCTDdrPzn
-        cKN/zCu7f10PdTjopUmqTe6hSqHAwVwgI5AGd/oUmA==
-X-Google-Smtp-Source: ABdhPJxkxWViiR7+vNwBsf/JsSJSnGBvwsAoK0L0khytjCMALZZE3DhVgkcsjlOdiCEQeze9wTvqED+Hg5lgHKAj1wQ=
-X-Received: by 2002:a02:ca0d:: with SMTP id i13mr23985823jak.98.1622538603578;
- Tue, 01 Jun 2021 02:10:03 -0700 (PDT)
+        id S233408AbhFAJLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:11:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:44508 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231139AbhFAJLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:11:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E5D511D4;
+        Tue,  1 Jun 2021 02:09:56 -0700 (PDT)
+Received: from [10.57.73.64] (unknown [10.57.73.64])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A2383F73D;
+        Tue,  1 Jun 2021 02:09:55 -0700 (PDT)
+Subject: Re: [PATCH] iommu: Print default strict or lazy mode at init time
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        hch@lst.de
+References: <1622209074-37899-1-git-send-email-john.garry@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3ee986a0-29c1-100c-c72f-360f919caf7d@arm.com>
+Date:   Tue, 1 Jun 2021 10:09:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210601103250.07301254@canb.auug.org.au> <YLX176D9oD7ZTSkT@ninjato>
-In-Reply-To: <YLX176D9oD7ZTSkT@ninjato>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 1 Jun 2021 17:09:37 +0800
-Message-ID: <CAJMQK-j1YKfquvY55HgTQ6zfDkE5btmRZKdjjOQ3rcq04QgKKQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the i2c tree
-To:     Wolfram Sang <wsa@the-dreams.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1622209074-37899-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 4:55 PM Wolfram Sang <wsa@the-dreams.de> wrote:
->
-> Hi Stephen,
->
-> > After merging the i2c tree, today's linux-next build (x86_64 allmodconfig)
-> > failed like this:
-> >
-> > In file included from drivers/gpu/drm/i915/i915_gem.c:1250:
-> > drivers/gpu/drm/i915/selftests/i915_gem.c:97:13: error: conflicting types for 'pm_suspend'
-> >    97 | static void pm_suspend(struct drm_i915_private *i915)
-> >       |             ^~~~~~~~~~
-> > In file included from include/linux/regulator/consumer.h:35,
-> >                  from include/linux/i2c.h:18,
-> >                  from drivers/gpu/drm/i915/i915_drv.h:39,
-> >                  from drivers/gpu/drm/i915/gt/intel_context.h:14,
-> >                  from drivers/gpu/drm/i915/gem/i915_gem_context.h:12,
-> >                  from drivers/gpu/drm/i915/i915_gem.c:44:
-> > include/linux/suspend.h:331:12: note: previous declaration of 'pm_suspend' was here
-> >   331 | extern int pm_suspend(suspend_state_t state);
-> >       |            ^~~~~~~~~~
-> >
-> > Caused by commit
-> >
-> >   5a7b95fb993e ("i2c: core: support bus regulator controlling in adapter")
-> >
-> > interacting with commit
-> >
-> >   3f51b7e1f36a ("drm/i915/selftests: Add a simple exerciser for suspend/hibernate")
-> >
-> > from Linus' tree (v4.20-rc1)
->
-> Thank you very much for taking care of this!
->
+On 2021-05-28 14:37, John Garry wrote:
+> As well as the default domain type, it's useful to know whether strict
+> or lazy mode is default for DMA domains, so add this info in a separate
+> print.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 808ab70d5df5..f25fae62f077 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -138,6 +138,11 @@ static int __init iommu_subsys_init(void)
+>   		(iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
+>   			"(set via kernel command line)" : "");
+>   
+> +	pr_info("Default DMA domain mode: %s %s\n",
 
-Hi, this issue is fixed in
-https://cgit.freedesktop.org/drm-intel/commit/?h=drm-intel-gt-next&id=5b11705608898c31a1cae5340555ee60d5a4fa45
+Nit: I think this might be a little unclear for end-users - *I'm* not 
+even sure whether "Default" here is meant to refer to the mode setting 
+itself or to default domains (of DMA type). Maybe something like "DMA 
+domain TLB invalidation policy"? Certainly it seems like a good idea to 
+explicitly mention invalidation to correlate with the documentation of 
+the "iommu.strict" parameter.
 
-And I think the pull request is in
-https://lists.freedesktop.org/archives/intel-gfx/2021-May/267588.html
+Ack to the general idea though.
 
-Thanks
+Thanks,
+Robin.
 
->
-> > I have added the following merge fix patch:
-> >
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Tue, 1 Jun 2021 10:25:49 +1000
-> > Subject: [PATCH] drm/i915/selftests: Avoid name clash with pm_ global functions
-> >
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
->
-> Looks like the proper solution to me. I think this should be added to
-> the i915 tree. D'accord everyone?
->
-> Reviewed-by: Wolfram Sang <wsa@kernel.org>
->
-> Kind regards,
->
->    Wolfram
->
+> +		iommu_dma_strict ? "strict" : "lazy",
+> +		(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
+> +			"(set via kernel command line)" : "");
+> +
+>   	return 0;
+>   }
+>   subsys_initcall(iommu_subsys_init);
+> 
