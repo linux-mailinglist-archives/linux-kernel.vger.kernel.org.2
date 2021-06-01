@@ -2,70 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500023973A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5A83973B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233847AbhFAMze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:55:34 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2931 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232965AbhFAMzc (ORCPT
+        id S233959AbhFANA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:00:26 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:53452 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233162AbhFANAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:55:32 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvX8D17R9z67R7;
-        Tue,  1 Jun 2021 20:50:52 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 20:53:49 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 20:53:48 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-CC:     <miquel.raynal@bootlin.com>, <daniel@zonque.org>
-Subject: [PATCH -next] mtd: rawnand: marvell: add missing clk_disable_unprepare() on error in marvell_nfc_resume()
-Date:   Tue, 1 Jun 2021 20:58:14 +0800
-Message-ID: <20210601125814.3260364-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Jun 2021 09:00:25 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151CtEl8022507;
+        Tue, 1 Jun 2021 12:58:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=k9gZ/x/FrYyAyY2znziCK+W8/UgWcWWFHLXHMDMnlhc=;
+ b=yM/Xl3isO4wuRiipwtzRApavPqo5FyoAXMUMFOCNnPRT7DLqG9q/5JC7PFxoHa7LXyHi
+ 1vXp+XRzNtxKvx3r5AoWelT7J11cmwev3yBzbW1mfaI1HYFfFfl5oQ5/NEh930RzZ/Fk
+ 3qVR1BjzWZhd1Z0u8b5Ejd3g4J9u401q5kVSw8d+UbUZuSh5ljnUNkPw8NHXYBMtLO1x
+ 8ntplJ1zXPBU8jPlQJUiTwqHmXvlTyneYQsDvv10Rqdw9lHyAjFnHYTBxf2DaVP/lRU/
+ o0dzxE2R24QqHoMbyS2inypKJ18PzDJAE5Qpmus3F56OnsM+ZxGF0oDfL88vz6zI3Z+S 9A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 38ub4cnehm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 12:58:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151CtDaA093932;
+        Tue, 1 Jun 2021 12:58:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38ude8uen0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 12:58:35 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 151CwYsP119096;
+        Tue, 1 Jun 2021 12:58:34 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 38ude8uem0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 12:58:34 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 151CwVom016588;
+        Tue, 1 Jun 2021 12:58:32 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Jun 2021 05:58:31 -0700
+Date:   Tue, 1 Jun 2021 15:58:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is initialized
+Message-ID: <20210601125819.GZ1955@kadam>
+References: <20210527145048.795954-1-colin.king@canonical.com>
+ <20210527170309.4d99bc31@xps13>
+ <20210601121401.GY1955@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601121401.GY1955@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: UiVjigSNNY-G05jAa1HIU_SZIbW0wDYm
+X-Proofpoint-ORIG-GUID: UiVjigSNNY-G05jAa1HIU_SZIbW0wDYm
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10001 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=991 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106010088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add clk_disable_unprepare() on error path in marvell_nfc_resume().
+On Tue, Jun 01, 2021 at 03:14:02PM +0300, Dan Carpenter wrote:
+> On Thu, May 27, 2021 at 05:03:09PM +0200, Miquel Raynal wrote:
+> > Hi Colin,
+> > 
+> > Colin King <colin.king@canonical.com> wrote on Thu, 27 May 2021
+> > 15:50:48 +0100:
+> > 
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > > 
+> > > Currently there are corner cases where spec_times is NULL and
+> > > chip->parameters.onfi or when best_mode is zero where ret is
+> > 
+> >                        ^
+> > something is missing here, the sentence is not clear
+> > 
+> > > not assigned a value and an uninitialized return value can be
+> > > returned. Fix this by ensuring ret is initialized to -EINVAL.
+> > 
+> > I don't see how this situation can happen.
+> > 
+> > In both cases, no matter the value of best_mode, the for loop will
+> > always execute at least one time (mode 0) so ret will be populated.
+> > 
+> > Maybe the robot does not know that best_mode cannot be negative and
+> > should be defined unsigned, but the current patch is invalid.
+> >
+> 
+> People think list counter unsigned is a good idea, but it's a terrible
+> idea and has caused hundreds of bugs for me to fix/report over the
+> years.  *grumble*.
 
-Fixes: bd9c3f9b3c00 ("mtd: rawnand: marvell: add suspend and resume hooks")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/mtd/nand/raw/marvell_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Imagine if best_mode were unsigned int (and the loop ended on > 0 so it
+wasn't an endless loop).  Then instead of a no-op the loop would iterate
+4 million times.  Each iteration would trigger the WARN_ON()
+onfi_fill_sdr_interface_config().
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 79da6b02e209..f83525a1ab0e 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -3030,8 +3030,10 @@ static int __maybe_unused marvell_nfc_resume(struct device *dev)
- 		return ret;
- 
- 	ret = clk_prepare_enable(nfc->reg_clk);
--	if (ret < 0)
-+	if (ret < 0) {
-+		clk_disable_unprepare(nfc->core_clk);
- 		return ret;
-+	}
- 
- 	/*
- 	 * Reset nfc->selected_chip so the next command will cause the timing
--- 
-2.25.1
+I think people believe that the compiler will warn them something like:
+"warning: Assigning a subtract operation to an unsigned!" but the
+compiler is never going to do that.  Unsigned is just a declaration that
+"I'm never going to be surprised so let's make this stuff more dangerous
+and fun!"
+
+There are times where it's appropriate, sure.  But it's mostly unsigned
+long which is correct instead of unsigned int.  If you were to draw a
+number line from 0-U64_MAX then the band between 2-4 million is quite
+skinny and a long way from the zero.  There aren't that many thing which
+fall into the band.  Most numbers are smaller, but once we start talking
+about millions then 4 million is very limitting so we would want to use
+a 64 bit type.
+
+regards,
+dan carpenter
 
