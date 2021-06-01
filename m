@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98644397450
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FC5397449
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbhFANeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:34:25 -0400
-Received: from mail-oo1-f46.google.com ([209.85.161.46]:40804 "EHLO
-        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhFANeF (ORCPT
+        id S234105AbhFANeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:34:02 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:33294 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234041AbhFANd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:34:05 -0400
-Received: by mail-oo1-f46.google.com with SMTP id w20-20020a4a35540000b02902458551c0d6so1680452oog.7;
-        Tue, 01 Jun 2021 06:32:23 -0700 (PDT)
+        Tue, 1 Jun 2021 09:33:56 -0400
+Received: by mail-oi1-f176.google.com with SMTP id b25so15523730oic.0;
+        Tue, 01 Jun 2021 06:32:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=cbbANktLK+nxqt4uUwCIqegFj6C7KopoJQcn0d/pISM=;
-        b=ApsoDh9VYkKMiGaqrPjWkHbxo9xMTg4lMmq6s7GJjzCUAqqAt1YvWzjjXrMrS6F35X
-         Raw0/oNmx2zGHMyOd4IDxlKM2CHPDIIsHqtCAKBZDIzWrvJtRQ5qIGDymA5DrtlqJNWx
-         a4WqJ5SKYk+ovlf2UN4rl93S8JvFEUWf8bFYA6yf+yXt6xdRSljtROghrororpC4hs7G
-         jW/O/FhUc1vF2gBLYi5KtpyYO0dtL7hcoE2QnCE+AbgrRnePN5NznXrICI464N6vG+9K
-         yPDbNULwAq8X82bMgiJmWaUNipAMGH7SrQ8u/tiKpSccbBGeXvHP0d3TgsHLBjpdl1cl
-         fzdw==
-X-Gm-Message-State: AOAM531t6eFcUKLA+C1rNm7PiumPuXeZ3a4gyGfryM8GAl2k1xR+lbKU
-        e8MztF/oHNEaBYIyN26WoA==
-X-Google-Smtp-Source: ABdhPJzeNcFyGQm1lJ+4LJMre1TykO8SPIZ4q+FLDdGzVeNgU89lwPVka2DuK9V5/kTBHs/BfedkyQ==
-X-Received: by 2002:a4a:3f53:: with SMTP id x19mr20741442ooe.88.1622554342745;
-        Tue, 01 Jun 2021 06:32:22 -0700 (PDT)
+        bh=sUvFSbu0LjfUEV8j0+FO3g9Nw0MVO+tbGa4afn92YVM=;
+        b=l4aJDF2f84s6OwTDg7ekXNVatCHWbL+QdFuV2ZPqnF5Bl6CMNyNrqA7UtrwyXwgsWS
+         VXnZ+Jdj39FFKQWMNl4fcqaq2s0dEjSaMMiNm/8+4e5k6FWwV2h6yfTWXb8T66dNYvUs
+         tSKxOXwIe1oW/IzyGovM2GoJ/Q4Yxllw/Pp+7NVN7YyfiY4th2EuPPyZy8bMeO0jUbwQ
+         uAfpN4BuZgWcC//RdkstyVgHglfW1TQNs6nRc4Tw/igrTYpKfDPBtDkBdpFUq2uXyDY1
+         IBz18iHSR6FazTkr+XoypwcD249A31B4ltrF1QPBkguLRY5j6kkFWgijX7Q6/2phMFua
+         JAOQ==
+X-Gm-Message-State: AOAM5316wMSJ1tgvTYAEXBxzaRQ9XnGTaL1KSNvsKA2li8GUNSazdwL7
+        aAtlKFri2IAYyRJCEUQDcg==
+X-Google-Smtp-Source: ABdhPJxIQ4UNHJiSMIQurjA4OqwlMFcM1ZeS8iht1dzB0oheLg8yrxOc5sZ0cAHYtcMx3as29NSRpA==
+X-Received: by 2002:a05:6808:4cf:: with SMTP id a15mr3193906oie.78.1622554334167;
+        Tue, 01 Jun 2021 06:32:14 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s4sm3809013otr.80.2021.06.01.06.32.20
+        by smtp.gmail.com with ESMTPSA id m66sm3438918oia.28.2021.06.01.06.32.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 06:32:21 -0700 (PDT)
-Received: (nullmailer pid 242357 invoked by uid 1000);
+        Tue, 01 Jun 2021 06:32:13 -0700 (PDT)
+Received: (nullmailer pid 242371 invoked by uid 1000);
         Tue, 01 Jun 2021 13:32:10 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        michal.simek@xilinx.com, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210528214522.617435-1-sean.anderson@seco.com>
-References: <20210528214522.617435-1-sean.anderson@seco.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     robh+dt@kernel.org, mkrishn@codeaurora.org,
+        kalyan_t@codeaurora.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        abhinavk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        jonathan@marek.ca, dri-devel@lists.freedesktop.org,
+        robdclark@gmail.com, sean@poorly.run
+In-Reply-To: <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org> <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
+Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
 Date:   Tue, 01 Jun 2021 08:32:10 -0500
-Message-Id: <1622554330.014931.242356.nullmailer@robh.at.kernel.org>
+Message-Id: <1622554330.075037.242370.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 17:45:20 -0400, Sean Anderson wrote:
-> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
-> a "soft" block, so it has many parameters which would not be
-> configurable in most hardware. This binding is usually automatically
-> generated by Xilinx's tools, so the names and values of some properties
-> must be kept as they are. Replacement properties have been provided for
-> new device trees.
+On Mon, 31 May 2021 19:03:53 +0530, Rajeev Nandan wrote:
+> Add YAML schema for the device tree bindings for MSM 7nm DSI PHY driver.
 > 
-> Because we need to init timer devices so early in boot, the easiest way
-> to configure things is to use a device tree property. For the moment
-> this is 'xlnx,pwm', but this could be extended/renamed/etc. in the
-> future if these is a need for a generic property.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> Cc: Jonathan Marek <jonathan@marek.ca>
+> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
 > ---
-> 
-> Changes in v4:
-> - Remove references to generate polarity so this can get merged
-> - Predicate PWM driver on the presence of #pwm-cells
-> - Make some properties optional for clocksource drivers
-> 
-> Changes in v3:
-> - Mark all boolean-as-int properties as deprecated
-> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> - Make newer replacement properties mutually-exclusive with what they
->   replace
-> - Add an example with non-deprecated properties only.
-> 
-> Changes in v2:
-> - Use 32-bit addresses for example binding
-> 
->  .../bindings/pwm/xlnx,axi-timer.yaml          | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
+>  .../bindings/display/msm/dsi-phy-7nm.yaml          | 68 ++++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml:16:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
-./Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml:19:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
 
 dtschema/dtc warnings/errors:
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/display/msm/dsi-phy-common.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dts:19:18: fatal error: dt-bindings/clock/qcom,dispcc-sc7280.h: No such file or directory
+   19 |         #include <dt-bindings/clock/qcom,dispcc-sc7280.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1485318
+See https://patchwork.ozlabs.org/patch/1485686
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
