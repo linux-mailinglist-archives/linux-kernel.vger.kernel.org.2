@@ -2,131 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A221396CD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40209396CD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhFAFcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:32:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232744AbhFAFby (ORCPT
+        id S232869AbhFAFcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:32:47 -0400
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]:42184 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232744AbhFAFcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:31:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622525393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=siJz2CTmBAQXJpnvED6F5Lh0Z4do04zZE0SUG5Fvo2s=;
-        b=ZZ2Gs+WAwGUw4hJSrtGoi8pFBeenRUCZil/IUzcdrozKK0LSvAz/CqeIN+kKwLkFYc5qDY
-        0x8/5YfX9+mWPuaWy59Ksgq7ANoc4AQYyo4dS426j21J6l5x/1EVuQq5hMf/rsS8io6Cla
-        d2C8xtBN0BN5tzdqL95wQpbc89LhBKM=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-xpobtnF0PC-wDGxexPVjJw-1; Tue, 01 Jun 2021 01:29:49 -0400
-X-MC-Unique: xpobtnF0PC-wDGxexPVjJw-1
-Received: by mail-pl1-f198.google.com with SMTP id u14-20020a170903304eb02900ec9757f3dbso4000736pla.17
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:29:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=siJz2CTmBAQXJpnvED6F5Lh0Z4do04zZE0SUG5Fvo2s=;
-        b=e/+B1k0x9UGW63ky6HjTg+PwRjYSSOl3tVxHFI1aH2DYt1zPXXvFPnKyxK61BgKCdg
-         jaFjAdJ/DsuoV5Pia22Hs2+0ukk1159S+3VnPPhtqbD/GVhzU2IEOnUBruBjfZvk3EV6
-         cUeyj/JeiImoxYkDPGmqmzGCoiQGSeTRKHBYlUKqCsNBGoTiD6jlZ9I38SIVv4kThhQW
-         LvdydVGmv/9q9swyLKMpDeOy4A8+YhOEO2OoLSNr52hCr+1LL8Wl+0DY6YjNGPGOoziM
-         QCvcTGxjPnQTBJJ9REg66qV1BKtJ0j7e05JCS/GzE3c0MAG5g8QkO9zmT7C6DNC9Ksgy
-         JnHA==
-X-Gm-Message-State: AOAM533CyRz4HtQOgjsL3RHplcpcxfx+uNDUxoy+CgceykdNQ55+HtAp
-        6z7lSuURkBt5bssPerY+CNZdNEinr36zKWNd26PhPiypRtLPUinPdEqkVBsHXG3J0O580FrNoyJ
-        jPf0nfqU+xjiZjivjfZfOJR7j
-X-Received: by 2002:a17:90a:4d0a:: with SMTP id c10mr2950615pjg.206.1622525388810;
-        Mon, 31 May 2021 22:29:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZ7rHezJVl5toCxwphy2EqgUV3yr26yAhv4PAH3egfoOPVMm51yn71ZSBxAm52zcWBKyM7sw==
-X-Received: by 2002:a17:90a:4d0a:: with SMTP id c10mr2950597pjg.206.1622525388516;
-        Mon, 31 May 2021 22:29:48 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y20sm12198235pfn.164.2021.05.31.22.29.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 22:29:48 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>
-Cc:     yi.l.liu@intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
-        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
- <20210531164118.265789ee@yiliu-dev>
- <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
- <20210601113152.6d09e47b@yiliu-dev>
- <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
- <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
-Date:   Tue, 1 Jun 2021 13:29:39 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Tue, 1 Jun 2021 01:32:43 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 1515Unv3021389; Tue, 1 Jun 2021 14:30:49 +0900
+X-Iguazu-Qid: 34tKOQR7Jx8HZepPvF
+X-Iguazu-QSIG: v=2; s=0; t=1622525448; q=34tKOQR7Jx8HZepPvF; m=/fEaRDidXZyoAZy1z8DDch/yNMGf2PRJ9OVynpWkct4=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1510) id 1515UlVl009135
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 1 Jun 2021 14:30:48 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 39A541000C2;
+        Tue,  1 Jun 2021 14:30:47 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 1515UkeD008244;
+        Tue, 1 Jun 2021 14:30:46 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v2 4/4] MAINTAINERS: Add entries for Toshiba Visconti PLL and clock controller
+Date:   Tue,  1 Jun 2021 14:30:37 +0900
+X-TSB-HOP: ON
+Message-Id: <20210601053037.233573-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210601053037.233573-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+References: <20210601053037.233573-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 MIME-Version: 1.0
-In-Reply-To: <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add entries for Toshiba Visconti PLL and clock controller binding and driver.
 
-在 2021/6/1 下午1:23, Lu Baolu 写道:
-> Hi Jason W,
->
-> On 6/1/21 1:08 PM, Jason Wang wrote:
->>>> 2) If yes, what's the reason for not simply use the fd opened from
->>>> /dev/ioas. (This is the question that is not answered) and what 
->>>> happens
->>>> if we call GET_INFO for the ioasid_fd?
->>>> 3) If not, how GET_INFO work?
->>> oh, missed this question in prior reply. Personally, no special reason
->>> yet. But using ID may give us opportunity to customize the management
->>> of the handle. For one, better lookup efficiency by using xarray to
->>> store the allocated IDs. For two, could categorize the allocated IDs
->>> (parent or nested). GET_INFO just works with an input FD and an ID.
->>
->>
->> I'm not sure I get this, for nesting cases you can still make the 
->> child an fd.
->>
->> And a question still, under what case we need to create multiple 
->> ioasids on a single ioasid fd?
->
-> One possible situation where multiple IOASIDs per FD could be used is
-> that devices with different underlying IOMMU capabilities are sharing a
-> single FD. In this case, only devices with consistent underlying IOMMU
-> capabilities could be put in an IOASID and multiple IOASIDs per FD could
-> be applied.
->
-> Though, I still not sure about "multiple IOASID per-FD" vs "multiple
-> IOASID FDs" for such case.
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+---
+ MAINTAINERS | 3 +++
+ 1 file changed, 3 insertions(+)
 
-
-Right, that's exactly my question. The latter seems much more easier to 
-be understood and implemented.
-
-Thanks
-
-
->
-> Best regards,
-> baolu
->
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bd7aff0c120f..7260de6d050d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2661,11 +2661,14 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Supported
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/iwamatsu/linux-visconti.git
+ F:	Documentation/devicetree/bindings/arm/toshiba.yaml
++F:	Documentation/devicetree/bindings/clock/toshiba,tmpv7708-pipllct.yaml
++F:	Documentation/devicetree/bindings/clock/toshiba,tmpv7708-pismu.yaml
+ F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
+ F:	Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+ F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
+ F:	Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
+ F:	arch/arm64/boot/dts/toshiba/
++F:	drivers/clk/visconti/
+ F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
+ F:	drivers/gpio/gpio-visconti.c
+ F:	drivers/pinctrl/visconti/
+-- 
+2.31.1
 
