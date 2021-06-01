@@ -2,107 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0198B3976DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7CB3976E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbhFAPks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        id S234384AbhFAPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbhFAPks (ORCPT
+        with ESMTP id S234295AbhFAPlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:40:48 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F525C061574;
-        Tue,  1 Jun 2021 08:39:05 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id ee9so7405731qvb.8;
-        Tue, 01 Jun 2021 08:39:05 -0700 (PDT)
+        Tue, 1 Jun 2021 11:41:11 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95091C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:39:28 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id m18so14834480wrv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=iY7omL5QvGPktjhcbH3ePgrdipmWmknzPOenKs7LO/8=;
-        b=NFnKs88jGMZA5eIcHvWUf7dq5SBW3reOr//0aUOt0xiYg+THG11fK0I2rQ6ayc3Hae
-         9lFzgdSgKAezYTKehR/9/rH+igKi0a+XeuEbzEyl+8Koj8GaspMFVsk+MrPkM8OxZ1ft
-         MwdRJKFK37QiUDCL8HQBe5eiKBorIN6ANee6mXeQhIvdsz/1Vc2+4b6eYdnenJE/xgsL
-         YUPi0YQjEtlCjmETljZ400y2FJgPgwiOi+XV0VbMAsavtoQGWmryY2kvoH/p+8pAN42t
-         h++whHQW80RYebwXMx4KmbdK7iQL/PJeV6OCJqlzE4kb9TPq83OzwclqHt0VyXvMqLtI
-         wxOA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z/ysYleRM2YWzX9orexLMMrJ25j/bIHTJa7Myg7V+/g=;
+        b=eu9MiLEbQyakIhjEXcMmgjSRv78Ba7G/e1UOLBHnzFW/YA+RyANkoF4bC/6/K0B/hU
+         3vzKx00aYuV61b3NWUWl+Sruw4cWGJK9FdTT0O9uLhRged5Tx49j2vUbmETZQiZ3pYHB
+         IA4NGuTOYCEjOJf0RiCqhil8b3s/w6/5+Kh9k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iY7omL5QvGPktjhcbH3ePgrdipmWmknzPOenKs7LO/8=;
-        b=U3si/rSRRi8M2eIiUTjleO6NQN7DmZ+x4JHEQU6GaSXEQbQwPNzphk5EZrbwYFqGXW
-         DmDAkSUemW99DjwOcCO2YKiqoTFnxqMUTS2k18EY7+9KoPPSSAHE5hxE9g+MuCgxucHU
-         4wfnmD6kTb0ZzGPMdekrT53c6Wq4ANPv2EeT5+P8uCVLPGHb0Zoa5LyqC2x0xSgYGnPH
-         15i1T7IJ5XCR8d2NW8ZSL4rOMfeSMvWLmGuIhUAbwi/vUIeon9DwjFYC2PRzQjYdjsL+
-         maZChtJueivs3XnkRNObmnjfFDHMgF09C7atemoYsLCYLg4RHN64HzehAj1DNdkAPDg9
-         jh1Q==
-X-Gm-Message-State: AOAM531MuPrZFfbuFWioG/awInDrVIQCOmMTzXF/cmMnIOMMsiY3sStJ
-        LAM7RiFup/LzVlho6KMrapJS2gTE03s=
-X-Google-Smtp-Source: ABdhPJwGeJc1CW8EQ/rUJUAQu0ButFl9twM19BYRdMCB4CeFdg/T2F22UaFK5j3t2M+eaWXK4p1x1A==
-X-Received: by 2002:a0c:f7cb:: with SMTP id f11mr23080709qvo.34.1622561944603;
-        Tue, 01 Jun 2021 08:39:04 -0700 (PDT)
-Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
-        by smtp.gmail.com with ESMTPSA id e4sm10537671qtq.5.2021.06.01.08.39.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 08:39:04 -0700 (PDT)
-Subject: Re: docs: Convert the Speakup guide to rst
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        speakup@linux-speakup.org, corbet@lwn.net,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210531215737.8431-1-igormtorrente@gmail.com>
- <20210531220754.h4ep2dj65wl6hejf@begin>
-From:   Igor Torrente <igormtorrente@gmail.com>
-Message-ID: <b8769ad4-9188-a735-3ac4-4a79b9b06487@gmail.com>
-Date:   Tue, 1 Jun 2021 12:39:01 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Z/ysYleRM2YWzX9orexLMMrJ25j/bIHTJa7Myg7V+/g=;
+        b=dLfN180NcIn5tzSFIc5DTRs1Mv5o8VD76OR4WvM1y7jqpyoAwJRdMBIa14gBBKNOSl
+         HBS7hSC6jvORknjiPtvrTm2GxbAOy43oeaYvQz/FNkStTX81t7/ydgqO2eQfrdJMt9MG
+         SfTlMVk8pf1dQVad8hSoWNVmpZsUnLDDjxwzO/PveUZreoYDlyClAasoDUvZNOUSKl+B
+         ETbSBy09gnoEqAikwyXlpZtICSXuLrjD2zfQ9hsTsdaz7JEyt7UwP+bPjm84hmFx3yiq
+         g5lfVMXh2H3p3psU06dygUuF3oi3NCTAzDkS8LAXLbszlgAq9VbCZdR9vicSUZ27TfOF
+         9ttg==
+X-Gm-Message-State: AOAM533r/DyQYG8PZsjpag3y3CvDJsloJJeNrY7w5reVd/Vwj7aU45Q4
+        0+vuZNf5HamSXOCS84exyH1xng==
+X-Google-Smtp-Source: ABdhPJyWk8xbTDu5kyBta0mIR4LHfdyYJ1fyzR7WqhCo0hJxT1KtDnyJ8ajPu2j2FMjyD1tm65qN0Q==
+X-Received: by 2002:adf:9dd1:: with SMTP id q17mr16440710wre.402.1622561967210;
+        Tue, 01 Jun 2021 08:39:27 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 62sm3894313wrm.1.2021.06.01.08.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 08:39:26 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 17:39:24 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>, linux-fbdev@vger.kernel.org,
+        linux-mm@kvack.org, Jani Nikula <jani.nikula@intel.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        William Kucharski <william.kucharski@oracle.com>,
+        Ian Campbell <ijc@hellion.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        Jaya Kumar <jayakumar.lkml@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] fb_defio: Remove custom address_space_operations
+Message-ID: <YLZUrEjVJWBGGMxf@phenom.ffwll.local>
+Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>, linux-fbdev@vger.kernel.org,
+        linux-mm@kvack.org, Jani Nikula <jani.nikula@intel.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        William Kucharski <william.kucharski@oracle.com>,
+        Ian Campbell <ijc@hellion.org.uk>, linux-fsdevel@vger.kernel.org,
+        Jaya Kumar <jayakumar.lkml@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210310185530.1053320-1-willy@infradead.org>
+ <YLPjwUUmHDRjyPpR@Ryzen-9-3900X.localdomain>
+ <YLQALv2YENIDh77N@casper.infradead.org>
+ <YLY/2O16fAjriZGQ@phenom.ffwll.local>
+ <YLZEhv0cpZp8uVE3@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210531220754.h4ep2dj65wl6hejf@begin>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLZEhv0cpZp8uVE3@casper.infradead.org>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
+On Tue, Jun 01, 2021 at 03:30:30PM +0100, Matthew Wilcox wrote:
+> On Tue, Jun 01, 2021 at 04:10:32PM +0200, Daniel Vetter wrote:
+> > On Sun, May 30, 2021 at 10:14:22PM +0100, Matthew Wilcox wrote:
+> > > On Sun, May 30, 2021 at 12:13:05PM -0700, Nathan Chancellor wrote:
+> > > > Hi Matthew,
+> > > > 
+> > > > On Wed, Mar 10, 2021 at 06:55:30PM +0000, Matthew Wilcox (Oracle) wrote:
+> > > > > There's no need to give the page an address_space.  Leaving the
+> > > > > page->mapping as NULL will cause the VM to handle set_page_dirty()
+> > > > > the same way that it's handled now, and that was the only reason to
+> > > > > set the address_space in the first place.
+> > > > > 
+> > > > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > > > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > > > > Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> > > > 
+> > > > This patch in mainline as commit ccf953d8f3d6 ("fb_defio: Remove custom
+> > > > address_space_operations") causes my Hyper-V based VM to no longer make
+> > > > it to a graphical environment.
+> > > 
+> > > Hi Nathan,
+> > > 
+> > > Thanks for the report.  I sent Daniel a revert patch with a full
+> > > explanation last week, which I assume he'll queue up for a pull soon.
+> > > You can just git revert ccf953d8f3d6 for yourself until that shows up.
+> > > Sorry for the inconvenience.
+> > 
+> > Uh that patch didn't get cc'ed to any list so I've ignored it. I've found
+> > it now, but lack of lore link is awkward. Can you pls resubmit with
+> > dri-devel on cc? fbdev list is dead, I don't look there.
+> 
+> How about I just attach it here?
 
-On 5/31/21 7:07 PM, Samuel Thibault wrote:
-> Hello,
-> 
-> Adding the speakup list in the loop.
-> 
-> Igor Matheus Andrade Torrente wrote:
->> Modify some parts of the text and add the necessary formatting to leverage
->> the rst features. Including links, code-blocks, bullet lists, etc.
->>
->> Also, adds a table of contents at the beginning and a section to the
->> license.
->>
->> This change helps integrate this documentation to the rest of the rst
->> documentation.
-> 
-> Mmm, I'm unsure how the result is readable with the speakup screen
-> reader itself. I have attached the result, could people on the speakup
-> mailing list check how well it goes? If it significantly degrades
-> readability, we'll have to reject the move to rst formatting, since in
-> the end it's people who use the speakup screen reader who need to be
-> able to read this document.
+Thanks, that worked with Link: and everything and no choking of my script
+:-)
 
-I was reading all the emails sent in this thread, but I'm not sure how I 
-should proceed. Do think should I continue to improve the patch with the 
-Jani Nikula suggestions? Or abandon it? Or keep both versions?
+Cheers, Daniel
 
+> From e88921d0775d87323a8688af37dfd7cdebdde5a9 Mon Sep 17 00:00:00 2001
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Date: Tue, 25 May 2021 08:37:33 -0400
+> Subject: [PATCH] Revert "fb_defio: Remove custom address_space_operations"
 > 
-> Samuel
+> Commit ccf953d8f3d6 makes framebuffers which use deferred I/O stop
+> displaying updates after the first one.  This is because the pages
+> handled by fb_defio no longer have a page_mapping().  That prevents
+> page_mkclean() from marking the PTEs as clean, and so writes are only
+> noticed the first time.
+> 
+> Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  drivers/video/fbdev/core/fb_defio.c | 35 +++++++++++++++++++++++++++++
+>  drivers/video/fbdev/core/fbmem.c    |  4 ++++
+>  include/linux/fb.h                  |  3 +++
+>  3 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
+> index b292887a2481..a591d291b231 100644
+> --- a/drivers/video/fbdev/core/fb_defio.c
+> +++ b/drivers/video/fbdev/core/fb_defio.c
+> @@ -52,6 +52,13 @@ static vm_fault_t fb_deferred_io_fault(struct vm_fault *vmf)
+>  		return VM_FAULT_SIGBUS;
+>  
+>  	get_page(page);
+> +
+> +	if (vmf->vma->vm_file)
+> +		page->mapping = vmf->vma->vm_file->f_mapping;
+> +	else
+> +		printk(KERN_ERR "no mapping available\n");
+> +
+> +	BUG_ON(!page->mapping);
+>  	page->index = vmf->pgoff;
+>  
+>  	vmf->page = page;
+> @@ -144,6 +151,17 @@ static const struct vm_operations_struct fb_deferred_io_vm_ops = {
+>  	.page_mkwrite	= fb_deferred_io_mkwrite,
+>  };
+>  
+> +static int fb_deferred_io_set_page_dirty(struct page *page)
+> +{
+> +	if (!PageDirty(page))
+> +		SetPageDirty(page);
+> +	return 0;
+> +}
+> +
+> +static const struct address_space_operations fb_deferred_io_aops = {
+> +	.set_page_dirty = fb_deferred_io_set_page_dirty,
+> +};
+> +
+>  int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
+>  {
+>  	vma->vm_ops = &fb_deferred_io_vm_ops;
+> @@ -194,12 +212,29 @@ void fb_deferred_io_init(struct fb_info *info)
+>  }
+>  EXPORT_SYMBOL_GPL(fb_deferred_io_init);
+>  
+> +void fb_deferred_io_open(struct fb_info *info,
+> +			 struct inode *inode,
+> +			 struct file *file)
+> +{
+> +	file->f_mapping->a_ops = &fb_deferred_io_aops;
+> +}
+> +EXPORT_SYMBOL_GPL(fb_deferred_io_open);
+> +
+>  void fb_deferred_io_cleanup(struct fb_info *info)
+>  {
+>  	struct fb_deferred_io *fbdefio = info->fbdefio;
+> +	struct page *page;
+> +	int i;
+>  
+>  	BUG_ON(!fbdefio);
+>  	cancel_delayed_work_sync(&info->deferred_work);
+> +
+> +	/* clear out the mapping that we setup */
+> +	for (i = 0 ; i < info->fix.smem_len; i += PAGE_SIZE) {
+> +		page = fb_deferred_io_page(info, i);
+> +		page->mapping = NULL;
+> +	}
+> +
+>  	mutex_destroy(&fbdefio->lock);
+>  }
+>  EXPORT_SYMBOL_GPL(fb_deferred_io_cleanup);
+> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+> index 072780b0e570..98f193078c05 100644
+> --- a/drivers/video/fbdev/core/fbmem.c
+> +++ b/drivers/video/fbdev/core/fbmem.c
+> @@ -1415,6 +1415,10 @@ __releases(&info->lock)
+>  		if (res)
+>  			module_put(info->fbops->owner);
+>  	}
+> +#ifdef CONFIG_FB_DEFERRED_IO
+> +	if (info->fbdefio)
+> +		fb_deferred_io_open(info, inode, file);
+> +#endif
+>  out:
+>  	unlock_fb_info(info);
+>  	if (res)
+> diff --git a/include/linux/fb.h b/include/linux/fb.h
+> index a8dccd23c249..ecfbcc0553a5 100644
+> --- a/include/linux/fb.h
+> +++ b/include/linux/fb.h
+> @@ -659,6 +659,9 @@ static inline void __fb_pad_aligned_buffer(u8 *dst, u32 d_pitch,
+>  /* drivers/video/fb_defio.c */
+>  int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma);
+>  extern void fb_deferred_io_init(struct fb_info *info);
+> +extern void fb_deferred_io_open(struct fb_info *info,
+> +				struct inode *inode,
+> +				struct file *file);
+>  extern void fb_deferred_io_cleanup(struct fb_info *info);
+>  extern int fb_deferred_io_fsync(struct file *file, loff_t start,
+>  				loff_t end, int datasync);
+> -- 
+> 2.30.2
 > 
 
-Thanks,
----
-Igor M. A. Torrente
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
