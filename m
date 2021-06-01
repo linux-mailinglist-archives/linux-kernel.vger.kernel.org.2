@@ -2,150 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A49C3978CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A957A3978C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhFARLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:11:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234228AbhFARLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:11:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 215E8613CD;
-        Tue,  1 Jun 2021 17:10:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622567402;
-        bh=Pe14x4wYEjy5Woh+XA7xkKOEsS+4eNlZfe0uzDsv9+E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fvTpPsh3V6l2qm2oRMS7RNJyzR2mTKGIFSeuityttlia9IiG8YMztTz/b84FqKOmE
-         S0j+ckcnoXriiiKPIVQZMjIoYWg3h+v/x6iUDjM20QIIZzC7zQc5quGMsX+WCAwLlK
-         aaOwYIKSjae7QZXWXjGd6f3cuXbvRE0vj3B1mUWh41QjiyJ0QUHqu2PBTYZ3dLcTSR
-         HjGLFmerfS9z0wfzJvIwkjfT7cQT8konIzjVye5/ZPcXXXPnvM/XPY+hFN3osp/t6P
-         bLoB/hBtAzyGmpYwDS76Bt8mI/PGZJI1aCDfDOBR5exR3botdeDrommk6weooiUE9b
-         3UFWQzBAn3ICw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EAF7C5C08EB; Tue,  1 Jun 2021 10:10:01 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 10:10:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S234614AbhFARKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234581AbhFARKR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:10:17 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B91EC061760;
+        Tue,  1 Jun 2021 10:08:35 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id dg27so8547198edb.12;
+        Tue, 01 Jun 2021 10:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b14f7x0G6qwhXKyhv/ZWNE4Va6SHm9Fj/WA+S8U4gkk=;
+        b=VI37py+0idQkQMtyA2diYaP9Qs+Q0PI7DAaQNzlIIRdS5jdFlTxxq6fNexYlkF/b7t
+         2ZTUG38T0QH88npVF6+6aTmibfeCiSVnzTFKIrNQpYdpgS3PcBRSrQXRrmY+704bo+i/
+         pKajwjIOWL93YGz4q7HbDrwYOF9iEOVCGjHCycUDbsHfuTox+VhdGxbZWMspRjSbmYZ4
+         c0S1LkyyLr8Tz+tzsMfJP/UvseqCzZSGwNVdnsIGRHmopN1YBsE4z2CctEo8KJe6gWUd
+         h2mzqgq3/icbtbuA/7KhhKwloI+BfTkqJyy94ZD3ra2YO7iDf0g7jY2SXXsdG1m0ajPk
+         eAHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b14f7x0G6qwhXKyhv/ZWNE4Va6SHm9Fj/WA+S8U4gkk=;
+        b=mWQPl+DIcvsssHsqHzZ3elYIaSs2QpSppbxCqpaVHR09mSxlCzXZCBtXxxauToaHvy
+         SKEVfIHKRLkrtrb76VjzO50FtHxsR2Yrd1n3PmtnJZ9lUbVMZIKcZmaPYZKKXWijMFuZ
+         G9yW0xH9CM0Drv2WrMJWAhINcB6thDhHru14jbCz/UepTqRmoXRJ9c7kK9GMCgMGra0J
+         be9MuXirl+WcQFWFNzRxz79pH4XYijRkGcpzjHQsFdOvykHizKEmfDh4tdInttAmesZE
+         m2m0zDYbbSk2dqQp2hRfJWivQUWyHgihAPaGgs1TniqhV8HaXlSCHWrHxpKbvGcng4A9
+         /dKg==
+X-Gm-Message-State: AOAM531bywibznydGMXJkzL621lrO6CkJi/y4zhJ/sOpfJnEJzjqB0at
+        wO18huV65FeQUdYXS2QuZnA=
+X-Google-Smtp-Source: ABdhPJwaNZhg0igVAbJpgo4E4GFx+2pDpOX8Zrxo64OaAWULhK5yea/2YAcxTgnMuDGgV4a5ieTPkg==
+X-Received: by 2002:aa7:d8d8:: with SMTP id k24mr18079147eds.253.1622567313625;
+        Tue, 01 Jun 2021 10:08:33 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id r21sm5292674edy.78.2021.06.01.10.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 10:08:32 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 19:10:08 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Nikola =?utf-8?Q?Milosavljevi=C4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
         Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [clocksource] 8901ecc231: stress-ng.lockbus.ops_per_sec -9.5%
- regression
-Message-ID: <20210601171001.GN4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
- <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
- <20210526064922.GD5262@shbuild999.sh.intel.com>
- <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
- <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
- <138f81df-08e1-f96e-1915-c58b44f96a41@linux.intel.com>
- <20210527191923.GD4397@paulmck-ThinkPad-P17-Gen-1>
- <YK/zHMPSZSKrmXC6@casper.infradead.org>
- <20210527210524.GE4397@paulmck-ThinkPad-P17-Gen-1>
- <7bda8e6a-2179-b431-973b-d074cd8d93db@linux.intel.com>
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v6 00/14] NVIDIA Tegra memory and power management
+ changes for 5.14
+Message-ID: <YLZp8FlV4lcDnL23@orome.fritz.box>
+References: <20210601023119.22044-1-digetx@gmail.com>
+ <YLYZvFPyJFJgxI56@orome.fritz.box>
+ <11206c96-9f56-ca6f-e5e3-658534356666@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UGsCKX3hLwTPT7Tr"
 Content-Disposition: inline
-In-Reply-To: <7bda8e6a-2179-b431-973b-d074cd8d93db@linux.intel.com>
+In-Reply-To: <11206c96-9f56-ca6f-e5e3-658534356666@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:58:53PM -0700, Andi Kleen wrote:
-> 
-> > Only those cloud provides making heavy use of the aforementioned "poorly
-> > designed" hardware, correct?
-> 
-> If any such hardware is deployed in non homeopathic quantities, we probably
-> need to support it out of the box. So far I'm not seeing any evidence that
-> it does not.
-> 
-> That would argue for including the patch in the patch series.
-> 
-> Especially since stress-ng is somewhat popular for system testing.
 
-Except that different use cases need different out-of-the-box settings.
-In addition, there is a range of consequences for undesired settings
-across these use cases.  Fortunately, the various distros and other kernel
-delivery mechanisms act as different boxes, and can provide their chosen
-out-of-box setting.
+--UGsCKX3hLwTPT7Tr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Of course, it would be better to avoid adding an additional setting.
-But as we will see when considering the following use cases and
-corresponding consequences, that setting needs to be to mark the
-clocksource unstable if that clocksource exhibits persistent read delays,
-that is, as the v15 series does -without- the out-of-tree patch.
+On Tue, Jun 01, 2021 at 06:51:33PM +0300, Dmitry Osipenko wrote:
+> 01.06.2021 14:27, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Tue, Jun 01, 2021 at 05:31:05AM +0300, Dmitry Osipenko wrote:
+> >> This series:
+> >>
+> >>   1. Adds CPU/core voltage bump before system is rebooted.
+> >>   2. Adds new devm_tegra_core_dev_init_opp_table() helper and switches
+> >>      Tegra memory drivers to use it.
+> >>   3. Adds compile-testing support to the Tegra memory drivers.
+> >>   4. Adds Tegra SoC core power domain support.
+> >>
+> >> Changelog:
+> >>
+> >> v6: - Fixed another compile-test trouble reported for v5. I double che=
+cked
+> >>       the clk stubs this time and compiled them locally.
+> >=20
+> > Heh... I just fixed those locally on top of your v5. Let me see if I can
+> > roll back the changes and apply this new set instead.
+>=20
+> Thank you! You probably saw already that Ulf Hansson suggested to remove
+> the lockdep annotation for now from the core PD, I'll make a v7 with
+> this small change.
 
-To see this, consider the following use cases:
+Can you perhaps post this change as a follow-up? That way I can just
+merge it into the corresponding branch, which may be easier than backing
+out all the changes spread over four branches and applying basically the
+same thing again.
 
-o	Bringup testing for new silicon, firmware, and clock drivers.
-	In this case, it is critically important that any serious problem
-	be unmistakably flagged.  After all, these activities are all
-	too often carried out under severe time pressure, which means
-	that subtle messages are likely to be ignored.  If there is a
-	hardware, firmware, or driver issue that results in persistent
-	delays, this issue must not be ignored.  Hence the absolute need
-	to mark the clocksource unstable in this case, in order to avoid
-	releasing hardware, firmware, and clock-driver bugs into the wild.
+Thierry
 
-o	System test for new hardware, including multisocket hardware
-	such as that denigrated by stress-ng.  Although this use case
-	might prefer that clocksource read delays be ignored (as they
-	would be with my out-of-tree patch [1]), there are a number of
-	good-and-sufficient ways to deal with the current state of the
-	v15 series [2], including marking the TSC stable, specifying HPET
-	at boot time, or simply ignoring the fact that the clocksource
-	gets marked unstable.
+--UGsCKX3hLwTPT7Tr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-o	Applications running in production that suffer from stress-ng-like
-	properties.  Such applications might well prefer that high-speed
-	fine-grained clocksources not be marked unstable, but the
-	workarounds for system test apply here as well.
+-----BEGIN PGP SIGNATURE-----
 
-	Furthermore, such applications are likely to perform better
-	on a single-socket system than on a larger and more expensive
-	multi-socket system.  Thus, marking clocksources unstable
-	would be a good hint that adjustments would be helpful, whether
-	these adjustments be confining such applications to lower-cost
-	hardware on which they are likely to perform better, or reading
-	a certain book [3] and applying its lessons in order to adjust
-	the application to improve performance and scalability and to
-	reduce the interference with clocksources.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC2afAACgkQ3SOs138+
+s6G/ew//SSAN5RwYaYKKZhq2h3fzHhv65ckrGL74avoGHdwES0XJzLEsMSULZggA
+w3NKHFtmqyDnaCTL2M9QSOnBPGohXwutZtX8GWifTATMzg+JaRNH1Hsm48lbuovi
+Aab4sL6NzAdX1j/MxI3PZgviVmDKz5R0uzAN3xa7CWjGs64a7nhvhf8ONRdJanEB
+7NiFjiR5HpcldgfR9hv6DwID5GxeAaQ6HcOngERDGTkC7dPPWfd7LrqJkOJ77iLG
+I0CFmXe4nu+lNI9zztqyuD3Z/b64otAmtwhVa30plsnysl40EaJJWI+nFrPMBrGj
+hh+5ZoFzPz+D5p6yZ0qjLCUZ8rL9JiRSdOEDl/mYVT3/pgO/zG8NpuuzEtYvQije
+62Tn7L4T5cpdRfkgTnmWWOE4fh6iWbRBHvp8RDJ/eaUjGaHC4E1yvw84YSOxkMgr
+dk0P9R1amzVgI8TFiPn2HQ9X/rbLSqlhjN7iKBffpKmrkaq+7QixSaHw/wbh8CqX
+msfyAyuGQC65JiyMtOQcZuARntKJtgZuYy9gwb+w6VyD8ttWFu3P0FpHvkSmFFz8
+DeGQ2aAaB/R8SpbIsasRxNGsFKEq3En7dfFLuM5TyAF+N///UuTpJVanB3967N3o
+DyuvDflL/6a7PTGJp2M4ZOBg9LKpQYMteNf9e8m9okhrtsKd/yQ=
+=Cbap
+-----END PGP SIGNATURE-----
 
-o	Scalable applications running in production, as in those that do
-	not suffer from stress-ng-like properties.  Any such applications
-	that are sensitive to clock skew in excess of 100 microseconds
-	really want the v15 series without the extra patch.  After all,
-	if there is a problem with clock-related hardware, firmware,
-	or device-driver bugs, it is far better to have that problem
-	unambiguously diagnosed than to have to wade through strange
-	and misleading application problems caused by clock skew.
-
-	And please note that this is not a theoretical problem.
-	After all, an earlier version of this series already spotted a
-	very real problem that was addressed by an upgrade.
-
-So if there is only a single out-of-the box option, it really does need
-to be that provided by v15 of the patch series.  There are already
-settings that can be used in the use cases that care, but if these
-prove inadequate, again, I can add another setting via a new patch,
-perhaps based on my out-of-tree patch.
-
-							Thanx, Paul
-
-[1]	https://lore.kernel.org/lkml/20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1/
-[2]	https://lore.kernel.org/lkml/20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1/
-[3]	https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html
+--UGsCKX3hLwTPT7Tr--
