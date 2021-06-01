@@ -2,101 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3212439778F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707B5397799
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhFAQM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:12:58 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55200 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232490AbhFAQM4 (ORCPT
+        id S234127AbhFAQNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234050AbhFAQNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:12:56 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151G3HlT191311;
-        Tue, 1 Jun 2021 12:11:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=wpJ9EjHra92DkVCSdbGlKcp7UVGQDXqqS5WOBCtsgUs=;
- b=Gf+wRthh7CJTKDBVyWhx8sAI9qzF/G28r4zBbjfo6d/3OHuFHUF+ucCtzHvXCK+A+n8m
- fuwuS2hOvLdEhebP1SjmiGY8/VyYT4k+QWNRrGoXlXFFJeaEYHiwe3zfGd0Y+fu9VkTk
- fL9dgPhbTkPTXH2btAK0BgtQM74JMtdSk2Ym91hT5rfaPaccnSq8nc5PJjE/6j5rF8Dm
- kOQNE9riXZbTi8UPOeP8+0RdWICdCT0lfDnOgvCS0ZnhEbA5slAYrhr0og84ApF3rHSs
- 3NQhGSCeVriKiIhkJ1EJRUot2gYdrcvim/OdKmY2GkVOZALD9O6dleox5QO+18waUyC9 bA== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38wr2e88e8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 12:11:02 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151G2NNN011090;
-        Tue, 1 Jun 2021 16:11:00 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 38ud889u6a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 16:11:00 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151GAw1e27197936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Jun 2021 16:10:58 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5E1E4C05C;
-        Tue,  1 Jun 2021 16:10:57 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8F9364C04A;
-        Tue,  1 Jun 2021 16:10:56 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.90.147])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Jun 2021 16:10:56 +0000 (GMT)
-Message-ID: <60a8dd3dddfa469e08c673af30ed08dca3baec1a.camel@linux.ibm.com>
-Subject: Re: [RESEND][PATCH v2 5/7] ima: Define new template fields
- xattrnames, xattrlengths and xattrvalues
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@srcf.ucam.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Date:   Tue, 01 Jun 2021 12:10:54 -0400
-In-Reply-To: <20210601082338.908390-1-roberto.sassu@huawei.com>
-References: <20210528073812.407936-6-roberto.sassu@huawei.com>
-         <20210601082338.908390-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 58s6sedDJ8_u2SBkqZDALBJpUp3QFeL-
-X-Proofpoint-ORIG-GUID: 58s6sedDJ8_u2SBkqZDALBJpUp3QFeL-
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_08:2021-06-01,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 adultscore=0 malwarescore=0 suspectscore=0 phishscore=0
- mlxscore=0 clxscore=1015 spamscore=0 mlxlogscore=999 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106010109
+        Tue, 1 Jun 2021 12:13:16 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8765BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:11:33 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso21734wmc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oHZtx0tJnq4NGnZOtbU7Ge91DzY+YkKV8LDOwm9HnX0=;
+        b=iUTqK6T1kJwQHPPVEW0WclCi3oIKbSaTlvz3sCcmFuWo9vDEuCSbq37qd0T4q+hSue
+         Mi/Hxz6azavcH5NjHfu9MQNAonDdZ0LWwbP0mrNHwKIDceaaXVYz3X85CxIsIV0QnUqZ
+         17Ff42BPHBcPqRE1hSQojrfEwXeGdtjZw48K8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=oHZtx0tJnq4NGnZOtbU7Ge91DzY+YkKV8LDOwm9HnX0=;
+        b=WtAYb3KbPu+j2XaMiKU2vrKq2kn++caFh8zWIEs02ZevGKBakwPdTfSzIqf0+U8HrW
+         eQEsC9bayHktMBh5pgv3IQnKmWrGMw5IK7xk7JhYrgzLSs1HDqTDsTyeVIQ887xbWIQx
+         Jl+f78ac3vur9IbCaXYTi5Tewa5Iw7zVIj3uge43lXc6JhuCCtPHZzghqr3zzidh1+pK
+         D/JYSIp5jKHDHDOdDjTbvZw01u1tJ9OTO9Oth7VvvnAjItCdk7VCJRp7SDqdjXo4GhfO
+         DS6VlzbCTz4iaLu4tkKDH/2KfjhMWBCj5tdiECZipZDMxjIzwyQnukgHYywU1atsF6Mp
+         4grA==
+X-Gm-Message-State: AOAM530uVtzJj67dOAX8+CCenH6NcN5Gc+0T6GamuVgjEOGUXILU8EWh
+        rV1dRWGAzt2hv6yOSnDx2TDA9w==
+X-Google-Smtp-Source: ABdhPJyvJhwUB9Y7TCS1lis38aIf4uzgSN86wg7qgWT1AduNq4U5ym7MkB64zgqdULO1+P43xnfH3g==
+X-Received: by 2002:a1c:cc12:: with SMTP id h18mr27042131wmb.141.1622563892183;
+        Tue, 01 Jun 2021 09:11:32 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j10sm3765164wrt.32.2021.06.01.09.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 09:11:31 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 18:11:29 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [RFC 2/3] drm/atomic: Call dma_fence_boost() when we've missed a
+ vblank
+Message-ID: <YLZcMTPlI3XDAFP+@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matthew Brost <matthew.brost@intel.com>
+References: <20210519183855.1523927-1-robdclark@gmail.com>
+ <20210519183855.1523927-3-robdclark@gmail.com>
+ <YKaOY3AWgHh5kplS@phenom.ffwll.local>
+ <CAF6AEGv470U7fujLrJOE8fJh1o-BW3=mOpKJ45FFz=Xb8Q0D6A@mail.gmail.com>
+ <YLZBzKlb7xpJaG4+@phenom.ffwll.local>
+ <CAF6AEGvcFMejnN1032+=9E=8f2=E4CpqHiARHHQ_Bin+f5DQTg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGvcFMejnN1032+=9E=8f2=E4CpqHiARHHQ_Bin+f5DQTg@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto,
-
-On Tue, 2021-06-01 at 10:23 +0200, Roberto Sassu wrote:
-> This patch defines the new template fields xattrnames, xattrlengths and
-> xattrvalues, which contain respectively a list of xattr names (strings,
-> separated by |), lengths (u32, hex) and values (hex). If an xattr is not
-> present, the name and length are not displayed in the measurement list.
+On Tue, Jun 01, 2021 at 08:46:14AM -0700, Rob Clark wrote:
+> On Tue, Jun 1, 2021 at 7:18 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Sun, May 30, 2021 at 07:33:57AM -0700, Rob Clark wrote:
+> > > On Thu, May 20, 2021 at 9:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Wed, May 19, 2021 at 11:38:53AM -0700, Rob Clark wrote:
+> > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > >
+> > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > ---
+> > > > >  drivers/gpu/drm/drm_atomic_helper.c | 11 +++++++++++
+> > > > >  1 file changed, 11 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> > > > > index 560aaecba31b..fe10fc2e7f86 100644
+> > > > > --- a/drivers/gpu/drm/drm_atomic_helper.c
+> > > > > +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> > > > > @@ -1435,11 +1435,15 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
+> > > > >       int i, ret;
+> > > > >
+> > > > >       for_each_new_plane_in_state(state, plane, new_plane_state, i) {
+> > > > > +             u64 vblank_count;
+> > > > > +
+> > > > >               if (!new_plane_state->fence)
+> > > > >                       continue;
+> > > > >
+> > > > >               WARN_ON(!new_plane_state->fb);
+> > > > >
+> > > > > +             vblank_count = drm_crtc_vblank_count(new_plane_state->crtc);
+> > > > > +
+> > > > >               /*
+> > > > >                * If waiting for fences pre-swap (ie: nonblock), userspace can
+> > > > >                * still interrupt the operation. Instead of blocking until the
+> > > > > @@ -1449,6 +1453,13 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
+> > > > >               if (ret)
+> > > > >                       return ret;
+> > > > >
+> > > > > +             /*
+> > > > > +              * Check if we've missed a vblank while waiting, and if we have
+> > > > > +              * signal the fence that it's signaler should be boosted
+> > > > > +              */
+> > > > > +             if (vblank_count != drm_crtc_vblank_count(new_plane_state->crtc))
+> > > > > +                     dma_fence_boost(new_plane_state->fence);
+> > > >
+> > > > I think we should do a lot better here:
+> > > > - maybe only bother doing this for single-crtc updates, and only if
+> > > >   modeset isn't set. No one else cares about latency.
+> > > >
+> > > > - We should boost _right_ when we've missed the frame, so I think we
+> > > >   should have a _timeout wait here that guesstimates when the vblank is
+> > > >   over (might need to throw in a vblank wait if we missed) and then boost
+> > > >   immediately. Not wait a bunch of frames (worst case) until we finally
+> > > >   decide to boost.
+> > >
+> > > I was thinking about this a bit more.. How about rather than calling
+> > > some fence->op->boost() type thing when we are about to miss a vblank
+> > > (IMO that is also already too late), we do something more like
+> > > fence->ops->set_deadline() before we even wait?
+> >
+> > Hm yeah that sounds like a clean idea.
+> >
+> > Even more, why not add the deadline/waiter information to the callback
+> > we're adding? That way drivers can inspect it whenever they feel like and
+> > don't have to duplicate the tracking. And it's probably easier to
+> > tune/adjust to the myriads of use-cases (flip target miss, userspace wait,
+> > wakeup boost maybe too ...).
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> You mean, enumerate the types of deadline?
+> 
+> For userspace waits, we might have a timeout, but not really
+> (currently) any more information than that?  The vblank deadline is
+> the only type of deadline that seems pretty clear to me.
+> 
+> I suppose we could do something like:
+> 
+>    dma_fence_set_deadline(fence, &(struct dma_fence_deadline){
+>            .type = DMA_FENCE_DEADLINE_VBLANK,
+>            .time = next_vblank_ktime,
+>        });
+> 
+> to make it a bit more extensible to add more deadline types or
+> additional optional information
 
-Thank you for giving credit to the "kernel test robot".   For a bug fix
-patch the above "Reported-by" tag would be appropriate, but for an
-existing patch it needs to be qualified.  I've modified it to:
+Nah not enumerate the types of deadlines, but the types of waits. Some of
+which might have a deadline (like page flip), some wont (like userspace
+waiting or poll() on a dma-fd or whatever).
 
-Reported-by: kernel test robot <lkp@intel.com> [Missing prototype def]
+What I had in mind is roughly
 
-thanks,
 
-Mimi
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 6ffb4b2c6371..e7c239145273 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -116,6 +116,8 @@ typedef void (*dma_fence_func_t)(struct dma_fence *fence,
+ struct dma_fence_cb {
+ 	struct list_head node;
+ 	dma_fence_func_t func;
++	enume dma_fence_wait_type wait_type;
++	struct ktime deadline; /* fixme how do we indicate no deadline? */
+ };
+ 
+ /**
 
+With that waiters, and irrespective of whether they use dma_fence_wait or
+have something else like the dma-buf fd poll stuff, can indicate to the
+driver what kind of wait with what kind of deadline this is.
+
+Maybe we should make this a sub-struct, so that it can also be passed to
+dma_fence_wait().
+-Daniel
+
+> 
+> BR,
+> -R
+> 
+> >
+> > I like this direction a lot more than what we discussed with post-miss
+> > hints thus far.
+> >
+> > > It's probably a bit impossible for a gpu driver to really predict how
+> > > long some rendering will take, but other cases like video decoder are
+> > > somewhat more predictable.. the fence provider could predict given the
+> > > remaining time until the deadline what clk rates are required to get
+> > > you there.
+> >
+> > Well if we do have a deadline the driver can note that in its scheduler
+> > and arm a driver to kick the clocks. Or maybe use past history to do this
+> > upfront.
+> > -Daniel
+> >
+> > >
+> > > BR,
+> > > -R
+> > >
+> > >
+> > > >
+> > > > Otherwise I really like this, I think it's about the only real reason i915
+> > > > isn't using atomic helpers.
+> > > >
+> > > > Also adding Matt B for this topic.
+> > > > -Daniel
+> > > >
+> > > > > +
+> > > > >               dma_fence_put(new_plane_state->fence);
+> > > > >               new_plane_state->fence = NULL;
+> > > > >       }
+> > > > > --
+> > > > > 2.30.2
+> > > > >
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
