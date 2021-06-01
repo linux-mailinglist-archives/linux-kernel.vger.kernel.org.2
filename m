@@ -2,138 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142803974F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D363C39750E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhFAOHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234145AbhFAOGk (ORCPT
+        id S234309AbhFAOJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:09:33 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3496 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234084AbhFAOJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:06:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB7EC061574;
-        Tue,  1 Jun 2021 07:04:59 -0700 (PDT)
-Date:   Tue, 01 Jun 2021 14:04:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622556297;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qsSksMoFHb71KZ6Gzl6UA6wkKqMUMNN0rd8LNXFyD7w=;
-        b=YxuVap3e8GlSaquoaEVc6nQg3kRoW/erF7ID0v8ueuadzIZQf6tfXa0cqWer6+65A5UI+d
-        R2L7YfFtUHl4Y4Up4aV4TwS+/4Jd3YqR85ZVcrx3FEHh2XyQDcR7lXjD0SjZv7nfTwap0U
-        IhxjKRFazsFxGO9saJIt4Qme6EPgmIznnXcDvc21T8Y1v2b4pAx7LONyujVJdTTOZrHuBe
-        P2O3f+wDjTWHmNspZgpHmnV2V9H9E/6G5XapkSr7nRXOguCp6YuuDAjWCEzYtzLDgPkch8
-        yc9tEbDrmc6LPdRWHgA9QrWPs6Jx8zB//kcvy+IIlWz/LzI/PK7XGcvVzIpHNQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622556297;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qsSksMoFHb71KZ6Gzl6UA6wkKqMUMNN0rd8LNXFyD7w=;
-        b=e5yas7IdFcexW0r0yMjwTfDybwJzsA0RIZsepNxhfmbjsmsa/cdOF7hvF1ywZATalm63Py
-        yqiuCEXqp+EoXrCg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched,init: Fix DEBUG_PREEMPT vs early boot
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <YLS4mbKUrA3Gnb4t@hirez.programming.kicks-ass.net>
-References: <YLS4mbKUrA3Gnb4t@hirez.programming.kicks-ass.net>
+        Tue, 1 Jun 2021 10:09:30 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvYnq0MYvzYs4W;
+        Tue,  1 Jun 2021 22:05:03 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 22:07:46 +0800
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 22:07:46 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <sashal@kernel.org>,
+        <maz@kernel.org>, <alexandru.elisei@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+Subject: [PATCH v2 stable-5.12.y backport 0/2] KVM: arm64: Commit exception state on exit to userspace
+Date:   Tue, 1 Jun 2021 22:07:36 +0800
+Message-ID: <20210601140738.2026-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Message-ID: <162255629704.29796.6291052814035637150.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+As promised on the list [0], this series aims to backport 3 upstream
+commits [1,2,3] into 5.12-stable tree.
 
-Commit-ID:     15faafc6b449777a85c0cf82dd8286c293fed4eb
-Gitweb:        https://git.kernel.org/tip/15faafc6b449777a85c0cf82dd8286c293fed4eb
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 31 May 2021 12:21:13 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 01 Jun 2021 16:00:11 +02:00
+Patch #1 is already in the queue and therefore not included. Patch #2 can
+be applied now by manually adding the __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc
+macro (please review). Patch #3 can be applied cleanly then (after #2).
 
-sched,init: Fix DEBUG_PREEMPT vs early boot
+I've slightly tested it on my 920 (boot test and the whole kvm-unit-tests),
+on top of the latest linux-stable-rc/linux-5.12.y. Please consider taking
+them for 5.12-stable.
 
-Extend 8fb12156b8db ("init: Pin init task to the boot CPU, initially")
-to cover the new PF_NO_SETAFFINITY requirement.
+* From v1:
+  - Allocate a new number for __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc
+  - Collect Marc's R-b tags
 
-While there, move wait_for_completion(&kthreadd_done) into kernel_init()
-to make it absolutely clear it is the very first thing done by the init
-thread.
+[0] https://lore.kernel.org/r/0d9f123c-e9f7-7481-143d-efd488873082@huawei.com
+[1] https://git.kernel.org/torvalds/c/f5e30680616a
+[2] https://git.kernel.org/torvalds/c/26778aaa134a
+[3] https://git.kernel.org/torvalds/c/e3e880bb1518
 
-Fixes: 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Borislav Petkov <bp@alien8.de>
-Link: https://lkml.kernel.org/r/YLS4mbKUrA3Gnb4t@hirez.programming.kicks-ass.net
----
- init/main.c         | 11 ++++++-----
- kernel/sched/core.c |  1 +
- 2 files changed, 7 insertions(+), 5 deletions(-)
+Marc Zyngier (1):
+  KVM: arm64: Commit pending PC adjustemnts before returning to
+    userspace
 
-diff --git a/init/main.c b/init/main.c
-index 7b027d9..e945ec8 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -692,6 +692,7 @@ noinline void __ref rest_init(void)
- 	 */
- 	rcu_read_lock();
- 	tsk = find_task_by_pid_ns(pid, &init_pid_ns);
-+	tsk->flags |= PF_NO_SETAFFINITY;
- 	set_cpus_allowed_ptr(tsk, cpumask_of(smp_processor_id()));
- 	rcu_read_unlock();
- 
-@@ -1440,6 +1441,11 @@ static int __ref kernel_init(void *unused)
- {
- 	int ret;
- 
-+	/*
-+	 * Wait until kthreadd is all set-up.
-+	 */
-+	wait_for_completion(&kthreadd_done);
-+
- 	kernel_init_freeable();
- 	/* need to finish all async __init code before freeing the memory */
- 	async_synchronize_full();
-@@ -1520,11 +1526,6 @@ void __init console_on_rootfs(void)
- 
- static noinline void __init kernel_init_freeable(void)
- {
--	/*
--	 * Wait until kthreadd is all set-up.
--	 */
--	wait_for_completion(&kthreadd_done);
--
- 	/* Now the scheduler is fully set up and can do blocking allocations */
- 	gfp_allowed_mask = __GFP_BITS_MASK;
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3d25272..e205c19 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8862,6 +8862,7 @@ void __init sched_init_smp(void)
- 	/* Move init over to a non-isolated CPU */
- 	if (set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_DOMAIN)) < 0)
- 		BUG();
-+	current->flags &= ~PF_NO_SETAFFINITY;
- 	sched_init_granularity();
- 
- 	init_sched_rt_class();
+Zenghui Yu (1):
+  KVM: arm64: Resolve all pending PC updates before immediate exit
+
+ arch/arm64/include/asm/kvm_asm.h   |  1 +
+ arch/arm64/kvm/arm.c               | 20 +++++++++++++++++---
+ arch/arm64/kvm/hyp/exception.c     |  4 ++--
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c |  8 ++++++++
+ 4 files changed, 28 insertions(+), 5 deletions(-)
+
+-- 
+2.19.1
+
