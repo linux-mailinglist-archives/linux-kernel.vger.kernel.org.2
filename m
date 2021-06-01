@@ -2,239 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD91D397B5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42166397B5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhFAUsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 16:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55252 "EHLO
+        id S234831AbhFAUsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 16:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhFAUsJ (ORCPT
+        with ESMTP id S234806AbhFAUsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 16:48:09 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB34DC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 13:46:26 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id w33so23889781lfu.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 13:46:26 -0700 (PDT)
+        Tue, 1 Jun 2021 16:48:18 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A99C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 13:46:36 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id o27so176861qkj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 13:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kiWwAMz7iLrYejxtz+2HF1gEQcQDx+tl72Dyj7rhLz8=;
-        b=WPSXIeGWAZ/pyLH1/FB8Nyq+rWQsY+c6rTjQR372TslZRPpiL7ctujqUDUFcAg/7cu
-         LOsK4vJL1tPxR9cO/ZQ9Njx0CU121FyJpncS5iaFFkYv1nhwgcSejT9uXlRscy21kdMc
-         AzUqEbCyL72/JYa98VI5We3dZ6wSkCKtdiyJ39DCFbPy2CNiHCWTyA7hEwjlDggU4RA6
-         tJNlykxgmFtBYua5bFLV4Tjn/6W05U3rprRkxzNchgp/2GQcvSwsnsdXtfr3/FhjZmT6
-         ish7rmG2HigXuTvCW/wuBVGg2CCzDjDG0GP2JoqHeachplpbqTAAjFcbOTvhyrOA6C6t
-         i5BQ==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bVfjYE/IhtPoACf3sIUQRpJ74FVGj5RoIkiYbY+pmBU=;
+        b=Ulwy23rIbq6n+LD1DsTXaNBIEJyKOAzX/Ip1ssDWfkGqWqekFIkmBT6qQgdZDtkiv+
+         K3u8fEAdfrGVZq4xZGFAXmmmdsX7TJjISFrR+1qVcflPelw59MPb0Ub0AlsH6JnSwXOU
+         8+bOgCMQNssD9mwQ4s682E0FNZCiQK1SWEw6s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kiWwAMz7iLrYejxtz+2HF1gEQcQDx+tl72Dyj7rhLz8=;
-        b=N35HiOHmrS0scvDG96xAOZLW/4tGtEpevIShKP4wJsC6m1C7ICRkxBuwtEEN2Od7Zb
-         V58qsNpySgaThAnsNvQW15xnBxYWxque4D9TmKt7dNMCWb4moQq1HyaKmXZZdDrN/yQa
-         ejj09uobGCQ30Cd5OCwlSqCD5FQK8BLpSqOI3ej3jysa8bB18s8+lrRoLn9QnVbQi+aw
-         +je9NjgR0ZtXsM9IeuyO4WjvMxyQAy6KQcBeygDyTM40Kousq7v5XoEHL8mxpAWd9gZA
-         Z1zTI+ryU08Mz0E6OTXXtwO50QCAmPe624OK2wMggAFrfv1fIYv1l1Z4l7Sp8BVl1Lkz
-         whIg==
-X-Gm-Message-State: AOAM530hiQGG65B6J62O0+Nm5K1qgnU/OcqWyHPIN41j8mdhLODULBzF
-        2z+T5ZwVYxL47q9Wks7845U=
-X-Google-Smtp-Source: ABdhPJzYi2v5Pz+R4dh0r/ZGJh+62e1/m0a9b3Yl9uLsBUl6fxV2vr6ZukFZakomaNX9+htjtlwdQA==
-X-Received: by 2002:a19:e05d:: with SMTP id g29mr1274724lfj.524.1622580385211;
-        Tue, 01 Jun 2021 13:46:25 -0700 (PDT)
-Received: from hyperiorarchmachine.localnet (dcx7x4yb9bh06yk5jm2qt-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:3d09:bda0:2327:559b])
-        by smtp.gmail.com with ESMTPSA id 14sm1952086lfq.130.2021.06.01.13.46.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bVfjYE/IhtPoACf3sIUQRpJ74FVGj5RoIkiYbY+pmBU=;
+        b=puY1Ze21KuGNfyXFPl2ZU7AOA2KLkB7RXdHMORscHEM67cwVuxn6gOQwBroPRP0JGG
+         yoonSGTLNKRuWnhW96CFjBIDks1gK/Xw4RqtM/v2r4oaRcI5iPfh5agiMmZzdqb2DmQ3
+         apwP5SpqLOASyqyEb2piUVOmtbhTU3RcxfAfX3+sE6n2VC3dpCng5ocR/Z0TJafHcqto
+         pUd7nfi0lr7fgvcRSScbeA6E/hhR8iPYOrX3fnKwIAiD2Hx9H1ZpbdGwKqdx9fmfvh/d
+         1pAfI7j5vadN8bBr9y9lra58rkyDb3DmzOP0AVtUcBcaA+z30kjtvRoeFRYJiFSVSPEd
+         1ptw==
+X-Gm-Message-State: AOAM531zm+TSydGsb4E/bwh3cLH55EzyTVojxXAKIJmjIEq2yj4bmN7D
+        bJ0jx7NS/SRUqpq4JY3IlhVDjA==
+X-Google-Smtp-Source: ABdhPJwxduFtSZZFOKiuXWZibpD1AFJTVrZ+DL8mGkRv95sHWFmJU0aL8adsFWxxFOyLmZqueu8exA==
+X-Received: by 2002:a37:4392:: with SMTP id q140mr5408874qka.49.1622580395041;
+        Tue, 01 Jun 2021 13:46:35 -0700 (PDT)
+Received: from localhost ([2620:15c:6:411:959f:df0e:4ded:f970])
+        by smtp.gmail.com with ESMTPSA id z15sm7989580qkj.49.2021.06.01.13.46.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 13:46:24 -0700 (PDT)
-From:   jarmo.tiitto@gmail.com
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Bill Wendling <morbo@google.com>, samitolvanen@google.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH 3/6] pgo: modules Add module profile data export machinery.
-Date:   Tue, 01 Jun 2021 23:46:23 +0300
-Message-ID: <3233714.pFP5IgcPq9@hyperiorarchmachine>
-In-Reply-To: <CAKwvOdmk34yQQow_kMLeF32OpfcP4O0SrPx3gMO3KQvgE8uZ9Q@mail.gmail.com>
-References: <20210528200821.459214-1-jarmo.tiitto@gmail.com> <2450763.S1xdTQMYLV@hyperiorarchmachine> <CAKwvOdmk34yQQow_kMLeF32OpfcP4O0SrPx3gMO3KQvgE8uZ9Q@mail.gmail.com>
+        Tue, 01 Jun 2021 13:46:34 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 16:46:34 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org, Chris Hyser <chris.hyser@oracle.com>,
+        Josh Don <joshdon@google.com>, mingo@kernel.org,
+        peterz@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] Documentation: Add usecases, design and interface for
+ core scheduling
+Message-ID: <YLacqqEsnEbKowVh@google.com>
+References: <20210526175623.34781-1-joel@joelfernandes.org>
+ <87y2c13y79.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2c13y79.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kirjoitit tiistaina 1. kes=C3=A4kuuta 2021 20.27.01 EEST:
-> On Tue, Jun 1, 2021 at 6:26 AM <jarmo.tiitto@gmail.com> wrote:
-> > Kirjoitit tiistaina 1. kes=C3=A4kuuta 2021 11.33.48 EEST:
-> > > On Mon, May 31, 2021 at 12:09 PM Nathan Chancellor <nathan@kernel.org>
-> >=20
-> > wrote:
-> > > > On Fri, May 28, 2021 at 11:08:21PM +0300, Jarmo Tiitto wrote:
-> > > > > PGO profile data is exported from the kernel by
-> > > > > creating debugfs files: pgo/<module>.profraw for each module.
-> > > >=20
-> > > > Again, I do not really have many comments on the actual code as I am
-> >=20
-> > not
-> >=20
-> > > > super familiar with it.
-> > > >=20
-> > > > However, fs_mod.c duplicates a lot of the functions in fs.c, which
-> >=20
-> > makes
-> >=20
-> > > > maintaining this code even more difficult, especially against LLVM =
-PGO
-> > > > profile data format changes. I just want to make sure I understand
-> >=20
-> > this:
-> > > > does PGO currently not work with modules? Or does this patch series
-> >=20
-> > just
-> >=20
-> > > > make it so that each module has its own .profraw file so individual
-> > > > modules can be optimized?
-> > > >=20
-> > > > If it is the latter, what is the point? Why would you want to optim=
-ize
-> > > > just a module and not the entire kernel, if you already have to go
-> > > > through the profiling steps?
-> > > >=20
-> > > > If it is the former, there has to be a better way to share more of =
-the
-> > > > machinery between fs.c and fs_mod.c than basically duplicating
-> > > > everything because there are some parameters and logic that have to
-> > > > change. I do not have a ton of time to outline exactly what that mi=
-ght
-> > > > look like but for example, prf_fill_header and prf_module_fill_head=
-er
-> > > > are basically the same thing aside from the mod parameter and the
-> > > > prf_..._count() calls. It seems like if mod was NULL, you would call
-> >=20
-> > the
-> >=20
-> > > > vmlinux versions of the functions.
-> > >=20
-> > > Functions definitely shouldn't be duplicated with only minor changes.
-> > > We should determine a way to combine them.
-> > >=20
-> > > As for whether the original PGO patch supports profiling in modules,
-> > > the answer is "it depends". :-) I believe that clang inserts profiling
-> > > hooks into all code that's compiled with the "-fprofile..." flags.
-> > > This would include the modules of course. In GCOV, it's possible to
-> > > retrieve profiling information for a single file. Jarmo, is that the
-> > > intention of your patches?
-> > >=20
-> > > -bw
-> >=20
-> > Thanks for replying Nathan and Bill!
-> >=20
-> > My original motivation for writing this patch was the realization that =
-no
-> > profile data could be obtained from modules using the original patch on=
-ly.
-> >=20
-> > My insight when testing the original patch was that the compiler indeed
-> > does
-> > instrument+profile all code, including any loaded modules. But this is
-> > where
-> > the current instrument.c falls short:
-> > The allocate_node() function may consume nodes from __llvm_prf_vnds_sta=
-rt
-> > that are actually in a module and not in vmlinux.
-> > So llvm_prf_data *p argument may point into an module section, and not
-> > into
-> > __llvm_prf_data_start range.
-> >=20
-> > This can result in early exhaustion of of nodes for vmlinux and less
-> > accurate
-> > profile data. I think this is actually a bug in the original patch.
-> >=20
-> > So no, the PGO does not currently work with modules. And it somewhat wo=
-rks
-> > for vmlinux.
->=20
-> Hi Jarmo,
-> Thanks for the series! Would you mind including the above in a cover lett=
-er
-> in a v2? (You can use --cover-letter command line arg to `git format-patc=
-h`
-> to generate a stub).  The please explicitly cc
-> Sami Tolvanen <samitolvanen@google.com>
-> Bill Wendling <morbo@google.com>
-> on the series? Finally, please specify the cover letter and all patch fil=
-es
-> to git send-email in one command, so that the individual patch files are
-> linked on lore.kernel.org. This makes it significantly easier to review a=
-nd
-> test.
->=20
+Hi Jon,
 
-Hello,
-=20
-Yeah, I realized afterwards that I screwed up at the git send-mail/message=
-=20
-threading task. Sorry about that. I will correct all of it in my next v2=20
-patch. Make mistakes, and learn new things. =F0=9F=98=83
+Apologies for late reply, memorial day holidays and all...
 
-I will post new v2 patch once I'm done writing and testing it. Based on the=
-=20
-feed back here I will try keep it simple and unify the vmlinux + modules co=
-de=20
-such that there is no fs_mod.c source any more nor necessary code duplicati=
-on.
+On Wed, May 26, 2021 at 04:52:10PM -0600, Jonathan Corbet wrote:
+> "Joel Fernandes (Google)" <joel@joelfernandes.org> writes:
+> 
+> > Now that core scheduling is merged, update the documentation.
+> 
+> Yay documentation!
 
-Basically it will be an rewrite on my part but I'm just excited to do it.
-I feel this first attempt was more like of RFC/prototype such that I could =
-get=20
-in contact with you guys.
+What can I say, it is important and necessary as much as it is boring ;-)
 
-Just one question about copyrights: do I need to add my statement to the=20
-sources, if yes, then how should I proceed ?
+> A couple of nits...
+> 
+> > Co-developed-by: Chris Hyser <chris.hyser@oracle.com>
+> > Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
+> > Co-developed-by: Josh Don <joshdon@google.com>
+> > Signed-off-by: Josh Don <joshdon@google.com>
+> > Cc: mingo@kernel.org
+> > Cc: peterz@infradead.org
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> > ---
+> >  .../admin-guide/hw-vuln/core-scheduling.rst   | 211 ++++++++++++++++++
+> >  Documentation/admin-guide/hw-vuln/index.rst   |   1 +
+> 
+> As I understand it, there are use cases for core scheduling that go well
+> beyond dancing around hardware vulnerabilities.  So do we really want to
+> bury the documentation for this feature there?  To me it seems like the
+> user-space API manual might be a better place, but perhaps I'm missing
+> something.
 
-Regards,
-Jarmo Tiitto.
+True. But I would say the "main usecase" is security. So perhaps it is better
+to house it here, with a slight reference to other usecases - if that's ok
+with you.
 
-> > My code confines the llvm_prf_value_node reservation to vmlinux or modu=
-le
-> > in
-> > instrument.c based on where the llvm_prf_data *p argument points into.
-> >=20
-> > My next intention with the patch is that vmlinux and each loadable modu=
-le
-> > exports their own, separate profile data file in debugfs/pgo/ like the
-> > vmlinux
-> > already does.
-> > So no file level information like in gcov. Only per whole "module.ko" a=
-nd
-> > the
-> > vmlinux binary.
-> > This way you can inspect what each module is doing individually using
-> > "llvm-
-> > profdata show mod.profraw"
-> >=20
-> > For PGO final build I intended combining the profile data from vmlinux =
-and
-> > all
-> > modules with "llvm-profdata merge" into single profile for optimized
-> > build.
-> >=20
-> > I agree fully that the current code duplication is bad.
-> > Maybe I should pass in the mod->prf_xxx sections in a struct to the
-> > serializing functions?
-> > In that way, the struct can be initialized from either module or the
-> > vmlinux
-> > sections and all serializing code can share the same code.
-> >=20
-> > Either way, thanks to your questions and info I can try an write better
-> > version.=F0=9F=98=83
-> >=20
-> > I have learned a lot, thanks.
-> > -Jarmo Tiitto
-> >=20
+> >  2 files changed, 212 insertions(+)
+> >  create mode 100644 Documentation/admin-guide/hw-vuln/core-scheduling.rst
+> >
+> > diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+> > new file mode 100644
+> > index 000000000000..585edf16183b
+> > --- /dev/null
+> > +++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+> > @@ -0,0 +1,211 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +Core Scheduling
+> > +***************
+> 
+> We have a nicely laid-out set of conventions for subsection headings,
+> described in Documentation/doc-guide/sphinx.rst; it would be nice if
+> this document would conform to that.
 
+Ok, I will go through that. Sorry and thanks.
 
+> > +Core scheduling support allows userspace to define groups of tasks that can
+> > +share a core. These groups can be specified either for security usecases (one
+> > +group of tasks don't trust another), or for performance usecases (some
+> > +workloads may benefit from running on the same core as they don't need the same
+> > +hardware resources of the shared core, or may prefer different cores if they
+> > +do share hardware resource needs). This document only describes the security
+> > +usecase.
+> > +
+> > +Security usecase
+> > +----------------
+> > +A cross-HT attack involves the attacker and victim running on different Hyper
+> > +Threads of the same core. MDS and L1TF are examples of such attacks.  The only
+> > +full mitigation of cross-HT attacks is to disable Hyper Threading (HT). Core
+> > +scheduling is a scheduler feature that can mitigate some (not all) cross-HT
+> > +attacks. It allows HT to be turned on safely by ensuring that tasks in a
+> 
+> by ensuring that *only* tasks in a trusted group ... right?
 
+Yes, ok.
+
+> > +user-designated trusted group can share a core. This increase in core sharing
+> > +can also improve performance, however it is not guaranteed that performance
+> > +will always improve, though that is seen to be the case with a number of real
+> > +world workloads. In theory, core scheduling aims to perform at least as good as
+> 
+> s/good/well/
+
+Ok.
+
+> > +when Hyper Threading is disabled. In practice, this is mostly the case though
+> > +not always: as synchronizing scheduling decisions across 2 or more CPUs in a
+> > +core involves additional overhead - especially when the system is lightly
+> > +loaded. When ``total_threads <= N_CPUS/2``, the extra overhead may cause core
+> > +scheduling to perform more poorly compared to SMT-disabled, where N_CPUS is the
+> > +total number of CPUs. Please measure the performance of your workloads always.
+> > +
+> > +Usage
+> > +-----
+> > +Core scheduling support is enabled via the ``CONFIG_SCHED_CORE`` config option.
+> 
+> The use of ``literal text`` markup isn't necessary here, and is known to
+> irritate some people.
+
+Ok.
+
+> > +Using this feature, userspace defines groups of tasks that can be co-scheduled
+> > +on the same core. The core scheduler uses this information to make sure that
+> > +tasks that are not in the same group never run simultaneously on a core, while
+> > +doing its best to satisfy the system's scheduling requirements.
+> > +
+> > +Core scheduling can be enabled via the ``PR_SCHED_CORE`` prctl interface.
+> > +This interface provides support for the creation of core scheduling groups, as
+> > +well as admission and removal of tasks from created groups.
+> > +
+> > +::
+> 
+> I'd just say "from created groups::" and leave off the separate "::" line.
+
+Ok sure.
+
+> > +
+> > +    #include <sys/prctl.h>
+> > +
+> > +    int prctl(int option, unsigned long arg2, unsigned long arg3,
+> > +            unsigned long arg4, unsigned long arg5);
+> > +
+> > +option:
+> > +    ``PR_SCHED_CORE``
+> 
+> Did you want that to be in the literal block?  If you don't indent it
+> that won't work.  If you *do* want it, you really don't need the literal
+> markup. 
+
+makes sense, I did want it literal. Will drop quotes.
+
+> > +
+> > +arg2:
+> > +    Command for operation, must be one off:
+> > +    - ``PR_SCHED_CORE_GET              0  -- get core_sched cookie of ``pid``.
+> > +    - ``PR_SCHED_CORE_CREATE           1  -- create a new unique cookie for ``pid``.
+> > +    - ``PR_SCHED_CORE_SHARE_TO         2  -- push core_sched cookie to ``pid``.
+> > +    - ``PR_SCHED_CORE_SHARE_FROM       3  -- pull core_sched cookie from ``pid``.
+> > +
+> > +arg3:
+> > +    ``pid`` of the task for which the operation applies.
+> > +
+> > +arg4:
+> > +    ``pid_type`` for which the operation applies. It is of type ``enum pid_type``.
+> > +    For example, if arg4 is ``PIDTYPE_TGID``, then the operation of this command
+> > +    will be performed for all tasks in the task group of ``pid``.
+> > +
+> > +arg5:
+> > +    userspace pointer to an unsigned long for storing the cookie returned by
+> > +    ``PR_SCHED_CORE_GET`` command. Should be 0 for all other commands.
+> > +
+> > +Cookie Transferral
+> > +~~~~~~~~~~~~~~~~~~
+> > +Transferring a cookie between the current and other tasks is possible using
+> > +PR_SCHED_CORE_SHARE_FROM and PR_SCHED_CORE_SHARE_TO to inherit a cookie from a
+> > +specified task or a share a cookie with a task. In combination this allows a
+> > +simple helper program to pull a cookie from a task in an existing core
+> > +scheduling group and share it with already running tasks.
+> 
+> There must be some sort of security model here, right?  You can't just
+> steal somebody else's cookies, even if they are the yummy chocolate-chip
+> variety.  It would be good to say what the policy is.
+
+Yeah. It is enforced by these ptrace checks in the code. I will add some info
+about it:
+
+        /*
+         * Check if this process has the right to modify the specified
+         * process. Use the regular "ptrace_may_access()" checks.
+         */
+        if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
+                err = -EPERM;
+                goto out;
+        }
+
+> > +Design/Implementation
+> > +---------------------
+> > +Each task that is tagged is assigned a cookie internally in the kernel. As
+> > +mentioned in `Usage`_, tasks with the same cookie value are assumed to trust
+> > +each other and share a core.
+> > +
+> > +The basic idea is that, every schedule event tries to select tasks for all the
+> > +siblings of a core such that all the selected tasks running on a core are
+> > +trusted (same cookie) at any point in time. Kernel threads are assumed trusted.
+> 
+> ...and kernel threads trust random user tasks too?  Interesting.
+
+Not if those untrusted random kernel tasks are assigned a cookie.
+
+> > +The idle task is considered special, as it trusts everything and everything
+> > +trusts it.
+> > +
+> > +During a schedule() event on any sibling of a core, the highest priority task on
+> > +the sibling's core is picked and assigned to the sibling calling schedule(), if
+> > +the sibling has the task enqueued. For rest of the siblings in the core,
+> > +highest priority task with the same cookie is selected if there is one runnable
+> > +in their individual run queues. If a task with same cookie is not available,
+> > +the idle task is selected.  Idle task is globally trusted.
+> > +
+> > +Once a task has been selected for all the siblings in the core, an IPI is sent to
+> > +siblings for whom a new task was selected. Siblings on receiving the IPI will
+> > +switch to the new task immediately. If an idle task is selected for a sibling,
+> > +then the sibling is considered to be in a `forced idle` state. I.e., it may
+> > +have tasks on its on runqueue to run, however it will still have to run idle.
+> > +More on this in the next section.
+> > +
+> > +Forced-idling of tasks
+> > +----------------------
+> 
+> You're idling *CPUs*, not tasks, right?
+
+You are quite right, I'll correct the wording, thanks.
+
+> > +The scheduler tries its best to find tasks that trust each other such that all
+> > +tasks selected to be scheduled are of the highest priority in a core.  However,
+> > +it is possible that some runqueues had tasks that were incompatible with the
+> > +highest priority ones in the core. Favoring security over fairness, one or more
+> > +siblings could be forced to select a lower priority task if the highest
+> > +priority task is not trusted with respect to the core wide highest priority
+> > +task.  If a sibling does not have a trusted task to run, it will be forced idle
+> > +by the scheduler (idle thread is scheduled to run).
+> > +
+> > +When the highest priority task is selected to run, a reschedule-IPI is sent to
+> > +the sibling to force it into idle. This results in 4 cases which need to be
+> > +considered depending on whether a VM or a regular usermode process was running
+> > +on either HT::
+> > +
+> > +          HT1 (attack)            HT2 (victim)
+> > +   A      idle -> user space      user space -> idle
+> > +   B      idle -> user space      guest -> idle
+> > +   C      idle -> guest           user space -> idle
+> > +   D      idle -> guest           guest -> idle
+> > +
+> > +Note that for better performance, we do not wait for the destination CPU
+> > +(victim) to enter idle mode. This is because the sending of the IPI would bring
+> > +the destination CPU immediately into kernel mode from user space, or VMEXIT
+> > +in the case of guests. At best, this would only leak some scheduler metadata
+> > +which may not be worth protecting. It is also possible that the IPI is received
+> > +too late on some architectures, but this has not been observed in the case of
+> > +x86.
+> > +
+> > +Trust model
+> > +-----------
+> > +Core scheduling maintains trust relationships amongst groups of tasks by
+> > +assigning them a tag that is the same cookie value.
+> > +When a system with core scheduling boots, all tasks are considered to trust
+> > +each other. This is because the core scheduler does not have information about
+> > +trust relationships until userspace uses the above mentioned interfaces, to
+> > +communicate them. In other words, all tasks have a default cookie value of 0.
+> > +and are considered system-wide trusted. The stunning of siblings running
+> 
+> "stunning"?  Is this idling or are you doing something more violent here?
+
+Yes, idling would be easier to understand. "Stunning" is a term used in the
+security circles to mean forced idling on incompatible CPUs. I will just
+change it to "forced idling".
+
+Will spin this patch soon with the corrections, thanks Jon!
+
+-Joel
+
+> 
+> > +cookie-0 tasks is also avoided.
+> 
+> [...]
+> 
+> Thanks,
+> 
+> jon
