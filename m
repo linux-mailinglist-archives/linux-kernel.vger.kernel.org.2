@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD10397A7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922A2397A84
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234740AbhFATMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 15:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        id S234706AbhFATPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 15:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbhFATMd (ORCPT
+        with ESMTP id S233397AbhFATPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 15:12:33 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A77C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:10:51 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id k4so15472249qkd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:10:51 -0700 (PDT)
+        Tue, 1 Jun 2021 15:15:05 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3779C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:13:23 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id y15so266743pfl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:13:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=MFawdZO8qw31LqF1YNPnBQn4vTvNybwM9oOXVgye56w=;
-        b=ZQybl2DUCslmE5zuIPFnC434vrcQxWIlga+QSn3bsxaah8EC05cuOMDYytbpNslCuV
-         wIB03QlJD8Bf7Xzzk7R0JOsDKLdijGQqy9EZDnmgypXfx4DqaEG5HUbIFLRxWdMjW3M3
-         x4n+qqaRnqiVQXkxGKuI9PX7kpx8rEzaT2RSDXtUGkPU1/9ubWQdOZXmFtW83i1tOgCE
-         LnRZAD31PBCiX9jlnJ7yLn0Nf1Eu0pBxUvt+ZiFjsy/sZK9Vp2RAYwZQd6FOVbIegCxW
-         O3bvFTk54kqrf0mqmC9daGO6HzVpEanjnOWr07bdch+SsFTRsgSCmtgm2HyHRT5rBkfz
-         Qywg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F2nIYNp74XkoIbaKwSbgXhOoOC//P+XAXbK1h22Ceac=;
+        b=lkbfMl1Gmq+Nf/7ubjo1OqC7uT9K9Mr6mhUY2FEZSmrJPHAB0auG9k9uCBtbvFW7E+
+         f0Q4vvjVo8XzLVCG/jM1Z4nwD1CiBbxVqshZ7h96EbGppBXf8gK9pANmLngrz86A9IVM
+         wK3esYJdGgKwBvpr7YAwjV41Fe0DLQWWzprys=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=MFawdZO8qw31LqF1YNPnBQn4vTvNybwM9oOXVgye56w=;
-        b=BJTWPsOVDOOQIKBkcN8/IIX45V+GaaJOTNuwirCJGjmakSeEG6P6Y2qNU4kPmmN5Q2
-         SgE1CFPh3I11aTzGIFysIZKYXfIm+05EtdWmRdqkrgBikr+vl88XmGA8C4YIHq0zfbUL
-         8ioL10Lc1cqQOpzDKVXzNq+2nIdNXzDVsnsk7uKGmRHQxnONw+3hLHQSczkM0Q9dKdmK
-         a/T08ROm06kFagVm70RblP7dD6aNgeHFmOfG/nXvdZ5jUyxbtOwa6z0rQlT/0sjpVMNa
-         7ZKn0oD+wavRMFha1GSwThpDIpQSGcjdEvO8VQfR94sRxExErWJTYpHH72kTlVK8NBac
-         GBdQ==
-X-Gm-Message-State: AOAM533nB0Oa3K7tpygfploopsu3VUeJII1fKKhpqVW7yJHAVGfFEoKU
-        9yKdb08pxbtUuY0wCd1sFZe2sg==
-X-Google-Smtp-Source: ABdhPJwhCdbmRQb7qVOI9FKquZ+yAv16YOjwlJo0usOfM+ayYHiegotPle8om3w+dPdzgqwHA3ATgA==
-X-Received: by 2002:a37:7145:: with SMTP id m66mr23082124qkc.379.1622574650524;
-        Tue, 01 Jun 2021 12:10:50 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id o22sm1101915qtq.89.2021.06.01.12.10.49
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 01 Jun 2021 12:10:50 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 12:10:48 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>, Xu Yu <xuyu@linux.alibaba.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com,
-        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm, thp: relax migration wait when failed to get tail
- page
-In-Reply-To: <YLZqKJ4anEGpAZfp@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2106011114580.1045@eggly.anvils>
-References: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com> <alpine.LSU.2.11.2106010947370.1090@eggly.anvils> <YLZqKJ4anEGpAZfp@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F2nIYNp74XkoIbaKwSbgXhOoOC//P+XAXbK1h22Ceac=;
+        b=fgybSmNTXKq9YcIKy4C5rDUFnF1gmAl2ZqZygkf+siBBVMwew8dN5RHMWGy8CxQdLc
+         QNGLOA5uFH9X1vAgvdH1ShikE893jND3iE8x3m+9R49kzPvVtURHeiqyisG3tiobeELN
+         LJSLV95WHSI7lCwzYSAGtD27cgAOTu2f7koJzgCEePfwwwvmcb0XYMKsZHNaQzIxt2Gq
+         h/5k6ufgFH5UpJOm+nnR879mpZxeMFQ8c01IqQy6wC3tbMcj8uDvv1IQgDzBCEGd31Ju
+         aoRrnLkQnCS6SXoYuQaEE7wdiG18NFbtqwZALxMSWUm9LGwBLaMlAaSSkwswi4Qbd7d4
+         3FLQ==
+X-Gm-Message-State: AOAM530NZakYmeuQ9/gcmBSt1aT2YeG0LGk8JWpCFO57JZJgtOw0wCBt
+        10So8WeDoJEmPm1/5Czx/L8rKA==
+X-Google-Smtp-Source: ABdhPJz37ayunvn9ok1+ENdFPwZxrGi7OsloH6vD2nAp9cdyVRqX1z2+Tmk0IHTTo9v7cTVgjj829w==
+X-Received: by 2002:a05:6a00:14cb:b029:2be:1466:5a28 with SMTP id w11-20020a056a0014cbb02902be14665a28mr23125434pfu.55.1622574803092;
+        Tue, 01 Jun 2021 12:13:23 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u18sm5029856pfl.9.2021.06.01.12.13.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 12:13:22 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 12:13:21 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Bill Wendling <morbo@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jarmo Tiitto <jarmo.tiitto@gmail.com>
+Subject: Re: [PATCH] pgo: rename the raw profile file to vmlinux.profraw
+Message-ID: <202106011210.B5A8881214@keescook>
+References: <20210531202044.426578-1-morbo@google.com>
+ <e22afde4-e312-4589-cf2e-3c35219d7249@kernel.org>
+ <CAGG=3QVdXxLf0T9+n9FidrRcfdWY36m-i=4kPRJjOojWhjiywg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGG=3QVdXxLf0T9+n9FidrRcfdWY36m-i=4kPRJjOojWhjiywg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021, Matthew Wilcox wrote:
-> On Tue, Jun 01, 2021 at 09:55:56AM -0700, Hugh Dickins wrote:
-> > 
-> > Well caught: you're absolutely right that there's a bug there.
-> > But isn't cond_resched() just papering over the real bug, and
-> > what it should do is a "page = compound_head(page);" before the
-> > get_page_unless_zero()? How does that work out in your testing?
+On Tue, Jun 01, 2021 at 01:24:39AM -0700, 'Bill Wendling' via Clang Built Linux wrote:
+> On Mon, May 31, 2021 at 1:29 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > On 5/31/2021 1:20 PM, Bill Wendling wrote:
+> > > Future PGO features may create other files in /sys/kernel/debug/pgo. So
+> > > rename the kernel's raw profile data file to "vmlinux.profraw" to make
+> > > which part of the kernel the file is for more explicit.
+> > >
+> > > Note that future files in /sys/kernel/debug/pgo should follow a similar
+> > > naming convention.
+> > >
+> > > Signed-off-by: Bill Wendling <morbo@google.com>
+> >
+> > Guess this clears up my confusion around the module patches :)
+> >
+> To clarify, Jarmo did those patches on his own. I just wanted to
+> clarify the naming convention. :-)
+
+Is the expectation that there would be 1 file per module in
+/sys/kernel/debug/pgo/ after the modules patch?
+
 > 
-> You do realise you're strengthening my case for folios by suggesting
-> that, don't you?  ;-)
-
-Hah! Well, I do realize that I'm offering you a marketing opportunity.
-And you won't believe how many patches I dread to post for fear of that ;-)
-
-But I'm not so sure that it strengthens your case: apparently folios
-had not detected this?  Or do you have a hoard of folio-detected fixes
-waiting for the day, and a folio-kit for each of the stable releases?
-
+> -bw
 > 
-> I was going to suggest that it won't make any difference because the
-> page reference count is frozen, but the freezing happens after the call
-> to unmap_page(), so it may make a difference.
+> > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> >
+> > > ---
+> > >   Documentation/dev-tools/pgo.rst | 6 +++---
+> > >   kernel/pgo/Kconfig              | 7 ++++---
+> > >   kernel/pgo/fs.c                 | 2 +-
+> > >   3 files changed, 8 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/Documentation/dev-tools/pgo.rst b/Documentation/dev-tools/pgo.rst
+> > > index b7f11d8405b7..0200449c4843 100644
+> > > --- a/Documentation/dev-tools/pgo.rst
+> > > +++ b/Documentation/dev-tools/pgo.rst
+> > > @@ -76,7 +76,7 @@ The PGO kernel support creates the following files in debugfs:
+> > >   ``/sys/kernel/debug/pgo/reset``
+> > >       Global reset file: resets all coverage data to zero when written to.
+> > >
+> > > -``/sys/kernel/debug/profraw``
+> > > +``/sys/kernel/debug/pgo/vmlinux.profraw``
+> > >       The raw PGO data that must be processed with ``llvm_profdata``.
+> > >
+> > >
+> > > @@ -108,7 +108,7 @@ using the result to optimize the kernel:
+> > >
+> > >      .. code-block:: sh
+> > >
+> > > -      $ cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
+> > > +      $ cp -a /sys/kernel/debug/pgo/vmlinux.profraw /tmp/vmlinux.profraw
 
-I think that's a good point: I may have just jumped on the missing
-compound_head(), without thinking it through as far as you have.
+And if so, these instructions would change (in the future) to something
+like:
 
-I'm having trouble remembering the dynamics now; but I think there
-are cond_resched()s in the unmap_page() part, so the splitter may
-get preempted even on a non-preempt kernel; whereas the frozen
-part is all done expeditiously, with interrupts disabled.
+     $ cp -a /sys/kernel/debug/pgo/*.profraw /tmp/prof/
 
-Greg discovered the same issue recently, but we all got sidetracked,
-and I don't know where his investigation ended up.  He was in favour
-of cond_resched(), I was in favour of compound_head(); and I think I
-was coming to the conclusion that if cond_resched() is needed, it
-should not be there in __migration_entry_wait(), but somewhere up
-in mm/gup.c, so that other faults that retry, expecting to reschedule
-on return to userspace, do not get trapped in kernelspace this way.
+?
 
-Waiting on migration entries from THP splitting is an egregious
-example, but others may be suffering too.
+-Kees
 
-Hugh
+-- 
+Kees Cook
