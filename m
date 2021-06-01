@@ -2,149 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC79396B72
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805E9396B79
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbhFACib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 22:38:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40410 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232625AbhFACia (ORCPT
+        id S232598AbhFACkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 22:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhFACkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 22:38:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622515009;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R/vNKwMKD4yXShKjN11l9IaBWHIc+94yjI5sIegf+Rs=;
-        b=OBAwwawgVnJKw6NQa/JNZGM3/zbIzbHi2/mM3viUw8+gSvHW0V9SDsapStzCjpLN0hgVZy
-        UMaY8Brxm1w/GzWXP5Gf7Q3VQvighMuGnQNccifpnaqKfxPXsrjmQsm/ZMyr5uJ6kcZ7iV
-        /Sb1h5Z6ARLGKjOEg6rqHg1j2Z/dulc=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-DYsy1e4kN-axVExRZbhlpA-1; Mon, 31 May 2021 22:36:47 -0400
-X-MC-Unique: DYsy1e4kN-axVExRZbhlpA-1
-Received: by mail-pj1-f71.google.com with SMTP id f15-20020a17090aa78fb029015c411f061bso1030064pjq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:36:47 -0700 (PDT)
+        Mon, 31 May 2021 22:40:46 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE09C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:39:05 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id v13-20020a4aa40d0000b02902052145a469so3174030ool.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NvVZjz2gRnjw/PQviXkm4XEh9QvnrEhyd6R5TbtOdh8=;
+        b=R/C8i9ZvzNPIueQAgqTnooe76qYDKhUMqUI8TqWZFB15tCKPRG+TQJ4v9J7KxVhyOb
+         WY6IvTgWrGkIOZsmQqkGdl0fNsJzBmR/5BqevIggtqaWD/aGNOG6ftrZ76g2x4cnudve
+         y6wYb6mJnRAIMKhCZW+tDnjEVeJHo2nuwMyn6jmDy98fctDgIt9pQ19B01qxzUuqaTYF
+         tAJ79plQZFLNOsJfdkHcm+jp1tX9MGAuN7YDu/LxGvXvOJZXbWBSAN5eKwzzkEccL8X+
+         3evBtt+XSMPpiIlMzlRlZmPF8ZjEKTuZjUgS64bgC0G9Sfh8oY13kMacYbbd+fmnDFa1
+         jYkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=R/vNKwMKD4yXShKjN11l9IaBWHIc+94yjI5sIegf+Rs=;
-        b=S5dyPQPQsghpP+8iRiBxxEzG045FeAd5vpEgYSCFmjii3P72fbIZj7EK3ZboWRJssI
-         gtPu5bCGqfNVpEjndKNHuLuN0c+Mrtt3nwJCHxWWP+uxqaKF0a0ks5L9p+BEhoMNEs8p
-         zsF9wu4Z4BbtG7TmHw/qSMWPQ6AlQCWQ7UQxnqCPZ8t+XEqq5l4xoozgzDDb7e8c2fCe
-         4LA/5TMkAZcco9Ny/Kjbgy6MlvfHoDomDgyvrrExodhpzR0ZLP+NuHfqMor9Cb93ON0b
-         vKv1R9hiAaSmFtjMbOXyXLyJ1zprjsj40L1ieLhrZuR2o3L641mtYE6SMC6ppwabDYqE
-         IlJA==
-X-Gm-Message-State: AOAM532ZnvxEM+tTVuKBR3HF9AucY39gRuZxtqKsnh4uM/kdAiDWWy/T
-        nk5Lj3CZEQOMwaJPDWml1uWjeRrKEJ6q6pPYPvKQ1pTKdtHxC1o1VxIaBEoTubemPN7DHFuD81H
-        aCjqwcHYAFbp9E1FyIdai0z+G
-X-Received: by 2002:a17:90a:588f:: with SMTP id j15mr1033509pji.112.1622515006581;
-        Mon, 31 May 2021 19:36:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPDXYinpNeWXLQoK98eNSiwNXoeGiMTG9/9gXFH9CKUekKLqJYBGdJOueFprZDJGgzAlaU8A==
-X-Received: by 2002:a17:90a:588f:: with SMTP id j15mr1033494pji.112.1622515006334;
-        Mon, 31 May 2021 19:36:46 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id p14sm13530139pgb.2.2021.05.31.19.36.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 19:36:45 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Liu Yi L <yi.l.liu@linux.intel.com>
-Cc:     yi.l.liu@intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"" 
-        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
- <20210531164118.265789ee@yiliu-dev>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
-Date:   Tue, 1 Jun 2021 10:36:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NvVZjz2gRnjw/PQviXkm4XEh9QvnrEhyd6R5TbtOdh8=;
+        b=rJKhhl/Zq45V2+3mNEA1mQaXvGDsKroAjRpN0NN6Stdlb95qvvlGA6vL4NunpiBRPD
+         oiLyNpb/bSW/abC5y2o++3IVSelDZsFcwuqtjQLPlDHiby0X2OTfO8sd1qeMcXpSWtfZ
+         8rqF46Vkz+WVo/UHofvwbV6towkMPB3WFlXNqV0clMfCV+15m0wAgQFYghgzvOkJJtvI
+         9L4EnUZKzUeBaaMZKRAieQq//lAS8Qs34VGK0sdLoRpWeiqctmHgmrZ9GVZ+yK/cP9Zd
+         dgRGoPcTk9LiUYHR3cPSXfHnjrX04eGpQHSuLe3uwm1+HM85iLONpiBlCYvamkKMknXI
+         +39g==
+X-Gm-Message-State: AOAM531pTYAF4L6RFs7siRnQYM/6deSya1xiJgsuTZsn9N3E9kMihVBR
+        opVgCZv0mLGQcmpahH3bXzRdRTp9uugnBh6f7fw=
+X-Google-Smtp-Source: ABdhPJy0p6Mc57vuZNCBsAynS+dABjULFi0fEVZA62qwqVWKmYq9FgI3sBmIsxdRhZWyIY1TSkJx0xw/2XXDNzuvhHI=
+X-Received: by 2002:a4a:d89a:: with SMTP id b26mr18347712oov.11.1622515145156;
+ Mon, 31 May 2021 19:39:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210531164118.265789ee@yiliu-dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
+ <20210531091908.1738465-3-aisheng.dong@nxp.com> <20210531150542.inopmezthosooy5u@revolver>
+In-Reply-To: <20210531150542.inopmezthosooy5u@revolver>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Tue, 1 Jun 2021 10:37:54 +0800
+Message-ID: <CAA+hA=SyzhHyU5SMgz2Y29YahOut9WUZEs6h5cXrsBCj_YZ9iw@mail.gmail.com>
+Subject: Re: [PATCH V2 2/6] mm/sparse: free section usage memory in case
+ populate_section_memmap failed
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/5/31 下午4:41, Liu Yi L 写道:
->> I guess VFIO_ATTACH_IOASID will fail if the underlayer doesn't support
->> hardware nesting. Or is there way to detect the capability before?
-> I think it could fail in the IOASID_CREATE_NESTING. If the gpa_ioasid
-> is not able to support nesting, then should fail it.
+On Mon, May 31, 2021 at 11:06 PM Liam Howlett <liam.howlett@oracle.com> wrote:
 >
->> I think GET_INFO only works after the ATTACH.
-> yes. After attaching to gpa_ioasid, userspace could GET_INFO on the
-> gpa_ioasid and check if nesting is supported or not. right?
-
-
-Some more questions:
-
-1) Is the handle returned by IOASID_ALLOC an fd?
-2) If yes, what's the reason for not simply use the fd opened from 
-/dev/ioas. (This is the question that is not answered) and what happens 
-if we call GET_INFO for the ioasid_fd?
-3) If not, how GET_INFO work?
-
-
+> * Dong Aisheng <aisheng.dong@nxp.com> [210531 05:20]:
+> > Free section usage memory in case populate_section_memmap failed.
+> > We use map_count to track the remain unused memory to be freed.
+> >
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Mike Rapoport <rppt@kernel.org>
+> > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> > ---
+> > ChangeLog:
+> > v1->v2:
+> >  * using goto + lable according to Mike's suggestion
+> > ---
+> >  mm/sparse.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/mm/sparse.c b/mm/sparse.c
+> > index 7ac481353b6b..408b737e168e 100644
+> > --- a/mm/sparse.c
+> > +++ b/mm/sparse.c
+> > @@ -533,7 +533,7 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
+> >                       mem_section_usage_size() * map_count);
+> >       if (!usage) {
+> >               pr_err("%s: node[%d] usemap allocation failed", __func__, nid);
+> > -             goto failed;
+> > +             goto failed1;
 >
->>> 	/* Bind guest I/O page table  */
->>> 	bind_data = {
->>> 		.ioasid	= giova_ioasid;
->>> 		.addr	= giova_pgtable;
->>> 		// and format information
->>> 	};
->>> 	ioctl(ioasid_fd, IOASID_BIND_PGTABLE, &bind_data);
->>>
->>> 	/* Invalidate IOTLB when required */
->>> 	inv_data = {
->>> 		.ioasid	= giova_ioasid;
->>> 		// granular information
->>> 	};
->>> 	ioctl(ioasid_fd, IOASID_INVALIDATE_CACHE, &inv_data);
->>>
->>> 	/* See 5.6 for I/O page fault handling */
->>> 	
->>> 5.5. Guest SVA (vSVA)
->>> ++++++++++++++++++
->>>
->>> After boots the guest further create a GVA address spaces (gpasid1) on
->>> dev1. Dev2 is not affected (still attached to giova_ioasid).
->>>
->>> As explained in section 4, user should avoid expose ENQCMD on both
->>> pdev and mdev.
->>>
->>> The sequence applies to all device types (being pdev or mdev), except
->>> one additional step to call KVM for ENQCMD-capable mdev:
->> My understanding is ENQCMD is Intel specific and not a requirement for
->> having vSVA.
-> ENQCMD is not really Intel specific although only Intel supports it today.
-> The PCIe DMWr capability is the capability for software to enumerate the
-> ENQCMD support in device side. yes, it is not a requirement for vSVA. They
-> are orthogonal.
-
-
-Right, then it's better to mention DMWr instead of a vendor specific 
-instruction in a general framework like ioasid.
-
-Thanks
-
-
+> Please use better labels for goto statements.  Perhaps usemap_failed ?
 >
 
+Thanks, I will improve it.
+
+Regards
+Aisheng
+
+>
+> >       }
+> >       sparse_buffer_init(map_count * section_map_size(), nid);
+> >       for_each_present_section_nr(pnum_begin, pnum) {
+> > @@ -548,17 +548,20 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
+> >                       pr_err("%s: node[%d] memory map backing failed. Some memory will not be available.",
+> >                              __func__, nid);
+> >                       pnum_begin = pnum;
+> > -                     sparse_buffer_fini();
+> > -                     goto failed;
+> > +                     goto failed2;
+>
+> Again, this goto label is not descriptive.
+>
+> >               }
+> >               check_usemap_section_nr(nid, usage);
+> >               sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
+> >                               SECTION_IS_EARLY);
+> >               usage = (void *) usage + mem_section_usage_size();
+> > +             map_count--;
+> >       }
+> >       sparse_buffer_fini();
+> >       return;
+> > -failed:
+> > +failed2:
+> > +     sparse_buffer_fini();
+> > +     memblock_free_early(__pa(usage), map_count * mem_section_usage_size());
+> > +failed1:
+> >       /* We failed to allocate, mark all the following pnums as not present */
+> >       for_each_present_section_nr(pnum_begin, pnum) {
+> >               struct mem_section *ms;
+> > --
+> > 2.25.1
+> >
+> >
