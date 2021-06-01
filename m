@@ -2,328 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8374F397A4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C90F397A53
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhFAS6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:58:43 -0400
-Received: from mail-dm6nam11on2055.outbound.protection.outlook.com ([40.107.223.55]:59681
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233397AbhFAS6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:58:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W/9lIcH31nCBzV+eZZ3rUC4DvXcEMeflzu+5fVA1uRiHc6gpKcKYYTtwOWQ2hfPXEV7cc7jUuNrTimNRPQrTPADqu06KoAlqbXs06kCk82kGswJTlIrbJ0FQrfjG8opexAETcjTO+7Mq5wDAEC9u4u+ymu6Lqek+JbCimXnKXycN9ZPN5nlAz5qaxVyVU5hJKTLTFNeFtPjtHTFf0N7/AQsUuNg04OA228GRStsBa7QP3rRfPPeSqstC4MCgzKWJYvkK5L2qERHX/uzqVuBn22w2nZQWFvDh+whenZTDgIuaTQb1ZTNzBVTC42QoVq3e3wuAuQOGW8cTFTUkOweJaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yKtvrcT3Rkk/MdnTyOQ+s8ySgeN8DTONfdHWLOefLzQ=;
- b=ej4U4rdrHBcbFxxymLa4iVCZeVSSIN2QLmg3FNHlvGzfOAXDyOqY4VRs0WQUSv6fttG7y2VjMYpUq/KwcpIYJPV8+bOBWbnEChQMWeHGJpTsMh0ZjP8P85lOKZROUp8NfEYRzLbRnnru8Sprnqk1h0cs8OayyEKKOAW+eF08DvtgmYL7EvB1GzRPDMXubfqUbUMxSKV0C7EHNE5hAwTE3d/W/KhKRVyjQpUD+2eJgJOa+z3wa6ER+YeCZ3sv+DFrLfHohtdbeI5tEMOxfyBfAAWvfthEodfOYhgh9iloed4E4+0tbW3VCcEITc71zNxr+cOgMespHE7Xie2eaL1rTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yKtvrcT3Rkk/MdnTyOQ+s8ySgeN8DTONfdHWLOefLzQ=;
- b=jvVuiM6TFmLnYGRXxuWGHWwGkZHcdjoubtEvETQCVj8aKA3jrbEIOtKzKn4+ebT1t79ZiMMDLUvMBPuT+mIkuO0KVQELKWGMVlNsDa9po9Eq/CqkrhN9PCfiXyFdq9/gSxQS7o1D9V998AIxPYCJne8pYkLSIoC10kURK7DSWAg=
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
- by BYAPR05MB5333.namprd05.prod.outlook.com (2603:10b6:a03:1e::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.12; Tue, 1 Jun
- 2021 18:56:57 +0000
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::1c28:6a3d:d0d6:42fd]) by BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::1c28:6a3d:d0d6:42fd%3]) with mapi id 15.20.4195.018; Tue, 1 Jun 2021
- 18:56:57 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Jiajun Cao <caojiajun@vmware.com>
-Subject: Re: [PATCH 3/4] iommu/amd: Do not sync on page size changes
-Thread-Topic: [PATCH 3/4] iommu/amd: Do not sync on page size changes
-Thread-Index: AQHXVv8h/VT5hYiBaUmB/VN59+xv0ar/W4EAgAANS4CAABj+AA==
-Date:   Tue, 1 Jun 2021 18:56:57 +0000
-Message-ID: <46F62EF5-8463-468B-B9D5-30B4F0572491@vmware.com>
-References: <20210502070001.1559127-1-namit@vmware.com>
- <20210502070001.1559127-5-namit@vmware.com>
- <f00bd0ce-e4a7-93c6-39ae-db19779b9331@arm.com>
- <F5D25BE7-FA34-4017-AA22-DDAB24F634BC@vmware.com>
- <7e0b4b12-c68a-ff90-5d86-4ab88ddd7991@arm.com>
-In-Reply-To: <7e0b4b12-c68a-ff90-5d86-4ab88ddd7991@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.100.0.2.22)
-authentication-results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [24.6.216.183]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2ebe0944-6a75-4eeb-6bd2-08d9252f07ce
-x-ms-traffictypediagnostic: BYAPR05MB5333:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR05MB53335F2CBE52F239D4C37CF0D03E9@BYAPR05MB5333.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OSozYCORupkmWSh9qfzwoDyqDAQo8/DkWj2heQVr2fwdeekT2ELO8+mWBdXn5Ng615KdJXn9ftgFYygBKHEHV6CN0hR993pvQa0qo0ZIBCMVse9fAtr3nTyqi18py84AOmf6E6tf/BSSYW9Hf3lpVNcm8S3VhNuOXKk/DmgDxGBohyiNJ1JoHijrwzDsuUs/A4CKKThf/ahmxIC3G+FZ2P7agC6JG+ygeEISoycukRZuwZAW43YUKblr/UCB+kvSSFT+lK2f8QsLyCC001aDUA8Ob7FTCD2FEEyoM6Lh3SfjbzOYy4QWfVyQGrhGkgtzsm1lJ6ZBQkcRX5bTV5O5a+5JY4ejbjb8REVLY6+G9PcoPiWFbSBRiE31DP4d6u8p3QV4lqNxitHn7HonsLIIUCG3FjZAXxNLrj6uoXBrX0A5F5sx9SIfZxa7zk2lllTbdzhyKmAmq1jeuwIiS1y2HUB5+vIbq6IM8WmLVGIixAqZScCRMFLb2QlacpZvPo7l/IS347R6Ms+36oZ8VNpIqq5P71oD1NYT+wa2um2zW7gDsEUsXrI391pwMvWvS03AMlwKq5iJPDVR8C/YOQUnMegQv1/5U2sVw1Vy0OocHERS4FqLjt+/sayyt0W+08b5enkSgGODHeoSgLfWKI3ezv1yDn0e3OeZQnsBpbFWSBs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(39860400002)(396003)(54906003)(5660300002)(4326008)(2616005)(6506007)(71200400001)(53546011)(26005)(6916009)(8676002)(186003)(122000001)(478600001)(66446008)(66616009)(76116006)(66556008)(99936003)(2906002)(86362001)(6486002)(316002)(83380400001)(107886003)(33656002)(66476007)(66946007)(38100700002)(64756008)(8936002)(6512007)(36756003)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?cVFQdlRxdDM0WTBweVhlY0w1TTZtcnd0NGVhTHNHeWozeEFGNXdsMFFlUWJU?=
- =?utf-8?B?VVllVlRCa3gvMHRMWGpXY2EzTEZRWTZPdjAvVmNzVUhaWGljMHpHUUp0K1Fv?=
- =?utf-8?B?eithTEo3bW50UHUvZG05RUJrZTBTYVJHNUNseTZwa2NkMzFockFScVdlYktw?=
- =?utf-8?B?dFdmUmkzT05sY0VzU1hicnlLUDZRekxYUjNFVzJDMXYwamE4TWkyd2FaQXA0?=
- =?utf-8?B?dElodWh6cTVwZk9HYXVBTTI3RUtGcG9nMk5FeDFRNEpOdHFFRGNVeEVTaWV3?=
- =?utf-8?B?ZlJrb2NWRjBUd0N6MkpIcDFrWVpIUWI3NCtDOHhTZ25wVnUyWm9KTUIySWRu?=
- =?utf-8?B?dW44eUZoakgrMVlibWpJaWtZdXduYnByWVp2RDdqek5iY1FtaGpzdyt0a3Ey?=
- =?utf-8?B?TFBVUlZJaUVPZDhkekpQSXNVTzIyTjRDYlBiR1IzRS9TeWFscUdBWEk0dENn?=
- =?utf-8?B?YXlaWUY4SGZtejhLc09XY0ZkdkZ0aE9HSndRY3BHa2hiNmdRZml2WmljSGo1?=
- =?utf-8?B?elhFTWFqaFBUMU5wZ2paWThXMFZXQVpSeGF3R0NOV0JjQ25yeFNDODBRallB?=
- =?utf-8?B?UmFnbUp3dzlNZmZBbDZrVTRETmhldTB2cGNkTGNOdWU1dXUrcTEwSFpTKzJv?=
- =?utf-8?B?akFYY3hjOWJTcUJBWHUxSnVkT3FYd1NDeENLS2x4YmhRTHJaRjEyTE9QdlZU?=
- =?utf-8?B?c1hWM2ZwcWJMUFQxOHpiRTRRL25odjVuWFRWczc0SS9oS0hpRGgvN00ycW0v?=
- =?utf-8?B?QVU3Qmh6aDUwZzdXTHM3dXd5Wmk1cFg0MEFTMG9aRDdpSHdLQ3VMb0xoMG43?=
- =?utf-8?B?RXphY3FRcFRlamlZMmErYjRORXN4cWsrVllSWE16blNHWXYydDJrSkRGcnd0?=
- =?utf-8?B?VWp5TkdFWjl3c0h3U0NUSms3VW84WWIreGJ6NndBUC82K0ltRU5VSHk5R0sy?=
- =?utf-8?B?N0Fqem10ellBM1F2ckdMU3hVK25PeTdLQldBWitFZFRxZ3hxekJSRTJQT0VU?=
- =?utf-8?B?bWxnZ0R5eXpyVWtTRkJWNGJoRGQ2OFgraHRkOCtLbTVUMVNYR0xpaFJhdW5L?=
- =?utf-8?B?VGdHLzM2ZEd1L0RYVUQzNW1jekNEN09YdnpxUnFwZi85MlIvK3BtMGxrYVVs?=
- =?utf-8?B?emZzQWNuMmN3Rm5jNHVIQmJuUTg2M0lKN2V4dnp1MmlwNE5sZkdLcDVURHBr?=
- =?utf-8?B?b21RMDJxWGYrOHZRZVBQNHZNenhXTkphQmR5R3VYWG5zcHNFTS9zOWE5M1dU?=
- =?utf-8?B?NkpJYUVVTmtKZGUyOWVpeGJHMktpSTRRdlVpbHlJdm9FMjZFRjNHdDgyRzhV?=
- =?utf-8?B?ZHFRQUdRNXhzcUVuR3RpeDBmVHZWRE05QWQxMUdxWmd4MmxIeFRpcGsybEJF?=
- =?utf-8?B?M0hBUUpaZDdJcCtOUG5mLzgzT1VBWWZabkZQdW9paEZ4dDBBRDBleXd1K2kr?=
- =?utf-8?B?M2xqdVEvelJUK1V1QjArQ2FDWkhkUVV6VmxvaUUxc1dOeGsrQm9BbjB1R2dB?=
- =?utf-8?B?N1lWd09tU1pyTzhLaTUrMC9MOC9mS1NXOWNjN05yN2g5bGYwYUFraVZjL21Y?=
- =?utf-8?B?ZWlWcmppRDhLRWNibDFFOUVOUnZCQmNQTGNwaEdCdzNOdGYxMEVYdkFteG9a?=
- =?utf-8?B?Tno5c3lFL3piMkFwQzMrMFdiMDFIclE0eE4xVXRQbmV6LzJWaVoyVXdSYnFN?=
- =?utf-8?B?OFlPZE5rZyt2dEkvOGJ4SFh2eUhKTnh4bjMvd2JrdGFTTG1UMTlqYWUzU3V3?=
- =?utf-8?Q?WGOuz4QBH9VaS6JOI/moUDlTIUZondni+TLzvWK?=
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_B357E3CE-B050-4CEC-BE04-BB7FB11573D5";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
+        id S234671AbhFATBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 15:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233397AbhFATBo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 15:01:44 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F91C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:00:02 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id h12so7382024plf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d70mWsIG9EaxVCKWsokKSvhrP1b5Ectf8KCIC91GlHM=;
+        b=JQQazUOBGRua3zTuzOQeUQ8DRK6EQpuJmBVaIAhAcctV2/I23SVlW1qX8sLyKjhRd6
+         TO7y0Ab1zc3CYU/t1ii7CBgGjzxOw/O+3hXg3v55J+37emS9eNyHV9LqC7S/f+cKuEcx
+         Vajipcsu6YfZPmQHoQNCR4r+/YK/x/I6y6ouE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d70mWsIG9EaxVCKWsokKSvhrP1b5Ectf8KCIC91GlHM=;
+        b=tZ6jrgSy5tJ5ggKvBM5TNKCFGKdtXZpvE17U+BY0vkgLgbQpuebfTPLs4jxGjQ3eXP
+         X9SCKZbG0D6xugAqUD2/L2e2IB4jJufSMGsf/77zA5FzO3fu3S287CzCQi/Yiyph8jec
+         8V0GX9IjxnwUm/6m7+AEWQPzy7eSDchRb7ACORqKXTWYzT6GovVH7TAWg9E9dhTv3uGZ
+         d4fxfMMGt6E3JEu2k2wCFD5Pt41UGcCJtRM1jFckcw5Q5JIWVzczPlww05NtVu+AJLRn
+         Mq05Ydrqedr9YTgWALevXzc3WBWvx4hI/IbhyBM/aqNaVrwotvZTpqM+UuMMCiKXn5Df
+         BI0Q==
+X-Gm-Message-State: AOAM533KylN0n7ckyZoSeckxrgDUxJUSYMu9ReF55msx5CkG8AD9ApwT
+        F74kaJC+YEs7f4sg9GMCl5TIQw==
+X-Google-Smtp-Source: ABdhPJyE5vO18OlwMKxn3ult3kWG1P3QdabymJEaRkG4o+qtMD6kSLOjI56Zf7Oc0krRYtNHhCRBWw==
+X-Received: by 2002:a17:902:e007:b029:ef:9dd2:be6 with SMTP id o7-20020a170902e007b02900ef9dd20be6mr27303658plo.12.1622574002315;
+        Tue, 01 Jun 2021 12:00:02 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:ee82:b2a7:c8bd:18e7])
+        by smtp.gmail.com with ESMTPSA id a10sm2709753pjs.39.2021.06.01.12.00.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 12:00:02 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH 1/2] arm64: dts: qcom: Remove cros-pd-update on Trogdor
+Date:   Tue,  1 Jun 2021 11:59:58 -0700
+Message-Id: <20210601185959.3101132-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ebe0944-6a75-4eeb-6bd2-08d9252f07ce
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2021 18:56:57.3040
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +AZxhCKS5fpmdm/nJOzUuwrgfOjbegZhWpxEzpBwLP7J88/CVrRhWvTXqUOSYfCAY3ZejNsGL7tUrGbUNKnJeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5333
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Apple-Mail=_B357E3CE-B050-4CEC-BE04-BB7FB11573D5
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+This compatible string isn't present upstream. Let's drop the node as it
+isn't used.
 
-
-
-> On Jun 1, 2021, at 10:27 AM, Robin Murphy <robin.murphy@arm.com> =
-wrote:
->=20
-> On 2021-06-01 17:39, Nadav Amit wrote:
->>> On Jun 1, 2021, at 8:59 AM, Robin Murphy <robin.murphy@arm.com> =
-wrote:
->>>=20
->>> On 2021-05-02 07:59, Nadav Amit wrote:
->>>> From: Nadav Amit <namit@vmware.com>
->>>> Some IOMMU architectures perform invalidations regardless of the =
-page
->>>> size. In such architectures there is no need to sync when the page =
-size
->>>> changes or to regard pgsize when making interim flush in
->>>> iommu_iotlb_gather_add_page().
->>>> Add a "ignore_gather_pgsize" property for each IOMMU-ops to decide
->>>> whether gather's pgsize is tracked and triggers a flush.
->>>=20
->>> I've objected before[1], and I'll readily object again ;)
->>>=20
->>> I still think it's very silly to add a bunch of indirection all over =
-the place to make a helper function not do the main thing it's intended =
-to help with. If you only need trivial address gathering then it's far =
-simpler to just implement trivial address gathering. I suppose if you =
-really want to you could factor out another helper to share the 5 lines =
-of code which ended up in mtk-iommu (see commit f21ae3b10084).
->> Thanks, Robin.
->> I read your comments but I cannot fully understand the alternative =
-that you propose, although I do understand your objection to the =
-indirection =E2=80=9Cignore_gather_pgsize=E2=80=9D. Would it be ok if =
-=E2=80=9Cignore_gather_pgsize" was provided as an argument for =
-iommu_iotlb_gather_add_page()?
->=20
-> No, I mean if iommu_iotlb_gather_add_page() doesn't have the behaviour =
-your driver wants, just don't call it. Write or factor out a suitable =
-helper that *does* do what you want and call that, or just implement the =
-logic directly inline. Indirect argument or not, it just doesn't make =
-much sense to have a helper function call which says "do this except =
-don't do most of it".
->=20
->> In general, I can live without this patch. It probably would have =
-negligent impact on performance anyhow.
->=20
-> As I implied, it sounds like your needs are the same as the Mediatek =
-driver had, so you could readily factor out a new page-size-agnostic =
-gather helper from that. I fully support making the functional change to =
-amd-iommu *somehow* - nobody likes unnecessary syncs - just not with =
-this particular implementation :)
-
-Hm=E2=80=A6 avoid code duplication I need to extract some common code to =
-another function.
-
-Is the following resembles what you had in mind (untested)?
-
--- >8 --
-
-Subject: [PATCH] iommu: add iommu_iotlb_gather_add_page_ignore_pgsize()
-
+Cc: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/iommu/mtk_iommu.c |  7 ++---
- include/linux/iommu.h     | 55 ++++++++++++++++++++++++++++++---------
- 2 files changed, 44 insertions(+), 18 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index e168a682806a..5890e745bed3 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -520,12 +520,9 @@ static size_t mtk_iommu_unmap(struct iommu_domain =
-*domain,
- 			      struct iommu_iotlb_gather *gather)
- {
- 	struct mtk_iommu_domain *dom =3D to_mtk_domain(domain);
--	unsigned long end =3D iova + size - 1;
-
--	if (gather->start > iova)
--		gather->start =3D iova;
--	if (gather->end < end)
--		gather->end =3D end;
-+	iommu_iotlb_gather_update_range(gather, iova, size);
-+
- 	return dom->iop->unmap(dom->iop, iova, size, gather);
- }
-
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 9ca6e6b8084d..037434b6eb4c 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -535,29 +535,58 @@ static inline void iommu_iotlb_sync(struct =
-iommu_domain *domain,
- 	iommu_iotlb_gather_init(iotlb_gather);
- }
-
--static inline void iommu_iotlb_gather_add_page(struct iommu_domain =
-*domain,
-+static inline
-+void iommu_iotlb_gather_update_range(struct iommu_iotlb_gather *gather,
-+				     unsigned long iova, size_t size)
-+{
-+	unsigned long start =3D iova, end =3D start + size - 1;
-+
-+	if (gather->end < end)
-+		gather->end =3D end;
-+
-+	if (gather->start > start)
-+		gather->start =3D start;
-+
-+	gather->pgsize =3D size;
-+}
-+
-+static inline
-+bool iommu_iotlb_gather_is_disjoint(struct iommu_iotlb_gather *gather,
-+				    unsigned long iova, size_t size)
-+{
-+	return iova + size < gather->start || iova > gather->end + 1;
-+}
-+
-+static inline
-+void iommu_iotlb_gather_add_page_ignore_pgsize(struct iommu_domain =
-*domain,
- 					       struct iommu_iotlb_gather =
-*gather,
- 					       unsigned long iova, =
-size_t size)
- {
--	unsigned long start =3D iova, end =3D start + size - 1;
-+	/*
-+	 * Only if the new page is disjoint from the current range, then =
-sync
-+	 * the TLB so that the gather structure can be rewritten.
-+	 */
-+	if (iommu_iotlb_gather_is_disjoint(gather, iova, size) && =
-gather->pgsize)
-+		iommu_iotlb_sync(domain, gather);
-+
-+	iommu_iotlb_gather_update_range(gather, iova, size);
-+}
-
-+static inline void iommu_iotlb_gather_add_page(struct iommu_domain =
-*domain,
-+					       struct iommu_iotlb_gather =
-*gather,
-+					       unsigned long iova, =
-size_t size)
-+{
- 	/*
- 	 * If the new page is disjoint from the current range or is =
-mapped at
- 	 * a different granularity, then sync the TLB so that the gather
- 	 * structure can be rewritten.
- 	 */
--	if (gather->pgsize !=3D size ||
--	    end + 1 < gather->start || start > gather->end + 1) {
--		if (gather->pgsize)
--			iommu_iotlb_sync(domain, gather);
--		gather->pgsize =3D size;
--	}
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 24d293ef56d7..c134feb02eec 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -564,10 +564,6 @@ i2c_tunnel: i2c-tunnel {
+ 			#size-cells = <0>;
+ 		};
+ 
+-		pdupdate {
+-			compatible = "google,cros-ec-pd-update";
+-		};
 -
--	if (gather->end < end)
--		gather->end =3D end;
-+	if ((gather->pgsize !=3D size ||
-+	     iommu_iotlb_gather_is_disjoint(gather, iova, size)) &&
-+	    gather->pgsize)
-+		iommu_iotlb_sync(domain, gather);
+ 		typec {
+ 			compatible = "google,cros-ec-typec";
+ 			#address-cells = <1>;
 
--	if (gather->start > start)
--		gather->start =3D start;
-+	iommu_iotlb_gather_update_range(gather, iova, size);
- }
+base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+-- 
+https://chromeos.dev
 
- /* PCI device grouping function */
---
-2.25.1
-
---Apple-Mail=_B357E3CE-B050-4CEC-BE04-BB7FB11573D5
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmC2gvgACgkQHaAqSaba
-D1rJkQ/+JWJnCMtFtwXQ1fbPf1HQn1pRTUeUlsKCx8wzRIaRYDy/Ocd387H4MluD
-LVQ/maYXSmXT60XDRhpG9AAa4z9NBRrvpeFkL+V0AzK0l4Xy0u+vzHJA+d9IRJfv
-/FurUSv0A5iARwAzm+rBCYNxig0HpoZ/jSnyrtv4WcTZTbLtaWMGbPG2HgwkDc3w
-fZv+cHOwPHZvvdFwXu3kaVEmCAnOz3t169D8DQyikC/ua/YVC5BH+USUWZ/ki9f3
-Rir6xQLUM9fpYa5Cmr5M1QpBxU50T8OvjpSna/78kchU5/XCySPlFjgXCpBgpxQd
-BJzcKCGhuM7Nsaun1AYTGAzfV7Gu80cRxyqtsQf7SxzTuU7qoSGYjy+FAK6fCOYW
-Hk6KTyznXk9EgUy85Waki34fgKb9hTocFPnXYRoxpNGw+ig1gtUxXNeztEh4va7i
-+67XNikCE/13ah0QuEXv2tmv3Z1OS5HtK5hvSrmtDIMw9He3v7ot+PjRSLU4epAG
-XAm1lyrpiBIW8odasMdhX5zu3jB1OpQ+xanxX3IritosVNAeC3hS+lmrsKoJZmkw
-s6orm8Ir0rZnJkoE9WKJ0vJkptaveYCoghZ5cKp+mxOvRlBMN2bPoPn1g0x+itUp
-fEJxwkOnaFL/x2DuN9GVlSdOHSTRQhrvBB66FD1GISV+2tM7Mkk=
-=tXYN
------END PGP SIGNATURE-----
-
---Apple-Mail=_B357E3CE-B050-4CEC-BE04-BB7FB11573D5--
