@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8FF39771C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CF439771F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhFAPtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S234462AbhFAPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234294AbhFAPtu (ORCPT
+        with ESMTP id S234446AbhFAPt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:49:50 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DA2C061761
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:48:08 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id n2so14924748wrm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:48:08 -0700 (PDT)
+        Tue, 1 Jun 2021 11:49:56 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EE6C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:48:11 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id z8so9752001wrp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:48:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KONWqLG6CUXaRV5hwllfvFmPWL0Jl8cb7j10mpIM550=;
-        b=cnK0ZkWs2/SewuH/NKxorjIyIkfEUPQUTZehAPoW6IoPQBKoMAWIelEfE5N22he+Gc
-         ry06rfEAkFOH8dlo6LWXrBLW6aQBSrP9WxOem+QtD80sVfiHcXKP1XXe/xo5SvidJqSV
-         sgxYV21GkcOlI5/fE9IU1kRGYWbIIpv5cqwg9V1foYeo5bs76GQqyqk1830N0Xju50lm
-         M1lY/NGtba0vUnD7CvUmjigyMAN9qwPcw4j6OyQd/2ytRjOHSQie+uyAXO4qJzd8K6An
-         C+q/oLNV1Emikd/WHxe4lXYioh4kU/qnLTOSfk+eJ/a5ntcg7QS88R3z2yHaMpiLsQS6
-         /qBw==
+         :content-disposition:in-reply-to;
+        bh=wEwX9WZesArWKsstP4MgeMs+pB7+trRKG9aUiLAejfI=;
+        b=j7funsS3lgOohm05QYVU+t8GGWwgu0Wf20fsocDj/LBWHAlMAMRLryyp9qyZQdrJzs
+         19JU1dDbayAu7X9IC/gXiuse+1XBdQMfra6E8X8im1Yf2OuhFVB2afWXKUoinPmFOOsT
+         WPj3A3VI2jJ9+9fQQNj9JN6DPMCpDDlgMtYnZFDqsVHiJGEBq/t0E30gB5368QBOEng3
+         t09QPgcYsVUjhowSdXx8Ng0XLom4WcaVit5zzpCJYbZ9aVUisMW4KnUnndLFhcGfPzsj
+         4BhVindCVW1K6mhnWo+HBMMbmTXdM22cbOPjRiJqXlAQK73xamnHyuk/u/yMHQtVVMUS
+         IC+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KONWqLG6CUXaRV5hwllfvFmPWL0Jl8cb7j10mpIM550=;
-        b=LGKvyxflKlvTJOwcWYylFSuaZXxYxDMmm5dkfbEeS29nYdePAfSF59kLMH6FbrnnD6
-         fIPEClV/kdK7JAoiNkl2eWcZFZ8stTvYQaVwjtm1woY5OIhUFh4969PMohiezHsn9z21
-         gNaFnNIyfeBJ7vnhn2XCn3kksdNMENdz5raDmlgFmSwH0BQwWr4IGK/7sa6D2fU/XY4F
-         tmrDicNTqBaPO4AKs165ZvZ/btmVyo0zYuT7BRRCQYZZcUAbpW16V+9SMQo2AYS7yJhi
-         PAOg5+EDevnZVHtc4nqBV8mPz6CqIkkFWwRVouHuXyONjDajlIeY52TGo1NzKRvXd1mF
-         5WaQ==
-X-Gm-Message-State: AOAM532wlDsD3436BlQcYZxjoEw8DQpllQ1bH/TCXHInUc4O6prtTN2Z
-        4wuKxzouytMkXAm/aR1lQ8PR3Q==
-X-Google-Smtp-Source: ABdhPJxcoVIpBA7C0tcHpkh8NoySQOCYDJ7uWohpbQ/QLRGQQmfdrpzXTq1Wc4+T7riMjaVVR4+/Tw==
-X-Received: by 2002:adf:f044:: with SMTP id t4mr16812609wro.73.1622562487446;
-        Tue, 01 Jun 2021 08:48:07 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id r7sm2872895wmq.3.2021.06.01.08.48.06
+         :mime-version:content-disposition:in-reply-to;
+        bh=wEwX9WZesArWKsstP4MgeMs+pB7+trRKG9aUiLAejfI=;
+        b=XdqwTnP69nmJsfQSNeU7vph1jhvPaI2XXWv2ovKNOOrjqChXntebbZShd7d6VKjLCl
+         a5jaJUKt4kJB/IjcgRuAdr5uvZFfsXRsRW1AGd4NTDbk10AqLUm3R/q2U2wUuMXq9A28
+         b7fyCMt7+/UrKk3jmiBxkZm1FV6kHidmnUHkImoyNuRhT6IrLA5H1JzldmFnIFnzK+fK
+         iKnABQ7yQkGQUt//SZXuNxh8kJ25WKatvh97g/DD521VrDYUs8tc7kaFZ5ZPqi6hQdMz
+         FG87CFw7QWMXo6bQvBlw/LZ7XFYXIVHLlTHuoiYWhgE5ZKqYZ8QzSqL7r0vq/Za5H8aU
+         o4yA==
+X-Gm-Message-State: AOAM533mlualqFoQdLF7XNTNzeKmA53K40cclRMUpBFgmtPNSgSbPFnb
+        zMWGYoveCzGtRFNLRH/ILKokjA==
+X-Google-Smtp-Source: ABdhPJypLSgdyQrzYGtYN1BysUUWmR3te0VbHpPr02pGuGIYnfWllUWNT85DgCvXAJ1Jr1mor+fMhQ==
+X-Received: by 2002:a5d:50c1:: with SMTP id f1mr29105131wrt.168.1622562489528;
+        Tue, 01 Jun 2021 08:48:09 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id b15sm3342934wru.64.2021.06.01.08.48.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 08:48:06 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 16:48:04 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 8/9] mfd: bd70528: Drop BD70528 support
-Message-ID: <20210601154804.GA2165650@dell>
-References: <cover.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
- <d4e4213ffea09525814e4b55518fd689b5c3bf87.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 01 Jun 2021 08:48:08 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 15:48:06 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     will@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        catalin.marinas@arm.com, suzuki.poulose@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] KVM: arm64: Remove list_head from hyp_page
+Message-ID: <YLZWtnGVQSguI1P6@google.com>
+References: <20210527125134.2116404-1-qperret@google.com>
+ <20210527125134.2116404-4-qperret@google.com>
+ <87k0nd1wgx.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d4e4213ffea09525814e4b55518fd689b5c3bf87.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <87k0nd1wgx.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021, Matti Vaittinen wrote:
-
-> The only known BD70528 use-cases are such that the PMIC is controlled
-> from separate MCU which is not running Linux. I am not aware of
-> any Linux driver users. Furthermore, it seems there is no demand for
-> this IC. Let's ease the maintenance burden and drop the driver. We can
-> always add it back if there is sudden need for it.
+On Tuesday 01 Jun 2021 at 15:38:22 (+0100), Marc Zyngier wrote:
+> On Thu, 27 May 2021 13:51:30 +0100,
+> Quentin Perret <qperret@google.com> wrote:
+> > +/*
+> > + * Pages that are available for allocation are tracked in free-lists, so we use
+> > + * the pages themselves to store the list nodes to avoid wasting space. As the
+> > + * allocator always returns zeroed pages (which are zeroed on the hyp_put_page()
+> > + * path to optimize allocation speed), we also need to clean-up the list node in
+> > + * each page when we take it out of the list.
+> > + */
+> > +static inline void page_remove_from_list(struct hyp_page *p)
+> > +{
+> > +	struct list_head *node = (struct list_head *)hyp_page_to_virt(p);
 > 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> Nit: How about changing hyp_page_to_virt() so that it returns a
+> convenient 'void *', and get rid of the ugly casts?
+
+It should already return void *, but I kind of liked the explicit cast
+here for documentation purpose. We're turning a 'random' piece of unused
+memory into a typed object, so that felt like a useful annotation. Happy
+to get rid of it though.
+
+> > +
+> > +	__list_del_entry(node);
+> > +	memset(node, 0, sizeof(*node));
+> > +}
+> > +
+> > +static inline void page_add_to_list(struct hyp_page *p, struct list_head *head)
+> > +{
+> > +	struct list_head *node = (struct list_head *)hyp_page_to_virt(p);
+> > +
+> > +	INIT_LIST_HEAD(node);
+> > +	list_add_tail(node, head);
+> > +}
+> > +
+> > +static inline struct hyp_page *node_to_page(struct list_head *node)
+> > +{
+> > +	return (struct hyp_page *)hyp_virt_to_page(node);
 > 
-> ---
-> Please let me know if some of you think the driver is needed.
-> ---
->  drivers/mfd/Kconfig              |  17 --
->  drivers/mfd/Makefile             |   1 -
->  drivers/mfd/rohm-bd70528.c       | 314 -------------------------
->  include/linux/mfd/rohm-bd70528.h | 391 -------------------------------
->  include/linux/mfd/rohm-generic.h |   1 -
->  5 files changed, 724 deletions(-)
->  delete mode 100644 drivers/mfd/rohm-bd70528.c
->  delete mode 100644 include/linux/mfd/rohm-bd70528.h
+> Why is this cast necessary? If I'm not mistaken, hyp_vmemmap is
+> already cast as a 'struct hyp_page *', so hyp_virt_to_page() should
+> return the same type.
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+Right, that one is totally unnecessary, I'll remove.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Cheers,
+Quentin
