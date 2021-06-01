@@ -2,82 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69F33972D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC323972D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbhFALyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFALyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:54:08 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13436C061574;
-        Tue,  1 Jun 2021 04:52:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=hThjzyD5PdpvEbtDuA2WlTKzdIKthAXEXN7E7fzGif0=; b=xnISXh1iuAYIg9J7zF2crdN68
-        ycZn4SEIUAob7ZGnV3Vyfmg4mGpcCB3Y9VbVjfbDhKhKmXtOJgVc7+KYYh2b3pyoZ1OwAa0jYrc1b
-        fy+BV5byDSkvisC3WJO2nJ1oshL7JL2TjMt6asGnP1ftPuZn2x1scmZQ5LUfk813ZZr884qYE8CVA
-        SNcE4os5KQzM1T/LsVswbez0oqWp3qOwiNNZShSfmS82wy/3DjQPlBVUQSZh5SYEBE5NUcqRBzn2j
-        l1KMs07gN2PLzPEoT9kXbP4wnURhffeNvQP3C8WFBIQThZ92aRGNBFG/Z3/Yw2eNXnMgHW7XVPdBi
-        4gUQfmQ3g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44564)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lo2wW-0003wM-Ab; Tue, 01 Jun 2021 12:52:20 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lo2wV-0008W6-QQ; Tue, 01 Jun 2021 12:52:19 +0100
-Date:   Tue, 1 Jun 2021 12:52:19 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com, f.fainelli@gmail.com,
-        linux-imx@nxp.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/4] net: phy: realteck: add dt property to
- disable ALDPS mode
-Message-ID: <20210601115219.GU30436@shell.armlinux.org.uk>
-References: <20210601090408.22025-1-qiangqing.zhang@nxp.com>
- <20210601090408.22025-4-qiangqing.zhang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601090408.22025-4-qiangqing.zhang@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        id S233729AbhFALzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:55:53 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:46770 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230288AbhFALzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 07:55:51 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxkOLVH7Zge0QIAA--.5303S2;
+        Tue, 01 Jun 2021 19:53:57 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] perf tools: Copy uapi/asm/perf_regs.h from the kernel for MIPS
+Date:   Tue,  1 Jun 2021 19:53:56 +0800
+Message-Id: <1622548436-12472-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9BxkOLVH7Zge0QIAA--.5303S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF45uF4xGF1UGrWfGry3Arb_yoW5Zry7pF
+        ZrC34rJw4v93yak3yFyFyUWr13trWxXFZFv3yfCry7ZF42yF1rXwn7Kr13Kw1xJr4xta17
+        CFyxWr4UAF10yw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JUsyCJUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 05:04:07PM +0800, Joakim Zhang wrote:
-> @@ -325,8 +329,10 @@ static int rtl8211f_config_init(struct phy_device *phydev)
->  	u16 val;
->  	int ret;
->  
-> -	val = RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_XTAL_OFF;
-> -	phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1, val, val);
-> +	if (!(priv->quirks & RTL821X_ALDPS_DISABLE_FEATURE)) {
-> +		val = RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_XTAL_OFF;
-> +		phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1, val, val);
-> +	}
+To allow the build to complete on older systems, where those files are
+either not uptodate, lacking some recent additions or not present at
+all.
 
-Similar questions as with the previous patch, but also... this doesn't
-actually disable the feature if it was previously turned on. E.g. a
-kexec() from a current kernel that has set these features into a
-subsequent kernel that the DT requests the feature to be disabled. Or
-a boot loader that has enabled this feature.
+And check if the copy drifts from the kernel.
 
-If DT specifies that this feature is disabled, shouldn't this code be
-disabling it explicitly?
+This commit is similar with
+commit 12f020338a2c ("tools: Copy uapi/asm/perf_regs.h from the kernel")
 
+With this commit, we can avoid the following build error in any case:
+
+tools/perf/arch/mips/include/perf_regs.h:7:10:
+fatal error: asm/perf_regs.h: No such file or directory
+ #include <asm/perf_regs.h>
+          ^~~~~~~~~~~~~~~~~
+compilation terminated.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/arch/mips/include/uapi/asm/perf_regs.h | 40 ++++++++++++++++++++++++++++
+ tools/perf/Makefile.config                   |  1 -
+ tools/perf/check-headers.sh                  |  1 +
+ 3 files changed, 41 insertions(+), 1 deletion(-)
+ create mode 100644 tools/arch/mips/include/uapi/asm/perf_regs.h
+
+diff --git a/tools/arch/mips/include/uapi/asm/perf_regs.h b/tools/arch/mips/include/uapi/asm/perf_regs.h
+new file mode 100644
+index 0000000..d0f4ecd
+--- /dev/null
++++ b/tools/arch/mips/include/uapi/asm/perf_regs.h
+@@ -0,0 +1,40 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _ASM_MIPS_PERF_REGS_H
++#define _ASM_MIPS_PERF_REGS_H
++
++enum perf_event_mips_regs {
++	PERF_REG_MIPS_PC,
++	PERF_REG_MIPS_R1,
++	PERF_REG_MIPS_R2,
++	PERF_REG_MIPS_R3,
++	PERF_REG_MIPS_R4,
++	PERF_REG_MIPS_R5,
++	PERF_REG_MIPS_R6,
++	PERF_REG_MIPS_R7,
++	PERF_REG_MIPS_R8,
++	PERF_REG_MIPS_R9,
++	PERF_REG_MIPS_R10,
++	PERF_REG_MIPS_R11,
++	PERF_REG_MIPS_R12,
++	PERF_REG_MIPS_R13,
++	PERF_REG_MIPS_R14,
++	PERF_REG_MIPS_R15,
++	PERF_REG_MIPS_R16,
++	PERF_REG_MIPS_R17,
++	PERF_REG_MIPS_R18,
++	PERF_REG_MIPS_R19,
++	PERF_REG_MIPS_R20,
++	PERF_REG_MIPS_R21,
++	PERF_REG_MIPS_R22,
++	PERF_REG_MIPS_R23,
++	PERF_REG_MIPS_R24,
++	PERF_REG_MIPS_R25,
++	PERF_REG_MIPS_R26,
++	PERF_REG_MIPS_R27,
++	PERF_REG_MIPS_R28,
++	PERF_REG_MIPS_R29,
++	PERF_REG_MIPS_R30,
++	PERF_REG_MIPS_R31,
++	PERF_REG_MIPS_MAX = PERF_REG_MIPS_R31 + 1,
++};
++#endif /* _ASM_MIPS_PERF_REGS_H */
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 406a951..73df23d 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -90,7 +90,6 @@ endif
+ ifeq ($(ARCH),mips)
+   NO_PERF_REGS := 0
+   CFLAGS += -I$(OUTPUT)arch/mips/include/generated
+-  CFLAGS += -I../../arch/mips/include/uapi -I../../arch/mips/include/generated/uapi
+   LIBUNWIND_LIBS = -lunwind -lunwind-mips
+ endif
+ 
+diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+index dd8ff28..c783558 100755
+--- a/tools/perf/check-headers.sh
++++ b/tools/perf/check-headers.sh
+@@ -39,6 +39,7 @@ arch/x86/lib/x86-opcode-map.txt
+ arch/x86/tools/gen-insn-attr-x86.awk
+ arch/arm/include/uapi/asm/perf_regs.h
+ arch/arm64/include/uapi/asm/perf_regs.h
++arch/mips/include/uapi/asm/perf_regs.h
+ arch/powerpc/include/uapi/asm/perf_regs.h
+ arch/s390/include/uapi/asm/perf_regs.h
+ arch/x86/include/uapi/asm/perf_regs.h
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.1.0
+
