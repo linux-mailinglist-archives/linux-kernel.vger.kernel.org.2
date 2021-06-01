@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AD4397CC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD60397CC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235044AbhFAWzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234656AbhFAWzU (ORCPT
+        id S235102AbhFAW41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:56:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24830 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234766AbhFAW4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:55:20 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF61DC061574;
-        Tue,  1 Jun 2021 15:53:38 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6A6086E2;
-        Tue,  1 Jun 2021 22:53:38 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6A6086E2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1622588018; bh=PTa73ReiH99pYqrE1NUMVlZagcYAcqSVKLM15m3VVHo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=hbUmMXM6OdMXBpPnxLFx6bfsCLW0Y+OTwFzkhFHLgUIHW/m6QgjMaCAbGpenq5Bkr
-         T1KM0VQy/Hmh8b06JGlfs3dqFVWJR/2/oOwPvARNPSsUmZGEblzTulh7VtgyjYLvnw
-         K3j1n7lF74dHsYM/Y04MLb8etNLFDUaWdn8mZTv/5uGRBVzt4jGs9k1pg/nqzSEGTv
-         nHmTDVFnpbhaAf81TiOs1yw8HpsB3OqGEXTh3i0zG8i1YAxJTYIfYVV6AqkhwV+KFJ
-         L2O76w6R8klTxQnzfSozZxRBSkhKz2gqZT3Iswmu1r8ctcW2c8MQ4/xQ0wyB5u2xw4
-         Fy9nVWRAWDP5A==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Haocheng Xie <xiehaocheng.cn@gmail.com>, rostedt@goodmis.org,
-        mingo@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Haocheng Xie <xiehaocheng.cn@gmail.com>
-Subject: Re: [PATCH] docs: Fix typos in Documentation/trace/ftrace.rst
-In-Reply-To: <20210531083905.25763-1-xiehaocheng.cn@gmail.com>
-References: <20210531083905.25763-1-xiehaocheng.cn@gmail.com>
-Date:   Tue, 01 Jun 2021 16:53:37 -0600
-Message-ID: <87a6o98adq.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Tue, 1 Jun 2021 18:56:25 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151MmHuZ169830;
+        Tue, 1 Jun 2021 18:54:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=+wWzQP9rjd2CHTXRY5GoVE+0wcUvqFNy3Jyzv3lkdHE=;
+ b=TSK7Z63wtUrrWNIj/b5fV4ZrQRQoBF5D+s4kN/kLVbQfbnGfND78eodJEHgExIVJrUVZ
+ 0Psa3FRBORWrWsVeGwyEeqnbSjS30XRMnUXht0Awd1FCnkL4uS64F4TFv7dvr2Pmp2Kg
+ 1IUZsVaBPUdv2euAVHgvmEnshlh7rNN0SXH6RhznXTm1B2pzKanNmX0WLgVY8EUcDhi/
+ u8Zq2F+P8hG93u47Reqbjd4+7E9zT4bZf7EzljDVC+txM1Nw7pfNmjVyEkwGzRKWGbyq
+ a7NWQVGGu3N6Ox+iXuvzejAUJ1fFKoS1qoEec2ig753oUki2vYWhR70ZuPwfZkMVC8Ky xg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38wx0hg2rg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 18:54:36 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 151Mpje7193367;
+        Tue, 1 Jun 2021 18:54:36 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38wx0hg2qy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 18:54:36 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151Mnaal009160;
+        Tue, 1 Jun 2021 22:54:33 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 38ud88132f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 22:54:33 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151MsVIJ33751436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Jun 2021 22:54:31 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7915EA407E;
+        Tue,  1 Jun 2021 22:54:31 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E9329A4083;
+        Tue,  1 Jun 2021 22:54:29 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.20.75])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  1 Jun 2021 22:54:29 +0000 (GMT)
+Message-ID: <1bb738125345283693fb41ea188e934b3d33ae75.camel@linux.ibm.com>
+Subject: Re: linux-next: Fixes tag needs some work in the integrity tree
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Tue, 01 Jun 2021 18:54:28 -0400
+In-Reply-To: <20210602080742.1832f12c@canb.auug.org.au>
+References: <20210602080742.1832f12c@canb.auug.org.au>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: M0wqmwW3InNGAISZxhDvFgOeAmKTtZrQ
+X-Proofpoint-ORIG-GUID: QEa9AiUv7kOCYyL1L9W_xtUDW8TiYUmm
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-01_12:2021-06-01,2021-06-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 adultscore=0
+ spamscore=0 impostorscore=0 clxscore=1011 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106010150
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Haocheng Xie <xiehaocheng.cn@gmail.com> writes:
+On Wed, 2021-06-02 at 08:07 +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>   9eea2904292c ("evm: Execute evm_inode_init_security() only when an HMAC key is loaded")
+> 
+> Fixes tag
+> 
+>   Fixes: 26ddabfe96b ("evm: enable EVM when X509 certificate is loaded")
+> 
+> has these problem(s):
+> 
+>   - SHA1 should be at least 12 digits long
+> 
+> Probably not worth rebasing for, but can be avoided in the future by
+> setting core.abbrev to 12 (or more) or (for git v2.11 or later) just
+> making sure it is not set (or set to "auto").
 
-> Fix the usage of "a/the" and improve the readability.
->
-> Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
-> ---
->  Documentation/trace/ftrace.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-> index 62c98e9..11cc1c2 100644
-> --- a/Documentation/trace/ftrace.rst
-> +++ b/Documentation/trace/ftrace.rst
-> @@ -354,8 +354,8 @@ of ftrace. Here is a list of some of the key files:
->  	is being directly called by the function. If the count is greater
->  	than 1 it most likely will be ftrace_ops_list_func().
->  
-> -	If the callback of the function jumps to a trampoline that is
-> -	specific to a the callback and not the standard trampoline,
-> +	If the callback of a function jumps to a trampoline which is
-> +	specific to the callback and which is not the standard trampoline,
+Stephen, thank you for catching the short hash.  It would be nice if
+checkpatch would be updated to catch it.  I recently noticed
+Documentation/process/submitting-patches.rst has directions for setting
+up "--pretty=fixes".
 
-The "that" in the first line was actually correct and best left
-unchanged.  I've applied the patch, but took the liberty of putting
-"that" back.
+thanks,
 
-Thanks,
+Mimi
 
-jon
