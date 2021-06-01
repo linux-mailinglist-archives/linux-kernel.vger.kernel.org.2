@@ -2,496 +2,1089 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A3E396F21
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C75396F12
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhFAIlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:41:39 -0400
-Received: from mail-m121144.qiye.163.com ([115.236.121.144]:25984 "EHLO
-        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233421AbhFAIli (ORCPT
+        id S233299AbhFAIku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:40:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232869AbhFAIkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:41:38 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id E073DAC0397;
-        Tue,  1 Jun 2021 16:39:53 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        Bernard Zhao <bernard@vivo.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] docs/zh_CN: add translations in zh_CN/dev-tools/kasan
-Date:   Tue,  1 Jun 2021 16:38:26 +0800
-Message-Id: <1622536714-2669-1-git-send-email-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 1 Jun 2021 04:40:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622536746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TLBCEGvNwlWNPCFijO8BSEZ9ZLkuG+xlka8nHN1DZ74=;
+        b=EGdBkhD9k5Btg/cthuv38iTVyYQEtZPJpJAAIeegq47BoO12mnNjmoR96fPcnU7UZfPsnG
+        gAaj1De10sYoYzD0ZVN5sOosa2FHmp63w6vamEeQKgPzDSFsUAKblhfOSGX829f4ngQQfa
+        2Pm9yomfjwpJaZarrxX9rXLb3Ooafas=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-BP0J7jkhPJKFB9FRkU2T7A-1; Tue, 01 Jun 2021 04:38:54 -0400
+X-MC-Unique: BP0J7jkhPJKFB9FRkU2T7A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9536ABBEE4;
+        Tue,  1 Jun 2021 08:38:53 +0000 (UTC)
+Received: from ws.net.home (ovpn-113-152.ams2.redhat.com [10.36.113.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 500B5101E24F;
+        Tue,  1 Jun 2021 08:38:52 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 10:38:49 +0200
+From:   Karel Zak <kzak@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        util-linux@vger.kernel.org
+Subject: [ANNOUNCE] util-linux v2.37
+Message-ID: <20210601083849.niumt2zvyr3boiqw@ws.net.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0hKTFZLHh9PTx1ISB9KSEtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ok06Qxw4GT8TKxAjSh4zGi0N
-        GB4wCStVSlVKTUlJTkhNTEJOS0JNVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUhJWVdZCAFZQUlITkpDNwY+
-X-HM-Tid: 0a79c6bab15bb039kuuue073dac0397
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new zh translations
-* zh_CN/dev-tools/kasan.rst
-and link it to zh_CN/dev-tools/index.rst
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- .../translations/zh_CN/dev-tools/index.rst         |   2 +-
- .../translations/zh_CN/dev-tools/kasan.rst         | 410 +++++++++++++++++++++
- 2 files changed, 411 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/translations/zh_CN/dev-tools/kasan.rst
+The util-linux release v2.37 is available at
 
-diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Documentation/translations/zh_CN/dev-tools/index.rst
-index fd73c47..e6c99f2 100644
---- a/Documentation/translations/zh_CN/dev-tools/index.rst
-+++ b/Documentation/translations/zh_CN/dev-tools/index.rst
-@@ -19,13 +19,13 @@
-    :maxdepth: 2
- 
-    gcov
-+   kasan
- 
- Todolist:
- 
-  - coccinelle
-  - sparse
-  - kcov
-- - kasan
-  - ubsan
-  - kmemleak
-  - kcsan
-diff --git a/Documentation/translations/zh_CN/dev-tools/kasan.rst b/Documentation/translations/zh_CN/dev-tools/kasan.rst
-new file mode 100644
-index 0000000..8eb9ec9
---- /dev/null
-+++ b/Documentation/translations/zh_CN/dev-tools/kasan.rst
-@@ -0,0 +1,410 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: Documentation/dev-tools/kasan.rst
-+:Translator: 万家兵 Wan Jiabing <wanjiabing@vivo.com>
-+
-+内核地址消毒剂 (KASAN)
-+======================
-+
-+概述
-+----
-+
-+KernelAddressSANitizer (KASAN)是一种动态内存安全错误检测工具，
-+主要功能是检查内存越界访问和使用已释放内存的问题。KASAN有三种模式:
-+
-+1. 通用KASAN （与用户空间的ASan类似）
-+2. 基于软件标签的KASAN （与用户空间的HWASan类似）
-+3. 基于硬件标签的KASAN （基于硬件内存标签）
-+
-+由于通用 KASAN 的内存开销较大，通用 KASAN 主要用于调试。
-+基于软件标签的 KASAN 可用于 dogfood 测试，因为它具有较低的内存开销，并允许将其用于实际工作量。
-+基于硬件标签的 KASAN 具有较低的内存和性能开销，因此可用于生产。
-+同时可用于检测现场内存问题或作为安全缓解措施。
-+
-+软件 KASAN 模式（#1 和 #2）使用编译时工具在每次内存访问之前插入有效性检查，
-+因此需要一个支持它的编译器版本。
-+
-+通用 KASAN 在 GCC 和 Clang 受支持。GCC需要 8.3.0 或更高版本。
-+任何受支持的 Clang 版本都是兼容的，但从 Clang 11 才开始支持检测全局变量的越界访问。
-+
-+基于软件标签的KASAN模式仅在Clang中受支持。
-+
-+硬件 KASAN 模式 (#3) 依赖硬件来执行检查，但仍需要支持内存标签指令的编译器版本。
-+GCC 10+ 和 Clang 11+ 支持此模式。
-+
-+两种软件 KASAN 模式都适用于 SLUB 和 SLAB 内存分配器，
-+而基于硬件标签的 KASAN 目前仅支持 SLUB。
-+
-+目前x86_64、arm、arm64、xtensa、s390、riscv架构支持通用KASAN模式，
-+仅arm64架构支持基于标签的KASAN模式。
-+
-+用法
-+----
-+
-+要启用 KASAN，请使用以下命令配置内核::
-+
-+	  CONFIG_KASAN=y
-+
-+同时在 ``CONFIG_KASAN_GENERIC`` (启用通用 KASAN 模式)，
-+``CONFIG_KASAN_SW_TAGS`` (启用基于硬件标签的 KASAN 模式)，
-+和 ``CONFIG_KASAN_HW_TAGS`` (启用基于硬件标签的 KASAN 模式) 之间进行选择。
-+
-+对于软件模式，还可以在 ``CONFIG_KASAN_OUTLINE`` 和 ``CONFIG_KASAN_INLINE`` 之间进行选择。
-+outline和inline是编译器检测类型。前者产生较小的二进制文件，而后者快 1.1-2 倍。
-+
-+要将受影响的 slab 对象的 alloc 和 free 堆栈跟踪包含到报告中，请启用 ``CONFIG_STACKTRACE`` 。
-+要包括受影响物理页面的分配和释放堆栈跟踪的话，
-+请启用 ``CONFIG_PAGE_OWNER`` 并使用 ``page_owner=on`` 进行引导。
-+
-+错误报告
-+~~~~~~~~
-+
-+典型的 KASAN 报告如下所示::
-+
-+    ==================================================================
-+    BUG: KASAN: slab-out-of-bounds in kmalloc_oob_right+0xa8/0xbc [test_kasan]
-+    Write of size 1 at addr ffff8801f44ec37b by task insmod/2760
-+
-+    CPU: 1 PID: 2760 Comm: insmod Not tainted 4.19.0-rc3+ #698
-+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
-+    Call Trace:
-+     dump_stack+0x94/0xd8
-+     print_address_description+0x73/0x280
-+     kasan_report+0x144/0x187
-+     __asan_report_store1_noabort+0x17/0x20
-+     kmalloc_oob_right+0xa8/0xbc [test_kasan]
-+     kmalloc_tests_init+0x16/0x700 [test_kasan]
-+     do_one_initcall+0xa5/0x3ae
-+     do_init_module+0x1b6/0x547
-+     load_module+0x75df/0x8070
-+     __do_sys_init_module+0x1c6/0x200
-+     __x64_sys_init_module+0x6e/0xb0
-+     do_syscall_64+0x9f/0x2c0
-+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-+    RIP: 0033:0x7f96443109da
-+    RSP: 002b:00007ffcf0b51b08 EFLAGS: 00000202 ORIG_RAX: 00000000000000af
-+    RAX: ffffffffffffffda RBX: 000055dc3ee521a0 RCX: 00007f96443109da
-+    RDX: 00007f96445cff88 RSI: 0000000000057a50 RDI: 00007f9644992000
-+    RBP: 000055dc3ee510b0 R08: 0000000000000003 R09: 0000000000000000
-+    R10: 00007f964430cd0a R11: 0000000000000202 R12: 00007f96445cff88
-+    R13: 000055dc3ee51090 R14: 0000000000000000 R15: 0000000000000000
-+
-+    Allocated by task 2760:
-+     save_stack+0x43/0xd0
-+     kasan_kmalloc+0xa7/0xd0
-+     kmem_cache_alloc_trace+0xe1/0x1b0
-+     kmalloc_oob_right+0x56/0xbc [test_kasan]
-+     kmalloc_tests_init+0x16/0x700 [test_kasan]
-+     do_one_initcall+0xa5/0x3ae
-+     do_init_module+0x1b6/0x547
-+     load_module+0x75df/0x8070
-+     __do_sys_init_module+0x1c6/0x200
-+     __x64_sys_init_module+0x6e/0xb0
-+     do_syscall_64+0x9f/0x2c0
-+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-+
-+    Freed by task 815:
-+     save_stack+0x43/0xd0
-+     __kasan_slab_free+0x135/0x190
-+     kasan_slab_free+0xe/0x10
-+     kfree+0x93/0x1a0
-+     umh_complete+0x6a/0xa0
-+     call_usermodehelper_exec_async+0x4c3/0x640
-+     ret_from_fork+0x35/0x40
-+
-+    The buggy address belongs to the object at ffff8801f44ec300
-+     which belongs to the cache kmalloc-128 of size 128
-+    The buggy address is located 123 bytes inside of
-+     128-byte region [ffff8801f44ec300, ffff8801f44ec380)
-+    The buggy address belongs to the page:
-+    page:ffffea0007d13b00 count:1 mapcount:0 mapping:ffff8801f7001640 index:0x0
-+    flags: 0x200000000000100(slab)
-+    raw: 0200000000000100 ffffea0007d11dc0 0000001a0000001a ffff8801f7001640
-+    raw: 0000000000000000 0000000080150015 00000001ffffffff 0000000000000000
-+    page dumped because: kasan: bad access detected
-+
-+    Memory state around the buggy address:
-+     ffff8801f44ec200: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
-+     ffff8801f44ec280: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-+    >ffff8801f44ec300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03
-+                                                                    ^
-+     ffff8801f44ec380: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
-+     ffff8801f44ec400: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-+    ==================================================================
-+
-+报告标题总结了发生的错误类型以及导致该错误的访问类型。紧随其后的是错误访问的堆栈跟踪、
-+所访问内存分配位置的堆栈跟踪（对于访问了 slab 对象的情况）以及对象被释放的位置的堆栈跟踪
-+（对于访问已释放内存的问题报告）。接下来是对访问的slab对象的描述以及关于访问的内存页的信息。
-+
-+最后，报告展示了访问地址周围的内存状态。在内部，KASAN 单独跟踪每个内存颗粒的内存状态，
-+根据 KASAN 模式分为 8 或 16 个对齐字节。
-+报告的内存状态部分中的每个数字都显示了围绕访问地址的其中一个内存颗粒的状态。
-+
-+对于通用 KASAN ，每个内存颗粒的大小为 8 个字节。每个颗粒的状态被编码在一个影子字节中。
-+这8个字节可以是可访问的，部分访问的，已释放的或成为 Redzone  的一部分。
-+KASAN 对每个影子字节使用以下编码:00 表示对应内存区域的所有 8 个字节都可以访问；
-+数字 N (1 <= N <= 7) 表示前 N 个字节可访问，其他 (8 - N) 个字节不可访问；
-+任何负值都表示无法访问整个 8 字节。KASAN 使用不同的负值来区分不同类型的不可访问内存，
-+如 redzones 或已释放的内存（参见 mm/kasan/kasan.h）。
-+
-+在上面的报告中，箭头指向影子字节 ``03``，表示访问的地址是部分可访问的。
-+
-+对于基于标签的KASAN模式，报告最后的部分显示了访问地址周围的内存标签(参考 `实施细则`_ 章节)。
-+
-+请注意，KASAN 错误标题（如 ``slab-out-of-bounds`` 或 ``use-after-free`` ）是尽量接近的:
-+KASAN 根据其拥有的有限信息打印出最可能的错误类型。错误的实际类型可能会有所不同。
-+
-+通用 KASAN 还报告两个辅助调用堆栈跟踪。
-+这些堆栈跟踪指向代码中与对象交互但不直接出现在错误访问堆栈跟踪中的位置。
-+目前，这包括 call_rcu() 和排队的工作队列。
-+
-+启动参数
-+~~~~~~~~
-+
-+KASAN 受通用 ``panic_on_warn`` 命令行参数的影响。
-+启用该功能后，KASAN在打印错误报告后会引起内核恐慌。
-+
-+默认情况下，KASAN 只为第一次无效内存访问打印错误报告。使用 ``kasan_multi_shot`` ，
-+KASAN会针对每个无效访问打印报告。这有效地禁用了 KASAN 报告的 ``panic_on_warn``。
-+
-+基于硬件标签的 KASAN 模式（请参阅下面有关各种模式的部分）旨在在生产中用作安全缓解措施。
-+因此，它支持允许禁用 KASAN 或控制其功能的引导参数。
-+
-+- ``kasan=off`` 或 ``=on`` 控制KASAN是否启用 (默认: ``on`` )。
-+
-+- ``kasan.mode=sync`` 或 ``=async`` 控制 KASAN 是否配置为同步或异步执行模式 (默认: ``sync`` )。
-+  同步模式：当标签检查错误发生时，立即检测到错误访问。
-+  异步模式：延迟错误访问检测。当标签检查错误发生时，信息存储在硬件中（在arm64的TFSR_EL1寄存器中）。
-+  内核会定期检查硬件，并且仅在这些检查期间报告标签错误。
-+
-+- ``kasan.stacktrace=off`` 或 ``=on`` 禁用或启用 alloc 和 free 堆栈跟踪收集 (默认: ``on`` )。
-+
-+- ``kasan.fault=report`` 或 ``=panic`` 控制是只打印 KASAN 报告还是同时使内核恐慌
-+  (默认: ``report`` )。即使启用了 ``kasan_multi_shot``，也会发生内核恐慌。
-+
-+实施细则
-+---------
-+
-+通用 KASAN
-+~~~~~~~~~~
-+
-+软件 KASAN 模式使用影子内存来记录每个内存字节是否可以安全访问，
-+并使用编译时工具在每次内存访问之前插入影子内存检查。
-+
-+通用 KASAN 将 1/8 的内核内存专用于其影子内存（16TB 以覆盖 x86_64 上的 128TB），
-+并使用具有比例和偏移量的直接映射将内存地址转换为其相应的影子地址。
-+
-+这是将地址转换为其相应影子地址的函数::
-+
-+    static inline void *kasan_mem_to_shadow(const void *addr)
-+    {
-+	return (void *)((unsigned long)addr >> KASAN_SHADOW_SCALE_SHIFT)
-+		+ KASAN_SHADOW_OFFSET;
-+    }
-+
-+在这里 ``KASAN_SHADOW_SCALE_SHIFT = 3``。
-+
-+编译时工具用于插入内存访问检查。编译器在每次访问大小为 1、2、4、8 或 16 的内存之前插入函数调用
-+(``__asan_load*(addr)``, ``__asan_store*(addr)``)。
-+这些函数通过检查相应的影子内存来检查内存访问是否有效。
-+
-+使用inline检测，编译器不进行函数调用，而是直接插入代码来检查影子内存。
-+此选项显著地增大了内核体积，但与outline检测内核相比，它提供了 x1.1-x2 的性能提升。
-+
-+通用 KASAN 是唯一一种通过隔离延迟重新使用已释放对象的模式
-+（参见 mm/kasan/quarantine.c 以了解实现）。
-+
-+基于软件标签的 KASAN 模式
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+基于软件标签的 KASAN 使用软件内存标签方法来检查访问有效性。
-+目前仅针对 arm64 架构实现。
-+
-+基于软件标签的 KASAN 使用 arm64 CPU 的顶部字节忽略 (TBI) 特性在内核指针的顶部字节中存储一个指针标签。
-+它使用影子内存来存储与每个 16 字节内存单元相关的内存标签(因此，它将内核内存的 1/16 专用于影子内存)。
-+
-+在每次内存分配时，基于软件标签的 KASAN 都会生成一个随机标签，用这个标签标记分配的内存，
-+并将相同的标签嵌入到返回的指针中。
-+
-+基于软件标签的 KASAN 使用编译时工具在每次内存访问之前插入检查。
-+这些检查确保正在访问的内存的标签等于用于访问该内存的指针的标签。
-+如果标签不匹配，基于软件标签的 KASAN 会打印错误报告。
-+
-+基于软件标签的 KASAN 也有两种检测模式（outline，发出回调来检查内存访问；inline，
-+执行内联的影子内存检查）。使用outline检测模式，会从执行访问检查的函数打印错误报告。
-+使用inline检测，编译器会发出 ``brk`` 指令，并使用专用的 ``brk`` 处理程序来打印错误报告。
-+
-+基于软件标签的 KASAN 使用 0xFF 作为匹配所有指针标签（不检查通过带有 0xFF 指针标签的指针进行的访问）。
-+值 0xFE 当前保留用于标记已释放的内存区域。
-+
-+基于软件标签的KASAN目前仅支持对 Slab 和 page_alloc 内存进行标记。
-+
-+基于硬件标签的 KASAN 模式
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+基于硬件标签的 KASAN 在概念上类似于软件模式，
-+但它是使用硬件内存标签作为支持而不是编译器检测和影子内存。
-+
-+基于硬件标签的 KASAN 目前仅针对 arm64 架构实现，
-+并且基于 ARMv8.5 指令集架构中引入的 arm64 内存标记扩展 (MTE) 和最高字节忽略 (TBI)。
-+
-+特殊的 arm64 指令用于为每次内存分配指定内存标签。相同的标签被指定给指向这些分配的指针。
-+在每次内存访问时，硬件确保正在访问的内存的标签等于用于访问该内存的指针的标签。
-+如果标签不匹配，则会生成故障并打印报告。
-+
-+基于硬件标签的 KASAN 使用 0xFF 作为匹配所有指针标签（不检查通过带有 0xFF 指针标签的指针进行的访问）。
-+值 0xFE 当前保留用于标记已释放的内存区域。
-+
-+基于硬件标签的 KASAN 目前仅支持对 Slab 和 page_alloc 内存进行标记。
-+
-+如果硬件不支持 MTE（ARMv8.5 之前），则不会启用基于硬件标签的 KASAN。
-+在这种情况下，所有 KASAN 引导参数都将被忽略。
-+
-+请注意，启用 CONFIG_KASAN_HW_TAGS 始终会导致启用内核中的 TBI。
-+即使提供了 ``kasan.mode=off`` 或硬件不支持 MTE（但支持 TBI）。
-+
-+基于硬件标签的 KASAN 只报告第一个发现的错误。之后，MTE 标签检查将被禁用。
-+
-+影子内存
-+--------
-+
-+内核将内存映射到地址空间的几个不同部分。内核虚拟地址的范围很大：
-+没有足够的真实内存来支持内核可以访问的每个地址的真实影子区域。
-+因此，KASAN 只为地址空间的某些部分映射真实的影子。
-+
-+默认行为
-+~~~~~~~~
-+
-+默认情况下，体系结构仅将实际内存映射到用于线性映射的阴影区域（以及可能的其他小区域）。
-+对于所有其他区域 —— 例如 vmalloc 和 vmemmap 空间 —— 一个只读页面被映射到阴影区域上。
-+这个只读的影子页面声明所有内存访问都是允许的。
-+
-+这给模块带来了一个问题：它们不存在于线性映射中，而是存在于专用的模块空间中。
-+通过连接模块分配器，KASAN 临时映射真实的影子内存以覆盖它们。
-+例如，这允许检测对模块全局变量的无效访问。
-+
-+这也造成了与 ``VMAP_STACK`` 的不兼容：如果堆栈位于 vmalloc 空间中，它将被分配只读页面的影子内存，
-+并且内核在尝试为堆栈变量设置影子数据时会出错。
-+
-+CONFIG_KASAN_VMALLOC
-+~~~~~~~~~~~~~~~~~~~~
-+
-+使用 ``CONFIG_KASAN_VMALLOC`` ，KASAN 可以以更大的内存使用为代价覆盖 vmalloc 空间。
-+目前，这在 x86、riscv、s390 和 powerpc 上受支持。
-+
-+这通过连接到 vmalloc 和 vmap 并动态分配真实的影子内存来支持映射。
-+
-+vmalloc 空间中的大多数映射都很小，需要不到一整页的阴影空间。
-+因此，为每个映射分配一个完整的影子页面将是一种浪费。
-+此外，为了确保不同的映射使用不同的影子页面，映射必须与 ``KASAN_GRANULE_SIZE * PAGE_SIZE`` 对齐。
-+
-+相反，KASAN 跨多个映射共享后备空间。当 vmalloc 空间中的映射使用影子区域的特定页面时，
-+它会分配一个后备页面。此页面稍后可以由其他 vmalloc 映射共享。
-+
-+KASAN 连接到 vmap 基础架构以懒清理未使用的影子内存。
-+
-+为了避免交换映射的困难，KASAN 预测覆盖 vmalloc 空间的阴影区域部分将不会被早期的阴影页面覆盖，
-+但是将不会被映射。这将需要更改特定于 arch 的代码。
-+
-+这允许在 x86 上支持 ``VMAP_STACK`` ，并且可以简化对没有固定模块区域的架构的支持。
-+
-+对于开发者
-+----------
-+
-+忽略访问
-+~~~~~~~~
-+
-+软件 KASAN 模式使用编译器检测来插入有效性检查。
-+此类检测可能与内核的某些部分不兼容，因此需要禁用。
-+
-+内核的其他部分可能会访问已分配对象的元数据。通常，KASAN 会检测并报告此类访问，
-+但在某些情况下（例如，在内存分配器中），这些访问是有效的。
-+
-+对于软件 KASAN 模式，要禁用特定文件或目录的检测，
-+请将​​ ``KASAN_SANITIZE`` 添加到相应的内核 Makefile 中:
-+
-+- 对于单个文件 (例如， main.o)::
-+
-+    KASAN_SANITIZE_main.o := n
-+
-+- 对于一个目录下的所有文件::
-+
-+    KASAN_SANITIZE := n
-+
-+对于软件 KASAN 模式，要在每个函数的基础上禁用检测，
-+请使用 KASAN 特定的 ``__no_sanitize_address`` 函数属性或某个通用的 ``noinstr`` 。
-+
-+请注意，禁用编译器检测（基于每个文件或每个函数）会使 KASAN 忽略在软件 KASAN 模式的代码中直接发生的访问。
-+当访问是间接发生的（通过调用检测函数）或使用没有编译器检测的基于硬件标签的模式时，它没有帮助。
-+
-+对于软件 KASAN 模式，要在当前任务的一部分内核代码中禁用 KASAN 报告，
-+请使用 ``kasan_disable_current()``/``kasan_enable_current()`` 部分注释这部分代码。
-+这也会禁用通过函数调用发生的间接访问的报告。
-+
-+对于基于标签的 KASAN 模式（包括硬件模式），要禁用访问检查，
-+请使用 ``kasan_reset_tag()`` 或 ``page_kasan_tag_reset()``。
-+请注意，通过 ``page_kasan_tag_reset()`` 临时禁用访问检查需要通过
-+``page_kasan_tag``/``page_kasan_tag_set`` 保存和恢复每页 KASAN 标签。
-+
-+测试
-+~~~~
-+
-+有一些 KASAN 测试可以验证 KASAN 是否正常工作并可以检测某些类型的内存损坏。
-+测试由两部分组成:
-+
-+1. 与 KUnit 测试框架集成的测试。使用 ``CONFIG_KASAN_KUNIT_TEST`` 启用。
-+这些测试可以通过几种不同的方式自动运行和部分验证；请参阅下面的说明。
-+
-+2. 与 KUnit 不兼容的测试。使用 ``CONFIG_KASAN_MODULE_TEST`` 启用并且只能作为模块运行。
-+这些测试只能通过加载内核模块并检查内核日志以获取 KASAN 报告来手动验证。
-+
-+如果检测到错误，每个 KUnit 兼容的 KASAN 测试都会打印多个 KASAN 报告之一，然后测试打印其编号和状态。
-+
-+当测试通过::
-+
-+        ok 28 - kmalloc_double_kzfree
-+
-+当由于 ``kmalloc`` 失败而导致测试失败时::
-+
-+        # kmalloc_large_oob_right: ASSERTION FAILED at lib/test_kasan.c:163
-+        Expected ptr is not null, but is
-+        not ok 4 - kmalloc_large_oob_right
-+
-+当由于缺少 KASAN 报告而导致测试失败时::
-+
-+        # kmalloc_double_kzfree: EXPECTATION FAILED at lib/test_kasan.c:629
-+        Expected kasan_data->report_expected == kasan_data->report_found, but
-+        kasan_data->report_expected == 1
-+        kasan_data->report_found == 0
-+        not ok 28 - kmalloc_double_kzfree
-+
-+最后打印所有 KASAN 测试的累积状态。成功::
-+
-+        ok 1 - kasan
-+
-+或者，如果其中一项测试失败::
-+
-+        not ok 1 - kasan
-+
-+有几种方法可以运行与 KUnit 兼容的 KASAN 测试。
-+
-+1. 可加载模块
-+
-+   启用 ``CONFIG_KUNIT`` 后，KASAN-KUnit 测试可以构建为可加载模块，
-+   并通过使用 ``insmod`` 或 ``modprobe`` 加载 ``test_kasan.ko`` 来运行。
-+
-+2. 内置
-+
-+   通过内置 ``CONFIG_KUNIT`` ，也可以内置 KASAN-KUnit 测试。
-+   在这种情况下，测试将在启动时作为后期初始化调用运行。
-+
-+3. 使用 kunit_tool
-+
-+   通过内置 ``CONFIG_KUNIT`` 和 ``CONFIG_KASAN_KUNIT_TEST`` ，
-+   还可以使用 ``kunit_tool`` 以更易读的方式查看 KUnit 测试的结果。
-+   这不会打印通过测试的 KASAN 报告。有关 ``kunit_tool`` 的更多最新信息，
-+   请参阅 `KUnit文档 <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_ 。
-+
-+.. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
--- 
-2.7.4
+  http://www.kernel.org/pub/linux/utils/util-linux/v2.37/
+
+Feedback and bug reports, as always, are welcomed.
+
+  Karel
+
+
+
+Util-linux 2.37 Release Notes
+=============================
+
+Release highlights
+------------------
+
+This project no more uses Groff to maintain man-pages. Since v2.37 all text is
+maintained in AsciiDoc and man-pages are generated by asciidoctor to man-pages
+during the package build process (see also --disable-asciidoc configure
+option). Thanks to Mario Blättermann.
+
+The long-term goal is to maintain also man-page translations (via
+translationproject.org and po4a) in the util-linux project. Please, contact
+Mario Blättermann if you're want to help with the conversion from
+manpages-l10n.
+
+The old hardlink(1) implementation from Jakub Jelinek (originally for Fedora)
+has been replaced by a new implementation from Julian Andres Klode (originally
+for Debian). The new implementation does not support -f option to force
+hardlinks creation between filesystem.
+
+lscpu(1) has been reimplemented. Now it analyzes /sys for all CPUs and provides
+information for all CPU types used by the system (for example heterogeneous
+big.LITTLE ARMs, etc.). This command reads also SMBIOS tables to get CPU
+identifiers. Thanks to Masayoshi Mizuma from Fujitsu and Jeffrey Bastian from
+Red Hat.  The default output on the terminal is more structured now to be more
+human-readable.
+
+uclampset(1) is new util to manipulate the utilization clamping attributes of
+the system or a process. Thanks to Qais Yousef from ARM.
+
+hexdump(1) automatically uses -C when called as "hd".
+
+dmesg(1) supports new command-line options --since and --until.
+
+findmnt(8) supports new command-line options --shadowed to print only
+filesystems over-mounted by another filesystem.
+
+mount(8) supports --read-only command-line option for non-root users too.
+
+umount(8) can umount also all over-mounted filesystems (more filesystems on the
+the same mount point) when executed with --recursive.
+
+libfdisk (and fdisk, sfdisk, cfdisk) supports partition type names on input,
+ignoring the case of the characters and all non-alphanumeric and non-digit
+characters in the name (e.g. type="Linux /usr x86" is the same as type="linux
+usr-x86" for sfdisk).
+
+libmount no more contains a workaround to detect inconsistent
+/proc/self/mountinfo read. This problem is fixed by the Linux kernel (since v5.8,
+kernel commit 9f6c61f96f2d97cbb5f7fa85607bc398f843ff0f).
+
+libblkid supports "probing hints" now. The hints are the optional way how to
+force probing functions to check for example another location -- for example
+specific session on multi-session UDF. The command blkid(8) supports this
+functionality with a new --hint option. The library has been also extended to
+support others ISO9660 and UDF identifiers. Thanks to Pali Rohár.
+
+blkzone(8) provides a new "capacity" command.
+
+cfdisk(8) is possible to start in read-only mode by a new command-line option
+--read-only
+
+lsblk(8) provides new columns FSROOTS, and MOUNTPOINTS. The column
+MOUNTPOINTS is used in the default output now and this new column prints all
+mount points where the device is used (btrfs subvolumes, bind mounts, etc).
+
+losetup(8) uses LOOP_CONFIG ioctl now.
+
+column(1) supports a new command-line option --table-columns-limit to specify a
+maximal number of the input columns. The last column will contain all remaining
+line data if the limit is smaller than the number of the columns in the input
+data.
+
+It's possible to use meson to build util-linux. This feature is experimental
+and currently designed only for developers. No panic, the current primary
+autotools-based build process will be supported, maintained, and used as
+primary for next years.
+
+
+Changes between v2.36 and v2.37
+-------------------------------
+
+Asciidoc:
+   - Adapt Makefiles to new asciidoc man pages  [Mario Blättermann]
+   - Add Po4a hint to file headers  [Mario Blättermann]
+   - Add missing macro definition in uclampset.1  [Mario Blättermann]
+   - Add po4a config file and initial translation template for man pages  [Mario Blättermann]
+   - Better gettext message splitting in nsenter.1.adoc  [Mario Blättermann]
+   - Convert man-common/README to Markdown  [Mario Blättermann]
+   - Fix artifact from initial import, sixth attempt  [Mario Blättermann]
+   - Fix artifacts from initial import  [Mario Blättermann]
+   - Fix artifacts from initial import, fifth attempt  [Mario Blättermann]
+   - Fix artifacts from initial import, fourth attempt  [Mario Blättermann]
+   - Fix artifacts from initial import, second attempt  [Mario Blättermann]
+   - Fix artifacts from initial import, third attempt  [Mario Blättermann]
+   - Fix man pages with variables to use the same value as in previous *.in files  [Mario Blättermann]
+   - Fix markup  [Mario Blättermann]
+   - Fix markup in example man page  [Mario Blättermann]
+   - Fix typo  [Mario Blättermann]
+   - Fix typo and remove invisible spaces which confuse po4a  [Mario Blättermann]
+   - Formatting cleanup  [Mario Blättermann]
+   - Import disk-utils man pages  [Mario Blättermann]
+   - Import hwclock.8.in  [Mario Blättermann]
+   - Import libuuid man pages  [Mario Blättermann]
+   - Import login-utils man pages  [Mario Blättermann]
+   - Import misc-utils man pages  [Mario Blättermann]
+   - Import rtcwake.8.in  [Mario Blättermann]
+   - Import sys-utils man pages, part 1  [Mario Blättermann]
+   - Import sys-utils man pages, part 2  [Mario Blättermann]
+   - Import sys-utils man pages, part 3  [Mario Blättermann]
+   - Import term-utils man pages  [Mario Blättermann]
+   - Import textutils man pages  [Mario Blättermann]
+   - Incorporate latest change in findmnt.8  [Mario Blättermann]
+   - Incorporate latest changes in findmnt.8  [Karel Zak]
+   - Incorporate latest changes in rfkill.8 and umount.8  [Mario Blättermann]
+   - Re-add empty lines to man pages  [Mario Blättermann]
+   - Remove already imported *roff man pages  [Mario Blättermann]
+   - Remove already imported disk-utils *roff man pages  [Mario Blättermann]
+   - Remove already imported login-utils *roff man pages  [Mario Blättermann]
+   - Remove already imported misc-utils *roff man pages  [Mario Blättermann]
+   - Remove already imported text-utils *roff man pages  [Mario Blättermann]
+   - Remove artifact from merge conflict  [Mario Blättermann]
+   - Remove old man page links  [Mario Blättermann]
+   - Reorder example command sequence  [Mario Blättermann]
+   - Review disk-utils man pages  [Mario Blättermann]
+   - Review login-utils man pages  [Mario Blättermann]
+   - Review misc-utils man pages  [Mario Blättermann]
+   - Review schedutils man pages  [Mario Blättermann]
+   - Review sys-utils man pages, part 2  [Mario Blättermann]
+   - Review sys-utils man pages,part 1  [Mario Blättermann]
+   - Review term-utils man pages  [Mario Blättermann]
+   - Review terminal-colors.d.5.adoc  [Mario Blättermann]
+   - Review text-utils man pages  [Mario Blättermann]
+   - Small fix in nsenter.1.adoc  [Mario Blättermann]
+   - Small indentation fix in mount.8.adoc  [Mario Blättermann]
+   - Some formatting cleanup in man pages  [Mario Blättermann]
+   - Some more  man page formatting improvements  [Mario Blättermann]
+   - Unify spelling of »User Commands«  [Mario Blättermann]
+   - Update .pot template  [Mario Blättermann]
+   - Use correct ' man manual ' for man pages from section 8  [Mario Blättermann]
+   - Yet another formatting fix  [Mario Blättermann]
+   - add missing bugreports section to libblkid and some cleanup  [Mario Blättermann]
+Automake:
+   - install uuidgen bash completion only if it is built  [Luca Boccassi]
+   - use EXTRA_LTLIBRARIES instead of noinst_LTLIBRARIES  [Luca Boccassi]
+Manual pages:
+   - agetty.8  Minor formatting and wording fixes  [Michael Kerrisk (man-pages)]
+   - blockdev.8  Minor wording and formatting fixes  [Michael Kerrisk (man-pages)]
+   - blockdev.8, sfdisk.8  typo fixes  [Michael Kerrisk (man-pages)]
+   - document the 'resize' command  [Vincent McIntyre]
+   - logger.1  minor formatting and typo fixes  [Michael Kerrisk (man-pages)]
+   - lsblk.8  Minor formatting and typo fixes  [Michael Kerrisk (man-pages)]
+   - lslogins.1  Minor wording and formatting fixres  [Michael Kerrisk (man-pages)]
+   - nologin.8  formatting fixes  [Michael Kerrisk (man-pages)]
+   - raw.8  Minor formatting and wording fixes  [Michael Kerrisk (man-pages)]
+   - sfdisk.8  Minor wording and formatting fixes  [Michael Kerrisk (man-pages)]
+   - sfdisk.8  Use less aggressive indenting  [Michael Kerrisk (man-pages)]
+   - wdctl.8  typo fix  [Michael Kerrisk (man-pages)]
+   - wipefs.8  Formatting fixes  [Michael Kerrisk (man-pages)]
+agetty:
+   - Allow --init-string on a virtual console  [Ivan Mironov]
+   - fix typo in manual page  [Samanta Navarro]
+   - tty eol defaults to REPRINT  [Sami Loone]
+bash-completion:
+   - (lsblk) fix -E/-M arg (non-)completion  [Ville Skyttä]
+   - (lsblk) update columns  [Karel Zak]
+   - add column --table-columns-limit  [Karel Zak]
+   - add irqtop/lsirq --softirq  [Karel Zak]
+blkdiscard:
+   - do not probe for signatures on --force  [Karel Zak]
+   - fix compilation without libblkid  [Karel Zak]
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+blkid:
+   - add --hint <name>=value  [Karel Zak]
+   - add another UDF identifiers  [Karel Zak]
+   - document --hint  [Karel Zak]
+   - encode all udf and iso IDs in udev output  [Karel Zak]
+blkzone:
+   - add capacity field to zone report  [Shin'ichiro Kawasaki]
+   - add report capacity command  [Hans Holmberg]
+blockdev:
+   - fix man page formatting  [Jakub Wilk]
+build-sys:
+   - add --disable-scriptutils  [Karel Zak]
+   - add .stamp to gitignore  [Karel Zak]
+   - add EXTRA_LTLIBRARIES beween CLEANFILES  [Karel Zak]
+   - add UL_REQUIRES_PROGRAM() macro, use it for asciidoc  [Karel Zak]
+   - add configure options to disable individual utils  [heitbaum]
+   - add man-common/Makemodule.am  [Karel Zak]
+   - add missing header file  [Karel Zak]
+   - add restrict keyword fallback  [Karel Zak]
+   - add support for --enable-fuzzing-engine  [Evgeny Vereshchagin]
+   - add targets to generated translated man pages  [Karel Zak]
+   - add uninstall to po-man  [Karel Zak]
+   - check for libselinux >= 3.1  [Karel Zak]
+   - cleanup .gitignore files  [Karel Zak]
+   - cleanup Makefiles  [Karel Zak]
+   - cleanup distcheck options  [Karel Zak]
+   - cleanup uclampset dependencies  [Karel Zak]
+   - disable po-man by default, cleanup summary  [Karel Zak]
+   - do not build plymouth-ctrl.c w/ disabled plymouth  [Pino Toscano]
+   - do not use extra subdir for getopt examples  [Karel Zak]
+   - exclude GPL from libcommon  [Karel Zak]
+   - fix libblkid dependence  [Karel Zak]
+   - fix out-of-tree build  [Karel Zak]
+   - fix po-man/ make check  [Karel Zak]
+   - fix schedutils/sched_attr.h include  [Karel Zak]
+   - fix sendfile use  [Karel Zak]
+   - fix test_loopdev build  [Karel Zak]
+   - fix typo  [Karel Zak]
+   - improve asciidoc generic rule  [Karel Zak]
+   - keep adoc files in dist_noinst_DATA  [Karel Zak]
+   - make man pages location independent  [Karel Zak]
+   - make man pages optional, add --disable-asciidoc  [Karel Zak]
+   - move selinux_utils.c  [Karel Zak]
+   - release++ (v2.37-rc1)  [Karel Zak]
+   - release++ (v2.37-rc2)  [Karel Zak]
+   - remove duplicate hook  [Karel Zak]
+   - remove fallback for security_context_t  [Karel Zak]
+   - remove man page link files  [Karel Zak]
+   - remove some man pages from PATHFILES  [Karel Zak]
+   - remove with-cryptsetup from tools/config-gen.d/all.conf  [Karel Zak]
+   - set localstatedir and sysconfdir default  [Karel Zak]
+   - silence non-POSIX variable name warning  [Sami Kerola]
+   - sort various lists in configure.ac  [Sami Kerola]
+   - split man pages and man page links  [Karel Zak]
+   - update to autoconf 2.70  [Sami Kerola]
+   - update util-linux-man.pot on 'make dist'  [Karel Zak]
+   - use _DATA to install getopt examples  [Karel Zak]
+build-system:
+   - make "make distcheck" work  [Evgeny Vereshchagin]
+   - stop looking for %ms and %as  [Evgeny Vereshchagin]
+cal:
+   - do not use putp(), directly use stdio functions  [Karel Zak]
+cfdisk:
+   - (man) add info when cfdisk writes to the device  [Karel Zak]
+   - Implemented cfdisk's opening in read-only mode  [Dmitriy Chestnykh]
+   - show Q option when choosing label type  [Chris Hofstaedtler]
+   - warn if disk on use  [Karel Zak]
+chfs-chfn:
+   - remove deprecated selinux_check_passwd_access()  [Karel Zak]
+chrt:
+   - (man) add human-readable names for policies  [Karel Zak]
+   - don't restrict --reset-on-fork, add more info to man page  [Karel Zak]
+   - non-Linux fix  [Karel Zak]
+   - use SCHED_FLAG_RESET_ON_FORK for sched_setattr()  [Karel Zak]
+ci:
+   - 'downgrade' Ubuntu version to Bionic  [Frantisek Sumsal]
+   - build both w/ and w/o sanitizers on GH Actions  [Frantisek Sumsal]
+   - code cleanup  [Frantisek Sumsal]
+   - deal with uninstrumented binaries using instrumented libs  [Frantisek Sumsal]
+   - run the build test for each pull request  [Frantisek Sumsal]
+   - trigger CiFuzz for the master branch only  [Evgeny Vereshchagin]
+   - use the correct compiler version  [Frantisek Sumsal]
+cifuzz:
+   - reindent yaml file  [Sami Kerola]
+   - turn on MSan  [Evgeny Vereshchagin]
+col:
+   - add defaults to switch case clauses  [Sami Kerola]
+   - add handle_not_graphic() function  [Sami Kerola]
+   - add more tests  [Sami Kerola]
+   - add structure to hold line variables  [Sami Kerola]
+   - add update_cur_line() function  [Sami Kerola]
+   - cleanup usage() and struct col_*  [Karel Zak]
+   - enable deallocation on exit also for __SANITIZE_ADDRESS__  [Karel Zak]
+   - fix --help short option in usage() output  [Sami Kerola]
+   - flip all comparisions to numerical order  [Sami Kerola]
+   - free memory before exit [LeakSanitizer]  [Sami Kerola]
+   - initialize variables when they are declared  [Sami Kerola]
+   - make input to tolerate invalid wide characters  [Sami Kerola]
+   - move global variables to a control structure  [Sami Kerola]
+   - move option handling to separate function  [Sami Kerola]
+   - remove function prototypes  [Sami Kerola]
+   - replace LINE and CHAR typedefs with structs  [Sami Kerola]
+   - tidy up sources a little bit  [Sami Kerola]
+   - use inline function rather than function like define  [Sami Kerola]
+   - use size_t when dealing with numbers that buffer sizes  [Sami Kerola]
+   - use typedef and enum to clarify struct  [Sami Kerola]
+colrm:
+   - fix argument parsing  [Sami Kerola]
+column:
+   - Deprecate --table-empty-lines in favor of --keep-empty-lines  [Lennard Hofmann]
+   - Optionally keep empty lines in cols/rows mode  [Lennard Hofmann]
+   - add --table-columns-limit  [Karel Zak]
+   - add placeholder '0' to specify all columns  [Karel Zak]
+configure:
+   - test -a|o is not POSIX  [Issam E. Maghni]
+configure.ac:
+   - check for sendfile  [Egor Chelak]
+dmesg:
+   - add --since and --until  [Karel Zak]
+   - fix and cleanup --read-clear  [Karel Zak]
+docs:
+   - add #1266 to TODO file  [Karel Zak]
+   - add hint about make install-strip and link to Documentation/  [Karel Zak]
+   - add kernel version and commit to info about mountinfo workaround  [Karel Zak]
+   - add note about github  [Karel Zak]
+   - fix typo  [Karel Zak]
+   - fix typo in v2.36-ReleaseNotes  [Karel Zak]
+   - mention OSS-Fuzz and CIFuzz and how to build fuzz targets locally  [Evgeny Vereshchagin]
+   - rename to getopt-example  [Karel Zak]
+   - update AUTHORS file  [Karel Zak]
+   - update Documentation/howto-man-page.txt  [Karel Zak]
+   - update TODO  [Karel Zak]
+   - update TODO (add item about mnt_context_get_excode() )  [Karel Zak]
+   - update TODO (scols borders)  [Karel Zak]
+   - update TODO file (add item about libblkid ZFS)  [Karel Zak]
+   - update copyright years  [Karel Zak]
+   - update v2.37-ReleaseNotes  [Karel Zak]
+docs/TODO:
+   - Minor update and fix typo  [Mario Blättermann]
+eject:
+   - cleanup before successful exit  [Karel Zak]
+fallocate:
+   - fix --dig-holes at end of files  [Gero Treuner]
+fdformat:
+   - remove command from default build  [Sami Kerola]
+fdisk:
+   - (man) add info about order for -l  [Karel Zak]
+   - always report fdisk_create_disklabel() errors  [Karel Zak]
+   - always skips zeros in dumps  [Karel Zak]
+   - fix expected test output on alpha  [Chris Hofstaedtler]
+   - support partition type name in dialogs  [Karel Zak]
+   - warn if disk in use  [Karel Zak]
+findmnt:
+   - (man) add more info about --target  [Karel Zak]
+   - add --shadowed  [Karel Zak]
+   - add --shadowed to the man page  [Karel Zak]
+   - add PARENT column  [Karel Zak]
+   - add option to list all fs-independent flags  [Roberto Bergantinos Corpas]
+   - sort columns  [Karel Zak]
+flock:
+   - fix time_t=long assumptions  [Karel Zak]
+   - keep -E exit status more restrictive  [Karel Zak]
+fsck:
+   - fix time_t=long assumptions  [Karel Zak]
+fsck, libblkid:
+   - fix printf format string issue [coverity scan]  [Sami Kerola]
+fsck.cramfs:
+   - fix fsck.cramfs crashes on blocksizes > 4K  [ToddRK]
+fstab:
+   - fstab.5 NTFS and FAT volume IDs use upper case  [Heinrich Schuchardt]
+fstrim:
+   - do not start the timer in initrd  [Zbigniew Jędrzejewski-Szmek]
+   - fix memory leak [coverity scan]  [Karel Zak]
+   - fix paths comparison  [Karel Zak]
+   - remove fstab condition from fstrim.timer  [Dusty Mabe]
+fuzzers:
+   - make tests setup more robust  [Karel Zak]
+getopt:
+   - explicitly ask for POSIX mode on POSIXLY_CORRECT  [Đoàn Trần Công Danh]
+github:
+   - CC fix export  [Karel Zak]
+   - add 'distcheck' workflow job  [Karel Zak]
+   - add build workflow  [Karel Zak]
+   - add ruby-asciidoctor to CI-build  [Karel Zak]
+   - cleanup cibuild.sh  [Karel Zak]
+   - enable ci-build for all basic branches  [Karel Zak]
+   - export CC and CXX  [Karel Zak]
+   - fix asciidoctror dependence  [Karel Zak]
+   - fix btrfs package name  [Karel Zak]
+   - fix cibuild typo  [Karel Zak]
+   - fix distcheck job  [Karel Zak]
+   - make sure compiler is defined  [Karel Zak]
+   - remove distcheck  [Karel Zak]
+hardlink:
+   - add --quiet option  [Karel Zak]
+   - check and use sys/xattr.h  [Karel Zak]
+   - cleanup --minimum-size stuff  [Karel Zak]
+   - cleanup includes and types  [Karel Zak]
+   - cleanup man page  [Karel Zak]
+   - cleanup summary  [Karel Zak]
+   - cleanup usage()  [Karel Zak]
+   - fix hardlink pcre leak  [Sami Kerola]
+   - fix indention  [Karel Zak]
+   - fix time_t=long assumptions  [Karel Zak]
+   - fix typo  [Karel Zak]
+   - fix typo  [Mario Blättermann]
+   - fix typo again  [Karel Zak]
+   - fix typo in man page  [Karel Zak]
+   - move default to options initialization  [Karel Zak]
+   - replace with code from Debian  [Karel Zak]
+   - s/DEBUG/VERBOSE/  [Karel Zak]
+   - translate verbose messages  [Karel Zak]
+   - use PRCE2 posix header file  [Karel Zak]
+   - use err() if possible  [Karel Zak]
+   - use errx() when parse options  [Karel Zak]
+   - use monotonic time like other utils  [Karel Zak]
+   - use only err.h to print errors and warnings  [Karel Zak]
+   - use our xalloc.h  [Karel Zak]
+   - use size_to_human_string()  [Karel Zak]
+hexdump:
+   - add "hd" program name to man page  [Chris Hofstaedtler]
+   - automatically use -C when called as hd  [Chris Hofstaedtler]
+hwclock:
+   - add fallback if SYS_settimeofday does not exist  [Karel Zak]
+   - do not assume __NR_settimeofday_time32  [Pino Toscano]
+   - fix SYS_settimeofday fallback  [Rosen Penev]
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+   - fix indentation  [Łukasz Stelmach]
+   - follow timespec and use long int for nsec  [Karel Zak]
+   - make tz use more robust [coverity scan]  [Karel Zak]
+   - use pointer to adjtime data  [Karel Zak]
+include/pathnames:
+   - cleanup /proc/sys/kernel use  [Karel Zak]
+include/strutils:
+   - make xstrncpy() compatible with over-smart gcc 9  [Karel Zak]
+ipcs:
+   - Avoid shmall overflows  [Vasilis Liaskovitis]
+   - fallback for overflow  [Karel Zak]
+irqtop:
+   - add per-cpu stats  [Karel Zak]
+   - check scols_line_set_data() return code  [Karel Zak]
+   - print header in reverse mode  [Karel Zak]
+   - small cleanup  [Karel Zak]
+irqtop/lsirq:
+   - add additional desc for softirq  [zhenwei pi]
+   - add softirq for man page  [zhenwei pi]
+   - support softirq  [zhenwei pi]
+lib:
+   - add missing headers to .c files  [Karel Zak]
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+   - use procutils.c on Linux only  [Karel Zak]
+   - use ul_prefix for close_all_fds() and mkdir_p()  [Karel Zak]
+lib/buffer:
+   - add simple grow-able buffer  [Karel Zak]
+   - fix end pointer initilaization  [Karel Zak]
+   - make it robust for static analyzers [coverity scan]  [Karel Zak]
+lib/caputils:
+   - add fall back for last cap using prctl.  [Érico Rolim]
+   - split to multiple functions, add test  [Karel Zak]
+lib/env:
+   - add function to save and restore unwanted variables  [Karel Zak]
+lib/fileutils:
+   - close fd if fdopen is failed  [Masatake YAMATO]
+   - make close_all_fds() to be similar with close_range()  [Sami Kerola]
+lib/jsonwrt:
+   - add new functions to write in JSON  [Karel Zak]
+   - don't use ctype.h for ASCII chars  [Karel Zak]
+   - remove 'islast' from API  [Karel Zak]
+   - remove fputs_quoted_json_* functions from include/carefulputc.h  [Karel Zak]
+   - use proper output function  [Karel Zak]
+lib/loopdev:
+   - cosmetic changes to LOOP_CONFIGURE  [Karel Zak]
+   - fix is_loopdev() to be usable with partitions  [Karel Zak]
+   - make is_loopdev() more robust  [Karel Zak]
+lib/pager:
+   - fix improper use of negative value [coverity scan]  [Sami Kerola]
+lib/procutils:
+   - add proc_is_procfs helper.  [Érico Rolim]
+   - improve proc_is_procfs(), add test  [Karel Zak]
+   - use Public Domain for this file  [Karel Zak]
+lib/pty-session:
+   - fix time_t=long assumptions  [Karel Zak]
+lib/randutils:
+   - rename random_get_bytes()  [Sami Kerola]
+lib/selinux-utils:
+   - cleanup function names  [Karel Zak]
+   - tiny cleanup  [Karel Zak]
+lib/signames:
+   - change license to public domain  [Karel Zak]
+lib/strutils:
+   - add normalize_whitespace()  [Karel Zak]
+   - add ul_stralnumcmp()  [Karel Zak]
+   - assume 64-bit time_t  [Karel Zak]
+lib/sysfs:
+   - fix doble free [coverity scan]  [Karel Zak]
+libblikid.3.adoc:
+   - Add missing SYNOPSIS section  [Mario Blättermann]
+libblkid:
+   - (gpt) accept tiny devices  [Karel Zak]
+   - add blkid_probe_{set,get}_hint()  [Karel Zak]
+   - add erofs filesystem support  [Gao Xiang]
+   - allow a lot of mac partitions  [Samanta Navarro]
+   - allow to specify offset defined by hint for blkid_probe_get_idmag()  [Pali Rohár]
+   - detect CD/DVD discs in packet writing mode  [Pali Rohár]
+   - detect session_offset hint for optical discs  [Pali Rohár]
+   - do size correction of optical discs also by last written sector  [Pali Rohár]
+   - drbdmanage  use blkid_probe_strncpy_uuid instead of blkid_probe_set_id_label  [Pali Rohár]
+   - export blkid_probe_reset_hints()  [Karel Zak]
+   - fix Atari prober logic  [Karel Zak]
+   - fix blkid_probe_get_sb() to use hint offset calculation  [Pali Rohár]
+   - fix comment block  [Karel Zak]
+   - fix docs  [Karel Zak]
+   - fix memory leak in config parser  [Samanta Navarro]
+   - fix some typos in function comments  [nick black]
+   - fix time_t handling  [Samanta Navarro]
+   - improve debug for /proc/partitions  [Karel Zak]
+   - initialize magic strings in robust way  [Karel Zak]
+   - iso9660  add new test images  [Pali Rohár]
+   - iso9660  add support for VOLUME_SET_ID and DATA_PREPARER_ID  [Pali Rohár]
+   - iso9660  add support for multisession via session_offset hint  [Pali Rohár]
+   - iso9660  check that iso->publisher_id and iso->application_id are not file paths  [Pali Rohár]
+   - iso9660  do not check is_str_empty() for iso->system_id and boot->boot_system_id  [Pali Rohár]
+   - iso9660  fix parsing images which do not have Primary Volume Descriptor as the first  [Pali Rohár]
+   - iso9660  improve label parsing  [Pali Rohár]
+   - iso9660  parse SYSTEM_ID, PUBLISHER_ID and APPLICATION_ID from Joliet  [Pali Rohár]
+   - iso9660  set block size also for High Sierra format  [Pali Rohár]
+   - limit amount of parsed partitions  [Samanta Navarro]
+   - make Atari more robust  [Karel Zak]
+   - make gfs2 prober more extendible  [Karel Zak]
+   - overwrite existing hint  [Karel Zak]
+   - remove workaround for FAT+MBR on whole-disk  [Karel Zak]
+   - udf  add support for APPLICATION_ID  [Pali Rohár]
+   - udf  add support for PUBLISHER_ID  [Pali Rohár]
+   - udf  add support for multisession via session_offset hint  [Pali Rohár]
+   - udf  add support for unclosed sequential Write-Once media  [Pali Rohár]
+   - udf  check that dstrings are encoded in OSTA Compressed Unicode  [Pali Rohár]
+   - udf  update test output for APPLICATION_ID and PUBLISHER_ID  [Pali Rohár]
+   - use /sys to read all block devices  [Karel Zak]
+libfdisk:
+   - (dos) fix last possible sector calculation  [Karel Zak]
+   - (gpt) make sure device is large enough  [Karel Zak]
+   - (gpt) reduce number of entries to fit small device  [Karel Zak]
+   - (gpt) returns location of the backup header too  [Karel Zak]
+   - (script) don't use sector size if not specified  [Karel Zak]
+   - (script) fix possible memory leaks  [Karel Zak]
+   - (script) fix possible partno overflow  [Karel Zak]
+   - (script) ignore empty values for start and size  [Gaël PORTAY]
+   - (script) make sure buffer is initialized  [Karel Zak]
+   - (script) make sure label is specified  [Karel Zak]
+   - (script) print bootable flag only when set  [Karel Zak]
+   - Include table-length in first-lba checks  [Samuel Dionne-Riel]
+   - add "Linux /usr" and "Linux /usr verity" GPT partition types  [nl6720]
+   - add systemd-homed user's home GPT partition type  [nl6720]
+   - another parse_line_nameval() cleanup  [Karel Zak]
+   - do not reset default if undefined by script  [Karel Zak]
+   - fix fdisk_reread_changes() for extended partitions  [Karel Zak]
+   - fix last free sector detection if partition size specified  [Karel Zak]
+   - fix typo from 255f5f4c770ebd46a38b58975bd33e33ae87ed24  [Karel Zak]
+   - ignore 33553920 byte optimal I/O size  [Ryan Finnie]
+   - make fdisk_partname() more robust  [Karel Zak]
+   - make labels allocations readable for analysers [coverity scan]  [Karel Zak]
+   - reset context FD on error  [yangzz-97]
+   - support partition type name parsing  [Karel Zak]
+   - use lib/jsonwrt.s for JSON formatting  [Karel Zak]
+   - use open(O_EXCL) to detect if device is used  [Karel Zak]
+libmount:
+   - (optstr) improve default initialization  [Karel Zak]
+   - (python) fix compiler warning  [Karel Zak]
+   - Fix 0x%u usage  [Dr. David Alan Gilbert]
+   - add assert() to umount lookup code  [Karel Zak]
+   - add mnt_table_over_fs()  [Karel Zak]
+   - add vboxsf, virtiofs to pseudo filesystems  [Shahid Laher]
+   - allow --read-only for not-root users  [Karel Zak]
+   - do not canonicalize ZFS source dataset  [Karel Zak]
+   - do not use pointer as an integer value  [Sami Kerola]
+   - don't use "symfollow" for helpers on user mounts  [Karel Zak]
+   - don't use deprecated security_context_t  [Karel Zak]
+   - fix /{etc,proc}/filesystems use  [Karel Zak]
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+   - fix memory leak [coverity scan]  [Karel Zak]
+   - fix tab parser for badly terminated lines  [Karel Zak]
+   - improve mnt_split_optstr() performance  [Karel Zak]
+   - mark entries from /proc/swaps by MNT_FS_SWAP  [Karel Zak]
+   - mnt_table_over_fs() make child optional  [Karel Zak]
+   - optimize mnt_optstr_apply_flags()  [Karel Zak]
+   - remove read-mountinfo workaround  [Karel Zak]
+libmount (verity):
+   - let crypt_deactivate_by_name handle its own data structure  [Luca Boccassi]
+   - plug libcryptsetup logger into our logging system  [Luca Boccassi]
+libsmartcols:
+   - add comments to private header file  [Karel Zak]
+   - add sort sunction to the sample  [Karel Zak]
+   - don't print empty output on empty table in JSON  [Karel Zak]
+   - fix colors use  [Karel Zak]
+   - introduce default sort column  [Karel Zak]
+   - make buffers append function more robust  [Karel Zak]
+   - remove unnecessary code  [Karel Zak]
+   - sanitize variable names on export output  [Karel Zak]
+   - support arrays for JSON output  [Karel Zak]
+   - use lib/jsonwrt.c for JSON  [Karel Zak]
+libsmratcols:
+   - print title color only when wanted  [Karel Zak]
+libuuid:
+   - check quality of random bytes  [Samanta Navarro]
+   - improve "restrict" keyword use  [Karel Zak]
+   - simplify uuid_is_null() check  [Sami Kerola]
+login:
+   - add initialize() function to have less stack allocated in main()  [Sami Kerola]
+   - add option to not reset username on each attempt  [Thayne McCombs]
+   - close() only a file descriptor that is open [coverity scan]  [Sami Kerola]
+   - ensure getutxid() does not use uninitialized variable [coverity scan]  [Sami Kerola]
+   - fix coding style issues  [Sami Kerola]
+   - fix compiler warning [-Werror=strict-prototypes]  [Karel Zak]
+   - move generic setting to ttyutils.h  [Karel Zak]
+   - move getlogindefs_num() after localization init  [Sami Kerola]
+   - move message printing out from main()  [Sami Kerola]
+   - move proctitle code to login.c  [Karel Zak]
+   - move timeout from global to local scope  [Sami Kerola]
+   - replace function like definitions with inline functions  [Sami Kerola]
+   - stop keeping timeout message in memory forever  [Sami Kerola]
+   - tidy up manual page  [Sami Kerola]
+   - use calloc() when memory needs to be cleared  [Sami Kerola]
+   - use close_range() system call when possible  [Sami Kerola]
+   - use explicit_bzero() to get rid of confidental memory  [Sami Kerola]
+   - use full tty path for PAM_TTY  [Karel Zak]
+   - use mem2strcpy() rather than rely on printf()  [Karel Zak]
+   - use sig_atomic_t type for variable accessed from signal handler  [Sami Kerola]
+   - use system definitions to determine maxium login name length  [Sami Kerola]
+   - use ul_copy_file  [Egor Chelak]
+   - use xalloc memory allocation helpers everywhere  [Sami Kerola]
+login-utils:
+   - don't use deprecated security_context_t  [Karel Zak]
+loopdev:
+   - use LOOP_CONFIG ioctl  [Sinan Kaya]
+losetup:
+   - avoid infinite busy loop  [Karel Zak]
+   - fix wrong printf() format specifier for ino_t data type  [Manuel Bentele]
+   - increase limit of setup attempts  [Karel Zak]
+lsblk:
+   - add --width option  [Karel Zak]
+   - add FSROOTS column  [Karel Zak]
+   - add dependence between CD/DVD block and packet devices  [Karel Zak]
+   - add lscpu_read_topology_polarization()  [Karel Zak]
+   - fix -T optional argument  [Karel Zak]
+   - fix SCSI_IDENT_SERIAL  [Karel Zak]
+   - fix filesystem array allocation  [Karel Zak]
+   - ignore only loopdevs without backing file  [Karel Zak]
+   - print all device mountpoints  [Karel Zak]
+   - print zero rather than empty SIZE  [Karel Zak]
+   - read ID_SCSI_IDENT_SERIAL if available  [Karel Zak]
+   - read SCSI_IDENT_SERIAL also from udev  [Karel Zak]
+   - show all empty, except loopdevs  [Karel Zak]
+   - update man page  [Karel Zak]
+   - use MOUNTPOINTS in --fs  [Karel Zak]
+   - use MOUNTTARGETS in default output  [Karel Zak]
+lscpu:
+   - (arm) reuse parsed vendor ID  [Karel Zak]
+   - (cpuinfo) fill empty cputype  [Karel Zak]
+   - (cpuinfo) rewrite parser  [Karel Zak]
+   - (cputype) add cpuinfo parser  [Karel Zak]
+   - (cputype) add debug stuff  [Karel Zak]
+   - (cputype) add header file, cleanup patterns code  [Karel Zak]
+   - (cputype) add ref-counting, allocate context  [Karel Zak]
+   - (cputype) move temporary stuff  [Karel Zak]
+   - (cputype) simplify cpuinfo parsing  [Karel Zak]
+   - (topology) add read_address()  [Karel Zak]
+   - (topology) add read_configure()  [Karel Zak]
+   - (topology) add read_mhz()  [Karel Zak]
+   - (topology) read caches from /sys  [Karel Zak]
+   - (virt) add macros for VMWARE  [Karel Zak]
+   - (virt) simplify hypervisor parsing  [Karel Zak]
+   - Adapt MIPS cpuinfo  [Karel Zak]
+   - Add FUJITSU aarch64 A64FX cpupart  [Shunsuke Nakamura]
+   - Even more Arm part numbers  [Jeremy Linton]
+   - Replace space with tabs  [Bader Zaidan]
+   - add LSCPU_OUTPUT_ enum  [Karel Zak]
+   - add MHZ column  [Karel Zak]
+   - add MHZ to the -e output  [Karel Zak]
+   - add another part of summary output  [Karel Zak]
+   - add extra caches to --cache output  [Karel Zak]
+   - add function to count caches size  [Karel Zak]
+   - add functions to get CPU freq  [Karel Zak]
+   - add helper to get physical sockets  [Masayoshi Mizuma]
+   - add info that caches sizes are sum  [Karel Zak]
+   - add lscpu_cpu to internal API  [Karel Zak]
+   - add lscpu_cpus_loopup_by_type(), improve readability  [Karel Zak]
+   - add lscpu_read_architecture()  [Karel Zak]
+   - add lscpu_read_cpulists()  [Karel Zak]
+   - add lscpu_read_extra()  [Karel Zak]
+   - add lscpu_read_numas()  [Karel Zak]
+   - add lscpu_read_topolgy_ids()  [Karel Zak]
+   - add lscpu_read_topology()  [Karel Zak]
+   - add lscpu_read_virtualization()  [Karel Zak]
+   - add lscpu_read_vulnerabilities()  [Karel Zak]
+   - add note about cache IDs  [Karel Zak]
+   - add per type summary function  [Karel Zak]
+   - add rest of summary  [Karel Zak]
+   - add sections  [Karel Zak]
+   - add setsize to lscpu context  [Karel Zak]
+   - add shared cached info for s390 lscpu -C  [Karel Zak]
+   - add very basic cputype code  [Karel Zak]
+   - assume L1d, L1i, L2, L3 for sparc  [Karel Zak]
+   - assume gaps in list of CPUs  [Karel Zak]
+   - avoid segfault on PowerPC systems with valid hardware configurations  [Thomas Abraham]
+   - calculate threads number from type specific values  [Karel Zak]
+   - cleanup --cache  [Karel Zak]
+   - cleanup --parse  [Karel Zak]
+   - cleanup -e  [Karel Zak]
+   - cleanup lscpu_unref_cputype()  [Karel Zak]
+   - cleanup tab vs. space  [Karel Zak]
+   - cleaup arch freeing  [Karel Zak]
+   - convert ARM decoding to new API  [Karel Zak]
+   - convert getopt block to new API  [Karel Zak]
+   - deallocate maps  [Karel Zak]
+   - don't use section for extra caches  [Karel Zak]
+   - don't use smbios when read snapshots  [Karel Zak]
+   - fix "caches" header  [Karel Zak]
+   - fix MHZ parsing  [Karel Zak]
+   - fix NUMAs reading code  [Karel Zak]
+   - fix NVIDIA ARM hw implementer spelling case  [Ville Skyttä]
+   - fix for sparc64  [Karel Zak]
+   - fix last caches separator in -e and -p output  [Karel Zak]
+   - fix mem-leak in cpu  [Karel Zak]
+   - fix memory leaks  [Karel Zak]
+   - fix possible null dereferences [coverity scan]  [Karel Zak]
+   - fix resource leak [coverity scan]  [Karel Zak]
+   - fix variable shadowing  [Sami Kerola]
+   - generate cache ID if not available  [Karel Zak]
+   - hide all to lscpu_read_topology()  [Karel Zak]
+   - improve bogomips use  [Karel Zak]
+   - improve debug message  [Karel Zak]
+   - improve topology calculation  [Karel Zak]
+   - improve topology calculation, use /proc/sysinfo  [Karel Zak]
+   - improve topology debug message  [Karel Zak]
+   - keep hypervisor name in allocated memory  [Karel Zak]
+   - keep static/dynamic MHz in cputype struct  [Karel Zak]
+   - merge new API to lscpu.h  [Karel Zak]
+   - move debug initialization to main  [Karel Zak]
+   - move to main function to init context  [Karel Zak]
+   - move topology stuff to separate file  [Karel Zak]
+   - new cpuinfo parser  [Karel Zak]
+   - print generic part of the summary  [Karel Zak]
+   - read Sparc caches files  [Karel Zak]
+   - recognize more ARM implementers  [Ville Skyttä]
+   - remove obsolete code  [Karel Zak]
+   - remove unnecessary prefix from static function  [Karel Zak]
+   - remove unused code  [Karel Zak]
+   - remove unused function  [Karel Zak]
+   - report also number of cache instances  [Karel Zak]
+   - show the number of physical socket on aarch64 machine without ACPI PPTT  [Masayoshi Mizuma]
+   - sort extra caches  [Karel Zak]
+   - split output to sections  [Karel Zak]
+   - support +list for -e, -p and -C  [Karel Zak]
+   - support s390 cpuinfo processor-pre-line format  [Karel Zak]
+   - temporary commit  [Karel Zak]
+   - update tests  [Karel Zak]
+   - use SMBIOS tables on ARM for lscpu  [Jeffrey Bastian]
+   - use cache ID, keep caches independent on CPU type  [Karel Zak]
+   - use cluster on aarch64 machine which doesn't have ACPI PPTT  [Masayoshi Mizuma]
+   - use constants from new API  [Karel Zak]
+   - use new code to read CPUs info  [Karel Zak]
+   - use size_t for counters  [Karel Zak]
+   - use size_t for ncolumns  [Karel Zak]
+lscpu-arm:
+   - Add "BIOS Vendor ID" and "BIOS Model name" to show the SMBIOS information.  [Masayoshi Mizuma]
+lscpu-dmi:
+   - Move some functions related to DMI to lscpu-dmi  [Masayoshi Mizuma]
+lscpu-virt:
+   - fix return type of read_hypervisor_cpuid for non x86.  [Érico Rolim]
+   - split hypervisor_from_dmi_table()  [Masayoshi Mizuma]
+lsipc:
+   - make default output byte sizes to be in human units  [Sami Kerola]
+lsirq:
+   - fix resources leak [coverity scan]  [Karel Zak]
+lslogins:
+   - call close() for usable FD [coverity scan]  [Karel Zak]
+   - non-Linux fix  [Karel Zak]
+lsmem:
+   - use ul_path_readf_string() readable for analysers [coverity scan]  [Karel Zak]
+lsns:
+   - add columns for parent namespaces and owner namespaces  [Masatake YAMATO]
+man:
+   - add ioctl_ns(2) to SEE ALSO of lsns(2)  [Masatake YAMATO]
+   - add missing backslash to caret printing macro  [Sami Kerola]
+   - make tilde and caret characters to render correctly  [Sami Kerola]
+manpages:
+   - fix "The example command" in AVAILABILITY section  [Chris Hofstaedtler]
+mesg:
+   - use only stat() to get the current terminal status  [Karel Zak]
+meson:
+   - add irq utils  [Karel Zak]
+   - add missing HAVE_ definitions  [Karel Zak]
+   - add second build system  [Zbigniew Jędrzejewski-Szmek]
+   - fix systemd dependence  [Karel Zak]
+   - generate man pages from asciidoc  [Karel Zak]
+   - implement building of static programs  [Zbigniew Jędrzejewski-Szmek]
+   - port localstatedir and sysconfdir  [Karel Zak]
+   - update configuration  [Karel Zak]
+   - update for new hardlink  [Karel Zak]
+   - update sources and dependencies  [Karel Zak]
+misc:
+   - fix typos  [Samanta Navarro]
+   - fix typos [codespell]  [Samanta Navarro]
+mkfs.minix:
+   - add --lock and LOCK_BLOCK_DEVICE  [Karel Zak]
+mkswap:
+   - add --verbose, reduce extents check output  [Karel Zak]
+   - check for holes and unwanted extentd in file  [Karel Zak]
+   - cleanup usage()  [Karel Zak]
+   - don't use deprecated security_context_t  [Karel Zak]
+   - improve extents check  [Karel Zak]
+   - remove deprecated SELinux matchpathcon()  [Karel Zak]
+   - remove unnecessary on FS_IOC_FIEMAP  [Karel Zak]
+   - remove unused variable when compile without libblkid  [Karel Zak]
+   - tell how to fix insecure permissions and owner in warning  [Sami Kerola]
+more:
+   - fix ARROW_DOWN and PAGE_DOWN behaviour to not skip lines  [Hannes Müller]
+   - fix command 'f' (screen forward) behaviour  [Hannes Müller]
+   - fix floating point exception core dump  [Sami Kerola]
+   - improve error messaging when input file is directory  [Sami Kerola]
+mount:
+   - Add support for "nosymfollow" mount option.  [Mattias Nissler]
+mount, umount:
+   - restore environ[] after suid drop  [Karel Zak]
+mount.a.adoc:
+   - Fix markup  [Mario Blättermann]
+mountpoint:
+   - different exit status for errors and non-mountpoint situation  [Karel Zak]
+nologin:
+   - use ul_copy_file  [Egor Chelak]
+nsenter / switch_root:
+   - fix insecure chroot [coverity scan]  [Sami Kerola]
+pg:
+   - fix wcstombs() use  [Karel Zak]
+po:
+   - add ko.po (from translationproject.org)  [Seong-ho Cho]
+   - add sr.po (from translationproject.org)  [Мирослав Николић]
+   - add xgettext hint for non-c-format string  [Karel Zak]
+   - merge changes  [Karel Zak]
+   - update  [Karel Zak]
+   - update cs.po (from translationproject.org)  [Petr Písař]
+   - update de.po (from translationproject.org)  [Mario Blättermann]
+   - update es.po (from translationproject.org)  [Antonio Ceballos Roa]
+   - update fr.po (from translationproject.org)  [Frédéric Marchal]
+   - update hr.po (from translationproject.org)  [Božidar Putanec]
+   - update pl.po (from translationproject.org)  [Jakub Bogusz]
+   - update pt.po (from translationproject.org)  [Pedro Albuquerque]
+   - update sv.po (from translationproject.org)  [Sebastian Rasmussen]
+   - update uk.po (from translationproject.org)  [Yuri Chornoivan]
+   - use msgmerge --previous  [Karel Zak]
+po-man:
+   - Add (incomplete) de.po for testing purposes  [Mario Blättermann]
+   - Add po-man/README.md  [Mario Blättermann]
+   - Adjust paths in po4a.cfg and update .pot file  [Mario Blättermann]
+   - Fix the example man page  [Mario Blättermann]
+   - Fix typos in de.po and po4a.cfg  [Mario Blättermann]
+   - Fix typos in po-man/README.md  [Mario Blättermann]
+   - Move Po4a config file and translation template to po-man  [Mario Blättermann]
+   - Update the example man page  [Mario Blättermann]
+prlimit:
+   - fix optional arguments parsing  [Karel Zak]
+   - make code more robust  [Karel Zak]
+pylibmount:
+   - PyEval_Call* is deprecate, use PyObject_Call*  [Karel Zak]
+read_all:
+   - return 0 when EOF occurs after 0 bytes  [Egor Chelak]
+readprofile:
+   - fix static analyzer warning [coverity scan]  [Karel Zak]
+rfkill:
+   - add "toggle" command  [Karel Zak]
+   - fix compiler warning [-Wformat=]  [Karel Zak]
+   - fix compiler warning [-Wsign-compare]  [Karel Zak]
+   - fix static analyzer warning [coverity scan]  [Karel Zak]
+   - make RFKILL_EVENT_SIZE_V1 use more portable  [Karel Zak]
+   - stop execution when rfkill device cannot be opened  [Sami Kerola]
+rtcwake:
+   - fix time_t=long assumptions  [Karel Zak]
+script:
+   - cleanup --echo  [Soumendra Ganguly]
+   - don't use strings from user as printf-format [coverity scan]  [Karel Zak]
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+   - fix time_t=long assumptions  [Karel Zak]
+   - improve I/O return code checks  [Soumendra Ganguly]
+   - kill child process on error  [Karel Zak]
+scriptlive:
+   - (man) add missing parenthesis  [Karel Zak]
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+scriptplay:
+   - fix time_t=long assumptions  [Karel Zak]
+scriptreplay:
+   - enable special character handling  [Soumendra Ganguly]
+setpriv:
+   - allow using [-+]all for capabilities.  [Érico Rolim]
+   - small clean-up.  [Érico Rolim]
+sfdisk:
+   - (docs) add more information about GPT attribute bits  [Karel Zak]
+   - correct --json --dump false exclusive  [Dimitri John Ledkov]
+   - disable bootbits protection on '--wipe always'  [Karel Zak]
+   - do not free device name too soon [coverity scan]  [Sami Kerola]
+   - fix backward --move-data  [Karel Zak]
+   - fix resources leak [coverity scan]  [Karel Zak]
+   - support for type="partition type name"  [Karel Zak]
+su:
+   - (pty) change owner and mode for pty  [Karel Zak]
+   - explicitly enable echo for --pty  [Karel Zak]
+   - fix man page typos  [Štěpán Němec]
+   - remove useless assignment  [Karel Zak]
+   - use full tty path for PAM_TTY  [Karel Zak]
+swapon:
+   - Keep headings and fields aligned in summary output.  [Sebastian Rasmussen]
+switch_root:
+   - check if mount point to move even exists  [Thomas Deutschmann]
+   - fix double close [coverity scan]  [Karel Zak, Sami Kerola]
+sys-utils:
+   - mount.8  fix a typo  [Eric Biggers]
+test_uuid_parser:
+   - fix time_t=long assumptions  [Karel Zak]
+tests:
+   - (blkid) add erofs image  [Karel Zak]
+   - (blkid) add support for multisession images  [Karel Zak]
+   - (fileutils) remove unused code  [Karel Zak]
+   - (ul) remove another 'dim' input  [Karel Zak]
+   - add a fuzz target calling fdisk_script_read_file  [Evgeny Vereshchagin]
+   - add a fuzzer for mnt_table_parse_stream  [Evgeny Vereshchagin]
+   - add a fuzzer for process_wtmp_file  [Evgeny Vereshchagin]
+   - add checksum for cramfs/mkfs for LE 16384 (ia64)  [Anatoly Pugachev]
+   - add sfdisk test for 4fe7f9b614e2b5bb97f6d89af02acb867cffccc1  [Karel Zak]
+   - add testcases that triggered various crashes  [Evgeny Vereshchagin]
+   - an attempt to get around https //github.com/karelzak/util-linux/issues/1110  [Evgeny Vereshchagin]
+   - be explicit with file permissions for cramfs  [Karel Zak]
+   - cover the code parsing comments  [Evgeny Vereshchagin]
+   - don't reply on scsi_debug partitions  [Karel Zak]
+   - dump more information about CFS and block devices  [Karel Zak]
+   - improve u64 use in ipcs test  [Karel Zak]
+   - integrate test_last_fuzz into the testsuite  [Evgeny Vereshchagin]
+   - integrate test_mount_fuzz into the testsuite  [Evgeny Vereshchagin]
+   - make it compatible with meson  [Karel Zak]
+   - mark ul/basic as KNOWN_FAIL  [Karel Zak]
+   - migrate from ext3 to ext2  [Karel Zak]
+   - mkfs-endianness test use iflag=fullblock to fill block completely with string  [Masami Ichikawa]
+   - mkfs-endianness test uses prepared test data  [Masami Ichikawa]
+   - move misc/ul to ul/ directory  [Sami Kerola]
+   - pack testcases into zip archives  [Evgeny Vereshchagin]
+   - remove ul(1) 'dim' input  [Karel Zak]
+   - set shmmni to 32k  [Karel Zak]
+   - skip hwclock/systohc on GH Actions  [Karel Zak]
+   - small change to the lsns/ioctl_ns  [Karel Zak]
+   - suggest "make check-programs"  [Karel Zak]
+   - take exit codes into account  [Evgeny Vereshchagin]
+   - update JSON outputs  [Karel Zak]
+   - update atari blkid tests  [Karel Zak]
+   - update atari partx tests  [Karel Zak]
+   - update blkid output for iso/udf  [Karel Zak]
+   - update build test results  [Karel Zak]
+   - update build tests  [Karel Zak]
+   - update fdisk dumps  [Karel Zak]
+   - update hardlink tests  [Karel Zak]
+   - update libfdisk JSON outputs  [Karel Zak]
+   - update lscpu output  [Karel Zak]
+   - update mountpoint return code chack  [Karel Zak]
+   - update mountpoint tests  [Karel Zak]
+   - update script(1) return code  [Karel Zak]
+   - update sfdisk wipe tests  [Karel Zak]
+   - update sparc lscpu tests  [Karel Zak]
+   - update swaplabel.err  [Karel Zak]
+tests/run:
+   - create failure directory  [Zbigniew Jędrzejewski-Szmek]
+text-utils:
+   - correctly detect ASan under clang  [Frantisek Sumsal]
+tools:
+   - add missing stuff to Makefile.am  [Karel Zak]
+   - make it possible to set all the fuzzing flags with config-gen  [Evgeny Vereshchagin]
+   - replace checkmans.sh with adoc scripts  [Karel Zak]
+   - use libcryptsetup in config-gen.d/all.conf  [Karel Zak]
+travis:
+   - cleanup before autogen  [Karel Zak]
+   - disable OSX for now  [Karel Zak]
+   - remove old ubuntu  [Karel Zak]
+   - set CXX correctly  [Evgeny Vereshchagin]
+   - stop building fuzz targets on macOS  [Evgeny Vereshchagin]
+   - try update to xcode10.1  [Karel Zak]
+   - turn off libmount on OSX  [Evgeny Vereshchagin]
+   - turn on --enable-fuzzing-engine  [Evgeny Vereshchagin]
+   - use verbose mode (V=1) for make  [Karel Zak]
+ttymsg:
+   - fix resource leak [coverity scan]  [Karel Zak]
+uclampset:
+   - Add man page  [Qais Yousef]
+   - Plumb in bash-completion  [Qais Yousef]
+   - Plump into the build system  [Qais Yousef]
+   - cleanup --hel output  [Karel Zak]
+ul:
+   - add a term capabilities tracking structure  [Sami Kerola]
+   - add basic tests  [Sami Kerola]
+   - fix use of unsigned number  [Karel Zak]
+   - flip comparisons to lesser to greater order  [Sami Kerola]
+   - free most allocations ncurses did during setupterm()  [Sami Kerola]
+   - improve function and variable names  [Sami Kerola]
+   - make set_column() zero check more obvious  [Sami Kerola]
+   - remove function like putwp preprocessor define  [Sami Kerola]
+   - remove function prototypes  [Sami Kerola]
+   - rename enumerated mode symbols  [Sami Kerola]
+   - replace global runtime variables with a control structure  [Sami Kerola]
+   - small coding changes  [Karel Zak]
+   - tidy up coding style  [Sami Kerola]
+   - use size_t to measure memory allocation size  [Sami Kerola]
+ul_copy_file:
+   - add test program  [Egor Chelak]
+   - handle EAGAIN and EINTR  [Egor Chelak]
+   - make defines for return values  [Egor Chelak]
+   - use BUFSSIZ for buffer size  [Egor Chelak]
+   - use all_read/all_write  [Egor Chelak]
+   - use sendfile  [Egor Chelak]
+umount:
+   - ignore --no-canonicalize,-c for non-root users  [Karel Zak]
+   - support over-mounts for --recursive  [Karel Zak]
+unshare:
+   - Fix error message when setting proc mount propagation  [Johan Herland]
+   - fix bad bit shift operation [coverity scan]  [Sami Kerola]
+utmpdup:
+   - Ensure flushing when using follow flag  [Andrew Shapiro]
+uuidd:
+   - add command-line option values struct  [Sami Kerola]
+   - add uuidd specific data types that are used in protocol  [Sami Kerola]
+   - document uuidd protocol  [Sami Kerola]
+   - fix misleading indentation  [Sami Kerola]
+   - make timeout to take effect when debug is not defined  [Sami Kerola]
+   - move option parsing to separate function  [Sami Kerola]
+   - override operation type when performing bulk request  [Sami Kerola]
+   - remove unnecessary bulk request size limit  [Sami Kerola]
+   - reorder bulk time and random generation code  [Sami Kerola]
+   - use pid_t type when referring to process id  [Sami Kerola]
+uuidgen:
+   - give hint in usage() what uuid namepaces can be used  [Sami Kerola]
+   - use errx() rather than fprintf() when priting errors  [Sami Kerola]
+uuidparse:
+   - use libuuid function to test nil uuid  [Sami Kerola]
+   - use uuid type definitions from libuuid header  [Sami Kerola]
+vipw:
+   - fix short write handling in copyfile  [Egor Chelak]
+   - move copyfile to the lib  [Egor Chelak]
+whereis:
+   - add --disable-whereis to configure  [Samanta Navarro]
+   - add lib32 directories  [Samanta Navarro]
+   - do not ignore trailing numbers  [Samanta Navarro]
+   - do not strip suffixes  [Samanta Navarro]
+   - extend test case  [Samanta Navarro]
+   - filter bin, man and src differently  [Samanta Navarro]
+   - fix out of boundary read  [Samanta Navarro]
+   - support zst compressed man pages  [Samanta Navarro]
+wipefs:
+   - (man) add hint to erase on partitions and disk  [Karel Zak]
+   - fix compiler warning  [Karel Zak]
+zramctl:
+   - (man) fix streams default number  [Karel Zak]
 
