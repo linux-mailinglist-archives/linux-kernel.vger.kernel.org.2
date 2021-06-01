@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18F93974A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE513974AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhFANye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:54:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233584AbhFANy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:54:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E158F61376;
-        Tue,  1 Jun 2021 13:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622555565;
-        bh=JvEEdlPXj4ia4HL0u4q4ZXk0jCOdlivWDn7dFPYD3tM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CE5z9Qn0F8WJPAtTqloR3989T+FAmwPphxaJ3xPLgjWrIXOFpPut0WEtGvJylgRWC
-         wgzHaEgrcWUXk4We3oPfc4P7fwZz+ixzQv0sk69/uCOwywdLrzaIpwaf8SoJHvYEZY
-         vjKxWHiMzPQRRBbkXui77sOaGEKhVzdD8sOI1LZnkcUVN5tbwhdT6SiOkooJsXte0u
-         e0ztDacoHuKbytb7KEMAQbINww2VFLsr58JtOgcqwWjQlmboxLFJgjf/XLvVcvnX7p
-         o+UFMi3q/iZkoLkpZzyj5VvF2fHysyDpic89/2iJuwk219pcw/YqRWP4KVM9gMTutF
-         6jEvMwRQ4Uc0g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 565914011C; Tue,  1 Jun 2021 10:52:42 -0300 (-03)
-Date:   Tue, 1 Jun 2021 10:52:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>, Song Liu <songliubraving@fb.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH] perf stat: Fix error return code in bperf__load()
-Message-ID: <YLY7qozcJcj8RVe+@kernel.org>
-References: <20210517081254.1561564-1-yukuai3@huawei.com>
+        id S234059AbhFAN4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233871AbhFAN4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:56:00 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B468FC061574;
+        Tue,  1 Jun 2021 06:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=7XhK7llXjchxp+a7TIgBxmkimmZHUZAa+hOWlZXnwvg=; b=KncBS8kthwg3/xy/MOY43kE0h
+        GeNUvPLx3dDFs6+dHwh1EQOBgZeQ5IT1d6n3R/Tb9lm/DMGylf0lUWUfHQgt2DqU57BKJrjGLuvI7
+        /vG8ZR1O/gMBxZmdlgxD7Q/TaSqixgY9cAfRnSEnXeV0PUNFEG3eNEL+1XBwizX7EYHRMzqQ43K/N
+        CZ1f/ezxnSUS0YZXKaQIkgAlYsa3pzKPIqcnNjV3ovUf2LlvfMC3e4VdVzEcyf/0G8HWTl+HqgSjn
+        IlpWwBowpE8lGcsTYVuz8eRYavqP0MF5t6cOubxsRlbYL2kfbZW4Aswfj/WFcqA+RlCKRKpGB+Sza
+        FTmWKOfNA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44578)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lo4qW-0004A2-Hm; Tue, 01 Jun 2021 14:54:16 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lo4qV-0000Al-MC; Tue, 01 Jun 2021 14:54:15 +0100
+Date:   Tue, 1 Jun 2021 14:54:15 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org
+Subject: Re: [RFC/RFT PATCH 2/5] memblock: introduce generic
+ memblock_setup_resources()
+Message-ID: <20210601135415.GZ30436@shell.armlinux.org.uk>
+References: <20210531122959.23499-1-rppt@kernel.org>
+ <20210531122959.23499-3-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517081254.1561564-1-yukuai3@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210531122959.23499-3-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, May 17, 2021 at 04:12:54PM +0800, Yu Kuai escreveu:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On Mon, May 31, 2021 at 03:29:56PM +0300, Mike Rapoport wrote:
+> +	code_resource.start = __pa_symbol(_text);
+> +	code_resource.end = __pa_symbol(_etext)-1;
+> +	rodata_resource.start = __pa_symbol(__start_rodata);
+> +	rodata_resource.end = __pa_symbol(__end_rodata)-1;
+> +	data_resource.start = __pa_symbol(_sdata);
+> +	data_resource.end = __pa_symbol(_edata)-1;
+> +	bss_resource.start = __pa_symbol(__bss_start);
+> +	bss_resource.end = __pa_symbol(__bss_stop)-1;
 
-Applied, but I had to add Song to the CC list and also add this line:
+This falls short on 32-bit ARM. The old code was:
 
-Fixes: 7fac83aaf2eecc9e ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
+-       kernel_code.start   = virt_to_phys(_text);
+-       kernel_code.end     = virt_to_phys(__init_begin - 1);
+-       kernel_data.start   = virt_to_phys(_sdata);                             
+-       kernel_data.end     = virt_to_phys(_end - 1);                           
 
-So that the stable@kernel.org folks can get this auto-collected.
+If I look at one of my kernels:
 
-Perhaps you guys can make Hulk do that as well? :-)
+c0008000 T _text
+c0b5b000 R __end_rodata
+... exception and unwind tables live here ...
+c0c00000 T __init_begin
+c0e00000 D _sdata
+c0e68870 D _edata
+c0e68870 B __bss_start
+c0e995d4 B __bss_stop
+c0e995d4 B _end
 
-Thanks,
-
-- Arnaldo
-
-> ---
->  tools/perf/util/bpf_counter.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> index ddb52f748c8e..843b20aa6688 100644
-> --- a/tools/perf/util/bpf_counter.c
-> +++ b/tools/perf/util/bpf_counter.c
-> @@ -522,6 +522,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
->  	evsel->bperf_leader_link_fd = bpf_link_get_fd_by_id(entry.link_id);
->  	if (evsel->bperf_leader_link_fd < 0 &&
->  	    bperf_reload_leader_program(evsel, attr_map_fd, &entry))
-> +		err = -1;
->  		goto out;
->  
->  	/*
-> @@ -550,6 +551,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
->  	/* Step 2: load the follower skeleton */
->  	evsel->follower_skel = bperf_follower_bpf__open();
->  	if (!evsel->follower_skel) {
-> +		err = -1;
->  		pr_err("Failed to open follower skeleton\n");
->  		goto out;
->  	}
-> -- 
-> 2.25.4
-> 
+So the original covers _text..__init_begin-1 which includes the
+exception and unwind tables. Your version above omits these, which
+leaves them exposed.
 
 -- 
-
-- Arnaldo
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
