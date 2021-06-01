@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D3F397C01
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90B4397C2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234936AbhFAWCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:02:04 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35933 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234740AbhFAWCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:02:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvmL401bKz9sWc;
-        Wed,  2 Jun 2021 08:00:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622584815;
-        bh=VNJUL7vtURQbJVy1w9t/7hyhua736mwNIIFv/kKyKiU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AcJ8rCyCDDuISz6JsgloQtKiOonDqbXKccrZZTwXqkT9IZ5at1Y9ccepYAI6gwP/W
-         YdMlutLKG5TrHKp+3ZELXbz5YQNkRyKn0JzXZOzP4l8HA3oOnMv2XdgoYSI+VQ1CHK
-         Vs640+uImoX2FfwgSdYVyHE+/v3I9gkeU6TfCOprqAxzgR/76FLpbiyYQKaLtEhz56
-         I0r6NiESvC2mP8LJWDCX7uHR7tckrv8qR6bzdOTq19Tz1912791NpR+rQ0YESPiNo5
-         hAn7uaHCSWy2BUqWKVK7vSzUfyBOgRpAmSzqSa7MpycJfhRxJ0C9VCULnQXB6DpMS0
-         /JWoJbTLh1rbA==
-Date:   Wed, 2 Jun 2021 08:00:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the sound-asoc-fixes tree
-Message-ID: <20210602080011.6c211704@canb.auug.org.au>
+        id S235077AbhFAWIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:08:38 -0400
+Received: from hera.aquilenet.fr ([185.233.100.1]:49810 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235008AbhFAWI3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:08:29 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id A8A56221;
+        Wed,  2 Jun 2021 00:06:45 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BAHdQU1dDaSo; Wed,  2 Jun 2021 00:06:45 +0200 (CEST)
+Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 139A3170;
+        Wed,  2 Jun 2021 00:06:45 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.94.2)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1loCX5-005Vyk-Ho; Wed, 02 Jun 2021 00:06:43 +0200
+Date:   Wed, 2 Jun 2021 00:06:43 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Jonathan Corbet <corbet@lwn.net>, collins@gene3.ait.iastate.edu
+Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
+Message-ID: <20210601220643.uzep2ju2zlcmpa57@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Jonathan Corbet <corbet@lwn.net>, collins@gene3.ait.iastate.edu,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <875yyxbenm.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qiJlL5srbB0/IGVG9BqGO+e";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875yyxbenm.fsf@meer.lwn.net>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: --
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Server: hera
+X-Rspamd-Queue-Id: A8A56221
+X-Spamd-Result: default: False [-2.50 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[gmail.com];
+         BAYES_HAM(-3.00)[100.00%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qiJlL5srbB0/IGVG9BqGO+e
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Jonathan Corbet, le mar. 01 juin 2021 12:53:01 -0600, a ecrit:
+> I am concerned about one thing, though: the licensing of this document
+> is not GPL-compatible, which means we can't build it into the rest of
+> the docs.
 
-Hi all,
+? I see various GFDL-1.1-no-invariants-or-later documentation in
+userspace-api/media notably, do they have such build restriction? What
+is actually posing problem in the GFDL licence?
 
-In commit
+> What are the chances that we can get the authors to agree on a change to
+> a GPL-compatible license for this file?
 
-  b640e8a4bd24 ("ASoC: SOF: reset enabled_cores state at suspend")
+I don't know about Collins' opinion on this, Cc-ing him with the latest
+mail my archives know for him (which dates 2008...)
 
-Fixes tag
+The copyright "the Speakup Team" is a more complex thing to look for.
 
-  Fixes: 42077f08b3 ("ASoC: SOF: update dsp core power status in common API=
-s")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-Probably not worth rebasing for, but can be avoided in the future by
-setting core.abbrev to 12 (or more) or (for git v2.11 or later) just
-making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qiJlL5srbB0/IGVG9BqGO+e
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC2resACgkQAVBC80lX
-0GzTPgf+IBmgbBJGxc3wIhS0nnYZ3tYLcVDFmWPfz1W1POmvVWOvwGqYgP7qAbrc
-UnRVRgY4jkosKjXED4BarDZikPGTcUsoh1JlKKsi+FonV2Q+854/Qyp3XR7Oq2Y9
-YPZABSy/uMVIn6MdleQbagcJQkKM1eVXKgx1jacjC9Ds7SowwOyWrSfclPaJpNIJ
-3O9BNlATuxvsYEx2jJUTYTgs9U5DZNV2tz+FXO/WOw3r/46vD9eKq8oWEQmBIHJC
-VmdfeKcOb+PZR1Ba1SgW+kfMmj2pCI4WECdhFnmeFnlYQP1NUlpru+17aIkz2eQv
-hgNZaNHVslUFgOMzvycckWxru6zB2Q==
-=gloo
------END PGP SIGNATURE-----
-
---Sig_/qiJlL5srbB0/IGVG9BqGO+e--
+Samuel
