@@ -2,80 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C381339790A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A28E397919
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhFAR3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:29:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:54946 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233925AbhFAR3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:29:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B8336D;
-        Tue,  1 Jun 2021 10:27:35 -0700 (PDT)
-Received: from [10.57.73.64] (unknown [10.57.73.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C82713F719;
-        Tue,  1 Jun 2021 10:27:34 -0700 (PDT)
-Subject: Re: [PATCH 3/4] iommu/amd: Do not sync on page size changes
-To:     Nadav Amit <namit@vmware.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Jiajun Cao <caojiajun@vmware.com>
-References: <20210502070001.1559127-1-namit@vmware.com>
- <20210502070001.1559127-5-namit@vmware.com>
- <f00bd0ce-e4a7-93c6-39ae-db19779b9331@arm.com>
- <F5D25BE7-FA34-4017-AA22-DDAB24F634BC@vmware.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7e0b4b12-c68a-ff90-5d86-4ab88ddd7991@arm.com>
-Date:   Tue, 1 Jun 2021 18:27:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234610AbhFARcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:32:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53118 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233871AbhFARcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:32:16 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 53B3C1FD48;
+        Tue,  1 Jun 2021 17:30:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622568634;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B7eJCORmTBEMzXQNN3OoaOrtx2vgCfr3M+vVxtmtTLU=;
+        b=fmY0dRua9mfGxlgBGFJnmf/A/C5hVlf8r5cjsU19G/iX2+5vlgWgTa+Qj6OW+cdSPxuzxg
+        FBmsS9DgY1kDvo8NIK2CnukMXBiGu3KL/rN7g5bC/CmlR9tuedzesbUnIOKkFUqKSW2tEk
+        LM9FsxhuBTLeloWHV0KmHlFqNHRfcf8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622568634;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B7eJCORmTBEMzXQNN3OoaOrtx2vgCfr3M+vVxtmtTLU=;
+        b=mv3gng7iuw6cv6Q/Cw7njbW8BI/geWlTNfkcUh+QO4B7lr3wpc6rWBcFBNW86HkoB3KFlM
+        S3sQ/fTI9dDRTCBw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 2A542A3B87;
+        Tue,  1 Jun 2021 17:30:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 36009DA734; Tue,  1 Jun 2021 19:27:54 +0200 (CEST)
+Date:   Tue, 1 Jun 2021 19:27:54 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] kernel BUG in assertfail
+Message-ID: <20210601172754.GJ31483@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <000000000000f9136f05c39b84e4@google.com>
+ <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+ <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
+ <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
+ <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
+ <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <F5D25BE7-FA34-4017-AA22-DDAB24F634BC@vmware.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-01 17:39, Nadav Amit wrote:
+On Mon, May 31, 2021 at 12:27:05PM +0300, Nikolay Borisov wrote:
+> On 31.05.21 г. 12:09, Dmitry Vyukov wrote:
+> > On Mon, May 31, 2021 at 10:57 AM Nikolay Borisov <nborisov@suse.com> wrote:
+> >> On 31.05.21 г. 11:55, Dmitry Vyukov wrote:
+> >>> On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
+> >>> <syzkaller-bugs@googlegroups.com> wrote:
+> >>>> On 31.05.21 г. 10:53, syzbot wrote:
+> >>>>> Hello,
+> >>>>>
+> >>>>> syzbot found the following issue on:
+> >>>>>
+> >>>>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
+> >>>>> git tree:       upstream
+> >>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
+> >>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
+> >>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
+> >>>>>
+> >>>>> Unfortunately, I don't have any reproducer for this issue yet.
+> >>>>>
+> >>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >>>>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+> >>>>>
+> >>>>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
+> >>>>
+> >>>> This means a device contains a btrfs filesystem which has a different
+> >>>> FSID in its superblock than the fsid which all devices part of the same
+> >>>> fs_devices should have. This can happen in 2 ways - memory corruption
+> >>>> where either of the ->fsid member are corrupted or if there was a crash
+> >>>> while a filesystem's fsid was being changed. We need more context about
+> >>>> what the test did?
+> >>>
+> >>> Hi Nikolay,
+> >>>
+> >>> From a semantic point of view we can consider that it just mounts /dev/random.
+> >>> If syzbot comes up with a reproducer it will post it, but you seem to
+> >>> already figure out what happened, so I assume you can write a unit
+> >>> test for this.
+> >>
+> >> Well no, under normal circumstances this shouldn't trigger. So if syzbot
+> >> is doing something stupid as mounting /dev/random then I don't see a
+> >> problem here. The assert is there to catch inconsistencies during normal
+> >> operation which doesn't seem to be the case here.
+> > 
+> > Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing?
+> > What is it intended for? Or it can only be enabled when mounting known
+> > good images? But then I assume even btrfs unit tests mount some
+> > invalid images, so it would mean it can't be used even  during unit
+> > testing?
+> > 
+> > Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
+> > of these actually check for something that "must never happen". E.g.
+> > some lists/pointers are empty/non-empty in particular states. And
+> > "must never happen" checks are for testing scenarios...
+> > 
+> > Taking this particular FSID mismatch assert, should such corrupted
+> > images be mounted for end users? Should users be notified? Currently
+> > they are mounted and users are not notified, what is the purpose of
+> > this assertion?
+> > 
+> > Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
+> > checks that are enabled during testing and normal if's with pr_err for
+> > user notifications?
 > 
-> 
->> On Jun 1, 2021, at 8:59 AM, Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-05-02 07:59, Nadav Amit wrote:
->>> From: Nadav Amit <namit@vmware.com>
->>> Some IOMMU architectures perform invalidations regardless of the page
->>> size. In such architectures there is no need to sync when the page size
->>> changes or to regard pgsize when making interim flush in
->>> iommu_iotlb_gather_add_page().
->>> Add a "ignore_gather_pgsize" property for each IOMMU-ops to decide
->>> whether gather's pgsize is tracked and triggers a flush.
->>
->> I've objected before[1], and I'll readily object again ;)
->>
->> I still think it's very silly to add a bunch of indirection all over the place to make a helper function not do the main thing it's intended to help with. If you only need trivial address gathering then it's far simpler to just implement trivial address gathering. I suppose if you really want to you could factor out another helper to share the 5 lines of code which ended up in mtk-iommu (see commit f21ae3b10084).
-> 
-> Thanks, Robin.
-> 
-> I read your comments but I cannot fully understand the alternative that you propose, although I do understand your objection to the indirection “ignore_gather_pgsize”. Would it be ok if “ignore_gather_pgsize" was provided as an argument for iommu_iotlb_gather_add_page()?
+> After going through the code you've convinced me. I just sent a patch
+> turning the 2 debugging asserts into full-fledged checks in
+> validate_super. So now the correct behavior is to prevent mounting of
+> such images.  How can I force syzbot to retest with the given patch applied?
 
-No, I mean if iommu_iotlb_gather_add_page() doesn't have the behaviour 
-your driver wants, just don't call it. Write or factor out a suitable 
-helper that *does* do what you want and call that, or just implement the 
-logic directly inline. Indirect argument or not, it just doesn't make 
-much sense to have a helper function call which says "do this except 
-don't do most of it".
+Let me answer the points from the discussions:
 
-> In general, I can live without this patch. It probably would have negligent impact on performance anyhow.
+- mounting /dev/random should never lead to a crash, this is effectively
+  the same as crafting data that would get past the sanity checks
 
-As I implied, it sounds like your needs are the same as the Mediatek 
-driver had, so you could readily factor out a new page-size-agnostic 
-gather helper from that. I fully support making the functional change to 
-amd-iommu *somehow* - nobody likes unnecessary syncs - just not with 
-this particular implementation :)
+- the behaviour regarding assertions should not affect testing, same
+  result with or without it
 
-Robin.
+- input validation - for a filesystem everything that comes from the
+  disk is input, so what we want to do with the data is unconditional
+  runtime validation
+
+- the 'must never happen' is two fold, depending what's the answer, but
+  we namely use it to verify invariants and catch developer errors, eg.
+  adding an object to list and then later assserting that it's there;
+  excluding the cosmic rays type of bugs, the remaining reason is that
+  the assert should be turned into a runtime check
