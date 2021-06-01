@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C28C39708C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B363970A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhFAJtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:49:01 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47094 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbhFAJs4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:48:56 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A3A4121928;
-        Tue,  1 Jun 2021 09:47:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622540834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9G3Kpyx+CwhO/99NFfmbRZHrvD5QiFT32bQzKFAn7/Q=;
-        b=GvuEo/HOq76opQ8mc4wpz1Gm/ff1RvdFOyFKZY6AuVdL3EJuyOJmt4yLa4EJeL3USQGsnx
-        9CyqtlrdlltWBFJoKbOLuFcXrX6KszlWbDapfZRV9Zmi94n3TVjx3S9qNWIuyVQ5OZXcgi
-        XMpuqWbv+kiIBs+1XcmqxwPrRhkw48s=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 53E7FA3B84;
-        Tue,  1 Jun 2021 09:47:14 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 11:47:13 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm,memory_hotplug: Drop unneeded locking
-Message-ID: <YLYCIZ5XNXGoE95p@dhcp22.suse.cz>
-References: <20210531093958.15021-1-osalvador@suse.de>
- <679d311a-8ad4-bb53-18f0-11190a2bf1b5@arm.com>
- <20210601074737.GA30768@linux>
- <f655ced2-281e-33ee-e1ea-89a0e13fc7a3@redhat.com>
- <20210601081250.GA32364@linux>
+        id S231845AbhFAJxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:53:50 -0400
+Received: from elvis.franken.de ([193.175.24.41]:59994 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230262AbhFAJxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:53:37 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lo13y-0001KW-01; Tue, 01 Jun 2021 11:51:54 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 5D3FFC1B8C; Tue,  1 Jun 2021 11:47:36 +0200 (CEST)
+Date:   Tue, 1 Jun 2021 11:47:36 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] MIPS: Loongson64: Make some functions static in smp.c
+Message-ID: <20210601094736.GB6961@alpha.franken.de>
+References: <1622116373-24218-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210601081250.GA32364@linux>
+In-Reply-To: <1622116373-24218-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01-06-21 10:12:54, Oscar Salvador wrote:
-> On Tue, Jun 01, 2021 at 10:02:54AM +0200, David Hildenbrand wrote:
-> > If there is no writer anymore, why do we have to protect readers?
+On Thu, May 27, 2021 at 07:52:53PM +0800, Tiezhu Yang wrote:
+> Make some functions static to fix the following sparse warnings:
 > 
-> Yeah, you are right. 
-> Let me prepare a v2 as this is getting too sloppy.
+>   arch/mips/loongson64/smp.c:54:5: sparse: sparse: symbol 'ipi_read_clear' was not declared. Should it be static?
+>   arch/mips/loongson64/smp.c:55:6: sparse: sparse: symbol 'ipi_write_action' was not declared. Should it be static?
+>   arch/mips/loongson64/smp.c:56:6: sparse: sparse: symbol 'ipi_write_enable' was not declared. Should it be static?
+>   arch/mips/loongson64/smp.c:57:6: sparse: sparse: symbol 'ipi_clear_buf' was not declared. Should it be static?
+>   arch/mips/loongson64/smp.c:58:6: sparse: sparse: symbol 'ipi_write_buf' was not declared. Should it be static?
+> 
+> Fixes: fed4955f304e ("MIPS: Loongson64: Add Mail_Send support for 3A4000+ CPU")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/loongson64/smp.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-While you are touching this and want to drill all the way down then it
-would be reasonable to drop pgdat resize locks as well.
-It is only used in the early boot code and we have one executing thread
-context per numa node during the deferred initialization. I haven't
-checked all potential side effects the lock might have but it sounds
-like there is quite some clean up potential over there.
+applied to mips-next.
+
+Thomas.
 
 -- 
-Michal Hocko
-SUSE Labs
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
