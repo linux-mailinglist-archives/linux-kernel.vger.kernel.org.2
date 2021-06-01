@@ -2,87 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643E33976AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0703976B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhFAPcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFAPcN (ORCPT
+        id S234228AbhFAPct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:32:49 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:25708 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230288AbhFAPcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:32:13 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3B9C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:30:31 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 3-20020a05600c0243b029019f2f9b2b8aso1092116wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=76wpUGHYFm3YaMJqur5wJZu3Y9FviRWLrs078eFj8DY=;
-        b=s9BFm/8n+cVZP1SofD384n0aP8sSMBO4/4Ae+Se87GbastmZfNabAKa41CdtTMY7ro
-         pnZXxpQxvnThP/nbgZv78w4IfgEMrfwdfuPqp/5MqacxoqIcNBleRbKdXH65VTFqGNPq
-         JaVsrIijfTSFYPknzeIUIbTyq+lxNmwVHwHPEkj3BZeHSCaV6EVuEO8pvtgKfGiolN25
-         XHz1Ll7FL2ZqmL5ZhCgvPUV/zgt60a9t7Vf/EJUQvCVs3cvC6XQsgevi1hLoYxIHxMar
-         CHA6hbFIoX0ZrjJSVYYmNfbvtM+R5yllIAeT+W8WroK51PM+C6xX7Hogdh1MNu0YXemy
-         MlRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=76wpUGHYFm3YaMJqur5wJZu3Y9FviRWLrs078eFj8DY=;
-        b=p6I8OfUyhGSvrUMib1WVNt6oiLKECildroBrON3DH2i/ZyAK5Wn19Dk83VeiorI/6t
-         xG4MpHwBioohQXjwpIqfM88oBsk9TFfo2S6l4narStED9eKCvnl0uTVX0LM2rb9Xmcz0
-         1bDVFQT8YAOas73iRnll/1VHmVkEwmhrYHt20h72ORlwTG2l/pndXHv8/HsIgYte8zVl
-         flprkawritQV8hev7c+KkAMTWIf/Eq01+dCLKCTa0bOrOxuLwGx03xxB2PfmRu8835G6
-         ElFDNsCaD+Qgi1ZtxP3J3fluQCiahrgMBCxLZHhk7z1aNu5Cex35cfcc917/XXVJDKOd
-         7Rbw==
-X-Gm-Message-State: AOAM532b0EllzIfGjjIr7QPLgG5Bidnb1tT1dgADenLJcA/fNLLV+9Fo
-        tyLDJigY/f0jZw04hXT0oDNEDg==
-X-Google-Smtp-Source: ABdhPJwH5uEnBfUj7Nrxl1uy+34/ojEOuZwkzE4DcydGfa+x0aZFuw+pauofoW2UbUel3WHJEKC8HQ==
-X-Received: by 2002:a1c:bdd6:: with SMTP id n205mr19507671wmf.74.1622561430236;
-        Tue, 01 Jun 2021 08:30:30 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id t12sm4805992wre.9.2021.06.01.08.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 08:30:29 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 16:30:28 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gwendal Grignou <gwendal@chromium.org>
-Cc:     bleung@chromium.org, enric.balletbo@collabora.com,
-        groeck@chromium.org, swboyd@chromium.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: cros_ec_dev: Load lightbar module only present
-Message-ID: <20210601153028.GC2159518@dell>
-References: <20210526034500.954219-1-gwendal@chromium.org>
+        Tue, 1 Jun 2021 11:32:47 -0400
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151FOKew009540;
+        Tue, 1 Jun 2021 15:30:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=iCUWAj7frxQI7LsZaRn7UF3u6PLCoOjGUA7u8YvVpOY=;
+ b=DE0K03P+3llubk1hTeCxo/m2cleU7WrD5yK/sXNitoj6Obtsrh+kKX+m7F4Xb/Q5mP1Z
+ TGfBVdVULZBym+3kwCWmJvMwjpzRCQs+aNhrpEnZjeTnKQ5C8ZJnRaR2BgKi+o5yMulE
+ gSTlfeqbcKphzaJkw1fRkWfYgvFZzLzlerMnVG7Q//Ixc0mJU9+a5GEOSFJkjoTCswc5
+ ImsbfIFJoGPTIbegBsSf67FpGNj7WkbHFjhYsYBZpMGLtSE4wy6FwSvMz0DG9dlQLdFf
+ Ldl6iRdBifQ03cNKSv2bZs0HjDV14AArCOxDZNUgMXgMLnwb05ofbCftHnQkbKs1HwmD CQ== 
+Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
+        by mx0a-002e3701.pphosted.com with ESMTP id 38w2ctrp1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 15:30:32 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g9t5008.houston.hpe.com (Postfix) with ESMTP id B4D3D59;
+        Tue,  1 Jun 2021 15:30:31 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.99.164.36])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id C881448;
+        Tue,  1 Jun 2021 15:30:29 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 10:30:29 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     Qiheng Lin <linqiheng@huawei.com>
+Cc:     mike.travis@hpe.com, dimitri.sivanich@hpe.com,
+        russ.anderson@hpe.com, dvhart@infradead.org, andy@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, steve.wahl@hpe.com,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] x86/platform/uv: Remove the unneeded extern
+ keyword
+Message-ID: <YLZSlQnGETqw1da6@swahl-home.5wahls.com>
+References: <20210601063034.27433-1-linqiheng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210526034500.954219-1-gwendal@chromium.org>
+In-Reply-To: <20210601063034.27433-1-linqiheng@huawei.com>
+X-Proofpoint-GUID: YVHJYEDfOUpNWLZyyJeWvmMPjmiPeqYW
+X-Proofpoint-ORIG-GUID: YVHJYEDfOUpNWLZyyJeWvmMPjmiPeqYW
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-01_07:2021-06-01,2021-06-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=953 mlxscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 priorityscore=1501
+ suspectscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106010104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021, Gwendal Grignou wrote:
-
-> The pixel lightbar is only present on chromebook pixel (link), pixel 2
-> and pixel C. For the latter two, the EC reports its presence.
-> Instead of always loading the lightbar driver on all chromebook, only
-> load it when reported by the EC or Link device.
+On Tue, Jun 01, 2021 at 02:30:34PM +0800, Qiheng Lin wrote:
+> The function declarations in bios.h are already marked extern, so remove
+> them in the definition.
 > 
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
-> ---
->  drivers/mfd/cros_ec_dev.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
+> This problem was caught by the sparse tool:
+>  function 'uv_bios_get_master_nasid' with external linkage has definition
+>  function 'uv_bios_get_heapsize' with external linkage has definition
+>  function 'uv_bios_install_heap' with external linkage has definition
+>  function 'uv_bios_obj_count' with external linkage has definition
+>  function 'uv_bios_enum_objs' with external linkage has definition
+>  function 'uv_bios_enum_ports' with external linkage has definition
+>  function 'uv_bios_get_geoinfo' with external linkage has definition
+>  function 'uv_bios_get_pci_topology' with external linkage has definition
+> 
+> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
 
-Applied, thanks.
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+
+> ---
+> Changes in v2:
+>  - adjust the subject and commit message
+> 
+>  arch/x86/platform/uv/bios_uv.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
+> index bf31af3d32d6..7e7634c8be62 100644
+> --- a/arch/x86/platform/uv/bios_uv.c
+> +++ b/arch/x86/platform/uv/bios_uv.c
+> @@ -172,55 +172,55 @@ int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus)
+>  				(u64)decode, (u64)domain, (u64)bus, 0, 0);
+>  }
+>  
+> -extern s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
+> +s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
+>  {
+>  	return uv_bios_call(UV_BIOS_EXTRA, 0, UV_BIOS_EXTRA_MASTER_NASID, 0,
+>  				size, (u64)master_nasid);
+>  }
+>  EXPORT_SYMBOL_GPL(uv_bios_get_master_nasid);
+>  
+> -extern s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
+> +s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
+>  {
+>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_GET_HEAPSIZE,
+>  				0, size, (u64)heap_size);
+>  }
+>  EXPORT_SYMBOL_GPL(uv_bios_get_heapsize);
+>  
+> -extern s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
+> +s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
+>  {
+>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_INSTALL_HEAP,
+>  				0, heap_size, (u64)bios_heap);
+>  }
+>  EXPORT_SYMBOL_GPL(uv_bios_install_heap);
+>  
+> -extern s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
+> +s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
+>  {
+>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_OBJECT_COUNT,
+>  				0, size, (u64)objcnt);
+>  }
+>  EXPORT_SYMBOL_GPL(uv_bios_obj_count);
+>  
+> -extern s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
+> +s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
+>  {
+>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_OBJECTS,
+>  				0, size, (u64)objbuf);
+>  }
+>  EXPORT_SYMBOL_GPL(uv_bios_enum_objs);
+>  
+> -extern s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
+> +s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
+>  {
+>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_PORTS,
+>  				obj_id, size, (u64)portbuf);
+>  }
+>  EXPORT_SYMBOL_GPL(uv_bios_enum_ports);
+>  
+> -extern s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
+> +s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
+>  {
+>  	return uv_bios_call(UV_BIOS_GET_GEOINFO, nasid, (u64)buf, size, 0, 0);
+>  }
+>  EXPORT_SYMBOL_GPL(uv_bios_get_geoinfo);
+>  
+> -extern s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
+> +s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
+>  {
+>  	return uv_bios_call(UV_BIOS_GET_PCI_TOPOLOGY, (u64)buf, size, 0, 0, 0);
+>  }
+> -- 
+> 2.31.1
+> 
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Steve Wahl, Hewlett Packard Enterprise
