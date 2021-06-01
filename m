@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D9C39748A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B23D39749E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234038AbhFANt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:49:29 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6117 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233584AbhFANt2 (ORCPT
+        id S233995AbhFANx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:53:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60762 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233584AbhFANxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:49:28 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvYLh6cJtzYnjB;
-        Tue,  1 Jun 2021 21:45:00 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 21:47:44 +0800
-Received: from [10.174.185.179] (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 1 Jun 2021 21:47:43 +0800
-Subject: Re: [PATCH stable-5.12.y backport 1/2] KVM: arm64: Commit pending PC
- adjustemnts before returning to userspace
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>, <sashal@kernel.org>,
-        <alexandru.elisei@arm.com>, <wanghaibin.wang@huawei.com>
-References: <20210601111238.1059-1-yuzenghui@huawei.com>
- <20210601111238.1059-2-yuzenghui@huawei.com> <87v96x24ir.wl-maz@kernel.org>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <b7cf4102-17e8-f4f8-0314-0a06d7429b4c@huawei.com>
-Date:   Tue, 1 Jun 2021 21:47:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 1 Jun 2021 09:53:54 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151DX2xm090255;
+        Tue, 1 Jun 2021 09:51:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : message-id : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=mDnV0LUjr/nkxsZMowZ68RPaqejWJLV3R5OTVuMBWNI=;
+ b=BaMnAF6sQzBcj+g7At8P2++bnm48aNRufByTQtZpFZG+1GGHHLizMiNSoZVfT0zxpH8Z
+ mzycO6ktXnqLyA+yLqtKExRlXZkiERVMG/bD5AFgQpz1fIViCx2wgFMUKIwZzQ2zI4fX
+ kAHTc72fvqhIKm65NjPgJD/0cRiVKjrJ8lLCcjZ8f9U0WayAzILcoqeRaTy+N1+a9oG/
+ y0AEPYx8mUUZiYi5RvMY/BOUb2A5+gXTo8RIcOpHA98i/IO//1zuv5K0B00bK6g0Bm5j
+ eisRC3lRNef/wfH8FsNhM6RrxRb7FJM25VCumGaq9GBT4BNCHOzDdPMzK9oniCaESUeM sw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38wntd8qty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 09:51:33 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151DmZ5N020259;
+        Tue, 1 Jun 2021 13:51:31 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 38ucvh9rm8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 13:51:31 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151DpTDD14352894
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Jun 2021 13:51:29 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 839B6A4051;
+        Tue,  1 Jun 2021 13:51:29 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B093AA4053;
+        Tue,  1 Jun 2021 13:51:28 +0000 (GMT)
+Received: from localhost (unknown [9.85.73.71])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  1 Jun 2021 13:51:28 +0000 (GMT)
+Date:   Tue, 01 Jun 2021 19:21:27 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [RFC PATCH 2/6] powerpc/trace: Add support for stack tracer
+To:     Torsten Duwe <duwe@suse.de>, Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
+        <6ed4941e8ff48729a14b24c8e0d0f876fe8f22e0.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
+In-Reply-To: <6ed4941e8ff48729a14b24c8e0d0f876fe8f22e0.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1622555131.dct16s656o.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: mvcbIP1VvixYC1v_n35mv_aOznNrkNu6
+X-Proofpoint-GUID: mvcbIP1VvixYC1v_n35mv_aOznNrkNu6
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <87v96x24ir.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-01_06:2021-06-01,2021-06-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ suspectscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106010092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Naveen N. Rao wrote:
+> +
+> +unsigned long ftrace_get_traced_func_if_no_stackframe(unsigned long ip, =
+unsigned long *stack)
+> +{
+> +	if (!is_ftrace_entry(ip))
+> +		return 0;
+> +
+> +	if (IS_ENABLED(CONFIG_PPC32))
+> +		return stack[11]; /* see MCOUNT_SAVE_FRAME */
+> +
+> +	if (!IS_ENABLED(CONFIG_MPROFILE_KERNEL))
+> +		return 0;
+> +
+> +	return stack[(STACK_FRAME_OVERHEAD + offsetof(struct pt_regs, nip)) / s=
+izeof(unsigned long)];
 
-On 2021/6/1 19:44, Marc Zyngier wrote:
-> Hi Zenghui,
-> 
-> Thanks for having a go at the backport.
-> 
-> On Tue, 01 Jun 2021 12:12:37 +0100,
-> Zenghui Yu <yuzenghui@huawei.com> wrote:
->>
->> From: Marc Zyngier <maz@kernel.org>
->>
->> commit 26778aaa134a9aefdf5dbaad904054d7be9d656d upstream.
->>
->> KVM currently updates PC (and the corresponding exception state)
->> using a two phase approach: first by setting a set of flags,
->> then by converting these flags into a state update when the vcpu
->> is about to enter the guest.
->>
->> However, this creates a disconnect with userspace if the vcpu thread
->> returns there with any exception/PC flag set. In this case, the exposed
->> context is wrong, as userspace doesn't have access to these flags
->> (they aren't architectural). It also means that these flags are
->> preserved across a reset, which isn't expected.
->>
->> To solve this problem, force an explicit synchronisation of the
->> exception state on vcpu exit to userspace. As an optimisation
->> for nVHE systems, only perform this when there is something pending.
->>
->> Reported-by: Zenghui Yu <yuzenghui@huawei.com>
->> Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>
->> Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
->> Tested-by: Zenghui Yu <yuzenghui@huawei.com>
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> Cc: stable@vger.kernel.org # 5.11
->> [yuz: stable-5.12.y backport: add __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc
->>  macro manually and keep it consistent with mainline]
-> 
-> I'd rather you allocated a new number here, irrespective of what
-> mainline has (rational below).
-> 
->> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->> ---
->>  arch/arm64/include/asm/kvm_asm.h   |  1 +
->>  arch/arm64/kvm/arm.c               | 11 +++++++++++
->>  arch/arm64/kvm/hyp/exception.c     |  4 ++--
->>  arch/arm64/kvm/hyp/nvhe/hyp-main.c |  8 ++++++++
->>  4 files changed, 22 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
->> index a8578d650bb6..d7f769bb6c9c 100644
->> --- a/arch/arm64/include/asm/kvm_asm.h
->> +++ b/arch/arm64/include/asm/kvm_asm.h
->> @@ -57,6 +57,7 @@
->>  #define __KVM_HOST_SMCCC_FUNC___kvm_get_mdcr_el2		12
->>  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_save_aprs		13
->>  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_restore_aprs		14
->> +#define __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc			21
-> 
-> This is going to generate a larger than necessary host_hcall array in
-> hyp/nvhe/hyp-main.c, which we're trying to keep tightly packed for
-> obvious reasons.
+Looking at Daniel's patch to address KASAN errors with our stack walk=20
+code in show_stack() [*], I realized that I am not validating the stack=20
+pointer here for the above accesses...
 
-It isn't obvious to me ;-). But this creates some invalid entries
-(HVC handlers) in the host_hcall array, which is not good. I'll change
-__KVM_HOST_SMCCC_FUNC___kvm_adjust_pc to 15. Thanks for your reminder.
+[*] http://lkml.kernel.org/r/20210528074806.1311297-1-dja@axtens.net
 
-> With this nit fixed:
-> 
-> Reviewed-by: Marc Zyngier <maz@kernel.org>
+> +}
+> +
+> +#ifdef CONFIG_STACK_TRACER
+> +void stack_get_trace(unsigned long traced_ip,
+> +		     unsigned long *stack_ref __maybe_unused,
+> +		     unsigned long stack_size __maybe_unused,
+> +		     int *tracer_frame)
+> +{
+> +	unsigned long sp, newsp, top, ip;
+> +	int ftrace_call_found =3D 0;
+> +	unsigned long *stack;
+> +	int i =3D 0;
+> +
+> +	sp =3D current_stack_frame();
+> +	top =3D (unsigned long)task_stack_page(current) + THREAD_SIZE;
+> +
+> +	while (validate_sp(sp, current, STACK_FRAME_OVERHEAD) && i < STACK_TRAC=
+E_ENTRIES) {
+> +		stack =3D (unsigned long *) sp;
+> +		newsp =3D stack[0];
+> +		ip =3D stack[STACK_FRAME_LR_SAVE];
+> +
+> +		if (ftrace_call_found) {
+> +			stack_dump_trace[i] =3D ip;
+> +			stack_trace_index[i++] =3D top - sp;
+> +		}
 
-Thanks!
+And I need to make the above accesses bypass KASAN as well.
 
-Zenghui
+
+- Naveen
+
