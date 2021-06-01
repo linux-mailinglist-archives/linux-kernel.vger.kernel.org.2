@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3432139783C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C7A397841
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234495AbhFAQoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:44:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:54144 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233904AbhFAQoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:44:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DA9B101E;
-        Tue,  1 Jun 2021 09:42:35 -0700 (PDT)
-Received: from [10.57.73.64] (unknown [10.57.73.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFABC3F719;
-        Tue,  1 Jun 2021 09:42:33 -0700 (PDT)
-Subject: Re: [PATCH] iommu: Print default strict or lazy mode at init time
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        hch@lst.de
-References: <1622209074-37899-1-git-send-email-john.garry@huawei.com>
- <3ee986a0-29c1-100c-c72f-360f919caf7d@arm.com>
- <e478aea8-54d3-bfc6-1bc8-b0c7709e353a@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <58ea001c-4c37-9c5a-77be-38ac3bea2476@arm.com>
-Date:   Tue, 1 Jun 2021 17:42:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <e478aea8-54d3-bfc6-1bc8-b0c7709e353a@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+        id S234539AbhFAQpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232490AbhFAQpA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 12:45:00 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F31C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:43:18 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id y17-20020a17090aa411b02901649daab2b1so3370925pjp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=aTLuLVDR3lxcou2oBOuWuwpILE9+p4rbUTDh4A1ndUg=;
+        b=cgjkARurXBSRrO3zA1rIuwqKH1hSgO+xKdOaemlYS/J7t4GR8aKmW37vIRssyT84e+
+         D0QBFjgw7JZ7W2aE16mcr9xjkmCVufU++TxZpytMBMJEcPlwcJQ3Mv0/1r/C3/RAOlsO
+         +QKvzP5we6zfaCnj0QM25edS3B6Rsgfxb/CM84uVVgfyOtkBnIp2fJ71NX0eu6rtund5
+         BchPtn9k068U3QJaUBdHHT3t5pqZa8tfFtHP814l7KRV7HgUKSomKUj2u3DA9CeMZ6Rs
+         EWE3/S81qRxQWUb65DICAssi9TKj6lm4fUSKrzRHfyGCS2DGwn874dgSe5PDMgVhu4Gr
+         Kbyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=aTLuLVDR3lxcou2oBOuWuwpILE9+p4rbUTDh4A1ndUg=;
+        b=EdsYcXL83y27rjWi2HKIgFbqF7wrvb8XTJ9goikiz5tCP+DSi+eNjRXRkqXVexbxBo
+         pNRTEntd2gYIs0bQtX6sSvcKuESs8YSF1sVDGl427Kkc3lt/C5/bDp5Ed/YDY3G0HznO
+         7WP87uI5GJiXqPRNitYQyH81c7iilbEhyjMN3rP0CGo6sKZUnytYPq5WQ/FiCw1rNC/D
+         TWus5BNRwMvDYdHefDLgYpZzUxieTFw1gEfvXTZIIE62uLouAWy4XzsgV4814GX8r3F8
+         QTFwgvjQ/1lh8sLeP+ujpRSsFJr178YImJTS7zRdcruWj7hZOEXM6dtji1eu5iqyplue
+         yARQ==
+X-Gm-Message-State: AOAM530IVSOzq/TCzCOWcCJGwGwJCetFJjZktioHo1erLW3aG77FNKNX
+        qOBqXuajN1+9xfEnb6nZ7IErh8n8cv8CIw==
+X-Google-Smtp-Source: ABdhPJwFeayMKFWCMU7/Jn60aBx4kngs6iBv6Aw8W/fGakCaE62W9z44EIv+sa0caIvWoz3jsRv0smxvW9OVvw==
+X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:19cd])
+ (user=dmatlack job=sendgmr) by 2002:a17:902:6902:b029:106:50e3:b2db with SMTP
+ id j2-20020a1709026902b029010650e3b2dbmr7955257plk.35.1622565798266; Tue, 01
+ Jun 2021 09:43:18 -0700 (PDT)
+Date:   Tue,  1 Jun 2021 16:43:05 +0000
+Message-Id: <20210601164305.11776-1-dmatlack@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH] proc: Add .gitignore for proc-subset-pid selftest
+From:   David Matlack <dmatlack@google.com>
+To:     linux-kselftest@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        akpm@linux-foundation.org,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-01 16:50, John Garry wrote:
-> On 01/06/2021 10:09, Robin Murphy wrote:
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>> index 808ab70d5df5..f25fae62f077 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -138,6 +138,11 @@ static int __init iommu_subsys_init(void)
->>>           (iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
->>>               "(set via kernel command line)" : "");
->>> +    pr_info("Default DMA domain mode: %s %s\n",
->>
->> Nit: I think this might be a little unclear for end-users - *I'm* not 
->> even sure whether "Default" here is meant to refer to the mode setting 
->> itself or to default domains (of DMA type). Maybe something like "DMA 
->> domain TLB invalidation policy"? Certainly it seems like a good idea 
->> to explicitly mention invalidation to correlate with the documentation 
->> of the "iommu.strict" parameter.
->>
->> Ack to the general idea though.
-> 
-> ok, so I'll go with this:
-> 
-> pr_info("DMA domain default TLB invalidation policy: %s mode %s\n",
->                iommu_dma_strict ? "strict" : "lazy",
->                 (iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
->                         "(set via kernel command line)" : "");
-> 
-> I think it's worth mentioning "default" somewhere, as not all IOMMUs or 
-> devices will use lazy mode even if it's default.
+This new selftest needs an entry in the .gitignore file otherwise git
+will try to track the binary.
 
-But that's part of what I think is misleading - I boot and see that the 
-default is something, so I reboot with iommu.strict to explicitly set it 
-the other way, but now that's the default... huh?
+Signed-off-by: David Matlack <dmatlack@google.com>
+---
+ tools/testing/selftests/proc/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-The way I see it, we're saying what the current IOMMU API policy is - 
-the value of iommu_dma_strict at any given time is fact - but we're not 
-necessarily saying how widely that policy is enforced. We similarly 
-report the type for default domains from global policy even though that 
-may also be overridden per-group by drivers and/or userspace later; we 
-don't say it's the *default* default domain type.
+diff --git a/tools/testing/selftests/proc/.gitignore b/tools/testing/selftests/proc/.gitignore
+index bed4b5318a86..8f3e72e626fa 100644
+--- a/tools/testing/selftests/proc/.gitignore
++++ b/tools/testing/selftests/proc/.gitignore
+@@ -10,6 +10,7 @@
+ /proc-self-map-files-002
+ /proc-self-syscall
+ /proc-self-wchan
++/proc-subset-pid
+ /proc-uptime-001
+ /proc-uptime-002
+ /read
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
-However, having now debugged the AMD issue from another thread, I think 
-doing this at subsys_initcall is in fact going to be too early to be 
-meaningful, since it ignores drivers' ability to change the global policy :(
-
-Robin.
