@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D74139793F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CE6397940
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234736AbhFARkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60822 "EHLO mail.kernel.org"
+        id S234756AbhFARks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:40:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234633AbhFARkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:40:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0D2161378;
-        Tue,  1 Jun 2021 17:38:42 +0000 (UTC)
+        id S234641AbhFARk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:40:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CAE561042;
+        Tue,  1 Jun 2021 17:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622569123;
-        bh=FBu28wz+nr8vx7czp/1X9z6q34O3c+xbVoMywBNsw34=;
+        s=k20201202; t=1622569125;
+        bh=iUqKscYPjDDlLRwvidolE2TbOYvSMk74dIBMKzUZyV0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gDqh8quYB54zo+sIM4+n49xIzE1k9Zn1lAYS3LspUMw8z9+5yQSYJhp/xHq2EQ4U4
-         P2+s2BH3Yo0EREwBNAgbLKjYNn/vhD8rt6uwCic5Nx2cyzeTwa1rQ36BEFe0l6sfXo
-         jmZVSgP5ezzP8xDOiZUM8I3jA4W2Ba5n9cdb6f9XJ+YA5n/PnsKuHtPdryyQgiNrK0
-         d840/03V1g0I+gpqHoaJoaULaIZlylRT+NhkhudQ9Z3FXJa4EaGPK5mPlLgXH4zOjq
-         /NLUH68kG/Wy6bvlHEI4yIeGa9hRb+PA5jQrWTlGDNlpr0h+ysbi8vooMQMBHQKpaO
-         VDkkY8OtcwX0Q==
+        b=uE2QdmUhC/nvAMHSnjD0Bn6InMspzBSSlYbsb+0hCnFtGTBrY2V5Xlei4+blRV7b0
+         sJBxTB1OMXWJdSNDe+NXkBCEdy9pgVeJ8/8fFK+80CBFF1Wxe1uknWrBdeB91IGMM9
+         x+NncMLBK2e4KNk/amUU2+BzJqNY6G+/SaifpjSp7LC4gyC5qCdhEHLnHGouACggc5
+         qENbm8IgqadoTTKY2rK9PGGb1XpyeiUU5nvU+aX+dlYxAxVpqhdoyH4mOJDVAvGo/q
+         rChL6i1fFjAPBNspDqIfLGCackPnMopVZPJybyvVrT3WbO/k546oMqUjAIkEPMccDX
+         7EZqL8jMVd4pA==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, cy_huang <u0084500@gmail.com>
+To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com
-Subject: Re: [PATCH] regulator: rtmv20: Fix to make regcache value first reading back from HW
-Date:   Tue,  1 Jun 2021 18:38:05 +0100
-Message-Id: <162256901746.20048.6373382563782761366.b4-ty@kernel.org>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        ChiYuan Huang <cy_huang@richtek.com>
+Subject: Re: [PATCH RFT 1/2] regulator: rtmv20: Fix .set_current_limit/.get_current_limit callbacks
+Date:   Tue,  1 Jun 2021 18:38:06 +0100
+Message-Id: <162256901745.20048.14057115217631222086.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1622542155-6373-1-git-send-email-u0084500@gmail.com>
-References: <1622542155-6373-1-git-send-email-u0084500@gmail.com>
+In-Reply-To: <20210530124101.477727-1-axel.lin@ingics.com>
+References: <20210530124101.477727-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,8 +41,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 18:09:15 +0800, cy_huang wrote:
-> - Fix to make regcache value first reading back from HW.
+On Sun, 30 May 2021 20:41:00 +0800, Axel Lin wrote:
+> Current code does not set .curr_table and .n_linear_ranges settings,
+> so it cannot use the regulator_get/set_current_limit_regmap helpers.
+> If we setup the curr_table, it will has 200 entries.
+> Implement customized .set_current_limit/.get_current_limit callbacks
+> instead.
 
 Applied to
 
@@ -49,8 +54,10 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: rtmv20: Fix to make regcache value first reading back from HW
-      commit: 46639a5e684edd0b80ae9dff220f193feb356277
+[1/2] regulator: rtmv20: Fix .set_current_limit/.get_current_limit callbacks
+      commit: 86ab21cc39e6b99b7065ab9008c90bec5dec535a
+[2/2] regulator: rtmv20: Add Richtek to Kconfig text
+      commit: 5f01de6ffae2b00d3795a399d8d630bdae3c8997
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
