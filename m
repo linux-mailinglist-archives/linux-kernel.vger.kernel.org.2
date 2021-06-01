@@ -2,174 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE63971FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5E73971F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbhFALDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:03:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58310 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbhFALDo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:03:44 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CC74A21922;
-        Tue,  1 Jun 2021 11:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622545322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=OZt2SiQbqKVL9pvYj4mGQTWSD0tVMGOogS8NZiduT00=;
-        b=MWNqQQTAPWrmOlAtuvKa8WBdgp2iakD+tbr/NtWDR6pXNnAC/f3aEWeaC4cpYZMO0e01eX
-        IG5j0UHFW/G9JiwC72ndoZoVYpwpwii95wm7a9fwnoVK9DWc0B12LcEEuUqRXUwBxqTUgE
-        j06U5JTDpyl7WVHO71jnH62yLr+mOZk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622545322;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=OZt2SiQbqKVL9pvYj4mGQTWSD0tVMGOogS8NZiduT00=;
-        b=0zMTSVcAlHSBbCefV3296LrJgxy2vNFojd02hazCbBlWWKVxJEfGTipOSwBi72LI87YjLo
-        8hZ4VvZFZVOdyMDg==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id C4AE1A3B83;
-        Tue,  1 Jun 2021 11:02:02 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 16045)
-        id 8FE9E516FA52; Tue,  1 Jun 2021 13:02:02 +0200 (CEST)
-From:   Hannes Reinecke <hare@suse.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        Linux Kernel Mailinglist <linux-kernel@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH] block/genhd: use atomic_t for disk_event->block
-Date:   Tue,  1 Jun 2021 13:01:45 +0200
-Message-Id: <20210601110145.113365-1-hare@suse.de>
-X-Mailer: git-send-email 2.29.2
+        id S232968AbhFALDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:03:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:47404 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230282AbhFALDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 07:03:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C0C5101E;
+        Tue,  1 Jun 2021 04:01:50 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51ECB3F73D;
+        Tue,  1 Jun 2021 04:01:49 -0700 (PDT)
+To:     balbi@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        sanm@codeaurora.org
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Subject: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
+Message-ID: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
+Date:   Tue, 1 Jun 2021 12:02:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__disk_unblock_events() will call queue_delayed_work() with a '0' argument
-under a spin lock. This might cause the queue_work item to be executed
-immediately, and run into a deadlock in disk_check_events() waiting for
-the lock to be released.
+I've been seeing the following panic when shutting down my rockpro64:
 
-This patch converts the 'blocked' counter into an atomic variable, so we don't
-need to hold a spinlock anymore when scheduling the workqueue function.
+[   21.459064] xhci-hcd xhci-hcd.0.auto: USB bus 5 deregistered
+[   21.683077] Unable to handle kernel NULL pointer dereference at virtual address
+00000000000000a0
+[   21.683858] Mem abort info:
+[   21.684104]   ESR = 0x96000004
+[   21.684375]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   21.684841]   SET = 0, FnV = 0
+[   21.685111]   EA = 0, S1PTW = 0
+[   21.685389] Data abort info:
+[   21.685644]   ISV = 0, ISS = 0x00000004
+[   21.686024]   CM = 0, WnR = 0
+[   21.686288] user pgtable: 4k pages, 48-bit VAs, pgdp=000000000757a000
+[   21.686853] [00000000000000a0] pgd=0000000000000000, p4d=0000000000000000
+[   21.687452] Internal error: Oops: 96000004EEMPT SMP
+[   21.687941] Modules linked in:
+[   21.688214] CPU: 4 PID: 1 Comm: shutdown Not tainted
+5.12.0-rc7-00262-g568262bf5492 #33
+[   21.688915] Hardware name: Pine64 RockPro64 v2.0 (DT)
+[   21.689357] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[   21.689884] pc : down_read_interruptible+0xec/0x200
+[   21.690321] lr : simple_recursive_removal+0x48/0x280
+[   21.690761] sp : ffff800011f4b940
+[   21.691053] x29: ffff800011f4b940 x28: ffff000000809b40
+[   21.691522] x27: ffff000000809b98 x26: ffff8000114f5170
+[   21.691990] x25: 00000000000000a0 x24: ffff800011e84030
+[   21.692459] x23: 0000000000000080 x22: 0000000000000000
+[   21.692927] x21: ffff800011ecaa5c x20: ffff800011ecaa60
+[   21.693395] x19: ffff000000809b40 x18: ffffffffffffffff
+[   21.693863] x17: 0000000000000000 x16: 0000000000000000
+[   21.694331] x15: ffff800091f4ba6d x14: 0000000000000004
+[   21.694799] x13: 0000000000000000 x12: 0000000000000020
+[   21.695267] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
+[   21.695735] x9 : 6f6c746364716e62 x8 : 7f7f7f7f7f7f7f7f
+[   21.696203] x7 : fefefeff6364626d x6 : 0000000000001bd8
+[   21.696671] x5 : 0000000000000000 x4 : 0000000000000000
+[   21.697138] x3 : 00000000000000a0 x2 : 0000000000000001
+[   21.697606] x1 : 0000000000000000 x0 : 00000000000000a0
+[   21.698075] Call trace:
+[   21.698291]  down_read_interruptible+0xec/0x200
+[   21.698690]  debugfs_remove+0x60/0x84
+[   21.699016]  dwc3_debugfs_exit+0x1c/0x6c
+[   21.699363]  dwc3_remove+0x34/0x1a0
+[   21.699672]  platform_remove+0x28/0x60
+[   21.700005]  __device_release_driver+0x188/0x230
+[   21.700414]  device_release_driver+0x2c/0x44
+[   21.700791]  bus_remove_device+0x124/0x130
+[   21.701154]  device_del+0x168/0x420
+[   21.701462]  platform_device_del.part.0+0x1c/0x90
+[   21.701877]  platform_device_unregister+0x28/0x44
+[   21.702291]  of_platform_device_destroy+0xe8/0x100
+[   21.702716]  device_for_each_child_reverse+0x64/0xb4
+[   21.703153]  of_platform_depopulate+0x40/0x84
+[   21.703538]  __dwc3_of_simple_teardown+0x20/0xd4
+[   21.703945]  dwc3_of_simple_shutdown+0x14/0x20
+[   21.704337]  platform_shutdown+0x28/0x40
+[   21.704683]  device_shutdown+0x158/0x330
+[   21.705029]  kernel_power_off+0x38/0x7c
+[   21.705372]  __do_sys_reboot+0x16c/0x2a0
+[   21.705719]  __arm64_sys_reboot+0x28/0x34
+[   21.706074]  el0_svc_common.constprop.0+0x60/0x120
+[   21.706499]  do_el0_svc+0x28/0x94
+[   21.706794]  el0_svc+0x2c/0x54
+[   21.707067]  el0_sync_handler+0xa4/0x130
+[   21.707414]  el0_sync+0x170/0x180
+[   21.707711] Code: c8047c62 35ffff84 17fffe5f f9800071 (c85ffc60)
+[   21.708250] ---[ end trace 5ae08147542eb468 ]---
+[   21.708667] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[   21.709456] Kernel Offset: disabled
+[   21.709762] CPU features: 0x00240022,2100600c
+[   21.710146] Memory Limit: 2048 MB
+[   21.710443] ---[ end Kernel panic - not syncing: Attempted to kill init!
+exitcode=0x0000000b ]---
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
----
- block/genhd.c | 36 +++++++++++++-----------------------
- 1 file changed, 13 insertions(+), 23 deletions(-)
+I've been able to bisect the panic and the offending commit is 568262bf5492 ("usb:
+dwc3: core: Add shutdown callback for dwc3"). I can provide more diagnostic
+information if needed and I can help test the fix.
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 9f8cb7beaad1..07e70f0c9c25 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1379,7 +1379,7 @@ struct disk_events {
- 	spinlock_t		lock;
- 
- 	struct mutex		block_mutex;	/* protects blocking */
--	int			block;		/* event blocking depth */
-+	atomic_t		block;		/* event blocking depth */
- 	unsigned int		pending;	/* events already sent out */
- 	unsigned int		clearing;	/* events being cleared */
- 
-@@ -1439,8 +1439,6 @@ static unsigned long disk_events_poll_jiffies(struct gendisk *disk)
- void disk_block_events(struct gendisk *disk)
- {
- 	struct disk_events *ev = disk->ev;
--	unsigned long flags;
--	bool cancel;
- 
- 	if (!ev)
- 		return;
-@@ -1451,11 +1449,7 @@ void disk_block_events(struct gendisk *disk)
- 	 */
- 	mutex_lock(&ev->block_mutex);
- 
--	spin_lock_irqsave(&ev->lock, flags);
--	cancel = !ev->block++;
--	spin_unlock_irqrestore(&ev->lock, flags);
--
--	if (cancel)
-+	if (atomic_inc_return(&ev->block) == 1)
- 		cancel_delayed_work_sync(&disk->ev->dwork);
- 
- 	mutex_unlock(&ev->block_mutex);
-@@ -1467,23 +1461,19 @@ static void __disk_unblock_events(struct gendisk *disk, bool check_now)
- 	unsigned long intv;
- 	unsigned long flags;
- 
-+	if (atomic_dec_return(&ev->block) <= 0) {
-+		mutex_unlock(&ev->block_mutex);
-+		return;
-+	}
- 	spin_lock_irqsave(&ev->lock, flags);
--
--	if (WARN_ON_ONCE(ev->block <= 0))
--		goto out_unlock;
--
--	if (--ev->block)
--		goto out_unlock;
--
- 	intv = disk_events_poll_jiffies(disk);
-+	spin_unlock_irqrestore(&ev->lock, flags);
- 	if (check_now)
- 		queue_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, 0);
- 	else if (intv)
- 		queue_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, intv);
--out_unlock:
--	spin_unlock_irqrestore(&ev->lock, flags);
- }
- 
- /**
-@@ -1523,10 +1513,10 @@ void disk_flush_events(struct gendisk *disk, unsigned int mask)
- 
- 	spin_lock_irq(&ev->lock);
- 	ev->clearing |= mask;
--	if (!ev->block)
-+	spin_unlock_irq(&ev->lock);
-+	if (!atomic_read(&ev->block))
- 		mod_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, 0);
--	spin_unlock_irq(&ev->lock);
- }
- 
- /**
-@@ -1638,11 +1628,11 @@ static void disk_check_events(struct disk_events *ev,
- 	*clearing_ptr &= ~clearing;
- 
- 	intv = disk_events_poll_jiffies(disk);
--	if (!ev->block && intv)
-+	spin_unlock_irq(&ev->lock);
-+	if (!atomic_read(&ev->block) && intv)
- 		queue_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, intv);
- 
--	spin_unlock_irq(&ev->lock);
- 
- 	/*
- 	 * Tell userland about new events.  Only the events listed in
-@@ -1807,7 +1797,7 @@ static void disk_alloc_events(struct gendisk *disk)
- 	ev->disk = disk;
- 	spin_lock_init(&ev->lock);
- 	mutex_init(&ev->block_mutex);
--	ev->block = 1;
-+	atomic_set(&ev->block, 1);
- 	ev->poll_msecs = -1;
- 	INIT_DELAYED_WORK(&ev->dwork, disk_events_workfn);
- 
-@@ -1851,6 +1841,6 @@ static void disk_del_events(struct gendisk *disk)
- static void disk_release_events(struct gendisk *disk)
- {
- 	/* the block count should be 1 from disk_del_events() */
--	WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
-+	WARN_ON_ONCE(disk->ev && atomic_read(&disk->ev->block) != 1);
- 	kfree(disk->ev);
- }
--- 
-2.29.2
+Thanks,
+
+Alex 
 
