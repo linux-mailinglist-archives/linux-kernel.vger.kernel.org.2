@@ -2,184 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E087397D34
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7C3397D3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhFAXwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:52:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:37470 "EHLO m43-7.mailgun.net"
+        id S235217AbhFAXyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:54:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235034AbhFAXwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 19:52:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622591419; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=9xh6n6GHVdcIYXWa7pi+x0KJzFHvM0ecBCbRhg1PzGs=; b=k8mlNzpOEPvVPJ/wtADbNoIP9Di4+ZXqtxq8rvlSphpzJHL4/C4IOfE7H7BwjGOerMGTYSQn
- g1JyGVhC1dnA+ucyHDuC3RcRnp03QmNYG2FvMhCkN8si+MCtLDwKFfFBvJbdgc3KqZD8iHV9
- /GNnPjLLw7RdiLk2x9fgsU2nLZo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60b6c7b88491191eb3ba32ae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Jun 2021 23:50:16
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7F689C43145; Tue,  1 Jun 2021 23:50:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3C59C433F1;
-        Tue,  1 Jun 2021 23:50:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A3C59C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] drm/msm/dp: power off DP phy at suspend
-Date:   Tue,  1 Jun 2021 16:50:08 -0700
-Message-Id: <1622591408-5465-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S235137AbhFAXy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 19:54:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70F0E613AD;
+        Tue,  1 Jun 2021 23:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622591567;
+        bh=dxjDIz0r0b7xu1n9w+LYp4IakkKBhTx8Jn5ZMEZwbhI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HCyhQjonnStyx/IAf6j38G5VoiTAkwlYEGBOjWwsTQRs9d74mqf0NIB6G9LdowvNg
+         06s4vaky2uliZYTTcrBHtdLErU12UipwM8Aqzb7u303acCyzFmTU6JaEsi+VvCVr0d
+         B4feOWRTx/LtL6nVZMHV5JUfKevSWoHIaGwUrPTE=
+Date:   Tue, 1 Jun 2021 16:52:46 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Dong Aisheng <dongas86@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+Subject: Re: [PATCH V2 4/6] mm: rename the global section array to
+ mem_sections
+Message-Id: <20210601165246.99d7374d07661b7e91e49cb6@linux-foundation.org>
+In-Reply-To: <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
+References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
+        <20210531091908.1738465-5-aisheng.dong@nxp.com>
+        <42617372-c846-85fe-4739-abbe55eca8f6@redhat.com>
+        <CAA+hA=Ss4j8qeoe7RtDJ14nuqy+TpOk2qi-A9+YN6=2y8c_CGg@mail.gmail.com>
+        <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normal DP suspend operation contains two steps, display off followed
-by dp suspend, to complete system wide suspending cycle if display is
-up at that time. In this case, DP phy will be powered off at display
-off. However there is an exception case that depending on the timing
-of dongle plug in during system wide suspending, sometimes display off
-procedure may be skipped and dp suspend was called directly. In this
-case, dp phy is stay at powered on (phy->power_count = 1) so that at
-next resume dp driver crash at main link clock enable due to phy is
-not physically powered on. This patch will call dp_ctrl_off_link_stream()
-to tear down main link and power off phy at dp_pm_suspend() if main link
-had been brought up.
+On Tue, 1 Jun 2021 10:40:09 +0200 David Hildenbrand <david@redhat.com> wrote:
 
-Changes in V2:
--- stashed changes into dp_ctrl.c
--- add is_phy_on to monitor phy state
+> > Thanks, i explained the reason during my last reply.
+> > Andrew has already picked this patch to -mm tree.
+> 
+> Just because it's in Andrews tree doesn't mean it will end up upstream. ;)
+> 
+> Anyhow, no really strong opinion, it's simply unnecessary code churn 
+> that makes bisecting harder without real value IMHO.
 
-Changes in V3:
--- delete is_phy_on
--- call dp_ctrl_off_link_stream() from dp_pm_suspend()
-
-Fixes: 0114f31a2903 ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly)
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 10 +++++++++-
- drivers/gpu/drm/msm/dp/dp_display.c |  4 +++-
- drivers/gpu/drm/msm/dp/dp_power.c   | 15 +++++++++++++++
- 3 files changed, 27 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index dbd8943..8324a453 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1414,6 +1414,7 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
- 	phy = dp_io->phy;
- 
- 	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
-+
- 	phy_exit(phy);
- 
- 	DRM_DEBUG_DP("Host deinitialized successfully\n");
-@@ -1457,6 +1458,7 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 		return ret;
- 	}
- 	phy_power_off(phy);
-+
- 	/* hw recommended delay before re-enabling clocks */
- 	msleep(20);
- 
-@@ -1488,6 +1490,7 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 	}
- 
- 	phy_power_off(phy);
-+
- 	phy_exit(phy);
- 
- 	return 0;
-@@ -1816,12 +1819,16 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
- 	struct dp_ctrl_private *ctrl;
- 	struct dp_io *dp_io;
- 	struct phy *phy;
--	int ret;
-+	int ret = 0;
- 
- 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
- 	dp_io = &ctrl->parser->io;
- 	phy = dp_io->phy;
- 
-+	/* main link is off */
-+	if (!dp_power_clk_status(ctrl->power, DP_CTRL_PM))
-+		return ret;
-+
- 	/* set dongle to D3 (power off) mode */
- 	dp_link_psm_config(ctrl->link, &ctrl->panel->link_info, true);
- 
-@@ -1894,6 +1901,7 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
- 	}
- 
- 	phy_power_off(phy);
-+
- 	phy_exit(phy);
- 
- 	DRM_DEBUG_DP("DP off done\n");
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index cdec0a3..5abd769 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1327,8 +1327,10 @@ static int dp_pm_suspend(struct device *dev)
- 
- 	mutex_lock(&dp->event_mutex);
- 
--	if (dp->core_initialized == true)
-+	if (dp->core_initialized == true) {
-+		dp_ctrl_off_link_stream(dp->ctrl);
- 		dp_display_host_deinit(dp);
-+	}
- 
- 	dp->hpd_state = ST_SUSPENDED;
- 
-diff --git a/drivers/gpu/drm/msm/dp/dp_power.c b/drivers/gpu/drm/msm/dp/dp_power.c
-index 9c4ea00..980924a9 100644
---- a/drivers/gpu/drm/msm/dp/dp_power.c
-+++ b/drivers/gpu/drm/msm/dp/dp_power.c
-@@ -262,6 +262,21 @@ int dp_power_clk_enable(struct dp_power *dp_power,
- 			}
- 			dp_power->core_clks_on = true;
- 		}
-+	} else {
-+		if (pm_type == DP_CORE_PM && !dp_power->core_clks_on) {
-+			DRM_DEBUG_DP("core clks already disabled\n");
-+			return 0;
-+		}
-+
-+		if (pm_type == DP_CTRL_PM && !dp_power->link_clks_on) {
-+			DRM_DEBUG_DP("links clks already disabled\n");
-+			return 0;
-+		}
-+
-+		if (pm_type == DP_STREAM_PM && !dp_power->stream_clks_on) {
-+			DRM_DEBUG_DP("pixel clks already disabled\n");
-+			return 0;
-+		}
- 	}
- 
- 	rc = dp_power_clk_set_rate(power, pm_type, enable);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I think it's a good change - mem_sections refers to multiple instances
+of a mem_section.  Churn is a pain, but that's the price we pay for more
+readable code.  And for having screwed it up originally ;)
 
