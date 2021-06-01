@@ -2,153 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E47396A96
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 03:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F5F396A99
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 03:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232448AbhFABZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 21:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38274 "EHLO mail.kernel.org"
+        id S232515AbhFAB2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 21:28:07 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46622 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231714AbhFABZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 21:25:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EC0E610A1;
-        Tue,  1 Jun 2021 01:23:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622510625;
-        bh=tJI6iUgH4WbJL1Ain1qtmC88ZJN93TFAElZ2sjKd3y4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Zhgp/24FPdRQOadk7iDa1k61dyyZzMYu6led2E3+OeDYEdb1tJrXVQZEwu+W68Y0h
-         QMDV3gDpsHnpZpDT0GNEq3uwuC+Nby97gttsTRJmot2hF5urRncGUuHvfjxYOpQSDz
-         hE8i2JpfiKyHzHm1BD8GlngnqIU/um/VQVpDaC0o=
-Date:   Mon, 31 May 2021 18:23:44 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     adobriyan@gmail.com, rppt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com
-Subject: Re: [PATCH] fs/proc/kcore.c: add mmap interface
-Message-Id: <20210531182344.e9692132981a5bf9bf6d4583@linux-foundation.org>
-In-Reply-To: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
-References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S231714AbhFAB2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 21:28:06 -0400
+IronPort-SDR: lpTGoGBVGUM9poQk/cmuUYvIPSkoOzSNOgNxF5Xfn6d848uOCw/HgGJVcq8BnRxqas6yddK+Vw
+ jn/UbTTEYtHg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="264636450"
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="264636450"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 18:26:23 -0700
+IronPort-SDR: 3ISgzlIM9qswXjZQDHBeANiitu0fX8s7d+7JTlBEqDv2NaJfFaUxOX4F6EkXR8+6aF44ke+Lvp
+ 1iqskwpkwaAQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="632703400"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.105]) ([10.239.159.105])
+  by fmsmga006.fm.intel.com with ESMTP; 31 May 2021 18:26:19 -0700
+Cc:     baolu.lu@linux.intel.com,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Liu Yi L <yi.l.liu@linux.intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210528233649.GB3816344@nvidia.com> <20210531193157.5494e6c6@yiliu-dev>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <576ab03b-3f2b-512f-7c29-f489ed9576f6@linux.intel.com>
+Date:   Tue, 1 Jun 2021 09:25:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210531193157.5494e6c6@yiliu-dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 15:51:42 +0800 Feng zhou <zhoufeng.zf@bytedance.com> wrote:
-
-> From: ZHOUFENG <zhoufeng.zf@bytedance.com>
+On 5/31/21 7:31 PM, Liu Yi L wrote:
+> On Fri, 28 May 2021 20:36:49 -0300, Jason Gunthorpe wrote:
 > 
-> When we do the kernel monitor, use the DRGN
-> (https://github.com/osandov/drgn) access to kernel data structures,
-> found that the system calls a lot. DRGN is implemented by reading
-> /proc/kcore. After looking at the kcore code, it is found that kcore
-> does not implement mmap, resulting in frequent context switching
-> triggered by read. Therefore, we want to add mmap interface to optimize
-> performance. Since vmalloc and module areas will change with allocation
-> and release, consistency cannot be guaranteed, so mmap interface only
-> maps KCORE_TEXT and KCORE_RAM.
+>> On Thu, May 27, 2021 at 07:58:12AM +0000, Tian, Kevin wrote:
+>>
+>>> 2.1. /dev/ioasid uAPI
+>>> +++++++++++++++++
+
+[---cut for short---]
+
+>>> /*
+>>>    * Allocate an IOASID.
+>>>    *
+>>>    * IOASID is the FD-local software handle representing an I/O address
+>>>    * space. Each IOASID is associated with a single I/O page table. User
+>>>    * must call this ioctl to get an IOASID for every I/O address space that is
+>>>    * intended to be enabled in the IOMMU.
+>>>    *
+>>>    * A newly-created IOASID doesn't accept any command before it is
+>>>    * attached to a device. Once attached, an empty I/O page table is
+>>>    * bound with the IOMMU then the user could use either DMA mapping
+>>>    * or pgtable binding commands to manage this I/O page table.
+>> Can the IOASID can be populated before being attached?
+> perhaps a MAP/UNMAP operation on a gpa_ioasid?
 > 
-> ...
->
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -573,11 +573,81 @@ static int release_kcore(struct inode *inode, struct file *file)
->  	return 0;
->  }
->  
-> +static vm_fault_t mmap_kcore_fault(struct vm_fault *vmf)
-> +{
-> +	return VM_FAULT_SIGBUS;
-> +}
-> +
-> +static const struct vm_operations_struct kcore_mmap_ops = {
-> +	.fault = mmap_kcore_fault,
-> +};
-> +
-> +static int mmap_kcore(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	size_t size = vma->vm_end - vma->vm_start;
-> +	u64 start, pfn;
-> +	int nphdr;
-> +	size_t data_offset;
-> +	size_t phdrs_len, notes_len;
-> +	struct kcore_list *m = NULL;
-> +	int ret = 0;
-> +
-> +	down_read(&kclist_lock);
-> +
-> +	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
-> +
-> +	start = kc_offset_to_vaddr(((u64)vma->vm_pgoff << PAGE_SHIFT) -
-> +		((data_offset >> PAGE_SHIFT) << PAGE_SHIFT));
-> +
-> +	list_for_each_entry(m, &kclist_head, list) {
-> +		if (start >= m->addr && size <= m->size)
-> +			break;
-> +	}
-> +
-> +	if (&m->list == &kclist_head) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
-> +		ret = -EPERM;
-> +		goto out;
-> +	}
-> +
-> +	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
-> +	vma->vm_flags |= VM_MIXEDMAP;
-> +	vma->vm_ops = &kcore_mmap_ops;
-> +
-> +	if (kern_addr_valid(start)) {
-> +		if (m->type == KCORE_RAM || m->type == KCORE_REMAP)
-> +			pfn = __pa(start) >> PAGE_SHIFT;
-> +		else if (m->type == KCORE_TEXT)
-> +			pfn = __pa_symbol(start) >> PAGE_SHIFT;
-> +		else {
-> +			ret = -EFAULT;
-> +			goto out;
-> +		}
-> +
-> +		if (remap_pfn_range(vma, vma->vm_start, pfn, size,
-> +				vma->vm_page_prot)) {
-> +			ret = -EAGAIN;
 
-EAGAIN seems a strange errno for this case.   The mmap manpage says
+But before attaching to any device, there's no connection between an
+IOASID and the underlying IOMMU. How do you know the supported page
+sizes and cache coherency?
 
-       EAGAIN The file has been locked, or too much  memory  has  been  locked
-              (see setrlimit(2)).
+The restriction of iommu_group is implicitly expressed as only after all
+devices belonging to an iommu_group are attached, the operations of the
+page table can be performed.
 
-
-remap_pfn_range() already returns an errno - why not return whatever
-that code was?
-
-> +			goto out;
-> +		}
-> +	} else {
-> +		ret = -EFAULT;
-> +	}
-> +
-> +out:
-> +	up_read(&kclist_lock);
-> +	return ret;
-> +}
-> +
->  static const struct proc_ops kcore_proc_ops = {
->  	.proc_read	= read_kcore,
->  	.proc_open	= open_kcore,
->  	.proc_release	= release_kcore,
->  	.proc_lseek	= default_llseek,
-> +	.proc_mmap	= mmap_kcore,
->  };
->  
->  /* just remember that we have to update kcore */
-
-Otherwise looks OK to me.  Please update the changelog to reflect the
-discussion thus far and send a v2?  
+Best regards,
+baolu
