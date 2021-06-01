@@ -2,66 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39E3396BA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE93D396BA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhFAC4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 22:56:08 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:13572 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232268AbhFAC4D (ORCPT
+        id S232691AbhFAC5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 22:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhFAC5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 22:56:03 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UaoGXlt_1622516047;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UaoGXlt_1622516047)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 01 Jun 2021 10:54:08 +0800
-Subject: Re: [PATCH] crypto: sm2 - fix a memory leak in sm2
-To:     Hongbo Li <herbert.tencent@gmail.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        ebiggers@kernel.org, dhowells@redhat.com, jarkko@kernel.org,
-        herberthbli@tencent.com
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <1622467801-30957-1-git-send-email-herbert.tencent@gmail.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <91999e12-a7de-ad4b-72c4-2376ac682c92@linux.alibaba.com>
-Date:   Tue, 1 Jun 2021 10:54:07 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Mon, 31 May 2021 22:57:04 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C83C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:55:24 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id c13so1169327plz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v3pohhDIzpTNGTaLw5FGOawbaRYby4i5Jggmf7n1XFo=;
+        b=cDKZ7nrGg3SitOakQBGpVL1BFbEU6GaUR6pfRuOVyDbFDHTNgzjlEv9pGLJ6tQebx1
+         TvR4V7ARWr0D2ue6Vo1GzPXNBXAzRwVuTpyqLCLDFnqx+5pRQ6h8JR1Opa7ywKjmezTt
+         230z8WSKDLkL9v0juswaumkv0c+9iriSK8Mw8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v3pohhDIzpTNGTaLw5FGOawbaRYby4i5Jggmf7n1XFo=;
+        b=Yq7qisqUMY9YBvv7shJb9E5kc0UDfSSAVn+CSDNgyONtvW1x/h55C2gyBnkdHcY6eZ
+         u9YsIgm2ocPxuxW0O7gbFJNZn2IszNy9frvddiQJJ+IEo0AGvAv1p5js9RhrPl8ySweC
+         Mkc86/lVa77P9UugA1/9TseWYOJc0FxD/fSqwX7eOu6LdX+9fyL4XVKZq5j6IIKrvu/n
+         870mEnRlaagW2zLMR0Nier0cp6sEdEKBV3s4U1YHYT4uhw3/L8R4u9mFxkTtjk0vdUuV
+         rG/PFPmrQtp+QhgFc6SVVTIGi0j7C0gQ6lSlahMhoXwjGcoEZxiFaJ67z0gMKOnMgkMi
+         iv2Q==
+X-Gm-Message-State: AOAM530dzRfsbbYowFN6AYoqyaz98P6wW1l6C1GOWXAuzfwxrn1dMre4
+        PDEverPRszUeDu8BMYC0Cpg2oQ==
+X-Google-Smtp-Source: ABdhPJyHKfUsqE0m1JFGzAh6859rIZJIGXcyAHz3mDfWY6H7A9aRMVriVM16UsBMMvAhPOcRZnl2Fw==
+X-Received: by 2002:a17:90b:603:: with SMTP id gb3mr2237595pjb.118.1622516124107;
+        Mon, 31 May 2021 19:55:24 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:3d42:f77e:d3ba:9a24])
+        by smtp.gmail.com with ESMTPSA id y20sm11868451pfn.164.2021.05.31.19.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 19:55:23 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 11:55:17 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH next v1 1/2] dump_stack: move cpu lock to printk.c
+Message-ID: <YLWhlZy8jQR3zpun@google.com>
+References: <20210531162051.2325-1-john.ogness@linutronix.de>
+ <20210531162051.2325-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1622467801-30957-1-git-send-email-herbert.tencent@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531162051.2325-2-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hongbo,
+On (21/05/31 18:20), John Ogness wrote:
+> +void printk_cpu_lock(unsigned int *cpu_store, unsigned long *flags)
+> +{
+> +	unsigned int cpu;
+> +
+> +	for (;;) {
+> +		cpu = get_cpu();
+> +
+> +		*cpu_store = atomic_read(&printk_cpulock_owner);
+> +
+> +		if (*cpu_store == -1) {
+> +			local_irq_save(*flags);
 
-On 5/31/21 9:30 PM, Hongbo Li wrote:
-> From: Hongbo Li <herberthbli@tencent.com>
-> 
-> SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
-> test_akcipher_one(), it will set public key for every test vector,
-> and don't free ec->Q. This will cause a memory leak.
-> 
-> This patch alloc ec->Q in sm2_ec_ctx_init().
-> 
-> Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
-> Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->   crypto/sm2.c | 24 ++++++++++--------------
->   1 file changed, 10 insertions(+), 14 deletions(-)
-> 
+Is there any particular reason this does
 
-Just add Cc: to SOB, like this:
+	preempt_disable();
+	cpu = smp_processor_id();
+	local_irq_safe();
 
-   Fixes: ea7ecb66440b (...)
-   Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-   Cc: stable@vger.kernel.org # v5.10+
-   Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+instead of
 
-Thanks,
-Tianjia
+	local_irq_safe();
+	cpu = raw_smp_processor_id();
+
+?
