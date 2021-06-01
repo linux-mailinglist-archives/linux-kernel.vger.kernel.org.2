@@ -2,158 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069053973DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EFA397406
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhFANKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:10:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41670 "EHLO mail.kernel.org"
+        id S233988AbhFANYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:24:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:55365 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233409AbhFANKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D83B6136E;
-        Tue,  1 Jun 2021 13:08:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622552920;
-        bh=F5l3pFKtESBtIzN5XEefSEsjZDV84ZcGAOVvlKQ6dD4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M2yGYPumXx1S7rpQuwiaxT4yo/Q4hMAa39ejN1WjdV07gw2vU+i2/5fYsEZiBOvzU
-         vEypnZigDti/wBgL29ASBANLjfb/eOUT8vTV3Eub3WAnQoI0E7NBExhcEdLNhdUrWW
-         hyJ/UQrl+0vdhpRWBUKYj/xMc380s5pT6CeuyzmLC+0JL6WrVqzXwDyM/7MUgMF1bG
-         3jDuvwGZX0/5DxhjOAJGGm37ZZrrWMtyT6xLrN+KfWjNieL7vbafmjbnTXvj5cTU1W
-         9GG7dQafz4rWNFir/Ho4Jf+5VE6k2iTCXP0LFAf8vr2t8P0Z77ji5xKhbVHiCUzl/O
-         aZ8IZ6Dw5/6ZA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 37C3D4011C; Tue,  1 Jun 2021 10:08:37 -0300 (-03)
-Date:   Tue, 1 Jun 2021 10:08:37 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] perf tools: Copy uapi/asm/perf_regs.h from the kernel
- for MIPS
-Message-ID: <YLYxVXevS2kL4EVK@kernel.org>
-References: <1622548436-12472-1-git-send-email-yangtiezhu@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622548436-12472-1-git-send-email-yangtiezhu@loongson.cn>
-X-Url:  http://acmel.wordpress.com
+        id S233758AbhFANYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:24:37 -0400
+IronPort-SDR: 5KRgAcjBQP/pMPsK6xP+ZytWrRvIBkkgXILCaGJokVnkSb653tBp5pQsI3qpL75qQYmSPQV0R4
+ pusH6h3N2pwA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="190898394"
+X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
+   d="scan'208";a="190898394"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 06:22:55 -0700
+IronPort-SDR: zoZrPeCi2RqaKqMQe4XN6qCjPMuv7NY+eqP1ba1oRMp8iUgijhuNjcmdCqRsdl3v8dovdwUeRu
+ kCzY7rS9CUCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
+   d="scan'208";a="549058306"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga004.jf.intel.com with ESMTP; 01 Jun 2021 06:22:55 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, yao.jin@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
+Subject: [RESEND PATCH] perf/x86/intel/uncore: Fix M2M event umask for Ice Lake server
+Date:   Tue,  1 Jun 2021 06:09:03 -0700
+Message-Id: <1622552943-119174-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 01, 2021 at 07:53:56PM +0800, Tiezhu Yang escreveu:
-> To allow the build to complete on older systems, where those files are
-> either not uptodate, lacking some recent additions or not present at
-> all.
-> 
-> And check if the copy drifts from the kernel.
-> 
-> This commit is similar with
-> commit 12f020338a2c ("tools: Copy uapi/asm/perf_regs.h from the kernel")
-> 
-> With this commit, we can avoid the following build error in any case:
-> 
-> tools/perf/arch/mips/include/perf_regs.h:7:10:
-> fatal error: asm/perf_regs.h: No such file or directory
->  #include <asm/perf_regs.h>
->           ^~~~~~~~~~~~~~~~~
-> compilation terminated.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Thanks, applied.
+Perf tool errors out with the latest event list for the Ice Lake server.
 
-- Arnaldo
+event syntax error: 'unc_m2m_imc_reads.to_pmm'
+                           \___ value too big for format, maximum is 255
 
+The same as the Snow Ridge server, the M2M uncore unit in the Ice Lake
+server has the unit mask extension field as well.
+
+Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/events/intel/uncore_snbep.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index acc3c0e5..06c055d 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -5106,9 +5106,10 @@ static struct intel_uncore_type icx_uncore_m2m = {
+ 	.perf_ctr	= SNR_M2M_PCI_PMON_CTR0,
+ 	.event_ctl	= SNR_M2M_PCI_PMON_CTL0,
+ 	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.event_mask_ext	= SNR_M2M_PCI_PMON_UMASK_EXT,
+ 	.box_ctl	= SNR_M2M_PCI_PMON_BOX_CTL,
+ 	.ops		= &snr_m2m_uncore_pci_ops,
+-	.format_group	= &skx_uncore_format_group,
++	.format_group	= &snr_m2m_uncore_format_group,
+ };
  
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  tools/arch/mips/include/uapi/asm/perf_regs.h | 40 ++++++++++++++++++++++++++++
->  tools/perf/Makefile.config                   |  1 -
->  tools/perf/check-headers.sh                  |  1 +
->  3 files changed, 41 insertions(+), 1 deletion(-)
->  create mode 100644 tools/arch/mips/include/uapi/asm/perf_regs.h
-> 
-> diff --git a/tools/arch/mips/include/uapi/asm/perf_regs.h b/tools/arch/mips/include/uapi/asm/perf_regs.h
-> new file mode 100644
-> index 0000000..d0f4ecd
-> --- /dev/null
-> +++ b/tools/arch/mips/include/uapi/asm/perf_regs.h
-> @@ -0,0 +1,40 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _ASM_MIPS_PERF_REGS_H
-> +#define _ASM_MIPS_PERF_REGS_H
-> +
-> +enum perf_event_mips_regs {
-> +	PERF_REG_MIPS_PC,
-> +	PERF_REG_MIPS_R1,
-> +	PERF_REG_MIPS_R2,
-> +	PERF_REG_MIPS_R3,
-> +	PERF_REG_MIPS_R4,
-> +	PERF_REG_MIPS_R5,
-> +	PERF_REG_MIPS_R6,
-> +	PERF_REG_MIPS_R7,
-> +	PERF_REG_MIPS_R8,
-> +	PERF_REG_MIPS_R9,
-> +	PERF_REG_MIPS_R10,
-> +	PERF_REG_MIPS_R11,
-> +	PERF_REG_MIPS_R12,
-> +	PERF_REG_MIPS_R13,
-> +	PERF_REG_MIPS_R14,
-> +	PERF_REG_MIPS_R15,
-> +	PERF_REG_MIPS_R16,
-> +	PERF_REG_MIPS_R17,
-> +	PERF_REG_MIPS_R18,
-> +	PERF_REG_MIPS_R19,
-> +	PERF_REG_MIPS_R20,
-> +	PERF_REG_MIPS_R21,
-> +	PERF_REG_MIPS_R22,
-> +	PERF_REG_MIPS_R23,
-> +	PERF_REG_MIPS_R24,
-> +	PERF_REG_MIPS_R25,
-> +	PERF_REG_MIPS_R26,
-> +	PERF_REG_MIPS_R27,
-> +	PERF_REG_MIPS_R28,
-> +	PERF_REG_MIPS_R29,
-> +	PERF_REG_MIPS_R30,
-> +	PERF_REG_MIPS_R31,
-> +	PERF_REG_MIPS_MAX = PERF_REG_MIPS_R31 + 1,
-> +};
-> +#endif /* _ASM_MIPS_PERF_REGS_H */
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 406a951..73df23d 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -90,7 +90,6 @@ endif
->  ifeq ($(ARCH),mips)
->    NO_PERF_REGS := 0
->    CFLAGS += -I$(OUTPUT)arch/mips/include/generated
-> -  CFLAGS += -I../../arch/mips/include/uapi -I../../arch/mips/include/generated/uapi
->    LIBUNWIND_LIBS = -lunwind -lunwind-mips
->  endif
->  
-> diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-> index dd8ff28..c783558 100755
-> --- a/tools/perf/check-headers.sh
-> +++ b/tools/perf/check-headers.sh
-> @@ -39,6 +39,7 @@ arch/x86/lib/x86-opcode-map.txt
->  arch/x86/tools/gen-insn-attr-x86.awk
->  arch/arm/include/uapi/asm/perf_regs.h
->  arch/arm64/include/uapi/asm/perf_regs.h
-> +arch/mips/include/uapi/asm/perf_regs.h
->  arch/powerpc/include/uapi/asm/perf_regs.h
->  arch/s390/include/uapi/asm/perf_regs.h
->  arch/x86/include/uapi/asm/perf_regs.h
-> -- 
-> 2.1.0
-> 
-
+ static struct attribute *icx_upi_uncore_formats_attr[] = {
 -- 
+2.7.4
 
-- Arnaldo
