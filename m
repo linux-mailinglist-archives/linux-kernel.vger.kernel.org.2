@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C803E39796A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29DCF397969
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhFARqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:46:37 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3129 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhFARqf (ORCPT
+        id S234569AbhFARqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231331AbhFARqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:46:35 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvfWz0HFmz6P3Ml;
-        Wed,  2 Jun 2021 01:38:23 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 19:44:52 +0200
-Received: from [10.47.91.52] (10.47.91.52) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 18:44:51 +0100
-Subject: Re: [PATCH] iommu: Print default strict or lazy mode at init time
-To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <will@kernel.org>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <hch@lst.de>
-References: <1622209074-37899-1-git-send-email-john.garry@huawei.com>
- <3ee986a0-29c1-100c-c72f-360f919caf7d@arm.com>
- <e478aea8-54d3-bfc6-1bc8-b0c7709e353a@huawei.com>
- <58ea001c-4c37-9c5a-77be-38ac3bea2476@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <72eb3de9-1d1c-ae46-c5a9-95f26525d435@huawei.com>
-Date:   Tue, 1 Jun 2021 18:44:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 1 Jun 2021 13:46:03 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557E5C061574;
+        Tue,  1 Jun 2021 10:44:21 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i10so11067185lfj.2;
+        Tue, 01 Jun 2021 10:44:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sptds5+nmUjMz5WSZykG6yT08EhbN0cTXQfwU+dolb8=;
+        b=vAwZkaGkcW5IdFnf6/QkWmZzuJpSH9INFalf6LBxStpLC6Q7MzPlkthNFATTKVcixA
+         btbkR8z6g051uD7ahfCzRtU7hveYQ2iGzkZ/sU7GPinua1UH15mViuJyvzEqHRq7HVMv
+         NndzbnBEGXZ8XcYkdq9ig1ASzNQRUwQNIfYtxwtzqNOJ9kY6fVyIWIQZdhSZ11KIclYQ
+         tjcLgc4cyL9xg/ZyFJmxbmmsl0t/wWcgi0FNg8fH6kYtC7Q/+TQBV2MzFXo+6v+Oi5Dn
+         03rFXGxYqJm8ZmHUcIqrGPvgQpYyM4Kt+qXEPJo3w7eySRUvWCsR1v8yA1jZNE7yzaKQ
+         Tvhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sptds5+nmUjMz5WSZykG6yT08EhbN0cTXQfwU+dolb8=;
+        b=LzHRmGSFoB8smVh0D/ashtNlYJkj6Qj4nWF9h9F1cMrS84hEmNsmRW61zNAG8+i4fM
+         xXUA8Kmx0W2BVNQzSduwodoZniY1dbnlPenyWOaFW46gahq6q/hg2mjg+MVt08BMBEXP
+         8/+4NXaJSfnfrIrqO4AQ2zj2uVJsIBAnH8FVoTQquUnm1w+o+OTREzBubn5yQpIm5s15
+         sHw465xe/N3DF293oP59myKBa27RR3uDP0yUvJh5pRRKCafm6fYqLEB3BrdQzfXYd79M
+         aIsxcufHvBJCOTym7flquROf0rqxOHFqEvPCtl8a7ZUK/7pMr/d3kvip7Tg+vUhqFOM/
+         pcVw==
+X-Gm-Message-State: AOAM531797em+hayEtGcWF6riO73KHBdRpng9LQRXukQ56uT8Wl3px54
+        nHlqQiF1axLYdDqpSbkqAZru2v+BabM=
+X-Google-Smtp-Source: ABdhPJx5NbShuKhjIAMDZtDNQiq4g8ZpD8ma8TpVlyNVRH5ohaeyMK3qv1ChOz+eUj1I5OmzvvUFeQ==
+X-Received: by 2002:a05:6512:3483:: with SMTP id v3mr6111459lfr.154.1622569459499;
+        Tue, 01 Jun 2021 10:44:19 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id a25sm2091581ljp.11.2021.06.01.10.44.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 10:44:19 -0700 (PDT)
+Subject: Re: [PATCH v1 04/10] ARM: tegra: Add reg property to Tegra20 EMC
+ table device-tree nodes
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210510202600.12156-1-digetx@gmail.com>
+ <20210510202600.12156-5-digetx@gmail.com> <YLSpCXNtut3z8U9a@orome.fritz.box>
+ <1ab11cc8-b45a-0c2d-c0c4-fa5779756c05@gmail.com>
+ <YLYZHPpjZB9amRBW@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <056fed54-b075-443b-a445-ede45bc8eb54@gmail.com>
+Date:   Tue, 1 Jun 2021 20:44:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <58ea001c-4c37-9c5a-77be-38ac3bea2476@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <YLYZHPpjZB9amRBW@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.91.52]
-X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+01.06.2021 14:25, Thierry Reding пишет:
+> On Mon, May 31, 2021 at 11:45:19PM +0300, Dmitry Osipenko wrote:
+>> 31.05.2021 12:14, Thierry Reding пишет:
+>>> On Mon, May 10, 2021 at 11:25:54PM +0300, Dmitry Osipenko wrote:
+>>>> The reg property is now specified for the emc-tables nodes in the Tegra20
+>>>> device-tree binding. Add reg property to the EMC table device-tree nodes
+>>>> of Tegra20 board device-trees in order to silence dt_binding_check warning
+>>>> about the missing property.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 4 ++++
+>>>>  arch/arm/boot/dts/tegra20-paz00.dts             | 1 +
+>>>>  2 files changed, 5 insertions(+)
+>>>
+>>> In retrospect we should've just used "reg" in the first place rather
+>>> than adding the custom "nvidia,ram-code". It's a bit redundant to have
+>>> both of them with the same value. I wonder if we should deprecate the
+>>> use of "nvidia,ram-code" and at least make the code look at the "reg"
+>>> property first and only fall back to "nvidia,ram-code" if "reg" does
+>>> not exist. We probably won't ever be able to get rid of the fallback
+>>> for backwards-compatibility reasons, but at least that would make the
+>>> intent a bit clearer.
 >>
->> pr_info("DMA domain default TLB invalidation policy: %s mode %s\n",
->>                iommu_dma_strict ? "strict" : "lazy",
->>                 (iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
->>                         "(set via kernel command line)" : "");
+>> This may be not doable. We have Asus TF101 which doesn't use RAM code
+>> for the memory identification, instead it uses LPDDR chip info [1]. I
+>> will send the LPDDR patches later on.
 >>
->> I think it's worth mentioning "default" somewhere, as not all IOMMUs 
->> or devices will use lazy mode even if it's default.
+>> [1]
+>> https://github.com/grate-driver/linux/blob/master/arch/arm/boot/dts/tegra20-asus-tf101.dts#L1115
 > 
-> But that's part of what I think is misleading - I boot and see that the 
-> default is something, so I reboot with iommu.strict to explicitly set it 
-> the other way, but now that's the default... huh?
-> 
-> The way I see it, we're saying what the current IOMMU API policy is - 
-> the value of iommu_dma_strict at any given time is fact - but we're not 
-> necessarily saying how widely that policy is enforced. We similarly 
-> report the type for default domains from global policy even though that 
-> may also be overridden per-group by drivers and/or userspace later; 
+> That DTS defines both "jedec,lpddr-manufacturer-id" and "reg" with the
+> same value, so we could simply use "reg" there. If you plan to support
+> the JEDEC properties, we'll have to add code for that anyway, so there
+> is no downside to first trying "reg". 
 
-> we 
-> don't say it's the *default* default domain type.
+At least in my mind the reg property is associated with a hardware
+register. Changing the purpose of the reg and removing the verbose
+properties should create confusion for anyone who looks at device-tree
+and not familiar with the binding.
 
-I think that is this is the behavior a user would understand from that 
-message.
+The current main purpose of the reg is "Either an opaque enumerator to
+tell different tables apart or the valid frequency for which the table
+should be used (in kHz)", like the binding says. It should be better to
+keep the reg optional and additional, especially if we will give it
+another meaning, IMO.
 
-However from a glance at the intel IOMMU driver, it seems possible to 
-change default domain type after iommu_subsys_init().
+> And we may not even need to add
+> support for any of those JEDEC properties if we can just use the "reg"
+> standard property in the first place.
 
-> 
-> However, having now debugged the AMD issue from another thread, I think 
-> doing this at subsys_initcall is in fact going to be too early to be 
-> meaningful, since it ignores drivers' ability to change the global 
-> policy :(
-
-A user may still learn the IOMMU group domain type from sysfs. There is 
-no such thing for TLB invalidation mode - how about add a file for this? 
-It would be useful.
-
-Thanks,
-John
+We will need all those JEDEC properties for identifying memory chips,
+including information about chip version and h/w geometry. This method
+of matching is borrowed from the official downstream kernel of TF101,
+apparently board designers decided not to use the RAM code.
