@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F81397CD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A369397CD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235127AbhFAXBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40908 "EHLO mail.kernel.org"
+        id S235155AbhFAXBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234656AbhFAXBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234766AbhFAXBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Jun 2021 19:01:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F15E1613BC;
-        Tue,  1 Jun 2021 23:00:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 715B0613C5;
+        Tue,  1 Jun 2021 23:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622588403;
-        bh=tbqCPYrPXuGVLzNNNZFMxmyWcRmpu8AG1sQfIicFoq8=;
+        bh=iLhyLUw2mYamC6iFH0dPrfhONhGrSeaNEsfGwlmJ4Uo=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tJpyGTBZt9ZKeMnd2wlkLnKlqJVrus7LULc1RVwAEVJ/fV8y5oWZP0nMRG8gFlWzj
-         W4Ww2MYBz5hKnlj+Yk941R8cLacHGXzU5DkElWwJ8oGeN/VIbZmjoNg0Th/GoQOhJ7
-         7ZdV1PvOgYiLUH6QI764+fYi7/rnwublpxhAqC73u7Q1gkFiWWxlrXqt13HFtYVmep
-         JCJVbrD5jLxA6SPoeidotIVPwhM/HMW1VTiOAeV3I0h12OLQ6E8uf3rSnsKHCgm3J2
-         tJFy8TKMspLMcw+COSUiycPOOHiaNicfop56Yu7ewCWWjWffZGYY2dPbepLPDWYtub
-         tDFPd8S2VH3qQ==
+        b=LB8Qzv0NirOeYUdEqU0/+H3GnPGLTrKCl43R6VhgfOgfd9sbrgcihRi/617NeG1Hr
+         yg37gj6XUVQS+aoWXe7HI8OEgptrxW79VR8K5QSkJZJV5QXIkBAIaOpiEd1CCg8bUT
+         uPSUeX/9iqNyaL1Ni6F4R5vmg2mZYV0cTiNKmpHAZUTEj0WZrTwjN2T9nphrNmbwZL
+         6neb88jkGvyRjhRshnCCf6wgoiuVmTmC7PIESh7gUUsIBuILFMLxS+V0N8+31VOwFX
+         cPARS7qg00oqNnQSN7uVYKoyBsnnEgyLTyE1uBrntpR7srhGzIUjyI5Hg9EwlIuLOl
+         ueViBfTgRQprw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E35FC60A47;
-        Tue,  1 Jun 2021 23:00:02 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6B4D6609F8;
+        Tue,  1 Jun 2021 23:00:03 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ethernet: myri10ge: Fix missing error code in
- myri10ge_probe()
+Subject: Re: [PATCH][next] octeontx2-af: Fix spelling mistake "vesion" ->
+ "version"
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162258840292.25475.8812296337772071436.git-patchwork-notify@kernel.org>
-Date:   Tue, 01 Jun 2021 23:00:02 +0000
-References: <1622545491-18706-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1622545491-18706-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     christopher.lee@cspi.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <162258840343.25475.840773037649617405.git-patchwork-notify@kernel.org>
+Date:   Tue, 01 Jun 2021 23:00:03 +0000
+References: <20210601103144.9213-1-colin.king@canonical.com>
+In-Reply-To: <20210601103144.9213-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue,  1 Jun 2021 19:04:51 +0800 you wrote:
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'status'.
+On Tue,  1 Jun 2021 11:31:44 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Eliminate the follow smatch warning:
+> There is a spelling mistake in a dev_warning message. Fix it.
 > 
-> drivers/net/ethernet/myricom/myri10ge/myri10ge.c:3818 myri10ge_probe()
-> warn: missing error code 'status'.
-> 
-> [...]
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - ethernet: myri10ge: Fix missing error code in myri10ge_probe()
-    https://git.kernel.org/netdev/net/c/f336d0b93ae9
+  - [next] octeontx2-af: Fix spelling mistake "vesion" -> "version"
+    https://git.kernel.org/netdev/net-next/c/b934b6d1d933
 
 You are awesome, thank you!
 --
