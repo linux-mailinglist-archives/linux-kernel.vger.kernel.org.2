@@ -2,147 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC7A397198
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E13039719C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhFAKjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:39:08 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:53050 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232569AbhFAKjG (ORCPT
+        id S233577AbhFAKj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231792AbhFAKj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:39:06 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151AVmNg029022;
-        Tue, 1 Jun 2021 12:37:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=3biXO/fpJflq2AcQCK76xAJA1BbX58Bg7funY9JCbm8=;
- b=gVGcDWpmFLi2vkt8ZSC1ZkyNDcWZlIPGQDgMzMN51/USVOX7Ci4eZovrXm/mWC7srra3
- 7cKLpT5ixlVZQ1QzD4IAe/Ui68Brj7h1s6D+6S3Yv4o3eV3deR62/mKPAB2dPjSImVD2
- bKeA4Xhb8y94aO96qM2Gs0EsI/QJ6pqxwv/hoFiC+Ytcs+GHkzPHxi+v2wwIzJP+FQz0
- lbrNA2HFD7jGPmKX4/KwFcsE2eaJF3qLXhKcyzO/ndkxzRgqcCwtFsKW83PQRc0MoWzt
- O5oWJZw9awpOuUqE8clBzM6KDu/f5W3g8M23pNaMZuX4di3SQlYMaakCJj7zUwscVjmP Dw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38wjdg0aps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 12:37:12 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BA73410002A;
-        Tue,  1 Jun 2021 12:37:11 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8D82721B514;
-        Tue,  1 Jun 2021 12:37:11 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 1 Jun
- 2021 12:37:10 +0200
-Subject: Re: [PATCH 00/13] ARM: dts: stm32: fix "make dtbs_check W=1" round1
-To:     <arnd@arndb.de>, <robh+dt@kernel.org>, Marek Vasut <marex@denx.de>,
-        <jagan@amarulasolutions.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        <kuba@kernel.org>
-References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <a5a76fa8-fac5-556d-f272-4c471f3e7913@foss.st.com>
-Date:   Tue, 1 Jun 2021 12:37:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Jun 2021 06:39:56 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71354C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:38:14 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id x38so20994193lfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yN5uiFBkkTeT2+j1gnjicofSI0ZU0aW0s8cvIPMUB5c=;
+        b=Yp4g9qfAZ2U4RijeC/9A/sXt0dNmQH8B2qgnGaUsUALb9c0wdcbuwpoelkQx97gpJ7
+         g1q1rUo6V/D+UN0Xy7n9Wwkh+MlP/n5z3hm41lYLlHgL+aB4y+PEHQ7/stAQvwxqoMdd
+         KsVE/QJlsIt0BZTMveHgGG9V4wkx8m9LMjZTiY8qklY58VAkq7gXoONJ+GzdZGmtKu5f
+         US1s4g+gA9pgtUUoc3GFG2mMLabhCX3JtI/1lwAtbqD5MjUa/nnwM/Bx3TUkeVDFis3i
+         MgBiwJCASB7dQyqwmQH+j+6UeHjCZKrSn+ticL0q6+9zcP0gELkMRAvgr6qFvzPpuiad
+         no8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yN5uiFBkkTeT2+j1gnjicofSI0ZU0aW0s8cvIPMUB5c=;
+        b=WJs+d96JfVJ7lrr+dnjYuXkpGimI8u0xu7pjAwSeVkExnG+iOHTJgJDDmBTlkiiGnc
+         0Wl4isEFNsGE+xaW4vJjqu+HWx+qZ2D8rwyWgX65Wp4IEZrXSyu5/obdt0mFSd5q7lYF
+         kmy/7EtL5FwQh+u+g2zsm4Q9qfadspd9oIRvsrajkCssxjMGzA4UuzsDMBsEcnph2PUt
+         wJHLkfO2G2qI19MC0C32eWGK7hw0A0h1SzSyIoXxQu3PrTgV/3xX0lj+WlE3OgoxYyLf
+         hfEzreyzG5j1qYRKR8h7hKKRKtux+zMaDOPfvNs/pappUOY2MukIbzOP+SQpgkba75Ms
+         owtA==
+X-Gm-Message-State: AOAM530SNpLbhZNA/Ra8dnxRDFwFnAyKCnfPstyX2nqtVc+8tfk82WZW
+        e4Vnvil7a9gyBpHr8vWoWHdRlJxFz+HQQZ0vhsQVbw==
+X-Google-Smtp-Source: ABdhPJyrNY1gdF74/aahJD6WWpvmsfypMnfesq4IK/NIfeVwSBC8cYbo6kOwQ59ZGcFwYnmhMPCTSa5bqu3fh/F7YJ4=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr18182416lfn.465.1622543892812;
+ Tue, 01 Jun 2021 03:38:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_05:2021-05-31,2021-06-01 signatures=0
+References: <20210325122832.119147-1-sandberg@mailfence.com>
+ <20210530161333.3996-1-maukka@ext.kapsi.fi> <20210530161333.3996-3-maukka@ext.kapsi.fi>
+In-Reply-To: <20210530161333.3996-3-maukka@ext.kapsi.fi>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 1 Jun 2021 12:38:01 +0200
+Message-ID: <CACRpkdYf06W2QDY6EN0OG3RjOnJ+AVE+Wd4M6Z9=B7aZ9rGfwA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] gpio: gpio-mux-input: add generic gpio input multiplexer
+To:     Mauri Sandberg <maukka@ext.kapsi.fi>
+Cc:     Mauri Sandberg <sandberg@mailfence.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Sun, May 30, 2021 at 6:16 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
 
-On 4/15/21 12:10 PM, Alexandre Torgue wrote:
-> Hi,
-> 
-> First round to cleanup warnings and yaml validation issues seen running
-> "make dtbs_check W=1" command for STM32 platform. It concerns all SoC
-> (MCU: f429/429, f746/769, h743, MPU) and all boards (ST reference boards,
-> DH, Engicam, LxA ...).
-> 
-> Main fixes are done in device tree files but some imply a change in yaml
-> dt-bindings file.
-> 
-> regards
-> Alex
-> 
-> Alexandre Torgue (13):
->    ARM: dts: stm32: fix gpio-keys node on STM32 MCU boards
->    ARM: dts: stm32: fix RCC node name on stm32f429 MCU
->    ARM: dts: stm32: fix timer nodes on STM32 MCU to prevent warnings
->    dt-bindings: mfd: stm32-timers: remove #address/size cells from
->      required properties
->    ARM: dts: stm32: update pinctrl node name on STM32 MCU to prevent
->      warnings
->    ARM: dts: stm32: fix i2c node name on stm32f746 to prevent warnings
->    ARM: dts: stm32: move stmmac axi config in ethernet node on stm32mp15
->    dt-bindings: net: document ptp_ref clk in dwmac
->    ARM: dts: stm32: fix stpmic node for stm32mp1 boards
->    dt-bindings: mfd: add vref_ddr-supply to st,stpmic1 yaml
->    ARM: dts: stm32: fix LTDC port node on STM32 MCU ad MPU
->    ARM: dts: stm32: fix DSI port node on STM32MP15
->    ARM: dts: stm32: fix ltdc pinctrl on microdev2.0-of7
-> 
->   .../bindings/mfd/st,stm32-timers.yaml         |  2 -
->   .../devicetree/bindings/mfd/st,stpmic1.yaml   |  2 +-
->   .../devicetree/bindings/net/snps,dwmac.yaml   |  4 +-
->   .../devicetree/bindings/net/stm32-dwmac.yaml  |  6 +-
->   arch/arm/boot/dts/stm32429i-eval.dts          |  8 +-
->   arch/arm/boot/dts/stm32746g-eval.dts          |  6 +-
->   arch/arm/boot/dts/stm32f4-pinctrl.dtsi        |  2 +-
->   arch/arm/boot/dts/stm32f429-disco.dts         |  6 +-
->   arch/arm/boot/dts/stm32f429-pinctrl.dtsi      | 72 +++++++++---------
->   arch/arm/boot/dts/stm32f429.dtsi              | 10 +--
->   arch/arm/boot/dts/stm32f469-disco.dts         |  8 +-
->   arch/arm/boot/dts/stm32f469-pinctrl.dtsi      | 74 +++++++++----------
->   arch/arm/boot/dts/stm32f7-pinctrl.dtsi        |  2 +-
->   arch/arm/boot/dts/stm32f746.dtsi              | 12 +--
->   arch/arm/boot/dts/stm32f769-disco.dts         |  6 +-
->   arch/arm/boot/dts/stm32h743.dtsi              |  4 -
->   arch/arm/boot/dts/stm32mp151.dtsi             | 16 ++--
->   arch/arm/boot/dts/stm32mp157.dtsi             |  2 -
->   arch/arm/boot/dts/stm32mp157a-dk1.dts         |  8 ++
->   ...157a-microgea-stm32mp1-microdev2.0-of7.dts |  5 +-
->   arch/arm/boot/dts/stm32mp157a-stinger96.dtsi  |  7 +-
->   arch/arm/boot/dts/stm32mp157c-dk2.dts         | 12 ++-
->   arch/arm/boot/dts/stm32mp157c-ev1.dts         |  5 +-
->   arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts     |  3 +-
->   .../arm/boot/dts/stm32mp157c-odyssey-som.dtsi |  5 +-
->   arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi  |  5 +-
->   .../boot/dts/stm32mp15xx-dhcor-avenger96.dtsi |  6 +-
->   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi        |  7 --
->   arch/arm/boot/dts/stm32mp15xx-osd32.dtsi      |  7 +-
->   29 files changed, 130 insertions(+), 182 deletions(-)
-> 
+> Adds support for a generic GPIO multiplexer. To drive the multiplexer a
+> mux-controller is needed. The output pin of the multiplexer is a GPIO
+> pin.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
+> Tested-by: Drew Fustini <drew@beagleboard.org>
+> Reviewed-by: Drew Fustini <drew@beagleboard.org>
 
-Patches 1 to 8 and 13 applied on stm32-next. I will send a v2 for 
-vref-ddr supply. There is still an open point about #adress-size/cells 
-check for DSI / LTDC ports.
+The commit message and part of the driver becomes hard to
+read and understand because the word pin is overused.
+Switch to talk about "gpio lines" rather than pins.
 
-Rob,
-Can we consider to have "#adress-size/cells defined even if only one 
-endpoint (child) is defined ? and then is it possible to update the 
-checker ? Or do we have to keep patches [11][12]
-and update #adress-size/cells in board dts files ?
+Draw a simple ASCII image like this:
 
-Thanks
-Alex
+               /|---- Cascaded GPIO line 0
+              |M|---- Cascaded GPIO line 1
+GPIO line ----+U| .
+              |X| .
+           \|---- Cascaded GPIO line n
 
+Maybe also as illustration in the driver and in the bindings.
+Make things easy to understand.
+
+Explain exactly why only input lines can be multiplexed.
+
+I'm not sure it should be restricted to just input
+in theory, but since that is all we can test, restrict it to
+input in practice.
+
+> +config GPIO_MUX_INPUT
+> +       tristate "General GPIO input multiplexer"
+
+Rename it just GPIO_MUX
+  "General GPIO multiplexer"
+
+Then clarify in the help description that it currently can only
+handle input lines.
+
+> +       depends on OF_GPIO
+> +       select MULTIPLEXER
+> +       select MUX_GPIO
+> +       help
+> +         Say yes here to enable support for generic GPIO input multiplexer.
+> +
+> +         This driver uses a mux-controller to drive the multiplexer and has a
+> +         single output pin for reading the inputs to the mux. The driver can
+> +         be used in situations when GPIO pins are used to select what
+> +         multiplexer pin should be used for reading input and the output pin
+> +         of the multiplexer is connected to a GPIO input pin.
+
+Input output etc, this gets very hard to understand.
+
+Switch terminology from "pin" to "GPIO lines", (or "GPIO rails").
+
+Use the word "routing" as the GPIO line is routed through the
+multiplexer. Maybe spell out multiplexer for clarity.
+
+Explain why, for electrical reasons, output lines are harder
+to multiplex like this, as the output will not maintain
+state. Notice that "using open drain constructions, output
+multiplexing may be possible, but it is currently not implemented."
+
+> +static int gpio_mux_input_get_direction(struct gpio_chip *gc,
+> +                                       unsigned int offset)
+> +{
+> +       return GPIO_LINE_DIRECTION_IN;
+> +}
+
+Explain why this is a restriction with a comment in the code.
+Add comment that in the future we might be able to handle
+also output.
+
+> +static int gpio_mux_input_get_value(struct gpio_chip *gc, unsigned int offset)
+
+This looks very nice!
+
+We might have to extend this driver at some point.
+
+Intuitively I'd say it takes some time and then someone
+comes along and say "actually we have done this
+for output as well, using some open drain and stuff"
+but this is a good starting point anyway we need no
+big upfront designs.
+
+Yours,
+Linus Walleij
