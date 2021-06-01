@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49260396C9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A1B396CA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbhFAFF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:05:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49406 "EHLO
+        id S232516AbhFAFKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:10:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27747 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229477AbhFAFF2 (ORCPT
+        by vger.kernel.org with ESMTP id S230329AbhFAFKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:05:28 -0400
+        Tue, 1 Jun 2021 01:10:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622523826;
+        s=mimecast20190719; t=1622524137;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=G4xPXgmRao4zlx3pSRsI1OzlbqWv379yzh8jVfWIHn8=;
-        b=WJxMDbMxCe6upgAX6wGoQsCkAa/VFgZ8laf7/NCDPpS8bhasnBBtxP8hoR90M4pXdijCxw
-        lzijo34+hntL6EgW1sdU1/cSvfIbr8TKtAg/hsHdk7+xZG0Ok/oWVDv6Boy9AbaeC8PgkZ
-        8pR3xWRSnjdwHkULsdY8ZCmxgquL7YY=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-q9ni1opnOGW408eUX4d-OA-1; Tue, 01 Jun 2021 01:03:45 -0400
-X-MC-Unique: q9ni1opnOGW408eUX4d-OA-1
-Received: by mail-pj1-f72.google.com with SMTP id hf1-20020a17090aff81b02901630f822d2aso880105pjb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:03:45 -0700 (PDT)
+        bh=T0ge9eI66wPcsIxgT0s5YZb/3xhZpxQFY4I1oaBiwpo=;
+        b=A0BPUMnf1QFCOELFyELvHchU4my+82Cy4vm/2ofEYXbVTstnOUOechVbuIIUsqYa35G2Ie
+        lCkMppHERXo76f5r51p2BcyLTLHVhNnxolLw2i5szPz5WvqlPiWPS9Rk4o/lfamMOtno/b
+        mq8/UF3CJYng9nn7YvkXrBAoORk3Yus=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-nK3I2_TWP-6ooB3_ThfoTg-1; Tue, 01 Jun 2021 01:08:37 -0400
+X-MC-Unique: nK3I2_TWP-6ooB3_ThfoTg-1
+Received: by mail-pj1-f71.google.com with SMTP id k1-20020a17090a7f01b029015d0d4c2107so6332793pjl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:08:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=G4xPXgmRao4zlx3pSRsI1OzlbqWv379yzh8jVfWIHn8=;
-        b=Oquz82djAwH09RYkwnNr8I99/IVQzb2I0cc6ZdChtBwMw9P0c3SuT7mqPryUFj1fh7
-         eA+bqeScNPofroTR0vju+5jjqCWl1UUAm0iSsAegf8Le0apP+Miwu2tIIyfZMbXgaet8
-         P/3msy+zPj/cDSdv8/uUv/7sH0z1evjQBQSxmHzcSrI9Dbnl+NlvZfyEVnOcfSW2LFMI
-         2BvHd8UMxHZRTYHgH+UG3egGde66AoOTD5Vge+VSH0gS1f11f0tY/1jQtI4+7t+w8d6s
-         2f+AioOWWcsrIkAoGoGpBuKwaA9qqssqSRfJ8eOpDZemXPjIiznjgSfxhgOXGTqejtZE
-         erAA==
-X-Gm-Message-State: AOAM532xnMA2CxZ+auYuokSSXUSThrbmscy4qcx4tfKKDdBHnd822dz4
-        BSO04XrEb/huPQN6I+ySBoTnJb7K1OKgOqa/7EW8xv0ZkwVxu6WsdjslFYI/XppwrNF210wysCU
-        BFssw1yA1iZvunWZ8eqh8k0egVHATrxUH2No/IurzBV1qfHcOhsR/r6wqr2SNmN1Ht842zTOxr5
-        8m
-X-Received: by 2002:a17:902:a40f:b029:fe:fee9:92fe with SMTP id p15-20020a170902a40fb02900fefee992femr22714904plq.26.1622523824134;
-        Mon, 31 May 2021 22:03:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLVOUMSb6U/UchT8myrtUaWkyYyY5luHhLO64YPIyhDNndX7GsRByxJqGUxTQndQBf5UjwoA==
-X-Received: by 2002:a17:902:a40f:b029:fe:fee9:92fe with SMTP id p15-20020a170902a40fb02900fefee992femr22714873plq.26.1622523823808;
-        Mon, 31 May 2021 22:03:43 -0700 (PDT)
+        bh=T0ge9eI66wPcsIxgT0s5YZb/3xhZpxQFY4I1oaBiwpo=;
+        b=RzF2f4yw4i0n0HrU808/dk6v3wwhsGDiDg33wz+uPTK7oRBhlq//q4/F1KvQAt51uL
+         Es1DZy9A+sbQEYhCeGHSIoPI0V3xTkiCJnD7rZ8vav/pbDTQduuVVJ3GNIR5jcEz90yF
+         XcANuu6NHWod7aKh03FigzgGrBu3aLRpkEkSGLdUqJ/ZP0cNZ9EGhJese2s7dvkjP7ot
+         DYlPXCMIzYVni+8ICLBJT7bOfWUQdkZiCx5cuGKnITqSdEZ7obNzkanKlSRndDJ/w6uT
+         lTR1JM9THCnTKA/CJt0Cpcd9zUXvcDqr0LRk9SZsYlSZJrsd5KcByep6K46aKdiYBw4d
+         PbEg==
+X-Gm-Message-State: AOAM531NSZAPNkzhqrZmotNxvBU+s5VQUJzK5tQxcMxxnv/2gWraurps
+        aLz8xEO9WstFScRS/VMFXyO71qBTPT+Bh74DZaLDyeyRdNlIWAzcdR5SIvaORLPPg0DL9hvJTZh
+        qCqky3QyxikGJZTy0mVEAom2K
+X-Received: by 2002:a17:902:6908:b029:f7:cbad:c07a with SMTP id j8-20020a1709026908b02900f7cbadc07amr24232995plk.2.1622524116010;
+        Mon, 31 May 2021 22:08:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOw8eLgbeF/Ld10BQ267ECPLF2AMYqOh2mlgGe5FRchSRMetTlx3IsfoCHw/xZOMqR2DD4kg==
+X-Received: by 2002:a17:902:6908:b029:f7:cbad:c07a with SMTP id j8-20020a1709026908b02900f7cbadc07amr24232965plk.2.1622524115712;
+        Mon, 31 May 2021 22:08:35 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id n17sm1545604pfv.125.2021.05.31.22.03.41
+        by smtp.gmail.com with ESMTPSA id x22sm4713384pfn.10.2021.05.31.22.08.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 22:03:43 -0700 (PDT)
-Subject: Re: [PATCH 2/3] vdpa/mlx5: Only return vq ready if vq is initialized
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210531160448.31537-1-elic@nvidia.com>
- <0fbd8484-9e8b-d7cc-4996-74306e6e2867@redhat.com>
- <20210601041351.GC203469@mtl-vdi-166.wap.labs.mlnx>
+        Mon, 31 May 2021 22:08:35 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Liu Yi L <yi.l.liu@linux.intel.com>
+Cc:     yi.l.liu@intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
+ <20210531164118.265789ee@yiliu-dev>
+ <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
+ <20210601113152.6d09e47b@yiliu-dev>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <67b26a20-b418-4893-a42f-f03852c2123e@redhat.com>
-Date:   Tue, 1 Jun 2021 13:03:36 +0800
+Message-ID: <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
+Date:   Tue, 1 Jun 2021 13:08:29 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210601041351.GC203469@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <20210601113152.6d09e47b@yiliu-dev>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -75,69 +85,90 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-在 2021/6/1 下午12:13, Eli Cohen 写道:
-> On Tue, Jun 01, 2021 at 10:18:04AM +0800, Jason Wang wrote:
->> 在 2021/6/1 上午12:04, Eli Cohen 写道:
->>> Only return the value of the ready field if the VQ is initialized in
->>> which case the value of the field is valid.
->>>
->>> Failing to do so can result in virtio_vdpa failing to load if the device
->>> was previously used by vhost_vdpa and the old values are ready.
->>> virtio_vdpa expects to find VQs in "not ready" state.
->>>
->>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
->>> Signed-off-by: Eli Cohen <elic@nvidia.com>
->>> ---
->>>    drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>> index 02a05492204c..f6b680d2ab1c 100644
->>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>> @@ -1407,7 +1407,7 @@ static bool mlx5_vdpa_get_vq_ready(struct vdpa_device *vdev, u16 idx)
->>>    	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
->>>    	struct mlx5_vdpa_virtqueue *mvq = &ndev->vqs[idx];
->>> -	return mvq->ready;
->>> +	return mvq->initialized && mvq->ready;
+在 2021/6/1 上午11:31, Liu Yi L 写道:
+> On Tue, 1 Jun 2021 10:36:36 +0800, Jason Wang wrote:
+>
+>> 在 2021/5/31 下午4:41, Liu Yi L 写道:
+>>>> I guess VFIO_ATTACH_IOASID will fail if the underlayer doesn't support
+>>>> hardware nesting. Or is there way to detect the capability before?
+>>> I think it could fail in the IOASID_CREATE_NESTING. If the gpa_ioasid
+>>> is not able to support nesting, then should fail it.
+>>>   
+>>>> I think GET_INFO only works after the ATTACH.
+>>> yes. After attaching to gpa_ioasid, userspace could GET_INFO on the
+>>> gpa_ioasid and check if nesting is supported or not. right?
 >>
->> I think the more suitable fix is to reset mvq->ready during reset. The
->> vq_ready should follow the queue_enable semantic in virtio-pci:
+>> Some more questions:
 >>
->> "
->> The device MUST present a 0 in queue_enable on reset.
->> "
-> Thinking again, I think we should call set_vq_ready() from
-> qemu/virtio_vdpa etc. after reset to explicitly set ready to false.
+>> 1) Is the handle returned by IOASID_ALLOC an fd?
+> it's an ID so far in this proposal.
 
 
-This is not what I read from the spec and how the current driver behave.
-
-And I don't see why we need to stick to 1 after the reset.
+Ok.
 
 
 >
-> The ready indication is not necessairily a reflection of the hardware
-> queue:
->
-> "Virtual queue ready bit
-> Writing one (0x1) to this register notifies the device that it can
-> execute requests from this virtual queue. Reading from this register
-> returns the last value written to it. Both read and write accesses apply
-> to the queue selected by writing to QueueSel."
+>> 2) If yes, what's the reason for not simply use the fd opened from
+>> /dev/ioas. (This is the question that is not answered) and what happens
+>> if we call GET_INFO for the ioasid_fd?
+>> 3) If not, how GET_INFO work?
+> oh, missed this question in prior reply. Personally, no special reason
+> yet. But using ID may give us opportunity to customize the management
+> of the handle. For one, better lookup efficiency by using xarray to
+> store the allocated IDs. For two, could categorize the allocated IDs
+> (parent or nested). GET_INFO just works with an input FD and an ID.
 
 
-My understanding that this applies if not reset in the middle. We can 
-clarify this in the spec if needed.
+I'm not sure I get this, for nesting cases you can still make the child 
+an fd.
+
+And a question still, under what case we need to create multiple ioasids 
+on a single ioasid fd?
+
+(This case is not demonstrated in your examples).
 
 Thanks
 
 
 >
+>>>   
+>>>>> 	/* Bind guest I/O page table  */
+>>>>> 	bind_data = {
+>>>>> 		.ioasid	= giova_ioasid;
+>>>>> 		.addr	= giova_pgtable;
+>>>>> 		// and format information
+>>>>> 	};
+>>>>> 	ioctl(ioasid_fd, IOASID_BIND_PGTABLE, &bind_data);
+>>>>>
+>>>>> 	/* Invalidate IOTLB when required */
+>>>>> 	inv_data = {
+>>>>> 		.ioasid	= giova_ioasid;
+>>>>> 		// granular information
+>>>>> 	};
+>>>>> 	ioctl(ioasid_fd, IOASID_INVALIDATE_CACHE, &inv_data);
+>>>>>
+>>>>> 	/* See 5.6 for I/O page fault handling */
+>>>>> 	
+>>>>> 5.5. Guest SVA (vSVA)
+>>>>> ++++++++++++++++++
+>>>>>
+>>>>> After boots the guest further create a GVA address spaces (gpasid1) on
+>>>>> dev1. Dev2 is not affected (still attached to giova_ioasid).
+>>>>>
+>>>>> As explained in section 4, user should avoid expose ENQCMD on both
+>>>>> pdev and mdev.
+>>>>>
+>>>>> The sequence applies to all device types (being pdev or mdev), except
+>>>>> one additional step to call KVM for ENQCMD-capable mdev:
+>>>> My understanding is ENQCMD is Intel specific and not a requirement for
+>>>> having vSVA.
+>>> ENQCMD is not really Intel specific although only Intel supports it today.
+>>> The PCIe DMWr capability is the capability for software to enumerate the
+>>> ENQCMD support in device side. yes, it is not a requirement for vSVA. They
+>>> are orthogonal.
+>>
+>> Right, then it's better to mention DMWr instead of a vendor specific
+>> instruction in a general framework like ioasid.
+> good suggestion. :)
 >
->> Thanks
->>
->>
->>>    }
->>>    static int mlx5_vdpa_set_vq_state(struct vdpa_device *vdev, u16 idx,
 
