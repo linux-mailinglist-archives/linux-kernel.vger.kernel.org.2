@@ -2,136 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE30397D1D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6481D397D26
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbhFAXpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234766AbhFAXpG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 19:45:06 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00860C061574;
-        Tue,  1 Jun 2021 16:43:22 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id k4so716754qkd.0;
-        Tue, 01 Jun 2021 16:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=LOfyTvzBlduQM6r6bBzDtQHy05UJJgLn5jYaGzsmD/U=;
-        b=nUjIdHZFKCGWbp8oi5u8CAD4grNNKv9hdLxU6gDSERpvmU4Dyw6r1jzJRRZkoyoY/k
-         B2D5yuJdAPdUCWN5ZsLIuZ4gW8StzTzC6j0hHZ51DieQmxI/RmbQfuNO0LHvsKcU22kl
-         Or9r5MkVq2IJR1qEd3dvXTFNqUjdBTqOMEOK6IZSx7LXvKSJ998b1LQToeO1yM9v+T85
-         VXvnEWDvau/HwLHlOJ0N5Zf6MlrovbU8knTyYzSuOUEa/voTHGQo6xH3RGK6+uqkVtdn
-         pjNTb+rJbWOC51xPrvIagPMcxnFyUROLvyyi9YfB9UXEP6EwXyUOJ7LS4TeKv+P4vkU1
-         LOJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LOfyTvzBlduQM6r6bBzDtQHy05UJJgLn5jYaGzsmD/U=;
-        b=gXpwuFbBWhGzcQSqKrnOBZ7K75796IADV2GCDi5TjzeHiMGDS5cqI0ZYxA8CFliM6Y
-         cKo444jMJ9/glArOU4B4OFh9PEqA5frOxOConK/KYBux+67GQqVUSNyAEFz5b3hWVj5z
-         1G1p6J8vmZ3RIWbqYtnIImEzIs1M2iDV5d99jtCaaPbwUtZ7BL6IZq7H7vIBlFZOI+hY
-         vGELkuvwP0si5W8R99a+yZ80BzzGjQfBd675Q8fiCNiiK7if5umzJ4SMZreMz1pUV2Dq
-         NXClzRUJR2FuMVcmyNFJix7/paaj198O7IIu78MPyU0tUUMUwWyTbJ5+zSIEGRy9E9D3
-         uQRQ==
-X-Gm-Message-State: AOAM531sN413hW6fSkMyO3Gws2lfr7m6/N/nTX2h2ngD/L2Y95mPkXFX
-        vXWwiqV1AtXzZ4B4xm+qawwqX5KWrHA=
-X-Google-Smtp-Source: ABdhPJw8669buwbP4TtbDzmypkGjLKydn7Mi0vzlV4kQNcIO+PdJaYpy13sXtRHL6ysu+8UPyhwabQ==
-X-Received: by 2002:a37:5d46:: with SMTP id r67mr23827219qkb.72.1622591001976;
-        Tue, 01 Jun 2021 16:43:21 -0700 (PDT)
-Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
-        by smtp.gmail.com with ESMTPSA id d11sm12410089qkk.110.2021.06.01.16.43.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 16:43:21 -0700 (PDT)
-Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>, corbet@lwn.net,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210531215737.8431-1-igormtorrente@gmail.com>
- <87r1hlrfhk.fsf@intel.com> <1b1e0e07-d438-0902-a28a-e346cba53518@gmail.com>
- <20210601215723.7kwakixrrizba3bu@begin>
-From:   Igor Torrente <igormtorrente@gmail.com>
-Message-ID: <9932ed69-685a-e5ce-0180-bf030ca4b608@gmail.com>
-Date:   Tue, 1 Jun 2021 20:43:18 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210601215723.7kwakixrrizba3bu@begin>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S235195AbhFAXre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:47:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235034AbhFAXrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 19:47:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42C7E613F0;
+        Tue,  1 Jun 2021 23:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622591151;
+        bh=547ziGklarlo+Osudojb8D43pdF92M2aOJKWeIfFN8A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VOMCXEkqK+OOooAHNWX53HXrUkacjvwNKfj9aStfvsIKOkYRDqAlRm4Fm8GIwZRFV
+         lNu9nK2dCwxZQKMbhxhcd5rtk1IChHpyPwJ6ao+yv/XIyCPRTOLf2m7bjsZprz55jQ
+         ymo6DA3I0BaleGVFq0UcmoVprZ3iac7zaMCJxqegLleClAOtbQH6lyFbh3OaqWPvma
+         Ge991ZgUE6oRiGIGYE66k6/MjO9pDqV8NtiUVsYjNsuwQXND5jgddyOc5bsm+j9JjW
+         uBEtbn2fgSK4/G4Cumq2mXmhaJtKFR1l019rKzJH0zcPkjLg2jEA2O2COMmR45I6Kh
+         E7FFtZCtzZglA==
+Date:   Wed, 2 Jun 2021 08:45:45 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Li Huafei <lihuafei1@huawei.com>
+Cc:     <acme@kernel.org>, <namhyung@kernel.org>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <srikar@linux.vnet.ibm.com>, <fche@redhat.com>,
+        <Jianlin.Lv@arm.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
+        <zhangjinhao2@huawei.com>
+Subject: Re: [PATCH] perf probe: Fix null pointer dereference in
+ convert_variable_location()
+Message-Id: <20210602084545.99e6d7d43e183ceaa603d247@kernel.org>
+In-Reply-To: <20210601092750.169601-1-lihuafei1@huawei.com>
+References: <20210601092750.169601-1-lihuafei1@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
+On Tue, 1 Jun 2021 17:27:50 +0800
+Li Huafei <lihuafei1@huawei.com> wrote:
 
-On 6/1/21 6:57 PM, Samuel Thibault wrote:
-> Igor Torrente, le mar. 01 juin 2021 12:11:26 -0300, a ecrit:
->>>> +| acntsa -- Accent SA
->>>> +| acntpc -- Accent PC
->>>> +| apollo -- Apollo
->>>> +| audptr -- Audapter
->>>> +| bns -- Braille 'n Speak
->>>> +| dectlk -- DecTalk Express (old and new, db9 serial only)
->>>> +| decext -- DecTalk (old) External
->>>> +| dtlk -- DoubleTalk PC
->>>> +| keypc -- Keynote Gold PC
->>>> +| ltlk -- DoubleTalk LT, LiteTalk, or external Tripletalk (db9 serial only)
->>>> +| spkout -- Speak Out
->>>> +| txprt -- Transport
->>>> +| dummy -- Plain text terminal
->>>
->>> Looks like a definition list?
->>>
->>> https://docutils.sourceforge.io/docs/user/rst/quickref.html#definition-lists
->>
->> If the '|' is replaced by definition-list, I'll have to skip a line to each
->> item so the sphinx doesn't concatenate them into a single line. Like this:
->>
->> keywords
->>    acntsa -- Accent SA
->>
->>    acntpc -- Accent PC
->>
->>    apollo -- Apollo
->>    [...]
->>
->>
->> There's a way to do that without these blank lines?
+> If we just check whether the variable can be converted, 'tvar' should be
+> a null pointer. However, the null pointer check is missing in the
+> 'Constant value' execution path.
 > 
-> The blank line isn't really a problem.
+> The following cases can trigger this problem:
 > 
->>>> +Document License
->>>> +================
->>>> +
->>>
->>> Using SPDX might be nice.
->>
->> I was just trying to respect the original text as much as possible, but I
->> don't mind change it if everybody agrees with it.
+> 	$ cat test.c
+> 	#include <stdio.h>
 > 
-> SPDX should be fine.
+> 	void main(void)
+> 	{
+> 	        int a;
+> 	        const int b = 1;
+> 
+> 	        asm volatile("mov %1, %0" : "=r"(a): "i"(b));
+> 	        printf("a: %d\n", a);
+> 	}
+> 
+> 	$ gcc test.c -o test -O -g
+> 	$ sudo ./perf probe -x ./test -L "main"
+> 	<main@/home/lhf/test.c:0>
+> 	      0  void main(void)
+> 	         {
+> 	      2          int a;
+> 	                 const int b = 1;
+> 
+> 	                 asm volatile("mov %1, %0" : "=r"(a): "i"(b));
+> 	      6          printf("a: %d\n", a);
+> 	         }
+> 
+> 	$ sudo ./perf probe -x ./test -V "main:6"
+> 	Segmentation fault
 
-I have two questions about it.
-
-1 - Should I only make this change when we have the 'acks' from all the 
-previous contributors? Or can I change it to the v3?
-
-2 - Is '.. SPDX-License-Identifier: GPL-2.0' at the beginning is enough?
+Oops, thanks for fixing!
 
 > 
-> Samuel
+> The check on 'tvar' is added. If 'tavr' is a null pointer, we return 0
+> to indicate that the variable can be converted. Now, we can successfully
+> show the variables that can be accessed.
+> 
+> 	$ sudo ./perf probe -x ./test -V "main:6"
+> 	Available variables at main:6
+> 	        @<main+13>
+> 	                char*   __fmt
+> 	                int     a
+> 	                int     b
+> 
+> However, the variable 'b' cannot be tracked.
+> 
+> 	$ sudo ./perf probe -x ./test -D "main:6 b"
+> 	Failed to find the location of the 'b' variable at this address.
+> 	 Perhaps it has been optimized out.
+> 	 Use -V with the --range option to show 'b' location range.
+> 	  Error: Failed to add events.
+> 
+> This is because __die_find_variable_cb() did not successfully match
+> variable 'b', which has the DW_AT_const_value attribute instead of
+> DW_AT_location. We added support for DW_AT_const_value in
+> __die_find_variable_cb(). With this modification, we can successfully
+> track the variable 'b'.
+> 
+> 	$ sudo ./perf probe -x ./test -D "main:6 b"
+> 	p:probe_test/main_L6 /home/lhf/test:0x1156 b=\1:s32
+
+Great! This looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> 
+> Fixes: 66f69b219716 ("perf probe: Support DW_AT_const_value constant value")
+> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+> ---
+>  tools/perf/util/dwarf-aux.c    | 8 ++++++--
+>  tools/perf/util/probe-finder.c | 3 +++
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index b2f4920e19a6..7d2ba8419b0c 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -975,9 +975,13 @@ static int __die_find_variable_cb(Dwarf_Die *die_mem, void *data)
+>  	if ((tag == DW_TAG_formal_parameter ||
+>  	     tag == DW_TAG_variable) &&
+>  	    die_compare_name(die_mem, fvp->name) &&
+> -	/* Does the DIE have location information or external instance? */
+> +	/*
+> +	 * Does the DIE have location information or const value
+> +	 * or external instance?
+> +	 */
+>  	    (dwarf_attr(die_mem, DW_AT_external, &attr) ||
+> -	     dwarf_attr(die_mem, DW_AT_location, &attr)))
+> +	     dwarf_attr(die_mem, DW_AT_location, &attr) ||
+> +	     dwarf_attr(die_mem, DW_AT_const_value, &attr)))
+>  		return DIE_FIND_CB_END;
+>  	if (dwarf_haspc(die_mem, fvp->addr))
+>  		return DIE_FIND_CB_CONTINUE;
+> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+> index 866f2d514d72..b029c29ce227 100644
+> --- a/tools/perf/util/probe-finder.c
+> +++ b/tools/perf/util/probe-finder.c
+> @@ -190,6 +190,9 @@ static int convert_variable_location(Dwarf_Die *vr_die, Dwarf_Addr addr,
+>  	    immediate_value_is_supported()) {
+>  		Dwarf_Sword snum;
+>  
+> +		if (!tvar)
+> +			return 0;
+> +
+>  		dwarf_formsdata(&attr, &snum);
+>  		ret = asprintf(&tvar->value, "\\%ld", (long)snum);
+>  
+> -- 
+> 2.17.1
 > 
 
-Thanks,
----
-Igor M. A. Torrente
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
