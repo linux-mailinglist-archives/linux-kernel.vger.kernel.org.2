@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593F53973B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F9C3973BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbhFANAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:00:18 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29926 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233162AbhFANAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:00:17 -0400
-IronPort-SDR: LwKuHAlJXgIzpXwg8X/7CGcAQHfkc6FyvnMCrwy966Qa7Ci5k3Fnuvcurem5q9z5xRflkcrL3X
- SSpARUd+VxVw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="201671708"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="201671708"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 05:58:36 -0700
-IronPort-SDR: GCDZ5iWYsJ3w1wJvU1SsJKhdf3cRDx023GHFDruIL+1Txe9Kg4DAydLl3UJNfRWE16MYWIeu2x
- UCc3livv78Vg==
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="474239953"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 05:58:32 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lo3yX-00GQuE-D8; Tue, 01 Jun 2021 15:58:29 +0300
-Date:   Tue, 1 Jun 2021 15:58:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Hailong Liu <liuhailongg6@163.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-kernel@vger.kernel.org, Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: Re: [PATCH] sched/debug:fix stale comments of sched_debug
-Message-ID: <YLYu9YpBDre5BO3F@smile.fi.intel.com>
-References: <20210530025145.13527-1-liuhailongg6@163.com>
- <YLSUw2Kkq946LQam@smile.fi.intel.com>
- <48a36f92-e8cf-d62b-e4d5-bf6911bcbbcf@163.com>
- <YLUJQp4fdEAW4GzY@smile.fi.intel.com>
- <YLXoQzcUwSO775Z6@hirez.programming.kicks-ass.net>
+        id S233898AbhFANEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233584AbhFANEI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:04:08 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF98C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:02:27 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D339A22236;
+        Tue,  1 Jun 2021 15:02:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622552545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IbfG+7l9lazycX8CAfFKL8/FChgR2UYhI1E57Fm9gNI=;
+        b=mwZ9BlhQhiOFFA1uyVKEOxEDCGuYtVlNwmx15I48E0G4/pLXIVlJlhe2xokz2ng+zgA45R
+        WRJOrr/ztnRu18YKD6o/GaulztaHvYscwrP0xsz37z+a2VQ+W0tGAUfTnMbvaZ2V5mc8Ea
+        t6hQxfqJ5AhbzhaA/URWcDI3Ty7gdzM=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLXoQzcUwSO775Z6@hirez.programming.kicks-ass.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 01 Jun 2021 15:02:24 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com
+Subject: Re: [PATCH v4 3/4] mtd: spi-nor: otp: return -EROFS if region is
+ read-only
+In-Reply-To: <bf3a9cf9-fc72-8ea4-de0a-1f0e123cb644@microchip.com>
+References: <20210521194034.15249-1-michael@walle.cc>
+ <20210521194034.15249-4-michael@walle.cc>
+ <bf3a9cf9-fc72-8ea4-de0a-1f0e123cb644@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <e9a697de15dcf4f526a7f2da95b67b73@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 09:56:51AM +0200, Peter Zijlstra wrote:
-> On Mon, May 31, 2021 at 07:05:22PM +0300, Andy Shevchenko wrote:
-> > > >> --- a/lib/Kconfig.debug
-> > > >> +++ b/lib/Kconfig.debug
-> > > >> @@ -1166,7 +1166,7 @@ config SCHED_DEBUG
-> > > >>  	depends on DEBUG_KERNEL && PROC_FS
-> > > > 
-> > > > Are the dependencies correct?
-> > > 
-> > > Based on your suggestion, I checked and it turned out that PROC_FS is not
-> > > the correct dependency, but DEBUG_FS. 
-> > 
-> > I guess you missed something.
-> > 
-> > > Shoud I change it to DEBUG_FS?
-> > 
-> > Please, double check.
+Am 2021-05-31 10:52, schrieb Tudor.Ambarus@microchip.com:
+> On 5/21/21 10:40 PM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> SPI NOR flashes will just ignore program commands if the OTP region is
+>> locked. Thus, a user might not notice that the intended write didn't 
+>> end
+>> up in the flash. Return -EROFS to the user in this case. From what I 
+>> can
+>> tell, chips/cfi_cmdset_0001.c also return this error code.
+>> 
+>> One could optimize spi_nor_mtd_otp_range_is_locked() to read the 
+>> status
+>> register only once and not for every OTP region, but for that we would
+>> need some more invasive changes. Given that this is
+>> one-time-programmable memory and the normal access mode is reading, we
+>> just live with the small overhead.
 > 
-> Thing is that proc_sched_show_task() still wants PROC_FS, i've not yet
-> found a suitable debugfs based location for that.
+> :)
 > 
-> And DEBUG_FS doesn't need a dependency; it has complete DEBUG_FS=n
-> wrappers and will build fine. Arguably selecting SCHED_DEBUG without
-> DEBUG_FS is daft, but it should work.
+> Shouldn't we change
+> struct spi_nor_otp_ops {
+> 	...
+>         int (*lock)(struct spi_nor *nor, unsigned int region);
+>         int (*is_locked)(struct spi_nor *nor, unsigned int region);
+> };
+> 
+> to:
+> struct spi_nor_otp_ops {
+> 	...
+>         int (*lock)(struct spi_nor *nor, loff_t addr, size_t len);
+> 
+>         int (*is_locked)(struct spi_nor *nor, loff_t addr, size_t len);
+> };
+> 
+> instead?
 
-Yep, my point here is that we have several files (in procfs and debugfs) which
-are enabled by the same option. Changing help text as it's done in the patch
-seems a half baked solution, i.e. it needs more, like describing what the files
-are visible in different configurations.
+I had that, but then
+  (1) it doesn't fit the hardware (the one's I know of) and the function
+      itself would need to convert to the given range
+  (2) each lock()/is_locked() would need to implement the "if at least
+      one region is locked everything is locked", which might lead to
+      different implementations.
+  (3) in what address space is addr and len? I'd presume the one of the
+      device (so is orthogonal to read()/write()). So if you get lets
+      say addr=0x1000 len=512, you'd need to convert that into region
+      0 and 1. Thus you'd have this mapping cluttered over all functions.
+      And additionally, you'd first need to convert the mtd offsets
+      addr=0 len=512 to addr=0x1000 and len=512.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+-michael
