@@ -2,536 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4B43970F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033463970F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhFAKKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:10:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:21659 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229538AbhFAKKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:10:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622542102; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=J/oeeSIFTZ6FnCyG1cebEeK4i9jqm24uVRLtQWeIvf8=; b=dwSZTeda/lS0pV2oCZfleyqV6lysyCFNXXLbAiRadlpYlYYaNfbhFdPV/X+WMO/G8xJ+XWyz
- DYI2ArfhcqeMO/iZ0RidaokvsWoo+7vLOakW1bO3/zKl02nOUjffhwoanvvgLq7Cvfrlzz9U
- jYj+ykGAFTVxObgUTXyVIqnuEM8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60b606f8e27c0cc77f84dbf0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Jun 2021 10:07:52
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2E533C43460; Tue,  1 Jun 2021 10:07:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BFF30C433D3;
-        Tue,  1 Jun 2021 10:07:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BFF30C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, greg@kroah.com,
-        glittao@gmail.com
-Cc:     vinmenon@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
-Subject: [PATCH v8] mm: slub: move sysfs slab alloc/free interfaces to debugfs
-Date:   Tue,  1 Jun 2021 15:37:37 +0530
-Message-Id: <1622542057-14632-1-git-send-email-faiyazm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S231994AbhFAKKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:10:22 -0400
+Received: from mail-dm6nam11on2042.outbound.protection.outlook.com ([40.107.223.42]:30561
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229538AbhFAKKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 06:10:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fdAK+rzw68loW43z4eC5G6BRdI15RJ+C/s0BxNE+sgg6otDSkG5tRWwkE0mJq2GrpXGPZP/P0NOTaTxNn4kFS/5gz9DCCx6JZnJBFxA3bPpQEP7NWkNkKEYr6adNEQF/nl36gKe0EgZWNR2Z951HQicSw9cW4gnImnvxymO2L7iOgjCpAVe7uAR2Yn4qQk2D+PdGvHgGr3igM90fpz47b4amffssV6r4he5pOG0PB72on6LsGub8PhhUWtgWksUz6+3QEaev5NwPCxUmDCUYk818nPShoTR0bpvQg1B47yIYE/G9tKutwCRtEOe7E2673qQn7LJv61Eh7IDXN5CiTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=skKY91CvY+iIimtxCff2eX15YcgkQY4CMKyv8XggZR8=;
+ b=ROTGtbEhG7rA+aMy6okt/U+qEIZnrUTr5NHWdJDjM6+/aWhhNacxtmDCRZmZf6EbvPdSlnxu3vOipi65r1vQXdYQJfb6fO4ioQwYVwSsdMpjNfbMv9cpTCswb7yjrmfj93xtS51vf+se1ANJMfEgEPdOcCeTxatqydQDgJB3CKF44d8PRr5NMHLP83+eHD04I8huSH9pQe1rtTa4fohMrIA3OXOpxjX/JxR0Ny87tD+u/m8AmlKP4B+02HbuP9yaOybmDVNQUvi0pB8A+QUqi23ibqihOj0SG6J8PXeBYW8pn2ki+WolNUJ1tNY5MI4+Guk/gIYXLeIMvcBMEnqefA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=lists.linux-foundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=skKY91CvY+iIimtxCff2eX15YcgkQY4CMKyv8XggZR8=;
+ b=qEKR/YzUcl1UntRbbncsqkZpJGKb9hZyUFGbaE6LUfH3+IvPiojOH5/g4OnfTV2Y83RaLnb3Wx18aOakKtfuZSuiQe3SCfZUWMezjXV/1hLFaY1STFqHj10PxLplGvDCoGT1eJ0lUefoDAkgfQH+YnWWB9vUcBa4PkLRKbzGbjxE5AyffwPBX+25i0mGbwUXJ8aoZXGdk7EhYsZr1Hc8cPBBUns9nohaTgPnQf/YSlgIDe9Pc3Pwk9rliprsBpiXjFS2o3/FWCKSTB9UtcxnVBwBbz170b1QYz6isPhGPcwLdvofiVRfyBGo8YI3p2A++DdSA2MeK/JzL+sZ/UiXeg==
+Received: from BN9PR03CA0969.namprd03.prod.outlook.com (2603:10b6:408:109::14)
+ by BY5PR12MB4195.namprd12.prod.outlook.com (2603:10b6:a03:200::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Tue, 1 Jun
+ 2021 10:08:37 +0000
+Received: from BN8NAM11FT030.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:109:cafe::2b) by BN9PR03CA0969.outlook.office365.com
+ (2603:10b6:408:109::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Tue, 1 Jun 2021 10:08:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT030.mail.protection.outlook.com (10.13.177.146) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4150.30 via Frontend Transport; Tue, 1 Jun 2021 10:08:36 +0000
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 1 Jun 2021 10:08:29 +0000
+Date:   Tue, 1 Jun 2021 13:08:26 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] vdpa/mlx5: Add support for running with virtio_vdpa
+Message-ID: <20210601100826.GA215954@mtl-vdi-166.wap.labs.mlnx>
+References: <20210531160428.31454-1-elic@nvidia.com>
+ <117f8549-85c5-6603-c941-77c63b596bdd@redhat.com>
+ <20210601034018.GA203469@mtl-vdi-166.wap.labs.mlnx>
+ <cd1aee86-86df-b7df-e6da-5402f9525ce5@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cd1aee86-86df-b7df-e6da-5402f9525ce5@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 71c71ad8-a93f-4cd4-c3f1-08d924e538c4
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4195:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB41952D4D3823D2D84A9BCCCDAB3E9@BY5PR12MB4195.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:376;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oLmTH4Sll8tqmZfNCYQ97ZfM/xhzV79MPSchckQh8sBZhSYQWu9RtpeUYimNFt5QTrFNfysRJPE4EkDqyHygDi4d2FVaUqJ23UOgGbIrTC8J4C+fmE6VQgkJ4zuJIZ94GRgbWQdxswZmdBCZ4r6EH93YbQqclLxaAcY7W74AF6i3bAAR8KvzLl6+kerdmugf0COIQ/UhQ1iQI/Dv+3cwap9xN8a2rOSC8u2neOP7wCfVHX/JcOAD7B6cM4ol3J+1lFXyfxVtj1WQyKT2nxcwALYw1DFqzRUx9g7KHTmT2KgEn0Fw5CCumHbuxng5mkLYAUph/joT11PrWEJhNJmr9TLENnIvLFy6IOn4G2NSlef7QC6VcalOkLgjzE7yZg7htL3ey/Z4/fkwfukkOHj90rq/P8ew/lk+zCuAjdGYAFaKuCWrzRJFQT8x4uja8CLxvLkrBLy8GIllz+FTVq9dsllNB9GCDYVpngjD+yfFM3l3BL/GjX0FcsuSBUg8qA1Xgu6bDrpJeUgNFLf+UXL9jqRUvYznAdftAfICBoH3gSwiUt7tCLiL1t66s2sM3QVdHmr4IsRdPz2v4B6wSEvN4b/ZxbzA+l5mFWgLiZ0s+uKeRg/IC2okPxcK5rweCAxQTuuRIQ7bVFpZC82f+glnQp/Q03uZd+N5Htrg7PaikYQ=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(36840700001)(46966006)(5660300002)(2906002)(26005)(70586007)(55016002)(36906005)(36860700001)(7636003)(8936002)(16526019)(33656002)(186003)(86362001)(336012)(4326008)(356005)(9686003)(82740400003)(54906003)(316002)(70206006)(1076003)(478600001)(7696005)(47076005)(6666004)(6916009)(83380400001)(8676002)(82310400003)(426003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 10:08:36.6356
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71c71ad8-a93f-4cd4-c3f1-08d924e538c4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT030.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4195
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_calls and free_calls implementation in sysfs have two issues,
-one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-to "one value per file" rule.
+On Tue, Jun 01, 2021 at 01:00:05PM +0800, Jason Wang wrote:
+> 
+> 在 2021/6/1 上午11:40, Eli Cohen 写道:
+> > On Tue, Jun 01, 2021 at 10:09:45AM +0800, Jason Wang wrote:
+> > > 在 2021/6/1 上午12:04, Eli Cohen 写道:
+> > > > In order to support running vdpa using vritio_vdpa driver, we need  to
+> > > > create a different kind of MR, one that has 1:1 mapping, since the
+> > > > addresses referring to virtqueues are dma addresses.
+> > > > 
+> > > > We create the 1:1 MR in mlx5_vdpa_dev_add() only in case firmware
+> > > > supports the general capability umem_uid_0. The reason for that is that
+> > > > 1:1 MRs must be created with uid == 0 while virtqueue objects can be
+> > > > created with uid == 0 only when the firmware capability is on.
+> > > > 
+> > > > If the set_map() callback is called with new translations provided
+> > > > through iotlb, the driver will destroy the 1:1 MR and create a regular
+> > > > one.
+> > > > 
+> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > ---
+> > > > v0 --> v1:
+> > > >     1. Clear user_mr after successful creation of DMA MR
+> > > >     2. Check return code of mlx5_vdpa_create_mr() and emit warning if
+> > > >        failed.
+> > > > 
+> > > >    drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+> > > >    drivers/vdpa/mlx5/core/mr.c        | 84 +++++++++++++++++++++++++-----
+> > > >    drivers/vdpa/mlx5/net/mlx5_vnet.c  | 15 +++++-
+> > > >    3 files changed, 85 insertions(+), 15 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > index b6cc53ba980c..09a16a3d1b2a 100644
+> > > > --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > @@ -35,6 +35,7 @@ struct mlx5_vdpa_mr {
+> > > >    	/* serialize mkey creation and destruction */
+> > > >    	struct mutex mkey_mtx;
+> > > > +	bool user_mr;
+> > > >    };
+> > > >    struct mlx5_vdpa_resources {
+> > > > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> > > > index 800cfd1967ad..3c6c1d846f5e 100644
+> > > > --- a/drivers/vdpa/mlx5/core/mr.c
+> > > > +++ b/drivers/vdpa/mlx5/core/mr.c
+> > > > @@ -360,7 +360,7 @@ static int add_direct_chain(struct mlx5_vdpa_dev *mvdev, u64 start, u64 size, u8
+> > > >     * indirect memory key that provides access to the enitre address space given
+> > > >     * by iotlb.
+> > > >     */
+> > > > -static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > > > +static int create_user_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > > >    {
+> > > >    	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+> > > >    	struct mlx5_vdpa_direct_mr *dmr;
+> > > > @@ -374,9 +374,6 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
+> > > >    	int err = 0;
+> > > >    	int nnuls;
+> > > > -	if (mr->initialized)
+> > > > -		return 0;
+> > > > -
+> > > >    	INIT_LIST_HEAD(&mr->head);
+> > > >    	for (map = vhost_iotlb_itree_first(iotlb, start, last); map;
+> > > >    	     map = vhost_iotlb_itree_next(map, start, last)) {
+> > > > @@ -414,7 +411,7 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
+> > > >    	if (err)
+> > > >    		goto err_chain;
+> > > > -	mr->initialized = true;
+> > > > +	mr->user_mr = true;
+> > > >    	return 0;
+> > > >    err_chain:
+> > > > @@ -426,33 +423,92 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
+> > > >    	return err;
+> > > >    }
+> > > > -int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > > > +static int create_dma_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+> > > > +{
+> > > > +	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+> > > > +	void *mkc;
+> > > > +	u32 *in;
+> > > > +	int err;
+> > > > +
+> > > > +	in = kzalloc(inlen, GFP_KERNEL);
+> > > > +	if (!in)
+> > > > +		return -ENOMEM;
+> > > > +
+> > > > +	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+> > > > +
+> > > > +	MLX5_SET(mkc, mkc, access_mode_1_0, MLX5_MKC_ACCESS_MODE_PA);
+> > > > +	MLX5_SET(mkc, mkc, length64, 1);
+> > > > +	MLX5_SET(mkc, mkc, lw, 1);
+> > > > +	MLX5_SET(mkc, mkc, lr, 1);
+> > > > +	MLX5_SET(mkc, mkc, pd, mvdev->res.pdn);
+> > > > +	MLX5_SET(mkc, mkc, qpn, 0xffffff);
+> > > > +
+> > > > +	err = mlx5_vdpa_create_mkey(mvdev, &mr->mkey, in, inlen);
+> > > > +	if (!err)
+> > > > +		mr->user_mr = false;
+> > > 
+> > > Rethink about this. I wonder this is correct when we fail to create memory
+> > > key.
+> > > 
+> > > In this case, user_mr is true but user_mr is already destroyed. Can this
+> > > lead double free for user mr?
+> > mr->user_mr is a binary flag and its sole purpose is to tell the flavour
+> > of the MR but is valid only when mr->initialized is true. MR won't be
+> > freed if mr->initialized is false.
+> 
+> 
+> So we have:
+> 
+> static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct
+> vhost_iotlb *iotlb)
+> {
+>         struct mlx5_vdpa_mr *mr = &mvdev->mr;
+>         int err;
+> 
+>         if (mr->initialized)
+>                 return 0;
+> 
+>         if (iotlb)
+>                 err = create_user_mr(mvdev, iotlb);
+>         else
+>                 err = create_dma_mr(mvdev, mr);
+> 
+>         mr->initialized = true;
+>         return err;
+> }
+> 
+> It looks to me we need to check err before set mr->initialized.
 
-To overcome this issues, move the alloc_calls and free_calls implemeation
-to debugfs.
+Correct, will fix.
 
-Debugfs cache will be created if SLAB_STORE_USER flag is set.
-
-Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-to be inline with what it does.
-
-Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
----
-changes in v8:
-	- Debugfs cache file will not be created if SLAB_STORE_USER flag is not set.
-	- Make sure the debugfs slab release happen before slab kmem cahce release.
-	
-changes in V7:
-	- https://lore.kernel.org/linux-mm/1621928285-751-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v6:
-	- https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v5:
-	- https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v4:
-	- https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v3:
-	- https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v2:
-	- https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
-
-changes in v1
-	- https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
-
- include/linux/slab_def.h |   2 +
- include/linux/slub_def.h |   8 ++
- mm/slab_common.c         |   3 +
- mm/slub.c                | 306 +++++++++++++++++++++++++++++++++--------------
- 4 files changed, 226 insertions(+), 93 deletions(-)
-
-diff --git a/include/linux/slab_def.h b/include/linux/slab_def.h
-index 3aa5e1e..02ca311 100644
---- a/include/linux/slab_def.h
-+++ b/include/linux/slab_def.h
-@@ -120,4 +120,6 @@ static inline int objs_per_slab_page(const struct kmem_cache *cache,
- 	return cache->num;
- }
- 
-+static inline void debugfs_slab_release(struct kmem_cache *s) { }
-+
- #endif	/* _LINUX_SLAB_DEF_H */
-diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index dcde82a..90d659a 100644
---- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -159,6 +159,14 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
- }
- #endif
- 
-+#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
-+void debugfs_slab_release(struct kmem_cache *);
-+#else
-+static inline void debugfs_slab_release(struct kmem_cache *s)
-+{
-+}
-+#endif
-+
- void object_err(struct kmem_cache *s, struct page *page,
- 		u8 *object, char *reason);
- 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index a4a5714..ca39e84 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -449,6 +449,7 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
- 	rcu_barrier();
- 
- 	list_for_each_entry_safe(s, s2, &to_destroy, list) {
-+		debugfs_slab_release(s);
- 		kfence_shutdown_cache(s);
- #ifdef SLAB_SUPPORTS_SYSFS
- 		sysfs_slab_release(s);
-@@ -469,6 +470,7 @@ static int shutdown_cache(struct kmem_cache *s)
- 	list_del(&s->list);
- 
- 	if (s->flags & SLAB_TYPESAFE_BY_RCU) {
-+		debugfs_slab_release(s);
- #ifdef SLAB_SUPPORTS_SYSFS
- 		sysfs_slab_unlink(s);
- #endif
-@@ -476,6 +478,7 @@ static int shutdown_cache(struct kmem_cache *s)
- 		schedule_work(&slab_caches_to_rcu_destroy_work);
- 	} else {
- 		kfence_shutdown_cache(s);
-+		debugfs_slab_release(s);
- #ifdef SLAB_SUPPORTS_SYSFS
- 		sysfs_slab_unlink(s);
- 		sysfs_slab_release(s);
-diff --git a/mm/slub.c b/mm/slub.c
-index 3f96e09..f7735c1 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -36,6 +36,7 @@
- #include <linux/memcontrol.h>
- #include <linux/random.h>
- 
-+#include <linux/debugfs.h>
- #include <trace/events/kmem.h>
- 
- #include "internal.h"
-@@ -225,6 +226,12 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
- 							{ return 0; }
- #endif
- 
-+#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
-+static void debugfs_slab_add(struct kmem_cache *);
-+#else
-+static inline void debugfs_slab_add(struct kmem_cache *s) { }
-+#endif
-+
- static inline void stat(const struct kmem_cache *s, enum stat_item si)
- {
- #ifdef CONFIG_SLUB_STATS
-@@ -4546,6 +4553,9 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
- 	if (err)
- 		__kmem_cache_release(s);
- 
-+	if (s->flags & SLAB_STORE_USER)
-+		debugfs_slab_add(s);
-+
- 	return err;
- }
- 
-@@ -4686,6 +4696,8 @@ static long validate_slab_cache(struct kmem_cache *s)
- 
- 	return count;
- }
-+
-+#ifdef CONFIG_DEBUG_FS
- /*
-  * Generate lists of code addresses where slabcache objects are allocated
-  * and freed.
-@@ -4709,6 +4721,9 @@ struct loc_track {
- 	struct location *loc;
- };
- 
-+static struct dentry *slab_debugfs_root;
-+struct loc_track t = { 0, 0, NULL };
-+
- static void free_loc_track(struct loc_track *t)
- {
- 	if (t->max)
-@@ -4825,82 +4840,7 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
- 			add_location(t, s, get_track(s, p, alloc));
- 	put_map(map);
- }
--
--static int list_locations(struct kmem_cache *s, char *buf,
--			  enum track_item alloc)
--{
--	int len = 0;
--	unsigned long i;
--	struct loc_track t = { 0, 0, NULL };
--	int node;
--	struct kmem_cache_node *n;
--
--	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
--			     GFP_KERNEL)) {
--		return sysfs_emit(buf, "Out of memory\n");
--	}
--	/* Push back cpu slabs */
--	flush_all(s);
--
--	for_each_kmem_cache_node(s, node, n) {
--		unsigned long flags;
--		struct page *page;
--
--		if (!atomic_long_read(&n->nr_slabs))
--			continue;
--
--		spin_lock_irqsave(&n->list_lock, flags);
--		list_for_each_entry(page, &n->partial, slab_list)
--			process_slab(&t, s, page, alloc);
--		list_for_each_entry(page, &n->full, slab_list)
--			process_slab(&t, s, page, alloc);
--		spin_unlock_irqrestore(&n->list_lock, flags);
--	}
--
--	for (i = 0; i < t.count; i++) {
--		struct location *l = &t.loc[i];
--
--		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
--
--		if (l->addr)
--			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
--		else
--			len += sysfs_emit_at(buf, len, "<not-available>");
--
--		if (l->sum_time != l->min_time)
--			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
--					     l->min_time,
--					     (long)div_u64(l->sum_time,
--							   l->count),
--					     l->max_time);
--		else
--			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
--
--		if (l->min_pid != l->max_pid)
--			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
--					     l->min_pid, l->max_pid);
--		else
--			len += sysfs_emit_at(buf, len, " pid=%ld",
--					     l->min_pid);
--
--		if (num_online_cpus() > 1 &&
--		    !cpumask_empty(to_cpumask(l->cpus)))
--			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
--					     cpumask_pr_args(to_cpumask(l->cpus)));
--
--		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
--			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
--					     nodemask_pr_args(&l->nodes));
--
--		len += sysfs_emit_at(buf, len, "\n");
--	}
--
--	free_loc_track(&t);
--	if (!t.count)
--		len += sysfs_emit_at(buf, len, "No data\n");
--
--	return len;
--}
-+#endif  /* CONFIG_DEBUG_FS   */
- #endif	/* CONFIG_SLUB_DEBUG */
- 
- #ifdef SLUB_RESILIENCY_TEST
-@@ -5350,21 +5290,6 @@ static ssize_t validate_store(struct kmem_cache *s,
- }
- SLAB_ATTR(validate);
- 
--static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
--{
--	if (!(s->flags & SLAB_STORE_USER))
--		return -ENOSYS;
--	return list_locations(s, buf, TRACK_ALLOC);
--}
--SLAB_ATTR_RO(alloc_calls);
--
--static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
--{
--	if (!(s->flags & SLAB_STORE_USER))
--		return -ENOSYS;
--	return list_locations(s, buf, TRACK_FREE);
--}
--SLAB_ATTR_RO(free_calls);
- #endif /* CONFIG_SLUB_DEBUG */
- 
- #ifdef CONFIG_FAILSLAB
-@@ -5528,8 +5453,6 @@ static struct attribute *slab_attrs[] = {
- 	&poison_attr.attr,
- 	&store_user_attr.attr,
- 	&validate_attr.attr,
--	&alloc_calls_attr.attr,
--	&free_calls_attr.attr,
- #endif
- #ifdef CONFIG_ZONE_DMA
- 	&cache_dma_attr.attr,
-@@ -5818,6 +5741,203 @@ static int __init slab_sysfs_init(void)
- __initcall(slab_sysfs_init);
- #endif /* CONFIG_SYSFS */
- 
-+#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
-+static int slab_debugfs_show(struct seq_file *seq, void *v)
-+{
-+
-+	struct location *l;
-+	unsigned int idx = *(unsigned int *)v;
-+
-+	if (idx < t.count) {
-+		l = &t.loc[idx];
-+
-+		seq_printf(seq, "%7ld ", l->count);
-+
-+		if (l->addr)
-+			seq_printf(seq, "%pS", (void *)l->addr);
-+		else
-+			seq_puts(seq, "<not-available>");
-+
-+		if (l->sum_time != l->min_time) {
-+			seq_printf(seq, " age=%ld/%ld/%ld",
-+				l->min_time,
-+				(long)div_u64(l->sum_time, l->count),
-+				l->max_time);
-+		} else
-+			seq_printf(seq, " age=%ld",
-+				l->min_time);
-+
-+		if (l->min_pid != l->max_pid)
-+			seq_printf(seq, " pid=%ld-%ld",
-+				l->min_pid, l->max_pid);
-+		else
-+			seq_printf(seq, " pid=%ld",
-+				l->min_pid);
-+
-+		if (num_online_cpus() > 1 &&
-+				!cpumask_empty(to_cpumask(l->cpus)))
-+			seq_printf(seq, " cpus=%*pbl",
-+				 cpumask_pr_args(to_cpumask(l->cpus)));
-+
-+		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-+			seq_printf(seq, " nodes=%*pbl",
-+				 nodemask_pr_args(&l->nodes));
-+
-+		seq_puts(seq, "\n");
-+	}
-+
-+	if (t.count == 0)
-+		seq_puts(seq, "No data\n");
-+
-+	return 0;
-+}
-+
-+static void slab_debugfs_stop(struct seq_file *seq, void *v)
-+{
-+	if (!v && t.max) {
-+		free_loc_track(&t);
-+		t.max = 0;
-+	}
-+}
-+
-+static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
-+{
-+	loff_t *spos = v;
-+
-+	if (*ppos < t.count) {
-+		*spos = *spos + 1;
-+		*ppos = *spos;
-+		return spos;
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
-+{
-+	struct kmem_cache_node *n;
-+	struct kmem_cache *s;
-+	enum track_item alloc;
-+	int node;
-+	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
-+
-+	s = seq->file->f_inode->i_private;
-+
-+	if (!spos)
-+		return NULL;
-+
-+	if (*ppos == 0) {
-+
-+		t.count = 0;
-+		t.max = 0;
-+		t.loc = NULL;
-+		if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_traces") == 0)
-+			alloc =  TRACK_ALLOC;
-+		else
-+			alloc =  TRACK_FREE;
-+
-+		if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-+			     GFP_KERNEL)) {
-+			seq_puts(seq, "Out of memory\n");
-+			kfree(spos);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+		/* Push back cpu slabs */
-+		flush_all(s);
-+
-+		for_each_kmem_cache_node(s, node, n) {
-+			unsigned long flags;
-+			struct page *page;
-+
-+			if (!atomic_long_read(&n->nr_slabs))
-+				continue;
-+
-+			spin_lock_irqsave(&n->list_lock, flags);
-+			list_for_each_entry(page, &n->partial, slab_list)
-+				process_slab(&t, s, page, alloc);
-+			list_for_each_entry(page, &n->full, slab_list)
-+				process_slab(&t, s, page, alloc);
-+			spin_unlock_irqrestore(&n->list_lock, flags);
-+		}
-+	}
-+
-+	if (*ppos < t.count) {
-+		*spos = *ppos;
-+		return spos;
-+	}
-+
-+	kfree(spos);
-+	return NULL;
-+}
-+
-+static const struct seq_operations slab_debugfs_sops = {
-+	.start  = slab_debugfs_start,
-+	.next   = slab_debugfs_next,
-+	.stop   = slab_debugfs_stop,
-+	.show   = slab_debugfs_show
-+};
-+DEFINE_SEQ_ATTRIBUTE(slab_debugfs);
-+
-+static void debugfs_slab_add(struct kmem_cache *s)
-+{
-+	const char *name;
-+	struct dentry *slab_cache_dir;
-+	int unmergeable = slab_unmergeable(s);
-+
-+	if (unlikely(!slab_debugfs_root))
-+		return;
-+
-+	if (!unmergeable && disable_higher_order_debug &&
-+			(slub_debug & DEBUG_METADATA_FLAGS))
-+		unmergeable = 1;
-+
-+	if (unmergeable) {
-+		/*
-+		 * Slabcache can never be merged so we can use the name proper.
-+		 * This is typically the case for debug situations. In that
-+		 * case we can catch duplicate names easily.
-+		 */
-+		slab_cache_dir = debugfs_lookup(s->name, slab_debugfs_root);
-+		debugfs_remove_recursive(slab_cache_dir);
-+		name = s->name;
-+	} else {
-+		/*
-+		 * Create a unique name for the slab as a target
-+		 * for the symlinks.
-+		 */
-+		name = create_unique_id(s);
-+	}
-+
-+	slab_cache_dir = debugfs_create_dir(name, slab_debugfs_root);
-+
-+	debugfs_create_file("alloc_traces", 0400,
-+		slab_cache_dir, s, &slab_debugfs_fops);
-+
-+	debugfs_create_file("free_traces", 0400,
-+		slab_cache_dir, s, &slab_debugfs_fops);
-+}
-+
-+void debugfs_slab_release(struct kmem_cache *s)
-+{
-+	debugfs_remove_recursive(debugfs_lookup(s->name,
-+					slab_debugfs_root));
-+}
-+
-+static int __init slab_debugfs_init(void)
-+{
-+	struct kmem_cache *s;
-+
-+	slab_debugfs_root = debugfs_create_dir("slab", NULL);
-+
-+	list_for_each_entry(s, &slab_caches, list)
-+		if (s->flags & SLAB_STORE_USER)
-+			debugfs_slab_add(s);
-+
-+	return 0;
-+
-+}
-+__initcall(slab_debugfs_init);
-+#endif
- /*
-  * The /proc/slabinfo ABI
-  */
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+> 
+> Thanks
+> 
+> 
+> > 
+> > > Thanks
+> > > 
+> > > 
+> > > > +
+> > > > +	kfree(in);
+> > > > +	return err;
+> > > > +}
+> > > > +
+> > > > +static void destroy_dma_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+> > > > +{
+> > > > +	mlx5_vdpa_destroy_mkey(mvdev, &mr->mkey);
+> > > > +}
+> > > > +
+> > > > +static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > > >    {
+> > > >    	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+> > > >    	int err;
+> > > > -	mutex_lock(&mr->mkey_mtx);
+> > > > +	if (mr->initialized)
+> > > > +		return 0;
+> > > > +
+> > > > +	if (iotlb)
+> > > > +		err = create_user_mr(mvdev, iotlb);
+> > > > +	else
+> > > > +		err = create_dma_mr(mvdev, mr);
+> > > > +
+> > > > +	mr->initialized = true;
+> > > > +	return err;
+> > > > +}
+> > > > +
+> > > > +int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+> > > > +{
+> > > > +	int err;
+> > > > +
+> > > > +	mutex_lock(&mvdev->mr.mkey_mtx);
+> > > >    	err = _mlx5_vdpa_create_mr(mvdev, iotlb);
+> > > > -	mutex_unlock(&mr->mkey_mtx);
+> > > > +	mutex_unlock(&mvdev->mr.mkey_mtx);
+> > > >    	return err;
+> > > >    }
+> > > > -void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > > > +static void destroy_user_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+> > > >    {
+> > > > -	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+> > > >    	struct mlx5_vdpa_direct_mr *dmr;
+> > > >    	struct mlx5_vdpa_direct_mr *n;
+> > > > -	mutex_lock(&mr->mkey_mtx);
+> > > > -	if (!mr->initialized)
+> > > > -		goto out;
+> > > > -
+> > > >    	destroy_indirect_key(mvdev, mr);
+> > > >    	list_for_each_entry_safe_reverse(dmr, n, &mr->head, list) {
+> > > >    		list_del_init(&dmr->list);
+> > > >    		unmap_direct_mr(mvdev, dmr);
+> > > >    		kfree(dmr);
+> > > >    	}
+> > > > +}
+> > > > +
+> > > > +void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> > > > +{
+> > > > +	struct mlx5_vdpa_mr *mr = &mvdev->mr;
+> > > > +
+> > > > +	mutex_lock(&mr->mkey_mtx);
+> > > > +	if (!mr->initialized)
+> > > > +		goto out;
+> > > > +
+> > > > +	if (mr->user_mr)
+> > > > +		destroy_user_mr(mvdev, mr);
+> > > > +	else
+> > > > +		destroy_dma_mr(mvdev, mr);
+> > > > +
+> > > >    	memset(mr, 0, sizeof(*mr));
+> > > >    	mr->initialized = false;
+> > > >    out:
+> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > index fdf3e74bffbd..02a05492204c 100644
+> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > @@ -1780,6 +1780,10 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+> > > >    		ndev->mvdev.status = 0;
+> > > >    		ndev->mvdev.mlx_features = 0;
+> > > >    		++mvdev->generation;
+> > > > +		if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
+> > > > +			if (mlx5_vdpa_create_mr(mvdev, NULL))
+> > > > +				mlx5_vdpa_warn(mvdev, "create MR failed\n");
+> > > > +		}
+> > > >    		return;
+> > > >    	}
+> > > > @@ -1859,6 +1863,7 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
+> > > >    	ndev = to_mlx5_vdpa_ndev(mvdev);
+> > > >    	free_resources(ndev);
+> > > > +	mlx5_vdpa_destroy_mr(mvdev);
+> > > >    	mlx5_vdpa_free_resources(&ndev->mvdev);
+> > > >    	mutex_destroy(&ndev->reslock);
+> > > >    }
+> > > > @@ -2023,9 +2028,15 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+> > > >    	if (err)
+> > > >    		goto err_mtu;
+> > > > +	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
+> > > > +		err = mlx5_vdpa_create_mr(mvdev, NULL);
+> > > > +		if (err)
+> > > > +			goto err_res;
+> > > > +	}
+> > > > +
+> > > >    	err = alloc_resources(ndev);
+> > > >    	if (err)
+> > > > -		goto err_res;
+> > > > +		goto err_mr;
+> > > >    	mvdev->vdev.mdev = &mgtdev->mgtdev;
+> > > >    	err = _vdpa_register_device(&mvdev->vdev, 2 * mlx5_vdpa_max_qps(max_vqs));
+> > > > @@ -2037,6 +2048,8 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+> > > >    err_reg:
+> > > >    	free_resources(ndev);
+> > > > +err_mr:
+> > > > +	mlx5_vdpa_destroy_mr(mvdev);
+> > > >    err_res:
+> > > >    	mlx5_vdpa_free_resources(&ndev->mvdev);
+> > > >    err_mtu:
+> 
