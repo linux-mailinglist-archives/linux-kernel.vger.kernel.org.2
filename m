@@ -2,163 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8A6397188
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D108397184
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhFAKfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbhFAKft (ORCPT
+        id S231726AbhFAKf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:35:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35172 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhFAKf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:35:49 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4949C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:34:08 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id i29so7444919vsr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K57YqakeMlmXTnxAf+W2Ub8EZWhnyq1GipQeukL/j9Q=;
-        b=SIWk7sKq05dNmHj0cBNp9EnrSZc9XaiEDsHvkAFhIs4Oyo7JCVHa+imw1r+2fwmLUm
-         pPOdcNj+OeHdi3RSEN/nypmZcjYWO0XC7t+Y3Yc7jRh/DlkD7kecoGfbwW6iq+IXvQqh
-         0gNJN5nW7JnuKCcz+Qq4QJsZYvUhEtpZpj1TMCjEK3Spt167Rph4TWfsdj17RSCJrmm3
-         bSXLGkgrWxz15BPbfPl0yXqvE0iLnWZbk3Nyrck59H0Qx/pVuh7sHd0dmaK9lRb7/LAG
-         +T1aozxFesbAeQniL8zB/YkvbVbUGZeZV5TDnl50t2kq4+9eKlqUZ7dCG4KlRbBMIo7V
-         r+RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K57YqakeMlmXTnxAf+W2Ub8EZWhnyq1GipQeukL/j9Q=;
-        b=VY9AQJP1rITqM10fGfQY0+a2XOg8VugI8LCmtVFgUOqzRvqWJwiSP19o1g+Kv3kmco
-         3J2VljxCj6nLJOk1D7uWOb0Ugyx/Tr/pxpDDouIgrc9ggZ01aviHkIQSio1npCooZQ1n
-         00CidN25icFfJdpyYZKUhqIEDffNk+0HnJW61uBF5ION+WdWBoiOLFLZ5g8DnR1iARN/
-         yQrw4kvxkSLQeSbLvK+nNj8zchyq1kC6qVQAUzyq9NteXYJranpkEbMYnFc9iFkQIVHp
-         BeKwXHiY7aluDofs6Y7iSkgQJnJE1WhIUvExKYIrtzzK9Lr2zVQHfttoQDrWDEEHa4Zc
-         n+nw==
-X-Gm-Message-State: AOAM530hJo9mKEQNjOAbS9VwJzF6tyczvE6GyiB9Sm8RVtj27TCCCwOm
-        d5yOmBRNh1oKgUmiRFxOAlm2isuHB1zSlNFsRW6+NA==
-X-Google-Smtp-Source: ABdhPJxNQUczDFy7+X9laWNw8HAiSAl8diMPy3LtKv4U3uWIE7CFniKpvhHwll3xsreB7iQhBeAQ/hOY8lGcQt4mIz4=
-X-Received: by 2002:a67:e915:: with SMTP id c21mr6805876vso.19.1622543647735;
- Tue, 01 Jun 2021 03:34:07 -0700 (PDT)
+        Tue, 1 Jun 2021 06:35:27 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C22781FD2D;
+        Tue,  1 Jun 2021 10:33:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622543625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VCS921ApL9LSFwrtHBUcyFVnLRi2XXAUivZ2aaWFSGs=;
+        b=Tnc5SEPLQ/1zAFkGh34oI2iHhRh4Q2//2eaGnvMBQ2HRlVLnE8/A94f2jyP8ITXlN19gp1
+        +21PsMYvprqq4XKIUKQj20+ePF8t+JcljHgaqFJidDU2/FVkvgK9Y1dx5p9OxQuKEZxvVj
+        MbLpxpGFQNE0kaMUDtUxo3X9T/SXu+Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622543625;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VCS921ApL9LSFwrtHBUcyFVnLRi2XXAUivZ2aaWFSGs=;
+        b=j7jPzd4FVhOqJfzyqba8w/fdtwXvlhi9TrNZkDTXimNwP0VI/AFXh/ykOIeXPbahAf7aaF
+        JxsLT7tz0P/hkQDQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 3412D118DD;
+        Tue,  1 Jun 2021 10:33:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622543625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VCS921ApL9LSFwrtHBUcyFVnLRi2XXAUivZ2aaWFSGs=;
+        b=Tnc5SEPLQ/1zAFkGh34oI2iHhRh4Q2//2eaGnvMBQ2HRlVLnE8/A94f2jyP8ITXlN19gp1
+        +21PsMYvprqq4XKIUKQj20+ePF8t+JcljHgaqFJidDU2/FVkvgK9Y1dx5p9OxQuKEZxvVj
+        MbLpxpGFQNE0kaMUDtUxo3X9T/SXu+Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622543625;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VCS921ApL9LSFwrtHBUcyFVnLRi2XXAUivZ2aaWFSGs=;
+        b=j7jPzd4FVhOqJfzyqba8w/fdtwXvlhi9TrNZkDTXimNwP0VI/AFXh/ykOIeXPbahAf7aaF
+        JxsLT7tz0P/hkQDQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id LchcCQkNtmAGEwAALh3uQQ
+        (envelope-from <osalvador@suse.de>); Tue, 01 Jun 2021 10:33:45 +0000
+Date:   Tue, 1 Jun 2021 12:33:43 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm,memory_hotplug: Drop unneeded locking
+Message-ID: <20210601103334.GA5927@linux>
+References: <20210531093958.15021-1-osalvador@suse.de>
+ <679d311a-8ad4-bb53-18f0-11190a2bf1b5@arm.com>
+ <20210601074737.GA30768@linux>
+ <f655ced2-281e-33ee-e1ea-89a0e13fc7a3@redhat.com>
+ <20210601081250.GA32364@linux>
+ <YLYCIZ5XNXGoE95p@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org> <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
-In-Reply-To: <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 1 Jun 2021 12:33:31 +0200
-Message-ID: <CAPDyKFprcA3DJW4bxef88oekpB5cNCkgy73_=mr40YWjNphvOw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce 'assigned-performance-states'
- property
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLYCIZ5XNXGoE95p@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 at 08:13, Rajendra Nayak <rnayak@codeaurora.org> wrote:
->
-> While most devices within power-domains which support performance states,
-> scale the performance state dynamically, some devices might want to
-> set a static/default performance state while the device is active.
-> These devices typically would also run off a fixed clock and not support
-> dynamically scaling the device's performance, also known as DVFS techniques.
-> Add a property 'assigned-performance-states' which client devices can
-> use to set this default performance state on their power-domains.
->
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+On Tue, Jun 01, 2021 at 11:47:13AM +0200, Michal Hocko wrote:
+> While you are touching this and want to drill all the way down then it
+> would be reasonable to drop pgdat resize locks as well.
+> It is only used in the early boot code and we have one executing thread
+> context per numa node during the deferred initialization. I haven't
+> checked all potential side effects the lock might have but it sounds
+> like there is quite some clean up potential over there.
 
-I don't have a strong opinion about using "default-performance-state"
-or "assigned-performance-state". Although, perhaps people can relate
-to the existing "assigned-clock-rates" DT binding?
-In any case, please add:
+I am not sure about that. True is that deferred_init_memmap() gets executed
+on numa-thread so it's not a problem for itself, but we also have deferred_grow_zone().
+It might be that while deferred_init_memmap() is running, we also have calls to
+deferred_grow_zone() for the same node and that would cause some trouble wrt.
+first_deferred_pfn. I need to double check it, but IIRC, that is the case.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Kind regards
-Uffe
-
-> ---
->  .../devicetree/bindings/power/power-domain.yaml    | 50 ++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/power/power-domain.yaml b/Documentation/devicetree/bindings/power/power-domain.yaml
-> index aed51e9..88cebf2 100644
-> --- a/Documentation/devicetree/bindings/power/power-domain.yaml
-> +++ b/Documentation/devicetree/bindings/power/power-domain.yaml
-> @@ -66,6 +66,19 @@ properties:
->        by the given provider should be subdomains of the domain specified
->        by this binding.
->
-> +  assigned-performance-states:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description:
-> +       Some devices might need to configure their power domains in a default
-> +       performance state while the device is active. These devices typically
-> +       would also run off a fixed clock and not support dynamically scaling the
-> +       device's performance, also known as DVFS techniques. The list of performance
-> +       state values should correspond to the list of power domains specified as part
-> +       of the power-domains property. Each cell corresponds to one power-domain.
-> +       A value of 0 can be used for power-domains with no performance state
-> +       requirement. In case the power-domains have OPP tables associated, the values
-> +       here would typically match with one of the entries in the OPP table.
-> +
->  required:
->    - "#power-domain-cells"
->
-> @@ -131,3 +144,40 @@ examples:
->              min-residency-us = <7000>;
->          };
->      };
-> +
-> +  - |
-> +    parent4: power-controller@12340000 {
-> +        compatible = "foo,power-controller";
-> +        reg = <0x12340000 0x1000>;
-> +        #power-domain-cells = <0>;
-> +    };
-> +
-> +    parent5: power-controller@43210000 {
-> +        compatible = "foo,power-controller";
-> +        reg = <0x43210000 0x1000>;
-> +        #power-domain-cells = <0>;
-> +        operating-points-v2 = <&power_opp_table>;
-> +
-> +        power_opp_table: opp-table {
-> +            compatible = "operating-points-v2";
-> +
-> +            power_opp_low: opp1 {
-> +                opp-level = <16>;
-> +            };
-> +
-> +            rpmpd_opp_ret: opp2 {
-> +                opp-level = <64>;
-> +            };
-> +
-> +            rpmpd_opp_svs: opp3 {
-> +                opp-level = <256>;
-> +            };
-> +        };
-> +    };
-> +
-> +    child4: consumer@12341000 {
-> +        compatible = "foo,consumer";
-> +        reg = <0x12341000 0x1000>;
-> +        power-domains = <&parent4>, <&parent5>;
-> +        assigned-performance-states = <0>, <256>;
-> +    };
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
->
+-- 
+Oscar Salvador
+SUSE L3
