@@ -2,315 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF853978CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A49C3978CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhFARLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbhFARLh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:11:37 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE820C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 10:09:54 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id b9so5971626ilr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 10:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z+Rz3Lhcejb7HYCpXC74t+FaU8kf98DbGjszGlQZc0Y=;
-        b=QpNc9h4rw8vXfFDVPSkzkMB/cP3vX6woCKter+Qxj7Y1Y7kWRr9fmv+y40seGL424W
-         7S9RTbV3Y2rrUbdZiAqMyrShtp6g20AD/SxpmPXwYX9b6YvEswzFKTVxAQsupcQ2zGzy
-         pXZBvgaSMdHQP/7/Cqx3oJhG7/aCgfoDjduveEPH1/u7ilTetgGXhljOfu4Ub2pdF8Zw
-         8K3E1ASc9A2BcbYAST9n6qj6ddSzNkcRxgMVOtly8Kj4rx03Hzli0DqyeJYKje/AuK4D
-         JBg2M4R67C3PBAtwTvWaDcfR6pZ1qwo49BdkK7vPinFzWEo5rjnyvvtYGu/B2jhUN8Xe
-         NZbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z+Rz3Lhcejb7HYCpXC74t+FaU8kf98DbGjszGlQZc0Y=;
-        b=A/1NnNx5BgjMSKE7LTrcZacZcj0yfGe0BDpaalor2n7TSeFWTo96ZMfkwuIUpizrku
-         HNVJYfTU66ZF+WebQe0WUTXDegOuJaDFjVeXvJ3RAlWCLfpagLvg04fLeHVSmIUbgwtT
-         nf15yID77KjQYQ2GfhtdkqrRYivl0L8v1qCCmVc2A5rVrCZxEc8RNQyZPr4RLzihpBrE
-         1SXEqqPhx/T/lNe0F+racCTeMxQ7SyGcCeyHqLp+g6AqTyF+X0aa99LwK27iZ2Mp7qNN
-         AKW+3+3/T1jNLUQI1GxqvikkHBVwzCcqhMUSpZ14fqIM1QXTkvGDBMJSP+xngv79MERg
-         rRrQ==
-X-Gm-Message-State: AOAM5325/XH+mNN3x7cxCJojC53SWVjxS0/IufubfTn5/Blj4Xq2WKYz
-        iEsnzIS+C6ump6FONqcinRRDVlY/yjmuEN3Uyd0Ixp5RsMM=
-X-Google-Smtp-Source: ABdhPJywrV5idkePTh207NsMmYcHSjFJZB9Y4WcJUy3l3DSaXB9DrUzzrI0y7K1CxUlTgwYRSFs6BgPKtD5TfzlnPmU=
-X-Received: by 2002:a92:c10a:: with SMTP id p10mr9363696ile.183.1622567393997;
- Tue, 01 Jun 2021 10:09:53 -0700 (PDT)
+        id S234624AbhFARLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:11:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234228AbhFARLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:11:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 215E8613CD;
+        Tue,  1 Jun 2021 17:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622567402;
+        bh=Pe14x4wYEjy5Woh+XA7xkKOEsS+4eNlZfe0uzDsv9+E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=fvTpPsh3V6l2qm2oRMS7RNJyzR2mTKGIFSeuityttlia9IiG8YMztTz/b84FqKOmE
+         S0j+ckcnoXriiiKPIVQZMjIoYWg3h+v/x6iUDjM20QIIZzC7zQc5quGMsX+WCAwLlK
+         aaOwYIKSjae7QZXWXjGd6f3cuXbvRE0vj3B1mUWh41QjiyJ0QUHqu2PBTYZ3dLcTSR
+         HjGLFmerfS9z0wfzJvIwkjfT7cQT8konIzjVye5/ZPcXXXPnvM/XPY+hFN3osp/t6P
+         bLoB/hBtAzyGmpYwDS76Bt8mI/PGZJI1aCDfDOBR5exR3botdeDrommk6weooiUE9b
+         3UFWQzBAn3ICw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id EAF7C5C08EB; Tue,  1 Jun 2021 10:10:01 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 10:10:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [clocksource] 8901ecc231: stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+Message-ID: <20210601171001.GN4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
+ <20210526064922.GD5262@shbuild999.sh.intel.com>
+ <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+ <138f81df-08e1-f96e-1915-c58b44f96a41@linux.intel.com>
+ <20210527191923.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <YK/zHMPSZSKrmXC6@casper.infradead.org>
+ <20210527210524.GE4397@paulmck-ThinkPad-P17-Gen-1>
+ <7bda8e6a-2179-b431-973b-d074cd8d93db@linux.intel.com>
 MIME-Version: 1.0
-References: <20210531125143.257622-1-robert.marko@sartura.hr>
- <20210531125143.257622-4-robert.marko@sartura.hr> <20210601153818.GA20254@pengutronix.de>
-In-Reply-To: <20210601153818.GA20254@pengutronix.de>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 1 Jun 2021 19:09:43 +0200
-Message-ID: <CA+HBbNG3O_QORj1NEKvoC4C5FfyfXyO_PMOZS0pHJimGn+HTUA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] reset: Add Delta TN48M CPLD reset controller
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bda8e6a-2179-b431-973b-d074cd8d93db@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 5:38 PM Philipp Zabel <p.zabel@pengutronix.de> wrote:
->
-> Hi Robert,
->
-> thank you for the patch. A few comments below:
->
-> On Mon, May 31, 2021 at 02:51:41PM +0200, Robert Marko wrote:
-> > Delta TN48M CPLD exposes resets for the following:
-> > * 88F7040 SoC
-> > * 88F6820 SoC
-> > * 98DX3265 switch MAC-s
-> > * 88E1680 PHY-s
-> > * 88E1512 PHY
-> > * PoE PSE controller
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > ---
-> >  drivers/reset/Kconfig       |   9 +++
-> >  drivers/reset/Makefile      |   1 +
-> >  drivers/reset/reset-tn48m.c | 128 ++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 138 insertions(+)
-> >  create mode 100644 drivers/reset/reset-tn48m.c
-> >
-> > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> > index 4171c6f76385..e3ff4b020c96 100644
-> > --- a/drivers/reset/Kconfig
-> > +++ b/drivers/reset/Kconfig
-> > @@ -64,6 +64,15 @@ config RESET_BRCMSTB_RESCAL
-> >         This enables the RESCAL reset controller for SATA, PCIe0, or PCIe1 on
-> >         BCM7216.
-> >
-> > +config RESET_TN48M_CPLD
->
-> Please sort this alphabetically.
-Yeah, sorry I was sorting this by the tristate text.
-Leftover from some other subsystems that sort like that.
+On Thu, May 27, 2021 at 05:58:53PM -0700, Andi Kleen wrote:
+> 
+> > Only those cloud provides making heavy use of the aforementioned "poorly
+> > designed" hardware, correct?
+> 
+> If any such hardware is deployed in non homeopathic quantities, we probably
+> need to support it out of the box. So far I'm not seeing any evidence that
+> it does not.
+> 
+> That would argue for including the patch in the patch series.
+> 
+> Especially since stress-ng is somewhat popular for system testing.
 
->
-> > +     tristate "Delta Networks TN48M switch CPLD reset controller"
-> > +     depends on MFD_TN48M_CPLD
-> > +     help
-> > +       This enables the reset controller driver for the Delta TN48M CPLD.
-> > +       It provides reset signals for Armada 7040 and 385 SoC-s, Alleycat 3X
-> > +       switch MAC-s, Alaska OOB ethernet PHY, Quad Alaska ethernet PHY-s and
-> > +       Microchip PD69200 PoE PSE controller.
-> > +
-> >  config RESET_HSDK
-> >       bool "Synopsys HSDK Reset Driver"
-> >       depends on HAS_IOMEM
-> > diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> > index 65a118a91b27..6d6945638b76 100644
-> > --- a/drivers/reset/Makefile
-> > +++ b/drivers/reset/Makefile
-> > @@ -10,6 +10,7 @@ obj-$(CONFIG_RESET_BCM6345) += reset-bcm6345.o
-> >  obj-$(CONFIG_RESET_BERLIN) += reset-berlin.o
-> >  obj-$(CONFIG_RESET_BRCMSTB) += reset-brcmstb.o
-> >  obj-$(CONFIG_RESET_BRCMSTB_RESCAL) += reset-brcmstb-rescal.o
-> > +obj-$(CONFIG_RESET_TN48M_CPLD) += reset-tn48m.o
->
-> Same as here.
+Except that different use cases need different out-of-the-box settings.
+In addition, there is a range of consequences for undesired settings
+across these use cases.  Fortunately, the various distros and other kernel
+delivery mechanisms act as different boxes, and can provide their chosen
+out-of-box setting.
 
-Yeah, same as before.
-Will fix that.
->
-> >  obj-$(CONFIG_RESET_HSDK) += reset-hsdk.o
-> >  obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
-> >  obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
-> > diff --git a/drivers/reset/reset-tn48m.c b/drivers/reset/reset-tn48m.c
-> > new file mode 100644
-> > index 000000000000..960ee5f4eb40
-> > --- /dev/null
-> > +++ b/drivers/reset/reset-tn48m.c
-> > @@ -0,0 +1,128 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Delta TN48M CPLD reset driver
-> > + *
-> > + * Copyright 2021 Sartura Ltd
-> > + *
-> > + * Author: Robert Marko <robert.marko@sartura.hr>
-> > + */
-> > +
-> > +#include <linux/bitfield.h>
->
-> What is this used for?
+Of course, it would be better to avoid adding an additional setting.
+But as we will see when considering the following use cases and
+corresponding consequences, that setting needs to be to mark the
+clocksource unstable if that clocksource exhibits persistent read delays,
+that is, as the v15 series does -without- the out-of-tree patch.
 
-Actually its not, its leftover from when I was thinking to use FIELD_GET()
-macro.
-Will drop it.
->
-> > +#include <linux/device.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/reset-controller.h>
-> > +
-> > +#include <dt-bindings/reset/delta,tn48m-reset.h>
-> > +
-> > +#define TN48M_RESET_REG              0x10
-> > +
-> > +struct tn48_reset_map {
-> > +     u8 bit;
-> > +};
-> > +
-> > +struct tn48_reset_data {
-> > +     struct reset_controller_dev rcdev;
-> > +     struct regmap *regmap;
-> > +};
-> > +
-> > +static const struct tn48_reset_map tn48m_resets[] = {
-> > +     [CPU_88F7040_RESET] = {0},
-> > +     [CPU_88F6820_RESET] = {1},
-> > +     [MAC_98DX3265_RESET] = {2},
-> > +     [PHY_88E1680_RESET] = {4},
-> > +     [PHY_88E1512_RESET] = {6},
-> > +     [POE_RESET] = {7},
-> > +};
-> > +
-> > +static inline struct tn48_reset_data *to_tn48_reset_data(
-> > +                     struct reset_controller_dev *rcdev)
-> > +{
-> > +     return container_of(rcdev, struct tn48_reset_data, rcdev);
-> > +}
-> > +
-> > +static int tn48m_control_assert(struct reset_controller_dev *rcdev,
-> > +                             unsigned long id)
-> > +{
-> > +     struct tn48_reset_data *data = to_tn48_reset_data(rcdev);
-> > +
-> > +     return regmap_update_bits(data->regmap, TN48M_RESET_REG,
-> > +                               BIT(tn48m_resets[id].bit), 0);
-> > +}
->
-> Why is there no deassert?
-All of the reset are self-clearing, so no need for it.
->
-> > +static int tn48m_control_reset(struct reset_controller_dev *rcdev,
-> > +                            unsigned long id)
-> > +{
-> > +     return tn48m_control_assert(rcdev, id);
->
-> Is this a self-clearing (or rather self re-setting) bit that triggers a
-> reset pulse?
-> If so, assert shouldn't be implemented.
+To see this, consider the following use cases:
 
-Yes, it's self-clearing, per spec they will be cleared after 100ms.
-Will drop assert then, I saw that reset was for self-clearing, but other
-drivers I looked for example implemented both which was confusing.
+o	Bringup testing for new silicon, firmware, and clock drivers.
+	In this case, it is critically important that any serious problem
+	be unmistakably flagged.  After all, these activities are all
+	too often carried out under severe time pressure, which means
+	that subtle messages are likely to be ignored.  If there is a
+	hardware, firmware, or driver issue that results in persistent
+	delays, this issue must not be ignored.  Hence the absolute need
+	to mark the clocksource unstable in this case, in order to avoid
+	releasing hardware, firmware, and clock-driver bugs into the wild.
 
->
-> > +}
-> > +
-> > +static int tn48m_control_status(struct reset_controller_dev *rcdev,
-> > +                             unsigned long id)
-> > +{
-> > +     struct tn48_reset_data *data = to_tn48_reset_data(rcdev);
-> > +     unsigned int regval;
-> > +     int ret;
-> > +
-> > +     ret = regmap_read(data->regmap, TN48M_RESET_REG, &regval);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     if (BIT(tn48m_resets[id].bit) & regval)
-> > +             return 0;
-> > +     else
-> > +             return 1;
-> > +}
-> > +
-> > +static const struct reset_control_ops tn48_reset_ops = {
-> > +     .reset          = tn48m_control_reset,
-> > +     .assert         = tn48m_control_assert,
-> > +     .status         = tn48m_control_status,
-> > +};
-> > +
-> > +static int tn48m_reset_probe(struct platform_device *pdev)
-> > +{
-> > +     struct tn48_reset_data *data;
-> > +     struct regmap *regmap;
-> > +
-> > +     if (!pdev->dev.parent)
-> > +             return -ENODEV;
->
-> That shouldn't be necessary.
+o	System test for new hardware, including multisocket hardware
+	such as that denigrated by stress-ng.  Although this use case
+	might prefer that clocksource read delays be ignored (as they
+	would be with my out-of-tree patch [1]), there are a number of
+	good-and-sufficient ways to deal with the current state of the
+	v15 series [2], including marking the TSC stable, specifying HPET
+	at boot time, or simply ignoring the fact that the clocksource
+	gets marked unstable.
 
-This driver depends on having a parent as it needs to get the
-regmap from it.
-The parent is a CPLD using simple-i2c-mfd.
-So it's nice to check.
+o	Applications running in production that suffer from stress-ng-like
+	properties.  Such applications might well prefer that high-speed
+	fine-grained clocksources not be marked unstable, but the
+	workarounds for system test apply here as well.
 
-Regards, Robert
->
-> > +     regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> > +     if (!regmap)
-> > +             return -ENODEV;
-> > +
-> > +     data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-> > +     if (!data)
-> > +             return -ENOMEM;
-> > +
-> > +     data->regmap = regmap;
-> > +
-> > +     data->rcdev.owner = THIS_MODULE;
-> > +     data->rcdev.ops = &tn48_reset_ops;
-> > +     data->rcdev.nr_resets = ARRAY_SIZE(tn48m_resets);
-> > +     data->rcdev.of_node = pdev->dev.of_node;
-> > +
-> > +     return devm_reset_controller_register(&pdev->dev, &data->rcdev);
-> > +}
-> > +
-> > +static const struct of_device_id tn48m_reset_of_match[] = {
-> > +     { .compatible = "delta,tn48m-reset", },
-> > +     { }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, tn48m_reset_of_match);
-> > +
-> > +static struct platform_driver tn48m_reset_driver = {
-> > +     .driver = {
-> > +             .name = "delta-tn48m-reset",
-> > +             .of_match_table = tn48m_reset_of_match,
-> > +     },
-> > +     .probe = tn48m_reset_probe,
-> > +};
-> > +module_platform_driver(tn48m_reset_driver);
-> > +
-> > +MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
-> > +MODULE_DESCRIPTION("Delta TN48M CPLD reset driver");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.31.1
-> >
-> >
->
-> regards
-> Philipp
+	Furthermore, such applications are likely to perform better
+	on a single-socket system than on a larger and more expensive
+	multi-socket system.  Thus, marking clocksources unstable
+	would be a good hint that adjustments would be helpful, whether
+	these adjustments be confining such applications to lower-cost
+	hardware on which they are likely to perform better, or reading
+	a certain book [3] and applying its lessons in order to adjust
+	the application to improve performance and scalability and to
+	reduce the interference with clocksources.
 
+o	Scalable applications running in production, as in those that do
+	not suffer from stress-ng-like properties.  Any such applications
+	that are sensitive to clock skew in excess of 100 microseconds
+	really want the v15 series without the extra patch.  After all,
+	if there is a problem with clock-related hardware, firmware,
+	or device-driver bugs, it is far better to have that problem
+	unambiguously diagnosed than to have to wade through strange
+	and misleading application problems caused by clock skew.
 
+	And please note that this is not a theoretical problem.
+	After all, an earlier version of this series already spotted a
+	very real problem that was addressed by an upgrade.
 
--- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+So if there is only a single out-of-the box option, it really does need
+to be that provided by v15 of the patch series.  There are already
+settings that can be used in the use cases that care, but if these
+prove inadequate, again, I can add another setting via a new patch,
+perhaps based on my out-of-tree patch.
+
+							Thanx, Paul
+
+[1]	https://lore.kernel.org/lkml/20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1/
+[2]	https://lore.kernel.org/lkml/20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1/
+[3]	https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html
