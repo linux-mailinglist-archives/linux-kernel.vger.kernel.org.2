@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2F239746E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A2C397471
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbhFANhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:37:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44677 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbhFANht (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:37:49 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lo4Yx-0005K5-Nt
-        for linux-kernel@vger.kernel.org; Tue, 01 Jun 2021 13:36:07 +0000
-Received: by mail-ed1-f70.google.com with SMTP id c15-20020a05640227cfb029038d710bf29cso7790813ede.16
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:36:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jdrwxPjOVbLLEQao+8w5TJgGCv7vD4c/43FIdShoDJs=;
-        b=WaY4uIwLMPXIhPwALjhqnShWWJzwmjYQqQSaXW6U257Z/+g2IvuTUJm2O17qBVtin9
-         jlQAR+3T49YKt4gMJ1AnRHWWgAeX/DZScFSakM2tCnhYhUjMLym73XDoTuwfdOkzBsvF
-         VpQrkOMNzWUNyOs/lzEt18/y8el48x0gzx8DW6UUQUFLqb/lyrtyEy5efGdE6KRPplN7
-         UMMKJpgup7zK2lCSoL6StBo7MdouXpKl7+M0bx62bcxBdEY1jcx3PhY7LpCW/xe86HRG
-         Suru9f0b5YQCHQwHkpMKpYVrT51QjlC+gacvymcrEOlE83cqH/7hifTIb5fnPrDSHDo+
-         R0zw==
-X-Gm-Message-State: AOAM533y+WLE06GBuaSLmLYnCbJBlNGe6HGau2U/JuN7hww8qvSlRG2K
-        IbxYDCD1M6eq6D7tiv8EfjXPeWoPiyRnTh4kW4hg05u6GzU/8yWiHN6H6K/IfMi4+KzY1PJzSIg
-        DqzksTSFYOhJtkgvyhucA26A6baqVKjhm25BVIoSbFQ==
-X-Received: by 2002:a05:6402:4389:: with SMTP id o9mr32131910edc.368.1622554567522;
-        Tue, 01 Jun 2021 06:36:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWLv5THL6TSFbxkXvKLAIgNMaFXdmlMfxUSudPIpijlMGKPlOSS/zojznQMGRH1X2l7WAbCw==
-X-Received: by 2002:a05:6402:4389:: with SMTP id o9mr32131894edc.368.1622554567412;
-        Tue, 01 Jun 2021 06:36:07 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id p5sm7210941ejm.115.2021.06.01.06.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 06:36:06 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 2/2] MAINTAINERS: power: supply: cover also header files
-Date:   Tue,  1 Jun 2021 15:36:00 +0200
-Message-Id: <20210601133600.285452-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210601133600.285452-1-krzysztof.kozlowski@canonical.com>
-References: <20210601133600.285452-1-krzysztof.kozlowski@canonical.com>
+        id S233995AbhFANj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233584AbhFANj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:39:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 636CC61263;
+        Tue,  1 Jun 2021 13:37:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622554664;
+        bh=pkFlErKqCbMKfuoBC4+Cn0CMLj9ZRkztvcHyPpIn5L0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VH4nF+u0ltS3vwi4R55bofpmRvLFeHe3SG8sVb2sAEArEdSxUI4ZjA5R7Iml+j7uw
+         L0gYNIV0OM9dO2g9YGEMvYX58cQ5sgaJLXBdmSdR5B7rTW/7fIcXwnDXigzJJOHNSK
+         O9O464pO67RZADXp09JWscqiZx6LxIQTqfF8jXENL5FCG3aqzQ4jzYrp0jfPxxyG/a
+         8MVC5pA+ByenUlfLOc6RM+uxyANO04YLGQz5BYZBhxGfMcde8WaxlgB96rUSnD9eXj
+         HkY5aOQWRdvDmoQ1RThoXQUyOM6HsGk1kiX7Bf9fS9fb4gNQaYXWguHv9vFLCmK6Ix
+         guEORrEK68Llg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A5EAB4011C; Tue,  1 Jun 2021 10:37:41 -0300 (-03)
+Date:   Tue, 1 Jun 2021 10:37:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf: fix segfault when wrong option for --debug is
+ provided
+Message-ID: <YLY4JfCmgaYGNBQO@kernel.org>
+References: <20210531212828.240077-1-rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531212828.240077-1-rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only one header (smartreflex.h) in include/linux/power/ is not related
-to battery or charger drivers.  All others should be covered by power
-supply maintainers entry so patches to them will reach respective people
-and lists.
+Em Mon, May 31, 2021 at 11:28:28PM +0200, Riccardo Mancini escreveu:
+> The command `perf --debug record` causes a segfault instead of notifying
+> the user of the unrecognized option for --debug (the correct syntax would
+> be `perf --debug verbose=2 record`).
+> 
+> The bug is caused by a call to pr_err before debug_file (debug.c:34) is
+> set via perf_debug_setup(). It has been introduced in
+> commit 8abceacff87d ("perf debug: Add debug_set_file function").
+> 
+> This patch resolves the bug by calling perf_debug_setup earlier in the
+> main, so that debug_file is set to stderr before any call to a debug
+> printing function is made.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Ian fixed this earlier and it is already even upstream:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 365f873d0077..2f9961310c80 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14744,6 +14744,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
- F:	Documentation/ABI/testing/sysfs-class-power
- F:	Documentation/devicetree/bindings/power/supply/
- F:	drivers/power/supply/
-+F:	include/linux/power/
- F:	include/linux/power_supply.h
+https://git.kernel.org/torvalds/c/c59870e2110e1229a6e4
+
+Thanks,
+
+- Arnaldo
  
- POWERNV OPERATOR PANEL LCD DISPLAY DRIVER
--- 
-2.27.0
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/perf.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> index 20cb91ef06ffc..cffbab2d085a7 100644
+> --- a/tools/perf/perf.c
+> +++ b/tools/perf/perf.c
+> @@ -448,6 +448,7 @@ int main(int argc, const char **argv)
+>  	pager_init(PERF_PAGER_ENVIRONMENT);
+>  
+>  	libperf_init(libperf_print);
+> +	perf_debug_setup();
+>  
+>  	cmd = extract_argv0_path(argv[0]);
+>  	if (!cmd)
+> @@ -531,8 +532,6 @@ int main(int argc, const char **argv)
+>  	 */
+>  	pthread__block_sigwinch();
+>  
+> -	perf_debug_setup();
+> -
+>  	while (1) {
+>  		static int done_help;
+>  
+> -- 
+> 2.23.0
+> 
 
+-- 
+
+- Arnaldo
