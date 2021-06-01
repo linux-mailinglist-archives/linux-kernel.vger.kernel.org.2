@@ -2,731 +2,460 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02BE396F01
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB35396F03
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbhFAIfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbhFAIfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:35:43 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3A2C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:34:01 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id g20so4943465ejt.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xc4n9XmoNCDNr0ZZajgmxSpPRpnP9fadGEn7vmxH+5o=;
-        b=A7UfRu3qnJmRYT10oWME1pV22/sl3gfyCEY9kvaayuWazifX53ou4VOOriNuYb9lhq
-         49W2C8P3epYohVYeH0cyMoy2p1ku2XCQx5g63lt1yjZMjmOSGTIXmrY07vrzGPiMhfz+
-         2F+VEkJnPA6KVDKwln7sSGaDNxqnuoLeoThSFPxCWP26uUAJSboMR7kOEsrkD8ef8hSe
-         HcSfhxekjKbvV3Rr/1xhGcgb9Zes2rgQNo7cTcquyAXw0vn+yVCjPxxYuT54NdmaI6ON
-         GWxOLJjHSwEp0RMPRS6g3CFe7E/lv6oNrc5T4VUPjWsf5WIWQ9LAHtkcIqpWBNRRzh2r
-         3DUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xc4n9XmoNCDNr0ZZajgmxSpPRpnP9fadGEn7vmxH+5o=;
-        b=eeoAM4yDhlszsdnoqRLO0ByEzoNF2zhBSZd2qVuz5Z7phO4eGWOeP9T0pRgpQgrNk/
-         ofus8UzWUEEhuaFuR1rHQiqcEas2BEfgM3HxQpnlHONHGEYuMALvl8gJzbx4XjKz/Ezd
-         DYAjRW4Re/3ouBLQqJINeQbCTlN7My6Lq4LPbahrkjJWh9TnEgHL1zrVPyk8NZJd5r5b
-         L9p00mVGwQzkrxtIrFeFtjBVYLxwSf3V+X20dF5ZQ8XiuiXn4Yt83cktFENi8nD4FA+Q
-         ndsUdUTlkQoW0HC+k1cODQHWiwqZeVvsnk9jKYyW353z+ne9Dx4wRuK01Yk/gzOV4ZTR
-         JEUQ==
-X-Gm-Message-State: AOAM532UKLoI0OBEdV8pDcDLRSCJnZxRP8++9+4b+ET311MDSM1sCe++
-        snlQ7JjtZaEaAt68c66oXE0gSv3hqK/f6+Kb+TXl
-X-Google-Smtp-Source: ABdhPJxwFewXAEpHuiUXL0qByilsIpFWVZh/+hVGXv3rYhm3xzkdD1mDVNUHCmZNu+EN2vhGHPcol1kHi6OowW24qgk=
-X-Received: by 2002:a17:906:f9db:: with SMTP id lj27mr16059235ejb.421.1622536439789;
- Tue, 01 Jun 2021 01:33:59 -0700 (PDT)
+        id S233252AbhFAIf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:35:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232963AbhFAIfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:35:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F42561263;
+        Tue,  1 Jun 2021 08:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622536453;
+        bh=GdebqU1EV06E3Xssayj3o+b88YgOxl+3jm279G6qFeM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sih1DaLhxq2X+7l16y0GqsrRnryWC0bbSU5Gg2HQV3eRy6sMNGoaUJLkLur2eNTs/
+         I+Hi+ZHwIuwuTDrjJtw+Uaxy9PWRQ3SVmQjxoK62GPwbh/pk5nSRTnsNDkbdP8YAsB
+         lw37wLp1PX4nPxovbpHfMA8m3vXlTvyHUr02oGGs=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.14 00/84] 4.14.235-rc2 review
+Date:   Tue,  1 Jun 2021 10:34:11 +0200
+Message-Id: <20210601072913.387837810@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210528200821.459214-1-jarmo.tiitto@gmail.com> <YLU0VAoWG7qa7u24@Ryzen-9-3900X.localdomain>
-In-Reply-To: <YLU0VAoWG7qa7u24@Ryzen-9-3900X.localdomain>
-From:   Bill Wendling <morbo@google.com>
-Date:   Tue, 1 Jun 2021 01:33:48 -0700
-Message-ID: <CAGG=3QXtisfabaiVP6y_3sjGsM7cQmPhur8Zqor4qkGrbiXpBA@mail.gmail.com>
-Subject: Re: [PATCH 3/6] pgo: modules Add module profile data export machinery.
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>, wcw@google.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.235-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.235-rc2
+X-KernelTest-Deadline: 2021-06-03T07:29+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 12:09 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Fri, May 28, 2021 at 11:08:21PM +0300, Jarmo Tiitto wrote:
-> > PGO profile data is exported from the kernel by
-> > creating debugfs files: pgo/<module>.profraw for each module.
->
-> Again, I do not really have many comments on the actual code as I am not
-> super familiar with it.
->
-> However, fs_mod.c duplicates a lot of the functions in fs.c, which makes
-> maintaining this code even more difficult, especially against LLVM PGO
-> profile data format changes. I just want to make sure I understand this:
-> does PGO currently not work with modules? Or does this patch series just
-> make it so that each module has its own .profraw file so individual
-> modules can be optimized?
->
-> If it is the latter, what is the point? Why would you want to optimize
-> just a module and not the entire kernel, if you already have to go
-> through the profiling steps?
->
-> If it is the former, there has to be a better way to share more of the
-> machinery between fs.c and fs_mod.c than basically duplicating
-> everything because there are some parameters and logic that have to
-> change. I do not have a ton of time to outline exactly what that might
-> look like but for example, prf_fill_header and prf_module_fill_header
-> are basically the same thing aside from the mod parameter and the
-> prf_..._count() calls. It seems like if mod was NULL, you would call the
-> vmlinux versions of the functions.
->
-Functions definitely shouldn't be duplicated with only minor changes.
-We should determine a way to combine them.
+This is the start of the stable review cycle for the 4.14.235 release.
+There are 84 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-As for whether the original PGO patch supports profiling in modules,
-the answer is "it depends". :-) I believe that clang inserts profiling
-hooks into all code that's compiled with the "-fprofile..." flags.
-This would include the modules of course. In GCOV, it's possible to
-retrieve profiling information for a single file. Jarmo, is that the
-intention of your patches?
+Responses should be made by Thu, 03 Jun 2021 07:28:28 +0000.
+Anything received after that time might be too late.
 
--bw
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.235-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
 
-> > Modules are register into the profiler via module notifier callback
-> > similiar to gcov/base.c. Note that if module does not have __llvm_prf_xxx
-> > sections required the module ignored.
-> >
-> > Also there is no "reset" support for yet for these files.
-> >
-> > Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
-> > ---
-> >  kernel/pgo/Makefile     |   2 +-
-> >  kernel/pgo/fs.c         |  54 ++++--
-> >  kernel/pgo/fs_mod.c     | 415 ++++++++++++++++++++++++++++++++++++++++
-> >  kernel/pgo/instrument.c |  12 +-
-> >  kernel/pgo/pgo.h        |  11 +-
-> >  5 files changed, 466 insertions(+), 28 deletions(-)
-> >  create mode 100644 kernel/pgo/fs_mod.c
-> >
-> > diff --git a/kernel/pgo/Makefile b/kernel/pgo/Makefile
-> > index 41e27cefd9a4..662b7dfdfbe9 100644
-> > --- a/kernel/pgo/Makefile
-> > +++ b/kernel/pgo/Makefile
-> > @@ -2,4 +2,4 @@
-> >  GCOV_PROFILE := n
-> >  PGO_PROFILE  := n
-> >
-> > -obj-y        += fs.o instrument.o
-> > +obj-y        += fs.o fs_mod.o instrument.o
-> > diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
-> > index 575142735273..5471d270a5bb 100644
-> > --- a/kernel/pgo/fs.c
-> > +++ b/kernel/pgo/fs.c
-> > @@ -227,15 +227,15 @@ static unsigned long prf_buffer_size(void)
-> >   * Serialize the profiling data into a format LLVM's tools can understand.
-> >   * Note: caller *must* hold pgo_lock.
-> >   */
-> > -static int prf_serialize(struct prf_private_data *p)
-> > +static int prf_serialize(struct prf_private_data *p, unsigned long *buf_size)
-> >  {
-> >       int err = 0;
-> >       void *buffer;
-> >
-> > -     p->size = prf_buffer_size();
-> > -     p->buffer = vzalloc(p->size);
-> > +     /* re-check buffer size */
-> > +     *buf_size = prf_buffer_size();
-> >
-> > -     if (!p->buffer) {
-> > +     if (p->size < *buf_size || !p->buffer) {
-> >               err = -ENOMEM;
-> >               goto out;
-> >       }
-> > @@ -262,7 +262,8 @@ static int prf_open(struct inode *inode, struct file *file)
-> >  {
-> >       struct prf_private_data *data;
-> >       unsigned long flags;
-> > -     int err;
-> > +     unsigned long buf_size;
-> > +     int err = 0;
-> >
-> >       data = kzalloc(sizeof(*data), GFP_KERNEL);
-> >       if (!data) {
-> > @@ -270,18 +271,41 @@ static int prf_open(struct inode *inode, struct file *file)
-> >               goto out;
-> >       }
-> >
-> > +     /* estimate amount of memory needed:
-> > +      * can't vzalloc() while prf_lock() is held:
-> > +      * CONFIG_DEBUG_ATOMIC_SLEEP complains.
-> > +      * So first get buffer size, release the lock,
-> > +      * vzalloc(), re-lock and try serialize.
-> > +      */
-> >       flags = prf_lock();
-> > +     buf_size = prf_buffer_size();
-> >
-> > -     err = prf_serialize(data);
-> > -     if (unlikely(err)) {
-> > -             kfree(data);
-> > -             goto out_unlock;
-> > -     }
-> > +     do {
-> > +             prf_unlock(flags);
-> >
-> > -     file->private_data = data;
-> > +             /* resize buffer */
-> > +             if (data->size < buf_size && data->buffer) {
-> > +                     vfree(data->buffer);
-> > +                     data->buffer = NULL;
-> > +             }
-> > +
-> > +             if (!data->buffer) {
-> > +                     data->size = buf_size;
-> > +                     data->buffer = vzalloc(data->size);
-> >
-> > -out_unlock:
-> > +                     if (!data->buffer) {
-> > +                             err = -ENOMEM;
-> > +                             goto out;
-> > +                     }
-> > +             }
-> > +             /* try serialize */
-> > +             flags = prf_lock();
-> > +     } while (prf_serialize(data, &buf_size));
-> >       prf_unlock(flags);
-> > +
-> > +     data->size = buf_size;
-> > +     file->private_data = data;
-> > +
-> >  out:
-> >       return err;
-> >  }
-> > @@ -363,6 +387,8 @@ static const struct file_operations prf_reset_fops = {
-> >  /* Create debugfs entries. */
-> >  static int __init pgo_init(void)
-> >  {
-> > +     pr_notice("Clang PGO profile data available.");
-> > +
-> >       directory = debugfs_create_dir("pgo", NULL);
-> >       if (!directory)
-> >               goto err_remove;
-> > @@ -375,6 +401,8 @@ static int __init pgo_init(void)
-> >                                &prf_reset_fops))
-> >               goto err_remove;
-> >
-> > +     prf_modules_init();
-> > +
-> >       return 0;
-> >
-> >  err_remove:
-> > @@ -385,6 +413,8 @@ static int __init pgo_init(void)
-> >  /* Remove debugfs entries. */
-> >  static void __exit pgo_exit(void)
-> >  {
-> > +     prf_modules_exit();
-> > +
-> >       debugfs_remove_recursive(directory);
-> >  }
-> >
-> > diff --git a/kernel/pgo/fs_mod.c b/kernel/pgo/fs_mod.c
-> > new file mode 100644
-> > index 000000000000..0808d44227f1
-> > --- /dev/null
-> > +++ b/kernel/pgo/fs_mod.c
-> > @@ -0,0 +1,415 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2021 Jarmo Tiitto
-> > + *
-> > + * Author:
-> > + *   Jarmo Tiitto <jarmo.tiitto@gmail.com>
-> > + *
-> > + * Based on the clang PGO kernel patch by:
-> > + *  Sami Tolvanen <samitolvanen@google.com>
-> > + *
-> > + * This software is licensed under the terms of the GNU General Public
-> > + * License version 2, as published by the Free Software Foundation, and
-> > + * may be copied, distributed, and modified under those terms.
-> > + *
-> > + * This program is distributed in the hope that it will be useful,
-> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > + * GNU General Public License for more details.
-> > + *
-> > + */
-> > +
-> > +#define pr_fmt(fmt)  "pgo: " fmt
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/debugfs.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/module.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/vmalloc.h>
-> > +#include "pgo.h"
-> > +
-> > +/*
-> > + * PGO profile data reporting for modules:
-> > + * We maintain one debugfs pgo/<module>.profraw file per module.
-> > + */
-> > +
-> > +
-> > +DEFINE_MUTEX(prf_mod_lock);
-> > +LIST_HEAD(prf_mod_list);
-> > +
-> > +struct prf_mod_data {
-> > +     void *buffer;
-> > +     unsigned long size;
-> > +};
-> > +
-> > +/* these are trivial, but each one differs a bit */
-> > +static inline unsigned long prf_mod_data_size(struct module *mod)
-> > +{
-> > +     return mod->prf_data_size;
-> > +}
-> > +
-> > +static inline unsigned long prf_mod_data_count(struct module *mod)
-> > +{
-> > +     return mod->prf_data_size / sizeof(struct llvm_prf_data);
-> > +}
-> > +
-> > +static inline unsigned long prf_mod_cnts_size(struct module *mod)
-> > +{
-> > +     return mod->prf_cnts_num * sizeof(mod->prf_cnts[0]);
-> > +}
-> > +
-> > +static inline unsigned long prf_mod_cnts_count(struct module *mod)
-> > +{
-> > +     return mod->prf_cnts_num;
-> > +}
-> > +
-> > +static inline unsigned long prf_mod_names_size(struct module *mod)
-> > +{
-> > +     return mod->prf_names_num * sizeof(mod->prf_names[0]);
-> > +}
-> > +
-> > +static inline unsigned long prf_mod_names_count(struct module *mod)
-> > +{
-> > +     return mod->prf_names_num;
-> > +}
-> > +
-> > +static inline unsigned long prf_mod_vnds_size(struct module *mod)
-> > +{
-> > +     return mod->prf_vnds_size;
-> > +}
-> > +
-> > +static inline unsigned long prf_mod_vnds_count(struct module *mod)
-> > +{
-> > +     return mod->prf_vnds_size / sizeof(struct llvm_prf_value_node);
-> > +}
-> > +
-> > +/*
-> > + * Raw profile data format:
-> > + *
-> > + *   - llvm_prf_header
-> > + *   - __llvm_prf_data
-> > + *   - __llvm_prf_cnts
-> > + *   - __llvm_prf_names
-> > + *   - zero padding to 8 bytes
-> > + *   - for each llvm_prf_data in __llvm_prf_data:
-> > + *           - llvm_prf_value_data
-> > + *                   - llvm_prf_value_record + site count array
-> > + *                           - llvm_prf_value_node_data
-> > + *                           ...
-> > + *                   ...
-> > + *           ...
-> > + */
-> > +
-> > +static void prf_module_fill_header(struct module *mod, void **buffer)
-> > +{
-> > +     struct llvm_prf_header *header = *(struct llvm_prf_header **)buffer;
-> > +
-> > +#ifdef CONFIG_64BIT
-> > +     header->magic = LLVM_INSTR_PROF_RAW_MAGIC_64;
-> > +#else
-> > +     header->magic = LLVM_INSTR_PROF_RAW_MAGIC_32;
-> > +#endif
-> > +     header->version = LLVM_VARIANT_MASK_IR_PROF | LLVM_INSTR_PROF_RAW_VERSION;
-> > +     header->data_size = prf_mod_data_count(mod);
-> > +     header->padding_bytes_before_counters = 0;
-> > +     header->counters_size = prf_mod_cnts_count(mod);
-> > +     header->padding_bytes_after_counters = 0;
-> > +     header->names_size = prf_mod_names_count(mod);
-> > +     header->counters_delta = (u64)mod->prf_cnts;
-> > +     header->names_delta = (u64)mod->prf_names;
-> > +     header->value_kind_last = LLVM_INSTR_PROF_IPVK_LAST;
-> > +
-> > +     *buffer += sizeof(*header);
-> > +}
-> > +
-> > +/*
-> > + * Copy the source into the buffer, incrementing the pointer into buffer in the
-> > + * process.
-> > + */
-> > +static void prf_copy_to_buffer(void **buffer, const void *src, unsigned long size)
-> > +{
-> > +     memcpy(*buffer, src, size);
-> > +     *buffer += size;
-> > +}
-> > +
-> > +/* extern u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds) */
-> > +
-> > +static u32 prf_module_get_value_size(struct module *mod)
-> > +{
-> > +     u32 size = 0;
-> > +     struct llvm_prf_data *p;
-> > +     struct llvm_prf_data *start = mod->prf_data;
-> > +     struct llvm_prf_data *end = start + prf_mod_data_count(mod);
-> > +
-> > +     for (p = start; p < end; p++)
-> > +             size += __prf_get_value_size(p, NULL);
-> > +
-> > +     return size;
-> > +}
-> > +
-> > +/* Serialize the profiling's value.
-> > + * extern void prf_serialize_value(struct llvm_prf_data *p, void **buffer)
-> > + */
-> > +
-> > +static void prf_module_serialize_values(struct module *mod, void **buffer)
-> > +{
-> > +     struct llvm_prf_data *p;
-> > +     struct llvm_prf_data *start = mod->prf_data;
-> > +     struct llvm_prf_data *end = start + prf_mod_data_count(mod);
-> > +
-> > +     for (p = start; p < end; p++)
-> > +             prf_serialize_value(p, buffer);
-> > +}
-> > +
-> > +static inline unsigned long prf_get_padding(unsigned long size)
-> > +{
-> > +     return 7 & (sizeof(u64) - size % sizeof(u64));
-> > +}
-> > +
-> > +static unsigned long prf_module_buffer_size(struct module *mod)
-> > +{
-> > +     return sizeof(struct llvm_prf_header) +
-> > +                     prf_mod_data_size(mod)  +
-> > +                     prf_mod_cnts_size(mod) +
-> > +                     prf_mod_names_size(mod) +
-> > +                     prf_get_padding(prf_mod_names_size(mod)) +
-> > +                     prf_module_get_value_size(mod);
-> > +}
-> > +
-> > +/*
-> > + * Serialize the profiling data into a format LLVM's tools can understand.
-> > + * Note: caller *must* hold pgo_lock and hold reference to the module.
-> > + */
-> > +static int prf_module_serialize(struct module *mod, struct prf_mod_data *p, unsigned long *buf_size)
-> > +{
-> > +     int err = 0;
-> > +     void *buffer;
-> > +
-> > +     /* re-check buffer size */
-> > +     *buf_size = prf_module_buffer_size(mod);
-> > +
-> > +     if (p->size < *buf_size || !p->buffer) {
-> > +             err = -ENOMEM;
-> > +             goto out;
-> > +     }
-> > +
-> > +     buffer = p->buffer;
-> > +
-> > +     prf_module_fill_header(mod, &buffer);
-> > +     prf_copy_to_buffer(&buffer, mod->prf_data,  prf_mod_data_size(mod));
-> > +     prf_copy_to_buffer(&buffer, mod->prf_cnts,  prf_mod_cnts_size(mod));
-> > +     prf_copy_to_buffer(&buffer, mod->prf_names, prf_mod_names_size(mod));
-> > +     buffer += prf_get_padding(prf_mod_names_size(mod));
-> > +
-> > +     prf_module_serialize_values(mod, &buffer);
-> > +
-> > +out:
-> > +     return err;
-> > +}
-> > +
-> > +/* open() implementation for module PGO. */
-> > +static int prf_module_open(struct inode *inode, struct file *file)
-> > +{
-> > +     struct prf_mod_private_data *data;
-> > +     struct prf_mod_data *pinfo;
-> > +     struct module *mod;
-> > +     unsigned long flags;
-> > +     unsigned long buf_size = 0;
-> > +     int err = 0;
-> > +
-> > +     mutex_lock(&prf_mod_lock);
-> > +     data = inode->i_private; /* see: pgo_module_notifier() */
-> > +
-> > +     BUG_ON(!data);
-> > +
-> > +     /* grab the module */
-> > +     mod = READ_ONCE(data->mod);
-> > +     if (mod && try_module_get(mod)) {
-> > +             // Is it live?
-> > +             if (mod->state != MODULE_STATE_LIVE) {
-> > +                     err = -EAGAIN;
-> > +                     goto put_unlock;
-> > +             }
-> > +
-> > +             pinfo = kzalloc(sizeof(*pinfo), GFP_KERNEL);
-> > +             if (!pinfo) {
-> > +                     err = -ENOMEM;
-> > +                     goto put_unlock;
-> > +             }
-> > +
-> > +             mutex_unlock(&prf_mod_lock);
-> > +
-> > +             /* estimate amount of memory needed:
-> > +              * can't vzalloc() while prf_lock() is held
-> > +              * and prf_module_buffer_size() only works while it is held..
-> > +              */
-> > +             flags = prf_lock();
-> > +             buf_size = prf_module_buffer_size(mod);
-> > +             do {
-> > +                     prf_unlock(flags);
-> > +
-> > +                     /* resize buffer */
-> > +                     if (pinfo->size < buf_size && pinfo->buffer) {
-> > +                             vfree(pinfo->buffer);
-> > +                             pinfo->buffer = NULL;
-> > +                     }
-> > +
-> > +                     if (!pinfo->buffer) {
-> > +                             pinfo->size = buf_size;
-> > +                             pinfo->buffer = vzalloc(pinfo->size);
-> > +
-> > +                             if (!pinfo->buffer) {
-> > +                                     err = -ENOMEM;
-> > +                                     goto out;
-> > +                             }
-> > +                     }
-> > +
-> > +                     /* try serialize */
-> > +                     flags = prf_lock();
-> > +
-> > +             } while (prf_module_serialize(mod, pinfo, &buf_size));
-> > +
-> > +             prf_unlock(flags);
-> > +
-> > +             /* success! */
-> > +             pinfo->size = buf_size;
-> > +             file->private_data = pinfo;
-> > +
-> > +             module_put(mod);
-> > +             return err;
-> > +     }
-> > +
-> > +put_unlock:
-> > +     module_put(mod);
-> > +     mutex_unlock(&prf_mod_lock);
-> > +out:
-> > +     return err;
-> > +}
-> > +
-> > +/* read() implementation for PGO. */
-> > +static ssize_t prf_module_read(struct file *file, char __user *buf, size_t count,
-> > +                     loff_t *ppos)
-> > +{
-> > +     struct prf_mod_data *pinfo = file->private_data;
-> > +
-> > +     BUG_ON(!pinfo);
-> > +
-> > +     return simple_read_from_buffer(buf, count, ppos, pinfo->buffer,
-> > +                                        pinfo->size);
-> > +}
-> > +
-> > +/* release() implementation for PGO. Release resources allocated by open(). */
-> > +static int prf_module_release(struct inode *inode, struct file *file)
-> > +{
-> > +     struct prf_mod_data *pinfo = file->private_data;
-> > +
-> > +     if (pinfo) {
-> > +             vfree(pinfo->buffer);
-> > +             kfree(pinfo);
-> > +             file->private_data = 0;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct file_operations prf_mod_fops = {
-> > +     .owner          = THIS_MODULE,
-> > +     .open           = prf_module_open,
-> > +     .read           = prf_module_read,
-> > +     .llseek         = default_llseek,
-> > +     .release        = prf_module_release
-> > +};
-> > +
-> > +static void prf_module_free(struct rcu_head *rcu)
-> > +{
-> > +     struct prf_mod_private_data *data;
-> > +
-> > +     data = container_of(rcu, struct prf_mod_private_data, rcu);
-> > +
-> > +     debugfs_remove(data->file);
-> > +
-> > +     kfree(data);
-> > +}
-> > +
-> > +static int pgo_module_notifier(struct notifier_block *nb, unsigned long event,
-> > +                             void *pdata)
-> > +{
-> > +     struct module *mod = pdata;
-> > +     struct prf_mod_private_data *data;
-> > +     char fsname[MODULE_NAME_LEN + 9]; // +strlen(".profraw")
-> > +
-> > +     if (event == MODULE_STATE_LIVE) {
-> > +             /* does the module have profiling info? */
-> > +             if (mod->prf_data
-> > +                       && mod->prf_cnts
-> > +                       && mod->prf_names
-> > +                       && mod->prf_vnds) {
-> > +                     /* add module prf_mod_private_data entry */
-> > +                     data = kzalloc(sizeof(*data), GFP_KERNEL);
-> > +
-> > +                     fsname[0] = 0;
-> > +                     snprintf(fsname, sizeof(fsname), "%s.profraw", mod->name);
-> > +
-> > +                     mutex_lock(&prf_mod_lock);
-> > +
-> > +                     data->file = debugfs_create_file(fsname, 0600, directory, data, &prf_mod_fops);
-> > +                     if (!data->file) {
-> > +                             pr_err("Failed setup module pgo: %s", fsname);
-> > +                             kfree(data);
-> > +                             mutex_unlock(&prf_mod_lock);
-> > +                             return NOTIFY_OK;
-> > +                     }
-> > +
-> > +                     WRITE_ONCE(data->mod, mod);
-> > +
-> > +                     list_add_tail_rcu(&data->link, &prf_mod_list);
-> > +                     mutex_unlock(&prf_mod_lock);
-> > +             }
-> > +     }
-> > +     if (event == MODULE_STATE_GOING) {
-> > +             /* remove module from the list */
-> > +             rcu_read_lock();
-> > +             list_for_each_entry_rcu(data, &prf_mod_list, link) {
-> > +                     if (strcmp(data->mod->name, mod->name) == 0) {
-> > +
-> > +                             mutex_lock(&prf_mod_lock);
-> > +                             /* remofe from profiled modules */
-> > +                             list_del_rcu(&data->link);
-> > +                             /* mark it stale */
-> > +                             WRITE_ONCE(data->mod, NULL);
-> > +                             mutex_unlock(&prf_mod_lock);
-> > +                             call_rcu(&data->rcu, prf_module_free);
-> > +                             break;
-> > +                     }
-> > +             }
-> > +             rcu_read_unlock();
-> > +     }
-> > +
-> > +     return NOTIFY_OK;
-> > +}
-> > +
-> > +static struct notifier_block pgo_module_nb = {
-> > +     .notifier_call = pgo_module_notifier
-> > +};
-> > +
-> > +void prf_modules_init(void)
-> > +{
-> > +     register_module_notifier(&pgo_module_nb);
-> > +}
-> > +
-> > +void prf_modules_exit(void)
-> > +{
-> > +     struct prf_mod_private_data *p;
-> > +
-> > +     /* unsubscribe the notifier and do cleanup. */
-> > +     unregister_module_notifier(&pgo_module_nb);
-> > +
-> > +     rcu_read_lock();
-> > +     list_for_each_entry_rcu(p, &prf_mod_list, link) {
-> > +             /* delete nodes */
-> > +             list_del(&p->link);
-> > +             WRITE_ONCE(p->mod, NULL);
-> > +             call_rcu(&p->rcu, prf_module_free);
-> > +     }
-> > +     rcu_read_unlock();
-> > +}
-> > \ No newline at end of file
-> > diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
-> > index 464b3bc77431..98cfa11a7b76 100644
-> > --- a/kernel/pgo/instrument.c
-> > +++ b/kernel/pgo/instrument.c
-> > @@ -139,11 +139,11 @@ EXPORT_SYMBOL(__llvm_profile_instrument_target);
-> >
-> >  /* Counts the number of times a range of targets values are seen. */
-> >  void __llvm_profile_instrument_range(u64 target_value, void *data,
-> > -                                  u32 index, s64 precise_start,
-> > -                                  s64 precise_last, s64 large_value);
-> > +                                      u32 index, s64 precise_start,
-> > +                                      s64 precise_last, s64 large_value);
-> >  void __llvm_profile_instrument_range(u64 target_value, void *data,
-> > -                                  u32 index, s64 precise_start,
-> > -                                  s64 precise_last, s64 large_value)
-> > +                                      u32 index, s64 precise_start,
-> > +                                      s64 precise_last, s64 large_value)
-> >  {
-> >       if (large_value != S64_MIN && (s64)target_value >= large_value)
-> >               target_value = large_value;
-> > @@ -176,9 +176,9 @@ static u64 inst_prof_get_range_rep_value(u64 value)
-> >   * defined in compiler-rt/include/profile/InstrProfData.inc.
-> >   */
-> >  void __llvm_profile_instrument_memop(u64 target_value, void *data,
-> > -                                  u32 counter_index);
-> > +                                      u32 counter_index);
-> >  void __llvm_profile_instrument_memop(u64 target_value, void *data,
-> > -                                  u32 counter_index)
-> > +                                      u32 counter_index)
-> >  {
-> >       u64 rep_value;
-> >
-> > diff --git a/kernel/pgo/pgo.h b/kernel/pgo/pgo.h
-> > index a9ff51abbfd5..2840da63c7cd 100644
-> > --- a/kernel/pgo/pgo.h
-> > +++ b/kernel/pgo/pgo.h
-> > @@ -212,17 +212,13 @@ struct prf_mod_private_data {
-> >       struct list_head link;
-> >       struct rcu_head rcu;
-> >
-> > -     void *buffer;
-> > -     unsigned long size;
-> > -
-> > -     char mod_name[MODULE_NAME_LEN];
-> >       struct module *mod;
-> >       struct dentry *file;
-> >
-> >       int current_node;
-> >  };
-> >
-> > -/* Mutex protecting the prf_mod_list and entries */
-> > +/* Mutex protecting the prf_mod_list */
-> >  extern struct mutex prf_mod_lock;
-> >
-> >  /* List of modules profiled */
-> > @@ -231,10 +227,7 @@ extern struct list_head prf_mod_list;
-> >  extern void prf_modules_init(void);
-> >  extern void prf_modules_exit(void);
-> >
-> > -/* Update each modules snapshot of the profiling data. */
-> > -extern int prf_modules_snapshot(void);
-> > -
-> > -/* below funcs are required by prf_modules_snapshot() */
-> > +/* below funcs are required by prf_modules */
-> >  extern u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds);
-> >
-> >  extern void prf_serialize_value(struct llvm_prf_data *p, void **buffer);
-> > --
-> > 2.31.1
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.235-rc2
+
+Chunfeng Yun <chunfeng.yun@mediatek.com>
+    usb: core: reduce power-on-good delay time of root hub
+
+Jesse Brandeburg <jesse.brandeburg@intel.com>
+    drivers/net/ethernet: clean up unused assignments
+
+Mike Kravetz <mike.kravetz@oracle.com>
+    hugetlbfs: hugetlb_fault_mutex_hash() cleanup
+
+Randy Dunlap <rdunlap@infradead.org>
+    MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
+
+Randy Dunlap <rdunlap@infradead.org>
+    MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+
+Taehee Yoo <ap420073@gmail.com>
+    sch_dsmark: fix a NULL deref in qdisc_reset()
+
+Francesco Ruggeri <fruggeri@arista.com>
+    ipv6: record frag_max_size in atomic fragments in input path
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    scsi: libsas: Use _safe() loop in sas_resume_port()
+
+Jesse Brandeburg <jesse.brandeburg@intel.com>
+    ixgbe: fix large MTU request from VF
+
+Jussi Maki <joamaki@gmail.com>
+    bpf: Set mac_len in bpf_skb_change_head
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    ASoC: cs35l33: fix an error code in probe()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    staging: emxx_udc: fix loop in _nbu2ss_nuke()
+
+Taehee Yoo <ap420073@gmail.com>
+    mld: fix panic in mld_newpack()
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    net: bnx2: Fix error return code in bnx2_init_board()
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    net: mdio: octeon: Fix some double free issues
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    net: mdio: thunder: Fix a double free issue in the .remove function
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    net: netcp: Fix an error message
+
+xinhui pan <xinhui.pan@amd.com>
+    drm/amdgpu: Fix a use-after-free
+
+Steve French <stfrench@microsoft.com>
+    SMB3: incorrect file id in requests compounded with open
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    platform/x86: intel_punit_ipc: Append MODULE_DEVICE_TABLE for ACPI
+
+Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+    platform/x86: hp-wireless: add AMD's hardware id to the supported list
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: do not BUG_ON in link_to_fixup_dir
+
+Peter Zijlstra <peterz@infradead.org>
+    openrisc: Define memory barrier mb
+
+Matt Wang <wwentao@vmware.com>
+    scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    media: gspca: properly check for errors in po1030_probe()
+
+Alaa Emad <alaaemadhossney.ae@gmail.com>
+    media: dvb: Add check on sp8870_readreg return
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    libertas: register sysfs groups properly
+
+Phillip Potter <phil@philpotter.co.uk>
+    dmaengine: qcom_hidma: comment platform_driver_register call
+
+Phillip Potter <phil@philpotter.co.uk>
+    isdn: mISDNinfineon: check/cleanup ioremap failure correctly in setup_io
+
+Tom Seewald <tseewald@gmail.com>
+    char: hpet: add checks after calling ioremap
+
+Du Cheng <ducheng2@gmail.com>
+    net: caif: remove BUG_ON(dev == NULL) in caif_xmit
+
+Anirudh Rayabharam <mail@anirudhrb.com>
+    net: fujitsu: fix potential null-ptr-deref
+
+Atul Gopinathan <atulgopinathan@gmail.com>
+    serial: max310x: unregister uart driver in case of failure and abort
+
+Kai-Heng Feng <kai.heng.feng@canonical.com>
+    platform/x86: hp_accel: Avoid invoking _INI to speed up resume
+
+Felix Fietkau <nbd@nbd.name>
+    perf jevents: Fix getting maximum number of fds
+
+Jean Delvare <jdelvare@suse.de>
+    i2c: i801: Don't generate an interrupt on bus reset
+
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+    i2c: s3c2410: fix possible NULL pointer deref on read message after write
+
+Xin Long <lucien.xin@gmail.com>
+    tipc: skb_linearize the head skb when reassembling msgs
+
+Hoang Le <hoang.h.le@dektech.com.au>
+    Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
+
+Vladyslav Tarasiuk <vladyslavt@nvidia.com>
+    net/mlx4: Fix EEPROM dump support
+
+Neil Armstrong <narmstrong@baylibre.com>
+    drm/meson: fix shutdown crash when component not probed
+
+Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+    NFSv4: Fix v4.0/v4.1 SEEK_DATA return -ENOTSUPP when set NFS_V4_2 config
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    NFS: Don't corrupt the value of pg_bytes_written in nfs_do_recoalesce()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    NFS: fix an incorrect limit in filelayout_decode_layout()
+
+Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+    Bluetooth: cmtp: fix file refcount when cmtp_attach_device fails
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: usb: fix memory leak in smsc75xx_bind
+
+Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+    usb: gadget: udc: renesas_usb3: Fix a race in usb3_start_pipen()
+
+Zolton Jheng <s6668c2t@gmail.com>
+    USB: serial: pl2303: add device id for ADLINK ND-6530 GC
+
+Dominik Andreas Schorpp <dominik.a.schorpp@ids.de>
+    USB: serial: ftdi_sio: add IDs for IDS GmbH Products
+
+Daniele Palmas <dnlplm@gmail.com>
+    USB: serial: option: add Telit LE910-S1 compositions 0x7010, 0x7011
+
+Sean MacLennan <seanm@seanm.ca>
+    USB: serial: ti_usb_3410_5052: add startech.com device id
+
+Zheyu Ma <zheyuma97@gmail.com>
+    serial: rp2: use 'request_firmware' instead of 'request_firmware_nowait'
+
+Geert Uytterhoeven <geert+renesas@glider.be>
+    serial: sh-sci: Fix off-by-one error in FIFO threshold register setting
+
+Johan Hovold <johan@kernel.org>
+    USB: trancevibrator: fix control-request direction
+
+YueHaibing <yuehaibing@huawei.com>
+    iio: adc: ad7793: Add missing error code in ad7793_setup()
+
+Lucas Stankus <lucas.p.stankus@gmail.com>
+    staging: iio: cdc: ad7746: avoid overwrite of num_channels
+
+Alexander Usyskin <alexander.usyskin@intel.com>
+    mei: request autosuspend after sending rx flow control
+
+Mathias Nyman <mathias.nyman@linux.intel.com>
+    thunderbolt: dma_port: Fix NVM read buffer bounds and offset issue
+
+Dongliang Mu <mudongliangabcd@gmail.com>
+    misc/uss720: fix memory leak in uss720_probe
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    kgdb: fix gcc-11 warnings harder
+
+Mikulas Patocka <mpatocka@redhat.com>
+    dm snapshot: properly fix a crash when an origin has no snapshots
+
+Sriram R <srirrama@codeaurora.org>
+    ath10k: Validate first subframe of A-MSDU before processing the list
+
+Wen Gong <wgong@codeaurora.org>
+    mac80211: extend protection against mixed key and fragment cache attacks
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: do not accept/forward invalid EAPOL frames
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: prevent attacks on TKIP/WEP as well
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: check defrag PN against current frame
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: add fragment cache to sta_info
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: drop A-MSDUs on old ciphers
+
+Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+    cfg80211: mitigate A-MSDU aggregation attacks
+
+Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+    mac80211: properly handle A-MSDUs that start with an RFC 1042 header
+
+Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+    mac80211: prevent mixed key and fragment cache attacks
+
+Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+    mac80211: assure all fragments are encrypted
+
+Johan Hovold <johan@kernel.org>
+    net: hso: fix control-request directions
+
+Kees Cook <keescook@chromium.org>
+    proc: Check /proc/$pid/attr/ writes against file opener
+
+Adrian Hunter <adrian.hunter@intel.com>
+    perf intel-pt: Fix transaction abort handling
+
+Adrian Hunter <adrian.hunter@intel.com>
+    perf intel-pt: Fix sample instruction bytes
+
+Rolf Eike Beer <eb@emlix.com>
+    iommu/vt-d: Fix sysfs leak in alloc_iommu()
+
+Anna Schumaker <Anna.Schumaker@Netapp.com>
+    NFSv4: Fix a NULL pointer dereference in pnfs_mark_matching_lsegs_return()
+
+Dongliang Mu <mudongliangabcd@gmail.com>
+    NFC: nci: fix memory leak in nci_allocate_device
+
+Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+    netfilter: x_tables: Use correct memory barriers.
+
+Jack Pham <jackp@codeaurora.org>
+    usb: dwc3: gadget: Enable suspend events
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    scripts: switch explicitly to Python 3
+
+Finn Behrens <me@kloenk.de>
+    tweewide: Fix most Shebang lines
+
+Stephen Brennan <stephen.s.brennan@oracle.com>
+    mm, vmstat: drop zone->lock in /proc/pagetypeinfo
+
+
+-------------
+
+Diffstat:
+
+ Documentation/sphinx/parse-headers.pl              |   2 +-
+ Documentation/target/tcm_mod_builder.py            |   2 +-
+ Documentation/trace/postprocess/decode_msr.py      |   2 +-
+ .../postprocess/trace-pagealloc-postprocess.pl     |   2 +-
+ .../trace/postprocess/trace-vmscan-postprocess.pl  |   2 +-
+ Makefile                                           |   4 +-
+ arch/ia64/scripts/unwcheck.py                      |   2 +-
+ arch/mips/alchemy/board-xxs1500.c                  |   1 +
+ arch/mips/ralink/of.c                              |   2 +
+ arch/openrisc/include/asm/barrier.h                |   9 ++
+ drivers/char/hpet.c                                |   4 +
+ drivers/dma/qcom/hidma_mgmt.c                      |  14 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |   1 +
+ drivers/gpu/drm/meson/meson_drv.c                  |   9 +-
+ drivers/i2c/busses/i2c-i801.c                      |   6 +-
+ drivers/i2c/busses/i2c-s3c2410.c                   |   3 +
+ drivers/iio/adc/ad7793.c                           |   1 +
+ drivers/iommu/dmar.c                               |   4 +-
+ drivers/isdn/hardware/mISDN/mISDNinfineon.c        |  24 ++--
+ drivers/md/dm-snap.c                               |   2 +-
+ drivers/media/dvb-frontends/sp8870.c               |   4 +-
+ drivers/media/usb/gspca/m5602/m5602_po1030.c       |  10 +-
+ drivers/misc/kgdbts.c                              |   3 +-
+ drivers/misc/lis3lv02d/lis3lv02d.h                 |   1 +
+ drivers/misc/mei/interrupt.c                       |   3 +
+ drivers/net/caif/caif_serial.c                     |   1 -
+ drivers/net/ethernet/broadcom/bnx2.c               |   2 +-
+ drivers/net/ethernet/brocade/bna/bnad.c            |   7 +-
+ drivers/net/ethernet/dec/tulip/de4x5.c             |   4 +-
+ drivers/net/ethernet/dec/tulip/media.c             |   5 -
+ drivers/net/ethernet/fujitsu/fmvj18x_cs.c          |   5 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c     |  16 +--
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c    |   4 +-
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c         |   2 +-
+ drivers/net/ethernet/mellanox/mlx4/port.c          | 107 ++++++++++++++-
+ drivers/net/ethernet/micrel/ksz884x.c              |   3 +-
+ drivers/net/ethernet/neterion/vxge/vxge-traffic.c  |  32 ++---
+ drivers/net/ethernet/sfc/falcon/farch.c            |  29 ++--
+ drivers/net/ethernet/sis/sis900.c                  |   5 +-
+ drivers/net/ethernet/synopsys/dwc-xlgmac-common.c  |   2 +-
+ drivers/net/ethernet/ti/davinci_emac.c             |   5 +-
+ drivers/net/ethernet/ti/netcp_core.c               |   2 +-
+ drivers/net/ethernet/ti/tlan.c                     |   4 +-
+ drivers/net/ethernet/via/via-velocity.c            |  13 --
+ drivers/net/phy/mdio-octeon.c                      |   2 -
+ drivers/net/phy/mdio-thunder.c                     |   1 -
+ drivers/net/usb/hso.c                              |   4 +-
+ drivers/net/usb/smsc75xx.c                         |   8 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c           |  61 ++++++++-
+ drivers/net/wireless/marvell/libertas/mesh.c       |  28 +---
+ drivers/platform/x86/hp-wireless.c                 |   2 +
+ drivers/platform/x86/hp_accel.c                    |  22 ++-
+ drivers/platform/x86/intel_punit_ipc.c             |   1 +
+ drivers/scsi/BusLogic.c                            |   6 +-
+ drivers/scsi/BusLogic.h                            |   2 +-
+ drivers/scsi/libsas/sas_port.c                     |   4 +-
+ drivers/staging/emxx_udc/emxx_udc.c                |   4 +-
+ drivers/staging/iio/cdc/ad7746.c                   |   1 -
+ drivers/thunderbolt/dma_port.c                     |  11 +-
+ drivers/tty/serial/max310x.c                       |   6 +-
+ drivers/tty/serial/rp2.c                           |  52 +++----
+ drivers/tty/serial/sh-sci.c                        |   4 +-
+ drivers/usb/core/hub.h                             |   6 +-
+ drivers/usb/dwc3/gadget.c                          |   4 +
+ drivers/usb/gadget/udc/renesas_usb3.c              |   5 +-
+ drivers/usb/misc/trancevibrator.c                  |   4 +-
+ drivers/usb/misc/uss720.c                          |   1 +
+ drivers/usb/serial/ftdi_sio.c                      |   3 +
+ drivers/usb/serial/ftdi_sio_ids.h                  |   7 +
+ drivers/usb/serial/option.c                        |   4 +
+ drivers/usb/serial/pl2303.c                        |   1 +
+ drivers/usb/serial/pl2303.h                        |   1 +
+ drivers/usb/serial/ti_usb_3410_5052.c              |   3 +
+ fs/btrfs/tree-log.c                                |   2 -
+ fs/cifs/smb2pdu.c                                  |   6 +-
+ fs/hugetlbfs/inode.c                               |   4 +-
+ fs/nfs/filelayout/filelayout.c                     |   2 +-
+ fs/nfs/nfs4file.c                                  |   2 +-
+ fs/nfs/pagelist.c                                  |  12 +-
+ fs/nfs/pnfs.c                                      |  15 +--
+ fs/proc/base.c                                     |   4 +
+ include/linux/hugetlb.h                            |   2 +-
+ include/linux/netfilter/x_tables.h                 |   2 +-
+ include/net/cfg80211.h                             |   5 +-
+ include/net/nfc/nci_core.h                         |   1 +
+ mm/hugetlb.c                                       |  11 +-
+ mm/userfaultfd.c                                   |   2 +-
+ mm/vmstat.c                                        |   3 +
+ net/bluetooth/cmtp/core.c                          |   5 +
+ net/core/filter.c                                  |   1 +
+ net/ipv6/mcast.c                                   |   3 -
+ net/ipv6/reassembly.c                              |   4 +-
+ net/mac80211/ieee80211_i.h                         |  36 ++---
+ net/mac80211/iface.c                               |   9 +-
+ net/mac80211/key.c                                 |   7 +
+ net/mac80211/key.h                                 |   2 +
+ net/mac80211/rx.c                                  | 150 ++++++++++++++++-----
+ net/mac80211/sta_info.c                            |   4 +
+ net/mac80211/sta_info.h                            |  31 +++++
+ net/mac80211/wpa.c                                 |  12 +-
+ net/netfilter/x_tables.c                           |   3 +
+ net/nfc/nci/core.c                                 |   1 +
+ net/nfc/nci/hci.c                                  |   5 +
+ net/sched/sch_dsmark.c                             |   3 +-
+ net/tipc/msg.c                                     |   9 +-
+ net/tipc/socket.c                                  |   5 +-
+ net/wireless/util.c                                |   8 +-
+ scripts/bloat-o-meter                              |   2 +-
+ scripts/config                                     |   2 +-
+ scripts/diffconfig                                 |   2 +-
+ scripts/show_delta                                 |   2 +-
+ scripts/sphinx-pre-install                         |   2 +-
+ scripts/tracing/draw_functrace.py                  |   2 +-
+ sound/soc/codecs/cs35l33.c                         |   1 +
+ tools/kvm/kvm_stat/kvm_stat                        |   2 +-
+ tools/perf/pmu-events/jevents.c                    |   2 +-
+ tools/perf/python/tracepoint.py                    |   2 +-
+ tools/perf/python/twatch.py                        |   2 +-
+ tools/perf/scripts/python/call-graph-from-sql.py   |   2 +-
+ tools/perf/scripts/python/sched-migration.py       |   2 +-
+ tools/perf/tests/attr.py                           |   2 +-
+ .../perf/util/intel-pt-decoder/intel-pt-decoder.c  |   6 +-
+ tools/perf/util/intel-pt.c                         |   5 +-
+ tools/perf/util/setup.py                           |   2 +-
+ tools/power/pm-graph/analyze_boot.py               |   2 +-
+ tools/power/pm-graph/analyze_suspend.py            |   2 +-
+ .../x86/intel_pstate_tracer/intel_pstate_tracer.py |   2 +-
+ tools/testing/ktest/compare-ktest-sample.pl        |   2 +-
+ tools/testing/selftests/tc-testing/tdc_batch.py    |   2 +-
+ 129 files changed, 685 insertions(+), 359 deletions(-)
+
+
