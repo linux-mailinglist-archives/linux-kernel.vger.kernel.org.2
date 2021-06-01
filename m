@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F197D39729B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64938397287
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbhFALnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:43:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41694 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFALnS (ORCPT
+        id S233640AbhFALjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:39:15 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2930 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233514AbhFALjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:43:18 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lo2m7-0008G4-O5; Tue, 01 Jun 2021 11:41:35 +0000
-To:     Suganath Prabu S <suganath-prabu.subramani@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: scsi: mpt3sas: Handle firmware faults during second half of IOC
- init
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        MPT-FusionLinux.pdl@broadcom.com,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Message-ID: <78ceab25-cc36-ac43-1e5a-5e38c22eab21@canonical.com>
-Date:   Tue, 1 Jun 2021 12:41:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 1 Jun 2021 07:39:11 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvVS74NLRz658m;
+        Tue,  1 Jun 2021 19:34:31 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 19:37:28 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 19:37:28 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-clk@vger.kernel.org>
+CC:     <paul.walmsley@sifive.com>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>
+Subject: [PATCH -next] clk: analogbits: fix doc warning in wrpll-cln28hpc.c
+Date:   Tue, 1 Jun 2021 19:41:54 +0800
+Message-ID: <20210601114154.3163327-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix the following make W=1 warning:
 
-Static analysis with Coverity on linux-next has detected an issue in
-drivers/scsi/mpt3sas/mpt3sas_base.c with the following commit:
+  drivers/clk/analogbits/wrpll-cln28hpc.c:227: warning: expecting prototype for wrpll_configure(). Prototype was for wrpll_configure_for_rate() instead
 
-commit a0815c45c89f544861eae55d85ccee6b1b1451e8
-Author: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
-Date:   Tue May 18 10:46:25 2021 +0530
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/clk/analogbits/wrpll-cln28hpc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    scsi: mpt3sas: Handle firmware faults during second half of IOC init
+diff --git a/drivers/clk/analogbits/wrpll-cln28hpc.c b/drivers/clk/analogbits/wrpll-cln28hpc.c
+index 7c64ea52a8d5..09ca82356399 100644
+--- a/drivers/clk/analogbits/wrpll-cln28hpc.c
++++ b/drivers/clk/analogbits/wrpll-cln28hpc.c
+@@ -202,7 +202,7 @@ static int __wrpll_update_parent_rate(struct wrpll_cfg *c,
+ }
+ 
+ /**
+- * wrpll_configure() - compute PLL configuration for a target rate
++ * wrpll_configure_for_rate() - compute PLL configuration for a target rate
+  * @c: ptr to a struct wrpll_cfg record to write into
+  * @target_rate: target PLL output clock rate (post-Q-divider)
+  * @parent_rate: PLL input refclk rate (pre-R-divider)
+-- 
+2.25.1
 
-The analysis is as follows:
-
-7208        if (ioc->port_enable_cmds.status & MPT3_CMD_COMPLETE_ASYNC) {
-7209                if (ioc_status == MPI2_IOCSTATUS_SUCCESS) {
-7210                        mpt3sas_port_enable_complete(ioc);
-7211                        return 1;
-7212                } else {
-7213                        ioc->start_scan_failed = ioc_status;
-7214                        ioc->start_scan = 0;
-7215                        return 1;
-7216                }
-
-Structurally dead code (UNREACHABLE)
-unreachable: This code cannot be reached:
-
-7217                ioc->port_enable_cmds.status &=
-~MPT3_CMD_COMPLETE_ASYNC;
-7218        }
-
-The return 1 statements in either parts of the proceeding if statement
-end up with the ioc->port_enable_cmds.status masking assignment never
-being reached.
-
-Colin
