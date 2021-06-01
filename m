@@ -2,254 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87712396A63
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 02:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 046D2396A84
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 02:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhFAArj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 20:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbhFAAri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 20:47:38 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD05C061574;
-        Mon, 31 May 2021 17:45:57 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 97EE588C;
-        Tue,  1 Jun 2021 02:45:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622508354;
-        bh=aaRaIinwqCNhQXmrnWaLPdMOsD1/sPsbMK/Wqq0cc9o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hZpfMmrkCtS/ht7hbbbEOf9dQV7C/WtkS2JxTddCj851tjWgVmXd3ev+l2jYpK+Lq
-         5sz09PgOwsdrMexPRg4yAEuKNdsnDuORUqbE65dDqeRuRQYBrTSbJLQn4HD/T1pq49
-         qSAMEc0wkKPzcurbBnx6WsIGxnd4OmEYDeNHRGeM=
-Date:   Tue, 1 Jun 2021 03:45:44 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     festevam@gmail.com, krzk@kernel.org, mchehab@kernel.org,
-        robh@kernel.org, devicetree@vger.kernel.org, kernel@pengutronix.de,
-        kernel@puri.sm, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        shawnguo@kernel.org, slongerbeam@gmail.com,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: media: document the
- nxp,imx8mq-mipi-csi2 receiver phy and controller
-Message-ID: <YLWDOBHqnDQpXx5Z@pendragon.ideasonboard.com>
-References: <20210531112326.90094-1-martin.kepplinger@puri.sm>
- <20210531112326.90094-2-martin.kepplinger@puri.sm>
+        id S232207AbhFAA46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 20:56:58 -0400
+Received: from mga01.intel.com ([192.55.52.88]:55237 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231714AbhFAA46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 20:56:58 -0400
+IronPort-SDR: tMDmaxGQfaG8DCAbVePZ/zOLlzcS8kokPFyz8cbWyu3dTsM3rzSnOahJO9q7cHdHuQ0rdqr2Es
+ nefgwCaxXfcg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="224717835"
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="224717835"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 17:55:17 -0700
+IronPort-SDR: Lb05pGGMDVCHUzbYxbAuc3yv31Gl68Ovcs1wQxU9doNNNRp7pnC2Z8YKmSRh/SCAhKiF6HCYOP
+ bSpcnqNXpqWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="445137100"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga008.jf.intel.com with ESMTP; 31 May 2021 17:55:13 -0700
+Date:   Tue, 1 Jun 2021 08:55:13 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [v3 PATCH 0/3] mm/mempolicy: some fix and semantics cleanup
+Message-ID: <20210601005513.GA15828@shbuild999.sh.intel.com>
+References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
+ <20210531144128.e69aaf2904e83ae170f00f06@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210531112326.90094-2-martin.kepplinger@puri.sm>
+In-Reply-To: <20210531144128.e69aaf2904e83ae170f00f06@linux-foundation.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+Hi Andrew,
 
-Thank you for the patch.
+Thanks for reviewing and taking the patches.
 
-On Mon, May 31, 2021 at 01:23:24PM +0200, Martin Kepplinger wrote:
-> The i.MX8MQ SoC integrates a different MIPI CSI receiver as the i.MX8MM so
-> describe the DT bindings for it.
+On Mon, May 31, 2021 at 02:41:28PM -0700, Andrew Morton wrote:
+> On Mon, 31 May 2021 22:05:53 +0800 Feng Tang <feng.tang@intel.com> wrote:
 > 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 162 ++++++++++++++++++
->  1 file changed, 162 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+> > We've posted v4 patchset introducing a new "perfer-many" memory policy
+> > https://lore.kernel.org/lkml/1615952410-36895-1-git-send-email-feng.tang@intel.com/ ,
+> > for which Michal Hocko gave many comments while pointing out some
+> > problems, and we also found some semantics confusion about 'prefer'
+> > and 'local' policy, as well as some duplicated code. This patchset
+> > tries to address them. Please help to review, thanks!
+> > 
+> > The patchset has been run with some sanity test like 'stress-ng'
+> > and 'ltp', and no problem found.
 > 
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
-> new file mode 100644
-> index 000000000000..4e3b17c220fc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
-> @@ -0,0 +1,162 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/nxp,imx8mq-mipi-csi2.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP and i.MX8MQ MIPI CSI-2 receiver
+> None of the above is suitable for the [0/n] overall description.  I
+> copied-n-pasted the v1 cover letter from the above link.  Please check
+> that it is all still correct and up to date.  If not, please send along
+> replacement text, thanks.
 
-s/and //
+I should make the cover-letter more descriptive. The link above is another
+patchset to introduce a new memory policy MPOL_PREFERRED_MANY, while these
+3 patches are preparation work for it, to make it easier for a new policy
+to be hooked in.
 
-> +
-> +maintainers:
-> +  - Martin Kepplinger <martin.kepplinger@puri.sm>
-> +
-> +description: |-
-> +  This binding covers the CSI-2 RX PHY and host controller included in the
-> +  NXP i.MX8MQ SoC. It handles the sensor/image input and process for all the
-> +  input imaging devices.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8mq-mipi-csi2
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 4
+So how about the following text:
 
-A description of each clock would be nice.
+Current memory policy code has some confusing and ambiguous part about
+MPOL_LOCAL policy, as it is handled as a faked MPOL_PREFERRED one, and
+there are many places having to distinguish them. Also the nodemask
+intersection check needs cleanup to be more explicit for OOM use, and
+handle MPOL_INTERLEAVE correctly. This patchset cleans up these and
+unifies the parameter sanity check for mbind() and set_mempolicy().
 
-> +
-> +  clock-names:
-> +    minItems: 4
+Please feel free to modify it, thanks!
 
-You can drop this, it's the default with 4 items listed below.
-
-> +    items:
-> +      - const: core
-> +      - const: esc
-> +      - const: pxl
-> +      - const: clko2
-> +
-> +  assigned-clocks:
-> +    maxItems: 3
-> +
-> +  assigned-clock-rates:
-> +    maxItems: 3
-> +
-> +  assigned-clock-parents:
-> +    maxItems: 3
-
-Those properties shouldn't be part of the bindings, it's a system
-configuration policy.
-
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  phy-reset:
-> +    description:
-> +      The phandle to the imx8mq reset-controller.
-> +    maxItems: 1
-> +
-> +  phy-gpr:
-> +    description:
-> +      The phandle to the imx8mq syscon iomux-gpr.
-> +    maxItems: 1
-> +
-> +  interconnects:
-> +    maxItems: 1
-> +
-> +  interconnect-names:
-> +    const: dram
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
-> +        description:
-> +          Input port node, single endpoint describing the CSI-2 transmitter.
-> +
-> +        properties:
-> +          endpoint:
-> +            $ref: video-interfaces.yaml#
-> +            unevaluatedProperties: false
-> +
-> +            properties:
-> +              data-lanes:
-> +                items:
-> +                  minItems: 1
-> +                  maxItems: 4
-> +                  items:
-> +                    - const: 1
-> +                    - const: 2
-> +                    - const: 3
-> +                    - const: 4
-> +
-> +            required:
-> +              - data-lanes
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description:
-> +          Output port node
-
-    required:
-      - port@0
-      - port@1
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-rates
-> +  - assigned-clock-parents
-> +  - power-domains
-> +  - phy-reset
-> +  - phy-gpr
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8mq-clock.h>
-> +    #include <dt-bindings/interconnect/imx8mq.h>
-> +
-> +    mipi_csi1@30a70000 {
-> +        compatible = "fsl,imx8mq-mipi-csi2";
-> +        reg = <0x30a70000 0x1000>; /* MIPI CSI1 Controller base addr */
-> +        clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-> +                 <&clk IMX8MQ_CLK_CSI1_ESC>,
-> +                 <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-> +                 <&clk IMX8MQ_CLK_CLKO2>;
-> +        clock-names = "core", "esc", "pxl", "clko2";
-> +        assigned-clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-> +                          <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-> +                          <&clk IMX8MQ_CLK_CSI1_ESC>;
-> +        assigned-clock-rates = <266000000>, <200000000>, <66000000>;
-> +        assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
-> +                                 <&clk IMX8MQ_SYS2_PLL_1000M>,
-> +                                 <&clk IMX8MQ_SYS1_PLL_800M>;
-> +        power-domains = <&pgc_mipi_csi1>;
-> +        phy-reset = <&src>;
-> +        phy-gpr = <&iomuxc_gpr>;
-> +        interconnects = <&noc IMX8MQ_ICM_CSI1 &noc IMX8MQ_ICS_DRAM>;
-> +        interconnect-names = "dram";
-> +
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +
-> +                imx8mm_mipi_csi_in: endpoint {
-> +                    remote-endpoint = <&imx477_out>;
-> +                    data-lanes = <1 2 3 4>;
-> +                };
-> +            };
-> +
-> +            port@1 {
-> +                reg = <1>;
-> +
-> +                imx8mm_mipi_csi_out: endpoint {
-> +                    remote-endpoint = <&csi_in>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-
--- 
-Regards,
-
-Laurent Pinchart
+- Feng
