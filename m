@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D989C396C56
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9468396C59
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhFAEbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 00:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhFAEbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 00:31:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D50B061364;
-        Tue,  1 Jun 2021 04:30:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622521802;
-        bh=cf7uT1qIsUt6MtE6dAECA9+37OawbN0iLEE3uGrkYio=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dcrZFxlzAzfa1YZNYqmRsoKbzaBsd6rXk89p2L17B2cwredQLcAOkjLKavSxbJtP1
-         Sr0NYjHfHrfNuKJ2NtPmjLiCzpqLC1/61LjR2BSd4Bf9QBj+6JnSPjGHbKpvJzV0Pw
-         iKnq7REiXcj6lsTqJH/zRHWu/TreA+WZfgDYNpKG9tuVe3cKlCkSdtzqMdUd1+4wwc
-         cLnBuuA34UMnUnwuZbRvR+6/6lqdtDVLDb5k1VGep5nlLiAxu9z2M2GfLSULFqbcD3
-         anjGt5dsoWrIdCa21oYqjeolWA+wUigebe2PMzxv+Jv4buaRdtsy7VmP5wAomlUhK+
-         0xtdtBDl3E2uQ==
-Date:   Mon, 31 May 2021 21:30:00 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Simon Horman" <simon.horman@netronome.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Subject: Re: [PATCH net-next v2 03/10] net: sparx5: add hostmode with
- phylink support
-Message-ID: <20210531213000.46143fad@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <5719f0fad28e453e0398048ebcfbc421b85a9647.camel@microchip.com>
-References: <20210528123419.1142290-1-steen.hegelund@microchip.com>
-        <20210528123419.1142290-4-steen.hegelund@microchip.com>
-        <20210530141502.561920a7@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <5719f0fad28e453e0398048ebcfbc421b85a9647.camel@microchip.com>
+        id S231572AbhFAEda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 00:33:30 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2808 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhFAEd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 00:33:29 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvJyx5fcLzWqK0;
+        Tue,  1 Jun 2021 12:27:05 +0800 (CST)
+Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 12:31:47 +0800
+Received: from [10.174.185.220] (10.174.185.220) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 12:31:46 +0800
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>
+CC:     Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "Kirti Wankhede" <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Zenghui Yu" <yuzenghui@huawei.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <c9c066ae-2a25-0799-51a7-0ca47fff41a1@huawei.com>
+Date:   Tue, 1 Jun 2021 12:31:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.220]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 16:02:54 +0200 Steen Hegelund wrote:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 val =3D ether_addr_to_u64(sparx5->base_mac)=
- + portno + 1;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 u64_to_ether_addr(val, ndev->dev_addr);
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return ndev;
-> > > +} =20
-> >  =20
-> > > +static void sparx5_xtr_grp(struct sparx5 *sparx5, u8 grp, bool byte_=
-swap)
-> > > +{
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 bool eof_flag =3D false, pruned_flag =3D fa=
-lse, abort_flag =3D false;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct net_device *netdev;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct sparx5_port *port;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct frame_info fi;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 int i, byte_cnt =3D 0;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct sk_buff *skb;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 u32 ifh[IFH_LEN];
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 u32 *rxbuf;
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Get IFH */
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < IFH_LEN; i++)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 ifh[i] =3D spx5_rd(sparx5, QS_XTR_RD(grp));
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Decode IFH (whats needed) */
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 sparx5_ifh_parse(ifh, &fi);
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Map to port netdev */
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 port =3D fi.src_port < SPX5_PORTS ?
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 sparx5->ports[fi.src_port] : NULL;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!port || !port->ndev) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 dev_err(sparx5->dev, "Data on inactive port %d\n", fi.src_port);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 sparx5_xtr_flush(sparx5, grp);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 return; =20
-> >=20
-> > You should probably increment appropriate counter for each error
-> > condition. =20
->=20
-> At this first check I do not have the netdev, so it will not be
-> possible to update any counters, but below I can use rx_dropped. =20
-> Is that what you mean?
+On 2021/5/27 15:58, Tian, Kevin wrote:
+> /dev/ioasid provides an unified interface for managing I/O page tables for 
+> devices assigned to userspace. Device passthrough frameworks (VFIO, vDPA, 
+> etc.) are expected to use this interface instead of creating their own logic to 
+> isolate untrusted device DMAs initiated by userspace. 
+> 
+> This proposal describes the uAPI of /dev/ioasid and also sample sequences 
+> with VFIO as example in typical usages. The driver-facing kernel API provided 
+> by the iommu layer is still TBD, which can be discussed after consensus is 
+> made on this uAPI.
+> 
+> It's based on a lengthy discussion starting from here:
+> 	https://lore.kernel.org/linux-iommu/20210330132830.GO2356281@nvidia.com/ 
+> 
+> It ends up to be a long writing due to many things to be summarized and
+> non-trivial effort required to connect them into a complete proposal.
+> Hope it provides a clean base to converge.
+> 
 
-Yes, sorry, I just scrolled up to the earliest drop I could find.
-Indeed nothing we can increment here.=20
+[..]
 
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Finish up skb */
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 skb_put(skb, byte_cnt - ETH_FCS_LEN);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 eth_skb_pad(skb);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 skb->protocol =3D eth_type_trans(skb, netde=
-v);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 netif_rx(skb);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 netdev->stats.rx_bytes +=3D skb->len;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 netdev->stats.rx_packets++; =20
-> >=20
-> > Does the Rx really need to happen in an interrupt context?
-> > Did you consider using NAPI or a tasklet? =20
->=20
-> This register base injection and extraction is just preliminary.  I
-> have the next series waiting with support for Frame DMA'ing and there
-> I use NAPI, so if possible I would like to leave this as it is, since
-> it only a stopgap.
+> 
+> /*
+>   * Page fault report and response
+>   *
+>   * This is TBD. Can be added after other parts are cleared up. Likely it 
+>   * will be a ring buffer shared between user/kernel, an eventfd to notify 
+>   * the user and an ioctl to complete the fault.
+>   *
+>   * The fault data is per I/O address space, i.e.: IOASID + faulting_addr
+>   */
 
-Ah, that's fine.
+Hi,
 
-> > What do you expect to happen at this point? Kernel can retry sending
-> > for ever, is there a way for the driver to find out that the fifo is
-> > no longer busy to stop/start the software queuing appropriately? =20
->=20
-> Hmm.  I am not too familiar with the netdev queuing, but would this
-> be a way forward?
->=20
-> 1) In sparx5_inject: After injecting a frame then test for HW queue
-> readiness and watermark levels, and if there is a problem then call
-> netif_queue_stop
->=20
-> 2) Add an implementation of ndo_tx_timeout where the HW queue and
-> Watermark level is checked and if all is OK, then do a
-> netif_wake_queue.
+It seems that the ioasid has different usage in different situation, it could
+be directly used in the physical routing, or just a virtual handle that indicates
+a page table or a vPASID table (such as the GPA address space, in the simple
+passthrough case, the DMA input to IOMMU will just contain a Stream ID, no
+Substream ID), right?
 
-timeout is not a good mechanism because it will print a stack trace and
-an error to logs. timeout is used for detecting broken interfaced.
-Perhaps use a hrtimer or a normal timer? What kind of time scales are
-we talking here?
+And Baolu suggested that since one device might consume multiple page tables,
+it's more reasonable to have one fault handler per page table. By this, do we
+have to maintain such an ioasid info list in the IOMMU layer?
 
-> 3) But if the HW queue and/or Watermark level is still not OK - then
-> probably something went seriously wrong, or the wait was to short.
-> Will the ndo_tx_timeout be called again or is this a one-off?
->=20
-> If the ndo_tx_timeout call is a one-off the driver would need to
-> reset the HW queue system or even deeper down...
+Then if we add host IOPF support (for the GPA address space) in the future
+(I have sent a series for this but it aimed for VFIO, I will convert it for
+IOASID later [1] :-)), how could we find the handler for the received fault
+event which only contains a Stream ID... Do we also have to maintain a
+dev(vPASID)->ioasid mapping in the IOMMU layer?
+
+[1] https://lore.kernel.org/patchwork/cover/1410223/
+
+Thanks,
+Shenming
