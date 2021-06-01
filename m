@@ -2,161 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4BA397739
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F208439773B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbhFAPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234294AbhFAPy0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:54:26 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F44C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:52:44 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id o5so18023278edc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:52:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7kZmqa9AQHlhf4LAWbBjUUPJOktIkTk9wm72ZNUa+F8=;
-        b=i7ONSsBhG91eTLfG3wxwX0jkRQ3UBebbuNE7QzMPoyRATsY0UP+K35w8D9oAw4wZC/
-         3SYUD4tyUk+SXjlXiHR7p1MFa/SuzUO8fgYH3l3ZrdPPpys0p+GZRPSFY5N++gpqhBn9
-         nII0hylqLX/yc5+Zc57NRU/C1ob2woMlHiQP4sFPatVfK72fDj6W6R4abVdXBcRlkl15
-         PcDyrkxFAowuWOfy6OAYhqYP6R5C80JBlsfX9ymFLHsBaw5w0cw0M4+q/Hj7P9NfwsEA
-         ZiYSbl16VF4ORAP3rqI5yT/nkBHK7bIIInq6cqkofbIY1RbXEJ9BklD5AywVYoMaXXbA
-         kg1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7kZmqa9AQHlhf4LAWbBjUUPJOktIkTk9wm72ZNUa+F8=;
-        b=PTVUlJTTSvqKPJbel9nSKMD7PUSLaJMxcnV7PlS9+JrIBRsv0t2yvmyjPmP6LAFHtN
-         9dsetB40K6CLnsjc9ujxE6OhHCwXUIu1OtkM33DfK5gcJrtpe5tkpNqYxC5BRPpFvgEE
-         AvHTOfQ/Iax82c5gbK6LclLFpevDwFvPDlpNBTMyBWBUQjYA/LVKyzs3uJ6SqrFBTJjt
-         phhnBlYOddV7eE7OAdiw1lD4lp/0w4XytIOp1qEkeyj5TaTgFeAJl7MR5PSBhXZEtc4l
-         VZEIf2iyMKcSBC01O1xwPIU/0Zt83T8sBPrKNdSevNc21USV4pJwlbKDiJxyubUtIttZ
-         M/Mg==
-X-Gm-Message-State: AOAM532ZURuTbuDwQh7SNzaQ9dZku3FXJxN5on+Q/cajnM/cOjhi4Ua0
-        fJ+Gw5k20k4SwxlU+cY5Ay0ec6KMIFt69Q7+afgtPG1NF/Q=
-X-Google-Smtp-Source: ABdhPJz2rS/h9c2JQZYpWmeKofkQ0Rc5bewQJc3cVTnwYeI7c+z6CgV+sDPxgqYhkO4V3eB5Ju3lGJQiFlKYh4b+Duo=
-X-Received: by 2002:aa7:dd4f:: with SMTP id o15mr27863853edw.174.1622562763405;
- Tue, 01 Jun 2021 08:52:43 -0700 (PDT)
+        id S234506AbhFAPyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:54:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234495AbhFAPyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 11:54:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BE3861396;
+        Tue,  1 Jun 2021 15:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622562769;
+        bh=aGdPf/JG2Ma5dBKju6woR09ogotgTp0UyCyCSzPN8E0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vFmm4EuDgRez/N9yYR8a2d8GUezxEqiMSMBcLzq6HqBUE9zJLj6qL2dkHJZDPH8op
+         iX1CqyIZdIMGpNoMJTIQcrkoOPYDGcPRizuPOtMu++Mpn3MXa7CrkR+xTl0SizVkxU
+         vcY6KQYQK60IB4VYju/UO9J5u2YSUpE5eGtiUe/2X99jCl7DPrE7zmeZwH7xYGB08Y
+         ATdnAOyRj0KSZSx3/W8vzdstQHOvZ/6t2RrP+qoC6yeHZl1IWU6uCqi65sHaC+ae/d
+         ePaRWGOdqnfOrax69HoqQoU0WFH6K/UvnadhleC25UuxBaWYwIZ//PDxH7sk13RtRc
+         u7POCe7b6WHgw==
+Date:   Tue, 1 Jun 2021 16:52:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     ChiYuan Huang <u0084500@gmail.com>
+Cc:     lgirdwood@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v4 2/2] regulator: rt6160: Add support for Richtek RT6160
+Message-ID: <20210601155239.GD4089@sirena.org.uk>
+References: <1622008068-13474-1-git-send-email-u0084500@gmail.com>
+ <1622008068-13474-2-git-send-email-u0084500@gmail.com>
+ <YK4oGB5cZ/DhG5vm@sirena.org.uk>
+ <CADiBU393NchfrTmgPApNRqSVrTBGT+bs+H+m2UF_H3tSGLyFVQ@mail.gmail.com>
+ <CADiBU3-LjetAkzks4MZKiK=KXK5ziFhF9D13cAjJ4W5gytw74A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210531110144.GA24442@kadam> <CAD-N9QW17fVZhaLY=CLPj9EbTLpG9qFNcGYZ0MhGxg_E0df1Uw@mail.gmail.com>
- <20210601134606.GD24442@kadam> <CAD-N9QWspFya5YmFsR=9tskS_JK+8V1suuPiC=h2XpPt3=KymQ@mail.gmail.com>
- <20210601143711.GE24442@kadam>
-In-Reply-To: <20210601143711.GE24442@kadam>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 1 Jun 2021 23:52:17 +0800
-Message-ID: <CAD-N9QX3daWfV8VHJsYSkWKGLx1ySrnscykGHGB0RMTw_g3k0w@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="//IivP0gvsAy3Can"
+Content-Disposition: inline
+In-Reply-To: <CADiBU3-LjetAkzks4MZKiK=KXK5ziFhF9D13cAjJ4W5gytw74A@mail.gmail.com>
+X-Cookie: Sic Transit Gloria Thursdi.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 10:43 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Tue, Jun 01, 2021 at 10:19:22PM +0800, Dongliang Mu wrote:
-> > On Tue, Jun 1, 2021 at 9:46 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > >
-> > > On Tue, Jun 01, 2021 at 09:17:04PM +0800, Dongliang Mu wrote:
-> > > > On Mon, May 31, 2021 at 7:02 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > > > > @@ -701,6 +706,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
-> > > > > >               sysfs_remove_link(&card->ctl_dev.kobj, link_name);
-> > > > > >               sysfs_remove_link(&led_card->dev.kobj, "card");
-> > > > > >               device_del(&led_card->dev);
-> > > > > > +             put_device(&led_card->dev);
-> > > > > >               kfree(led_card);
-> > > > > >               led->cards[card->number] = NULL;
-> > > > > >       }
-> > > > >
-> > > > > Btw, I have created a Smatch warning for this type of code where we
-> > > > > have:
-> > > > >
-> > > > >         put_device(&foo->dev);
-> > > > >         kfree(foo);
-> > > >
-> > > > I don't think this should be a bug pattern. put_device will drop the
-> > > > final reference of one object with struct device and invoke
-> > > > device_release to release some resources.
-> > > >
-> > > > The release function should only clean up the internal resources in
-> > > > the device object. It should not touch the led_card which contains the
-> > > > device object.
-> > > >
-> > >
-> > > It's only a use after free if you turn CONFIG_DEBUG_KOBJECT_RELEASE
-> > > debugging on, which you would never do in a production environment.  The
-> > > put_device() function calls kobject_release():
-> >
-> > This is interesting. Let's dig a little deeper.
-> >
-> > >
-> > > lib/kobject.c
-> > >    725  static void kobject_release(struct kref *kref)
-> > >    726  {
-> > >    727          struct kobject *kobj = container_of(kref, struct kobject, kref);
-> > >    728  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-> > >    729          unsigned long delay = HZ + HZ * (get_random_int() & 0x3);
-> > >    730          pr_info("kobject: '%s' (%p): %s, parent %p (delayed %ld)\n",
-> > >    731                   kobject_name(kobj), kobj, __func__, kobj->parent, delay);
-> > >    732          INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
-> > >                                                   ^^^^^^^^^^^^^^^^^^^^^^^
-> > >
-> > >    733
-> > >    734          schedule_delayed_work(&kobj->release, delay);
-> > >    735  #else
-> > >    736          kobject_cleanup(kobj);
-> > >    737  #endif
-> > >    738  }
-> > >
-> > > This release will be done later and it references led_card->dev which is
-> > > now freed.
-> >
-> > The call chain of kobject_delayed_cleanup is kobject_delayed_cleanup
-> > -> kobject_cleanup. From the comment, kobject_cleanup should only
-> > clean the resources in the kobject, without touching the dev object.
-> > To further confirm, I checked the implementation and found out there
-> > seem no references to the dev object. Would you mind pointing out the
-> > reference to dev object?
->
-> The kobj struct is included in the dev struct, it's not a pointer.
->
->         led_card->dev.kobj.name
->
-> See all the '.' characters and only one "->"?  If you kfree(led_card)
-> then you can't use led_card->dev.kobj any more.
 
-Yeah, you're right. I originally thought the field kobj is a pointer
-and there should no problem. Please leave alone the question below. I
-thought up this question based on the assumption before.
+--//IivP0gvsAy3Can
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> > Moreover, if kobject_cleanup touches the
-> > resources out of kobject, shall we directly change this function other
-> > than its callees?
-> >
->
-> I don't understand your question here.  The rest of the email looks like
-> some copy and pasted code but I don't know what I'm supposed to be
-> looking for.
->
-> I really feel like I have explained things very as well as I can and I'm
-> not sure what more I can do to help... :/
+On Thu, May 27, 2021 at 11:14:17AM +0800, ChiYuan Huang wrote:
 
-You already helped too much, and I learned a lot from the discussion
-with you. Don't be bothered by my stupid questions. :)
+> I review the regulator_set_ramp_delay_regmap API.
+> If seems I need to fill in the ramp_delay_table by the descend order.
+> But this chip ramp delay table is designed the ascending value reg bit
+> field [0 1 2 3] by
+> the ascending order [1000 2500 5000 10000] uV/uS
+> Even if I tried to filler in descending order, I also need a inverted operation.
 
->
-> regards,
-> dan carpenter
->
+I see... that really should be supportable, and I'd have expected
+find_closest_bigger() to DTRT here, it's not obvious it's expecting
+ordering.
+
+> And I found the regulator_set_ramp_delay_regmap API has some logic error.
+> From the include/linux/regulator/driver.h, the set_ramp_delay function says to
+> set the less or equal one ramp delay value.
+> But your logic will get the larger or equal one from the descending
+> ramp delay table.
+
+The code is correct here, the documentation should be fixed - with a
+delay like this we should be erring on the side of delaying too long to
+be safe.
+
+--//IivP0gvsAy3Can
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC2V8YACgkQJNaLcl1U
+h9CTrgf6ArqSe4D42r70JaahR7KYaMW6G6x9fIdM279DEUiisu2lF4pby14hFG9v
+xze19BNI8C7w7ziMCd3Q4gOF2h8jLljHv8tubSalY3W89MCX6AhfBfKzoc7aSWat
+lxjjLfCMWV6u5CJhPvSS8L2XMawDG6WkA98Kuvde52YGTxRnieHeJbLaHdIs3fr9
+c2uHJRSRFvEkVhkhikwi4OhtFHoRjZVRlnTn03n1gqSc9d9gfZSOATutUZxQnvoe
+6eneLvfQJwpX1UjhvJ1JPox28cXqzPwWgxKfBBoAd3hRSRwZSNMhwto9VsJ7TrRZ
+9r1fBvnARN+gMU2hPNeHwQT6zO5p7A==
+=1NtJ
+-----END PGP SIGNATURE-----
+
+--//IivP0gvsAy3Can--
