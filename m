@@ -2,100 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE60397989
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E5239798C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234623AbhFAR40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhFAR4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:56:24 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE081C061574;
-        Tue,  1 Jun 2021 10:54:40 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id s25so20402063ljo.11;
-        Tue, 01 Jun 2021 10:54:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=co5+HLp/gGoGl+hC9bP8ePh5EDsEzObjUAuxi+JiSMw=;
-        b=bY/ks8iMoG7dhJCPoIYPsDKYlkSvKwltmR6U4OgH/p7D3X8ggEjECTR3gtLJZG1jsP
-         KGiISsR//WDSvLOLEn7SstqTOosy0SHzzwto05vv5PEoT4lo7qCURil3+L9gb0eqxXOA
-         lNKyt7YV3HhPSIHKBaBlbg85u7JpXaBDF2Z7ymfzW7eY+CX1rMGqdEzD2p4IHmwEN0Ax
-         94f+ExgGorYVzPERp1RMMMnGp+9vx4Srgx+f9Ey9At4sANopcD+5ZGC2TI37Uwz8VRvn
-         I6p+MUG3WGeec2H78RtT0iL3ebWBQcwUcYo9XBkQT9Jjxo8e6+FGOYTfeCZwuzSDvzyc
-         pnLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=co5+HLp/gGoGl+hC9bP8ePh5EDsEzObjUAuxi+JiSMw=;
-        b=jjGzVunlxThmpnu31mion8b0c2AgIUIXwT72tS8l56WLfXAha4ahm1SypkFwH6qMhy
-         dmcjjfP9nRKqP9P2ChnhCiDdlKycX+b7++kZvG0+FtxmAlKBmu5Ypz6cysTZu/kEROnF
-         LT2Kpxp0qPvAwa9nnji6zaVyBOGXZkAx8Q/MJbm+2hmjTA6U9TE+Ax2fQIOcauj8AUNQ
-         MPPxUTsZok/3+7Pj6sJP+gNiuRKDYXuSdYMiQC6oFG78aA2iil2nEEI55tnNyxhQKqEs
-         ewmRyeGS9ML8kS7qc116v4jTQOlAFsv6VFh+HqyqeQzP4hq/54aoPTZZ5NQkEMWGtSXh
-         yh6Q==
-X-Gm-Message-State: AOAM530UDe0FJ1hJUvwwBpScGQeRjXCPBfMeBu4eiWYmYlspCJKJchcr
-        hbLXEFw/Ez0vgdCbvP3xkptPKcivQvE=
-X-Google-Smtp-Source: ABdhPJzXpy44eUncpYfi245RJRDP9uSQ5V7b7NmAgjbKdzYRfAlt5/h/OAAXbIDc6JxSpw1jCM5gRA==
-X-Received: by 2002:a05:651c:289:: with SMTP id b9mr22074537ljo.398.1622570079054;
-        Tue, 01 Jun 2021 10:54:39 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.googlemail.com with ESMTPSA id d19sm2083528ljg.52.2021.06.01.10.54.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 10:54:38 -0700 (PDT)
-Subject: Re: [PATCH v1 04/10] ARM: tegra: Add reg property to Tegra20 EMC
- table device-tree nodes
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210510202600.12156-1-digetx@gmail.com>
- <20210510202600.12156-5-digetx@gmail.com> <YLSpCXNtut3z8U9a@orome.fritz.box>
- <1ab11cc8-b45a-0c2d-c0c4-fa5779756c05@gmail.com>
- <YLYZHPpjZB9amRBW@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6e69a991-e5d3-fcad-6b7f-75b9953a8493@gmail.com>
-Date:   Tue, 1 Jun 2021 20:54:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234597AbhFAR6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:58:33 -0400
+Received: from mail-dm6nam11on2056.outbound.protection.outlook.com ([40.107.223.56]:39431
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231331AbhFAR62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:58:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VCs1lP5D1Z/aiSQl8pKyB9fyy6wKE8w5a2XXYnHnuTk+VHtvVqQHJYAbAvFb+RaLWBK+7bE+HUiKg1KJ+OZ/hdxMdvvEnXbE3y6SuJ2+aELIdKLl7T1JVvVNptoCOFV+s1P3TtkjlyYfSul47ykB8VFQhuUoxF4rdJ3JS0o8dmJn+MK0xHPm4kpflqd5HLLapiOnJ9rPVOhOg7YIGjF5j+OBYDvaaxBhNCvJdLImwMcOUiFKlYlK4yuMRn5u88fqUuPoOYtXD11paS3GuDTYYkpv5BKYxgkT5D1G74VYjWQ/iNiRGt9t2FiuT6sBbxyKKSTqOibgf7pBuqV/dzNzNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dqn1oB1oJ0AIQdc6LdudrbdLjcWNvzx4saNKRvdE/kY=;
+ b=UwsmGKPDKq8wwPr7D9Skf1ANEu4jLoIGAJnJyyu+fMQBUrQlf5CughDLzmjBfJ4zUd8sAcO7msCpyTOIefJWOErMbApmePF5o7MD6oalCtxVoG6bws10ZaCIQ68fADBxm+QM6glY7kGTV05x2mA4wX0LX9t8Bf3Tvemky21+lBIj/ytJbrfwkidy4gUvoYG2L+gQj+JEFPgB9dKN5SBL+xPReACcHJYniZJVJOKUVMCZq5MjjlmqByd57LqK3dreNkCbn/+SjlXJXHEWfQcACYWSSdwYXXqmvhMQIEBZM7zQZNQ+c02066Q1luLzGzx8BQ37yUxwzV5HlId86Yvg+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dqn1oB1oJ0AIQdc6LdudrbdLjcWNvzx4saNKRvdE/kY=;
+ b=gVvlLva+JzclUI5bHLzSICL7wo5lq4q7xE+U/rghmOIb2u3MpFCiX9lGMFCM7t8UDZr13V/ujAQpxjSWugFkturiJ42c/Z1yFIHIfWWfEoM6sU3oWB1f8r4oHFHUX3whuwUPsidfChuQXJuuX05aqEIVxJccMsGU7qvFfU0cIObtIjgXVqCzKuSn3xo4waoYePOHdZuU9yxoS7C8R1nII12bmKQt9LT+GCEfG9ud7UeYrG697FYr0sHWGmBBIfWsy4ajMdeMQ2GhsAGAvJS9oh2bb/jj/ATruVDNY951/BK9Ho82dpDmxNA0P1Z5xHNNJwKTXx0mUFSPlS9i2nuBaw==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5238.namprd12.prod.outlook.com (2603:10b6:208:31e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 1 Jun
+ 2021 17:56:45 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
+ 17:56:45 +0000
+Date:   Tue, 1 Jun 2021 14:56:43 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210601175643.GQ1002214@nvidia.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210528195839.GO1002214@nvidia.com>
+ <MWHPR11MB1886A17F36CF744857C531148C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB1886A17F36CF744857C531148C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR04CA0020.namprd04.prod.outlook.com
+ (2603:10b6:208:d4::33) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <YLYZHPpjZB9amRBW@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR04CA0020.namprd04.prod.outlook.com (2603:10b6:208:d4::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 1 Jun 2021 17:56:44 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lo8d9-00HY2N-Ik; Tue, 01 Jun 2021 14:56:43 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd27302a-6924-4c0c-5239-08d925269e9d
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5238:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5238BC5111DCC3713034682EC23E9@BL1PR12MB5238.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h/zdm+xEqN95KJIhqS5Ul4b5v+2ykee1obtXzhO7xuAx1qaPL/sVpuNV2Vr0OTaPKIInNVjzwIq63KKfFci8ZJR0vMSbXopnfAc5DuYOa5UJjHAq5EXbpMzJQb0gF2HPYDqyTAqoyXeupjXf1edPGMdrOKhTmBxPB+b/6q9DqzEDivXLOHqaZhiqZU16UE0sTTGFT5gXk9ZX6jOtgkXLpCsfrmiMMfSnRUP0iTKjJibuUseXIcdfGPceFyUcmwJhpofDMpUgqUI8xsp/xBnS69zqxnQq1uZVRYz/AocTo5LW3JgmQD275xvbWjl/uYpb1zZY4WSZ0yL4MYCNavFSHE+pEQkle8CcPflHm/wetmG3D8YH5P9x5+sNXASwZe3VHctFlbw2m9R+85sQnOYBhOu/fYL4lvaPgwmgPonNbx02aWr/CCxI8ZOgwa0I/AVQzSbC+8o1Ql9Tbeq0/ejhA3OYcKAywL+7HQwN0wADyAW/84ZVjy/5ONTBCGR1UZ8xdPnx9fVip6h+356AWDJJGbx/6wzzqYcTq0SWpT+DzzODivJqt32mo2fdJAN/iQftvIkeOuPT/+SResoEaYPPx6++CWoJCOAlmlrTNwvDSRA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(7416002)(2616005)(478600001)(83380400001)(86362001)(38100700002)(8676002)(9786002)(1076003)(316002)(9746002)(6916009)(4326008)(33656002)(5660300002)(2906002)(8936002)(186003)(26005)(36756003)(66476007)(66556008)(66946007)(426003)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?D0WMg6lLmpCg7hzNSIBDhY5UqKcWRX7OdeUebSZuc7YzJaipP9ZaSNnA6pN0?=
+ =?us-ascii?Q?q6dIzW3k/x68PVZjK2zIPBXGCRqBiULQNaBZHoL5KAlndtGrmMoCRg6hkamm?=
+ =?us-ascii?Q?p5wjUZ1h02O+DgHvS4zrUoa0iN7rtlZU0o2+Vmcc+wNNJtmdripTn6TU00+k?=
+ =?us-ascii?Q?Xkv/1X/nA58vTlzYMV1HXs/H2/IdPbNmr9MrtqF3RD+goCVcyB+n/q2cal61?=
+ =?us-ascii?Q?ZUbQaa7BP+rU6ju92r2Emyj4tlc00CivNgBKZkVQQ5ySQsEsPKoxfEfLvXUN?=
+ =?us-ascii?Q?hWdb58IAz7PUopy4SzM+yM4caxz6SvCFVtCCwpVAKQU4YJx9m2OqyrNG7PY/?=
+ =?us-ascii?Q?7jsetOMiH26hp9VyWWLpXJoGM89O5vNVK9KNdnjNaPFOfWEsSEvIUxLzrnHG?=
+ =?us-ascii?Q?ZNy2+lEg8BXzkr76fhb4K9C+QkZePSkteKeyes78DjGYW+BfcUSmEdjhPjV3?=
+ =?us-ascii?Q?0PXxkbcfSYl4kP1Vwcd3xpcdntPnXfw2fB+pL4Vq//xZo+vGsb1BJz8jkUcQ?=
+ =?us-ascii?Q?+C4A+uA9UpfSNFyo+OItDrGo2ke0W+nBiVQznBvoYPVoBri0a/f7AygDwNTc?=
+ =?us-ascii?Q?FiJsnObo+mzy41G4oDeM9GZIUCt5ywBdRUKRTwzMMjIlPhe0BQv7ZMlMnUrz?=
+ =?us-ascii?Q?PMwcfVAd5TUM6Q9dq+Rc5M2Hkvc23PlxbtV8xaQPTPoycWu5emEjrPqQ82nx?=
+ =?us-ascii?Q?BPC8seOFN1gwk9YDniX7VRUXOdGtN+0wsSDUOUMPmlEyoLVxgNWG5NfatzAR?=
+ =?us-ascii?Q?1pbUW9b5uIwaccCKh3XQHMN65KKCUzFdOBb10mIEmaGqJqxsdt41oAgvcL0B?=
+ =?us-ascii?Q?YUbX3c7dt34bijrdX0bBkAy/Ke4qvSt9iW7w5xYu0HQR+QVclN8JPseCOPVV?=
+ =?us-ascii?Q?hqJNn4IuXAF5f8n8/FzlVoLiaGhAAbeoP1GHgb4Ds1AIG1mUrdH9+72NUl0O?=
+ =?us-ascii?Q?rZjSDU3Xr1eGOYlugXjGDlqeieLxNFCuU+n94G3BC7RULmr2lxTS2o11gb7t?=
+ =?us-ascii?Q?b2NfrjrMQi6uVSCFhndbkVPZ4V+tf/1+N07xdByc9AIBkm5Tn13n5tBoGYTJ?=
+ =?us-ascii?Q?bEGn0YB38RUv4Ba55X/JC1/VlvEfWVsV2OqU9fJFqoyKKnh9FLV8deX3pwqI?=
+ =?us-ascii?Q?Mck7dD9yemSFBSDn2/pgbkdIxJWHTkySJj1UC0ZbgCQ7ztH91TRPFEAE6uBI?=
+ =?us-ascii?Q?jFYp3hsrF3NIet0PSs1Zaa2lJXOCKMxj/8P3q9CqgEFQRBQoztlE2lb6gBUZ?=
+ =?us-ascii?Q?1RM3CKxUXghRsx6kCJUkIdz9hcgH48yHp3il/tCLaezwhLAAMs6MNczu0Uae?=
+ =?us-ascii?Q?/MvByootrZS02AT/8+7/SD7+?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd27302a-6924-4c0c-5239-08d925269e9d
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 17:56:45.1792
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ADhebesglV10d8DtpVNtPIAgJxtJi1F2m3bet+7Uc7qD5Vl19ZzzTemlZqrnP8AE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5238
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.06.2021 14:25, Thierry Reding пишет:
->> The TF101 support mostly in a completed state now, we still need to try
->> to figure out why upstream kernel doesn't work using a stock Android
->> bootloader, so far bootloader replacement to u-boot is required.
-> I think it's fine to merge support upstream if there is some sort of
-> bootloader that it can run with. If that bootloader is open-source like
-> U-Boot, the better, but I don't think we need to set the bar as high as
-> being able to boot with any available bootloader. There are all sorts
-> of reasons why the Android stock bootloader may cause things not to work
-> and there's probably no way to get it fixed anyway. It's similarly
-> possible that the kernel may need some outlandish quirk to accomodate
-> for that breakage and we may not want, or be able, to upstream such
-> quirks anyway.
+On Tue, Jun 01, 2021 at 08:38:00AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Saturday, May 29, 2021 3:59 AM
+> > 
+> > On Thu, May 27, 2021 at 07:58:12AM +0000, Tian, Kevin wrote:
+> > >
+> > > 5. Use Cases and Flows
+> > >
+> > > Here assume VFIO will support a new model where every bound device
+> > > is explicitly listed under /dev/vfio thus a device fd can be acquired w/o
+> > > going through legacy container/group interface. For illustration purpose
+> > > those devices are just called dev[1...N]:
+> > >
+> > > 	device_fd[1...N] = open("/dev/vfio/devices/dev[1...N]", mode);
+> > >
+> > > As explained earlier, one IOASID fd is sufficient for all intended use cases:
+> > >
+> > > 	ioasid_fd = open("/dev/ioasid", mode);
+> > >
+> > > For simplicity below examples are all made for the virtualization story.
+> > > They are representative and could be easily adapted to a non-virtualization
+> > > scenario.
+> > 
+> > For others, I don't think this is *strictly* necessary, we can
+> > probably still get to the device_fd using the group_fd and fit in
+> > /dev/ioasid. It does make the rest of this more readable though.
+> 
+> Jason, want to confirm here. Per earlier discussion we remain an
+> impression that you want VFIO to be a pure device driver thus
+> container/group are used only for legacy application.
 
-Lots of devices with Android bootloader have odd limitations in regards
-to kernel zImage size, this is the main culprit. Nothing we can do about
-this in kernel code, but at least we may know how to prepare kernel
-config properly to make it working.
+Let me call this a "nice wish".
 
-> So if you want to pursue making upstream Linux work with the stock
-> Android bootloader, that's a fine goal and I won't object, but it's not
-> a requirement that I will insist on before merging DTS files.
+If you get to a point where you hard need this, then identify the hard
+requirement and let's do it, but I wouldn't bloat this already large
+project unnecessarily.
 
-This is indeed not a blocker for the device-tree. We will probably send
-all the transformers together once they all will be ready.
+Similarly I wouldn't depend on the group fd existing in this design
+so it could be changed later.
+
+> From this comment are you suggesting that VFIO can still keep
+> container/ group concepts and user just deprecates the use of vfio
+> iommu uAPI (e.g. VFIO_SET_IOMMU) by using /dev/ioasid (which has a
+> simple policy that an IOASID will reject cmd if partially-attached
+> group exists)?
+
+I would say no on the container. /dev/ioasid == the container, having
+two competing objects at once in a single process is just a mess.
+
+If the group fd can be kept requires charting a path through the
+ioctls where the container is not used and /dev/ioasid is sub'd in
+using the same device FD specific IOCTLs you show here.
+
+I didn't try to chart this out carefully.
+
+Also, ultimately, something need to be done about compatability with
+the vfio container fd. It looks clear enough to me that the the VFIO
+container FD is just a single IOASID using a special ioctl interface
+so it would be quite rasonable to harmonize these somehow.
+
+But that is too complicated and far out for me at least to guess on at
+this point..
+
+> > Still a little unsure why the vPASID is here not on the gva_ioasid. Is
+> > there any scenario where we want different vpasid's for the same
+> > IOASID? I guess it is OK like this. Hum.
+> 
+> Yes, it's completely sane that the guest links a I/O page table to 
+> different vpasids on dev1 and dev2. The IOMMU doesn't mandate
+> that when multiple devices share an I/O page table they must use
+> the same PASID#. 
+
+Ok..
+
+Jason
