@@ -2,80 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A42397824
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758CA397822
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234359AbhFAQgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbhFAQgP (ORCPT
+        id S233397AbhFAQgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:36:18 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3126 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFAQgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:36:15 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9BBC061574;
-        Tue,  1 Jun 2021 09:34:31 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id h3so8602237wmq.3;
-        Tue, 01 Jun 2021 09:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-transfer-encoding;
-        bh=bvCCBlAI0cegQuZ44NSg9CufixTnatS00Nz8370cpqc=;
-        b=B1Zqq99yrb4FADvGT1FhuXSVWaP6AcDmUNlcQi6xFjSUo47pJZMNWji4W1KBPUoaCp
-         lvevw+NvhaHLcYKL14MSQlkCPvJNc+Z/x3yTNfkPg13IRPDM/G2fy+OGaDDV3pT53IYW
-         l+0OJQBG+t4PJD+x4jV+cWvhhbG3L5X0GEEWWECmrz5hiXstma+b1sH4eaBBgXUvDqBU
-         3MDBvVw9PSHegSv5kGIEvyvuSDQ0WpRpyqmzgesx8/c6KOgxVvD+AeWwWQ6hkRdm9fmw
-         DGTY9V6XIayRNgjs+Vr9j3mMLYCNL8UXs+ynxpteHQtW6TFSWxiPKpO7v8LV0uQ1E6PV
-         Ai0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
-         :cc:subject:references:in-reply-to:content-transfer-encoding;
-        bh=bvCCBlAI0cegQuZ44NSg9CufixTnatS00Nz8370cpqc=;
-        b=VxsQ02CRiICehvJCCLPTLskh3oNjn8/UO13nXpBH+shJyakdHXm/maJWibqmNlxALk
-         oIEo8+ty8/p59giJ4L/fS/yC3qK0VgTkr2G18YVRV/ofVRXRhabOOxVXad3thTqGuCOd
-         1biZ60y8kY8qwMLnYJEKWBX/qm9lbdnl718njD8o9Kll8QiQifAYJOBvV3vco4w9669E
-         66zNQpwcii4RB/mioARGmdwwSfxd/yiDK/uBRngLzvgKePvsmikDsc1vsttGQiSLyObE
-         R4+LpvVJ0GCQn7f//4D36MbcsOzFqQ/jIepLxIevRbJNH5iMsNG41pAILvxK9dq59qbL
-         FhHw==
-X-Gm-Message-State: AOAM531UqjkSQX3g9bWDXe9vsDV1IOf0WRhkE9Fx+R2L60gkcvfiJ4v7
-        GMXcWpX/fahxYysrxoJ67ECQx93KNds=
-X-Google-Smtp-Source: ABdhPJy6vRXQIIKgw1cvPhmGkU2rDBerzDkGGWkN6tEAETe1C30BNvwsznkZWiue4b4OBsAb6prw4w==
-X-Received: by 2002:a7b:cbc2:: with SMTP id n2mr27692896wmi.69.1622565270396;
-        Tue, 01 Jun 2021 09:34:30 -0700 (PDT)
-Received: from [89.139.227.208] (89-139-227-208.bb.netvision.net.il. [89.139.227.208])
-        by smtp.gmail.com with ESMTPSA id n6sm7208wmq.34.2021.06.01.09.34.28
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Tue, 01 Jun 2021 09:34:29 -0700 (PDT)
-Message-ID: <60B6615F.1050807@gmail.com>
-Date:   Tue, 01 Jun 2021 19:33:35 +0300
-From:   Eli Billauer <eli.billauer@gmail.com>
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
+        Tue, 1 Jun 2021 12:36:14 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fvcr142PZz6J8tl;
+        Wed,  2 Jun 2021 00:22:09 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 18:34:31 +0200
+Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 17:34:30 +0100
+Date:   Tue, 1 Jun 2021 17:34:24 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Liam Beguin <liambeguin@gmail.com>
+CC:     <peda@axentia.se>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 5/9] iio: afe: rescale: add support for temperature
+ sensors
+Message-ID: <20210601173424.00001ce8@Huawei.com>
+In-Reply-To: <20210530005917.20953-6-liambeguin@gmail.com>
+References: <20210530005917.20953-1-liambeguin@gmail.com>
+        <20210530005917.20953-6-liambeguin@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-To:     Colin King <colin.king@canonical.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] char: xillybus: Fix spelling mistake "overflew"
- -> "overflowed"
-References: <20210601102201.8489-1-colin.king@canonical.com>
-In-Reply-To: <20210601102201.8489-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.71]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/06/21 13:22, Colin King wrote:
-> There is a spelling mistake in a dev_err message. Fix it.
->
->    
-This is actually a grammar mistake: Overflew is the past of overfly, not 
-overflow.
+On Sat, 29 May 2021 20:59:13 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
 
-I stand corrected nevertheless. Thanks.
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Add support for various linear temperature sensors.
+> 
+> temperature-sense-rtd is used when the measured temperature is a
+> function of the sensor's resistance (like RTD sensors).
+> 
+> temperature-sense-current is used when the measured temperature is a
+> function of the sensor's output current (like the AD590)
+> 
+> temperature-sense-amplifier is used when the measured temperature is a
+> function of the sensor's voltage (like the LTC2997)
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+Hi Liam,
 
-    Eli
+Comments in here follow through from the bindings.
 
-Acked-by: Eli Billauer <eli.billauer@gmail.com>
+Jonathan
+
+> ---
+>  drivers/iio/afe/iio-rescale.c | 141 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 141 insertions(+)
+> 
+> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+> index 3bd1f11f21db..eb53d833bf7c 100644
+> --- a/drivers/iio/afe/iio-rescale.c
+> +++ b/drivers/iio/afe/iio-rescale.c
+> @@ -222,10 +222,133 @@ static int rescale_voltage_divider_props(struct device *dev,
+>  	return 0;
+>  }
+>  
+> +static int rescale_temp_sense_rtd_props(struct device *dev,
+> +					struct rescale *rescale)
+> +{
+> +	u32 factor;
+> +	u32 alpha;
+> +	u32 iexc;
+> +	u32 tmp;
+> +	int ret;
+> +	u32 r0;
+> +
+> +	ret = device_property_read_u32(dev, "excitation-current-microamp",
+> +				       &iexc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read excitation-current-microamp: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = device_property_read_u32(dev, "alpha-micro-ohms-per-ohm-celsius",
+> +				       &alpha);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read alpha-micro-ohms-per-celsius: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = device_property_read_u32(dev, "r-naught-ohms", &r0);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read r-naught-ohms: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * The transfer function:
+> +	 *
+> +	 *	- V(T) = R(T) * iexc
+> +	 *	- R(T) = r0 * (1 + alpha * T)
+> +	 *
+> +	 *	T = 1 / (alpha * r0 * iexc) * (V - r0 * iexc)
+> +	 */
+> +	tmp = r0 * iexc * alpha / 1000000;
+> +	factor = gcd(tmp, 1000000);
+> +	rescale->numerator = 1000000 / factor;
+> +	rescale->denominator = tmp / factor;
+> +
+> +	rescale->offset = -1 * ((r0 * iexc) / 1000);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rescale_temp_sense_current_props(struct device *dev,
+> +					    struct rescale *rescale)
+> +{
+> +	u32 alpha;
+> +	u32 sense;
+> +	int ret;
+> +
+> +	ret = device_property_read_u32(dev, "sense-resistor-ohms", &sense);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read the sense resistance: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = device_property_read_u32(dev, "alpha-micro-amps-per-degree",
+> +				       &alpha);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read alpha-micro-amps-per-degree: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * The transfer function:
+> +	 *
+> +	 *	- V(K) = Rsense * Isense(K)
+> +	 *	- K = Isense(K) / alpha
+> +	 *	- C = K - 273.15
+> +	 *
+> +	 *	C = 1 / (Rsense * alpha) * (V - 273.15 * Rsense * alpha)
+> +	 */
+> +	rescale->numerator = 1000000;
+> +	rescale->denominator = alpha * sense;
+> +
+> +	if (device_property_read_bool(dev, "use-kelvin-scale"))
+> +		rescale->offset = -1 * ((27315 * alpha * sense) / 100000);
+
+As below. Generic offset, not this specific one please ;)
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int rescale_temp_sense_amplifier_props(struct device *dev,
+> +					      struct rescale *rescale)
+> +{
+> +	u32 alpha;
+> +	int ret;
+> +
+> +	ret = device_property_read_u32(dev, "alpha-micro-volts-per-degree",
+> +				       &alpha);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read alpha-micro-volts-per-degree: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * The transfer function:
+> +	 *
+> +	 *	- K = V(K) / alpha
+> +	 *	- C = K - 273.15
+> +	 *
+> +	 *	C = 1 / (alpha) * (V - 273.15 * alpha)
+> +	 */
+> +	rescale->numerator = 1000000;
+> +	rescale->denominator = alpha;
+> +
+> +	if (device_property_read_bool(dev, "use-kelvin-scale"))
+
+As mentioned later, stick to celcius + an explicit offset.
+
+There will be devices that have their own offset which doesn't happen to
+be -273.15
+
+> +		rescale->offset = -1 * ((27315 * alpha) / 100000);
+> +
+> +	return 0;
+> +}
+> +
+>  enum rescale_variant {
+>  	CURRENT_SENSE_AMPLIFIER,
+>  	CURRENT_SENSE_SHUNT,
+>  	VOLTAGE_DIVIDER,
+> +	TEMP_SENSE_RTD,
+> +	TEMP_SENSE_CURRENT,
+> +	TEMP_SENSE_AMPLIFIER,
+>  };
+>  
+>  static const struct rescale_cfg rescale_cfg[] = {
+> @@ -241,6 +364,18 @@ static const struct rescale_cfg rescale_cfg[] = {
+>  		.type = IIO_VOLTAGE,
+>  		.props = rescale_voltage_divider_props,
+>  	},
+> +	[TEMP_SENSE_RTD] = {
+> +		.type = IIO_TEMP,
+> +		.props = rescale_temp_sense_rtd_props,
+> +	},
+> +	[TEMP_SENSE_CURRENT] = {
+> +		.type = IIO_TEMP,
+> +		.props = rescale_temp_sense_current_props,
+> +	},
+> +	[TEMP_SENSE_AMPLIFIER] = {
+> +		.type = IIO_TEMP,
+> +		.props = rescale_temp_sense_amplifier_props,
+> +	},
+>  };
+>  
+>  static const struct of_device_id rescale_match[] = {
+> @@ -250,6 +385,12 @@ static const struct of_device_id rescale_match[] = {
+>  	  .data = &rescale_cfg[CURRENT_SENSE_SHUNT], },
+>  	{ .compatible = "voltage-divider",
+>  	  .data = &rescale_cfg[VOLTAGE_DIVIDER], },
+> +	{ .compatible = "temperature-sense-rtd",
+> +	  .data = &rescale_cfg[TEMP_SENSE_RTD], },
+> +	{ .compatible = "temperature-sense-current",
+> +	  .data = &rescale_cfg[TEMP_SENSE_CURRENT], },
+> +	{ .compatible = "temperature-sense-amplifier",
+> +	  .data = &rescale_cfg[TEMP_SENSE_AMPLIFIER], },
+>  	{ /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, rescale_match);
+
