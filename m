@@ -2,120 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6853C397253
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DB239725B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbhFAL25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhFAL24 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:28:56 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F0BC061574;
-        Tue,  1 Jun 2021 04:27:13 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so1685394wmh.4;
-        Tue, 01 Jun 2021 04:27:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qWpmyIqtIiEUNSYz2jvtQ/oVSnnO93CuP3bxTaEEH8I=;
-        b=r+kkXsYq3sSGQafJpKn6sgxGQLTlUDBebSrbgmbhJitf7gvLWz+0ZjyGCe176QU6Sh
-         uSrjn6Dzs78XGXw3TdpLZ6VhQrIIEsOR6jSx+i2pUd2JXSrZ39txZ3VGYismfaVlNFIL
-         5ubSJFe9ULHRj4Niq6Suo/TUp+a24ijAfHTzOFARjlTfc39znKtGxAxneZ/oGAphWrbo
-         ywRr2ZHMsVr2ibmVRMmA1H9qCe2jq1V3v5KMEMNWZdjICqLtfsylmys3zPDfjP/1isaO
-         dPYJFCXJ/Odo80HoKNHvJEMsnvZoR2ggpuqvO9V5LIaQI+jxUETpimQJwl5Q2Cx+OlBo
-         W48w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qWpmyIqtIiEUNSYz2jvtQ/oVSnnO93CuP3bxTaEEH8I=;
-        b=NB0UNKQ/tvcVKycVRjy9mddY+mwf1ufCEVxSC06k73mHs8hRcC6nhDfXGWW8ZCc1cb
-         WKMTrE9a+F3wqorr5ZaGrrShdEOVV46HWLCPwRwhFzSOTIKeHdaqXJOIMgaThXO7btwm
-         kQogOVTuwJLoFt9VAnEIL74eE8YB/JltbdIy23Os8eadhTA5wHECnwHDQ5MCok4c/yjC
-         k+c/M8+sCKwV+p7O7A51LUq8nRUgMNkL3A01KXN+hsLrOn5zKjssDsdxVHfUlOgbD+gq
-         FqN4PBJ05eCTVqXG0Mg9PBiSPRpE86ca2k59d9DQYRIkSp0WYG4YgYUlvAf/2UVZnFA0
-         qaDw==
-X-Gm-Message-State: AOAM5314YLqI5dcU5TYORnXG4pgOM3q6Wt3b03PfCExCs70CoJDYw2oa
-        6Ji4BtD8OfM9PAn5kKSKWTY=
-X-Google-Smtp-Source: ABdhPJxvQ8WhehZVdy3tmkC1NX1tpqvNgKfauz5YL2BWLrZ5cejOZ7TFVHM3a/I6nIzbe5ep1PnUZQ==
-X-Received: by 2002:a1c:acc5:: with SMTP id v188mr25576027wme.60.1622546831842;
-        Tue, 01 Jun 2021 04:27:11 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id m65sm7292051wmm.19.2021.06.01.04.27.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 04:27:10 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 13:28:46 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: devfreq: tegra30-actmon: Convert to
- schema
-Message-ID: <YLYZ7qgBP1ZNnM3w@orome.fritz.box>
-References: <20210601022319.17938-1-digetx@gmail.com>
- <20210601022319.17938-2-digetx@gmail.com>
+        id S233715AbhFALbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:31:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39056 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231201AbhFALbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 07:31:06 -0400
+IronPort-SDR: 2Umm7eWkLcfe/4qeRH/0JwjBJ716cawpZ+PCjMX1pZQQkYN+zQFRcGRalFwNeFLpmmBp18xwvV
+ mGR5kjvDP4rQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190640960"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="190640960"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 04:29:24 -0700
+IronPort-SDR: LCr6PBFbfXLyRnlYGo22DaUt3W583aCmAc5Xg6BimLd/avK9YTqir8+Bgx027AUorMEdwvf3CF
+ Pth/dFGeAyiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="479244076"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 01 Jun 2021 04:29:21 -0700
+Date:   Tue, 1 Jun 2021 19:29:20 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [v3 PATCH 2/3] mm/mempolicy: don't handle MPOL_LOCAL like a fake
+ MPOL_PREFERRED policy
+Message-ID: <20210601112920.GB80730@shbuild999.sh.intel.com>
+References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
+ <1622469956-82897-3-git-send-email-feng.tang@intel.com>
+ <YLXzd95duZ3va7Te@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="JH7CJL7a1vXi50s7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210601022319.17938-2-digetx@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <YLXzd95duZ3va7Te@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 01, 2021 at 10:44:39AM +0200, Michal Hocko wrote:
+> On Mon 31-05-21 22:05:55, Feng Tang wrote:
+> > MPOL_LOCAL policy has been setup as a real policy, but it is still
+> > handled like a faked POL_PREFERRED policy with one internal
+> > MPOL_F_LOCAL flag bit set, and there are many places having to
+> > judge the real 'prefer' or the 'local' policy, which are quite
+> > confusing.
+> > 
+> > In current code, there are 4 cases that MPOL_LOCAL are used:
+> > 1. user specifies 'local' policy
+> > 2. user specifies 'prefer' policy, but with empty nodemask
+> > 3. system 'default' policy is used
+> > 4. 'prefer' policy + valid 'preferred' node with MPOL_F_STATIC_NODES
+> >    flag set, and when it is 'rebind' to a nodemask which doesn't
+> >    contains the 'preferred' node, it will perform as 'local' policy
+> > 
+> > So make 'local' a real policy instead of a fake 'prefer' one, and
+> > kill MPOL_F_LOCAL bit, which can greatly reduce the confusion for
+> > code reading.
+> > 
+> > For case 4, the logic of mpol_rebind_preferred() is confusing, as
+> > Michal Hocko pointed out:
+> > 
+> >  "
+> >  I do believe that rebinding preferred policy is just bogus and
+> >  it should be dropped altogether on the ground that a preference
+> >  is a mere hint from userspace where to start the allocation.
+> >  Unless I am missing something cpusets will be always authoritative
+> >  for the final placement. The preferred node just acts as a starting
+> >  point and it should be really preserved when cpusets changes.
+> >  Otherwise we have a very subtle behavior corner cases.
+> >  "
+> > So dump all the tricky transformation between 'prefer' and 'local',
+> > and just record the new nodemask of rebinding.
+> > 
+> > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> 
+> I like this very much! It simplifies a tricky code and also a very
+> dubious behavior. I would like to hear from others whether there might
+> be some userspace depending on this obscure behavior though. One never
+> knows...
+> 
+> Some more notes/questions below
+> 
+> [...]
+> > @@ -239,25 +240,19 @@ static int mpol_set_nodemask(struct mempolicy *pol,
+> >  		  cpuset_current_mems_allowed, node_states[N_MEMORY]);
+> >  
+> >  	VM_BUG_ON(!nodes);
+> > -	if (pol->mode == MPOL_PREFERRED && nodes_empty(*nodes))
+> > -		nodes = NULL;	/* explicit local allocation */
+> > -	else {
+> > -		if (pol->flags & MPOL_F_RELATIVE_NODES)
+> > -			mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
+> > -		else
+> > -			nodes_and(nsc->mask2, *nodes, nsc->mask1);
+> >  
+> > -		if (mpol_store_user_nodemask(pol))
+> > -			pol->w.user_nodemask = *nodes;
+> > -		else
+> > -			pol->w.cpuset_mems_allowed =
+> > -						cpuset_current_mems_allowed;
+> > -	}
+> > +	if (pol->flags & MPOL_F_RELATIVE_NODES)
+> > +		mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
+> > +	else
+> > +		nodes_and(nsc->mask2, *nodes, nsc->mask1);
+> 
+> Maybe I've just got lost here but why don't you need to check for the
+> local policy anymore? mpol_new will take care of the MPOL_PREFERRED &&
+> nodes_empty special but why do we want/need all this for a local policy
+> at all?
+ 
+You are right that 'local' policy doesn't need this, it should just
+return in the early port of this function, like 'default' policy, which
+can remove the useless nop mpol_new_local().
 
---JH7CJL7a1vXi50s7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >  
+> > -	if (nodes)
+> > -		ret = mpol_ops[pol->mode].create(pol, &nsc->mask2);
+> > +	if (mpol_store_user_nodemask(pol))
+> > +		pol->w.user_nodemask = *nodes;
+> >  	else
+> > -		ret = mpol_ops[pol->mode].create(pol, NULL);
+> > +		pol->w.cpuset_mems_allowed =
+> > +					cpuset_current_mems_allowed;
+> 
+> please use a single line. This is just harder to read. You will cross
+> the line limit but readability should be preferred here.
+ 
+Will change.
 
-On Tue, Jun 01, 2021 at 05:23:18AM +0300, Dmitry Osipenko wrote:
-> Convert NVIDIA Tegra ACTMON binding to schema.
->=20
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../arm/tegra/nvidia,tegra30-actmon.txt       |  57 ---------
->  .../devfreq/nvidia,tegra30-actmon.yaml        | 121 ++++++++++++++++++
->  2 files changed, 121 insertions(+), 57 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,te=
-gra30-actmon.txt
->  create mode 100644 Documentation/devicetree/bindings/devfreq/nvidia,tegr=
-a30-actmon.yaml
+Thanks,
+Feng
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---JH7CJL7a1vXi50s7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC2Ge4ACgkQ3SOs138+
-s6HKuA/6An4z1SGtqnbFCDWDEs+HOPnz4oY3MoRvz3aNdGVM7ihxEoWg60fZU0I1
-FO0qOk79VGjonY94IwCyP2hX5iuupnQvI0S/2stHYkh03Ieq57NNLCpZ0Kj9Dm0L
-gcaUo6VWiUeD6zKrS3VCO5baBbTFgJeUE1ht4CA5ASyf/L6jJNCeiwzrIBDt0l3D
-d97Wp8Xkmrh0enXikio2RuTKS7geTjmnNIbnQP+Jc5z6GYAfv/e48Fpow22Ngy62
-695rySSp0s1fm2SPUX+8Yk9y/bsXWaaTgi5yzq3gLARKpIjQxAF1hWG0Ay2++qMj
-xFqGhHIZCnn+1AXVo3G7lzR+ZBM99DxZlLf0lGVJbeYaqACGdzorK+6rfjGC9i3e
-GPAFi2jz7/lXfQnndDxmdmIlmLy+zMWDdkNWql6vSxW7G8I+u8o+i3KLrYV4YM4v
-2sFfoLtDRo/wIW6ASRWiusSJ2yAOStvRKtp7yBjBi75VDff/1j2csaZ/v9c0UBBD
-hYuVyqqKuaBiEbHFmJj4eXZP9Teaq8gb8eqGh08xNLJ7EBM97SxvqEb0FAtQ4H+X
-r660+OMNujiXzYVXcG6shyLUpDuaqAYSamFeN05jn+OwR+gzRpO3B545qLnT46hl
-YzT8y6SldNThhutN91iVHH/ounRJ7R4TXz+4OebA4oCqtdcQ87o=
-=zgu9
------END PGP SIGNATURE-----
-
---JH7CJL7a1vXi50s7--
+> [...]
+> 
+> I haven't spotted anything else.
+> -- 
+> Michal Hocko
+> SUSE Labs
