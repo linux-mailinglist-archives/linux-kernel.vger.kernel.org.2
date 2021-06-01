@@ -2,212 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E1E397859
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9E1397844
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbhFAQp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:45:59 -0400
-Received: from smtp.outgoing.loopia.se ([93.188.3.37]:14991 "EHLO
-        smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbhFAQpu (ORCPT
+        id S234505AbhFAQpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:45:17 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3127 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232490AbhFAQpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:45:50 -0400
-Received: from s807.loopia.se (localhost [127.0.0.1])
-        by s807.loopia.se (Postfix) with ESMTP id 4A8D72E6BC96
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 18:44:07 +0200 (CEST)
-Received: from s645.loopia.se (unknown [172.22.191.6])
-        by s807.loopia.se (Postfix) with ESMTP id 39E1E2E2C691;
-        Tue,  1 Jun 2021 18:44:07 +0200 (CEST)
-Received: from s474.loopia.se (unknown [172.22.191.5])
-        by s645.loopia.se (Postfix) with ESMTP id 1F7261579F94;
-        Tue,  1 Jun 2021 18:44:07 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at amavis.loopia.se
-X-Spam-Flag: NO
-X-Spam-Score: -1
-X-Spam-Level: 
-X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
-        tests=[ALL_TRUSTED=-1] autolearn=disabled
-Received: from s645.loopia.se ([172.22.191.5])
-        by s474.loopia.se (s474.loopia.se [172.22.190.14]) (amavisd-new, port 10024)
-        with UTF8LMTP id J33FdIMDVxBb; Tue,  1 Jun 2021 18:44:06 +0200 (CEST)
-X-Loopia-Auth: user
-X-Loopia-User: carl@hgsystem.se
-X-Loopia-Originating-IP: 178.28.230.104
-Received: from localhost.localdomain (c-b21ce668-74736162.cust.telenor.se [178.28.230.104])
-        (Authenticated sender: carl@hgsystem.se)
-        by s645.loopia.se (Postfix) with ESMTPSA id 0E7E71579FD5;
-        Tue,  1 Jun 2021 18:44:05 +0200 (CEST)
-From:   Erik Rosen <erik.rosen@metormote.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Nilsson <daniel.nilsson@flex.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Erik Rosen <erik.rosen@metormote.com>
-Subject: [PATCH v4 5/5] hwmon: (pmbus/pim4328) Add documentation for the pim4328 PMBus driver
-Date:   Tue,  1 Jun 2021 18:43:20 +0200
-Message-Id: <20210601164320.2907-6-erik.rosen@metormote.com>
-X-Mailer: git-send-email 2.11.0 (Apple Git-81)
-In-Reply-To: <20210601164320.2907-1-erik.rosen@metormote.com>
-References: <20210601164320.2907-1-erik.rosen@metormote.com>
+        Tue, 1 Jun 2021 12:45:15 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fvd6F3rKXz6V03Q;
+        Wed,  2 Jun 2021 00:34:29 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 18:43:32 +0200
+Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 17:43:31 +0100
+Date:   Tue, 1 Jun 2021 17:43:25 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Liam Beguin <liambeguin@gmail.com>
+CC:     <peda@axentia.se>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 7/9] dt-bindings: iio: afe: add binding for
+ temperature-sense-rtd
+Message-ID: <20210601174325.00000ca2@Huawei.com>
+In-Reply-To: <20210530005917.20953-8-liambeguin@gmail.com>
+References: <20210530005917.20953-1-liambeguin@gmail.com>
+        <20210530005917.20953-8-liambeguin@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.71]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation and index link for pim4328 PMBus driver.
-Update MAINTAINER file for the driver.
+On Sat, 29 May 2021 20:59:15 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
 
-Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
-Acked-by: Daniel Nilsson <daniel.nilsson@flex.com>
----
- Documentation/hwmon/index.rst   |   1 +
- Documentation/hwmon/pim4328.rst | 105 ++++++++++++++++++++++++++++++++
- MAINTAINERS                     |   7 +++
- 3 files changed, 113 insertions(+)
- create mode 100644 Documentation/hwmon/pim4328.rst
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> An ADC is often used to measure other quantities indirectly. This
+> binding describe one cases, the measurement of a temperature through
+> the voltage across an RTD resistor such as a PT1000.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 9ed60fa84cbe..719625f8f755 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -150,6 +150,7 @@ Hardware Monitoring Kernel Drivers
-    pc87360
-    pc87427
-    pcf8591
-+   pim4328
-    pm6764tr
-    pmbus
-    powr1220
-diff --git a/Documentation/hwmon/pim4328.rst b/Documentation/hwmon/pim4328.rst
-new file mode 100644
-index 000000000000..70c9e7a6882c
---- /dev/null
-+++ b/Documentation/hwmon/pim4328.rst
-@@ -0,0 +1,105 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver pim4328
-+=====================
-+
-+Supported chips:
-+
-+  * Flex PIM4328
-+
-+    Prefix: 'pim4328', 'bmr455'
-+
-+    Addresses scanned: -
-+
-+    Datasheet:
-+
-+https://flexpowermodules.com/resources/fpm-techspec-pim4328
-+
-+  * Flex PIM4820
-+
-+    Prefixes: 'pim4820'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4820
-+
-+  * Flex PIM4006, PIM4106, PIM4206, PIM4306, PIM4406
-+
-+    Prefixes: 'pim4006', 'pim4106', 'pim4206', 'pim4306', 'pim4406'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-pim4006
-+
-+Author: Erik Rosen <erik.rosen@metormote.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supports hardware monitoring for Flex PIM4328 and
-+compatible digital power interface modules.
-+
-+The driver is a client driver to the core PMBus driver. Please see
-+Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
-+on PMBus client drivers.
-+
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate the
-+devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-+details.
-+
-+
-+Platform data support
-+---------------------
-+
-+The driver supports standard PMBus driver platform data.
-+
-+
-+Sysfs entries
-+-------------
-+
-+The following attributes are supported. All attributes are read-only.
-+
-+======================= ========================================================
-+in1_label		"vin"
-+in1_input		Measured input voltage.
-+in1_alarm		Input voltage alarm.
-+
-+in2_label		"vin.0"
-+in2_input		Measured input voltage on input A.
-+
-+			PIM4328 and PIM4X06
-+
-+in3_label		"vin.1"
-+in3_input		Measured input voltage on input B.
-+
-+			PIM4328 and PIM4X06
-+
-+in4_label		"vcap"
-+in4_input		Measured voltage on holdup capacitor.
-+
-+			PIM4328
-+
-+curr1_label		"iin.0"
-+curr1_input		Measured input current on input A.
-+
-+			PIM4X06
-+
-+curr2_label		"iin.1"
-+curr2_input		Measured input current on input B.
-+
-+			PIM4X06
-+
-+currX_label		"iout1"
-+currX_input		Measured output current.
-+currX_alarm		Output current alarm.
-+
-+			X is 1 for PIM4820, 3 otherwise.
-+
-+temp1_input		Measured temperature.
-+temp1_alarm		High temperature alarm.
-+======================= ========================================================
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..378a121d80f6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14416,6 +14416,13 @@ K:	(?i)pidfd
- K:	(?i)clone3
- K:	\b(clone_args|kernel_clone_args)\b
- 
-+PIM4328 DRIVER
-+M:	Daniel Nilsson <daniel.nilsson@flex.com>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/hwmon/pim4328.rst
-+F:	drivers/hwmon/pmbus/pim4328.c
-+
- PIN CONTROL SUBSYSTEM
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-gpio@vger.kernel.org
--- 
-2.20.1
+Just one nit pick inline.
+
+Hmm. these devices use some 'special' units for their coefficients.
+Ah well, guess we copy the industry standard.
+
+> ---
+>  .../iio/afe/temperature-sense-rtd.yaml        | 65 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
+> new file mode 100644
+> index 000000000000..4798eda6e533
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
+> @@ -0,0 +1,65 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/afe/temperature-sense-rtd.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Temperature Sense RTD
+> +
+> +maintainers:
+> +  - Liam Beguin <lvb@xiphos.com>
+> +
+> +description: |
+> +  When an io-channel measures the output voltage across an RTD such as a
+> +  PT1000, the interesting measurement is almost always the corresponding
+> +  temperature, not the voltage output. This binding describes such a circuit.
+> +
+> +properties:
+> +  compatible:
+> +    const: temperature-sense-rtd
+> +
+> +  io-channels:
+> +    maxItems: 1
+> +    description: |
+> +      Channel node of a voltage io-channel.
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +
+> +  excitation-current-microamp:
+> +    description: The current fed through the RTD sensor.
+> +
+> +  alpha-micro-ohms-per-ohm-celsius:
+> +    description: |
+> +      Linear approximation of the resistance versus temperature relationship
+> +      between 0 and 100 degrees Celsius.
+> +
+> +      Pure platinum has an alpha of 3925. Industry standards such as IEC60751
+> +      and ASTM E-1137 specify an alpha of 3850.
+> +
+> +  r-naught-ohms:
+> +    description: |
+> +      Resistance of the sensor at 0 degrees Celsius.
+> +      Common values are 100 for PT100 and 1000 for PT1000.
+> +
+> +additionalProperties: false
+> +required:
+> +  - compatible
+> +  - io-channels
+> +  - excitation-current-microamp
+> +  - alpha-micro-ohms-per-ohm-celsius
+> +  - r-naught-ohms
+> +
+> +examples:
+> +  - |
+> +    pt1000_1: iio-rescale0 {
+> +        compatible = "temperature-sense-rtd";
+> +        #io-channel-cells = <1>;
+> +        io-channels = <&temp_adc1 0>;
+> +
+> +        excitation-current-microamp = <1000>;
+> +        alpha-micro-ohms-per-ohm-celsius = <3908>;
+> +        r-naught-ohms = <1000>;
+> +    };
+> +
+
+Drop this blank line.  Doesn't add anything ;)
+
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d3ab0ccc34ab..a7279af85adb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8721,6 +8721,7 @@ L:	linux-iio@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+> +F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+>  F:	drivers/iio/afe/iio-rescale.c
+>  
 
