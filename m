@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9468396C59
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4509C396C5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhFAEda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 00:33:30 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2808 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhFAEd3 (ORCPT
+        id S232626AbhFAEeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 00:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhFAEeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 00:33:29 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvJyx5fcLzWqK0;
-        Tue,  1 Jun 2021 12:27:05 +0800 (CST)
-Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 12:31:47 +0800
-Received: from [10.174.185.220] (10.174.185.220) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 12:31:46 +0800
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>
-CC:     Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Zenghui Yu" <yuzenghui@huawei.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <c9c066ae-2a25-0799-51a7-0ca47fff41a1@huawei.com>
-Date:   Tue, 1 Jun 2021 12:31:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 1 Jun 2021 00:34:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CDAC061574;
+        Mon, 31 May 2021 21:32:22 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i10so7649918lfj.2;
+        Mon, 31 May 2021 21:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8fLKhrUqwIxQ2xXGCIpsy1nQkq4X8BC2dI8dF7Ysll4=;
+        b=U9OHcCu4V/wDY1tsGXV2eshRLrjRfPice5eoIjlRPyQ1MCuMgW0y6imnF6TZ+1nvSr
+         lkpoVD8uNcNSQfKLY9zPs+yuGoRuKax65LSSwF0dsHbk167AAj6H+9He+dcLSbZnPZ3u
+         mGR0gTS7a8X9jSlJWbWmMtZJVGWLSUdkYegAmiGb1dzsBvqNXzyY3SquYuVBe35/Te42
+         T/QxVpQPwLz6Iww+ko+SM1L+bBP1cJMy03ZWqBVAr7QCW9dmb2ooIbXGhhpprZYrqCqq
+         85U5Dfw/uzeLxbQFwOeZs/8JPQSgpqG40aI817t9p3yZM7zQvxAObf4M7UX7XrKDXHZR
+         9nBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8fLKhrUqwIxQ2xXGCIpsy1nQkq4X8BC2dI8dF7Ysll4=;
+        b=QqK3d2pZKBd0XiyeRLl7QjQYbOwQPTNR/NggrXbgypXsEhWwBw83VB8rVNvQDPwjoc
+         ZSapAjmX8tBvIyDO9ZQjkqbqRlzt6x/vhYNqcF6NHwiz1FLJ8RkJHgLdA7AnvIG7vqGp
+         R1QxbsK98vnRt7eLxNvi5p2QFE21cmiZshV9hLcEkF0ztt0BuWDNzG2/oRXJDLJUybUM
+         xYPu8BDUpOeBil3Wy1WMpJbnYbjdpSn1lmiszB3bjW5vcWQ4dil5sMX5XHU2aQz8QRvq
+         Fih44GzTA4nl/9kdNlAL9hP/m7sl2C7YZt2YxbpU/rDpugX10i3ymPnR/YgPwWA3Vgda
+         zZrw==
+X-Gm-Message-State: AOAM532j0byPs3ksOXO/krrU/IFaTKBjWhDuVYa+Es55xddPZQ11sXcl
+        1rqbAPIjgIBQvpAovHGgQZMJn5SqIvo=
+X-Google-Smtp-Source: ABdhPJyZOoyMjsAEgJ5QqpWftZq0zpRUdysZh/BbpsknOcK9B1P0zg1rXr1TwghT/iHKyC0PpYI6ZA==
+X-Received: by 2002:a05:6512:1194:: with SMTP id g20mr17786786lfr.407.1622521940654;
+        Mon, 31 May 2021 21:32:20 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id x26sm1863322ljj.46.2021.05.31.21.32.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 21:32:20 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] dt-bindings: devfreq: tegra30-actmon: Add
+ cooling-cells
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210601022319.17938-1-digetx@gmail.com>
+ <20210601022319.17938-3-digetx@gmail.com>
+Message-ID: <bda7233e-a9e0-7a3d-f6b5-084a49d705ed@gmail.com>
+Date:   Tue, 1 Jun 2021 07:32:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210601022319.17938-3-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.220]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500022.china.huawei.com (7.185.36.162)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/27 15:58, Tian, Kevin wrote:
-> /dev/ioasid provides an unified interface for managing I/O page tables for 
-> devices assigned to userspace. Device passthrough frameworks (VFIO, vDPA, 
-> etc.) are expected to use this interface instead of creating their own logic to 
-> isolate untrusted device DMAs initiated by userspace. 
+01.06.2021 05:23, Dmitry Osipenko пишет:
+> The ACTMON watches activity of memory clients. Decisions about a minimum
+> required frequency are made based on the info from ACTMON. We can use
+> ACTMON as a thermal cooling device by limiting the required frequency.
+> Document new cooling-cells property of NVIDIA Tegra ACTMON hardware unit.
 > 
-> This proposal describes the uAPI of /dev/ioasid and also sample sequences 
-> with VFIO as example in typical usages. The driver-facing kernel API provided 
-> by the iommu layer is still TBD, which can be discussed after consensus is 
-> made on this uAPI.
-> 
-> It's based on a lengthy discussion starting from here:
-> 	https://lore.kernel.org/linux-iommu/20210330132830.GO2356281@nvidia.com/ 
-> 
-> It ends up to be a long writing due to many things to be summarized and
-> non-trivial effort required to connect them into a complete proposal.
-> Hope it provides a clean base to converge.
-> 
+> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
-[..]
+I missed to add Rob's r-b to this patch that he gave to v1:
 
-> 
-> /*
->   * Page fault report and response
->   *
->   * This is TBD. Can be added after other parts are cleared up. Likely it 
->   * will be a ring buffer shared between user/kernel, an eventfd to notify 
->   * the user and an ioctl to complete the fault.
->   *
->   * The fault data is per I/O address space, i.e.: IOASID + faulting_addr
->   */
-
-Hi,
-
-It seems that the ioasid has different usage in different situation, it could
-be directly used in the physical routing, or just a virtual handle that indicates
-a page table or a vPASID table (such as the GPA address space, in the simple
-passthrough case, the DMA input to IOMMU will just contain a Stream ID, no
-Substream ID), right?
-
-And Baolu suggested that since one device might consume multiple page tables,
-it's more reasonable to have one fault handler per page table. By this, do we
-have to maintain such an ioasid info list in the IOMMU layer?
-
-Then if we add host IOPF support (for the GPA address space) in the future
-(I have sent a series for this but it aimed for VFIO, I will convert it for
-IOASID later [1] :-)), how could we find the handler for the received fault
-event which only contains a Stream ID... Do we also have to maintain a
-dev(vPASID)->ioasid mapping in the IOMMU layer?
-
-[1] https://lore.kernel.org/patchwork/cover/1410223/
-
-Thanks,
-Shenming
+Reviewed-by: Rob Herring <robh@kernel.org>
