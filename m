@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFBE3975C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5053975CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbhFAOuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
+        id S234177AbhFAOvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbhFAOuQ (ORCPT
+        with ESMTP id S234052AbhFAOvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:50:16 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F65C061574;
-        Tue,  1 Jun 2021 07:48:33 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so14373017oth.8;
-        Tue, 01 Jun 2021 07:48:33 -0700 (PDT)
+        Tue, 1 Jun 2021 10:51:09 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A4AC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 07:49:28 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id h5-20020a05600c3505b029019f0654f6f1so1247050wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Kj6ioPeCLs4B4BFisWU9q6uXkqmgdZ9EHR/xw+SastY=;
-        b=DHzKqXNPdhx9CUOqPzR7heC1sbMC5Af0QQxq302XggNVGsl9pAdUyjsk5ijXNUxyTV
-         twkZ9XrnRvIHDojV4Nev0csoiDN3O24HtrLhlJaiFFBBLJY4mDq8cZif3gjIiiA6XAtr
-         VkfzfOFDI9YIDzIU6NE/jNA1bIF/xqICfXomQ7yW4C0LJeQPO8MRxmxeURmMnq23QW+H
-         FZ31L2MeBxgImAoFOGROX2wgkzf2lVcJbgOou6hr/Rf4VKCGuBa7FLs16+WM0wM1+2Hj
-         i2SWKmKSY/bJoX64G+zWmlLR7GKjSXbdcEdSTM5rJOij90Je1AEg03xuEfh/QJaEhMgg
-         YKyQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ihM/qXBqWzRvSoQD4j53iilM0ynqghAwVc7Zrz4ZrcY=;
+        b=hBzTVjQI9L0XRaGOEzpyRjz3ZnsXv4aKJF0skfz4OE6eppuvG3Dz8etqDW3eZFu3Ay
+         cu8Z1AB1oI9WAJ48ki/AXp52k9qRwbZBAi1rpQFnVqwTCxCp5gFoK085k5x9P9tg15r+
+         85/Jh32kYWdzLPmCxw6PILZX/AtB311xgFMiNaB0deiQiTHkS8bX8Vbyddq15g2mUJeN
+         R8sOiswLT4yiRuVUq1G0P+ZqjX+BXcNuWgfD9x8anxQZfqnMdte+69t6+CWl8MSwl9St
+         0PJ1oaZlr+f31lhNePOIwrVM+HX7JdpuMBRWnjPen9Zoj6RNGsTHsfpqpZrg8SHgj4yY
+         y/BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Kj6ioPeCLs4B4BFisWU9q6uXkqmgdZ9EHR/xw+SastY=;
-        b=pOB+iDNm8Ip1F7VBdmbe+j21+jNFNo+XKxJH5AXStz9C1N3bCgXg7baxx3F/VW+19W
-         DLVI+/eZAIiHlpb7GVTKmWXAd4Eg7eUAjJbCwIwzN8TrsFA0At3nsv7RUHQ9fmtpWtTb
-         DEplA5GoAuJoee//JT67n+CjOTuHd7eN8VVQS+9DQMNU2tZTwFxxxrUVpw8VBlFm7UXI
-         hPDbOnIj7ZdQ8AiuzKV58FtoKqO/MoXaGIZr8ytrKcWdIAiA3JeMJDzFpOZ7hIsSOh72
-         RRH7muAlVlM06ka3r38esojxhiAcaJq9wF87aTPRgdHVTrsREIWBlMsrV5zFLk6Ejmkg
-         fn8w==
-X-Gm-Message-State: AOAM53354mPTgeolv3+fG3tBT05BNqdbi1fVIqAAJywXMXs2V2XFXWDH
-        6ozjVBlX3sdyZwQ/MDoDan+aa8sPvbA=
-X-Google-Smtp-Source: ABdhPJz87NUsJRnakXomDD+00Fi6iPQl+pyAX9EU7bF0mwEqsYplck6GrJbY3mIEuj3HaGsaM22vYA==
-X-Received: by 2002:a9d:4584:: with SMTP id x4mr21151290ote.85.1622558912936;
-        Tue, 01 Jun 2021 07:48:32 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.22])
-        by smtp.googlemail.com with ESMTPSA id x29sm335254ott.68.2021.06.01.07.48.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 07:48:32 -0700 (PDT)
-Subject: Re: [PATCH net-next] vrf: Fix a typo
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, dsahern@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210601141635.4131513-1-zhengyongjun3@huawei.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <61d4798a-67bf-f2f1-28a7-c2f2024d4759@gmail.com>
-Date:   Tue, 1 Jun 2021 08:48:30 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ihM/qXBqWzRvSoQD4j53iilM0ynqghAwVc7Zrz4ZrcY=;
+        b=Js3R4lwl1MPEg6wmvbFKwFuqPSAxV36IgAKKK+B3QQFdQFaACxkQ5SW2XOwZXH6J04
+         7/mk/84jN0yr7ibwPrDyk9D5tpRr/12AYgTS7z8quUiWPVl/ET4ZWMGe63s/HVcFwEjV
+         qQ5yTkuwaDx6fxrlveQMsonDrkL8+GmAm1HlUX8lQhvKooufKXOf7WDCGIFOIfw/DDHn
+         Y0YSl1PCFVVggxod1M/Pl82iFDLqXFG//o2AqTZ/K0PUTuGh3ikRsvsNZmGwnETWA2C9
+         ksw2BTqVPB3kq2mMmtLZO0ITcsNxauQd71cm54YteB6J/lcE3UD3dEFgGVq68wXvG9H0
+         oo7Q==
+X-Gm-Message-State: AOAM533ij8pZvq87ghnrI38OQ8/96N79fDE+uHIdyzago7Z0wyR+hd7k
+        DA9xqbnYOLgCjENlDret4uB7yWOMsDd9Eg==
+X-Google-Smtp-Source: ABdhPJyKzzXV/+PAHfSE00Fimmlh0sqGCwHz44R14tEi3mK5gO8EfT5Kqe/ywOo9kkcvQgsPWrVhaA==
+X-Received: by 2002:a7b:c207:: with SMTP id x7mr20038772wmi.42.1622558966736;
+        Tue, 01 Jun 2021 07:49:26 -0700 (PDT)
+Received: from dell ([91.110.221.249])
+        by smtp.gmail.com with ESMTPSA id p6sm3842925wrf.51.2021.06.01.07.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 07:49:26 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 15:49:24 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3] mfd: db8500-prcmu: Add devicetree bindings
+Message-ID: <20210601144924.GJ543307@dell>
+References: <20210518145132.428340-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210601141635.4131513-1-zhengyongjun3@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210518145132.428340-1-linus.walleij@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 8:16 AM, Zheng Yongjun wrote:
-> possibile  ==> possible
+On Tue, 18 May 2021, Linus Walleij wrote:
+
+> This driver was merged in the early days of device tree
+> on Arm in 2012 and somehow we failed to provide bindings
+> for it. Fix it up with some YAML bindings.
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  drivers/net/vrf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
-> index 503e2fd7ce51..07eaef5e73c2 100644
-> --- a/drivers/net/vrf.c
-> +++ b/drivers/net/vrf.c
-> @@ -274,7 +274,7 @@ vrf_map_register_dev(struct net_device *dev, struct netlink_ext_ack *extack)
->  	int res;
->  
->  	/* we pre-allocate elements used in the spin-locked section (so that we
-> -	 * keep the spinlock as short as possibile).
-> +	 * keep the spinlock as short as possible).
->  	 */
->  	new_me = vrf_map_elem_alloc(GFP_KERNEL);
->  	if (!new_me)
-> 
+> ChangeLog v2->v3:
+> - Enforce unit name on the DT node, 'prcmu@'
+> - Remove overspecified unit names for prcmu-timer and thermal and
+>   use patternProperties to match this to a regexp instead.
+> - Drop dependency interrupt-controller: [ interrupts ] instead make
+>   interrupts required. Make interrupts required instead since
+>   interrupt-controller is already required.
+> ChangeLog v1->v2:
+> - Make the main PRCMU node name more generic instead of
+>   hammering it down to a specific address.
+> ---
+>  .../bindings/mfd/stericsson,db8500-prcmu.yaml | 278 ++++++++++++++++++
+>  1 file changed, 278 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/stericsson,db8500-prcmu.yaml
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Applied, thanks.
 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
