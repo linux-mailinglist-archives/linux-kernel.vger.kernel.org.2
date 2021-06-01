@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B35239781C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A42397824
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234397AbhFAQdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:33:43 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45773 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232490AbhFAQdl (ORCPT
+        id S234359AbhFAQgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232490AbhFAQgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:33:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UazGnUc_1622565117;
-Received: from localhost(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UazGnUc_1622565117)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 02 Jun 2021 00:31:58 +0800
-From:   Xu Yu <xuyu@linux.alibaba.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, gavin.dg@linux.alibaba.com
-Subject: [PATCH] mm, thp: relax migration wait when failed to get tail page
-Date:   Wed,  2 Jun 2021 00:31:41 +0800
-Message-Id: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.2432.ga663e714
+        Tue, 1 Jun 2021 12:36:15 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9BBC061574;
+        Tue,  1 Jun 2021 09:34:31 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id h3so8602237wmq.3;
+        Tue, 01 Jun 2021 09:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-transfer-encoding;
+        bh=bvCCBlAI0cegQuZ44NSg9CufixTnatS00Nz8370cpqc=;
+        b=B1Zqq99yrb4FADvGT1FhuXSVWaP6AcDmUNlcQi6xFjSUo47pJZMNWji4W1KBPUoaCp
+         lvevw+NvhaHLcYKL14MSQlkCPvJNc+Z/x3yTNfkPg13IRPDM/G2fy+OGaDDV3pT53IYW
+         l+0OJQBG+t4PJD+x4jV+cWvhhbG3L5X0GEEWWECmrz5hiXstma+b1sH4eaBBgXUvDqBU
+         3MDBvVw9PSHegSv5kGIEvyvuSDQ0WpRpyqmzgesx8/c6KOgxVvD+AeWwWQ6hkRdm9fmw
+         DGTY9V6XIayRNgjs+Vr9j3mMLYCNL8UXs+ynxpteHQtW6TFSWxiPKpO7v8LV0uQ1E6PV
+         Ai0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
+         :cc:subject:references:in-reply-to:content-transfer-encoding;
+        bh=bvCCBlAI0cegQuZ44NSg9CufixTnatS00Nz8370cpqc=;
+        b=VxsQ02CRiICehvJCCLPTLskh3oNjn8/UO13nXpBH+shJyakdHXm/maJWibqmNlxALk
+         oIEo8+ty8/p59giJ4L/fS/yC3qK0VgTkr2G18YVRV/ofVRXRhabOOxVXad3thTqGuCOd
+         1biZ60y8kY8qwMLnYJEKWBX/qm9lbdnl718njD8o9Kll8QiQifAYJOBvV3vco4w9669E
+         66zNQpwcii4RB/mioARGmdwwSfxd/yiDK/uBRngLzvgKePvsmikDsc1vsttGQiSLyObE
+         R4+LpvVJ0GCQn7f//4D36MbcsOzFqQ/jIepLxIevRbJNH5iMsNG41pAILvxK9dq59qbL
+         FhHw==
+X-Gm-Message-State: AOAM531UqjkSQX3g9bWDXe9vsDV1IOf0WRhkE9Fx+R2L60gkcvfiJ4v7
+        GMXcWpX/fahxYysrxoJ67ECQx93KNds=
+X-Google-Smtp-Source: ABdhPJy6vRXQIIKgw1cvPhmGkU2rDBerzDkGGWkN6tEAETe1C30BNvwsznkZWiue4b4OBsAb6prw4w==
+X-Received: by 2002:a7b:cbc2:: with SMTP id n2mr27692896wmi.69.1622565270396;
+        Tue, 01 Jun 2021 09:34:30 -0700 (PDT)
+Received: from [89.139.227.208] (89-139-227-208.bb.netvision.net.il. [89.139.227.208])
+        by smtp.gmail.com with ESMTPSA id n6sm7208wmq.34.2021.06.01.09.34.28
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Tue, 01 Jun 2021 09:34:29 -0700 (PDT)
+Message-ID: <60B6615F.1050807@gmail.com>
+Date:   Tue, 01 Jun 2021 19:33:35 +0300
+From:   Eli Billauer <eli.billauer@gmail.com>
+User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To:     Colin King <colin.king@canonical.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] char: xillybus: Fix spelling mistake "overflew"
+ -> "overflowed"
+References: <20210601102201.8489-1-colin.king@canonical.com>
+In-Reply-To: <20210601102201.8489-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We notice that hung task happens in a conner but practical scenario when
-CONFIG_PREEMPT_NONE is enabled, as follows.
+On 01/06/21 13:22, Colin King wrote:
+> There is a spelling mistake in a dev_err message. Fix it.
+>
+>    
+This is actually a grammar mistake: Overflew is the past of overfly, not 
+overflow.
 
-Process 0                       Process 1                     Process 2..Inf
-split_huge_page_to_list
-    unmap_page
-        split_huge_pmd_address
-                                __migration_entry_wait(head)
-                                                              __migration_entry_wait(tail)
-    remap_page (roll back)
-        remove_migration_ptes
-            rmap_walk_anon
-                cond_resched
+I stand corrected nevertheless. Thanks.
 
-Where __migration_entry_wait(tail) is occurred in kernel space, e.g.,
-copy_to_user, which will immediately fault again without rescheduling,
-and thus occupy the cpu fully.
+    Eli
 
-When there are too many processes performing __migration_entry_wait on
-tail page, remap_page will never be done after cond_resched.
-
-This relaxes __migration_entry_wait on tail page, thus gives remap_page
-a chance to complete.
-
-Signed-off-by: Gang Deng <gavin.dg@linux.alibaba.com>
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
----
- mm/migrate.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index b234c3f3acb7..df2dc39fe566 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -301,8 +301,11 @@ void __migration_entry_wait(struct mm_struct *mm, pte_t *ptep,
- 	 * is zero; but we must not call put_and_wait_on_page_locked() without
- 	 * a ref. Use get_page_unless_zero(), and just fault again if it fails.
- 	 */
--	if (!get_page_unless_zero(page))
--		goto out;
-+	if (!get_page_unless_zero(page)) {
-+		pte_unmap_unlock(ptep, ptl);
-+		cond_resched();
-+		return;
-+	}
- 	pte_unmap_unlock(ptep, ptl);
- 	put_and_wait_on_page_locked(page, TASK_UNINTERRUPTIBLE);
- 	return;
--- 
-2.20.1.2432.ga663e714
-
+Acked-by: Eli Billauer <eli.billauer@gmail.com>
