@@ -2,189 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01555397277
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F6E39728B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhFALgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233823AbhFALg3 (ORCPT
+        id S233514AbhFALjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:39:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6114 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233654AbhFALjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:36:29 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BE4C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:34:47 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id t15so8163966eju.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:34:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+X+Upp1KkOzzISSwBmRgZ50VCwMFCQhKqjvuG7pRCPY=;
-        b=HrOxvbx82HNbXikP4Ae4xRkXgSHTQEPOQ23k78nNZgUyk0X/QGeGCJkBOjcbGCyDdH
-         y5pQQTnPn0PSaSXCizEXCXiJgs2JAIRih4dMoXwvqauZGa+cCY2Wh9ypN9Hd8g3NKzLW
-         WnQML19OQrtGCmT2AUZacxhMuXryc3PTzvxlpvIp/lNkWkyO2Tk+91YFHoVZVanC2zM7
-         HcSFaBPgRMGGdsbVRo56SxhmJ9braOAn41LP4lcEd/1j8l3jOjSAPQ9RzPdwTiJpwF4z
-         sngqeePEQX5by98+6JEq0Wa6QHwWTLHwUrr1tIFynSMIJ53nbLG9uRK/6jUq0w1Drx24
-         gqfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+X+Upp1KkOzzISSwBmRgZ50VCwMFCQhKqjvuG7pRCPY=;
-        b=GH5xMNj9hTo9xJaAjX4Zj4iSf2WSXsKB1fzj3IIPV3LlwoiTlu6IrPnCT/lBoTJLP3
-         O7tqIL1TKurvaPc7hgVRbpslJ4npuizI8GFy8KJYvx7N2DNTluCoXrpy9ndm6m0BMqu3
-         wK3faiNW4Zk8Kx7+sDG+z5YcpQDjuwjsSyjzduvzJMO+4p7QvA7dgqBJb0dSPNhVEkEM
-         bO+YsIr4le6Q8bQaFWAowTDfPq1l7QVyVVwjVMC7kE62KIXY3VJ4BWLxfGN2Bh1/Tqg6
-         lXutm3Y/vj0v/47z1rXwE9uzz4DmY99DnEWhCQ5N+lLQyVqZ7S5sG1dd8ACV1nR1TBs/
-         2d8Q==
-X-Gm-Message-State: AOAM530piJiNnD1S2XQ6bfg9Kk/c5brpS2k7/tVFmScXKL+Tb16HiR/A
-        hDx3u5IoTUYkEgX5A1ICYO9vBA==
-X-Google-Smtp-Source: ABdhPJy52zG4Okgl37Jf0/WtQadIx4QOYycIEhLToM9FNZj1hY6ZfpiF8N8BXw4OGQbquLIF9fE/SA==
-X-Received: by 2002:a17:906:c141:: with SMTP id dp1mr7969982ejc.87.1622547286163;
-        Tue, 01 Jun 2021 04:34:46 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id f10sm4729487edx.60.2021.06.01.04.34.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 04:34:45 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     robh@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v8 9/9] ASoC: codecs: wcd938x: add audio routing
-Date:   Tue,  1 Jun 2021 12:31:58 +0100
-Message-Id: <20210601113158.16085-10-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210601113158.16085-1-srinivas.kandagatla@linaro.org>
-References: <20210601113158.16085-1-srinivas.kandagatla@linaro.org>
+        Tue, 1 Jun 2021 07:39:12 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvVSQ0dSczYpTN;
+        Tue,  1 Jun 2021 19:34:46 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 19:37:29 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 19:37:29 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <lipeng321@huawei.com>,
+        <tanhuazhong@huawei.com>, <huangguangbin2@huawei.com>
+Subject: [PATCH net-next 0/2] net: hns3: add support for PTP
+Date:   Tue, 1 Jun 2021 19:34:23 +0800
+Message-ID: <1622547265-48051-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds audio routing for both playback and capture.
+This series adds PTP support for the HNS3 ethernet driver.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/wcd938x.c | 94 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+Huazhong Tan (2):
+  net: hns3: add support for PTP
+  net: hns3: add debugfs support for ptp info
 
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index d251ae35bd81..d659de0e3274 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -3123,6 +3123,98 @@ static const struct snd_soc_dapm_widget wcd938x_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("AUX"),
- 	SND_SOC_DAPM_OUTPUT("HPHL"),
- 	SND_SOC_DAPM_OUTPUT("HPHR"),
-+
-+};
-+
-+static const struct snd_soc_dapm_route wcd938x_audio_map[] = {
-+	{"ADC1_OUTPUT", NULL, "ADC1_MIXER"},
-+	{"ADC1_MIXER", "Switch", "ADC1 REQ"},
-+	{"ADC1 REQ", NULL, "ADC1"},
-+	{"ADC1", NULL, "AMIC1"},
-+
-+	{"ADC2_OUTPUT", NULL, "ADC2_MIXER"},
-+	{"ADC2_MIXER", "Switch", "ADC2 REQ"},
-+	{"ADC2 REQ", NULL, "ADC2"},
-+	{"ADC2", NULL, "HDR12 MUX"},
-+	{"HDR12 MUX", "NO_HDR12", "ADC2 MUX"},
-+	{"HDR12 MUX", "HDR12", "AMIC1"},
-+	{"ADC2 MUX", "INP3", "AMIC3"},
-+	{"ADC2 MUX", "INP2", "AMIC2"},
-+
-+	{"ADC3_OUTPUT", NULL, "ADC3_MIXER"},
-+	{"ADC3_MIXER", "Switch", "ADC3 REQ"},
-+	{"ADC3 REQ", NULL, "ADC3"},
-+	{"ADC3", NULL, "HDR34 MUX"},
-+	{"HDR34 MUX", "NO_HDR34", "ADC3 MUX"},
-+	{"HDR34 MUX", "HDR34", "AMIC5"},
-+	{"ADC3 MUX", "INP4", "AMIC4"},
-+	{"ADC3 MUX", "INP6", "AMIC6"},
-+
-+	{"ADC4_OUTPUT", NULL, "ADC4_MIXER"},
-+	{"ADC4_MIXER", "Switch", "ADC4 REQ"},
-+	{"ADC4 REQ", NULL, "ADC4"},
-+	{"ADC4", NULL, "ADC4 MUX"},
-+	{"ADC4 MUX", "INP5", "AMIC5"},
-+	{"ADC4 MUX", "INP7", "AMIC7"},
-+
-+	{"DMIC1_OUTPUT", NULL, "DMIC1_MIXER"},
-+	{"DMIC1_MIXER", "Switch", "DMIC1"},
-+
-+	{"DMIC2_OUTPUT", NULL, "DMIC2_MIXER"},
-+	{"DMIC2_MIXER", "Switch", "DMIC2"},
-+
-+	{"DMIC3_OUTPUT", NULL, "DMIC3_MIXER"},
-+	{"DMIC3_MIXER", "Switch", "DMIC3"},
-+
-+	{"DMIC4_OUTPUT", NULL, "DMIC4_MIXER"},
-+	{"DMIC4_MIXER", "Switch", "DMIC4"},
-+
-+	{"DMIC5_OUTPUT", NULL, "DMIC5_MIXER"},
-+	{"DMIC5_MIXER", "Switch", "DMIC5"},
-+
-+	{"DMIC6_OUTPUT", NULL, "DMIC6_MIXER"},
-+	{"DMIC6_MIXER", "Switch", "DMIC6"},
-+
-+	{"DMIC7_OUTPUT", NULL, "DMIC7_MIXER"},
-+	{"DMIC7_MIXER", "Switch", "DMIC7"},
-+
-+	{"DMIC8_OUTPUT", NULL, "DMIC8_MIXER"},
-+	{"DMIC8_MIXER", "Switch", "DMIC8"},
-+
-+	{"IN1_HPHL", NULL, "VDD_BUCK"},
-+	{"IN1_HPHL", NULL, "CLS_H_PORT"},
-+
-+	{"RX1", NULL, "IN1_HPHL"},
-+	{"RX1", NULL, "RXCLK"},
-+	{"RDAC1", NULL, "RX1"},
-+	{"HPHL_RDAC", "Switch", "RDAC1"},
-+	{"HPHL PGA", NULL, "HPHL_RDAC"},
-+	{"HPHL", NULL, "HPHL PGA"},
-+
-+	{"IN2_HPHR", NULL, "VDD_BUCK"},
-+	{"IN2_HPHR", NULL, "CLS_H_PORT"},
-+	{"RX2", NULL, "IN2_HPHR"},
-+	{"RDAC2", NULL, "RX2"},
-+	{"RX2", NULL, "RXCLK"},
-+	{"HPHR_RDAC", "Switch", "RDAC2"},
-+	{"HPHR PGA", NULL, "HPHR_RDAC"},
-+	{"HPHR", NULL, "HPHR PGA"},
-+
-+	{"IN3_AUX", NULL, "VDD_BUCK"},
-+	{"IN3_AUX", NULL, "CLS_H_PORT"},
-+	{"RX3", NULL, "IN3_AUX"},
-+	{"RDAC4", NULL, "RX3"},
-+	{"RX3", NULL, "RXCLK"},
-+	{"AUX_RDAC", "Switch", "RDAC4"},
-+	{"AUX PGA", NULL, "AUX_RDAC"},
-+	{"AUX", NULL, "AUX PGA"},
-+
-+	{"RDAC3_MUX", "RX3", "RX3"},
-+	{"RDAC3_MUX", "RX1", "RX1"},
-+	{"RDAC3", NULL, "RDAC3_MUX"},
-+	{"EAR_RDAC", "Switch", "RDAC3"},
-+	{"EAR PGA", NULL, "EAR_RDAC"},
-+	{"EAR", NULL, "EAR PGA"},
- };
- 
- static int wcd938x_get_micb_vout_ctl_val(u32 micb_mv)
-@@ -3290,6 +3382,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd938x = {
- 	.num_controls = ARRAY_SIZE(wcd938x_snd_controls),
- 	.dapm_widgets = wcd938x_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd938x_dapm_widgets),
-+	.dapm_routes = wcd938x_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd938x_audio_map),
- };
- 
- static void wcd938x_dt_parse_micbias_info(struct device *dev, struct wcd938x_priv *wcd)
+ drivers/net/ethernet/hisilicon/Kconfig             |   1 +
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  13 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |  13 +-
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  27 ++
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   9 +-
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  12 +
+ .../net/ethernet/hisilicon/hns3/hns3pf/Makefile    |   2 +-
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |   4 +
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c |  55 +++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |  57 ++-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |   6 +
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.c | 520 +++++++++++++++++++++
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.h | 133 ++++++
+ 13 files changed, 844 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.c
+ create mode 100644 drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.h
+
 -- 
-2.21.0
+2.8.1
 
