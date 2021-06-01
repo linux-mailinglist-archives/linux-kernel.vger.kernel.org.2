@@ -2,76 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EFA397406
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92183973DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhFANYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:24:38 -0400
-Received: from mga18.intel.com ([134.134.136.126]:55365 "EHLO mga18.intel.com"
+        id S233971AbhFANK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:10:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:49652 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233758AbhFANYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:24:37 -0400
-IronPort-SDR: 5KRgAcjBQP/pMPsK6xP+ZytWrRvIBkkgXILCaGJokVnkSb653tBp5pQsI3qpL75qQYmSPQV0R4
- pusH6h3N2pwA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="190898394"
-X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
-   d="scan'208";a="190898394"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 06:22:55 -0700
-IronPort-SDR: zoZrPeCi2RqaKqMQe4XN6qCjPMuv7NY+eqP1ba1oRMp8iUgijhuNjcmdCqRsdl3v8dovdwUeRu
- kCzY7rS9CUCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
-   d="scan'208";a="549058306"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga004.jf.intel.com with ESMTP; 01 Jun 2021 06:22:55 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, yao.jin@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
-Subject: [RESEND PATCH] perf/x86/intel/uncore: Fix M2M event umask for Ice Lake server
-Date:   Tue,  1 Jun 2021 06:09:03 -0700
-Message-Id: <1622552943-119174-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S233409AbhFANKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:10:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16C2F6D;
+        Tue,  1 Jun 2021 06:09:13 -0700 (PDT)
+Received: from [10.57.9.215] (unknown [10.57.9.215])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44B683F719;
+        Tue,  1 Jun 2021 06:09:09 -0700 (PDT)
+Subject: Re: [RFC PATCH v3] perf cs-etm: Split Coresight decode by aux records
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Al Grant <al.grant@arm.com>,
+        branislav.rankov@arm.com, Denis Nikitin <denik@chromium.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210527104234.24313-1-james.clark@arm.com>
+ <11822824-7486-2333-f039-bfd801b86922@arm.com>
+ <CANLsYkynQbGRhOmyramX+nSHvVnH_nSJb=t03Dp-2WeXP3ZYAw@mail.gmail.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <dcf7cbe3-2d97-bf99-7025-3f62e2f09be1@arm.com>
+Date:   Tue, 1 Jun 2021 16:09:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CANLsYkynQbGRhOmyramX+nSHvVnH_nSJb=t03Dp-2WeXP3ZYAw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
 
-Perf tool errors out with the latest event list for the Ice Lake server.
 
-event syntax error: 'unc_m2m_imc_reads.to_pmm'
-                           \___ value too big for format, maximum is 255
+On 27/05/2021 18:37, Mathieu Poirier wrote:
+> On Thu, 27 May 2021 at 07:46, James Clark <james.clark@arm.com> wrote:
+>>
+>>
+>>
+>> On 27/05/2021 13:42, James Clark wrote:
+>>> Populate the auxtrace queues using AUX records rather than whole
+>>> auxtrace buffers.
+>>>
+>> ...
+>>> Snapshot mode still needs to be tested.
+>>>
+>>
+>> Snapshot mode is also working, but needs the following patch applied to reverse aux_offset
+>> from the end of the buffer to the beginning:
+> 
+> It might be better to send another revision with this patch included
+> in to make sure everyone is looking at (and testing) the same thing.
 
-The same as the Snow Ridge server, the M2M uncore unit in the Ice Lake
-server has the unit mask extension field as well.
+I've sent v4 with it applied. There was actually a mistake which broke the normal mode,
+so it was a good idea to apply it.
 
-Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
-Reported-by: Jin Yao <yao.jin@linux.intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/events/intel/uncore_snbep.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index acc3c0e5..06c055d 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -5106,9 +5106,10 @@ static struct intel_uncore_type icx_uncore_m2m = {
- 	.perf_ctr	= SNR_M2M_PCI_PMON_CTR0,
- 	.event_ctl	= SNR_M2M_PCI_PMON_CTL0,
- 	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
-+	.event_mask_ext	= SNR_M2M_PCI_PMON_UMASK_EXT,
- 	.box_ctl	= SNR_M2M_PCI_PMON_BOX_CTL,
- 	.ops		= &snr_m2m_uncore_pci_ops,
--	.format_group	= &skx_uncore_format_group,
-+	.format_group	= &snr_m2m_uncore_format_group,
- };
- 
- static struct attribute *icx_upi_uncore_formats_attr[] = {
--- 
-2.7.4
-
+> 
+>>
+>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+>> index 5d6c03488187..9db556e14dfa 100644
+>> --- a/tools/perf/util/cs-etm.c
+>> +++ b/tools/perf/util/cs-etm.c
+>> @@ -2700,6 +2700,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session,
+>>         struct perf_record_auxtrace *auxtrace_event;
+>>         union perf_event auxtrace_fragment;
+>>         bool matchesCpuPid;
+>> +       __u64 aux_offset;
+>>         struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
+>>                                                    struct cs_etm_auxtrace,
+>>                                                    auxtrace);
+>> @@ -2730,19 +2731,26 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session,
+>>         else
+>>                 matchesCpuPid = auxtrace_event->cpu == sample->cpu;
+>>
+>> +       /*
+>> +        * In snapshot/overwrite mode, the head points to the end of the buffer so aux_offset needs
+>> +        * to have the size subtracted so it points to the beginning as in normal mode.
+>> +        */
+>> +       if (aux_event->flags && PERF_AUX_FLAG_OVERWRITE)
+>> +               aux_offset = aux_event->aux_offset - aux_event->aux_size;
+>> +       else
+>> +               aux_offset = aux_event->aux_offset;
+>> +
+>>         if (matchesCpuPid &&
+>> -           aux_event->aux_offset >= auxtrace_event->offset &&
+>> -           aux_event->aux_offset + aux_event->aux_size <=
+>> -                       auxtrace_event->offset + auxtrace_event->size) {
+>> +           aux_offset >= auxtrace_event->offset &&
+>> +           aux_offset + aux_event->aux_size <= auxtrace_event->offset + auxtrace_event->size) {
+>>                 /*
+>>                  * If this AUX event was inside this buffer somewhere, create a new auxtrace event
+>>                  * based on the sizes of the aux event, and queue that fragment.
+>>                  */
+>>                 auxtrace_fragment.auxtrace = *auxtrace_event;
+>>                 auxtrace_fragment.auxtrace.size = aux_event->aux_size;
+>> -               auxtrace_fragment.auxtrace.offset = aux_event->aux_offset;
+>> -               file_offset += aux_event->aux_offset - auxtrace_event->offset +
+>> -                               auxtrace_event->header.size;
+>> +               auxtrace_fragment.auxtrace.offset = aux_offset;
+>> +               file_offset += aux_offset - auxtrace_event->offset + auxtrace_event->header.size;
+>>                 return auxtrace_queues__add_event(&etm->queues,
+>>                                                session,
+>>                                                &auxtrace_fragment,
+>>
+>>
