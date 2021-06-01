@@ -2,95 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB8D39701A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFDA39701E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbhFAJRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:17:18 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:47288 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231139AbhFAJRR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:17:17 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1519DOvn012202;
-        Tue, 1 Jun 2021 09:15:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=AMzMC6WVaFSkjgPnsMYkeiLg88Ox0rk4fBCHhz3nMU0=;
- b=cjHZ8IANNdBYUlgMX5+xUYr0SRbKktNKSC+E572PM4zalHe5eF7Ta8kxyPj3o5gk++tB
- I2dfrARyQfnjI6FZ81g/wj1n17IhKLvCD4urz47wgZJ467a2K9aZFww/OBRUZr2SJVi0
- vEXz6xyJkwQyEhZ1J+lj1mMffdZbnY6BOdKM+A3TfCuBJfkhEOiPeM1xtEWuGGh72zbz
- 3ooYO4/veGwfaTThvivWzqB36RdUcHO+Jxfo+ZSIT+tcj3e3LkOijtRvCUSKvJw2hWG0
- gliX9fA1fWyHPxxtb2yixbVC/dnDnfOWEXBAK9sLA1CraGVPPTDaPLokqlwOWrNMt4ty uw== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38vj1krhws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 09:15:32 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1519BRe3005688;
-        Tue, 1 Jun 2021 09:15:31 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38ude8dk48-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 09:15:31 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1519FU8O035633;
-        Tue, 1 Jun 2021 09:15:30 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 38ude8dk3p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 09:15:30 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1519FTP4026485;
-        Tue, 1 Jun 2021 09:15:29 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Jun 2021 02:15:29 -0700
-Date:   Tue, 1 Jun 2021 12:15:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Matt Porter <mporter@kernel.crashing.org>
-Cc:     Alexandre Bounine <alex.bou9@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] rapidio: potential overflow in riocm_ch_send()
-Message-ID: <YLX6p+NXg2w+UqRq@mwanda>
+        id S233479AbhFAJRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:17:37 -0400
+Received: from mga03.intel.com ([134.134.136.65]:63288 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231139AbhFAJRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:17:34 -0400
+IronPort-SDR: n/O5j2G822giEhSf58PoeGvby5D8hBcqNTmZQx3xBa3H2akwE/Te5zhl+wZTQfmEmVkFh8kjMt
+ /PnybT8vQ1OQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="203542540"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="203542540"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 02:15:52 -0700
+IronPort-SDR: Bw0tk3C7d1eONPubV8f1kyR9bZ+TSKu8KpyNrFseCA1eadASP2wH92/dAbzFseIm9hc6Hhv/pw
+ A19f5nJPi4nw==
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="416411726"
+Received: from deancarp-mobl.ger.corp.intel.com (HELO [10.213.232.28]) ([10.213.232.28])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 02:15:50 -0700
+Subject: Re: [Intel-gfx] [PATCH -next] drm/i915: use DEVICE_ATTR_RO macro
+To:     YueHaibing <yuehaibing@huawei.com>, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, chris@chris-wilson.co.uk,
+        tvrtko.ursulin@intel.com
+Cc:     intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20210528100403.21548-1-yuehaibing@huawei.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <7e60320b-3a1b-0cdc-136d-29c139b27af7@linux.intel.com>
+Date:   Tue, 1 Jun 2021 10:15:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: QBjpSKkFcV6F-Sk7eCVz14jMFJzaHfpI
-X-Proofpoint-GUID: QBjpSKkFcV6F-Sk7eCVz14jMFJzaHfpI
+In-Reply-To: <20210528100403.21548-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "buf" variable has "len" bytes, and the size is controlled by the
-user in cm_chan_msg_send().  If the length is fewer than sizeof(*hdr)
-then it could lead to memory corruption.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Strictly speaking the last two bytes of length are reserved and not
-written to but it's simpler and better to check "< sizeof(*hdr)" instead
-of "< sizeof(*hdr) - 2".  This is better for future proofing.
+On 28/05/2021 11:04, YueHaibing wrote:
+> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
+> which makes the code a bit shorter and easier to read.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>   drivers/gpu/drm/i915/i915_pmu.c   |  8 +++-----
+>   drivers/gpu/drm/i915/i915_sysfs.c | 30 +++++++++++++++---------------
+>   2 files changed, 18 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_pmu.c b/drivers/gpu/drm/i915/i915_pmu.c
+> index 41651ac255fa..fb215929b05b 100644
+> --- a/drivers/gpu/drm/i915/i915_pmu.c
+> +++ b/drivers/gpu/drm/i915/i915_pmu.c
+> @@ -834,15 +834,13 @@ static ssize_t i915_pmu_event_show(struct device *dev,
+>   	return sprintf(buf, "config=0x%lx\n", eattr->val);
+>   }
+>   
+> -static ssize_t
+> -i915_pmu_get_attr_cpumask(struct device *dev,
+> -			  struct device_attribute *attr,
+> -			  char *buf)
+> +static ssize_t cpumask_show(struct device *dev,
+> +			    struct device_attribute *attr, char *buf)
+>   {
+>   	return cpumap_print_to_pagebuf(true, buf, &i915_pmu_cpumask);
+>   }
+>   
+> -static DEVICE_ATTR(cpumask, 0444, i915_pmu_get_attr_cpumask, NULL);
+> +static DEVICE_ATTR_RO(cpumask);
+>   
+>   static struct attribute *i915_cpumask_attrs[] = {
+>   	&dev_attr_cpumask.attr,
+> diff --git a/drivers/gpu/drm/i915/i915_sysfs.c b/drivers/gpu/drm/i915/i915_sysfs.c
+> index 4c6b5d52b5ca..183517d1a73d 100644
+> --- a/drivers/gpu/drm/i915/i915_sysfs.c
+> +++ b/drivers/gpu/drm/i915/i915_sysfs.c
+> @@ -58,8 +58,8 @@ static u32 calc_residency(struct drm_i915_private *dev_priv,
+>   	return DIV_ROUND_CLOSEST_ULL(res, 1000);
+>   }
+>   
+> -static ssize_t
+> -show_rc6_mask(struct device *kdev, struct device_attribute *attr, char *buf)
+> +static ssize_t rc6_enable_show(struct device *kdev,
+> +			       struct device_attribute *attr, char *buf)
+>   {
+>   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
+>   	unsigned int mask;
+> @@ -75,43 +75,43 @@ show_rc6_mask(struct device *kdev, struct device_attribute *attr, char *buf)
+>   	return sysfs_emit(buf, "%x\n", mask);
+>   }
+>   
+> -static ssize_t
+> -show_rc6_ms(struct device *kdev, struct device_attribute *attr, char *buf)
+> +static ssize_t rc6_residency_ms_show(struct device *kdev,
+> +				     struct device_attribute *attr, char *buf)
+>   {
+>   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
+>   	u32 rc6_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6);
+>   	return sysfs_emit(buf, "%u\n", rc6_residency);
+>   }
+>   
+> -static ssize_t
+> -show_rc6p_ms(struct device *kdev, struct device_attribute *attr, char *buf)
+> +static ssize_t rc6p_residency_ms_show(struct device *kdev,
+> +				      struct device_attribute *attr, char *buf)
+>   {
+>   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
+>   	u32 rc6p_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6p);
+>   	return sysfs_emit(buf, "%u\n", rc6p_residency);
+>   }
+>   
+> -static ssize_t
+> -show_rc6pp_ms(struct device *kdev, struct device_attribute *attr, char *buf)
+> +static ssize_t rc6pp_residency_ms_show(struct device *kdev,
+> +				       struct device_attribute *attr, char *buf)
+>   {
+>   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
+>   	u32 rc6pp_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6pp);
+>   	return sysfs_emit(buf, "%u\n", rc6pp_residency);
+>   }
+>   
+> -static ssize_t
+> -show_media_rc6_ms(struct device *kdev, struct device_attribute *attr, char *buf)
+> +static ssize_t media_rc6_residency_ms_show(struct device *kdev,
+> +					   struct device_attribute *attr, char *buf)
+>   {
+>   	struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
+>   	u32 rc6_residency = calc_residency(dev_priv, VLV_GT_MEDIA_RC6);
+>   	return sysfs_emit(buf, "%u\n", rc6_residency);
+>   }
+>   
+> -static DEVICE_ATTR(rc6_enable, S_IRUGO, show_rc6_mask, NULL);
+> -static DEVICE_ATTR(rc6_residency_ms, S_IRUGO, show_rc6_ms, NULL);
+> -static DEVICE_ATTR(rc6p_residency_ms, S_IRUGO, show_rc6p_ms, NULL);
+> -static DEVICE_ATTR(rc6pp_residency_ms, S_IRUGO, show_rc6pp_ms, NULL);
+> -static DEVICE_ATTR(media_rc6_residency_ms, S_IRUGO, show_media_rc6_ms, NULL);
+> +static DEVICE_ATTR_RO(rc6_enable);
+> +static DEVICE_ATTR_RO(rc6_residency_ms);
+> +static DEVICE_ATTR_RO(rc6p_residency_ms);
+> +static DEVICE_ATTR_RO(rc6pp_residency_ms);
+> +static DEVICE_ATTR_RO(media_rc6_residency_ms);
+>   
+>   static struct attribute *rc6_attrs[] = {
+>   	&dev_attr_rc6_enable.attr,
+> 
 
- drivers/rapidio/rio_cm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
-index db4c265287ae..5c332b9867e1 100644
---- a/drivers/rapidio/rio_cm.c
-+++ b/drivers/rapidio/rio_cm.c
-@@ -784,7 +784,8 @@ static int riocm_ch_send(u16 ch_id, void *buf, int len)
- 	struct rio_ch_chan_hdr *hdr;
- 	int ret;
- 
--	if (buf == NULL || ch_id == 0 || len == 0 || len > RIO_MAX_MSG_SIZE)
-+	if (buf == NULL || ch_id == 0 ||
-+	    len < sizeof(*hdr) || len > RIO_MAX_MSG_SIZE)
- 		return -EINVAL;
- 
- 	ch = riocm_get_channel(ch_id);
--- 
-2.30.2
+Regards,
 
+Tvrtko
