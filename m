@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40209396CD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F36C396CDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbhFAFcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:32:47 -0400
-Received: from mo-csw1514.securemx.jp ([210.130.202.153]:42184 "EHLO
+        id S233039AbhFAFc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:32:58 -0400
+Received: from mo-csw1115.securemx.jp ([210.130.202.157]:37238 "EHLO
         mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232744AbhFAFcn (ORCPT
+        with ESMTP id S229521AbhFAFco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:32:43 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 1515Unv3021389; Tue, 1 Jun 2021 14:30:49 +0900
-X-Iguazu-Qid: 34tKOQR7Jx8HZepPvF
-X-Iguazu-QSIG: v=2; s=0; t=1622525448; q=34tKOQR7Jx8HZepPvF; m=/fEaRDidXZyoAZy1z8DDch/yNMGf2PRJ9OVynpWkct4=
+        Tue, 1 Jun 2021 01:32:44 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 1515Uoah003175; Tue, 1 Jun 2021 14:30:50 +0900
+X-Iguazu-Qid: 2wGrbz1dNdizgTkdja
+X-Iguazu-QSIG: v=2; s=0; t=1622525450; q=2wGrbz1dNdizgTkdja; m=mIZLztjuKnQq8Caa1gB4JPLYqjV9QtiaARAly0kxN5U=
 Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1510) id 1515UlVl009135
+        by relay.securemx.jp (mx-mr1113) id 1515UkOU010224
         (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 1 Jun 2021 14:30:48 +0900
+        Tue, 1 Jun 2021 14:30:49 +0900
 Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 39A541000C2;
-        Tue,  1 Jun 2021 14:30:47 +0900 (JST)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id CCDAF1000A6;
+        Tue,  1 Jun 2021 14:30:46 +0900 (JST)
 Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 1515UkeD008244;
+        by enc01.toshiba.co.jp  with ESMTP id 1515UkZY008240;
         Tue, 1 Jun 2021 14:30:46 +0900
 From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 To:     Michael Turquette <mturquette@baylibre.com>,
@@ -34,45 +34,81 @@ Cc:     linux-clk@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
         yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH v2 4/4] MAINTAINERS: Add entries for Toshiba Visconti PLL and clock controller
-Date:   Tue,  1 Jun 2021 14:30:37 +0900
+Subject: [PATCH v2 0/4] clk: visconti: Add support common clock driver and reset driver 
+Date:   Tue,  1 Jun 2021 14:30:33 +0900
 X-TSB-HOP: ON
-Message-Id: <20210601053037.233573-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+Message-Id: <20210601053037.233573-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210601053037.233573-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210601053037.233573-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for Toshiba Visconti PLL and clock controller binding and driver.
+Hi,
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+This series is PLL, clock and reset driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..7260de6d050d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2661,11 +2661,14 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/iwamatsu/linux-visconti.git
- F:	Documentation/devicetree/bindings/arm/toshiba.yaml
-+F:	Documentation/devicetree/bindings/clock/toshiba,tmpv7708-pipllct.yaml
-+F:	Documentation/devicetree/bindings/clock/toshiba,tmpv7708-pismu.yaml
- F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
- F:	Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
- F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
- F:	Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
- F:	arch/arm64/boot/dts/toshiba/
-+F:	drivers/clk/visconti/
- F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
- F:	drivers/gpio/gpio-visconti.c
- F:	drivers/pinctrl/visconti/
+Best regards,
+  Nobuhiro
+
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+
+  clk: visconti: Add support common clock driver and reset driver
+    v1 -> v2:
+       - Fix warning with W=1
+
+  dt-bindings: clock: Add DT bindings for PLL of Toshiba Visconti TMPV7708 SoC
+    v1 -> v2:
+       - Update subject.
+
+  dt-bindings: clock: Add DT bindings for SMU of Toshiba Visconti TMPV7708 SoC
+    v1 -> v2:
+       - Update subject.
+
+  MAINTAINERS: Add entries for Toshiba Visconti PLL and clock controller
+    v1 -> v2:
+       - no update.
+
+Nobuhiro Iwamatsu (4):
+  clk: visconti: Add support common clock driver and reset driver
+  dt-bindings: clock: Add DT bindings for PLL of Toshiba Visconti
+    TMPV7708 SoC
+  dt-bindings: clock: Add DT bindings for SMU of Toshiba Visconti
+    TMPV7708 SoC
+  MAINTAINERS: Add entries for Toshiba Visconti PLL and clock controller
+
+ .../clock/toshiba,tmpv7708-pipllct.yaml       |  49 +++
+ .../clock/toshiba,tmpv7708-pismu.yaml         |  50 +++
+ MAINTAINERS                                   |   3 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/visconti/Makefile                 |   5 +
+ drivers/clk/visconti/clkc-tmpv770x.c          | 249 ++++++++++++
+ drivers/clk/visconti/clkc.c                   | 219 ++++++++++
+ drivers/clk/visconti/clkc.h                   |  75 ++++
+ drivers/clk/visconti/pll-tmpv770x.c           |  96 +++++
+ drivers/clk/visconti/pll.c                    | 373 ++++++++++++++++++
+ drivers/clk/visconti/pll.h                    |  62 +++
+ drivers/clk/visconti/reset.c                  | 111 ++++++
+ drivers/clk/visconti/reset.h                  |  35 ++
+ include/dt-bindings/clock/toshiba,tmpv770x.h  | 181 +++++++++
+ include/dt-bindings/reset/toshiba,tmpv770x.h  |  41 ++
+ 15 files changed, 1550 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/toshiba,tmpv7708-pipllct.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/toshiba,tmpv7708-pismu.yaml
+ create mode 100644 drivers/clk/visconti/Makefile
+ create mode 100644 drivers/clk/visconti/clkc-tmpv770x.c
+ create mode 100644 drivers/clk/visconti/clkc.c
+ create mode 100644 drivers/clk/visconti/clkc.h
+ create mode 100644 drivers/clk/visconti/pll-tmpv770x.c
+ create mode 100644 drivers/clk/visconti/pll.c
+ create mode 100644 drivers/clk/visconti/pll.h
+ create mode 100644 drivers/clk/visconti/reset.c
+ create mode 100644 drivers/clk/visconti/reset.h
+ create mode 100644 include/dt-bindings/clock/toshiba,tmpv770x.h
+ create mode 100644 include/dt-bindings/reset/toshiba,tmpv770x.h
+
 -- 
 2.31.1
 
