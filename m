@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9EA396F42
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8C6396F45
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbhFAIr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:47:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42193 "EHLO
+        id S233756AbhFAIre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:47:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32984 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233571AbhFAIrS (ORCPT
+        by vger.kernel.org with ESMTP id S233657AbhFAIrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:47:18 -0400
+        Tue, 1 Jun 2021 04:47:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622537137;
+        s=mimecast20190719; t=1622537138;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0N48jdl0LC6EEeO/MPQo8KIfakfiafpunndtsq1f0hA=;
-        b=QOgxd9MpoTi+pilPGEza1P7Yf3/ZdoxiE1hJ29DjtUuOihupQ6KuwouJypRnZkNK09HXM7
-        QOAjxGyKstWkVPL1D5NvSO5kAUJ1QUPzP1Hl8AEYRCPW/bFEzXyDZ2SVWeS4+Bie/h8LUr
-        CtCwXM9GGg7RWC8PS610wz6tzcGjmYo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-Okf16E4rOF-PsWMWXG2vHg-1; Tue, 01 Jun 2021 04:45:36 -0400
-X-MC-Unique: Okf16E4rOF-PsWMWXG2vHg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FEE3106BAEA;
-        Tue,  1 Jun 2021 08:45:34 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-12-16.pek2.redhat.com [10.72.12.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D050D100E113;
-        Tue,  1 Jun 2021 08:45:28 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     eli@mellanox.com, Eli Cohen <elic@nvidia.com>
-Subject: [PATCH 4/4] virtio/vdpa: clear the virtqueue state during probe
-Date:   Tue,  1 Jun 2021 16:45:03 +0800
-Message-Id: <20210601084503.34724-5-jasowang@redhat.com>
-In-Reply-To: <20210601084503.34724-1-jasowang@redhat.com>
-References: <20210601084503.34724-1-jasowang@redhat.com>
+        bh=Ei1+7YPTwhcGwSC6x5usnbU/cNlmjtRYkQNi6UDFTrc=;
+        b=EkJhtoONb6k8ZLDNDIAdPVTlgBlWdVE2M2uF60nvXfXnMQucj4l2m8Qmn6iUvJzoV6pLuw
+        uXb5R3JA/pDjQdM2pIKir6rnLgUmu5Csi80b7NIAbGKeR8neOhOSev5B089vY3oW3kRi/A
+        FgCEeItGeDXPGrbZBz/vOIujyyTE/+8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-82Tdn6vKPFGI1wfhpQg-Wg-1; Tue, 01 Jun 2021 04:45:37 -0400
+X-MC-Unique: 82Tdn6vKPFGI1wfhpQg-Wg-1
+Received: by mail-wm1-f71.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so786968wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:45:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Ei1+7YPTwhcGwSC6x5usnbU/cNlmjtRYkQNi6UDFTrc=;
+        b=KDUTe8p3J9XgJtNCjbgLs5LDZjA4hLU2A/DnRT8Z3FzhK9Fceb/DlX60J+ZtQTlD/3
+         +GDu5noRdIseNyjPFYoC6pWvJA4yTRdqFLfePmBFoA62rAPzF+G9uWTRSsmzHLmZarGx
+         1XiF8/RmSgpsBXsQ+CXQnkFoRtHYuN0jXXg/eSdQVTBJfLxjWr63+knKv9nH1L8ch7zL
+         turfgu2kvvN9A1L+zsI/M1cZxD5QkTDksk7r6v7TzFFz1p+KtYGKhHCQP1qzaHCjGyNM
+         Mhs2gg1VLXLzmvBs3we6WpJHPZ749sFGMSRuwf+fUgzMM/l/VOIVTeNDwMG3EKIVcgEk
+         dAYg==
+X-Gm-Message-State: AOAM5315Yo8zC4AcMkaXRntsHxEdZvB6IPhjop4ZxagnP69M7qwEh4bG
+        it0a7Sy3Pn+92jwU5XxFFtrPJKNYCPEBoeICLBASDPrNFn1rdbSM0UgSeeA+FCJ6qJLZ6/PmgiQ
+        cvE8cYLJErKj+ZSEoaQlKyDsI
+X-Received: by 2002:a05:600c:2256:: with SMTP id a22mr3376721wmm.138.1622537136544;
+        Tue, 01 Jun 2021 01:45:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw71orUED6J0M5xRL2FPbrXf1zLtQk15md+bXCGp928W5f5vqEbcF2SNwRqRon22LUBP3L6NQ==
+X-Received: by 2002:a05:600c:2256:: with SMTP id a22mr3376705wmm.138.1622537136338;
+        Tue, 01 Jun 2021 01:45:36 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c69ce.dip0.t-ipconnect.de. [91.12.105.206])
+        by smtp.gmail.com with ESMTPSA id e26sm16961562wmh.39.2021.06.01.01.45.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 01:45:36 -0700 (PDT)
+To:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org
+References: <20210531122959.23499-1-rppt@kernel.org>
+ <20210531122959.23499-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC/RFT PATCH 1/5] s390: make crashk_res resource a child of
+ "System RAM"
+Message-ID: <1efc386c-2cb4-164f-7194-497f142f969f@redhat.com>
+Date:   Tue, 1 Jun 2021 10:45:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <20210531122959.23499-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+On 31.05.21 14:29, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Commit 4e042af463f8 ("s390/kexec: fix crash on resize of reserved memory")
+> added a comment that says "crash kernel resource should not be part of the
+> System RAM resource" but never explained why. As it looks from the code in
+> the kernel and in kexec there is no actual reason for that.
 
-Clear the available index as part of the initialization process to
-clear and values that might be left from previous usage of the device.
-For example, if the device was previously used by vhost_vdpa and now
-probed by vhost_vdpa, you want to start with indices.
+Are you sure?
 
-Fixes: c043b4a8cf3b ("virtio: introduce a vDPA based transport")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_vdpa.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Looking at kexec-tools: kexec/arch/s390/kexec-s390.c
 
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index e28acf482e0c..e1a141135992 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -142,6 +142,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 	struct vdpa_callback cb;
- 	struct virtqueue *vq;
- 	u64 desc_addr, driver_addr, device_addr;
-+	/* Assume split virtqueue, switch to packed if necessary */
-+	struct vdpa_vq_state state = {0};
- 	unsigned long flags;
- 	u32 align, num;
- 	int err;
-@@ -191,6 +193,19 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 		goto err_vq;
- 	}
- 
-+	/* reset virtqueue state index */
-+	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED)) {
-+		struct vdpa_vq_state_packed *s = &state.packed;
-+
-+		s->last_avail_counter = 1;
-+		s->last_avail_idx = 0;
-+		s->last_used_counter = 1;
-+		s->last_used_idx = 0;
-+	}
-+	err = ops->set_vq_state(vdpa, index, &state);
-+	if (err)
-+		goto err_vq;
-+
- 	ops->set_vq_ready(vdpa, index, 1);
- 
- 	vq->priv = info;
+get_memory_ranges_s390() wants "System RAM" and Crash kernel only with 
+"with_crashk=1". Your patch would change that. "Crash kernel" would 
+always be included if you make it a child of "System RAM".
+
+Further, get_memory_ranges() and is_crashkernel_mem_reserved() look out 
+for "Crash kernel\n" via parse_iomem_single().
+
+However, parse_iomem_single() does not care about ranges that start with 
+spaces IIRC via
+   sscanf(line, "%llx-%llx : %n" ...
+
+So once you make "Crash kernel" a child of "System RAM", kexec-tools 
+would break if I'm not completely wrong.
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
