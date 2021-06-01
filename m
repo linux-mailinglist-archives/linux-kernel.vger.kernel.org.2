@@ -2,173 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447AE397066
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6DB39702A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbhFAJb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:31:56 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:60595 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233237AbhFAJbz (ORCPT
+        id S233360AbhFAJTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhFAJTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:31:55 -0400
-X-UUID: a16ecd614e454d858890c1adc31bfaac-20210601
-X-UUID: a16ecd614e454d858890c1adc31bfaac-20210601
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 400033471; Tue, 01 Jun 2021 17:30:10 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 1 Jun 2021 17:30:02 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 1 Jun 2021 17:30:01 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <rocco.yue@gmail.com>, Rocco Yue <rocco.yue@mediatek.com>
-Subject: [PATCH] ipv6: create ra_mtu proc file to only record mtu in RA
-Date:   Tue, 1 Jun 2021 17:16:19 +0800
-Message-ID: <20210601091619.19372-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 1 Jun 2021 05:19:43 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8746DC061574;
+        Tue,  1 Jun 2021 02:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5rmhQAIMRhc0/LXllKDO9MjTjuKbppvLAxt/fqIeNe0=; b=bP1CJz4s1PkNBLaGcX+yW6zHu/
+        1XXqpeUi1pFJ0EhIDBh9vZT/LxvjJbWeut6it+HG1Ryxaugdn1PbwdYhctNtsD4068Vc+LBMIdO6r
+        l/7VFWM/DF4rMUG3x2GD552/ujSDdEcCmkFG0H0wgMJehmEDhXUNtjgANz9frQyFzYshxfljS2HuU
+        HfYKbYV8vHjIECJwueJKKTGv2jLJMbvqjIuy7pm9xjpSiknQmLlHgbzKYlon/ThFzaG1b80fbK3SO
+        sLZZhS1e7UdMvvJDCPIM3qDhm4lzWxeWjjhIw3C8rpWRAvU+a2Cenn/trEKvjEb7Rybhq5sbBUUKQ
+        qof1GGTA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lo0Wr-002W26-SI; Tue, 01 Jun 2021 09:17:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F3E8E30019C;
+        Tue,  1 Jun 2021 11:17:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D72032011CA24; Tue,  1 Jun 2021 11:17:46 +0200 (CEST)
+Date:   Tue, 1 Jun 2021 11:17:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] perf auxtrace: Optimize barriers with
+ load-acquire and store-release
+Message-ID: <YLX7OhK37QmfeOwu@hirez.programming.kicks-ass.net>
+References: <20210519140319.1673043-1-leo.yan@linaro.org>
+ <20210519140319.1673043-2-leo.yan@linaro.org>
+ <20210531151049.GE9324@leoy-ThinkPad-X240s>
+ <cc3810cd-5edc-26d3-9c77-8bb6479152c1@intel.com>
+ <20210601063342.GB10026@leoy-ThinkPad-X240s>
+ <71b0e395-0e20-fdd1-b105-0ca1706c8ed1@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71b0e395-0e20-fdd1-b105-0ca1706c8ed1@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel provides a "/proc/sys/net/ipv6/conf/<iface>/mtu" file,
-which can temporarily record the mtu value of the last received
-RA message when ra mtu is lower than the interface mtu, but this
-proc has following limitations:
-(1) when the interface mtu (/sys/class/net/<iface>/mtu) is
-updeated, mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) will be
-updated to the value of interface mtu;
-(2) mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) only affect
-ipv6 connection, and not affect ipv4.
+On Tue, Jun 01, 2021 at 12:07:31PM +0300, Adrian Hunter wrote:
+> __sync_xxx_compare_and_swap is out-of-date now. This page:
+> 
+> https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html#g_t_005f_005fsync-Builtins
+> 
+> recommends '__atomic' builtins instead.
 
-Therefore, when the mtu option is carried in the RA message,
-there will be a problem that the user sometimes cannot obtain
-ra mtu value by reading mtu6.
+perf doesn't seem to use that.
 
-Waiting for RA to arrive, setting the interface mtu after
-reading mtu6 can avoid above problem. But device can't do this,
-on the one hand, the device should first ensure that the ipv4
-function is normal, and on the other hand, the time point of
-receiving the RA message from the network is not certain.
+> Since atomics are needed only for the "compat" case (i.e. 32-bit perf with 64-bit kernel)
+> you could try to find an elegant way to check for a 64-bit kernel, and avoid the atomics
+> for a 32-bit perf with 32-bit kernel.
 
-For this patch set, if RA message carries the mtu option,
-"proc/sys/net/ipv6/conf/<iface>/ra_mtu" will be updated to the
-mtu value carried in the last RA message received, and ra_mtu
-is an independent proc file, which is not affected by the update
-of interface mtu value.
-
-In this way, If the MTU values that the device receives from the
-network in the PCO IPv4 and the RA IPv6 procedures are different,
-the user space process can read ra_mtu to get the mtu value carried
-in the RA message without worrying about the issue of ipv4 being
-stuck due to the late arrival of RA message. After comparing the
-value of ra_mtu and ipv4 mtu, then the device can use the lower
-MTU value for both IPv4 and IPv6.
-
-Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
----
- include/linux/ipv6.h      |  1 +
- include/uapi/linux/ipv6.h |  1 +
- net/ipv6/addrconf.c       | 10 ++++++++++
- net/ipv6/ndisc.c          |  5 +++++
- 4 files changed, 17 insertions(+)
-
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index 70b2ad3b9884..1679b7ce6780 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -13,6 +13,7 @@ struct ipv6_devconf {
- 	__s32		forwarding;
- 	__s32		hop_limit;
- 	__s32		mtu6;
-+	__s32		ra_mtu;
- 	__s32		accept_ra;
- 	__s32		accept_redirects;
- 	__s32		autoconf;
-diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-index 70603775fe91..1214befaea9f 100644
---- a/include/uapi/linux/ipv6.h
-+++ b/include/uapi/linux/ipv6.h
-@@ -140,6 +140,7 @@ enum {
- 	DEVCONF_FORWARDING = 0,
- 	DEVCONF_HOPLIMIT,
- 	DEVCONF_MTU6,
-+	DEVCONF_RA_MTU,
- 	DEVCONF_ACCEPT_RA,
- 	DEVCONF_ACCEPT_REDIRECTS,
- 	DEVCONF_AUTOCONF,
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index b0ef65eb9bd2..d2cd30bd25b3 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -187,6 +187,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
- 	.forwarding		= 0,
- 	.hop_limit		= IPV6_DEFAULT_HOPLIMIT,
- 	.mtu6			= IPV6_MIN_MTU,
-+	.ra_mtu			= 0,
- 	.accept_ra		= 1,
- 	.accept_redirects	= 1,
- 	.autoconf		= 1,
-@@ -243,6 +244,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
- 	.forwarding		= 0,
- 	.hop_limit		= IPV6_DEFAULT_HOPLIMIT,
- 	.mtu6			= IPV6_MIN_MTU,
-+	.ra_mtu			= 0,
- 	.accept_ra		= 1,
- 	.accept_redirects	= 1,
- 	.autoconf		= 1,
-@@ -5460,6 +5462,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
- 	array[DEVCONF_FORWARDING] = cnf->forwarding;
- 	array[DEVCONF_HOPLIMIT] = cnf->hop_limit;
- 	array[DEVCONF_MTU6] = cnf->mtu6;
-+	array[DEVCONF_RA_MTU] = cnf->ra_mtu;
- 	array[DEVCONF_ACCEPT_RA] = cnf->accept_ra;
- 	array[DEVCONF_ACCEPT_REDIRECTS] = cnf->accept_redirects;
- 	array[DEVCONF_AUTOCONF] = cnf->autoconf;
-@@ -6565,6 +6568,13 @@ static const struct ctl_table addrconf_sysctl[] = {
- 		.mode		= 0644,
- 		.proc_handler	= addrconf_sysctl_mtu,
- 	},
-+	{
-+		.procname	= "ra_mtu",
-+		.data		= &ipv6_devconf.ra_mtu,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
- 	{
- 		.procname	= "accept_ra",
- 		.data		= &ipv6_devconf.accept_ra,
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index c467c6419893..1da626267662 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -1496,6 +1496,11 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 		memcpy(&n, ((u8 *)(ndopts.nd_opts_mtu+1))+2, sizeof(mtu));
- 		mtu = ntohl(n);
- 
-+		if (in6_dev->cnf.ra_mtu != mtu) {
-+			in6_dev->cnf.ra_mtu = mtu;
-+			ND_PRINTK(2, info, "update ra_mtu to %d\n", in6_dev->cnf.ra_mtu);
-+		}
-+
- 		if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu) {
- 			ND_PRINTK(2, warn, "RA: invalid mtu: %d\n", mtu);
- 		} else if (in6_dev->cnf.mtu6 != mtu) {
--- 
-2.18.0
+Most 32bit archs cannot do 64bit atomics. I suppose the only reason this
+doesn't explode is because the aux stuff isn't supported on many
+architectures?
 
