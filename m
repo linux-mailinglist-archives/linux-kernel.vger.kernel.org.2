@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5AD397378
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EDA39737A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhFAMrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:47:18 -0400
-Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:47249 "EHLO
-        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232965AbhFAMrR (ORCPT
+        id S233847AbhFAMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232965AbhFAMsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:47:17 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id D502AFB120
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 13:45:34 +0100 (IST)
-Received: (qmail 716 invoked from network); 1 Jun 2021 12:45:34 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 1 Jun 2021 12:45:34 -0000
-Date:   Tue, 1 Jun 2021 13:45:33 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mm/page_alloc: Allow high-order pages to be stored
- on the per-cpu lists
-Message-ID: <20210601124533.GU30378@techsingularity.net>
-References: <20210531120412.17411-1-mgorman@techsingularity.net>
- <20210531120412.17411-3-mgorman@techsingularity.net>
- <20210531172338.2e7cb070@carbon>
+        Tue, 1 Jun 2021 08:48:37 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2D6C061574;
+        Tue,  1 Jun 2021 05:46:56 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D3C0F88C;
+        Tue,  1 Jun 2021 14:46:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622551613;
+        bh=pEVvmyFStsOwrTtf+TJW7eOTlI/2Bu2ObexnAPsjg1Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LVH9e96ZzxEBe9OxvsKUkdLcT1KcuKyzPyLZxa9IR7alvgqTs5TVS1G//vlZ9I9Ym
+         sBArtMpicHvJcJss2Yhm89DYJZh78gqirWFfsHX6xKOgq9uNsFA/j9+41eJl0g0Va7
+         25N8BfrhGtz4PB8PsCDN1AA/q2W875ZIxxceUzbE=
+Date:   Tue, 1 Jun 2021 15:46:42 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     trix@redhat.com
+Cc:     rmfrfs@gmail.com, slongerbeam@gmail.com, p.zabel@pengutronix.de,
+        mchehab@kernel.org, gregkh@linuxfoundation.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: imx: imx7_mipi_csis: convert some switch cases to
+ the default
+Message-ID: <YLYsMifcjA2c0eDN@pendragon.ideasonboard.com>
+References: <20210531174300.2594109-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210531172338.2e7cb070@carbon>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210531174300.2594109-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 05:23:38PM +0200, Jesper Dangaard Brouer wrote:
-> On Mon, 31 May 2021 13:04:12 +0100
-> Mel Gorman <mgorman@techsingularity.net> wrote:
-> 
-> > The per-cpu page allocator (PCP) only stores order-0 pages. This means
-> > that all THP and "cheap" high-order allocations including SLUB contends
-> > on the zone->lock. This patch extends the PCP allocator to store THP and
-> > "cheap" high-order pages. Note that struct per_cpu_pages increases in
-> > size to 256 bytes (4 cache lines) on x86-64.
-> > 
-> > Note that this is not necessarily a universal performance win because of
-> > how it is implemented. High-order pages can cause pcp->high to be exceeded
-> > prematurely for lower-orders so for example, a large number of THP pages
-> > being freed could release order-0 pages from the PCP lists. Hence, much
-> > depends on the allocation/free pattern as observed by a single CPU to
-> > determine if caching helps or hurts a particular workload.
-> > 
-> > That said, basic performance testing passed. The following is a netperf
-> > UDP_STREAM test which hits the relevant patches as some of the network
-> > allocations are high-order.
-> 
-> This series[1] looks very interesting!  I confirm that some network
-> allocations do use high-order allocations.  Thus, I think this will
-> increase network performance in general, like you confirm below:
-> 
+Hi Tom,
 
-Would you be able to do a small test on a real high-speed network? It's
-something I can do easily myself in a few weeks but I do not have testbed
-readily available at the moment. It's ok if you do not have the time,
-it would just be nice if I could include independent results in the
-changelog if the results are positive. Alternatively, a negative result
-would mean going back to the drawing board :)
+Thank you for the patch.
+
+On Mon, May 31, 2021 at 10:43:00AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> Static analysis reports this false positive
+> imx7-mipi-csis.c:1027:2: warning: 4th function call argument is
+>   an uninitialized value
+> 
+> The variable 'align' is falsely reported as uninitialized.
+> Even though all the cases are covered in the
+> 	switch (csis_fmt->width % 8) {
+> 
+> Because there is no default case, it is reported as uninialized.
+> 
+> Improve the switch by converting the most numerous set of cases
+> to the default and silence the false positive.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/staging/media/imx/imx7-mipi-csis.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
+> index d573f3475d28..330f283030ec 100644
+> --- a/drivers/staging/media/imx/imx7-mipi-csis.c
+> +++ b/drivers/staging/media/imx/imx7-mipi-csis.c
+> @@ -1016,10 +1016,8 @@ static int mipi_csis_set_fmt(struct v4l2_subdev *sd,
+>  	case 6:
+>  		align = 2;
+>  		break;
+> -	case 1:
+> -	case 3:
+> -	case 5:
+> -	case 7:
+> +	default:
+> +		/* 1, 3, 5, 7 */
+>  		align = 3;
+>  		break;
+>  	}
 
 -- 
-Mel Gorman
-SUSE Labs
+Regards,
+
+Laurent Pinchart
