@@ -2,167 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDB3397BAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D947F397BB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbhFAVXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 17:23:22 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:51488 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234831AbhFAVXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 17:23:19 -0400
-Received: from zn.tnic (p200300ec2f111d0093004df6f0d27e9c.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1d00:9300:4df6:f0d2:7e9c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6ED551EC0288;
-        Tue,  1 Jun 2021 23:21:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622582496;
+        id S234870AbhFAVX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 17:23:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31707 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234707AbhFAVXw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 17:23:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622582530;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=r6po77ash8nSd+/o4Au/rz1P1mxTHjT+9nnkvAgn8+E=;
-        b=gOd/30Z5BByE+u0vlUXbN52jkEJnKTUBSmsGP2OxydiPFFMWs8t0TthCLECUr9iNFgSv2c
-        Fhd02cwuAGPtgSUi7FE/z91xSAQ/Krby7bEmMANlsdFsIHGZytNg+otQJ/KG3PXm4fi56m
-        fZl7B7Tg+51iR/FAllP36J5Ib8UnecM=
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Richard Narron <richard@aaazen.com>
-Subject: [PATCH] x86/alternative: Optimize single-byte NOPs at an arbitrary position
-Date:   Tue,  1 Jun 2021 23:21:25 +0200
-Message-Id: <20210601212125.17145-1-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SGACjImek1ptgXSeByQZrD4xRmOVpVtzNZYAghuZKk4=;
+        b=Z22242zcTg6ue6O4EALb+HQkK3HDvxrWVNouePwnh4XLeHliwuhCqvGlYe3QJNmqznE+w2
+        C9DkSNyvIMJh8wOnJLiQFx+V+57BvHFW8irBqVw++RVvNPpjPlL0QurCDF020c4M94jeVR
+        sG2qKvTTZXWwPVat+ibzVjBonDwJDSM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-ykzdWWcHPH-SRYaf-FKqNA-1; Tue, 01 Jun 2021 17:22:07 -0400
+X-MC-Unique: ykzdWWcHPH-SRYaf-FKqNA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A15B19611A1;
+        Tue,  1 Jun 2021 21:22:06 +0000 (UTC)
+Received: from max.com (unknown [10.40.193.232])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 05E9260CC5;
+        Tue,  1 Jun 2021 21:22:01 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Revert "gfs2: Fix mmap locking for write faults"
+Date:   Tue,  1 Jun 2021 23:22:00 +0200
+Message-Id: <20210601212200.318607-1-agruenba@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+Hi Linus,
 
-Up until now the assumption was that an alternative patching site would
-have some instructions at the beginning and trailing single-byte NOPs
-(0x90) padding. Therefore, the patching machinery would go and optimize
-those single-byte NOPs into longer ones.
+please consider pulling this revert.  The commit in question is broken,
+and reverting it will restore the correct behavior.  Sorry for the
+confusion.
 
-However, this assumption is broken on 32-bit when code like
-hv_do_hypercall() in hyperv_init() would use the ratpoline speculation
-killer CALL_NOSPEC. The 32-bit version of that macro would align certain
-insns to 16 bytes, leading to the compiler issuing a one or more
-single-byte NOPs, depending on the holes it needs to fill for alignment.
+Thanks,
+Andreas
 
-That would lead to the warning in optimize_nops() to fire:
+The following changes since commit c2131f7e73c9e9365613e323d65c7b9e5b910f56:
 
-  ------------[ cut here ]------------
-  Not a NOP at 0xc27fb598
-   WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:211 optimize_nops.isra.13
+  Merge tag 'gfs2-v5.13-rc2-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2 (2021-05-31 05:57:22 -1000)
 
-due to that function verifying whether all of the following bytes really
-are single-byte NOPs.
+are available in the Git repository at:
 
-Therefore, carve out the NOP padding into a separate function and call
-it for each NOP range beginning with a single-byte NOP.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-rc2-fixes2
 
-Fixes: 23c1ad538f4f ("x86/alternatives: Optimize optimize_nops()")
-Reported-by: Richard Narron <richard@aaazen.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=213301
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/alternative.c | 62 +++++++++++++++++++++++++----------
- 1 file changed, 44 insertions(+), 18 deletions(-)
+for you to fetch changes up to d5b8145455c629e7f157d2da46a9b2fba483f235:
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 6974b5174495..7baf13b11952 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -182,42 +182,68 @@ recompute_jump(struct alt_instr *a, u8 *orig_insn, u8 *repl_insn, u8 *insn_buff)
- 		n_dspl, (unsigned long)orig_insn + n_dspl + repl_len);
- }
- 
-+/*
-+ * @instr: instruction byte stream
-+ * @instrlen: length of the above
-+ * @off: offset within @instr where the first NOP has been detected
-+ */
-+static __always_inline int optimize_nops_range(u8 *instr, u8 instrlen, int off)
-+{
-+	unsigned long flags;
-+	int i = off, nnops;
-+
-+	while (i < instrlen) {
-+		if (instr[i] != 0x90)
-+			break;
-+
-+		i++;
-+	}
-+
-+	nnops = i - off;
-+
-+	if (nnops <= 1)
-+		return nnops;
-+
-+	local_irq_save(flags);
-+	add_nops(instr + off, nnops);
-+	local_irq_restore(flags);
-+
-+	DUMP_BYTES(instr, instrlen, "%px: [%d:%d) optimized NOPs: ",
-+		   instr, off, i);
-+
-+	return nnops;
-+}
-+
-+
- /*
-  * "noinline" to cause control flow change and thus invalidate I$ and
-  * cause refetch after modification.
-  */
- static void __init_or_module noinline optimize_nops(struct alt_instr *a, u8 *instr)
- {
--	unsigned long flags;
- 	struct insn insn;
--	int nop, i = 0;
-+	int i = 0;
- 
- 	/*
--	 * Jump over the non-NOP insns, the remaining bytes must be single-byte
--	 * NOPs, optimize them.
-+	 * Jump over the non-NOP insns and optimize single-byte NOPs into bigger
-+	 * ones.
- 	 */
- 	for (;;) {
- 		if (insn_decode_kernel(&insn, &instr[i]))
- 			return;
- 
-+		/*
-+		 * See if this and any potentially following NOPs can be
-+		 * optimized.
-+		 */
- 		if (insn.length == 1 && insn.opcode.bytes[0] == 0x90)
--			break;
--
--		if ((i += insn.length) >= a->instrlen)
--			return;
--	}
-+			i += optimize_nops_range(instr, a->instrlen, i);
-+		else
-+			i += insn.length;
- 
--	for (nop = i; i < a->instrlen; i++) {
--		if (WARN_ONCE(instr[i] != 0x90, "Not a NOP at 0x%px\n", &instr[i]))
-+		if (i >= a->instrlen)
- 			return;
- 	}
--
--	local_irq_save(flags);
--	add_nops(instr + nop, i - nop);
--	local_irq_restore(flags);
--
--	DUMP_BYTES(instr, a->instrlen, "%px: [%d:%d) optimized NOPs: ",
--		   instr, nop, a->instrlen);
- }
- 
- /*
--- 
-2.29.2
+  Revert "gfs2: Fix mmap locking for write faults" (2021-06-01 23:16:42 +0200)
+
+----------------------------------------------------------------
+Revert broken commit
+
+----------------------------------------------------------------
+Andreas Gruenbacher (1):
+      Revert "gfs2: Fix mmap locking for write faults"
+
+ fs/gfs2/file.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
