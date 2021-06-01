@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B6D397B34
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2A6397B39
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbhFAU1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 16:27:16 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:35336 "EHLO vps-vb.mhejs.net"
+        id S234867AbhFAU1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 16:27:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234799AbhFAU1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 16:27:13 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1loAx2-0008T9-Ui; Tue, 01 Jun 2021 22:25:24 +0200
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
- <38333ef36e7812e1b9f9d24e726ca632997a8ef1.1621191552.git.maciej.szmigiero@oracle.com>
- <YK6GWUP107i5KAJo@google.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v3 7/8] KVM: Optimize gfn lookup in kvm_zap_gfn_range()
-Message-ID: <99a961d2-d46c-ead9-1138-45f6587a60ed@maciej.szmigiero.name>
-Date:   Tue, 1 Jun 2021 22:25:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S234671AbhFAU1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 16:27:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34158610A8;
+        Tue,  1 Jun 2021 20:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622579163;
+        bh=2RGqqaOEnSd0LK0+wop5EnOkhn2/+LvTDRenEweUGCQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=djNg89bVRT2X8/E139AuGWE1ZZALT5AxuAvwokQs5Byl/Cw1MYoj6M/nPQN2DbiP8
+         lnmlkWsLux5OaHlDn4JalilUMCedb8EairBL6gCQiJzvBe2zGEnjD/fljz8olQU2XD
+         FrVxdBbAoLHnqUjtZCZ1byR/8kEy1g6Fg26pwCJtywpW9gpPhg9H+0gUwl3Lk1iT0h
+         UMp3Adx2iTAglKIIzVfXzOLbZmnjCEtJXqCVzSpxpocQY5p9GGx+xxCpFGWnp0gCMl
+         ZLgWepdtKHRSrfkTZm89AbctlsqYYfbcIZnMfzjTNvzdLisLzBmJHECu3ffdVu4Bq0
+         fFfeVj4+oZlEg==
+Date:   Tue, 1 Jun 2021 13:26:02 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        stable@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
+Message-ID: <20210601132602.02e92678@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20210601080654.cl7caplm7rsagl6u@wittgenstein>
+References: <20210531153410.93150-1-changbin.du@gmail.com>
+        <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20210601080654.cl7caplm7rsagl6u@wittgenstein>
 MIME-Version: 1.0
-In-Reply-To: <YK6GWUP107i5KAJo@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.05.2021 19:33, Sean Christopherson wrote:
-> On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
->> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
->>
->> Introduce a memslots gfn upper bound operation and use it to optimize
->> kvm_zap_gfn_range().
->> This way this handler can do a quick lookup for intersecting gfns and won't
->> have to do a linear scan of the whole memslot set.
->>
->> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
->> ---
->>   arch/x86/kvm/mmu/mmu.c   | 41 ++++++++++++++++++++++++++++++++++++++--
->>   include/linux/kvm_host.h | 22 +++++++++++++++++++++
->>   2 files changed, 61 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->> index 7222b552d139..f23398cf0316 100644
->> --- a/arch/x86/kvm/mmu/mmu.c
->> +++ b/arch/x86/kvm/mmu/mmu.c
->> @@ -5490,14 +5490,51 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->>   	int i;
->>   	bool flush = false;
->>   
->> +	if (gfn_end == gfn_start || WARN_ON(gfn_end < gfn_start))
->> +		return;
->> +
->>   	write_lock(&kvm->mmu_lock);
->>   	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
->> -		int ctr;
->> +		int idxactive;
->> +		struct rb_node *node;
->>   
->>   		slots = __kvm_memslots(kvm, i);
->> -		kvm_for_each_memslot(memslot, ctr, slots) {
->> +		idxactive = kvm_memslots_idx(slots);
->> +
->> +		/*
->> +		 * Find the slot with the lowest gfn that can possibly intersect with
->> +		 * the range, so we'll ideally have slot start <= range start
->> +		 */
->> +		node = kvm_memslots_gfn_upper_bound(slots, gfn_start);
->> +		if (node) {
->> +			struct rb_node *pnode;
->> +
->> +			/*
->> +			 * A NULL previous node means that the very first slot
->> +			 * already has a higher start gfn.
->> +			 * In this case slot start > range start.
->> +			 */
->> +			pnode = rb_prev(node);
->> +			if (pnode)
->> +				node = pnode;
->> +		} else {
->> +			/* a NULL node below means no slots */
->> +			node = rb_last(&slots->gfn_tree);
->> +		}
->> +
->> +		for ( ; node; node = rb_next(node)) {
->>   			gfn_t start, end;
+On Tue, 1 Jun 2021 10:06:54 +0200 Christian Brauner wrote:
+> > I'm not sure why we'd pick runtime checks for something that can be
+> > perfectly easily solved at compilation time. Networking should not
+> > be asking for FDs for objects which don't exist.  
 > 
-> Can this be abstracted into something like:
+> Agreed!
+> This should be fixable by sm like:
 > 
-> 		kvm_for_each_memslot_in_gfn_range(...) {
+> diff --git a/net/socket.c b/net/socket.c
+> index 27e3e7d53f8e..2484466d96ad 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -1150,10 +1150,12 @@ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+>                         break;
+>                 case SIOCGSKNS:
+>                         err = -EPERM;
+> +#ifdef CONFIG_NET_NS
+>                         if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>                                 break;
 > 
-> 		}
-> 
-> and share that implementation with kvm_check_memslot_overlap() in the next patch?
-> 
-> I really don't think arch code should be poking into gfn_tree, and ideally arch
-> code wouldn't even be aware that gfn_tree exists.
+>                         err = open_related_ns(&net->ns, get_net_ns);
+> +#endif
+>                         break;
+>                 case SIOCGSTAMP_OLD:
+>                 case SIOCGSTAMPNS_OLD:
 
-That's a good idea, will do.
+Thanks! You weren't CCed on v1, so FWIW I was suggesting
+checking in get_net_ns(), to catch other callers:
 
-Thanks,
-Maciej
+diff --git a/net/socket.c b/net/socket.c
+index 27e3e7d53f8e..3b44f2700e0c 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1081,6 +1081,8 @@ static long sock_do_ioctl(struct net *net, struct socket *sock,
+ 
+ struct ns_common *get_net_ns(struct ns_common *ns)
+ {
++       if (!IS_ENABLED(CONFIG_NET_NS))
++               return ERR_PTR(-EOPNOTSUPP);
+        return &get_net(container_of(ns, struct net, ns))->ns;
+ }
+ EXPORT_SYMBOL_GPL(get_net_ns);
