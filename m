@@ -2,201 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CFD3976F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A713939770B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhFAPoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        id S234130AbhFAPsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFAPoG (ORCPT
+        with ESMTP id S232490AbhFAPsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:44:06 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B9BC061574;
-        Tue,  1 Jun 2021 08:42:24 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso1886860wmh.4;
-        Tue, 01 Jun 2021 08:42:24 -0700 (PDT)
+        Tue, 1 Jun 2021 11:48:13 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5A9C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:46:30 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id v9so15806689ion.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:46:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ej3vlHeKK1+uQ8+If+YtX+yV0AeomMPg/9tYvhXhlPE=;
-        b=CxMW+c3L3LN09Ja/Gp1nCIEMlaF9lzN1sjUuZlg7SuItpgg/3DTnB+FedhwxEQZh0Y
-         qwQ55cSDvxXetARJDYA317Z72y/NcwOqs99DDzfsuAk3rsUcPNOy6ho/kd77pP3KJryO
-         Z+fpP2KrQyJNy/whNf3NmFYq8vWRu0O+CraTKsj1M3EpEscqFxnQe2r7P42GKofrrDXl
-         CoC3sZ6bVKaF2J50CtjISgqzYU5BCpuyBX2KN51MddYptEtcjxm1d1LR+LQT4ynqZs49
-         6kcxnxhcN9dovPl+V3iWC9khbuTw5SIFB5u2kvTe3XbdzW3kiBeFEMPf7ibPqIRJrmmh
-         IQfA==
+        bh=xzkpMoK025anFl+s6G5Ps0FIBRVqAbi7JbvSN9zWPHk=;
+        b=vkt+d/Dcp4O3PlNbrWwLupeypuSQ9zkYpnSMtFmQJLmbUoOuV9YVUa3AKlcnNGjHjx
+         RBHmByVWY3mmVAQZ+9fRKYO8s95YMnW2NWZ1a/VGInAl6t70l3wyFUAH3w6YV6wkBx2p
+         WV3jX3QNRd0NMKjot2IahHVNYzom3M9Qd71Sesaf2PfsJPC7UHg2JZvQH9hIydUDug8u
+         BCXcPv7+ICk5WCTPilryHTsQw+jnoDGYBJxLXMEE6iwHncbhxbhPF45ZC51n2Ybh5l9v
+         44tVX66M85t2oXrHK8X3tmnrjDTEiSdifa0JxwDNYOlYBom8lcPfhEusf5nMKkHrzhH6
+         Cpsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ej3vlHeKK1+uQ8+If+YtX+yV0AeomMPg/9tYvhXhlPE=;
-        b=AdPVeZb1U805zDsRIrGlj1o3NcfzUxLq5NLS1wK359H3b95VRSQdLLMGIsFgHTL2Xf
-         1x62ST489sGx3LHMSw5rArqTuRBwBC6DOQlCl36DaKbtOlq5QJBE+3FnpLgAzHlvHvQH
-         0fQIQ+8gd3nrx4NaQEQPQUJMi5s+nqb3q8JM/281nVwkqTIWa1rqYl4lEo6cB5fh/63K
-         ljQFtKwB7+EGXMIZrXY08e/g/t/13dqHlQrBsioDzh6V7+bDfSMbYPekZLA8PL654Bod
-         RNBbHn9vLHhZ512noymFGfpmKPu4cPpdkTxhkzx1Eyx8g4XrzGXGXShQSjfYg5D+0G7P
-         HG6w==
-X-Gm-Message-State: AOAM531IgqoEl5qk6ypGIi3J4WLS0zgCXUL2RCHTRITf4KYXao8/MQ8N
-        MDkkDlwL+us7DP1PQKWfvA77mheql+jYgMRc7/4=
-X-Google-Smtp-Source: ABdhPJzEaksrb+hHKQ9SPfqQ+6MhwcSJ2MqH5GsyPc/+E5hCwuMuCX5aXcRibJVEJkvPlTtRLTBbviOQEFeTLqTYJzY=
-X-Received: by 2002:a1c:23d6:: with SMTP id j205mr564816wmj.94.1622562142833;
- Tue, 01 Jun 2021 08:42:22 -0700 (PDT)
+        bh=xzkpMoK025anFl+s6G5Ps0FIBRVqAbi7JbvSN9zWPHk=;
+        b=PFr23ob76N/fnpDMjVjQdFM4j+QL+Y7kmphff2rgQB4CAvHAJ72CHT/ld3Mk+jZCrc
+         HKq9UBMbziHon2g4mDfImZceCZnKL5TbY/+A6lAul3e5FFv6jvqBqKkeiOrBYn5NFaT4
+         qZ5bIsf1TPGiGdi4k6iIuzEQ7bT7lkY+GZdjB2k8zfPtZM6ezy2PLGA7qWVMtGVLAMnJ
+         RKgVe02mT7q9PaY63m7fbewfB6QRvYJWJP6bHN5RGYIu8vvQRBVwNtmjJt81AErcct9w
+         LF/d1E3OhoUu1/XoGh28+38nS77QZ0ZRlmRG+ZO0N5K8VHazwywygilTy6zRSPo7WtDw
+         DevA==
+X-Gm-Message-State: AOAM530211IqXBe+yvm8++GEq55U6Bd4L+RqFhWJDQYvWyrLUtBWc+oK
+        A+btDEvIXaoDqwgo5U4DX6m6BPTDcYoQ6tKbGZKFAQ==
+X-Google-Smtp-Source: ABdhPJxOz9rgM80Sy48JbcZ4GldO30kOzGxGLVIEdLZYFNOPl0HaRE8eQrLdns2g8T+JhD0n6cscn+Y7+KUBDgBUKpk=
+X-Received: by 2002:a05:6638:76d:: with SMTP id y13mr25440767jad.25.1622562389742;
+ Tue, 01 Jun 2021 08:46:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210519183855.1523927-1-robdclark@gmail.com> <20210519183855.1523927-3-robdclark@gmail.com>
- <YKaOY3AWgHh5kplS@phenom.ffwll.local> <CAF6AEGv470U7fujLrJOE8fJh1o-BW3=mOpKJ45FFz=Xb8Q0D6A@mail.gmail.com>
- <YLZBzKlb7xpJaG4+@phenom.ffwll.local>
-In-Reply-To: <YLZBzKlb7xpJaG4+@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 1 Jun 2021 08:46:14 -0700
-Message-ID: <CAF6AEGvcFMejnN1032+=9E=8f2=E4CpqHiARHHQ_Bin+f5DQTg@mail.gmail.com>
-Subject: Re: [RFC 2/3] drm/atomic: Call dma_fence_boost() when we've missed a vblank
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matthew Brost <matthew.brost@intel.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
+References: <20210528075932.347154-1-davidgow@google.com> <20210528075932.347154-2-davidgow@google.com>
+In-Reply-To: <20210528075932.347154-2-davidgow@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 1 Jun 2021 08:46:18 -0700
+Message-ID: <CAGS_qxpg7PdGPiP5kmzBthh=eHd+SYmyvUitQV40Weej3wD4QA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] kunit: tool: Support skipped tests in kunit_tool
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 7:18 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Fri, May 28, 2021 at 12:59 AM David Gow <davidgow@google.com> wrote:
 >
-> On Sun, May 30, 2021 at 07:33:57AM -0700, Rob Clark wrote:
-> > On Thu, May 20, 2021 at 9:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Wed, May 19, 2021 at 11:38:53AM -0700, Rob Clark wrote:
-> > > > From: Rob Clark <robdclark@chromium.org>
-> > > >
-> > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > > ---
-> > > >  drivers/gpu/drm/drm_atomic_helper.c | 11 +++++++++++
-> > > >  1 file changed, 11 insertions(+)
-> > > >
-> > > > diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-> > > > index 560aaecba31b..fe10fc2e7f86 100644
-> > > > --- a/drivers/gpu/drm/drm_atomic_helper.c
-> > > > +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> > > > @@ -1435,11 +1435,15 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
-> > > >       int i, ret;
-> > > >
-> > > >       for_each_new_plane_in_state(state, plane, new_plane_state, i) {
-> > > > +             u64 vblank_count;
-> > > > +
-> > > >               if (!new_plane_state->fence)
-> > > >                       continue;
-> > > >
-> > > >               WARN_ON(!new_plane_state->fb);
-> > > >
-> > > > +             vblank_count = drm_crtc_vblank_count(new_plane_state->crtc);
-> > > > +
-> > > >               /*
-> > > >                * If waiting for fences pre-swap (ie: nonblock), userspace can
-> > > >                * still interrupt the operation. Instead of blocking until the
-> > > > @@ -1449,6 +1453,13 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
-> > > >               if (ret)
-> > > >                       return ret;
-> > > >
-> > > > +             /*
-> > > > +              * Check if we've missed a vblank while waiting, and if we have
-> > > > +              * signal the fence that it's signaler should be boosted
-> > > > +              */
-> > > > +             if (vblank_count != drm_crtc_vblank_count(new_plane_state->crtc))
-> > > > +                     dma_fence_boost(new_plane_state->fence);
-> > >
-> > > I think we should do a lot better here:
-> > > - maybe only bother doing this for single-crtc updates, and only if
-> > >   modeset isn't set. No one else cares about latency.
-> > >
-> > > - We should boost _right_ when we've missed the frame, so I think we
-> > >   should have a _timeout wait here that guesstimates when the vblank is
-> > >   over (might need to throw in a vblank wait if we missed) and then boost
-> > >   immediately. Not wait a bunch of frames (worst case) until we finally
-> > >   decide to boost.
-> >
-> > I was thinking about this a bit more.. How about rather than calling
-> > some fence->op->boost() type thing when we are about to miss a vblank
-> > (IMO that is also already too late), we do something more like
-> > fence->ops->set_deadline() before we even wait?
+> Add support for the SKIP directive to kunit_tool's TAP parser.
 >
-> Hm yeah that sounds like a clean idea.
+> Skipped tests now show up as such in the printed summary. The number of
+> skipped tests is counted, and if all tests in a suite are skipped, the
+> suite is also marked as skipped. Otherwise, skipped tests do affect the
+> suite result.
 >
-> Even more, why not add the deadline/waiter information to the callback
-> we're adding? That way drivers can inspect it whenever they feel like and
-> don't have to duplicate the tracking. And it's probably easier to
-> tune/adjust to the myriads of use-cases (flip target miss, userspace wait,
-> wakeup boost maybe too ...).
+> Example output:
+> [00:22:34] ======== [SKIPPED] example_skip ========
+> [00:22:34] [SKIPPED] example_skip_test # SKIP this test should be skipped
+> [00:22:34] [SKIPPED] example_mark_skipped_test # SKIP this test should be skipped
+> [00:22:34] ============================================================
+> [00:22:34] Testing complete. 2 tests run. 0 failed. 0 crashed. 2 skipped.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-You mean, enumerate the types of deadline?
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
 
-For userspace waits, we might have a timeout, but not really
-(currently) any more information than that?  The vblank deadline is
-the only type of deadline that seems pretty clear to me.
+Some minor remarks, but this looks good to me.
 
-I suppose we could do something like:
+Though I'm surprised there has not been any bikeshedding done about
+the color of the SKIPPED output.
+So I'll throw an opinion out there.
+I think yellow is fine, but I did somewhat recently change another
+similar tool to go from yellow => cyan for SKIPPED. The motivation
+there was to have a color for "flaky" tests that stood out, and the
+most appropriate ANSI color seemed to be yellow (between green for
+PASSED and red for FAILED).
+And I don't know if KUnit tool will ever get to the point where we
+automatically rerun tests on failure, as I can see an argument for
+that logic living a layer above.
 
-   dma_fence_set_deadline(fence, &(struct dma_fence_deadline){
-           .type = DMA_FENCE_DEADLINE_VBLANK,
-           .time = next_vblank_ktime,
-       });
-
-to make it a bit more extensible to add more deadline types or
-additional optional information
-
-BR,
--R
-
+> ---
 >
-> I like this direction a lot more than what we discussed with post-miss
-> hints thus far.
+> Changes since v1:
+> https://lore.kernel.org/linux-kselftest/20210526081112.3652290-2-davidgow@google.com/
+> - Include missing test logs for kunit_tool_test
+> - Encapsulate test counts in a class (Thanks Daniel Latypov)
+>   - Fix a type hinting issue in the process
 >
-> > It's probably a bit impossible for a gpu driver to really predict how
-> > long some rendering will take, but other cases like video decoder are
-> > somewhat more predictable.. the fence provider could predict given the
-> > remaining time until the deadline what clk rates are required to get
-> > you there.
+> ---
+>  tools/testing/kunit/kunit_parser.py           | 77 +++++++++++++------
+>  tools/testing/kunit/kunit_tool_test.py        | 22 ++++++
+>  .../kunit/test_data/test_skip_all_tests.log   | 15 ++++
+>  .../kunit/test_data/test_skip_tests.log       | 15 ++++
+>  4 files changed, 105 insertions(+), 24 deletions(-)
+>  create mode 100644 tools/testing/kunit/test_data/test_skip_all_tests.log
+>  create mode 100644 tools/testing/kunit/test_data/test_skip_tests.log
 >
-> Well if we do have a deadline the driver can note that in its scheduler
-> and arm a driver to kick the clocks. Or maybe use past history to do this
-> upfront.
-> -Daniel
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> index e8bcc139702e..f07dce1d4146 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -43,6 +43,7 @@ class TestCase(object):
+>  class TestStatus(Enum):
+>         SUCCESS = auto()
+>         FAILURE = auto()
+> +       SKIPPED = auto()
+>         TEST_CRASHED = auto()
+>         NO_TESTS = auto()
+>         FAILURE_TO_PARSE_TESTS = auto()
+> @@ -108,6 +109,8 @@ def save_non_diagnostic(lines: List[str], test_case: TestCase) -> None:
 >
-> >
-> > BR,
-> > -R
-> >
-> >
-> > >
-> > > Otherwise I really like this, I think it's about the only real reason i915
-> > > isn't using atomic helpers.
-> > >
-> > > Also adding Matt B for this topic.
-> > > -Daniel
-> > >
-> > > > +
-> > > >               dma_fence_put(new_plane_state->fence);
-> > > >               new_plane_state->fence = NULL;
-> > > >       }
-> > > > --
-> > > > 2.30.2
-> > > >
-> > >
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
+>  OkNotOkResult = namedtuple('OkNotOkResult', ['is_ok','description', 'text'])
 >
+> +OK_NOT_OK_SKIP = re.compile(r'^[\s]*(ok|not ok) [0-9]+ - (.*) # SKIP(.*)$')
+> +
+>  OK_NOT_OK_SUBTEST = re.compile(r'^[\s]+(ok|not ok) [0-9]+ - (.*)$')
+>
+>  OK_NOT_OK_MODULE = re.compile(r'^(ok|not ok) ([0-9]+) - (.*)$')
+> @@ -125,6 +128,10 @@ def parse_ok_not_ok_test_case(lines: List[str], test_case: TestCase) -> bool:
+>         if match:
+>                 test_case.log.append(lines.pop(0))
+>                 test_case.name = match.group(2)
+> +               skip_match = OK_NOT_OK_SKIP.match(line)
+> +               if skip_match:
+> +                       test_case.status = TestStatus.SKIPPED
+> +                       return True
+>                 if test_case.status == TestStatus.TEST_CRASHED:
+>                         return True
+>                 if match.group(1) == 'ok':
+> @@ -188,16 +195,16 @@ def parse_subtest_plan(lines: List[str]) -> Optional[int]:
+>                 return None
+>
+>  def max_status(left: TestStatus, right: TestStatus) -> TestStatus:
+> -       if left == TestStatus.TEST_CRASHED or right == TestStatus.TEST_CRASHED:
+> +       if left == right:
+> +               return left
+> +       elif left == TestStatus.TEST_CRASHED or right == TestStatus.TEST_CRASHED:
+>                 return TestStatus.TEST_CRASHED
+>         elif left == TestStatus.FAILURE or right == TestStatus.FAILURE:
+>                 return TestStatus.FAILURE
+> -       elif left != TestStatus.SUCCESS:
+> -               return left
+> -       elif right != TestStatus.SUCCESS:
+> +       elif left == TestStatus.SKIPPED:
+>                 return right
+>         else:
+> -               return TestStatus.SUCCESS
+> +               return left
+>
+>  def parse_ok_not_ok_test_suite(lines: List[str],
+>                                test_suite: TestSuite,
+> @@ -214,6 +221,9 @@ def parse_ok_not_ok_test_suite(lines: List[str],
+>                         test_suite.status = TestStatus.SUCCESS
+>                 else:
+>                         test_suite.status = TestStatus.FAILURE
+> +               skip_match = OK_NOT_OK_SKIP.match(line)
+> +               if skip_match:
+> +                       test_suite.status = TestStatus.SKIPPED
+>                 suite_index = int(match.group(2))
+>                 if suite_index != expected_suite_index:
+>                         print_with_timestamp(
+> @@ -224,8 +234,8 @@ def parse_ok_not_ok_test_suite(lines: List[str],
+>         else:
+>                 return False
+>
+> -def bubble_up_errors(statuses: Iterable[TestStatus]) -> TestStatus:
+> -       return reduce(max_status, statuses, TestStatus.SUCCESS)
+> +def bubble_up_errors(status_list: Iterable[TestStatus]) -> TestStatus:
+> +       return reduce(max_status, status_list, TestStatus.SKIPPED)
+>
+>  def bubble_up_test_case_errors(test_suite: TestSuite) -> TestStatus:
+>         max_test_case_status = bubble_up_errors(x.status for x in test_suite.cases)
+> @@ -311,49 +321,68 @@ def parse_test_result(lines: List[str]) -> TestResult:
+>         else:
+>                 return TestResult(TestStatus.NO_TESTS, [], lines)
+>
+> -def print_and_count_results(test_result: TestResult) -> Tuple[int, int, int]:
+> -       total_tests = 0
+> -       failed_tests = 0
+> -       crashed_tests = 0
+> +class TestCounts:
+> +       passed: int
+> +       failed: int
+> +       crashed: int
+> +       skipped: int
+> +
+> +       def __init__(self):
+> +               self.passed = 0
+> +               self.failed = 0
+> +               self.crashed = 0
+> +               self.skipped = 0
+> +
+> +       def total(self) -> int:
+> +               return self.passed + self.failed + self.crashed + self.skipped
+> +
+> +def print_and_count_results(test_result: TestResult) -> TestCounts:
+> +       counts = TestCounts()
+>         for test_suite in test_result.suites:
+>                 if test_suite.status == TestStatus.SUCCESS:
+>                         print_suite_divider(green('[PASSED] ') + test_suite.name)
+> +               elif test_suite.status == TestStatus.SKIPPED:
+> +                       print_suite_divider(yellow('[SKIPPED] ') + test_suite.name)
+>                 elif test_suite.status == TestStatus.TEST_CRASHED:
+>                         print_suite_divider(red('[CRASHED] ' + test_suite.name))
+>                 else:
+>                         print_suite_divider(red('[FAILED] ') + test_suite.name)
+>                 for test_case in test_suite.cases:
+> -                       total_tests += 1
+>                         if test_case.status == TestStatus.SUCCESS:
+> +                               counts.passed += 1
+>                                 print_with_timestamp(green('[PASSED] ') + test_case.name)
+> +                       elif test_case.status == TestStatus.SKIPPED:
+> +                               counts.skipped += 1
+> +                               print_with_timestamp(yellow('[SKIPPED] ') + test_case.name)
+>                         elif test_case.status == TestStatus.TEST_CRASHED:
+> -                               crashed_tests += 1
+> +                               counts.crashed += 1
+>                                 print_with_timestamp(red('[CRASHED] ' + test_case.name))
+>                                 print_log(map(yellow, test_case.log))
+>                                 print_with_timestamp('')
+>                         else:
+> -                               failed_tests += 1
+> +                               counts.failed += 1
+>                                 print_with_timestamp(red('[FAILED] ') + test_case.name)
+>                                 print_log(map(yellow, test_case.log))
+>                                 print_with_timestamp('')
+> -       return total_tests, failed_tests, crashed_tests
+> +       return counts
+>
+>  def parse_run_tests(kernel_output) -> TestResult:
+> -       total_tests = 0
+> -       failed_tests = 0
+> -       crashed_tests = 0
+> +       counts = TestCounts()
+>         test_result = parse_test_result(list(isolate_kunit_output(kernel_output)))
+>         if test_result.status == TestStatus.NO_TESTS:
+>                 print(red('[ERROR] ') + yellow('no tests run!'))
+>         elif test_result.status == TestStatus.FAILURE_TO_PARSE_TESTS:
+>                 print(red('[ERROR] ') + yellow('could not parse test results!'))
+>         else:
+> -               (total_tests,
+> -                failed_tests,
+> -                crashed_tests) = print_and_count_results(test_result)
+> +               counts = print_and_count_results(test_result)
+>         print_with_timestamp(DIVIDER)
+> -       fmt = green if test_result.status == TestStatus.SUCCESS else red
+> +       if test_result.status == TestStatus.SUCCESS:
+> +               fmt = green
+> +       elif test_result.status == TestStatus.SKIPPED:
+> +               fmt = yellow
+> +       else:
+> +               fmt =red
+>         print_with_timestamp(
+> -               fmt('Testing complete. %d tests run. %d failed. %d crashed.' %
+> -                   (total_tests, failed_tests, crashed_tests)))
+> +               fmt('Testing complete. %d tests run. %d failed. %d crashed. %d skipped.' %
+> +                   (counts.total(), counts.failed, counts.crashed, counts.skipped)))
+
+This looks good to me, just want to comment that we'll probably want
+to factor this into a helper in TestCounts the next time we add a
+status.
+I've written very similar code for other projects, and it can help to reduce
+  42 tests run. 0 failed. 0 crashed. 1 skipped.
+to something like
+  42 tests run. 1 skipped.
+
+But with just these, I think it's fine to leave them entirely as-is.
+We can decide later if we want to tersen the output.
+
+E.g. we might decide that we want to have
+  42 tests run. 2 timed out. 1 crashed.
+in the future.
+
+>         return test_result
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 2e809dd956a7..a51e70cafcc1 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -183,6 +183,28 @@ class KUnitParserTest(unittest.TestCase):
+>                         kunit_parser.TestStatus.TEST_CRASHED,
+>                         result.status)
+>
+> +       def test_skipped_test(self):
+> +               skipped_log = test_data_path('test_skip_tests.log')
+> +               file = open(skipped_log)
+> +               result = kunit_parser.parse_run_tests(file.readlines())
+
+This would be slightly safer as
+
+with open(skipped_log) as file:
+   result = kunit_parser.parse_run_tests(file.readlines())
+
+As-is, the code will leak FDs if the test fails.
+
+But you've stated a preference before for having tests like this, so I
+don't care too much either way.
+It's less confusing to someone thinking in a C mindset, since `result`
+will more obviously be in scope.
+
+
+> +
+> +               # A skipped test does not fail the whole suite.
+> +               self.assertEqual(
+> +                       kunit_parser.TestStatus.SUCCESS,
+> +                       result.status)
+> +               file.close()
+> +
+> +       def test_skipped_all_tests(self):
+> +               skipped_log = test_data_path('test_skip_all_tests.log')
+> +               file = open(skipped_log)
+> +               result = kunit_parser.parse_run_tests(file.readlines())
+> +
+> +               self.assertEqual(
+> +                       kunit_parser.TestStatus.SKIPPED,
+> +                       result.status)
+> +               file.close()
+> +
+> +
+>         def test_ignores_prefix_printk_time(self):
+>                 prefix_log = test_data_path('test_config_printk_time.log')
+>                 with open(prefix_log) as file:
+> diff --git a/tools/testing/kunit/test_data/test_skip_all_tests.log b/tools/testing/kunit/test_data/test_skip_all_tests.log
+> new file mode 100644
+> index 000000000000..2ea6e6d14fff
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_skip_all_tests.log
+> @@ -0,0 +1,15 @@
+> +TAP version 14
+> +1..2
+> +    # Subtest: string-stream-test
+> +    1..3
+> +    ok 1 - string_stream_test_empty_on_creation # SKIP all tests skipped
+> +    ok 2 - string_stream_test_not_empty_after_add # SKIP all tests skipped
+> +    ok 3 - string_stream_test_get_string # SKIP all tests skipped
+> +ok 1 - string-stream-test # SKIP
+> +    # Subtest: example
+> +    1..2
+> +    # example_simple_test: initializing
+> +    ok 1 - example_simple_test # SKIP all tests skipped
+> +    # example_skip_test: initializing
+> +    ok 2 - example_skip_test # SKIP this test should be skipped
+> +ok 2 - example # SKIP
+> diff --git a/tools/testing/kunit/test_data/test_skip_tests.log b/tools/testing/kunit/test_data/test_skip_tests.log
+> new file mode 100644
+> index 000000000000..79b326e31274
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_skip_tests.log
+> @@ -0,0 +1,15 @@
+> +TAP version 14
+> +1..2
+> +    # Subtest: string-stream-test
+> +    1..3
+> +    ok 1 - string_stream_test_empty_on_creation
+> +    ok 2 - string_stream_test_not_empty_after_add
+> +    ok 3 - string_stream_test_get_string
+> +ok 1 - string-stream-test
+> +    # Subtest: example
+> +    1..2
+> +    # example_simple_test: initializing
+> +    ok 1 - example_simple_test
+> +    # example_skip_test: initializing
+> +    ok 2 - example_skip_test # SKIP this test should be skipped
+> +ok 2 - example
 > --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> 2.32.0.rc0.204.g9fa02ecfa5-goog
+>
