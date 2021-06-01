@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0000397285
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED06397291
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233336AbhFALjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFALjB (ORCPT
+        id S233877AbhFALjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:39:47 -0400
+Received: from relay.smtp-ext.broadcom.com ([192.19.11.229]:38874 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233409AbhFALjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:39:01 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2320AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:37:20 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so1242851pjs.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CS1n4sRHqpOQsFkP1CCTSFKBKWDyW0xQAW3QzafXtXc=;
-        b=lq0SA5HGo+yQXaRg89NNd2j8VGI0VwV8xL3rruVRjC52JKktGKja2NuzY0NIrOVutl
-         aNvbC+J6h7hptSZD/4SZ4HNEPYPyXv/ka5RtjVDhKQEgMll/aEvDwstR27JmEu3Xxv/X
-         eSoztdPaHC3ZMW7nNx9yX9hP1rU2G/0BU8RLY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CS1n4sRHqpOQsFkP1CCTSFKBKWDyW0xQAW3QzafXtXc=;
-        b=gIYshRVGmRqCcdDBwEYrLB4vsmKdOV1qeZ1DhIwTJ6duLDTR6GYih8iGaYVeShGJmQ
-         IQRS4Dccb/GIKgaWBOMBlQmFaDuVYqSsGfTV6z1tYvliLDTMrdjdzxnjxuQFl7W5So2R
-         gFYHHeLg/tLUOsedRs1/qwkuh/pvRg/+7VTpdv5eCgoCWuXXSUTVkGRx2bPMM32K+lIj
-         dSbSxFasQSMqCvvMEDdfzz8Tx+jytc43C5MhTRiLoKpCz0GHqa8dwOi/XsiDn8ipw2f3
-         gVUWPHeeoiAgy8xCl95UZioNZ13NycqTeWTfisIj4+bcAE3dMa8A89qG8ieYoyIzLShn
-         MbYg==
-X-Gm-Message-State: AOAM531Hn6G5oQcjgn4hjC/RWrN2qAlaUofuPtFxnpttE/Y2lhBESOs+
-        Fw3abF0dT24SXrMyT9UdoBIE+yKUIa4UKm9AEJU=
-X-Google-Smtp-Source: ABdhPJznkRs//17VYuRFjTcDDl4U/eW721ciFqOI6XZslBYAQsi+1iDme+p1FAJ9YlPw9ZmeNBufbw==
-X-Received: by 2002:a17:90a:117:: with SMTP id b23mr24609895pjb.183.1622547439593;
-        Tue, 01 Jun 2021 04:37:19 -0700 (PDT)
-Received: from 19e0a75b4758 ([124.170.34.40])
-        by smtp.gmail.com with ESMTPSA id i8sm13462728pgt.58.2021.06.01.04.37.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Jun 2021 04:37:19 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 11:37:12 +0000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/296] 5.12.9-rc1 review
-Message-ID: <20210601113707.GA270394@19e0a75b4758>
-References: <20210531130703.762129381@linuxfoundation.org>
+        Tue, 1 Jun 2021 07:39:43 -0400
+Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 3A7C5829D;
+        Tue,  1 Jun 2021 04:38:01 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 3A7C5829D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1622547481;
+        bh=A7DViLzhSSmk++S9KSFL1GRI7XxOsNHRI9z60MGz1zw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Bxwbgz/205KnBPTpWMrQIYHlRNlywbla8G5vLdUvYZVgjA9StBtnydwBRPdIRUs4m
+         hiil/PzpEiJqXrmJ3XdGhrfqC6RbYfrNsvPW46pJQgdF9gRi8hRFtB9d4/5+5uiTBQ
+         KuWHSJqlhA64kjfJVXa1ltvQQVp+feVBW1xr1S/8=
+Received: from [10.230.42.155] (unknown [10.230.42.155])
+        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 16ACE1874BE;
+        Tue,  1 Jun 2021 04:37:56 -0700 (PDT)
+Subject: Re: [PATCH -next] brcmfmac: Fix a double-free in brcmf_sdio_bus_reset
+To:     Tong Tiangen <tongtiangen@huawei.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210601100128.69561-1-tongtiangen@huawei.com>
+From:   Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <224ed779-5d68-9f67-9b17-75e1e1b4250c@broadcom.com>
+Date:   Tue, 1 Jun 2021 13:37:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210601100128.69561-1-tongtiangen@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 03:10:55PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.9 release.
-> There are 296 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 01-06-2021 12:01, Tong Tiangen wrote:
+> brcmf_sdiod_remove has been called inside brcmf_sdiod_probe when fails,
+> so there's no need to call another one. Otherwise, sdiodev->freezer
+> would be double freed.
 > 
-> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.9-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-Tested ok on:
-- Tiger Lake x86_64
-- Radxa ROCK Pi N10 (rk3399pro)
-
-Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
--- 
-Rudi
+> Fixes: 7836102a750a ("brcmfmac: reset SDIO bus on a firmware crash")
+Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+> ---
+>   drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 -
+>   1 file changed, 1 deletion(-)
