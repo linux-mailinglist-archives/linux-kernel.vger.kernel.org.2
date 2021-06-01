@@ -2,106 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4F4396A9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 03:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E1E396AD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhFABe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 21:34:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30470 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231714AbhFABe1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 21:34:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622511166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XKyYJx9YieU8ulaBq4SlFZLz0hyHCdkp8RQ+G8AysWM=;
-        b=XfDjydr1vt6NyCVUHMVQ8OTOdH7LN/euBQldSJXHhq1mkfqvDLb2yIYL+J+0bSWAab6XCR
-        9BQ0xZ9qZGwrRcMWi/LorqS+Wg6ZZ+BXodm+OT7RSGnDflverV1HKmBMbT+l/LEgfulcri
-        AJZwuCxbvjW5Vl1jfHNBMdR4FPlaj9c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-TR3kc_W9OPGkI8nRAzBngA-1; Mon, 31 May 2021 21:32:44 -0400
-X-MC-Unique: TR3kc_W9OPGkI8nRAzBngA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CA09107ACE4;
-        Tue,  1 Jun 2021 01:32:43 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-23.bne.redhat.com [10.64.54.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E690460936;
-        Tue,  1 Jun 2021 01:32:37 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, alexander.h.duyck@linux.intel.com,
-        david@redhat.com, akpm@linux-foundation.org, shan.gavin@gmail.com
-Subject: [RFC PATCH] mm/page_reporting: Adjust threshold according to MAX_ORDER
-Date:   Tue,  1 Jun 2021 11:33:19 +0800
-Message-Id: <20210601033319.100737-1-gshan@redhat.com>
+        id S232412AbhFACFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 22:05:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:15901 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232132AbhFACFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 22:05:08 -0400
+IronPort-SDR: m5F6g8aUmTWPVl/mnXQt4jvjwF+5i8SpWtor9IOFRNP5F2Ow6/4wiVQsoYhFfpZSj39H1U11oz
+ cvvI/RgcrPCQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="267332161"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="267332161"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 19:03:27 -0700
+IronPort-SDR: T0HhPcU3LUhlpMXsdvkZNWGRMSCTRZrvkw2oOQoPkxQFDD/Ny3WOn54bPdAjyblncuoZojHruQ
+ cHLmSoCGxZ1w==
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="445151825"
+Received: from mjdelaro-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.3.23])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 19:03:25 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC v2-fix-v1 1/1] x86/kvm: Use bounce buffers for TD guest
+Date:   Mon, 31 May 2021 19:03:16 -0700
+Message-Id: <20210601020316.3736-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <de4b67fc6b23718e0cc01aac6efff35f4ef1ad8c.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <de4b67fc6b23718e0cc01aac6efff35f4ef1ad8c.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PAGE_REPORTING_MIN_ORDER is equal to @pageblock_order, taken as
-minimal order (threshold) to trigger page reporting. The page reporting
-is never triggered with the following configurations and settings on
-aarch64. In the particular scenario, the page reporting won't be triggered
-until the largest (2 ^ (MAX_ORDER-1)) free area is achieved from the
-page freeing. The condition is very hard, or even impossible to be met.
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-  CONFIG_ARM64_PAGE_SHIFT:              16
-  CONFIG_HUGETLB_PAGE:                  Y
-  CONFIG_HUGETLB_PAGE_SIZE_VARIABLE:    N
-  pageblock_order:                      13
-  CONFIG_FORCE_MAX_ZONEORDER:           14
-  MAX_ORDER:                            14
+Intel TDX doesn't allow VMM to directly access guest private
+memory. Any memory that is required for communication with
+VMM must be shared explicitly. The same rule applies for any
+any DMA to and fromTDX guest. All DMA pages had to marked as
+shared pages. A generic way to achieve this without any changes
+to device drivers is to use the SWIOTLB framework.
 
-The issue can be reproduced in VM, running kernel with above configurations
-and settings. The 'memhog' is used inside the VM to access 512MB anonymous
-area. The QEMU's RSS doesn't drop accordingly after 'memhog' exits.
+This method of handling is similar to AMD SEV. So extend this
+support for TDX guest as well. Also since there are some common
+code between AMD SEV and TDX guest in mem_encrypt_init(), move it
+to mem_encrypt_common.c and call AMD specific init function from
+it
 
-  /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64          \
-  -accel kvm -machine virt,gic-version=host                        \
-  -cpu host -smp 8,sockets=2,cores=4,threads=1 -m 4096M,maxmem=64G \
-  -object memory-backend-ram,id=mem0,size=2048M                    \
-  -object memory-backend-ram,id=mem1,size=2048M                    \
-  -numa node,nodeid=0,cpus=0-3,memdev=mem0                         \
-  -numa node,nodeid=1,cpus=4-7,memdev=mem1                         \
-    :                                                              \
-  -device virtio-balloon-pci,id=balloon0,free-page-reporting=yes
-
-This tries to fix the issue by adjusting the threshold to the smaller value
-of @pageblock_order and (MAX_ORDER/2). With this applied, the QEMU's RSS
-drops after 'memhog' exits.
-
-Signed-off-by: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- mm/page_reporting.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/mm/page_reporting.h b/mm/page_reporting.h
-index 2c385dd4ddbd..5dae3d171004 100644
---- a/mm/page_reporting.h
-+++ b/mm/page_reporting.h
-@@ -10,9 +10,10 @@
- #include <linux/pgtable.h>
- #include <linux/scatterlist.h>
+Changes since RFC v2:
+ * Fixed commit log as per review comments.
+ * Instead of moving all AMD related changes to mem_encrypt_common.c,
+   created a AMD specific helper function amd_mem_encrypt_init() and
+   called it from mem_encrypt_init().
+ * Removed redundant changes in arch/x86/kernel/pci-swiotlb.c.
+
+ arch/x86/include/asm/mem_encrypt_common.h |  2 ++
+ arch/x86/kernel/tdx.c                     |  3 +++
+ arch/x86/mm/mem_encrypt.c                 |  5 +----
+ arch/x86/mm/mem_encrypt_common.c          | 16 ++++++++++++++++
+ 4 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/mem_encrypt_common.h b/arch/x86/include/asm/mem_encrypt_common.h
+index 697bc40a4e3d..48d98a3d64fd 100644
+--- a/arch/x86/include/asm/mem_encrypt_common.h
++++ b/arch/x86/include/asm/mem_encrypt_common.h
+@@ -8,11 +8,13 @@
  
--#define PAGE_REPORTING_MIN_ORDER	pageblock_order
--
- #ifdef CONFIG_PAGE_REPORTING
-+#define PAGE_REPORTING_MIN_ORDER	\
-+	min_t(unsigned int, pageblock_order, (MAX_ORDER / 2))
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ bool amd_force_dma_unencrypted(struct device *dev);
++void __init amd_mem_encrypt_init(void);
+ #else /* CONFIG_AMD_MEM_ENCRYPT */
+ static inline bool amd_force_dma_unencrypted(struct device *dev)
+ {
+ 	return false;
+ }
++static inline void amd_mem_encrypt_init(void) {}
+ #endif /* CONFIG_AMD_MEM_ENCRYPT */
+ 
+ #endif
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index e84ae4f302b8..31aa47ba8f91 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -8,6 +8,7 @@
+ #include <asm/vmx.h>
+ #include <asm/insn.h>
+ #include <linux/sched/signal.h> /* force_sig_fault() */
++#include <linux/swiotlb.h>
+ 
+ #include <linux/cpu.h>
+ #include <linux/protected_guest.h>
+@@ -536,6 +537,8 @@ void __init tdx_early_init(void)
+ 
+ 	legacy_pic = &null_legacy_pic;
+ 
++	swiotlb_force = SWIOTLB_FORCE;
 +
- DECLARE_STATIC_KEY_FALSE(page_reporting_enabled);
- void __page_reporting_notify(void);
+ 	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdg:cpu_hotplug",
+ 			  NULL, tdg_cpu_offline_prepare);
  
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 5a81f73dd61e..073f2105b4af 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -467,14 +467,11 @@ static void print_mem_encrypt_feature_info(void)
+ }
+ 
+ /* Architecture __weak replacement functions */
+-void __init mem_encrypt_init(void)
++void __init amd_mem_encrypt_init(void)
+ {
+ 	if (!sme_me_mask)
+ 		return;
+ 
+-	/* Call into SWIOTLB to update the SWIOTLB DMA buffers */
+-	swiotlb_update_mem_attributes();
+-
+ 	/*
+ 	 * With SEV, we need to unroll the rep string I/O instructions,
+ 	 * but SEV-ES supports them through the #VC handler.
+diff --git a/arch/x86/mm/mem_encrypt_common.c b/arch/x86/mm/mem_encrypt_common.c
+index 661c9457c02e..24c9117547b4 100644
+--- a/arch/x86/mm/mem_encrypt_common.c
++++ b/arch/x86/mm/mem_encrypt_common.c
+@@ -9,6 +9,7 @@
+ 
+ #include <asm/mem_encrypt_common.h>
+ #include <linux/dma-mapping.h>
++#include <linux/swiotlb.h>
+ 
+ /* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
+ bool force_dma_unencrypted(struct device *dev)
+@@ -21,3 +22,18 @@ bool force_dma_unencrypted(struct device *dev)
+ 
+ 	return false;
+ }
++
++/* Architecture __weak replacement functions */
++void __init mem_encrypt_init(void)
++{
++	/*
++	 * For TDX guest or SEV/SME, call into SWIOTLB to update
++	 * the SWIOTLB DMA buffers
++	 */
++	if (sme_me_mask || protected_guest_has(VM_MEM_ENCRYPT))
++		swiotlb_update_mem_attributes();
++
++	if (sme_me_mask)
++		amd_mem_encrypt_init();
++}
++
 -- 
-2.23.0
+2.25.1
 
