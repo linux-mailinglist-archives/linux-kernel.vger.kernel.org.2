@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEF7396EB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AFA396EFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbhFAIVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:21:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2928 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233295AbhFAIU7 (ORCPT
+        id S233461AbhFAIbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232963AbhFAIbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:20:59 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvQ3R4w9Sz68Xx;
-        Tue,  1 Jun 2021 16:16:19 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 16:19:16 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
- 2021 16:19:15 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <jaswinder.singh@linaro.org>, <eric@anholt.net>,
-        <jassisinghbrar@gmail.com>
-CC:     <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-rpi-kernel@lists.infradead.org>, <chengzhihao1@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH] mailbox: bcm-flexrm-mailbox: Remove redundant dev_err call in flexrm_mbox_probe()
-Date:   Tue, 1 Jun 2021 16:28:34 +0800
-Message-ID: <20210601082834.129587-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 1 Jun 2021 04:31:48 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92484C061574;
+        Tue,  1 Jun 2021 01:30:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvQMH1DHYz9sSn;
+        Tue,  1 Jun 2021 18:30:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622536203;
+        bh=K3FBU1+AjIwzODQMzIbSger+HfYWtlItLlr+x2MdE28=;
+        h=Date:From:To:Cc:Subject:From;
+        b=I+BSjSczMRgnmDst7UpWqYqqDn519l5hGa2Q5etgRO1eLprQvbJxok+A6c+/0zCgJ
+         QIb119Mxne8nFeQvClepOETjNnzu37J76CV8BvnRkTNvjiqgxozOjp8rBifYA4qcat
+         khBpIRnBmeQNU2N+xzB+tVHa+AAatpb15tC9afcDgaJjVdZrHsXk2uzIbjFETBAxDo
+         mNE9N9qwJ45K3ZxFWwTz0NJ6Fpp6KPSIu+GDSYcyNwp3idL7S69NGjxJ+0jVuj1VC4
+         2XZmgdrOyLXWVPQg9FyVskMRTw0luJExEyn8EGfIg8S+0uvvpcPZnXKXhXf3avX9tX
+         fGJ6BEwFdbPvg==
+Date:   Tue, 1 Jun 2021 18:30:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Rajat Jain <rajatja@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the usb tree
+Message-ID: <20210601183002.26176586@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/vvOjpJer9Fp84cjAHRf=ysu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+--Sig_/vvOjpJer9Fp84cjAHRf=ysu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/mailbox/bcm-flexrm-mailbox.c | 1 -
- 1 file changed, 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/mailbox/bcm-flexrm-mailbox.c b/drivers/mailbox/bcm-flexrm-mailbox.c
-index b4f33dc399a0..78073ad1f2f1 100644
---- a/drivers/mailbox/bcm-flexrm-mailbox.c
-+++ b/drivers/mailbox/bcm-flexrm-mailbox.c
-@@ -1523,7 +1523,6 @@ static int flexrm_mbox_probe(struct platform_device *pdev)
- 	mbox->regs = devm_ioremap_resource(&pdev->dev, iomem);
- 	if (IS_ERR(mbox->regs)) {
- 		ret = PTR_ERR(mbox->regs);
--		dev_err(&pdev->dev, "Failed to remap mailbox regs: %d\n", ret);
- 		goto fail;
- 	}
- 	regs_end = mbox->regs + resource_size(iomem);
--- 
-2.31.1
+After merging the usb tree, today's linux-next build (htmldocs) produced
+this warning:
 
+Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected in=
+dentation.
+Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote e=
+nds without a blank line; unexpected unindent.
+
+Introduced by commit
+
+  70f400d4d957 ("driver core: Move the "removable" attribute from USB to co=
+re")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vvOjpJer9Fp84cjAHRf=ysu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC18AoACgkQAVBC80lX
+0GwpLQgAliCVU1vxjrk/UDx780r2vE74IUxBzUmr0HthirKMAsvo+FGzFy44Cm2v
+N4Q3VpnEOLrAZ+DLD6tjq8A4vquhnD3SVy25WR411wVHtULeWafSUK60AM/2ZTms
+AU2xbtob/JJsGvZOm49mtfuDM+q4ldzn5hy3n3evo/yxzTsa6V32EeqXMXH7RZMy
+lowBZv6UrzlWWCgNstQLHd0FVBXzGqO6JY5HODQE7rwXfVdtL9UuTps9ihm6TNus
+fiBgddSrKiJ2RFKtOLi/516SthBo0tcbFXFjBqSgkvAFk865RFVpDPW7bLJ6xzfg
+3fGy4Zq6MW31tJCYTW/ps3gns4X50g==
+=l5FH
+-----END PGP SIGNATURE-----
+
+--Sig_/vvOjpJer9Fp84cjAHRf=ysu--
