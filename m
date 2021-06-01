@@ -2,150 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483BC397974
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA576397979
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234505AbhFARsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S234597AbhFARub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhFARsm (ORCPT
+        with ESMTP id S231331AbhFARu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:48:42 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5991EC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 10:47:00 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x38so23093653lfa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 10:47:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jJYP1ahOHUDkEz4I2iYxmBxvA/YEgFvm6f/leHoOsVY=;
-        b=uiisl/l2JAeeqyGsUirCfSyUuUVpC8Cfit36EJ+bP2ODPTY7wxHgP0BQmI5rHxhTY9
-         LbJTI6WRjpjYGzpNwaOxqr6d7GSJnRpo+o1iVKkG0xUFVi7v3lmS5lLTRM4le9l4botv
-         yb/lYPJKPLxS6ZbEdq69Yj5yZIgEUa+RdqMg4bJ8B4Vfe/M4ybKPhrZwW8ZFgr2tQInN
-         uwTSyR7MUp+ysnFEOyUgaIuszyz0531mGUwp7h0eGYilZYVVX0Dm2TgvSAkimrIaEzRX
-         Q9OP9icLpFN8qXEnagMF2oBO+ou8qmSVs5yuHmh0DNud2zh4Hl+K7BShc36iIkUaP4rr
-         9hWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jJYP1ahOHUDkEz4I2iYxmBxvA/YEgFvm6f/leHoOsVY=;
-        b=a/21lTKqlaUiag4OzplRxO9oRehG6vh8XMBzooTrJ6+EChHztH+xq2j/1/Zg5STMkf
-         xIdBcNMji947kxOyFC5BY8ePaL73HGYidwqhLnYSZWS7BvXzR4jm2kpYV4gxMgGm3CY2
-         Q5XzfA3PVIlzJVs6EjRyjp5Dyu0COYHbfBxfiJmb4R0GRUA4MWcRiqupjSdWZEc/UAwL
-         4UXci9RQPVjZ2wJv8FfMHaORGETcgODbWfcjSO4LwFJcEZDQXB9Kby2Z7thgn694F+D6
-         XTTVPPXSjbmc+12xbFC0CtmfNQ/pBaj7f/GvzOYC6kYHG3KWSEbZzeWpOk1vmonwq1pZ
-         oDsw==
-X-Gm-Message-State: AOAM532G68v5q8T8H2kx4LwdaiEWZGVb9bN6GM/gDnJd6BsFofTChSN7
-        MjmAfaqM5o+1NtfGN8ZHmz2/aWmuC0DwyKrdA46XeUbQURQ=
-X-Google-Smtp-Source: ABdhPJw42vulKDibjXHniD1a5KBQ7FuDHO9ORXGzCVu1stGaMi5omtQP2h7TLf4fg+sYsaNxhkBj+xxxGDJcXv2pTZw=
-X-Received: by 2002:a19:dc08:: with SMTP id t8mr8284937lfg.503.1622569618435;
- Tue, 01 Jun 2021 10:46:58 -0700 (PDT)
+        Tue, 1 Jun 2021 13:50:29 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B4DC061574;
+        Tue,  1 Jun 2021 10:48:47 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f111d0082e984b2e91ac710.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1d00:82e9:84b2:e91a:c710])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 38A301EC04DE;
+        Tue,  1 Jun 2021 19:48:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622569726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=biQU14FYVVk4LB/gooVKcC5sTJb4CihHDJ0GsZwwdsI=;
+        b=ljUMKrqnXANNG2IE6wOlTAr42/bzDsFV0OihCjRTU+kIPfJCb2tJcciteOpTeKOm4N83My
+        qSP5K6wXXge4fWUtSwXeMnD51FZvwo2LDaVYGGAv46WxHdY9gmfF6mRU77oQ3a24o/1KpR
+        Lf8wqwE1nu75LbGucD+vhJVSAERhg44=
+Date:   Tue, 1 Jun 2021 19:48:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, Pu Wen <puwen@hygon.cn>,
+        Joerg Roedel <jroedel@suse.de>, x86@kernel.org,
+        joro@8bytes.org, dave.hansen@linux.intel.com, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        sashal@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] x86/sev: Check whether SEV or SME is supported first
+Message-ID: <YLZy+JR7TNEeNA6C@zn.tnic>
+References: <20210526072424.22453-1-puwen@hygon.cn>
+ <YK6E5NnmRpYYDMTA@google.com>
+ <905ecd90-54d2-35f1-c8ab-c123d8a3d9a0@hygon.cn>
+ <YLSuRBzM6piigP8t@suse.de>
+ <e1ad087e-a951-4128-923e-867a8b38ecec@hygon.cn>
+ <YLZGuTYXDin2K9wx@zn.tnic>
+ <YLZc3sFKSjpd2yPS@google.com>
+ <dbc4e48f-187a-4b2d-2625-b62d334f60b2@amd.com>
+ <YLZneRWzoujEe+6b@zn.tnic>
+ <YLZrXEQ8w5ntu7ov@google.com>
 MIME-Version: 1.0
-References: <20210527162655.3246381-1-elver@google.com> <CAKwvOdmgZXJB2dV7iG67qHgbDgVTJaH7b3dkpgZyea4ULgQjgA@mail.gmail.com>
-In-Reply-To: <CAKwvOdmgZXJB2dV7iG67qHgbDgVTJaH7b3dkpgZyea4ULgQjgA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 1 Jun 2021 19:46:47 +0200
-Message-ID: <CANpmjNNqzCTks5dFkbbqzPP4UX7GDTdjbvJ7SbN2jcSNWjxQzA@mail.gmail.com>
-Subject: Re: [PATCH v2] kcov: add __no_sanitize_coverage to fix noinstr for
- all architectures
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YLZrXEQ8w5ntu7ov@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 at 19:42, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> On Thu, May 27, 2021 at 9:27 AM Marco Elver <elver@google.com> wrote:
-> >
-> > Until now no compiler supported an attribute to disable coverage
-> > instrumentation as used by KCOV.
-> >
-> > To work around this limitation on x86, noinstr functions have their
-> > coverage instrumentation turned into nops by objtool. However, this
-> > solution doesn't scale automatically to other architectures, such as
-> > arm64, which are migrating to use the generic entry code.
-> >
-> > Clang [1] and GCC [2] have added support for the attribute recently.
-> > [1] https://github.com/llvm/llvm-project/commit/280333021e9550d80f5c1152a34e33e81df1e178
-> > [2] https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=cec4d4a6782c9bd8d071839c50a239c49caca689
-> > The changes will appear in Clang 13 and GCC 12.
-> >
-> > Add __no_sanitize_coverage for both compilers, and add it to noinstr.
-> >
-> > Note: In the Clang case, __has_feature(coverage_sanitizer) is only true
-> > if the feature is enabled, and therefore we do not require an additional
-> > defined(CONFIG_KCOV) (like in the GCC case where __has_attribute(..) is
-> > always true) to avoid adding redundant attributes to functions if KCOV
-> > is off. That being said, compilers that support the attribute will not
-> > generate errors/warnings if the attribute is redundantly used; however,
-> > where possible let's avoid it as it reduces preprocessed code size and
-> > associated compile-time overheads.
-> >
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> > v2:
-> > * Implement __has_feature(coverage_sanitizer) in Clang
-> >   (https://reviews.llvm.org/D103159) and use instead of version check.
-> > * Add Peter's Ack.
-> > ---
-> >  include/linux/compiler-clang.h | 11 +++++++++++
-> >  include/linux/compiler-gcc.h   |  6 ++++++
-> >  include/linux/compiler_types.h |  2 +-
-> >  3 files changed, 18 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> > index adbe76b203e2..e15eebfa8e5d 100644
-> > --- a/include/linux/compiler-clang.h
-> > +++ b/include/linux/compiler-clang.h
-> > @@ -45,6 +45,17 @@
-> >  #define __no_sanitize_undefined
-> >  #endif
-> >
-> > +/*
-> > + * Support for __has_feature(coverage_sanitizer) was added in Clang 13 together
-> > + * with no_sanitize("coverage"). Prior versions of Clang support coverage
-> > + * instrumentation, but cannot be queried for support by the preprocessor.
->
-> I'm not against a version check for supporting older releases (in
-> addition to the cleaner feature check, since the feature check was
-> non-existent); we can clean it up someday when clang-13 is the
-> minimally supported version.  Would having an additional version check
-> help support existing/older releases here?
+On Tue, Jun 01, 2021 at 05:16:12PM +0000, Sean Christopherson wrote:
+> The bug isn't limited to out-of-spec hardware.  At the point of #GP, sme_enable()
+> has only verified the max leaf is greater than 0x8000001f, it has not verified
+> that 0x8000001f is actually supported.  The APM itself declares several leafs
+> between 0x80000000 and 0x8000001f as reserved/unsupported, so we can't argue that
+> 0x8000001f must be supported if the max leaf is greater than 0x8000001f.
 
-The feature check will just return 0 on older releases, since the
-feature does not exist there. Therefore, no additional code is
-required to support older releases and a version check would be
-redundant.
+If a hypervisor says that 0x8000001f is supported but then we explode
+when reading MSR_AMD64_SEV, then hypervisor gets to keep both pieces.
 
-> > + */
-> > +#if __has_feature(coverage_sanitizer)
-> > +#define __no_sanitize_coverage __attribute__((no_sanitize("coverage")))
-> > +#else
-> > +#define __no_sanitize_coverage
-> > +#endif
-> > +
+We're not going to workaround all possible insane hardware/hypervisor
+configurations just because they dropped the ball.
 
-Thanks,
--- Marco
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
