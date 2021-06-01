@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50CD397812
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDD8397816
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhFAQbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFAQbJ (ORCPT
+        id S234492AbhFAQcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:32:22 -0400
+Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:60726 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233853AbhFAQcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:31:09 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6CBC061574;
-        Tue,  1 Jun 2021 09:29:26 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id o2-20020a05600c4fc2b029019a0a8f959dso2297435wmq.1;
-        Tue, 01 Jun 2021 09:29:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M+Wt77gwcQjul5PYu85EVePOuCkP6+G9utWtWXYGHkk=;
-        b=gcnDim/odTZhMIwZZpal1dRFzmVljdi6FUGnhpL1j+LAt1wO2t8ypMJaXKT6viZwvy
-         /IADCeUCqyQs5HRamF3aDrd2VVtRBQl1NUb13yNF5kpZsXY75w4vhW8GPVjbNKoBzXV0
-         TSD/rHCu6+Hs60z/AOGKZHrjuLixP2zaLwwBl+/V+WPuLtlZXOE5iJVYezzOA21ZVSl9
-         nIPbmtT2WYtLBkdDb35CaxNi+VVAnDSK2NXPS5pzO318nm+o8g62u5AeLc0LUG8DN8PF
-         piMQ7TifSDXs/fPKs2d6SRwMBsqipjq/MT6yfCwoY8SKKtXxSyllXuv6fG/vjHPAfHgb
-         Yxgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M+Wt77gwcQjul5PYu85EVePOuCkP6+G9utWtWXYGHkk=;
-        b=ljt07z4Rz1NRWyXHBP+PKEE6L7WuOimySgMePw7pDaLq8Gz9tFe+9poEhUa47xG46i
-         PZmTv0uRQIjBxivNxoR70yiARXXGlA64VuhRkn134X4oY0F63k4T1ecAX0xrF6EcGFQP
-         tXbqfFEHemVofko2sasGOgwLTP5d0vhshfODoxoBc1hwE2y1G3R0z2maA/lQiuESOt3P
-         Isi5zVQs/qZBMgqagd2CZ0ihrUZH7Bz55BNNGpBeWhLJ5pPCzt9EjiG6pAqnG2SC8/1g
-         M8g8gVEosuD79DkmMsUVZkkZtcReB4LXTZna6DVg/m22uul2AL5v7g4KojI/aHWZQBR9
-         vheg==
-X-Gm-Message-State: AOAM532UwQu0//7bbtCzm6dwAxsPjjapSCj+mQUOOp18vVtmansx8lmG
-        3iw5rBcqFR07s728RDBSQ6+j8thYgUnaiQ==
-X-Google-Smtp-Source: ABdhPJzlT3EjioGBboR7CQJ+mG43k9LhSLmblOQWozTBq8npYRaRvWkjqyV02VLpM7eHN9jOVXHr9A==
-X-Received: by 2002:a05:600c:4f4e:: with SMTP id m14mr743106wmq.164.1622564965010;
-        Tue, 01 Jun 2021 09:29:25 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.237.139])
-        by smtp.gmail.com with ESMTPSA id c206sm19972wmf.12.2021.06.01.09.29.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 09:29:24 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     Andres Freund <andres@anarazel.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
+        Tue, 1 Jun 2021 12:32:16 -0400
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id B2E59181D3025;
+        Tue,  1 Jun 2021 16:30:31 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id D343313D94;
+        Tue,  1 Jun 2021 16:30:30 +0000 (UTC)
+Message-ID: <5780056e09dbbd285d470a313939e5d3cc1a0c3e.camel@perches.com>
+Subject: Re: [PATCH] nfc: mrvl: remove useless "continue" at end of loop
+From:   Joe Perches <joe@perches.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <cover.1622558659.git.asml.silence@gmail.com>
- <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
- <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
- <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
- <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [RFC 4/4] io_uring: implement futex wait
-Message-ID: <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com>
-Date:   Tue, 1 Jun 2021 17:29:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+Date:   Tue, 01 Jun 2021 09:30:29 -0700
+In-Reply-To: <20210601160713.312622-1-krzysztof.kozlowski@canonical.com>
+References: <20210601160713.312622-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.00
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: D343313D94
+X-Stat-Signature: o3qkn9t5grq5md5xm1h6mtcgc4rpcoyn
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+x6Np0T0GrHquofG0cRy8+fzcy4/IsBi4=
+X-HE-Tag: 1622565030-517770
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 5:01 PM, Jens Axboe wrote:
-> On 6/1/21 9:58 AM, Pavel Begunkov wrote:
->> On 6/1/21 4:45 PM, Jens Axboe wrote:
->>> On 6/1/21 8:58 AM, Pavel Begunkov wrote:
->>>> Add futex wait requests, those always go through io-wq for simplicity.
->>>
->>> Not a huge fan of that, I think this should tap into the waitqueue
->>> instead and just rely on the wakeup callback to trigger the event. That
->>> would be a lot more efficient than punting to io-wq, both in terms of
->>> latency on trigger, but also for efficiency if the app is waiting on a
->>> lot of futexes.
->>
->> Yes, that would be preferable, but looks futexes don't use
->> waitqueues but some manual enqueuing into a plist_node, see
->> futex_wait_queue_me() or mark_wake_futex().
->> Did I miss it somewhere?
-> 
-> Yes, we'd need to augment that with a callback. I do think that's going
+On Tue, 2021-06-01 at 18:07 +0200, Krzysztof Kozlowski wrote:
+> The "continue" statement at the end of a for loop does not have an
+> effect.
+[]
+> diff --git a/drivers/nfc/nfcmrvl/usb.c b/drivers/nfc/nfcmrvl/usb.c
+[]
+> @@ -325,7 +325,6 @@ static int nfcmrvl_probe(struct usb_interface *intf,
+>  		if (!drv_data->bulk_rx_ep &&
+>  		    usb_endpoint_is_bulk_in(ep_desc)) {
+>  			drv_data->bulk_rx_ep = ep_desc;
+> -			continue;
+>  		}
+>  	}
 
-Yeah, that was the first idea, but it's also more intrusive for the
-futex codebase. Can be piled on top for next revision of patches.
+I think this code would be clearer with an if/else instead of
+multiple continues.
 
-A question to futex maintainers, how much resistance to merging
-something like that I may expect?
+---
+ drivers/nfc/nfcmrvl/usb.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-> to be necessary, I don't see the io-wq solution working well outside of
-> the most basic of use cases. And even for that, it won't be particularly
-> efficient for single waits.
+diff --git a/drivers/nfc/nfcmrvl/usb.c b/drivers/nfc/nfcmrvl/usb.c
+index bcd563cb556ce..1616b873b15e6 100644
+--- a/drivers/nfc/nfcmrvl/usb.c
++++ b/drivers/nfc/nfcmrvl/usb.c
+@@ -296,7 +296,6 @@ static void nfcmrvl_waker(struct work_struct *work)
+ static int nfcmrvl_probe(struct usb_interface *intf,
+ 			 const struct usb_device_id *id)
+ {
+-	struct usb_endpoint_descriptor *ep_desc;
+ 	struct nfcmrvl_usb_drv_data *drv_data;
+ 	struct nfcmrvl_private *priv;
+ 	int i;
+@@ -314,19 +313,16 @@ static int nfcmrvl_probe(struct usb_interface *intf,
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < intf->cur_altsetting->desc.bNumEndpoints; i++) {
++		struct usb_endpoint_descriptor *ep_desc;
++
+ 		ep_desc = &intf->cur_altsetting->endpoint[i].desc;
+ 
+ 		if (!drv_data->bulk_tx_ep &&
+-		    usb_endpoint_is_bulk_out(ep_desc)) {
++		    usb_endpoint_is_bulk_out(ep_desc))
+ 			drv_data->bulk_tx_ep = ep_desc;
+-			continue;
+-		}
+-
+-		if (!drv_data->bulk_rx_ep &&
+-		    usb_endpoint_is_bulk_in(ep_desc)) {
++		else if (!drv_data->bulk_rx_ep &&
++			 usb_endpoint_is_bulk_in(ep_desc))
+ 			drv_data->bulk_rx_ep = ep_desc;
+-			continue;
+-		}
+ 	}
+ 
+ 	if (!drv_data->bulk_tx_ep || !drv_data->bulk_rx_ep)
 
--- 
-Pavel Begunkov
+
