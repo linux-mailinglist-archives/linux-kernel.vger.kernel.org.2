@@ -2,78 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC2939718F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2919397192
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbhFAKg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:36:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40017 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbhFAKgx (ORCPT
+        id S233064AbhFAKiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFAKiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:36:53 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lo1jm-0000fi-9e; Tue, 01 Jun 2021 10:35:06 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: topology: Fix spelling mistake "vesion" -> "version"
-Date:   Tue,  1 Jun 2021 11:35:06 +0100
-Message-Id: <20210601103506.9477-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 1 Jun 2021 06:38:11 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1E7C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:36:29 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id ci15so17554500ejc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=n2rcYxr+4iyg+FBD+P9vQi6mlsQoT7vy+quq4xOTEAs=;
+        b=gxfdf/cOkVSWRs1fgAIrmRFwFwEZ1+BluexLtMqM8NifMmi5IOaYB1zBYecQtd9yDc
+         ratzfPxzNuQQu1HSG0d1m5AwiGwtnkNPA/kOknHQA1HnqrLV4brTUV88CDc+fw32gcug
+         M4R5MO1HxZRxuvWYA/NO9yaOyIV+xn5Q97XKXBL/ZxHk52u/gLoFb+IDQNibezwVMFnm
+         u61fzYpIrsecS7VBCy6IrLUhcrGc85zdU5jJZNa4ffCuRds7OxCw5zubO0IJIdGyWjQV
+         LnjMShp87ugilyUHXuZBzPybgOHYMDiXuz3UwD7yq3EyqkmK9e4SKVTdOpYbUbjaqSme
+         9fKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=n2rcYxr+4iyg+FBD+P9vQi6mlsQoT7vy+quq4xOTEAs=;
+        b=KKt1kxs+4xq6VDbPGVOT4thTPY6GLSWEVce/HpnrYvMgk0wBfdXSfmyuhxTRd7Y3rl
+         rDXxku+OOeXqtgolNsU+DNWmQ3m6HJtRw3OLMBCYnFFSvI+kwBjLXS4ritbalUqq0xaO
+         bfaW7gRPDMOdJ/veZo9dkpMNWjZgQtXUH2lqG9ElakMiobgKJP5hNU2cxW3vtr1RZ6Zp
+         LlHZgBgb/pHLUiDcHF/DYRNv4qEK04SqbjqWUUo34R7URBShaDfhGb+9d1/noorqoyyO
+         bibj9UP+uV/kHSogjdnUu/6zlSeXTr2PBD32kwT6K7le3BIeJg2oCil/jbny0iGLXr+r
+         oefA==
+X-Gm-Message-State: AOAM532xNJxuoxvXWjYDthfQAr3zcd6wPhjrm9X1RAlMggml1+Aw/aqf
+        RpcTiJ6kCT9jv0N6ycfi9Fkoynig3SY8D63PluxicTzww9RMp3PG
+X-Google-Smtp-Source: ABdhPJw9+tUu+tyx6oUfkMuvkhZT4WmRAUVO3uuHwKPIwpLsMnTahGwHegIo9sVxfKqlrd37K5NPK5QUxMwcOC4gaTM=
+X-Received: by 2002:a17:906:d0da:: with SMTP id bq26mr16625220ejb.287.1622543787889;
+ Tue, 01 Jun 2021 03:36:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 1 Jun 2021 16:06:15 +0530
+Message-ID: <CA+G9fYvJC050CGZ5Gsd8bAfTmahAfSPJqxyJu__GBYfO9X-9TA@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/79] 4.14.235-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, 31 May 2021 at 18:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.235 release.
+> There are 79 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.235-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-There are spelling mistakes in comments. Fix them.
+This set of results are from 4.14.235-rc1.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 5e65b72910e9..0a24d0d409d2 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1881,7 +1881,7 @@ static void stream_caps_new_ver(struct snd_soc_tplg_stream_caps *dest,
-  * @src: older version of pcm as a source
-  * @pcm: latest version of pcm created from the source
-  *
-- * Support from vesion 4. User should free the returned pcm manually.
-+ * Support from version 4. User should free the returned pcm manually.
-  */
- static int pcm_new_ver(struct soc_tplg *tplg,
- 		       struct snd_soc_tplg_pcm *src,
-@@ -2069,7 +2069,7 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
-  * @src: old version of phyical link config as a source
-  * @link: latest version of physical link config created from the source
-  *
-- * Support from vesion 4. User need free the returned link config manually.
-+ * Support from version 4. User need free the returned link config manually.
-  */
- static int link_new_ver(struct soc_tplg *tplg,
- 			struct snd_soc_tplg_link_config *src,
-@@ -2380,7 +2380,7 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
-  * @src: old version of manifest as a source
-  * @manifest: latest version of manifest created from the source
-  *
-- * Support from vesion 4. Users need free the returned manifest manually.
-+ * Support from version 4. Users need free the returned manifest manually.
-  */
- static int manifest_new_ver(struct soc_tplg *tplg,
- 			    struct snd_soc_tplg_manifest *src,
--- 
-2.31.1
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 4.14.235-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: 506e0ba115126ff217295dca5197f9688c6f07c0
+* git describe: v4.14.234-80-g506e0ba11512
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.234-80-g506e0ba11512
+
+## No regressions (compared to v4.14.233-38-g535f9ea88cc8)
+
+
+## Fixes (compared to v4.14.233-38-g535f9ea88cc8)
+* ltp-mm-tests
+  - ksm03
+  - ksm03_1
+
+NOTE: The LTP test suite upgraded to latest release version LTP 20210524.
+
+## Test result summary
+ total: 62263, pass: 49714, fail: 1558, skip: 10203, xfail: 788,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Naresh Kamboju
+https://lkft.linaro.org
