@@ -2,112 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD8B396EDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4109C396EE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhFAIZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:25:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52005 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233372AbhFAIZb (ORCPT
+        id S233438AbhFAI0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233300AbhFAI0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622535829;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=19rdlm3aekp78iG0bh4BpLYZ54JID0O0sq66buG23WU=;
-        b=MW08KIVV2306Ao8Fn+enydzY7ltFB/Jn1jg1Rgxvt9Q4DFc4dyLJ6sLFV3XHSZYjbhYMbn
-        CZPF8wlHp8D44ahXjgpAuQ+EFcLaXm4Jm2Cyx+8nDCkDUIOtv+0eJf/jkwqF9ZfYQvb6i+
-        jmkbNZGqhWDox7Z6bpjDYFiWugYFK8k=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-ZH4pVhiYOxWhqNK5A1Ck1A-1; Tue, 01 Jun 2021 04:23:48 -0400
-X-MC-Unique: ZH4pVhiYOxWhqNK5A1Ck1A-1
-Received: by mail-wm1-f70.google.com with SMTP id g9-20020a05600c4ec9b0290198e2707cecso1017146wmq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:23:48 -0700 (PDT)
+        Tue, 1 Jun 2021 04:26:33 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84618C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:24:52 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id u24so6717982edy.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k2z10kHvXwh0VlWb//vEH7qdG2w+rH+BOKMSkAeptuo=;
+        b=JxNSuwOnVwr5zWbPShFowZKsvvro/a6F4DoBJ6KmXQHabMzL8if52GI5mSsrW34g8g
+         JDB1uOq3ZUASaZX4npfzfbyaPnVHzbDftKoLMFk0dPA46BdIpSXWaeQobY4ywCSlGu4z
+         Sq8Y1d3WdPf/dE1vksKs9/oIrwlGIS6H+75YAGSpJ+6KvG98yVc6GIwtgpBzQjRAlL9w
+         Zrf/t9qy/TOpltWXCO5d0mWHlZPE7CGaq2M7ZHsfByvtadrOFlOJLTMCzUMGCsVAM5+9
+         f0ETQXKQZtYSQ2KrDTL1V+VfKWJAwzvwSPJTrj8r5JfPyv+jUzLybLfBy3xFhsk5AKbG
+         dIbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=19rdlm3aekp78iG0bh4BpLYZ54JID0O0sq66buG23WU=;
-        b=RWgInKS/06Rli0KcobRTBF7X3wjxFARnSTBacA6P3Xw8S7CKuHQQZxB5u3LYLjeM/Z
-         OTFvA8nlPdPtXpX3i2lCY3ziJvy7JDkNIF7kF5jfLb86iOa6HPIj/6jAatoo/gi6zO9n
-         oDl066hcaIzQIGKvY6oK8GXIieWMyfkiNcwrl+xTVEE7TJC4qa/KYjyjeHuB0pCiua0q
-         fklxAqzx+3NSL93lOzp0FiY9CePXNUqkfjWAJx3A/1T79LTuU7aFxasTMn66T7iIO4pH
-         gRR7jy9dx4BNzTl8HY97Bs4CR8qh0/NXg0c/DizrPwvw4AGM6xV+axiro2Y2sogmRC67
-         Ln8g==
-X-Gm-Message-State: AOAM5332plQROSzRsCcAiyP2nYu4ZWIdh3lOcnlKob6CWAG3wYJRyzg8
-        K0WWkKR0nzWcnQcJoMx+dX8I7HChFXnjqEUaCrRgi3Zi2eEyEjWwsH74R9wuxbDwJ5Wyh9HthG8
-        fvSmayDuaDV+5239Eno+1FzKH
-X-Received: by 2002:a5d:50c1:: with SMTP id f1mr26902262wrt.168.1622535827535;
-        Tue, 01 Jun 2021 01:23:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwuONRAg7ToUff+HnfBB4K6bjg8qM2dP+YiK/aB9hK9nvdNQ5+4tI+WfcuUbmEAmzC3Dbz53A==
-X-Received: by 2002:a5d:50c1:: with SMTP id f1mr26902245wrt.168.1622535827341;
-        Tue, 01 Jun 2021 01:23:47 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c69ce.dip0.t-ipconnect.de. [91.12.105.206])
-        by smtp.gmail.com with ESMTPSA id m5sm1806819wmq.6.2021.06.01.01.23.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 01:23:47 -0700 (PDT)
-Subject: Re: [PATCH V2 5/6] mm/page_alloc: improve memmap_pages dbg msg
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
- <20210531091908.1738465-6-aisheng.dong@nxp.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <c2faa32e-1d9b-ae0d-b037-9efcb6ff0022@redhat.com>
-Date:   Tue, 1 Jun 2021 10:23:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k2z10kHvXwh0VlWb//vEH7qdG2w+rH+BOKMSkAeptuo=;
+        b=jnNPb9QBU1iL9ufAiyAPphpMCJ+IPIo3Gp6o4eLBWmsL9VF/om/eHNdJdevZOcZUf2
+         57A7iFufsu6R5Iwvg23eZFXP7Bccii8fhoiBIGcX864oMdI9z+6fLdlb2H4FaFYaQjh7
+         ibOJtjc/CJ2/MJSEZyn82PVAfL/CTITD6+gbt+L18LM438slNufXnonolcCq0F/iFaNn
+         ifVGLUp7b6BXm8Ey/iPzlsRXakcX4rc3uVk49KZNvkjRlqBOPk6kfBXJOt9/216zxleL
+         Mye7jg6656ELghQVaygf+aeIzF2siZbIkf75xRWOfNljM5Ju+o/EbFHwDy5cV7Vg8Axz
+         8vng==
+X-Gm-Message-State: AOAM533xJ/7tjZvIJV8ZMSEluYbIc/EUnoSM1umeDz+xOYCwUdWokWJ4
+        XNRst+rJ4jhoobGI5lMtOocw9amQSbBHpr5LiT3C
+X-Google-Smtp-Source: ABdhPJwLWEnRspCTHXQw5Y1o2N+2A0zsuxnn8yIG3KMhBPuEdZ1Ac8Z+84mEcsiLINoXwdsQfuFh4BxffxXzvAt/zxo=
+X-Received: by 2002:aa7:c584:: with SMTP id g4mr11564961edq.335.1622535890905;
+ Tue, 01 Jun 2021 01:24:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210531091908.1738465-6-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210531202044.426578-1-morbo@google.com> <e22afde4-e312-4589-cf2e-3c35219d7249@kernel.org>
+In-Reply-To: <e22afde4-e312-4589-cf2e-3c35219d7249@kernel.org>
+From:   Bill Wendling <morbo@google.com>
+Date:   Tue, 1 Jun 2021 01:24:39 -0700
+Message-ID: <CAGG=3QVdXxLf0T9+n9FidrRcfdWY36m-i=4kPRJjOojWhjiywg@mail.gmail.com>
+Subject: Re: [PATCH] pgo: rename the raw profile file to vmlinux.profraw
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.05.21 11:19, Dong Aisheng wrote:
-> Make debug message more accurately.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
-> ChangeLog:
-> v1->v2:
->   * drop dma_reserve log changing
-> ---
->   mm/page_alloc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 1786a24cdc5a..1bfbe178a9ed 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -7347,7 +7347,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->   					pr_debug("  %s zone: %lu pages used for memmap\n",
->   						 zone_names[j], memmap_pages);
->   			} else
-> -				pr_warn("  %s zone: %lu pages exceeds freesize %lu\n",
-> +				pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
->   					zone_names[j], memmap_pages, freesize);
+On Mon, May 31, 2021 at 1:29 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On 5/31/2021 1:20 PM, Bill Wendling wrote:
+> > Future PGO features may create other files in /sys/kernel/debug/pgo. So
+> > rename the kernel's raw profile data file to "vmlinux.profraw" to make
+> > which part of the kernel the file is for more explicit.
+> >
+> > Note that future files in /sys/kernel/debug/pgo should follow a similar
+> > naming convention.
+> >
+> > Signed-off-by: Bill Wendling <morbo@google.com>
+>
+> Guess this clears up my confusion around the module patches :)
+>
+To clarify, Jarmo did those patches on his own. I just wanted to
+clarify the naming convention. :-)
 
-I guess it should be s/exceeds/exceed/.
+-bw
 
-Apart from that
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+>
+> > ---
+> >   Documentation/dev-tools/pgo.rst | 6 +++---
+> >   kernel/pgo/Kconfig              | 7 ++++---
+> >   kernel/pgo/fs.c                 | 2 +-
+> >   3 files changed, 8 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/Documentation/dev-tools/pgo.rst b/Documentation/dev-tools/pgo.rst
+> > index b7f11d8405b7..0200449c4843 100644
+> > --- a/Documentation/dev-tools/pgo.rst
+> > +++ b/Documentation/dev-tools/pgo.rst
+> > @@ -76,7 +76,7 @@ The PGO kernel support creates the following files in debugfs:
+> >   ``/sys/kernel/debug/pgo/reset``
+> >       Global reset file: resets all coverage data to zero when written to.
+> >
+> > -``/sys/kernel/debug/profraw``
+> > +``/sys/kernel/debug/pgo/vmlinux.profraw``
+> >       The raw PGO data that must be processed with ``llvm_profdata``.
+> >
+> >
+> > @@ -108,7 +108,7 @@ using the result to optimize the kernel:
+> >
+> >      .. code-block:: sh
+> >
+> > -      $ cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
+> > +      $ cp -a /sys/kernel/debug/pgo/vmlinux.profraw /tmp/vmlinux.profraw
+> >
+> >   5) (Optional) Download the raw profile data to the HOST machine.
+> >
+> > @@ -120,7 +120,7 @@ using the result to optimize the kernel:
+> >
+> >      Note that multiple raw profile data files can be merged during this step.
+> >
+> > -7) Rebuild the kernel using the profile data (PGO disabled)
+> > +7) Rebuild the kernel using the processed profile data (PGO disabled)
+> >
+> >      .. code-block:: sh
+> >
+> > diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
+> > index 76a640b6cf6e..d2053df1111c 100644
+> > --- a/kernel/pgo/Kconfig
+> > +++ b/kernel/pgo/Kconfig
+> > @@ -17,10 +17,11 @@ config PGO_CLANG
+> >
+> >         Run a representative workload for your application on a kernel
+> >         compiled with this option and download the raw profile file from
+> > -       /sys/kernel/debug/pgo/profraw. This file needs to be processed with
+> > -       llvm-profdata. It may be merged with other collected raw profiles.
+> > +       /sys/kernel/debug/pgo/vmlinux.profraw. This file needs to be
+> > +       processed with llvm-profdata. It may be merged with other collected
+> > +       raw profiles.
+> >
+> > -       Copy the resulting profile file into vmlinux.profdata, and enable
+> > +       Copy the processed profile file into vmlinux.profdata, and enable
+> >         KCFLAGS=-fprofile-use=vmlinux.profdata to produce an optimized
+> >         kernel.
+> >
+> > diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
+> > index 449f16beb2cf..ef985159dad3 100644
+> > --- a/kernel/pgo/fs.c
+> > +++ b/kernel/pgo/fs.c
+> > @@ -365,7 +365,7 @@ static int __init pgo_init(void)
+> >       if (!directory)
+> >               goto err_remove;
+> >
+> > -     if (!debugfs_create_file("profraw", 0600, directory, NULL,
+> > +     if (!debugfs_create_file("vmlinux.profraw", 0600, directory, NULL,
+> >                                &prf_fops))
+> >               goto err_remove;
+> >
+> >
