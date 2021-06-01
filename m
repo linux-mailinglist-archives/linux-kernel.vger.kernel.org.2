@@ -2,181 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C016B3976B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F8F3976BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234283AbhFAPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:32:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47730 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234260AbhFAPc5 (ORCPT
+        id S233059AbhFAPdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234305AbhFAPdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:32:57 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151FUJGS128223;
-        Tue, 1 Jun 2021 15:30:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=VrzulyZpEph92htIJFeZlMPUmowtTPctjF/roRFKleQ=;
- b=fBaNhazqViPHKl9Fv0BXlHDthegAmlJeblSJ5LWk/y+hWkbbhRpJXsZYw0HOCoE+SFv4
- x2sSoAz7vekX/FXhlRvCHipOAGkIBb3J6CZJBE3Q1qLsBx4KKPXLPEFM4MS46yssWl0h
- ISoLEuRSjxU2jLqQHDyWIZEwencXnhs/bo5NSPwUO7EUJ3oz/gUVAec0p4VBz8N8GKpP
- tWA3PlBPTRYeGnvE27DZNS0nBwMXVQ8wfns6kp+Q5oHPEiegGBq9Hnw4pMePL5aDXV4+
- KHtco5gVB6BaupIq2rJChf8bT7nUJJnpwExpuGCdga17uRQ9lfUHMzaJWEYVg2L1ZRAW QQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 38udjmnxcw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 15:30:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151FGSmD051942;
-        Tue, 1 Jun 2021 15:30:54 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-        by aserp3030.oracle.com with ESMTP id 38ubnd94k1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 15:30:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G2vzVFJMZnAcAxwViANPJYUGf0HodMq3nsK7OaqURY4QuLYqe8htsloEKlrCkSQ0imYBkezAH1u+uupIpBgvAb6VKjqx8s7bpMxw509RevZpXclk1gBDHZiPr36U2bLwcpGtPRfYTxseil72EgiPV+ZS+uoMh0pyuxqeaWfQHx5S+xrxiHsqHGzoRYd0Rv3fJV/CidgwZMUpGH5newDhAuAAkbhhGkw7hcjPQmzdpc6LSDOCe6+pJFliapOX6+mFUQyFA8+XPBRLzI17X8wat7tPTMOpnplo8TzfX1HfL8AbfvontMtl+Zly13NQOi5UIXnew9/nebRa5lAKoqeF1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VrzulyZpEph92htIJFeZlMPUmowtTPctjF/roRFKleQ=;
- b=hbj0VQF89AewAKKou9J33N1HON1dyHVocVkOSz8y+mXSHbtYLunRVod5+RJNTd2pRcereiO7mmOL2yhKTfR+NDsjVnDThkUK+dcL06T2jClf/zIZIW7UOlLoF5R+pQz6jaXa6633sL3/WrvUIsSrmzDiY0dq1swEo44Kz8/UlLsi4uavJN18PgYIETgnKKCFIbpEzbg4VX3qu2UJBkAKcawYeH/JJY1Spc5MVzdtdgNpYXSjqbjLS9AZ6yvR+f6qSDgcozAbp10ciGnZqZ++k6UNUGOC0R9JKwx51rvUUxROr8+UH3K94svap5k8dQmPwlvOgymo54v5FEyIFsQ3Dw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VrzulyZpEph92htIJFeZlMPUmowtTPctjF/roRFKleQ=;
- b=ae2TlrlChcoCnbSnJ1//pJ2yKdXSvL2HsPlQuMnUpiqn1cOpd5VogmZKg4jzr4DWVya+LVF95n/Avmz5Euxotzmw2XAISMqLYFCfioM0AljZApIr8rxAA6W7P3Crfg1FT03h+F8OxvEoSdmPH84hd7O0sfS+l5pj9vo0FssgemE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8)
- by CH2PR10MB4072.namprd10.prod.outlook.com (2603:10b6:610:c::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.24; Tue, 1 Jun
- 2021 15:30:52 +0000
-Received: from CH2PR10MB4118.namprd10.prod.outlook.com
- ([fe80::5d0c:35a5:182d:4517]) by CH2PR10MB4118.namprd10.prod.outlook.com
- ([fe80::5d0c:35a5:182d:4517%5]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
- 15:30:52 +0000
-Subject: Re: [PATCH] fs/jfs: Fix missing error code in lmLogInit()
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <1622545630-19745-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-Message-ID: <103f7053-409a-72c6-aae2-613d80b521d7@oracle.com>
-Date:   Tue, 1 Jun 2021 10:30:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-In-Reply-To: <1622545630-19745-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [68.201.65.98]
-X-ClientProxiedBy: SN1PR12CA0068.namprd12.prod.outlook.com
- (2603:10b6:802:20::39) To CH2PR10MB4118.namprd10.prod.outlook.com
- (2603:10b6:610:a4::8)
+        Tue, 1 Jun 2021 11:33:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A931C061574;
+        Tue,  1 Jun 2021 08:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=spulMJU5vcfm6fCDiXKafJqkb0QFdQy2mPq+FRg3HrI=; b=MutdgsODQUN/W4vU1lKs+wXA2y
+        z9fs2I5gVYi629eoU7OElZjgZFcyo/GhXq4Zp14HO7usWO1hYc45clLTQF4nLnVk1iMLyMX+mo6J4
+        n99BeytS6B7UaSG/IBtoVBbH0lasTiVpvs5VXWnRwgTUlMCEKD5C3xJscexDf0op9JU/Rik9RYBj0
+        jOtkW8/sivy6F+MeQA3q2xG8oy8nGdtJpsSKR6F+lrBngwSjHTYbK2SEeK8Q73GdMMOpamtPKICBZ
+        YYCYK961/27+L3Kh4Id08WqDV2W0Gw7ZHT0gtgyZar+YsJzJjdk2GEQ3mXh4b8WuwxHEcEZiNW5Kl
+        161ausGQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lo6LJ-00AA26-Vr; Tue, 01 Jun 2021 15:30:15 +0000
+Date:   Tue, 1 Jun 2021 16:30:09 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFCv2 2/3] lib/vsprintf.c: make %pD print full path for
+ file
+Message-ID: <YLZSgZIcWyYTmqOT@casper.infradead.org>
+References: <20210528113951.6225-1-justin.he@arm.com>
+ <20210528113951.6225-3-justin.he@arm.com>
+ <YLDpSnV9XBUJq5RU@casper.infradead.org>
+ <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
+ <YLEDwFCPcFx+qeul@casper.infradead.org>
+ <AM6PR08MB437615DB6A6DEC33223A3138F7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
+ <YLEKqGkm8bX6LZfP@casper.infradead.org>
+ <AM6PR08MB43764764B52AAC7F05B71056F73E9@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.190] (68.201.65.98) by SN1PR12CA0068.namprd12.prod.outlook.com (2603:10b6:802:20::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 1 Jun 2021 15:30:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a7c4c953-6383-43e6-a883-08d925123d9e
-X-MS-TrafficTypeDiagnostic: CH2PR10MB4072:
-X-Microsoft-Antispam-PRVS: <CH2PR10MB40722D0A6AAAD77C60181320873E9@CH2PR10MB4072.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MN9ByP9rrOqXl2LQjToxEvVTCpnb2S7eLY4i6nQOLmTqlkiKlYXC7DsAguR/nNfx3t4NhrVhCEVnxduG8y0GsZkZtD7GZvRjj0kBeNJLg8zIfCBgCLkFdd2mxzfsnfm0dhzGtHqvUBVIs/z+3qcyZeojjwK/pd/789trbXsdtM/ApMPaWsE9IKMxTxbFGD/Vf4CEsWbeV80Gk5npogkXYp5Oqvsfd4Wb2N/QVEL0vP9v5AL0ciYlkG2pcq/KxYNMMNt/t8Nd16nYMt54/zjozFkNaXd8BP+xZgFo0w9+JGO2krVeA31gbpGaosR2Oj/WAktF+lTWvR9Ks5RCXVbHqPrfjoKJYD5lu7f6hXbLNen1HEKeI3YV9dNGnF1aEKCsqOxjB+ajuEyIJOv9b29ObCRuXoG+PlWoHEpd19Nrmwx5M7/wciD/TVJh+x6dEo71c9CV1s8NGhPQIFI5QX3FZSbVOyTeCiLnHoVkmh7+eo93GKIYxxlKjvkLVjFhhZybLKdhcI04E3UBxPIpxI/lptgOiFUgvldWg6FiIcGmnTsznb6k24GtUdiW1Ilhx/tae/O63bdWKognaM5RU+2aCCaZRYYkYtEWhimrKWX6hrJGyaW3gD/Zs1drlkUa4Ir1+20P38ZgZ/Gf1assLLlD6QNBjA8kQ62W9Qpjo0LB3jP7LX8VwMhvQ1Mo7y4w51Uh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4118.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(376002)(136003)(346002)(53546011)(2616005)(5660300002)(6486002)(956004)(38100700002)(31686004)(16526019)(186003)(4744005)(44832011)(36756003)(2906002)(8936002)(83380400001)(31696002)(86362001)(6916009)(8676002)(66476007)(26005)(66946007)(16576012)(4326008)(316002)(66556008)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NDBHaUVEQkw5N2NuVGptaWxvOFFLellwRnFXRFIvWUtZamwwSUozSWh3MWhR?=
- =?utf-8?B?VldSUDlscUI4WldrSjJrRXN0aVJwWHc4dkRKNDNQYWJCTk9oSGFSSmhXS3pi?=
- =?utf-8?B?M21RcTVObTlNMTJhemFLU0UxTTNiRzdPREY5U0dtMHczNGRCRTlvbTdDSkVC?=
- =?utf-8?B?eVN3TWU0NDhVdlM4RHVra2lWMmk2VG92QnJQQU0yaEJjbXlWWXo2WlFKZndR?=
- =?utf-8?B?MXR3K1NzSHlOYVVXTEtNSkFULzJBUm5rV3d5bTNUTjNxUitHbWk5WkhITlJ1?=
- =?utf-8?B?UlBNSW0wVXBraUZKK2k1cnYvUVJhSWJBV1VoQVJidVdiNUdYV0puNEYwaGhX?=
- =?utf-8?B?Q0Ztd2x2T3FwWmpoclVaL0p2eVRUYjR6a0lKQ1hYdHgyRHlnSTlKSUV6eXNy?=
- =?utf-8?B?Tkx1Y1BVU1NmcEFUaHl6bFpKZ1pQWlc2eVRHNVZZcFp0STNob01RdG9aSFlK?=
- =?utf-8?B?ZnhVQTNkb0ZyZUVzRFIzN0pBVTZndVluQVUvNEdaa1VKU2MzME9pWUpxMi9s?=
- =?utf-8?B?UzM1ZkZ6ZzF5UEFoRzd2YU1YbmdyL0poaWhrcTA4bDZySENIbGhjWEVmZWxW?=
- =?utf-8?B?ejNLTGwreXpDUWRhQi9YOEFod2s5SERCUUxSQ1psOEJRVURvL2hpUzNGU29s?=
- =?utf-8?B?Yi85MlNkZ2Z2RmVBMHFqOTBlZjYxSGlVb2xPanNqaFdWdDVuVUZrZ3RweFRj?=
- =?utf-8?B?K3krTSt2M2dsTENEOGZWaGIyMlJ3WVA2aGVZUy9haVpqSzVta2kzSXN3NXR2?=
- =?utf-8?B?QTMrRlBtbVFVRCtDUXFMVDRJYlNVVVlja29QY0kzVTZKemZsNko3cW9GTURK?=
- =?utf-8?B?cGorTVhHd3R3VVNtbW5zWG1aeGtNU2JyejhSdVBua282dlFMWkphTGJmUUt4?=
- =?utf-8?B?V2lMcmthQ21zSm1uNWQ2T2RTbGx4eWIwSStYZ0ExMUpXS0E4djFueVowMDBs?=
- =?utf-8?B?UUZqSk5FejZ6V1BtUEZjQ3h6dHJmSkQySktsNXcxU2l1VmsrNTBFb093UWEz?=
- =?utf-8?B?eDZSVUsxb1BsQUJRd2xSUnE3TUxwMTA0c3RNdUp0OGE4aU1OU1hMazQwczd4?=
- =?utf-8?B?V3RMNjZWSXVYeEpCU05qOHZibHhlSzMwSG9MWmxndlhGaStOcGN2c28xV3Bp?=
- =?utf-8?B?WThTRXEycitpVHhrL2JXd2dVS210dDJ2ZmdHdTZScDBMdlNIbU05R0xSUUt4?=
- =?utf-8?B?SmZxWUNLL1NSazJBUFAvL0pUR2lHRUNvWlBJaWFraVVrYkJWQWxxQ2REV1Fm?=
- =?utf-8?B?YjY3N2RaZGpPaUx1OThVWVd4aEpvaVdxZ1lPKzc0aGZwaG1Xdmt1QzQ2cXA3?=
- =?utf-8?B?SlFlbWJMdnJrcHc4cXpwbmdQNlB5TC9qYU44R3YzRnFUMEM5NElkMks1bTVn?=
- =?utf-8?B?czk5WldFS2RnUWNIK1BET0FsUkI2dVJyTEVjcStEQ2p5YUNwMFFLL2RHV3BC?=
- =?utf-8?B?dURUWHBqOU9GYjhlUzVab0E3Qkl6OXZNNVR5cVBHejlBRlpLTi90SlV0USt5?=
- =?utf-8?B?ZWRFTk5La3NEWUVodXFTN2hSOFhtdUNldTdVSHdFYVh1SCtxTExRU2VwUEtF?=
- =?utf-8?B?SVlVUU0rVFM0MXpjV25qUVRNcU9ka2EwT3J1eE16NElyV2g5akp3L25VRENp?=
- =?utf-8?B?STE2QWgyc2ViTmxERUczdzkyMkE4NUJjd3dZODFtVUY0enNyeHB4d3hVMVg5?=
- =?utf-8?B?ODlQU0tXYWNhc2FFeHpQMFcwUXhwSk9lcDlDWTNUb01MaE43eDgxZGVMeSs4?=
- =?utf-8?Q?vtUg9y5URbcmEBkZqZq8HN1RfjcDlSSOH6wlTwq?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7c4c953-6383-43e6-a883-08d925123d9e
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4118.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 15:30:52.5790
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +AZC5wcR+lQOysxHO7/wzv9QXaDnkQVXjdqpMaf7h+mw58vE2OfIdNsuSjH6afEp0db/7rRqhD+gq+QK1MKmEUwP4256hBfpHz3NxLxlr8w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4072
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
- spamscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106010104
-X-Proofpoint-GUID: TAfMDaLUOagKk2_Fp9WxGGUn6TbeNF7z
-X-Proofpoint-ORIG-GUID: TAfMDaLUOagKk2_Fp9WxGGUn6TbeNF7z
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106010104
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB43764764B52AAC7F05B71056F73E9@AM6PR08MB4376.eurprd08.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good catch. I'll push this in the next merge window.
+somehow the linux-fsdevel mailing list got dropped from this revision
+of the patch set.  anyone who's following along may wish to refer to
+the archives:
+https://lore.kernel.org/linux-doc/20210528113951.6225-1-justin.he@arm.com/
 
-Thanks,
-Shaggy
+On Tue, Jun 01, 2021 at 02:42:15PM +0000, Justin He wrote:
+> > On Fri, May 28, 2021 at 03:09:28PM +0000, Justin He wrote:
+> > > > I'm not sure why it's so complicated.  p->len records how many bytes
+> > > > are needed for the entire path; can't you just return -p->len ?
+> > >
+> > > prepend_name() will return at the beginning if p->len is <0 in this case,
+> > > we can't even get the correct full path size if keep __prepend_path
+> > unchanged.
+> > > We need another new helper __prepend_path_size() to get the full path
+> > size
+> > > regardless of the negative value p->len.
+> >
+> > It's a little hard to follow, based on just the patches.  Is there a
+> > git tree somewhere of Al's patches that you're based on?
+> >
+> > Seems to me that prepend_name() is just fine because it updates p->len
+> > before returning false:
+> >
+> >  static bool prepend_name(struct prepend_buffer *p, const struct qstr
+> > *name)
+> >  {
+> >       const char *dname = smp_load_acquire(&name->name); /* ^^^ */
+> >       u32 dlen = READ_ONCE(name->len);
+> >       char *s;
+> >
+> >       p->len -= dlen + 1;
+> >       if (unlikely(p->len < 0))
+> >               return false;
+> >
+> > I think the only change you'd need to make for vsnprintf() is in
+> > prepend_path():
+> >
+> > -             if (!prepend_name(&b, &dentry->d_name))
+> > -                     break;
+> > +             prepend_name(&b, &dentry->d_name);
+> >
+> > Would that hurt anything else?
+> >
+> 
+> It almost works except the snprintf case,
+> Consider,assuming filp path is 256 bytes, 2 dentries "/root/$long_string":
+> snprintf(buffer, 128, "%pD", filp);
+> p->len is positive at first, but negative after prepend_name loop.
+> So, it will not fill any bytes in _buffer_.
+> But in theory, it should fill the beginning 127 bytes and '\0'.
 
-On 6/1/21 6:07 AM, Jiapeng Chong wrote:
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'rc.
-> 
-> Eliminate the follow smatch warning:
-> 
-> fs/jfs/jfs_logmgr.c:1327 lmLogInit() warn: missing error code 'rc'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   fs/jfs/jfs_logmgr.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-> index 9330eff21..78fd136 100644
-> --- a/fs/jfs/jfs_logmgr.c
-> +++ b/fs/jfs/jfs_logmgr.c
-> @@ -1324,6 +1324,7 @@ int lmLogInit(struct jfs_log * log)
->   		} else {
->   			if (!uuid_equal(&logsuper->uuid, &log->uuid)) {
->   				jfs_warn("wrong uuid on JFS log device");
-> +				rc = -EINVAL;
->   				goto errout20;
->   			}
->   			log->size = le32_to_cpu(logsuper->size);
-> 
+I have a few thoughts ...
+
+1. Do we actually depend on that anywhere?
+2. Is that something we should support?
+3. We could print the start of the filename, if we do.  So something like
+this ...
+
+static void prepend(struct prepend_buffer *p, const char *str, int namelen)
+{
+	p->len -= namelen;
+	if (likely(p->len >= 0)) {
+		p->buf -= namelen;
+		memcpy(p->buf, str, namelen);
+	} else {
+		char *s = p->buf;
+		int buflen = strlen(p->buf);
+
+		/* The first time we overflow the buffer */
+		if (p->len + namelen > 0) {
+			p->buf -= p->len + namelen;
+			buflen += p->len + namelen;
+		}
+
+		if (buflen > namelen) {
+			memmove(p->buf + namelen, s, buflen - namelen);
+			memcpy(p->buf, str, namelen);
+		} else {
+			memcpy(p->buf, str, buflen);
+		}
+	}
+}
+
+I haven't tested this; it's probably full of confusion and off-by-one
+errors.  But I hope you get the point -- we continue to accumulate
+p->len to indicate how many characters we shifted off the right of the
+buffer while adding the (start of) the filename on the left.
+
+4. If we want the end of the filename instead, that looks easier:
+
+static void prepend(struct prepend_buffer *p, const char *str, int namelen)
+{
+	p->len -= namelen;
+	if (likely(p->len >= 0)) {
+		p->buf -= namelen;
+		memcpy(p->buf, str, namelen);
+	} else if (p->len + namelen > 0) {
+		p->buf -= p->len + namelen;
+		memcpy(p->buf, str - p->len, p->len + namelen)
+	}
+}
+
+But I don't think we want any of this at all.  Just don't put anything
+in the buffer if the user didn't supply enough space.  As long as you
+get the return value right, they know the string is bad (or they don't
+care if the string is bad)
