@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B44396B0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E38396B00
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhFAC0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 22:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        id S232524AbhFACZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 22:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbhFAC0B (ORCPT
+        with ESMTP id S232268AbhFACZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 22:26:01 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D286BC061756;
-        Mon, 31 May 2021 19:24:18 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id w33so19321110lfu.7;
-        Mon, 31 May 2021 19:24:18 -0700 (PDT)
+        Mon, 31 May 2021 22:25:42 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA14C061574;
+        Mon, 31 May 2021 19:24:02 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so949228pjq.3;
+        Mon, 31 May 2021 19:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S8vIWLZExfHwrllytUl82llWvNAE8jr59cb6GfsI/sc=;
-        b=QSQnS6orgEeE0FakSD3AuyPbB6t71SGC8B6DmuVyXAaqHvFPnfA61rHTHdeGOACVV+
-         Gj8iQsUoobaERXTkS0Oqk3Ajl5KW+DeeoVNS5jc/7nMM3UyftsNiejYDuyGbjDXMhJub
-         Hh0OM85BCiswJUgO089I5HEu8hip48ZEbGp8LRQjJQ/uQSkV1tFz98SqvSEuNsGje5S1
-         +5SxCRz2LwgqlI9NKprA488yl5HkwwHPNLxJPG45QXFcdZm6ZAVPeVItDVEUb6GpPx2N
-         cAkNmW1QpVXEvFmSJsYU/yzuFV6S0mrWytzWs1gXg/ObtJB+QvQbdzgNye2vUD/tEDwN
-         rByg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UpzhSNwLiW0YeEWD8X316pfssjFG1xaIfF4B5TBGhug=;
+        b=CkklemdYph3jwNNdKXeuwgfOM08GVgZNlDEN4Vy5NpHX770HioX+whdzoXrX13cKQ+
+         WAxKMisyZfN0f/ztmZmyRvzK/lHYoGGexa2SBgxWhPXeRsUfn2fZMC+CaFSNOCvDSS5c
+         6wTh7Z04zPBmgpdace08S6XeUfnXsMyrsQ/U9vwOKV/iNUb9F5+rsHDk8RrzoAqQaYi2
+         JTZZhACip196vsEBpQUqvwhaa3VVlwB/BTOeU4c8U+kiz7ZDkuqCIU2HIJZ1ySkpRiA/
+         xNwReZlNwsRbgKUR5m1CaZ0LGnkAFUdJBlOPyi8mGdhqYvo+OR5gBhOuOxgLHqk/hyVV
+         Q4Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S8vIWLZExfHwrllytUl82llWvNAE8jr59cb6GfsI/sc=;
-        b=VdH/s/6++xLffc3YYKDXawEPt0a3B4mGOA+rX7JpygXkYjIy3BvUliHBzGD6yEo+GP
-         3b9XrBwBZTBZKkAIeJiwXe8/iwtObyDInNxrzNEjvpv1qXJmIam/fg7D6qsWndkamt8I
-         mhJdA5gXWtG59f9Ymqhb6ft98lgVjHOn4Cehldv0GnTK9/KT9h5GEn0T5wtlnkmrvHgu
-         E8M9I4IwzaMlWEEjWLqzjpE1+x5jWpszEGHJH17W7hWrfuJdB9HTJN5i4x40SiZrqkx+
-         o3JsSM4fJ5XbW1YrYHgnvJ1MuAzaE0zEJBpQ57q2bsLXE8b1/rigb2NmbzA5djLm9btp
-         K1qA==
-X-Gm-Message-State: AOAM531GGTz7sOkB8JiB93eQ4uMDxjJ5av1/XqIOmF298ASKKLtc6QJC
-        U33Zwy+8p3CEAqgI/L1f9vw=
-X-Google-Smtp-Source: ABdhPJxRLTcWUI3a6c18u1QZHb9K/WBQdeqCJeZdWlIhkYUEqu7MTo2564bXnCUcAAl/UL58GLyAxA==
-X-Received: by 2002:a19:8545:: with SMTP id h66mr5007771lfd.64.1622514257124;
-        Mon, 31 May 2021 19:24:17 -0700 (PDT)
-Received: from localhost.localdomain (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.gmail.com with ESMTPSA id g34sm1524207lfv.59.2021.05.31.19.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 19:24:16 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: devfreq: tegra30-actmon: Add cooling-cells
-Date:   Tue,  1 Jun 2021 05:23:19 +0300
-Message-Id: <20210601022319.17938-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210601022319.17938-1-digetx@gmail.com>
-References: <20210601022319.17938-1-digetx@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UpzhSNwLiW0YeEWD8X316pfssjFG1xaIfF4B5TBGhug=;
+        b=pcHZMSW0ng1CjEn70HtAL6iNPND9LbMwpZ6YQYZyfgvlmSxyP6Bbky73rN77V2hlJA
+         a66UEx+vcpk+eg2bUrk6f3zzvTf3JiMr0AAc0vO0yr3qdDl0ABGYUHkLsG0fdf/KZKWU
+         adxtGcB+TTz5RE+brT97wwRW6FgpQa7CJDBJl7+Euzl5T4zLYLjecF9zT7OFji8S7nnk
+         oWUkiosYmxjgkZrrXK7J4NMUV+BOwAfkr5yGOFJA5GRbCYVoob4nOWc4PEnIvyFsvisS
+         utmPllnWAmrmWioRKRlROCwFn1n/HxjV9Bcm4AIm2gTiu6lGVD3H779GjcQUgqjFToqE
+         N42w==
+X-Gm-Message-State: AOAM532ceIGNKih4enoPEjiOPR8F3cO4qVMDn6F5XsfDmabh4bKZlTn8
+        LcZWObSyprBJhNM+7vTqcOVTT841ZQzfgw==
+X-Google-Smtp-Source: ABdhPJzUhaVduybp1p70m0klT/mfXpqeAcXGiBYm3thNi3R7b36JRtTc8ma4XwuYdG313uSBvEnydQ==
+X-Received: by 2002:a17:90a:28a6:: with SMTP id f35mr2124949pjd.1.1622514241559;
+        Mon, 31 May 2021 19:24:01 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id g6sm2686934pfq.110.2021.05.31.19.23.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 19:24:00 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/177] 5.4.124-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210531130647.887605866@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9abbe647-b522-3db6-7587-90e9532a5e76@gmail.com>
+Date:   Mon, 31 May 2021 19:23:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ACTMON watches activity of memory clients. Decisions about a minimum
-required frequency are made based on the info from ACTMON. We can use
-ACTMON as a thermal cooling device by limiting the required frequency.
-Document new cooling-cells property of NVIDIA Tegra ACTMON hardware unit.
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- .../devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml   | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
-index ba938eed28ee..e3379d106728 100644
---- a/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
-+++ b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
-@@ -63,6 +63,9 @@ properties:
-       Should contain freqs and voltages and opp-supported-hw property, which
-       is a bitfield indicating SoC speedo ID mask.
- 
-+  "#cooling-cells":
-+    const: 2
-+
- required:
-   - compatible
-   - reg
-@@ -74,6 +77,7 @@ required:
-   - interconnects
-   - interconnect-names
-   - operating-points-v2
-+  - "#cooling-cells"
- 
- additionalProperties: false
- 
-@@ -118,4 +122,5 @@ examples:
-         operating-points-v2 = <&dvfs_opp_table>;
-         interconnects = <&mc TEGRA30_MC_MPCORER &emc>;
-         interconnect-names = "cpu-read";
-+        #cooling-cells = <2>;
-     };
+On 5/31/2021 6:12 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.124 release.
+> There are 177 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.124-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.30.2
-
+Florian
