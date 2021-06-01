@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272063972CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69F33972D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhFALv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
+        id S233742AbhFALyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233064AbhFALvY (ORCPT
+        with ESMTP id S230288AbhFALyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:51:24 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EAFC061574;
-        Tue,  1 Jun 2021 04:49:43 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id A4D492224A;
-        Tue,  1 Jun 2021 13:49:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1622548178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HwyHo5KmOS+wJ8+Zmtt3LzoQ8VbBO0PvA0b+B+ROgHE=;
-        b=qmsy6VuDvoP/T3NCjWBNzLHxoXZ9hGk7/k/3Mjie29LAenUS6S91fKxxkIBGcY/BCll8w0
-        FJIfq5GU9Nwk4XtQee5kHnouso9MdowOaPjJ4Pw34j0m+pvbDj7nj00yMplNQSbHhwY2xD
-        fo+13GXbZWJRZp6LCwFuAEp1QjrDINk=
+        Tue, 1 Jun 2021 07:54:08 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13436C061574;
+        Tue,  1 Jun 2021 04:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=hThjzyD5PdpvEbtDuA2WlTKzdIKthAXEXN7E7fzGif0=; b=xnISXh1iuAYIg9J7zF2crdN68
+        ycZn4SEIUAob7ZGnV3Vyfmg4mGpcCB3Y9VbVjfbDhKhKmXtOJgVc7+KYYh2b3pyoZ1OwAa0jYrc1b
+        fy+BV5byDSkvisC3WJO2nJ1oshL7JL2TjMt6asGnP1ftPuZn2x1scmZQ5LUfk813ZZr884qYE8CVA
+        SNcE4os5KQzM1T/LsVswbez0oqWp3qOwiNNZShSfmS82wy/3DjQPlBVUQSZh5SYEBE5NUcqRBzn2j
+        l1KMs07gN2PLzPEoT9kXbP4wnURhffeNvQP3C8WFBIQThZ92aRGNBFG/Z3/Yw2eNXnMgHW7XVPdBi
+        4gUQfmQ3g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44564)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lo2wW-0003wM-Ab; Tue, 01 Jun 2021 12:52:20 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lo2wV-0008W6-QQ; Tue, 01 Jun 2021 12:52:19 +0100
+Date:   Tue, 1 Jun 2021 12:52:19 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, f.fainelli@gmail.com,
+        linux-imx@nxp.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 3/4] net: phy: realteck: add dt property to
+ disable ALDPS mode
+Message-ID: <20210601115219.GU30436@shell.armlinux.org.uk>
+References: <20210601090408.22025-1-qiangqing.zhang@nxp.com>
+ <20210601090408.22025-4-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Jun 2021 13:49:38 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Sander Vanheule <sander@svanheule.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/5] RTL8231 GPIO expander support
-In-Reply-To: <CAHp75Vcb95HiYxvEzYr0QXcQmA_A+2M9M0uv6PAhPHtgTges8g@mail.gmail.com>
-References: <cover.1620735871.git.sander@svanheule.net>
- <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
- <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
- <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
- <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc>
- <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
- <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com>
- <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
- <c7239e0cbbc9748925410937a914bd8a@walle.cc>
- <7a9978881e9ec5d4b811fa6e5d355fb6bce6f6d8.camel@svanheule.net>
- <0047200eecbd7ee480258cc904d6b7ee@walle.cc>
- <CAHp75VfOrUBRQH1vrXEwHN4ZPojQfQju-_wp_3djZeozEaatug@mail.gmail.com>
- <272ac6af4a5ba5df4bb085617c9267e5ece61c19.camel@svanheule.net>
- <CAHp75Vcb95HiYxvEzYr0QXcQmA_A+2M9M0uv6PAhPHtgTges8g@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <8df77f619730b9e7b5cdd7ddefb60a03@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601090408.22025-4-qiangqing.zhang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-31 17:48, schrieb Andy Shevchenko:
-> On Mon, May 31, 2021 at 6:33 PM Sander Vanheule <sander@svanheule.net> 
-> wrote:
->> On Mon, 2021-05-31 at 14:16 +0300, Andy Shevchenko wrote:
->> > On Monday, May 31, 2021, Michael Walle <michael@walle.cc> wrote:
->> > > Am 2021-05-31 10:36, schrieb Sander Vanheule:
-> 
->> Am I missing something here? It seems to me like the regmap interface 
->> can't
->> really accommodate what's required, unless maybe the rtl8231 regmap 
->> users
->> perform some manual locking. This all seems terribly complicated 
->> compared to
->> using an internal output-value cache inside regmap-gpio.
-> 
-> Have you had a chance to look into the PCA953x driver?
-> Sounds to me that you are missing the APIs that regmap provides.
+On Tue, Jun 01, 2021 at 05:04:07PM +0800, Joakim Zhang wrote:
+> @@ -325,8 +329,10 @@ static int rtl8211f_config_init(struct phy_device *phydev)
+>  	u16 val;
+>  	int ret;
+>  
+> -	val = RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_XTAL_OFF;
+> -	phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1, val, val);
+> +	if (!(priv->quirks & RTL821X_ALDPS_DISABLE_FEATURE)) {
+> +		val = RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_XTAL_OFF;
+> +		phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1, val, val);
+> +	}
 
-What would that be? The register cache? We need to cache the
-value somehow, because (still assuming it is write only) we cannot
-read it back. Thus the read of the RMW, would need get the
-value from the cache. Thus the user of gpio-regmap would need
-to make sure, to (a) use a cache for the regmap supplied to
-gpio-regmap and (b) populate its initial values correctly. Is
-that what you are suggesting? And hopefully, no other user
-of the regmap will call regcache_mark_dirty() or something
-like that.
+Similar questions as with the previous patch, but also... this doesn't
+actually disable the feature if it was previously turned on. E.g. a
+kexec() from a current kernel that has set these features into a
+subsequent kernel that the DT requests the feature to be disabled. Or
+a boot loader that has enabled this feature.
 
-I had a quick look at the PCA953x driver but it all its
-registers are readable according to the comment on the top
-of the file.
+If DT specifies that this feature is disabled, shouldn't this code be
+disabling it explicitly?
 
--michael
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
