@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEFA397767
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F4B39776F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhFAQC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFAQCz (ORCPT
+        id S234457AbhFAQEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:04:40 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3122 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230523AbhFAQEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:02:55 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3134C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:01:13 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id k16so15843424ios.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WfmsydD/A8BiNqHr9XgI8dOVh8RAtY6UXqT7qqwK9X8=;
-        b=Sy4bUKJmv2dkaIL+PnSyHaFU4M7Xr9P9mJvn6Azv/EzDtyYXU5e4kQOR/zL9HPytx0
-         QcZQLccBYF3AOuCjlwiEYrfJFwxCg4R6vAfYO+mdPKzZ2hKkN8+kW/pNfZ7fha7bGtc0
-         lReUE9y/DtyL5f1CPH7clx3gYrkTiss9eHWcVGYPQForWyzPVhp78WnxJWaFGW1TqTsF
-         8lHVKPkfU5w2+/d1Zo4pnXdREZrzedwCTGDFvTon+M39PGpyV3qjMH5WbP/+KOd8yVkS
-         9reEl/T7Ki7A5GhsHz7pTwnLguzyS4ZWpRxRhw497XP15S4nH6XiV3Ttf0fXoewKmIRj
-         POzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WfmsydD/A8BiNqHr9XgI8dOVh8RAtY6UXqT7qqwK9X8=;
-        b=HZhHatqolNI5sTjelyjlkFgHpFU4xeI58EGk3IxAz1dDQLBjJ7AqZxZfWSUuUR5oFz
-         aGOWFa1gPMAZqfeTJefWCqsREU1Kd/z7XQQ6WkKR72GDRtNW1YrjyFcG8CmF52JQN34z
-         0fFMHdMHjKQwulOVUSH4DdDt4e3Koq9B6yIiVwy4IzMB8e6ovY9ziGo4N4NThLmidKE2
-         0nMdbYKEy25Ne5R72JvDNShaeinjKgCQiAD/0iGJl9TUnxq28Dfq4nif7q4DV2rJKK07
-         yRpEvwByH7+6VcbanFm5M1Yaz/4oflQylFJK3a4g4YhM8/1I7VpM2vMrspsQWOktJYDO
-         MUQg==
-X-Gm-Message-State: AOAM531SRMEyh5gO6xDtPWMngbvDR4MXqWSWwuE/wD/jZFnEGLNffcPz
-        AXgn4G9iDN9xoJc4G6qJt1mTkQv9W4nzqSoj
-X-Google-Smtp-Source: ABdhPJy6KabpoFyW9fLH+Ch6zAs6yTCUjvg/QYLvTXzSZ2XwGs30TbFV6J3nia2b9uGkivg2kyHWQw==
-X-Received: by 2002:a6b:690c:: with SMTP id e12mr21869176ioc.69.1622563272777;
-        Tue, 01 Jun 2021 09:01:12 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id o2sm9978840ilt.73.2021.06.01.09.01.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 09:01:12 -0700 (PDT)
-Subject: Re: [RFC 4/4] io_uring: implement futex wait
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
-Cc:     Andres Freund <andres@anarazel.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org
-References: <cover.1622558659.git.asml.silence@gmail.com>
- <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
- <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
- <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
-Date:   Tue, 1 Jun 2021 10:01:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Jun 2021 12:04:39 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvcGL71Knz6Q3qK;
+        Tue,  1 Jun 2021 23:56:26 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 18:02:56 +0200
+Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 17:02:55 +0100
+Date:   Tue, 1 Jun 2021 17:02:51 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Liam Beguin <liambeguin@gmail.com>
+CC:     Peter Rosin <peda@axentia.se>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for
+ temperature-sense-amplifier
+Message-ID: <20210601170251.00002ddf@Huawei.com>
+In-Reply-To: <CBRHJM8ANOSE.2Q5C1FVQS5QOA@shaak>
+References: <20210530005917.20953-1-liambeguin@gmail.com>
+        <20210530005917.20953-10-liambeguin@gmail.com>
+        <0286de71-1b04-0956-be4e-f38573c6fea2@axentia.se>
+        <CBRHJM8ANOSE.2Q5C1FVQS5QOA@shaak>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.71]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 9:58 AM, Pavel Begunkov wrote:
-> On 6/1/21 4:45 PM, Jens Axboe wrote:
->> On 6/1/21 8:58 AM, Pavel Begunkov wrote:
->>> Add futex wait requests, those always go through io-wq for simplicity.
->>
->> Not a huge fan of that, I think this should tap into the waitqueue
->> instead and just rely on the wakeup callback to trigger the event. That
->> would be a lot more efficient than punting to io-wq, both in terms of
->> latency on trigger, but also for efficiency if the app is waiting on a
->> lot of futexes.
+On Mon, 31 May 2021 10:03:23 -0400
+"Liam Beguin" <liambeguin@gmail.com> wrote:
+
+> Hi Peter,
 > 
-> Yes, that would be preferable, but looks futexes don't use
-> waitqueues but some manual enqueuing into a plist_node, see
-> futex_wait_queue_me() or mark_wake_futex().
-> Did I miss it somewhere?
+> On Mon May 31, 2021 at 3:32 AM EDT, Peter Rosin wrote:
+> > Hi!
+> >
+> > On 2021-05-30 02:59, Liam Beguin wrote:  
+> > > From: Liam Beguin <lvb@xiphos.com>
+> > > 
+> > > An ADC is often used to measure other quantities indirectly. This
+> > > binding describe one cases, the measurement of a temperature through a
+> > > voltage sense amplifier such as the LTC2997.
+> > > 
+> > > Signed-off-by: Liam Beguin <lvb@xiphos.com>  
+> >
+> > What's the significant difference between this and the RTD binding? Does
+> > not both simply scale/offset a voltage to a temperature?
 
-Yes, we'd need to augment that with a callback. I do think that's going
-to be necessary, I don't see the io-wq solution working well outside of
-the most basic of use cases. And even for that, it won't be particularly
-efficient for single waits.
+I'm lost: what RTD binding?
 
--- 
-Jens Axboe
+> >  
+> 
+> The way I looked at it was one binding per sensor type (resistance
+> driven, current driven, and voltage driven).
+> 
+> Thinking about it more, these three bindings could be factorized into
+> one if the user is required to enter parameters "by hand".
 
+Don't. They are effectively different types of devices and we just end
+up with a more complex binding if we try to cover them all.
+
+There is an argument to go the other way and actually have bindings for
+individual temperature sensors like the LTC2997.  Then the parameters
+become a driver problem rather than one for the binding.
+
+Jonathan
+
+
+> 
+> These could become something like:
+> - sense-gain-mult
+> - sense-gain-div
+> - sense-offset
+> 
+> I like the idea of having the "datasheet parameters" in the devicetree,
+> but this would be a lot more versatile.
+> 
+> What do you think?
+> 
+> Cheers,
+> Liam
+> 
+> > Cheers,
+> > Peter  
+> 
 
