@@ -2,140 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D081396E74
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEFA396E79
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhFAIDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:03:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21933 "EHLO
+        id S233257AbhFAIEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:04:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29703 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233127AbhFAIDK (ORCPT
+        by vger.kernel.org with ESMTP id S232963AbhFAIEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:03:10 -0400
+        Tue, 1 Jun 2021 04:04:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622534488;
+        s=mimecast20190719; t=1622534578;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8mKeAx83Wo1F8/mxxn7eN4daLltVvzFFfCCvCnjwWhw=;
-        b=IDBHXsFGfqMk5VA7aOAYQHWenZJDKQiyKZxFqVC/H1/HYNRmPZlp//R1kQjOUHYrTl5FaP
-        tUC0LFnZj/XgjW1ROKIrE0hM/dtexkkpJEG1E2baPPBCc6PnAsSU16NMU+YhK88/w2V4G0
-        vyFyBvcZhmkRigJ5wh2lzz1pPGVhCE4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-4GEfehpjOXWhaqAqdnsXqQ-1; Tue, 01 Jun 2021 04:01:27 -0400
-X-MC-Unique: 4GEfehpjOXWhaqAqdnsXqQ-1
-Received: by mail-wm1-f70.google.com with SMTP id z25-20020a1c4c190000b029019f15b0657dso269969wmf.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:01:27 -0700 (PDT)
+        bh=nC6vJCqg2xcsbPsrocgrlXG+kt6WskzJ0DDl/gOMrrs=;
+        b=eJQrVCGXgHEartomrT/dvO+F7BWHMZm+N1o0JvtJwjYMg8kouKCVCt77N1qDp7OGOS1l8n
+        vY+G+h7nuUaG9L7PYKc1FWS/Nf1gUylXiv5Z0mBd8c5Ybzyp/8x08JCjhlSOzdktf1KV7l
+        TZyx3XhpwmVqmOgIaZVSBCmEwh4yOF0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-pduosfQYPLKDHnzMYUE1zA-1; Tue, 01 Jun 2021 04:02:57 -0400
+X-MC-Unique: pduosfQYPLKDHnzMYUE1zA-1
+Received: by mail-wr1-f72.google.com with SMTP id q15-20020adfc50f0000b0290111f48b865cso4544478wrf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:02:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
+        h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=8mKeAx83Wo1F8/mxxn7eN4daLltVvzFFfCCvCnjwWhw=;
-        b=EEbO3d4BqKPXEMd/+CdcCcTa8ak/y8zi1pEtCaNjfRUIoy5v7Amj+G1iWZ96uVxE2d
-         LJgpAWgK0aCZsYIjpBgJm02Z4H2MWUn7G5nlLLqQy3weQ1i49JsvDCdNApFWez0MfnFy
-         Z0QOWLDSvGcsAECt1j9eBoC+CnGp4Y2bQXIw4EWhnYsCphu9dTxyBLDIdfL1m8qKrIYe
-         CfkkS4gTaoDJv2eVJrJnT4oS1RUgG+ex/8razOwcWnk8ae+3uxHzQ6WaZ1Xu17/IhG13
-         xu3SnxNNaxHbogFpCtw182rff6kFimKoruof3+mV7n0zWi/myrPuDeqYKnkv9vk9mBCZ
-         w6jw==
-X-Gm-Message-State: AOAM531bZrE6rK4RfdQtFdIS3+3K/BFxYKO34Jo8MNcrV1I0bcNKv5fO
-        HnJTZWy0tYhotj8WP1s8vcJoMKGyyOFJe8UPVguchDwBCsKiyeUYZ1Eg0KpNBey1gevIvFnVvjL
-        6gGdp1QCfRIdfcQRgYUMJkZDK
-X-Received: by 2002:a7b:c006:: with SMTP id c6mr3192723wmb.11.1622534486376;
-        Tue, 01 Jun 2021 01:01:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwccKvTwuROehgW3RRKPGdNxD6nFp8lVriIFHjp5RHZwx/0OZRvWmnzuZaMgiV0bJqxs+lwhw==
-X-Received: by 2002:a7b:c006:: with SMTP id c6mr3192696wmb.11.1622534486126;
-        Tue, 01 Jun 2021 01:01:26 -0700 (PDT)
+        bh=nC6vJCqg2xcsbPsrocgrlXG+kt6WskzJ0DDl/gOMrrs=;
+        b=lidfHYV/er9eQrfGDWyntN+DYLuxqgC2GYu5UuFXxrC39R1tcciNSLH2mNsbmxtst4
+         qIB1VaFmAdiOgCKk869x1/cmEmOnnW1Fy9hW2Ck8N+vsxLx3IjvzaP4udChXTROhSyUw
+         i9CkdP2xaXVkvwx5zpcmc6AhQOL2F8M2KtRFXcDzfiROvunASOlnsrfYW1DTXvUGqeJq
+         KcZNcQ76BrlwAUUPdATge54hwDtxpuVi8zkmuvCJnsoNOP8rnLqO07SIoy8UWOjJTu2o
+         5OSvvx957rXoALvqIz+6LUgeIw51E62/G2E2Hy3PP567wzFGabUlFSqNqexa0WB8hgU3
+         bDUg==
+X-Gm-Message-State: AOAM532gff++FwRVIi8Rf/xv++hBck3cWRWQQkBYyt5/vj+MrlzfIzs7
+        56+YaPMwKDEEjDTMS9UnippLBUmrjY0x0tcZvaEMl4qJh/gdF6UZUjuXONn3Yg7JRXvULasa7J0
+        vqrquIBGq8tZ8NPS9Par73udz7pB6JeP407zTD/G1W42UiNjTYMtvvaI2t77ZaMlQ/JxsYaBN
+X-Received: by 2002:a1c:4b13:: with SMTP id y19mr3306533wma.102.1622534575024;
+        Tue, 01 Jun 2021 01:02:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyMMEa9JGVFtvJcqXTvaDxvwVIh9UeQ7EkpoSGCk3UjM8vH/hWyW39dr7lxbyqGDPq4wImaWQ==
+X-Received: by 2002:a1c:4b13:: with SMTP id y19mr3306503wma.102.1622534574837;
+        Tue, 01 Jun 2021 01:02:54 -0700 (PDT)
 Received: from [192.168.3.132] (p5b0c69ce.dip0.t-ipconnect.de. [91.12.105.206])
-        by smtp.gmail.com with ESMTPSA id v18sm2650277wro.18.2021.06.01.01.01.25
+        by smtp.gmail.com with ESMTPSA id w13sm2611037wrc.31.2021.06.01.01.02.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 01:01:25 -0700 (PDT)
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, alexander.h.duyck@linux.intel.com,
-        akpm@linux-foundation.org, shan.gavin@gmail.com,
+        Tue, 01 Jun 2021 01:02:54 -0700 (PDT)
+Subject: Re: [PATCH] mm,memory_hotplug: Drop unneeded locking
+To:     Oscar Salvador <osalvador@suse.de>,
         Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210601033319.100737-1-gshan@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210531093958.15021-1-osalvador@suse.de>
+ <679d311a-8ad4-bb53-18f0-11190a2bf1b5@arm.com> <20210601074737.GA30768@linux>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-Subject: Re: [RFC PATCH] mm/page_reporting: Adjust threshold according to
- MAX_ORDER
-Message-ID: <76516781-6a70-f2b0-f3e3-da999c84350f@redhat.com>
-Date:   Tue, 1 Jun 2021 10:01:25 +0200
+Message-ID: <f655ced2-281e-33ee-e1ea-89a0e13fc7a3@redhat.com>
+Date:   Tue, 1 Jun 2021 10:02:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210601033319.100737-1-gshan@redhat.com>
+In-Reply-To: <20210601074737.GA30768@linux>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.06.21 05:33, Gavin Shan wrote:
-> The PAGE_REPORTING_MIN_ORDER is equal to @pageblock_order, taken as
-> minimal order (threshold) to trigger page reporting. The page reporting
-> is never triggered with the following configurations and settings on
-> aarch64. In the particular scenario, the page reporting won't be triggered
-> until the largest (2 ^ (MAX_ORDER-1)) free area is achieved from the
-> page freeing. The condition is very hard, or even impossible to be met.
+On 01.06.21 09:47, Oscar Salvador wrote:
+> On Tue, Jun 01, 2021 at 10:47:31AM +0530, Anshuman Khandual wrote:
+>> Should also just drop zone_span_write[lock|unlock]() helpers as there
+>> are no users left ?
 > 
->    CONFIG_ARM64_PAGE_SHIFT:              16
->    CONFIG_HUGETLB_PAGE:                  Y
->    CONFIG_HUGETLB_PAGE_SIZE_VARIABLE:    N
->    pageblock_order:                      13
->    CONFIG_FORCE_MAX_ZONEORDER:           14
->    MAX_ORDER:                            14
+> Yes, definitely.
+> Andrew, can you squash this on top? Thanks:
 > 
-> The issue can be reproduced in VM, running kernel with above configurations
-> and settings. The 'memhog' is used inside the VM to access 512MB anonymous
-> area. The QEMU's RSS doesn't drop accordingly after 'memhog' exits.
-> 
->    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64          \
->    -accel kvm -machine virt,gic-version=host                        \
->    -cpu host -smp 8,sockets=2,cores=4,threads=1 -m 4096M,maxmem=64G \
->    -object memory-backend-ram,id=mem0,size=2048M                    \
->    -object memory-backend-ram,id=mem1,size=2048M                    \
->    -numa node,nodeid=0,cpus=0-3,memdev=mem0                         \
->    -numa node,nodeid=1,cpus=4-7,memdev=mem1                         \
->      :                                                              \
->    -device virtio-balloon-pci,id=balloon0,free-page-reporting=yes
-> 
-> This tries to fix the issue by adjusting the threshold to the smaller value
-> of @pageblock_order and (MAX_ORDER/2). With this applied, the QEMU's RSS
-> drops after 'memhog' exits.
+> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+> index a7fd2c3ccb77..27d8ba1d32cb 100644
+> --- a/include/linux/memory_hotplug.h
+> +++ b/include/linux/memory_hotplug.h
+> @@ -67,10 +67,6 @@ struct range mhp_get_pluggable_range(bool need_mapping);
+>   
+>   /*
+>    * Zone resizing functions
+> - *
+> - * Note: any attempt to resize a zone should has pgdat_resize_lock()
+> - * zone_span_writelock() both held. This ensure the size of a zone
+> - * can't be changed while pgdat_resize_lock() held.
+>    */
+>   static inline unsigned zone_span_seqbegin(struct zone *zone)
+>   {
+> @@ -80,14 +76,6 @@ static inline int zone_span_seqretry(struct zone *zone, unsigned iv)
+>   {
+>   	return read_seqretry(&zone->span_seqlock, iv);
+>   }
+> -static inline void zone_span_writelock(struct zone *zone)
+> -{
+> -	write_seqlock(&zone->span_seqlock);
+> -}
+> -static inline void zone_span_writeunlock(struct zone *zone)
+> -{
+> -	write_sequnlock(&zone->span_seqlock);
+> -}
 
-IIRC, we use pageblock_order to
-
-a) Reduce the free page reporting overhead. Reporting on small chunks 
-can make us report constantly with little system activity.
-
-b) Avoid splitting THP in the hypervisor, avoiding downgraded VM 
-performance.
-
-c) Avoid affecting creation of pageblock_order pages while hinting is 
-active. I think there are cases where "temporary pulling sub-pageblock 
-pages" can negatively affect creation of pageblock_order pages. 
-Concurrent compaction would be one of these cases.
-
-The monstrosity called aarch64 64k is really special in that sense, 
-because a) does not apply because pageblocks are just very big, b) does 
-sometimes not apply because either our VM isn't backed by (rare) 512MB 
-THP or uses 4k with 2MB THP and c) similarly doesn't apply in smallish 
-VMs because we don't really happen to create 512MB THP either way.
+If there is no writer anymore, why do we have to protect readers?
 
 
-For example, going on x86-64 from reporting 2MB to something like 32KB 
-is absolutely undesired.
-
-I think if we want to go down that path (and I am not 100% sure yet if 
-we want to), we really want to treat only the special case in a special 
-way. Note that even when doing it only for aarch64 with 64k, you will 
-still end up splitting THP in a hypervisor if it uses 64k base pages 
-(b)) and can affect creation of THP, for example, when compacting (c), 
-so there is a negative side to that.
 
 -- 
 Thanks,
