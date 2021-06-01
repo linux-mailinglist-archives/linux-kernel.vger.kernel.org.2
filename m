@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C75397A27
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86889397A2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhFASqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233970AbhFASqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:46:01 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A47AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:44:20 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id i5so132608pgm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a2TX2Vdw/o0zaTAKknUFEUNmG6BDmXhWCNuSw8+ULck=;
-        b=L1fnkDVpJ/NPH+VgFT9ATs+Iu0eyrT8uz6GPjPikqry3DCOwqwQAPAZn3xVm1R+j0A
-         MJvVBxIUOv0EUZSF1rtfD5FwUeDp4UYUICoIZ93z1HODM7rdqgSCCaJMRjgRomuVCa9D
-         G7exwru7qL82YjXqlJ0jOIbPxXSW1TW/WOK7Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a2TX2Vdw/o0zaTAKknUFEUNmG6BDmXhWCNuSw8+ULck=;
-        b=HTYtVERd6nCss4bx++k9sJLXM/tXUAp9D93TrEYeJJssvUgSu2rpFja6ub0qnBDwXY
-         yMCrkQgCymvNaTU755qefyGAgYkeJxUXkyg/hzUxCD70lYUOs//zV+svV0xrSoqrJxzB
-         1oJ7U8oAEQeiy5eZwXdWeQx4IvYLvM0n8aWh3NGqo5XWZLsyc9oVR6JUpceflS2GuQE8
-         6wb4gDdIWBnoFst3kb1rrGTvMgDQCZZ+a63USRCCFgDMBA2r9DY2qMZW0/1+VOBwQsIm
-         rC4vxjnC2dDyN/abumWUFg+OY71Pt31BUR4FV4EetkoGJdWSeA5eB4KlZAWU0lIZpncc
-         L8qQ==
-X-Gm-Message-State: AOAM530gF5AuDcQOvR43/VbPKJK752B4srfnzIb/SdsdNn9l0+zb5t9H
-        RIOt4z/IvbKqMYOdQKyW9my0Yw==
-X-Google-Smtp-Source: ABdhPJw9MH696XihyRpyC1GpZ6E1M8Ahri6D6zpRirylleIKHL4+GHBH7lfMIWvd4DSv+8WWxyD8Ew==
-X-Received: by 2002:a63:5060:: with SMTP id q32mr29791486pgl.32.1622573059486;
-        Tue, 01 Jun 2021 11:44:19 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:ee82:b2a7:c8bd:18e7])
-        by smtp.gmail.com with ESMTPSA id m13sm2846319pjj.18.2021.06.01.11.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 11:44:19 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] arm64: dts: qcom: Disable PON on Trogdor
-Date:   Tue,  1 Jun 2021 11:44:17 -0700
-Message-Id: <20210601184417.3020834-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+        id S234678AbhFASqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233970AbhFASqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 14:46:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55E4D60C3F;
+        Tue,  1 Jun 2021 18:45:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622573110;
+        bh=/0v0BbCRmqQoHmuTHyO1LQsRp/5gRVDEfk7TG+cgMAU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GX1Ri7Es0XLMxlp5yqIYrNgrJydS9rfYAJya7Ivfel5l2otEsvwhZQBhRqmW6DMQF
+         l1GaXoIeDqMwprPi65R5uapr7Qw1bva44ihRQULSjtPHPmetZvNBgqxFJzW7Z1Qq62
+         1syPGNkSqEjSsiAAXd0lVOql1jLrtkbZ7QG4KP786YrP5I3x6APRowuGPLM9YKk7KO
+         A3JqXV/AnfwEZPVBHwkij6gApi6bE511mkhPnrrH3TwIlkBVTScPsaIJaCRX1e9g2F
+         t3RRm4rvoEWvOTn+UMaZUqg6wStJ8Xz/vKZieFzZVlUysyoCqw2PwfmFguje4x94AC
+         zEAsyx/PrpJpA==
+Date:   Tue, 1 Jun 2021 13:46:16 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][venus-for-next-v5.14] media: venus: hfi_cmds: Fix packet
+ size calculation
+Message-ID: <20210601184616.GA23488@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't use the PON module on Trogdor devices. Instead the reboot
-reason is sort of stored in the 'eventlog' and the bootloader figures
-out if the boot is abnormal and records that there. Disable the PON node
-and then drop the power key disabling because that's a child node that
-will no longer be enabled if the PON node is disabled.
+Now that a one-element array was replaced with a flexible-array member
+in struct hfi_sys_set_property_pkt, use the struct_size() helper to
+correctly calculate the packet size.
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array with flexible-array member")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+BTW... it seems that a similar problem is present in
+https://lore.kernel.org/linux-hardening/20210211001044.GA69612@embeddedor/ 
+and that is what is causing the regression. I will send v2 of that
+patch, shortly. Thanks.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 24d293ef56d7..cbde625cbea2 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -805,7 +805,7 @@ charger-thermistor@0 {
- 	};
- };
- 
--&pm6150_pwrkey {
-+&pm6150_pon {
- 	status = "disabled";
- };
- 
+ drivers/media/platform/qcom/venus/hfi_cmds.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
+index 11a8347e5f5c..c86279e5d6e8 100644
+--- a/drivers/media/platform/qcom/venus/hfi_cmds.c
++++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
+@@ -27,7 +27,7 @@ void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
+ {
+ 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
+ 
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_IDLE_INDICATOR;
+@@ -39,7 +39,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
+ {
+ 	struct hfi_debug_config *hfi;
+ 
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_DEBUG_CONFIG;
+@@ -50,7 +50,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
+ 
+ void pkt_sys_coverage_config(struct hfi_sys_set_property_pkt *pkt, u32 mode)
+ {
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_CONFIG_COVERAGE;
+@@ -116,7 +116,7 @@ void pkt_sys_power_control(struct hfi_sys_set_property_pkt *pkt, u32 enable)
+ {
+ 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
+ 
+-	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
++	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
+ 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
+ 	pkt->num_properties = 1;
+ 	pkt->data[0] = HFI_PROPERTY_SYS_CODEC_POWER_PLANE_CTRL;
 -- 
-https://chromeos.dev
+2.27.0
 
