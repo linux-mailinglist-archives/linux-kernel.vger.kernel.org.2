@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E66E396D6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30290396D5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhFAGgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 02:36:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2810 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhFAGgR (ORCPT
+        id S232869AbhFAGfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 02:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229984AbhFAGfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 02:36:17 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvMhc667ZzWq3w;
-        Tue,  1 Jun 2021 14:29:52 +0800 (CST)
-Received: from dggpemm500012.china.huawei.com (7.185.36.89) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 14:34:34 +0800
-Received: from DESKTOP-EFRLNPK.china.huawei.com (10.174.176.189) by
- dggpemm500012.china.huawei.com (7.185.36.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 14:34:33 +0800
-From:   Qiheng Lin <linqiheng@huawei.com>
-To:     <mike.travis@hpe.com>, <dimitri.sivanich@hpe.com>,
-        <russ.anderson@hpe.com>, <dvhart@infradead.org>,
-        <andy@infradead.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>
-CC:     <steve.wahl@hpe.com>, <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Qiheng Lin <linqiheng@huawei.com>
-Subject: [PATCH v2 -next] x86/platform/uv: Remove the unneeded extern keyword
-Date:   Tue, 1 Jun 2021 14:30:34 +0800
-Message-ID: <20210601063034.27433-1-linqiheng@huawei.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.176.189]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500012.china.huawei.com (7.185.36.89)
-X-CFilter-Loop: Reflected
+        Tue, 1 Jun 2021 02:35:06 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A011C061574;
+        Mon, 31 May 2021 23:33:26 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id y15so6668985pfl.4;
+        Mon, 31 May 2021 23:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=rD8EmGvVLCHRY6rnYywd87VdaZhsWJHUm0MbRk+LcQA=;
+        b=Q9bMkDN0zym7toQx1eVx7k2pr0kn+SDcctMTH45q01uNqQUC/tIBLcOR8453UiWPVF
+         8QkhSFOCX2s1MAl+0afYx2L2iy3hk7oMOCh7tyQnW36A+9HKes/RLJVhnqInIqrsEdZb
+         mCLpEwF0RDs9fls63IRTjU5e+YZ7jWH1qsZvJmuKMslPKi/+rB0zqaUEuFYhZGXDQm6s
+         BQDegzm12DzzHM3Ch7C+bguKslHk3LnIXdByZZlRKi/JMxGdtn8ksxaGr0ZAuVsVJmxF
+         p8zMMOriSXpH7P+to4lIurlBpqR3yTR33ECioLZ4BgGDSvCX1EaDWgbKnoSB6gAWi/tO
+         cUhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rD8EmGvVLCHRY6rnYywd87VdaZhsWJHUm0MbRk+LcQA=;
+        b=QBmhaxq1hhMX4py6dzejtWDaHiHF3AIq/VZ3kygH9R/QuPVbA1Z0+5eitaSeVWN/MI
+         Yv+jb5Q03Fk7GRvXWZzu2lqctVJ+yBNWTGuX9hoJ/8PO+TyboLnnvmaARLwBUSHq9YXa
+         J8FBuEUhT23bOs70u+muHBNDtyOWa+8gRCvzcumcSm8wHoCwMUgRQi/0nch2u5oJGESb
+         qW/pg/vIvKf9r32ZpJxE3CMIe9HYadwK61lNixxg7PGbiWzdnuWQt5khuz490UBHrbJ1
+         MShvmIdImAzZJbTPyqhwHzopdGc2yt3V123qpjCh7a/PF/n1RM2KDcQ9QJpih/PEVeNt
+         9exA==
+X-Gm-Message-State: AOAM5303UeQj1+2W5xoEuriT/9H1nW5WOsLFPMoX3r83LODlFy3RvLZO
+        WEu3fR7ouFe3iA7/2wS3ikc=
+X-Google-Smtp-Source: ABdhPJw3sCPrYiqaonigcopaVcbE7RK0SisDPproosl/KP6/N9tBlXvnPomsEkSjaP1hhodqEIvk2A==
+X-Received: by 2002:a05:6a00:2b5:b029:2ea:a29:a117 with SMTP id q21-20020a056a0002b5b02902ea0a29a117mr306718pfs.35.1622529205239;
+        Mon, 31 May 2021 23:33:25 -0700 (PDT)
+Received: from localhost.localdomain (1-171-14-152.dynamic-ip.hinet.net. [1.171.14.152])
+        by smtp.gmail.com with ESMTPSA id x22sm4982747pfn.10.2021.05.31.23.33.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 May 2021 23:33:24 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
+Cc:     cy_huang@richtek.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v5 1/2] regulator: rt6160: Add DT binding document for Richtek RT6160
+Date:   Tue,  1 Jun 2021 14:32:46 +0800
+Message-Id: <1622529167-25852-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function declarations in bios.h are already marked extern, so remove
-them in the definition.
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-This problem was caught by the sparse tool:
- function 'uv_bios_get_master_nasid' with external linkage has definition
- function 'uv_bios_get_heapsize' with external linkage has definition
- function 'uv_bios_install_heap' with external linkage has definition
- function 'uv_bios_obj_count' with external linkage has definition
- function 'uv_bios_enum_objs' with external linkage has definition
- function 'uv_bios_enum_ports' with external linkage has definition
- function 'uv_bios_get_geoinfo' with external linkage has definition
- function 'uv_bios_get_pci_topology' with external linkage has definition
+Add DT binding document for Richtek RT6160 voltage regulator.
 
-Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
-Changes in v2:
- - adjust the subject and commit message
+since v4
+- Add Reviewed-by.
 
- arch/x86/platform/uv/bios_uv.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+since v3
+- Move all regulator related properties to the upper node.
 
-diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
-index bf31af3d32d6..7e7634c8be62 100644
---- a/arch/x86/platform/uv/bios_uv.c
-+++ b/arch/x86/platform/uv/bios_uv.c
-@@ -172,55 +172,55 @@ int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus)
- 				(u64)decode, (u64)domain, (u64)bus, 0, 0);
- }
- 
--extern s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
-+s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
- {
- 	return uv_bios_call(UV_BIOS_EXTRA, 0, UV_BIOS_EXTRA_MASTER_NASID, 0,
- 				size, (u64)master_nasid);
- }
- EXPORT_SYMBOL_GPL(uv_bios_get_master_nasid);
- 
--extern s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
-+s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
- {
- 	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_GET_HEAPSIZE,
- 				0, size, (u64)heap_size);
- }
- EXPORT_SYMBOL_GPL(uv_bios_get_heapsize);
- 
--extern s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
-+s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
- {
- 	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_INSTALL_HEAP,
- 				0, heap_size, (u64)bios_heap);
- }
- EXPORT_SYMBOL_GPL(uv_bios_install_heap);
- 
--extern s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
-+s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
- {
- 	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_OBJECT_COUNT,
- 				0, size, (u64)objcnt);
- }
- EXPORT_SYMBOL_GPL(uv_bios_obj_count);
- 
--extern s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
-+s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
- {
- 	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_OBJECTS,
- 				0, size, (u64)objbuf);
- }
- EXPORT_SYMBOL_GPL(uv_bios_enum_objs);
- 
--extern s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
-+s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
- {
- 	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_PORTS,
- 				obj_id, size, (u64)portbuf);
- }
- EXPORT_SYMBOL_GPL(uv_bios_enum_ports);
- 
--extern s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
-+s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
- {
- 	return uv_bios_call(UV_BIOS_GET_GEOINFO, nasid, (u64)buf, size, 0, 0);
- }
- EXPORT_SYMBOL_GPL(uv_bios_get_geoinfo);
- 
--extern s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
-+s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
- {
- 	return uv_bios_call(UV_BIOS_GET_PCI_TOPOLOGY, (u64)buf, size, 0, 0, 0);
- }
+since v2
+- Move buckboost node from patternProperties to Properties.
+---
+ .../regulator/richtek,rt6160-regulator.yaml        | 61 ++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+
+diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+new file mode 100644
+index 00000000..0534b0d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/richtek,rt6160-regulator.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/richtek,rt6160-regulator.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Richtek RT6160 BuckBoost converter
++
++maintainers:
++  - ChiYuan Huang <cy_huang@richtek.com>
++
++description: |
++  The RT6160 is a high-efficiency buck-boost converter that can provide
++  up to 3A output current from 2025mV to 5200mV. And it support the wide
++  input voltage range from 2200mV to 5500mV.
++
++  Datasheet is available at
++  https://www.richtek.com/assets/product_file/RT6160A/DS6160A-00.pdf
++
++allOf:
++  - $ref: regulator.yaml#
++
++properties:
++  compatible:
++    enum:
++      - richtek,rt6160
++
++  reg:
++    maxItems: 1
++
++  enable-gpios:
++    description: A connection of the 'enable' gpio line.
++    maxItems: 1
++
++  richtek,vsel-active-low:
++    description: |
++      Used to indicate the 'vsel' pin active level. if not specified, use
++      high active level as the default.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      rt6160@75 {
++        compatible = "richtek,rt6160";
++        reg = <0x75>;
++        enable-gpios = <&gpio26 2 0>;
++        regulator-name = "rt6160-buckboost";
++        regulator-min-microvolt = <2025000>;
++        regulator-max-microvolt = <5200000>;
++      };
++    };
 -- 
-2.31.1
+2.7.4
 
