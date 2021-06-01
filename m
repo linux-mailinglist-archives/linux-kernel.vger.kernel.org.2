@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756E1397048
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30B7397050
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhFAJ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbhFAJ07 (ORCPT
+        id S233640AbhFAJ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:27:50 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:52576 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233225AbhFAJ1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:26:59 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CEFC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:25:17 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id h5-20020a05600c3505b029019f0654f6f1so562395wmq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:25:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=lUvOHqo/Lw93HfZjg1cpwSyhO3hTI8CQC/Owemy4Ix0=;
-        b=ve9tkK+lNU24xe7waJw5f+yzt3CYYqhvXm5AzQYRO3IS53DbhhG0eJuKx4TJPAjdhH
-         tzbNVyMhXkfRTuGSmrJtODay1jVTwzcBKfNwLv17YRHCZkQHaNSF7+7G6BR6WsUSdeQT
-         DYbmh2dnzXQXRaRtKU/Ck+hl7hjFwJmJSQLkeQQetJXD9QYBD/sFdCiYc5rRbZPUkTao
-         PcfgS7n80IlV0my8h3d0WMUoe/TxJfJNWJQ8ILIGeojZzXreQcTg7ub4iXKl4qdmbaCw
-         gnwCdbrLYSoMTs0f38OCbC6vUdCD8TgyNP2voPuGdvgh3bx6EfVDLdqQ7xUSfvZY10jA
-         RKgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lUvOHqo/Lw93HfZjg1cpwSyhO3hTI8CQC/Owemy4Ix0=;
-        b=ZpojvVWX+jAXfRZfaQUhEZqCNffh+L8UbPFI4ZM48nDodUeWf4uxf+0SXlPoVLTiLD
-         t92Led/59RbVrdVhDY9v7GnYyvbJtsQn6iVUbygcmX62Ef8T9Ga8AGNVrq06YCH034bf
-         YCMv42+w82/tr/esr7J6zArH0/v4vJ0MwFe9g5WkPxLI4D6hStRlyLyhNWR4yIBswduc
-         1QumyfQxoWz9Ou7A3ZnvD5h/8B+rQHV5cw3BjoyebljQN3rS0576iTOygL1L+FeMmXBa
-         RyBCcQCwYVDNV541pwRERY8Xg247IN/6rxdhWg96ae1t8iUoxrJmSNPp1UlU2xAzqO2F
-         r8WQ==
-X-Gm-Message-State: AOAM531QIyK2lEZN6j1S93x640KFKZebYpIMKqstZ0VVC6h1vy6EZCRJ
-        9JYobawbcH6qPChzu1J948hqwg==
-X-Google-Smtp-Source: ABdhPJwogak5rFHzumPcquLkCKp2KsdlXeQ7KHJw9U/D6ZFGvVTht59amxTvQUij/hL/9Q7stCcuNg==
-X-Received: by 2002:a1c:1fd1:: with SMTP id f200mr3573089wmf.113.1622539515780;
-        Tue, 01 Jun 2021 02:25:15 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id k82sm2042554wmf.11.2021.06.01.02.25.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 02:25:15 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 10:25:13 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 21/24] usb: host: xhci: Move array of structs from the
- stack onto the heap
-Message-ID: <20210601092513.GC543307@dell>
-References: <20210526130037.856068-1-lee.jones@linaro.org>
- <20210526130037.856068-22-lee.jones@linaro.org>
- <8551978f-27b0-767e-f92b-e96ab3064b33@gmail.com>
- <20210526144451.GB543307@dell>
- <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
- <20210526152835.GE543307@dell>
- <23bb1fc5-acff-74a6-c67a-11b0e0d85011@linux.intel.com>
+        Tue, 1 Jun 2021 05:27:49 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15199CmN126927;
+        Tue, 1 Jun 2021 09:25:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=wwB4VSUvKdGzhu1xJP6jPOcXCgeh115bhoXsbDIkYts=;
+ b=kUAZg7E56EW/JNy5ngfcQUNwrba4Vh/MJPSxBA2rKyLD1seXq+aBtZ3X44pLbndf+AeT
+ 7CWbzXlRbwv0XjXL49uOnuS81piQBplQadsUEqwt7+eMJn8bI6YFAy0l9JO3P85niLYj
+ PHUzuFDyscIZ6JNyQlItv9QpYKpPL5Z6BBULAmVkcKqzomrOmaxEj/xZx7KY7EUWPYX7
+ U5CIroogBen9b3zIWvulPKGjIdNZBCC3yQO4WRhVji57MOJc3tlFRlLEEfytBhFr4wvv
+ 4161kAVZS2VRUEDMhLmAlHOm24ipXFQwrUc4Uo+49gfFw2kIN1pRHsdJOLK4HH1tsQTO Zg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 38ub4cmygw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 09:25:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1519AbLR057280;
+        Tue, 1 Jun 2021 09:25:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 38uycr45yd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 09:25:52 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1519NOV9084577;
+        Tue, 1 Jun 2021 09:25:52 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 38uycr45xv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 09:25:52 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1519Pp8o020050;
+        Tue, 1 Jun 2021 09:25:51 GMT
+Received: from mwanda (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Jun 2021 09:25:50 +0000
+Date:   Tue, 1 Jun 2021 12:25:40 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] mm: hugetlb: checking for IS_ERR() instead of NULL
+Message-ID: <YLX9FCOU0Il8Ejoy@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <23bb1fc5-acff-74a6-c67a-11b0e0d85011@linux.intel.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-GUID: xyYXQHqPAUI61IN86pE8ylRfcFXBAwHi
+X-Proofpoint-ORIG-GUID: xyYXQHqPAUI61IN86pE8ylRfcFXBAwHi
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10001 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106010062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021, Mathias Nyman wrote:
+The alloc_migrate_huge_page() doesn't return error pointers, it returns
+NULL.
 
-> On 26.5.2021 18.28, Lee Jones wrote:
-> > On Wed, 26 May 2021, Sergei Shtylyov wrote:
-> > 
-> >> On 5/26/21 5:44 PM, Lee Jones wrote:
-> >>
-> >> [...]
-> >>>>> Fixes the following W=1 kernel build warning(s):
-> >>>>>
-> >>>>>  drivers/usb/host/xhci.c: In function ‘xhci_reserve_bandwidth’:
-> >>>>>  drivers/usb/host/xhci.c:2859:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> >>>>>
-> >>>>> Cc: Mathias Nyman <mathias.nyman@intel.com>
-> >>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>>>> Cc: linux-usb@vger.kernel.org
-> >>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> >>>>> ---
-> >>>>>  drivers/usb/host/xhci.c | 8 +++++++-
-> >>>>>  1 file changed, 7 insertions(+), 1 deletion(-)
-> >>>>>
-> >>>>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> >>>>> index ac2a7d4288883..40ce4b4eb12ad 100644
-> >>>>> --- a/drivers/usb/host/xhci.c
-> >>>>> +++ b/drivers/usb/host/xhci.c
-> >>>> [...]
-> >>>>> @@ -2788,6 +2788,10 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
-> >>>>>  		return -ENOMEM;
-> >>>>>  	}
-> >>>>>  
-> >>>>> +	ep_bw_info = kzalloc(sizeof(*ep_bw_info) * 31, GFP_KERNEL);
-> 
-> GFP_KERNEL might not be suitable for all cases.
-> 
-> xhci_reserve_bandwidth() is called from xhci_configure_endpoint(), which again
-> is called from a lot of places.
-> For example from xhci_update_hub_device() which can be called with GFP_NOIO mem_flags.
+Fixes: ab45bc8b5910 ("mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ mm/hugetlb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-What do you suggest as an alternative?
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 69a4b551c157..3221c94b4749 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5103,7 +5103,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 			 */
+ 			page = alloc_migrate_huge_page(h, gfp_mask, node,
+ 						       nodemask);
+-			if (IS_ERR(page)) {
++			if (!page) {
+ 				ret = -ENOMEM;
+ 				goto out;
+ 			}
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.30.2
+
