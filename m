@@ -2,75 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976A03971D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA1C3971D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhFAKx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:53:27 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:59862 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230282AbhFAKxZ (ORCPT
+        id S233397AbhFAKxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232968AbhFAKxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:53:25 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151Afmcq008038;
-        Tue, 1 Jun 2021 05:51:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=kttahVLl585IscFfSbkAFw1hdSQotk8tKL9yGoHTAyw=;
- b=WAwZNb89GmvAsdyJ+KKVmkXNXTiqoweSiIqIi6nT7jaj+xMMIpXJhcRQeZQy48XjenS9
- Sru0+ejfiBkcu/smdJAcxNHjIyGqC26XNGETLG4DjPhoSNIyaWEulYQSsb8wAPqyVoHq
- yTORvIneAXY9utu7buC/FHQeS0omINdjxwWkAYUL0uVw5WATt8JNTCj+JsIAykBKTkT5
- vQ73FSYBDcyKVmQGB26T2TXQA3BSI4ArNOZfANUSeD6n/3NP2ej2SsmuP7qxeV8+GBta
- 9Z71CqB+kIOaBDl/63KTn06ZPqFFELhb1iOnRz/kxAMe6VLksKVn2HzZp1Eu8I90Z8ru tw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 38vv1h159h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 01 Jun 2021 05:51:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 1 Jun 2021
- 11:51:33 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 1 Jun 2021 11:51:33 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 377272B2;
-        Tue,  1 Jun 2021 10:51:33 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 10:51:33 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        patches <patches@opensource.cirrus.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mfd: wm831x: Use DEFINE_RES_IRQ_NAMED() and
- DEFINE_RES_IRQ() to simplify code
-Message-ID: <20210601105133.GD9223@ediswmail.ad.cirrus.com>
-References: <20210601070009.10098-1-thunder.leizhen@huawei.com>
+        Tue, 1 Jun 2021 06:53:38 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21ABDC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:51:57 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id w33so21059567lfu.7
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kkk96RFhOUVeXcdtYw7VNYf9WSYu11sjtdPL/xxbKe8=;
+        b=o1ehZKIudj8IUbNQJja9Bw9E9H+E7miiapinkr/taDqFF3USQSngLdAs8ijRzdZ5V4
+         R8DlQVmJxyWLsrLsjSnekMwy/de6jXpATv4L6WrPeY0hpYbHi8PSRH6GATZbgs9j3QlQ
+         5TK1ycoaH/cgAu6KgAma2Q3jm3i0rbxMBH1ca232N7C8suTpy2V/Obr1ogILk8FMvgdz
+         9DPGRRwyNUcb8mXrXKub2kPGQ2RxKx1zZL6wQDX4+c8gLKNy4DfiNZP7IgsUtPFQxGjy
+         ppyiI9c1hoOI9oSO/zm31ropq2E1gVVhXMwoeppqq2s3IlwYf0fEv7QhfUNyXfLJ++9H
+         tfFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kkk96RFhOUVeXcdtYw7VNYf9WSYu11sjtdPL/xxbKe8=;
+        b=Yz4orueJtRDEJR+IzGSs2mdr33ZhZTqkvtIWwOIkwJA1twKGa+obSFTkegRCXfA06g
+         F/0+wqeS+NmWd5JA/W2jHbVVzsO0usBEOZ0OvFoEgw5oKlygb7+gcDv7KpyzzOJEnHw6
+         fApOE083qnNG/4Xmb0GCihenmz05OR5Qc3jSdbQTxfdn43kC4pnCdr+aAeyGpNam1OdK
+         5RBBsNxx5fMj+5sCbvBWV3BWFL2Sox+WaWfWHizoWmfqOSdn1I0qSCiC37VGDkcH0j7C
+         xaat0F1REwjBl9UnZuWFTq4Bvy2vt2+lCobIW0p5UWvy85cJrsDF7rH8NLaEmGtESAjB
+         K7cw==
+X-Gm-Message-State: AOAM531kQJrE65N0jkRVgDftFt7R/42R/RlepqbHQNgptkm4efNCCBux
+        aDb051zfwcUUIVv8AIbfE3Rkbhl34ix4g/NDA53m8A==
+X-Google-Smtp-Source: ABdhPJyA7vr/U/2Lycbd2FWBZBtLqVEAm94uzNvJ8gdrDqZfAvOsT2ddncI3yJcK4skM3pg4UBmX6/vZkNHtfc3zogI=
+X-Received: by 2002:a05:6512:3e03:: with SMTP id i3mr14354819lfv.529.1622544715508;
+ Tue, 01 Jun 2021 03:51:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210601070009.10098-1-thunder.leizhen@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: bhxdNQDtpPn2i8H6jJ8sP-r3YYSfdD3i
-X-Proofpoint-GUID: bhxdNQDtpPn2i8H6jJ8sP-r3YYSfdD3i
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 spamscore=0
- suspectscore=0 mlxlogscore=901 clxscore=1011 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106010072
+References: <cover.1620735871.git.sander@svanheule.net> <cover.1621809029.git.sander@svanheule.net>
+ <YKr9G3EfrM34gCsL@lunn.ch> <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
+ <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+ <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc> <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
+ <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com> <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
+ <CACRpkda+m5mOzMJ8KcPmojFGWkUpCrbmY0ySPTVx72RtWwf89A@mail.gmail.com> <e10c8ef7f758b4f7fa0fcbc992c84125@walle.cc>
+In-Reply-To: <e10c8ef7f758b4f7fa0fcbc992c84125@walle.cc>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 1 Jun 2021 12:51:43 +0200
+Message-ID: <CACRpkdb4j6krXwdZGtth9b2W2bAdy9_StGbse_YbBY86-AWdLg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
+To:     Michael Walle <michael@walle.cc>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sander Vanheule <sander@svanheule.net>,
+        Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 03:00:09PM +0800, Zhen Lei wrote:
-> No functional change.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
+On Tue, Jun 1, 2021 at 12:18 PM Michael Walle <michael@walle.cc> wrote:
+> Am 2021-06-01 11:59, schrieb Linus Walleij:
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> > Just regarding all registers/memory cells in a register page
+> > as default volatile (which is what we do a lot of the time)
+> > has its upsides: bugs like this doesn't happen.
+>
+> I don't think this is the bug here. If it is really a write-only
+> register
+> the problem is the read in RMW. Because reading the register will return
+> the input value instead of the (previously written) output value.
 
-Thanks,
-Charles
+True that. Write and read semantics differ on the register.
+
+Volatile is used for this and some other things,
+like for example interrupts being cleared when a register
+is read so it is strictly read-once.
+
+So the regmap config is really important to get right.
+
+IIUC one of the ambitions around Rust is to encode this
+in how memory is specified in the language. (I am still
+thinking about whether that is really a good idea or not.)
+
+Yours,
+Linus Walleij
