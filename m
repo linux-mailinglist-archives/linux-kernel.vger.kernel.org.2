@@ -2,124 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E84F397AA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169CD397AAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhFATXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 15:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S234740AbhFATZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 15:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234539AbhFATXv (ORCPT
+        with ESMTP id S234539AbhFATZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 15:23:51 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CEEC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:22:09 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id ei4so263409pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=St33BOH+YuaBj7xW0i483ddBsmidH6Woz5Y18MzENkE=;
-        b=DCf/MEMGvnxWynrqXM2LY+B5EYcOT/o/M9bm1Ad7GKry15+OFu92f1xFTaMomSqIVB
-         DNZfbACS69dlijDmrRGl4oHgeTD1VNexNkE4xJ8JNmnp9tO7VDKTahiOj+LiMG5QeenS
-         qjJuOkjpuYpQeHVXSwFGZ43F6+PXT1GNwXgzQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=St33BOH+YuaBj7xW0i483ddBsmidH6Woz5Y18MzENkE=;
-        b=evPZIzkJ5oj+kYE1Q+Gkj/MhdLKcng2IsLII+DZt/RZ1iwR5SMnQRT5sca2ShPf3HV
-         Z0cJGSCIVSMbfbxcf2Bx9hwV0Ozc3p3bb9PpgjQBBcMxepc4cG/Lmsdtyjity2JC+lq1
-         NIQRlSNfU24zVyiBME2Ro8M2IyPaLZdlzV9UrxGXC10bdtYl7b9vmw1szXdDWxbIwXnm
-         mu+P7BUlmVaTpdWMYisUpX8eHD+N0JNrTzQTT1ECxq30lmaLlAVbhsmaIwo1y48fkOrd
-         SrSqLERzFufUKcs/Js9Iwlcak2LkfU8cABS2Kmq/22gz78MR53Rb1d3T/B2L/KyzoA2Y
-         ZHOA==
-X-Gm-Message-State: AOAM531jnkj2s8alS7VHBOK+QC6DzjpzbOBRrRv51tonJHf6y2/U4GC5
-        FShU3JPg1dNDyUMaJxTwRkdEEA==
-X-Google-Smtp-Source: ABdhPJygGGHoda2yu7Kz19KMt8cwgE3hz+zhW6FXtlmD/XKrZQVUBtTo1DDDlq5HqKGuQ+GU5mQXLA==
-X-Received: by 2002:a17:902:860b:b029:ef:46b8:886e with SMTP id f11-20020a170902860bb02900ef46b8886emr27413701plo.18.1622575329457;
-        Tue, 01 Jun 2021 12:22:09 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v12sm14803089pgi.44.2021.06.01.12.22.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 12:22:08 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 12:22:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Rodrigo Campos <rodrigo@kinvolk.io>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
-        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
- for new semantics
-Message-ID: <202106011221.98BC12C78@keescook>
-References: <20210517193908.3113-1-sargun@sargun.me>
- <20210517193908.3113-3-sargun@sargun.me>
- <CACaBj2YUiowSKzvh02OjpQNqQViA8N0eyRMimkK=90NagRF40w@mail.gmail.com>
- <202105271137.C491991621@keescook>
- <CACaBj2aaDkJwDM8ugR5LxWEOho3nZuHjYLLsth3XYjf39tpaQQ@mail.gmail.com>
- <202105281014.EECE3D3048@keescook>
- <CACaBj2aM0FxsTSeCDu+3tfdBY9-rbPaLA88YW3Fg-ZQDJRGoXQ@mail.gmail.com>
+        Tue, 1 Jun 2021 15:25:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BF5C061574;
+        Tue,  1 Jun 2021 12:23:33 -0700 (PDT)
+Date:   Tue, 01 Jun 2021 19:23:27 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622575409;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sxCSdpFRtrgxrKSeiwck9rPJUmddxOlUbySrg0xuHOw=;
+        b=Nn7pax/Mu33FGrXe0z9F61toZ9Or1bj+2urpJq2CW0sle7jMNlnP9CvaPXukgZy1yjqJGA
+        0yoO4kZ1BkwBpdLzvXS4VHnw/Cmu/DcXQ2LxvELJgw7oaN/ofC2Wtt4CTz83sTOpEw0T8x
+        /e17thJbbOX3SAcUvhX2JDDjXLpMD4I8KynKIRByqrnanTbuSSVNXUfrVMcIs32DJW0H5N
+        D2c6mkrdr0HwlznbfajPnMvL0utPIA6JEqugcYMVYDwm7dR0cER3tjttGHyLxc6aWoBeEw
+        uautc+p5c8HPKtFTOE39hFsFPudRIU4SbZYhO+kZZsOfSCXZnZAGBE7m3aESYA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622575409;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sxCSdpFRtrgxrKSeiwck9rPJUmddxOlUbySrg0xuHOw=;
+        b=BpfSRaGzI6IvzNpQU1dv5YRkI7PLNGsfIaZRlK49DrXcaD2p1nu6gslKMMV02AQKbfdXCM
+        2tDVLqXEDIXavVCQ==
+From:   "tip-bot2 for Andrew Cooper" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] perf/x86/rapl: Use CPUID bit on AMD and Hygon parts
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210514135920.16093-1-andrew.cooper3@citrix.com>
+References: <20210514135920.16093-1-andrew.cooper3@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACaBj2aM0FxsTSeCDu+3tfdBY9-rbPaLA88YW3Fg-ZQDJRGoXQ@mail.gmail.com>
+Message-ID: <162257540743.29796.5658741433704678582.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 12:31:55AM +0200, Rodrigo Campos wrote:
-> On Fri, May 28, 2021 at 7:14 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Fri, May 28, 2021 at 05:27:39PM +0200, Rodrigo Campos wrote:
-> > > On Thu, May 27, 2021 at 8:42 PM Kees Cook <keescook@chromium.org> wrote:
-> > > >
-> > > > On Thu, May 27, 2021 at 01:51:13PM +0200, Rodrigo Campos wrote:
-> > > > >
-> > > > > Kees, as I mentioned in the linked thread, this issue is present in
-> > > > > 5.9+ kernels. Should we add the cc to stable for this patch? Or should
-> > > > > we cc to stable the one linked, that just fixes the issue without
-> > > > > semantic changes to userspace?
-> > > >
-> > > > It sounds like the problem is with Go, using addfd, on 5.9-5.13 kernels,
-> > > > yes?
-> > >
-> > > Yes.
-> > >
-> > > > Would the semantic change be a problem there? (i.e. it sounds like
-> > > > the semantic change was fine for the 5.14+ kernels, so I'm assuming it's
-> > > > fine for earlier ones too.)
-> > >
-> > > No, I don't think it will cause any problem.
-> > >
-> > > > > Just to be clear, the other patch that fixes the problem without
-> > > > > userspace visible changes is this:
-> > > > > https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
-> > > >
-> > > > I'd prefer to use the now-in-next fix if we can. Is it possible to build
-> > > > a test case that triggers the race so we can have some certainty that
-> > > > any fix in -stable covers it appropriately?
-> > >
-> > > I've verified that Sargun's patch also solves the problem in mainline.
-> > > I have now also verified that it applies cleany and fixes the issue
-> > > for linux-stable/5.10.y and linux-stable/5.12.y too (without the patch
-> > > I see the problem, with the patch I don't see it).  5.11 is already
-> > > EOL, so I didn't try it (probably will work as well).
-> >
-> > Oh, btw, may I add a Tested-by: from you for this fix?
-> 
-> Oh, right! Yes. Here it goes so it's simpler to add :)
-> 
-> Tested-by: Rodrigo Campos <rodrigo@kinvolk.io>
+The following commit has been merged into the x86/cpu branch of tip:
 
-Thanks; this is in v5.13-rc4 now:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ddc473916955f7710d1eb17c1273d91c8622a9fe
+Commit-ID:     cbcddaa33d7e11a053cb80a4a635c023b4f8b906
+Gitweb:        https://git.kernel.org/tip/cbcddaa33d7e11a053cb80a4a635c023b4f8b906
+Author:        Andrew Cooper <andrew.cooper3@citrix.com>
+AuthorDate:    Fri, 14 May 2021 14:59:20 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 01 Jun 2021 21:10:33 +02:00
 
--- 
-Kees Cook
+perf/x86/rapl: Use CPUID bit on AMD and Hygon parts
+
+AMD and Hygon CPUs have a CPUID bit for RAPL.  Drop the fam17h suffix as
+it is stale already.
+
+Make use of this instead of a model check to work more nicely in virtual
+environments where RAPL typically isn't available.
+
+ [ bp: drop the ../cpu/powerflags.c hunk which is superfluous as the
+   "rapl" bit name appears already in flags. ]
+
+Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210514135920.16093-1-andrew.cooper3@citrix.com
+---
+ arch/x86/events/rapl.c             | 6 ++----
+ arch/x86/include/asm/cpufeatures.h | 2 +-
+ arch/x86/kernel/cpu/amd.c          | 4 ++++
+ arch/x86/kernel/cpu/hygon.c        | 4 ++++
+ 4 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index 84a1042..85feafa 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -764,13 +764,14 @@ static struct rapl_model model_spr = {
+ 	.rapl_msrs      = intel_rapl_spr_msrs,
+ };
+ 
+-static struct rapl_model model_amd_fam17h = {
++static struct rapl_model model_amd_hygon = {
+ 	.events		= BIT(PERF_RAPL_PKG),
+ 	.msr_power_unit = MSR_AMD_RAPL_POWER_UNIT,
+ 	.rapl_msrs      = amd_rapl_msrs,
+ };
+ 
+ static const struct x86_cpu_id rapl_model_match[] __initconst = {
++	X86_MATCH_FEATURE(X86_FEATURE_RAPL,		&model_amd_hygon),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE,		&model_snb),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE_X,	&model_snbep),
+ 	X86_MATCH_INTEL_FAM6_MODEL(IVYBRIDGE,		&model_snb),
+@@ -803,9 +804,6 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&model_spr),
+-	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
+-	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
+-	X86_MATCH_VENDOR_FAM(AMD,	0x19,		&model_amd_fam17h),
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(x86cpu, rapl_model_match);
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index ac37830..81269c7 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -108,7 +108,7 @@
+ #define X86_FEATURE_EXTD_APICID		( 3*32+26) /* Extended APICID (8 bits) */
+ #define X86_FEATURE_AMD_DCM		( 3*32+27) /* AMD multi-node processor */
+ #define X86_FEATURE_APERFMPERF		( 3*32+28) /* P-State hardware coordination feedback capability (APERF/MPERF MSRs) */
+-/* free					( 3*32+29) */
++#define X86_FEATURE_RAPL		( 3*32+29) /* AMD/Hygon RAPL interface */
+ #define X86_FEATURE_NONSTOP_TSC_S3	( 3*32+30) /* TSC doesn't stop in S3 state */
+ #define X86_FEATURE_TSC_KNOWN_FREQ	( 3*32+31) /* TSC has known frequency */
+ 
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 2d11384..da57b96 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -646,6 +646,10 @@ static void early_init_amd(struct cpuinfo_x86 *c)
+ 	if (c->x86_power & BIT(12))
+ 		set_cpu_cap(c, X86_FEATURE_ACC_POWER);
+ 
++	/* Bit 14 indicates the Runtime Average Power Limit interface. */
++	if (c->x86_power & BIT(14))
++		set_cpu_cap(c, X86_FEATURE_RAPL);
++
+ #ifdef CONFIG_X86_64
+ 	set_cpu_cap(c, X86_FEATURE_SYSCALL32);
+ #else
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index 0bd6c74..6d50136 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -260,6 +260,10 @@ static void early_init_hygon(struct cpuinfo_x86 *c)
+ 	if (c->x86_power & BIT(12))
+ 		set_cpu_cap(c, X86_FEATURE_ACC_POWER);
+ 
++	/* Bit 14 indicates the Runtime Average Power Limit interface. */
++	if (c->x86_power & BIT(14))
++		set_cpu_cap(c, X86_FEATURE_RAPL);
++
+ #ifdef CONFIG_X86_64
+ 	set_cpu_cap(c, X86_FEATURE_SYSCALL32);
+ #endif
