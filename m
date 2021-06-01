@@ -2,95 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B27D3977CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055FE3977D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234397AbhFAQQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S232490AbhFAQWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233657AbhFAQQK (ORCPT
+        with ESMTP id S230288AbhFAQWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:16:10 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A160EC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:14:27 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id e1so2875770pld.13
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:14:27 -0700 (PDT)
+        Tue, 1 Jun 2021 12:22:47 -0400
+Received: from mail-lj1-x264.google.com (mail-lj1-x264.google.com [IPv6:2a00:1450:4864:20::264])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D21C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:21:04 -0700 (PDT)
+Received: by mail-lj1-x264.google.com with SMTP id c11so4520627ljd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:21:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HnyeiFGGaM1+1pZ7M3NiT7LE1UhO/QICF92CFaIJJ4s=;
-        b=lxTcsSXC8WaRn4itmjpibCtk+TgTlO9fZHzUgi371vg3lej7TxV83SPMYxbtl52eXB
-         7E+kkcJyOdDaG6ArydsaOGjTPi6ImuxjRzF8Tz3HFW58WSoD+qvxvRq11rskjqDiT2HZ
-         tSUCNpEN9qYo08Cv6jAKuiu+AKN5HT1jASEJdJTMWUspRQTRCJy5wd1AStcELidWGvEw
-         RzMBRfSXdOdqSjdxO93GHCzDkR8OjJLluR/Rl+hydWyGot7KcKeYoFGk5aooE1fUWQp7
-         Yq85q1XowM7InIu13pZaSPDZxjsaihmeeDMFKpl2rxa8CoO/kkyA9UlD3AkdP9pvoZP4
-         uNeA==
+        d=flowbird.group; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=In/GkSHT/rgtsc6Ydue2MWFy5Ook8SgyWRFS6hmgR5E=;
+        b=YKq+L2DtNMcsyYCaHkMqQSRpDrNBXJoN4hEECDawVb1DwrIir6Nlb4oX8Bk9+aKSln
+         t5y5TdSPmWBjUcAnd4AoUGE/D11UUAnhbGRTmUfHvsUrMJ9mkLg/sIITSO2RYg+HN3+w
+         F6APyqxk9qRXLWpPoZ1z2rrhfgprxc1b0eNYd7H4RM1PwwXnrppXfYhneCg28UEuDM5d
+         2OGOT07qXtizYBO0bnbWiXPzxnNDpD0XR/oxdNKhLJ+K2qbo/jWnEIcqXsCBUtWTgck5
+         9GW1PfNZxHUxe2EHbNnzz87vTcN5m9p5hyeE5f1DJ+m6AVWnGxYXrygOdXzY2Ib3j+lO
+         oPlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HnyeiFGGaM1+1pZ7M3NiT7LE1UhO/QICF92CFaIJJ4s=;
-        b=VaCl1fSPts7nMdSMSNmUMsj0LtxxHsZ52/JZKSQjMOj49+btUie0rMYWrFmkEyh4St
-         OmJf+B2eRzzfJOsBLwqSI/NYMXYg5v+Q3ci85diuDgtc5vA0G7I02ogDpypE6LSm4ZlG
-         BO6dstustYpPhMfDP37b0Ft6KBGRQNpdaeDSz7GjrnGKbHqnXn1j4Df1tPpN6+Uc0X+T
-         pZksFOyJSHeljYltMOwQP17KkwaqYW3FWoHTOxo6cmSbDz/6GbL7BRgGwktAfg6qFv26
-         k/SB9eCeaf2Uc19ffkOLToTUyeecPKKhr/iiVZX8/33PAoHIkve9gCtjwjM3eiS26kA3
-         kDjA==
-X-Gm-Message-State: AOAM533SLHauzeKr1FPnyXpYzUzemANBc92RUqYcxJwco/lPRZwX3ZJf
-        GMc+a6DGcrUX5NG9qRNiKqIijg==
-X-Google-Smtp-Source: ABdhPJymgNGA7XMkvK8yrNNyGR+rN2EEGFDcV9XRM/bv9x954aq4gFoBA7mIygVlIrtgZJaoY3YP3g==
-X-Received: by 2002:a17:902:9006:b029:107:394a:387 with SMTP id a6-20020a1709029006b0290107394a0387mr6125645plp.35.1622564066892;
-        Tue, 01 Jun 2021 09:14:26 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id t5sm2458443pfe.116.2021.06.01.09.14.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 09:14:26 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 16:14:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Pu Wen <puwen@hygon.cn>, Joerg Roedel <jroedel@suse.de>,
-        x86@kernel.org, joro@8bytes.org, thomas.lendacky@amd.com,
-        dave.hansen@linux.intel.com, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        sashal@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] x86/sev: Check whether SEV or SME is supported first
-Message-ID: <YLZc3sFKSjpd2yPS@google.com>
-References: <20210526072424.22453-1-puwen@hygon.cn>
- <YK6E5NnmRpYYDMTA@google.com>
- <905ecd90-54d2-35f1-c8ab-c123d8a3d9a0@hygon.cn>
- <YLSuRBzM6piigP8t@suse.de>
- <e1ad087e-a951-4128-923e-867a8b38ecec@hygon.cn>
- <YLZGuTYXDin2K9wx@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLZGuTYXDin2K9wx@zn.tnic>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=In/GkSHT/rgtsc6Ydue2MWFy5Ook8SgyWRFS6hmgR5E=;
+        b=Q/bRdsS7EfAm389wRaXavAiDPsnkXVuFIAtRj5FwNNV5KY1CXKN3mWMGKv3M4PCwzH
+         a8HsrYWil0NMynsAqIyBHegSJVlpLa10dfie1M2hO3VH9SrYzELaBDY3gVvc2AL1hz0y
+         BHcoOi/GXL0pBMi5cgD3ewahSHHTGS10QOuiVmUryxCgHJFDubVMxsq146t/CEsG3AdC
+         yZ62A3aHlugiEkvHnU52Mmrt5+/Bc8N9o0QQLkXlS+fhcLUkeNSCZ0ik4xJJDHFK4Jza
+         fcg2GQGs74om7oWG4QbiDZMYC3baGY5sjNyrpWtMiPgfRk5xeCFWiTKRCsroFBeKrvZu
+         90pg==
+X-Gm-Message-State: AOAM532bJpLfiHMxvwPc4AB9XjF+qYqXmBYp0Uuj6JG3Ia3JrHaqMXCE
+        LamP8SHXh87DZ/4lCykSKnsgV43aNcSJVwrptTK7OsoTX/jZ
+X-Google-Smtp-Source: ABdhPJyBKXLzlICbLObTVI8H+umyehJ1gJWyJA7M7jf+bsMkLTbXmXKJGRqj7qjgcAGw2zucxg5IMH40Uamb
+X-Received: by 2002:a2e:b4b0:: with SMTP id q16mr21472002ljm.434.1622564461573;
+        Tue, 01 Jun 2021 09:21:01 -0700 (PDT)
+Received: from mta1.parkeon.com ([185.149.63.251])
+        by smtp-relay.gmail.com with ESMTPS id w18sm403369lji.37.2021.06.01.09.21.01
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Tue, 01 Jun 2021 09:21:01 -0700 (PDT)
+X-Relaying-Domain: flowbird.group
+Received: from [172.16.13.234] (port=34414 helo=PC12445-BES.dynamic.besancon.parkeon.com)
+        by mta1.parkeon.com with esmtp (Exim 4.71)
+        (envelope-from <martin.fuzzey@flowbird.group>)
+        id 1lo78W-0006tW-MD; Tue, 01 Jun 2021 18:21:00 +0200
+From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>
+Cc:     stable@vger.kernel.org, Siva Rebbagondla <siva8118@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>, Marek Vasut <marex@denx.de>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] rsi: fix AP mode with WPA failure due to encrypted EAPOL
+Date:   Tue,  1 Jun 2021 18:19:53 +0200
+Message-Id: <1622564459-24430-1-git-send-email-martin.fuzzey@flowbird.group>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021, Borislav Petkov wrote:
-> On Mon, May 31, 2021 at 10:56:50PM +0800, Pu Wen wrote:
-> > Thanks for your suggestion, I'll try to set up early #GP handler to fix
-> > the problem.
-> 
-> Why? AFAICT, you only need to return early in sme_enable() if CPUID is
-> not "AuthenticAMD". Just do that please.
+In AP mode WPA2-PSK connections were not established.
 
-I don't think that would suffice, presumably MSR_AMD64_SEV doesn't exist on older
-AMD CPUs either.  E.g. there's no mention of MSR 0xC001_0131 in the dev's guide
-from 2015[*].
+The reason was that the AP was sending the first message
+of the 4 way handshake encrypted, even though no pairwise
+key had (correctly) yet been set.
 
-I also don't see the point in checking the vendor string.  A malicious hypervisor
-can lie about CPUID.0x0 just as easily as it can lie about CPUID.0x8000001f, so
-for SEV the options are to either trust the hypervisor or eat #GPs on RDMSR for
-non-SEV CPUs.  If we go with "trust the hypervisor", then the original patch of
-hoisting the CPUID.0x8000001f check up is simpler than checking the vendor string.
+Encryption was enabled if the "security_enable" driver flag
+was set and encryption was not explicitly disabled by
+IEEE80211_TX_INTFL_DONT_ENCRYPT.
 
+However security_enable was set when *any* key, including
+the AP GTK key, had been set which was causing unwanted
+encryption even if no key was avaialble for the unicast
+packet to be sent.
 
-[*] https://www.amd.com/system/files/TechDocs/48751_16h_bkdg.pdf
+Fix this by adding a check that we have a key and drop
+the old security_enable driver flag which is insufficient
+and redundant.
+
+The Redpine downstream out of tree driver does it this way too.
+
+Regarding the Fixes tag the actual code being modified was
+introduced earlier, with the original driver submission, in
+dad0d04fa7ba ("rsi: Add RS9113 wireless driver"), however
+at that time AP mode was not yet supported so there was
+no bug at that point.
+
+So I have tagged the introduction of AP support instead
+which was part of the patch set "rsi: support for AP mode" [1]
+
+It is not clear whether AP WPA has ever worked, I can see nothing
+on the kernel side that broke it afterwards yet the AP support
+patch series says "Tests are performed to confirm aggregation,
+connections in WEP and WPA/WPA2 security."
+
+One possibility is that the initial tests were done with a modified
+userspace (hostapd).
+
+[1] https://www.spinics.net/lists/linux-wireless/msg165302.html
+
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+Fixes: 38ef62353acb ("rsi: security enhancements for AP mode")
+CC: stable@vger.kernel.org
+---
+
+V2:
+        Remove security_enable driver flag
+        Remove unnecessary parantheses
+        Improve $SUBJECT
+
+ drivers/net/wireless/rsi/rsi_91x_hal.c      | 2 +-
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c | 3 ---
+ drivers/net/wireless/rsi/rsi_91x_mgmt.c     | 3 +--
+ drivers/net/wireless/rsi/rsi_main.h         | 1 -
+ 4 files changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
+index ce98921..a51cb0a 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_hal.c
++++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
+@@ -203,7 +203,7 @@ int rsi_prepare_data_desc(struct rsi_common *common, struct sk_buff *skb)
+ 		wh->frame_control |= cpu_to_le16(RSI_SET_PS_ENABLE);
+ 
+ 	if ((!(info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT)) &&
+-	    (common->secinfo.security_enable)) {
++	    info->control.hw_key) {
+ 		if (rsi_is_cipher_wep(common))
+ 			ieee80211_size += 4;
+ 		else
+diff --git a/drivers/net/wireless/rsi/rsi_91x_mac80211.c b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
+index 1602530..57c9e35 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_mac80211.c
++++ b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
+@@ -1028,7 +1028,6 @@ static int rsi_mac80211_set_key(struct ieee80211_hw *hw,
+ 	mutex_lock(&common->mutex);
+ 	switch (cmd) {
+ 	case SET_KEY:
+-		secinfo->security_enable = true;
+ 		status = rsi_hal_key_config(hw, vif, key, sta);
+ 		if (status) {
+ 			mutex_unlock(&common->mutex);
+@@ -1047,8 +1046,6 @@ static int rsi_mac80211_set_key(struct ieee80211_hw *hw,
+ 		break;
+ 
+ 	case DISABLE_KEY:
+-		if (vif->type == NL80211_IFTYPE_STATION)
+-			secinfo->security_enable = false;
+ 		rsi_dbg(ERR_ZONE, "%s: RSI del key\n", __func__);
+ 		memset(key, 0, sizeof(struct ieee80211_key_conf));
+ 		status = rsi_hal_key_config(hw, vif, key, sta);
+diff --git a/drivers/net/wireless/rsi/rsi_91x_mgmt.c b/drivers/net/wireless/rsi/rsi_91x_mgmt.c
+index 33c76d3..b6d050a 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_mgmt.c
++++ b/drivers/net/wireless/rsi/rsi_91x_mgmt.c
+@@ -1803,8 +1803,7 @@ int rsi_send_wowlan_request(struct rsi_common *common, u16 flags,
+ 			RSI_WIFI_MGMT_Q);
+ 	cmd_frame->desc.desc_dword0.frame_type = WOWLAN_CONFIG_PARAMS;
+ 	cmd_frame->host_sleep_status = sleep_status;
+-	if (common->secinfo.security_enable &&
+-	    common->secinfo.gtk_cipher)
++	if (common->secinfo.gtk_cipher)
+ 		flags |= RSI_WOW_GTK_REKEY;
+ 	if (sleep_status)
+ 		cmd_frame->wow_flags = flags;
+diff --git a/drivers/net/wireless/rsi/rsi_main.h b/drivers/net/wireless/rsi/rsi_main.h
+index a1065e5..0f53585 100644
+--- a/drivers/net/wireless/rsi/rsi_main.h
++++ b/drivers/net/wireless/rsi/rsi_main.h
+@@ -151,7 +151,6 @@ enum edca_queue {
+ };
+ 
+ struct security_info {
+-	bool security_enable;
+ 	u32 ptk_cipher;
+ 	u32 gtk_cipher;
+ };
+-- 
+1.9.1
+
