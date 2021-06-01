@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA0A397CFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8461B397D0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbhFAXYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235137AbhFAXYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 19:24:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69192613BC;
-        Tue,  1 Jun 2021 23:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622589755;
-        bh=d6j6EDGkhnc+GxiEmiU29Lm/NCKNEqKbXTPVfNJiuuM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ftu0zJj3/weUgRsC8CSXzsmqeuhN2FdlfFbM5ew8+E1xgWmbSx50aC2TeDff/fo3r
-         rXK/4YMRtWDpxZ50xfhXMJM3yljE5igxQ6kcRa58MomH/F5L3TNhL/t884dtSmTIo+
-         09ytxS7PJVtcn5dj3yw4PyjcYw2tGvkIVW8OQ6ZWZD48lgYqOpLsFdXQDLWjTH9P85
-         7oHZbbIgqE5qoxr3gzF+FM4CckTHXQRscojVBqXI2wgPvH8I2utWPqJdlz5LQ+N7pT
-         TM+e02mUxQEZMPM0EBBBYG3z5XlVgjf55p6Q/I8nuq6tynxWktFEIPZ5FcbLpVVNog
-         E77bBQpTQwZTw==
-From:   Ming Lin <mlin@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Simon Ser <contact@emersion.fr>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ming Lin <mlin@kernel.org>
-Subject: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem read
-Date:   Tue,  1 Jun 2021 16:22:33 -0700
-Message-Id: <1622589753-9206-3-git-send-email-mlin@kernel.org>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1622589753-9206-1-git-send-email-mlin@kernel.org>
-References: <1622589753-9206-1-git-send-email-mlin@kernel.org>
+        id S235179AbhFAXeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234766AbhFAXeI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 19:34:08 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1947BC061574;
+        Tue,  1 Jun 2021 16:32:25 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id c20so638364qkm.3;
+        Tue, 01 Jun 2021 16:32:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=n5qUxNhebxhh1o4S5RsRDnpxOezOtNelOWi74JiDkls=;
+        b=cHpjBW28CEKIdPIP96wHCabTM6ov5/xmVJdjvgmDpseY7daumngEmz1fwlBpplgxnY
+         FRwdeP94Y8Jg4q3RNDNCV2jkN4elQWGcipiidgSZtRGnG/F7FUtuyU0Ws6W+yf6+RasW
+         C/c5sfTswWi8ITgypSmV6IufK5q37mRkjZs6ZZEYo9dUhhs3QpUgIYwsSZ7ZsuN+rbYx
+         Sca47SADPVOjfK/aXZgbIFh9iLLX01EkxW95RohaUDLLazl7iDUSjnUF5kkMwbZqHBJ2
+         HUoEfJKpcnl9RDRgcBkO+XcPkMCBvfAJ7SlKKQoga4D2ralI7P1B0kjTR1jVs9E34wlm
+         Jlpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n5qUxNhebxhh1o4S5RsRDnpxOezOtNelOWi74JiDkls=;
+        b=nNpM49kCUOaq19pekM8jFGb/NQjANARmsAh7DycV7AgDvbSLOksoqqr/A+zQVSPuJ2
+         /9TRaMZ1iCvxutFKc2tQCk3KDkiK/VQKy0+o1TBf1hTUzb7rXEZllR9P8UlyM44B9xdP
+         eEmcXpuQHietKUPOuiqY6tdaQ0yadzNRysH18STmm0PKcdps4HGKnNFP4l8hdJTaI4PW
+         vw6orR17qOAvGkIWcnxKWoUT5t8bJp2ZD6CLx4/lzggdRhx9uw7nx8obExcu8HpiGxwO
+         Qxq5T15O3KQpOvtuz2IqIQGom6rnn0PpFPXkP+SgIkFolMw4mS971vAX0hSr4YAB+uTx
+         2amA==
+X-Gm-Message-State: AOAM5319h16x20G7EZIgDoUrETlTs46sMOm1QlYwXj2UdhpzAZIzkkHv
+        /Cm7j0xliohgO0gjTnNgDQVam0MrywA=
+X-Google-Smtp-Source: ABdhPJxBdDt7Cc0D9SHrdNBpxahBph5JPuVp2VNMKdcHmGJ5OgCruLRtn00LXh0CFyQXb4aQ5JHtwA==
+X-Received: by 2002:ae9:e716:: with SMTP id m22mr25307355qka.217.1622590344161;
+        Tue, 01 Jun 2021 16:32:24 -0700 (PDT)
+Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
+        by smtp.gmail.com with ESMTPSA id t196sm1573728qke.50.2021.06.01.16.32.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 16:32:23 -0700 (PDT)
+Subject: Re: docs: Convert the Speakup guide to rst
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        speakup@linux-speakup.org, corbet@lwn.net,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <20210531220754.h4ep2dj65wl6hejf@begin>
+ <b8769ad4-9188-a735-3ac4-4a79b9b06487@gmail.com>
+ <20210601215536.5rhnbwwt66uyqhze@begin>
+From:   Igor Torrente <igormtorrente@gmail.com>
+Message-ID: <85969150-6e00-12b8-b56d-5f161436777d@gmail.com>
+Date:   Tue, 1 Jun 2021 20:32:20 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210601215536.5rhnbwwt66uyqhze@begin>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds new flag MAP_NOSIGBUS of mmap() to specify the behavior of
-"don't SIGBUS on read beyond i_size". This flag is only allowed
-for read only shmem mapping.
+Hi Samuel,
 
-If you use MAP_NOSIGBUS, and you access pages that don't have a backing
-store, you will get zero pages, and they will NOT BE SYNCHRONIZED with
-the backing store possibly later being updated.
+On 6/1/21 6:55 PM, Samuel Thibault wrote:
+> Hello,
+> 
+> Igor Torrente, le mar. 01 juin 2021 12:39:01 -0300, a ecrit:
+>> I was reading all the emails sent in this thread, but I'm not sure how I
+>> should proceed. Do think should I continue to improve the patch with the
+>> Jani Nikula suggestions? Or abandon it? Or keep both versions?
+> 
+> It seems that people are fine with the switch to the .rst format, and
+> it'll indeed allow much better distribution of its content, so please
+> continue improving the patch with the suggestions from Jani, you have an
+> 
+> Acked-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+> 
+> and the review will probably come from Jani, who seems to actually know
+> a bit about the rst syntax :)
 
-Any user that uses MAP_NOSIGBUS had better just accept that it's not
-compatible with expanding the shmem backing store later.
+OK, I will keep improving it.
 
-Signed-off-by: Ming Lin <mlin@kernel.org>
+> 
+> Samuel
+> 
+
+Thanks,
 ---
- include/linux/mm.h                     |  2 ++
- include/linux/mman.h                   |  1 +
- include/uapi/asm-generic/mman-common.h |  1 +
- mm/mmap.c                              |  3 +++
- mm/shmem.c                             | 17 ++++++++++++++++-
- 5 files changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index e9d67bc..5d0e0dc 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -373,6 +373,8 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
- # define VM_UFFD_MINOR		VM_NONE
- #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
- 
-+#define VM_NOSIGBUS		VM_FLAGS_BIT(38)	/* Do not SIGBUS on out-of-band shmem read */
-+
- /* Bits set in the VMA until the stack is in its final location */
- #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
- 
-diff --git a/include/linux/mman.h b/include/linux/mman.h
-index b2cbae9..c966b08 100644
---- a/include/linux/mman.h
-+++ b/include/linux/mman.h
-@@ -154,6 +154,7 @@ static inline bool arch_validate_flags(unsigned long flags)
- 	       _calc_vm_trans(flags, MAP_DENYWRITE,  VM_DENYWRITE ) |
- 	       _calc_vm_trans(flags, MAP_LOCKED,     VM_LOCKED    ) |
- 	       _calc_vm_trans(flags, MAP_SYNC,	     VM_SYNC      ) |
-+	       _calc_vm_trans(flags, MAP_NOSIGBUS,   VM_NOSIGBUS  ) |
- 	       arch_calc_vm_flag_bits(flags);
- }
- 
-diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
-index f94f65d..55f4be0 100644
---- a/include/uapi/asm-generic/mman-common.h
-+++ b/include/uapi/asm-generic/mman-common.h
-@@ -29,6 +29,7 @@
- #define MAP_HUGETLB		0x040000	/* create a huge page mapping */
- #define MAP_SYNC		0x080000 /* perform synchronous page faults for the mapping */
- #define MAP_FIXED_NOREPLACE	0x100000	/* MAP_FIXED which doesn't unmap underlying mapping */
-+#define MAP_NOSIGBUS		0x200000	/* do not SIGBUS on out-of-band shmem read */
- 
- #define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could be
- 					 * uninitialized */
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 096bba4..69cd856 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1419,6 +1419,9 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 	if (!len)
- 		return -EINVAL;
- 
-+	if ((flags & MAP_NOSIGBUS) && ((prot & PROT_WRITE) || !shmem_file(file)))
-+		return -EINVAL;
-+
- 	/*
- 	 * Does the application expect PROT_READ to imply PROT_EXEC?
- 	 *
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 5d46611..5d15b08 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1812,7 +1812,22 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- repeat:
- 	if (sgp <= SGP_CACHE &&
- 	    ((loff_t)index << PAGE_SHIFT) >= i_size_read(inode)) {
--		return -EINVAL;
-+		if (!vma || !(vma->vm_flags & VM_NOSIGBUS))
-+			return -EINVAL;
-+
-+		vma->vm_flags |= VM_MIXEDMAP;
-+		/*
-+		 * Get zero page for MAP_NOSIGBUS mapping, which isn't
-+                 * coherent wrt shmem contents that are expanded and
-+		 * filled in later.
-+		 */
-+		error = vm_insert_page(vma, (unsigned long)vmf->address,
-+					ZERO_PAGE(0));
-+		if (error)
-+			return error;
-+
-+		*fault_type = VM_FAULT_NOPAGE;
-+		return 0;
- 	}
- 
- 	sbinfo = SHMEM_SB(inode->i_sb);
--- 
-1.8.3.1
-
+Igor M. A. Torrente
