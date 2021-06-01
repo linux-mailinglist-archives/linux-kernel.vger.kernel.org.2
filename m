@@ -2,125 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA22397CCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F81397CD6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235119AbhFAW7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:59:11 -0400
-Received: from gateway30.websitewelcome.com ([192.185.168.15]:46171 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234766AbhFAW7J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:59:09 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 84D7DD96C
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 17:57:26 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id oDKAlw6vFFRe9oDKAlnLFU; Tue, 01 Jun 2021 17:57:26 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=EJjRNBIb1t/JVbuc9ZYLViGQoZmuO/z8cpH4lbWGbvQ=; b=JOidhVBNMgAlBwN/pL8izI0orq
-        28RS3VeyVKl5j9UeURZQpF3Pi/zNn8Ahj2qcT8HpEsxOvZcany91xRaW2KxaO/iPeM224rF8VfYiE
-        iTwTN9n9PR1uOqi0tMyr8XNYlnSdo8kw2kzxYAtun6ShA32tMQ0Oom7plfPoG0iS/xBXcqiejEAja
-        XRVgYBb9w3CxOtsyY99ealNQ+vPZ58qi9kTfFdwQcByIKCfYxsTSJZs49KOopzhJ8BZIk1pEzFTMi
-        cwCFYTSgkO1Yk0YGrb9/F34YJ0mZFK6SecrT0W4fxHXu7D6SUIFIDdwL6KiJXZfnLvredKFKpomTN
-        kbej1dUg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53078 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1loDK7-000vU5-0n; Tue, 01 Jun 2021 17:57:23 -0500
-Subject: Re: [PATCH RESEND][next] drm/nouveau/therm: Fix fall-through warnings
- for Clang
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-References: <20210305095807.GA142125@embeddedor>
- <af4363d5-982d-3168-21aa-921c65f35554@embeddedor.com>
-Message-ID: <b3daee1b-95da-c9d0-3214-661807d22f50@embeddedor.com>
-Date:   Tue, 1 Jun 2021 17:58:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235127AbhFAXBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:01:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234656AbhFAXBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 19:01:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F15E1613BC;
+        Tue,  1 Jun 2021 23:00:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622588403;
+        bh=tbqCPYrPXuGVLzNNNZFMxmyWcRmpu8AG1sQfIicFoq8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=tJpyGTBZt9ZKeMnd2wlkLnKlqJVrus7LULc1RVwAEVJ/fV8y5oWZP0nMRG8gFlWzj
+         W4Ww2MYBz5hKnlj+Yk941R8cLacHGXzU5DkElWwJ8oGeN/VIbZmjoNg0Th/GoQOhJ7
+         7ZdV1PvOgYiLUH6QI764+fYi7/rnwublpxhAqC73u7Q1gkFiWWxlrXqt13HFtYVmep
+         JCJVbrD5jLxA6SPoeidotIVPwhM/HMW1VTiOAeV3I0h12OLQ6E8uf3rSnsKHCgm3J2
+         tJFy8TKMspLMcw+COSUiycPOOHiaNicfop56Yu7ewCWWjWffZGYY2dPbepLPDWYtub
+         tDFPd8S2VH3qQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E35FC60A47;
+        Tue,  1 Jun 2021 23:00:02 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <af4363d5-982d-3168-21aa-921c65f35554@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1loDK7-000vU5-0n
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53078
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 39
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ethernet: myri10ge: Fix missing error code in
+ myri10ge_probe()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162258840292.25475.8812296337772071436.git-patchwork-notify@kernel.org>
+Date:   Tue, 01 Jun 2021 23:00:02 +0000
+References: <1622545491-18706-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1622545491-18706-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     christopher.lee@cspi.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-Friendly second ping: who can take this?
+This patch was applied to netdev/net.git (refs/heads/master):
 
-I can add this to my -next branch for 5.14 if you don't mind.
+On Tue,  1 Jun 2021 19:04:51 +0800 you wrote:
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'status'.
+> 
+> Eliminate the follow smatch warning:
+> 
+> drivers/net/ethernet/myricom/myri10ge/myri10ge.c:3818 myri10ge_probe()
+> warn: missing error code 'status'.
+> 
+> [...]
 
-JFYI: We had thousands of these sorts of warnings and now we are down
-to just 23 in linux-next. This is one of those last remaining warnings.
+Here is the summary with links:
+  - ethernet: myri10ge: Fix missing error code in myri10ge_probe()
+    https://git.kernel.org/netdev/net/c/f336d0b93ae9
 
-Thanks
+You are awesome, thank you!
 --
-Gustavo
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-On 4/20/21 15:13, Gustavo A. R. Silva wrote:
-> Hi all,
-> 
-> Friendly ping: who can take this, please?
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> On 3/5/21 03:58, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->> by explicitly adding a break statement instead of letting the code fall
->> through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>  drivers/gpu/drm/nouveau/nvkm/subdev/therm/gf119.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gf119.c b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gf119.c
->> index 2b031d4eaeb6..684aff7437ee 100644
->> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gf119.c
->> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gf119.c
->> @@ -41,6 +41,7 @@ pwm_info(struct nvkm_therm *therm, int line)
->>  		default:
->>  			break;
->>  		}
->> +		break;
->>  	default:
->>  		break;
->>  	}
->>
+
