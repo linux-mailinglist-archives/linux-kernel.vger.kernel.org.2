@@ -2,149 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A80397487
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D9C39748A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbhFANsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:48:52 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48842 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233584AbhFANsv (ORCPT
+        id S234038AbhFANt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:49:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6117 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233584AbhFANt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:48:51 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151DkM4i013732;
-        Tue, 1 Jun 2021 13:46:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=44w8HnzJCVFzBaUr40h+1Z99o7CPw9koJPJwXdJfORo=;
- b=cLhy7hhwp04C6uyqBgz3J2o/HRFdP5A5i6I8uz3SbiS63iJgTTojtHX3Zdq0IA+ci8+q
- xejUJlFyTgjiwQhtu6huswGpzc7gy4NlgaVEG5RH1lGvOS7vww1K/SpabPW+0kFaPStV
- pfGR5C816AKunQ2cOEyeErl/RNegore18OenYgapnd4ptDSbjLbrOlXV3tqKhoNBNxi/
- xNM6nbpvyOpkWKYfeCx7l1uGmcjeYOsrw1QYlC1e6GhmZyb98lkTihHuwGxefvgZjmCb
- vAoFvQXpCFMlCHjvg/FfqDUi1Pic8lQQG7IFw2CLHLlMFkr3WZTSxdcBQFn4/GBk8tWB EA== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38vjar0mn2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 13:46:22 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 151DhNKs068253;
-        Tue, 1 Jun 2021 13:46:21 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38uycra5vj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 13:46:21 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 151DkK42074986;
-        Tue, 1 Jun 2021 13:46:20 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 38uycra5v6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 13:46:20 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 151DkGfX011164;
-        Tue, 1 Jun 2021 13:46:17 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Jun 2021 13:46:15 +0000
-Date:   Tue, 1 Jun 2021 16:46:07 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-Message-ID: <20210601134606.GD24442@kadam>
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210531110144.GA24442@kadam>
- <CAD-N9QW17fVZhaLY=CLPj9EbTLpG9qFNcGYZ0MhGxg_E0df1Uw@mail.gmail.com>
+        Tue, 1 Jun 2021 09:49:28 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvYLh6cJtzYnjB;
+        Tue,  1 Jun 2021 21:45:00 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 21:47:44 +0800
+Received: from [10.174.185.179] (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 21:47:43 +0800
+Subject: Re: [PATCH stable-5.12.y backport 1/2] KVM: arm64: Commit pending PC
+ adjustemnts before returning to userspace
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <sashal@kernel.org>,
+        <alexandru.elisei@arm.com>, <wanghaibin.wang@huawei.com>
+References: <20210601111238.1059-1-yuzenghui@huawei.com>
+ <20210601111238.1059-2-yuzenghui@huawei.com> <87v96x24ir.wl-maz@kernel.org>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <b7cf4102-17e8-f4f8-0314-0a06d7429b4c@huawei.com>
+Date:   Tue, 1 Jun 2021 21:47:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD-N9QW17fVZhaLY=CLPj9EbTLpG9qFNcGYZ0MhGxg_E0df1Uw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: hPuK-GX05TvdHVxpZNtQQ58X0GqwDWkt
-X-Proofpoint-GUID: hPuK-GX05TvdHVxpZNtQQ58X0GqwDWkt
+In-Reply-To: <87v96x24ir.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 09:17:04PM +0800, Dongliang Mu wrote:
-> On Mon, May 31, 2021 at 7:02 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > @@ -701,6 +706,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
-> > >               sysfs_remove_link(&card->ctl_dev.kobj, link_name);
-> > >               sysfs_remove_link(&led_card->dev.kobj, "card");
-> > >               device_del(&led_card->dev);
-> > > +             put_device(&led_card->dev);
-> > >               kfree(led_card);
-> > >               led->cards[card->number] = NULL;
-> > >       }
-> >
-> > Btw, I have created a Smatch warning for this type of code where we
-> > have:
-> >
-> >         put_device(&foo->dev);
-> >         kfree(foo);
+Hi Marc,
+
+On 2021/6/1 19:44, Marc Zyngier wrote:
+> Hi Zenghui,
 > 
-> I don't think this should be a bug pattern. put_device will drop the
-> final reference of one object with struct device and invoke
-> device_release to release some resources.
+> Thanks for having a go at the backport.
 > 
-> The release function should only clean up the internal resources in
-> the device object. It should not touch the led_card which contains the
-> device object.
+> On Tue, 01 Jun 2021 12:12:37 +0100,
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+>>
+>> From: Marc Zyngier <maz@kernel.org>
+>>
+>> commit 26778aaa134a9aefdf5dbaad904054d7be9d656d upstream.
+>>
+>> KVM currently updates PC (and the corresponding exception state)
+>> using a two phase approach: first by setting a set of flags,
+>> then by converting these flags into a state update when the vcpu
+>> is about to enter the guest.
+>>
+>> However, this creates a disconnect with userspace if the vcpu thread
+>> returns there with any exception/PC flag set. In this case, the exposed
+>> context is wrong, as userspace doesn't have access to these flags
+>> (they aren't architectural). It also means that these flags are
+>> preserved across a reset, which isn't expected.
+>>
+>> To solve this problem, force an explicit synchronisation of the
+>> exception state on vcpu exit to userspace. As an optimisation
+>> for nVHE systems, only perform this when there is something pending.
+>>
+>> Reported-by: Zenghui Yu <yuzenghui@huawei.com>
+>> Reviewed-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
+>> Tested-by: Zenghui Yu <yuzenghui@huawei.com>
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> Cc: stable@vger.kernel.org # 5.11
+>> [yuz: stable-5.12.y backport: add __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc
+>>  macro manually and keep it consistent with mainline]
 > 
+> I'd rather you allocated a new number here, irrespective of what
+> mainline has (rational below).
+> 
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> ---
+>>  arch/arm64/include/asm/kvm_asm.h   |  1 +
+>>  arch/arm64/kvm/arm.c               | 11 +++++++++++
+>>  arch/arm64/kvm/hyp/exception.c     |  4 ++--
+>>  arch/arm64/kvm/hyp/nvhe/hyp-main.c |  8 ++++++++
+>>  4 files changed, 22 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+>> index a8578d650bb6..d7f769bb6c9c 100644
+>> --- a/arch/arm64/include/asm/kvm_asm.h
+>> +++ b/arch/arm64/include/asm/kvm_asm.h
+>> @@ -57,6 +57,7 @@
+>>  #define __KVM_HOST_SMCCC_FUNC___kvm_get_mdcr_el2		12
+>>  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_save_aprs		13
+>>  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_restore_aprs		14
+>> +#define __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc			21
+> 
+> This is going to generate a larger than necessary host_hcall array in
+> hyp/nvhe/hyp-main.c, which we're trying to keep tightly packed for
+> obvious reasons.
 
-It's only a use after free if you turn CONFIG_DEBUG_KOBJECT_RELEASE
-debugging on, which you would never do in a production environment.  The
-put_device() function calls kobject_release():
+It isn't obvious to me ;-). But this creates some invalid entries
+(HVC handlers) in the host_hcall array, which is not good. I'll change
+__KVM_HOST_SMCCC_FUNC___kvm_adjust_pc to 15. Thanks for your reminder.
 
-lib/kobject.c
-   725  static void kobject_release(struct kref *kref)
-   726  {
-   727          struct kobject *kobj = container_of(kref, struct kobject, kref);
-   728  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-   729          unsigned long delay = HZ + HZ * (get_random_int() & 0x3);
-   730          pr_info("kobject: '%s' (%p): %s, parent %p (delayed %ld)\n",
-   731                   kobject_name(kobj), kobj, __func__, kobj->parent, delay);
-   732          INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
-                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+> With this nit fixed:
+> 
+> Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-   733  
-   734          schedule_delayed_work(&kobj->release, delay);
-   735  #else
-   736          kobject_cleanup(kobj);
-   737  #endif
-   738  }
+Thanks!
 
-This release will be done later and it references led_card->dev which is
-now freed.
-
-The Smatch check did work pretty decently.  These are all use after free
-bugs if you have CONFIG_DEBUG_KOBJECT_RELEASE enabled.  (Line numbers
-from Friday's linux-next).  I'm not going to bother fixing them because
-they're only an issue for CONFIG_DEBUG_KOBJECT_RELEASE and not for
-production but I will email people when more of these bugs are
-introduced.
-
-sound/core/control_led.c:688 snd_ctl_led_sysfs_add() warn: freeing device managed memory (UAF): 'led_card'
-drivers/usb/gadget/function/f_mass_storage.c:2649 fsg_common_remove_lun() warn: freeing device managed memory (UAF): 'lun'
-drivers/usb/gadget/function/f_mass_storage.c:2818 fsg_common_create_lun() warn: freeing device managed memory (UAF): 'lun'
-drivers/usb/gadget/function/f_mass_storage.c:2881 fsg_common_release() warn: freeing device managed memory (UAF): 'lun'
-drivers/w1/w1.c:810 w1_unref_slave() warn: freeing device managed memory (UAF): 'sl'
-drivers/pci/endpoint/pci-epc-core.c:671 pci_epc_destroy() warn: freeing device managed memory (UAF): 'epc'
-drivers/pci/endpoint/pci-epc-core.c:742 __pci_epc_create() warn: freeing device managed memory (UAF): 'epc'
-drivers/infiniband/ulp/srp/ib_srp.c:3930 srp_add_port() warn: freeing device managed memory (UAF): 'host'
-drivers/infiniband/ulp/srp/ib_srp.c:4058 srp_remove_one() warn: freeing device managed memory (UAF): 'host'
-drivers/infiniband/ulp/rtrs/rtrs-clt.c:2695 alloc_clt() warn: freeing device managed memory (UAF): 'clt'
-drivers/media/pci/solo6x10/solo6x10-core.c:156 free_solo_dev() warn: freeing device managed memory (UAF): 'solo_dev'
-drivers/net/ethernet/netronome/nfp/nfpcore/nfp_cppcore.c:203 nfp_cpp_free() warn: freeing device managed memory (UAF): 'cpp'
-drivers/net/ethernet/netronome/nfp/nfpcore/nfp_cppcore.c:1258 nfp_cpp_from_operations() warn: freeing device managed memory (UAF): 'cpp'
-drivers/net/netdevsim/bus.c:354 nsim_bus_dev_del() warn: freeing device managed memory (UAF): 'nsim_bus_dev'
-drivers/thermal/thermal_core.c:1002 __thermal_cooling_device_register() warn: freeing device managed memory (UAF): 'cdev'
-
-regards,
-dan carpenter
-
+Zenghui
