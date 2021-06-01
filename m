@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306DC3974E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349D439751C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbhFAOGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:06:01 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6120 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbhFAOFz (ORCPT
+        id S234228AbhFAOKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:10:45 -0400
+Received: from out28-50.mail.aliyun.com ([115.124.28.50]:52115 "EHLO
+        out28-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234027AbhFAOKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:05:55 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvYjg3bTZzYpZN;
-        Tue,  1 Jun 2021 22:01:27 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 22:04:11 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 22:04:10 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>
-CC:     <wsa@kernel.org>, <f.fainelli@gmail.com>
-Subject: [PATCH -next] i2c: bcm2835: add missing disable and put clk on error in bcm2835_i2c_probe()
-Date:   Tue, 1 Jun 2021 22:08:35 +0800
-Message-ID: <20210601140835.3595921-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Jun 2021 10:10:42 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1194137|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.427396-0.000226577-0.572377;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.KM.e4b8_1622556537;
+Received: from 192.168.0.103(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KM.e4b8_1622556537)
+          by smtp.aliyun-inc.com(10.147.43.95);
+          Tue, 01 Jun 2021 22:08:58 +0800
+Subject: Re: [PATCH v2 3/6] clk: ingenic: Read bypass register only when there
+ is one
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        list@opendingux.net
+References: <20210530164923.18134-1-paul@crapouillou.net>
+ <20210530164923.18134-4-paul@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <47eeb44b-2752-1c99-4209-09769e267c7f@wanyeetech.com>
+Date:   Tue, 1 Jun 2021 22:08:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210530164923.18134-4-paul@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add clk_disable_unprepare() and clk_rate_exclusive_put() on error
-path in bcm2835_i2c_probe().
 
-Fixes: bebff81fb8b9 ("i2c: bcm2835: Model Divider in CCF")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/i2c/busses/i2c-bcm2835.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+On 2021/5/31 上午12:49, Paul Cercueil wrote:
+> Rework the clock code so that the bypass register is only read when
+> there is actually a bypass functionality.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>   drivers/clk/ingenic/cgu.c | 19 +++++++++++--------
+>   1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-bcm2835.c b/drivers/i2c/busses/i2c-bcm2835.c
-index 37443edbf754..a7fa3429c389 100644
---- a/drivers/i2c/busses/i2c-bcm2835.c
-+++ b/drivers/i2c/busses/i2c-bcm2835.c
-@@ -449,13 +449,14 @@ static int bcm2835_i2c_probe(struct platform_device *pdev)
- 	ret = clk_prepare_enable(i2c_dev->bus_clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Couldn't prepare clock");
--		return ret;
-+		goto err_put_clk;
- 	}
- 
- 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (!irq) {
- 		dev_err(&pdev->dev, "No IRQ resource\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_disable_clk;
- 	}
- 	i2c_dev->irq = irq->start;
- 
-@@ -463,7 +464,8 @@ static int bcm2835_i2c_probe(struct platform_device *pdev)
- 			  dev_name(&pdev->dev), i2c_dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not request IRQ\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_disable_clk;
- 	}
- 
- 	adap = &i2c_dev->adapter;
-@@ -480,9 +482,17 @@ static int bcm2835_i2c_probe(struct platform_device *pdev)
- 	bcm2835_i2c_writel(i2c_dev, BCM2835_I2C_C, 0);
- 
- 	ret = i2c_add_adapter(adap);
--	if (ret)
-+	if (ret) {
- 		free_irq(i2c_dev->irq, i2c_dev);
-+		goto err_disable_clk;
-+	}
- 
-+	return 0;
-+
-+err_disable_clk:
-+	clk_disable_unprepare(i2c_dev->bus_clk);
-+err_put_clk:
-+	clk_rate_exclusive_put(i2c_dev->bus_clk);
- 	return ret;
- }
- 
--- 
-2.25.1
 
+Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>    # on CU1830-neo/X1830
+
+
+>
+> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+> index 0619d45a950c..7686072aff8f 100644
+> --- a/drivers/clk/ingenic/cgu.c
+> +++ b/drivers/clk/ingenic/cgu.c
+> @@ -99,13 +99,14 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+>   	od_enc = ctl >> pll_info->od_shift;
+>   	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+>   
+> -	ctl = readl(cgu->base + pll_info->bypass_reg);
+> +	if (!pll_info->no_bypass_bit) {
+> +		ctl = readl(cgu->base + pll_info->bypass_reg);
+>   
+> -	bypass = !pll_info->no_bypass_bit &&
+> -		 !!(ctl & BIT(pll_info->bypass_bit));
+> +		bypass = !!(ctl & BIT(pll_info->bypass_bit));
+>   
+> -	if (bypass)
+> -		return parent_rate;
+> +		if (bypass)
+> +			return parent_rate;
+> +	}
+>   
+>   	for (od = 0; od < pll_info->od_max; od++) {
+>   		if (pll_info->od_encoding[od] == od_enc)
+> @@ -225,11 +226,13 @@ static int ingenic_pll_enable(struct clk_hw *hw)
+>   	u32 ctl;
+>   
+>   	spin_lock_irqsave(&cgu->lock, flags);
+> -	ctl = readl(cgu->base + pll_info->bypass_reg);
+> +	if (!pll_info->no_bypass_bit) {
+> +		ctl = readl(cgu->base + pll_info->bypass_reg);
+>   
+> -	ctl &= ~BIT(pll_info->bypass_bit);
+> +		ctl &= ~BIT(pll_info->bypass_bit);
+>   
+> -	writel(ctl, cgu->base + pll_info->bypass_reg);
+> +		writel(ctl, cgu->base + pll_info->bypass_reg);
+> +	}
+>   
+>   	ctl = readl(cgu->base + pll_info->reg);
+>   
