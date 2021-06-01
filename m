@@ -2,142 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE62397A8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006F2397A8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234707AbhFATSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 15:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
+        id S234714AbhFATTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 15:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbhFATSK (ORCPT
+        with ESMTP id S233853AbhFATTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 15:18:10 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCA2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:16:27 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id u22so823606ljh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:16:27 -0700 (PDT)
+        Tue, 1 Jun 2021 15:19:02 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2CEC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:17:21 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id g6so290172pfq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V/jOJxrVdwVgkU5pbHsyaxFrpR7j0sbYKE51g0U8/jE=;
-        b=JNQVKx8YGqWIPolHIu7v69C0waidVaomhIcbK/bziEbTl7DykCEDGeYYUeLjtFfsff
-         oXQYZFYTAMZA0mrbtVQ8+hvf40tKDtC+0YeeNuM3fnUHbx4RXPwjjxXoUI6EGll9fdoT
-         xx87coe9CxpHI62e4tK/n1R0QIJcxiwM78wsY1bjJD5S85HVGCgiXEwWYsfYDIaa1FoM
-         5rXMOfyYCo1BYHGjht1LqOHqzSgzhN3nyICK9NNQs0jFCDAm8HX5wDGPhrKPVEENhAOp
-         Me/o1k/AvMlS+BtdWIkLq9s7TFT+W0lVn+rDsDRL47WJzhfZPHWCenbiim+pSKg+W2lf
-         BkXA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PUUyD7O6JCMKmduUrqE7eyPTkSebjyeJhHYra7PUdnQ=;
+        b=SqAi/ENxCFVkulIXSB1VhksmBc4c2GQFIdGxDv5fxL0vRsqmn3597gHONUKkFN8uvz
+         7o0AjJNYkYcUY9Nkq/FyFXi3wMLho3nmGyINAYdIo8SstqzRzibZKDY8SC+h2o+t8PjE
+         iTLyPHPt9OqeRrwzpIs3OVqNuWak12hOjbLhg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V/jOJxrVdwVgkU5pbHsyaxFrpR7j0sbYKE51g0U8/jE=;
-        b=osPZPRUBpaDYV9hHhYY5sDrEkyMI2JyGMEVB8L0Jv8jXA/s/UVoomPruhlKNPvvi+5
-         Y6SDR6VAl6CcKNPC2vGlp1GZKRuyfj0be1jXlQznNmKtRcp3nDppJ1CiNoyIJWpfldMW
-         uyWY2e3O1G6C+JiUi6ev7+ZkqBabHKV2683Mc/a1o6z5rJWKRlEHyR8ktMoa5qnmnxw3
-         u82SMfBpPOCZ+w+3CKVoP86aRqLwM/yyMMZMgLmnEGhYN7ugYA8Sbh/8iDoUhkpx/urA
-         hUFHlzhCZoeYberNCZQeG9wWw/FE3Lko0HCwRflFD65NDUa7XLRWMfux3rH92nFFJ+QK
-         0T3A==
-X-Gm-Message-State: AOAM530wPo4SW5w6bo0iU1+WLOhbCofxJDmT/bhYLbbhdqEVKEssG4QF
-        ZjNlnSIg0yzUQG/f/RiHTiETubA8SUy941ymCI8CjgstmsU=
-X-Google-Smtp-Source: ABdhPJyJN7rznpmh/MvqNMCED4g9cm477yEbcpS0IHXgl5c7ioyiAWHkHQJUXQItnu0aciOXvmkPmEU2nN5EuXKf1hY=
-X-Received: by 2002:a2e:6e13:: with SMTP id j19mr22336288ljc.116.1622574985372;
- Tue, 01 Jun 2021 12:16:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PUUyD7O6JCMKmduUrqE7eyPTkSebjyeJhHYra7PUdnQ=;
+        b=V+kpXuCch5Is00/Dr956Tr1JlRBVKDmSxq8i+VNmJR71V7OTNHF7ETU0P0vbL4mcvC
+         7gkbQ3GrtlN3qXruRou3WupiU3F5iCeHumTgSUzw1CWrmC6e0m3RjlD19QnUkHT/o5wK
+         ILgktLkViWzG3VRlEAcoBgnu6a4rFT13tripigC71NRrxr7T6yFyZkbVRjZIUkq0XfM+
+         YkdrWAJUxqfigEsPhfmemBU3x79NAKg//hbFfz+lIUlQ6JrIWxFMOA1a7Q80zfqAGp4H
+         TnTR7EsRzx04+S8vbcojjaMcvSQ9dyipa69IwxBegL91/aMhtFVW60TS4wY9oqL37bcj
+         4cvQ==
+X-Gm-Message-State: AOAM532dQliQxsP6c8umhmi55Rz8yNFXZiXF0WuVJXU4JH6AzRJHXqc6
+        3A2EVjq8KkC9uBmrHHyjoWtW0A==
+X-Google-Smtp-Source: ABdhPJx2vPDHtoBxDH0gx5Co0TCaSf2x+OpD4SdyKicYlVxWXiF6AdzadtmK+ZuQ4ZSftK/fRLbVWQ==
+X-Received: by 2002:a05:6a00:87:b029:2ea:d79:1d4e with SMTP id c7-20020a056a000087b02902ea0d791d4emr2818989pfj.59.1622575040865;
+        Tue, 01 Jun 2021 12:17:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y6sm7412037pjf.40.2021.06.01.12.17.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 12:17:20 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MAINTAINERS: Add Clang CFI section
+Date:   Tue,  1 Jun 2021 12:17:14 -0700
+Message-Id: <162257503133.1460666.16967231826334923768.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210531210629.864888-1-nathan@kernel.org>
+References: <20210531205405.67993-1-nathan@kernel.org> <20210531210629.864888-1-nathan@kernel.org>
 MIME-Version: 1.0
-References: <20210521011239.1332345-1-nathan@kernel.org> <20210521011239.1332345-2-nathan@kernel.org>
-In-Reply-To: <20210521011239.1332345-2-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 1 Jun 2021 12:16:14 -0700
-Message-ID: <CAKwvOdnUdQHMungT97KcECo-HzMSLeDM7s=JCGh5XwOkR84+Rg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] hexagon: Handle {,SOFT}IRQENTRY_TEXT in linker script
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Brian Cain <bcain@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 6:13 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Patch "mm/slub: use stackdepot to save stack trace in objects" in -mm
-> selects CONFIG_STACKDEPOT when CONFIG_STACKTRACE_SUPPORT is selected and
-> CONFIG_STACKDEPOT requires IRQENTRY_TEXT and SOFTIRQENTRY_TEXT to be
-> handled after commit 505a0ef15f96 ("kasan: stackdepot: move
-> filter_irq_stacks() to stackdepot.c") due to the use of the
-> __{,soft}irqentry_text_{start,end} section symbols. If those sections
-> are not handled, the build is broken.
->
-> $ make ARCH=hexagon CROSS_COMPILE=hexagon-linux- LLVM=1 LLVM_IAS=1 defconfig all
-> ...
-> ld.lld: error: undefined symbol: __irqentry_text_start
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
->
-> ld.lld: error: undefined symbol: __irqentry_text_end
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
->
-> ld.lld: error: undefined symbol: __softirqentry_text_start
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
->
-> ld.lld: error: undefined symbol: __softirqentry_text_end
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
-> >>> referenced by stackdepot.c
-> >>>               stackdepot.o:(filter_irq_stacks) in archive lib/built-in.a
-> ...
->
-> Add these sections to the Hexagon linker script so the build continues
-> to work. ld.lld's orphan section warning would have caught this prior to
-> the -mm commit mentioned above:
->
-> ld.lld: warning: kernel/built-in.a(softirq.o):(.softirqentry.text) is being placed in '.softirqentry.text'
-> ld.lld: warning: kernel/built-in.a(softirq.o):(.softirqentry.text) is being placed in '.softirqentry.text'
-> ld.lld: warning: kernel/built-in.a(softirq.o):(.softirqentry.text) is being placed in '.softirqentry.text'
->
-> Fixes: 505a0ef15f96 ("kasan: stackdepot: move filter_irq_stacks() to stackdepot.c")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1381
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Mon, 31 May 2021 14:06:30 -0700, Nathan Chancellor wrote:
+> Sami is the primary developer and Kees has been chauffeuring the patches
+> to Linus so ensure they are always kept in the loop about proposed
+> changes to these files. Add Nick and I as reviewers so we are CC'd as
+> well.
 
-Thanks for the series, and sorry I didn't get around to reviewing
-before I took time off last week.
+Applied to for-next/clang/features, thanks!
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  arch/hexagon/kernel/vmlinux.lds.S | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/hexagon/kernel/vmlinux.lds.S b/arch/hexagon/kernel/vmlinux.lds.S
-> index 35b18e55eae8..20f19539c5fc 100644
-> --- a/arch/hexagon/kernel/vmlinux.lds.S
-> +++ b/arch/hexagon/kernel/vmlinux.lds.S
-> @@ -38,6 +38,8 @@ SECTIONS
->         .text : AT(ADDR(.text)) {
->                 _text = .;
->                 TEXT_TEXT
-> +               IRQENTRY_TEXT
-> +               SOFTIRQENTRY_TEXT
->                 SCHED_TEXT
->                 CPUIDLE_TEXT
->                 LOCK_TEXT
-> --
-> 2.32.0.rc0
->
-
+[1/1] MAINTAINERS: Add Clang CFI section
+      https://git.kernel.org/kees/c/3a40617ce088
 
 -- 
-Thanks,
-~Nick Desaulniers
+Kees Cook
+
