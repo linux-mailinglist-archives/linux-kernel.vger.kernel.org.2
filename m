@@ -2,156 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D414539730F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443E3397312
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhFAMRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:17:42 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12880 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhFAMRk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:17:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622549759; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=tprHWYokWxxPsEVWwyMkMhvSmSsooYLul99ouTewZiU=; b=qAJPN1L6k7biUaq0Jj+RszMnKGWAwbB/bIrNXy7uHuyru7mUMIg4HAw/qD3owPhTrJJNm3KW
- zGIieLfGCdNq+nftmf0Cpab2Fy+L8r6tgLxVWqA2LYcAm0HVZUoj6a1fQ1XGqnEMPbVLQaXV
- qdlUgBEBqSMyyUWupQWM3oY1LXU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60b624ea81efe91cda35ec73 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Jun 2021 12:15:38
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 89B02C43460; Tue,  1 Jun 2021 12:15:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.105] (unknown [49.204.181.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DAAD0C433D3;
-        Tue,  1 Jun 2021 12:15:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DAAD0C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH v8] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        kernel test robot <lkp@intel.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com
-Cc:     kbuild-all@lists.01.org
-References: <1622542057-14632-1-git-send-email-faiyazm@codeaurora.org>
- <202106011959.5wcQP2E6-lkp@intel.com>
- <96578f05-79a0-96eb-c015-02e8640e6016@suse.cz>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <3449cf29-3c21-69e2-d410-31a5730d4574@codeaurora.org>
-Date:   Tue, 1 Jun 2021 17:45:30 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S233851AbhFAMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:17:58 -0400
+Received: from mail-bn8nam12on2052.outbound.protection.outlook.com ([40.107.237.52]:23254
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231219AbhFAMR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 08:17:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fLCv/Sovi9qgj0HhL4LwEZV4GCV43N4O/AqIHsalvFLNkV6egjfl5GGa+26Bx1iLPBoP83AnwZHAb91GBoPio/isNwVEHp2msMfRPTgUV7wPK1Zyk1GUoaWcy7MNH1POPVmIq7JDEvVstWvjX72cpA1Q8XlIhsQpbb1lvgT9RhQm/IX20+68irFX7Gja9MWW16X/u5BHopwl/XIVQOwGGthv9M4/7yMYzoV39keniCm1Hp9Sdvz17DpiCwilV23277h8+gfuwyQK1j0FF4PhcGRgilpW+z18iB9HQnf63uAtJ9BATOeO+gt4Ap4ERocTb3GuGz/KHAwsUdqVqPxgbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tELnOz9gOZgoqkNPefnS2UcgqXew9TNx6yEtBgyNbe4=;
+ b=hBuAFc8RPnwUOYjB0BydVzVO/QqtsgViDGNZro9gPbgdJbjlqbBNlmxEX1Du8RhmSaXmZuPttX/nuIJAqeC2oSJE2QtE+DT+ZKRXBooaMEgAVqnwKkUIYCasn3+zbSPajXMbG/JyqUssNgG9HSnMeQb1yYhWp5U7HXNI/zD0WV3+tJcYlDMfX8KlcVkZike9mZ87SiLHeuslH7HaudhKfZ9PBzD36/MauTIAW6PRrN16O91O4ZgzhuHIcudHwCSfWzFIJQKNed+sxiGhLgZ1+8IUq0JQyKs8Jkb4HsahgpmuPvfrk3Hj2c56mxX3BlsG8cXYao1sNMmMvjt0LLFEaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tELnOz9gOZgoqkNPefnS2UcgqXew9TNx6yEtBgyNbe4=;
+ b=QUnwi+Nmafy5t08GAT/C351u8iEFziXr/gZM91xR28+P/banrR9F65XDmGnnWO5WB9wdcrLYom9QHvjxf9dUhIP9ZQb3wgyadjmiNxR8NdWJUOooEbbaCZXqrW5BUjGsFRTQF1T17Ka0PzVSl24Z84xADza6Kjh3VNvP3TAPjE4cldKPfDGDGRpID9ra9rsjq03DVlFwwQD+8ww3sSvX9Gk3UXdbfA+fDWhmco7SLc/EeNwGg3VIHtBJqNDIF+9eJHX1pOPM6zW9p2lH7bTGY9azwzEM+iA+pHVn0uRhPlb0F46oVkTx8xXxknGzwQ3VkjXF+L7jC5CvLWKp8PIvfg==
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5240.namprd12.prod.outlook.com (2603:10b6:208:319::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Tue, 1 Jun
+ 2021 12:16:13 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
+ 12:16:13 +0000
+Date:   Tue, 1 Jun 2021 09:16:12 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Dave Jiang <dave.jiang@intel.com>, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, vkoul@kernel.org, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v6 15/20] vfio/mdev: idxd: ims domain setup for the vdcm
+Message-ID: <20210601121612.GH1002214@nvidia.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+ <162164283796.261970.11020270418798826121.stgit@djiang5-desk3.ch.intel.com>
+ <20210523235023.GL1002214@nvidia.com>
+ <87mtsb3sth.ffs@nanos.tec.linutronix.de>
+ <20210531165754.GV1002214@nvidia.com>
+ <875yyy31cl.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875yyy31cl.ffs@nanos.tec.linutronix.de>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BLAPR03CA0129.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::14) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <96578f05-79a0-96eb-c015-02e8640e6016@suse.cz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0129.namprd03.prod.outlook.com (2603:10b6:208:32e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22 via Frontend Transport; Tue, 1 Jun 2021 12:16:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lo3Jc-00HRVM-CM; Tue, 01 Jun 2021 09:16:12 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a6994371-ef89-422f-8139-08d924f70c4a
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5240:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB52400C2DF7D16DED5BC984F1C23E9@BL1PR12MB5240.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wd6rzb1dIWu36eRNDFrNPG6bD/uzeVEvDDuuipb4dU9sbUH9B0AFS8hxeyI8zeOQ2PrrJ6ImfJZPw3PUYqzB/e8kyoFlRUTIk/lbAMGCC2l7Ud1d+GIt6CuqAU0E6BXnCsrGZdKNKz2P2x325HA4sfr1ZQbNtZoSs0jvhWkaYBgHJedfRABF9/LJ6HUSIwVglTziMZWfL0Eku48OtcV764wKZnaVMjLlFDW6G4hUc1n5rCQjOu8d3NMksnGmDZpWsuwtQ09PemK8aAz3R/sfaMXGLz+Ss8gxh3LU4dheq6WjltHgmtSqgJmLpXHnWik+C/Yine2cXBYv8I6cAqSuALXVIjUyWKZA71+sI8+Zc4PqKxrLEDOfcIamWA+aDx5sBlJ5QbhzYRn8u3FAe11sAYg1An2ZMnmUpSWDAwEhbY7J+cVr1J7Ih/B0XYdQb8RAt0miV+kHDMpru2aO5qcmMap4DaCFiv4s+nzUfKN7xEWYqYQT6TsLd23PBs/NDpt8+AedJ9OSPfXbToItx9pxCBr/zQMU2R9CMZkXsZ4T3elsdoXBWJeMSuQEEw+Cr0lfvf/t+tqYIdx2YuMiRayXhWVYgytuSwqybIO+Lgl3tBPbvCaqNMtqQe8enASKFkAgN61ZBqcmwHoRqTGEcInM89KrEtikH6wmCD9O5KpPFIZVyR5bclVq+XVcU7yvriVgTUllZu3qCc/QjzTRPMeigw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(966005)(478600001)(8676002)(5660300002)(8936002)(426003)(186003)(66476007)(86362001)(2906002)(1076003)(66946007)(2616005)(6916009)(316002)(38100700002)(4326008)(26005)(9786002)(83380400001)(7416002)(9746002)(36756003)(33656002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7kG+g6cB25bwUsEMoqad+0/y3rZoHv6518FGLM/WHJrFzSb154oW3UqTXRij?=
+ =?us-ascii?Q?Xnd3AbeiRsWzUYul9q4n249U3E6vlkOoosVMo9/LJq59hN+15quEgCgkVYHb?=
+ =?us-ascii?Q?snSy/znHFbdzS9C5hzwfbfvcjPRTzEGvaAHAoVQgNbjLdx7vDg0kT/T31jFG?=
+ =?us-ascii?Q?DXHoZEM21lbpJSWN8F6csK9iKOf5f2lNyzHtIOsh0J6a5UFUkArcxaLM3/xf?=
+ =?us-ascii?Q?L6mvsabvX/th87malEJCPOhdEIkBBFNUi2eoZlBkcbf8bcXiCglOXvTCf4QG?=
+ =?us-ascii?Q?jNssVzequIhgia4BThI8brE1eaxWpGtJmTMSrvMF/b/xoFP9n8lOI8iKeQI/?=
+ =?us-ascii?Q?bVdpYrBJFyUvYoJYb5BIOssler8PEj3f4wvw/FQW6basRAxVCB1Mj4YEGVqA?=
+ =?us-ascii?Q?mN02dAFwS1vuQjYQ3J0XruZYtEOdP203OQPM4BSamuesK9oqojnFRj3IAtxE?=
+ =?us-ascii?Q?JL8eakK/aAJoBBo6EByMn1qaZlE35bcm7Y8gOWFhDo6kxCvMFb+8mfmUZGAV?=
+ =?us-ascii?Q?QdKbtQoQb3CPHiz/vV/4n1jnjM/AgJS0X3tVNA4022BpTYszbXH+73YGeGgh?=
+ =?us-ascii?Q?6djBZ4BXoz4GJ907h9Alor63MZRlwIdRku3Boq+5uosJJe5JlofrPbSJZZOl?=
+ =?us-ascii?Q?s8P1kZyI0Q12n+/qIM5cEJEJWOqwS+NWQ7gNvoxoXl4m49JpYx2ViAfYF8fj?=
+ =?us-ascii?Q?oXxr5XLETlxbHvPAY8z7zUF4Ye/oJ5XPC5FNFOt59yzzAOu2Os8/F+m0GNjg?=
+ =?us-ascii?Q?cwDVb3TWL5htSOiBJ5D05swNQ7m5wdMcjwQdD5oaXXf+UtOzk+IWE9cfEJV0?=
+ =?us-ascii?Q?Iw7n0t8VksSQxa6s6Q6Qa4RR0zPLCyhfsrmMA+JVg/pWIv86eOIkDgXK5a2+?=
+ =?us-ascii?Q?KKHcHiFoKw1oNzg/KFzQkZMgZkhAuXMrFKqCf7C1i+oe9OMnQVNdktlYY0C5?=
+ =?us-ascii?Q?KzWpKhiOE838476jMbrKlwSUbbHQAUviLHg5s6F+1wVRC4ZLCOgu8JuJGabd?=
+ =?us-ascii?Q?ekKXLOATJb09ASNkb/laj+LNkPlRC25FzNuIHeJOQ2d0fJbljHG3+hWTarb1?=
+ =?us-ascii?Q?HPHKvnsWjGew30IAAC3SJljF99bfAUIEotk0iR0bYyJye3219k6nzAh7IFlj?=
+ =?us-ascii?Q?TFAt6VNHiXjnlLaDEMtOH4xty8j5vyM8iwwXFMJDd9bsaO9wAg+fTtuw+hXd?=
+ =?us-ascii?Q?fCHzinhvARYbllQJfqSNeSoEn7s3ETnbRl2AzagzwQPPqRhMsn7P0NKMQpco?=
+ =?us-ascii?Q?aazMOSMkyi3Q6MXLieQDWJlNKVtOZVYQOxwJCuCVft1iILOyGFFhUlyzPTiG?=
+ =?us-ascii?Q?pXOU6dcvtWgt9exdmlJ9YDmG?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6994371-ef89-422f-8139-08d924f70c4a
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 12:16:13.4135
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VJxAgPfA6btE0E1F3cBsRDlkQdY73Klr7WrtfruSC9ct2Jg484hkNIIdlLJRWZl9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5240
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/1/2021 5:44 PM, Vlastimil Babka wrote:
-> On 6/1/21 1:08 PM, kernel test robot wrote:
->> Hi Faiyaz,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on linus/master]
->> [also build test ERROR on v5.13-rc4]
->> [cannot apply to hnaz-linux-mm/master next-20210601]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:    https://github.com/0day-ci/linux/commits/Faiyaz-Mohammed/mm-slub-move-sysfs-slab-alloc-free-interfaces-to-debugfs/20210601-180903
->> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git c2131f7e73c9e9365613e323d65c7b9e5b910f56
->> config: i386-tinyconfig (attached as .config)
->> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
->> reproduce (this is a W=1 build):
->>         # https://github.com/0day-ci/linux/commit/9540acc4691d680b7124d8daa1a2eb98a97ee19a
->>         git remote add linux-review https://github.com/0day-ci/linux
->>         git fetch --no-tags linux-review Faiyaz-Mohammed/mm-slub-move-sysfs-slab-alloc-free-interfaces-to-debugfs/20210601-180903
->>         git checkout 9540acc4691d680b7124d8daa1a2eb98a97ee19a
->>         # save the attached .config to linux build tree
->>         make W=1 ARCH=i386 
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>    mm/slab_common.c: In function 'slab_caches_to_rcu_destroy_workfn':
->>>> mm/slab_common.c:452:3: error: implicit declaration of function 'debugfs_slab_release' [-Werror=implicit-function-declaration]
->>      452 |   debugfs_slab_release(s);
->>          |   ^~~~~~~~~~~~~~~~~~~~
->>    cc1: some warnings being treated as errors
+On Tue, Jun 01, 2021 at 01:55:22AM +0200, Thomas Gleixner wrote:
+> On Mon, May 31 2021 at 13:57, Jason Gunthorpe wrote:
+> > On Mon, May 31, 2021 at 04:02:02PM +0200, Thomas Gleixner wrote:
+> >> > I'm quite surprised that every mdev doesn't create its own ims_domain
+> >> > in its probe function.
+> >> 
+> >> What for?
+> >
+> > IDXD wouldn't need it, but proper IMS HW with no bound of number of
+> > vectors can't provide a ims_info.max_slots value here.
 > 
-> Oh, right, CONFIG_SLOB.
-> How about moving the ifdef-ed declaration from slub-def.h to mm/slab.h and
-> discarding the slab-def.h empty one. That will take care of SLOB too.
+> There is no need to do so:
 > 
+>      https://lore.kernel.org/r/20200826112335.202234502@linutronix.de
+> 
+> which has the IMS_MSI_QUEUE variant at which you looked at and said:
+> 
+>  "I haven't looked through everything in detail, but this does look like
+>   it is good for the mlx5 devices."
+> 
+> ims_info.max_slots is a property of the IMS_MSI_ARRAY and does not make
+> any restrictions on other storage.
 
-Yes, doing the same.
->> vim +/debugfs_slab_release +452 mm/slab_common.c
->>
->>    427	
->>    428	static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
->>    429	{
->>    430		LIST_HEAD(to_destroy);
->>    431		struct kmem_cache *s, *s2;
->>    432	
->>    433		/*
->>    434		 * On destruction, SLAB_TYPESAFE_BY_RCU kmem_caches are put on the
->>    435		 * @slab_caches_to_rcu_destroy list.  The slab pages are freed
->>    436		 * through RCU and the associated kmem_cache are dereferenced
->>    437		 * while freeing the pages, so the kmem_caches should be freed only
->>    438		 * after the pending RCU operations are finished.  As rcu_barrier()
->>    439		 * is a pretty slow operation, we batch all pending destructions
->>    440		 * asynchronously.
->>    441		 */
->>    442		mutex_lock(&slab_mutex);
->>    443		list_splice_init(&slab_caches_to_rcu_destroy, &to_destroy);
->>    444		mutex_unlock(&slab_mutex);
->>    445	
->>    446		if (list_empty(&to_destroy))
->>    447			return;
->>    448	
->>    449		rcu_barrier();
->>    450	
->>    451		list_for_each_entry_safe(s, s2, &to_destroy, list) {
->>  > 452			debugfs_slab_release(s);
->>    453			kfence_shutdown_cache(s);
->>    454	#ifdef SLAB_SUPPORTS_SYSFS
->>    455			sysfs_slab_release(s);
->>    456	#else
->>    457			slab_kmem_cache_release(s);
->>    458	#endif
->>    459		}
->>    460	}
->>    461	
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>
+Ok, it has been a while since then
+
+> >> That depends on how IMS is implemented. The IDXD variant has a fixed
+> >> sized message store which is shared between all subdevices, so yet
+> >> another domain would not provide any value.
+> >
+> > Right, IDXD would have been perfectly happy to use the normal MSI-X
+> > table from what I can see.
 > 
+> Again. No, it's a storage size problem and regular MSI-X does not
+> support auxiliary data.
+
+I mean the IDXD HW could have been designed with a normal format MSI-X
+table and a side table with the PASID.
+
+> Ergo, the proper thing to do is to fix this ID storage problem (PASID,
+> VM_ID or whatever) at the proper place, i.e. store it in struct device
+> (which is associated to that mdev) and let the individual drivers handle
+> it as they require.
+
+If the struct device defines all the details of how to place the IRQ
+into the HW, including what HW table to use, then it seems like it
+could work.
+
+I don't clearly remember all the details anymore so lets look at how
+non-IDXD devices might work when HW actually comes.
+
+Jason
