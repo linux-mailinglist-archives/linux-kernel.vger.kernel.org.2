@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66084396FCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EAC396FD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhFAJFT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Jun 2021 05:05:19 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:54700 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232869AbhFAJFR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:05:17 -0400
-Received: from [77.244.183.192] (port=62922 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lo0JD-000FyI-5R; Tue, 01 Jun 2021 11:03:35 +0200
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20210531090540.2663171-1-luca@lucaceresoli.net>
- <20210531133211.llyiq3jcfy25tmz4@pali>
- <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
- <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <e1e09f57-2504-6e46-ebd6-61947e0a195c@lucaceresoli.net>
-Date:   Tue, 1 Jun 2021 11:03:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233465AbhFAJGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:06:24 -0400
+Received: from mail-eopbgr80054.outbound.protection.outlook.com ([40.107.8.54]:20878
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232869AbhFAJGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:06:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L5ZT8k7fqScsA5yREqXWlvM0TS9tPGnq04JmZu4+jjQa+G85GsomLvpRQS0fgn22AWXHtMUC3KyGRnj1sl1npPho15b9aGmpg5gh0KPUFV1frcmi3t7EVs+kv5YFcKoh66QY9Kcc/INHVk4fqqzJcHD4HiOhmhVZKGxNsjt+j2xMSdxi1bGeZpxDMvZq6/gtZc4lvxwp2FUNrGCtroJiRcgfWRL4X4mCJe8R6Cmy+AgS7kNotyN8rjjGbck+cknAPsfsDSjH36fSFC4z8pEKIsGwS9bS0rbgqKZPL5xs2Jttiqnb/YHgTWhZbV9IFxbhLKSqfpI1qi9qGkTSRqYZEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vCLrTiiZZWcy/dVE6lykCXfvWxLr6EgS/w/mqmJ7RGM=;
+ b=PILchitwTVrBbtLdrlr3CdETvmfw3k+q9sO17GtSUEiyEML+vA/Xz+kc2j3neXXvqMxzKy6BPKk98m3NfMZaecIX6HaBXxkDVpX0nMa17NRT9qkhADa4TuknWDVypWYgyG15oYjO+WLS/RWMh4FcmC0IonlxgRkELzmcGGkxpg4f3bCfZ9wXdt52kgRfYfgGsZNsm/xI1bv5Kl/QD1Nxb3sTKBh2WY1+3EtYNgXmdGDQeeh9XKbFc7hws/76r87imogKyo3lTSQ6ipLMqjUSq48n3E0MEluQKK6QiVQ/8v44PWD04UNsZKowuRVZ4aQstYXKvzdb9ppV462Fw1Q2hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vCLrTiiZZWcy/dVE6lykCXfvWxLr6EgS/w/mqmJ7RGM=;
+ b=HTNhmvLwP6yaexjSAV8PUZcbwsEGeVlhdnMy7/k3D29/HsoJkwyNQNQ0jK9BWT2bFnAYTh0NPNqxskgpZuAnYA8PWfoa5FhqzKgrAuU/X1oKNuAMPloEq+0BPjil6kh1JoYnpE7SPi6Z3Od8g+8cNZ4PrLuFQ2nY47++SVxLxtw=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Tue, 1 Jun
+ 2021 09:04:39 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
+ 09:04:39 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        f.fainelli@gmail.com
+Cc:     linux-imx@nxp.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/4] net: phy: add dt property for realtek phy
+Date:   Tue,  1 Jun 2021 17:04:04 +0800
+Message-Id: <20210601090408.22025-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SGBP274CA0013.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::25)
+ To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-In-Reply-To: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: it-IT
-Content-Transfer-Encoding: 8BIT
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SGBP274CA0013.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 1 Jun 2021 09:04:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b3e62a5b-c5ad-4710-cd56-08d924dc4980
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6795:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB6795E86493F54F413761DB72E63E9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JfWZUMzTyEWlHKSClXzHaAbo9V5EicsH0zQPrxQbkIMAPTDg7WHanVaeqGLVLVYIEOLGcV8+tI7HfQ+xioWsZItDKXFWfjw/gmNbQgmacpRKznav3PcWG32+5WzWVvYdBz0EL5pnk4N2PvoInbnZ57ZOnamlOQ9milz37ikUmmjFavlSiW12E49pLk+J2b+Q98j4TYN/smoPby4wdbi4wo5hyPYFZ7+M/m4XHrpKJhJPdjWYHTkr/H612B4aXMyHBT2kockj4R5Wbhh8TDoLg2NJdzrY4rvRgTNo88PO34r/hkJ4A1dIADIzmroTsgy/+IdE0ZIJLYDhyB7+K3HWsE7duRUOU2H6OGBgWZlwC3WmgRFWzOo64+r3pJZ74bbs5nITTAvjKb/tvnXUkeyX0WYa4tpSDGArGLKdQSU2K8A5k/JmHLCj3ML3LBrsR6dYV+bC0ySfIr8rBNnYOdv9RkKGSW0CH6tMaHuAstdHdmSXf15AnQGDuPPtGtdMpDB3L1trnh9mxbRZ9nmB9veOTNhvdDSMsE2S8iX8atYqUJIBQDdK7pDV4VoNqYv7sYUOd48G3DJe9JF9JofFsTote5aEKwD21Qdt+lfoJINzOYa+baQNsRTcu7IjN6+iiNFuSWsB8yVw/bFDFnMcP2YzZxF7v+wLWlzCoPY6CJNNXqI3mVfjz6H2qxHns47AsCef
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39850400004)(396003)(136003)(66946007)(38350700002)(8936002)(478600001)(6666004)(36756003)(2616005)(52116002)(6506007)(2906002)(316002)(86362001)(16526019)(6486002)(186003)(956004)(38100700002)(5660300002)(6512007)(83380400001)(26005)(1076003)(66556008)(7416002)(8676002)(4326008)(4744005)(66476007)(69590400013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?HhEgYaaWP1myHO2wyxIgSvWXZ0zfo14MltXjV9oRVINuELB1RGrpWyEPdzoi?=
+ =?us-ascii?Q?rGf30RoUpTbuVjm5Z/5d6q/gMADF+RfgwzUITXi1l9z9zhClQe7qbpf1o8nl?=
+ =?us-ascii?Q?jRx0M/necCxIxbh79cesiEPd2YrFoUfptCs0/i6od9XPXHK50r8i7IaNqqry?=
+ =?us-ascii?Q?3q3BR3Txv8LJb5vA9G+NDXEKL/yf0UfKRXvtXFNa8vUj3mr6eGQceHe2jXLs?=
+ =?us-ascii?Q?2j4VIry7r2gTRhyNyvJ1SoiajI+3Pf/U9arbJ9ChObM9UM9CHCAxJfCWEMC8?=
+ =?us-ascii?Q?A8KgWk+PhiXhZ+YGwh/53oQ0RY2N6xynXZ/yhQXhqldRWBSHPPxfylWCmzxe?=
+ =?us-ascii?Q?vsS5LHrQ4dYZLR6Fozb+JOZEwgSsgDGSAVV5psTeE5Ixqxt+fSC1D5pjCpjS?=
+ =?us-ascii?Q?TFe/m78EqXbX9Jz2FXUYSlyAZjT3/P73k77J+q79PKNhnH+BhBK0rVNUH+jH?=
+ =?us-ascii?Q?d5B3VQDQfz2AraQ336lxLBMhSyNxzurIlfbwaqmN99n/LgZ3OABig/wsa7sx?=
+ =?us-ascii?Q?/k/UpEXql1h/jUBLL+UjZUO68aKKTIQx1RP2cSpnaCN6N3kXbkmg3ghjIJIr?=
+ =?us-ascii?Q?N8lLSXTFIpwCV4FTySyKqRJoun/4oBmvj2O/nt8VE+bj2n1faZ5m2y+BTyjT?=
+ =?us-ascii?Q?GseMg41CjH2QXWcY/ajcKcFu/Z74uN8J1Dn/7/eaQ7d0nSTD9LE9aA7bIM9W?=
+ =?us-ascii?Q?x5ewvq26vsrxlo0wpRGgIA2WQ71VMc6uX/r7azXfAdcinljqpLmDrysL52bq?=
+ =?us-ascii?Q?Kj5WWSKZazjKwh8w8e7ROLJowlk1xZgVmetzmiMFM4EibNlMC3/a/Fu0t0xm?=
+ =?us-ascii?Q?pqd5CT053zZFZ/fXB+B4PhxOvydNvHO/L95vZP1LILbw4PIJSppnf3vYku43?=
+ =?us-ascii?Q?RaSjeSrYxYoEI7CpbQhZ81WIpc3Gxf/jHXKjLQ/lZzIpow3Hw3h11ZhvZjU+?=
+ =?us-ascii?Q?UYSzEUCFlOLGGA2dKmXOgJ10o9Gb05sx3CW7lx91wRfNHH0zTm8s+Y8wDoy1?=
+ =?us-ascii?Q?SnL6stDpJTOd/VnOuYEGkwVWqHlmT+92uHn+2fVfVAim4Xc/A/XMmqZu81yL?=
+ =?us-ascii?Q?OrJ61qSj4eFG5SsPpShCLV0NvOv2JjMJN6LrDuJQ+AzTUu/LrKgtPxwxfjWl?=
+ =?us-ascii?Q?KcGPfemCQaer5UQZhPgYGr6LlXi1qzxOqGNSyFJDD75QjfHY/hhldB3QvJYF?=
+ =?us-ascii?Q?AFaTn51hJoGiNNG+IAFLP8EpIIMMSs1aznN9/2519dRSBWAYBwVWj8r/H9WK?=
+ =?us-ascii?Q?ngiwmin3h2ivRqD06KTIFu24KzvRKjUCV9q0z0dIvLfMpWWVJzCbqQM7ZO2j?=
+ =?us-ascii?Q?1a30im6zMR7ttsz9eS6ZKN5a?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3e62a5b-c5ad-4710-cd56-08d924dc4980
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 09:04:39.8091
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rY2aPS/stkBqDlCSRCIZlY5emk3RlmZuD506DNc4zadiESJLrSwgu6A+5nK1MS5+w9psD9+U4QVNNtn9D6Wi3w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6795
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+Add dt property for realtek phy.
 
-On 31/05/21 18:00, Kishon Vijay Abraham I wrote:
-> Hi,
-> 
-> On 31/05/21 7:24 pm, Luca Ceresoli wrote:
->> Hi Pali,
->>
->> On 31/05/21 15:32, Pali Rohár wrote:
->>> On Monday 31 May 2021 11:05:40 Luca Ceresoli wrote:
->>>> The PCIe PERSTn reset pin is active low and should be asserted, then
->>>> deasserted.
->>>>
->>>> The current implementation only drives the pin once in "HIGH" position,
->>>> thus presumably it was intended to deassert the pin. This has two problems:
->>>>
->>>>   1) it assumes the pin was asserted by other means before loading the
->>>>      driver
->>>>   2) it has the wrong polarity, since "HIGH" means "active", and the pin is
->>>>      presumably configured as active low coherently with the PCIe
->>>>      convention, thus it is driven physically to 0, keeping the device
->>>>      under reset unless the pin is configured as active high.
->>>>
->>>> Fix both problems by:
->>>>
->>>>   1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
->>>>      assuming the pin is correctly configured as "active low" this now
->>>>      becomes a reset assertion
->>>>   2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
->>>>
->>>> Fixes: 78bdcad05ea1 ("PCI: dra7xx: Add support to make GPIO drive PERST# line")
->>>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->>>>
->>>> ---
->>>>
->>>> Changes v1 -> v2:
->>>>  - No changes to the patch
->>>>  - Reword commit message according to suggestions from Bjorn Helgaas (from
->>>>    another patchset)
->>>>  - Add Fixes: tag
->>>> ---
->>>>  drivers/pci/controller/dwc/pci-dra7xx.c | 2 ++
->>>>  1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
->>>> index cb5d4c245ff6..11f392b7a9a2 100644
->>>> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
->>>> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
->>>> @@ -801,6 +801,8 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
->>>>  		dev_err(&pdev->dev, "gpio request failed, ret %d\n", ret);
->>>>  		goto err_gpio;
->>>>  	}
->>>> +	usleep_range(1000, 2000);
->>>
->>> Hello! Just a note that this is again a new code pattern in another
->>> driver for different wait value of PCIe Warm Reset timeout. I sent email
->>> about these issues:
->>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
->>>
->>> Luca, how did you choose value 1000-2000 us? Do you have some reference
->>> or specification which says that this value needs to be used?
->>
->> Sadly I haven't access to the PCIe specification.
->>
->> I'd be very happy to know what a correct value should be and update my
->> patch.
-> 
-> I had given the timing mentioned in the specification here
-> https://lore.kernel.org/r/023c9b59-70bb-ed8d-a4c0-76eae726b574@ti.com
-> 
-> The PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION defines the Power
-> Sequencing and Reset Signal Timings in Table 2-4. Please also refer Figure
-> 2-10: Power Up of the CEM.
-> 
-> ╔═════════════╤══════════════════════════════════════╤═════╤═════╤═══════╗
-> ║ Symbol      │ Parameter                            │ Min │ Max │ Units ║
-> ╠═════════════╪══════════════════════════════════════╪═════╪═════╪═══════╣
-> ║ T PVPERL    │ Power stable to PERST# inactive      │ 100 │     │ ms    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T PERST-CLK │ REFCLK stable before PERST# inactive │ 100 │     │ μs    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T PERST     │ PERST# active time                   │ 100 │     │ μs    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T FAIL      │ Power level invalid to PERST# active │     │ 500 │ ns    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T WKRF      │ WAKE# rise – fall time               │     │ 100 │ ns    ║
-> ╚═════════════╧══════════════════════════════════════╧═════╧═════╧═══════╝
-> 
-> The de-assertion of #PERST is w.r.t both power stable and refclk stable.
-> 
-> I'm yet to validate this patch, but IIRC devm_gpiod_get_optional(dev,
-> NULL, GPIOD_OUT_HIGH) will already de-assert the PERST line. 
+Joakim Zhang (4):
+  dt-bindings: net: add dt binding for realtek rtl82xx phy
+  net: phy: realtek: add dt property to disable CLKOUT clock
+  net: phy: realteck: add dt property to disable ALDPS mode
+  net: phy: realtek: add delay to fix RXC generation issue
 
-Perhaps in all the cases you faced, but GPIOD_OUT_HIGH [0] really means
-"active", not "electrically high", and here we want reset to be
-deasserted (=deactivated), not asserted (=activated).
-
-I guess it works when the GPIO drives PERSTn without inversion (no NOT
-gates or an even number of NOT gates) _and_ device tree does specify the
-GPIO as active high (which is incorrect: PERSTn is active low).
-
-> Please note
-> the board here can have various combinations of NOT gate before the
-> gpio
-> line is actually connected to the connector.
-
-Exactly for this reason a portable driver must never drive the signal
-"electrically low" or "electrically high". That's why with my patch I
-propose to give the proper interpretation [1] to GPIOD_OUT_HIGH, i.e.
-"active", i.e. "reset asserted". Device tree will describe if active
-means electrically low (no NOT gates between GPIO pin and device PERSTn
-pin) or high (odd number of NOT gates).
-
-Additionally, as per patch description, even in the cases where the
-driver deasserts the reset, it does not assert it. Should the signal be
-asserted before dra7xx_pcie_probe(), devm_gpiod_get_optional(dev, NULL,
-GPIOD_OUT_HIGH) would not move the line and thus would not reset the device.
-
-The only problem I can imagine with my patch is with existing code. If
-you have a board with the reset GPIO described as active high in DT
-while it is active low (no/even NOR gates on board), then you should
-apply this patch _and_ fix the board device tree.
-
-I hope the intent of the patch is clearer now.
-
-[0]
-https://www.kernel.org/doc/html/latest/driver-api/gpio/consumer.html#obtaining-and-disposing-gpios
-[1]
-https://www.kernel.org/doc/html/latest/driver-api/gpio/consumer.html#the-active-low-and-open-drain-semantics
+ .../bindings/net/realtek,rtl82xx.yaml         | 42 +++++++++++
+ drivers/net/phy/realtek.c                     | 74 ++++++++++++++++++-
+ 2 files changed, 113 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/realtek,rtl82xx.yaml
 
 -- 
-Luca
+2.17.1
 
