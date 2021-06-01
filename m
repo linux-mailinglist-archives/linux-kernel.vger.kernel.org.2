@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AFA396EFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F03396ECC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhFAIbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbhFAIbs (ORCPT
+        id S233465AbhFAIX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:23:28 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2817 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233490AbhFAIXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:31:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92484C061574;
-        Tue,  1 Jun 2021 01:30:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvQMH1DHYz9sSn;
-        Tue,  1 Jun 2021 18:30:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622536203;
-        bh=K3FBU1+AjIwzODQMzIbSger+HfYWtlItLlr+x2MdE28=;
-        h=Date:From:To:Cc:Subject:From;
-        b=I+BSjSczMRgnmDst7UpWqYqqDn519l5hGa2Q5etgRO1eLprQvbJxok+A6c+/0zCgJ
-         QIb119Mxne8nFeQvClepOETjNnzu37J76CV8BvnRkTNvjiqgxozOjp8rBifYA4qcat
-         khBpIRnBmeQNU2N+xzB+tVHa+AAatpb15tC9afcDgaJjVdZrHsXk2uzIbjFETBAxDo
-         mNE9N9qwJ45K3ZxFWwTz0NJ6Fpp6KPSIu+GDSYcyNwp3idL7S69NGjxJ+0jVuj1VC4
-         2XZmgdrOyLXWVPQg9FyVskMRTw0luJExEyn8EGfIg8S+0uvvpcPZnXKXhXf3avX9tX
-         fGJ6BEwFdbPvg==
-Date:   Tue, 1 Jun 2021 18:30:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Rajat Jain <rajatja@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the usb tree
-Message-ID: <20210601183002.26176586@canb.auug.org.au>
+        Tue, 1 Jun 2021 04:23:24 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvQ4D3SldzWqLq;
+        Tue,  1 Jun 2021 16:17:00 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 16:21:42 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
+ 2021 16:21:41 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH] remoteproc: pru: Remove redundant dev_err call in pru_rproc_probe()
+Date:   Tue, 1 Jun 2021 16:31:00 +0800
+Message-ID: <20210601083100.130776-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vvOjpJer9Fp84cjAHRf=ysu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vvOjpJer9Fp84cjAHRf=ysu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-Hi all,
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/remoteproc/pru_rproc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-After merging the usb tree, today's linux-next build (htmldocs) produced
-this warning:
+diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+index e5778e476245..6491c731c6e2 100644
+--- a/drivers/remoteproc/pru_rproc.c
++++ b/drivers/remoteproc/pru_rproc.c
+@@ -822,8 +822,6 @@ static int pru_rproc_probe(struct platform_device *pdev)
+ 						   mem_names[i]);
+ 		pru->mem_regions[i].va = devm_ioremap_resource(dev, res);
+ 		if (IS_ERR(pru->mem_regions[i].va)) {
+-			dev_err(dev, "failed to parse and map memory resource %d %s\n",
+-				i, mem_names[i]);
+ 			ret = PTR_ERR(pru->mem_regions[i].va);
+ 			return ret;
+ 		}
+-- 
+2.31.1
 
-Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected in=
-dentation.
-Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote e=
-nds without a blank line; unexpected unindent.
-
-Introduced by commit
-
-  70f400d4d957 ("driver core: Move the "removable" attribute from USB to co=
-re")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vvOjpJer9Fp84cjAHRf=ysu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC18AoACgkQAVBC80lX
-0GwpLQgAliCVU1vxjrk/UDx780r2vE74IUxBzUmr0HthirKMAsvo+FGzFy44Cm2v
-N4Q3VpnEOLrAZ+DLD6tjq8A4vquhnD3SVy25WR411wVHtULeWafSUK60AM/2ZTms
-AU2xbtob/JJsGvZOm49mtfuDM+q4ldzn5hy3n3evo/yxzTsa6V32EeqXMXH7RZMy
-lowBZv6UrzlWWCgNstQLHd0FVBXzGqO6JY5HODQE7rwXfVdtL9UuTps9ihm6TNus
-fiBgddSrKiJ2RFKtOLi/516SthBo0tcbFXFjBqSgkvAFk865RFVpDPW7bLJ6xzfg
-3fGy4Zq6MW31tJCYTW/ps3gns4X50g==
-=l5FH
------END PGP SIGNATURE-----
-
---Sig_/vvOjpJer9Fp84cjAHRf=ysu--
