@@ -2,81 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C288397780
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B51397785
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbhFAQJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:09:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49080 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhFAQI7 (ORCPT
+        id S234117AbhFAQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:09:20 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3123 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234212AbhFAQJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:08:59 -0400
-Received: from mail-ej1-f72.google.com ([209.85.218.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lo6vE-0006pJ-Vs
-        for linux-kernel@vger.kernel.org; Tue, 01 Jun 2021 16:07:17 +0000
-Received: by mail-ej1-f72.google.com with SMTP id h18-20020a1709063992b02903d59b32b039so3564016eje.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:07:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NG5lMIADTn8CON0lTv5ao0jAEzyt4S1tTd5JRxguyoQ=;
-        b=hNavchve/c78GbbNVMqkQ7MKH1H/hYHO1TH09IASaU3U3b0Rh9M9Q+9vh0LCcCPduu
-         /7aOnPFAFERf0WTABvWIzqgVEZEG5mW7xCGMu5cwaad/KptDcP3AJkREWJ3CYnskfuRB
-         8sIYCLKoZWIy53Jiishuew0984K6ksM/8qKKM6pwqO04PQk+uerKDsxq6rt7mYPiouHb
-         15kBiMNHst5ap1H5yNdPFIEqMG/Uu+6PwhW9DAHS3QwH2nJeN5+3qgHg2Q6bG6f4nblN
-         qTL8fvXHscEn96KzGweiSANW4EGPqhubDfNgXpaDGBCI2wih7N0EXBfzxLZ4NmGbXTfZ
-         ez0w==
-X-Gm-Message-State: AOAM533YwZKAi+JwFP7Q8bqQGqVdJCUpS6SZ7bVcnqARqtQh1lH7MQRG
-        qSrs+oIHvDYSzsA215mJ2eTE4ZH5UwRxqYO7eK3dmtasDdiBBVRnXSmEV6DkOggPg0wmTCvxdCJ
-        9nDGO6VfEkwASKzaMUpSUEYYndIhIYEGRMaLyXLjYyg==
-X-Received: by 2002:aa7:c359:: with SMTP id j25mr32834980edr.171.1622563636773;
-        Tue, 01 Jun 2021 09:07:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxXuDJan1liufQhFoz7cUP5EJTQ5z9AdgUXI1Nfs/cIJjXy6zEGa76y2xp/KLXolqsq/Wozgw==
-X-Received: by 2002:aa7:c359:: with SMTP id j25mr32834972edr.171.1622563636677;
-        Tue, 01 Jun 2021 09:07:16 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id dk12sm3382668ejb.84.2021.06.01.09.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 09:07:16 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nfc: mrvl: remove useless "continue" at end of loop
-Date:   Tue,  1 Jun 2021 18:07:13 +0200
-Message-Id: <20210601160713.312622-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 1 Jun 2021 12:09:17 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvcDw5znPz6M4Ps;
+        Tue,  1 Jun 2021 23:55:12 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 18:07:34 +0200
+Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 17:07:33 +0100
+Date:   Tue, 1 Jun 2021 17:07:29 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Liam Beguin <liambeguin@gmail.com>
+CC:     Peter Rosin <peda@axentia.se>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for
+ temperature-sense-amplifier
+Message-ID: <20210601170729.000066b1@Huawei.com>
+In-Reply-To: <20210601170251.00002ddf@Huawei.com>
+References: <20210530005917.20953-1-liambeguin@gmail.com>
+        <20210530005917.20953-10-liambeguin@gmail.com>
+        <0286de71-1b04-0956-be4e-f38573c6fea2@axentia.se>
+        <CBRHJM8ANOSE.2Q5C1FVQS5QOA@shaak>
+        <20210601170251.00002ddf@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.71]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "continue" statement at the end of a for loop does not have an
-effect.
+On Tue, 1 Jun 2021 17:02:51 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/nfc/nfcmrvl/usb.c | 1 -
- 1 file changed, 1 deletion(-)
+> On Mon, 31 May 2021 10:03:23 -0400
+> "Liam Beguin" <liambeguin@gmail.com> wrote:
+> 
+> > Hi Peter,
+> > 
+> > On Mon May 31, 2021 at 3:32 AM EDT, Peter Rosin wrote:  
+> > > Hi!
+> > >
+> > > On 2021-05-30 02:59, Liam Beguin wrote:    
+> > > > From: Liam Beguin <lvb@xiphos.com>
+> > > > 
+> > > > An ADC is often used to measure other quantities indirectly. This
+> > > > binding describe one cases, the measurement of a temperature through a
+> > > > voltage sense amplifier such as the LTC2997.
+> > > > 
+> > > > Signed-off-by: Liam Beguin <lvb@xiphos.com>    
+> > >
+> > > What's the significant difference between this and the RTD binding? Does
+> > > not both simply scale/offset a voltage to a temperature?  
+> 
+> I'm lost: what RTD binding?
+Ignore this email - I was reading the series backwards and thought we were
+talking about a preexisting binding.
 
-diff --git a/drivers/nfc/nfcmrvl/usb.c b/drivers/nfc/nfcmrvl/usb.c
-index bcd563cb556c..433bdc37ba91 100644
---- a/drivers/nfc/nfcmrvl/usb.c
-+++ b/drivers/nfc/nfcmrvl/usb.c
-@@ -325,7 +325,6 @@ static int nfcmrvl_probe(struct usb_interface *intf,
- 		if (!drv_data->bulk_rx_ep &&
- 		    usb_endpoint_is_bulk_in(ep_desc)) {
- 			drv_data->bulk_rx_ep = ep_desc;
--			continue;
- 		}
- 	}
- 
--- 
-2.27.0
+> 
+> > >    
+> > 
+> > The way I looked at it was one binding per sensor type (resistance
+> > driven, current driven, and voltage driven).
+> > 
+> > Thinking about it more, these three bindings could be factorized into
+> > one if the user is required to enter parameters "by hand".  
+> 
+> Don't. They are effectively different types of devices and we just end
+> up with a more complex binding if we try to cover them all.
+Ignore that as well. If the bindings combine fairly easily it is nice
+to do so, but be careful not to throw too many things in together and
+make it very hard to write the binding. However, I'm not keen on entirely
+generic bindings and would like the channel type at least to come from
+the compatible.
+
+> 
+> There is an argument to go the other way and actually have bindings for
+> individual temperature sensors like the LTC2997.  Then the parameters
+> become a driver problem rather than one for the binding.
+> 
+> Jonathan
+> 
+> 
+> > 
+> > These could become something like:
+> > - sense-gain-mult
+> > - sense-gain-div
+> > - sense-offset
+> > 
+> > I like the idea of having the "datasheet parameters" in the devicetree,
+> > but this would be a lot more versatile.
+> > 
+> > What do you think?
+> > 
+> > Cheers,
+> > Liam
+> >   
+> > > Cheers,
+> > > Peter    
+> >   
+> 
 
