@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B51397785
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22CB397788
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234117AbhFAQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:09:20 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3123 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234212AbhFAQJR (ORCPT
+        id S233397AbhFAQLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFAQLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:09:17 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvcDw5znPz6M4Ps;
-        Tue,  1 Jun 2021 23:55:12 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 18:07:34 +0200
-Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 17:07:33 +0100
-Date:   Tue, 1 Jun 2021 17:07:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Liam Beguin <liambeguin@gmail.com>
-CC:     Peter Rosin <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for
- temperature-sense-amplifier
-Message-ID: <20210601170729.000066b1@Huawei.com>
-In-Reply-To: <20210601170251.00002ddf@Huawei.com>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
-        <20210530005917.20953-10-liambeguin@gmail.com>
-        <0286de71-1b04-0956-be4e-f38573c6fea2@axentia.se>
-        <CBRHJM8ANOSE.2Q5C1FVQS5QOA@shaak>
-        <20210601170251.00002ddf@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Tue, 1 Jun 2021 12:11:11 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C04C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:09:26 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id t4-20020a1c77040000b029019d22d84ebdso1937379wmi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=C6Q550/eANL96iUNLAowFBRxhw9fUJjEuG+TUdGZjDM=;
+        b=bCjSgH1mOxQfNot9Us35SaRJcSiJpNCOUNyy/+jP4HvuTuIUyMaB7p/6AvjGXuLm3C
+         roEVJQYtO0tKcmdNiWJ+r883YLtQg/8OusItxddVyboNK9Odc40DNxPcb0jZI0ZJDlU0
+         vHsa5lejmsMu9H6nUGtwOCBEHN/f6g8vU18jxJ491FMVZJD3FAm5PhHNfwsMP6ysxlUL
+         JpLtEkZ6dOMndMF1ybjP5WbBmMW5t4UZa6dbtqwrg3KzXbI4DRDiH5is08hKYK38CyEg
+         5eyjystyNAHCABBrfE8/bsHPOF10UJ0DTxzvOdBTHceu4hotLioLcmWD8pzeNe9llpTM
+         8shQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=C6Q550/eANL96iUNLAowFBRxhw9fUJjEuG+TUdGZjDM=;
+        b=A8zCGXe9ddzdrNNd1jH8mWPMISF1eSPiU+MioInm4Njr2MZO9bmoJ9XEmbXZnmy+KO
+         wUqLli7nyNIH77Fd0290zj1yhwST6NZkNgflGlEk/EOprvvL9C2P6ae+hr9U+5O8Jw7y
+         a4cH6HB1wSWpYI6jH03/0baQFGvTAf4cTPkkj6uCdY0eGCCgmFUUe0FU4h6IRyMUZTzu
+         ICTLCH1bokoKLak6hBPs8DFEJaRJiWhAcLQrAzWETQLaH6jzsrQ7fHevrzBU8ooqa86O
+         EiWABATXHnlh+w2D1DzMLFZXbrAbivA74Vj2QIZh50IeTgfkn4TCSmdjdQSkx2IhzPOj
+         d9/g==
+X-Gm-Message-State: AOAM530fqPE7w9M5ZHt2EfhHr5lRnEm1xxOOH0y7MAntrlTZmSXOtQJj
+        MuYheppK/2OWxneQzHr63CX1dbc4rtCRvA==
+X-Google-Smtp-Source: ABdhPJyZZW+ZwN/oELgTzUON176eAfJvgHT9INBqMu7UETJTW3LUjRcn9aUC3vujoQKndXBgSGEDZw==
+X-Received: by 2002:a1c:146:: with SMTP id 67mr667396wmb.61.1622563764813;
+        Tue, 01 Jun 2021 09:09:24 -0700 (PDT)
+Received: from dell ([91.110.221.249])
+        by smtp.gmail.com with ESMTPSA id u3sm4144960wre.76.2021.06.01.09.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 09:09:24 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 17:09:22 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] mfd: t7l66xb: Use DEFINE_RES_MEM() and
+ DEFINE_RES_IRQ() to simplify code
+Message-ID: <20210601160922.GE2165650@dell>
+References: <20210601074706.10425-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.71]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210601074706.10425-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 17:02:51 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Tue, 01 Jun 2021, Zhen Lei wrote:
 
-> On Mon, 31 May 2021 10:03:23 -0400
-> "Liam Beguin" <liambeguin@gmail.com> wrote:
+> No functional change.
 > 
-> > Hi Peter,
-> > 
-> > On Mon May 31, 2021 at 3:32 AM EDT, Peter Rosin wrote:  
-> > > Hi!
-> > >
-> > > On 2021-05-30 02:59, Liam Beguin wrote:    
-> > > > From: Liam Beguin <lvb@xiphos.com>
-> > > > 
-> > > > An ADC is often used to measure other quantities indirectly. This
-> > > > binding describe one cases, the measurement of a temperature through a
-> > > > voltage sense amplifier such as the LTC2997.
-> > > > 
-> > > > Signed-off-by: Liam Beguin <lvb@xiphos.com>    
-> > >
-> > > What's the significant difference between this and the RTD binding? Does
-> > > not both simply scale/offset a voltage to a temperature?  
-> 
-> I'm lost: what RTD binding?
-Ignore this email - I was reading the series backwards and thought we were
-talking about a preexisting binding.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  drivers/mfd/t7l66xb.c | 12 ++----------
+>  1 file changed, 2 insertions(+), 10 deletions(-)
 
-> 
-> > >    
-> > 
-> > The way I looked at it was one binding per sensor type (resistance
-> > driven, current driven, and voltage driven).
-> > 
-> > Thinking about it more, these three bindings could be factorized into
-> > one if the user is required to enter parameters "by hand".  
-> 
-> Don't. They are effectively different types of devices and we just end
-> up with a more complex binding if we try to cover them all.
-Ignore that as well. If the bindings combine fairly easily it is nice
-to do so, but be careful not to throw too many things in together and
-make it very hard to write the binding. However, I'm not keen on entirely
-generic bindings and would like the channel type at least to come from
-the compatible.
+All 8 patches applied, thanks.
 
-> 
-> There is an argument to go the other way and actually have bindings for
-> individual temperature sensors like the LTC2997.  Then the parameters
-> become a driver problem rather than one for the binding.
-> 
-> Jonathan
-> 
-> 
-> > 
-> > These could become something like:
-> > - sense-gain-mult
-> > - sense-gain-div
-> > - sense-offset
-> > 
-> > I like the idea of having the "datasheet parameters" in the devicetree,
-> > but this would be a lot more versatile.
-> > 
-> > What do you think?
-> > 
-> > Cheers,
-> > Liam
-> >   
-> > > Cheers,
-> > > Peter    
-> >   
-> 
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
