@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505793970AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA663970B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhFAJy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:54:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:45498 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230323AbhFAJyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:54:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DBD011D4;
-        Tue,  1 Jun 2021 02:53:14 -0700 (PDT)
-Received: from [10.57.9.215] (unknown [10.57.9.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B215B3F73D;
-        Tue,  1 Jun 2021 02:53:11 -0700 (PDT)
-Subject: Re: [PATCH v1 1/3] coresight: etm-perf: Correct buffer syncing for
- snapshot
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <20210528161552.654907-2-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <f29d2d68-2735-dddf-b872-6163d1dbc8f0@arm.com>
-Date:   Tue, 1 Jun 2021 12:53:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233336AbhFAJzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:55:51 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38905 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231542AbhFAJzt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:55:49 -0400
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lo167-0004f7-Jy
+        for linux-kernel@vger.kernel.org; Tue, 01 Jun 2021 09:54:07 +0000
+Received: by mail-wr1-f71.google.com with SMTP id u20-20020a0560001614b02901115c8f2d89so4623939wrb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:54:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+OIrf2YpRvopTOP9GrsCcXEr+7TL2pNaPcwxG3gY5kg=;
+        b=FHkfFtPf363MnikwnptCwQWcFCQC2Ck5qQeNyrMLOe7B6LL0BsxiDkiyh6hMr+c6yq
+         gh8xzeY56aE69rgk9T+P8evU954DBxDpSz+PWMct3y4Mh2yJ1x30RIdXG+ZRLc6Kh4dN
+         tdtPFrbNMCIuEB11bRCucBeWYcsVMOpL6I9S1WVLHFExqFMwaHIz1+k7RnA57KEYVTEx
+         5hOZryZtcua6dsofplVjj7h17prJ7DLB/SEzFSC3P1MTZ+hv6wP0MMgp7Tq0Vdcgh9Va
+         CFHlbzBHCPlxgytZ/VGtViM3Uix204IeL7LKImgpiYpNnmEXWWVs79+tJq2KAG58srUr
+         ezHg==
+X-Gm-Message-State: AOAM532C+k7ECc7iGDq2pOmhbMiVA4mRfQEHl7hc3tXJt/heCLuSwTkY
+        rxzT3T40PsbUmKERXKEzNV9Nq0KT/eeT95Jj04PQZ0pYtjw00PkPV4AxRfMEdy05cL2Y55l/vcg
+        MOvtk0N2jYk8kSRMgD/+Lp9oF0dh6YI1OteblIdfINQ==
+X-Received: by 2002:a05:6000:11c9:: with SMTP id i9mr26826370wrx.153.1622541247275;
+        Tue, 01 Jun 2021 02:54:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEgSE7f74QpnJ54SuwC0JE/TVO2c38ODfUoM2T1GA4moNTgXFOXZDzv9q0xjvJnadZtjMS5w==
+X-Received: by 2002:a05:6000:11c9:: with SMTP id i9mr26826353wrx.153.1622541247176;
+        Tue, 01 Jun 2021 02:54:07 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id c7sm2018363wml.33.2021.06.01.02.54.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 02:54:06 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/2] mmc: sdhci-esdhc-imx: remove unused is_imx6q_usdhc
+Date:   Tue,  1 Jun 2021 11:54:02 +0200
+Message-Id: <20210601095403.236007-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210528161552.654907-2-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The is_imx6q_usdhc() function is unused:
 
+  drivers/mmc/host/sdhci-esdhc-imx.c:343:19: warning: unused function 'is_imx6q_usdhc'
 
-On 28/05/2021 19:15, Leo Yan wrote:
-> The perf tool records the Arm CoreSight trace data with snapshot mode
-> with the option '-S', when receiving USR2 signal, it is observed the
-> captured trace data size is very varied: from several MBs to ~20MBs.
-> This can be reproduced with the command:
-> 
->   perf record -e cs_etm// -S \
-> 	-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
->   PERFPID=$!
->   sleep 1
->   kill -USR2 $PERFPID
-> 
-> It's different for only specifying option '-S' than options '-a -S'.  If
-> without option '-a', perf tool creates separate AUX buffers for every
-> CPU, but the tracer will be enabled only when the profiled program is
-> scheduled onto the corresponding CPU, this might lead to record very
-> old trace data when snapshot.
-> 
-> Let's see below diagram:
->                                                             snapshot
->   CPU0: ______###P1###__________________________________________|
->   CPU1: __________________________###P3###____________###P5###__|
->   CPU2: ____________________________________###P4###____________|
->   CPU3: ________________###P2###________________________________V
-> 
-> In this diagram, the program runs for 5 periods (from P1 to P5), these 5
-> periods show the task run on different CPUs, e.g. during P1 period the
-> program runs on CPU0, and during P2 period the program is migrated to
-> CPU1, and so on.  At the end of P1 period when the program is switched
-> out from CPU0, the ETR trace data is saved into AUX trace buffer, this
-> AUX buffer is a dedicated buffer for CPU0's tracer.  With the same
-> logic, P2's trace data is saved into CPU3's tracer buffer, P4's trace
-> data is saved into CPU2's buffer, P3 and P5's trace data is saved into
-> CPU1's.  Therefore, when snapshot, it saves the trace data from all AUX
-> ring buffers (in this case, it have total 4 AUX ring buffers) into perf
-> data file.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: f47c4bbfa283 ("mmc: sdhci-esdhc-imx: create struct esdhc_soc_data")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/mmc/host/sdhci-esdhc-imx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Hi Leo,
+diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
+index fba4a963d12e..7336ae749137 100644
+--- a/drivers/mmc/host/sdhci-esdhc-imx.c
++++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+@@ -324,11 +324,6 @@ static inline int is_imx53_esdhc(struct pltfm_imx_data *data)
+ 	return data->socdata == &esdhc_imx53_data;
+ }
+ 
+-static inline int is_imx6q_usdhc(struct pltfm_imx_data *data)
+-{
+-	return data->socdata == &usdhc_imx6q_data;
+-}
+-
+ static inline int esdhc_is_usdhc(struct pltfm_imx_data *data)
+ {
+ 	return !!(data->socdata->flags & ESDHC_FLAG_USDHC);
+-- 
+2.27.0
 
-I was testing out snapshot mode (without your patch) and I noticed that it
-only ever collects from the last CPU. For example on a 4 core system,
-the CPU ID of the AUX records and the AUXTRACE buffers is always 3.
-
-This is with systemwide tracing, and running "stress -m 2 -c 2".
-Is this something that your patch fixes, or am I doing something wrong, or
-is it just a coincidence?
-
-Here's a snippet of the output:
-
-	./perf report -D | grep AUX
-	0 0 0x200 [0x168]: PERF_RECORD_AUXTRACE_INFO type: 3
-	0 0 0x152248 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0  ref: 0x75e0bdc44ea1bb65  idx: 3  tid: -1  cpu: 3
-	3 583600975364460 0x152160 [0x40]: PERF_RECORD_AUX offset: 0x400000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x55c950 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x400000  ref: 0x6f506d2d02841da4  idx: 3  tid: -1  cpu: 3
-	3 583602209157460 0x55c908 [0x40]: PERF_RECORD_AUX offset: 0x800000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x9624d8 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x800000  ref: 0x2d83d30161e1117a  idx: 3  tid: -1  cpu: 3
-	3 583602526365800 0x962490 [0x40]: PERF_RECORD_AUX offset: 0xc00000 size: 0x400000 flags: 0x2 [O]
-	0 0 0xd65f00 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0xc00000  ref: 0x5013e6e2a3c97c9  idx: 3  tid: -1  cpu: 3
-	3 583602714310320 0xd65eb8 [0x40]: PERF_RECORD_AUX offset: 0x1000000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x1169be8 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1000000  ref: 0x67b37e157f843269  idx: 3  tid: -1  cpu: 3
-	3 583602874193840 0x1169ba0 [0x40]: PERF_RECORD_AUX offset: 0x1400000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x156d550 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1400000  ref: 0x3cb268b926f22d41  idx: 3  tid: -1  cpu: 3
-	3 583603044203980 0x156d508 [0x40]: PERF_RECORD_AUX offset: 0x1800000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x1971238 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1800000  ref: 0x4905e0a21d5d35d7  idx: 3  tid: -1  cpu: 3
-	3 583603211393440 0x19711f0 [0x40]: PERF_RECORD_AUX offset: 0x1c00000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x1d747e0 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x1c00000  ref: 0x4f8f48007f7d70e7  idx: 3  tid: -1  cpu: 3
-	3 583603362643100 0x1d74798 [0x40]: PERF_RECORD_AUX offset: 0x2000000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x2178368 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x2000000  ref: 0x770d07213be2d29a  idx: 3  tid: -1  cpu: 3
-	3 583603526029900 0x2178320 [0x40]: PERF_RECORD_AUX offset: 0x2400000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x257bfb0 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x2400000  ref: 0x2e4ed1454815c13e  idx: 3  tid: -1  cpu: 3
-	3 583603687951260 0x257bf68 [0x40]: PERF_RECORD_AUX offset: 0x2800000 size: 0x400000 flags: 0x2 [O]
-	0 0 0x297fb18 [0x30]: PERF_RECORD_AUXTRACE size: 0x400000  offset: 0x2800000  ref: 0x644eba01d391129  idx: 3  tid: -1  cpu: 3
-
-Thanks
-James
