@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15591396C96
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585BA396C9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhFAFCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:02:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50222 "EHLO mail.kernel.org"
+        id S232906AbhFAFDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:03:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230170AbhFAFCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:02:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE38E6102A;
-        Tue,  1 Jun 2021 05:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622523663;
-        bh=kNdCmu0Ne4ouGWs+tyMNaaXD0+25jXNACguOyM29hAI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EGio6xOpGKUO5Y/1X6sQnHGqI+BMLW7JuVUrp5hDecSYs4J/upZ4xeEQtwUFI5coR
-         evkq7WAvgRwpJmBPzUTjeFVgiiwW8qo2k5WPR37bLI5YgCKbLdGcSZWHSpea9wyF5m
-         3zhYgaJav2C/DNz2N8QtYiX4BbHnKvNTkthdGwi4=
-Date:   Tue, 1 Jun 2021 07:01:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        song.bao.hua@hisilicon.com, "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH 2/2] drivers/base/node.c: use bin_attribute to avoid buff
- overflow
-Message-ID: <YLW/DZBYOcYxzRaK@kroah.com>
-References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
- <1622516210-10886-3-git-send-email-tiantao6@hisilicon.com>
+        id S230170AbhFAFDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:03:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23A576102A;
+        Tue,  1 Jun 2021 05:01:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622523689;
+        bh=oQlazZST/xTVF4xaTCspIjwCZZNAdsOrYEBHpFSLUMs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Inbx6eGf8uuOhQpwvwOY2NdQNf4FEQvyhePt97HJPaBu+P7lDcMo97U3y77wQdtLs
+         U68yCi02NBh5197AT/2PMfcB0HNQb729i9LSwNkhfA+r/HC13kE9z/lMaA1qtbLeZA
+         4rcorJ3nQn69RNdpiKD0kQX8UgAydFSziuyZnbVOA/AboAZBoaw7WTHGI8VtiIPOxb
+         oQrCUCVKWhQ/8Xt3zpwg8wQM6jw2N9kW6pXnm0FDpfb2Cwue5cRmw0EGSisGbQzVOa
+         204Y/snDAT2adrZeA8BUDBLl9fl1F3iDOYnf5ziuyjt5aNPL4lVdc1PxJhULJSCByz
+         vGUSMNZnjiGjA==
+Date:   Mon, 31 May 2021 22:01:28 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        stable@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
+Message-ID: <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20210531153410.93150-1-changbin.du@gmail.com>
+References: <20210531153410.93150-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622516210-10886-3-git-send-email-tiantao6@hisilicon.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 10:56:50AM +0800, Tian Tao wrote:
-> Reading sys/devices/system/cpu/cpuX/nodeX/ returns cpumap and cpulist.
-> However, the size of this file is limited to PAGE_SIZE because of the
-> limitation for sysfs attribute. so we use bin_attribute instead of
-> attribute to avoid NR_CPUS too big to cause buff overflow.
+On Mon, 31 May 2021 23:34:10 +0800 Changbin Du wrote:
+> We should not create inode for disabled namespace. A disabled namespace
+> sets its ns->ops to NULL. Kernel could panic if we try to create a inode
+> for such namespace.
 > 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Here is an example oops in socket ioctl cmd SIOCGSKNS when NET_NS is
+> disabled. Kernel panicked wherever nsfs trys to access ns->ops since the
+> proc_ns_operations is not implemented in this case.
+> 
+> [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+> [7.670268] pgd = 32b54000
+> [7.670544] [00000010] *pgd=00000000
+> [7.671861] Internal error: Oops: 5 [#1] SMP ARM
+> [7.672315] Modules linked in:
+> [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+> [7.673309] Hardware name: Generic DT based system
+> [7.673642] PC is at nsfs_evict+0x24/0x30
+> [7.674486] LR is at clear_inode+0x20/0x9c
+> 
+> So let's reject such request for disabled namespace.
+> 
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: David Laight <David.Laight@ACULAB.COM>
 > ---
->  drivers/base/node.c | 49 +++++++++++++++++++++++++++++++------------------
->  1 file changed, 31 insertions(+), 18 deletions(-)
+>  fs/nsfs.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index f449dbb..a19be64 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -27,42 +27,42 @@ static struct bus_type node_subsys = {
->  };
+> diff --git a/fs/nsfs.c b/fs/nsfs.c
+> index 800c1d0eb0d0..6c055eb7757b 100644
+> --- a/fs/nsfs.c
+> +++ b/fs/nsfs.c
+> @@ -62,6 +62,10 @@ static int __ns_get_path(struct path *path, struct ns_common *ns)
+>  	struct inode *inode;
+>  	unsigned long d;
 >  
->  
-> -static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
-> +static ssize_t node_read_cpumap(struct kobject *kobj, bool list,
+> +	/* In case the namespace is not actually enabled. */
+> +	if (!ns->ops)
+> +		return -EOPNOTSUPP;
+> +
+>  	rcu_read_lock();
+>  	d = atomic_long_read(&ns->stashed);
+>  	if (!d)
 
-Why not stick with the dev pointer here?  These are devices, please use
-them.
-
-thanks,
-
-greg k-h
+I'm not sure why we'd pick runtime checks for something that can be
+perfectly easily solved at compilation time. Networking should not
+be asking for FDs for objects which don't exist.
