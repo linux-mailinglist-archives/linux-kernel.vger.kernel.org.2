@@ -2,157 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4109C396EE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07C9396E9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhFAI0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbhFAI0d (ORCPT
+        id S233285AbhFAIRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:17:21 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6107 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233088AbhFAIRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:26:33 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84618C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:24:52 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id u24so6717982edy.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k2z10kHvXwh0VlWb//vEH7qdG2w+rH+BOKMSkAeptuo=;
-        b=JxNSuwOnVwr5zWbPShFowZKsvvro/a6F4DoBJ6KmXQHabMzL8if52GI5mSsrW34g8g
-         JDB1uOq3ZUASaZX4npfzfbyaPnVHzbDftKoLMFk0dPA46BdIpSXWaeQobY4ywCSlGu4z
-         Sq8Y1d3WdPf/dE1vksKs9/oIrwlGIS6H+75YAGSpJ+6KvG98yVc6GIwtgpBzQjRAlL9w
-         Zrf/t9qy/TOpltWXCO5d0mWHlZPE7CGaq2M7ZHsfByvtadrOFlOJLTMCzUMGCsVAM5+9
-         f0ETQXKQZtYSQ2KrDTL1V+VfKWJAwzvwSPJTrj8r5JfPyv+jUzLybLfBy3xFhsk5AKbG
-         dIbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k2z10kHvXwh0VlWb//vEH7qdG2w+rH+BOKMSkAeptuo=;
-        b=jnNPb9QBU1iL9ufAiyAPphpMCJ+IPIo3Gp6o4eLBWmsL9VF/om/eHNdJdevZOcZUf2
-         57A7iFufsu6R5Iwvg23eZFXP7Bccii8fhoiBIGcX864oMdI9z+6fLdlb2H4FaFYaQjh7
-         ibOJtjc/CJ2/MJSEZyn82PVAfL/CTITD6+gbt+L18LM438slNufXnonolcCq0F/iFaNn
-         ifVGLUp7b6BXm8Ey/iPzlsRXakcX4rc3uVk49KZNvkjRlqBOPk6kfBXJOt9/216zxleL
-         Mye7jg6656ELghQVaygf+aeIzF2siZbIkf75xRWOfNljM5Ju+o/EbFHwDy5cV7Vg8Axz
-         8vng==
-X-Gm-Message-State: AOAM533xJ/7tjZvIJV8ZMSEluYbIc/EUnoSM1umeDz+xOYCwUdWokWJ4
-        XNRst+rJ4jhoobGI5lMtOocw9amQSbBHpr5LiT3C
-X-Google-Smtp-Source: ABdhPJwLWEnRspCTHXQw5Y1o2N+2A0zsuxnn8yIG3KMhBPuEdZ1Ac8Z+84mEcsiLINoXwdsQfuFh4BxffxXzvAt/zxo=
-X-Received: by 2002:aa7:c584:: with SMTP id g4mr11564961edq.335.1622535890905;
- Tue, 01 Jun 2021 01:24:50 -0700 (PDT)
+        Tue, 1 Jun 2021 04:17:19 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvPzT4YdqzYpS2;
+        Tue,  1 Jun 2021 16:12:53 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 16:15:36 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
+ 2021 16:15:36 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <jaswinder.singh@linaro.org>, <eric@anholt.net>,
+        <jassisinghbrar@gmail.com>
+CC:     <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>
+Subject: [PATCH] mailbox: bcm2835: Remove redundant dev_err call in bcm2835_mbox_probe()
+Date:   Tue, 1 Jun 2021 16:24:54 +0800
+Message-ID: <20210601082454.127810-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210531202044.426578-1-morbo@google.com> <e22afde4-e312-4589-cf2e-3c35219d7249@kernel.org>
-In-Reply-To: <e22afde4-e312-4589-cf2e-3c35219d7249@kernel.org>
-From:   Bill Wendling <morbo@google.com>
-Date:   Tue, 1 Jun 2021 01:24:39 -0700
-Message-ID: <CAGG=3QVdXxLf0T9+n9FidrRcfdWY36m-i=4kPRJjOojWhjiywg@mail.gmail.com>
-Subject: Re: [PATCH] pgo: rename the raw profile file to vmlinux.profraw
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 1:29 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On 5/31/2021 1:20 PM, Bill Wendling wrote:
-> > Future PGO features may create other files in /sys/kernel/debug/pgo. So
-> > rename the kernel's raw profile data file to "vmlinux.profraw" to make
-> > which part of the kernel the file is for more explicit.
-> >
-> > Note that future files in /sys/kernel/debug/pgo should follow a similar
-> > naming convention.
-> >
-> > Signed-off-by: Bill Wendling <morbo@google.com>
->
-> Guess this clears up my confusion around the module patches :)
->
-To clarify, Jarmo did those patches on his own. I just wanted to
-clarify the naming convention. :-)
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
--bw
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mailbox/bcm2835-mailbox.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
->
-> > ---
-> >   Documentation/dev-tools/pgo.rst | 6 +++---
-> >   kernel/pgo/Kconfig              | 7 ++++---
-> >   kernel/pgo/fs.c                 | 2 +-
-> >   3 files changed, 8 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/Documentation/dev-tools/pgo.rst b/Documentation/dev-tools/pgo.rst
-> > index b7f11d8405b7..0200449c4843 100644
-> > --- a/Documentation/dev-tools/pgo.rst
-> > +++ b/Documentation/dev-tools/pgo.rst
-> > @@ -76,7 +76,7 @@ The PGO kernel support creates the following files in debugfs:
-> >   ``/sys/kernel/debug/pgo/reset``
-> >       Global reset file: resets all coverage data to zero when written to.
-> >
-> > -``/sys/kernel/debug/profraw``
-> > +``/sys/kernel/debug/pgo/vmlinux.profraw``
-> >       The raw PGO data that must be processed with ``llvm_profdata``.
-> >
-> >
-> > @@ -108,7 +108,7 @@ using the result to optimize the kernel:
-> >
-> >      .. code-block:: sh
-> >
-> > -      $ cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
-> > +      $ cp -a /sys/kernel/debug/pgo/vmlinux.profraw /tmp/vmlinux.profraw
-> >
-> >   5) (Optional) Download the raw profile data to the HOST machine.
-> >
-> > @@ -120,7 +120,7 @@ using the result to optimize the kernel:
-> >
-> >      Note that multiple raw profile data files can be merged during this step.
-> >
-> > -7) Rebuild the kernel using the profile data (PGO disabled)
-> > +7) Rebuild the kernel using the processed profile data (PGO disabled)
-> >
-> >      .. code-block:: sh
-> >
-> > diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
-> > index 76a640b6cf6e..d2053df1111c 100644
-> > --- a/kernel/pgo/Kconfig
-> > +++ b/kernel/pgo/Kconfig
-> > @@ -17,10 +17,11 @@ config PGO_CLANG
-> >
-> >         Run a representative workload for your application on a kernel
-> >         compiled with this option and download the raw profile file from
-> > -       /sys/kernel/debug/pgo/profraw. This file needs to be processed with
-> > -       llvm-profdata. It may be merged with other collected raw profiles.
-> > +       /sys/kernel/debug/pgo/vmlinux.profraw. This file needs to be
-> > +       processed with llvm-profdata. It may be merged with other collected
-> > +       raw profiles.
-> >
-> > -       Copy the resulting profile file into vmlinux.profdata, and enable
-> > +       Copy the processed profile file into vmlinux.profdata, and enable
-> >         KCFLAGS=-fprofile-use=vmlinux.profdata to produce an optimized
-> >         kernel.
-> >
-> > diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
-> > index 449f16beb2cf..ef985159dad3 100644
-> > --- a/kernel/pgo/fs.c
-> > +++ b/kernel/pgo/fs.c
-> > @@ -365,7 +365,7 @@ static int __init pgo_init(void)
-> >       if (!directory)
-> >               goto err_remove;
-> >
-> > -     if (!debugfs_create_file("profraw", 0600, directory, NULL,
-> > +     if (!debugfs_create_file("vmlinux.profraw", 0600, directory, NULL,
-> >                                &prf_fops))
-> >               goto err_remove;
-> >
-> >
+diff --git a/drivers/mailbox/bcm2835-mailbox.c b/drivers/mailbox/bcm2835-mailbox.c
+index 39761d190545..86b7ce3549c5 100644
+--- a/drivers/mailbox/bcm2835-mailbox.c
++++ b/drivers/mailbox/bcm2835-mailbox.c
+@@ -157,7 +157,6 @@ static int bcm2835_mbox_probe(struct platform_device *pdev)
+ 	mbox->regs = devm_ioremap_resource(&pdev->dev, iomem);
+ 	if (IS_ERR(mbox->regs)) {
+ 		ret = PTR_ERR(mbox->regs);
+-		dev_err(&pdev->dev, "Failed to remap mailbox regs: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-- 
+2.31.1
+
