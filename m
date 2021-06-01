@@ -2,170 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24762396B70
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC79396B72
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbhFACiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 22:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbhFACiS (ORCPT
+        id S232663AbhFACib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 22:38:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40410 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232625AbhFACia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 22:38:18 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCFDC061574;
-        Mon, 31 May 2021 19:36:38 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so569641pjs.2;
-        Mon, 31 May 2021 19:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2OVxSeKlGQa+hnVanHgZWFQDTlIpKAAIk1DeojjE1ho=;
-        b=dElHa+6HUI5/H+/9avy+0ej2L5RGZrTitHtRG4EaU6Ud2x8dTfxFpbo+cO01bxbivC
-         qTihiT4InWOND6FO0YHnXokVaAzCrotfRECPmF8qL0I4vKiy1Zpy6qmyTpgVm+28nL/e
-         bfjhLYVPsHZqnaKGgI22DOatI2gRn7jc48oB6Vfu05A0DJvApOAnu6Gp3HdN9za/vJx5
-         OY6BeKB7thR7io0jTcrqg/JZ+mhLcHUsYHJ7RsdCb7akl7hYIXhiuetr2kzctJiweygL
-         j/EgVXcuXCwEvondMSW0ExmzIJtD8oFcvE1joJ4ui3ESALJsY3srgavhHD62U8RrQW9K
-         evzQ==
+        Mon, 31 May 2021 22:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622515009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R/vNKwMKD4yXShKjN11l9IaBWHIc+94yjI5sIegf+Rs=;
+        b=OBAwwawgVnJKw6NQa/JNZGM3/zbIzbHi2/mM3viUw8+gSvHW0V9SDsapStzCjpLN0hgVZy
+        UMaY8Brxm1w/GzWXP5Gf7Q3VQvighMuGnQNccifpnaqKfxPXsrjmQsm/ZMyr5uJ6kcZ7iV
+        /Sb1h5Z6ARLGKjOEg6rqHg1j2Z/dulc=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-210-DYsy1e4kN-axVExRZbhlpA-1; Mon, 31 May 2021 22:36:47 -0400
+X-MC-Unique: DYsy1e4kN-axVExRZbhlpA-1
+Received: by mail-pj1-f71.google.com with SMTP id f15-20020a17090aa78fb029015c411f061bso1030064pjq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 19:36:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2OVxSeKlGQa+hnVanHgZWFQDTlIpKAAIk1DeojjE1ho=;
-        b=o/HHLw57uh5xdkjILgdnxVfMc9ljZaGfRhPcK2P/DkwiATZJMrm6T5oQ68TTI4cuoq
-         TeASiHLi9kH6OMhkY5wYCqUcJzihzrIHJVPshKVfmW1yEOs0su90t0qpVWgSYjHGOBFD
-         cL6E5b+1jMn8hiXKhkJZQP7Yf4zrUEQNYzQ7jGKT7RuNodMY6FVQyyJiNbSuahnowob9
-         VQTr9pUHuVUMfLVREzNXou86AeHjAtsFgjUX7vLJ7rXkeAQavzy+ZuE/XRoHYXYCtga5
-         gRMLpjjKPWw+7c/gSCAe9red1MDtuqMosVfJ0NC3GiOolXqNEp1DmiIeO+G0OV+j7Ca9
-         nShQ==
-X-Gm-Message-State: AOAM532hbeNJhh8Ti2rK7aD+jX+XcgIqc5860XoDnrD9Vew+0TWmqzkQ
-        gdfE344CCZa70DdlgH5mJ9k=
-X-Google-Smtp-Source: ABdhPJxfB6K7sQgb9Aqx0gpaUDFjBV0bkLEyF4je/RGsU0zz5PFj+ojsVNTqan+VXdp8rM4GdUYJ1A==
-X-Received: by 2002:a17:90a:bf03:: with SMTP id c3mr22001931pjs.196.1622514997720;
-        Mon, 31 May 2021 19:36:37 -0700 (PDT)
-Received: from [10.230.2.159] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id hk15sm546202pjb.53.2021.05.31.19.36.32
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=R/vNKwMKD4yXShKjN11l9IaBWHIc+94yjI5sIegf+Rs=;
+        b=S5dyPQPQsghpP+8iRiBxxEzG045FeAd5vpEgYSCFmjii3P72fbIZj7EK3ZboWRJssI
+         gtPu5bCGqfNVpEjndKNHuLuN0c+Mrtt3nwJCHxWWP+uxqaKF0a0ks5L9p+BEhoMNEs8p
+         zsF9wu4Z4BbtG7TmHw/qSMWPQ6AlQCWQ7UQxnqCPZ8t+XEqq5l4xoozgzDDb7e8c2fCe
+         4LA/5TMkAZcco9Ny/Kjbgy6MlvfHoDomDgyvrrExodhpzR0ZLP+NuHfqMor9Cb93ON0b
+         vKv1R9hiAaSmFtjMbOXyXLyJ1zprjsj40L1ieLhrZuR2o3L641mtYE6SMC6ppwabDYqE
+         IlJA==
+X-Gm-Message-State: AOAM532ZnvxEM+tTVuKBR3HF9AucY39gRuZxtqKsnh4uM/kdAiDWWy/T
+        nk5Lj3CZEQOMwaJPDWml1uWjeRrKEJ6q6pPYPvKQ1pTKdtHxC1o1VxIaBEoTubemPN7DHFuD81H
+        aCjqwcHYAFbp9E1FyIdai0z+G
+X-Received: by 2002:a17:90a:588f:: with SMTP id j15mr1033509pji.112.1622515006581;
+        Mon, 31 May 2021 19:36:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPDXYinpNeWXLQoK98eNSiwNXoeGiMTG9/9gXFH9CKUekKLqJYBGdJOueFprZDJGgzAlaU8A==
+X-Received: by 2002:a17:90a:588f:: with SMTP id j15mr1033494pji.112.1622515006334;
+        Mon, 31 May 2021 19:36:46 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id p14sm13530139pgb.2.2021.05.31.19.36.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 19:36:37 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: Kernel Panic in skb_release_data using genet
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Doug Berger <opendmb@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-References: <20210524130147.7xv6ih2e3apu2zvu@gilmour>
- <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
- <20210524151329.5ummh4dfui6syme3@gilmour>
- <1482eff4-c5f4-66d9-237c-55a096ae2eb4@gmail.com>
- <6caa98e7-28ba-520c-f0cc-ee1219305c17@gmail.com>
- <20210528163219.x6yn44aimvdxlp6j@gilmour>
- <77d412b4-cdd6-ea86-d7fd-adb3af8970d9@gmail.com>
-Message-ID: <9e99ade5-ebfc-133e-ac61-1aba07ca80a2@gmail.com>
-Date:   Mon, 31 May 2021 19:36:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        Mon, 31 May 2021 19:36:45 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Liu Yi L <yi.l.liu@linux.intel.com>
+Cc:     yi.l.liu@intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"" 
+        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
+ <20210531164118.265789ee@yiliu-dev>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
+Date:   Tue, 1 Jun 2021 10:36:36 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <77d412b4-cdd6-ea86-d7fd-adb3af8970d9@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210531164118.265789ee@yiliu-dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+在 2021/5/31 下午4:41, Liu Yi L 写道:
+>> I guess VFIO_ATTACH_IOASID will fail if the underlayer doesn't support
+>> hardware nesting. Or is there way to detect the capability before?
+> I think it could fail in the IOASID_CREATE_NESTING. If the gpa_ioasid
+> is not able to support nesting, then should fail it.
+>
+>> I think GET_INFO only works after the ATTACH.
+> yes. After attaching to gpa_ioasid, userspace could GET_INFO on the
+> gpa_ioasid and check if nesting is supported or not. right?
 
-On 5/28/2021 9:48 AM, Florian Fainelli wrote:
-> On 5/28/21 9:32 AM, Maxime Ripard wrote:
->> hi Florian,
->>
->> On Fri, May 28, 2021 at 09:21:27AM -0700, Florian Fainelli wrote:
->>> On 5/24/21 8:37 AM, Florian Fainelli wrote:
->>>>
->>>>
->>>> On 5/24/2021 8:13 AM, Maxime Ripard wrote:
->>>>> Hi Florian,
->>>>>
->>>>> On Mon, May 24, 2021 at 07:49:25AM -0700, Florian Fainelli wrote:
->>>>>> Hi Maxime,
->>>>>>
->>>>>> On 5/24/2021 6:01 AM, Maxime Ripard wrote:
->>>>>>> Hi Doug, Florian,
->>>>>>>
->>>>>>> I've been running a RaspberryPi4 with a mainline kernel for a while,
->>>>>>> booting from NFS. Every once in a while (I'd say ~20-30% of all boots),
->>>>>>> I'm getting a kernel panic around the time init is started.
->>>>>>>
->>>>>>> I was debugging a kernel based on drm-misc-next-2021-05-17 today with
->>>>>>> KASAN enabled and got this, which looks related:
->>>>>>
->>>>>> Is there a known good version that could be used for bisection or you
->>>>>> just started to do this test and you have no reference point?
->>>>>
->>>>> I've had this issue for over a year and never (I think?) got a good
->>>>> version, so while it might be a regression, it's not a recent one.
->>>>
->>>> OK, this helps and does not really help.
->>>>
->>>>>
->>>>>> How stable in terms of clocking is the configuration that you are using?
->>>>>> I could try to fire up a similar test on a Pi4 at home, or use one of
->>>>>> our 72112 systems which is the closest we have to a Pi4 and see if that
->>>>>> happens there as well.
->>>>>
->>>>> I'm not really sure about the clocking. Is there any clock you want to
->>>>> look at in particular?
->>>>
->>>> ARM, DDR, AXI, anything that could cause some memory corruption to occur
->>>> essentially. GENET clocks are fairly fixed, you have a 250MHz clock and
->>>> a 125MHz clock feeding the data path.
->>>>
->>>>>
->>>>> My setup is fairly simple: the firmware and kernel are loaded over TFTP
->>>>> and the rootfs is mounted over NFS, and the crash always occur around
->>>>> init start, so I guess when it actually starts to transmit a decent
->>>>> amount of data?
->>>>
->>>> Do you reproduce this problem with KASAN disabled, do you eventually
->>>> have a crash pointing back to the same location?
->>>>
->>>> I have a suspicion that this is all Pi4 specific because we regularly
->>>> run the GENET driver through various kernel versions (4.9, 5.4 and 5.10
->>>> and mainline) and did not run into that.
+
+Some more questions:
+
+1) Is the handle returned by IOASID_ALLOC an fd?
+2) If yes, what's the reason for not simply use the fd opened from 
+/dev/ioas. (This is the question that is not answered) and what happens 
+if we call GET_INFO for the ioasid_fd?
+3) If not, how GET_INFO work?
+
+
+>
+>>> 	/* Bind guest I/O page table  */
+>>> 	bind_data = {
+>>> 		.ioasid	= giova_ioasid;
+>>> 		.addr	= giova_pgtable;
+>>> 		// and format information
+>>> 	};
+>>> 	ioctl(ioasid_fd, IOASID_BIND_PGTABLE, &bind_data);
 >>>
->>> I have not had time to get a set-up to reproduce what you are seeing,
->>> could you share your .config meanwhile? Thanks
->>
->> Sorry, I didn't have the time to check how the clock were behaving.
->>
->> You'll find attached my config.txt file and .config
->>
->> I'm booting the board entirely from TFTP (which might introduce some
->> issues in the "handoff" from the bootloader to the kernel), you'll find
->> some guide there:
->>
->> https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/net_tutorial.md
-> 
-> That is also how I boot my Pi4 at home, and I suspect you are right, if
-> the VPU does not shut down GENET's DMA, and leaves buffer addresses in
-> the on-chip descriptors that point to an address space that is managed
-> totally differently by Linux, then we can have a serious problem and
-> create some memory corruption when the ring is being reclaimed. I will
-> run a few experiments to test that theory and there may be a solution
-> using the SW_INIT reset controller to have a big reset of the controller
-> before handing it over to the Linux driver.
+>>> 	/* Invalidate IOTLB when required */
+>>> 	inv_data = {
+>>> 		.ioasid	= giova_ioasid;
+>>> 		// granular information
+>>> 	};
+>>> 	ioctl(ioasid_fd, IOASID_INVALIDATE_CACHE, &inv_data);
+>>>
+>>> 	/* See 5.6 for I/O page fault handling */
+>>> 	
+>>> 5.5. Guest SVA (vSVA)
+>>> ++++++++++++++++++
+>>>
+>>> After boots the guest further create a GVA address spaces (gpasid1) on
+>>> dev1. Dev2 is not affected (still attached to giova_ioasid).
+>>>
+>>> As explained in section 4, user should avoid expose ENQCMD on both
+>>> pdev and mdev.
+>>>
+>>> The sequence applies to all device types (being pdev or mdev), except
+>>> one additional step to call KVM for ENQCMD-capable mdev:
+>> My understanding is ENQCMD is Intel specific and not a requirement for
+>> having vSVA.
+> ENQCMD is not really Intel specific although only Intel supports it today.
+> The PCIe DMWr capability is the capability for software to enumerate the
+> ENQCMD support in device side. yes, it is not a requirement for vSVA. They
+> are orthogonal.
 
-Adding a WARN_ON(reg & DMA_EN) in bcmgenet_dma_disable() has not shown
-that the TX or RX DMA have been left running during the hand over from
-the VPU to the kernel. I checked out drm-misc-next-2021-05-17 to reduce
-as much as possible the differences between your set-up and my set-up
-but so far have not been able to reproduce the crash in booting from NFS
-repeatedly, I will try again.
--- 
-Florian
 
+Right, then it's better to mention DMWr instead of a vendor specific 
+instruction in a general framework like ioasid.
+
+Thanks
+
+
+>
 
