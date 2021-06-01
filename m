@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506A8397376
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5AD397378
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbhFAMqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:46:42 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:41279 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232965AbhFAMqk (ORCPT
+        id S233657AbhFAMrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:47:18 -0400
+Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:47249 "EHLO
+        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232965AbhFAMrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:46:40 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8735722236;
-        Tue,  1 Jun 2021 14:44:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1622551498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b43l9JwGMojnvxR7u6rb4bHE+y8B1xgeuP6UyhnRg5c=;
-        b=rNrxYXXV2kN3d7v6g8tdreG6grSr43AMWyyJiXRAN9wHYI7ylyOnvcu3RMCODE/vVAQgxk
-        Hibh6sxO6fBla+TpjAkb4hR658JUgaTvrByCl2UMuJxUp4jeiyZ2ngu/tk0Z7wyDTdNIYh
-        0fF8pYRGkd4I7NJq9uFUwXwFw3Ab4oc=
+        Tue, 1 Jun 2021 08:47:17 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id D502AFB120
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 13:45:34 +0100 (IST)
+Received: (qmail 716 invoked from network); 1 Jun 2021 12:45:34 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 1 Jun 2021 12:45:34 -0000
+Date:   Tue, 1 Jun 2021 13:45:33 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mm/page_alloc: Allow high-order pages to be stored
+ on the per-cpu lists
+Message-ID: <20210601124533.GU30378@techsingularity.net>
+References: <20210531120412.17411-1-mgorman@techsingularity.net>
+ <20210531120412.17411-3-mgorman@techsingularity.net>
+ <20210531172338.2e7cb070@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Jun 2021 14:44:57 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] mtd: spi-nor: core: avoid odd length/address
- writes in 8D-8D-8D mode
-In-Reply-To: <20210531181757.19458-7-p.yadav@ti.com>
-References: <20210531181757.19458-1-p.yadav@ti.com>
- <20210531181757.19458-7-p.yadav@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <6fb69565f7b27eb7e8ee3321624ad624@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210531172338.2e7cb070@carbon>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-31 20:17, schrieb Pratyush Yadav:
-> On Octal DTR capable flashes like Micron Xcella the writes cannot start
-> or end at an odd address in Octal DTR mode. Extra 0xff bytes need to be
-> appended or prepended to make sure the start address and end address 
-> are
-> even. 0xff is used because on NOR flashes a program operation can only
-> flip bits from 1 to 0, not the other way round. 0 to 1 flip needs to
-> happen via erases.
+On Mon, May 31, 2021 at 05:23:38PM +0200, Jesper Dangaard Brouer wrote:
+> On Mon, 31 May 2021 13:04:12 +0100
+> Mel Gorman <mgorman@techsingularity.net> wrote:
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > The per-cpu page allocator (PCP) only stores order-0 pages. This means
+> > that all THP and "cheap" high-order allocations including SLUB contends
+> > on the zone->lock. This patch extends the PCP allocator to store THP and
+> > "cheap" high-order pages. Note that struct per_cpu_pages increases in
+> > size to 256 bytes (4 cache lines) on x86-64.
+> > 
+> > Note that this is not necessarily a universal performance win because of
+> > how it is implemented. High-order pages can cause pcp->high to be exceeded
+> > prematurely for lower-orders so for example, a large number of THP pages
+> > being freed could release order-0 pages from the PCP lists. Hence, much
+> > depends on the allocation/free pattern as observed by a single CPU to
+> > determine if caching helps or hurts a particular workload.
+> > 
+> > That said, basic performance testing passed. The following is a netperf
+> > UDP_STREAM test which hits the relevant patches as some of the network
+> > allocations are high-order.
+> 
+> This series[1] looks very interesting!  I confirm that some network
+> allocations do use high-order allocations.  Thus, I think this will
+> increase network performance in general, like you confirm below:
+> 
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+Would you be able to do a small test on a real high-speed network? It's
+something I can do easily myself in a few weeks but I do not have testbed
+readily available at the moment. It's ok if you do not have the time,
+it would just be nice if I could include independent results in the
+changelog if the results are positive. Alternatively, a negative result
+would mean going back to the drawing board :)
+
+-- 
+Mel Gorman
+SUSE Labs
