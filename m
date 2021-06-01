@@ -2,125 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8432B397B6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA647397B7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhFAUum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 16:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234756AbhFAUuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 16:50:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B85A560E0C;
-        Tue,  1 Jun 2021 20:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622580539;
-        bh=alP6MwNJj6Tz9IWa3CoTduqAUpA0QOW99jGw8zk2njU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RWn1Gby6RnNrr32g8UFmJmfRd5MahcuQZ+zOd8xVMBtrLgDRovGotB9OtbO+5mHlT
-         eUa5Bl7atcRLL7oIWawrltnShlo6/e3w/qxCDhWvRw2vm4JKr2EzRKcLYHvmmG8XCq
-         +j8tqiqr335SoRdSysnMUbzX75x1eaQXgLYuGEpXhpKRcsPF63E9RR9mLkiZQ2PSr7
-         mqPc3kXdHdzh0WvwaKc/GGPp9h8BGFyoEs9lTviAWptf7F4AnGiReDYxWrwW3j4JYl
-         3f/v/ImdR9nphGLJF4uezurJkGNB0iwrO/wX5bYutvvcHMHtpzrTi0MN929byBwGKF
-         l/PzYctLmkh+A==
-Date:   Tue, 1 Jun 2021 13:48:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Yunsheng Lin <yunshenglin0825@gmail.com>, <davem@davemloft.net>,
-        <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: Re: [Linuxarm] Re: [PATCH net-next 2/3] net: sched: implement
- TCQ_F_CAN_BYPASS for lockless qdisc
-Message-ID: <20210601134856.12573333@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <cf75e1f4-7972-8efa-7554-fc528c5da380@huawei.com>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
-        <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
-        <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
-        <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
-        <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
-        <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <3c2fbc70-841f-d90b-ca13-1f058169be50@huawei.com>
-        <3a307707-9fb5-d73a-01f9-93aaf5c7a437@huawei.com>
-        <428f92d8-f4a2-13cf-8dcc-b38d48a42965@huawei.com>
-        <20210531215146.5ca802a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <cf75e1f4-7972-8efa-7554-fc528c5da380@huawei.com>
+        id S234799AbhFAVAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 17:00:35 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:33654 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234638AbhFAVAd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 17:00:33 -0400
+Received: by mail-ot1-f52.google.com with SMTP id l19-20020a0568301553b02903beaa8d961aso634802otp.0;
+        Tue, 01 Jun 2021 13:58:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mFVgXK4P9/P196d6q38oyDpnHkvZz1jGfjrbZohVPy8=;
+        b=oZebr1t4L3KpYIwM87E8veHoFItWVz59cRvZhh+/ZTdOjhQjbY9ZT63wYl9aisNzUr
+         PIdSoH2ojK5fYp5sCvjJdXeKVdiFteBvpVw/362vhQv0HmB2iaHXkOuYImcBsyMa/BgE
+         Zti81N5/dFTSPw0NFFRiIASGzoCaej/veNVvacc31h4Eer/lJskn2juir46uVUCRvKGe
+         UfhsbSslAiD3qw9R2KYbhUnPPoX/1a6VlNixrgiDF6g4n8Y2ldiwGNTupQPFhT3QlD5h
+         vdEeGCv5OlA8EmstKkdcX96u41b6BlG53oKRYJZLQYPFa2yafnkJwiv/EyaVdM/AvecK
+         7L2g==
+X-Gm-Message-State: AOAM532VFjDzkWYPveRA45nqra5FVD5ci4XAmNLjtHvzsyPZ9SIac0gA
+        gHaP9KX6zDpWHCKn8LKhRw==
+X-Google-Smtp-Source: ABdhPJwSDOHE2U3w/uzQOBXamMUbXVw3E+ghXWqjym71F23AjO+4al6m1BHPI6Gog/151NLhLbohIg==
+X-Received: by 2002:a05:6830:611:: with SMTP id w17mr22894682oti.225.1622581130059;
+        Tue, 01 Jun 2021 13:58:50 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a14sm3956610otl.52.2021.06.01.13.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 13:58:49 -0700 (PDT)
+Received: (nullmailer pid 1030577 invoked by uid 1000);
+        Tue, 01 Jun 2021 20:58:48 -0000
+Date:   Tue, 1 Jun 2021 15:58:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
+        abhinavk@codeaurora.org, kalyan_t@codeaurora.org,
+        mkrishn@codeaurora.org, jonathan@marek.ca
+Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
+Message-ID: <20210601205848.GA1025498@robh.at.kernel.org>
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
+ <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 16:18:54 +0800 Yunsheng Lin wrote:
-> > I see, thanks! That explains the need. Perhaps we can rephrase the
-> > comment? Maybe:
-> > 
-> > +			/* Retest nolock_qdisc_is_empty() within the protection
-> > +			 * of q->seqlock to protect from racing with requeuing.
-> > +			 */  
+On Mon, May 31, 2021 at 07:03:53PM +0530, Rajeev Nandan wrote:
+> Add YAML schema for the device tree bindings for MSM 7nm DSI PHY driver.
 > 
-> Yes if we still decide to preserve the nolock_qdisc_is_empty() rechecking
-> under q->seqlock.
-
-Sounds good.
-
-> >> --- a/net/sched/sch_generic.c
-> >> +++ b/net/sched/sch_generic.c
-> >> @@ -38,6 +38,15 @@ EXPORT_SYMBOL(default_qdisc_ops);
-> >>  static void qdisc_maybe_clear_missed(struct Qdisc *q,
-> >>                                      const struct netdev_queue *txq)
-> >>  {
-> >> +       set_bit(__QDISC_STATE_DRAINING, &q->state);
-> >> +
-> >> +       /* Make sure DRAINING is set before clearing MISSED
-> >> +        * to make sure nolock_qdisc_is_empty() always return
-> >> +        * false for aoviding transmitting a packet directly
-> >> +        * bypassing the requeued packet.
-> >> +        */
-> >> +       smp_mb__after_atomic();
-> >> +
-> >>         clear_bit(__QDISC_STATE_MISSED, &q->state);
-> >>
-> >>         /* Make sure the below netif_xmit_frozen_or_stopped()
-> >> @@ -52,8 +61,6 @@ static void qdisc_maybe_clear_missed(struct Qdisc *q,
-> >>          */
-> >>         if (!netif_xmit_frozen_or_stopped(txq))
-> >>                 set_bit(__QDISC_STATE_MISSED, &q->state);
-> >> -       else
-> >> -               set_bit(__QDISC_STATE_DRAINING, &q->state);
-> >>  }  
-> > 
-> > But this would not be enough because we may also clear MISSING 
-> > in pfifo_fast_dequeue()?  
+> Cc: Jonathan Marek <jonathan@marek.ca>
+> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> ---
+>  .../bindings/display/msm/dsi-phy-7nm.yaml          | 68 ++++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
 > 
-> For the MISSING clearing in pfifo_fast_dequeue(), it seems it
-> looks like the data race described in RFC v3 too?
-> 
->       CPU1                 CPU2               CPU3
-> qdisc_run_begin(q)          .                  .
->         .              MISSED is set           .
->   MISSED is cleared         .                  .
->     q->dequeue()            .                  .
->         .              enqueue skb1     check MISSED # true
-> qdisc_run_end(q)            .                  .
->         .                   .         qdisc_run_begin(q) # true
->         .            MISSED is set      send skb2 directly
+> diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
+> new file mode 100644
+> index 00000000..f17cfde
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-7nm.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/msm/dsi-phy-7nm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Display DSI 7nm PHY
+> +
+> +maintainers:
+> +  - Rajeev Nandan <rajeevny@codeaurora.org>
+> +
+> +allOf:
+> +  - $ref: dsi-phy-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: qcom,dsi-phy-7nm
 
-Not sure what you mean.
+When would one use this?
+
+> +      - const: qcom,dsi-phy-7nm-7280
+> +      - const: qcom,dsi-phy-7nm-8150
+
+These don't look like full SoC names (sm8150?) and it's 
+<vendor>,<soc>-<block>.
+
+> +
+> +  reg:
+> +    items:
+> +      - description: dsi phy register set
+> +      - description: dsi phy lane register set
+> +      - description: dsi pll register set
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dsi_phy
+> +      - const: dsi_phy_lane
+> +      - const: dsi_pll
+> +
+> +  vdds-supply:
+> +    description: Phandle to 0.9V power supply regulator device node.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - vdds-supply
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +     #include <dt-bindings/clock/qcom,dispcc-sc7280.h>
+> +     #include <dt-bindings/clock/qcom,rpmh.h>
+> +
+> +     dsi-phy@ae94400 {
+> +         compatible = "qcom,dsi-phy-7nm-7280";
+> +         reg = <0x0ae94400 0x200>,
+> +               <0x0ae94600 0x280>,
+> +               <0x0ae94900 0x280>;
+> +         reg-names = "dsi_phy",
+> +                     "dsi_phy_lane",
+> +                     "dsi_pll";
+> +
+> +         #clock-cells = <1>;
+> +         #phy-cells = <0>;
+> +
+> +         clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +                  <&rpmhcc RPMH_CXO_CLK>;
+> +         clock-names = "iface", "ref";
+> +
+> +         vdds-supply = <&vreg_l10c_0p8>;
+> +     };
+> +...
+> -- 
+> 2.7.4
