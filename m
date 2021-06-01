@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC168397205
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B51F397208
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbhFALGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:06:49 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:44792 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233509AbhFALGr (ORCPT
+        id S233645AbhFALHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:07:17 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46918 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232569AbhFALHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:06:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UavjINc_1622545498;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UavjINc_1622545498)
+        Tue, 1 Jun 2021 07:07:13 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UawU1dh_1622545524;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UawU1dh_1622545524)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 01 Jun 2021 19:05:04 +0800
+          Tue, 01 Jun 2021 19:05:30 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     christopher.lee@cspi.com
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, linux-usb@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] ethernet: myri10ge: Fix missing error code in myri10ge_probe()
-Date:   Tue,  1 Jun 2021 19:04:51 +0800
-Message-Id: <1622545491-18706-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] HID: usbhid: hid-pidff: Fix missing error code in hid_pidff_init()
+Date:   Tue,  1 Jun 2021 19:05:18 +0800
+Message-Id: <1622545518-18949-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'status'.
+'-EINVAL' to the return value 'error'.
 
 Eliminate the follow smatch warning:
 
-drivers/net/ethernet/myricom/myri10ge/myri10ge.c:3818 myri10ge_probe()
-warn: missing error code 'status'.
+drivers/hid/usbhid/hid-pidff.c:1297 hid_pidff_init() warn: missing error
+code 'error'.
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/net/ethernet/myricom/myri10ge/myri10ge.c | 1 +
+ drivers/hid/usbhid/hid-pidff.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-index c84c8bf..fc99ad8 100644
---- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-+++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-@@ -3815,6 +3815,7 @@ static int myri10ge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		dev_err(&pdev->dev,
- 			"invalid sram_size %dB or board span %ldB\n",
- 			mgp->sram_size, mgp->board_span);
-+		status = -EINVAL;
- 		goto abort_with_ioremap;
+diff --git a/drivers/hid/usbhid/hid-pidff.c b/drivers/hid/usbhid/hid-pidff.c
+index ea126c5..731b49e 100644
+--- a/drivers/hid/usbhid/hid-pidff.c
++++ b/drivers/hid/usbhid/hid-pidff.c
+@@ -1294,6 +1294,7 @@ int hid_pidff_init(struct hid_device *hid)
+ 	    pidff->pool[PID_DEVICE_MANAGED_POOL].value[0] == 0) {
+ 		hid_notice(hid,
+ 			   "device does not support device managed pool\n");
++		error = -EINVAL;
+ 		goto fail;
  	}
- 	memcpy_fromio(mgp->eeprom_strings,
+ 
 -- 
 1.8.3.1
 
