@@ -2,154 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98857397765
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEFA397767
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhFAQCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
+        id S234438AbhFAQC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFAQBz (ORCPT
+        with ESMTP id S230288AbhFAQCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:01:55 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F77EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:00:14 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id h19-20020a9d6f930000b02903c0c4560e99so1361633otq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:00:14 -0700 (PDT)
+        Tue, 1 Jun 2021 12:02:55 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3134C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:01:13 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id k16so15843424ios.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:01:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+EQc3xvG4vj4snpRMCUapfXHF8CpIpQCf2oacLZFBAk=;
-        b=JeHyn8OpcfFeowio6lacRBlt7uKlEBVT0atacKuoMyyheIZe6HEZu8oJ/iBrO1DO1F
-         OVCJhIf0AfES6MFJ+irIKqRLXlp/XbXYltlH4VO+ibPgl0QVSc6s78aPUXbuBvv8yocD
-         afVNLPjC4HLPkk/Cd2qCIZFkpoGavJXHJcKUGfSV+NA/WryXTERG3dvjf/jL/PB9luFx
-         98P38atSF+M/EjlnURCenI5RexCscTp24Gmkj7x8EuJmpnOTNKs8tAHj4TWY2bQiLmHO
-         Bd34DwXpJQG3Rs2VW+ed0CMqgWICwIarye8SitaTgBtoCXoyOGcrt951KGkSrXriw2Dx
-         IihQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WfmsydD/A8BiNqHr9XgI8dOVh8RAtY6UXqT7qqwK9X8=;
+        b=Sy4bUKJmv2dkaIL+PnSyHaFU4M7Xr9P9mJvn6Azv/EzDtyYXU5e4kQOR/zL9HPytx0
+         QcZQLccBYF3AOuCjlwiEYrfJFwxCg4R6vAfYO+mdPKzZ2hKkN8+kW/pNfZ7fha7bGtc0
+         lReUE9y/DtyL5f1CPH7clx3gYrkTiss9eHWcVGYPQForWyzPVhp78WnxJWaFGW1TqTsF
+         8lHVKPkfU5w2+/d1Zo4pnXdREZrzedwCTGDFvTon+M39PGpyV3qjMH5WbP/+KOd8yVkS
+         9reEl/T7Ki7A5GhsHz7pTwnLguzyS4ZWpRxRhw497XP15S4nH6XiV3Ttf0fXoewKmIRj
+         POzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+EQc3xvG4vj4snpRMCUapfXHF8CpIpQCf2oacLZFBAk=;
-        b=QliPQFb9EHzi/+FOTyhTv4Zizv8yINRV0QXN3dsr6O2jSD2G2BDwsDfchg4sW7wK0n
-         3+GBMDssUS4SkVOr4V6Gb+Q+nMMWi7+ULzAFnxnzOm1aUH+UrGkr/1WoT43Qu7l0ZY7B
-         AgsVElD5BpLdXJGgEUcZW97k1y33Lvjk5OVbKx/mHcITEwzffyQmVZkghS/GTjn91i3e
-         oYziprR4YhylIP+RwUftpyfHmXWRTtzes41/mYuvNPliAC3Z99TLF958+QoXX/2uLHgL
-         w2hP2cH4bwgt/V9tUT3vJLZ76KsllhapnWSM9dzCGW1nD0q0SHEFjLruqywtES9FWPMa
-         WacA==
-X-Gm-Message-State: AOAM532RgmWgArtTGgANdkztKfRhqZ5k9Wzjyl7yAOu5meNFO8+Xcuvd
-        yNpysXPpFzJi2YBonodA1BDxxw==
-X-Google-Smtp-Source: ABdhPJwPbmwjUcUd/RkviTbfJMWI6W/96DM7lu5hzupA0RL0pKF638/dfu5fK+yefZmIG0F5nNmpqw==
-X-Received: by 2002:a05:6830:a:: with SMTP id c10mr23699912otp.114.1622563213374;
-        Tue, 01 Jun 2021 09:00:13 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a71sm3508262oib.20.2021.06.01.09.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 09:00:12 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 11:00:10 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, ohad@wizery.com,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] remoteproc: imx_rproc: correct firmware reload
-Message-ID: <YLZZinrEMaYHgsEe@yoga>
-References: <20210601102939.16139-1-peng.fan@oss.nxp.com>
- <20210601153139.GB1759269@xps15>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WfmsydD/A8BiNqHr9XgI8dOVh8RAtY6UXqT7qqwK9X8=;
+        b=HZhHatqolNI5sTjelyjlkFgHpFU4xeI58EGk3IxAz1dDQLBjJ7AqZxZfWSUuUR5oFz
+         aGOWFa1gPMAZqfeTJefWCqsREU1Kd/z7XQQ6WkKR72GDRtNW1YrjyFcG8CmF52JQN34z
+         0fFMHdMHjKQwulOVUSH4DdDt4e3Koq9B6yIiVwy4IzMB8e6ovY9ziGo4N4NThLmidKE2
+         0nMdbYKEy25Ne5R72JvDNShaeinjKgCQiAD/0iGJl9TUnxq28Dfq4nif7q4DV2rJKK07
+         yRpEvwByH7+6VcbanFm5M1Yaz/4oflQylFJK3a4g4YhM8/1I7VpM2vMrspsQWOktJYDO
+         MUQg==
+X-Gm-Message-State: AOAM531SRMEyh5gO6xDtPWMngbvDR4MXqWSWwuE/wD/jZFnEGLNffcPz
+        AXgn4G9iDN9xoJc4G6qJt1mTkQv9W4nzqSoj
+X-Google-Smtp-Source: ABdhPJy6KabpoFyW9fLH+Ch6zAs6yTCUjvg/QYLvTXzSZ2XwGs30TbFV6J3nia2b9uGkivg2kyHWQw==
+X-Received: by 2002:a6b:690c:: with SMTP id e12mr21869176ioc.69.1622563272777;
+        Tue, 01 Jun 2021 09:01:12 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o2sm9978840ilt.73.2021.06.01.09.01.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 09:01:12 -0700 (PDT)
+Subject: Re: [RFC 4/4] io_uring: implement futex wait
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
+Cc:     Andres Freund <andres@anarazel.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org
+References: <cover.1622558659.git.asml.silence@gmail.com>
+ <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
+ <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
+ <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
+Date:   Tue, 1 Jun 2021 10:01:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601153139.GB1759269@xps15>
+In-Reply-To: <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01 Jun 10:31 CDT 2021, Mathieu Poirier wrote:
-
-> On Tue, Jun 01, 2021 at 06:29:39PM +0800, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> > 
-> > ENABLE_M4 should be set to 1 when loading code to TCM, otherwise
-> > you will not able to replace the firmware after you stop m4.
-> > 
-> > Besides ENABLE_M4, we still need set SW_M4C_RST, because this bit
-> > will be automatically set with SW_M4C_NON_SCLR_RST set.
-> > 
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> > 
-> > V1:
-> >  Although this is an fix, but it is not critical, patch is based on
-> >  https://patchwork.kernel.org/project/linux-remoteproc/cover/1620274123-1461-1-git-send-email-peng.fan@oss.nxp.com/
-> > 
-> >  drivers/remoteproc/imx_rproc.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> > index cd2ca96a30e5..ce2ce42bee91 100644
-> > --- a/drivers/remoteproc/imx_rproc.c
-> > +++ b/drivers/remoteproc/imx_rproc.c
-> > @@ -33,7 +33,8 @@
-> >  
-> >  #define IMX7D_M4_START			(IMX7D_ENABLE_M4 | IMX7D_SW_M4P_RST \
-> >  					 | IMX7D_SW_M4C_RST)
-> > -#define IMX7D_M4_STOP			(IMX7D_ENABLE_M4 | IMX7D_SW_M4C_NON_SCLR_RST)
-> > +#define IMX7D_M4_STOP			(IMX7D_ENABLE_M4 | IMX7D_SW_M4C_RST | \
-> > +					 IMX7D_SW_M4C_NON_SCLR_RST)
-> >  
-> >  /* Address: 0x020D8000 */
-> >  #define IMX6SX_SRC_SCR			0x00
-> > @@ -44,7 +45,8 @@
-> >  
-> >  #define IMX6SX_M4_START			(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4P_RST \
-> >  					 | IMX6SX_SW_M4C_RST)
-> > -#define IMX6SX_M4_STOP			(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4C_NON_SCLR_RST)
-> > +#define IMX6SX_M4_STOP			(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4C_RST | \
-> > +					 IMX6SX_SW_M4C_NON_SCLR_RST)
-> >  #define IMX6SX_M4_RST_MASK		(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4P_RST \
-> >  					 | IMX6SX_SW_M4C_NON_SCLR_RST \
-> >  					 | IMX6SX_SW_M4C_RST)
-> > @@ -691,7 +693,7 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
-> >  		return ret;
-> >  	}
-> >  
-> > -	if (!(val & dcfg->src_stop))
-> > +	if ((val & dcfg->src_mask) != dcfg->src_stop)
-> >  		priv->rproc->state = RPROC_DETACHED;
+On 6/1/21 9:58 AM, Pavel Begunkov wrote:
+> On 6/1/21 4:45 PM, Jens Axboe wrote:
+>> On 6/1/21 8:58 AM, Pavel Begunkov wrote:
+>>> Add futex wait requests, those always go through io-wq for simplicity.
+>>
+>> Not a huge fan of that, I think this should tap into the waitqueue
+>> instead and just rely on the wakeup callback to trigger the event. That
+>> would be a lot more efficient than punting to io-wq, both in terms of
+>> latency on trigger, but also for efficiency if the app is waiting on a
+>> lot of futexes.
 > 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
-> Bjorn hasn't picked up this set yet so it is best to send a v7 of [1] with this
-> change merged in it.
-> 
+> Yes, that would be preferable, but looks futexes don't use
+> waitqueues but some manual enqueuing into a plist_node, see
+> futex_wait_queue_me() or mark_wake_futex().
+> Did I miss it somewhere?
 
-Sorry I had missed that [1] was fully reviewed, so I figured I'll just
-apply the series and squash this in. But afaict this patch isn't a fix
-to any of the patches in [1].
+Yes, we'd need to augment that with a callback. I do think that's going
+to be necessary, I don't see the io-wq solution working well outside of
+the most basic of use cases. And even for that, it won't be particularly
+efficient for single waits.
 
-More so, this patch doesn't apply on top of either v5.13-rc1, linux-next
-or [1] - because neither IMX7D_M4_STOP nor IMX6SX_M4_STOP has
-IMX6SX_ENABLE_M4 included.
+-- 
+Jens Axboe
 
 
-Peng, I've applied [1] now, please let me know what to do about this
-patch.
-
-Regards,
-Bjorn
-
-> Thanks,
-> Mathieu 
-> 
-> [1]. https://patchwork.kernel.org/project/linux-remoteproc/cover/1620274123-1461-1-git-send-email-peng.fan@oss.nxp.com/
-> 
-> >  
-> >  	return 0;
-> > -- 
-> > 2.30.0
-> > 
