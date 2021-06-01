@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3173C3970CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA533970A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhFAKBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhFAKBF (ORCPT
+        id S233020AbhFAJyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:54:09 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6109 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhFAJx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:01:05 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF112C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:59:23 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x38so20835996lfa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2W6uim/mGDin/FJYZH96yxsKQsl+UwiwSGvJzTSgiW4=;
-        b=P0mZDtgnoKk2E9LA8Xx97KeYoyyRE79OQ5TnUfPfYyFya3a6MKnLY0W1ZtUDFUU+11
-         RDDsk9f4VFPxuR/ZWjXuwkrCH8jMsT/11H82ifPUW/OU3IwhCQO/Z3Y/0uMvndX7Xu3o
-         2C+UFCcvza21W5YDotUFlzhq+ycUOT/pUMFnFT2llRw6wysgxeSqUcUHYIGaIxC3yPSj
-         0lTr07owbwPftwWM6loybaiLzRlxlfUKo6tW/GSrFtNfoxIjg+BCCvp+rO1PqeZPpdzU
-         JG20KMtedWg8MD2K76uWb0BQX0GnG7Wrj4N+RgUqXHt0YFM6gxWgEGLZzQ32tzb5Rk1e
-         w54Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2W6uim/mGDin/FJYZH96yxsKQsl+UwiwSGvJzTSgiW4=;
-        b=Hu55l9bQK/tzdYjWjg3fwJXO0wrSMP3XXppa0Z9DDZTZhXBCvqTsbObgoH8GTssXQg
-         eMyFIjCQWkcmCzrCtjEX7iCLeGciJomDJKQAqYF4gTCgucq88sMVpVk1td948H7h10QJ
-         z5O23WGD5ivnCyQi7bWcJVq6g5GPv6UtT+RqF41M+mRzRXHyD7T3O/aOIkUFVg0Uv5aC
-         xmI5maKXhyNj5NtAqkGlqf1e9bR231g8Oh87S8/HtQCztgMr9NgpkX7YmzvpYzUDzSe4
-         9kmEPaXEzqtmC9D2QWZnHRR6pC5LdLfY0BFOHEBDiDyJcctK7aREC5Lmow329/z52fSN
-         oLfw==
-X-Gm-Message-State: AOAM533yrD5ZcEyKUPzHnu1nhTmJ2BpAT+DCGTUC8z+j18vVJzuTFruo
-        hzgqcQhjh8d0Xt5w1i5SKA0qODreBFWnBduMLWmYMA==
-X-Google-Smtp-Source: ABdhPJz7fj9TbUyHQCGTxDF+hC0s+lxk8kvTdqeTswE9X5ltix8EKC8tE/lVya1dFeSqalUK/XrhQ2tps4p5OgHu+oU=
-X-Received: by 2002:a05:6512:3241:: with SMTP id c1mr9699263lfr.29.1622541561986;
- Tue, 01 Jun 2021 02:59:21 -0700 (PDT)
+        Tue, 1 Jun 2021 05:53:57 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvS6y47mtzYpXD;
+        Tue,  1 Jun 2021 17:49:30 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 17:52:14 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 17:52:13 +0800
+From:   Tong Tiangen <tongtiangen@huawei.com>
+To:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <SHA-cyfmac-dev-list@infineon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tong Tiangen <tongtiangen@huawei.com>
+Subject: [PATCH -next] brcmfmac: Fix a double-free in brcmf_sdio_bus_reset
+Date:   Tue, 1 Jun 2021 18:01:28 +0800
+Message-ID: <20210601100128.69561-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <cover.1620735871.git.sander@svanheule.net> <cover.1621809029.git.sander@svanheule.net>
- <YKr9G3EfrM34gCsL@lunn.ch> <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
- <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
- <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc> <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
- <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com> <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
-In-Reply-To: <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Jun 2021 11:59:10 +0200
-Message-ID: <CACRpkda+m5mOzMJ8KcPmojFGWkUpCrbmY0ySPTVx72RtWwf89A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Sander Vanheule <sander@svanheule.net>,
-        Michael Walle <michael@walle.cc>, Andrew Lunn <andrew@lunn.ch>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 30, 2021 at 8:16 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Sun, May 30, 2021 at 7:51 PM Hans de Goede <hdegoede@redhat.com> wrote:
+brcmf_sdiod_remove has been called inside brcmf_sdiod_probe when fails,
+so there's no need to call another one. Otherwise, sdiodev->freezer
+would be double freed.
 
-> > Regmap allows you to mark certain ranges as volatile, so that they will not
-> > be cached, these GPIO registers containing the current pin value seems like
-> > a good candidate for this. This is also necessary to make reading the GPIO
-> > work without getting back a stale, cached value.
->
-> After all it seems a simple missed proper register configuration in
-> the driver for regmap.
-> Oh, as usual something easy-to-solve requires tons of time to find it. :-)
+Fixes: 7836102a750a ("brcmfmac: reset SDIO bus on a firmware crash")
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-This is actually quite interesting.
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 16ed325795a8..3a1c98a046f0 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -4162,7 +4162,6 @@ static int brcmf_sdio_bus_reset(struct device *dev)
+ 	if (ret) {
+ 		brcmf_err("Failed to probe after sdio device reset: ret %d\n",
+ 			  ret);
+-		brcmf_sdiod_remove(sdiodev);
+ 	}
+ 
+ 	return ret;
+-- 
+2.18.0.huawei.25
 
-In the discussion around adding Rust support for the Linux kernel
-what I came to realize was that the memory safety that Rust adds is
-similar in application and ambition to what e.g. regmap-mmio provides.
-
-One aspect of writing kernel drivers in Rust is to always have
-something like regmap between your code and the hardware to
-strictly control the memory access pattern.
-
-After all regmap is "memory safety implemented in C".
-
-What we see in cases like this is that not only does that make
-things more strict and controlled (after all we have regmap for
-a reason) but also makes it possible to generate a whole new
-set of bugs by doing an error in how you specify the memory
-semantics. As all other paradigms, memory safety thinking
-implies that never specify anything wrong.
-
-Just regarding all registers/memory cells in a register page
-as default volatile (which is what we do a lot of the time)
-has its upsides: bugs like this doesn't happen.
-
-(Just some sidetracking...)
-
-Yours,
-Linus Walleij
