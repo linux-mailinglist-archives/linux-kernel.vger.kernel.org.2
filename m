@@ -2,225 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC77396CCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CF8396CB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhFAFb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFAFbw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:31:52 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CFDC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:18:38 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id b17so15820529ede.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5Y1aD/mhYzZNlmN8zlF6a252/zpnt3wSAmr/T0bADys=;
-        b=ryodzXOwQxwL3aLrspdlr1NAu++cAPzy0oA79UesMBDSH3kH1cf20gBgZNax6nz/WA
-         3Aq321jtIlj63r/YAYGkNf+V3Z8czVPtno0hiScUwkZrdK3Yg1Z/WEDEIOqqjUv+py9O
-         LLJgVOdwbWL0YKEw0A9p3DmvGbqZd0wiWZMg+Gzo+Gmj6+VMkfzFZ3lrtp3BctWz5mLy
-         bttYC/DTTMQ+44H3xxDEIuCx/Naam5BtC3eHfy5hLthE1b6lK0C8fQaiJZKqTeWiC3ZL
-         AbI+HRhreK+/b8ejCuS/TmUhYJFNG4UHIIVQx/iXs4XWqnKH/FHXdXbGnndozAhqrbOM
-         VtgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5Y1aD/mhYzZNlmN8zlF6a252/zpnt3wSAmr/T0bADys=;
-        b=S2MGdrfsJMEW57DYB5HAU5abf+W5piDRc/Kc4uDjiiGTrLDGJkIVtj8YcwIGYUspsN
-         r/JrdBDWQ2Apzui+IjhPIwI2S6k0gDe/+qhx/vKaBJS+4+b/9twYe6oLtzuHjAkOUdxy
-         SR2bicKW1/9W/Z6jlOoRjZ0YKwx8G+rLBQJIHo8/Fs3OIyS0Cmxmeg4S5ZDvcoW0k06b
-         PmzbypIHmdYIrOKRgQkqNo9+7epti2u4nSvgQncB+N3qVvkHf3xYnzJVFTvXgyldAAE/
-         hR6ZYIESXzQrltGeB3zmGNUg1OjRHzJeLuZ2nyvIlHKFDUbmQg+mQyFZTSwQuO7g0Dtg
-         yAZA==
-X-Gm-Message-State: AOAM531ueQyC7zbiZRTE8h7dFvGUKIl28P5hH+ElWjxnVaP8Wa9Ur4sy
-        l0ne5Tol1uYJyoxDtRY2D0V8s0JxoSYkE2FR13zdYg==
-X-Google-Smtp-Source: ABdhPJws6eazEJDMFUV7K/t2UAF5BhnqHE3Pc9O2LlB8ty5fj+dJDbe2wE1GcMu3uB2wJjj71qlIonwn21a2wV9jvHM=
-X-Received: by 2002:a50:9346:: with SMTP id n6mr29589751eda.365.1622524716739;
- Mon, 31 May 2021 22:18:36 -0700 (PDT)
+        id S232814AbhFAFWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:22:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232732AbhFAFWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:22:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 081AD6136E;
+        Tue,  1 Jun 2021 05:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622524805;
+        bh=iVUNTREHe5pmoduLTm8TwUY5m0X11N1UAhTg9STXuwg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=eukooJg1MnjDR2TZNrtL9zQAy3zOqWUVALpRoDq1MuNdBuNyqI3FlNQD2A/AqQ+is
+         dbIpGF2h11CQSn7AsBEeo+Tj/oIiKcDXUvxLjd9HwMYdG8vsLxz0mv/Rt48blYsB02
+         //vbBRulo/sXMLoRbKr0s5HCYUtrtX5v11pBpKdkyLiN1NCji4wACd1pmDBhxxFfr+
+         5kzXsmYTJtJYz44hErmerubjVFszPwx1HPN+L4Uv/Xk8BSmpED862FZ12sA0X5724Z
+         GD83JBxciNZAMmucEO1zztfm3JdngXap96bpk7aIhC0fFw4CL0YfSetzm3DEKgw0ME
+         cQfOHVatNvZ9Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EEC3960BCF;
+        Tue,  1 Jun 2021 05:20:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210531130703.762129381@linuxfoundation.org>
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 1 Jun 2021 10:48:25 +0530
-Message-ID: <CA+G9fYuO-uwwuj3DvnaKgN00mBAizA2dRLiv-jS+-bD+e1ppFQ@mail.gmail.com>
-Subject: Re: [PATCH 5.12 000/296] 5.12.9-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 00/10] net: sealevel: clean up some code style issues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162252480497.23898.11185065116991612070.git-patchwork-notify@kernel.org>
+Date:   Tue, 01 Jun 2021 05:20:04 +0000
+References: <1622355874-18933-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1622355874-18933-1-git-send-email-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, xie.he.0141@gmail.com,
+        ms@dev.tdt.de, willemb@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com,
+        tanhuazhong@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 at 19:26, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.12.9 release.
-> There are 296 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.12.9-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.12.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hello:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On Sun, 30 May 2021 14:24:24 +0800 you wrote:
+> This patchset clean up some code style issues.
+> 
+> Peng Li (10):
+>   net: sealevel: remove redundant blank lines
+>   net: sealevel: add blank line after declarations
+>   net: sealevel: fix the code style issue about "foo* bar"
+>   net: sealevel: open brace '{' following struct go on the same line
+>   net: sealevel: add some required spaces
+>   net: sealevel: remove redundant initialization for statics
+>   net: sealevel: fix a code style issue about switch and case
+>   net: sealevel: remove meaningless comments
+>   net: sealevel: fix the comments style issue
+>   net: sealevel: fix the alignment issue
+> 
+> [...]
 
-## Build
-* kernel: 5.12.9-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.12.y
-* git commit: 327e3cf768fb44b16c21a0589a492bf7bccef28b
-* git describe: v5.12.7-305-g327e3cf768fb
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
-.7-305-g327e3cf768fb
+Here is the summary with links:
+  - [net-next,01/10] net: sealevel: remove redundant blank lines
+    https://git.kernel.org/netdev/net-next/c/801f0a1cf96f
+  - [net-next,02/10] net: sealevel: add blank line after declarations
+    https://git.kernel.org/netdev/net-next/c/58f30eea85a3
+  - [net-next,03/10] net: sealevel: fix the code style issue about "foo* bar"
+    https://git.kernel.org/netdev/net-next/c/8be88e3ccee4
+  - [net-next,04/10] net: sealevel: open brace '{' following struct go on the same line
+    https://git.kernel.org/netdev/net-next/c/f090d1c38107
+  - [net-next,05/10] net: sealevel: add some required spaces
+    https://git.kernel.org/netdev/net-next/c/52499d202dc6
+  - [net-next,06/10] net: sealevel: remove redundant initialization for statics
+    https://git.kernel.org/netdev/net-next/c/40e8ee9d467d
+  - [net-next,07/10] net: sealevel: fix a code style issue about switch and case
+    https://git.kernel.org/netdev/net-next/c/cc51e3f36e62
+  - [net-next,08/10] net: sealevel: remove meaningless comments
+    https://git.kernel.org/netdev/net-next/c/04d7ad8cca9c
+  - [net-next,09/10] net: sealevel: fix the comments style issue
+    https://git.kernel.org/netdev/net-next/c/b086ebfce34f
+  - [net-next,10/10] net: sealevel: fix the alignment issue
+    https://git.kernel.org/netdev/net-next/c/e24b60851936
 
-## No regressions (compared to v5.12.7-8-g6fc814b4a8b3)
-
-## No fixes (compared to v5.12.7-8-g6fc814b4a8b3)
-
-## Test result summary
- total: 76833, pass: 64662, fail: 605, skip: 10956, xfail: 610,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* v4l2-compliance
-
+You are awesome, thank you!
 --
-Linaro LKFT
-https://lkft.linaro.org
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
