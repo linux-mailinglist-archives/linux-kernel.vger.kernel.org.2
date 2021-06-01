@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26736397B4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF7A397B4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 22:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbhFAUfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 16:35:01 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:34427 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhFAUfA (ORCPT
+        id S234813AbhFAUhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 16:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234513AbhFAUhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 16:35:00 -0400
-Received: by mail-oi1-f174.google.com with SMTP id u11so648383oiv.1;
-        Tue, 01 Jun 2021 13:33:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QrEdnEwQRqeosY6gkgi2Hdn7Yt87QUVcHOSzMSN62Lc=;
-        b=UXZZ7yM5rb5UF4dAKI+gyk1nmHOyM5gNapMHOSLvwDsUzatNc/eLQKpxILuV0YjEfT
-         RbAz66LsO+0GSLCeSKZhw21wBR5H8WsWKgeVgV0CI2jkxdyKfJUR0uFxebn+IWAePo+n
-         SVMCtoDU4VEVtwlXCddnKoWk8XqtsVyub1c9E2HIXtDkqRO/LJ16bJ+ffi8geXZcAEQ8
-         SKe6q9U1UYYNV0J8Zy+36Bf25g0PjY8Rn7mzbHPT+Rlv+TcCgyFafEYPJSKQ9qdBWDDH
-         6o8/DUtgDK5tVCtUi78DZoeXqfUfYIVrTAeYz2VqFPLC1IrHO5HXVOklxNo2ecms2xQU
-         PPtQ==
-X-Gm-Message-State: AOAM533y/TQaZGOho4YmGjUbSLXNMeMP886FwHnPM8mmHaO2XinIgRL7
-        9pfBCp26LgRkG7aHkm0qdf1yGYB+gA==
-X-Google-Smtp-Source: ABdhPJwC3oC7hefJFsHAhMPWQ6kmcmL5EL4tOd4wqe3rJZvXBFChtRBITnFPHbbFFjAGtpaQ8LQBdw==
-X-Received: by 2002:a05:6808:1394:: with SMTP id c20mr18806663oiw.90.1622579596906;
-        Tue, 01 Jun 2021 13:33:16 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 7sm3907126oti.30.2021.06.01.13.33.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 13:33:16 -0700 (PDT)
-Received: (nullmailer pid 984921 invoked by uid 1000);
-        Tue, 01 Jun 2021 20:33:14 -0000
-Date:   Tue, 1 Jun 2021 15:33:14 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     linux-pci@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-        robin.murphy@arm.com, devicetree@vger.kernel.org,
-        Mark Kettenis <kettenis@openbsd.org>, maz@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
-Message-ID: <20210601203314.GA977583@robh.at.kernel.org>
-References: <20210530224404.95917-1-mark.kettenis@xs4all.nl>
- <20210530224404.95917-2-mark.kettenis@xs4all.nl>
- <1622554330.029938.242360.nullmailer@robh.at.kernel.org>
+        Tue, 1 Jun 2021 16:37:48 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61FBC061574;
+        Tue,  1 Jun 2021 13:36:06 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f111d0004f27110e64a0196.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:1d00:4f2:7110:e64a:196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 66A0C1EC04F3;
+        Tue,  1 Jun 2021 22:36:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622579765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/JK3lYtJiNtQPSL8Cztpwpa5zs1zRzYriYt8JjW4ptM=;
+        b=YuceAqid1U9cijNCIyYyO/PfGeS/A8LFM+6xh+MZUgAQfHEh82SKZL9PeFSaIb31+GGxMr
+        MkJj3Wa4KGRe4xsBC3PtC93uHaDBRMPX1juSnuhBitjSqh7VKh7lQ3k2uUfHE/VMZ22RU3
+        XTuODbBi8F3fjhFbAUua5jeEf7ChIfg=
+Date:   Tue, 1 Jun 2021 22:35:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Christopher BeSerra <beserra@amazon.com>, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] x86/mce: Provide sysfs interface to show CMCI storm
+ state
+Message-ID: <YLaaLws+4FEHOqQs@zn.tnic>
+References: <20210601200505.966849-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1622554330.029938.242360.nullmailer@robh.at.kernel.org>
+In-Reply-To: <20210601200505.966849-1-tony.luck@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 08:32:10AM -0500, Rob Herring wrote:
-> On Mon, 31 May 2021 00:44:00 +0200, Mark Kettenis wrote:
-> > From: Mark Kettenis <kettenis@openbsd.org>
-> > 
-> > The Apple PCIe host controller is a PCIe host controller with
-> > multiple root ports present in Apple ARM SoC platforms, including
-> > various iPhone and iPad devices and the "Apple Silicon" Macs.
-> > 
-> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> > ---
-> >  .../devicetree/bindings/pci/apple,pcie.yaml   | 167 ++++++++++++++++++
-> >  MAINTAINERS                                   |   1 +
-> >  2 files changed, 168 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > 
+On Tue, Jun 01, 2021 at 01:05:05PM -0700, Tony Luck wrote:
+> Scripts that process error logs can do better if they know whether
+> Linux is executing in CMCI storm mode (only polling and reporting
+> some errors instead of trying to report them all). While it is possible
+> to parse the console log for:
 > 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 	CMCI storm detected: switching to poll mode
+> 	CMCI storm subsided: switching to interrupt mode
 > 
-> yamllint warnings/errors:
+> messages, that is error prone.
 > 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/pci/apple,pcie.example.dts:20:18: fatal error: dt-bindings/pinctrl/apple.h: No such file or directory
->    20 |         #include <dt-bindings/pinctrl/apple.h>
->       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> Add a new file to sysfs to report the current storm count.
+> 
+> Reported-by: Christopher BeSerra <beserra@amazon.com>
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+> 
+> RFC questions:
+> 1) Is there a better way to do this?
 
-Looking at the example, I don't think you need this header. Looks like 
-irq.h is needed though.
+Probably.
 
-Otherwise, LGTM.
+But I'm unclear as to what this whole use case is. The very first
+"Scripts that process error logs" already sounds like a bad idea - I'd
+expect userspace consumers to open the trace_mce_record() and get the
+MCE records from there. And in that case CMCI storm shouldn't matter...
 
-Rob
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
