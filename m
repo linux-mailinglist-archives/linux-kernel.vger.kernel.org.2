@@ -2,161 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154FF397240
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C812397248
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbhFALZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFALZZ (ORCPT
+        id S233758AbhFAL1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:27:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62258 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230308AbhFAL1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:25:25 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CCFC061574;
-        Tue,  1 Jun 2021 04:23:43 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id qq22so12855461ejb.9;
-        Tue, 01 Jun 2021 04:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=S3KhbuoyhKPDwdQU5jkXOffzZjPiGwIAcW9wMtdkuwo=;
-        b=RMNOr9+w1uJDBMusudGIoj/pGbC0ctESuF1SLXo1HCemb3T5qH8Bobz49uDH4n4VDS
-         1n8iZrYatFf9/mbzdkN67HbXhXhqr0Q20M8ieZrN6992DG9bwKUQj6On+xZSH6EFiPt+
-         fpIQUWkSAXeQVu7ej2Ut5DEqCIhnUoKlxcGChMJap5Kx5fKA7+xqNemIQqqhtS+T0oP2
-         pzjBj8cPMDJYvMsEWVeUBHbMQeD+E5p9SFJXG43bvq/8xCt/2hWScunsHE0xIwV4Whe6
-         qkns1AUMWUDCKfwtLvV8ETsmN1wY77sEIjkXfoIJysX4+l18Fouxu3Pm9+wIBRoEatjf
-         YATw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=S3KhbuoyhKPDwdQU5jkXOffzZjPiGwIAcW9wMtdkuwo=;
-        b=Tjx9NrztFjjNe9uYzO88fu9xf6PCNFNIgMwXPaeOhlNIDlt7vnvUC2YxnxCJhNA+Gp
-         +5cEn4a3ZrvjA5IV7bqWUv9Ld1yLqgSKU2dsN9WzWmT6Izp3yFtbWsQmAoXXQ4IridCH
-         MzitAEq41yb+H1br/C5ZcxUltrbFfaCItrtuUkaSFhnVmnsKYrPntcYShhlbI1U19q5v
-         SmMmzzdvZ7sSwhcjfNxLdxdproxmCXXrB2gM610AKnMSeE5BzsQBWGOe+FUvAb1SCvlm
-         B5RPYb0/7YpjPsIkK3tcnXeZiWWiUq0BUDiLqhOQLR0iWlxLUuH8jZ+F2stE3Z65rgMc
-         AiWQ==
-X-Gm-Message-State: AOAM533kzIHfoXzQ+gur1lMWGcVDg0r6sxow7X5GzQg2OfBfOqmB+ls0
-        NIvfn2z19HEkSxuPJaTmt00=
-X-Google-Smtp-Source: ABdhPJyTnzbXmSweeSWknvr/IYvb5lUM8VhkyX9Gsu87+A5LDIaUkg4/5HcLyT00s9jkLAYeuIDWoQ==
-X-Received: by 2002:a17:906:2854:: with SMTP id s20mr28592048ejc.335.1622546622211;
-        Tue, 01 Jun 2021 04:23:42 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id di16sm1106760edb.62.2021.06.01.04.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 04:23:40 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 13:25:16 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 04/10] ARM: tegra: Add reg property to Tegra20 EMC
- table device-tree nodes
-Message-ID: <YLYZHPpjZB9amRBW@orome.fritz.box>
-References: <20210510202600.12156-1-digetx@gmail.com>
- <20210510202600.12156-5-digetx@gmail.com>
- <YLSpCXNtut3z8U9a@orome.fritz.box>
- <1ab11cc8-b45a-0c2d-c0c4-fa5779756c05@gmail.com>
+        Tue, 1 Jun 2021 07:27:42 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151B2teK116967;
+        Tue, 1 Jun 2021 07:25:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=g3SnxyIN5/jUzx1WFoWZHmL+DiWvwkp/44ekH6M3gZc=;
+ b=T9pAgf3NCa1H8nANmbXs5SCl7v0fCIy6b5AJlhgeHEMt/I7YgoyaTYxkuswMJ4tXe0PL
+ XkTLc20kqvZ7zlhGeqNABAGqi1BXdb40A9ezcV2wxXA97uW2bWRvI8NxulmVwEMmTxcN
+ 6JHTrZdDri1CdFeR/NZs9eihghkJ+PfvEj6mva0SkklLnxzRfSVBgwFSZr9ktvxeC4kg
+ kSxKI/35xg6nPRzVPNAjYEzJkIDGsLwhzcZIfoOeNLoLfsm1sW6+Nq/2NcncSRR1NOJz
+ nQpEsPKiTaESapN2tnRL3V4dnsYIqWpEg3JCDaYeSv0mBIryTj2+5xEfC2F0JPn0gtW0 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38whnn40t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 07:25:58 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 151B2waM117341;
+        Tue, 1 Jun 2021 07:25:58 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38whnn40t1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 07:25:58 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151BH5sd032294;
+        Tue, 1 Jun 2021 11:25:57 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02dal.us.ibm.com with ESMTP id 38ud89c3vw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Jun 2021 11:25:57 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151BPuG637683558
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Jun 2021 11:25:56 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EFCDF124054;
+        Tue,  1 Jun 2021 11:25:55 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88D5E124055;
+        Tue,  1 Jun 2021 11:25:55 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.178.155])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  1 Jun 2021 11:25:55 +0000 (GMT)
+Subject: Re: [PATCH v16 06/14] s390/vfio-ap: refresh guest's APCB by filtering
+ APQNs assigned to mdev
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, freude@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com
+References: <20210510164423.346858-1-akrowiak@linux.ibm.com>
+ <20210510164423.346858-7-akrowiak@linux.ibm.com>
+ <20210524181548.4dbe52bc.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <25ddf7f5-3d70-7e9d-14b1-76f753e64d00@linux.ibm.com>
+Date:   Tue, 1 Jun 2021 07:25:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EqnHcgd+ZcjTNu1H"
-Content-Disposition: inline
-In-Reply-To: <1ab11cc8-b45a-0c2d-c0c4-fa5779756c05@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <20210524181548.4dbe52bc.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: OkgP8otBoMFt2Lvf0N75nG-NCjXsSUyg
+X-Proofpoint-GUID: v1Xa7Uq9UVn1hDyeFfUGrfA8bZeOjRZK
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-01_06:2021-05-31,2021-06-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0
+ clxscore=1015 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106010075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---EqnHcgd+ZcjTNu1H
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 31, 2021 at 11:45:19PM +0300, Dmitry Osipenko wrote:
-> 31.05.2021 12:14, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Mon, May 10, 2021 at 11:25:54PM +0300, Dmitry Osipenko wrote:
-> >> The reg property is now specified for the emc-tables nodes in the Tegr=
-a20
-> >> device-tree binding. Add reg property to the EMC table device-tree nod=
-es
-> >> of Tegra20 board device-trees in order to silence dt_binding_check war=
-ning
-> >> about the missing property.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 4 ++++
-> >>  arch/arm/boot/dts/tegra20-paz00.dts             | 1 +
-> >>  2 files changed, 5 insertions(+)
-> >=20
-> > In retrospect we should've just used "reg" in the first place rather
-> > than adding the custom "nvidia,ram-code". It's a bit redundant to have
-> > both of them with the same value. I wonder if we should deprecate the
-> > use of "nvidia,ram-code" and at least make the code look at the "reg"
-> > property first and only fall back to "nvidia,ram-code" if "reg" does
-> > not exist. We probably won't ever be able to get rid of the fallback
-> > for backwards-compatibility reasons, but at least that would make the
-> > intent a bit clearer.
->=20
-> This may be not doable. We have Asus TF101 which doesn't use RAM code
-> for the memory identification, instead it uses LPDDR chip info [1]. I
-> will send the LPDDR patches later on.
->=20
-> [1]
-> https://github.com/grate-driver/linux/blob/master/arch/arm/boot/dts/tegra=
-20-asus-tf101.dts#L1115
+On 5/24/21 12:15 PM, Halil Pasic wrote:
+> On Mon, 10 May 2021 12:44:15 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> @@ -1601,8 +1676,10 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
+>>   	mutex_lock(&matrix_dev->lock);
+>>   	q = dev_get_drvdata(&apdev->device);
+>>   
+>> -	if (q->matrix_mdev)
+>> +	if (q->matrix_mdev) {
+>>   		vfio_ap_mdev_unlink_queue_fr_mdev(q);
+>> +		vfio_ap_mdev_refresh_apcb(q->matrix_mdev);
+>> +	}
+>>   
+>>   	vfio_ap_mdev_reset_queue(q, 1);
+>>   	dev_set_drvdata(&apdev->device, NULL);
+> At this point we don't know if !!kvm_busy or kvm_busy AFAICT. If
+> !!kvm_busy, then we may end up changing a shadow_apcb while an other
+> thread is in the middle of committing it to the SD satellite. That
+> would be no good.
 
-That DTS defines both "jedec,lpddr-manufacturer-id" and "reg" with the
-same value, so we could simply use "reg" there. If you plan to support
-the JEDEC properties, we'll have to add code for that anyway, so there
-is no downside to first trying "reg". And we may not even need to add
-support for any of those JEDEC properties if we can just use the "reg"
-standard property in the first place.
+No, that would not be a good thing, we should check for
+that.
 
-> The TF101 support mostly in a completed state now, we still need to try
-> to figure out why upstream kernel doesn't work using a stock Android
-> bootloader, so far bootloader replacement to u-boot is required.
+>
+> Regards,
+> Halil
 
-I think it's fine to merge support upstream if there is some sort of
-bootloader that it can run with. If that bootloader is open-source like
-U-Boot, the better, but I don't think we need to set the bar as high as
-being able to boot with any available bootloader. There are all sorts
-of reasons why the Android stock bootloader may cause things not to work
-and there's probably no way to get it fixed anyway. It's similarly
-possible that the kernel may need some outlandish quirk to accomodate
-for that breakage and we may not want, or be able, to upstream such
-quirks anyway.
-
-So if you want to pursue making upstream Linux work with the stock
-Android bootloader, that's a fine goal and I won't object, but it's not
-a requirement that I will insist on before merging DTS files.
-
-Thierry
-
---EqnHcgd+ZcjTNu1H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC2GRkACgkQ3SOs138+
-s6G7XQ/+PYR7uRtcQUTZVILyxP1ZYlkd/mic87hEjc1Rnxw5HTbGq56zUAeRtSah
-dUoXyv9hcCc8Ls4s8Mg0jw6xmeiOUIItemD7+mJ8GFtWpN/5QJ5Gi7wCl2Nwqqyk
-O79AmwgJQou37KFhUnKTUDazLQfBQ9ouAklKPk6wH11y+5vjVp6/CdGLLOR+efBN
-xF2IofEZNVNAJVOaLdw3L2wsIfUW0YgW6MrRbofYOX3Vnz0K1jUst9Wt6FqiQIIS
-C9Cbbi/APTmQUxPrTgbLE8nnpRzsxT9pOvPiErv5AYL5/iXL9fpENZ5Dq9Wk8a+c
-yqNaYua0CRF0VuOJCITHOHpfqZ9Z2ADv+fF2bqvavWxYnD0wDMc17hmsJvN9P8UV
-5/Np8R8wVrc+hWUjXNvUvNRjdGeEXGjlATKakIc2IdsBszYVB+qFU8pOawNZKzPB
-SnheKmDsqhYc5sivYItvOkP8a6JIpXpy1hfVKJv2phZ/23+4HIw+CyGvthiCJGX0
-Nmb/+qfFvPYQ0zcFGQ+qN7qLWsYpMhGfiAo+/EtUfMxbmyBOZVvKd7TP9voJuunh
-ux3alcGXWKEjMLgnMgU63CPvEXH7sWUA7T5pHX+RbIea2yXv6QXTyarh53KU2kOT
-OvcXsJm3IQgDk7gvA6YMUlxmZvOhZgggelRuVJcUlgMCHjGqxD4=
-=1La0
------END PGP SIGNATURE-----
-
---EqnHcgd+ZcjTNu1H--
