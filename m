@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7083973A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4A33973A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhFAM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:58:35 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:54204 "EHLO mail.ispras.ru"
+        id S233911AbhFAM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:58:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233064AbhFAM6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:58:34 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 4368A40755C4;
-        Tue,  1 Jun 2021 12:56:50 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     Evgeny Novikov <novikov@ispras.ru>, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH v2] media: st_rc: Handle errors of clk_prepare_enable()
-Date:   Tue,  1 Jun 2021 15:56:43 +0300
-Message-Id: <20210601125643.26844-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S233064AbhFAM6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 08:58:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C02496139A;
+        Tue,  1 Jun 2021 12:57:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622552229;
+        bh=+tNYRrbJaNJpLw0qIAcircs1AmrNncomZDxq2GxZ4vQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mDJclJmxB+QtzHuW4UrMAQ/Uea/iCtbWGfJSbZzoAME42LQMRwSk88NvM8LJksv+N
+         W1xaLgLNiMCy7yYI+ivzK3tIGOfR/ipjEtgXuvxnlm/YMdtmvzHoMPpM+f36nrL+N8
+         MMRI4ibGehWKZymtUWuwMdlrGXEJKfMCqyDKZyLw43YM9NAhIH8C5fCv4MKqD/qf8k
+         nw8UVfH9A07Tb1aOV+A3VZP68PhmKAV72azIC+NcaS8537kwSlwPCd1rfJ8aya4UAJ
+         5P3aqjtyKWR4CV4sfN+B1+W8IdlmQykBllQUstBvPdu3cdNHW3j8Gc+vg33+0EmJ4m
+         LdjXUDG11+Lvg==
+Date:   Tue, 1 Jun 2021 13:57:03 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 4/5] arm64: perf: Add userspace counter access disable
+ switch
+Message-ID: <20210601125703.GC28025@willie-the-truck>
+References: <20210517195405.3079458-1-robh@kernel.org>
+ <20210517195405.3079458-5-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517195405.3079458-5-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hadle errors of clk_prepare_enable() in st_rc_hardware_init() and its
-callers.
+Hi Rob,
 
-Found by Linux Driver Verification project (linuxtesting.org).
+On Mon, May 17, 2021 at 02:54:04PM -0500, Rob Herring wrote:
+> Like x86, some users may want to disable userspace PMU counter
+> altogether. Add a sysfs 'rdpmc' file to control userspace counter
+> access. The default is '1' which is enabled. Writing '0' disables
+> access.
+> 
+> In the case of multiple PMUs (i.e. big.LITTLE), the control is per PMU
+> and userspace must disable access on each PMU.
+> 
+> Note that x86 also supports writing '2' to globally enable user access.
+> As there's not existing userspace support to worry about, this shouldn't
+> be necessary for Arm. It could be added later if the need arises.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v8:
+>  - Adjust due to patch 3 changes
+> v7:
+>  - New patch
+> ---
+>  arch/arm64/kernel/perf_event.c | 64 ++++++++++++++++++++++++++++++++--
+>  include/linux/perf/arm_pmu.h   |  4 ++-
+>  2 files changed, 65 insertions(+), 3 deletions(-)
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
-v2: Add error loging (Sean Young)
----
- drivers/media/rc/st_rc.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+I understand you've tried to follow the x86 behaviour here, but I think it
+might be better to implement this as a sysctl on arm64, with the default
+behaviour being that userspace access is _disabled_. Having the attribute
+per-PMU doesn't really make a lot of sense to me and we don't have any
+compatibility issues to worry about given that we've not exposed this to
+userspace yet.
 
-diff --git a/drivers/media/rc/st_rc.c b/drivers/media/rc/st_rc.c
-index 3237fef5d502..d79d1e3996b2 100644
---- a/drivers/media/rc/st_rc.c
-+++ b/drivers/media/rc/st_rc.c
-@@ -157,8 +157,9 @@ static irqreturn_t st_rc_rx_interrupt(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--static void st_rc_hardware_init(struct st_rc_device *dev)
-+static int st_rc_hardware_init(struct st_rc_device *dev)
- {
-+	int ret;
- 	int baseclock, freqdiff;
- 	unsigned int rx_max_symbol_per = MAX_SYMB_TIME;
- 	unsigned int rx_sampling_freq_div;
-@@ -166,7 +167,12 @@ static void st_rc_hardware_init(struct st_rc_device *dev)
- 	/* Enable the IP */
- 	reset_control_deassert(dev->rstc);
- 
--	clk_prepare_enable(dev->sys_clock);
-+	ret = clk_prepare_enable(dev->sys_clock);
-+	if (ret) {
-+		dev_err(dev->dev, "Failed to prepare/enable system clock\n");
-+		return ret;
-+	}
-+
- 	baseclock = clk_get_rate(dev->sys_clock);
- 
- 	/* IRB input pins are inverted internally from high to low. */
-@@ -184,6 +190,8 @@ static void st_rc_hardware_init(struct st_rc_device *dev)
- 	}
- 
- 	writel(rx_max_symbol_per, dev->rx_base + IRB_MAX_SYM_PERIOD);
-+
-+	return 0;
- }
- 
- static int st_rc_remove(struct platform_device *pdev)
-@@ -287,7 +295,9 @@ static int st_rc_probe(struct platform_device *pdev)
- 
- 	rc_dev->dev = dev;
- 	platform_set_drvdata(pdev, rc_dev);
--	st_rc_hardware_init(rc_dev);
-+	ret = st_rc_hardware_init(rc_dev);
-+	if (ret)
-+		goto err;
- 
- 	rdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
- 	/* rx sampling rate is 10Mhz */
-@@ -359,6 +369,7 @@ static int st_rc_suspend(struct device *dev)
- 
- static int st_rc_resume(struct device *dev)
- {
-+	int ret;
- 	struct st_rc_device *rc_dev = dev_get_drvdata(dev);
- 	struct rc_dev	*rdev = rc_dev->rdev;
- 
-@@ -367,7 +378,10 @@ static int st_rc_resume(struct device *dev)
- 		rc_dev->irq_wake = 0;
- 	} else {
- 		pinctrl_pm_select_default_state(dev);
--		st_rc_hardware_init(rc_dev);
-+		ret = st_rc_hardware_init(rc_dev);
-+		if (ret)
-+			return ret;
-+
- 		if (rdev->users) {
- 			writel(IRB_RX_INTS, rc_dev->rx_base + IRB_RX_INT_EN);
- 			writel(0x01, rc_dev->rx_base + IRB_RX_EN);
--- 
-2.26.2
+That should also be straightforward to implement (famous last words... yell
+if it isn't).
 
+Will
