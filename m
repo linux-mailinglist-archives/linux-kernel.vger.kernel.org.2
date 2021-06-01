@@ -2,148 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0203397907
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DB1397909
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbhFAR2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:28:40 -0400
-Received: from mail-bn8nam11on2044.outbound.protection.outlook.com ([40.107.236.44]:9441
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231918AbhFAR2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:28:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O6EdIYP/nvCgd0zWHP9khLt6ueOoUbknZvi/u9A9hqSdIjtoY5IpTYuJw+neiCtQ36O/oD74pvEDDcpvPhu0ubMtRN1LdNWeevgwCk1MzIprmXge3Lxi1WwB75IP7kDqwjsBcmCSM3ArT3vypMhq0O7o53qFK5gi19Nyb+lSjqgoTdIKz/MfXg+bmdK0wg5kpL9R/Za/cyMreQt62k3KzIWWMABZqCYQHCQ5kM9txcKk6JgHx76CyQ3RcXQA0wyxBa+fvUUNRdFA3KiQO5EcWbNBs3owSKaObt56PGYjG4nwLLpQa3Srh3RWHePOtjwOvfryw1NKOcyFiRY3AA0IWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9Aa9yT1F9dejnesVJMwlSsNfiZjsXTNsIm3Blf5Q8tk=;
- b=Ni2YSjko3veqjVT5N2ZYV15/jQNlotTKejqXiTpsq3TQGNsq48aGBG9QdKdqKYptsN+Zq6L+iDoJr3cg/DL35JG29wZxB6jPJ6wox6qqZd4c4pq4IlB4UHwY8fdT3SCqfEkDkg3x3ds5zZKM2IFm1dRUjbCp9R4wQ16DU6OouL6TwpdpEpcLnWeYdJEDglalFX1o8M7aZzQ/M1lGrrnw58/JaEm3CKOiJGqbOzc6Dn/VIqJsnchaY/wiYEnhaqr+5SQXLsf/cdFhlr1QGn6OO4VY2sN0l7nkrhup+jU7ApOb5Zr1CtdTKGhy1bsH1/U1nIgWqdz7lBFemEJN1dXpPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9Aa9yT1F9dejnesVJMwlSsNfiZjsXTNsIm3Blf5Q8tk=;
- b=QoM5S+HO8y0vm2QQEoiz84ksWn+hzcAcyIxbubyj45v1ekCEJkKoqo3GlaIPSQBJctt3rchvsBGKEi7oSOZZlBonVfJrdCiJQAGpkPDy9ednPVMwSu/NXUFhvpP7ejLR3g47aIpVDOUxb4EDigsGnlxOnZc4E4YTfC35IiEzguOT6D863fSsmCFLNcthCGp+9jXb2OV0Pk9fuuIKKQ2Q4nfGbp6b/GO4J02/zJgFrKMkwgjPgFXVe/AEakRZPxthZEoGH1ajGaOUzpWyFugzi0u9mRRRhPT1rO33nvxePcBclH/PNFLnn+O36ycsaUr44lWiuvmIWiG8vNQTwBHG/A==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5125.namprd12.prod.outlook.com (2603:10b6:208:309::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 1 Jun
- 2021 17:26:54 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
- 17:26:54 +0000
-Date:   Tue, 1 Jun 2021 14:26:52 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210601172652.GK1002214@nvidia.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528233649.GB3816344@nvidia.com>
- <786295f7-b154-cf28-3f4c-434426e897d3@linux.intel.com>
+        id S234533AbhFAR3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:29:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233925AbhFAR3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:29:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 079ED610C9;
+        Tue,  1 Jun 2021 17:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622568444;
+        bh=d3z7mELUiviyWH2sfxC5chscv7M4jzF7oXqo/a1kRQI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=db4Y7WsHGKcOdwzlMPjNRTTJXmRwHCDdvAjDKSGqQaBowzUCWkghMSSwnM/+Gy9K+
+         WuwXaNK3B7cigZzPHect96xAova/FMwubqaPootoqm8p69C3Tpfc0loFIJFE7BgH0c
+         bg1mFb7UxyFR9Yfvke2Sp1OgByq42ZddKInTDv2dXjkbv43U6S3+3Kd0SOr18tjDxu
+         Nmg15aIUIST0GtLJ4EfYQEyPtnnRTVBYowoi2u/9zhR7N3u30/fNQVYwQYommK0g6P
+         7dPPxkCh/em1xSm5ZVGqpq3l/3jvxlAvo6IWq6EjKq1D/9uaXu26SWP3zwD4hHj+Px
+         XymYkL0lwgBbw==
+Date:   Tue, 1 Jun 2021 10:27:22 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: add compress_inode to
+ cache compressed blocks
+Message-ID: <YLZt+rFClf7xEzOa@google.com>
+References: <20210520115150.4718-1-chao@kernel.org>
+ <c82e63e9-e626-f9a6-ddbc-b9acd026dafa@huawei.com>
+ <YKz0VJSYYBEnF75V@google.com>
+ <YKz1gGctmOJ+LjOn@google.com>
+ <2c4db877-b5e6-1139-98b5-be2d9e7872be@kernel.org>
+ <YK0DVi4aTNdXDN3L@google.com>
+ <dda2400f-4a06-0ef6-b4f5-8aafe86bd81d@huawei.com>
+ <YK5Mewfb3gMg1yGM@google.com>
+ <5140516c-e4c6-fd6a-69b2-7566c903cb53@kernel.org>
+ <YLZc0y0S3sGkU6f4@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <786295f7-b154-cf28-3f4c-434426e897d3@linux.intel.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1P223CA0023.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::28) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1P223CA0023.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21 via Frontend Transport; Tue, 1 Jun 2021 17:26:54 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lo8AG-00HXXY-Kc; Tue, 01 Jun 2021 14:26:52 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3a017791-79e7-4910-8daf-08d92522731d
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5125:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5125B0097B608CFC238A7CF7C23E9@BL1PR12MB5125.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yhsxvw3EIYl4JIftsC+VVDJENF3KoJ4QS4fYQQD6X+6GCUyOeHKYn9YCPHziwm0BnzH50lG/QdKtJ5at5YpcBHioWz83jpOLvnUpB+CYkeLr/W0I3v7vQcn0AQaPozaDUbEXp9gwNFTzvD8hLH4PKzL6ji6jxU28kE5LEILCiS40ZtUehZljhK/jGV501SzE5I7O6I/WEkmev2qBudozXAv/aznM7jsJwek7CXddrAWTHwT0ork2pwSv90RUbnM0J0lBV2EF37Gb9Ca39t4NFJPolMtu04x5Plyox2AmRqLAC6xANPN3jhFQox5N+HAMt1vHvViglhiwfik0zRmanZ7R2//w/U2nU29AT0VxZtuMgBeyUQm2ppKE5tFFDkdyrhk/LyAx+1z0Gkk7D9KVZXomtOaAmSwghGp0cb/bMfarbqNZAcSwuzfh8B57IXhioIYLt4Y9UNpbV9+m93R+5gotzx/sYWOzsW81W3ptPxt4Rmh7QJL1fYv0M4ApUrcX88cVk1ImqIAvw2b1PziXeIw0+sSaptYYbYggYIy4E1KJ/l0FxfJxCVLhD5lFY89/nMfsWNiKb1TvCSfdAUZ5DlfhCXjNwmXJDRciEYvrRLs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(136003)(346002)(396003)(8936002)(66476007)(66946007)(86362001)(4744005)(8676002)(36756003)(7416002)(2616005)(5660300002)(9746002)(26005)(6916009)(1076003)(2906002)(426003)(4326008)(54906003)(478600001)(66556008)(9786002)(33656002)(38100700002)(186003)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Zg+mmTkIWs+hTM1kn+udlf3hR3LAX+YFVJZH6tVKEwvWFL9fA8D9ITHvVLuz?=
- =?us-ascii?Q?G7as5g7jKDQn0Q2pYnyGYfPdQkwKPxhqZDRGZzy3xPQZhieC3dUbfu9r75b6?=
- =?us-ascii?Q?vM2ZecaWhrS9Q3idF7bgTZQdB5TSpbZ5fB3lMZkUMzKHTsMcXr739U2QY8o9?=
- =?us-ascii?Q?Cgr6mJE+S86RsYyKVXllpKMYKAoCTMRASp/T1Gy1UpPzY7zmprAUj/ITb575?=
- =?us-ascii?Q?aRRFK9XJz+TJV5d/l8pgq2q07r2SeXGOEVkN+FElkJcSgwNOA41b+vsv2J5a?=
- =?us-ascii?Q?GA8AEtHKTpA+qrXKoh4spxKldX76V3xJME63GCcKA2Cs0qBrQCJpmwGqHyRQ?=
- =?us-ascii?Q?0AJuwtxnlaxvW5eabh4QfMOXUC6S7pT5J9+l0HYxYkrZPcqvZGBZxxzOzWvl?=
- =?us-ascii?Q?MnCoT2u4zrIRppqWIg7/TYz3793AKnIX3Ug1HFIhzH9MB9T/b3QszFmVG5KS?=
- =?us-ascii?Q?bI60shUN69oZg9Q3c6l/TlhFKzBtcIl66Sjt+YfKQnr0cCjWvJKTw2xFsWoH?=
- =?us-ascii?Q?Fd41/g0usovdUvJgDTmNh+XREBTMLXALhcDiIY17leaLqtAPeZu2GTxFJ2jf?=
- =?us-ascii?Q?JJeyOaVeXQUkHP8iaiGFd/LHV+9GdxZO+3KstugCX8xHAcQwVPm5L6LbGQla?=
- =?us-ascii?Q?y9t9/LPdXD1toXd5i4MwJenSwNtioVRsEHOkKPcApo28ZQf+FJ+1uuHiq1UF?=
- =?us-ascii?Q?umEqrHAaE7PWI8fjrpiWIKTreDeCB3Aifbrig1wHqaWe3/YCKUZ6G4SYSk13?=
- =?us-ascii?Q?l0sCT6u0NutGgf+w6vbSD58Bs17QtX9Cbsw6JtXVPVjysZAt/Y6AuP+75Z4V?=
- =?us-ascii?Q?tLNVl6yIooZS09cgwz6z60139PZobGmxeDO2osnIcqZli7H/m7y6raQq1bg2?=
- =?us-ascii?Q?gmD43+MUu5CZqsnEVygpkGViEKVR3vzrelmPa8V2bMgDSJyeqrgWVzeFyg9S?=
- =?us-ascii?Q?KN+VyEEWH8sFt8yCN7cctyettVGdxH9IYEj+NBtn9jF9fQDfD/vG68M9vOer?=
- =?us-ascii?Q?AtptUKIrZgT3jRN4tAtbDFqcftdzs/FYzrHtu4aUXCDEG/q4qenRybBagNtS?=
- =?us-ascii?Q?TUwXie+GsKeIJ5EZNau2LjG2XmeW5EiyI2jGyAgng3CkIDFDRr3s7t1CWzQ9?=
- =?us-ascii?Q?VFv1NtT+KkZtxKjncSEfOAVhrVZ5WiBwbTr2+2TwnDFEJExjGG4BOk7kOzIc?=
- =?us-ascii?Q?KRhxoQ4XYBK5Y8siWAGoffB26QTRgecoA74I69nEsoxwN7yExnHNUtVx7HLI?=
- =?us-ascii?Q?dh0izDD1jYwy5oEip+5CHOWy98iYBHzr7cnH6S3AOMLesn9qPjcDHmRI9hgW?=
- =?us-ascii?Q?Ap8edLiq8TJdpeXGrY7YLsOz?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a017791-79e7-4910-8daf-08d92522731d
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 17:26:54.1780
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HB3mtMEQeSGXTfztEa91mwcLi0lVmlxtDNg9oCdWyetLDKHlcxer4DYT9sKQaF3I
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5125
+In-Reply-To: <YLZc0y0S3sGkU6f4@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 07:09:21PM +0800, Lu Baolu wrote:
+On 06/01, Jaegeuk Kim wrote:
+> On 05/26, Chao Yu wrote:
+> > On 2021/5/26 21:26, Jaegeuk Kim wrote:
+> > > On 05/26, Chao Yu wrote:
+> > > > On 2021/5/25 22:01, Jaegeuk Kim wrote:
+> > > > > On 05/25, Chao Yu wrote:
+> > > > > > On 2021/5/25 21:02, Jaegeuk Kim wrote:
+> > > > > > > On 05/25, Jaegeuk Kim wrote:
+> > > > > > > > On 05/25, Chao Yu wrote:
+> > > > > > > > > Also, and queue this?
+> > > > > > > > 
+> > > > > > > > Easy to get this?
+> > > > > > > 
+> > > > > > > need GFP_NOFS?
+> > > > > > 
+> > > > > > Not sure, I use __GFP_IO intentionally here to avoid __GFP_RECLAIM from
+> > > > > > GFP_NOFS, because in low memory case, I don't want to instead page cache
+> > > > > > of normal file with page cache of sbi->compress_inode.
+> > > > > > 
+> > > > > > What is memory size in your vm?
+> > > > > 
+> > > > > 4GB. If I set GFP_NOFS, I don't see the error anymore, at least.
+> > > > 
+> > > > I applied below patch and don't see the warning message anymore.
+> > > > 
+> > > > ---
+> > > >   fs/f2fs/compress.c | 2 +-
+> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > > index 701dd0f6f4ec..ed5b7fabc604 100644
+> > > > --- a/fs/f2fs/compress.c
+> > > > +++ b/fs/f2fs/compress.c
+> > > > @@ -1703,7 +1703,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > >   	avail_ram = si.totalram - si.totalhigh;
+> > > > 
+> > > >   	/* free memory is lower than watermark, deny caching compress page */
+> > > > -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
+> > 
+> > This is buggy, because sbi->compress_watermark equals to 20, so that
+> > sbi->compress_watermark / 100 * avail_ram always be zero...
+> > 
+> > After this change, if free ram is lower, we may just skip caching
+> > compressed blocks here.
+> 
+> Can we move this in f2fs_available_free_memory()?
 
-> This version only covers 1) and 4). Do you think we need to support 2),
-> 3) and beyond? 
+Testing this.
 
-Yes aboslutely. The API should be flexable enough to specify the
-creation of all future page table formats we'd want to have and all HW
-specific details on those formats.
+---
+ fs/f2fs/compress.c | 14 +-------------
+ fs/f2fs/node.c     | 11 ++++++++++-
+ fs/f2fs/node.h     |  1 +
+ 3 files changed, 12 insertions(+), 14 deletions(-)
 
-> If so, it seems that we need some in-kernel helpers and uAPIs to
-> support pre-installing a page table to IOASID. 
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 9fd62a0a646b..455561826c7d 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1688,8 +1688,6 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+ {
+ 	struct page *cpage;
+ 	int ret;
+-	struct sysinfo si;
+-	unsigned long free_ram, avail_ram;
+ 
+ 	if (!test_opt(sbi, COMPRESS_CACHE))
+ 		return;
+@@ -1697,17 +1695,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+ 	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+ 		return;
+ 
+-	si_meminfo(&si);
+-	free_ram = si.freeram;
+-	avail_ram = si.totalram - si.totalhigh;
+-
+-	/* free memory is lower than watermark, deny caching compress page */
+-	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
+-		return;
+-
+-	/* cached page count exceed threshold, deny caching compress page */
+-	if (COMPRESS_MAPPING(sbi)->nrpages >=
+-			free_ram / 100 * sbi->compress_percent)
++	if (!f2fs_available_free_memory(sbi, COMPRESS_PAGE))
+ 		return;
+ 
+ 	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 3a8f7afa5059..67093416ce9c 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -45,7 +45,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+ 	struct f2fs_nm_info *nm_i = NM_I(sbi);
+ 	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
+ 	struct sysinfo val;
+-	unsigned long avail_ram;
++	unsigned long avail_ram, free_ram;
+ 	unsigned long mem_size = 0;
+ 	bool res = false;
+ 
+@@ -56,6 +56,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+ 
+ 	/* only uses low memory */
+ 	avail_ram = val.totalram - val.totalhigh;
++	free_ram = val.freeram;
+ 
+ 	/*
+ 	 * give 25%, 25%, 50%, 50%, 50% memory for each components respectively
+@@ -97,6 +98,14 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+ 		mem_size = (atomic_read(&dcc->discard_cmd_cnt) *
+ 				sizeof(struct discard_cmd)) >> PAGE_SHIFT;
+ 		res = mem_size < (avail_ram * nm_i->ram_thresh / 100);
++	} else if (type == COMPRESS_PAGE) {
++		/*
++		 * free memory is lower than watermark or cached page count
++		 * exceed threshold, deny caching compress page.
++		 */
++		res = (free_ram > avail_ram * sbi->compress_watermark / 100) &&
++			(COMPRESS_MAPPING(sbi)->nrpages <
++			 free_ram * sbi->compress_percent / 100);
+ 	} else {
+ 		if (!sbi->sb->s_bdi->wb.dirty_exceeded)
+ 			return true;
+diff --git a/fs/f2fs/node.h b/fs/f2fs/node.h
+index d85e8659cfda..84d45385d1f2 100644
+--- a/fs/f2fs/node.h
++++ b/fs/f2fs/node.h
+@@ -148,6 +148,7 @@ enum mem_type {
+ 	EXTENT_CACHE,	/* indicates extent cache */
+ 	INMEM_PAGES,	/* indicates inmemory pages */
+ 	DISCARD_CACHE,	/* indicates memory of cached discard cmds */
++	COMPRESS_PAGE,	/* indicates memory of cached compressed pages */
+ 	BASE_CHECK,	/* check kernel status */
+ };
+ 
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
-Not sure what this means..
-
-> From this point of view an IOASID is actually not just a variant of
-> iommu_domain, but an I/O page table representation in a broader
-> sense.
-
-Yes, and things need to evolve in a staged way. The ioctl API should
-have room for this growth but you need to start out with some
-constrained enough to actually implement then figure out how to grow
-from there
-
-Jason
