@@ -2,62 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775A5397410
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91E7397417
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhFAN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:26:08 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:42956 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233584AbhFAN0F (ORCPT
+        id S233981AbhFAN1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:27:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41751 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233938AbhFAN1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:26:05 -0400
-Received: by mail-wr1-f54.google.com with SMTP id c5so3141699wrq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:24:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=h8VbcOfb3+RdW8LaQuUQw9dnmTWlit7uMfdLFgHeOVM=;
-        b=q9cvIKZjY9L1nplc2xYtcwP3FTUMt/vK3E1Alp0yiKITRx9fVhleqQ2xPoFy73XkpP
-         WIuIWWhWKWwdqd5SuQzJRZ91A4wHd5mBoUPbHNxUXGstBDdBXK64pzUjSFNoJuqqZxLp
-         eLvAQX2cIaSQAOntAqh9TPAnzShAg3ALD+fBkx9z4a/obqSVZjjPlxUo/DoKYk8y5Ylo
-         4djXG9Mh6iXNz2CUWQoGdLPp9nbn/AJzA/rv+DIY6/oevZlT3qQGzsclcBofBppnxdX2
-         VgpYrzlyz2L8253IM8XtUlEABWJvZNqhBUUZV7yzlFUmuGPMvLs9Wnxy9Uh45cYt6Asz
-         6l2g==
-X-Gm-Message-State: AOAM531tlM1r4BQDWOgL37pEUVpqpzCDXn3e+vGQBPsaAwtHZHEE5g9F
-        Tiz+dHwnTds81U5ru7Me6IGpPiEL4S+GBw==
-X-Google-Smtp-Source: ABdhPJz399TTaI9I2Cz52dUweXpzVGEhNXiLGldeikRvmyrwYiAZUAOK44NvlaMlh4ZmgeCVbVqPrA==
-X-Received: by 2002:adf:a353:: with SMTP id d19mr12026623wrb.363.1622553862022;
-        Tue, 01 Jun 2021 06:24:22 -0700 (PDT)
-Received: from Johanness-MBP.fritz.box ([2001:a62:141b:f301:fcc0:44c6:21e1:ed3])
-        by smtp.gmail.com with ESMTPSA id h46sm3647723wrh.44.2021.06.01.06.24.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 06:24:21 -0700 (PDT)
-Subject: Re: [PATCH 1/1] mcb: Use DEFINE_RES_MEM() to simplify code
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210601064038.9936-1-thunder.leizhen@huawei.com>
-From:   Johannes Thumshirn <jth@kernel.org>
-Message-ID: <cb067fd1-cfa8-8515-7161-7d1008030de0@kernel.org>
-Date:   Tue, 1 Jun 2021 15:24:21 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        Tue, 1 Jun 2021 09:27:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622553966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7TuMZN1E0lbaQ4+hZI+BzEhy4hL1Tvu8HZ6jA5gQoCo=;
+        b=Or14BzzecxZJmyl55kwvWtqag5norMUHjZImFtjiUJBOVZpg36JzmYjSzHuXqqiYvdsu9o
+        0+4tzS7QDiTj6k85TJq5BK+eP68maEiOB28m5poA81aMlqs+Rtc3FDGphrYehpFykAZN0i
+        LMXtvpudp7n+CiLiT2wniYceCwoxYnk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-K2HIVmKNP-izGpM3ukrxfQ-1; Tue, 01 Jun 2021 09:26:03 -0400
+X-MC-Unique: K2HIVmKNP-izGpM3ukrxfQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26CB6107ACC7;
+        Tue,  1 Jun 2021 13:26:01 +0000 (UTC)
+Received: from T590 (ovpn-12-120.pek2.redhat.com [10.72.12.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5ED749936;
+        Tue,  1 Jun 2021 13:25:55 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 21:25:43 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailinglist <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] block/genhd: use atomic_t for disk_event->block
+Message-ID: <YLY1V/dTMeo3RGZd@T590>
+References: <20210601110145.113365-1-hare@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210601064038.9936-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601110145.113365-1-hare@suse.de>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 01, 2021 at 01:01:45PM +0200, Hannes Reinecke wrote:
+> __disk_unblock_events() will call queue_delayed_work() with a '0' argument
+> under a spin lock. This might cause the queue_work item to be executed
+> immediately, and run into a deadlock in disk_check_events() waiting for
+> the lock to be released.
 
+Do you have lockdep warning on this 'deadlock'?
 
-Am 01.06.21 um 08:40 schrieb Zhen Lei:
-> The value of '.end' should be "start + size - 1". So the previous writing
-> should have omitted subtracted 1.
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
+Executed immediately doesn't mean the work fn is run in the current
+task context, and it is actually run in one wq worker(task) context, so
+__queue_work() usually wakes up one wq worker for running the work fn,
+then there shouldn't be the 'deadlock' you mentioned.
 
-Thanks applied
+Thanks, 
+Ming
+
