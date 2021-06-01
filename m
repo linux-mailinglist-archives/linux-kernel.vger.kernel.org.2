@@ -2,467 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1AE3975A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72923975A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbhFAOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhFAOlF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:41:05 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60A6C06174A;
-        Tue,  1 Jun 2021 07:39:22 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id u7so6983379plq.4;
-        Tue, 01 Jun 2021 07:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ARyDH+fznISLQH0l+M7CNP/5hUyye5S2g30yfFYr1Qc=;
-        b=feMFQ+crSI9htBzvicjyHcgRBlPUeE5ZVRF6JDqDrifeddegB+y3zr7nhCGw4EOO3f
-         AKsOFLpResRtlxyHDaUYGTT8encTjvQPfE8lpd0pwz+q/meWeVciQ0RPhyQenOUSwhVN
-         CWi11a3iGt4ydXM9prkqfAxorPZvZM2AK9bCN2FMFAncMyZ8/weitmb1idIWEPJG8jZO
-         wAS5WwXVael91JjgOFFjcCvFRioPIiqVunKE97L632CMZ5isu1vc2pMdfOiB2jPa0JgW
-         d1dQgOqT7uOvKJLfMmz/zEOLjjWNg3t5vIH6hQlhqNQ8r8SgEwIzmXVJtAXGSHT+dgAP
-         T9xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ARyDH+fznISLQH0l+M7CNP/5hUyye5S2g30yfFYr1Qc=;
-        b=D4izoK+h8e0HRAreSuqlNqVNBlwcWGQpuDrYF2LHNpvMT4Lmy0NZmSMghNsXCyTyaO
-         jJqKU04EFSp4Y4KsfrsG92te4BuWFTzFh/Gcu7yQKHUVjrchITXbbq94eQLh0xUx4J8R
-         a6Yk06B8eKQFWEsWDcnzbNdZqxtdR5X3OUphu5P49RywcojNyQ7MqambXr/Z8SuaLTo+
-         yiVMpi0Af7p8Tm8ENA7bDOQ1r0JZ/dKmwbV03lxWkvI4vWuX8HVUkwDRMfG3scDHqNtO
-         O0iC0YW+quIVxByI3MMZGgBJGYBJIbMv9C3osFPQvvwexfCHODiQ9alu1tIwqW0hTJSt
-         obKQ==
-X-Gm-Message-State: AOAM533IBbP6JSmfJwZblwAFYQXa7jCrvYtz+/HEnCZXzaLFX2kij28x
-        516EpbPxw91n+vxccVlfZgo=
-X-Google-Smtp-Source: ABdhPJwdxJk3KCpx/nnExkuqCkxxEjgf2Dbcg3qJ9B6xxYKyftMN/Ast8MSDwMP3k0PoHirr29mTog==
-X-Received: by 2002:a17:90a:578a:: with SMTP id g10mr191078pji.165.1622558362311;
-        Tue, 01 Jun 2021 07:39:22 -0700 (PDT)
-Received: from localhost.localdomain (1-171-14-152.dynamic-ip.hinet.net. [1.171.14.152])
-        by smtp.gmail.com with ESMTPSA id q4sm7309693pgg.0.2021.06.01.07.39.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Jun 2021 07:39:21 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
-Cc:     cy_huang@richtek.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v6 2/2] regulator: rt6160: Add support for Richtek RT6160
-Date:   Tue,  1 Jun 2021 22:39:12 +0800
-Message-Id: <1622558352-19750-2-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622558352-19750-1-git-send-email-u0084500@gmail.com>
-References: <1622558352-19750-1-git-send-email-u0084500@gmail.com>
+        id S234258AbhFAOlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234160AbhFAOlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 10:41:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 596F161375;
+        Tue,  1 Jun 2021 14:39:31 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 16:39:28 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     menglong8.dong@gmail.com
+Cc:     mhiramat@kernel.org, mcgrof@kernel.org, josh@joshtriplett.org,
+        viro@zeniv.linux.org.uk, keescook@chromium.org,
+        samitolvanen@google.com, ojeda@kernel.org, johan@kernel.org,
+        jeyu@kernel.org, masahiroy@kernel.org, dong.menglong@zte.com.cn,
+        joe@perches.com, axboe@kernel.dk, jack@suse.cz, hare@suse.de,
+        tj@kernel.org, gregkh@linuxfoundation.org, song@kernel.org,
+        neilb@suse.de, akpm@linux-foundation.org, f.fainelli@gmail.com,
+        wangkefeng.wang@huawei.com, arnd@arndb.de,
+        linux@rasmusvillemoes.dk, brho@google.com, rostedt@goodmis.org,
+        vbabka@suse.cz, pmladek@suse.com, glider@google.com,
+        chris@chrisdown.name, jojing64@gmail.com, ebiederm@xmission.com,
+        mingo@kernel.org, terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com
+Subject: Re: [PATCH v3 2/3] init/do_cmounts.c: introduce 'user_root' for
+ initramfs
+Message-ID: <20210601143928.b2t2xwxnqma5h6li@wittgenstein>
+References: <20210528143802.78635-1-dong.menglong@zte.com.cn>
+ <20210528143802.78635-3-dong.menglong@zte.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210528143802.78635-3-dong.menglong@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Fri, May 28, 2021 at 10:38:01PM +0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> If using container platforms such as Docker, upon initialization it
+> wants to use pivot_root() so that currently mounted devices do not
+> propagate to containers. An example of value in this is that
+> a USB device connected prior to the creation of a containers on the
+> host gets disconnected after a container is created; if the
+> USB device was mounted on containers, but already removed and
+> umounted on the host, the mount point will not go away until all
+> containers unmount the USB device.
+> 
+> Another reason for container platforms such as Docker to use pivot_root
+> is that upon initialization the net-namspace is mounted under
+> /var/run/docker/netns/ on the host by dockerd. Without pivot_root
+> Docker must either wait to create the network namespace prior to
+> the creation of containers or simply deal with leaking this to each
+> container.
+> 
+> pivot_root is supported if the rootfs is a initrd or block device, but
+> it's not supported if the rootfs uses an initramfs (tmpfs). This means
+> container platforms today must resort to using block devices if
+> they want to pivot_root from the rootfs. A workaround to use chroot()
+> is not a clean viable option given every container will have a
+> duplicate of every mount point on the host.
+> 
+> In order to support using container platforms such as Docker on
+> all the supported rootfs types we must extend Linux to support
+> pivot_root on initramfs as well. This patch does the work to do
+> just that.
+> 
+> pivot_root will unmount the mount of the rootfs from its parent mount
+> and mount the new root to it. However, when it comes to initramfs, it
+> donesn't work, because the root filesystem has not parent mount, which
+> makes initramfs not supported by pivot_root.
+> 
+> In order to support pivot_root on initramfs we introduce a second
+> "user_root" mount which is created before we do the cpio unpacking.
+> The filesystem of the "user_root" mount is the same the rootfs.
+> 
+> While mounting the 'user_root', 'rootflags' is passed to it, and it means
+> that we can set options for the mount of rootfs in boot cmd now.
+> For example, the size of tmpfs can be set with 'rootflags=size=1024M'.
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> ---
+>  init/do_mounts.c | 101 +++++++++++++++++++++++++++++++++++++++++++++++
+>  init/do_mounts.h |  18 ++++++++-
+>  init/initramfs.c |  10 +++++
+>  usr/Kconfig      |  10 +++++
+>  4 files changed, 138 insertions(+), 1 deletion(-)
+> 
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index a78e44ee6adb..2fd168cca480 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -617,6 +617,107 @@ void __init prepare_namespace(void)
+>  	init_chroot(".");
+>  }
+>  
+> +#ifdef CONFIG_INITRAMFS_USER_ROOT
+> +#ifdef CONFIG_TMPFS
+> +static __init bool is_tmpfs_enabled(void)
+> +{
+> +	return (!root_fs_names || strstr(root_fs_names, "tmpfs")) &&
+> +	       !saved_root_name[0];
+> +}
+> +#endif
 
-Add support for Richtek RT6160 voltage regulator. It can provide up
-to 3A output current within the adjustable voltage from 2025mV
-to 5200mV. It integrate a buckboost converter to support wide input
-voltage range from 2200mV to 5500mV.
+This code is duplicated below in this file
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
-since v6
-- Emergency fix for kernel test robot PTR_ERR fail.
+void __init init_rootfs(void)
+{
+	if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
+		(!root_fs_names || strstr(root_fs_names, "tmpfs")))
+		is_tmpfs = true;
+}
+                                        
+so you should add a tiny inline helper that can be called in both
+places. Will also allow you to get rid of one ifdef and makes the patch
+smaller.
 
-since v5
-- Add 'enable" gpio control into regulator enable/disable.
-- Refine regulator ramp delay ops.
-- Due to 'enable' gpio H to L cause register reset, use regcache.
+> +
+> +static __init bool is_ramfs_enabled(void)
+> +{
+> +	return true;
+> +}
+> +
+> +struct fs_user_root {
+> +	bool (*enabled)(void);
+> +	char *dev_name;
+> +	char *fs_name;
+> +};
+> +
+> +static struct fs_user_root user_roots[] __initdata = {
+> +#ifdef CONFIG_TMPFS
+> +	{
+> +		.enabled  = is_tmpfs_enabled,
+> +		.dev_name = "tmpfs",
+> +		.fs_name  = "tmpfs",
+> +	},
+> +#endif
+> +	{
+> +		.enabled  = is_ramfs_enabled,
+> +		.dev_name = "ramfs",
+> +		.fs_name  = "ramfs"
+> +	}
+> +};
+> +static struct fs_user_root * __initdata user_root;
+> +
+> +/*
+> + * The syscall 'pivot_root' is used to change root and it is able to
+> + * clean the old mounts, which make it preferred by container platforms
+> + * such as Docker. However, initramfs is not supported by pivot_root,
+> + * and 'chroot()' has to be used, which is unable to clean the mounts
+> + * that propagate from HOST. These useless mounts make the release of
+> + * removable device or network namespace a big problem.
+> + *
+> + * To make initramfs supported by pivot_root, the mount of the root
+> + * filesystem should have a parent, which will make it unmountable. In
+> + * this function, the second mount, which is called 'user root', is
+> + * created and mounted on '/root', and it will be made the root filesystem
+> + * in end_mount_user_root() by init_chroot().
+> + *
+> + * The 'user root' has a parent mount, which makes it unmountable and
+> + * pivot_root work.
+> + *
+> + * What's more, root_mountflags and root_mount_data are used here, which
+> + * makes the 'rootflags' in boot cmd work for 'user root'.
 
-since v4
-- Add of_node into regulator_config to fix regulator_get by device tree node parsing.
+I appreciate the detail but most of that should go in the commit
+message it also repeats some info a couple of times. :) Here sm like the
+following should suffice, I think:
 
-since v3
-- Use more header file like as of_regulator.h and property.h.
-- Change the parsing string from 'richtek,vsel_active_low' to 'richtek,vsel-active-low'.
-- Use of_get_regulator_init_data to get the regulator init_data.
+/*
+ * Give systems running from the initramfs and making use of pivot_root a
+ * proper mount so it can be umounted during pivot_root.
+ */
 
-since v2
-- Fix W=1 warning for of_device_id.
----
- drivers/regulator/Kconfig            |  11 ++
- drivers/regulator/Makefile           |   1 +
- drivers/regulator/rt6160-regulator.c | 328 +++++++++++++++++++++++++++++++++++
- 3 files changed, 340 insertions(+)
- create mode 100644 drivers/regulator/rt6160-regulator.c
+> + */
+> +int __init mount_user_root(void)
+> +{
+> +	return do_mount_root(user_root->dev_name,
+> +			     user_root->fs_name,
+> +			     root_mountflags & ~MS_RDONLY,
+> +			     root_mount_data);
+> +}
+> +
+> +/*
+> + * This function is used to chroot to new initramfs root that
+> + * we unpacked on success. It will chdir to '/' and umount
+> + * the secound mount on failure.
+> + */
+> +void __init end_mount_user_root(bool succeed)
+> +{
+> +	init_chdir("/");
+> +	if (!succeed) {
+> +		init_umount("/root", 0);
+> +		return;
+> +	}
+> +
+> +	init_mount("/root", "/", NULL, MS_MOVE, NULL);
+> +	if (!ramdisk_exec_exist()) {
+> +		init_umount("/..", 0);
+> +		return;
+> +	}
+> +
+> +	init_chroot("/..");
+> +}
+> +
+> +void __init init_user_rootfs(void)
+> +{
+> +	struct fs_user_root *root;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(user_roots); i++) {
+> +		root = &user_roots[i];
+> +		if (root->enabled()) {
+> +			user_root = root;
+> +			break;
+> +		}
+> +	}
+> +}
+> +#endif
+> +
+>  static bool is_tmpfs;
+>  static int rootfs_init_fs_context(struct fs_context *fc)
+>  {
+> diff --git a/init/do_mounts.h b/init/do_mounts.h
+> index 7a29ac3e427b..3802c7a3ba91 100644
+> --- a/init/do_mounts.h
+> +++ b/init/do_mounts.h
+> @@ -10,9 +10,25 @@
+>  #include <linux/root_dev.h>
+>  #include <linux/init_syscalls.h>
+>  
+> +extern int root_mountflags;
+> +
+>  void  mount_block_root(char *name, int flags);
+>  void  mount_root(void);
+> -extern int root_mountflags;
+> +bool  ramdisk_exec_exist(void);
+> +
+> +#ifdef CONFIG_INITRAMFS_USER_ROOT
+> +
+> +int   mount_user_root(void);
+> +void  end_mount_user_root(bool succeed);
+> +void  init_user_rootfs(void);
+> +
+> +#else
+> +
+> +static inline int   mount_user_root(void) { return 0; }
+> +static inline void  end_mount_user_root(bool succeed) { }
+> +static inline void  init_user_rootfs(void) { }
+> +
+> +#endif
+>  
+>  static inline __init int create_dev(char *name, dev_t dev)
+>  {
+> diff --git a/init/initramfs.c b/init/initramfs.c
+> index af27abc59643..ffa78932ae65 100644
+> --- a/init/initramfs.c
+> +++ b/init/initramfs.c
+> @@ -16,6 +16,8 @@
+>  #include <linux/namei.h>
+>  #include <linux/init_syscalls.h>
+>  
+> +#include "do_mounts.h"
+> +
+>  static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
+>  		loff_t *pos)
+>  {
+> @@ -682,15 +684,23 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+>  	else
+>  		printk(KERN_INFO "Unpacking initramfs...\n");
+>  
+> +	init_user_rootfs();
+> +
+> +	if (mount_user_root())
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 9d84d92..4fe7ddc 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -1030,6 +1030,17 @@ config REGULATOR_RT5033
- 	  RT5033 PMIC. The device supports multiple regulators like
- 	  current source, LDO and Buck.
- 
-+config REGULATOR_RT6160
-+	tristate "Richtek RT6160 BuckBoost voltage regulator"
-+	depends on I2C
-+	select REGMAP_I2C
-+	help
-+	  This adds support for voltage regulator in Richtek RT6160.
-+	  This device automatically change voltage output mode from
-+	  Buck or Boost. The mode transistion depend on the input source voltage.
-+	  The wide output range is from 2025mV to 5200mV and can be used on most
-+	  common application scenario.
-+
- config REGULATOR_RTMV20
- 	tristate "RTMV20 Laser Diode Regulator"
- 	depends on I2C
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 580b015..5b2c93e 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -124,6 +124,7 @@ obj-$(CONFIG_REGULATOR_ROHM)	+= rohm-regulator.o
- obj-$(CONFIG_REGULATOR_RT4801)	+= rt4801-regulator.o
- obj-$(CONFIG_REGULATOR_RT4831)	+= rt4831-regulator.o
- obj-$(CONFIG_REGULATOR_RT5033)	+= rt5033-regulator.o
-+obj-$(CONFIG_REGULATOR_RT6160)	+= rt6160-regulator.o
- obj-$(CONFIG_REGULATOR_RTMV20)	+= rtmv20-regulator.o
- obj-$(CONFIG_REGULATOR_S2MPA01) += s2mpa01.o
- obj-$(CONFIG_REGULATOR_S2MPS11) += s2mps11.o
-diff --git a/drivers/regulator/rt6160-regulator.c b/drivers/regulator/rt6160-regulator.c
-new file mode 100644
-index 00000000..77e91cd
---- /dev/null
-+++ b/drivers/regulator/rt6160-regulator.c
-@@ -0,0 +1,328 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/of_regulator.h>
-+
-+#define RT6160_MODE_AUTO	0
-+#define RT6160_MODE_FPWM	1
-+
-+#define RT6160_REG_CNTL		0x01
-+#define RT6160_REG_STATUS	0x02
-+#define RT6160_REG_DEVID	0x03
-+#define RT6160_REG_VSELL	0x04
-+#define RT6160_REG_VSELH	0x05
-+#define RT6160_NUM_REGS		(RT6160_REG_VSELH + 1)
-+
-+#define RT6160_FPWM_MASK	BIT(3)
-+#define RT6160_RAMPRATE_MASK	GENMASK(1, 0)
-+#define RT6160_VID_MASK		GENMASK(7, 4)
-+#define RT6160_VSEL_MASK	GENMASK(6, 0)
-+#define RT6160_HDSTAT_MASK	BIT(4)
-+#define RT6160_UVSTAT_MASK	BIT(3)
-+#define RT6160_OCSTAT_MASK	BIT(2)
-+#define RT6160_TSDSTAT_MASK	BIT(1)
-+#define RT6160_PGSTAT_MASK	BIT(0)
-+
-+#define RT6160_VENDOR_ID	0xA0
-+#define RT6160_VOUT_MINUV	2025000
-+#define RT6160_VOUT_MAXUV	5200000
-+#define RT6160_VOUT_STPUV	25000
-+#define RT6160_N_VOUTS		((RT6160_VOUT_MAXUV - RT6160_VOUT_MINUV) / RT6160_VOUT_STPUV + 1)
-+
-+#define RT6160_I2CRDY_TIMEUS	100
-+
-+struct rt6160_priv {
-+	struct regulator_desc desc;
-+	struct gpio_desc *enable_gpio;
-+	struct regmap *regmap;
-+	bool vsel_active_low;
-+	bool enable_state;
-+};
-+
-+static int rt6160_enable(struct regulator_dev *rdev)
-+{
-+	struct rt6160_priv *priv = rdev_get_drvdata(rdev);
-+
-+	if (!priv->enable_gpio)
-+		return 0;
-+
-+	gpiod_set_value_cansleep(priv->enable_gpio, 1);
-+	priv->enable_state = true;
-+
-+	usleep_range(RT6160_I2CRDY_TIMEUS, RT6160_I2CRDY_TIMEUS + 100);
-+
-+	regcache_cache_only(priv->regmap, false);
-+	return regcache_sync(priv->regmap);
-+}
-+
-+static int rt6160_disable(struct regulator_dev *rdev)
-+{
-+	struct rt6160_priv *priv = rdev_get_drvdata(rdev);
-+
-+	if (!priv->enable_gpio)
-+		return -EINVAL;
-+
-+	/* Mark regcache as dirty and cache only before HW disabled */
-+	regcache_cache_only(priv->regmap, true);
-+	regcache_mark_dirty(priv->regmap);
-+
-+	priv->enable_state = false;
-+	gpiod_set_value_cansleep(priv->enable_gpio, 0);
-+
-+	return 0;
-+
-+}
-+
-+static int rt6160_is_enabled(struct regulator_dev *rdev)
-+{
-+	struct rt6160_priv *priv = rdev_get_drvdata(rdev);
-+
-+	return priv->enable_state ? 1 : 0;
-+}
-+
-+static int rt6160_set_mode(struct regulator_dev *rdev, unsigned int mode)
-+{
-+	struct regmap *regmap = rdev_get_regmap(rdev);
-+	unsigned int mode_val;
-+
-+	switch (mode) {
-+	case REGULATOR_MODE_FAST:
-+		mode_val = RT6160_FPWM_MASK;
-+		break;
-+	case REGULATOR_MODE_NORMAL:
-+		mode_val = 0;
-+		break;
-+	default:
-+		dev_err(&rdev->dev, "mode not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	return regmap_update_bits(regmap, RT6160_REG_CNTL, RT6160_FPWM_MASK, mode_val);
-+}
-+
-+static unsigned int rt6160_get_mode(struct regulator_dev *rdev)
-+{
-+	struct regmap *regmap = rdev_get_regmap(rdev);
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(regmap, RT6160_REG_CNTL, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val & RT6160_FPWM_MASK)
-+		return REGULATOR_MODE_FAST;
-+
-+	return REGULATOR_MODE_NORMAL;
-+}
-+
-+static int rt6160_set_suspend_voltage(struct regulator_dev *rdev, int uV)
-+{
-+	struct rt6160_priv *priv = rdev_get_drvdata(rdev);
-+	struct regmap *regmap = rdev_get_regmap(rdev);
-+	unsigned int reg = RT6160_REG_VSELH;
-+	int vsel;
-+
-+	vsel = regulator_map_voltage_linear(rdev, uV, uV);
-+	if (vsel < 0)
-+		return vsel;
-+
-+	if (priv->vsel_active_low)
-+		reg = RT6160_REG_VSELL;
-+
-+	return regmap_update_bits(regmap, reg, RT6160_VSEL_MASK, vsel);
-+}
-+
-+static int rt6160_set_ramp_delay(struct regulator_dev *rdev, int target)
-+{
-+	struct regmap *regmap = rdev_get_regmap(rdev);
-+	const unsigned int ramp_tables[] = { 1000, 2500, 5000, 10000 };
-+	unsigned int sel = 0;
-+	int i;
-+
-+	/* Find closest smaller or equal */
-+	for (i = 1; i < ARRAY_SIZE(ramp_tables); i++) {
-+		if (target < ramp_tables[i])
-+			break;
-+
-+		if (target >= ramp_tables[i])
-+			sel++;
-+	}
-+
-+	sel <<= ffs(RT6160_RAMPRATE_MASK) - 1;
-+
-+	return regmap_update_bits(regmap, RT6160_REG_CNTL, RT6160_RAMPRATE_MASK, sel);
-+}
-+
-+static int rt6160_get_error_flags(struct regulator_dev *rdev, unsigned int *flags)
-+{
-+	struct regmap *regmap = rdev_get_regmap(rdev);
-+	unsigned int val, events = 0;
-+	int ret;
-+
-+	ret = regmap_read(regmap, RT6160_REG_STATUS, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val & (RT6160_HDSTAT_MASK | RT6160_TSDSTAT_MASK))
-+		events |= REGULATOR_ERROR_OVER_TEMP;
-+
-+	if (val & RT6160_UVSTAT_MASK)
-+		events |= REGULATOR_ERROR_UNDER_VOLTAGE;
-+
-+	if (val & RT6160_OCSTAT_MASK)
-+		events |= REGULATOR_ERROR_OVER_CURRENT;
-+
-+	if (val & RT6160_PGSTAT_MASK)
-+		events |= REGULATOR_ERROR_FAIL;
-+
-+	*flags = events;
-+	return 0;
-+}
-+
-+static const struct regulator_ops rt6160_regulator_ops = {
-+	.list_voltage = regulator_list_voltage_linear,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+
-+	.enable = rt6160_enable,
-+	.disable = rt6160_disable,
-+	.is_enabled = rt6160_is_enabled,
-+
-+	.set_mode = rt6160_set_mode,
-+	.get_mode = rt6160_get_mode,
-+	.set_suspend_voltage = rt6160_set_suspend_voltage,
-+	.set_ramp_delay = rt6160_set_ramp_delay,
-+	.get_error_flags = rt6160_get_error_flags,
-+};
-+
-+static unsigned int rt6160_of_map_mode(unsigned int mode)
-+{
-+	switch (mode) {
-+	case RT6160_MODE_FPWM:
-+		return REGULATOR_MODE_FAST;
-+	case RT6160_MODE_AUTO:
-+		return REGULATOR_MODE_NORMAL;
-+	}
-+
-+	return REGULATOR_MODE_INVALID;
-+}
-+
-+static bool rt6160_is_accessible_reg(struct device *dev, unsigned int reg)
-+{
-+	if (reg >= RT6160_REG_CNTL && reg <= RT6160_REG_VSELH)
-+		return true;
-+	return false;
-+}
-+
-+static bool rt6160_is_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	if (reg == RT6160_REG_STATUS)
-+		return true;
-+	return false;
-+}
-+
-+static const struct regmap_config rt6160_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = RT6160_REG_VSELH,
-+	.num_reg_defaults_raw = RT6160_NUM_REGS,
-+	.cache_type = REGCACHE_FLAT,
-+
-+	.writeable_reg = rt6160_is_accessible_reg,
-+	.readable_reg = rt6160_is_accessible_reg,
-+	.volatile_reg = rt6160_is_volatile_reg,
-+};
-+
-+static int rt6160_probe(struct i2c_client *i2c)
-+{
-+	struct rt6160_priv *priv;
-+	struct regulator_config regulator_cfg = {};
-+	struct regulator_dev *rdev;
-+	unsigned int devid;
-+	int ret;
-+
-+	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->vsel_active_low = device_property_present(&i2c->dev, "richtek,vsel-active-low");
-+
-+	priv->enable_gpio = devm_gpiod_get_optional(&i2c->dev, "enable", GPIOD_OUT_HIGH);
-+	if (IS_ERR(priv->enable_gpio)) {
-+		dev_err(&i2c->dev, "Failed to get 'enable' gpio\n");
-+		return PTR_ERR(priv->enable_gpio);
-+	}
-+	priv->enable_state = true;
-+
-+	usleep_range(RT6160_I2CRDY_TIMEUS, RT6160_I2CRDY_TIMEUS + 100);
-+
-+	priv->regmap = devm_regmap_init_i2c(i2c, &rt6160_regmap_config);
-+	if (IS_ERR(priv->regmap)) {
-+		ret = PTR_ERR(priv->regmap);
-+		dev_err(&i2c->dev, "Failed to init regmap (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_read(priv->regmap, RT6160_REG_DEVID, &devid);
-+	if (ret)
-+		return ret;
-+
-+	if ((devid & RT6160_VID_MASK) != RT6160_VENDOR_ID) {
-+		dev_err(&i2c->dev, "VID not correct [0x%02x]\n", devid);
-+		return -ENODEV;
-+	}
-+
-+	priv->desc.name = "rt6160-buckboost";
-+	priv->desc.type = REGULATOR_VOLTAGE;
-+	priv->desc.owner = THIS_MODULE;
-+	priv->desc.min_uV = RT6160_VOUT_MINUV;
-+	priv->desc.uV_step = RT6160_VOUT_STPUV;
-+	priv->desc.vsel_reg = RT6160_REG_VSELH;
-+	priv->desc.vsel_mask = RT6160_VSEL_MASK;
-+	priv->desc.n_voltages = RT6160_N_VOUTS;
-+	priv->desc.of_map_mode = rt6160_of_map_mode;
-+	priv->desc.ops = &rt6160_regulator_ops;
-+	if (priv->vsel_active_low)
-+		priv->desc.vsel_reg = RT6160_REG_VSELL;
-+
-+	regulator_cfg.dev = &i2c->dev;
-+	regulator_cfg.of_node = i2c->dev.of_node;
-+	regulator_cfg.regmap = priv->regmap;
-+	regulator_cfg.driver_data = priv;
-+	regulator_cfg.init_data = of_get_regulator_init_data(&i2c->dev, i2c->dev.of_node,
-+							     &priv->desc);
-+
-+	rdev = devm_regulator_register(&i2c->dev, &priv->desc, &regulator_cfg);
-+	if (IS_ERR(rdev)) {
-+		dev_err(&i2c->dev, "Failed to register regulator\n");
-+		return PTR_ERR(rdev);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id __maybe_unused rt6160_of_match_table[] = {
-+	{ .compatible = "richtek,rt6160", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, rt6160_of_match_table);
-+
-+static struct i2c_driver rt6160_driver = {
-+	.driver = {
-+		.name = "rt6160",
-+		.of_match_table = rt6160_of_match_table,
-+	},
-+	.probe_new = rt6160_probe,
-+};
-+module_i2c_driver(rt6160_driver);
-+
-+MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+I would call this sm like
 
+prepare_mount_rootfs()
+finish_mount_rootfs()
+
+> +		panic("Failed to create user root");
+
+I don't think you need to call init_user_rootfs() separately? You could
+just move it into the prepare_mount_rootfs()/mount_user_root() call.
+
+> +
+>  	err = unpack_to_rootfs((char *)initrd_start, initrd_end - initrd_start);
+>  	if (err) {
+> +		end_mount_user_root(false);
+
+This boolean argument to end_mount_user_root() is a bit strange. Just
+call init_umount() directly here?
+
+>  #ifdef CONFIG_BLK_DEV_RAM
+>  		populate_initrd_image(err);
+>  #else
+>  		printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
+>  #endif
+> +		goto done;
+>  	}
+>  
+> +	end_mount_user_root(true);
+>  done:
+>  	/*
+>  	 * If the initrd region is overlapped with crashkernel reserved region,
+> diff --git a/usr/Kconfig b/usr/Kconfig
+> index 8bbcf699fe3b..f9c96de539c3 100644
+> --- a/usr/Kconfig
+> +++ b/usr/Kconfig
+> @@ -52,6 +52,16 @@ config INITRAMFS_ROOT_GID
+>  
+>  	  If you are not sure, leave it set to "0".
+>  
+> +config INITRAMFS_USER_ROOT
+
+I think the naming isn't great. Just call it INITRAMFS_MOUNT. The "user"
+part in all the function and variabe names seems confusing to me at
+least it doesn't convey a lot of useful info. So I'd just drop it and
+try to stick with plain rootfs/initramfs terminology.
+
+> +	bool "Create 'user root' to make pivot_root supported"
+> +	default y
+> +	help
+> +	  Before unpacking cpio, create a second mount and make it become
+> +	  the root filesystem. Therefore, initramfs will be supported by
+> +	  pivot_root().
+> +
+> +	  If container platforms is used with initramfs, say Y.
+> +
+>  config RD_GZIP
+>  	bool "Support initial ramdisk/ramfs compressed using gzip"
+>  	default y
+> -- 
+> 2.32.0.rc0
+> 
+> 
