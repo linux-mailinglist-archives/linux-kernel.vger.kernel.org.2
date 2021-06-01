@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB179396AE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FA3396AE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 04:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhFACO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 22:14:56 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2807 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbhFACOz (ORCPT
+        id S232625AbhFACPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 22:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhFACPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 22:14:55 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvFtz0y7dzWq2c;
-        Tue,  1 Jun 2021 10:08:27 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 10:13:03 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 10:12:49 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [PATCH RESEND] fs: Optimized file struct to improve performance
-Date:   Tue, 1 Jun 2021 10:12:37 +0800
-Message-ID: <1622513557-46189-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 31 May 2021 22:15:40 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3D9C061574;
+        Mon, 31 May 2021 19:14:00 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id c13so1127909plz.0;
+        Mon, 31 May 2021 19:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FiNYOp2WDhjmbZvz+trYR0sYgu9U4pdGAJHnzSHmxdU=;
+        b=VTp/4yXUmP3jNr6GbzZ00yJnxjGd+gK2Sx8YdolKVINXM7cb1+nIBDgbq+tOHW2GLG
+         9HSl3hkt0Qv/GYpWtnsexcs5UnLNDQIRKCcee0Oy/bGuzjvjdpm6E0nTlTyA/D57H46q
+         5HoyGMv7U2sMHyWr4uk0cMsmbibC2sePMgxrg37JM8hNBcha6Q4XdAhApLrxKTtIE6hx
+         l837ZIBlTYwl/qO42YBEfQT9Fv/KkZ8L9MI9Ty63b5trzDgsOBZruAIAEumOFSBhIyDo
+         4zyqZtI9vnsnKvwYYyiRgVoWC/l7wguZ5acMvA0rTXGzLCCRgn4TAqyU5zr/QNIiaC4a
+         4VWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FiNYOp2WDhjmbZvz+trYR0sYgu9U4pdGAJHnzSHmxdU=;
+        b=rfmRdXf/XXtESB8oTfiACouvSCfnDSR12r+TXF+76t3miuQgHpr2Dxw5glO8zSJkL3
+         /mXEe1AGFo51AJjm/lMFBJfMaTVfTCSXrcRwOgnAKrzNgF9UA/fdVIiD0eWWmzy7Oo9U
+         cpaQkHPSvraOEnbL51Bf1RPuq8FXrpC0jb9Vo+bqhlJlBn80VK/43NAKCB3eQ91Uj7br
+         b55ZxY+a2mN1ZaDqtHjrXdHQxSKlNbQCTrLN3WLsz5eABWo/STU0nQZi8cBrdPNc4A4X
+         nFkls4xRPGTXfz2pKDjm6we3nCESk8orSJIjeidyGO2SOGiJUdUbMhcjiOu+hKyCmUe7
+         pJww==
+X-Gm-Message-State: AOAM530Evrl+76JEHV9fouy1R9/8alIMhLh7av7JGjU+Tgnz1X9mPT8G
+        mHq3L5l63l+dUocq/Ic7M7/Ugn8IbyR25w==
+X-Google-Smtp-Source: ABdhPJz46Iir++2MWHS9quMBD4vqaD3PG0V5faPOmC6KTNGsevZoShoGUz+59PSsl4h4HFUogYpipQ==
+X-Received: by 2002:a17:90a:8d82:: with SMTP id d2mr22204705pjo.200.1622513639538;
+        Mon, 31 May 2021 19:13:59 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id j20sm11536873pfj.40.2021.05.31.19.13.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 19:13:58 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/66] 4.9.271-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210531130636.254683895@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8fbf80fa-6ccb-a775-42d7-6966871d20ad@gmail.com>
+Date:   Mon, 31 May 2021 19:13:51 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuqi Jin <jinyuqi@huawei.com>
 
-In the syscall process, @f_count and @f_mod are frequently used, if
-we put them together with each other and they will share the same
-cacheline. It is useful for the performance.
 
-syscall of unixbench is tested on Intel 8180.
-before this patch
-80 CPUs in system; running 80 parallel copies of tests
+On 5/31/2021 6:13 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.271 release.
+> There are 66 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.271-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-System Call Overhead                    3789860.2 lps   (10.0 s, 1 samples)
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-System Call Overhead                          15000.0    3789860.2   2526.6
-                                                                   ========
-System Benchmarks Index Score (Partial Only)                         2526.6
-
-after this patch
-80 CPUs in system; running 80 parallel copies of tests
-
-System Call Overhead                    3951328.1 lps   (10.0 s, 1 samples)
-
-System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-System Call Overhead                          15000.0    3951328.1   2634.2
-                                                                   ========
-System Benchmarks Index Score (Partial Only)                         2634.2
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
-Hi,
-    Sorry for the noise that I resent the patch since v1[1], while
-Intel's robot gives the 19.2% improvement[2].
-
-[1]https://www.spinics.net/lists/linux-fsdevel/msg192888.html
-[2]https://www.spinics.net/lists/linux-fsdevel/msg193521.html
-
- include/linux/fs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c3c88fdb9b2a..23baa7c8301b 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -922,7 +922,6 @@ struct file {
- 		struct llist_node	fu_llist;
- 		struct rcu_head 	fu_rcuhead;
- 	} f_u;
--	struct path		f_path;
- 	struct inode		*f_inode;	/* cached value */
- 	const struct file_operations	*f_op;
- 
-@@ -931,13 +930,14 @@ struct file {
- 	 * Must not be taken from IRQ context.
- 	 */
- 	spinlock_t		f_lock;
--	enum rw_hint		f_write_hint;
- 	atomic_long_t		f_count;
- 	unsigned int 		f_flags;
- 	fmode_t			f_mode;
- 	struct mutex		f_pos_lock;
- 	loff_t			f_pos;
- 	struct fown_struct	f_owner;
-+	enum rw_hint		f_write_hint;
-+	struct path		f_path;
- 	const struct cred	*f_cred;
- 	struct file_ra_state	f_ra;
- 
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.7.4
-
+Florian
