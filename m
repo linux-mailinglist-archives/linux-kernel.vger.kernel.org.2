@@ -2,159 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6073978D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B753978DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhFARNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:13:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:54672 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231918AbhFARNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:13:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8AEF6D;
-        Tue,  1 Jun 2021 10:12:06 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.0.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EEA963F719;
-        Tue,  1 Jun 2021 10:12:02 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 18:11:59 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 3/5] arm64: perf: Enable PMU counter userspace access
- for perf event
-Message-ID: <20210601171159.GD3326@C02TD0UTHF1T.local>
-References: <20210517195405.3079458-1-robh@kernel.org>
- <20210517195405.3079458-4-robh@kernel.org>
- <20210601135526.GA3326@C02TD0UTHF1T.local>
- <CAL_JsqKo2cQsWkG67HUDgyO=WXywzykM+UY4uOwdpA6FVZsc0A@mail.gmail.com>
+        id S234135AbhFARQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233301AbhFARQy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:16:54 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCE4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 10:15:12 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id i22so99478pju.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 10:15:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U65hdesdvDmorFbtO287+I+YEZ3urVVgKrKl2j6XaOE=;
+        b=lQ2a6yQOhnzrehY6i6bUnFYQhtdk49xyq3u3DAqS0+a09Kuf5d8sBn1xy56r7yaWHt
+         sBEmAsPdBN6igfc5WbwC0LP6Azup6KLjdcpK/8WAZNUq7C9VfjiQjSy8b0AYlHQ5lyN/
+         Vy1FMVcHCwms5Q2pMh5Rb71K/PqC+BoZrhonxDob60Bq6Q5frWNoTvycZsXsTINvgL31
+         9TmxjCbxehPCXkTNlqtt3YCrxT2+vL0j817NLmy+BE1JJD9V7EKWsfosQmesLTw5X5So
+         D6mEn1oGlfW2IIJYnY773fUsJudSHJLNReG3vI7VfdUoBT5Y1iqOCvfBSZz3pjcc4lAn
+         nKlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U65hdesdvDmorFbtO287+I+YEZ3urVVgKrKl2j6XaOE=;
+        b=TdL4BqQdXaW8cfVCsJlhPCmaeg9pGHkZGJ8n1ARPvKBI2YIzxJVTMUmpIQbhX642Ro
+         aNe4Z6SrW5AVaNx0GbE1Ii9hOWvfrZIz62lNVoV7YaMZN36BkqkjJ9LUb4ism5/pjoJm
+         97I6BD68+OLZXr9lATGiEDY7Jw/CbZOMW3PI6tQbkIVHvgZNqR07MpLguqX65mycHi/K
+         j0FI4JYuTcGMhcfQP0Q6xsnVGpfRfhoVKKH8DhrwMP11emCABO66a9AjPL9A1o3IxU7W
+         LZI3uebL4TeqxbsPUIbjZkLKYTbS2IvEIjJuoutFF7Gmj+82XGhy1BiHACvmCVTNSyKI
+         5ZXw==
+X-Gm-Message-State: AOAM530edczOoMDjpCI/xxORS9a/rqkR+S88TsI/OUewx8IYvK6h5fGp
+        lMM1n4zI41U9iykDqR4UH+m27Q==
+X-Google-Smtp-Source: ABdhPJys/Yp8G0oNUgYLPKf9H5QgDrsj8LcedkfkXi0nXaccVVUpRZqEsBhOmZkmtAWJigxiv6cNbw==
+X-Received: by 2002:a17:90b:4d82:: with SMTP id oj2mr25737050pjb.61.1622567712053;
+        Tue, 01 Jun 2021 10:15:12 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id pg5sm13382530pjb.28.2021.06.01.10.15.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 10:15:10 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 11:15:08 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] remoteproc: Add support for detach-only during
+ shutdown
+Message-ID: <20210601171508.GC1759269@xps15>
+References: <20210522000309.26134-1-s-anna@ti.com>
+ <20210522000309.26134-3-s-anna@ti.com>
+ <YLBtbHevzyxT4RTK@builder.lan>
+ <da468002-580c-de1a-dcf4-275d57bb7ac7@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqKo2cQsWkG67HUDgyO=WXywzykM+UY4uOwdpA6FVZsc0A@mail.gmail.com>
+In-Reply-To: <da468002-580c-de1a-dcf4-275d57bb7ac7@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 10:00:53AM -0500, Rob Herring wrote:
-> On Tue, Jun 1, 2021 at 8:55 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > On Mon, May 17, 2021 at 02:54:03PM -0500, Rob Herring wrote:
-> > > +static void armv8pmu_enable_user_access(struct arm_pmu *cpu_pmu)
-> > > +{
-> > > +     struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
-> > > +
-> > > +     if (!bitmap_empty(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS)) {
-> > > +             int i;
-> > > +             /* Don't need to clear assigned counters. */
-> > > +             bitmap_xor(cpuc->dirty_mask, cpuc->dirty_mask, cpuc->used_mask, ARMPMU_MAX_HWEVENTS);
-> > > +
-> > > +             for_each_set_bit(i, cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS) {
-> > > +                     if (i == ARMV8_IDX_CYCLE_COUNTER)
-> > > +                             write_sysreg(0, pmccntr_el0);
-> > > +                     else
-> > > +                             armv8pmu_write_evcntr(i, 0);
-> > > +             }
-> > > +             bitmap_zero(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS);
-> > > +     }
-> > > +
-> > > +     write_sysreg(ARMV8_PMU_USERENR_ER | ARMV8_PMU_USERENR_CR, pmuserenr_el0);
-> > > +}
-> >
-> > This still leaks the values of CPU-bound events, or task-bound events
-> > owned by others, right?
+Hey guys,
+
+On Fri, May 28, 2021 at 11:40:02AM -0500, Suman Anna wrote:
+> Hi Bjorn,
 > 
-> For CPU-bound events, yes. There's not any way to prevent that without
-> per counter access controls.
+> On 5/27/21 11:11 PM, Bjorn Andersson wrote:
+> > On Fri 21 May 19:03 CDT 2021, Suman Anna wrote:
+> > 
+> >> The remoteproc core has support for both stopping and detaching a
+> >> remote processor that was attached to previously, through both the
+> >> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
+> >> unconditionally only uses the stop functionality at present. This
+> >> may not be the default desired functionality for all the remoteproc
+> >> platform drivers.
+> >>
+> >> Introduce a new rproc state flag 'detach_on_shutdown' that individual
+> >> remoteproc drivers can set to only allow detach in rproc_shutdown()
+> >> that would have been invoked when the driver is uninstalled, so that
+> >> remote processor continues to run undisturbed even after the driver
+> >> removal.
+> >>
+> > 
+> > I dislike the introduction of knobs for everything and would much rather
+> > see that we define some sound defaults. Can we make shutdown just do
+> > detach() if that's supported otherwise stop().
+> > 
 > 
-> It is clearing other's task-bound events.
-
-Sorry, I misspoke. When I said "task-bound events owned by others", I
-had meant events bounds to this task, but owned by someone else (e.g.
-the system administrator).
-
-Thanks for confirming!
-
-> > > +static void armv8pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
-> > > +{
-> > > +     if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR) || (atomic_read(&event->mmap_count) != 1))
-> > > +             return;
-> > > +
-> > > +     if (atomic_inc_return(&event->ctx->nr_user) == 1) {
-> > > +             unsigned long flags;
-> > > +             atomic_inc(&event->pmu->sched_cb_usage);
-> > > +             local_irq_save(flags);
-> > > +             armv8pmu_enable_user_access(to_arm_pmu(event->pmu));
-> > > +             local_irq_restore(flags);
-> > > +     }
-> > > +}
-> > > +
-> > > +static void armv8pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
-> > > +{
-> > > +     if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR) || (atomic_read(&event->mmap_count) != 1))
-> > > +             return;
-> > > +
-> > > +     if (atomic_dec_and_test(&event->ctx->nr_user)) {
-> > > +             atomic_dec(&event->pmu->sched_cb_usage);
-> > > +             armv8pmu_disable_user_access();
-> > > +     }
-> > >  }
-> >
-> > We can open an event for task A, but call mmap()/munmap() for that event
-> > from task B, which will do the enable/disable on task B rather than task
-> > A. The core doesn't enforce that the mmap is performed on the same core,
-> > so I don't think this is quite right, unfortunately.
+> I maybe missing your point, but the change in remoteproc_core below exactly does
+> that, right? Are you saying drop the checks in remoteproc_cdev and remoteproc_sysfs?
 > 
-> Why do we care and who wants to do that? It all seems like a
-> convoluted scenario that isn't really going to happen. I prefer to not
-> support that until someone asks for it. Maybe we should check for the
-> condition (event->ctx->task != current) though.
-
-My reason for caring is that it means our accounting structures aren't
-aligned with the actual CPU state, and it's going to be very easy for
-this to go wrong as things get reworked in future.
-
-If we're saying someone shouldn't do this, then we should enforce that
-they can't. If they can, then I'd prefer to have deterministic behaviour
-that isn't going to cause us issues in future.
-
-I think that we should treat this like changing other event properties
-(e.g. the period, or enabling/disabling the event), with an
-event_function_call, since that will do the right thing regardless. I
-also expect that people will want to do setup/teardown in a single
-thread, and this would make that work too.
-
-I reckon we can get the core logic for that in kernel/events/core.c.
-
-> > I reckon we need to do something with task_function_call() to make this
-> > happen in the context of the expected task.
+> The asymmetry did bug me as well, but it is already existing even before this
+> patch. I personally would have preferred a cleaner and symmetrical attach,
+> start, stop, detach, but existing code has overloaded attach into start (keys
+> off by RPROC_OFFLINE/RPROC_DETACHED) while introducing a separate detach from
+> stop. I have retained the meaning of stop as shutdown from userspace interface
+> perspective, but enforcing the checks for detach only remoteprocs.
 > 
-> Following the x86 way using the mm_context and IPI handled that case,
-> but Will didn't like either part of that implementation. His
-> suggestion then was to enable access in an undef instr handler rather
-> than an IPI. I think that would still work with this version.
+> The logic in rproc_shutdown is for driver paths.
+> 
+> > This still allows userspace to explicitly stop the detachable remoteproc
+> > before shutdown, if for some reason that's what you want...
+> 
+> This is the existing behavior and the difference between stop and detach. That
+> behavior is maintained for remoteprocs not setting the detach_on_shutdown flag.
+> I am only restricting the behavior for those that set it.
+> 
+> Mathieu,
+> Your thoughts on this?
 
-IIUC the main objection there was that we'd have to signal all tasks
-associated with the mm or all CPUs, neither of which were attractive.
+Introducing knobs in such a way makes the code very difficult to understand and
+maintain.  It is also a matter of time before another knob is introduced to
+modify the behavior of this knob.  
 
-Now that we're saying this is strictly task-bound, I think this is
-similar to enabling/disabling an event or changing its period, for which
-we already do a (single) event_function_call() to ensure the CPU state
-change happens on the correct CPU.
+Function rproc_detach() is exported and should be used in the platform driver if
+the state of the remote processor mandates it.  Function rproc_del() calls
+rproc_shutdown() but the latter will return immediately because of rproc->power.
+So calling rproc_detach() followed by rproc_del() will work as expected.  The
+real fix is to de-couple rproc_shutdown from rproc_del() and do the right calls
+in the platform drivers using them.
 
-Thanks,
-Mark.
+With regards to rproc_cdev_write(), the state of the remote processor is
+advertised in sysfs.  As such it should be easy to write "stop" or "detach" to
+the character interface.  If a command to stop the remote processor is not
+supported in a scenario then rproc_ops::stop should reflect that.  If that is
+the case then rproc_shutdown() should be modified to return an error code, the
+same way rproc_detach() was done.
+
+> 
+> regards
+> Suman
+> 
+> 
+> 
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> >> Signed-off-by: Suman Anna <s-anna@ti.com>
+> >> ---
+> >>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
+> >>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
+> >>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
+> >>  include/linux/remoteproc.h            | 3 +++
+> >>  4 files changed, 20 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
+> >> index 0b8a84c04f76..473467711a09 100644
+> >> --- a/drivers/remoteproc/remoteproc_cdev.c
+> >> +++ b/drivers/remoteproc/remoteproc_cdev.c
+> >> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
+> >>  		    rproc->state != RPROC_ATTACHED)
+> >>  			return -EINVAL;
+> >>  
+> >> +		if (rproc->state == RPROC_ATTACHED &&
+> >> +		    rproc->detach_on_shutdown) {
+> >> +			dev_err(&rproc->dev,
+> >> +				"stop not supported for this rproc, use detach\n");
+> >> +			return -EINVAL;
+> >> +		}
+> >> +
+> >>  		rproc_shutdown(rproc);
+> >>  	} else if (!strncmp(cmd, "detach", len)) {
+> >>  		if (rproc->state != RPROC_ATTACHED)
+> >> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> >> index 6019f46001c8..e8ab3eb41f00 100644
+> >> --- a/drivers/remoteproc/remoteproc_core.c
+> >> +++ b/drivers/remoteproc/remoteproc_core.c
+> >> @@ -2074,7 +2074,10 @@ void rproc_shutdown(struct rproc *rproc)
+> >>  	if (!atomic_dec_and_test(&rproc->power))
+> >>  		goto out;
+> >>  
+> >> -	ret = rproc_stop(rproc, false);
+> >> +	if (rproc->detach_on_shutdown && rproc->state == RPROC_ATTACHED)
+> >> +		ret = __rproc_detach(rproc);
+> >> +	else
+> >> +		ret = rproc_stop(rproc, false);
+> >>  	if (ret) {
+> >>  		atomic_inc(&rproc->power);
+> >>  		goto out;
+> >> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> >> index ea8b89f97d7b..1785fbcb1075 100644
+> >> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> >> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> >> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
+> >>  		    rproc->state != RPROC_ATTACHED)
+> >>  			return -EINVAL;
+> >>  
+> >> +		if (rproc->state == RPROC_ATTACHED &&
+> >> +		    rproc->detach_on_shutdown) {
+> >> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
+> >> +			return -EINVAL;
+> >> +		}
+> >> +
+> >>  		rproc_shutdown(rproc);
+> >>  	} else if (sysfs_streq(buf, "detach")) {
+> >>  		if (rproc->state != RPROC_ATTACHED)
+> >> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> >> index 42a1f30e33a7..35ef921676a1 100644
+> >> --- a/include/linux/remoteproc.h
+> >> +++ b/include/linux/remoteproc.h
+> >> @@ -530,6 +530,8 @@ struct rproc_dump_segment {
+> >>   * @elf_machine: firmware ELF machine
+> >>   * @cdev: character device of the rproc
+> >>   * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
+> >> + * @detach_on_shutdown: flag to indicate if remoteproc cannot be shutdown in
+> >> + *			attached state and _only_ support detach
+> >>   */
+> >>  struct rproc {
+> >>  	struct list_head node;
+> >> @@ -569,6 +571,7 @@ struct rproc {
+> >>  	u16 elf_machine;
+> >>  	struct cdev cdev;
+> >>  	bool cdev_put_on_release;
+> >> +	bool detach_on_shutdown;
+> >>  };
+> >>  
+> >>  /**
+> >> -- 
+> >> 2.30.1
+> >>
+> 
