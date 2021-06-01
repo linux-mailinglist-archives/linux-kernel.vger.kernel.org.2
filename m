@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B4A396CF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262F2396CFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhFAFtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhFAFt3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:49:29 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA67C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:47:47 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id t17so7902867ljk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rVw8no+yV8oB3wz5djeZPnCWS3j2O3cetrETqnASBLc=;
-        b=LxxywmlOdMylQC+6NS46kAlF9f/RiIoTq9gjw+8eBv6QkEYkFQCE8uSUzz5w9gkSpQ
-         6B2eNbVehSY8QYIreQhEdA1oxQiOtjGwW1J5ftT2LsWFvgH4d22o6yvUexfnGa7FFcDH
-         l7s+M0MmYYYj+X0iQ+rL9V/7TTbkSMWKfENyM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rVw8no+yV8oB3wz5djeZPnCWS3j2O3cetrETqnASBLc=;
-        b=iDbDbX4U6cUkrNjPSaXZT5eRvXQS7P+Quf8DiJt7USf1GOTsPcZ3frXN6sPiLTR3rM
-         /5V3MqrQVD1PM//mRpDcrRdaXPeZ/bmnSe+oy/ndWTc4tLVQDRiznrhjjGFInB7oQDn3
-         o7wQBb0KxODwGcwroDPTBl5mWb5vI/qJT9mAyhN78H3dNMjtFU+dGaOIGY58bSOHW/1w
-         gZcRaC+l7JxsJ8Celr4gxl4GkwuI7c8025HJO/7AI9TOU52Gv2/YQsuC2yCUM79ZD0Qd
-         FuIu/+6nTXhexqdVDfEClKACRjQAUqogiuUyAUz9ThB0/GDGkWZl0GlE6sARV4PUThVb
-         Dn3A==
-X-Gm-Message-State: AOAM533/oyl2pH3lTMYJPLosNesVrNSkX2EVOb2UvXpP3ofMmtKllGyJ
-        PUjCqxYjNSH6me3hnD+xYib+ON+M+zTDqdxE
-X-Google-Smtp-Source: ABdhPJzdDX58HMiyB9mQ7rjjAR1f36nQEDN9h//CR2PLe10ejM/HgRfZ8ChSbdfqQiPXjLGulmLgrA==
-X-Received: by 2002:a2e:2c0a:: with SMTP id s10mr19209827ljs.171.1622526465534;
-        Mon, 31 May 2021 22:47:45 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id b29sm1809540ljf.64.2021.05.31.22.47.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 22:47:44 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id q7so19917878lfr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:47:44 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr11242558lfa.421.1622526464531;
- Mon, 31 May 2021 22:47:44 -0700 (PDT)
+        id S232839AbhFAFvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229477AbhFAFu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42CC4613AB;
+        Tue,  1 Jun 2021 05:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622526557;
+        bh=OPxQYwkHb+c8kRPYIMeJZ1NAST5RTo/Lc2MbCJ31+VY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZbBVaFHV/dOaGQ4wh+zmyN2lxHOP0Z/AjIO5zoJoUd2RuzjvOhtS9T96+JUNiNO/n
+         +ojMNCmF2kpgkQgHWADV0M3+XGtH+Fn3yI/ANDSxmbIk4j5HUVS+Y7GpwW7hNVhAp9
+         tCx7VzAoEL1REgTQRv9EqKWSX14UwMjNIMYljUWBZrfd/OY0a4O9gDx8mLEW6w8tUe
+         6NDueNw7IEwmXcrKBoJMhBZVHTlKO5FHFu/cJtPXUTLKgXb6VJwegTxCp+cYDGlWTr
+         WzqrpejvAEF1KyeM5LLrsdH8Ucc9Rs4ieM+b7LWUY6NooBUoNLtTco2zZylLbznxLj
+         mw8MKPyuZJ06Q==
+Received: by mail-oi1-f172.google.com with SMTP id a13so8985979oid.9;
+        Mon, 31 May 2021 22:49:17 -0700 (PDT)
+X-Gm-Message-State: AOAM530eJhDTlNRNDGDgw9OGQiXkSXK1hiRo1a6szNW3OogXAeZjjSgQ
+        TKTMgjj/65WKFsVXzJOxVE9tsm6iXASG3jrWjeA=
+X-Google-Smtp-Source: ABdhPJyIgc6c1QDmrjpCQOdUgQgVOvJONM1ji6QepPdsP8ZlBMN3ZjkhsZ26x+8EVFkB6zxjhv7Ejz8OqJ1I51L65QM=
+X-Received: by 2002:a54:460a:: with SMTP id p10mr1817105oip.47.1622526556632;
+ Mon, 31 May 2021 22:49:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531170123.243771-1-agruenba@redhat.com> <20210531170123.243771-10-agruenba@redhat.com>
-In-Reply-To: <20210531170123.243771-10-agruenba@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 May 2021 19:47:28 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whZWgwbyXMdC0JE+dM0zLyG1TU4gyAxv0FxbwZPwaEX7Q@mail.gmail.com>
-Message-ID: <CAHk-=whZWgwbyXMdC0JE+dM0zLyG1TU4gyAxv0FxbwZPwaEX7Q@mail.gmail.com>
-Subject: Re: [RFC 9/9] gfs2: Fix mmap + page fault deadlocks (part 2)
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     cluster-devel <cluster-devel@redhat.com>,
+References: <20210531221057.3406958-1-punitagrawal@gmail.com> <20210531221057.3406958-2-punitagrawal@gmail.com>
+In-Reply-To: <20210531221057.3406958-2-punitagrawal@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 1 Jun 2021 07:49:05 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHkZhgp3y_1dvKjfiEbwWDooCY0X+0HZutn5ZrsRGk15w@mail.gmail.com>
+Message-ID: <CAMj1kXHkZhgp3y_1dvKjfiEbwWDooCY0X+0HZutn5ZrsRGk15w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] PCI: of: Override 64-bit flag for non-prefetchable
+ memory below 4GB
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        Peter Geis <pgwipeout@gmail.com>, briannorris@chromium.org,
+        shawn.lin@rock-chips.com, Bjorn Helgaas <helgaas@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 7:02 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+Hi Punit,
+
+On Tue, 1 Jun 2021 at 00:11, Punit Agrawal <punitagrawal@gmail.com> wrote:
 >
-> @@ -807,13 +824,20 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
-> [...]
->         ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0);
->         gfs2_glock_dq(gh);
-> +       if (unlikely(current_needs_retry())) {
-> +               set_current_needs_retry(false);
-> +               if (ret == -EFAULT &&
-> +                   !iov_iter_fault_in_writeable(to, PAGE_SIZE))
-> +                       goto retry;
-> +       }
+> Some host bridges advertise non-prefetable memory windows that are
 
-Hmm. I haven't walked through this all, but is that "ret == -EFAULT"
-test the right thing to do?
+typo ^
 
-Can iomap_dio_rw() not instead just return a partial success if it hit
-a missing page half-way?
+> entirely located below 4GB but are marked as 64-bit address memory.
+>
+> Since commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
+> flags for 64-bit memory addresses"), the OF PCI range parser takes a
+> stricter view and treats 64-bit address ranges as advertised while
+> before such ranges were treated as 32-bit.
+>
+> A PCI host bridge that is modelled as PCI-to-PCI bridge cannot forward
 
-Shouldn't you retry for that case too?
+It is the root port which is modeled as a P2P bridge. The root port(s)
+together with the host bridge is what makes up the root complex.
 
-                Linus
+
+> 64-bit non-prefetchable memory ranges. As a result, the change in
+> behaviour due to the commit causes allocation failure for devices that
+> require non-prefetchable bus addresses.
+>
+
+AIUI, the problem is not that the device requires a non-prefetchable
+bus address, but that it fails to allocate a 32-bit BAR from a 64-bit
+non-prefetchable window.
+
+> In order to not break platforms, override the 64-bit flag for
+> non-prefetchable memory ranges that lie entirely below 4GB.
+>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+>
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> ---
+>  drivers/pci/of.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index da5b414d585a..e2e64c5c55cb 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -346,6 +346,14 @@ static int devm_of_pci_get_host_bridge_resources(struct device *dev,
+>                                 dev_warn(dev, "More than one I/O resource converted for %pOF. CPU base address for old range lost!\n",
+>                                          dev_node);
+>                         *io_base = range.cpu_addr;
+> +               } else if (resource_type(res) == IORESOURCE_MEM) {
+> +                       if (!(res->flags & IORESOURCE_PREFETCH)) {
+> +                               if (res->flags & IORESOURCE_MEM_64)
+> +                                       if (!upper_32_bits(range.pci_addr + range.size - 1)) {
+> +                                               dev_warn(dev, "Clearing 64-bit flag for non-prefetchable memory below 4GB\n");
+> +                                               res->flags &= ~IORESOURCE_MEM_64;
+> +                                       }
+> +                       }
+>                 }
+>
+>                 pci_add_resource_offset(resources, res, res->start - range.pci_addr);
+> --
+> 2.30.2
+>
