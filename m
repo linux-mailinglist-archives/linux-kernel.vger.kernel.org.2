@@ -2,76 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6313979B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FD13979C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhFASH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S234653AbhFASKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhFASH2 (ORCPT
+        with ESMTP id S231726AbhFASKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:07:28 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5661C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:05:45 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id k5so167701pjj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:05:45 -0700 (PDT)
+        Tue, 1 Jun 2021 14:10:06 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8688BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:08:24 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id k5so171909pjj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:08:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tFi+0ZXy3DnUaNTWR7lHK+Jvu+Euee8I+krnOUNTIo8=;
-        b=uOhIrF0skcVRYvW/sWyGzJPs4UT01Htakzfx7vc3yQzsMjnKVxV0Wfce9cVPXmlC/s
-         z99yd7kpG6/139ktjuDyzt1OHgvrhKn3qsLaVNrdVeBJTH9HNcb6fsV1GuOGc0wtLz1M
-         EB79TwLnP4jUMIpAvnHG68rQk0JYYaKPri9zyS9W880HpvcGMYjppN9ooy3hffkEic0B
-         odDc9ifCiGlr7scq7BxPOMACHhf0LcEYs3MLh/NL9XBpluljMRzvQaPkF0vD9dxJ9YNq
-         80Fs3QV0QhKvkJA/2AzWHtDrweSk6RtCqwgHplNbaBJjDdD7b2JIdOgVKE5i/xVybiyx
-         l2LQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DnmoH9bekRYpYwPbGnzt8MqfxFmGQVDBVeFrYtSfJAg=;
+        b=jNgEdYIMirBHf1RlWUpV+0XMt7t6M9Qb3u+Dm5b2Ko72L5Q/aswYluWEgM0Cf1LWE4
+         hZ4M7fWl9C2A90MzYiCfu3In2kwCEUcJN5Zc0GAfv75NTC6ApAs0DyLtLGT5urQTNFrG
+         7bLFUJEzE9nVbsd9R+hdLTvVTbmopnWQzV0xR04k/6p3ClNRirj1x4wRe6nIlNCbWV4P
+         eWrRfI9TcM8sHd6WRL1CPUWeYcmxdECAYdhZRpp9sQDHsU7hqycvpMxzdAFmdAg7h53z
+         dCD/VRxEBLWSQ8ecq+4dmDVENZe1rttV1r5JRy+1TOOdWU1A5y1e0hi3zd5sn6bMbQ4K
+         eI/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tFi+0ZXy3DnUaNTWR7lHK+Jvu+Euee8I+krnOUNTIo8=;
-        b=Ki7dAPnX34pp1djKMqVjupykeQRHIlIqL4RffJ6b2f1ZRdgnBlHgVOB2Ghz+7VrZtC
-         8f4VaA09XZvEyDy07WB0n0Xst8gX7ba+pE0Q5EX4LOb60UUcujBRsPSA5egXPuzaxYjX
-         J4sTQJ4ak/DE6xtyht70IzbiAzCBmFOFxE55fpaZi7SaQ+WkONWNdmPSudekvxpcivHl
-         zBNRgZefv+14LnZ68KImaEBbVs/9aIxxASWxxLk6gcadVHM45Jzywxt/zhP4uX9Ruxa9
-         Nfd1bDK5jDacEMiPG+3q73TNmwDPwW64+XkutAam/OFiPSso2L3R2JNo0vOBisrQslFK
-         h/AA==
-X-Gm-Message-State: AOAM5335q0tFSqI/cV7hh4530+1x4AtU6viPV8hf7/mUy5PqC01FvxiX
-        oPGbsFfhIvspqxl/gNYviDBS5v1+Zwp5k8G62N41jw==
-X-Google-Smtp-Source: ABdhPJwSvmFlvlvBNl2uR19/9PrU1TWWKo+7aepgOx3AgZNM8LBx5JAocjwfD9LASD/WwCHDZM24bSiyHNHt8DTyzRU=
-X-Received: by 2002:a17:902:e5ca:b029:109:8857:af7e with SMTP id
- u10-20020a170902e5cab02901098857af7emr1793368plf.82.1622570745134; Tue, 01
- Jun 2021 11:05:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DnmoH9bekRYpYwPbGnzt8MqfxFmGQVDBVeFrYtSfJAg=;
+        b=lzjzzQ5qc5hN8kG5WnP7T+Yb+hIUoJTDe8Fi5FM6Pg/GkfjUsfgH5D9y3dxuKh0qs6
+         DQGIPBCiH7kDn1eyrznEFdpXZ1ojiBv343N12+LiJQvFk46BkZS9yYFeSgmDDxugrpjs
+         UjUkI07Ob/GtQ7xadzQxpPSDY2IwZiKMM7YReCRiltbT1l8Tp8FLBxAY0EFU30leTvNb
+         KhMq3IizVJ7BILdE2hr4mP9RdebHV4SizqnLNtw6BAbm0MICarofhGiFKy19I5D6bNza
+         DsHUJ7MLw8n0QR5wsn6O6HWjM9xFZuMsgR6GYpYz2ogofu7bTOQW4znnUuHcoDEy84VZ
+         Tm4w==
+X-Gm-Message-State: AOAM53228G09fw89KXN2jWDjwyRZoqVvzlsurjuBSw9RaN356KJia+pq
+        NAe9F+LpXBO7xwBXiUSefyLQLA==
+X-Google-Smtp-Source: ABdhPJxKXC66gotDOyho4nO17wIW1CBqdGqeINp4HW5tpxGXIBnz8OWQp2+0yigdIN5+oThSwjq6Qg==
+X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr1124647pjb.13.1622570903889;
+        Tue, 01 Jun 2021 11:08:23 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id mr23sm909701pjb.12.2021.06.01.11.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 11:08:23 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 18:08:19 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, Pu Wen <puwen@hygon.cn>,
+        Joerg Roedel <jroedel@suse.de>, x86@kernel.org,
+        joro@8bytes.org, dave.hansen@linux.intel.com, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        sashal@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] x86/sev: Check whether SEV or SME is supported first
+Message-ID: <YLZ3k77CK+F9v8fF@google.com>
+References: <YK6E5NnmRpYYDMTA@google.com>
+ <905ecd90-54d2-35f1-c8ab-c123d8a3d9a0@hygon.cn>
+ <YLSuRBzM6piigP8t@suse.de>
+ <e1ad087e-a951-4128-923e-867a8b38ecec@hygon.cn>
+ <YLZGuTYXDin2K9wx@zn.tnic>
+ <YLZc3sFKSjpd2yPS@google.com>
+ <dbc4e48f-187a-4b2d-2625-b62d334f60b2@amd.com>
+ <YLZneRWzoujEe+6b@zn.tnic>
+ <YLZrXEQ8w5ntu7ov@google.com>
+ <YLZy+JR7TNEeNA6C@zn.tnic>
 MIME-Version: 1.0
-References: <20210528005029.88088-1-almasrymina@google.com>
- <20210531162527.caeae9545ea2843c5f62bc9c@linux-foundation.org>
- <CAHS8izMCb4Ws46X3xXGcmrvV6J36qsAPTVCA_gdcH65FU0OeUg@mail.gmail.com>
- <20210531173652.c21404a16a8f8542ce40afa8@linux-foundation.org>
- <CAHS8izO_3QivHuGdmY79Jb_-LqOGc5j-_-1C-tf84hXoKdBDTQ@mail.gmail.com>
- <83617ae4-90a1-24d0-a79c-4e259a928e04@oracle.com> <CAHS8izMA-YLz_wMyP15PV45tErN+bCHJ1x_q1vfQTMbkK-=MhA@mail.gmail.com>
-In-Reply-To: <CAHS8izMA-YLz_wMyP15PV45tErN+bCHJ1x_q1vfQTMbkK-=MhA@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 1 Jun 2021 11:05:34 -0700
-Message-ID: <CAHS8izO0br4O=v4g-0yiD0opei7+thmxyDNVQjqVif1rtjVyTg@mail.gmail.com>
-Subject: Re: [PATCH v4] mm, hugetlb: fix racy resv_huge_pages underflow on UFFDIO_COPY
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLZy+JR7TNEeNA6C@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Mina, does this patch depend on changes to restore_reserve_on_error()?
-> >
->
-> Yes, this patch (and only this patch) depends on your changes for
-> complete and correct functionality. I'm not sure what's the impact
+On Tue, Jun 01, 2021, Borislav Petkov wrote:
+> On Tue, Jun 01, 2021 at 05:16:12PM +0000, Sean Christopherson wrote:
+> > The bug isn't limited to out-of-spec hardware.  At the point of #GP, sme_enable()
+> > has only verified the max leaf is greater than 0x8000001f, it has not verified
+> > that 0x8000001f is actually supported.  The APM itself declares several leafs
+> > between 0x80000000 and 0x8000001f as reserved/unsupported, so we can't argue that
+> > 0x8000001f must be supported if the max leaf is greater than 0x8000001f.
+> 
+> If a hypervisor says that 0x8000001f is supported but then we explode
+> when reading MSR_AMD64_SEV, then hypervisor gets to keep both pieces.
 
-...of missing your changes aside from the underflow. The userfaultfd
-tests still pass.
+But in my scenario, the hypervisor has not said that 0x8000001f is valid, it has
+only said that at least one leaf > 0x8000001f is valid.
+
+E.g. if a (virtual) CPU supports CPUID ranges:
+
+  0x80000000 - 0x8000000A
+  0x80000020 - 0x80000021
+
+then the below check will pass as eax will be 0x80000021.
+
+	/* Check for the SME/SEV support leaf */
+	eax = 0x80000000;
+	ecx = 0;
+	native_cpuid(&eax, &ebx, &ecx, &edx);
+	if (eax < 0x8000001f)
+		return;
+
+But we have not yet verified that 0x8000001f is supported, only that the result
+of CPUID.0x8000001f can be trusted (to handle Intel CPUs which return data from
+the highest supported leaf if the provided leaf function is greater than the max
+supported leaf).  Verifying that 0x8000001f is supported doesn't happen until
+0x8000001f is actually read, which is currently done after the RDMSR that #GPs
+and explodes.
+
+> We're not going to workaround all possible insane hardware/hypervisor
+> configurations just because they dropped the ball.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
