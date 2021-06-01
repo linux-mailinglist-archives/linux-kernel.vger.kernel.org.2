@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34B9397897
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67705397899
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhFARBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:01:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:54490 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234505AbhFARBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:01:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FC446D;
-        Tue,  1 Jun 2021 10:00:00 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5F843F719;
-        Tue,  1 Jun 2021 09:59:58 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH 2/2] sched: Plug race between SCA, hotplug and migration_cpu_stop()
-In-Reply-To: <20210526205751.842360-3-valentin.schneider@arm.com>
-References: <20210526205751.842360-1-valentin.schneider@arm.com> <20210526205751.842360-3-valentin.schneider@arm.com>
-Date:   Tue, 01 Jun 2021 17:59:56 +0100
-Message-ID: <87h7ihfrlf.mognet@arm.com>
+        id S234561AbhFARCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234505AbhFARCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:02:12 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D58AC061574;
+        Tue,  1 Jun 2021 10:00:30 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id e18so7089418eje.5;
+        Tue, 01 Jun 2021 10:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CQMqoWBzPL5ZLjlastQzR0yj7aAdYnXQO5fTeIFHZ4k=;
+        b=ofaY6ZaT894tU9GoJsERFeuD9OD42gzTogC7Kxhjh/caApTFSPZUhXeALqmKwC49TY
+         O6KJKbTayLjj1K51CHu3nvHQg0A6jbNRc5lEjV1Gao2I203F1t8HD1bOQMsf6y1LXpdK
+         elUbzHcmR6qOHi5lmvk8ewFRC2UpJzz4bFXH0v/W5wq2A247kXrQPGJae0UWQZwpxesT
+         cYnNJo0Hcct+8Txg21brH899srxYL5ZNYPqG8Ry4+tLFbUtHiObim9mlppQrf/4tnQob
+         yB5NB9Ov+CPeBOHbCaZsYigVmI8mt9zLI9450umfPPXeM+Lw+lxvygGULrrZDOYkY5NU
+         tRZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CQMqoWBzPL5ZLjlastQzR0yj7aAdYnXQO5fTeIFHZ4k=;
+        b=g5/VjIEjWR2RUmPDcVzUn5iuFybhN2IFctFw3cJbvnfHjYKgCNN/zp1wdClVUEix31
+         BftUCajf5yUNcRj4+mWe0fW8pmSDNLfQrDfzVB1rosgbjW+AkTEMEwmlfWmhqpOoFqOF
+         ZVJD6Ip+9pNdUiYz8+UgwFHfjD6Dt3Q8EcxLFDDKlma7XTpQkwrxXd5ywvaMuk4kKu1G
+         hkrCR8W+eVqfH2qphophGisraS1mXYF3GZds5ZkcMvMycKmlrFPyiBLDTZxgWbqLJIyj
+         lznzTaB22Q/C0W/SVBeUW/5VEFuJtiQJmA7V1Az0uR/OYhIA7Av30xeVwx2G+lMO8rV4
+         gGOQ==
+X-Gm-Message-State: AOAM530vsfq8NU33wpb2g6t9wZpIWAJqTDxLt1w2Q664zUHP6p5UYpQz
+        a3BKTvjDIWp6VTOFnOfm0PbO8RzosP8=
+X-Google-Smtp-Source: ABdhPJyeYOWjKhIUjgAyXu/6opTIZiY7INYhum2ypvPWZAVMNFSxz6OYqa+86KdwPYLX8cww7HPu7A==
+X-Received: by 2002:a17:907:7201:: with SMTP id dr1mr1121890ejc.19.1622566828720;
+        Tue, 01 Jun 2021 10:00:28 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id bq1sm3123438ejb.66.2021.06.01.10.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 10:00:27 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 19:02:03 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        jonathanh@nvidia.com
+Subject: Re: [PATCH -next] soc/tegra: fuse: don't return -ENOMEM when
+ allocate lookups failed
+Message-ID: <YLZoC32dTDVwfSjh@orome.fritz.box>
+References: <20210412140527.4142735-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="P3fufEzxHHIvHqpA"
+Content-Disposition: inline
+In-Reply-To: <20210412140527.4142735-1-yangyingliang@huawei.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/21 21:57, Valentin Schneider wrote:
-> +		dest_cpu = arg->dest_cpu;
-> +		if (task_on_rq_queued(p)) {
-> +			/*
-> +			 * A hotplug operation could have happened between
-> +			 * set_cpus_allowed_ptr() and here, making dest_cpu no
-> +			 * longer allowed.
-> +			 */
-> +			if (!is_cpu_allowed(p, dest_cpu))
-> +				dest_cpu = select_fallback_rq(cpu_of(rq), p);
-> +			/*
-> +			 * dest_cpu can be victim of hotplug between is_cpu_allowed()
-> +			 * and here. However, per the synchronize_rcu() in
-> +			 * sched_cpu_deactivate(), it can't have gone lower than
-> +			 * CPUHP_AP_ACTIVE, so it's safe to punt it over and let
-> +			 * balance_push() route it elsewhere.
-> +			 */
-> +			update_rq_clock(rq);
-> +			rq = move_queued_task(rq, &rf, p, dest_cpu);
 
-So, while digesting this I started having doubts vs pcpu kthreads since
-they're allowed on online CPUs. The bogus scenario here would be picking a
-!active && online CPU, and see it go !online before the move_queued_task().
+--P3fufEzxHHIvHqpA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Now, to transition from online -> !online, we have to go through
-take_cpu_down() which is issued via a stop_machine() call. This means the
-transition can't happen until all online CPUs are running the stopper task
-and reach MULTI_STOP_RUN.
+On Mon, Apr 12, 2021 at 10:05:27PM +0800, Yang Yingliang wrote:
+> fuse->base can not be unmapped if allocate lookups failed in
+> tegra_init_fuse(), because it is an early_initcall, the driver
+> will be loaded anyway and fuse->base will be accessed by other
+> functions later, so remove the return -ENOMEM after allocating
+> lookups failed to make less confusing.
+>=20
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/soc/tegra/fuse/fuse-tegra.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 
-migration_cpu_stop() being already a stopper callback should thus make it
-"atomic" vs takedown_cpu(), meaning the above should be fine.
+Applied, though I did drop the error message. Out-of-memory situations
+are noisy anyway, so the extra error message doesn't add anything.
 
-> +		} else {
-> +			p->wake_cpu = dest_cpu;
-> +		}
->       } else if (pending) {
->               /*
->                * This happens when we get migrated between migrate_enable()'s
-> --
-> 2.25.1
+Thanks,
+Thierry
+
+--P3fufEzxHHIvHqpA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC2aAcACgkQ3SOs138+
+s6Fxtg//R8Jp1X7MQW6jXODjtxZCNLH2r+0MuF2z9+x5gE6deR0/Vfg4YrnIBPj2
+UijfczUYNHGsiJ6uisl6/VA4x2JgjZAmtuUActxkD+hAeMuCp+saF0LylsKI8HK2
+OcnELPh1sp11+1FPU75dxqsbEqYWbJ6ZqUlaHrugQ71Qe61+UflxirNQOsikKo6y
+sDewYLjcn36GWqLqCdaQjxKr8VC1GehSkWClHebPtyWCGdjcLntfcQ0HRIsefCHQ
+FkSVCwms74AxjnsmVwd92h0SlGdYkgpn2XU9Ox4KslX3KIkjwc8zQbKYC6p7y5d3
+0PxhOnxI5ygt0lANjvKHA4qKe6g3hIwPsWTzGmjKjwB3vTh4nj2tUfkev/8gNr25
+0DioLGQygX2pxoTrP0LtC6t7/15qRnTKpZEOp6i44uGiephPsNyqjm0mlYN35Gai
+9GrUBdpmsEK3lscQHuu2WnENOiqKXagdIDuuyPtv3bUMT9KXYi4Aor0uzWKae0od
+JwllY2Jt0nQMJzX95xxDgYpyNs5rtVWAO+m6tJuhcoF9K2wfkl1JdoZxdsD8l01M
+jbfriSy6S1UvkiW0H6IOpGg/9ZWOWj/7/NwxeKy9nAb6B0bjanBaw36VxxgOVgPk
+g8I6Y7hK4A6kmZ+JvTcRTkH+sM4Gau24xMGqsfTJQI/h5h19pyw=
+=Ak5L
+-----END PGP SIGNATURE-----
+
+--P3fufEzxHHIvHqpA--
