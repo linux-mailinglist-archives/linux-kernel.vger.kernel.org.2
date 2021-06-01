@@ -2,101 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EB039705C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAE539705E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhFAJ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:29:17 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56616 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233182AbhFAJ3I (ORCPT
+        id S233708AbhFAJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:29:40 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38322 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233225AbhFAJ3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:29:08 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1519QRn8002805;
-        Tue, 1 Jun 2021 11:27:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=BsDpJoLHvDvSIYjWJaYxAmYm+9EbdYsJJXc+10150Fk=;
- b=PfDoER9oXuNCgWnYOKszZTpqmVokmPoa8D1Jpn4V6CVbfgjTgDQwYXVn26WmZ2HFbcC0
- XY37NKR73VVnTZfrI9klV4NA6eQ2fsI1qACyqsQL1GbNE46lfgJa/vgn+VW9lSp9PMh+
- 65FkfwCs8Xn/7NeHtwk5R/dPbbI58ne+p8RvO7ld1qE5udyAt1m1+foemK3Zkbe/lztp
- 56JbDSPxQcQMd51CgeVPYSr3KEeGR5HKXrHwGlraeaglWDZrQ8N6ruCmyj9GbJgekpEX
- r+PV6MmDl9/67kCCeq/ZkGxmfPI8T0jXjd4fg30rBllmJMh795rWGG75yQa7SPsyYOHi gw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38w49ckk1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 11:27:06 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E55F210002A;
-        Tue,  1 Jun 2021 11:27:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CE7D4218112;
-        Tue,  1 Jun 2021 11:27:04 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 1 Jun
- 2021 11:27:04 +0200
-Subject: Re: [PATCH] ARM: dts: stm32: fix stm32mp157c-odyssey card detect pin
-To:     Grzegorz Szymaszek <gszymaszek@short.pl>
-CC:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        =?UTF-8?Q?Marcin_S=c5=82oniewski?= <marcin.sloniewski@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <YHH9+Xrn5Quge4Jt@nx64de-df6d00>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <74029811-6417-7c0b-1abd-6ea15de7f1ae@foss.st.com>
-Date:   Tue, 1 Jun 2021 11:27:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Jun 2021 05:29:39 -0400
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lo0gm-0001rw-Tn
+        for linux-kernel@vger.kernel.org; Tue, 01 Jun 2021 09:27:57 +0000
+Received: by mail-wr1-f72.google.com with SMTP id g14-20020a5d698e0000b0290117735bd4d3so689923wru.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:27:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LpP1wbaBTd6CznJkAVeLVRWdOIhuA1LgB5xje3HBMh4=;
+        b=U8k6d+BpE6qrVfyifzzjV2NXhAN5ERJa/3OtEf/q/jc+Tu+B3+yKwDii3qYhvB8mX/
+         MEsAxHC+X8VMmw4vc/POau9Bov0LKlfIAyx3RbLjxb2cXZG7Pt3hqkm9TX7byVP5Jl2u
+         9ZnzRI4qOATCz8ahnajyOEikN9T9+8va3AhGzcYjC8sVGWfSnv4bXQrl5OqpARXu9m5X
+         VWuGJ2JP/SXWGsXTdoy81NGiM+kaT4zO/2sBzXFQChF5pN8bK1fjTpVrpcZMzDgr/OHY
+         1tT5gMTal+On+fWLBOwnP/bMAWtgUB0dkPJhJFJTGZA5uKwTuGKsLsCFt/Pg6DMQqc+x
+         wVtw==
+X-Gm-Message-State: AOAM530xKbbL+KHK0/HRD7RZ7RHef8cLvmEp7gTtvjJ7bwWepWgQlOb9
+        ZXaU0lY1MtFirZlusnc0VbBpRiP9LPm1Kk/qtbBEeO8HSqjj9U4ECAU2nEjvGVbFlw6tkaNZQrZ
+        znPqxqHAksPbcExFmQEEj35BgUf/b18RgGEWRwVmMKQ==
+X-Received: by 2002:a5d:6c6f:: with SMTP id r15mr26128733wrz.79.1622539676590;
+        Tue, 01 Jun 2021 02:27:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxlt27WwKmWPgGZjKKTi+R3wpNAquWKWHEBbnXQTizR9DhlKa/nCvounLTe/91cT5Daw9FHrA==
+X-Received: by 2002:a5d:6c6f:: with SMTP id r15mr26128711wrz.79.1622539676431;
+        Tue, 01 Jun 2021 02:27:56 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id k82sm2053571wmf.11.2021.06.01.02.27.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 02:27:56 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Dinh Nguyen <dinguyen@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] EDAC, altera: skip defining unused structures for specific configs
+Date:   Tue,  1 Jun 2021 11:27:04 +0200
+Message-Id: <20210601092704.203555-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YHH9+Xrn5Quge4Jt@nx64de-df6d00>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_05:2021-05-31,2021-06-01 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/21 9:35 PM, Grzegorz Szymaszek wrote:
-> The microSD card detect pin is physically connected to the MPU pin PI3.
-> The Device Tree configuration of the card detect pin was wrong—it was
-> set to pin PB7 instead. If such configuration was used, the kernel would
-> hang on “Waiting for root device” when booting from a microSD card.
-> 
-> Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
-> ---
->   arch/arm/boot/dts/stm32mp157c-odyssey.dts | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey.dts b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-> index a7ffec8f1516..be1dd5e9e744 100644
-> --- a/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-> +++ b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-> @@ -64,7 +64,7 @@ &sdmmc1 {
->   	pinctrl-0 = <&sdmmc1_b4_pins_a>;
->   	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
->   	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
-> -	cd-gpios = <&gpiob 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-> +	cd-gpios = <&gpioi 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
->   	disable-wp;
->   	st,neg-edge;
->   	bus-width = <4>;
-> 
+The Altera EDAC driver has several features conditionally built
+depending on Kconfig options.  The edac_device_prv_data structures are
+conditionally used in of_device_id tables.  They reference other
+functions and structures which can be defined as __maybe_unused.  This
+silences build warnings like:
 
-Hi Grzegorz
+    drivers/edac/altera_edac.c:643:37: warning:
+        ‘altr_edac_device_inject_fops’ defined but not used [-Wunused-const-variable=]
 
-Applied on stm32-next.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/edac/altera_edac.c | 44 ++++++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 18 deletions(-)
 
-Thanks.
-Alex
-
+diff --git a/drivers/edac/altera_edac.c b/drivers/edac/altera_edac.c
+index 61c21bd880a4..2949edb93454 100644
+--- a/drivers/edac/altera_edac.c
++++ b/drivers/edac/altera_edac.c
+@@ -539,10 +539,18 @@ module_platform_driver(altr_edac_driver);
+  * trigger testing are different for each memory.
+  */
+ 
++#ifdef CONFIG_EDAC_ALTERA_OCRAM
+ static const struct edac_device_prv_data ocramecc_data;
++#endif
++#ifdef CONFIG_EDAC_ALTERA_L2C
+ static const struct edac_device_prv_data l2ecc_data;
++#endif
++#ifdef CONFIG_EDAC_ALTERA_OCRAM
+ static const struct edac_device_prv_data a10_ocramecc_data;
++#endif
++#ifdef CONFIG_EDAC_ALTERA_L2C
+ static const struct edac_device_prv_data a10_l2ecc_data;
++#endif
+ 
+ static irqreturn_t altr_edac_device_handler(int irq, void *dev_id)
+ {
+@@ -569,9 +577,9 @@ static irqreturn_t altr_edac_device_handler(int irq, void *dev_id)
+ 	return ret_value;
+ }
+ 
+-static ssize_t altr_edac_device_trig(struct file *file,
+-				     const char __user *user_buf,
+-				     size_t count, loff_t *ppos)
++static ssize_t __maybe_unused
++altr_edac_device_trig(struct file *file, const char __user *user_buf,
++		      size_t count, loff_t *ppos)
+ 
+ {
+ 	u32 *ptemp, i, error_mask;
+@@ -640,27 +648,27 @@ static ssize_t altr_edac_device_trig(struct file *file,
+ 	return count;
+ }
+ 
+-static const struct file_operations altr_edac_device_inject_fops = {
++static const struct file_operations altr_edac_device_inject_fops __maybe_unused = {
+ 	.open = simple_open,
+ 	.write = altr_edac_device_trig,
+ 	.llseek = generic_file_llseek,
+ };
+ 
+-static ssize_t altr_edac_a10_device_trig(struct file *file,
+-					 const char __user *user_buf,
+-					 size_t count, loff_t *ppos);
++static ssize_t __maybe_unused
++altr_edac_a10_device_trig(struct file *file, const char __user *user_buf,
++			  size_t count, loff_t *ppos);
+ 
+-static const struct file_operations altr_edac_a10_device_inject_fops = {
++static const struct file_operations altr_edac_a10_device_inject_fops __maybe_unused = {
+ 	.open = simple_open,
+ 	.write = altr_edac_a10_device_trig,
+ 	.llseek = generic_file_llseek,
+ };
+ 
+-static ssize_t altr_edac_a10_device_trig2(struct file *file,
+-					  const char __user *user_buf,
+-					  size_t count, loff_t *ppos);
++static ssize_t __maybe_unused
++altr_edac_a10_device_trig2(struct file *file, const char __user *user_buf,
++			   size_t count, loff_t *ppos);
+ 
+-static const struct file_operations altr_edac_a10_device_inject2_fops = {
++static const struct file_operations altr_edac_a10_device_inject2_fops __maybe_unused = {
+ 	.open = simple_open,
+ 	.write = altr_edac_a10_device_trig2,
+ 	.llseek = generic_file_llseek,
+@@ -1697,9 +1705,9 @@ MODULE_DEVICE_TABLE(of, altr_edac_a10_device_of_match);
+  * Based on xgene_edac.c peripheral code.
+  */
+ 
+-static ssize_t altr_edac_a10_device_trig(struct file *file,
+-					 const char __user *user_buf,
+-					 size_t count, loff_t *ppos)
++static ssize_t __maybe_unused
++altr_edac_a10_device_trig(struct file *file, const char __user *user_buf,
++			  size_t count, loff_t *ppos)
+ {
+ 	struct edac_device_ctl_info *edac_dci = file->private_data;
+ 	struct altr_edac_device_dev *drvdata = edac_dci->pvt_info;
+@@ -1729,9 +1737,9 @@ static ssize_t altr_edac_a10_device_trig(struct file *file,
+  * slightly. A few Arria10 peripherals can use this injection function.
+  * Inject the error into the memory and then readback to trigger the IRQ.
+  */
+-static ssize_t altr_edac_a10_device_trig2(struct file *file,
+-					  const char __user *user_buf,
+-					  size_t count, loff_t *ppos)
++static ssize_t __maybe_unused
++altr_edac_a10_device_trig2(struct file *file, const char __user *user_buf,
++			   size_t count, loff_t *ppos)
+ {
+ 	struct edac_device_ctl_info *edac_dci = file->private_data;
+ 	struct altr_edac_device_dev *drvdata = edac_dci->pvt_info;
+-- 
+2.27.0
 
