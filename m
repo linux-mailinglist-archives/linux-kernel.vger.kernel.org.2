@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A814A396BFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4B4396C07
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhFAECB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 00:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhFAECA (ORCPT
+        id S231375AbhFAESY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 00:18:24 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3362 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhFAESX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 00:02:00 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2B8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 21:00:19 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so646376pjp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 21:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k3CXuIHvguEKDy/ECWlq3WX2NJbLw9/l4D5j8nQaStQ=;
-        b=UPTILnt9B7+RBltwKhRkE3pDiFM447zC45wGOtGp30p7Gacb2MTU7rMY3naqzhfpLz
-         VH4yJnFNaFN5lr1cF4PURM4D81wWhql55YMgqGbvu9NflrxWS1MnLdwlj5TPlHefOIO4
-         Yt2BOQjYlm0lzGkyu7DibJv5p+gDjuJLdvj4E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k3CXuIHvguEKDy/ECWlq3WX2NJbLw9/l4D5j8nQaStQ=;
-        b=Moamq5ltpArftlMpePtfRATCWdtd7ShKvHHixGXhGaOrFmqSSl5/ZeIB1BU91xHV4h
-         n22byvnLghVENQca9u9hZBDTDSQjKVq52gf1ZVFjOwaB3/ViFVAGKUCsfnCowS75rsXT
-         HDQCADOt0mSap/T+nYC6sThMvm6hz0+kM1F1YYsZAORA7hgpusyh+nIucE+8r+cNRRP/
-         rfxozZouzgcJ6RPH2Lk5kp+/wU0+7yciPONrt6po7hp+cNi6Ri8X5Hiq+qiLludL4Rwn
-         FDNiU67wQs5BGweZLib8AAAAKljcN8uE0/Z7IvmklIgpTHTvMcPPFeTcxvHF1a3kpatM
-         NZrA==
-X-Gm-Message-State: AOAM530mTUZwcP1TTRrkvONOvAup06IEPuXMLfO1pLG5xRIvQCkuSYlJ
-        r5eqfwzXO4IhoUn6xmsVsucliw==
-X-Google-Smtp-Source: ABdhPJxVRZNWrzNMHtMZqws3k5caqBWHpgoq/Euc0BFxsKp0hxH4Lc9Fj8WdYMvbSZCNfIab89LMoQ==
-X-Received: by 2002:a17:90a:9517:: with SMTP id t23mr2477148pjo.130.1622520019059;
-        Mon, 31 May 2021 21:00:19 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:5f83:3563:b780:4d82])
-        by smtp.gmail.com with ESMTPSA id 191sm11866953pfx.121.2021.05.31.21.00.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 21:00:18 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        chun-jie.chen@mediatek.corp-partner.google.com,
-        Yong Wu <yong.wu@mediatek.com>
-Subject: [PATCH v2 3/3] arm64: dts: mt8183: remove syscon from smi_common node
-Date:   Tue,  1 Jun 2021 12:00:14 +0800
-Message-Id: <20210601040014.2970805-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+        Tue, 1 Jun 2021 00:18:23 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FvJfd6t4gz630D;
+        Tue,  1 Jun 2021 12:12:57 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 12:16:35 +0800
+Received: from SWX921481.china.huawei.com (10.126.201.217) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 12:16:32 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <hpa@zytor.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <bp@alien8.de>, <x86@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH] x86/kprobes: remove free_insn_page since it is same with the common weak function
+Date:   Tue, 1 Jun 2021 16:08:56 +1200
+Message-ID: <20210601040856.22080-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.201.217]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi761-chm.china.huawei.com (10.1.198.147)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't need to register smi_common as syscon. Also add required
-property power-domains for this node.
+free_insn_page() in x86 is same with the common weak function in
+kernel/kprobes.c. Plus, its comment "Recover page to RW mode before
+releasing it" seems insensible to be there since resetting mapping
+is done by common code in vfree() of module_memfree().
+So drop the strong function and its comment in x86 totally.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kernel/kprobes/core.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index c5e822b6b77a..e074c0d402ff 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1263,13 +1263,14 @@ larb0: larb@14017000 {
- 		};
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index d3d65545cb8b..3bce67d3a03c 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -422,12 +422,6 @@ void *alloc_insn_page(void)
+ 	return page;
+ }
  
- 		smi_common: smi@14019000 {
--			compatible = "mediatek,mt8183-smi-common", "syscon";
-+			compatible = "mediatek,mt8183-smi-common";
- 			reg = <0 0x14019000 0 0x1000>;
- 			clocks = <&mmsys CLK_MM_SMI_COMMON>,
- 				 <&mmsys CLK_MM_SMI_COMMON>,
- 				 <&mmsys CLK_MM_GALS_COMM0>,
- 				 <&mmsys CLK_MM_GALS_COMM1>;
- 			clock-names = "apb", "smi", "gals0", "gals1";
-+			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
- 		};
+-/* Recover page to RW mode before releasing it */
+-void free_insn_page(void *page)
+-{
+-	module_memfree(page);
+-}
+-
+ /* Kprobe x86 instruction emulation - only regs->ip or IF flag modifiers */
  
- 		imgsys: syscon@15020000 {
+ static void kprobe_emulate_ifmodifiers(struct kprobe *p, struct pt_regs *regs)
 -- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
+2.25.1
 
