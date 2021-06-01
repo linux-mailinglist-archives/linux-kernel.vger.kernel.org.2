@@ -2,188 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BE83973FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176F83973FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbhFANVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:21:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1864 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233064AbhFANVJ (ORCPT
+        id S233922AbhFANUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233064AbhFANUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:21:09 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151D7E92145199;
-        Tue, 1 Jun 2021 09:18:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=nujpD2uRJJJK6SGWNkvfjHopcPKh4UOdpV9UeDwm950=;
- b=lu9zdtiAOggn0BEn0PWSqNkynDl14bx+UcEni8ELAqwUzdVV8LvK96tznyKVGyxUEYFN
- DV+Wu9jrPl4LeJ9kgdSAql7rCf+g7k2HiwCwoHN3cYpI6swQbEwbon/K3tVtu/5RRzOU
- LMVfdHSFy66oBmZaktBpyatrVm1X9xeGc1O13brQFmcom5elIMusETlBRTU8AHTZBQik
- IYexEy3ZPWwGw3zI2pbG6mnmU7D1skagjSG2WYFNB25QXjzNXgKGrLccuGte3r+KrelC
- 8EZZe5+Aoh354IjNcA/aAc2atFwoF63+oZwQXEfboAjxoOWnTvOAnYrbQ4yxbvTXdRDD KA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38wma4jq5t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 09:18:45 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 151D7UWu146948;
-        Tue, 1 Jun 2021 09:18:45 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38wma4jq53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 09:18:44 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151DEBq2004348;
-        Tue, 1 Jun 2021 13:18:42 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 38ud889qy6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 13:18:42 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151DIdi518284996
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Jun 2021 13:18:39 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDD24A4059;
-        Tue,  1 Jun 2021 13:18:38 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3027BA4040;
-        Tue,  1 Jun 2021 13:18:38 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.61.122])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue,  1 Jun 2021 13:18:38 +0000 (GMT)
-Date:   Tue, 1 Jun 2021 15:18:36 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org
-Subject: Re: [RFC/RFT PATCH 1/5] s390: make crashk_res resource a child of
- "System RAM"
-Message-ID: <20210601151836.1f3a90e0@thinkpad>
-In-Reply-To: <20210531122959.23499-2-rppt@kernel.org>
-References: <20210531122959.23499-1-rppt@kernel.org>
-        <20210531122959.23499-2-rppt@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 1 Jun 2021 09:20:51 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9D2C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:19:08 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id e2so5512212vsr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vG9XhD9yPILV9Qp7pU9v5y+PXRxebG5XrL79GQd10ds=;
+        b=neTIcs2KViMm4PAkTdmxpRRJPGBIVB2P4CHkfj09jaZmc1cNfB/2QmyFtmvoW7bYQy
+         GtvP361YVlji7lbMB2azJaAw2gzsb/VFEPoJEkBlkfCk4SK0uTG+rMKP64goXu5R4rmz
+         tzKEkH0HmGAHRz7TThyTiMeMYADAWjvD2GDi8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vG9XhD9yPILV9Qp7pU9v5y+PXRxebG5XrL79GQd10ds=;
+        b=IZFoTMafpGPhhA3NcU3S641Kztv9fgcMItSN9dtw1mVHzPY2eDcrmiMwuKL+OOTmHs
+         99RWT1Ue543sQ+b79EA57VcrRTLFn76ImQFU8XlRz4rXaV+tJ0yxAxK7EqffDRva2F04
+         wwE0iA4+LDRb7aW3w5WvmzcJpG1gY+efI2pnrgaXK8yBFclw1+vyNHa+ilZsve173Z7g
+         iCKk/1iC4ygWw8e7RipfH8mqVMPP1YWmhtQ2cdOVs4J/vO81ytCvJkcp548LYrcptj7S
+         WylWaXVAB2saKfIxQV2H7/AYzFZckcRz9zqQDhNhdcHlkVGtR0FLp06Z5d0Ood9V+49Q
+         JGHw==
+X-Gm-Message-State: AOAM532gB0JiGSnuoDbAN27+zXbbBfX6WnkJx6WBHw5hjtxNWrG/YKzT
+        Jqu6wbKndu2MUWvz9HKex1jyFB78O8rfkxrN/AA1Bg==
+X-Google-Smtp-Source: ABdhPJxjmup0Pyq9xuCSMQbidyEK5x0ytyC4tnXrH70thXtlATobCKr/Au/GM/YPozoWlqxFsY73VBD2sR2OJ0RLFLA=
+X-Received: by 2002:a05:6102:b06:: with SMTP id b6mr18171215vst.21.1622553545662;
+ Tue, 01 Jun 2021 06:19:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: zfZM6brFCcTyehtRJvYgRd1OdKDzk76Y
-X-Proofpoint-GUID: 4M8jGD7jEmJYuCMaDnew6ToMDp5DgKp1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_06:2021-05-31,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 spamscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- mlxlogscore=999 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106010089
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+ <162218366632.34379.11311748209082333016.stgit@web.messagingengine.com>
+In-Reply-To: <162218366632.34379.11311748209082333016.stgit@web.messagingengine.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 1 Jun 2021 15:18:54 +0200
+Message-ID: <CAJfpegshedor_ZiQ_8EdLGRG0AEWb5Sy5Pa4SwPg9+f196_mGg@mail.gmail.com>
+Subject: Re: [REPOST PATCH v4 4/5] kernfs: use i_lock to protect concurrent
+ inode updates
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 15:29:55 +0300
-Mike Rapoport <rppt@kernel.org> wrote:
-
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Commit 4e042af463f8 ("s390/kexec: fix crash on resize of reserved memory")
-> added a comment that says "crash kernel resource should not be part of the
-> System RAM resource" but never explained why. As it looks from the code in
-> the kernel and in kexec there is no actual reason for that.
-
-Still testing, but so far everything works fine.
-
-> 
-> Keeping crashk_res inline with other resources makes code simpler and
-> cleaner, and allows future consolidation of the resources setup across
-> several architectures.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net> wrote:
+>
+> The inode operations .permission() and .getattr() use the kernfs node
+> write lock but all that's needed is to keep the rb tree stable while
+> updating the inode attributes as well as protecting the update itself
+> against concurrent changes.
+>
+> And .permission() is called frequently during path walks and can cause
+> quite a bit of contention between kernfs node operations and path
+> walks when the number of concurrent walks is high.
+>
+> To change kernfs_iop_getattr() and kernfs_iop_permission() to take
+> the rw sem read lock instead of the write lock an additional lock is
+> needed to protect against multiple processes concurrently updating
+> the inode attributes and link count in kernfs_refresh_inode().
+>
+> The inode i_lock seems like the sensible thing to use to protect these
+> inode attribute updates so use it in kernfs_refresh_inode().
+>
+> Signed-off-by: Ian Kent <raven@themaw.net>
 > ---
->  arch/s390/kernel/setup.c | 21 +++++----------------
->  1 file changed, 5 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-> index 5aab59ad5688..30430e7c1b03 100644
-> --- a/arch/s390/kernel/setup.c
-> +++ b/arch/s390/kernel/setup.c
-> @@ -500,6 +500,9 @@ static struct resource __initdata *standard_resources[] = {
->  	&code_resource,
->  	&data_resource,
->  	&bss_resource,
-> +#ifdef CONFIG_CRASH_DUMP
-> +	&crashk_res,
-> +#endif
->  };
->  
->  static void __init setup_resources(void)
-> @@ -535,7 +538,7 @@ static void __init setup_resources(void)
->  
->  		for (j = 0; j < ARRAY_SIZE(standard_resources); j++) {
->  			std_res = standard_resources[j];
-> -			if (std_res->start < res->start ||
-> +			if (!std_res->end || std_res->start < res->start ||
->  			    std_res->start > res->end)
->  				continue;
->  			if (std_res->end > res->end) {
-
-Why is this extra check for !std_res->end added here? I assume it
-might be needed later, after you moved this to common code, but I
-cannot see how any of the other patches in this series would require
-that.
-
-> @@ -552,20 +555,6 @@ static void __init setup_resources(void)
->  			}
->  		}
->  	}
-> -#ifdef CONFIG_CRASH_DUMP
-> -	/*
-> -	 * Re-add removed crash kernel memory as reserved memory. This makes
-> -	 * sure it will be mapped with the identity mapping and struct pages
-> -	 * will be created, so it can be resized later on.
-> -	 * However add it later since the crash kernel resource should not be
-> -	 * part of the System RAM resource.
-> -	 */
-> -	if (crashk_res.end) {
-> -		memblock_add_node(crashk_res.start, resource_size(&crashk_res), 0);
-> -		memblock_reserve(crashk_res.start, resource_size(&crashk_res));
-> -		insert_resource(&iomem_resource, &crashk_res);
-> -	}
-> -#endif
+>  fs/kernfs/inode.c |   10 ++++++----
+>  fs/kernfs/mount.c |    4 ++--
+>  2 files changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
+> index 3b01e9e61f14e..6728ecd81eb37 100644
+> --- a/fs/kernfs/inode.c
+> +++ b/fs/kernfs/inode.c
+> @@ -172,6 +172,7 @@ static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
+>  {
+>         struct kernfs_iattrs *attrs = kn->iattr;
+>
+> +       spin_lock(&inode->i_lock);
+>         inode->i_mode = kn->mode;
+>         if (attrs)
+>                 /*
+> @@ -182,6 +183,7 @@ static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
+>
+>         if (kernfs_type(kn) == KERNFS_DIR)
+>                 set_nlink(inode, kn->dir.subdirs + 2);
+> +       spin_unlock(&inode->i_lock);
 >  }
->  
->  static void __init setup_ident_map_size(void)
-> @@ -733,7 +722,7 @@ static void __init reserve_crashkernel(void)
->  		diag10_range(PFN_DOWN(crash_base), PFN_DOWN(crash_size));
->  	crashk_res.start = crash_base;
->  	crashk_res.end = crash_base + crash_size - 1;
-> -	memblock_remove(crash_base, crash_size);
-> +	memblock_reserve(crash_base, crash_size);
->  	pr_info("Reserving %lluMB of memory at %lluMB "
->  		"for crashkernel (System RAM: %luMB)\n",
->  		crash_size >> 20, crash_base >> 20,
+>
+>  int kernfs_iop_getattr(struct user_namespace *mnt_userns,
+> @@ -191,9 +193,9 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
+>         struct inode *inode = d_inode(path->dentry);
+>         struct kernfs_node *kn = inode->i_private;
+>
+> -       down_write(&kernfs_rwsem);
+> +       down_read(&kernfs_rwsem);
+>         kernfs_refresh_inode(kn, inode);
+> -       up_write(&kernfs_rwsem);
+> +       up_read(&kernfs_rwsem);
+>
+>         generic_fillattr(&init_user_ns, inode, stat);
+>         return 0;
+> @@ -284,9 +286,9 @@ int kernfs_iop_permission(struct user_namespace *mnt_userns,
+>
+>         kn = inode->i_private;
+>
+> -       down_write(&kernfs_rwsem);
+> +       down_read(&kernfs_rwsem);
+>         kernfs_refresh_inode(kn, inode);
+> -       up_write(&kernfs_rwsem);
+> +       up_read(&kernfs_rwsem);
+>
+>         return generic_permission(&init_user_ns, inode, mask);
+>  }
+> diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+> index baa4155ba2edf..f2f909d09f522 100644
+> --- a/fs/kernfs/mount.c
+> +++ b/fs/kernfs/mount.c
+> @@ -255,9 +255,9 @@ static int kernfs_fill_super(struct super_block *sb, struct kernfs_fs_context *k
+>         sb->s_shrink.seeks = 0;
+>
+>         /* get root inode, initialize and unlock it */
+> -       down_write(&kernfs_rwsem);
+> +       down_read(&kernfs_rwsem);
+>         inode = kernfs_get_inode(sb, info->root->kn);
+> -       up_write(&kernfs_rwsem);
+> +       up_read(&kernfs_rwsem);
+>         if (!inode) {
+>                 pr_debug("kernfs: could not get root inode\n");
+>                 return -ENOMEM;
+>
 
-Other architectures check the return value of memblock_reserve() at
-this point, and exit crashkernel reservation if it fails. IIUC, the
-only reason why memblock_reserve() could fail would be the same reason
-why also memblock_remove() could fail, i.e. that memblock_double_array()
-would fail. And since we also do not check that at the moment, your
-patch would probably not (additionally) break anything.
+This last hunk is not mentioned in the patch header.  Why is this needed?
 
-Still, this might be something for an add-on patch (for us). Do you
-happen to know how likely it would be that memblock_remove/reserve()
-could fail at this point?
+Otherwise looks good.
+
+Thanks,
+Miklos
