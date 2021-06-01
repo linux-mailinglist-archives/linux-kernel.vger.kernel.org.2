@@ -2,129 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E562E397435
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6481C397437
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbhFANcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:32:04 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:43735 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233924AbhFANcD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:32:03 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 7860E22236;
-        Tue,  1 Jun 2021 15:30:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1622554220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lmn070DewzzRb9NZbmshsQ4m/50BlJ3QSmY3EOYGQWk=;
-        b=psJSsva3QJ4sIsKgOoB8FDggNkXR1q3AGkzseOJybJUwHuj9GoTLKSX2DmpOmXGtYdVzUw
-        57pbUPYNhL6ksfubzyHN7ieBIk7V/KEIyedfbYDXHEEcXiB+b2tKQ9q+RkbQrBNBSjz4W3
-        q3iJQevnxpoiYZVvqm+UDlojTVMcNkU=
+        id S234032AbhFANcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:32:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234001AbhFANcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:32:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31FCA613AB;
+        Tue,  1 Jun 2021 13:30:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622554228;
+        bh=u3ILEWTeiysuA4cfXkP54DqJof+Ly4Pxun8uzn4hxys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M1KENGQC9GCnydeaUAPkpZ0e7xBL8BNiVn+zyL0/MQJDzedIqI18QjMGYEsxSkgKd
+         rJQd7RHi48RHwNttJUwWNX/fNTSGrzBARDJJZ0MD//nPShggrDHEdDz5d5Wq5XvKz4
+         3rDmcEbrIPqFt66IHdhhXKpGyumEBPSVNgmG3Rm2Wm54Iaxw6DN0Wb7v8ddg9RXFyh
+         fmXntPOLCG5OUW27JXDgArRoUXSdZe9XbHuVzal33xnvdBhLx+BTI7pohCTklyG4K7
+         zKei7vpv5wJ9XG74VJLRiu1T5vWJU98BXXD05lyrsZCCESv/e4Qn+wWMoc44WqzVIK
+         xhXZYshmuNN4Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 695E74011C; Tue,  1 Jun 2021 10:30:25 -0300 (-03)
+Date:   Tue, 1 Jun 2021 10:30:25 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf tools: Move probing cgroup sampling support
+Message-ID: <YLY2cdeQec5bH5Jc@kernel.org>
+References: <20210527182835.1634339-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Jun 2021 15:30:20 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com
-Subject: Re: [PATCH v4 4/4] mtd: spi-nor: otp: implement erase for Winbond and
- similar flashes
-In-Reply-To: <2d04a7f5-c99e-3177-5a1f-debe49f51ef5@microchip.com>
-References: <20210521194034.15249-1-michael@walle.cc>
- <20210521194034.15249-5-michael@walle.cc>
- <2d04a7f5-c99e-3177-5a1f-debe49f51ef5@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <6c8539c4fcfa1e58446826c24fd4e539@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527182835.1634339-1-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-31 10:56, schrieb Tudor.Ambarus@microchip.com:
-> On 5/21/21 10:40 PM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Winbond flashes with OTP support provide a command to erase the OTP
->> data. This might come in handy during development.
->> 
->> This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
->> NXP FSPI controller.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/mtd/spi-nor/core.c    |  2 +-
->>  drivers/mtd/spi-nor/core.h    |  4 ++
->>  drivers/mtd/spi-nor/otp.c     | 83 
->> +++++++++++++++++++++++++++++++++++
->>  drivers/mtd/spi-nor/winbond.c |  1 +
->>  4 files changed, 89 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index bd2c7717eb10..9551effb6a44 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -1318,7 +1318,7 @@ static u32 spi_nor_convert_addr(struct spi_nor 
->> *nor, loff_t addr)
->>  /*
->>   * Initiate the erasure of a single sector
->>   */
->> -static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
->> +int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
->>  {
->>         int i;
->> 
->> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->> index 28a2e0be97a3..9398a8738857 100644
->> --- a/drivers/mtd/spi-nor/core.h
->> +++ b/drivers/mtd/spi-nor/core.h
->> @@ -207,6 +207,7 @@ struct spi_nor_otp_organization {
->>   * @read:      read from the SPI NOR OTP area.
->>   * @write:     write to the SPI NOR OTP area.
->>   * @lock:      lock an OTP region.
->> + * @erase:     erase an OTP region.
->>   * @is_locked: check if an OTP region of the SPI NOR is locked.
->>   */
->>  struct spi_nor_otp_ops {
->> @@ -214,6 +215,7 @@ struct spi_nor_otp_ops {
->>         int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
->>                      const u8 *buf);
->>         int (*lock)(struct spi_nor *nor, unsigned int region);
->> +       int (*erase)(struct spi_nor *nor, loff_t addr);
+Em Thu, May 27, 2021 at 11:28:35AM -0700, Namhyung Kim escreveu:
+> I found that checking cgroup sampling support using the missing
+> features doesn't work on old kernels.  Because it added both
+> attr.cgroup bit and PERF_SAMPLE_CGROUP bit, it needs to check
+> whichever comes first (usually the actual event, not dummy).
 > 
-> maybe better:
-> int (*erase)(struct spi_nor *nor, loff_t addr, size_t len);
+> But it only checks the attr.cgroup bit which is set only in the dummy
+> event so cannot detect failtures due the sample bits.  Also we don't
+> ignore the missing feature and retry, it'd be better checking it with
+> the API probing logic.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/builtin-record.c      |  6 ++++++
+>  tools/perf/util/evsel.c          |  6 +-----
+>  tools/perf/util/evsel.h          |  1 -
+>  tools/perf/util/perf_api_probe.c | 10 ++++++++++
+>  tools/perf/util/perf_api_probe.h |  1 +
+>  5 files changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
+> index 829af17a0867..020411682a3c 100644
+> --- a/tools/perf/util/perf_api_probe.c
+> +++ b/tools/perf/util/perf_api_probe.c
+> @@ -103,6 +103,11 @@ static void perf_probe_build_id(struct evsel *evsel)
+>  	evsel->core.attr.build_id = 1;
+>  }
+>  
+> +static void perf_probe_cgroup(struct evsel *evsel)
+> +{
+> +	evsel->core.attr.cgroup = 1;
+> +}
+> +
+>  bool perf_can_sample_identifier(void)
+>  {
+>  	return perf_probe_api(perf_probe_sample_identifier);
+> @@ -182,3 +187,8 @@ bool perf_can_record_build_id(void)
+>  {
+>  	return perf_probe_api(perf_probe_build_id);
+>  }
+> +
+> +bool perf_can_record_cgroup(void)
+> +{
+> +	return perf_probe_api(perf_probe_cgroup);
+> +}
+> diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_probe.h
+> index f12ca55f509a..b104168efb15 100644
+> --- a/tools/perf/util/perf_api_probe.h
+> +++ b/tools/perf/util/perf_api_probe.h
+> @@ -12,5 +12,6 @@ bool perf_can_record_switch_events(void);
+>  bool perf_can_record_text_poke_events(void);
+>  bool perf_can_sample_identifier(void);
+>  bool perf_can_record_build_id(void);
+> +bool perf_can_record_cgroup(void);
+>  
+>  #endif // __PERF_API_PROBE_H
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index bc3dd379eb67..71efe6573ee7 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -2733,6 +2733,12 @@ int cmd_record(int argc, const char **argv)
+>  		rec->no_buildid = true;
+>  	}
+>  
+> +	if (rec->opts.record_cgroup && !perf_can_record_cgroup()) {
+> +		pr_err("Kernel has no cgroup sampling support.\n");
+> +		err = -EINVAL;
+> +		goto out_opts;
+> +	}
+> +
+>  	if (rec->opts.kcore)
+>  		rec->data.is_dir = true;
+>  
 
-Right now these ops represent what is sent to the hardware. The address
-is what is really sent over the wire. The read and write has the same
-semantics (and limitations, like you can't cross region boundaries etc).
+The above is perf/urgent material and should fix your issue, right?
 
-As there is only one kind of method to access OTP right now, I wouldn't
-want to prematurely optimize it for future ones. It is easy to change
-afterwards if there is need to. And supplying a length right now would
-mean to have a loop and some checks in the erase() op; where it should
-really be "erase one region" and not "erase multiple ones". Mapping
-from multiple to one should be the duty of the otp core code.
+The part below is a separate patch and can be left for later, or maybe
+remain in the codebase, as simple tools that use just one evsel and
+request a cgroup will continue probing the kernel, etc. I.e. it
+shouldn't get in the way for cases with dummies, etc.
 
-So, one could argue about the parameter "unsigned in region" vs.
-"loff_t addr" because both represent the same thing. But
-spi_nor_otp_erase_secr() should really take the address, because
-that is what the opcode takes as an argument. Thus, changing the
-argument of the .erase to "unsigned int region" you couldn't just
-assign spi_nor_otp_erase_secr to .erase but you'd need to have a
-small wrapper which converts the argument.
+Simple tools then won't have to get that !perf_can_record_cgroup() call.
 
-So IMHO future will tell if we have to change this to somewhat
-more generic.
+- Arnaldo
 
--michael
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index 4a3cd1b5bb33..2462584d0ee5 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -1217,7 +1217,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+>  		attr->namespaces  = track;
+>  
+>  	if (opts->record_cgroup) {
+> -		attr->cgroup = track && !perf_missing_features.cgroup;
+> +		attr->cgroup = track;
+>  		evsel__set_sample_bit(evsel, CGROUP);
+>  	}
+>  
+> @@ -1933,10 +1933,6 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  		perf_missing_features.data_page_size = true;
+>  		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
+>  		goto out_close;
+> -	} else if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
+> -		perf_missing_features.cgroup = true;
+> -		pr_debug2_peo("Kernel has no cgroup sampling support, bailing out\n");
+> -		goto out_close;
+>          } else if (!perf_missing_features.branch_hw_idx &&
+>  	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX)) {
+>  		perf_missing_features.branch_hw_idx = true;
+> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> index 75cf5dbfe208..fecf13c0e4da 100644
+> --- a/tools/perf/util/evsel.h
+> +++ b/tools/perf/util/evsel.h
+> @@ -168,7 +168,6 @@ struct perf_missing_features {
+>  	bool bpf;
+>  	bool aux_output;
+>  	bool branch_hw_idx;
+> -	bool cgroup;
+>  	bool data_page_size;
+>  	bool code_page_size;
+>  	bool weight_struct;
+> -- 
+> 2.32.0.rc0.204.g9fa02ecfa5-goog
+> 
+
+-- 
+
+- Arnaldo
