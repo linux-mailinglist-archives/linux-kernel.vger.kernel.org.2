@@ -2,140 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FC5396CDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31807396CE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhFAFdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:33:43 -0400
-Received: from mga17.intel.com ([192.55.52.151]:21530 "EHLO mga17.intel.com"
+        id S232833AbhFAFjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:39:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhFAFdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:33:41 -0400
-IronPort-SDR: GOxffjsJWDLvOOIF4KyMKiIzfcWzHUpfyWKdKFm76+Q7YteyAvf9l/McfWU2V7aLMPphro5Ot0
- vFzz50ainjXA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="183836496"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="183836496"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 22:32:00 -0700
-IronPort-SDR: fnblnD0+UTg3vn/P/LDqEk8ZOwct9IwAzMhJ+x1MnkosNlQ1Xgb00d+km28i8Xsim4wddIO+Kk
- KsUIZ1Xz5C7A==
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="446821780"
-Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 22:31:57 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH] mm: free idle swap cache page after COW
-Date:   Tue,  1 Jun 2021 13:31:43 +0800
-Message-Id: <20210601053143.1380078-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S229477AbhFAFjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:39:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C17C6128A;
+        Tue,  1 Jun 2021 05:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622525832;
+        bh=yO0eoa+2tzufXW5lRiGMzA2X6x9LWyVgEc+NjDK+5XE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QKjLhWAaO16ojkpXzgKdHgNHfksk9XqH9n4n0GNRh3rs7k9OjVXtNvS8buzqTEBok
+         Bjo/EVTieImnQ3Laqf9HYzFIqtaNq+8xtLmY5pF+SfUNeD+P8n3vUv+W6tRCwf3QHZ
+         1P9zu24L++C7o3ir5n2rLAF6RmYDg5ZDxGXgc1YVwAJfccFUX/ndMRejVj3zmDy7dh
+         I2ZK85y9+pwUXySXmY04hJ+ig4/0paHc8uA8p8ZX4WJoyahPZ7V4o1Xxfki4eT7Ui+
+         7XW2fbETXkUz0PXB+BPZDv94wOd4LVnt7NUpdk+5tkT80lw8az0eoQpfnJ0h5D769/
+         b5+0E1RMjOqiw==
+Date:   Mon, 31 May 2021 22:37:11 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     moyufeng <moyufeng@huawei.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Parav Pandit <parav@mellanox.com>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "lipeng (Y)" <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        <shenjian15@huawei.com>, <linyunsheng@huawei.com>,
+        "chenhao (DY)" <chenhao288@hisilicon.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>
+Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
+Message-ID: <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
+References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
+        <20190301120358.7970f0ad@cakuba.netronome.com>
+        <VI1PR0501MB227107F2EB29C7462DEE3637D1710@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+        <20190304174551.2300b7bc@cakuba.netronome.com>
+        <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+        <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 09854ba94c6a ("mm: do_wp_page() simplification"), after
-COW, the idle swap cache page (neither the page nor the corresponding
-swap entry is mapped by any process) will be left in the LRU list,
-even if it's in the active list or the head of the inactive list.  So,
-the page reclaimer may take quite some overhead to reclaim these
-actually unused pages.
+On Mon, 31 May 2021 18:36:12 +0800 moyufeng wrote:
+> Hi, Jiri & Jakub
+> 
+>     Generally, a devlink instance is created for each PF/VF. This
+> facilitates the query and configuration of the settings of each
+> function. But if some common objects, like the health status of
+> the entire ASIC, the data read by those instances will be duplicate.
+> 
+>     So I wonder do I just need to apply a public devlink instance for the
+> entire ASIC to avoid reading the same data? If so, then I can't set
+> parameters for each function individually. Or is there a better suggestion
+> to implement it?
 
-To help the page reclaiming, in this patch, after COW, the idle swap
-cache page will be tried to be freed.  To avoid to introduce much
-overhead to the hot COW code path,
+I don't think there is a great way to solve this today. In my mind
+devlink instances should be per ASIC, but I never had to solve this
+problem for a multi-function ASIC. 
 
-a) there's almost zero overhead for non-swap case via checking
-   PageSwapCache() firstly.
-
-b) the page lock is acquired via trylock only.
-
-To test the patch, we used pmbench memory accessing benchmark with
-working-set larger than available memory on a 2-socket Intel server
-with a NVMe SSD as swap device.  Test results shows that the pmbench
-score increases up to 23.8% with the decreased size of swap cache and
-swapin throughput.
-
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org> # use free_swap_cache()
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
----
- include/linux/swap.h | 5 +++++
- mm/memory.c          | 2 ++
- mm/swap_state.c      | 2 +-
- 3 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 032485ee7597..bb4889369a22 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -451,6 +451,7 @@ extern void __delete_from_swap_cache(struct page *page,
- extern void delete_from_swap_cache(struct page *);
- extern void clear_shadow_from_swap_cache(int type, unsigned long begin,
- 				unsigned long end);
-+extern void free_swap_cache(struct page *);
- extern void free_page_and_swap_cache(struct page *);
- extern void free_pages_and_swap_cache(struct page **, int);
- extern struct page *lookup_swap_cache(swp_entry_t entry,
-@@ -560,6 +561,10 @@ static inline struct address_space *swap_address_space(swp_entry_t entry)
- #define free_pages_and_swap_cache(pages, nr) \
- 	release_pages((pages), (nr));
- 
-+static inline void free_swap_cache(struct page *page)
-+{
-+}
-+
- static inline void show_swap_cache_info(void)
- {
- }
-diff --git a/mm/memory.c b/mm/memory.c
-index 2b7ffcbca175..d44425820240 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3104,6 +3104,8 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 				munlock_vma_page(old_page);
- 			unlock_page(old_page);
- 		}
-+		if (page_copied)
-+			free_swap_cache(old_page);
- 		put_page(old_page);
- 	}
- 	return page_copied ? VM_FAULT_WRITE : 0;
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index b5a3dc8f47a1..95e391f46468 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -285,7 +285,7 @@ void clear_shadow_from_swap_cache(int type, unsigned long begin,
-  * try_to_free_swap() _with_ the lock.
-  * 					- Marcelo
-  */
--static inline void free_swap_cache(struct page *page)
-+void free_swap_cache(struct page *page)
- {
- 	if (PageSwapCache(page) && !page_mapped(page) && trylock_page(page)) {
- 		try_to_free_swap(page);
--- 
-2.30.2
-
+Can you assume all functions are in the same control domain? Can they
+trust each other?
