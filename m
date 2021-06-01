@@ -2,162 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67563971B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757573971BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbhFAKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:43:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:46962 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230308AbhFAKnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:43:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9CB411FB;
-        Tue,  1 Jun 2021 03:41:55 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89E093F73D;
-        Tue,  1 Jun 2021 03:41:54 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 11:41:48 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH v2 4/4] firmware: arm_scmi: add optee transport
-Message-ID: <20210601104148.GW28060@e120937-lin>
-References: <20210521134055.24271-1-etienne.carriere@linaro.org>
- <20210521134055.24271-4-etienne.carriere@linaro.org>
- <20210527151118.GV28060@e120937-lin>
- <CAN5uoS_0SMndmAvTwZnsCeQSUAfvBRz1diU_94CSYrsBxsZeew@mail.gmail.com>
+        id S233076AbhFAKpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:45:38 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:56778 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230282AbhFAKpg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 06:45:36 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151Ag0uY029859;
+        Tue, 1 Jun 2021 10:43:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Gx79InivmVewarDJyyMOVuflbWM4unS5ErB5h13b2Lw=;
+ b=gB+WLL32hgD4VzXFy1XC5N3VAJUPyY2GBN9nXi8S5ZZozIwng/PV/N7iipnoRHupUwiV
+ gsxJ+5FZCfCnHYsnfh2h4Aos8UtQq7xVY83znarvvFf6Bhi1T7HdmeFik4ceTdLBkPIz
+ w0EvYCpC1lbFNCoHJ3dYCNo1eT5n6fM7mGhpqgpd9cgXfScdXPCZQbKbMSC2RV12NgzO
+ zJ23bzCAquQslCy6ONKWuw3hkOAnmieS8T3i/wQTM8FXWARfQ38FzPny/Z/mKF7FIe7f
+ 2Gms6P/aMqcWuVn5faE2SS30+WquZyIwySlx6sIKDNSt2pNKxFLHuO7t3ejfUTkdPi1N GA== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vjar0js1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 10:43:49 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 151AhmAG003720;
+        Tue, 1 Jun 2021 10:43:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 38ubnd3n98-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 10:43:48 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 151AhmgW003708;
+        Tue, 1 Jun 2021 10:43:48 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 38ubnd3n92-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Jun 2021 10:43:48 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 151AhkJL013285;
+        Tue, 1 Jun 2021 10:43:46 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Jun 2021 03:43:46 -0700
+Date:   Tue, 1 Jun 2021 13:43:37 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mm: thp: fix a double unlock bug
+Message-ID: <20210601104337.GX1955@kadam>
+References: <YLX8uYN01JmfLnlK@mwanda>
+ <20210601100849.GQ3672@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAN5uoS_0SMndmAvTwZnsCeQSUAfvBRz1diU_94CSYrsBxsZeew@mail.gmail.com>
+In-Reply-To: <20210601100849.GQ3672@suse.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: Qpm2tEc2qMH89MRHSfhoULSDgCa0t8Yn
+X-Proofpoint-GUID: Qpm2tEc2qMH89MRHSfhoULSDgCa0t8Yn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Etienne,
-
-On Fri, May 28, 2021 at 11:43:24AM +0200, Etienne Carriere wrote:
-> Hello Christian,
+On Tue, Jun 01, 2021 at 11:08:49AM +0100, Mel Gorman wrote:
+> On Tue, Jun 01, 2021 at 12:24:09PM +0300, Dan Carpenter wrote:
+> > We're supposed to be holding the "vmf->ptl" spin_lock when we goto
+> > out_map.  The lock is dropped after if finishes cleaning up.
+> > 
+> > Fixes: 9aff7b33c74a ("mm: thp: refactor NUMA fault handling")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> On Thu, 27 May 2021 at 17:11, Cristian Marussi <cristian.marussi@arm.com> wrote:
-> >
-
-[snip]
-
-> > > +
-> > > +static struct tee_client_driver optee_scmi_driver = {
-> > > +     .id_table       = optee_scmi_id_table,
-> > > +     .driver         = {
-> > > +             .name = DRIVER_NAME,
-> > > +             .bus = &tee_bus_type,
-> > > +             .probe = optee_scmi_probe,
-> > > +             .remove = optee_scmi_remove,
-> > > +     },
-> > > +};
-> > > +
-> > > +static int __init optee_scmi_init(void)
-> > > +{
-> > > +     return driver_register(&optee_scmi_driver.driver);
-> > > +}
-> > > +
-> > > +static void __exit optee_scmi_exit(void)
-> > > +{
-> > > +     driver_unregister(&optee_scmi_driver.driver);
-> > > +}
-> > > +
-> > > +module_init(optee_scmi_init);
-> > > +module_exit(optee_scmi_exit);
-> > > +
-> >
-> > This cannot compile is the full SCMI statck ARM_SCMI_PROTOCOL is configured as =m
-> >
-> > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld:
-> > drivers/firmware/arm_scmi/optee_service.o: in function
-> > `optee_scmi_init':
-> > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee_service.c:515:
-> > multiple definition of `init_module';
-> > drivers/firmware/arm_scmi/driver.o:/home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/driver.c:1593:
-> > first defined here
-> > /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld:
-> > drivers/firmware/arm_scmi/optee_service.o: in function
-> > `optee_scmi_exit':
-> > /home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/optee_service.c:520:
-> > multiple definition of `cleanup_module';
-> > drivers/firmware/arm_scmi/driver.o:/home/crimar01/ARM/dev/src/pdsw/linux/drivers/firmware/arm_scmi/driver.c:1611:
-> > first defined here
-> > /home/crimar01/ARM/dev/src/pdsw/linux/scripts/Makefile.build:449: recipe
-> > for target 'drivers/firmware/arm_scmi/scmi-module.o' failed
-> > make[4]: *** [drivers/firmware/arm_scmi/scmi-module.o] Error 1
-> >
-> >
-> > Indeed it was the same issue we faced in the virtio-scmi series, and it
-> > derives from the fact that SCMI transports 'driver' are really NOT
-> > standalone drivers but only extension of the main SCMI module, so you
-> > cannot have them initialize their stuff using usual kernel module_ machinery.
-> >
-> > In order to address this, and avoid a hell of ifdeffery probably,
-> > in the context of virtio-scmi, I added a couple of transport's
-> > optionalily provided init/deinit functions so that a transport can provide
-> > some specific init code and be assured they are called at SCMI stack init,
-> > so definitely even before the SCMI stack is probed and the selected
-> > transport used.
-> >
-> > This is the patch from the virtio-scmi series:
-> >
-> > https://lore.kernel.org/linux-arm-kernel/20210511002040.802226-3-peter.hilber@opensynergy.com/
-> >
-> > which in that context is used like:
-> >
-> > +static int __init virtio_scmi_init(void)
-> > +{
-> > +       return register_virtio_driver(&virtio_scmi_driver);
-> > +}
-> > +
-> > +static void __exit virtio_scmi_exit(void)
-> > +{
-> > +       unregister_virtio_driver(&virtio_scmi_driver);
-> > +}
-> > +
-> > +const struct scmi_desc scmi_virtio_desc = {
-> > +       .init = virtio_scmi_init,
-> > +       .exit = virtio_scmi_exit,
-> > +       .ops = &scmi_virtio_ops,
-> >
-> > I'll cleanup further that init/deinit patch and move it out into that bunch
-> > of SCMI core changes that I'm making (in a separate series) to aid in virtio-scmi
-> > devel.
-> > In the meantime for your testing the above lore patch should work fine.
+> Ouch.
 > 
-> Thanks for the details, i'll upgrade to the series.
+> Acked-by: Mel Gorman <mgorman@suse.de>
 > 
+> However, that git commit is not stable. Instead of Fixes: I would
+> suggest renaming the patch to "mm: thp: refactor NUMA fault handling
+> -fix" and replacing Fixes with "This patch is a fix to the mmotm patch
+> mm-thp-refactor-numa-fault-handling.patch". Andrew usually slots that
+> into the correct place in his quilt series and collapses the fixes before
+> sending to Linus which works better with bisection.
 
-This is the udpated patch above about init/exit now included in that
-bunch of SCMI core transport changes I'm making:
+I know that these normally get folded in, but I assumed that Andrew
+would want the Fixes tag so that he could fold them in automatically
+using a mutt alias. #OneClickShopping
 
-https://lore.kernel.org/linux-arm-kernel/20210601102421.26581-4-cristian.marussi@arm.com/T/#u
-
-but there's really no functional change from the one I mentioned above
-that was part of the virtio-scmi series.
-
-Thanks,
-Cristian
-
-> Cheers,
-> Etienne
-> 
-> >
-> > Thanks,
-> > Cristian
-> >
-> > > +MODULE_LICENSE("GPL v2");
-> > > +MODULE_AUTHOR("Etienne Carriere <etienne.carriere@linaro.org>");
-> > > +MODULE_DESCRIPTION("OP-TEE SCMI transport driver");
-> > > --
-> > > 2.17.1
-> > >
+regards,
+dan carpenter
