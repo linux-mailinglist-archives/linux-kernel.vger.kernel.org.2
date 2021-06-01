@@ -2,115 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9D1397B83
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253EE397B87
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhFAVF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 17:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        id S234854AbhFAVGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 17:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhFAVF1 (ORCPT
+        with ESMTP id S234513AbhFAVGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 17:05:27 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B34C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 14:03:44 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id x196so295186oif.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 14:03:44 -0700 (PDT)
+        Tue, 1 Jun 2021 17:06:40 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E819C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 14:04:57 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id f11so15083216lfq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 14:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
-        bh=l/l+v5X+oLRJBHDUXRGrjTZKpv5YVsX+2isDeYmnVg4=;
-        b=HrFwY4QYFqbMigF5BpUSwMk4+GZcIcMT7Mtfaqk4R/yAp78dWUz1NA9ybUroyCv7jY
-         18fxx93VRlGq4kX7zjZ7Dlkq6mVpZJmwfk0pMIZXqg8EDMMZBhxUJPW2pxJOqYASszLI
-         9rVD3LQFJvsP0kSZRLe2eFoRV+ksRau7QszbY3ET+JNpxltMovrQSDT3ARKEL4UWeRMt
-         CSnoY2ZE11R5GanhfLciPU1hmhTNFlqtshIZpiZFQNqvedELzuOUiVVtgIVBPIrzJ8Rm
-         Qpm2oLIsH/X5MPA980hp4OlHuvy6NKfTfhcBInY5fsUk6whYTrlc6+pPnSEV4/nfavO+
-         B43Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1xBq/yJQb1ctA6qRFIUGU27xyMZ75sBIbNTD9efPBik=;
+        b=t0eflJF8UnBowpwoSUwJPkrnNdFFFYx7tvKHGM/SVmXzP1zmhBL45Yc07D0w2k7N4b
+         msWGrBeHienj1/NGQWjKz6eX6KGg5xjY0m6mP8FPNSq+LkRqHN6zRuaF/bj7V7Ynac5x
+         b2IiLFfuFgnKS/vXDgbyPwb45xMb8tpOyBjvUnH5Zw9f2T0T665G5GkqsXTOJjhRDha5
+         bK5sDKlwO05A3cNwdbo/htN/MLrB8V1hBW2MQUkzQmNjz4+Zlby7hqyb52c+IlKp6Q72
+         Tqdw1r/T7rBQkIB6FIJiKlGdrnUpEhWKvOrxd+vFRKY37R5c4Xr4gXTUZCrOFC9jDgBg
+         gKOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=l/l+v5X+oLRJBHDUXRGrjTZKpv5YVsX+2isDeYmnVg4=;
-        b=FTLbfoi16hLU3FFcJbeU+rh3ex7c9WBsXGkDH3pR5pNNm9cPUrNLwzp29MSqiFvZCh
-         CnWOYitujmTjXewRPxuvdMsN+B4N8NuoMlB/9w18IYVlK2nuOfLXET5hdTqOStTEU8c7
-         8D26bkfhKRH7W55HibRRXpErPhLXjxRAc8bB9XCCaZ8L1s1HOHgTZeoELYMv9joZJKu+
-         dTt8SxoyLC8geptN5PWLuBAyNPnge8yE0VoPxojPHAaRTGLqU/u1T6CojJS2XaykPylw
-         WLWFuj9Qh0H1u0ZL2A82xAn/xrPeRZFDcDd211fvSwH0RlaJGEbkqvRaXpSIHRSHAyX5
-         +L6g==
-X-Gm-Message-State: AOAM530KhtcQGcLgg2LIEe7u4+ra+8UwMvWIq4znZVRm2kDbMmyvWeJn
-        q10Hp7Z3AQdyV2yLg9AbkljT9g==
-X-Google-Smtp-Source: ABdhPJx3CVgQjugIPj4M0vJd5OW1nmLCCa4/Os/1sEr5qKc1o6SZm+6H0i2O9eCoQ1wTtPY+KlMgdA==
-X-Received: by 2002:a05:6808:a87:: with SMTP id q7mr19559940oij.38.1622581423647;
-        Tue, 01 Jun 2021 14:03:43 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l131sm3609558oia.0.2021.06.01.14.03.42
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 01 Jun 2021 14:03:43 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 14:03:30 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 0/7] mm/thp: fix THP splitting unmap BUGs and related
-Message-ID: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1xBq/yJQb1ctA6qRFIUGU27xyMZ75sBIbNTD9efPBik=;
+        b=Zyg2p8jKw+AiO5JcIq4FFsTp71fZ+UwziXr/NWge+J3yCLnbKUNgJqZy+42WXnmaiB
+         5F5FaKV/yVeGWDbhVd74Bgp7xCaJXHnD8KV6xTMjIgTqskWI//LOSn03v4Taots9e6Ey
+         Plpae175rnW+vDaWcHCemaUC/VHJQwRI2+ZkTkghN4crfUG+6sMCl0oulWIQ2e/U7/ps
+         msWMFhpAXfWu0fAgd3EkT9RaVu3eXZaBy25JwLhsbr7y5t28zPDk1w982HB9rR+1It4H
+         R9aiSdN6VFv1V6A0PuDh3cSabJt50X2KapoOqZmDW2f9yPwvyfQ6v0ASS8pR6pEKnIza
+         cgfw==
+X-Gm-Message-State: AOAM532doBwZrC+7A6DCnzJ7Vd2o1fzZmF87zLNBu6KtQCEWGAVQf13Y
+        Z2XivH/3ig/xLefkhvcxW4SBPtTTMyyW9dMe5mbQxg==
+X-Google-Smtp-Source: ABdhPJxQkHCQf9RGRbYb1eURvFXQz0R5PgHRn0MZYtVB7qDIQTNv2ZXq/Cg+zMtKmjEkGy0hxIaIOL5ODDYv7J26Cd8=
+X-Received: by 2002:a19:f706:: with SMTP id z6mr5933873lfe.122.1622581495442;
+ Tue, 01 Jun 2021 14:04:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210528200821.459214-1-jarmo.tiitto@gmail.com>
+ <2450763.S1xdTQMYLV@hyperiorarchmachine> <CAKwvOdmk34yQQow_kMLeF32OpfcP4O0SrPx3gMO3KQvgE8uZ9Q@mail.gmail.com>
+ <3233714.pFP5IgcPq9@hyperiorarchmachine>
+In-Reply-To: <3233714.pFP5IgcPq9@hyperiorarchmachine>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Jun 2021 14:04:43 -0700
+Message-ID: <CAKwvOdnN+Cv5e1D5O18GkE6hjqaSAOKQHywDnJ7GzjPNMAsy_g@mail.gmail.com>
+Subject: Re: [PATCH 3/6] pgo: modules Add module profile data export machinery.
+To:     jarmo.tiitto@gmail.com
+Cc:     Bill Wendling <morbo@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is a batch of long-standing THP bug fixes that I had not got
-around to sending before, but prompted now by Wang Yugui's report
-https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+On Tue, Jun 1, 2021 at 1:46 PM <jarmo.tiitto@gmail.com> wrote:
+>
+> Kirjoitit tiistaina 1. kes=C3=A4kuuta 2021 20.27.01 EEST:
+>
+> > Hi Jarmo,
+> > Thanks for the series! Would you mind including the above in a cover le=
+tter
+> > in a v2? (You can use --cover-letter command line arg to `git format-pa=
+tch`
+> > to generate a stub).  The please explicitly cc
+> > Sami Tolvanen <samitolvanen@google.com>
+> > Bill Wendling <morbo@google.com>
+> > on the series? Finally, please specify the cover letter and all patch f=
+iles
+> > to git send-email in one command, so that the individual patch files ar=
+e
+> > linked on lore.kernel.org. This makes it significantly easier to review=
+ and
+> > test.
+> >
+>
+> Hello,
+>
+> Yeah, I realized afterwards that I screwed up at the git send-mail/messag=
+e
+> threading task. Sorry about that. I will correct all of it in my next v2
+> patch. Make mistakes, and learn new things.
 
-Wang Yugui has tested a rollup of these fixes applied to 5.10.39,
-and they have done no harm, but have *not* fixed that issue:
-something more is needed and I have no idea of what.
+No worries; best way to learn to swim is to jump in the pool!
+(Well...I might not actually recommend that to kids, but you catch the
+drift; maybe "sink or swim" is the better expression?).  Also, you
+should use text/plain for your email; you're probably getting
+automated responses from LKML about that. In gmail, you can click the
+vertical ellipses in the bottom right of a reply; make sure to check
+"Plain Text."
 
-But at least these clear up related issues, and should go to stable
-(except for the last, which is just an optimization: it would be
-fine in stable, but it's not required there).
+> I will post new v2 patch once I'm done writing and testing it. Based on t=
+he
+> feed back here I will try keep it simple and unify the vmlinux + modules =
+code
+> such that there is no fs_mod.c source any more nor necessary code duplica=
+tion.
+>
+> Basically it will be an rewrite on my part but I'm just excited to do it.
 
-These are against 5.13-rc4: easy for others to try out, but my next
-task is to work out how to shoehorn them into mmotm and linux-next.
+Better to rewrite it now rather than later, I suppose.
 
-I would have said just before Yang Shi's related
-mm-thp-replace-debug_vm-bug-with-vm_warn-when-unmap-fails-for-split.patch
-except that (which should also go to stable) is currently placed after
-Alistair Popple's "Add support for SVM atomics in Nouveau" series,
-mm-rmap-split-try_to_munlock-from-try_to_unmap.patch etc.
-I expect I shall offer you some rediffs of Alistair's, we'll see.
+> I feel this first attempt was more like of RFC/prototype such that I coul=
+d get
+> in contact with you guys.
 
-1/7 mm/thp: fix __split_huge_pmd_locked() on shmem migration entry
-2/7 mm/thp: try_to_unmap() use TTU_SYNC for safe DEBUG_VM splitting
-3/7 mm/thp: fix vma_address() if virtual address below file offset
-4/7 mm/thp: fix page_address_in_vma() on file THP tails
-5/7 mm/thp: fix page_vma_mapped_walk() if huge page mapped by ptes
-6/7 mm/thp: unmap_mapping_page() to fix THP truncate_cleanup_page()
-7/7 mm/thp: remap_page() is only needed on anonymous THP
+Yep, that's common for v1 of patches.  If you're interested in Clang
+Built Linux generally, send me your github account name and I'll add
+you to our org on github.
+https://github.com/ClangBuiltLinux
 
- include/linux/mm.h   |    3 
- include/linux/rmap.h |    3 
- mm/huge_memory.c     |   47 ++++++++----
- mm/internal.h        |   54 ++++++++++----
- mm/memory.c          |   40 ++++++++++
- mm/page_vma_mapped.c |  163 ++++++++++++++++++++++++++-----------------
- mm/pgtable-generic.c |    5 -
- mm/rmap.c            |   39 +++++++---
- mm/truncate.c        |   43 +++++------
- 9 files changed, 266 insertions(+), 131 deletions(-)
+> Just one question about copyrights: do I need to add my statement to the
+> sources, if yes, then how should I proceed ?
 
-Hugh
+Sure, you can add them to the top level of each source file you touch
+(we don't do this for Makefiles I think).  I think the signed-off-by
+tag is enough though, which implies agreement with the Developer's
+Certificate of Origin:
+https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#devel=
+oper-s-certificate-of-origin-1-1.
+For instance, I don't think I ever have added my name/copyright to the
+top of a file, but that also has to do with my employment agreement I
+have with my employer. IANAL
+--=20
+Thanks,
+~Nick Desaulniers
