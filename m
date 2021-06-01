@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F371397CC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AD4397CC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbhFAWzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:55:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:7004 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234947AbhFAWzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:55:21 -0400
-IronPort-SDR: k8kKGTIQRZM4vldxgJtAXmRLvHlahr4zqseUuYf7AGDa86YjVZ54G+ydOv2loz7ys3ZWTQx0Cr
- rChinm0G7TCg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="200645940"
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="200645940"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 15:53:38 -0700
-IronPort-SDR: FvEmDQWzTVhQd/WWqFcCGAW6HmJXwMVVR8bLQvrSXfd4I0F6d/lz+Xf7/vbINV9W9Pm13zt9CE
- lb58nMB2c3fg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="399766174"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP; 01 Jun 2021 15:53:38 -0700
-Received: from linux.intel.com (unknown [10.88.229.80])
+        id S235044AbhFAWzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234656AbhFAWzU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:55:20 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF61DC061574;
+        Tue,  1 Jun 2021 15:53:38 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id BAB63580427;
-        Tue,  1 Jun 2021 15:53:35 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 06:53:32 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/1] net: stmmac: enable platform specific
- safety features
-Message-ID: <20210601225332.GA28151@linux.intel.com>
-References: <20210601135235.1058841-1-vee.khee.wong@linux.intel.com>
- <YLawrTO4pkgc6tnb@lunn.ch>
+        by ms.lwn.net (Postfix) with ESMTPSA id 6A6086E2;
+        Tue,  1 Jun 2021 22:53:38 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6A6086E2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1622588018; bh=PTa73ReiH99pYqrE1NUMVlZagcYAcqSVKLM15m3VVHo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=hbUmMXM6OdMXBpPnxLFx6bfsCLW0Y+OTwFzkhFHLgUIHW/m6QgjMaCAbGpenq5Bkr
+         T1KM0VQy/Hmh8b06JGlfs3dqFVWJR/2/oOwPvARNPSsUmZGEblzTulh7VtgyjYLvnw
+         K3j1n7lF74dHsYM/Y04MLb8etNLFDUaWdn8mZTv/5uGRBVzt4jGs9k1pg/nqzSEGTv
+         nHmTDVFnpbhaAf81TiOs1yw8HpsB3OqGEXTh3i0zG8i1YAxJTYIfYVV6AqkhwV+KFJ
+         L2O76w6R8klTxQnzfSozZxRBSkhKz2gqZT3Iswmu1r8ctcW2c8MQ4/xQ0wyB5u2xw4
+         Fy9nVWRAWDP5A==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Haocheng Xie <xiehaocheng.cn@gmail.com>, rostedt@goodmis.org,
+        mingo@redhat.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Haocheng Xie <xiehaocheng.cn@gmail.com>
+Subject: Re: [PATCH] docs: Fix typos in Documentation/trace/ftrace.rst
+In-Reply-To: <20210531083905.25763-1-xiehaocheng.cn@gmail.com>
+References: <20210531083905.25763-1-xiehaocheng.cn@gmail.com>
+Date:   Tue, 01 Jun 2021 16:53:37 -0600
+Message-ID: <87a6o98adq.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLawrTO4pkgc6tnb@lunn.ch>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 12:11:57AM +0200, Andrew Lunn wrote:
-> On Tue, Jun 01, 2021 at 09:52:35PM +0800, Wong Vee Khee wrote:
-> > On Intel platforms, not all safety features are enabled on the hardware.
-> 
-> Is it possible to read a register is determine what safety features
-> have been synthesised?
+Haocheng Xie <xiehaocheng.cn@gmail.com> writes:
+
+> Fix the usage of "a/the" and improve the readability.
 >
+> Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
+> ---
+>  Documentation/trace/ftrace.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+> index 62c98e9..11cc1c2 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -354,8 +354,8 @@ of ftrace. Here is a list of some of the key files:
+>  	is being directly called by the function. If the count is greater
+>  	than 1 it most likely will be ftrace_ops_list_func().
+>  
+> -	If the callback of the function jumps to a trampoline that is
+> -	specific to a the callback and not the standard trampoline,
+> +	If the callback of a function jumps to a trampoline which is
+> +	specific to the callback and which is not the standard trampoline,
 
-No. The value of these registers after reset are 0x0. We need to set it
-manually.
+The "that" in the first line was actually correct and best left
+unchanged.  I've applied the patch, but took the liberty of putting
+"that" back.
 
-VK
+Thanks,
+
+jon
