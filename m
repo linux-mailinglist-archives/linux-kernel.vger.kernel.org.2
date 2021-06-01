@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86889397A2C
+	by mail.lfdr.de (Postfix) with ESMTP id 8D724397A2D
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhFASqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:46:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44298 "EHLO mail.kernel.org"
+        id S234690AbhFASse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:48:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:56410 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233970AbhFASqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:46:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55E4D60C3F;
-        Tue,  1 Jun 2021 18:45:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622573110;
-        bh=/0v0BbCRmqQoHmuTHyO1LQsRp/5gRVDEfk7TG+cgMAU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GX1Ri7Es0XLMxlp5yqIYrNgrJydS9rfYAJya7Ivfel5l2otEsvwhZQBhRqmW6DMQF
-         l1GaXoIeDqMwprPi65R5uapr7Qw1bva44ihRQULSjtPHPmetZvNBgqxFJzW7Z1Qq62
-         1syPGNkSqEjSsiAAXd0lVOql1jLrtkbZ7QG4KP786YrP5I3x6APRowuGPLM9YKk7KO
-         A3JqXV/AnfwEZPVBHwkij6gApi6bE511mkhPnrrH3TwIlkBVTScPsaIJaCRX1e9g2F
-         t3RRm4rvoEWvOTn+UMaZUqg6wStJ8Xz/vKZieFzZVlUysyoCqw2PwfmFguje4x94AC
-         zEAsyx/PrpJpA==
-Date:   Tue, 1 Jun 2021 13:46:16 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][venus-for-next-v5.14] media: venus: hfi_cmds: Fix packet
- size calculation
-Message-ID: <20210601184616.GA23488@embeddedor>
+        id S233970AbhFASsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 14:48:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73DC56D;
+        Tue,  1 Jun 2021 11:46:51 -0700 (PDT)
+Received: from [10.57.73.64] (unknown [10.57.73.64])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B59C3F774;
+        Tue,  1 Jun 2021 11:46:50 -0700 (PDT)
+Subject: Re: [PATCH 1/1] dma-contiguous: return early for dt case in
+ dma_contiguous_reserve
+To:     Dong Aisheng <dongas86@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>
+Cc:     iommu@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20210518112857.1198415-1-aisheng.dong@nxp.com>
+ <CAA+hA=SSeRrnBRGeqVxJ71Cv0uxydidWoKmG6b0bYzoEdcgqOQ@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <4a7922c0-7696-b4f7-f212-6710f4b2720d@arm.com>
+Date:   Tue, 1 Jun 2021 19:46:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CAA+hA=SSeRrnBRGeqVxJ71Cv0uxydidWoKmG6b0bYzoEdcgqOQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that a one-element array was replaced with a flexible-array member
-in struct hfi_sys_set_property_pkt, use the struct_size() helper to
-correctly calculate the packet size.
+On 2021-05-31 10:21, Dong Aisheng wrote:
+> On Tue, May 18, 2021 at 7:29 PM Dong Aisheng <aisheng.dong@nxp.com> wrote:
+>>
+>> dma_contiguous_reserve() aims to support cmdline case for CMA memory
+>> reserve. But if users define reserved memory in DT,
+>> 'dma_contiguous_default_area' will not be 0, then it's meaningless
+>> to continue to run dma_contiguous_reserve(). So we return early
+>> if detect 'dma_contiguous_default_area' is unzero.
+>>
+>> Cc: Christoph Hellwig <hch@lst.de>
+>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Cc: Robin Murphy <robin.murphy@arm.com>
+>> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> 
+> Gently ping
 
-Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array with flexible-array member")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-BTW... it seems that a similar problem is present in
-https://lore.kernel.org/linux-hardening/20210211001044.GA69612@embeddedor/ 
-and that is what is causing the regression. I will send v2 of that
-patch, shortly. Thanks.
+The commit message is still wrong, and I still think the change doesn't 
+achieve anything meaningful. This code is hard to make sense of either 
+way because the crucial interplay between size_cmdline and 
+dma_contiguous_default_area is hidden somewhere else entirely, and it 
+would take a much more significant refactoring to clear that up.
 
- drivers/media/platform/qcom/venus/hfi_cmds.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Robin.
 
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 11a8347e5f5c..c86279e5d6e8 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -27,7 +27,7 @@ void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
- {
- 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
- 
--	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_IDLE_INDICATOR;
-@@ -39,7 +39,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
- {
- 	struct hfi_debug_config *hfi;
- 
--	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_DEBUG_CONFIG;
-@@ -50,7 +50,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
- 
- void pkt_sys_coverage_config(struct hfi_sys_set_property_pkt *pkt, u32 mode)
- {
--	pkt->hdr.size = sizeof(*pkt) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 2);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_CONFIG_COVERAGE;
-@@ -116,7 +116,7 @@ void pkt_sys_power_control(struct hfi_sys_set_property_pkt *pkt, u32 enable)
- {
- 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
- 
--	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_CODEC_POWER_PLANE_CTRL;
--- 
-2.27.0
-
+> 
+> Regards
+> Aisheng
+> 
+>> ---
+>>   kernel/dma/contiguous.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+>> index 3d63d91cba5c..ebade9f43eff 100644
+>> --- a/kernel/dma/contiguous.c
+>> +++ b/kernel/dma/contiguous.c
+>> @@ -171,6 +171,9 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
+>>          phys_addr_t selected_limit = limit;
+>>          bool fixed = false;
+>>
+>> +       if (dma_contiguous_default_area)
+>> +               return;
+>> +
+>>          pr_debug("%s(limit %08lx)\n", __func__, (unsigned long)limit);
+>>
+>>          if (size_cmdline != -1) {
+>> @@ -191,7 +194,7 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
+>>   #endif
+>>          }
+>>
+>> -       if (selected_size && !dma_contiguous_default_area) {
+>> +       if (selected_size) {
+>>                  pr_debug("%s: reserving %ld MiB for global area\n", __func__,
+>>                           (unsigned long)selected_size / SZ_1M);
+>>
+>> --
+>> 2.25.1
+>>
