@@ -2,58 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C1E3979F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2110F3979F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234728AbhFASX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:23:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234692AbhFASXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:23:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53C5A613BC;
-        Tue,  1 Jun 2021 18:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622571696;
-        bh=RkuLnYe/XfumILch0fOAa0uv13ScTbTnPD5MYc//4ro=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jWCsDWKZAjrcNnZ5fFJh2HtV73sNGIqyLoHKDY2wc1mV2i1GaBBdY6zDk0K2B5Lwa
-         nHbauOOdHdhf8WtLB8cTUri5Gi+xslYwkviu8cmqJskbcdncIjPhLexgTH3/eZVf4u
-         jzs/05fzhCKtn2ZDgzI289hFev+J3nzRr4Blzo/R1IjW/+JZU+YYxKS6oPy12nc6Gh
-         9vkn8ZY+YWcvM7c1i0DguxvAsiPK13CEvmFnYc6jMp7g0pr9hDThhCCRZVhjXT1w1b
-         sV4abGbame5h+fvBLXo2MqkIMFkrkmpR4mB6x+AkV4+mJDc10Rdkps9rjqKx9VDtaL
-         WaVH/GFP7XsuA==
-From:   Will Deacon <will@kernel.org>
-To:     mark.rutland@arm.com, YueHaibing <yuehaibing@huawei.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 -next] perf: arm_spe: use DEVICE_ATTR_RO macro
-Date:   Tue,  1 Jun 2021 19:21:09 +0100
-Message-Id: <162255390948.567214.11552331173090930522.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210528061738.23392-1-yuehaibing@huawei.com>
-References: <20210528061738.23392-1-yuehaibing@huawei.com>
+        id S234701AbhFASXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234465AbhFASXs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 14:23:48 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7387DC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:22:05 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id e1so3073952pld.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N590ERPxxGg8/dMTw4VCa6qnq3T7bZw0OnBgJ+94JC0=;
+        b=myeIShlJLASAlCPHOcNqaie+PXracNEfNlGHIyAKJ1GTdY5P0EcciI6cHQi+P/+PUq
+         gUb0gM4Ir3sOoY5AFs0MZ7Z5FnGtvcUh+KdQcuZYeSwhQ/8S1jm44wmazpaqqz3uhJId
+         tuLdQRXk4a/EFPccoKuGvjvT0ELpQsmQWZQlQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N590ERPxxGg8/dMTw4VCa6qnq3T7bZw0OnBgJ+94JC0=;
+        b=JGbMm+ouaZyuZ8ZEMkhojMeRQHavH4iMyZu2o6L1wYcFwsfKhyfIc9l1cYDHNoRZal
+         vmdwv6p5bL8sTxam9hUWKJVa0uyOmJ/ASurSkQ3Jrluvlb9wqnfBZqry92uq8TMd1wt0
+         1FhaLKH16wJEHFCSJ37JxS9XWEdCjlM4i3b6+JIFs321YHFDqimJJFtvzVSu16h5NCHl
+         CrUCFMVPJC1bna8bs4GA9X7H4fhGpprgGI1EEJMUIJ0ILAvNPZ7T6aZ3QOcTEdembc5Q
+         VQ4Kmhw73/d0/bJh3dlcR3FlZwLfM5Lhvrnv5SXOzrolllKrIQ94fKODXk1LOw8UBuNQ
+         FW1w==
+X-Gm-Message-State: AOAM530WXOf+rMsFdEkeBD+mG+j4cdObnZhC4xBJakO7nYmBmaVHjb2k
+        EtevQ9G7spjo0DYin3CaIeko1g==
+X-Google-Smtp-Source: ABdhPJycRHp/Fs/mycv/09GBfTzFmVr3DcT4Qh/upYDbYbTpuP7W+MVvQmpZ0VnO3Sk2j3TqxcfvJg==
+X-Received: by 2002:a17:90a:4f0a:: with SMTP id p10mr1225781pjh.36.1622571724975;
+        Tue, 01 Jun 2021 11:22:04 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:ee82:b2a7:c8bd:18e7])
+        by smtp.gmail.com with ESMTPSA id g29sm14510982pgm.11.2021.06.01.11.22.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 11:22:04 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
+Subject: [PATCH v3 0/4] slub: Print non-hashed pointers in slub debugging 
+Date:   Tue,  1 Jun 2021 11:21:58 -0700
+Message-Id: <20210601182202.3011020-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 14:17:38 +0800, YueHaibing wrote:
-> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
-> which makes the code a bit shorter and easier to read.
+I was doing some debugging recently and noticed that my pointers were
+being hashed while slub_debug was on the kernel commandline. Let's force
+on the no hash pointer option when slub_debug is on the kernel
+commandline so that the prints are more meaningful.
 
-Applied to will (for-next/perf), thanks!
+The first two patches are something else I noticed while looking at the
+code. The message argument is never used so the debugging messages are
+not as clear as they could be and the slub_debug=- behavior seems to be
+busted. Then there's a printf fixup from Joe and the final patch is the
+one that force disables pointer hashing.
 
-[1/1] perf: arm_spe: use DEVICE_ATTR_RO macro
-      https://git.kernel.org/will/c/f9e36b388a32
+Changes from v2 (https://lore.kernel.org/r/20210526025625.601023-1-swboyd@chromium.org):
+ * Fixed up Fixes tag on first first patch
+ * Picked up acks
+ * Moved decl of no_hash_pointers() to kernel.h
 
-Cheers,
+Changes from v1:
+ * Dropped the hexdump printing format
+ * Forced on the no_hash_pointers option instead of pushing %px
+
+Joe Perches (1):
+  slub: Indicate slab_fix() uses printf formats
+
+Stephen Boyd (3):
+  slub: Restore slub_debug=- behavior
+  slub: Actually use 'message' in restore_bytes()
+  slub: Force on no_hash_pointers when slub_debug is enabled
+
+ include/linux/kernel.h |  2 ++
+ lib/vsprintf.c         |  2 +-
+ mm/slub.c              | 13 ++++++++++---
+ 3 files changed, 13 insertions(+), 4 deletions(-)
+
+
+base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
 -- 
-Will
+https://chromeos.dev
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
