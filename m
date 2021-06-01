@@ -2,169 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B30396FF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368AC396FF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhFAJIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:08:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34769 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231139AbhFAJIp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:08:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622538424;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wwyq+d8kaa3gE2iFZ3mOrS7Gyye0u9Y9IgFDFZTKJ9s=;
-        b=PjC+qSHS6V1NGrAXD5AscFZzz+FCrIKqy69DJ/XnCmiRBDvYVINI1hhUhBah+tNm+k7jfx
-        +kIzT5SSzULJoFP6gynBq0OCGuK5MxLyPCudF5r8OXbXpEtuv1cGH+yXWTT4tOCgIasIZ2
-        rG33uo9BqJ2ew1clunfrjinvjKu77RE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-63-ZIwBcJjnPNS5dwTQpNN6pw-1; Tue, 01 Jun 2021 05:07:03 -0400
-X-MC-Unique: ZIwBcJjnPNS5dwTQpNN6pw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DEB4803624;
-        Tue,  1 Jun 2021 09:07:00 +0000 (UTC)
-Received: from localhost (ovpn-13-211.pek2.redhat.com [10.72.13.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 49D6469108;
-        Tue,  1 Jun 2021 09:06:56 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 17:06:53 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Shevchenko <andy@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Dave Young <dyoung@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
+        id S233529AbhFAJJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:09:02 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29385 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233505AbhFAJI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 05:08:56 -0400
+IronPort-SDR: Cn/TsQoruwtUJSmJ35EbyHqI9IToNkb8G+iRTegZTMREuyFAZkCMRpwi7DviutWTbfXbN10mG7
+ jYqcFgCdZLPA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190622460"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="190622460"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 02:07:13 -0700
+IronPort-SDR: 1mj7VSAfwuEOCtvUGdjZroTOsoAYwZDy+fFuRfC4yOFLtUdVoOtHtKyXxcuZ3iFgE/e15GgLwY
+ eEZLirFLLkhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="482410643"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Jun 2021 02:07:10 -0700
+Subject: Re: [PATCH v1 2/2] perf auxtrace: Optimize barriers with load-acquire
+ and store-release
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lianbo Jiang <lijiang@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 1/3] x86/setup: always reserve the first 1M of RAM
-Message-ID: <20210601090653.GB361405@MiWiFi-R3L-srv>
-References: <20210601075354.5149-1-rppt@kernel.org>
- <20210601075354.5149-2-rppt@kernel.org>
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519140319.1673043-1-leo.yan@linaro.org>
+ <20210519140319.1673043-2-leo.yan@linaro.org>
+ <20210531151049.GE9324@leoy-ThinkPad-X240s>
+ <cc3810cd-5edc-26d3-9c77-8bb6479152c1@intel.com>
+ <20210601063342.GB10026@leoy-ThinkPad-X240s>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <71b0e395-0e20-fdd1-b105-0ca1706c8ed1@intel.com>
+Date:   Tue, 1 Jun 2021 12:07:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601075354.5149-2-rppt@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210601063342.GB10026@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/01/21 at 10:53am, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-......  
-
-> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-> index 7850111008a8..b15ebfe40a73 100644
-> --- a/arch/x86/platform/efi/quirks.c
-> +++ b/arch/x86/platform/efi/quirks.c
-> @@ -450,6 +450,18 @@ void __init efi_free_boot_services(void)
->  			size -= rm_size;
->  		}
-
-Thanks for taking care of the low-1M excluding in
-efi_free_boot_services(), Mike. You might want to remove the old real
-mode excluding code either since it's been covered by your new code.
-
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index b15ebfe40a73..be814f2089ff 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -409,7 +409,6 @@ void __init efi_free_boot_services(void)
- 	for_each_efi_memory_desc(md) {
- 		unsigned long long start = md->phys_addr;
- 		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
--		size_t rm_size;
- 
- 		if (md->type != EFI_BOOT_SERVICES_CODE &&
- 		    md->type != EFI_BOOT_SERVICES_DATA) {
-@@ -430,26 +429,6 @@ void __init efi_free_boot_services(void)
- 		 */
- 		efi_unmap_pages(md);
- 
--		/*
--		 * Nasty quirk: if all sub-1MB memory is used for boot
--		 * services, we can get here without having allocated the
--		 * real mode trampoline.  It's too late to hand boot services
--		 * memory back to the memblock allocator, so instead
--		 * try to manually allocate the trampoline if needed.
--		 *
--		 * I've seen this on a Dell XPS 13 9350 with firmware
--		 * 1.4.4 with SGX enabled booting Linux via Fedora 24's
--		 * grub2-efi on a hard disk.  (And no, I don't know why
--		 * this happened, but Linux should still try to boot rather
--		 * panicking early.)
--		 */
--		rm_size = real_mode_size_needed();
--		if (rm_size && (start + rm_size) < (1<<20) && size >= rm_size) {
--			set_real_mode_mem(start);
--			start += rm_size;
--			size -= rm_size;
--		}
--
- 		/*
- 		 * Don't free memory under 1M for two reasons:
- 		 * - BIOS might clobber it
-
->  
-> +		/*
-> +		 * Don't free memory under 1M for two reasons:
-> +		 * - BIOS might clobber it
-> +		 * - Crash kernel needs it to be reserved
-> +		 */
-> +		if (start + size < SZ_1M)
-> +			continue;
-> +		if (start < SZ_1M) {
-> +			size -= (SZ_1M - start);
-> +			start = SZ_1M;
-> +		}
-> +
->  		memblock_free_late(start, size);
->  	}
->  
-> diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-> index 2e1c1bec0f9e..8ea285aca827 100644
-> --- a/arch/x86/realmode/init.c
-> +++ b/arch/x86/realmode/init.c
-> @@ -29,14 +29,16 @@ void __init reserve_real_mode(void)
->  
->  	/* Has to be under 1M so we can execute real-mode AP code. */
->  	mem = memblock_find_in_range(0, 1<<20, size, PAGE_SIZE);
-> -	if (!mem) {
-> +	if (!mem)
->  		pr_info("No sub-1M memory is available for the trampoline\n");
-> -		return;
-> -	}
-> +	else
-> +		set_real_mode_mem(mem);
->  
-> -	memblock_reserve(mem, size);
-> -	set_real_mode_mem(mem);
-> -	crash_reserve_low_1M();
-> +	/*
-> +	 * Unconditionally reserve the entire fisrt 1M, see comment in
-> +	 * setup_arch()
-> +	 */
-> +	memblock_reserve(0, SZ_1M);
->  }
->  
->  static void sme_sev_setup_real_mode(struct trampoline_header *th)
-> -- 
-> 2.28.0
+On 1/06/21 9:33 am, Leo Yan wrote:
+> On Mon, May 31, 2021 at 10:03:33PM +0300, Adrian Hunter wrote:
+>> On 31/05/21 6:10 pm, Leo Yan wrote:
+>>> Hi Peter, Adrian,
+>>>
+>>> On Wed, May 19, 2021 at 10:03:19PM +0800, Leo Yan wrote:
+>>>> Load-acquire and store-release are one-way permeable barriers, which can
+>>>> be used to guarantee the memory ordering between accessing the buffer
+>>>> data and the buffer's head / tail.
+>>>>
+>>>> This patch optimizes the memory ordering with the load-acquire and
+>>>> store-release barriers.
+>>>
+>>> Is this patch okay for you?
+>>>
+>>> Besides this patch, I have an extra question.  You could see for
+>>> accessing the AUX buffer's head and tail, it also support to use
+>>> compiler build-in functions for atomicity accessing:
+>>>
+>>>   __sync_val_compare_and_swap()
+>>>   __sync_bool_compare_and_swap()
+>>>
+>>> Since now we have READ_ONCE()/WRITE_ONCE(), do you think we still need
+>>> to support __sync_xxx_compare_and_swap() atomicity?
+>>
+>> I don't remember, but it seems to me atomicity is needed only
+>> for a 32-bit perf running with a 64-bit kernel.
 > 
+> 32-bit perf wants to access 64-bit value atomically, I think it tries to
+> avoid the issue caused by scenario:
+> 
+>         CPU0 (64-bit kernel)           CPU1 (32-bit user)
+> 
+>                                          read head_lo
+>         WRITE_ONCE(head)
+>                                          read head_hi
+> 
+> 
+> I dumped the disassembly for reading 64-bit value for perf Arm32 and get
+> below results:
+> 
+>   perf Arm32 for READ_ONCE():
+> 
+> 	case 8: *(__u64_alias_t *) res = *(volatile __u64_alias_t *) p; break;
+>      84a:	68fb      	ldr	r3, [r7, #12]
+>      84c:	e9d3 2300 	ldrd	r2, r3, [r3]
+>      850:	6939      	ldr	r1, [r7, #16]
+>      852:	e9c1 2300 	strd	r2, r3, [r1]
+>      856:	e007      	b.n	868 <auxtrace_mmap__read_head+0xb0>
+> 
+> It uses the instruction ldrd which is "Load Register Dual (register)",
+> but this doesn't mean the instruction is atomic, especially based on
+> the comment in the kernel header include/asm-generic/rwonce.h, I think
+> the instruction ldrd/strd will be "atomic in some cases (namely Armv7 +
+> LPAE), but for others we rely on the access being split into 2x32-bit
+> accesses".
+> 
+> 
+>   perf Arm32 for __sync_val_compare_and_swap():
+> 
+> 	u64 head = __sync_val_compare_and_swap(&pc->aux_head, 0, 0);
+>      7d6:	68fb      	ldr	r3, [r7, #12]
+>      7d8:	f503 6484 	add.w	r4, r3, #1056	; 0x420
+>      7dc:	f04f 0000 	mov.w	r0, #0
+>      7e0:	f04f 0100 	mov.w	r1, #0
+>      7e4:	f3bf 8f5b 	dmb	ish
+>      7e8:	e8d4 237f 	ldrexd	r2, r3, [r4]
+>      7ec:	ea52 0c03 	orrs.w	ip, r2, r3
+>      7f0:	d106      	bne.n	800 <auxtrace_mmap__read_head+0x48>
+>      7f2:	e8c4 017c 	strexd	ip, r0, r1, [r4]
+>      7f6:	f1bc 0f00 	cmp.w	ip, #0
+>      7fa:	f1bc 0f00 	cmp.w	ip, #0
+>      7fe:	d1f3      	bne.n	7e8 <auxtrace_mmap__read_head+0x30>
+>      800:	f3bf 8f5b 	dmb	ish
+>      804:	e9c7 2304 	strd	r2, r3, [r7, #16]
+> 
+> For __sync_val_compare_and_swap(), it uses the instructions
+> ldrexd/ldrexd, these two instructions rely on the exclusive monitor
+> for accessing 64-bit value, so seems to me this is more reliable way
+> for accessing 64-bit value in CPU's 32-bit mode.
+> 
+> Conclusion: seems to me __sync_xxx_compare_and_swap() should be kept
+> in this case rather than using READ_ONCE() for 32-bit building.  Or
+> any other suggestions?  Thanks!
 
+__sync_xxx_compare_and_swap is out-of-date now. This page:
+
+https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html#g_t_005f_005fsync-Builtins
+
+recommends '__atomic' builtins instead.
+
+Since atomics are needed only for the "compat" case (i.e. 32-bit perf with 64-bit kernel)
+you could try to find an elegant way to check for a 64-bit kernel, and avoid the atomics
+for a 32-bit perf with 32-bit kernel.
