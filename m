@@ -2,371 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F2C397970
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483BC397974
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbhFARrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:47:06 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:35796 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233397AbhFARrF (ORCPT
+        id S234505AbhFARsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231331AbhFARsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:47:05 -0400
-Received: by mail-oi1-f173.google.com with SMTP id v22so205241oic.2;
-        Tue, 01 Jun 2021 10:45:22 -0700 (PDT)
+        Tue, 1 Jun 2021 13:48:42 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5991EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 10:47:00 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x38so23093653lfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 10:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jJYP1ahOHUDkEz4I2iYxmBxvA/YEgFvm6f/leHoOsVY=;
+        b=uiisl/l2JAeeqyGsUirCfSyUuUVpC8Cfit36EJ+bP2ODPTY7wxHgP0BQmI5rHxhTY9
+         LbJTI6WRjpjYGzpNwaOxqr6d7GSJnRpo+o1iVKkG0xUFVi7v3lmS5lLTRM4le9l4botv
+         yb/lYPJKPLxS6ZbEdq69Yj5yZIgEUa+RdqMg4bJ8B4Vfe/M4ybKPhrZwW8ZFgr2tQInN
+         uwTSyR7MUp+ysnFEOyUgaIuszyz0531mGUwp7h0eGYilZYVVX0Dm2TgvSAkimrIaEzRX
+         Q9OP9icLpFN8qXEnagMF2oBO+ou8qmSVs5yuHmh0DNud2zh4Hl+K7BShc36iIkUaP4rr
+         9hWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D/RwutDeiUE8RoJ6NiieivInKsIh5wCxpSy1RciiElU=;
-        b=d+BjN3tFef4zR6n7uTAPc2qwEs2Z2SRd5ciWNtgILFMTSU9rOS3DACqxE7Q+GTq6w5
-         ZRF01MdXu645/rvrlYxAvMvXzXa9ox2oDM0J3DD2HiPeaybr/CQutJT1uVxCo5aiR6SU
-         oS924KRxanrGFzaiLrg9rVl/y1ABRMGaFZX4yBDq2mc6n2aSDzqav25UoDhZq68GPjuX
-         ouKLVyZPXDJQvbaW2l1DRx8PLC1OCa9VMzzmPWnLjp8k4xrpx7RMbsy5nyEAy6j05VBi
-         Q1mKqayZ3/z6jcvMDrqiwvu/7OM2+PbtWNZ/kUuB9TPz+eli1JBFUJsqiw7NoJb3IRSZ
-         WrWA==
-X-Gm-Message-State: AOAM5331Us+pDrvwhnYXfeRRmBKJHT8W5VXVrHh/kUNNEelKBaCpPHm8
-        DsCihmgfO0+q2VtslaRNJgKs8TGvaQ==
-X-Google-Smtp-Source: ABdhPJzvNU9U33YqpbUUxKRtRnym65kpSninZ/cD0ub81YCj0r4m8yLb2ew3h563MJZYBCJh6BxCow==
-X-Received: by 2002:a05:6808:1592:: with SMTP id t18mr18633949oiw.123.1622569522240;
-        Tue, 01 Jun 2021 10:45:22 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z9sm3554897oog.25.2021.06.01.10.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 10:45:21 -0700 (PDT)
-Received: (nullmailer pid 684833 invoked by uid 1000);
-        Tue, 01 Jun 2021 17:45:19 -0000
-Date:   Tue, 1 Jun 2021 12:45:19 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 15/18] media: dt-bindings: Convert Cadence CSI2RX
- binding to YAML
-Message-ID: <20210601174519.GA666193@robh.at.kernel.org>
-References: <20210526152308.16525-1-p.yadav@ti.com>
- <20210526152308.16525-16-p.yadav@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jJYP1ahOHUDkEz4I2iYxmBxvA/YEgFvm6f/leHoOsVY=;
+        b=a/21lTKqlaUiag4OzplRxO9oRehG6vh8XMBzooTrJ6+EChHztH+xq2j/1/Zg5STMkf
+         xIdBcNMji947kxOyFC5BY8ePaL73HGYidwqhLnYSZWS7BvXzR4jm2kpYV4gxMgGm3CY2
+         Q5XzfA3PVIlzJVs6EjRyjp5Dyu0COYHbfBxfiJmb4R0GRUA4MWcRiqupjSdWZEc/UAwL
+         4UXci9RQPVjZ2wJv8FfMHaORGETcgODbWfcjSO4LwFJcEZDQXB9Kby2Z7thgn694F+D6
+         XTTVPPXSjbmc+12xbFC0CtmfNQ/pBaj7f/GvzOYC6kYHG3KWSEbZzeWpOk1vmonwq1pZ
+         oDsw==
+X-Gm-Message-State: AOAM532G68v5q8T8H2kx4LwdaiEWZGVb9bN6GM/gDnJd6BsFofTChSN7
+        MjmAfaqM5o+1NtfGN8ZHmz2/aWmuC0DwyKrdA46XeUbQURQ=
+X-Google-Smtp-Source: ABdhPJw42vulKDibjXHniD1a5KBQ7FuDHO9ORXGzCVu1stGaMi5omtQP2h7TLf4fg+sYsaNxhkBj+xxxGDJcXv2pTZw=
+X-Received: by 2002:a19:dc08:: with SMTP id t8mr8284937lfg.503.1622569618435;
+ Tue, 01 Jun 2021 10:46:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526152308.16525-16-p.yadav@ti.com>
+References: <20210527162655.3246381-1-elver@google.com> <CAKwvOdmgZXJB2dV7iG67qHgbDgVTJaH7b3dkpgZyea4ULgQjgA@mail.gmail.com>
+In-Reply-To: <CAKwvOdmgZXJB2dV7iG67qHgbDgVTJaH7b3dkpgZyea4ULgQjgA@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 1 Jun 2021 19:46:47 +0200
+Message-ID: <CANpmjNNqzCTks5dFkbbqzPP4UX7GDTdjbvJ7SbN2jcSNWjxQzA@mail.gmail.com>
+Subject: Re: [PATCH v2] kcov: add __no_sanitize_coverage to fix noinstr for
+ all architectures
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Will Deacon <will@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 08:53:05PM +0530, Pratyush Yadav wrote:
-> Convert the Cadence CSI2RX binding to use YAML schema.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> ---
-> 
-> Changes in v2:
-> - New in v2.
-> 
->  .../devicetree/bindings/media/cdns,csi2rx.txt | 100 -----------
->  .../bindings/media/cdns,csi2rx.yaml           | 164 ++++++++++++++++++
->  2 files changed, 164 insertions(+), 100 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.txt
->  create mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt b/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-> deleted file mode 100644
-> index 6b02a0657ad9..000000000000
-> --- a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-> +++ /dev/null
-> @@ -1,100 +0,0 @@
-> -Cadence MIPI-CSI2 RX controller
-> -===============================
-> -
-> -The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
-> -lanes in input, and 4 different pixel streams in output.
-> -
-> -Required properties:
-> -  - compatible: must be set to "cdns,csi2rx" and an SoC-specific compatible
-> -  - reg: base address and size of the memory mapped region
-> -  - clocks: phandles to the clocks driving the controller
-> -  - clock-names: must contain:
-> -    * sys_clk: main clock
-> -    * p_clk: register bank clock
-> -    * pixel_if[0-3]_clk: pixel stream output clock, one for each stream
-> -                         implemented in hardware, between 0 and 3
-> -
-> -Optional properties:
-> -  - phys: phandle to the external D-PHY, phy-names must be provided
-> -  - phy-names: must contain "dphy", if the implementation uses an
-> -               external D-PHY
-> -
-> -Required subnodes:
-> -  - ports: A ports node with one port child node per device input and output
-> -           port, in accordance with the video interface bindings defined in
-> -           Documentation/devicetree/bindings/media/video-interfaces.txt. The
-> -           port nodes are numbered as follows:
-> -
-> -           Port Description
-> -           -----------------------------
-> -           0    CSI-2 input
-> -           1    Stream 0 output
-> -           2    Stream 1 output
-> -           3    Stream 2 output
-> -           4    Stream 3 output
-> -
-> -           The stream output port nodes are optional if they are not
-> -           connected to anything at the hardware level or implemented
-> -           in the design.Since there is only one endpoint per port,
-> -           the endpoints are not numbered.
-> -
-> -
-> -Example:
-> -
-> -csi2rx: csi-bridge@0d060000 {
-> -	compatible = "cdns,csi2rx";
-> -	reg = <0x0d060000 0x1000>;
-> -	clocks = <&byteclock>, <&byteclock>
-> -		 <&coreclock>, <&coreclock>,
-> -		 <&coreclock>, <&coreclock>;
-> -	clock-names = "sys_clk", "p_clk",
-> -		      "pixel_if0_clk", "pixel_if1_clk",
-> -		      "pixel_if2_clk", "pixel_if3_clk";
-> -
-> -	ports {
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -
-> -		port@0 {
-> -			reg = <0>;
-> -
-> -			csi2rx_in_sensor: endpoint {
-> -				remote-endpoint = <&sensor_out_csi2rx>;
-> -				clock-lanes = <0>;
-> -				data-lanes = <1 2>;
-> -			};
-> -		};
-> -
-> -		port@1 {
-> -			reg = <1>;
-> -
-> -			csi2rx_out_grabber0: endpoint {
-> -				remote-endpoint = <&grabber0_in_csi2rx>;
-> -			};
-> -		};
-> -
-> -		port@2 {
-> -			reg = <2>;
-> -
-> -			csi2rx_out_grabber1: endpoint {
-> -				remote-endpoint = <&grabber1_in_csi2rx>;
-> -			};
-> -		};
-> -
-> -		port@3 {
-> -			reg = <3>;
-> -
-> -			csi2rx_out_grabber2: endpoint {
-> -				remote-endpoint = <&grabber2_in_csi2rx>;
-> -			};
-> -		};
-> -
-> -		port@4 {
-> -			reg = <4>;
-> -
-> -			csi2rx_out_grabber3: endpoint {
-> -				remote-endpoint = <&grabber3_in_csi2rx>;
-> -			};
-> -		};
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> new file mode 100644
-> index 000000000000..ff5dd4211ac9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> @@ -0,0 +1,164 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/cdns,csi2rx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cadence MIPI-CSI2 RX controller
-> +
-> +description: |
-> +  The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
-> +  lanes in input, and 4 different pixel streams in output.
-> +
-> +maintainers:
-> +  - Pratyush Yadav <p.yadav@ti.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: cdns,csi2rx
+On Tue, 1 Jun 2021 at 19:42, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> On Thu, May 27, 2021 at 9:27 AM Marco Elver <elver@google.com> wrote:
+> >
+> > Until now no compiler supported an attribute to disable coverage
+> > instrumentation as used by KCOV.
+> >
+> > To work around this limitation on x86, noinstr functions have their
+> > coverage instrumentation turned into nops by objtool. However, this
+> > solution doesn't scale automatically to other architectures, such as
+> > arm64, which are migrating to use the generic entry code.
+> >
+> > Clang [1] and GCC [2] have added support for the attribute recently.
+> > [1] https://github.com/llvm/llvm-project/commit/280333021e9550d80f5c1152a34e33e81df1e178
+> > [2] https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=cec4d4a6782c9bd8d071839c50a239c49caca689
+> > The changes will appear in Clang 13 and GCC 12.
+> >
+> > Add __no_sanitize_coverage for both compilers, and add it to noinstr.
+> >
+> > Note: In the Clang case, __has_feature(coverage_sanitizer) is only true
+> > if the feature is enabled, and therefore we do not require an additional
+> > defined(CONFIG_KCOV) (like in the GCC case where __has_attribute(..) is
+> > always true) to avoid adding redundant attributes to functions if KCOV
+> > is off. That being said, compilers that support the attribute will not
+> > generate errors/warnings if the attribute is redundantly used; however,
+> > where possible let's avoid it as it reduces preprocessed code size and
+> > associated compile-time overheads.
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> > v2:
+> > * Implement __has_feature(coverage_sanitizer) in Clang
+> >   (https://reviews.llvm.org/D103159) and use instead of version check.
+> > * Add Peter's Ack.
+> > ---
+> >  include/linux/compiler-clang.h | 11 +++++++++++
+> >  include/linux/compiler-gcc.h   |  6 ++++++
+> >  include/linux/compiler_types.h |  2 +-
+> >  3 files changed, 18 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> > index adbe76b203e2..e15eebfa8e5d 100644
+> > --- a/include/linux/compiler-clang.h
+> > +++ b/include/linux/compiler-clang.h
+> > @@ -45,6 +45,17 @@
+> >  #define __no_sanitize_undefined
+> >  #endif
+> >
+> > +/*
+> > + * Support for __has_feature(coverage_sanitizer) was added in Clang 13 together
+> > + * with no_sanitize("coverage"). Prior versions of Clang support coverage
+> > + * instrumentation, but cannot be queried for support by the preprocessor.
+>
+> I'm not against a version check for supporting older releases (in
+> addition to the cleaner feature check, since the feature check was
+> non-existent); we can clean it up someday when clang-13 is the
+> minimally supported version.  Would having an additional version check
+> help support existing/older releases here?
 
-Since there has to be an SoC specific compatible, this should be:
+The feature check will just return 0 on older releases, since the
+feature does not exist there. Therefore, no additional code is
+required to support older releases and a version check would be
+redundant.
 
-compatible:
-  contains:
-    const: cdns,csi2rx
+> > + */
+> > +#if __has_feature(coverage_sanitizer)
+> > +#define __no_sanitize_coverage __attribute__((no_sanitize("coverage")))
+> > +#else
+> > +#define __no_sanitize_coverage
+> > +#endif
+> > +
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 3
-> +    maxItems: 6
-> +
-> +  clock-names:
-> +    minItems: 3
-> +    maxItems: 6
-> +    items:
-> +      - const: sys_clk # main clock
-> +      - const: p_clk # register bank clock
-> +      - const: pixel_if0_clk # pixel stream 0 output clock
-> +      - const: pixel_if1_clk # pixel stream 1 output clock
-> +      - const: pixel_if2_clk # pixel stream 2 output clock
-> +      - const: pixel_if3_clk # pixel stream 3 output clock
-> +
-> +  phys:
-> +    maxItems: 1
-> +    description: phandle to the external D-PHY
-> +
-> +  phy-names:
-> +    items:
-> +      - const: dphy
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
-> +        description: CSI-2 input
-> +
-> +        properties:
-> +          endpoint:
-> +            $ref: video-interfaces.yaml#
-> +            unevaluatedProperties: false
-> +
-> +            properties:
-> +              clock-lanes:
-> +                maxItems: 1
-> +
-> +              data-lanes:
-> +                maxItems: 1
-
-If there's only 1 lane, are you assigning between clock and data lanes? 
-If not, then there's no mapping needed.
-
-> +
-> +            required:
-> +              - clock-lanes
-> +              - data-lanes
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 0 output
-> +
-> +      port@2:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 1 output
-> +
-> +      port@3:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 2 output
-> +
-> +      port@4:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 3 output
-> +
-> +    required:
-> +      - port@0
-> +
-> +
-> +dependencies:
-> +  phys: [ 'phy-names' ]
-> +  phy-names: [ 'phys' ]
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    csi2rx: csi-bridge@d060000 {
-> +      compatible = "cdns,csi2rx";
-> +      reg = <0x0d060000 0x1000>;
-> +      clocks = <&byteclock>, <&byteclock>,
-> +        <&coreclock>, <&coreclock>,
-> +        <&coreclock>, <&coreclock>;
-> +      clock-names = "sys_clk", "p_clk",
-> +              "pixel_if0_clk", "pixel_if1_clk",
-> +              "pixel_if2_clk", "pixel_if3_clk";
-> +      phys = <&dphy0>;
-> +      phy-names = "dphy";
-> +
-> +      ports {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        port@0 {
-> +          reg = <0>;
-> +
-> +          csi2rx_in_sensor: endpoint {
-> +            remote-endpoint = <&sensor_out_csi2rx>;
-> +            clock-lanes = <0>;
-> +            data-lanes = <1 2>;
-> +          };
-> +        };
-> +
-> +        port@1 {
-> +          reg = <1>;
-> +
-> +          csi2rx_out_grabber0: endpoint {
-> +            remote-endpoint = <&grabber0_in_csi2rx>;
-> +          };
-> +        };
-> +
-> +        port@2 {
-> +          reg = <2>;
-> +
-> +          csi2rx_out_grabber1: endpoint {
-> +            remote-endpoint = <&grabber1_in_csi2rx>;
-> +          };
-> +        };
-> +
-> +        port@3 {
-> +          reg = <3>;
-> +
-> +          csi2rx_out_grabber2: endpoint {
-> +            remote-endpoint = <&grabber2_in_csi2rx>;
-> +          };
-> +        };
-> +
-> +        port@4 {
-> +          reg = <4>;
-> +
-> +          csi2rx_out_grabber3: endpoint {
-> +            remote-endpoint = <&grabber3_in_csi2rx>;
-> +          };
-> +        };
-> +      };
-> +    };
-> -- 
-> 2.30.0
+Thanks,
+-- Marco
