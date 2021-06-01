@@ -2,97 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349D439751C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE69039756D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbhFAOKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:10:45 -0400
-Received: from out28-50.mail.aliyun.com ([115.124.28.50]:52115 "EHLO
-        out28-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234027AbhFAOKm (ORCPT
+        id S234191AbhFAObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233797AbhFAObY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:10:42 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1194137|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.427396-0.000226577-0.572377;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.KM.e4b8_1622556537;
-Received: from 192.168.0.103(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KM.e4b8_1622556537)
-          by smtp.aliyun-inc.com(10.147.43.95);
-          Tue, 01 Jun 2021 22:08:58 +0800
-Subject: Re: [PATCH v2 3/6] clk: ingenic: Read bypass register only when there
- is one
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        list@opendingux.net
-References: <20210530164923.18134-1-paul@crapouillou.net>
- <20210530164923.18134-4-paul@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <47eeb44b-2752-1c99-4209-09769e267c7f@wanyeetech.com>
-Date:   Tue, 1 Jun 2021 22:08:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Tue, 1 Jun 2021 10:31:24 -0400
+X-Greylist: delayed 1173 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 01 Jun 2021 07:29:42 PDT
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3F2C061574;
+        Tue,  1 Jun 2021 07:29:42 -0700 (PDT)
+Received: from uucp by ganesha.gnumonks.org with local-bsmtp (Exim 4.89)
+        (envelope-from <laforge@gnumonks.org>)
+        id 1lo55o-0006dN-Af; Tue, 01 Jun 2021 16:10:04 +0200
+Received: from laforge by localhost.localdomain with local (Exim 4.94.2)
+        (envelope-from <laforge@gnumonks.org>)
+        id 1lo54u-004M7u-30; Tue, 01 Jun 2021 16:09:08 +0200
+Date:   Tue, 1 Jun 2021 16:09:08 +0200
+From:   Harald Welte <laforge@gnumonks.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     pablo@netfilter.org, davem@davemloft.net, kuba@kernel.org,
+        osmocom-net-gprs@lists.osmocom.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] gtp: Fix a typo
+Message-ID: <YLY/hDKxXLC507ft@nataraja>
+References: <20210601141625.4131445-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210530164923.18134-4-paul@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601141625.4131445-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 01, 2021 at 10:16:25PM +0800, Zheng Yongjun wrote:
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-On 2021/5/31 上午12:49, Paul Cercueil wrote:
-> Rework the clock code so that the bypass register is only read when
-> there is actually a bypass functionality.
->
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->   drivers/clk/ingenic/cgu.c | 19 +++++++++++--------
->   1 file changed, 11 insertions(+), 8 deletions(-)
+Obviousy-Acked-by: Harald Welte <laforge@gnumonks.org>
 
-
-Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>    # on CU1830-neo/X1830
-
-
->
-> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
-> index 0619d45a950c..7686072aff8f 100644
-> --- a/drivers/clk/ingenic/cgu.c
-> +++ b/drivers/clk/ingenic/cgu.c
-> @@ -99,13 +99,14 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
->   	od_enc = ctl >> pll_info->od_shift;
->   	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
->   
-> -	ctl = readl(cgu->base + pll_info->bypass_reg);
-> +	if (!pll_info->no_bypass_bit) {
-> +		ctl = readl(cgu->base + pll_info->bypass_reg);
->   
-> -	bypass = !pll_info->no_bypass_bit &&
-> -		 !!(ctl & BIT(pll_info->bypass_bit));
-> +		bypass = !!(ctl & BIT(pll_info->bypass_bit));
->   
-> -	if (bypass)
-> -		return parent_rate;
-> +		if (bypass)
-> +			return parent_rate;
-> +	}
->   
->   	for (od = 0; od < pll_info->od_max; od++) {
->   		if (pll_info->od_encoding[od] == od_enc)
-> @@ -225,11 +226,13 @@ static int ingenic_pll_enable(struct clk_hw *hw)
->   	u32 ctl;
->   
->   	spin_lock_irqsave(&cgu->lock, flags);
-> -	ctl = readl(cgu->base + pll_info->bypass_reg);
-> +	if (!pll_info->no_bypass_bit) {
-> +		ctl = readl(cgu->base + pll_info->bypass_reg);
->   
-> -	ctl &= ~BIT(pll_info->bypass_bit);
-> +		ctl &= ~BIT(pll_info->bypass_bit);
->   
-> -	writel(ctl, cgu->base + pll_info->bypass_reg);
-> +		writel(ctl, cgu->base + pll_info->bypass_reg);
-> +	}
->   
->   	ctl = readl(cgu->base + pll_info->reg);
->   
+-- 
+- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
