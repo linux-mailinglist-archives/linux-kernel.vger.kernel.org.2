@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C90F397A53
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0E1397A54
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234671AbhFATBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 15:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
+        id S234714AbhFATB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 15:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233397AbhFATBo (ORCPT
+        with ESMTP id S234574AbhFATBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 15:01:44 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F91C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:00:02 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id h12so7382024plf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:00:02 -0700 (PDT)
+        Tue, 1 Jun 2021 15:01:47 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE35CC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:00:03 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id x18so215931pfi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 12:00:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d70mWsIG9EaxVCKWsokKSvhrP1b5Ectf8KCIC91GlHM=;
-        b=JQQazUOBGRua3zTuzOQeUQ8DRK6EQpuJmBVaIAhAcctV2/I23SVlW1qX8sLyKjhRd6
-         TO7y0Ab1zc3CYU/t1ii7CBgGjzxOw/O+3hXg3v55J+37emS9eNyHV9LqC7S/f+cKuEcx
-         Vajipcsu6YfZPmQHoQNCR4r+/YK/x/I6y6ouE=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BjSsL+RYZ+Q0RhIg/GdDpOBrbHM4/OAFr/ZVDgOzxmg=;
+        b=avnMapG4X/3F6hbySsJBTDLwVx8lYZ38H7SMk21myYXWqNp/ACiJ4jGmjlN8WrBXI9
+         TUDkzfpTQfiJH6oieYUYb6bnZvRMoGdTzZI5HpCn6JBWExqHqXcsmsJs/mPolKB2yaA6
+         XgFXRADOd1m/iCYZliloQwY8yHE+De9KWl0EA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d70mWsIG9EaxVCKWsokKSvhrP1b5Ectf8KCIC91GlHM=;
-        b=tZ6jrgSy5tJ5ggKvBM5TNKCFGKdtXZpvE17U+BY0vkgLgbQpuebfTPLs4jxGjQ3eXP
-         X9SCKZbG0D6xugAqUD2/L2e2IB4jJufSMGsf/77zA5FzO3fu3S287CzCQi/Yiyph8jec
-         8V0GX9IjxnwUm/6m7+AEWQPzy7eSDchRb7ACORqKXTWYzT6GovVH7TAWg9E9dhTv3uGZ
-         d4fxfMMGt6E3JEu2k2wCFD5Pt41UGcCJtRM1jFckcw5Q5JIWVzczPlww05NtVu+AJLRn
-         Mq05Ydrqedr9YTgWALevXzc3WBWvx4hI/IbhyBM/aqNaVrwotvZTpqM+UuMMCiKXn5Df
-         BI0Q==
-X-Gm-Message-State: AOAM533KylN0n7ckyZoSeckxrgDUxJUSYMu9ReF55msx5CkG8AD9ApwT
-        F74kaJC+YEs7f4sg9GMCl5TIQw==
-X-Google-Smtp-Source: ABdhPJyE5vO18OlwMKxn3ult3kWG1P3QdabymJEaRkG4o+qtMD6kSLOjI56Zf7Oc0krRYtNHhCRBWw==
-X-Received: by 2002:a17:902:e007:b029:ef:9dd2:be6 with SMTP id o7-20020a170902e007b02900ef9dd20be6mr27303658plo.12.1622574002315;
-        Tue, 01 Jun 2021 12:00:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BjSsL+RYZ+Q0RhIg/GdDpOBrbHM4/OAFr/ZVDgOzxmg=;
+        b=gcENA+bu/NwVInLq8+Zh7AqH67NW9gYWbmj8DsgSsUVTEFELxBbr1bgcJnKkulWCXA
+         0wLO7NlQvxn0vEgP2GtJCG5WJJaz7L/JqgLmTkZDNVg3DY7pVyN4SKZ2QYsf0FPmCkwj
+         V3vkgdpSL3wxopVpip1ydO63ytudbMXyNpPCWLQnyM0iN3SpU+25m39/+35jJfbhl0HJ
+         aTI/9kSsEROE46UfS1v+ukW1lnzNqaDqAFw7wMeAW8G3iE4XGoxg6wVLZF8YXSRojtFb
+         gpnBXC/8ZE8vtXxjspbR7S+JcoRwfzSX3X7+CfY/4JZLKQrZLi7blbeb0U8pVtq0bVsK
+         GCiQ==
+X-Gm-Message-State: AOAM533mS2V7wfhFTwZ6clOi6qZLi4OvYbRVcD2qjAzPlEU5XN+B4lmK
+        dycBWqQksgfF5qOXOeHyUwL0kA==
+X-Google-Smtp-Source: ABdhPJwtltjXqh+Fi6FukJ+KNQRPzQtrkk8lSxLumIEp+wGrZYqf8YUCE43xzWr/fWaO0rCDB8Ux3g==
+X-Received: by 2002:a63:543:: with SMTP id 64mr18881214pgf.288.1622574003246;
+        Tue, 01 Jun 2021 12:00:03 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:ee82:b2a7:c8bd:18e7])
-        by smtp.gmail.com with ESMTPSA id a10sm2709753pjs.39.2021.06.01.12.00.01
+        by smtp.gmail.com with ESMTPSA id a10sm2709753pjs.39.2021.06.01.12.00.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 01 Jun 2021 12:00:02 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
@@ -50,10 +50,12 @@ To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH 1/2] arm64: dts: qcom: Remove cros-pd-update on Trogdor
-Date:   Tue,  1 Jun 2021 11:59:58 -0700
-Message-Id: <20210601185959.3101132-1-swboyd@chromium.org>
+Subject: [PATCH 2/2] arm64: dts: qcom: Remove cros-pd-update on Cheza
+Date:   Tue,  1 Jun 2021 11:59:59 -0700
+Message-Id: <20210601185959.3101132-2-swboyd@chromium.org>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+In-Reply-To: <20210601185959.3101132-1-swboyd@chromium.org>
+References: <20210601185959.3101132-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -66,26 +68,24 @@ isn't used.
 Cc: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 4 ----
+ arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 4 ----
  1 file changed, 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 24d293ef56d7..c134feb02eec 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -564,10 +564,6 @@ i2c_tunnel: i2c-tunnel {
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
+index 216a74f0057c..dfd1b42c07fd 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
+@@ -714,10 +714,6 @@ i2c_tunnel: i2c-tunnel {
+ 			#address-cells = <1>;
  			#size-cells = <0>;
  		};
- 
+-
 -		pdupdate {
 -			compatible = "google,cros-ec-pd-update";
 -		};
--
- 		typec {
- 			compatible = "google,cros-ec-typec";
- 			#address-cells = <1>;
-
-base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+ 	};
+ };
+ 
 -- 
 https://chromeos.dev
 
