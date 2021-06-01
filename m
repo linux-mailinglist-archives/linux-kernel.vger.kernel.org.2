@@ -2,125 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737EA3976FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6728D397700
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbhFAPqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:46:13 -0400
-Received: from mga04.intel.com ([192.55.52.120]:44635 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhFAPqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:46:11 -0400
-IronPort-SDR: +LdanXLyBV0M634CK3ruon9CcWonwHEsEMaxUmt2gIr5WNfO4KkeX69VMnpbA34c9KX2dZCEve
- jHfNDKdU0riw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="201705055"
-X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
-   d="scan'208";a="201705055"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 08:44:28 -0700
-IronPort-SDR: Ac9R8PJ/NqQS8OH/ildLDNP7C4I5V6l3U+4HjeNQxJAiOS6yBeq/CavRQNQM9pYlrppWW9/Lzu
- j4c/0UpTLYqA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
-   d="scan'208";a="616863631"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 01 Jun 2021 08:44:28 -0700
-Received: from linux.intel.com (unknown [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id A7A67580039;
-        Tue,  1 Jun 2021 08:44:26 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 23:44:23 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
-Message-ID: <20210601154423.GA27463@linux.intel.com>
-References: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
- <YKz86iMwoP3VT4uh@lunn.ch>
- <20210601104734.GA18984@linux.intel.com>
- <YLYwcx3aHXFu4n5C@lunn.ch>
+        id S234438AbhFAPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234074AbhFAPqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 11:46:24 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A130C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:44:42 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id h7so1724440iok.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nvfBq2aXtJ08TGHS8dCWxvUmTewAGJbPcj6f0TWlUiY=;
+        b=kRP9RlunMLDQfqS8+ys+DPhZExy23ZacwK6tldf29WDZpUF9gMrU53snMNzxbOK8Xx
+         mFBKUUhUjw2mJKRMdKO8xXTbdkbju+jNtMPX3uGyompBImAvdoPQ9hKtelQZjwaJk/1m
+         W729w4nS3IOnXZ45i+J7UUP3+yzQMn0TRsaCJ5BV2EK08w30jsd+Rui/r6Bs6fZoH05W
+         XqYJuQxTiBtHsFk3+hJU64fLX0dUYqHWwwAmkY/KYdCEMxWvmSXwgfDq4ViCFGNMFw85
+         txmnvZvHyvN2N0+mfIJfIfQYcXxhFqyWEg0EQ65Z4gTejqVYbCU5YV5a5HK8sjfwpCJm
+         Vleg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nvfBq2aXtJ08TGHS8dCWxvUmTewAGJbPcj6f0TWlUiY=;
+        b=ZEGCUPATjMpvY/+WCPdLXP9CJf1jVbxl2wF6Haqr40Mz3uNQ8MXhAWr7ankCgGo9Xx
+         BbkPMrWSm1eTPX6MPROSBCB/S39phbRhfePSvZZWY78WPvwzurVN10D+ZuKwHXL44bJv
+         XIjFhDzB5dUT9AAYZXguUOUDyCGIX7XMjdVYzwFZOVMC6r4URtdfnnV0p6BDmeizr1Xn
+         rrEk9f3z7iLsnIzO3VIZ7OWu4PNlCqfc5UYYsEB6P/55jhPxghIyE7HCVkA97hkh+ys7
+         mQhf+FOd+Y59/Q8xKU8s3Jx+WH2rfJQZCZ9fMXOpCxJHncB4RlXKYcygNSQWv/tEmY1+
+         a8Aw==
+X-Gm-Message-State: AOAM532I0QwPEgqua+8GMZioBADLnRmXavuztucMT+LkzdRu7RmWPnVm
+        TjdUb3o7o2pCyUcGl4FWOliukT2woPpgyO/bLrXexA==
+X-Google-Smtp-Source: ABdhPJx/UMblI0JBFNQGhmSUwzNnzmzVmDXqPuPba6tlXA1wNfGoVEasufKEZ/1btEqVM+yw8XDTXVMNqCEn91SVNFA=
+X-Received: by 2002:a02:5b45:: with SMTP id g66mr11315101jab.62.1622562281646;
+ Tue, 01 Jun 2021 08:44:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLYwcx3aHXFu4n5C@lunn.ch>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210528075932.347154-1-davidgow@google.com> <20210528075932.347154-4-davidgow@google.com>
+In-Reply-To: <20210528075932.347154-4-davidgow@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 1 Jun 2021 08:44:27 -0700
+Message-ID: <CAGS_qxr+nOBoL86GzX3o+CUvp0FFGv7qJh70ALUxe-Hr6X7+xA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] kasan: test: make use of kunit_skip()
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Marco Elver <elver@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        kasan-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 03:04:51PM +0200, Andrew Lunn wrote:
-> On Tue, Jun 01, 2021 at 06:47:34PM +0800, Wong Vee Khee wrote:
-> > On Tue, May 25, 2021 at 03:34:34PM +0200, Andrew Lunn wrote:
-> > > On Tue, May 25, 2021 at 01:58:03PM +0800, Wong Vee Khee wrote:
-> > > > Synopsys MAC controller is capable of pairing with external PHY devices
-> > > > that accessible via Clause-22 and Clause-45.
-> > > > 
-> > > > There is a problem when it is paired with Marvell 88E2110 which returns
-> > > > PHY ID of 0 using get_phy_c22_id(). We can add this check in that
-> > > > function, but this will break swphy, as swphy_reg_reg() return 0. [1]
-> > > 
-> > > Is it possible to identify it is a Marvell PHY? Do any of the other
-> > > C22 registers return anything unique? I'm wondering if adding
-> > > .match_phy_device to genphy would work to identify it is a Marvell PHY
-> > > and not bind to it. Or we can turn it around, make the
-> > > .match_phy_device specifically look for the fixed-link device by
-> > > putting a magic number in one of the vendor registers.
-> > >
-> > 
-> > I checked the Marvell and did not see any unique register values.
-> > Also, since get_phy_c22_id() returns a *phy_id== 0, it is not bind to
-> > any PHY driver, so I don't think adding the match_phy_device check in
-> > getphy would help.
-> 
-> It has a Marvell ID in C45 space. So maybe we need to special case for
-> ID 0. If we get that, go look in C45 space. If we find a valid ID, use
-> it. If we get EOPNOTSUP because the MDIO bus is not C45 capable, or we
-> don't find a vendor ID in C45 space, keep with id == 0 and load
-> genphy?
+On Fri, May 28, 2021 at 12:59 AM David Gow <davidgow@google.com> wrote:
 >
+> From: Marco Elver <elver@google.com>
+>
+> Make use of the recently added kunit_skip() to skip tests, as it permits
+> TAP parsers to recognize if a test was deliberately skipped.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Make sense for me.
-Let me what you think of adding the checks in *get_phy_device():
-
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 1539ea021ac0..ad9a87fadea1 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -862,11 +862,21 @@ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
-        c45_ids.mmds_present = 0;
-        memset(c45_ids.device_ids, 0xff, sizeof(c45_ids.device_ids));
-
--       if (is_c45)
-+       if (is_c45) {
-                r = get_phy_c45_ids(bus, addr, &c45_ids);
--       else
-+       } else {
-                r = get_phy_c22_id(bus, addr, &phy_id);
-
-+               if (phy_id == 0) {
-+                       r = get_phy_c45_ids(bus, addr, &c45_ids);
-+                       if (r == -ENOTSUPP || r == -ENODEV)
-+                               return 0;
-+                       else
-+                               return phy_device_create(bus, addr, phy_id,
-+                                                        true, &c45_ids);
-+               }
-+       }
-+
-        if (r)
-                return ERR_PTR(r);
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
 
 
-> The other option is consider the PHY broken, and require that you put
-> the correct ID in DT as the compatible string. The correct driver will
-> then be loaded, based on the compatible string, rather than what is
-> found by probing.
-
-Unfortunately all Intel platforms (ElkhartLake/TigerLake/AlderLake) are non-DT.
-
-
-VK
-
+> ---
+>  lib/test_kasan.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+>
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index cacbbbdef768..0a2029d14c91 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -111,17 +111,13 @@ static void kasan_test_exit(struct kunit *test)
+>  } while (0)
+>
+>  #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {                  \
+> -       if (!IS_ENABLED(config)) {                                      \
+> -               kunit_info((test), "skipping, " #config " required");   \
+> -               return;                                                 \
+> -       }                                                               \
+> +       if (!IS_ENABLED(config))                                        \
+> +               kunit_skip((test), "Test requires " #config "=y");      \
+>  } while (0)
+>
+>  #define KASAN_TEST_NEEDS_CONFIG_OFF(test, config) do {                 \
+> -       if (IS_ENABLED(config)) {                                       \
+> -               kunit_info((test), "skipping, " #config " enabled");    \
+> -               return;                                                 \
+> -       }                                                               \
+> +       if (IS_ENABLED(config))                                         \
+> +               kunit_skip((test), "Test requires " #config "=n");      \
+>  } while (0)
+>
+>  static void kmalloc_oob_right(struct kunit *test)
+> --
+> 2.32.0.rc0.204.g9fa02ecfa5-goog
+>
