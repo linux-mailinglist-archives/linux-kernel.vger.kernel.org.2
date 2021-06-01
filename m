@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDD83977E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74845397803
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhFAQYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:24:44 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3124 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbhFAQYl (ORCPT
+        id S234266AbhFAQ20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFAQ2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:24:41 -0400
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvcfW5LV5z6Q2Tp;
-        Wed,  2 Jun 2021 00:13:55 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 1 Jun 2021 18:22:58 +0200
-Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 17:22:57 +0100
-Date:   Tue, 1 Jun 2021 17:22:52 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Liam Beguin <liambeguin@gmail.com>
-CC:     <peda@axentia.se>, <jic23@kernel.org>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 3/9] iio: afe: rescale: use core to get processed
- value
-Message-ID: <20210601172252.00007f5c@Huawei.com>
-In-Reply-To: <20210530005917.20953-4-liambeguin@gmail.com>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
-        <20210530005917.20953-4-liambeguin@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Tue, 1 Jun 2021 12:28:25 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3E3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:26:42 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j14so14985828wrq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:26:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3qOQncXWcmTagrRnUN7xPwpRuDjJHMU3NDeiXjxsC04=;
+        b=Q4UQpith9NJSzA3Ospei0Bw1mvGVa0w89R29XVu0wKwJvBGcEVnUtMRn8e9xMKE0AK
+         2Ap4Q8kWdiQ6iBjPAwFPvOk4vIpQVkbGQpHo0yF34mcg+gbyZxY4Q4TmiTFxKGhdjliu
+         gpHMHprjHINFQeXihuzRgGaHRwwJab9S7xk0l9HRhEKybgx20hxnks8hG4P0MjMMgonv
+         /Fo607iUYWugl6neBdvC0KuG2IPQDnttRH/iGRaLS3/7cNkkrpwickMj0WLfejmbQOLX
+         l/G6ODram+H62iUiXJ25jEtgl1LZnmc0136U8jBZdaxOGtNVRZmeKJiN3Woh1onCPEKF
+         HztA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3qOQncXWcmTagrRnUN7xPwpRuDjJHMU3NDeiXjxsC04=;
+        b=pav3vBHt6hDlV72apadDiK8sygp58JPVltcFcGG0jQbb7b2TpPmWReNiiwns4oAq0N
+         ZqWFDvjq2g/AnBqL7r6H9mJPaCP4vhnrARSM1QLi801zt4D9MMYBYGrhRLpiRNYLBrdg
+         mEj2YEda5kOrR17VLtBem4lP4EM5jIcUHp9prG1EL6n/EUJGBlLB8tQoRgQIMSxIEKhQ
+         8aefSNmRJ5Q4I3t+5F7DhF3Er/5Ojp8W8x+qxyBMimNAp/tgiJhN5Qj7EgNpcf9vPokL
+         nS1+U+rLwyPMxQy/96OEA4pVhT+UBu9h8R7fTYBs/BkYAsxz18ONLj/vbyp4UBMM7uJd
+         qMOQ==
+X-Gm-Message-State: AOAM530G8xvYZUywJ/8xKiVTMWioj5NJYm0WqRXFZ/JhE+9MHea968tg
+        Gl+x/I5zBvX4+OCoTVkXsPV2HA==
+X-Google-Smtp-Source: ABdhPJzz/8Ro1pa/8xroirV4pUUj3sHXXH1wBBHnxdukJhb7RDxwxT+OyE6j+YMnWmfO587jWBJfqw==
+X-Received: by 2002:a05:6000:50d:: with SMTP id a13mr27799191wrf.130.1622564801308;
+        Tue, 01 Jun 2021 09:26:41 -0700 (PDT)
+Received: from dell ([91.110.221.249])
+        by smtp.gmail.com with ESMTPSA id h15sm10735wmq.1.2021.06.01.09.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 09:26:40 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 17:26:38 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     arnd@arndb.de, robh+dt@kernel.org, Marek Vasut <marex@denx.de>,
+        jagan@amarulasolutions.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org
+Subject: Re: [PATCH 04/13] dt-bindings: mfd: stm32-timers: remove
+ #address/size cells from required properties
+Message-ID: <20210601162638.GF2165650@dell>
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-5-alexandre.torgue@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.71]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210415101037.1465-5-alexandre.torgue@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021 20:59:11 -0400
-Liam Beguin <liambeguin@gmail.com> wrote:
+On Thu, 15 Apr 2021, Alexandre Torgue wrote:
 
-> From: Liam Beguin <lvb@xiphos.com>
+> address-cells and size-cells can't be declared as "required" properties
+> as they are not needed if subnodes don't have a "reg" entry.
 > 
-> Make use of the IIO core to compute the source channel's processed
-> value. This reduces duplication and will facilitate the addition of
-> offsets in the iio-rescale driver.
+> Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 
-Fairly sure you just dropped a lot or precision if the devices do provide
-a scale.
-> 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> ---
->  drivers/iio/afe/iio-rescale.c | 37 ++++++++++-------------------------
->  1 file changed, 10 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
-> index e42ea2b1707d..4d0813b274d1 100644
-> --- a/drivers/iio/afe/iio-rescale.c
-> +++ b/drivers/iio/afe/iio-rescale.c
-> @@ -38,36 +38,20 @@ static int rescale_read_raw(struct iio_dev *indio_dev,
->  			    int *val, int *val2, long mask)
->  {
->  	struct rescale *rescale = iio_priv(indio_dev);
-> -	unsigned long long tmp;
->  	int ret;
->  
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
-> -		return iio_read_channel_raw(rescale->source, val);
-> +		ret = iio_read_channel_processed(rescale->source, val);
+Applied, thanks.
 
-iio_read_channel_processed() provides a IIO_VAL_INT as you can see.
-Now that can be heavily truncated.  In some cases it is always 0
-(e.g. device reading very small currents only).
-
-To maintain that scaling we deliberately combine it with the
-scaling from the afe, hopefully maintaining that precision because
-the scale value has much higher degree of precision.
-
-We could probably do this better than currently with a more complex
-conversion function.
-
-It might seem like a good idea to fix up iio_read_channel_processed
-to return IIO_VAL_INT_PLUS_MICRO or similar, but potentially that
-would still throw away precision, for example if the scale is
-expressed as IIO_VAL_FRACTIONAL to a high degree of precision.
-
-Jonathan
-
->  
-> +		return IIO_VAL_INT;
->  	case IIO_CHAN_INFO_SCALE:
-> -		ret = iio_read_channel_scale(rescale->source, val, val2);
-> -		switch (ret) {
-> -		case IIO_VAL_FRACTIONAL:
-> -			*val *= rescale->numerator;
-> -			*val2 *= rescale->denominator;
-> -			return ret;
-> -		case IIO_VAL_INT:
-> -			*val *= rescale->numerator;
-> -			if (rescale->denominator == 1)
-> -				return ret;
-> -			*val2 = rescale->denominator;
-> -			return IIO_VAL_FRACTIONAL;
-> -		case IIO_VAL_FRACTIONAL_LOG2:
-> -			tmp = *val * 1000000000LL;
-> -			do_div(tmp, rescale->denominator);
-> -			tmp *= rescale->numerator;
-> -			do_div(tmp, 1000000000LL);
-> -			*val = tmp;
-> -			return ret;
-> -		default:
-> -			return -EOPNOTSUPP;
-> -		}
-> +		*val = rescale->numerator;
-> +		if (rescale->denominator == 1)
-> +			return IIO_VAL_INT;
-> +		*val2 = rescale->denominator;
-> +
-> +		return IIO_VAL_FRACTIONAL;
->  	default:
->  		return -EINVAL;
->  	}
-> @@ -130,9 +114,8 @@ static int rescale_configure_channel(struct device *dev,
->  	chan->ext_info = rescale->ext_info;
->  	chan->type = rescale->cfg->type;
->  
-> -	if (!iio_channel_has_info(schan, IIO_CHAN_INFO_RAW) ||
-> -	    !iio_channel_has_info(schan, IIO_CHAN_INFO_SCALE)) {
-> -		dev_err(dev, "source channel does not support raw/scale\n");
-> +	if (!iio_channel_has_info(schan, IIO_CHAN_INFO_RAW)) {
-> +		dev_err(dev, "source channel does not support raw\n");
->  		return -EINVAL;
->  	}
->  
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
