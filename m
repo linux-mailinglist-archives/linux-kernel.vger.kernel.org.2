@@ -2,168 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2E73974B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01FE3974B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbhFAN5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234116AbhFAN53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:57:29 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A750C061574;
-        Tue,  1 Jun 2021 06:55:46 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id f11so13070906lfq.4;
-        Tue, 01 Jun 2021 06:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y1/x96UHDOyz4mo8Dx52Cylgiw8juPxSALX40n8TPCk=;
-        b=u1GjTSS+Wsu8wRn3z2JByj4bKIT74WoOKBq//n+U/Dg2jQs1SWiqyT9sedwtjKVqRn
-         0U1z9V8gPco4dM/w+iW9pFs0wo/Lkh/1cr38e+B29rx+lPiMDdRaXesVDUPlmVWZTZXj
-         dbsIQTwUXWefxOL/wGtJDGx9+GV9FEG1vbMzqyROZXIH+tSCWP5W2m5kNjKgacRWjjvn
-         YXD02UZsCKZ/D9uH+nNFFGRAM1RtjXTTcMYu0cDlU03CqLMqO2JQoWDNrGPl7aI+lmUy
-         WZOZ4lFC7uGYjsQ+zIc8lLhozYYISZjYtoXWO49en/A4/8w7CWXtwYB+wqoxeKYkwzvx
-         E3yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y1/x96UHDOyz4mo8Dx52Cylgiw8juPxSALX40n8TPCk=;
-        b=XXVoV8ZEDwcsC9BBY8okkkIpD4WZvfL5wMt4+cF171XrTYLRv+uExyXctUgtyr4iRL
-         xbdR7zdURvT9NAS5k2Iw4FsIo4D8ibFLgheaVpLD9qWi1dvNyfLIr5BBPOC478x6BGxO
-         c1yyWzCY3xCGiJkb9Pob5tFx+I7H9YPNgm5ullb9Jgft7yVo2riwhYV1VXYhXIEAZkSb
-         PVsiUweEpnsktfJJc3Rvaq2gvIXZwVpKyu7p0eW/X4O4S5pq3czBHA1Jx87ZQLgdLa3G
-         M0T/ac8NENDe95/1uA6rlyy6LyhidqaQrs7Wq+Lo8r4L59ZM3qiYrNrLEv6aRu6xNXmc
-         z17A==
-X-Gm-Message-State: AOAM531aZJQ/utWUtBnJ6wngdv7BTIrsjCReqxcPTWG7rqHwLH28UykI
-        PPeVhEBnB58od4mtiq3bgyYQJBoYZcsfKEV4Qbs=
-X-Google-Smtp-Source: ABdhPJz2QveIKeaW5IevsO5kSbKCgvt8JDrTYlMlKizZr9/AJ1PzvSVbuMQp68gL1DzLMoLI9FrvpV/w/SKJRM/U0x8=
-X-Received: by 2002:a05:6512:3772:: with SMTP id z18mr18821229lft.423.1622555744932;
- Tue, 01 Jun 2021 06:55:44 -0700 (PDT)
+        id S234171AbhFAN5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234119AbhFAN5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:57:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B324613AE;
+        Tue,  1 Jun 2021 13:55:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622555755;
+        bh=uDkz4YoEHcgBW7m92lJvZYICBqyo72YlqEVTWUbMiRg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZVkzo27Mj0F/+XVAb7Pw2B8W97FekTZBXxYswPbWs2QxuOu4AejG/xzX1XCBYpQie
+         vAVhvyi23fC2KHpFCB5mke3sxNhZ86Lr6Wt8zrbIR1MalzoGxQkEOGBzjKyMIIYU67
+         CJHo3AXVtRTpQGpG+gCpYxgOKAwXIkebXYJzuQtZmxYVYFoBjQv1taJ6J2IVmG/stN
+         mRrZNhYDdG7NMjiVLzjHV+7JkGpb7+Kwzbw/5rmhz4DQFPF67M/Pm9GQiVlClNoNXZ
+         YTsyvSbH9aBCKtIRlsNAV72XvP6kskT1LRbF6YdanDvszeBt0K8MQjEPL4e0S/NCT7
+         PRRI3pa8/xoFA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 78FB34011C; Tue,  1 Jun 2021 10:55:52 -0300 (-03)
+Date:   Tue, 1 Jun 2021 10:55:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>, Song Liu <songliubraving@fb.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH] perf stat: Fix error return code in bperf__load()
+Message-ID: <YLY8aKsMvBG+DB1W@kernel.org>
+References: <20210517081254.1561564-1-yukuai3@huawei.com>
+ <YLY7qozcJcj8RVe+@kernel.org>
 MIME-Version: 1.0
-References: <20210528143802.78635-1-dong.menglong@zte.com.cn> <20210529112638.b3a9ec5475ca8e4f51648ff0@kernel.org>
-In-Reply-To: <20210529112638.b3a9ec5475ca8e4f51648ff0@kernel.org>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Tue, 1 Jun 2021 21:55:33 +0800
-Message-ID: <CADxym3Ya3Jv_tUMJyq+ymd8m1_S-KezqNDfsLtMcJCXtDytBzA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] init/initramfs.c: make initramfs support pivot_root
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, ojeda@kernel.org,
-        johan@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>, joe@perches.com,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        hare@suse.de, tj@kernel.org, gregkh@linuxfoundation.org,
-        song@kernel.org, NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        f.fainelli@gmail.com, wangkefeng.wang@huawei.com, arnd@arndb.de,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Barret Rhoden <brho@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
-        pmladek@suse.com, Alexander Potapenko <glider@google.com>,
-        Chris Down <chris@chrisdown.name>, jojing64@gmail.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>, mingo@kernel.org,
-        terrelln@fb.com, geert@linux-m68k.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YLY7qozcJcj8RVe+@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Em Tue, Jun 01, 2021 at 10:52:42AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, May 17, 2021 at 04:12:54PM +0800, Yu Kuai escreveu:
+> > Fix to return a negative error code from the error handling
+> > case instead of 0, as done elsewhere in this function.
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> Applied, but I had to add Song to the CC list and also add this line:
+> 
+> Fixes: 7fac83aaf2eecc9e ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
+> 
+> So that the stable@kernel.org folks can get this auto-collected.
+> 
+> Perhaps you guys can make Hulk do that as well? :-)
+> 
+> Thanks,
 
-What's the status or fate of this patch? Does anyone do an in-depth
-study of this field? Knock-knock~
+Something else to teach Hulk:
 
-On Sat, May 29, 2021 at 10:26 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Hi Menglong,
->
-> On Fri, 28 May 2021 22:37:59 +0800
-> menglong8.dong@gmail.com wrote:
->
-> > From: Menglong Dong <dong.menglong@zte.com.cn>
-> >
-> > As Luis Chamberlain suggested, I split the patch:
-> > [init/initramfs.c: make initramfs support pivot_root]
-> > (https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
-> > into three.
-> >
-> > The goal of the series patches is to make pivot_root() support initramfs.
-> >
-> > In the first patch, I introduce the function ramdisk_exec_exist(), which
-> > is used to check the exist of 'ramdisk_execute_command' in LOOKUP_DOWN
-> > lookup mode.
-> >
-> > In the second patch, I create a second mount, which is called
-> > 'user root', and make it become the root. Therefore, the root has a
-> > parent mount, and it can be umounted or pivot_root.
-> >
-> > In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
-> > directly any more, and it make no sense to switch it between ramfs and
-> > tmpfs, just fix it with ramfs to simplify the code.
-> >
-> >
-> > Changes since V2:
-> >
-> > In the first patch, I use vfs_path_lookup() in init_eaccess() to make the
-> > path lookup follow the mount on '/'. After this, the problem reported by
-> > Masami Hiramatsu is solved. Thanks for your report :/
->
-> Thank you for the fix, I confirmed that the issue has been solved with this.
->
-> Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
->
-> for this series.
->
-> Regards,
->
->
-> >
-> >
-> > Changes since V1:
-> >
-> > In the first patch, I add the flag LOOKUP_DOWN to init_eaccess(), to make
-> > it support the check of filesystem mounted on '/'.
-> >
-> > In the second patch, I control 'user root' with kconfig option
-> > 'CONFIG_INITRAMFS_USER_ROOT', and add some comments, as Luis Chamberlain
-> > suggested.
-> >
-> > In the third patch, I make 'rootfs_fs_type' in control of
-> > 'CONFIG_INITRAMFS_USER_ROOT'.
-> >
-> >
-> >
-> > Menglong Dong (3):
-> >   init/main.c: introduce function ramdisk_exec_exist()
-> >   init/do_cmounts.c: introduce 'user_root' for initramfs
-> >   init/do_mounts.c: fix rootfs_fs_type with ramfs
-> >
-> >  fs/init.c            |  11 ++++-
-> >  include/linux/init.h |   5 ++
-> >  init/do_mounts.c     | 109 +++++++++++++++++++++++++++++++++++++++++++
-> >  init/do_mounts.h     |  18 ++++++-
-> >  init/initramfs.c     |  10 ++++
-> >  init/main.c          |   7 ++-
-> >  usr/Kconfig          |  10 ++++
-> >  7 files changed, 166 insertions(+), 4 deletions(-)
-> >
-> > --
-> > 2.32.0.rc0
-> >
->
->
-> --
-> Masami Hiramatsu <mhiramat@kernel.org>
+util/bpf_counter.c: In function ‘bperf__load’:
+util/bpf_counter.c:523:9: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+  523 |         if (evsel->bperf_leader_link_fd < 0 &&
+      |         ^~
+util/bpf_counter.c:526:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  526 |                 goto out;
+      |                 ^~~~
+cc1: all warnings being treated as errors
 
-Thanks!
-Menglong Dong
+I'm adding the missing {} for the now multiline if block.
+
+- Arnaldo
+> 
+> > ---
+> >  tools/perf/util/bpf_counter.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> > index ddb52f748c8e..843b20aa6688 100644
+> > --- a/tools/perf/util/bpf_counter.c
+> > +++ b/tools/perf/util/bpf_counter.c
+> > @@ -522,6 +522,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+> >  	evsel->bperf_leader_link_fd = bpf_link_get_fd_by_id(entry.link_id);
+> >  	if (evsel->bperf_leader_link_fd < 0 &&
+> >  	    bperf_reload_leader_program(evsel, attr_map_fd, &entry))
+> > +		err = -1;
+> >  		goto out;
+> >  
+> >  	/*
+> > @@ -550,6 +551,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+> >  	/* Step 2: load the follower skeleton */
+> >  	evsel->follower_skel = bperf_follower_bpf__open();
+> >  	if (!evsel->follower_skel) {
+> > +		err = -1;
+> >  		pr_err("Failed to open follower skeleton\n");
+> >  		goto out;
+> >  	}
+> > -- 
+> > 2.25.4
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
+
+-- 
+
+- Arnaldo
