@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757573971BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF543971C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbhFAKpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:45:38 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:56778 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230282AbhFAKpg (ORCPT
+        id S233422AbhFAKqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232694AbhFAKqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:45:36 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151Ag0uY029859;
-        Tue, 1 Jun 2021 10:43:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Gx79InivmVewarDJyyMOVuflbWM4unS5ErB5h13b2Lw=;
- b=gB+WLL32hgD4VzXFy1XC5N3VAJUPyY2GBN9nXi8S5ZZozIwng/PV/N7iipnoRHupUwiV
- gsxJ+5FZCfCnHYsnfh2h4Aos8UtQq7xVY83znarvvFf6Bhi1T7HdmeFik4ceTdLBkPIz
- w0EvYCpC1lbFNCoHJ3dYCNo1eT5n6fM7mGhpqgpd9cgXfScdXPCZQbKbMSC2RV12NgzO
- zJ23bzCAquQslCy6ONKWuw3hkOAnmieS8T3i/wQTM8FXWARfQ38FzPny/Z/mKF7FIe7f
- 2Gms6P/aMqcWuVn5faE2SS30+WquZyIwySlx6sIKDNSt2pNKxFLHuO7t3ejfUTkdPi1N GA== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38vjar0js1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 10:43:49 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 151AhmAG003720;
-        Tue, 1 Jun 2021 10:43:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38ubnd3n98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 10:43:48 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 151AhmgW003708;
-        Tue, 1 Jun 2021 10:43:48 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 38ubnd3n92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 10:43:48 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 151AhkJL013285;
-        Tue, 1 Jun 2021 10:43:46 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Jun 2021 03:43:46 -0700
-Date:   Tue, 1 Jun 2021 13:43:37 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mm: thp: fix a double unlock bug
-Message-ID: <20210601104337.GX1955@kadam>
-References: <YLX8uYN01JmfLnlK@mwanda>
- <20210601100849.GQ3672@suse.de>
+        Tue, 1 Jun 2021 06:46:13 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFEEC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:44:30 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id f30so21107830lfj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MNIiBPe7Xgkk/pQlTn5d5oBTgg8+i5Bf4QSJR9wISVM=;
+        b=UXkQHT3eBr+4JEvtzopIhZ1FvV3ocxuIYgeJ+7Su7fYCJ+dkwEyccmnGDbXqTpQXBa
+         4D+czka30Sntd5pqwadbJ+Fq33TIkGQPN/0YVo+5mMyrYwik/0aYGD2jMwvJjph5Rge8
+         bNtZVVIfMKVzC/NorGzwfSkYaX5RvV5LNk72BsdEO4C+pupjQurW+qDzc5Y/IuE3T7xH
+         iZSlq0ilBaxuxQtypbr/oNlRsEVlCHBT2DwLZ/AV1234NH1yvTnSH2mkoawJTx3nr8dF
+         aA0TZ051QZhPIuAHoUCZdxCT+zP+kapzbmeLw7kbjQ0sx/riAhd+J1zA3hxxAY0dCTSl
+         wAig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MNIiBPe7Xgkk/pQlTn5d5oBTgg8+i5Bf4QSJR9wISVM=;
+        b=T+KUsPFSA7QBPmHgPswffkX5zWoDo29HXDC65325i29gaOTJdACuj9geYpNz9WZHWD
+         Ro+yCyGznaJ1gCbn/nr2+DxzE3Oxk+aK94nDIzL2Hl6GSoGZVMKQ+dT+PtWxGFOYfGem
+         wnyWsdEy4r8p8sg9iSlmwUrwwb4PbEt1QbvBnmR/zez+wYwb7fKEw3YoprUqnEWf/8CL
+         9Yy4u3tcfgKTYs7PX21yUkfP2jcYCNQ0e3MR+7MBWGckAWXES09Mb2hoLYWTh6aRS0b4
+         aiWxvOiJUTRWvSB7pVWl7xUYyClhZuIhzg1OeTA7Qtc1fgPvml5F/zHwNOCY+ncNAL7X
+         sPYg==
+X-Gm-Message-State: AOAM533k2wZE6ILR0d5O6Gba4WuVsCqFsk6lw2NbA/wXtBvM16JDbonM
+        MvLh7ti2ToSZ2w6w64jPSLgnMz3PqVzkCcUuuHUvhw==
+X-Google-Smtp-Source: ABdhPJymNy/m+dkQx0iYjjTIrVKPk7L2Q0TqaniD+inM4naMM/JHehOqRI2qhFyGjgM79n4LG885n/7C85sCH1/cmGA=
+X-Received: by 2002:a05:6512:3e03:: with SMTP id i3mr14333979lfv.529.1622544269211;
+ Tue, 01 Jun 2021 03:44:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601100849.GQ3672@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: Qpm2tEc2qMH89MRHSfhoULSDgCa0t8Yn
-X-Proofpoint-GUID: Qpm2tEc2qMH89MRHSfhoULSDgCa0t8Yn
+References: <20210325122832.119147-1-sandberg@mailfence.com>
+ <20210530161333.3996-1-maukka@ext.kapsi.fi> <20210530161333.3996-2-maukka@ext.kapsi.fi>
+In-Reply-To: <20210530161333.3996-2-maukka@ext.kapsi.fi>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 1 Jun 2021 12:44:18 +0200
+Message-ID: <CACRpkdZfdd=ogHoNGuLzGGZYkvw7xtNO2VJm-t-2vMibGNy=dA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: gpio-mux-input: add documentation
+To:     Mauri Sandberg <maukka@ext.kapsi.fi>
+Cc:     Mauri Sandberg <sandberg@mailfence.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 11:08:49AM +0100, Mel Gorman wrote:
-> On Tue, Jun 01, 2021 at 12:24:09PM +0300, Dan Carpenter wrote:
-> > We're supposed to be holding the "vmf->ptl" spin_lock when we goto
-> > out_map.  The lock is dropped after if finishes cleaning up.
-> > 
-> > Fixes: 9aff7b33c74a ("mm: thp: refactor NUMA fault handling")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> Ouch.
-> 
-> Acked-by: Mel Gorman <mgorman@suse.de>
-> 
-> However, that git commit is not stable. Instead of Fixes: I would
-> suggest renaming the patch to "mm: thp: refactor NUMA fault handling
-> -fix" and replacing Fixes with "This patch is a fix to the mmotm patch
-> mm-thp-refactor-numa-fault-handling.patch". Andrew usually slots that
-> into the correct place in his quilt series and collapses the fixes before
-> sending to Linus which works better with bisection.
+On Sun, May 30, 2021 at 6:16 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
 
-I know that these normally get folded in, but I assumed that Andrew
-would want the Fixes tag so that he could fold them in automatically
-using a mutt alias. #OneClickShopping
+> Add documentation for a general GPIO multiplexer.
+>
+> Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
+> Tested-by: Drew Fustini <drew@beagleboard.org>
+> Reviewed-by: Drew Fustini <drew@beagleboard.org>
 
-regards,
-dan carpenter
+After some thinking I realized these bindings should not
+be restricted to just input. There exist electronic constructions
+such as open drain that would make it possible to mux also
+outputs.
+
+>  .../bindings/gpio/gpio-mux-input.yaml         | 75 +++++++++++++++++++
+
+Rename it just gpio-mux.yaml
+
+> +$id: http://devicetree.org/schemas/gpio/gpio-mux-input.yaml#
+
+Also here
+
+> +title: Generic GPIO input multiplexer
+
+Generic GPIO multiplexer
+
+> +description: |
+> +  A generic GPIO based input multiplexer
+
+Not just input
+
+> +  This driver uses a mux-controller to drive the multiplexer and has a single
+> +  output pin for reading the inputs to the mux.
+
+Make this clearer and do not mention "driver".
+Here is a suggestion:
+
+This hardware construction multiplexes (cascades) several GPIO
+lines from one-to-many using a software controlled multiplexer.
+The most common use case is probably reading several inputs
+by switching the multiplexer over several input lines, which in
+practice works well since input lines has high impedance.
+
+Constructions with multiplexed outputs are also possible using
+open drain electronics.
+
+> +  For GPIO consumer documentation see gpio.txt.
+
+No need to mention this I think, not your problem :D
+
+> +  pin-gpios:
+
+I still want this renamed like in my previous mail.
+
+Hope all is clear!
+
+Yours,
+Linus Walleij
