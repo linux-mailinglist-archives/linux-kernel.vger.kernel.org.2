@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C785D397BC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68700397BCB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhFAVfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 17:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234747AbhFAVfR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 17:35:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14299C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 14:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VtQlTRq3lnMUDQP6n+cCL3Pr5EYfmGRzRcuenjvwhbg=; b=jSvFOe6oQvEot8Hy2t2tjZ0oly
-        +rAFW4iWTtIqeDktq4WT7ML2dlJCIplA38nSg/xAGJY75rlRjDfLqPbXQrdXnrp0L4LnkpenIQItQ
-        cRDow56xi46pK/14vztTUe4E1B4LcEngFPWGqOXgFUL6kNx1eaC7OyXbF3Lxg0JD0cbXsB2SRlS+k
-        FOFkai8VEjxQjw7PCuFVE+7Ph6a/TpMfz0V/18nzZ7I4qphlSN5LAddPVzvsB4J5v9pJ6xkLJPw2U
-        yys9VKEnH6YavCFZ4wJOD7v69DJ8bRArY2dFpZl0bhAgQqsxtkvo5fOa1mEWf5/3rcYyuuOiVmt3s
-        JQk0VzXg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1loC0F-00ASGe-N8; Tue, 01 Jun 2021 21:32:50 +0000
-Date:   Tue, 1 Jun 2021 22:32:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] mm/thp: fix page_address_in_vma() on file THP tails
-Message-ID: <YLanf/fmB2D5B1Ew@casper.infradead.org>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
- <alpine.LSU.2.11.2106011409390.2148@eggly.anvils>
+        id S234908AbhFAVgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 17:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234747AbhFAVge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 17:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC3E0613B4;
+        Tue,  1 Jun 2021 21:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622583292;
+        bh=kqnuJdvqpIeAot1ffooo2UK7VmfmnWmuJOhnmB7pOHE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JBz/dV0tsA2sAWPt5ApH1k3KAicOPjy88X0j4W2Xj9ZCN6k5e+JMh6fGGyjF8Xb3Y
+         euKnsRkdtTihdnJ0sGQUblOUqdsZ6TnN54gQuSstIzvPXuARMk4Hmq6N1uAxkAzVBD
+         a4UxPjQOvmIzZt7T1rJE0OxdEMlQSPODBVK/XWuPmSkqH77v3bdL0HkjbM+ObfP5rH
+         UEoenbNOS5F/cYYBy9/JE/6OKPmByrQoJYta/cHvnwv5Qb+y9NbLj0bSZa+vxNixsG
+         i9A+JHLGJdjDc3VtEufqUEe0u5HUTCqQMF1HteCrJiKTCn8z631iUHpC0P3WfOqym0
+         k8WyZWizSpnOw==
+Date:   Tue, 1 Jun 2021 14:34:51 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     moyufeng <moyufeng@huawei.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Parav Pandit <parav@mellanox.com>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "lipeng (Y)" <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>
+Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
+Message-ID: <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
+References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
+        <20190301120358.7970f0ad@cakuba.netronome.com>
+        <VI1PR0501MB227107F2EB29C7462DEE3637D1710@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+        <20190304174551.2300b7bc@cakuba.netronome.com>
+        <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+        <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
+        <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2106011409390.2148@eggly.anvils>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 02:11:22PM -0700, Hugh Dickins wrote:
-> From: Jue Wang <juew@google.com>
+On Tue, 1 Jun 2021 15:33:09 +0800 Yunsheng Lin wrote:
+> On 2021/6/1 13:37, Jakub Kicinski wrote:
+> > On Mon, 31 May 2021 18:36:12 +0800 moyufeng wrote:  
+> >> Hi, Jiri & Jakub
+> >>
+> >>     Generally, a devlink instance is created for each PF/VF. This
+> >> facilitates the query and configuration of the settings of each
+> >> function. But if some common objects, like the health status of
+> >> the entire ASIC, the data read by those instances will be duplicate.
+> >>
+> >>     So I wonder do I just need to apply a public devlink instance for the
+> >> entire ASIC to avoid reading the same data? If so, then I can't set
+> >> parameters for each function individually. Or is there a better suggestion
+> >> to implement it?  
+> > 
+> > I don't think there is a great way to solve this today. In my mind
+> > devlink instances should be per ASIC, but I never had to solve this
+> > problem for a multi-function ASIC.   
 > 
-> Anon THP tails were already supported, but memory-failure may need to use
-> page_address_in_vma() on file THP tails, which its page->mapping check did
-> not permit: fix it.
-> 
-> hughd adds: no current usage is known to hit the issue, but this does fix
-> a subtle trap in a general helper: best fixed in stable sooner than later.
-> 
-> Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-> Signed-off-by: Jue Wang <juew@google.com>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+> Is there a reason why it didn't have to be solved yet?
+> Is it because the devices currently supporting devlink do not have
+> this kind of problem, like single-function ASIC or multi-function
+> ASIC without sharing common resource?
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+I'm not 100% sure, my guess is multi-function devices supporting
+devlink are simple enough for the problem not to matter all that much.
+
+> Was there a discussion how to solved it in the past?
+
+Not really, we floated an idea of creating aliases for devlink
+instances so a single devlink instance could answer to multiple 
+bus identifiers. But nothing concrete.
+
+> > Can you assume all functions are in the same control domain? Can they
+> > trust each other?  
+> 
+> "same control domain" means if it is controlled by a single host, not
+> by multi hosts, right?
+> 
+> If the PF is not passed through to a vm using VFIO and other PF is still
+> in the host, then I think we can say it is controlled by a single host.
+> 
+> And each PF is trusted with each other right now, at least at the driver
+> level, but not between VF.
+
+Right, the challenge AFAIU is how to match up multiple functions into 
+a single devlink instance, when driver has to probe them one by one.
+If there is no requirement that different functions are securely
+isolated it becomes a lot simpler (e.g. just compare device serial
+numbers).
