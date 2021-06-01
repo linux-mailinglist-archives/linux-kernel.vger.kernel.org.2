@@ -2,124 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43BE396FC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66084396FCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhFAJEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbhFAJEO (ORCPT
+        id S233528AbhFAJFT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Jun 2021 05:05:19 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:54700 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232869AbhFAJFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:04:14 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689A8C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:02:31 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id r13so7184016wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flowbird.group; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S426NvUwnGOCjzkrl5jzsuxo4jUDZnsm79SUS445wp0=;
-        b=DU98Ta12dnp3+1qJmCY1HvAVFlbkeVV9lznzFZ5seG9KbpALYJyNts5R6Ya3CXwjVT
-         3k2mTY+FwtFZs7sIWNxWDc/g4mZy3t6guXx58N0uK2cyrw/fQpbI6+8PdYMRFb2JRDPo
-         GYpW15HA0grtmTqz1XMU5JQicc6w+nAtsqMxaVcsAH9vA6Ku0I+Ziz26GIAKcfsbRjNn
-         czKcoWe9zXEkNXoeqW1mDv6YxAMMfhtRvQMNIrhGMOnCTqN6zNi00gfvozGpCwwj047v
-         CKwBarpoXK5sryLioEkHdgRQaozXVNY75+JxNTXrbIDXcQ6FjF7MJbJei5eKREP2SFBA
-         oJCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S426NvUwnGOCjzkrl5jzsuxo4jUDZnsm79SUS445wp0=;
-        b=Z7PeEUUhc3Wanq2IZdzwOBrT1qf3ql6ChFzV9wtdx8bS90agtR5PfmuD48gf1XTtTo
-         DqDsrvQwVF02bvKyJizkFmAwHPpTZpcRv5bWmuH7AEv7k2T2DP3d7DkKfqF5rtLCvuqE
-         3tZDEMvgGInY8U+prxXTHm5Z2pEk0UhYBRF47r+7JoNmQNW8UayoYX4NgXwx6PLfontw
-         zaujyDuf4wS9TtA1xEmMkihszP0FkzrcVjGGJ7lQhFceApcNtP8lZws4IATLXEFQFRHn
-         GBvCBpE2CXqSvxV76GVoef2326JQ57dZf4OrPEUSd5gmOn6MUK/YXxX0P2wJiyQ4To9P
-         k5uA==
-X-Gm-Message-State: AOAM532RM3h8yqeQ11NnCvPuSE+dnYu/f2PtAukToPq9SH7NtkzV/JSc
-        eXGoUv9GOeqbSyo4No5hlXMMoto4VLHAi1QoHwFQiA==
-X-Google-Smtp-Source: ABdhPJw1e/ioLQZZ/KX8dvjW/dXgB5kdgooECoGWrKzmNX+n/HM9CTBJ+yzkDmkzm7IiH5i1mP4dLwaVIayjpJ+AgSs=
-X-Received: by 2002:a7b:c3da:: with SMTP id t26mr592402wmj.63.1622538149944;
- Tue, 01 Jun 2021 02:02:29 -0700 (PDT)
+        Tue, 1 Jun 2021 05:05:17 -0400
+Received: from [77.244.183.192] (port=62922 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lo0JD-000FyI-5R; Tue, 01 Jun 2021 11:03:35 +0200
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20210531090540.2663171-1-luca@lucaceresoli.net>
+ <20210531133211.llyiq3jcfy25tmz4@pali>
+ <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
+ <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <e1e09f57-2504-6e46-ebd6-61947e0a195c@lucaceresoli.net>
+Date:   Tue, 1 Jun 2021 11:03:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <1622222314-17192-1-git-send-email-martin.fuzzey@flowbird.group> <6f1d3952-c30e-4a6d-9857-5a6d68e962b2@denx.de>
-In-Reply-To: <6f1d3952-c30e-4a6d-9857-5a6d68e962b2@denx.de>
-From:   "Fuzzey, Martin" <martin.fuzzey@flowbird.group>
-Date:   Tue, 1 Jun 2021 11:02:19 +0200
-Message-ID: <CANh8QzykdFSvmEgY=iTyZdbzg5Uv785zVZdAoYbrx2--sDyiCQ@mail.gmail.com>
-Subject: Re: [PATCH] rsi: fix broken AP mode due to unwanted encryption
-To:     Marek Vasut <marex@denx.de>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: it-IT
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
-thanks for the review.
+Hi Kishon,
 
-On Fri, 28 May 2021 at 20:11, Marek Vasut <marex@denx.de> wrote:
->
-> > Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-> > CC: stable@vger.kernel.org
->
-> This likely needs a Fixes: tag ?
->
+On 31/05/21 18:00, Kishon Vijay Abraham I wrote:
+> Hi,
+> 
+> On 31/05/21 7:24 pm, Luca Ceresoli wrote:
+>> Hi Pali,
+>>
+>> On 31/05/21 15:32, Pali Rohár wrote:
+>>> On Monday 31 May 2021 11:05:40 Luca Ceresoli wrote:
+>>>> The PCIe PERSTn reset pin is active low and should be asserted, then
+>>>> deasserted.
+>>>>
+>>>> The current implementation only drives the pin once in "HIGH" position,
+>>>> thus presumably it was intended to deassert the pin. This has two problems:
+>>>>
+>>>>   1) it assumes the pin was asserted by other means before loading the
+>>>>      driver
+>>>>   2) it has the wrong polarity, since "HIGH" means "active", and the pin is
+>>>>      presumably configured as active low coherently with the PCIe
+>>>>      convention, thus it is driven physically to 0, keeping the device
+>>>>      under reset unless the pin is configured as active high.
+>>>>
+>>>> Fix both problems by:
+>>>>
+>>>>   1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
+>>>>      assuming the pin is correctly configured as "active low" this now
+>>>>      becomes a reset assertion
+>>>>   2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
+>>>>
+>>>> Fixes: 78bdcad05ea1 ("PCI: dra7xx: Add support to make GPIO drive PERST# line")
+>>>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>>>>
+>>>> ---
+>>>>
+>>>> Changes v1 -> v2:
+>>>>  - No changes to the patch
+>>>>  - Reword commit message according to suggestions from Bjorn Helgaas (from
+>>>>    another patchset)
+>>>>  - Add Fixes: tag
+>>>> ---
+>>>>  drivers/pci/controller/dwc/pci-dra7xx.c | 2 ++
+>>>>  1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+>>>> index cb5d4c245ff6..11f392b7a9a2 100644
+>>>> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+>>>> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+>>>> @@ -801,6 +801,8 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
+>>>>  		dev_err(&pdev->dev, "gpio request failed, ret %d\n", ret);
+>>>>  		goto err_gpio;
+>>>>  	}
+>>>> +	usleep_range(1000, 2000);
+>>>
+>>> Hello! Just a note that this is again a new code pattern in another
+>>> driver for different wait value of PCIe Warm Reset timeout. I sent email
+>>> about these issues:
+>>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+>>>
+>>> Luca, how did you choose value 1000-2000 us? Do you have some reference
+>>> or specification which says that this value needs to be used?
+>>
+>> Sadly I haven't access to the PCIe specification.
+>>
+>> I'd be very happy to know what a correct value should be and update my
+>> patch.
+> 
+> I had given the timing mentioned in the specification here
+> https://lore.kernel.org/r/023c9b59-70bb-ed8d-a4c0-76eae726b574@ti.com
+> 
+> The PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION defines the Power
+> Sequencing and Reset Signal Timings in Table 2-4. Please also refer Figure
+> 2-10: Power Up of the CEM.
+> 
+> ╔═════════════╤══════════════════════════════════════╤═════╤═════╤═══════╗
+> ║ Symbol      │ Parameter                            │ Min │ Max │ Units ║
+> ╠═════════════╪══════════════════════════════════════╪═════╪═════╪═══════╣
+> ║ T PVPERL    │ Power stable to PERST# inactive      │ 100 │     │ ms    ║
+> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+> ║ T PERST-CLK │ REFCLK stable before PERST# inactive │ 100 │     │ μs    ║
+> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+> ║ T PERST     │ PERST# active time                   │ 100 │     │ μs    ║
+> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+> ║ T FAIL      │ Power level invalid to PERST# active │     │ 500 │ ns    ║
+> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+> ║ T WKRF      │ WAKE# rise – fall time               │     │ 100 │ ns    ║
+> ╚═════════════╧══════════════════════════════════════╧═════╧═════╧═══════╝
+> 
+> The de-assertion of #PERST is w.r.t both power stable and refclk stable.
+> 
+> I'm yet to validate this patch, but IIRC devm_gpiod_get_optional(dev,
+> NULL, GPIOD_OUT_HIGH) will already de-assert the PERST line. 
 
-I'm not quite sure what that should be.
-The test involved here has been present since the very first version
-of the driver back in 2014 but at that time AP mode wasn't supported.
+Perhaps in all the cases you faced, but GPIOD_OUT_HIGH [0] really means
+"active", not "electrically high", and here we want reset to be
+deasserted (=deactivated), not asserted (=activated).
 
-AP mode was added in 2017 by the patch series "rsi: support for AP mode" [1]
-In particular 38ef62353acb ("rsi: security enhancements for AP mode")
-does some stuff relating to AP key configuration but it doesn't
-actually change the behaviour concerning the encryption condition.
+I guess it works when the GPIO drives PERSTn without inversion (no NOT
+gates or an even number of NOT gates) _and_ device tree does specify the
+GPIO as active high (which is incorrect: PERSTn is active low).
 
-In fact I don't understand how it ever worked in AP WPA2 mode given
-that secinfo->security_enable (which is tested in the encryption
-condition) has always been unconditionally set in set_key (when
-setting not deleting).
-Yet the series cover letter [1] says "Tests are performed to confirm
-aggregation, connections in WEP and WPA/WPA2 security."
+> Please note
+> the board here can have various combinations of NOT gate before the
+> gpio
+> line is actually connected to the connector.
 
-The problem is that in AP mode with WPA2 there is a set_key done at AP
-startup time to set the GTK (but not yet the pairwise key which is
-only done after the 4 way handshake) so this sets security_enable to
-true which later causes the EAPOL messages to be sent encrypted.
+Exactly for this reason a portable driver must never drive the signal
+"electrically low" or "electrically high". That's why with my patch I
+propose to give the proper interpretation [1] to GPIOD_OUT_HIGH, i.e.
+"active", i.e. "reset asserted". Device tree will describe if active
+means electrically low (no NOT gates between GPIO pin and device PERSTn
+pin) or high (odd number of NOT gates).
 
-Maybe there have been userspace changes to hostapd that have changed
-the time at which the GTK is set?
-I had a quick look at the hostapd history but didn't see anything obvious.
+Additionally, as per patch description, even in the cases where the
+driver deasserts the reset, it does not assert it. Should the signal be
+asserted before dra7xx_pcie_probe(), devm_gpiod_get_optional(dev, NULL,
+GPIOD_OUT_HIGH) would not move the line and thus would not reset the device.
 
-I'm going to send a V2 completely removing the security_enable flag in
-addition to adding the new test (which is what downstream has too).
-Keeping security_enable doesn't actually break anything but is
-redundant and confusing.
+The only problem I can imagine with my patch is with existing code. If
+you have a board with the reset GPIO described as active high in DT
+while it is active low (no/even NOR gates on board), then you should
+apply this patch _and_ fix the board device tree.
 
-Unfortunately I cannot find any downstream history, I just have 2
-downstream tarballs, a "2.0 RC2" which has the same problem as
-mainline and a "2.0 RC4" which does not
+I hope the intent of the patch is clearer now.
 
+[0]
+https://www.kernel.org/doc/html/latest/driver-api/gpio/consumer.html#obtaining-and-disposing-gpios
+[1]
+https://www.kernel.org/doc/html/latest/driver-api/gpio/consumer.html#the-active-low-and-open-drain-semantics
 
-[1] https://www.spinics.net/lists/linux-wireless/msg165302.html
+-- 
+Luca
 
-> >       if ((!(info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT)) &&
-> > +         (info->control.hw_key) &&
->
-> The () are not needed.
->
-
-Ok, will fix for V2
-
-> Reviewed-by: Marek Vasut <marex@denx.de>
-
-Seeing as the V2 will be a bit different I won't add that yet.
-
-Martin
