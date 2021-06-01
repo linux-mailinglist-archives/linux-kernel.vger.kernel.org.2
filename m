@@ -2,451 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4C539743E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB0139744F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhFANdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:33:18 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44770 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234053AbhFANdQ (ORCPT
+        id S234130AbhFANeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:34:19 -0400
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:36433 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234111AbhFANeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:33:16 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 114482192F;
-        Tue,  1 Jun 2021 13:31:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622554294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kxolnSznagQnuCu9jRXmV8OGgEUIUpt0/kwE2bQdQw=;
-        b=ugGTMWzjk3Hrq4+70ol/sxlPSoaxjtn7/6IhPdg6oU6rHD+JFLmPkCxXREZgJfsFif8OnD
-        8U7v4kX54bXwhFw9DCU+mS6PLfLhFZ1Bexo2ME7gM3n9m9Fui+RZ++vSYJyYf39JyQVVxA
-        t16vytLtFeJmG/XGl3K4S9IHd1EFLj8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622554294;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kxolnSznagQnuCu9jRXmV8OGgEUIUpt0/kwE2bQdQw=;
-        b=v8l0nBCKYhztJYN/oYLYY3uCkfL4O7/e0Tv+BYHGphqXBqULrR8xjS5kZXSK1iOCPuUHXG
-        //nnHvQ7HobS/rCA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id D8AA5118DD;
-        Tue,  1 Jun 2021 13:31:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622554294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kxolnSznagQnuCu9jRXmV8OGgEUIUpt0/kwE2bQdQw=;
-        b=ugGTMWzjk3Hrq4+70ol/sxlPSoaxjtn7/6IhPdg6oU6rHD+JFLmPkCxXREZgJfsFif8OnD
-        8U7v4kX54bXwhFw9DCU+mS6PLfLhFZ1Bexo2ME7gM3n9m9Fui+RZ++vSYJyYf39JyQVVxA
-        t16vytLtFeJmG/XGl3K4S9IHd1EFLj8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622554294;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kxolnSznagQnuCu9jRXmV8OGgEUIUpt0/kwE2bQdQw=;
-        b=v8l0nBCKYhztJYN/oYLYY3uCkfL4O7/e0Tv+BYHGphqXBqULrR8xjS5kZXSK1iOCPuUHXG
-        //nnHvQ7HobS/rCA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id aFY0NLU2tmCACQAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Tue, 01 Jun 2021 13:31:33 +0000
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com
-Cc:     vinmenon@codeaurora.org
-References: <1622542057-14632-1-git-send-email-faiyazm@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v8] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <8c6db046-9f12-e670-8fe0-6d34f9328a52@suse.cz>
-Date:   Tue, 1 Jun 2021 15:31:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <1622542057-14632-1-git-send-email-faiyazm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 1 Jun 2021 09:34:03 -0400
+Received: by mail-oo1-f42.google.com with SMTP id v13-20020a4aa40d0000b02902052145a469so3502962ool.3;
+        Tue, 01 Jun 2021 06:32:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=TPpPgFNd2sDgtCAR0zIZgOJqlZgoqTCL4qj+uAo7KlI=;
+        b=hrOlsQoMffIzOk+bWeISuTD4PIUqwodkuf+BSpXtRV9YaQVw6MSLD0Z2Zi3FgVzvOs
+         ea8GrIhOi49jIzBgD20S/d/D2BzfVeyDggUnZ55NT7NtH0DH6uwYlc3j4Zv67B/tvLwA
+         lEoM970QqS4SQB2o+eyqU4V0dipU7ouaUsCT3D00MbojrLw+zHMbSyOQSmstaC/4l9gL
+         klcekv3T9ovVJz/UqCGkJ4m0fw4CuV/tU2/yz43+Rq9lh9yqNuVJrXbrhuT7EGc/4GjR
+         gpQEMBo5RJ5bzsaV3L1kwoHEboq/IhRH/Cx35NkDd0JYO1Fts/+fdq/fHCJihKLqhHiX
+         nGmw==
+X-Gm-Message-State: AOAM531Tct0Hl6drMR1lpSFYvxFIj8HqFG9FvRyhXwPlwEM+VEZqLL+d
+        ze2eqsDhwIyow2VDZNKxxg==
+X-Google-Smtp-Source: ABdhPJzuO6ilkX46UxM29fz5aBu8YHC+8X4UvxBW0XBeKIgYB6DHl/dVpJDkqKzEOxeh4jW7azH8Nw==
+X-Received: by 2002:a4a:8706:: with SMTP id z6mr20661494ooh.41.1622554339789;
+        Tue, 01 Jun 2021 06:32:19 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m28sm3725765otr.81.2021.06.01.06.32.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 06:32:18 -0700 (PDT)
+Received: (nullmailer pid 242375 invoked by uid 1000);
+        Tue, 01 Jun 2021 13:32:10 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     devicetree@vger.kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, robh+dt@kernel.org, linux-imx@nxp.com,
+        andrew@lunn.ch, linux@armlinux.org.uk, f.fainelli@gmail.com,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        hkallweit1@gmail.com
+In-Reply-To: <20210601090408.22025-2-qiangqing.zhang@nxp.com>
+References: <20210601090408.22025-1-qiangqing.zhang@nxp.com> <20210601090408.22025-2-qiangqing.zhang@nxp.com>
+Subject: Re: [PATCH net-next 1/4] dt-bindings: net: add dt binding for realtek rtl82xx phy
+Date:   Tue, 01 Jun 2021 08:32:10 -0500
+Message-Id: <1622554330.095263.242374.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 12:07 PM, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
+On Tue, 01 Jun 2021 17:04:05 +0800, Joakim Zhang wrote:
+> Add binding for realtek rtl82xx phy.
 > 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+>  .../bindings/net/realtek,rtl82xx.yaml         | 42 +++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/realtek,rtl82xx.yaml
 > 
-> Debugfs cache will be created if SLAB_STORE_USER flag is set.
-> 
-> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-> to be inline with what it does.
-> 
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
 
-When reading the files I'm getting dmesg errors like this:
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-[   37.998152] seq_file: buggy .next function slab_debugfs_next did not update
-position index
+yamllint warnings/errors:
 
-Don't recall this from previous versions?
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/realtek,rtl82xx.example.dt.yaml: ethernet-phy@1: 'rtl821x,aldps-disable', 'rtl821x,clkout-disable' do not match any of the regexes: '^#.*', '^(at25|bm|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio-key|gpio|gpmc|hdmi|i2c-gpio),.*', '^(keypad|m25p|max8952|max8997|max8998|mpmc),.*', '^(pinctrl-single|#pinctrl-single|PowerPC),.*', '^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*', '^(simple-audio-card|st-plgpio|st-spics|ts),.*', '^70mai,.*', '^GEFanuc,.*', '^ORCL,.*', '^SUNW,.*', '^[a-zA-Z0-9#_][a-zA-Z0-9+\\-._@]{0,63}$', '^[a-zA-Z0-9+\\-._]*@[0-9a-zA-Z,]*$', '^abb,.*', '^abilis,.*', '^abracon,.*', '^abt,.*', '^acer,.*', '^acme,.*', '^actions,.*', '^active-semi,.*', '^ad,.*', '^adafruit,.*', '^adapteva,.*', '^adaptrum,.*', '^adh,.*', '^adi,.*', '^advantech,.*', '^aeroflexgaisler,.*', '^aesop,.*', '^al,.*', '^alcatel,.*', '^allegro,.*', '^allo,.*', '^allwinner,.*', '^alphascale,.*', '^alps,.*', '^alt,.*', '^altr,.*', '^amarula,.*', '^amazon,.*', '^amcc,.*', '^amd,.*', '^amediatech,.*', '^amlogic,.*', '^ampere,.*', '^ampire,.*', '^ams,.*', '^amstaos,.*', '^analogix,.*', '^andestech,.*', '^anvo,.*', '^apm,.*', '^apple,.*', '^aptina,.*', '^arasan,.*', '^archermind,.*', '^arctic,.*', '^arcx,.*', '^aries,.*', '^arm,.*', '^armadeus,.*', '^arrow,.*', '^artesyn,.*', '^asahi-kasei,.*', '^asc,.*', '^aspeed,.*', '^asus,.*', '^atlas,.*', '^atmel,.*', '^auo,.*', '^auvidea,.*', '^avago,.*', '^avia,.*', '^avic,.*', '^avnet,.*', '^awinic,.*', '^axentia,.*', '^axis,.*', '^azoteq,.*', '^azw,.*', '^baikal,.*', '^bananapi,.*', '^beacon,.*', '^beagle,.*', '^bhf,.*', '^bitmain,.*', '^blutek,.*', '^boe,.*', '^bosch,.*', '^boundary,.*', '^brcm,.*', '^broadmobi,.*', '^bticino,.*', '^buffalo,.*', '^bur,.*', '^calaosystems,.*', '^calxeda,.*', '^canaan,.*', '^caninos,.*', '^capella,.*', '^cascoda,.*', '^catalyst,.*', '^cavium,.*', '^cdns,.*', '^cdtech,.*', '^cellwise,.*', '^ceva,.*', '^checkpoint,.*', '^chefree,.*', '^chipidea,.*', '^chipone,.*', '^chipspark,.*', '^chrontel,.*', '^chrp,.*', '^chunghwa,.*', '^chuwi,.*', '^ciaa,.*', '^cirrus,.*', '^cisco,.*', '^cloudengines,.*', '^cnm,.*', '^cnxt,.*', '^colorfly,.*', '^compulab,.*', '^coreriver,.*', '^corpro,.*', '^cortina,.*', '^cosmic,.*', '^crane,.*', '^creative,.*', '^crystalfontz,.*', '^csky,.*', '^csq,.*', '^cubietech,.*', '^cypress,.*', '^cznic,.*', '^dallas,.*', '^dataimage,.*', '^davicom,.*', '^dell,.*', '^delta,.*', '^denx,.*', '^devantech,.*', '^dfi,.*', '^dh,.*', '^difrnce,.*', '^digi,.*', '^digilent,.*', '^dioo,.*', '^dlc,.*', '^dlg,.*', '^dlink,.*', '^dmo,.*', '^domintech,.*', '^dongwoon,.*', '^dptechnics,.*', '^dragino,.*', '^dserve,.*', '^dynaimage,.*', '^ea,.*', '^ebang,.*', '^ebs-systart,.*', '^ebv,.*', '^eckelmann,.*', '^edt,.*', '^eeti,.*', '^einfochips,.*', '^elan,.*', '^element14,.*', '^elgin,.*', '^elida,.*', '^elimo,.*', '^embest,.*', '^emlid,.*', '^emmicro,.*', '^empire-electronix,.*', '^emtrion,.*', '^endless,.*', '^ene,.*', '^energymicro,.*', '^engicam,.*', '^epcos,.*', '^epfl,.*', '^epson,.*', '^esp,.*', '^est,.*', '^ettus,.*', '^eukrea,.*', '^everest,.*', '^everspin,.*', '^evervision,.*', '^exar,.*', '^excito,.*', '^ezchip,.*', '^facebook,.*', '^fairphone,.*', '^faraday,.*', '^fastrax,.*', '^fcs,.*', '^feixin,.*', '^feiyang,.*', '^fii,.*', '^firefly,.*', '^focaltech,.*', '^frida,.*', '^friendlyarm,.*', '^fsl,.*', '^fujitsu,.*', '^gardena,.*', '^gateworks,.*', '^gcw,.*', '^ge,.*', '^geekbuying,.*', '^gef,.*', '^gemei,.*', '^geniatech,.*', '^giantec,.*', '^giantplus,.*', '^globalscale,.*', '^globaltop,.*', '^gmt,.*', '^goodix,.*', '^google,.*', '^grinn,.*', '^grmn,.*', '^gumstix,.*', '^gw,.*', '^hannstar,.*', '^haoyu,.*', '^hardkernel,.*', '^hideep,.*', '^himax,.*', '^hirschmann,.*', '^hisilicon,.*', '^hit,.*', '^hitex,.*', '^holt,.*', '^holtek,.*', '^honestar,.*', '^honeywell,.*', '^hoperun,.*', '^hp,.*', '^hsg,.*', '^hugsun,.*', '^hwacom,.*', '^hycon,.*', '^hydis,.*', '^hyundai,.*', '^i2se,.*', '^ibm,.*', '^icplus,.*', '^idt,.*', '^ifi,.*', '^ilitek,.*', '^img,.*', '^imi,.*', '^incircuit,.*', '^inet-tek,.*', '^infineon,.*', '^inforce,.*', '^ingenic,.*', '^innolux,.*', '^inside-secure,.*', '^inspur,.*', '^intel,.*', '^intercontrol,.*', '^invensense,.*', '^inversepath,.*', '^iom,.*', '^isee,.*', '^isil,.*', '^issi,.*', '^ite,.*', '^itead,.*', '^ivo,.*', '^iwave,.*', '^jdi,.*', '^jedec,.*', '^jesurun,.*', '^jianda,.*', '^kam,.*', '^karo,.*', '^keithkoep,.*', '^keymile,.*', '^khadas,.*', '^kiebackpeter,.*', '^kinetic,.*', '^kingdisplay,.*', '^kingnovel,.*', '^kionix,.*', '^kobo,.*', '^kobol,.*', '^koe,.*', '^kontron,.*', '^kosagi,.*', '^kvg,.*', '^kyo,.*', '^lacie,.*', '^laird,.*', '^lamobo,.*', '^lantiq,.*', '^lattice,.*', '^leadtek,.*', '^leez,.*', '^lego,.*', '^lemaker,.*', '^lenovo,.*', '^lg,.*', '^lgphilips,.*', '^libretech,.*', '^licheepi,.*', '^linaro,.*', '^linksprite,.*', '^linksys,.*', '^linutronix,.*', '^linux,.*', '^linx,.*', '^litex,.*', '^lltc,.*', '^logicpd,.*', '^logictechno,.*', '^longcheer,.*', '^lontium,.*', '^loongson,.*', '^lsi,.*', '^lwn,.*', '^lxa,.*', '^m5stack,.*', '^macnica,.*', '^mantix,.*', '^mapleboard,.*', '^marvell,.*', '^maxbotix,.*', '^maxim,.*', '^mbvl,.*', '^mcube,.*', '^meas,.*', '^mecer,.*', '^mediatek,.*', '^megachips,.*', '^mele,.*', '^melexis,.*', '^melfas,.*', '^mellanox,.*', '^memsic,.*', '^menlo,.*', '^mentor,.*', '^meraki,.*', '^merrii,.*', '^micrel,.*', '^microchip,.*', '^microcrystal,.*', '^micron,.*', '^microsoft,.*', '^microsys,.*', '^mikroe,.*', '^mikrotik,.*', '^miniand,.*', '^minix,.*', '^miramems,.*', '^mitsubishi,.*', '^modtronix,.*', '^mosaixtech,.*', '^motorola,.*', '^moxa,.*', '^mpl,.*', '^mps,.*', '^mqmaker,.*', '^mrvl,.*', '^mscc,.*', '^msi,.*', '^mstar,.*', '^mti,.*', '^multi-inno,.*', '^mundoreader,.*', '^murata,.*', '^mxicy,.*', '^myir,.*', '^national,.*', '^nec,.*', '^neonode,.*', '^netgear,.*', '^netlogic,.*', '^netron-dy,.*', '^netronix,.*', '^netxeon,.*', '^neweast,.*', '^newhaven,.*', '^nexbox,.*', '^nextthing,.*', '^ni,.*', '^nintendo,.*', '^nlt,.*', '^nokia,.*', '^nordic,.*', '^novtech,.*', '^nutsboard,.*', '^nuvoton,.*', '^nvd,.*', '^nvidia,.*', '^nxp,.*', '^oceanic,.*', '^oct,.*', '^okaya,.*', '^oki,.*', '^olimex,.*', '^olpc,.*', '^onion,.*', '^onnn,.*', '^ontat,.*', '^opalkelly,.*', '^opencores,.*', '^openrisc,.*', '^option,.*', '^oranth,.*', '^orisetech,.*', '^ortustech,.*', '^osddisplays,.*', '^ouya,.*', '^overkiz,.*', '^ovti,.*', '^oxsemi,.*', '^ozzmaker,.*', '^panasonic,.*', '^parade,.*', '^parallax,.*', '^pda,.*', '^pericom,.*', '^pervasive,.*', '^phicomm,.*', '^phytec,.*', '^picochip,.*', '^pine64,.*', '^pineriver,.*', '^pixcir,.*', '^plantower,.*', '^plathome,.*', '^plda,.*', '^plx,.*', '^ply,.*', '^pni,.*', '^pocketbook,.*', '^polaroid,.*', '^portwell,.*', '^poslab,.*', '^pov,.*', '^powertip,.*', '^powervr,.*', '^primux,.*', '^probox2,.*', '^prt,.*', '^pulsedlight,.*', '^purism,.*', '^qca,.*', '^qcom,.*', '^qemu,.*', '^qi,.*', '^qiaodian,.*', '^qihua,.*', '^qnap,.*', '^radxa,.*', '^raidsonic,.*', '^ralink,.*', '^ramtron,.*', '^raspberrypi,.*', '^raydium,.*', '^rda,.*', '^realtek,.*', '^remarkable,.*', '^renesas,.*', '^rervision,.*', '^revotics,.*', '^rex,.*', '^richtek,.*', '^ricoh,.*', '^rikomagic,.*', '^riot,.*', '^riscv,.*', '^rockchip,.*', '^rocktech,.*', '^rohm,.*', '^ronbo,.*', '^roofull,.*', '^roseapplepi,.*', '^samsung,.*', '^samtec,.*', '^sancloud,.*', '^sandisk,.*', '^satoz,.*', '^sbs,.*', '^schindler,.*', '^seagate,.*', '^seeed,.*', '^seirobotics,.*', '^semtech,.*', '^sensirion,.*', '^sensortek,.*', '^sff,.*', '^sgd,.*', '^sgmicro,.*', '^sgx,.*', '^sharp,.*', '^shimafuji,.*', '^shiratech,.*', '^si-en,.*', '^si-linux,.*', '^siemens,.*', '^sifive,.*', '^sigma,.*', '^sii,.*', '^sil,.*', '^silabs,.*', '^silead,.*', '^silergy,.*', '^silex-insight,.*', '^siliconfile,.*', '^siliconmitus,.*', '^silvaco,.*', '^simtek,.*', '^sinlinx,.*', '^sinovoip,.*', '^sipeed,.*', '^sirf,.*', '^sis,.*', '^sitronix,.*', '^skyworks,.*', '^smartlabs,.*', '^smsc,.*', '^snps,.*', '^sochip,.*', '^socionext,.*', '^solidrun,.*', '^solomon,.*', '^sony,.*', '^spansion,.*', '^sprd,.*', '^sst,.*', '^sstar,.*', '^st,.*', '^st-ericsson,.*', '^starry,.*', '^startek,.*', '^ste,.*', '^stericsson,.*', '^summit,.*', '^sunchip,.*', '^supermicro,.*', '^swir,.*', '^syna,.*', '^synology,.*', '^tbs,.*', '^tbs-biometrics,.*', '^tcg,.*', '^tcl,.*', '^tcs,.*', '^tdo,.*', '^technexion,.*', '^technologic,.*', '^techstar,.*', '^tempo,.*', '^terasic,.*', '^tfc,.*', '^thine,.*', '^thingyjp,.*', '^ti,.*', '^tianma,.*', '^tlm,.*', '^tmt,.*', '^topeet,.*', '^toppoly,.*', '^topwise,.*', '^toradex,.*', '^toshiba,.*', '^toumaz,.*', '^tpk,.*', '^tplink,.*', '^tpo,.*', '^tq,.*', '^tronfy,.*', '^tronsmart,.*', '^truly,.*', '^tsd,.*', '^tyan,.*', '^u-blox,.*', '^u-boot,.*', '^ubnt,.*', '^ucrobotics,.*', '^udoo,.*', '^ugoos,.*', '^uniwest,.*', '^upisemi,.*', '^urt,.*', '^usi,.*', '^utoo,.*', '^v3,.*', '^vaisala,.*', '^vamrs,.*', '^variscite,.*', '^vdl,.*', '^via,.*', '^videostrong,.*', '^virtio,.*', '^virtual,.*', '^vishay,.*', '^visionox,.*', '^vitesse,.*', '^vivante,.*', '^vocore,.*', '^voipac,.*', '^vot,.*', '^vxt,.*', '^wand,.*', '^waveshare,.*', '^wd,.*', '^we,.*', '^wetek,.*', '^wexler,.*', '^whwave,.*', '^wi2wi,.*', '^winbond,.*', '^winstar,.*', '^wits,.*', '^wlf,.*', '^wm,.*', '^wobo,.*', '^x-powers,.*', '^xes,.*', '^xiaomi,.*', '^xillybus,.*', '^xingbangda,.*', '^xinpeng,.*', '^xiphera,.*', '^xlnx,.*', '^xnano,.*', '^xunlong,.*', '^xylon,.*', '^yamaha,.*', '^yes-optoelectronics,.*', '^yic,.*', '^ylm,.*', '^yna,.*', '^yones-toptech,.*', '^ys,.*', '^ysoft,.*', '^zarlink,.*', '^zealz,.*', '^zeitec,.*', '^zidoo,.*', '^zii,.*', '^zinitix,.*', '^zkmagic,.*', '^zte,.*', '^zyxel,.*'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/vendor-prefixes.yaml
 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index a4a5714..ca39e84 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -449,6 +449,7 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
->  	rcu_barrier();
->  
->  	list_for_each_entry_safe(s, s2, &to_destroy, list) {
-> +		debugfs_slab_release(s);
+See https://patchwork.ozlabs.org/patch/1485921
 
-You should remove this one, you already do the release when queueing the work
-below. This is not like sysfs where we distinguish _unlink() when queueing and
-_release when processing the work.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-> +static struct dentry *slab_debugfs_root;
-> +struct loc_track t = { 0, 0, NULL };
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Ooops, this can't be a global variable, especially when shared without any lock
-protection - but even with a protection it would be very suboptimal. You'll need
-to make it a seq_file private, see e.g. here for an example:
-https://lore.kernel.org/linux-mm/20210521121127.24653-3-glittao@gmail.com/
+pip3 install dtschema --upgrade
 
->  static void free_loc_track(struct loc_track *t)
->  {
->  	if (t->max)
-> @@ -4825,82 +4840,7 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
->  			add_location(t, s, get_track(s, p, alloc));
->  	put_map(map);
->  }
-> -
-> -static int list_locations(struct kmem_cache *s, char *buf,
-> -			  enum track_item alloc)
-> -{
-> -	int len = 0;
-> -	unsigned long i;
-> -	struct loc_track t = { 0, 0, NULL };
-> -	int node;
-> -	struct kmem_cache_node *n;
-> -
-> -	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-> -			     GFP_KERNEL)) {
-> -		return sysfs_emit(buf, "Out of memory\n");
-> -	}
-> -	/* Push back cpu slabs */
-> -	flush_all(s);
-> -
-> -	for_each_kmem_cache_node(s, node, n) {
-> -		unsigned long flags;
-> -		struct page *page;
-> -
-> -		if (!atomic_long_read(&n->nr_slabs))
-> -			continue;
-> -
-> -		spin_lock_irqsave(&n->list_lock, flags);
-> -		list_for_each_entry(page, &n->partial, slab_list)
-> -			process_slab(&t, s, page, alloc);
-> -		list_for_each_entry(page, &n->full, slab_list)
-> -			process_slab(&t, s, page, alloc);
-> -		spin_unlock_irqrestore(&n->list_lock, flags);
-> -	}
-> -
-> -	for (i = 0; i < t.count; i++) {
-> -		struct location *l = &t.loc[i];
-> -
-> -		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
-> -
-> -		if (l->addr)
-> -			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
-> -		else
-> -			len += sysfs_emit_at(buf, len, "<not-available>");
-> -
-> -		if (l->sum_time != l->min_time)
-> -			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
-> -					     l->min_time,
-> -					     (long)div_u64(l->sum_time,
-> -							   l->count),
-> -					     l->max_time);
-> -		else
-> -			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
-> -
-> -		if (l->min_pid != l->max_pid)
-> -			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
-> -					     l->min_pid, l->max_pid);
-> -		else
-> -			len += sysfs_emit_at(buf, len, " pid=%ld",
-> -					     l->min_pid);
-> -
-> -		if (num_online_cpus() > 1 &&
-> -		    !cpumask_empty(to_cpumask(l->cpus)))
-> -			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
-> -					     cpumask_pr_args(to_cpumask(l->cpus)));
-> -
-> -		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-> -			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
-> -					     nodemask_pr_args(&l->nodes));
-> -
-> -		len += sysfs_emit_at(buf, len, "\n");
-> -	}
-> -
-> -	free_loc_track(&t);
-> -	if (!t.count)
-> -		len += sysfs_emit_at(buf, len, "No data\n");
-> -
-> -	return len;
-> -}
-> +#endif  /* CONFIG_DEBUG_FS   */
->  #endif	/* CONFIG_SLUB_DEBUG */
->  
->  #ifdef SLUB_RESILIENCY_TEST
-> @@ -5350,21 +5290,6 @@ static ssize_t validate_store(struct kmem_cache *s,
->  }
->  SLAB_ATTR(validate);
->  
-> -static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
-> -{
-> -	if (!(s->flags & SLAB_STORE_USER))
-> -		return -ENOSYS;
-> -	return list_locations(s, buf, TRACK_ALLOC);
-> -}
-> -SLAB_ATTR_RO(alloc_calls);
-> -
-> -static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
-> -{
-> -	if (!(s->flags & SLAB_STORE_USER))
-> -		return -ENOSYS;
-> -	return list_locations(s, buf, TRACK_FREE);
-> -}
-> -SLAB_ATTR_RO(free_calls);
->  #endif /* CONFIG_SLUB_DEBUG */
->  
->  #ifdef CONFIG_FAILSLAB
-> @@ -5528,8 +5453,6 @@ static struct attribute *slab_attrs[] = {
->  	&poison_attr.attr,
->  	&store_user_attr.attr,
->  	&validate_attr.attr,
-> -	&alloc_calls_attr.attr,
-> -	&free_calls_attr.attr,
->  #endif
->  #ifdef CONFIG_ZONE_DMA
->  	&cache_dma_attr.attr,
-> @@ -5818,6 +5741,203 @@ static int __init slab_sysfs_init(void)
->  __initcall(slab_sysfs_init);
->  #endif /* CONFIG_SYSFS */
->  
-> +#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
-> +static int slab_debugfs_show(struct seq_file *seq, void *v)
-> +{
-> +
-> +	struct location *l;
-> +	unsigned int idx = *(unsigned int *)v;
-> +
-> +	if (idx < t.count) {
-> +		l = &t.loc[idx];
-> +
-> +		seq_printf(seq, "%7ld ", l->count);
-> +
-> +		if (l->addr)
-> +			seq_printf(seq, "%pS", (void *)l->addr);
-> +		else
-> +			seq_puts(seq, "<not-available>");
-> +
-> +		if (l->sum_time != l->min_time) {
-> +			seq_printf(seq, " age=%ld/%ld/%ld",
-> +				l->min_time,
-> +				(long)div_u64(l->sum_time, l->count),
-> +				l->max_time);
-> +		} else
-> +			seq_printf(seq, " age=%ld",
-> +				l->min_time);
-> +
-> +		if (l->min_pid != l->max_pid)
-> +			seq_printf(seq, " pid=%ld-%ld",
-> +				l->min_pid, l->max_pid);
-> +		else
-> +			seq_printf(seq, " pid=%ld",
-> +				l->min_pid);
-> +
-> +		if (num_online_cpus() > 1 &&
-> +				!cpumask_empty(to_cpumask(l->cpus)))
-> +			seq_printf(seq, " cpus=%*pbl",
-> +				 cpumask_pr_args(to_cpumask(l->cpus)));
-> +
-> +		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-> +			seq_printf(seq, " nodes=%*pbl",
-> +				 nodemask_pr_args(&l->nodes));
-> +
-> +		seq_puts(seq, "\n");
-> +	}
-> +
-> +	if (t.count == 0)
-> +		seq_puts(seq, "No data\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static void slab_debugfs_stop(struct seq_file *seq, void *v)
-> +{
-> +	if (!v && t.max) {
-> +		free_loc_track(&t);
-> +		t.max = 0;
-> +	}
-> +}
-> +
-> +static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
-> +{
-> +	loff_t *spos = v;
-> +
-> +	if (*ppos < t.count) {
-> +		*spos = *spos + 1;
-> +		*ppos = *spos;
-> +		return spos;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
-> +{
-> +	struct kmem_cache_node *n;
-> +	struct kmem_cache *s;
-> +	enum track_item alloc;
-> +	int node;
-> +	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
-> +
-> +	s = seq->file->f_inode->i_private;
-> +
-> +	if (!spos)
-> +		return NULL;
-> +
-> +	if (*ppos == 0) {
-> +
-> +		t.count = 0;
-> +		t.max = 0;
-> +		t.loc = NULL;
-> +		if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_traces") == 0)
-> +			alloc =  TRACK_ALLOC;
-> +		else
-> +			alloc =  TRACK_FREE;
-> +
-> +		if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-> +			     GFP_KERNEL)) {
-> +			seq_puts(seq, "Out of memory\n");
-> +			kfree(spos);
-> +			return ERR_PTR(-ENOMEM);
-> +		}
-> +		/* Push back cpu slabs */
-> +		flush_all(s);
-> +
-> +		for_each_kmem_cache_node(s, node, n) {
-> +			unsigned long flags;
-> +			struct page *page;
-> +
-> +			if (!atomic_long_read(&n->nr_slabs))
-> +				continue;
-> +
-> +			spin_lock_irqsave(&n->list_lock, flags);
-> +			list_for_each_entry(page, &n->partial, slab_list)
-> +				process_slab(&t, s, page, alloc);
-> +			list_for_each_entry(page, &n->full, slab_list)
-> +				process_slab(&t, s, page, alloc);
-> +			spin_unlock_irqrestore(&n->list_lock, flags);
-> +		}
-> +	}
-> +
-> +	if (*ppos < t.count) {
-> +		*spos = *ppos;
-> +		return spos;
-> +	}
-> +
-> +	kfree(spos);
-> +	return NULL;
-> +}
-> +
-> +static const struct seq_operations slab_debugfs_sops = {
-> +	.start  = slab_debugfs_start,
-> +	.next   = slab_debugfs_next,
-> +	.stop   = slab_debugfs_stop,
-> +	.show   = slab_debugfs_show
-> +};
-> +DEFINE_SEQ_ATTRIBUTE(slab_debugfs);
-> +
-> +static void debugfs_slab_add(struct kmem_cache *s)
-> +{
-> +	const char *name;
-> +	struct dentry *slab_cache_dir;
-> +	int unmergeable = slab_unmergeable(s);
-> +
-> +	if (unlikely(!slab_debugfs_root))
-> +		return;
-> +
-> +	if (!unmergeable && disable_higher_order_debug &&
-> +			(slub_debug & DEBUG_METADATA_FLAGS))
-> +		unmergeable = 1;
-> +
-> +	if (unmergeable) {
-> +		/*
-> +		 * Slabcache can never be merged so we can use the name proper.
-> +		 * This is typically the case for debug situations. In that
-> +		 * case we can catch duplicate names easily.
-> +		 */
-> +		slab_cache_dir = debugfs_lookup(s->name, slab_debugfs_root);
-> +		debugfs_remove_recursive(slab_cache_dir);
-> +		name = s->name;
-> +	} else {
-> +		/*
-> +		 * Create a unique name for the slab as a target
-> +		 * for the symlinks.
-> +		 */
-> +		name = create_unique_id(s);
-> +	}
-> +
-> +	slab_cache_dir = debugfs_create_dir(name, slab_debugfs_root);
-> +
-> +	debugfs_create_file("alloc_traces", 0400,
-> +		slab_cache_dir, s, &slab_debugfs_fops);
-> +
-> +	debugfs_create_file("free_traces", 0400,
-> +		slab_cache_dir, s, &slab_debugfs_fops);
-> +}
-> +
-> +void debugfs_slab_release(struct kmem_cache *s)
-> +{
-> +	debugfs_remove_recursive(debugfs_lookup(s->name,
-> +					slab_debugfs_root));
-> +}
-> +
-> +static int __init slab_debugfs_init(void)
-> +{
-> +	struct kmem_cache *s;
-> +
-> +	slab_debugfs_root = debugfs_create_dir("slab", NULL);
-> +
-> +	list_for_each_entry(s, &slab_caches, list)
-> +		if (s->flags & SLAB_STORE_USER)
-> +			debugfs_slab_add(s);
-> +
-> +	return 0;
-> +
-> +}
-> +__initcall(slab_debugfs_init);
-> +#endif
->  /*
->   * The /proc/slabinfo ABI
->   */
-> 
+Please check and re-submit.
 
