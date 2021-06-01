@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F38396EE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEF7396EB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbhFAIaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:30:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232963AbhFAIaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:30:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 818CA61003;
-        Tue,  1 Jun 2021 08:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622536115;
-        bh=bedRNk8wKv9NNSArocmrL5fhZW3QrCccbA4cX/dEOdc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tgWxKFb46eJYPD/PnkAXyI8LDCApIWd3GHG/fyhfFfyFiSbjUSNuWjDj5ShGwFONM
-         RZgzn7tu17i4WOx4ZtuDZxDbbROuULhzo/S8oktQHERFhrx+rkytFudN72++fK98Nc
-         894NSiCoXzQDYXcNdyZAKV+P/4gsK7DsE2zF15SL5tcqZ3EDhKHb9gMbUst9Kkbhon
-         vIFo4DZsRrI3qh68zkhvkPx6t0BzavOufxg3wxtXJoQfOOrBxu1VjI/M1EPoxw6Yg9
-         izZigHWQxDKLWPC0UKUMNHSudlbdvYUjaptZPC0J8y0fPHkx7R4brhcwIukny8knac
-         voSA9ZWr/Mbkg==
-Date:   Tue, 1 Jun 2021 10:28:29 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Brad Love <brad@nextdimension.cc>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxim Plotnikov <wgh@torlan.ru>, Sean Young <sean@mess.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH] media: sp8870: move it to staging
-Message-ID: <20210601102829.37d9447a@coco.lan>
-In-Reply-To: <YLW8rkDRNp1TdWqY@kroah.com>
-References: <5e694bc1b0670b58b93a9fea5712ed0f306e6050.1622493461.git.mchehab+huawei@kernel.org>
-        <YLW8rkDRNp1TdWqY@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S233401AbhFAIVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:21:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2928 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233295AbhFAIU7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:20:59 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvQ3R4w9Sz68Xx;
+        Tue,  1 Jun 2021 16:16:19 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 16:19:16 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
+ 2021 16:19:15 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <jaswinder.singh@linaro.org>, <eric@anholt.net>,
+        <jassisinghbrar@gmail.com>
+CC:     <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-rpi-kernel@lists.infradead.org>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>
+Subject: [PATCH] mailbox: bcm-flexrm-mailbox: Remove redundant dev_err call in flexrm_mbox_probe()
+Date:   Tue, 1 Jun 2021 16:28:34 +0800
+Message-ID: <20210601082834.129587-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 1 Jun 2021 06:50:54 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-> On Mon, May 31, 2021 at 10:37:54PM +0200, Mauro Carvalho Chehab wrote:
-> > This driver is used only ba av7110, which is preparing for
-> > its retirement. So, move this ancillary driver to stay together
-> > with av7110.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/media/dvb-frontends/Kconfig           | 12 -----------
-> >  drivers/media/dvb-frontends/Makefile          |  1 -
-> >  drivers/staging/media/av7110/Kconfig          | 20 +++++++++++++++++++
-> >  drivers/staging/media/av7110/Makefile         |  2 ++
-> >  .../media/av7110}/sp8870.c                    |  0
-> >  .../media/av7110}/sp8870.h                    |  0
-> >  6 files changed, 22 insertions(+), 13 deletions(-)
-> >  rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.c (100%)
-> >  rename drivers/{media/dvb-frontends => staging/media/av7110}/sp8870.h (100%)  
-> 
-> Don't you need a TODO file for these moves that says what is wrong with
-> the driver and when it will be removed and to not send cleanups for it?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mailbox/bcm-flexrm-mailbox.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Yes, but it was added on the previous patch that moved the master driver
-(av7110):
+diff --git a/drivers/mailbox/bcm-flexrm-mailbox.c b/drivers/mailbox/bcm-flexrm-mailbox.c
+index b4f33dc399a0..78073ad1f2f1 100644
+--- a/drivers/mailbox/bcm-flexrm-mailbox.c
++++ b/drivers/mailbox/bcm-flexrm-mailbox.c
+@@ -1523,7 +1523,6 @@ static int flexrm_mbox_probe(struct platform_device *pdev)
+ 	mbox->regs = devm_ioremap_resource(&pdev->dev, iomem);
+ 	if (IS_ERR(mbox->regs)) {
+ 		ret = PTR_ERR(mbox->regs);
+-		dev_err(&pdev->dev, "Failed to remap mailbox regs: %d\n", ret);
+ 		goto fail;
+ 	}
+ 	regs_end = mbox->regs + resource_size(iomem);
+-- 
+2.31.1
 
-	https://lore.kernel.org/linux-media/4e7136434c68eabcdb66d25f44946ab794f4af0b.1622476959.git.mchehab+huawei@kernel.org/T/#u
-
-The TODO is just saying:
-
-	This driver is too old and relies on a different API.
-	Drop it from Kernel on a couple of versions.
-
-(there was a typo there, I'll fix at the next version)
-
-Thanks,
-Mauro
