@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D677397044
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756E1397048
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbhFAJ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:26:12 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:53478 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233096AbhFAJ0K (ORCPT
+        id S233541AbhFAJ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233252AbhFAJ07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:26:10 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1519DlsP002560;
-        Tue, 1 Jun 2021 09:24:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=jN7+gUrA4PoLPxt0TxmBGmGW1ZJ+sWOMQa5ojP8FOLI=;
- b=YJz5eTlNAe93Y94xSW5Ggx6Hh3SGqyCLfHQwcmzOeGNRWCbz2RLtTCPV0snHxX3bM9yH
- MBp9U2cm7kNRD26BZQuU05C88ZXXU7KTQeC/inXuvT5CaLPP2BAzUR3EWChn+BLgGZr9
- owz5zuNGtVCXRenFGuhFBPB2h5XurqhTTPuiHRHd8MXbK/U/4Z9iC/7eXqOngko6rHX0
- QegeB8NGAVsbpnagN8fDUwdmdX5oqCtE7CZyRWzAzOo9XoKROjcGdbtoHpxBByvs5p1b
- cex1L8r4yWmaKpkh5xXRY6h+kzh3MWM+QQHC05i45nfUydj60AsASzaN/3iZhSEOQY/T /g== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38vpk2gg3g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 09:24:22 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1519HTHJ029745;
-        Tue, 1 Jun 2021 09:24:21 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38uaqw62nu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 09:24:21 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1519OKuB041457;
-        Tue, 1 Jun 2021 09:24:20 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 38uaqw62nr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 09:24:20 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1519OJRp012577;
-        Tue, 1 Jun 2021 09:24:19 GMT
-Received: from mwanda (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Jun 2021 02:24:18 -0700
-Date:   Tue, 1 Jun 2021 12:24:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>
-Cc:     Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] mm: thp: fix a double unlock bug
-Message-ID: <YLX8uYN01JmfLnlK@mwanda>
+        Tue, 1 Jun 2021 05:26:59 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CEFC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:25:17 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id h5-20020a05600c3505b029019f0654f6f1so562395wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=lUvOHqo/Lw93HfZjg1cpwSyhO3hTI8CQC/Owemy4Ix0=;
+        b=ve9tkK+lNU24xe7waJw5f+yzt3CYYqhvXm5AzQYRO3IS53DbhhG0eJuKx4TJPAjdhH
+         tzbNVyMhXkfRTuGSmrJtODay1jVTwzcBKfNwLv17YRHCZkQHaNSF7+7G6BR6WsUSdeQT
+         DYbmh2dnzXQXRaRtKU/Ck+hl7hjFwJmJSQLkeQQetJXD9QYBD/sFdCiYc5rRbZPUkTao
+         PcfgS7n80IlV0my8h3d0WMUoe/TxJfJNWJQ8ILIGeojZzXreQcTg7ub4iXKl4qdmbaCw
+         gnwCdbrLYSoMTs0f38OCbC6vUdCD8TgyNP2voPuGdvgh3bx6EfVDLdqQ7xUSfvZY10jA
+         RKgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=lUvOHqo/Lw93HfZjg1cpwSyhO3hTI8CQC/Owemy4Ix0=;
+        b=ZpojvVWX+jAXfRZfaQUhEZqCNffh+L8UbPFI4ZM48nDodUeWf4uxf+0SXlPoVLTiLD
+         t92Led/59RbVrdVhDY9v7GnYyvbJtsQn6iVUbygcmX62Ef8T9Ga8AGNVrq06YCH034bf
+         YCMv42+w82/tr/esr7J6zArH0/v4vJ0MwFe9g5WkPxLI4D6hStRlyLyhNWR4yIBswduc
+         1QumyfQxoWz9Ou7A3ZnvD5h/8B+rQHV5cw3BjoyebljQN3rS0576iTOygL1L+FeMmXBa
+         RyBCcQCwYVDNV541pwRERY8Xg247IN/6rxdhWg96ae1t8iUoxrJmSNPp1UlU2xAzqO2F
+         r8WQ==
+X-Gm-Message-State: AOAM531QIyK2lEZN6j1S93x640KFKZebYpIMKqstZ0VVC6h1vy6EZCRJ
+        9JYobawbcH6qPChzu1J948hqwg==
+X-Google-Smtp-Source: ABdhPJwogak5rFHzumPcquLkCKp2KsdlXeQ7KHJw9U/D6ZFGvVTht59amxTvQUij/hL/9Q7stCcuNg==
+X-Received: by 2002:a1c:1fd1:: with SMTP id f200mr3573089wmf.113.1622539515780;
+        Tue, 01 Jun 2021 02:25:15 -0700 (PDT)
+Received: from dell ([91.110.221.249])
+        by smtp.gmail.com with ESMTPSA id k82sm2042554wmf.11.2021.06.01.02.25.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 02:25:15 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 10:25:13 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 21/24] usb: host: xhci: Move array of structs from the
+ stack onto the heap
+Message-ID: <20210601092513.GC543307@dell>
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-22-lee.jones@linaro.org>
+ <8551978f-27b0-767e-f92b-e96ab3064b33@gmail.com>
+ <20210526144451.GB543307@dell>
+ <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
+ <20210526152835.GE543307@dell>
+ <23bb1fc5-acff-74a6-c67a-11b0e0d85011@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: 5FwNM0G1IyYbJRtmC7W_AiVNZk2TJwOt
-X-Proofpoint-ORIG-GUID: 5FwNM0G1IyYbJRtmC7W_AiVNZk2TJwOt
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <23bb1fc5-acff-74a6-c67a-11b0e0d85011@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We're supposed to be holding the "vmf->ptl" spin_lock when we goto
-out_map.  The lock is dropped after if finishes cleaning up.
+On Thu, 27 May 2021, Mathias Nyman wrote:
 
-Fixes: 9aff7b33c74a ("mm: thp: refactor NUMA fault handling")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- mm/huge_memory.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> On 26.5.2021 18.28, Lee Jones wrote:
+> > On Wed, 26 May 2021, Sergei Shtylyov wrote:
+> > 
+> >> On 5/26/21 5:44 PM, Lee Jones wrote:
+> >>
+> >> [...]
+> >>>>> Fixes the following W=1 kernel build warning(s):
+> >>>>>
+> >>>>>  drivers/usb/host/xhci.c: In function ‘xhci_reserve_bandwidth’:
+> >>>>>  drivers/usb/host/xhci.c:2859:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> >>>>>
+> >>>>> Cc: Mathias Nyman <mathias.nyman@intel.com>
+> >>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>>>> Cc: linux-usb@vger.kernel.org
+> >>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >>>>> ---
+> >>>>>  drivers/usb/host/xhci.c | 8 +++++++-
+> >>>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+> >>>>>
+> >>>>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> >>>>> index ac2a7d4288883..40ce4b4eb12ad 100644
+> >>>>> --- a/drivers/usb/host/xhci.c
+> >>>>> +++ b/drivers/usb/host/xhci.c
+> >>>> [...]
+> >>>>> @@ -2788,6 +2788,10 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+> >>>>>  		return -ENOMEM;
+> >>>>>  	}
+> >>>>>  
+> >>>>> +	ep_bw_info = kzalloc(sizeof(*ep_bw_info) * 31, GFP_KERNEL);
+> 
+> GFP_KERNEL might not be suitable for all cases.
+> 
+> xhci_reserve_bandwidth() is called from xhci_configure_endpoint(), which again
+> is called from a lot of places.
+> For example from xhci_update_hub_device() which can be called with GFP_NOIO mem_flags.
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index e353bbc6cee3..caa0148f15bb 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1465,10 +1465,8 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
- 
- 	pmd = pmd_modify(oldpmd, vma->vm_page_prot);
- 	page = vm_normal_page_pmd(vma, haddr, pmd);
--	if (!page) {
--		spin_unlock(vmf->ptl);
-+	if (!page)
- 		goto out_map;
--	}
- 
- 	/* See similar comment in do_numa_page for explanation */
- 	if (!was_writable)
+What do you suggest as an alternative?
+
 -- 
-2.30.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
