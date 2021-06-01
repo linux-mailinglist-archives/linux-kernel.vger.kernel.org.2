@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DBE396DA5
+	by mail.lfdr.de (Postfix) with ESMTP id 58FBD396DA4
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbhFAHAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 03:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233030AbhFAHAi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233040AbhFAHAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 1 Jun 2021 03:00:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD25C061574;
-        Mon, 31 May 2021 23:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0l2yYQsJKshGfYOkmILgyUlyXhH0uHawPd3uvuaVdjM=; b=k4IBvCxuSl/cf3JYsEuCg30doH
-        NVZXR6Yd2MqaEquUWs6A+cNso2m+KF0VSIW5qrLXOZdgEI28CMTG20Q3taB8n10nEuPAQSZaA6hmM
-        vu2BZiUjBSHYqRVppoBpoB24mcTLdPkMWrcBhPhZso/aOEOwf6Y3zzECWNxenMV5tlsySEd1J0PP4
-        SLpO4668CFUvfVkW4veDHNiPG5oZhPNbZAIFixGXYXCSrF8l1SmIsVjkgkeoThtYg9NkN0hjrlRT3
-        5pB2zBJ470/tiOxr6Mq8/iiJF/9GbUIzblC4nuDrScPiMcxbokqu+mK6OsQURH6ia6VcLjavc1R9H
-        /OUHZ/CA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lnyMG-009lrX-4B; Tue, 01 Jun 2021 06:58:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A9B0930019C;
-        Tue,  1 Jun 2021 08:58:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 845732011CA24; Tue,  1 Jun 2021 08:58:35 +0200 (CEST)
-Date:   Tue, 1 Jun 2021 08:58:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] perf auxtrace: Optimize barriers with
- load-acquire and store-release
-Message-ID: <YLXamz7BChYBspmY@hirez.programming.kicks-ass.net>
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
- <20210519140319.1673043-2-leo.yan@linaro.org>
- <20210531151049.GE9324@leoy-ThinkPad-X240s>
- <cc3810cd-5edc-26d3-9c77-8bb6479152c1@intel.com>
- <20210601063342.GB10026@leoy-ThinkPad-X240s>
+Received: from Galois.linutronix.de ([193.142.43.55]:59100 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231139AbhFAHAg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 03:00:36 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622530734;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8qy5Dlvl3KVfi8a+CNTca0GFXKGaZXfGUgkLF8E1qAI=;
+        b=r9UMyCOHdPczrCWrhXhSkQUgSkZZWfaZh1/hiRSfo1KUgL0oFSVKUvZsq2uzOaIzByS9Du
+        DVrr/m8Fko2tqOQcj5WR2trUpn+BXN8aF9pQtcptz58e7ImPuvs5pRmRHT0FQfEcVA+guo
+        CXF2GcEiG1ixoO+tbOvtkPCOyUQZhgq08Doqz0g7P5/AlgP6pjOvIAJKRnt2LNBei0aTVu
+        n9kh//1o+K86AB1ny+phIaWkYsk/gtrC+4l5gYSqi3dzophK+1zrbTUe6VnTPUsaO+Fg+O
+        iVBw9G7FFvIUNYZTL9GvYu2KIj4wiORaUytxNj3ixGf69IXZxFaaZD6Ubh+5PQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622530734;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8qy5Dlvl3KVfi8a+CNTca0GFXKGaZXfGUgkLF8E1qAI=;
+        b=bim+vB2xoBoTCb5W8JTOH2ih2VtenI8UuncyMXjFUJdTs2OjjJIzn8KOTHPkLdttT8C1yr
+        dhAn2ggLiAm4s4BQ==
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH next v1 1/2] dump_stack: move cpu lock to printk.c
+In-Reply-To: <YLWhlZy8jQR3zpun@google.com>
+References: <20210531162051.2325-1-john.ogness@linutronix.de> <20210531162051.2325-2-john.ogness@linutronix.de> <YLWhlZy8jQR3zpun@google.com>
+Date:   Tue, 01 Jun 2021 08:58:54 +0200
+Message-ID: <87y2bu2hqp.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601063342.GB10026@leoy-ThinkPad-X240s>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 02:33:42PM +0800, Leo Yan wrote:
-> 
-> 32-bit perf wants to access 64-bit value atomically, I think it tries to
-> avoid the issue caused by scenario:
-> 
->         CPU0 (64-bit kernel)           CPU1 (32-bit user)
-> 
->                                          read head_lo
->         WRITE_ONCE(head)
->                                          read head_hi
+On 2021-06-01, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+> On (21/05/31 18:20), John Ogness wrote:
+>> +void printk_cpu_lock(unsigned int *cpu_store, unsigned long *flags)
+>> +{
+>> +	unsigned int cpu;
+>> +
+>> +	for (;;) {
+>> +		cpu = get_cpu();
+>> +
+>> +		*cpu_store = atomic_read(&printk_cpulock_owner);
+>> +
+>> +		if (*cpu_store == -1) {
+>> +			local_irq_save(*flags);
+>
+> Is there any particular reason this does
+>
+> 	preempt_disable();
+> 	cpu = smp_processor_id();
+> 	local_irq_safe();
+>
+> instead of
+>
+> 	local_irq_safe();
+> 	cpu = raw_smp_processor_id();
+>
+> ?
 
-Right; so I think Mark and me once spend a bunch of time on this for the
-regular ring buffer, but my memory is vague.
+If the lock is owned by another CPU, there is no need to disable
+interrupts for this CPU. (The local_irq_save() is conditional.)
 
-It was supposed to be that the high word would always be zero on 32bit,
-but it turns out that that is not in fact the case and we get to have
-this race that's basically unfixable :/
-
-Or maybe that was only the compat case.. Ah yes, so see the kernel uses
-unsigned long, so on 32bit the high word is empty and we always
-read/write 0s, unless you're explicitly doing daft things.
-
-But on compat, the high word can be non-zero and we get to have 'fun'.
+John Ogness
