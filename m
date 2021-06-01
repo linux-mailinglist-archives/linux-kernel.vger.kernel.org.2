@@ -2,136 +2,731 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0DF396F5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02BE396F01
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhFAItd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:49:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:14824 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233740AbhFAIt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:49:27 -0400
-IronPort-SDR: oDX2CV2AxwF6Jru6iacTS1bTpCsVC2Y9zmpbJd45gnnycxe/vOk5hYXDElPFJhZiNgXXMZN9OO
- 1P0e/DgmKwJw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="201635972"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="asc'?scan'208";a="201635972"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 01:47:46 -0700
-IronPort-SDR: LxtEFyZT6oTvdwGLVd1a0Onta12b4d1TAxSK0eoTLxy8TUX2UjkylYbL6xaqoHIiknf/mJHAWA
- +y7Jka9r+yOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="asc'?scan'208";a="474169308"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by FMSMGA003.fm.intel.com with ESMTP; 01 Jun 2021 01:47:44 -0700
-Date:   Tue, 1 Jun 2021 16:28:04 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gvt-dev@lists.freedesktop.org
-Subject: Re: [PATCH v2] drm/i915/gem: Use list_entry to access list members
-Message-ID: <20210601082804.GS27293@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210523172304.3033229-1-linux@roeck-us.net>
+        id S233157AbhFAIfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232963AbhFAIfn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:35:43 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3A2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:34:01 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id g20so4943465ejt.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xc4n9XmoNCDNr0ZZajgmxSpPRpnP9fadGEn7vmxH+5o=;
+        b=A7UfRu3qnJmRYT10oWME1pV22/sl3gfyCEY9kvaayuWazifX53ou4VOOriNuYb9lhq
+         49W2C8P3epYohVYeH0cyMoy2p1ku2XCQx5g63lt1yjZMjmOSGTIXmrY07vrzGPiMhfz+
+         2F+VEkJnPA6KVDKwln7sSGaDNxqnuoLeoThSFPxCWP26uUAJSboMR7kOEsrkD8ef8hSe
+         HcSfhxekjKbvV3Rr/1xhGcgb9Zes2rgQNo7cTcquyAXw0vn+yVCjPxxYuT54NdmaI6ON
+         GWxOLJjHSwEp0RMPRS6g3CFe7E/lv6oNrc5T4VUPjWsf5WIWQ9LAHtkcIqpWBNRRzh2r
+         3DUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xc4n9XmoNCDNr0ZZajgmxSpPRpnP9fadGEn7vmxH+5o=;
+        b=eeoAM4yDhlszsdnoqRLO0ByEzoNF2zhBSZd2qVuz5Z7phO4eGWOeP9T0pRgpQgrNk/
+         ofus8UzWUEEhuaFuR1rHQiqcEas2BEfgM3HxQpnlHONHGEYuMALvl8gJzbx4XjKz/Ezd
+         DYAjRW4Re/3ouBLQqJINeQbCTlN7My6Lq4LPbahrkjJWh9TnEgHL1zrVPyk8NZJd5r5b
+         L9p00mVGwQzkrxtIrFeFtjBVYLxwSf3V+X20dF5ZQ8XiuiXn4Yt83cktFENi8nD4FA+Q
+         ndsUdUTlkQoW0HC+k1cODQHWiwqZeVvsnk9jKYyW353z+ne9Dx4wRuK01Yk/gzOV4ZTR
+         JEUQ==
+X-Gm-Message-State: AOAM532UKLoI0OBEdV8pDcDLRSCJnZxRP8++9+4b+ET311MDSM1sCe++
+        snlQ7JjtZaEaAt68c66oXE0gSv3hqK/f6+Kb+TXl
+X-Google-Smtp-Source: ABdhPJxwFewXAEpHuiUXL0qByilsIpFWVZh/+hVGXv3rYhm3xzkdD1mDVNUHCmZNu+EN2vhGHPcol1kHi6OowW24qgk=
+X-Received: by 2002:a17:906:f9db:: with SMTP id lj27mr16059235ejb.421.1622536439789;
+ Tue, 01 Jun 2021 01:33:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Bqc0IY4JZZt50bUr"
-Content-Disposition: inline
-In-Reply-To: <20210523172304.3033229-1-linux@roeck-us.net>
+References: <20210528200821.459214-1-jarmo.tiitto@gmail.com> <YLU0VAoWG7qa7u24@Ryzen-9-3900X.localdomain>
+In-Reply-To: <YLU0VAoWG7qa7u24@Ryzen-9-3900X.localdomain>
+From:   Bill Wendling <morbo@google.com>
+Date:   Tue, 1 Jun 2021 01:33:48 -0700
+Message-ID: <CAGG=3QXtisfabaiVP6y_3sjGsM7cQmPhur8Zqor4qkGrbiXpBA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] pgo: modules Add module profile data export machinery.
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>, wcw@google.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 31, 2021 at 12:09 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Fri, May 28, 2021 at 11:08:21PM +0300, Jarmo Tiitto wrote:
+> > PGO profile data is exported from the kernel by
+> > creating debugfs files: pgo/<module>.profraw for each module.
+>
+> Again, I do not really have many comments on the actual code as I am not
+> super familiar with it.
+>
+> However, fs_mod.c duplicates a lot of the functions in fs.c, which makes
+> maintaining this code even more difficult, especially against LLVM PGO
+> profile data format changes. I just want to make sure I understand this:
+> does PGO currently not work with modules? Or does this patch series just
+> make it so that each module has its own .profraw file so individual
+> modules can be optimized?
+>
+> If it is the latter, what is the point? Why would you want to optimize
+> just a module and not the entire kernel, if you already have to go
+> through the profiling steps?
+>
+> If it is the former, there has to be a better way to share more of the
+> machinery between fs.c and fs_mod.c than basically duplicating
+> everything because there are some parameters and logic that have to
+> change. I do not have a ton of time to outline exactly what that might
+> look like but for example, prf_fill_header and prf_module_fill_header
+> are basically the same thing aside from the mod parameter and the
+> prf_..._count() calls. It seems like if mod was NULL, you would call the
+> vmlinux versions of the functions.
+>
+Functions definitely shouldn't be duplicated with only minor changes.
+We should determine a way to combine them.
 
---Bqc0IY4JZZt50bUr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As for whether the original PGO patch supports profiling in modules,
+the answer is "it depends". :-) I believe that clang inserts profiling
+hooks into all code that's compiled with the "-fprofile..." flags.
+This would include the modules of course. In GCOV, it's possible to
+retrieve profiling information for a single file. Jarmo, is that the
+intention of your patches?
 
-On 2021.05.23 10:23:04 -0700, Guenter Roeck wrote:
-> Use list_entry() instead of container_of() to access list members.
-> Also drop unnecessary and misleading NULL checks on the result of
-> list_entry().
->=20
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: Checkpatch fixes:
->     - Fix alignment
->     - Replace comparison against NULL with !
->=20
->  drivers/gpu/drm/i915/gvt/dmabuf.c | 18 +++++-------------
->  1 file changed, 5 insertions(+), 13 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i915/gvt/dmabuf.c b/drivers/gpu/drm/i915/gvt=
-/dmabuf.c
-> index d4f883f35b95..e3f488681484 100644
-> --- a/drivers/gpu/drm/i915/gvt/dmabuf.c
-> +++ b/drivers/gpu/drm/i915/gvt/dmabuf.c
-> @@ -148,8 +148,7 @@ static void dmabuf_gem_object_free(struct kref *kref)
-> =20
->  	if (vgpu && vgpu->active && !list_empty(&vgpu->dmabuf_obj_list_head)) {
->  		list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
-> -			dmabuf_obj =3D container_of(pos,
-> -					struct intel_vgpu_dmabuf_obj, list);
-> +			dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
->  			if (dmabuf_obj =3D=3D obj) {
->  				list_del(pos);
->  				intel_gvt_hypervisor_put_vfio_device(vgpu);
-> @@ -357,10 +356,8 @@ pick_dmabuf_by_info(struct intel_vgpu *vgpu,
->  	struct intel_vgpu_dmabuf_obj *ret =3D NULL;
-> =20
->  	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
-> -		dmabuf_obj =3D container_of(pos, struct intel_vgpu_dmabuf_obj,
-> -						list);
-> -		if ((dmabuf_obj =3D=3D NULL) ||
-> -		    (dmabuf_obj->info =3D=3D NULL))
-> +		dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
-> +		if (!dmabuf_obj->info)
->  			continue;
-> =20
->  		fb_info =3D (struct intel_vgpu_fb_info *)dmabuf_obj->info;
-> @@ -387,11 +384,7 @@ pick_dmabuf_by_num(struct intel_vgpu *vgpu, u32 id)
->  	struct intel_vgpu_dmabuf_obj *ret =3D NULL;
-> =20
->  	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
-> -		dmabuf_obj =3D container_of(pos, struct intel_vgpu_dmabuf_obj,
-> -						list);
-> -		if (!dmabuf_obj)
-> -			continue;
-> -
-> +		dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
->  		if (dmabuf_obj->dmabuf_id =3D=3D id) {
->  			ret =3D dmabuf_obj;
->  			break;
-> @@ -600,8 +593,7 @@ void intel_vgpu_dmabuf_cleanup(struct intel_vgpu *vgp=
-u)
-> =20
->  	mutex_lock(&vgpu->dmabuf_lock);
->  	list_for_each_safe(pos, n, &vgpu->dmabuf_obj_list_head) {
-> -		dmabuf_obj =3D container_of(pos, struct intel_vgpu_dmabuf_obj,
-> -						list);
-> +		dmabuf_obj =3D list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
->  		dmabuf_obj->vgpu =3D NULL;
-> =20
->  		idr_remove(&vgpu->object_idr, dmabuf_obj->dmabuf_id);
-> --=20
+-bw
 
-Sorry for late reply! Looks good to me.
-
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-
---Bqc0IY4JZZt50bUr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYLXviAAKCRCxBBozTXgY
-JwG7AJ9Pr/tLAdoR3m14OG9PG9UnCCEW9gCcDSBRdzRBnLpNffd7NifoU6gF4+0=
-=aKMJ
------END PGP SIGNATURE-----
-
---Bqc0IY4JZZt50bUr--
+> > Modules are register into the profiler via module notifier callback
+> > similiar to gcov/base.c. Note that if module does not have __llvm_prf_xxx
+> > sections required the module ignored.
+> >
+> > Also there is no "reset" support for yet for these files.
+> >
+> > Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
+> > ---
+> >  kernel/pgo/Makefile     |   2 +-
+> >  kernel/pgo/fs.c         |  54 ++++--
+> >  kernel/pgo/fs_mod.c     | 415 ++++++++++++++++++++++++++++++++++++++++
+> >  kernel/pgo/instrument.c |  12 +-
+> >  kernel/pgo/pgo.h        |  11 +-
+> >  5 files changed, 466 insertions(+), 28 deletions(-)
+> >  create mode 100644 kernel/pgo/fs_mod.c
+> >
+> > diff --git a/kernel/pgo/Makefile b/kernel/pgo/Makefile
+> > index 41e27cefd9a4..662b7dfdfbe9 100644
+> > --- a/kernel/pgo/Makefile
+> > +++ b/kernel/pgo/Makefile
+> > @@ -2,4 +2,4 @@
+> >  GCOV_PROFILE := n
+> >  PGO_PROFILE  := n
+> >
+> > -obj-y        += fs.o instrument.o
+> > +obj-y        += fs.o fs_mod.o instrument.o
+> > diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
+> > index 575142735273..5471d270a5bb 100644
+> > --- a/kernel/pgo/fs.c
+> > +++ b/kernel/pgo/fs.c
+> > @@ -227,15 +227,15 @@ static unsigned long prf_buffer_size(void)
+> >   * Serialize the profiling data into a format LLVM's tools can understand.
+> >   * Note: caller *must* hold pgo_lock.
+> >   */
+> > -static int prf_serialize(struct prf_private_data *p)
+> > +static int prf_serialize(struct prf_private_data *p, unsigned long *buf_size)
+> >  {
+> >       int err = 0;
+> >       void *buffer;
+> >
+> > -     p->size = prf_buffer_size();
+> > -     p->buffer = vzalloc(p->size);
+> > +     /* re-check buffer size */
+> > +     *buf_size = prf_buffer_size();
+> >
+> > -     if (!p->buffer) {
+> > +     if (p->size < *buf_size || !p->buffer) {
+> >               err = -ENOMEM;
+> >               goto out;
+> >       }
+> > @@ -262,7 +262,8 @@ static int prf_open(struct inode *inode, struct file *file)
+> >  {
+> >       struct prf_private_data *data;
+> >       unsigned long flags;
+> > -     int err;
+> > +     unsigned long buf_size;
+> > +     int err = 0;
+> >
+> >       data = kzalloc(sizeof(*data), GFP_KERNEL);
+> >       if (!data) {
+> > @@ -270,18 +271,41 @@ static int prf_open(struct inode *inode, struct file *file)
+> >               goto out;
+> >       }
+> >
+> > +     /* estimate amount of memory needed:
+> > +      * can't vzalloc() while prf_lock() is held:
+> > +      * CONFIG_DEBUG_ATOMIC_SLEEP complains.
+> > +      * So first get buffer size, release the lock,
+> > +      * vzalloc(), re-lock and try serialize.
+> > +      */
+> >       flags = prf_lock();
+> > +     buf_size = prf_buffer_size();
+> >
+> > -     err = prf_serialize(data);
+> > -     if (unlikely(err)) {
+> > -             kfree(data);
+> > -             goto out_unlock;
+> > -     }
+> > +     do {
+> > +             prf_unlock(flags);
+> >
+> > -     file->private_data = data;
+> > +             /* resize buffer */
+> > +             if (data->size < buf_size && data->buffer) {
+> > +                     vfree(data->buffer);
+> > +                     data->buffer = NULL;
+> > +             }
+> > +
+> > +             if (!data->buffer) {
+> > +                     data->size = buf_size;
+> > +                     data->buffer = vzalloc(data->size);
+> >
+> > -out_unlock:
+> > +                     if (!data->buffer) {
+> > +                             err = -ENOMEM;
+> > +                             goto out;
+> > +                     }
+> > +             }
+> > +             /* try serialize */
+> > +             flags = prf_lock();
+> > +     } while (prf_serialize(data, &buf_size));
+> >       prf_unlock(flags);
+> > +
+> > +     data->size = buf_size;
+> > +     file->private_data = data;
+> > +
+> >  out:
+> >       return err;
+> >  }
+> > @@ -363,6 +387,8 @@ static const struct file_operations prf_reset_fops = {
+> >  /* Create debugfs entries. */
+> >  static int __init pgo_init(void)
+> >  {
+> > +     pr_notice("Clang PGO profile data available.");
+> > +
+> >       directory = debugfs_create_dir("pgo", NULL);
+> >       if (!directory)
+> >               goto err_remove;
+> > @@ -375,6 +401,8 @@ static int __init pgo_init(void)
+> >                                &prf_reset_fops))
+> >               goto err_remove;
+> >
+> > +     prf_modules_init();
+> > +
+> >       return 0;
+> >
+> >  err_remove:
+> > @@ -385,6 +413,8 @@ static int __init pgo_init(void)
+> >  /* Remove debugfs entries. */
+> >  static void __exit pgo_exit(void)
+> >  {
+> > +     prf_modules_exit();
+> > +
+> >       debugfs_remove_recursive(directory);
+> >  }
+> >
+> > diff --git a/kernel/pgo/fs_mod.c b/kernel/pgo/fs_mod.c
+> > new file mode 100644
+> > index 000000000000..0808d44227f1
+> > --- /dev/null
+> > +++ b/kernel/pgo/fs_mod.c
+> > @@ -0,0 +1,415 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2021 Jarmo Tiitto
+> > + *
+> > + * Author:
+> > + *   Jarmo Tiitto <jarmo.tiitto@gmail.com>
+> > + *
+> > + * Based on the clang PGO kernel patch by:
+> > + *  Sami Tolvanen <samitolvanen@google.com>
+> > + *
+> > + * This software is licensed under the terms of the GNU General Public
+> > + * License version 2, as published by the Free Software Foundation, and
+> > + * may be copied, distributed, and modified under those terms.
+> > + *
+> > + * This program is distributed in the hope that it will be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + * GNU General Public License for more details.
+> > + *
+> > + */
+> > +
+> > +#define pr_fmt(fmt)  "pgo: " fmt
+> > +
+> > +#include <linux/kernel.h>
+> > +#include <linux/debugfs.h>
+> > +#include <linux/fs.h>
+> > +#include <linux/module.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/vmalloc.h>
+> > +#include "pgo.h"
+> > +
+> > +/*
+> > + * PGO profile data reporting for modules:
+> > + * We maintain one debugfs pgo/<module>.profraw file per module.
+> > + */
+> > +
+> > +
+> > +DEFINE_MUTEX(prf_mod_lock);
+> > +LIST_HEAD(prf_mod_list);
+> > +
+> > +struct prf_mod_data {
+> > +     void *buffer;
+> > +     unsigned long size;
+> > +};
+> > +
+> > +/* these are trivial, but each one differs a bit */
+> > +static inline unsigned long prf_mod_data_size(struct module *mod)
+> > +{
+> > +     return mod->prf_data_size;
+> > +}
+> > +
+> > +static inline unsigned long prf_mod_data_count(struct module *mod)
+> > +{
+> > +     return mod->prf_data_size / sizeof(struct llvm_prf_data);
+> > +}
+> > +
+> > +static inline unsigned long prf_mod_cnts_size(struct module *mod)
+> > +{
+> > +     return mod->prf_cnts_num * sizeof(mod->prf_cnts[0]);
+> > +}
+> > +
+> > +static inline unsigned long prf_mod_cnts_count(struct module *mod)
+> > +{
+> > +     return mod->prf_cnts_num;
+> > +}
+> > +
+> > +static inline unsigned long prf_mod_names_size(struct module *mod)
+> > +{
+> > +     return mod->prf_names_num * sizeof(mod->prf_names[0]);
+> > +}
+> > +
+> > +static inline unsigned long prf_mod_names_count(struct module *mod)
+> > +{
+> > +     return mod->prf_names_num;
+> > +}
+> > +
+> > +static inline unsigned long prf_mod_vnds_size(struct module *mod)
+> > +{
+> > +     return mod->prf_vnds_size;
+> > +}
+> > +
+> > +static inline unsigned long prf_mod_vnds_count(struct module *mod)
+> > +{
+> > +     return mod->prf_vnds_size / sizeof(struct llvm_prf_value_node);
+> > +}
+> > +
+> > +/*
+> > + * Raw profile data format:
+> > + *
+> > + *   - llvm_prf_header
+> > + *   - __llvm_prf_data
+> > + *   - __llvm_prf_cnts
+> > + *   - __llvm_prf_names
+> > + *   - zero padding to 8 bytes
+> > + *   - for each llvm_prf_data in __llvm_prf_data:
+> > + *           - llvm_prf_value_data
+> > + *                   - llvm_prf_value_record + site count array
+> > + *                           - llvm_prf_value_node_data
+> > + *                           ...
+> > + *                   ...
+> > + *           ...
+> > + */
+> > +
+> > +static void prf_module_fill_header(struct module *mod, void **buffer)
+> > +{
+> > +     struct llvm_prf_header *header = *(struct llvm_prf_header **)buffer;
+> > +
+> > +#ifdef CONFIG_64BIT
+> > +     header->magic = LLVM_INSTR_PROF_RAW_MAGIC_64;
+> > +#else
+> > +     header->magic = LLVM_INSTR_PROF_RAW_MAGIC_32;
+> > +#endif
+> > +     header->version = LLVM_VARIANT_MASK_IR_PROF | LLVM_INSTR_PROF_RAW_VERSION;
+> > +     header->data_size = prf_mod_data_count(mod);
+> > +     header->padding_bytes_before_counters = 0;
+> > +     header->counters_size = prf_mod_cnts_count(mod);
+> > +     header->padding_bytes_after_counters = 0;
+> > +     header->names_size = prf_mod_names_count(mod);
+> > +     header->counters_delta = (u64)mod->prf_cnts;
+> > +     header->names_delta = (u64)mod->prf_names;
+> > +     header->value_kind_last = LLVM_INSTR_PROF_IPVK_LAST;
+> > +
+> > +     *buffer += sizeof(*header);
+> > +}
+> > +
+> > +/*
+> > + * Copy the source into the buffer, incrementing the pointer into buffer in the
+> > + * process.
+> > + */
+> > +static void prf_copy_to_buffer(void **buffer, const void *src, unsigned long size)
+> > +{
+> > +     memcpy(*buffer, src, size);
+> > +     *buffer += size;
+> > +}
+> > +
+> > +/* extern u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds) */
+> > +
+> > +static u32 prf_module_get_value_size(struct module *mod)
+> > +{
+> > +     u32 size = 0;
+> > +     struct llvm_prf_data *p;
+> > +     struct llvm_prf_data *start = mod->prf_data;
+> > +     struct llvm_prf_data *end = start + prf_mod_data_count(mod);
+> > +
+> > +     for (p = start; p < end; p++)
+> > +             size += __prf_get_value_size(p, NULL);
+> > +
+> > +     return size;
+> > +}
+> > +
+> > +/* Serialize the profiling's value.
+> > + * extern void prf_serialize_value(struct llvm_prf_data *p, void **buffer)
+> > + */
+> > +
+> > +static void prf_module_serialize_values(struct module *mod, void **buffer)
+> > +{
+> > +     struct llvm_prf_data *p;
+> > +     struct llvm_prf_data *start = mod->prf_data;
+> > +     struct llvm_prf_data *end = start + prf_mod_data_count(mod);
+> > +
+> > +     for (p = start; p < end; p++)
+> > +             prf_serialize_value(p, buffer);
+> > +}
+> > +
+> > +static inline unsigned long prf_get_padding(unsigned long size)
+> > +{
+> > +     return 7 & (sizeof(u64) - size % sizeof(u64));
+> > +}
+> > +
+> > +static unsigned long prf_module_buffer_size(struct module *mod)
+> > +{
+> > +     return sizeof(struct llvm_prf_header) +
+> > +                     prf_mod_data_size(mod)  +
+> > +                     prf_mod_cnts_size(mod) +
+> > +                     prf_mod_names_size(mod) +
+> > +                     prf_get_padding(prf_mod_names_size(mod)) +
+> > +                     prf_module_get_value_size(mod);
+> > +}
+> > +
+> > +/*
+> > + * Serialize the profiling data into a format LLVM's tools can understand.
+> > + * Note: caller *must* hold pgo_lock and hold reference to the module.
+> > + */
+> > +static int prf_module_serialize(struct module *mod, struct prf_mod_data *p, unsigned long *buf_size)
+> > +{
+> > +     int err = 0;
+> > +     void *buffer;
+> > +
+> > +     /* re-check buffer size */
+> > +     *buf_size = prf_module_buffer_size(mod);
+> > +
+> > +     if (p->size < *buf_size || !p->buffer) {
+> > +             err = -ENOMEM;
+> > +             goto out;
+> > +     }
+> > +
+> > +     buffer = p->buffer;
+> > +
+> > +     prf_module_fill_header(mod, &buffer);
+> > +     prf_copy_to_buffer(&buffer, mod->prf_data,  prf_mod_data_size(mod));
+> > +     prf_copy_to_buffer(&buffer, mod->prf_cnts,  prf_mod_cnts_size(mod));
+> > +     prf_copy_to_buffer(&buffer, mod->prf_names, prf_mod_names_size(mod));
+> > +     buffer += prf_get_padding(prf_mod_names_size(mod));
+> > +
+> > +     prf_module_serialize_values(mod, &buffer);
+> > +
+> > +out:
+> > +     return err;
+> > +}
+> > +
+> > +/* open() implementation for module PGO. */
+> > +static int prf_module_open(struct inode *inode, struct file *file)
+> > +{
+> > +     struct prf_mod_private_data *data;
+> > +     struct prf_mod_data *pinfo;
+> > +     struct module *mod;
+> > +     unsigned long flags;
+> > +     unsigned long buf_size = 0;
+> > +     int err = 0;
+> > +
+> > +     mutex_lock(&prf_mod_lock);
+> > +     data = inode->i_private; /* see: pgo_module_notifier() */
+> > +
+> > +     BUG_ON(!data);
+> > +
+> > +     /* grab the module */
+> > +     mod = READ_ONCE(data->mod);
+> > +     if (mod && try_module_get(mod)) {
+> > +             // Is it live?
+> > +             if (mod->state != MODULE_STATE_LIVE) {
+> > +                     err = -EAGAIN;
+> > +                     goto put_unlock;
+> > +             }
+> > +
+> > +             pinfo = kzalloc(sizeof(*pinfo), GFP_KERNEL);
+> > +             if (!pinfo) {
+> > +                     err = -ENOMEM;
+> > +                     goto put_unlock;
+> > +             }
+> > +
+> > +             mutex_unlock(&prf_mod_lock);
+> > +
+> > +             /* estimate amount of memory needed:
+> > +              * can't vzalloc() while prf_lock() is held
+> > +              * and prf_module_buffer_size() only works while it is held..
+> > +              */
+> > +             flags = prf_lock();
+> > +             buf_size = prf_module_buffer_size(mod);
+> > +             do {
+> > +                     prf_unlock(flags);
+> > +
+> > +                     /* resize buffer */
+> > +                     if (pinfo->size < buf_size && pinfo->buffer) {
+> > +                             vfree(pinfo->buffer);
+> > +                             pinfo->buffer = NULL;
+> > +                     }
+> > +
+> > +                     if (!pinfo->buffer) {
+> > +                             pinfo->size = buf_size;
+> > +                             pinfo->buffer = vzalloc(pinfo->size);
+> > +
+> > +                             if (!pinfo->buffer) {
+> > +                                     err = -ENOMEM;
+> > +                                     goto out;
+> > +                             }
+> > +                     }
+> > +
+> > +                     /* try serialize */
+> > +                     flags = prf_lock();
+> > +
+> > +             } while (prf_module_serialize(mod, pinfo, &buf_size));
+> > +
+> > +             prf_unlock(flags);
+> > +
+> > +             /* success! */
+> > +             pinfo->size = buf_size;
+> > +             file->private_data = pinfo;
+> > +
+> > +             module_put(mod);
+> > +             return err;
+> > +     }
+> > +
+> > +put_unlock:
+> > +     module_put(mod);
+> > +     mutex_unlock(&prf_mod_lock);
+> > +out:
+> > +     return err;
+> > +}
+> > +
+> > +/* read() implementation for PGO. */
+> > +static ssize_t prf_module_read(struct file *file, char __user *buf, size_t count,
+> > +                     loff_t *ppos)
+> > +{
+> > +     struct prf_mod_data *pinfo = file->private_data;
+> > +
+> > +     BUG_ON(!pinfo);
+> > +
+> > +     return simple_read_from_buffer(buf, count, ppos, pinfo->buffer,
+> > +                                        pinfo->size);
+> > +}
+> > +
+> > +/* release() implementation for PGO. Release resources allocated by open(). */
+> > +static int prf_module_release(struct inode *inode, struct file *file)
+> > +{
+> > +     struct prf_mod_data *pinfo = file->private_data;
+> > +
+> > +     if (pinfo) {
+> > +             vfree(pinfo->buffer);
+> > +             kfree(pinfo);
+> > +             file->private_data = 0;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct file_operations prf_mod_fops = {
+> > +     .owner          = THIS_MODULE,
+> > +     .open           = prf_module_open,
+> > +     .read           = prf_module_read,
+> > +     .llseek         = default_llseek,
+> > +     .release        = prf_module_release
+> > +};
+> > +
+> > +static void prf_module_free(struct rcu_head *rcu)
+> > +{
+> > +     struct prf_mod_private_data *data;
+> > +
+> > +     data = container_of(rcu, struct prf_mod_private_data, rcu);
+> > +
+> > +     debugfs_remove(data->file);
+> > +
+> > +     kfree(data);
+> > +}
+> > +
+> > +static int pgo_module_notifier(struct notifier_block *nb, unsigned long event,
+> > +                             void *pdata)
+> > +{
+> > +     struct module *mod = pdata;
+> > +     struct prf_mod_private_data *data;
+> > +     char fsname[MODULE_NAME_LEN + 9]; // +strlen(".profraw")
+> > +
+> > +     if (event == MODULE_STATE_LIVE) {
+> > +             /* does the module have profiling info? */
+> > +             if (mod->prf_data
+> > +                       && mod->prf_cnts
+> > +                       && mod->prf_names
+> > +                       && mod->prf_vnds) {
+> > +                     /* add module prf_mod_private_data entry */
+> > +                     data = kzalloc(sizeof(*data), GFP_KERNEL);
+> > +
+> > +                     fsname[0] = 0;
+> > +                     snprintf(fsname, sizeof(fsname), "%s.profraw", mod->name);
+> > +
+> > +                     mutex_lock(&prf_mod_lock);
+> > +
+> > +                     data->file = debugfs_create_file(fsname, 0600, directory, data, &prf_mod_fops);
+> > +                     if (!data->file) {
+> > +                             pr_err("Failed setup module pgo: %s", fsname);
+> > +                             kfree(data);
+> > +                             mutex_unlock(&prf_mod_lock);
+> > +                             return NOTIFY_OK;
+> > +                     }
+> > +
+> > +                     WRITE_ONCE(data->mod, mod);
+> > +
+> > +                     list_add_tail_rcu(&data->link, &prf_mod_list);
+> > +                     mutex_unlock(&prf_mod_lock);
+> > +             }
+> > +     }
+> > +     if (event == MODULE_STATE_GOING) {
+> > +             /* remove module from the list */
+> > +             rcu_read_lock();
+> > +             list_for_each_entry_rcu(data, &prf_mod_list, link) {
+> > +                     if (strcmp(data->mod->name, mod->name) == 0) {
+> > +
+> > +                             mutex_lock(&prf_mod_lock);
+> > +                             /* remofe from profiled modules */
+> > +                             list_del_rcu(&data->link);
+> > +                             /* mark it stale */
+> > +                             WRITE_ONCE(data->mod, NULL);
+> > +                             mutex_unlock(&prf_mod_lock);
+> > +                             call_rcu(&data->rcu, prf_module_free);
+> > +                             break;
+> > +                     }
+> > +             }
+> > +             rcu_read_unlock();
+> > +     }
+> > +
+> > +     return NOTIFY_OK;
+> > +}
+> > +
+> > +static struct notifier_block pgo_module_nb = {
+> > +     .notifier_call = pgo_module_notifier
+> > +};
+> > +
+> > +void prf_modules_init(void)
+> > +{
+> > +     register_module_notifier(&pgo_module_nb);
+> > +}
+> > +
+> > +void prf_modules_exit(void)
+> > +{
+> > +     struct prf_mod_private_data *p;
+> > +
+> > +     /* unsubscribe the notifier and do cleanup. */
+> > +     unregister_module_notifier(&pgo_module_nb);
+> > +
+> > +     rcu_read_lock();
+> > +     list_for_each_entry_rcu(p, &prf_mod_list, link) {
+> > +             /* delete nodes */
+> > +             list_del(&p->link);
+> > +             WRITE_ONCE(p->mod, NULL);
+> > +             call_rcu(&p->rcu, prf_module_free);
+> > +     }
+> > +     rcu_read_unlock();
+> > +}
+> > \ No newline at end of file
+> > diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
+> > index 464b3bc77431..98cfa11a7b76 100644
+> > --- a/kernel/pgo/instrument.c
+> > +++ b/kernel/pgo/instrument.c
+> > @@ -139,11 +139,11 @@ EXPORT_SYMBOL(__llvm_profile_instrument_target);
+> >
+> >  /* Counts the number of times a range of targets values are seen. */
+> >  void __llvm_profile_instrument_range(u64 target_value, void *data,
+> > -                                  u32 index, s64 precise_start,
+> > -                                  s64 precise_last, s64 large_value);
+> > +                                      u32 index, s64 precise_start,
+> > +                                      s64 precise_last, s64 large_value);
+> >  void __llvm_profile_instrument_range(u64 target_value, void *data,
+> > -                                  u32 index, s64 precise_start,
+> > -                                  s64 precise_last, s64 large_value)
+> > +                                      u32 index, s64 precise_start,
+> > +                                      s64 precise_last, s64 large_value)
+> >  {
+> >       if (large_value != S64_MIN && (s64)target_value >= large_value)
+> >               target_value = large_value;
+> > @@ -176,9 +176,9 @@ static u64 inst_prof_get_range_rep_value(u64 value)
+> >   * defined in compiler-rt/include/profile/InstrProfData.inc.
+> >   */
+> >  void __llvm_profile_instrument_memop(u64 target_value, void *data,
+> > -                                  u32 counter_index);
+> > +                                      u32 counter_index);
+> >  void __llvm_profile_instrument_memop(u64 target_value, void *data,
+> > -                                  u32 counter_index)
+> > +                                      u32 counter_index)
+> >  {
+> >       u64 rep_value;
+> >
+> > diff --git a/kernel/pgo/pgo.h b/kernel/pgo/pgo.h
+> > index a9ff51abbfd5..2840da63c7cd 100644
+> > --- a/kernel/pgo/pgo.h
+> > +++ b/kernel/pgo/pgo.h
+> > @@ -212,17 +212,13 @@ struct prf_mod_private_data {
+> >       struct list_head link;
+> >       struct rcu_head rcu;
+> >
+> > -     void *buffer;
+> > -     unsigned long size;
+> > -
+> > -     char mod_name[MODULE_NAME_LEN];
+> >       struct module *mod;
+> >       struct dentry *file;
+> >
+> >       int current_node;
+> >  };
+> >
+> > -/* Mutex protecting the prf_mod_list and entries */
+> > +/* Mutex protecting the prf_mod_list */
+> >  extern struct mutex prf_mod_lock;
+> >
+> >  /* List of modules profiled */
+> > @@ -231,10 +227,7 @@ extern struct list_head prf_mod_list;
+> >  extern void prf_modules_init(void);
+> >  extern void prf_modules_exit(void);
+> >
+> > -/* Update each modules snapshot of the profiling data. */
+> > -extern int prf_modules_snapshot(void);
+> > -
+> > -/* below funcs are required by prf_modules_snapshot() */
+> > +/* below funcs are required by prf_modules */
+> >  extern u32 __prf_get_value_size(struct llvm_prf_data *p, u32 *value_kinds);
+> >
+> >  extern void prf_serialize_value(struct llvm_prf_data *p, void **buffer);
+> > --
+> > 2.31.1
