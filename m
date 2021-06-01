@@ -2,160 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176F83973FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1957397400
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233922AbhFANUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        id S233981AbhFANW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233064AbhFANUv (ORCPT
+        with ESMTP id S233890AbhFANW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:20:51 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9D2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:19:08 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id e2so5512212vsr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vG9XhD9yPILV9Qp7pU9v5y+PXRxebG5XrL79GQd10ds=;
-        b=neTIcs2KViMm4PAkTdmxpRRJPGBIVB2P4CHkfj09jaZmc1cNfB/2QmyFtmvoW7bYQy
-         GtvP361YVlji7lbMB2azJaAw2gzsb/VFEPoJEkBlkfCk4SK0uTG+rMKP64goXu5R4rmz
-         tzKEkH0HmGAHRz7TThyTiMeMYADAWjvD2GDi8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vG9XhD9yPILV9Qp7pU9v5y+PXRxebG5XrL79GQd10ds=;
-        b=IZFoTMafpGPhhA3NcU3S641Kztv9fgcMItSN9dtw1mVHzPY2eDcrmiMwuKL+OOTmHs
-         99RWT1Ue543sQ+b79EA57VcrRTLFn76ImQFU8XlRz4rXaV+tJ0yxAxK7EqffDRva2F04
-         wwE0iA4+LDRb7aW3w5WvmzcJpG1gY+efI2pnrgaXK8yBFclw1+vyNHa+ilZsve173Z7g
-         iCKk/1iC4ygWw8e7RipfH8mqVMPP1YWmhtQ2cdOVs4J/vO81ytCvJkcp548LYrcptj7S
-         WylWaXVAB2saKfIxQV2H7/AYzFZckcRz9zqQDhNhdcHlkVGtR0FLp06Z5d0Ood9V+49Q
-         JGHw==
-X-Gm-Message-State: AOAM532gB0JiGSnuoDbAN27+zXbbBfX6WnkJx6WBHw5hjtxNWrG/YKzT
-        Jqu6wbKndu2MUWvz9HKex1jyFB78O8rfkxrN/AA1Bg==
-X-Google-Smtp-Source: ABdhPJxjmup0Pyq9xuCSMQbidyEK5x0ytyC4tnXrH70thXtlATobCKr/Au/GM/YPozoWlqxFsY73VBD2sR2OJ0RLFLA=
-X-Received: by 2002:a05:6102:b06:: with SMTP id b6mr18171215vst.21.1622553545662;
- Tue, 01 Jun 2021 06:19:05 -0700 (PDT)
+        Tue, 1 Jun 2021 09:22:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A473DC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zTqrZmhq51DtZlmMtazWrk9jV/i4Bk4h4IOGLPy/Eso=; b=etOO2Ek7slNxGTycYgex+3MKkw
+        nr0LGOg2R8aj19teHfukxrViEYVy0b04wg9m0vRldXT0qDhVdb3doVTygSakN5guMnvnpa2qUVmLP
+        xn2Vc/Fxs3SYyO1v70t6t0KhVbVX9WO2SzYyLRQkt83dH3hHWHTwnsQ1PQLqRbfA2ri07wqxvG9tF
+        N2qroXr3oOpHYwck40bFG2CiAq99AnOHYyBBFzNkZg3rzCOFx68m+UNX/GDZMI3v2fzw+YaNvdJlG
+        Xb58+XzDMPryDtHAP83kZL6LwMp/A0zQFlNux7C/3bFkpu0zlW9pBpLJXFlfz5uB/VATTdpgiySns
+        tJa8AOxg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lo4Jn-002ZcU-Mq; Tue, 01 Jun 2021 13:20:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 11070300095;
+        Tue,  1 Jun 2021 15:20:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B41FC21228182; Tue,  1 Jun 2021 15:20:32 +0200 (CEST)
+Date:   Tue, 1 Jun 2021 15:20:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     mhiramat@kernel.org, ananth@linux.ibm.com,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [PATCH] kprobes: Do not increment probe miss count in the fault
+ handler
+Message-ID: <YLY0INyDtfjgVrXv@hirez.programming.kicks-ass.net>
+References: <20210525073213.561116662@infradead.org>
+ <20210601120150.672652-1-naveen.n.rao@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
- <162218366632.34379.11311748209082333016.stgit@web.messagingengine.com>
-In-Reply-To: <162218366632.34379.11311748209082333016.stgit@web.messagingengine.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 1 Jun 2021 15:18:54 +0200
-Message-ID: <CAJfpegshedor_ZiQ_8EdLGRG0AEWb5Sy5Pa4SwPg9+f196_mGg@mail.gmail.com>
-Subject: Re: [REPOST PATCH v4 4/5] kernfs: use i_lock to protect concurrent
- inode updates
-To:     Ian Kent <raven@themaw.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601120150.672652-1-naveen.n.rao@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net> wrote:
->
-> The inode operations .permission() and .getattr() use the kernfs node
-> write lock but all that's needed is to keep the rb tree stable while
-> updating the inode attributes as well as protecting the update itself
-> against concurrent changes.
->
-> And .permission() is called frequently during path walks and can cause
-> quite a bit of contention between kernfs node operations and path
-> walks when the number of concurrent walks is high.
->
-> To change kernfs_iop_getattr() and kernfs_iop_permission() to take
-> the rw sem read lock instead of the write lock an additional lock is
-> needed to protect against multiple processes concurrently updating
-> the inode attributes and link count in kernfs_refresh_inode().
->
-> The inode i_lock seems like the sensible thing to use to protect these
-> inode attribute updates so use it in kernfs_refresh_inode().
->
-> Signed-off-by: Ian Kent <raven@themaw.net>
+On Tue, Jun 01, 2021 at 05:31:50PM +0530, Naveen N. Rao wrote:
+> Kprobes has a counter 'nmissed', that is used to count the number of
+> times a probe handler was not called. This generally happens when we hit
+> a kprobe while handling another kprobe.
+> 
+> However, if one of the probe handlers causes a fault, we are currently
+> incrementing 'nmissed'. The comment in fault handler indicates that this
+> can be used to account faults taken by the probe handlers. But, this has
+> never been the intention as is evident from the comment above 'nmissed'
+> in 'struct kprobe':
+> 
+> 	/*count the number of times this probe was temporarily disarmed */
+> 	unsigned long nmissed;
+> 
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 > ---
->  fs/kernfs/inode.c |   10 ++++++----
->  fs/kernfs/mount.c |    4 ++--
->  2 files changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-> index 3b01e9e61f14e..6728ecd81eb37 100644
-> --- a/fs/kernfs/inode.c
-> +++ b/fs/kernfs/inode.c
-> @@ -172,6 +172,7 @@ static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
->  {
->         struct kernfs_iattrs *attrs = kn->iattr;
->
-> +       spin_lock(&inode->i_lock);
->         inode->i_mode = kn->mode;
->         if (attrs)
->                 /*
-> @@ -182,6 +183,7 @@ static void kernfs_refresh_inode(struct kernfs_node *kn, struct inode *inode)
->
->         if (kernfs_type(kn) == KERNFS_DIR)
->                 set_nlink(inode, kn->dir.subdirs + 2);
-> +       spin_unlock(&inode->i_lock);
->  }
->
->  int kernfs_iop_getattr(struct user_namespace *mnt_userns,
-> @@ -191,9 +193,9 @@ int kernfs_iop_getattr(struct user_namespace *mnt_userns,
->         struct inode *inode = d_inode(path->dentry);
->         struct kernfs_node *kn = inode->i_private;
->
-> -       down_write(&kernfs_rwsem);
-> +       down_read(&kernfs_rwsem);
->         kernfs_refresh_inode(kn, inode);
-> -       up_write(&kernfs_rwsem);
-> +       up_read(&kernfs_rwsem);
->
->         generic_fillattr(&init_user_ns, inode, stat);
->         return 0;
-> @@ -284,9 +286,9 @@ int kernfs_iop_permission(struct user_namespace *mnt_userns,
->
->         kn = inode->i_private;
->
-> -       down_write(&kernfs_rwsem);
-> +       down_read(&kernfs_rwsem);
->         kernfs_refresh_inode(kn, inode);
-> -       up_write(&kernfs_rwsem);
-> +       up_read(&kernfs_rwsem);
->
->         return generic_permission(&init_user_ns, inode, mask);
->  }
-> diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-> index baa4155ba2edf..f2f909d09f522 100644
-> --- a/fs/kernfs/mount.c
-> +++ b/fs/kernfs/mount.c
-> @@ -255,9 +255,9 @@ static int kernfs_fill_super(struct super_block *sb, struct kernfs_fs_context *k
->         sb->s_shrink.seeks = 0;
->
->         /* get root inode, initialize and unlock it */
-> -       down_write(&kernfs_rwsem);
-> +       down_read(&kernfs_rwsem);
->         inode = kernfs_get_inode(sb, info->root->kn);
-> -       up_write(&kernfs_rwsem);
-> +       up_read(&kernfs_rwsem);
->         if (!inode) {
->                 pr_debug("kernfs: could not get root inode\n");
->                 return -ENOMEM;
->
+> I'm posting this here so that these can go together, if the patch is ok 
+> otherwise.
 
-This last hunk is not mentioned in the patch header.  Why is this needed?
-
-Otherwise looks good.
-
-Thanks,
-Miklos
+I had the other two queued in perf/core and was about to push then to
+tip, Masami are you good with adding this on top?
