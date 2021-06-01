@@ -2,88 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02AD397C35
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DC2397C38
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234933AbhFAWJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:09:31 -0400
-Received: from ozlabs.org ([203.11.71.1]:38973 "EHLO ozlabs.org"
+        id S234971AbhFAWJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:09:43 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39666 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234897AbhFAWJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:09:27 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvmVl38Z6z9s5R;
-        Wed,  2 Jun 2021 08:07:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622585264;
-        bh=EPNCrH1ipIYIjYIZR3e7Sx4DYJbRQHwSTFXT+SSJLLo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TffMpoL9xYtQlePycD3FlvZgzpmIzSCRzD/XIrcewTmkt4paGvebz7Cc9xBpQuVCP
-         CtT9kxrGA1lCpNIpXErXag+5RoscIzlXv+XwWAiBImeorW+hhBXcOa2zRon3HQovCA
-         Y7Qs1D0Od+tvGzvlJGlw7wB9KQUIPYUnjdDfe4Xeto+olvkd2l3tZEwhRzJQjefi1s
-         HB5QyzuopP0K5okhVFrqySbK+juDVvWQKvvWqzoR9itIvyso530tdg74mVGppxsSwb
-         ifPf+y+fSWdOspN7SIr+IBX8OamH/oIkYqVBvA/L3tO3KhqPZ8ykpO6dSNfCBo/rsw
-         Ws7LXKouxGvCQ==
-Date:   Wed, 2 Jun 2021 08:07:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the integrity tree
-Message-ID: <20210602080742.1832f12c@canb.auug.org.au>
+        id S234897AbhFAWJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:09:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=FtHxG6xUI+ZK/LdOWImVo2KBg5IQssGdB+TkgX8DaAc=; b=07F7bXGF6o2GkIt8YI5oQtaLJl
+        GzHjxDA/eXv6w4vO5Gmy2VHFMqWYbq7va2EhmbRi5HG5YZ4p4xRpoOQ4IInl/fuUvlUz24w5NunKH
+        SCdVry8Y5mhDETT957/nbzuM1JPVaVNrovPsOE6BqTvVH91gXS/pD/yGFI5ZQD9UEbDM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1loCYA-007LxQ-F7; Wed, 02 Jun 2021 00:07:50 +0200
+Date:   Wed, 2 Jun 2021 00:07:50 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, f.fainelli@gmail.com,
+        linux-imx@nxp.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/4] net: phy: realtek: add dt property to
+ disable CLKOUT clock
+Message-ID: <YLavtkj5YO4WGlLd@lunn.ch>
+References: <20210601090408.22025-1-qiangqing.zhang@nxp.com>
+ <20210601090408.22025-3-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/W.VlX1=apFJVu8WwkLkibUe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601090408.22025-3-qiangqing.zhang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/W.VlX1=apFJVu8WwkLkibUe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> +struct rtl821x_priv {
+> +	u32 quirks;
 
-Hi all,
+I'm not sure quirks is the correct word here. I would probably use
+features, or flags.
 
-In commit
-
-  9eea2904292c ("evm: Execute evm_inode_init_security() only when an HMAC k=
-ey is loaded")
-
-Fixes tag
-
-  Fixes: 26ddabfe96b ("evm: enable EVM when X509 certificate is loaded")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-Probably not worth rebasing for, but can be avoided in the future by
-setting core.abbrev to 12 (or more) or (for git v2.11 or later) just
-making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/W.VlX1=apFJVu8WwkLkibUe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC2r64ACgkQAVBC80lX
-0GxXmwf/dzQKYbYijr16dto1MW7fmyyophM73cHjxZKSY0Lsgo/5SheqFN3pn8Gk
-SKwx5XU3B1TnFoc2f/heXh0dfPMWR8kmHeLqlcs7RJyQAzFoCofUt1IRo0y1rX/3
-k956Zw6bFo1dbTLuM/KtSG6LyhgIh2bKvYpjQBmG8pkEyUNLHmQ86TNg48zYlF/U
-4c3DLFM55A6Z4q2cO6dcvAZocaBVs7EEuG27xVeMBY9FRWe3DWPHoFSiggChwcvm
-FtBi8resblvG2diU5iGTGI2M17v79t+UOa5xHvFYmAHCvEgPHD3nFBTR9Rrmgj8a
-sS6/1DDRC962HitRVkv5PQsbbvvALg==
-=AzQp
------END PGP SIGNATURE-----
-
---Sig_/W.VlX1=apFJVu8WwkLkibUe--
+	  Andrew
