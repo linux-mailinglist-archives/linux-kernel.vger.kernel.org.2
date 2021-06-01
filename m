@@ -2,49 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A91396CCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A221396CD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhFAF3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:29:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229477AbhFAF3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:29:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1C3061042;
-        Tue,  1 Jun 2021 05:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622525241;
-        bh=vfdyDVfejBDK08APTvZn88/BgNA1G6tTsDDAjl5hXzY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sFdZmG3k+bI0DbZO5SSe1KApJkX/YuX0YBfuZhigJ7CBbE5uGTO+/fbsesTtjvhrD
-         PWLaA81KhTD3mjMxqEwjg+bh0VeqtjnKG4TiCxcEgTOCVprEPHUZyQ5IU7ef7J6UF6
-         MRDFnR5XVN5EJa59nfpUIgt09mODIseX0DuiRa5ann5r2Q2hSThLQ2Wv3jhEI1AEoI
-         ApVB9ETaqD6cu1A9OOlsKVuOYsM8N+rgVuaqQhWokMnkzDQjDUMlD27YJL8AEWFzep
-         mIEysAQm0SE6SB0Sqg2w/9Vk18QO9hAY19yBlSfkuuuTTzfi/oiMFQrfxcyEo+s+CI
-         0rfjd3eQYwmMA==
-Date:   Mon, 31 May 2021 22:27:19 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
-        <davem@davemloft.net>, <linux-nfs@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bfields@fieldses.org>, <chuck.lever@oracle.com>
-Subject: Re: [PATCH net-next] xprtrdma: Fix spelling mistakes
-Message-ID: <20210531222719.3e742ed6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20210531063640.3018843-1-zhengyongjun3@huawei.com>
-References: <20210531063640.3018843-1-zhengyongjun3@huawei.com>
+        id S232953AbhFAFcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:32:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56136 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232744AbhFAFby (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:31:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622525393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=siJz2CTmBAQXJpnvED6F5Lh0Z4do04zZE0SUG5Fvo2s=;
+        b=ZZ2Gs+WAwGUw4hJSrtGoi8pFBeenRUCZil/IUzcdrozKK0LSvAz/CqeIN+kKwLkFYc5qDY
+        0x8/5YfX9+mWPuaWy59Ksgq7ANoc4AQYyo4dS426j21J6l5x/1EVuQq5hMf/rsS8io6Cla
+        d2C8xtBN0BN5tzdqL95wQpbc89LhBKM=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-150-xpobtnF0PC-wDGxexPVjJw-1; Tue, 01 Jun 2021 01:29:49 -0400
+X-MC-Unique: xpobtnF0PC-wDGxexPVjJw-1
+Received: by mail-pl1-f198.google.com with SMTP id u14-20020a170903304eb02900ec9757f3dbso4000736pla.17
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:29:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=siJz2CTmBAQXJpnvED6F5Lh0Z4do04zZE0SUG5Fvo2s=;
+        b=e/+B1k0x9UGW63ky6HjTg+PwRjYSSOl3tVxHFI1aH2DYt1zPXXvFPnKyxK61BgKCdg
+         jaFjAdJ/DsuoV5Pia22Hs2+0ukk1159S+3VnPPhtqbD/GVhzU2IEOnUBruBjfZvk3EV6
+         cUeyj/JeiImoxYkDPGmqmzGCoiQGSeTRKHBYlUKqCsNBGoTiD6jlZ9I38SIVv4kThhQW
+         LvdydVGmv/9q9swyLKMpDeOy4A8+YhOEO2OoLSNr52hCr+1LL8Wl+0DY6YjNGPGOoziM
+         QCvcTGxjPnQTBJJ9REg66qV1BKtJ0j7e05JCS/GzE3c0MAG5g8QkO9zmT7C6DNC9Ksgy
+         JnHA==
+X-Gm-Message-State: AOAM533CyRz4HtQOgjsL3RHplcpcxfx+uNDUxoy+CgceykdNQ55+HtAp
+        6z7lSuURkBt5bssPerY+CNZdNEinr36zKWNd26PhPiypRtLPUinPdEqkVBsHXG3J0O580FrNoyJ
+        jPf0nfqU+xjiZjivjfZfOJR7j
+X-Received: by 2002:a17:90a:4d0a:: with SMTP id c10mr2950615pjg.206.1622525388810;
+        Mon, 31 May 2021 22:29:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZ7rHezJVl5toCxwphy2EqgUV3yr26yAhv4PAH3egfoOPVMm51yn71ZSBxAm52zcWBKyM7sw==
+X-Received: by 2002:a17:90a:4d0a:: with SMTP id c10mr2950597pjg.206.1622525388516;
+        Mon, 31 May 2021 22:29:48 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y20sm12198235pfn.164.2021.05.31.22.29.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 22:29:48 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Liu Yi L <yi.l.liu@linux.intel.com>
+Cc:     yi.l.liu@intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
+ <20210531164118.265789ee@yiliu-dev>
+ <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
+ <20210601113152.6d09e47b@yiliu-dev>
+ <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
+ <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
+Date:   Tue, 1 Jun 2021 13:29:39 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 14:36:40 +0800 Zheng Yongjun wrote:
-> Fix some spelling mistakes in comments:
-> succes  ==> success
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-This should not have been tagged for net-next, leaving it to Trond.
+在 2021/6/1 下午1:23, Lu Baolu 写道:
+> Hi Jason W,
+>
+> On 6/1/21 1:08 PM, Jason Wang wrote:
+>>>> 2) If yes, what's the reason for not simply use the fd opened from
+>>>> /dev/ioas. (This is the question that is not answered) and what 
+>>>> happens
+>>>> if we call GET_INFO for the ioasid_fd?
+>>>> 3) If not, how GET_INFO work?
+>>> oh, missed this question in prior reply. Personally, no special reason
+>>> yet. But using ID may give us opportunity to customize the management
+>>> of the handle. For one, better lookup efficiency by using xarray to
+>>> store the allocated IDs. For two, could categorize the allocated IDs
+>>> (parent or nested). GET_INFO just works with an input FD and an ID.
+>>
+>>
+>> I'm not sure I get this, for nesting cases you can still make the 
+>> child an fd.
+>>
+>> And a question still, under what case we need to create multiple 
+>> ioasids on a single ioasid fd?
+>
+> One possible situation where multiple IOASIDs per FD could be used is
+> that devices with different underlying IOMMU capabilities are sharing a
+> single FD. In this case, only devices with consistent underlying IOMMU
+> capabilities could be put in an IOASID and multiple IOASIDs per FD could
+> be applied.
+>
+> Though, I still not sure about "multiple IOASID per-FD" vs "multiple
+> IOASID FDs" for such case.
+
+
+Right, that's exactly my question. The latter seems much more easier to 
+be understood and implemented.
+
+Thanks
+
+
+>
+> Best regards,
+> baolu
+>
+
