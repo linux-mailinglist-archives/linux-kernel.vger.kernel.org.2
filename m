@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6481D397D26
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679AD397D2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhFAXre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:47:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52936 "EHLO mail.kernel.org"
+        id S235197AbhFAXuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:50:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235034AbhFAXrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 19:47:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42C7E613F0;
-        Tue,  1 Jun 2021 23:45:48 +0000 (UTC)
+        id S235034AbhFAXug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 19:50:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97CAC613B4;
+        Tue,  1 Jun 2021 23:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622591151;
-        bh=547ziGklarlo+Osudojb8D43pdF92M2aOJKWeIfFN8A=;
+        s=k20201202; t=1622591334;
+        bh=L5TBPUeRAk35Q5KL49H1pE9FXn6EXJ/5i7usvcJ4g2g=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VOMCXEkqK+OOooAHNWX53HXrUkacjvwNKfj9aStfvsIKOkYRDqAlRm4Fm8GIwZRFV
-         lNu9nK2dCwxZQKMbhxhcd5rtk1IChHpyPwJ6ao+yv/XIyCPRTOLf2m7bjsZprz55jQ
-         ymo6DA3I0BaleGVFq0UcmoVprZ3iac7zaMCJxqegLleClAOtbQH6lyFbh3OaqWPvma
-         Ge991ZgUE6oRiGIGYE66k6/MjO9pDqV8NtiUVsYjNsuwQXND5jgddyOc5bsm+j9JjW
-         uBEtbn2fgSK4/G4Cumq2mXmhaJtKFR1l019rKzJH0zcPkjLg2jEA2O2COMmR45I6Kh
-         E7FFtZCtzZglA==
-Date:   Wed, 2 Jun 2021 08:45:45 +0900
+        b=Osm0zNOwf+weSGzuGiJV4iyG6FvfX2RvIsSYStZcYKZjChPL/PNeFlIJvg7dqEOFB
+         0FFpiscmEhDn3dav7HZWsNago+DtlYO8XuT+mOa8iNNVvYdq3hKfnmhg+RXQasE166
+         QqWD8U6fNi78DwlmEDE0Ay2U50oqsQTiWJ3wdaWZ2fFCJ/dFsoTUFtsjRcxnU/MCuq
+         YtmNqEavToCk7NGfDq07wAXP208GDwRgYDwAnMn3BOrh2wmPJEPORwHYBZweqGg1zk
+         yg41CNSoi+FjpjsBiVnprGN3PrlYKj8MjCP78OHZOwch0HIFDBY74Ev8iedkmgENGD
+         39DGs8pmMPRDA==
+Date:   Wed, 2 Jun 2021 08:48:50 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Li Huafei <lihuafei1@huawei.com>
-Cc:     <acme@kernel.org>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <srikar@linux.vnet.ibm.com>, <fche@redhat.com>,
-        <Jianlin.Lv@arm.com>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
-        <zhangjinhao2@huawei.com>
-Subject: Re: [PATCH] perf probe: Fix null pointer dereference in
- convert_variable_location()
-Message-Id: <20210602084545.99e6d7d43e183ceaa603d247@kernel.org>
-In-Reply-To: <20210601092750.169601-1-lihuafei1@huawei.com>
-References: <20210601092750.169601-1-lihuafei1@huawei.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        mhiramat@kernel.org, ananth@linux.ibm.com,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [PATCH] kprobes: Do not increment probe miss count in the fault
+ handler
+Message-Id: <20210602084850.598a60d848a7bdc7c3b0085a@kernel.org>
+In-Reply-To: <YLY0INyDtfjgVrXv@hirez.programming.kicks-ass.net>
+References: <20210525073213.561116662@infradead.org>
+        <20210601120150.672652-1-naveen.n.rao@linux.vnet.ibm.com>
+        <YLY0INyDtfjgVrXv@hirez.programming.kicks-ass.net>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -46,125 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 17:27:50 +0800
-Li Huafei <lihuafei1@huawei.com> wrote:
+On Tue, 1 Jun 2021 15:20:32 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-> If we just check whether the variable can be converted, 'tvar' should be
-> a null pointer. However, the null pointer check is missing in the
-> 'Constant value' execution path.
+> On Tue, Jun 01, 2021 at 05:31:50PM +0530, Naveen N. Rao wrote:
+> > Kprobes has a counter 'nmissed', that is used to count the number of
+> > times a probe handler was not called. This generally happens when we hit
+> > a kprobe while handling another kprobe.
+> > 
+> > However, if one of the probe handlers causes a fault, we are currently
+> > incrementing 'nmissed'. The comment in fault handler indicates that this
+> > can be used to account faults taken by the probe handlers. But, this has
+> > never been the intention as is evident from the comment above 'nmissed'
+> > in 'struct kprobe':
+> > 
+> > 	/*count the number of times this probe was temporarily disarmed */
+> > 	unsigned long nmissed;
+> > 
+> > Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> > ---
+> > I'm posting this here so that these can go together, if the patch is ok 
+> > otherwise.
 > 
-> The following cases can trigger this problem:
-> 
-> 	$ cat test.c
-> 	#include <stdio.h>
-> 
-> 	void main(void)
-> 	{
-> 	        int a;
-> 	        const int b = 1;
-> 
-> 	        asm volatile("mov %1, %0" : "=r"(a): "i"(b));
-> 	        printf("a: %d\n", a);
-> 	}
-> 
-> 	$ gcc test.c -o test -O -g
-> 	$ sudo ./perf probe -x ./test -L "main"
-> 	<main@/home/lhf/test.c:0>
-> 	      0  void main(void)
-> 	         {
-> 	      2          int a;
-> 	                 const int b = 1;
-> 
-> 	                 asm volatile("mov %1, %0" : "=r"(a): "i"(b));
-> 	      6          printf("a: %d\n", a);
-> 	         }
-> 
-> 	$ sudo ./perf probe -x ./test -V "main:6"
-> 	Segmentation fault
+> I had the other two queued in perf/core and was about to push then to
+> tip, Masami are you good with adding this on top?
 
-Oops, thanks for fixing!
-
-> 
-> The check on 'tvar' is added. If 'tavr' is a null pointer, we return 0
-> to indicate that the variable can be converted. Now, we can successfully
-> show the variables that can be accessed.
-> 
-> 	$ sudo ./perf probe -x ./test -V "main:6"
-> 	Available variables at main:6
-> 	        @<main+13>
-> 	                char*   __fmt
-> 	                int     a
-> 	                int     b
-> 
-> However, the variable 'b' cannot be tracked.
-> 
-> 	$ sudo ./perf probe -x ./test -D "main:6 b"
-> 	Failed to find the location of the 'b' variable at this address.
-> 	 Perhaps it has been optimized out.
-> 	 Use -V with the --range option to show 'b' location range.
-> 	  Error: Failed to add events.
-> 
-> This is because __die_find_variable_cb() did not successfully match
-> variable 'b', which has the DW_AT_const_value attribute instead of
-> DW_AT_location. We added support for DW_AT_const_value in
-> __die_find_variable_cb(). With this modification, we can successfully
-> track the variable 'b'.
-> 
-> 	$ sudo ./perf probe -x ./test -D "main:6 b"
-> 	p:probe_test/main_L6 /home/lhf/test:0x1156 b=\1:s32
-
-Great! This looks good to me.
+Yes, those looks good to me too.
 
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Thank you!
-
-> 
-> Fixes: 66f69b219716 ("perf probe: Support DW_AT_const_value constant value")
-> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
-> ---
->  tools/perf/util/dwarf-aux.c    | 8 ++++++--
->  tools/perf/util/probe-finder.c | 3 +++
->  2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index b2f4920e19a6..7d2ba8419b0c 100644
-> --- a/tools/perf/util/dwarf-aux.c
-> +++ b/tools/perf/util/dwarf-aux.c
-> @@ -975,9 +975,13 @@ static int __die_find_variable_cb(Dwarf_Die *die_mem, void *data)
->  	if ((tag == DW_TAG_formal_parameter ||
->  	     tag == DW_TAG_variable) &&
->  	    die_compare_name(die_mem, fvp->name) &&
-> -	/* Does the DIE have location information or external instance? */
-> +	/*
-> +	 * Does the DIE have location information or const value
-> +	 * or external instance?
-> +	 */
->  	    (dwarf_attr(die_mem, DW_AT_external, &attr) ||
-> -	     dwarf_attr(die_mem, DW_AT_location, &attr)))
-> +	     dwarf_attr(die_mem, DW_AT_location, &attr) ||
-> +	     dwarf_attr(die_mem, DW_AT_const_value, &attr)))
->  		return DIE_FIND_CB_END;
->  	if (dwarf_haspc(die_mem, fvp->addr))
->  		return DIE_FIND_CB_CONTINUE;
-> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-> index 866f2d514d72..b029c29ce227 100644
-> --- a/tools/perf/util/probe-finder.c
-> +++ b/tools/perf/util/probe-finder.c
-> @@ -190,6 +190,9 @@ static int convert_variable_location(Dwarf_Die *vr_die, Dwarf_Addr addr,
->  	    immediate_value_is_supported()) {
->  		Dwarf_Sword snum;
->  
-> +		if (!tvar)
-> +			return 0;
-> +
->  		dwarf_formsdata(&attr, &snum);
->  		ret = asprintf(&tvar->value, "\\%ld", (long)snum);
->  
-> -- 
-> 2.17.1
-> 
-
+Thank you,
 
 -- 
 Masami Hiramatsu <mhiramat@kernel.org>
