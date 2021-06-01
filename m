@@ -2,110 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F4B39776F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93A8397794
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhFAQEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:04:40 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3122 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbhFAQEj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:04:39 -0400
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvcGL71Knz6Q3qK;
-        Tue,  1 Jun 2021 23:56:26 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 18:02:56 +0200
-Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 17:02:55 +0100
-Date:   Tue, 1 Jun 2021 17:02:51 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Liam Beguin <liambeguin@gmail.com>
-CC:     Peter Rosin <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for
- temperature-sense-amplifier
-Message-ID: <20210601170251.00002ddf@Huawei.com>
-In-Reply-To: <CBRHJM8ANOSE.2Q5C1FVQS5QOA@shaak>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
-        <20210530005917.20953-10-liambeguin@gmail.com>
-        <0286de71-1b04-0956-be4e-f38573c6fea2@axentia.se>
-        <CBRHJM8ANOSE.2Q5C1FVQS5QOA@shaak>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S234001AbhFAQNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:13:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230523AbhFAQNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 12:13:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EB7860232;
+        Tue,  1 Jun 2021 16:04:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622563449;
+        bh=/ypgGqL0v+wsCgxDS8k0oLpREu5q7GxXgSi43vcKhcw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DH17KwsxplYIBl3YflGFUaRCGNMjISN1k6KMivXnfOqr5k0Q3eQWdrkFOp/lzW/1g
+         fPv+4slyk5DCica+zDVOHa/+hMq5PcqCuVFyCYeLdg/VKfzNPrV+1mFrLQ9vJ/TxrD
+         ljfdK7MP0vekepdZtNmFDoltBRGXzTwArD0hjVb/+MVn2/mHY4HMhexmShffv5w7m5
+         8I6qHHL6zC4YginEDR6Ho/UWPedEtB4pyAV5Lx7yzhr1Kmo1+1nIWNIFUIsyRyi+N6
+         Q87kXii61tZKgkMYYZLQthvPOo2jhRJw4I25FNLHH6o3nmrqe0ihANcJ5A1siIwf4J
+         6OcH6tucNV2Kw==
+Date:   Tue, 1 Jun 2021 11:04:02 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wesley Sheng <wesley.sheng@amd.com>
+Cc:     linasvepstas@gmail.com, ruscur@russell.cc, oohall@gmail.com,
+        bhelgaas@google.com, corbet@lwn.net, linux-pci@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wesleyshenggit@sina.com
+Subject: Re: [PATCH] Documentation PCI: Fix typo in pci-error-recovery.rst
+Message-ID: <20210601160402.GA1944037@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.71]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531081215.43507-1-wesley.sheng@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 10:03:23 -0400
-"Liam Beguin" <liambeguin@gmail.com> wrote:
-
-> Hi Peter,
+On Mon, May 31, 2021 at 04:12:15PM +0800, Wesley Sheng wrote:
+> Replace "It" with "If", since it is a conditional statement.
 > 
-> On Mon May 31, 2021 at 3:32 AM EDT, Peter Rosin wrote:
-> > Hi!
-> >
-> > On 2021-05-30 02:59, Liam Beguin wrote:  
-> > > From: Liam Beguin <lvb@xiphos.com>
-> > > 
-> > > An ADC is often used to measure other quantities indirectly. This
-> > > binding describe one cases, the measurement of a temperature through a
-> > > voltage sense amplifier such as the LTC2997.
-> > > 
-> > > Signed-off-by: Liam Beguin <lvb@xiphos.com>  
-> >
-> > What's the significant difference between this and the RTD binding? Does
-> > not both simply scale/offset a voltage to a temperature?
+> Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
 
-I'm lost: what RTD binding?
+Applied to pci/error for v5.14 with Krzysztof's reviewed-by and
+subject "Documentation: PCI: Fix typo in pci-error-recovery.rst" to
+match previous convention, thanks!
 
-> >  
+> ---
+>  Documentation/PCI/pci-error-recovery.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> The way I looked at it was one binding per sensor type (resistance
-> driven, current driven, and voltage driven).
+> diff --git a/Documentation/PCI/pci-error-recovery.rst b/Documentation/PCI/pci-error-recovery.rst
+> index 84ceebb08cac..187f43a03200 100644
+> --- a/Documentation/PCI/pci-error-recovery.rst
+> +++ b/Documentation/PCI/pci-error-recovery.rst
+> @@ -295,7 +295,7 @@ and let the driver restart normal I/O processing.
+>  A driver can still return a critical failure for this function if
+>  it can't get the device operational after reset.  If the platform
+>  previously tried a soft reset, it might now try a hard reset (power
+> -cycle) and then call slot_reset() again.  It the device still can't
+> +cycle) and then call slot_reset() again.  If the device still can't
+>  be recovered, there is nothing more that can be done;  the platform
+>  will typically report a "permanent failure" in such a case.  The
+>  device will be considered "dead" in this case.
+> -- 
+> 2.25.1
 > 
-> Thinking about it more, these three bindings could be factorized into
-> one if the user is required to enter parameters "by hand".
-
-Don't. They are effectively different types of devices and we just end
-up with a more complex binding if we try to cover them all.
-
-There is an argument to go the other way and actually have bindings for
-individual temperature sensors like the LTC2997.  Then the parameters
-become a driver problem rather than one for the binding.
-
-Jonathan
-
-
-> 
-> These could become something like:
-> - sense-gain-mult
-> - sense-gain-div
-> - sense-offset
-> 
-> I like the idea of having the "datasheet parameters" in the devicetree,
-> but this would be a lot more versatile.
-> 
-> What do you think?
-> 
-> Cheers,
-> Liam
-> 
-> > Cheers,
-> > Peter  
-> 
-
