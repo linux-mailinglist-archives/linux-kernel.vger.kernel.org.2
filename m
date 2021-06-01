@@ -2,120 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0CB39730C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C3D39730A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhFAMQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:16:28 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:34658 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhFAMQZ (ORCPT
+        id S233758AbhFAMPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:15:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36674 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231219AbhFAMPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:16:25 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151C8wY8157385;
-        Tue, 1 Jun 2021 12:14:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=TY/l/e9NEFH9rioskKiN8eW/uAap6wHenLerhBZ8eeQ=;
- b=I2F0TiHqQwTnfOVMqOsbxFYnaKsT39+yZBMC9vNjJt0xHkOl48hBgetbPuqNqEH9/5Vd
- jIqTiGWNH3XSTzV1JlowUFmBaCZOIuW8ytwDL3xOSejejrtoz0X+kTiZ7HS+aJQ7PE4M
- SvfQnxi/1zXoLaYJghwYRr/dYBsP9kgwluE6OctZtQrqSooIAMwngf7gC8Vu3LazMfq+
- zw8Se3I83SlwWCh1M8jMN+/RCPp0Wh9bku76o4vFF6mI0X/nIf9JGZcrEU/OFOz5oQK8
- H96Dj1ZlApxGUP+au2bFi2Pps39j5FISabWdyY+aAsBUCYuZWycJmvZGJXt4gF+4AYJk fA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 38ub4cnb60-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 12:14:20 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 151CAbv3049882;
-        Tue, 1 Jun 2021 12:14:19 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38uycr8b7w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 12:14:19 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 151CEI8U065031;
-        Tue, 1 Jun 2021 12:14:18 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 38uycr8b7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Jun 2021 12:14:18 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 151CECxS013783;
-        Tue, 1 Jun 2021 12:14:13 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Jun 2021 05:14:12 -0700
-Date:   Tue, 1 Jun 2021 15:14:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is initialized
-Message-ID: <20210601121401.GY1955@kadam>
-References: <20210527145048.795954-1-colin.king@canonical.com>
- <20210527170309.4d99bc31@xps13>
+        Tue, 1 Jun 2021 08:15:54 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CB8B421926;
+        Tue,  1 Jun 2021 12:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622549651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y3QbPuZmzCj3kt2UlzpOt7teYl+odFUhgka2ffSCpYI=;
+        b=S6dumE+J60zZwDBW4Ad0Lv9NafScli1fm0JN0BVOgTA8TJmEryZJ89QbvXyc3ZXn/eimey
+        C1xObOcj3HYV/hYlUXLG2Bs2lVdqsI2j0VfucXq/j88Sr5SRRedH7dS0/tYQ6ufBrdjFZF
+        Xz67B92YGjWj+z/YlIq10SsoPOreMYQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622549651;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y3QbPuZmzCj3kt2UlzpOt7teYl+odFUhgka2ffSCpYI=;
+        b=2t2UodyrGEHy6KxId5+Bt5Jnhh3lgyVEWx5Ke/5MSY/XoYo6Aq47G84RKedu7MKK73hL8W
+        rPEdVaRyv0GGC5Bg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A8E74118DD;
+        Tue,  1 Jun 2021 12:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622549651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y3QbPuZmzCj3kt2UlzpOt7teYl+odFUhgka2ffSCpYI=;
+        b=S6dumE+J60zZwDBW4Ad0Lv9NafScli1fm0JN0BVOgTA8TJmEryZJ89QbvXyc3ZXn/eimey
+        C1xObOcj3HYV/hYlUXLG2Bs2lVdqsI2j0VfucXq/j88Sr5SRRedH7dS0/tYQ6ufBrdjFZF
+        Xz67B92YGjWj+z/YlIq10SsoPOreMYQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622549651;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y3QbPuZmzCj3kt2UlzpOt7teYl+odFUhgka2ffSCpYI=;
+        b=2t2UodyrGEHy6KxId5+Bt5Jnhh3lgyVEWx5Ke/5MSY/XoYo6Aq47G84RKedu7MKK73hL8W
+        rPEdVaRyv0GGC5Bg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id SqDAKJMktmCqUAAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Tue, 01 Jun 2021 12:14:11 +0000
+Subject: Re: [PATCH v8] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+To:     kernel test robot <lkp@intel.com>,
+        Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com
+Cc:     kbuild-all@lists.01.org
+References: <1622542057-14632-1-git-send-email-faiyazm@codeaurora.org>
+ <202106011959.5wcQP2E6-lkp@intel.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <96578f05-79a0-96eb-c015-02e8640e6016@suse.cz>
+Date:   Tue, 1 Jun 2021 14:14:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527170309.4d99bc31@xps13>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: W5IuRZZzOTQyTDaouT9Db3Ml8C9ASZZ7
-X-Proofpoint-ORIG-GUID: W5IuRZZzOTQyTDaouT9Db3Ml8C9ASZZ7
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10001 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=854 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106010083
+In-Reply-To: <202106011959.5wcQP2E6-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:03:09PM +0200, Miquel Raynal wrote:
-> Hi Colin,
+On 6/1/21 1:08 PM, kernel test robot wrote:
+> Hi Faiyaz,
 > 
-> Colin King <colin.king@canonical.com> wrote on Thu, 27 May 2021
-> 15:50:48 +0100:
+> Thank you for the patch! Yet something to improve:
 > 
-> > From: Colin Ian King <colin.king@canonical.com>
-> > 
-> > Currently there are corner cases where spec_times is NULL and
-> > chip->parameters.onfi or when best_mode is zero where ret is
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.13-rc4]
+> [cannot apply to hnaz-linux-mm/master next-20210601]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 > 
->                        ^
-> something is missing here, the sentence is not clear
+> url:    https://github.com/0day-ci/linux/commits/Faiyaz-Mohammed/mm-slub-move-sysfs-slab-alloc-free-interfaces-to-debugfs/20210601-180903
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git c2131f7e73c9e9365613e323d65c7b9e5b910f56
+> config: i386-tinyconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/9540acc4691d680b7124d8daa1a2eb98a97ee19a
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Faiyaz-Mohammed/mm-slub-move-sysfs-slab-alloc-free-interfaces-to-debugfs/20210601-180903
+>         git checkout 9540acc4691d680b7124d8daa1a2eb98a97ee19a
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=i386 
 > 
-> > not assigned a value and an uninitialized return value can be
-> > returned. Fix this by ensuring ret is initialized to -EINVAL.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> I don't see how this situation can happen.
+> All errors (new ones prefixed by >>):
 > 
-> In both cases, no matter the value of best_mode, the for loop will
-> always execute at least one time (mode 0) so ret will be populated.
-> 
-> Maybe the robot does not know that best_mode cannot be negative and
-> should be defined unsigned, but the current patch is invalid.
->
+>    mm/slab_common.c: In function 'slab_caches_to_rcu_destroy_workfn':
+>>> mm/slab_common.c:452:3: error: implicit declaration of function 'debugfs_slab_release' [-Werror=implicit-function-declaration]
+>      452 |   debugfs_slab_release(s);
+>          |   ^~~~~~~~~~~~~~~~~~~~
+>    cc1: some warnings being treated as errors
 
-People think list counter unsigned is a good idea, but it's a terrible
-idea and has caused hundreds of bugs for me to fix/report over the
-years.  *grumble*.
+Oh, right, CONFIG_SLOB.
+How about moving the ifdef-ed declaration from slub-def.h to mm/slab.h and
+discarding the slab-def.h empty one. That will take care of SLOB too.
 
-Anyway, I was revisiting this code because it showed up as a Smatch
-warning and the bug appears to be real.
-
-	best_mode = fls(chip->parameters.onfi->sdr_timing_modes) - 1;
-
-The "onfi->sdr_timing_modes" comes from the hardware in nand_onfi_detect()
-and nothing checks that it is non-zero so "best_mode = fls(0) - 1;" is
-negative and "ret" is uninitialized.
-
-regards,
-dan carpenter
+> vim +/debugfs_slab_release +452 mm/slab_common.c
+> 
+>    427	
+>    428	static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
+>    429	{
+>    430		LIST_HEAD(to_destroy);
+>    431		struct kmem_cache *s, *s2;
+>    432	
+>    433		/*
+>    434		 * On destruction, SLAB_TYPESAFE_BY_RCU kmem_caches are put on the
+>    435		 * @slab_caches_to_rcu_destroy list.  The slab pages are freed
+>    436		 * through RCU and the associated kmem_cache are dereferenced
+>    437		 * while freeing the pages, so the kmem_caches should be freed only
+>    438		 * after the pending RCU operations are finished.  As rcu_barrier()
+>    439		 * is a pretty slow operation, we batch all pending destructions
+>    440		 * asynchronously.
+>    441		 */
+>    442		mutex_lock(&slab_mutex);
+>    443		list_splice_init(&slab_caches_to_rcu_destroy, &to_destroy);
+>    444		mutex_unlock(&slab_mutex);
+>    445	
+>    446		if (list_empty(&to_destroy))
+>    447			return;
+>    448	
+>    449		rcu_barrier();
+>    450	
+>    451		list_for_each_entry_safe(s, s2, &to_destroy, list) {
+>  > 452			debugfs_slab_release(s);
+>    453			kfence_shutdown_cache(s);
+>    454	#ifdef SLAB_SUPPORTS_SYSFS
+>    455			sysfs_slab_release(s);
+>    456	#else
+>    457			slab_kmem_cache_release(s);
+>    458	#endif
+>    459		}
+>    460	}
+>    461	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
 
