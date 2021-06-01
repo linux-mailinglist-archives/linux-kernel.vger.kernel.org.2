@@ -2,158 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D63C3975EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B6B3975EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhFAPBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234393AbhFAPAi (ORCPT
+        id S234451AbhFAPBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:01:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46823 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234393AbhFAPBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:00:38 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756D6C061574;
-        Tue,  1 Jun 2021 07:58:56 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id z8so9564495wrp.12;
-        Tue, 01 Jun 2021 07:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r+ZDp2MX14n2P2eiCGRvIM1kDjuYaOV/V/d7u2BhKxU=;
-        b=C9W+uhYumE184gHUe2A17WI1k6OUSKnUMSOlPxD9DzuqrJLhDNIQkGaKWUKIEiW4v1
-         mNeh2Y4YpZnQs1t27DpJQ3jjUuxr/OzZLDbmGOsx1aCDwyzOl2TGF8e9t6rFT04DPqV6
-         m4sPMX+LJfq3mrA4LQ97TpK6CI01oePa/rfDWPLfZoiYnxzpS+vMqpYR+epbx7JQ8K2K
-         gXiReU9pjUIzNjq2u5fe6yghw+ZR7qJDdTEEYS9sKhUT7EOFMf4tAz0wCoEDsurME/vM
-         Sc+Wophdi9+3KOlYQp4+xQNhUe0gnxqhbiWsuySYfv1/OrJiCv7dnEwfbEIOIA1vqZsz
-         DAUw==
+        Tue, 1 Jun 2021 11:01:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622559567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vBakIu1dQtk22INC/4X9gLrUw+kGXTDgbjVD36Rzgzs=;
+        b=fbeXQH4rXt7j5/AAE7GpIxdM1cQGYZV2vi9QDB5jzsgtr6ogRetNHJEL1H5nZll+6XjrPq
+        eilb1OccATUY2yGp7homxPWPdxEX8Xluh1idSOiFwiorxkiA1wKH4D0Os8uDLqb+ejPqaP
+        2W9N1Lua66gh9eOxm8EOsNgCXr6Refg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-153--HyZWk61MK-f-tn7ujNUNQ-1; Tue, 01 Jun 2021 10:59:25 -0400
+X-MC-Unique: -HyZWk61MK-f-tn7ujNUNQ-1
+Received: by mail-wm1-f72.google.com with SMTP id z25-20020a1c4c190000b029019f15b0657dso606018wmf.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:59:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r+ZDp2MX14n2P2eiCGRvIM1kDjuYaOV/V/d7u2BhKxU=;
-        b=j2opq+UQCnfmq6kvGiDfUXBZMFLXGM5TnlHCPbcU6qoabRV4FGouKk/RKdHdMU3SIK
-         VLzo5FRnE3n0UxMsc0ja7tSxKyy9M13d9YZYC4ZP5Rgy6MaKZrvqwIaghIMlFIENLlE/
-         vo3N1D+4MEg2nII03kYkyzq5+SYYZhDFZwGuqjQbKpxKqTzPUlae4D8+9qPjhEqvfPLz
-         NVandNtbYZK7fICmogHsxcv8EEqw98wt6KoaqEAajTCJp7R8s/p70xbBFoJnImu12xUO
-         HMuQEa+CvuQMoA8ESHH5NdpdhhA07cE8Tm2dLllq7QyZSBbileada3yN3DwssU3i2FjK
-         21Qg==
-X-Gm-Message-State: AOAM530vwDPtmuvf8Pt2alWVut45yf5h0Zz03gI6j4Jf/w3DJRw3I7LW
-        qXuZsHX2ToUKqV+RH80skTfMEObLDm/hHw==
-X-Google-Smtp-Source: ABdhPJyrg5+f0xUmH302dzE4IPBJ0+uJdRyhon962O01ooqk7iAaOTm4XMlIRidsWPcg2jCEYjuAEQ==
-X-Received: by 2002:adf:eb86:: with SMTP id t6mr28618701wrn.253.1622559534854;
-        Tue, 01 Jun 2021 07:58:54 -0700 (PDT)
-Received: from localhost.localdomain ([85.255.237.139])
-        by smtp.gmail.com with ESMTPSA id b4sm10697061wmj.42.2021.06.01.07.58.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vBakIu1dQtk22INC/4X9gLrUw+kGXTDgbjVD36Rzgzs=;
+        b=N+n9T8hRz3wFJjFWQuob2yDf9+fbMb6GgsTvHvS05FZHNzd2iTigw4iS00GZfJUHnN
+         uOOBgaV2Jn1rir3zA6Rdg4P7pf3ZG4IMF88BBeZnHikeVl12AG1pq7g6jDbdB4vXjE2B
+         M0fzhaLvz/+tJyChCLFDJhithj11WqNZCR1sQL7dXFy5Fg1wEue8Gmj2UYonRgw0zi6j
+         uTWopIZr5czaRS3DhTtFumQld0AcRLjpWAppJnD/zOMbSAX1Wqybzn27o88H5gdX4U4j
+         ntGbmzQ8b6/ol46AWUDaj4e7i3mm97Gh0V+18HnOsdA73/B/EAERRG0WuI+/iL+eQWox
+         rPrA==
+X-Gm-Message-State: AOAM533BhoFA9d1k9sKlC+hK61y81FBbtZvLpiwTpC3OoKgs2U4i8tOM
+        KNc+ummICh9nj35lpSrnS67PhZZ3ZuGZZtw90jg007W9nmPgPIgZDzY5SXgGvjLXt8OBrYRFynh
+        gPMS4SKvcmkUYtEB5jPBHgLXsP04V0tIvzU/0dLNfecyVMwUUz7JMsLc6LGFV6yaqeoEzDUORWu
+        o=
+X-Received: by 2002:a1c:282:: with SMTP id 124mr350848wmc.82.1622559564400;
+        Tue, 01 Jun 2021 07:59:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9XbrF5UjA3Lkw2unmQqkjrGQdtKb1lFgUux9RmxthjhbwQ8B+MLPzmwDX65DDh6SYfSo0EA==
+X-Received: by 2002:a1c:282:: with SMTP id 124mr350790wmc.82.1622559564069;
+        Tue, 01 Jun 2021 07:59:24 -0700 (PDT)
+Received: from minerva.redhat.com ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id h6sm3533153wrt.6.2021.06.01.07.59.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 07:58:54 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     io-uring@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Andres Freund <andres@anarazel.de>,
+        Tue, 01 Jun 2021 07:59:23 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chester Lin <clin@suse.com>, Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC 4/4] io_uring: implement futex wait
-Date:   Tue,  1 Jun 2021 15:58:29 +0100
-Message-Id: <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Subject: [PATCH v2 0/2] allow simple{fb,drm} drivers to be used on non-x86 EFI platforms
+Date:   Tue,  1 Jun 2021 16:59:10 +0200
+Message-Id: <20210601145912.774054-1-javierm@redhat.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1622558659.git.asml.silence@gmail.com>
-References: <cover.1622558659.git.asml.silence@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add futex wait requests, those always go through io-wq for simplicity.
+The simplefb and simpledrm drivers match against a "simple-framebuffer"
+device, but for aarch64 this is only registered when using Device Trees
+and there's a node with a "simple-framebuffer" compatible string.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c                 | 38 ++++++++++++++++++++++++++++-------
- include/uapi/linux/io_uring.h |  2 +-
- 2 files changed, 32 insertions(+), 8 deletions(-)
+There is no code to register a "simple-framebuffer" platform device when
+using EFI instead. In fact, the only platform device that's registered in
+this case is an "efi-framebuffer", which means that the efifb driver is
+the only driver supported to have an early console with EFI on aarch64.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 99f4f8d9f685..9c3d075a6647 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -670,8 +670,15 @@ struct io_futex {
- 	struct file			*file;
- 	unsigned int			futex_op;
- 
--	unsigned int			nr_wake;
--	unsigned int			wake_op_arg;
-+	union {
-+		/* wake */
-+		struct {
-+			unsigned int	nr_wake;
-+			unsigned int	wake_op_arg;
-+		};
-+		/* wait */
-+		u32 			val;
-+	};
- 	unsigned int			flags;
- 	void __user			*uaddr;
- };
-@@ -5894,10 +5901,23 @@ static int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- 		return -EINVAL;
- 
- 	v = READ_ONCE(sqe->off);
--	f->nr_wake = (u32)v;
--	f->wake_op_arg = (u32)(v >> 32);
--	f->futex_op = READ_ONCE(sqe->futex_op);
- 	f->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
-+	f->futex_op = READ_ONCE(sqe->futex_op);
-+
-+	switch (f->futex_op) {
-+	case IORING_FUTEX_WAKE_OP:
-+		f->nr_wake = (u32)v;
-+		f->wake_op_arg = (u32)(v >> 32);
-+		break;
-+	case IORING_FUTEX_WAIT:
-+		f->val = (u32)v;
-+		if (unlikely(v >> 32))
-+			return -EINVAL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
- 	return 0;
- }
- 
-@@ -5916,8 +5936,12 @@ static int io_futex(struct io_kiocb *req, unsigned int issue_flags)
- 		if (nonblock && ret == -EAGAIN)
- 			return -EAGAIN;
- 		break;
--	default:
--		ret = -EINVAL;
-+	case IORING_FUTEX_WAIT:
-+		if (nonblock)
-+			return -EAGAIN;
-+		ret = futex_wait(f->uaddr, f->flags, f->val, NULL,
-+				 FUTEX_BITSET_MATCH_ANY);
-+		break;
- 	}
- 
- 	if (ret < 0)
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 6fa5a6e59934..7ab11ee2ce12 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -186,7 +186,7 @@ enum {
- 
- enum {
- 	IORING_FUTEX_WAKE_OP = 0,
--
-+	IORING_FUTEX_WAIT,
- 	IORING_FUTEX_LAST,
- };
- 
+The x86 architecture platform has a Generic System Framebuffers (sysfb)
+support, that register a system frambuffer platform device. It either
+registers a "simple-framebuffer" for the simple{fb,drm} drivers or legacy
+VGA/EFI FB devices for the vgafb/efifb drivers.
+
+The sysfb is generic enough to be reused by other architectures and can be
+moved out of the arch/x86 directory to drivers/firmware, allowing the EFI
+logic used by non-x86 architectures to be folded into sysfb as well.
+
+Patch #1 in this series do the former while patch #2 do the latter. It has
+been tested on x86_64 and aarch64 machines using the efifb, simplefb and
+simpledrm drivers. But more testing will be highly appreciated, to make
+sure that no regressions are being introduced by these changes.
+
+The series touches different subystems and will need coordination between
+maintainers. Ard Biesheuvel said that can be merged through the EFI tree.
+
+Best regards,
+Javier
+
+Changes in v2:
+- Use default y and depends on X86 instead doing a select in arch/x86/Kconfig.
+- Also enable the SYSFB Kconfig option when COMPILE_TEST.
+- Improve commit message to explain why is useful for other arches to use this.
+- Use "depends on" for the supported architectures instead of selecting it.
+- Improve commit message to explain the benefits of reusing sysfb for !X86.
+
+Javier Martinez Canillas (2):
+  drivers/firmware: move x86 Generic System Framebuffers support
+  drivers/firmware: consolidate EFI framebuffer setup for all arches
+
+ arch/arm/include/asm/efi.h                    |  5 +-
+ arch/arm64/include/asm/efi.h                  |  5 +-
+ arch/riscv/include/asm/efi.h                  |  5 +-
+ arch/x86/Kconfig                              | 26 ------
+ arch/x86/kernel/Makefile                      |  3 -
+ drivers/firmware/Kconfig                      | 32 +++++++
+ drivers/firmware/Makefile                     |  2 +
+ drivers/firmware/efi/Makefile                 |  2 +
+ drivers/firmware/efi/efi-init.c               | 90 -------------------
+ .../firmware/efi}/sysfb_efi.c                 | 79 +++++++++++++++-
+ {arch/x86/kernel => drivers/firmware}/sysfb.c | 42 +++++----
+ .../firmware}/sysfb_simplefb.c                | 31 ++++---
+ .../x86/include/asm => include/linux}/sysfb.h | 34 +++----
+ 13 files changed, 180 insertions(+), 176 deletions(-)
+ rename {arch/x86/kernel => drivers/firmware/efi}/sysfb_efi.c (84%)
+ rename {arch/x86/kernel => drivers/firmware}/sysfb.c (70%)
+ rename {arch/x86/kernel => drivers/firmware}/sysfb_simplefb.c (82%)
+ rename {arch/x86/include/asm => include/linux}/sysfb.h (68%)
+
 -- 
 2.31.1
 
