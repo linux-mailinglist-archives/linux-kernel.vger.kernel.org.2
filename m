@@ -2,184 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B30E396EB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9F9396EBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233421AbhFAIVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:21:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55264 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233295AbhFAIVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:21:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622535566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l0j051AAXi+uzGkChemQvG7BEpNZnRrIFj2OzSLlI3Y=;
-        b=cmrRZE9cjm8oKpwXCtF/3k4iwcLAKZFAziGXWMUjBo6zBfNDeVb3Gnub6dVHzBJ4s76mfo
-        Z1JebDGI1ePsKrGx9/JwmJHszkB131LelEGxekAXJtIRMHpZkZcPdw5h4EbtFnzmDIenaM
-        28DwnIwvUZqcm64/8Cxs1fgzHrSgJcU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED39EACB1;
-        Tue,  1 Jun 2021 08:19:25 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 10:19:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [v3 PATCH 1/3] mm/mempolicy: cleanup nodemask intersection check
- for oom
-Message-ID: <YLXtjRYUcaXcYfua@dhcp22.suse.cz>
-References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
- <1622469956-82897-2-git-send-email-feng.tang@intel.com>
+        id S233469AbhFAIV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233431AbhFAIVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:21:19 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA2FC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:19:37 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id q5so13283797wrs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KukDru8x9QpmY3cmltufnJ8Ttohzvm/qv7QdMVbte6Q=;
+        b=vWeB5vM7l9vQeqWDCKYiIIf6rdKeCS6rOqxAXs5SkMsl0zAQz2MreKsTuutru/3KHS
+         N1rcbpd/MbStA2AoeesYEmPdzGkiTCGDYi/nDwtr20SLW6k/u+oA3n1nHf01dCkhj7PZ
+         m4DafUjHVAs8x9mThNr6lYhqzZOb/vbRG1C5dS+aheSb2hxaEfZPI1Dnre5AvV+o7kai
+         S9AjWb34gmTK7ksUnM540qp51IG0ALLZVF8WglKka5lDjz1nibnhwC6nWsU6k8f6nHkf
+         dfgq2w8i4Vadgo8Q0i8N+ORUGoYsfD+53/LD2JKkQ+q+WBN0vkAqEByoqGwJRoma/S2R
+         gA9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KukDru8x9QpmY3cmltufnJ8Ttohzvm/qv7QdMVbte6Q=;
+        b=OsH7HXoAEorp3Beh240Hzxl6icuJmYIXEsAk8tT4/+ucwGw7s4DVGOuhw87BklZo2t
+         s9ei8NRrMpcpvFuM7sUTKQklvRf8ieDVJ6Cep03zCsI9UmhH4jFBD/7BM0fxzRHX4Fnm
+         SNNzH/HCz54iz6DXG5ySI/OeCAGmjR5Ge0DcByvw+7voNbI/VmBgVTA2s3EfDEN+ZYRX
+         Ei424t1rFDKQTAmMajzNX+Hl6PyebWKU2riUPmGYfDLNT858JYLI+PXWqb038CGvlFRZ
+         WQb0Hg6Cy7/Hdzc4gkrhy6X9dJZf5hOf6ZTvaby7V0rOTlbmHBpD9dsjcd/ThiTax+zf
+         qbbA==
+X-Gm-Message-State: AOAM531cFVaAN4wN3lMpNJyEanJCmoKhrpuoMCD10vPJSRidSv+XZzcf
+        0r5UQ8womov8SjLNfygPsFqDCw==
+X-Google-Smtp-Source: ABdhPJzIworTj34S1WsMzhTicK84t6ne3uMrwkffGkcGsO94WMOa27KFQn7os5+/Ub6oYkfJI2b+AQ==
+X-Received: by 2002:adf:f14d:: with SMTP id y13mr26368165wro.261.1622535575803;
+        Tue, 01 Jun 2021 01:19:35 -0700 (PDT)
+Received: from dell ([91.110.221.249])
+        by smtp.gmail.com with ESMTPSA id t4sm612108wru.53.2021.06.01.01.19.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 01:19:35 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 09:19:33 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <20210601081933.GU543307@dell>
+References: <20210524120539.3267145-1-robert.marko@sartura.hr>
+ <20210524120539.3267145-3-robert.marko@sartura.hr>
+ <20210524230940.GA1350504@robh.at.kernel.org>
+ <20210525074649.GC4005783@dell>
+ <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+ <20210526075255.GG4005783@dell>
+ <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1622469956-82897-2-git-send-email-feng.tang@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 31-05-21 22:05:54, Feng Tang wrote:
-> mempolicy_nodemask_intersects() is used in oom case to check if a
-> task may have memory allocated on some memory nodes.
+On Mon, 31 May 2021, Robert Marko wrote:
+
+> On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Tue, 25 May 2021, Robert Marko wrote:
+> >
+> > > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > On Mon, 24 May 2021, Rob Herring wrote:
+> > > >
+> > > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
+> > > > > > Add binding documents for the Delta TN48M CPLD drivers.
+> > > > > >
+> > > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > > > ---
+> > > > > > Changes in v2:
+> > > > > > * Implement MFD as a simple I2C MFD
+> > > > > > * Add GPIO bindings as separate
+> > > > >
+> > > > > I don't understand why this changed. This doesn't look like an MFD to
+> > > > > me. Make your binding complete if there are missing functions.
+> > > > > Otherwise, stick with what I already ok'ed.
+> > > >
+> > > > Right.  What else, besides GPIO, does this do?
+> > >
+> > > It currently does not do anything else as hwmon driver was essentially
+> > > NACK-ed for not exposing standard attributes.
+> >
+> > Once this provides more than GPIO capabilities i.e. becomes a proper
+> > Multi-Function Device, then it can use the MFD framework.  Until then,
+> > it's a GPIO device I'm afraid.
+> >
+> > Are you going to re-author the HWMON driver to conform?
+> hwmon cannot be reathored as it has no standard hwmon attributes.
 > 
-> As it's only used by OOM check, rename it to mempolicy_in_oom_domain()
-> to reduce confusion.
+> >
+> > > The CPLD itself has PSU status-related information, bootstrap related
+> > > information,
+> > > various resets for the CPU-s, OOB ethernet PHY, information on the exact board
+> > > model it's running etc.
+> > >
+> > > PSU and model-related info stuff is gonna be exposed via a misc driver
+> > > in debugfs as
+> > > we have user-space SW depending on that.
+> > > I thought we agreed on that as v1 MFD driver was exposing those directly and
+> > > not doing anything else.
+> >
+> > Yes, we agreed that creating an MFD driver just to expose chip
+> > attributes was not an acceptable solution.
+> >
+> > > So I moved to use the simple I2C MFD driver, this is all modeled on the sl28cpld
+> > > which currently uses the same driver and then GPIO regmap as I do.
+> > >
+> > > Other stuff like the resets is probably gonna get exposed later when
+> > > it's required
+> > > to control it directly.
+> >
+> > In order for this driver to tick the MFD box, it's going to need more
+> > than one function.
 > 
-> As only for 'bind' policy, the nodemask is a force requirement for
-> from where to allocate memory, only do the intesection check for it,
-> and return true for all other policies.
+> Understood, would a debug driver count or I can expose the resets via
+> a reset driver
+> as we have a future use for them?
 
-I would slightly rephrase the above to
-"
-mempolicy_nodemask_intersects seem to be a general purpose mempolicy
-function. In fact it is partially tailored for the OOM purpose instead.
-The oom proper is the only existing user so rename the function to make
-that purpose explicit.
+CPLDs and FPGAs are funny ones and are often difficult to support in
+Linux.  Especially if they can change their behaviour.
 
-While at it drop the MPOL_INTERLEAVE as those allocations never has a
-nodemask defined (see alloc_page_interleave) so this is a dead code
-and a confusing one because MPOL_INTERLEAVE is a hint rather than a hard
-requirement so it shouldn't be considered during the OOM.
+It's hard to make a solid suggestion as to how your device is handled
+without knowing the intricacies of the device.
 
-The final code can be reduced to a check for MPOL_BIND which is the only
-memory policy that is a hard requirement and thus relevant to a
-constrained OOM logic.
-"
-
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-
-To the change itself
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  include/linux/mempolicy.h |  2 +-
->  mm/mempolicy.c            | 34 +++++++++-------------------------
->  mm/oom_kill.c             |  2 +-
->  3 files changed, 11 insertions(+), 27 deletions(-)
-> 
-> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-> index 5f1c74d..8773c55 100644
-> --- a/include/linux/mempolicy.h
-> +++ b/include/linux/mempolicy.h
-> @@ -150,7 +150,7 @@ extern int huge_node(struct vm_area_struct *vma,
->  				unsigned long addr, gfp_t gfp_flags,
->  				struct mempolicy **mpol, nodemask_t **nodemask);
->  extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
-> -extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
-> +extern bool mempolicy_in_oom_domain(struct task_struct *tsk,
->  				const nodemask_t *mask);
->  extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
->  
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index d79fa29..6795a6a 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2094,16 +2094,16 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
->  #endif
->  
->  /*
-> - * mempolicy_nodemask_intersects
-> + * mempolicy_in_oom_domain
->   *
-> - * If tsk's mempolicy is "default" [NULL], return 'true' to indicate default
-> - * policy.  Otherwise, check for intersection between mask and the policy
-> - * nodemask for 'bind' or 'interleave' policy.  For 'preferred' or 'local'
-> - * policy, always return true since it may allocate elsewhere on fallback.
-> + * If tsk's mempolicy is "bind", check for intersection between mask and
-> + * the policy nodemask. Otherwise, return true for all other policies
-> + * including "interleave", as a tsk with "interleave" policy may have
-> + * memory allocated from all nodes in system.
->   *
->   * Takes task_lock(tsk) to prevent freeing of its mempolicy.
->   */
-> -bool mempolicy_nodemask_intersects(struct task_struct *tsk,
-> +bool mempolicy_in_oom_domain(struct task_struct *tsk,
->  					const nodemask_t *mask)
->  {
->  	struct mempolicy *mempolicy;
-> @@ -2111,29 +2111,13 @@ bool mempolicy_nodemask_intersects(struct task_struct *tsk,
->  
->  	if (!mask)
->  		return ret;
-> +
->  	task_lock(tsk);
->  	mempolicy = tsk->mempolicy;
-> -	if (!mempolicy)
-> -		goto out;
-> -
-> -	switch (mempolicy->mode) {
-> -	case MPOL_PREFERRED:
-> -		/*
-> -		 * MPOL_PREFERRED and MPOL_F_LOCAL are only preferred nodes to
-> -		 * allocate from, they may fallback to other nodes when oom.
-> -		 * Thus, it's possible for tsk to have allocated memory from
-> -		 * nodes in mask.
-> -		 */
-> -		break;
-> -	case MPOL_BIND:
-> -	case MPOL_INTERLEAVE:
-> +	if (mempolicy && mempolicy->mode == MPOL_BIND)
->  		ret = nodes_intersects(mempolicy->v.nodes, *mask);
-> -		break;
-> -	default:
-> -		BUG();
-> -	}
-> -out:
->  	task_unlock(tsk);
-> +
->  	return ret;
->  }
->  
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index eefd3f5..fcc29e9 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -104,7 +104,7 @@ static bool oom_cpuset_eligible(struct task_struct *start,
->  			 * mempolicy intersects current, otherwise it may be
->  			 * needlessly killed.
->  			 */
-> -			ret = mempolicy_nodemask_intersects(tsk, mask);
-> +			ret = mempolicy_in_oom_domain(tsk, mask);
->  		} else {
->  			/*
->  			 * This is not a mempolicy constrained oom, so only
-> -- 
-> 2.7.4
+Why do you require one single Regmap anyway?  Are they register banks
+not neatly separated on a per-function basis?
 
 -- 
-Michal Hocko
-SUSE Labs
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
