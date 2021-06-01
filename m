@@ -2,298 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3244F39715F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212CD39715D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbhFAK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:26:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:46422 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233492AbhFAK0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233632AbhFAK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 1 Jun 2021 06:26:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC34B12FC;
-        Tue,  1 Jun 2021 03:24:46 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 308A53F73D;
-        Tue,  1 Jun 2021 03:24:45 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v2 5/5] firmware: arm_scmi: Introduce delegated xfers support
-Date:   Tue,  1 Jun 2021 11:24:21 +0100
-Message-Id: <20210601102421.26581-6-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210601102421.26581-1-cristian.marussi@arm.com>
-References: <20210601102421.26581-1-cristian.marussi@arm.com>
+Received: from mga07.intel.com ([134.134.136.100]:52378 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233237AbhFAK0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 06:26:25 -0400
+IronPort-SDR: PaLB3wxELZMPFCJ9IqARPyAWB0C17hvPNgjonhEokj+3xSTG/hWHEdbaAjvFmaivo7Z3kBkFvq
+ UJDBmrGLTYbA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="267394383"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="267394383"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 03:24:39 -0700
+IronPort-SDR: l6ts3JXUttWZArQyQcYLDP37RmNoYkQTQcxEfj3z5zQFvY/xK94BWjEiyAV81QTrBIjw++QuTv
+ 5Fx+Grb3y1bQ==
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="479226991"
+Received: from liujing-mobl.ccr.corp.intel.com (HELO [10.238.130.133]) ([10.238.130.133])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 03:24:36 -0700
+Subject: Re: [PATCH RFC 4/7] kvm: x86: Add new ioctls for XSAVE extension
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-5-jing2.liu@linux.intel.com>
+ <YKwfsIT5DuE+L+4M@google.com>
+ <920df897-56d8-1f81-7ce2-0050fb744bd7@linux.intel.com>
+ <YK5egUs+Wl2d+wWz@google.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <a65656e7-adab-dd9d-7f9d-b25a96e7accd@linux.intel.com>
+Date:   Tue, 1 Jun 2021 18:24:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <YK5egUs+Wl2d+wWz@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce optional support for delegated xfers allocation.
 
-An SCMI transport can optionally declare to support delegated xfers and
-then use a few helper functions exposed by the core SCMI transport layer to
-query the core for existing in-flight transfers matching a provided message
-header or alternatively and transparently obtain a brand new xfer to handle
-a freshly received notification message.
-In both cases the obtained xfer is uniquely mapped into a specific xfer
-through the means of the message header acting as key.
 
-In this way such a transport can properly store its own transport specific
-payload into the xfer uniquely associated to the message header before
-even calling into the core scmi_rx_callback() in the usual way, so that
-the transport specific message envelope structures can be freed early
-and there is no more need to keep track of their status till the core
-fully processes the xfer to completion or times out.
+On 5/26/2021 10:43 PM, Sean Christopherson wrote:
+> On Wed, May 26, 2021, Liu, Jing2 wrote:
+>> On 5/25/2021 5:50 AM, Sean Christopherson wrote:
+>>> On Sun, Feb 07, 2021, Jing Liu wrote:
+>>>> The static xstate buffer kvm_xsave contains the extended register
+>>>> states, but it is not enough for dynamic features with large state.
+>>>>
+>>>> Introduce a new capability called KVM_CAP_X86_XSAVE_EXTENSION to
+>>>> detect if hardware has XSAVE extension (XFD). Meanwhile, add two
+>>>> new ioctl interfaces to get/set the whole xstate using struct
+>>>> kvm_xsave_extension buffer containing both static and dynamic
+>>>> xfeatures. Reuse fill_xsave and load_xsave for both cases.
+>>>>
+>>>> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+>>>> ---
+>>>>    arch/x86/include/uapi/asm/kvm.h |  5 +++
+>>>>    arch/x86/kvm/x86.c              | 70 +++++++++++++++++++++++++--------
+>>>>    include/uapi/linux/kvm.h        |  8 ++++
+>>>>    3 files changed, 66 insertions(+), 17 deletions(-)
+>>>>
+>>>> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+>>>> index 89e5f3d1bba8..bf785e89a728 100644
+>>>> --- a/arch/x86/include/uapi/asm/kvm.h
+>>>> +++ b/arch/x86/include/uapi/asm/kvm.h
+>>>> @@ -362,6 +362,11 @@ struct kvm_xsave {
+>>>>    	__u32 region[1024];
+> Hold up a sec.  How big is the AMX data?
+AMX tileconfig size is 64B, but tiledata size is 8K.
+> The existing size is 4096 bytes, not
+> 1024 bytes.  IIRC, AMX is >4k, so we still need a new ioctl(),
+Yep, kvm_xsave can hold 4KB state. We need a new ioctl, holding all the 
+states,
+not only AMX. And once KVM supports AMX, the size will >4096 so qemu need
+use kvm_xsave2 instead, otherwise, cannot save/restore whole AMX state.
+> but we should be
+> careful to mentally adjust for the __u32 when mentioning the sizes.
+>
+>>>>    };
+>>>> +/* for KVM_CAP_XSAVE_EXTENSION */
+>>>> +struct kvm_xsave_extension {
+>>>> +	__u32 region[3072];
+>>> Fool me once, shame on you (Intel).  Fool me twice, shame on me (KVM).
+>>>
+>>> As amusing as kvm_xsave_really_extended would be, the required size should be
+>>> discoverable, not hardcoded.
+>> Thanks for reviewing the patch.  When looking at current kvm_xsave structure,
+>> I felt confusing about the static hardcoding of 1024 bytes, but failed to
+>> find clue for its final decision in 2010[1].
+> Simplicitly and lack of foresight :-)
+>
+>> So we'd prefer to changing the way right? Please correct me if I misunderstood.
+> Sadly, we can't fix the existing ioctl() without breaking userspace.  But for
+> the new ioctl(), yes, its size should not be hardcoded.
+>
+>>> Nothing prevents a hardware vendor from inventing a newfangled feature that
+>>> requires yet more space.  As an alternative to adding a dedicated
+>>> capability, can we leverage GET_SUPPORTED_CPUID, leaf CPUID.0xD,
+>> Yes, this is a good way to avoid a dedicated capability. Thanks for the
+>> suggestion.  Use 0xD.1.EBX for size of enabled xcr0|xss if supposing
+>> kvm_xsave cares both.
+>>> to enumerate the minimum required size and state
+>> For the state, an extreme case is using an old qemu as follows, but a
+>> new kvm with more future_featureZ supported. If hardware vendor arranges
+>> one by one, it's OK to use static state like X86XSaveArea(2) and
+>> get/set between userspace and kvm because it's non-compacted. If not,
+>> the state will not correct.
+>> So far it is OK, so I'm wondering if this would be an issue for now?
+> Oh, you're saying that, because kvm_xsave is non-compacted, future features may
+> overflow kvm_xsave simply because the architectural offset overflows 4096 bytes.
+>
+> That should be a non-issue for old KVM/kernels, since the new features shouldn't
+> be enabled.  For new KVM, I think the right approach is to reject KVM_GET_XSAVE
+> and KVM_SET_XSAVE if the required size is greater than sizeof(struct kvm_xsave).
+> I.e. force userspace to either hide the features from the guest, or use
+> KVM_{G,S}ET_XSAVE2.
+I was considering if the order/offset of future features will impact the 
+compatibility
+if it is not designed one by one. But I realized it's not an issue 
+because there uses
+non-compacted format so each offset strictly refers to spec.
 
-The scmi_rx_callbak() does not need to be modified to carry additional
-transport-specific ancillary data related to such message envelopes since
-an unique natural association is established between the xfer and the
-related message header.
+>> X86XSaveArea2 {
+>>      ...
+>>      XSaveAVX
+>>      ...
+>>      AMX_XTILE;
+>>      future_featureX;
+>>      future_featureY;
+>> }
+>>
+>>>    that the new ioctl() is available if the min size is greater than 1024?
+>>> Or is that unnecessarily convoluted...
+>> To enable a dynamic size kvm_xsave2(Thanks Jim's name suggestion), if things
+>> as follows are what we might want.
+>> /* for xstate large than 1024 */
+>> struct kvm_xsave2 {
+>>      int size; // size of the whole xstate
+>>      void *ptr; // xstate pointer
+>> }
+>> #define KVM_GET_XSAVE2   _IOW(KVMIO,  0xa4, struct kvm_xsave2)
+>>
+>> Take @size together, so KVM need not fetch 0xd.1.ebx each time or a dedicated
+>> variable.
+> Yes, userspace needs to provide the size so that KVM doesn't unintentionally
+> overflow the buffer provided by userspace.  We might also want to hedge by adding
+> a flags?  Can't think of a use for it at the moment, though.
+>
+>    struct kvm_xsave2 {
+>    	__u32 flags;
+> 	__u32 size;
+> 	__u8  state[0];
+>    };
+u8 makes things simple that kvm doesn't need compute size to u32.
 
-Existing transports that do not need anything of the above will continue
-to work as before without any change.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/firmware/arm_scmi/common.h |  14 +++
- drivers/firmware/arm_scmi/driver.c | 132 ++++++++++++++++++++++++++++-
- 2 files changed, 143 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index f49465086579..fa5a209bd792 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -80,6 +80,7 @@ struct scmi_msg_resp_prot_version {
-  * @status: Status of the transfer once it's complete
-  * @poll_completion: Indicate if the transfer needs to be polled for
-  *	completion or interrupt mode is used
-+ * @saved_hdr: A copy of the original msg_hdr
-  */
- struct scmi_msg_hdr {
- 	u8 id;
-@@ -88,6 +89,7 @@ struct scmi_msg_hdr {
- 	u16 seq;
- 	u32 status;
- 	bool poll_completion;
-+	u32 saved_hdr;
- };
- 
- /**
-@@ -154,6 +156,9 @@ struct scmi_msg {
-  * @rx: Receive message, the buffer should be pre-allocated to store
-  *	message. If request-ACK protocol is used, we can reuse the same
-  *	buffer for the rx path as we use for the tx path.
-+ * @rx_raw_len: A field which can be optionally used by a specific transport
-+ *		to save transport specific message length
-+ *		It is not used by the SCMI transport core
-  * @done: command message transmit completion event
-  * @async_done: pointer to delayed response message received event completion
-  * @users: A refcount to track the active users for this xfer
-@@ -165,6 +170,7 @@ struct scmi_xfer {
- 	struct scmi_msg_hdr hdr;
- 	struct scmi_msg tx;
- 	struct scmi_msg rx;
-+	size_t rx_raw_len;
- 	struct completion done;
- 	struct completion *async_done;
- 	refcount_t users;
-@@ -355,6 +361,9 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
-  * @max_msg: Maximum number of messages that can be pending
-  *	simultaneously in the system
-  * @max_msg_size: Maximum size of data per message that can be handled.
-+ * @support_xfers_delegation: A flag to indicate if the described transport
-+ *			      will handle delegated xfers, so the core can
-+ *			      derive proper related assumptions.
-  */
- struct scmi_desc {
- 	int (*init)(void);
-@@ -363,6 +372,7 @@ struct scmi_desc {
- 	int max_rx_timeout_ms;
- 	int max_msg;
- 	int max_msg_size;
-+	bool support_xfers_delegation;
- };
- 
- extern const struct scmi_desc scmi_mailbox_desc;
-@@ -391,4 +401,8 @@ void scmi_notification_instance_data_set(const struct scmi_handle *handle,
- 					 void *priv);
- void *scmi_notification_instance_data_get(const struct scmi_handle *handle);
- 
-+int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
-+			  struct scmi_xfer **xfer);
-+void scmi_transfer_release(struct scmi_chan_info *cinfo,
-+			   struct scmi_xfer *xfer);
- #endif /* _SCMI_COMMON_H */
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 9a00028c69aa..4478fe897f31 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -433,6 +433,124 @@ scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
- 	return xfer ?: ERR_PTR(-EINVAL);
- }
- 
-+/**
-+ * scmi_xfer_acquire  -  Helper to lookup and acquire an xfer
-+ *
-+ * @minfo: Pointer to Tx/Rx Message management info based on channel type
-+ * @xfer_id: Token ID to lookup in @pending_xfers
-+ *
-+ * When a valid xfer is found for the provided @xfer_id, reference counting is
-+ * properly updated.
-+ *
-+ * Return: A valid @xfer on Success or error otherwise.
-+ */
-+static struct scmi_xfer *
-+scmi_xfer_acquire(struct scmi_xfers_info *minfo, u16 xfer_id)
-+{
-+	unsigned long flags;
-+	struct scmi_xfer *xfer;
-+
-+	spin_lock_irqsave(&minfo->xfer_lock, flags);
-+	xfer = scmi_xfer_lookup_unlocked(minfo, xfer_id);
-+	if (!IS_ERR(xfer))
-+		refcount_inc(&xfer->users);
-+	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-+
-+	return xfer;
-+}
-+
-+/**
-+ * scmi_transfer_acquire  -  Lookup for an existing xfer or freshly allocate a
-+ * new one depending on the type of the message
-+ *
-+ * @cinfo: A reference to the channel descriptor.
-+ * @msg_hdr: A pointer to the message header to lookup.
-+ * @xfer: A reference to the pre-existent or freshly allocated xfer
-+ *	  associated with the provided *msg_hdr.
-+ *
-+ * This function can be used by transports supporting delegated xfers to obtain
-+ * a valid @xfer associated with the provided @msg_hdr param.
-+ *
-+ * The nature of the resulting @xfer depends on the type of message specified in
-+ * @msg_hdr:
-+ *  - for responses and delayed responses a pre-existent/pre-allocated in-flight
-+ *    xfer descriptor will be returned (properly refcounted)
-+ *  - for notifications a brand new xfer will be allocated; in this case the
-+ *    provided message header sequence number will also be mangled to match
-+ *    the token in the freshly allocated xfer: this is needed to establish a
-+ *    link between the picked xfer and the msg_hdr that will be subsequently
-+ *    passed back via usual scmi_rx_callback().
-+ *
-+ * Return: 0 if a valid xfer is returned in @xfer, error otherwise.
-+ */
-+int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
-+			  struct scmi_xfer **xfer)
-+{
-+	u8 msg_type;
-+	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
-+
-+	if (!xfer || !msg_hdr || !info->desc->support_xfers_delegation)
-+		return -EINVAL;
-+
-+	msg_type = MSG_XTRACT_TYPE(*msg_hdr);
-+	switch (msg_type) {
-+	case MSG_TYPE_COMMAND:
-+	case MSG_TYPE_DELAYED_RESP:
-+		/* Grab an existing xfer for xfer_id */
-+		*xfer = scmi_xfer_acquire(&info->tx_minfo,
-+					  MSG_XTRACT_TOKEN(*msg_hdr));
-+		break;
-+	case MSG_TYPE_NOTIFICATION:
-+		/* Get a brand new RX xfer */
-+		*xfer = scmi_xfer_get(cinfo->handle, &info->rx_minfo);
-+		if (!IS_ERR(*xfer)) {
-+			/* Save original msg_hdr and fix sequence number */
-+			(*xfer)->hdr.saved_hdr = *msg_hdr;
-+			*msg_hdr &= ~MSG_TOKEN_ID_MASK;
-+			*msg_hdr |= FIELD_PREP(MSG_TOKEN_ID_MASK,
-+					       (*xfer)->hdr.seq);
-+		}
-+		break;
-+	default:
-+		*xfer = ERR_PTR(-EINVAL);
-+		break;
-+	}
-+
-+	if (IS_ERR(*xfer)) {
-+		dev_err(cinfo->dev,
-+			"Failed to acquire a valid xfer for hdr:0x%X\n",
-+			*msg_hdr);
-+		return PTR_ERR(*xfer);
-+	}
-+
-+	/* Fix xfer->hdr.type with actual msg_hdr carried type */
-+	unpack_scmi_header(*msg_hdr, &((*xfer)->hdr));
-+
-+	return 0;
-+}
-+
-+/**
-+ * scmi_transfer_release  - Release an previously acquired xfer
-+ *
-+ * @cinfo: A reference to the channel descriptor.
-+ * @xfer: A reference to the xfer to release.
-+ */
-+void scmi_transfer_release(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
-+{
-+	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
-+	struct scmi_xfers_info *minfo;
-+
-+	if (!xfer || !info->desc->support_xfers_delegation)
-+		return;
-+
-+	if (xfer->hdr.type == MSG_TYPE_NOTIFICATION)
-+		minfo = &info->rx_minfo;
-+	else
-+		minfo = &info->tx_minfo;
-+
-+	__scmi_xfer_put(minfo, xfer);
-+}
-+
- static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
- {
- 	struct scmi_xfer *xfer;
-@@ -442,7 +560,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
- 	ktime_t ts;
- 
- 	ts = ktime_get_boottime();
--	xfer = scmi_xfer_get(cinfo->handle, minfo);
-+
-+	if (!info->desc->support_xfers_delegation)
-+		xfer = scmi_xfer_get(cinfo->handle, minfo);
-+	else
-+		xfer = scmi_xfer_acquire(minfo, MSG_XTRACT_TOKEN(msg_hdr));
- 	if (IS_ERR(xfer)) {
- 		dev_err(dev, "failed to get free message slot (%ld)\n",
- 			PTR_ERR(xfer));
-@@ -450,8 +572,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
- 		return;
- 	}
- 
--	unpack_scmi_header(msg_hdr, &xfer->hdr);
- 	scmi_dump_header_dbg(dev, &xfer->hdr);
-+
-+	if (!info->desc->support_xfers_delegation)
-+		unpack_scmi_header(msg_hdr, &xfer->hdr);
-+
- 	info->desc->ops->fetch_notification(cinfo, info->desc->max_msg_size,
- 					    xfer);
- 	scmi_notify(cinfo->handle, xfer->hdr.protocol_id,
-@@ -497,7 +622,8 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
- 			xfer_id);
- 		info->desc->ops->clear_channel(cinfo);
- 		/* It was unexpected, so nobody will clear the xfer if not us */
--		__scmi_xfer_put(minfo, xfer);
-+		if (!info->desc->support_xfers_delegation) //XXX ??? Really
-+			__scmi_xfer_put(minfo, xfer);
- 		return;
- 	}
- 
--- 
-2.17.1
+Thanks,
+Jing
 
