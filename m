@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C133974F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7714A3974F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhFAOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbhFAOGi (ORCPT
+        id S234364AbhFAOGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:06:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33148 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234179AbhFAOGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Jun 2021 10:06:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E62C06174A;
-        Tue,  1 Jun 2021 07:04:56 -0700 (PDT)
-Date:   Tue, 01 Jun 2021 14:04:52 -0000
+Date:   Tue, 01 Jun 2021 14:04:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622556292;
+        s=2020; t=1622556296;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nl9mFaXwdYjixZLJzgT6WmxN7SuKh+t3RLI17ECMaTg=;
-        b=gxEroV8h3FO3fR9BLGagXQs2hGni8aO6PqbnI6MiqYfEzJai9os9j+RRrcIJpTEFs4jHBs
-        NUJeSscI7lS5ES53lvlxyCBJokXN1qpP+dQejgKAv7slgnXCb8mgfO8vjzKSJ37jO+zzD6
-        CYkQKjPhOAgMCAUqaDUKT0lh4XiJ7xmjMiA+jH5Lh71CmgEsPgXX2N/KyBzxuGdRkPgG35
-        cojoff7YqclhcvjVlpoBPAZzv3Qyqj2Q1Y3nME6HFUjCS2j9gwT0hFEQa58pfvUT/MhrjP
-        RlgBQB0KihonJAXUIM6j1iY3ttDH0kmEkstLuVFwZEP/27Hi9f3qclrOfO4q5Q==
+        bh=/anJoGY66lTm18QohSp7zbrtC/47XBUCTHDencbsvZ4=;
+        b=WlgNjT6fULWaaUX6tUkuOwcfSjEOrULP/aRVV19L0NDrwy3iUJMzpFTFA6AWH31rFVrS/z
+        ZeMEchOjfY4b98b0PNbDhO8TLjEN5M2ddVBXLVf/1tVZGVgbznmOW5snGPJI6gOlOO+ncK
+        70ZA1NI7dCsJAbEfagSCTt7VExqJpZkCLSBn02MNOiJbm5pCHqddNNVPDNH8/IS5Z4J9nO
+        QUJDkDGZRw2Cl/Nno7fGafKJEPeLcsdFsp1lJXyysdar4jJAWUsFx3QVpqo2ymjvKMB2R5
+        +jlaI9tgUuY0VeUwUqHfZcFrzunBZYOX/blt/kDrgpXCX9uvNDFha/kprTFzYg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622556292;
+        s=2020e; t=1622556296;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nl9mFaXwdYjixZLJzgT6WmxN7SuKh+t3RLI17ECMaTg=;
-        b=4a/FjvYOJLp/1AC6ksHkALPRpjOiOF0nFBMRuHbNfMlaFM2YTCeZKrN6/noouHrnRBj1yi
-        57OCLrGB9t4fLtAA==
-From:   "tip-bot2 for Qiujun Huang" <tip-bot2@linutronix.de>
+        bh=/anJoGY66lTm18QohSp7zbrtC/47XBUCTHDencbsvZ4=;
+        b=0BoExO7THO4P1nuit4rLjS7T1OCrIUftYEE29OcU3S0L7HdFtSZdDqrEUg/3DgUAGmtBpD
+        6NKGhHk2uZ5HuOBA==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] uprobes: Update uprobe_write_opcode() kernel-doc comment
-Cc:     Qiujun Huang <hqjagain@gmail.com>,
+Subject: [tip: sched/core] sched: Don't defer CPU pick to migration_cpu_stop()
+Cc:     Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210524041411.157027-1-hqjagain@gmail.com>
-References: <20210524041411.157027-1-hqjagain@gmail.com>
+In-Reply-To: <20210526205751.842360-2-valentin.schneider@arm.com>
+References: <20210526205751.842360-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <162255629209.29796.8459366310090862821.tip-bot2@tip-bot2>
+Message-ID: <162255629595.29796.17462979182739834450.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,36 +57,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     9ce4d216fe8b581e4da4406461a4cfc9acbfa679
-Gitweb:        https://git.kernel.org/tip/9ce4d216fe8b581e4da4406461a4cfc9acbfa679
-Author:        Qiujun Huang <hqjagain@gmail.com>
-AuthorDate:    Mon, 24 May 2021 04:14:11 
+Commit-ID:     475ea6c60279e9f2ddf7e4cf2648cd8ae0608361
+Gitweb:        https://git.kernel.org/tip/475ea6c60279e9f2ddf7e4cf2648cd8ae0608361
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Wed, 26 May 2021 21:57:50 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 01 Jun 2021 16:00:08 +02:00
+CommitterDate: Tue, 01 Jun 2021 16:00:11 +02:00
 
-uprobes: Update uprobe_write_opcode() kernel-doc comment
+sched: Don't defer CPU pick to migration_cpu_stop()
 
-commit 6d43743e9079 ("Uprobe: Additional argument arch_uprobe to
-uprobe_write_opcode()") added the parameter @auprobe.
+Will reported that the 'XXX __migrate_task() can fail' in migration_cpu_stop()
+can happen, and it *is* sort of a big deal. Looking at it some more, one
+will note there is a glaring hole in the deferred CPU selection:
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+  (w/ CONFIG_CPUSET=n, so that the affinity mask passed via taskset doesn't
+  get AND'd with cpu_online_mask)
+
+  $ taskset -pc 0-2 $PID
+  # offline CPUs 3-4
+  $ taskset -pc 3-5 $PID
+    `\
+      $PID may stay on 0-2 due to the cpumask_any_distribute() picking an
+      offline CPU and __migrate_task() refusing to do anything due to
+      cpu_is_allowed().
+
+set_cpus_allowed_ptr() goes to some length to pick a dest_cpu that matches
+the right constraints vs affinity and the online/active state of the
+CPUs. Reuse that instead of discarding it in the affine_move_task() case.
+
+Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
+Reported-by: Will Deacon <will@kernel.org>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210524041411.157027-1-hqjagain@gmail.com
+Link: https://lkml.kernel.org/r/20210526205751.842360-2-valentin.schneider@arm.com
 ---
- kernel/events/uprobes.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/sched/core.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 6addc97..a481ef6 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -453,6 +453,7 @@ static int update_ref_ctr(struct uprobe *uprobe, struct mm_struct *mm,
-  * that have fixed length instructions.
-  *
-  * uprobe_write_opcode - write the opcode at a given virtual address.
-+ * @auprobe: arch specific probepoint information.
-  * @mm: the probed process address space.
-  * @vaddr: the virtual address to store the opcode.
-  * @opcode: opcode to be written at @vaddr.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e205c19..7e59466 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2273,7 +2273,6 @@ static int migration_cpu_stop(void *data)
+ 	struct migration_arg *arg = data;
+ 	struct set_affinity_pending *pending = arg->pending;
+ 	struct task_struct *p = arg->task;
+-	int dest_cpu = arg->dest_cpu;
+ 	struct rq *rq = this_rq();
+ 	bool complete = false;
+ 	struct rq_flags rf;
+@@ -2311,19 +2310,15 @@ static int migration_cpu_stop(void *data)
+ 		if (pending) {
+ 			p->migration_pending = NULL;
+ 			complete = true;
+-		}
+ 
+-		if (dest_cpu < 0) {
+ 			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
+ 				goto out;
+-
+-			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
+ 		}
+ 
+ 		if (task_on_rq_queued(p))
+-			rq = __migrate_task(rq, &rf, p, dest_cpu);
++			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
+ 		else
+-			p->wake_cpu = dest_cpu;
++			p->wake_cpu = arg->dest_cpu;
+ 
+ 		/*
+ 		 * XXX __migrate_task() can fail, at which point we might end
+@@ -2606,7 +2601,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 			init_completion(&my_pending.done);
+ 			my_pending.arg = (struct migration_arg) {
+ 				.task = p,
+-				.dest_cpu = -1,		/* any */
++				.dest_cpu = dest_cpu,
+ 				.pending = &my_pending,
+ 			};
+ 
+@@ -2614,6 +2609,15 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		} else {
+ 			pending = p->migration_pending;
+ 			refcount_inc(&pending->refs);
++			/*
++			 * Affinity has changed, but we've already installed a
++			 * pending. migration_cpu_stop() *must* see this, else
++			 * we risk a completion of the pending despite having a
++			 * task on a disallowed CPU.
++			 *
++			 * Serialized by p->pi_lock, so this is safe.
++			 */
++			pending->arg.dest_cpu = dest_cpu;
+ 		}
+ 	}
+ 	pending = p->migration_pending;
