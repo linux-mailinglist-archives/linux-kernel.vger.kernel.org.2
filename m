@@ -2,129 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D09397201
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E818397203
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhFALFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFALFm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:05:42 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C2FC061574;
-        Tue,  1 Jun 2021 04:04:01 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id h3so7901987wmq.3;
-        Tue, 01 Jun 2021 04:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=UIeev169KsjRHIHSK44fgwRCcjF3oL63Fw85uvXExqs=;
-        b=KvzCCTj/0TGGXpfZKR9UGY0wC/FftejkhUxjOm+geMYWUYljCPae/mROSOWpu+UYrb
-         ShBHZcRmnjjg767XGrE08i5WsakGc4dJrIV1HLAgvLnRcOsYkOm9/f1550HkKqTgub2U
-         ZV6JfcJRs75dXucvlyNBM1aMcIopYauMEB3q1VgzRWfS4oE/9JfbNo27tCyXR4Ujb1MZ
-         n51p12Lg4PJ1jondTA91Ml45ze1QTPqZ9Lvej+jyD5AIYm3o1a4+/pZ/52/UmUDspqBz
-         Len4mSE2cglioc2E8Lko+dUCpKqSO/bb+ZwVKn3za2eiPjyBa+KLE6e13oSbpfYWXh8L
-         dl0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=UIeev169KsjRHIHSK44fgwRCcjF3oL63Fw85uvXExqs=;
-        b=I2+mN9wpydkMT0mnNLfjblc7Zjgyv3+59jN//QjejMYxj+WOapEaNZh+mVfyI7+Om9
-         jsgVZY9QxxtxEhD2FJJzFRL4eR8v9MQ1C6t0lUEUn7lJhjdGbMcx5deoa0iJwGFW1j1x
-         jP0XI5OWEuO7vKeoUpjZanQYaW+lYjBKtgUw/WsBsxb918j433j820fX36rAvF8YMQdY
-         3bvNS8TayGOUyh/WHJiw8v0DU6ioCvAwXj4N+c1bMc8jih27Ry/gnvd0FVNzqCOhPTIi
-         OgpRwqp992ore7nPR2p1Bc7ZMjZDokWq4Hm+3miZlj9HAQd5lgO/vWm4t26vCqfhqbDT
-         ljEA==
-X-Gm-Message-State: AOAM532pOqEVTjClRV7a5rZX7tC6rMNfLWi5nkkLbAOOIaEi9Gr7btz/
-        tEZb5h8MxnKDp5OK93aMK4M=
-X-Google-Smtp-Source: ABdhPJzNJTzJo1iWAFdFFiIgWC2+hfB9CM4LEfJWadWMhzsrL8GS7Czqs8kzSnzTDLb/ygH3MQYjfQ==
-X-Received: by 2002:a1c:a3c3:: with SMTP id m186mr14625537wme.154.1622545440071;
-        Tue, 01 Jun 2021 04:04:00 -0700 (PDT)
-Received: from localhost (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
-        by smtp.gmail.com with ESMTPSA id t14sm2755228wra.60.2021.06.01.04.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 04:03:59 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 01 Jun 2021 12:03:59 +0100
-Message-Id: <CBS8CSIHJTXJ.1HWQ3AWYCC1V8@arch-thunder>
-Cc:     <linux-media@vger.kernel.org>, <linux-staging@lists.linux.dev>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: imx: imx7_mipi_csis: convert some switch cases
- to the default
-From:   "Rui Miguel Silva" <rmfrfs@gmail.com>
-To:     <trix@redhat.com>, <laurent.pinchart@ideasonboard.com>,
-        <slongerbeam@gmail.com>, <p.zabel@pengutronix.de>,
-        <mchehab@kernel.org>, <gregkh@linuxfoundation.org>,
-        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
-        <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>
-References: <20210531174300.2594109-1-trix@redhat.com>
-In-Reply-To: <20210531174300.2594109-1-trix@redhat.com>
+        id S232968AbhFALGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:06:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44932 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhFALGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 07:06:35 -0400
+IronPort-SDR: DsSswFkEkrCcqW4kILEJSAb9GTOt6zpnobfPVVBcLbeKMBb+g96rt0xU5NPPZQhwo4hx1pRXtx
+ Cyi6BQEfryMA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190878083"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="190878083"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 04:04:54 -0700
+IronPort-SDR: guHlYiqI2h9TyxydrIqUlRZ/v8ir7k1yY45FzrIUKuk6361cEY8C7W9DxZWvhlz8VYTCgR0iHS
+ vRKnY8xPMePA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="549695674"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 01 Jun 2021 04:04:50 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 01 Jun 2021 14:04:50 +0300
+Date:   Tue, 1 Jun 2021 14:04:49 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Azhar Shaikh <azhar.shaikh@intel.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] usb: typec: intel_pmc_mux: Update IOM port status
+ offset for AlderLake
+Message-ID: <YLYUUUH6a/YLA09N@kuha.fi.intel.com>
+References: <20210601035843.71150-1-azhar.shaikh@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601035843.71150-1-azhar.shaikh@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
-Thanks for the patch.
+On Mon, May 31, 2021 at 08:58:43PM -0700, Azhar Shaikh wrote:
+> Intel AlderLake(ADL) IOM has a different IOM port status offset than
+> Intel TigerLake.
+> Add a new ACPI ID for ADL and use the IOM port status offset as per
+> the platform.
+> 
+> Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
 
-On Mon May 31, 2021 at 6:43 PM WEST,  wrote:
-
-> From: Tom Rix <trix@redhat.com>
->
-> Static analysis reports this false positive
-> imx7-mipi-csis.c:1027:2: warning: 4th function call argument is
->   an uninitialized value
->
-> The variable 'align' is falsely reported as uninitialized.
-> Even though all the cases are covered in the
-> 	switch (csis_fmt->width % 8) {
->
-> Because there is no default case, it is reported as uninialized.
->
-> Improve the switch by converting the most numerous set of cases
-> to the default and silence the false positive.
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-
-It solves that, looks good to me.
-
-Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
-
-------
-Cheers,
-     Rui
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
 > ---
->  drivers/staging/media/imx/imx7-mipi-csis.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging=
-/media/imx/imx7-mipi-csis.c
-> index d573f3475d28..330f283030ec 100644
-> --- a/drivers/staging/media/imx/imx7-mipi-csis.c
-> +++ b/drivers/staging/media/imx/imx7-mipi-csis.c
-> @@ -1016,10 +1016,8 @@ static int mipi_csis_set_fmt(struct v4l2_subdev *s=
-d,
->  	case 6:
->  		align =3D 2;
->  		break;
-> -	case 1:
-> -	case 3:
-> -	case 5:
-> -	case 7:
-> +	default:
-> +		/* 1, 3, 5, 7 */
->  		align =3D 3;
->  		break;
->  	}
-> --=20
-> 2.26.3
+> Changes in v2:
+> - Passed acpi_device_id->id to acpi_dev_present() and
+>   acpi_dev_get_first_match_dev()
+> 
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 28 ++++++++++++++++++++++-----
+>  1 file changed, 23 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+> index 46a25b8db72e..dc8689db0100 100644
+> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
+> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+> @@ -83,8 +83,6 @@ enum {
+>  /*
+>   * Input Output Manager (IOM) PORT STATUS
+>   */
+> -#define IOM_PORT_STATUS_OFFSET				0x560
+> -
+>  #define IOM_PORT_STATUS_ACTIVITY_TYPE_MASK		GENMASK(9, 6)
+>  #define IOM_PORT_STATUS_ACTIVITY_TYPE_SHIFT		6
+>  #define IOM_PORT_STATUS_ACTIVITY_TYPE_USB		0x03
+> @@ -144,6 +142,7 @@ struct pmc_usb {
+>  	struct pmc_usb_port *port;
+>  	struct acpi_device *iom_adev;
+>  	void __iomem *iom_base;
+> +	u32 iom_port_status_offset;
+>  };
+>  
+>  static void update_port_status(struct pmc_usb_port *port)
+> @@ -153,7 +152,8 @@ static void update_port_status(struct pmc_usb_port *port)
+>  	/* SoC expects the USB Type-C port numbers to start with 0 */
+>  	port_num = port->usb3_port - 1;
+>  
+> -	port->iom_status = readl(port->pmc->iom_base + IOM_PORT_STATUS_OFFSET +
+> +	port->iom_status = readl(port->pmc->iom_base +
+> +				 port->pmc->iom_port_status_offset +
+>  				 port_num * sizeof(u32));
+>  }
+>  
+> @@ -559,14 +559,32 @@ static int is_memory(struct acpi_resource *res, void *data)
+>  	return !acpi_dev_resource_memory(res, &r);
+>  }
+>  
+> +/* IOM ACPI IDs and IOM_PORT_STATUS_OFFSET */
+> +static const struct acpi_device_id iom_acpi_ids[] = {
+> +	/* TigerLake */
+> +	{ "INTC1072", 0x560, },
+> +
+> +	/* AlderLake */
+> +	{ "INTC1079", 0x160, },
+> +	{}
+> +};
+> +
+>  static int pmc_usb_probe_iom(struct pmc_usb *pmc)
+>  {
+>  	struct list_head resource_list;
+>  	struct resource_entry *rentry;
+> -	struct acpi_device *adev;
+> +	static const struct acpi_device_id *dev_id;
+> +	struct acpi_device *adev = NULL;
+>  	int ret;
+>  
+> -	adev = acpi_dev_get_first_match_dev("INTC1072", NULL, -1);
+> +	for (dev_id = &iom_acpi_ids[0]; dev_id->id[0]; dev_id++) {
+> +		if (acpi_dev_present(dev_id->id, NULL, -1)) {
+> +			pmc->iom_port_status_offset = (u32)dev_id->driver_data;
+> +			adev = acpi_dev_get_first_match_dev(dev_id->id, NULL, -1);
+> +			break;
+> +		}
+> +	}
+> +
+>  	if (!adev)
+>  		return -ENODEV;
+>  
+> -- 
+> 2.17.1
 
-
-
+-- 
+heikki
