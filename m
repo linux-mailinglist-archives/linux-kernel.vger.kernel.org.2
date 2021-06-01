@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68700397BCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AE4397BD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234908AbhFAVgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 17:36:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234747AbhFAVge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 17:36:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC3E0613B4;
-        Tue,  1 Jun 2021 21:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622583292;
-        bh=kqnuJdvqpIeAot1ffooo2UK7VmfmnWmuJOhnmB7pOHE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JBz/dV0tsA2sAWPt5ApH1k3KAicOPjy88X0j4W2Xj9ZCN6k5e+JMh6fGGyjF8Xb3Y
-         euKnsRkdtTihdnJ0sGQUblOUqdsZ6TnN54gQuSstIzvPXuARMk4Hmq6N1uAxkAzVBD
-         a4UxPjQOvmIzZt7T1rJE0OxdEMlQSPODBVK/XWuPmSkqH77v3bdL0HkjbM+ObfP5rH
-         UEoenbNOS5F/cYYBy9/JE/6OKPmByrQoJYta/cHvnwv5Qb+y9NbLj0bSZa+vxNixsG
-         i9A+JHLGJdjDc3VtEufqUEe0u5HUTCqQMF1HteCrJiKTCn8z631iUHpC0P3WfOqym0
-         k8WyZWizSpnOw==
-Date:   Tue, 1 Jun 2021 14:34:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     moyufeng <moyufeng@huawei.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Parav Pandit <parav@mellanox.com>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "lipeng (Y)" <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>
-Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
-Message-ID: <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
-References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
-        <20190301120358.7970f0ad@cakuba.netronome.com>
-        <VI1PR0501MB227107F2EB29C7462DEE3637D1710@VI1PR0501MB2271.eurprd05.prod.outlook.com>
-        <20190304174551.2300b7bc@cakuba.netronome.com>
-        <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
-        <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
-        <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
+        id S234758AbhFAVmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 17:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234656AbhFAVmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 17:42:11 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97863C061574;
+        Tue,  1 Jun 2021 14:40:28 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id f30so36043lfj.1;
+        Tue, 01 Jun 2021 14:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3GJ4iW9ne/KKSp4HSYBLS3JGEPYqPP2i6X+oTP0z2Ns=;
+        b=og8bAN+l7Cqtt/P5jxWrxAUlELIHKbc0JTIU+F8ZTifVTRzdg607kDLuI0FuXdh8AY
+         Qu6bGR9qZeI/jPgFlDy9EjwXCzwrYSSvxTum4fp0MVGo/zRzajIAX4Edws1O+EpeC9pD
+         KUGlJa80oAW7gSA18Kqk9iD8UOxRQdhdCtRGOgUI1BaYUcYmoQHvHpFDdtgfwOHoVUjN
+         jF7FeS9Em52ZR3UjnCZYtl699YD9YIa0VA/3nLDm+wiyi6sz4NzThMTVGH4T5oD+xfnN
+         tCFtxRJbhnL9GNhUrn06ZuecXwp7oR90YiAp50EBcgQmJx6mPM0ffjaIFL/KNyqKXnM0
+         YSlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3GJ4iW9ne/KKSp4HSYBLS3JGEPYqPP2i6X+oTP0z2Ns=;
+        b=kpHO7PTe/WJFzI2pu+VrzL3MFwI0sjhBllAdRsWEwZkMwvBIsNzetwAje2GQxTfb8K
+         mjJBneY06h86MgguvKFrpkN+/Zl7rQiIoBuXILFm12okrK8o1dkobLERI4sGbSqiY6Dg
+         9uhFuo/7e18KGCyzEUg+d6/g7NWr5ydOFimP5J/ak7knX7Uhd/S8hx2ONet6f0ywms4n
+         06Hd2VQqB1SQHjoEaz5hSlnC08o+fBNeDNFFN4rrljz20XVYO9u8STvWpr9J+CG8bsb0
+         e8Df+5oCUJ499qgH/PfXCPYZrdUKBecd3atu7quqVbF2snSDd/CyLRUfwGby7WyS/fhn
+         ffUQ==
+X-Gm-Message-State: AOAM5306PXtXp3sOUsWoCbVGpWCIU68waAFzJkApJHj8MC+0Z/5rHP/F
+        O4VC3od9XFkCXrPrOeLGO0g=
+X-Google-Smtp-Source: ABdhPJxGpqZxl3VjWMjtR1d2dLTnLrbTz7xVmRgiR8fjJZp7t4f7DjR/BNxM2PIBDwo2tZ6tXO8kbA==
+X-Received: by 2002:a05:6512:46c:: with SMTP id x12mr6130853lfd.203.1622583626848;
+        Tue, 01 Jun 2021 14:40:26 -0700 (PDT)
+Received: from hyperiorarchmachine.localnet (dcx7x4yb9bh06yk5jm2qt-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:3d09:bda0:2327:559b])
+        by smtp.gmail.com with ESMTPSA id p9sm626662lfo.276.2021.06.01.14.40.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 14:40:26 -0700 (PDT)
+From:   jarmo.tiitto@gmail.com
+To:     Bill Wendling <morbo@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH] pgo: rename the raw profile file to vmlinux.profraw
+Date:   Wed, 02 Jun 2021 00:40:25 +0300
+Message-ID: <5615959.Mqr2uNrfH2@hyperiorarchmachine>
+In-Reply-To: <202106011210.B5A8881214@keescook>
+References: <20210531202044.426578-1-morbo@google.com> <CAGG=3QVdXxLf0T9+n9FidrRcfdWY36m-i=4kPRJjOojWhjiywg@mail.gmail.com> <202106011210.B5A8881214@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 15:33:09 +0800 Yunsheng Lin wrote:
-> On 2021/6/1 13:37, Jakub Kicinski wrote:
-> > On Mon, 31 May 2021 18:36:12 +0800 moyufeng wrote:  
-> >> Hi, Jiri & Jakub
-> >>
-> >>     Generally, a devlink instance is created for each PF/VF. This
-> >> facilitates the query and configuration of the settings of each
-> >> function. But if some common objects, like the health status of
-> >> the entire ASIC, the data read by those instances will be duplicate.
-> >>
-> >>     So I wonder do I just need to apply a public devlink instance for the
-> >> entire ASIC to avoid reading the same data? If so, then I can't set
-> >> parameters for each function individually. Or is there a better suggestion
-> >> to implement it?  
-> > 
-> > I don't think there is a great way to solve this today. In my mind
-> > devlink instances should be per ASIC, but I never had to solve this
-> > problem for a multi-function ASIC.   
-> 
-> Is there a reason why it didn't have to be solved yet?
-> Is it because the devices currently supporting devlink do not have
-> this kind of problem, like single-function ASIC or multi-function
-> ASIC without sharing common resource?
+Kees Cook wrote tiistaina 1. kes=E4kuuta 2021 22.13.21 EEST:
+> On Tue, Jun 01, 2021 at 01:24:39AM -0700, 'Bill Wendling' via Clang Built=
+=20
+Linux wrote:
+> > On Mon, May 31, 2021 at 1:29 PM Nathan Chancellor <nathan@kernel.org>=20
+wrote:
+> > > On 5/31/2021 1:20 PM, Bill Wendling wrote:
+> > > > Future PGO features may create other files in /sys/kernel/debug/pgo.
+> > > > So
+> > > > rename the kernel's raw profile data file to "vmlinux.profraw" to m=
+ake
+> > > > which part of the kernel the file is for more explicit.
+> > > >=20
+> > > > Note that future files in /sys/kernel/debug/pgo should follow a
+> > > > similar
+> > > > naming convention.
+> > > >=20
+> > > > Signed-off-by: Bill Wendling <morbo@google.com>
+> > >=20
+> > > Guess this clears up my confusion around the module patches :)
+> >=20
+> > To clarify, Jarmo did those patches on his own. I just wanted to
+> > clarify the naming convention. :-)
+>=20
+> Is the expectation that there would be 1 file per module in
+> /sys/kernel/debug/pgo/ after the modules patch?
+>=20
+> > -bw
+> >=20
+> > > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> > >=20
+> > > > ---
+> > > >=20
+> > > >   Documentation/dev-tools/pgo.rst | 6 +++---
+> > > >   kernel/pgo/Kconfig              | 7 ++++---
+> > > >   kernel/pgo/fs.c                 | 2 +-
+> > > >   3 files changed, 8 insertions(+), 7 deletions(-)
+> > > >=20
+> > > > diff --git a/Documentation/dev-tools/pgo.rst
+> > > > b/Documentation/dev-tools/pgo.rst index b7f11d8405b7..0200449c4843
+> > > > 100644
+> > > > --- a/Documentation/dev-tools/pgo.rst
+> > > > +++ b/Documentation/dev-tools/pgo.rst
+> > > >=20
+> > > > @@ -76,7 +76,7 @@ The PGO kernel support creates the following file=
+s in=20
+debugfs:
+> > > >   ``/sys/kernel/debug/pgo/reset``
+> > > >  =20
+> > > >       Global reset file: resets all coverage data to zero when writ=
+ten
+> > > >       to.
+> > > >=20
+> > > > -``/sys/kernel/debug/profraw``
+> > > > +``/sys/kernel/debug/pgo/vmlinux.profraw``
+> > > >=20
+> > > >       The raw PGO data that must be processed with ``llvm_profdata`=
+`.
+> > > >=20
+> > > > @@ -108,7 +108,7 @@ using the result to optimize the kernel:
+> > > >      .. code-block:: sh
+> > > >=20
+> > > > -      $ cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
+> > > > +      $ cp -a /sys/kernel/debug/pgo/vmlinux.profraw
+> > > > /tmp/vmlinux.profraw
+>=20
+> And if so, these instructions would change (in the future) to something
+> like:
+>=20
+>      $ cp -a /sys/kernel/debug/pgo/*.profraw /tmp/prof/
+>=20
+> ?
+>=20
+> -Kees
 
-I'm not 100% sure, my guess is multi-function devices supporting
-devlink are simple enough for the problem not to matter all that much.
+Hi,
 
-> Was there a discussion how to solved it in the past?
+To be clear the mucked up patches I sent are more like of RFC to get in=20
+contact with the development.
+Back to the code:
 
-Not really, we floated an idea of creating aliases for devlink
-instances so a single devlink instance could answer to multiple 
-bus identifiers. But nothing concrete.
+Yes, my future intention is that there will be one *.profraw file per modul=
+e.
+And curiously I would also have renamed the current profile data file to=20
+"vmlinux.profraw" to disambiguate it from what part of kernel generated it.
 
-> > Can you assume all functions are in the same control domain? Can they
-> > trust each other?  
-> 
-> "same control domain" means if it is controlled by a single host, not
-> by multi hosts, right?
-> 
-> If the PF is not passed through to a vm using VFIO and other PF is still
-> in the host, then I think we can say it is controlled by a single host.
-> 
-> And each PF is trusted with each other right now, at least at the driver
-> level, but not between VF.
+I already wrote an small fix up that I think should be part of the upstream=
+=20
+code so that profiling the vmlinux works better.
+It filters out any module originated content from vmlinux.profraw.
 
-Right, the challenge AFAIU is how to match up multiple functions into 
-a single devlink instance, when driver has to probe them one by one.
-If there is no requirement that different functions are securely
-isolated it becomes a lot simpler (e.g. just compare device serial
-numbers).
+Above will be probably a good exercise for me.
+
+Next, my future v2 module profiling machinery
+would probably follow on top of your work.
+
+=2DJarmo
+
+
