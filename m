@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 554B4396ABF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 03:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79079396AC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 03:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhFABzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 21:55:24 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3359 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232320AbhFABzU (ORCPT
+        id S232448AbhFAB4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 21:56:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54655 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232042AbhFAB4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 21:55:20 -0400
-Received: from dggeme712-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FvFTb0PLxz677c;
-        Tue,  1 Jun 2021 09:49:55 +0800 (CST)
-Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
- dggeme712-chm.china.huawei.com (10.1.199.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 1 Jun 2021 09:53:37 +0800
-Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
- dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
- Tue, 1 Jun 2021 09:53:37 +0800
-From:   zhengyongjun <zhengyongjun3@huawei.com>
-To:     Xin Long <lucien.xin@gmail.com>
-CC:     Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggbmV0LW5leHRdIHNjdHA6IHNtX3N0YXRlZnVuczog?=
- =?utf-8?Q?Fix_spelling_mistakes?=
-Thread-Topic: [PATCH net-next] sctp: sm_statefuns: Fix spelling mistakes
-Thread-Index: AQHXVb7r2PGYQfiLYUeXXJTSIeBLlKr9QQaAgAEk9cA=
-Date:   Tue, 1 Jun 2021 01:53:37 +0000
-Message-ID: <0a8bacf10bc145c5924f1d33a9aefd43@huawei.com>
-References: <20210531020110.2920255-1-zhengyongjun3@huawei.com>
- <CADvbK_eCmDbAZ6_tppe=q3aW76OAnfZd3TXoAafDTk0h=JaTAg@mail.gmail.com>
-In-Reply-To: <CADvbK_eCmDbAZ6_tppe=q3aW76OAnfZd3TXoAafDTk0h=JaTAg@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.64]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 31 May 2021 21:56:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622512504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ASyMBPQPEsfDziJ+K95xbpCDWyQpQmjYvWNZlEBpeY=;
+        b=A3y0G6cH6WZOjoCXP863mCQgWDYZ2yXJqtzquDQUcMmXT7JurZDAI+QxgjEiDfVnQcJbEm
+        J37QdjzhlUzkYbvFNHy+cEMBmrJkKGg3ldDTUbqgzqa7m3d2RWSqrbyVtIfD8lB5RQIdyw
+        Jd9IT4COtGC+W/OWqsHVms2daHvPTvc=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-vzU-poZ7NQq18O8tqT5Mcw-1; Mon, 31 May 2021 21:55:02 -0400
+X-MC-Unique: vzU-poZ7NQq18O8tqT5Mcw-1
+Received: by mail-pl1-f200.google.com with SMTP id 62-20020a1709020544b02900f0a8e26363so3786971plf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 18:55:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=7ASyMBPQPEsfDziJ+K95xbpCDWyQpQmjYvWNZlEBpeY=;
+        b=o7rxCCY9v1v1s8reZ2B942bupAbN4RCLPpdYDf2+FiZws5623YyH/LqZigOu7op9bp
+         3KPwe0UGzBUG84zPWDJzypeWgueRTbL4CwygFfl4CPi3MfOmE1AIxqbX6uGCQlhmoKxa
+         trZ9H9Wf7xRXY0YZLFmM7+yVyFpifj8lxcR6su/0YivJ4RXPqzjGGX6JmjLOh+WmT15A
+         iw72BtOrz2dnfxbYScl+ByRCXPFDR/8RXh8qfF9QXdlfHU8q1QHsWzYmyVRm6Vs+Fq2Z
+         KZM21kK5Bd66l38zREJrER6ogriulH/9UtKjvxFox7lp+msgIl8fIKadPWJ+G3CV1HxU
+         dDFA==
+X-Gm-Message-State: AOAM531TjGFXW/evki9954v5Q21b2zyRN1056o4xRU/MwDKMXFPWPyjF
+        aCiCIi/cAxOq8J52RyLtkN2gOdaEK0xoQ1pzptu3vk7qf96BguJg8fdUqvl1B1GGdQC//zUQIFf
+        w8tZRN2G/IxEo65VIKY+NMn+b8zmFmD2tVo73X83uUKb26jykbZihLcvIppdqXiNv3tBdIFRP87
+        mT
+X-Received: by 2002:a17:902:4:b029:fa:670f:f20f with SMTP id 4-20020a1709020004b02900fa670ff20fmr23126206pla.11.1622512501346;
+        Mon, 31 May 2021 18:55:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwackNHk9NU70dohTROxE93bBTCw+m7dTBc2owq9+YhG/iJRBmDXtt6soLUeratGznqq9fVOQ==
+X-Received: by 2002:a17:902:4:b029:fa:670f:f20f with SMTP id 4-20020a1709020004b02900fa670ff20fmr23126187pla.11.1622512501000;
+        Mon, 31 May 2021 18:55:01 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 195sm154446pfz.24.2021.05.31.18.54.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 18:55:00 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] vdpa/mlx5: Support creating resources with uid ==
+ 0
+To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210531160404.31368-1-elic@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <09bf796a-2c89-496d-a304-e889f3519a5c@redhat.com>
+Date:   Tue, 1 Jun 2021 09:54:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210531160404.31368-1-elic@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIGFkdmljZSwgSSB3aWxsIGZpeCBpdCBhcyB5b3Ugc3VnZ2VzdCBhbmQg
-c2VuZCBwYXRjaCB2MiA6KQ0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bkuro6IFhp
-biBMb25nIFttYWlsdG86bHVjaWVuLnhpbkBnbWFpbC5jb21dIA0K5Y+R6YCB5pe26Ze0OiAyMDIx
-5bm0NuaciDHml6UgMDoyNA0K5pS25Lu25Lq6OiB6aGVuZ3lvbmdqdW4gPHpoZW5neW9uZ2p1bjNA
-aHVhd2VpLmNvbT4NCuaKhOmAgTogVmxhZCBZYXNldmljaCA8dnlhc2V2aWNoQGdtYWlsLmNvbT47
-IE5laWwgSG9ybWFuIDxuaG9ybWFuQHR1eGRyaXZlci5jb20+OyBNYXJjZWxvIFJpY2FyZG8gTGVp
-dG5lciA8bWFyY2Vsby5sZWl0bmVyQGdtYWlsLmNvbT47IGRhdmVtIDxkYXZlbUBkYXZlbWxvZnQu
-bmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47IGxpbnV4LXNjdHAgQCB2Z2Vy
-IC4ga2VybmVsIC4gb3JnIDxsaW51eC1zY3RwQHZnZXIua2VybmVsLm9yZz47IG5ldHdvcmsgZGV2
-IDxuZXRkZXZAdmdlci5rZXJuZWwub3JnPjsgTEtNTCA8bGludXgta2VybmVsQHZnZXIua2VybmVs
-Lm9yZz4NCuS4u+mimDogUmU6IFtQQVRDSCBuZXQtbmV4dF0gc2N0cDogc21fc3RhdGVmdW5zOiBG
-aXggc3BlbGxpbmcgbWlzdGFrZXMNCg0KT24gU3VuLCBNYXkgMzAsIDIwMjEgYXQgOTo0OCBQTSBa
-aGVuZyBZb25nanVuIDx6aGVuZ3lvbmdqdW4zQGh1YXdlaS5jb20+IHdyb3RlOg0KPg0KPiBGaXgg
-c29tZSBzcGVsbGluZyBtaXN0YWtlcyBpbiBjb21tZW50czoNCj4gZ2VuZXJlYXRlID09PiBnZW5l
-cmF0ZQ0KPiBjb3JyZWNsdHkgPT0+IGNvcnJlY3RseQ0KPiBib3VuZHJpZXMgPT0+IGJvdW5kYXJp
-ZXMNCj4gZmFpbGVzID09PiBmYWlscw0KDQpJIGJlbGlldmUgbW9yZSBtaXN0YWtlcyBiZWxvdyBp
-biB0aGlzIGZpbGUgY291bGQgaGl0Y2hoaWtlIHRoaXMgcGF0Y2ggdG8gZ2V0IGZpeGVkLiA6LSkN
-Cg0KaXNzZXMgLT4gaXNzdWVzDQphc3NvY2l0aW9uIC0+IGFzc29jaWF0aW9uDQpzaWduZSAtPiBz
-aWduDQphc3NvY2FpdGlvbiAtPiBhc3NvY2lhdGlvbg0KbWFuYWdlbWVtZW50LT4gbWFuYWdlbWVu
-dA0KcmVzdHJhbnNtaXNzaW9ucy0+cmV0cmFuc21pc3Npb24NCnNpZGVmZmVjdCAtPiBzaWRlZWZm
-ZWN0DQpib21taW5nIC0+IGJvb21pbmcNCmNodWtucy0+IGNodW5rcw0KU0hVRE9XTiAtPiBTSFVU
-RE9XTg0KdmlvbGF0aW9uZy0+dmlvbGF0aW5nDQpleHBsY2l0bHktPiBleHBsaWNpdGx5DQpDSHVu
-ay0+IENodW5rDQoNClRoYW5rcy4NCg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBaaGVuZyBZb25nanVu
-IDx6aGVuZ3lvbmdqdW4zQGh1YXdlaS5jb20+DQo+IC0tLQ0KPiAgbmV0L3NjdHAvc21fc3RhdGVm
-dW5zLmMgfCA4ICsrKystLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0
-IGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvbmV0L3NjdHAvc21fc3RhdGVmdW5zLmMg
-Yi9uZXQvc2N0cC9zbV9zdGF0ZWZ1bnMuYyBpbmRleCANCj4gZmQxZTMxOWVkYTAwLi42OGU3ZDE0
-YzM3OTkgMTAwNjQ0DQo+IC0tLSBhL25ldC9zY3RwL3NtX3N0YXRlZnVucy5jDQo+ICsrKyBiL25l
-dC9zY3RwL3NtX3N0YXRlZnVucy5jDQo+IEBAIC02MDgsNyArNjA4LDcgQEAgZW51bSBzY3RwX2Rp
-c3Bvc2l0aW9uIHNjdHBfc2ZfZG9fNV8xQ19hY2soc3RydWN0IG5ldCAqbmV0LA0KPiAgICAgICAg
-IHNjdHBfYWRkX2NtZF9zZihjb21tYW5kcywgU0NUUF9DTURfTkVXX1NUQVRFLA0KPiAgICAgICAg
-ICAgICAgICAgICAgICAgICBTQ1RQX1NUQVRFKFNDVFBfU1RBVEVfQ09PS0lFX0VDSE9FRCkpOw0K
-Pg0KPiAtICAgICAgIC8qIFNDVFAtQVVUSDogZ2VuZXJlYXRlIHRoZSBhc3NvY2l0aW9uIHNoYXJl
-ZCBrZXlzIHNvIHRoYXQNCj4gKyAgICAgICAvKiBTQ1RQLUFVVEg6IGdlbmVyYXRlIHRoZSBhc3Nv
-Y2l0aW9uIHNoYXJlZCBrZXlzIHNvIHRoYXQNCj4gICAgICAgICAgKiB3ZSBjYW4gcG90ZW50aWFs
-bHkgc2lnbmUgdGhlIENPT0tJRS1FQ0hPLg0KPiAgICAgICAgICAqLw0KPiAgICAgICAgIHNjdHBf
-YWRkX2NtZF9zZihjb21tYW5kcywgU0NUUF9DTURfQVNTT0NfU0hLRVksIFNDVFBfTlVMTCgpKTsg
-DQo+IEBAIC04MzgsNyArODM4LDcgQEAgZW51bSBzY3RwX2Rpc3Bvc2l0aW9uIHNjdHBfc2ZfZG9f
-NV8xRF9jZShzdHJ1Y3QgDQo+IG5ldCAqbmV0LA0KPg0KPiAgICAgICAgIC8qIEFkZCBhbGwgdGhl
-IHN0YXRlIG1hY2hpbmUgY29tbWFuZHMgbm93IHNpbmNlIHdlJ3ZlIGNyZWF0ZWQNCj4gICAgICAg
-ICAgKiBldmVyeXRoaW5nLiAgVGhpcyB3YXkgd2UgZG9uJ3QgaW50cm9kdWNlIG1lbW9yeSBjb3Jy
-dXB0aW9ucw0KPiAtICAgICAgICAqIGR1cmluZyBzaWRlLWVmZmVjdCBwcm9jZXNzaW5nIGFuZCBj
-b3JyZWNsdHkgY291bnQgZXN0YWJsaXNoZWQNCj4gKyAgICAgICAgKiBkdXJpbmcgc2lkZS1lZmZl
-Y3QgcHJvY2Vzc2luZyBhbmQgY29ycmVjdGx5IGNvdW50IA0KPiArIGVzdGFibGlzaGVkDQo+ICAg
-ICAgICAgICogYXNzb2NpYXRpb25zLg0KPiAgICAgICAgICAqLw0KPiAgICAgICAgIHNjdHBfYWRk
-X2NtZF9zZihjb21tYW5kcywgU0NUUF9DTURfTkVXX0FTT0MsIA0KPiBTQ1RQX0FTT0MobmV3X2Fz
-b2MpKTsgQEAgLTI5NTAsNyArMjk1MCw3IEBAIGVudW0gc2N0cF9kaXNwb3NpdGlvbiBzY3RwX3Nm
-X2RvXzlfMl9yZXNodXRhY2soDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgY29tbWFuZHMpOw0KPg0KPiAgICAgICAgIC8qIFNpbmNlIHdlIGFyZSBu
-b3QgZ29pbmcgdG8gcmVhbGx5IHByb2Nlc3MgdGhpcyBJTklULCB0aGVyZQ0KPiAtICAgICAgICAq
-IGlzIG5vIHBvaW50IGluIHZlcmlmeWluZyBjaHVuayBib3VuZHJpZXMuICBKdXN0IGdlbmVyYXRl
-DQo+ICsgICAgICAgICogaXMgbm8gcG9pbnQgaW4gdmVyaWZ5aW5nIGNodW5rIGJvdW5kYXJpZXMu
-ICBKdXN0IGdlbmVyYXRlDQo+ICAgICAgICAgICogdGhlIFNIVVRET1dOIEFDSy4NCj4gICAgICAg
-ICAgKi8NCj4gICAgICAgICByZXBseSA9IHNjdHBfbWFrZV9zaHV0ZG93bl9hY2soYXNvYywgY2h1
-bmspOyBAQCAtMzU2MCw3IA0KPiArMzU2MCw3IEBAIGVudW0gc2N0cF9kaXNwb3NpdGlvbiBzY3Rw
-X3NmX2RvXzlfMl9maW5hbChzdHJ1Y3QgbmV0ICpuZXQsDQo+ICAgICAgICAgICAgICAgICBnb3Rv
-IG5vbWVtX2NodW5rOw0KPg0KPiAgICAgICAgIC8qIERvIGFsbCB0aGUgY29tbWFuZHMgbm93IChh
-ZnRlciBhbGxvY2F0aW9uKSwgc28gdGhhdCB3ZQ0KPiAtICAgICAgICAqIGhhdmUgY29uc2lzdGVu
-dCBzdGF0ZSBpZiBtZW1vcnkgYWxsb2NhdGlvbiBmYWlsZXMNCj4gKyAgICAgICAgKiBoYXZlIGNv
-bnNpc3RlbnQgc3RhdGUgaWYgbWVtb3J5IGFsbG9jYXRpb24gZmFpbHMNCj4gICAgICAgICAgKi8N
-Cj4gICAgICAgICBzY3RwX2FkZF9jbWRfc2YoY29tbWFuZHMsIFNDVFBfQ01EX0VWRU5UX1VMUCwg
-DQo+IFNDVFBfVUxQRVZFTlQoZXYpKTsNCj4NCj4gLS0NCj4gMi4yNS4xDQo+DQo=
+
+ÔÚ 2021/6/1 ÉÏÎç12:04, Eli Cohen Ð´µÀ:
+> Currently all resources must be created with uid != 0 which is essential
+> when userspace processes are allocating virtquueue resources. Since this
+> is a kernel implementation, it is perfectly legal to open resources with
+> uid == 0.
+>
+> In case firmware supports, avoid allocating user context.
+>
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
+
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+> v0 --> v1:
+>    Fix typo and modify phrasing
+>
+>   drivers/vdpa/mlx5/core/resources.c | 6 ++++++
+>   include/linux/mlx5/mlx5_ifc.h      | 4 +++-
+>   2 files changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> index 6521cbd0f5c2..836ab9ef0fa6 100644
+> --- a/drivers/vdpa/mlx5/core/resources.c
+> +++ b/drivers/vdpa/mlx5/core/resources.c
+> @@ -54,6 +54,9 @@ static int create_uctx(struct mlx5_vdpa_dev *mvdev, u16 *uid)
+>   	void *in;
+>   	int err;
+>   
+> +	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0))
+> +		return 0;
+> +
+>   	/* 0 means not supported */
+>   	if (!MLX5_CAP_GEN(mvdev->mdev, log_max_uctx))
+>   		return -EOPNOTSUPP;
+> @@ -79,6 +82,9 @@ static void destroy_uctx(struct mlx5_vdpa_dev *mvdev, u32 uid)
+>   	u32 out[MLX5_ST_SZ_DW(destroy_uctx_out)] = {};
+>   	u32 in[MLX5_ST_SZ_DW(destroy_uctx_in)] = {};
+>   
+> +	if (!uid)
+> +		return;
+> +
+>   	MLX5_SET(destroy_uctx_in, in, opcode, MLX5_CMD_OP_DESTROY_UCTX);
+>   	MLX5_SET(destroy_uctx_in, in, uid, uid);
+>   
+> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+> index 9c68b2da14c6..606d2aeacad4 100644
+> --- a/include/linux/mlx5/mlx5_ifc.h
+> +++ b/include/linux/mlx5/mlx5_ifc.h
+> @@ -1487,7 +1487,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+>   	u8         uar_4k[0x1];
+>   	u8         reserved_at_241[0x9];
+>   	u8         uar_sz[0x6];
+> -	u8         reserved_at_250[0x8];
+> +	u8         reserved_at_248[0x2];
+> +	u8         umem_uid_0[0x1];
+> +	u8         reserved_at_250[0x5];
+>   	u8         log_pg_sz[0x8];
+>   
+>   	u8         bf[0x1];
+
