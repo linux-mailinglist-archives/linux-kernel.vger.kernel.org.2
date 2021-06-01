@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCCA3972C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDAD3972C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbhFALua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
+        id S233758AbhFALuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFALu2 (ORCPT
+        with ESMTP id S230288AbhFALui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:50:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88781C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:48:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FG8QsXBT9RwonVdLjIFuZXWFVzP4Jy7oyS+/HVeFnwk=; b=U8zo4BcNXFspX345/GEHZU/xcq
-        O1pN3s1GYhzCNlGlH7kB+2/c/YQys3SXLbhl7xrZBY8y5cPTpOKbfdARhdOxdQn8nWMpWNSlc5k8y
-        yq9rl3VuvQdiI9nyJMMyx/pMovjihUJRfTvRRVQc3hYjUn/BucuiqrAh7WDsj5rryy8ayhNrr2wIg
-        XtD2nv5CI/bzn0BLPc8lVsY91HXtWuFCeq0c74iFJeYL+Ezf55KnazeRgoXLmRzKxG07bNeL+nYJa
-        x4D27m85R0mEJ4PbSyn+7gtBDG7DeWVtHrNQ5Il4BlE/hcREg0yn25CgnMgp9escsGZ4tvt30m+2A
-        XPFZI+1w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lo2sZ-009zEi-JF; Tue, 01 Jun 2021 11:48:19 +0000
-Date:   Tue, 1 Jun 2021 12:48:15 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH] mm: free idle swap cache page after COW
-Message-ID: <YLYef3i2OGseGbsS@casper.infradead.org>
-References: <20210601053143.1380078-1-ying.huang@intel.com>
+        Tue, 1 Jun 2021 07:50:38 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF45C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:48:56 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x38so21290027lfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:48:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6zj02qXAAuk1QMJQIoOzaeU/P0x5I8fbdsNIO3pGtyM=;
+        b=GCM7TqzsCQfMbmkRYl1ltBptIKp+x5Qk014ppmBUTtp150nlx088axbmbXi54EYEJs
+         6mEGIZOKLnyzs1jt1wMaf4KOlMe3yCHfXXpLFdWB+VhWAzC9DsYKfmOK9iyh4uiW9ZXM
+         UPffTgBYvAeMgv1MSPKtvFAFcI20GiYHjJh02wNDnOTqk7XsXL8h7+73mOVpvHrrBe1z
+         7yuT6pmonFwXsXn0DW1jC03q3BXXuZKSUl+XfSVgxFiTvAWmSadKCkguWLltWa75Gk+F
+         HVlyOLt2dlf1Ogd0HGlSc2b+Ev3Qlp9roPuwyJV0Pze1yj3rTINevD5wK5+QYs2AKeRa
+         SjCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6zj02qXAAuk1QMJQIoOzaeU/P0x5I8fbdsNIO3pGtyM=;
+        b=jmVYq9w4Q8gH7eu309OJy+YyG6MS4Gj2ehkOzjpUYPHxOB0bmUvHq/H02ZsLjY06DJ
+         0KbfLwKbhelWY6iTpM7N3ER7t9M95PySOdZwRxXOH4GAZv29dvOH5U0TiLdnrbJEi9NL
+         jNKtOCr84RmByrmL4GOs8FAE9AryEimpIQTBYs3BYsxF6G2SFPy8U3VaEea05oTgVfkq
+         ThiIVHMbPmlNe3DfG33t2NiO9Dwraf3dXUJVgFkwJbpbYbuH4tY8xZu99kWBc8wQeJPB
+         TSfFFDx/9ySuXeW2LIsh2S3FVLIylbnXk6Cg+uAMZz8cnD+iHDpjCdXwyL3i5QTN/Fgp
+         C0lw==
+X-Gm-Message-State: AOAM533AlY07HHe9hsoD+789FUI5neTFYKiRuWnYndK2kBzMosXRdkOq
+        yPCrl3N26uQQ0GR/VpSZL8trGLma/YgrfDbZTBkUBQ==
+X-Google-Smtp-Source: ABdhPJzF8H83uaZnzZpe08/0yXw6XupwStZHCxUKdO+/s/bThQc8z/xGZtqpykumfoLGGvPGtwEdFRNbALwP1zVytAM=
+X-Received: by 2002:a19:f616:: with SMTP id x22mr18138502lfe.291.1622548135157;
+ Tue, 01 Jun 2021 04:48:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601053143.1380078-1-ying.huang@intel.com>
+References: <cover.1620735871.git.sander@svanheule.net> <cover.1621809029.git.sander@svanheule.net>
+ <YKr9G3EfrM34gCsL@lunn.ch> <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
+ <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+ <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc> <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
+ <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com> <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
+ <CACRpkda+m5mOzMJ8KcPmojFGWkUpCrbmY0ySPTVx72RtWwf89A@mail.gmail.com>
+ <e10c8ef7f758b4f7fa0fcbc992c84125@walle.cc> <CACRpkdb4j6krXwdZGtth9b2W2bAdy9_StGbse_YbBY86-AWdLg@mail.gmail.com>
+ <401805ef27bb273d7aca4f3377b53b07@walle.cc>
+In-Reply-To: <401805ef27bb273d7aca4f3377b53b07@walle.cc>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 1 Jun 2021 13:48:43 +0200
+Message-ID: <CACRpkdYSMjDaRY2chbFyBTJ4jeAjPtXX3+VW7MHu-wH2QoAfPA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
+To:     Michael Walle <michael@walle.cc>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sander Vanheule <sander@svanheule.net>,
+        Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 01:31:43PM +0800, Huang Ying wrote:
-> With commit 09854ba94c6a ("mm: do_wp_page() simplification"), after
-> COW, the idle swap cache page (neither the page nor the corresponding
-> swap entry is mapped by any process) will be left in the LRU list,
-> even if it's in the active list or the head of the inactive list.  So,
-> the page reclaimer may take quite some overhead to reclaim these
-> actually unused pages.
-> 
-> To help the page reclaiming, in this patch, after COW, the idle swap
-> cache page will be tried to be freed.  To avoid to introduce much
-> overhead to the hot COW code path,
-> 
-> a) there's almost zero overhead for non-swap case via checking
->    PageSwapCache() firstly.
-> 
-> b) the page lock is acquired via trylock only.
-> 
-> To test the patch, we used pmbench memory accessing benchmark with
-> working-set larger than available memory on a 2-socket Intel server
-> with a NVMe SSD as swap device.  Test results shows that the pmbench
-> score increases up to 23.8% with the decreased size of swap cache and
-> swapin throughput.
+On Tue, Jun 1, 2021 at 1:41 PM Michael Walle <michael@walle.cc> wrote:
+> Am 2021-06-01 12:51, schrieb Linus Walleij:
+> > On Tue, Jun 1, 2021 at 12:18 PM Michael Walle <michael@walle.cc> wrote:
+> >> Am 2021-06-01 11:59, schrieb Linus Walleij:
+> >
+> >> > Just regarding all registers/memory cells in a register page
+> >> > as default volatile (which is what we do a lot of the time)
+> >> > has its upsides: bugs like this doesn't happen.
+> >>
+> >> I don't think this is the bug here. If it is really a write-only
+> >> register
+> >> the problem is the read in RMW. Because reading the register will
+> >> return
+> >> the input value instead of the (previously written) output value.
+> >
+> > True that. Write and read semantics differ on the register.
+> >
+> > Volatile is used for this and some other things,
+> > like for example interrupts being cleared when a register
+> > is read so it is strictly read-once.
+>
+> Isn't that what precious is for?
 
-So 2 percentage points better than my original idea?  Sweet.
+I never figured that one out. But I assume you are right.
 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 2b7ffcbca175..d44425820240 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3104,6 +3104,8 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->  				munlock_vma_page(old_page);
->  			unlock_page(old_page);
->  		}
-> +		if (page_copied)
-> +			free_swap_cache(old_page);
->  		put_page(old_page);
->  	}
->  	return page_copied ? VM_FAULT_WRITE : 0;
+Proper regmap semantics documentation is forthcoming! ;)
 
-Why not ...
-
-		if (page_copied)
-			free_page_and_swap_cache(old_page);
-		else
-			put_page(old_page);
-
-then you don't need to expose free_swap_cache().  Or does the test for
-huge_zero_page mess this up?
-
+Yours,
+Linus Walleij
