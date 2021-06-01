@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BBC397577
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A145D39757A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhFAOfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:35:53 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3111 "EHLO
+        id S234142AbhFAOf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:35:59 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3112 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233924AbhFAOfw (ORCPT
+        with ESMTP id S233924AbhFAOfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:35:52 -0400
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvZ976ssJz6M4NR;
-        Tue,  1 Jun 2021 22:21:47 +0800 (CST)
+        Tue, 1 Jun 2021 10:35:54 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FvZF1602Bz6T0qy;
+        Tue,  1 Jun 2021 22:25:09 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 16:34:09 +0200
+ 15.1.2176.2; Tue, 1 Jun 2021 16:34:11 +0200
 Received: from localhost.localdomain (10.69.192.58) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 15:34:06 +0100
+ 15.1.2176.2; Tue, 1 Jun 2021 15:34:09 +0100
 From:   John Garry <john.garry@huawei.com>
 To:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>
 CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
         <chenxiang66@hisilicon.com>, <linuxarm@huawei.com>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH v3 0/7] iommu: Allow IOVA rcache range be configured
-Date:   Tue, 1 Jun 2021 22:29:34 +0800
-Message-ID: <1622557781-211697-1-git-send-email-john.garry@huawei.com>
+Subject: [PATCH v3 1/7] iommu: Reactor iommu_group_store_type()
+Date:   Tue, 1 Jun 2021 22:29:35 +0800
+Message-ID: <1622557781-211697-2-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1622557781-211697-1-git-send-email-john.garry@huawei.com>
+References: <1622557781-211697-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.58]
@@ -42,70 +44,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For streaming DMA mappings involving an IOMMU and whose IOVA len regularly
-exceeds the IOVA rcache upper limit (meaning that they are not cached),
-performance can be reduced. 
+Function iommu_group_store_type() supports changing the default domain
+of an IOMMU group.
 
-This is much more pronounced from commit 4e89dce72521 ("iommu/iova: Retry
-from last rb tree node if iova search fails"), as discussed at [0].
+Many conditions need to be satisfied and steps taken for this action to be
+successful.
 
-IOVAs which cannot be cached are highly involved in the IOVA ageing issue,
-as discussed at [1].
+Satisfying these conditions and steps will be required for setting other
+IOMMU group attributes, so factor into a common part and a part specific
+to update the IOMMU group attribute.
 
-This series allows the IOVA rcache range be configured, so that we may
-cache all IOVAs per domain, thus improving performance.
+No functional change intended.
 
-A new IOMMU group sysfs file is added - max_opt_dma_size - which is used
-indirectly to configure the IOVA rcache range:
-/sys/kernel/iommu_groups/X/max_opt_dma_size
+Some code comments are tidied up also.
 
-This file is updated same as how the IOMMU group default domain type is
-updated, i.e. must unbind the only device in the group first.
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ drivers/iommu/iommu.c | 73 +++++++++++++++++++++++++++----------------
+ 1 file changed, 46 insertions(+), 27 deletions(-)
 
-The inspiration here comes from block layer request queue sysfs
-"optimal_io_size" file, in /sys/block/sdX/queue/optimal_io_size
-
-Some figures for storage scenario (when increasing IOVA rcache range to
-cover all DMA mapping sizes from the LLD):
-v5.13-rc1 baseline:			1200K IOPS
-With series:				1800K IOPS
-
-All above are for IOMMU strict mode. Non-strict mode gives ~1800K IOPS in
-all scenarios.
-
-[0] https://lore.kernel.org/linux-iommu/20210129092120.1482-1-thunder.leizhen@huawei.com/
-[1] https://lore.kernel.org/linux-iommu/1607538189-237944-1-git-send-email-john.garry@huawei.com/
-
-Differences to v2:
-- Drop DMA mapping API to allow LLD set set for now
-- Update default domain immediately, instead of in reprobe
-- Fix build warning
-
-Differences to v1:
-- Many
-- Change method to not operate on a 'live' IOMMU domain:
-	- rather, force device driver to be re-probed once
-	  dma_max_opt_size is set, and reconfig a new IOMMU group then
-- Add iommu sysfs max_dma_opt_size file, and allow updating same as how
-  group type is changed 
-
-John Garry (7):
-  iommu: Reactor iommu_group_store_type()
-  iova: Allow rcache range upper limit to be flexible
-  iommu: Allow iommu_change_dev_def_domain() realloc default domain for
-    same type
-  iova: Add iova_domain_len_is_cached()
-  iova: Add init_iova_domain_ext()
-  iommu: Allow max opt DMA len be set for a group via sysfs
-  dma-iommu: Use init_iova_domain_ext() for IOVA domain init
-
- drivers/iommu/dma-iommu.c |  17 +++-
- drivers/iommu/iommu.c     | 172 ++++++++++++++++++++++++++------------
- drivers/iommu/iova.c      |  63 +++++++++++---
- include/linux/iommu.h     |   6 ++
- include/linux/iova.h      |  21 ++++-
- 5 files changed, 210 insertions(+), 69 deletions(-)
-
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 808ab70d5df5..4d12b607918c 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -3169,20 +3169,23 @@ static int iommu_change_dev_def_domain(struct iommu_group *group,
+ }
+ 
+ /*
+- * Changing the default domain through sysfs requires the users to ubind the
+- * drivers from the devices in the iommu group. Return failure if this doesn't
+- * meet.
++ * Changing the default domain or any other IOMMU group attribute through sysfs
++ * requires the users to unbind the drivers from the devices in the IOMMU group.
++ * Return failure if this precondition is not met.
+  *
+  * We need to consider the race between this and the device release path.
+  * device_lock(dev) is used here to guarantee that the device release path
+  * will not be entered at the same time.
+  */
+-static ssize_t iommu_group_store_type(struct iommu_group *group,
+-				      const char *buf, size_t count)
++static ssize_t iommu_group_store_common(struct iommu_group *group,
++					const char *buf, size_t count,
++					int (*cb)(const char *buf,
++						  struct iommu_group *group,
++						  struct device *dev))
+ {
+ 	struct group_device *grp_dev;
+ 	struct device *dev;
+-	int ret, req_type;
++	int ret;
+ 
+ 	if (!capable(CAP_SYS_ADMIN) || !capable(CAP_SYS_RAWIO))
+ 		return -EACCES;
+@@ -3190,25 +3193,16 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+ 	if (WARN_ON(!group))
+ 		return -EINVAL;
+ 
+-	if (sysfs_streq(buf, "identity"))
+-		req_type = IOMMU_DOMAIN_IDENTITY;
+-	else if (sysfs_streq(buf, "DMA"))
+-		req_type = IOMMU_DOMAIN_DMA;
+-	else if (sysfs_streq(buf, "auto"))
+-		req_type = 0;
+-	else
+-		return -EINVAL;
+-
+ 	/*
+ 	 * Lock/Unlock the group mutex here before device lock to
+-	 * 1. Make sure that the iommu group has only one device (this is a
++	 * 1. Make sure that the IOMMU group has only one device (this is a
+ 	 *    prerequisite for step 2)
+ 	 * 2. Get struct *dev which is needed to lock device
+ 	 */
+ 	mutex_lock(&group->mutex);
+ 	if (iommu_group_device_count(group) != 1) {
+ 		mutex_unlock(&group->mutex);
+-		pr_err_ratelimited("Cannot change default domain: Group has more than one device\n");
++		pr_err_ratelimited("Cannot change IOMMU group default domain attribute: Group has more than one device\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -3220,16 +3214,16 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+ 	/*
+ 	 * Don't hold the group mutex because taking group mutex first and then
+ 	 * the device lock could potentially cause a deadlock as below. Assume
+-	 * two threads T1 and T2. T1 is trying to change default domain of an
+-	 * iommu group and T2 is trying to hot unplug a device or release [1] VF
+-	 * of a PCIe device which is in the same iommu group. T1 takes group
+-	 * mutex and before it could take device lock assume T2 has taken device
+-	 * lock and is yet to take group mutex. Now, both the threads will be
+-	 * waiting for the other thread to release lock. Below, lock order was
+-	 * suggested.
++	 * two threads, T1 and T2. T1 is trying to change default domain
++	 * attribute of an IOMMU group and T2 is trying to hot unplug a device
++	 * or release [1] VF of a PCIe device which is in the same IOMMU group.
++	 * T1 takes the group mutex and before it could take device lock T2 may
++	 * have taken device lock and is yet to take group mutex. Now, both the
++	 * threads will be waiting for the other thread to release lock. Below,
++	 * lock order was suggested.
+ 	 * device_lock(dev);
+ 	 *	mutex_lock(&group->mutex);
+-	 *		iommu_change_dev_def_domain();
++	 *		cb->iommu_change_dev_def_domain(); [example cb]
+ 	 *	mutex_unlock(&group->mutex);
+ 	 * device_unlock(dev);
+ 	 *
+@@ -3243,7 +3237,7 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+ 	 */
+ 	mutex_unlock(&group->mutex);
+ 
+-	/* Check if the device in the group still has a driver bound to it */
++	/* Check if the only device in the group still has a driver bound */
+ 	device_lock(dev);
+ 	if (device_is_bound(dev)) {
+ 		pr_err_ratelimited("Device is still bound to driver\n");
+@@ -3251,7 +3245,7 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+ 		goto out;
+ 	}
+ 
+-	ret = iommu_change_dev_def_domain(group, dev, req_type);
++	ret = (cb)(buf, group, dev);
+ 	ret = ret ?: count;
+ 
+ out:
+@@ -3260,3 +3254,28 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+ 
+ 	return ret;
+ }
++
++static int iommu_group_store_type_cb(const char *buf,
++				     struct iommu_group *group,
++				     struct device *dev)
++{
++	int type;
++
++	if (sysfs_streq(buf, "identity"))
++		type = IOMMU_DOMAIN_IDENTITY;
++	else if (sysfs_streq(buf, "DMA"))
++		type = IOMMU_DOMAIN_DMA;
++	else if (sysfs_streq(buf, "auto"))
++		type = 0;
++	else
++		return -EINVAL;
++
++	return iommu_change_dev_def_domain(group, dev, type);
++}
++
++static ssize_t iommu_group_store_type(struct iommu_group *group,
++				      const char *buf, size_t count)
++{
++	return iommu_group_store_common(group, buf, count,
++					iommu_group_store_type_cb);
++}
 -- 
 2.26.2
 
