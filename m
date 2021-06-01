@@ -2,163 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBD4397A77
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A5F397A79
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 21:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234763AbhFATKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 15:10:47 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:43746 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhFATKo (ORCPT
+        id S234714AbhFATMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 15:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233853AbhFATMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 15:10:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622574543; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=+bLsBPHU1LaIdCv04nFKLHzd65rHOKclCOVC2UEdtNU=;
- b=f5M8NMMCZ9jtZh/UEf1Q+1HGrdx+s9d9bwhBRyh0Ezeo1PFY7Gk4bPRN1eDWR2Kf0LDWSVYn
- uNpmfpjKyO5IUnTwqoNdNYed0fpneN8gYeuuA3aHAtilnchH8WtA2U2hEA5U1tIeIrtnw9WR
- jsKDtzSh023g+VrWxGi320nx3zw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60b685c281efe91cdafdcc29 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Jun 2021 19:08:50
- GMT
-Sender: sharathv=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4D6A5C4338A; Tue,  1 Jun 2021 19:08:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sharathv)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D5D2C433D3;
-        Tue,  1 Jun 2021 19:08:49 +0000 (UTC)
+        Tue, 1 Jun 2021 15:12:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0545C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 12:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=LCgeVYYC1zbzbCB+HR8hlhgoNfX1Llo03rabJZIASVE=; b=CgbtqyY5TLK4PK2zjTBtK7w2Uc
+        Ungj/LAldIOXVzKaDEG77+9ME7HPI+CNkkdnFn/bk+CdpiDQXeRoWHF7Rjg/rrEyzyzAEsEWZfD59
+        vNzMSPhlGqviF7D9xAeK/YYO4uC6zKkJu8k4hQPXNPmm0BLfemyyoH0Pgnq2P/9YRJtqXddwCN1YB
+        OUmSNveTEF6d71vw7HHJ5hoyS4gm2C84AWdnrnxsI3hmPyX7ZNY6q3cEmLCZPRq1E4YzIvm3PsfQL
+        K/RqdNxD3E5CseKhwjnpNy0n+6XORTTU82T/+t/9XN11sdRZ2bJ5QSU4izSklXoFCXZ904Dodk7JU
+        iSQ3CyMQ==;
+Received: from [2601:1c0:6280:3f0::ce7d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lo9mQ-000Xlz-IA; Tue, 01 Jun 2021 19:10:22 +0000
+Subject: Re: [PATCH] afs: add a return to afs_dir_set_page_dirty()
+To:     trix@redhat.com, dhowells@redhat.com, marc.dionne@auristor.com
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210601140820.2626615-1-trix@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5ddf7235-dd6c-d4c3-41a8-bc5a538ccd1e@infradead.org>
+Date:   Tue, 1 Jun 2021 12:10:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210601140820.2626615-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 02 Jun 2021 00:38:49 +0530
-From:   sharathv@codeaurora.org
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, elder@kernel.org, cpratapa@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v7 3/3] net: ethernet: rmnet: Add support for
- MAPv5 egress packets
-In-Reply-To: <20210528161131.5f7b9920@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <1622105322-2975-1-git-send-email-sharathv@codeaurora.org>
- <1622105322-2975-4-git-send-email-sharathv@codeaurora.org>
- <20210528161131.5f7b9920@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Message-ID: <bea88cea5094f7fec640a5d867b5a31a@codeaurora.org>
-X-Sender: sharathv@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-29 04:41, Jakub Kicinski wrote:
-> On Thu, 27 May 2021 14:18:42 +0530 Sharath Chandra Vurukala wrote:
->> Adding support for MAPv5 egress packets.
->> 
->> This involves adding the MAPv5 header and setting the 
->> csum_valid_required
->> in the checksum header to request HW compute the checksum.
->> 
->> Corresponding stats are incremented based on whether the checksum is
->> computed in software or HW.
->> 
->> New stat has been added which represents the count of packets whose
->> checksum is calculated by the HW.
->> 
->> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
+On 6/1/21 7:08 AM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
->> +static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
->> +						struct rmnet_port *port,
->> +						struct net_device *orig_dev)
->> +{
->> +	struct rmnet_priv *priv = netdev_priv(orig_dev);
->> +	struct rmnet_map_v5_csum_header *ul_header;
->> +
->> +	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
->> +		return;
+> With gcc 10.3, this compile error is reported
+> dir.c: In function 'afs_dir_set_page_dirty':
+> dir.c:51:1: error: no return statement in function
+>   returning non-void [-Werror=return-type]
 > 
-> how can we get here if this condition is not met? Looks like defensive
-> programming.
+> Even though the code is unreachable, add a return
+> to silence the error.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+
+or this previous patch:
+  https://lore.kernel.org/lkml/20210327121624.194639-1-zhengzengkai@huawei.com/
+
+but for either of them, ack.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+thanks.
+
+> ---
+>  fs/afs/dir.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+> index 78719f2f567e..988766f88d8b 100644
+> --- a/fs/afs/dir.c
+> +++ b/fs/afs/dir.c
+> @@ -48,6 +48,7 @@ static void afs_dir_invalidatepage(struct page *page, unsigned int offset,
+>  static int afs_dir_set_page_dirty(struct page *page)
+>  {
+>  	BUG(); /* This should never happen. */
+> +	return -EINVAL;
+>  }
+>  
+>  const struct file_operations afs_dir_file_operations = {
 > 
 
-Yes we get here only for the MAPv5 case, as you think this is just a 
-defensive code.
-will remove this in next patch.
 
->> +	ul_header = skb_push(skb, sizeof(*ul_header));
-> 
-> Are you making sure you can modify head? I only see a check if there is
-> enough headroom but not if head is writable (skb_cow_head()).
-> 
+-- 
+~Randy
 
-TSkb_cow_head() changes will be done in the rmnet_map_egress_handler() 
-in the next patch.
-
->> +	memset(ul_header, 0, sizeof(*ul_header));
->> +	ul_header->header_info = 
->> u8_encode_bits(RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD,
->> +						MAPV5_HDRINFO_HDR_TYPE_FMASK);
-> 
-> Is prepending the header required even when packet doesn't need
-> checksuming?
-> 
->> +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
->> +		void *iph = (char *)ul_header + sizeof(*ul_header);
-> 
-> ip_hdr(skb)
-> 
-
->> +		__sum16 *check;
->> +		void *trans;
->> +		u8 proto;
->> +
->> +		if (skb->protocol == htons(ETH_P_IP)) {
->> +			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
->> +
->> +			proto = ((struct iphdr *)iph)->protocol;
->> +			trans = iph + ip_len;
->> +		} else if (skb->protocol == htons(ETH_P_IPV6)) {
->> +#if IS_ENABLED(CONFIG_IPV6)
->> +			u16 ip_len = sizeof(struct ipv6hdr);
->> +
->> +			proto = ((struct ipv6hdr *)iph)->nexthdr;
->> +			trans = iph + ip_len;
->> +#else
->> +			priv->stats.csum_err_invalid_ip_version++;
->> +			goto sw_csum;
->> +#endif /* CONFIG_IPV6 */
->> +		} else {
->> +			priv->stats.csum_err_invalid_ip_version++;
->> +			goto sw_csum;
->> +		}
->> +
->> +		check = rmnet_map_get_csum_field(proto, trans);
->> +		if (check) {
->> +			skb->ip_summed = CHECKSUM_NONE;
->> +			/* Ask for checksum offloading */
->> +			ul_header->csum_info |= MAPV5_CSUMINFO_VALID_FLAG;
->> +			priv->stats.csum_hw++;
->> +			return;
-> 
-> Please try to keep the success path unindented.
-> 
-
-Sure will take care of these comments in next patch.
->> +		}
->> +	}
->> +
->> +sw_csum:
->> +	priv->stats.csum_sw++;
->> +}
