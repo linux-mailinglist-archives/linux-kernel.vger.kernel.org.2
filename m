@@ -2,143 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CF03973E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6893973EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhFANMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:12:41 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3367 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233768AbhFANMj (ORCPT
+        id S233909AbhFANNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233409AbhFANNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:12:39 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FvXW34ZMTz67Pr;
-        Tue,  1 Jun 2021 21:07:11 +0800 (CST)
-Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 21:10:55 +0800
-Received: from [10.174.185.220] (10.174.185.220) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 21:10:54 +0800
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Jason Gunthorpe" <jgg@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-CC:     Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <c9c066ae-2a25-0799-51a7-0ca47fff41a1@huawei.com>
- <aa1624bf-e472-2b66-1d20-54ca23c19fd2@linux.intel.com>
- <ed4f6e57-4847-3ed2-75de-cea80b2fbdb8@huawei.com>
- <01fe5034-42c8-6923-32f1-e287cc36bccc@linux.intel.com>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <b343c294-e097-0c94-e480-4dde80c308d1@huawei.com>
-Date:   Tue, 1 Jun 2021 21:10:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 1 Jun 2021 09:13:41 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D174EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:11:58 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id m23so2216082uao.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7077Dyh+YDGnNAVDGqIhJHPedBuZ0QWG2BmwzLYPyOE=;
+        b=mOWF2fH4vzpM4K88hASPlljlknDxGCqVikan6nD+g6eIBhCloQZwCoOlhNph8a9avb
+         PJjl8LES9abQWrxfzSNfh8/FXZTXPTqwJzccU8qlsjvF/IDdsLrT8N2hs/EzAmkGLDqi
+         kYS0f0MCle0u6YpmeubmqivlSYpYO1VwMVOEY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7077Dyh+YDGnNAVDGqIhJHPedBuZ0QWG2BmwzLYPyOE=;
+        b=U/F9HZl08uS8ntWW5rCp9t5g3ltdQMilcrAf3OfCmo7+SNGO2Hk0crvcjYxCfhqGXI
+         wLp6P+w3h9nNmtcot+T/sc60eNIFr+wlSkx3o3utdYhpxkxFISYWA92Gx96cmENMgczA
+         g9YaVttC8jqWEZvHsJGwd8E36EsBGePp2KNVvVXeBa5baareRyEcOq6GqRErCCdLZVPW
+         qoDvcP0zs+xbmBvztqgCaPdUguKJp4tvYH6Q29Jl6D0+xhgOnUx2v8TC80qBkdc+shE4
+         o9WopzFPsBRMHeRa7Qg/c0R0RbxGhxxtWC1cWrQDuCVb4sJQLKg2bb3yJWFsIXlfWNan
+         VWSw==
+X-Gm-Message-State: AOAM5332036u/kvEgwoW4kFi3k4fxqAgSXCCmps15gAbhsVoMibCx2cr
+        O13GTBYJHztuymgkb56mBJWxtQzVo2H+iBBDW7KKhQ==
+X-Google-Smtp-Source: ABdhPJzOiGtl010Vi+hi7PV0RZgu51OPFYuSBEL/0eqeynMnkCMAjPcyXnals/v8+1/iVL2IMiV18T8hp94QcaKQ6Bo=
+X-Received: by 2002:ab0:2690:: with SMTP id t16mr14884741uao.9.1622553118062;
+ Tue, 01 Jun 2021 06:11:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <01fe5034-42c8-6923-32f1-e287cc36bccc@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.220]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500022.china.huawei.com (7.185.36.162)
-X-CFilter-Loop: Reflected
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+ <162218365578.34379.12523496660412609287.stgit@web.messagingengine.com>
+In-Reply-To: <162218365578.34379.12523496660412609287.stgit@web.messagingengine.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 1 Jun 2021 15:11:47 +0200
+Message-ID: <CAJfpeguSnA-At8Jca0Ge0aytC22Gb5YmKpxbEy82rR7btczh5Q@mail.gmail.com>
+Subject: Re: [REPOST PATCH v4 3/5] kernfs: switch kernfs to use an rwsem
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/1 20:30, Lu Baolu wrote:
-> On 2021/6/1 15:15, Shenming Lu wrote:
->> On 2021/6/1 13:10, Lu Baolu wrote:
->>> Hi Shenming,
->>>
->>> On 6/1/21 12:31 PM, Shenming Lu wrote:
->>>> On 2021/5/27 15:58, Tian, Kevin wrote:
->>>>> /dev/ioasid provides an unified interface for managing I/O page tables for
->>>>> devices assigned to userspace. Device passthrough frameworks (VFIO, vDPA,
->>>>> etc.) are expected to use this interface instead of creating their own logic to
->>>>> isolate untrusted device DMAs initiated by userspace.
->>>>>
->>>>> This proposal describes the uAPI of /dev/ioasid and also sample sequences
->>>>> with VFIO as example in typical usages. The driver-facing kernel API provided
->>>>> by the iommu layer is still TBD, which can be discussed after consensus is
->>>>> made on this uAPI.
->>>>>
->>>>> It's based on a lengthy discussion starting from here:
->>>>>      https://lore.kernel.org/linux-iommu/20210330132830.GO2356281@nvidia.com/
->>>>>
->>>>> It ends up to be a long writing due to many things to be summarized and
->>>>> non-trivial effort required to connect them into a complete proposal.
->>>>> Hope it provides a clean base to converge.
->>>>>
->>>> [..]
->>>>
->>>>> /*
->>>>>     * Page fault report and response
->>>>>     *
->>>>>     * This is TBD. Can be added after other parts are cleared up. Likely it
->>>>>     * will be a ring buffer shared between user/kernel, an eventfd to notify
->>>>>     * the user and an ioctl to complete the fault.
->>>>>     *
->>>>>     * The fault data is per I/O address space, i.e.: IOASID + faulting_addr
->>>>>     */
->>>> Hi,
->>>>
->>>> It seems that the ioasid has different usage in different situation, it could
->>>> be directly used in the physical routing, or just a virtual handle that indicates
->>>> a page table or a vPASID table (such as the GPA address space, in the simple
->>>> passthrough case, the DMA input to IOMMU will just contain a Stream ID, no
->>>> Substream ID), right?
->>>>
->>>> And Baolu suggested that since one device might consume multiple page tables,
->>>> it's more reasonable to have one fault handler per page table. By this, do we
->>>> have to maintain such an ioasid info list in the IOMMU layer?
->>> As discussed earlier, the I/O page fault and cache invalidation paths
->>> will have "device labels" so that the information could be easily
->>> translated and routed.
->>>
->>> So it's likely the per-device fault handler registering API in iommu
->>> core can be kept, but /dev/ioasid will be grown with a layer to
->>> translate and propagate I/O page fault information to the right
->>> consumers.
->> Yeah, having a general preprocessing of the faults in IOASID seems to be
->> a doable direction. But since there may be more than one consumer at the
->> same time, who is responsible for registering the per-device fault handler?
-> 
-> The drivers register per page table fault handlers to /dev/ioasid which
-> will then register itself to iommu core to listen and route the per-
-> device I/O page faults. This is just a top level thought. Haven't gone
-> through the details yet. Need to wait and see what /dev/ioasid finally
-> looks like.
+On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net> wrote:
+>
+> The kernfs global lock restricts the ability to perform kernfs node
+> lookup operations in parallel during path walks.
+>
+> Change the kernfs mutex to an rwsem so that, when opportunity arises,
+> node searches can be done in parallel with path walk lookups.
 
-OK. And it needs to be confirmed by Jean since we might migrate the code from
-io-pgfault.c to IOASID... Anyway, finalize /dev/ioasid first.  Thanks,
+I don't see how this could have any drawbacks.
 
-Shenming
-
-> 
-> Best regards,
-> baolu
-> .
+Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
