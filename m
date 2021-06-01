@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9716C3973C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972393973CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhFANGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:06:39 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:38728 "EHLO vps0.lunn.ch"
+        id S233904AbhFANH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233905AbhFANGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:06:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=1nlyDUEZQwgAaoaZn/Zf38Ai9ligQ5XU00uvWa0IyRo=; b=ldePIHyiDH9JQeGLucmWsxSu58
-        KAxlYi0h7zPGSssVPnhFtrG6wzD+HfzktSxy5WQSyh1DR3kCBBMEMDmMr0AdPYSJ33BprG9nXMULt
-        X2RNxCDQe+LGxd7/FjJCvo1p3gb5yIJEKADV/ysWHaBjjhywmwmbroBDpVPLD7R07/w0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lo44h-007I14-HY; Tue, 01 Jun 2021 15:04:51 +0200
-Date:   Tue, 1 Jun 2021 15:04:51 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        id S233064AbhFANH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:07:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDF9860233;
+        Tue,  1 Jun 2021 13:06:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622552775;
+        bh=4xRwXmuVtxkf59vg6MQ7DuHfHb4DjP2d4tmgPEoKbb4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iKfhf68IQnU7z6ThowHafzPAmy/mjgPC+63A/sK/ZcBLaF/pLZuTpOOL/W7DHhxoj
+         V1cCegL0pZhANPKSmTKIkKhfoKv3So5u3JSgWKs9zzaH2pGPl0Mf/K0o8E++evvj2D
+         zG5Y2Y5hTHZRSqjaX+lZejH0JRG4DwBFlCvxGoAoWbXNEEgD0533wHmAenfg49r150
+         DqgxPCrOqcu2XxV460aHCzKrNr8DbJ8QDp1G0anrILiRujFJIoJrHwym/Fy1DQJEKk
+         JU/vuyPKE1OSrawbIx7GjXMKu9WNeIm5kViDlcPxLZz9kdyr5sc4v7J3n9asV4JkgO
+         6uZvZF7ldROog==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 029CC4011C; Tue,  1 Jun 2021 10:06:11 -0300 (-03)
+Date:   Tue, 1 Jun 2021 10:06:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
-Message-ID: <YLYwcx3aHXFu4n5C@lunn.ch>
-References: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
- <YKz86iMwoP3VT4uh@lunn.ch>
- <20210601104734.GA18984@linux.intel.com>
+Subject: Re: [PATCH 00/13] perf scripting python: Add insn, srcline and
+ srccode
+Message-ID: <YLYww32pSoB8sW1d@kernel.org>
+References: <20210530192308.7382-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210601104734.GA18984@linux.intel.com>
+In-Reply-To: <20210530192308.7382-1-adrian.hunter@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 06:47:34PM +0800, Wong Vee Khee wrote:
-> On Tue, May 25, 2021 at 03:34:34PM +0200, Andrew Lunn wrote:
-> > On Tue, May 25, 2021 at 01:58:03PM +0800, Wong Vee Khee wrote:
-> > > Synopsys MAC controller is capable of pairing with external PHY devices
-> > > that accessible via Clause-22 and Clause-45.
-> > > 
-> > > There is a problem when it is paired with Marvell 88E2110 which returns
-> > > PHY ID of 0 using get_phy_c22_id(). We can add this check in that
-> > > function, but this will break swphy, as swphy_reg_reg() return 0. [1]
-> > 
-> > Is it possible to identify it is a Marvell PHY? Do any of the other
-> > C22 registers return anything unique? I'm wondering if adding
-> > .match_phy_device to genphy would work to identify it is a Marvell PHY
-> > and not bind to it. Or we can turn it around, make the
-> > .match_phy_device specifically look for the fixed-link device by
-> > putting a magic number in one of the vendor registers.
-> >
+Em Sun, May 30, 2021 at 10:22:55PM +0300, Adrian Hunter escreveu:
+> Hi
 > 
-> I checked the Marvell and did not see any unique register values.
-> Also, since get_phy_c22_id() returns a *phy_id== 0, it is not bind to
-> any PHY driver, so I don't think adding the match_phy_device check in
-> getphy would help.
+> Here are some patches to add insn, srcline and srccode to python scripting.
+> In addition, it is made possible for a script to set itrace options.
+> 
+> The first 2 patches are minor tidy-ups.  The next 3 are additions to
+> scripting_context. The next 5 add new methods that python scripts can call.
+> 
+> Then there is a patch to the perf scripting python documentation.
+> 
+> And finally 2 patches add to the intel-pt-events.py script as an example.
 
-It has a Marvell ID in C45 space. So maybe we need to special case for
-ID 0. If we get that, go look in C45 space. If we find a valid ID, use
-it. If we get EOPNOTSUP because the MDIO bus is not C45 capable, or we
-don't find a vendor ID in C45 space, keep with id == 0 and load
-genphy?
+Thanks, applied.
 
-The other option is consider the PHY broken, and require that you put
-the correct ID in DT as the compatible string. The correct driver will
-then be loaded, based on the compatible string, rather than what is
-found by probing.
+- Arnaldo
 
-      Andrew
+ 
+> 
+> Adrian Hunter (13):
+>       perf scripting python: Remove unnecessary 'static'
+>       perf scripting python: Simplify perf-trace-context module functions
+>       perf scripting: Add scripting_context__update()
+>       perf scripting: Add perf_session to scripting_context
+>       perf scripting python: Assign perf_script_context
+>       perf script: Factor out script_fetch_insn()
+>       perf scripting python: Add perf_sample_insn()
+>       perf auxtrace: Factor out itrace_do_parse_synth_opts()
+>       perf scripting python: Add perf_set_itrace_options()
+>       perf scripting python: Add perf_sample_srcline() and perf_sample_srccode()
+>       perf scripting python: Update documentation for srcline etc
+>       perf scripting python: exported-sql-viewer.py: Factor out libxed.py
+>       perf scripting python: intel-pt-events.py: Add --insn-trace and --src-trace
+> 
+>  tools/perf/Documentation/perf-intel-pt.txt         |   6 +-
+>  tools/perf/Documentation/perf-script-python.txt    |  46 +++++-
+>  tools/perf/builtin-script.c                        |  12 +-
+>  .../perf/scripts/python/Perf-Trace-Util/Context.c  | 168 +++++++++++++++++---
+>  tools/perf/scripts/python/exported-sql-viewer.py   |  89 +----------
+>  tools/perf/scripts/python/intel-pt-events.py       | 176 ++++++++++++++++++---
+>  tools/perf/scripts/python/libxed.py                | 107 +++++++++++++
+>  tools/perf/util/auxtrace.c                         |  10 +-
+>  tools/perf/util/auxtrace.h                         |  10 ++
+>  .../perf/util/scripting-engines/trace-event-perl.c |  11 +-
+>  .../util/scripting-engines/trace-event-python.c    |  37 ++++-
+>  tools/perf/util/trace-event-scripting.c            |  27 +++-
+>  tools/perf/util/trace-event.h                      |  20 ++-
+>  13 files changed, 568 insertions(+), 151 deletions(-)
+>  create mode 100644 tools/perf/scripts/python/libxed.py
+> 
+> 
+> Regards
+> Adrian
+
+-- 
+
+- Arnaldo
