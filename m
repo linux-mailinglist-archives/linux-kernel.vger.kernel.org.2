@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70C03975C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFBE3975C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhFAOuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        id S234286AbhFAOuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbhFAOuL (ORCPT
+        with ESMTP id S233797AbhFAOuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:50:11 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0612EC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 07:48:30 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id h12-20020a05600c350cb029019fae7a26cdso34705wmq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:48:29 -0700 (PDT)
+        Tue, 1 Jun 2021 10:50:16 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F65C061574;
+        Tue,  1 Jun 2021 07:48:33 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so14373017oth.8;
+        Tue, 01 Jun 2021 07:48:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VBC6p0CYeTEs8LBPbXWO6qCXW99P1wQJJOQ5N5i01VQ=;
-        b=f55fOyvgfKVrMZ6UQnW/TFJ97BT7PIjrBGSrf0ub+jmYIYveM/SacTYD/ffCi1gMvy
-         dx8UoLwj0/giE/LRl2F15A3HRxak29o+Efm4mX1g3WkiptBHirjkOvAGxhY/pVV9gX6/
-         gUBj6RiAzW/jZRPUduBuSH6Z2R79khEBSKbSbbvDcmAJ6htuMk7Qo7PuTod9CVLY4JRd
-         a+sqCtPYJDudohhGXcdBN2TthfFLDOcngAhN62joNzcfa1dok5sj7cvtH0QQIbxyK5Ig
-         na4SoYMk27DwSowOCkNqj/TsnC8Zcge5EOt8x5elNcfKnBmG9Mm8p+8IMaH7iiwLMwRa
-         +dzw==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Kj6ioPeCLs4B4BFisWU9q6uXkqmgdZ9EHR/xw+SastY=;
+        b=DHzKqXNPdhx9CUOqPzR7heC1sbMC5Af0QQxq302XggNVGsl9pAdUyjsk5ijXNUxyTV
+         twkZ9XrnRvIHDojV4Nev0csoiDN3O24HtrLhlJaiFFBBLJY4mDq8cZif3gjIiiA6XAtr
+         VkfzfOFDI9YIDzIU6NE/jNA1bIF/xqICfXomQ7yW4C0LJeQPO8MRxmxeURmMnq23QW+H
+         FZ31L2MeBxgImAoFOGROX2wgkzf2lVcJbgOou6hr/Rf4VKCGuBa7FLs16+WM0wM1+2Hj
+         i2SWKmKSY/bJoX64G+zWmlLR7GKjSXbdcEdSTM5rJOij90Je1AEg03xuEfh/QJaEhMgg
+         YKyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VBC6p0CYeTEs8LBPbXWO6qCXW99P1wQJJOQ5N5i01VQ=;
-        b=TOAlIKDKTaWHRD69OyTuQ0lgxmi1DURKCoTMjfqAxRhLn2XDX8BryETpDeXByRkRlN
-         1ojd0yMsbdwEyn1U31Lu3GE91c86G1GZxB9HAVD8Y9yg67SnSAqfMd1YatotJUmYmr7p
-         R4f5QChEHkoVtuBSE18RODCzmljiwtetJ3e5LdSWBHCcfkDrA2jXPSIqXwb2WpSJwbiA
-         9xt2gWyQRXnMFnDMK2TpdTdsEWyK2lZx49d00hL7ZCE83CIMKEWT9gq9JoBHJ1wHPPDm
-         E328iA+u0w+z8Jc+tKtNCjVnqA9cv2D6W20MJ1LRYFq8MZj74OOB+DGE7itIfBLb8tGN
-         LkOg==
-X-Gm-Message-State: AOAM5303HoLvZ/FFRBE6hu8146efu14UvV9fal2y/iolEm6GsaLzqaUW
-        QEp4Nb+O1VZRZ0VQb0YV7J3lUw==
-X-Google-Smtp-Source: ABdhPJyKyx/OmLkVnsfXkw6GGCEzY1jkBlJAaOeO4cBcuvzhR67UEnNW8PWcyRlGmP0CkoTkW6pt6A==
-X-Received: by 2002:a1c:7218:: with SMTP id n24mr302581wmc.104.1622558908619;
-        Tue, 01 Jun 2021 07:48:28 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id h1sm3331865wmq.0.2021.06.01.07.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 07:48:28 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 15:48:26 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
- bindings
-Message-ID: <20210601144826.GI543307@dell>
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr>
- <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell>
- <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
- <20210526075255.GG4005783@dell>
- <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
- <20210601081933.GU543307@dell>
- <50ced58164999f51a8c8b9c8dc01468e@walle.cc>
- <20210601135816.GG543307@dell>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Kj6ioPeCLs4B4BFisWU9q6uXkqmgdZ9EHR/xw+SastY=;
+        b=pOB+iDNm8Ip1F7VBdmbe+j21+jNFNo+XKxJH5AXStz9C1N3bCgXg7baxx3F/VW+19W
+         DLVI+/eZAIiHlpb7GVTKmWXAd4Eg7eUAjJbCwIwzN8TrsFA0At3nsv7RUHQ9fmtpWtTb
+         DEplA5GoAuJoee//JT67n+CjOTuHd7eN8VVQS+9DQMNU2tZTwFxxxrUVpw8VBlFm7UXI
+         hPDbOnIj7ZdQ8AiuzKV58FtoKqO/MoXaGIZr8ytrKcWdIAiA3JeMJDzFpOZ7hIsSOh72
+         RRH7muAlVlM06ka3r38esojxhiAcaJq9wF87aTPRgdHVTrsREIWBlMsrV5zFLk6Ejmkg
+         fn8w==
+X-Gm-Message-State: AOAM53354mPTgeolv3+fG3tBT05BNqdbi1fVIqAAJywXMXs2V2XFXWDH
+        6ozjVBlX3sdyZwQ/MDoDan+aa8sPvbA=
+X-Google-Smtp-Source: ABdhPJz87NUsJRnakXomDD+00Fi6iPQl+pyAX9EU7bF0mwEqsYplck6GrJbY3mIEuj3HaGsaM22vYA==
+X-Received: by 2002:a9d:4584:: with SMTP id x4mr21151290ote.85.1622558912936;
+        Tue, 01 Jun 2021 07:48:32 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.22])
+        by smtp.googlemail.com with ESMTPSA id x29sm335254ott.68.2021.06.01.07.48.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 07:48:32 -0700 (PDT)
+Subject: Re: [PATCH net-next] vrf: Fix a typo
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>, dsahern@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210601141635.4131513-1-zhengyongjun3@huawei.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <61d4798a-67bf-f2f1-28a7-c2f2024d4759@gmail.com>
+Date:   Tue, 1 Jun 2021 08:48:30 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210601141635.4131513-1-zhengyongjun3@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210601135816.GG543307@dell>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Jun 2021, Lee Jones wrote:
-
-> On Tue, 01 Jun 2021, Michael Walle wrote:
+On 6/1/21 8:16 AM, Zheng Yongjun wrote:
+> possibile  ==> possible
 > 
-> > Am 2021-06-01 10:19, schrieb Lee Jones:
-> > > Why do you require one single Regmap anyway?  Are they register banks
-> > > not neatly separated on a per-function basis?
-> > 
-> > AFAIK you can only have one I2C device driver per device, hence the
-> > simple-mfd-i2c.
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/net/vrf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Sorry, can you provide more detail.
+> diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
+> index 503e2fd7ce51..07eaef5e73c2 100644
+> --- a/drivers/net/vrf.c
+> +++ b/drivers/net/vrf.c
+> @@ -274,7 +274,7 @@ vrf_map_register_dev(struct net_device *dev, struct netlink_ext_ack *extack)
+>  	int res;
+>  
+>  	/* we pre-allocate elements used in the spin-locked section (so that we
+> -	 * keep the spinlock as short as possibile).
+> +	 * keep the spinlock as short as possible).
+>  	 */
+>  	new_me = vrf_map_elem_alloc(GFP_KERNEL);
+>  	if (!new_me)
+> 
 
-I'd still like further explanation to be sure, but if you mean what I
-think you mean then, no, I don't think that's correct.
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
-The point of simple-mfd-i2c is to provide an I2C device offering
-multiple functions, but does so via a non-separated/linear register-
-set, with an entry point and an opportunity to register its interwoven 
-bank of registers via Regmap.
-
-However, if you can get away with not registering your entire register
-set as a single Regmap chunk, then all the better.  This will allow
-you to use the OF provided 'simple-mfd' compatible instead.
-
-Now, if you're talking about Regmap not supporting multiple
-registrations with only a single I2C address, this *may* very well be
-the case, but IIRC, I've spoken to Mark about this previously and he
-said the extension to make this possible would be trivial.
-
-So we have to take this on a device-by-device basis an decide what is
-best at the time of submission.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
