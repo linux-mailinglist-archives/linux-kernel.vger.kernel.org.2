@@ -2,283 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112B2396F56
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E10396F63
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbhFAItZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233658AbhFAItW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:49:22 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9CFC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:47:41 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so1012079wmq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=e2iKj7zCwXw8DooKZ9IYIlYsyY7Y6y/Vqg6VLw15jxg=;
-        b=e4sXAJ4CT+RhoBPm5y8Hmq5oeKnrDZ/tN7WhPbI5OizOkDj/c4oLwhEO+bZdq2bY4T
-         RgJxhzwbYiWAj4uUztmmLCvsfw38GRF9gv4NRZuOTgRS38TsWX47dv7IE8mUoCCfiarR
-         Gn9Ij5YN7R5gQA6X7xCKWAXAvZlagmaiy2wtYew6PoqpztgTUVK5FuXGIkFQhWlOoXUX
-         ZEqm/VccWj0wIVlJ2f1fyW8Dz0kmFKIP2im6KPk5eRR+uOMiOi/uVzitNTc4R3pAz3LP
-         vl6ijEwbP8uludf0dExgdlFabHOl3Xnk0F5HnCrCV/IS0rkpJAmu0hUflCBKglBrpT7j
-         sC8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=e2iKj7zCwXw8DooKZ9IYIlYsyY7Y6y/Vqg6VLw15jxg=;
-        b=oddrNdNyKKrvXWFh9eGvdWJex8RHyqlOjweMKTQ/QE4um4L4/TQTOK0hwQ1xBXZI73
-         OKZI+KIykjRe2WMdMyMV+V9IY/yBTw/iA/9RyzBdf62Q9tms5zaS9XPdFkUy9THVCKgf
-         HEDXJQUTvV/pISuPWmvjzcYb8L5jZ14HJ155nCVohVCtG5UPBed4lhTYFBGooiqSK8Tr
-         9FhFYgwQEzEtmRhEl+XKx0SoLTHBomrUcI/dkHRW6UtSC0RKaVfw2fwHfnpaXxUDIE+b
-         EtIefGri7Pq8JiRJFSXtIPRVytzMJpHbiaQRYe3NEbl291vWIcQ539/ldVSHPoHfK5pq
-         YmXQ==
-X-Gm-Message-State: AOAM533wjgVWVufUGemdipbrwRS9dQymDi4iYXeDTGZ3ZUArmKOihzOu
-        iUs7QHx2iPY556031EQ3cNe24A==
-X-Google-Smtp-Source: ABdhPJx/igAFckTnXTnz6o7aF5Nn8EH6ONEImQdJrkqlAEOHqXHUuqWPcXbTujiEJaYApXzFrSQKdQ==
-X-Received: by 2002:a7b:c92e:: with SMTP id h14mr5653541wml.51.1622537259959;
-        Tue, 01 Jun 2021 01:47:39 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id z12sm21854339wmc.5.2021.06.01.01.47.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 01:47:39 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 09:47:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        michal.simek@xilinx.com, linux-kernel@vger.kernel.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 2/3] clocksource: Rewrite Xilinx AXI timer driver
-Message-ID: <20210601084734.GX543307@dell>
-References: <20210528214522.617435-1-sean.anderson@seco.com>
- <20210528214522.617435-2-sean.anderson@seco.com>
+        id S233379AbhFAIts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:49:48 -0400
+Received: from mga07.intel.com ([134.134.136.100]:45129 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233561AbhFAItj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:49:39 -0400
+IronPort-SDR: Plp4X3BqkkHDZUK4TEh+CqRwdaNSfBBddRHiLmlciDvkqPC4q21YqEPHQNeEJdUSL9gdq+Pnzf
+ rzNavRevziTQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="267381282"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="267381282"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 01:47:58 -0700
+IronPort-SDR: lrZRXcbg4/b7RscuTnXd4PtKeNIMa/vn4TqWFjEcs+W1ppUsVkOdTTO5jp6Gm1QXTaTQ19NsHV
+ hZd15I7lgNqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="437967726"
+Received: from sqa-gate.sh.intel.com (HELO robert-ivt.tsp.org) ([10.239.48.212])
+  by orsmga007.jf.intel.com with ESMTP; 01 Jun 2021 01:47:54 -0700
+From:   Robert Hoo <robert.hu@linux.intel.com>
+To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com, robert.hu@intel.com,
+        robert.hu@linux.intel.com
+Subject: [PATCH 00/15] KVM: Support Intel Key Locker
+Date:   Tue,  1 Jun 2021 16:47:39 +0800
+Message-Id: <1622537274-146420-1-git-send-email-robert.hu@linux.intel.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210528214522.617435-2-sean.anderson@seco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021, Sean Anderson wrote:
+This patch set is to support KVM virtualization of Key Locker feature
+[1][2].
 
-> This rewrites the Xilinx AXI timer driver to be more platform agnostic.
-> Some common code has been split off so it can be reused. These routines
-> currently live in drivers/mfd. The largest changes have taken place in the
-> initialization:
-> 
-> - We now support any number of timer devices, possibly with only one
->   counter each. The first counter will be used as a clocksource. Every
->   other counter will be used as a clockevent.
-> - We do not use timer_of_init because we need to perform some tasks in
->   between different stages. For example, we must ensure that ->read and
->   ->write are initialized before registering the irq. This can only happen
->   after we have gotten the register base (to detect endianness). We also
->   have a rather unusual clock initialization sequence in order to remain
->   backwards compatible. Due to this, it's ok for the initial clock request
->   to fail, and we do not want other initialization to be undone. Lastly, it
->   is more convenient to do one allocation for xilinx_clockevent_device than
->   to do one for timer_of and one for xilinx_timer_priv.
-> - We now pay attention to xlnx,count-width and handle smaller width timers.
->   The default remains 32.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> ---
-> This has been tested on microblaze qemu.
-> 
-> Changes in v4:
-> - Break out clock* drivers into their own file
-> 
->  arch/microblaze/kernel/Makefile    |   3 +-
->  arch/microblaze/kernel/timer.c     | 326 -----------------------------
->  drivers/clocksource/Kconfig        |  11 +
->  drivers/clocksource/Makefile       |   1 +
->  drivers/clocksource/timer-xilinx.c | 300 ++++++++++++++++++++++++++
->  drivers/mfd/Makefile               |   4 +
->  drivers/mfd/xilinx-timer.c         | 147 +++++++++++++
+Key Locker provides a mechanism to encrypt and decrypt data without
+directly providing AES key but a "handle" instead.
+Handles are essentially an encrypted form of those underlying real AES
+keys. "IWKey (Internal Wrapping Key)", loaded inside CPU, inaccessible from
+outside, is the key used to seal real AES Keys into handles.
+Thus, a real AES Key exists in memory for only a short period of time, when
+user is requesting a 'handle' from it. After that, the real AES Key can be
+erased, user then uses handle, with new Key Locker instructions, to perform
+AES encryption/decryption. By OS policy, usually, handles will be revoked
+after reboot, then any handles that may have been stolen should no longer
+be useful to the attacker after the reboot.
 
-I'm confused!
+IWKey, is the core of this framework. It is loaded into CPU by LOADIWKEY
+instruction, then inaccessible from CPU-outside anymore. LOADIWKEY is the
+only Key Locker instruction that will cause VM-exit (if we set so in VM
+Execution Control). When load IWKey into CPU, we can ask CPU further
+randomize it, if HW supports this.
+The IWKey can also be distributed among CPUs, rather than LOADIWKEY on each
+CPU, by: first backup IWKey to platform specific storage, then copy it on
+target CPU. The backup process is triggered by writing to MSR
+IA32_COPY_LOCAL_TO_PLATFORM. The restore process is triggered by writing to
+MSR IA32_COPY_PLATFORM_LOCAL.
 
->  include/linux/mfd/xilinx-timer.h   | 134 ++++++++++++
->  8 files changed, 598 insertions(+), 328 deletions(-)
->  delete mode 100644 arch/microblaze/kernel/timer.c
->  create mode 100644 drivers/clocksource/timer-xilinx.c
->  create mode 100644 drivers/mfd/xilinx-timer.c
->  create mode 100644 include/linux/mfd/xilinx-timer.h
+Virtualization Design
+Key Locker Spec [2] indicates virtualization limitations by current HW
+implementation.
+1) IWKey cannot be read from CPU after it's loaded (this is the nature of
+this feature) and only 1 copy of IWKey inside 1 CPU.
+2) Initial implementations may take a significant amount of time to perform
+a copy of IWKeyBackup to IWKey (via a write to MSR
+IA32_COPY_PLATFORM_LOCAL) so it may cause a significant performance impact
+to reload IWKey after each VM exit.
 
-[...]
+Due to above reasons, virtualization design makes below decisions
+1) don't expose HW randomize IWKey capability (CPUID.0x19.ECX[1]) to
+guest. As such, guest IWKey cannot be preserved by VMM across vCPU switch.
+(VMM cannot know what IWKey is set in physical CPU if HW randomized.)
+2) guests and host can only use Key Locker feature exclusively. [4] 
 
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright (C) 2021 Sean Anderson <sean.anderson@seco.com>
-> + *
-> + * For Xilinx LogiCORE IP AXI Timer documentation, refer to DS764:
-> + * https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v1_03_a/axi_timer_ds764.pdf
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/mfd/xilinx-timer.h>
-> +#include <linux/of.h>
-> +#include <asm/io.h>
+The virtualization implementation is generally straight forward
+1) On VM-Exit of guest 'LOADIWKEY', VMM stores the IWKey of that vCPU, and
+set in physical CPU on behalf.
+2) On each vCPU load/put, VMM is responsible to set IWKEY to pCPU or clear
+it.
+3) On guest backup local to platform operation, VMM traps the write
+   to MSR, and simulate the IWKey store process by store it in a KVM
+   scope area (kvm_arch), mark the success status in the shadow
+   msr_ia32_iwkey_backup_status and msr_ia32_copy_status.
+4) On guest copy from platform to local operation, VMM traps the write
+   to MSR and simulate the process by load kvm_arch.iwkey_backup to
+   vCPU.iwkey; and simulate the success status in the
+   shadow msr_ia32_copy_status.
+5) Guest read the 2 status MSRs will also be trapped and return the shadow
+   value.
+6) Other Key Locker instructions can run without VM-Exit in non-root mode.
 
-RED FLAG: You are not using the MFD API here.
+To the end, we don't suggest this feature to be migratable, as if so, IWKey
+would have to be exposed to user space, which would further weaken this
+feature's security significance.
 
-> +#define TCSR0	0x00
-> +#define TLR0	0x04
-> +#define TCR0	0x08
-> +#define TCSR1	0x10
-> +#define TLR1	0x14
-> +#define TCR1	0x18
-> +
-> +#define TCSR_MDT	BIT(0)
-> +#define TCSR_UDT	BIT(1)
-> +#define TCSR_GENT	BIT(2)
-> +#define TCSR_CAPT	BIT(3)
-> +#define TCSR_ARHT	BIT(4)
-> +#define TCSR_LOAD	BIT(5)
-> +#define TCSR_ENIT	BIT(6)
-> +#define TCSR_ENT	BIT(7)
-> +#define TCSR_TINT	BIT(8)
-> +#define TCSR_PWMA	BIT(9)
-> +#define TCSR_ENALL	BIT(10)
-> +#define TCSR_CASC	BIT(11)
-> +
-> +/* readl/writel wrappers to support BE systems */
-> +
-> +static u32 xilinx_ioread32be(const void __iomem *addr)
-> +{
-> +	return ioread32be(addr);
-> +}
-> +
-> +static void xilinx_iowrite32be(u32 value, void __iomem *addr)
-> +{
-> +	iowrite32be(value, addr);
-> +}
-> +
-> +static u32 xilinx_ioread32(const void __iomem *addr)
-> +{
-> +	return ioread32(addr);
-> +}
-> +
-> +static void xilinx_iowrite32(u32 value, void __iomem *addr)
-> +{
-> +	iowrite32(value, addr);
-> +}
+P.S. this patch set is based on Chang's Kernel Key Locker upstream-v2
+https://lore.kernel.org/lkml/20210514201508.27967-1-chang.seok.bae@intel.com/
 
-Abstraction for the sake of abstraction, is not allowed.
+Patch 1 ~ 3, x86 code, which lay the foundation of following KVM patches.
+Have been reviewed by Tony Luck.
+Patch 4 ~ 9, KVM enabling of Key Locker.
+Patch 10 ~ 15, nested VMX support for Key Locker.
 
-Just use the io*() calls directly in-place.
+[1] Intel Architecture Instruction Set Extensions Programming Reference:
+https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
 
-> +int xilinx_timer_tlr_cycles(struct xilinx_timer_priv *priv, u32 *tlr,
-> +			    u32 tcsr, u64 cycles)
-> +{
-> +	if (cycles < 2 || cycles > priv->max + 2)
-> +		return -ERANGE;
-> +
-> +	if (tcsr & TCSR_UDT)
-> +		*tlr = cycles - 2;
-> +	else
-> +		*tlr = priv->max - cycles + 2;
-> +
-> +	return 0;
-> +}
-> +
-> +int xilinx_timer_tlr_period(struct xilinx_timer_priv *priv, u32 *tlr,
-> +			    u32 tcsr, unsigned int period)
-> +{
-> +	u64 cycles = DIV_ROUND_DOWN_ULL((u64)period * clk_get_rate(priv->clk),
-> +					NSEC_PER_SEC);
-> +
-> +	return xilinx_timer_tlr_cycles(priv, tlr, tcsr, cycles);
-> +}
-> +
-> +unsigned int xilinx_timer_get_period(struct xilinx_timer_priv *priv,
-> +				     u32 tlr, u32 tcsr)
-> +{
-> +	u64 cycles;
-> +
-> +	if (tcsr & TCSR_UDT)
-> +		cycles = tlr + 2;
-> +	else
-> +		cycles = priv->max - tlr + 2;
-> +
-> +	return DIV_ROUND_UP_ULL(cycles * NSEC_PER_SEC,
-> +				clk_get_rate(priv->clk));
-> +}
-> +
-> +int xilinx_timer_common_init(struct device_node *np,
-> +			     struct xilinx_timer_priv *priv,
-> +			     u32 *one_timer)
-> +{
-> +	int ret;
-> +	u32 tcsr0, width;
-> +
-> +
-> +	priv->read = xilinx_ioread32;
-> +	priv->write = xilinx_iowrite32;
-> +	/*
-> +	 * If PWM mode is enabled, we should try not to disturb it. Use
-> +	 * CAPT since if PWM mode is enabled then MDT will be set as
-> +	 * well.
-> +	 *
-> +	 * First, clear CAPT and verify that it has been cleared
-> +	 */
-> +	tcsr0 = xilinx_timer_read(priv, TCSR0);
-> +	xilinx_timer_write(priv, tcsr0 & ~(TCSR_CAPT & swab(TCSR_CAPT)), TCSR0);
-> +	tcsr0 = xilinx_timer_read(priv, TCSR0);
-> +	if (tcsr0 & (TCSR_CAPT | swab(TCSR_CAPT))) {
-> +		pr_err("%pOF: cannot determine endianness\n", np);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	/* Then check to make sure our write sticks */
-> +	xilinx_timer_write(priv, tcsr0 | TCSR_CAPT, TCSR0);
-> +	if (!(xilinx_timer_read(priv, TCSR0) & TCSR_CAPT)) {
-> +		priv->read = xilinx_ioread32be;
-> +		priv->write = xilinx_iowrite32be;
-> +	}
-> +
-> +	ret = of_property_read_u32(np, "xlnx,one-timer-only", one_timer);
-> +	if (ret) {
-> +		pr_err("%pOF: err %d: xlnx,one-timer-only\n", np, ret);
-> +		return ret;
-> +	} else if (*one_timer && *one_timer != 1) {
-> +		pr_err("%pOF: xlnx,one-timer-only must be 0 or 1\n", np);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = of_property_read_u32(np, "xlnx,count-width", &width);
-> +	if (ret == -EINVAL) {
-> +		width = 32;
-> +	} else if (ret) {
-> +		pr_err("%pOF: err %d: xlnx,count-width\n", np, ret);
-> +		return ret;
-> +	} else if (width < 8 || width > 32) {
-> +		pr_err("%pOF: invalid counter width\n", np);
-> +		return -EINVAL;
-> +	}
-> +	priv->max = BIT_ULL(width) - 1;
-> +
-> +	return 0;
-> +}
+[2] Intel Key Locker Specification:
+https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html 
 
-This is *all* timer stuff.
+[3] Kernel enablement patch:
+https://lore.kernel.org/lkml/20201216174146.10446-1-chang.seok.bae@intel.com/
 
-What is your rationale for dumping this into MFD?
+[4] It's possible to use Key Locker by both the guest and host, albeit with
+reduced security benefits. I.e., store host IWKey in VMM scoped place
+(memory/register), VMM switches host-IWKey and guest-IWKey between
+VM-{Exit/Entry} by LOADIWKEY instruction.
+But in this case, an adversary that can observe arbitrary VMM memory may be
+able to steal both the handles and IWKey. And this case also require the
+VMM to be running before the first IWKey load.
+
+---
+Change log since last RFC patch set:
+* Don't loadiwkey every VM-Exit/Entry. (Sean Christopherson)
+* Don't enable Tertiary VM-Exec Control if using eVMCS, as its support in
+enlightened VMCS isn't ready yet. (Vitaly Kuznetsov)
+* Extended BUILD_CONTROLS_SHADOW to support 64-bit variation. (Sean
+Christopherson)
+* Refactored patch set and other changes.
+
+
+Hu, Robert (2):
+  kvm/vmx: Detect Tertiary VM-Execution control when setup VMCS config
+  kvm/vmx: dump_vmcs() reports tertiary_exec_control field as well
+
+Robert Hoo (13):
+  x86/keylocker: Move KEYSRC_{SW,HW}RAND to keylocker.h
+  x86/cpufeatures: Define Key Locker sub feature flags
+  x86/feat_ctl: Add new VMX feature, Tertiary VM-Execution control and  
+      LOADIWKEY Exiting
+  kvm/vmx: Extend BUILD_CONTROLS_SHADOW macro to support 64-bit
+    variation
+  kvm/vmx: Set Tertiary VM-Execution control field When init vCPU's VMCS
+  kvm/vmx: Add KVM support on guest Key Locker operations
+  kvm/cpuid: Enumerate Key Locker feature in KVM
+  kvm/vmx/nested: Support new IA32_VMX_PROCBASED_CTLS3 vmx capability
+    MSR
+  kvm/vmx: Implement vmx_compute_tertiary_exec_control()
+  kvm/vmx/vmcs12: Add Tertiary VM-Exec control field in vmcs12
+  kvm/vmx/nested: Support Tertiary VM-Exec control in vmcs02
+  kvm/vmx/nested: Support CR4.KL in nested
+  kvm/vmx/nested: Enable nested LOADIWKEY VM-exit
+
+ arch/x86/include/asm/cpufeatures.h |   5 +
+ arch/x86/include/asm/keylocker.h   |   3 +
+ arch/x86/include/asm/kvm_host.h    |  24 ++-
+ arch/x86/include/asm/msr-index.h   |   1 +
+ arch/x86/include/asm/vmx.h         |   9 ++
+ arch/x86/include/asm/vmxfeatures.h |   6 +-
+ arch/x86/include/uapi/asm/vmx.h    |   2 +
+ arch/x86/kernel/cpu/feat_ctl.c     |   9 ++
+ arch/x86/kernel/cpu/scattered.c    |   5 +
+ arch/x86/kernel/keylocker.c        |   2 -
+ arch/x86/kvm/cpuid.c               |  26 +++-
+ arch/x86/kvm/reverse_cpuid.h       |  32 +++-
+ arch/x86/kvm/vmx/capabilities.h    |   9 ++
+ arch/x86/kvm/vmx/evmcs.c           |   2 +
+ arch/x86/kvm/vmx/evmcs.h           |   1 +
+ arch/x86/kvm/vmx/nested.c          |  38 ++++-
+ arch/x86/kvm/vmx/nested.h          |   7 +
+ arch/x86/kvm/vmx/vmcs.h            |   1 +
+ arch/x86/kvm/vmx/vmcs12.c          |   1 +
+ arch/x86/kvm/vmx/vmcs12.h          |   4 +-
+ arch/x86/kvm/vmx/vmx.c             | 290 ++++++++++++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.h             |  24 +--
+ arch/x86/kvm/x86.c                 |   2 +
+ arch/x86/kvm/x86.h                 |   2 +
+ 24 files changed, 475 insertions(+), 30 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1.8.3.1
+
