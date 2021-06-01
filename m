@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007D43978A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2053978B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbhFAREs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        id S234561AbhFARIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234492AbhFAREq (ORCPT
+        with ESMTP id S231918AbhFARIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:04:46 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FA6C06174A;
-        Tue,  1 Jun 2021 10:03:04 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id g20so7359199ejt.0;
-        Tue, 01 Jun 2021 10:03:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pXMzv2dknDoL7JPkXn/TuXhQO+T7tuVSK8fCsQ1MDW8=;
-        b=cHbMRfl4PTGDrInu+kUlRDrhr2PnoLqGMeMqNrKQ1JzWd7gm1CZhbiz9YCkifNabEd
-         AcLiPA9zF03VRY49AL0ya+/76xJVk4CfuT6qX2mf3/JLbIYh6hQoHCbjVPhPsQ59t4zr
-         5L5iGMvZHbTqHh6cXXQ4B3fns4pf2fwjzVwuZHqg14wh87I8V6UdjdN7C0aDxur2nQr8
-         CiBaC6ynR8ikaT0goUqjpT3ai/IBoDVAVlN1t9J+bBLBEb2828SVLVkc1tSJUXeWp8QB
-         mKH348aa0nZpTkq3R4QMXTRWSU2kHjnmX1uVY7+MUd4azHj+86mco2zVA+fPKTup6qmy
-         02kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pXMzv2dknDoL7JPkXn/TuXhQO+T7tuVSK8fCsQ1MDW8=;
-        b=rcKEYKnnJKKcY5qlhVuPwH4EHS9KHbUTcYdzU07QiajYO9PEMjSb/mYfiVjL2D4cR0
-         DHWTUtJI8DP8giTkgsIPZ/dhP43uQaVCOHwyNSuY5amSDAoUQ6KJ8mmaFAxYA8YZqnLJ
-         YtZg4FJIv3ZaXfKMMzCSlEl4Ja4J8BbhkBmnHCMT43OUlmMoD26/zhIX8sWU8/+QXGyV
-         ItwKthWrMLFxIpTgCyb6LBkFOdI34S5glElCCEVmAc3Ru/GS4oyaN4Uwy6lc5H5qo151
-         ywz0y0+nuM82TPm0HQ1s6AlDK2Nbg1fwy5HdgUWXKM8cymptKAh/y45t9H6JWUUjwKCb
-         esGw==
-X-Gm-Message-State: AOAM5314KePDyticDWCfbdigbA6r7EFpjxF04KEexhghlX+U1iFn7zsc
-        I3RUMZRJtIBk9jBhnpgzzK3XxJZJPK8=
-X-Google-Smtp-Source: ABdhPJxFRqoyCy02GFAR+AFVjiWrab+UEWNxdzt+a9vFHSF/xWpgpZkGHP33AmKDJB9bQVvqAsXB6w==
-X-Received: by 2002:a17:906:f9d1:: with SMTP id lj17mr9644880ejb.345.1622566983014;
-        Tue, 01 Jun 2021 10:03:03 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id j1sm8775816edv.14.2021.06.01.10.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 10:03:01 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 19:04:37 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] PCI: tegra: Add missing MODULE_DEVICE_TABLE
-Message-ID: <YLZopfEiv+4uzH8J@orome.fritz.box>
-References: <1620792422-16535-1-git-send-email-zou_wei@huawei.com>
+        Tue, 1 Jun 2021 13:08:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0B5C061574;
+        Tue,  1 Jun 2021 10:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hA62la00vFMppd9s1AomcqtrMlyNDRJAkQFp1nXnFAg=; b=bhrq8HGvk2ZC9QEwuF3N+FtO15
+        D91cwCGObxRWpjhgo3KsDyZ/ccqpaKL1PKiqNJ6DyXoAd3sH8j3/v38LCVcvBBaQBBbuic3LwsDAJ
+        +8tAvC6xnAzAmA2HBRfvUbPq/pfObzWigW5VlFNHN6lhA+Gd/VRL+a5EXewYUpnCrHRxvkb1TzGlH
+        N401VSuO7kjeKd04aOalX52/LMQFAWweJvJvB+wz/rFUfpsnLI/iY+MRzMxnPT/d5GwzdRe7k/JbE
+        vf5bEBx1jR7MUlL5Kj0nk0aza5v71zysqRMPjrRoDA00lec1DdVTRanpocwFGdS/z1Iad8J2I7IBt
+        rFdK0zyg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lo7pK-00AEY3-91; Tue, 01 Jun 2021 17:05:15 +0000
+Date:   Tue, 1 Jun 2021 18:05:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Justin He <Justin.He@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH RFCv2 2/3] lib/vsprintf.c: make %pD print full path for
+ file
+Message-ID: <YLZoyjSJyzU5w1qO@casper.infradead.org>
+References: <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
+ <YLEDwFCPcFx+qeul@casper.infradead.org>
+ <AM6PR08MB437615DB6A6DEC33223A3138F7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
+ <YLEKqGkm8bX6LZfP@casper.infradead.org>
+ <AM6PR08MB43764764B52AAC7F05B71056F73E9@AM6PR08MB4376.eurprd08.prod.outlook.com>
+ <YLZSgZIcWyYTmqOT@casper.infradead.org>
+ <CAHp75VfYgEtJeiVp8b10Va54QShyg4DmWeufuB_WGC8C2SE2mQ@mail.gmail.com>
+ <YLZVwFh9MZJR3amM@casper.infradead.org>
+ <YLZX9oicn8u4ZVCl@smile.fi.intel.com>
+ <YLZcAesVG1SYL5fp@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wx+er7KiEyvePTDY"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620792422-16535-1-git-send-email-zou_wei@huawei.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <YLZcAesVG1SYL5fp@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 01, 2021 at 07:10:41PM +0300, Andy Shevchenko wrote:
+> On Tue, Jun 01, 2021 at 06:53:26PM +0300, Andy Shevchenko wrote:
+> > On Tue, Jun 01, 2021 at 04:44:00PM +0100, Matthew Wilcox wrote:
+> > > On Tue, Jun 01, 2021 at 06:36:41PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Jun 1, 2021 at 6:32 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > On Tue, Jun 01, 2021 at 02:42:15PM +0000, Justin He wrote:
+> > > > 
+> > > > ...
+> > > > 
+> > > > > Just don't put anything
+> > > > > in the buffer if the user didn't supply enough space.  As long as you
+> > > > > get the return value right, they know the string is bad (or they don't
+> > > > > care if the string is bad)
+> > > > 
+> > > > It might be that I'm out of context here, but printf() functionality
+> > > > in the kernel (vsprintf() if being precise)  and its users consider
+> > > > that it should fill buffer up to the end of whatever space is
+> > > > available.
+> > > 
+> > > Do they though?  What use is it to specify a small buffer, print a
+> > > large filename into it and then use that buffer, knowing that it wasn't
+> > > big enough?  That would help decide whether we should print the
+> > > start or the end of the filename.
+> > > 
+> > > Remember, we're going for usefulness here, not abiding by the letter of
+> > > the standard under all circumstances, no matter the cost.  At least
+> > > partially because we're far outside the standard here; POSIX does
+> > > not specify what %pD does.
+> > > 
+> > > "The argument shall be a pointer to void. The value of the
+> > > pointer is converted to a sequence of printable characters, in an
+> > > implementation-defined manner."
+> > 
+> > All nice words, but don't forget kasprintf() or other usages like this.
+> > For the same input we have to have the same result independently on the room in
+> > the buffer.
+> > 
+> > So, if I print "Hello, World" I should always get it, not "Monkey's Paw".
+> > I.o.w.
+> > 
+> >  snprintf(10) ==> "Hello, Wor"
+> >  snprintf(5)  ==> "Hello"
+> >  snprintf(2)  !=> "Mo"
+> >  snprintf(1)  !=> "M"
+> >  snprintf(1)  ==> "H"
+> > 
+> > Inconsistency here is really not what we want.
+> 
+> I have to add that in light of the topic those characters should be counted
+> from the end of the filename. So, we will give user as much as possible of useful
+> information. I.o.w. always print the last part of filename up to the buffer
+> size or if the filename is shorter than buffer we will have it in full.
 
---wx+er7KiEyvePTDY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, not monkey's paw, but donkey hoof then ...
 
-On Wed, May 12, 2021 at 12:07:02PM +0800, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/pci/controller/pci-tegra.c | 1 +
->  1 file changed, 1 insertion(+)
+Here's some examples, what do you think makes sense?
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+snprintf(buf, 16, "bad file '%pD'\n", q);
 
---wx+er7KiEyvePTDY
-Content-Type: application/pgp-signature; name="signature.asc"
+what content do you want buf to have when q is variously:
 
------BEGIN PGP SIGNATURE-----
+1. /abcd/efgh
+2. /a/bcdefgh.iso
+3. /abcdef/gh
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC2aKUACgkQ3SOs138+
-s6HcaA/+MbOXo1+hpebluYaY0ckMgHPeUfiGr7UgDbPk/LLG1Sa3B1++2nukfL9D
-UXowBEAQIp/VHDZDpmHBpjC1nHAhS3xzCSB29aCeeQI1juJ3mqAIYZgwwf0nTQuO
-r9b/ZaiLHTo9eJxnntI+Z8rL93UHFcdQW0CA8WEoqgp4IitzRU5AApJMR2b8tnzs
-AsG53CfZu5KRFrWvbfeZ7Urj/4vPMgvTg+K4OAElZxcFF4ylaET+w42dVAWpyliY
-h15TceleLv/71HQLpro5Ck/IGY8o4H9oYhWryD4KXT0/RsSVZX/xGH8fkiRHaeVD
-P2zpTOZ8NrOqcUU/bIf7V8kYiMHWnc+3YsCpRINT/eY/LOG+Vig7fhmuFYFMRzOb
-8vgEM8QPOnA1nAAA2asJ5bBny/f3XMDBp3Rt59yyA9C9QDJoEZOye6mIxilyrqfp
-9pRnc59zpdJqsgy40or20CetWGTvgIUm1wq9tr9UcIKK220qfNtrxtJ5uSTUdGw0
-rhvL950Mso9oXRegDnxk7bO51rsMZYMW1gZUBfDS6jqdSdElP/OPwj4vouUjcoY/
-nqgkO1MjWm39vWgP2JLSU8N3kMzzBiMX4O31TOee8Ta26gyllP1WNQ2RlMusH5un
-azG61F15EE43STxJmSEUCrjIPagUkCVtTvuzDJG7M2Iva+OCW7w=
-=9uNf
------END PGP SIGNATURE-----
-
---wx+er7KiEyvePTDY--
+I would argue that
+"bad file ''\n"
+is actually a better string to have than any of (case 2)
+"bad file '/a/bc"
+"bad file 'bcdef"
+"bad file 'h.iso"
