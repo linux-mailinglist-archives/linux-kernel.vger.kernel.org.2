@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C50396D63
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01B1396D74
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbhFAGfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 02:35:51 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2921 "EHLO
+        id S233054AbhFAGii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 02:38:38 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2922 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbhFAGfr (ORCPT
+        with ESMTP id S231375AbhFAGih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 02:35:47 -0400
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvMk337J0z64ZS;
-        Tue,  1 Jun 2021 14:31:07 +0800 (CST)
-Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
- dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 1 Jun 2021 14:34:04 +0800
-Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
- dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
- Tue, 1 Jun 2021 14:34:04 +0800
-From:   zhengyongjun <zhengyongjun3@huawei.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "trond.myklebust@hammerspace.com" <trond.myklebust@hammerspace.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIG5ldC1uZXh0XSB4cHJ0cmRtYTogRml4IHNwZWxsaW5n?=
- =?gb2312?Q?_mistakes?=
-Thread-Topic: [PATCH net-next] xprtrdma: Fix spelling mistakes
-Thread-Index: AQHXVeVpMNGWR7lJskGFmjxjGRAR5Kr+G62AgACYXYA=
-Date:   Tue, 1 Jun 2021 06:34:04 +0000
-Message-ID: <6b737fb5440d4fe3a53a163624d9cbf8@huawei.com>
-References: <20210531063640.3018843-1-zhengyongjun3@huawei.com>
- <20210531222719.3e742ed6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20210531222719.3e742ed6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.64]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Tue, 1 Jun 2021 02:38:37 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvMnL31lbz68Tw;
+        Tue,  1 Jun 2021 14:33:58 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 14:36:55 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 14:36:54 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] mfd: asic3: Use DEFINE_RES_MEM() and DEFINE_RES_IRQ() to simplify code
+Date:   Tue, 1 Jun 2021 14:36:48 +0800
+Message-ID: <20210601063648.9883-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U2hvdWxkIEkgcmVtb3ZlIG5ldC1uZXh0IHRhZyBhbmQgc2VuZCBwYXRjaCB2Mj8gV2FpdGluZyBm
-b3IgeW91ciBzdWdnZXN0IDopDQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiBKYWt1YiBL
-aWNpbnNraSBbbWFpbHRvOmt1YmFAa2VybmVsLm9yZ10gDQq3osvNyrG85DogMjAyMcTqNtTCMcjV
-IDEzOjI3DQrK1bz+yMs6IHpoZW5neW9uZ2p1biA8emhlbmd5b25nanVuM0BodWF3ZWkuY29tPg0K
-s63LzTogdHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbTsgYW5uYS5zY2h1bWFrZXJAbmV0
-YXBwLmNvbTsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsgbGludXgtbmZzQHZnZXIua2VybmVsLm9yZzsg
-bmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgYmZp
-ZWxkc0BmaWVsZHNlcy5vcmc7IGNodWNrLmxldmVyQG9yYWNsZS5jb20NCtb3zOI6IFJlOiBbUEFU
-Q0ggbmV0LW5leHRdIHhwcnRyZG1hOiBGaXggc3BlbGxpbmcgbWlzdGFrZXMNCg0KT24gTW9uLCAz
-MSBNYXkgMjAyMSAxNDozNjo0MCArMDgwMCBaaGVuZyBZb25nanVuIHdyb3RlOg0KPiBGaXggc29t
-ZSBzcGVsbGluZyBtaXN0YWtlcyBpbiBjb21tZW50czoNCj4gc3VjY2VzICA9PT4gc3VjY2Vzcw0K
-PiANCj4gU2lnbmVkLW9mZi1ieTogWmhlbmcgWW9uZ2p1biA8emhlbmd5b25nanVuM0BodWF3ZWku
-Y29tPg0KDQpUaGlzIHNob3VsZCBub3QgaGF2ZSBiZWVuIHRhZ2dlZCBmb3IgbmV0LW5leHQsIGxl
-YXZpbmcgaXQgdG8gVHJvbmQuDQo=
+No functional change.
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/mfd/asic3.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mfd/asic3.c b/drivers/mfd/asic3.c
+index a6bd2134cea2ae8..8d58c8df46cfb83 100644
+--- a/drivers/mfd/asic3.c
++++ b/drivers/mfd/asic3.c
+@@ -723,16 +723,8 @@ static struct tmio_mmc_data asic3_mmc_data = {
+ };
+ 
+ static struct resource asic3_mmc_resources[] = {
+-	{
+-		.start = ASIC3_SD_CTRL_BASE,
+-		.end   = ASIC3_SD_CTRL_BASE + 0x3ff,
+-		.flags = IORESOURCE_MEM,
+-	},
+-	{
+-		.start = 0,
+-		.end   = 0,
+-		.flags = IORESOURCE_IRQ,
+-	},
++	DEFINE_RES_MEM(ASIC3_SD_CTRL_BASE, 0x400),
++	DEFINE_RES_IRQ(0)
+ };
+ 
+ static int asic3_mmc_enable(struct platform_device *pdev)
+-- 
+2.26.0.106.g9fadedd
+
+
