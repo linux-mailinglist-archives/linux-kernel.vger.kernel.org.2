@@ -2,197 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763B4396FE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C901F396FEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 11:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhFAJIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 05:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233301AbhFAJH5 (ORCPT
+        id S233672AbhFAJII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 05:08:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44258 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231139AbhFAJIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 05:07:57 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB66BC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 02:06:16 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id d9so8359207ioo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:06:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ekE+dxAB6Ci5Gjbh4XABVLj4ahXXOJ1oOcI27j00W5Q=;
-        b=z5Nrkir5ExF/hl688SIDMC0pJRBvAxGQooLpvjx8EytfaG3IJIfemRIn/LGFySLJh+
-         GucpPpBvnd/Z3piK4Es7/7JCQsG9K0hBP17n93QyDMXoBPmCEC3J4Yl/XgWoy5wW4N2N
-         0ML7hQxFSnbovbYEEJ0HAELR2jl4jYoF76d26qW8Pym2coBehm7EywIQfM5f6r0J5w9l
-         bX1logSgwWDRanVY2aveeP86+/bw7dynWZ1iI3qy8bf/Dj8FBr1rm/h/JiyO5jTkuLqN
-         ymC7zeo+rt4/lSj+0O6HKXayLPmr8ccYgesg2cJRTnTH+iWen3F8sRjkuW7FQ410Rd05
-         u8Eg==
+        Tue, 1 Jun 2021 05:08:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622538383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TC49diZ8yvtNeRfoDHho9BsiKWB6WeW1SJE0j6cAKdU=;
+        b=LNzbskb221IDRNS7eTBI68JLiDh5WxTN4LJUgYjQqz0GmpLWYurltMapETTHgP7Z9XwqzF
+        dWeM4EnII/wJUkBniwFY0wsMq5g9EXSyCc0jjfvq8O7VLpJFb3AWPc1k4Gcu6NqaTMnAw/
+        0iKiUzZaUkRri/f0bb21wRBZnKSDsuE=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-prgU9vUpOtuPQ8zbzrzZ4A-1; Tue, 01 Jun 2021 05:06:22 -0400
+X-MC-Unique: prgU9vUpOtuPQ8zbzrzZ4A-1
+Received: by mail-il1-f199.google.com with SMTP id z3-20020a92cb830000b02901bb45557893so9630741ilo.18
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 02:06:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ekE+dxAB6Ci5Gjbh4XABVLj4ahXXOJ1oOcI27j00W5Q=;
-        b=L67WjFPDCRw+0eefXUsc/8YkFjz6lFLp8++YxOxpOaaRFAQLBy3w0I8UiWVMTuvPV/
-         L9DXl9E8BSE2UNU38lIcKidGeipLMWh1YSEzKEBq95+XtnaNNUlpQ765UZKRH03dqONd
-         BZYGO8yQLROYN/YnGH2Er10JRqhh9v+Thnxel3GTo0KncZhs50wYjPjybASsClr7vSPs
-         M4gLajSXg0u13SqY7TLhat7xoV+K5eJ2s7FCeu/BAVqUxQcUeCImz3Zo56IKZjvuACJg
-         V8I/ZPn/Ul3wvJxbfCGK+C+9y39p4HeeEd/q0Aajl2ZQp+VdIhEtFZN1LaYsddm94kDW
-         KwOg==
-X-Gm-Message-State: AOAM532Yhhyqfv98LVeKdnbRr0Dc9FwyGZTcwVXZavgb7Dz+3UEbYS65
-        zPexcwuP+YHc9s2uuQNh2vuk++2pZTRbSXR/KAbf0Q==
-X-Google-Smtp-Source: ABdhPJwowsxD4CemN7T8T8uw9fjBd0RXx+HffJMHz/C59XDzdvA/aLQPpx2U5VWqSjLf7bRLeaw4z9qWsuit/ebXOXU=
-X-Received: by 2002:a05:6638:2728:: with SMTP id m40mr24525083jav.55.1622538376071;
- Tue, 01 Jun 2021 02:06:16 -0700 (PDT)
+         :message-id:subject:to:content-transfer-encoding;
+        bh=TC49diZ8yvtNeRfoDHho9BsiKWB6WeW1SJE0j6cAKdU=;
+        b=BgnxDgrHsXke/qI2RGsL6/OapbQ6JL49QFdOCd+EAOTjqaHZl5OwFfpuEtbomz6iNU
+         Yf0aA+vnU/y7YyHqoK8LwsQahhyV0ymXmYv+G/O1f7Va7rYJ5XVhVr4wKVWsMvHzGth9
+         c6pGxLAz20p6X6/1DpSxwTbxR+iodFy6Rh/Q1Gt8BH241zs6ML5N+gC3Mc2RnaNe+BiC
+         fwzQSwEdePR0eiO78DZv/QD2Hjr36ZgZzqB+D5aVivphvD0FXb7YxA/kwixqONMVk3KI
+         Ea8N9DuvwyHYkZ/taxfovyAjQT61ZuMnuZXYUSdbm8qJWOSZxtFOkJTtfnyZKBrCaBE7
+         YD4A==
+X-Gm-Message-State: AOAM531drwxG+uOEMsIP5QSkoVYhC9Va0+fDqPTznQ3DRSMG7uIQm77b
+        fZr6K1Woo5E3Zmjt5r1n6x0R60jtaCYaMpVIK9nndhl+Gr0zB15NK7fgVadDeYU3MvAYrQc115v
+        V8j6rnd+VwmLbcIFQc9psyOlMEDyL49/EW6raxn8K
+X-Received: by 2002:a02:384b:: with SMTP id v11mr11232989jae.90.1622538382157;
+        Tue, 01 Jun 2021 02:06:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZQ8URK5CiJvEC5yEjY6vdL8Z9nhAdkHGrPEoD8pjNhf2DMrUcABocCKqqN/gaPUGnJjPa/rOI/2sHGIkGGqQ=
+X-Received: by 2002:a02:384b:: with SMTP id v11mr11232977jae.90.1622538382042;
+ Tue, 01 Jun 2021 02:06:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr> <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell> <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
- <20210526075255.GG4005783@dell> <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
- <20210601081933.GU543307@dell>
-In-Reply-To: <20210601081933.GU543307@dell>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 1 Jun 2021 11:06:05 +0200
-Message-ID: <CA+HBbNFW4NHpcEt7Xa+qC2HVvhuKu1O+PUo_rSE03qtSsBCehg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
+References: <20210511070257.7843-1-ihuguet@redhat.com>
+In-Reply-To: <20210511070257.7843-1-ihuguet@redhat.com>
+From:   =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
+Date:   Tue, 1 Jun 2021 11:06:11 +0200
+Message-ID: <CACT4oufayruhjHdog6UKyjYrCQS_SVkAearf1RdamQhSraa=BQ@mail.gmail.com>
+Subject: Re: [PATCH] BRCM80211: improve readability on addresses copy
+To:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 10:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+On Tue, May 11, 2021 at 9:04 AM =C3=8D=C3=B1igo Huguet <ihuguet@redhat.com>=
+ wrote:
 >
-> On Mon, 31 May 2021, Robert Marko wrote:
+> A static analyzer identified as a potential bug the copy of
+> 12 bytes from a 6 bytes array to a 6 bytes array. Both
+> arrays are 6 bytes addresses.
 >
-> > On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Tue, 25 May 2021, Robert Marko wrote:
-> > >
-> > > > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wr=
-ote:
-> > > > >
-> > > > > On Mon, 24 May 2021, Rob Herring wrote:
-> > > > >
-> > > > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > > > > > > Add binding documents for the Delta TN48M CPLD drivers.
-> > > > > > >
-> > > > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > > > > ---
-> > > > > > > Changes in v2:
-> > > > > > > * Implement MFD as a simple I2C MFD
-> > > > > > > * Add GPIO bindings as separate
-> > > > > >
-> > > > > > I don't understand why this changed. This doesn't look like an =
-MFD to
-> > > > > > me. Make your binding complete if there are missing functions.
-> > > > > > Otherwise, stick with what I already ok'ed.
-> > > > >
-> > > > > Right.  What else, besides GPIO, does this do?
-> > > >
-> > > > It currently does not do anything else as hwmon driver was essentia=
-lly
-> > > > NACK-ed for not exposing standard attributes.
-> > >
-> > > Once this provides more than GPIO capabilities i.e. becomes a proper
-> > > Multi-Function Device, then it can use the MFD framework.  Until then=
-,
-> > > it's a GPIO device I'm afraid.
-> > >
-> > > Are you going to re-author the HWMON driver to conform?
-> > hwmon cannot be reathored as it has no standard hwmon attributes.
-> >
-> > >
-> > > > The CPLD itself has PSU status-related information, bootstrap relat=
-ed
-> > > > information,
-> > > > various resets for the CPU-s, OOB ethernet PHY, information on the =
-exact board
-> > > > model it's running etc.
-> > > >
-> > > > PSU and model-related info stuff is gonna be exposed via a misc dri=
-ver
-> > > > in debugfs as
-> > > > we have user-space SW depending on that.
-> > > > I thought we agreed on that as v1 MFD driver was exposing those dir=
-ectly and
-> > > > not doing anything else.
-> > >
-> > > Yes, we agreed that creating an MFD driver just to expose chip
-> > > attributes was not an acceptable solution.
-> > >
-> > > > So I moved to use the simple I2C MFD driver, this is all modeled on=
- the sl28cpld
-> > > > which currently uses the same driver and then GPIO regmap as I do.
-> > > >
-> > > > Other stuff like the resets is probably gonna get exposed later whe=
-n
-> > > > it's required
-> > > > to control it directly.
-> > >
-> > > In order for this driver to tick the MFD box, it's going to need more
-> > > than one function.
-> >
-> > Understood, would a debug driver count or I can expose the resets via
-> > a reset driver
-> > as we have a future use for them?
+> Although not being a real bug, it is not immediately clear
+> why is done this way: next 6 bytes address, contiguous to
+> the first one, must also be copied to next contiguous 6 bytes
+> address of the destination.
 >
-> CPLDs and FPGAs are funny ones and are often difficult to support in
-> Linux.  Especially if they can change their behaviour.
+> Copying each one separately will make both static analyzers
+> and reviewers happier.
 >
-> It's hard to make a solid suggestion as to how your device is handled
-> without knowing the intricacies of the device.
-
-Yeah, I understand.
-This one is a generic CPLD used in multiple switch models, however in this
-switch model, it has the smallest set of features.
-Things that are usable for the kernel and userspace it provides are SFP pin=
-s,
-resets and debug information.
-Debug information is quite detailed actually.
-
-I have added the reset driver in v3 as that is something that was gonna get
-added later as well as it exposes resets for the ethernet PHY-s and U-boot
-messes with the OOB PHY configuration.
-
+> Signed-off-by: =C3=8D=C3=B1igo Huguet <ihuguet@redhat.com>
+> ---
+>  drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> Why do you require one single Regmap anyway?  Are they register banks
-> not neatly separated on a per-function basis?
-
-For GPIO and reset drivers, I could get away with each of them
-registering a regmap
-but the debug driver will require accessing certain registers from their sp=
-ace.
-Also, I see using a single regmap that is provided by a generic driver
-much simpler
-and cleaner than doing that in each of the child drivers.
-
-Regards,
-Robert
-
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c b/dr=
+ivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
+> index 763e0ec583d7..26de1bd7fee9 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
+> @@ -6607,7 +6607,8 @@ brcms_c_d11hdrs_mac80211(struct brcms_c_info *wlc, =
+struct ieee80211_hw *hw,
+>                         rts->frame_control =3D cpu_to_le16(IEEE80211_FTYP=
+E_CTL |
+>                                                          IEEE80211_STYPE_=
+RTS);
 >
+> -                       memcpy(&rts->ra, &h->addr1, 2 * ETH_ALEN);
+> +                       memcpy(&rts->ra, &h->addr1, ETH_ALEN);
+> +                       memcpy(&rts->ta, &h->addr2, ETH_ALEN);
+>                 }
+>
+>                 /* mainrate
 > --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+> 2.31.1
+>
 
+Hello,
 
+About 3 weeks ago I sent this patch, just with a small style change
+proposal. Any feedback would be appreciated.
 
+Thanks!
 --=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+=C3=8D=C3=B1igo Huguet
+
