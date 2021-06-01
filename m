@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA1C3971D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4415B3971D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 12:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhFAKxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 06:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232968AbhFAKxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 06:53:38 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21ABDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 03:51:57 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id w33so21059567lfu.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 03:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kkk96RFhOUVeXcdtYw7VNYf9WSYu11sjtdPL/xxbKe8=;
-        b=o1ehZKIudj8IUbNQJja9Bw9E9H+E7miiapinkr/taDqFF3USQSngLdAs8ijRzdZ5V4
-         R8DlQVmJxyWLsrLsjSnekMwy/de6jXpATv4L6WrPeY0hpYbHi8PSRH6GATZbgs9j3QlQ
-         5TK1ycoaH/cgAu6KgAma2Q3jm3i0rbxMBH1ca232N7C8suTpy2V/Obr1ogILk8FMvgdz
-         9DPGRRwyNUcb8mXrXKub2kPGQ2RxKx1zZL6wQDX4+c8gLKNy4DfiNZP7IgsUtPFQxGjy
-         ppyiI9c1hoOI9oSO/zm31ropq2E1gVVhXMwoeppqq2s3IlwYf0fEv7QhfUNyXfLJ++9H
-         tfFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kkk96RFhOUVeXcdtYw7VNYf9WSYu11sjtdPL/xxbKe8=;
-        b=Yz4orueJtRDEJR+IzGSs2mdr33ZhZTqkvtIWwOIkwJA1twKGa+obSFTkegRCXfA06g
-         F/0+wqeS+NmWd5JA/W2jHbVVzsO0usBEOZ0OvFoEgw5oKlygb7+gcDv7KpyzzOJEnHw6
-         fApOE083qnNG/4Xmb0GCihenmz05OR5Qc3jSdbQTxfdn43kC4pnCdr+aAeyGpNam1OdK
-         5RBBsNxx5fMj+5sCbvBWV3BWFL2Sox+WaWfWHizoWmfqOSdn1I0qSCiC37VGDkcH0j7C
-         xaat0F1REwjBl9UnZuWFTq4Bvy2vt2+lCobIW0p5UWvy85cJrsDF7rH8NLaEmGtESAjB
-         K7cw==
-X-Gm-Message-State: AOAM531kQJrE65N0jkRVgDftFt7R/42R/RlepqbHQNgptkm4efNCCBux
-        aDb051zfwcUUIVv8AIbfE3Rkbhl34ix4g/NDA53m8A==
-X-Google-Smtp-Source: ABdhPJyA7vr/U/2Lycbd2FWBZBtLqVEAm94uzNvJ8gdrDqZfAvOsT2ddncI3yJcK4skM3pg4UBmX6/vZkNHtfc3zogI=
-X-Received: by 2002:a05:6512:3e03:: with SMTP id i3mr14354819lfv.529.1622544715508;
- Tue, 01 Jun 2021 03:51:55 -0700 (PDT)
+        id S233605AbhFAKyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 06:54:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:5058 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232968AbhFAKyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 06:54:17 -0400
+IronPort-SDR: DutuKACw/5Xuuakq8wkfQr5NX8QIK9qqZknV+OFIpvTsirkpLZ6yTlTqsgVv9jvI0c1ggUlAsi
+ +dNbOJW2JKTg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="203554826"
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="203554826"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 03:52:35 -0700
+IronPort-SDR: I3LNhnlxS59SiW7gRqhKiQNQORxLcyuTnYDKfBdDQGtXGnQvTpQ6hqGC5O/mdwurZHjRxDOxwe
+ Veo+LoMzZmLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
+   d="scan'208";a="482444245"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Jun 2021 03:52:35 -0700
+Received: from linux.intel.com (unknown [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 1213358090A;
+        Tue,  1 Jun 2021 03:52:33 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 18:52:31 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 1/2] net: phy: allow mdio bus to probe for c45
+ devices before c22
+Message-ID: <20210601105231.GB18984@linux.intel.com>
+References: <20210525055839.22496-1-vee.khee.wong@linux.intel.com>
+ <20210525083117.GC30436@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <cover.1620735871.git.sander@svanheule.net> <cover.1621809029.git.sander@svanheule.net>
- <YKr9G3EfrM34gCsL@lunn.ch> <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
- <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
- <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc> <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
- <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com> <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
- <CACRpkda+m5mOzMJ8KcPmojFGWkUpCrbmY0ySPTVx72RtWwf89A@mail.gmail.com> <e10c8ef7f758b4f7fa0fcbc992c84125@walle.cc>
-In-Reply-To: <e10c8ef7f758b4f7fa0fcbc992c84125@walle.cc>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Jun 2021 12:51:43 +0200
-Message-ID: <CACRpkdb4j6krXwdZGtth9b2W2bAdy9_StGbse_YbBY86-AWdLg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-To:     Michael Walle <michael@walle.cc>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sander Vanheule <sander@svanheule.net>,
-        Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525083117.GC30436@shell.armlinux.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 12:18 PM Michael Walle <michael@walle.cc> wrote:
-> Am 2021-06-01 11:59, schrieb Linus Walleij:
-
-> > Just regarding all registers/memory cells in a register page
-> > as default volatile (which is what we do a lot of the time)
-> > has its upsides: bugs like this doesn't happen.
+On Tue, May 25, 2021 at 09:31:17AM +0100, Russell King (Oracle) wrote:
+> On Tue, May 25, 2021 at 01:58:39PM +0800, Wong Vee Khee wrote:
+> > Some MAC controllers that is able to pair with  external PHY devices
+> > such as the Synopsys MAC Controller (STMMAC) support both Clause-22 and
+> > Clause-45 access.
+> > 
+> > When paired with PHY devices that only accessible via Clause-45, such as
+> > the Marvell 88E2110, any attempts to access the PHY devices via
+> > Clause-22 will get a PHY ID of all zeroes.
+> > 
+> > To fix this, we introduce MDIOBUS_C45_C22 which the MAC controller will
+> > try with Clause-45 access before going to Clause-22.
+> > 
+> > Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+> > ---
+> >  include/linux/phy.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/include/linux/phy.h b/include/linux/phy.h
+> > index 60d2b26026a2..9b0e2c76e19b 100644
+> > --- a/include/linux/phy.h
+> > +++ b/include/linux/phy.h
+> > @@ -368,6 +368,7 @@ struct mii_bus {
+> >  		MDIOBUS_C22,
+> >  		MDIOBUS_C45,
+> >  		MDIOBUS_C22_C45,
+> > +		MDIOBUS_C45_C22,
+> >  	} probe_capabilities;
+> >  
+> >  	/** @shared_lock: protect access to the shared element */
+> 
+> The new definition doesn't seem to be used anywhere, so this patch
+> merely adds the definition. It doesn't do what it says in the subject
+> line. Any driver that sets the capabilities to MDIOBUS_C45_C22 will
+> end up not doing any probing of the PHY.
 >
-> I don't think this is the bug here. If it is really a write-only
-> register
-> the problem is the read in RMW. Because reading the register will return
-> the input value instead of the (previously written) output value.
 
-True that. Write and read semantics differ on the register.
+You are right. I left out the required changes in drivers/net/mdio_bus.c:-
 
-Volatile is used for this and some other things,
-like for example interrupts being cleared when a register
-is read so it is strictly read-once.
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 6045ad3def12..fbf9b8f1f47c 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -684,6 +684,11 @@ struct phy_device *mdiobus_scan(struct mii_bus *bus, int addr)
+                if (IS_ERR(phydev))
+                        phydev = get_phy_device(bus, addr, true);
+                break;
++       case MDIOBUS_C45_C22:
++               phydev = get_phy_device(bus, addr, true);
++               if (IS_ERR(phydev))
++                       phydev = get_phy_device(bus, addr, false);
++               break;
+        }
 
-So the regmap config is really important to get right.
+        if (IS_ERR(phydev))
 
-IIUC one of the ambitions around Rust is to encode this
-in how memory is specified in the language. (I am still
-thinking about whether that is really a good idea or not.)
 
-Yours,
-Linus Walleij
+VK 
