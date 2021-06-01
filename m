@@ -2,89 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27C7396C52
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D989C396C56
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 06:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhFAE3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 00:29:51 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6101 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhFAE3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 00:29:48 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvJww3HQczYnKJ;
-        Tue,  1 Jun 2021 12:25:20 +0800 (CST)
-Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 12:28:03 +0800
-Received: from [10.174.185.220] (10.174.185.220) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 12:28:02 +0800
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Wang <jasowang@redhat.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>
-CC:     <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Jason Gunthorpe" <jgg@nvidia.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"" 
-        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
- <20210531164118.265789ee@yiliu-dev>
- <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <1fedcd93-1a8a-884f-d0c8-3e2c21ed7654@huawei.com>
-Date:   Tue, 1 Jun 2021 12:27:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S231928AbhFAEbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 00:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229460AbhFAEbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 00:31:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D50B061364;
+        Tue,  1 Jun 2021 04:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622521802;
+        bh=cf7uT1qIsUt6MtE6dAECA9+37OawbN0iLEE3uGrkYio=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dcrZFxlzAzfa1YZNYqmRsoKbzaBsd6rXk89p2L17B2cwredQLcAOkjLKavSxbJtP1
+         Sr0NYjHfHrfNuKJ2NtPmjLiCzpqLC1/61LjR2BSd4Bf9QBj+6JnSPjGHbKpvJzV0Pw
+         iKnq7REiXcj6lsTqJH/zRHWu/TreA+WZfgDYNpKG9tuVe3cKlCkSdtzqMdUd1+4wwc
+         cLnBuuA34UMnUnwuZbRvR+6/6lqdtDVLDb5k1VGep5nlLiAxu9z2M2GfLSULFqbcD3
+         anjGt5dsoWrIdCa21oYqjeolWA+wUigebe2PMzxv+Jv4buaRdtsy7VmP5wAomlUhK+
+         0xtdtBDl3E2uQ==
+Date:   Mon, 31 May 2021 21:30:00 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Simon Horman" <simon.horman@netronome.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Subject: Re: [PATCH net-next v2 03/10] net: sparx5: add hostmode with
+ phylink support
+Message-ID: <20210531213000.46143fad@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <5719f0fad28e453e0398048ebcfbc421b85a9647.camel@microchip.com>
+References: <20210528123419.1142290-1-steen.hegelund@microchip.com>
+        <20210528123419.1142290-4-steen.hegelund@microchip.com>
+        <20210530141502.561920a7@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <5719f0fad28e453e0398048ebcfbc421b85a9647.camel@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.220]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500022.china.huawei.com (7.185.36.162)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/1 10:36, Jason Wang wrote:
-> 
-> 在 2021/5/31 下午4:41, Liu Yi L 写道:
->>> I guess VFIO_ATTACH_IOASID will fail if the underlayer doesn't support
->>> hardware nesting. Or is there way to detect the capability before?
->> I think it could fail in the IOASID_CREATE_NESTING. If the gpa_ioasid
->> is not able to support nesting, then should fail it.
->>
->>> I think GET_INFO only works after the ATTACH.
->> yes. After attaching to gpa_ioasid, userspace could GET_INFO on the
->> gpa_ioasid and check if nesting is supported or not. right?
-> 
-> 
-> Some more questions:
-> 
-> 1) Is the handle returned by IOASID_ALLOC an fd?
-> 2) If yes, what's the reason for not simply use the fd opened from /dev/ioas. (This is the question that is not answered) and what happens if we call GET_INFO for the ioasid_fd?
-> 3) If not, how GET_INFO work?
+On Mon, 31 May 2021 16:02:54 +0200 Steen Hegelund wrote:
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 val =3D ether_addr_to_u64(sparx5->base_mac)=
+ + portno + 1;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 u64_to_ether_addr(val, ndev->dev_addr);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return ndev;
+> > > +} =20
+> >  =20
+> > > +static void sparx5_xtr_grp(struct sparx5 *sparx5, u8 grp, bool byte_=
+swap)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 bool eof_flag =3D false, pruned_flag =3D fa=
+lse, abort_flag =3D false;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct net_device *netdev;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct sparx5_port *port;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct frame_info fi;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 int i, byte_cnt =3D 0;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct sk_buff *skb;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 u32 ifh[IFH_LEN];
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 u32 *rxbuf;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Get IFH */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < IFH_LEN; i++)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ifh[i] =3D spx5_rd(sparx5, QS_XTR_RD(grp));
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Decode IFH (whats needed) */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 sparx5_ifh_parse(ifh, &fi);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Map to port netdev */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 port =3D fi.src_port < SPX5_PORTS ?
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 sparx5->ports[fi.src_port] : NULL;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!port || !port->ndev) {
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 dev_err(sparx5->dev, "Data on inactive port %d\n", fi.src_port);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 sparx5_xtr_flush(sparx5, grp);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 return; =20
+> >=20
+> > You should probably increment appropriate counter for each error
+> > condition. =20
+>=20
+> At this first check I do not have the netdev, so it will not be
+> possible to update any counters, but below I can use rx_dropped. =20
+> Is that what you mean?
 
-It seems that the return value from IOASID_ALLOC is an IOASID number in the
-ioasid_data struct, then when calling GET_INFO, we should convey this IOASID
-number to get the associated I/O address space attributes (depend on the
-physical IOMMU, which could be discovered when attaching a device to the
-IOASID fd or number), right?
+Yes, sorry, I just scrolled up to the earliest drop I could find.
+Indeed nothing we can increment here.=20
 
-Thanks,
-Shenming
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /* Finish up skb */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 skb_put(skb, byte_cnt - ETH_FCS_LEN);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 eth_skb_pad(skb);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 skb->protocol =3D eth_type_trans(skb, netde=
+v);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 netif_rx(skb);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 netdev->stats.rx_bytes +=3D skb->len;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 netdev->stats.rx_packets++; =20
+> >=20
+> > Does the Rx really need to happen in an interrupt context?
+> > Did you consider using NAPI or a tasklet? =20
+>=20
+> This register base injection and extraction is just preliminary.  I
+> have the next series waiting with support for Frame DMA'ing and there
+> I use NAPI, so if possible I would like to leave this as it is, since
+> it only a stopgap.
+
+Ah, that's fine.
+
+> > What do you expect to happen at this point? Kernel can retry sending
+> > for ever, is there a way for the driver to find out that the fifo is
+> > no longer busy to stop/start the software queuing appropriately? =20
+>=20
+> Hmm.  I am not too familiar with the netdev queuing, but would this
+> be a way forward?
+>=20
+> 1) In sparx5_inject: After injecting a frame then test for HW queue
+> readiness and watermark levels, and if there is a problem then call
+> netif_queue_stop
+>=20
+> 2) Add an implementation of ndo_tx_timeout where the HW queue and
+> Watermark level is checked and if all is OK, then do a
+> netif_wake_queue.
+
+timeout is not a good mechanism because it will print a stack trace and
+an error to logs. timeout is used for detecting broken interfaced.
+Perhaps use a hrtimer or a normal timer? What kind of time scales are
+we talking here?
+
+> 3) But if the HW queue and/or Watermark level is still not OK - then
+> probably something went seriously wrong, or the wait was to short.
+> Will the ndo_tx_timeout be called again or is this a one-off?
+>=20
+> If the ndo_tx_timeout call is a one-off the driver would need to
+> reset the HW queue system or even deeper down...
