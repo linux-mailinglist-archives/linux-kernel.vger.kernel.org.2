@@ -2,123 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D79396CB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC77396CCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhFAFSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:18:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:39644 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229477AbhFAFSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:18:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CCA11FB;
-        Mon, 31 May 2021 22:16:49 -0700 (PDT)
-Received: from [10.163.82.105] (unknown [10.163.82.105])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C7523F774;
-        Mon, 31 May 2021 22:16:46 -0700 (PDT)
-Subject: Re: [PATCH] mm,memory_hotplug: Drop unneeded locking
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210531093958.15021-1-osalvador@suse.de>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <679d311a-8ad4-bb53-18f0-11190a2bf1b5@arm.com>
-Date:   Tue, 1 Jun 2021 10:47:31 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232876AbhFAFb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhFAFbw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:31:52 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CFDC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:18:38 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id b17so15820529ede.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5Y1aD/mhYzZNlmN8zlF6a252/zpnt3wSAmr/T0bADys=;
+        b=ryodzXOwQxwL3aLrspdlr1NAu++cAPzy0oA79UesMBDSH3kH1cf20gBgZNax6nz/WA
+         3Aq321jtIlj63r/YAYGkNf+V3Z8czVPtno0hiScUwkZrdK3Yg1Z/WEDEIOqqjUv+py9O
+         LLJgVOdwbWL0YKEw0A9p3DmvGbqZd0wiWZMg+Gzo+Gmj6+VMkfzFZ3lrtp3BctWz5mLy
+         bttYC/DTTMQ+44H3xxDEIuCx/Naam5BtC3eHfy5hLthE1b6lK0C8fQaiJZKqTeWiC3ZL
+         AbI+HRhreK+/b8ejCuS/TmUhYJFNG4UHIIVQx/iXs4XWqnKH/FHXdXbGnndozAhqrbOM
+         VtgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5Y1aD/mhYzZNlmN8zlF6a252/zpnt3wSAmr/T0bADys=;
+        b=S2MGdrfsJMEW57DYB5HAU5abf+W5piDRc/Kc4uDjiiGTrLDGJkIVtj8YcwIGYUspsN
+         r/JrdBDWQ2Apzui+IjhPIwI2S6k0gDe/+qhx/vKaBJS+4+b/9twYe6oLtzuHjAkOUdxy
+         SR2bicKW1/9W/Z6jlOoRjZ0YKwx8G+rLBQJIHo8/Fs3OIyS0Cmxmeg4S5ZDvcoW0k06b
+         PmzbypIHmdYIrOKRgQkqNo9+7epti2u4nSvgQncB+N3qVvkHf3xYnzJVFTvXgyldAAE/
+         hR6ZYIESXzQrltGeB3zmGNUg1OjRHzJeLuZ2nyvIlHKFDUbmQg+mQyFZTSwQuO7g0Dtg
+         yAZA==
+X-Gm-Message-State: AOAM531ueQyC7zbiZRTE8h7dFvGUKIl28P5hH+ElWjxnVaP8Wa9Ur4sy
+        l0ne5Tol1uYJyoxDtRY2D0V8s0JxoSYkE2FR13zdYg==
+X-Google-Smtp-Source: ABdhPJws6eazEJDMFUV7K/t2UAF5BhnqHE3Pc9O2LlB8ty5fj+dJDbe2wE1GcMu3uB2wJjj71qlIonwn21a2wV9jvHM=
+X-Received: by 2002:a50:9346:: with SMTP id n6mr29589751eda.365.1622524716739;
+ Mon, 31 May 2021 22:18:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210531093958.15021-1-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 1 Jun 2021 10:48:25 +0530
+Message-ID: <CA+G9fYuO-uwwuj3DvnaKgN00mBAizA2dRLiv-jS+-bD+e1ppFQ@mail.gmail.com>
+Subject: Re: [PATCH 5.12 000/296] 5.12.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 31 May 2021 at 19:26, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.12.9 release.
+> There are 296 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.12.9-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On 5/31/21 3:09 PM, Oscar Salvador wrote:
-> Currently, memory-hotplug code takes zone's span_writelock
-> and pgdat's resize_lock when resizing the node/zone's spanned
-> pages via {move_pfn_range_to_zone(),remove_pfn_range_from_zone()}
-> and when resizing node and zone's present pages via
-> adjust_present_page_count().
-> 
-> These locks are also taken during the initialization of the system
-> at boot time, where it protects parallel struct page initialization,
-> but they should not really be needed in memory-hotplug where all
-> operations are a) synchronized on device level and b) serialized by
-> the mem_hotplug_lock lock.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Acked-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/memory_hotplug.c | 11 -----------
->  1 file changed, 11 deletions(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 075b34803fec..9edbc57055bf 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -329,7 +329,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
->  	unsigned long pfn;
->  	int nid = zone_to_nid(zone);
->  
-> -	zone_span_writelock(zone);
->  	if (zone->zone_start_pfn == start_pfn) {
->  		/*
->  		 * If the section is smallest section in the zone, it need
-> @@ -362,7 +361,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
->  			zone->spanned_pages = 0;
->  		}
->  	}
-> -	zone_span_writeunlock(zone);
->  }
->  
->  static void update_pgdat_span(struct pglist_data *pgdat)
-> @@ -424,10 +422,8 @@ void __ref remove_pfn_range_from_zone(struct zone *zone,
->  
->  	clear_zone_contiguous(zone);
->  
-> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
->  	shrink_zone_span(zone, start_pfn, start_pfn + nr_pages);
->  	update_pgdat_span(pgdat);
-> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
->  
->  	set_zone_contiguous(zone);
->  }
-> @@ -638,15 +634,10 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
->  
->  	clear_zone_contiguous(zone);
->  
-> -	/* TODO Huh pgdat is irqsave while zone is not. It used to be like that before */
-> -	pgdat_resize_lock(pgdat, &flags);
-> -	zone_span_writelock(zone);
->  	if (zone_is_empty(zone))
->  		init_currently_empty_zone(zone, start_pfn, nr_pages);
->  	resize_zone_range(zone, start_pfn, nr_pages);
-> -	zone_span_writeunlock(zone);
->  	resize_pgdat_range(pgdat, start_pfn, nr_pages);
-> -	pgdat_resize_unlock(pgdat, &flags);
->  
->  	/*
->  	 * Subsection population requires care in pfn_to_online_page().
-> @@ -739,9 +730,7 @@ void adjust_present_page_count(struct zone *zone, long nr_pages)
->  	unsigned long flags;
->  
->  	zone->present_pages += nr_pages;
-> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
->  	zone->zone_pgdat->node_present_pages += nr_pages;
-> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
->  }
->  
->  int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
-> 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Should also just drop zone_span_write[lock|unlock]() helpers as there
-are no users left ?
+## Build
+* kernel: 5.12.9-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.12.y
+* git commit: 327e3cf768fb44b16c21a0589a492bf7bccef28b
+* git describe: v5.12.7-305-g327e3cf768fb
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
+.7-305-g327e3cf768fb
+
+## No regressions (compared to v5.12.7-8-g6fc814b4a8b3)
+
+## No fixes (compared to v5.12.7-8-g6fc814b4a8b3)
+
+## Test result summary
+ total: 76833, pass: 64662, fail: 605, skip: 10956, xfail: 610,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
