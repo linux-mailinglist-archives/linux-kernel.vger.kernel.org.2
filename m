@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27023396C94
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15591396C96
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhFAFB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:01:57 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:35811 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbhFAFBv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:01:51 -0400
-Received: by mail-il1-f197.google.com with SMTP id n7-20020a056e021487b02901d29983f028so9337797ilk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 22:00:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=HZoCrhifvFqebweO5oM8sTQXrnYAq0UL7ZIrots2vSc=;
-        b=SlpTM7LQXFvwHIuNIewhBQif2+aBRiFGQ9hlfFV5b1DQOjs7p4fkzm2bU5YzuzRjme
-         1J35NEGpMN30IdRXekFENRpiV9BvZNBgCHnXTkalLCHmpSh7iiEaD0p9fqmkYpluLcRd
-         Umpo1B2iMdnHALFd3QaN32H83OuOhJLasIQ9LHjEZ9QzuZeytW3SNZMz7WvbnOheUfP4
-         c/JTwZC9CeJk9yX3QFR8O/U7jmTmHEJWA9SHU61um4G0sE0D226lQyAtdrwvOS90Zbzd
-         6aj/E25LSPJcsY4LBu1gXVaETpBd3VLjtpdJQqkYIa7XrTWTcnvNC4h5JNX7o1ccrC4E
-         /0eg==
-X-Gm-Message-State: AOAM5332jaeL3Wb2aqblYgWRWHnfSj3po6Eia1skl1IvNkUFhQX8+LJ5
-        dM84viI0wli6Glafy+8rSI+noX8qQzcVAhnM9odkiVS21AiH
-X-Google-Smtp-Source: ABdhPJyDPqVeQwFPYxvwDFNm5lVzsEmrtB9fOyxrUNzo2mPUK0UzLNL7BZ0jpoGpdR7H0zY1Wl5YoHHlpd3CmiPaYpmOLCQaOLqA
+        id S232861AbhFAFCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:02:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230170AbhFAFCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:02:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE38E6102A;
+        Tue,  1 Jun 2021 05:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622523663;
+        bh=kNdCmu0Ne4ouGWs+tyMNaaXD0+25jXNACguOyM29hAI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EGio6xOpGKUO5Y/1X6sQnHGqI+BMLW7JuVUrp5hDecSYs4J/upZ4xeEQtwUFI5coR
+         evkq7WAvgRwpJmBPzUTjeFVgiiwW8qo2k5WPR37bLI5YgCKbLdGcSZWHSpea9wyF5m
+         3zhYgaJav2C/DNz2N8QtYiX4BbHnKvNTkthdGwi4=
+Date:   Tue, 1 Jun 2021 07:01:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        song.bao.hua@hisilicon.com, "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 2/2] drivers/base/node.c: use bin_attribute to avoid buff
+ overflow
+Message-ID: <YLW/DZBYOcYxzRaK@kroah.com>
+References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
+ <1622516210-10886-3-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d201:: with SMTP id y1mr19795884ily.103.1622523610124;
- Mon, 31 May 2021 22:00:10 -0700 (PDT)
-Date:   Mon, 31 May 2021 22:00:10 -0700
-In-Reply-To: <000000000000f32b3c05958ed0eb@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006bd5ff05c3ad37da@google.com>
-Subject: Re: [syzbot] INFO: task hung in register_netdevice_notifier (2)
-From:   syzbot <syzbot+355f8edb2ff45d5f95fa@syzkaller.appspotmail.com>
-To:     a@unstable.cc, ast@kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
-        bpf@vger.kernel.org, brouer@redhat.com, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
-        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, mkl@pengutronix.de,
-        netdev@vger.kernel.org, socketcan@hartkopp.net,
-        songliubraving@fb.com, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com, xdp-newbies@vger.kernel.org,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622516210-10886-3-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Tue, Jun 01, 2021 at 10:56:50AM +0800, Tian Tao wrote:
+> Reading sys/devices/system/cpu/cpuX/nodeX/ returns cpumap and cpulist.
+> However, the size of this file is limited to PAGE_SIZE because of the
+> limitation for sysfs attribute. so we use bin_attribute instead of
+> attribute to avoid NR_CPUS too big to cause buff overflow.
+> 
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> ---
+>  drivers/base/node.c | 49 +++++++++++++++++++++++++++++++------------------
+>  1 file changed, 31 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index f449dbb..a19be64 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -27,42 +27,42 @@ static struct bus_type node_subsys = {
+>  };
+>  
+>  
+> -static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
+> +static ssize_t node_read_cpumap(struct kobject *kobj, bool list,
 
-commit 6bf071bf09d4b2ff3ee8783531e2ce814f0870cb
-Author: Jesper Dangaard Brouer <brouer@redhat.com>
-Date:   Tue Jun 18 13:05:27 2019 +0000
+Why not stick with the dev pointer here?  These are devices, please use
+them.
 
-    xdp: page_pool related fix to cpumap
+thanks,
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1397c4a7d00000
-start commit:   7ac3a1c1 Merge tag 'mtd/fixes-for-5.13-rc4' of git://git.k..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1057c4a7d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1797c4a7d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=266cda122a0b56c
-dashboard link: https://syzkaller.appspot.com/bug?extid=355f8edb2ff45d5f95fa
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cc630fd00000
-
-Reported-by: syzbot+355f8edb2ff45d5f95fa@syzkaller.appspotmail.com
-Fixes: 6bf071bf09d4 ("xdp: page_pool related fix to cpumap")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+greg k-h
