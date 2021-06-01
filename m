@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68873397516
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D43397515
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbhFAOJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:09:59 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2829 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234233AbhFAOJe (ORCPT
+        id S234379AbhFAOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:09:45 -0400
+Received: from out28-73.mail.aliyun.com ([115.124.28.73]:59720 "EHLO
+        out28-73.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234188AbhFAOJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:09:34 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvYlc4gvnzWqcj;
-        Tue,  1 Jun 2021 22:03:08 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 22:07:50 +0800
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 1 Jun 2021 22:07:49 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <sashal@kernel.org>,
-        <maz@kernel.org>, <alexandru.elisei@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-Subject: [PATCH v2 stable-5.12.y backport 2/2] KVM: arm64: Resolve all pending PC updates before immediate exit
-Date:   Tue, 1 Jun 2021 22:07:38 +0800
-Message-ID: <20210601140738.2026-3-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
-In-Reply-To: <20210601140738.2026-1-yuzenghui@huawei.com>
-References: <20210601140738.2026-1-yuzenghui@huawei.com>
+        Tue, 1 Jun 2021 10:09:32 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1111761|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.432646-0.00042108-0.566933;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.KM.eRxy_1622556466;
+Received: from 192.168.0.103(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KM.eRxy_1622556466)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Tue, 01 Jun 2021 22:07:47 +0800
+Subject: Re: [PATCH v2 4/6] clk: ingenic: Remove pll_info.no_bypass_bit
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        list@opendingux.net
+References: <20210530164923.18134-1-paul@crapouillou.net>
+ <20210530164923.18134-5-paul@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <dd9a3581-1391-962e-c5b3-e8bed90f3087@wanyeetech.com>
+Date:   Tue, 1 Jun 2021 22:07:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210530164923.18134-5-paul@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit e3e880bb1518eb10a4b4bb4344ed614d6856f190 upstream.
 
-Commit 26778aaa134a ("KVM: arm64: Commit pending PC adjustemnts before
-returning to userspace") fixed the PC updating issue by forcing an explicit
-synchronisation of the exception state on vcpu exit to userspace.
+On 2021/5/31 上午12:49, Paul Cercueil wrote:
+> We can express that a PLL has no bypass bit by simply setting the
+> .bypass_bit field to a negative value.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>   drivers/clk/ingenic/cgu.c        | 4 ++--
+>   drivers/clk/ingenic/cgu.h        | 7 +++----
+>   drivers/clk/ingenic/jz4770-cgu.c | 3 +--
+>   3 files changed, 6 insertions(+), 8 deletions(-)
 
-However, we forgot to take into account the case where immediate_exit is
-set by userspace and KVM_RUN will exit immediately. Fix it by resolving all
-pending PC updates before returning to userspace.
 
-Since __kvm_adjust_pc() relies on a loaded vcpu context, I moved the
-immediate_exit checking right after vcpu_load(). We will get some overhead
-if immediate_exit is true (which should hopefully be rare).
+Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>    # on CU1830-neo/X1830
 
-Fixes: 26778aaa134a ("KVM: arm64: Commit pending PC adjustemnts before returning to userspace")
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210526141831.1662-1-yuzenghui@huawei.com
-Cc: stable@vger.kernel.org # 5.11
-[yuz: stable-5.12.y backport]
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm64/kvm/arm.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index c18740a1e541..7730b81aad6d 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -715,11 +715,13 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 			return ret;
- 	}
- 
--	if (run->immediate_exit)
--		return -EINTR;
--
- 	vcpu_load(vcpu);
- 
-+	if (run->immediate_exit) {
-+		ret = -EINTR;
-+		goto out;
-+	}
-+
- 	kvm_sigset_activate(vcpu);
- 
- 	ret = 1;
-@@ -892,6 +894,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 
- 	kvm_sigset_deactivate(vcpu);
- 
-+out:
- 	/*
- 	 * In the unlikely event that we are returning to userspace
- 	 * with pending exceptions or PC adjustment, commit these
--- 
-2.19.1
-
+>
+> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+> index 7686072aff8f..58f7ab5cf0fe 100644
+> --- a/drivers/clk/ingenic/cgu.c
+> +++ b/drivers/clk/ingenic/cgu.c
+> @@ -99,7 +99,7 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+>   	od_enc = ctl >> pll_info->od_shift;
+>   	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+>   
+> -	if (!pll_info->no_bypass_bit) {
+> +	if (pll_info->bypass_bit >= 0) {
+>   		ctl = readl(cgu->base + pll_info->bypass_reg);
+>   
+>   		bypass = !!(ctl & BIT(pll_info->bypass_bit));
+> @@ -226,7 +226,7 @@ static int ingenic_pll_enable(struct clk_hw *hw)
+>   	u32 ctl;
+>   
+>   	spin_lock_irqsave(&cgu->lock, flags);
+> -	if (!pll_info->no_bypass_bit) {
+> +	if (pll_info->bypass_bit >= 0) {
+>   		ctl = readl(cgu->base + pll_info->bypass_reg);
+>   
+>   		ctl &= ~BIT(pll_info->bypass_bit);
+> diff --git a/drivers/clk/ingenic/cgu.h b/drivers/clk/ingenic/cgu.h
+> index 44d97a259692..10521d1b7b12 100644
+> --- a/drivers/clk/ingenic/cgu.h
+> +++ b/drivers/clk/ingenic/cgu.h
+> @@ -39,10 +39,10 @@
+>    *               their encoded values in the PLL control register, or -1 for
+>    *               unsupported values
+>    * @bypass_reg: the offset of the bypass control register within the CGU
+> - * @bypass_bit: the index of the bypass bit in the PLL control register
+> + * @bypass_bit: the index of the bypass bit in the PLL control register, or
+> + *              -1 if there is no bypass bit
+>    * @enable_bit: the index of the enable bit in the PLL control register
+>    * @stable_bit: the index of the stable bit in the PLL control register
+> - * @no_bypass_bit: if set, the PLL has no bypass functionality
+>    */
+>   struct ingenic_cgu_pll_info {
+>   	unsigned reg;
+> @@ -52,10 +52,9 @@ struct ingenic_cgu_pll_info {
+>   	u8 n_shift, n_bits, n_offset;
+>   	u8 od_shift, od_bits, od_max;
+>   	unsigned bypass_reg;
+> -	u8 bypass_bit;
+> +	s8 bypass_bit;
+>   	u8 enable_bit;
+>   	u8 stable_bit;
+> -	bool no_bypass_bit;
+>   };
+>   
+>   /**
+> diff --git a/drivers/clk/ingenic/jz4770-cgu.c b/drivers/clk/ingenic/jz4770-cgu.c
+> index 381a27f20b51..2321742b3471 100644
+> --- a/drivers/clk/ingenic/jz4770-cgu.c
+> +++ b/drivers/clk/ingenic/jz4770-cgu.c
+> @@ -139,8 +139,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
+>   			.od_bits = 2,
+>   			.od_max = 8,
+>   			.od_encoding = pll_od_encoding,
+> -			.bypass_reg = CGU_REG_CPPCR1,
+> -			.no_bypass_bit = true,
+> +			.bypass_bit = -1,
+>   			.enable_bit = 7,
+>   			.stable_bit = 6,
+>   		},
