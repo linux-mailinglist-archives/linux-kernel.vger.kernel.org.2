@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACFF396F8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F80396F28
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhFAIv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:51:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233556AbhFAIvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E53F61375;
-        Tue,  1 Jun 2021 08:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622537392;
-        bh=BWq5NprmRBFQsgZo2g232l4nfkJzik5TZeKrg2RP7A4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=iGXAAQHTjaMW5jK32eeGWC/RMFFgzjIrcMr7psbh+zR6Q2/OwOLt/jUrgAkIts5eI
-         YE9mqsBPPxfXMllInKg/lzlcvQL9pBDGUUKDpK3bANr+hzYeKuYwQsRZ1azVlrjV60
-         L9ZRjWo97oGa5w+Gja4vghuhWY7d/iByP3bkn3Ok4Cx/gH+j+MtNRmuAoN/QBTXTcj
-         joE5KshjA13w2AZoHznmYqMMMcOIdld5uK/Xt6IbKrb/I130zBtSJw0uDaqj54TMVk
-         mvFA3LqaeVz+EXflPqjPNu5e6bQuYjhGykfyPXILyn5ZZKnlaqDmODJtrzmviALaKp
-         9mYgKvZ8Yr/vg==
-Message-ID: <90338d5fbc55f80a8cd28ead24791f3edc247ba4.camel@kernel.org>
-Subject: Re: [PATCH v2 08/12] drm/vc4: hdmi: Set
- VC4_HDMI_MAI_CONFIG_FORMAT_REVERSE
-From:   nicolas saenz julienne <nsaenz@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     devicetree@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Maxime Ripard <mripard@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-rpi-kernel@lists.infradead.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dom Cobley <popcornmix@gmail.com>
-Date:   Tue, 01 Jun 2021 10:49:44 +0200
-In-Reply-To: <20210525132354.297468-9-maxime@cerno.tech>
-References: <20210525132354.297468-1-maxime@cerno.tech>
-         <20210525132354.297468-9-maxime@cerno.tech>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+        id S233330AbhFAIn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:43:56 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3491 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhFAIny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:43:54 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvQZ74j7TzYrxh;
+        Tue,  1 Jun 2021 16:39:27 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 16:42:11 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 16:42:10 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <jk@ozlabs.org>, <arnd@arndb.de>, <mpe@ellerman.id.au>,
+        <benh@kernel.crashing.org>, <paulus@samba.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>
+Subject: [PATCH -next] powerpc/spufs: disp: Remove set but not used variable 'dummy'
+Date:   Tue, 1 Jun 2021 16:51:27 +0800
+Message-ID: <20210601085127.139598-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-25 at 15:23 +0200, Maxime Ripard wrote:
-> From: Dom Cobley <popcornmix@gmail.com>
-> 
-> Without this bit set, HDMI_MAI_FORMAT doesn't pick up
-> the format and samplerate from DVP_CFG_MAI0_FMT and you
-> can't get HDMI_HDMI_13_AUDIO_STATUS_1 to indicate HBR mode
-> 
-> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+arch/powerpc/platforms/cell/spufs/switch.c: In function 'check_ppu_mb_stat':
+arch/powerpc/platforms/cell/spufs/switch.c:1660:6: warning:
+variable ‘dummy’ set but not used [-Wunused-but-set-variable]
 
-Regards,
-Nicolas
+arch/powerpc/platforms/cell/spufs/switch.c: In function 'check_ppuint_mb_stat':
+arch/powerpc/platforms/cell/spufs/switch.c:1675:6: warning:
+variable ‘dummy’ set but not used [-Wunused-but-set-variable]
+
+It never used since introduction.
+
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ arch/powerpc/platforms/cell/spufs/switch.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/platforms/cell/spufs/switch.c b/arch/powerpc/platforms/cell/spufs/switch.c
+index d56b4e3241cd..b41e81b22fdc 100644
+--- a/arch/powerpc/platforms/cell/spufs/switch.c
++++ b/arch/powerpc/platforms/cell/spufs/switch.c
+@@ -1657,14 +1657,13 @@ static inline void restore_spu_mb(struct spu_state *csa, struct spu *spu)
+ static inline void check_ppu_mb_stat(struct spu_state *csa, struct spu *spu)
+ {
+ 	struct spu_problem __iomem *prob = spu->problem;
+-	u32 dummy = 0;
+ 
+ 	/* Restore, Step 66:
+ 	 *     If CSA.MB_Stat[P]=0 (mailbox empty) then
+ 	 *     read from the PPU_MB register.
+ 	 */
+ 	if ((csa->prob.mb_stat_R & 0xFF) == 0) {
+-		dummy = in_be32(&prob->pu_mb_R);
++		in_be32(&prob->pu_mb_R);
+ 		eieio();
+ 	}
+ }
+@@ -1672,14 +1671,13 @@ static inline void check_ppu_mb_stat(struct spu_state *csa, struct spu *spu)
+ static inline void check_ppuint_mb_stat(struct spu_state *csa, struct spu *spu)
+ {
+ 	struct spu_priv2 __iomem *priv2 = spu->priv2;
+-	u64 dummy = 0UL;
+ 
+ 	/* Restore, Step 66:
+ 	 *     If CSA.MB_Stat[I]=0 (mailbox empty) then
+ 	 *     read from the PPUINT_MB register.
+ 	 */
+ 	if ((csa->prob.mb_stat_R & 0xFF0000) == 0) {
+-		dummy = in_be64(&priv2->puint_mb_R);
++		in_be64(&priv2->puint_mb_R);
+ 		eieio();
+ 		spu_int_stat_clear(spu, 2, CLASS2_ENABLE_MAILBOX_INTR);
+ 		eieio();
+-- 
+2.31.1
 
