@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8591F3979AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263BC3979B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 20:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbhFASCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 14:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        id S234589AbhFASGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 14:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhFASCh (ORCPT
+        with ESMTP id S231918AbhFASGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 14:02:37 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4969C061574;
-        Tue,  1 Jun 2021 11:00:55 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id u22so529821ljh.7;
-        Tue, 01 Jun 2021 11:00:55 -0700 (PDT)
+        Tue, 1 Jun 2021 14:06:22 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC5EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 11:04:40 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id q15so11322432pgg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 11:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VUZ6e3WukGa4/Dft64xoEcyXnfbX/2avn7g/0jYSyNY=;
-        b=g6flVsONZnK/Fgt3JDdq2AZK3JeNsXCuPMV25DNHZA0YUIaskgYQy138/B3/JdIZFJ
-         i51bwXd74rxyFMnSgLDVHakM0ZqX7140OMTfXoJE6mtP099QOH5krFGGBV3pTvUjUx8o
-         OM3fgM1U8VqHdIiWjKJ2oInhHwMxxm4TWxZlA4A0iT9E0CYnH3UlwsvLFsX2VMWyvW5V
-         gJsvEBtcUplpbooHcHCX4lM+WP8hdC867yhHBlzx6aer+VnbIz37k+bf2VnVPxHxmQgt
-         tAwiBXGBzvszMsK/E4y4jEnNaN2SDUc4QuoS4mvRqF8YP8rluH0xiAWtYtCZQArQ1/H1
-         NOyg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TYSehRyYKXLtA2v4mB2RlonXm8D5VUS7x+sRHGYw9pM=;
+        b=QGbVsehE8eg8hbvGRGtRk/3OPto0TVeY/NFT31XWJ7XcUNtmp/0Y1v4feiIJ9q7x5S
+         0kraAeAGRzB+4hKTvihE7bbip2z6CJk+zB0AAkaM5D8FVhgmzis8bbOHsJRknth2dGXQ
+         XaKQzGNDuUknd22sLQsK5kNg/YF/W3dDQh6Zn0ZyFjf4MOyTr4NNATAm6NmbdaZLIenI
+         DFmhFyvQob3QdO8ik52Vd3yQ8G9YVBa31eZ0NnVTsziTcvEq/b8t5mxOTWh6GlcoXd09
+         zVCu4T/zWE9hZYBd2pTtndLcZ/NkwYg7MWUkEX/OLSJV19Dqn3ipvc6490SUP8PzQdOi
+         74Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VUZ6e3WukGa4/Dft64xoEcyXnfbX/2avn7g/0jYSyNY=;
-        b=Z1a8Tr3U4VDcHwhNHTcydY6U/mWR+g+brOCi0ryuNWmYuP5j+RUwodgUcB7s+8f3Fq
-         c+oRIg6YcPpbBW/r8AjKDvoW2eWu1tvsPmB2XEKDIvNLkb1A/Vxx1BimVCD1Lta5Gb2h
-         yyAIB9V8Kw20i6husraINGxjTKDRgBuVxs4M6pYJZZ2Fq0JPrbBGmcYGgbk0jFIag8vK
-         L8q9faJTsCEpBYRhUmvV22a7zqVIBkLsPv645RceNyjvy0Zyr4Jvo6Snk5RF5mz6H3ls
-         PUV3i7Dlj/HXzQqlKPkzQWzWIQrkysPE42Iht3bqnJ0aKneNtvwH1qDJlfgqOeG4Hjx/
-         h92Q==
-X-Gm-Message-State: AOAM533NU+BpQUHmg9aaBvno26ZrmJnCbqI+rQdipjyxmu75D8h8ttWS
-        fBWHY8jQ9hlO+ZsyWXv9RlH9NISsYY0=
-X-Google-Smtp-Source: ABdhPJzJnUKk/j3J+WZluG6HjRJw1QmYgtAdoIqKhQsP3oETPDEz7h6vpaqZgO5ohDF6ln1AdVRlvA==
-X-Received: by 2002:a2e:9e57:: with SMTP id g23mr22299683ljk.123.1622570452138;
-        Tue, 01 Jun 2021 11:00:52 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.googlemail.com with ESMTPSA id a22sm1551718ljp.72.2021.06.01.11.00.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 11:00:51 -0700 (PDT)
-Subject: Re: [PATCH v6 00/14] NVIDIA Tegra memory and power management changes
- for 5.14
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-clk@vger.kernel.org
-References: <20210601023119.22044-1-digetx@gmail.com>
- <YLYZvFPyJFJgxI56@orome.fritz.box>
- <11206c96-9f56-ca6f-e5e3-658534356666@gmail.com>
- <YLZp8FlV4lcDnL23@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c624bc95-1369-b6ef-5c98-15988955937e@gmail.com>
-Date:   Tue, 1 Jun 2021 21:00:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TYSehRyYKXLtA2v4mB2RlonXm8D5VUS7x+sRHGYw9pM=;
+        b=eibMvM1eLV3kWeNhrTRZtAr0a0C/h4QF3vhnrc4FOrmsdhmeo/+K/u7IqoISiUf7+m
+         0t5tt3mgMtr3i8tzgqt4g8LoVFl5ZZUmgMtkEjlqXhSc02veM/I8eL1Avt+KLKejKc5t
+         t0lc4iM1dq3ZK0FvrwUZrl3ZadvS62DLjpt6K7kRU8OReNsElIsOEy148y/6VgR0tVRP
+         A5U2ALvJq+n1GlKsm4k1wQlyplkVcVtxLUaqksCMGmFOnHKzq2jW7B3lO5SbHehy9NVq
+         HGPKeeub9u7utO/ZdN6qmR3MUQfRKGUNif5v9krn4OCPMzTXFQblSrovSJYB0UFL2AAB
+         0Sxg==
+X-Gm-Message-State: AOAM533AS3H2QFexQgIM1n3N2w8GwHom63VeTKxOZaNcQ5NRd2OfT2He
+        wDgqHzavzyildMqcxqReTYYcrG+2d/a871ZSCdpFlQ==
+X-Google-Smtp-Source: ABdhPJwdwH/33yjBENKSlUDlb9piGqAErRe6qgaCVJFmxuOnooIbN2cAcvzyX51ziLVuTB2eWb3vzbarkMXhl4YDeJs=
+X-Received: by 2002:a63:f717:: with SMTP id x23mr29541791pgh.141.1622570679445;
+ Tue, 01 Jun 2021 11:04:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YLZp8FlV4lcDnL23@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210528005029.88088-1-almasrymina@google.com>
+ <20210531162527.caeae9545ea2843c5f62bc9c@linux-foundation.org>
+ <CAHS8izMCb4Ws46X3xXGcmrvV6J36qsAPTVCA_gdcH65FU0OeUg@mail.gmail.com>
+ <20210531173652.c21404a16a8f8542ce40afa8@linux-foundation.org>
+ <CAHS8izO_3QivHuGdmY79Jb_-LqOGc5j-_-1C-tf84hXoKdBDTQ@mail.gmail.com> <83617ae4-90a1-24d0-a79c-4e259a928e04@oracle.com>
+In-Reply-To: <83617ae4-90a1-24d0-a79c-4e259a928e04@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 1 Jun 2021 11:04:28 -0700
+Message-ID: <CAHS8izMA-YLz_wMyP15PV45tErN+bCHJ1x_q1vfQTMbkK-=MhA@mail.gmail.com>
+Subject: Re: [PATCH v4] mm, hugetlb: fix racy resv_huge_pages underflow on UFFDIO_COPY
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.06.2021 20:10, Thierry Reding пишет:
-> On Tue, Jun 01, 2021 at 06:51:33PM +0300, Dmitry Osipenko wrote:
->> 01.06.2021 14:27, Thierry Reding пишет:
->>> On Tue, Jun 01, 2021 at 05:31:05AM +0300, Dmitry Osipenko wrote:
->>>> This series:
->>>>
->>>>   1. Adds CPU/core voltage bump before system is rebooted.
->>>>   2. Adds new devm_tegra_core_dev_init_opp_table() helper and switches
->>>>      Tegra memory drivers to use it.
->>>>   3. Adds compile-testing support to the Tegra memory drivers.
->>>>   4. Adds Tegra SoC core power domain support.
->>>>
->>>> Changelog:
->>>>
->>>> v6: - Fixed another compile-test trouble reported for v5. I double checked
->>>>       the clk stubs this time and compiled them locally.
->>>
->>> Heh... I just fixed those locally on top of your v5. Let me see if I can
->>> roll back the changes and apply this new set instead.
->>
->> Thank you! You probably saw already that Ulf Hansson suggested to remove
->> the lockdep annotation for now from the core PD, I'll make a v7 with
->> this small change.
-> 
-> Can you perhaps post this change as a follow-up? That way I can just
-> merge it into the corresponding branch, which may be easier than backing
-> out all the changes spread over four branches and applying basically the
-> same thing again.
+On Tue, Jun 1, 2021 at 10:09 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 5/31/21 7:48 PM, Mina Almasry wrote:
+> > On Mon, May 31, 2021 at 5:36 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> >> On Mon, 31 May 2021 17:11:52 -0700 Mina Almasry <almasrymina@google.com> wrote:
+> >>> On Mon, May 31, 2021 at 4:25 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> >>>> On Thu, 27 May 2021 17:50:29 -0700 Mina Almasry <almasrymina@google.com> wrote:
+> >>> I've sent 2 similar patches to the list:
+> >>>
+> >>> 1. "[PATCH v4] mm, hugetlb: Fix simple resv_huge_pages underflow on UFFDIO_COPY"
+> >>>
+> >>> This one is sent to -stable and linux-mm and is a fairly simple fix.
+> >>>
+> >>> 2. "[PATCH v4] mm, hugetlb: fix racy resv_huge_pages underflow on UFFDIO_COPY"
+> >>
+> >> Ah, OK, the title of the first patch was changed, which threw me off.
+> >>
+> >> I'd skipped "[PATCH v4] mm, hugetlb: Fix simple resv_huge_pages
+> >> underflow on UFFDIO_COPY" because Mike's comments appeared to require a
+> >> v5.  I applied it and made Mike's changelog suggestions.  Queued for
+> >> 5.13 and -stable.
+> >>
+> >> And I queued "[PATCH v4] mm, hugetlb: fix racy resv_huge_pages
+> >> underflow on UFFDIO_COPY" for 5.14.
+> >>
+> >>
+> >
+> > Awesome, thanks! And sorry for the confusion!
+> >
+>
+> Mina, does this patch depend on changes to restore_reserve_on_error()?
+>
 
-Alright, I'll make a follow-up. Thank you.
+Yes, this patch (and only this patch) depends on your changes for
+complete and correct functionality. I'm not sure what's the impact
+
+> I am still working on those changes.  It may be a few days before I can
+> have something finalized.
+>
+> If this does depend on restore_reserve_on_error as I suspect, perhaps we
+> should send these together.
+
+I was thinking it's fine to have my fix in Andrew's tree a few days
+before yours, since the race is hard to reproduce and even if the race
+reproduces the userfaultfd tests still pass, so I don't see any
+disastrous consequences, but I'm happy to do whatever is appropriate
+here.
+> --
+> Mike Kravetz
