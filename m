@@ -2,115 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7DB396D5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97451396D5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhFAG3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 02:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhFAG3o (ORCPT
+        id S232725AbhFAGcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 02:32:04 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6103 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229984AbhFAGcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 02:29:44 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E792C061574;
-        Mon, 31 May 2021 23:28:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvMfN1l0Yz9sX2;
-        Tue,  1 Jun 2021 16:27:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622528880;
-        bh=ymDImV4zv2Er8XJEcPufPATDBMYqC4ae7DxwdFrIOmM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eco7BSj1t8RkqAxSrVX5b61O1QgXZkIi+OLS3WpKwDX1LFnKtiGyAUmiiSkb0oSYN
-         jRAEvi9KQksWwytchvDSBOGUuOHX8Mvzg4i01xYB8tbs0Zuluo5Ez8EXRwkB1D6MPi
-         1YIIIIzfBsHiMCZwN3k9SfyMgJbWGjeSO1FX8Dn9NC/1e9oMjWv55tD/PLTlOmA7kY
-         vTLhhzvJsiFdNwieO4Z1P6/3yBviA1vy7KGDyTgegD5Ts6WCgqmwc7+byhuZLneefz
-         eMzlt8YCnIBFgZFcgmIwAORp45w9bbbEI8xZnvnOaPF0hBUN4yzNJtZvm4z9sB5s7r
-         LYbg91fNF/3pg==
-Date:   Tue, 1 Jun 2021 16:27:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: linux-next: manual merge of the akpm-current tree with the risc-v
- tree
-Message-ID: <20210601162752.642129c2@canb.auug.org.au>
+        Tue, 1 Jun 2021 02:32:03 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvMf13Qc5zYpLF;
+        Tue,  1 Jun 2021 14:27:37 +0800 (CST)
+Received: from dggpemm500012.china.huawei.com (7.185.36.89) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 14:30:20 +0800
+Received: from DESKTOP-EFRLNPK.china.huawei.com (10.174.176.189) by
+ dggpemm500012.china.huawei.com (7.185.36.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 14:30:20 +0800
+From:   Qiheng Lin <linqiheng@huawei.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>
+CC:     <linux-kernel@vger.kernel.org>, Qiheng Lin <linqiheng@huawei.com>
+Subject: [PATCH v2 -next] x86/kprobes: Remove the unneeded extern keyword
+Date:   Tue, 1 Jun 2021 14:30:15 +0800
+Message-ID: <20210601063015.27309-1-linqiheng@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QS=aojrS+w2H9tjeWzE7ztJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.176.189]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500012.china.huawei.com (7.185.36.89)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QS=aojrS+w2H9tjeWzE7ztJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The function declaration in kprobes.h is already marked extern, so remove
+it in the definition.
 
-Hi all,
+This problem was caught by the sparse tool:
+ function 'arch_unoptimize_kprobes' with external linkage has definition
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+---
+Changes in v2:
+ - adjust the subject and commit message
 
-  arch/riscv/Kconfig
+ arch/x86/kernel/kprobes/opt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-between commit:
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index 71425ebba98a..7d962c884505 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -539,8 +539,8 @@ void arch_unoptimize_kprobe(struct optimized_kprobe *op)
+  * Recover original instructions and breakpoints from relative jumps.
+  * Caller must call with locking kprobe_mutex.
+  */
+-extern void arch_unoptimize_kprobes(struct list_head *oplist,
+-				    struct list_head *done_list)
++void arch_unoptimize_kprobes(struct list_head *oplist,
++			     struct list_head *done_list)
+ {
+ 	struct optimized_kprobe *op, *tmp;
+ 
+-- 
+2.31.1
 
-  7fa865f5640a ("riscv: TRANSPARENT_HUGEPAGE: depends on MMU")
-
-from the risc-v tree and commit:
-
-  f36992ff3525 ("mm: generalize ZONE_[DMA|DMA32]")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-I did the minimal fixup, but really, these selects should remain sorted.
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/Kconfig
-index 2eedaf621bc7,6ee11ca998b2..000000000000
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@@ -106,7 -104,7 +106,8 @@@ config RISC
-  	select SYSCTL_EXCEPTION_TRACE
-  	select THREAD_INFO_IN_TASK
-  	select UACCESS_MEMCPY if !MMU
- +	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if 64BIT && MMU
-+ 	select ZONE_DMA32 if 64BIT
- =20
-  config ARCH_MMAP_RND_BITS_MIN
-  	default 18 if 64BIT
-
---Sig_/QS=aojrS+w2H9tjeWzE7ztJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC102gACgkQAVBC80lX
-0GwgvggAgJsNIIghxw7Lm5+no+1RZCrE/vnBhMATuSSYCvf8/nA8YP8rFin22B1i
-YEQnosoM0FEi3WY5mwCUB9PGcHH4hC7R99gQ6OAlYywaNWZKOeV1jXosqohgxb5r
-IjveRwj4B/UJj4iaZDHFLKpQtP50d9EWugM9MyZ1pxjd72AJZUW7E1fIFUTO3ZTC
-jSWdOEZPd6wEnSaW/rMr7qUWl3MI8I6Ku8lgVwwJJCKFp6LXMjFeLMvp4F5ImLU8
-FDtdTNWq4no1kvVfFeR05GvtNAbBZYxifxEPK+JmfPLVvd4VaxokBVw5Xgn4rLat
-R5LS/wWOl2jHeXvkSGHodI8LXSqYQg==
-=/R85
------END PGP SIGNATURE-----
-
---Sig_/QS=aojrS+w2H9tjeWzE7ztJ--
