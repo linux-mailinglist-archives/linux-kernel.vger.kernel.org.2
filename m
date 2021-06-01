@@ -2,60 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7C3397D3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E153397D3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbhFAXyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:54:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235137AbhFAXy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 19:54:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70F0E613AD;
-        Tue,  1 Jun 2021 23:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622591567;
-        bh=dxjDIz0r0b7xu1n9w+LYp4IakkKBhTx8Jn5ZMEZwbhI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HCyhQjonnStyx/IAf6j38G5VoiTAkwlYEGBOjWwsTQRs9d74mqf0NIB6G9LdowvNg
-         06s4vaky2uliZYTTcrBHtdLErU12UipwM8Aqzb7u303acCyzFmTU6JaEsi+VvCVr0d
-         B4feOWRTx/LtL6nVZMHV5JUfKevSWoHIaGwUrPTE=
-Date:   Tue, 1 Jun 2021 16:52:46 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dong Aisheng <dongas86@gmail.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
-Subject: Re: [PATCH V2 4/6] mm: rename the global section array to
- mem_sections
-Message-Id: <20210601165246.99d7374d07661b7e91e49cb6@linux-foundation.org>
-In-Reply-To: <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
-References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
-        <20210531091908.1738465-5-aisheng.dong@nxp.com>
-        <42617372-c846-85fe-4739-abbe55eca8f6@redhat.com>
-        <CAA+hA=Ss4j8qeoe7RtDJ14nuqy+TpOk2qi-A9+YN6=2y8c_CGg@mail.gmail.com>
-        <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235225AbhFAXym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:54:42 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53018 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235137AbhFAXyk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 19:54:40 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 151Nqr6w109565;
+        Tue, 1 Jun 2021 18:52:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622591573;
+        bh=R/TwjtddTVGHWakjw/FOW9ucHapL5nru4HxdLWEtUmA=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=h1+Dp/xf+FNy4+jDoACDBTqOzqEMMmBKr+I7OTmPjpd6DvB8RAq1z0CtsUItPvqVT
+         E9zql7cYc4ESmyozmOtkezpj9+ynHjJT7spIv+FFz43NjSLXKv8yAxngijzSe/psmx
+         yhecXz4LOT852SDpP76fiZ5RIZ75o3aMbbLQPS1c=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 151Nqra9118447
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Jun 2021 18:52:53 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
+ 2021 18:52:52 -0500
+Received: from DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14]) by
+ DFLE103.ent.ti.com ([fe80::7431:ea48:7659:dc14%17]) with mapi id
+ 15.01.2176.012; Tue, 1 Jun 2021 18:52:52 -0500
+From:   "Modi, Geet" <geet.modi@ti.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "Bajjuri, Praneeth" <praneeth@ti.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy:
+ dp83867: perform soft reset and retain established link
+Thread-Topic: [EXTERNAL] Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH] net: phy:
+ dp83867: perform soft reset and retain established link
+Thread-Index: AQHXU98FVTwb14DGTkOIv0rsFlldQar5b8+A//+PhQCABmhVAIAAej4A///XSQA=
+Date:   Tue, 1 Jun 2021 23:52:52 +0000
+Message-ID: <5A01E985-7215-4926-98F7-3F776E06A436@ti.com>
+References: <20210324010006.32576-1-praneeth@ti.com>
+ <YFsxaBj/AvPpo13W@lunn.ch> <404285EC-BBF0-4482-8454-3289C7AF3084@ti.com>
+ <YGSk4W4mW8JQPyPl@lunn.ch> <3494dcf6-14ca-be2b-dbf8-dda2e208b70b@ti.com>
+ <YLEf128OEADi0Kb1@lunn.ch> <5480BEB5-B540-4BB6-AC32-65CB27439270@ti.com>
+ <EC713CBF-D669-4A0E-ADF2-093902C03C49@ti.com> <YLaICrmU8ND+66mU@lunn.ch>
+In-Reply-To: <YLaICrmU8ND+66mU@lunn.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.49.21050901
+x-originating-ip: [10.250.200.196]
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B9267D983B21EC4AAD90EBC921C49109@owa.mail.ti.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 10:40:09 +0200 David Hildenbrand <david@redhat.com> wrote:
-
-> > Thanks, i explained the reason during my last reply.
-> > Andrew has already picked this patch to -mm tree.
-> 
-> Just because it's in Andrews tree doesn't mean it will end up upstream. ;)
-> 
-> Anyhow, no really strong opinion, it's simply unnecessary code churn 
-> that makes bisecting harder without real value IMHO.
-
-I think it's a good change - mem_sections refers to multiple instances
-of a mem_section.  Churn is a pain, but that's the price we pay for more
-readable code.  And for having screwed it up originally ;)
-
+UHJhbmVldGgsDQoNCkNhbiB5b3UgcGxlYXNlIGhlbHAgZWRpdCB0aGUgY29tbWVudCBhbmQgcmVz
+dWJtaXQgZm9yIGFwcHJvdmFsID8NCg0KUmVnYXJkcywNCkdlZXQNCg0KDQrvu79PbiA2LzEvMjEs
+IDEyOjE4IFBNLCAiQW5kcmV3IEx1bm4iIDxhbmRyZXdAbHVubi5jaD4gd3JvdGU6DQoNCiAgICBP
+biBUdWUsIEp1biAwMSwgMjAyMSBhdCAwNzowMTowNFBNICswMDAwLCBNb2RpLCBHZWV0IHdyb3Rl
+Og0KICAgID4gSGVsbG8gQW5kcmV3LA0KICAgID4gDQogICAgPiAgDQogICAgPiANCiAgICA+IFBs
+ZWFzZSBsZXQgbWUga25vdyBpZiB5b3UgaGF2ZSBhZGRpdGlvbmFsIHF1ZXN0aW9ucy9jbGFyaWZp
+Y2F0aW9ucyB0byBhcHByb3ZlDQogICAgPiBiZWxvdyBjaGFuZ2UgcmVxdWVzdC4NCiAgICA+IA0K
+ICAgID4gIA0KICAgID4gDQogICAgPiBSZWdhcmRzLA0KICAgID4gR2VldA0KICAgID4gDQogICAg
+PiAgDQogICAgPiANCiAgICA+ICANCiAgICA+IA0KICAgID4gRnJvbTogR2VldCBNb2RpIDxnZWV0
+Lm1vZGlAdGkuY29tPg0KICAgID4gRGF0ZTogRnJpZGF5LCBNYXkgMjgsIDIwMjEgYXQgMTA6MTAg
+QU0NCiAgICA+IFRvOiBBbmRyZXcgTHVubiA8YW5kcmV3QGx1bm4uY2g+LCAiQmFqanVyaSwgUHJh
+bmVldGgiIDxwcmFuZWV0aEB0aS5jb20+DQogICAgPiBDYzogIkRhdmlkIFMgLiBNaWxsZXIiIDxk
+YXZlbUBkYXZlbWxvZnQubmV0PiwgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz4sDQog
+ICAgPiAibmV0ZGV2QHZnZXIua2VybmVsLm9yZyIgPG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc+LA0K
+ICAgID4gImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciIDxsaW51eC1rZXJuZWxAdmdlci5r
+ZXJuZWwub3JnPg0KICAgID4gU3ViamVjdDogUmU6IFtFWFRFUk5BTF0gUmU6IFtFWFRFUk5BTF0g
+UmU6IFtQQVRDSF0gbmV0OiBwaHk6IGRwODM4Njc6IHBlcmZvcm0NCiAgICA+IHNvZnQgcmVzZXQg
+YW5kIHJldGFpbiBlc3RhYmxpc2hlZCBsaW5rDQoNCiAgICBTbyB0aGlzIGFsbCBzZWVtcyB0byBi
+b2lsIGRvd24gdG8sIGl0IGRvZXMgbm90IG1hdHRlciBpZiBpdCBpcw0KICAgIGFjY2VwdGFibGUg
+b3Igbm90LCB5b3UgYXJlIGdvaW5nIHRvIGRvIGl0LiBTbyBwbGVhc2UganVzdCByZW1vdmUgdGhh
+dA0KICAgIHBhcnQgb2YgdGhlIGNvbW1lbnQuIEl0IGhhcyBubyB2YWx1ZS4NCg0KICAgIAkgQW5k
+cmV3DQoNCg==
