@@ -2,91 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAAD396CC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A91396CCA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhFAF0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:26:05 -0400
-Received: from mga03.intel.com ([134.134.136.65]:46455 "EHLO mga03.intel.com"
+        id S232725AbhFAF3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:29:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhFAF0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:26:02 -0400
-IronPort-SDR: YbTWwSOBbZVsDosE0wgD8Tz2wwMRLVGJvLcHijLsoJWpmPIlcRr4adhSgbZufiV2pMokqHfKC3
- YLmIKflH0gHg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="203508638"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="203508638"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 22:24:21 -0700
-IronPort-SDR: 9/26xGdp6Lz9x66jJdkf3SzA1PYii11BJIvKVB0+a/56W0qSgeYjSmdylmkMihaKUpOfvXuquH
- x+Vy+yi2JzkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="632749269"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.105]) ([10.239.159.105])
-  by fmsmga006.fm.intel.com with ESMTP; 31 May 2021 22:24:16 -0700
-Cc:     baolu.lu@linux.intel.com, yi.l.liu@intel.com,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
-        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Wang <jasowang@redhat.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
- <20210531164118.265789ee@yiliu-dev>
- <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
- <20210601113152.6d09e47b@yiliu-dev>
- <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
-Date:   Tue, 1 Jun 2021 13:23:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229477AbhFAF3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:29:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1C3061042;
+        Tue,  1 Jun 2021 05:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622525241;
+        bh=vfdyDVfejBDK08APTvZn88/BgNA1G6tTsDDAjl5hXzY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sFdZmG3k+bI0DbZO5SSe1KApJkX/YuX0YBfuZhigJ7CBbE5uGTO+/fbsesTtjvhrD
+         PWLaA81KhTD3mjMxqEwjg+bh0VeqtjnKG4TiCxcEgTOCVprEPHUZyQ5IU7ef7J6UF6
+         MRDFnR5XVN5EJa59nfpUIgt09mODIseX0DuiRa5ann5r2Q2hSThLQ2Wv3jhEI1AEoI
+         ApVB9ETaqD6cu1A9OOlsKVuOYsM8N+rgVuaqQhWokMnkzDQjDUMlD27YJL8AEWFzep
+         mIEysAQm0SE6SB0Sqg2w/9Vk18QO9hAY19yBlSfkuuuTTzfi/oiMFQrfxcyEo+s+CI
+         0rfjd3eQYwmMA==
+Date:   Mon, 31 May 2021 22:27:19 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
+        <davem@davemloft.net>, <linux-nfs@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bfields@fieldses.org>, <chuck.lever@oracle.com>
+Subject: Re: [PATCH net-next] xprtrdma: Fix spelling mistakes
+Message-ID: <20210531222719.3e742ed6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20210531063640.3018843-1-zhengyongjun3@huawei.com>
+References: <20210531063640.3018843-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason W,
-
-On 6/1/21 1:08 PM, Jason Wang wrote:
->>> 2) If yes, what's the reason for not simply use the fd opened from
->>> /dev/ioas. (This is the question that is not answered) and what happens
->>> if we call GET_INFO for the ioasid_fd?
->>> 3) If not, how GET_INFO work?
->> oh, missed this question in prior reply. Personally, no special reason
->> yet. But using ID may give us opportunity to customize the management
->> of the handle. For one, better lookup efficiency by using xarray to
->> store the allocated IDs. For two, could categorize the allocated IDs
->> (parent or nested). GET_INFO just works with an input FD and an ID.
+On Mon, 31 May 2021 14:36:40 +0800 Zheng Yongjun wrote:
+> Fix some spelling mistakes in comments:
+> succes  ==> success
 > 
-> 
-> I'm not sure I get this, for nesting cases you can still make the child 
-> an fd.
-> 
-> And a question still, under what case we need to create multiple ioasids 
-> on a single ioasid fd?
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-One possible situation where multiple IOASIDs per FD could be used is
-that devices with different underlying IOMMU capabilities are sharing a
-single FD. In this case, only devices with consistent underlying IOMMU
-capabilities could be put in an IOASID and multiple IOASIDs per FD could
-be applied.
-
-Though, I still not sure about "multiple IOASID per-FD" vs "multiple
-IOASID FDs" for such case.
-
-Best regards,
-baolu
+This should not have been tagged for net-next, leaving it to Trond.
