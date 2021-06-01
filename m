@@ -2,90 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F293978E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D283978F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234533AbhFARSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbhFARR7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:17:59 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B20C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 10:16:17 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so1818356pjp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 10:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=03YGTpNwQSOs+dI0DajKWE/HnlTsHUlOJKv/uB8bu8o=;
-        b=lQf4HXK19/hFZG81cGyUp07I8F+flEDEOIxVB1Z/Rt2SEAWS3YszoIHLRAJgmgAUTw
-         Edy2QW9uzPi+mzLbA9XbJwsVRcfjLOMRajCMS1vssNlGY6HyMiUnwxvLpqT2iiGAWkNY
-         CqORDo3gPhJlFccupKxkE2/usq7xSdkR7wYPJtsIjxN8VIgPoGjDk9clMHss+BEafbJw
-         +LNWiFb7hJLe3xFkbB33M/EUXFPgszY8Om3Uf2prmU0HnrOWUwnfO+cEi4c3fC+sizsE
-         kE4wbGfst49nJFzgDNQMbjlKmUogCyjYPViFQ0cJjHZAyqqxR9XosG3Ova7FUWdFywbQ
-         RL2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=03YGTpNwQSOs+dI0DajKWE/HnlTsHUlOJKv/uB8bu8o=;
-        b=QEZgvWNdfuHhzbkDnX3Qg1ZOvBjr+nnl17ILdGlAgr0k3s2jr6OQm6+cAob6XZtJqv
-         Md6z9Y24pYPdqTQGMrUzeuwArB30bInPS9Gohy5H/5Hm9aUIrElsFbWhHIRcLLz3QChH
-         dACi9rIpPNp6yWzuZFCCC6PwZFT32tyVKoMpei7Z0lywicGOl0dQjP2zQOicYHhQ25Jv
-         1C3kuVxoUq+VEEkpTzII9qGoI0HU6fV5phggzpmhW0DsUVNHyJetmML5uQUvcK5AQMVE
-         MyAfuUr8CwQTRDuo+tndlGTEgWkvyV4ah76xW3+9+U3L4MgDCJDs6vO7L8BHIZjBAVXv
-         X9Cg==
-X-Gm-Message-State: AOAM532EeyXT7TpE8Had9b3bo7SPr7TRsVQNACazJMDkDYDcE86wXTll
-        eMjAq6TR/VRutsWwvgNkqVw7Xw==
-X-Google-Smtp-Source: ABdhPJx0tglHxBZ0iTUaqoezKcBQbxi4tmxT77btfq43yF4S/S/GHJomHt8fhQx/ETbZVaqtivdbBg==
-X-Received: by 2002:a17:90a:e7c2:: with SMTP id kb2mr26667597pjb.193.1622567776919;
-        Tue, 01 Jun 2021 10:16:16 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id b10sm8787458pfi.122.2021.06.01.10.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 10:16:16 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 17:16:12 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>, Pu Wen <puwen@hygon.cn>,
-        Joerg Roedel <jroedel@suse.de>, x86@kernel.org,
-        joro@8bytes.org, dave.hansen@linux.intel.com, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        sashal@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] x86/sev: Check whether SEV or SME is supported first
-Message-ID: <YLZrXEQ8w5ntu7ov@google.com>
-References: <20210526072424.22453-1-puwen@hygon.cn>
- <YK6E5NnmRpYYDMTA@google.com>
- <905ecd90-54d2-35f1-c8ab-c123d8a3d9a0@hygon.cn>
- <YLSuRBzM6piigP8t@suse.de>
- <e1ad087e-a951-4128-923e-867a8b38ecec@hygon.cn>
- <YLZGuTYXDin2K9wx@zn.tnic>
- <YLZc3sFKSjpd2yPS@google.com>
- <dbc4e48f-187a-4b2d-2625-b62d334f60b2@amd.com>
- <YLZneRWzoujEe+6b@zn.tnic>
+        id S234388AbhFARVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:21:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231918AbhFARVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:21:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B375E610C9;
+        Tue,  1 Jun 2021 17:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622567964;
+        bh=q1sbzRBTpAxr0jTVMrGbHfxE6MisoOTVV2xrIOplyF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EDC4ObUwc0z2+/NXM43bGUUH634E+DSTDo58hx4EHsxrPIgyluNYrUO+QMv584mzw
+         CxufNq/L31bShhVuXpBxWa+aaFpP9pX7rOlFkHVOnLuSXl/R2oXTS+StjynK8O4GbF
+         KVFEhiRc56++gCHEqGWPoXAwJDT+oigiyW2SSN+a8RWrY+mJG1b/1vA393HWxD8HJk
+         dUPTWt0QD1afJo5K1hs/422cEOsej/mTxyj48PGjBMayJn3Fljkh6kbujRf3fM9k5s
+         whEDRpaIcQkqSEn8eff+rgOzZvddMbp66eUIP/ELkQW7xnFRigNvzsqUkKL/zSgch1
+         mIHt1ai5THAuw==
+Date:   Tue, 1 Jun 2021 20:19:13 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Shevchenko <andy@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Dave Young <dyoung@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lianbo Jiang <lijiang@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 1/3] x86/setup: always reserve the first 1M of RAM
+Message-ID: <YLZsEaimyAe0x6b3@kernel.org>
+References: <20210601075354.5149-1-rppt@kernel.org>
+ <20210601075354.5149-2-rppt@kernel.org>
+ <20210601090653.GB361405@MiWiFi-R3L-srv>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLZneRWzoujEe+6b@zn.tnic>
+In-Reply-To: <20210601090653.GB361405@MiWiFi-R3L-srv>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021, Borislav Petkov wrote:
-> Yah, ain't gonna happen. I'm not taking some #GP handler to the early
-> code just because some hardware is operating out of spec.
+Hi Baoquan,
+On Tue, Jun 01, 2021 at 05:06:53PM +0800, Baoquan He wrote:
+> On 06/01/21 at 10:53am, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> ......  
+> 
+> > diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> > index 7850111008a8..b15ebfe40a73 100644
+> > --- a/arch/x86/platform/efi/quirks.c
+> > +++ b/arch/x86/platform/efi/quirks.c
+> > @@ -450,6 +450,18 @@ void __init efi_free_boot_services(void)
+> >  			size -= rm_size;
+> >  		}
+> 
+> Thanks for taking care of the low-1M excluding in
+> efi_free_boot_services(), Mike. You might want to remove the old real
+> mode excluding code either since it's been covered by your new code.
 
-The bug isn't limited to out-of-spec hardware.  At the point of #GP, sme_enable()
-has only verified the max leaf is greater than 0x8000001f, it has not verified
-that 0x8000001f is actually supported.  The APM itself declares several leafs
-between 0x80000000 and 0x8000001f as reserved/unsupported, so we can't argue that
-0x8000001f must be supported if the max leaf is greater than 0x8000001f.
+Unfortunately I can't because it's important that set_real_mode_mem() would
+reuse memory that was occupied by EFI boot services and that is being freed
+here.
 
-The only way to verify that 0x8000001f is supported is to find a non-zero bit,
-which is what Pu Wen's patch does.
+According to the changelog of 5bc653b73182 ("x86/efi: Allocate a trampoline
+if needed in efi_free_boot_services()"), that system has EBDA at 0x2c000 so
+we reserve everything from 0x2c000 to 0xa0000 in reserve_bios_regions() and
+most of the memory below 0x2c0000 is used by EFI boot data. So with such
+memory layout reserve_real_mode() won't be able to allocate the trampoline.
+Yet, when the EFI boot data is free, the room occupied by it will be reused
+by the real mode trampoline via set_real_mode_mem().
+ 
+> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> index b15ebfe40a73..be814f2089ff 100644
+> --- a/arch/x86/platform/efi/quirks.c
+> +++ b/arch/x86/platform/efi/quirks.c
+> @@ -409,7 +409,6 @@ void __init efi_free_boot_services(void)
+>  	for_each_efi_memory_desc(md) {
+>  		unsigned long long start = md->phys_addr;
+>  		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
+> -		size_t rm_size;
+>  
+>  		if (md->type != EFI_BOOT_SERVICES_CODE &&
+>  		    md->type != EFI_BOOT_SERVICES_DATA) {
+> @@ -430,26 +429,6 @@ void __init efi_free_boot_services(void)
+>  		 */
+>  		efi_unmap_pages(md);
+>  
+> -		/*
+> -		 * Nasty quirk: if all sub-1MB memory is used for boot
+> -		 * services, we can get here without having allocated the
+> -		 * real mode trampoline.  It's too late to hand boot services
+> -		 * memory back to the memblock allocator, so instead
+> -		 * try to manually allocate the trampoline if needed.
+> -		 *
+> -		 * I've seen this on a Dell XPS 13 9350 with firmware
+> -		 * 1.4.4 with SGX enabled booting Linux via Fedora 24's
+> -		 * grub2-efi on a hard disk.  (And no, I don't know why
+> -		 * this happened, but Linux should still try to boot rather
+> -		 * panicking early.)
+> -		 */
+> -		rm_size = real_mode_size_needed();
+> -		if (rm_size && (start + rm_size) < (1<<20) && size >= rm_size) {
+> -			set_real_mode_mem(start);
+> -			start += rm_size;
+> -			size -= rm_size;
+> -		}
+> -
+>  		/*
+>  		 * Don't free memory under 1M for two reasons:
+>  		 * - BIOS might clobber it
+> 
+> >  
+> > +		/*
+> > +		 * Don't free memory under 1M for two reasons:
+> > +		 * - BIOS might clobber it
+> > +		 * - Crash kernel needs it to be reserved
+> > +		 */
+> > +		if (start + size < SZ_1M)
+> > +			continue;
+> > +		if (start < SZ_1M) {
+> > +			size -= (SZ_1M - start);
+> > +			start = SZ_1M;
+> > +		}
+> > +
+> >  		memblock_free_late(start, size);
+> >  	}
+> >  
+> > diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
+> > index 2e1c1bec0f9e..8ea285aca827 100644
+> > --- a/arch/x86/realmode/init.c
+> > +++ b/arch/x86/realmode/init.c
+> > @@ -29,14 +29,16 @@ void __init reserve_real_mode(void)
+> >  
+> >  	/* Has to be under 1M so we can execute real-mode AP code. */
+> >  	mem = memblock_find_in_range(0, 1<<20, size, PAGE_SIZE);
+> > -	if (!mem) {
+> > +	if (!mem)
+> >  		pr_info("No sub-1M memory is available for the trampoline\n");
+> > -		return;
+> > -	}
+> > +	else
+> > +		set_real_mode_mem(mem);
+> >  
+> > -	memblock_reserve(mem, size);
+> > -	set_real_mode_mem(mem);
+> > -	crash_reserve_low_1M();
+> > +	/*
+> > +	 * Unconditionally reserve the entire fisrt 1M, see comment in
+> > +	 * setup_arch()
+> > +	 */
+> > +	memblock_reserve(0, SZ_1M);
+> >  }
+> >  
+> >  static void sme_sev_setup_real_mode(struct trampoline_header *th)
+> > -- 
+> > 2.28.0
+> > 
+> 
+
+-- 
+Sincerely yours,
+Mike.
