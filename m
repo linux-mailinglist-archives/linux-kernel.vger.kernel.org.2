@@ -2,157 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9F9396EBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C09396EC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbhFAIV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233431AbhFAIVT (ORCPT
+        id S233446AbhFAIWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:22:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37234 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233300AbhFAIWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:21:19 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA2FC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:19:37 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id q5so13283797wrs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KukDru8x9QpmY3cmltufnJ8Ttohzvm/qv7QdMVbte6Q=;
-        b=vWeB5vM7l9vQeqWDCKYiIIf6rdKeCS6rOqxAXs5SkMsl0zAQz2MreKsTuutru/3KHS
-         N1rcbpd/MbStA2AoeesYEmPdzGkiTCGDYi/nDwtr20SLW6k/u+oA3n1nHf01dCkhj7PZ
-         m4DafUjHVAs8x9mThNr6lYhqzZOb/vbRG1C5dS+aheSb2hxaEfZPI1Dnre5AvV+o7kai
-         S9AjWb34gmTK7ksUnM540qp51IG0ALLZVF8WglKka5lDjz1nibnhwC6nWsU6k8f6nHkf
-         dfgq2w8i4Vadgo8Q0i8N+ORUGoYsfD+53/LD2JKkQ+q+WBN0vkAqEByoqGwJRoma/S2R
-         gA9w==
+        Tue, 1 Jun 2021 04:22:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622535667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WReHxPda64zFpH85OA/SFzugrU65pXg0epyJmDyWUw0=;
+        b=WPTP/Alq3FKsCJg+XsiY4d0Tk3jIdx/BiiQ/GHzp/iUpanMxuI3jCxsdeQJNqhMPRpLlUj
+        6Lc45urPlPq0TuSo2J4aSY8yJUNyazETVcjml1c0KOj7gi9FeUDKIofzquPcDIKw3J3xF+
+        ph5GT801P7C00MouiDA/TqL5recxzIs=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-MHrdQfbJNTqzxpUB2uMahg-1; Tue, 01 Jun 2021 04:21:06 -0400
+X-MC-Unique: MHrdQfbJNTqzxpUB2uMahg-1
+Received: by mail-ej1-f70.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso772436ejt.20
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:21:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KukDru8x9QpmY3cmltufnJ8Ttohzvm/qv7QdMVbte6Q=;
-        b=OsH7HXoAEorp3Beh240Hzxl6icuJmYIXEsAk8tT4/+ucwGw7s4DVGOuhw87BklZo2t
-         s9ei8NRrMpcpvFuM7sUTKQklvRf8ieDVJ6Cep03zCsI9UmhH4jFBD/7BM0fxzRHX4Fnm
-         SNNzH/HCz54iz6DXG5ySI/OeCAGmjR5Ge0DcByvw+7voNbI/VmBgVTA2s3EfDEN+ZYRX
-         Ei424t1rFDKQTAmMajzNX+Hl6PyebWKU2riUPmGYfDLNT858JYLI+PXWqb038CGvlFRZ
-         WQb0Hg6Cy7/Hdzc4gkrhy6X9dJZf5hOf6ZTvaby7V0rOTlbmHBpD9dsjcd/ThiTax+zf
-         qbbA==
-X-Gm-Message-State: AOAM531cFVaAN4wN3lMpNJyEanJCmoKhrpuoMCD10vPJSRidSv+XZzcf
-        0r5UQ8womov8SjLNfygPsFqDCw==
-X-Google-Smtp-Source: ABdhPJzIworTj34S1WsMzhTicK84t6ne3uMrwkffGkcGsO94WMOa27KFQn7os5+/Ub6oYkfJI2b+AQ==
-X-Received: by 2002:adf:f14d:: with SMTP id y13mr26368165wro.261.1622535575803;
-        Tue, 01 Jun 2021 01:19:35 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id t4sm612108wru.53.2021.06.01.01.19.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 01:19:35 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 09:19:33 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
- bindings
-Message-ID: <20210601081933.GU543307@dell>
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr>
- <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell>
- <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
- <20210526075255.GG4005783@dell>
- <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WReHxPda64zFpH85OA/SFzugrU65pXg0epyJmDyWUw0=;
+        b=D79Nr7FP6L+UHQ1sGzV68OXRporS2ZQW68Hn655yOGOVE+uSU9xQdtjgV3KYdTZex7
+         ZL+s2odruMgMx7PipcLGDGJYV3bcOA1tRP0yJCyM1SGhbAvIVRJRqnXGxGbl0iozugdB
+         eY8jYvrYe5wtc1QFaUUqzn7D82RwjZTA5ZwYfXAhKLNjhw1bKYDjEWs5ulXtQdvs7yta
+         iG+KQXwxQSOvB0ZpD7Xn97gW1ajCMWSfY3i5k6ldBMo/cfUJNPM6PjwpDH21jsgbKyP7
+         jejNwX8ARzfNv2B2CKzRg3xVuOtJGhahpXTK+ADKSE2gF32Ws7eejubbpu4j9Ip34SbJ
+         VBnA==
+X-Gm-Message-State: AOAM532EANnEVWOCleabBh9wLcE4Ub4R5jEwwXSpCkA0FAegOsvtPCcP
+        NH1Vgyb7d6v8w5UMn7DWbMCcZwvEjDyZD4OdM/6eEXxdjGiulGUiCd8rMg78TD20CTkmXVO5Hpg
+        QhgOWo8r/zbe5+BVdS2gTdOEt
+X-Received: by 2002:aa7:c7cc:: with SMTP id o12mr31049692eds.291.1622535664460;
+        Tue, 01 Jun 2021 01:21:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGx4WjZajKzfRVdcO3xdPUBoEbwZ8YN5yKtU7CehhauQj/wnCqLYgCI87BDDuWg2PYcGjN8w==
+X-Received: by 2002:aa7:c7cc:: with SMTP id o12mr31049665eds.291.1622535664323;
+        Tue, 01 Jun 2021 01:21:04 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id lv10sm7146890ejb.32.2021.06.01.01.21.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 01:21:03 -0700 (PDT)
+Subject: Re: [PATCH][next] KVM: x86: Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210528200756.GA39320@embeddedor>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c1624e6f-1ca0-ac57-29c0-05d7c944ffc7@redhat.com>
+Date:   Tue, 1 Jun 2021 10:21:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
+In-Reply-To: <20210528200756.GA39320@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021, Robert Marko wrote:
-
-> On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Tue, 25 May 2021, Robert Marko wrote:
-> >
-> > > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > >
-> > > > On Mon, 24 May 2021, Rob Herring wrote:
-> > > >
-> > > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > > > > > Add binding documents for the Delta TN48M CPLD drivers.
-> > > > > >
-> > > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > > > ---
-> > > > > > Changes in v2:
-> > > > > > * Implement MFD as a simple I2C MFD
-> > > > > > * Add GPIO bindings as separate
-> > > > >
-> > > > > I don't understand why this changed. This doesn't look like an MFD to
-> > > > > me. Make your binding complete if there are missing functions.
-> > > > > Otherwise, stick with what I already ok'ed.
-> > > >
-> > > > Right.  What else, besides GPIO, does this do?
-> > >
-> > > It currently does not do anything else as hwmon driver was essentially
-> > > NACK-ed for not exposing standard attributes.
-> >
-> > Once this provides more than GPIO capabilities i.e. becomes a proper
-> > Multi-Function Device, then it can use the MFD framework.  Until then,
-> > it's a GPIO device I'm afraid.
-> >
-> > Are you going to re-author the HWMON driver to conform?
-> hwmon cannot be reathored as it has no standard hwmon attributes.
+On 28/05/21 22:07, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a couple
+> of warnings by explicitly adding break statements instead of just letting
+> the code fall through to the next case.
 > 
-> >
-> > > The CPLD itself has PSU status-related information, bootstrap related
-> > > information,
-> > > various resets for the CPU-s, OOB ethernet PHY, information on the exact board
-> > > model it's running etc.
-> > >
-> > > PSU and model-related info stuff is gonna be exposed via a misc driver
-> > > in debugfs as
-> > > we have user-space SW depending on that.
-> > > I thought we agreed on that as v1 MFD driver was exposing those directly and
-> > > not doing anything else.
-> >
-> > Yes, we agreed that creating an MFD driver just to expose chip
-> > attributes was not an acceptable solution.
-> >
-> > > So I moved to use the simple I2C MFD driver, this is all modeled on the sl28cpld
-> > > which currently uses the same driver and then GPIO regmap as I do.
-> > >
-> > > Other stuff like the resets is probably gonna get exposed later when
-> > > it's required
-> > > to control it directly.
-> >
-> > In order for this driver to tick the MFD box, it's going to need more
-> > than one function.
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> JFYI: We had thousands of these sorts of warnings and now we are down
+>        to just 25 in linux-next. These are some of those last remaining
+>        warnings.
 > 
-> Understood, would a debug driver count or I can expose the resets via
-> a reset driver
-> as we have a future use for them?
+>   arch/x86/kvm/cpuid.c   | 1 +
+>   arch/x86/kvm/vmx/vmx.c | 1 +
+>   2 files changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 9a48f138832d..b4da665bb892 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -655,6 +655,7 @@ static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+>   		if (kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
+>   			entry->ecx = F(RDPID);
+>   		++array->nent;
+> +		break;
+>   	default:
+>   		break;
+>   	}
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 4bceb5ca3a89..e7d98c3d398e 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6248,6 +6248,7 @@ void vmx_set_virtual_apic_mode(struct kvm_vcpu *vcpu)
+>   	switch (kvm_get_apic_mode(vcpu)) {
+>   	case LAPIC_MODE_INVALID:
+>   		WARN_ONCE(true, "Invalid local APIC state");
+> +		break;
+>   	case LAPIC_MODE_DISABLED:
+>   		break;
+>   	case LAPIC_MODE_XAPIC:
+> 
 
-CPLDs and FPGAs are funny ones and are often difficult to support in
-Linux.  Especially if they can change their behaviour.
+Queued, thanks.
 
-It's hard to make a solid suggestion as to how your device is handled
-without knowing the intricacies of the device.
+Paolo
 
-Why do you require one single Regmap anyway?  Are they register banks
-not neatly separated on a per-function basis?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
