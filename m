@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19099396E68
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E220396E6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 09:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbhFAIAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:00:45 -0400
-Received: from hel-mailgw-01.vaisala.com ([193.143.230.17]:52740 "EHLO
-        hel-mailgw-01.vaisala.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233182AbhFAIAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:00:43 -0400
-Received: from HEL-SMTP.corp.vaisala.com (HEL-SMTP.corp.vaisala.com [172.24.1.225])
-        by hel-mailgw-01.vaisala.com (Postfix) with ESMTP id 93191601D6F2;
-        Tue,  1 Jun 2021 10:58:55 +0300 (EEST)
-Received: from localhost.localdomain ([172.24.252.62]) by HEL-SMTP.corp.vaisala.com over TLS secured channel with Microsoft SMTPSVC(8.5.9600.16384);
-         Tue, 1 Jun 2021 10:59:00 +0300
-Subject: Re: [PATCH v4 2/4] nvmem: bootcount: add bootcount driver
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     =?UTF-8?B?VmVzYSBKw6TDpHNrZWzDpGluZW4=?= 
-        <vesa.jaaskelainen@vaisala.com>,
-        Tomas Melin <tomas.melin@vaisala.com>
-References: <cover.1620211180.git.nandor.han@vaisala.com>
- <43e36704e9acbf89b3b29113554d3a79417d42db.1620211180.git.nandor.han@vaisala.com>
- <b973f433-5aa6-5c93-4d60-1017495ae0a7@linaro.org>
-From:   Nandor Han <nandor.han@vaisala.com>
-Message-ID: <a456396b-3950-7bd2-8f5c-af2699276f82@vaisala.com>
-Date:   Tue, 1 Jun 2021 10:58:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233272AbhFAIBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:01:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37476 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233069AbhFAIBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:01:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622534361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ETA/uZ3RYpkBUVga1GOnLXdkl/xa1dO7W1HIUnISUfo=;
+        b=qxjixrjODsCX8O311V2pZ4XZDFroeVhUc0n5yOMyNYPrPiS+hTiuZdT172p2qKvPFnby2q
+        J7PWibYVNItSjk7JFRNi+Nnn6QHfMSiUvVowo0UrLojZpcpczmzvHFxC122Y345WfeXU6q
+        k8fw73HXt03kPkdUM/TDEdLuvzAShZ0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622534361;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ETA/uZ3RYpkBUVga1GOnLXdkl/xa1dO7W1HIUnISUfo=;
+        b=wHR0OVOHiig4z3YxtYJ7jszKfMePoHoZDi8xUstskenJ7l0QPdZ5wvDBMWIGv1UrjF+hAZ
+        pJo3cv94Cc7vRVBw==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35272AD54;
+        Tue,  1 Jun 2021 07:59:21 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 08:59:18 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        tangchengchang <tangchengchang@huawei.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH] sched: fair: don't depend on wake_wide if waker and
+ wakee are already in same LLC
+Message-ID: <20210601075918.GP3672@suse.de>
+References: <20210526091057.1800-1-song.bao.hua@hisilicon.com>
+ <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
+ <7dd00a98d6454d5e92a7d9b936d1aa1c@hisilicon.com>
+ <20210527121409.GK3672@suse.de>
+ <07e4ba63a19c451ab47e6a636c400f4a@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <b973f433-5aa6-5c93-4d60-1017495ae0a7@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 01 Jun 2021 07:59:00.0348 (UTC) FILETIME=[FB2AD3C0:01D756BB]
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <07e4ba63a19c451ab47e6a636c400f4a@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi and thanks for your answers.
-
-
-On 5/28/21 11:23 AM, Srinivas Kandagatla wrote:
+On Mon, May 31, 2021 at 10:21:55PM +0000, Song Bao Hua (Barry Song) wrote:
+> The benchmark of tbenchs is still positive:
 > 
+> tbench4
 > 
-> On 05/05/2021 11:42, Nandor Han wrote:
->> In order to have a robust system we want to be able to identify and take
->> actions if a boot loop occurs. This is possible by using the bootcount
->> feature, which can be used to identify the number of times device has
->> booted since bootcount was last time reset. Bootcount feature (1)
->> requires a collaboration between bootloader and user-space, where
->> the bootloader will increase a counter and user-space reset it.
->> If the counter is not reset and a pre-established threshold is reached,
->> bootloader can react and take action.
->>
->> This is the kernel side implementation, which can be used to
->> identify the number of times device has booted since bootcount was
->> last time reset.
->>
+>                            5.13-rc4               5.13-rc4
+>                                      disable-llc-wakewide/
 > 
-> If I understand this correctly, this driver is basically exposing a 
-> nvmem cell via sysfs.
+> Hmean     1       514.87 (   0.00%)      505.17 *  -1.88%*
+> Hmean     2       914.45 (   0.00%)      918.45 *   0.44%*
+> Hmean     4      1483.81 (   0.00%)     1485.38 *   0.11%*
+> Hmean     8      2211.62 (   0.00%)     2236.02 *   1.10%*
+> Hmean     16     2129.80 (   0.00%)     2450.81 *  15.07%*
+> Hmean     32     5098.35 (   0.00%)     5085.20 *  -0.26%*
+> Hmean     64     4797.62 (   0.00%)     4801.34 *   0.08%*
+> Hmean     80     4802.89 (   0.00%)     4780.40 *  -0.47%*
 > 
-> Firstly, This sounds like totally a generic functionality that needs to 
-> go into nvmem core rather than individual drivers.
+> I guess something which work across several LLC domains
+> cause performance regression.
 > 
-> Do you see any reason for this not be in core?
-
-I agree that exposing a NVMEM cell via sysfs does look as a generic 
-functionality. However, the bootcount feature contains also a magic
-value that needs to be taken in consideration when extracting the
-bootcount value. The size of the field storing the magic and value combo
-is configurable as well. The driver will handle this values 
-transparentlry for the user and expose only the validated
-bootcount value. In case we will only use a generic implementation for
-exposing a NVMEM cell via sysfs the aformention functionality will have
-to be handled by userspace and this will force the userspace to have
-knolwdge about bootcount value format and magic since they will have
-to implement it's own functionality about this. In the current solution
-the user only have to reset the value to 0 and that's it, the driver
-will take care of the rest.
-
-> 
-> Secondly, creating sysfs entries like this in probe will race with 
-> userspace udev. udev might not notice this new entry in such cases.
-
-Thanks for point this out. I will have a look how to fix this. I'll 
-appriciate any advice.
-
-> 
-> Thirdly, You would need to document this in Documentation/ABI/
+> I wonder how your test will be like if you pin the testing
+> to CPUs within one LLC?
 > 
 
-I'll do that.
-
-
-> Finally I noticed that the changes to snvs_lpgpr.c  have not been cced 
-> to the original author.
-> 
-
-Sorry, my mistake. I will add it in the next patch-set.
-<snip>
+While I could do this, what would be the benefit? Running within one LLC
+would be running the test in one small fraction of the entire machine as
+the machine has multiple LLCs per NUMA node. A patch dealing with how the
+scheduler works with respect to LLC should take different configurations
+into consideration as best as possible.
 
 -- 
-Regards,
-    Nandor
+Mel Gorman
+SUSE Labs
