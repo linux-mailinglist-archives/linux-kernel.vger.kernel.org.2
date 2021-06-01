@@ -2,109 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2B539775A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2084039775F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhFAQBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:01:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:53250 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232490AbhFAQBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:01:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53C1C101E;
-        Tue,  1 Jun 2021 08:59:35 -0700 (PDT)
-Received: from [10.57.73.64] (unknown [10.57.73.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 356943F719;
-        Tue,  1 Jun 2021 08:59:34 -0700 (PDT)
-Subject: Re: [PATCH 3/4] iommu/amd: Do not sync on page size changes
-To:     Nadav Amit <nadav.amit@gmail.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, Nadav Amit <namit@vmware.com>,
-        Jiajun Cao <caojiajun@vmware.com>, linux-kernel@vger.kernel.org
-References: <20210502070001.1559127-1-namit@vmware.com>
- <20210502070001.1559127-5-namit@vmware.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f00bd0ce-e4a7-93c6-39ae-db19779b9331@arm.com>
-Date:   Tue, 1 Jun 2021 16:59:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234498AbhFAQBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:01:40 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3121 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhFAQBj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 12:01:39 -0400
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fvc462Nblz6M4Pb;
+        Tue,  1 Jun 2021 23:47:34 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 1 Jun 2021 17:59:56 +0200
+Received: from localhost (10.52.121.71) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
+ 16:59:55 +0100
+Date:   Tue, 1 Jun 2021 16:59:51 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Liam Beguin <liambeguin@gmail.com>
+CC:     <peda@axentia.se>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for
+ temperature-sense-amplifier
+Message-ID: <20210601165951.000002c7@Huawei.com>
+In-Reply-To: <20210530005917.20953-10-liambeguin@gmail.com>
+References: <20210530005917.20953-1-liambeguin@gmail.com>
+        <20210530005917.20953-10-liambeguin@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210502070001.1559127-5-namit@vmware.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.71]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-02 07:59, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
+On Sat, 29 May 2021 20:59:17 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
+
+> From: Liam Beguin <lvb@xiphos.com>
 > 
-> Some IOMMU architectures perform invalidations regardless of the page
-> size. In such architectures there is no need to sync when the page size
-> changes or to regard pgsize when making interim flush in
-> iommu_iotlb_gather_add_page().
+> An ADC is often used to measure other quantities indirectly. This
+> binding describe one cases, the measurement of a temperature through a
+> voltage sense amplifier such as the LTC2997.
 > 
-> Add a "ignore_gather_pgsize" property for each IOMMU-ops to decide
-> whether gather's pgsize is tracked and triggers a flush.
-
-I've objected before[1], and I'll readily object again ;)
-
-I still think it's very silly to add a bunch of indirection all over the 
-place to make a helper function not do the main thing it's intended to 
-help with. If you only need trivial address gathering then it's far 
-simpler to just implement trivial address gathering. I suppose if you 
-really want to you could factor out another helper to share the 5 lines 
-of code which ended up in mtk-iommu (see commit f21ae3b10084).
-
-Robin.
-
-[1] 
-https://lore.kernel.org/linux-iommu/49bae447-d662-e6cf-7500-ab78e3b75dc4@arm.com/
-
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Jiajun Cao <caojiajun@vmware.com>
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Nadav Amit <namit@vmware.com>
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
 > ---
->   drivers/iommu/amd/iommu.c | 1 +
->   include/linux/iommu.h     | 3 ++-
->   2 files changed, 3 insertions(+), 1 deletion(-)
+>  .../iio/afe/temperature-sense-amplifier.yaml  | 55 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
 > 
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index b8cabbbeed71..1849b53f2149 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -2215,6 +2215,7 @@ const struct iommu_ops amd_iommu_ops = {
->   	.put_resv_regions = generic_iommu_put_resv_regions,
->   	.is_attach_deferred = amd_iommu_is_attach_deferred,
->   	.pgsize_bitmap	= AMD_IOMMU_PGSIZES,
-> +	.ignore_gather_pgsize = true,
->   	.flush_iotlb_all = amd_iommu_flush_iotlb_all,
->   	.iotlb_sync = amd_iommu_iotlb_sync,
->   	.def_domain_type = amd_iommu_def_domain_type,
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 32d448050bf7..1fb2695418e9 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -284,6 +284,7 @@ struct iommu_ops {
->   	int (*def_domain_type)(struct device *dev);
->   
->   	unsigned long pgsize_bitmap;
-> +	bool ignore_gather_pgsize;
->   	struct module *owner;
->   };
->   
-> @@ -508,7 +509,7 @@ static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
->   	 * a different granularity, then sync the TLB so that the gather
->   	 * structure can be rewritten.
->   	 */
-> -	if (gather->pgsize != size ||
-> +	if ((gather->pgsize != size && !domain->ops->ignore_gather_pgsize) ||
->   	    end + 1 < gather->start || start > gather->end + 1) {
->   		if (gather->pgsize)
->   			iommu_iotlb_sync(domain, gather);
-> 
+> diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+> new file mode 100644
+> index 000000000000..015413cbffbc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/afe/temperature-sense-amplifier.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Temperature Sense Amplifier
+> +
+> +maintainers:
+> +  - Liam Beguin <lvb@xiphos.com>
+> +
+> +description: |
+> +  When an io-channel measures the output voltage of a temperature IC such as
+> +  the LTC2997, the interesting measurement is almost always the corresponding
+> +  temperature, not the voltage output. This binding describes such a circuit.
+> +
+> +properties:
+> +  compatible:
+> +    const: temperature-sense-amplifier
+> +
+> +  io-channels:
+> +    maxItems: 1
+> +    description: |
+> +      Channel node of a voltage io-channel.
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +
+> +  alpha-micro-volts-per-degree:
+
+Include units in the naming.
+
+micro-volts-per-degree-celsius: perhaps?
+That will then get the type from dt-schema/schema/property-units.
+Though amusing it will identify it based on celsius, when the units are arguably
+volts.
+
+
+> +    description: |
+> +      Output voltage gain of the temperature IC.
+> +
+> +  use-kelvin-scale:
+> +    type: boolean
+> +    description: |
+> +      Boolean indicating if alpha uses Kelvin degrees instead of Celsius.
+
+I'm not clear why that change would make any difference to alpha?  It would make
+a difference to an offset though (and you should allow for one of those if
+you want this to be generic).
+
+Pick one and stick to it for all cases.  It might make the dts author do
+some simple maths but that is preferable to having this flexibility
+when we don't need it.
+
+> +
+> +additionalProperties: false
+> +required:
+> +  - compatible
+> +  - io-channels
+> +  - alpha-micro-volts-per-degree
+> +
+> +examples:
+> +  - |
+> +    znq_temp: iio-rescale0 {
+
+The end result is a temperature sensor, so this should
+have a name reflecting that.  Here that would be
+temperature-sensor as per the dt schema specification:
+https://www.devicetree.org/specifications/
+
+> +        compatible = "temperature-sense-amplifier";
+> +        #io-channel-cells = <1>;
+> +        io-channels = <&temp_adc 3>;
+> +
+> +        use-kelvin-scale;
+> +        alpha-micro-volts-per-degree = <4000>;
+> +    };
+> +
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0eb7fcd94b66..f224bd8e6125 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8721,6 +8721,7 @@ L:	linux-iio@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+> +F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-current.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
+>  F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
+
