@@ -2,77 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8322E3973A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7083973A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 14:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbhFAM6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 08:58:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33268 "EHLO mail.kernel.org"
+        id S233890AbhFAM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 08:58:35 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:54204 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233064AbhFAM6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 08:58:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1D856135D;
-        Tue,  1 Jun 2021 12:56:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622552178;
-        bh=2Cl6MC1zMLi1wVlxtabUNKw40xMLYyr3h9FF5PfzyX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CnvVCbpOOeN9rkItCc/yoTJVnjIYphOmRUyy31lUnBN16ztG508cC6bnbwExyyPfz
-         4frf2pAynhv11HOAms0oRJEahYMeG0tJWXOcmnXyaYSyI5zbD90fISxnTj4ZD6Zrsu
-         4KHdr3lui/UR2XVz30gQggHNZhJS55ocfbFdK16AfxECbi+7onftdTHdC+8eHRpC82
-         GWlAQENZUjuDWUGrWnwevhodDw/4bAXrNsXQkb3paumbXLiPRNnt3HSl2qklurQNhy
-         3q5C+9yipXhvNBsOICFkwI5+XJgxlaAX54znzWYBKxd9gnLFPnGUHNcCqiwrtgL6xa
-         WhMI/9Tmb8M+Q==
-Date:   Tue, 1 Jun 2021 13:56:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rudi Heitbaum <rudi@heitbaum.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, ezequiel@collabora.com,
-        chenjh@rock-chips.com, pgwipeout@gmail.com
-Subject: Re: [PATCH v2] regulator: fan53555: add tcs4526
-Message-ID: <20210601125608.GC4089@sirena.org.uk>
-References: <20210526162342.GA20@8bbba9ba63a4>
- <20210528101946.GA418765@96e513df87d1>
+        id S233064AbhFAM6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 08:58:34 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPS id 4368A40755C4;
+        Tue,  1 Jun 2021 12:56:50 +0000 (UTC)
+From:   Evgeny Novikov <novikov@ispras.ru>
+To:     Patrice Chotard <patrice.chotard@foss.st.com>
+Cc:     Evgeny Novikov <novikov@ispras.ru>, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: [PATCH v2] media: st_rc: Handle errors of clk_prepare_enable()
+Date:   Tue,  1 Jun 2021 15:56:43 +0300
+Message-Id: <20210601125643.26844-1-novikov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Q0rSlbzrZN6k9QnT"
-Content-Disposition: inline
-In-Reply-To: <20210528101946.GA418765@96e513df87d1>
-X-Cookie: Sic Transit Gloria Thursdi.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hadle errors of clk_prepare_enable() in st_rc_hardware_init() and its
+callers.
 
---Q0rSlbzrZN6k9QnT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Found by Linux Driver Verification project (linuxtesting.org).
 
-On Fri, May 28, 2021 at 10:19:50AM +0000, Rudi Heitbaum wrote:
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+---
+v2: Add error loging (Sean Young)
+---
+ drivers/media/rc/st_rc.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-> ---
->  drivers/regulator/fan53555.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
+diff --git a/drivers/media/rc/st_rc.c b/drivers/media/rc/st_rc.c
+index 3237fef5d502..d79d1e3996b2 100644
+--- a/drivers/media/rc/st_rc.c
++++ b/drivers/media/rc/st_rc.c
+@@ -157,8 +157,9 @@ static irqreturn_t st_rc_rx_interrupt(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void st_rc_hardware_init(struct st_rc_device *dev)
++static int st_rc_hardware_init(struct st_rc_device *dev)
+ {
++	int ret;
+ 	int baseclock, freqdiff;
+ 	unsigned int rx_max_symbol_per = MAX_SYMB_TIME;
+ 	unsigned int rx_sampling_freq_div;
+@@ -166,7 +167,12 @@ static void st_rc_hardware_init(struct st_rc_device *dev)
+ 	/* Enable the IP */
+ 	reset_control_deassert(dev->rstc);
+ 
+-	clk_prepare_enable(dev->sys_clock);
++	ret = clk_prepare_enable(dev->sys_clock);
++	if (ret) {
++		dev_err(dev->dev, "Failed to prepare/enable system clock\n");
++		return ret;
++	}
++
+ 	baseclock = clk_get_rate(dev->sys_clock);
+ 
+ 	/* IRB input pins are inverted internally from high to low. */
+@@ -184,6 +190,8 @@ static void st_rc_hardware_init(struct st_rc_device *dev)
+ 	}
+ 
+ 	writel(rx_max_symbol_per, dev->rx_base + IRB_MAX_SYM_PERIOD);
++
++	return 0;
+ }
+ 
+ static int st_rc_remove(struct platform_device *pdev)
+@@ -287,7 +295,9 @@ static int st_rc_probe(struct platform_device *pdev)
+ 
+ 	rc_dev->dev = dev;
+ 	platform_set_drvdata(pdev, rc_dev);
+-	st_rc_hardware_init(rc_dev);
++	ret = st_rc_hardware_init(rc_dev);
++	if (ret)
++		goto err;
+ 
+ 	rdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
+ 	/* rx sampling rate is 10Mhz */
+@@ -359,6 +369,7 @@ static int st_rc_suspend(struct device *dev)
+ 
+ static int st_rc_resume(struct device *dev)
+ {
++	int ret;
+ 	struct st_rc_device *rc_dev = dev_get_drvdata(dev);
+ 	struct rc_dev	*rdev = rc_dev->rdev;
+ 
+@@ -367,7 +378,10 @@ static int st_rc_resume(struct device *dev)
+ 		rc_dev->irq_wake = 0;
+ 	} else {
+ 		pinctrl_pm_select_default_state(dev);
+-		st_rc_hardware_init(rc_dev);
++		ret = st_rc_hardware_init(rc_dev);
++		if (ret)
++			return ret;
++
+ 		if (rdev->users) {
+ 			writel(IRB_RX_INTS, rc_dev->rx_base + IRB_RX_INT_EN);
+ 			writel(0x01, rc_dev->rx_base + IRB_RX_EN);
+-- 
+2.26.2
 
-This is adding a new DT binding, it needs to update the binding document
-too.
-
---Q0rSlbzrZN6k9QnT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC2LmcACgkQJNaLcl1U
-h9BzHAf9G464dHNtQknzDW/5kAgdMbejI7xxx5QTf4tseVQ6XY22i3ThsC5iivxi
-5OiLoEmJJ62CFt4fcej2+g9xrtqlrML+fU+D1YwIV4JnBKcNwf1PUKsufpxZdlOl
-jVRFThjrGk8ZXaYnuVu+U+9FbnoYGzidvMT8xdWqcDCUhGT0mUpMcQP3jAsRWXIh
-XqsJpBQrLyCoZE188rbXZN5PEyRHKymDKzSCgJalshiSxReexKZpeJNgZ8IEFcaE
-LZOQNJv01ie/uh7h1Y+5C0bDNlHM6HE89egEY+ATVbx5uHpH2r3GN8wMtBHJk5Hx
-s9+s5oOePen3qqty+jum80ZePycKGg==
-=8JU/
------END PGP SIGNATURE-----
-
---Q0rSlbzrZN6k9QnT--
