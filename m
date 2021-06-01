@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379A43978AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D22D3978B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhFARHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:07:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231918AbhFARHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:07:21 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0712E60FF1;
-        Tue,  1 Jun 2021 17:05:38 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 13:05:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Subject: Re: [RFC PATCH 1/4] x86/entry/nmi: Switch to the entry stack before
- switching to the thread stack
-Message-ID: <20210601130537.7b389804@oasis.local.home>
-In-Reply-To: <20210601065217.23540-2-jiangshanlai@gmail.com>
-References: <20210601065217.23540-1-jiangshanlai@gmail.com>
-        <20210601065217.23540-2-jiangshanlai@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234465AbhFARKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 13:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231918AbhFARJ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:09:59 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B80C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 10:08:17 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id e2so20263684ljk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 10:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4iyHaQ7eusXLRjtFERBUVZNb8xaPVSBCRT0/y8uyn4c=;
+        b=Pvzi2RTs0xv8RthXQbDip89Ark+YPqTkuESnir8GjsIwSzhAbzowZu2Larpe0AnxKV
+         HXxFFINhALJDRN0kadRjv2EEBoB5u9sQCtFhueOf3CA8PbCTHUcudTzn4dkLiuKrlOoO
+         Msvb5ckElaH+KPKY/9H+8LleppOMQoD4G2aCLfO2bd9/ICidJDlHJGzNNHOk+PUtX94C
+         NUGDJZ2fsa3Ah6Z0yxWOavAYlJlKZKQBOP6sU+2QVj/qFIVIjujg/3s3eDnxs43d5AwB
+         lpiuPCo83EijwetzaArrZXHlWafFZhch+yADPktNJrrpE2zHwL8HxtiHfazyZt5l40f+
+         jmVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4iyHaQ7eusXLRjtFERBUVZNb8xaPVSBCRT0/y8uyn4c=;
+        b=A14MGJ8ywMEIJDPHckL9DAQMcY44dGefic/t1bOx/mFmrm0I7n9i+FhwV5dfaF7O9r
+         RK7r4L76K9bkxSfDrZzKZ3yZr+hnsvIpt9+/gbaItRcWF9qImZq8V4n/JqiNlOKegkEi
+         8E6JkjB8DGecsA/h9v9F2UjdIfkZZzxJMhy3EuLuFm+eL0mr3Yp1P51NcJIzXEgCiK6v
+         T1XheLdzwpMlr8ictxEVkv6pPv473ynSQQbN7zOMg4+TAEYnWljf62KXptPsE0YQhWtc
+         IC5A85E1NWYEunp2GpM/YyyaL1Kpxj6Dua/Cl6oluZBnf8RF/l+SWHNjyVSecpsNppac
+         TEww==
+X-Gm-Message-State: AOAM532kvvdREnmv6rkpNIqn/JNtgvBjp985qta0kBh4PPGyV0+Z2TOQ
+        m8EegsWbJUsVJi30uTguPz8uuGLMYmblh5I61c5VlA==
+X-Google-Smtp-Source: ABdhPJzl+Cl1UbXSRojpUksElwA1wE+1Ml5ttKnLUWhHUb0qH+JifNvIbHgqpsnxYsuVO3AECPVQnwJ/moldgfTgCmY=
+X-Received: by 2002:a2e:b0f2:: with SMTP id h18mr11079691ljl.244.1622567295431;
+ Tue, 01 Jun 2021 10:08:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210531205405.67993-1-nathan@kernel.org> <20210531210629.864888-1-nathan@kernel.org>
+In-Reply-To: <20210531210629.864888-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Jun 2021 10:08:04 -0700
+Message-ID: <CAKwvOdkwKc5opVXUAVxehDCGfgidhEr2LH4LQaS-HUSk7gQk1g@mail.gmail.com>
+Subject: Re: [PATCH v2] MAINTAINERS: Add Clang CFI section
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  1 Jun 2021 14:52:14 +0800
-Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+On Mon, May 31, 2021 at 2:06 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Sami is the primary developer and Kees has been chauffeuring the patches
+> to Linus so ensure they are always kept in the loop about proposed
+> changes to these files. Add Nick and I as reviewers so we are CC'd as
+> well.
+>
+> Fixes: cf68fffb66d6 ("add support for Clang CFI")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> Current kernel has no code to enforce data breakpoint not on the thread
-> stack.  If there is any data breakpoint on the top area of the thread
-> stack, there might be problem.
-> 
-> For example, when NMI hits on userspace in this setting, the code copies
-> the exception frame from the NMI stack to the thread stack and it will
-> cause #DB and after #DB is handled, the not yet copied portion on the
-> NMI stack is in danger of corruption because the NMI is unmasked.
-> 
-> Stashing the exception frame on the entry stack before touching the
-> entry stack can fix the problem.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+
 > ---
->  arch/x86/entry/entry_64.S     | 22 ++++++++++++++++++++++
->  arch/x86/kernel/asm-offsets.c |  1 +
->  2 files changed, 23 insertions(+)
-> 
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index a5f02d03c585..4190e668f346 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -1121,8 +1121,30 @@ SYM_CODE_START(asm_exc_nmi)
->  	 *
->  	 * We also must not push anything to the stack before switching
->  	 * stacks lest we corrupt the "NMI executing" variable.
-> +	 *
-> +	 * Before switching to the thread stack, it switches to the entry
-> +	 * stack first lest there is any data breakpoint in the thread
-> +	 * stack and the iret of #DB will cause NMI unmasked before
-> +	 * finishing switching.
->  	 */
->  
-> +	/* Switch stack to entry stack */
-> +	movq	%rsp, %rdx
-> +	addq	$(+6*8			/* to NMI stack top */		\
-> +		  -EXCEPTION_STKSZ	/* to NMI stack bottom */	\
-> +		  -CPU_ENTRY_AREA_nmi_stack /* to entry area */		\
-
-Just so that I understand this correctly. This "entry area" is not part
-of the NMI stack, but just at the bottom of it? That is, this part of
-the stack will never be touched by an NMI coming in from kernel space,
-correct?
-
--- Steve
-
-
-> +		  +CPU_ENTRY_AREA_entry_stack /* to entry stack bottom */\
-> +		  +SIZEOF_entry_stack	/* to entry stack top */	\
-> +		), %rsp
+>
+> v1 -> v2:
+>
+> * Add "git " in front of the "T:" entry to match the rest of MAINTAINERS
+>
+>  MAINTAINERS | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 008fcad7ac00..4ddf370572d3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4436,6 +4436,18 @@ F:       include/linux/compiler-clang.h
+>  F:     scripts/clang-tools/
+>  K:     \b(?i:clang|llvm)\b
+>
+> +CLANG CONTROL FLOW INTEGRITY SUPPORT
+> +M:     Sami Tolvanen <samitolvanen@google.com>
+> +M:     Kees Cook <keescook@chromium.org>
+> +R:     Nathan Chancellor <nathan@kernel.org>
+> +R:     Nick Desaulniers <ndesaulniers@google.com>
+> +L:     clang-built-linux@googlegroups.com
+> +S:     Supported
+> +B:     https://github.com/ClangBuiltLinux/linux/issues
+> +T:     git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/features
+> +F:     include/linux/cfi.h
+> +F:     kernel/cfi.c
 > +
-> +	/* Stash exception frame and %rdx to entry stack */
-> +	pushq	5*8(%rdx)	/* pt_regs->ss */
-> +	pushq	4*8(%rdx)	/* pt_regs->rsp */
-> +	pushq	3*8(%rdx)	/* pt_regs->flags */
-> +	pushq	2*8(%rdx)	/* pt_regs->cs */
-> +	pushq	1*8(%rdx)	/* pt_regs->rip */
-> +	pushq	0*8(%rdx)	/* %rdx */
-> +
->  	swapgs
->  	cld
->  	FENCE_SWAPGS_USER_ENTRY
-> diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
-> index ecd3fd6993d1..dfafa0c7e887 100644
-> --- a/arch/x86/kernel/asm-offsets.c
-> +++ b/arch/x86/kernel/asm-offsets.c
-> @@ -88,6 +88,7 @@ static void __used common(void)
->  	OFFSET(CPU_ENTRY_AREA_entry_stack, cpu_entry_area, entry_stack_page);
->  	DEFINE(SIZEOF_entry_stack, sizeof(struct entry_stack));
->  	DEFINE(MASK_entry_stack, (~(sizeof(struct entry_stack) - 1)));
-> +	OFFSET(CPU_ENTRY_AREA_nmi_stack, cpu_entry_area, estacks.NMI_stack);
->  
->  	/* Offset for fields in tss_struct */
->  	OFFSET(TSS_sp0, tss_struct, x86_tss.sp0);
+>  CLEANCACHE API
+>  M:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+>  L:     linux-kernel@vger.kernel.org
+>
+> base-commit: 24845dcb170e16b3100bd49743687648c71387ae
+> --
+> 2.32.0.rc0
 
+-- 
+Thanks,
+~Nick Desaulniers
