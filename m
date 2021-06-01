@@ -2,144 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074FE396F2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DF1396F4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbhFAIqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:46:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47312 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhFAIqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:46:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622537080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nw3tVST1fAJ8CKCXcRmhBeLdhca4454ZmSsP+4SzR/c=;
-        b=Y7VvU0jGVR0m9j8Q6IkIhX+VUBCUXusvT1RPc9i+5kTiLTmpyWi+dszsl89SpeSerOtt3+
-        MizcP4PfOA8ztpNvrKwia0b550sQpc+doH5WRuq0oEp2Y1aqlQ8tBn/rl3yKTH7XIPu6Rk
-        eeUTLfaW5THvYgppIhtMrdSGahs7iEY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 709D7ADE7;
-        Tue,  1 Jun 2021 08:44:40 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 10:44:39 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [v3 PATCH 2/3] mm/mempolicy: don't handle MPOL_LOCAL like a fake
- MPOL_PREFERRED policy
-Message-ID: <YLXzd95duZ3va7Te@dhcp22.suse.cz>
-References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
- <1622469956-82897-3-git-send-email-feng.tang@intel.com>
+        id S233642AbhFAIsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233687AbhFAIrp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:47:45 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D33C061348
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:46:01 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so13424479otc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fvnZa/3GSWoijoWUP996Kg50ie5gi3CPyJfodx+nuj0=;
+        b=Nm5Z+r3e6oXn/WlBAHuSatC+Zo4ChEuTrkW4GYAtxAnuTcS8ijCh9zciZfzaGMAbLe
+         HwZZVgOp01U37i19k0ig3zBH8zqT5saOozaec5th3B00AAtDQW7NBV+yO63SGWAgaH6q
+         ZzpIVmIYvlhwKNY884ZMyaqFTyErDAWoGe4gUkYRRmCwm9cxwknSHzfofDMd2mT3HcBQ
+         Bb4+Yt/9ua1LM6uaoDAkno+wfqN9ryawjaBoDzwCWBKx3Scri/hH+hLnAhtyA+3SoAcV
+         QR+yzBKTe/qJy9Iz1+vBG8Hquz4NeCqN5wz0YWIsW8m7mBLlS3WLsiLeg3uq5f2jfK41
+         HqeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fvnZa/3GSWoijoWUP996Kg50ie5gi3CPyJfodx+nuj0=;
+        b=SJd9enJL0GTFV6rAzgGv68XduTR6/N0w76yfFyIg9NBG/IplU9UL8p+1jhq9v/X0lE
+         pTVp06m7P35C260kgK4DPeHyH3EkDkrlmAIJI3H1sJWDkoCO06qPblnsj4HYXzPxZZYb
+         Ghw2xhH1Zh+yGY5qi7a6AAJj/z0g/njivcW9gCh6+pykG/sB/5Eg5/PUju5KebAj+Hek
+         DkvVjilz6QL1s9q4RET9oFz3InY2EXon1xfA93vg7MApb8VdierET3CSWzIiVtqsLH2L
+         O1AOoAVrljlHshH0xglZruTTnkf60lwaJnArXgp/Vkpr8gLGWuJnLwhIWMoZiye0dfDi
+         gdDg==
+X-Gm-Message-State: AOAM533N198VMwwfo0EBy75cK3mrXE3djyin/CO/QNPyp5wEXMJyhWDS
+        f73/FVhKdT19Vc/xAjzCYyOio5fASNFrUMlROko//E88
+X-Google-Smtp-Source: ABdhPJyFMV+qnkun3wPnfMnzQCAc/g3cwnJpVtSi+3/UR2QQDOtEF6tNOzyRVc8MK481WPpd5qi/KUtmK8FX72qE3uQ=
+X-Received: by 2002:a9d:4115:: with SMTP id o21mr20597434ote.52.1622537160686;
+ Tue, 01 Jun 2021 01:46:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622469956-82897-3-git-send-email-feng.tang@intel.com>
+References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
+ <20210531091908.1738465-5-aisheng.dong@nxp.com> <42617372-c846-85fe-4739-abbe55eca8f6@redhat.com>
+ <CAA+hA=Ss4j8qeoe7RtDJ14nuqy+TpOk2qi-A9+YN6=2y8c_CGg@mail.gmail.com> <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
+In-Reply-To: <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Tue, 1 Jun 2021 16:44:50 +0800
+Message-ID: <CAA+hA=SEKczg-tkyEQSHR=HxE8vB5Acvf-HPGy3E-0apdkZ8FA@mail.gmail.com>
+Subject: Re: [PATCH V2 4/6] mm: rename the global section array to mem_sections
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 31-05-21 22:05:55, Feng Tang wrote:
-> MPOL_LOCAL policy has been setup as a real policy, but it is still
-> handled like a faked POL_PREFERRED policy with one internal
-> MPOL_F_LOCAL flag bit set, and there are many places having to
-> judge the real 'prefer' or the 'local' policy, which are quite
-> confusing.
-> 
-> In current code, there are 4 cases that MPOL_LOCAL are used:
-> 1. user specifies 'local' policy
-> 2. user specifies 'prefer' policy, but with empty nodemask
-> 3. system 'default' policy is used
-> 4. 'prefer' policy + valid 'preferred' node with MPOL_F_STATIC_NODES
->    flag set, and when it is 'rebind' to a nodemask which doesn't
->    contains the 'preferred' node, it will perform as 'local' policy
-> 
-> So make 'local' a real policy instead of a fake 'prefer' one, and
-> kill MPOL_F_LOCAL bit, which can greatly reduce the confusion for
-> code reading.
-> 
-> For case 4, the logic of mpol_rebind_preferred() is confusing, as
-> Michal Hocko pointed out:
-> 
->  "
->  I do believe that rebinding preferred policy is just bogus and
->  it should be dropped altogether on the ground that a preference
->  is a mere hint from userspace where to start the allocation.
->  Unless I am missing something cpusets will be always authoritative
->  for the final placement. The preferred node just acts as a starting
->  point and it should be really preserved when cpusets changes.
->  Otherwise we have a very subtle behavior corner cases.
->  "
-> So dump all the tricky transformation between 'prefer' and 'local',
-> and just record the new nodemask of rebinding.
-> 
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
+On Tue, Jun 1, 2021 at 4:40 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 01.06.21 10:37, Dong Aisheng wrote:
+> > On Tue, Jun 1, 2021 at 4:22 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 31.05.21 11:19, Dong Aisheng wrote:
+> >>> In order to distinguish the struct mem_section for a better code
+> >>> readability and align with kernel doc [1] name below, change the
+> >>> global mem section name to 'mem_sections' from 'mem_section'.
+> >>>
+> >>> [1] Documentation/vm/memory-model.rst
+> >>> "The `mem_section` objects are arranged in a two-dimensional array
+> >>> called `mem_sections`."
+> >>>
+> >>> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >>> Cc: Dave Young <dyoung@redhat.com>
+> >>> Cc: Baoquan He <bhe@redhat.com>
+> >>> Cc: Vivek Goyal <vgoyal@redhat.com>
+> >>> Cc: kexec@lists.infradead.org
+> >>> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> >>> ---
+> >>> v1->v2:
+> >>>    * no changes
+> >>> ---
+> >>>    include/linux/mmzone.h | 10 +++++-----
+> >>>    kernel/crash_core.c    |  4 ++--
+> >>>    mm/sparse.c            | 16 ++++++++--------
+> >>>    3 files changed, 15 insertions(+), 15 deletions(-)
+> >>>
+> >>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> >>> index a6bfde85ddb0..0ed61f32d898 100644
+> >>> --- a/include/linux/mmzone.h
+> >>> +++ b/include/linux/mmzone.h
+> >>> @@ -1302,9 +1302,9 @@ struct mem_section {
+> >>>    #define SECTION_ROOT_MASK   (SECTIONS_PER_ROOT - 1)
+> >>>
+> >>>    #ifdef CONFIG_SPARSEMEM_EXTREME
+> >>> -extern struct mem_section **mem_section;
+> >>> +extern struct mem_section **mem_sections;
+> >>>    #else
+> >>> -extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+> >>> +extern struct mem_section mem_sections[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+> >>>    #endif
+> >>>
+> >>>    static inline unsigned long *section_to_usemap(struct mem_section *ms)
+> >>> @@ -1315,12 +1315,12 @@ static inline unsigned long *section_to_usemap(struct mem_section *ms)
+> >>>    static inline struct mem_section *__nr_to_section(unsigned long nr)
+> >>>    {
+> >>>    #ifdef CONFIG_SPARSEMEM_EXTREME
+> >>> -     if (!mem_section)
+> >>> +     if (!mem_sections)
+> >>>                return NULL;
+> >>>    #endif
+> >>> -     if (!mem_section[SECTION_NR_TO_ROOT(nr)])
+> >>> +     if (!mem_sections[SECTION_NR_TO_ROOT(nr)])
+> >>>                return NULL;
+> >>> -     return &mem_section[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
+> >>> +     return &mem_sections[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
+> >>>    }
+> >>>    extern unsigned long __section_nr(struct mem_section *ms);
+> >>>    extern size_t mem_section_usage_size(void);
+> >>> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> >>> index 29cc15398ee4..fb1180d81b5a 100644
+> >>> --- a/kernel/crash_core.c
+> >>> +++ b/kernel/crash_core.c
+> >>> @@ -414,8 +414,8 @@ static int __init crash_save_vmcoreinfo_init(void)
+> >>>        VMCOREINFO_SYMBOL(contig_page_data);
+> >>>    #endif
+> >>>    #ifdef CONFIG_SPARSEMEM
+> >>> -     VMCOREINFO_SYMBOL_ARRAY(mem_section);
+> >>> -     VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
+> >>> +     VMCOREINFO_SYMBOL_ARRAY(mem_sections);
+> >>> +     VMCOREINFO_LENGTH(mem_sections, NR_SECTION_ROOTS);
+> >>>        VMCOREINFO_STRUCT_SIZE(mem_section);
+> >>>        VMCOREINFO_OFFSET(mem_section, section_mem_map);
+> >>>        VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
+> >>> diff --git a/mm/sparse.c b/mm/sparse.c
+> >>> index d02ee6bb7cbc..6412010478f7 100644
+> >>> --- a/mm/sparse.c
+> >>> +++ b/mm/sparse.c
+> >>> @@ -24,12 +24,12 @@
+> >>>     * 1) mem_section   - memory sections, mem_map's for valid memory
+> >>>     */
+> >>>    #ifdef CONFIG_SPARSEMEM_EXTREME
+> >>> -struct mem_section **mem_section;
+> >>> +struct mem_section **mem_sections;
+> >>>    #else
+> >>> -struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT]
+> >>> +struct mem_section mem_sections[NR_SECTION_ROOTS][SECTIONS_PER_ROOT]
+> >>>        ____cacheline_internodealigned_in_smp;
+> >>>    #endif
+> >>> -EXPORT_SYMBOL(mem_section);
+> >>> +EXPORT_SYMBOL(mem_sections);
+> >>>
+> >>>    #ifdef NODE_NOT_IN_PAGE_FLAGS
+> >>>    /*
+> >>> @@ -66,8 +66,8 @@ static void __init sparse_alloc_section_roots(void)
+> >>>
+> >>>        size = sizeof(struct mem_section *) * NR_SECTION_ROOTS;
+> >>>        align = 1 << (INTERNODE_CACHE_SHIFT);
+> >>> -     mem_section = memblock_alloc(size, align);
+> >>> -     if (!mem_section)
+> >>> +     mem_sections = memblock_alloc(size, align);
+> >>> +     if (!mem_sections)
+> >>>                panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
+> >>>                      __func__, size, align);
+> >>>    }
+> >>> @@ -103,14 +103,14 @@ static int __meminit sparse_index_init(unsigned long section_nr, int nid)
+> >>>         *
+> >>>         * The mem_hotplug_lock resolves the apparent race below.
+> >>>         */
+> >>> -     if (mem_section[root])
+> >>> +     if (mem_sections[root])
+> >>>                return 0;
+> >>>
+> >>>        section = sparse_index_alloc(nid);
+> >>>        if (!section)
+> >>>                return -ENOMEM;
+> >>>
+> >>> -     mem_section[root] = section;
+> >>> +     mem_sections[root] = section;
+> >>>
+> >>>        return 0;
+> >>>    }
+> >>> @@ -145,7 +145,7 @@ unsigned long __section_nr(struct mem_section *ms)
+> >>>    #else
+> >>>    unsigned long __section_nr(struct mem_section *ms)
+> >>>    {
+> >>> -     return (unsigned long)(ms - mem_section[0]);
+> >>> +     return (unsigned long)(ms - mem_sections[0]);
+> >>>    }
+> >>>    #endif
+> >>>
+> >>>
+> >>
+> >> I repeat: unnecessary code churn IMHO.
+> >
+> > Hi David,
+> >
+> > Thanks, i explained the reason during my last reply.
+> > Andrew has already picked this patch to -mm tree.
+>
+> Just because it's in Andrews tree doesn't mean it will end up upstream. ;)
+>
+> Anyhow, no really strong opinion, it's simply unnecessary code churn
+> that makes bisecting harder without real value IMHO.
 
-I like this very much! It simplifies a tricky code and also a very
-dubious behavior. I would like to hear from others whether there might
-be some userspace depending on this obscure behavior though. One never
-knows...
+In my practice, it helps improve the code reading efficiency with
+scope and vim hotkey.
+Before the change, I really feel mixed definition causes troubles in
+reading code efficiently.
+Anyway, that's my personal experience while others may have different options.
+Thanks for the feedback.
 
-Some more notes/questions below
+Regards
+Aisheng
 
-[...]
-> @@ -239,25 +240,19 @@ static int mpol_set_nodemask(struct mempolicy *pol,
->  		  cpuset_current_mems_allowed, node_states[N_MEMORY]);
->  
->  	VM_BUG_ON(!nodes);
-> -	if (pol->mode == MPOL_PREFERRED && nodes_empty(*nodes))
-> -		nodes = NULL;	/* explicit local allocation */
-> -	else {
-> -		if (pol->flags & MPOL_F_RELATIVE_NODES)
-> -			mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
-> -		else
-> -			nodes_and(nsc->mask2, *nodes, nsc->mask1);
->  
-> -		if (mpol_store_user_nodemask(pol))
-> -			pol->w.user_nodemask = *nodes;
-> -		else
-> -			pol->w.cpuset_mems_allowed =
-> -						cpuset_current_mems_allowed;
-> -	}
-> +	if (pol->flags & MPOL_F_RELATIVE_NODES)
-> +		mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
-> +	else
-> +		nodes_and(nsc->mask2, *nodes, nsc->mask1);
-
-Maybe I've just got lost here but why don't you need to check for the
-local policy anymore? mpol_new will take care of the MPOL_PREFERRED &&
-nodes_empty special but why do we want/need all this for a local policy
-at all?
-
->  
-> -	if (nodes)
-> -		ret = mpol_ops[pol->mode].create(pol, &nsc->mask2);
-> +	if (mpol_store_user_nodemask(pol))
-> +		pol->w.user_nodemask = *nodes;
->  	else
-> -		ret = mpol_ops[pol->mode].create(pol, NULL);
-> +		pol->w.cpuset_mems_allowed =
-> +					cpuset_current_mems_allowed;
-
-please use a single line. This is just harder to read. You will cross
-the line limit but readability should be preferred here.
-
-[...]
-
-I haven't spotted anything else.
--- 
-Michal Hocko
-SUSE Labs
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
