@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061BC3972A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554933972AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhFALpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:45:03 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:42816 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231219AbhFALpA (ORCPT
+        id S233717AbhFALqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231219AbhFALqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:45:00 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151BbeKb027852;
-        Tue, 1 Jun 2021 13:43:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=DJ37+M79ssVG9Eilaezkix8osS0akg3oQ3Ki2TOqVeY=;
- b=ZGHghPaIfg/tu/QIF6uNwBws0V1i6sPtyFGFy5E2Ot1NEdWGFElIDqvAUDitDGpRg8ql
- No/SgMp74lDNIGjUKQph+xOwOBbDURjsR7g/sozAGcWM29FD9+/O/9IP5U4v48ZlCYVQ
- F/aBr8/NCu/x8Pkv0YziT73BIfoHVUWbtrjjf2qTNQkTme0hAahUjueTlXQblQW29xST
- X9nd73N5Zn6JL8djS3kvoKkapMvQE9VHTUSk0451Yx2eLQ2DjgXAmRq7sZZrcYDie7ui
- U4bP1Sm1JXtwZylCvOCmgK0tJS27KEyZ11i1Ay8oZSZbIiyEU+5SmRTCPoY0c3irHSIp gg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38wjdg0mpa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 13:43:02 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A3E0010002A;
-        Tue,  1 Jun 2021 13:43:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 846AA21E17B;
-        Tue,  1 Jun 2021 13:43:01 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 1 Jun
- 2021 13:43:00 +0200
-Subject: Re: [PATCH 2/4] i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
-To:     <dillon.minfei@gmail.com>, <pierre-yves.mordret@foss.st.com>,
-        <alain.volmat@foss.st.com>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@foss.st.com>, <sumit.semwal@linaro.org>,
-        <christian.koenig@amd.com>, <mturquette@baylibre.com>
-CC:     <sboyd@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>, <linux-clk@vger.kernel.org>
-References: <1620990152-19255-1-git-send-email-dillon.minfei@gmail.com>
- <1620990152-19255-3-git-send-email-dillon.minfei@gmail.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <f30d5a1d-5acc-e756-5883-6c3d0173d643@foss.st.com>
-Date:   Tue, 1 Jun 2021 13:43:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Jun 2021 07:46:11 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291A0C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 04:44:29 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 6so10471696pgk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 04:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zUuBlevDml1RsQmUcJ3i0Xl7Pbt1BMQJv/H4BpeTbs4=;
+        b=wJB/xCUiFi4akZMhxo2B7DlgwZfFQIEYn4N/AW59AMcymGly3G9+wq3KBOcIh0jyEg
+         jaw119dClX+VlreibdlDHU998M2zPLm4P3UkG4FYFoR7Gs6ZTxkdstOjQO81WEO3/66E
+         D43hTf1Zv1DWu39wy8e+HIOPYxfcIKBr95dtcQIbxbkN40GSzZjVc+7djlK3PK+BNJTP
+         yhgq9oRRkDTosR33WVGAzemSjkYhcQYvmZDm1oEBHqta/Jw5FjPebpxkHFTlxDAdbFx8
+         Mjx5ms/A18kQyTzW3AJD2Y5d2D47s1chlk/iwX7Uz5+YcSbfiWSBSB7Qu+Hrs5dsnsDC
+         tNKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zUuBlevDml1RsQmUcJ3i0Xl7Pbt1BMQJv/H4BpeTbs4=;
+        b=KTifRvSkL+ueVGKOTITU3JEorWnvmZsc3TvjCYsFZdUdfXczfMi8PMd8EFXR/9gcy0
+         I5Vo+J1Jh0Q0L7AlW30QbIxY4Cf0dJIGrcRWDfivC14oGUprm4Inl/X1/97psRDeebZN
+         Y/AVrVSmWENjPYKE1uTVK/BwG0kYePa4WTqj+exQeiRpMz2BB5mkcSz1xEwrqiC/Gaxo
+         LDI+fPbKy+XhHgqKxmO7k2XrBqKqom8zEY9enuEA0di/pyaAujXnaBKtXTnk6CFjGwGG
+         LtPnHKqsIKMY3+Avp6iYH4qIFpFBn8yHNBO0Zy3CYE6+NNoOgkc9HfNihMQIG9bVH+D0
+         j6Qg==
+X-Gm-Message-State: AOAM532XpfU6KWh8Uj5OzbSo5FnE2Zy/bqaH8CvrOMip5baCSmHUr6Zy
+        iI78tOKtfxv0RF0ooXt/w1mnqQ==
+X-Google-Smtp-Source: ABdhPJzGgQOKQeJuHCotgvJ/qS4B4/iYGR2HD+vCofFVAcj+a5E+3QEYwRq58t171wWXWNbFZ49CGw==
+X-Received: by 2002:a63:5c4e:: with SMTP id n14mr27752883pgm.192.1622547868703;
+        Tue, 01 Jun 2021 04:44:28 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id s123sm13088954pfb.78.2021.06.01.04.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 04:44:28 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 17:14:26 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, rojay@codeaurora.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce
+ 'assigned-performance-states' property
+Message-ID: <20210601114426.3vhh2twocqx254b6@vireshk-i7>
+References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org>
+ <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
+ <YLYV3ov/iBffZMg4@gerhold.net>
 MIME-Version: 1.0
-In-Reply-To: <1620990152-19255-3-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_06:2021-05-31,2021-06-01 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLYV3ov/iBffZMg4@gerhold.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dillon
+On 01-06-21, 13:12, Stephan Gerhold wrote:
+> > +    child4: consumer@12341000 {
+> > +        compatible = "foo,consumer";
+> > +        reg = <0x12341000 0x1000>;
+> > +        power-domains = <&parent4>, <&parent5>;
+> > +        assigned-performance-states = <0>, <256>;
+> > +    };
+> 
+> Bjorn already asked this in v1 [1]:
+> 
+> > May I ask how this is different from saying something like:
+> >
+> > 	required-opps = <&??>, <&rpmpd_opp_svs>;
+> 
+> and maybe this was already discussed further elsewhere. But I think at
+> the very least we need some clarification in the commit message + the
+> binding documentation how your new property relates to the existing
+> "required-opps" binding.
+> 
+> Because even if it might not be implemented at the moment,
+> Documentation/devicetree/bindings/power/power_domain.txt actually also
+> specifies "required-opps" for device nodes e.g. with the following example:
+> 
+> 	leaky-device0@12350000 {
+> 		compatible = "foo,i-leak-current";
+> 		reg = <0x12350000 0x1000>;
+> 		power-domains = <&power 0>;
+> 		required-opps = <&domain0_opp_0>;
+> 	};
+> 
+> It looks like Viresh added that in commit e856f078bcf1
+> ("OPP: Introduce "required-opp" property").
+> 
+> And in general I think it's a bit inconsistent that we usually refer to
+> performance states with phandles into the OPP table, but the
+> assigned-performance-states suddenly use "raw numbers".
 
-On 5/14/21 1:02 PM, dillon.minfei@gmail.com wrote:
-> From: Dillon Min <dillon.minfei@gmail.com>
-> 
-> As stm32f429's internal flash is 2Mbytes and compiled kernel
-> image bigger than 2Mbytes, so we have to load kernel image
-> to sdram on stm32f429-disco board which has 8Mbytes sdram space.
-> 
-> based on above context, as you knows kernel running on external
-> sdram is more slower than internal flash. besides, we need read 4
-> bytes to get touch screen xyz(x, y, pressure) coordinate data in
-> stmpe811 interrupt.
-> 
-> so, in stm32f4_i2c_handle_rx_done, as i2c read slower than running
-> in xip mode, have to adjust 'STOP/START bit set position' from last
-> two bytes to last one bytes. else, will get i2c timeout in reading
-> touch screen coordinate.
-> 
-> to not bring in side effect, introduce IIC_LAST_BYTE_POS to support xip
-> kernel or zImage.
-> 
-> Fixes: 62817fc8d282 ("i2c: stm32f4: add driver")
-> Link: https://lore.kernel.org/lkml/1591709203-12106-5-git-send-email-dillon.minfei@gmail.com/
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-stm32f4.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
-> index 4933fc8ce3fd..2e41231b9037 100644
-> --- a/drivers/i2c/busses/i2c-stm32f4.c
-> +++ b/drivers/i2c/busses/i2c-stm32f4.c
-> @@ -93,6 +93,12 @@
->  #define STM32F4_I2C_MAX_FREQ		46U
->  #define HZ_TO_MHZ			1000000
->  
-> +#if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
-> +#define IIC_LAST_BYTE_POS 1
-> +#else
-> +#define IIC_LAST_BYTE_POS 2
-> +#endif
-> +
->  /**
->   * struct stm32f4_i2c_msg - client specific data
->   * @addr: 8-bit slave addr, including r/w bit
-> @@ -439,7 +445,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->  	int i;
->  
->  	switch (msg->count) {
-> -	case 2:
-> +	case IIC_LAST_BYTE_POS:
->  		/*
->  		 * In order to correctly send the Stop or Repeated Start
->  		 * condition on the I2C bus, the STOP/START bit has to be set
-> @@ -454,7 +460,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->  		else
->  			stm32f4_i2c_set_bits(reg, STM32F4_I2C_CR1_START);
->  
-> -		for (i = 2; i > 0; i--)
-> +		for (i = IIC_LAST_BYTE_POS; i > 0; i--)
->  			stm32f4_i2c_read_msg(i2c_dev);
->  
->  		reg = i2c_dev->base + STM32F4_I2C_CR2;
-> @@ -463,7 +469,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->  
->  		complete(&i2c_dev->complete);
->  		break;
-> -	case 3:
-> +	case (IIC_LAST_BYTE_POS+1):
->  		/*
->  		 * In order to correctly generate the NACK pulse after the last
->  		 * received data byte, we have to enable NACK before reading N-2
-> 
+I must have missed that discussion, sorry about that.
 
-I tested this patch on STM32F429-Disco, it fixes the issue described by Dillon.
-But i think it's not a good idea to make usage of #if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
-inside the driver code.
+The required-opps property, when present in device's node directly, is about the
+(default) OPPs to choose for that device's normal functioning as they may not do
+DVFS.
 
-Pierre-Yves, Alain, as i am not I2C expert, can you have a look at this patch and propose another solution 
-to fix the original issue described by Dillon ?
+Good point Stephan.
 
-Thanks
-Patrice
+-- 
+viresh
