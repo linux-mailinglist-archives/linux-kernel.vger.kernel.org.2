@@ -2,121 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F72396BFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 05:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12ABD396BFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 05:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhFAD6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 23:58:19 -0400
-Received: from mga03.intel.com ([134.134.136.65]:8779 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232516AbhFAD6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 23:58:15 -0400
-IronPort-SDR: Yz2y0wiMSdTdok1+wVUMdT4vvHGj0xDixo2UeFdwn99jhC7zIMeCTKVsdXe2JO5L3FQwjIQhQv
- DzBnv0NYz7jw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="203500346"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="203500346"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 20:56:34 -0700
-IronPort-SDR: cL5qE+7uZ/vSzO1xldngoS1kyAn3LvCDruHlGHTNLPh/tev1QCaLGdNKHsgRLTu/Sl5gO6DES6
- Q0PnIbkjhNyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="632732921"
-Received: from otc-chromeosbuild-1.jf.intel.com ([10.54.30.83])
-  by fmsmga006.fm.intel.com with ESMTP; 31 May 2021 20:56:33 -0700
-From:   Azhar Shaikh <azhar.shaikh@intel.com>
-To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        azhar.shaikh@intel.com
-Subject: [PATCH v2] usb: typec: intel_pmc_mux: Update IOM port status offset for AlderLake
-Date:   Mon, 31 May 2021 20:58:43 -0700
-Message-Id: <20210601035843.71150-1-azhar.shaikh@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229984AbhFAEAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 00:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhFAEAv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 00:00:51 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420A1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 20:59:10 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id k5so7606196pjj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 20:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SXwwYLYnJsnDBREbEY1ZpSah/5rCANgCAGvtHU5EDV4=;
+        b=DsX8PTvp7nRUwWpmJC/wVYpd2qd27HE9+ililwcm6lIVdQUi9680xucnTRbHskC424
+         4jzAahY89yDIZXjMVmTPI60eQtmBwedVlnIydqpIHXLzs9/fdhkwKvRWe+HyeTtQ3Yl4
+         TBaYQLe+nTcwnF7mtZjJI84eVmu1oVIqLBgTg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SXwwYLYnJsnDBREbEY1ZpSah/5rCANgCAGvtHU5EDV4=;
+        b=RtPOjtyyp31JdPzDhffciAPPxxLXVibRKSwfEexQ7ineTArCa6opzIPKh1fvKskFu5
+         S31n2CfDJ9YZQOmq1g/B5EZv304B+Ip87netAuwoG5XmOaTvvfT77/+0Tvc5HMR1Btta
+         FEdcyghGbXMti7+AVoJyhG6868EJr6W6TRETIzL23ZZQaGxhqMgQ0a4mYJB40/O1kgOr
+         HZOLT61zcG4w4GMX7P+9Es2Y/X9ii4QpIHoLapEmJ2M6gPOu8jQ3I1MUpaWx4QTmh04r
+         N7IVXXVtMngzCtSxA9t8iPuuSDjargzd/2+qGfgMagy07wQrT73WUbAI0b1F7ueKZBig
+         iLfA==
+X-Gm-Message-State: AOAM531ozKiVnkk/LRz1RIYm12PTJmRdFrFhCLdb4bB4LyK8Y38uEfgk
+        gIGsRfPsufrGiM6VeFjBZPn4Yw==
+X-Google-Smtp-Source: ABdhPJwG6Rn5CV9j8+8zdP9BMbU2vg1FdpBVA8VXDgHafS3v4vMRxLv5l7xQojLafjQKMt1nbXQANA==
+X-Received: by 2002:a17:90b:2250:: with SMTP id hk16mr2434435pjb.95.1622519949734;
+        Mon, 31 May 2021 20:59:09 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:5f83:3563:b780:4d82])
+        by smtp.gmail.com with ESMTPSA id 203sm2779735pfw.124.2021.05.31.20.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 20:59:09 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        chun-jie.chen@mediatek.corp-partner.google.com,
+        Yong Wu <yong.wu@mediatek.com>
+Subject: [PATCH v2 1/3] soc: mtk-pm-domains: Fix the clock prepared issue
+Date:   Tue,  1 Jun 2021 11:59:03 +0800
+Message-Id: <20210601035905.2970384-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel AlderLake(ADL) IOM has a different IOM port status offset than
-Intel TigerLake.
-Add a new ACPI ID for ADL and use the IOM port status offset as per
-the platform.
+From: Weiyi Lu <weiyi.lu@mediatek.com>
 
-Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
+In this new power domain driver, when adding one power domain
+it will prepare the dependent clocks at the same.
+So we only do clk_bulk_enable/disable control during power ON/OFF.
+When system suspend, the pm runtime framework will forcely power off
+power domains. However, the dependent clocks are disabled but kept
+prepared.
+
+In MediaTek clock drivers, PLL would be turned ON when we do
+clk_bulk_prepare control.
+
+Clock hierarchy:
+PLL -->
+       DIV_CK -->
+                 CLK_MUX
+                 (may be dependent clocks)
+                         -->
+                             SUBSYS_CG
+                             (may be dependent clocks)
+
+It will lead some unexpected clock states during system suspend.
+This patch will fix by doing prepare_enable/disable_unprepare on
+dependent clocks at the same time while we are going to power on/off
+any power domain.
+
+Fixes: 59b644b01cf4 ("soc: mediatek: Add MediaTek SCPSYS power domains")
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: chun-jie.chen <chun-jie.chen@mediatek.com>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
-Changes in v2:
-- Passed acpi_device_id->id to acpi_dev_present() and
-  acpi_dev_get_first_match_dev()
+ drivers/soc/mediatek/mtk-pm-domains.c | 31 +++++++--------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
- drivers/usb/typec/mux/intel_pmc_mux.c | 28 ++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-index 46a25b8db72e..dc8689db0100 100644
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -83,8 +83,6 @@ enum {
- /*
-  * Input Output Manager (IOM) PORT STATUS
-  */
--#define IOM_PORT_STATUS_OFFSET				0x560
+diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+index 0af00efa0ef8..536d8c64b2b4 100644
+--- a/drivers/soc/mediatek/mtk-pm-domains.c
++++ b/drivers/soc/mediatek/mtk-pm-domains.c
+@@ -211,7 +211,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = clk_bulk_enable(pd->num_clks, pd->clks);
++	ret = clk_bulk_prepare_enable(pd->num_clks, pd->clks);
+ 	if (ret)
+ 		goto err_reg;
+ 
+@@ -229,7 +229,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ 	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_ISO_BIT);
+ 	regmap_set_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+ 
+-	ret = clk_bulk_enable(pd->num_subsys_clks, pd->subsys_clks);
++	ret = clk_bulk_prepare_enable(pd->num_subsys_clks, pd->subsys_clks);
+ 	if (ret)
+ 		goto err_pwr_ack;
+ 
+@@ -246,9 +246,9 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ err_disable_sram:
+ 	scpsys_sram_disable(pd);
+ err_disable_subsys_clks:
+-	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
++	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+ err_pwr_ack:
+-	clk_bulk_disable(pd->num_clks, pd->clks);
++	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+ err_reg:
+ 	scpsys_regulator_disable(pd->supply);
+ 	return ret;
+@@ -269,7 +269,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
++	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+ 
+ 	/* subsys power off */
+ 	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+@@ -284,7 +284,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	clk_bulk_disable(pd->num_clks, pd->clks);
++	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+ 
+ 	scpsys_regulator_disable(pd->supply);
+ 
+@@ -405,14 +405,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		pd->subsys_clks[i].clk = clk;
+ 	}
+ 
+-	ret = clk_bulk_prepare(pd->num_clks, pd->clks);
+-	if (ret)
+-		goto err_put_subsys_clocks;
 -
- #define IOM_PORT_STATUS_ACTIVITY_TYPE_MASK		GENMASK(9, 6)
- #define IOM_PORT_STATUS_ACTIVITY_TYPE_SHIFT		6
- #define IOM_PORT_STATUS_ACTIVITY_TYPE_USB		0x03
-@@ -144,6 +142,7 @@ struct pmc_usb {
- 	struct pmc_usb_port *port;
- 	struct acpi_device *iom_adev;
- 	void __iomem *iom_base;
-+	u32 iom_port_status_offset;
- };
+-	ret = clk_bulk_prepare(pd->num_subsys_clks, pd->subsys_clks);
+-	if (ret)
+-		goto err_unprepare_clocks;
+-
+ 	/*
+ 	 * Initially turn on all domains to make the domains usable
+ 	 * with !CONFIG_PM and to get the hardware in sync with the
+@@ -427,7 +419,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		ret = scpsys_power_on(&pd->genpd);
+ 		if (ret < 0) {
+ 			dev_err(scpsys->dev, "%pOF: failed to power on domain: %d\n", node, ret);
+-			goto err_unprepare_clocks;
++			goto err_put_subsys_clocks;
+ 		}
+ 	}
  
- static void update_port_status(struct pmc_usb_port *port)
-@@ -153,7 +152,8 @@ static void update_port_status(struct pmc_usb_port *port)
- 	/* SoC expects the USB Type-C port numbers to start with 0 */
- 	port_num = port->usb3_port - 1;
+@@ -435,7 +427,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 		ret = -EINVAL;
+ 		dev_err(scpsys->dev,
+ 			"power domain with id %d already exists, check your device-tree\n", id);
+-		goto err_unprepare_subsys_clocks;
++		goto err_put_subsys_clocks;
+ 	}
  
--	port->iom_status = readl(port->pmc->iom_base + IOM_PORT_STATUS_OFFSET +
-+	port->iom_status = readl(port->pmc->iom_base +
-+				 port->pmc->iom_port_status_offset +
- 				 port_num * sizeof(u32));
+ 	if (!pd->data->name)
+@@ -455,10 +447,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+ 
+ 	return scpsys->pd_data.domains[id];
+ 
+-err_unprepare_subsys_clocks:
+-	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+-err_unprepare_clocks:
+-	clk_bulk_unprepare(pd->num_clks, pd->clks);
+ err_put_subsys_clocks:
+ 	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+ err_put_clocks:
+@@ -537,10 +525,7 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
+ 			"failed to remove domain '%s' : %d - state may be inconsistent\n",
+ 			pd->genpd.name, ret);
+ 
+-	clk_bulk_unprepare(pd->num_clks, pd->clks);
+ 	clk_bulk_put(pd->num_clks, pd->clks);
+-
+-	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+ 	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
  }
- 
-@@ -559,14 +559,32 @@ static int is_memory(struct acpi_resource *res, void *data)
- 	return !acpi_dev_resource_memory(res, &r);
- }
- 
-+/* IOM ACPI IDs and IOM_PORT_STATUS_OFFSET */
-+static const struct acpi_device_id iom_acpi_ids[] = {
-+	/* TigerLake */
-+	{ "INTC1072", 0x560, },
-+
-+	/* AlderLake */
-+	{ "INTC1079", 0x160, },
-+	{}
-+};
-+
- static int pmc_usb_probe_iom(struct pmc_usb *pmc)
- {
- 	struct list_head resource_list;
- 	struct resource_entry *rentry;
--	struct acpi_device *adev;
-+	static const struct acpi_device_id *dev_id;
-+	struct acpi_device *adev = NULL;
- 	int ret;
- 
--	adev = acpi_dev_get_first_match_dev("INTC1072", NULL, -1);
-+	for (dev_id = &iom_acpi_ids[0]; dev_id->id[0]; dev_id++) {
-+		if (acpi_dev_present(dev_id->id, NULL, -1)) {
-+			pmc->iom_port_status_offset = (u32)dev_id->driver_data;
-+			adev = acpi_dev_get_first_match_dev(dev_id->id, NULL, -1);
-+			break;
-+		}
-+	}
-+
- 	if (!adev)
- 		return -ENODEV;
  
 -- 
-2.17.1
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
