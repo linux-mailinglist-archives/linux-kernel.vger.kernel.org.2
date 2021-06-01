@@ -2,118 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EF2396F76
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACFF396F8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhFAIue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233924AbhFAIuT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:50:19 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD332C061344
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:48:34 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id c3so13354356wrp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:48:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HsyI5GdZuVzBJ4Q40lGtjbheVohc16mnJhwL7iMTmSw=;
-        b=xaimFvKzZB07yjuzlZWyPID+i3O41/kcqJPcS6iQTWYstiOp6aDbYne2LEu5c5Bux7
-         3X91TH+ey2cmfMXZ8kv0um25JeEv8d8DqKkZfsjA0q4JdTqyq9I6DPvCkw9m4c1tt1tf
-         lPn1qCjbi02nMpYFRTg/itPrKYtWrubWxcg56rL0v7agha79MwcofUh5IEPUhisFoHHi
-         5UqOQYX3i8u2pq8/W+d/9E1fc17DzamiGADiKsbfUwM7uvp1mIfiiQ5SLqhtevM5f3pl
-         BnMKeRC6P3WWASjB21jSQrIW4tuqsodmzAcONWwCXZj3Zh7rFDkH9hvR5rdJCpUtLySu
-         zguA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HsyI5GdZuVzBJ4Q40lGtjbheVohc16mnJhwL7iMTmSw=;
-        b=X4vFKTd04Mu3xfIlch+IeWefSmJejsAeFeq6vnLiQjmsYcdb023lvEbz/+IZ3ctwfL
-         WvhsLb7byH4S+Q9K9QDeRrE+61E4CjdnWQf2o55+D3J+HMQNOGzVHMhY2DHY3d9R8Wd3
-         3QZkqrJgmP86UYLyvg/JJUtLKBs2iotjIdsl+kt60DWlDTwV/avCPynoTbOYsAKpN+qC
-         2PJ2p/gARoJpnYCH71Mp0rQOkFN6R6s1DX9YgkGDf0fR7rzX78C4I32yY6qlkycVsKYB
-         MjQ2wtE/gWhF5c3TggTEYzmtUdPlbCrLBtEdBIQMe8UDZnl80N/tYAhiMPh73LgtwL4i
-         o0Rw==
-X-Gm-Message-State: AOAM5331gQY3/3KKcEENRWWNhzlxuXZdIB7T57nY6VxQ4HCH9UfSpqJn
-        2EjyUoSkc0cimwU6rOqOCEWUgA==
-X-Google-Smtp-Source: ABdhPJwicPfpiz9Ps9bnHfK5U9UhZq6pV1e3HJK+KjRppnJs8C7vVjbqoq40pD23inszRKpnR1omzw==
-X-Received: by 2002:a5d:4c49:: with SMTP id n9mr26124117wrt.417.1622537313482;
-        Tue, 01 Jun 2021 01:48:33 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:a3a:d001:6a80:207a])
-        by smtp.gmail.com with ESMTPSA id t14sm1710470wmq.16.2021.06.01.01.48.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 01:48:33 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     balbi@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH] usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0 is disabled
-Date:   Tue,  1 Jun 2021 10:48:30 +0200
-Message-Id: <20210601084830.260196-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        id S233890AbhFAIv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:51:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233556AbhFAIvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:51:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E53F61375;
+        Tue,  1 Jun 2021 08:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622537392;
+        bh=BWq5NprmRBFQsgZo2g232l4nfkJzik5TZeKrg2RP7A4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=iGXAAQHTjaMW5jK32eeGWC/RMFFgzjIrcMr7psbh+zR6Q2/OwOLt/jUrgAkIts5eI
+         YE9mqsBPPxfXMllInKg/lzlcvQL9pBDGUUKDpK3bANr+hzYeKuYwQsRZ1azVlrjV60
+         L9ZRjWo97oGa5w+Gja4vghuhWY7d/iByP3bkn3Ok4Cx/gH+j+MtNRmuAoN/QBTXTcj
+         joE5KshjA13w2AZoHznmYqMMMcOIdld5uK/Xt6IbKrb/I130zBtSJw0uDaqj54TMVk
+         mvFA3LqaeVz+EXflPqjPNu5e6bQuYjhGykfyPXILyn5ZZKnlaqDmODJtrzmviALaKp
+         9mYgKvZ8Yr/vg==
+Message-ID: <90338d5fbc55f80a8cd28ead24791f3edc247ba4.camel@kernel.org>
+Subject: Re: [PATCH v2 08/12] drm/vc4: hdmi: Set
+ VC4_HDMI_MAI_CONFIG_FORMAT_REVERSE
+From:   nicolas saenz julienne <nsaenz@kernel.org>
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     devicetree@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
+        Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Maxime Ripard <mripard@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dom Cobley <popcornmix@gmail.com>
+Date:   Tue, 01 Jun 2021 10:49:44 +0200
+In-Reply-To: <20210525132354.297468-9-maxime@cerno.tech>
+References: <20210525132354.297468-1-maxime@cerno.tech>
+         <20210525132354.297468-9-maxime@cerno.tech>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1816; h=from:subject; bh=Qf752RJbSHGdE83hMRrW4mM1Uj4TitFrYwm+jlRhNvY=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBgtfRG0QSALHdUEWJSyZF78sJxWZurbP2ZCdFuehVl tryIs/6JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYLX0RgAKCRB33NvayMhJ0ediEA DAEklNiHPCq29uk/iUjjt18PU0FxsriKAlJsf0WAkT4X8QAiBmOmFWHhG52Ugh1DIAar9YxggiaLVp nxIoiNOEcUG0n8PYca4XoMrrT/K9Qg6gyuEvdtdf5im26Z/pZzMpSQdaG+yzXlOdzA4vRxVv531vZb HE2G7Y5C3/G4eVYIXeN25A61PxbEp0XQLJgrIbZQrsa2x34Da0So46A1PBZ+/KG9xyi+lYk/uo8Ol9 +1CoMKDwOJr36+PL2pDgXEG8bPMqbJdOEcuMXihqH9ZOdSSaRqiX/Xcll0063Hgzp0sSid7J1Eux8W gZ3Y2egjh3e1b2q3dPU9JHrDyAMTCKtqzlwTzs2g3TZE+XT5deZ5THiOyZ8T/Ix2y4L1P71LeSuJNS T4MsZIp+MZueAd8D6CzH/rQZ5ogCFHdde8gA1ukOF2ow/Ji4P6fzzTSi6BbnreT1fv/ZGxJdIuPqe5 3ChDtsFjVHfhBHOC8R4mOiLV+r7lriC2CdtjSesNqpyy4AhHLqFgJF0tUweDK4axJuKblZdeSKYLW9 cN/48ySEMgJKSp7eHV6wLlIwsWhj79IUbfaBAcb5TQHwh/w9XfRLHGeXrqljzkz1KcOYFK8hEMMTqP GeqUnb0elGu5F1Qkh3MHos8Bfr7d5LhnJNGf48gOJpL5I8+HP1qXf2LUG4lg==
-X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When only PHY1 is used (for example on Odroid-HC4), the regmap init code
-uses the usb2 ports when doesn't initialize the PHY1 regmap entry.
+On Tue, 2021-05-25 at 15:23 +0200, Maxime Ripard wrote:
+> From: Dom Cobley <popcornmix@gmail.com>
+> 
+> Without this bit set, HDMI_MAI_FORMAT doesn't pick up
+> the format and samplerate from DVP_CFG_MAI0_FMT and you
+> can't get HDMI_HDMI_13_AUDIO_STATUS_1 to indicate HBR mode
+> 
+> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
 
-This fixes:
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
-...
-pc : regmap_update_bits_base+0x40/0xa0
-lr : dwc3_meson_g12a_usb2_init_phy+0x4c/0xf8
-...
-Call trace:
-regmap_update_bits_base+0x40/0xa0
-dwc3_meson_g12a_usb2_init_phy+0x4c/0xf8
-dwc3_meson_g12a_usb2_init+0x7c/0xc8
-dwc3_meson_g12a_usb_init+0x28/0x48
-dwc3_meson_g12a_probe+0x298/0x540
-platform_probe+0x70/0xe0
-really_probe+0xf0/0x4d8
-driver_probe_device+0xfc/0x168
-...
+Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 
-Fixes: 013af227f58a97 ("usb: dwc3: meson-g12a: handle the phy and glue registers separately")
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/usb/dwc3/dwc3-meson-g12a.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
-index bdf1f98dfad8..9c944bc6d555 100644
---- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-+++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-@@ -651,7 +651,7 @@ static int dwc3_meson_g12a_setup_regmaps(struct dwc3_meson_g12a *priv,
- 		return PTR_ERR(priv->usb_glue_regmap);
- 
- 	/* Create a regmap for each USB2 PHY control register set */
--	for (i = 0; i < priv->usb2_ports; i++) {
-+	for (i = 0; i < priv->drvdata->num_phys; i++) {
- 		struct regmap_config u2p_regmap_config = {
- 			.reg_bits = 8,
- 			.val_bits = 32,
-@@ -659,6 +659,9 @@ static int dwc3_meson_g12a_setup_regmaps(struct dwc3_meson_g12a *priv,
- 			.max_register = U2P_R1,
- 		};
- 
-+		if (!strstr(priv->drvdata->phy_names[i], "usb2"))
-+			continue;
-+
- 		u2p_regmap_config.name = devm_kasprintf(priv->dev, GFP_KERNEL,
- 							"u2p-%d", i);
- 		if (!u2p_regmap_config.name)
--- 
-2.25.1
+Regards,
+Nicolas
 
