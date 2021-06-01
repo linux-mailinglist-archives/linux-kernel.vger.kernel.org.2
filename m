@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED923975DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B703975E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234338AbhFAO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
+        id S234378AbhFAPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbhFAO70 (ORCPT
+        with ESMTP id S234328AbhFAPAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:59:26 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A412C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 07:57:44 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1423648wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 07:57:44 -0700 (PDT)
+        Tue, 1 Jun 2021 11:00:33 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACFAC061574;
+        Tue,  1 Jun 2021 07:58:51 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id o127so8388533wmo.4;
+        Tue, 01 Jun 2021 07:58:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=x67didzJtzPvmOqgoOtarXvLTU2X2jkGh5nw7JkZVzU=;
-        b=l+7hzMmPtjN45ePn9RNs41K0zG4xu7SfGq6Ex66ocZ7kMM5kADn84QdgR8hpFz4yM/
-         EQcn0um0ME4ntF8kEZsNMFxMsjp1PtlXjQhzcY7/1GDoFrdeQC9IbBQc121gpgH3ZjXA
-         ra2GSpf1mMcZ15xBJ7ol+qRugNLpfqmoY9Bpa61OGLITY73meyUD/3j/yllNyjOMkWGC
-         xlwUVyXkbl/DZAIRyQ9d+x7GfdgUuoiw9um7LkQ2Byfn7rriXzxhLiAjtspplC3Y3tHs
-         tCab2APbTgOsVuhc/XV6TIznhXDQX5m9kQPoEM0nBp15MewJXO6cj1iZUSORe5LpoMKg
-         x6ZA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/DPpONB5odANLklybjY0IIz2Pfr0oDmD8mNE0eMYsI=;
+        b=Uz3fUkl9sq/oqwcdscWGbxqJrGU3rI5f/xRfrQixUnNdVN5lPlk4PwAPQGfEQRxOYP
+         MLB8LrVpAyJimVWcRG16K+3vVSghn1YodeKsNydqG7okEu2E7cHUuTUDmxusc4cpcTdx
+         vrmKOgxa1poBlzFJuRhSKe8oERH4/Ay2f2vM6mEjJjN1/0+nZA3FqAfnPhpl6ZsJd59Y
+         7hQBN86KvB4LX05xOSbFqZ7h+lBNDQthjnRssDZ+ypVGgxAs2RuuHbkA3bYY5/on1VJa
+         ahAIh3nFaztxBKTWqT1LNQxR6ycjPNLm/qEGrxgivQ/yEiSrXmnfsz9wOEx0EduCjX2i
+         zQaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=x67didzJtzPvmOqgoOtarXvLTU2X2jkGh5nw7JkZVzU=;
-        b=qa9YUmfZEZGa0J42Fo/ZLiYPx3zCPMRZH1HNpIGbGB9gZboU534kFS/XHV9Zaj+j7M
-         moiZEDPvhcylMeK3KKbzjR/R0bHxpKSai2q65Ja7gcuUDBAJqFCirIIx/4njvhpiujV4
-         7b+Sq4VOtkk6H6Nyx9i4khbTP495Xc0QAUOZwpxHNFJjYXrs3GJ31RGZ7cId+D/ahQGA
-         qmuzbc4XIdyCluHt9DiwnoMoVrAKGFFYrwxMzf9a0OQdhDVRtiSLfqRfv/BIfN/jjZau
-         ipVTVrRdirWdMHZG/zfhU9iUYNnU2jFGnNO1afhBWe1DB7U+1PY+1+4PbcUUGAduUB13
-         e2bA==
-X-Gm-Message-State: AOAM531Nk1vD1iD/lTh10jrNf7N0I8MSwDpN9uP7f7b+x5oI75ka6oT5
-        HBnijp3mDy88uYeBh9BLpNPaUw==
-X-Google-Smtp-Source: ABdhPJwAw8VQngr7L9YOTXshioLjs5VT7iu8jf0HW8o4ZIyUeYNTNLmv9SyWUs7wHtbITDfR5RQu/A==
-X-Received: by 2002:a7b:c749:: with SMTP id w9mr318833wmk.3.1622559462684;
-        Tue, 01 Jun 2021 07:57:42 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id a11sm3475669wrr.48.2021.06.01.07.57.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/DPpONB5odANLklybjY0IIz2Pfr0oDmD8mNE0eMYsI=;
+        b=Fk/osuI77APTYSfBFaRiuG0BbkQEzuztfdiDR3mf/0ua9HCjWyLhmHVGTB0xrFso4Y
+         USttkWAOryy+/nRBW3Dj0Iax/d9GPPLYpy/nlCEUF8bg2n1/j34ZH9HfPth0HGKtDzRk
+         tRuRTJc32jcdptVhwt0ULLsT3jESeGt56e+omYEnIt46O0vtBFXZyr4SuX3JzoSv4ofM
+         Gbmwm+xNy6ZTKQmsKnEJb9DEj3VkIQmQTYuaCgJWM3nNjJ8Si260tAM9nFCKMuuYev5L
+         iWNLWbClGsTCrDP7VhImZzCWCn01Ss6emN1XMFWgQ4HkZbxNeyGchibp0gsKgdUEDG10
+         6GkA==
+X-Gm-Message-State: AOAM532vuib32Bi6kzAz7Yg+wHLUu/zXPnfS8esG+m1bzNSifnUaQed4
+        FT0xML0/jreYESMLoyKJwdTSgwM6Hea5RQ==
+X-Google-Smtp-Source: ABdhPJwJHpR7j+k9q5fB1R/HZHo1CkPVkXNi8Ml/nuZf16U8qmV4l9NzZKUscw4KqlK/EHmXvScZ2g==
+X-Received: by 2002:a05:600c:d0:: with SMTP id u16mr294549wmm.155.1622559529669;
+        Tue, 01 Jun 2021 07:58:49 -0700 (PDT)
+Received: from localhost.localdomain ([85.255.237.139])
+        by smtp.gmail.com with ESMTPSA id b4sm10697061wmj.42.2021.06.01.07.58.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 07:57:42 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 15:57:40 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-Subject: Re: [PATCH 2/2] regulator: bd71828: Fix .n_voltages settings
-Message-ID: <20210601145740.GO543307@dell>
-References: <20210523071045.2168904-1-axel.lin@ingics.com>
- <20210523071045.2168904-2-axel.lin@ingics.com>
+        Tue, 01 Jun 2021 07:58:49 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     io-uring@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Andres Freund <andres@anarazel.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC 0/4] futex request support
+Date:   Tue,  1 Jun 2021 15:58:25 +0100
+Message-Id: <cover.1622558659.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210523071045.2168904-2-axel.lin@ingics.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 May 2021, Axel Lin wrote:
+Proof of concept for io_uring futex requests. The wake side does
+FUTEX_WAKE_OP type of modify-compare operation but with a single
+address. Wait reqs go through io-wq and so slow path.
 
-> Current .n_voltages settings do not cover the latest 2 valid selectors,
-> so it fails to set voltage for the hightest voltage support.
-> The latest linear range has step_uV = 0, so it does not matter if we
-> count the .n_voltages to maximum selector + 1 or the first selector of
-> latest linear range + 1.
-> To simplify calculating the n_voltages, let's just set the
-> .n_voltages to maximum selector + 1.
-> 
-> Fixes: 522498f8cb8c ("regulator: bd71828: Basic support for ROHM bd71828 PMIC regulators")
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
->  include/linux/mfd/rohm-bd71828.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+Should be interesting for a bunch of people, so we should first
+outline API and capabilities it should give. As I almost never
+had to deal with futexes myself, would especially love to hear
+use case, what might be lacking and other blind spots.
 
-Applied, thanks.
+1) Do we need PI?
+2) Do we need requeue? Anything else?
+3) How hot waits are? May be done fully async avoiding io-wq, but
+apparently requires more changes in futex code.
+4) We can avoid all page locking/unlocking for shared futexes
+with pre-registration. How much is it interesting?
+
+For _very_ basic examples see [1]
+
+[1] https://github.com/isilence/liburing/tree/futex_v1
+
+Pavel Begunkov (4):
+  futex: add op wake for a single key
+  io_uring: frame out futex op
+  io_uring: support futex wake requests
+  io_uring: implement futex wait
+
+ fs/io_uring.c                 | 91 +++++++++++++++++++++++++++++++++++
+ include/linux/futex.h         | 15 ++++++
+ include/uapi/linux/io_uring.h | 19 +++++++-
+ kernel/futex.c                | 64 +++++++++++++++++++++++-
+ 4 files changed, 186 insertions(+), 3 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.31.1
+
