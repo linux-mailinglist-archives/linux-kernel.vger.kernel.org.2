@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED187396F8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92542396F69
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233586AbhFAIvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:51:37 -0400
-Received: from mga07.intel.com ([134.134.136.100]:45208 "EHLO mga07.intel.com"
+        id S233803AbhFAIuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:50:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51992 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233958AbhFAIvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:51:11 -0400
-IronPort-SDR: Bt+Sjy6Izis6MJfuHuKSh2Omk0wg6E57TojLzEB0zr43BMQy0yeVHckTRoqvpsrHJy6EEXU4rr
- T4FurxyAT8xg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="267381541"
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="267381541"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 01:48:42 -0700
-IronPort-SDR: KF3INlzmY+dy1eXTMBimHFb9/Jd4n/Vq4XJxMyxlgYoGEZLDyf1IywD3JbnXtL4F/RA0DuKsWI
- OpiqEcsDj14g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,239,1616482800"; 
-   d="scan'208";a="437967879"
-Received: from sqa-gate.sh.intel.com (HELO robert-ivt.tsp.org) ([10.239.48.212])
-  by orsmga007.jf.intel.com with ESMTP; 01 Jun 2021 01:48:39 -0700
-From:   Robert Hoo <robert.hu@linux.intel.com>
-To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, robert.hu@intel.com,
-        robert.hu@linux.intel.com
-Subject: [PATCH 15/15] kvm/vmx/nested: Enable nested LOADIWKEY VM-exit
-Date:   Tue,  1 Jun 2021 16:47:54 +0800
-Message-Id: <1622537274-146420-16-git-send-email-robert.hu@linux.intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1622537274-146420-1-git-send-email-robert.hu@linux.intel.com>
-References: <1622537274-146420-1-git-send-email-robert.hu@linux.intel.com>
+        id S233812AbhFAItu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:49:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622537288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MMdwS/ef9ydlcUl/RcqGrwlMAgDRp0m5QB4l1k6zhDc=;
+        b=m8ZTX+0EqSAI4Bk7cjO1Ow5K4pvDyxL2+JXo2S2cXntECd5PbJ9KYonmfeNxOnfzRcj7GM
+        m6440iCYhq5z3t6VOIubYTIaArgZMFbonS/NoKabP1ef9U0vGa5Yl5kT8DgePUdF8j4KK7
+        bC2IZjsvJjIOhOirdW3/LzpyhHUntUs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B291DAEB9;
+        Tue,  1 Jun 2021 08:48:08 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 10:48:08 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [v3 PATCH 0/3] mm/mempolicy: some fix and semantics cleanup
+Message-ID: <YLX0SFNfXVxcjV2/@dhcp22.suse.cz>
+References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
+ <20210531144128.e69aaf2904e83ae170f00f06@linux-foundation.org>
+ <20210601005513.GA15828@shbuild999.sh.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601005513.GA15828@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the LOADIWKEY VM-exit bit in nested vmx ctrl MSR, and
-let L1 intercept L2's LOADIWKEY VM-Exit.
+On Tue 01-06-21 08:55:13, Feng Tang wrote:
+[...]
+> Current memory policy code has some confusing and ambiguous part about
+> MPOL_LOCAL policy, as it is handled as a faked MPOL_PREFERRED one, and
+> there are many places having to distinguish them. Also the nodemask
+> intersection check needs cleanup to be more explicit for OOM use, and
+> handle MPOL_INTERLEAVE correctly. This patchset cleans up these and
+> unifies the parameter sanity check for mbind() and set_mempolicy().
 
-Add helper nested_cpu_has3(), which returns if some feature in Tertiary
-VM-Exec Control is set.
+Looks good to me. I would just add that this cleanup helps to make
+further changes easier (notably MPOL_PREFERRED_MANY)
 
-Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
----
- arch/x86/kvm/vmx/nested.c | 5 ++++-
- arch/x86/kvm/vmx/nested.h | 7 +++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index f5ec215..514df3f 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5983,6 +5983,9 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu,
- 			SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE);
- 	case EXIT_REASON_ENCLS:
- 		return nested_vmx_exit_handled_encls(vcpu, vmcs12);
-+	case EXIT_REASON_LOADIWKEY:
-+		return nested_cpu_has3(vmcs12,
-+			TERTIARY_EXEC_LOADIWKEY_EXITING);
- 	default:
- 		return true;
- 	}
-@@ -6499,7 +6502,7 @@ void nested_vmx_setup_ctls_msrs(struct nested_vmx_msrs *msrs, u32 ept_caps)
- 
- 	if (msrs->procbased_ctls_high & CPU_BASED_ACTIVATE_TERTIARY_CONTROLS)
- 		rdmsrl(MSR_IA32_VMX_PROCBASED_CTLS3, msrs->tertiary_ctls);
--	msrs->tertiary_ctls &= 0;
-+	msrs->tertiary_ctls &= TERTIARY_EXEC_LOADIWKEY_EXITING;
- 	/*
- 	 * We can emulate "VMCS shadowing," even if the hardware
- 	 * doesn't support it.
-diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
-index 184418b..f1e43e2 100644
---- a/arch/x86/kvm/vmx/nested.h
-+++ b/arch/x86/kvm/vmx/nested.h
-@@ -145,6 +145,13 @@ static inline bool nested_cpu_has2(struct vmcs12 *vmcs12, u32 bit)
- 		(vmcs12->secondary_vm_exec_control & bit);
- }
- 
-+static inline bool nested_cpu_has3(struct vmcs12 *vmcs12, u32 bit)
-+{
-+	return (vmcs12->cpu_based_vm_exec_control &
-+			CPU_BASED_ACTIVATE_TERTIARY_CONTROLS) &&
-+		(vmcs12->tertiary_vm_exec_control & bit);
-+}
-+
- static inline bool nested_cpu_has_preemption_timer(struct vmcs12 *vmcs12)
- {
- 	return vmcs12->pin_based_vm_exec_control &
 -- 
-1.8.3.1
-
+Michal Hocko
+SUSE Labs
