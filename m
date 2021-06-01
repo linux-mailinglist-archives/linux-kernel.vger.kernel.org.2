@@ -2,159 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2895839792C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E1F397931
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 19:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbhFARiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 13:38:20 -0400
-Received: from mail-dm6nam10on2073.outbound.protection.outlook.com ([40.107.93.73]:5472
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230289AbhFARiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:38:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iqjuax/6nTp2WJOPnCjYVlNI5VQVoe+r5l0LWifZPofL9EalWKixHbteWWD5KsMG0M7880bBprZGXtBr/hkMydaIUVV9OoDBs+kYw7qoPdXiXa5qsgnqm0vsHmwOeJ2ZWi0Uj6UJqXLJdOBsX6H2WTWyIASVRW/ssmuDrova7KGJ60e13UhREKHL1fbsalBaMupzo8dIHODPnjKL4VYz6gLvnoyS0JzTsyC2W+3Tx4j+EgU6f1AlRcGApSs5iqfNL0axTJz/ngiZdZEif26RSclBdXe+YLMK5OQ0zQyBr5/vlZVlItpuMYfQrc3Z7Wtjga08DjC6CsY9H7lgtMAEFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9M0VCahuU0rRd1OozjLd7E9Vr7n2r0+Rw+efD6JCW8c=;
- b=BY+VN0pJPIiFfCgnTop4y8FzPkAtQ7GmR6MJuIRrdlSW8KszSAjVSBJUOHmPXhWlNqOooFKNFMirxYmU2SLB/aa/VBkj0C937mvwJmMGo85vPWvyIM/TqXxY//8VREFrI6K78cNUIiDtLcUb2kUang56U1bCIoIaJ3soZGm7ztw/NicEd29pO1+m3XywUnyS5Cy6n8fJVLvvj0WmuWZET8Zap2Cq2o28TEXzijsPdcYRq2rP4n6sD6UwYbMMgUBvZAiroMxdKSqlVLJyQftIiOdb/f4ygA6obulBstCxbKFwHM34bnFVtOmYCmH3efWn8f1gpqujJCp0Mu55kx4EpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9M0VCahuU0rRd1OozjLd7E9Vr7n2r0+Rw+efD6JCW8c=;
- b=MRPGnx9S4pznn77X+65+ZtQhSjW3CvMr/r53UmZgrUQS12HGuG9Bp5wbIluwYWnrdL+gsN45rAKFtP1Arcgj2lcrGyCQk50UZ7MCiQXsOyvA+sRXIpuKaTo6roS5XEOeFUL6WoJMvY8MxzxVHTHI8t3rN/ewtGlgGU1lloHm/XYDGotiMGVj+T47CgFlq0SioXkT2OQ1L6MBTDVouYc3tC/SRp+VDaw4vMNbETRVnnp796C4zvICypRjRBOgW6v2sotAlCJpjLhQOevThz/5jyrBJuCxogsSnSgDqVOKSAG4hqM8gYwm5JbFDie+vTA/P4Q7Umgd6whNYMZhvucwQQ==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5377.namprd12.prod.outlook.com (2603:10b6:208:31f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Tue, 1 Jun
- 2021 17:36:35 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.030; Tue, 1 Jun 2021
- 17:36:34 +0000
-Date:   Tue, 1 Jun 2021 14:36:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210601173633.GO1002214@nvidia.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <PH0PR12MB5481C1B2249615257A461EEDDC3F9@PH0PR12MB5481.namprd12.prod.outlook.com>
- <20210531181243.GY1002214@nvidia.com>
- <PH0PR12MB548177CF2193BF5AD12B493EDC3E9@PH0PR12MB5481.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR12MB548177CF2193BF5AD12B493EDC3E9@PH0PR12MB5481.namprd12.prod.outlook.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR16CA0007.namprd16.prod.outlook.com
- (2603:10b6:208:134::20) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S233853AbhFARih convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Jun 2021 13:38:37 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:39496 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234135AbhFARif (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:38:35 -0400
+Received: by mail-wr1-f43.google.com with SMTP id l2so7736072wrw.6;
+        Tue, 01 Jun 2021 10:36:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UTRWMHnj/XsFbhwCEMyVCpjRMbzoLknPIS7avPJ0rj0=;
+        b=LgkrvM5IFfr6i0v8BK0wHCM5Se8s0OnPlkgySAIyM1atYU34lTSCshfgeGsX/+i6dn
+         hF6c9cjle7H8j8W31YqLCq4FUJi9TvH0ZisvMVhBlu3V16U90NrFgJQVJd4dO1qG/6wb
+         Mlr2Ve867ywcLc32S2DMVcTb5sml6MA1M12EW2gkU74pNdeLooCWHNpOXQVSG89bMTFb
+         zHZT42642I4q5WFn7IISTs8FbCoE3zaRIPWpaXZEuD8JWcggyHOn52dQnZSJ5SLQ0WtA
+         4Qj+hS1xxbswdE1oTm4AITvIab2QH9O7NIfxH9C2nUdFAqCrzmUoF0bO7JDqfrCGAdLi
+         PaEg==
+X-Gm-Message-State: AOAM531KiYXvacGXnHG19MOcN06pQjd9ok7J9FIqSUSVQqMlRe3PpBb/
+        uZ7Y7jZ+bLPBG/nw8CAXI5wgE3CVQRLn3TCxslM=
+X-Google-Smtp-Source: ABdhPJyeNQUU8HrQ0zJ5L+JGxSWzGY00QmLq8B8BOCGQPtkiQPSSySoddkPLKKnV26gfrLpuYhwFLsd14NDTkwvRCwA=
+X-Received: by 2002:adf:e4d2:: with SMTP id v18mr13728518wrm.114.1622569011337;
+ Tue, 01 Jun 2021 10:36:51 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR16CA0007.namprd16.prod.outlook.com (2603:10b6:208:134::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 1 Jun 2021 17:36:34 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lo8Jd-00HXib-QW; Tue, 01 Jun 2021 14:36:33 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 46ba1881-6878-4eab-9a59-08d92523cd37
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5377:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53772F1399C09B727ECEEC59C23E9@BL1PR12MB5377.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: emOwnqPppflLBfrZrdWnADOCDuYbrLKzm2Q11vBgd0K1rWNGsF+Yd8dV0VJ9rnBQ7hX0wLuCdI/vtVH7gJNmKr5lk92ot4/WE/CmYKJ2ZM3OwCLbTzpcwuuIdPC6gNigcmXPktk6c7sjcvlahtUd5AkfY+2YE4XEyiDfsGpaMKbobY9J6EZZmePw/H1oCIz2WB1+IbfmuAiEkmdqDL5xeA9u5wdjqzMWGXDzOvxvYb4q+qKtnwuR4mH5zvwJFAtU9cqlwMcLHvbzptNqo2lcK2bAYc8MmZBVbWhejwT91lobnbeC+ngJ9Sk+WytvaV6zggVVW/bQdgk5XEQVTC+TwLTrOEm2F/FErKerukuycCq4+gNOHu0dL/oN4ZyCjWS+p6RE9YfZlHHRbrLX2mUevRbIqer9eUtxY7NmSDo/GjdY2D19B5hk8B94JO4a8uf96V6j8ccSSqNb6wtQ4aVX013n74LlxENI1WTQgcM/34pz3657FHZf8+vNIWaVQJfA+I9056tXC9Hqaj0uHuCeE+lgEQafGdglJWuWQCuBLm5lbNnTmGuZhFLDsTPVhPSNd9SLQpvvNucyREPCYUFbrI5y+xFFmRgXhvNYuUSJNao=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(39860400002)(136003)(396003)(6636002)(9786002)(5660300002)(186003)(33656002)(9746002)(4326008)(316002)(54906003)(37006003)(26005)(6862004)(7416002)(86362001)(83380400001)(2616005)(1076003)(426003)(66476007)(66946007)(66556008)(478600001)(2906002)(36756003)(38100700002)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VumFSDISCm/yIvvKSvjRHM1pk85yDBemZTmH3tsfqbRj4M2P5LHJpOYl4u+N?=
- =?us-ascii?Q?B/pDFc24Iuo7VpRbEpOvg8Yahn+2OgNYO0exffWKZ6M1L5rmfo00T8ADJuQg?=
- =?us-ascii?Q?xytDaO5l6fADK1HNcP9X6Ju3717QfD2msLlUhyG+qDgEMEQeaYiNZP0oNn9v?=
- =?us-ascii?Q?9/RriwELQNVwzkSC5xfjgzw1nS+0IunKYi3/PDyLiPYe1PuljIm9AkfXUdkj?=
- =?us-ascii?Q?N2VBncfFTScFKLeuom0g7cBaHI5lzd+S72vLvXxLpprQRy7ZeqwsZ5+esbcj?=
- =?us-ascii?Q?vD0PQsx8LI6hxgT+NIDeDYahyKqaZdAuDT++4ZiJE4hSk9zJGoUH4GIertb6?=
- =?us-ascii?Q?YtaLHi9h6F3DvnYt7IuDlpPDdryvn9vKGGNbtBtQz1a8JaCn8gzySoW4ghad?=
- =?us-ascii?Q?zAABQoI1r8iKs6Yp8ZPysQtGsY2AahqzcnmhjdCvmxrzKO2u7yuyavqrMFFS?=
- =?us-ascii?Q?BFwSbSTXDiETSv9NZqXAcbrwiLnJZconX4JOUrTTIaCvsKQBbJO0ASUxdcSI?=
- =?us-ascii?Q?F6OIL7K8LWeZlLkQuSMkwGPA8C//H2wXYFtUoEf07T1Bcykg03abmYI4ysGA?=
- =?us-ascii?Q?fv1NMZzIEOnqCiRwZFkaV9dj5Bb5IvO28y/5mlH9EGaBL92u1Rh3h//UF0gn?=
- =?us-ascii?Q?fSJwbq6e1qNumLeB1XkbSV33r60ltOgL58kyj1ncWIN6hIs/+n3dFligve/n?=
- =?us-ascii?Q?J36SKoAGKw0xAMqFfl4LHeOrzVXnewlG0O2OxjFkd7cuD1ARPAMDBuBRg7Ui?=
- =?us-ascii?Q?2p7fqU5MkZObr/lyH7rW+mUSJdqWoSWxFHiSGlgvkqdy/yKVaEJ+TZ2antFF?=
- =?us-ascii?Q?IaMtYa2iMhGT7g27gSRdaMyHJNkDrGQ/wZA5O0IToXzRArr/sQlpWryETHEQ?=
- =?us-ascii?Q?6FUoR7yNMhqxEaIPxzL5oC/MPHkoMp8fNgJ3Av6isfPdzXnMuc9sY9uIbMZb?=
- =?us-ascii?Q?oTmLlLqYUX5RhInkM/qAJwcp9TPmAAB3p0HMO7+2XJH3xEwF4eNgG54KApps?=
- =?us-ascii?Q?y4u6IBNdHVjaPr0mvy2gkzCbRWHQSP2cA7S3gvx/H3trrhEkQSrRv4GAX2pD?=
- =?us-ascii?Q?WxmZ0pAaGMM3NsQquzdVLj3a1nDv9CTmxXFnJ41CRdj0IOegOEFUUdWmt2sP?=
- =?us-ascii?Q?xNx5W995cw7XzICxZ6RDfIpwW+EoMtYBX/vuYJu387umM4xghlb4AAuWXMGP?=
- =?us-ascii?Q?B2WH2meBvpGn5u4UqHKzfvsy0W7NHnAEHlzn4Eezjc/Qim9I3qL5Mm6lCsX3?=
- =?us-ascii?Q?dWB930tVE89FKC3JPMXFhEszZxn99kvpL4kAuESFbvscGvei54wS7GUKzn5A?=
- =?us-ascii?Q?Q/LqIZusUKc7omS1HmODi/UO?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46ba1881-6878-4eab-9a59-08d92523cd37
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2021 17:36:34.8753
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: keFu5SD0W1ZvhBD4Xt1vgLJanO/dOySO/R7pUB8ePCW5Q8Yr5WCYYncJrMBgZvFg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5377
+References: <20210601142103.6378-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210601142103.6378-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 1 Jun 2021 19:36:40 +0200
+Message-ID: <CAJZ5v0htnjWs1e4sSJNx2_S7-bbPtt8V-QiNmkU3UM7RbADGKQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up support
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 12:04:00PM +0000, Parav Pandit wrote:
-> 
-> 
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Monday, May 31, 2021 11:43 PM
-> > 
-> > On Mon, May 31, 2021 at 05:37:35PM +0000, Parav Pandit wrote:
-> > 
-> > > In that case, can it be a new system call? Why does it have to be under
-> > /dev/ioasid?
-> > > For example few years back such system call mpin() thought was proposed
-> > in [1].
-> > 
-> > Reference counting of the overall pins are required
-> > 
-> > So when a pinned pages is incorporated into an IOASID page table in a later
-> > IOCTL it means it cannot be unpinned while the IOASID page table is using it.
-> Ok. but cant it use the same refcount of that mmu uses?
+On Tue, Jun 1, 2021 at 4:21 PM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+> As per ACPI specification r6.4, sec 5.2.12.19, a new sub
+> structure – multiprocessor wake-up structure - is added to the
+> ACPI Multiple APIC Description Table (MADT) to describe the
+> information of the mailbox. If a platform firmware produces the
+> multiprocessor wake-up structure, then OS may use this new
+> mailbox-based mechanism to wake up the APs.
+>
+> Add ACPI MADT wake table parsing support for x86 platform and if
+> MADT wake table is present, update apic->wakeup_secondary_cpu with
+> new API which uses MADT wake mailbox to wake-up CPU.
+>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
 
-Manipulating that refcount is part of the overhead that is trying to
-be avoided here, plus ensuring that the pinned pages accounting
-doesn't get out of sync with the actual account of pinned pages!
+All of my comments have been addressed, so
 
-> > Then the ioasid's interval tree would be mapped into a page table tree in HW
-> > format.
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> Does it mean in simple use case [1], second level page table copy is
-> maintained in the IOMMU side via map interface?  I hope not. It
-> should use the same as what mmu uses, right?
-
-Not a full page by page copy, but some interval reference.
-
-Jason
+> ---
+>
+> Changes since v5:
+>  * None ( CCed ACPI list)
+>
+> Changes since v4:
+>  * Used smp_store_release() in place of WRITE_ONCE().
+>  * Addressed some checkpatch warnings.
+>
+> Changes since v3:
+>  * Removed acpi_mp_wake_mailbox_init() and moved init code to
+>    acpi_wakeup_cpu().
+>  * Removed redundant NULL pointer check for acpi_mp_wake_mailbox.
+>  * Added comments/debug prints as per Rafael's suggestion.
+>  * Removed MADT/SVKL ACPI patches from this patchset. It will be
+>    merged via ACPICA submission.
+>
+>  arch/x86/include/asm/apic.h |  3 ++
+>  arch/x86/kernel/acpi/boot.c | 96 +++++++++++++++++++++++++++++++++++++
+>  arch/x86/kernel/apic/apic.c |  8 ++++
+>  3 files changed, 107 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+> index 412b51e059c8..3e94e1f402ea 100644
+> --- a/arch/x86/include/asm/apic.h
+> +++ b/arch/x86/include/asm/apic.h
+> @@ -487,6 +487,9 @@ static inline unsigned int read_apic_id(void)
+>         return apic->get_apic_id(reg);
+>  }
+>
+> +typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
+> +extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
+> +
+>  extern int default_apic_id_valid(u32 apicid);
+>  extern int default_acpi_madt_oem_check(char *, char *);
+>  extern void default_setup_apic_routing(void);
+> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+> index 14cd3186dc77..c51134eb55d0 100644
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -65,6 +65,10 @@ int acpi_fix_pin2_polarity __initdata;
+>  static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
+>  #endif
+>
+> +static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
+> +static u64 acpi_mp_wake_mailbox_paddr;
+> +static physid_mask_t apic_id_wakemap = PHYSID_MASK_NONE;
+> +
+>  #ifdef CONFIG_X86_IO_APIC
+>  /*
+>   * Locks related to IOAPIC hotplug
+> @@ -329,6 +333,68 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
+>         return 0;
+>  }
+>
+> +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+> +{
+> +       u8 timeout = 0xFF;
+> +
+> +       /* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
+> +       if (physids_empty(apic_id_wakemap)) {
+> +               acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
+> +                                               sizeof(*acpi_mp_wake_mailbox),
+> +                                               MEMREMAP_WB);
+> +       }
+> +
+> +       /*
+> +        * According to the ACPI specification r6.4, sec 5.2.12.19, the
+> +        * mailbox-based wakeup mechanism cannot be used more than once
+> +        * for the same CPU, so skip sending wake commands to already
+> +        * awake CPU.
+> +        */
+> +       if (physid_isset(apicid, apic_id_wakemap)) {
+> +               pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
+> +                      apicid);
+> +               return -EINVAL;
+> +       }
+> +
+> +       /*
+> +        * Mailbox memory is shared between firmware and OS. Firmware will
+> +        * listen on mailbox command address, and once it receives the wakeup
+> +        * command, CPU associated with the given apicid will be booted. So,
+> +        * the value of apic_id and wakeup_vector has to be set before updating
+> +        * the wakeup command. So use smp_store_release to let the compiler know
+> +        * about it and preserve the order of writes.
+> +        */
+> +       smp_store_release(&acpi_mp_wake_mailbox->apic_id, apicid);
+> +       smp_store_release(&acpi_mp_wake_mailbox->wakeup_vector, start_ip);
+> +       smp_store_release(&acpi_mp_wake_mailbox->command,
+> +                         ACPI_MP_WAKE_COMMAND_WAKEUP);
+> +
+> +       /*
+> +        * After writing wakeup command, wait for maximum timeout of 0xFF
+> +        * for firmware to reset the command address back zero to indicate
+> +        * the successful reception of command.
+> +        * NOTE: 255 as timeout value is decided based on our experiments.
+> +        *
+> +        * XXX: Change the timeout once ACPI specification comes up with
+> +        *      standard maximum timeout value.
+> +        */
+> +       while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
+> +               cpu_relax();
+> +
+> +       if (timeout) {
+> +               /*
+> +                * If the CPU wakeup process is successful, store the
+> +                * status in apic_id_wakemap to prevent re-wakeup
+> +                * requests.
+> +                */
+> +               physid_set(apicid, apic_id_wakemap);
+> +               return 0;
+> +       }
+> +
+> +       /* If timed out (timeout == 0), return error */
+> +       return -EIO;
+> +}
+> +
+>  #endif                         /*CONFIG_X86_LOCAL_APIC */
+>
+>  #ifdef CONFIG_X86_IO_APIC
+> @@ -1086,6 +1152,30 @@ static int __init acpi_parse_madt_lapic_entries(void)
+>         }
+>         return 0;
+>  }
+> +
+> +static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+> +                                     const unsigned long end)
+> +{
+> +       struct acpi_madt_multiproc_wakeup *mp_wake;
+> +
+> +       if (acpi_mp_wake_mailbox)
+> +               return -EINVAL;
+> +
+> +       if (!IS_ENABLED(CONFIG_SMP))
+> +               return -ENODEV;
+> +
+> +       mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
+> +       if (BAD_MADT_ENTRY(mp_wake, end))
+> +               return -EINVAL;
+> +
+> +       acpi_table_print_madt_entry(&header->common);
+> +
+> +       acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
+> +
+> +       acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
+> +
+> +       return 0;
+> +}
+>  #endif                         /* CONFIG_X86_LOCAL_APIC */
+>
+>  #ifdef CONFIG_X86_IO_APIC
+> @@ -1284,6 +1374,12 @@ static void __init acpi_process_madt(void)
+>
+>                                 smp_found_config = 1;
+>                         }
+> +
+> +                       /*
+> +                        * Parse MADT MP Wake entry.
+> +                        */
+> +                       acpi_table_parse_madt(ACPI_MADT_TYPE_MULTIPROC_WAKEUP,
+> +                                             acpi_parse_mp_wake, 1);
+>                 }
+>                 if (error == -EINVAL) {
+>                         /*
+> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+> index 4f26700f314d..f1b90a4b89e8 100644
+> --- a/arch/x86/kernel/apic/apic.c
+> +++ b/arch/x86/kernel/apic/apic.c
+> @@ -2554,6 +2554,14 @@ u32 x86_msi_msg_get_destid(struct msi_msg *msg, bool extid)
+>  }
+>  EXPORT_SYMBOL_GPL(x86_msi_msg_get_destid);
+>
+> +void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
+> +{
+> +       struct apic **drv;
+> +
+> +       for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
+> +               (*drv)->wakeup_secondary_cpu = handler;
+> +}
+> +
+>  /*
+>   * Override the generic EOI implementation with an optimized version.
+>   * Only called during early boot when only one CPU is active and with
+> --
+> 2.25.1
+>
