@@ -2,114 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43815396D18
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9DE396D20
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 08:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232906AbhFAGCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 02:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhFAGCJ (ORCPT
+        id S232905AbhFAGJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 02:09:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41837 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231139AbhFAGI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 02:02:09 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3A4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 23:00:26 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x38so19916542lfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 23:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FMK+BlVA/bqQ4G3j0umpuAtgbjll4fk10VR8BwqsbnM=;
-        b=Cq1BJQXRRbsAXqGxRHmxlETFypstLuehMX0LFh5G4WwWip0G6ssEb7uQhJQf6qE/w6
-         q99MLnXgThXbCZe6+0hy/V9sd6Z8pdAbXqzWYO7KoTJokBUNapDj13LzLPptKUN0dXDB
-         dBnWVVEJ54OfnhbSAGqeb8GPq4vKV3/0PFITU=
+        Tue, 1 Jun 2021 02:08:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622527637;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WBtT6QfhiDgonj2vvLPkT9r7vtcFNwuVXyhZCxDQcFk=;
+        b=g3QgaCw5HTnjmQFssW/gZqX/BdxT0PiPrInkzqb5sDFCrlZW/UeDGH6QYMkAJzZSfUbhHC
+        56mj8tPmO1GnMd1xQ9AIwflyXoIKdg18G7XVDGza8kx41G5M1pjk7cDnA+OMq+o+ccdix9
+        np7eeJfiaqV8rO/jl/rZd7wDFV8JtuI=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-gX3GaGayO7yGyzcSxsrVaw-1; Tue, 01 Jun 2021 02:07:16 -0400
+X-MC-Unique: gX3GaGayO7yGyzcSxsrVaw-1
+Received: by mail-pg1-f200.google.com with SMTP id q64-20020a6343430000b02902164088f2f0so8277683pga.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 23:07:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FMK+BlVA/bqQ4G3j0umpuAtgbjll4fk10VR8BwqsbnM=;
-        b=ftIwz5pvs1Il82SxYt78Wws13on6GhubhzrqDCYApUEF+sMydEHjyYvAx3WsTkfSJ0
-         q2SdpddrVLp9nDIGbSPgF8NgjIMZ5vAicl3d1SwjNOI+6SzQfO/GW+0oOcuRJssJvW5+
-         +ieI3KdxWRg2q14UYtq/ZE/6M16wcIAZ9/9ANVDzj6kQabGGrZR/FCH2FUkDLehXuS9z
-         RhfrTzy2gv3guQUaOz8BnG8SwgEF/bgSB4TS3wntlNxuQaFBst9UVOm+OZ019xmEwzUW
-         nwMJ4VxMNsAM76X6FZKKtVDItPZH2lIutz/fnxZosKSH/te0dKyDlzwsmgOkMOz9bvrX
-         sLWw==
-X-Gm-Message-State: AOAM530JDuV5ugO7Bu5zjfUOJEbXReleO4uyN6lKrSv3EBeAEyzuQEhq
-        Iu2Qlg4bKkGEvS5U0V7h14hDoH8rI3lrv4tB
-X-Google-Smtp-Source: ABdhPJy8Erz+FvHoBwp7fIe+mCwHInbs7O9x6gg8UyiYIKr6ZOYYbIOkNkwUEcfzUqiol6LG92Y0hQ==
-X-Received: by 2002:a19:e212:: with SMTP id z18mr10759831lfg.55.1622527225154;
-        Mon, 31 May 2021 23:00:25 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id n130sm1724572lfa.10.2021.05.31.23.00.24
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=WBtT6QfhiDgonj2vvLPkT9r7vtcFNwuVXyhZCxDQcFk=;
+        b=nzAG3RquW5cA49vx57KoCEhy80kpMa8kcvmfbkaX3OEM+XsrxPtvUpjVvhLjqXiDRq
+         f6Da0eHTUrrEw5GR6q0zYzJg8mH4Gw9zVwO4xzFBhShSIYsWOKR/IhIhaDNspqEY8zYi
+         D3gNHY0d/PjF0lOS6evnoU17arJd2jhnt8pt++/jXYONJzvOSAN5VS3urcKWS21HXPln
+         +ugVWo0vr65NNAXBR1ZyDXNrm2kWRCllFkGg1dvfR5RysHFaM35bGNhBEhXHJBs8ciLx
+         hZ8QNRbJBuzRViaS3mhBlgn8LrwQc/SSqjf8oq/FqG8VMTBJjcP8tORfZ+VJxaxkEg56
+         Zd9g==
+X-Gm-Message-State: AOAM531s/G3b/+KzakGQufbamLCI6dXkMQxu4PkcfUVkUNYA/TQ6PD+h
+        XQJ4Uqv6scvdfJUQtoWtJtB6KhoIeeI6+wBIl3rBBO5dgbhjzXJGL9G/sgsDZRzmHyKLGsWoKsy
+        4WNQFiBdfgnJH/1unSkvButXj
+X-Received: by 2002:a62:1856:0:b029:2e9:c6ef:3b34 with SMTP id 83-20020a6218560000b02902e9c6ef3b34mr10235747pfy.65.1622527635283;
+        Mon, 31 May 2021 23:07:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy061Dy19iHLayhC8IX/sic1Xj79JCDr5oreU6IxvFEXjUpr+lVQ790JMBSTMUZPvKcvJ5VZQ==
+X-Received: by 2002:a62:1856:0:b029:2e9:c6ef:3b34 with SMTP id 83-20020a6218560000b02902e9c6ef3b34mr10235727pfy.65.1622527635026;
+        Mon, 31 May 2021 23:07:15 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 25sm12058529pfh.39.2021.05.31.23.07.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 23:00:24 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id a4so17630570ljd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 23:00:24 -0700 (PDT)
-X-Received: by 2002:a2e:9644:: with SMTP id z4mr1911003ljh.507.1622527224567;
- Mon, 31 May 2021 23:00:24 -0700 (PDT)
+        Mon, 31 May 2021 23:07:14 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Liu Yi L <yi.l.liu@linux.intel.com>
+Cc:     "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
+ <20210531164118.265789ee@yiliu-dev>
+ <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
+ <20210601113152.6d09e47b@yiliu-dev>
+ <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
+ <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
+ <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
+ <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
+Date:   Tue, 1 Jun 2021 14:07:05 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210531170123.243771-1-agruenba@redhat.com> <20210531170123.243771-5-agruenba@redhat.com>
-In-Reply-To: <20210531170123.243771-5-agruenba@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 May 2021 20:00:08 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wiB9gvUsebmiOaRXzYVUxJDUt1SozGtRyxR_MDR=Nv7YQ@mail.gmail.com>
-Message-ID: <CAHk-=wiB9gvUsebmiOaRXzYVUxJDUt1SozGtRyxR_MDR=Nv7YQ@mail.gmail.com>
-Subject: Re: [RFC 4/9] gfs2: Fix mmap + page fault deadlocks (part 1)
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     cluster-devel <cluster-devel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 7:01 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+
+在 2021/6/1 下午1:42, Tian, Kevin 写道:
+>> From: Jason Wang
+>> Sent: Tuesday, June 1, 2021 1:30 PM
+>>
+>> 在 2021/6/1 下午1:23, Lu Baolu 写道:
+>>> Hi Jason W,
+>>>
+>>> On 6/1/21 1:08 PM, Jason Wang wrote:
+>>>>>> 2) If yes, what's the reason for not simply use the fd opened from
+>>>>>> /dev/ioas. (This is the question that is not answered) and what
+>>>>>> happens
+>>>>>> if we call GET_INFO for the ioasid_fd?
+>>>>>> 3) If not, how GET_INFO work?
+>>>>> oh, missed this question in prior reply. Personally, no special reason
+>>>>> yet. But using ID may give us opportunity to customize the management
+>>>>> of the handle. For one, better lookup efficiency by using xarray to
+>>>>> store the allocated IDs. For two, could categorize the allocated IDs
+>>>>> (parent or nested). GET_INFO just works with an input FD and an ID.
+>>>>
+>>>> I'm not sure I get this, for nesting cases you can still make the
+>>>> child an fd.
+>>>>
+>>>> And a question still, under what case we need to create multiple
+>>>> ioasids on a single ioasid fd?
+>>> One possible situation where multiple IOASIDs per FD could be used is
+>>> that devices with different underlying IOMMU capabilities are sharing a
+>>> single FD. In this case, only devices with consistent underlying IOMMU
+>>> capabilities could be put in an IOASID and multiple IOASIDs per FD could
+>>> be applied.
+>>>
+>>> Though, I still not sure about "multiple IOASID per-FD" vs "multiple
+>>> IOASID FDs" for such case.
+>>
+>> Right, that's exactly my question. The latter seems much more easier to
+>> be understood and implemented.
+>>
+> A simple reason discussed in previous thread - there could be 1M's
+> I/O address spaces per device while #FD's are precious resource.
+
+
+Is the concern for ulimit or performance? Note that we had
+
+#define NR_OPEN_MAX ~0U
+
+And with the fd semantic, you can do a lot of other stuffs: close on 
+exec, passing via SCM_RIGHTS.
+
+For the case of 1M, I would like to know what's the use case for a 
+single process to handle 1M+ address spaces?
+
+
+> So this RFC treats fd as a container of address spaces which is each
+> tagged by an IOASID.
+
+
+If the container and address space is 1:1 then the container seems useless.
+
+Thanks
+
+
 >
-> Fix that by recognizing the self-recursion case.
+> Thanks
+> Kevin
 
-Hmm. I get the feeling that the self-recursion case should never have
-been allowed to happen in the first place.
-
-IOW, is there some reason why you can't make the user accesses always
-be doen with page faults disabled (ie using the "atomic" user space
-access model), and then if you get a partial read (or write) to user
-space, at that point you drop the locks in read/write, do the "try to
-make readable/writable" and try again.
-
-IOW, none of this "detect recursion" thing. Just "no recursion in the
-first place".
-
-That way you'd not have these odd rules at fault time at all, because
-a fault while holding a lock would never get to the filesystem at all,
-it would be aborted early. And you'd not have any odd "inner/outer"
-locks, or lock compatibility rules or anything like that. You'd
-literally have just "oh, I didn't get everything at RW time while I
-held locks, so let's drop the locks, try to access user space, and
-retry".
-
-Wouldn't that be a lot simpler and more robust?
-
-Because what if the mmap is something a bit more complex, like
-overlayfs or usefaultfd, and completing the fault isn't about gfs2
-handling it as a "fault", but about some *other* entity calling back
-to gfs2 and doing a read/write instead? Now all your "inner/outer"
-lock logic ends up being entirely pointless, as far as I can tell, and
-you end up deadlocking on the lock you are holding over the user space
-access _anyway_.
-
-So I literally think that your approach is
-
- (a) too complicated
-
- (b) doesn't actually fix the issue in the more general case
-
-But maybe I'm missing something.
-
-              Linus
-
-                    Linus
