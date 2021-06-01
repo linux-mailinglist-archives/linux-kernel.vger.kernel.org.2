@@ -2,234 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A015397439
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA01939743D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbhFANc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
+        id S234052AbhFANcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233993AbhFANcU (ORCPT
+        with ESMTP id S233925AbhFANcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:32:20 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171F2C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:30:38 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id g8so13281081ejx.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:30:38 -0700 (PDT)
+        Tue, 1 Jun 2021 09:32:53 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4CDC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:31:11 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id c3so14320670wrp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:31:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kKOh4wrNyJe362NzAi1yzZCGJgSv/lcLZ6R5aT0OAQE=;
-        b=oli0AEGTibHr+X4BBq6ryNZ6kU6+VTDFuoYIpRqB62OJRMQPVRJKaYesaAqA07M4EM
-         EdbvchSzKuzv0e22u0bfHBN5cMcR3lPKE+rBI6lCeHJTYRNtBeX8ZRc+QpiZzReF7DL5
-         gCrikxlDOKXZrjcaPJNbpuVmjS9YxDBGVJ9vDyjYFX0prY0IXvzDHp/Lclf2WS+oAaRx
-         u+mPeMNB0zAngRuTxcBw8A+Iro+ieWOou+tu6BWsSwox08tRHNVXiaQ0j8qGTPUdCqVv
-         X1PnI5INMdch0RywVA3kNZ7+TzygZktxeqrqJ0gc9atCIiLLcojQPHrLH7bH/YONKGo8
-         /LWw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ceM+pzGaASjItNNpKWFEaDd0DaKnxYhb/K4oaZ7JsPI=;
+        b=LP2fsEvMTFs8wSLGgZY1ubi1BD83fbQR+WWGlnKbnhrJzkcoYhZUlw/ZkFPHVRX2pS
+         1kxI8JgLhb0g3kz0pGI8o3ABqCJYAa0imQmWdnz1EWZGapSxVVG0FE8I2m7eCNFp+FhJ
+         LX0uC4VCrnahVcOZ/Fet/aQm0qdopbZL6zqs2RlZqUjc4xKX7utUPhIEuwzdWLNG7IVz
+         ++liR5Sn4WQaIdIQG2oJDi6hnggLc2WP6sfG4+RcODkWpixbjWvXjXfdGBeUfjYhoY1y
+         DhzTNVl41otb4rKKFkL85f8end5tGK+CpDfjGjCeZ4NEEnEvWdsyM8i67qe/y/1t0Wyt
+         kmQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kKOh4wrNyJe362NzAi1yzZCGJgSv/lcLZ6R5aT0OAQE=;
-        b=YF0q062SGPlwB/4QMazaFlWuARD6vufVxc9yykf+l3zUGuqnfyybzSbGk+tfu/8ah6
-         7mSV09sCMoaTlCKOxi8zhvNiXwmwV1Tq63EfaA92pc9JkUAVbWjED925MaqDous9iCFg
-         n+sFUFi3ZE9O5VlHEPyIhM8gjnWBZ/1dI/PMQUTmDASabkTFzK85Uic6GfrGJBLv72mR
-         cCeuUKIANDZns4HOuMuQQwRgykLwAePseALs7dtGKO4zYlfcjCq1yxPuxiqjFJMetyDA
-         LZr88L6aEr0AliHvpN7ik3bmjTiul9HufXigfMPmx4d4ogxQy0p9/x8a4m4b9IKs6TsN
-         1zlA==
-X-Gm-Message-State: AOAM531YZgMi3zTVnKXWlr516YhiIHhn4CqakhBV5u3GdbV2tzCx42gY
-        zYqUbhZlyVoAcjWukWnCz0pnllsEnObeONO54PiQvg==
-X-Google-Smtp-Source: ABdhPJz7rEw5+UuX6nNDwDbflC7I8zzwHvfk2Ad0RKiQ0Uw6pCAFxoyqfG9E6wADau5iuq+9j0y7qHlzZuEYbWu9GyI=
-X-Received: by 2002:a17:906:8394:: with SMTP id p20mr26473972ejx.170.1622554236515;
- Tue, 01 Jun 2021 06:30:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ceM+pzGaASjItNNpKWFEaDd0DaKnxYhb/K4oaZ7JsPI=;
+        b=M6opWu46tPQcqu3EBtNFcE6BfBHC/TV1SVzTWGRBBBP2cxcw2VCnBiWBzCoEdKEmGi
+         AHw98JQiURbs9KMQPg0zPnDqpACMPi+G1fGXwu2Bb9sPgF68k1KXNKddFdqvHLz5tmWr
+         sZ96iQfORVH6NX3PeifY7piMKfZ/YNjbNxMWYaysP5dAw/bocKY3R97d5XT8bnHS7pxk
+         xLu9zGlW0l/1UvVdJBzr6iHUw+m0ApZIkBWbf6RB+U5RwgQOmFJ7N/CyboV++SCBTRRQ
+         QvlTzyRiSGGvlAoVtJt0oCHxbri3V/7T/+ngTFpIoioBIn8etCb7pM95FZt/BdnT6dlE
+         0raQ==
+X-Gm-Message-State: AOAM530GAAXc1/fg/fUanIqeM1mJQjH8XvhjoWAexqiN41/Doovopx+c
+        bCPIJ2SDPUeV2wTLQ1iotR5B3w==
+X-Google-Smtp-Source: ABdhPJwkD2HduO0uUirxMSgy26JktuDamd44LHDyKx90TnuHOIIZTT9Fv/kzeN7mfG9dVVkN7NVWOg==
+X-Received: by 2002:a5d:4003:: with SMTP id n3mr27693980wrp.173.1622554270083;
+        Tue, 01 Jun 2021 06:31:10 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id w13sm490487wmi.4.2021.06.01.06.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 06:31:09 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 13:31:06 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     will@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        catalin.marinas@arm.com, suzuki.poulose@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] KVM: arm64: Move hyp_pool locking out of refcount
+ helpers
+Message-ID: <YLY2mjxGCSyunnhV@google.com>
+References: <20210527125134.2116404-1-qperret@google.com>
+ <20210527125134.2116404-2-qperret@google.com>
+ <87sg2123pj.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210601072913.387837810@linuxfoundation.org>
-In-Reply-To: <20210601072913.387837810@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 1 Jun 2021 19:00:25 +0530
-Message-ID: <CA+G9fYtaDQWR9ir0QX9R-n_+G+8n8p0LnuoBbo6fsxFQK8j9MA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/84] 4.14.235-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sg2123pj.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 at 14:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.235 release.
-> There are 84 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 03 Jun 2021 07:28:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.235-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tuesday 01 Jun 2021 at 13:02:00 (+0100), Marc Zyngier wrote:
+> On Thu, 27 May 2021 13:51:28 +0100,
+> Quentin Perret <qperret@google.com> wrote:
+> > 
+> > The hyp_page refcount helpers currently rely on the hyp_pool lock for
+> > serialization. However, this means the refcounts can't be changed from
+> > the buddy allocator core as it already holds the lock, which means pages
+> > have to go through odd transient states.
+> > 
+> > For example, when a page is freed, its refcount is set to 0, and the
+> > lock is transiently released before the page can be attached to a free
+> > list in the buddy tree. This is currently harmless as the allocator
+> > checks the list node of each page to see if it is available for
+> > allocation or not, but it means the page refcount can't be trusted to
+> > represent the state of the page even if the pool lock is held.
+> > 
+> > In order to fix this, remove the pool locking from the refcount helpers,
+> > and move all the logic to the buddy allocator. This will simplify the
+> > removal of the list node from struct hyp_page in a later patch.
+> 
+> Is there any chance some documentation could be added so that we have
+> a record of what the locking boundaries are? Something along the line
+> of what we have in arch/arm64/kvm/vgic/vgic.c, for example.
 
-This set of results are from 4.14.235-rc2.
+Sounds like a good idea, I'll go write something.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.14.235-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.14.y
-* git commit: 709fde45859bbcf6ad058f7f29761df9adfc26b4
-* git describe: v4.14.234-85-g709fde45859b
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.234-85-g709fde45859b
-
-## No regressions (compared to v4.14.233-38-g535f9ea88cc8)
-
-## Fixes (compared to v4.14.233-38-g535f9ea88cc8)
-* ltp-mm-tests
-  - ksm03
-  - ksm03_1
-
-NOTE: The LTP test suite upgraded to latest release version LTP 20210524.
-
-## Test result summary
- total: 64130, pass: 51268, fail: 1497, skip: 10559, xfail: 806,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 24 total, 24 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Cheers,
+Quentin
