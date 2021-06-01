@@ -2,163 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0FB396ED2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B07396ED5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 10:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhFAIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 04:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        id S233524AbhFAIYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 04:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233505AbhFAIYM (ORCPT
+        with ESMTP id S233364AbhFAIYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:24:12 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1D0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:22:29 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id m18so7628547wmq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:22:29 -0700 (PDT)
+        Tue, 1 Jun 2021 04:24:34 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF45C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 01:22:53 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d16so10778362pfn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 01:22:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xn1L6fDVgKOqaKxXDbNnwMwyXVO3IZf/L5m590U3DtA=;
-        b=P4zFL9GjWh1yzkidZEfo5c6HMaVNYnZ6cGP56ifvlomWIqK9CyXOR93ixHqcTLAUhQ
-         /wp+5j57R8EDBOVJdIQU60i3lEFN8mBZfjHkfhGFKyas/e//PAXUc7mGjPcVLcVvY1AA
-         T56FqXT75od2O0cDhUzjDxDxWSk76dPm/kxjo87ksdRqc4M3ec30jMQolM2n3sFgSBpG
-         gMPyBys49OEugQO/ghhIArt827BUY6y8+M9Kq1fasdVre7h474reGjttOBnXInggzBS9
-         UOt8bj9n7pdW8ji0YmIXognVtFTRMxe2kPs9qHjBHFFuw7OZ+KOFyAMAIrez4sMsu8zX
-         mg+Q==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cmtbv533T+lIcgmnYXDQIYlfDlz/3dP+vNE0ksXaWFg=;
+        b=j+wd4DLtohlBcCHNl1RZQ/Ih+s3QZ9YjLM/SkASYaUI9tMKnyfQH0jA2IQDMut7am/
+         F18ajErF8iOReZlQvEeMZs3TL9fs5o1gIk9sHL2eo8SdQoXsqs7HMZXmpVQCT4CI6hFG
+         TjgieFCVQ0R9J9Mbp4JFZCo4qScT5uneVZ8kSriR9i0eT4yTqaLMCTP01joxgTrXk3vh
+         tXR2OLNu03J8gkFlEz1dgwbvsyb7gW/ww0VARqyBkZKkP2XqAQ+eaKaVhk/91RGkSO3e
+         R9xuJdYJTyG2KfZLpsnP6pNaS1XnT6Pfmp0vt4MBqs+j/MrYEoj+aBw3V/bGgv7pTO3x
+         isXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xn1L6fDVgKOqaKxXDbNnwMwyXVO3IZf/L5m590U3DtA=;
-        b=nU+j/o3tnDFU5NMIQfPTV76ulvC+m2x7OPaNHSPEeY8UMxaKFK3DMa6bAm/lyosqzn
-         KnLeUo+pF5JKX8VQt/zKodGcY3OATb3ThnEas8PHqhJMcaN9FIUGnPQif8xjD+2a0Tn3
-         AeWTHJqGSlfNSzoPhZEmvs+sA1iwjTAES5iaIR0EYtPpIjrF8ejfvk0xVFBmxNpBxU1K
-         2To16lMoTmxt6VbUN0pwTlcBCpU6eO35VdRwSMqgzdr6FIigewXD0okOr3C7R61JsIFo
-         Emgv+d7j3MJM1ws+NITP4bXwIob8zOfSdKYA1lMjO6i9TBoxXkgNLeL0jDFFc6zEYzE2
-         X87A==
-X-Gm-Message-State: AOAM530dbGpMMmVb/jzppHgad0s7eRPayr56+9wP/7blzc364unNFmPX
-        8dTYL2on+LhIoLkwV4Fu/ktCIA==
-X-Google-Smtp-Source: ABdhPJxgMmw3U4gYvvxN0M46LLI5LG9BtSt+xyFMDSjhngHe93AriPW6B3ttYCrNsM2t13PEm0MhXg==
-X-Received: by 2002:a1c:f60f:: with SMTP id w15mr3362619wmc.5.1622535748454;
-        Tue, 01 Jun 2021 01:22:28 -0700 (PDT)
-Received: from dell ([91.110.221.249])
-        by smtp.gmail.com with ESMTPSA id m132sm912619wmf.10.2021.06.01.01.22.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 01:22:28 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 09:22:26 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
- bindings
-Message-ID: <20210601082226.GV543307@dell>
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr>
- <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell>
- <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
- <20210526075255.GG4005783@dell>
- <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
- <20210601081933.GU543307@dell>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cmtbv533T+lIcgmnYXDQIYlfDlz/3dP+vNE0ksXaWFg=;
+        b=V5qBNiwhBdKHR4jiOB5cVmPEljzR/j8bkYTJqQHexcRKZ1zsBAeotPEv101vkzKZsY
+         qPr2WCTGpF4UCsxDjrtPddfvgj4JfMEfN5Ebwttl9UeADR45ouNzDTgaaK4K1nco+lJ2
+         OmdVfJbSVUMoruFZDEwYbnnoA+dQq4Zkb0Tv3NTbMJEkaCP+sRDqmafLCXSoWTyb9nCl
+         ucDHSIG91OukDx5LVk3NqHjCriUvueD5Pkalq4MpFiy0xJWzvsPF5LVQEGoD85ht5eck
+         5sYBXNIpzPPQduVHxl+yXnH/Gpsu92tAFNxqiQ50dOu1ysiclCk1FYjMwe/HDGomHiTb
+         bk0Q==
+X-Gm-Message-State: AOAM531ku1dU9sKEKzCIXfeMnHS0kynCw45/lRGnsZg4F0A++XCK71FQ
+        RcZ9NaK3IFoKbINeF2q8sYYwGQ==
+X-Google-Smtp-Source: ABdhPJxqYIztjAiH2O3UXaLiF5pofSZstUQEhihvG513bJN2IQj26dsDk5GPVwZCHwtnEcF1YCXOhA==
+X-Received: by 2002:a63:594f:: with SMTP id j15mr8436110pgm.244.1622535772563;
+        Tue, 01 Jun 2021 01:22:52 -0700 (PDT)
+Received: from FVFX41FWHV2J.bytedance.net ([139.177.225.224])
+        by smtp.gmail.com with ESMTPSA id g19sm1485193pjl.24.2021.06.01.01.22.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Jun 2021 01:22:51 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     adobriyan@gmail.com, akpm@linux-foundation.org, rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        songmuchun@bytedance.com, zhouchengming@bytedance.com,
+        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH v2] fs/proc/kcore.c: add mmap interface
+Date:   Tue,  1 Jun 2021 16:22:41 +0800
+Message-Id: <20210601082241.13378-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210601081933.GU543307@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Jun 2021, Lee Jones wrote:
+From: ZHOUFENG <zhoufeng.zf@bytedance.com>
 
-> On Mon, 31 May 2021, Robert Marko wrote:
-> 
-> > On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Tue, 25 May 2021, Robert Marko wrote:
-> > >
-> > > > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > >
-> > > > > On Mon, 24 May 2021, Rob Herring wrote:
-> > > > >
-> > > > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > > > > > > Add binding documents for the Delta TN48M CPLD drivers.
-> > > > > > >
-> > > > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > > > > ---
-> > > > > > > Changes in v2:
-> > > > > > > * Implement MFD as a simple I2C MFD
-> > > > > > > * Add GPIO bindings as separate
-> > > > > >
-> > > > > > I don't understand why this changed. This doesn't look like an MFD to
-> > > > > > me. Make your binding complete if there are missing functions.
-> > > > > > Otherwise, stick with what I already ok'ed.
-> > > > >
-> > > > > Right.  What else, besides GPIO, does this do?
-> > > >
-> > > > It currently does not do anything else as hwmon driver was essentially
-> > > > NACK-ed for not exposing standard attributes.
-> > >
-> > > Once this provides more than GPIO capabilities i.e. becomes a proper
-> > > Multi-Function Device, then it can use the MFD framework.  Until then,
-> > > it's a GPIO device I'm afraid.
-> > >
-> > > Are you going to re-author the HWMON driver to conform?
-> > hwmon cannot be reathored as it has no standard hwmon attributes.
-> > 
-> > >
-> > > > The CPLD itself has PSU status-related information, bootstrap related
-> > > > information,
-> > > > various resets for the CPU-s, OOB ethernet PHY, information on the exact board
-> > > > model it's running etc.
-> > > >
-> > > > PSU and model-related info stuff is gonna be exposed via a misc driver
-> > > > in debugfs as
-> > > > we have user-space SW depending on that.
-> > > > I thought we agreed on that as v1 MFD driver was exposing those directly and
-> > > > not doing anything else.
-> > >
-> > > Yes, we agreed that creating an MFD driver just to expose chip
-> > > attributes was not an acceptable solution.
-> > >
-> > > > So I moved to use the simple I2C MFD driver, this is all modeled on the sl28cpld
-> > > > which currently uses the same driver and then GPIO regmap as I do.
-> > > >
-> > > > Other stuff like the resets is probably gonna get exposed later when
-> > > > it's required
-> > > > to control it directly.
-> > >
-> > > In order for this driver to tick the MFD box, it's going to need more
-> > > than one function.
-> > 
-> > Understood, would a debug driver count or I can expose the resets via
-> > a reset driver
-> > as we have a future use for them?
-> 
-> CPLDs and FPGAs are funny ones and are often difficult to support in
-> Linux.  Especially if they can change their behaviour.
-> 
-> It's hard to make a solid suggestion as to how your device is handled
-> without knowing the intricacies of the device.
-> 
-> Why do you require one single Regmap anyway?  Are they register banks
-> not neatly separated on a per-function basis?
+When we do the kernel monitor, use the DRGN
+(https://github.com/osandov/drgn) access to kernel data structures,
+found that the system calls a lot. DRGN is implemented by reading
+/proc/kcore. After looking at the kcore code, it is found that kcore
+does not implement mmap, resulting in frequent context switching
+triggered by read. Therefore, we want to add mmap interface to optimize
+performance. Since vmalloc and module areas will change with allocation
+and release, consistency cannot be guaranteed, so mmap interface only
+maps KCORE_TEXT and KCORE_RAM.
 
-Also, if this is really just a GPIO expander, can't the GPIO driver
-output something to /sysfs that identifies it to userspace instead?
+The test results:
+1. the default version of kcore
+real 11.00
+user 8.53
+sys 3.59
 
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+99.64  128.578319          12  11168701           pread64
+...
+------ ----------- ----------- --------- --------- ----------------
+100.00  129.042853              11193748       966 total
+
+2. added kcore for the mmap interface
+real 6.44
+user 7.32
+sys 0.24
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+32.94    0.130120          24      5317       315 futex
+11.66    0.046077          21      2231         1 lstat
+ 9.23    0.036449         177       206           mmap
+...
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.395077                 25435       971 total
+
+The test results show that the number of system calls and time
+consumption are significantly reduced.
+
+Thanks to Andrew Morton for your advice.
+
+Co-developed-by: CHENYING <chenying.kernel@bytedance.com>
+Signed-off-by: CHENYING <chenying.kernel@bytedance.com>
+Signed-off-by: ZHOUFENG <zhoufeng.zf@bytedance.com>
+---
+Updates since v1:
+- Replace EAGAIN with the return value of remap_pfn_range(). more details
+can be seen from here:
+https://lore.kernel.org/patchwork/patch/1436352/
+
+ fs/proc/kcore.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+index 4d2e64e9016c..91b19f63a298 100644
+--- a/fs/proc/kcore.c
++++ b/fs/proc/kcore.c
+@@ -573,11 +573,78 @@ static int release_kcore(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
++static vm_fault_t mmap_kcore_fault(struct vm_fault *vmf)
++{
++	return VM_FAULT_SIGBUS;
++}
++
++static const struct vm_operations_struct kcore_mmap_ops = {
++	.fault = mmap_kcore_fault,
++};
++
++static int mmap_kcore(struct file *file, struct vm_area_struct *vma)
++{
++	size_t size = vma->vm_end - vma->vm_start;
++	u64 start, pfn;
++	int nphdr;
++	size_t data_offset;
++	size_t phdrs_len, notes_len;
++	struct kcore_list *m = NULL;
++	int ret = 0;
++
++	down_read(&kclist_lock);
++
++	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
++
++	start = kc_offset_to_vaddr(((u64)vma->vm_pgoff << PAGE_SHIFT) -
++		((data_offset >> PAGE_SHIFT) << PAGE_SHIFT));
++
++	list_for_each_entry(m, &kclist_head, list) {
++		if (start >= m->addr && size <= m->size)
++			break;
++	}
++
++	if (&m->list == &kclist_head) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
++		ret = -EPERM;
++		goto out;
++	}
++
++	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
++	vma->vm_flags |= VM_MIXEDMAP;
++	vma->vm_ops = &kcore_mmap_ops;
++
++	if (kern_addr_valid(start)) {
++		if (m->type == KCORE_RAM || m->type == KCORE_REMAP)
++			pfn = __pa(start) >> PAGE_SHIFT;
++		else if (m->type == KCORE_TEXT)
++			pfn = __pa_symbol(start) >> PAGE_SHIFT;
++		else {
++			ret = -EFAULT;
++			goto out;
++		}
++
++		ret = remap_pfn_range(vma, vma->vm_start, pfn, size,
++				vma->vm_page_prot);
++	} else {
++		ret = -EFAULT;
++	}
++
++out:
++	up_read(&kclist_lock);
++	return ret;
++}
++
+ static const struct proc_ops kcore_proc_ops = {
+ 	.proc_read	= read_kcore,
+ 	.proc_open	= open_kcore,
+ 	.proc_release	= release_kcore,
+ 	.proc_lseek	= default_llseek,
++	.proc_mmap	= mmap_kcore,
+ };
+ 
+ /* just remember that we have to update kcore */
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.11.0
+
