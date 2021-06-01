@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C56397C4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57699397C53
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 00:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbhFAWOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:14:30 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.191]:12834 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234740AbhFAWO1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:14:27 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id E9B92400D497F
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 17:12:41 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id oCcrlatSrDedfoCcrlg1CA; Tue, 01 Jun 2021 17:12:41 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gQRWjLhpoAcL1f0UUsLAbLVdyvmjcaGwSmImCIMpK8g=; b=bMNcVIOdSbAXlFOIuKZBAlQgHb
-        rizHEbtPx/wzzA8zqcRapvlU8ysBb7UK1JtNxmi9ml0UM3aWv2vx56T2J6VDzc9qm9xnsicW6cPub
-        wCWYuhcSS0L4MR/0nu+MH1rJ8KNNWRDQZba/bygsG2AVLOwhqdh0oJFFpMd9o5XRSrSqFMPMEoBHs
-        9Eycf2roWWXoQh436c20ZAonzOD6Dff1+OIQK/bdOQYuXJmaM3D8Dj2tQXEwxBZxBKCJLdeJal2Kx
-        DBPDf7EnoxQyV365tcr0fc7lC7Q6+OAvSioS5JvoAErfDv+s5bNk5+LxyYo50rrDXoNxXtDKzCtmI
-        JKx47Xbg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52568 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1loCco-000BPJ-Fv; Tue, 01 Jun 2021 17:12:38 -0500
-Subject: Re: [PATCH][next] kgdb: Fix fall-through warning for Clang
-To:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210528200222.GA39201@embeddedor>
- <202106011220.AA0C1482@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <0d53a68c-b445-1df6-43a9-eff1a54f8fce@embeddedor.com>
-Date:   Tue, 1 Jun 2021 17:13:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234942AbhFAWUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:20:31 -0400
+Received: from ms.lwn.net ([45.79.88.28]:45034 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234740AbhFAWU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:20:29 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 685322CD;
+        Tue,  1 Jun 2021 22:18:47 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 685322CD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1622585927; bh=2yabEFKh//VFd2YJCgm8kIdYA7dygVPkzhE0gMUph+g=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Jlbp89h1wWR/z2IcJXdvHLvZqr1K4CvjZ0x2CHnKNdYz1j+bk+wiOr70E/iV0aisP
+         HiFoIYsY1gnQVc1L6/IUBPJjBSoagHVJBgG9ZeDSbLqVVBBdX04uP3vSvU88fq964R
+         /PHmI2zV+xDXLvRc49AFNm8DRmw6d/ZBnFQSqHhNNvy5OtHKmmoyCT5l5ivyIyK6ou
+         GXdIvcJJMitrWW93Lu0JEO5cIdRm206bD77WeDFIsWFmBr06+AYXy4hvq/cMxH6qwv
+         dTG06h3QGVAFonL+xLsf6ALDiYM09qlUVMRI1EQHXkDFmj90ytT19MmIJOAYP+2JBR
+         rLJ0iK5ph50XQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        collins@gene3.ait.iastate.edu
+Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
+In-Reply-To: <20210601220643.uzep2ju2zlcmpa57@begin>
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <875yyxbenm.fsf@meer.lwn.net> <20210601220643.uzep2ju2zlcmpa57@begin>
+Date:   Tue, 01 Jun 2021 16:18:46 -0600
+Message-ID: <874keh9qk9.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <202106011220.AA0C1482@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1loCco-000BPJ-Fv
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:52568
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 13
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Samuel Thibault <samuel.thibault@ens-lyon.org> writes:
 
+> Jonathan Corbet, le mar. 01 juin 2021 12:53:01 -0600, a ecrit:
+>> I am concerned about one thing, though: the licensing of this document
+>> is not GPL-compatible, which means we can't build it into the rest of
+>> the docs.
+>
+> ? I see various GFDL-1.1-no-invariants-or-later documentation in
+> userspace-api/media notably, do they have such build restriction? What
+> is actually posing problem in the GFDL licence?
 
-On 6/1/21 14:20, Kees Cook wrote:
-> On Fri, May 28, 2021 at 03:02:22PM -0500, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a
->> fall-through warning by explicitly adding a goto statement instead
->> of letting the code fall through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> JFYI: We had thousands of these sorts of warnings and now we are down
->>       to just 25 in linux-next. This is one of those last remaining
->>       warnings.
-> 
-> So close! :)
+Those media docs are separate from the rest of the kernel
+documentation.  Other than that, all FDL in Documentation/ was
+dual-licensed, last time I checked.
 
-Almost there!
+The problem is that the kernel docs, when built, include a great deal of
+code and text taken directly from the kernel source.  The built docs are
+thus a derived product of the kernel and the result needs to carry a
+GPL-compatible license.  I've spent some time talking with lawyers about
+this, and they have confirmed that view of things.
 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+This document should not have entered Documentation/ with that license;
+had I known this was happening at the time, I would have raised a fuss.
+As a standalone .txt file there is probably no legal problem, but that
+changes as soon as you bring it into RST TOC tree.
 
-Thanks
+>> What are the chances that we can get the authors to agree on a change to
+>> a GPL-compatible license for this file?
+>
+> I don't know about Collins' opinion on this, Cc-ing him with the latest
+> mail my archives know for him (which dates 2008...)
+>
+> The copyright "the Speakup Team" is a more complex thing to look for.
 
---
-Gustavo
+Do you have a history of contributors to the file in its previous home?
 
-> 
-> -Kees
-> 
->>
->>  kernel/debug/debug_core.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
->> index 4708aec492df..431749dd9ab6 100644
->> --- a/kernel/debug/debug_core.c
->> +++ b/kernel/debug/debug_core.c
->> @@ -1038,6 +1038,7 @@ dbg_notify_reboot(struct notifier_block *this, unsigned long code, void *x)
->>  	switch (kgdbreboot) {
->>  	case 1:
->>  		kgdb_breakpoint();
->> +		goto done;
->>  	case -1:
->>  		goto done;
->>  	}
->> -- 
->> 2.27.0
->>
-> 
+I'm sorry to be obnoxious; I *really* want to see this document converted
+and in with the rest.  But the licensing is something that we need to
+get right.
+
+Thanks,
+
+jon
