@@ -2,77 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A205A396D0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207A9396D0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 07:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhFAFvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 01:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56798 "EHLO mail.kernel.org"
+        id S233208AbhFAFwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 01:52:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232915AbhFAFvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 01:51:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9F246613AB;
-        Tue,  1 Jun 2021 05:50:03 +0000 (UTC)
+        id S233000AbhFAFvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 01:51:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 68372613C1;
+        Tue,  1 Jun 2021 05:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622526603;
-        bh=VCzH3BoPB2RIkvJY/BJI5kw9URxgsqORyWnXV23YrXo=;
+        s=k20201202; t=1622526606;
+        bh=FlJ3viznYg3tQPzp32cHJMDq0VgTfFhuink3pMVQpak=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=pNOP2ymdMgMzC+vdpEpQ0qwOcs2aKyGRV2rch8h7m3jVexxV1WcObbdP9J9YUWjCj
-         1RRhh/bv33KrCYLsTQMIShCZZXu19onh2uozrNj5nXYlt2xSgU2JEqLV/+5GTTCbFs
-         AOD0OyCLC+C36Bi0NbVM4AtlukMLKKy5PDp4Ig/qI/jUBjHUCQquf8rTTtUFKaWWQC
-         LzCm28NiZTHmJS/LovD4zjpsLQb+Vg/wBIqcADATkdHRRqC3XE+goF66Ap58sBpu/6
-         voBB6rgvtib/Onzb2WMsCh6HvUO+y2vM4Ka3S9rgrSHH2AOtONxM8e74JOCnkMqIBL
-         yD9gDaCWoRl0Q==
+        b=j9tCIW2uiXWerpJRpYzOHvPz4Ex2KdW4eTpE865S8wkehL1f+2Wb6gpJ4dodfMxEI
+         H4N5s6wPcBLHQ8utwfj/Xl/HQ3y5jTICJHXJZL0TK1nBVBpTLitO2zdNqkToZdBs6Y
+         hPmAvc3sCK/WdzFXpgJtX2FOnYS8r+F89kgavCfMO60A8ky1pDfa8klOTEwxSmaa1y
+         /mT8pSMhtybzU0ZQx9QtsZnffiqNW+4HVCyRzVCvOdUgW0Od8p4DGVOeZiUjmE0v6j
+         96YNIUt2058qGYNbvP0rWwsIGNwuaUqfDnE1IFrNvIDn5lKlIuwl6GjLWsuvp+cZWF
+         yaVGqVrHzpkTg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 94BB7609D9;
-        Tue,  1 Jun 2021 05:50:03 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 629C560CD1;
+        Tue,  1 Jun 2021 05:50:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [RESEND PATCH] nfc: fix NULL ptr dereference in llcp_sock_getname()
- after failed connect
+Subject: Re: [PATCH net-next] rds: Fix spelling mistakes
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162252660360.4642.10005433752607898965.git-patchwork-notify@kernel.org>
-Date:   Tue, 01 Jun 2021 05:50:03 +0000
-References: <20210531072138.5219-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210531072138.5219-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linville@tuxdriver.com,
-        sameo@linux.intel.com, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thadeu.cascardo@canonical.com, stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butterflyhuangxx@gmail.com
+Message-Id: <162252660640.4642.2796141808873153557.git-patchwork-notify@kernel.org>
+Date:   Tue, 01 Jun 2021 05:50:06 +0000
+References: <20210531063617.3018637-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210531063617.3018637-1-zhengyongjun3@huawei.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        santosh.shilimkar@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 31 May 2021 09:21:38 +0200 you wrote:
-> It's possible to trigger NULL pointer dereference by local unprivileged
-> user, when calling getsockname() after failed bind() (e.g. the bind
-> fails because LLCP_SAP_MAX used as SAP):
+On Mon, 31 May 2021 14:36:17 +0800 you wrote:
+> Fix some spelling mistakes in comments:
+> alloced  ==> allocated
 > 
->   BUG: kernel NULL pointer dereference, address: 0000000000000000
->   CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
->   Call Trace:
->    llcp_sock_getname+0xb1/0xe0
->    __sys_getpeername+0x95/0xc0
->    ? lockdep_hardirqs_on_prepare+0xd5/0x180
->    ? syscall_enter_from_user_mode+0x1c/0x40
->    __x64_sys_getpeername+0x11/0x20
->    do_syscall_64+0x36/0x70
->    entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> [...]
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  net/rds/ib_ring.c  | 2 +-
+>  net/rds/tcp_recv.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
 Here is the summary with links:
-  - [RESEND] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
-    https://git.kernel.org/netdev/net/c/4ac06a1e013c
+  - [net-next] rds: Fix spelling mistakes
+    https://git.kernel.org/netdev/net-next/c/379aecbce08f
 
 You are awesome, thank you!
 --
