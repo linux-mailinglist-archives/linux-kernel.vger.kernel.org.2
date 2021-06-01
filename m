@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01FE3974B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17D33974BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234171AbhFAN5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234119AbhFAN5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:57:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B324613AE;
-        Tue,  1 Jun 2021 13:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622555755;
-        bh=uDkz4YoEHcgBW7m92lJvZYICBqyo72YlqEVTWUbMiRg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZVkzo27Mj0F/+XVAb7Pw2B8W97FekTZBXxYswPbWs2QxuOu4AejG/xzX1XCBYpQie
-         vAVhvyi23fC2KHpFCB5mke3sxNhZ86Lr6Wt8zrbIR1MalzoGxQkEOGBzjKyMIIYU67
-         CJHo3AXVtRTpQGpG+gCpYxgOKAwXIkebXYJzuQtZmxYVYFoBjQv1taJ6J2IVmG/stN
-         mRrZNhYDdG7NMjiVLzjHV+7JkGpb7+Kwzbw/5rmhz4DQFPF67M/Pm9GQiVlClNoNXZ
-         YTsyvSbH9aBCKtIRlsNAV72XvP6kskT1LRbF6YdanDvszeBt0K8MQjEPL4e0S/NCT7
-         PRRI3pa8/xoFA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 78FB34011C; Tue,  1 Jun 2021 10:55:52 -0300 (-03)
-Date:   Tue, 1 Jun 2021 10:55:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>, Song Liu <songliubraving@fb.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH] perf stat: Fix error return code in bperf__load()
-Message-ID: <YLY8aKsMvBG+DB1W@kernel.org>
-References: <20210517081254.1561564-1-yukuai3@huawei.com>
- <YLY7qozcJcj8RVe+@kernel.org>
+        id S234027AbhFAN6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233797AbhFAN6l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:58:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89827C061574;
+        Tue,  1 Jun 2021 06:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PYkGLsUaYHx4YUXUEF2hLnezEVw9FCUy2NVjB346Zfs=; b=JbKOgLZ4P7H+naEMxvc0KYDB4j
+        K6EbAI4f5D/cBecypuyT8x4iYHEmXZclSnek5vxp8P5K/MpKNz6h4OA4TO9MPbwoauFQODuiqQODx
+        cqH5udgQoBFYkq5PEMM8sCGL0lHqo6SlmlHmw/FKd7T5+rTwRhXwLkDN1fn5B/EcZSYvmJAJ2OZo9
+        J8TSbXSoKqWHbyiHs/I2MJKsU56d0HIT660bDum83vPpwY2yph9IAziTWBd3o7wwFNQKaC72xx0Fn
+        G36fnzkLjz04r+S/0tPoqS2GmQBZVvi3m1Og86vxN4QuMS3FgsxOs2G/grgYtPJoBf0O6S1Dj0f25
+        wm5ABzNg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lo4sp-00A5Vk-Ja; Tue, 01 Jun 2021 13:56:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2EACA30019C;
+        Tue,  1 Jun 2021 15:56:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 64958286DEB1A; Tue,  1 Jun 2021 15:56:37 +0200 (CEST)
+Date:   Tue, 1 Jun 2021 15:56:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        yao.jin@linux.intel.com, stable@vger.kernel.org
+Subject: Re: [RESEND PATCH] perf/x86/intel/uncore: Fix M2M event umask for
+ Ice Lake server
+Message-ID: <YLY8lZ+YuvJ6Uj33@hirez.programming.kicks-ass.net>
+References: <1622552943-119174-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YLY7qozcJcj8RVe+@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <1622552943-119174-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jun 01, 2021 at 10:52:42AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, May 17, 2021 at 04:12:54PM +0800, Yu Kuai escreveu:
-> > Fix to return a negative error code from the error handling
-> > case instead of 0, as done elsewhere in this function.
-> > 
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On Tue, Jun 01, 2021 at 06:09:03AM -0700, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> Applied, but I had to add Song to the CC list and also add this line:
+> Perf tool errors out with the latest event list for the Ice Lake server.
 > 
-> Fixes: 7fac83aaf2eecc9e ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
+> event syntax error: 'unc_m2m_imc_reads.to_pmm'
+>                            \___ value too big for format, maximum is 255
 > 
-> So that the stable@kernel.org folks can get this auto-collected.
+> The same as the Snow Ridge server, the M2M uncore unit in the Ice Lake
+> server has the unit mask extension field as well.
 > 
-> Perhaps you guys can make Hulk do that as well? :-)
-> 
-> Thanks,
+> Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
+> Reported-by: Jin Yao <yao.jin@linux.intel.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Cc: stable@vger.kernel.org
 
-Something else to teach Hulk:
-
-util/bpf_counter.c: In function ‘bperf__load’:
-util/bpf_counter.c:523:9: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
-  523 |         if (evsel->bperf_leader_link_fd < 0 &&
-      |         ^~
-util/bpf_counter.c:526:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
-  526 |                 goto out;
-      |                 ^~~~
-cc1: all warnings being treated as errors
-
-I'm adding the missing {} for the now multiline if block.
-
-- Arnaldo
-> 
-> > ---
-> >  tools/perf/util/bpf_counter.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> > index ddb52f748c8e..843b20aa6688 100644
-> > --- a/tools/perf/util/bpf_counter.c
-> > +++ b/tools/perf/util/bpf_counter.c
-> > @@ -522,6 +522,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
-> >  	evsel->bperf_leader_link_fd = bpf_link_get_fd_by_id(entry.link_id);
-> >  	if (evsel->bperf_leader_link_fd < 0 &&
-> >  	    bperf_reload_leader_program(evsel, attr_map_fd, &entry))
-> > +		err = -1;
-> >  		goto out;
-> >  
-> >  	/*
-> > @@ -550,6 +551,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
-> >  	/* Step 2: load the follower skeleton */
-> >  	evsel->follower_skel = bperf_follower_bpf__open();
-> >  	if (!evsel->follower_skel) {
-> > +		err = -1;
-> >  		pr_err("Failed to open follower skeleton\n");
-> >  		goto out;
-> >  	}
-> > -- 
-> > 2.25.4
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
-
--- 
-
-- Arnaldo
+Thanks!
