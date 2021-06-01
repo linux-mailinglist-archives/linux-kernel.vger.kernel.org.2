@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE334397743
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E93039773D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbhFAPzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:55:19 -0400
-Received: from mga11.intel.com ([192.55.52.93]:39065 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234509AbhFAPzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:55:17 -0400
-IronPort-SDR: ysOsEbmTKQno7RQjY9aRNvzGWkpaV8ezyzN856CJXh0vskRQfbQfq+dEhDI9LLuqcGplAt8b2b
- Msi3bQAbBRVw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="200560722"
-X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
-   d="scan'208";a="200560722"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 08:53:35 -0700
-IronPort-SDR: Dqsx7f1uf8eEqfpJipAwkdbFi00n1UDbgCGrF6mC7VyCqTu5jSg18Yw+zDV5veibAWiF0qkKwz
- D+OqBAJHwwwg==
-X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
-   d="scan'208";a="411282177"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 08:53:30 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1lo6hq-00GTZB-Rc; Tue, 01 Jun 2021 18:53:26 +0300
-Date:   Tue, 1 Jun 2021 18:53:26 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Justin He <Justin.He@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH RFCv2 2/3] lib/vsprintf.c: make %pD print full path for
- file
-Message-ID: <YLZX9oicn8u4ZVCl@smile.fi.intel.com>
-References: <20210528113951.6225-3-justin.he@arm.com>
- <YLDpSnV9XBUJq5RU@casper.infradead.org>
- <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
- <YLEDwFCPcFx+qeul@casper.infradead.org>
- <AM6PR08MB437615DB6A6DEC33223A3138F7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
- <YLEKqGkm8bX6LZfP@casper.infradead.org>
- <AM6PR08MB43764764B52AAC7F05B71056F73E9@AM6PR08MB4376.eurprd08.prod.outlook.com>
- <YLZSgZIcWyYTmqOT@casper.infradead.org>
- <CAHp75VfYgEtJeiVp8b10Va54QShyg4DmWeufuB_WGC8C2SE2mQ@mail.gmail.com>
- <YLZVwFh9MZJR3amM@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLZVwFh9MZJR3amM@casper.infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S234495AbhFAPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhFAPzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 11:55:15 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CB5C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:53:33 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so2239570wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=VFIoQD4qrPW/qYAFsIyDwvwOZ9V+jP/7FIYDt1yCrb4=;
+        b=BHU7tvdqmSo1hf0RvadYnGAHKFwL/OSyV3RMb3exulAs1UJ82zyXND+JO6tr4mzIXJ
+         U76gQSbLdKjmXebHQ2VNuo9QcHIVK2EFquGJ0dtQdjqk6and/22VlwarYUPHvHWSxlE/
+         jCDnpGD5EOIRJ+5eqlhWSNaTnowgBlmxTIFplycpdtRPTNXFNvLfMP//hcrAQoXvNXUm
+         pfP1vqCZcbMk6pTA0XkYAdDSuxWUllmZa2KnRDhVVO0slXR4zERFBejtCGBik6HSjdEK
+         SjZOsUg7JXZbDfkTncXoveGJ7sStRXiZ0KvjzJLMksCIO9yF/Bi3kIsR9bxnuR6qB1tY
+         p0Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=VFIoQD4qrPW/qYAFsIyDwvwOZ9V+jP/7FIYDt1yCrb4=;
+        b=lFcq6LwV8pyaIhtqoXrEbOknhHPiO2RUbtdpLH1lZsZNPhhXf+5Th9yVlZvbMIi8pZ
+         4adUBHmRcBmKH5geSo4+x8pSNVCJdg0YpFo2v5wQKpVkFM87p6XStU9UbYaVj+dZOzqx
+         +f7zGYhL2IhypVAv1kG9pGUSKiXmuUl1PpH4WS3OCbz87riHbKB3mRgyknXmQZ76xcw6
+         Ulm5Of9JybG0FMaJCenGrWjFdp5zvo2LYbxcWvh7xGyNHLbaDyFyi4LzEMbj2WVLxWkT
+         VTeopzF7UxAXLCIzuFX2f/Q/4TSjjJJ9ZPEg4g9kAyV+zdzty02BO0HXpeEq8TcHYYzp
+         QiYg==
+X-Gm-Message-State: AOAM533HXEu0ASgsma3gPquOnUAcCFUGQO03QFSzFWCR92/svg7O6ww5
+        FfHlnvChb3ZyX/J8JcN1EV2kJw==
+X-Google-Smtp-Source: ABdhPJyKi6kzcv8ZG6flBXlxFCvc7lLBGHOozthgCR7KsbZhMi/Fq2t4h3miFMId7da5nkarS+MxNw==
+X-Received: by 2002:a05:600c:2142:: with SMTP id v2mr9971128wml.9.1622562812026;
+        Tue, 01 Jun 2021 08:53:32 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:ac51:a684:201f:b56f])
+        by smtp.gmail.com with ESMTPSA id r7sm3937125wma.9.2021.06.01.08.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 08:53:31 -0700 (PDT)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Cc:     odin@uged.al, Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH] sched/pelt: check that *_avg are null when *_sum are
+Date:   Tue,  1 Jun 2021 17:53:28 +0200
+Message-Id: <20210601155328.19487-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 04:44:00PM +0100, Matthew Wilcox wrote:
-> On Tue, Jun 01, 2021 at 06:36:41PM +0300, Andy Shevchenko wrote:
-> > On Tue, Jun 1, 2021 at 6:32 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > On Tue, Jun 01, 2021 at 02:42:15PM +0000, Justin He wrote:
-> > 
-> > ...
-> > 
-> > > Just don't put anything
-> > > in the buffer if the user didn't supply enough space.  As long as you
-> > > get the return value right, they know the string is bad (or they don't
-> > > care if the string is bad)
-> > 
-> > It might be that I'm out of context here, but printf() functionality
-> > in the kernel (vsprintf() if being precise)  and its users consider
-> > that it should fill buffer up to the end of whatever space is
-> > available.
-> 
-> Do they though?  What use is it to specify a small buffer, print a
-> large filename into it and then use that buffer, knowing that it wasn't
-> big enough?  That would help decide whether we should print the
-> start or the end of the filename.
-> 
-> Remember, we're going for usefulness here, not abiding by the letter of
-> the standard under all circumstances, no matter the cost.  At least
-> partially because we're far outside the standard here; POSIX does
-> not specify what %pD does.
-> 
-> "The argument shall be a pointer to void. The value of the
-> pointer is converted to a sequence of printable characters, in an
-> implementation-defined manner."
+Check that we never break the rule that pelt's avg values are null if
+pelt's sum are.
 
-All nice words, but don't forget kasprintf() or other usages like this.
-For the same input we have to have the same result independently on the room in
-the buffer.
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
 
-So, if I print "Hello, World" I should always get it, not "Monkey's Paw".
-I.o.w.
+This is what I used for patch 20210601085832.12626-1-vincent.guittot@linaro.org
 
- snprintf(10) ==> "Hello, Wor"
- snprintf(5)  ==> "Hello"
- snprintf(2)  !=> "Mo"
- snprintf(1)  !=> "M"
- snprintf(1)  ==> "H"
+ kernel/sched/fair.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Inconsistency here is really not what we want.
-
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index a2c30e52de76..c17feadeafcc 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8021,6 +8021,15 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (cfs_rq->avg.runnable_sum)
+ 		return false;
+ 
++	/*
++	 * _avg must be null when _sum are null because _avg = _sum / divider
++	 * Make sure that rounding and/or propagation of PELT values never
++	 * break this.
++	 */
++	SCHED_WARN_ON(cfs_rq->avg.load_avg ||
++		      cfs_rq->avg.util_avg ||
++		      cfs_rq->avg.runnable_avg);
++
+ 	return true;
+ }
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
