@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEA73974DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A865B3974E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234260AbhFAOEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:04:32 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3325 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbhFAOEb (ORCPT
+        id S234281AbhFAOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:05:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48948 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234074AbhFAOFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:04:31 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FvYdp3brmz1BGgh;
-        Tue,  1 Jun 2021 21:58:06 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 22:02:48 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 1 Jun
- 2021 22:02:47 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] igb: Fix -Wunused-const-variable warning
-Date:   Tue, 1 Jun 2021 22:02:38 +0800
-Message-ID: <20210601140238.20712-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Tue, 1 Jun 2021 10:05:11 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 38CDD21915;
+        Tue,  1 Jun 2021 14:03:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622556209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pA/k3YdGmgOZom7OBwq+qx+OBhw/xvqeZ7Bq0AxBTxc=;
+        b=zcePxBDATvHoSRTHXK92KNDVj/eg6jO3AFn1x42vKtpXsyMQQ+L3Ec8geQLqHc/uIZwlrZ
+        upuJ0yIYKgsvfzejpuc0grVgToJJXPm43VmJtJfxmsXbIApikVGAPDLDVq8FvPvbHgPysN
+        f6Um2BnnDILXY0KaeZSTMmfseNEk/xM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622556209;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pA/k3YdGmgOZom7OBwq+qx+OBhw/xvqeZ7Bq0AxBTxc=;
+        b=DTzt2ps4UdbWPNZe1UJJQzKHGXR8HBk58bliBjw//ak54gNGByO7VO3j6AoU+vI05u3OWw
+        tjPyaAaOPo/3P4AQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 3B6A0118DD;
+        Tue,  1 Jun 2021 14:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622556209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pA/k3YdGmgOZom7OBwq+qx+OBhw/xvqeZ7Bq0AxBTxc=;
+        b=zcePxBDATvHoSRTHXK92KNDVj/eg6jO3AFn1x42vKtpXsyMQQ+L3Ec8geQLqHc/uIZwlrZ
+        upuJ0yIYKgsvfzejpuc0grVgToJJXPm43VmJtJfxmsXbIApikVGAPDLDVq8FvPvbHgPysN
+        f6Um2BnnDILXY0KaeZSTMmfseNEk/xM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622556209;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pA/k3YdGmgOZom7OBwq+qx+OBhw/xvqeZ7Bq0AxBTxc=;
+        b=DTzt2ps4UdbWPNZe1UJJQzKHGXR8HBk58bliBjw//ak54gNGByO7VO3j6AoU+vI05u3OWw
+        tjPyaAaOPo/3P4AQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id VYvwAzA+tmAuHAAALh3uQQ
+        (envelope-from <colyli@suse.de>); Tue, 01 Jun 2021 14:03:28 +0000
+Subject: Re: [PATCH -next] lib: crc64: Fix kernel-doc warning
+To:     YueHaibing <yuehaibing@huawei.com>, akpm@linux-foundation.org,
+        grandmaster@al2klimov.de
+Cc:     linux-kernel@vger.kernel.org
+References: <20210601135851.15444-1-yuehaibing@huawei.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <e76b42f9-e5b0-f5f3-9776-b322c1aa3be3@suse.de>
+Date:   Tue, 1 Jun 2021 22:03:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210601135851.15444-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_IGB_HWMON is n, gcc warns:
+On 6/1/21 9:58 PM, YueHaibing wrote:
+> Fix W=1 kernel build warning:
+>
+> lib/crc64.c:40: warning:
+>  bad line:         or the previous crc64 value if computing incrementally.
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-drivers/net/ethernet/intel/igb/e1000_82575.c:2765:17:
- warning: ‘e1000_emc_therm_limit’ defined but not used [-Wunused-const-variable=]
- static const u8 e1000_emc_therm_limit[4] = {
-                 ^~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/intel/igb/e1000_82575.c:2759:17:
- warning: ‘e1000_emc_temp_data’ defined but not used [-Wunused-const-variable=]
- static const u8 e1000_emc_temp_data[4] = {
-                 ^~~~~~~~~~~~~~~~~~~
+Reviewed-by: Coly Li <colyli@suse.de>
 
-Move it into #ifdef block to fix this.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/ethernet/intel/igb/e1000_82575.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks.
 
-diff --git a/drivers/net/ethernet/intel/igb/e1000_82575.c b/drivers/net/ethernet/intel/igb/e1000_82575.c
-index 50863fd87d53..cbe92fd23a70 100644
---- a/drivers/net/ethernet/intel/igb/e1000_82575.c
-+++ b/drivers/net/ethernet/intel/igb/e1000_82575.c
-@@ -2756,6 +2756,7 @@ s32 igb_get_eee_status_i354(struct e1000_hw *hw, bool *status)
- 	return ret_val;
- }
- 
-+#ifdef CONFIG_IGB_HWMON
- static const u8 e1000_emc_temp_data[4] = {
- 	E1000_EMC_INTERNAL_DATA,
- 	E1000_EMC_DIODE1_DATA,
-@@ -2769,7 +2770,6 @@ static const u8 e1000_emc_therm_limit[4] = {
- 	E1000_EMC_DIODE3_THERM_LIMIT
- };
- 
--#ifdef CONFIG_IGB_HWMON
- /**
-  *  igb_get_thermal_sensor_data_generic - Gathers thermal sensor data
-  *  @hw: pointer to hardware structure
--- 
-2.17.1
+Coly Li
+
+> ---
+>  lib/crc64.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/crc64.c b/lib/crc64.c
+> index 47cfa054827f..9f852a89ee2a 100644
+> --- a/lib/crc64.c
+> +++ b/lib/crc64.c
+> @@ -37,7 +37,7 @@ MODULE_LICENSE("GPL v2");
+>  /**
+>   * crc64_be - Calculate bitwise big-endian ECMA-182 CRC64
+>   * @crc: seed value for computation. 0 or (u64)~0 for a new CRC calculation,
+> -	or the previous crc64 value if computing incrementally.
+> + *       or the previous crc64 value if computing incrementally.
+>   * @p: pointer to buffer over which CRC64 is run
+>   * @len: length of buffer @p
+>   */
 
