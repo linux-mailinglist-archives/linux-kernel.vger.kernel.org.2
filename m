@@ -2,134 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B02397886
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0847D397889
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 18:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbhFAQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 12:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
+        id S233925AbhFAQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 12:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbhFAQ5w (ORCPT
+        with ESMTP id S232490AbhFAQ7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 12:57:52 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D443C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:56:10 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id a7so7533021qvf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:56:10 -0700 (PDT)
+        Tue, 1 Jun 2021 12:59:50 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9131CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 09:58:07 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id q6so7568236qvb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=C/GoBbxbbL1j3ZgEgqdllSBXYrRGp9vFh0BE3WavI/A=;
-        b=ZUbP9CMDb5auLLc4hp9CECDW8oHfEsAPVdKYAaAoNncNvv8OT2rF9/4z9Cg9xn+g1o
-         g79Lf792oGIoTVQRrRx/rxRvDDf/2599hBx40e8e3FU7d1rG+kEa+Kdg2CcRf3QfX2pw
-         9wDqJzUtUi9faJ9H8Uh/VrpvxCXjRQO76lDYA1D51utb+EaTeRnswSHMDMPmpe3DAO9E
-         XJun8OO7zcF5WEOzJEzPiXtTHZ49HjXKa+qRWEwngI2MHvq/5+QwW/ilpmFOLRS9ao50
-         ArMp/2EkATuhnnq8Q3W1nERKyYC1hHROSgqSwlu1wQ1k+kNom5tDAbL5RfV3Sg1z9euS
-         RDfw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ldU/TPmtPmVs6oGr7yGz/gAY04wIfA/VvvfcSuok9Fk=;
+        b=ItrTAwFyEd3vy4gcIMd1nyNP0+p9wLUpoepc2e8uV8llGt5bIcguuOkSItn+6rpc9z
+         Fc0Te4vtTh3Nw60Q7F+W0cNouuLl8j8GBlj6SUNYWeWdgIVL1iepdsaHtMug2yW2Ec4h
+         NSDfw/DRmV5Dai8I+dDkG+HF4HSBW2P+o0LBw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=C/GoBbxbbL1j3ZgEgqdllSBXYrRGp9vFh0BE3WavI/A=;
-        b=Ni6bx6E4p16lrFQFNexyk/7hNOx12jfTDysHx15w3UL0RD8Dc3WZEB3GrLxSZtaxih
-         iqC5cnHrffP+hxaOCoVxcaQyNoJKMcw2eP30vXPvOjSsmma+U2tUF5MzTmyBkQa/gfW5
-         dr+w0UTuQjKMNiMCwtnZ/56zBt6KDOWsad8wCbWjiGgh8ViNkSZ2yyyvg0kT1tOlNp4k
-         Ng4HLZCLMOreBprosURADlcvtz2viTV7bwOuZrZmRBVAv0ED3HlILul6shaVArah/+V3
-         3Mtdpimsv+yiL5gnUQzyEp1YPusrXSFkgW6URQ/QU1k6yBBQ/qm4uZMj620VgfJtHT/W
-         6JUA==
-X-Gm-Message-State: AOAM533i5GdG+Gi9GArSIDa35P3qeMxr8uAfFdSdxurPxfKtHRlp8fd2
-        unEd5S/2uhJpyqQdcA9Zc3KFsA==
-X-Google-Smtp-Source: ABdhPJzzLpK1gGAZ35uLeax+6NhU8wKNmaMJjD6arKlXzE67y02SAjN9GcgdjT8p1u5ntIOJxGQa+w==
-X-Received: by 2002:a0c:ee23:: with SMTP id l3mr23734537qvs.55.1622566568843;
-        Tue, 01 Jun 2021 09:56:08 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id d21sm2407258qke.29.2021.06.01.09.56.07
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 01 Jun 2021 09:56:08 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 09:55:56 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Xu Yu <xuyu@linux.alibaba.com>
-cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com,
-        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm, thp: relax migration wait when failed to get tail
- page
-In-Reply-To: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2106010947370.1090@eggly.anvils>
-References: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ldU/TPmtPmVs6oGr7yGz/gAY04wIfA/VvvfcSuok9Fk=;
+        b=TjgRFWBuv0ta7okWjbmRzWDg3yihSDin9pplIeUrRcxtPxG4KjCD/j3g3gU9q51KOh
+         E+Ve7jzJhXY5orMZ+o0BXF+FNHQO5S4oB7w+A/x80Ir9JccO2AXWJzf0rNVsqv992u1y
+         WpJ88iUeOFkaFOLsAQGkyeDR6B6URfn0oWSV11f4GI/PAHptWgsgiRtgCmy2sH12+2RL
+         Xk9Tp8Py/cBjraLwUUqIuYUSUegG12TUzDu2ZD2o1YPD/9KL7P7cil27fWgsdmZzcV96
+         C6SIg3GUF7wD5+gX9wt8xOwRsNQMPMf6wiQ1TPdwT8gsc4knF9g66TtxoW+TPrkQRpIB
+         Y4AA==
+X-Gm-Message-State: AOAM531IDBVgGAyrpCp2yTqwLH5vP1UGZOwQZ2JPATfJAE9jdvoHns8f
+        UZZryWGdYBDcKT6vAhIvzXvYTlhLseupew==
+X-Google-Smtp-Source: ABdhPJwHWemSa8q8NIyeTm4kkmZnqTI87oiCQfTFip6mivZXEOTQ+xNELQLG565EmZStdOVRrp2CpA==
+X-Received: by 2002:a0c:e8cd:: with SMTP id m13mr2592348qvo.52.1622566686417;
+        Tue, 01 Jun 2021 09:58:06 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id j22sm11276413qkk.58.2021.06.01.09.58.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 09:58:06 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id z38so22161712ybh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 09:58:05 -0700 (PDT)
+X-Received: by 2002:a25:8191:: with SMTP id p17mr40654965ybk.405.1622566685333;
+ Tue, 01 Jun 2021 09:58:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210510075253.1.Ib4c296d6ff9819f26bcaf91e8a08729cc203fed0@changeid>
+In-Reply-To: <20210510075253.1.Ib4c296d6ff9819f26bcaf91e8a08729cc203fed0@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 1 Jun 2021 09:57:54 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WMfCi9fVHxUqRiy+abgQU2K28BfOHfUrUpwcwUVrrOOA@mail.gmail.com>
+Message-ID: <CAD=FV=WMfCi9fVHxUqRiy+abgQU2K28BfOHfUrUpwcwUVrrOOA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Modify SPI_CLK voltage level
+ for trogdor
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Wenchao Han <hanwenchao@huaqin.corp-partner.google.com>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021, Xu Yu wrote:
+Bjorn,
 
-> We notice that hung task happens in a conner but practical scenario when
-> CONFIG_PREEMPT_NONE is enabled, as follows.
-> 
-> Process 0                       Process 1                     Process 2..Inf
-> split_huge_page_to_list
->     unmap_page
->         split_huge_pmd_address
->                                 __migration_entry_wait(head)
->                                                               __migration_entry_wait(tail)
->     remap_page (roll back)
->         remove_migration_ptes
->             rmap_walk_anon
->                 cond_resched
-> 
-> Where __migration_entry_wait(tail) is occurred in kernel space, e.g.,
-> copy_to_user, which will immediately fault again without rescheduling,
-> and thus occupy the cpu fully.
-> 
-> When there are too many processes performing __migration_entry_wait on
-> tail page, remap_page will never be done after cond_resched.
-> 
-> This relaxes __migration_entry_wait on tail page, thus gives remap_page
-> a chance to complete.
-> 
-> Signed-off-by: Gang Deng <gavin.dg@linux.alibaba.com>
-> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-
-Well caught: you're absolutely right that there's a bug there.
-But isn't cond_resched() just papering over the real bug, and
-what it should do is a "page = compound_head(page);" before the
-get_page_unless_zero()? How does that work out in your testing?
-
-Hugh
-
+On Mon, May 10, 2021 at 7:53 AM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> From: Wenchao Han <hanwenchao@huaqin.corp-partner.google.com>
+>
+> On coachz it could be observed that SPI_CLK voltage level was only
+> 1.4V during active transfers because the drive strength was too
+> weak. The line hadn't finished slewing up by the time we started
+> driving it down again. Using a drive strength of 8 lets us achieve the
+> correct voltage level of 1.8V.
+>
+> Though the worst problems were observed on coachz hardware, let's do
+> this across the board for trogdor devices. Scoping other boards shows
+> that this makes the clk line look nicer on them too and doesn't
+> introduce any problems.
+>
+> Only the clk line is adjusted, not any data lines. Because SPI isn't a
+> DDR protocol we only sample the data lines on either rising or falling
+> edges, not both. That means the clk line needs to toggle twice as fast
+> as data lines so having the higher drive strength is more important
+> there.
+>
+> Signed-off-by: Wenchao Han <hanwenchao@huaqin.corp-partner.google.com>
+> [dianders: Adjust author real name; adjust commit message]
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  mm/migrate.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index b234c3f3acb7..df2dc39fe566 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -301,8 +301,11 @@ void __migration_entry_wait(struct mm_struct *mm, pte_t *ptep,
->  	 * is zero; but we must not call put_and_wait_on_page_locked() without
->  	 * a ref. Use get_page_unless_zero(), and just fault again if it fails.
->  	 */
-> -	if (!get_page_unless_zero(page))
-> -		goto out;
-> +	if (!get_page_unless_zero(page)) {
-> +		pte_unmap_unlock(ptep, ptl);
-> +		cond_resched();
-> +		return;
-> +	}
->  	pte_unmap_unlock(ptep, ptl);
->  	put_and_wait_on_page_locked(page, TASK_UNINTERRUPTIBLE);
->  	return;
-> -- 
-> 2.20.1.2432.ga663e714
-> 
-> 
-> 
+>
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+
+I think this patch is ready to land and it's what we're now using in
+the Chrome OS tree. See <https://crrev.com/c/2821728>.
+
+-Doug
