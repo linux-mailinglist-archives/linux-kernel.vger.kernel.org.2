@@ -2,135 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBD43976C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5228C3976C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 17:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhFAPd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 11:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234260AbhFAPdX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 11:33:23 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502A1C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 08:31:42 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id l1so3740676pgm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 08:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gTgOBibirnBB2GitVEyLBhHjpuO9U7MjzLnH/sLIBeU=;
-        b=SbtiMkA2cXKmqnuhlqRQ/GcAh3HKmymH+KS4LHCxzinxnUkU75yjf4Io01QJJCvB7q
-         hfQmHoWixiDYv/P2A6v5KOFcy3B+6G9q5iENVpSgDEkz0HTmElhlWF4KdkXD7MKdPbOz
-         jBWOSb2ysqFxXA+qSnXaWcGqZcme+84ZZrUGz80DOYuWIZkFhXIH41Ck7SFC21SyX5eq
-         zLGVQp0Qr6Pz5qeDfjfJUogAFfFi2xN22xACq4heVdJalh8pQpX74ViUM/oMqWxCWcsN
-         dzU8NkSqnSzLy4Ij0QH3ZvUEyicLdMbOtZi3/zL3bsa85WBb3VJ4/b+D0TOVSVyCo7N7
-         5hMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gTgOBibirnBB2GitVEyLBhHjpuO9U7MjzLnH/sLIBeU=;
-        b=a/jB69W4zcb0klChyvReWys0BPnGKVnBs+1w923xGizeZMhK9oZBGL3h+umV69SNZ9
-         7mK3L4VBhhwbr8bjACf3PVjNVdmdHnxr2LNC/oP6h2mZWIJjAKgnvYt0GV93FodnNsz9
-         fRMyKY4hVA2vCrXVxoqn6/MSzmQjyMCsqBTsM+0D5oopGi3Os3iFG8jK8w7cbLU8ovfc
-         0bsMbBLayEz4wfJ0QfGmskc98Qpto6812JW9r3WSCo5TUBa+J7aEaay1nt331GHUEZ7w
-         7STXP0HghjBK/T3Txdq4sI8WaapFauZ9iujbVRstXfVOkIoPKhnFI/hhmdjei6QlRcN+
-         b3IA==
-X-Gm-Message-State: AOAM530npUyEIVyAkthuw6kg07bN2Sdg616qE0Jr7fqAEgBsei2BtIvL
-        vtY3fWrxTGncyk5n3nE7+B7jew==
-X-Google-Smtp-Source: ABdhPJzADFE2oje+Od8nkzd/eeIdgUatVlkKC/Lu69DCAQxyWzWme1S5jWFOQp+CvZMFau1cO8TKeA==
-X-Received: by 2002:a05:6a00:16c9:b029:2df:c620:8156 with SMTP id l9-20020a056a0016c9b02902dfc6208156mr22365906pfc.40.1622561501732;
-        Tue, 01 Jun 2021 08:31:41 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id h24sm13959682pfn.180.2021.06.01.08.31.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 08:31:40 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 09:31:39 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] remoteproc: imx_rproc: correct firmware reload
-Message-ID: <20210601153139.GB1759269@xps15>
-References: <20210601102939.16139-1-peng.fan@oss.nxp.com>
+        id S233301AbhFAPgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 11:36:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhFAPgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 11:36:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CB9F613AE;
+        Tue,  1 Jun 2021 15:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622561682;
+        bh=PjDaT7Lg11rLOIV5SBNPMB8T9/bYRvzPUa+R9IUPVco=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qmo9y17C0edARAItgd5EUpS1j5pfmjl0Tlu+jJLC2H167WnkuOl/k9giu2uc8n1tY
+         8zFr+riirYDKLvIuS2mxKvANmuCxEpyO1Ddi41rT0efPQgWroR+HwwgczdUFnYTbjS
+         bXfV0wpr2Ntl971+02BLsCymUfH2spUHJPEoUartYa30elS4gt3D+SgGI+t/OUp3e5
+         mzTz29wpj4lTR1JAmNM4xeGRY9nUQutaRWg5OqJkDdvC1xuktO4eAG/AjWuX6h6jnp
+         Sc+CSD3SdXCLxJQsytOpqcr1JoB8e7G+8AXN5eNTugGFu95x6XCbVdjMxsfooHfldI
+         du+ldsFqhIwIg==
+Received: by mail-qk1-f169.google.com with SMTP id c124so9907848qkd.8;
+        Tue, 01 Jun 2021 08:34:42 -0700 (PDT)
+X-Gm-Message-State: AOAM532UsPNzieqKKvr3aV9mqO//bS6j9twcQKmgHNAzoHQeMVihW9q6
+        /0XwAr1ZrnzaKHBbIedaCDY4yODxLqbV+UkYzQ==
+X-Google-Smtp-Source: ABdhPJwHkdngmta7lGz7KigItmGOLHj9xTT2xxiK+diFNAzEccij8DF8KawDF2asaJYbOjS/NcHmGasu3trn3AzD2rU=
+X-Received: by 2002:a05:620a:12a6:: with SMTP id x6mr22128113qki.364.1622561681384;
+ Tue, 01 Jun 2021 08:34:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601102939.16139-1-peng.fan@oss.nxp.com>
+References: <20210527223217.1572631-1-robh@kernel.org> <e477c3a3-5180-8a5c-7b1d-d429e45d7dc5@infradead.org>
+ <93bcda31-00ad-e97f-f700-b84977ede981@infradead.org>
+In-Reply-To: <93bcda31-00ad-e97f-f700-b84977ede981@infradead.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 1 Jun 2021 10:34:29 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKtNJdjWF6i05kXPzZn7NwOTGW-2jbhcPGQc_deJKuQ0A@mail.gmail.com>
+Message-ID: <CAL_JsqKtNJdjWF6i05kXPzZn7NwOTGW-2jbhcPGQc_deJKuQ0A@mail.gmail.com>
+Subject: Re: [PATCH] of: Drop reserved mem dependency on DMA_DECLARE_COHERENT
+ and DMA_CMA
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 06:29:39PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> ENABLE_M4 should be set to 1 when loading code to TCM, otherwise
-> you will not able to replace the firmware after you stop m4.
-> 
-> Besides ENABLE_M4, we still need set SW_M4C_RST, because this bit
-> will be automatically set with SW_M4C_NON_SCLR_RST set.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
-> 
-> V1:
->  Although this is an fix, but it is not critical, patch is based on
->  https://patchwork.kernel.org/project/linux-remoteproc/cover/1620274123-1461-1-git-send-email-peng.fan@oss.nxp.com/
-> 
->  drivers/remoteproc/imx_rproc.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index cd2ca96a30e5..ce2ce42bee91 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -33,7 +33,8 @@
->  
->  #define IMX7D_M4_START			(IMX7D_ENABLE_M4 | IMX7D_SW_M4P_RST \
->  					 | IMX7D_SW_M4C_RST)
-> -#define IMX7D_M4_STOP			(IMX7D_ENABLE_M4 | IMX7D_SW_M4C_NON_SCLR_RST)
-> +#define IMX7D_M4_STOP			(IMX7D_ENABLE_M4 | IMX7D_SW_M4C_RST | \
-> +					 IMX7D_SW_M4C_NON_SCLR_RST)
->  
->  /* Address: 0x020D8000 */
->  #define IMX6SX_SRC_SCR			0x00
-> @@ -44,7 +45,8 @@
->  
->  #define IMX6SX_M4_START			(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4P_RST \
->  					 | IMX6SX_SW_M4C_RST)
-> -#define IMX6SX_M4_STOP			(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4C_NON_SCLR_RST)
-> +#define IMX6SX_M4_STOP			(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4C_RST | \
-> +					 IMX6SX_SW_M4C_NON_SCLR_RST)
->  #define IMX6SX_M4_RST_MASK		(IMX6SX_ENABLE_M4 | IMX6SX_SW_M4P_RST \
->  					 | IMX6SX_SW_M4C_NON_SCLR_RST \
->  					 | IMX6SX_SW_M4C_RST)
-> @@ -691,7 +693,7 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
->  		return ret;
->  	}
->  
-> -	if (!(val & dcfg->src_stop))
-> +	if ((val & dcfg->src_mask) != dcfg->src_stop)
->  		priv->rproc->state = RPROC_DETACHED;
+On Fri, May 28, 2021 at 5:32 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 5/28/21 3:09 PM, Randy Dunlap wrote:
+> > On 5/27/21 3:32 PM, Rob Herring wrote:
+> >> Reserved memory regions can be used for more than just DMA regions, so
+> >> only enabling on DMA_DECLARE_COHERENT (via HAS_DMA) or DMA_CMA is wrong.
+> >> This effectively doesn't matter except for the few cases arches select
+> >> NO_DMA.
+> >>
+> >> At least, these users of RESERVEDMEM_OF_DECLARE depend on reserved memory
+> >> support:
+> >>
+> >> arch/riscv/mm/init.c:RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
+> >> drivers/memory/tegra/tegra210-emc-table.c:RESERVEDMEM_OF_DECLARE(tegra210_emc_table, "nvidia,tegra210-emc-table",
+> >> drivers/soc/fsl/qbman/bman_ccsr.c:RESERVEDMEM_OF_DECLARE(bman_fbpr, "fsl,bman-fbpr", bman_fbpr);
+> >> drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_fqd, "fsl,qman-fqd", qman_fqd);
+> >> drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_pfdr, "fsl,qman-pfdr", qman_pfdr);
+> >>
+> >> Let's simplify things and enable OF_RESERVED_MEM when OF_EARLY_FLATTREE is
+> >> enabled.
+> >>
+> >> Cc: Christoph Hellwig <hch@lst.de>
+> >> Signed-off-by: Rob Herring <robh@kernel.org>
+> >
+> > Hi Rob,
+> >
+> > I'm OK with this patch, but with or without this patch,
+> > compiling kernel/dma/coherent.c without HAS_IOMEM (!)
+> > has build errors:
+> >
+> > s390-linux-ld: kernel/dma/coherent.o: in function `dma_init_coherent_memory':
+> > coherent.c:(.text+0x5ae): undefined reference to `memremap'
+> > s390-linux-ld: coherent.c:(.text+0x7a4): undefined reference to `memunmap'
+> > s390-linux-ld: kernel/dma/coherent.o: in function `dma_declare_coherent_memory':
+> > coherent.c:(.text+0xd84): undefined reference to `memunmap'
+> >
+> >
+> > along with a slew of other build errors (arch/s390/, CONFIG_PCI is not set,
+> > CONFIG_HAS_IOMEM is not set):
+> >
+> > s390-linux-ld: drivers/irqchip/irq-al-fic.o: in function `al_fic_init_dt':
+> > irq-al-fic.c:(.init.text+0x6a0): undefined reference to `iounmap'
+> > s390-linux-ld: drivers/char/xillybus/xillybus_of.o: in function `xilly_drv_probe':
+> > xillybus_of.c:(.text+0x2c8): undefined reference to `devm_platform_ioremap_resource'
+> > s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
+> > cistpl.c:(.text+0x87a): undefined reference to `ioremap'
+> > s390-linux-ld: cistpl.c:(.text+0x99a): undefined reference to `iounmap'
+> > s390-linux-ld: cistpl.c:(.text+0xa34): undefined reference to `iounmap'
+> > s390-linux-ld: cistpl.c:(.text+0xaa6): undefined reference to `ioremap'
+> > s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
+> > cistpl.c:(.text+0x2976): undefined reference to `iounmap'
+> > s390-linux-ld: drivers/of/address.o: in function `of_iomap':
+> > address.c:(.text+0x1f02): undefined reference to `ioremap'
+> > s390-linux-ld: drivers/of/address.o: in function `of_io_request_and_map':
+> > address.c:(.text+0x2030): undefined reference to `ioremap'
+> >
+>
+> Oops, sorry. I should have said that this is also with my
+> experimental path that I thought you suggested earlier this
+> week (although I could have misunderstood you):
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Yes, that's what I'd like, but no doubt that change alone will make
+things worse.
 
-Bjorn hasn't picked up this set yet so it is best to send a v7 of [1] with this
-change merged in it.
+> --- linux-next-20210526.orig/drivers/of/Kconfig
+> +++ linux-next-20210526/drivers/of/Kconfig
+> @@ -64,7 +64,7 @@ config OF_DYNAMIC
+>
+>  config OF_ADDRESS
+>         def_bool y
+> -       depends on !SPARC && (HAS_IOMEM || UML)
+> +       depends on !SPARC
+>
+>  config OF_IRQ
+>         def_bool y
+>
+> [rebuild]
+>
+> OK, even without this small patch, the result is about the same (just
+> a few different function names):
+>
+> s390-linux-ld: kernel/dma/coherent.o: in function `dma_init_coherent_memory':
+> coherent.c:(.text+0x5ae): undefined reference to `memremap'
+> s390-linux-ld: coherent.c:(.text+0x7a4): undefined reference to `memunmap'
+> s390-linux-ld: kernel/dma/coherent.o: in function `dma_declare_coherent_memory':
+> coherent.c:(.text+0xd84): undefined reference to `memunmap'
+>
+> s390-linux-ld: drivers/irqchip/irq-al-fic.o: in function `al_fic_init_dt':
+> irq-al-fic.c:(.init.text+0x64): undefined reference to `of_iomap'
+> s390-linux-ld: irq-al-fic.c:(.init.text+0x6a0): undefined reference to `iounmap'
+> s390-linux-ld: drivers/char/xillybus/xillybus_of.o: in function `xilly_drv_probe':
+> xillybus_of.c:(.text+0x2c8): undefined reference to `devm_platform_ioremap_resource'
+> s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
+> cistpl.c:(.text+0x87a): undefined reference to `ioremap'
+> s390-linux-ld: cistpl.c:(.text+0x99a): undefined reference to `iounmap'
+> s390-linux-ld: cistpl.c:(.text+0xa34): undefined reference to `iounmap'
+> s390-linux-ld: cistpl.c:(.text+0xaa6): undefined reference to `ioremap'
+> s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
+> cistpl.c:(.text+0x2976): undefined reference to `iounmap'
 
-Thanks,
-Mathieu 
+Empty stubs for ioremap, iounmap, memremap, and memunmap would fix all
+these, right? Though maybe adding stubs is more complicated than I'm
+thinking given all the architecture specifics.
 
-[1]. https://patchwork.kernel.org/project/linux-remoteproc/cover/1620274123-1461-1-git-send-email-peng.fan@oss.nxp.com/
-
->  
->  	return 0;
-> -- 
-> 2.30.0
-> 
+Rob
