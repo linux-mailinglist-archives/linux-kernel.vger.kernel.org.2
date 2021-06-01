@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25689397CE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1E5397CEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 01:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbhFAXMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 19:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        id S235145AbhFAXPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 19:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235141AbhFAXL7 (ORCPT
+        with ESMTP id S234989AbhFAXPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 19:11:59 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74BFC061574;
-        Tue,  1 Jun 2021 16:10:15 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id i9so255936lfe.13;
-        Tue, 01 Jun 2021 16:10:15 -0700 (PDT)
+        Tue, 1 Jun 2021 19:15:31 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD60C061574;
+        Tue,  1 Jun 2021 16:13:48 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id l1so939676ejb.6;
+        Tue, 01 Jun 2021 16:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PRuetqj60vCol0jIW7eqdwzeG6NNor0Vk1d2LV6pFl0=;
-        b=DPRn3nvK9VUuZIY0y7bcpXwEBSbxUxXkbm7+tKfMV9NKIGV/DrM5yNJn7VyKoEhznJ
-         jyrwPUClZ5zclgQlt7xHQyjmWM1YPkIjGKdQUAoOuWKc0rwsinhkg5vMJRsbxZIlyg87
-         QAsVYg9AqBlEzABFMnFKJfUsXA8zPLhwAYv+COfqqWGenRXwJEnv+GOlKcs/2N2RwX6J
-         w+fc1H7G1WRifIwMtHe5hHm3G6mHkk4xbtQKnN/YNm71oY6f+0R3tb8cYWf4U9g32nnK
-         cUPTKGXMB4eZYBTBgPBo7huuU2z99gpHA4s013zwbss23mDsIkLL3NupVGZIsTfoYAW8
-         8gRw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zh1+/6WfqdVuCg7ID+TQV9ppVnJ4x/cqO6OMVZxi09Q=;
+        b=ovTam58e4mYWAmOtX8O9o9KMOV3qEYdvXzOTKSuqXqvtnbYh63J5II9hnT/u/13ODS
+         SRX9mMyD7BdpIGRRxgZz6jdZFfv47vOM42jTscBuBlGkr9G+4kJWMSb0+AGDchOxQRYr
+         8WDaYTIaofSKBBgNNRRQScDTtWwllbH4DTcC/5+KYQ5Cie47fSA0nnp99dhYCpTVWD78
+         BQpKD5Xv6pBVHhCfmRkhr8Jt4yEGlD8VItQChC6WfLn+tF6SaRo25RWGcACAGN8CaJ9z
+         MZ3JT1rdZsMt28zGCaiYte/8w/BO/mYd3TXh/E44OqtWP+ROcqu/rb9kd9uEFVazsjAv
+         1A2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PRuetqj60vCol0jIW7eqdwzeG6NNor0Vk1d2LV6pFl0=;
-        b=HUjTB8MiBDbN9NknfLTCcup0VLK699ifWh9MyTKZ2xzgtnZZwPtVGH7MobjyIvQkeh
-         PeFom0XwxY3+OndJUiygjTT6/kWk92oqAiE5TWaiWGXd2S9066BEVpmb3S+pJRdjjSiB
-         3Haupk2oUGLiuTtHr/g4isztOwR3ibDz1e4VHT+UZyzqRf7gZsfAzZso3kVB2mbS5XNf
-         jJWnIARwfrzog4DJ7glrlMC6pbIidEZxFanZvVsa9hyX84SniqDYz2xycGrBtRP8Q/74
-         5sXDpvREOn0E0/Z171XIbD5qackjSlsLkzj33csbziyjoJiu972UFxc5zyM8dbcnKo8s
-         l5gg==
-X-Gm-Message-State: AOAM532f/ORzu2JJl7iAf17n+GgxaX0ZedmWlJM00L+jW8KSFGAoeXpd
-        f4C9Dd+q+A3LU9o3wELHWEc=
-X-Google-Smtp-Source: ABdhPJy6hpbqg9/mq+2o8H8eC+O+t3sLyZUIWV/3C9vxrxompKPjdpJsdUKZeDD0cDMrT7ZfVOEg6g==
-X-Received: by 2002:ac2:5084:: with SMTP id f4mr12870728lfm.466.1622589014237;
-        Tue, 01 Jun 2021 16:10:14 -0700 (PDT)
-Received: from localhost.localdomain (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.gmail.com with ESMTPSA id s9sm1813574lfr.231.2021.06.01.16.10.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zh1+/6WfqdVuCg7ID+TQV9ppVnJ4x/cqO6OMVZxi09Q=;
+        b=H1XKGjRMvk3G/+ySrvX6u0KGiwnN6HYY84AIsdF//27sqT7/Df69vPy626eGsvNp3G
+         As3wywuwYb0pucpv4DFjkoLjQW164ulCbeIEHbPTI4SDjHA8TeUJvvOhN08WuSGFLXNX
+         WMrHBmsBwsi+3S/DNOc5Al+DZ8bLPRPqeEj5L5og/ezDASvAmZTAGPJStuzlai/B2D8v
+         npscZxsil4S9GAxl3NgC9gigK2wzYjt4QTFI235Jmilwt7G+d7GT1lH5lTKd1vaGXHP9
+         qnBjLxR04PX4OuKbu+OA+Kwi0TxbFn4er4GSGGKUDqnk9IFqiY0mQOWoAS20AubUceQs
+         7Fbw==
+X-Gm-Message-State: AOAM533EuWPwjyQbg1r116he+vgtisOmYFZm25YixYSc3W8yc14wL/+9
+        4qis4uKXdHVQeOgASqEaeRI=
+X-Google-Smtp-Source: ABdhPJyJZZiHu8zdJIZVwUwAJhA75O5Pcldzt4kz1cEG7CswolwKOoxougSP2vOlPjwCEKx5+Qk10w==
+X-Received: by 2002:a17:906:2ec6:: with SMTP id s6mr30948371eji.65.1622589226849;
+        Tue, 01 Jun 2021 16:13:46 -0700 (PDT)
+Received: from anparri (host-95-246-186-31.retail.telecomitalia.it. [95.246.186.31])
+        by smtp.gmail.com with ESMTPSA id m16sm236824edq.56.2021.06.01.16.13.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 16:10:14 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v1 2/2] soc/tegra: pmc: Remove usage of lockdep_set_class()
-Date:   Wed,  2 Jun 2021 02:10:03 +0300
-Message-Id: <20210601231003.9845-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210601231003.9845-1-digetx@gmail.com>
-References: <20210601231003.9845-1-digetx@gmail.com>
+        Tue, 01 Jun 2021 16:13:46 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 01:13:39 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Long Li <longli@microsoft.com>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrea Parri <Andrea.Parri@microsoft.com>
+Subject: Re: [PATCH] PCI: hv: Move completion variable from stack to heap in
+ hv_compose_msi_msg()
+Message-ID: <20210601231339.GA1391@anparri>
+References: <1620806824-31151-1-git-send-email-longli@linuxonhyperv.com>
+ <MWHPR21MB15931F1698FD128C76219F7DD7249@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <BY5PR21MB150673A34B431F9311E6FDC5CE3E9@BY5PR21MB1506.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR21MB150673A34B431F9311E6FDC5CE3E9@BY5PR21MB1506.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lockdep_set_class() will become necessary only if we will have a
-nested toggling of core / PMC power domains that will happen if we will
-add RPM and OPP support to Tegra CCF driver. Ulf Hansson has concerns
-about whether this is the best approach. He suggested to remove the
-lockdep class annotation until we will agree on how the OPP support of
-clocks should be implemented, hence remove it for now.
+> I agree if the intent is to deal with a untrusted host, I can follow the same principle to add this support to all requests to VSP. But this is a different problem to what this patch intends to address. I can see they may share the same design principle and common code. My question on a untrusted host is: If a host is untrusted and is misbehaving on purpose, what's the point of keep the VM running and not crashing the PCI driver?
 
-Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/soc/tegra/pmc.c | 10 ----------
- 1 file changed, 10 deletions(-)
+I think the principle can be summarized with "keep the VM _running, if you can
+handle the misbehaviour (possibly, warning on "something wrong/unexpected just
+happened"); crash, otherwise".
 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index d317532130c3..ea62f84d1c8b 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -1344,7 +1344,6 @@ tegra_pmc_core_pd_opp_to_performance_state(struct generic_pm_domain *genpd,
- 
- static int tegra_pmc_core_pd_add(struct tegra_pmc *pmc, struct device_node *np)
- {
--	static struct lock_class_key tegra_core_domain_lock_class;
- 	struct generic_pm_domain *genpd;
- 	const char *rname = "core";
- 	int err;
-@@ -1368,15 +1367,6 @@ static int tegra_pmc_core_pd_add(struct tegra_pmc *pmc, struct device_node *np)
- 		return err;
- 	}
- 
--	/*
--	 * We have a "PMC pwrgate -> Core" hierarchy of the power domains
--	 * where PMC needs to resume and change performance (voltage) of the
--	 * Core domain from the PMC GENPD on/off callbacks, hence we need
--	 * to annotate the lock in order to remove confusion from the
--	 * lockdep checker when a nested access happens.
--	 */
--	lockdep_set_class(&genpd->mlock, &tegra_core_domain_lock_class);
--
- 	err = of_genpd_add_provider_simple(np, genpd);
- 	if (err) {
- 		dev_err(pmc->dev, "failed to add core genpd: %d\n", err);
--- 
-2.30.2
+Of course, this is just a principle: the exact meaning of that 'handle' should
+be leverage case by case (which I admittedly haven't here); I'm thinking, e.g.,
+at corresponding complexity/performance impacts and risks of 'mis-assessments'.
 
+Thanks,
+  Andrea
