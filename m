@@ -2,135 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B23D39749E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBD839748D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbhFANx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:53:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60762 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233584AbhFANxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:53:54 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 151DX2xm090255;
-        Tue, 1 Jun 2021 09:51:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : message-id : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=mDnV0LUjr/nkxsZMowZ68RPaqejWJLV3R5OTVuMBWNI=;
- b=BaMnAF6sQzBcj+g7At8P2++bnm48aNRufByTQtZpFZG+1GGHHLizMiNSoZVfT0zxpH8Z
- mzycO6ktXnqLyA+yLqtKExRlXZkiERVMG/bD5AFgQpz1fIViCx2wgFMUKIwZzQ2zI4fX
- kAHTc72fvqhIKm65NjPgJD/0cRiVKjrJ8lLCcjZ8f9U0WayAzILcoqeRaTy+N1+a9oG/
- y0AEPYx8mUUZiYi5RvMY/BOUb2A5+gXTo8RIcOpHA98i/IO//1zuv5K0B00bK6g0Bm5j
- eisRC3lRNef/wfH8FsNhM6RrxRb7FJM25VCumGaq9GBT4BNCHOzDdPMzK9oniCaESUeM sw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38wntd8qty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 09:51:33 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 151DmZ5N020259;
-        Tue, 1 Jun 2021 13:51:31 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 38ucvh9rm8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 13:51:31 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 151DpTDD14352894
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Jun 2021 13:51:29 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 839B6A4051;
-        Tue,  1 Jun 2021 13:51:29 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B093AA4053;
-        Tue,  1 Jun 2021 13:51:28 +0000 (GMT)
-Received: from localhost (unknown [9.85.73.71])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Jun 2021 13:51:28 +0000 (GMT)
-Date:   Tue, 01 Jun 2021 19:21:27 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 2/6] powerpc/trace: Add support for stack tracer
-To:     Torsten Duwe <duwe@suse.de>, Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
-        <6ed4941e8ff48729a14b24c8e0d0f876fe8f22e0.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
-In-Reply-To: <6ed4941e8ff48729a14b24c8e0d0f876fe8f22e0.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1622555131.dct16s656o.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: mvcbIP1VvixYC1v_n35mv_aOznNrkNu6
-X-Proofpoint-GUID: mvcbIP1VvixYC1v_n35mv_aOznNrkNu6
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S234066AbhFANtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:49:45 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58104 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233797AbhFANto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:49:44 -0400
+IronPort-SDR: +ue3s7fvNmo4nAOlYjezZI1QTzWdPFQ6L0rt6FSGr2Oj8WWkKfAFjP5XT4BfcH+OxUOQMnj5HW
+ ITI07JP4J/4Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="190902616"
+X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
+   d="scan'208";a="190902616"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 06:48:01 -0700
+IronPort-SDR: Ei6ATOpnOMSCKz1rYHltb3cv108G1SvmRv7Aav7lF8hxvHdI1zAzohevjDixeDFqasr+H3mAx/
+ 5ZJa4GXgaTWQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
+   d="scan'208";a="399607816"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 01 Jun 2021 06:48:01 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id AC429580932;
+        Tue,  1 Jun 2021 06:47:58 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/1] net: stmmac: enable platform specific safety features
+Date:   Tue,  1 Jun 2021 21:52:35 +0800
+Message-Id: <20210601135235.1058841-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_06:2021-06-01,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106010092
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Naveen N. Rao wrote:
-> +
-> +unsigned long ftrace_get_traced_func_if_no_stackframe(unsigned long ip, =
-unsigned long *stack)
-> +{
-> +	if (!is_ftrace_entry(ip))
-> +		return 0;
-> +
-> +	if (IS_ENABLED(CONFIG_PPC32))
-> +		return stack[11]; /* see MCOUNT_SAVE_FRAME */
-> +
-> +	if (!IS_ENABLED(CONFIG_MPROFILE_KERNEL))
-> +		return 0;
-> +
-> +	return stack[(STACK_FRAME_OVERHEAD + offsetof(struct pt_regs, nip)) / s=
-izeof(unsigned long)];
+On Intel platforms, not all safety features are enabled on the hardware.
+The current implementation enable all safety features by default. This
+will cause mass error and warning printouts after the module is loaded.
 
-Looking at Daniel's patch to address KASAN errors with our stack walk=20
-code in show_stack() [*], I realized that I am not validating the stack=20
-pointer here for the above accesses...
+Introduce platform specific safety features flag to enable or disable
+each safety features.
 
-[*] http://lkml.kernel.org/r/20210528074806.1311297-1-dja@axtens.net
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 26 ++++++++++++++++
+ drivers/net/ethernet/stmicro/stmmac/dwmac5.c  | 30 ++++++++++++-------
+ drivers/net/ethernet/stmicro/stmmac/dwmac5.h  |  3 +-
+ .../ethernet/stmicro/stmmac/dwxgmac2_core.c   |  4 ++-
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |  3 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  3 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_pci.c  | 16 ++++++++++
+ include/linux/stmmac.h                        | 13 ++++++++
+ 8 files changed, 84 insertions(+), 14 deletions(-)
 
-> +}
-> +
-> +#ifdef CONFIG_STACK_TRACER
-> +void stack_get_trace(unsigned long traced_ip,
-> +		     unsigned long *stack_ref __maybe_unused,
-> +		     unsigned long stack_size __maybe_unused,
-> +		     int *tracer_frame)
-> +{
-> +	unsigned long sp, newsp, top, ip;
-> +	int ftrace_call_found =3D 0;
-> +	unsigned long *stack;
-> +	int i =3D 0;
-> +
-> +	sp =3D current_stack_frame();
-> +	top =3D (unsigned long)task_stack_page(current) + THREAD_SIZE;
-> +
-> +	while (validate_sp(sp, current, STACK_FRAME_OVERHEAD) && i < STACK_TRAC=
-E_ENTRIES) {
-> +		stack =3D (unsigned long *) sp;
-> +		newsp =3D stack[0];
-> +		ip =3D stack[STACK_FRAME_LR_SAVE];
-> +
-> +		if (ftrace_call_found) {
-> +			stack_dump_trace[i] =3D ip;
-> +			stack_trace_index[i++] =3D top - sp;
-> +		}
-
-And I need to make the above accesses bypass KASAN as well.
-
-
-- Naveen
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index e36a8cc59ad0..2ecf93c84b9d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -568,6 +568,16 @@ static int ehl_common_data(struct pci_dev *pdev,
+ 	plat->tx_queues_to_use = 8;
+ 	plat->clk_ptp_rate = 200000000;
+ 
++	plat->safety_feat_cfg->tsoee = 1;
++	plat->safety_feat_cfg->mrxpee = 1;
++	plat->safety_feat_cfg->mestee = 1;
++	plat->safety_feat_cfg->mrxee = 1;
++	plat->safety_feat_cfg->mtxee = 1;
++	plat->safety_feat_cfg->epsi = 0;
++	plat->safety_feat_cfg->edpp = 0;
++	plat->safety_feat_cfg->prtyen = 0;
++	plat->safety_feat_cfg->tmouten = 0;
++
+ 	return intel_mgbe_common_data(pdev, plat);
+ }
+ 
+@@ -683,6 +693,16 @@ static int tgl_common_data(struct pci_dev *pdev,
+ 	plat->tx_queues_to_use = 4;
+ 	plat->clk_ptp_rate = 200000000;
+ 
++	plat->safety_feat_cfg->tsoee = 1;
++	plat->safety_feat_cfg->mrxpee = 0;
++	plat->safety_feat_cfg->mestee = 1;
++	plat->safety_feat_cfg->mrxee = 1;
++	plat->safety_feat_cfg->mtxee = 1;
++	plat->safety_feat_cfg->epsi = 0;
++	plat->safety_feat_cfg->edpp = 0;
++	plat->safety_feat_cfg->prtyen = 0;
++	plat->safety_feat_cfg->tmouten = 0;
++
+ 	return intel_mgbe_common_data(pdev, plat);
+ }
+ 
+@@ -959,6 +979,12 @@ static int intel_eth_pci_probe(struct pci_dev *pdev,
+ 	if (!plat->dma_cfg)
+ 		return -ENOMEM;
+ 
++	plat->safety_feat_cfg = devm_kzalloc(&pdev->dev,
++					     sizeof(*plat->safety_feat_cfg),
++					     GFP_KERNEL);
++	if (!plat->safety_feat_cfg)
++		return -ENOMEM;
++
+ 	/* Enable pci device */
+ 	ret = pcim_enable_device(pdev);
+ 	if (ret) {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
+index d8c6ff725237..9c2d40f853ed 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
+@@ -183,7 +183,8 @@ static void dwmac5_handle_dma_err(struct net_device *ndev,
+ 			STAT_OFF(dma_errors), stats);
+ }
+ 
+-int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp)
++int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp,
++			      struct stmmac_safety_feature_cfg *safety_feat_cfg)
+ {
+ 	u32 value;
+ 
+@@ -193,11 +194,16 @@ int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp)
+ 	/* 1. Enable Safety Features */
+ 	value = readl(ioaddr + MTL_ECC_CONTROL);
+ 	value |= MEEAO; /* MTL ECC Error Addr Status Override */
+-	value |= TSOEE; /* TSO ECC */
+-	value |= MRXPEE; /* MTL RX Parser ECC */
+-	value |= MESTEE; /* MTL EST ECC */
+-	value |= MRXEE; /* MTL RX FIFO ECC */
+-	value |= MTXEE; /* MTL TX FIFO ECC */
++	if (safety_feat_cfg->tsoee)
++		value |= TSOEE; /* TSO ECC */
++	if (safety_feat_cfg->mrxpee)
++		value |= MRXPEE; /* MTL RX Parser ECC */
++	if (safety_feat_cfg->mestee)
++		value |= MESTEE; /* MTL EST ECC */
++	if (safety_feat_cfg->mrxee)
++		value |= MRXEE; /* MTL RX FIFO ECC */
++	if (safety_feat_cfg->mtxee)
++		value |= MTXEE; /* MTL TX FIFO ECC */
+ 	writel(value, ioaddr + MTL_ECC_CONTROL);
+ 
+ 	/* 2. Enable MTL Safety Interrupts */
+@@ -219,13 +225,16 @@ int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp)
+ 
+ 	/* 5. Enable Parity and Timeout for FSM */
+ 	value = readl(ioaddr + MAC_FSM_CONTROL);
+-	value |= PRTYEN; /* FSM Parity Feature */
+-	value |= TMOUTEN; /* FSM Timeout Feature */
++	if (safety_feat_cfg->prtyen)
++		value |= PRTYEN; /* FSM Parity Feature */
++	if (safety_feat_cfg->tmouten)
++		value |= TMOUTEN; /* FSM Timeout Feature */
+ 	writel(value, ioaddr + MAC_FSM_CONTROL);
+ 
+ 	/* 4. Enable Data Parity Protection */
+ 	value = readl(ioaddr + MTL_DPP_CONTROL);
+-	value |= EDPP;
++	if (safety_feat_cfg->edpp)
++		value |= EDPP;
+ 	writel(value, ioaddr + MTL_DPP_CONTROL);
+ 
+ 	/*
+@@ -235,7 +244,8 @@ int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp)
+ 	if (asp <= 0x2)
+ 		return 0;
+ 
+-	value |= EPSI;
++	if (safety_feat_cfg->epsi)
++		value |= EPSI;
+ 	writel(value, ioaddr + MTL_DPP_CONTROL);
+ 	return 0;
+ }
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac5.h b/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
+index 6b2fd37b29ad..53c138d0ff48 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
+@@ -137,7 +137,8 @@
+ 
+ #define GMAC_INT_FPE_EN			BIT(17)
+ 
+-int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp);
++int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp,
++			      struct stmmac_safety_feature_cfg *safety_cfg);
+ int dwmac5_safety_feat_irq_status(struct net_device *ndev,
+ 		void __iomem *ioaddr, unsigned int asp,
+ 		struct stmmac_safety_stats *stats);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+index ad4df9bddcf3..c4d78fa93663 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+@@ -801,7 +801,9 @@ static void dwxgmac3_handle_dma_err(struct net_device *ndev,
+ 			   dwxgmac3_dma_errors, STAT_OFF(dma_errors), stats);
+ }
+ 
+-static int dwxgmac3_safety_feat_config(void __iomem *ioaddr, unsigned int asp)
++static int
++dwxgmac3_safety_feat_config(void __iomem *ioaddr, unsigned int asp,
++			    struct stmmac_safety_feature_cfg *safety_cfg)
+ {
+ 	u32 value;
+ 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index 75a8b90c202a..dbafedb24290 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -348,7 +348,8 @@ struct stmmac_ops {
+ 	void (*pcs_rane)(void __iomem *ioaddr, bool restart);
+ 	void (*pcs_get_adv_lp)(void __iomem *ioaddr, struct rgmii_adv *adv);
+ 	/* Safety Features */
+-	int (*safety_feat_config)(void __iomem *ioaddr, unsigned int asp);
++	int (*safety_feat_config)(void __iomem *ioaddr, unsigned int asp,
++				  struct stmmac_safety_feature_cfg *safety_cfg);
+ 	int (*safety_feat_irq_status)(struct net_device *ndev,
+ 			void __iomem *ioaddr, unsigned int asp,
+ 			struct stmmac_safety_stats *stats);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 9962a1041d35..13720bf6f6ff 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3172,7 +3172,8 @@ static void stmmac_safety_feat_configuration(struct stmmac_priv *priv)
+ {
+ 	if (priv->dma_cap.asp) {
+ 		netdev_info(priv->dev, "Enabling Safety Features\n");
+-		stmmac_safety_feat_config(priv, priv->ioaddr, priv->dma_cap.asp);
++		stmmac_safety_feat_config(priv, priv->ioaddr, priv->dma_cap.asp,
++					  priv->plat->safety_feat_cfg);
+ 	} else {
+ 		netdev_info(priv->dev, "No Safety Features support found\n");
+ 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
+index 95e0e4d6f74d..fcf17d8a0494 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
+@@ -174,6 +174,12 @@ static int stmmac_pci_probe(struct pci_dev *pdev,
+ 	if (!plat->dma_cfg)
+ 		return -ENOMEM;
+ 
++	plat->safety_feat_cfg = devm_kzalloc(&pdev->dev,
++					     sizeof(*plat->safety_feat_cfg),
++					     GFP_KERNEL);
++	if (!plat->safety_feat_cfg)
++		return -ENOMEM;
++
+ 	/* Enable pci device */
+ 	ret = pci_enable_device(pdev);
+ 	if (ret) {
+@@ -203,6 +209,16 @@ static int stmmac_pci_probe(struct pci_dev *pdev,
+ 	res.wol_irq = pdev->irq;
+ 	res.irq = pdev->irq;
+ 
++	plat->safety_feat_cfg->tsoee = 1;
++	plat->safety_feat_cfg->mrxpee = 1;
++	plat->safety_feat_cfg->mestee = 1;
++	plat->safety_feat_cfg->mrxee = 1;
++	plat->safety_feat_cfg->mtxee = 1;
++	plat->safety_feat_cfg->epsi = 1;
++	plat->safety_feat_cfg->edpp = 1;
++	plat->safety_feat_cfg->prtyen = 1;
++	plat->safety_feat_cfg->tmouten = 1;
++
+ 	return stmmac_dvr_probe(&pdev->dev, plat, &res);
+ }
+ 
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index e14a12df381b..e55a4807e3ea 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -172,6 +172,18 @@ struct stmmac_fpe_cfg {
+ 	enum stmmac_fpe_state lo_fpe_state;	/* Local station FPE state */
+ };
+ 
++struct stmmac_safety_feature_cfg {
++	u32 tsoee;
++	u32 mrxpee;
++	u32 mestee;
++	u32 mrxee;
++	u32 mtxee;
++	u32 epsi;
++	u32 edpp;
++	u32 prtyen;
++	u32 tmouten;
++};
++
+ struct plat_stmmacenet_data {
+ 	int bus_id;
+ 	int phy_addr;
+@@ -184,6 +196,7 @@ struct plat_stmmacenet_data {
+ 	struct stmmac_dma_cfg *dma_cfg;
+ 	struct stmmac_est *est;
+ 	struct stmmac_fpe_cfg *fpe_cfg;
++	struct stmmac_safety_feature_cfg *safety_feat_cfg;
+ 	int clk_csr;
+ 	int has_gmac;
+ 	int enh_desc;
+-- 
+2.25.1
 
