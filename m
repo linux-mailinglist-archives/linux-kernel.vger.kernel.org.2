@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64938397287
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA6739729F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 13:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233640AbhFALjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 07:39:15 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2930 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhFALjL (ORCPT
+        id S233739AbhFALnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 07:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFALnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 07:39:11 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvVS74NLRz658m;
-        Tue,  1 Jun 2021 19:34:31 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 19:37:28 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 19:37:28 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <linux-clk@vger.kernel.org>
-CC:     <paul.walmsley@sifive.com>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>
-Subject: [PATCH -next] clk: analogbits: fix doc warning in wrpll-cln28hpc.c
-Date:   Tue, 1 Jun 2021 19:41:54 +0800
-Message-ID: <20210601114154.3163327-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Jun 2021 07:43:41 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9F0C061574;
+        Tue,  1 Jun 2021 04:41:59 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 701912224A;
+        Tue,  1 Jun 2021 13:41:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622547718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xC7P/bcFCV2ZCGkF8kjoqn5cfA8HZsmaWEnBxWUHEDM=;
+        b=eNiCyfvWaN/+vfSha991PXVg+RUbyHmmgR0PDUfcscbxStGXX847KmZdGfsRA49Z+JNIUK
+        a+xj7o/h3+JkiKyPGmGscPC5NINmziOPzrYVBqxKhgyB1fbvhYNsWTM+lOBq8RLWllzVKI
+        CrALRlMjL7Wd82QxbvzkulHMl7axo0g=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 01 Jun 2021 13:41:57 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sander Vanheule <sander@svanheule.net>,
+        Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
+In-Reply-To: <CACRpkdb4j6krXwdZGtth9b2W2bAdy9_StGbse_YbBY86-AWdLg@mail.gmail.com>
+References: <cover.1620735871.git.sander@svanheule.net>
+ <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
+ <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
+ <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+ <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc>
+ <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
+ <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com>
+ <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
+ <CACRpkda+m5mOzMJ8KcPmojFGWkUpCrbmY0ySPTVx72RtWwf89A@mail.gmail.com>
+ <e10c8ef7f758b4f7fa0fcbc992c84125@walle.cc>
+ <CACRpkdb4j6krXwdZGtth9b2W2bAdy9_StGbse_YbBY86-AWdLg@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <401805ef27bb273d7aca4f3377b53b07@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following make W=1 warning:
+Am 2021-06-01 12:51, schrieb Linus Walleij:
+> On Tue, Jun 1, 2021 at 12:18 PM Michael Walle <michael@walle.cc> wrote:
+>> Am 2021-06-01 11:59, schrieb Linus Walleij:
+> 
+>> > Just regarding all registers/memory cells in a register page
+>> > as default volatile (which is what we do a lot of the time)
+>> > has its upsides: bugs like this doesn't happen.
+>> 
+>> I don't think this is the bug here. If it is really a write-only
+>> register
+>> the problem is the read in RMW. Because reading the register will 
+>> return
+>> the input value instead of the (previously written) output value.
+> 
+> True that. Write and read semantics differ on the register.
+> 
+> Volatile is used for this and some other things,
+> like for example interrupts being cleared when a register
+> is read so it is strictly read-once.
 
-  drivers/clk/analogbits/wrpll-cln28hpc.c:227: warning: expecting prototype for wrpll_configure(). Prototype was for wrpll_configure_for_rate() instead
+Isn't that what precious is for?
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/clk/analogbits/wrpll-cln28hpc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> So the regmap config is really important to get right.
+> 
+> IIUC one of the ambitions around Rust is to encode this
+> in how memory is specified in the language. (I am still
+> thinking about whether that is really a good idea or not.)
 
-diff --git a/drivers/clk/analogbits/wrpll-cln28hpc.c b/drivers/clk/analogbits/wrpll-cln28hpc.c
-index 7c64ea52a8d5..09ca82356399 100644
---- a/drivers/clk/analogbits/wrpll-cln28hpc.c
-+++ b/drivers/clk/analogbits/wrpll-cln28hpc.c
-@@ -202,7 +202,7 @@ static int __wrpll_update_parent_rate(struct wrpll_cfg *c,
- }
- 
- /**
-- * wrpll_configure() - compute PLL configuration for a target rate
-+ * wrpll_configure_for_rate() - compute PLL configuration for a target rate
-  * @c: ptr to a struct wrpll_cfg record to write into
-  * @target_rate: target PLL output clock rate (post-Q-divider)
-  * @parent_rate: PLL input refclk rate (pre-R-divider)
 -- 
-2.25.1
-
+-michael
