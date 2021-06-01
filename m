@@ -2,64 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC64397506
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535CC397551
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 16:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhFAOJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 10:09:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6121 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234034AbhFAOJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 10:09:06 -0400
-Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvYnN0XXQzYpZM;
-        Tue,  1 Jun 2021 22:04:40 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 1 Jun 2021 22:07:22 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] drm/amdgpu: Remove unneeded semicolon
-Date:   Tue, 1 Jun 2021 22:20:55 +0800
-Message-ID: <20210601142055.4132163-1-zhengyongjun3@huawei.com>
+        id S234192AbhFAOWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 10:22:53 -0400
+Received: from mga05.intel.com ([192.55.52.43]:15063 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233871AbhFAOWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 10:22:51 -0400
+IronPort-SDR: zPCaYW35vgAoEDRAlQu8C11XObCa9JwTpGxVjkqNMfc6Lol6bdmtBmqGGlfMKi0APsFcP+/QNr
+ FrcgKfWKYdlA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="289176098"
+X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
+   d="scan'208";a="289176098"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 07:21:10 -0700
+IronPort-SDR: Ca36dvVd0OQXI3CoAK/YIsp9PjYRF7sMBl7kfaM10+rOZYviOh5OhjSHKXmcBv1wJuFjOowOwB
+ PdxApo3yrxWA==
+X-IronPort-AV: E=Sophos;i="5.83,240,1616482800"; 
+   d="scan'208";a="446980601"
+Received: from mjdelaro-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.3.23])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 07:21:09 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Len Brown <lenb@kernel.org>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: [PATCH v6 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up support
+Date:   Tue,  1 Jun 2021 07:21:03 -0700
+Message-Id: <20210601142103.6378-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme760-chm.china.huawei.com (10.3.19.106)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneeded semicolon.
+As per ACPI specification r6.4, sec 5.2.12.19, a new sub
+structure – multiprocessor wake-up structure - is added to the
+ACPI Multiple APIC Description Table (MADT) to describe the
+information of the mailbox. If a platform firmware produces the
+multiprocessor wake-up structure, then OS may use this new
+mailbox-based mechanism to wake up the APs.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Add ACPI MADT wake table parsing support for x86 platform and if
+MADT wake table is present, update apic->wakeup_secondary_cpu with
+new API which uses MADT wake mailbox to wake-up CPU.
+
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
 ---
- drivers/gpu/drm/amd/amdgpu/aldebaran.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/aldebaran.c b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
-index 65b1dca4b02e..148f6c3343ab 100644
---- a/drivers/gpu/drm/amd/amdgpu/aldebaran.c
-+++ b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
-@@ -227,7 +227,7 @@ static int aldebaran_mode2_restore_ip(struct amdgpu_device *adev)
- 			break;
- 		default:
- 			break;
--		};
-+		}
- 	}
+Changes since v5:
+ * None ( CCed ACPI list)
+
+Changes since v4:
+ * Used smp_store_release() in place of WRITE_ONCE().
+ * Addressed some checkpatch warnings.
+
+Changes since v3:
+ * Removed acpi_mp_wake_mailbox_init() and moved init code to
+   acpi_wakeup_cpu().
+ * Removed redundant NULL pointer check for acpi_mp_wake_mailbox.
+ * Added comments/debug prints as per Rafael's suggestion.
+ * Removed MADT/SVKL ACPI patches from this patchset. It will be
+   merged via ACPICA submission.
+
+ arch/x86/include/asm/apic.h |  3 ++
+ arch/x86/kernel/acpi/boot.c | 96 +++++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/apic/apic.c |  8 ++++
+ 3 files changed, 107 insertions(+)
+
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index 412b51e059c8..3e94e1f402ea 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -487,6 +487,9 @@ static inline unsigned int read_apic_id(void)
+ 	return apic->get_apic_id(reg);
+ }
  
- 	/* Reinit NBIF block */
++typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
++extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
++
+ extern int default_apic_id_valid(u32 apicid);
+ extern int default_acpi_madt_oem_check(char *, char *);
+ extern void default_setup_apic_routing(void);
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index 14cd3186dc77..c51134eb55d0 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -65,6 +65,10 @@ int acpi_fix_pin2_polarity __initdata;
+ static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
+ #endif
+ 
++static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
++static u64 acpi_mp_wake_mailbox_paddr;
++static physid_mask_t apic_id_wakemap = PHYSID_MASK_NONE;
++
+ #ifdef CONFIG_X86_IO_APIC
+ /*
+  * Locks related to IOAPIC hotplug
+@@ -329,6 +333,68 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
+ 	return 0;
+ }
+ 
++static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
++{
++	u8 timeout = 0xFF;
++
++	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
++	if (physids_empty(apic_id_wakemap)) {
++		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
++						sizeof(*acpi_mp_wake_mailbox),
++						MEMREMAP_WB);
++	}
++
++	/*
++	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
++	 * mailbox-based wakeup mechanism cannot be used more than once
++	 * for the same CPU, so skip sending wake commands to already
++	 * awake CPU.
++	 */
++	if (physid_isset(apicid, apic_id_wakemap)) {
++		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
++		       apicid);
++		return -EINVAL;
++	}
++
++	/*
++	 * Mailbox memory is shared between firmware and OS. Firmware will
++	 * listen on mailbox command address, and once it receives the wakeup
++	 * command, CPU associated with the given apicid will be booted. So,
++	 * the value of apic_id and wakeup_vector has to be set before updating
++	 * the wakeup command. So use smp_store_release to let the compiler know
++	 * about it and preserve the order of writes.
++	 */
++	smp_store_release(&acpi_mp_wake_mailbox->apic_id, apicid);
++	smp_store_release(&acpi_mp_wake_mailbox->wakeup_vector, start_ip);
++	smp_store_release(&acpi_mp_wake_mailbox->command,
++			  ACPI_MP_WAKE_COMMAND_WAKEUP);
++
++	/*
++	 * After writing wakeup command, wait for maximum timeout of 0xFF
++	 * for firmware to reset the command address back zero to indicate
++	 * the successful reception of command.
++	 * NOTE: 255 as timeout value is decided based on our experiments.
++	 *
++	 * XXX: Change the timeout once ACPI specification comes up with
++	 *      standard maximum timeout value.
++	 */
++	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
++		cpu_relax();
++
++	if (timeout) {
++		/*
++		 * If the CPU wakeup process is successful, store the
++		 * status in apic_id_wakemap to prevent re-wakeup
++		 * requests.
++		 */
++		physid_set(apicid, apic_id_wakemap);
++		return 0;
++	}
++
++	/* If timed out (timeout == 0), return error */
++	return -EIO;
++}
++
+ #endif				/*CONFIG_X86_LOCAL_APIC */
+ 
+ #ifdef CONFIG_X86_IO_APIC
+@@ -1086,6 +1152,30 @@ static int __init acpi_parse_madt_lapic_entries(void)
+ 	}
+ 	return 0;
+ }
++
++static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
++				      const unsigned long end)
++{
++	struct acpi_madt_multiproc_wakeup *mp_wake;
++
++	if (acpi_mp_wake_mailbox)
++		return -EINVAL;
++
++	if (!IS_ENABLED(CONFIG_SMP))
++		return -ENODEV;
++
++	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
++	if (BAD_MADT_ENTRY(mp_wake, end))
++		return -EINVAL;
++
++	acpi_table_print_madt_entry(&header->common);
++
++	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
++
++	acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
++
++	return 0;
++}
+ #endif				/* CONFIG_X86_LOCAL_APIC */
+ 
+ #ifdef	CONFIG_X86_IO_APIC
+@@ -1284,6 +1374,12 @@ static void __init acpi_process_madt(void)
+ 
+ 				smp_found_config = 1;
+ 			}
++
++			/*
++			 * Parse MADT MP Wake entry.
++			 */
++			acpi_table_parse_madt(ACPI_MADT_TYPE_MULTIPROC_WAKEUP,
++					      acpi_parse_mp_wake, 1);
+ 		}
+ 		if (error == -EINVAL) {
+ 			/*
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 4f26700f314d..f1b90a4b89e8 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2554,6 +2554,14 @@ u32 x86_msi_msg_get_destid(struct msi_msg *msg, bool extid)
+ }
+ EXPORT_SYMBOL_GPL(x86_msi_msg_get_destid);
+ 
++void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
++{
++	struct apic **drv;
++
++	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
++		(*drv)->wakeup_secondary_cpu = handler;
++}
++
+ /*
+  * Override the generic EOI implementation with an optimized version.
+  * Only called during early boot when only one CPU is active and with
 -- 
 2.25.1
 
