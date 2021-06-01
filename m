@@ -2,48 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A83397BF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D7B397BFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 23:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbhFAWAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 18:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234656AbhFAWAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 18:00:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5382960FDC;
-        Tue,  1 Jun 2021 21:58:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622584718;
-        bh=FtNaWpBLeJH7u6QzCHPHHXFFCwmnPujIFR0wi8zsayw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=o4bSRJPX8SrRr01CDtuAoRHvFgXxKvKd5Qcf/eNNkQUGllsNnpfaXUjNvgdGwirw7
-         wr6Wmekd3NDg6EJ04N/Wez888E+i/OZOd9IczIGVlHkRwzhqWW5EtZWS7wvNfb0y+l
-         LKku/g7T96jsAqSiz29m5RUrW01d53FwAfLaAHdkObkW41FGj5pEphUQO5pt6mV2pZ
-         cbPuQU1W0ABPlPBlMeW4EVBL/l5rQ5A99pOtSFkV5ykGxwY0g/wT8YHtJA5nhuq7VD
-         nZcXpK6LVsuZk/d0hXGwud3rYNTtULAsKHZTM4wtl66C2SC37x8c1r8SB8C79908da
-         aslrrALUp5mbw==
-Date:   Tue, 1 Jun 2021 14:58:37 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
-        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>
-Subject: Re: [PATCH net-next 1/2] net: hns3: add support for PTP
-Message-ID: <20210601145837.7b457748@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <1622547265-48051-2-git-send-email-huangguangbin2@huawei.com>
-References: <1622547265-48051-1-git-send-email-huangguangbin2@huawei.com>
-        <1622547265-48051-2-git-send-email-huangguangbin2@huawei.com>
+        id S234927AbhFAWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 18:00:30 -0400
+Received: from hera.aquilenet.fr ([185.233.100.1]:49626 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234925AbhFAWA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 18:00:28 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 88CC131F;
+        Tue,  1 Jun 2021 23:58:45 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3uddWn2Mdui3; Tue,  1 Jun 2021 23:58:45 +0200 (CEST)
+Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id BE0A1233;
+        Tue,  1 Jun 2021 23:58:44 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.94.2)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1loCPM-005VoO-0T; Tue, 01 Jun 2021 23:58:44 +0200
+Date:   Tue, 1 Jun 2021 23:58:44 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Igor Torrente <igormtorrente@gmail.com>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
+Message-ID: <20210601215843.ajebgifrgm2mth5t@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Igor Torrente <igormtorrente@gmail.com>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <87r1hlrfhk.fsf@intel.com>
+ <1b1e0e07-d438-0902-a28a-e346cba53518@gmail.com>
+ <878s3tr3ai.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878s3tr3ai.fsf@intel.com>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: --
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Server: hera
+X-Rspamd-Queue-Id: 88CC131F
+X-Spamd-Result: default: False [-2.50 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[gmail.com];
+         BAYES_HAM(-3.00)[100.00%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 19:34:24 +0800 Guangbin Huang wrote:
-> From: Huazhong Tan <tanhuazhong@huawei.com>
+Jani Nikula, le mar. 01 juin 2021 18:51:49 +0300, a ecrit:
+> On Tue, 01 Jun 2021, Igor Torrente <igormtorrente@gmail.com> wrote:
+> > There's a way to do that without these blank lines?
+> >
+> > For me, it doesn't look very good, but I think the tradeoff worth it 
+> > improves readability to speakup users. If it is the case.
 > 
-> Adds PTP support for HNS3 ethernet driver.
+> I was thinking:
+> 
+> acntsa
+>   Accent SA
+> 
+> acntpc
+>   Accent PC
+> 
+> apollo
+>   Apollo
 
-Please repost CCing Richard Cochran, the PTP maintainer.
+Having the two pieces on separate lines makes it a bit more tedious to
+read on Braille displays, it's better to keep them single-line.
+
+> >>> +
+> >>> +.. note::
+> >>> +
+> >>> +   | Speakup does **NOT** support usb connections!
+> >>> +   | Speakup also does **NOT** support the internal Tripletalk!
+> >> 
+> >> Why the pipes "|"?
+> >
+> > This is the way I found to separate these sentences into two different 
+> > lines. I'm gladly accepting a better solution for this :)
+> 
+> Maybe just like this?
+> 
+> .. note::
+> 
+>    Speakup does **NOT** support usb connections!
+> 
+>    Speakup also does **NOT** support the internal Tripletalk!
+
+That will be fine (though the first statement is actually outdated)
+
+Samuel
