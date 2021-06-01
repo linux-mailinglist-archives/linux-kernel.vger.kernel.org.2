@@ -2,126 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92183973DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CB33973DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 15:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233971AbhFANK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 09:10:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:49652 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233409AbhFANKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 09:10:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16C2F6D;
-        Tue,  1 Jun 2021 06:09:13 -0700 (PDT)
-Received: from [10.57.9.215] (unknown [10.57.9.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44B683F719;
-        Tue,  1 Jun 2021 06:09:09 -0700 (PDT)
-Subject: Re: [RFC PATCH v3] perf cs-etm: Split Coresight decode by aux records
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Al Grant <al.grant@arm.com>,
-        branislav.rankov@arm.com, Denis Nikitin <denik@chromium.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210527104234.24313-1-james.clark@arm.com>
- <11822824-7486-2333-f039-bfd801b86922@arm.com>
- <CANLsYkynQbGRhOmyramX+nSHvVnH_nSJb=t03Dp-2WeXP3ZYAw@mail.gmail.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <dcf7cbe3-2d97-bf99-7025-3f62e2f09be1@arm.com>
-Date:   Tue, 1 Jun 2021 16:09:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233980AbhFANLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 09:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233409AbhFANLO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 09:11:14 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E153C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 06:09:32 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id qq22so13343788ejb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 06:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EBxyeOx+3RsWJVhTTc5ohpA2jwgveNW4SF62Y0kGAg0=;
+        b=dsDckIPOp9TXBT/s7RdiUDvpov38qfYBx3AaTcisxYwVC6JrB+2zJLDNxXBoUSPQ6v
+         hvUi3rlaAGVNYmhWyr5XDrs5ZxuZH/SjH5C8s0SYrS2NnhstttWyBaRwLyK8v1ui7awm
+         sKLcam94uyM9oXyG95b+Hlqr/a5+iHlMHpVjiTdRH9JPI2dZsK+aopEPzj1CJdSkUx16
+         fxVcPQnDRfsncYCqppvgbJP5kZY6lHTSNDk6+R1I7vEGhD1hlQ1qnMLSdzUHIvcB1qvd
+         iP7PpcJa/SGPJD2N2EDiK7IcSNbnRkHUXfbc4ZNL7x5bNpL2N9PFG28C9BvdlwqYKP+v
+         7jFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EBxyeOx+3RsWJVhTTc5ohpA2jwgveNW4SF62Y0kGAg0=;
+        b=NqiAmDcfiWzdMPigUNkAE3rSsKh1q5TCZsbOMvJymy9A4df4wOgO2arCPmQ+BpHJkg
+         azdXuKt5cPxZREkqNqdLIbl4qq9KIEeKNKXjvZuToqbeFVuQTztbR1B2R4Xff5z/GbW2
+         wejsin/rQyg2wIiP/yERWp5TcUw6/PkxAvnfF522jjhNObHEBHpx2U7wI9Ikj1w2AbOF
+         uLLlPbf4mHDzdvMt/ZUgJl5acmhLbQik5Y0if2CjWMi6v4x3idx1vkd9V6pPROcvolJQ
+         2XxNb1lwcaWviZTeWZvzGgpfGIvoctLXyrlAsvWvbQKfJD8JeXOhrUqeyweCM1Ssr7jy
+         5Aig==
+X-Gm-Message-State: AOAM530k3LWCFPZ9+mlcIhrsuM0/gd1vJRr/JfULBNKllatlWb0CPo5D
+        +aGuZTHlFyWiLBNARldRXGr3Laqa7EpmSMecqsvZBw==
+X-Google-Smtp-Source: ABdhPJzaJWShJBsE42YmVPyWkCZpCfZNLRBpTqLqq7WzlxkyzfSZXMAaBRl90OZDXy16OLV8GAIvXQb7vzjAFOk/GWE=
+X-Received: by 2002:a17:906:8318:: with SMTP id j24mr10513958ejx.375.1622552970872;
+ Tue, 01 Jun 2021 06:09:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CANLsYkynQbGRhOmyramX+nSHvVnH_nSJb=t03Dp-2WeXP3ZYAw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210601081514.670960578@linuxfoundation.org>
+In-Reply-To: <20210601081514.670960578@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 1 Jun 2021 18:39:19 +0530
+Message-ID: <CA+G9fYtDntHBQ4Tu9JpO7mtE6hLC=ATToLVub=ON7YvN04RQug@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/71] 4.9.271-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 1 Jun 2021 at 14:04, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.271 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 03 Jun 2021 08:15:02 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.271-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+This set of results are from 4.9.271-rc2.
 
-On 27/05/2021 18:37, Mathieu Poirier wrote:
-> On Thu, 27 May 2021 at 07:46, James Clark <james.clark@arm.com> wrote:
->>
->>
->>
->> On 27/05/2021 13:42, James Clark wrote:
->>> Populate the auxtrace queues using AUX records rather than whole
->>> auxtrace buffers.
->>>
->> ...
->>> Snapshot mode still needs to be tested.
->>>
->>
->> Snapshot mode is also working, but needs the following patch applied to reverse aux_offset
->> from the end of the buffer to the beginning:
-> 
-> It might be better to send another revision with this patch included
-> in to make sure everyone is looking at (and testing) the same thing.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I've sent v4 with it applied. There was actually a mistake which broke the normal mode,
-so it was a good idea to apply it.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> 
->>
->> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
->> index 5d6c03488187..9db556e14dfa 100644
->> --- a/tools/perf/util/cs-etm.c
->> +++ b/tools/perf/util/cs-etm.c
->> @@ -2700,6 +2700,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session,
->>         struct perf_record_auxtrace *auxtrace_event;
->>         union perf_event auxtrace_fragment;
->>         bool matchesCpuPid;
->> +       __u64 aux_offset;
->>         struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
->>                                                    struct cs_etm_auxtrace,
->>                                                    auxtrace);
->> @@ -2730,19 +2731,26 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session,
->>         else
->>                 matchesCpuPid = auxtrace_event->cpu == sample->cpu;
->>
->> +       /*
->> +        * In snapshot/overwrite mode, the head points to the end of the buffer so aux_offset needs
->> +        * to have the size subtracted so it points to the beginning as in normal mode.
->> +        */
->> +       if (aux_event->flags && PERF_AUX_FLAG_OVERWRITE)
->> +               aux_offset = aux_event->aux_offset - aux_event->aux_size;
->> +       else
->> +               aux_offset = aux_event->aux_offset;
->> +
->>         if (matchesCpuPid &&
->> -           aux_event->aux_offset >= auxtrace_event->offset &&
->> -           aux_event->aux_offset + aux_event->aux_size <=
->> -                       auxtrace_event->offset + auxtrace_event->size) {
->> +           aux_offset >= auxtrace_event->offset &&
->> +           aux_offset + aux_event->aux_size <= auxtrace_event->offset + auxtrace_event->size) {
->>                 /*
->>                  * If this AUX event was inside this buffer somewhere, create a new auxtrace event
->>                  * based on the sizes of the aux event, and queue that fragment.
->>                  */
->>                 auxtrace_fragment.auxtrace = *auxtrace_event;
->>                 auxtrace_fragment.auxtrace.size = aux_event->aux_size;
->> -               auxtrace_fragment.auxtrace.offset = aux_event->aux_offset;
->> -               file_offset += aux_event->aux_offset - auxtrace_event->offset +
->> -                               auxtrace_event->header.size;
->> +               auxtrace_fragment.auxtrace.offset = aux_offset;
->> +               file_offset += aux_offset - auxtrace_event->offset + auxtrace_event->header.size;
->>                 return auxtrace_queues__add_event(&etm->queues,
->>                                                session,
->>                                                &auxtrace_fragment,
->>
->>
+## Build
+* kernel: 4.9.271-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: 7c0244f56992aacc7d68dd6e61be593062aa0668
+* git describe: v4.9.270-72-g7c0244f56992
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+70-72-g7c0244f56992
+
+## No regressions (compared to v4.9.269-37-gc1efed5276d2)
+
+## Fixes (compared to v4.9.269-37-gc1efed5276d2)
+* ltp-mm-tests
+  - ksm03
+  - ksm03_1
+
+NOTE: The LTP test suite upgraded to latest release version LTP 20210524.
+
+## Test result summary
+ total: 57037, pass: 45364, fail: 1305, skip: 9522, xfail: 846,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* timesync-off
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
