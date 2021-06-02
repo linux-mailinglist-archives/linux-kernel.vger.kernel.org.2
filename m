@@ -2,174 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED13398A07
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BCD398A0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhFBMwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:52:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:44100 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhFBMwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:52:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 784866D;
-        Wed,  2 Jun 2021 05:50:31 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 256FD3F719;
-        Wed,  2 Jun 2021 05:50:30 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Beata Michalska <beata.michalska@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] sched/topology: Rework CPU capacity asymmetry detection
-In-Reply-To: <20210527153842.17567-3-beata.michalska@arm.com>
-References: <20210527153842.17567-1-beata.michalska@arm.com> <20210527153842.17567-3-beata.michalska@arm.com>
-Date:   Wed, 02 Jun 2021 13:50:21 +0100
-Message-ID: <87eedkfn1u.mognet@arm.com>
+        id S229921AbhFBMxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFBMw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 08:52:58 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1300C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 05:51:15 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id e2so1004398vsr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zDam4v5Fg9p7lK+CPPtdMq2wb+GIbZcnsBCVIiUd08s=;
+        b=pPx7UQ5vCXmUVaWp/RGRW8H3dUeJPovQZDDbaJVgs5/Wp6iRe5oN3pKw2b4JwQXMiT
+         lMEGL2nBG0T/ztRgyHjWu/z0HHHB/0H9SIzc/4mfpBERd9AKFFV+SGY2FnjATr39V+yy
+         IrZXEkbTq2//k3FAo/Un/eAHd4UMhDZaZV4PZHC22BXOslQbAj3t8okWLVTmr+45tT7d
+         iAtxORC4HMNJcqe5TQ/uvvMb1EwqvfBjkK3SvbefiKKbpFWUFZls3ukK/eVJH1iPFRfQ
+         U2htTY/gOql+jetOZw7vHEGRgW94m+6W3URlxLlhXxyYPcnVDuC4cDiE8PuFj60d5b8v
+         fAzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zDam4v5Fg9p7lK+CPPtdMq2wb+GIbZcnsBCVIiUd08s=;
+        b=EyIJHuZhud8YIEM5NbSooZKhCsOsEvRYAR1ciES1KFRuq7OhNRlk7MGJ8DLs0XMmXj
+         dBS3pqEf2t3ddrt76+RcIKN8eDFuGfPu0R8/AMqeW7uhBHaZky6m37kFFlDOfNVWQSIo
+         jwQ7PxFffZO8B4rMJSrc5JfnpSCaWzYEn+gWjClAnI92RqplWOikQCRYgwZf+Inp6Lmb
+         rUjYnBVyfs4ArHT/3Wb+Su5urIxVz5bRino/vMObmpUuUToVZT2fQFBXEzSstVCunV2w
+         h7+wy1FTsEDfh2vS31KvgxIrQqRM1K6pjokErIyNT9SvIhseLyCgIi4ZdQehZ0uwM+os
+         UpTA==
+X-Gm-Message-State: AOAM53108BOEcH2TWyvcoVcdF4ab0kGKx8u7lku8+yTytcCpHUE1wLEb
+        ex2jaPipVdVaNJGfn1gXi4R0PAUQ513Rq39WfaOIIA==
+X-Google-Smtp-Source: ABdhPJzUginGmlokX+ysh4R5RQMBlTK4PfZt1V/KV/Te6Zr4zZ5crlWHz5ddYGKBWzw8HczkDLY1ZEHZw3YTwIkaRuw=
+X-Received: by 2002:a05:6102:5da:: with SMTP id v26mr2293516vsf.19.1622638274853;
+ Wed, 02 Jun 2021 05:51:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org>
+ <1622095949-2014-2-git-send-email-rnayak@codeaurora.org> <YLYV3ov/iBffZMg4@gerhold.net>
+ <20210601114426.3vhh2twocqx254b6@vireshk-i7> <CAPDyKFqmBoMwQkWHT-w8A2=PeXeDgxE8n=D4prdEyuxM+ZOAaA@mail.gmail.com>
+ <20210602105459.t3ptci42lgvrzqlx@vireshk-i7>
+In-Reply-To: <20210602105459.t3ptci42lgvrzqlx@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 2 Jun 2021 14:50:38 +0200
+Message-ID: <CAPDyKFrO-xTCy+ZRNX8y6yUdUoZqv0KZWcPp6dD_R1kxNB-L-g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce 'assigned-performance-states'
+ property
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/21 16:38, Beata Michalska wrote:
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Valentin Schneider <valentin.schneider@arm.com>
-> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-
-I ran this through the usual series of tests ('exotic' topologies, hotplug
-and exclusive cpusets), it all behaves as expected.
-
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-Some tiny cosmetic nits below, which don't warrant a new revision, and a
-comment wrt purely symmetric systems.
-
-> ---
->  kernel/sched/topology.c | 194 ++++++++++++++++++++++++----------------
->  1 file changed, 118 insertions(+), 76 deletions(-)
+On Wed, 2 Jun 2021 at 12:55, Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 55a0a243e871..77e6f79235ad 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
+> On 02-06-21, 12:45, Ulf Hansson wrote:
+> > Alright, so it looks like we already have the DT binding that we need for this.
+> >
+> > That leaves us with the question, at what place should we parse it
+> > (call of_get_required_opp_performance_state()) and set the performance
+> > state for the device?
+> >
+> > Does it still make sense to do it while attaching the device to the
+> > genpd, you think?
+>
+> For parsing, yes this is the right place. For getting that into
+> effect, whenever the device is supposed to work, i.e. with runtime PM
+> somehow.
 
-> +/*
-> + * Verify whether there is any CPU capacity asymmetry in a given sched domain.
-> + * Provides sd_flags reflecting the asymmetry scope.
-> + */
-> +static inline int
-> +asym_cpu_capacity_classify(struct sched_domain *sd,
-> +			   const struct cpumask *cpu_map)
-> +{
-> +	struct asym_cap_data *entry;
-> +	int sd_asym_flags = 0;
-> +	int asym_cap_count = 0;
-> +	int asym_cap_miss = 0;
-> +
-> +	/*
-> +	 * Count how many unique CPU capacities this domain spans across
-> +	 * (compare sched_domain CPUs mask with ones representing  available
-> +	 * CPUs capacities). Take into account CPUs that might be offline:
-> +	 * skip those.
-> +	 */
-> +	list_for_each_entry(entry, &asym_cap_list, link) {
-> +		if (cpumask_intersects(sched_domain_span(sd),
-> +				       cpu_capacity_span(entry)))
+Okay, thanks for confirming. That would be along the lines of what
+Rajendra did in patch2.
 
-IMO this is one such place where the 80 chars limit can be omitted.
-
-> +			++asym_cap_count;
-> +		else if (cpumask_intersects(cpu_capacity_span(entry), cpu_map))
-> +			++asym_cap_miss;
-> +	}
-
-> +/*
-> + * Build-up/update list of CPUs grouped by their capacities
-> + * An update requires explicit request to rebuild sched domains
-> + * with state indicating CPU topology changes.
-> + */
-> +static void asym_cpu_capacity_scan(void)
-> +{
-> +	struct asym_cap_data *entry, *next;
-> +	int cpu;
-> +
-> +	list_for_each_entry(entry, &asym_cap_list, link)
-> +		cpumask_clear(cpu_capacity_span(entry));
-> +
-> +	for_each_cpu_and(cpu, cpu_possible_mask,
-> +			 housekeeping_cpumask(HK_FLAG_DOMAIN))
-
-Ditto on keeping this on a single line.
-
-> +		asym_cpu_capacity_update_data(cpu);
-> +
-> +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
-> +		if (cpumask_empty(cpu_capacity_span(entry))) {
-> +			list_del(&entry->link);
-> +			kfree(entry);
-> +		}
-> +	}
-> +}
-
-One "corner case" that comes to mind is systems / architectures which are
-purely symmetric wrt CPU capacity. Our x86 friends might object to us
-reserving a puny 24 bytes + cpumask_size() in a corner of their
-memory.
-
-Perhaps we could clear the list in the list_is_singular_case(), and since
-the rest of the code only does list iteration, this should 'naturally'
-cover this case:
-
----
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 62d412013df8..b06d277fa280 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1305,14 +1305,13 @@ asym_cpu_capacity_classify(struct sched_domain *sd,
- 	 * skip those.
- 	 */
- 	list_for_each_entry(entry, &asym_cap_list, link) {
--		if (cpumask_intersects(sched_domain_span(sd),
--				       cpu_capacity_span(entry)))
-+		if (cpumask_intersects(sched_domain_span(sd), cpu_capacity_span(entry)))
- 			++asym_cap_count;
- 		else if (cpumask_intersects(cpu_capacity_span(entry), cpu_map))
- 			++asym_cap_miss;
- 	}
- 	/* No asymmetry detected */
--	if (WARN_ON_ONCE(!asym_cap_count) || asym_cap_count == 1)
-+	if (asym_cap_count < 2)
- 		goto leave;
- 
- 	sd_asym_flags |= SD_ASYM_CPUCAPACITY;
-@@ -1360,8 +1359,7 @@ static void asym_cpu_capacity_scan(void)
- 	list_for_each_entry(entry, &asym_cap_list, link)
- 		cpumask_clear(cpu_capacity_span(entry));
- 
--	for_each_cpu_and(cpu, cpu_possible_mask,
--			 housekeeping_cpumask(HK_FLAG_DOMAIN))
-+	for_each_cpu_and(cpu, cpu_possible_mask, housekeeping_cpumask(HK_FLAG_DOMAIN))
- 		asym_cpu_capacity_update_data(cpu);
- 
- 	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
-@@ -1370,6 +1368,16 @@ static void asym_cpu_capacity_scan(void)
- 			kfree(entry);
- 		}
- 	}
-+
-+	/*
-+	 * There's only one capacity value, i.e. this system is symmetric.
-+	 * No need to keep this data around.
-+	 */
-+	if (list_is_singular(&asym_cap_list)) {
-+		entry = list_first_entry(&asym_cap_list, typeof(*entry), link);
-+		list_del(&entry->link);
-+		kfree(entry);
-+	}
- }
- 
- /*
+Kind regards
+Uffe
