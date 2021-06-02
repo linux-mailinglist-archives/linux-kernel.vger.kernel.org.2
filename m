@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E7639829E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D043982A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhFBHIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:08:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37352 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229753AbhFBHIT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:08:19 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15272aoD070108;
-        Wed, 2 Jun 2021 03:06:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=GFBycVBB+/xnfkQ4jX/AScq7z7Un90yyHMcTZFBccbA=;
- b=RzP73lw6Z5V0yFsM5tT3opZIMdNz8zJuEtt+mQTgXJbSNOQ/9Hiked48PLn7QIER9Qs2
- Ed4PU4dHfcSfVvjc9I6nk7RN/EU4DedAPcOuQjS2p67FHJWnkGVy9/JUgUQtpOqaP78f
- lklLYpBCp+GReSSE/bLpzmDmUwvpzRuMj/4NtiMOqYuK11bPrC7SZMWQHwXGnaILS8xH
- oxlHPUBpmCM8FCpToWtTWxtIQrlIaIsdzENMHAfILucP0IZYwH4LIQpiA7M86RdZ6unl
- aeAlL7cuGAI6FX/uDsGCr4I4FX9opLAQIp8johTnzT5WvGsffEZIbaMmVJtl8S+7QHSP Lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38x55h09ks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 03:06:03 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15273HKp073495;
-        Wed, 2 Jun 2021 03:06:03 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38x55h09hv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 03:06:02 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15272oDY026082;
-        Wed, 2 Jun 2021 07:06:00 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 38ucvh96a9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 07:06:00 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15275vu933096056
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Jun 2021 07:05:57 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09E1842042;
-        Wed,  2 Jun 2021 07:05:57 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5FE84203F;
-        Wed,  2 Jun 2021 07:05:53 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.77.40])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  2 Jun 2021 07:05:53 +0000 (GMT)
-Date:   Wed, 2 Jun 2021 10:05:51 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org
-Subject: Re: [RFC/RFT PATCH 0/5] consolidate "System RAM" resources setup
-Message-ID: <YLctz5z34knyHVFz@linux.ibm.com>
-References: <20210531122959.23499-1-rppt@kernel.org>
- <20210601134429.GY30436@shell.armlinux.org.uk>
+        id S230467AbhFBHIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:08:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhFBHI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 03:08:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B6E760FF3;
+        Wed,  2 Jun 2021 07:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622617606;
+        bh=lquQN/jlE/0WNJ9FMxm7Amdcp89k6AsKIIqlAAppnSM=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=d04Gz8cosorzMIhGRraoB+oDV6DOT+lbEY6Fejjl/rPsqylApRBOQPYuMpfoxYjpw
+         nIovEktjAp6TjrOgS5+X2lv8DcXLqaBwTQwNRZlF10OR2vbPIcAIjIesDuuyXt3Bto
+         qMg5wOxCxGlxiLCyGXTKAjkhqXGpqhDg2Zs1T2jL37oPzSb6QKxTfdr4gaTbVw9qOZ
+         hlZ9tXFb2txJV0RvX0XczhUX43C2Q7/UI01zpcAYinS0zGdRF1dI+/OauKdo3K9/Gg
+         TX+rWDpMJJ+7lMprY9tGhIGLp7F2tn8b1kzuGm/gLyhVkR4Blhe7sOGyw66nzIkc7Z
+         TaSr3umLuJ1Mg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601134429.GY30436@shell.armlinux.org.uk>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: f3G9ixy-BGxGSouhWNCKbcO-usydOj1k
-X-Proofpoint-ORIG-GUID: NQ-TJPvOXD2GbphMmpQ8sXZjkW9bcYbI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-02_02:2021-06-01,2021-06-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- clxscore=1015 phishscore=0 mlxlogscore=761 bulkscore=0 priorityscore=1501
- spamscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106020045
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1619519590-3019-7-git-send-email-tdas@codeaurora.org>
+References: <1619519590-3019-1-git-send-email-tdas@codeaurora.org> <1619519590-3019-7-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH v2 6/6] clk: qcom: Add video clock controller driver for SC7280
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Wed, 02 Jun 2021 00:06:44 -0700
+Message-ID: <162261760498.4130789.12499425999582046146@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 02:44:29PM +0100, Russell King (Oracle) wrote:
-> On Mon, May 31, 2021 at 03:29:54PM +0300, Mike Rapoport wrote:
-> > * arm has "System RAM (boot alias)" that do not seem useful for any other
-> >   architecture
-> 
-> This is VERY important for kexec and must _not_ be removed, since you
-> will be causing a userspace regression by doing so.
+Quoting Taniya Das (2021-04-27 03:33:10)
+> diff --git a/drivers/clk/qcom/videocc-sc7280.c b/drivers/clk/qcom/videocc=
+-sc7280.c
+> new file mode 100644
+> index 0000000..3387154
+> --- /dev/null
+> +++ b/drivers/clk/qcom/videocc-sc7280.c
+> @@ -0,0 +1,372 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <dt-bindings/clock/qcom,videocc-sc7280.h>
+> +
+> +#include "clk-alpha-pll.h"
+> +#include "clk-branch.h"
+> +#include "clk-rcg.h"
+> +#include "common.h"
+> +#include "reset.h"
+> +#include "gdsc.h"
+> +
+> +enum {
+> +       P_BI_TCXO,
+> +       P_SLEEP_CLK,
+> +       P_VIDEO_PLL0_OUT_EVEN,
+> +};
+> +
+> +static struct pll_vco lucid_vco[] =3D {
 
-I didn't remove these. I'll update the changelog and the cover letter to
-make it clear.
+const?
 
--- 
-Sincerely yours,
-Mike.
+> +       { 249600000, 2000000000, 0 },
+> +};
+> +
+[...]
+> +
+> +static const struct parent_map video_cc_parent_map_0[] =3D {
+> +       { P_BI_TCXO, 0 },
+> +       { P_VIDEO_PLL0_OUT_EVEN, 3 },
+> +};
+> +
+> +static const struct clk_parent_data video_cc_parent_data_0[] =3D {
+> +       { .fw_name =3D "bi_tcxo" },
+> +       { .hw =3D &video_pll0.clkr.hw },
+> +};
+> +
+> +static const struct parent_map video_cc_parent_map_1[] =3D {
+> +       { P_SLEEP_CLK, 0 },
+> +};
+> +
+> +static const struct clk_parent_data video_cc_parent_data_1[] =3D {
+> +       { .fw_name =3D "sleep_clk" },
+> +};
+> +
+> +static const struct parent_map video_cc_parent_map_2[] =3D {
+> +       { P_BI_TCXO, 0 },
+> +};
+> +
+> +static const struct clk_parent_data video_cc_parent_data_2_ao[] =3D {
+> +       { .fw_name =3D "bi_tcxo_ao" },
+
+This is new. Why would we want the video clk parent state to turn off
+when the CPU is off? Does the video engine keep XO enabled for itself?
+Can you please add some comment into the code explaining why it's ok to
+use the ao clk here?
+
+> +};
+> +
+> +static const struct freq_tbl ftbl_video_cc_iris_clk_src[] =3D {
+> +       F(133333333, P_VIDEO_PLL0_OUT_EVEN, 3, 0, 0),
+> +       F(240000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
+> +       F(335000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
+> +       F(424000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
+> +       F(460000000, P_VIDEO_PLL0_OUT_EVEN, 2, 0, 0),
+> +       { }
+> +};
+[...]
+> +
+> +static struct clk_branch video_cc_xo_clk =3D {
+> +       .halt_reg =3D 0x7018,
+> +       .halt_check =3D BRANCH_HALT,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x7018,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "video_cc_xo_clk",
+> +                       .parent_hws =3D (const struct clk_hw*[]){
+> +                               &video_cc_xo_clk_src.clkr.hw,
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
+
+Please add a comment why it is critical.
+
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
