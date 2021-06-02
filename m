@@ -2,82 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E673992B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530EA3992B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhFBSlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBSlo (ORCPT
+        id S229697AbhFBSmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:42:18 -0400
+Received: from gateway24.websitewelcome.com ([192.185.50.71]:42813 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229468AbhFBSmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:41:44 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D0BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 11:40:00 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f0e00fb29af68c81f5342.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:e00:fb29:af68:c81f:5342])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 658FA1EC047D;
-        Wed,  2 Jun 2021 20:39:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622659199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1p169zuTSnb+F4C11QFsu1dq9u78p4YI/Gb69UPmJsU=;
-        b=RSnzafbpzoUyFf4d76GHO3ktspCSdeAsukD2b48AZfGg6/2IiJ0oTc0+GkA+b4kvLRBx8B
-        492CvM7NV1wU79LWWRMkn8HjNdLO7fwKYo0w7a0xvu73sRCgjyJaEUx0Q8BNyeYQBKiqrM
-        0k4uQtRfyg2WoUQwolsNhf5F3KPUY38=
-Date:   Wed, 2 Jun 2021 20:39:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
- abstraction
-Message-ID: <YLfQf6quDHIVeRhH@zn.tnic>
-References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YLe92NXx1jZPtPqB@google.com>
- <3036a655-9d09-0f04-62a2-7a72ba9af5c7@amd.com>
- <YLfOApYdX/KL1wKF@zn.tnic>
- <23225953-2052-8e72-5eb0-6b30f2a5c84b@linux.intel.com>
+        Wed, 2 Jun 2021 14:42:11 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 8AF7C47D8
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 13:40:21 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id oVmvl4xzeMGeEoVmvlyhkp; Wed, 02 Jun 2021 13:40:21 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2+ckpTm7lC7sdsELuV1F3Ug7vq+/kF0ixFZ4mssOTYk=; b=bjBGFnyNlgjsN/VB7sJaQ9zp7F
+        6aGjV3FuZ64vfzF9XdbUciQBC2LvZrnCkdnPbaQQiJdhBRzA+Qxvk9/PCxj7A2YowYig43ql/DJ+i
+        Ii4O7zxpy0jwBq3Idu3YmZJg2TR64qt5Zqc3v3GOb7bA1TMxsTmNJmNmA/Oc4nmq2bt65I7Tc5hN6
+        lnT++xh/N8xgW0U3adCP1DjzeGUFhQUOuADapf/9d4KSmnV3iBMHgBBwB6Cz7Z9WFdbL2iFZ3u/Al
+        9c6O4Sbjsxxe9vHqArvipwsC0CRTYZByysk4FC7939f43cIPB708ragh8jVEWv5T5Rjg1dv1JB7EB
+        DopBmrcw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52308 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1loVmr-004LkR-2L; Wed, 02 Jun 2021 13:40:17 -0500
+Subject: Re: [PATCH v2] scsi: fcoe: Statically initialize flogi_maddr
+To:     Kees Cook <keescook@chromium.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Joe Perches <joe@perches.com>, Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-scsi@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210602180000.3326448-1-keescook@chromium.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <389cfd5c-ea78-2da9-9d00-8743eda8bb0d@embeddedor.com>
+Date:   Wed, 2 Jun 2021 13:41:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210602180000.3326448-1-keescook@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <23225953-2052-8e72-5eb0-6b30f2a5c84b@linux.intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1loVmr-004LkR-2L
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:52308
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:32:18AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+
+
+On 6/2/21 13:00, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy() avoid using an inline const buffer
+> argument and instead just statically initialize the destination array
+> directly.
 > 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+--
+Gustavo
+
+> ---
+> v2:
+>  - use "static const" (Joe)
+> v1: https://lore.kernel.org/lkml/20210528181337.792268-2-keescook@chromium.org/
+> ---
+>  drivers/scsi/fcoe/fcoe.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> On 6/2/21 11:29 AM, Borislav Petkov wrote:
-> > If you can point me to a tree with your patches, I can try to hack up
-> > what I mean.
+> diff --git a/drivers/scsi/fcoe/fcoe.c b/drivers/scsi/fcoe/fcoe.c
+> index 89ec735929c3..5ae6c207d3ac 100644
+> --- a/drivers/scsi/fcoe/fcoe.c
+> +++ b/drivers/scsi/fcoe/fcoe.c
+> @@ -293,7 +293,7 @@ static int fcoe_interface_setup(struct fcoe_interface *fcoe,
+>  	struct fcoe_ctlr *fip = fcoe_to_ctlr(fcoe);
+>  	struct netdev_hw_addr *ha;
+>  	struct net_device *real_dev;
+> -	u8 flogi_maddr[ETH_ALEN];
+> +	static const u8 flogi_maddr[ETH_ALEN] = FC_FCOE_FLOGI_MAC;
+>  	const struct net_device_ops *ops;
+>  
+>  	fcoe->netdev = netdev;
+> @@ -336,7 +336,6 @@ static int fcoe_interface_setup(struct fcoe_interface *fcoe,
+>  	 * or enter promiscuous mode if not capable of listening
+>  	 * for multiple unicast MACs.
+>  	 */
+> -	memcpy(flogi_maddr, (u8[6]) FC_FCOE_FLOGI_MAC, ETH_ALEN);
+>  	dev_uc_add(netdev, flogi_maddr);
+>  	if (fip->spma)
+>  		dev_uc_add(netdev, fip->ctl_src_addr);
+> @@ -442,7 +441,7 @@ static void fcoe_interface_remove(struct fcoe_interface *fcoe)
+>  {
+>  	struct net_device *netdev = fcoe->netdev;
+>  	struct fcoe_ctlr *fip = fcoe_to_ctlr(fcoe);
+> -	u8 flogi_maddr[ETH_ALEN];
+> +	static const u8 flogi_maddr[ETH_ALEN] = FC_FCOE_FLOGI_MAC;
+>  	const struct net_device_ops *ops;
+>  
+>  	/*
+> @@ -458,7 +457,6 @@ static void fcoe_interface_remove(struct fcoe_interface *fcoe)
+>  	synchronize_net();
+>  
+>  	/* Delete secondary MAC addresses */
+> -	memcpy(flogi_maddr, (u8[6]) FC_FCOE_FLOGI_MAC, ETH_ALEN);
+>  	dev_uc_del(netdev, flogi_maddr);
+>  	if (fip->spma)
+>  		dev_uc_del(netdev, fip->ctl_src_addr);
 > 
-> https://github.com/intel/tdx/commit/8515b66a0cb27d5ab66eda201285090faee742f7
-
-Ok, and which branch or tag?
-
-tdx-guest-v5.12-7 or "guest"?
-
-The github interface is yuck when one wants to look at commits...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
