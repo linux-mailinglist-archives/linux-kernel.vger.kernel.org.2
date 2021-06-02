@@ -2,391 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF80A39836B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263FB39836E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbhFBHq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:46:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28299 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232045AbhFBHqZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:46:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622619883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DLGpkDE1IQ5Z6ghLy17vYVsC5JFNhgBxA3y2/XyFEdA=;
-        b=LaCaxxaHFwrDMEmTyCrHVZqKTXdk5TkuZijBYME3yWVvu7yG1WNivC9Q+S/FUgB8+cZYLK
-        ooLKEb9wbGTyvfALUShPz8v+Oi1EyPTl7nXaV6t7JMEIDZjLIwpIyZ36NZuinXeEGsaF21
-        MEEvUBF146JLNLtD8BlPijoCtD62DZA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-FdH4VYz_NVOw6H7WnQV1Og-1; Wed, 02 Jun 2021 03:44:39 -0400
-X-MC-Unique: FdH4VYz_NVOw6H7WnQV1Og-1
-Received: by mail-wr1-f72.google.com with SMTP id u20-20020a0560001614b02901115c8f2d89so659871wrb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 00:44:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=DLGpkDE1IQ5Z6ghLy17vYVsC5JFNhgBxA3y2/XyFEdA=;
-        b=phCXJ+1mUk0EM42M6yPQVBa0aahdhn6jP0xU3svNnIsfQ2MRP3izl2oQwMDiQefGul
-         3ndsk2KAP9P6IQTwT+a4w7qFoqeyS9vrHEYdLbJjCaMMKquryM4y/rjZJzpcXAQBDc1i
-         GI2keiVLSU82t1TJHAuB9gX6+tsEcM9VT21DjgFUTiFSxewz21Hl9El86DJ/QJ9taOcT
-         ObOptsJ/jeaWpR5Fc3LxJsEvS/BKStYL4c0Xz23is5gMdxWO8MDkvZu02MM/Ed5yJK5y
-         haxd0J3xQeP+cmXm4T90+XMSJHi4FASSzLjUuqTYFTlgGvoM4NOgmBvHf2evF+kVJn2h
-         UgXg==
-X-Gm-Message-State: AOAM531fJee8tcIHAOS742nvuYzbnZ0eDuI/mH2K6jlitwFNhHMlv720
-        CNLEPTeWSgW7UpA2RLFxAl3S0aNmQiBWCTKLLLfm7KDzuyKltDH2NDqou6h8s1s95WYuN66q2Z4
-        jwf0Y82ckltx6DMAqlkGyrdK9
-X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr1386665wry.4.1622619878315;
-        Wed, 02 Jun 2021 00:44:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzI3CiFMzRRi7muHGRTn1JgPXeq0ijBTSXMaKWHp06UrdyFomSIUI6/+cnQbSdUADSp0rrJTQ==
-X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr1386639wry.4.1622619877932;
-        Wed, 02 Jun 2021 00:44:37 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6b6d.dip0.t-ipconnect.de. [91.12.107.109])
-        by smtp.gmail.com with ESMTPSA id z12sm5549022wrv.68.2021.06.02.00.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 00:44:37 -0700 (PDT)
-To:     yong w <yongw.pur@gmail.com>
-Cc:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
-        axboe@kernel.dk, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-mm@kvack.org
-References: <CAOH5QeCiBF8AYsF853YRFw=kKq+7ps_a30qOFwYOwbinYLbUEw@mail.gmail.com>
- <13c28e69-cfd9-bcf6-ab77-445c6fa4cc6e@redhat.com>
- <CAOH5QeDapb6zsUZK3QA66PNfWJovqR4gWMODnckVdfbvte0Vqg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [RFC PATCH V1] zram:calculate available memory when zram is used
-Message-ID: <4350ee16-15d0-1d37-6074-cea5185aac51@redhat.com>
-Date:   Wed, 2 Jun 2021 09:44:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232077AbhFBHqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:46:37 -0400
+Received: from mail-mw2nam12on2046.outbound.protection.outlook.com ([40.107.244.46]:13280
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232066AbhFBHqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 03:46:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CsKR4RUv6nhsijzHQ2h3AQwtbQFeJjsIxWcmtwXscch7jQgjeHQYgOhulcruI/L0kt67tjmm/t9JZQcqc27CfdXz1Nfo9mSVF93jAI81d3nSS1fHLyeM+Qvwq/XW8Wfmi4tfdOOEU1JKsIqmX5hecRE20qsLUvmpyHgzjwWDIZzdIyJ9eCMlkHgIf3cxdECyrDou0DdJdmIYJBGEMRC75GdKjfEWGmGUa5zS+Xo+9o1D+wZQL4LohbKlCNiy0zDDXm4cPTgzGFiEU54CnxrypeVm0Astw/Q161U47kvIMvbHwNRD8k3UWSJzpccvGTGQ8BDLEJC/BYs6dGXAV8hcHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NM3UaMStDV8kUDjcJ+Cn9PDzBvRZ3jJsHxxw6ySSO1Q=;
+ b=Bls1C71zD0mLEnGjCEAU876VoW2B6MWD8Q5GLNPc79eWeDgQcJeK6RXW2JjY6xTDkfvFSyM287bf5j9tZtiVeZvL3B37oXxjaxvzc2Rq8Y5fExcJ16YIjtrZpqeielbzwVOpKY1Rxud3okTWdrXFLtlPY8yCdzivUPQSDjscLb7/u41koGhhaCsbmr6LIU+S6fAZ67mZLwjeh9COBHBN/4JPPpMXItHzZiaVQPq+kjukXonqJ2f0XL/a4PDERvjrHkUCirSoNlB/G8BjEPqNamgSpviocSbx/ET5/3ZME4BikLfia9M0yvkc5tmu/HEZTgj3uCgkdUfiYojCJ82dvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NM3UaMStDV8kUDjcJ+Cn9PDzBvRZ3jJsHxxw6ySSO1Q=;
+ b=WJtu9+Tg6vvtdFTeORZGjTBovgB7WwTmT42hecJWIilCobA99B2ZzIh+J+L/Y0STjMRPKh8DF4YrFfYpROsl+RoukjbK6tgl0cax5NkNlXooSqYrRE9CGOj92vftIBby6ImP4MbA+pf81wciZR9g9jim+0r9WFL0EZy6UwSdeZO2YRcMl0wIG2B95m5ZB166ft3rdkoBFm0yO+N9NhYCpe+wJbHIIeFpzqfj/Btu83WIqHlZ9t9ZdFn6z2Y64noq/Q5CMBn2a6OLrT3VoB7TuL2CSrAoHk1G+t9GIP1tevUHjnpF8LYdltvCjOzxoM13m/e7ZI6COUdKMzFMxl1T3A==
+Received: from DM5PR16CA0040.namprd16.prod.outlook.com (2603:10b6:4:15::26) by
+ SJ0PR12MB5440.namprd12.prod.outlook.com (2603:10b6:a03:3ac::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Wed, 2 Jun
+ 2021 07:44:51 +0000
+Received: from DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:15:cafe::e2) by DM5PR16CA0040.outlook.office365.com
+ (2603:10b6:4:15::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Wed, 2 Jun 2021 07:44:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT054.mail.protection.outlook.com (10.13.173.95) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4150.30 via Frontend Transport; Wed, 2 Jun 2021 07:44:51 +0000
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.187.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 2 Jun 2021 07:44:47 +0000
+Date:   Wed, 2 Jun 2021 10:44:42 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <eli@mellanox.com>
+Subject: Re: [PATCH V2 RESEND 1/4] vdpa: support packed virtqueue for
+ set/get_vq_state()
+Message-ID: <20210602074442.GD12498@mtl-vdi-166.wap.labs.mlnx>
+References: <20210602021536.39525-1-jasowang@redhat.com>
+ <20210602021536.39525-2-jasowang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOH5QeDapb6zsUZK3QA66PNfWJovqR4gWMODnckVdfbvte0Vqg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210602021536.39525-2-jasowang@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 316cbcf3-d6af-4da5-8279-08d9259a4e0c
+X-MS-TrafficTypeDiagnostic: SJ0PR12MB5440:
+X-Microsoft-Antispam-PRVS: <SJ0PR12MB5440C3153EC3E81434B8F262AB3D9@SJ0PR12MB5440.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Cd+oa3WGnf/iVVVVmFTD96zrczQH1/0lT1f6H80X5i5aFB8p8DG3P4T+BgxrXzuKtVwqbHvqkkYj2iiFD86pfjVnio2Df6OqVeP814nVnlC+NAq6y7GT9howezHovS1RiLpGAK/3vW+rO/82jFkjTbl9+7Kmts3yjP83An80H22Yhw6/PFkuwCpLMDM4ZQc18t6lYnVzeOtvCi0gAzKK1kHJyY4v47JpxQOpLDmHPlTa9Fz/d1ZSeK4+v2RpA+3hhUa3gygmyPGU1zwEdI7jjhL7wLa+ykBG1hPl7gMskhow0S4YQiP+wzYx6CwCss8b2XYUgiQESJRFrOBE9/adZe2hR5T0KSy89cqHEh5VWrVVHkFZ/tpwdkSuvl4cnmrbe6/BWS1hnmcbMm4rP4T5iGez8blc/tq1uLh2kO+5cCGNIAKHGRVjJVQ6PB15mMCju/Sg9wH2FcbvpBSaECuT3gPB0oVmDpX8Wivof1HLo+X3/i421krXOJSyuoXAbU3HYcIfzwMbhB3qd60ColyLaV8+LY7hMurmh2juNNm7srkBTtZ/EqNZwmNK3TNKHMGwrWx44lIgktoHWrEXAyNWLkhoKHpQF78Xjzg7fLA4RvmaMR92UUDdOcUPJGYfAX9uZaPIr6CwWKSKBBm23N2V4Q==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(36840700001)(46966006)(5660300002)(2906002)(26005)(55016002)(36906005)(356005)(70206006)(9686003)(16526019)(33656002)(186003)(8676002)(1076003)(336012)(70586007)(83380400001)(316002)(86362001)(7636003)(82740400003)(54906003)(426003)(47076005)(82310400003)(478600001)(7696005)(6666004)(6916009)(36860700001)(8936002)(107886003)(4326008);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 07:44:51.2740
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 316cbcf3-d6af-4da5-8279-08d9259a4e0c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5440
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.06.21 02:06, yong w wrote:
-> Thanks for your reply!
+On Wed, Jun 02, 2021 at 10:15:33AM +0800, Jason Wang wrote:
+> This patch extends the vdpa_vq_state to support packed virtqueue
+> state which is basically the device/driver ring wrap counters and the
+> avail and used index. This will be used for the virito-vdpa support
+> for the packed virtqueue and the future vhost/vhost-vdpa support for
+> the packed virtqueue.
 > 
-> Indeed, when zram is not triggered, MemAvalible will be greater than Memtotal.
-> As you said, this modification will have program compatibility issues,
->   when there
-> are some user space scripts use MemAvailable for calculation.
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+
+Reviewed-by: Eli Cohen <elic@nvidia.com>
+
+> ---
+>  drivers/vdpa/ifcvf/ifcvf_main.c   |  4 ++--
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c |  8 ++++----
+>  drivers/vdpa/vdpa_sim/vdpa_sim.c  |  4 ++--
+>  drivers/vhost/vdpa.c              |  4 ++--
+>  include/linux/vdpa.h              | 25 +++++++++++++++++++++++--
+>  5 files changed, 33 insertions(+), 12 deletions(-)
 > 
-> How about providing another proc interface?
-> Such as /proc/xxx, When execute “cat /proc/xxx”, it returns "available
-> + swapfree - swapfree * compress ratio" value.
-
-Good question. What would be an appropriate name and description for 
-this entry?
-
-We do have in /proc/meminfo already:
-
-MemTotal:
-MemAvailable:
-SwapTotal:
-SwapFree:
-
-I wonder if we could add an entry either for "swapfree - swapfree * 
-compress" or "swapfree * compress". But even then, I struggle to find a 
-fitting name. We could either define something like
-
-"SwapAvailable:" An estimate of how much swap space is available for 
-starting new applications. Note that SwapAvailable is different to 
-SwapFree when swap compression, as implemented by zram, is being performed.
-
-So a user can compute
-
-"TotalAvailable = MemAvailable + SwapAvailable".
-
-or if that doesn't make any sense:
-
-"TotalAvailable:" An estimate of how much memory and swap space is 
-available for starting new applications. Usually, the value corresponds 
-to "MemAvailable + SwapFree", however, swap compression, as implemented 
-by zram, might allow for making more efficient use of free swap space.
-
-
-I'd prefer the first -- if it makes any sense.
-
-You should CC linux-api on follow up patches.
-
-> Thanks in advance！
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+> index ab0ab5cf0f6e..5d3891b1ca28 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+> @@ -264,7 +264,7 @@ static int ifcvf_vdpa_get_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
+>  {
+>  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+>  
+> -	state->avail_index = ifcvf_get_vq_state(vf, qid);
+> +	state->split.avail_index = ifcvf_get_vq_state(vf, qid);
+>  	return 0;
+>  }
+>  
+> @@ -273,7 +273,7 @@ static int ifcvf_vdpa_set_vq_state(struct vdpa_device *vdpa_dev, u16 qid,
+>  {
+>  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+>  
+> -	return ifcvf_set_vq_state(vf, qid, state->avail_index);
+> +	return ifcvf_set_vq_state(vf, qid, state->split.avail_index);
+>  }
+>  
+>  static void ifcvf_vdpa_set_vq_cb(struct vdpa_device *vdpa_dev, u16 qid,
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 189e4385df40..e5505d760bca 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1427,8 +1427,8 @@ static int mlx5_vdpa_set_vq_state(struct vdpa_device *vdev, u16 idx,
+>  		return -EINVAL;
+>  	}
+>  
+> -	mvq->used_idx = state->avail_index;
+> -	mvq->avail_idx = state->avail_index;
+> +	mvq->used_idx = state->split.avail_index;
+> +	mvq->avail_idx = state->split.avail_index;
+>  	return 0;
+>  }
+>  
+> @@ -1449,7 +1449,7 @@ static int mlx5_vdpa_get_vq_state(struct vdpa_device *vdev, u16 idx, struct vdpa
+>  		 * Since both values should be identical, we take the value of
+>  		 * used_idx which is reported correctly.
+>  		 */
+> -		state->avail_index = mvq->used_idx;
+> +		state->split.avail_index = mvq->used_idx;
+>  		return 0;
+>  	}
+>  
+> @@ -1458,7 +1458,7 @@ static int mlx5_vdpa_get_vq_state(struct vdpa_device *vdev, u16 idx, struct vdpa
+>  		mlx5_vdpa_warn(mvdev, "failed to query virtqueue\n");
+>  		return err;
+>  	}
+> -	state->avail_index = attr.used_index;
+> +	state->split.avail_index = attr.used_index;
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> index 98f793bc9376..14e024de5cbf 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> @@ -374,7 +374,7 @@ static int vdpasim_set_vq_state(struct vdpa_device *vdpa, u16 idx,
+>  	struct vringh *vrh = &vq->vring;
+>  
+>  	spin_lock(&vdpasim->lock);
+> -	vrh->last_avail_idx = state->avail_index;
+> +	vrh->last_avail_idx = state->split.avail_index;
+>  	spin_unlock(&vdpasim->lock);
+>  
+>  	return 0;
+> @@ -387,7 +387,7 @@ static int vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx,
+>  	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
+>  	struct vringh *vrh = &vq->vring;
+>  
+> -	state->avail_index = vrh->last_avail_idx;
+> +	state->split.avail_index = vrh->last_avail_idx;
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index fb41db3da611..210ab35a7ebf 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -383,7 +383,7 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+>  		if (r)
+>  			return r;
+>  
+> -		vq->last_avail_idx = vq_state.avail_index;
+> +		vq->last_avail_idx = vq_state.split.avail_index;
+>  		break;
+>  	}
+>  
+> @@ -401,7 +401,7 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+>  		break;
+>  
+>  	case VHOST_SET_VRING_BASE:
+> -		vq_state.avail_index = vq->last_avail_idx;
+> +		vq_state.split.avail_index = vq->last_avail_idx;
+>  		if (ops->set_vq_state(vdpa, idx, &vq_state))
+>  			r = -EINVAL;
+>  		break;
+> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> index f311d227aa1b..3357ac98878d 100644
+> --- a/include/linux/vdpa.h
+> +++ b/include/linux/vdpa.h
+> @@ -28,13 +28,34 @@ struct vdpa_notification_area {
+>  };
+>  
+>  /**
+> - * struct vdpa_vq_state - vDPA vq_state definition
+> + * struct vdpa_vq_state_split - vDPA split virtqueue state
+>   * @avail_index: available index
+>   */
+> -struct vdpa_vq_state {
+> +struct vdpa_vq_state_split {
+>  	u16	avail_index;
+>  };
+>  
+> +/**
+> + * struct vdpa_vq_state_packed - vDPA packed virtqueue state
+> + * @last_avail_counter: last driver ring wrap counter observed by device
+> + * @last_avail_idx: device available index
+> + * @last_used_counter: device ring wrap counter
+> + * @last_used_idx: used index
+> + */
+> +struct vdpa_vq_state_packed {
+> +        u16	last_avail_counter:1;
+> +        u16	last_avail_idx:15;
+> +        u16	last_used_counter:1;
+> +        u16	last_used_idx:15;
+> +};
+> +
+> +struct vdpa_vq_state {
+> +     union {
+> +          struct vdpa_vq_state_split split;
+> +          struct vdpa_vq_state_packed packed;
+> +     };
+> +};
+> +
+>  struct vdpa_mgmt_dev;
+>  
+>  /**
+> -- 
+> 2.25.1
 > 
-> 
-> David Hildenbrand <david@redhat.com> 于2021年5月31日周一 下午4:17写道：
->>
->> On 30.05.21 19:18, yong w wrote:
->>> When zram is used, available+Swap free memory is obviously bigger than
->>> I actually can use, because zram can compress memory by compression
->>> algorithm and zram compressed data will occupy memory too.
->>>
->>> So, I count the compression rate of zram in the kernel. The available
->>> memory  is calculated as follows:
->>> available + swapfree - swapfree * compress ratio
->>> MemAvailable in /proc/meminfo returns available + zram will save space
->>>
->>
->> This will mean that we can easily have MemAvailable > MemTotal, right?
->> I'm not sure if there are some user space scripts that will be a little
->> disrupted by that. Like calculating "MemUnavailable = MemTotal -
->> MemAvailable".
->>
->> MemAvailable: "An estimate of how much memory is available for starting
->> new applications, without swapping"
->>
->> Although zram isn't "traditional swapping", there is still a performance
->> impact when having to go to zram because it adds an indirection and
->> requires (de)compression. Similar to having very fast swap space (like
->> PMEM). Let's not call something "memory" that doesn't have the same
->> semantics as real memory as in "MemTotal".
->>
->> This doesn't feel right.
->>
->>> Signed-off-by: wangyong <yongw.pur@gmail.com <mailto:yongw.pur@gmail.com>>
->>> ---
->>>    drivers/block/zram/zcomp.h    |  1 +
->>>    drivers/block/zram/zram_drv.c |  4 ++
->>>    drivers/block/zram/zram_drv.h |  1 +
->>>    fs/proc/meminfo.c             |  2 +-
->>>    include/linux/swap.h          | 10 +++++
->>>    mm/swapfile.c                 | 95
->>> +++++++++++++++++++++++++++++++++++++++++++
->>>    mm/vmscan.c                   |  1 +
->>>    7 files changed, 113 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
->>> index 40f6420..deb2dbf 100644
->>> --- a/drivers/block/zram/zcomp.h
->>> +++ b/drivers/block/zram/zcomp.h
->>> @@ -40,4 +40,5 @@ int zcomp_decompress(struct zcomp_strm *zstrm,
->>>     const void *src, unsigned int src_len, void *dst);
->>>
->>>    bool zcomp_set_max_streams(struct zcomp *comp, int num_strm);
->>> +int get_zram_major(void);
->>>    #endif /* _ZCOMP_H_ */
->>> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
->>> index cf8deec..1c6cbd4 100644
->>> --- a/drivers/block/zram/zram_drv.c
->>> +++ b/drivers/block/zram/zram_drv.c
->>> @@ -59,6 +59,10 @@ static void zram_free_page(struct zram *zram, size_t
->>> index);
->>>    static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
->>>     u32 index, int offset, struct bio *bio);
->>>
->>> +int get_zram_major(void)
->>> +{
->>> + return zram_major;
->>> +}
->>>
->>>    static int zram_slot_trylock(struct zram *zram, u32 index)
->>>    {
->>> diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
->>> index 6e73dc3..5d8701a 100644
->>> --- a/drivers/block/zram/zram_drv.h
->>> +++ b/drivers/block/zram/zram_drv.h
->>> @@ -88,6 +88,7 @@ struct zram_stats {
->>>     atomic64_t bd_reads; /* no. of reads from backing device */
->>>     atomic64_t bd_writes; /* no. of writes from backing device */
->>>    #endif
->>> + atomic_t min_compr_ratio;
->>>    };
->>>
->>>    struct zram {
->>> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
->>> index 6fa761c..f7bf350 100644
->>> --- a/fs/proc/meminfo.c
->>> +++ b/fs/proc/meminfo.c
->>> @@ -57,7 +57,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->>>
->>>     show_val_kb(m, "MemTotal:       ", i.totalram);
->>>     show_val_kb(m, "MemFree:        ", i.freeram);
->>> - show_val_kb(m, "MemAvailable:   ", available);
->>> + show_val_kb(m, "MemAvailable:   ", available + count_avail_swaps());
->>>     show_val_kb(m, "Buffers:        ", i.bufferram);
->>>     show_val_kb(m, "Cached:         ", cached);
->>>     show_val_kb(m, "SwapCached:     ", total_swapcache_pages());
->>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>> index 032485e..3225a2f 100644
->>> --- a/include/linux/swap.h
->>> +++ b/include/linux/swap.h
->>> @@ -514,6 +514,8 @@ extern int init_swap_address_space(unsigned int
->>> type, unsigned long nr_pages);
->>>    extern void exit_swap_address_space(unsigned int type);
->>>    extern struct swap_info_struct *get_swap_device(swp_entry_t entry);
->>>    sector_t swap_page_sector(struct page *page);
->>> +extern void update_zram_zstats(void);
->>> +extern u64 count_avail_swaps(void);
->>>
->>>    static inline void put_swap_device(struct swap_info_struct *si)
->>>    {
->>> @@ -684,6 +686,14 @@ static inline swp_entry_t get_swap_page(struct page
->>> *page)
->>>     return entry;
->>>    }
->>>
->>> +void update_zram_zstats(void)
->>> +{
->>> +}
->>> +
->>> +u64 count_avail_swaps(void)
->>> +{
->>> +}
->>> +
->>>    #endif /* CONFIG_SWAP */
->>>
->>>    #ifdef CONFIG_THP_SWAP
->>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>> index cbb4c07..93a9dcb 100644
->>> --- a/mm/swapfile.c
->>> +++ b/mm/swapfile.c
->>> @@ -44,6 +44,7 @@
->>>    #include <asm/tlbflush.h>
->>>    #include <linux/swapops.h>
->>>    #include <linux/swap_cgroup.h>
->>> +#include "../drivers/block/zram/zram_drv.h"
->>>
->>>    static bool swap_count_continued(struct swap_info_struct *, pgoff_t,
->>>     unsigned char);
->>> @@ -3408,6 +3409,100 @@ SYSCALL_DEFINE2(swapon, const char __user *,
->>> specialfile, int, swap_flags)
->>>     return error;
->>>    }
->>>
->>> +u64 count_avail_swap(struct swap_info_struct *si)
->>> +{
->>> + u64 result;
->>> + struct zram *z;
->>> + unsigned int free;
->>> + unsigned int ratio;
->>> +
->>> + result = 0;
->>> + if (!si)
->>> + return 0;
->>> +
->>> + //zram calculate available mem
->>> + if (si->flags & SWP_USED && si->swap_map) {
->>> + if (si->bdev->bd_disk->major == get_zram_major()) {
->>> + z = (struct zram *)si->bdev->bd_disk->private_data;
->>> + down_read(&z->init_lock);
->>> + ratio = atomic_read(&z->stats.min_compr_ratio);
->>> + free = (si->pages << (PAGE_SHIFT - 10))
->>> + - (si->inuse_pages << (PAGE_SHIFT - 10));
->>> + if (!ratio)
->>> + result += free / 2;
->>> + else
->>> + result = free * (100 - 10000 / ratio) / 100;
->>> + up_read(&z->init_lock);
->>> + }
->>> + } else
->>> + result += (si->pages << (PAGE_SHIFT - 10))
->>> + - (si->inuse_pages << (PAGE_SHIFT - 10));
->>> +
->>> + return result;
->>> +}
->>> +
->>> +u64 count_avail_swaps(void)
->>> +{
->>> + int type;
->>> + u64 result;
->>> + struct swap_info_struct *si;
->>> +
->>> + result = 0;
->>> + spin_lock(&swap_lock);
->>> + for (type = 0; type < nr_swapfiles; type++) {
->>> + si = swap_info[type];
->>> + spin_lock(&si->lock);
->>> + result += count_avail_swap(si);
->>> + spin_unlock(&si->lock);
->>> + }
->>> + spin_unlock(&swap_lock);
->>> +
->>> + return result;
->>> +}
->>> +
->>> +void update_zram_zstat(struct swap_info_struct *si)
->>> +{
->>> + struct zram *z;
->>> + struct zram_stats *stat;
->>> + int ratio;
->>> + u64 orig_size, compr_data_size;
->>> +
->>> + if (!si)
->>> + return;
->>> +
->>> + //update zram min compress ratio
->>> + if (si->flags & SWP_USED && si->swap_map) {
->>> + if (si->bdev->bd_disk->major == get_zram_major()) {
->>> + z = (struct zram *)si->bdev->bd_disk->private_data;
->>> + down_read(&z->init_lock);
->>> + stat = &z->stats;
->>> + ratio = atomic_read(&stat->min_compr_ratio);
->>> + orig_size = atomic64_read(&stat->pages_stored) << PAGE_SHIFT;
->>> + compr_data_size = atomic64_read(&stat->compr_data_size);
->>> + if (compr_data_size && (!ratio
->>> +     || ((orig_size * 100) / compr_data_size < ratio)))
->>> + atomic_set(&stat->min_compr_ratio,
->>> +    (orig_size * 100) / compr_data_size);
->>> + up_read(&z->init_lock);
->>> + }
->>> + }
->>> +}
->>> +
->>> +void update_zram_zstats(void)
->>> +{
->>> + int type;
->>> + struct swap_info_struct *si;
->>> +
->>> + spin_lock(&swap_lock);
->>> + for (type = 0; type < nr_swapfiles; type++) {
->>> + si = swap_info[type];
->>> + spin_lock(&si->lock);
->>> + update_zram_zstat(si);
->>> + spin_unlock(&si->lock);
->>> + }
->>> + spin_unlock(&swap_lock);
->>> +}
->>> +
->>>    void si_swapinfo(struct sysinfo *val)
->>>    {
->>>     unsigned int type;
->>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>> index eb31452..ffaf59b 100644
->>> --- a/mm/vmscan.c
->>> +++ b/mm/vmscan.c
->>> @@ -4159,6 +4159,7 @@ static int kswapd(void *p)
->>>     alloc_order);
->>>     reclaim_order = balance_pgdat(pgdat, alloc_order,
->>>     highest_zoneidx);
->>> + update_zram_zstats();
->>>     if (reclaim_order < alloc_order)
->>>     goto kswapd_try_sleep;
->>>     }
->>> --
->>> 2.7.4
->>
->>
->> --
->> Thanks,
->>
->> David / dhildenb
->>
-> 
-
-
--- 
-Thanks,
-
-David / dhildenb
-
