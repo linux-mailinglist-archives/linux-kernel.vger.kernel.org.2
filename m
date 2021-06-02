@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71DC39801D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5F7398020
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbhFBETk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 00:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
+        id S229817AbhFBEVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 00:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhFBETj (ORCPT
+        with ESMTP id S229469AbhFBEVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 00:19:39 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD913C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 21:17:55 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d16so1150549pfn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 21:17:55 -0700 (PDT)
+        Wed, 2 Jun 2021 00:21:50 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B164C061574;
+        Tue,  1 Jun 2021 21:20:06 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso1326546otu.10;
+        Tue, 01 Jun 2021 21:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mtSaAuWiZJRWHW31U7h2NEY6RUaj0+NwZWeALsZIKAk=;
-        b=uhw5Vz0t/XV6dCO6C6hZia8HgopUokHahOvnkP5Gg7tYVUMthZYs/hZmnMSuKPhT3u
-         +bzVdgVXeY5QJ1woKKgeXMX0eQZEZG9P3+rAbUuRiFzpZRplBNNcO5VOKnU3e6U7CqtL
-         TLlz3swXz41PHdNxtiCfFsf5i0bbW7sl8lTND0g8RofRTwbSSroB56QGhN41rsvIpkMB
-         Ux43/mhK0TB4PEpCglbfYQ2haDa520zSOjgRnlWzeaaIRvkKcudws+8CicEngVvMmTg2
-         zWhcN9tFmNpEKfOwymAK5l9lzVAu8xlk4aGAGAt4JWkD/9H9GDfW1WEqXObFtQb9k8T8
-         MatA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iMGGsERMcpA8geFW9RIY3rOzp/NmJwFBkoB6KSFK9fg=;
+        b=kXURr4p8FYVcPWJPYQpN81Dnc23rFNR576uqzwHXok9JqcJIjI6lYm+b/65+Kc7BzQ
+         r3lfmmlY/ey68rQd9erNzPIRbPTPUCxhzBZWVFFYM354letowY1j3NV0w5pkBdOTs7fX
+         lTDz4+vUHQ+5wN/nV8MO+4oMzUADGYznF/ijy2lvw6uR4vhT/Dch7MpI8OFKHPLWdHNZ
+         kPeOF4sU8Umpl/15u5sBC9ePcVHkxAoG46af2xb1ljN4C150i/RHON091eYeWHF9R0St
+         K8tN98do0Ar+WlfhtnaJUj5tDrmoZcYtM+re/HfDitBJY0H3GWZ/Cg70t+mpnsG/DECq
+         LNag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=mtSaAuWiZJRWHW31U7h2NEY6RUaj0+NwZWeALsZIKAk=;
-        b=IMny4z8Ih1Of633x3ORJITXwefY797PrAhqVW3W09Q/ED9pNRAb6K+lm8DEVcVll3k
-         vSUxl1UvzUlDQPh23+yXdtyN6Bgqai1Ipj5pQBr4MmuMazlGeyh40PPeAmkS1pTMjzoq
-         5GhIon/vK91guxe54n9Yj3A8e8Z+R96vF1Uvc6ZnjOXn34XKwu3KgGSHHjB2FgjedMIw
-         pedsLLXDFliA+hmb/snGcSXjOMETDDA5mciemCDC0AWuCM3hCifz1pQj6SeNDE0JKpg9
-         m+7kwqsXHvpji7eyM1IZ2Op/q/Z5pYCrDihoHHh8Y9tCRSYGKje5ArQE8SXX4Za6qhyJ
-         hBgg==
-X-Gm-Message-State: AOAM531MP2Zj69v9Jf9n2EAx6gTQOHeRf8lQTpkx+JtHIifJcn2cMkYR
-        A7Vm6qOrPQZcv7iSR7R8n+U8Iw==
-X-Google-Smtp-Source: ABdhPJyXusxvKqjWp5isMx1d+LhFjYhYLYM/k7N+B3pFOZtRUrACHwxWtCF9uQDazwO1Gt+ikU4m7g==
-X-Received: by 2002:a63:1324:: with SMTP id i36mr17778343pgl.44.1622607475209;
-        Tue, 01 Jun 2021 21:17:55 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id s19sm473261pgv.92.2021.06.01.21.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 21:17:54 -0700 (PDT)
-Date:   Tue, 01 Jun 2021 21:17:54 -0700 (PDT)
-X-Google-Original-Date: Tue, 01 Jun 2021 21:17:52 PDT (-0700)
-Subject:     Re: linux-next: Signed-off-by missing for commit in the risc-v-fixes tree
-In-Reply-To: <20210601075713.6cffe979@canb.auug.org.au>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Message-ID: <mhng-317af89c-4d85-491d-9eac-439972a26469@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iMGGsERMcpA8geFW9RIY3rOzp/NmJwFBkoB6KSFK9fg=;
+        b=pskiJ+wiAsBnnQ0ZwCR1YEqavTWWy4H+cpH2xiLnfvlUOEJohvr4WosOoo4ug9Rvml
+         gYyVWb8SMLEPDNIUqgnIHzeftJrMdYDSuvSlhQPipMqSjv+8Qr9uli8299DvI+nvWP4V
+         oXXsuXeKN1yOT2YvOBjl62ElnKDGcibczURFVV8/mHSEctd0VFN5GmZyBCbmKVPnm5FS
+         qMlJZjOWVW3aUfUtzFX8UaIQj68MSVaBZg1UVaf5ll0kvScjji/HHvKOPWNd9b8orWiQ
+         A+FLbwpLNODirMU7rP3KGPYn6OiZ0vWKd6nDeU+Iocxqgg9iymC6VcItADwULvM8iIVj
+         VB/w==
+X-Gm-Message-State: AOAM533sYufswtFAenhZC6LH0Rx/Wh4TT4CQ5lSyGpn48PhXD46lNnqS
+        6URmhr4N6L9suVuOXtVVlEc=
+X-Google-Smtp-Source: ABdhPJxIICiS9DApqp6rDz37Pujc3qqjy2E0zZ1KFQCNVyxmacAjPjgq5QQFR3HoGsyV5xY4tmfwRQ==
+X-Received: by 2002:a05:6830:16c4:: with SMTP id l4mr25176368otr.93.1622607605823;
+        Tue, 01 Jun 2021 21:20:05 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.22])
+        by smtp.googlemail.com with ESMTPSA id x14sm3932671oic.3.2021.06.01.21.20.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 21:20:05 -0700 (PDT)
+Subject: Re: [PATCH] ipv6: create ra_mtu proc file to only record mtu in RA
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        rocco.yue@gmail.com
+References: <7087f518-f86e-58fb-6f32-a7cda77fb065@gmail.com>
+ <20210602031502.31600-1-rocco.yue@mediatek.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <05efe271-72f8-bc77-8869-ae4685af5ea4@gmail.com>
+Date:   Tue, 1 Jun 2021 22:20:03 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
+MIME-Version: 1.0
+In-Reply-To: <20210602031502.31600-1-rocco.yue@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 14:57:13 PDT (-0700), Stephen Rothwell wrote:
-> Hi all,
->
-> Commit
->
->   345f7d3d5e58 ("riscv: mm: Fix W+X mappings at boot")
->
-> is missing a Signed-off-by from its committer.
+On 6/1/21 9:15 PM, Rocco Yue wrote:
+> On Tue, 2021-06-01 at 18:38 -0600, David Ahern wrote:
+> On 6/1/21 3:16 AM, Rocco Yue wrote:
+>>> For this patch set, if RA message carries the mtu option,
+>>> "proc/sys/net/ipv6/conf/<iface>/ra_mtu" will be updated to the
+>>> mtu value carried in the last RA message received, and ra_mtu
+>>> is an independent proc file, which is not affected by the update
+>>> of interface mtu value.
+>>
+>> I am not a fan of more /proc/sys files.
+>>
+>> You are adding it to devconf which is good. You can add another link
+>> attribute, e.g., IFLA_RA_MTU, and have it returned on link queries.
+>>
+>> Make sure the attribute can not be sent in a NEWLINK or SETLINK request;
+>> it should be read-only for GETLINK.
+> 
+> Thanks for your review and advice.
+> Do you mean that I should keep the ra_mtu proc and add an another extra netlink msg?
+> Or only use netlink msg instead of ra_mtu proc?
+> I will do it.
+> 
 
-Thanks, this should be fixed.
+I meant DEVCONF and notification to userspace was good, but using an
+IFLA attribute and no proc/sys file is better.
