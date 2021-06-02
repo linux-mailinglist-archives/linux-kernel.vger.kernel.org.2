@@ -2,106 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC0A399456
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8094D399454
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhFBUNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:13:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49093 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229618AbhFBUNC (ORCPT
+        id S229626AbhFBUM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:12:59 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:45728 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBUM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:13:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622664678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CSRmX+FDS/GxrreH9xxeE/g9PuIN/GIv3cCKatjn/Mc=;
-        b=g8sZvC/uA913o1xahaZNnGUA2vQSl4G9i6vKuDw8WVPluR4kWL8oV5LgwUamtFEXe+wrjw
-        TINvi3u6ZD1SGO4ju3pY/MPvyAVPLp3CwskBTEg5mTJJWnbE1PaPYCN+mydG7Ypy3h98B8
-        VLtQTOzxnkhxF0uNSFvvoGKxy6ZuCkQ=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-GwOK6_qMMTa3fLpphKtr8g-1; Wed, 02 Jun 2021 16:11:17 -0400
-X-MC-Unique: GwOK6_qMMTa3fLpphKtr8g-1
-Received: by mail-qv1-f72.google.com with SMTP id n12-20020a0c8c0c0000b02901edb8963d4dso2653710qvb.18
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:11:17 -0700 (PDT)
+        Wed, 2 Jun 2021 16:12:59 -0400
+Received: by mail-oi1-f182.google.com with SMTP id w127so3867522oig.12;
+        Wed, 02 Jun 2021 13:11:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CSRmX+FDS/GxrreH9xxeE/g9PuIN/GIv3cCKatjn/Mc=;
-        b=SFUOs81TKT/IPW6CSdKXaXNIYw4uhTZAh06h+fiivLW0gOwZ522tdM4nt48Tb6XPON
-         1SBOiIVeQ86u353X2SYqwhZ8E61vYdLLOB30276DmS6Lofgqk0RyMZl8LlJTuIp7rbPY
-         hfQ856L7mw6XBdvCcGHnFEFOwVxbGxtaJR7cU/EQoPp3GHkMmWEZcigjkSs3e526B3CK
-         LsVxkDBtPeRXdMyTIm4VRfWBKUlPgoWQ7akfcZ4jBTy0AZHuufQtI/oazzQ27aEAVmWg
-         4jDmrQTAn9S5ndSnhPk16h/17JfFtDc9PSwKLkvLb4XQiETaj5HQ2AFvlmd6yGWGSKrI
-         mJjw==
-X-Gm-Message-State: AOAM532IbvwMpVdQCt7q8v8YYag+xOKjLZNWV6ExMHavwsSVevIG1Afa
-        R3XDVWN4VSWsiw53LMSb5iaKSGsqf5DYMaioVEusAFvN0ZzupatgTU2lyjs3lS79boBwnsQznwh
-        c0LeS5o29J8y8ewo96asigsrz
-X-Received: by 2002:a05:6214:e4d:: with SMTP id o13mr17043947qvc.19.1622664676727;
-        Wed, 02 Jun 2021 13:11:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZjZ8rrlikpx3dQU20EhYB/9CMwwnljiy3i6TbaDxe5BRTF53qkmMSwvadPyohzcS97aHnYw==
-X-Received: by 2002:a05:6214:e4d:: with SMTP id o13mr17043927qvc.19.1622664676532;
-        Wed, 02 Jun 2021 13:11:16 -0700 (PDT)
-Received: from treble ([68.52.236.68])
-        by smtp.gmail.com with ESMTPSA id h3sm531880qkk.82.2021.06.02.13.11.15
+        bh=3gem2VAQRvFplAWFQHGfada4VjRLkmbUR91Bl8uiQ1Y=;
+        b=K9vOG1p/qCBaZt+dB3SGd71eyFiFeKIvfWelc+PUAjKr0+s8M7HZ6EpLeOa2APdwbC
+         LTDsYM/H/BGltd9xdzU+67hlVFe4J3UvSuK1HNJ1BCVrD4f4bXVSU04C2W/WdqHMuTpL
+         7pw3xiCTiRz+Go1TRRFtTxsIY6tx6KsH1eFBLa7aUfcgyZM/ITBIBdIrWQptSMklFa6+
+         U7+Tq764rfwTZL5i9nE4eJG6IhPYf1fJbjCHzvY2T8oj41ZXLc/CsCIv6IZgzem+nFB0
+         yaTT7mM8gq/n8PLDFcHk2Cv+49P7U3C1S06mtrIPnL56vwnwIesE6xshGatUZPuDW7hS
+         aEDQ==
+X-Gm-Message-State: AOAM533119/FrdeK1oS2XR8/1vpAOgEpaSDSm+Ad4UeW3vLXj1K5vi4f
+        oOzp05AY+6Pw7ubIWIcquQ==
+X-Google-Smtp-Source: ABdhPJxT77S6h3/WeXIguRZu6ZOD+xXpJHz/pe3tDit/4kfpDjhc2sr3vDTaUncOXiOF5Z8fwjEouw==
+X-Received: by 2002:aca:654d:: with SMTP id j13mr4974972oiw.125.1622664675540;
+        Wed, 02 Jun 2021 13:11:15 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u6sm202482otk.63.2021.06.02.13.11.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 13:11:16 -0700 (PDT)
+        Wed, 02 Jun 2021 13:11:14 -0700 (PDT)
+Received: (nullmailer pid 3909398 invoked by uid 1000);
+        Wed, 02 Jun 2021 20:11:13 -0000
 Date:   Wed, 2 Jun 2021 15:11:13 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@aculab.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Message-ID: <20210602201113.gsuw7km3lkupg6r7@treble>
-References: <cover.1620186182.git.jpoimboe@redhat.com>
- <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
- <YLe73YcUeXBaLwHr@google.com>
+From:   Rob Herring <robh@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     cy_huang@richtek.com, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, broonie@kernel.org, devicetree@vger.kernel.org,
+        lgirdwood@gmail.com
+Subject: Re: [PATCH v2 1/2] regulator: rt6245: Add the binding document for
+ Richtek RT6245
+Message-ID: <20210602201113.GA3909335@robh.at.kernel.org>
+References: <1622092449-21461-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLe73YcUeXBaLwHr@google.com>
+In-Reply-To: <1622092449-21461-1-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 05:11:57PM +0000, Sean Christopherson wrote:
-> On Tue, May 04, 2021, Josh Poimboeuf wrote:
-> > The x86 uaccess code uses barrier_nospec() in various places to prevent
-> > speculative dereferencing of user-controlled pointers (which might be
-> > combined with further gadgets or CPU bugs to leak data).
-> > 
-> > There are some issues with the current implementation:
-> > 
-> > - The barrier_nospec() in copy_from_user() was inadvertently removed
-> >   with: 4b842e4e25b1 ("x86: get rid of small constant size cases in
-> >   raw_copy_{to,from}_user()")
+On Thu, 27 May 2021 13:14:08 +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
 > 
-> Mostly out of curiosity, wasn't copy_{from,to}_user() flawed even before that
-> patch?  Non-constant sizes would go straight to copy_user_generic(), and even if
-> string ops are used and strings are magically not vulnerable, small sizes would
-> skip to normal loads/stores in _copy_short_string when using
-> copy_user_enhanced_fast_string().
+> Add the binding document for Richtek RT6245.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> ---
+>  .../regulator/richtek,rt6245-regulator.yaml        | 89 ++++++++++++++++++++++
+>  1 file changed, 89 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
+> 
 
-Yes, it appears so.
-
--- 
-Josh
-
+Reviewed-by: Rob Herring <robh@kernel.org>
