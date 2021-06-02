@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6718398CFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA76398D0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhFBOf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhFBOfN (ORCPT
+        id S231535AbhFBOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:36:08 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:45581 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231626AbhFBOgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:35:13 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3D8C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:33:17 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id h8so2527212wrz.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:33:17 -0700 (PDT)
+        Wed, 2 Jun 2021 10:36:02 -0400
+Received: by mail-wm1-f53.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so1803228wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:34:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AV8ypLVFqPQaG8ImkTPidzOwU8OZuMCnDE642RmrYdM=;
-        b=p3+jsdMrgcaJkJnXd2tptd14Mk1isNUcDV4LXBYeZFHXMeFmYoBo2PZjh5bUHprvBq
-         amccJeNF6hAUYrfLing1CDMI1lReu7p2/ZAPfNGglUqM+2Rosu78ZD4ZV2ViNAIQScMe
-         wcJ6ppFXrlweNftZsGxihOEpbqUhKj9zZ+SBmXx8WlKP35h3ApyUFlHv1WuX4/aRYecr
-         UusaQA09LCi1+W2zmLQxxNfnPYNx3oYZ87WeKqo4H2PsuuzWCEMdq/OBUnTDjCAaWYIC
-         hDz0pDtBIqho0/CX2qKIHMxLUYwUoQVRYTGzccznsPwNZV5ctCqhoRsYdfJ3+rB2OCNV
-         oDZA==
+        bh=GHanPGk1uQOVUKO22D7xcyQQ9/A6KPvFy4YVhuM9AVY=;
+        b=weSv2bllCF3e1ehlxVmp/Vvyzjp3E0FY5fNrrrpD3iURB5k45Pm9TcA8+Js6WKxf9x
+         GBOz3TS5syfRjralVfYe6JUyG4b+LJpNVkDMHsCTnZljPC/qsrTJ0zxNpBYRoSPEBmKp
+         M+2ltZkccnBPhUHs4STlukcGb6tbBJLnlox2mb5rCUdn+x7DmFYRXrAZvkZAkSNxXvGK
+         r5zgx29duwCL6x9FTP5DkBZJYxX7cwxdb8yKSXv/z3LKd4xcIyyfY2deucptM8t8Z9oH
+         SI60mk5cLgN0+nk56E9pB0KMNPyWgJlApL/Gf3Rdi1rhs84sWsjxUXNj1YSfwC48Vi3E
+         bE9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AV8ypLVFqPQaG8ImkTPidzOwU8OZuMCnDE642RmrYdM=;
-        b=NNg3AAlORmoUKWbU60p4ObMbbMWnhNk9uqPyopwdGdeuXqzNqn2mQMflICQA6BHDla
-         eHe7eCZZZDJbrGGH9otnMNp7shCeRVnT3LG2dnSRg7e3/PUwwqag9MD0xYZm4ipw7VPl
-         sTDSbRwPEGBYHBa83j+c1WoecXV8SaVF86DC/wiW3modC7yQYSmR89AYSzl1nxzaXzEj
-         urpM9Z/SV6CLe3x5J/C6viuUDZhKsbAVzWZC90RC59nFNIJzCHBMDzJCuoZdj6Ny5DVa
-         YyUdZtJuXpt5XHkjQoUOT6eTeS0u+QcqSz0x4qMqGQZY+WlyXYAzjM2imwQc5tUq4xf5
-         rLjQ==
-X-Gm-Message-State: AOAM531YAewZBE6wHcmzc7RhV04TIRALrTTcqQ6A4Gvm7scQ9Tpq2/Ye
-        v98quJqsq4VCYry+9FnuditCXGJo/pry2g==
-X-Google-Smtp-Source: ABdhPJxv8/tXnt3jZGpEevkz+eyTG2Mxqu7ZVtAd/LSIfmLkLKLboeHduLpBdhMqhKvTfjt1eKrKQA==
-X-Received: by 2002:a5d:5049:: with SMTP id h9mr23002280wrt.221.1622644396475;
-        Wed, 02 Jun 2021 07:33:16 -0700 (PDT)
+        bh=GHanPGk1uQOVUKO22D7xcyQQ9/A6KPvFy4YVhuM9AVY=;
+        b=e/iMMnlDwFd6h05K9zv+FD/J8OpohvMTniyUi6pRx91IPmMVdIoDxQvQE0NqlAsyNc
+         ZKFyxbQWZqi8oR/3x9recBN3e4gIoIL7JbXbv13rdeHSVHPfY6qdyE45uet1L6qbKDgb
+         jy5OU2EaZgTZUMBfmkep6hQPYbbNxQaJPGkdq+4t2hwomffN9XEeseprD8MiSjijxq6M
+         kVQ0pEv9SxpXQ9jLKbgcP1td2GReUFk2oHTSvCJVWeB54kWkdpgxARDYC5SLURpOoZxt
+         osrIPokArShrGPdrLpyCHykFsxMMp6GSs8GQ0S8AtLICznSoWzNa54H/3YFn9U2xPgpE
+         Itgw==
+X-Gm-Message-State: AOAM533mVFyXhL7J9DWB+UY65X7AdK34j07lhdXrMOdpsO5OfuJRezfE
+        1FqoStodp7PvIe3btzxKrEPNzA==
+X-Google-Smtp-Source: ABdhPJxN9ta9qy0R5f/5vOwNfZet9pXrYS0G+jE+L4Zlx+LNSFezFCkj20cY+A42n9v7q6yu3KHE2Q==
+X-Received: by 2002:a1c:1f4a:: with SMTP id f71mr5593727wmf.146.1622644398348;
+        Wed, 02 Jun 2021 07:33:18 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.15
+        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:33:16 -0700 (PDT)
+        Wed, 02 Jun 2021 07:33:17 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,11 +52,11 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Philipp Zabel <p.zabel@pengutronix.de>,
-        Vincent Abriou <vincent.abriou@st.com>,
+        Fabien Dessenne <fabien.dessenne@st.com>,
         dri-devel@lists.freedesktop.org
-Subject: [RESEND 07/26] drm/sti/sti_tvout: Provide a bunch of missing function names
-Date:   Wed,  2 Jun 2021 15:32:41 +0100
-Message-Id: <20210602143300.2330146-8-lee.jones@linaro.org>
+Subject: [RESEND 08/26] drm/sti/sti_hqvdp: Fix incorrectly named function 'sti_hqvdp_vtg_cb()'
+Date:   Wed,  2 Jun 2021 15:32:42 +0100
+Message-Id: <20210602143300.2330146-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
 References: <20210602143300.2330146-1-lee.jones@linaro.org>
@@ -71,112 +68,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/sti/sti_tvout.c:166: warning: expecting prototype for Set the clipping mode of a VIP(). Prototype was for tvout_vip_set_color_order() instead
- drivers/gpu/drm/sti/sti_tvout.c:187: warning: expecting prototype for Set the clipping mode of a VIP(). Prototype was for tvout_vip_set_clip_mode() instead
- drivers/gpu/drm/sti/sti_tvout.c:203: warning: expecting prototype for Set the rounded value of a VIP(). Prototype was for tvout_vip_set_rnd() instead
- drivers/gpu/drm/sti/sti_tvout.c:223: warning: expecting prototype for Select the VIP input(). Prototype was for tvout_vip_set_sel_input() instead
- drivers/gpu/drm/sti/sti_tvout.c:258: warning: expecting prototype for Select the input video signed or unsigned(). Prototype was for tvout_vip_set_in_vid_fmt() instead
- drivers/gpu/drm/sti/sti_tvout.c:274: warning: expecting prototype for Set preformatter matrix(). Prototype was for tvout_preformatter_set_matrix() instead
- drivers/gpu/drm/sti/sti_tvout.c:299: warning: expecting prototype for Start VIP block for DVO output(). Prototype was for tvout_dvo_start() instead
- drivers/gpu/drm/sti/sti_tvout.c:353: warning: expecting prototype for Start VIP block for HDMI output(). Prototype was for tvout_hdmi_start() instead
- drivers/gpu/drm/sti/sti_tvout.c:402: warning: expecting prototype for Start HDF VIP and HD DAC(). Prototype was for tvout_hda_start() instead
+ drivers/gpu/drm/sti/sti_hqvdp.c:796: warning: expecting prototype for sti_vdp_vtg_cb(). Prototype was for sti_hqvdp_vtg_cb() instead
 
 Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Vincent Abriou <vincent.abriou@st.com>
+Cc: Fabien Dessenne <fabien.dessenne@st.com>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/sti/sti_tvout.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/sti/sti_hqvdp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/sti/sti_tvout.c b/drivers/gpu/drm/sti/sti_tvout.c
-index df3817f0fd302..2499715a69b79 100644
---- a/drivers/gpu/drm/sti/sti_tvout.c
-+++ b/drivers/gpu/drm/sti/sti_tvout.c
-@@ -153,7 +153,7 @@ static void tvout_write(struct sti_tvout *tvout, u32 val, int offset)
+diff --git a/drivers/gpu/drm/sti/sti_hqvdp.c b/drivers/gpu/drm/sti/sti_hqvdp.c
+index edbb99f53de19..d09b08995b12a 100644
+--- a/drivers/gpu/drm/sti/sti_hqvdp.c
++++ b/drivers/gpu/drm/sti/sti_hqvdp.c
+@@ -782,7 +782,7 @@ static void sti_hqvdp_disable(struct sti_hqvdp *hqvdp)
  }
  
  /**
-- * Set the clipping mode of a VIP
-+ * tvout_vip_set_color_order - Set the clipping mode of a VIP
-  *
-  * @tvout: tvout structure
-  * @reg: register to set
-@@ -177,7 +177,7 @@ static void tvout_vip_set_color_order(struct sti_tvout *tvout, int reg,
- }
- 
- /**
-- * Set the clipping mode of a VIP
-+ * tvout_vip_set_clip_mode - Set the clipping mode of a VIP
-  *
-  * @tvout: tvout structure
-  * @reg: register to set
-@@ -193,7 +193,7 @@ static void tvout_vip_set_clip_mode(struct sti_tvout *tvout, int reg, u32 range)
- }
- 
- /**
-- * Set the rounded value of a VIP
-+ * tvout_vip_set_rnd - Set the rounded value of a VIP
-  *
-  * @tvout: tvout structure
-  * @reg: register to set
-@@ -209,7 +209,7 @@ static void tvout_vip_set_rnd(struct sti_tvout *tvout, int reg, u32 rnd)
- }
- 
- /**
-- * Select the VIP input
-+ * tvout_vip_set_sel_input - Select the VIP input
-  *
-  * @tvout: tvout structure
-  * @reg: register to set
-@@ -247,7 +247,7 @@ static void tvout_vip_set_sel_input(struct sti_tvout *tvout,
- }
- 
- /**
-- * Select the input video signed or unsigned
-+ * tvout_vip_set_in_vid_fmt - Select the input video signed or unsigned
-  *
-  * @tvout: tvout structure
-  * @reg: register to set
-@@ -264,7 +264,7 @@ static void tvout_vip_set_in_vid_fmt(struct sti_tvout *tvout,
- }
- 
- /**
-- * Set preformatter matrix
-+ * tvout_preformatter_set_matrix - Set preformatter matrix
-  *
-  * @tvout: tvout structure
-  * @mode: display mode structure
-@@ -289,7 +289,7 @@ static void tvout_preformatter_set_matrix(struct sti_tvout *tvout,
- }
- 
- /**
-- * Start VIP block for DVO output
-+ * tvout_dvo_start - Start VIP block for DVO output
-  *
-  * @tvout: pointer on tvout structure
-  * @main_path: true if main path has to be used in the vip configuration
-@@ -343,7 +343,7 @@ static void tvout_dvo_start(struct sti_tvout *tvout, bool main_path)
- }
- 
- /**
-- * Start VIP block for HDMI output
-+ * tvout_hdmi_start - Start VIP block for HDMI output
-  *
-  * @tvout: pointer on tvout structure
-  * @main_path: true if main path has to be used in the vip configuration
-@@ -392,7 +392,7 @@ static void tvout_hdmi_start(struct sti_tvout *tvout, bool main_path)
- }
- 
- /**
-- * Start HDF VIP and HD DAC
-+ * tvout_hda_start - Start HDF VIP and HD DAC
-  *
-  * @tvout: pointer on tvout structure
-  * @main_path: true if main path has to be used in the vip configuration
+- * sti_vdp_vtg_cb
++ * sti_hqvdp_vtg_cb
+  * @nb: notifier block
+  * @evt: event message
+  * @data: private data
 -- 
 2.31.1
 
