@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CE7399322
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F1B399326
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhFBTG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhFBTGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:06:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 686B5613DE;
-        Wed,  2 Jun 2021 19:04:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622660672;
-        bh=1s3WT318ictohTUfF3d1I01V0SMUDcGKZwBUXHKF/10=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JZsRKlKjKj+I3Q9YlsSS7TDXstEsiTy3tFrF3u6OjsI8sJ8AePvy6/Rmbqn7RfL8k
-         3CIQFqawgLsG6Z1hEdfa6q+dl1gNzAGske28SJ1k/3dBsYB8aILEaRdHKddSEWrt+Z
-         4+5KADomuVXD6zqGLSSN6AlCvrzhrQiBHSuC1OmRILo+DWlmJ1hiCApvLBxZYAZJgr
-         qN3Tfbp4eurKSjZY9boWcs3s1RNlT1Fea83f7M4Aselsq4HKqK9NbdpG8s+dP+GJfg
-         kFToWhmSgg+HwkFokj547vfXkaE5gnRDQOa5Xa3O+lA7inBqjODgEL12TzXrdm/kqt
-         bsSOlxHaeWm0A==
-Date:   Wed, 2 Jun 2021 22:04:24 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     ysato@users.sourceforge.jp, akpm@linux-foundation.org,
-        sboyd@kernel.org, geert+renesas@glider.be,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] h8300: Remove unused variable
-Message-ID: <YLfWONfYC0Fw2mdL@kernel.org>
-References: <20210602185431.11416-1-jrdr.linux@gmail.com>
+        id S229467AbhFBTHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:07:05 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:39827 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFBTGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:06:51 -0400
+Received: by mail-ot1-f49.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so2355754otu.6;
+        Wed, 02 Jun 2021 12:05:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XTd1+1XMqhMrHa7fM4NJ/msyMW1m4BDVtFV2Bk70Qcw=;
+        b=Kw+qqR90/oVpM+P3tmO+CRywahen2i6NtAoqtrYITAp9FFdx+mOmuQtE3gZVtnePDz
+         tB7+sHFpZvRQQVXF+zoXgeNaCYZoad+331IJ82UOVwigg/0H/ClaRbtyWq/v85mrwZkH
+         NDVty8Ykrp+LD0gEI6fQe3Jkl+f1i0oIa/1Ip2XdZz7jkQHMAZETVp8kURNa+of6hWN8
+         az1wb2fSsFPc5kDs1O8ulghGn9IUjZMGOpzKNAkNBfxo38t3fCDywdo2ZoW/bxHkP2No
+         SoHH6yxoT3CX4+y2TnH5RcwtMZeGEl4y1lN457UeM6Ftm+ibipL7n3ujNhRoCsskw84w
+         cU3Q==
+X-Gm-Message-State: AOAM5313DOgARKazfb0MHBvc6KHCVt8GQj4QgjfauGZxvCeWhtMv7ePv
+        DBofdBTNbN2wh8f2oCFl8w==
+X-Google-Smtp-Source: ABdhPJyNxmMkB4xFVEH+C+raEBK7tJthMajdTd255TExpMg2W/cjtnPqK8qbho/BRBUxNAtNtiWyDg==
+X-Received: by 2002:a05:6830:905:: with SMTP id v5mr26832227ott.214.1622660707200;
+        Wed, 02 Jun 2021 12:05:07 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x65sm176359otb.59.2021.06.02.12.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 12:05:06 -0700 (PDT)
+Received: (nullmailer pid 3790704 invoked by uid 1000);
+        Wed, 02 Jun 2021 19:05:05 -0000
+Date:   Wed, 2 Jun 2021 14:05:05 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Sekhar Nori <nsekhar@ti.com>, linux-gpio@vger.kernel.org,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, Keerthy <j-keerthy@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        linux-kernel@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: Re: [PATCH v3 2/2] dt-bindings: gpio: gpio-davinci: Convert to
+ json-schema
+Message-ID: <20210602190505.GA3790655@robh.at.kernel.org>
+References: <20210524151955.8008-1-a-govindraju@ti.com>
+ <20210524151955.8008-3-a-govindraju@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602185431.11416-1-jrdr.linux@gmail.com>
+In-Reply-To: <20210524151955.8008-3-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 12:24:31AM +0530, Souptick Joarder wrote:
-> Kernel test robot throws below warning ->
+On Mon, 24 May 2021 20:49:54 +0530, Aswath Govindraju wrote:
+> Convert gpio-davinci dt-binding documentation from txt to yaml format.
 > 
-> >> arch/h8300/kernel/setup.c:72:26:
-> warning: Unused variable: region [unusedVariable]
->     struct memblock_region *region;
-> 
-> Fixed it by removing unused variable.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-
-I believe a Fixes: tag would be appropriate here. Otherwise
-
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 > ---
->  arch/h8300/kernel/setup.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/h8300/kernel/setup.c b/arch/h8300/kernel/setup.c
-> index 15280af7251c..5745a763dc78 100644
-> --- a/arch/h8300/kernel/setup.c
-> +++ b/arch/h8300/kernel/setup.c
-> @@ -69,8 +69,6 @@ void __init h8300_fdt_init(void *fdt, char *bootargs)
->  
->  static void __init bootmem_init(void)
->  {
-> -	struct memblock_region *region;
-> -
->  	memory_end = memory_start = 0;
->  
->  	/* Find main memory where is the kernel */
-> -- 
-> 2.25.1
+>  .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ----------------
+>  .../bindings/gpio/gpio-davinci.yaml           | 186 ++++++++++++++++++
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 187 insertions(+), 168 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
 > 
 
--- 
-Sincerely yours,
-Mike.
+Reviewed-by: Rob Herring <robh@kernel.org>
