@@ -2,125 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C7C399304
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C42399308
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbhFBTAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:00:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37169 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229719AbhFBS76 (ORCPT
+        id S229685AbhFBTAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:00:13 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:34514 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhFBTAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:59:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622660295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=di/rBgpO3ofh6oyQUWmcuqLGaaUuBYS2slt2/XE3Gtc=;
-        b=BO+G5/BK2L0Km6r7FQLPfgLuXGGQmx3saBaV/7Q3pokYS0SlJf5bWEVZdGv0/hZm7X2mic
-        +7TD2z4YHQFjsIOUqVt4lf1sd9myzZkhkl8U5YS3CedFyC909/NL5a6bms/DkadNcoyTJH
-        T473NDJ0W2bkzFbP90EnQ95N6TrYuz8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-dILL77kCN9SXtJzC6wQM5Q-1; Wed, 02 Jun 2021 14:58:14 -0400
-X-MC-Unique: dILL77kCN9SXtJzC6wQM5Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 616608015F8;
-        Wed,  2 Jun 2021 18:58:12 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-159.ams2.redhat.com [10.36.114.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D6C30100238C;
-        Wed,  2 Jun 2021 18:57:59 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Marek Kedzierski <mkedzier@redhat.com>,
-        Hui Zhu <teawater@gmail.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
-Subject: [PATCH v1 7/7] virtio-mem: prioritize unplug from ZONE_MOVABLE in Big Block Mode
-Date:   Wed,  2 Jun 2021 20:57:20 +0200
-Message-Id: <20210602185720.31821-8-david@redhat.com>
-In-Reply-To: <20210602185720.31821-1-david@redhat.com>
-References: <20210602185720.31821-1-david@redhat.com>
+        Wed, 2 Jun 2021 15:00:10 -0400
+Received: by mail-ot1-f43.google.com with SMTP id v27-20020a056830091bb02903cd67d40070so312137ott.1;
+        Wed, 02 Jun 2021 11:58:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XxTgIILdcuRKgt2t103GTb8rzN2k3rWcVcHMsIEiZBI=;
+        b=JVigLwRxRO+f20PApScsfbFnPPi9lWpZKzZkkRKLrhBCMkfd/+dF9nioGbBpeo4e5m
+         fMPAzcV6XeDrtlN12NHXmTwE+yWsCMkbIimz6BCxTla/BtBtfJwiDan9Lr56vfXA4Qv3
+         yEqsi7R5Xpf0wMYZm6ZvsiLGuWszLzdLQ4NP84hmBYRCnjd1nZI4mcdskEP4O9d+7a8G
+         of0kGYZedCMDU+zQSHO1yRHsUVKiF7iHdT3Djw8V6XG44dw9Gu8qyJGB/WIwuicSXVJS
+         T2TdxK+rFXoL7ovmIc0ILcCp6j+f8S8hr2sP1OKhkcGGUfA2VnB1oYlHXcouBkP9anti
+         fICg==
+X-Gm-Message-State: AOAM530GWjGZStNZaWNvnAh8rfhsFx6FoaAHILf8jaWsbXX+qJzUA/S6
+        Lx6acy0tz9WxBH3dt3Vu4Q==
+X-Google-Smtp-Source: ABdhPJx6IAb1nq04AfhTZzJUGBqnvkBwEUrVVBoXVFE4RZRpp3lLMddFbDRO5gegZODRBzOO7Uas9A==
+X-Received: by 2002:a9d:289:: with SMTP id 9mr26361517otl.10.1622660305683;
+        Wed, 02 Jun 2021 11:58:25 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t23sm153827oij.21.2021.06.02.11.58.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 11:58:24 -0700 (PDT)
+Received: (nullmailer pid 3778567 invoked by uid 1000);
+        Wed, 02 Jun 2021 18:58:22 -0000
+Date:   Wed, 2 Jun 2021 13:58:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, Andrew Lunn <andrew@lunn.ch>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-leds@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH v3 2/6] dt-bindings: leds: Binding for RTL8231 scan matrix
+Message-ID: <20210602185822.GA3778506@robh.at.kernel.org>
+References: <cover.1621809029.git.sander@svanheule.net>
+ <dca103fe584c7c5a07ad521ad3d1c08ba2758c77.1621809029.git.sander@svanheule.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dca103fe584c7c5a07ad521ad3d1c08ba2758c77.1621809029.git.sander@svanheule.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's handle unplug in Big Block Mode similar to Sub Block Mode --
-prioritize memory blocks onlined to ZONE_MOVABLE.
+On Mon, 24 May 2021 00:34:00 +0200, Sander Vanheule wrote:
+> Add a binding description for the Realtek RTL8231's LED support, which
+> consists of up to 88 LEDs arranged in a number of scanning matrices.
+> 
+> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> ---
+>  .../bindings/leds/realtek,rtl8231-leds.yaml   | 166 ++++++++++++++++++
+>  1 file changed, 166 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
+> 
 
-We won't care further about big blocks with mixed zones, as it's
-rather a corner case that won't matter in practice.
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- drivers/virtio/virtio_mem.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 43199389c414..d3e874b6b50b 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -2121,6 +2121,29 @@ static bool virtio_mem_bbm_bb_is_offline(struct virtio_mem *vm,
- 	return true;
- }
- 
-+/*
-+ * Test if a big block is completely onlined to ZONE_MOVABLE (or offline).
-+ */
-+static bool virtio_mem_bbm_bb_is_movable(struct virtio_mem *vm,
-+					 unsigned long bb_id)
-+{
-+	const unsigned long start_pfn = PFN_DOWN(virtio_mem_bb_id_to_phys(vm, bb_id));
-+	const unsigned long nr_pages = PFN_DOWN(vm->bbm.bb_size);
-+	struct page *page;
-+	unsigned long pfn;
-+
-+	for (pfn = start_pfn; pfn < start_pfn + nr_pages;
-+	     pfn += PAGES_PER_SECTION) {
-+		page = pfn_to_online_page(pfn);
-+		if (!page)
-+			continue;
-+		if (page_zonenum(page) != ZONE_MOVABLE)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- static int virtio_mem_bbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
- {
- 	uint64_t nb_bb = diff / vm->bbm.bb_size;
-@@ -2134,7 +2157,7 @@ static int virtio_mem_bbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
- 	 * Try to unplug big blocks. Similar to SBM, start with offline
- 	 * big blocks.
- 	 */
--	for (i = 0; i < 2; i++) {
-+	for (i = 0; i < 3; i++) {
- 		virtio_mem_bbm_for_each_bb_rev(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED) {
- 			cond_resched();
- 
-@@ -2144,6 +2167,8 @@ static int virtio_mem_bbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
- 			 */
- 			if (i == 0 && !virtio_mem_bbm_bb_is_offline(vm, bb_id))
- 				continue;
-+			if (i == 1 && !virtio_mem_bbm_bb_is_movable(vm, bb_id))
-+				continue;
- 			rc = virtio_mem_bbm_offline_remove_and_unplug_bb(vm, bb_id);
- 			if (rc == -EBUSY)
- 				continue;
--- 
-2.31.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
