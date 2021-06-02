@@ -2,69 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3203398EE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E8B398EE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhFBPnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhFBPnj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:43:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116B6C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:41:56 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622648513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u2R/UCIsrDhh39+Ps2UcS5DyYiLCBXjWWE+/H8f4DC8=;
-        b=JljiYd4pdDGsNSjgvLifiJZVUMvL6lIjEDi8hMIA98wmrPFM/PfvJyfbw6nskGxKyRhjwC
-        9GBx7akslaM7Rf0uYG9uk5T8bAJ6To7ucmH3YKfpGdpACK/5wDvhjH6+ptp/Gh5i15f48X
-        TWK3+ILN8ghc95FR4uWLG8hZ9uW7lJLGcfdSJrYJSBj7MdjwO7Gv4zdZAKaGyxNgUSQW+r
-        +BwRjaM75QVz0fPcNcW9xYIF49MiX4QlTgF7QFWJTxvgWCQSYoxQgPdKWFvoqjW6nd2kQ9
-        BLhq7FaeELxYlZ5wFlK/me/2tTLwSVN9AV6h1gEoYvFyUovRTkU62FkM4yVNSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622648513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u2R/UCIsrDhh39+Ps2UcS5DyYiLCBXjWWE+/H8f4DC8=;
-        b=CxqOAb0efk8lcQdFRImWxc1FSeq5vhydfws55McceX6RffxB6GzGub2fNb/zvnihn7E6KF
-        8RMwfSROWaBPbEBQ==
-To:     houdek.ryan@fex-emu.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH 1/4] Move userspace syscall dispatch outside of common entry
-In-Reply-To: <20210529081620.164422-2-Houdek.Ryan@fex-emu.org>
-References: <20210529081620.164422-1-Houdek.Ryan@fex-emu.org> <20210529081620.164422-2-Houdek.Ryan@fex-emu.org>
-Date:   Wed, 02 Jun 2021 17:41:53 +0200
-Message-ID: <871r9k1dfi.ffs@nanos.tec.linutronix.de>
+        id S231998AbhFBPoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:44:18 -0400
+Received: from mga04.intel.com ([192.55.52.120]:62234 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232322AbhFBPoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:44:13 -0400
+IronPort-SDR: WzV71W42nQqsNCUQiyiaILLbMjF1iGg/R32AHTQnwOFxnIYE8ArmJNI/O8scDZ2+9TprcH2VqT
+ k0iNgjw6y1Lw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="201959308"
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="201959308"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 08:42:30 -0700
+IronPort-SDR: rrWGxOBaLHWIaSmC+W+ABp9UDGCW6LOenQjVMWN1ij5zcS8JoxdokqmCnn14CfTra9RlrqiUpV
+ O+2q7rc8WPuw==
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="447450704"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 08:42:27 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1loT0i-00Gk1l-Mc; Wed, 02 Jun 2021 18:42:24 +0300
+Date:   Wed, 2 Jun 2021 18:42:24 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, jonathan.cameron@huawei.com,
+        song.bao.hua@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] use bin_attribute to avoid buff overflow
+Message-ID: <YLem4MMvxvS9+B3V@smile.fi.intel.com>
+References: <1622641734-22538-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622641734-22538-1-git-send-email-tiantao6@hisilicon.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29 2021 at 01:16, houdek ryan wrote:
-> From: Ryan Houdek <Houdek.Ryan@fex-emu.org>
->
-> This will allow other architectures to support userspace syscall
-> dispatch without supporting the syscall common entry.
+On Wed, Jun 02, 2021 at 09:48:51PM +0800, Tian Tao wrote:
+> patch #1 adds a new function cpumap_print_to_buf and patch #2 uses
+> this function in drivers/base/topology.c, and patch #3 uses this new
+> function in drivers/base/node.c.
 
-NAK.
+Somehow you missed to include BITMAP maintainers / reviewers.
 
-This is in common entry on purpose and won't go anywhere else. The every
-arch has it's own broken entry code ordering mess needs to go away and
-not proliferated further.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Move ARM to common entry first.
 
-Thanks,
-
-        tglx
