@@ -2,151 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3187397E71
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52B4397E74
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhFBCIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:08:55 -0400
-Received: from mail-dm6nam12on2040.outbound.protection.outlook.com ([40.107.243.40]:10304
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229654AbhFBCIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:08:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LiMv8DQrg8IAfN8OhGEFI4PagZOxeTM9JUvHPtd19vw+QiuQFNpx07uLPtJWhOWMbWrLlOVUwI7A0RpnQtzvXLBgNW4X1kWOfabk92N/dUS+pVYNXD6P6jpxTYPCkTUhjyCw9HSGAQS5nqRUi7Yy++FhotEejRgaAeXar+6S2e1YNUrdrV4krMfPxFl8Um9oewWV4QIAejEk9oKZZhzfQyGwSK6JjzyGtUfrJhBZp8+9QZanHsSANHw4JEsmD9CFKO5PETAtd8/MKpOKj9jOB+ZPQpel0xhZwnv065/E8KU20NDqADYxJ7c+EoSe1FfCrut/pQ+6iUdyyQFhfwyLrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6WJQTd7AvRqQgNo8Hp3kW2b8X/6q2JIuN5h+lK6j0hw=;
- b=juAwm2fqqEDnV6iuCAuXVBJR4XhMogcm+D3e9UAZLrbg45m/YcMBDs2YoNhokVB34Q/AQq1zo/Zic/seRBclNOQZahvbqgSFYKO/XOZyVYDifnEqdCE8EjEzqpTTJJKWqTduJKivEtMYSHgz6mT+dR44+8cZhq7JiSQpdY+kZRn7MWRn3tWteYNXKrhPHAEGR+fzYvTN0kr0b4bEYUN+sDi1cuj/vuQ7V9UJC+yVVu7/CLv/L9pAbsUxvCQEHWS1prqj0vJbktGNZwbAmEK1UlW71Cbr5VEiYeTUogoJITXq5vUvs/nlkVYjx/qP0RwPkzA0q1nH7MKunrLDbNx7oA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6WJQTd7AvRqQgNo8Hp3kW2b8X/6q2JIuN5h+lK6j0hw=;
- b=Dijy2BbCEB1VSUwhaAduN+eXaZQHjml7Pjkh2OONK29F6/LfgNV6QOfLuY677v87TGuge0lv8XNltjC7jTxvdb9jH/YjLU74zq5BobUfgbztUN4nBCOrvt+Jl755j8harJHUDgwR5dUl22SfohIzHrsAdds5CQnA9SBb55ab+N/3ihro5Eu2amMzDs8QMRXSmwKk5gY6Kz4xCFW9g/PjwkY/6n/hq1vowsEpizAil5YKeGmFNA6Cv+CXerwr9lQfIVbapp2xbR00mYLRar6jmsHBUzFWSvBEFu67TJmNBB8Xscgaf3y4/bmqseiszHJQ2PKjRm154n1LeN45mFkFqA==
-Received: from CO2PR04CA0134.namprd04.prod.outlook.com (2603:10b6:104::12) by
- BN7PR12MB2692.namprd12.prod.outlook.com (2603:10b6:408:2a::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4173.22; Wed, 2 Jun 2021 02:07:10 +0000
-Received: from CO1NAM11FT013.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:0:cafe::db) by CO2PR04CA0134.outlook.office365.com
- (2603:10b6:104::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Wed, 2 Jun 2021 02:07:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT013.mail.protection.outlook.com (10.13.174.227) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4150.30 via Frontend Transport; Wed, 2 Jun 2021 02:07:10 +0000
-Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Jun
- 2021 02:07:06 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Hugh Dickins <hughd@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Naoya Horiguchi" <naoya.horiguchi@nec.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/7] mm/thp: fix THP splitting unmap BUGs and related
-Date:   Wed, 2 Jun 2021 12:07:04 +1000
-Message-ID: <2748366.Ij88iOltre@nvdebian>
-In-Reply-To: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
+        id S230225AbhFBCJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhFBCJd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:09:33 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0D5C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 19:07:50 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so1165905otg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 19:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pU1TRPFdg/mvMNMBTDRgncKjTs5cmC/VyWt+TILhNqg=;
+        b=leBsDCLV2SQ+QW8NeJ78bjOGFhHQDUCW/Evqpq2ZLpXULUTD/gYVSWB0dKF+OZ2v8/
+         C7XYgo/lznFWK0glQZ5BhIsDN4m+9THwBBrByZI1kPwsRbO+4oDbSI3miRWMTMXEL+TJ
+         1bdst67rVthfP5BTO5o7lI3krd9Eb7oCk4+SErPCDN/Egx3dajMebOIS64mmZR9VKZAA
+         OixVbaRn4O994jn/KWkrQaEWsVAZ7QoxOgZvu9FzCcPJf+N7wHU74hl8nazHzgKTthi+
+         5Wtb2q8dVFp8ElfhO3dwBkVDj8xJxy5wa6AceM5RNEykul5QZjSehyXxn02IrOPIi55P
+         FBbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pU1TRPFdg/mvMNMBTDRgncKjTs5cmC/VyWt+TILhNqg=;
+        b=hpDU+Dt0NvdzfTpd2uGlRUNKsy7KdaRGEEzfSY6+myWObJO0bKdtQ32mVR7lBruo6K
+         kSDUg5/H+DbWlpnpRpF2UFxpRQU1CzbLC8+FKCB2LFqcRYLJtQiemvbcWfWMRtWJW3a7
+         T0te3D1Keu2yqbilELx1gYk0kV0iOIJef2rgsMyNB1JJUTRmeaz9Hnz67CvcvwC9udlA
+         hsC4ivh/xwBpw9itJzjs0FZj5rmEtTK0gXbS1q7HkwZ95FJuY02psGiIVNsbOR+4pQiZ
+         KSLbjlofu77V55YcTWqcKtwEjdgOZZCuKteo86s5N1jTYsPklPpu1psPoZvqqPdVMct/
+         KsAA==
+X-Gm-Message-State: AOAM531aNf+/C6/snvF1bQJAPDQUkP348ytiCWxs+bTDnjkIBVqHPH1y
+        oAvi+nBbE1Az9RHp/Lz4RU52z122bkJo+o5fIYI=
+X-Google-Smtp-Source: ABdhPJy++Oeg5/01VJ0eNw4v7bM57dKx0Um7cQXKi3LBbMT6j2vCn15UhSf89hqlJcqfgZt7Y2XlXZgo5CTv05pt1g0=
+X-Received: by 2002:a9d:6548:: with SMTP id q8mr24108150otl.311.1622599669886;
+ Tue, 01 Jun 2021 19:07:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 53316702-5e59-4c65-4cbf-08d9256b2178
-X-MS-TrafficTypeDiagnostic: BN7PR12MB2692:
-X-Microsoft-Antispam-PRVS: <BN7PR12MB2692830BD528885B15D104B6DF3D9@BN7PR12MB2692.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PF9wKyxtHrKvworh2zpXTMbZaxY6dwuJ7LGySHLQdlxE1lAASET5oKB8b/+/mRby2IPXKpo1s7Awq9risXF0dni8bUkWRgqZe3Z5ftdXMI2Xe4EZR33/aFix+h+0/yfrvxjB+In4iqxr+oh36LNm+bHePqbneK2cDKNLlOb0LeGgVjTJ8BiIzln3r7a+Dgj8yG5spMKXw+V9kyJpANBAI4/4Ot8N7hhm1foA0abyy56tPu9IDt3t3sfVGD/RUrxqGIx0Ws1yGr2TsbB6Hx3HablTaYCPqH9rR/wo5FGFZ3GXHAGmrbjeGwsv91g06P6QM57KYyB3PTy+Owd79GTiSQFj9xJboWO6NtKuuITI7TH2ojS+6i/jlTBmejTQcfxFetaQ0Unw+AiPa35i9fYxsFUztXObgmsNDKyBbL4KyaDKGe2HWYhgeeB2WPXuaMWDH5oNJBhUpNNv6jdg+0Xn7yZMt7y9d+NJOohfuQoj/kxRpduiz0sqGIYX/isKKjIdJV+upiUvhLcXkgpCbp0Q+gB8CRDdtmDGaiQZ34xWO4mTH1KaGejm4gFHvfznNgewxMNruZHNe0cTYCTHZPs8ELG5Frt6vqxA1ZSMqYcOllUl+YSV8k9TIClWMd5dF2nAaizptBN8xQF7x/KuPQkmVw/f77LAUHvoA4E9onKnhaltmWIBrWGTndPZPesFsjyYHkISQAMoNnNMaUxluNfxmEQ+x85mdOM266g/QvWyMQZQa/Bvrh3DF1EdfelFxKATYWw4+JLS/7DycHQar+60VHcU+fyQIQnvU+QhJ7vagVg=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(46966006)(36840700001)(2906002)(54906003)(356005)(82310400003)(478600001)(336012)(47076005)(36860700001)(5660300002)(7416002)(8936002)(316002)(36906005)(70586007)(9686003)(8676002)(82740400003)(86362001)(26005)(16526019)(186003)(83380400001)(33716001)(966005)(70206006)(6916009)(426003)(9576002)(4326008)(7636003)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 02:07:10.1796
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53316702-5e59-4c65-4cbf-08d9256b2178
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT013.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2692
+References: <20210529092816.3133745-1-yukuai3@huawei.com>
+In-Reply-To: <20210529092816.3133745-1-yukuai3@huawei.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 1 Jun 2021 22:07:38 -0400
+Message-ID: <CADnq5_Na=AdNCoQpDPVJ=5078s8C7SNMBo295H-Jp1fQZWkmCw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: fix gcc set but not used warning of
+ variable 'old_plane_state'
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>, yi.zhang@huawei.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 2 June 2021 7:03:30 AM AEST Hugh Dickins wrote:
-> Here is a batch of long-standing THP bug fixes that I had not got
-> around to sending before, but prompted now by Wang Yugui's report
-> https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
-> 
-> Wang Yugui has tested a rollup of these fixes applied to 5.10.39,
-> and they have done no harm, but have *not* fixed that issue:
-> something more is needed and I have no idea of what.
-> 
-> But at least these clear up related issues, and should go to stable
-> (except for the last, which is just an optimization: it would be
-> fine in stable, but it's not required there).
-> 
-> These are against 5.13-rc4: easy for others to try out, but my next
-> task is to work out how to shoehorn them into mmotm and linux-next.
-> 
-> I would have said just before Yang Shi's related
-> mm-thp-replace-debug_vm-bug-with-vm_warn-when-unmap-fails-for-split.patch
-> except that (which should also go to stable) is currently placed after
-> Alistair Popple's "Add support for SVM atomics in Nouveau" series,
-> mm-rmap-split-try_to_munlock-from-try_to_unmap.patch etc.
-> I expect I shall offer you some rediffs of Alistair's, we'll see.
+Applied.  Thanks!
 
-I haven't looked at Yang Shi's patch yet but aside from patch 2 this series 
-applies on top of mine fairly easily. The only other issue I noticed was 
-needing to rename migration_entry_to_page() -> pfn_swap_entry_to_page() in 
-patch 1 & 7 before applying.
+Alex
 
-> 1/7 mm/thp: fix __split_huge_pmd_locked() on shmem migration entry
-> 2/7 mm/thp: try_to_unmap() use TTU_SYNC for safe DEBUG_VM splitting
-> 3/7 mm/thp: fix vma_address() if virtual address below file offset
-> 4/7 mm/thp: fix page_address_in_vma() on file THP tails
-> 5/7 mm/thp: fix page_vma_mapped_walk() if huge page mapped by ptes
-> 6/7 mm/thp: unmap_mapping_page() to fix THP truncate_cleanup_page()
-> 7/7 mm/thp: remap_page() is only needed on anonymous THP
-> 
->  include/linux/mm.h   |    3
->  include/linux/rmap.h |    3
->  mm/huge_memory.c     |   47 ++++++++----
->  mm/internal.h        |   54 ++++++++++----
->  mm/memory.c          |   40 ++++++++++
->  mm/page_vma_mapped.c |  163 ++++++++++++++++++++++++++-----------------
->  mm/pgtable-generic.c |    5 -
->  mm/rmap.c            |   39 +++++++---
->  mm/truncate.c        |   43 +++++------
->  9 files changed, 266 insertions(+), 131 deletions(-)
-> 
-> Hugh
-
-
-
-
+On Sat, May 29, 2021 at 5:19 AM Yu Kuai <yukuai3@huawei.com> wrote:
+>
+> define a new macro for_each_new_plane_in_state_reverse to replace
+> for_each_oldnew_plane_in_state_reverse, so that the unused variable
+> 'old_plane_state' can be removed.
+>
+> Fix gcc warning:
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:10066:26: war=
+ning:
+>  variable =E2=80=98old_plane_state=E2=80=99 set but not used [-Wunused-bu=
+t-set-variable]
+>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  4 ++--
+>  include/drm/drm_atomic.h                          | 12 ++++++++++++
+>  2 files changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
+gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index f7a5e5b48ea6..9f4b334bc071 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -10063,11 +10063,11 @@ static int validate_overlay(struct drm_atomic_s=
+tate *state)
+>  {
+>         int i;
+>         struct drm_plane *plane;
+> -       struct drm_plane_state *old_plane_state, *new_plane_state;
+> +       struct drm_plane_state *new_plane_state;
+>         struct drm_plane_state *primary_state, *cursor_state, *overlay_st=
+ate =3D NULL;
+>
+>         /* Check if primary plane is contained inside overlay */
+> -       for_each_oldnew_plane_in_state_reverse(state, plane, old_plane_st=
+ate, new_plane_state, i) {
+> +       for_each_new_plane_in_state_reverse(state, plane, new_plane_state=
+, i) {
+>                 if (plane->type =3D=3D DRM_PLANE_TYPE_OVERLAY) {
+>                         if (drm_atomic_plane_disabling(plane->state, new_=
+plane_state))
+>                                 return 0;
+> diff --git a/include/drm/drm_atomic.h b/include/drm/drm_atomic.h
+> index ac5a28eff2c8..8f1350e599eb 100644
+> --- a/include/drm/drm_atomic.h
+> +++ b/include/drm/drm_atomic.h
+> @@ -895,6 +895,18 @@ void drm_state_dump(struct drm_device *dev, struct d=
+rm_printer *p);
+>                               (old_plane_state) =3D (__state)->planes[__i=
+].old_state,\
+>                               (new_plane_state) =3D (__state)->planes[__i=
+].new_state, 1))
+>
+> +/**
+> + * for_each_new_plane_in_state_reverse - other than only tracking new st=
+ate,
+> + * it's the same as for_each_oldnew_plane_in_state_reverse
+> + */
+> +#define for_each_new_plane_in_state_reverse(__state, plane, new_plane_st=
+ate, __i) \
+> +       for ((__i) =3D ((__state)->dev->mode_config.num_total_plane - 1);=
+ \
+> +            (__i) >=3D 0;                                               =
+ \
+> +            (__i)--)                                                   \
+> +               for_each_if ((__state)->planes[__i].ptr &&              \
+> +                            ((plane) =3D (__state)->planes[__i].ptr,    =
+ \
+> +                             (new_plane_state) =3D (__state)->planes[__i=
+].new_state, 1))
+> +
+>  /**
+>   * for_each_old_plane_in_state - iterate over all planes in an atomic up=
+date
+>   * @__state: &struct drm_atomic_state pointer
+> --
+> 2.25.4
+>
