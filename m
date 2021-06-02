@@ -2,115 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C917A3984A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E7F398493
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhFBI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:56:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29242 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232907AbhFBI4R (ORCPT
+        id S232861AbhFBIxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:53:05 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2952 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232840AbhFBIxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:56:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622624074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TOI6E9j/kLUqqLzfWVG9w8giJlysUj5C+KWef8bCQ8I=;
-        b=iey3U79HA+VvTZDpvn1WzZuVy5l3v5TtkaaFIzHe2il5HHOOGPHzbDXGtiQDNBsOFN19sO
-        mNTCWKrpE+y6XmGPFu41oA/AWk/aqGo8VO6vkp0q+3NJdCwM6Iezl+7WPJ+YfRIsxQXClb
-        E0mOrFzHtGAgKY6sPrOW8RlG6yeWu6k=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-v7X_3FsnNJa7bcVV6WOzfA-1; Wed, 02 Jun 2021 04:54:33 -0400
-X-MC-Unique: v7X_3FsnNJa7bcVV6WOzfA-1
-Received: by mail-pl1-f197.google.com with SMTP id o9-20020a1709026b09b0290102b8314d05so754469plk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:54:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=TOI6E9j/kLUqqLzfWVG9w8giJlysUj5C+KWef8bCQ8I=;
-        b=U0LjsEu08TbhsYK9Fq3FyOEIasnlJFm1ssRmwTnOwfHiBGPsd3iHa4b6ugNDo4F1Zo
-         /ARKLVnikNtR4ih6uqpd5/WLcK6qH9T0vxkDyN9LzVZase41hzS3TUY8cupFDClel3DI
-         wzGfL6YlZms50Zve5Qoc+5Y5TUXA0B24VGb8tM5SEdSiipe75pkcP19pFnKX+SAM/ry6
-         zTgvPkIrPJ8AbU5pibDBGlYxUH6XpvXpCFeHqIXx862QjEb2z/pXHyUNYcvSg1pBMgh/
-         bPOyABGkR6jQ87puxco+pYQC/l0wVR/tSR0by7OaivxAp3aEPXxEk0f3sSDddH/+1feE
-         Mmvw==
-X-Gm-Message-State: AOAM530VNoP8GoJSDEysgqe94H9MxbH600XKAbJs3zvyyjYqkFd4GIbd
-        ZVY3Vhp1G+Vsa6RT3Fjf/fWqXxG3S8Ja/mgJV76ucFqhzB+yEzDSF0vN1wEjGa0Qp6cRXnvMNby
-        ftguve8gTk+rr3gpk1OlEriZz
-X-Received: by 2002:a17:90a:7306:: with SMTP id m6mr4486579pjk.217.1622624072029;
-        Wed, 02 Jun 2021 01:54:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQ9jinHicYAMXd7FQEuh3El0Ofh9v6RECp7TK6Os2FVDpLb1bDFUCefzQjoGn2stvAL6/t8g==
-X-Received: by 2002:a17:90a:7306:: with SMTP id m6mr4486565pjk.217.1622624071836;
-        Wed, 02 Jun 2021 01:54:31 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w2sm4060045pfc.126.2021.06.02.01.54.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 01:54:31 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
-        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
-References: <20210531164118.265789ee@yiliu-dev>
- <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
- <20210601113152.6d09e47b@yiliu-dev>
- <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
- <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
- <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
- <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
- <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
- <20210601173138.GM1002214@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
-Date:   Wed, 2 Jun 2021 16:54:26 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Wed, 2 Jun 2021 04:53:05 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw2jy6lBHz67fp;
+        Wed,  2 Jun 2021 16:48:22 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 16:51:20 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 2 Jun 2021
+ 16:51:20 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-i3c@lists.infradead.org>
+CC:     <alexandre.belloni@bootlin.com>, <miquel.raynal@bootlin.com>
+Subject: [PATCH -next] i3c: master: svc: fix doc warning in svc-i3c-master.c
+Date:   Wed, 2 Jun 2021 16:55:44 +0800
+Message-ID: <20210602085544.4101980-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210601173138.GM1002214@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following make W=1 warning:
 
-ÔÚ 2021/6/2 ÉÏÎç1:31, Jason Gunthorpe Ð´µÀ:
-> On Tue, Jun 01, 2021 at 04:47:15PM +0800, Jason Wang wrote:
->   
->> We can open up to ~0U file descriptors, I don't see why we need to restrict
->> it in uAPI.
-> There are significant problems with such large file descriptor
-> tables. High FD numbers man things like select don't work at all
-> anymore and IIRC there are more complications.
+  drivers/i3c/master/svc-i3c-master.c:207: warning: expecting prototype for struct svc_i3c_i3c_dev_data. Prototype was for struct svc_i3c_i2c_dev_data instead
 
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/i3c/master/svc-i3c-master.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I don't see how much difference for IOASID and other type of fds. People 
-can choose to use poll or epoll.
-
-And with the current proposal, (assuming there's a N:1 ioasid to 
-ioasid). I wonder how select can work for the specific ioasid.
-
-Thanks
-
-
->
-> A huge number of FDs for typical usages should be avoided.
->
-> Jason
->
+diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+index eeb49b5d90ef..879e5a64acaf 100644
+--- a/drivers/i3c/master/svc-i3c-master.c
++++ b/drivers/i3c/master/svc-i3c-master.c
+@@ -195,7 +195,7 @@ struct svc_i3c_master {
+ };
+ 
+ /**
+- * struct svc_i3c_i3c_dev_data - Device specific data
++ * struct svc_i3c_i2c_dev_data - Device specific data
+  * @index: Index in the master tables corresponding to this device
+  * @ibi: IBI slot index in the master structure
+  * @ibi_pool: IBI pool associated to this device
+-- 
+2.25.1
 
