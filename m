@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2B239805D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B855E398062
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhFBEe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 00:34:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229571AbhFBEez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 00:34:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44EF660FDB;
-        Wed,  2 Jun 2021 04:33:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622608393;
-        bh=9a9dDkujkT1nzgYKXZW5zFQGI0FPKBB4qk+ZfH6F86o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tFBGYLvUfw50mplmr5oFMwLkSPN5R9zirH56Png4LMAS6EeNMlRHHsGvV5Y+GoIy6
-         FGg9ghyd7wZ6i/GvpJAyOa1NyrHb6+xKSZhAyXkIsNNWY8P7pdhoJ5hEYX0IrKw6Ye
-         b+tpbrSCwWYDrNQDC1l+aTOd1h3WQkOCVl8urXvhyRAEByYbrvueAKx16HZz0W01qU
-         nzkxi4WO5RghcI3W1terBwOSKUWcAfHyg5q4c0INm+i+xuYZW4ZXOs5ttR8TjqqZF6
-         JaFsPPKNuskmp0BlDFaBK+BReaFps9xmYDjahdr6t8Ag5oTeaETXhZ+28mcJpXQgTw
-         oK5VLTCjSe4Tw==
-Date:   Wed, 2 Jun 2021 07:33:09 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Message-ID: <YLcKBb3/Oir2Bdm5@unreal>
-References: <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
- <20210514150237.GJ1002214@nvidia.com>
- <YKTDPm6j29jziSxT@unreal>
- <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
- <20210519182941.GQ1002214@nvidia.com>
- <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
- <20210519202623.GU1002214@nvidia.com>
- <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
- <20210525131358.GU1002214@nvidia.com>
- <4e4df8bd-4e3a-fe35-041d-ed3ed95be1cb@cornelisnetworks.com>
+        id S229650AbhFBEiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 00:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhFBEiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 00:38:11 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C914C061574;
+        Tue,  1 Jun 2021 21:36:28 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id s14so330315pfd.9;
+        Tue, 01 Jun 2021 21:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZCliPGLx6FVNnQ6sgaobA51qmzo7sZrH3tFGSfSKils=;
+        b=c0iUg/IDskzwFQ/JReV42re1915rl03KYKmqdM+qyaxNeIxVMhz1R7ttPYJuYABUzU
+         4AgbRD51XC9rGDLNZG89ZzFHnhj6nad36c8do6zmzGG3kV/qK54jtTWf0lH2zmUOh/vN
+         ENAF3MnZvWy1IDeS1WCcIlsm6WAqYiupPQI/xip/U4agHUYhrk8QMUBa5k0Eh3e8YS5N
+         LvQy8BGSrMF+h3hkLcCcXtay4YQTrlKp8jOSwEZ/ZemnjQevrajrcMw10tDGysJ90IQv
+         bnBik+uQ2MDNNx6AlhHAtXRfO9aOjLCe24mPFepBlzTQJzEyJJ3OKKRpLq2rTMWDchhg
+         PHYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZCliPGLx6FVNnQ6sgaobA51qmzo7sZrH3tFGSfSKils=;
+        b=eogsB7hNEZTEIlPsmiyzWRaj/tKe71dQ44vVa8RU8FttOrnj8iWwX2CAi3p8vPLBTz
+         6lPFC61EY07ba4I8Igmq25wipJYsnigDmE5q2DHvkHwCLZz1sxoalnVuCxzx2spKd9hD
+         yHGqM99OxGgN/n9q8UqalD9Bgalr2JLW4DaU3ppANm+mFSyNL3tk/FlEgY5rjWnTpdWL
+         48/rs5HdZG9Fv+QpCEA7nBd5oNR0tclo91PNF20S14tcu4wogYJHXOcVaFX70rwcuMYj
+         M04jh4MlC+Yb8+dpjB9cwGVbJbovhWvGXpcrYjHlz3xreRYjvl9iFM7jkymNk/djEdys
+         wEjg==
+X-Gm-Message-State: AOAM531DFWcMCR9ZgTgMKQb1Ni6gRVRkMSX/3Hek5MsnfQSDb5hYtog0
+        YsrIPglbRr6WWOmcFuVKu8M=
+X-Google-Smtp-Source: ABdhPJyUx3UOpF2e1qPYGhhakRHaKxG12A0Z8FuXc15itUMxsrpFkrtGZCV4Tk2emQ68W65Jm57R8w==
+X-Received: by 2002:a65:464b:: with SMTP id k11mr32140520pgr.407.1622608587719;
+        Tue, 01 Jun 2021 21:36:27 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a596:b3cb:1a6:1ee4])
+        by smtp.gmail.com with ESMTPSA id i16sm14850421pji.30.2021.06.01.21.36.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 21:36:26 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 21:36:23 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH V3 1/5] input: pm8941-pwrkey: add support for PMK8350
+ PON_HLOS PMIC peripheral
+Message-ID: <YLcKx+0/zih3iDFk@google.com>
+References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
+ <1620630064-16354-2-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4e4df8bd-4e3a-fe35-041d-ed3ed95be1cb@cornelisnetworks.com>
+In-Reply-To: <1620630064-16354-2-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:10:47AM -0400, Dennis Dalessandro wrote:
-> On 5/25/21 9:13 AM, Jason Gunthorpe wrote:
-> > On Thu, May 20, 2021 at 06:02:09PM -0400, Dennis Dalessandro wrote:
-
-<...>
-
-> We are already mid 5.13 cycle. So the earliest this could be queued up to go
-> in is 5.14. Can this wait one more cycle? If we can't get it tested/proven
-> to make a difference mid 5.14, we will drop the objection and Leon's patch
-> can go ahead in for 5.15. Fair compromise?
-
-I sent this patch as early as I could to make sure that it won't
-jeopardize the restrack QP flow fixes. Delaying one more cycle means
-that QP conversion will be delayed too which is needed to close the race
-between netlink query QP call and simultaneous ibv_destroy_qp() call.
-
-Thanks
-
+On Mon, May 10, 2021 at 12:31:00PM +0530, satya priya wrote:
+> From: David Collins <collinsd@codeaurora.org>
 > 
-> -Denny
+> On Qualcomm Technologies, Inc. PMIC PMK8350, the PON peripheral
+> is split into two peripherals: PON_HLOS and PON_PBS.  The
+> application processor only has write access to PON_HLOS which
+> limits it to only receiving PON interrupts.
 > 
+> Add support for the PMK8350 PON_HLOS peripheral so that its
+> KPDPWR_N and RESIN_N interrupts can be used to detect key
+> presses.
 > 
-> 
-> 
+> Signed-off-by: David Collins <collinsd@codeaurora.org>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Applied, thank you.
+
+-- 
+Dmitry
