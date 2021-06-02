@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DA0398D83
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6542C398D88
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhFBO62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:58:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57790 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230029AbhFBO60 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:58:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622645802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TMcD5cH8Gq97lrhqQCtDsFyiGiLKX1rySB5M/G3UShE=;
-        b=NolTLwC7aFbQFLnktO1a+lUgeGx14Ltl5h+A1zLx6Jme7AL4BO9cncqsJZ7+afhGmVOTAI
-        OhVE0OJsKVozYiEUlElqReY2z2MvN2WtdL/pynIt6nthClD9iGtZHy2v1vae2qSfJd+Osh
-        D/Au77DlOUNNPKcImPg3rLTfu7DpNuo=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-46-08GEY8mUPiu88-MyljQuDw-1; Wed, 02 Jun 2021 10:56:40 -0400
-X-MC-Unique: 08GEY8mUPiu88-MyljQuDw-1
-Received: by mail-ej1-f70.google.com with SMTP id mp38-20020a1709071b26b02903df8ccd76fbso761625ejc.23
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:56:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TMcD5cH8Gq97lrhqQCtDsFyiGiLKX1rySB5M/G3UShE=;
-        b=lC4UlVAo0zPzB+GxwIpfefRdq4/Ps+wwo41KFJzsX3TU7bAInxRXB8VJnukSTcVqZZ
-         K5ZZzbEwFACgyK1DL+81kM0xKHA4g8oUpqUDt7ZNRDAypwj5FpCoFWNVwSl82dqeSgLU
-         YCvq7+clgt3hfAIBhr3wEv1/gD/vIB4yC1nQpuCdjvHQ/Zmmw0eLbAX0C7vrXFFLyHxH
-         xIBiv77p+Lj3SeD/6y/vQ5xW5ah5+lMBwPKJyM4IhNchdZu6/u0r2G0Jj8jmxrioZ4k3
-         hmlGwHGVwCSx6VzUgSpNthTQYztWo/pe72RZEHhExDCHvfjBQzqQguB1m3vHOg5dqgZz
-         2T7A==
-X-Gm-Message-State: AOAM532RNkxhTu5hzG07VwZa/3QSC4gMDMopH86+TkhlRSTFkHd6l0EO
-        A+NTzKvzjnTLtAb/Gdqjye4TGueJ4n0ppL7SGiw+cdXi1aFQ9B4bCP+ik+bR1kaEIxUJNAK6nsd
-        YBvk3YnvzLKyIZGPvZkgIha9I
-X-Received: by 2002:aa7:cd19:: with SMTP id b25mr37414296edw.84.1622645799649;
-        Wed, 02 Jun 2021 07:56:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxETIGO2DZMJnum6q9KmB/yfISXhRFopOOUID+RlpBdT/IOOqIC9wTBVDUx7nYRfzZeiS6/GA==
-X-Received: by 2002:aa7:cd19:: with SMTP id b25mr37414281edw.84.1622645799426;
-        Wed, 02 Jun 2021 07:56:39 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id w14sm115661edj.6.2021.06.02.07.56.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 07:56:39 -0700 (PDT)
-Subject: Re: [PATCH] brcmfmac: Delete second brcm folder hierarchy
-To:     matthias.bgg@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     brcm80211-dev-list.pdl@broadcom.com,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        netdev@vger.kernel.org,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        linux-wireless@vger.kernel.org, Amar Shankar <amsr@cypress.com>,
-        ivan.ivanov@suse.com, linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        SHA-cyfmac-dev-list@infineon.com,
-        Wright Feng <wright.feng@infineon.com>,
-        Remi Depommier <rde@setrix.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Arend van Spriel <aspriel@gmail.com>, dmueller@suse.de,
-        Matthias Brugger <mbrugger@suse.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20210602144305.4481-1-matthias.bgg@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <be57da0c-bb2a-787b-caa2-843f7110c109@redhat.com>
-Date:   Wed, 2 Jun 2021 16:56:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230085AbhFBO7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230029AbhFBO7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:59:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A6F60C3F;
+        Wed,  2 Jun 2021 14:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622645846;
+        bh=9S5+0imidO+Ol9OzZqRG2yXOFZnJXLzoJ8dwHhJ87c0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=nTptz/RlreMg0+WvWbELEa13RR9Mh6Crt8dAeUzRJtFkqemJWRI+ULnVKfkhaZstK
+         vawFGwKVXBV0TVqZkzQZDnRrbYNfKZQ6UBZTxELF8o2ClxDpl7vFkeoieBg2BRWB6V
+         mQ6ozIIHUrgorrb/sJdGW9dfL/SO9mIR+UCiwgO6W9o2y45oeB/uiw6CWwYBiwJtC5
+         Y0GbUj65jYHd/OgfuIqc8gs7BrFGTnDjxy80AdnLetKU7UGZ4GTin2ZgyubqFz3x9h
+         oJXgwPx3LLdNBok4d7d8cab8mhdwhx5U/g7YKOr0ndvllgPTgBXNQZ/CEkkZri42kq
+         hXmxbPGlR3tcw==
+Subject: Re: [PATCH 2/2] f2fs: Advertise encrypted casefolding in sysfs
+To:     Daniel Rosenberg <drosen@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+References: <20210602041539.123097-1-drosen@google.com>
+ <20210602041539.123097-3-drosen@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <a954e38e-8ace-df39-3d74-814afd798267@kernel.org>
+Date:   Wed, 2 Jun 2021 22:57:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210602144305.4481-1-matthias.bgg@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210602041539.123097-3-drosen@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2021/6/2 12:15, Daniel Rosenberg wrote:
+> Older kernels don't support encryption with casefolding. This adds
+> the sysfs entry encrypted_casefold to show support for those combined
+> features. Support for this feature was originally added by
+> commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
 
-On 6/2/21 4:43 PM, matthias.bgg@kernel.org wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
-> 
-> BRCMF_FW_DEFAULT_PATH already defines the brcm folder, delete the second
-> folder to match with Linux firmware repository layout.
-> 
-> Fixes: 75729e110e68 ("brcmfmac: expose firmware config files through modinfo")
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+Shouldn't this be backported to the kernel where we support casefolding
+with encryption? So adding a fixes tag here?
 
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
+Thanks,
 
 > 
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
 > ---
+>   fs/f2fs/sysfs.c | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
 > 
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 09e3f258eb52..3c1095a76710 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+>   	if (f2fs_sb_has_compression(sbi))
+>   		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>   				len ? ", " : "", "compression");
+> +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
+> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> +				len ? ", " : "", "encrypted_casefold");
+>   	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>   				len ? ", " : "", "pin_file");
+>   	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
+> @@ -579,6 +582,7 @@ enum feat_id {
+>   	FEAT_CASEFOLD,
+>   	FEAT_COMPRESSION,
+>   	FEAT_TEST_DUMMY_ENCRYPTION_V2,
+> +	FEAT_ENCRYPTED_CASEFOLD,
+>   };
+>   
+>   static ssize_t f2fs_feature_show(struct f2fs_attr *a,
+> @@ -600,6 +604,7 @@ static ssize_t f2fs_feature_show(struct f2fs_attr *a,
+>   	case FEAT_CASEFOLD:
+>   	case FEAT_COMPRESSION:
+>   	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
+> +	case FEAT_ENCRYPTED_CASEFOLD:
+>   		return sprintf(buf, "supported\n");
+>   	}
+>   	return 0;
+> @@ -704,6 +709,9 @@ F2FS_GENERAL_RO_ATTR(avg_vblocks);
+>   #ifdef CONFIG_FS_ENCRYPTION
+>   F2FS_FEATURE_RO_ATTR(encryption, FEAT_CRYPTO);
+>   F2FS_FEATURE_RO_ATTR(test_dummy_encryption_v2, FEAT_TEST_DUMMY_ENCRYPTION_V2);
+> +#ifdef CONFIG_UNICODE
+> +F2FS_FEATURE_RO_ATTR(encrypted_casefold, FEAT_ENCRYPTED_CASEFOLD);
+> +#endif
+>   #endif
+>   #ifdef CONFIG_BLK_DEV_ZONED
+>   F2FS_FEATURE_RO_ATTR(block_zoned, FEAT_BLKZONED);
+> @@ -815,6 +823,9 @@ static struct attribute *f2fs_feat_attrs[] = {
+>   #ifdef CONFIG_FS_ENCRYPTION
+>   	ATTR_LIST(encryption),
+>   	ATTR_LIST(test_dummy_encryption_v2),
+> +#ifdef CONFIG_UNICODE
+> +	ATTR_LIST(encrypted_casefold),
+> +#endif
+>   #endif
+>   #ifdef CONFIG_BLK_DEV_ZONED
+>   	ATTR_LIST(block_zoned),
 > 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> index 16ed325795a8..b8788d7090a4 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> @@ -626,8 +626,8 @@ BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
->  BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
->  
->  /* firmware config files */
-> -MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-sdio.*.txt");
-> -MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-pcie.*.txt");
-> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcmfmac*-sdio.*.txt");
-> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcmfmac*-pcie.*.txt");
->  
->  static const struct brcmf_firmware_mapping brcmf_sdio_fwnames[] = {
->  	BRCMF_FW_ENTRY(BRCM_CC_43143_CHIP_ID, 0xFFFFFFFF, 43143),
-> 
-
