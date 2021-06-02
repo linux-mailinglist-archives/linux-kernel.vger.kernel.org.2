@@ -2,104 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5F8398507
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9349D39850C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhFBJPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhFBJP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:15:28 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A5DC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:13:44 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 6so1720044pgk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sRa/SCLvjxclceznxdFj3+fej72AkhZROM61oD4qmtY=;
-        b=PadHvrgXfsF8NWcRseL9ndsK0SRDFHvq0J/1AMXGNoo+jdHj8ecNl05GYTtB9gcCsf
-         iNzuowUlrzCHtWiOLSoDBfqYgiVe4uU0h5IDeB5+B0WMSCrVMie24Z9Izk7qe1T1f2th
-         DRRlzyJyZziM9RYXYOLSeGitJSIcP0r/5Mgz3htnRHKalG5Q1wR0Vl43G2N1pEK+sJRy
-         Kr37L33/rdJyF2nJ6xGS7rngukMiR+ozULYXoxFewWgVUgwqkV2uYDHv5uyrHyuMwxzw
-         yFw3vYnJLzO1hq1yeLXmdUhbYW6m63O5HUVUQzUOsKZ10LwMPgLpCtixZyUDLq6fQOYz
-         oV5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sRa/SCLvjxclceznxdFj3+fej72AkhZROM61oD4qmtY=;
-        b=PGhbzFj868/sazsti+uKn9sFaJoMOrJ2MTvATEEVIrrLgSxtiF8l7qiIddJB8/5Y0q
-         FEogJS1UyRR0wsV0fC7zKsJoZM0ezxoX4N5KwAVH7eD/fH5Iqqj/KPPJQcBiHAbDBMqD
-         xVG8KlAbSmBmxjNcUL5tNCgJ0ANpR3IqDtK3sQkdaJIEB3Va7M/gkSfpx3k2yPR5VaNL
-         HGsMdeF0d9QAdAoJFAWUPpcGHPe+Yzeakz2b4p/tv/mRy80AwPMPx//H4UekphpVZ/N/
-         lNdfYr6dWfuQNCdH+8yGBQlP9xKdZ/ecaUw+D6zZ8eulIdNd4mpRnjopOpN3m2d8tq3H
-         TjEQ==
-X-Gm-Message-State: AOAM532cRYdAuAY7B9rtJCjtjdow6QFRqARrjSdYVVhQlPpvZqrCy+6R
-        JzNsriORkpx2n6nd+TutUKo=
-X-Google-Smtp-Source: ABdhPJwTV3FKHHyx7tOoeqkV1rWY56OKsASLEP4SLRoWUowqvbbpSHctG+YB0L+ldtG6q+z9mDmYrg==
-X-Received: by 2002:aa7:9581:0:b029:2ea:39e:2224 with SMTP id z1-20020aa795810000b02902ea039e2224mr6870691pfj.32.1622625223899;
-        Wed, 02 Jun 2021 02:13:43 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9005:8001:1fcc:40d0:d6f2:3e07])
-        by smtp.gmail.com with ESMTPSA id o20sm2433387pjq.4.2021.06.02.02.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 02:13:43 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] drm/rockchip: defined struct vop_driver_dt_match[] under CONFIG_OF
-Date:   Wed,  2 Jun 2021 14:43:24 +0530
-Message-Id: <20210602091324.9440-1-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231612AbhFBJQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:16:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231543AbhFBJQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:16:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DE94610A8;
+        Wed,  2 Jun 2021 09:14:54 +0000 (UTC)
+Date:   Wed, 2 Jun 2021 11:14:51 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Changbin Du <changbin.du@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
+Message-ID: <20210602091451.kbdul6nhobilwqvi@wittgenstein>
+References: <20210531153410.93150-1-changbin.du@gmail.com>
+ <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot throws warning when CONFIG_OF not set.
+On Tue, Jun 01, 2021 at 12:51:51PM -0700, Cong Wang wrote:
+> On Mon, May 31, 2021 at 10:01 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Mon, 31 May 2021 23:34:10 +0800 Changbin Du wrote:
+> > > We should not create inode for disabled namespace. A disabled namespace
+> > > sets its ns->ops to NULL. Kernel could panic if we try to create a inode
+> > > for such namespace.
+> > >
+> > > Here is an example oops in socket ioctl cmd SIOCGSKNS when NET_NS is
+> > > disabled. Kernel panicked wherever nsfs trys to access ns->ops since the
+> > > proc_ns_operations is not implemented in this case.
+> > >
+> > > [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+> > > [7.670268] pgd = 32b54000
+> > > [7.670544] [00000010] *pgd=00000000
+> > > [7.671861] Internal error: Oops: 5 [#1] SMP ARM
+> > > [7.672315] Modules linked in:
+> > > [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+> > > [7.673309] Hardware name: Generic DT based system
+> > > [7.673642] PC is at nsfs_evict+0x24/0x30
+> > > [7.674486] LR is at clear_inode+0x20/0x9c
+> > >
+> > > So let's reject such request for disabled namespace.
+> > >
+> > > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > > Cc: <stable@vger.kernel.org>
+> > > Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: David Laight <David.Laight@ACULAB.COM>
+> > > ---
+> > >  fs/nsfs.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/fs/nsfs.c b/fs/nsfs.c
+> > > index 800c1d0eb0d0..6c055eb7757b 100644
+> > > --- a/fs/nsfs.c
+> > > +++ b/fs/nsfs.c
+> > > @@ -62,6 +62,10 @@ static int __ns_get_path(struct path *path, struct ns_common *ns)
+> > >       struct inode *inode;
+> > >       unsigned long d;
+> > >
+> > > +     /* In case the namespace is not actually enabled. */
+> > > +     if (!ns->ops)
+> > > +             return -EOPNOTSUPP;
+> > > +
+> > >       rcu_read_lock();
+> > >       d = atomic_long_read(&ns->stashed);
+> > >       if (!d)
+> >
+> > I'm not sure why we'd pick runtime checks for something that can be
+> > perfectly easily solved at compilation time. Networking should not
+> > be asking for FDs for objects which don't exist.
+> 
+> Four reasons:
+> 
+> 1) ioctl() is not a hot path, so performance is not a problem here.
 
->> drivers/gpu/drm/rockchip/rockchip_vop_reg.c:1038:34:
-warning: unused variable 'vop_driver_dt_match' [-Wunused-const-variable]
-   static const struct of_device_id vop_driver_dt_match[] = {
+Hm, I think a compile time check is better than a runtime check
+independent of performance benefits.
 
-Fixed it by defining vop_driver_dt_match[] under CONFIG_OF.
+> 
+> 2) There are 3 different places (tun has two more) that need the same
+> fix.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index ca7cc82125cb..2cdf889ca361 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -1069,6 +1069,7 @@ static const struct vop_data rk3328_vop = {
- 	.win_size = ARRAY_SIZE(rk3328_vop_win_data),
- };
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id vop_driver_dt_match[] = {
- 	{ .compatible = "rockchip,rk3036-vop",
- 	  .data = &rk3036_vop },
-@@ -1099,6 +1100,7 @@ static const struct of_device_id vop_driver_dt_match[] = {
- 	{},
- };
- MODULE_DEVICE_TABLE(of, vop_driver_dt_match);
-+#endif
- 
- static int vop_probe(struct platform_device *pdev)
- {
--- 
-2.25.1
+> 
+> 3) init_net always exits, except it does not have an ops when
+> CONFIG_NET_NS is disabled:
 
+Which is true for every namespace.
+
+> 
+> static __net_init int net_ns_net_init(struct net *net)
+> {
+> #ifdef CONFIG_NET_NS
+>         net->ns.ops = &netns_operations;
+> #endif
+>         return ns_alloc_inum(&net->ns);
+> }
+> 
+> 4) *I think* other namespaces need this fix too, for instance
+> init_ipc_ns:
+
+None of them should have paths to trigger ->ops.
+
+> 
+> struct ipc_namespace init_ipc_ns = {
+>         .ns.count = REFCOUNT_INIT(1),
+>         .user_ns = &init_user_ns,
+>         .ns.inum = PROC_IPC_INIT_INO,
+> #ifdef CONFIG_IPC_NS
+>         .ns.ops = &ipcns_operations,
+> #endif
+> };
+> 
+> whose ns->ops is NULL too if disabled.
+
+But the point is that ns->ops should never be accessed when that
+namespace type is disabled. Or in other words, the bug is that something
+in netns makes use of namespace features when they are disabled. If we
+handle ->ops being NULL we might be tapering over a real bug somewhere.
+
+Jakub's proposal in the other mail makes sense and falls in line with
+how the rest of the netns getters are implemented. For example
+get_net_ns_fd_fd():
+
+#ifdef CONFIG_NET_NS
+
+[...]
+
+struct net *get_net_ns_by_fd(int fd)
+{
+	struct file *file;
+	struct ns_common *ns;
+	struct net *net;
+
+	file = proc_ns_fget(fd);
+	if (IS_ERR(file))
+		return ERR_CAST(file);
+
+	ns = get_proc_ns(file_inode(file));
+	if (ns->ops == &netns_operations)
+		net = get_net(container_of(ns, struct net, ns));
+	else
+		net = ERR_PTR(-EINVAL);
+
+	fput(file);
+	return net;
+}
+
+#else
+struct net *get_net_ns_by_fd(int fd)
+{
+	return ERR_PTR(-EINVAL);
+}
+#endif
+EXPORT_SYMBOL_GPL(get_net_ns_by_fd);
+
+(It seems that "get_net_ns()" could also be moved into the same file as
+get_net_ns_by_fd() btw.)
+
+Christian
