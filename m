@@ -2,179 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DF3399623
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D766399629
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhFBXEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 19:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhFBXEX (ORCPT
+        id S229828AbhFBXJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 19:09:03 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46114 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhFBXJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 19:04:23 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AF1C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 16:02:39 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 3-20020a05600c0243b029019f2f9b2b8aso2569542wmj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 16:02:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uQ3zJHAGrzkcIOMFd58YKH+8xRtJGPXf1kt35EHrK5M=;
-        b=NfyXzG5fCAIiS41LLk7QTQVL/x0O8UOkuOWDToDl1U8/ju7y5wpLP3eqLyafZbxsLE
-         uEe5OS8xqzA/WcR7hUrSEBO8N6QBTTEn6LyFoN7+bZlsqBubu7xji5LTHbStEXsT9mzd
-         bqceTbAdjkajLL1PR7Cu3NmZn91lEaikqoUjf9SPFf8BjqSz7+vQgkoFGuV1L0DOXJEm
-         BPKyqLHwveIpfnSYi7IynO+fpeAxgh2Ppvbt9z5nVPtegIM8CxehNh+Q/K7DE8INhokK
-         sNSNa2IiPHjJVaMBuq4eqCkmFk+Ov/BmamUvdUsog6ENN4nBDxSkvBv+0qaC3FFRdvzO
-         qjlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uQ3zJHAGrzkcIOMFd58YKH+8xRtJGPXf1kt35EHrK5M=;
-        b=gXbwICZQm6/T5JiDUF6UzoSJm8GzV2GCd9ZoW3KXTeJxeoonT2F4eG09XkNFfM9AlR
-         ealmOU4gGpo8j8QgeU9z8CY8OfxNx5xY/tghCcZMFNQlX6C8YjANbpVzKYEGurHmwyLG
-         GUrIYfR62vKp+GAcTFdQDoVZqEBfQhWGwlAz7WvtjqFig42WQTo6tV5omTnes6hi8PXC
-         CpmeH8JsAcUNfOwvXvxBW1e3UOIQgEnwwvxUZG/CPXup9As7eDn2RNihzWVPfx9q6wV/
-         z1kc0au12XTt7Rv+ilZFXui4Po5omBTM62H42mZ9A+htrtwrIQxv8hBvcg1sJ5Lus4Zr
-         22bQ==
-X-Gm-Message-State: AOAM532gcLFUmV+YaolorsQaqt7q01SZ8WNlAKFQ3XJ21doqWRTkI1Tv
-        89TZ1Q+leCeTOcVe0uA8aCIJsxik48NnFcE1GTHNYLhoVBBLLw==
-X-Google-Smtp-Source: ABdhPJyArNDOrqfDp038gm6qqfxY1+X9KvE3W762ygB8KcW2dtHaHdSDC0XUu1sjDb8oIA7WDvriDE5g231Uaj1zzYU=
-X-Received: by 2002:a7b:c5d3:: with SMTP id n19mr34850699wmk.68.1622674958498;
- Wed, 02 Jun 2021 16:02:38 -0700 (PDT)
+        Wed, 2 Jun 2021 19:09:01 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 152N65mH121479;
+        Wed, 2 Jun 2021 23:07:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=22DF2x0tSEQl0JjtHkqsEo/T+t7Ye4UbEDbhnIwPHIA=;
+ b=VvXCuk2N0amOJfoCGUwUoIPC9uheLDbwn902wzQUeETonRggSgRiX+PSs88hkoOLN9Nb
+ wDCRA27bj1nRc3PO5PIGjOfEv7mzjZeOWDxYZIDxTgEwDprfZ4tfPOSvg+6E9trTwOv2
+ X1yJxnvH3+r88x5SB6W+NWaIzvUesUqA3qmPVm1oChI8VGHGEwzKW+HlDEywAYZLl6Ic
+ fvHjcKEmeATqHEZQOBJQqO88d8izGQFp+crb3GIi1WrV4Xf4jmGoZ+U8qsIB+hr7rB2q
+ SeYmWx6aVBwpCPbQ2NMR6GFmHDJqFlcv3P6+cQIjk5MLvtx/A6p2kKcJ8hoZBrEOrEjC aQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 38ue8phvet-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Jun 2021 23:07:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 152N5aD6087799;
+        Wed, 2 Jun 2021 23:07:08 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 38uded8hbh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Jun 2021 23:07:08 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 152N77p2012289;
+        Wed, 2 Jun 2021 23:07:08 GMT
+Received: from [10.175.197.78] (/10.175.197.78)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Jun 2021 16:07:07 -0700
+From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
+ memslot_perf_test
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Zhenzhong Duan <zhenzhong.duan@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Andrew Jones <drjones@redhat.com>
+References: <20210528191134.3740950-1-pbonzini@redhat.com>
+ <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
+ <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
+ <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
+Message-ID: <68bda0ef-b58f-c335-a0c7-96186cbad535@oracle.com>
+Date:   Thu, 3 Jun 2021 01:07:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <162262192121.264090.6540508908529705156.stgit@devnote2>
-In-Reply-To: <162262192121.264090.6540508908529705156.stgit@devnote2>
-From:   Devin Moore <devinmoore@google.com>
-Date:   Wed, 2 Jun 2021 16:02:27 -0700
-Message-ID: <CAOELnJzW4boH=WadqW31hbWLhmZgNLD9+EiN0GJGBe1RCMxFaw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/6] bootconfig: Add mixed subkeys and value under the
- same key
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10003 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106020147
+X-Proofpoint-GUID: ZWLtDWW7BQdk9pCpKx0ONV8wN6gl8_vv
+X-Proofpoint-ORIG-GUID: ZWLtDWW7BQdk9pCpKx0ONV8wN6gl8_vv
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10003 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 phishscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106020147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 1:18 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Hi,
->
-> Here is the 4th version of the series which updates bootconfig to
-> support mixed subkeys and a value under the same key.
-> The 3rd version is completely wrong. I missed to picked up the older
-> (v1) patches to v3. So please ignore v3.
->
-> Since the kernel cmdline accepts options like
-> "aaa.bbb=val1 aaa.bbb.ccc=val2", it is better that the bootconfig
-> also support it.
->
-> Here is the previous series (v2):
->   https://lore.kernel.org/lkml/162157886618.78209.11141970623539574861.stgit@devnote2/
->
-> In this version, I rebased on top of the latest linus tree and
-> add the build error fix [1/6](*) and a cleanup patch [6/6].
->
-> (*) https://lore.kernel.org/lkml/162087519356.442660.11385099982318160180.stgit@devnote2/
->
-> Changes in v4
->  [1/6]:
->      - Added from separated thread. This is a fundamental fix.
->  [6/6]:
->      - New cleanup patch.
->
->
-> With this series, sub-keys and a value can co-exist under a parent key.
-> For example, following config is allowed.
->
->  foo = value1
->  foo.bar = value2
->
-> Note, since there is no syntax to put a raw value directly under a
-> structured key, you have to define it outside of the brace. For example,
->
->  foo {
->      bar = value1
->      bar {
->          baz = value2
->          qux = value3
->      }
->  }
->
-> Also, the order of the value node under a key is fixed. If there
-> are a value and subkeys, the value is always the first child node
-> of the key. Thus if user specifies subkeys first, e.g.
->
->  foo.bar = value1
->  foo = value2
->
-> In the program (and /proc/bootconfig), it will be shown as below
->
->  foo = value2
->  foo.bar = value1
->
->
-> Thank you,
->
-> ---
->
-> Masami Hiramatsu (6):
->       tools/bootconfig: Fix a build error accroding to undefined fallthrough
->       bootconfig: Change array value to use child node
->       bootconfig: Support mixing a value and subkeys under a key
->       tools/bootconfig: Support mixed value and subkey test cases
->       docs: bootconfig: Update for mixing value and subkeys
->       bootconfig: Share the checksum function with tools
->
->
->  Documentation/admin-guide/bootconfig.rst           |   30 +++++++-
->  fs/proc/bootconfig.c                               |    2 -
->  include/linux/bootconfig.h                         |   58 ++++++++++++++-
->  init/main.c                                        |   12 ---
->  lib/bootconfig.c                                   |   76 +++++++++++++++-----
->  tools/bootconfig/include/linux/bootconfig.h        |    4 +
->  tools/bootconfig/main.c                            |   62 +++++++++++-----
->  tools/bootconfig/samples/bad-mixed-kv1.bconf       |    3 -
->  tools/bootconfig/samples/bad-mixed-kv2.bconf       |    3 -
->  tools/bootconfig/samples/bad-override.bconf        |    3 -
->  tools/bootconfig/samples/bad-override2.bconf       |    3 -
->  tools/bootconfig/samples/good-mixed-append.bconf   |    4 +
->  tools/bootconfig/samples/good-mixed-kv1.bconf      |    3 +
->  tools/bootconfig/samples/good-mixed-kv2.bconf      |    3 +
->  tools/bootconfig/samples/good-mixed-kv3.bconf      |    6 ++
->  tools/bootconfig/samples/good-mixed-override.bconf |    4 +
->  16 files changed, 205 insertions(+), 71 deletions(-)
->  delete mode 100644 tools/bootconfig/samples/bad-mixed-kv1.bconf
->  delete mode 100644 tools/bootconfig/samples/bad-mixed-kv2.bconf
->  delete mode 100644 tools/bootconfig/samples/bad-override.bconf
->  delete mode 100644 tools/bootconfig/samples/bad-override2.bconf
->  create mode 100644 tools/bootconfig/samples/good-mixed-append.bconf
->  create mode 100644 tools/bootconfig/samples/good-mixed-kv1.bconf
->  create mode 100644 tools/bootconfig/samples/good-mixed-kv2.bconf
->  create mode 100644 tools/bootconfig/samples/good-mixed-kv3.bconf
->  create mode 100644 tools/bootconfig/samples/good-mixed-override.bconf
->
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+On 30.05.2021 01:13, Maciej S. Szmigiero wrote:
+> On 29.05.2021 12:20, Paolo Bonzini wrote:
+>> On 28/05/21 21:51, Maciej S. Szmigiero wrote:
+>>> On 28.05.2021 21:11, Paolo Bonzini wrote:
+>>>> The memory that is allocated in vm_create is already mapped close to
+>>>> GPA 0, because test_execute passes the requested memory to
+>>>> prepare_vm.  This causes overlapping memory regions and the
+>>>> test crashes.  For simplicity just move MEM_GPA higher.
+>>>>
+>>>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+>>>
+>>> I am not sure that I understand the issue correctly, is vm_create_default()
+>>> already reserving low GPAs (around 0x10000000) on some arches or run
+>>> environments?
+>>
+>> It maps the number of pages you pass in the second argument, see
+>> vm_create.
+>>
+>>    if (phy_pages != 0)
+>>      vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+>>                                  0, 0, phy_pages, 0);
+>>
+>> In this case:
+>>
+>>    data->vm = vm_create_default(VCPU_ID, mempages, guest_code);
+>>
+>> called here:
+>>
+>>    if (!prepare_vm(data, nslots, maxslots, tdata->guest_code,
+>>                    mem_size, slot_runtime)) {
+>>
+>> where mempages is mem_size, which is declared as:
+>>
+>>          uint64_t mem_size = tdata->mem_size ? : MEM_SIZE_PAGES;
+>>
+>> but actually a better fix is just to pass a small fixed value (e.g. 1024) to vm_create_default,
+>> since all other regions are added by hand
+> 
+> Yes, but the argument that is passed to vm_create_default() (mem_size
+> in the case of the test) is not passed as phy_pages to vm_create().
+> Rather, vm_create_with_vcpus() calculates some upper bound of extra
+> memory that is needed to cover that much guest memory (including for
+> its page tables).
+> 
+> The biggest possible mem_size from memslot_perf_test is 512 MiB + 1 page,
+> according to my calculations this results in phy_pages of 1029 (~4 MiB)
+> in the x86-64 case and around 1540 (~6 MiB) in the s390x case (here I am
+> not sure about the exact number, since s390x has some additional alignment
+> requirements).
+> 
+> Both values are well below 256 MiB (0x10000000UL), so I was wondering
+> what kind of circumstances can make these allocations collide
+> (maybe I am missing something in my analysis).
 
+I see now that there has been a patch merged last week called
+"selftests: kvm: make allocation of extra memory take effect" by
+Zhenzhong that now allocates also the whole memory size passed to
+vm_create_default() (instead of just page tables for that much memory).
 
-Thanks for the updated patches.
-I tested the v4 changes on an Android virtual device(Cuttlefish) with
-a variety of
-parameters that included array values. I checked the output in /proc/bootconfig
-before and after the changes.
-I added a new parameter that failed before these changes and it worked great!
-Added 'androidboot.hardware=cutf_cvm ' which worked with
-'androidboot.hardware.gralloc = "minigbm"' that was already present.
+The commit message of this patch says that "perf_test_util and
+kvm_page_table_test use it to alloc extra memory currently", however both
+kvm_page_table_test and lib/perf_test_util framework explicitly add the
+required memory allocation by doing a vm_userspace_mem_region_add() call
+for the same memory size that they pass to vm_create_default().
 
-These changes really help Android simplify some boot configuration
-processes. We will be using it ASAP.
+So now they allocate this memory twice.
 
-So,
+@Zhenzhong: did you notice improper operation of either kvm_page_table_test
+or perf_test_util-based tests (demand_paging_test, dirty_log_perf_test,
+memslot_modification_stress_test) before your patch?
 
-Tested-by: Devin Moore <devinmoore@google.com>
+They seem to work fine for me without the patch (and I guess other
+people would have noticed earlier, too, if they were broken).
+
+After this patch not only these tests allocate their memory twice but
+it is harder to make vm_create_default() allocate the right amount
+of memory for the page tables in cases where the test needs to
+explicitly use vm_userspace_mem_region_add() for its allocations
+(because it wants the allocation placed at a specific GPA or in a
+specific memslot).
+
+One has to basically open-code the page table size calculations from
+vm_create_with_vcpus() in the particular test then, taking also into
+account that vm_create_with_vcpus() will not only allocate the passed
+memory size (calculated page tables size) but also behave like it was
+allocating space for page tables for these page tables (even though
+the passed memory size itself is supposed to cover them).
+
+Due to the above, I suspect the previous behavior was, in fact, correct.
+
+Thanks,
+Maciej
