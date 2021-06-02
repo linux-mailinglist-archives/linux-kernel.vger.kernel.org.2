@@ -2,424 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89ED43991E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6727A3991F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhFBRsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
+        id S230220AbhFBRww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbhFBRsj (ORCPT
+        with ESMTP id S229489AbhFBRwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:48:39 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951A4C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 10:46:55 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id z17so3138750wrq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:46:55 -0700 (PDT)
+        Wed, 2 Jun 2021 13:52:51 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53941C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 10:51:08 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id h12so1481104plf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:51:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2XXaXHwJJKnuZOIw46AcnXF0JDzhiEfcgIqPQIy2dsk=;
-        b=rfir6B7e7kdfxjTrqgklOOY6n/idfmY0cxbE02cQ1T5zjGcX5MP0kzMhlmIss5YmfR
-         9LZTTXrxwB6uVEr3GQ14fIKp2puxSAT40jaAfc1ACmiXgSu2z50KUvhHPM7Rc/vqOGQa
-         zjDG1RHOUP3tVFLc7kTmvxsT5oUeUQIpCsywEvTDBxVKEd0SUNfW+Q16iDSJ4ZkvKkGX
-         UEfk+yJ6D5TZyvl9uAmJ1kcBePdnFT17duYXi4uGB0/pvfBCXDy3FbdwpMsA9FLnq+6Y
-         qRGBCK4HPrzWCz4Cp5fgtJ4F+3ZlKofjQfUhnAqaPaNWQIqVwjZEO/dKrJXS2osdk6go
-         Dl3Q==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zkOJFfkTCTVQxqMmrj4ZWVfnOWEp4RXFr0NhsSAyeV8=;
+        b=dhlXwZXUl+ds8DakYE+hrD4smEvnIIxco8nmRTKqI3WZAG/iy5ars2LIaEalrGkKMh
+         wd6Jc4PL7OWyM9+pAxVSBG6Dwir5wdIMP6frXsEOg+yy9rfgdTAD0ZRqbKo6UDirJ7b2
+         TRo5qlUISVd+ikiFE4t4LlP7w1O8UnhXc4/1VHkc4gLuyz055y+VHM5N7oMKfEH/YAOQ
+         Oe7ST609RtGLMOmuh4ixsP4WFSQjMrOOMrFbrBhi1IXw5KH19myYayHGIYGWBuBIEs1p
+         ASNTbRy2VWY/7Cpmh7HOERqln73nSb0RsQVYDJ6H6q3u0wZwjX57eO+BTt76JdJhQ4Ka
+         LzAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2XXaXHwJJKnuZOIw46AcnXF0JDzhiEfcgIqPQIy2dsk=;
-        b=QV6i86sMTNKI+yK7KemNjfya9bPpx+tFKmZgTxMzsk2HtcI7Ozr1TnWj3TvYT3AxUH
-         OwUjm2ujCVZIcgRZFATqr9jOxqTeE3ekYzV1i65OeS8vEw3er2wIUKSZaVnVvAuc9G8l
-         DOjg3vugfl4bbzNPOtfwHmdP6w9Uh1yv0mhEE/hDSojbCEpZtotN81zjneouOtl9k3sh
-         sgGBfxeqZaNieqnqVG6koSrEZZf8EXnXEuG8OdTIUljuGrZFkkr702h3En8hZHuv/Kck
-         XN8c1REheRhOfEGP6by1sISCx4nourroaMmEu9MI9I5d2uQxER0pMGfxBA2Rw+nI0NSN
-         54cQ==
-X-Gm-Message-State: AOAM531MfXwmfAxO5941eOVrK87SiO6a4HL6FUkYKCa3ONhLXJYtHJiK
-        RYzxXQ2vUjJfFLnSyIS4Wi4=
-X-Google-Smtp-Source: ABdhPJw0N0sap4BK6zLluD8nQYGSP6XemidJbJ4xAic8JwNPNyUBpboYgIdokI2cu7x/13efAW5B5Q==
-X-Received: by 2002:a5d:4089:: with SMTP id o9mr27618302wrp.195.1622656014048;
-        Wed, 02 Jun 2021 10:46:54 -0700 (PDT)
-Received: from othello.cust.communityfibre.co.uk ([2a02:6b64:80a9:0:1be:22d4:3c1d:bcad])
-        by smtp.gmail.com with ESMTPSA id u2sm647574wrn.38.2021.06.02.10.46.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zkOJFfkTCTVQxqMmrj4ZWVfnOWEp4RXFr0NhsSAyeV8=;
+        b=g33+TsdMvDFDZfOC3NtaXXxwRPH9TtgMQ3M9ttC1PPDNQUqDOPNFurXhxhNtvPasEn
+         H1/aW/APplE8zry9MpfSYb1OZr8iwX9kb4qdnkl9E5nDkhtHtJSDvg7MKR90qzTooOrn
+         AUQffmw3BUmDkYg6jhCZY2PvuwzHMd9qobrfIHuARr2S5/1Tal7NkNcUiYVtNn/OMd9L
+         1OXRIVH8lsBltYlBv6ZkKlZWOdlTJQix/H9KrpYKQxJl0Fi5dahW6sPArYksEiBShcTN
+         kw/nYw4zNTbPfvUpJkjPw6meGb4XMQg57giYb42OzDNB3xG027WoCQwBkKjqtAQvdlZv
+         0fZw==
+X-Gm-Message-State: AOAM5308oKrarA3tmGUPJeN6QLVRFDf7ZkKMW4TqZlXGmV6TcEncnQEr
+        z88kRoivVVUoWyJwXlG2/DQT2g==
+X-Google-Smtp-Source: ABdhPJx95iN/xpxAC65h1nNQekOXUL6OKO0DFWy5yQwk+UTa8NT0wKbAu7E0PT1yCaWzI36k//yvKQ==
+X-Received: by 2002:a17:902:6546:b029:101:abf0:d882 with SMTP id d6-20020a1709026546b0290101abf0d882mr24761050pln.73.1622656266627;
+        Wed, 02 Jun 2021 10:51:06 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t124sm410746pgb.38.2021.06.02.10.51.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 10:46:53 -0700 (PDT)
-From:   Cassio Neri <cassio.neri@gmail.com>
-To:     john.stultz@linaro.org, tglx@linutronix.de
-Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org,
-        Cassio Neri <cassio.neri@gmail.com>
-Subject: [PATCH v2] kernel/time: Improve performance of time64_to_tm. Add tests.
-Date:   Wed,  2 Jun 2021 18:46:51 +0100
-Message-Id: <20210602174651.37874-1-cassio.neri@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Wed, 02 Jun 2021 10:51:05 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 17:51:02 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
+Message-ID: <YLfFBgPeWZ91TfH7@google.com>
+References: <YH2pam5b837wFM3z@google.com>
+ <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
+ <YH3HWeOXFiCTZN4y@google.com>
+ <20210419185354.v3rgandtrel7bzjj@box>
+ <YH3jaf5ThzLZdY4K@google.com>
+ <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
+ <YH8L0ihIzL6UB6qD@google.com>
+ <20210521123148.a3t4uh4iezm6ax47@box>
+ <YK6lrHeaeUZvHMJC@google.com>
+ <20210531200712.qjxghakcaj4s6ara@box.shutemov.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531200712.qjxghakcaj4s6ara@box.shutemov.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cassio Neri <cassio.neri@gmail.com>
+On Mon, May 31, 2021, Kirill A. Shutemov wrote:
+> On Wed, May 26, 2021 at 07:46:52PM +0000, Sean Christopherson wrote:
+> > On Fri, May 21, 2021, Kirill A. Shutemov wrote:
+> > > Inserting PageGuest() into shared is fine, but the page will not be accessible
+> > > from userspace.
+> > 
+> > Even if it can be functionally fine, I don't think we want to allow KVM to map
+> > PageGuest() as shared memory.  The only reason to map memory shared is to share
+> > it with something, e.g. the host, that doesn't have access to private memory, so
+> > I can't envision a use case.
+> > 
+> > On the KVM side, it's trivially easy to omit FOLL_GUEST for shared memory, while
+> > always passing FOLL_GUEST would require manually zapping.  Manual zapping isn't
+> > a big deal, but I do think it can be avoided if userspace must either remap the
+> > hva or define a new KVM memslot (new gpa->hva), both of which will automatically
+> > zap any existing translations.
+> > 
+> > Aha, thought of a concrete problem.  If KVM maps PageGuest() into shared memory,
+> > then KVM must ensure that the page is not mapped private via a different hva/gpa,
+> > and is not mapped _any_ other guest because the TDX-Module's 1:1 PFN:TD+GPA
+> > enforcement only applies to private memory.  The explicit "VM_WRITE | VM_SHARED"
+> > requirement below makes me think this wouldn't be prevented.
+> 
+> Hm. I didn't realize that TDX module doesn't prevent the same page to be
+> used as shared and private at the same time.
 
-The current implementation of time64_to_tm contains unnecessary loops,
-branches and look-up tables. The new one uses an arithmetic-based algorithm
-appeared in [1] and is ~3.2 times faster (YMMV).
+Ya, only private mappings are routed through the TDX module, e.g. it can prevent
+mapping the same page as private into multiple guests, but it can't prevent the
+host from mapping the page as non-private.
 
-The drawback is that the new code isn't intuitive and contains many 'magic
-numbers' (not unusual for this type of algorithm). However, [1] justifies
-all those numbers and, given this function's history, I reckon the code is
-unlikely to need much maintenance, if any at all.
+> Omitting FOLL_GUEST for shared memory doesn't look like a right approach.
+> IIUC, it would require the kernel to track what memory is share and what
+> private, which defeat the purpose of the rework. I would rather enforce
+> !PageGuest() when share SEPT is populated in addition to enforcing
+> PageGuest() fro private SEPT.
 
-Added file kernel/time/time_test.c containing a KUnit test case that checks
-every day in a 160,000 years interval centered at 1970-01-01 against the
-expected result. A new config TIME_KUNIT_TEST symbol was introduced to
-give the option to run this test suite.
+Isn't that what omitting FOLL_GUEST would accomplish?  For shared memory,
+including mapping memory into the shared EPT, KVM will omit FOLL_GUEST and thus
+require the memory to be readable/writable according to the guest access type.
 
-[1] Neri, Schneider, "Euclidean Affine Functions and Applications to
-Calendar Algorithms". https://arxiv.org/abs/2102.06959
+By definition, that excludes PageGuest() because PageGuest() pages must always
+be unmapped, e.g. PROTNONE.  And for private EPT, because PageGuest() is always
+PROTNONE or whatever, it will require FOLL_GUEST to retrieve the PTE/PMD/Pxx.
 
-Signed-off-by: Cassio Neri <cassio.neri@gmail.com>
+On a semi-related topic, I don't think can_follow_write_pte() is the correct
+place to hook PageGuest().  TDX's S-EPT has a quirk where all private guest
+memory must be mapped writable, but that quirk doesn't hold true for non-TDX
+guests.  It should be legal to map private guest memory as read-only.  And I
+believe the below snippet in follow_page_pte() will be problematic too, since
+FOLL_NUMA is added unless FOLL_FORCE is set.  I suspect the correct approach is
+to handle FOLL_GUEST as an exception to pte_protnone(), though that might require
+adjusting pte_protnone() to be meaningful even when CONFIG_NUMA_BALANCING=n.
 
----
+	if ((flags & FOLL_NUMA) && pte_protnone(pte))
+		goto no_page;
+	if ((flags & FOLL_WRITE) && !can_follow_write_pte(pte, flags)) {
+		pte_unmap_unlock(ptep, ptl);
+		return NULL;
+	}
 
-* Disclaimer: I'm an author of [1] and, surely, I have an interest in
-seeing my algorithm made into the kernel. If not by this patch, I'm
-willing to work closely with maintainers, if they wish, in order to write
-an appropriate implementation.
+> Do you see any problems with this?
+> 
+> > Oh, and the other nicety is that I think it would avoid having to explicitly
+> > handle PageGuest() memory that is being accessed from kernel/KVM, i.e. if all
+> > memory exposed to KVM must be !PageGuest(), then it is also eligible for
+> > copy_{to,from}_user().
+> 
+> copy_{to,from}_user() enforce by setting PTE entries to PROT_NONE.
 
-* Test evidence: This runs the same test implemented in
-kernel/time/time_test.c (see above). It's possible to run it on 32 and 64
-bits.
+But KVM does _not_ want those PTEs PROT_NONE.  If KVM is accessing memory that
+is also accessible by the the guest, then it must be shared.  And if it's shared,
+it must also be accessible to host userspace, i.e. something other than PROT_NONE,
+otherwise the memory isn't actually shared with anything.
 
-    https://godbolt.org/z/1rn1aqfqY
-
-* Benchmarks: It measures the time taken by each implementation to process
-65,536 numbers (time64_t). These numbers are pseudo-random under the
-uniform distribution on the interval corresponding to dates spanning 800
-years centered at 1970-01-01:
-
-    https://quick-bench.com/q/COPMeRk9e00Sua85KFrKKL9YoSc
-
-(Apologies that the benchmark is in C++ but results in C should be close.)
-
-* Disasembly: Shows, in particular, reduction in code size:
-
-    https://godbolt.org/z/e87rhha5b
-
-* History
-
-  v2 Address reviewer comments.
-  v1 Original implementation.
-
----
- kernel/time/Kconfig     |   9 +++
- kernel/time/Makefile    |   1 +
- kernel/time/time_test.c |  98 ++++++++++++++++++++++++++++++
- kernel/time/timeconv.c  | 130 ++++++++++++++++++++++------------------
- 4 files changed, 180 insertions(+), 58 deletions(-)
- create mode 100644 kernel/time/time_test.c
-
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index 83e158d016ba..3610b1bef142 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -64,6 +64,15 @@ config LEGACY_TIMER_TICK
- 	  lack support for the generic clockevent framework.
- 	  New platforms should use generic clockevents instead.
- 
-+config TIME_KUNIT_TEST
-+	tristate "KUnit test for kernel/time functions" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Enable this option to test RTC library functions.
-+
-+	  If unsure, say N.
-+
- if GENERIC_CLOCKEVENTS
- menu "Timers subsystem"
- 
-diff --git a/kernel/time/Makefile b/kernel/time/Makefile
-index 1fb1c1ef6a19..b733d09a6e4d 100644
---- a/kernel/time/Makefile
-+++ b/kernel/time/Makefile
-@@ -21,3 +21,4 @@ obj-$(CONFIG_HAVE_GENERIC_VDSO)			+= vsyscall.o
- obj-$(CONFIG_DEBUG_FS)				+= timekeeping_debug.o
- obj-$(CONFIG_TEST_UDELAY)			+= test_udelay.o
- obj-$(CONFIG_TIME_NS)				+= namespace.o
-+obj-$(CONFIG_TIME_KUNIT_TEST)			+= time_test.o
-diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
-new file mode 100644
-index 000000000000..7893539cb458
---- /dev/null
-+++ b/kernel/time/time_test.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: LGPL-2.1+
-+
-+#include <kunit/test.h>
-+#include <linux/time.h>
-+
-+/*
-+ * Tradicional implementation of is_leap.
-+ */
-+static bool is_leap(long year)
-+{
-+	return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-+}
-+
-+/*
-+ * Gets the last day of a month.
-+ */
-+static int last_day_of_month(long year, int month)
-+{
-+	if (month == 2)
-+		return 28 + is_leap(year);
-+	if (month == 4 || month == 6 || month == 9 || month == 11)
-+		return 30;
-+	return 31;
-+}
-+
-+/*
-+ * Advances a date by one day.
-+ */
-+static void advance_date(long *year, int *month, int *mday, int *yday)
-+{
-+	if (*mday != last_day_of_month(*year, *month)) {
-+		++*mday;
-+		++*yday;
-+		return;
-+	}
-+
-+	*mday = 1;
-+	if (*month != 12) {
-+		++*month;
-+		++*yday;
-+		return;
-+	}
-+
-+	*month = 1;
-+	*yday  = 0;
-+	++*year;
-+}
-+
-+/*
-+ * Checks every day in a 160000 years interval centered at 1970-01-01
-+ * against the expected result.
-+ */
-+static void time64_to_tm_test_date_range(struct kunit *test)
-+{
-+	/*
-+	 *  80000 years = (80000 / 400) * 400 years
-+	 *              = (80000 / 400) * 146097 days
-+	 *              = (80000 / 400) * 146097 * 86400 seconds
-+	 */
-+	time64_t total_secs = ((time64_t) 80000) / 400 * 146097 * 86400;
-+	long     year       = 1970 - 80000;
-+	int      month      = 1;
-+	int      mdday      = 1;
-+	int      yday       = 0;
-+
-+	struct tm result;
-+	time64_t  secs;
-+	s64       days;
-+
-+	for (secs = -total_secs; secs <= total_secs; secs += 86400) {
-+
-+		time64_to_tm(secs, 0, &result);
-+
-+		days = div_s64(secs, 86400);
-+
-+		#define FAIL_MSG "%05ld/%02d/%02d (%2d) : %ld", \
-+			year, month, mdday, yday, days
-+
-+		KUNIT_ASSERT_EQ_MSG(test, year - 1900, result.tm_year, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, month - 1, result.tm_mon, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, mdday, result.tm_mday, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, yday, result.tm_yday, FAIL_MSG);
-+
-+		advance_date(&year, &month, &mdday, &yday);
-+	}
-+}
-+
-+static struct kunit_case time_test_cases[] = {
-+	KUNIT_CASE(time64_to_tm_test_date_range),
-+	{}
-+};
-+
-+static struct kunit_suite time_test_suite = {
-+	.name = "time_test_cases",
-+	.test_cases = time_test_cases,
-+};
-+
-+kunit_test_suite(time_test_suite);
-diff --git a/kernel/time/timeconv.c b/kernel/time/timeconv.c
-index 62e3b46717a6..800da4326f5d 100644
---- a/kernel/time/timeconv.c
-+++ b/kernel/time/timeconv.c
-@@ -22,48 +22,16 @@
- 
- /*
-  * Converts the calendar time to broken-down time representation
-- * Based on code from glibc-2.6
-  *
-  * 2009-7-14:
-  *   Moved from glibc-2.6 to kernel by Zhaolei<zhaolei@cn.fujitsu.com>
-+ * 2021-06-02:
-+ *   Partially reimplemented by Cassio Neri <cassio.neri@gmail.com>
-  */
- 
- #include <linux/time.h>
- #include <linux/module.h>
- 
--/*
-- * Nonzero if YEAR is a leap year (every 4 years,
-- * except every 100th isn't, and every 400th is).
-- */
--static int __isleap(long year)
--{
--	return (year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0);
--}
--
--/* do a mathdiv for long type */
--static long math_div(long a, long b)
--{
--	return a / b - (a % b < 0);
--}
--
--/* How many leap years between y1 and y2, y1 must less or equal to y2 */
--static long leaps_between(long y1, long y2)
--{
--	long leaps1 = math_div(y1 - 1, 4) - math_div(y1 - 1, 100)
--		+ math_div(y1 - 1, 400);
--	long leaps2 = math_div(y2 - 1, 4) - math_div(y2 - 1, 100)
--		+ math_div(y2 - 1, 400);
--	return leaps2 - leaps1;
--}
--
--/* How many days come before each month (0-12). */
--static const unsigned short __mon_yday[2][13] = {
--	/* Normal years. */
--	{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365},
--	/* Leap years. */
--	{0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}
--};
--
- #define SECS_PER_HOUR	(60 * 60)
- #define SECS_PER_DAY	(SECS_PER_HOUR * 24)
- 
-@@ -77,9 +45,12 @@ static const unsigned short __mon_yday[2][13] = {
-  */
- void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
- {
--	long days, rem, y;
-+	long days, rem;
- 	int remainder;
--	const unsigned short *ip;
-+
-+	u64 u64tmp, udays, century, year;
-+	u32 u32tmp, day_of_century, year_of_century, day_of_year, month,
-+		day, janOrFeb, is_leap;
- 
- 	days = div_s64_rem(totalsecs, SECS_PER_DAY, &remainder);
- 	rem = remainder;
-@@ -103,27 +74,70 @@ void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
- 	if (result->tm_wday < 0)
- 		result->tm_wday += 7;
- 
--	y = 1970;
--
--	while (days < 0 || days >= (__isleap(y) ? 366 : 365)) {
--		/* Guess a corrected year, assuming 365 days per year. */
--		long yg = y + math_div(days, 365);
--
--		/* Adjust DAYS and Y to match the guessed year. */
--		days -= (yg - y) * 365 + leaps_between(y, yg);
--		y = yg;
--	}
--
--	result->tm_year = y - 1900;
--
--	result->tm_yday = days;
--
--	ip = __mon_yday[__isleap(y)];
--	for (y = 11; days < ip[y]; y--)
--		continue;
--	days -= ip[y];
--
--	result->tm_mon = y;
--	result->tm_mday = days + 1;
-+	/*
-+	 * The following algorithm is, basically, Proposition 6.3 of Neri
-+	 * and Schneider [1]. In a few words: it works on the
-+	 * computational (fictitious) calendar where the year starts in
-+	 * March, month = 2 (*), and finishes in February, month = 13. This
-+	 * calendar is mathematically convenient because the day of the
-+	 * year does not depend on whether the year is leap or not. For
-+	 * instance:
-+	 *
-+	 * March    01 is the   0-th day of the year;
-+	 * ...
-+	 * April    01 is the  31-st day of the year;
-+	 * ...
-+	 * January  01 is the 306-th day of the year; (Important!)
-+	 * ...
-+	 * February 28 is the 364-th day of the year;
-+	 * February 29 is the 365-th day of the year (provided it exists).
-+	 *
-+	 * After having worked out the date in the computational calendar
-+	 * (using just arithmetics) it's easy to convert it to the
-+	 * corresponding date in the Gregorian calendar.
-+	 *
-+	 * [1] "Euclidean Affine Functions and Applications to Calendar
-+	 * Algorithms". https://arxiv.org/abs/2102.06959
-+	 *
-+	 * (*) The numbering of months follows tm more closely and thus,
-+	 * is slightly different from [1].
-+	 */
-+
-+	udays           = ((u64) days) + 2305843009213814918ULL;
-+
-+	u64tmp          = 4 * udays + 3;
-+	century         = div64_u64_rem(u64tmp, 146097, &u64tmp);
-+	day_of_century  = (u32) (u64tmp / 4);
-+
-+	u32tmp          = 4 * day_of_century + 3;
-+	u64tmp          = 2939745ULL * u32tmp;
-+	year_of_century = (u32) (u64tmp >> 32);
-+	day_of_year     = ((u32) u64tmp) / 2939745 / 4;
-+
-+	year            = 100 * century + year_of_century;
-+	is_leap         = year_of_century != 0 ?
-+		year_of_century % 4 == 0 : century % 4 == 0;
-+
-+	u32tmp          = 2141 * day_of_year + 132377;
-+	month           = u32tmp >> 16;
-+	day             = ((u16) u32tmp) / 2141;
-+
-+	/* Recall that January 01 is the 306-th day of the year in the
-+	 * computational (not Gregorian) calendar.
-+	 */
-+	janOrFeb        = day_of_year >= 306;
-+
-+	/* Converts to the Gregorian calendar and adjusts to Unix time. */
-+	year            = year + janOrFeb - 6313183731940000ULL;
-+	month           = janOrFeb ? month - 12 : month;
-+	day             = day + 1;
-+	day_of_year     = janOrFeb ?
-+		day_of_year - 306 : day_of_year + 31 + 28 + is_leap;
-+
-+	/* Converts to tm's format. */
-+	result->tm_year = (long) (year - 1900);
-+	result->tm_mon  = (int) month;
-+	result->tm_mday = (int) day;
-+	result->tm_yday = (int) day_of_year;
- }
- EXPORT_SYMBOL(time64_to_tm);
-
-base-commit: 245a057fee18be08d6ac12357463579d06bea077
--- 
-2.31.0
-
+As above, any guest-accessible memory that is accessed by the host must be
+shared, and so must be mapped with the required permissions.
