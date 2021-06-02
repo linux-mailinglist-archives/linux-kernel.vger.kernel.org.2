@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353D139808D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617F6398091
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhFBFFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 01:05:39 -0400
-Received: from muru.com ([72.249.23.125]:35156 "EHLO muru.com"
+        id S229911AbhFBFJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 01:09:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:32927 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229863AbhFBFFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 01:05:38 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 3864E80E0;
-        Wed,  2 Jun 2021 05:04:01 +0000 (UTC)
-Date:   Wed, 2 Jun 2021 08:03:51 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] pinctrl: core: configure pinmux from pins debug
- file
-Message-ID: <YLcRN0KSCpvCS4ET@atomide.com>
-References: <20210520202730.4444-1-dariobin@libero.it>
- <20210520202730.4444-3-dariobin@libero.it>
- <87ea9971-9e15-c595-95cc-14c68b0b68d8@mleia.com>
- <1972814783.387983.1621877304255@mail1.libero.it>
- <414c9176-7922-929f-e82e-f80f07e91b2c@mleia.com>
- <106030092.519428.1622143415836@mail1.libero.it>
- <b25a0e33-d7e8-322a-2a73-bda6e88c8f8b@mleia.com>
- <2062056721.520514.1622147634190@mail1.libero.it>
- <CACRpkdZb4WZS8cd=nFz_J0GrBc5HJ8SMYtniB2W_Jpq_vtPTYQ@mail.gmail.com>
+        id S229852AbhFBFJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 01:09:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622610448; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FkvZYbRbC/cAozRjP4BPGysEfk7mZXUuzUP30C8/JvY=;
+ b=h1uVrM6GMHr2pUzreugYpqY/5tmacvBf1X6zxeA8IXDAWeZTZZ4kFeQq9t++AgD8U3K2IW6K
+ Bc82bLJ7SBv13KXrE4VYTasPtuy+ac+6vycDTHYAJ51LeJ/aPTBUF/U2TiOas9rYJOkdUXhc
+ yYe9qCUbgC09UhFj03knQ7KpQJw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60b7120f6ddc3305c4ccc9d4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 05:07:27
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95E2AC4323A; Wed,  2 Jun 2021 05:07:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC05FC433F1;
+        Wed,  2 Jun 2021 05:07:25 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZb4WZS8cd=nFz_J0GrBc5HJ8SMYtniB2W_Jpq_vtPTYQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 02 Jun 2021 10:37:25 +0530
+From:   rojay@codeaurora.org
+To:     wsa@kernel.org
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, skananth@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V11 1/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+Mail-Followup-To: wsa@kernel.org, swboyd@chromium.org,
+ dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+ gregkh@linuxfoundation.org, mka@chromium.org, skananth@codeaurora.org,
+ msavaliy@qti.qualcomm.com, skakit@codeaurora.org, rnayak@codeaurora.org,
+ agross@kernel.org, bjorn.andersson@linaro.org,
+ linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org, sumit.semwal@linaro.org,
+ linux-media@vger.kernel.org
+In-Reply-To: <YLClq6hZKUA1Y4ZW@kunai>
+References: <20210525131051.31250-1-rojay@codeaurora.org>
+ <20210525131051.31250-2-rojay@codeaurora.org> <YLClq6hZKUA1Y4ZW@kunai>
+Message-ID: <f0b92d196a92201696b7f8984ab34523@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Linus Walleij <linus.walleij@linaro.org> [210528 09:08]:
-> On Thu, May 27, 2021 at 10:33 PM Dario Binacchi <dariobin@libero.it> wrote:
-> > > Il 27/05/2021 21:57 Vladimir Zapolskiy <vz@mleia.com> ha scritto:
+On 2021-05-28 13:41, Wolfram Sang wrote:
+> On Tue, May 25, 2021 at 06:40:50PM +0530, Roja Rani Yarubandi wrote:
+>> If the hardware is still accessing memory after SMMU translation
+>> is disabled (as part of smmu shutdown callback), then the
+>> IOVAs (I/O virtual address) which it was using will go on the bus
+>> as the physical addresses which will result in unknown crashes
+>> like NoC/interconnect errors.
+>> 
+>> So, implement shutdown callback for i2c driver to suspend the bus
+>> during system "reboot" or "shutdown".
+>> 
+>> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the 
+>> Qualcomm GENI I2C controller")
+>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
 > 
-> > > Unfortunately you continue to cling to the broken interface, while I see no
-> > > comments from you about asked to consider pin groups and pin group functions.
-> >
-> > Could you kindly explain to me, with some practical examples, what kind of interface
-> > would you implement ?
+> Do we need patch 1 after patch 2 was applied? I always thought all
+> devices are suspended before shutdown/reboot?
 > 
-> I am not fully understanding this discussion.
-> 
-> I get the feeling that this is caused by the early architectural decisions with
-> pinctrl-single to put all configuration of pin groups and functions per pin into
-> the device tree.
->
-> Tony specifically wanted this because what he gets from TI are some raw
-> ASIC data dumps from the designers, that he could make a script to process
-> into device tree rather than into .h files, and get this out of the kernel.
-> (As I remember it, Tony correct me if I'm wrong.)
 
-Yeah the idea was to avoid stuffing even more SoC specific data into the
-kernel and rather use devicetree data only for the booted SoC.
- 
-> This makes it hard to align some concepts of the pin control subsystem such
-> as functions and groups because pinctrl-single assume a 1-to-1 mapping
-> between one pin and one group, which in turn has a 1-to-many mapping
-> to functions.
-> 
-> Is the patch trying to debugfs around this somehow?
-> 
-> If this hack is only needed for pinctrl-single.c then it should be placed in
-> that driver, so Tony can review it and maintain it as applicable in that
-> driver's context only, not in the pinctrl core as it appears the general
-> applicability for other drivers is not there.
-> 
-> Would this really be useful for other drivers than pinctrl-single.c?
+Yes, both patch 1 and patch 2 are required.
+Devices are not suspended during shutdown/reboot.
 
-I'd rather go with a generic interface. I think it should work if we only
-allow enabling and disabling of unclaimed pingroups from sysfs. And then
-we can also allow creating new pingroups for unclaimed pins if needed.
+> Nice to see that 'mark_adapter_suspended' becomes useful again!
 
-Regards,
-
-Tony
+Thanks,
+Roja
