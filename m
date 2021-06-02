@@ -2,102 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AB53989C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CFF3989C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhFBMhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:37:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30036 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229610AbhFBMhV (ORCPT
+        id S229807AbhFBMjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhFBMjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:37:21 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 152CYVHZ135012;
-        Wed, 2 Jun 2021 08:35:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6k50fOEFi7RXAL8U0g6F+fY7m6rM8rdiM5Z6yO1JrRM=;
- b=KXcEZVzMU8fH0Kj2vqtNHwQLOwfapZzme5cTmzXY3qAbgk7xeM6z0Hlwd/AGCmDr+SgO
- bBX0pZJxBsbdGMNbtUlmHuxBPRTfd3Tq505uiJkmdaqfEeXgs/xnl5+WzW47RJed/s65
- bskrGH6Od4F0wTFWF1p8PkBwgtBzwIypSZEOiUe4eaiet/pkmshrgc4OuKOv1z8ca/B6
- A9GM0fp3EtBz/v4ZNyenhD3xemom7QtYZ1LdZGzDXshsSFS8wQPElxBBK4RlIeF37bGx
- hkxpS94MV1gcuk6B4H6uE1uQvOzLWpRyE7BAafpVOJXt+3tTrgUoHMEkrNf+ErpCSPlF +Q== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38x9hm16ku-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 08:35:36 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 152CSsvd023646;
-        Wed, 2 Jun 2021 12:35:33 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 38ucvh99t0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 12:35:33 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 152CZV4Z23462178
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Jun 2021 12:35:31 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67686AE053;
-        Wed,  2 Jun 2021 12:35:31 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4726FAE05A;
-        Wed,  2 Jun 2021 12:35:31 +0000 (GMT)
-Received: from [9.145.65.140] (unknown [9.145.65.140])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Jun 2021 12:35:31 +0000 (GMT)
-Subject: Re: gcov: NULL pointer dereference with gcc 9.3.1
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     linux-kernel@vger.kernel.org
-References: <YLZYwgs5hyzFZMlw@suse.de>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <0a013450-75eb-de2c-f90a-3df193800cea@linux.ibm.com>
-Date:   Wed, 2 Jun 2021 14:35:31 +0200
+        Wed, 2 Jun 2021 08:39:06 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9F0C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 05:37:23 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id f30so3173678lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:37:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8PqULTBrsSuBQESuLaha+XAIqL+NLDB4pV3bb3Gk0Ns=;
+        b=QrP6W7zXEaPvUGhYr1BOSwFbQm01sqAnALBeXeAJFOw9NyL6EOuHipcB0zqPA2G3A4
+         fJhoBnfkZEVrp6GILxQC9agjxReOH/sxxvshpfkN7io08RjuGIuiign85xoaCcZvqPZ1
+         XTJIJZHrtUoPvi9DZGb4C3e9WYUlL5yHswmKwVKZct8UCprvR/q3ISLIcU8K6Y0SvukG
+         0laPn7Zei8HXCLcsBWLyWGfLuQvQLAnPsEJty36yNiCQIoT25UfMXp7n27R9h/6BHhLg
+         SFPxlG/CJFc9wG7DsxOPHu2f1Si7vazCNLB+j7nXxvuIkQIqwjZhD9GqAtKpeyzw7KmL
+         xRlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8PqULTBrsSuBQESuLaha+XAIqL+NLDB4pV3bb3Gk0Ns=;
+        b=NnrKxJ3jOV7dSnW+FrSRjcbFROiJxzDyD1F/4MSBtd3CQyF85mJC7Nf1pSr7SWq5DU
+         CZIsx6IwF/mXfu82RmFYzuYz3+XuYPJGrtFdjjflkUKG0/eSUXdGKfqG4DtLBOJy1nBt
+         mI3odGu+pwDV03uI+M+x4PAK2C3pRmIsJ0c8JtGPk9Es7OUn5bM3ZzLCqe8cNm7Yrp3H
+         lV0oy+g8Cxqvty3yT4jbBbOexb6n8Z0u/BvfKZCmtompW/g/Mr0zPVS7WSYkIn5wlr0W
+         2yxhoARdMQpUsCE4mkCDrCXh8lSULCzu7wSvZsRRg8qrPmDkyz6osj4fLqn6O/xKCo/r
+         aE2Q==
+X-Gm-Message-State: AOAM533RQPyyjlOB3PJVxmqpXL8bBoWkSrVUBNrA+yD1OqvQdutg6S49
+        XqRxySx146MTN4xdrSdTg737DnpgRFpjMJr6QKfqlg==
+X-Google-Smtp-Source: ABdhPJxwrSiAwHT/j9GBhQmA/pqqCgez0Dd2Wk15iJxfnaLhAKNu6pgB5vE6ptiTyS/WhQ4CQgphwMG6KhFm6gnOBRs=
+X-Received: by 2002:a05:6512:3e12:: with SMTP id i18mr18386456lfv.286.1622637441915;
+ Wed, 02 Jun 2021 05:37:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YLZYwgs5hyzFZMlw@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: j7QsMlzIdIj-iRysBRinfblzFRBMw2gJ
-X-Proofpoint-GUID: j7QsMlzIdIj-iRysBRinfblzFRBMw2gJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-02_07:2021-06-02,2021-06-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106020080
+References: <20210602122555.10082-1-laoar.shao@gmail.com>
+In-Reply-To: <20210602122555.10082-1-laoar.shao@gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 2 Jun 2021 14:37:10 +0200
+Message-ID: <CAKfTPtCS6bVGK1EFUHygj+uZL5N2kEzyyEeoyT4Cuc7r-65yVw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched: do active load balance on the new idle cpu
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.co>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.06.2021 17:56, Luis Henriques wrote:
-> Hi!
-> 
-> Maybe this is a known (gcc?) issue, but I'm seeing a NULL pointer splat if
-> I instrument my kernel (or a module, more specifically) using gcc 9.3.1.
-> 
-> It looks like, during initialization in __gcov_init(), gcov_info struct is
-> invalid: the filename seems to be correct but ->function is NULL and
-> ->n_functions contains garbage.
+On Wed, 2 Jun 2021 at 14:26, Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> We monitored our latency-sensitive RT tasks are randomly preempted by the
+> kthreads migration/n, which means to migrate tasks on CPUn to other new
+> idle CPU. The logical as follows,
+>
+>   new idle CPU                          CPU n
+>   (no task to run)                      (busy running)
+>   wakeup migration/n                    (busy running)
+>   (idle)                                migraion/n preempts current task
+>   run the migrated task                 (busy running)
 
-Thanks for reporting this issue. The symptoms you're seeing look similar
-to those that occur when the struct gcov_info layout emitted by GCC does
-not match the one used by the kernel. In particular a change in the
-GCOV_COUNTER value can cause this behavior.
+migration thread is only used when we want to migrate the currently
+running task of the source cpu.
+This doesn't seem to be your case as it's a RT thread that is
+currently running so the migration thread should not be woken up as we
+don't need it to migrate a runnable but not running cfs thread from
+coin to new idle CPU
 
-I've checked upstream GCC 9.3.1 and it seems to match what is used by
-the kernel for that GCC version. Could you provide the exact version of
-the compiler you are using? Both 'gcc --version' output and the GCC
-package version should help. Also what architecture are you seeing this on?
+Do you have more details about the UC. Could it be a race between new
+idle load balance starting migration thread to pull the cfs running
+thread and the RT thread waking up and preempting cfs task before
+migration threads which then preempt your RT threads
 
 
-Regards,
-  Peter Oberparleiter
 
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+>
+> As the new idle CPU is going to be idle, we'd better move the migration
+> work on it instead of burdening the busy CPU. After this change, the
+> logic is,
+>  new idle CPU                           CPU n
+>  (no task to run)                       (busy running)
+>  migrate task from CPU n                (busy running)
+>  run the migrated task                  (busy running)
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  kernel/sched/fair.c | 17 +++++------------
+>  1 file changed, 5 insertions(+), 12 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 3248e24a90b0..3e8b98b982ff 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9807,13 +9807,11 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>                                 busiest->push_cpu = this_cpu;
+>                                 active_balance = 1;
+>                         }
+> -                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
+>
+> -                       if (active_balance) {
+> -                               stop_one_cpu_nowait(cpu_of(busiest),
+> -                                       active_load_balance_cpu_stop, busiest,
+> -                                       &busiest->active_balance_work);
+> -                       }
+> +                       if (active_balance)
+> +                               active_load_balance_cpu_stop(busiest);
+
+this doesn't make sense because we reach this point if we want to
+migrate the current running task of the busiest cpu and in order to do
+this we need the preempt this current running thread
+
+> +
+> +                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
+>                 }
+>         } else {
+>                 sd->nr_balance_failed = 0;
+> @@ -9923,7 +9921,6 @@ static int active_load_balance_cpu_stop(void *data)
+>         struct task_struct *p = NULL;
+>         struct rq_flags rf;
+>
+> -       rq_lock_irq(busiest_rq, &rf);
+>         /*
+>          * Between queueing the stop-work and running it is a hole in which
+>          * CPUs can become inactive. We should not move tasks from or to
+> @@ -9933,8 +9930,7 @@ static int active_load_balance_cpu_stop(void *data)
+>                 goto out_unlock;
+>
+>         /* Make sure the requested CPU hasn't gone down in the meantime: */
+> -       if (unlikely(busiest_cpu != smp_processor_id() ||
+> -                    !busiest_rq->active_balance))
+> +       if (unlikely(!busiest_rq->active_balance))
+>                 goto out_unlock;
+>
+>         /* Is there any task to move? */
+> @@ -9981,13 +9977,10 @@ static int active_load_balance_cpu_stop(void *data)
+>         rcu_read_unlock();
+>  out_unlock:
+>         busiest_rq->active_balance = 0;
+> -       rq_unlock(busiest_rq, &rf);
+>
+>         if (p)
+>                 attach_one_task(target_rq, p);
+>
+> -       local_irq_enable();
+> -
+>         return 0;
+>  }
+>
+> --
+> 2.17.1
+>
