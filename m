@@ -2,106 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49482398845
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1B839883A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbhFBL1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:27:48 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:2568 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232850AbhFBL05 (ORCPT
+        id S231617AbhFBL1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:27:01 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:59156 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232305AbhFBL0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:26:57 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 152BCMWE000946;
-        Wed, 2 Jun 2021 11:24:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=boB/nKh+qAxdwe2vTp/6XFb++1c2+Zuxo/FZb24bAlo=;
- b=LQWlcG9VMFyUiywqjQcY/S0NBRjC+Ewy8jp2QfZ2qR9rIe/GtWztjycbjroQ5UstOktV
- WfuVSbDTjJIpZduvMLFM7W9M9vTZ6APHuUAulygv2Z+PVUt0lcTsmWj2rFf9gfpppBiT
- wc65BQ2ICIKvK3ZQDGouZGYT05505MHHEr2d/e33iy7M1ijLvWnY/18dZKjYRxGZ8eO9
- ykTTMHn+WDFGxeRj+HjsvDRUluqQl0BrwSu8CWLFtQCTDBqKcUvgXdz456uTXu/g9+aq
- gEhItMZT1Ethlzg/2kfVf9AMaG7kdChWbZ1r0oAjRSSDueK1CfpATI3IP6mQXDBPG1ys uA== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38wr508b0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 11:24:32 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 152BKCm5114181;
-        Wed, 2 Jun 2021 11:24:31 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38x1bcuk35-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 11:24:31 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 152BOV0R120478;
-        Wed, 2 Jun 2021 11:24:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 38x1bcuk22-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 11:24:31 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 152BORDh008252;
-        Wed, 2 Jun 2021 11:24:27 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Jun 2021 11:24:26 +0000
-Date:   Wed, 2 Jun 2021 14:24:16 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ASoC: rk817: remove redundant assignment to
- pointer node
-Message-ID: <20210602112416.GG1955@kadam>
-References: <20210602102746.11793-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602102746.11793-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: Omvj3_IJRJvZEPF87IJzLnvGmWx-Uk1T
-X-Proofpoint-GUID: Omvj3_IJRJvZEPF87IJzLnvGmWx-Uk1T
+        Wed, 2 Jun 2021 07:26:22 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id A175FC047D;
+        Wed,  2 Jun 2021 11:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1622633079; bh=o8fUj4cnDTlc5py1s3Yw542RYJUwKpkMsXpFixB/w+o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XgDKuelTAhGK4P2M85CZRF/+PMdzcfsUWWRaRTf/NgNPyooq63Zckeha3wHUFHgZR
+         hIZmcugz7srFNyjAtrzd0NUsG7tEyT5wIXR7aRnXD7pUH55EN96vlZ0ocjrp+GyOBl
+         Su56UPFrfOAIc5JGRovEmUkq/8NIuc3+Ar0ww8pIRG85WkIxCONhtvLoM98ct8P+ah
+         0Ok+yYXjybMnOIvykp864gHbDDtqijtEpiTlugeBy0cn91E5ynyjrvhfm3ZaCAWY5P
+         q+yupLrLkXiNhI7RkewQgu91hD0wvCKCJRLp80YF9i8OAh7dbobwSrUieTKG0KWIhz
+         MOXWrWa/tXJiw==
+Received: from de02dwvm009.internal.synopsys.com (de02dwvm009.internal.synopsys.com [10.225.17.73])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 94B06A005E;
+        Wed,  2 Jun 2021 11:24:36 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Nelson Costa <Nelson.Costa@synopsys.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Nelson Costa <Nelson.Costa@synopsys.com>
+Subject: [PATCH 0/9] Add Synopsys DesignWare HDMI RX Controller and PHY drivers
+Date:   Wed,  2 Jun 2021 13:24:18 +0200
+Message-Id: <cover.1622631488.git.nelson.costa@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:27:46AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The pointer node is being initialized with a value that is never read and
-> it is being updated later with a new value.  The initialization is
-> redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  sound/soc/codecs/rk817_codec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/rk817_codec.c b/sound/soc/codecs/rk817_codec.c
-> index 17e672b85ee5..0d7cc26ded57 100644
-> --- a/sound/soc/codecs/rk817_codec.c
-> +++ b/sound/soc/codecs/rk817_codec.c
-> @@ -457,7 +457,7 @@ static const struct snd_soc_component_driver soc_codec_dev_rk817 = {
->  static void rk817_codec_parse_dt_property(struct device *dev,
->  					 struct rk817_codec_priv *rk817)
->  {
-> -	struct device_node *node = dev->parent->of_node;
-> +	struct device_node *node;
->  
->  	node = of_get_child_by_name(dev->parent->of_node, "codec");
->  	if (!node) {
+This series implements support for the Synopsys DesignWare HDMI RX Controller
+and PHYs e405/e406 drivers, being compliant with standard HDMI 1.4 and
+HDMI 2.0.
 
-This function needs an of_node_put().
+The Controller + PHY pipeline can be integrated into a fully featured
+system that can be able to receive video up to 4k@60Hz with basic audio.
 
-regards,
-dan carpenter
+This solution is mainly composed by two modules: phy-dw-hdmi-e40x and
+dw-hdmi-rx.
+
+phy-dw-hdmi-e40x: it's the PHY (Physical Layer) driver that implements
+support for Synopsys DesignWare e405 and e406 PHYs. It is responsible to
+configure the PHY and equalize it for the best settings, in order to
+receive and decode video to be delivered to the Controller.
+This driver is integrated in the PHY subsystem.
+The main features of this module are:
+ - Equalizer algorithm that chooses the phy best settings
+ according to the detected HDMI cable characteristics
+ - Support for scrambling
+ - Support for color depth up to 48bpp
+ - Support for HDMI 2.0 modes up to 6G (HDMI 4k@60Hz).
+
+dw-hdmi-rx: it's the Controller driver that implements support for
+Synopsys DesignWare HDMI RX Controller. It is responsible to manage and
+handle the PHY (through the PHY API) and the Controller configurations in
+order to configure the video and audio pipeline.
+This driver is implemented as a standard V4L2 subdevice.
+The main features of this module are:
+ - Support for scrambling
+ - Support for color depth up to 48bpp
+ - Support for HDMI 2.0 modes up to 6G (HDMI 4k@60Hz)
+ - Support for RGB, YCC444, YCC422 and YCC420
+ - Support for basic audio (LPCM 2ch, 32KHz/44.1KHz/48KHz, 16bit)
+ - Support for Aspect Ratio
+ - Support for CEC
+ - Internal state machine that reconfigures phy and controller
+ - JTAG communication with phy
+ - Inter-module communication with phy driver:
+   * through the PHY API using the phy reference "hdmi-phy"
+   * through the callbacks that phy dwc driver needs.
+ - Debug write/read ioctls
+
+NOTES: This patch series has two specific patches (Patch [4/8] and [7/8])
+one for the PHY API and the other for v4l2-dv-timings.
+
+Patch [4/8] adds phy standard HDMI opts to the phy API that contributes
+for the PHY subsystem, which allows to integrate the PHY driver in the
+PHY subsystem using this new HDMI opts structure, because there are hdmi
+options that are needed to pass between the Controller and PHY drivers
+using the standard API.
+
+Patch [7/8] adds more CEA/CTA-861 video format timings that contributes
+to the v4l2 media subsystem, which in our case is needed to provide
+information about the Aspect Ratio.
+
+PATCH v1:
+ - Fix "undefined reference to `hdmi_infoframe_unpack'", adding config
+  HDMI selectable for config VIDEO_DWC_HDMI_RX.
+  Reported-by: default avatarkernel test robot <lkp@intel.com>
+ - Add MEDIA_CONTROLLER and VIDEO_V4L2_SUBDEV_API also selectable
+  for config VIDEO_DWC_HDMI_RX.
+
+RFC v2:
+ - The original media Device Tree bindings was divided in two independent
+  Device Trees:
+  * Device tree for PHYs e405/e406 in PHY dt bindings
+  * Device tree for HDMI RX Controller in media dt bindings
+ - Add OF graph ports connection model in the Device Trees
+  (Thanks to Laurent Pinchart <laurent.pinchart@ideasonboard.com>)
+ - The HDMI RX Controller was adjusted in order to work with the new
+  Device Trees Model:
+  * the "input-count" field was removed from original Device Tree and now
+  the count is done based on port child count.
+  * Changed the way to get the phy node, removing the dependency as child
+  node of Controller node
+ - Fix reported kernel test robot issues:
+  * Fix "warning: no previous prototype for 'dw_phy_eq_settings'"
+  * Fix "warning: integer literal is too large to be represented in type
+  'long', interpreting as 'unsigned long' per C89; this literal will have
+  type 'long long' in C99 onwards [-Wc99-compat]"
+  Reported-by: kernel test robot <lkp@intel.com>
+ - Fix phy power off/on issue when the system startups without the cable
+  connected.
+ - Fix "CHECK: Comparison to NULL could be written
+  "of_device_get_match_data"".
+
+Nelson Costa (9):
+  dt-bindings: phy: Document Synopsys DesignWare HDMI RX PHYs e405 and
+    e406
+  dt-bindings: media: Document Synopsys DesignWare HDMI RX
+  MAINTAINERS: Add entry for Synopsys DesignWare HDMI drivers
+  phy: Add PHY standard HDMI opts to the PHY API
+  phy: dwc: Add Synopsys DesignWare HDMI RX PHYs e405 and e406 Driver
+  media: platform: Add Synopsys DesignWare HDMI RX Controller Driver
+  media: v4l2-dv-timings: Add more CEA/CTA-861 video format timings
+  media: dwc: dw-hdmi-rx: Add support for Aspect Ratio
+  media: dwc: dw-hdmi-rx: Add support for CEC
+
+ .../devicetree/bindings/media/snps,dw-hdmi-rx.yaml |   98 +
+ .../bindings/phy/snps,phy-dw-hdmi-e40x.yaml        |   93 +
+ MAINTAINERS                                        |   11 +
+ drivers/media/platform/Kconfig                     |    2 +
+ drivers/media/platform/Makefile                    |    1 +
+ drivers/media/platform/dwc/Kconfig                 |   23 +
+ drivers/media/platform/dwc/Makefile                |    3 +
+ drivers/media/platform/dwc/dw-hdmi-rx.c            | 3542 ++++++++++++++++++++
+ drivers/media/platform/dwc/dw-hdmi-rx.h            |  533 +++
+ drivers/media/v4l2-core/v4l2-dv-timings.c          |  139 +
+ drivers/phy/Kconfig                                |    1 +
+ drivers/phy/Makefile                               |    1 +
+ drivers/phy/dwc/Kconfig                            |   20 +
+ drivers/phy/dwc/Makefile                           |    9 +
+ drivers/phy/dwc/phy-dw-hdmi-e405.c                 |  497 +++
+ drivers/phy/dwc/phy-dw-hdmi-e406.c                 |  475 +++
+ drivers/phy/dwc/phy-dw-hdmi-e40x-core.c            |  514 +++
+ drivers/phy/dwc/phy-dw-hdmi-e40x.h                 |  219 ++
+ include/linux/phy/dwc/dw-hdmi-phy-pdata.h          |   73 +
+ include/linux/phy/phy-hdmi.h                       |  102 +
+ include/linux/phy/phy.h                            |    7 +-
+ include/media/dwc/dw-hdmi-rx-pdata.h               |  126 +
+ include/uapi/linux/v4l2-dv-timings.h               | 1595 ++++++++-
+ 23 files changed, 8082 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
+ create mode 100644 Documentation/devicetree/bindings/phy/snps,phy-dw-hdmi-e40x.yaml
+ create mode 100644 drivers/media/platform/dwc/Kconfig
+ create mode 100644 drivers/media/platform/dwc/Makefile
+ create mode 100644 drivers/media/platform/dwc/dw-hdmi-rx.c
+ create mode 100644 drivers/media/platform/dwc/dw-hdmi-rx.h
+ create mode 100644 drivers/phy/dwc/Kconfig
+ create mode 100644 drivers/phy/dwc/Makefile
+ create mode 100644 drivers/phy/dwc/phy-dw-hdmi-e405.c
+ create mode 100644 drivers/phy/dwc/phy-dw-hdmi-e406.c
+ create mode 100644 drivers/phy/dwc/phy-dw-hdmi-e40x-core.c
+ create mode 100644 drivers/phy/dwc/phy-dw-hdmi-e40x.h
+ create mode 100644 include/linux/phy/dwc/dw-hdmi-phy-pdata.h
+ create mode 100644 include/linux/phy/phy-hdmi.h
+ create mode 100644 include/media/dwc/dw-hdmi-rx-pdata.h
+
+-- 
+2.7.4
 
