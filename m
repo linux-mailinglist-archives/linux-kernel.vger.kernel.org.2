@@ -2,215 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902A9398EBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A44398EC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhFBPf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:35:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S231891AbhFBPhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:37:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:48010 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231645AbhFBPft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:35:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D961610C8;
-        Wed,  2 Jun 2021 15:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622648046;
-        bh=WzRkpqDT9rtR1tyCqRm6HCqhGHlRRytAMLxNBfRtvog=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mokpwC/70BJAIpYvej+U+p2/Gy2cR9+72MgG2F8S7yBor3wtu43Mupnh2JB7qWXqb
-         361ScpUm80wo+5iIQzAkHP7xSi8lBFCP+ZJY3CaurD1m0qP3OE7UR9weYQEi6AGbP5
-         kkEmWjBiXnmvPfnfj5vtU0P9kvNkY22VoDT+osZ6qhwQbpnNN/ytWH00U/hBhubwKM
-         UU8LzTyTiC/bV/G492UUcVhfUa4QSZfFS+jheoG7hGa9hsuqUHl7fNJsm3Hs5eDqk0
-         3Zr82ohFORTyzT7xn8JGfLL4n1mOvGFSqVXLI05nY4r/U12db4rYldVp2fVxaP2VkP
-         2ncYHU+3iI1pw==
-Date:   Wed, 2 Jun 2021 08:34:05 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Chao Yu <yuchao0@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: add compress_inode to
- cache compressed blocks
-Message-ID: <YLek7U+BaFvHhz58@google.com>
-References: <YKz0VJSYYBEnF75V@google.com>
- <YKz1gGctmOJ+LjOn@google.com>
- <2c4db877-b5e6-1139-98b5-be2d9e7872be@kernel.org>
- <YK0DVi4aTNdXDN3L@google.com>
- <dda2400f-4a06-0ef6-b4f5-8aafe86bd81d@huawei.com>
- <YK5Mewfb3gMg1yGM@google.com>
- <5140516c-e4c6-fd6a-69b2-7566c903cb53@kernel.org>
- <YLZc0y0S3sGkU6f4@google.com>
- <YLZt+rFClf7xEzOa@google.com>
- <09fa74d3-a9df-028f-3ebc-2b845e5cd609@kernel.org>
+        id S230246AbhFBPhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:37:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C4A711FB;
+        Wed,  2 Jun 2021 08:35:30 -0700 (PDT)
+Received: from [10.57.1.174] (unknown [10.57.1.174])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 253A23F719;
+        Wed,  2 Jun 2021 08:35:26 -0700 (PDT)
+Subject: Re: [PATCH 1/2] sched/fair: Take thermal pressure into account while
+ estimating energy
+To:     Quentin Perret <qperret@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        vincent.donnefort@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+References: <20210602135609.10867-1-lukasz.luba@arm.com>
+ <20210602135609.10867-2-lukasz.luba@arm.com> <YLedIMNFlZ5eu2Oe@google.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <ce1751d6-4b23-3588-a050-2c30cd3ec9dc@arm.com>
+Date:   Wed, 2 Jun 2021 16:35:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09fa74d3-a9df-028f-3ebc-2b845e5cd609@kernel.org>
+In-Reply-To: <YLedIMNFlZ5eu2Oe@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/02, Chao Yu wrote:
-> On 2021/6/2 1:27, Jaegeuk Kim wrote:
-> > On 06/01, Jaegeuk Kim wrote:
-> > > On 05/26, Chao Yu wrote:
-> > > > On 2021/5/26 21:26, Jaegeuk Kim wrote:
-> > > > > On 05/26, Chao Yu wrote:
-> > > > > > On 2021/5/25 22:01, Jaegeuk Kim wrote:
-> > > > > > > On 05/25, Chao Yu wrote:
-> > > > > > > > On 2021/5/25 21:02, Jaegeuk Kim wrote:
-> > > > > > > > > On 05/25, Jaegeuk Kim wrote:
-> > > > > > > > > > On 05/25, Chao Yu wrote:
-> > > > > > > > > > > Also, and queue this?
-> > > > > > > > > > 
-> > > > > > > > > > Easy to get this?
-> > > > > > > > > 
-> > > > > > > > > need GFP_NOFS?
-> > > > > > > > 
-> > > > > > > > Not sure, I use __GFP_IO intentionally here to avoid __GFP_RECLAIM from
-> > > > > > > > GFP_NOFS, because in low memory case, I don't want to instead page cache
-> > > > > > > > of normal file with page cache of sbi->compress_inode.
-> > > > > > > > 
-> > > > > > > > What is memory size in your vm?
-> > > > > > > 
-> > > > > > > 4GB. If I set GFP_NOFS, I don't see the error anymore, at least.
-> > > > > > 
-> > > > > > I applied below patch and don't see the warning message anymore.
-> > > > > > 
-> > > > > > ---
-> > > > > >    fs/f2fs/compress.c | 2 +-
-> > > > > >    1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > > > > > index 701dd0f6f4ec..ed5b7fabc604 100644
-> > > > > > --- a/fs/f2fs/compress.c
-> > > > > > +++ b/fs/f2fs/compress.c
-> > > > > > @@ -1703,7 +1703,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
-> > > > > >    	avail_ram = si.totalram - si.totalhigh;
-> > > > > > 
-> > > > > >    	/* free memory is lower than watermark, deny caching compress page */
-> > > > > > -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
-> > > > 
-> > > > This is buggy, because sbi->compress_watermark equals to 20, so that
-> > > > sbi->compress_watermark / 100 * avail_ram always be zero...
-> > > > 
-> > > > After this change, if free ram is lower, we may just skip caching
-> > > > compressed blocks here.
-> > > 
-> > > Can we move this in f2fs_available_free_memory()?
-> 
-> More clean.
-> 
-> One comment below:
-> 
-> > 
-> > Testing this.
-> > 
-> > ---
-> >   fs/f2fs/compress.c | 14 +-------------
-> >   fs/f2fs/node.c     | 11 ++++++++++-
-> >   fs/f2fs/node.h     |  1 +
-> >   3 files changed, 12 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > index 9fd62a0a646b..455561826c7d 100644
-> > --- a/fs/f2fs/compress.c
-> > +++ b/fs/f2fs/compress.c
-> > @@ -1688,8 +1688,6 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
-> >   {
-> >   	struct page *cpage;
-> >   	int ret;
-> > -	struct sysinfo si;
-> > -	unsigned long free_ram, avail_ram;
-> >   	if (!test_opt(sbi, COMPRESS_CACHE))
-> >   		return;
-> > @@ -1697,17 +1695,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
-> >   	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
-> >   		return;
-> > -	si_meminfo(&si);
-> > -	free_ram = si.freeram;
-> > -	avail_ram = si.totalram - si.totalhigh;
-> > -
-> > -	/* free memory is lower than watermark, deny caching compress page */
-> > -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
-> > -		return;
-> > -
-> > -	/* cached page count exceed threshold, deny caching compress page */
-> > -	if (COMPRESS_MAPPING(sbi)->nrpages >=
-> 
-> Need to cover COMPRESS_MAPPING() with CONFIG_F2FS_FS_COMPRESSION.
+Hi Quentin,
 
-Added like this.
-
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -99,6 +99,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
-                                sizeof(struct discard_cmd)) >> PAGE_SHIFT;
-                res = mem_size < (avail_ram * nm_i->ram_thresh / 100);
-        } else if (type == COMPRESS_PAGE) {
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-                /*
-                 * free memory is lower than watermark or cached page count
-                 * exceed threshold, deny caching compress page.
-@@ -106,6 +107,9 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
-                res = (free_ram > avail_ram * sbi->compress_watermark / 100) &&
-                        (COMPRESS_MAPPING(sbi)->nrpages <
-                         free_ram * sbi->compress_percent / 100);
-+#else
-+               res = false;
-+#endif
-        } else {
-                if (!sbi->sb->s_bdi->wb.dirty_exceeded)
-                        return true;
-
+On 6/2/21 4:00 PM, Quentin Perret wrote:
+> Hi Lukasz,
 > 
-> Thanks,
+> On Wednesday 02 Jun 2021 at 14:56:08 (+0100), Lukasz Luba wrote:
+>>   compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>>   {
+>>   	struct cpumask *pd_mask = perf_domain_span(pd);
+>> -	unsigned long cpu_cap = arch_scale_cpu_capacity(cpumask_first(pd_mask));
+>> +	unsigned long _cpu_cap = arch_scale_cpu_capacity(cpumask_first(pd_mask));
+>>   	unsigned long max_util = 0, sum_util = 0;
+>> +	unsigned long cpu_cap = _cpu_cap;
+>>   	int cpu;
+>>   
+>>   	/*
+>> @@ -6558,6 +6559,14 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>>   				cpu_util_next(cpu, p, -1) + task_util_est(p);
+>>   		}
+>>   
+>> +		/*
+>> +		 * Take the thermal pressure from non-idle CPUs. They have
+>> +		 * most up-to-date information. For idle CPUs thermal pressure
+>> +		 * signal is not updated so often.
+>> +		 */
+>> +		if (!idle_cpu(cpu))
+>> +			cpu_cap = _cpu_cap - thermal_load_avg(cpu_rq(cpu));
 > 
-> > -			free_ram / 100 * sbi->compress_percent)
-> > +	if (!f2fs_available_free_memory(sbi, COMPRESS_PAGE))
-> >   		return;
-> >   	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
-> > diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> > index 3a8f7afa5059..67093416ce9c 100644
-> > --- a/fs/f2fs/node.c
-> > +++ b/fs/f2fs/node.c
-> > @@ -45,7 +45,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
-> >   	struct f2fs_nm_info *nm_i = NM_I(sbi);
-> >   	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
-> >   	struct sysinfo val;
-> > -	unsigned long avail_ram;
-> > +	unsigned long avail_ram, free_ram;
-> >   	unsigned long mem_size = 0;
-> >   	bool res = false;
-> > @@ -56,6 +56,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
-> >   	/* only uses low memory */
-> >   	avail_ram = val.totalram - val.totalhigh;
-> > +	free_ram = val.freeram;
-> >   	/*
-> >   	 * give 25%, 25%, 50%, 50%, 50% memory for each components respectively
-> > @@ -97,6 +98,14 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
-> >   		mem_size = (atomic_read(&dcc->discard_cmd_cnt) *
-> >   				sizeof(struct discard_cmd)) >> PAGE_SHIFT;
-> >   		res = mem_size < (avail_ram * nm_i->ram_thresh / 100);
-> > +	} else if (type == COMPRESS_PAGE) {
-> > +		/*
-> > +		 * free memory is lower than watermark or cached page count
-> > +		 * exceed threshold, deny caching compress page.
-> > +		 */
-> > +		res = (free_ram > avail_ram * sbi->compress_watermark / 100) &&
-> > +			(COMPRESS_MAPPING(sbi)->nrpages <
-> > +			 free_ram * sbi->compress_percent / 100);
-> >   	} else {
-> >   		if (!sbi->sb->s_bdi->wb.dirty_exceeded)
-> >   			return true;
-> > diff --git a/fs/f2fs/node.h b/fs/f2fs/node.h
-> > index d85e8659cfda..84d45385d1f2 100644
-> > --- a/fs/f2fs/node.h
-> > +++ b/fs/f2fs/node.h
-> > @@ -148,6 +148,7 @@ enum mem_type {
-> >   	EXTENT_CACHE,	/* indicates extent cache */
-> >   	INMEM_PAGES,	/* indicates inmemory pages */
-> >   	DISCARD_CACHE,	/* indicates memory of cached discard cmds */
-> > +	COMPRESS_PAGE,	/* indicates memory of cached compressed pages */
-> >   	BASE_CHECK,	/* check kernel status */
-> >   };
-> > 
+> This messes up the irq time scaling no? Maybe move the capping in this
+
+You are talking about scale_irq_capacity() which shrinks the util by
+some percentage of irq time. It might be different, by some fraction
+(e.g. 8/9 vs 9/10) compared to SchedUtil view, which passes 'raw' arch
+capacity. It then adds the irq part, but still to this slightly
+different base util.
+
+> function instead of relying on effective_cpu_util() to do it for you?
+
+Agree, since it would be more 'aligned' with how SchedUtil calls
+effective_cpu_util(). I will clamp the returned value.
+
+Thanks for pointing this out.
+
+Regards,
+Lukasz
