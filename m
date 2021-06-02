@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2634399226
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FCB399228
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhFBSHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:07:41 -0400
-Received: from smtprelay0140.hostedemail.com ([216.40.44.140]:48374 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229541AbhFBSHk (ORCPT
+        id S229778AbhFBSH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:07:56 -0400
+Received: from mail-oo1-f44.google.com ([209.85.161.44]:44933 "EHLO
+        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBSHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:07:40 -0400
-Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6A4E618224D63;
-        Wed,  2 Jun 2021 18:05:56 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 87A622448C2;
-        Wed,  2 Jun 2021 18:05:55 +0000 (UTC)
-Message-ID: <ef68a1ece1a2db3dca73c326f65304fd640c6a7e.camel@perches.com>
-Subject: Re: [PATCH v2] kernel/time: Improve performance of time64_to_tm.
- Add tests.
-From:   Joe Perches <joe@perches.com>
-To:     Cassio Neri <cassio.neri@gmail.com>, john.stultz@linaro.org,
-        tglx@linutronix.de
-Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 02 Jun 2021 11:05:54 -0700
-In-Reply-To: <20210602174651.37874-1-cassio.neri@gmail.com>
-References: <20210602174651.37874-1-cassio.neri@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 2 Jun 2021 14:07:54 -0400
+Received: by mail-oo1-f44.google.com with SMTP id o5-20020a4a2c050000b0290245d6c7b555so757033ooo.11;
+        Wed, 02 Jun 2021 11:06:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OXQfC+XKgJEeb6dM9eMgXu59hvMyoJzOchI782JgqsE=;
+        b=kaM8QM1ZJ+OvZL2/qyQkVkj9lxzU6mcZ4Amvi07wT15qQYikr0BLS2TZ/gpB6Sb5pL
+         tVeD2Vg7kI4e+++mb5tBQk+iuBBL8eTme5UeEeZCbSf8hHZoede57e/jhRewy3phuGHt
+         j28TGcsGCneuqVuR0ccXT63DhVl4h4hQ07bqtn5PgE1+39a/JEVzYYkCYPD5ajRvwH/z
+         wYJ7i3A/VOPI18limUaycm9wdVEh+MKvNrXfzojKOt2fAbdsVAqwUjdx+TGbrEKi8myP
+         6MfSYybbfgvu7MGnr/e3nrWR3utrAVN31lJOfA+qSakReUOlo2WwSG1YZtaAvujBwY38
+         rBjA==
+X-Gm-Message-State: AOAM531xiwAUpVzADIb3STsNyekEf1rDloHprGKPkBlLWTg0+SlgXIOL
+        +AP5V8OPwyi2Wd52JYItfg==
+X-Google-Smtp-Source: ABdhPJwam6nqA2q4bi7B4qoK5vD5zo/AYazGpsK2qGbDlzHhFnQ6k8GumVkSvq5b7zM8n6ym5eulUA==
+X-Received: by 2002:a4a:e945:: with SMTP id v5mr26155249ood.64.1622657171175;
+        Wed, 02 Jun 2021 11:06:11 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 94sm137834otj.33.2021.06.02.11.06.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 11:06:10 -0700 (PDT)
+Received: (nullmailer pid 3685093 invoked by uid 1000);
+        Wed, 02 Jun 2021 18:06:09 -0000
+Date:   Wed, 2 Jun 2021 13:06:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 03/11] dt-bindings: drm/bridge: ti-sn65dsi86: Add
+ aux-bus child
+Message-ID: <20210602180609.GA3675041@robh.at.kernel.org>
+References: <20210525000159.3384921-1-dianders@chromium.org>
+ <20210524165920.v8.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
+ <CACRpkdZQ_4OMfUPZj1hXzRzqcfbhnrOHZ42NdP+giKbcz3=2VQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.35
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 87A622448C2
-X-Stat-Signature: 4c58457tdrg68zsn9csgyczrimgbd7e4
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/s5kfWtyTAB33qPzDHWJUT64S+55llffo=
-X-HE-Tag: 1622657155-651289
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZQ_4OMfUPZj1hXzRzqcfbhnrOHZ42NdP+giKbcz3=2VQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-02 at 18:46 +0100, Cassio Neri wrote:
-> The current implementation of time64_to_tm contains unnecessary loops,
-> branches and look-up tables. The new one uses an arithmetic-based algorithm
-> appeared in [1] and is ~3.2 times faster (YMMV).
+On Fri, May 28, 2021 at 02:29:53AM +0200, Linus Walleij wrote:
+> On Tue, May 25, 2021 at 2:02 AM Douglas Anderson <dianders@chromium.org> wrote:
+> 
+> > The patch ("dt-bindings: drm: Introduce the DP AUX bus") talks about
+> > how using the DP AUX bus is better than learning how to slice
+> > bread. Let's add it to the ti-sn65dsi86 bindings.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> (...)
+> >      description: See ../../pwm/pwm.yaml for description of the cell formats.>
+> 
+> Just use the full path:
+> /schemas/pwm/pwm.yaml
 
-trivia:
+Really, just drop it. If we want have generic references and/or 
+descriptions for common properties, we should generate that in pretty 
+documentation (there are json-schema to doc tools already).
 
-> diff --git a/kernel/time/timeconv.c b/kernel/time/timeconv.c
-[]
->  void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
->  {
-> -	long days, rem, y;
-> +	long days, rem;
->  	int remainder;
-> -	const unsigned short *ip;
-> +
-> +	u64 u64tmp, udays, century, year;
-> +	u32 u32tmp, day_of_century, year_of_century, day_of_year, month,
-> +		day, janOrFeb, is_leap;
+> 
+> > +  aux-bus:
+> > +    $ref: ../dp-aux-bus.yaml#
+> 
+> Use the full path. (Same method as above)
 
-janOrFeb is an odd name choice and it and is_leap could be bool
-which _might_ improve performance in some memory access cases.
++1
 
-> +	year_of_century = (u32) (u64tmp >> 32);
-
-Perhaps
-	year_of_century = upper_32_bits(u64tmp);
-
-> +	day_of_year     = ((u32) u64tmp) / 2939745 / 4;
-
-and
-	day_of_year = lower_32_bits(u64tmp) / 2939745 / 4;
-
-> +	is_leap         = year_of_century != 0 ?
-> +		year_of_century % 4 == 0 : century % 4 == 0;
-> +
-> +	u32tmp          = 2141 * day_of_year + 132377;
-> +	month           = u32tmp >> 16;
-> +	day             = ((u16) u32tmp) / 2141;
-> +
-> +	/* Recall that January 01 is the 306-th day of the year in the
-> +	 * computational (not Gregorian) calendar.
-> +	 */
-> +	janOrFeb        = day_of_year >= 306;
-> +
-> +	/* Converts to the Gregorian calendar and adjusts to Unix time. */
-> +	year            = year + janOrFeb - 6313183731940000ULL;
-> +	month           = janOrFeb ? month - 12 : month;
-> +	day             = day + 1;
-> +	day_of_year     = janOrFeb ?
-> +		day_of_year - 306 : day_of_year + 31 + 28 + is_leap;
-
-I believe the extended naming improves readability, thanks.
-
+> This removes the need for ../../... ....
+> 
+> You do it here:
+> 
+> >    ports:
+> >      $ref: /schemas/graph.yaml#/properties/ports
+> 
+> Other than that I think it looks all right!
+> 
+> Yours,
+> Linus Walleij
