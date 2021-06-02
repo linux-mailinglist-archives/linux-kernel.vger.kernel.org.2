@@ -2,66 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B77397F41
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC19397F4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhFBDBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:01:34 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2835 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbhFBDBc (ORCPT
+        id S230518AbhFBDC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 23:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230398AbhFBDCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:01:32 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvttL2TSNzWlbT;
-        Wed,  2 Jun 2021 10:55:06 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by dggeme766-chm.china.huawei.com
- (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 2 Jun
- 2021 10:59:48 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <bjorn@kernel.org>, <magnus.karlsson@intel.com>,
-        <jonathan.lemon@gmail.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] xsk: Return -EINVAL instead of -EBUSY after xsk_get_pool_from_qid() fails
-Date:   Wed, 2 Jun 2021 11:10:01 +0800
-Message-ID: <20210602031001.18656-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 1 Jun 2021 23:02:55 -0400
+Received: from hurricane.the-brannons.com (hurricane.the-brannons.com [IPv6:2602:ff06:725:1:20::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4D4C061574;
+        Tue,  1 Jun 2021 20:01:12 -0700 (PDT)
+Received: from localhost (<unknown> [2602:3f:e0f9:dc00::2])
+        by hurricane.the-brannons.com (OpenSMTPD) with ESMTPSA id 9c702b39 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 1 Jun 2021 19:54:31 -0700 (PDT)
+From:   Chris Brannon <chris@the-brannons.com>
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Christopher Brannon <chris@the-brannons.com>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        collins@gene3.ait.iastate.edu,
+        Steve Holmes <steve.holmes88@gmail.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+        <875yyxbenm.fsf@meer.lwn.net> <20210601220643.uzep2ju2zlcmpa57@begin>
+        <874keh9qk9.fsf@meer.lwn.net> <20210601223743.carif4gkzcz5jo7j@begin>
+Date:   Tue, 01 Jun 2021 19:54:30 -0700
+In-Reply-To: <20210601223743.carif4gkzcz5jo7j@begin> (Samuel Thibault's
+        message of "Wed, 2 Jun 2021 00:37:43 +0200")
+Message-ID: <87r1hldli1.fsf@the-brannons.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xsk_get_pool_from_qid() fails not because the device's queues are busy,
-but because the queue_id exceeds the current number of queues.
-So when it fails, it is better to return -EINVAL instead of -EBUSY.
+Samuel Thibault <samuel.thibault@ens-lyon.org> writes:
 
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- net/xdp/xsk_buff_pool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> So we'd need Gene's, Christopher's, William's, and Steve's ack on adding
+> the GPL alternative to the GFDL-1.2 licence.
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 8de01aaac4a0..30ece117117a 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -135,7 +135,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
- 		return -EINVAL;
- 
- 	if (xsk_get_pool_from_qid(netdev, queue_id))
--		return -EBUSY;
-+		return -EINVAL;
- 
- 	pool->netdev = netdev;
- 	pool->queue_id = queue_id;
+You have my ack.  Do whatever is needful.  I wish I didn't have to care about
+this stuff.
+
 -- 
-2.17.1
-
+Chris Brannon
+Founder: Blind and Low Vision Unix Users Group (https://blvuug.org/).
+Personal website: (https://the-brannons.com/)
+Chat: IRC: teiresias on libera.chat and OFTC, XMPP: chris@chat.number89.net
