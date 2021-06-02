@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B4A398D09
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BD9398CD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhFBOgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:36:01 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:54926 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhFBOfz (ORCPT
+        id S231200AbhFBOfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230456AbhFBOe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:35:55 -0400
-Received: by mail-wm1-f42.google.com with SMTP id o127so1444766wmo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:34:12 -0700 (PDT)
+        Wed, 2 Jun 2021 10:34:57 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FBEC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:33:14 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id a20so2596707wrc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=M9bRhyWuFVpQrG3EHXZKnG7o8XLPNhfRhn1oXXk6SrQ=;
-        b=FYmSxXOaVJ7u/hRBRjCRyMs468oivh2TsgX2RGPglQBkpugM6lgQWldOX0rIaOfXSP
-         YVzbQwXiDA9smCQzDmzafGN3P1RprMVSNRl3BnqKNAfSQmT6ulR1Hv9/6EfLwMxmyo7z
-         P6PyagKgW4BuWiOnsMTU6Y0JhWJJEX+DY/1Vv5eHGNSpouz68kzJzZutQ3ZV1CjhkM0H
-         kzzsCCmphlHG62++alAVxt85h/Fj77OwkErFTBbHEy8olwx4eM1/k+Y4mKMUCge+8YMs
-         14iIaeDvwMBwEKhfGiiU3WYlRVTOwA3gMFv4Xuf4/f9BthCK8u4+iw1ZJjxGde5/Bfuj
-         qe3Q==
+        bh=rMlp5Ni2aMFHyMfn1NEHDx/+WQIjP8upodgZGGEhVrs=;
+        b=K+TM+jok6dmGLiVfdJ5aHvkAyTXlaxEkUvu3eR15jQnSiQZDOVbl7Ad7UABtuK84F+
+         SiGyWlm0Q/Roo4MaHxBw0hVagJn3kB7B36ned7f9VZ7qKdW9ew8tDax4JyeliwEfgol3
+         LzTH/V9mmfZPWw8etltfOUAbOOTdt4Q0Ftc5FSS8fWAxZyn2LdeeVc0x7fAv7i5SeeiV
+         RyQyKw94rLiFXSNIvLFJOHuBXAj1BVslRvQMMPFHt2y5OtRXJV3gKAa/0ebcSulVTrhy
+         2+LLiMiabV/zAlV49XtTFoV3pIDQSZGzBFWLFN2PAdXSdV+a0OFPsprrfDXJgipgQSRi
+         8lMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M9bRhyWuFVpQrG3EHXZKnG7o8XLPNhfRhn1oXXk6SrQ=;
-        b=ANYjOXSbHaXooZ8wZ80uGxrG0+yP1hK1+c0LDAnmo2qQPp+OlaZxF/eZVgOvZap4Cw
-         Zrdidt9UyHWKGopE1SPetEENKAOXulXOvRyJXYtlEfC4hW2ZovzoWi8VDpXW9SZVZ3V1
-         H6znyRUGaMmoBZ6tVU+a3dupLKX/4pEZrqq9f6XvVT1avzOkm9ubasgi5uqHHU0cAyp0
-         hM8jirM4Ne1gBrMs89T0MKhBdLmKQkBacHRLC0DLACz4+Z12d61jpCGSl2uc3t/kF1Y4
-         Cf0E6hfnc07a8SfabuSd6VTdEOMqL7Cw8kfb0g346LXvnYa+xw7fj22pYbppJ5qr7pfC
-         Vpew==
-X-Gm-Message-State: AOAM531va3mq20M53kKwpU8NAKuYtHK2q3ILPlYVW8N9PZfYa0oWd6VL
-        3/jSmU3ROxr/++0qWJqIS2a/9w==
-X-Google-Smtp-Source: ABdhPJzsdddao34LRabPBk4flX5Gv0pUOZLrhtePOoQ2SzMzu4f5Lqu++Joq8p3Yl+P1MsCSIKI/tQ==
-X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr33825781wmq.119.1622644391896;
-        Wed, 02 Jun 2021 07:33:11 -0700 (PDT)
+        bh=rMlp5Ni2aMFHyMfn1NEHDx/+WQIjP8upodgZGGEhVrs=;
+        b=hM6Vyo/SbVQ7WskZgDw/oJX/68ug/qhYLfaPevTGTw8a9JA+sFoLAXE4ajugQlenpY
+         F4qtpNKsf7D7X3EgxD3LnaQT5hC1+tU38Rs60dCykIz6BQ7y/nBKHA+njUVbZHRpTX/V
+         m0iiK3hk2s+8rJltMwwY+f27bFQvqOl/mruexTvvVB2hAbVxmxu1n2N77Yd8fT50T1wv
+         dBtDd07wumyHZ7CZtum+KqAvP/C9x7Q1+eaGvc0E9gTybxAfZaWyqCpc9DarYzpJ4D2O
+         dedgT98dKYi/tyDsa5Wyw5TUlEnWd4BEMl/8VzJtkV4jtV2x+zk0h/E5yJ7YOZGe/HJA
+         DIJw==
+X-Gm-Message-State: AOAM533aZMNzYvare1xH2+geVWDB+RwBkH/g9nGmDA7LDeGLbL4ptupR
+        FFa/lXUfUtzDWIfC1oNqeYrsJrNxxpEZig==
+X-Google-Smtp-Source: ABdhPJyyjExdHvRbSDp8SXi+SPDREQCiQw3FO2lfDCB5q7ocoF+sb8JiXyCVcFPptQi4DQIZ2IRr1A==
+X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr3202490wry.4.1622644392816;
+        Wed, 02 Jun 2021 07:33:12 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.11
+        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:33:11 -0700 (PDT)
+        Wed, 02 Jun 2021 07:33:12 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +59,9 @@ Cc:     linux-kernel@vger.kernel.org,
         dri-devel@lists.freedesktop.org,
         linux-mediatek@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [RESEND 02/26] drm/mediatek/mtk_disp_gamma: Strip and demote non-conformant kernel-doc header
-Date:   Wed,  2 Jun 2021 15:32:36 +0100
-Message-Id: <20210602143300.2330146-3-lee.jones@linaro.org>
+Subject: [RESEND 03/26] drm/mediatek/mtk_disp_ovl: Strip and demote non-conformant header
+Date:   Wed,  2 Jun 2021 15:32:37 +0100
+Message-Id: <20210602143300.2330146-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
 References: <20210602143300.2330146-1-lee.jones@linaro.org>
@@ -70,10 +73,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c:42: warning: Function parameter or member 'clk' not described in 'mtk_disp_gamma'
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c:42: warning: Function parameter or member 'regs' not described in 'mtk_disp_gamma'
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c:42: warning: Function parameter or member 'cmdq_reg' not described in 'mtk_disp_gamma'
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c:42: warning: Function parameter or member 'data' not described in 'mtk_disp_gamma'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'clk' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'regs' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'cmdq_reg' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'vblank_cb' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'vblank_cb_data' not described in 'mtk_disp_ovl'
 
 Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Cc: Philipp Zabel <p.zabel@pengutronix.de>
@@ -85,25 +89,24 @@ Cc: linux-mediatek@lists.infradead.org
 Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-index 3ebf91e0ab412..3a5815ab40795 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-@@ -29,10 +29,8 @@ struct mtk_disp_gamma_data {
- 	bool has_dither;
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+index 961f87f8d4d15..fa9d79963cd34 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+@@ -66,9 +66,8 @@ struct mtk_disp_ovl_data {
+ 	bool smi_id_en;
  };
  
 -/**
 +/*
-  * struct mtk_disp_gamma - DISP_GAMMA driver structure
-- * @ddp_comp - structure containing type enum and hardware resources
-- * @crtc - associated crtc to report irq events to
+  * struct mtk_disp_ovl - DISP_OVL driver structure
+- * @ddp_comp: structure containing type enum and hardware resources
+  * @crtc: associated crtc to report vblank events to
+  * @data: platform data
   */
- struct mtk_disp_gamma {
- 	struct clk *clk;
 -- 
 2.31.1
 
