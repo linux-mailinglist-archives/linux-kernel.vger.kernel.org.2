@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528D6398AEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637DC398AEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhFBNmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
+        id S229719AbhFBNpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhFBNmk (ORCPT
+        with ESMTP id S229579AbhFBNpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:42:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD074C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 06:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9VXI9IDsTNx8jcKM0F7WQjsSFQrMM0WoeJ2HjMVY+fI=; b=Z1M5/TV+BFuOFCUJ/wezccC23S
-        UxQDwNuqdH8PaXyv4Fx4fav+OWVpTOXUf6svzHTE5GMxVOCX+xiYEFh5iRgF6PqPuqAwN8Rjx4/oN
-        ZGP3Rrjm76uNmugSHsrItOY0ttDE/HchDbTnOSjYJrGp8Swb5B8cVaItQvgev4uS51+r6WFZZLsXE
-        6Yd85nWZKrP9khtbarKFEPT6Nv1ak3Xk4tUMpyTIr7arQT6F2nNEfgsZZAMlOpV70PybV7QEfOeKV
-        UgzKslZ8MvCxRlc/gpF3Jmz30m9TM6zSmbrF12pelPbxLaewmCJ0Qx0EE5q8PSI8gKVTwooCCa8SP
-        QBwaqERg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1loR6j-00B9Y9-P1; Wed, 02 Jun 2021 13:40:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59BCF300269;
-        Wed,  2 Jun 2021 15:40:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4250F2BE6588B; Wed,  2 Jun 2021 15:40:29 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 15:40:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Guenter Roeck <groeck@google.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] sched/debug: remove obsolete init_schedstats()
-Message-ID: <YLeKTXYExADomHY4@hirez.programming.kicks-ass.net>
-References: <20210602112108.1709635-1-eric.dumazet@gmail.com>
+        Wed, 2 Jun 2021 09:45:12 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD880C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 06:43:14 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id a8so2533568ioa.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:43:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bQwWMdNiop3KR5deOzjW/qoaepwqcvp7jJfbHI3zXtY=;
+        b=JPtMWY4kgGga8R41zy7szTr3zo7j99f+OfcMYf3jZwLVSe7eCz6+i5RKPqO9EFb/6f
+         Ett0SsYxZ1oWEBSe4AY+D5FyHsE63ePBYY2wG2/WeUQ0OvKdU54hH9KzaMXgrumXCtrx
+         OvCC+X92lFHRNMwzTd1/AE0BhtspPGgsL+eqE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bQwWMdNiop3KR5deOzjW/qoaepwqcvp7jJfbHI3zXtY=;
+        b=UZ+WM2LI+V6Fd0jyWoPGmopqWr5Q7U+0rv+x9vM9+FinKY2YX0vkT3J+lH6kYIAOLr
+         H+3JFBkmY5uLLBudQipPq6Xh6pmV/vgq/lEvpwXLhjQHFeGr0HDXpmMGGjvWSyIYtNcc
+         rfkN9Dqmo+PEkVeUoYj8H1SUj7tamGZG8NCJCIZLGPwJuICrC05yS7E13P502TLBqyE9
+         kDwtHCpm627dezHsNjrvLGmwdlSMatlqN/ogo30IujBsTKiXophmPRrApxmkxylStLd6
+         aqw4dJS9qkEWfd55SYiR5GA6d17Icj6lq23eoozeyFqGUyMsh5zQg/InPDQxonXIFcbd
+         hOYA==
+X-Gm-Message-State: AOAM531PZdpNtsqt7me/717TPcXYCoPcHaPXr6s/0SKgIRVBQr5y3KEF
+        wkGLHXENK65EGjlgejla2SAiDb7METNOjw==
+X-Google-Smtp-Source: ABdhPJzI132qPNGQXEIRmSa3fSS7UK52IeTZVxH49vKtqdaD+xrMOSB2COZPmz0sKUk9M9cC2VPEtA==
+X-Received: by 2002:a05:6638:343:: with SMTP id x3mr9697267jap.101.1622641393970;
+        Wed, 02 Jun 2021 06:43:13 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id i12sm51270ilk.22.2021.06.02.06.43.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 06:43:13 -0700 (PDT)
+Subject: Re: [PATCH] staging: greybus: fixed the coding style, labels should
+ not be indented.
+To:     sh4nnu <manikishanghantasala@gmail.com>
+Cc:     Rui Miguel Silva <rmfrfs@gmail.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
+Date:   Wed, 2 Jun 2021 08:43:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602112108.1709635-1-eric.dumazet@gmail.com>
+In-Reply-To: <20210602133659.46158-1-manikishanghantasala@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:21:08AM -0700, Eric Dumazet wrote:
-> From: Eric Dumazet <edumazet@google.com>
+On 6/2/21 8:36 AM, sh4nnu wrote:
+> From: Manikishan Ghantasala <manikishanghantasala@gmail.com>
 > 
-> Revert "sched/debug: Fix 'schedstats=enable' cmdline option"
-> 
-> This reverts commit 4698f88c06b893f2acc0b443004a53bf490fde7c.
-> 
-> After commit 6041186a3258 ("init: initialize jump labels before command
-> line option parsing") we can rely on jump label infra being ready for use
-> when setup_schedstats() is called.
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> staging: greybus: gpio.c: Clear coding-style problem
+> "labels should not be indented" by removing indentation.
 
-Thanks!
+These are not labels.
+
+I don't really understand what you're doing here.
+
+Can you please explain why you think this needs changing?
+
+					-Alex
+
+> Signed-off-by: Manikishan Ghantasala <manikishanghantasala@gmail.com>
+> ---
+>   drivers/staging/greybus/gpio.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/gpio.c b/drivers/staging/greybus/gpio.c
+> index 7e6347fe93f9..4661f4a251bd 100644
+> --- a/drivers/staging/greybus/gpio.c
+> +++ b/drivers/staging/greybus/gpio.c
+> @@ -20,9 +20,9 @@
+>   struct gb_gpio_line {
+>   	/* The following has to be an array of line_max entries */
+>   	/* --> make them just a flags field */
+> -	u8			active:    1,
+> -				direction: 1,	/* 0 = output, 1 = input */
+> -				value:     1;	/* 0 = low, 1 = high */
+> +	u8			active:1,
+> +				direction:1,	/* 0 = output, 1 = input */
+> +				value:1;	/* 0 = low, 1 = high */
+>   	u16			debounce_usec;
+>   
+>   	u8			irq_type;
+> 
+
