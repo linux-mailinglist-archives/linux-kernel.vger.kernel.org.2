@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EFC3993A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B64B3993A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhFBTiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:38:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhFBTiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:38:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A3EF961402;
-        Wed,  2 Jun 2021 19:36:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622662588;
-        bh=xkoRTx8PyiAvsSN/B21YSjsU38FXDkANSs7YDOHYkSo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=JprHzA2GRMfwZoOzXk69h1wKb7jb/6E73y5PuDvOVAPRSZ+LSuBeNEMJal8E3Dxvk
-         sq8c8u+33g4Rb/BoYah9R8j2UXcoN38Z+5CvgdvyuQD0Q2eLF/2MA0cBABgG43Zpec
-         8dBNsOXPdU5dnEalbEnbU91qi45lUgIF+5njrR3ndX8YXE5UA9EeeQLAESdBcYLvx/
-         7Ta3c5+LwOB1xAjYccm1RbdvIzSYa84IclGkO5pOc1dqdLF7bsmOiHxFv9BWN8/mRs
-         OHkS0PmcQlLBln4qDyKSUCp1EvDcOjUOOK/WyOxAgzFNNryFJUi15kGGMOdCe4SlbR
-         2Q/D/z9VPID6w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9933260A39;
-        Wed,  2 Jun 2021 19:36:28 +0000 (UTC)
-Subject: Re: [GIT PULL] EFI fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YLfDmYv1VSoaaVpq@gmail.com>
-References: <YLfDmYv1VSoaaVpq@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YLfDmYv1VSoaaVpq@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-urgent-2021-06-02
-X-PR-Tracked-Commit-Id: e169fba4f464760dd9734c9e39e1c2e88e374f32
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 324c92e5e0ee0e993bdb106fac407846ed677f6b
-Message-Id: <162266258862.13029.337587819674018201.pr-tracker-bot@kernel.org>
-Date:   Wed, 02 Jun 2021 19:36:28 +0000
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
+        id S229489AbhFBTi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:38:26 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:35367 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhFBTiY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:38:24 -0400
+Received: by mail-oi1-f178.google.com with SMTP id v22so3811425oic.2;
+        Wed, 02 Jun 2021 12:36:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YYSx52f4ZDE8Bx1jem0M8DJEVHzH9GCK3SePAGeVDLk=;
+        b=aCE/UFUxBVXEBCJKA9hznqDB5iXf/tuZdRH19LW7+VHtALO8CR6T4REcWkX6CACfk3
+         AxOJaeSmSbGM0+5luXulev4xrcbgJZ5elOgFY430UbuLNuOxQKx4AUlE1STKtLEY1LCK
+         umeGXRS0RQyceaPWiGSf7Yct9vmNxTb0c304Pcj4fgDQ/zqSlMAmLtKx06FT7WXofQFE
+         QUEyCci6pDQHOdnMAsWljl3pJLIj3qWtn5iNLy2eQPsF31PTcpGvCBzYP+PBfY/x785s
+         xBS5QS9qsSkUWUgJvpV8GhlKBEx5mpJS3x1h09/3WZaVsdvieZWbtOWHU5+/+pt/zATU
+         niXA==
+X-Gm-Message-State: AOAM532zg6WpO2/pzQgxuSXWeE6H7CEJazvuCBMKw7ZmMPmVSd2rkkxE
+        mu+6Cn3eY2TkYNdzkcWCLw==
+X-Google-Smtp-Source: ABdhPJwaesupVLKHtFpoCvPdYuv99AGaU/mQgNQjg0yrJd/8nqZv438WAuo6ReQODxrjn9yuciKHUg==
+X-Received: by 2002:a05:6808:341:: with SMTP id j1mr1744943oie.43.1622662601135;
+        Wed, 02 Jun 2021 12:36:41 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x9sm176105oto.79.2021.06.02.12.36.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 12:36:40 -0700 (PDT)
+Received: (nullmailer pid 3847385 invoked by uid 1000);
+        Wed, 02 Jun 2021 19:36:39 -0000
+Date:   Wed, 2 Jun 2021 14:36:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     heikki.krogerus@linux.intel.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        badhri@google.com, gregkh@linuxfoundation.org, linux@roeck-us.net,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] dt-bindings: connector: Add PD rev 2.0 VDO
+ definition
+Message-ID: <20210602193639.GA3847324@robh.at.kernel.org>
+References: <20210601123151.3441914-1-kyletso@google.com>
+ <20210601123151.3441914-3-kyletso@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601123151.3441914-3-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 2 Jun 2021 19:44:57 +0200:
+On Tue, 01 Jun 2021 20:31:49 +0800, Kyle Tso wrote:
+> Add the VDO definition for USB PD rev 2.0 in the bindings and define a
+> new property snk-vdos-v1 containing legacy VDOs as the responses to the
+> port partner which only supports PD rev 2.0.
+> 
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+> ---
+> changes since v2:
+> - no change
+> 
+>  .../bindings/connector/usb-connector.yaml     | 15 ++++
+>  include/dt-bindings/usb/pd.h                  | 69 ++++++++++++++++++-
+>  2 files changed, 81 insertions(+), 3 deletions(-)
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-urgent-2021-06-02
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/324c92e5e0ee0e993bdb106fac407846ed677f6b
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Reviewed-by: Rob Herring <robh@kernel.org>
