@@ -2,81 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B35839931A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A3B39931B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhFBTEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229719AbhFBTEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:04:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhFBTEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Jun 2021 15:04:42 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:35411 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhFBTEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:04:37 -0400
-Received: by mail-oi1-f176.google.com with SMTP id v22so3709307oic.2;
-        Wed, 02 Jun 2021 12:02:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e2vrx/QBePjkyqx9ENa+RBQUczjrTw2LnQ8NzOyjcB0=;
-        b=n1PVYfXujQ5KNakLjvZ+wb+p78ky1YT2P+oXh/+4fNbY9fB44if9QiVH2/Rlaq2R4Z
-         Z2uxOOfGNz5gvQLZzAmfxQkv8iVf8s+0QSobFlej4fAjWNEza7q6Hf1snsOD6xBTe/HE
-         PN/FiuXsHaa/ntZ8rz4Jwb5NkFs+w27vFUCIsu9Hybjwf9KViMEBTTWrLsD2xQUYKZYh
-         iPRO4WO1kRMXVj3r43Okl226v42hKj7iRdQ3OeGFW3PkupZe2pKMxpcFzkVY7MjqLzC8
-         8vcTaPwAyjsw8VW5by1hrXx/VJs8FhKx3fFZj3T7nikDF2KYJrU4Hc+9yakOtbDLlY6/
-         PuAw==
-X-Gm-Message-State: AOAM533PFRuDCymSQuODmYUSemJ0vptHSpxWdD1YuAXYTNJlNMbOdZlh
-        2TFqb4Gi/9EJkjwzbItkWg==
-X-Google-Smtp-Source: ABdhPJwFzl2mCZiExS3oFX4eDQsnFWbiMLq/7d5TPsynHkoiIluIP0xq/89gZ+2sF5G/qYjOe1m54g==
-X-Received: by 2002:aca:120c:: with SMTP id 12mr22141662ois.42.1622660573455;
-        Wed, 02 Jun 2021 12:02:53 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q63sm163420oic.15.2021.06.02.12.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 12:02:52 -0700 (PDT)
-Received: (nullmailer pid 3786574 invoked by uid 1000);
-        Wed, 02 Jun 2021 19:02:51 -0000
-Date:   Wed, 2 Jun 2021 14:02:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-leds@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Pavel Machek <pavel@ucw.cz>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v3 3/6] dt-bindings: mfd: Binding for RTL8231
-Message-ID: <20210602190251.GA3786545@robh.at.kernel.org>
-References: <cover.1621809029.git.sander@svanheule.net>
- <ea03804a538ecf45287f8cc356b8d9536c91e688.1621809029.git.sander@svanheule.net>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E155613E7;
+        Wed,  2 Jun 2021 19:02:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622660577;
+        bh=lajGP6QzgBhYP9J6PHuzTJjJCvfkqE4Ga+mXgAeu7oY=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=Q0OLqLuC+xKRjrfsHU/tuLp0RKYhdMj1F3dTebp17sQmXrGOs3un3CkBsRRtDsxzx
+         4Ri5heUNuBrd9gp4Atn0xZMz4zcElHC9jfEPxKFgK88QGcbX3jcpjZnl0XmJafiTsx
+         75f/HD6ldah1JMZ0V2Ybw9Yvw9EM7BhJlEvvfzCef23LuPMt9j1z+cbYYN6uxwpxMD
+         zm2AUYYW2rYLzb71YqIyMwLP+74qS7cI7ASLeXuF9YD03yDaP2ERnSf+8uVtlHiD9j
+         INXJEMLu0txKwXtGk62N3EJptrDwwMj9QxiUazBquVKYQB59IJ16ibLuh3RYZkQ92n
+         98ZOKBgPITNWg==
+Date:   Wed, 2 Jun 2021 12:02:56 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH 2/2 v4] f2fs: support RO feature
+Message-ID: <YLfV4EPW5Yw6wP+v@google.com>
+References: <20210521190217.2484099-1-jaegeuk@kernel.org>
+ <20210521190217.2484099-2-jaegeuk@kernel.org>
+ <YK5UOfzwdZni7c5W@google.com>
+ <YK5edM0igwfd47LV@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ea03804a538ecf45287f8cc356b8d9536c91e688.1621809029.git.sander@svanheule.net>
+In-Reply-To: <YK5edM0igwfd47LV@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 00:34:01 +0200, Sander Vanheule wrote:
-> Add a binding description for the Realtek RTL8231, a GPIO and LED
-> expander chip commonly used in ethernet switches based on a Realtek
-> switch SoC. These chips can be addressed via an MDIO or SMI bus, or used
-> as a plain 36-bit shift register.
-> 
-> This binding only describes the feature set provided by the MDIO/SMI
-> configuration, and covers the GPIO, PWM, and pin control properties. The
-> LED properties are defined in a separate binding.
-> 
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
-> ---
->  .../bindings/mfd/realtek,rtl8231.yaml         | 190 ++++++++++++++++++
->  1 file changed, 190 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/realtek,rtl8231.yaml
-> 
+Given RO feature in superblock, we don't need to check provisioning/reserve
+spaces and SSA area.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+
+Change log from v3:
+ - add feature sysfs entries
+
+ fs/f2fs/f2fs.h    |  3 +++
+ fs/f2fs/segment.c |  4 ++++
+ fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
+ fs/f2fs/sysfs.c   |  8 ++++++++
+ 4 files changed, 46 insertions(+), 6 deletions(-)
+
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index eaf57b5f3c4b..8903c43091f8 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -168,6 +168,7 @@ struct f2fs_mount_info {
+ #define F2FS_FEATURE_SB_CHKSUM		0x0800
+ #define F2FS_FEATURE_CASEFOLD		0x1000
+ #define F2FS_FEATURE_COMPRESSION	0x2000
++#define F2FS_FEATURE_RO			0x4000
+ 
+ #define __F2FS_HAS_FEATURE(raw_super, mask)				\
+ 	((raw_super->feature & cpu_to_le32(mask)) != 0)
+@@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+ #define	NR_CURSEG_DATA_TYPE	(3)
+ #define NR_CURSEG_NODE_TYPE	(3)
+ #define NR_CURSEG_INMEM_TYPE	(2)
++#define NR_CURSEG_RO_TYPE	(2)
+ #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
+ #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
+ 
+@@ -4128,6 +4130,7 @@ F2FS_FEATURE_FUNCS(verity, VERITY);
+ F2FS_FEATURE_FUNCS(sb_chksum, SB_CHKSUM);
+ F2FS_FEATURE_FUNCS(casefold, CASEFOLD);
+ F2FS_FEATURE_FUNCS(compression, COMPRESSION);
++F2FS_FEATURE_FUNCS(readonly, RO);
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
+ static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 380ef34e1a59..376c33ab71e2 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+ 		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
+ 		unsigned int blkofs = curseg->next_blkoff;
+ 
++		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
++			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
++			continue;
++
+ 		sanity_check_seg_type(sbi, curseg->seg_type);
+ 
+ 		if (f2fs_test_bit(blkofs, se->cur_valid_map))
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 2fa59c674cd9..fb490383c767 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 	int ret;
+ 
+ 	if (!options)
+-		return 0;
++		goto default_check;
+ 
+ 	while ((p = strsep(&options, ",")) != NULL) {
+ 		int token;
+@@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 			return -EINVAL;
+ 		}
+ 	}
++default_check:
+ #ifdef CONFIG_QUOTA
+ 	if (f2fs_check_quota_options(sbi))
+ 		return -EINVAL;
+@@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 	 */
+ 	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
+ 		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
++
++	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
++		f2fs_err(sbi, "Allow to mount readonly mode only");
++		return -EROFS;
++	}
+ 	return 0;
+ }
+ 
+@@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ static void default_options(struct f2fs_sb_info *sbi)
+ {
+ 	/* init some FS parameters */
+-	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
++	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
++		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
++	else
++		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
++
+ 	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+ 	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+ 	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+@@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
+ 		goto skip;
+ 
++	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
++		err = -EROFS;
++		goto restore_opts;
++	}
++
+ #ifdef CONFIG_QUOTA
+ 	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
+ 		err = dquot_suspend(sb, -1);
+@@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+ 	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+ 
+-	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
++	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
++			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+ 			ovp_segments == 0 || reserved_segments == 0)) {
+ 		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
+ 		return 1;
+ 	}
+-
+ 	user_block_count = le64_to_cpu(ckpt->user_block_count);
+-	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
++	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
++			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
+ 	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
+ 	if (!user_block_count || user_block_count >=
+ 			segment_count_main << log_blocks_per_seg) {
+@@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+ 			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
+ 			return 1;
++
++		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
++			goto check_data;
++
+ 		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
+ 			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
+ 				le32_to_cpu(ckpt->cur_node_segno[j])) {
+@@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 			}
+ 		}
+ 	}
++check_data:
+ 	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
+ 		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
+ 			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
+ 			return 1;
++
++		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
++			goto skip_cross;
++
+ 		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
+ 			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
+ 				le32_to_cpu(ckpt->cur_data_segno[j])) {
+@@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 			}
+ 		}
+ 	}
+-
++skip_cross:
+ 	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
+ 	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
+ 
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 09e3f258eb52..62fbe4f20dd6 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -158,6 +158,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+ 	if (f2fs_sb_has_casefold(sbi))
+ 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+ 				len ? ", " : "", "casefold");
++	if (f2fs_sb_has_readonly(sbi))
++		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
++				len ? ", " : "", "readonly");
+ 	if (f2fs_sb_has_compression(sbi))
+ 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+ 				len ? ", " : "", "compression");
+@@ -578,6 +581,7 @@ enum feat_id {
+ 	FEAT_SB_CHECKSUM,
+ 	FEAT_CASEFOLD,
+ 	FEAT_COMPRESSION,
++	FEAT_RO,
+ 	FEAT_TEST_DUMMY_ENCRYPTION_V2,
+ };
+ 
+@@ -599,6 +603,7 @@ static ssize_t f2fs_feature_show(struct f2fs_attr *a,
+ 	case FEAT_SB_CHECKSUM:
+ 	case FEAT_CASEFOLD:
+ 	case FEAT_COMPRESSION:
++	case FEAT_RO:
+ 	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
+ 		return sprintf(buf, "supported\n");
+ 	}
+@@ -723,12 +728,14 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
+ #ifdef CONFIG_UNICODE
+ F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
+ #endif
++F2FS_FEATURE_RO_ATTR(readonly, FEAT_RO);
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
+ #endif
++
+ /* For ATGC */
+ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_ratio, candidate_ratio);
+ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_count);
+@@ -834,6 +841,7 @@ static struct attribute *f2fs_feat_attrs[] = {
+ #ifdef CONFIG_UNICODE
+ 	ATTR_LIST(casefold),
+ #endif
++	ATTR_LIST(readonly),
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	ATTR_LIST(compression),
+ #endif
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
+
