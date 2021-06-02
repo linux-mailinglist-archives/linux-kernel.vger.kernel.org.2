@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8D7398D1F
+	by mail.lfdr.de (Postfix) with ESMTP id 44BF4398D1E
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbhFBOhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:37:19 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:40545 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231866AbhFBOg3 (ORCPT
+        id S232140AbhFBOhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:37:12 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:54976 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231851AbhFBOg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:36:29 -0400
-Received: by mail-wm1-f47.google.com with SMTP id b145-20020a1c80970000b029019c8c824054so3907735wmd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:34:33 -0700 (PDT)
+        Wed, 2 Jun 2021 10:36:27 -0400
+Received: by mail-wm1-f52.google.com with SMTP id o127so1445680wmo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JvuBm7KpIXmVjvwi2OsKGMdogxy/zdINv8FqDSEvNYM=;
-        b=nH1tswbv/dRTxAbMVL2oQ+YkAIasGdidijupRDL7c3sCfVwK+oNtIhOPL0xok9gzVW
-         t5+ceR05rXZ7uMo2uFij6BvFfqXaDmi0JMWGswWKDBNIILG5hLPYn20T6fCzdxolvyPX
-         +XTqGQ5X5YYinYoN2/mYvDaKDcYXM0/IDw799rIPSAk/3ROkjHPygpnIc7Z8qekh7XqF
-         ANhYI2NCG0tckEoHP506uUWeO9SDw2dESxg+EJ8Be80RUywMFpYsHwunvITnn9pQm8V5
-         0tiSbn6+yxv5bdePKcmjb5leSF3Dh/kD4YgCPLWnT+gapDJbriqm67BYzq1bujgpWvBm
-         NwKQ==
+        bh=ggE8ksbwsKIQV0Iz58/vSuT7hydgMXkIFUzJg2iRL3g=;
+        b=j1G7oiOUGHpTTpz7N1iwCK31eRewhRnoAF2xf8UwzdvPqQglJHQm5wgoBIQ6wjwMjg
+         q+7qtBtnoyK12VxJOtlQOffmMwgKbTIuSsCd68GxxfeKwYjeWzIsYGzSEVDq2HndGIUb
+         s0CfACPN1haeU3M0PD3alT3nwpJs9FIPgQjWXh23qOIpQObjaH8OUA3kWOxCOAWVj+E7
+         2W9MnyRFUEmy6xxuzqsPyyQ3tox+X6w7nOqTZ7BSJUVFprJlOmAmTG+6GciYpvGRtIcS
+         P59EGzETOn/uvHje/qBYMvMjNLgD9tTLbcKTSAizUGThSDsa/RcOaV+T8FOJGiJ8ozDS
+         dulw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JvuBm7KpIXmVjvwi2OsKGMdogxy/zdINv8FqDSEvNYM=;
-        b=K6boYqxR9ZtI3QDFKIbxG9o3hQ9pi4xqmRcDt68Izy/ZyhQnDKbK8/ikYDB+wfHc/8
-         /v3Nw1YeRMo9RBOXPzBXjnunSSlZUPOI/u9/ycqeZt+xseedIAIkdrkMDtWkJBpOQc0/
-         bnUFEPB1Mg7K/Kfh1XqzsV7M2mbWuxcb+fRgi6kqs7kTfOwbL6+l9H/GVgeJcnkPmm+3
-         +f7UWP0i7JJ077y+XoifMVwku3SsiouwiQJ4tlji6T6q4/OGJX2gwE3Z9kCRvbvUkZUZ
-         hvQGIkwUyaLhP067abqn2WV23uv7A5k6qCeS4d9dI/sv26ehOwkzZc1ZGPQVlzWJeiHr
-         LBWg==
-X-Gm-Message-State: AOAM530BNKJCDfCFzPeoacutppPhYfB41G6Bn0o/aTSPoXVz2olJiHkQ
-        NgR9xWoGTlhq/SHZmhJWrPM03Q==
-X-Google-Smtp-Source: ABdhPJyUgla3FFfynuCl+ad/SpJvdCBqRlxX5f3USSzH6/SPYgduUsfipkbdGBvQZ5pWNouc43kgzw==
-X-Received: by 2002:a1c:41c5:: with SMTP id o188mr5498913wma.60.1622644412785;
-        Wed, 02 Jun 2021 07:33:32 -0700 (PDT)
+        bh=ggE8ksbwsKIQV0Iz58/vSuT7hydgMXkIFUzJg2iRL3g=;
+        b=kWcA6doacTZVggn2Su4MgLGmHbfdsxlT7r2m4A3RJSRLo7Odf4q6BXOwO+jw7d62om
+         oXClKE1yv/Feq5Z8kn1W+43SEOe9TXCeB+J6IFLs4CUU+n5Dz596VzelZxc72PqJ+pbw
+         zCgw8wNf1oHUNH0TgZZ9Tn8ZtHzkNE5mZ4ABFczBu7zroAxjLyUteQorDAbrboBmqPq9
+         mKH/QGFQWiHFACOnLSEeAbgQuNk5E/lhEJDMAundUNKJ070JONNoqWRKEYbdKo1XbOD3
+         xWzEYiccTwhwVlFDvZ88pVubMBO21Xxe2fTZFthvdyBw1xZlqbpS7pIpKrQ7eOpwNnQc
+         9CUw==
+X-Gm-Message-State: AOAM532RiF5vQmM6TZQ/BXOrJquXc+VBh1kZngIc2Pezf9033eR79uu9
+        Pg75+Rv7fthOrOKSBlU6nvjhKcT4A+e8Ag==
+X-Google-Smtp-Source: ABdhPJxuui5QGQFjB6ghdF42kN+HT/+I/xxE44H9hpyRue/mdRNGI3/PcvlzK7bQqwgrsMF4W/P4qQ==
+X-Received: by 2002:a1c:a7d4:: with SMTP id q203mr5573033wme.39.1622644413721;
+        Wed, 02 Jun 2021 07:33:33 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.31
+        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:33:32 -0700 (PDT)
+        Wed, 02 Jun 2021 07:33:33 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Adam Jackson <ajax@redhat.com>,
-        Ben Widawsky <ben@bwidawsk.net>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [RESEND 22/26] drm/vgem/vgem_drv: Standard comment blocks should not use kernel-doc format
-Date:   Wed,  2 Jun 2021 15:32:56 +0100
-Message-Id: <20210602143300.2330146-23-lee.jones@linaro.org>
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Akshu Agarwal <akshua@gmail.com>,
+        Ajay Kumar <ajaykumar.rs@samsung.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [RESEND 23/26] drm/exynos/exynos7_drm_decon: Fix incorrect naming of 'decon_shadow_protect_win()'
+Date:   Wed,  2 Jun 2021 15:32:57 +0100
+Message-Id: <20210602143300.2330146-24-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
 References: <20210602143300.2330146-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -70,35 +73,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vgem/vgem_drv.c:47: warning: expecting prototype for This is vgem, a (non-hardware(). Prototype was for DRIVER_NAME() instead
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c:355: warning: expecting prototype for shadow_protect_win(). Prototype was for decon_shadow_protect_win() instead
 
+Cc: Inki Dae <inki.dae@samsung.com>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Adam Jackson <ajax@redhat.com>
-Cc: Ben Widawsky <ben@bwidawsk.net>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Akshu Agarwal <akshua@gmail.com>
+Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vgem/vgem_drv.c | 2 +-
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
-index a0e75f1d5d016..bf38a7e319d14 100644
---- a/drivers/gpu/drm/vgem/vgem_drv.c
-+++ b/drivers/gpu/drm/vgem/vgem_drv.c
-@@ -25,7 +25,7 @@
-  *	Ben Widawsky <ben@bwidawsk.net>
-  */
+diff --git a/drivers/gpu/drm/exynos/exynos7_drm_decon.c b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
+index 431c5d32f9a47..9b5e6f94e5585 100644
+--- a/drivers/gpu/drm/exynos/exynos7_drm_decon.c
++++ b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
+@@ -344,7 +344,7 @@ static void decon_win_set_colkey(struct decon_context *ctx, unsigned int win)
+ }
  
--/**
-+/*
-  * This is vgem, a (non-hardware-backed) GEM service.  This is used by Mesa's
-  * software renderer and the X server for efficient buffer sharing.
-  */
+ /**
+- * shadow_protect_win() - disable updating values from shadow registers at vsync
++ * decon_shadow_protect_win() - disable updating values from shadow registers at vsync
+  *
+  * @ctx: display and enhancement controller context
+  * @win: window to protect registers for
 -- 
 2.31.1
 
