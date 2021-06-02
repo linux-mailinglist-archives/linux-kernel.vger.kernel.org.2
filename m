@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B04398375
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D12398312
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbhFBHrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:47:52 -0400
-Received: from hera.aquilenet.fr ([185.233.100.1]:57178 "EHLO
-        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232109AbhFBHrs (ORCPT
+        id S231646AbhFBHgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhFBHgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:47:48 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 1A2C94AE;
-        Wed,  2 Jun 2021 09:46:04 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TJGLL8MI3RHF; Wed,  2 Jun 2021 09:45:59 +0200 (CEST)
-Received: from begin (lfbn-bor-1-56-204.w90-50.abo.wanadoo.fr [90.50.148.204])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 24A2842B;
-        Wed,  2 Jun 2021 09:45:55 +0200 (CEST)
-Received: from samy by begin with local (Exim 4.94.2)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1loKdk-0063uT-3T; Wed, 02 Jun 2021 08:46:08 +0200
-Date:   Wed, 2 Jun 2021 08:46:03 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Chris Brannon <chris@the-brannons.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        William Hubbs <w.d.hubbs@gmail.com>,
-        collins@gene3.ait.iastate.edu,
-        Steve Holmes <steve.holmes88@gmail.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
-Message-ID: <20210602064603.hlluahbkc2ncull3@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Chris Brannon <chris@the-brannons.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        William Hubbs <w.d.hubbs@gmail.com>, collins@gene3.ait.iastate.edu,
-        Steve Holmes <steve.holmes88@gmail.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210531215737.8431-1-igormtorrente@gmail.com>
- <875yyxbenm.fsf@meer.lwn.net>
- <20210601220643.uzep2ju2zlcmpa57@begin>
- <874keh9qk9.fsf@meer.lwn.net>
- <20210601223743.carif4gkzcz5jo7j@begin>
- <87r1hldli1.fsf@the-brannons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1hldli1.fsf@the-brannons.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
-X-Spamd-Bar: --
-Authentication-Results: hera.aquilenet.fr
-X-Rspamd-Server: hera
-X-Rspamd-Queue-Id: 1A2C94AE
-X-Spamd-Result: default: False [-2.50 / 15.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         HAS_ORG_HEADER(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MID_RHS_NOT_FQDN(0.50)[];
-         BAYES_HAM(-3.00)[100.00%]
+        Wed, 2 Jun 2021 03:36:43 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8D1C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 00:34:58 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id l1so1546631pgm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 00:34:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=kPYLu8xbAIOv7Q1oQZKxgzwnMunzTs+Q84KnZRYcuT4=;
+        b=VBCp0K7vNGPqb1NLvv9BxPv45d6+m9ix9wfOk0T4siFr/bokfpg76NH16TxTP9YUuP
+         0qXEe6VaVAhegZpnjogJYddQLDZ4O8oko/Ottqt02MxPZ4TYDOMApU1IRPB2wCTJMjed
+         uw7J6HBPTIwNc98lTb/OGoJ6Xdy61JZVhCyd/G0eG0CH9U2xhFfWS0hQ1iIxwHj37xCm
+         LqHmNakQHO3pDTOdAVk8HF5Iai0fCOwFAIKL8cthyayIVjWUOJCZp5wJ8sEHjQ0IVINj
+         tIcS96eKin2ioFQ5RATfBN9779JjOC1Owt87+xKsnRgHGWCIIf9fmvT6AhnSnrPDlgJh
+         MPPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kPYLu8xbAIOv7Q1oQZKxgzwnMunzTs+Q84KnZRYcuT4=;
+        b=lTuVprp4NP6/8Rnl/c0Ke/OpEEaUbY+goTy9cTzzFdfCLMhWiPyfK7W8k8A0zem38S
+         UhNdGk19Pz5+HPtWtfyZnI0ddcLk64SkovqJGL13QWqNWOHXiw1ZIdhngQY8ikMdtxr5
+         E30r6DqXjZR0KO0SQQcmmuJyV7+3QgMs9bA+BwCec21BFqWuVWGnp6xqDRbBbo4DKIhN
+         MIb6NFLIebtFA+NHa16oPg3n2veSoBtO4X7eRVWOdg2u7jhfRZbUZS42Bc0At7KojXdx
+         PEyFJ/MZJpgO7t6JKJWeNoHXB9MginWm8p36sMFhZ7ZDEAu9kmBSHgxYGiuSZj3Qw80u
+         SrTg==
+X-Gm-Message-State: AOAM533m0ujXb9H3Vqy8ciCZWAxhQbSUn40ZSV6jKW1kqb6fm3qC7m2i
+        /xDj4GYMsqbiid9eYGtBMIz0vHQgCRf7vLpY
+X-Google-Smtp-Source: ABdhPJwbNo3bIo61LUDHn6Kn5OZsjLMBIBJPs6FkIXO8m14CZ6EUTjVTJG3EoSDP3Crun/ra+2pGpw==
+X-Received: by 2002:a62:b419:0:b029:2e8:e879:5d1e with SMTP id h25-20020a62b4190000b02902e8e8795d1emr25603729pfn.3.1622619298425;
+        Wed, 02 Jun 2021 00:34:58 -0700 (PDT)
+Received: from sz-dl-056.autox.sz ([151.248.69.100])
+        by smtp.gmail.com with ESMTPSA id r28sm16239478pgm.53.2021.06.02.00.34.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Jun 2021 00:34:58 -0700 (PDT)
+From:   Yejune Deng <yejune.deng@gmail.com>
+X-Google-Original-From: Yejune Deng <yejunedeng@gmail.com>
+To:     tglx@linutronix.de, peterz@infradead.org, frederic@kernel.org,
+        mingo@kernel.org, keescook@chromium.org, dave@stgolabs.net
+Cc:     linux-kernel@vger.kernel.org, Yejune Deng <yejunedeng@gmail.com>
+Subject: [PATCH] softirq: Remove the unnecessary CONFIG_TRACE_IRQFLAGS
+Date:   Wed,  2 Jun 2021 15:34:42 +0800
+Message-Id: <1622619282-12077-1-git-send-email-yejunedeng@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The local_irq_enable() and local_irq_disable() had two definitions that
+include CONFIG_TRACE_IRQFLAGS or not.
 
-Chris Brannon, le mar. 01 juin 2021 19:54:30 -0700, a ecrit:
-> Samuel Thibault <samuel.thibault@ens-lyon.org> writes:
-> 
-> > So we'd need Gene's, Christopher's, William's, and Steve's ack on adding
-> > the GPL alternative to the GFDL-1.2 licence.
-> 
-> You have my ack.  Do whatever is needful.  I wish I didn't have to care about
-> this stuff.
+Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
+---
+ kernel/softirq.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Thanks! Linux will stay GPL forever anyway so that will do for
-long-term.
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 4992853..a81d804 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -362,9 +362,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+ {
+ 	WARN_ON_ONCE(in_irq());
+ 	lockdep_assert_irqs_enabled();
+-#ifdef CONFIG_TRACE_IRQFLAGS
+ 	local_irq_disable();
+-#endif
+ 	/*
+ 	 * Are softirqs going to be turned on now:
+ 	 */
+@@ -385,9 +383,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+ 	}
+ 
+ 	preempt_count_dec();
+-#ifdef CONFIG_TRACE_IRQFLAGS
+ 	local_irq_enable();
+-#endif
+ 	preempt_check_resched();
+ }
+ EXPORT_SYMBOL(__local_bh_enable_ip);
+-- 
+2.7.4
 
-Samuel
