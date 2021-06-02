@@ -2,162 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FB5399462
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1283C399467
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhFBUQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhFBUQw (ORCPT
+        id S229675AbhFBUTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:19:07 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:36611 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBUTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:16:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A85CC061756;
-        Wed,  2 Jun 2021 13:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=hg1i1lJUDI2dbeh2/KVZj893kEGRfKzlm3YByZ5waG8=; b=pw5LtsnUBCH9bK2J0dEulMays
-        omr8kMIj1brZGBhcbDHrAae/h+L4FnbWtFLgTbPNrmeMqEkbEcgl4Vz7SE8RqRsvtZ6UbqRIVF0Qq
-        iVX2dypzeNwFOS7Px9gyAZA0B0cGjui2nj9yoXNL6zBKZcwA1okNTEnf6qTDQz0h0QIugSNpDBxlQ
-        BCoYuqDSMNOafq7kf12tLMf+P7f6DryHtuIjU1b5dWa5tD21VEwQbqwQFL81W8vebifiK8hc5Szfy
-        EPHT3nsn+EYbrK5t/g8EAFQt2VIIKN7AEZEMInO4I1pJxIKvV5srYPBdZ/+CRQjiSMoxOKI6LVow9
-        XqvY+jujw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44646)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1loXGa-0001mw-OQ; Wed, 02 Jun 2021 21:15:04 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1loXGY-0001QE-UG; Wed, 02 Jun 2021 21:15:02 +0100
-Date:   Wed, 2 Jun 2021 21:15:02 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org
-Subject: Re: [RFC/RFT PATCH 2/5] memblock: introduce generic
- memblock_setup_resources()
-Message-ID: <20210602201502.GP30436@shell.armlinux.org.uk>
-References: <20210531122959.23499-1-rppt@kernel.org>
- <20210531122959.23499-3-rppt@kernel.org>
- <20210601135415.GZ30436@shell.armlinux.org.uk>
- <YLdCRoldZFYMZ0BG@linux.ibm.com>
- <20210602101521.GD30436@shell.armlinux.org.uk>
- <YLeNiUkIw+aFpMcz@linux.ibm.com>
- <20210602155141.GM30436@shell.armlinux.org.uk>
- <YLfRVGC+tq5L0TZ6@kernel.org>
+        Wed, 2 Jun 2021 16:19:06 -0400
+Received: by mail-ot1-f47.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3632754otl.3;
+        Wed, 02 Jun 2021 13:17:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/jmVznYmQTH93X26NjVfXHcldPh3SZGCs6s2/JZMXiE=;
+        b=OrwyWOujqXbyo0Dlic9Lds9TIuTbdYNvqjlbDc6FYNWvK9ytF09HQtq1dXPgff35VW
+         8bmu3lF+PD3uxjDls2VD8Jzept0hoPE6btR8Z/Tb1RMlRiIknSJCEAAdwl9iMCM6CJW7
+         JDe2k8IrV6q7mH58V80MEB2z/AVvc3xbjd2+jf9KQwTY5mlt8ytHCbsZi874IhirPNv4
+         nNibUz8yIXD8Ta08tEUVxaaLpLfU3qJuVzATu3zcBF4xHV1OnI4V464FmT9TBlMlBmQQ
+         G5SZ4lSuTAkKbuUi3llKSirDPOCS91+MlhJJder83jtdBbYOKDQ8YnY1o6zD0jvMEJM7
+         IssQ==
+X-Gm-Message-State: AOAM531uFQ24IH4RjzttY4XJY0hcbv1ebhuU+u7j5kCAtIBt05XIU1LU
+        Xyv2Eh6WO4/RWeCp9iKsbg==
+X-Google-Smtp-Source: ABdhPJyniojfQZIQ5XkjjIwjiuhE4C04qsmxU08698rH3heQFT1ZtGUEhu3qHxE4j9cQaciRdXki9Q==
+X-Received: by 2002:a9d:5e8c:: with SMTP id f12mr27237550otl.18.1622665042758;
+        Wed, 02 Jun 2021 13:17:22 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q15sm208624oon.28.2021.06.02.13.17.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 13:17:22 -0700 (PDT)
+Received: (nullmailer pid 3920332 invoked by uid 1000);
+        Wed, 02 Jun 2021 20:17:20 -0000
+Date:   Wed, 2 Jun 2021 15:17:20 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Rayn Chen <rayn_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        ryan_chen@aspeedtech.com, chin-ting_kuo@aspeedtech.com,
+        troy_lee@aspeedtech.com, steven_lee@aspeedtech.com
+Subject: Re: [PATCH v2 1/1] dt-bindings: aspeed-i2c: Convert txt to yaml
+ format
+Message-ID: <20210602201720.GA3910963@robh.at.kernel.org>
+References: <20210527102512.20684-1-jamin_lin@aspeedtech.com>
+ <20210527102512.20684-2-jamin_lin@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLfRVGC+tq5L0TZ6@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210527102512.20684-2-jamin_lin@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 09:43:32PM +0300, Mike Rapoport wrote:
-> Back then when __ex_table was moved from .data section, _sdata and _edata
-> were part of the .data section. Today they are not. So something like the
-> patch below will ensure for instance that __ex_table would be a part of
-> "Kernel data" in /proc/iomem without moving it to the .data section:
+On Thu, May 27, 2021 at 06:25:05PM +0800, Jamin Lin wrote:
+> Convert aspeed i2c to yaml.
 > 
-> diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-> index f7f4620d59c3..2991feceab31 100644
-> --- a/arch/arm/kernel/vmlinux.lds.S
-> +++ b/arch/arm/kernel/vmlinux.lds.S
-> @@ -72,13 +72,6 @@ SECTIONS
->  
->  	RO_DATA(PAGE_SIZE)
->  
-> -	. = ALIGN(4);
-> -	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
-> -		__start___ex_table = .;
-> -		ARM_MMU_KEEP(*(__ex_table))
-> -		__stop___ex_table = .;
-> -	}
-> -
->  #ifdef CONFIG_ARM_UNWIND
->  	ARM_UNWIND_SECTIONS
->  #endif
-> @@ -143,6 +136,14 @@ SECTIONS
->  	__init_end = .;
->  
->  	_sdata = .;
+> Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
+> ---
+>  .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 86 +++++++++++++++++++
+>  .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 -----------
+>  2 files changed, 86 insertions(+), 49 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+> new file mode 100644
+> index 000000000000..1f7064d77708
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+> @@ -0,0 +1,86 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/aspeed,i2c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	. = ALIGN(4);
-> +	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
-> +		__start___ex_table = .;
-> +		ARM_MMU_KEEP(*(__ex_table))
-> +		__stop___ex_table = .;
-> +	}
+> +title: ASPEED I2C on the AST24XX, AST25XX, and AST26XX SoCs Device Tree Bindings
 > +
->  	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
->  	_edata = .;
+> +maintainers:
+> +  - Rayn Chen <rayn_chen@aspeedtech.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2400-i2c-bus
+> +      - aspeed,ast2500-i2c-bus
+> +      - aspeed,ast2600-i2c-bus
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  "#address-cells":
+> +    const: 1
 
-This example has undesirable security implications. It moves the
-exception table out of the read-only mappings into the read-write
-mappings, thereby providing a way for an attacker to bypass the
-read-only protection on the kernel and manipulate code pointers at
-potentially known addresses for distro built kernels.
+These 2 are covered by i2c-controller.yaml.
 
-> I agree there is a risk but I don't think it's high. It does not look like
-> the minor changes in "reserved" reporting in /proc/iomem will break kexec
-> tooling.
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - description: address offset and range of bus
+> +      - description: address offset and range of bus buffer
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: interrupt number
 
-What makes you come to that conclusion? The kexec tools architecture
-backends get to decide what they do when parsing /proc/iomem.
-Currently, only firmware areas are marked reserved in /proc/iomem on
-32-bit ARM.
+Drop. Not a useful description.
 
-This is read by kexec, and entered into its memory_range[] table as
-either RAM, or RESERVED.
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description:
+> +      root clock of bus, should reference the APB
+> +      clock in the second cell
+> +
+> +  reset:
 
-kexec uses this to search for a suitable hole in the memory map to
-place the kernel in physical memory. The addition of what I will call
-ficticious "reserved" areas by the host kernel because the host kernel
-happened to use them _will_ have an impact on this.
+resets
 
-They _are_ ficticious, because they are purely an artifact of the host
-kernel being run, and are of no consequence to tooling such as kexec.
-What such tooling is interested in is which areas it needs to avoid
-because of firmware.
+> +    maxItems: 1
+> +    description: phandle to reset controller with the reset number in
+> +      the second cell
 
-I think what isn't helping here is that you haven't adequately
-described what your overall objective actually is. Framing it in
-terms of wanting the reserved memory to be consistent between the
-various kernel "interfaces" such as /proc/iomem, the memblock debugfs
-and firmware is very ambiguous and open to different interpretations,
-whcih I think is what the problem is here.
+No need to describe the format of 'resets'.
 
-> Anyway the amount of reserved and free memory depends on a
-> particular system, kernel version, configuration and command line.
-> I have no intention to report kernel boot time reservations
-> to /proc/iomem on architectures that do not report them there today,
-> although this also does not seem like a significant factor.
+> +
+> +  bus-frequency:
+> +    minimum: 500
+> +    maximum: 4000000
+> +    default: 100000
+> +    description: frequency of the bus clock in Hz defaults to 100 kHz when not
+> +      specified
+> +
+> +  multi-master:
+> +    type: boolean
+> +    description:
+> +      states that there is another master active on this bus
+> +
+> +required:
+> +  - reg
+> +  - compatible
+> +  - clocks
+> +  - resets
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/aspeed-clock.h>
+> +    i2c0: i2c-bus@40 {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      #interrupt-cells = <1>;
+> +      reg = <0x40 0x40>;
+> +      compatible = "aspeed,ast2500-i2c-bus";
 
-You seem to be missing the point I've tried to make. The areas in
-memblock that are marked "reserved" are the areas of reserved memory
-from the firmware _plus_ the areas that the kernel has made during
-boot which are of no consequence to userspace.
+Convention is compatible first in the list of properties.
 
-Wanting /proc/iomem, memblock and firmware to all agree on the values
-that they mark as "reserved" is IMHO unrealistic.
+> +      clocks = <&syscon ASPEED_CLK_APB>;
+> +      resets = <&syscon ASPEED_RESET_I2C>;
+> +      bus-frequency = <100000>;
+> +      interrupts = <0>;
+> +      interrupt-parent = <&i2c_ic>;
+> +      status = "disabled";
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Don't show status in examples especially when disabling disables some 
+validation...
+
+> +      /* Does not need pinctrl properties */
+> +    };
