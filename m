@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF294399200
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01290399202
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhFBR5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48346 "EHLO mail.kernel.org"
+        id S230416AbhFBR6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:58:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhFBR5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5793661DA5;
-        Wed,  2 Jun 2021 17:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622656566;
-        bh=Czsuka7+HAGaSUNNQSSRfeXG6GJieqJ4DRUlmcntgAY=;
+        id S229467AbhFBR6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 13:58:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7F2061DAA;
+        Wed,  2 Jun 2021 17:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622656600;
+        bh=di7qnIoRuVmUc7S1bq5974ayyTkJke4QQK1OYu5tyZ4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t5cJqRiURMB0mvCDuGxAQqoQaubwsosndqXFSMS4MV01Blt3guNQdVa6KgxMskLh/
-         i+XoodFDYNHcDJfZPFwi2mG6UO2vAdFGvJuPRdFvR0WXkk5njxy4XZTyQMVyTVackS
-         VF4gbeIEAs1034YIdmLym9QTFCge8bFpXghi1epxehKF01pD2JHU7BOgakp0zJ64PB
-         iT0VSbSMOaUA7la2vkc96ulysSfE2XV2lGm9KCB8nzlSsrHQ45AMFOqxgBsUkl/pLN
-         vyTpn801vbDdCAsWGnOUW/pHFTV3SV/xMl8bESrw5wcIrFTaT2xojOOvUSph92qO96
-         9uEKhbqRyHkdg==
-Date:   Wed, 2 Jun 2021 18:55:59 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Seth LaForge <sethml@google.com>,
-        Ricky Liang <jcliang@chromium.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 0/3] arm64: perf: Make compat tracing better
-Message-ID: <20210602175559.GC31957@willie-the-truck>
-References: <20210507205513.640780-1-dianders@chromium.org>
+        b=j2uvTS0gAKA+jwF0zh05OfPHjiNe0Bcep4HlCGs3mRSiv4ZrSX6xTj9nOAZKvgd0v
+         WsOnD9we8mBqYnIjeHcRVV9blSycelD9hJMdkfjYGOCZAOQxuAkaTBQvjOYsgNlFIw
+         hRxi472lh7DJKUhyl+ii47XUbeKwPIcuICloFbQc=
+Date:   Wed, 2 Jun 2021 19:56:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     SyzScope <syzscope@gmail.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        syzbot <syzbot+9b91d635e2b51efd6371@syzkaller.appspotmail.com>,
+        Martin Fuzzey <mfuzzey@parkeon.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, sunjunyong@xiaomi.com, sunjy516@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: use-after-free Read in fw_load_sysfs_fallback
+Message-ID: <YLfGUNpTU5BE27IT@kroah.com>
+References: <000000000000721b1305bf043595@google.com>
+ <20210403013143.GV4332@42.do-not-panic.com>
+ <07acfc7a-cfa4-5f14-b2ee-14790ff58363@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210507205513.640780-1-dianders@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <07acfc7a-cfa4-5f14-b2ee-14790ff58363@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-
-Thanks for posting this, and sorry for the delay in getting to it.
-
-On Fri, May 07, 2021 at 01:55:10PM -0700, Douglas Anderson wrote:
-> The goal for this series is to improve "perf" behavior when 32-bit
-> userspace code is involved. This turns out to be fairly important for
-> Chrome OS which still runs 32-bit userspace for the time being (long
-> story there).
-
-Watch out, your days are numbered! See [1].
-
-> I won't repeat everything said in the individual patches since since
-> they are wordy enough as it is.
+On Wed, Jun 02, 2021 at 10:08:39AM -0700, SyzScope wrote:
+> Hi,
+> We have analyzed this bug and realize that it is security-critical.
+> Specifically, according to our investigation, it will lead to a
+> use-after-free write (instead of the originally reported use-after-free
+> read) and thus highly likely exploitable. More details can be found at:
 > 
-> Please enjoy and I hope this isn't too ugly/hacky for inclusion in
-> mainline.
+> https://sites.google.com/view/syzscope/kasan-use-after-free-read-in-fw_load_sysfs_fallback <https://sites.google.com/view/syzscope/kasan-use-after-free-read-in-fw_load_sysfs_fallback>
 > 
-> Thanks to Nick Desaulniers for his early review of these patches and
-> to Ricky for the super early prototype that some of this is based on.
+> 
+> We understand that creating a patch can be time-consuming and there is
+> probably a long list of bugs pending fixes. We hope that our security
+> analysis can enable an informed decision on which bugs to fix first
+> (prioritization).
+> 
+> Since the bug has been on syzbot for over two months (first found on
+> 03-22-2020), it is best to have the bug fixed early enough to avoid it being
+> weaponized.
 
-I can see that you've put a lot of effort into this, but I'm not thrilled
-with the prospect of maintaining these heuristics in the kernel. The
-callchain behaviour is directly visible to userspace, and all we'll be able
-to do is throw more heuristics at it if faced with any regression reports.
-Every assumption made about userspace behaviour results in diminishing
-returns where some set of programs no longer fall into the "supported"
-bucket and, on balance, I don't think the trade-off is worth it.
+Great, please work to provide a fix!  See the archives for more details
+if you are curious about this.
 
-If we were to do this in the kernel, then I'd like to see a spec for how
-frame-pointer based unwinding should work for Thumb and have it agreed
-upon and implemented by both GCC and LLVM. That way, we can implement
-the unwinder according to that spec and file bug reports against the
-compiler if it goes wrong.
+thanks,
 
-In lieu of that, I think we must defer to userspace to unwind using DWARF.
-Perf supports this via PERF_SAMPLE_STACK_USER and PERF_SAMPLE_REGS_USER,
-which allows libunwind to be used to create the callchain. You haven't
-mentioned that here, so I'd be interested to know why not.
-
-Finally, you've probably noticed that our unwinding code for compat tasks
-is basically identical to the code in arch/arm/. If the functionality is
-going to be extended, it should be done there first and then we will follow
-to be compatible.
-
-Cheers,
-
-Will
-
-[1] https://lore.kernel.org/lkml/20210602164719.31777-20-will@kernel.org/T/#u
+greg k-h
