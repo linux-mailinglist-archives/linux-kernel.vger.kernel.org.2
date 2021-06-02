@@ -2,73 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579BF3992A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A764F3992AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhFBShv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhFBShu (ORCPT
+        id S229675AbhFBSiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:38:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229468AbhFBSiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:37:50 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B037AC061574;
-        Wed,  2 Jun 2021 11:36:06 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 2E2B32E0;
-        Wed,  2 Jun 2021 18:36:06 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2E2B32E0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1622658966; bh=W/vpT+iI0rchh3VZVeVOnpqOaOwv9O6V0VgVswk0/g0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=LSXthPXOmpX/n+ndSxtzyxlCGepQIfoPYYqCN1C+RnIZt9Be1Qb2OL9krezxYXjsW
-         6dW0I7ch/FgEoTtrc5jUk6D50PDU8TTYUujLQfTL5p5K24yFUIsC0IrO4FO1IWfOtg
-         lZI2L5uk8LkeJilGm73QhKex16dLbZ4dc9EgdjS5bSuvNcizOTuZP6nw5CHgrEiGcO
-         QbKTO9zCTsOyeW5MgqFzVqwCEhLlUvlxGvr4p8PHKIfFOYOG3vtpkfrlsaFCas4pnM
-         J8EsT0qJ8qsbOEcbvDlNFwTDq3uBjxcyTu9hM8CGqdir2iBAkdRjrbwzw47Eklsge4
-         s736sGtw3nVRg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lepton Wu <ytht.net@gmail.com>, Mel Gorman <mgorman@suse.de>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Stephen Kitt <steve@sk2.org>, Wang Qing <wangqing@vivo.com>,
+        Wed, 2 Jun 2021 14:38:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622659026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ktmy9OPHs7EKpTut0wBFjcJ9rL9I98RB0SACOwd6rGU=;
+        b=EgsPupvcMmDxAcyrhVH+Da4b8fT9F7okFryY/fEhMClhB4UN01q4CVKIeDMkc5u8m6VZcQ
+        q++Z3r7Ag6hDRL3t/NOaXEYlEuTi0w+k5P6ocOQJVbBpr8jHdDQqWVaSivuKrQ6HlBolwL
+        lPB6X8LfaSZ6AREl0cm5MdYct9EbfW0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-UsnF-M4LO9aaJprBQPlqGg-1; Wed, 02 Jun 2021 14:37:04 -0400
+X-MC-Unique: UsnF-M4LO9aaJprBQPlqGg-1
+Received: by mail-wm1-f72.google.com with SMTP id i13-20020a05600c354db029019c437c377eso253554wmq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 11:37:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ktmy9OPHs7EKpTut0wBFjcJ9rL9I98RB0SACOwd6rGU=;
+        b=YdQB6+qhFduWr/EAiSi6rgRcyCQuEb+gIval4xrpFF55rzDRM2cVw8MNm2mn2H/Pi0
+         ts1In2DGECqQvmGnvdctixww9BJOiA03BNLMuHjkGvAtw9uQajUYhZZylJX5iQx+99zR
+         N7lWxh/8RhRZYR/+tlXHzHFYWA/LMXLTvqmZ8TvcppQ9hMPLEnL1v8LxXbpa1SmbyHFa
+         PILr9xP/JjmPOW3xLcOKpt8dC37Ijn4MA41GUtHcRoLy9zVdWRMcGqn5f3+ZsQIZDMoz
+         kcB/S+j2pFGsXAOyEc7s58hcMFN8Fe4fwQgyulHb1QXq18njxSLKWUWD0VyL7svhsM5t
+         UEZQ==
+X-Gm-Message-State: AOAM533gWN+C9XD9dBDaTgFsBf2YArApiYos8+qx2diIWzh6JZt+iZZe
+        bjH8fcFgQACKrZQBsBN+pVrXROuCf+vS3MlPDSa3DzHc+F4XjRQ23ePovTu43LRkgue5KpsCi4j
+        TXRm2J6aqhprQXPqCcN7RC8XCQ1CRsVcbZiwhyMK8+iu9zYL69yNMRRsjKxIcGc3YULWOu0iO
+X-Received: by 2002:a5d:638b:: with SMTP id p11mr34423235wru.90.1622659023519;
+        Wed, 02 Jun 2021 11:37:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBuZOl6CTO6xLJEMDKsbIrEohcw7mAJ1hiJmAPcx8wm+2snvnOfx9z+oQgLtu61Q7rte0ThA==
+X-Received: by 2002:a5d:638b:: with SMTP id p11mr34423216wru.90.1622659023253;
+        Wed, 02 Jun 2021 11:37:03 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6b6d.dip0.t-ipconnect.de. [91.12.107.109])
+        by smtp.gmail.com with ESMTPSA id 30sm851918wrl.37.2021.06.02.11.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 11:37:02 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
+ stable zone's values
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/12] docs: accounting: update delay-accounting.rst
- reference
-In-Reply-To: <20210602200121.64a828a1@coco.lan>
-References: <cover.1622648507.git.mchehab+huawei@kernel.org>
- <629b0bd21d02c8faef9a6d17d9eee8ff612715e0.1622648507.git.mchehab+huawei@kernel.org>
- <YLe0BQcrnfRgH1dV@hirez.programming.kicks-ass.net>
- <20210602200121.64a828a1@coco.lan>
-Date:   Wed, 02 Jun 2021 12:36:05 -0600
-Message-ID: <871r9k6rmy.fsf@meer.lwn.net>
+References: <20210602091457.17772-1-osalvador@suse.de>
+ <20210602091457.17772-2-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
+Date:   Wed, 2 Jun 2021 20:37:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210602091457.17772-2-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+On 02.06.21 11:14, Oscar Salvador wrote:
+> Currently, page_outside_zone_boundaries() takes zone's span_seqlock
+> when reading zone_start_pfn and spanned_pages so those values are
+> stable vs memory hotplug operations.
+> move_pfn_range_to_zone() and remove_pfn_range_from_zone(), which are
+> the functions that can change zone's values are serialized by
+> mem_hotplug_lock by mem_hotplug_{begin,done}, so we can just use
+> {get,put}_online_mems() on the readers.
+> 
+> This will allow us to completely kill span_seqlock lock as no users
+> will remain after this series.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>   mm/page_alloc.c | 14 ++++++--------
+>   1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index aaa1655cf682..296cb00802b4 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -582,17 +582,15 @@ void set_pageblock_migratetype(struct page *page, int migratetype)
+>   static int page_outside_zone_boundaries(struct zone *zone, struct page *page)
+>   {
+>   	int ret = 0;
+> -	unsigned seq;
+>   	unsigned long pfn = page_to_pfn(page);
+>   	unsigned long sp, start_pfn;
+>   
+> -	do {
+> -		seq = zone_span_seqbegin(zone);
+> -		start_pfn = zone->zone_start_pfn;
+> -		sp = zone->spanned_pages;
+> -		if (!zone_spans_pfn(zone, pfn))
+> -			ret = 1;
+> -	} while (zone_span_seqretry(zone, seq));
+> +	get_online_mems();
+> +	start_pfn = zone->zone_start_pfn;
+> +	sp = zone->spanned_pages;
+> +	if (!zone_spans_pfn(zone, pfn))
+> +		ret = 1;
+> +	put_online_mems();
+>   
+>   	if (ret)
+>   		pr_err("page 0x%lx outside node %d zone %s [ 0x%lx - 0x%lx ]\n",
+> 
 
-> That's said, automarkup.py has a rule to convert Documentation/<foo>.rst
-> into :doc:`<foo>`. So, an alternative approach would be to convert
-> treewide all :doc:`<foo>` into Documentation/<foo>.rst and add something 
-> at checkpatch.pl to recommend to avoid :doc: notation.
+It's worth noting that memory offlining might hold the memory hotplug 
+lock for quite some time. It's not a lightweight lock, compared to the 
+seqlock we have here.
 
-That seems like the right approach to me.  We have the automarkup
-capability, we might as well make use of it...
+I can see that page_outside_zone_boundaries() is only called from 
+bad_range(). bad_range() is only called under VM_BUG_ON_PAGE(). Still, 
+are you sure that it's even valid to block e.g., __free_one_page() and 
+others for eventually all eternity? And I think that we might just call 
+it from atomic context where we cannot even sleep.
 
+Long story short, using get_online_mems() looks wrong.
+
+Maybe the current lightweight reader/writer protection does serve a purpose?
+
+-- 
 Thanks,
 
-jon
+David / dhildenb
+
