@@ -2,116 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5E33984D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A084F3984E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhFBJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:03:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54274 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230145AbhFBJDf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:03:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622624512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=njnWJTDlbIZm6prQ7E30GXwheWyUoE2xiy3Ax+zybeA=;
-        b=gPWv9jxWLeONdCcecwIHYnJ5y0TvHQv7kCt/2xrhsBEHmuuDWYZl1nTfp8am/l7tfd/uEc
-        sXQQulSJbIVcTvGWTm2WulurHAiIgwx9hxoINKCbOVaUm/svGfKxfwDj9e9HUJU8AIqVv3
-        eIrkuS06jRXk5jkREsIbgJhHghFa6BM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-6XVtIL1QM2-c6E-4vCSllg-1; Wed, 02 Jun 2021 05:01:51 -0400
-X-MC-Unique: 6XVtIL1QM2-c6E-4vCSllg-1
-Received: by mail-wr1-f69.google.com with SMTP id f22-20020a5d58f60000b029011634e39889so735549wrd.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:01:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=njnWJTDlbIZm6prQ7E30GXwheWyUoE2xiy3Ax+zybeA=;
-        b=C5Io0UDzXbGbQ4Yfg70AzzZKdtOkZFdnb8v67bdtfv1JgMEGEJpGQPIZi0xhrVEIas
-         0lIPzLUctvJTTebeeEkWk45o4QdIVbF8dH8pJ7S3eeL4XGbZSV2dMaRwCo7zOCrZ56i1
-         gML7h8jYTqlilzIlf6awjr/8yIJQHZnQLrGaXhjAfNCqYzZywGYx9GEOlU2piI0lvHD1
-         C/F8Izx2miDQ94b/36J62+ETo9AkhVn7QYwmN8GbLWZUjI+BXiP67a4b8sKclKRxxaot
-         83jBdvvEUX/k2AcwpCcnxV4N/GxKYzKa3cdkA1PbXUt6cGBofu7glTWVq4xUEKQEOjlL
-         U3/w==
-X-Gm-Message-State: AOAM533HEWnXxR75y7eOn6AtOArFpbcTUC+I9r/YhDYWKZ98t+QeWtaB
-        ObB+9/2omxETUt1uXaBzXiQcVEfuoYaicbF3GQ6PGH8ME4leg7ZcGSLbWJnET8iU+xXkS4GptVI
-        dl7F6ms9OAPN27NjUgCXu2IyT
-X-Received: by 2002:adf:ce90:: with SMTP id r16mr25980516wrn.146.1622624510125;
-        Wed, 02 Jun 2021 02:01:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNVBmXAyq37FqDobGkcDp4OJuhWbvV0DTLa/PhMfqGvVUJbx2BhUaiURI8cN1Anujmf0Glyw==
-X-Received: by 2002:adf:ce90:: with SMTP id r16mr25980499wrn.146.1622624509984;
-        Wed, 02 Jun 2021 02:01:49 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6b6d.dip0.t-ipconnect.de. [91.12.107.109])
-        by smtp.gmail.com with ESMTPSA id s8sm7204322wrr.36.2021.06.02.02.01.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 02:01:49 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mm,memory_hotplug: print the min alignment in
- check_pfn_span
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org
-Cc:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        logang@deltatee.com
-References: <20210602084752.3534-1-mgurtovoy@nvidia.com>
- <20210602084752.3534-2-mgurtovoy@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <adcc88c9-6e75-07a1-2d3d-7fa4bda88137@redhat.com>
-Date:   Wed, 2 Jun 2021 11:01:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230456AbhFBJIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230099AbhFBJII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:08:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78E93613AC;
+        Wed,  2 Jun 2021 09:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622624784;
+        bh=bYcNDOKdBmTW3M+pfiUN2wg1jTBSFQ4m469qCqR2dhI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q44HcwhxipmzgGNQoqO2WvwJ+Ulc3XZW+zyFHGbjKONnWTSKLVpUNNkRNcBAt17Qc
+         RYeNLsAKlCcstML2PZTRmCxOKv+eZDC7xylxhp+/xGJBAcOSYZrw+jtleKymwwxxaR
+         Lfhz6ezO+5FWaMAEJ9jAFn+FdaYZQGqBqhaa4e9s=
+Date:   Wed, 2 Jun 2021 11:06:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "tiantao (H)" <tiantao6@huawei.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+Subject: Re: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
+Message-ID: <YLdKDXYKm7jqorGa@kroah.com>
+References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
+ <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
+ <YLW+hZwoImx2wjwS@kroah.com>
+ <4c9c7c17-e8d1-d601-6262-8064293a06a9@huawei.com>
+ <YLcivXNwm75V+I2m@kroah.com>
+ <d3c1ec35-fa62-46ed-9227-866e0a3c96b8@huawei.com>
+ <CAHp75VeL4UMFX6oZWaFscTX6Ta5s714NeisR=vTh6mYMjyPi6w@mail.gmail.com>
+ <f84f92f5-8462-0556-e457-4e302e1e8cb6@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210602084752.3534-2-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f84f92f5-8462-0556-e457-4e302e1e8cb6@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.06.21 10:47, Max Gurtovoy wrote:
-> The warning only prints the start and end pfns. Add min_align to the
-> warning print to add more info regarding the failure.
+On Wed, Jun 02, 2021 at 05:00:16PM +0800, tiantao (H) wrote:
 > 
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> ---
->   mm/memory_hotplug.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> 在 2021/6/2 16:48, Andy Shevchenko 写道:
+> > On Wed, Jun 2, 2021 at 9:45 AM tiantao (H) <tiantao6@huawei.com> wrote:
+> > > 在 2021/6/2 14:18, Greg KH 写道:
+> > > > On Wed, Jun 02, 2021 at 02:14:49PM +0800, tiantao (H) wrote:
+> > > > > 在 2021/6/1 12:58, Greg KH 写道:
+> > > > > > On Tue, Jun 01, 2021 at 10:56:49AM +0800, Tian Tao wrote:
+> > ...
+> > 
+> > > > > > >     /**
+> > > > > > > + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
+> > > > > > > + * @list: indicates whether the bitmap must be list
+> > > > > > > + * @buf: page aligned buffer into which string is placed
+> > > > > > > + * @maskp: pointer to bitmap to convert
+> > > > > > > + * @nmaskbits: size of bitmap, in bits
+> > > > > > > + * @off: offset in buf
+> > > > > > > + * @count: count that already output
+> > > > > > > + *
+> > > > > > > + * the role of bitmap_print_to_buf and bitmap_print_to_pagebuf is
+> > > > > > > + * the same, the difference is that the second parameter of
+> > > > > > > + * bitmap_print_to_buf can be more than one pagesize.
+> > > > > > > + */
+> > > > > > > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> > > > > > > +                  int nmaskbits, loff_t off, size_t count)
+> > > > > > > +{
+> > > > > > > +  int len, size;
+> > > > > > > +  void *data;
+> > > > > > > +  char *fmt = list ? "%*pbl\n" : "%*pb\n";
+> > > > > > > +
+> > > > > > > +  len = snprintf(NULL, 0, fmt, nmaskbits, maskp);
+> > > > > > > +
+> > > > > > > +  data = kvmalloc(len+1, GFP_KERNEL);
+> > > > > > > +  if (!data)
+> > > > > > > +          return -ENOMEM;
+> > > > > > > +
+> > > > > > > +  size = scnprintf(data, len+1, fmt, nmaskbits, maskp);
+> > > > > > > +  size = memory_read_from_buffer(buf, count, &off, data, size);
+> > > > > > > +  kvfree(data);
+> > > > > > > +
+> > > > > > > +  return size;
+> > > > > > Why is this so different from bitmap_print_to_pagebuf()?  Can't you just
+> > > > > > use this function as the "real" function and then change
+> > > > > > bitmap_print_to_pagebuf() to call it with a size of PAGE_SIZE?
+> > > > > Do you mean do following change, is that correct? :-)
+> > > > Maybe, it is whitespace corrupted, and it still feels like this function
+> > > > is much bigger than it needs to be given the function it is replacing is
+> > > > only a simple sprintf() call.
+> > > > 
+> > > > > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> > > > > +                       int nmaskbits, loff_t off, size_t count)
+> > > > > +{
+> > > > > +       int len, size;
+> > > > > +       void *data;
+> > > > > +       const char *fmt = list ? "%*pbl\n" : "%*pb\n";
+> > > > > +
+> > > > > +       if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
+> > > > > +               return scnprintf(buf, count, fmt, nmaskbits, maskp);
+> > > > > +
+> > > > > +       len = snprintf(NULL, 0, fmt, nmaskbits, maskp);
+> > > > > +
+> > > > > +       data = kvmalloc(len+1, GFP_KERNEL);
+> > > > Why do you need to allocate more memory?  And why kvmalloc()?
+> > > Because the memory here will exceed a pagesize and we don't know the
+> > > exact size, we have to call
+> > > 
+> > > snprintf first to get the actual size. kvmalloc() is used because when
+> > > physical memory is tight, kmalloc
+> > > 
+> > > may fail, but vmalloc will succeed. It is not so bad that the memory is
+> > > not requested here.
+> > To me it sounds like the function is overengineered / lacks thought
+> > through / optimization.
+> > Can you provide a few examples that require the above algorithm?
 > 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 8c3b423c1141..9e86e9ee0a10 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -289,8 +289,8 @@ static int check_pfn_span(unsigned long pfn, unsigned long nr_pages,
->   	else
->   		min_align = PAGES_PER_SECTION;
->   	if (!IS_ALIGNED(pfn, min_align) || !IS_ALIGNED(nr_pages, min_align)) {
-> -		WARN(1, "Misaligned __%s_pages start: %#lx end: %#lx\n",
-> -		     reason, pfn, pfn + nr_pages - 1);
-> +		WARN(1, "Misaligned __%s_pages min_align: %#lx start: %#lx end: %#lx\n",
-> +		     reason, min_align, pfn, pfn + nr_pages - 1);
->   		return -EINVAL;
->   	}
->   	return 0;
-> 
+> so you think we should use kmalloc instead of kvmalloc ?
 
-Not sure if we really care. I expect only developers will run into that 
-hacking on something new, and they will have to dig deeper either way.
+What size bitmap would trigger a vmalloc() call to be forced here?
 
-While at it, I'd suggest converting this to pr_warn(), as WARN() is 
-frowned upon as it can crash the kernel with panic_on_warn as set by 
-some distros.
+thanks,
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+greg k-h
