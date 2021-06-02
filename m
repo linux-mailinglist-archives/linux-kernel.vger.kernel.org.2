@@ -2,72 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE253986E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B743986E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhFBKun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhFBKtg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:49:36 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CDDC06138E
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:47:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=yoH2LiBrhNQoxKYBVg4LIMYjTL8KWNG9mNtpWnGT4C8=; b=v0Lr8E7Qy6jOfQvVwyTaoE8E0
-        m28MgInAnW/jHUeyRkOf6TDGdVfjIJA4PvU/BimIXYzjr9Giax+RTRu/JR8WEyWfGoDMVBN+XIeR1
-        JM7nGTEIHJfiqc6V3+78B7dP090GOMimDNmLakttFCsdDQQ6vsK2ckpYneM+MPf2CDoyb9vRdJ1X3
-        50QPiQhCb7BpzMKP33+Ra+69bSEfcLtZo32dhGmA7ifwqmQlIwx5N7HcHUnyxzzL7XFSdlmmnmTky
-        A6UVyVehku94AcekZKofJu7kWn5yAl0VkVyjvX7Joxfdrf3x3rLss/EDIIFcLs2rpKKmPMpJf/qup
-        M/y8zDDcw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44618)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1loOPQ-00012W-Mk; Wed, 02 Jun 2021 11:47:36 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1loOPP-000148-RJ; Wed, 02 Jun 2021 11:47:35 +0100
-Date:   Wed, 2 Jun 2021 11:47:35 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jungseung Lee <js07.lee@gmail.com>
-Subject: Re: [PATCH v2 5/7] ARM: mm: Print physical address of page table
- base in show_pte()
-Message-ID: <20210602104735.GI30436@shell.armlinux.org.uk>
-References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
- <20210602070246.83990-6-wangkefeng.wang@huawei.com>
+        id S231266AbhFBKua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:50:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:38328 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231905AbhFBKtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 06:49:22 -0400
+IronPort-SDR: fRVUJcIsQ37FAWndKJTDp/Lf7/Dv8ELFxw3JaJPj3qAGbKbinoRnFiWS8cd5lGJryfI/CXzPQs
+ sRdJjQlLuNqw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="289386926"
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="289386926"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 03:47:27 -0700
+IronPort-SDR: Qz6muSZFi2ahvoQYCouIM8vwxtXgOzHC7ph/awKQc8NhnCWD3LEcZa1By6dLhZGIsxPtciCSfC
+ upSLURDM66xQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="479663459"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by orsmga001.jf.intel.com with ESMTP; 02 Jun 2021 03:47:22 -0700
+Subject: Re: [PATCH v2 6/8] perf auxtrace: Drop legacy __sync functions
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-7-leo.yan@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <fc7bfa25-d96e-ea6d-2756-f94653dc4771@intel.com>
+Date:   Wed, 2 Jun 2021 13:47:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602070246.83990-6-wangkefeng.wang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210602103007.184993-7-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2/06/21 1:30 pm, Leo Yan wrote:
+> The main purpose for using __sync built-in functions is to support
+> compat mode for 32-bit perf with 64-bit kernel.  But using these
+> built-in functions might cause couple potential issues.
+> 
+> Firstly, __sync functions originally support Intel Itanium processoer [1]
+> but it cannot promise to support all 32-bit archs.  Now these
+> functions have become the legacy functions.
+> 
+> As Peter also pointed out the logic issue in the function
+> auxtrace_mmap__write_tail(), it does a cmpxchg with 0 values to load
+> old_tail, and then executes a further cmpxchg with old_tail to write
+> the new tail.  If consider the aux_tail might be assigned to '0' in the
+> middle of loops, this can introduce mess for AUX buffer if the kernel
+> fetches the temporary value '0'.
+> 
+> Considering __sync functions cannot really fix the 64-bit value
+> atomicity on 32-bit archs, thus this patch drops __sync functions.
+> 
+> Credits to Peter for detailed analysis.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html#g_t_005f_005fsync-Builtins
+> 
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/util/auxtrace.h | 19 -------------------
+>  1 file changed, 19 deletions(-)
+> 
+> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+> index 42b7ef811bde..e625bc76cdde 100644
+> --- a/tools/perf/util/auxtrace.h
+> +++ b/tools/perf/util/auxtrace.h
+> @@ -432,12 +432,6 @@ struct auxtrace_cache;
+>  
+>  #ifdef HAVE_AUXTRACE_SUPPORT
+>  
+> -/*
+> - * In snapshot mode the mmapped page is read-only which makes using
+> - * __sync_val_compare_and_swap() problematic.  However, snapshot mode expects
+> - * the buffer is not updated while the snapshot is made (e.g. Intel PT disables
+> - * the event) so there is not a race anyway.
+> - */
+>  static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
+>  {
+>  	struct perf_event_mmap_page *pc = mm->userpg;
+> @@ -451,11 +445,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
+>  static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+>  {
+>  	struct perf_event_mmap_page *pc = mm->userpg;
+> -#if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
 
-On Wed, Jun 02, 2021 at 03:02:44PM +0800, Kefeng Wang wrote:
-> Now the show_pts() will dump the virtual (hashed) address of page
-> table base, it is useless, let's print the page table base pointer
-> as a physical address for debug.
+The test and setup for HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT is not needed anymore either.
 
-I think we could probably get rid of this line - I think the last time
-the PGD address was of use was a very long time ago.
+>  	u64 head = READ_ONCE(pc->aux_head);
+> -#else
+> -	u64 head = __sync_val_compare_and_swap(&pc->aux_head, 0, 0);
+> -#endif
+>  
+>  	/* Ensure all reads are done after we read the head */
+>  	smp_rmb();
+> @@ -465,19 +455,10 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+>  static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+>  {
+>  	struct perf_event_mmap_page *pc = mm->userpg;
+> -#if BITS_PER_LONG != 64 && defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
+> -	u64 old_tail;
+> -#endif
+>  
+>  	/* Ensure all reads are done before we write the tail out */
+>  	smp_mb();
+> -#if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
+>  	pc->aux_tail = tail;
+> -#else
+> -	do {
+> -		old_tail = __sync_val_compare_and_swap(&pc->aux_tail, 0, 0);
+> -	} while (!__sync_bool_compare_and_swap(&pc->aux_tail, old_tail, tail));
+> -#endif
+>  }
+>  
+>  int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
+> 
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
