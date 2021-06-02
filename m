@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF804398D96
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD1E398D9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhFBPBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:01:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230031AbhFBPBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:01:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B95E7613B4;
-        Wed,  2 Jun 2021 14:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622645976;
-        bh=lULBTNw8ShimVVrtBYDbb5vhV5dQ9U6lx3o98b0hW5w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OQiBvXalcmFDhP4VUJkLfFfjUL+AdCowcIIHtwCBDEqTOBmz1OdBU6rrODvuN+9rD
-         mOLZKyuSS6i9EOd55gn+hVr2qB4URf3FK/46utTh8Mh1nd3yfAS9gC2T8qY5RT3IQY
-         b4rlXGea5BqIi+sm9FltOrrnryu0LA5VhApDTgyH63PLiPiZ2y0qibL1ECCDe/bn4n
-         SELGuhZLGN0WPbHVxREPrkTVpEWesEuUbZ+F7OzJ3FIIUPCtX92osJVk5KljY297eg
-         yycYme0OjJHY2hdQ/MWGMhjJv0YWgp66DxbyRygrcbb6F9I+DfNX1xA1IgwfjJU0xb
-         xfBJRIrGQb7lw==
-Date:   Wed, 2 Jun 2021 15:59:21 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
-Message-ID: <20210602145921.GB31179@willie-the-truck>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.334970485@infradead.org>
+        id S231688AbhFBPBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:01:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59390 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230482AbhFBPBp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:01:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622646002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+tyWsmFJ1Km9F7N+hZyqQ4T+xLeAXHNhyln3Rs50ZQ=;
+        b=B/GivPnKbnUs6OIwVvVD8MY2TfeB53/Q4Mbhb8oeaXGXho/BfIi7+/p0t3j8Qy/MmuGLLR
+        sHw+Pa+F6A88/YPe6/uYbuBRI2nLA+brw9kDJgVHsXaXg6iR0UO+Kp/l11Ng+gRs3OTiHL
+        Pv19dUwipq0jZqt3gIsihngV51rTfVI=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-ZL2KUF0qOdWizvXoCaNuHg-1; Wed, 02 Jun 2021 11:00:01 -0400
+X-MC-Unique: ZL2KUF0qOdWizvXoCaNuHg-1
+Received: by mail-qk1-f199.google.com with SMTP id s4-20020a3790040000b02902fa7aa987e8so1807998qkd.14
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 08:00:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R+tyWsmFJ1Km9F7N+hZyqQ4T+xLeAXHNhyln3Rs50ZQ=;
+        b=Cw07l3zod+1rMSXw1tO/HJIbD+oR87V34tmgcSq8HLARdircXa8tRiY3xEZSXrwzXp
+         VhNbuE5U8zcur1ePJizMfX3+Dg+wL9CPHqipoSsKJ7iyMb2iUwPGv3GncAfMfT1vnofx
+         vaNp4OaQS3iPgBSrs6VF6ASLi1B6RujqwQpj0I4gNy/Rjv0Y9/eNFgDqMxJF1/T4j3XQ
+         J4xR6kEm951fWs/Iu5rPFGX8lt7eURYJuiqI6n6nElZsTBvfQ/BU+5LcLxQCJcWCV2yL
+         LvyYaD4JjEfWtzg9YQLp9zuhe5EQdpcV8rzTAXbQ7KNRprmlKhXRiTMrh0oqJWjXzn2j
+         I5fQ==
+X-Gm-Message-State: AOAM531hSfUp0qFX+xF6cAxj4OhZQ+yQrxOlH97w8g91a7+tWF2mFtwq
+        7ONWgggwDDcngE9YFH0LLcyGefmWxbHRbjFR5H+cBLx0UAR6yXpg3EI2rLIsofj5PzyXlL1PMIX
+        azIE3RuB6AN0co2eagwiVa+lu
+X-Received: by 2002:a05:620a:40c7:: with SMTP id g7mr28049511qko.365.1622646000724;
+        Wed, 02 Jun 2021 08:00:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypRWZtw6N4jInlLEvM/V8Xz4Qm73OYJN+yfXmZ+SBFlinbVFk1qXOn76wHIC8j5H0stKkxbQ==
+X-Received: by 2002:a05:620a:40c7:: with SMTP id g7mr28049488qko.365.1622646000527;
+        Wed, 02 Jun 2021 08:00:00 -0700 (PDT)
+Received: from treble ([68.52.236.68])
+        by smtp.gmail.com with ESMTPSA id c23sm12599595qtq.87.2021.06.02.07.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 08:00:00 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 09:59:58 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Guenter Roeck <groeck@google.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] sched/debug: remove obsolete init_schedstats()
+Message-ID: <20210602145958.k5232rngg2labzmm@treble>
+References: <20210602112108.1709635-1-eric.dumazet@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210602133040.334970485@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210602112108.1709635-1-eric.dumazet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 03:12:27PM +0200, Peter Zijlstra wrote:
-> Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
-> task_is_running(p).
+On Wed, Jun 02, 2021 at 04:21:08AM -0700, Eric Dumazet wrote:
+> From: Eric Dumazet <edumazet@google.com>
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/kernel/process.c |    4 ++--
->  block/blk-mq.c            |    2 +-
->  include/linux/sched.h     |    2 ++
->  kernel/locking/lockdep.c  |    2 +-
->  kernel/rcu/tree_plugin.h  |    2 +-
->  kernel/sched/core.c       |    6 +++---
->  kernel/sched/stats.h      |    2 +-
->  kernel/signal.c           |    2 +-
->  kernel/softirq.c          |    3 +--
->  mm/compaction.c           |    2 +-
->  10 files changed, 14 insertions(+), 13 deletions(-)
+> Revert "sched/debug: Fix 'schedstats=enable' cmdline option"
 > 
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -931,7 +931,7 @@ unsigned long get_wchan(struct task_stru
->  	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
->  	int count = 0;
->  
-> -	if (p == current || p->state == TASK_RUNNING)
-> +	if (p == current || task_is_running(p))
+> This reverts commit 4698f88c06b893f2acc0b443004a53bf490fde7c.
+> 
+> After commit 6041186a3258 ("init: initialize jump labels before command
+> line option parsing") we can rely on jump label infra being ready for use
+> when setup_schedstats() is called.
+> 
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Guenter Roeck <groeck@google.com>
+> Cc: Kees Cook <keescook@chromium.org>
 
-Looks like this one in get_wchan() has been cargo-culted across most of
-arch/ so they'll need fixing up before you rename the struct member.
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-There's also a weird one in tools/bpf/runqslower/runqslower.bpf.c (!)
+-- 
+Josh
 
-Will
