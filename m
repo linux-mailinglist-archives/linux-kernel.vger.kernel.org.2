@@ -2,174 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D82039886E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6F9398872
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhFBLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
+        id S229625AbhFBLiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhFBLez (ORCPT
+        with ESMTP id S229482AbhFBLiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:34:55 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB98EC061574;
-        Wed,  2 Jun 2021 04:33:11 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id z137-20020a1c7e8f0000b02901774f2a7dc4so1139822wmc.0;
-        Wed, 02 Jun 2021 04:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YpPo5MBLVYvDn/sYz6mEnGVnyd3ShtD58F9/Awc2BpA=;
-        b=kVW6e8YiNo8g5jZzT0Bts2a0UncmcVWmaRW0M7i4O2D8xy+KvvmKD3sAyTGlgTG7kt
-         zw+1i5ixEjtOgD6RVEZzoDp2k/njyKH8jrPuyLIhznfIc7VHdbm7b2UtgWB1YssswsbU
-         ZuIG6NmLFgWN39RK9Ar7QVDrYpjbPUUYabz1oDvms+e9b8+DlXxRFI9wmNh2YngkXUdJ
-         lKbjZZb5/P4fv7UmikpEZgwofHnuLV55T8byBfhsgH8pQXC9ZYV2Vb3cRkrUOE4AYVqL
-         gLrtgaMlJQ6Zn10S60flrArFRJTPtIyhRQzDHlklc3hkveSxrwR+7R5zPjil+GV7TUdC
-         fYeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YpPo5MBLVYvDn/sYz6mEnGVnyd3ShtD58F9/Awc2BpA=;
-        b=EQ5srSw1kWPtWDYSGwTu1zlNTwXyL1Fr2qTfirTvLMJeMMy2US4RaifgXpCHnPQlug
-         IPhHqDg+gPeSAmzOj66t3qaJ8CNz1LbKlUsZLPwZXROmk7ybKd8F21dsXqDE0PsUEy1w
-         cN7CFcmJZDeGz4yJ4c74QP4oxB1nPtq64fkekOUdRwtmy+gdfROXA6nRsrvVmiK2xVHv
-         pBpWGPrVopASJvhC1Ft9BJ5IqTa3fGcilH6uBO+pUy1fHmR/ggXC8qzcysyZve9YKdLu
-         KVX47oH3PD3cwDHrnPRc6Eq8q+N4ryvInqq91g7BW+BtKksyP4TO3FiXUbWHsHzC904B
-         ITvw==
-X-Gm-Message-State: AOAM5330sIpbDAkFCIt5WW6nB4X71cHVLyfw57jEWm5NZnbKm6fSXC49
-        ALxDdf88YJ65+xvMNOwHK4I=
-X-Google-Smtp-Source: ABdhPJwCYFHyPJ4mtPKQH6YK0yXLSoUWALZ/L3nQxpyEn8N3GhSJpqhz2Lz5eakMQ6A+sxu6jdDVOg==
-X-Received: by 2002:a7b:c002:: with SMTP id c2mr31535267wmb.118.1622633590311;
-        Wed, 02 Jun 2021 04:33:10 -0700 (PDT)
-Received: from ziggy.stardust ([46.6.149.244])
-        by smtp.gmail.com with ESMTPSA id r7sm3057110wma.9.2021.06.02.04.33.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 04:33:09 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dt-bindings: PCI: mediatek-gen3: Add support for
- MT8195
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Ryder Lee <ryder.lee@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Randy Wu <Randy.Wu@mediatek.com>, youlin.pei@mediatek.com
-References: <20210601024408.24485-1-jianjun.wang@mediatek.com>
- <20210601024408.24485-2-jianjun.wang@mediatek.com>
- <CAGXv+5G-8+ppafiUnqWm2UeiL+edHJ2zYZvU-S7mz_NdrM3YsA@mail.gmail.com>
- <1622526594.9054.6.camel@mhfsdcap03>
- <CAGXv+5GMTbC5TTgURhPAvxBEY18S6-T-BZ9CpXsO91Trim7TXw@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <db62910b-febd-6cba-8a72-2bf718f7b110@gmail.com>
-Date:   Wed, 2 Jun 2021 13:33:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Wed, 2 Jun 2021 07:38:16 -0400
+Received: from mailserv1.kapsi.fi (mailserv1.kapsi.fi [IPv6:2001:67c:1be8::25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02C7C061574;
+        Wed,  2 Jun 2021 04:36:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=ext.kapsi.fi; s=20161220; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HjIO51Dy95B1sAIiwx/AGzUErMBUQXzVZagx1OmVJyM=; b=wqt6KE7pT37VTODlH9CiGDtX/s
+        UpaWXBHdRKMTWes2YvNeCd4hZayvH1jU+UjKd87Auq8t9J+PPJ0JQG+0lDZpKVYST/fHwQdCCf6TG
+        My1b7Cvumy6O5Nkyv6o3cmohO7IDFf0TCEjaL1Mq2UU+ZggCI5qNFtNr75jIiO36wHGuGU8xSsB+3
+        GYIB/2ir9t3ypqjRK79j6VlytIvdSHh2OKwgZ74WtFaOiA5Ga/8ntNwI0pwlLuMn0kMRF7kfKdpuz
+        uvY91CFI+w/LLQul0Rbop364nYEwUpYciqc+KLLWINqJrkjv0pbJlsEpmxQbXj6tgeyJZo1R5ynWI
+        Knxp1CVQ==;
+Received: from sein11.ut.ee ([193.40.12.11]:46381 helo=[172.17.163.37])
+        by mailserv1.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <maukka@ext.kapsi.fi>)
+        id 1loPAj-0001LT-0p; Wed, 02 Jun 2021 14:36:29 +0300
+To:     Rob Herring <robh@kernel.org>
+Cc:     linus.walleij@linaro.org, andy.shevchenko@gmail.com,
+        sandberg@mailfence.com, linux-gpio@vger.kernel.org,
+        geert+renesas@glider.be, bgolaszewski@baylibre.com,
+        linux-kernel@vger.kernel.org, drew@beagleboard.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+References: <20210325122832.119147-1-sandberg@mailfence.com>
+ <20210530161333.3996-1-maukka@ext.kapsi.fi>
+ <20210530161333.3996-2-maukka@ext.kapsi.fi>
+ <1622554330.022234.242358.nullmailer@robh.at.kernel.org>
+From:   Mauri Sandberg <maukka@ext.kapsi.fi>
+Message-ID: <c19e2528-648f-0df0-c13d-127b897e9597@ext.kapsi.fi>
+Date:   Wed, 2 Jun 2021 14:36:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <CAGXv+5GMTbC5TTgURhPAvxBEY18S6-T-BZ9CpXsO91Trim7TXw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <1622554330.022234.242358.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 193.40.12.11
+X-SA-Exim-Mail-From: maukka@ext.kapsi.fi
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mailserv1.kapsi.fi
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v4 1/2] dt-bindings: gpio-mux-input: add documentation
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on mailserv1.kapsi.fi)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
-
-On 01/06/2021 08:07, Chen-Yu Tsai wrote:
-> Hi,
-> 
-> On Tue, Jun 1, 2021 at 1:50 PM Jianjun Wang <jianjun.wang@mediatek.com> wrote:
+On 1.6.2021 16.32, Rob Herring wrote:
+> On Sun, 30 May 2021 19:13:32 +0300, Mauri Sandberg wrote:
+>> Add documentation for a general GPIO multiplexer.
 >>
->> On Tue, 2021-06-01 at 11:53 +0800, Chen-Yu Tsai wrote:
->>> Hi,
->>>
->>> On Tue, Jun 1, 2021 at 10:50 AM Jianjun Wang <jianjun.wang@mediatek.com> wrote:
->>>>
->>>> MT8195 is an ARM platform SoC which has the same PCIe IP with MT8192.
->>>
->>> Based on what I'm seeing internally, there seems to be some inconsistency
->>> across the MediaTek platform on whether new compatible strings should be
->>> introduced for "fully compatible" IP blocks.
->>>
->>> If this hardware block in MT8195 is "the same" as the one in MT8192, do we
->>> really need the new compatible string? Are there any concerns?
+>> Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
+>> Tested-by: Drew Fustini <drew@beagleboard.org>
+>> Reviewed-by: Drew Fustini <drew@beagleboard.org>
+>> ---
+>> v3 -> v4:
+>>   - Changed author email
+>>   - Included Tested-by and Reviewed-by from Drew
+>> v2 -> v3: added a complete example on dual 4-way multiplexer
+>> v1 -> v2: added a little bit more text in the binding documenation
+>> ---
+>>   .../bindings/gpio/gpio-mux-input.yaml         | 75 +++++++++++++++++++
+>>   1 file changed, 75 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/gpio/gpio-mux-input.yaml
 >>
->> Hi Chen-Yu,
->>
->> It's ok to reuse the compatible string with MT8192, but I think this
->> will be easier to find which platforms this driver is compatible with,
->> especially when we have more and more platforms in the future.
 > 
-> If it's just for informational purposes, then having the MT8192 compatible
-> as a fallback would work, and we wouldn't need to make changes to the driver.
-> This works better especially if we have to support multiple operating systems
-> that use device tree.
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> So we would want
+> yamllint warnings/errors:
 > 
->     "mediatek,mt8195-pcie", "mediatek,mt8192-pcie"
-> 
-> and
-> 
->     "mediatek,mt8192-pcie"
-> 
-> be the valid options.
-> 
-> Personally I'm not seeing enough value to justify adding the compatible string
-> just for informational purposes though. One could easily discern which hardware
-> is used by looking at the device tree.
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/gpio/gpio-mux-input.example.dt.yaml:0:0: /example-0/mux-controller: failed to match any schema with compatible: ['gpio-mux']
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/gpio-mux-input.example.dt.yaml: key-mux1: 'mux-controls' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/gpio-mux-input.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/gpio-mux-input.example.dt.yaml: key-mux2: 'mux-controls' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/gpio-mux-input.yaml
 > 
 
-I agree, if no differences between the two chips are known, adding a binding
-withe new compatible and a fallback is a good thing. If we later on realize that
-mt8195 PCI block has differences, we can add the matching to the driver.
+These look like they could be caused by gpio-mux bindings [2], which 
+this depends on, not being formulated in yaml. Should it be addressed 
+before carrying on?
 
-Regards,
-Matthias
+Thanks,
+Mauri
 
-> 
-> Regards
-> ChenYu
-> 
-> 
->> Thanks.
->>>
->>>
->>> Thanks
->>> ChenYu
->>>
->>>
->>>> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
->>>> ---
->>>>  Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml | 4 +++-
->>>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
->>>> index e7b1f9892da4..d5e4a3e63d97 100644
->>>> --- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
->>>> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
->>>> @@ -48,7 +48,9 @@ allOf:
->>>>
->>>>  properties:
->>>>    compatible:
->>>> -    const: mediatek,mt8192-pcie
->>>> +    oneOf:
->>>> +      - const: mediatek,mt8192-pcie
->>>> +      - const: mediatek,mt8195-pcie
->>>>
->>>>    reg:
->>>>      maxItems: 1
->>>> --
->>>> 2.18.0
->>>> _______________________________________________
->>>> Linux-mediatek mailing list
->>>> Linux-mediatek@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/linux-mediatek
->>
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/mux/gpio-mux.txt
+
