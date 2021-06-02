@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87483987AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9B93987AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFBLI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:08:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232106AbhFBLIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:08:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F359A613B8;
-        Wed,  2 Jun 2021 11:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622631997;
-        bh=1pg+MG37+fS5YicaXP0xD9f9S1lKkaW87BxtuaVzwvg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=abv8LMc142JlLjtSs6HPx5+vRInJT+MQ2tf/b2CPy4kexX5J5IP9ju3DxlGqsSVaq
-         t2XwUHN2uF9OluciFmOeImhgMSYjN9mBeQcPXV6ryDL+X82HL9SnreYTmTBAqjRM5B
-         q9vpKyjI3gp4lbYDnlIp4T5jjrznwrC8R7d8vFDNmgvdi8+CzPjYfaYNoxa8Ki2Yxy
-         SFVmIpJ9gDeIodCeku8L4WwDN7P9bv+7OtZ3Ob+c6K8j6YWx0ciWAoxnWwHChMTa7I
-         Axcm5C5Q0l55DxiyIMwvKIMIap2gURNPWQfT3YNur0ztEGPwT9HO5v2k1Gneq2nDjP
-         iLAImxNUDVQjw==
-Date:   Wed, 2 Jun 2021 16:36:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [RFC PATCH 03/13] drm/msm/dsi: add support for dsc data
-Message-ID: <YLdmOibbas3xunu3@vkoul-mobl>
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <20210521124946.3617862-5-vkoul@kernel.org>
- <73815f0b-b6d1-f6f3-d7aa-f77492861967@linaro.org>
+        id S230118AbhFBLIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:08:30 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3511 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230462AbhFBLIX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 07:08:23 -0400
+Received: from dggeme764-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw5kK0rHhzYrwQ;
+        Wed,  2 Jun 2021 19:03:53 +0800 (CST)
+Received: from [10.174.179.31] (10.174.179.31) by
+ dggeme764-chm.china.huawei.com (10.3.19.110) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 19:06:37 +0800
+Subject: Re: [PATCH] ACPI: tables: fixes the missed acpi_put_table() in
+ acpi_init_fpdt()
+To:     Hanjun Guo <guohanjun@huawei.com>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>, <rui.zhang@intel.com>
+References: <20210602011723.23666-1-jingxiangfeng@huawei.com>
+ <b70f1c51-08fa-4ddf-51c6-77064e02fe87@huawei.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+Message-ID: <60B7663C.8070903@huawei.com>
+Date:   Wed, 2 Jun 2021 19:06:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73815f0b-b6d1-f6f3-d7aa-f77492861967@linaro.org>
+In-Reply-To: <b70f1c51-08fa-4ddf-51c6-77064e02fe87@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.31]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme764-chm.china.huawei.com (10.3.19.110)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-05-21, 02:45, Dmitry Baryshkov wrote:
-> On 21/05/2021 15:49, Vinod Koul wrote:
-> > DSC needs some configuration from device tree, add support to read and
-> > store these params and add DSC structures in msm_drv
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >   drivers/gpu/drm/msm/dsi/dsi_host.c | 170 +++++++++++++++++++++++++++++
-> >   drivers/gpu/drm/msm/msm_drv.h      |  32 ++++++
-> >   2 files changed, 202 insertions(+)
-> > 
-> 
-> 
-> [skipped]
-> 
-> 
-> >   		DRM_DEV_ERROR(dev, "%s: invalid lane configuration %d\n",
-> > diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-> > index 2668941df529..26661dd43936 100644
-> > --- a/drivers/gpu/drm/msm/msm_drv.h
-> > +++ b/drivers/gpu/drm/msm/msm_drv.h
-> > @@ -30,6 +30,7 @@
-> >   #include <drm/drm_plane_helper.h>
-> >   #include <drm/drm_probe_helper.h>
-> >   #include <drm/drm_fb_helper.h>
-> > +#include <drm/drm_dsc.h>
-> >   #include <drm/msm_drm.h>
-> >   #include <drm/drm_gem.h>
-> > @@ -70,6 +71,16 @@ enum msm_mdp_plane_property {
-> >   #define MSM_GPU_MAX_RINGS 4
-> >   #define MAX_H_TILES_PER_DISPLAY 2
-> > +/**
-> > + * enum msm_display_compression_type - compression method used for pixel stream
-> > + * @MSM_DISPLAY_COMPRESSION_NONE:	Pixel data is not compressed
-> > + * @MSM_DISPLAY_COMPRESSION_DSC:	DSC compresison is used
-> > + */
-> > +enum msm_display_compression_type {
-> > +	MSM_DISPLAY_COMPRESSION_NONE,
-> > +	MSM_DISPLAY_COMPRESSION_DSC,
-> > +};
-> > +
-> 
-> Seems to be unused
 
-Yeah this was started from downstream which used this and I seem to have
-not cleared this up, thanks for pointing. Will remove..
 
--- 
-~Vinod
+On 2021/6/2 17:21, Hanjun Guo wrote:
+> The title of this patch is misleading, how about "ACPI: FPDT: Add the
+> missed acpi_put_table() in acpi_init_fpdt()" ?
+Thanks a lot for your comments! I'll send a v2 with this change.
+
+>
+> On 2021/6/2 9:17, Jing Xiangfeng wrote:
+>> acpi_init_fpdt() misses to call acpi_put_table() in an error path. Add
+>> the missed function call to fix it.
+>>
+>> Fixes: d1eb86e59be0 ("ACPI: tables: introduce support for FPDT table")
+>> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+>> ---
+>>   drivers/acpi/acpi_fpdt.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
+>> index a89a806a7a2a..4ee2ad234e3d 100644
+>> --- a/drivers/acpi/acpi_fpdt.c
+>> +++ b/drivers/acpi/acpi_fpdt.c
+>> @@ -240,8 +240,10 @@ static int __init acpi_init_fpdt(void)
+>>           return 0;
+>>         fpdt_kobj = kobject_create_and_add("fpdt", acpi_kobj);
+>> -    if (!fpdt_kobj)
+>> +    if (!fpdt_kobj) {
+>> +        acpi_put_table(header);
+>>           return -ENOMEM;
+>> +    }
+>
+> The code looks good to me.
+>
+> Thanks
+> Hanjun
+> .
+>
+
