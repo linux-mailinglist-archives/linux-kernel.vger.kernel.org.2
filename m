@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794FB39857A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1352D39857E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhFBJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S232201AbhFBJp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232165AbhFBJpr (ORCPT
+        with ESMTP id S232208AbhFBJps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:45:47 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01101C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:44:02 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id n12-20020a0c8c0c0000b02901edb8963d4dso1258395qvb.18
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:44:02 -0700 (PDT)
+        Wed, 2 Jun 2021 05:45:48 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2546FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:44:04 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id s4-20020a3790040000b02902fa7aa987e8so1203320qkd.14
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:44:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=M5Wmq+shTVGIkdp11V4c5i7OM/twUXVfGwFeKTKgDek=;
-        b=sbhoOROzzgBjQ0Ii5F3WE53vDNE2WQ9bNmdrgZu1xuJ9RSjfTkJSQQOFRCY5YBGWoq
-         uLzfsCzlorbdo93AUkTG8w+9z/k/IQhlrlZzGIue7mROdwqxWwzpc4ACpqZ7TQrsr0nR
-         HxhodZI0VmshsthL3HyVJ4Llw6dMvOEOg0orUkcuwgmexiBLsW5yMr32mgBpk/UXShq5
-         3VsQbZ/2UndcuRP5P5ctxfPvznXxJrBNlmX/yVf4mCCSAdHzRGM9Q7rijkRuyatj6zvf
-         hU9a4s+ryYsqN1/rzuOaQGnMC6kXUcDFLbTJdWPGndOcXodaVXtrYT9fbb4sBsC1tai/
-         uwOA==
+        bh=Ge7hgJuDR1OpL3eSXNKyct/Yzp2Tl/Woy/7gBbj6zjQ=;
+        b=SGe/vI9/qoCqTrH+bcIEubNmK7H5mOii/6aJ7flU0VvoG+l9VpXBTcsBtOfu9zM6Le
+         7rG86QSqJXdsMmuUrCOYSJY45EaW1zs86TqCiEjOMym4hEd27qd7N1ER72U0Fldirwtk
+         YpiawF0q6cWlEBkdfwtCXrVyUgcpsXlUf6eKEkGBNu5881nqHe+QVg31Bk84i7XPLYom
+         NPJ+n940IN6ugXYoxgScSNzm9aVvwIieFCWVKCi2awubsPBuTyDkz89BFag6+HJgeehc
+         RdF8TuSXEjWNX2szcC9S2t6MQwm8yO/xuEG76vjbEmFccD5UL3F13X6RH/r1n6e2q5wy
+         r82w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=M5Wmq+shTVGIkdp11V4c5i7OM/twUXVfGwFeKTKgDek=;
-        b=Yajpn+bxZ/F3GlDS00Sm1p+ah+4pJkep/s5lfzbUCImiZeeZI14fwG+3DTEY1LX6F3
-         rvyYEtjDuRQ/Z1buMmZHIXnKw5cUW1iK1AnLxS5lFN91KlfcVodcZbuxGQMBMvodR5ex
-         ebscS2S1iUly0PVu0+1USokdNgvKoQjv/6fFKPoXVk2a89D6QjP6CVMCNwpIoljUROBz
-         SksO3IVMYq2otfkzHMqk+jbAmLKloHqYvS60Y1xIjv7LrSy5D1dnQ0adYJmYvURhVxPb
-         EfsxWrWHNe/jbCA8f+VrD1n+C7ct8p6senkksQUWEf4caBDh8ZRfJ+egAgUd+xF7/Wzl
-         defw==
-X-Gm-Message-State: AOAM532AhiP9DJp2LPUwxsFFT3veXwzpdPtCIiOk+Vbz7q2QAQdQIA51
-        AqCzK6g1+MTdRqlZse2/VMuokOItImTq
-X-Google-Smtp-Source: ABdhPJzlMLj9aWOGmgfcq4uAOufpXqkiQRCfhyfBHQEh7YCjqgQkiQm8f+4yZIS6dkEn/iv2Ws85pl+Yel5w
+        bh=Ge7hgJuDR1OpL3eSXNKyct/Yzp2Tl/Woy/7gBbj6zjQ=;
+        b=uAfuFKh/JZ9pZfesEsdjpEaLiaCHRXwDTCi4/j0ZLemMZodAmuUCmwSasmOr1PdsjY
+         irEWnehsLK9DUV8/z5z1TI/JZZCI7w36naPdA/SBT2LDKfDQZ+D1wK0Ot0+feXfGUo6T
+         4rdiZZSklJYhVxZD661s8rWSlX436xuMxV0jCP2nAYRcD3v/NphIUP8ZERDZ1DsArR5H
+         AmYsCstTdE6EVDAXak11LOLkDqHTcztzAOGlp4awzm8bTTM40BRIa0cws/8yHH7jsWni
+         gfQtWwGegdiI056NRsiglQOpN/u22ADLbXkILKNI+Y2o3uybgnRDJ4Ms6Kw8HPa00GZK
+         Makg==
+X-Gm-Message-State: AOAM531KCq5Kz57GMRr5g8Ua2NLh8WuQpMvVy31Y1ooljkLtyudYfNM/
+        7GThnKAbzlsvW6IH+QyFE3IJTueKDJnE
+X-Google-Smtp-Source: ABdhPJwsIzGYhk0U69gO8w3MHa79EDRbAbnBjGKRU6QKgQTKDkQjjmn2EG/UXRBfHqwlMUkGRST8bkfSbrh3
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a05:6214:19c8:: with SMTP id
- j8mr27500174qvc.42.1622627042096; Wed, 02 Jun 2021 02:44:02 -0700 (PDT)
-Date:   Wed,  2 Jun 2021 09:43:45 +0000
+ (user=qperret job=sendgmr) by 2002:a05:6214:2125:: with SMTP id
+ r5mr27655598qvc.28.1622627044088; Wed, 02 Jun 2021 02:44:04 -0700 (PDT)
+Date:   Wed,  2 Jun 2021 09:43:46 +0000
 In-Reply-To: <20210602094347.3730846-1-qperret@google.com>
-Message-Id: <20210602094347.3730846-6-qperret@google.com>
+Message-Id: <20210602094347.3730846-7-qperret@google.com>
 Mime-Version: 1.0
 References: <20210602094347.3730846-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH v2 5/7] KVM: arm64: Remove hyp_pool pointer from struct hyp_page
+Subject: [PATCH v2 6/7] KVM: arm64: Use less bits for hyp_page order
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, will@kernel.org, james.morse@arm.com,
         alexandru.elisei@arm.com, catalin.marinas@arm.com,
@@ -63,150 +63,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each struct hyp_page currently contains a pointer to a hyp_pool struct
-where the page should be freed if its refcount reaches 0. However, this
-information can always be inferred from the context in the EL2 code, so
-drop the pointer to save a few bytes in the vmemmap.
+The hyp_page order is currently encoded on 4 bytes even though it is
+guaranteed to be smaller than this. Make it 2 bytes to reduce the hyp
+vmemmap overhead.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/include/nvhe/gfp.h    |  4 ++--
- arch/arm64/kvm/hyp/include/nvhe/memory.h |  2 --
- arch/arm64/kvm/hyp/nvhe/mem_protect.c    | 14 ++++++++++++--
- arch/arm64/kvm/hyp/nvhe/page_alloc.c     |  7 ++-----
- arch/arm64/kvm/hyp/nvhe/setup.c          | 14 ++++++++++++--
- 5 files changed, 28 insertions(+), 13 deletions(-)
+ arch/arm64/kvm/hyp/include/nvhe/gfp.h    |  6 +++---
+ arch/arm64/kvm/hyp/include/nvhe/memory.h |  2 +-
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c     | 12 ++++++------
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/arch/arm64/kvm/hyp/include/nvhe/gfp.h b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
-index f2c84e4fa40f..3ea7bfb6c380 100644
+index 3ea7bfb6c380..fb0f523d1492 100644
 --- a/arch/arm64/kvm/hyp/include/nvhe/gfp.h
 +++ b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
-@@ -24,8 +24,8 @@ struct hyp_pool {
+@@ -7,7 +7,7 @@
+ #include <nvhe/memory.h>
+ #include <nvhe/spinlock.h>
+ 
+-#define HYP_NO_ORDER	UINT_MAX
++#define HYP_NO_ORDER	USHRT_MAX
+ 
+ struct hyp_pool {
+ 	/*
+@@ -19,11 +19,11 @@ struct hyp_pool {
+ 	struct list_head free_area[MAX_ORDER];
+ 	phys_addr_t range_start;
+ 	phys_addr_t range_end;
+-	unsigned int max_order;
++	unsigned short max_order;
+ };
  
  /* Allocation */
- void *hyp_alloc_pages(struct hyp_pool *pool, unsigned int order);
--void hyp_get_page(void *addr);
--void hyp_put_page(void *addr);
-+void hyp_get_page(struct hyp_pool *pool, void *addr);
-+void hyp_put_page(struct hyp_pool *pool, void *addr);
+-void *hyp_alloc_pages(struct hyp_pool *pool, unsigned int order);
++void *hyp_alloc_pages(struct hyp_pool *pool, unsigned short order);
+ void hyp_get_page(struct hyp_pool *pool, void *addr);
+ void hyp_put_page(struct hyp_pool *pool, void *addr);
  
- /* Used pages cannot be freed */
- int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsigned int nr_pages,
 diff --git a/arch/arm64/kvm/hyp/include/nvhe/memory.h b/arch/arm64/kvm/hyp/include/nvhe/memory.h
-index 7691ab495eb4..991636be2f46 100644
+index 991636be2f46..3fe34fa30ea4 100644
 --- a/arch/arm64/kvm/hyp/include/nvhe/memory.h
 +++ b/arch/arm64/kvm/hyp/include/nvhe/memory.h
-@@ -7,11 +7,9 @@
+@@ -9,7 +9,7 @@
  
- #include <linux/types.h>
- 
--struct hyp_pool;
  struct hyp_page {
  	unsigned int refcount;
- 	unsigned int order;
--	struct hyp_pool *pool;
+-	unsigned int order;
++	unsigned short order;
  };
  
  extern u64 __hyp_vmemmap;
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index fdd5b5702e8a..7727252890d8 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -43,6 +43,16 @@ static void *host_s2_zalloc_page(void *pool)
- 	return hyp_alloc_pages(pool, 0);
- }
- 
-+static void host_s2_get_page(void *addr)
-+{
-+	hyp_get_page(&host_s2_pool, addr);
-+}
-+
-+static void host_s2_put_page(void *addr)
-+{
-+	hyp_put_page(&host_s2_pool, addr);
-+}
-+
- static int prepare_s2_pool(void *pgt_pool_base)
- {
- 	unsigned long nr_pages, pfn;
-@@ -60,8 +70,8 @@ static int prepare_s2_pool(void *pgt_pool_base)
- 		.phys_to_virt = hyp_phys_to_virt,
- 		.virt_to_phys = hyp_virt_to_phys,
- 		.page_count = hyp_page_count,
--		.get_page = hyp_get_page,
--		.put_page = hyp_put_page,
-+		.get_page = host_s2_get_page,
-+		.put_page = host_s2_put_page,
- 	};
- 
- 	return 0;
 diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-index 34f0eb026dd2..e3689def7033 100644
+index e3689def7033..be07055bbc10 100644
 --- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
 +++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-@@ -174,20 +174,18 @@ static void __hyp_put_page(struct hyp_pool *pool, struct hyp_page *p)
-  * section to guarantee transient states (e.g. a page with null refcount but
-  * not yet attached to a free list) can't be observed by well-behaved readers.
+@@ -32,7 +32,7 @@ u64 __hyp_vmemmap;
   */
--void hyp_put_page(void *addr)
-+void hyp_put_page(struct hyp_pool *pool, void *addr)
+ static struct hyp_page *__find_buddy_nocheck(struct hyp_pool *pool,
+ 					     struct hyp_page *p,
+-					     unsigned int order)
++					     unsigned short order)
  {
- 	struct hyp_page *p = hyp_virt_to_page(addr);
--	struct hyp_pool *pool = hyp_page_to_pool(p);
+ 	phys_addr_t addr = hyp_page_to_phys(p);
  
- 	hyp_spin_lock(&pool->lock);
- 	__hyp_put_page(pool, p);
+@@ -51,7 +51,7 @@ static struct hyp_page *__find_buddy_nocheck(struct hyp_pool *pool,
+ /* Find a buddy page currently available for allocation */
+ static struct hyp_page *__find_buddy_avail(struct hyp_pool *pool,
+ 					   struct hyp_page *p,
+-					   unsigned int order)
++					   unsigned short order)
+ {
+ 	struct hyp_page *buddy = __find_buddy_nocheck(pool, p, order);
+ 
+@@ -93,7 +93,7 @@ static inline struct hyp_page *node_to_page(struct list_head *node)
+ static void __hyp_attach_page(struct hyp_pool *pool,
+ 			      struct hyp_page *p)
+ {
+-	unsigned int order = p->order;
++	unsigned short order = p->order;
+ 	struct hyp_page *buddy;
+ 
+ 	memset(hyp_page_to_virt(p), 0, PAGE_SIZE << p->order);
+@@ -123,7 +123,7 @@ static void __hyp_attach_page(struct hyp_pool *pool,
+ 
+ static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
+ 					   struct hyp_page *p,
+-					   unsigned int order)
++					   unsigned short order)
+ {
+ 	struct hyp_page *buddy;
+ 
+@@ -192,9 +192,9 @@ void hyp_get_page(struct hyp_pool *pool, void *addr)
  	hyp_spin_unlock(&pool->lock);
  }
  
--void hyp_get_page(void *addr)
-+void hyp_get_page(struct hyp_pool *pool, void *addr)
+-void *hyp_alloc_pages(struct hyp_pool *pool, unsigned int order)
++void *hyp_alloc_pages(struct hyp_pool *pool, unsigned short order)
  {
- 	struct hyp_page *p = hyp_virt_to_page(addr);
--	struct hyp_pool *pool = hyp_page_to_pool(p);
+-	unsigned int i = order;
++	unsigned short i = order;
+ 	struct hyp_page *p;
  
  	hyp_spin_lock(&pool->lock);
- 	hyp_page_ref_inc(p);
-@@ -236,7 +234,6 @@ int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsigned int nr_pages,
- 	/* Init the vmemmap portion */
- 	p = hyp_phys_to_page(phys);
- 	for (i = 0; i < nr_pages; i++) {
--		p[i].pool = pool;
- 		p[i].order = 0;
- 		hyp_set_page_refcounted(&p[i]);
- 	}
-diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
-index 709cb3d19eb7..dee099871865 100644
---- a/arch/arm64/kvm/hyp/nvhe/setup.c
-+++ b/arch/arm64/kvm/hyp/nvhe/setup.c
-@@ -137,6 +137,16 @@ static void *hyp_zalloc_hyp_page(void *arg)
- 	return hyp_alloc_pages(&hpool, 0);
- }
- 
-+static void hpool_get_page(void *addr)
-+{
-+	hyp_get_page(&hpool, addr);
-+}
-+
-+static void hpool_put_page(void *addr)
-+{
-+	hyp_put_page(&hpool, addr);
-+}
-+
- void __noreturn __pkvm_init_finalise(void)
- {
- 	struct kvm_host_data *host_data = this_cpu_ptr(&kvm_host_data);
-@@ -160,8 +170,8 @@ void __noreturn __pkvm_init_finalise(void)
- 		.zalloc_page = hyp_zalloc_hyp_page,
- 		.phys_to_virt = hyp_phys_to_virt,
- 		.virt_to_phys = hyp_virt_to_phys,
--		.get_page = hyp_get_page,
--		.put_page = hyp_put_page,
-+		.get_page = hpool_get_page,
-+		.put_page = hpool_put_page,
- 	};
- 	pkvm_pgtable.mm_ops = &pkvm_pgtable_mm_ops;
- 
 -- 
 2.32.0.rc0.204.g9fa02ecfa5-goog
 
