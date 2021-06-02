@@ -2,271 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD5A39936E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D23B399374
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhFBTXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:23:47 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:33497 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBTXq (ORCPT
+        id S229650AbhFBTZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:25:08 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:39680 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhFBTZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:23:46 -0400
-Received: by mail-oi1-f181.google.com with SMTP id b25so3812160oic.0;
-        Wed, 02 Jun 2021 12:21:47 -0700 (PDT)
+        Wed, 2 Jun 2021 15:25:07 -0400
+Received: by mail-oi1-f180.google.com with SMTP id j1so3750550oie.6;
+        Wed, 02 Jun 2021 12:23:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=d5NhD9ZWw+rScVfqQm15tW/HQ3ePL8Ux4U4BtY07tuM=;
-        b=mG8rNWBnhEOQpYWNffLm692snooeVmERMPV18FVmF4S0mUwj0Ykh5VA2XPVY5Fg8cZ
-         Ip+pVzQdVDS5cPCYSZCRjLDUUeeYB2+pqAL+CYbYn44ONZ2U1hss7HbH4WVE5x0wA5Ud
-         vl3cYacuBJjLDAuWQLiYxU6/eY62yn0tD5ZWZ/FhMukjZgBYubYTQCrkf3dPsCJOSl3m
-         DfseUG7ENCwMxVxDaUPqZwFa3b1ncuT4EWPnVuezZaebICYj7RYfBh15q1jRJZO7plBR
-         qM48ITQSpaY7DHcV6rylETwxIOasQrTYCHRZzVnwooGirp1pwcKuMr5rqk/MiLQFyyhy
-         2eGQ==
-X-Gm-Message-State: AOAM530KPZHz2/iaio8RscQ7hDiy9HHjrIus1RXGP4dLmJ4uiEWPMIrA
-        WH3acF3AnYRwjKXOcMHcUQ==
-X-Google-Smtp-Source: ABdhPJz7WroWmM35e/2zCYtoCbJu6Wy0wBFdF2jUYKvrh0dzn0OAHymxjZTlj05A4spPcCX/dVmDbw==
-X-Received: by 2002:aca:3204:: with SMTP id y4mr4696557oiy.159.1622661707273;
-        Wed, 02 Jun 2021 12:21:47 -0700 (PDT)
+        bh=XAeJv7qZUUGdgq8G5ai3wA48HtkAvEJX/GzuCHR5O/I=;
+        b=LkIrlajuQiyAXy+zGq0M8pHEFxhHvDGcKb1mID9laV4fg1ykl0VfoV8XaQWE9SKZ+O
+         HhpioxjRjWjcxwxd8RH9qozTAwYW9UdAfVU/F8FsRquVn+PtQOs1/fFtP3pPBGHiu446
+         R+m3xLgCuRFlGrCO/IRWcjw1RE/B3R7bR90bCv9CE/crMXN6t24kGScDx5a6JFTKSmsj
+         +2D1MHWpjo7vEzCXg6yifOULR/O845McxxIF7ZogtlPwfLpTdqW35G/2RhoL7Uq6gjCx
+         H5bmAdWrM5N9M+eoJZqmDLyqEbxzNFnJGF91iUH03+1lyIIH+1eU8BqhQwh94Ow3g27Q
+         wo7Q==
+X-Gm-Message-State: AOAM531yGfCpocSdilnDJA8lqzB1wap3yEPf24xwrC3Q4DTWPzK6uBz1
+        q1rxU4BKSZuHxxX2M9nuXA==
+X-Google-Smtp-Source: ABdhPJzFWhHH6ZTH6NHxgK8vQrtEvn9um2KBFsSzAS7v9gqy++YrEO587CRoDAFQCGfEuE4vLuHQ+Q==
+X-Received: by 2002:aca:1a06:: with SMTP id a6mr21706779oia.95.1622661788233;
+        Wed, 02 Jun 2021 12:23:08 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i133sm165714oia.2.2021.06.02.12.21.46
+        by smtp.gmail.com with ESMTPSA id a71sm178321oib.20.2021.06.02.12.23.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 12:21:46 -0700 (PDT)
-Received: (nullmailer pid 3820325 invoked by uid 1000);
-        Wed, 02 Jun 2021 19:21:45 -0000
-Date:   Wed, 2 Jun 2021 14:21:45 -0500
+        Wed, 02 Jun 2021 12:23:07 -0700 (PDT)
+Received: (nullmailer pid 3822810 invoked by uid 1000);
+        Wed, 02 Jun 2021 19:23:06 -0000
+Date:   Wed, 2 Jun 2021 14:23:05 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     shruthi.sanil@intel.com
-Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
-        mgross@linux.intel.com, srikanth.thokala@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com,
-        mallikarjunappa.sangannavar@intel.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: timer: Add bindings for Intel Keem
- Bay SoC Timer
-Message-ID: <20210602192145.GA3800420@robh.at.kernel.org>
-References: <20210527063906.18592-1-shruthi.sanil@intel.com>
- <20210527063906.18592-2-shruthi.sanil@intel.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Ian Ray <ian.ray@ge.com>, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fabio Estevam <festevam@gmail.com>, linux-spi@vger.kernel.org,
+        kernel@collabora.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 2/5] spi: dt-bindings: support devices with multiple
+ chipselects
+Message-ID: <20210602192305.GA3822744@robh.at.kernel.org>
+References: <20210528113346.37137-1-sebastian.reichel@collabora.com>
+ <20210528113346.37137-3-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527063906.18592-2-shruthi.sanil@intel.com>
+In-Reply-To: <20210528113346.37137-3-sebastian.reichel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 12:09:05PM +0530, shruthi.sanil@intel.com wrote:
-> From: Shruthi Sanil <shruthi.sanil@intel.com>
+On Fri, 28 May 2021 13:33:44 +0200, Sebastian Reichel wrote:
+> Add binding support for devices, that have more than one
+> chip select. A typical example are SPI connected microcontroller,
+> that can also be programmed over SPI like NXP Kinetis or
+> chips with a configuration and a data chip select, such as
+> Microchip's MRF89XA transceiver.
 > 
-> Add Device Tree bindings for the Timer IP, which can be used as
-> clocksource and clockevent device in the Intel Keem Bay SoC.
-> 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 > ---
->  .../bindings/timer/intel,keembay-timer.yaml   | 180 ++++++++++++++++++
->  1 file changed, 180 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+>  Documentation/devicetree/bindings/spi/spi-controller.yaml | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
-> new file mode 100644
-> index 000000000000..e0152e19208f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
-> @@ -0,0 +1,180 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/timer/intel,keembay-timer.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Intel Keem Bay SoC Timers
-> +
-> +maintainers:
-> +  - Shruthi Sanil <shruthi.sanil@intel.com>
-> +
-> +description: |
-> +  The Intel Keem Bay timer driver supports clocksource and clockevent
-> +  features for the timer IP used in Intel Keembay SoC.
-> +  The timer block supports 1 free running counter and 8 timers.
-> +  The free running counter can be used as a clocksouce and
-> +  the timers can be used as clockevent. Each timer is capable of
-> +  generating inividual interrupt.
-> +  Both the features are enabled through the timer general config register.
-> +
-> +  The parent node represents the common general configuration details and
-> +  the child nodes represents the counter and timers.
-> +
-> +properties:
 
-There's no compatible, so this schema will never be applied. You need a 
-compatible to identify what the block is.
-
-> +  reg:
-> +    description: General configuration register address and length.
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 2
-> +
-> +  "#size-cells":
-> +    const: 2
-
-Not really any reason for 64-bits of address space in the child nodes. 
-Use a non-empty ranges.
-
-> +
-> +  ranges: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - ranges
-> +
-> +patternProperties:
-> +  "^counter@[0-9a-f]+$":
-> +    type: object
-> +    description: Properties for Intel Keem Bay counter
-> +
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - intel,keembay-counter
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      clocks:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +      - clocks
-> +
-> +  "^timer@[0-9a-f]+$":
-> +    type: object
-> +    description: Properties for Intel Keem Bay timer
-> +
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - intel,keembay-timer
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      interrupts:
-> +        maxItems: 1
-> +
-> +      clocks:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +      - interrupts
-> +      - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #define KEEM_BAY_A53_TIM
-> +
-> +    soc {
-> +        #address-cells = <0x2>;
-> +        #size-cells = <0x2>;
-> +
-> +        gpt@20331000 {
-> +            reg = <0x0 0x20331000 0x0 0xc>;
-> +            #address-cells = <0x2>;
-> +            #size-cells = <0x2>;
-> +            ranges;
-> +
-> +            counter@203300e8 {
-> +                compatible = "intel,keembay-counter";
-> +                reg = <0x0 0x203300e8 0x0 0x8>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-
-Don't show status in examples.
-
-> +            };
-> +
-> +            timer@20330010 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330010 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0x3 IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +
-> +            timer@20330020 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330020 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0x4 IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +
-> +            timer@20330030 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330030 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0x5 IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +
-> +            timer@20330040 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330040 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0x6 IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +
-> +            timer@20330050 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330050 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0x7 IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +
-> +            timer@20330060 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330060 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0x8 IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +
-> +            timer@20330070 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330070 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0x9 IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +
-> +            timer@20330080 {
-> +                compatible = "intel,keembay-timer";
-> +                reg = <0x0 0x20330080 0x0 0xc>;
-> +                interrupts = <GIC_SPI 0xa IRQ_TYPE_LEVEL_HIGH>;
-> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-> +                status = "okay";
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.17.1
+Reviewed-by: Rob Herring <robh@kernel.org>
