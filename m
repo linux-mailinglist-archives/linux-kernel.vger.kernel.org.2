@@ -2,66 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD43398160
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9ED39824A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFBGtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:49:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57662 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229966AbhFBGtR (ORCPT
+        id S230456AbhFBG70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231463AbhFBG7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:49:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622616454;
+        Wed, 2 Jun 2021 02:59:13 -0400
+X-Greylist: delayed 597 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 01 Jun 2021 23:57:22 PDT
+Received: from dvalin.narfation.org (dvalin.narfation.org [IPv6:2a00:17d8:100::8b1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1B7C061761
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 23:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1622616441;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HVcJbN/KT1+fyetrnk2iAeiqGIXFm+abamxXaSbzX64=;
-        b=aCbniVSoxED9tvY13FSMQ9T8Z9BrqtnWGZYYW4BtXTlv/zStbXb58SK60i3XrnFknFhVLG
-        Et91Gbd4kKUElewNhOKP2LxG2EsKuyeCvUU7QP0MOAGjo0RgOv032Y9ff1icCV10LwNYU9
-        IQjvEYZHmIDQnyS6KkC3lbZjIm2lgNc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-49-09wOAkscMgeBsiscxpu5_A-1; Wed, 02 Jun 2021 02:47:31 -0400
-X-MC-Unique: 09wOAkscMgeBsiscxpu5_A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5B6E107ACE8;
-        Wed,  2 Jun 2021 06:47:29 +0000 (UTC)
-Received: from T590 (ovpn-13-164.pek2.redhat.com [10.72.13.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 459DFE460;
-        Wed,  2 Jun 2021 06:47:22 +0000 (UTC)
-Date:   Wed, 2 Jun 2021 14:47:16 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailinglist <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv2] block/genhd: use atomic_t for disk_event->block
-Message-ID: <YLcpdKnt28vS6waI@T590>
-References: <20210602062015.33605-1-hare@suse.de>
+        bh=BB+iaYp4LyFwJ9jGzQ7cmHxv8GHima8n/NGSOQHI0s4=;
+        b=gT355vjzgjUhPMYzSmsu52NzowUci9aReYxeuOdY53rumwmwnIlHmFV7zxbp3L0MO13Xvx
+        yFv+9vinBKDGbb3ceW2yLaxvBhOSSEmFuSVFE/AVpOu47BlATc3eeycsnJL5L5o8KeOsxi
+        JHOnvRPq/Ro84nxder7/568C8piQF5c=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        b.a.t.m.a.n@lists.open-mesh.org
+Subject: Re: [PATCH net-next] batman-adv: Fix spelling mistakes
+Date:   Wed, 02 Jun 2021 08:47:18 +0200
+Message-ID: <48077100.4opSpZgCWW@ripper>
+In-Reply-To: <20210602065603.106030-1-zhengyongjun3@huawei.com>
+References: <20210602065603.106030-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602062015.33605-1-hare@suse.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; boundary="nextPart35456750.oCVJAORbYE"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 08:20:15AM +0200, Hannes Reinecke wrote:
-> __disk_unblock_events() will call queue_delayed_work() with a '0' argument
-> under a spin lock. This might cause the queue_work item to be executed
-> immediately, and run into a deadlock in disk_check_events() waiting for
-> the lock to be released.
+--nextPart35456750.oCVJAORbYE
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+To: mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc, davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Zheng Yongjun <zhengyongjun3@huawei.com>, b.a.t.m.a.n@lists.open-mesh.org
+Subject: Re: [PATCH net-next] batman-adv: Fix spelling mistakes
+Date: Wed, 02 Jun 2021 08:47:18 +0200
+Message-ID: <48077100.4opSpZgCWW@ripper>
+In-Reply-To: <20210602065603.106030-1-zhengyongjun3@huawei.com>
+References: <20210602065603.106030-1-zhengyongjun3@huawei.com>
 
-The above commit log isn't correct, and the current usage shouldn't cause such
-deadlock, so can you root cause the task hang report[1] on 5.3.18?
+On Wednesday, 2 June 2021 08:56:03 CEST Zheng Yongjun wrote:
+> Fix some spelling mistakes in comments:
+> containg  ==> containing
+> dont  ==> don't
+> datas  ==> data
+> brodcast  ==> broadcast
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  net/batman-adv/bridge_loop_avoidance.c | 4 ++--
+>  net/batman-adv/hard-interface.c        | 2 +-
+>  net/batman-adv/hash.h                  | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
 
-[1] https://lore.kernel.org/linux-block/73783f6f-a3ec-907f-ea19-966e9d1457dc@suse.de/T/#mcde381522bdb95740e04ced555ec017a25c993cc
+
+You forgot to send it to the B.A.T.M.A.N. mailing list. And it therefore 
+didn't appear in our patchwork. And you send stuff from the future - which is 
+rather odd.
+
+Applied anyway.
 
 Thanks,
-Ming
+	Sven
+
+--nextPart35456750.oCVJAORbYE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmC3KXYACgkQXYcKB8Em
+e0YXng//aLzrW36XvD5wdUTS/jlzrlxggP0i3YehwpVFOiSon6nDcxoAjjMij3qa
+8kJKrY1cjoVgQe93P6fc0nYb+UWwwbKEE9fOHw/FYIa6qU9XwfWN3MjbVAy0HEfr
+0OyBtx4o5MFA34uTCtxaE4TFXIn6am5P2U4u7rGLn9LejE1e0lfpWRUf3Wam/8Hg
+Mm681yStajB159NrEjVa6YnagZhqNI47U7mId+ZfAGjeHaGQX16p6NUD654+CtPW
+1P56KmH9p5JmKu1bbeUxXTaEq199I2GTsZUGZli6M6dcWaqcr2ILj6RV2G1y9vEK
+vltKRHnRo3vUlbONLgiCc6TwX+CZwf0D9fn4y5Fbhpwg+SKlMeTYoIsH36Q/VkQk
+kX+/iYT6WU+uQAnVcnYz9rAU6VIpkY2Gfnv9oDv5M1I653ySRY7x+5BnQBnUMCp4
+TYfojqC3Yd5U/RbT5giP+qh2yB88cBq26oxUDVEPs6VMQegcju3RBnh85rT/Iqav
+7pdWoLJicoB9ycbf8QFiwj8UcvEdXQKXdblkmCExuqG2BN2ln5G8GBK5PqOUenuJ
+3aozntk641U3swH54hjFP+c4ZyxVASGILANTHJk+HoM0x4aGQKABPGacO39V9oK9
+SkgMX8p285zxHwXICiCZGCt664FYBz9bUk1+Q9uc8bxj9mlSU/0=
+=+Ayg
+-----END PGP SIGNATURE-----
+
+--nextPart35456750.oCVJAORbYE--
+
+
 
