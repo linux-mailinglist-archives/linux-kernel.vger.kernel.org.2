@@ -2,194 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B673398A15
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87470398A17
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFBMzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:55:02 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:44297 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhFBMzA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:55:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1622638396; x=1654174396;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=rk5l15pXsg1cf8V92DaJpo1LWwRVPI7K8FD2mFqOqzY=;
-  b=VccH4ey8FDPuZbzg8b8nyHZA0DY95EVPLE42KfgqHnuAlrOGRuiKqN1K
-   FP1QX9roTo8NFYIXKyQSi5yZOk1clm/JaOdmqNGY30w6nuGhkjdP/fZm1
-   i2H47q+vZU4Rlf8EZzGzOVLYOGq/TutCAKUrEl8v2BaPsdCYSar0m0rC1
-   bdCbmDpWCNUmPXUcrcU6Ix2j2La+WDLNkfuXId75FeuqbDHaoTG/caB7p
-   NgmMrVhbFapn3FulmykkIbvJtl90q+f9HHkyezX5GM36PpCTowDVmrtwL
-   cxI2XBUZ0gUtM40DkOT9VmDrN3NYeRhwwZBsgaJKJBwgCJYzklEnXLhhl
-   A==;
-IronPort-SDR: dbQORegygKUy8Zf6yNU6ePG1hVwKID9HoU4ypHnvcTSDowfX6OmjNS7oQxYv29tUY6iWr147Rb
- HMn+OdC5DEDUbO2wAvWLkMvEsBL7W8p9/oPqpuG9qUNBIzziLv1DNZX0sTUnu3G/oG+kkf1dtf
- eIsdzFqBvejcwBCuCakC1kOpyQi/b/kNkTqt3PpYgYp6Xa7chfkgF1giMeS74IfdB6HcdIyxE7
- UMep6yiZdFEUX8joZjMqS5/LEddyv1/OeOlJWkERUH1lXVXf8NapRnBCDnl4Kj/zwemQ8ONuKI
- FIU=
-X-IronPort-AV: E=Sophos;i="5.83,242,1616428800"; 
-   d="scan'208";a="175151928"
-Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Jun 2021 20:53:13 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oAq9xhD7r7SfeaE7Ib9AwnOv+4dF14iUAMx+hDrZII9TWK7SeRuOyJCVX5tSK3CCrcXmHbp7oWwReYXzWDEX1c1F3R6x40RqIacUFvFp1vy7Vj5PflOObQ3x6UIOPQZyKx/B8bPoW0jd5Q1Yfr77l0VJ16ILtRysXKz3gnL0ITx9YNDoWcpexg14G9gHOb3klNvwbfvD+W2+fVC/aQeoaeHA93APa/LQ0tF9/i2kIrcFDa77hSi1pkppVr3QpImrwi7K5ws9uaegshT7EZPbFX7ZbFKcuC7UcgSQ2pDmbgqmtYJAtH/TynLIEbQR/aU07Eqe6ojkyb6ocvvVjZq7sQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7svqxpMd+EOkEWWF5ZKUJ67uKzp+Cj7OiAT3Flwx92o=;
- b=T6/rRFD+YpsWM2Srhv5t8VKET/pyN4j07Ec62SmKyHnHYPwimMcIIHrKetiMpKQ6cuAjjcyaXdk44TprD0sB3OReMvfPPvwri2dcbyykCs6xXH4bNYdSmZ/TDLkaiUcAKAtXgi6Va4JR+T4ZdGofs8EG7ezi5/I/WwGkEqWc9BCqxXQdjICFCGf1XOvK9l2yOnv0xV3/tY3mMXtKBw8EPwVHvmaDYc0ysb2E5VQ1A9K4Bs/cXtOEmfYlvSyOZt8ZmCuXG6Jc3UZx9MgrAM5pI/FhwqNpANYcNrluQ4p9qEEl84g5gAAI1wcv0O5a0WEIh63GL4W1FF62F22aIAi/0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7svqxpMd+EOkEWWF5ZKUJ67uKzp+Cj7OiAT3Flwx92o=;
- b=u+CO1E9BPHXpJKJaD+QigpHoNYpPwuc8CdiasNBIO/FbY4U++UUjwk/claFOLog/lAb2crlcHPycAhFjSOM0gpRBNGkXyhQ532LahlR2KAXKrUjzCVhQ+LlXDEB3URHMrOtNMatl9dyAgWWngxKQA5na6Ol7ny4ycKRc6x/Uork=
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com (2603:10b6:5:244::21)
- by DM6PR04MB3884.namprd04.prod.outlook.com (2603:10b6:5:b7::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.27; Wed, 2 Jun
- 2021 12:53:11 +0000
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::64f9:51d2:1e04:f806]) by DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::64f9:51d2:1e04:f806%9]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
- 12:53:11 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Changheun Lee <nanich.lee@samsung.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "alex_y_xu@yahoo.ca" <alex_y_xu@yahoo.ca>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "bgoncalv@redhat.com" <bgoncalv@redhat.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "patchwork-bot@kernel.org" <patchwork-bot@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "tom.leiming@gmail.com" <tom.leiming@gmail.com>,
-        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
-CC:     "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
-        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
-        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
-        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
-        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
-        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>,
-        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>
-Subject: Re: [PATCH v11 3/3] scsi: set max_bio_bytes with queue max sectors
-Thread-Topic: [PATCH v11 3/3] scsi: set max_bio_bytes with queue max sectors
-Thread-Index: AQHXV6r0LoEZlz08ZEum8DPleuIEgw==
-Date:   Wed, 2 Jun 2021 12:53:11 +0000
-Message-ID: <DM6PR04MB7081BDEC7ECFB63D3E6345D0E73D9@DM6PR04MB7081.namprd04.prod.outlook.com>
-References: <20210602121037.11083-1-nanich.lee@samsung.com>
- <CGME20210602122912epcas1p4faff714cc9457b0d482fc1a4b63a49a9@epcas1p4.samsung.com>
- <20210602121037.11083-4-nanich.lee@samsung.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:8d7b:9386:76d5:60d]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3cad6a67-4850-469d-44eb-08d925c560cc
-x-ms-traffictypediagnostic: DM6PR04MB3884:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR04MB3884AD1415EC02CDC939497DE73D9@DM6PR04MB3884.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IIHy5kmNjAOM4cUYFvx4rniTLIP/Qj/kBSaPk88vPcMXPOux/OY3WIZL/CJBUdlj6uFbhFmlBxU1kFOAgMH+RKofsm8kA7X9fWAdF3+V2NguW0OGAtxvR7ltjZf3wSoMICZu6wyeDhczpI9mY9d4q+31otJigYgPi3s9X6cW+Pq2L0nYT0TVVmrrUbwYK1cbMzT/S5GYJIwKwqn4udkI87l0IuJb4arTh1svHMS0DjVUHSuTDAFlPYTy5uFnyzZ6y/dfoyMw/uCN6f96IO3r2Fz6voObwbuKBIACtoYOThtJLYbSoUt6fWUn2Q0AVDPPXtTD6KHr+pIwRg03lcMgZrswVSz4BTpFyeVDTfGQ6jn2l1QCfmc8agKjfbcWpcOCKXjDmSqbswBGRe34AM7tCYAsqSV0KRGFm+MdVDjQsU18zVmK13LAxAQk51dgWf54BxBwu1sxfAw49DKv2BAbMKaSijSohNFxQYPvFdRVjQUjFnFRU+UVqxV81pBjhiG82jMJUcUcKD2I6h8IXwwXMcdUrYCptOsQbD0XlT67GSeHvq5ZEYmobQK8YbqMO8ACAs5xyKx1f0iwMOOVXwWZfaPcbiVlKb1kMZY5gmgr/JT29rx3SAG/cyO6B2aNRsBdGN6tAnMVyIjQhkC2AxoMOw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB7081.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(7696005)(8936002)(64756008)(5660300002)(316002)(55016002)(71200400001)(76116006)(83380400001)(53546011)(478600001)(8676002)(54906003)(110136005)(4326008)(921005)(86362001)(122000001)(66476007)(186003)(66556008)(2906002)(66946007)(66446008)(91956017)(52536014)(7416002)(9686003)(33656002)(38100700002)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XhqHkSOIm/G6vZCFFSDKOqTpP6c/NhIAWEBtxXsl7qD4JLNFHIwdTb1D3UXu?=
- =?us-ascii?Q?4X62xt7RCoD5BZvwq0SFvnJ/RK1isZI4QOk4eOFv2/3fjvlKNX3RJ8Jr9tOG?=
- =?us-ascii?Q?B1wkUx/hDimvEKtTANjDZXJXNT9U32hdMXyE9l7bQa8zX3FyY9hh6ibjRQ2x?=
- =?us-ascii?Q?hiQlJiBo6qZHLxYDFLESE4MlTJmL7jSnVjSlzyGmSE8Hhk4AODwYWk10SGPN?=
- =?us-ascii?Q?fki6BBjkMMiKfeBsMUyhuXfrBR1UYvY6JpNFmMbd8UQCmveMLevRJuRXzMa8?=
- =?us-ascii?Q?Q3GXgVEqJpZPapXrA0zPBhkWgk+Kje7z0HoZu+vB5UUQxWiZrN1643BreQ/G?=
- =?us-ascii?Q?b1krPuc2anD+X3ar9e1sh227AGBDlNKsVSGfQfT1YHgPiClVhIf6zHXfe/I4?=
- =?us-ascii?Q?uUauYUQg5/H1s1GdU6rV02wWRzF/itijQ6epJg4JXUwhBD3GsEgW6YUL65Bq?=
- =?us-ascii?Q?ee0J6yhSsmgaEbS6oThUhqeaksGALHSKKKt6+QngJMxnDxa2lJWcXqSd5nxM?=
- =?us-ascii?Q?3oWGBZcD1JAQZdI1Jcd3mnBZWDbgC1AXxKbYljBwBc8Y2bbsygAEuDk9KfIS?=
- =?us-ascii?Q?mXmRun1bppkzXhNqWDfAdEpcOtrenGsiUyxOpJJIICvMXG3/QwMaNaYu47t+?=
- =?us-ascii?Q?mYwGb6COmEbMWZeBb5Ug+NzHZD3Ot8FWSHy0UWHbzFBfSiPK4UUkbvaQApiM?=
- =?us-ascii?Q?OmxUKVbqGa1eP+PdFoaTVmUouheO0mv0W+4NoaCHm8Zq1qWgGRq2wvDsug5Y?=
- =?us-ascii?Q?TH4y8Z0ItE3jcSauqqTKHqyC6Sb3RppFvv3yy9e1RErkCkgmBcpS/OlMmkfe?=
- =?us-ascii?Q?jjMxEQevCLY2n+ZX21L+BUqTKE8gFdCPFO1IZlXgjKZGqq3UuPgPjrKBX66T?=
- =?us-ascii?Q?052o+ehKZ4PmgA15aYovmyW0b9GkoW+kfd5O5SqGIqVvDvzS7CziLBE/LV8+?=
- =?us-ascii?Q?g4ESpwkm7tkLYu695cbaJFjJxZ1KwJ6CE1ffh4nlNYvUbNS5SnESJ5oa5tfh?=
- =?us-ascii?Q?yObnJrZF+EcgHWQD/8EuzHMu3MK9HujeUUC14eKNji4rHnkUrohtnqF3PKI2?=
- =?us-ascii?Q?Ui7Ez3imU3sXeelVEU1hqwemxbAKRRw8AzWycHOrPLR/FpwEjr1tf32RwoYh?=
- =?us-ascii?Q?OMP7OjRyxX1HaPfFqISVZoDeXgJfV+aGF6jZlNpcCLwgb71pbJRPh61bDmRL?=
- =?us-ascii?Q?xUNaQZ4WZaO2RWS6jBHAOrrGchCXu+XvFz1J+Y7uOmGejMAB6qbR3f+iOpSj?=
- =?us-ascii?Q?tHJFTgwv8MmaLSJLW0vvFk6XctUMvXtgntZAvVMkPTa52JfBfC+lghIyfbkY?=
- =?us-ascii?Q?ktnVFmTYnhLjec9oJmsPUAwBFhe3RaYIGEWZ9TttyoSWG88nmq9B3CQfGHJK?=
- =?us-ascii?Q?orI9DD8waOsuImcL2BFLuqgjBmr28CMMgND7x5PifcmzvtwiBg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229999AbhFBMz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:55:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229579AbhFBMzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 08:55:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2042161359;
+        Wed,  2 Jun 2021 12:54:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622638452;
+        bh=Q3i434w1bmGmD1vtai1MkkJTr+dgXvu2ulIVLc9vZy0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OABGGpJ71fVScwcSSNGLlSEa9pB0Pdt3q3rH0+DgibprO8Ghk0xcNnm4+FmHvRmqZ
+         5b7Sz0Jn6zHV+zcCdZhp+0I0j2MIh8zph71MhoTl2CsHYhgFnXkTRoghzlZ9e445qc
+         9JN/trpBUAmwxegcjW0cQmWMqdtOLcvSE+BFKjPGkeWwqMoS1kbKIN1NAjajlvzHu8
+         FCU/NwCg4Xj4gU2lj3fr7dSZN3hrew7Zt6IManYGjaFsaiuAIlfshNyg69v9u+54eM
+         VVZSmcwhfVViwZRvqbE/Ds/kndDgfXciR+3On2xeUndj4UV21bWoW1JN7ooqwpuaMv
+         0OBkTiIaREp4Q==
+Date:   Wed, 2 Jun 2021 15:54:09 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, davem@davemloft.net,
+        kuba@kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio_net: Remove BUG() to aviod machine dead
+Message-ID: <YLd/cdL5F964G+Sb@unreal>
+References: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
+ <20210518055336-mutt-send-email-mst@kernel.org>
+ <4aaf5125-ce75-c72a-4b4a-11c91cb85a72@linux.alibaba.com>
+ <72f284c6-b2f5-a395-a68f-afe801eb81be@redhat.com>
+ <YLcePtKhnt9gXq8E@unreal>
+ <b80a2841-32aa-02ff-b2cc-f2fb3eeed9a1@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB7081.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3cad6a67-4850-469d-44eb-08d925c560cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jun 2021 12:53:11.1763
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1W3YLmQ1Yot6tg74JpfvK6mQT1kzq6/JBzrRgWr+eBoknE/9mpVNrRXvpDWhZ3PYXOnjIMx+9T4o0hLIox6APA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB3884
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b80a2841-32aa-02ff-b2cc-f2fb3eeed9a1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/06/02 21:29, Changheun Lee wrote:=0A=
-> Set max_bio_bytes same with queue max sectors. It will lead to fast bio=
-=0A=
-> submit when bio size is over than queue max sectors. And it might be help=
-ful=0A=
-> to align submit bio size in some case.=0A=
-> =0A=
-> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>=0A=
-> ---=0A=
->  drivers/scsi/scsi_lib.c | 2 ++=0A=
->  1 file changed, 2 insertions(+)=0A=
-> =0A=
-> diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c=0A=
-> index 532304d42f00..f6269268b0e0 100644=0A=
-> --- a/drivers/scsi/scsi_lib.c=0A=
-> +++ b/drivers/scsi/scsi_lib.c=0A=
-> @@ -1837,6 +1837,8 @@ void __scsi_init_queue(struct Scsi_Host *shost, str=
-uct request_queue *q)=0A=
->  	blk_queue_virt_boundary(q, shost->virt_boundary_mask);=0A=
->  	dma_set_max_seg_size(dev, queue_max_segment_size(q));=0A=
->  =0A=
-> +	blk_queue_max_bio_bytes(q, queue_max_sectors(q));=0A=
-=0A=
-Doing this unconditionally for all scsi block devices is probably not a goo=
-d=0A=
-idea. Cannot this be moved to the LLD handling the devices that actually ne=
-ed it ?=0A=
-=0A=
-> +=0A=
->  	/*=0A=
->  	 * Set a reasonable default alignment:  The larger of 32-byte (dword),=
-=0A=
->  	 * which is a common minimum for HBAs, and the minimum DMA alignment,=
-=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+On Wed, Jun 02, 2021 at 03:14:50PM +0800, Jason Wang wrote:
+> 
+> 在 2021/6/2 下午1:59, Leon Romanovsky 写道:
+> > On Tue, May 25, 2021 at 02:19:03PM +0800, Jason Wang wrote:
+> > > 在 2021/5/19 下午10:18, Xianting Tian 写道:
+> > > > thanks, I submit the patch as commented by Andrew
+> > > > https://lkml.org/lkml/2021/5/18/256
+> > > > 
+> > > > Actually, if xmit_skb() returns error, below code will give a warning
+> > > > with error code.
+> > > > 
+> > > >      /* Try to transmit */
+> > > >      err = xmit_skb(sq, skb);
+> > > > 
+> > > >      /* This should not happen! */
+> > > >      if (unlikely(err)) {
+> > > >          dev->stats.tx_fifo_errors++;
+> > > >          if (net_ratelimit())
+> > > >              dev_warn(&dev->dev,
+> > > >                   "Unexpected TXQ (%d) queue failure: %d\n",
+> > > >                   qnum, err);
+> > > >          dev->stats.tx_dropped++;
+> > > >          dev_kfree_skb_any(skb);
+> > > >          return NETDEV_TX_OK;
+> > > >      }
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > 在 2021/5/18 下午5:54, Michael S. Tsirkin 写道:
+> > > > > typo in subject
+> > > > > 
+> > > > > On Tue, May 18, 2021 at 05:46:56PM +0800, Xianting Tian wrote:
+> > > > > > When met error, we output a print to avoid a BUG().
+> > > 
+> > > So you don't explain why you need to remove BUG(). I think it deserve a
+> > > BUG().
+> > BUG() will crash the machine and virtio_net is not kernel core
+> > functionality that must stop the machine to prevent anything truly
+> > harmful and basic.
+> 
+> 
+> Note that the BUG() here is not for virtio-net itself. It tells us that a
+> bug was found by virtio-net.
+> 
+> That is, the one that produces the skb has a bug, usually it's the network
+> core.
+> 
+> There could also be the issue of the packet from untrusted source (userspace
+> like TAP or packet socket) but they should be validated there.
+
+So it is even worse than I thought. You are saying that in theory untrusted
+remote host can crash system. IMHO, It is definitely not the place to put BUG().
+
+I remind you that in-kernel API is build on the promise that data passed
+between and calls are safe and already checked. You don't need to set a
+protection from the net/core.
+
+Thanks
+
+> 
+> Thanks
+> 
+> 
+> > 
+> > I would argue that code in drivers/* shouldn't call BUG() macros at all.
+> > 
+> > If it is impossible, don't check for that or add WARN_ON() and recover,
+> > but don't crash whole system.
+> > 
+> > Thanks
+> > 
+> 
