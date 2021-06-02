@@ -2,184 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D80398EA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5C6398EBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhFBPcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
+        id S232009AbhFBPfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbhFBPcp (ORCPT
+        with ESMTP id S231200AbhFBPfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:32:45 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C739DC06174A;
-        Wed,  2 Jun 2021 08:30:50 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id e1so1270047pld.13;
-        Wed, 02 Jun 2021 08:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BUuJ+663ryW3aCLGW4N/wOnkqzF/PIsZJ+Jk8r5v/i0=;
-        b=LmHS/3bLpztg0JrzrPy5bFrjFmazJB/JwKd/hhfQVg0b7DZhOLX0XVkuSgFzK5JMDV
-         mHOARrNxspOR6UuVp1dGFc5/MS3CI9VF+c0U2COhzZT+IEpSIa9x4zu6jZbFhYMfAZyX
-         QL1vVrM889p7VCzf6EO9rxB3MWaiRB7+N7QXGkOflnR0KkMM1/LQogNpCW+hbn55OahS
-         33syvzZuWsllExZRUROcrsZ/UItxxlfwt4Ki39sSQdMfWSw1ETqHFDK3nbQMvLTmWzc3
-         zWk3gKnPvTJhBZyq9kVCYK3I6od0rKGfV/mQ/BE2aWGAmCLjJLjVi5gcQkjhi5EzViTe
-         956A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BUuJ+663ryW3aCLGW4N/wOnkqzF/PIsZJ+Jk8r5v/i0=;
-        b=o7S2bg+JhTZPn4mCbHue3QjoACClGrRdxSwfka+EcHXFIZleRk16fqR6PLO9lvgWP8
-         +Dt6YTWWIqXO2gTDQW4g0EWyG2aqvjkQyy01ClKGC7k9+tObEgHNUthRGgFknuYqp62k
-         88QkLIL+ko2dQyCCV+xCGkjCznH55l39125iJpNbUKWmGOix9uG+RV7Ff/9wgE0JR707
-         2yJ2EaNIwmQkB9EIUt4UnwHaq6RGFVaQFjBvLCwgD2yDqKbWXmzcKov5PYK8MfQtA62x
-         MlJac229KEsLXid1xUN0PTJtYTyDwFA8FhbkkudwR9CouLGrU4XgOJW2o+SPhYthwPSd
-         GBjA==
-X-Gm-Message-State: AOAM531++Z826q6Ogf0MyTndx4tVy4qnC/l2tkFqDfpF4cqfMLzL/HGV
-        5W1Anztcid2b4m41p1WU7VA=
-X-Google-Smtp-Source: ABdhPJxUC9lYcmvSWqFS4Uv2T0UXFDfoleQzHvaFxml3ZFRQq3EqqmSx4T3neWdIPtWq/zWUa5IaQg==
-X-Received: by 2002:a17:90a:3948:: with SMTP id n8mr32120008pjf.32.1622647850115;
-        Wed, 02 Jun 2021 08:30:50 -0700 (PDT)
-Received: from [172.30.1.14] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id f7sm38346pfk.191.2021.06.02.08.30.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 08:30:49 -0700 (PDT)
-Subject: Re: [PATCH v3 2/3] extcon: sm5502: Refactor driver to use
- chip-specific struct
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nikita Travkin <nikita@trvn.ru>,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20210601200007.218802-1-stephan@gerhold.net>
- <20210601200007.218802-3-stephan@gerhold.net>
- <b3a9eed8-0d7c-e935-36d4-13918f5b7b21@gmail.com>
- <YLeh2Q1q3643iFkZ@gerhold.net>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <83b00ca8-aa70-6c4b-5f9f-eebf571ee621@gmail.com>
-Date:   Thu, 3 Jun 2021 00:30:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 2 Jun 2021 11:35:48 -0400
+Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846ECC061574;
+        Wed,  2 Jun 2021 08:34:04 -0700 (PDT)
+Received: from sas1-6b1512233ef6.qloud-c.yandex.net (sas1-6b1512233ef6.qloud-c.yandex.net [IPv6:2a02:6b8:c14:44af:0:640:6b15:1223])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id B4B5D2E16E7;
+        Wed,  2 Jun 2021 18:29:15 +0300 (MSK)
+Received: from sas2-d40aa8807eff.qloud-c.yandex.net (sas2-d40aa8807eff.qloud-c.yandex.net [2a02:6b8:c08:b921:0:640:d40a:a880])
+        by sas1-6b1512233ef6.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id QfSGlawkec-TF1m5VGG;
+        Wed, 02 Jun 2021 18:29:15 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1622647755; bh=GHYHVjFgXMyBYXX9g5Vm44kIc3wPx/6lZzof53ArujY=;
+        h=Cc:Message-Id:Date:Subject:To:From;
+        b=J/92j8ZuZ+yMAOwCD78oNs5yFWA3WzuqHvE6UaGKJwGFvTIg/bUSW9HYlkmQ5rdh4
+         pG8KPYslrzw8+ngiPZ3xckDHKvmyH9eyhQUys55+fbUg0o/AcxlRFDmrTbcih5t5vA
+         05HdEG5dgChXLvlB4k1zM2N33dChXSw780eet7RI=
+Authentication-Results: sas1-6b1512233ef6.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from warwish-linux.sas.yp-c.yandex.net (warwish-linux.sas.yp-c.yandex.net [2a02:6b8:c1b:2920:0:696:cc9e:0])
+        by sas2-d40aa8807eff.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 42DbdVHlBw-TEoiZoxf;
+        Wed, 02 Jun 2021 18:29:14 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Anton Suvorov <warwish@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     warwish@yandex-team.ru, linux-fsdevel@vger.kernel.org,
+        dmtrmonakhov@yandex-team.ru, linux-block@vger.kernel.org,
+        viro@zeniv.linux.org.uk
+Subject: [PATCH 00/10] reduce stack footprint printing bdev names
+Date:   Wed,  2 Jun 2021 18:28:53 +0300
+Message-Id: <20210602152903.910190-1-warwish@yandex-team.ru>
 MIME-Version: 1.0
-In-Reply-To: <YLeh2Q1q3643iFkZ@gerhold.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 6. 3. 오전 12:20, Stephan Gerhold wrote:
-> On Thu, Jun 03, 2021 at 12:13:18AM +0900, Chanwoo Choi wrote:
->> On 21. 6. 2. 오전 5:00, Stephan Gerhold wrote:
->>> Prepare for supporting SM5504 in the extcon-sm5502 driver by replacing
->>> enum sm5504_types with a struct sm5504_type that stores the chip-specific
->>> definitions. This struct can then be defined separately for SM5504
->>> without having to add if (type == TYPE_SM5504) everywhere in the code.
->>>
->>> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
->>> ---
->>> Changes in v3: New patch to simplify diff on next patch
->>> ---
->>>    drivers/extcon/extcon-sm5502.c | 64 +++++++++++++++++++++-------------
->>>    drivers/extcon/extcon-sm5502.h |  4 ---
->>>    2 files changed, 40 insertions(+), 28 deletions(-)
->>>
->>> diff --git a/drivers/extcon/extcon-sm5502.c b/drivers/extcon/extcon-sm5502.c
->>> index 9f40bb9f1f81..951f6ca4c479 100644
->>> --- a/drivers/extcon/extcon-sm5502.c
->>> +++ b/drivers/extcon/extcon-sm5502.c
->>> @@ -40,17 +40,13 @@ struct sm5502_muic_info {
->>>    	struct i2c_client *i2c;
->>>    	struct regmap *regmap;
->>> +	const struct sm5502_type *type;
->>>    	struct regmap_irq_chip_data *irq_data;
->>> -	struct muic_irq *muic_irqs;
->>> -	unsigned int num_muic_irqs;
->>>    	int irq;
->>>    	bool irq_attach;
->>>    	bool irq_detach;
->>>    	struct work_struct irq_work;
->>> -	struct reg_data *reg_data;
->>> -	unsigned int num_reg_data;
->>> -
->>>    	struct mutex mutex;
->>>    	/*
->>> @@ -62,6 +58,17 @@ struct sm5502_muic_info {
->>>    	struct delayed_work wq_detcable;
->>>    };
->>> +struct sm5502_type {
->>> +	struct muic_irq *muic_irqs;
->>> +	unsigned int num_muic_irqs;
->>> +	const struct regmap_irq_chip *irq_chip;
->>> +
->>> +	struct reg_data *reg_data;
->>> +	unsigned int num_reg_data;
->>> +
->>> +	int (*parse_irq)(struct sm5502_muic_info *info, int irq_type);
->>> +};
->>> +
->>>    /* Default value of SM5502 register to bring up MUIC device. */
->>>    static struct reg_data sm5502_reg_data[] = {
->>>    	{
->>> @@ -502,11 +509,11 @@ static irqreturn_t sm5502_muic_irq_handler(int irq, void *data)
->>>    	struct sm5502_muic_info *info = data;
->>>    	int i, irq_type = -1, ret;
->>> -	for (i = 0; i < info->num_muic_irqs; i++)
->>> -		if (irq == info->muic_irqs[i].virq)
->>> -			irq_type = info->muic_irqs[i].irq;
->>> +	for (i = 0; i < info->type->num_muic_irqs; i++)
->>> +		if (irq == info->type->muic_irqs[i].virq)
->>> +			irq_type = info->type->muic_irqs[i].irq;
->>> -	ret = sm5502_parse_irq(info, irq_type);
->>> +	ret = info->type->parse_irq(info, irq_type);
->>
->> Looks good to me. But there is only one comment.
->> Need to check the 'parse_irq' as following:
->>
->> If you agree this suggestion, I'll apply with following changes by myself:
->>
->> 	if (!info->type->parse_irq) {
->> 		dev_err(info->dev, "failed to handle irq due to parse_irq\n",
->> 		return IRQ_NONE;
->> 	}
->>
->>
-> 
-> This condition should be impossible, since .parse_irq is set for both
-> SM5502 and SM5504:
-> 
-> static const struct sm5502_type sm5502_data = {
-> 	/* ... */
-> 	.parse_irq = sm5502_parse_irq,
-> };
-> 
-> static const struct sm5502_type sm5504_data = {
-> 	/* ... */
-> 	.parse_irq = sm5504_parse_irq,
-> };
-> 
-> Which failure case are you trying to handle with that if statement?
+Dmitry Monakhov <dmtrmonakhov@yandex-team.ru> started "kernel newbies"
+initiative at Yandex allowing developers unfamiliar with kernel
+development process to join kernel development. Initiative includes easy
+to fix bugs and some small improvments. This patchset was tailored as part
+of the initiative.
 
-There is not failure case of this patchset. But, this refactoring 
-suggestion has the potential problem without checking whether mandatory 
-function pointer is NULL or not. When adding new chip by using this 
-driver, the author might have the human error without parse_irq 
-initialization even if the mandatory.
+Few years ago Dmitry Monakhov introduced %pg formatter for vsprintf()
+(https://lore.kernel.org/lkml/1428928300-9132-1-git-send-email-dmonakhov@openvz.org/)
+and switched some hot code paths to it instead of allocating temporary
+buffer for device name on stack. This patchset continues his work and
+expands to most places where temporary buffer with BDEVNAME_SIZE size
+allocated on stack. There are also some changes in printk() calls
+advised by checkpatch.pl script.
 
-> 
-> Thanks!
-> Stephan
-> 
 
+The patchset shows significant reduce of stack footprint:
+
+	./block/blk-core.c	submit_bio_checks	248	112	-136
+	./block/blk-lib.c	__blkdev_issue_discard	240	104	-136
+	./block/blk-settings.c	disk_stack_limits	256	192	-64
+	./block/partitions/amiga.c	amiga_partition	424	368	-56
+	./block/partitions/sgi.c	sgi_partition	352	288	-64
+	./block/partitions/sun.c	sun_partition	392	328	-64
+	./drivers/block/drbd/drbd_req.c	drbd_report_io_error	200	72	-128
+	./drivers/block/pktcdvd.c	pkt_seq_show	288	224	-64
+	./drivers/block/pktcdvd.c	pkt_setup_dev	272	136	-136
+	./drivers/block/pktcdvd.c	pkt_submit_bio	288	224	-64
+	./drivers/dax/super.c	__bdev_dax_supported	192	56	-136
+	./drivers/dax/super.c	__generic_fsdax_supported	344	280	-64
+	./drivers/md/dm-cache-target.c	cache_ctr	392	328	-64
+	./drivers/md/dm-cache-target.c	cache_io_hints	208	72	-136
+	./drivers/md/dm-clone-target.c	clone_ctr	416	352	-64
+	./drivers/md/dm-clone-target.c	clone_io_hints	216	80	-136
+	./drivers/md/dm-crypt.c	crypt_convert_block_aead	408	272	-136
+	./drivers/md/dm-crypt.c	kcryptd_async_done	192	56	-136
+	./drivers/md/dm-integrity.c	integrity_metadata	872	808	-64
+	./drivers/md/dm-mpath.c	parse_priority_group	368	304	-64
+	./drivers/md/dm-table.c	device_area_is_invalid	216	80	-136
+	./drivers/md/dm-table.c	dm_set_device_limits	200	72	-128
+	./drivers/md/dm-thin.c	pool_io_hints	216	80	-136
+	./drivers/md/md-linear.c	linear_make_request	248	112	-136
+	./drivers/md/md-multipath.c	multipath_end_request	232	96	-136
+	./drivers/md/md-multipath.c	multipath_error	208	72	-136
+	./drivers/md/md-multipath.c	multipathd	248	112	-136
+	./drivers/md/md-multipath.c	print_multipath_conf	208	64	-144
+	./drivers/md/md.c	autorun_devices	312	184	-128
+	./drivers/md/md.c	export_rdev	168	32	-136
+	./drivers/md/md.c	md_add_new_disk	280	80	-200
+	./drivers/md/md.c	md_import_device	200	56	-144
+	./drivers/md/md.c	md_integrity_add_rdev	192	56	-136
+	./drivers/md/md.c	md_ioctl	560	496	-64
+	./drivers/md/md.c	md_reload_sb	224	88	-136
+	./drivers/md/md.c	md_run	408	288	-120
+	./drivers/md/md.c	md_seq_show	232	96	-136
+	./drivers/md/md.c	md_update_sb	304	168	-136
+	./drivers/md/md.c	read_disk_sb	184	48	-136
+	./drivers/md/md.c	super_1_load	392	192	-200
+	./drivers/md/md.c	super_90_load	304	112	-192
+	./drivers/md/md.c	unbind_rdev_from_array	200	64	-136
+	./drivers/md/raid0.c	create_strip_zones	400	200	-200
+	./drivers/md/raid0.c	dump_zones	536	464	-72
+	./drivers/md/raid1.c	fix_read_error	352	288	-64
+	./drivers/md/raid1.c	print_conf	224	80	-144
+	./drivers/md/raid1.c	raid1_end_read_request	216	80	-136
+	./drivers/md/raid1.c	raid1_error	216	96	-120
+	./drivers/md/raid1.c	sync_request_write	344	208	-136
+	./drivers/md/raid10.c	fix_read_error	392	320	-72
+	./drivers/md/raid10.c	print_conf	216	72	-144
+	./drivers/md/raid10.c	raid10_end_read_request	216	80	-136
+	./drivers/md/raid10.c	raid10_error	216	80	-136
+	./drivers/md/raid5-cache.c	r5l_init_log	224	88	-136
+	./drivers/md/raid5-ppl.c	ppl_do_flush	256	136	-120
+	./drivers/md/raid5-ppl.c	ppl_flush_endio	192	56	-136
+	./drivers/md/raid5-ppl.c	ppl_modify_log	192	56	-136
+	./drivers/md/raid5-ppl.c	ppl_recover_entry	1296	1232	-64
+	./drivers/md/raid5-ppl.c	ppl_submit_iounit_bio	192	56	-136
+	./drivers/md/raid5-ppl.c	ppl_validate_rdev	184	48	-136
+	./drivers/md/raid5.c	print_raid5_conf	208	64	-144
+	./drivers/md/raid5.c	raid5_end_read_request	272	128	-144
+	./drivers/md/raid5.c	raid5_error	216	80	-136
+	./drivers/md/raid5.c	setup_conf	360	296	-64
+	./drivers/target/target_core_iblock.c	iblock_show_configfs_dev_params	192	56	-136
+	./fs/block_dev.c	__blkdev_put	224	80	-144
+	./fs/ext4/page-io.c	ext4_end_bio	224	88	-136
+	./security/loadpin/loadpin.c	loadpin_read_file	200	56	-144
+
+Patchset was tested with kvm-xfstests -c 4k full using 
+https://github.com/tytso/xfstests-bld/blob/master/kernel-configs/x86_64-config-5.10
+kernel config:
+	-------------------- Summary report
+	KERNEL:    kernel 5.13.0-rc4-next-20210601-xfstests-00001-gf10818e9d103 #8 SMP Tue Jun 1 19:52:19 MSK 2021 x86_64
+	CMDLINE:   -c 4k full
+	CPUS:      2
+	MEM:       1961.41
+	
+	ext4/4k: 537 tests, 45 skipped, 5331 seconds
+	Totals: 492 tests, 45 skipped, 0 failures, 0 errors, 5281s
+	
+	FSTESTVER: blktests 4bc88ef (Sun, 7 Mar 2021 12:38:37 -0800)
+	FSTESTVER: fio  fio-3.26 (Mon, 8 Mar 2021 17:44:38 -0700)
+	FSTESTVER: fsverity v1.3-2-gcf8fa5e (Wed, 24 Feb 2021 13:32:36 -0800)
+	FSTESTVER: ima-evm-utils v1.3.2 (Wed, 28 Oct 2020 13:18:08 -0400)
+	FSTESTVER: nvme-cli v1.13 (Tue, 20 Oct 2020 16:50:31 -0700)
+	FSTESTVER: quota  v4.05-40-g25f16b1 (Tue, 16 Mar 2021 17:57:19 +0100)
+	FSTESTVER: util-linux v2.36.2 (Fri, 12 Feb 2021 14:59:56 +0100)
+	FSTESTVER: xfsprogs v5.11.0 (Fri, 12 Mar 2021 15:05:13 -0500)
+	FSTESTVER: xfstests linux-v3.8-3068-g4072b9d3 (Mon, 5 Apr 2021 15:44:33 -0400)
+	FSTESTVER: xfstests-bld 4ec07f9 (Mon, 12 Apr 2021 23:49:18 -0400)
+	FSTESTCFG: 4k
+	FSTESTSET: -g auto
+	FSTESTOPT: aex
+
+Anton Suvorov (10):
+  drbd: reduce stack footprint in drbd_report_io_error()
+  dax: reduce stack footprint dealing with block device names
+  raid-md: reduce stack footprint dealing with block device names
+  dm: reduce stack footprint dealing with block device names
+  block: reduce stack footprint dealing with block device names
+  target: reduce stack footprint in iblock_show_configfs_dev_params()
+  vfs: reduce stack footprint in __blkdev_put()
+  ext4: reduce stack footprint in ext4_end_bio()
+  security: reduce stack footprint in loadpin_read_file()
+  block: remove unused symbol bio_devname()
+
+ block/bio.c                         |   6 --
+ block/blk-core.c                    |  12 +--
+ block/blk-lib.c                     |   5 +-
+ block/blk-settings.c                |   7 +-
+ block/partitions/amiga.c            |  13 ++-
+ block/partitions/sgi.c              |   5 +-
+ block/partitions/sun.c              |   5 +-
+ drivers/block/drbd/drbd_req.c       |  12 +--
+ drivers/block/pktcdvd.c             |  15 ++-
+ drivers/dax/super.c                 |  34 +++----
+ drivers/md/dm-cache-target.c        |  10 +-
+ drivers/md/dm-clone-target.c        |  10 +-
+ drivers/md/dm-crypt.c               |   6 +-
+ drivers/md/dm-integrity.c           |   4 +-
+ drivers/md/dm-mpath.c               |   6 +-
+ drivers/md/dm-table.c               |  34 +++----
+ drivers/md/dm-thin.c                |   8 +-
+ drivers/md/md-linear.c              |   5 +-
+ drivers/md/md-multipath.c           |  24 ++---
+ drivers/md/md.c                     | 146 ++++++++++++----------------
+ drivers/md/raid0.c                  |  28 +++---
+ drivers/md/raid1.c                  |  25 ++---
+ drivers/md/raid10.c                 |  66 +++++--------
+ drivers/md/raid5-cache.c            |   5 +-
+ drivers/md/raid5-ppl.c              |  41 ++++----
+ drivers/md/raid5.c                  |  39 ++++----
+ drivers/target/target_core_iblock.c |   5 +-
+ fs/block_dev.c                      |   6 +-
+ fs/ext4/page-io.c                   |   5 +-
+ include/linux/bio.h                 |   2 -
+ security/loadpin/loadpin.c          |   5 +-
+ 31 files changed, 242 insertions(+), 352 deletions(-)
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.25.1
+
