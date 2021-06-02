@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FC83987CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE763987DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhFBLS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:18:57 -0400
-Received: from phobos.denx.de ([85.214.62.61]:51344 "EHLO phobos.denx.de"
+        id S231765AbhFBLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:19:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhFBLSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:18:55 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id C031A81E53;
-        Wed,  2 Jun 2021 13:17:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1622632631;
-        bh=FbYl3x0iYrkU3O1k6gmPtvghVGh3IcnhZHoAhRCxpQ4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=eXgz6pNwFZyRpn+Mhr0bhydxXnQMt1vYI9mZCzHLh91dcvpHEF7nvr8NgcCyPZpqP
-         ywHtUZxG3qVKFHs5XyYUXJoxERHpd9EfQsT6Ute66bIgHmdx+MnyWna0dAXSO06Oxx
-         OrrbOFmUG0mIa1OWs3A8pNuioCEqV8xmAiZ2wnWhYo9xfQjB8raNzrFo1KO6UQ+WEM
-         0vJoFB1q2i46CYox75uQBEG5Xggt690tfUszpp3e9D0EfEgWoorpVQ2kPtcoKHSZ8/
-         sB0JO56EuWmpqOwYKrnPGyN77j9b3ulhMA7fzkI7dNo4FVLAVJ6ktsL9p6SF4cyVLo
-         oWzjN5rIDPpGg==
-Subject: Re: [PATCH 02/10] i2c: xiic: Add standard mode support for > 255 byte
- read transfers
-To:     Raviteja Narayanam <raviteja.narayanam@xilinx.com>,
-        linux-i2c@vger.kernel.org, michal.simek@xilinx.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com
-References: <20210531131948.19477-1-raviteja.narayanam@xilinx.com>
- <20210531131948.19477-3-raviteja.narayanam@xilinx.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <0f167c21-6bc7-0806-a536-55658a199a5b@denx.de>
-Date:   Wed, 2 Jun 2021 13:17:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231730AbhFBLTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 07:19:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F234961159;
+        Wed,  2 Jun 2021 11:17:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622632672;
+        bh=9XgnjJyMgrfhJOYp/Bh6hZ1lr0KTwAcdyxI+kI1Tu+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jnSO0wecaOp4sz/E0D8SpdGLyiJvlk5I0nbuKmqOvyT3H792XqOo3rCcf0/NI5zRD
+         OXL0tqn8R2P1tM/syGxslDIZB1BSK9diGP/BihpCD1IJXk16YhfJd8njUIvQ4oLDRp
+         8C6kwsdLu2790OOPtL+t6MWgbcJiobv8UmXl9Dxuxj5n4ZQaD/431NvlmC+TCnvW9B
+         YNpumYsK7Za7dIYiUEl6GBHjlQ+1COq5U5F+67WJd0lvIrpOGiSveimnGi8lgqIi+s
+         oXLMPLoaZUeuPA/g4ec7srs4jJxxPAbd0wydZ4Xk7mpP9NacMcO/i6jDi48sbKbJDl
+         UD5Q4e7u16LLw==
+Date:   Wed, 2 Jun 2021 16:47:48 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [RFC PATCH 03/13] drm/msm/dsi: add support for dsc data
+Message-ID: <YLdo3P94dLmUNV5B@vkoul-mobl>
+References: <20210521124946.3617862-1-vkoul@kernel.org>
+ <20210521124946.3617862-5-vkoul@kernel.org>
+ <31b06821-a25d-7864-4e6e-448710203bef@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210531131948.19477-3-raviteja.narayanam@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31b06821-a25d-7864-4e6e-448710203bef@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/31/21 3:19 PM, Raviteja Narayanam wrote:
+On 28-05-21, 13:29, Dmitry Baryshkov wrote:
+> On 21/05/2021 15:49, Vinod Koul wrote:
+> > DSC needs some configuration from device tree, add support to read and
+> > store these params and add DSC structures in msm_drv
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >   drivers/gpu/drm/msm/dsi/dsi_host.c | 170 +++++++++++++++++++++++++++++
+> >   drivers/gpu/drm/msm/msm_drv.h      |  32 ++++++
+> >   2 files changed, 202 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> > index 8a10e4343281..864d3c655e73 100644
+> > --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> > +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> > @@ -156,6 +156,7 @@ struct msm_dsi_host {
+> >   	struct regmap *sfpb;
+> >   	struct drm_display_mode *mode;
+> > +	struct msm_display_dsc_config *dsc;
+> >   	/* connected device info */
+> >   	struct device_node *device_node;
+> > @@ -1744,6 +1745,168 @@ static int dsi_host_parse_lane_data(struct msm_dsi_host *msm_host,
+> >   	return -EINVAL;
+> >   }
+> > +static u32 dsi_dsc_rc_buf_thresh[DSC_NUM_BUF_RANGES - 1] = {
+> > +	0x0e, 0x1c, 0x2a, 0x38, 0x46, 0x54, 0x62,
+> > +	0x69, 0x70, 0x77, 0x79, 0x7b, 0x7d, 0x7e
+> > +};
+> 
+> I think we should move this table to a generic place. AMD and Intel DSC code
+> uses the same table, shifted by 6 (and both of those drivers shift it before
+> writing to the HW). Intel modifies this table for 6bpp case. AMD seems to
+> use it as is.
+> 
+> > +
+> > +/* only 8bpc, 8bpp added */
+> > +static char min_qp[DSC_NUM_BUF_RANGES] = {
+> > +	0, 0, 1, 1, 3, 3, 3, 3, 3, 3, 5, 5, 5, 7, 13
+> > +};
+> > +
+> > +static char max_qp[DSC_NUM_BUF_RANGES] = {
+> > +	4, 4, 5, 6, 7, 7, 7, 8, 9, 10, 11, 12, 13, 13, 15
+> > +};
+> > +
+> > +static char bpg_offset[DSC_NUM_BUF_RANGES] = {
+> > +	2, 0, 0, -2, -4, -6, -8, -8, -8, -10, -10, -12, -12, -12, -12
+> > +};
+> 
+> And these parameters seem to be generic too. Intel DSC code contains them in
+> a bit different form. Should we probably move them to the drm_dsc.c and use
+> the tables the generic location?
+> 
+> AMD drivers uses a bit different values at the first glance, so let's stick
+> with Intel version.
 
-[...]
+Yeah I think this is a good suggestion. I did look into and had this in
+my todo. Yes drm_dsc.c would be apt for the move..
 
-> +	if (i2c->dynamic) {
-> +		u8 bytes;
-> +		u16 val;
-> +
-> +		/* Clear and enable Rx full interrupt. */
-> +		xiic_irq_clr_en(i2c, XIIC_INTR_RX_FULL_MASK |
-> +				XIIC_INTR_TX_ERROR_MASK);
-> +
-> +		/*
-> +		 * We want to get all but last byte, because the TX_ERROR IRQ
-> +		 * is used to indicate error ACK on the address, and
-> +		 * negative ack on the last received byte, so to not mix
-> +		 * them receive all but last.
-> +		 * In the case where there is only one byte to receive
-> +		 * we can check if ERROR and RX full is set at the same time
-> +		 */
-> +		rx_watermark = msg->len;
-> +		bytes = min_t(u8, rx_watermark, IIC_RX_FIFO_DEPTH);
-> +		bytes--;
-> +
-> +		xiic_setreg8(i2c, XIIC_RFD_REG_OFFSET, bytes);
-> +
-> +		local_irq_save(flags);
-> +		if (!(msg->flags & I2C_M_NOSTART))
-> +			/* write the address */
-> +			xiic_setreg16(i2c, XIIC_DTR_REG_OFFSET,
-> +				      i2c_8bit_addr_from_msg(msg) |
-> +				      XIIC_TX_DYN_START_MASK);
-> +
-> +		xiic_irq_clr_en(i2c, XIIC_INTR_BNB_MASK);
-> +
-> +		/* If last message, include dynamic stop bit with length */
-> +		val = (i2c->nmsgs == 1) ? XIIC_TX_DYN_STOP_MASK : 0;
-> +		val |= msg->len;
-> +
-> +		xiic_setreg16(i2c, XIIC_DTR_REG_OFFSET, val);
-> +		local_irq_restore(flags);
-
-Is local_irq_save()/local_irq_restore() used here to prevent concurrent 
-access to the XIIC ?
-
-[...]
+-- 
+~Vinod
