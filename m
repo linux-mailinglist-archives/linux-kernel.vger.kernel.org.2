@@ -2,160 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D94397F96
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD27E397F9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhFBDky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:40:54 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:51320 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhFBDkv (ORCPT
+        id S229885AbhFBDne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 23:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhFBDnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:40:51 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1523Z4vU015162;
-        Wed, 2 Jun 2021 03:38:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=Ypf16uckvpLVoBxAzUkkzkLCiUKVmBRUdy/VN6AtOO4=;
- b=b1eqkTTOVGtfjstzRMxP9KRiDAtIbNOQTLny7+DSD2/xhBTR00WISkiYZvvF0BtsyE2g
- iK1/TA3KPi/X4uGVUHsv012e2JpGmQqOFdcobGnepPEhbI7n0GlOEO7/x7tlcFpHRJza
- Yl0XVghiv14oLcM4usuHdwlo0ZmlRa0RarzCf2l1JOV+0liSyjtepEAV3bpRuuT48ro0
- Cro5kXA+HMqoHUcwZNz3eB8i/TjsxiCLrRfEUtOSIRpOFfaTqMVNI2uWqmFlTNdClEFl
- eMwDixg73h0rNhT2wLQIsNoc/zdoh1IlxRHvMr+Yp41+g7+kVpEtwljrgMqN+5MW6rMh WA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 38ub4cqag7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 03:38:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1523abIQ190688;
-        Wed, 2 Jun 2021 03:38:53 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2108.outbound.protection.outlook.com [104.47.58.108])
-        by userp3020.oracle.com with ESMTP id 38x1bch5ku-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 03:38:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=epW6MMqBHuZrD1O81TlV6bBTWL4SgDmv+OKcBrXlqBcsMel0TNQugzx4rwXqsj3G8XjQv8HSepth0v/pXhwkSrk/LA9weBtc8oUzTuUSQB+K91+EHkVTtPtvI7HTvg3m7lQfDos9S0QH/H23g5ri8JKTZM8v4ErKlkfC5t7osx1HlJF999LaVM3JnBQYwvEFIiaIvpghTS6UpKCXPm0nQct7KsQhFP7BROmLEuojxkrw2JFaFHbfV/as+7vXbaHvELysyiltEQJyy6Jvq4/6Xe/uiJ8yZYzFgZxryaUJaVYVzlOwn1rKWvw7dLka8FtNqln811TQVDwNHAfa0PD9/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ypf16uckvpLVoBxAzUkkzkLCiUKVmBRUdy/VN6AtOO4=;
- b=BxOO7K5IGDRm1FuXWklRaL+5PWTrcdMfRXTX91lCk6Do8Bv5+yzePNCfF3CADKjcME4pmQenZfKD80s+4HEHH4pJjBdj8yh+WcnTcFLIpsbExrPL3Ch/HXkKnkGFwYm7On/LooVTR/UkJlaq0UI78fF9aD9/fUL35viElxLQueyUvKJk8JYUjaac63oQEI5eUPnDN0KDC0HgIbY/RXMSUWdJCoDZ4LTw0drzj8DTP0Rut96RqybJq0FDSFSDaJRfUkoR6bP+osehRe6n7k5cD5bsOpAIMJ2gFLiJTcpFU3VgiXUYFURMcertjeJ7OEUikbAyr3WHIa2nAtLL3JOPxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 1 Jun 2021 23:43:32 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47869C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 20:41:49 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 29so1108515pgu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 20:41:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ypf16uckvpLVoBxAzUkkzkLCiUKVmBRUdy/VN6AtOO4=;
- b=Y2IN2OlLVI2Qu/QwevZjQ+ya0tuKn3cuAE6Vcze2VaDYhkghOot8NiNK/RqZOZoAvvNwaUrrxrRWUBE3pCj8HCWq4DK6bwS4WcquijHrzCVzin+CrjzQ44gTRAWOfc77Lf7v5KhgOL0RWzUI05VvPyCAoz6WaQyd4/MwSLAUXM8=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4678.namprd10.prod.outlook.com (2603:10b6:510:3b::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.24; Wed, 2 Jun
- 2021 03:38:50 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
- 03:38:50 +0000
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/3] scsi: Fix a handful of memcpy() field overflows
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1eedlos1b.fsf@ca-mkp.ca.oracle.com>
-References: <20210528181337.792268-1-keescook@chromium.org>
-Date:   Tue, 01 Jun 2021 23:38:47 -0400
-In-Reply-To: <20210528181337.792268-1-keescook@chromium.org> (Kees Cook's
-        message of "Fri, 28 May 2021 11:13:34 -0700")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SA9PR03CA0009.namprd03.prod.outlook.com
- (2603:10b6:806:20::14) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zLdktgE0a9sEXZ0/b+s3AebnOjlZIpwVaCTKFoWaY6o=;
+        b=PyV8FeSKyEIVaDpLD1OQklsC0+U/xDfysW1/zZXRwfV+KdD6NggGTMgx0BhlkyFcVW
+         SuRX+ExKpACmEe4VXNzThsolvdMl99oWRC4cLxxUJxJlxkG0WEAH1BeLWZGowj3e2+g6
+         FJO0au3vJfJ7e2KFHuA73+gMVKDUzYq2QluuHh17e5HzHEMzFAru7FLzovFHeQfaJo9T
+         vCQqxmaUsbR50lSrCAYy3QdXiuzV+sGsjOpaavnZMj/xQtrfLs+PJJ7/WqjISF4F35zF
+         N2NNaZShZivIOJpEWbo8EQErq/+YBkkSsgADbfH0ePpBC4RyEdspM4G+RqHvPec+CQgF
+         o7zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zLdktgE0a9sEXZ0/b+s3AebnOjlZIpwVaCTKFoWaY6o=;
+        b=j6oYIJIADqS9dtYLJABEPR5ffyeydZvweOJNeICanp0gIt1pkNpGhwYv+5U1VMljD+
+         dE44pIlQtRnvRqEXvZ3ttvebyLxz2Hkbz/t+MOk7pa6AroV9cPArr9EjHLkwsH6XO9Eg
+         0K1BvzLuvjy/Hu+dVKIXwliNcDA4JztmhLH23ckUYhqY4qTwVPtBiYkj7ZY/Q4bpC3HQ
+         1eC4BRWpPuQpS8Qyeg5v45V6VE/NLe8dNUh1+90em92/XT5wshQuknrghMd//TC1zhZi
+         tgPQXCOWvFfW/WBXouKc9fpGeKlWNRHhpukhJIwQyKr23nuvX+/Z/NkdmnyjaylD21L/
+         r3KA==
+X-Gm-Message-State: AOAM532sXdLuz1kzDWDqeCnVFMHTUQrvXskxHC1v5SC/7oxPzvB1VSKw
+        bOsCh6mBR5xEEJydvGdd36A=
+X-Google-Smtp-Source: ABdhPJzPeLvDeBppfezgwtWuGF9uxgIOTAtzej3GgkpTc/DSKL2YdMFF0UIb8N/mqAv4ufvrNDH0ew==
+X-Received: by 2002:aa7:80d3:0:b029:28e:f117:4961 with SMTP id a19-20020aa780d30000b029028ef1174961mr25291555pfn.37.1622605308627;
+        Tue, 01 Jun 2021 20:41:48 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.140])
+        by smtp.gmail.com with ESMTPSA id 141sm10746460pgf.20.2021.06.01.20.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 20:41:48 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, dan.carpenter@oracle.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Subject: [PATCH v2] ALSA: control led: fix memory leak in snd_ctl_led_register
+Date:   Wed,  2 Jun 2021 11:41:36 +0800
+Message-Id: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA9PR03CA0009.namprd03.prod.outlook.com (2603:10b6:806:20::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Wed, 2 Jun 2021 03:38:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 605ca0a7-d230-432c-b401-08d92577efc9
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4678:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB46783571878B4336E29CD2768E3D9@PH0PR10MB4678.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: taIxnaxReZNrcX4vthFC+X26nNJ3CSxc23XjrU+/8DiZmigD6862e81W/3gd79fW7P6FrB1s3L+KaxdLqGnlHbyFn0e8TgrE0PnW5nPqvLWHH3BM7gn/HXtN2nPnzNyQ3h8XFo8td2a0iAJmeMXLdctZeEsJGeFq16BPYh3qQOppMQOvL4Ge5RQTouvBAe86H21e784haOj4lIk4RjMAJ2EJI+23lV9xcYQMRCmDWYYTo53svrLStaHZenatOxKS6sh1UYcaO+by6p5YYNAN0LmtzukyMJjxRsSU/ANP6by5fHyBmqRtBX9fq7QCigkrB91/TCMr05ycH1OtmQtigVRo412hG6x9dIQ80J//VvIFarz+yKJ2ChxcH0BhV0/KMXnZg0n45SfCNDonHGObJ8FAz2ZMB6ExyOtKsuhrkWdCunO3VzAnTjGPdp4XnlkolvygBaQuT/rPAjp291F6HcKD0GWXZTtPcJvaOXce3TbQH0o3vuGdFCUvzHYzNMaBdV7OOKONPwKaUn88HVHECSgQ2PwOHx2sGa8w/0qHs/G5CzJC9cWTiowGGrS9QQUWS9Rf/enR2WuxeMAjKW9ntOQn8UxxnLP1xjaFWYVjMvlG1TLrgUxzRsZxOuPnO3UOAIyy2Hm+DIhJ3dLYVa5KgPUcbeD2jCIJPKqlQQB0XAg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(346002)(396003)(39860400002)(8676002)(8936002)(54906003)(86362001)(6916009)(316002)(558084003)(26005)(55016002)(83380400001)(66476007)(5660300002)(66946007)(66556008)(38350700002)(38100700002)(478600001)(2906002)(956004)(16526019)(186003)(52116002)(4326008)(7696005)(36916002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ATRNAUjYojdJbp9lj7Fn3wF7OQFS6X+wbjL3oFSXHI1ap6S0cAil7ZYOS5QL?=
- =?us-ascii?Q?ohk+zZFlr7aijwQtX0mjuj/+OpFG4g70V/QLQalOi9jrYy/Yb9yS51l6wbQ6?=
- =?us-ascii?Q?8ZV31fxSENSLEmV/6KJTVAatrVT3ea8hMPp6OuXZAhiodv/IyK0uwkvSQXpG?=
- =?us-ascii?Q?6iUogd2uC7ypC4bTpu62enizSUN/P3qKOq2vseUrFDmO7USKbO5hbO9wwabj?=
- =?us-ascii?Q?nWcIejITnrAihS0R93ypce0mmWFK7m7toSsBzX+SPqxVHIL2pRJjB/AHenwv?=
- =?us-ascii?Q?8y4/amQpI8oRWsX5sWeDnGTiGKXWggatWopvJTAeR01Xh2PxEwF+8baHdw+o?=
- =?us-ascii?Q?Q5tGbZtxnhJ/EfrPN1ntKROH49cHqJgePHuCdxl7Bhh75Vq8a9URQBvQFPlj?=
- =?us-ascii?Q?QAjEh77lVQEkA46w/8KxE3hPBhcn71aU5veyuBOPob0ih58mMr7U1cJFyiTe?=
- =?us-ascii?Q?wdAudbq7+Jk6WfXCE5Osem2qDcirJ18yz8UCHuHwWpPjXwwZ72waBRCsS5g1?=
- =?us-ascii?Q?nEhF5vrRZBav3r6LAKPeBMdaa/ioNcE0Fqga/HL/ZojZ/km9R6Bo+Y3MUkuX?=
- =?us-ascii?Q?iflsyiMCUvxokw0FlQSRCxIKSb+OfeNEzv85hoPfWpHylUjSmXwbOHyUuVVB?=
- =?us-ascii?Q?MJbLLdM2D9TwFmZZHsSAsfxVgeAMKd5oF/rD5TNW4Y3UuTvk4fOLNeLJCeE4?=
- =?us-ascii?Q?TFI0p++O7lXoUpBRZltCUT6C9A9EXwGBMdNBEXlKzaZQQ+R4ReSf/qXDC+Xm?=
- =?us-ascii?Q?URrVBNs2OI2jQ1vlNvScLf5B7IWr+iBMFIkZ35W5iBR7aViNifRlQiW29q9Q?=
- =?us-ascii?Q?zW6ORTYR9qtjG0w+UEvtQnzobO64aL6fO40qEroKkBUlZk0o6NfUQDFfHCNg?=
- =?us-ascii?Q?twY1NzGANWLHxFCKjBTaRVxGT8O9pHtuA6IR4q7YPXa7U65DDWk/nQACbMtT?=
- =?us-ascii?Q?w1c95+O42XVbfxSfuXWmk6oHyV/A8UrXi/MMTx9PGy8SmRGH8UmtFoA1G/i6?=
- =?us-ascii?Q?YLfqErpgUEE72w31sX9bCrFCo7k7QUPY+RuIah5XALQeQCnnRpqIig6+/0a+?=
- =?us-ascii?Q?z6WKeB/y3kONvW7vwpvUgGxsqdL8zb4fq8T/Ngt2HlPLN5y1Z/jbzOMkMZHk?=
- =?us-ascii?Q?Su5rq1qaen5ZWlPYba+OkMcNntcJp3YKUJTS50xt6vps0f9dXjvWYvg9sqtK?=
- =?us-ascii?Q?VkqsbUuw1lh0zd4NZRFJfq5v3j/cjNK1OMzwl8G6SDYPtmNNzdMrBILbWbn+?=
- =?us-ascii?Q?CF9TiDc+yry0P46wfxYGT8jZU5yCH2TGEQGmLEUbqqKrAkKcNwLtOTllFn79?=
- =?us-ascii?Q?FKFskvqppB+VVRn6LXixule3?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 605ca0a7-d230-432c-b401-08d92577efc9
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 03:38:50.4950
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0FOFidct4n2pG5kImombBSqC6g2rIEfr9tps7RO3CN8LVZjt/VMBe9zyQ93vvxxbqdGi3BLGRwJMu6hKBNTQ+2SpoPoiFqu33ccjTkB2PtY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4678
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=840 adultscore=0
- malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106020020
-X-Proofpoint-GUID: 6q-GbjM3AVXaJb44z9btt5GJVxx4Rg6X
-X-Proofpoint-ORIG-GUID: 6q-GbjM3AVXaJb44z9btt5GJVxx4Rg6X
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1011 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106020020
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
+the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
+to decrease the refcount to zero, which causes device_release never to
+be invoked. This leads to memory leak to some resources, like struct
+device_private. In addition, we also free some other similar memory
+leaks in snd_ctl_led_init/snd_ctl_led_exit.
 
-Kees,
+Fix this by replacing device_del to device_unregister
+in snd_ctl_led_sysfs_remove/snd_ctl_led_init/snd_ctl_led_exit.
 
-> While working on improving FORTIFY_SOURCE's memcpy() coverage, there are
-> a few fixes that don't require any helper changes, etc.
+Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
+call kobject_release and delay the release of kobject, which will cause
+use-after-free when the memory backing the kobject is freed at once.
 
-Applied patches 2 and 3 to 5.14/scsi-staging, please update patch 1.
+Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+v1->v2: fix other similar memory leaks; move kfree(led_card) to a
+release function.
+ sound/core/control_led.c | 33 ++++++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
 
-Thanks!
-
+diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+index 25f57c14f294..a90e31dbde61 100644
+--- a/sound/core/control_led.c
++++ b/sound/core/control_led.c
+@@ -17,6 +17,9 @@ MODULE_LICENSE("GPL");
+ #define MAX_LED (((SNDRV_CTL_ELEM_ACCESS_MIC_LED - SNDRV_CTL_ELEM_ACCESS_SPK_LED) \
+ 			>> SNDRV_CTL_ELEM_ACCESS_LED_SHIFT) + 1)
+ 
++#define to_led_card_dev(_dev) \
++	container_of(_dev, struct snd_ctl_led_card, dev)
++
+ enum snd_ctl_led_mode {
+ 	 MODE_FOLLOW_MUTE = 0,
+ 	 MODE_FOLLOW_ROUTE,
+@@ -371,6 +374,21 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
+ 	snd_ctl_led_refresh();
+ }
+ 
++static void snd_ctl_led_card_release(struct device *dev)
++{
++	struct snd_ctl_led_card *led_card = to_led_card_dev(dev);
++
++	kfree(led_card);
++}
++
++static void snd_ctl_led_release(struct device *dev)
++{
++}
++
++static void snd_ctl_led_dev_release(struct device *dev)
++{
++}
++
+ /*
+  * sysfs
+  */
+@@ -663,6 +681,7 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
+ 		led_card->number = card->number;
+ 		led_card->led = led;
+ 		device_initialize(&led_card->dev);
++		led_card->dev.release = snd_ctl_led_card_release;
+ 		if (dev_set_name(&led_card->dev, "card%d", card->number) < 0)
+ 			goto cerr;
+ 		led_card->dev.parent = &led->dev;
+@@ -681,7 +700,6 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
+ 		put_device(&led_card->dev);
+ cerr2:
+ 		printk(KERN_ERR "snd_ctl_led: unable to add card%d", card->number);
+-		kfree(led_card);
+ 	}
+ }
+ 
+@@ -700,8 +718,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
+ 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
+ 		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
+ 		sysfs_remove_link(&led_card->dev.kobj, "card");
+-		device_del(&led_card->dev);
+-		kfree(led_card);
++		device_unregister(&led_card->dev);
+ 		led->cards[card->number] = NULL;
+ 	}
+ }
+@@ -723,6 +740,7 @@ static int __init snd_ctl_led_init(void)
+ 
+ 	device_initialize(&snd_ctl_led_dev);
+ 	snd_ctl_led_dev.class = sound_class;
++	snd_ctl_led_dev.release = snd_ctl_led_dev_release;
+ 	dev_set_name(&snd_ctl_led_dev, "ctl-led");
+ 	if (device_add(&snd_ctl_led_dev)) {
+ 		put_device(&snd_ctl_led_dev);
+@@ -733,15 +751,16 @@ static int __init snd_ctl_led_init(void)
+ 		INIT_LIST_HEAD(&led->controls);
+ 		device_initialize(&led->dev);
+ 		led->dev.parent = &snd_ctl_led_dev;
++		led->dev.release = snd_ctl_led_release;
+ 		led->dev.groups = snd_ctl_led_dev_attr_groups;
+ 		dev_set_name(&led->dev, led->name);
+ 		if (device_add(&led->dev)) {
+ 			put_device(&led->dev);
+ 			for (; group > 0; group--) {
+ 				led = &snd_ctl_leds[group - 1];
+-				device_del(&led->dev);
++				device_unregister(&led->dev);
+ 			}
+-			device_del(&snd_ctl_led_dev);
++			device_unregister(&snd_ctl_led_dev);
+ 			return -ENOMEM;
+ 		}
+ 	}
+@@ -767,9 +786,9 @@ static void __exit snd_ctl_led_exit(void)
+ 	}
+ 	for (group = 0; group < MAX_LED; group++) {
+ 		led = &snd_ctl_leds[group];
+-		device_del(&led->dev);
++		device_unregister(&led->dev);
+ 	}
+-	device_del(&snd_ctl_led_dev);
++	device_unregister(&snd_ctl_led_dev);
+ 	snd_ctl_led_clean(NULL);
+ }
+ 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.25.1
+
