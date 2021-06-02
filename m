@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A89B398017
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C1A398011
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhFBERt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 00:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
+        id S230330AbhFBERe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 00:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhFBERp (ORCPT
+        with ESMTP id S229767AbhFBERd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 00:17:45 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B9DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 21:16:02 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id k6-20020a0cd6860000b029021936c6e8ffso865597qvi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 21:16:02 -0700 (PDT)
+        Wed, 2 Jun 2021 00:17:33 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5076C061574;
+        Tue,  1 Jun 2021 21:15:50 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id h16so928031pjv.2;
+        Tue, 01 Jun 2021 21:15:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=/z3sAxNyr4/XNOsFRohgOJPV/ZAL16y4mKhabq6Roac=;
-        b=bqqkibubUcQfTOm+zRNWEg2yC3SutsWjbXs3cMSJa1NAVTjDGIqebv/pwYt2cN/CEJ
-         RO3Bwh1SNpskpQxZ9KqzDSVXhRTOjVy/IT5ZE01NrxVSqhnEBaL5rrP34AOLT1seNC3B
-         tZBz4jT8/ULpXWV5lAfk2wzvcbWowpX3/jE+W3Ey6kLhrmxxGTgCF0U4ly9DIDRN8CWE
-         +EDRzgu/KgGN/6pBi2RSIdeG2lrxxhzdEvjDd80qe7waAx6bwQ+f0dly+DgKhMH9H32O
-         t7rAx1WTZFl7DD7M4KZbUz8Dn/+E6IPgLyPbZbudoQQwgqKCl19FK4E9xrGoRpHZoCGQ
-         tGnQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/1wSyt9lFdOW+ZpHSxjEn9egCfQ8IpXv9FipEBLxVKA=;
+        b=A0zZaxAbhJjpcQ6ZlZ5KabO4GHlMw7dRWskq7QPKx0KrpNisezotqM+N1+MQawtzip
+         cHVFfMR0RcUhjfBBVs1ojRbH5vAHWHDZ7W0Yk80W/hkKXlwER+79glZocKvVaYn0eRCd
+         gByvwFhj8QzFN9OEHnxOX1+0hbRN1i98905UMOrOxdi97An3tb+8m8HxowQtSA7cfK8n
+         tPittSPYKEqw7xK3fI1fTnoxhfrfC3APOLvil65vQB115anWo9fTa5oxVBvN025Cp2wl
+         GCzRZJ94Bazx5QKBsYYkwJpqHj22ZSbi2PUcqU1w0TGjLX2E5in5QatIBbC9vyX8Qc/W
+         KT8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/z3sAxNyr4/XNOsFRohgOJPV/ZAL16y4mKhabq6Roac=;
-        b=aw7TOc+vuyBWydDGZCXK7VWUbBB/kTR1mYl0BOGOD2hgW/CiraO+DPJnRzFUzpBGQy
-         ZTlQV9qxHwzE05oiwbRooHFbwzfmg9t/AF1VmDkss3kpPmkek+WU580PE95mFeBXHTd/
-         SlbhWEhLdg0sleVyk1XYKq23dY6mPnLjcvhhLUC3WpPYDMBpGDlGA9ww4AsCFINC/S+J
-         hDjFfwU6UO8kg8+qoL+q6CyVHITBYXLA56UUclbZbHRyJ8Y269DzTAEJjJgomslDVaUU
-         A33YBKCV5d+ryCRUjUErWqrLv3ca+SiFOtV6nayXzcjqOyze/A7q3/nbtLcOJGD9i+Jy
-         rDbg==
-X-Gm-Message-State: AOAM5338k/qAuXVjxOfbgBhk63QVpH0xgEdeWcMFrtOKEeQ1LdKqy6M5
-        hXqT+xnBnRLopl/p88Je11Shy+tFs2s=
-X-Google-Smtp-Source: ABdhPJw1whS3sfZfBJvLGe85ZRsMy1o1HJW6TKg0vRD67RWCraVTN++TRNC9zYh3oMg0RKdm0X+os7U3GRs=
-X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
- (user=drosen job=sendgmr) by 2002:ad4:4e47:: with SMTP id eb7mr3473070qvb.40.1622607361346;
- Tue, 01 Jun 2021 21:16:01 -0700 (PDT)
-Date:   Wed,  2 Jun 2021 04:15:39 +0000
-In-Reply-To: <20210602041539.123097-1-drosen@google.com>
-Message-Id: <20210602041539.123097-3-drosen@google.com>
-Mime-Version: 1.0
-References: <20210602041539.123097-1-drosen@google.com>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH 2/2] f2fs: Advertise encrypted casefolding in sysfs
-From:   Daniel Rosenberg <drosen@google.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/1wSyt9lFdOW+ZpHSxjEn9egCfQ8IpXv9FipEBLxVKA=;
+        b=XjlBjWO73wfp9YB33AO/UwZtYNfpnSFeOVIPZ1jY9zQQ15qErbes/uga3DEby9bXRm
+         I4PIhSi0coHI5ZlNqaO/t0/hjx0j2pRSxiiTGfFVNiv7LqtEcViAD0Lp2JiW854rFam8
+         Z7USPSbEMLsbnSU/dW9yxTvohvCRxYQI5Z4bkzC0U06bY5vTv9j8NwOLXCyVr+i+1LpW
+         BEuhycyd65+yPVAHyJQQh99R9X8A6UcshlEA8IJmR5kqXpwWxIDv/lWS4AooBpckwb3P
+         8l91oOZm0TmsRFVQrDspHKjpqQOKjQRtohhL+2au+/yQLauXinguoQD9rxxcnki0wlvd
+         DzYA==
+X-Gm-Message-State: AOAM531M4nKsbfdkQD+BzvpKly+WehFvMnzxOdOwIlKYHbNPv9cEAoD/
+        sojjhcK6d2GmeLoTeD9SrgQ=
+X-Google-Smtp-Source: ABdhPJyPfEgLySzIcgD97mB22RFDByH3ihiCq4Sa0rTLX1HYtlfhh+50oXuL2mi1wdMQMq+yubr79A==
+X-Received: by 2002:a17:902:bf04:b029:fd:7c7c:bbf3 with SMTP id bi4-20020a170902bf04b02900fd7c7cbbf3mr29016675plb.59.1622607350098;
+        Tue, 01 Jun 2021 21:15:50 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a596:b3cb:1a6:1ee4])
+        by smtp.gmail.com with ESMTPSA id lp13sm3331919pjb.0.2021.06.01.21.15.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 21:15:49 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 21:15:46 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Schmitz <schmitz@debian.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
+Message-ID: <YLcF8k71w1mhN9OX@google.com>
+References: <20210527001251.8529-1-rdunlap@infradead.org>
+ <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Older kernels don't support encryption with casefolding. This adds
-the sysfs entry encrypted_casefold to show support for those combined
-features. Support for this feature was originally added by
-commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
+On Thu, May 27, 2021 at 08:56:30AM +0200, Geert Uytterhoeven wrote:
+> On Thu, May 27, 2021 at 2:12 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> > Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
+> > code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
+> > this dependency.
+> >
+> > Removes this kconfig warning:
+> >
+> > WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+> >   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+> >   Selected by [y]:
+> >   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+> >
+> > Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Michael Schmitz <schmitz@debian.org>
+> > Cc: Roman Zippel <zippel@linux-m68k.org>
+> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: linux-input@vger.kernel.org
+> > Cc: linux-m68k@lists.linux-m68k.org
+> > Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
+> 
+> > ---
+> > v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
+> >     to Kconfig.machine (Michael). Thanks.
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> I'm willing to queue this in the m68k for-v5.14 branch, if Dmitry agrees.
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
----
- fs/f2fs/sysfs.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Sure, works for me.
 
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 09e3f258eb52..3c1095a76710 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
- 	if (f2fs_sb_has_compression(sbi))
- 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
- 				len ? ", " : "", "compression");
-+	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
-+		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-+				len ? ", " : "", "encrypted_casefold");
- 	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
- 				len ? ", " : "", "pin_file");
- 	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
-@@ -579,6 +582,7 @@ enum feat_id {
- 	FEAT_CASEFOLD,
- 	FEAT_COMPRESSION,
- 	FEAT_TEST_DUMMY_ENCRYPTION_V2,
-+	FEAT_ENCRYPTED_CASEFOLD,
- };
- 
- static ssize_t f2fs_feature_show(struct f2fs_attr *a,
-@@ -600,6 +604,7 @@ static ssize_t f2fs_feature_show(struct f2fs_attr *a,
- 	case FEAT_CASEFOLD:
- 	case FEAT_COMPRESSION:
- 	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
-+	case FEAT_ENCRYPTED_CASEFOLD:
- 		return sprintf(buf, "supported\n");
- 	}
- 	return 0;
-@@ -704,6 +709,9 @@ F2FS_GENERAL_RO_ATTR(avg_vblocks);
- #ifdef CONFIG_FS_ENCRYPTION
- F2FS_FEATURE_RO_ATTR(encryption, FEAT_CRYPTO);
- F2FS_FEATURE_RO_ATTR(test_dummy_encryption_v2, FEAT_TEST_DUMMY_ENCRYPTION_V2);
-+#ifdef CONFIG_UNICODE
-+F2FS_FEATURE_RO_ATTR(encrypted_casefold, FEAT_ENCRYPTED_CASEFOLD);
-+#endif
- #endif
- #ifdef CONFIG_BLK_DEV_ZONED
- F2FS_FEATURE_RO_ATTR(block_zoned, FEAT_BLKZONED);
-@@ -815,6 +823,9 @@ static struct attribute *f2fs_feat_attrs[] = {
- #ifdef CONFIG_FS_ENCRYPTION
- 	ATTR_LIST(encryption),
- 	ATTR_LIST(test_dummy_encryption_v2),
-+#ifdef CONFIG_UNICODE
-+	ATTR_LIST(encrypted_casefold),
-+#endif
- #endif
- #ifdef CONFIG_BLK_DEV_ZONED
- 	ATTR_LIST(block_zoned),
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+Thanks.
+
 -- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
-
+Dmitry
