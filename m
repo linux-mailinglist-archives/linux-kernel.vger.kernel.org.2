@@ -2,157 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577AC398ECC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8D5398ED6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhFBPjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:39:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:48056 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231204AbhFBPi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:38:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DF7811FB;
-        Wed,  2 Jun 2021 08:37:13 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 60EAA3F719;
-        Wed,  2 Jun 2021 08:37:12 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH] CFI: Move function_nocfi() into compiler.h
-Date:   Wed,  2 Jun 2021 16:37:01 +0100
-Message-Id: <20210602153701.35957-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S232065AbhFBPlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhFBPlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:41:35 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C14C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:39:52 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 6so2556480pgk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 08:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ql9d/9lC/Z+oDU+E2Te9dSYsTCkeZFltxB8n5ToB/Gw=;
+        b=eDmjm6x3PDZ43U95ZfqC/7h/3BXiLvCQpHMtTLWt0PoVyzou8OV6f4KCKtUevfBuZv
+         3svHbVtP1wOf47r0ACg9gzxYVBF6qeE7gNos1aKDY23hu1Pu9MSgE2rJPnUgj0MpGXXo
+         2puFR9jQpNlLACRzjAYhoY3f1xtfTT0D1NPhDRK8OQlpNqzg3vfcs+aZ7/wnmzJTiheh
+         Ph5oe532nJEhPyRFLq7lYCnbLdx3tPM++hbFtdJMu9QJ2EvAqkPhF8Qodv5vJHewFH1Y
+         SMeW8kAnzhi1j0Qc5fuC007pRMRVfxRvjQRj2tOQcuC+QbnP5H+w8KMQHKGBvDPOPsxb
+         7PAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ql9d/9lC/Z+oDU+E2Te9dSYsTCkeZFltxB8n5ToB/Gw=;
+        b=sjc7ee7ila9dHjhGbQ/p7g8NxvD+3/GEoly1dfdJQy+TVukHStqXY21bVH6aHunule
+         hNCebA7VvJGjCBcEyC3e8IDw682Ih097Eat+S+vXpdXIT60dzRM/F5wAFTi2DR4ACejN
+         XZUtTp4IWvnzOhuAMX/Ewn5wYj4+uy1an5UQRgBtHXUVnRNezPpxpzhX1BF87q4kB/0G
+         cxcM2WF4/2uHz8iPzrhchyVDXx9nyk2XgQeSYO2NxNLOFUrKDTpgct8VXHlmrtH/90KH
+         E9WPUeHTpUsNLZN+7PF9MGalLidBU0yKC1ylR6Ht3KVzWodasSokgmFGiuFHcN7P58q0
+         vg6g==
+X-Gm-Message-State: AOAM533sB4kacvHGOc2zvXpUWdee4Gy4UdGN3pqtgdVJLleIZSznnMoP
+        v2BO0axq4Fi8GaE7EzXznVzWXQ==
+X-Google-Smtp-Source: ABdhPJyoFdBqGNzP8RjidgmmG03Wg/fcm/E0mpp8XjjIzR9WkDNNSXTACznsMKOveIcatXdp+UyYmQ==
+X-Received: by 2002:a63:145e:: with SMTP id 30mr34900690pgu.174.1622648391388;
+        Wed, 02 Jun 2021 08:39:51 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id o27sm156917pgb.70.2021.06.02.08.39.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 08:39:50 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 15:39:47 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH V2] KVM: X86: fix tlb_flush_guest()
+Message-ID: <YLemQ++Xdvh5TVNe@google.com>
+References: <4c3ef411ba68ca726531a379fb6c9d16178c8513.camel@redhat.com>
+ <20210531172256.2908-1-jiangshanlai@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531172256.2908-1-jiangshanlai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the common definition of function_nocfi() is provided by
-<linux/mm.h>, and architectures are expected to provide a definition in
-<asm/memory.h>. Due to header dependencies, this can make it hard to use
-function_nocfi() in low-level headers.
+On Tue, Jun 01, 2021, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> For KVM_VCPU_FLUSH_TLB used in kvm_flush_tlb_multi(), the guest expects
+> the hypervisor do the operation that equals to native_flush_tlb_global()
+> or invpcid_flush_all() in the specified guest CPU.
 
-As function_nocfi() has no dependency on any mm code, nor on any memory
-definitions, it doesn't need to live in <linux/mm.h> or <asm/memory.h>.
-Generally, it would make more sense for it to live in
-<linux/compiler.h>, where an architecture can override it in
-<asm/compiler.h>.
+I don't like referencing guest code, here and in the comment.  The paravirt
+flush isn't limited to Linux guests, the existing kernel code might change, and
+it doesn't directly explain KVM's responsibilities in response to a guest TLB
+flush.
 
-Move the definitions accordingly.
+Something like:
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Sami Tolvanen <samitolvanen@google.com>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/compiler.h | 16 ++++++++++++++++
- arch/arm64/include/asm/memory.h   | 16 ----------------
- include/linux/compiler.h          | 10 ++++++++++
- include/linux/mm.h                | 10 ----------
- 4 files changed, 26 insertions(+), 26 deletions(-)
+  When using shadow paging, unload the guest MMU when emulating a guest TLB
+  flush to all roots are synchronized.  From the guest's perspective,
+  flushing the TLB ensure any and all modifications to its PTEs will be
+  recognized by the CPU.
 
-diff --git a/arch/arm64/include/asm/compiler.h b/arch/arm64/include/asm/compiler.h
-index 6fb2e6bcc392..dc3ea4080e2e 100644
---- a/arch/arm64/include/asm/compiler.h
-+++ b/arch/arm64/include/asm/compiler.h
-@@ -23,4 +23,20 @@
- #define __builtin_return_address(val)					\
- 	(void *)(ptrauth_clear_pac((unsigned long)__builtin_return_address(val)))
- 
-+#ifdef CONFIG_CFI_CLANG
-+/*
-+ * With CONFIG_CFI_CLANG, the compiler replaces function address
-+ * references with the address of the function's CFI jump table
-+ * entry. The function_nocfi macro always returns the address of the
-+ * actual function instead.
-+ */
-+#define function_nocfi(x) ({						\
-+	void *addr;							\
-+	asm("adrp %0, " __stringify(x) "\n\t"				\
-+	    "add  %0, %0, :lo12:" __stringify(x)			\
-+	    : "=r" (addr));						\
-+	addr;								\
-+})
-+#endif
-+
- #endif /* __ASM_COMPILER_H */
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index 7b360960cc35..1a35a4473598 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -321,22 +321,6 @@ static inline void *phys_to_virt(phys_addr_t x)
- #define virt_to_pfn(x)		__phys_to_pfn(__virt_to_phys((unsigned long)(x)))
- #define sym_to_pfn(x)		__phys_to_pfn(__pa_symbol(x))
- 
--#ifdef CONFIG_CFI_CLANG
--/*
-- * With CONFIG_CFI_CLANG, the compiler replaces function address
-- * references with the address of the function's CFI jump table
-- * entry. The function_nocfi macro always returns the address of the
-- * actual function instead.
-- */
--#define function_nocfi(x) ({						\
--	void *addr;							\
--	asm("adrp %0, " __stringify(x) "\n\t"				\
--	    "add  %0, %0, :lo12:" __stringify(x)			\
--	    : "=r" (addr));						\
--	addr;								\
--})
--#endif
--
- /*
-  *  virt_to_page(x)	convert a _valid_ virtual address to struct page *
-  *  virt_addr_valid(x)	indicates whether a virtual address is valid
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index df5b405e6305..099e529a5d25 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -213,6 +213,16 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 	__v;								\
- })
- 
-+/*
-+ * With CONFIG_CFI_CLANG, the compiler replaces function addresses in
-+ * instrumented C code with jump table addresses. Architectures that
-+ * support CFI can define this macro to return the actual function address
-+ * when needed.
-+ */
-+#ifndef function_nocfi
-+#define function_nocfi(x) (x)
-+#endif
-+
- #endif /* __KERNEL__ */
- 
- /*
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index c274f75efcf9..b8c28b10f25d 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -125,16 +125,6 @@ extern int mmap_rnd_compat_bits __read_mostly;
- #endif
- 
- /*
-- * With CONFIG_CFI_CLANG, the compiler replaces function addresses in
-- * instrumented C code with jump table addresses. Architectures that
-- * support CFI can define this macro to return the actual function address
-- * when needed.
-- */
--#ifndef function_nocfi
--#define function_nocfi(x) (x)
--#endif
--
--/*
-  * To prevent common memory management code establishing
-  * a zero page mapping on a read fault.
-  * This macro should be defined within <asm/pgtable.h>.
--- 
-2.11.0
+  Note, unloading the MMU is overkill, but is done to mirror KVM's existing
+  handling of INVPCID(all) and ensure the bug is squashed.  Future cleanup
+  can be done to more precisely synchronize roots when servicing a guest
+  TLB flush.
+  
+> When TDP is enabled, there is no problem to just flush the hardware
+> TLB of the specified guest CPU.
+> 
+> But when using shadowpaging, the hypervisor should have to sync the
+> shadow pagetable at first before flushing the hardware TLB so that
+> it can truely emulate the operation of invpcid_flush_all() in guest.
+> 
+> The problem exists since the first implementation of KVM_VCPU_FLUSH_TLB
+> in commit f38a7b75267f ("KVM: X86: support paravirtualized help for TLB
+> shootdowns").  But I don't think it would be a real world problem that
+> time since the local CPU's tlb is flushed at first in guest before queuing
+> KVM_VCPU_FLUSH_TLB to other CPUs.  It means that the hypervisor syncs the
+> shadow pagetable before seeing the corresponding KVM_VCPU_FLUSH_TLBs.
+> 
+> After commit 4ce94eabac16 ("x86/mm/tlb: Flush remote and local TLBs
+> concurrently"), the guest doesn't flush local CPU's tlb at first and
+> the hypervisor can handle other VCPU's KVM_VCPU_FLUSH_TLB earlier than
+> local VCPU's tlb flush and might flush the hardware tlb without syncing
+> the shadow pagetable beforehand.
 
+Maybe reword the last two paragraphs to make it clear that a change in the Linux
+kernel exposed the KVM bug?
+
+  This bug has existed since the introduction of KVM_VCPU_FLUSH_TLB, but
+  was only recently exposed after Linux guests stopped flushing the local
+  CPU's TLB prior to flushing remote TLBs (see commit 4ce94eabac16,
+  "x86/mm/tlb: Flush remote and local TLBs concurrently").
+
+> Cc: Maxim Levitsky <mlevitsk@redhat.com>
+> Fixes: f38a7b75267f ("KVM: X86: support paravirtualized help for TLB shootdowns")
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+> Changed from V1
+> 	Use kvm_mmu_unload() instead of KVM_REQ_MMU_RELOAD to avoid
+> 	causing unneeded iteration of vcpu_enter_guest().
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index bbc4e04e67ad..27248e330767 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3072,6 +3072,22 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
+>  static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
+>  {
+>  	++vcpu->stat.tlb_flush;
+> +
+> +	if (!tdp_enabled) {
+> +		/*
+> +		 * When two dimensional paging is not enabled, the
+> +		 * operation should equal to native_flush_tlb_global()
+> +		 * or invpcid_flush_all() on the guest's behalf via
+> +		 * synchronzing shadow pagetable and flushing.
+> +		 *
+> +		 * kvm_mmu_unload() results consequent kvm_mmu_load()
+> +		 * before entering guest which will do the required
+> +		 * pagetable synchronzing and TLB flushing.
+> +		 */
+> +		kvm_mmu_unload(vcpu);
+
+I don't like the full unload, but I suppose the big hammer does make sense for a
+backport since handle_invcpid() and toggling CR4.PGE already nuke everything.  :-/
+
+> +		return;
+> +	}
+> +
+>  	static_call(kvm_x86_tlb_flush_guest)(vcpu);
+>  }
+>  
+> -- 
+> 2.19.1.6.gb485710b
+> 
