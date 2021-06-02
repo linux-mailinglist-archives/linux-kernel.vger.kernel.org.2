@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F73E398AB5
+	by mail.lfdr.de (Postfix) with ESMTP id EB89B398AB6
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhFBNdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:33:37 -0400
-Received: from mail-ej1-f52.google.com ([209.85.218.52]:46946 "EHLO
-        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbhFBNdH (ORCPT
+        id S230378AbhFBNdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhFBNdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:33:07 -0400
-Received: by mail-ej1-f52.google.com with SMTP id b9so3805145ejc.13
+        Wed, 2 Jun 2021 09:33:06 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45128C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 06:31:10 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id i4so3874521ybe.2
         for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CmMKEjn5wAawQySc5ZWj7VIbRiSvzSHnPMe8fkp0pgw=;
-        b=kAxAlm1SDECm+U40H38LsnsUnrYJO14WdtHq27vPyu2WTYmqehBdHDrnM4i2dVrtRp
-         GawhKW8IWFOrqlcEVUxBbmL9F/agDS1sv8q7HZ+2hJkhz76rZvve91nV9kxYKrTp/sfv
-         XRFmJA2DS1vwJ55grpA6mxEprRo+q4vB4fdEPQcZHj+6dpJDGFfNtrLe+MR5ouSvecq2
-         nD7SzKSiT2bt3up2Qdw+YAuyN46/z6clv4YfaolSuECeo4chfScIPvSRhMQ233CzyC20
-         Q61OmYhmKg4u5wyn/pYVnpbmNtzHUU3b7KjqCNPZtYE1u0VFITxMerKVzwAph2EuEzbk
-         pkAg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cNER4NQtwZ5xWdo+26Tmrkvw8GRzt+nxDgpp1wW+2Ts=;
+        b=QxqPoJT3+KN4MMpNRXYccWtL45RfJt6GvLyC3rs+GlQu2BuPW/9us9JE3jwLiulAU/
+         sWLYoHaC/44+yyrCfQg3i6XYqcwFC7bE1Dnf/Fj6UpGip1in5LcBwIwjrVflPXPDpXFW
+         xCtKFN9ZMpOZL7KxXYAegOa6Rsid+p0bPrNv88V7Px3+0w2Di9Os78OPth0fgO5OcegR
+         Uwn2b14dQUy719Sxrq7p06/Peq/hr3uiX5BKool8KsZ2E0nu0eLLghnDrFziXVWpRYCB
+         1OnKHThVBLUgwpQthQSPDfKHzqLcjWcXmSDfr1LGahyaR7oqB5zs1tefhlZj8c6GxAii
+         uvLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CmMKEjn5wAawQySc5ZWj7VIbRiSvzSHnPMe8fkp0pgw=;
-        b=Y3mL7lM5a4+bPmEo/ePkhAylLROQF0Z9qHtaynfa8U4VZC1L5ezXdRiPNitbC7zUw8
-         EpFr9/n7I+EvJQlrPBxgfW7f53xZkPDp7KPO6WDZeg1ysAvUaCEs7HvpxCOpJnP/STM0
-         4Um/GG00m9p3CcS4aUcepy2+XHoP4N74SL5lF0TgnpBTkFbh0OQC9a39I0L5ilyHbuDH
-         eoemih5QGjP1+YqPquhLF/oGlQhUmJCYu5wPrhL7XjK3HUSyw98IUnmDMaeq3ECeZ5Up
-         arvvPNZRsGxE8589rW+CSNRi3bkUw5nGnXzJspnIX/712Eux+yRtIGXA/lZ29VWCfRFI
-         gCpQ==
-X-Gm-Message-State: AOAM533kP3qp63NGyXF4J1KD10sEZ5I76t35LhDaDB0GBaxuSO4JXuZa
-        b6wGA1iiYK74S7bP3R0l0P+mmQ==
-X-Google-Smtp-Source: ABdhPJzg+epbXioL5/fO0o9gGBXzXyN7l/jPgr2tavbf7OQrtL0PJbH3WM8ENHvucWWNwIYcVXt8Hw==
-X-Received: by 2002:a17:906:3818:: with SMTP id v24mr25708052ejc.197.1622640609750;
-        Wed, 02 Jun 2021 06:30:09 -0700 (PDT)
-Received: from [192.168.1.28] (hst-221-100.medicom.bg. [84.238.221.100])
-        by smtp.googlemail.com with ESMTPSA id l8sm1352966eds.79.2021.06.02.06.30.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 06:30:09 -0700 (PDT)
-Subject: Re: [PATCH 3/3] venus: Add a handling of QC10C compressed format
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
- <20210429105815.2790770-4-stanimir.varbanov@linaro.org>
- <37d5e58c-ce5b-07f8-396f-662258a9b229@xs4all.nl>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <f5df5da4-6904-8e9f-0bf0-0c18cde1cc8a@linaro.org>
-Date:   Wed, 2 Jun 2021 16:30:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cNER4NQtwZ5xWdo+26Tmrkvw8GRzt+nxDgpp1wW+2Ts=;
+        b=T88j1AW2CVDeXRmRQ4txuUdkcU+Fqqc2te0ADA9BNCBa92Cr8jN3rNnOWFMDV6WmPy
+         ZJMoFJo2RNtTuDruhvwAEJrhi6A3CkJyp9puYstGOGGnWAdxq7DfLF1FOxLuzdUxXaBC
+         xQRTc8BMCdNyd2Gi6sQ0zAT7/BGLymDa6DGKaIZUIf3/kwIo4ERGPB+SbYBrgP519dK+
+         f4nrdEVLYFWlfQhxetCiRS4jjNT0DqUaCOX5+v8bYaKgHabHrILa+Og8TO9+Sab2EIFs
+         M2PIin1Zt9574P1cgdPK8RjC737UYMhhLXg8Edz9cx/AWt/qnE1TgXYx7pi1RrKJK1gJ
+         mpFg==
+X-Gm-Message-State: AOAM5338CDP27gbm54kESAhBmjCdjkIGF9x2Gkfvrz+Uj5VPv+0CVCpS
+        yhHKJtJPIFH40POcoVFP0sEeDUscXdSWU2mRM8u/kA==
+X-Google-Smtp-Source: ABdhPJxQPDE2xGfYkRSOj4oxRSKoBW1LR7SjHN4xu3Y58xs2ZK6P1q/ByomauopvW4wJJYm8IrTmKibl1oFCNtpIUL8=
+X-Received: by 2002:a25:8804:: with SMTP id c4mr47260792ybl.469.1622640669520;
+ Wed, 02 Jun 2021 06:31:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <37d5e58c-ce5b-07f8-396f-662258a9b229@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210525045717.20652-1-navin@linumiz.com>
+In-Reply-To: <20210525045717.20652-1-navin@linumiz.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 2 Jun 2021 15:30:58 +0200
+Message-ID: <CAMpxmJWCcHYs1wkhqcdUdc74_mwdJOD7WwcDFwwCs3cp16+zRw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: 104-idio-16: Fix coding style issues
+To:     Navin Sankar Velliangiri <navin@linumiz.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 6:57 AM Navin Sankar Velliangiri
+<navin@linumiz.com> wrote:
+>
+> Fixed multiple bare uses of 'unsigned' without int.
+> Reported by checkpatch.
+>
+> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+> ---
 
+Applied, thanks!
 
-On 6/2/21 1:01 PM, Hans Verkuil wrote:
-> On 29/04/2021 12:58, Stanimir Varbanov wrote:
->> This adds QC10C compressed pixel format in the Venus driver, and
->> make it enumeratable from v4l2 clients.
-> 
-> enumeratable -> possible to discover
-> 
-> (or possibly 'enumerable', but I prefer the phrase suggested above)
-> 
->>
->> Note: The QC10C format shouldn't be possible to enumerate by the
->> client if the decoded bitstream is not 10bits. This is not
-> 
-> 10bits -> 10-bits
-> 
->> implemented in this patch yet.
-> 
-> Obvious question: will this be done in a later patch that is being
-> prepared? Would it be better to wait until such a patch is available?
-> 
-
-Yes, It will be implemented in v2.
-
--- 
-regards,
-Stan
+Bart
