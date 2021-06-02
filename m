@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A46398D08
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DE5398CCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhFBOfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbhFBOfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:35:36 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7298C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:33:37 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id h3so1449388wmq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:33:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kVk/K6SiOopKBeZrOFr3ETwL2h0sUuVeJjHQIvLbemo=;
-        b=aOFSzbMh1MJoVmxlcUdFd7U7AXDU29/SRvovXJ/BeXWOGMTp7ZiZ5+ET8rZahi52XC
-         hHDhj0Lx3Wc5PNGUDrKCNTx5QuvAelYzl4pw5OkYJPkUuResbzQ9wEWBDk1JFEgvdzvq
-         7LC0I3lfvRWBsPUeCCHB0McrH101t6G/TFaIl8uVofGuk+LlX2xALid4KW3okkHvPtMl
-         R8YPiaapgbSYH0BtQ0eb3VJ/P9UTdLMwwZYxGHg9ElRG7QaS+dlGKDGjJLn+HLLpoDSQ
-         S5XvxR4cDDxbfSnepK0A7TgnHIpxpwUpvsYtzaydMJ+KHUWD9rv6ca2rd2QY/+PL1Kzt
-         Zk1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kVk/K6SiOopKBeZrOFr3ETwL2h0sUuVeJjHQIvLbemo=;
-        b=KmHOnetifzRzBTTtROiyyLcRtTxzI0WH+QoeFFNsnReQuQPdhPBA9RoBHhRSsU+xoP
-         FwzOc3RWdNDyWIew0KAeFUv0PB49wk9eHFdIpaN4AfXrYE2c8av+wM3epPDD/fBpe7d5
-         BT6/No2dIcPdy9V8HUbgdoBdojZhPg8ea5tOHNgXnW9V/O4+6c2+e9J146n2XolYJJZq
-         JEORS4agCLz/bIL/6Vw5A9EZ9glYKf5f+iwwUEvOsNXxJJP+sEFaNM7yNJsBQQi9ESOJ
-         954VOdgqa2TJJSwpXZSYTS/IFz2qx7HTtZOHJLCwkf1wdZ68sL5MX1LiVX1KdObUCgbx
-         Q5kQ==
-X-Gm-Message-State: AOAM5304b6sCmmdHpTtaCSpSb6DLlZCneZp5plSgs9kd7pMFcvOgEmAS
-        rJ+k241WLkNcqfzNHtX+Ljq3Dw==
-X-Google-Smtp-Source: ABdhPJx7/89qHUI3nSWoMnefrKMkjP5VwkmsVsC8ptnnljyy095o77k3JyChKVY7mNukeFzEjN8Dfg==
-X-Received: by 2002:a7b:cc87:: with SMTP id p7mr5628267wma.85.1622644416555;
-        Wed, 02 Jun 2021 07:33:36 -0700 (PDT)
-Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:33:36 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [RESEND 26/26] drm/vboxvideo/modesetting: Provide function names for prototype headers
-Date:   Wed,  2 Jun 2021 15:33:00 +0100
-Message-Id: <20210602143300.2330146-27-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
-References: <20210602143300.2330146-1-lee.jones@linaro.org>
+        id S230440AbhFBOet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230072AbhFBOeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:34:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94575610E5;
+        Wed,  2 Jun 2021 14:33:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622644383;
+        bh=hF0gUK5h5fG4VQJcQAexS0ZkmAECiuolBUP7hlmAfaU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ob5V39sTbdgXZrFmF6ULpnSyc6aqrJAVHvTPohn3s/DQ7+RzFooOfYXz0N25wkxz7
+         mjvB4LcMPiQ3krZQZuTpH05XZwvAyUT6GecK2G7Y6B5supsetFaKfzJy1IhDVdyBjD
+         62kYXWK53LAJZepaw2tY5dk7VwjifR4sTIhAs63oik0w0TCPAR5n67dq2gI206c2BL
+         0sSNlPRMB1N6OmRO89234twtbiy5wlT5Ux6A8Xl+yPg+xC7lNbL6iDECjCnYiON2HE
+         gxC0gz6cgEvdJx9z6BOdOmP7RwC0qgF1FgsTW7a4+dthmzY4Op/4U1SK2kTywN/jnj
+         h6yp2P0CZsWjA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] tracing/boot: Add per-group/all events enablement
+Date:   Wed,  2 Jun 2021 23:33:00 +0900
+Message-Id: <162264438005.302580.12019174481201855444.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Add ftrace.event.<GROUP>.enable and ftrace.event.enable
+boot-time tracing, which enables all events under
+given GROUP and all events respectivly.
 
- drivers/gpu/drm/vboxvideo/modesetting.c:11: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/vboxvideo/modesetting.c:54: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/vboxvideo/modesetting.c:87: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- drivers/gpu/drm/vboxvideo/modesetting.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ kernel/trace/trace_boot.c |   27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vboxvideo/modesetting.c b/drivers/gpu/drm/vboxvideo/modesetting.c
-index 7580b90023792..10b32d986b956 100644
---- a/drivers/gpu/drm/vboxvideo/modesetting.c
-+++ b/drivers/gpu/drm/vboxvideo/modesetting.c
-@@ -8,9 +8,11 @@
- #include "hgsmi_channels.h"
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index a82f03f385f8..94ef2d099e32 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -225,14 +225,37 @@ static void __init
+ trace_boot_init_events(struct trace_array *tr, struct xbc_node *node)
+ {
+ 	struct xbc_node *gnode, *enode;
++	bool enable, enable_all = false;
++	const char *data;
  
- /**
-- * Set a video mode via an HGSMI request.  The views must have been
-- * initialised first using @a VBoxHGSMISendViewInfo and if the mode is being
-- * set on the first display then it must be set first using registers.
-+ * hgsmi_process_display_info - Set a video mode via an HGSMI request.
-+ *                              The views must have been initialised first
-+ *                              using @a VBoxHGSMISendViewInfo and if the mode
-+ *                              is being set on the first display then it must
-+ *                              be set first using registers.
-  * @ctx:           The context containing the heap to use.
-  * @display:       The screen number.
-  * @origin_x:      The horizontal displacement relative to the first scrn.
-@@ -51,10 +53,12 @@ void hgsmi_process_display_info(struct gen_pool *ctx, u32 display,
+ 	node = xbc_node_find_child(node, "event");
+ 	if (!node)
+ 		return;
+ 	/* per-event key starts with "event.GROUP.EVENT" */
+-	xbc_node_for_each_child(node, gnode)
+-		xbc_node_for_each_child(gnode, enode)
++	xbc_node_for_each_child(node, gnode) {
++		data = xbc_node_get_data(gnode);
++		if (!strcmp(data, "enable")) {
++			enable_all = true;
++			continue;
++		}
++		enable = false;
++		xbc_node_for_each_child(gnode, enode) {
++			data = xbc_node_get_data(enode);
++			if (!strcmp(data, "enable")) {
++				enable = true;
++				continue;
++			}
+ 			trace_boot_init_one_event(tr, gnode, enode);
++		}
++		/* Event enablement must be done after event settings */
++		if (enable) {
++			data = xbc_node_get_data(gnode);
++			trace_array_set_clr_event(tr, data, NULL, true);
++		}
++	}
++	/* Ditto */
++	if (enable_all)
++		trace_array_set_clr_event(tr, NULL, NULL, true);
  }
- 
- /**
-- * Report the rectangle relative to which absolute pointer events should be
-- * expressed.  This information remains valid until the next VBVA resize event
-- * for any screen, at which time it is reset to the bounding rectangle of all
-- * virtual screens.
-+ * hgsmi_update_input_mapping - Report the rectangle relative to which absolute
-+ *                              pointer events should be expressed.  This
-+ *                              information remains valid until the next VBVA
-+ *                              resize event for any screen, at which time it is
-+ *                              reset to the bounding rectangle of all virtual
-+ *                              screens.
-  * Return: 0 or negative errno value.
-  * @ctx:       The context containing the heap to use.
-  * @origin_x:  Upper left X co-ordinate relative to the first screen.
-@@ -84,7 +88,7 @@ int hgsmi_update_input_mapping(struct gen_pool *ctx, s32 origin_x, s32 origin_y,
- }
- 
- /**
-- * Get most recent video mode hints.
-+ * hgsmi_get_mode_hints - Get most recent video mode hints.
-  * Return: 0 or negative errno value.
-  * @ctx:      The context containing the heap to use.
-  * @screens:  The number of screens to query hints for, starting at 0.
--- 
-2.31.1
+ #else
+ #define trace_boot_enable_events(tr, node) do {} while (0)
 
