@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC563398E6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFF6398E39
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbhFBPV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:21:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59614 "EHLO
+        id S232197AbhFBPTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:19:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51506 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbhFBPUR (ORCPT
+        with ESMTP id S232180AbhFBPTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:20:17 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0E59D336E7;
-        Wed,  2 Jun 2021 15:18:32 +0000 (UTC)
+        Wed, 2 Jun 2021 11:19:51 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0248B21AB2;
+        Wed,  2 Jun 2021 15:18:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622647112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=94BwVvcKrAI+NWGxu/ROld7wZlGsxt52f6M4Ri++3BE=;
-        b=JRfdjcjezHVUWId4flW7MPoRofk3c5D4AdW7mxSCnNVBrDflbgNjb82S5WvkI8x3m+1e0v
-        77O6UlA+5afJ5qOdRQzYsEsMPRTTICRhCwpueILy3T7ZKvNZGmidXx51v5MTLBqMTZBQAF
-        dPOXjBpIgq0NUX86Q26XiC9tPnVYML0=
+        t=1622647088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=abiDawFaADWTZKPBaHNA1Cn487UEzBujiumXV31Y0hY=;
+        b=FgGMWr2rx5+tyKHIGvzvQcdXnafUfufwEilebO4BNPEnTDcvJN9IIsSMtyj3keMFwvdTHW
+        vYLpEBDPg4fOMUAnMgd4D0zeqAUlcPk3QYfmpVEaa4dMPgdbJIaR2Tx+20zUgn3yPzZB5Q
+        2UJ+67kFfIEDv8cHsG/NL6AxVDPwb7k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622647112;
+        s=susede2_ed25519; t=1622647088;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=94BwVvcKrAI+NWGxu/ROld7wZlGsxt52f6M4Ri++3BE=;
-        b=zW7ehgWWMVNp82+eHjE5dkp1SiuEYRFvQfpM28o01y8BD+lpX53mSGzKT8lQw1h+8Z7IpQ
-        9tTJvwi/zc1OpHAg==
-Received: by imap.suse.de (Postfix, from userid 51)
-        id 03A5311CD6; Wed,  2 Jun 2021 16:07:31 +0000 (UTC)
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 8A29F11E3F;
-        Wed,  2 Jun 2021 12:49:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622638159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=94BwVvcKrAI+NWGxu/ROld7wZlGsxt52f6M4Ri++3BE=;
-        b=Ps9Uk4tk3AruLw4qiTFIcIwsJABrdJW5I6U31BJHSQzSrxmX6AevNLGDxO982AvpYgJabc
-        eHyIafbNhQ59P9c40um7S8v4pFnHlFfUs1IDfRSqoztKJevZa4azzYPsapVVFkENi4NeEa
-        lCazp7RCu+OjG7g/RrjPKRlNt47OfEA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622638159;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=94BwVvcKrAI+NWGxu/ROld7wZlGsxt52f6M4Ri++3BE=;
-        b=XYlQNIbld5R0Ky8IzRBkiK0ydxAQkpkwPKbOyrNrOKkb2qwXNcnyyHEu1AhP1HL1qv5idB
-        Fv6Ywi+lAZg/fuAA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 87PuIE9+t2D+KgAALh3uQQ
-        (envelope-from <dwagner@suse.de>); Wed, 02 Jun 2021 12:49:19 +0000
-Date:   Wed, 2 Jun 2021 14:49:19 +0200
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=abiDawFaADWTZKPBaHNA1Cn487UEzBujiumXV31Y0hY=;
+        b=YqGPT4aMSZHc/Vk9k0tj5XBjN+v//Dxr3CdRdONjdWvPhnWHqPesQY8IZmDFGcejFPcNNN
+        3o9r+Y3RafUrp4Cg==
+Received: by relay2.suse.de (Postfix, from userid 51)
+        id F33C0A3CB8; Wed,  2 Jun 2021 15:23:43 +0000 (UTC)
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id D57FBA703B;
+        Wed,  2 Jun 2021 13:00:42 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id C89DA516FB04; Wed,  2 Jun 2021 15:00:42 +0200 (CEST)
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-nvme@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
         Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH] nvme: reset disk to the mpath node also when requeuing
-Message-ID: <20210602124919.gdzorzhbjitjr4uj@beryllium.lan>
-References: <20210602123429.103935-1-dwagner@suse.de>
+        Sagi Grimberg <sagi@grimberg.me>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v2] nvme: reset disk to the mpath node also when requeuing
+Date:   Wed,  2 Jun 2021 15:00:39 +0200
+Message-Id: <20210602130039.122879-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602123429.103935-1-dwagner@suse.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 02:34:29PM +0200, Daniel Wagner wrote:
->  		spin_lock_irq(&head->requeue_lock);
-> +		bio_set_dev(bio, head->disk->part0);
+Commit ce86dad222e9 ("nvme-multipath: reset bdev to ns head when
+failover") moved the reset code where the bio is added to the
+requeue_list for the failover path. But it left the original
+bio_set_dev() in nvme_requeue_work().
 
-Obviously, this needs to be done for all bios. Let me send an updated
-version.x
+Let's move the bio_set_dev() where we add the bio to the requeue_list
+and avoid the double setting in case of the failover path. And this
+makes the code more consistent.
+
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+
+v2: loop over all bios and reset them
+
+ drivers/nvme/host/multipath.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 127a17b4c13d..3334c6f23476 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -302,6 +302,7 @@ static blk_qc_t nvme_ns_head_submit_bio(struct bio *bio)
+ 	struct nvme_ns_head *head = bio->bi_bdev->bd_disk->private_data;
+ 	struct device *dev = disk_to_dev(head->disk);
+ 	struct nvme_ns *ns;
++	struct bio *b;
+ 	blk_qc_t ret = BLK_QC_T_NONE;
+ 	int srcu_idx;
+ 
+@@ -324,6 +325,8 @@ static blk_qc_t nvme_ns_head_submit_bio(struct bio *bio)
+ 		dev_warn_ratelimited(dev, "no usable path - requeuing I/O\n");
+ 
+ 		spin_lock_irq(&head->requeue_lock);
++		for (b = bio; b; b = b->bi_next)
++			bio_set_dev(b, head->disk->part0);
+ 		bio_list_add(&head->requeue_list, bio);
+ 		spin_unlock_irq(&head->requeue_lock);
+ 	} else {
+@@ -435,11 +438,6 @@ static void nvme_requeue_work(struct work_struct *work)
+ 		next = bio->bi_next;
+ 		bio->bi_next = NULL;
+ 
+-		/*
+-		 * Reset disk to the mpath node and resubmit to select a new
+-		 * path.
+-		 */
+-		bio_set_dev(bio, head->disk->part0);
+ 		submit_bio_noacct(bio);
+ 	}
+ }
+-- 
+2.29.2
+
