@@ -2,132 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261AF398E0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1C8398E11
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhFBPPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:15:03 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3517 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhFBPPB (ORCPT
+        id S231770AbhFBPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:16:09 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:44715 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231286AbhFBPQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:15:01 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FwCBv15T3zYq3W;
-        Wed,  2 Jun 2021 23:10:31 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 23:13:15 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 23:13:15 +0800
-Subject: Re: [PATCH v2 7/7] ARM: mm: Fix PXN process with LPAE feature
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jungseung Lee <js07.lee@gmail.com>
-References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
- <20210602070246.83990-8-wangkefeng.wang@huawei.com>
- <20210602105255.GK30436@shell.armlinux.org.uk>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <62f08378-85e7-2a07-3fd0-b287047ce1b5@huawei.com>
-Date:   Wed, 2 Jun 2021 23:13:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 2 Jun 2021 11:16:07 -0400
+Received: by mail-pg1-f171.google.com with SMTP id 29so2463146pgu.11;
+        Wed, 02 Jun 2021 08:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EY89WvFPXItdyL7n52M5NUf6/h0uiQx9JjQhgnr22JY=;
+        b=KwFqdi2QeEjmXUXeSJjiszKwvxb25mTEyUFX64eOGEdR5GcefzXcN48k+CcD7fmk8Y
+         oZKwE5P8yvBLJ9SZlAp5kkg3/eeJABXOjC+AhaxH9+00oW1j/Hw3sDMI0OqZU8k3Rkn2
+         +0PHSBkJCmoM9lM/5z1TvvA3p6WgOGdQvJen4ZLW84EBgvL/3exaQC0goHX/RVh8/YAI
+         f5IDlGG5KU0tiNneiC6/f1GmffdkuDGyBrj3Xpji6Xs/EzZYqhPC6Ju6jtxFeMD5Y7gX
+         kjjNo0MWBB1Ho8Xqw/ufSwE7P2oNnGhNNOySCvX+jDxhLot7CWJBtD+vUZWAC3ZKVQKB
+         IWbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EY89WvFPXItdyL7n52M5NUf6/h0uiQx9JjQhgnr22JY=;
+        b=r7sIsm+zxsJuOBEQKu9x1aJhqNnPNzIgzW0sO47VtY2PB/yj3S56HMwj6nWVTy4D1X
+         vczKDSjbXW+sWh3MJmoDb3PKs+vEO9lBB9XJpUuCoM5/IjdYC0p9hOkOM5IBuGqf4Hh4
+         YoBoblnvYjJv67BADF/pBwxJ0SrQ+dnRZcwJ9ocEEeLeRKfEETau/ciyVKrBQ14b3GlI
+         RHonM/POwZ6YdPv2YjtKlXh5fty8UhhJJjfqjZtWFamlC5HshVlC1C8ePC0lvIL/rGQX
+         tHc0undiCNbhb5+HGS/91bD6M44wBHNcESHwyhJDRKDb9tU7+eMwK2LlZLhClY5Hv7+a
+         9vuA==
+X-Gm-Message-State: AOAM531V8KgBiFV6E0W3n/Vh09y/NK/7NBo5uakTtqyfr3zAt3egSTdD
+        dIidiFxjFf8d0C6599JTycMo9caN3xU=
+X-Google-Smtp-Source: ABdhPJxtaSanZi8Be5s2D+w8EQ0HqXEmErF7seavVsPW78lcs1gD9m4H8EhHVxdP+Dsq+074J8inUw==
+X-Received: by 2002:a05:6a00:1350:b029:2e9:ac26:a5ba with SMTP id k16-20020a056a001350b02902e9ac26a5bamr21769069pfu.15.1622646803821;
+        Wed, 02 Jun 2021 08:13:23 -0700 (PDT)
+Received: from [172.30.1.14] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id f6sm33475pfb.28.2021.06.02.08.13.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 08:13:23 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] extcon: sm5502: Refactor driver to use
+ chip-specific struct
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nikita Travkin <nikita@trvn.ru>,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20210601200007.218802-1-stephan@gerhold.net>
+ <20210601200007.218802-3-stephan@gerhold.net>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <b3a9eed8-0d7c-e935-36d4-13918f5b7b21@gmail.com>
+Date:   Thu, 3 Jun 2021 00:13:18 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210602105255.GK30436@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210601200007.218802-3-stephan@gerhold.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21. 6. 2. 오전 5:00, Stephan Gerhold wrote:
+> Prepare for supporting SM5504 in the extcon-sm5502 driver by replacing
+> enum sm5504_types with a struct sm5504_type that stores the chip-specific
+> definitions. This struct can then be defined separately for SM5504
+> without having to add if (type == TYPE_SM5504) everywhere in the code.
+> 
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+> Changes in v3: New patch to simplify diff on next patch
+> ---
+>   drivers/extcon/extcon-sm5502.c | 64 +++++++++++++++++++++-------------
+>   drivers/extcon/extcon-sm5502.h |  4 ---
+>   2 files changed, 40 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/extcon/extcon-sm5502.c b/drivers/extcon/extcon-sm5502.c
+> index 9f40bb9f1f81..951f6ca4c479 100644
+> --- a/drivers/extcon/extcon-sm5502.c
+> +++ b/drivers/extcon/extcon-sm5502.c
+> @@ -40,17 +40,13 @@ struct sm5502_muic_info {
+>   	struct i2c_client *i2c;
+>   	struct regmap *regmap;
+>   
+> +	const struct sm5502_type *type;
+>   	struct regmap_irq_chip_data *irq_data;
+> -	struct muic_irq *muic_irqs;
+> -	unsigned int num_muic_irqs;
+>   	int irq;
+>   	bool irq_attach;
+>   	bool irq_detach;
+>   	struct work_struct irq_work;
+>   
+> -	struct reg_data *reg_data;
+> -	unsigned int num_reg_data;
+> -
+>   	struct mutex mutex;
+>   
+>   	/*
+> @@ -62,6 +58,17 @@ struct sm5502_muic_info {
+>   	struct delayed_work wq_detcable;
+>   };
+>   
+> +struct sm5502_type {
+> +	struct muic_irq *muic_irqs;
+> +	unsigned int num_muic_irqs;
+> +	const struct regmap_irq_chip *irq_chip;
+> +
+> +	struct reg_data *reg_data;
+> +	unsigned int num_reg_data;
+> +
+> +	int (*parse_irq)(struct sm5502_muic_info *info, int irq_type);
+> +};
+> +
+>   /* Default value of SM5502 register to bring up MUIC device. */
+>   static struct reg_data sm5502_reg_data[] = {
+>   	{
+> @@ -502,11 +509,11 @@ static irqreturn_t sm5502_muic_irq_handler(int irq, void *data)
+>   	struct sm5502_muic_info *info = data;
+>   	int i, irq_type = -1, ret;
+>   
+> -	for (i = 0; i < info->num_muic_irqs; i++)
+> -		if (irq == info->muic_irqs[i].virq)
+> -			irq_type = info->muic_irqs[i].irq;
+> +	for (i = 0; i < info->type->num_muic_irqs; i++)
+> +		if (irq == info->type->muic_irqs[i].virq)
+> +			irq_type = info->type->muic_irqs[i].irq;
+>   
+> -	ret = sm5502_parse_irq(info, irq_type);
+> +	ret = info->type->parse_irq(info, irq_type);
 
-On 2021/6/2 18:52, Russell King (Oracle) wrote:
-> Hi,
->
-> On Wed, Jun 02, 2021 at 03:02:46PM +0800, Kefeng Wang wrote:
->> When user code execution with privilege mode, it will lead to
->> infinite loop in the page fault handler if ARM_LPAE enabled,
->>
->> The issue could be reproduced with
->>    "echo EXEC_USERSPACE > /sys/kernel/debug/provoke-crash/DIRECT"
->>
->> Lets' fix it by adding the check in do_page_fault() and panic
->> when ARM_LPAE enabled.
->>
->> Fixes: 1d4d37159d01 ("ARM: 8235/1: Support for the PXN CPU feature on ARMv7")
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   arch/arm/mm/fault.c | 8 +++++++-
->>   1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
->> index 7cfa9a59d3ec..279bbeb33b48 100644
->> --- a/arch/arm/mm/fault.c
->> +++ b/arch/arm/mm/fault.c
->> @@ -257,8 +257,14 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
->>   		vm_flags = VM_WRITE;
->>   	}
->>   
->> -	if (fsr & FSR_LNX_PF)
->> +	if (fsr & FSR_LNX_PF) {
->>   		vm_flags = VM_EXEC;
->> +#ifdef CONFIG_ARM_LPAE
->> +		if (addr && addr < TASK_SIZE && !user_mode(regs))
->> +			die_kernel_fault("execution of user memory",
->> +					 addr, fsr, regs);
->> +#endif
->> +	}
-> Do we need to do this test here?
->
-> Also, is this really LPAE specific? We have similar protection on 32-bit
-> ARM using domains to disable access to userspace except when the user
-> accessors are being used, so I would expect kernel-mode execution to
-> also cause a fault there.
-   IFSR format when using the Short-descriptor translation table format
+Looks good to me. But there is only one comment.
+Need to check the 'parse_irq' as following:
 
-     Domain fault      01001            First level   01011     Second level
+If you agree this suggestion, I'll apply with following changes by myself:
 
-     Permission fault 01101            First level   01111     Second level
+	if (!info->type->parse_irq) {
+		dev_err(info->dev, "failed to handle irq due to parse_irq\n",
+		return IRQ_NONE;
+	}
 
-   IFSR format when using the Long-descriptor translation table format
 
-    0011LL Permission fault. LL bits indicate levelb.
+(snip)
 
-After check the ARM spec, I think for the permission fault,  we should panic
-
-with or without LPAE, will change to
-
-diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
-index 7cfa9a59d3ec..dd97d9b19dec 100644
---- a/arch/arm/mm/fault.c
-+++ b/arch/arm/mm/fault.c
-@@ -257,8 +257,11 @@ do_page_fault(unsigned long addr, unsigned int fsr, 
-struct pt_regs *regs)
-                 vm_flags = VM_WRITE;
-         }
-
--       if (fsr & FSR_LNX_PF)
-+       if (fsr & FSR_LNX_PF) {
-                 vm_flags = VM_EXEC;
-+               if (!user_mode(regs))
-+                       die_kernel_fault("execution of memory", addr, 
-fsr, regs);
-+       }
-
-         perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
-
-If no object, I will send all patches with updates to  patch system,  
-thanks.
-
->
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
