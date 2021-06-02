@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064D739811A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A8F39811D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhFBG1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:27:23 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2944 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhFBG1L (ORCPT
+        id S231260AbhFBG1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231342AbhFBG11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:27:11 -0400
-Received: from dggeme710-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvzTd1CrYz693w;
-        Wed,  2 Jun 2021 14:22:29 +0800 (CST)
-Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
- dggeme710-chm.china.huawei.com (10.1.199.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 2 Jun 2021 14:25:26 +0800
-Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
- dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
- Wed, 2 Jun 2021 14:25:26 +0800
-From:   zhengyongjun <zhengyongjun3@huawei.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "rjui@broadcom.com" <rjui@broadcom.com>,
-        "sbranden@broadcom.com" <sbranden@broadcom.com>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "khilman@baylibre.com" <khilman@baylibre.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>
-CC:     "opendmb@gmail.com" <opendmb@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-        "martin.blumenstingl@googlemail.com" 
-        <martin.blumenstingl@googlemail.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjIgbmV0LW5leHRdIG5ldDogbWRpbzogRml4IHNw?=
- =?utf-8?Q?elling_mistakes?=
-Thread-Topic: [PATCH v2 net-next] net: mdio: Fix spelling mistakes
-Thread-Index: AQHXV0/0yeESSU45Zkat1EPmshxhFKr/kyaAgACuOKA=
-Date:   Wed, 2 Jun 2021 06:25:26 +0000
-Message-ID: <8f437442d492476bbb0a9d7c4672a65b@huawei.com>
-References: <20210602015151.4135891-1-zhengyongjun3@huawei.com>
- <ce8d1b78-47ce-9211-d948-093d316ea647@gmail.com>
-In-Reply-To: <ce8d1b78-47ce-9211-d948-093d316ea647@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.64]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 2 Jun 2021 02:27:27 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1908FC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 23:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=r9y2MIYHC1ZVT120C073M6ZnWMYa9AIdCVt6UqfKA4I=; b=VppKp40XA12T1ZYkMvv9l83acr
+        j0azsJaviVPYS5KWfR/jHnuTSePSjdQ+9/YqV479R7DMWswQ7+vT38oNlePLOGu6CULPH5L7KCxUx
+        9H99QPeNPiFpJ1/HUS5FMbHmelXHRPZnmv9TAcFJ2RsfdDfarY/h6oPPJ4r7Z2CD517xzKRGSOsvw
+        WrmBmvnaLdsz8lPAwb958ZA4sQB00PJ3cd34t2sZ803/cPqHNGmOkFk6ND1vxqnq0DHYaMMQK/74R
+        guFqJViXFpM2fXYYHxsrPy4kETbISk1xlbeAwHOPaK4KPRyCPeVfeyx9ooe+cdy4XP3F9Hrk7Usw9
+        3cx9+CNA==;
+Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1loKJy-0021P0-Ru; Wed, 02 Jun 2021 06:25:42 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] rbtree: repair some kernel-doc whining
+Date:   Tue,  1 Jun 2021 23:25:42 -0700
+Message-Id: <20210602062542.8188-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RmluZSwgSSB3aWxsIHNlbmQgdGhlIHBhdGNoIHJpZ2h0IG5vdyA6KQ0KDQotLS0tLemCruS7tuWO
-n+S7ti0tLS0tDQrlj5Hku7bkuro6IEZsb3JpYW4gRmFpbmVsbGkgW21haWx0bzpmLmZhaW5lbGxp
-QGdtYWlsLmNvbV0gDQrlj5HpgIHml7bpl7Q6IDIwMjHlubQ25pyIMuaXpSAxMjowMQ0K5pS25Lu2
-5Lq6OiB6aGVuZ3lvbmdqdW4gPHpoZW5neW9uZ2p1bjNAaHVhd2VpLmNvbT47IGFuZHJld0BsdW5u
-LmNoOyBoa2FsbHdlaXQxQGdtYWlsLmNvbTsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJu
-ZWwub3JnOyByanVpQGJyb2FkY29tLmNvbTsgc2JyYW5kZW5AYnJvYWRjb20uY29tOyBiY20ta2Vy
-bmVsLWZlZWRiYWNrLWxpc3RAYnJvYWRjb20uY29tOyBuYXJtc3Ryb25nQGJheWxpYnJlLmNvbTsg
-a2hpbG1hbkBiYXlsaWJyZS5jb207IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFtbG9naWNAbGlzdHMuaW5mcmFkZWFkLm9yZw0K5oqE
-6YCBOiBvcGVuZG1iQGdtYWlsLmNvbTsgZi5mYWluZWxsaUBnbWFpbC5jb207IGxpbnV4QGFybWxp
-bnV4Lm9yZy51azsgamJydW5ldEBiYXlsaWJyZS5jb207IG1hcnRpbi5ibHVtZW5zdGluZ2xAZ29v
-Z2xlbWFpbC5jb20NCuS4u+mimDogUmU6IFtQQVRDSCB2MiBuZXQtbmV4dF0gbmV0OiBtZGlvOiBG
-aXggc3BlbGxpbmcgbWlzdGFrZXMNCg0KDQoNCk9uIDYvMS8yMDIxIDY6NTEgUE0sIFpoZW5nIFlv
-bmdqdW4gd3JvdGU6DQo+IGluZm9ybWF0aW9ucyAgPT0+IGluZm9ybWF0aW9uDQo+IHR5cGljYWx5
-ICA9PT4gdHlwaWNhbGx5DQo+IGRlcnJpdmUgID09PiBkZXJpdmUNCj4gZXZlbnRob3VnaCAgPT0+
-IGV2ZW4gdGhvdWdoDQo+IGh6ID09PiBIeg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWmhlbmcgWW9u
-Z2p1biA8emhlbmd5b25nanVuM0BodWF3ZWkuY29tPg0KDQpZb3VyIHYxIHdhcyBhcHBsaWVkIGFs
-cmVhZHk6DQoNCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvbmV0ZGV2L25ldC1uZXh0L2MvZTY1YzI3
-OTM4ZDhlDQoNCnNvIHlvdSB3b3VsZCBuZWVkIHRvIHN1Ym1pdCBhbiBpbmNyZW1lbnRhbCBwYXRj
-aCB0aGFua3MhDQotLSANCkZsb3JpYW4NCg==
+Clean up some kernel-doc warnings and use the documented
+Return: notation for function return values.
+
+rbtree_latch.h:64: warning: cannot understand function prototype: 'struct latch_
+tree_ops '
+rbtree.h:343: warning: Function parameter or member 'node' not described in 'rb_
+next_match'
+rbtree.h:343: warning: Excess function parameter 'tree' description in 'rb_next_
+match'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Davidlohr Bueso <dbueso@suse.de>
+---
+ include/linux/rbtree.h       |   14 +++++++-------
+ include/linux/rbtree_latch.h |    2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+--- linux-next-20210601.orig/include/linux/rbtree_latch.h
++++ linux-next-20210601/include/linux/rbtree_latch.h
+@@ -47,7 +47,7 @@ struct latch_tree_root {
+ };
+ 
+ /**
+- * latch_tree_ops - operators to define the tree order
++ * struct latch_tree_ops - operators to define the tree order
+  * @less: used for insertion; provides the (partial) order between two elements.
+  * @comp: used for lookups; provides the order between the search key and an element.
+  *
+--- linux-next-20210601.orig/include/linux/rbtree.h
++++ linux-next-20210601/include/linux/rbtree.h
+@@ -186,7 +186,7 @@ static inline void rb_replace_node_cache
+  * @tree: leftmost cached tree to insert @node into
+  * @less: operator defining the (partial) node order
+  *
+- * Returns @node when it is the new leftmost, or NULL.
++ * Return: @node when it is the new leftmost, or %NULL.
+  */
+ static __always_inline struct rb_node *
+ rb_add_cached(struct rb_node *node, struct rb_root_cached *tree,
+@@ -243,7 +243,7 @@ rb_add(struct rb_node *node, struct rb_r
+  * @tree: tree to search / modify
+  * @cmp: operator defining the node order
+  *
+- * Returns the rb_node matching @node, or NULL when no match is found and @node
++ * Return: the rb_node matching @node, or %NULL when no match is found and @node
+  * is inserted.
+  */
+ static __always_inline struct rb_node *
+@@ -277,7 +277,7 @@ rb_find_add(struct rb_node *node, struct
+  * @tree: tree to search
+  * @cmp: operator defining the node order
+  *
+- * Returns the rb_node matching @key or NULL.
++ * Return: the rb_node matching @key or %NULL.
+  */
+ static __always_inline struct rb_node *
+ rb_find(const void *key, const struct rb_root *tree,
+@@ -305,7 +305,7 @@ rb_find(const void *key, const struct rb
+  * @tree: tree to search
+  * @cmp: operator defining node order
+  *
+- * Returns the leftmost node matching @key, or NULL.
++ * Return: the leftmost node matching @key, or %NULL.
+  */
+ static __always_inline struct rb_node *
+ rb_find_first(const void *key, const struct rb_root *tree,
+@@ -330,12 +330,12 @@ rb_find_first(const void *key, const str
+ }
+ 
+ /**
+- * rb_next_match() - find the next @key in @tree
++ * rb_next_match() - find the next @key in tree
+  * @key: key to match
+- * @tree: tree to search
++ * @node: where the previous match was found, then continue searching from here
+  * @cmp: operator defining node order
+  *
+- * Returns the next node matching @key, or NULL.
++ * Return: the next node matching @key, or %NULL.
+  */
+ static __always_inline struct rb_node *
+ rb_next_match(const void *key, struct rb_node *node,
