@@ -2,159 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8853398B10
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F130398B12
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhFBNx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:53:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44506 "EHLO mail.kernel.org"
+        id S230025AbhFBNyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:54:14 -0400
+Received: from meesny.iki.fi ([195.140.195.201]:32902 "EHLO meesny.iki.fi"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229852AbhFBNx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:53:57 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S229767AbhFBNyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 09:54:13 -0400
+Received: from hillosipuli.retiisi.eu (unknown [IPv6:2001:2003:f75d:b010::e64])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86E99613D6;
-        Wed,  2 Jun 2021 13:52:13 +0000 (UTC)
-Date:   Wed, 2 Jun 2021 09:52:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
-Cc:     <keescook@chromium.org>, <ccross@android.com>,
-        <linux-kernel@vger.kernel.org>,
-        Zhangjinhao <zhangjinhao2@huawei.com>,
-        Anton Vorontsov <anton@enomsg.org>
-Subject: Re: [BUG] I found a bug when try to enable record_ftrace
-Message-ID: <20210602095211.3c16b2da@oasis.local.home>
-In-Reply-To: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
-References: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: sailus)
+        by meesny.iki.fi (Postfix) with ESMTPSA id F2FA8201E0;
+        Wed,  2 Jun 2021 16:52:27 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1622641948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XasE4YAlNMR4WrY6dbX8b0zZWRhV24uifEW0Tnx0hOw=;
+        b=cqoamrpMrsiGqJXo3AYGEX/BGroPhrmZJN5P8mYFRLehd+o3Y/MiWQy4tZ7JLczMmSjzfb
+        SYptjivwo02pWcr6HE27e3Ma3rnJy7GL6WArjTaZAHFnPL0E8bEY6stT8oKH+pbus0lWbW
+        Km/uOJ2AMxNRmCy+vgQE3BqZMZd1aRg=
+Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 9C9D8634C87;
+        Wed,  2 Jun 2021 16:51:34 +0300 (EEST)
+Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
+        by valkosipuli.localdomain with esmtp (Exim 4.92)
+        (envelope-from <sakari.ailus@iki.fi>)
+        id 1loRIJ-0002Uv-Ig; Wed, 02 Jun 2021 16:52:27 +0300
+Date:   Wed, 2 Jun 2021 16:52:27 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, mchehab@kernel.org,
+        devicetree@vger.kernel.org, kernel@puri.sm,
+        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        robh@kernel.org, shawnx.tu@intel.com
+Subject: Re: [PATCH v2 2/5] dt-bindings: media: document SK Hynix Hi-846 MIPI
+ CSI-2 8M pixel sensor
+Message-ID: <20210602135226.GX3@valkosipuli.retiisi.eu>
+References: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
+ <20210528081336.3858700-3-martin.kepplinger@puri.sm>
+ <YLCrVzzvKoJOZAK3@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLCrVzzvKoJOZAK3@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1622641948; a=rsa-sha256; cv=none;
+        b=yq3M8su7tNeLBYbQnxlIWE0xAZhDsPrQRCwhIaP9RldbEP/MGJWm/XhOSvzge40u7znPjj
+        katd2z9xG91TN5OFQLlbOuJuZPeCVMglZdFFY4iMB4fm7KONcV0oraTQd3EOWTz3bvkwQ5
+        tk79trHHMZeLqoh5mqcyCPdypFZXDPY=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1622641948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XasE4YAlNMR4WrY6dbX8b0zZWRhV24uifEW0Tnx0hOw=;
+        b=fnEa+jVXXHiczG9qsdnq1esoEoyqjPKbg10uvYRTxfNCFx3VfnTCRNCiXM7aTlaUWkuwXR
+        +QKYETJssz2s187unMG62ION4pGBItem3P4m3Q7Eiw8F0nwILKi5cW2KqWFjKHaciuV2oS
+        dIjCfTKCwojtbpc0+zXfWog8+Iq1hvg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 15:42:23 +0800
-"Zhengyejian (Zetta)" <zhengyejian1@huawei.com> wrote:
+On Fri, May 28, 2021 at 11:35:35AM +0300, Laurent Pinchart wrote:
+...
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    description: Reference to the mclk clock.
+> > +    maxItems: 1
+> 
+> You could also write this
+> 
+>   clocks:
+>     items:
+>       - description: Reference to the mclk clock.
+> 
+> The maxItems will then be implicit. This is the preferred form when
+> multiple clocks are used, and given that clocks it meant to contain a
+> list of clocks, even if it has a single entry, placing the description
+> in a list of items may be a bit better semantically speaking.
+> 
+> > +
+> > +  clock-names:
+> > +    const: mclk
+> 
+> Similarly,
+> 
+>   clock-names:
+>     items:
+>       - const: mclk
+> 
+> Rob, is standardizing this pattern a good idea, or do you prefer the
+> shorter form
+> 
+>   clock-names:
+>     const: mclk
 
-> Hello,
-> 
-> There may be a deadlock caused by ftrace recursion when try to enable 
-> record_ftrace.
-> I'd like to known if the patchset 
-> (https://lore.kernel.org/lkml/20201106023235.367190737@goodmis.org/) is 
-> trying to fix it.
-> 
-> Procedure for reproducing the problem is:
->    1) this problem appears both in 5.13-rc4 and 5.10;
-> 
->    2) my work environment is:
->      qemu-arm version 4.0.0
->      arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
-> 
->    3) then try to enable record_ftrace:
->      / # mount -t pstore pstore /sys/fs/pstore
->      / # echo 1 > /sys/kernel/debug/pstore/record_ftrace
-> 
->    4) then system appears to be stuck, and use arm-linux-gnueabi-gdb 
-> dump the following call stack:
->      #0  arch_spin_lock (lock=0x811a0f98) at 
-> /home/zyj/Linux/linux-master/arch/arm/include/asm/spinlock.h:74
->      #1  do_raw_spin_lock_flags (flags=<synthetic pointer>, 
-> lock=0x811a0f98) at 
-> /home/zyj/Linux/linux-master/include/linux/spinlock.h:195
->      #2  __raw_spin_lock_irqsave (lock=0x811a0f98) at 
-> /home/zyj/Linux/linux-master/include/linux/spinlock_api_smp.h:119
->      #3  _raw_spin_lock_irqsave (lock=lock@entry=0x811a0f98) at 
-> /home/zyj/Linux/linux-master/kernel/locking/spinlock.c:159
->      #4  0x8046c6e0 in buffer_size_add (prz=prz@entry=0x811a0f80, 
-> a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:82
->      #5  0x8046cc20 in persistent_ram_write (prz=0x811a0f80, 
-> s=0x81137b80, count=16) at 
-> /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
->      #6  0x8046b438 in ramoops_pstore_write (record=0x81137b90) at 
-> /home/zyj/Linux/linux-master/fs/pstore/ram.c:331
->      #7  0x8046add8 in pstore_ftrace_call (ip=2156609456, 
-> parent_ip=2152122068, op=<optimized out>, fregs=<optimized out>)
->          at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
->      #8  0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0, 
-> parent_ip=2152122068, ip=2156609456) at 
-> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
->      #9  ftrace_ops_list_func (ip=2156609456, parent_ip=2152122068, 
-> op=<optimized out>, fregs=0x0) at 
-> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
->      #10 0x801109f8 in ftrace_caller () at 
-> /home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
->      #11 0x808b3fb4 in _raw_spin_unlock_irqrestore 
-> (lock=lock@entry=0x811a0f98, flags=1610612883) at 
-> /home/zyj/Linux/linux-master/kernel/locking/spinlock.c:190
->      #12 0x8046c6d4 in buffer_size_add (prz=prz@entry=0x811a0f80, 
-> a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:95
->      #13 0x8046cc20 in persistent_ram_write (prz=0x811a0f80, 
-> s=0x81137cf8, count=16) at 
-> /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
->      #14 0x8046b438 in ramoops_pstore_write (record=0x81137d08) at 
-> /home/zyj/Linux/linux-master/fs/pstore/ram.c:331
->      #15 0x8046add8 in pstore_ftrace_call (ip=2148632188, 
-> parent_ip=2148601660, op=<optimized out>, fregs=<optimized out>)
->          at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
->      #16 0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0, 
-> parent_ip=2148601660, ip=2148632188) at 
-> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
->      #17 ftrace_ops_list_func (ip=2148632188, parent_ip=2148601660, 
-> op=<optimized out>, fregs=0x0) at 
-> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
->      #18 0x801109f8 in ftrace_caller () at 
-> /home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
->      #19 0x80118680 in __set_fixmap (idx=idx@entry=FIX_TEXT_POKE0, 
-> phys=phys@entry=0, prot=prot@entry=0) at 
-> /home/zyj/Linux/linux-master/arch/arm/mm/mmu.c:385
->      #20 0x80110f3c in patch_unmap (flags=<synthetic pointer>, 
-> fixmap=129) at /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:45
->      #21 __patch_text_real (addr=addr@entry=0x808b3fb0 
-> <_raw_spin_unlock_irqrestore+16>, insn=insn@entry=3957420680, 
-> remap=remap@entry=true)
->          at /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:104
->      #22 0x80110b40 in __patch_text (insn=3957420680, addr=0x808b3fb0 
-> <_raw_spin_unlock_irqrestore+16>) at 
-> /home/zyj/Linux/linux-master/arch/arm/include/asm/patch.h:10
->      #23 ftrace_modify_code (pc=2156609456, old=3904716800, 
-> new=3957420680, validate=true) at 
-> /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:95
->      #24 0x80110cf4 in ftrace_make_call (rec=rec@entry=0x81007ce0, 
-> addr=addr@entry=2148600280) at 
-> /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:132
->      #25 0x801dda40 in __ftrace_replace_code (rec=rec@entry=0x81007ce0, 
-> enable=enable@entry=true) at 
-> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2524
->      #26 0x801de17c in ftrace_replace_code (mod_flags=mod_flags@entry=1) 
-> at /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2554
->      #27 0x801de39c in ftrace_modify_all_code (command=5) at 
-> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2698
->      #28 0x80110ad8 in __ftrace_modify_code (data=<optimized out>) at 
-> /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:39
->      #29 0x801d4da4 in multi_cpu_stop (data=data@entry=0x81c69d84) at 
-> /home/zyj/Linux/linux-master/kernel/stop_machine.c:240
->      #30 0x801d4a14 in cpu_stopper_thread (cpu=<optimized out>) at 
-> /home/zyj/Linux/linux-master/kernel/stop_machine.c:511
->      #31 0x8014de3c in smpboot_thread_fn (data=0x810c1c80) at 
-> /home/zyj/Linux/linux-master/kernel/smpboot.c:165
->      #32 0x8014a0dc in kthread (_create=0x810c1d40) at 
-> /home/zyj/Linux/linux-master/kernel/kthread.c:313
->      #33 0x80100150 in ret_from_fork () at 
-> /home/zyj/Linux/linux-master/arch/arm/kernel/entry-common.S:158
->      Backtrace stopped: previous frame identical to this frame (corrupt 
-> stack?)
-> 
-> See above #7~#15, there is a recursion in function pstore_ftrace_call(), 
-> and a spin_lock(lock=0x811a0f98) is hold since unlock operation in above 
-> #11 not finished. Then in above #0, trying to acquire same lock cause a 
-> deadlock.
-> 
-> Enabling 'record_ftrace' seems a basic operation of pstore/ftrace, Does 
-> it mean this feature is not available for a while?
+As there's just one clock, isn't the clock-names redundant?
 
-I don't use pstore or arm. That is a question for the pstore folks.
-
--- Steve
+-- 
+Sakari Ailus
