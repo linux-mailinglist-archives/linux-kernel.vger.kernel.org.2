@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B59A398F1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAA8398F09
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhFBPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:45:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46908 "EHLO mail.kernel.org"
+        id S232476AbhFBPpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:45:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230456AbhFBPpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:45:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BBEF61411;
+        id S232091AbhFBPpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:45:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FA5461401;
         Wed,  2 Jun 2021 15:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622648602;
-        bh=CVM8IBi+UG4UZpg7Id3o5ro5UIRzbPYTGht9oDsKea4=;
+        bh=jQfc6V+5fIkfWn3ixgZGKTZVxT9URXQOJEGGW29C1m4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DktvJn7R8FRy9t/QsFX+HnPYtCz7IW/8bFR5kPPBK41jk0QmHPcqtWEC0GAQdevAF
-         MEYl0h7JnIOsONJn29Gut92OVNrF4rfZnqvkswmYQMLPC4oVPuCBmE2uBUlSZJBY1J
-         HIc8IzmUep1vaRQu0CBsWt0FjDGyEe3kMAIaaxEnzHRT+v99kge0iJXZMAX3cuMMo1
-         taseg7zHmSfj5UQQe1NfXxk3SpnkUC2Yvr+iuLF1IFSgxtJHL3EMwFnS/aasSjCMnY
-         vdWttBGnTKaHLssxU46IJ4d1EMlb2qSad+yHZVBKXvPz7y9gI31tFXh77amjQPae7w
-         xOFzuy2NyRyHA==
+        b=cW8iZculuT9ve8BWFUusvOE7xAIyan7hKimqg1HaHDpxQ6FPqQDqyttnKnfP92XYT
+         tLNuzV1zDBZ9pzLonEiy8WzjqZsKzNdc8X8c51wup5aodAGsZLSEJPwVlVtLgrxlWM
+         Tl8qobESCWsbGC/+AsUSHgXB69bA3PdlYyWIKbz6FIy+Dd2/XBga581WJx8jzsVrKW
+         m/Ui/joAfznbjaiN0wP2AdKV4K8h1tVrajw5xoCs3WS2+qHLKnfPgGlhFiZi1H0IJ+
+         ncqxLGBCpUhHD+pBfCalRu5gO7F3bkDyAXt0RK/z2cNUJob6dTfX6iRUCM4V4gblIb
+         kgo0uTLd1UlcQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1loT1b-006Xbr-E4; Wed, 02 Jun 2021 17:43:19 +0200
+        id 1loT1b-006Xbv-Fw; Wed, 02 Jun 2021 17:43:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
-Subject: [PATCH 05/12] dt-bindings: reset: update ti,sci-reset.yaml references
-Date:   Wed,  2 Jun 2021 17:43:11 +0200
-Message-Id: <e9b505d900d898c0d030deb168ab291206c203ee.1622648507.git.mchehab+huawei@kernel.org>
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Rosin <peda@axentia.se>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 06/12] dt-bindings: iio: io-channel-mux.yaml: fix a typo
+Date:   Wed,  2 Jun 2021 17:43:12 +0200
+Message-Id: <ab0d1f89cf64ff4904155c92e1895763fb0bf173.1622648507.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1622648507.git.mchehab+huawei@kernel.org>
 References: <cover.1622648507.git.mchehab+huawei@kernel.org>
@@ -50,45 +48,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 9a81b8cbc245 ("dt-bindings: reset: Convert ti,sci-reset to json schema")
-renamed: Documentation/devicetree/bindings/reset/ti,sci-reset.txt
-to: Documentation/devicetree/bindings/reset/ti,sci-reset.yaml.
+The file name: Documentation/device-tree/bindings/mux/mux-controller.yaml
+should be, instead: Documentation/devicetree/bindings/mux/mux-controller.yaml.
 
-Update the cross-references accordingly.
+Update its cross-reference accordingly.
 
-Fixes: 9a81b8cbc245 ("dt-bindings: reset: Convert ti,sci-reset to json schema")
+Fixes: a66cec598f49 ("dt-bindings: iio: multiplexer: Convert io-channel-mux bindings to DT schema")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../devicetree/bindings/remoteproc/ti,keystone-rproc.txt        | 2 +-
- MAINTAINERS                                                     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml     | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/ti,keystone-rproc.txt b/Documentation/devicetree/bindings/remoteproc/ti,keystone-rproc.txt
-index e99123c1445e..463a97c11eff 100644
---- a/Documentation/devicetree/bindings/remoteproc/ti,keystone-rproc.txt
-+++ b/Documentation/devicetree/bindings/remoteproc/ti,keystone-rproc.txt
-@@ -48,7 +48,7 @@ The following are the mandatory properties:
- 			bindings for the reset argument specifier as per SoC,
- 			Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
- 			    for 66AK2HK/66AK2L/66AK2E SoCs or,
--			Documentation/devicetree/bindings/reset/ti,sci-reset.txt
-+			Documentation/devicetree/bindings/reset/ti,sci-reset.yaml
- 			    for 66AK2G SoCs
+diff --git a/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml b/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml
+index 37382b85f2b8..f37586702489 100644
+--- a/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml
++++ b/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml
+@@ -17,7 +17,7 @@ description: |
+   created. The number of this io-channel is the same as the index into the list
+   of strings in the channels property, and also matches the mux controller
+   state. The mux controller state is described in
+-  Documentation/device-tree/bindings/mux/mux-controller.yaml
++  Documentation/devicetree/bindings/mux/mux-controller.yaml
  
- - interrupts: 		Should contain an entry for each value in 'interrupt-names'.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 790eff88b53e..2800307082a9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18196,7 +18196,7 @@ F:	Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
- F:	Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.yaml
--F:	Documentation/devicetree/bindings/reset/ti,sci-reset.txt
-+F:	Documentation/devicetree/bindings/reset/ti,sci-reset.yaml
- F:	Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
- F:	drivers/clk/keystone/sci-clk.c
- F:	drivers/firmware/ti_sci*
+ properties:
+ 
 -- 
 2.31.1
 
