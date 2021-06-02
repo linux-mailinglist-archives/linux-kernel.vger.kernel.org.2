@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB70397EFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77255397EFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhFBCZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:25:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230518AbhFBCYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:24:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C78E61008;
-        Wed,  2 Jun 2021 02:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622600578;
-        bh=4+yLy4p99WqcuQe2+GKoMtnbQHolk38VvFSqueJl5PU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zVJyKrG2rWXB0c0ILxAig2g02HhkupS08S9YYUFJwhsoOwK6dNcpSZAHebVgu5zA/
-         SP/a9+40z4KAho+ozQDZNICPodGMS33gMlt6vUdv5pxS2A28yQGWBe2yWY8lj2uczo
-         l0btlGYYEaI09TzIUrQWAccv2zH0/gJ2ovDfVBbI=
-Date:   Tue, 1 Jun 2021 19:22:57 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     adobriyan@gmail.com, rppt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com
-Subject: Re: [PATCH v2] fs/proc/kcore.c: add mmap interface
-Message-Id: <20210601192257.65a514606382f0a972f918c3@linux-foundation.org>
-In-Reply-To: <20210601082241.13378-1-zhoufeng.zf@bytedance.com>
-References: <20210601082241.13378-1-zhoufeng.zf@bytedance.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229843AbhFBCZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhFBCZU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:25:20 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA9AC061349;
+        Tue,  1 Jun 2021 19:23:25 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so1130168otc.12;
+        Tue, 01 Jun 2021 19:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WisRZOMSe7gZp4rvPWMV14dWyx0DQxTbYmLA0BmBIeU=;
+        b=CDoGe9l648tujSZCXsHp3ZeeuAa0WYmC8at//uXPg+/bYdDBl9ILmcpI8A+gQk8glF
+         fP7Wu0986RszjSKvBbehR4Ps4636WCQKkhEOyCoYvzwxdeNfPO+SML+5ZGahxFAU2nF4
+         re/MZ51k3IXxoECIjR1q/QSk+dFFDKSE3VIpmVzlVM7mdSiH4mQxwaxNSXcv13+2jSif
+         vq4AhWSfy/T7GfN+sZ9P50gOH7OsSdTqoFqYaG2yL3ASUzfKk2KWknG7xPak70Ppwu1f
+         D3ezZncm6EFBVvNQeukTsLEglTlk6u0GYghV1N+o5F8BKcv4aQ6j7JY7XTHT5RSYZRAQ
+         LZDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=WisRZOMSe7gZp4rvPWMV14dWyx0DQxTbYmLA0BmBIeU=;
+        b=aU16KRhhXkexPHGpfHnabv1Y2RtzK9uWYZ89DnbYrulDl8TZC0FNkw8hS9vCc9FT0U
+         Oz8f8odr7YQIdQPdGcC+zVJTBniUVpsOS4WZ+pSeqquWLPtxH2hB5fRzDdUs0nYPVuP9
+         TP2/CJdfdktJqMy89HL2I6k+7JS7im9FEJQHZQ1wEGckSudmJGbV+XafMGcB+vLtai3I
+         MJY03reBlF31KsFqAwPbypv+82n+swW/4Rh2gkxO8sYONfQHR4sr1kousKS8dHJ3dp74
+         e/beh6I+xj+UqK5HAtT5smoUCIOag7MSxNXxMedK1dVOhe+O8RvNjTdIz6K6+e7SZsWN
+         uP9A==
+X-Gm-Message-State: AOAM532Vlyx+8N6qJPurKiRDric95YzKd0KY3Pj0WK6wH3zt/GHjvxy/
+        pEL5VtybvjQKZ7jZC4pA5wU=
+X-Google-Smtp-Source: ABdhPJxTAUdTk6XUmZ/1zT4KO0/0pwH8MsqMs3AAcyCHMOeYiGLGMDiD2IdCT3FyajbInkLciR/92w==
+X-Received: by 2002:a9d:7987:: with SMTP id h7mr23763916otm.70.1622600604793;
+        Tue, 01 Jun 2021 19:23:24 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d20sm11546otq.62.2021.06.01.19.23.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 19:23:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 1 Jun 2021 19:23:23 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/116] 4.19.193-rc1 review
+Message-ID: <20210602022323.GD3253484@roeck-us.net>
+References: <20210531130640.131924542@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  1 Jun 2021 16:22:41 +0800 Feng zhou <zhoufeng.zf@bytedance.com> wrote:
-
-> From: ZHOUFENG <zhoufeng.zf@bytedance.com>
+On Mon, May 31, 2021 at 03:12:56PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.193 release.
+> There are 116 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> When we do the kernel monitor, use the DRGN
-> (https://github.com/osandov/drgn) access to kernel data structures,
-> found that the system calls a lot. DRGN is implemented by reading
-> /proc/kcore. After looking at the kcore code, it is found that kcore
-> does not implement mmap, resulting in frequent context switching
-> triggered by read. Therefore, we want to add mmap interface to optimize
-> performance. Since vmalloc and module areas will change with allocation
-> and release, consistency cannot be guaranteed, so mmap interface only
-> maps KCORE_TEXT and KCORE_RAM.
+> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
+> Anything received after that time might be too late.
 > 
-> ...
->
-> +static int mmap_kcore(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	size_t size = vma->vm_end - vma->vm_start;
-> +	u64 start, pfn;
-> +	int nphdr;
-> +	size_t data_offset;
-> +	size_t phdrs_len, notes_len;
-> +	struct kcore_list *m = NULL;
-> +	int ret = 0;
-> +
-> +	down_read(&kclist_lock);
-> +
-> +	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
-> +
-> +	start = kc_offset_to_vaddr(((u64)vma->vm_pgoff << PAGE_SHIFT) -
-> +		((data_offset >> PAGE_SHIFT) << PAGE_SHIFT));
-> +
-> +	list_for_each_entry(m, &kclist_head, list) {
-> +		if (start >= m->addr && size <= m->size)
-> +			break;
-> +	}
-> +
-> +	if (&m->list == &kclist_head) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
-> +		ret = -EPERM;
-> +		goto out;
-> +	}
-> +
-> +	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
-> +	vma->vm_flags |= VM_MIXEDMAP;
-> +	vma->vm_ops = &kcore_mmap_ops;
-> +
-> +	if (kern_addr_valid(start)) {
-> +		if (m->type == KCORE_RAM || m->type == KCORE_REMAP)
 
-KCORE_REMAP was removed by
-https://lkml.kernel.org/r/20210526093041.8800-2-david@redhat.com
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 424 pass: 424 fail: 0
 
-I did this:
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
---- a/fs/proc/kcore.c~fs-proc-kcorec-add-mmap-interface-fix
-+++ a/fs/proc/kcore.c
-@@ -660,7 +660,7 @@ static int mmap_kcore(struct file *file,
- 	vma->vm_ops = &kcore_mmap_ops;
- 
- 	if (kern_addr_valid(start)) {
--		if (m->type == KCORE_RAM || m->type == KCORE_REMAP)
-+		if (m->type == KCORE_RAM)
- 			pfn = __pa(start) >> PAGE_SHIFT;
- 		else if (m->type == KCORE_TEXT)
- 			pfn = __pa_symbol(start) >> PAGE_SHIFT;
-
+Guenter
