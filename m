@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0CF397EED
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E5C397EF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhFBCYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:24:22 -0400
-Received: from mga18.intel.com ([134.134.136.126]:39490 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230414AbhFBCXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:23:37 -0400
-IronPort-SDR: Ls+1Q0CF/i5s5ufBO0oLLJ//o4c5BdVoIkE7YufQ+5qd99swLNLNpMNpYjh/uq+ZdD1io2HAUU
- g0BLzFlE09Tw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="191037611"
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="191037611"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 19:21:52 -0700
-IronPort-SDR: /50QWJuamk2Af5O7nXslCfbtggWuype9jayEaMohCzwo8sjQFjQvX2IDm6z81ShHCc48aAY6hp
- Hl1Y+CSZfxpg==
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="633069250"
-Received: from mjdelaro-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.3.23])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 19:21:51 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v1 11/11] x86/tdx: Handle CPUID via #VE
-Date:   Tue,  1 Jun 2021 19:21:36 -0700
-Message-Id: <20210602022136.2186759-12-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S231196AbhFBCYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231177AbhFBCYL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:24:11 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0FDC061763;
+        Tue,  1 Jun 2021 19:22:13 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so1170680otk.5;
+        Tue, 01 Jun 2021 19:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8NrnK+jhhyGoce/qrAL9mpHbdvNlBdp3TQPcFeDTvvA=;
+        b=cqscyRVUULAy3oWM49EmKiSCsVZOFOSyV1hfOtIrRkdh/shfrrrtboEM0fo/duHIU2
+         rdLfKCtnSPzCPvjChyfSDo8QBSnYfPTSoeFCLw8kEGiVKIhM5sUr604DjDqasj9U62FN
+         fWE0KrNOmxmr9I3Dj9VFEfra1QAlXCVg145Nd6sRLpqR1DM4VdnC2tfG6HV1wryeez6K
+         QeIVfhB8Nb2NVFP6hw+KbGeAS70wC0LLp3XmKH42IJ2Bij5FsqzRroElR/WIo2O3hVLx
+         tfv4OEBRKLWwfi5YRC6JO2/H019pnkVsl5jNQZ4/oWpw15TMd2775yfJyOzrN/C646BI
+         QVJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=8NrnK+jhhyGoce/qrAL9mpHbdvNlBdp3TQPcFeDTvvA=;
+        b=nClSWCPgDr6VyjcnCv63/3i8L4WNwMkOReTcdm3olsKrhGSh+8E0vR3lnYT7JcUmp3
+         AuyIH3VxrA+51UjFRgjPsvcDrx2VLryVI0zl4eFa+xBju1aR+72YuLDPkST2BaLQQ/Ur
+         VVPfQl8x5QRC6KQgPqvC4qMrjzMKL3l9i3AyxbV+yefAOGvWt0UU1z7QNGenpgtU2hoe
+         DVuSWdRw0orgt9IPA1Ncwf6DdAmThS/uxwCtJPwjrv0BDE6r6ZbGHfXUUplLzZPBRWHg
+         jihK0jXX+eogZl84/CIA0wEiVXDH7M53Lebwikx82imexF4lAKbGitJktWCCjCFZdLJi
+         3J7w==
+X-Gm-Message-State: AOAM533OzFRR9+mtk1MUtsnNAMb6/BYVDmcxg+shiu6FJ/YUOq41pXrc
+        FC0Fewmeks3CHLQrcCSkINo=
+X-Google-Smtp-Source: ABdhPJybv2TxXa8UWXR7RLfS0jXBmehNcBpsqiWlHGyk8Ixr+rHmjnOxas4/cknvKOP6oxjQPs61Wg==
+X-Received: by 2002:a9d:4008:: with SMTP id m8mr15029676ote.188.1622600531946;
+        Tue, 01 Jun 2021 19:22:11 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p9sm1520008otl.64.2021.06.01.19.22.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 19:22:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 1 Jun 2021 19:22:10 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/71] 4.9.271-rc2 review
+Message-ID: <20210602022210.GB3253484@roeck-us.net>
+References: <20210601081514.670960578@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601081514.670960578@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+On Tue, Jun 01, 2021 at 10:34:21AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.271 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 03 Jun 2021 08:15:02 +0000.
+> Anything received after that time might be too late.
+> 
 
-TDX has three classes of CPUID leaves: some CPUID leaves
-are always handled by the CPU, others are handled by the TDX module,
-and some others are handled by the VMM. Since the VMM cannot directly
-intercept the instruction these are reflected with a #VE exception
-to the guest, which then converts it into a hypercall to the VMM,
-or handled directly.
+Build results:
+	total: 163 pass: 163 fail: 0
+Qemu test results:
+	total: 383 pass: 383 fail: 0
 
-The TDX module EAS has a full list of CPUID leaves which are handled
-natively or by the TDX module in 16.2. Only unknown CPUIDs are handled by
-the #VE method. In practice this typically only applies to the
-hypervisor specific CPUIDs unknown to the native CPU.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Therefore there is no risk of causing this in early CPUID code which
-runs before the #VE handler is set up because it will never access
-those exotic CPUID leaves.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- arch/x86/kernel/tdx.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index af7acea500ab..17725646eb30 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -164,6 +164,22 @@ static int tdg_write_msr_safe(unsigned int msr, unsigned int low,
- 	return ret ? -EIO : 0;
- }
- 
-+static void tdg_handle_cpuid(struct pt_regs *regs)
-+{
-+	u64 ret;
-+	struct tdx_hypercall_output out = {0};
-+
-+	ret = __tdx_hypercall(EXIT_REASON_CPUID, regs->ax,
-+			      regs->cx, 0, 0, &out);
-+
-+	WARN_ON(ret);
-+
-+	regs->ax = out.r12;
-+	regs->bx = out.r13;
-+	regs->cx = out.r14;
-+	regs->dx = out.r15;
-+}
-+
- unsigned long tdg_get_ve_info(struct ve_info *ve)
- {
- 	u64 ret;
-@@ -207,6 +223,9 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_MSR_WRITE:
- 		ret = tdg_write_msr_safe(regs->cx, regs->ax, regs->dx);
- 		break;
-+	case EXIT_REASON_CPUID:
-+		tdg_handle_cpuid(regs);
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
- 		return -EFAULT;
--- 
-2.25.1
-
+Guenter
