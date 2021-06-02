@@ -2,171 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D766399629
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BE9399641
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhFBXJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 19:09:03 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:46114 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhFBXJB (ORCPT
+        id S229982AbhFBXSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 19:18:35 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:37470 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhFBXSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 19:09:01 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 152N65mH121479;
-        Wed, 2 Jun 2021 23:07:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=22DF2x0tSEQl0JjtHkqsEo/T+t7Ye4UbEDbhnIwPHIA=;
- b=VvXCuk2N0amOJfoCGUwUoIPC9uheLDbwn902wzQUeETonRggSgRiX+PSs88hkoOLN9Nb
- wDCRA27bj1nRc3PO5PIGjOfEv7mzjZeOWDxYZIDxTgEwDprfZ4tfPOSvg+6E9trTwOv2
- X1yJxnvH3+r88x5SB6W+NWaIzvUesUqA3qmPVm1oChI8VGHGEwzKW+HlDEywAYZLl6Ic
- fvHjcKEmeATqHEZQOBJQqO88d8izGQFp+crb3GIi1WrV4Xf4jmGoZ+U8qsIB+hr7rB2q
- SeYmWx6aVBwpCPbQ2NMR6GFmHDJqFlcv3P6+cQIjk5MLvtx/A6p2kKcJ8hoZBrEOrEjC aQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 38ue8phvet-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 23:07:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 152N5aD6087799;
-        Wed, 2 Jun 2021 23:07:08 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 38uded8hbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 23:07:08 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 152N77p2012289;
-        Wed, 2 Jun 2021 23:07:08 GMT
-Received: from [10.175.197.78] (/10.175.197.78)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Jun 2021 16:07:07 -0700
-From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
- memslot_perf_test
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Zhenzhong Duan <zhenzhong.duan@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Andrew Jones <drjones@redhat.com>
-References: <20210528191134.3740950-1-pbonzini@redhat.com>
- <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
- <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
- <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
-Message-ID: <68bda0ef-b58f-c335-a0c7-96186cbad535@oracle.com>
-Date:   Thu, 3 Jun 2021 01:07:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 2 Jun 2021 19:18:33 -0400
+Received: by mail-wr1-f52.google.com with SMTP id q5so3896516wrs.4;
+        Wed, 02 Jun 2021 16:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ay5J1mNVMWdSXPcS6ozTjgGPNhxiZyf4nSKZIJf7/Gc=;
+        b=Rqn/Os4bo2xRtUqE+nNbNLxsFLDKW4R+xHpbMAx9K/pVJg8kB1mb4Rx3p4+jGGou9R
+         C+hUdqTfwZv2sD/LhTCxQE4SFmUidoREJ2ZZqTLv7p6ILcFytS2culx+G/k0E3WoAVRT
+         rAVQQx3B/GZXVVJdRkXR8wGNgzFT+FurSm3ksYh7CW0HMZz18PtSS0taJr+8Ntrol8Ch
+         VVPlNIGjGwH3U136taxKkatHEGPRi6xA/HvdjvL1jK8LhCo/nKT/RdMV2bMzrNUFsKA4
+         WipmOIz2/RkR1lfUhyH3HyF5MiIEhfOTExu6tvJRuVbivNyefWLasUj9XhW7CjBZGWLZ
+         CTlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ay5J1mNVMWdSXPcS6ozTjgGPNhxiZyf4nSKZIJf7/Gc=;
+        b=NRtehC3juborSE+Z4SImAm8YinLRm+pkTwDZGe2Ojdf1+Yn4aJ1v22Yfq3CPs9vf3C
+         nlLY0vvYA4xysKxRZWB74hwCKaiBn1V26ej88BUwUFcRFErxI+VVKPKJ2KTWLHJ31FHP
+         voi27cpy880ehmXnN4LCmC4eUYEkS3/qe6lfgiEo35SUsgx1bm9QzpZINuoW0MxnL0ru
+         F0xTa0Uu0J1/YDh8SOWEFLXRwaTOgkWMDB/LbtgkVblU37SbrS/3UXmPdDE1QrBqtpaq
+         yH367XYi5DnY34aFf3/NiAFdmyKL4gIn9dOJscqL9H5OlJLTtXYw97zBuuWKevhZveQn
+         Snww==
+X-Gm-Message-State: AOAM531m4DT7k1Y3PDHJyylQV3HmaRUnoTFbHL/PI/78WiMErc9phEtf
+        RLGBkoA4Fo5sbuTYcdVcpEs=
+X-Google-Smtp-Source: ABdhPJzv0zV4uNTPFtCgCeWdcbkovxAGzd2+y0v3nxxGGeHXjL7CzLNnJjZvGfrfXcKWy7Smtf8G+g==
+X-Received: by 2002:adf:ee50:: with SMTP id w16mr8784387wro.187.1622675732865;
+        Wed, 02 Jun 2021 16:15:32 -0700 (PDT)
+Received: from honeypot.epfl.ch ([151.29.82.133])
+        by smtp.googlemail.com with ESMTPSA id i2sm929057wmo.40.2021.06.02.16.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 16:15:32 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf ksymbol: fix memory leak: decrease refcount of map and dso
+Date:   Thu,  3 Jun 2021 01:10:53 +0200
+Message-Id: <20210602231052.317048-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10003 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106020147
-X-Proofpoint-GUID: ZWLtDWW7BQdk9pCpKx0ONV8wN6gl8_vv
-X-Proofpoint-ORIG-GUID: ZWLtDWW7BQdk9pCpKx0ONV8wN6gl8_vv
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10003 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 phishscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106020147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.05.2021 01:13, Maciej S. Szmigiero wrote:
-> On 29.05.2021 12:20, Paolo Bonzini wrote:
->> On 28/05/21 21:51, Maciej S. Szmigiero wrote:
->>> On 28.05.2021 21:11, Paolo Bonzini wrote:
->>>> The memory that is allocated in vm_create is already mapped close to
->>>> GPA 0, because test_execute passes the requested memory to
->>>> prepare_vm.  This causes overlapping memory regions and the
->>>> test crashes.  For simplicity just move MEM_GPA higher.
->>>>
->>>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->>>
->>> I am not sure that I understand the issue correctly, is vm_create_default()
->>> already reserving low GPAs (around 0x10000000) on some arches or run
->>> environments?
->>
->> It maps the number of pages you pass in the second argument, see
->> vm_create.
->>
->>    if (phy_pages != 0)
->>      vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
->>                                  0, 0, phy_pages, 0);
->>
->> In this case:
->>
->>    data->vm = vm_create_default(VCPU_ID, mempages, guest_code);
->>
->> called here:
->>
->>    if (!prepare_vm(data, nslots, maxslots, tdata->guest_code,
->>                    mem_size, slot_runtime)) {
->>
->> where mempages is mem_size, which is declared as:
->>
->>          uint64_t mem_size = tdata->mem_size ? : MEM_SIZE_PAGES;
->>
->> but actually a better fix is just to pass a small fixed value (e.g. 1024) to vm_create_default,
->> since all other regions are added by hand
-> 
-> Yes, but the argument that is passed to vm_create_default() (mem_size
-> in the case of the test) is not passed as phy_pages to vm_create().
-> Rather, vm_create_with_vcpus() calculates some upper bound of extra
-> memory that is needed to cover that much guest memory (including for
-> its page tables).
-> 
-> The biggest possible mem_size from memslot_perf_test is 512 MiB + 1 page,
-> according to my calculations this results in phy_pages of 1029 (~4 MiB)
-> in the x86-64 case and around 1540 (~6 MiB) in the s390x case (here I am
-> not sure about the exact number, since s390x has some additional alignment
-> requirements).
-> 
-> Both values are well below 256 MiB (0x10000000UL), so I was wondering
-> what kind of circumstances can make these allocations collide
-> (maybe I am missing something in my analysis).
+ASan reported a memory leak of BPF-related ksymbols map and dso. 
+The leak is caused by refcount never reaching 0, due to missing 
+__put calls in the function machine__process_ksymbol_register.
+Once the dso is inserted in map, dso__put should be called, 
+since map__new2 has increased its refcount to 2.
+The same thing applies for the map when it's inserted into the 
+rb-tree in maps (maps__insert increases the refcount to 2).
 
-I see now that there has been a patch merged last week called
-"selftests: kvm: make allocation of extra memory take effect" by
-Zhenzhong that now allocates also the whole memory size passed to
-vm_create_default() (instead of just page tables for that much memory).
+$ sudo ./perf record -- sleep 5
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.025 MB perf.data (8 samples) ]
 
-The commit message of this patch says that "perf_test_util and
-kvm_page_table_test use it to alloc extra memory currently", however both
-kvm_page_table_test and lib/perf_test_util framework explicitly add the
-required memory allocation by doing a vm_userspace_mem_region_add() call
-for the same memory size that they pass to vm_create_default().
+=================================================================
+==297735==ERROR: LeakSanitizer: detected memory leaks
 
-So now they allocate this memory twice.
+Direct leak of 6992 byte(s) in 19 object(s) allocated from:
+    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+    #1 0x8e4e53 in map__new2 /home/user/linux/tools/perf/util/map.c:216:20
+    #2 0x8cf68c in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:778:10
+    [...]
 
-@Zhenzhong: did you notice improper operation of either kvm_page_table_test
-or perf_test_util-based tests (demand_paging_test, dirty_log_perf_test,
-memslot_modification_stress_test) before your patch?
+Indirect leak of 8702 byte(s) in 19 object(s) allocated from:
+    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+    #1 0x8728d7 in dso__new_id /home/user/linux/tools/perf/util/dso.c:1256:20
+    #2 0x872015 in dso__new /home/user/linux/tools/perf/util/dso.c:1295:9
+    #3 0x8cf623 in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:774:21
+    [...]
 
-They seem to work fine for me without the patch (and I guess other
-people would have noticed earlier, too, if they were broken).
+Indirect leak of 1520 byte(s) in 19 object(s) allocated from:
+    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+    #1 0x87b3da in symbol__new /home/user/linux/tools/perf/util/symbol.c:269:23
+    #2 0x888954 in map__process_kallsym_symbol /home/user/linux/tools/perf/util/symbol.c:710:8
+    [...]
 
-After this patch not only these tests allocate their memory twice but
-it is harder to make vm_create_default() allocate the right amount
-of memory for the page tables in cases where the test needs to
-explicitly use vm_userspace_mem_region_add() for its allocations
-(because it wants the allocation placed at a specific GPA or in a
-specific memslot).
+Indirect leak of 1406 byte(s) in 19 object(s) allocated from:
+    #0 0x4f43c7 in calloc (/home/user/linux/tools/perf/perf+0x4f43c7)
+    #1 0x87b3da in symbol__new /home/user/linux/tools/perf/util/symbol.c:269:23
+    #2 0x8cfbd8 in machine__process_ksymbol_register /home/user/linux/tools/perf/util/machine.c:803:8
+    [...]
 
-One has to basically open-code the page table size calculations from
-vm_create_with_vcpus() in the particular test then, taking also into
-account that vm_create_with_vcpus() will not only allocate the passed
-memory size (calculated page tables size) but also behave like it was
-allocating space for page tables for these page tables (even though
-the passed memory size itself is supposed to cover them).
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/util/machine.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Due to the above, I suspect the previous behavior was, in fact, correct.
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 3ff4936a15a42..d5937778875e1 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -776,6 +776,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
+ 		if (dso) {
+ 			dso->kernel = DSO_SPACE__KERNEL;
+ 			map = map__new2(0, dso);
++			dso__put(dso);
+ 		}
+ 
+ 		if (!dso || !map) {
+@@ -792,6 +793,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
+ 		map->start = event->ksymbol.addr;
+ 		map->end = map->start + event->ksymbol.len;
+ 		maps__insert(&machine->kmaps, map);
++		map__put(map);
+ 		dso__set_loaded(dso);
+ 
+ 		if (is_bpf_image(event->ksymbol.name)) {
+-- 
+2.31.1
 
-Thanks,
-Maciej
