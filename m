@@ -2,87 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F13398846
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9043398851
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhFBL16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbhFBL1L (ORCPT
+        id S232692AbhFBL2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:28:07 -0400
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:35815 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232946AbhFBL1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:27:11 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD05C061352
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:24:59 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id r1so1965152pgk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=li91TkB8vt4LZTs/ZRDPEkBtTqhmB+m8Wqp+53J3jpY=;
-        b=aonkHIp6X5zJfn9dkevz/e7hkCumER3RcmOsiw9du/9D9yv94CjQLo/uYyuC/XvNPf
-         SohKN8bPTJ8DIEn3p+38+e/UxffGTjgmc2yVx0mpVd9jw1xOAnvgrFB5P/4IoInc+373
-         Yb3dj/a26fUyuxUZC5tisApOpD1X0pSwB1ljE=
+        Wed, 2 Jun 2021 07:27:20 -0400
+Received: by mail-ua1-f52.google.com with SMTP id n61so1093903uan.2;
+        Wed, 02 Jun 2021 04:25:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=li91TkB8vt4LZTs/ZRDPEkBtTqhmB+m8Wqp+53J3jpY=;
-        b=mR9ecGXLp3oeVfXIh973nXReVkxd/ov4iGfKjGorH/xLMgDbP/EvugVOKDlEXHujaH
-         iiXOLJ6NGK4a4jdasP//SDAsr+pfh/p/K+e5tH45XUk3YtdXM9pbFBJ7P9v9PgTzG+0w
-         eb7Jv1sfwwMBr/1aK+2oJcI6r6x28/yqC9QMuEuhnpUAs806DPwLb8ZpjtFI0T+dywAH
-         jmV7XNUiGtvRVGduLn8VJZjtyiygNw1HC7rqN3ZJMaVPU/7yX+emKOc6GguYwjPDPdzu
-         gP3v+nX6lC8JHrknzv5pENHHDW4gxzxHQHU1eK4t9YqlIjGXkocjl53VIPR+P3S4OVm3
-         AFAQ==
-X-Gm-Message-State: AOAM532cSYEozPZk3HemMGtTLnh1IAUAtN1JVejMCUOpmfbYfladnT2s
-        GzlmjKAYFWxYEZLObQ8eZ2uIlA==
-X-Google-Smtp-Source: ABdhPJxpfZpr0xBPXyYNB5hyvH20vouT4QUVROCCeFjRrQPFQFstm2zrwf9q7Ou5UnmCblp40cXiWA==
-X-Received: by 2002:a63:b507:: with SMTP id y7mr33357175pge.74.1622633099202;
-        Wed, 02 Jun 2021 04:24:59 -0700 (PDT)
-Received: from 5f9be87369f8 ([124.170.34.40])
-        by smtp.gmail.com with ESMTPSA id t1sm10568249pfe.61.2021.06.02.04.24.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Jun 2021 04:24:58 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 11:24:53 +0000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Cc:     broonie@kernel.org, ezequiel@collabora.com, chenjh@rock-chips.com,
-        pgwipeout@gmail.com
-Subject: [PATCH 1/2] dt-bindings: regulator: Add support for TCS4526
-Message-ID: <20210602112452.GA98@5f9be87369f8>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AV6hHV9w+Q9HOaDxt1MduQbvvUP04JEJ1UZD5l/XTkY=;
+        b=gc2Ix2WYXrd5WBa8hgBCxI97fp6w5lfgSq5y19jK6xflsjm/7Qi77LTamSm8IRE/vZ
+         lnVGmmHIYKQplMfJJVLivjdoBII+fcGDZXQIFroxtfBnu/RLUbZkCtLwK0XcdSpflOn+
+         xER2ZqTNbCQ0NCRucaAE6MlNe0/kI7sh73nUh/FWk8GeLaGfUiF3FwdD6+zrFuR+0ORf
+         K1CCdcfJ+XJ0xQKFMxoeLAvuJ26AHtIo80w4dZe33lMo2RCUovhhCDrjV8a81vMQpegO
+         qg5fCQxWEgo8pa/jjVdVqcH/m+lg/4ZdMb3vn8BJTpJAo4JHPXB7eev+FIxZUakZslDF
+         TSrg==
+X-Gm-Message-State: AOAM5326kVIsA7qV6Ik1uDmkr2fUbjOvpkXbVdz1tzudDiEm6BIC/rPA
+        w2ybBhMHmRFC9mAddyxm9vN17wr6GLWCdLUpMZY=
+X-Google-Smtp-Source: ABdhPJyzzWa9paQxXHYFBMFScAZBlkmtyILKANDBBOx9rPPA/yxyu03vLu3qpQ9izu7tVqpx2AMkJo4APWbgLQB/p8I=
+X-Received: by 2002:ab0:26d8:: with SMTP id b24mr14134972uap.58.1622633136111;
+ Wed, 02 Jun 2021 04:25:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210602105348.13387-1-rppt@kernel.org> <20210602105348.13387-5-rppt@kernel.org>
+In-Reply-To: <20210602105348.13387-5-rppt@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 2 Jun 2021 13:25:24 +0200
+Message-ID: <CAMuHMdUUzMNcWNXCjwZmH-VBC+jH1ShBpeg6EBCdRXv3mwHxsQ@mail.gmail.com>
+Subject: Re: [PATCH 4/9] m68k: remove support for DISCONTIGMEM
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a compatible string to support the TCS4526 device,
-which is compatible with Fairchild FAN53555 regulators.
+Hi Mike,
 
-Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
----
- Documentation/devicetree/bindings/regulator/fan53555.txt | 2 +-
- 1 file changed, 1 insertions(+), 1 deletions(-)
+On Wed, Jun 2, 2021 at 12:54 PM Mike Rapoport <rppt@kernel.org> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> DISCONTIGMEM was replaced by FLATMEM with freeing of the unused memory map
+> in v5.11.
+>
+> Remove the support for DISCONTIGMEM entirely.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-diff --git a/Documentation/devicetree/bindings/regulator/fan53555.txt b/Documentation/devicetree/bindings/regulator/fan53555.txt
-index e7fc045281d1..013f096ac0aa 100644
---- a/Documentation/devicetree/bindings/regulator/fan53555.txt
-+++ b/Documentation/devicetree/bindings/regulator/fan53555.txt
-@@ -2,7 +2,7 @@
- 
- Required properties:
-   - compatible: one of "fcs,fan53555", "fcs,fan53526", "silergy,syr827",
--		"silergy,syr828" or "tcs,tcs4525".
-+		"silergy,syr828", "tcs,tcs4525" or "tcs,tcs4526".
-   - reg: I2C address
- 
- Optional properties:
--- 
-2.29.2
+Thanks for your patch!
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+> --- a/arch/m68k/include/asm/page_mm.h
+> +++ b/arch/m68k/include/asm/page_mm.h
+> @@ -126,25 +126,7 @@ static inline void *__va(unsigned long x)
+>
+>  extern int m68k_virt_to_node_shift;
+>
+> -#ifndef CONFIG_DISCONTIGMEM
+>  #define __virt_to_node(addr)   (&pg_data_map[0])
+
+With pg_data_map[] removed, this definition can go as well.
+Seems to be a leftover from 1008a11590b966b4 ("m68k: switch to MEMBLOCK
+ + NO_BOOTMEM")
+
+There are a few more:
+arch/m68k/include/asm/mmzone.h:extern pg_data_t pg_data_map[];
+arch/m68k/include/asm/mmzone.h:#define NODE_DATA(nid)
+(&pg_data_map[nid])
+
+> -#else
+> -extern struct pglist_data *pg_data_table[];
+> -
+> -static inline __attribute_const__ int __virt_to_node_shift(void)
+> -{
+> -       int shift;
+> -
+> -       asm (
+> -               "1:     moveq   #0,%0\n"
+> -               m68k_fixup(%c1, 1b)
+> -               : "=d" (shift)
+> -               : "i" (m68k_fixup_vnode_shift));
+> -       return shift;
+> -}
+> -
+> -#define __virt_to_node(addr)   (pg_data_table[(unsigned long)(addr) >> __virt_to_node_shift()])
+> -#endif
+
+> --- a/arch/m68k/mm/init.c
+> +++ b/arch/m68k/mm/init.c
+> @@ -44,28 +44,8 @@ EXPORT_SYMBOL(empty_zero_page);
+>
+>  int m68k_virt_to_node_shift;
+>
+> -#ifdef CONFIG_DISCONTIGMEM
+> -pg_data_t pg_data_map[MAX_NUMNODES];
+> -EXPORT_SYMBOL(pg_data_map);
+> -
+> -pg_data_t *pg_data_table[65];
+> -EXPORT_SYMBOL(pg_data_table);
+> -#endif
+> -
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
