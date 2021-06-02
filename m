@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1513397F0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077DE397F0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhFBC1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:27:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
+        id S230200AbhFBC2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:28:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhFBC1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:27:10 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6116C61008;
-        Wed,  2 Jun 2021 02:25:27 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 22:25:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Haocheng Xie <xiehaocheng.cn@gmail.com>, mingo@redhat.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: Fix typos in Documentation/trace/ftrace.rst
-Message-ID: <20210601222527.7cea98c6@rorschach.local.home>
-In-Reply-To: <87a6o98adq.fsf@meer.lwn.net>
-References: <20210531083905.25763-1-xiehaocheng.cn@gmail.com>
-        <87a6o98adq.fsf@meer.lwn.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229975AbhFBC2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DB0561351;
+        Wed,  2 Jun 2021 02:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622600792;
+        bh=P+ozhEM6eflHK0MwGKnJouOmnGB98sXAB7sz7QooHj8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=izUDmZ0yW5RXom1irJcMa7khmSvK/tp6eQKZ3OE4277UMikg5+PhSgJxQfjmVlbV/
+         YIi+X35/pT+n0Nl3KJYdAjzSSV6lUKKwV68DUoJp/RrgQa1cAMfYyuEaAfhv/2m1eC
+         18K/W9I4IMnVV5TunslBdHnPtBzhKaNANy8YZwXk=
+Date:   Tue, 1 Jun 2021 19:26:30 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     HAGIO =?UTF-8?B?S0FaVUhJVE8=?= (=?UTF-8?B?6JCp5bC+44CA5LiA5LuB?=) 
+        <k-hagio-ab@nec.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dong Aisheng <dongas86@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+Subject: Re: [PATCH V2 4/6] mm: rename the global section array to
+ mem_sections
+Message-Id: <20210601192630.884b1f51b81f60f5f0823694@linux-foundation.org>
+In-Reply-To: <TYYPR01MB67775E2EC60DEE1195A49577DD3D9@TYYPR01MB6777.jpnprd01.prod.outlook.com>
+References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
+        <20210531091908.1738465-5-aisheng.dong@nxp.com>
+        <42617372-c846-85fe-4739-abbe55eca8f6@redhat.com>
+        <CAA+hA=Ss4j8qeoe7RtDJ14nuqy+TpOk2qi-A9+YN6=2y8c_CGg@mail.gmail.com>
+        <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
+        <20210601165246.99d7374d07661b7e91e49cb6@linux-foundation.org>
+        <TYYPR01MB67775E2EC60DEE1195A49577DD3D9@TYYPR01MB6777.jpnprd01.prod.outlook.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Jun 2021 16:53:37 -0600
-Jonathan Corbet <corbet@lwn.net> wrote:
+On Wed, 2 Jun 2021 01:11:07 +0000 HAGIO KAZUHITO(萩尾　一仁) <k-hagio-ab@nec.com> wrote:
 
-> Haocheng Xie <xiehaocheng.cn@gmail.com> writes:
+> -----Original Message-----
+> > On Tue, 1 Jun 2021 10:40:09 +0200 David Hildenbrand <david@redhat.com> wrote:
+> > 
+> > > > Thanks, i explained the reason during my last reply.
+> > > > Andrew has already picked this patch to -mm tree.
+> > >
+> > > Just because it's in Andrews tree doesn't mean it will end up upstream. ;)
+> > >
+> > > Anyhow, no really strong opinion, it's simply unnecessary code churn
+> > > that makes bisecting harder without real value IMHO.
+> > 
+> > I think it's a good change - mem_sections refers to multiple instances
+> > of a mem_section.  Churn is a pain, but that's the price we pay for more
+> > readable code.  And for having screwed it up originally ;)
 > 
-> > Fix the usage of "a/the" and improve the readability.
-> >
-> > Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
-> > ---
-> >  Documentation/trace/ftrace.rst | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-> > index 62c98e9..11cc1c2 100644
-> > --- a/Documentation/trace/ftrace.rst
-> > +++ b/Documentation/trace/ftrace.rst
-> > @@ -354,8 +354,8 @@ of ftrace. Here is a list of some of the key files:
-> >  	is being directly called by the function. If the count is greater
-> >  	than 1 it most likely will be ftrace_ops_list_func().
-> >  
-> > -	If the callback of the function jumps to a trampoline that is
-> > -	specific to a the callback and not the standard trampoline,
-> > +	If the callback of a function jumps to a trampoline which is
-> > +	specific to the callback and which is not the standard trampoline,  
+> >From a makedumpfile/crash-utility viewpoint, I don't deny kernel improvement
+> and probably the change will not be hard for them to support, but I'd like
+> you to remember that the tool users will need to update them for the change.
 > 
-> The "that" in the first line was actually correct and best left
-> unchanged.  I've applied the patch, but took the liberty of putting
-> "that" back.
+> The situation where we need to update the tools for new kernels is usual, but
+> there are not many cases that they cannot even start session, and this change
+> will cause it.  Personally I wonder the change is worth forcing users to update
+> them.
 
-Right. And if it is modifying the "the" here, it should be modifying
-the "the function" in the previous paragraph as well.
+Didn't know that.  I guess I'll drop it then.
 
--- Steve
+We could do an assembly-level alias I assume..
