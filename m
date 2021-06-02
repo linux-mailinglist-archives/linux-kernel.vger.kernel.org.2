@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A921339810C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846AB39810E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhFBGWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:22:07 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:39330 "EHLO inva020.nxp.com"
+        id S231213AbhFBGXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:23:23 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:53798 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231147AbhFBGWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:22:06 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A4AD61A35AA;
-        Wed,  2 Jun 2021 08:20:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com A4AD61A35AA
+        id S230500AbhFBGXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 02:23:22 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D506201D24;
+        Wed,  2 Jun 2021 08:21:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com 6D506201D24
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
-        s=nselector3; t=1622614822;
-        bh=916qkDrbfLsKea6v3J9EiWiH16tJt1dJtsGTn8zGZMM=;
+        s=nselector4; t=1622614899;
+        bh=I5ZG4i74Bbuci05fKSVfqx2SSFWVySduNNdHnTcrr28=;
         h=From:To:Subject:Date:From;
-        b=osPWG7HF4wbDUh6UkQpDFSqdLTOzxNN0k9Ej83Unbhh9ktSyxgehINw8ZDR1nnAFG
-         FMX+E5a7dNtNMrcV6EhBg7K7XrZkfisvwH0lg2/nKqJhwVT+B0bySseDmq8dFDU/W6
-         3+OrgsnwqhgjnmJbRiQ2mHQH9sSMgdFF3ZtKdQlTq9EMZbsxGUacHpEU3Ss/jiXyt/
-         yAAb6A4GUGvk9Sv0YxDwBL8+eVU8uF9B28l+pczF8b5OOsyOnb/uY5quq9fStxvNf/
-         IW1DTgnbXttRdNzN+9XcGnlvJDg7KOubIYqnPyLP5ODub+d+Mi+QmxNVbNt1BeNS0F
-         8jyadsRh7WXFA==
+        b=mMZQXuL66kraGhH3fm3IZw897euPTILI6GWB26xETQbpQkkCyERli+lh8mjpEY2VY
+         wACh9rO/praUxBUdYmB5LdTiGb0ZNzkqD76ii5akZrIf5TsEnSgwnNgnmqzEtNlr9X
+         BcC2aWIn9LMzFmdqar/2/5Qbi/+0b/01SARXwKHiVL8N44kviq2IRhuF5wgou7R0Gd
+         /oYCRe5/05bg6YjMq5TcSdGQkp71tY4paId956ZP+KNiCRUcTYFGdlpBMhO9ukyO89
+         RcjDwlw+wTs8+stYhVCIdH7rltzISLff+qHrPAHzAn8C/s3AGnIOY0QlcH6FQRfS++
+         /DfNkoTZXAEeQ==
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EDCA81A1E65;
-        Wed,  2 Jun 2021 08:20:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com EDCA81A1E65
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BA4C5200AF5;
+        Wed,  2 Jun 2021 08:21:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com BA4C5200AF5
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AE51F4028B;
-        Wed,  2 Jun 2021 14:20:16 +0800 (+08)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7B42C4031E;
+        Wed,  2 Jun 2021 14:21:33 +0800 (+08)
 From:   Shengjiu Wang <shengjiu.wang@nxp.com>
 To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dt-bindings: fsl-sai: Add compatible string for imx8mm/8mn/8mp/8ulp
-Date:   Wed,  2 Jun 2021 14:02:50 +0800
-Message-Id: <1622613770-10220-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH] ASoC: dt-bindings: fsl,spdif: Add compatible string for imx8ulp
+Date:   Wed,  2 Jun 2021 14:04:09 +0800
+Message-Id: <1622613849-10271-1-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string for imx8mm/8mn/8mp/8ulp, these platforms all
-support SAI IP.
+Add compatible string for imx8ulp, which supports spdif module
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index 0dc83cc4a236..c71c5861d787 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -9,8 +9,10 @@ Required properties:
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+index 4454aca34d56..f226ec13167a 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
++++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+@@ -25,6 +25,7 @@ properties:
+       - fsl,imx8mq-spdif
+       - fsl,imx8mm-spdif
+       - fsl,imx8mn-spdif
++      - fsl,imx8ulp-spdif
  
-   - compatible		: Compatible list, contains "fsl,vf610-sai",
- 			  "fsl,imx6sx-sai", "fsl,imx6ul-sai",
--			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai" or
--			  "fsl,imx8qm-sai".
-+			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai",
-+			  "fsl,imx8qm-sai", "fsl,imx8mm-sai",
-+			  "fsl,imx8mn-sai", "fsl,imx8mp-sai", or
-+			  "fsl,imx8ulp-sai".
- 
-   - reg			: Offset and length of the register set for the device.
- 
+   reg:
+     maxItems: 1
 -- 
 2.27.0
 
