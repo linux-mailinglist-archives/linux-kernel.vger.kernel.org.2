@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA8039919C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF983991A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhFBR2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:28:14 -0400
-Received: from smtprelay0181.hostedemail.com ([216.40.44.181]:35566 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229876AbhFBR2N (ORCPT
+        id S230008AbhFBR2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:28:39 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:20492 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhFBR2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:28:13 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9D8DD1801A4E0;
-        Wed,  2 Jun 2021 17:26:28 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 3BA51315D7C;
-        Wed,  2 Jun 2021 17:26:27 +0000 (UTC)
-Message-ID: <b54d673e7cde7de5de0c9ba4dd57dd0858580ca4.camel@perches.com>
-Subject: [PATCH] checkpatch: Improve the indented label test
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manikishan Ghantasala <manikishanghantasala@gmail.com>,
-        Alex Elder <elder@ieee.org>, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Wed, 02 Jun 2021 10:26:25 -0700
-In-Reply-To: <YLeXoQH2/iJjxkc+@kroah.com>
-References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
-         <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
-         <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
-         <YLeXoQH2/iJjxkc+@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 2 Jun 2021 13:28:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622654814; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=thAp5U/BnilHig/A/fV8FHcVazNRnezQYfUBJs5V2nQ=;
+ b=d7kSb+HtqI7d+XGRQzg7I4CAOFAIzqSN0QcuR3Xwk9BaAgmj+vFKVCJ1daHtj5n6SGKW6VA9
+ pojIAv05DQPgCWFypXTQq5gb0Nt9xyK2evMMC/FdwAph2qi21/VBatJLak8dl0N8gpy36ozB
+ +f9tapgwbGz7FhGhK+RFLMZ4LY0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60b7bf4a2eaeb98b5e5f15ca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 17:26:34
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2E5D8C4338A; Wed,  2 Jun 2021 17:26:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 732B5C433F1;
+        Wed,  2 Jun 2021 17:26:31 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 3BA51315D7C
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: puiaqbjzhzyg9p4r5kyjyidreqtawow3
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+8gWow/8EElv5V+Upz4kYDcyBuJjso3/4=
-X-HE-Tag: 1622654787-866904
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 02 Jun 2021 10:26:31 -0700
+From:   abhinavk@codeaurora.org
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Sean Paul <sean@poorly.run>
+Subject: Re: [Freedreno] [RESEND 09/26]
+ drm/msm/disp/dpu1/dpu_encoder_phys_cmd: Remove unused variable 'cmd_enc'
+In-Reply-To: <20210602143300.2330146-10-lee.jones@linaro.org>
+References: <20210602143300.2330146-1-lee.jones@linaro.org>
+ <20210602143300.2330146-10-lee.jones@linaro.org>
+Message-ID: <c6c4443e3e7a3c5c9d97ecfc58f49fb6@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkpatch identifies a label only when a terminating colon
-immediately follows an identifier.
-
-Bitfield definitions can appear to be labels so ignore any
-spaces between the identifier terminating colon and any digit
-that may be used to define a bitfield length.
-
-Miscellanea:
-
-o Improve the initial checkpatch comment
-o Use the more typical '&&' instead of 'and'
-o Require the initial label character to be a non-digit
-  (Can't use $Ident here because $Ident allows ## concatenation)
-o Use $sline instead of $line to ignore comments
-o Use '$sline !~ /.../' instead of '!($line =~ /.../)'
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- 
-On Wed, 2021-06-02 at 16:37 +0200, Greg Kroah-Hartman wrote:
-> On Wed, Jun 02, 2021 at 07:57:35PM +0530, Manikishan Ghantasala wrote:
-> > I agree those are called bit-field member names rather than labels.
-> > But the reason I mentioned is because the ./scripts/checkpatch.pl
-> > gave out a warning saying "labels should not be indented".
+On 2021-06-02 07:32, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> checkpatch is a perl script that does it's best, but does not always get
-> it right.  In this case, it is incorrect, the existing code is just
-> fine.
-
- scripts/checkpatch.pl | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index d65334588eb4c..6e7d48f412fb7 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5361,9 +5361,13 @@ sub process {
- 			}
- 		}
- 
--#goto labels aren't indented, allow a single space however
--		if ($line=~/^.\s+[A-Za-z\d_]+:(?![0-9]+)/ and
--		   !($line=~/^. [A-Za-z\d_]+:/) and !($line=~/^.\s+default:/)) {
-+# check that goto labels aren't indented (allow a single space indentation)
-+# and ignore bitfield definitions like foo:1
-+# Strictly, labels can have whitespace after the identifier and before the :
-+# but this is not allowed here as many ?: uses would appear to be labels
-+		if ($sline =~ /^.\s+[A-Za-z_][A-Za-z\d_]*:(?!\s*\d+)/ &&
-+		    $sline !~ /^. [A-Za-z\d_][A-Za-z\d_]*:/ &&
-+		    $sline !~ /^.\s+default:/) {
- 			if (WARN("INDENTED_LABEL",
- 				 "labels should not be indented\n" . $herecurr) &&
- 			    $fix) {
-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c: In function
+> ‘dpu_encoder_phys_cmd_wait_for_commit_done’:
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c:688:31: warning:
+> variable ‘cmd_enc’ set but not used [-Wunused-but-set-variable]
+> 
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: AngeloGioacchino Del Regno 
+> <angelogioacchino.delregno@somainline.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index b2be39b9144e4..088900841bf8b 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -685,10 +685,6 @@ static int 
+> dpu_encoder_phys_cmd_wait_for_tx_complete(
+>  static int dpu_encoder_phys_cmd_wait_for_commit_done(
+>  		struct dpu_encoder_phys *phys_enc)
+>  {
+> -	struct dpu_encoder_phys_cmd *cmd_enc;
+> -
+> -	cmd_enc = to_dpu_encoder_phys_cmd(phys_enc);
+> -
+>  	/* only required for master controller */
+>  	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
+>  		return 0;
