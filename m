@@ -2,128 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F643989C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C4F3989CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhFBMkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:40:01 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:52784 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhFBMkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:40:00 -0400
-Received: from zn.tnic (p200300ec2f0f0e0009598a6b6104e9d0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:e00:959:8a6b:6104:e9d0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D68A21EC051E;
-        Wed,  2 Jun 2021 14:38:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622637497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mdoASBUa4Qv3xbqKAlEPW3ZCkB2pQW6JM5Lnhi6idXk=;
-        b=GFtSHKcX99SbEU/pulL4h27cx3I9s68lDG0O5hIbjOgc3kNcFqx3NhNTBw83EqVM5AOPfc
-        y0LJmHfJG1pkeBCMv7Ed5VLuMLLVXeW9XF7FujOh0/e7U1CLu33LdZw5mbl32sjhZNxRLQ
-        xksYSTGkxL4USilE8qw04dfiNQMm3uQ=
-Date:   Wed, 2 Jun 2021 14:38:11 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: Re: [patch 1/8] selftests/x86: Test signal frame XSTATE header
- corruption handling
-Message-ID: <YLd7s/cw8MsUlWvM@zn.tnic>
-References: <20210602095543.149814064@linutronix.de>
- <20210602101618.285452223@linutronix.de>
+        id S229594AbhFBMlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:41:52 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:39483 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhFBMlu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 08:41:50 -0400
+Received: by mail-pg1-f171.google.com with SMTP id v14so2118908pgi.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tkfGbFk7RbowFQb2pdJ2DiNSH2Hl1PMpHr94hmyAtqs=;
+        b=lxTZN5WbWFKLKZay+tdzygwECcBcBFtb83iQAMQ8lte/ef8eggQE+S6BXoanfnJ/4I
+         dEl0mlNV6UDIdqkQHC32HZwJ89hL6aWyh2WgB3pOoIe9D/z8kfIjRpvSZIH8pmiPlNGS
+         IpFZWdj+7gWvUjS9SyFwBbBo8H1aSB76NwmjvgtpvFHQToHJ+Kuddzdd+0tm+VMTcgg5
+         7H7ew14q/bvkc2Lod182B23azGQ9B9P9FlPuvJk8Dzix8zksKnZ+vJGK2e0WeuzXv25I
+         UkIy8wL7PVXNQ9j6HkPq9Undf92t2TZKM4M2WVAfzXaMeScb3NFjSK/mH/UmRz9bdIUs
+         v5tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tkfGbFk7RbowFQb2pdJ2DiNSH2Hl1PMpHr94hmyAtqs=;
+        b=bPgh+YmCWblq1OTROI1DJWWUJ5Fe0PTFz05nYIOBLvqkffQ5IMgSpkFzxmYWIlvier
+         jCAbOZKKvdLr8RisyogoHIZ9TI2A/f9Ed3eczfM1GuIlECvL20DQCm5ca2FczKZOP0S6
+         7tHRiMo4hBso+Ebmm0QEyNGCSKTY9ApddumTnHfvon051SLzL+aYdJ3I4o/Pg40y01bS
+         ZY53GoZ4EXSJZXnZ1wSe20vGGFIZNQcMqJJK+ZRy04XvVY6XETMu3yHEBPyZ7vpV7N20
+         zlvO9CbV2X+6PZ0ChuWwu1Mjb+lHucFjrcncc3z+1Y/ly6Fc5mpQZjYKp/gIKERlX7nN
+         Y8kA==
+X-Gm-Message-State: AOAM533iWe3hVLeEFJRHJWLPlm1BVTbtgZnOZvMBGTvCFzrioLMR9zSD
+        z8Duks4vkRMvjiFY/zznIZYRow==
+X-Google-Smtp-Source: ABdhPJwZLYHDPPn1a+5bpf3u9GEz+y0iz9ZUQ2qJzz1MLRRwbyl6UAlRYCEn1EZr8YCrCxvzgqY3OA==
+X-Received: by 2002:a63:5c5d:: with SMTP id n29mr33235732pgm.131.1622637534524;
+        Wed, 02 Jun 2021 05:38:54 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
+        by smtp.gmail.com with ESMTPSA id m2sm17340941pgu.85.2021.06.02.05.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 05:38:53 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 20:38:47 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 8/8] perf record: Directly bail out for compat case
+Message-ID: <20210602123847.GE10272@leoy-ThinkPad-X240s>
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-9-leo.yan@linaro.org>
+ <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602101618.285452223@linutronix.de>
+In-Reply-To: <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:55:44AM +0200, Thomas Gleixner wrote:
-> From: Andy Lutomirski <luto@kernel.org>
+Hi Adrain,
+
+On Wed, Jun 02, 2021 at 02:18:47PM +0300, Adrian Hunter wrote:
+> On 2/06/21 1:30 pm, Leo Yan wrote:
+> > Since the 64-bit atomicity is not promised in 32-bit perf, directly
+> > report the error and bail out for this case.
+> > 
+> > Now only applies on x86_64 and Arm64 platforms.
+> > 
+> > Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
 > 
-> This is very heavily based on some code from Thomas Gleixner.  On a system
-> without XSAVES, it triggers the WARN_ON():
+> Maybe we can do better for the compat case.
 > 
->     Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
+> We can assume the upper 32-bits change very seldom,
+> and always increase. So for the 'read' case:
+> 
+> 	u64 first, second, last;
+> 	u64 mask = (u64)((u32)-1) << 32;
+> 
+> 	do {
+> 		first = READ_ONCE(pc->aux_head);
+> 		rmb();
+> 		second = READ_ONCE(pc->aux_head);
+> 		rmb();
+> 		last = READ_ONCE(pc->aux_head);
+> 	} while ((first & mask) != (last & mask));
+> 	return second;
+> 
+> For the write case, we can cause a fatal error only if the new
+> tail has non-zero upper 32-bits.  That gives up to 4GiB of data
+> before aborting:
+> 
+> 	if (tail & mask)
+> 		return -1;
+> 	smp_mb();
+> 	WRITE_ONCE(pc->aux_tail, tail);
 
-That triggers
+Seems to me, it's pointless to only support aux_head for 64-bit and
+support aux_tail for 32-bit.  I understand this can be helpful for the
+snapshot mode which only uses aux_head, but it still fails to support
+the normal case for AUX ring buffer using 64-bit head/tail.
 
-[  149.497274] corrupt_xstate_[1627] bad frame in rt_sigreturn frame:00000000dad08ab1 ip:7f031449ffe1 sp:7ffd0c5c59f0 orax:ffffffffffffffff in libpthread-2.31.so[7f0314493000+10000]
-
-on an AMD laptop here.
-
-> +static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
-> +			   unsigned int *ecx, unsigned int *edx)
-> +{
-> +	asm volatile(
-> +		"cpuid;"
-> +		: "=a" (*eax),
-> +		  "=b" (*ebx),
-> +		  "=c" (*ecx),
-> +		  "=d" (*edx)
-> +		: "0" (*eax), "2" (*ecx));
-> +}
-> +
-> +static inline int xsave_enabled(void)
-> +{
-> +	unsigned int eax, ebx, ecx, edx;
-> +
-> +	eax = 0x1;
-> +	ecx = 0x0;
-> +	__cpuid(&eax, &ebx, &ecx, &edx);
-> +
-> +	/* Is CR4.OSXSAVE enabled ? */
-> +	return ecx & (1U << 27);
-> +}
-
-One fine day someone should sit down and unify all those auxillary
-functions used in the selftests into a lib...
-
-> +
-> +static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-> +		       int flags)
-> +{
-> +	struct sigaction sa;
-> +
-> +	memset(&sa, 0, sizeof(sa));
-> +	sa.sa_sigaction = handler;
-> +	sa.sa_flags = SA_SIGINFO | flags;
-> +	sigemptyset(&sa.sa_mask);
-> +	if (sigaction(sig, &sa, 0))
-> +		err(1, "sigaction");
-> +}
-> +
-> +static void sigusr1(int sig, siginfo_t *info, void *uc_void)
-> +{
-> +	ucontext_t *uc = uc_void;
-> +	uint8_t *fpstate = (uint8_t *)uc->uc_mcontext.fpregs;
-> +	uint64_t *xfeatures = (uint64_t *)(fpstate + 512);
-> +
-> +	printf("\tWreckage XSTATE header\n");
-> +	/* Wreckage the first reserved byte in the header */
-> +	*(xfeatures + 2) = 0xfffffff;
-> +}
-> +
-> +static void sigsegv(int sig, siginfo_t *info, void *uc_void)
-> +{
-> +	printf("\tGot SIGSEGV\n");
-> +}
-> +
-> +int main()
-
-ERROR: Bad function definition - int main() should probably be int main(void)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Leo
