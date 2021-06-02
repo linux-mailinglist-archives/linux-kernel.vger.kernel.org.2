@@ -2,58 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC19397F4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC22397F4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhFBDC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhFBDCz (ORCPT
+        id S230178AbhFBDCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 23:02:48 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6130 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhFBDCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:02:55 -0400
-Received: from hurricane.the-brannons.com (hurricane.the-brannons.com [IPv6:2602:ff06:725:1:20::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4D4C061574;
-        Tue,  1 Jun 2021 20:01:12 -0700 (PDT)
-Received: from localhost (<unknown> [2602:3f:e0f9:dc00::2])
-        by hurricane.the-brannons.com (OpenSMTPD) with ESMTPSA id 9c702b39 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 1 Jun 2021 19:54:31 -0700 (PDT)
-From:   Chris Brannon <chris@the-brannons.com>
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Christopher Brannon <chris@the-brannons.com>,
-        William Hubbs <w.d.hubbs@gmail.com>,
-        collins@gene3.ait.iastate.edu,
-        Steve Holmes <steve.holmes88@gmail.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
-References: <20210531215737.8431-1-igormtorrente@gmail.com>
-        <875yyxbenm.fsf@meer.lwn.net> <20210601220643.uzep2ju2zlcmpa57@begin>
-        <874keh9qk9.fsf@meer.lwn.net> <20210601223743.carif4gkzcz5jo7j@begin>
-Date:   Tue, 01 Jun 2021 19:54:30 -0700
-In-Reply-To: <20210601223743.carif4gkzcz5jo7j@begin> (Samuel Thibault's
-        message of "Wed, 2 Jun 2021 00:37:43 +0200")
-Message-ID: <87r1hldli1.fsf@the-brannons.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Tue, 1 Jun 2021 23:02:47 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fvty31HN8zYpts;
+        Wed,  2 Jun 2021 10:58:19 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 11:01:03 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 11:01:02 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Saurav Kashyap <skashyap@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] scsi: qedf: use DEVICE_ATTR_RO macro
+Date:   Wed, 2 Jun 2021 11:00:56 +0800
+Message-ID: <20210602030056.10799-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Samuel Thibault <samuel.thibault@ens-lyon.org> writes:
+Use DEVICE_ATTR_RO macro helper instead of plain DEVICE_ATTR, which makes
+the code a bit shorter and easier to read.
 
-> So we'd need Gene's, Christopher's, William's, and Steve's ack on adding
-> the GPL alternative to the GFDL-1.2 licence.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/scsi/qedf/qedf_attr.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-You have my ack.  Do whatever is needful.  I wish I didn't have to care about
-this stuff.
-
+diff --git a/drivers/scsi/qedf/qedf_attr.c b/drivers/scsi/qedf/qedf_attr.c
+index d995f72a67595bd..461c0c9180c444e 100644
+--- a/drivers/scsi/qedf/qedf_attr.c
++++ b/drivers/scsi/qedf/qedf_attr.c
+@@ -24,9 +24,8 @@ static struct qedf_ctx *qedf_get_base_qedf(struct qedf_ctx *qedf)
+ 	return lport_priv(base_lport);
+ }
+ 
+-static ssize_t
+-qedf_fcoe_mac_show(struct device *dev,
+-	struct device_attribute *attr, char *buf)
++static ssize_t fcoe_mac_show(struct device *dev,
++			     struct device_attribute *attr, char *buf)
+ {
+ 	struct fc_lport *lport = shost_priv(class_to_shost(dev));
+ 	u32 port_id;
+@@ -42,9 +41,8 @@ qedf_fcoe_mac_show(struct device *dev,
+ 	return scnprintf(buf, PAGE_SIZE, "%pM\n", fcoe_mac);
+ }
+ 
+-static ssize_t
+-qedf_fka_period_show(struct device *dev,
+-	struct device_attribute *attr, char *buf)
++static ssize_t fka_period_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
+ {
+ 	struct fc_lport *lport = shost_priv(class_to_shost(dev));
+ 	struct qedf_ctx *qedf = lport_priv(lport);
+@@ -59,8 +57,8 @@ qedf_fka_period_show(struct device *dev,
+ 	return scnprintf(buf, PAGE_SIZE, "%d\n", fka_period);
+ }
+ 
+-static DEVICE_ATTR(fcoe_mac, S_IRUGO, qedf_fcoe_mac_show, NULL);
+-static DEVICE_ATTR(fka_period, S_IRUGO, qedf_fka_period_show, NULL);
++static DEVICE_ATTR_RO(fcoe_mac);
++static DEVICE_ATTR_RO(fka_period);
+ 
+ struct device_attribute *qedf_host_attrs[] = {
+ 	&dev_attr_fcoe_mac,
 -- 
-Chris Brannon
-Founder: Blind and Low Vision Unix Users Group (https://blvuug.org/).
-Personal website: (https://the-brannons.com/)
-Chat: IRC: teiresias on libera.chat and OFTC, XMPP: chris@chat.number89.net
+2.26.0.106.g9fadedd
+
+
