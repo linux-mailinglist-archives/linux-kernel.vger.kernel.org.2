@@ -2,118 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70750398519
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02758398527
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhFBJSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:18:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhFBJSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:18:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F55260FE3;
-        Wed,  2 Jun 2021 09:16:34 +0000 (UTC)
-Date:   Wed, 2 Jun 2021 11:16:32 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        stable@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>
-Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
-Message-ID: <20210602091632.qijrpc2z6z44wu54@wittgenstein>
-References: <20210531153410.93150-1-changbin.du@gmail.com>
- <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <20210601080654.cl7caplm7rsagl6u@wittgenstein>
- <20210601132602.02e92678@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        id S231530AbhFBJWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:22:31 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6137 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBJWa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:22:30 -0400
+Received: from dggeme711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fw3N90mpKzYq0G;
+        Wed,  2 Jun 2021 17:18:01 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggeme711-chm.china.huawei.com (10.1.199.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 17:20:45 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Wed, 2 Jun 2021 17:20:45 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+Subject: RE: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
+Thread-Topic: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
+Thread-Index: AQHXVpHLdxqqXqYHy0SNrz7+ZdO1FKr+ElmAgAGnloCAAAEPgIAAArSAgAAnIwCAAANUAIAAAbOAgACIVwA=
+Date:   Wed, 2 Jun 2021 09:20:45 +0000
+Message-ID: <547f8273faa146699dd50173b33f03e2@hisilicon.com>
+References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
+ <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
+ <YLW+hZwoImx2wjwS@kroah.com>
+ <4c9c7c17-e8d1-d601-6262-8064293a06a9@huawei.com>
+ <YLcivXNwm75V+I2m@kroah.com>
+ <d3c1ec35-fa62-46ed-9227-866e0a3c96b8@huawei.com>
+ <CAHp75VeL4UMFX6oZWaFscTX6Ta5s714NeisR=vTh6mYMjyPi6w@mail.gmail.com>
+ <f84f92f5-8462-0556-e457-4e302e1e8cb6@huawei.com>
+ <YLdKDXYKm7jqorGa@kroah.com>
+In-Reply-To: <YLdKDXYKm7jqorGa@kroah.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.102]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210601132602.02e92678@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 01:26:02PM -0700, Jakub Kicinski wrote:
-> On Tue, 1 Jun 2021 10:06:54 +0200 Christian Brauner wrote:
-> > > I'm not sure why we'd pick runtime checks for something that can be
-> > > perfectly easily solved at compilation time. Networking should not
-> > > be asking for FDs for objects which don't exist.  
-> > 
-> > Agreed!
-> > This should be fixable by sm like:
-> > 
-> > diff --git a/net/socket.c b/net/socket.c
-> > index 27e3e7d53f8e..2484466d96ad 100644
-> > --- a/net/socket.c
-> > +++ b/net/socket.c
-> > @@ -1150,10 +1150,12 @@ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
-> >                         break;
-> >                 case SIOCGSKNS:
-> >                         err = -EPERM;
-> > +#ifdef CONFIG_NET_NS
-> >                         if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
-> >                                 break;
-> > 
-> >                         err = open_related_ns(&net->ns, get_net_ns);
-> > +#endif
-> >                         break;
-> >                 case SIOCGSTAMP_OLD:
-> >                 case SIOCGSTAMPNS_OLD:
-> 
-> Thanks! You weren't CCed on v1, so FWIW I was suggesting
-> checking in get_net_ns(), to catch other callers:
-> 
-> diff --git a/net/socket.c b/net/socket.c
-> index 27e3e7d53f8e..3b44f2700e0c 100644
-> --- a/net/socket.c
-> +++ b/net/socket.c
-> @@ -1081,6 +1081,8 @@ static long sock_do_ioctl(struct net *net, struct socket *sock,
->  
->  struct ns_common *get_net_ns(struct ns_common *ns)
->  {
-> +       if (!IS_ENABLED(CONFIG_NET_NS))
-> +               return ERR_PTR(-EOPNOTSUPP);
->         return &get_net(container_of(ns, struct net, ns))->ns;
->  }
->  EXPORT_SYMBOL_GPL(get_net_ns);
-
-Yeah, that's better than my hack. :) Maybe this function should simply
-move over to net/core/net_namespace.c with the other netns getters, e.g.
-get_net_ns_by_fd()?
-
-#ifdef CONFIG_NET_NS
-
-[...]
-
-struct net *get_net_ns_by_fd(int fd)
-{
-	struct file *file;
-	struct ns_common *ns;
-	struct net *net;
-
-	file = proc_ns_fget(fd);
-	if (IS_ERR(file))
-		return ERR_CAST(file);
-
-	ns = get_proc_ns(file_inode(file));
-	if (ns->ops == &netns_operations)
-		net = get_net(container_of(ns, struct net, ns));
-	else
-		net = ERR_PTR(-EINVAL);
-
-	fput(file);
-	return net;
-}
-
-#else
-struct net *get_net_ns_by_fd(int fd)
-{
-	return ERR_PTR(-EINVAL);
-}
-#endif
-EXPORT_SYMBOL_GPL(get_net_ns_by_fd);
-
-Christian
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR3JlZyBLSCBbbWFpbHRv
+OmdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnXQ0KPiBTZW50OiBXZWRuZXNkYXksIEp1bmUgMiwg
+MjAyMSA5OjA2IFBNDQo+IFRvOiB0aWFudGFvIChIKSA8dGlhbnRhbzZAaGlzaWxpY29uLmNvbT4N
+Cj4gQ2M6IEFuZHkgU2hldmNoZW5rbyA8YW5keS5zaGV2Y2hlbmtvQGdtYWlsLmNvbT47IHRpYW50
+YW8gKEgpDQo+IDx0aWFudGFvNkBoaXNpbGljb24uY29tPjsgTGludXggS2VybmVsIE1haWxpbmcg
+TGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IEFuZHJldyBNb3J0b24gPGFr
+cG1AbGludXgtZm91bmRhdGlvbi5vcmc+Ow0KPiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxz
+b25nLmJhby5odWFAaGlzaWxpY29uLmNvbT47IEFuZHkgU2hldmNoZW5rbw0KPiA8YW5kcml5LnNo
+ZXZjaGVua29AbGludXguaW50ZWwuY29tPjsgUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbEBrZXJu
+ZWwub3JnPjsNCj4gSm9uYXRoYW4gQ2FtZXJvbiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29t
+Pg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDEvMl0gdG9wb2xvZ3k6IHVzZSBiaW5fYXR0cmlidXRl
+IHRvIGF2b2lkIGJ1ZmYgb3ZlcmZsb3cNCj4gDQo+IE9uIFdlZCwgSnVuIDAyLCAyMDIxIGF0IDA1
+OjAwOjE2UE0gKzA4MDAsIHRpYW50YW8gKEgpIHdyb3RlOg0KPiA+DQo+ID4g5ZyoIDIwMjEvNi8y
+IDE2OjQ4LCBBbmR5IFNoZXZjaGVua28g5YaZ6YGTOg0KPiA+ID4gT24gV2VkLCBKdW4gMiwgMjAy
+MSBhdCA5OjQ1IEFNIHRpYW50YW8gKEgpIDx0aWFudGFvNkBodWF3ZWkuY29tPiB3cm90ZToNCj4g
+PiA+ID4g5ZyoIDIwMjEvNi8yIDE0OjE4LCBHcmVnIEtIIOWGmemBkzoNCj4gPiA+ID4gPiBPbiBX
+ZWQsIEp1biAwMiwgMjAyMSBhdCAwMjoxNDo0OVBNICswODAwLCB0aWFudGFvIChIKSB3cm90ZToN
+Cj4gPiA+ID4gPiA+IOWcqCAyMDIxLzYvMSAxMjo1OCwgR3JlZyBLSCDlhpnpgZM6DQo+ID4gPiA+
+ID4gPiA+IE9uIFR1ZSwgSnVuIDAxLCAyMDIxIGF0IDEwOjU2OjQ5QU0gKzA4MDAsIFRpYW4gVGFv
+IHdyb3RlOg0KPiA+ID4gLi4uDQo+ID4gPg0KPiA+ID4gPiA+ID4gPiA+ICAgICAvKioNCj4gPiA+
+ID4gPiA+ID4gPiArICogYml0bWFwX3ByaW50X3RvX2J1ZiAtIGNvbnZlcnQgYml0bWFwIHRvIGxp
+c3Qgb3IgaGV4IGZvcm1hdA0KPiBBU0NJSSBzdHJpbmcNCj4gPiA+ID4gPiA+ID4gPiArICogQGxp
+c3Q6IGluZGljYXRlcyB3aGV0aGVyIHRoZSBiaXRtYXAgbXVzdCBiZSBsaXN0DQo+ID4gPiA+ID4g
+PiA+ID4gKyAqIEBidWY6IHBhZ2UgYWxpZ25lZCBidWZmZXIgaW50byB3aGljaCBzdHJpbmcgaXMg
+cGxhY2VkDQo+ID4gPiA+ID4gPiA+ID4gKyAqIEBtYXNrcDogcG9pbnRlciB0byBiaXRtYXAgdG8g
+Y29udmVydA0KPiA+ID4gPiA+ID4gPiA+ICsgKiBAbm1hc2tiaXRzOiBzaXplIG9mIGJpdG1hcCwg
+aW4gYml0cw0KPiA+ID4gPiA+ID4gPiA+ICsgKiBAb2ZmOiBvZmZzZXQgaW4gYnVmDQo+ID4gPiA+
+ID4gPiA+ID4gKyAqIEBjb3VudDogY291bnQgdGhhdCBhbHJlYWR5IG91dHB1dA0KPiA+ID4gPiA+
+ID4gPiA+ICsgKg0KPiA+ID4gPiA+ID4gPiA+ICsgKiB0aGUgcm9sZSBvZiBiaXRtYXBfcHJpbnRf
+dG9fYnVmIGFuZCBiaXRtYXBfcHJpbnRfdG9fcGFnZWJ1Zg0KPiBpcw0KPiA+ID4gPiA+ID4gPiA+
+ICsgKiB0aGUgc2FtZSwgdGhlIGRpZmZlcmVuY2UgaXMgdGhhdCB0aGUgc2Vjb25kIHBhcmFtZXRl
+ciBvZg0KPiA+ID4gPiA+ID4gPiA+ICsgKiBiaXRtYXBfcHJpbnRfdG9fYnVmIGNhbiBiZSBtb3Jl
+IHRoYW4gb25lIHBhZ2VzaXplLg0KPiA+ID4gPiA+ID4gPiA+ICsgKi8NCj4gPiA+ID4gPiA+ID4g
+PiAraW50IGJpdG1hcF9wcmludF90b19idWYoYm9vbCBsaXN0LCBjaGFyICpidWYsIGNvbnN0IHVu
+c2lnbmVkDQo+IGxvbmcgKm1hc2twLA0KPiA+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAg
+ICBpbnQgbm1hc2tiaXRzLCBsb2ZmX3Qgb2ZmLCBzaXplX3QgY291bnQpDQo+ID4gPiA+ID4gPiA+
+ID4gK3sNCj4gPiA+ID4gPiA+ID4gPiArICBpbnQgbGVuLCBzaXplOw0KPiA+ID4gPiA+ID4gPiA+
+ICsgIHZvaWQgKmRhdGE7DQo+ID4gPiA+ID4gPiA+ID4gKyAgY2hhciAqZm10ID0gbGlzdCA/ICIl
+KnBibFxuIiA6ICIlKnBiXG4iOw0KPiA+ID4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ID4gPiAr
+ICBsZW4gPSBzbnByaW50ZihOVUxMLCAwLCBmbXQsIG5tYXNrYml0cywgbWFza3ApOw0KPiA+ID4g
+PiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ID4gPiArICBkYXRhID0ga3ZtYWxsb2MobGVuKzEsIEdG
+UF9LRVJORUwpOw0KPiA+ID4gPiA+ID4gPiA+ICsgIGlmICghZGF0YSkNCj4gPiA+ID4gPiA+ID4g
+PiArICAgICAgICAgIHJldHVybiAtRU5PTUVNOw0KPiA+ID4gPiA+ID4gPiA+ICsNCj4gPiA+ID4g
+PiA+ID4gPiArICBzaXplID0gc2NucHJpbnRmKGRhdGEsIGxlbisxLCBmbXQsIG5tYXNrYml0cywg
+bWFza3ApOw0KPiA+ID4gPiA+ID4gPiA+ICsgIHNpemUgPSBtZW1vcnlfcmVhZF9mcm9tX2J1ZmZl
+cihidWYsIGNvdW50LCAmb2ZmLCBkYXRhLCBzaXplKTsNCj4gPiA+ID4gPiA+ID4gPiArICBrdmZy
+ZWUoZGF0YSk7DQo+ID4gPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gPiA+ICsgIHJldHVybiBz
+aXplOw0KPiA+ID4gPiA+ID4gPiBXaHkgaXMgdGhpcyBzbyBkaWZmZXJlbnQgZnJvbSBiaXRtYXBf
+cHJpbnRfdG9fcGFnZWJ1ZigpPyAgQ2FuJ3QgeW91DQo+IGp1c3QNCj4gPiA+ID4gPiA+ID4gdXNl
+IHRoaXMgZnVuY3Rpb24gYXMgdGhlICJyZWFsIiBmdW5jdGlvbiBhbmQgdGhlbiBjaGFuZ2UNCj4g
+PiA+ID4gPiA+ID4gYml0bWFwX3ByaW50X3RvX3BhZ2VidWYoKSB0byBjYWxsIGl0IHdpdGggYSBz
+aXplIG9mIFBBR0VfU0laRT8NCj4gPiA+ID4gPiA+IERvIHlvdSBtZWFuIGRvIGZvbGxvd2luZyBj
+aGFuZ2UsIGlzIHRoYXQgY29ycmVjdD8gOi0pDQo+ID4gPiA+ID4gTWF5YmUsIGl0IGlzIHdoaXRl
+c3BhY2UgY29ycnVwdGVkLCBhbmQgaXQgc3RpbGwgZmVlbHMgbGlrZSB0aGlzIGZ1bmN0aW9uDQo+
+ID4gPiA+ID4gaXMgbXVjaCBiaWdnZXIgdGhhbiBpdCBuZWVkcyB0byBiZSBnaXZlbiB0aGUgZnVu
+Y3Rpb24gaXQgaXMgcmVwbGFjaW5nDQo+IGlzDQo+ID4gPiA+ID4gb25seSBhIHNpbXBsZSBzcHJp
+bnRmKCkgY2FsbC4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gK2ludCBiaXRtYXBfcHJpbnRfdG9f
+YnVmKGJvb2wgbGlzdCwgY2hhciAqYnVmLCBjb25zdCB1bnNpZ25lZCBsb25nDQo+ICptYXNrcCwN
+Cj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGludCBubWFza2JpdHMsIGxvZmZf
+dCBvZmYsIHNpemVfdCBjb3VudCkNCj4gPiA+ID4gPiA+ICt7DQo+ID4gPiA+ID4gPiArICAgICAg
+IGludCBsZW4sIHNpemU7DQo+ID4gPiA+ID4gPiArICAgICAgIHZvaWQgKmRhdGE7DQo+ID4gPiA+
+ID4gPiArICAgICAgIGNvbnN0IGNoYXIgKmZtdCA9IGxpc3QgPyAiJSpwYmxcbiIgOiAiJSpwYlxu
+IjsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsgICAgICAgaWYgKG9mZiA9PSBMTE9OR19N
+QVggJiYgY291bnQgPT0gUEFHRV9TSVpFIC0gb2Zmc2V0X2luX3BhZ2UoYnVmKSkNCj4gPiA+ID4g
+PiA+ICsgICAgICAgICAgICAgICByZXR1cm4gc2NucHJpbnRmKGJ1ZiwgY291bnQsIGZtdCwgbm1h
+c2tiaXRzLCBtYXNrcCk7DQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArICAgICAgIGxlbiA9
+IHNucHJpbnRmKE5VTEwsIDAsIGZtdCwgbm1hc2tiaXRzLCBtYXNrcCk7DQo+ID4gPiA+ID4gPiAr
+DQo+ID4gPiA+ID4gPiArICAgICAgIGRhdGEgPSBrdm1hbGxvYyhsZW4rMSwgR0ZQX0tFUk5FTCk7
+DQo+ID4gPiA+ID4gV2h5IGRvIHlvdSBuZWVkIHRvIGFsbG9jYXRlIG1vcmUgbWVtb3J5PyAgQW5k
+IHdoeSBrdm1hbGxvYygpPw0KPiA+ID4gPiBCZWNhdXNlIHRoZSBtZW1vcnkgaGVyZSB3aWxsIGV4
+Y2VlZCBhIHBhZ2VzaXplIGFuZCB3ZSBkb24ndCBrbm93IHRoZQ0KPiA+ID4gPiBleGFjdCBzaXpl
+LCB3ZSBoYXZlIHRvIGNhbGwNCj4gPiA+ID4NCj4gPiA+ID4gc25wcmludGYgZmlyc3QgdG8gZ2V0
+IHRoZSBhY3R1YWwgc2l6ZS4ga3ZtYWxsb2MoKSBpcyB1c2VkIGJlY2F1c2Ugd2hlbg0KPiA+ID4g
+PiBwaHlzaWNhbCBtZW1vcnkgaXMgdGlnaHQsIGttYWxsb2MNCj4gPiA+ID4NCj4gPiA+ID4gbWF5
+IGZhaWwsIGJ1dCB2bWFsbG9jIHdpbGwgc3VjY2VlZC4gSXQgaXMgbm90IHNvIGJhZCB0aGF0IHRo
+ZSBtZW1vcnkgaXMNCj4gPiA+ID4gbm90IHJlcXVlc3RlZCBoZXJlLg0KPiA+ID4gVG8gbWUgaXQg
+c291bmRzIGxpa2UgdGhlIGZ1bmN0aW9uIGlzIG92ZXJlbmdpbmVlcmVkIC8gbGFja3MgdGhvdWdo
+dA0KPiA+ID4gdGhyb3VnaCAvIG9wdGltaXphdGlvbi4NCj4gPiA+IENhbiB5b3UgcHJvdmlkZSBh
+IGZldyBleGFtcGxlcyB0aGF0IHJlcXVpcmUgdGhlIGFib3ZlIGFsZ29yaXRobT8NCj4gPg0KPiA+
+IHNvIHlvdSB0aGluayB3ZSBzaG91bGQgdXNlIGttYWxsb2MgaW5zdGVhZCBvZiBrdm1hbGxvYyA/
+DQo+IA0KPiBXaGF0IHNpemUgYml0bWFwIHdvdWxkIHRyaWdnZXIgYSB2bWFsbG9jKCkgY2FsbCB0
+byBiZSBmb3JjZWQgaGVyZT8NCj4gDQoNCkFjY29yZGluZyB0byBrdm1hbGxvY19ub2RlKCksIG9u
+bHkgaWYgc2l6ZSBpcyBsYXJnZXIgdGhhbiBQQUdFX1NJWkUsDQprdm1hbGxvYyB3aWxsIG1vdmUg
+dG8gdm1hbGxvYyBpZiBrbWFsbG9jIGZhaWxzIHRvIGdldCBtZW1vcnkuIE90aGVyd2lzZSwNCml0
+IHdpbGwgcmV0dXJuIGVycm9yLg0Kdm9pZCAqa3ZtYWxsb2Nfbm9kZShzaXplX3Qgc2l6ZSwgZ2Zw
+X3QgZmxhZ3MsIGludCBub2RlKQ0Kew0KCWdmcF90IGttYWxsb2NfZmxhZ3MgPSBmbGFnczsNCgl2
+b2lkICpyZXQ7DQoNCgkuLi4NCg0KCXJldCA9IGttYWxsb2Nfbm9kZShzaXplLCBrbWFsbG9jX2Zs
+YWdzLCBub2RlKTsNCg0KCS8qDQoJICogSXQgZG9lc24ndCByZWFsbHkgbWFrZSBzZW5zZSB0byBm
+YWxsYmFjayB0byB2bWFsbG9jIGZvciBzdWIgcGFnZQ0KCSAqIHJlcXVlc3RzDQoJICovDQoJaWYg
+KHJldCB8fCBzaXplIDw9IFBBR0VfU0laRSkNCgkJcmV0dXJuIHJldDsNCg0KCXJldHVybiBfX3Zt
+YWxsb2Nfbm9kZShzaXplLCAxLCBmbGFncywgbm9kZSwNCgkJCV9fYnVpbHRpbl9yZXR1cm5fYWRk
+cmVzcygwKSk7DQp9DQoNCkZvciBiaXRtYXAsIGl0IGlzIGNsZWFyIGEgbGFyZ2UgTlJfQ1BVUyBj
+YW4gdHJpZ2dlciB2bWFsbG9jOg0KQ29kZSBjb3B5LXBhc3RlIGZyb20gZHJpdmVycy9iYXNlL25v
+ZGUuYzoNCgkvKiAyMDA4LzA0LzA3OiBidWYgY3VycmVudGx5IFBBR0VfU0laRSwgbmVlZCA5IGNo
+YXJzIHBlciAzMiBiaXRzLiAqLw0KCUJVSUxEX0JVR19PTigoTlJfQ1BVUy8zMiAqIDkpID4gKFBB
+R0VfU0laRS0xKSk7DQoNCkJ1dCBmb3IgbGlzdCwgaXQgd291bGQgYmUgbXVjaCBtb3JlIHRyaWNr
+eS4gQXMgYSBsaXN0IGNvdWxkIGJlIGFzIHNpbXBsZQ0KYXM6DQowLTIwNDcNCkl0IGNvdWxkIGFs
+c28gYmUgYXMgY29tcGxleCBhczoNCjAsMSwzLDUsNyw5LDExLDEzLC4uLi4uLDIwNDUsMjA0Nw0K
+DQpJdCB0b3RhbGx5IGRlcGVuZHMgb24gaG93IHRoZSBiaXRtYXAgaXMgbGlrZS4NCg0KVGhhdCdz
+IHdoeSB0aWFudGFvJ3MgY29kZSBpcyBkZXRlY3Rpbmcgc2l6ZSBiZWZvcmUgbWFsbG9jLg0KDQo+
+IHRoYW5rcywNCj4gDQo+IGdyZWcgay1oDQoNClRoYW5rcw0KQmFycnkNCg0K
