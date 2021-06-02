@@ -2,175 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB9C398F8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5419B398F91
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhFBQFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:05:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232624AbhFBQFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:05:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B653A6162E;
-        Wed,  2 Jun 2021 16:03:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622649838;
-        bh=MT3465/9NA3wR+JslezglEfBk9PtRM3VfQrhsq1XZaM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A+zS+Yh/9eZwBPulYurBlP1e7GQ4RGt3G0sf/QP/LEsNe3jRZ1a1Mt69tK9bugsvO
-         5mLPPYZGfq4pkwvMyWAKSUS3ALC8keedFRcUzY7zdfhTykbfj7iwV8uut+5TLyLuya
-         JNOcHmlRGNwh1OT8uwFXjbDWMAM9tIVpUVbh277swTo0DS1e5PTyrVnMb35y/B4tyC
-         DPHeu4Rgdez6WgiqZ0IDhcRWN1XY6swRZdGqkwpUB5I+TBW1B44FBV/Oih9N37TUgL
-         E7bfHM9VKg+zB+4HaqfDYMeIrC9tf7Uu3oQgq06n4pHUE+9mKnq+bUo/xKOnSa0K1I
-         r8dF1oVTJrK0A==
-Date:   Wed, 2 Jun 2021 17:03:52 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Paul McKenney <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: Re: [PATCH -V2] mm, swap: Remove unnecessary smp_rmb() in
- swap_type_to_swap_info()
-Message-ID: <20210602160351.GG31179@willie-the-truck>
-References: <20210520073301.1676294-1-ying.huang@intel.com>
+        id S232532AbhFBQG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:06:57 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:40649 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhFBQG4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:06:56 -0400
+Received: by mail-pf1-f169.google.com with SMTP id q25so2544255pfh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XKxsJlne+LArk5awxmh1nwPa7SN5h9s/re93Xtt4ka8=;
+        b=FjEfvrJD0PcwRixn9+ipYc2UVI2BVVXxHzEBpdpdib/cTv5yJ75wIJx+OrYoVpxajD
+         wj2ZV3OQxeN8Ily3fsGw06aAiUR198DJqYG8plUdI8K6LKjkv1/qHgqmSxSvjh1UWK0k
+         k9/x+DtgsGZ9BrtzsjvfIAoDHHEcn550Qs0pUuddetVdM8fXClwxuZzWD9fdbZALjHUr
+         xAfvKcoYYg8i1UdPItt4lObs+J5rspbn9XCEXmwH/YynjaMQ1BxeVXzJNirYDqGu6x2y
+         wCjDJVYA44ppLpbjwsY5H6PTzRYZCgIzA2aU+0I2PBrftmIxDK/eICpD3WtVJgFYjqu2
+         g73g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XKxsJlne+LArk5awxmh1nwPa7SN5h9s/re93Xtt4ka8=;
+        b=o2AGiePe4OYt8h5NlaPLtWHyWx+t6f4eRFL+f7GWrclfQB9dS1vcOAi3oiGLnETQFV
+         xzTlfIp7Eh+TqA+/gVBOBiaB9E7ggyUWcJzyMZsH2TF426G3DidPFaWXSOaQ8a3mlkVy
+         oWgROoxQS1g2w+xTgJeKZP/DCp+0QQTBd7+hZhmJfwhRz9vMSk68PZaZUCo1TNbNF4AW
+         pxSlQWHye74vFz8oxWaGuTvcGdzs1wz7z8Kh4Efksf47DHuJz1U+nZbD+B7BrnmR4bop
+         lqqbFs+wmK1CwuWziMoHvzJtDW0lZVaq45yby2NOQgqB8uDrR7c2l867gaEXhG/dAUx0
+         ZhjQ==
+X-Gm-Message-State: AOAM530bMFqhuUTPOBRzrERGrfxiWKzp2gRGvfBkhaMtFIn++2dlddTh
+        ePne+PHk+F3B4NAsMrb4eNSXBA==
+X-Google-Smtp-Source: ABdhPJwMUb2pY+sg5TfsR33k8PDKyPC3ae62iZt5DGmYIGl1OkmztCpjP4ArzfBhi8o7V/STIGWjTA==
+X-Received: by 2002:a05:6a00:c86:b029:2e9:3041:162f with SMTP id a6-20020a056a000c86b02902e93041162fmr27619121pfv.78.1622649853558;
+        Wed, 02 Jun 2021 09:04:13 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id c130sm103715pfc.51.2021.06.02.09.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 09:04:12 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 10:04:10 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] remoteproc: k3-dsp: Refactor mbox request code in
+ start
+Message-ID: <20210602160410.GA1797307@xps15>
+References: <20210522000309.26134-1-s-anna@ti.com>
+ <20210522000309.26134-6-s-anna@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210520073301.1676294-1-ying.huang@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210522000309.26134-6-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 03:33:01PM +0800, Huang Ying wrote:
-> Before commit c10d38cc8d3e ("mm, swap: bounds check swap_info array
-> accesses to avoid NULL derefs"), the typical code to reference the
-> swap_info[] is as follows,
+On Fri, May 21, 2021 at 07:03:08PM -0500, Suman Anna wrote:
+> Refactor out the mailbox request and associated ping logic code
+> from k3_dsp_rproc_start() function into its own separate function
+> so that it can be re-used in the soon to be added .attach() ops
+> callback.
 > 
->   type = swp_type(swp_entry);
->   if (type >= nr_swapfiles)
->           /* handle invalid swp_entry */;
->   p = swap_info[type];
->   /* access fields of *p.  OOPS! p may be NULL! */
-> 
-> Because the ordering isn't guaranteed, it's possible that
-> swap_info[type] is read before "nr_swapfiles".  And that may result
-> in NULL pointer dereference.
-> 
-> So after commit c10d38cc8d3e, the code becomes,
-> 
->   struct swap_info_struct *swap_type_to_swap_info(int type)
->   {
-> 	  if (type >= READ_ONCE(nr_swapfiles))
-> 		  return NULL;
-> 	  smp_rmb();
-> 	  return READ_ONCE(swap_info[type]);
->   }
-> 
->   /* users */
->   type = swp_type(swp_entry);
->   p = swap_type_to_swap_info(type);
->   if (!p)
-> 	  /* handle invalid swp_entry */;
->   /* dereference p */
-> 
-> Where the value of swap_info[type] (that is, "p") is checked to be
-> non-zero before being dereferenced.  So, the NULL deferencing
-> becomes impossible even if "nr_swapfiles" is read after
-> swap_info[type].  Therefore, the "smp_rmb()" becomes unnecessary.
-> 
-> And, we don't even need to read "nr_swapfiles" here.  Because the
-> non-zero checking for "p" is sufficient.  We just need to make sure we
-> will not access out of the boundary of the array.  With the change,
-> nr_swapfiles will only be accessed with swap_lock held, except in
-> swapcache_free_entries().  Where the absolute correctness of the value
-> isn't needed, as described in the comments.
-> 
-> We still need to guarantee swap_info[type] is read before being
-> dereferenced.  That can be satisfied via the data dependency ordering
-> enforced by READ_ONCE(swap_info[type]).  This needs to be paired with
-> proper write barriers.  So smp_store_release() is used in
-> alloc_swap_info() to guarantee the fields of *swap_info[type] is
-> initialized before swap_info[type] itself being written.  Note that
-> the fields of *swap_info[type] is initialized to be 0 via kvzalloc()
-> firstly.  The assignment and deferencing of swap_info[type] is like
-> rcu_assign_pointer() and rcu_dereference().
-> 
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Cc: Andrea Parri <andrea.parri@amarulasolutions.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Omar Sandoval <osandov@fb.com>
-> Cc: Paul McKenney <paulmck@kernel.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Will Deacon <will.deacon@arm.com>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> v2:
-> 
-> - Revise the patch description and comments per Peter's comments.
-> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
 > ---
->  mm/swapfile.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
+>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 65 ++++++++++++++---------
+>  1 file changed, 39 insertions(+), 26 deletions(-)
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
 > 
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 2aad85751991..65dd979a0f94 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -100,11 +100,10 @@ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
->  
->  static struct swap_info_struct *swap_type_to_swap_info(int type)
->  {
-> -	if (type >= READ_ONCE(nr_swapfiles))
-> +	if (type >= MAX_SWAPFILES)
->  		return NULL;
->  
-> -	smp_rmb();	/* Pairs with smp_wmb in alloc_swap_info. */
-> -	return READ_ONCE(swap_info[type]);
-> +	return READ_ONCE(swap_info[type]); /* rcu_dereference() */
+> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> index fd4eb67a6681..faf60a274e8d 100644
+> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> @@ -216,6 +216,43 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
+>  	return ret;
 >  }
 >  
->  static inline unsigned char swap_count(unsigned char ent)
-> @@ -2884,14 +2883,12 @@ static struct swap_info_struct *alloc_swap_info(void)
->  	}
->  	if (type >= nr_swapfiles) {
->  		p->type = type;
-> -		WRITE_ONCE(swap_info[type], p);
->  		/*
-> -		 * Write swap_info[type] before nr_swapfiles, in case a
-> -		 * racing procfs swap_start() or swap_next() is reading them.
-> -		 * (We never shrink nr_swapfiles, we never free this entry.)
-> +		 * Publish the swap_info_struct after initializing it.
-> +		 * Note that kvzalloc() above zeroes all its fields.
->  		 */
-> -		smp_wmb();
-> -		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
-> +		smp_store_release(&swap_info[type], p); /* rcu_assign_pointer() */
-> +		nr_swapfiles++;
-
-Although I like this change, I comment you are removing refers to some
-dodgy-looking code. For example, swap_start() has this loop:
-
-	for (type = 0; (si = swap_type_to_swap_info(type)); type++) {
-		if (!(si->flags & SWP_USED) || !si->swap_map)
-			continue;
-
-so won't this just end up dereferencing NULL if nr_swapfiles < MAX_SWAPFILES?
-
-I think you need to check all callers of swap_type_to_swap_info() are
-either validating the 'type' they pass in or check the returned pointer.
-
-Will
+> +static int k3_dsp_rproc_request_mbox(struct rproc *rproc)
+> +{
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	struct mbox_client *client = &kproc->client;
+> +	struct device *dev = kproc->dev;
+> +	int ret;
+> +
+> +	client->dev = dev;
+> +	client->tx_done = NULL;
+> +	client->rx_callback = k3_dsp_rproc_mbox_callback;
+> +	client->tx_block = false;
+> +	client->knows_txdone = false;
+> +
+> +	kproc->mbox = mbox_request_channel(client, 0);
+> +	if (IS_ERR(kproc->mbox)) {
+> +		ret = -EBUSY;
+> +		dev_err(dev, "mbox_request_channel failed: %ld\n",
+> +			PTR_ERR(kproc->mbox));
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * Ping the remote processor, this is only for sanity-sake for now;
+> +	 * there is no functional effect whatsoever.
+> +	 *
+> +	 * Note that the reply will _not_ arrive immediately: this message
+> +	 * will wait in the mailbox fifo until the remote processor is booted.
+> +	 */
+> +	ret = mbox_send_message(kproc->mbox, (void *)RP_MBOX_ECHO_REQUEST);
+> +	if (ret < 0) {
+> +		dev_err(dev, "mbox_send_message failed: %d\n", ret);
+> +		mbox_free_channel(kproc->mbox);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+>  /*
+>   * The C66x DSP cores have a local reset that affects only the CPU, and a
+>   * generic module reset that powers on the device and allows the DSP internal
+> @@ -273,37 +310,13 @@ static int k3_dsp_rproc_unprepare(struct rproc *rproc)
+>  static int k3_dsp_rproc_start(struct rproc *rproc)
+>  {
+>  	struct k3_dsp_rproc *kproc = rproc->priv;
+> -	struct mbox_client *client = &kproc->client;
+>  	struct device *dev = kproc->dev;
+>  	u32 boot_addr;
+>  	int ret;
+>  
+> -	client->dev = dev;
+> -	client->tx_done = NULL;
+> -	client->rx_callback = k3_dsp_rproc_mbox_callback;
+> -	client->tx_block = false;
+> -	client->knows_txdone = false;
+> -
+> -	kproc->mbox = mbox_request_channel(client, 0);
+> -	if (IS_ERR(kproc->mbox)) {
+> -		ret = -EBUSY;
+> -		dev_err(dev, "mbox_request_channel failed: %ld\n",
+> -			PTR_ERR(kproc->mbox));
+> +	ret = k3_dsp_rproc_request_mbox(rproc);
+> +	if (ret)
+>  		return ret;
+> -	}
+> -
+> -	/*
+> -	 * Ping the remote processor, this is only for sanity-sake for now;
+> -	 * there is no functional effect whatsoever.
+> -	 *
+> -	 * Note that the reply will _not_ arrive immediately: this message
+> -	 * will wait in the mailbox fifo until the remote processor is booted.
+> -	 */
+> -	ret = mbox_send_message(kproc->mbox, (void *)RP_MBOX_ECHO_REQUEST);
+> -	if (ret < 0) {
+> -		dev_err(dev, "mbox_send_message failed: %d\n", ret);
+> -		goto put_mbox;
+> -	}
+>  
+>  	boot_addr = rproc->bootaddr;
+>  	if (boot_addr & (kproc->data->boot_align_addr - 1)) {
+> -- 
+> 2.30.1
+> 
