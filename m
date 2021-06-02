@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1234539865F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE462398662
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232568AbhFBKXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        id S230131AbhFBKX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbhFBKX3 (ORCPT
+        with ESMTP id S229603AbhFBKX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:23:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E2BC061756;
-        Wed,  2 Jun 2021 03:20:20 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622629219;
+        Wed, 2 Jun 2021 06:23:56 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A6CC061574;
+        Wed,  2 Jun 2021 03:22:13 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 491A52222E;
+        Wed,  2 Jun 2021 12:22:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622629330;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ycehTrtSkbzNyxkb7pYteowZNnr3e/3i4uwrIdUn4ks=;
-        b=goUuSDeF84WkaAOZwHO7jxr8b6qzOlP5Z8RALkPRnEgu/QgIAO9AYiqvP3EQePtlz4ISWM
-        P9xXodHXj0EhuqHSWGw8w49Xiwpqvtr7ueb0D2IcXvsJSIiJhqyNuzxgW1zZ6lIl7k58Q3
-        2mpAA3Mw2hFEToZ19NiMsIab9COwDaUi/+R2WY3Oobff+ok36o2gJDUsOFZKnoeNLt9lfK
-        owDobF+aH6xCaqaBxsoqXADNmnwhU9tvV3JIE5rkiloCmw26kJmbDxKs3ctZ905F84gzvH
-        XtM2rrAh/5DHvYlG8MViQXAq+YmGW1G30ySblTZSpk7SdDVkJrIBWut8quG2xA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622629219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ycehTrtSkbzNyxkb7pYteowZNnr3e/3i4uwrIdUn4ks=;
-        b=QFU8uRFnQvM4DJ8WlmWMQuSSa53t7e7ZnEkgELkmq1CQdCWE4GgFM9XNxOOfO7dszlJ+pX
-        EAJJgXit3+y5mDCA==
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
-Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and remove update_pasid()
-In-Reply-To: <YLdZ7bZDPNup1n9c@zn.tnic>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com> <1600187413-163670-10-git-send-email-fenghua.yu@intel.com> <87mtsd6gr9.ffs@nanos.tec.linutronix.de> <YLdZ7bZDPNup1n9c@zn.tnic>
-Date:   Wed, 02 Jun 2021 12:20:18 +0200
-Message-ID: <87k0nc1sbh.ffs@nanos.tec.linutronix.de>
+        bh=9JjiZVY1G39yLkYo2plpR+nek2Ix2xJGXMP7Q3ED5aw=;
+        b=v2RezFrHNxnZUZ1VpIP4uqNw6KTOg8ZHU1Kb9SuS2iu0Ulcvv1//avHR2ebe/r0G1p5JkI
+        3KLkSTk+vyyEjpfGDW1gTtpyn6NVbSnzTY2BRqw8fnGijr+iCDD3+7FMDqOCLZoJeD7Wci
+        VHHrcyy5EYnpaVpiHRztD1ksEMhOylo=
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 02 Jun 2021 12:22:09 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+In-Reply-To: <20210601144826.GI543307@dell>
+References: <20210524120539.3267145-1-robert.marko@sartura.hr>
+ <20210524120539.3267145-3-robert.marko@sartura.hr>
+ <20210524230940.GA1350504@robh.at.kernel.org>
+ <20210525074649.GC4005783@dell>
+ <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+ <20210526075255.GG4005783@dell>
+ <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
+ <20210601081933.GU543307@dell> <50ced58164999f51a8c8b9c8dc01468e@walle.cc>
+ <20210601135816.GG543307@dell> <20210601144826.GI543307@dell>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <bb73c46de48094759099e244e09b333c@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02 2021 at 12:14, Borislav Petkov wrote:
+Am 2021-06-01 16:48, schrieb Lee Jones:
+> On Tue, 01 Jun 2021, Lee Jones wrote:
+> 
+>> On Tue, 01 Jun 2021, Michael Walle wrote:
+>> 
+>> > Am 2021-06-01 10:19, schrieb Lee Jones:
+>> > > Why do you require one single Regmap anyway?  Are they register banks
+>> > > not neatly separated on a per-function basis?
+>> >
+>> > AFAIK you can only have one I2C device driver per device, hence the
+>> > simple-mfd-i2c.
+>> 
+>> Sorry, can you provide more detail.
+> 
+> I'd still like further explanation to be sure, but if you mean what I
+> think you mean then, no, I don't think that's correct.
 
-> On Sat, May 29, 2021 at 11:17:30AM +0200, Thomas Gleixner wrote:
->> --- a/arch/x86/include/asm/disabled-features.h
->> +++ b/arch/x86/include/asm/disabled-features.h
->> @@ -56,11 +56,8 @@
->>  # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
->>  #endif
->>  
->> -#ifdef CONFIG_IOMMU_SUPPORT
->> -# define DISABLE_ENQCMD	0
->> -#else
->> -# define DISABLE_ENQCMD (1 << (X86_FEATURE_ENQCMD & 31))
->> -#endif
->> +/* Force disable because it's broken beyond repair */
->> +#define DISABLE_ENQCMD		(1 << (X86_FEATURE_ENQCMD & 31))
->
-> Yeah, for that to work we need:
->
-> ---
-> From: Borislav Petkov <bp@suse.de>
-> Date: Wed, 2 Jun 2021 12:07:52 +0200
-> Subject: [PATCH] dmaengine: idxd: Use cpu_feature_enabled()
->
-> When testing x86 feature bits, use cpu_feature_enabled() so that
-> build-disabled features can remain off, regardless of what CPUID says.
->
-> Fixes: 8e50d392652f ("dmaengine: idxd: Add shared workqueue support")
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Cc: <stable@vger.kernel.org>
+We've already discussed this:
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+https://lore.kernel.org/lkml/20200622075145.1464020-1-lee.jones@linaro.org/
+https://lore.kernel.org/lkml/20200605065709.GD3714@dell/
 
-Thanks for spotting this!
+And how would a device tree binding look like if you have multiple
+i2c devices with the same i2c address?
 
-       tglx
-
+-michael
