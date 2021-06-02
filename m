@@ -2,76 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F56398A58
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D65A398A61
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhFBN0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:26:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56248 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhFBN0U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:26:20 -0400
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1loQrM-0006SC-8K
-        for linux-kernel@vger.kernel.org; Wed, 02 Jun 2021 13:24:36 +0000
-Received: by mail-ed1-f71.google.com with SMTP id s20-20020a0564025214b029038752a2d8f3so1409034edd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:24:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZbqO9leiYLcpHf1/CeWaekIOBlRRyOOvjknnxl/dSpE=;
-        b=dQ7PqsonUA6ePVelSJFiNYEzxEvWJyB7kuXIJ4aOLMx5p39VIljdhOHWWuF3iyxwu4
-         8qeG3igPctDLQjYQr9dHbYNB/z/PwbEt7xgTxehJixsPGV0VN+stH6558ZJXDCgKhWGN
-         zI3CWRAq2zjMGureozkI3ix6cUYu2tuh46C8BycYya3CDOMq/b3cr/sBcKs+AtCCrRo0
-         RJ5y1fFMUwNg3Lr0z/uY+gL2+8bcpgTXJwi59YXsnf3TvSYOifi6wNpHIW+8jW1FRvau
-         pZ/bzaxda8LmFWX846RrYGwmY2SykB22BkiUoijhFSjovDAB67WJoV94XTIgW8S4fv4s
-         5ueA==
-X-Gm-Message-State: AOAM530gPX6SeHMZoYINCz0e9NHObYfMxEcZunA+WqpQo88MceVugwX7
-        /tsSbm3Vki4nZLmSOFEyG60eBUXDBg1a4Q5LzNupKUrTQKOgTarmrSHAPZXXCDfSxO2bruF+b6a
-        HEKPf4qN5wOV7OTaHUonn9EcnSXboHOghLSK6Xp9DQQ==
-X-Received: by 2002:a17:906:c00f:: with SMTP id e15mr36561522ejz.458.1622640275809;
-        Wed, 02 Jun 2021 06:24:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtzGMwLAUU1O9hso14QGvyxJCgY0jrcJpE7S4rWWpRuQMT/j0VxL2N2oXQPuieX0XXAyNhoQ==
-X-Received: by 2002:a17:906:c00f:: with SMTP id e15mr36561505ejz.458.1622640275665;
-        Wed, 02 Jun 2021 06:24:35 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id bc4sm928548edb.63.2021.06.02.06.24.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 06:24:35 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org, krzk@kernel.org
-Subject: Re: [PATCH] arm64: defconfig: Enable Exynos UFS driver
-Date:   Wed,  2 Jun 2021 15:24:32 +0200
-Message-Id: <162264024536.63589.10570196675573160566.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210531170057.7730-1-alim.akhtar@samsung.com>
-References: <CGME20210531165414epcas5p1aae4ea3815fcbadad8b48a9210742489@epcas5p1.samsung.com> <20210531170057.7730-1-alim.akhtar@samsung.com>
+        id S229882AbhFBN1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229593AbhFBN0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 09:26:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63DE06024A;
+        Wed,  2 Jun 2021 13:25:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622640312;
+        bh=FV+x3WxqlmUwMsQyV+Gb3ENhCp68U7GBVBr1EI3Wgv8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TlQWh4JsQYBN9CkhhCoASBSgDddqLirbSLtxwZwAF8/U8RJA83feGs1sSd6q0chAL
+         Vhs2Ca7ZuWZGisyAUEiTJj51SPYptRxORRPGHX7FUlezF3u7Dln01EjYLo3dBZaEV6
+         FwsO9zixrSnyZxlpInhv/vKHJ2pnoFRbvSzs4maruafEdtOHE33Gtm0ihp0lu/ybD0
+         t2XUMp5m19MGp25Nr6ajPXzRpgNnQqs3Z5O0T2bqMJHj5/NrDFi/HqUY0SchZddy4c
+         4t6dJqo8UIO4oN5oC8iA1Y2Vhnj2qs5sovufIkuhhOPXRv6ExtZM7D38FcqpL6qf6u
+         JYszKQ35B6txw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1loQrt-006UP6-UK; Wed, 02 Jun 2021 15:25:09 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andy Walls <awalls@md.metrocast.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH 0/3] Move audio/video/osd APIs to be together with av7110
+Date:   Wed,  2 Jun 2021 15:25:06 +0200
+Message-Id: <cover.1622639751.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 22:30:57 +0530, Alim Akhtar wrote:
-> Enable the Exynos UFS controller and PHY configs. They need to be
-> buildin to ensure UFS devices gets detected on exynos7 and its
-> variant boards.
+The ivtv is abusing a DVB API, as this is a V4L2 driver only.
+While this got fixed several years ago, a backward-compat code
+was added on that time (2016) by
+commit 6689638025a9 ("[media] ivtv: mark DVB "borrowed" ioctls as deprecated").
 
-Applied, thanks!
+It is time to drop support for it.
 
-[1/1] arm64: defconfig: Enable Exynos UFS driver
-      commit: 5be91fe8d91b3aed5192b763fd6f2d11c7cd354d
+With that, the only remaining upstream driver to use those APIs is the
+av7110, which is now at staging. So, move the API to staging too, in order
+to be together with the driver that will retire on a couple of versions.
 
-Best regards,
+Mauro Carvalho Chehab (3):
+  media: ivtv: get rid of DVB deprecated ioctls
+  media: dvb header files: move some headers to staging
+  media: docs: move DVB audio/video docs to staging
+
+ Documentation/userspace-api/media/Makefile    |  10 +-
+ .../media/audio.h.rst.exceptions              |  19 --
+ .../userspace-api/media/dvb/headers.rst       |   7 -
+ .../media/dvb/legacy_dvb_apis.rst             |   7 -
+ .../media/video.h.rst.exceptions              |  39 ----
+ drivers/media/pci/ivtv/Kconfig                |  12 -
+ drivers/media/pci/ivtv/ivtv-driver.h          |   2 -
+ drivers/media/pci/ivtv/ivtv-ioctl.c           | 221 ------------------
+ .../audio-bilingual-channel-select.rst        |   0
+ .../media/av7110}/audio-channel-select.rst    |   0
+ .../media/av7110}/audio-clear-buffer.rst      |   0
+ .../staging/media/av7110}/audio-continue.rst  |   0
+ .../staging/media/av7110}/audio-fclose.rst    |   0
+ .../staging/media/av7110}/audio-fopen.rst     |   0
+ .../staging/media/av7110}/audio-fwrite.rst    |   0
+ .../media/av7110}/audio-get-capabilities.rst  |   0
+ .../media/av7110}/audio-get-status.rst        |   0
+ .../staging/media/av7110}/audio-pause.rst     |   0
+ .../staging/media/av7110}/audio-play.rst      |   0
+ .../media/av7110}/audio-select-source.rst     |   0
+ .../media/av7110}/audio-set-av-sync.rst       |   0
+ .../media/av7110}/audio-set-bypass-mode.rst   |   0
+ .../staging/media/av7110}/audio-set-id.rst    |   0
+ .../staging/media/av7110}/audio-set-mixer.rst |   0
+ .../staging/media/av7110}/audio-set-mute.rst  |   0
+ .../media/av7110}/audio-set-streamtype.rst    |   0
+ .../staging/media/av7110}/audio-stop.rst      |   0
+ .../staging/media/av7110}/audio.h             |   0
+ .../staging/media/av7110}/audio.rst           |   0
+ .../media/av7110}/audio_data_types.rst        |   0
+ .../media/av7110}/audio_function_calls.rst    |   0
+ drivers/staging/media/av7110/av7110.h         |   7 +-
+ .../staging/media/av7110}/osd.h               |   0
+ .../media/av7110}/video-clear-buffer.rst      |   0
+ .../staging/media/av7110}/video-command.rst   |   0
+ .../staging/media/av7110}/video-continue.rst  |   0
+ .../media/av7110}/video-fast-forward.rst      |   0
+ .../staging/media/av7110}/video-fclose.rst    |   0
+ .../staging/media/av7110}/video-fopen.rst     |   0
+ .../staging/media/av7110}/video-freeze.rst    |   0
+ .../staging/media/av7110}/video-fwrite.rst    |   0
+ .../media/av7110}/video-get-capabilities.rst  |   0
+ .../staging/media/av7110}/video-get-event.rst |   0
+ .../media/av7110}/video-get-frame-count.rst   |   0
+ .../staging/media/av7110}/video-get-pts.rst   |   0
+ .../staging/media/av7110}/video-get-size.rst  |   0
+ .../media/av7110}/video-get-status.rst        |   0
+ .../staging/media/av7110}/video-play.rst      |   0
+ .../media/av7110}/video-select-source.rst     |   0
+ .../staging/media/av7110}/video-set-blank.rst |   0
+ .../av7110}/video-set-display-format.rst      |   0
+ .../media/av7110}/video-set-format.rst        |   0
+ .../media/av7110}/video-set-streamtype.rst    |   0
+ .../media/av7110}/video-slowmotion.rst        |   0
+ .../media/av7110}/video-stillpicture.rst      |   0
+ .../staging/media/av7110}/video-stop.rst      |   0
+ .../media/av7110}/video-try-command.rst       |   0
+ .../staging/media/av7110}/video.h             |   0
+ .../staging/media/av7110}/video.rst           |   0
+ .../media/av7110}/video_function_calls.rst    |   0
+ .../staging/media/av7110}/video_types.rst     |   0
+ 61 files changed, 6 insertions(+), 318 deletions(-)
+ delete mode 100644 Documentation/userspace-api/media/audio.h.rst.exceptions
+ delete mode 100644 Documentation/userspace-api/media/video.h.rst.exceptions
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-bilingual-channel-select.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-channel-select.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-clear-buffer.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-continue.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-fclose.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-fopen.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-fwrite.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-get-capabilities.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-get-status.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-pause.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-play.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-select-source.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-av-sync.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-bypass-mode.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-id.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-mixer.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-mute.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-streamtype.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-stop.rst (100%)
+ rename {include/uapi/linux/dvb => drivers/staging/media/av7110}/audio.h (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio_data_types.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio_function_calls.rst (100%)
+ rename {include/uapi/linux/dvb => drivers/staging/media/av7110}/osd.h (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-clear-buffer.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-command.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-continue.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fast-forward.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fclose.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fopen.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-freeze.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fwrite.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-capabilities.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-event.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-frame-count.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-pts.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-size.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-status.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-play.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-select-source.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-blank.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-display-format.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-format.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-streamtype.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-slowmotion.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-stillpicture.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-stop.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-try-command.rst (100%)
+ rename {include/uapi/linux/dvb => drivers/staging/media/av7110}/video.h (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video_function_calls.rst (100%)
+ rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video_types.rst (100%)
+
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+2.31.1
+
+
