@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A19C3987F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8A23987FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhFBLWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:22:42 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:50940 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230284AbhFBLWk (ORCPT
+        id S232425AbhFBLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232229AbhFBLWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:22:40 -0400
-X-UUID: ca0cf66e97724f15b1e742ecd48246dd-20210602
-X-UUID: ca0cf66e97724f15b1e742ecd48246dd-20210602
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <james.lo@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 945426686; Wed, 02 Jun 2021 19:20:55 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 2 Jun 2021 19:20:53 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Jun 2021 19:20:53 +0800
-From:   James Lo <james.lo@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Sascha Hauer <s.hauer@pengutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Henry Chen <henryc.chen@mediatek.com>
-Subject: [PATCH 2/2] soc: mediatek: pwrap: add pwrap driver for MT8195 SoC
-Date:   Wed, 2 Jun 2021 19:20:50 +0800
-Message-ID: <20210602112050.12338-3-james.lo@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210602112050.12338-1-james.lo@mediatek.com>
-References: <20210602112050.12338-1-james.lo@mediatek.com>
+        Wed, 2 Jun 2021 07:22:53 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B64C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:21:10 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id i67so1907199qkc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gchpafLKJ6F6uOATukxao5S0fzx1QuO5gM2w3naYObs=;
+        b=RYDTY0QjdOGb7GBWzWXSIgmp3riEMTtlJ6ePjnS+zHZaqHYFqkBg61i+LUjT8vT0yX
+         0aFpRQzdhdiMFqLC0g8cGKUzYmQ+6Uvp5324tCxg7MgufCsg5COzkVbUDxigOpidKyj0
+         DfE61GhP1X/GTu1+yxXuVjsqsxs+5CW7o4mkpLeONuCCNft/BESAatIMWgCmnsIdnmvl
+         aR9+WJswy89YDIvJ/HT1wB296lsOy7zulRpyVy1u04f604IifYk4496HUh8S5UOkGiKq
+         VXJ4JzhBsS2k6HdiksLiL0UqPD8JZjTSwUNnY9Td8DpldjOrRbnm7CLOtyewUJAz7VnE
+         QFeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gchpafLKJ6F6uOATukxao5S0fzx1QuO5gM2w3naYObs=;
+        b=mF+5KqBHxBSoVeu+z45KxwmdCIvBIRgKExZRxZ/Uar3Mi6rvEUlVv7SJVvQAVmGyuN
+         OZWxrizLxRlwMP+fzxw7Yf8Irp3v1z6EkBNx8yOU4pEuu6X/mzPkNnLRmwvVPV/jGXsX
+         KhU93Sp8YmQq+IwDicrSScIBuBDZkekZCDiVr8zBaX37xq9oFNS+oPxT7CDzKPqRvQsD
+         8rWF0Rz8/RFr1dxAdFtCxDEN2URXAzuERVgMxMIEnA/3zYgYONuyu6L+fYjLM/H72qpv
+         RKnkBK1yumiYARXeFjdj0It/nqVREcGg3VzYvzjRE8CJZp2CKGMevEOvP6s3wNptvRrt
+         yNxA==
+X-Gm-Message-State: AOAM532a0CIdqG/d+zQc1dr/RH+rvWEGgR2rhOBMFsudT1UcVhFZ184E
+        Jg0wufszzgOIzQ5GzrydjgLBPXLa0p5zGhAnMw3bYg==
+X-Google-Smtp-Source: ABdhPJxkQvzCyua+2YCHkeNe+i/7cmwbKWtNkqHYzH1bZ1etsu2/XFklrkSEo8/9k2tD2Ih4LDt8IMgD4M2z0xhIp6w=
+X-Received: by 2002:a05:620a:15b:: with SMTP id e27mr19426423qkn.501.1622632869281;
+ Wed, 02 Jun 2021 04:21:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <000000000000c98d7205ae300144@google.com> <0000000000003e409f05c3c5f190@google.com>
+ <YLdo77SkmGLgPUBi@casper.infradead.org>
+In-Reply-To: <YLdo77SkmGLgPUBi@casper.infradead.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 2 Jun 2021 13:20:57 +0200
+Message-ID: <CACT4Y+YUa41KMCO3n9WSvsbLqXo=F5nxpnoYWyiyB=AFWZ-KVA@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in idr_get_next
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     syzbot <syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com>,
+        anmol.karan123@gmail.com,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
+        dsahern@kernel.org, Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Florian Westphal <fw@strlen.de>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Necip Fazil Yildiran <necip@google.com>,
+        netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Henry Chen <henryc.chen@mediatek.com>
+On Wed, Jun 2, 2021 at 1:19 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> #syz fixed qrtr: Convert qrtr_ports from IDR to XArray
 
-MT8195 are highly integrated SoC and use PMIC_MT6359 for
-power management. This patch adds pwrap master driver to
-access PMIC_MT6359.
+This would be:
 
-Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
----
- drivers/soc/mediatek/mtk-pmic-wrap.c | 35 ++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+#syz fix: qrtr: Convert qrtr_ports from IDR to XArray
 
-diff --git a/drivers/soc/mediatek/mtk-pmic-wrap.c b/drivers/soc/mediatek/mtk-pmic-wrap.c
-index e4de75f35c33..952bc554f443 100644
---- a/drivers/soc/mediatek/mtk-pmic-wrap.c
-+++ b/drivers/soc/mediatek/mtk-pmic-wrap.c
-@@ -961,6 +961,23 @@ static int mt8183_regs[] = {
- 	[PWRAP_WACS2_VLDCLR] =			0xC28,
- };
- 
-+static int mt8195_regs[] = {
-+	[PWRAP_INIT_DONE2] =		0x0,
-+	[PWRAP_STAUPD_CTRL] =		0x4C,
-+	[PWRAP_TIMER_EN] =		0x3E4,
-+	[PWRAP_INT_EN] =		0x420,
-+	[PWRAP_INT_FLG] =		0x428,
-+	[PWRAP_INT_CLR] =		0x42C,
-+	[PWRAP_INT1_EN] =		0x450,
-+	[PWRAP_INT1_FLG] =		0x458,
-+	[PWRAP_INT1_CLR] =		0x45C,
-+	[PWRAP_WACS2_CMD] =		0x880,
-+	[PWRAP_SWINF_2_WDATA_31_0] =	0x884,
-+	[PWRAP_SWINF_2_RDATA_31_0] =	0x894,
-+	[PWRAP_WACS2_VLDCLR] =		0x8A4,
-+	[PWRAP_WACS2_RDATA] =		0x8A8,
-+};
-+
- static int mt8516_regs[] = {
- 	[PWRAP_MUX_SEL] =		0x0,
- 	[PWRAP_WRAP_EN] =		0x4,
-@@ -1066,6 +1083,7 @@ enum pwrap_type {
- 	PWRAP_MT8135,
- 	PWRAP_MT8173,
- 	PWRAP_MT8183,
-+	PWRAP_MT8195,
- 	PWRAP_MT8516,
- };
- 
-@@ -1525,6 +1543,7 @@ static int pwrap_init_cipher(struct pmic_wrapper *wrp)
- 		break;
- 	case PWRAP_MT6873:
- 	case PWRAP_MT8183:
-+	case PWRAP_MT8195:
- 		break;
- 	}
- 
-@@ -2025,6 +2044,19 @@ static const struct pmic_wrapper_type pwrap_mt8183 = {
- 	.init_soc_specific = pwrap_mt8183_init_soc_specific,
- };
- 
-+static struct pmic_wrapper_type pwrap_mt8195 = {
-+	.regs = mt8195_regs,
-+	.type = PWRAP_MT8195,
-+	.arb_en_all = 0x777f, /* NEED CONFIRM */
-+	.int_en_all = 0x180000, /* NEED CONFIRM */
-+	.int1_en_all = 0,
-+	.spi_w = PWRAP_MAN_CMD_SPI_WRITE,
-+	.wdt_src = PWRAP_WDT_SRC_MASK_ALL,
-+	.caps = PWRAP_CAP_INT1_EN | PWRAP_CAP_ARB,
-+	.init_reg_clock = pwrap_common_init_reg_clock,
-+	.init_soc_specific = NULL,
-+};
-+
- static struct pmic_wrapper_type pwrap_mt8516 = {
- 	.regs = mt8516_regs,
- 	.type = PWRAP_MT8516,
-@@ -2065,6 +2097,9 @@ static const struct of_device_id of_pwrap_match_tbl[] = {
- 	}, {
- 		.compatible = "mediatek,mt8183-pwrap",
- 		.data = &pwrap_mt8183,
-+	}, {
-+		.compatible = "mediatek,mt8195-pwrap",
-+		.data = &pwrap_mt8195,
- 	}, {
- 		.compatible = "mediatek,mt8516-pwrap",
- 		.data = &pwrap_mt8516,
--- 
-2.18.0
+Thanks for looking up the proper fix.
 
+
+> On Wed, Jun 02, 2021 at 03:30:06AM -0700, syzbot wrote:
+> > syzbot suspects this issue was fixed by commit:
+> >
+> > commit 43016d02cf6e46edfc4696452251d34bba0c0435
+> > Author: Florian Westphal <fw@strlen.de>
+> > Date:   Mon May 3 11:51:15 2021 +0000
+>
+> Your bisect went astray.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/YLdo77SkmGLgPUBi%40casper.infradead.org.
