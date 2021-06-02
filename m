@@ -2,117 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F1D398911
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832CE398983
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbhFBMMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhFBMMT (ORCPT
+        id S229902AbhFBMa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:30:59 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:45367 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhFBMa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:12:19 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9309C061574;
-        Wed,  2 Jun 2021 05:10:35 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id h24so1578634qtm.12;
-        Wed, 02 Jun 2021 05:10:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ceLQ7DX2ahk6MofdGXKHmNmuyjMWe/DQo5AgrxKKavU=;
-        b=Gj4LRFDFVt28rRackU52vT0LU44EY5iS9YoU40iDIJ6okYWdJJQ7DXeHo/IjZJPQ86
-         Up3HsSSj4WJ1LAf3wPiEFONrSY5KLr3RPW74grEwPkEKh36Ry75vww/sa6mQH9dqehzG
-         lDg663TQvTTrmLqkhT+tUT1yzoh2o3fi44a/ujXLPV63YJAzPSkRN3D5poiZOXLoYecw
-         pgwEJmscN0a+7oZKYB3hd/praw9Ogyj7B0WgKn9HRPuInbrllc7aolhi49G4Cy9dSnnc
-         jlPIamXWs88HBYn/G19zf7PdfISvEJIhQpqTiArVe2BxschigCKCHbVlgIHT7sqdPi1V
-         kbJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ceLQ7DX2ahk6MofdGXKHmNmuyjMWe/DQo5AgrxKKavU=;
-        b=m2EVxo8dafTdq9DiAlqt5xfGJ1rGUy0OFWmfDYErX9Q29J7iduC1VuUMcsjmSU/hbn
-         TDs/xnrmt96fed3p3IDAhsc3dSgfjMhBDM+Ts1Xm71Aevd+Ee0AKvUHgX/7kueWcKJND
-         nOEo1qUfrVcR4aqnIb0LKHd8/B0FomaFKMJGkzmV8l9xAGthf0eW/iQr3qAOcxpI7jp4
-         B6sFo/jasKktZ9ApGFCsz7T5oVU/n9JLpY4VP5NrfczDr9+XnSnIUaHayyrrwTvuHdl7
-         02AclTCbWIxakEhIM0+TR21gErhF8EbyaQDmqjDXOi9W3mOBRB7NB0RCsB88eq3Ep+aC
-         k6Lw==
-X-Gm-Message-State: AOAM532hbtJUn2ZiCTGXAhCto9Vxhq2/bKVQ3TYBByyDwVGIMXsDH5Tr
-        ouaZINHudKuSTG37uLvMP2gWZEgj67w=
-X-Google-Smtp-Source: ABdhPJw38d2gZaCK/gMOrVE2/UOG16+nr05y2955AdhaSLxJpIbqI+NOJWJkwxolMaRYLfyYrOCT0Q==
-X-Received: by 2002:a05:622a:164a:: with SMTP id y10mr24453211qtj.97.1622635834960;
-        Wed, 02 Jun 2021 05:10:34 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g5sm809129qke.101.2021.06.02.05.10.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 05:10:34 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 2 Jun 2021 05:10:32 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Erik Rosen <erik.rosen@metormote.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Daniel Nilsson <daniel.nilsson@flex.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] hwmon: (pmbus/pim4328) Allow phase function even
- if it's not on page
-Message-ID: <20210602121032.GA2901466@roeck-us.net>
-References: <20210601164320.2907-1-erik.rosen@metormote.com>
- <20210601164320.2907-4-erik.rosen@metormote.com>
+        Wed, 2 Jun 2021 08:30:57 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210602122913epoutp016ea30d7d9951e5849eb9d6fa2cb710bd~Ew7Y9Uk_70563405634epoutp01b
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 12:29:13 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210602122913epoutp016ea30d7d9951e5849eb9d6fa2cb710bd~Ew7Y9Uk_70563405634epoutp01b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1622636953;
+        bh=woOP6Geg9KvqiLtlElYG3X44Jz/VfEkIs7qnjn4k4Ss=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=ZeeaJHl9WxtE90fNf8UhhTTq4JexaMp7rm7xg+1J4ItANaRSw1Wrho30+zV71obl9
+         hIZNpCwD8z0ecVu1mIlNkKjKG9etB9OvVlBI3SYw4u0pRaI6sW48Lw0B6dBKw17726
+         q/885OMgkMxT3lMTbymVaw/e1jaJquzGONZ9dgCI=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210602122912epcas1p39079b0f078a6aeecb6c9775a69a89531~Ew7X2iyM_0844208442epcas1p3x;
+        Wed,  2 Jun 2021 12:29:12 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Fw7ck5jt3z4x9Pq; Wed,  2 Jun
+        2021 12:29:10 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BA.C5.10258.69977B06; Wed,  2 Jun 2021 21:29:10 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210602122909epcas1p4f4cad512dd31ed9458ca6049c5074b71~Ew7VDBZdU2784327843epcas1p4o;
+        Wed,  2 Jun 2021 12:29:09 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210602122909epsmtrp2a55e7d3a95a98289fe2c1f5ffccbb1ff~Ew7VBwV9S2283522835epsmtrp2X;
+        Wed,  2 Jun 2021 12:29:09 +0000 (GMT)
+X-AuditID: b6c32a38-42fff70000002812-ec-60b779963542
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9D.0C.08637.49977B06; Wed,  2 Jun 2021 21:29:08 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210602122908epsmtip1cad040e318db0dc23284976f6611222f~Ew7Uudnja0104801048epsmtip1P;
+        Wed,  2 Jun 2021 12:29:08 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     hch@infradead.org, Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
+        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        bvanassche@acm.org, damien.lemoal@wdc.com,
+        gregkh@linuxfoundation.org, jaegeuk@kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
+        tj@kernel.org, tom.leiming@gmail.com, yi.zhang@redhat.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v11 0/3] bio: control bio max size
+Date:   Wed,  2 Jun 2021 21:10:34 +0900
+Message-Id: <20210602121037.11083-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601164320.2907-4-erik.rosen@metormote.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxjO10NPW7HsUJh+1BtrxhJwXMrNT0c3Fwg76LKw6eJmIFDoGTSW
+        tvYUY1lERhWwMC2QlQwouIGXMbURikIXxlLcFLllAiMhAyTUgUyunQTGhLWcmfHveZ73eb43
+        7/vl5WKCNVzIlSu1lEYpVYjwLR53OgKDg026u6lhC48C0K3fb3BQdcMdgL4fuYQj26+1AJnm
+        VzB0vnCJhfR1Fhx1Gb9lIYelEkMljnw2emEYZaHn4zRqG96L+m3VOLKX61mooqkaQ7+NdXNQ
+        x+igBxqvL8VQb+ciG9VMHER/X/sZoLnlIQ562FKOoaFeE44sbSv4QSHZP3CYLNXPcsjWyhEO
+        2XQ9iOzvySYbGy7gZLv5Boec+3EQJy9aGwDpbNxNFv5UzCLt9qtY4tbjiphMSiqjNP6UMl0l
+        kyszJKLDR1JiU6Kiw8TB4v1on8hfKc2iJKK49xOD4+UK1wpE/qekimyXlCilaVHo2zEaVbaW
+        8s9U0VqJiFLLFGpxmDqElmbR2cqMkHRV1gFxWFh4lMuZqsic/cME1FbuaVt/HTsPGHED4HIh
+        EQkHpkUGsIUrIFoAdPzVizNkEcB7hvb/yBKARSMGzAB4G4n7M1Y2U2gD8MGjSQ5DnAAalxc2
+        XDjxJrw4M4y7sS9Ri0HbCO02YcQEgAOdBRsFHyIc5ln6NrAHEQBnrGXAjfnEW/Bc7RTOtNsD
+        /xkrwRjdG3Z+7fBwY8yl65urMPejkCjkwaFfVtlMIA7eHlsDDPaB0/etHAYLoXO2DWcCxQDq
+        C2oBQ4wA1k9eZTGuCLjodAL3bjAiEFpsoYz8GmxdNQOmsxecfV7CZtbHh0UFAsbyOuw+N4a9
+        7DV5s5XFWEjoaPZzywIiGT7oqsKNYE/lpnEqN41T+X/fywBrANsoNZ2VQdFideTmb20EG4cQ
+        hFqAeWY+xA5YXGAHkIuJfPnvKZtTBXyZVJdDaVQpmmwFRdtBlGvBpZjw1XSV65KU2hRxVHhE
+        RASKjN4XHRUh2s7PiP08VUBkSLXUCYpSU5qXORaXJ8xjQb9n+x9aHLfrfvCy7fBMPik/I+tb
+        fWJL6zldcOnLD+flxUVBdyc/u/Zn4C5TyLP1CfPo8FK7BI+fCT3xzl6oG6ipybnyTZVR5XWM
+        V77YuJD/3XW+Yeqo9t2q1iz/2JIzklPJj4+Vxu2aM+3cnZRrF3ZxsUOGYt7gTd/6L/IPBW1r
+        7L5iPqJt8jT3lM3zjoev75hPmmbr0wfiDfdW2LNpi77jCWVnOYbulkFvyS3lk0/riSSdT85H
+        1TEclU7YV3qgTffx06JXcv2S0s6Dr7avPZU5vS5vte58w7HMj24h10/2efZJKhI6kiy5Fz4h
+        Ao4meE9Y5BVTk2d7C1+Eez8O0H0wIfKgM6XiIExDS/8F4o9s1ZEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsWy7bCSnO6Uyu0JBldum1msu7OG3WLOqm2M
+        Fqvv9rNZ7Lo4n9Fi2oefzBat7d+YLJoXr2ezOD1hEZPFk/WzmC16njSxWvztusdk8fVhscXe
+        W9oWl3fNYbM4NLmZyWL65jnMFtfun2G3OHzvKovFwyUTmS3OnfzEajHvsYPFr+VHGS3e/7jO
+        bnFqx2Rmi+vnprFZrN/7k81ByuPyFW+Pic3v2D12zrrL7rF5hZbH5bOlHptWdbJ57J+7ht3j
+        /b6rbB59W1YxenzeJOfRfqCbyePQoWXMATxRXDYpqTmZZalF+nYJXBnvnk1jLNjCUbHr8mLW
+        BsYJbF2MnBwSAiYSx99uYe1i5OIQEtjNKHFszWlWiISUxPETb4FsDiBbWOLw4WKImo+MEl8f
+        zWEBqWET0JHoe3sLbJCIwFZmicct8iBFzAKvGSW6Hi8CKxIWMJJoWH8erIhFQFXi7ZZJjCA2
+        r4C1RMv8F1BXyEv8ud/DDBEXlDg58wlYLzNQvHnrbOYJjHyzkKRmIUktYGRaxSiZWlCcm55b
+        bFhgmJdarlecmFtcmpeul5yfu4kRHJ9amjsYt6/6oHeIkYmD8RCjBAezkgive97WBCHelMTK
+        qtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYqoQXMr2sWOYgeVZB
+        yqrCyis19N6j3nmOV4SbOBolDnRf3/rSXHthl8yDBVN3X/MxvGB84BfbupxFvef9vst0LL4c
+        X/7c/vyZh4e9Ild9+cHy9auUd0vDpHsib5VSrHfb9R1NKtvm3edveFnp/44roc4JesfPdbNp
+        nmdxWZ36UvvC3OXH779ddPcJs2q5S/jmosX2Sndvlpim/1x0eummdyd8Vhy/aTU1enu/9Z17
+        r49UMu2wUk3VvhPPwHaiudzkttJC6zuPYkOO33xxZf/keRvtbeOmSR6b3SChaizo9vfMt+SK
+        g0fmMIomhx2wZHX1nMLb4Jj02GnrgXP2Psznqy8m8E3TYW784+ilF3rLT4mlOCPRUIu5qDgR
+        AKL5TTk+AwAA
+X-CMS-MailID: 20210602122909epcas1p4f4cad512dd31ed9458ca6049c5074b71
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210602122909epcas1p4f4cad512dd31ed9458ca6049c5074b71
+References: <CGME20210602122909epcas1p4f4cad512dd31ed9458ca6049c5074b71@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 06:43:18PM +0200, Erik Rosen wrote:
-> Allow the use of a phase function even if it does not exist not on
-> the associated page.
-> 
-Nit: Too many "not"
+bio size can grow up to 4GB after muli-page bvec has been enabled.
+But sometimes large size of bio would lead to inefficient behaviors.
+Control of bio max size will be helpful to improve inefficiency.
 
-Otherwise, for my reference:
+blk_queue_max_bio_bytes() is added to enable be set the max_bio_bytes in
+each driver layer. And max_bio_bytes sysfs is added to show current
+max_bio_bytes for each request queue.
+bio size can be controlled via max_bio_bytes.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Changheun Lee (3):
+  bio: control bio max size
+  blk-sysfs: add max_bio_bytes
+  scsi: set max_bio_bytes with queue max sectors
 
-Guenter
+ Documentation/ABI/testing/sysfs-block | 10 ++++++++++
+ Documentation/block/queue-sysfs.rst   |  7 +++++++
+ block/bio.c                           | 17 ++++++++++++++---
+ block/blk-settings.c                  | 19 +++++++++++++++++++
+ block/blk-sysfs.c                     |  7 +++++++
+ drivers/scsi/scsi_lib.c               |  2 ++
+ include/linux/bio.h                   |  4 +++-
+ include/linux/blkdev.h                |  3 +++
+ 8 files changed, 65 insertions(+), 4 deletions(-)
 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
-> ---
->  drivers/hwmon/pmbus/pmbus_core.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index cd80cb574267..7c4f7b6c846e 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -1327,14 +1327,14 @@ static int pmbus_add_sensor_attrs(struct i2c_client *client,
->  
->  		pages = paged ? info->pages : 1;
->  		for (page = 0; page < pages; page++) {
-> -			if (!(info->func[page] & attrs->func))
-> -				continue;
-> -			ret = pmbus_add_sensor_attrs_one(client, data, info,
-> -							 name, index, page,
-> -							 0xff, attrs, paged);
-> -			if (ret)
-> -				return ret;
-> -			index++;
-> +			if (info->func[page] & attrs->func) {
-> +				ret = pmbus_add_sensor_attrs_one(client, data, info,
-> +								 name, index, page,
-> +								 0xff, attrs, paged);
-> +				if (ret)
-> +					return ret;
-> +				index++;
-> +			}
->  			if (info->phases[page]) {
->  				int phase;
->  
-> -- 
-> 2.20.1
-> 
+-- 
+2.29.0
+
