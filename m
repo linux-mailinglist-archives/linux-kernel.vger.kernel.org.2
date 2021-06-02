@@ -2,165 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B563A3989D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3003989E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFBMnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:43:43 -0400
-Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:31567
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229850AbhFBMnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:43:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iGFR6iCrp/SasabG+JiVnzqMlxY0FXLpfsiTIr72D1QTtLHT2EO7Mk1CEcO+g/UURC3eQUcYC5OWLKcYT7+rCGHHvYXOQ9WNA8Fp9Zd082EQQzICMlSsrr8WRK6B/G53WEpvDBNHQvbr8/m5cppXDKjMswybH3nsHMifRMGNDRIcu3nF4Qeau5LdiUwLHgZQZ2Ah77wXiT39oVxnpdV/SqZVP8gboq+LFK+ejpgg+WDRzvNes7B6A6lwMzd/+j0V4tKFrBGbKnyBJ9/Smozfr+yXlUmh7gtUHSZDOoPqKoYsnz0wVcqYrNQdeUNlyIdFAWRRjsLq6JrFmX764/tCAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MURESkbkVTCGUX5fWbhTmrfUQm4bFedTrJN/uKtGY8c=;
- b=mxKH9mfspfII3T5olrl666N6WgYjeqxWSeefiqGUHo39yy5Wh/XD8pKI/5KZ7NFztB5H7Mt/TQx8EEXRyfaWqRLNwSrII3WfpHeRI1S9i7XDJB2+ixZGY5uOWbzAAsM90vp4VodPyXXvWBke0HvI1j6mcK+wsHN7gCmFy4DKUWUrHQoVnDuFgATGXZ8rJ8TL1jIeMGtrKi6QhmchjLyqGXS/VsEjEnIiLqUOfVGGhKipxGuHkvNq11woRSuPZBXIK/XofSa8j3nswkEEhakw5my3PMK+dBLOoVcKtqRuwHF0rZCkyRnMjuIkNnBPBqqrT0zs6byX2WoNlIZn7AIQQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MURESkbkVTCGUX5fWbhTmrfUQm4bFedTrJN/uKtGY8c=;
- b=erE6JlAkMw13kKkvCj2CkBOuIFGs699kI7rslvMJWHLzfInKxkd7Wf5JEyBsTlMiK6aOoJU1VlKxS1pX28hIwO9hJPPTPcIn7DG59LTuyZzdbC+SLTUGhpxVre8zshRxwVsTW5x8GrDJ5hls1VgeRqd507gYF+iSvf5t+gzbDcrlCEjDub2L9Gv8xa9GFdtgdKbyiXgEn/SYFAkTpXBrhqVuf0hO++wmikmMPXS855LLijtjQg5A0UZ1PASLMrHCzmASQYWL5Iriw9ahSnoa869+2+Ft0aHQh/ChxU1hX2zrXQ3Gua+AlspFpQanzGpydaAli5KJvAXcKUBh8jn8GA==
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com (2603:10b6:510:d4::15)
- by PH0PR12MB5401.namprd12.prod.outlook.com (2603:10b6:510:d4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Wed, 2 Jun
- 2021 12:41:58 +0000
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::b0d9:bff5:2fbf:b344]) by PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::b0d9:bff5:2fbf:b344%6]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
- 12:41:58 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>
-CC:     Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: RE: [RFC] /dev/ioasid uAPI proposal
-Thread-Topic: [RFC] /dev/ioasid uAPI proposal
-Thread-Index: AddSzQ970oLnVHLeQca/ysPD8zMJZwDdOxjAAFIuqoAACAmcgA==
-Date:   Wed, 2 Jun 2021 12:41:58 +0000
-Message-ID: <PH0PR12MB5481F4C360C09B8697D3B595DC3D9@PH0PR12MB5481.namprd12.prod.outlook.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <PH0PR12MB5481C1B2249615257A461EEDDC3F9@PH0PR12MB5481.namprd12.prod.outlook.com>
- <06892e6a-02c9-6c25-84eb-6a4b2177b48d@metux.net>
-In-Reply-To: <06892e6a-02c9-6c25-84eb-6a4b2177b48d@metux.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: metux.net; dkim=none (message not signed)
- header.d=none;metux.net; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [49.207.220.117]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c0f5b561-a867-4257-b96f-08d925c3cfab
-x-ms-traffictypediagnostic: PH0PR12MB5401:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR12MB54013215A4558E8D46676639DC3D9@PH0PR12MB5401.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hRSitfUtzrNdEx4ENuwftPZMHBiNBsgp3O5TI9ByCgo1TmQMTeVXGDjhgazM/8cdv+ACR7Wu64uuBs+ykdt5x10QbHO/n4WD4GZ2CxG3Zk/Mu8Vx1G9CsFTnc5AB3zhR2kpAqrSsx8mthB/Vq8wKSu7aTz5iU/CURX+cPYIlBHUiA4PCLSswOwVShoAq8RT6qD+G6OpryAY5QZf2zQT9iWJyrwoqfqol+NlwafEDB9FBfjgeupFgiGmu3r+wQe3wkyxy6FwE1kSnikF96O7EbbtNg/ZWIpK+9qp2a5SzxKUwOf8r9lnIIm3HVr/NaZRZtk9wDb4lwQMVNNhGMYClT/cFjbOfgh4uKD7DnsQt9/Z1lk2MUPO2y9jMHGfde+zj5qQyWXxTkMd0kiKa0fwX6VMUxo9IVwKILW7JNxbY/OPOvDZU1NNMiBUPGVwCkzAqge9p5ksSfUUkc//Q91AcWS+Yya9lK+4goo7swKF24Gbgn4mbCSuwhdyvcG9jYwK4bi0CqbD/AtyQFVbBjUFwmv7vLNxEUwUEoPSKOfjPzPLrtpy8bDMxhiaeruYxN+Hf3E4KoGr0svQbiwp3ZCjtfDIH9+gJuGr1MdBtznorsuE54Qa09p9tNBD4w2FUpW/+DaKd3MiLylh70cwcAOd7Ow==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5481.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(136003)(396003)(376002)(52536014)(71200400001)(53546011)(54906003)(64756008)(66446008)(110136005)(7696005)(55236004)(4326008)(186003)(9686003)(66946007)(66476007)(26005)(83380400001)(5660300002)(8676002)(7416002)(55016002)(316002)(478600001)(2906002)(76116006)(86362001)(6506007)(33656002)(921005)(122000001)(38100700002)(8936002)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?UC9NcFBzcGE0OFRJSmZzc3duWEloYnFzUU80T3h1ZE5sZmE0WnVXblNzOU0v?=
- =?utf-8?B?dXc3N2ZubHBObUVZY0gwVk1UWUw5cEZaaUNlUjZSbFhQeWV6aXR5OFFGZURE?=
- =?utf-8?B?dzJLVVlUZDliaWpxTk5USXhmVWFZRzZRUzRucmxOWFgyV29XZWlocGpxYllr?=
- =?utf-8?B?K3hwTTZqaXpnN2RXekUxMk11bHZxQncxZFNTQWc1enBVWkx0WVlSelR0Qkw2?=
- =?utf-8?B?ZUJldEVVZUxzMTcrSDBTM3R4WDg3Z2hFc0FYc1BiTWVZZmFzTVZ6SWV5MmRn?=
- =?utf-8?B?amNITXlCaXFCL3Bnb213Q0xEaVVyUFdpRCtrZWdLZXpkR05LaUNHb2RkTVVY?=
- =?utf-8?B?RHRVZ2hkTHNUSUFld3BLM3BKZjkxSzBxdU5uUlRCRVhaSCt4RnErOWQzanhh?=
- =?utf-8?B?MTN2RkJSVTNyV080M01RWFBiRnhoaWd5Y3cvMklKYmFjcUpDMEw5UnozZTRI?=
- =?utf-8?B?dk05TFFoOEVOWW1jM1lUOVo4b3JScStURndNOHlnWWdtTncxWktGeXpEQnJq?=
- =?utf-8?B?WnZvTnY5TGtpcWx5R2g3TW1vT095NXl6VEF6Zk9wVWhPWDdIM0pucnpDdVlh?=
- =?utf-8?B?UmkyZ3UyR1BtUmgrU0lNVWp3aU1IdGc5c3lRT2ZjOFRkV2hKRUlrZldZM0V2?=
- =?utf-8?B?eCtpeHNuQWZOVkJJaWg5aER3aXhsczZGYlJBcTZKRkN5YktHRVJ0UURZM2Q2?=
- =?utf-8?B?enBzakZjaU04YUwxNHlqbG8vUWRQUkg3N1lyMVFiVWRBdDE1VW5HRUxZMjBv?=
- =?utf-8?B?TktqS1k4ckUrYzg1WFpMMlM0cVozVmxwb0RDd2NHUG8rVVhGd0NLTExhT0Ft?=
- =?utf-8?B?YzhRWDc0bEhXZmt3RFhnZ1pRci9sRGdOSnh6U0VBL293RVhFcTVlVDFsblVE?=
- =?utf-8?B?M0pPRk1VZ2k0cDJnVkI0aTNjL3RZaHhzWlhvVUp0eVpOby84eFQ1QUdCL1lr?=
- =?utf-8?B?ZkR2WjVDNUs4QVMvMWlqNDN2MnpzT1ZjOXhwZXBPcW1RMDF1a0ZxOTNMenpa?=
- =?utf-8?B?alJYemllNzRObExJNFE0SzY2TkY0MWlxSjFlbDIvUXMrOUxIeFhsSWFpQys2?=
- =?utf-8?B?R1JIUXBxMHN1dlhmNWxlbURBVXBJSUgyd1pCckt0bnh0R0Q2YlQxNDFnYnNN?=
- =?utf-8?B?MEdERnFxTENXSzlLRml2Tk11ayt4ZzI1a3VkQnpCQzFjTEVXdnNNQTdqQy9h?=
- =?utf-8?B?MkFxeGhwVXZ2Rm5FVmJsSk1LTlhySXZhNGREUElJaWNHZSsyaHZvRWtINmt6?=
- =?utf-8?B?bzc4d0Z3RmMvMVZFdC82RC9HS3I1US9BOXNpdjVUVWpBRjEybGlXazBlbE9a?=
- =?utf-8?B?K1NhQnRWczNaV3NyaUt1MHNadXl3K01sWTJOdCs0TFJaMWpXMmh3MVpQRmJD?=
- =?utf-8?B?STVQa3BadVRhMFhKQVpsTWh4MXNCVGw2NndnbU5DRUpuTGRPckQxMWxacHhv?=
- =?utf-8?B?K01MV3ZGaWxycG5rbGIvQUg2N1dZUk1BTVZ6L1VyK3BNcDlGL21qQlpHV0Jn?=
- =?utf-8?B?L0NwQUN2b3hBVWNpSDdNM1E4cERTN3hEeElkK1dYeUhobDRLSVhBL2xKZm8v?=
- =?utf-8?B?QklNWWZjVWJPR2VWajdaZmNkamFRa3FEakZIRllEM1I3ampFZ1lORnQzM0tm?=
- =?utf-8?B?Ym5CbS9Ra2xBN3R1dlozcXBTY0VhNjQzbWFPaUoxbzR2NzRFK3hyVmVKTTBy?=
- =?utf-8?B?VTY2L0dBRXpVT1M2ZVJON1dTK1c0Q014dUxtMjZOTlVPcjBqNndoUXhwRHEy?=
- =?utf-8?Q?z18fMXUTGjR4b+GAsZCPstvbF7co3cfqllv52Qp?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229972AbhFBMpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhFBMps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 08:45:48 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E36C061574;
+        Wed,  2 Jun 2021 05:44:06 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so2284781otk.5;
+        Wed, 02 Jun 2021 05:44:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MW8o4EIgVKG5AkNL8mgbNRCVVUkJWDWwo/k1KObUVqA=;
+        b=Y1U55xjwdfHNEis2rGe2ENfvs5hhYL0a5sPtCfj2ff+NGgKlaLHgKd98pn4BmhtjXG
+         m2dQaZpvB0lzD963bCY9ykHF++pbpa/PvGxCG4LRCEbSeMm3wYxnQH2p43cVRPgbQOq0
+         CJNn8jxtcwTjl0h5RFGSj4b9PufUjRQRyKFtwIKOZk1NaqwShjBGkf5GV+h8GKKicO0Y
+         kb7wj3IGvAxXvy2DyGdrMYJSeLnukgSwRofJDA0Fxo90L80pJl6454M6YMtmJKC78OTE
+         Xeq/0JTMNBVA+hkyxbIoSz+WrqzKujjlNLXIIqgVqGtuLxVITR+IXjnSYx+PBhRrLJfU
+         AD2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MW8o4EIgVKG5AkNL8mgbNRCVVUkJWDWwo/k1KObUVqA=;
+        b=gSstIzUj5zSEUMM7nyANFCVmF4qE+ob79p064r8IWeeDO01rjH6etA7FaW2a89BxG8
+         d1O//pA3nJNZhQuCQXiNeWNmtOkk7vJFaY5i9ZsdQVXAYpFZjID7qE0mTz/KJSMExbre
+         lM42lrBcl1drfcut/7sySqHuvuwkurwU3Og2Z9Qs/ojQdd6bhMBI8WqDZZQepRzrUH5N
+         QMvxF+/T1y1OB4hQkxUXxFgHlEbDXaaiCedF4e+wwc+iGOYWsfa88VC5/ieeu04mR7zy
+         w3KCZXbfsNkjkGV7f/FIg/GDCSk8Oy6KuzlSNBBuN91cHQc+i+Q50MjKnWP+95ZcK25X
+         BO3g==
+X-Gm-Message-State: AOAM533Sr6XZtHN0mfPjE3MFdwoKi7Z1ga6WvyAYNdpM2K6hHyCFos9k
+        N53jIl/JnGTp4OmISnPbxQjOfdXEAgMl/Up7fww=
+X-Google-Smtp-Source: ABdhPJw6vHEJd7VGoLXB6NyhLonTIXgEktNNQCsa50N618rAysR8pyXgGTPxJl10wQsk23Cwst2sXV5Mk2S8v9ugsgg=
+X-Received: by 2002:a9d:4f19:: with SMTP id d25mr138576otl.72.1622637845314;
+ Wed, 02 Jun 2021 05:44:05 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5481.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0f5b561-a867-4257-b96f-08d925c3cfab
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jun 2021 12:41:58.0692
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pPnDCtRf0V+l8kUUG5lRe08kni/t3Bih6Y2+lg+CcjhjeWZaw7x6U1R1gylBz49GpdIYhNvqP51B/O0TIBab9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5401
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
+ <20210515124055.22225-3-sergio.paracuellos@gmail.com> <20210531131431.bzsvmefqdyawmeo2@pali>
+ <CAMhs-H80=7jctPT70rOmcwcqPw+9iUF84_ZCgGr-TKwJ4eB2Lg@mail.gmail.com>
+ <20210531135041.42ovpmbwuc3yfkaw@pali> <CAMhs-H_fR5aXJ=diTm-2yhgjjv9S6N6jA-DOZ0K_BnQ4UHHh3Q@mail.gmail.com>
+ <CAMhs-H8EwQDvZtzpPn2u_WOWt1wcixOvz5nVZP2miM6j0+P7EA@mail.gmail.com> <20210602122337.fxwaikulbawwkc2j@pali>
+In-Reply-To: <20210602122337.fxwaikulbawwkc2j@pali>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 2 Jun 2021 14:43:53 +0200
+Message-ID: <CAMhs-H8Gr=ObgMZAZ9VuNqHX4TaKQPPGNNMY4pzh9o=3EbAgUQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] MIPS: pci: Add driver for MT7621 PCIe controller
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IEZyb206IEVucmljbyBXZWlnZWx0LCBtZXR1eCBJVCBjb25zdWx0IDxsa21sQG1ldHV4Lm5l
-dD4NCj4gU2VudDogV2VkbmVzZGF5LCBKdW5lIDIsIDIwMjEgMjowOSBQTQ0KPiANCj4gT24gMzEu
-MDUuMjEgMTk6MzcsIFBhcmF2IFBhbmRpdCB3cm90ZToNCj4gDQo+ID4gSXQgYXBwZWFycyB0aGF0
-IHRoaXMgaXMgb25seSB0byBtYWtlIG1hcCBpb2N0bCBmYXN0ZXIgYXBhcnQgZnJvbSBhY2NvdW50
-aW5nLg0KPiA+IEl0IGRvZXNuJ3QgaGF2ZSBhbnkgaW9hc2lkIGhhbmRsZSBpbnB1dCBlaXRoZXIu
-DQo+ID4NCj4gPiBJbiB0aGF0IGNhc2UsIGNhbiBpdCBiZSBhIG5ldyBzeXN0ZW0gY2FsbD8gV2h5
-IGRvZXMgaXQgaGF2ZSB0byBiZSB1bmRlcg0KPiAvZGV2L2lvYXNpZD8NCj4gPiBGb3IgZXhhbXBs
-ZSBmZXcgeWVhcnMgYmFjayBzdWNoIHN5c3RlbSBjYWxsIG1waW4oKSB0aG91Z2h0IHdhcyBwcm9w
-b3NlZA0KPiBpbiBbMV0uDQo+IA0KPiBJJ20gdmVyeSByZWx1Y3RhbnQgdG8gbW9yZSBzeXNjYWxs
-IGluZmxhdGlvbi4gV2UgYWxyZWFkeSBoYXZlIGxvdHMgb2Ygc3lzY2FsbHMNCj4gdGhhdCBjb3Vs
-ZCBoYXZlIGJlZW4gZWFzaWx5IGRvbmUgdmlhIGRldmljZXMgb3IgZmlsZXN5c3RlbXMgKHllcywg
-c29tZSBvZg0KPiB0aGVtIGFyZSBqdXN0IG9sZCBVbml4IHJlbGljcykuDQo+IA0KPiBTeXNjYWxs
-cyBkb24ndCBwbGF5IHdlbGwgdy8gbW9kdWxlcywgY29udGFpbmVycywgZGlzdHJpYnV0ZWQgc3lz
-dGVtcywgZXRjLCBhbmQNCj4gbmVlZCBleHRyYSBsb3ctbGV2ZWwgY29kZSBmb3IgbW9zdCBub24t
-QyBsYW5ndWFnZXMgKGVnLg0KPiBzY3JpcHRpbmcgbGFuZ3VhZ2VzKS4NCg0KTGlrZWx5LCBidXQg
-YXMgcGVyIG15IHVuZGVyc3RhbmRpbmcsIHRoaXMgaW9jdGwoKSBpcyBhIHdyYXBwZXIgdG8gZGV2
-aWNlIGFnbm9zdGljIGNvZGUgYXMsDQoNCiB7DQogICBhdG9taWNfaW5jKG1tLT5waW5uZWRfdm0p
-Ow0KICAgcGluX3VzZXJfcGFnZXMoKTsNCn0NCg0KQW5kIG1tIG11c3QgZ290IHRvIGhvbGQgdGhl
-IHJlZmVyZW5jZSB0byBpdCwgc28gdGhhdCB0aGVzZSBwYWdlcyBjYW5ub3QgYmUgbXVubWFwKCkg
-b3IgZnJlZWQuDQoNCkFuZCBzZWNvbmQgcmVhc29uIEkgdGhpbmsgKEkgY291bGQgYmUgd3Jvbmcp
-IGlzIHRoYXQsIHNlY29uZCBsZXZlbCBwYWdlIHRhYmxlIGZvciBhIFBBU0lELCBzaG91bGQgYmUg
-c2FtZSBhcyB3aGF0IHByb2Nlc3MgQ1IzIGhhcyB1c2VkLg0KRXNzZW50aWFsbHkgaW9tbXUgcGFn
-ZSB0YWJsZSBhbmQgbW11IHBhZ2UgdGFibGUgc2hvdWxkIGJlIHBvaW50aW5nIHRvIHNhbWUgcGFn
-ZSB0YWJsZSBlbnRyeS4NCklmIHRoZXkgYXJlIGRpZmZlcmVudCwgdGhhbiBldmVuIGlmIHRoZSBn
-dWVzdCBDUFUgaGFzIGFjY2Vzc2VkIHRoZSBwYWdlcywgZGV2aWNlIGFjY2VzcyB2aWEgSU9NTVUg
-d2lsbCByZXN1bHQgaW4gYW4gZXhwZW5zaXZlIHBhZ2UgZmF1bHRzLg0KDQpTbyBhc3N1bWluZyBi
-b3RoIGNyMyBhbmQgcGFzaWQgdGFibGUgZW50cnkgcG9pbnRzIHRvIHNhbWUgcGFnZSB0YWJsZSwg
-SSBmYWlsIHRvIHVuZGVyc3RhbmQgZm9yIHRoZSBuZWVkIG9mIGV4dHJhIHJlZmNvdW50IGFuZCBo
-ZW5jZSBkcml2ZXIgc3BlY2lmaWMgaW9jdGwoKS4NClRob3VnaCBJIGRvIG5vdCBoYXZlIHN0cm9u
-ZyBvYmplY3Rpb24gdG8gdGhlIGlvY3RsKCkuIEJ1dCB3YW50IHRvIGtub3cgd2hhdCBpdCB3aWxs
-IGFuZCB3aWxsX25vdCBkby4NCklvIHVyaW5nIGZzIGhhcyBzaW1pbGFyIGlvY3RsKCkgZG9pbmcg
-aW9fc3FlX2J1ZmZlcl9yZWdpc3RlcigpLCBwaW5uaW5nIHRoZSBtZW1vcnkuDQo=
+Hi Pali,
+
+On Wed, Jun 2, 2021 at 2:23 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Wednesday 02 June 2021 14:16:26 Sergio Paracuellos wrote:
+> > Hi Pali,
+> >
+> > On Mon, May 31, 2021 at 4:19 PM Sergio Paracuellos
+> > <sergio.paracuellos@gmail.com> wrote:
+> > >
+> > > On Mon, May 31, 2021 at 3:50 PM Pali Roh=C3=A1r <pali@kernel.org> wro=
+te:
+> > > >
+> > > > On Monday 31 May 2021 15:39:55 Sergio Paracuellos wrote:
+> > > > > Hi Pali,
+> > > > >
+> > > > > Thanks for your comments.
+> > > > >
+> > > > > On Mon, May 31, 2021 at 3:14 PM Pali Roh=C3=A1r <pali@kernel.org>=
+ wrote:
+> > > > > >
+> > > > > > On Saturday 15 May 2021 14:40:53 Sergio Paracuellos wrote:
+> > > > > > > This patch adds a driver for the PCIe controller of MT7621 So=
+C.
+> > > > > > >
+> > > > > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.c=
+om>
+> > > > > > > ---
+> > > > > > >  arch/mips/pci/Makefile     |   1 +
+> > > > > > >  arch/mips/pci/pci-mt7621.c | 624 +++++++++++++++++++++++++++=
+++++++++++
+> > > > > > >  arch/mips/ralink/Kconfig   |   9 +-
+> > > > > > >  3 files changed, 633 insertions(+), 1 deletion(-)
+> > > > > > >  create mode 100644 arch/mips/pci/pci-mt7621.c
+> > > > > > >
+> > > > > > > diff --git a/arch/mips/pci/Makefile b/arch/mips/pci/Makefile
+> > > > > > > index f3eecc065e5c..178c550739c4 100644
+> > > > > > > --- a/arch/mips/pci/Makefile
+> > > > > > > +++ b/arch/mips/pci/Makefile
+> > > > > > > @@ -24,6 +24,7 @@ obj-$(CONFIG_PCI_AR2315)    +=3D pci-ar2315=
+.o
+> > > > > > >  obj-$(CONFIG_SOC_AR71XX)     +=3D pci-ar71xx.o
+> > > > > > >  obj-$(CONFIG_PCI_AR724X)     +=3D pci-ar724x.o
+> > > > > > >  obj-$(CONFIG_PCI_XTALK_BRIDGE)       +=3D pci-xtalk-bridge.o
+> > > > > > > +obj-$(CONFIG_PCI_MT7621)     +=3D pci-mt7621.o
+> > > > > > >  #
+> > > > > > >  # These are still pretty much in the old state, watch, go bl=
+ind.
+> > > > > > >  #
+> > > > > > > diff --git a/arch/mips/pci/pci-mt7621.c b/arch/mips/pci/pci-m=
+t7621.c
+> > > > > > > new file mode 100644
+> > > > > > > index 000000000000..fe1945819d25
+> > > > > > > --- /dev/null
+> > > > > > > +++ b/arch/mips/pci/pci-mt7621.c
+> > > > > > ...
+> > > > > > > +static int mt7621_pcie_enable_ports(struct mt7621_pcie *pcie=
+)
+> > > > > > > +{
+> > > > > > > +     struct device *dev =3D pcie->dev;
+> > > > > > > +     struct mt7621_pcie_port *port;
+> > > > > > > +     u8 num_slots_enabled =3D 0;
+> > > > > > > +     u32 slot;
+> > > > > > > +     u32 val;
+> > > > > > > +     int err;
+> > > > > > > +
+> > > > > > > +     /* Setup MEMWIN and IOWIN */
+> > > > > > > +     pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE);
+> > > > > > > +     pcie_write(pcie, pcie->io.start, RALINK_PCI_IOBASE);
+> > > > > > > +
+> > > > > > > +     list_for_each_entry(port, &pcie->ports, list) {
+> > > > > > > +             if (port->enabled) {
+> > > > > > > +                     err =3D clk_prepare_enable(port->clk);
+> > > > > > > +                     if (err) {
+> > > > > > > +                             dev_err(dev, "enabling clk pcie=
+%d\n", slot);
+> > > > > > > +                             return err;
+> > > > > > > +                     }
+> > > > > > > +
+> > > > > > > +                     mt7621_pcie_enable_port(port);
+> > > > > > > +                     dev_info(dev, "PCIE%d enabled\n", port-=
+>slot);
+> > > > > > > +                     num_slots_enabled++;
+> > > > > > > +             }
+> > > > > > > +     }
+> > > > > > > +
+> > > > > > > +     for (slot =3D 0; slot < num_slots_enabled; slot++) {
+> > > > > > > +             val =3D read_config(pcie, slot, PCI_COMMAND);
+> > > > > > > +             val |=3D PCI_COMMAND_MASTER;
+> > > > > > > +             write_config(pcie, slot, PCI_COMMAND, val);
+> > > > > >
+> > > > > > Hello! Is this part of code correct? Because it looks strange i=
+f PCIe
+> > > > > > controller driver automatically enables PCI bus mastering, prio=
+r device
+> > > > > > driver initialize itself.
+> > > > > >
+> > > > > > Moreover kernel has already function pci_set_master() for this =
+purpose
+> > > > > > which is used by device drivers.
+> > > > > >
+> > > > > > So I think this code can confuse some device drivers...
+> > > > >
+> > > > > I agree that we have pci_set_master() to be used in pci device dr=
+iver
+> > > > > code. Original controller driver set this bit for enabled slots. =
+Since
+> > > > > there is no documentation at all for the PCI in this SoC
+> > > >
+> > > > I see... this is really a big problem to do any driver development.=
+..
+> > >
+> > > For sure it is :(.
+> > >
+> > > >
+> > > > > I have
+> > > > > maintained the setting in the driver in a cleaner way. See origin=
+al
+> > > > > driver code and the setting here [0]. There is no other reason th=
+an
+> > > > > that. I am ok with removing this from here and testing with my tw=
+o
+> > > > > devices that everything is still ok if having this setting in the=
+ pci
+> > > > > controller driver is a real problem.
+> > > >
+> > > > You can run lspci -nnvv with and without PCI_COMMAND_MASTER code an=
+d
+> > > > then compare outputs.
+> > > >
+> > > > Device drivers for sure enable PCI_COMMAND_MASTER at the time when =
+it is
+> > > > needed, so it is possible that there would be no difference in lspc=
+i
+> > > > output.
+> > >
+> > > Thanks. I will take this into account when v2 is submitted after more
+> > > review comments come :).
+> >
+> > I have tested to remove this and check lspci -nnvv output with and
+> > without PCI_COMMAND_MASTER code and, as you pointed out, there is no
+> > difference between them. Also, both boards are working without
+> > regressions at all. So I will remove this code for next version.
+>
+> Perfect!
+>
+> > Thanks,
+> >     Sergio Paracuellos
+> > >
+> > > >
+> > > > > [0]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/stagi=
+ng.git/tree/drivers/staging/mt7621-pci/pci-mt7621.c?h=3Dv4.18#n676
+> > > > >
+> > > > > Best regards,
+> > > > >     Sergio Paracuellos
+> > > > > >
+> > > > > > > +             /* configure RC FTS number to 250 when it leave=
+s L0s */
+> > > > > > > +             val =3D read_config(pcie, slot, PCIE_FTS_NUM);
+> > > > > > > +             val &=3D ~PCIE_FTS_NUM_MASK;
+> > > > > > > +             val |=3D PCIE_FTS_NUM_L0(0x50);
+> > > > > > > +             write_config(pcie, slot, PCIE_FTS_NUM, val);
+>
+> Could you look also what is doing this code (PCIE_FTS_NUM)? It is marked
+> as MT specific register. But from this code for me it looks like that it
+> just access config space of some device and therefore it could be some
+> standard PCIe register. Just with hardcoded calculated offset.
+>
+> Could you provide output from lspci -nnvv? So other people could look at
+> it and maybe we decode what is this code doing and if it is needed.
+
+# lspci -nnvv
+00:02.0 PCI bridge [0604]: Device [0e8d:0801] (rev 01) (prog-if 00
+[Normal decode])
+        Device tree node: /sys/firmware/devicetree/base/pcie@1e140000/pcie@=
+2,0
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B- DisINTx-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 0
+        Interrupt: pin A routed to IRQ 255
+        Region 1: Memory at 60200000 (32-bit, non-prefetchable) [size=3D64K=
+]
+        Bus: primary=3D00, secondary=3D01, subordinate=3D01, sec-latency=3D=
+0
+        I/O behind bridge: 00000000-00000fff [size=3D4K]
+        Memory behind bridge: 60000000-600fffff [size=3D1M]
+        Prefetchable memory behind bridge: 60100000-601fffff [size=3D1M]
+        Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=3Dfast >TAbort-
+<TAbort- <MAbort- <SERR- <PERR-
+        BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B=
+-
+                PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
+        Capabilities: [40] Power Management version 3
+                Flags: PMEClk- DSI- D1+ D2- AuxCurrent=3D375mA
+PME(D0+,D1+,D2-,D3hot+,D3cold-)
+                Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D0 PME-
+        Capabilities: [50] MSI: Enable- Count=3D1/1 Maskable- 64bit+
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express (v2) Root Port (Slot-), MSI 00
+                DevCap: MaxPayload 128 bytes, PhantFunc 0
+                        ExtTag- RBE+
+                DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
+                        RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
+                        MaxPayload 128 bytes, MaxReadReq 128 bytes
+                DevSta: CorrErr+ NonFatalErr- FatalErr- UnsupReq-
+AuxPwr- TransPend-
+                LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1,
+Exit Latency L0s <512ns, L1 <64us
+                        ClockPM- Surprise- LLActRep+ BwNot- ASPMOptComp-
+                LnkCtl: ASPM Disabled; RCB 128 bytes, Disabled- CommClk-
+                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+                LnkSta: Speed 2.5GT/s (ok), Width x1 (ok)
+                        TrErr- Train- SlotClk+ DLActive+ BWMgmt- ABWMgmt-
+                RootCap: CRSVisible-
+                RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal-
+PMEIntEna- CRSVisible-
+                RootSta: PME ReqID 0000, PMEStatus- PMEPending-
+                DevCap2: Completion Timeout: Not Supported,
+TimeoutDis+ NROPrPrP- LTR-
+                         10BitTagComp- 10BitTagReq- OBFF Not
+Supported, ExtFmt- EETLPPrefix-
+                         EmergencyPowerReduction Not Supported,
+EmergencyPowerReductionInit-
+                         FRS- LN System CLS Not Supported, TPHComp-
+ExtTPHComp- ARIFwd-
+                         AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
+                DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-
+LTR- OBFF Disabled, ARIFwd-
+                         AtomicOpsCtl: ReqEn- EgressBlck-
+                LnkCap2: Supported Link Speeds: 2.5GT/s, Crosslink-
+Retimer- 2Retimers- DRS-
+                LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- Speed=
+Dis-
+                         Transmit Margin: Normal Operating Range,
+EnterModifiedCompliance- ComplianceSOS-
+                         Compliance De-emphasis: -6dB
+                LnkSta2: Current De-emphasis Level: -6dB,
+EqualizationComplete- EqualizationPhase1-
+                         EqualizationPhase2- EqualizationPhase3-
+LinkEqualizationRequest-
+                         Retimer- 2Retimers- CrosslinkRes: unsupported
+        Capabilities: [100 v1] Advanced Error Reporting
+                UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
+UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+                UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
+UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+                UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt-
+UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
+                CESta:  RxErr+ BadTLP- BadDLLP- Rollover- Timeout-
+AdvNonFatalErr-
+                CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout-
+AdvNonFatalErr+
+                AERCap: First Error Pointer: 00, ECRCGenCap+
+ECRCGenEn- ECRCChkCap+ ECRCChkEn-
+                        MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
+                HeaderLog: 00000000 00000000 00000000 00000000
+                RootCmd: CERptEn- NFERptEn- FERptEn-
+                RootSta: CERcvd- MultCERcvd- UERcvd- MultUERcvd-
+                         FirstFatal- NonFatalMsg- FatalMsg- IntMsg 0
+                ErrorSrc: ERR_COR: 0000 ERR_FATAL/NONFATAL: 0000
+        Capabilities: [140 v1] Virtual Channel
+                Caps:   LPEVC=3D0 RefClk=3D100ns PATEntryBits=3D1
+                Arb:    Fixed- WRR32- WRR64- WRR128-
+                Ctrl:   ArbSelect=3DFixed
+                Status: InProgress-
+                VC0:    Caps:   PATOffset=3D00 MaxTimeSlots=3D1 RejSnoopTra=
+ns-
+                        Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR25=
+6-
+                        Ctrl:   Enable+ ID=3D0 ArbSelect=3DFixed TC/VC=3Dff
+                        Status: NegoPending- InProgress-
+lspci: Unable to load libkmod resources: error -12
+
+01:00.0 Network controller [0280]: MEDIATEK Corp. Device [14c3:7612]
+        Subsystem: MEDIATEK Corp. Device [14c3:7612]
+        Device tree node:
+/sys/firmware/devicetree/base/pcie@1e140000/pcie@2,0/wifi@0,0
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B- DisINTx-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 0
+        Interrupt: pin A routed to IRQ 20
+        Region 0: Memory at 60000000 (64-bit, non-prefetchable) [size=3D1M]
+        Expansion ROM at 60100000 [virtual] [disabled] [size=3D64K]
+        Capabilities: [40] Power Management version 3
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D375mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D0 PME-
+        Capabilities: [50] MSI: Enable- Count=3D1/1 Maskable- 64bit+
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express (v2) Endpoint, MSI 00
+                DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s
+unlimited, L1 unlimited
+                        ExtTag- AttnBtn- AttnInd- PwrInd- RBE+
+FLReset- SlotPowerLimit 0.000W
+                DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
+                        RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
+                        MaxPayload 128 bytes, MaxReadReq 128 bytes
+                DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq-
+AuxPwr+ TransPend-
+                LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1,
+Exit Latency L0s <2us, L1 unlimited
+                        ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
+                LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk-
+                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+                LnkSta: Speed 2.5GT/s (ok), Width x1 (ok)
+                        TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+                DevCap2: Completion Timeout: Range ABCD, TimeoutDis+
+NROPrPrP- LTR-
+                         10BitTagComp- 10BitTagReq- OBFF Not
+Supported, ExtFmt- EETLPPrefix-
+                         EmergencyPowerReduction Not Supported,
+EmergencyPowerReductionInit-
+                         FRS- TPHComp- ExtTPHComp-
+                         AtomicOpsCap: 32bit- 64bit- 128bitCAS-
+                DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-
+LTR- OBFF Disabled,
+                         AtomicOpsCtl: ReqEn-
+                LnkCap2: Supported Link Speeds: 2.5GT/s, Crosslink-
+Retimer- 2Retimers- DRS-
+                LnkCtl2: Target Link Speed: 5GT/s, EnterCompliance- SpeedDi=
+s-
+                         Transmit Margin: Normal Operating Range,
+EnterModifiedCompliance- ComplianceSOS-
+                         Compliance De-emphasis: -6dB
+                LnkSta2: Current De-emphasis Level: -3.5dB,
+EqualizationComplete- EqualizationPhase1-
+                         EqualizationPhase2- EqualizationPhase3-
+LinkEqualizationRequest-
+                         Retimer- 2Retimers- CrosslinkRes: unsupported
+        Capabilities: [100 v2] Advanced Error Reporting
+                UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
+UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+                UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
+UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+                UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt-
+UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
+                CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout-
+AdvNonFatalErr-
+                CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout-
+AdvNonFatalErr+
+                AERCap: First Error Pointer: 00, ECRCGenCap+
+ECRCGenEn- ECRCChkCap+ ECRCChkEn-
+                        MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
+                HeaderLog: 00000000 00000000 00000000 00000000
+        Capabilities: [148 v1] Device Serial Number 00-00-00-00-00-00-00-00
+        Capabilities: [158 v1] Latency Tolerance Reporting
+                Max snoop latency: 0ns
+                Max no snoop latency: 0ns
+        Capabilities: [160 v1] L1 PM Substates
+                L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+
+ASPM_L1.1+ L1_PM_Substates+
+                          PortCommonModeRestoreTime=3D50us PortTPowerOnTime=
+=3D10us
+                L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2- ASPM_L1.1-
+                           T_CommonMode=3D0us LTR1.2_Threshold=3D0ns
+                L1SubCtl2: T_PwrOn=3D10us
+        Kernel driver in use: mt76x2e
+
+Best regards,
+    Sergio Paracuellos
+
+>
+> > > > > > > +     }
+> > > > > > > +
+> > > > > > > +     return 0;
+> > > > > > > +}
