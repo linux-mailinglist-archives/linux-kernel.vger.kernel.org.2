@@ -2,112 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3BD398F94
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A032398F96
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhFBQII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFBQIH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:08:07 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEF6C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 09:06:23 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id e22so2611203pgv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bGVJ1fEqd+Kmtn4CZUiicvmSxzhYZxgsSiEwCJsJFPs=;
-        b=gaKK+caiwwpAV1acAj90mEj+I+G3WF84YlHQoghHtaMb21r1BPmcOdmERodSw7gckN
-         v+rrAMqvANdGQ9qsYyLdAMup2LVONj2nqhjUPhtvOzKSVIP7ROgIHsc4qy4Rq4IQQGo3
-         cho/IKi31EFebhHza+L5urNVrf3jB6bn7CgVo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bGVJ1fEqd+Kmtn4CZUiicvmSxzhYZxgsSiEwCJsJFPs=;
-        b=HcCfmhFqVNl6VCBn2qKkXvff1HkZtyRHDtHzwflumRMMtCfkzKfVTUX8uQLjBmkV4B
-         l5aCuKY7nDEHJns3K5FN7Z3YkglkHjY+g9WctXPbvF4cvCjdLDlcl/+gQrUfhT9IANHN
-         yZb8G40XQsucvAmyqskqE/l/dAavAFaajhuvFvhWS48XgRj7BTBUZgV2NAFeY6+TLjKN
-         lqLRvk5SQenTCya4Bn4w4eyE8xPICQFMX73DouhL+QcP1WxGg8DImF17E6YLQ6ApPChV
-         hmKDpFjlNjNgDhhJDaruf4MHnXOUwg5mn8mVn60zfFA9/R79kBQBGVt2nhC49O5+Z/P1
-         T+GA==
-X-Gm-Message-State: AOAM5312ZNLSt82tzHaYMw8YcNGYLqiHny65wGzcIZYk9iZiZFSIWCHb
-        USF2M58FqGZBV3EH6Pamqb4Q1A==
-X-Google-Smtp-Source: ABdhPJyEAwrGnHc8J9VsjWkA60Q3J0sEYJly49WpAkjmIW6xj6PdM9vaVC+MXdKwGxM6v4qPP9MNcg==
-X-Received: by 2002:aa7:9537:0:b029:2ea:2312:d2cb with SMTP id c23-20020aa795370000b02902ea2312d2cbmr3313322pfp.27.1622649983304;
-        Wed, 02 Jun 2021 09:06:23 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:d737:2805:1403:7c09])
-        by smtp.gmail.com with UTF8SMTPSA id s6sm61385pjr.29.2021.06.02.09.06.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 09:06:22 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH] arm64: dts: qcom: pm6150: Add thermal zone for PMIC on-die temperature
-Date:   Wed,  2 Jun 2021 09:06:14 -0700
-Message-Id: <20210602090525.1.Id4510e9e4baaa3f6c9fdd5cdf4d8606e63c262e3@changeid>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+        id S232624AbhFBQIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:08:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232483AbhFBQIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:08:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF8B46161E;
+        Wed,  2 Jun 2021 16:06:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622650000;
+        bh=EHFr9F6g1VxVXVXM8lxkOJtRT+aYKQvDtKCMXAdXLTI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k5U45MSDgqZSf5TEI+EAS18aXE+2SF3KOdoKaUL8MPSQh+vTd++U7wYPqufBywd3H
+         2kCr52LiNuBwIPQdYhT6Oa0EtJfyWoDzGGHv/pCVpfgjWSEPZqAyg7nZEIfvzp/qeM
+         pP7pHkz1jUoT2tPz7EUW5UY/speA15+/Ea0jQOfwqnThubHE1wgWwMxGg4BcheEf8I
+         U91sE2GCAcDZ3+z2eGRNqnyTl3qse4myOmrdOgdJj1epo3/yjtA5RcyYNUPETAHA/s
+         xEdVQKH90+b08xy54knnw7lhj/VMTgNrCP57W2sIZeQ3LfZrPvWSu3eSCox/S+AUL8
+         g9yMJdm5h5R7Q==
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH] erofs: clean up file headers & footers
+Date:   Thu,  3 Jun 2021 00:06:34 +0800
+Message-Id: <20210602160634.10757-1-xiang@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a thermal zone for the pm6150 on-die temperature. The system should
-try to shut down orderly when the temperature reaches 95degC, otherwise
-the PMIC will power off at 115degC.
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+ - Remove my outdated misleading email address;
+
+ - Get rid of all unnecessary trailing newline by accident.
+
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 ---
+ fs/erofs/Kconfig        | 1 -
+ fs/erofs/compress.h     | 2 --
+ fs/erofs/data.c         | 2 --
+ fs/erofs/decompressor.c | 2 --
+ fs/erofs/dir.c          | 2 --
+ fs/erofs/erofs_fs.h     | 2 --
+ fs/erofs/inode.c        | 2 --
+ fs/erofs/internal.h     | 2 --
+ fs/erofs/namei.c        | 2 --
+ fs/erofs/super.c        | 2 --
+ fs/erofs/tagptr.h       | 3 ---
+ fs/erofs/utils.c        | 2 --
+ fs/erofs/xattr.c        | 2 --
+ fs/erofs/xattr.h        | 1 -
+ fs/erofs/zdata.c        | 2 --
+ fs/erofs/zdata.h        | 1 -
+ fs/erofs/zmap.c         | 2 --
+ fs/erofs/zpvec.h        | 2 --
+ 18 files changed, 34 deletions(-)
 
- arch/arm64/boot/dts/qcom/pm6150.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/pm6150.dtsi b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-index 8ab4f1f78bbf..de7fb129f739 100644
---- a/arch/arm64/boot/dts/qcom/pm6150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-@@ -7,6 +7,30 @@
- #include <dt-bindings/spmi/spmi.h>
- #include <dt-bindings/thermal/thermal.h>
+diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
+index 858b3339f381..906af0c1998c 100644
+--- a/fs/erofs/Kconfig
++++ b/fs/erofs/Kconfig
+@@ -75,4 +75,3 @@ config EROFS_FS_ZIP
+ 	  Enable fixed-sized output compression for EROFS.
  
-+/ {
-+	thermal-zones {
-+		pm6150_thermal: pm6150-thermal {
-+			polling-delay-passive = <100>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&pm6150_temp>;
-+
-+			trips {
-+				pm6150_trip0: trip0 {
-+					temperature = <95000>;
-+					hysteresis = <0>;
-+					type = "passive";
-+				};
-+
-+				pm6150_crit: pm6150-crit {
-+					temperature = <115000>;
-+					hysteresis = <0>;
-+					type = "critical";
-+				};
-+			};
-+		};
-+	};
-+};
-+
- &spmi_bus {
- 	pm6150_lsid0: pmic@0 {
- 		compatible = "qcom,pm6150", "qcom,spmi-pmic";
+ 	  If you don't want to enable compression feature, say N.
+-
+diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+index aea129ddda74..3701c72bacb2 100644
+--- a/fs/erofs/compress.h
++++ b/fs/erofs/compress.h
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2019 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #ifndef __EROFS_FS_COMPRESS_H
+ #define __EROFS_FS_COMPRESS_H
+@@ -85,4 +84,3 @@ int z_erofs_decompress(struct z_erofs_decompress_req *rq,
+ 		       struct list_head *pagepool);
+ 
+ #endif
+-
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index ebac756cb2a3..3787a5fb0a42 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "internal.h"
+ #include <linux/prefetch.h>
+@@ -315,4 +314,3 @@ const struct address_space_operations erofs_raw_access_aops = {
+ 	.readahead = erofs_raw_access_readahead,
+ 	.bmap = erofs_bmap,
+ };
+-
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 88e33addf229..a5bc4b1b7813 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2019 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "compress.h"
+ #include <linux/module.h>
+@@ -407,4 +406,3 @@ int z_erofs_decompress(struct z_erofs_decompress_req *rq,
+ 		return z_erofs_shifted_transform(rq, pagepool);
+ 	return z_erofs_decompress_generic(rq, pagepool);
+ }
+-
+diff --git a/fs/erofs/dir.c b/fs/erofs/dir.c
+index 2776bb832127..eee9b0b31b63 100644
+--- a/fs/erofs/dir.c
++++ b/fs/erofs/dir.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "internal.h"
+ 
+@@ -139,4 +138,3 @@ const struct file_operations erofs_dir_fops = {
+ 	.read		= generic_read_dir,
+ 	.iterate_shared	= erofs_readdir,
+ };
+-
+diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+index 8739d3adf51f..0f8da74570b4 100644
+--- a/fs/erofs/erofs_fs.h
++++ b/fs/erofs/erofs_fs.h
+@@ -4,7 +4,6 @@
+  *
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #ifndef __EROFS_FS_H
+ #define __EROFS_FS_H
+@@ -348,4 +347,3 @@ static inline void erofs_check_ondisk_layout_definitions(void)
+ }
+ 
+ #endif
+-
+diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
+index 7ed2d7391692..aa8a0d770ba3 100644
+--- a/fs/erofs/inode.c
++++ b/fs/erofs/inode.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "xattr.h"
+ 
+@@ -374,4 +373,3 @@ const struct inode_operations erofs_fast_symlink_iops = {
+ 	.listxattr = erofs_listxattr,
+ 	.get_acl = erofs_get_acl,
+ };
+-
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index f92e3e32b9f4..543c2ff97d30 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #ifndef __EROFS_INTERNAL_H
+ #define __EROFS_INTERNAL_H
+@@ -469,4 +468,3 @@ static inline int z_erofs_load_lz4_config(struct super_block *sb,
+ #define EFSCORRUPTED    EUCLEAN         /* Filesystem is corrupted */
+ 
+ #endif	/* __EROFS_INTERNAL_H */
+-
+diff --git a/fs/erofs/namei.c b/fs/erofs/namei.c
+index 3a81e1f7fc06..a8271ce5e13f 100644
+--- a/fs/erofs/namei.c
++++ b/fs/erofs/namei.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "xattr.h"
+ 
+@@ -247,4 +246,3 @@ const struct inode_operations erofs_dir_iops = {
+ 	.listxattr = erofs_listxattr,
+ 	.get_acl = erofs_get_acl,
+ };
+-
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 22991d22af5a..8fc6c04b54f4 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include <linux/module.h>
+ #include <linux/buffer_head.h>
+@@ -752,4 +751,3 @@ module_exit(erofs_module_exit);
+ MODULE_DESCRIPTION("Enhanced ROM File System");
+ MODULE_AUTHOR("Gao Xiang, Chao Yu, Miao Xie, CONSUMER BG, HUAWEI Inc.");
+ MODULE_LICENSE("GPL");
+-
+diff --git a/fs/erofs/tagptr.h b/fs/erofs/tagptr.h
+index a72897c86744..64ceb7270b5c 100644
+--- a/fs/erofs/tagptr.h
++++ b/fs/erofs/tagptr.h
+@@ -1,8 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * A tagged pointer implementation
+- *
+- * Copyright (C) 2018 Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #ifndef __EROFS_FS_TAGPTR_H
+ #define __EROFS_FS_TAGPTR_H
+@@ -107,4 +105,3 @@ tagptr_init(o, cmpxchg(&ptptr->v, o.v, n.v)); })
+ *ptptr; })
+ 
+ #endif	/* __EROFS_FS_TAGPTR_H */
+-
+diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
+index 6758c5b19f7c..bd86067a63f7 100644
+--- a/fs/erofs/utils.c
++++ b/fs/erofs/utils.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "internal.h"
+ #include <linux/pagevec.h>
+@@ -278,4 +277,3 @@ void erofs_exit_shrinker(void)
+ 	unregister_shrinker(&erofs_shrinker_info);
+ }
+ #endif	/* !CONFIG_EROFS_FS_ZIP */
+-
+diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
+index 47314a26767a..8dd54b420a1d 100644
+--- a/fs/erofs/xattr.c
++++ b/fs/erofs/xattr.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include <linux/security.h>
+ #include "xattr.h"
+@@ -709,4 +708,3 @@ struct posix_acl *erofs_get_acl(struct inode *inode, int type)
+ 	return acl;
+ }
+ #endif
+-
+diff --git a/fs/erofs/xattr.h b/fs/erofs/xattr.h
+index 815304bd335f..366dcb400525 100644
+--- a/fs/erofs/xattr.h
++++ b/fs/erofs/xattr.h
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #ifndef __EROFS_XATTR_H
+ #define __EROFS_XATTR_H
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 275fef484f24..cb4d0889eca9 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "zdata.h"
+ #include "compress.h"
+@@ -1469,4 +1468,3 @@ const struct address_space_operations z_erofs_aops = {
+ 	.readpage = z_erofs_readpage,
+ 	.readahead = z_erofs_readahead,
+ };
+-
+diff --git a/fs/erofs/zdata.h b/fs/erofs/zdata.h
+index 942ee69dff6a..3a008f1b9f78 100644
+--- a/fs/erofs/zdata.h
++++ b/fs/erofs/zdata.h
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #ifndef __EROFS_FS_ZDATA_H
+ #define __EROFS_FS_ZDATA_H
+diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+index efaf32596b97..f68aea4baed7 100644
+--- a/fs/erofs/zmap.c
++++ b/fs/erofs/zmap.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2018-2019 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #include "internal.h"
+ #include <asm/unaligned.h>
+@@ -597,4 +596,3 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+ 	DBG_BUGON(err < 0 && err != -ENOMEM);
+ 	return err;
+ }
+-
+diff --git a/fs/erofs/zpvec.h b/fs/erofs/zpvec.h
+index 95a620739e6a..dfd7fe0503bb 100644
+--- a/fs/erofs/zpvec.h
++++ b/fs/erofs/zpvec.h
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
+- * Created by Gao Xiang <gaoxiang25@huawei.com>
+  */
+ #ifndef __EROFS_FS_ZPVEC_H
+ #define __EROFS_FS_ZPVEC_H
+@@ -151,4 +150,3 @@ z_erofs_pagevec_dequeue(struct z_erofs_pagevec_ctor *ctor,
+ 	return tagptr_unfold_ptr(t);
+ }
+ #endif
+-
 -- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
+2.20.1
 
