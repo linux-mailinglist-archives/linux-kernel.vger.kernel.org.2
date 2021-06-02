@@ -2,74 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E26398690
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D5E398694
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhFBKdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232599AbhFBKdC (ORCPT
+        id S232689AbhFBKdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:33:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42776 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232441AbhFBKdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:33:02 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459E2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=xesr2NHy46oTkj5F598BjmgtyfqdebzNtCPOQtN41lI=; b=MOwT8PujIUWB35U7E+cZMFH4T
-        0tquQUglgUSrEQnekmx1Bbgm3tsDglEDWW7ztmf+pyIOZ/sTtYSNV7cSqvUnxgon2oT5quVoVppqK
-        zv4nOuc/JcYB/s1VAjRCCtBAS5MBqtB4ibq6fNF1CFJIsLw4Te9ow/DT4l6fACOF937UCxQv3JTFw
-        8kgWmVbMFAV/EOs6mMtl9tRl9B13miAFLm9L7WsvHw0nXxo1ewghD9Nxk6id8J0UUFaUjnamMnS1o
-        e9UK5oELtrDV15Z80S58RhN1SNHeCBIKQz9mL0Fs8TjVBekd11xD0/tF2CHbgKcrUJUD3lrsIU8Nf
-        CUsc03eCg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44612)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1loO9a-0000zJ-70; Wed, 02 Jun 2021 11:31:14 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1loO9Z-00012a-P0; Wed, 02 Jun 2021 11:31:13 +0100
-Date:   Wed, 2 Jun 2021 11:31:13 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jungseung Lee <js07.lee@gmail.com>
-Subject: Re: [PATCH v2 2/7] ARM: mm: Kill task_struct argument for
- __do_page_fault()
-Message-ID: <20210602103113.GF30436@shell.armlinux.org.uk>
-References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
- <20210602070246.83990-3-wangkefeng.wang@huawei.com>
+        Wed, 2 Jun 2021 06:33:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622629913; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=dDtT9RKDST8Kb7cX/QWo/KyCGcfZAqjbXnH9sp+GoxM=;
+ b=CeGxE4pbH5DU/18fk6JwYY2GaFVJ0p3Iikn/sJCDNxT7LSfX0T9KwU6VQbaHwV1dld58mA7E
+ p2zJCrh5WxYX/hPQftV/UbShcRz1rZy1wTLjQqm0ozdrr3AeHy6vMOimFr1+ukJh/pYQ3Avc
+ a4IHtnVqqGh+7wqWv9hPMyCR/Nk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60b75e17e27c0cc77f24f3a8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 10:31:51
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 83569C43148; Wed,  2 Jun 2021 10:31:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E114DC43144;
+        Wed,  2 Jun 2021 10:31:47 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602070246.83990-3-wangkefeng.wang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 02 Jun 2021 16:01:47 +0530
+From:   skakit@codeaurora.org
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        kgunda@codeaurora.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V3 4/5] dt-bindings: input: pm8941-pwrkey: Convert pm8941
+ power key binding to yaml
+In-Reply-To: <YLcLCmxNOYqj0SN3@google.com>
+References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
+ <1620630064-16354-5-git-send-email-skakit@codeaurora.org>
+ <1620655299.793818.41438.nullmailer@robh.at.kernel.org>
+ <20210510162445.GA230005@robh.at.kernel.org>
+ <c4e286ae6bd621a9d84184d5d014d060@codeaurora.org>
+ <YLcLCmxNOYqj0SN3@google.com>
+Message-ID: <a308dc5984d80709311a095b8435752f@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Jun 02, 2021 at 03:02:41PM +0800, Kefeng Wang wrote:
-> The __do_page_fault() won't use task_struct argument, kill it
-> and also use current->mm directly in do_page_fault().
+On 2021-06-02 10:07, Dmitry Torokhov wrote:
+> On Wed, May 12, 2021 at 10:17:43AM +0530, skakit@codeaurora.org wrote:
+>> On 2021-05-10 21:54, Rob Herring wrote:
+>> > On Mon, May 10, 2021 at 09:01:39AM -0500, Rob Herring wrote:
+>> > > On Mon, 10 May 2021 12:31:03 +0530, satya priya wrote:
+>> > > > Convert qcom pm8941 power key binding from .txt to .yaml format.
+>> > > >
+>> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
+>> > > > ---
+>> > > > Changes in V2:
+>> > > >  - Fixed bot errors, took reference from input.yaml for "linux,code"
+>> > > >  - Added one complete example for powerkey and resin, and referenced it
+>> > > >    in main PON binding.
+>> > > >  - Moved this patch to the end of the series.
+>> > > >
+>> > > > Changes in V3:
+>> > > >  - Moved this patch before PON binding patch.
+>> > > >  - As per Rob's comments, added allOf at the beginning of binding.
+>> > > >    Added maxItems for interrupts.
+>> > > >  - Added 'unevaluatedProperties' instead of 'additionalProperties' as
+>> > > >    we are using allOf.
+>> > > >
+>> > > >  .../bindings/input/qcom,pm8941-pwrkey.txt          | 55 --------------
+>> > > >  .../bindings/input/qcom,pm8941-pwrkey.yaml         | 87 ++++++++++++++++++++++
+>> > > >  2 files changed, 87 insertions(+), 55 deletions(-)
+>> > > >  delete mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt
+>> > > >  create mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
+>> > > >
+>> > >
+>> > > My bot found errors running 'make DT_CHECKER_FLAGS=-m
+>> > > dt_binding_check'
+>> > > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>> > >
+>> > > yamllint warnings/errors:
+>> > >
+>> > > dtschema/dtc warnings/errors:
+>> > > Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.example.dt.yaml:0:0:
+>> > > /example-0/spmi@c440000/pmic@0/pon_hlos@1300: failed to match any
+>> > > schema with compatible: ['qcom,pm8998-pon']
+>> >
+>> > You have the same example in patch 5, so drop the example here. That
+>> > will fix this circular dependency.
+>> 
+>> Earlier I have dropped example from qcom-pon.yaml. Now, I will add the
+>> example there and drop here.
 > 
-> No functional change.
+> It sounds to me you want to combine patches 4 and 5 since they depend 
+> on
+> each other.
 > 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-This looks fine, thanks. Please send it to the patch system, thanks.
+No, the idea was to have one complete example, instead of bits. So, 
+initially I have removed the example part from qcom-pon.yaml and added 
+full example here, but it was causing a circular dependency issue. Rob 
+suggested to move it back to qcom-pon.yaml to fix issue.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I have posted V4 making that change.
+https://lore.kernel.org/patchwork/patch/1425638/
+
+Thanks,
+Satya Priya
+
+> Thanks.
