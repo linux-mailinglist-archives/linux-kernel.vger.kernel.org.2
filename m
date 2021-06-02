@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5093993B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CF93993B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhFBTk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:40:29 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:42845 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBTkZ (ORCPT
+        id S229600AbhFBTnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBTna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:40:25 -0400
-Received: by mail-oi1-f180.google.com with SMTP id v142so3366995oie.9;
-        Wed, 02 Jun 2021 12:38:26 -0700 (PDT)
+        Wed, 2 Jun 2021 15:43:30 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF45C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 12:41:47 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id j184so3612448qkd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 12:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ttaylorr-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VXM916lfkO68AGVYAVVKzngsp7xw6VP9qJatS89TJDQ=;
+        b=yom/k1cYjeziEpSAxyhHbN/6wHxOkLzYl9GkEyX+B7jrWcu5LhmKc0tkPmZG2fFBkk
+         /Zrq0Y6+DL6WXsZb8pLrLUaPdKlE6MNUZ+u4ROLUtjJdov10nx5BpDeq/lLkXkfJketm
+         vgU64ahIht8WmizFhoYxcqsFxXbXmCplgfIjYgpQGGwGxMEAmG0OVZ/GCqvKAT1ayk4+
+         CwcgdkRp7p8WdvBdP5pHkJxDXxcSO3unb9ae+55RBucCNm6jaeCT8/ixJ3xqdksSqYqs
+         E2UVroA8D6m/2cJHRAWMrF5//1l2n7ZRntnkhJ4I8weaFqTrLvlEf+peS879BZ63za2h
+         p02w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=fsB+ST/iazXJkQ9lE/pAHAOafyvDLSMdQ8YyC9gyU5Q=;
-        b=mG61549mGPZSwNRFw26sX7BHV2ubMcQAZzWjtmM2Y3TYe59QXuONZQH0+qREzrUiNf
-         48KSj50TSa/PaICXPEJsjjRFepURlpCg2KbIXaiT6PzdWhv3CYmGvPDWUOrOmkaEloNL
-         +HpuFE/Ga2ssC2autmm5SUM8hDqMl7RHE7uwi7IKuePic2Oh86t3H8WsLryz4G8wSKj5
-         8PhukFj9kGCIz2XpwPCytWzSCT9s6hHh8zgrPhECVtiXMpqqNEUDfFsuZoUrLKWcnSVN
-         pSOQ7u+e4JVC767x+9UCHYlZ/AusSJfM9c6kuAyfsmIC9rUQ25OqRPDkwdzFeHqUQ41R
-         uk+Q==
-X-Gm-Message-State: AOAM530SlxYqaeczdM3wtzeZA5mKc2DgGNVJL14np/VrHuWX7M6N1wIf
-        3GFy+DKnzv4odnjjtisIhA==
-X-Google-Smtp-Source: ABdhPJxRxVf88PEQSy92kFJ8Cj0asYkkLIWfeFcqxMjcnpGu6ebwcLWdTsIVx6A51WKmuc630b+ZHw==
-X-Received: by 2002:a05:6808:d47:: with SMTP id w7mr22953199oik.104.1622662706270;
-        Wed, 02 Jun 2021 12:38:26 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l19sm192385otk.65.2021.06.02.12.38.25
+        bh=VXM916lfkO68AGVYAVVKzngsp7xw6VP9qJatS89TJDQ=;
+        b=JNP5fJnBu0SFe6J5GuzV9qWmzfdDvxWjISfGa7jDe9QvIg6Fsnb8yDI0bFFn8BFgi2
+         0ANbP8z9PRl7kd42tst8xbnSPoA5snMdxeEsGQMJSRcJRVdh9uLrfBzLis8jcHDxcP+R
+         ktGRSJYbTurMx3V13o6wtQbsPivAIqIsrwp2c66Wy513vLXTuvvwTpP19AJzZZrAwrNk
+         ASG2GLTqlKF5cPVa9NHa7IWopRS8ZBO54LQzjjVmYxGt91XP5exgQVbCMjz1ye5aiwm+
+         scix7zM+FcoqtW+buyc0ZFR4rfb13sY5MjdW/cnCdm+XOu8AFVKro+1eJ2+3+Nor4SC7
+         enKg==
+X-Gm-Message-State: AOAM531qFwaI7qeQeQwsmbD2JGDFi8v2AzORrWta6Qe1VQl/a2WuNdUG
+        +0FL1JRgBV2uU33KuySxJu2kHQXBmEJbND/6
+X-Google-Smtp-Source: ABdhPJw4yhYvmaBRL8dLeKlsAsWvJQFOIDcQgG4nDLcddgPSmgNV9L3kogYtiNmvHaXfaavTMHyAOg==
+X-Received: by 2002:a05:620a:2a01:: with SMTP id o1mr4499975qkp.137.1622662906284;
+        Wed, 02 Jun 2021 12:41:46 -0700 (PDT)
+Received: from localhost ([2605:9480:22e:ff10:9178:81cf:a7f0:8e5d])
+        by smtp.gmail.com with ESMTPSA id f13sm475634qkk.107.2021.06.02.12.41.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 12:38:25 -0700 (PDT)
-Received: (nullmailer pid 3850628 invoked by uid 1000);
-        Wed, 02 Jun 2021 19:38:24 -0000
-Date:   Wed, 2 Jun 2021 14:38:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Odelu Kukatla <okukatla@codeaurora.org>
-Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        evgreen@google.com, Andy Gross <agross@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [V3 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on
- SC7280
-Message-ID: <20210602193824.GA3848885@robh.at.kernel.org>
-References: <1622646894-7833-1-git-send-email-okukatla@codeaurora.org>
- <1622646894-7833-2-git-send-email-okukatla@codeaurora.org>
+        Wed, 02 Jun 2021 12:41:45 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 15:41:44 -0400
+From:   Taylor Blau <me@ttaylorr.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        git@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: git feature request: git blame --ignore-cleanup/--ignore-trivial
+Message-ID: <YLfe+HXl4hkzs44b@nand.local>
+References: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+ <YLej6F24Emm7SX35@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1622646894-7833-2-git-send-email-okukatla@codeaurora.org>
+In-Reply-To: <YLej6F24Emm7SX35@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 08:44:51PM +0530, Odelu Kukatla wrote:
-> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
-> SoCs.
-> 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
-> ---
->  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  4 +++-
->  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 +++++++++-
->  2 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
-> index d6a95c3..61e9a35 100644
-> --- a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
-> @@ -18,12 +18,14 @@ properties:
->    compatible:
->      enum:
->        - qcom,sc7180-osm-l3
-> +      - qcom,sc7280-epss-l3
->        - qcom,sdm845-osm-l3
->        - qcom,sm8150-osm-l3
->        - qcom,sm8250-epss-l3
->  
->    reg:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 4
+On Wed, Jun 02, 2021 at 03:29:44PM +0000, Al Viro wrote:
+> > Any maybe the patterns associated to "cleanup" and "trivial" commits
+> > should be something that can be configured through a git config
+> > file.
+>
+> Just an observation: quite a few subtle bugs arise from mistakes in
+> what should've been a trivial cleanup.  Hell, I've seen bugs coming
+> from rebase of provably no-op patches - with commit message unchanged.
+> So IME this is counterproductive...
 
-If there is more than 1 entry, you have to define what each entry is.
+Yes, I find excluding revisions from 'git blame' to be rarely useful,
+exactly for this reason.
 
->  
->    clocks:
->      items:
-> diff --git a/include/dt-bindings/interconnect/qcom,osm-l3.h b/include/dt-bindings/interconnect/qcom,osm-l3.h
-> index 61ef649..99534a5 100644
-> --- a/include/dt-bindings/interconnect/qcom,osm-l3.h
-> +++ b/include/dt-bindings/interconnect/qcom,osm-l3.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  /*
-> - * Copyright (C) 2019 The Linux Foundation. All rights reserved.
-> + * Copyright (C) 2019, 2021 The Linux Foundation. All rights reserved.
->   */
->  
->  #ifndef __DT_BINDINGS_INTERCONNECT_QCOM_OSM_L3_H
-> @@ -11,5 +11,13 @@
->  
->  #define MASTER_EPSS_L3_APPS	0
->  #define SLAVE_EPSS_L3_SHARED	1
-> +#define SLAVE_EPSS_L3_CPU0	2
-> +#define SLAVE_EPSS_L3_CPU1	3
-> +#define SLAVE_EPSS_L3_CPU2	4
-> +#define SLAVE_EPSS_L3_CPU3	5
-> +#define SLAVE_EPSS_L3_CPU4	6
-> +#define SLAVE_EPSS_L3_CPU5	7
-> +#define SLAVE_EPSS_L3_CPU6	8
-> +#define SLAVE_EPSS_L3_CPU7	9
->  
->  #endif
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+You could probably use the '--ignore-revs-file' option of 'git blame' to
+exclude commits you consider trivial ahead of time. If you had an
+'Is-trivial' trailer, I would probably do something like:
+
+  $ git log --format='%H %(trailers:key=Is-trivial)' |
+      grep "Is-trivial: true" | cut -d" " -f1 >exclude
+  $ git blame --ignore-revs-file exclude ...
+
+Thanks,
+Taylor
