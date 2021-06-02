@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2620C398AD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0F3398AD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhFBNho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:37:44 -0400
-Received: from mail-yb1-f182.google.com ([209.85.219.182]:39583 "EHLO
-        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhFBNhn (ORCPT
+        id S229852AbhFBNiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:38:11 -0400
+Received: from mail-yb1-f170.google.com ([209.85.219.170]:45003 "EHLO
+        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhFBNiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:37:43 -0400
-Received: by mail-yb1-f182.google.com with SMTP id n133so3854023ybf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:36:00 -0700 (PDT)
+        Wed, 2 Jun 2021 09:38:09 -0400
+Received: by mail-yb1-f170.google.com with SMTP id p184so3816917yba.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:36:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7y54rKSNGdkrAUoqhpn2Fjw3daxbe/zgPvjMo8fDxkE=;
-        b=AODZrLfxfp66ey27tmS+muPaAjACfDUTxc4po/MAna8MQA+SUqwFY+DzYotk5VQmFz
-         A3uFbRcWP9hFFVGGMpKUZKnsPwRbPAuDjUX83+Tjm3eWOBxXAeIaQqR9dM0/caOKFXsr
-         7BrGLNaqcoajWLB8cpZhAoZKJGS4dKkgWhHXMO0TDTMlQ3wSdtJjEHJlXnqv/+mDcmZ9
-         Fn8DwMbbCRh3s33NwVhPfYVn30y3iIVD/Kq/bC+McVp3V98WqlYrnVXe00J0I0pdTAv/
-         Xs4Za4E8yUTxeN+/N4vOcdSzHzY4r52v1FSk+JmRwmtAakNERCGEAvmt6ga6QlvwuCey
-         YOlQ==
+        bh=4Ynq65zJgZaJ1DDQH8/nTM0vWUXwNaeZbZ+ylCWa8X4=;
+        b=bHQKf0Bh5u0VD3pcErRT5BFCXmr1vhAfyd/N7RgSFfHsIDSOW1+NhT//pqINBbEvFf
+         pZ59VaqBdBv/tHRYe4h8KroNvFmeugk/ZZ4/8nlfezVjERWRKysrr3KF5cYhgu/uePjT
+         6XM2SnqrTbF79YM2u+1sU9U+IUbzjxu1xZbdjFkYJv3bCkPRNQDMBs3V4aeaDYlQQTlT
+         OYoSMOHUd4BKnZC3b3JxZ9shC4I9qy5OgEVLLlYscDqYXX1gJhME2vcyYe8HRhsEVzGT
+         w/nhYuKrW5K8iPtjFdayZyjGLE10hFAl/rKlDM0b4FD73/eg+buvVvy/5rECrt1N80Dp
+         +h+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7y54rKSNGdkrAUoqhpn2Fjw3daxbe/zgPvjMo8fDxkE=;
-        b=hWwLQA3HODJ009I/Z1nl9mGUcMChpG0S18ixwI3O5LIngOYdFs/AKCxGuDekV+0i9k
-         L6S3RdfCGJRNXc/brbGQYMGYZdt0xfQ+zAqT6ePppic0d+Q9vi4cnCFLOA4s3C5+su7D
-         mglfBaWUS1wh+InBKWkkF6ztVg3oILXWzAzlv1UTQ+zm5CCqIwd//jRuKXWskMi0Kn/I
-         DUJy3DhebgQJNa+k2DSu2ZtsO0T2WVPso//PXSZ6GgQdf6FT1Ndyx+CeWTaXoQiIANq3
-         /Ok8X4P79TGZWy5Z7AchJR8okSZ/yRo8R3bBRbB6gbZIGiWQvCrUQOFtt5+iXpOKmMRM
-         qrIQ==
-X-Gm-Message-State: AOAM5336H1RAQny92QMGdbBzLS1asheqvA2loitJLvuV5CEyBsIy0rOZ
-        UIkyLQXLVyhXi0Q5uAUHhG1CiFTQvU0U5qmzqtZBlQ==
-X-Google-Smtp-Source: ABdhPJwkyaLtGdIx4nMxydwWEO4QUlZ0SxgiPZQ9ls0Flty1oFgxtpYosn6RTHF4g6tKQlJ+IcVK7yH6YgU5Oe3D8R0=
-X-Received: by 2002:a25:1b0b:: with SMTP id b11mr48646766ybb.302.1622640900244;
- Wed, 02 Jun 2021 06:35:00 -0700 (PDT)
+        bh=4Ynq65zJgZaJ1DDQH8/nTM0vWUXwNaeZbZ+ylCWa8X4=;
+        b=sHNIQLKHJ8fCe/vuTr3/wkzpsakYUp3asS+Z7O3q+4j2r16XLVkoiY+Hb7cEp1clZr
+         3dIH6gwLswcOS7kVY5dYUg58mI7ffnvkgZmI68o31pHnjKT+gSO4WEb5OOZ3WNtz48rn
+         zwKJNUET1RF7ynXdNl4PTWFUUPPFaMD1D8ZgwXhmgrQxqhd9ygL3Q3pxidfn/6aXeNDL
+         mbdSYLW72qTUpXel7Dqo0syq9Ucxyd4AvacfuCFLWKOnTBtRuINwUeQK0eeNyWHZoW4G
+         /9gz1CzMPfc3+kmRNNOCPJvCpSc2m7t2NoTSFsK8iwCDj4VqQKEIBcexIayzQOnhHbWK
+         AZjw==
+X-Gm-Message-State: AOAM532tFi/KFElNtoyEUIbSXAMMOpdY+uoC0ohT2y7WdN/pFhLq/813
+        +apQv8E83uUOniC+dl7UiEE4diY9px4Xm2tIT30PkYUoqrP5bw==
+X-Google-Smtp-Source: ABdhPJyAhzTHc9jQwL9FaayiMoEIa880PB9NTfpy+vq5aOjqITc5fFPNQ2xLnDexqmBArWXs3eakTJ9F5iYrDyksFKU=
+X-Received: by 2002:a25:8804:: with SMTP id c4mr47285623ybl.469.1622640912641;
+ Wed, 02 Jun 2021 06:35:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210601162128.35663-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210601162128.35663-1-andriy.shevchenko@linux.intel.com>
+References: <20210601162128.35663-1-andriy.shevchenko@linux.intel.com> <20210601162128.35663-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210601162128.35663-2-andriy.shevchenko@linux.intel.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 2 Jun 2021 15:34:49 +0200
-Message-ID: <CAMpxmJUogbSKEnm=c_s=yYwgCiLD6g56_k30jg84J+=v-=47yw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] gpio: dwapb: Drop redundant check in dwapb_irq_set_type()
+Date:   Wed, 2 Jun 2021 15:35:02 +0200
+Message-ID: <CAMpxmJWHH7-40Gc5RCyRMq5v-_Ew8-B_CgrJmZQgtq2N6F5JEA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] gpio: dwapb: Switch to use fwnode_irq_get()
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         linux-gpio <linux-gpio@vger.kernel.org>,
@@ -63,33 +63,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Tue, Jun 1, 2021 at 6:21 PM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
 >
-> For more than 15 years we may not get into ->irq_set_type()
-> without any meaningful type provided.
->
-> Drop redundant check in dwapb_irq_set_type().
->
-> See the commit e76de9f8eb67 ("[PATCH] genirq: add SA_TRIGGER support")
-> out of curiosity.
+> We have open coded variant of fwnode_irq_get() in dwapb_get_irq().
+> Replace it with a simple call.
 >
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/gpio/gpio-dwapb.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  drivers/gpio/gpio-dwapb.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 >
 > diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index d3233cc4b76b..939701c1465e 100644
+> index 939701c1465e..7d61f5821e32 100644
 > --- a/drivers/gpio/gpio-dwapb.c
 > +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -297,9 +297,6 @@ static int dwapb_irq_set_type(struct irq_data *d, u32 type)
->         irq_hw_number_t bit = irqd_to_hwirq(d);
->         unsigned long level, polarity, flags;
->
-> -       if (type & ~IRQ_TYPE_SENSE_MASK)
-> -               return -EINVAL;
+> @@ -528,17 +528,13 @@ static int dwapb_gpio_add_port(struct dwapb_gpio *gpio,
+>  static void dwapb_get_irq(struct device *dev, struct fwnode_handle *fwnode,
+>                           struct dwapb_port_property *pp)
+>  {
+> -       struct device_node *np = NULL;
+> -       int irq = -ENXIO, j;
 > -
->         spin_lock_irqsave(&gc->bgpio_lock, flags);
->         level = dwapb_read(gpio, GPIO_INTTYPE_LEVEL);
->         polarity = dwapb_read(gpio, GPIO_INT_POLARITY);
+> -       if (fwnode_property_read_bool(fwnode, "interrupt-controller"))
+> -               np = to_of_node(fwnode);
+> +       int irq, j;
+>
+>         for (j = 0; j < pp->ngpio; j++) {
+> -               if (np)
+> -                       irq = of_irq_get(np, j);
+> -               else if (has_acpi_companion(dev))
+> +               if (has_acpi_companion(dev))
+>                         irq = platform_get_irq_optional(to_platform_device(dev), j);
+> +               else
+> +                       irq = fwnode_irq_get(fwnode, j);
+>                 if (irq > 0)
+>                         pp->irq[j] = irq;
+>         }
 > --
 > 2.30.2
 >
