@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11843985CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12905398650
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhFBKCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
+        id S231990AbhFBKVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhFBKCg (ORCPT
+        with ESMTP id S232541AbhFBKUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:02:36 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80889C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:00:52 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id d13so275643uav.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kYQ8JYBEy7lvKWQDIggyE7Q8g8ZfvSMvIgvFNwg3PWA=;
-        b=E7Y13F9E1P6m6uPrdeFtPtTyYgp71GUHcDG9b9SG8pVTvWIHYbMnx/rfh4IhUwekXb
-         kgTN/r9RzgHk0eTXxUfuovQCmUIyHmpwSR5akNx2dGwSuRMgIkLlQ9PRoG2X7j7Tr/87
-         U/oT823NKr5UYBcq/D8JtV4dVXpXHAPfb1FWslbbRW5msN9zrWv8K7ELqb6ILqKpN2s4
-         ViMW9C02GJ53Ojoc4SlzfIMuldlbTQ7gqqUmeEnyScTop1AJMBRpdAoY5QBn0OqjyQp5
-         9sKPPbvXSrlKMxZvV/V/13nUFxAVVYBxNvLW3+gTus1I4ECirhL2p2o/2tM2DLSKhkMR
-         Rbew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kYQ8JYBEy7lvKWQDIggyE7Q8g8ZfvSMvIgvFNwg3PWA=;
-        b=PlboN0ZuDXz+5XCJ0J2/pKqkXipkcPgVdAtN31N2MFay02kMGWYe6I8AyO2F6C8Sfi
-         8A2duRAChEHxYunLi02WCOno1Vi8We8RyQ0pom3VSjjtQTv8xtv74NvTeTQVLdz85KC/
-         Maqfh4iCzLfUQx2ztAdY8YrX7MFpBYw8eJ68j7miNsH+W0WAegzUSudms8MY/gm2bIkT
-         y2X35Iz0hiJqzpTb4sy+U0sXEpjz8vcnF4m6evnSp23NgIHgj5UZIDAqzCLochQl3iTc
-         JMBa6P78NgQ+K7wkl+T48Ovj+2ojbjtgY7rX2YaFNjxm/G7G8VIkSOptaajypdNGdPaG
-         yHXg==
-X-Gm-Message-State: AOAM533pq4PV+FkgbGfa9gUH8G0niSNCiS28UwyK3RexmWFCqqFRM0Np
-        x/jsFaP4IzyomOFH74mJ9IWERa3zB9SzxvBIQitCSg==
-X-Google-Smtp-Source: ABdhPJz+fWUP1yrioI1DOXyLCqHIl9Xjim3WV7PVlH8e8dZ1YoqCIkdxvp3qv5nY5bNL/sVkprcAt/yj67IgR33BiIA=
-X-Received: by 2002:a9f:35b3:: with SMTP id t48mr20019416uad.129.1622628051636;
- Wed, 02 Jun 2021 03:00:51 -0700 (PDT)
+        Wed, 2 Jun 2021 06:20:04 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF86C061352
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:17:54 -0700 (PDT)
+Message-Id: <20210602095543.149814064@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622629071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hTZs+5AhR4bwy/7d1vxzkJY4gBmS4CGWka4Ym2pOIc4=;
+        b=ASk+kjB/i+0e/UQbuf2P5AQuAo7cd3xWOWr9M+c1zxnov42wfil8ShDoQQqdZuf6o7rIZo
+        dYVW7mAcVBb+I83TERb3FAwn9WNcIleul5ghWo3hUcuFW+eeqzYVRLvaRjARVB45wSSMZ3
+        PHWyBFPsWuZHij4T5fY4NqlHqljkqYzM58kyxRMAyddWu3qQZfUXKQsGntdYMq8HF8ofe7
+        dNvx81i0rwI4NerL37IpghSu/36VVhKzLPnqVySmjNpagAFeAwZFEFCg2dLFhRXPtbyDj2
+        LRwsaSyFJvJwBujWqyupHsRJLJxxyiprr1eGNamIr0e9o3eBSf6cen+sijukaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622629071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hTZs+5AhR4bwy/7d1vxzkJY4gBmS4CGWka4Ym2pOIc4=;
+        b=8+la6rb8tyVwa9BXGEOyVI7a97aZiACF4RpfzuuU9ryldcJKWEXhW3JLBHBFSioUinCRqu
+        tdhseqwF2qAxupBQ==
+Date:   Wed, 02 Jun 2021 11:55:43 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [patch 0/8] x86/fpu: Mop up XSAVES and related damage
 MIME-Version: 1.0
-References: <20210601231003.9845-1-digetx@gmail.com> <YLdK6jp0Ybtzdstv@orome.fritz.box>
-In-Reply-To: <YLdK6jp0Ybtzdstv@orome.fritz.box>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 2 Jun 2021 12:00:15 +0200
-Message-ID: <CAPDyKFogXwT_C+hP8mW4EdoXnsiXCuF2m3cjURO6ijuUsV0sXQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] NVIDIA Tegra core power domain follow up
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 at 11:08, Thierry Reding <thierry.reding@gmail.com> wrote:
->
-> On Wed, Jun 02, 2021 at 02:10:01AM +0300, Dmitry Osipenko wrote:
-> > Remove the lockdep_set_class(), which Ulf Hansson asked for. And
-> > prevent core domain syncing if domain node is missing in device-tree,
-> > which I accidentally missed to add after squashing the standalone
-> > domain driver into the PMC driver.
-> >
-> > Dmitry Osipenko (2):
-> >   soc/tegra: pmc: Don't sync core domain if it's missing in device-tree
-> >   soc/tegra: pmc: Remove usage of lockdep_set_class()
-> >
-> >  drivers/soc/tegra/pmc.c | 21 +++++++++++----------
-> >  1 file changed, 11 insertions(+), 10 deletions(-)
->
-> I've squashed these into the corresponding patches of you v6 series and
-> added Ulf's reviewed-by to them.
->
-> Ulf, let me know if I misinterpreted the discussion and your reviewed-by
-> didn't extend to the original patches.
-
-Nope, looks good to me! Thanks!
-
-Kind regards
-Uffe
+c3lzemJvdCByZXBvcnRlZCBhIHdhcm5vbiBmb3IgWFJTVE9SIHJhaXNpbmcgI0dQOgoKIGh0dHBz
+Oi8vbG9yZS5rZXJuZWwub3JnL3IvMDAwMDAwMDAwMDAwNGM0NTM5MDVjMzBmODMzNEBnb29nbGUu
+Y29tCgp3aXRoIGEgc3l6Y2FsbGVyIHJlcHJvZHVjZXIgYW5kIGEgY29uY2x1c2l2ZSBiaXNlY3Qg
+cmVzdWx0LgoKSXQgdG9vayBhIHdoaWxlIHRvIGRlc3RpbGwgYSBzaW1wbGUgQyByZXByb2R1Y2Vy
+IG91dCBvZiBpdCB3aGljaCBhbGxvd2VkIHRvCnBpbiBwb2ludCB0aGUgcm9vdCBjYXVzZTogVGhl
+IHJlY2VudCBhZGRpdGlvbiBvZiBzdXBlcnZpc29yIFhTVEFURXMgYnJva2UKdGhlIHNpZ25hbCBy
+ZXN0b3JlIHBhdGggZm9yIHRoZSBjYXNlIHdoZXJlIHRoZSBzaWduYWwgaGFuZGxlciB3cmVja2Fn
+ZWQgdGhlClhTVEFURSBvbiBzdGFjayBiZWNhdXNlIGl0IGRvZXMgbm90IHNhbml0aXplIHRoZSBY
+U1RBVEUgaGVhZGVyIHdoaWNoIGNhdXNlcwphIHN1YnNlcXVlbnQgWFJTVE9SIHRvIGZhaWwgYW5k
+ICNHUC4KClRoZSBmb2xsb3dpbmcgc2VyaWVzIGFkZHJlc3NlcyB0aGUgcHJvYmxlbSBhbmQgZml4
+ZXMgcmVsYXRlZCBpc3N1ZXMgd2hpY2gKd2VyZSBmb3VuZCB3aGlsZSBpbnNwZWN0aW5nIHRoZSBy
+ZWxhdGVkIGNoYW5nZXMuCgpUaGFua3MgdG8gQW5keSBhbmQgRGF2ZSBmb3Igd29ya2luZyBvbiB0
+aGlzIHdpdGggbWUhCgpUaGFua3MsCgoJdGdseAotLS0KIGFyY2gveDg2L2luY2x1ZGUvYXNtL2Zw
+dS94c3RhdGUuaCAgICAgICAgICAgICAgICAgICAgIHwgICAgNCAKIGFyY2gveDg2L2tlcm5lbC9m
+cHUvY29yZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2MiArKysrKystLS0KIGFy
+Y2gveDg2L2tlcm5lbC9mcHUvcmVnc2V0LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA0
+MyArKy0tLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUvc2lnbmFsLmMgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgICAzMCArKystCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3hzdGF0ZS5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgOTUgKysrKystLS0tLS0tLS0tCiBiL3Rvb2xzL3Rlc3Rpbmcv
+c2VsZnRlc3RzL3g4Ni9jb3JydXB0X3hzdGF0ZV9oZWFkZXIuYyB8ICAxMTQgKysrKysrKysrKysr
+KysrKysrCiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy94ODYvTWFrZWZpbGUgICAgICAgICAgICAg
+ICAgICB8ICAgIDMgCiA3IGZpbGVzIGNoYW5nZWQsIDIzNCBpbnNlcnRpb25zKCspLCAxMTcgZGVs
+ZXRpb25zKC0pCgoKCg==
