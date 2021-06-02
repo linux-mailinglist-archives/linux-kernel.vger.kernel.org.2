@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077DE397F0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68493397F12
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhFBC2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:28:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
+        id S230350AbhFBCaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:30:13 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40078 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229975AbhFBC2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:28:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DB0561351;
-        Wed,  2 Jun 2021 02:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622600792;
-        bh=P+ozhEM6eflHK0MwGKnJouOmnGB98sXAB7sz7QooHj8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=izUDmZ0yW5RXom1irJcMa7khmSvK/tp6eQKZ3OE4277UMikg5+PhSgJxQfjmVlbV/
-         YIi+X35/pT+n0Nl3KJYdAjzSSV6lUKKwV68DUoJp/RrgQa1cAMfYyuEaAfhv/2m1eC
-         18K/W9I4IMnVV5TunslBdHnPtBzhKaNANy8YZwXk=
-Date:   Tue, 1 Jun 2021 19:26:30 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     HAGIO =?UTF-8?B?S0FaVUhJVE8=?= (=?UTF-8?B?6JCp5bC+44CA5LiA5LuB?=) 
-        <k-hagio-ab@nec.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Dong Aisheng <dongas86@gmail.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>
-Subject: Re: [PATCH V2 4/6] mm: rename the global section array to
- mem_sections
-Message-Id: <20210601192630.884b1f51b81f60f5f0823694@linux-foundation.org>
-In-Reply-To: <TYYPR01MB67775E2EC60DEE1195A49577DD3D9@TYYPR01MB6777.jpnprd01.prod.outlook.com>
-References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
-        <20210531091908.1738465-5-aisheng.dong@nxp.com>
-        <42617372-c846-85fe-4739-abbe55eca8f6@redhat.com>
-        <CAA+hA=Ss4j8qeoe7RtDJ14nuqy+TpOk2qi-A9+YN6=2y8c_CGg@mail.gmail.com>
-        <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
-        <20210601165246.99d7374d07661b7e91e49cb6@linux-foundation.org>
-        <TYYPR01MB67775E2EC60DEE1195A49577DD3D9@TYYPR01MB6777.jpnprd01.prod.outlook.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S229828AbhFBCaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:30:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=4JoMGfga1VbTByDb+krUTuutqYAcuOdoQ70Y27jTzf8=; b=fJXgFc/GRD6OG68GN6GC7fmcNJ
+        sCxWFlYEPPu4yPMgLkS+5YrzUpNY5fCDZ0fhqbHEIo9tjUD3owCdEJNgisENn7quOI6GK7UPcesrt
+        1I8Qv271k43/RVjJiIT/byYplg7l0n5DINSoQjQynWPfsSi4PXfnM+ZMOGjUgGwdSuSs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1loGcD-007NlP-ME; Wed, 02 Jun 2021 04:28:17 +0200
+Date:   Wed, 2 Jun 2021 04:28:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/1] net: stmmac: enable platform specific
+ safety features
+Message-ID: <YLbswWVdgGgAKpwo@lunn.ch>
+References: <20210601135235.1058841-1-vee.khee.wong@linux.intel.com>
+ <YLawrTO4pkgc6tnb@lunn.ch>
+ <20210601225332.GA28151@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601225332.GA28151@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 01:11:07 +0000 HAGIO KAZUHITO(萩尾　一仁) <k-hagio-ab@nec.com> wrote:
-
-> -----Original Message-----
-> > On Tue, 1 Jun 2021 10:40:09 +0200 David Hildenbrand <david@redhat.com> wrote:
+On Wed, Jun 02, 2021 at 06:53:32AM +0800, Wong Vee Khee wrote:
+> On Wed, Jun 02, 2021 at 12:11:57AM +0200, Andrew Lunn wrote:
+> > On Tue, Jun 01, 2021 at 09:52:35PM +0800, Wong Vee Khee wrote:
+> > > On Intel platforms, not all safety features are enabled on the hardware.
 > > 
-> > > > Thanks, i explained the reason during my last reply.
-> > > > Andrew has already picked this patch to -mm tree.
-> > >
-> > > Just because it's in Andrews tree doesn't mean it will end up upstream. ;)
-> > >
-> > > Anyhow, no really strong opinion, it's simply unnecessary code churn
-> > > that makes bisecting harder without real value IMHO.
-> > 
-> > I think it's a good change - mem_sections refers to multiple instances
-> > of a mem_section.  Churn is a pain, but that's the price we pay for more
-> > readable code.  And for having screwed it up originally ;)
+> > Is it possible to read a register is determine what safety features
+> > have been synthesised?
+> >
 > 
-> >From a makedumpfile/crash-utility viewpoint, I don't deny kernel improvement
-> and probably the change will not be hard for them to support, but I'd like
-> you to remember that the tool users will need to update them for the change.
-> 
-> The situation where we need to update the tools for new kernels is usual, but
-> there are not many cases that they cannot even start session, and this change
-> will cause it.  Personally I wonder the change is worth forcing users to update
-> them.
+> No. The value of these registers after reset are 0x0. We need to set it
+> manually.
 
-Didn't know that.  I guess I'll drop it then.
+That is not what i asked. Sometimes with IP you synthesise from VHDL
+or Verilog, there are registers which describe which features you have
+actually enabled/disabled in the synthesis. Maybe the stmmac has such
+a register describing which safety features are actually available in
+your specific version of the IP? You could go ask your ASIC engineers.
+Or maybe Synopsys can say that there are no such registers.
 
-We could do an assembly-level alias I assume..
+     Andrew
