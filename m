@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A764F3992AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7553992AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhFBSiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:38:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51487 "EHLO
+        id S229692AbhFBSjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:39:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30644 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229468AbhFBSiu (ORCPT
+        by vger.kernel.org with ESMTP id S229468AbhFBSjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:38:50 -0400
+        Wed, 2 Jun 2021 14:39:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622659026;
+        s=mimecast20190719; t=1622659084;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ktmy9OPHs7EKpTut0wBFjcJ9rL9I98RB0SACOwd6rGU=;
-        b=EgsPupvcMmDxAcyrhVH+Da4b8fT9F7okFryY/fEhMClhB4UN01q4CVKIeDMkc5u8m6VZcQ
-        q++Z3r7Ag6hDRL3t/NOaXEYlEuTi0w+k5P6ocOQJVbBpr8jHdDQqWVaSivuKrQ6HlBolwL
-        lPB6X8LfaSZ6AREl0cm5MdYct9EbfW0=
+        bh=mdvTs07LMgFf85cjcKT6lBxwefQ32Na7wsSXKwDVKtc=;
+        b=NebevsHka/3IBxkYW3/rWf6Lk+NIqjDXoCAgfRKY/ljQc8d9RuTtVB8dfttSVmTK4Xfpeh
+        ALK4yYP8ssUyxtBqCXkljWpKg4jPo8ODvIRUSOzPs9OfOhU89j9VN0KydSrjMz0r8x8H9P
+        mEBBqTR4PzsOaJnI0RcPB7lypFlLPfQ=
 Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
  [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-UsnF-M4LO9aaJprBQPlqGg-1; Wed, 02 Jun 2021 14:37:04 -0400
-X-MC-Unique: UsnF-M4LO9aaJprBQPlqGg-1
-Received: by mail-wm1-f72.google.com with SMTP id i13-20020a05600c354db029019c437c377eso253554wmq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 11:37:04 -0700 (PDT)
+ us-mta-489--9kw2sCiPuu4QNfddw-JBA-1; Wed, 02 Jun 2021 14:38:03 -0400
+X-MC-Unique: -9kw2sCiPuu4QNfddw-JBA-1
+Received: by mail-wm1-f72.google.com with SMTP id h18-20020a05600c3512b029018434eb1bd8so2561895wmq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 11:38:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=ktmy9OPHs7EKpTut0wBFjcJ9rL9I98RB0SACOwd6rGU=;
-        b=YdQB6+qhFduWr/EAiSi6rgRcyCQuEb+gIval4xrpFF55rzDRM2cVw8MNm2mn2H/Pi0
-         ts1In2DGECqQvmGnvdctixww9BJOiA03BNLMuHjkGvAtw9uQajUYhZZylJX5iQx+99zR
-         N7lWxh/8RhRZYR/+tlXHzHFYWA/LMXLTvqmZ8TvcppQ9hMPLEnL1v8LxXbpa1SmbyHFa
-         PILr9xP/JjmPOW3xLcOKpt8dC37Ijn4MA41GUtHcRoLy9zVdWRMcGqn5f3+ZsQIZDMoz
-         kcB/S+j2pFGsXAOyEc7s58hcMFN8Fe4fwQgyulHb1QXq18njxSLKWUWD0VyL7svhsM5t
-         UEZQ==
-X-Gm-Message-State: AOAM533gWN+C9XD9dBDaTgFsBf2YArApiYos8+qx2diIWzh6JZt+iZZe
-        bjH8fcFgQACKrZQBsBN+pVrXROuCf+vS3MlPDSa3DzHc+F4XjRQ23ePovTu43LRkgue5KpsCi4j
-        TXRm2J6aqhprQXPqCcN7RC8XCQ1CRsVcbZiwhyMK8+iu9zYL69yNMRRsjKxIcGc3YULWOu0iO
-X-Received: by 2002:a5d:638b:: with SMTP id p11mr34423235wru.90.1622659023519;
-        Wed, 02 Jun 2021 11:37:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBuZOl6CTO6xLJEMDKsbIrEohcw7mAJ1hiJmAPcx8wm+2snvnOfx9z+oQgLtu61Q7rte0ThA==
-X-Received: by 2002:a5d:638b:: with SMTP id p11mr34423216wru.90.1622659023253;
-        Wed, 02 Jun 2021 11:37:03 -0700 (PDT)
+        bh=mdvTs07LMgFf85cjcKT6lBxwefQ32Na7wsSXKwDVKtc=;
+        b=PYJVYfvSxVrninnzdak6iQprnyIC75GG2nIKYO3IIb1dI13lJW4vpwTc99qdbBKN5+
+         ZZnKGeX0MQbBWEZHe8geoaJoRrhuLBxpgK1MKGomc5OL5qofq8pHkAxDSvpNqn1nnQQ1
+         y3JyNPWtIXtT0L9tZApNXORbSu+K/vWgLm04gjdGegrqJDwBjiSR7Rb+sMHtYW73IYlo
+         QpOTGrInPSKb/m49KOQvkhKia/Yw7cB+j9hEvkPxyWR+pYPio510u5xRkLP8CWXmf2ep
+         +H5ptsew/TA5Zfs1IiwTsbp5tbD/y2IKEKP8HAL7k3vNK5Y1bsMW/WcRsYgi+jU73SJG
+         ebeg==
+X-Gm-Message-State: AOAM530D9XZ0LHEe4EiAPMI1mAAfKS03Kg1cTBxc7kcj3LeMXb6qGmTw
+        S2dBQHcy5HkThkvYK5iKeyZVNdeLqwHN/ptz5HxPZAV1BGf2IwsfLBSRQaYRVXGHn6TZ4s/9ub5
+        4S56Pd6HnIJ9tumxOQ3NXWA5yQcvcZDtixoQwBMd9intDp6WSk2DMz47EztYtpf3G1N6Nrlde
+X-Received: by 2002:adf:eac3:: with SMTP id o3mr18326629wrn.157.1622659082090;
+        Wed, 02 Jun 2021 11:38:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxuyef6KiBAlsn74PrPiXXROCnyunw+ZL/ZOZ/+jpYJUWZ39koRwxeHgGsq8eHVAhNJdVmnrA==
+X-Received: by 2002:adf:eac3:: with SMTP id o3mr18326603wrn.157.1622659081808;
+        Wed, 02 Jun 2021 11:38:01 -0700 (PDT)
 Received: from [192.168.3.132] (p5b0c6b6d.dip0.t-ipconnect.de. [91.12.107.109])
-        by smtp.gmail.com with ESMTPSA id 30sm851918wrl.37.2021.06.02.11.37.02
+        by smtp.gmail.com with ESMTPSA id w8sm822572wre.70.2021.06.02.11.38.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 11:37:02 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
- stable zone's values
+        Wed, 02 Jun 2021 11:38:01 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] mm,memory_hotplug: Remove unneeded declarations
 To:     Oscar Salvador <osalvador@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
@@ -63,15 +62,15 @@ Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 References: <20210602091457.17772-1-osalvador@suse.de>
- <20210602091457.17772-2-osalvador@suse.de>
+ <20210602091457.17772-4-osalvador@suse.de>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-Message-ID: <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
-Date:   Wed, 2 Jun 2021 20:37:02 +0200
+Message-ID: <87f5c05b-f107-26b9-8c5d-d2394bee2002@redhat.com>
+Date:   Wed, 2 Jun 2021 20:38:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210602091457.17772-2-osalvador@suse.de>
+In-Reply-To: <20210602091457.17772-4-osalvador@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -80,65 +79,57 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 02.06.21 11:14, Oscar Salvador wrote:
-> Currently, page_outside_zone_boundaries() takes zone's span_seqlock
-> when reading zone_start_pfn and spanned_pages so those values are
-> stable vs memory hotplug operations.
-> move_pfn_range_to_zone() and remove_pfn_range_from_zone(), which are
-> the functions that can change zone's values are serialized by
-> mem_hotplug_lock by mem_hotplug_{begin,done}, so we can just use
-> {get,put}_online_mems() on the readers.
+> include/linux/memory_hotplug.h has the following declarations:
 > 
-> This will allow us to completely kill span_seqlock lock as no users
-> will remain after this series.
+> extern int zone_grow_free_lists(struct zone *zone, unsigned long new_nr_pages);
+> extern int zone_grow_waitqueues(struct zone *zone, unsigned long nr_pages);
+> extern int add_one_highpage(struct page *page, int pfn, int bad_ppro);
+> 
+> These declarations were added by the following commit:
+> 
+> commit 3947be1969a9ce455ec30f60ef51efb10e4323d1
+> Author: Dave Hansen <haveblue@us.ibm.com>
+> Date:   Sat Oct 29 18:16:54 2005 -0700
+> 
+>      [PATCH] memory hotplug: sysfs and add/remove functions
+> 
+> It seems that zone_grow_free_lists() and zone_grow_waitqueues() were
+> never used, and add_one_highpage() was always declared as static in
+> arch/i386/mm/init.c and later on in arch/x86/mm/init_32.c, and was
+> later removed in:
+> 
+> commit 5e7ccf8635c93b493f7d378a57ce300fbe1484e8
+> Author: Jiang Liu <liuj97@gmail.com>
+> Date:   Mon Apr 29 15:07:12 2013 -0700
+> 
+>      mm/x86: use free_highmem_page() to free highmem pages into buddy system
+> 
+> So remove these declarations.
 > 
 > Signed-off-by: Oscar Salvador <osalvador@suse.de>
 > ---
->   mm/page_alloc.c | 14 ++++++--------
->   1 file changed, 6 insertions(+), 8 deletions(-)
+>   include/linux/memory_hotplug.h | 3 ---
+>   1 file changed, 3 deletions(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index aaa1655cf682..296cb00802b4 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -582,17 +582,15 @@ void set_pageblock_migratetype(struct page *page, int migratetype)
->   static int page_outside_zone_boundaries(struct zone *zone, struct page *page)
->   {
->   	int ret = 0;
-> -	unsigned seq;
->   	unsigned long pfn = page_to_pfn(page);
->   	unsigned long sp, start_pfn;
->   
-> -	do {
-> -		seq = zone_span_seqbegin(zone);
-> -		start_pfn = zone->zone_start_pfn;
-> -		sp = zone->spanned_pages;
-> -		if (!zone_spans_pfn(zone, pfn))
-> -			ret = 1;
-> -	} while (zone_span_seqretry(zone, seq));
-> +	get_online_mems();
-> +	start_pfn = zone->zone_start_pfn;
-> +	sp = zone->spanned_pages;
-> +	if (!zone_spans_pfn(zone, pfn))
-> +		ret = 1;
-> +	put_online_mems();
->   
->   	if (ret)
->   		pr_err("page 0x%lx outside node %d zone %s [ 0x%lx - 0x%lx ]\n",
+> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+> index 0d837ce6ec11..9a19e97d4f1a 100644
+> --- a/include/linux/memory_hotplug.h
+> +++ b/include/linux/memory_hotplug.h
+> @@ -80,9 +80,6 @@ struct range mhp_get_pluggable_range(bool need_mapping);
+>   /*
+>    * Zone resizing functions
+>    */
+> -extern int zone_grow_free_lists(struct zone *zone, unsigned long new_nr_pages);
+> -extern int zone_grow_waitqueues(struct zone *zone, unsigned long nr_pages);
+> -extern int add_one_highpage(struct page *page, int pfn, int bad_ppro);
+>   extern void adjust_present_page_count(struct zone *zone, long nr_pages);
+>   /* VM interface that may be used by firmware interface */
+>   extern int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
 > 
 
-It's worth noting that memory offlining might hold the memory hotplug 
-lock for quite some time. It's not a lightweight lock, compared to the 
-seqlock we have here.
+Right, that's a blast from the past. Thanks!
 
-I can see that page_outside_zone_boundaries() is only called from 
-bad_range(). bad_range() is only called under VM_BUG_ON_PAGE(). Still, 
-are you sure that it's even valid to block e.g., __free_one_page() and 
-others for eventually all eternity? And I think that we might just call 
-it from atomic context where we cannot even sleep.
-
-Long story short, using get_online_mems() looks wrong.
-
-Maybe the current lightweight reader/writer protection does serve a purpose?
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Thanks,
