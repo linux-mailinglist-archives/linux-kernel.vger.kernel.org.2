@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B2B398361
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CBC398360
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbhFBHpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:45:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45652 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232001AbhFBHpQ (ORCPT
+        id S232029AbhFBHpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:45:20 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3506 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhFBHpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:45:16 -0400
-Received: from mail-ot1-f70.google.com ([209.85.210.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1loLXH-0002lw-8k
-        for linux-kernel@vger.kernel.org; Wed, 02 Jun 2021 07:43:31 +0000
-Received: by mail-ot1-f70.google.com with SMTP id h8-20020a9d6a480000b02902edb9406104so1157015otn.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 00:43:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=JF/0aJKnxP013HBewIyjH6wIwwDGX25maQgUvSBVXZU=;
-        b=SAhNdgxIRGmjddLoaJT+UKpJRPPp+XAEdJeCqljJxj02Ob193hhky2JpnAFysQ/iL+
-         v6HFHi9glMS8mMMfDufGzY1n3O+6XWUO+7u93yeO+TsBBGaez+BeO5YxxjZB7cAEVqB9
-         EsGNPVI8xjuXhyoQUXEoeAcwjaPEgfAXj4xl7rjoprQRUotxN7H8RibKHzYDU0hECAK2
-         jD4v7N0VleDJA80v6GUdAoaM0oX8O1isvzYCp4anPPY6I0hCZsLj7wk32Gk6LRVjFo7N
-         q2L6w3xtjTVuT+7O/7KcojwQn+6G7UBTL9SFqHrzZG1Gwc6m08BWIjtmdZL42x+PNUSo
-         s5UA==
-X-Gm-Message-State: AOAM532ToIKb5NSS/z2kDqCOr3a7FjxYu6hxmYFO4U5mj+BT/glx97Fm
-        ncZ6uB58xkFFwOBqzMiQPb1NAVv8G9rukFgrUchrTGSbt7xqMwd0me/s/k50dHrRq+kxOtiE1yJ
-        FqRdptpm8BPNJPzCrI3GuWIqIA1XMfcxXMHFRsgtONhVXVRkWDbpCuRcx/w==
-X-Received: by 2002:aca:cf47:: with SMTP id f68mr2842034oig.86.1622619810250;
-        Wed, 02 Jun 2021 00:43:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxgGdF8/wHGPYH/agdxWCVNfW6hGk2ORA0n/5uvkYP5vmwxzKE6hE8zHdqvY6yoUIGRfZDJk26VVyD/KOLwbYA=
-X-Received: by 2002:aca:cf47:: with SMTP id f68mr2842013oig.86.1622619809712;
- Wed, 02 Jun 2021 00:43:29 -0700 (PDT)
+        Wed, 2 Jun 2021 03:45:08 -0400
+Received: from dggeme761-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw1Ck6THzzYrFn;
+        Wed,  2 Jun 2021 15:40:34 +0800 (CST)
+Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
+ dggeme761-chm.china.huawei.com (10.3.19.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 15:43:19 +0800
+Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
+ dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
+ Wed, 2 Jun 2021 15:43:19 +0800
+From:   zhengyongjun <zhengyongjun3@huawei.com>
+To:     Joe Perches <joe@perches.com>, "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "bcm-kernel-feedback-list@broadcom.com" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "opendmb@gmail.com" <opendmb@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggbmV0LW5leHRdIG5ldDogbWRpbzogRml4IGEgdHlw?=
+ =?utf-8?Q?o?=
+Thread-Topic: [PATCH net-next] net: mdio: Fix a typo
+Thread-Index: AQHXV3gaawUnSyvcRk+Lf+9GzB7O+ar/y9EAgACJjOA=
+Date:   Wed, 2 Jun 2021 07:43:19 +0000
+Message-ID: <264010307fb24b0193cfd451152bd71d@huawei.com>
+References: <20210602063914.89177-1-zhengyongjun3@huawei.com>
+ <76fd35fe623867c3be3f93b51d5d3461a2eabed9.camel@perches.com>
+In-Reply-To: <76fd35fe623867c3be3f93b51d5d3461a2eabed9.camel@perches.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.64]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Wed, 2 Jun 2021 15:43:19 +0800
-Message-ID: <CABTNMG2Cu1GqqF7qr4uCS-xNXnygEqyog8wYfRezv-nOgwfNMQ@mail.gmail.com>
-Subject: SD card fails to be detected on the second insertion
-To:     arnd@arndb.de, Greg KH <gregkh@linuxfoundation.org>,
-        ricky_wu@realtek.com, Bjorn Helgaas <bhelgaas@google.com>,
-        vaibhavgupta40@gmail.com, rui_feng@realsil.com.cn,
-        keitasuzuki.park@sslab.ics.keio.ac.jp, gordon.lack@dsl.pipex.com
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-    We got the bug report https://bugs.launchpad.net/bugs/1929444
-which said the SD card would not be detected correctly after
-replugging. Please check the
-https://bugs.launchpad.net/bugs/1929444/+attachment/5500291/+files/rtsx.info
-for the dmesg of card insertion/removal. It fails at SD/MMC CMD2 at
-replugging the SD card. We found that reverting commit 121e9c6b5c4
-("misc: rtsx: modify and fix init_hw function") can get the SD card
-back to work for each insertion (the dependent commit 38d98d73be9
-"misc: rtsx: remove unused function" also need to be reverted). I
-don't really know what goes wrong in that commit and I don't have that
-pci interfaced card reader (10ec:5287). @Rui, can you help verify what
-could possibly go wrong with that commit? Thanks
-
-Chris
+UnVzc2VsbCBLaW5nIHRvbGQgbWUgdG8gZG8gc28uLi4gIERpZCBJIHVuZGVyc3RhbmQgaXQgd3Jv
+bmc/ICANCkJ1dCBmcm9tIHlvdXIgb3BpbmlvbiwgSSB0aGluayAiSHoiIGlzIG1vcmUgYXBwcm9w
+cmlhdGUgOikNCg0KYGBgDQpSdXNzZWxsIEtpbmcgPGxpbnV4QGFybWxpbnV4Lm9yZy51az4NCg0K
+T24gVHVlLCBKdW4gMDEsIDIwMjEgYXQgMTA6MTg6NTlQTSArMDgwMCwgWmhlbmcgWW9uZ2p1biB3
+cm90ZToNCj4gaW5mb3JtYXRpb25zICA9PT4gaW5mb3JtYXRpb24NCj4gdHlwaWNhbHkgID09PiB0
+eXBpY2FsbHkNCj4gZGVycml2ZSAgPT0+IGRlcml2ZQ0KPiBldmVudGhvdWdoICA9PT4gZXZlbiB0
+aG91Z2gNCg0KSWYgeW91J3JlIGRvaW5nIHRoaXMsIHRoZW4gcGxlYXNlIGFsc28gY2hhbmdlICJo
+eiIgdG8gIkh6Ii4gVGhlIHVuaXQgb2YgZnJlcXVlbmN5IGlzIHRoZSBsYXR0ZXIsIG5vdCB0aGUg
+Zm9ybWVyLiBUaGFua3MuDQoNCi0tDQpSTUsncyBQYXRjaCBzeXN0ZW06IGh0dHBzOi8vd3d3LmFy
+bWxpbnV4Lm9yZy51ay9kZXZlbG9wZXIvcGF0Y2hlcy8NCkZUVFAgaXMgaGVyZSEgNDBNYnBzIGRv
+d24gMTBNYnBzIHVwLiBEZWNlbnQgY29ubmVjdGl2aXR5IGF0IGxhc3QhDQpgYGANCg0KLS0tLS3p
+gq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBKb2UgUGVyY2hlcyBbbWFpbHRvOmpvZUBwZXJj
+aGVzLmNvbV0gDQrlj5HpgIHml7bpl7Q6IDIwMjHlubQ25pyIMuaXpSAxNToyNQ0K5pS25Lu25Lq6
+OiB6aGVuZ3lvbmdqdW4gPHpoZW5neW9uZ2p1bjNAaHVhd2VpLmNvbT47IGFuZHJld0BsdW5uLmNo
+OyBoa2FsbHdlaXQxQGdtYWlsLmNvbTsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwu
+b3JnOyBiY20ta2VybmVsLWZlZWRiYWNrLWxpc3RAYnJvYWRjb20uY29tOyBuZXRkZXZAdmdlci5r
+ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQrmioTpgIE6IG9wZW5kbWJA
+Z21haWwuY29tOyBmLmZhaW5lbGxpQGdtYWlsLmNvbTsgbGludXhAYXJtbGludXgub3JnLnVrDQrk
+uLvpopg6IFJlOiBbUEFUQ0ggbmV0LW5leHRdIG5ldDogbWRpbzogRml4IGEgdHlwbw0KDQpPbiBX
+ZWQsIDIwMjEtMDYtMDIgYXQgMTQ6MzkgKzA4MDAsIFpoZW5nIFlvbmdqdW4gd3JvdGU6DQo+IEh6
+ICA9PT4gaHoNCltdDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9tZGlvL21kaW8tYmNtLXVu
+aW1hYy5jIGIvZHJpdmVycy9uZXQvbWRpby9tZGlvLWJjbS11bmltYWMuYw0KW10NCj4gQEAgLTIw
+Myw3ICsyMDMsNyBAQCBzdGF0aWMgdm9pZCB1bmltYWNfbWRpb19jbGtfc2V0KHN0cnVjdCB1bmlt
+YWNfbWRpb19wcml2ICpwcml2KQ0KPiDCoAkJcmV0dXJuOw0KPiDCoAl9DQo+IA0KPiAtCS8qIFRo
+ZSBNRElPIGNsb2NrIGlzIHRoZSByZWZlcmVuY2UgY2xvY2sgKHR5cGljYWxseSAyNTBNSHopIGRp
+dmlkZWQgYnkNCj4gKwkvKiBUaGUgTURJTyBjbG9jayBpcyB0aGUgcmVmZXJlbmNlIGNsb2NrICh0
+eXBpY2FsbHkgMjUwTWh6KSBkaXZpZGVkIGJ5DQoNCk5vIHRoYW5rcy4NCg0KTUh6IGlzIHR5cGlj
+YWwsIE1oeiBpcyBub3QuDQoNCiQgZ2l0IGdyZXAgLXcgLWkgLW8gLWggbWh6IHwgc29ydCB8dW5p
+cSAtYyB8IHNvcnQgLXJuDQogICA1MDQyIE1Ieg0KICAgIDU3MSBNSFoNCiAgICAzOTggTWh6DQog
+ICAgMzUzIG1oeg0KICAgICAxMCBtSHoNCg0KDQo=
