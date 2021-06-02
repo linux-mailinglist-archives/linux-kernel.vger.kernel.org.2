@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5435A39800F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD19398013
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhFBEQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 00:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
+        id S230370AbhFBERl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 00:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhFBEQX (ORCPT
+        with ESMTP id S229767AbhFBERk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 00:16:23 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E5CC061574;
-        Tue,  1 Jun 2021 21:14:40 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id u18so1152935pfk.11;
-        Tue, 01 Jun 2021 21:14:40 -0700 (PDT)
+        Wed, 2 Jun 2021 00:17:40 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0643EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 21:15:58 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id t20-20020aa793940000b02902e8f588ec26so772998pfe.17
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 21:15:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DASUdmuANq8WShRP2cidDgiF2d4vC+al/gFPjy5fagE=;
-        b=ddgJdqmN4OQyzlXC2WndBaDLMytaYp4Op1bDns1JM/CtR0fxgmeesbx/gBFvmfwR3F
-         ZY+LYdcrJcDEKLRZLAl9CBWhYjS5wna/Fis9wofmTL7jB2kWozz7+AnKh/Ary/t8zWnK
-         h9tpIb/RgrfAFoAxOzc7XJmJIFhYjdRbn7WYos2YVUKTXJAKuf1qQp3kSGdy4cxA+d9y
-         rbzhXKrg3RR/aqGMlWVnNKPOZaa8m8FMcgA0TbVektDdFY9DnVrnaLzsad+6YCpEPZvZ
-         oeWK2WaVFRqcWLJsw9LTII49xYrRuU95xfhF3CcaRdFSSJqRlUqF7pNAGXF6HO1Nt4nC
-         akHw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=3Qx5/477Yig5L61OFwMLDnCrLXWV7pw+VxgbIq/I9BM=;
+        b=L4wMXF1m8uq8W5WDMHlMk9MaVK+4srL2mJ9ZomD/pApmJ9j+gxFXP7dDFyydmkacHH
+         WacTdf81pGqdvLvoz5gZadfm2l2WKrMeDLO+BiFjZXYjAxarXm/5RJ6ba0Mbj4+FvlPL
+         12VSAsoX/s/leIHxA7XELMO0/Y6NVtlv/w7FQIFKDdo9C7jZP5CpfKC46D1K9HPf5Gv0
+         sFQWT7lFZtubTQF74Gj8SqrPY9HtpBPQ+UyoVXUB1vRDNaJ+wqdOSusVklrop/W4ZfIq
+         3vud/O85q5mpKbn0PT99LL5qmb34Nr7VCwN9iOy3iGewPTUm6JOPmhdvvpwb5Y0PTzS0
+         C7dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DASUdmuANq8WShRP2cidDgiF2d4vC+al/gFPjy5fagE=;
-        b=TRRJWJf1aqWEwceUylYsAv97Ipu6bqMtK6zNZ/VG1ttHVO3fubhlGAYuZo0icQxHGJ
-         2uVchHc6Q9NmkLQZhwj2GBJL0ojTUWucUorQffHS3czNxIf9UyoIRgDZ+iQLwLqKoSbg
-         T6oK/Y8dQDI5Ps1xg0hiyCjqlUFdITdaNVlGTTGwTw+I/NHNlOYDnDu01J+99pom4U0T
-         Rk9LHj/2URGRHkrRwmLH14S1fDhiKoCZ9mKLL7fLKozD7elL09jptozF9bnY3hXOCUrQ
-         zya6uSoIljHauz8/xIIuHzcIdeB0DQY37Byx1TsjMhxBnLRqWApP9AXdCAHsPlpRnNvV
-         +HIQ==
-X-Gm-Message-State: AOAM53106R6ONiivfNojLPLwY0S6Rr1wpt0yZYoUgnJPGPgcxVcrLdiT
-        mPCNpKr5hNB0oyExyZ7VOEE=
-X-Google-Smtp-Source: ABdhPJxFjJdzJw2luXvUFmVz6B4c0UReZJbXwX/w2nZZ9LvPd7bmb7fUrzpPqQxlyG8BbtON3A+Rzg==
-X-Received: by 2002:a65:6291:: with SMTP id f17mr11852711pgv.280.1622607280426;
-        Tue, 01 Jun 2021 21:14:40 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a596:b3cb:1a6:1ee4])
-        by smtp.gmail.com with ESMTPSA id 4sm3388519pji.14.2021.06.01.21.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 21:14:39 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 21:14:37 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] Input: elants_i2c - Switch to probe_new
-Message-ID: <YLcFrbtzFGpXgSyl@google.com>
-References: <20210528071024.26450-1-tiwai@suse.de>
- <20210528071024.26450-2-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528071024.26450-2-tiwai@suse.de>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=3Qx5/477Yig5L61OFwMLDnCrLXWV7pw+VxgbIq/I9BM=;
+        b=Hdz2H8zEfppjfXxThGFzbQQGYzlSOxWm4vMbie3FzoVnYcAQBBO2IVmSuhim8kanIU
+         b46ZBU7wE0HXPSsRPOCIX9aI4WVVSsDFPTFQEjlLI2gk2AGY74LqymyBTstxQNMkGbAx
+         h9w5iuaZGXg4KE7kSCK/sC0pD6jA4ROtu2EyoSiq1wT/Llkhx+WPzjPEmNCiaAA93wJ3
+         C/VwOuVXtBUv9H0kf9OU65mqTdQ7ypPShoYhbuR/58XW4ku0mighQBam9cNtFU521VMM
+         YLDIY/2B6UTXAqVsrITLdpRjxyxXdzcFFGAfEEeOOjeLWNiqKHjIkR0EzI43hr5Cs3ZR
+         c3TA==
+X-Gm-Message-State: AOAM532XrXUh3OoGU4Jy7GY7fucaRQM7EZFnQC2k1+YAqeTRKxw8ED6u
+        Qfg8iLR4buO1w4XofZVZu9OjEwZgCDM=
+X-Google-Smtp-Source: ABdhPJw5z7A0yAHelyWLEpnQXuueYkii5ep7MSUB4n11ebXmNMqnwoECb2sYiUUqoQDdLDNgwn/I6twKdPA=
+X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
+ (user=drosen job=sendgmr) by 2002:a05:6a00:882:b029:2de:b01d:755a with SMTP
+ id q2-20020a056a000882b02902deb01d755amr25380274pfj.43.1622607357461; Tue, 01
+ Jun 2021 21:15:57 -0700 (PDT)
+Date:   Wed,  2 Jun 2021 04:15:37 +0000
+Message-Id: <20210602041539.123097-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH 0/2] Fix up casefolding sysfs entries for F2FS
+From:   Daniel Rosenberg <drosen@google.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 09:10:24AM +0200, Takashi Iwai wrote:
-> Now that we get rid of the usage of id argument at probe again, let's
-> switch to the new i2c probe method; this will avoid for people
-> misusing the possibly unassigned id pointer again.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+These correct displaying support for casefolding only when that capability
+is present, and advertise if encryption and casefolding are supported
+together. Casefolding requires CONFIG_UNICODE, and casefolding with
+encryption wasn't supported until commit 7ad08a58bf67
+("f2fs: Handle casefolding with Encryption")
 
-Applied, thank you.
+Daniel Rosenberg (2):
+  f2fs: Show casefolding support only when supported
+  f2fs: Advertise encrypted casefolding in sysfs
+
+ fs/f2fs/sysfs.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 -- 
-Dmitry
+2.32.0.rc0.204.g9fa02ecfa5-goog
+
