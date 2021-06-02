@@ -2,126 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CC53984C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A343984CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhFBJAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:00:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23966 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232993AbhFBJAG (ORCPT
+        id S233013AbhFBJAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232940AbhFBJAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:00:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622624303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HgwV7ft+Ln03MaD+qvV/AkL0B+iArPbUA9ahbhF+wVg=;
-        b=QTSJnx4QZANKC2MFrXYT9euhRrVNbgeSmtWvBezvt4xanvqdTbszjudM7O+/7kwlZwQKhu
-        ZfF8PrfdX554kqW/3QLQEGWVq+PdH4BWVXPGoqJuKJGvIJsqnmT4qzyfvpsZLuX2peDUEZ
-        4Zr2KHhthRE/SX9KmS85ZL9S/H5qtHo=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-ZEFxMhADMeiaD56m3t1q9g-1; Wed, 02 Jun 2021 04:58:22 -0400
-X-MC-Unique: ZEFxMhADMeiaD56m3t1q9g-1
-Received: by mail-pg1-f199.google.com with SMTP id s7-20020a6352470000b029021b9013c124so1255286pgl.19
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:58:21 -0700 (PDT)
+        Wed, 2 Jun 2021 05:00:43 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D02C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 01:59:00 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id x8so703064vso.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kLWpOnx/iw1CEqFu8aVvjEaq/agq3E2iyw94IErInPc=;
+        b=nY1kbY7/QSUCDrXiaFOhA8gbbzhozBN9OX3YIsdbiCCbuY7QO5BqrLZJCFEjB2VYRX
+         asu2pKOjfnO5y0WIadVkgfT8iuJUbt15ZZo2gnik45qZGhELHNFLaqZWP23LwiMPhRtW
+         rIYbrClloptrBKGAgmpU2Yqjpojs1fPfCtQSY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HgwV7ft+Ln03MaD+qvV/AkL0B+iArPbUA9ahbhF+wVg=;
-        b=ZL28Igirf7Vtwfcd5RjJUmYO+HsvDXpU8tHdeB4j9SMckN64sa0jkL9/klrMvVsxZa
-         9AdrgaaxJrH1Dsr4XYL5wFFuVGs9OELaXPo1G/DHT8qYGOfzZpAjou8hvsLSSa6zAz8s
-         +qfy/zIso1fpqHXz04ihHhycumqdU/DpYK03K+08fi8U9spOsNVcaaA7sUz+xIiIKjsm
-         qgfNyVH/vH+oxoyTZQre/VwmNvLyRrm8YWe8MGHnuY/B+Ayf9yzYcXYLOdFWvoJtW9sb
-         gkVdoCIy+ydgSvCQuVPf71NltYi6itCxZluvlMRKHeNbYlhAiKRA6CMfKZIjRtKD7oc4
-         r1+Q==
-X-Gm-Message-State: AOAM532gL6jlUKJvlWC9MjX68akwRagsV9bGP+lODSphinQdFT12zsfb
-        jEP/TilgyNVhuBnbKv3EZ3VZbWoku568RFFImemyHAxfMNJoBjzvOpFtx42VTGlLsIoWHhEIFkU
-        LpP4fNDYyZDCRc+vYN8gIXe4G
-X-Received: by 2002:a63:e642:: with SMTP id p2mr31912919pgj.316.1622624301197;
-        Wed, 02 Jun 2021 01:58:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/hC2DUGaHASQJ2eBIgS4POmbF/OU0iTy4EElTI9I8lf554Diw4PoXXYk+RPG+3MuIoH1a7g==
-X-Received: by 2002:a63:e642:: with SMTP id p2mr31912901pgj.316.1622624301050;
-        Wed, 02 Jun 2021 01:58:21 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id m134sm4163818pfd.148.2021.06.02.01.58.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 01:58:20 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>,
-        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
-        <alex.williamson@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <f510f916-e91c-236d-e938-513a5992d3b5@redhat.com>
- <20210531164118.265789ee@yiliu-dev>
- <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
- <20210601113152.6d09e47b@yiliu-dev>
- <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
- <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
- <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
- <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
- <20210601172956.GL1002214@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <d8bb795f-8d73-e9a5-a4b1-8d9c563dffbd@redhat.com>
-Date:   Wed, 2 Jun 2021 16:58:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kLWpOnx/iw1CEqFu8aVvjEaq/agq3E2iyw94IErInPc=;
+        b=dFIBHenA+5xFrLLQ85cY1HyeoAfltSDicWNGvQobRwaDGaQpn4Q+dJt3IbD1ArWZmm
+         dNn+J8+DKtqKupR1rchjpub9gXnGq4pWrPQObFbnpVqayROFfsvRJjRAqvmcFUa8s1ko
+         U+0/OO1urPdwA8U9djZfj3EYhKtqe5wXprBL35Srp4vTb5wmCLedc7b2wC2mRWsMi5O+
+         wzmBnF2acyjJ62poxGK+AsqXqG7UKff9qOonn+4Y1l0XG1idCt6USfxKVeexPFkcHINs
+         5LmSlh8GKUi2sSrMgmO2cG/j6pGybf5wKm6wUTKNP7bdCyUZJpbVloeFPbTBLlBvFYHV
+         LBDw==
+X-Gm-Message-State: AOAM530EfGFrJmkzMNUotyWEaCQaqVVxP59QfBbSLRKBK7dmLTVBp5CL
+        dR2UrV6kMcW/6sCiXNBc/CxS5ZMhkN7nLEm1+gx/Aw==
+X-Google-Smtp-Source: ABdhPJzWOb/Y/vvMixw7Ap9EZqJmB1Nrwg3Z+raefHVfOAoYA/iY/ULLwcNG9/BhNPcy7/7Wk286HqW7ysbcXK70UaI=
+X-Received: by 2002:a05:6102:b06:: with SMTP id b6mr22371112vst.21.1622624338774;
+ Wed, 02 Jun 2021 01:58:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210601172956.GL1002214@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+ <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
+ <CAJfpeguUj5WKtKZsn_tZZNpiL17ggAPcPBXdpA03aAnjaexWug@mail.gmail.com> <972701826ebb1b3b3e00b12cde821b85eebc9749.camel@themaw.net>
+In-Reply-To: <972701826ebb1b3b3e00b12cde821b85eebc9749.camel@themaw.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 2 Jun 2021 10:58:47 +0200
+Message-ID: <CAJfpegsLqowjMPCAgsFe6eQK_CeixrevUPyA04V2hdYvc0HpLQ@mail.gmail.com>
+Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/6/2 ÉÏÎç1:29, Jason Gunthorpe Ð´µÀ:
-> On Tue, Jun 01, 2021 at 02:07:05PM +0800, Jason Wang wrote:
+On Wed, 2 Jun 2021 at 05:44, Ian Kent <raven@themaw.net> wrote:
 >
->> For the case of 1M, I would like to know what's the use case for a single
->> process to handle 1M+ address spaces?
-> For some scenarios every guest PASID will require a IOASID ID # so
-> there is a large enough demand that FDs alone are not a good fit.
+> On Tue, 2021-06-01 at 14:41 +0200, Miklos Szeredi wrote:
+> > On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net> wrote:
+> > >
+> > > If there are many lookups for non-existent paths these negative
+> > > lookups
+> > > can lead to a lot of overhead during path walks.
+> > >
+> > > The VFS allows dentries to be created as negative and hashed, and
+> > > caches
+> > > them so they can be used to reduce the fairly high overhead
+> > > alloc/free
+> > > cycle that occurs during these lookups.
+> >
+> > Obviously there's a cost associated with negative caching too.  For
+> > normal filesystems it's trivially worth that cost, but in case of
+> > kernfs, not sure...
+> >
+> > Can "fairly high" be somewhat substantiated with a microbenchmark for
+> > negative lookups?
 >
-> Further there are global container wide properties that are hard to
-> carry over to a multi-FD model, like the attachment of devices to the
-> container at the startup.
-
-
-So if we implement per fd model. The global "container" properties could 
-be done via the parent fd. E.g attaching the parent to the device at the 
-startup.
-
-
+> Well, maybe, but anything we do for a benchmark would be totally
+> artificial.
 >
->>> So this RFC treats fd as a container of address spaces which is each
->>> tagged by an IOASID.
->> If the container and address space is 1:1 then the container seems useless.
-> The examples at the bottom of the document show multiple IOASIDs in
-> the container for a parent/child type relationship
+> The reason I added this is because I saw appreciable contention
+> on the dentry alloc path in one case I saw.
 
+If multiple tasks are trying to look up the same negative dentry in
+parallel, then there will be contention on the parent inode lock.
+Was this the issue?   This could easily be reproduced with an
+artificial benchmark.
 
-This can also be done per fd? A fd parent can have multiple fd childs.
-
-Thanks
-
-
+> > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > > index 4c69e2af82dac..5151c712f06f5 100644
+> > > --- a/fs/kernfs/dir.c
+> > > +++ b/fs/kernfs/dir.c
+> > > @@ -1037,12 +1037,33 @@ static int kernfs_dop_revalidate(struct
+> > > dentry *dentry, unsigned int flags)
+> > >         if (flags & LOOKUP_RCU)
+> > >                 return -ECHILD;
+> > >
+> > > -       /* Always perform fresh lookup for negatives */
+> > > -       if (d_really_is_negative(dentry))
+> > > -               goto out_bad_unlocked;
+> > > +       mutex_lock(&kernfs_mutex);
+> > >
+> > >         kn = kernfs_dentry_node(dentry);
+> > > -       mutex_lock(&kernfs_mutex);
+> > > +
+> > > +       /* Negative hashed dentry? */
+> > > +       if (!kn) {
+> > > +               struct kernfs_node *parent;
+> > > +
+> > > +               /* If the kernfs node can be found this is a stale
+> > > negative
+> > > +                * hashed dentry so it must be discarded and the
+> > > lookup redone.
+> > > +                */
+> > > +               parent = kernfs_dentry_node(dentry->d_parent);
+> >
+> > This doesn't look safe WRT a racing sys_rename().  In this case
+> > d_move() is called only with parent inode locked, but not with
+> > kernfs_mutex while ->d_revalidate() may not have parent inode locked.
+> > After d_move() the old parent dentry can be freed, resulting in use
+> > after free.  Easily fixed by dget_parent().
 >
-> Jason
+> Umm ... I'll need some more explanation here ...
 >
+> We are in ref-walk mode so the parent dentry isn't going away.
 
+The parent that was used to lookup the dentry in __d_lookup() isn't
+going away.  But it's not necessarily equal to dentry->d_parent
+anymore.
+
+> And this is a negative dentry so rename is going to bail out
+> with ENOENT way early.
+
+You are right.  But note that negative dentry in question could be the
+target of a rename.  Current implementation doesn't switch the
+target's parent or name, but this wasn't always the case (commit
+076515fc9267 ("make non-exchanging __d_move() copy ->d_parent rather
+than swap them")), so a backport of this patch could become incorrect
+on old enough kernels.
+
+So I still think using dget_parent() is the correct way to do this.
+
+> >
+> > > +               if (parent) {
+> > > +                       const void *ns = NULL;
+> > > +
+> > > +                       if (kernfs_ns_enabled(parent))
+> > > +                               ns = kernfs_info(dentry->d_sb)->ns;
+> > > +                       kn = kernfs_find_ns(parent, dentry-
+> > > >d_name.name, ns);
+> >
+> > Same thing with d_name.  There's
+> > take_dentry_name_snapshot()/release_dentry_name_snapshot() to
+> > properly
+> > take care of that.
+>
+> I don't see that problem either, due to the dentry being negative,
+> but please explain what your seeing here.
+
+Yeah.  Negative dentries' names weren't always stable, but that was a
+long time ago (commit 8d85b4845a66 ("Allow sharing external names
+after __d_move()")).
+
+Thanks,
+Miklos
