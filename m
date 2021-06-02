@@ -2,246 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E877F398CA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA0A398CA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFBOY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:24:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230083AbhFBOY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:24:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C767610CB;
-        Wed,  2 Jun 2021 14:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622643763;
-        bh=j2Vucv7j48HxGa0rmULQUiDA8vOA5lkReOpPS+DWX0k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kWSNltbOxaUHNz7Oy82/Q+RVGRp7zGnvRgNvBvVbQ3lCd8/QJHQAQyy2X7kzPcOxF
-         xuDQRYjGNg9iJRLwwlpyKt7Dkmd5baI11N4QCi26WZ1pn6dbVjRBXUGEKSvp7+QatG
-         s6ojB0Y30ORJsCC+mkzh23WWj4qU7u/amyoxlrYdyLQXSz2prhPijFvZzjOSi0vCI1
-         eWdC4SxaX9/3zVvlps7NRwvbbf9IX3u+x20IB0Grcjh2/YrN8X8wb8t1vfqFxpyIYE
-         m/mQIOH4kjPsW9DDaw24yHS+Dn+wq1bKrs0TX7DLVz00buOm86O51+iO/+PDlVvMDW
-         wQz37ZgMtb3cg==
-Received: by mail-ed1-f49.google.com with SMTP id ba2so1429329edb.2;
-        Wed, 02 Jun 2021 07:22:43 -0700 (PDT)
-X-Gm-Message-State: AOAM53117+tNtIk+kJyEJtCAuM987wPtZzKYDzzdRiR9riZVaSEM54WP
-        6iUy0cFH5v6n2x8/smYAQCBFICrVcufs453cDg==
-X-Google-Smtp-Source: ABdhPJyIR6oYQn8q1KYvTQQteC/8OV+grbQU5QShD2x+i4fSDS+34Gh1WDg1MaRCWzgXaIfO5gte9k4P4zSCNbbkelI=
-X-Received: by 2002:a05:6402:1d85:: with SMTP id dk5mr21036040edb.289.1622643761769;
- Wed, 02 Jun 2021 07:22:41 -0700 (PDT)
+        id S230331AbhFBOZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFBOZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:25:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AB1C06174A;
+        Wed,  2 Jun 2021 07:23:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FXtOoRkqKzh7kLJLNx1aUNoAKOt2OwhOUmVlEeFOV/k=; b=CHh50MAnwHptxKKeb98FX0zBM/
+        hZGvhB4OgPfd+ch/7Q4Awrbwu4YMPhZZyT4MBL6ufwo9T1X3jzwrDiV2mV+NLG+uaGFtpk4wJW0Sl
+        qULAlfcMVVVzXG+nvaGIKpuQWC7oHU4cD3sRPQLrMBkEqwZcdjHxvNg+me0S6xPh9OUSlXXgEDC6Z
+        pzRSlZNULro6LWJusA97DADN/jHRNpmBokq3XpapoFAiUebSvq5DGMtNHHjHI7P94iuGqIHoF5IK5
+        c9Cs6a/FvoaHXq4eeNZQEa+OSz+uu1jB7/A+OTqK1Log/LLFviNFlK2bXPZ1hwESu9YATeOjws0cR
+        3OjnDBZg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1loRmg-002ugW-KD; Wed, 02 Jun 2021 14:23:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5940300299;
+        Wed,  2 Jun 2021 16:23:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B6EF620223DA8; Wed,  2 Jun 2021 16:23:56 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 16:23:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        paulmck <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        linux-usb@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        cgroups <cgroups@vger.kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu <rcu@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        KVM list <kvm@vger.kernel.org>
+Subject: Re: [PATCH 3/6] sched,perf,kvm: Fix preemption condition
+Message-ID: <YLeUfNEqKg27VwAB@hirez.programming.kicks-ass.net>
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.398289363@infradead.org>
+ <1524365960.5868.1622643316351.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-References: <20210602120752.46154-1-manivannan.sadhasivam@linaro.org> <20210602120752.46154-2-manivannan.sadhasivam@linaro.org>
-In-Reply-To: <20210602120752.46154-2-manivannan.sadhasivam@linaro.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 2 Jun 2021 09:22:29 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLdXsEfV6aj88e+ZjbL2EZxX2r8m+_MRMnUHuzKLV9_Yg@mail.gmail.com>
-Message-ID: <CAL_JsqLdXsEfV6aj88e+ZjbL2EZxX2r8m+_MRMnUHuzKLV9_Yg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: pci: Add devicetree binding for Qualcomm
- PCIe EP controller
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1524365960.5868.1622643316351.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 7:08 AM Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
->
-> Add devicetree binding for Qualcomm PCIe EP controller used in platforms
-> like SDX55. The EP controller is based on the Designware core with
-> Qualcomm specific wrappers.
+On Wed, Jun 02, 2021 at 10:15:16AM -0400, Mathieu Desnoyers wrote:
+> ----- On Jun 2, 2021, at 9:12 AM, Peter Zijlstra peterz@infradead.org wrote:
+> [...]
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -8568,13 +8568,12 @@ static void perf_event_switch(struct tas
+> > 		},
+> > 	};
+> > 
+> > -	if (!sched_in && task->state == TASK_RUNNING)
+> > +	if (!sched_in && current->on_rq) {
+> > 		switch_event.event_id.header.misc |=
+> > 				PERF_RECORD_MISC_SWITCH_OUT_PREEMPT;
+> > +	}
+> > 
+> > -	perf_iterate_sb(perf_event_switch_output,
+> > -		       &switch_event,
+> > -		       NULL);
+> > +	perf_iterate_sb(perf_event_switch_output, &switch_event, NULL);
+> > }
+> 
+> There is a lot of code cleanup going on here which does not seem to belong
+> to a "Fix" patch.
 
-Is the block EP only or configurable EP or host?
-
->
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 139 ++++++++++++++++++
->  1 file changed, 139 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
->
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> new file mode 100644
-> index 000000000000..0f9140e93bcb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> @@ -0,0 +1,139 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm PCIe Endpoint Controller binding
-> +
-> +maintainers:
-> +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> +
-> +allOf:
-> +  - $ref: "pci-ep.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,pcie-ep
-
-SoC specific please.
-
-> +
-> +  reg:
-> +    items:
-> +      - description: Designware PCIe registers
-> +      - description: External local bus interface registers
-> +      - description: Address Translation Unit (ATU) registers
-> +      - description: Memory region used to map remote RC address space
-> +      - description: Qualcomm specific PARF configuration registers
-> +      - description: Qualcomm specific TCSR registers
-> +
-> +  reg-names:
-> +    items:
-> +      - const: dbi
-> +      - const: elbi
-> +      - const: atu
-> +      - const: addr_space
-> +      - const: parf
-> +      - const: tcsr
-
-This should be in the same order as the host side. Unfortunately,
-that's not consistent, but to pick one:
-
-reg-names = "parf", "dbi", "elbi", "atu", "config";
-
-
-> +
-> +  clocks:
-> +    items:
-> +      - description: PCIe CFG AHB clock
-> +      - description: PCIe Auxiliary clock
-> +      - description: PCIe Master AXI clock
-> +      - description: PCIe Slave AXI clock
-> +      - description: PCIe Reference clock
-> +      - description: PCIe Sleep clock
-> +      - description: PCIe Slave Q2A AXI clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: cfg
-> +      - const: aux
-> +      - const: bus_master
-> +      - const: bus_slave
-> +      - const: ref
-> +      - const: sleep
-> +      - const: slave_q2a
-
-Again, try to keep the same ordering.
-
-I have to wonder where 'pipe' clock is that most of the QCom
-implementations have?
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: PCIe Global interrupt
-> +
-> +  interrupt-names:
-> +    const: int_global
-
-'int_' is redundant, drop.
-
-> +
-> +  perst-gpios:
-> +    description: PCIe endpoint reset GPIO
-
-An input, right?
-
-> +    maxItems: 1
-> +
-> +  wake-gpios:
-> +    description: PCIe endpoint wake GPIO
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    const: core_reset
-
-Not yet another name. We already have 'pci' and 'core' in the cases of
-a single reset.
-
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  phys:
-> +    maxItems: 1
-> +
-> +  phy-names:
-> +    const: pciephy
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +  - interrupt-names
-> +  - perst-gpios
-> +  - resets
-> +  - reset-names
-> +  - power-domains
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sdx55.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    pcie_ep: pcie-ep@40000000 {
-> +        compatible = "qcom,pcie-ep";
-> +
-> +        reg = <0x40000000 0xf1d>,
-> +              <0x40000f20 0xc8>,
-> +              <0x40001000 0x1000>,
-> +              <0x42000000 0x1000>,
-> +              <0x01c00000 0x3000>,
-> +              <0x01fcb000 0x1000>;
-> +        reg-names = "dbi", "elbi", "atu", "addr_space", "parf", "tcsr";
-> +
-> +        clocks = <&gcc GCC_PCIE_CFG_AHB_CLK>,
-> +             <&gcc GCC_PCIE_AUX_CLK>,
-> +             <&gcc GCC_PCIE_MSTR_AXI_CLK>,
-> +             <&gcc GCC_PCIE_SLV_AXI_CLK>,
-> +             <&gcc GCC_PCIE_0_CLKREF_CLK>,
-> +             <&gcc GCC_PCIE_SLEEP_CLK>,
-> +             <&gcc GCC_PCIE_SLV_Q2A_AXI_CLK>;
-> +        clock-names = "cfg", "aux", "bus_master", "bus_slave",
-> +                      "ref", "sleep", "slave_q2a";
-> +
-> +        interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-names = "int_global";
-> +        perst-gpios = <&tlmm 57 GPIO_ACTIVE_HIGH>;
-> +        wake-gpios = <&tlmm 53 GPIO_ACTIVE_LOW>;
-> +        resets = <&gcc GCC_PCIE_BCR>;
-> +        reset-names = "core_reset";
-> +        power-domains = <&gcc PCIE_GDSC>;
-> +        phys = <&pcie0_lane>;
-> +        phy-names = "pciephy";
-> +        max-link-speed = <3>;
-> +        num-lanes = <2>;
-
-Should be documented. I'd assume the max is less than 16 which is
-presumably what pcie-ep.yaml allows.
-
-> +    };
-> --
-> 2.25.1
->
+Maybe, but I so hate whitespace only patches :-/
