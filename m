@@ -2,105 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3DD397F66
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC055397F6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhFBDVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhFBDUz (ORCPT
+        id S231184AbhFBDZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 23:25:55 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33208 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhFBDZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:20:55 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A26C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 20:19:12 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id f11so1075027lfq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 20:19:12 -0700 (PDT)
+        Tue, 1 Jun 2021 23:25:43 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1523Nvs2013624;
+        Wed, 2 Jun 2021 03:23:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=F+elmLDCe0TDX4xCsm0zIHxBBEENjGU7+3UEKPnO3os=;
+ b=VGa41xGpyz/RfmEFTd//hxX2dhoPD3BuYKUq/7pCQM8c6QduK6fqFml9IalPEbKXcdXu
+ ogTCeblVCTdJvJNo2fT8DDd3WOJ2AA2Wf8e993n23cn2mGtHDCOwQWKL0eTRId2512u8
+ 4zDVIWlF9zDMWHVkfLCcxYruyxOeS6Pw9LH/0XO9N08i8gMzWWbngWyN1OsrgZ6U5iWr
+ iXNgBG5govaSebq9d21OZAGriGlqdNl7u/EUg1q0YER4n+3S9DRJh7l6AXVzC55SAdNB
+ 0kGQ3lNjUfETXAa6VF91YIF5zhGRAp84pAq/0NS6ZwKEvGK99Pt0jdb85mJs3uaQYNOk jg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 38ud1sf83a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Jun 2021 03:23:57 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1523AThf141348;
+        Wed, 2 Jun 2021 03:23:56 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
+        by aserp3030.oracle.com with ESMTP id 38ubndp4d9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Jun 2021 03:23:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YmVSwrbFAMoL6rQBuwwdC0MaF+BxDkCr+cdF9HkWFkzIuCQzw3SZbgGpv4MBZv3WglSjnuREf3kPUaJRJ2Iy4vqfyHiCxQPo98ZTXd6eqpST5Z6B17zLMfkWA8sS9Z0txLsz5F/sB9Yij8SApPEGRbxEu9+uloIaGajZaI9oP7IDctxrByk24iCY6LFIKchqM63QcctNdG+rkw6jlune/9vn0YlP1y2JeDMUEs1DwiczSwYSQ0eC3Ls6XxA0FDP+xcEs+vMSzh9jkf4HTS3rw27774HBDJlXuqiODmnRH2iJF0LqiIz06j1GjyfPpnQ0CElP9HV0dyzJq+Eg+9nSuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F+elmLDCe0TDX4xCsm0zIHxBBEENjGU7+3UEKPnO3os=;
+ b=bHj8VPB+xD0WjjZXzjQIlXWAOsst10FSjYPfIKjKnScVRSQboecLskOz0Kp9LI6kfQgp44Qz37YovGL3HdY4ZBSZrSqBKaSU4EMaf5P/Ss6mWckaOQsLakx7Fw4ks+fY85WQmN0yHN2ysGfVBZDd3ByjmV+JBxucA77n5Aq9u9gTJiGukPTC2XKWuYcvQwm3QAnpm9YcL9V7IsR0WsTrXaN0UDaATLi4dul/JUotzkYzoKLNGU7tDhKNeodf/WuUrJxhDS0IBQ+9p7C5r3iR70DD+wRUCm+PYqk9vQ/Sp8mFjDDAsLjhT7J5OM0yaGCzm521fRAXWECsvY0VHZoB9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r/zWmzR0Uw8QrtnlcpwUmwYP/OScyryb/Sf1j0emqwg=;
-        b=SsECy9lobUU8r8wKfxNiZRL2vW9bwzGqVFMzpdTKmkOrs80r2ixuRUvKnSf39X8ZJ7
-         /bmQdGbqnckxAwQQpztZtvI6Byphk5K/ZkdikURvwRNL+Ix0bVk/KrUBDQFELRbPWZgO
-         uIPRHzOJm2ARnkQVoO3gRPovpAaRqx2bC6eos=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r/zWmzR0Uw8QrtnlcpwUmwYP/OScyryb/Sf1j0emqwg=;
-        b=NT7pmAbj0KLB2qPo3UnyabIBSfVOkan0giRnAIrgvY7hQt07yPP6le7aQT7fFr38To
-         yHASd3qLqVceIQv8x/lvQnM1ISdhZq3R9cnNzVwwHHVnNsfokevHxbu8L6B8WTkQcvFD
-         ChKUegRG57BGZzIs8IY1+yCmE7E6abW1+jZDxsDH88/OhlvKKTbtrw6zuM7E6s+jVFAK
-         KNVVMukq9gTZTOvvjZdk60UIVFQCxkjQa2Uhp3ZMA9r6k6CaF/Wr9h/ulAx0Ars1cNwc
-         EJGyrq8qT35eSaGmNUfNiIyUm49Ru+WDYhKpmatg9RLJ26WL1dNy79CUV2rQzIX12TyA
-         XWRw==
-X-Gm-Message-State: AOAM531zhuwka9z/4he0HzVeB5FNhUYLN52h7PnC2lR17goL1IwPRUAg
-        35inDKBOWTpVEwo/EohfVPSwxqyx9LtnuWnvJEI=
-X-Google-Smtp-Source: ABdhPJymTCx7G8sZ8GnGuo+HrMUJzf9ib2gAyXSM33K7y76egxisEYfZTzj7dQgqyLt7hHbh8MAT2Q==
-X-Received: by 2002:a05:6512:2249:: with SMTP id i9mr9853160lfu.592.1622603950825;
-        Tue, 01 Jun 2021 20:19:10 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id p21sm1849483lfg.97.2021.06.01.20.19.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 20:19:10 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id m3so682086lji.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 20:19:10 -0700 (PDT)
-X-Received: by 2002:a2e:b60d:: with SMTP id r13mr1816032ljn.220.1622603949840;
- Tue, 01 Jun 2021 20:19:09 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F+elmLDCe0TDX4xCsm0zIHxBBEENjGU7+3UEKPnO3os=;
+ b=ooi8eI1wDTrReLyQHkXclJ9d9mkK+ulxNGFez4oODHH+bqUKiAP9R0PVo9/BaOqbe0614P+ijiPTClM0+KdZ7ub8DcqQnbtl1jkn1YsAMaeeRukgHMNM0pyLBfY4An+XF/skCdGiVoAPe5jE8db/MN4IfcK8ah8tW8o+FevvdwE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5468.namprd10.prod.outlook.com (2603:10b6:510:e8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Wed, 2 Jun
+ 2021 03:23:54 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
+ 03:23:54 +0000
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: mpt3sas: Fix fall-through warnings for Clang
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1v96xosp0.fsf@ca-mkp.ca.oracle.com>
+References: <20210528200828.GA39349@embeddedor>
+Date:   Tue, 01 Jun 2021 23:23:51 -0400
+In-Reply-To: <20210528200828.GA39349@embeddedor> (Gustavo A. R. Silva's
+        message of "Fri, 28 May 2021 15:08:28 -0500")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BYAPR06CA0025.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::38) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20210601053143.1380078-1-ying.huang@intel.com>
- <YLYef3i2OGseGbsS@casper.infradead.org> <YLZLf7MI11rzGI1B@cmpxchg.org>
-In-Reply-To: <YLZLf7MI11rzGI1B@cmpxchg.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 1 Jun 2021 17:18:54 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjg66VL1=F74-YDndwN2FvfUDG30XMgG7USiNkmExDeZA@mail.gmail.com>
-Message-ID: <CAHk-=wjg66VL1=F74-YDndwN2FvfUDG30XMgG7USiNkmExDeZA@mail.gmail.com>
-Subject: Re: [PATCH] mm: free idle swap cache page after COW
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR06CA0025.namprd06.prod.outlook.com (2603:10b6:a03:d4::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 2 Jun 2021 03:23:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b20a8a08-efad-42b8-3a33-08d92575d97e
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5468:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB5468BFF7891471CC10C9927E8E3D9@PH0PR10MB5468.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O9QQnc/5YrqqqSNRs8u4cajN0LyAoCJPnKpX5lljKHmG4sd5S9/x3Y4aLSIFedHSzSuzeSH/HV6IZaBUOBe1/3HUDU1XxcvmbOxdRK0qbKPEtUB6g/XMzyjG88NrNlh9BKkgFStXgNoIQFTF67SOifJvsms9fKQUYY9dEudomLugd20fciWxLBzzVc/y55v7cue1NpYl+DdFw5WQX6dZdKAiAdKipnzOqQs3J4FJO16BjVsxHTlcaFBj29TVcqDV4aeOxtsxmWeiUblQOfovHmlbpybxlm0htSO2kF4wwYA0eRMC9xx5o/IsL+QD7PUfY8nR7V/efrOac7ploWGIf1wYyK2+PHFAV8xJHJoWOG/ykqQGbtCmWXYJFZ1rLqDIozQXI1SwmefMZ6Sbv34FPQXWpeblWVPCxNSuLzfLQuSIwXKJtYyXZT0gTsspI30zq8EtBkVvdVjidoygBzNJE5HSquJA+mMIrPQvaa8ZYMmT6pQfZ6/NtRYqIJa4jblZWDZr7nNJhoxoYkEVBnARtQV4f+q37SyltmkmtuKKqu0282gM6EUxNFLa3zLGAQT+HWUgSGsOE9LEzyRcuZw+SbL2Lcx1J+SI8+LqnHtO9So99txDhZY/xxGNlWOiBLd7KKVkY7YGhTyt6sq9dwKUVFx4Ga5NpFASRGPBG21aJX4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(39860400002)(346002)(136003)(558084003)(6916009)(16526019)(66946007)(66476007)(86362001)(66556008)(26005)(186003)(478600001)(316002)(4326008)(55016002)(52116002)(36916002)(7696005)(5660300002)(54906003)(956004)(2906002)(83380400001)(38100700002)(38350700002)(8936002)(8676002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2QeDiJDZalrTlGOVLDyNKe03/1hPJuxMjXCUfKYSn5H2FWK+qQ/4rp/1XRYD?=
+ =?us-ascii?Q?7GN5pNiPuAAUW1w+f9+st/uuqDvf/Q393pL5j9Rkkrbc5rWtWvv3TnNK+x7J?=
+ =?us-ascii?Q?+CvkzDYBPv2lkssdIFnNZwy4DttDabga0AH13gJLeu9X20KZeS1HKFCIxaI0?=
+ =?us-ascii?Q?dzEvnfzStz5dotVl5dsYdvcWFeo99UoKyllopyoZvbDlDIXXYXHFXzNbK/R8?=
+ =?us-ascii?Q?a6o3mq6JYrzmDxTe6xjuO+wSyavOr9F3bXFb+dokUZ9wFgTlloCbS51EAGha?=
+ =?us-ascii?Q?3Gx7gm3kXGWO8ov28Av7mCnBQbqVIOVJ+aNvxUhUqJgY7Pq+Cw6SroLQuuNU?=
+ =?us-ascii?Q?bTzMoIRv/oGxS4ECC+qM/NVcHHPSmituWuNQGcqsLzewhaVUUVCJE0/tBYqV?=
+ =?us-ascii?Q?U4sEJYgR/Tn9y25gp0nTOKvdsF57ZJepFQU7pcSA5z3fBOtyPKDL2Pu2rQL6?=
+ =?us-ascii?Q?orrEMFQUDKbljRMR3TdefQEsjN0r15PslBji5lQIfIvnv9TV1pJhD62vMIMX?=
+ =?us-ascii?Q?tRXCcSwhilQGnu79CcZC9UE+Z76RKD4ZFWlIAg8b+PZBmbjkoUA4Lduw1giW?=
+ =?us-ascii?Q?2Lkju/bUWV8FwhYpMQ1AB3Xl0Irb3OB20lbYl45fKSb9iexIIasf1LqlKzCS?=
+ =?us-ascii?Q?GnOPG3AIdpyBvwM9DGqd6mZwi7aYKHItwBiLXon6k1JjaR7nbg7GinuOQZXV?=
+ =?us-ascii?Q?WZpqKsUKYFZUqsXpQ+Wv8yf/jFir7jTq0WBthDECo8c07F0k8a2rsTvA5uUl?=
+ =?us-ascii?Q?Jikmy42HqsJCQH5Up3ULED9EsqVg9upaBTW0u8IjqQtSK9VCz82FEzHJn2PD?=
+ =?us-ascii?Q?My0YjASH90SnSyEpQNh/X64rNXZ2t6R+xxsSfxj3hKG98Bhs2Y8C/4t5K8qi?=
+ =?us-ascii?Q?KZ3gg2E61t8iev1Sja9gdUSdlD2MkYftcXTO+mQH/3HH4em5zNcdz4+yfBEc?=
+ =?us-ascii?Q?X8znnrXN24gyNbwMVE9zCQUYpnoeJbJFithvHGWwcngjxoHMJjps6HLlPXr3?=
+ =?us-ascii?Q?jSowxTvHjDuPPCPYKpwiwKAxtF4r3YbbzljOfATq99Cjh8MVMFZTJV+GhIma?=
+ =?us-ascii?Q?MS9kfm9vM3asrKrj9OnjIYtHrcSwnxYccD2gNt99M0t8oULjH4Yh/+RhCAZT?=
+ =?us-ascii?Q?ENerR+D3rRxR1s1xPhIZSnXDmu3Rk0f6/3M3DnAAqgHosI7yRFwVTEyUNCqs?=
+ =?us-ascii?Q?QUcMXKRoihV7sKVt0QFI3pS1UgVyh2/GKOSHiWJoOSaXq/CJtQhbnTTeXyD/?=
+ =?us-ascii?Q?nH7QB3EI6XPdui9aIdaMOvYqdfATrOMYBNMsY+TeWxPKn73O9k9t7HcCKI/7?=
+ =?us-ascii?Q?W+dzmm6OueDn5FAh+F1Fo61f?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b20a8a08-efad-42b8-3a33-08d92575d97e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 03:23:54.1269
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BY2EOhurkESVsvyHz8/wg7ufmuhQEkcSzcU3mJAUuJxRuYFHYMn3hHrsIJHVQztBRkyqEtdZBIQaxQ5kbEn4CGtaI6/WR4xA/zZ4k2JrIzI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5468
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106020018
+X-Proofpoint-ORIG-GUID: pz8liv4p80Y9Ya1ERI_NX2fWjp2kOE__
+X-Proofpoint-GUID: pz8liv4p80Y9Ya1ERI_NX2fWjp2kOE__
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10002 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1011 spamscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106020019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 5:00 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> It's free_page[s]_and_swap_cache() we should reconsider, IMO.
->
-> free_swap_cache() makes for a clean API function that does one thing,
-> and does it right. free_page_and_swap_cache() combines two independent
-> operations, which has the habit of accumulating special case-handling
-> for some callers that is unncessary overhead for others (Abstraction
-> Inversion anti-pattern).
 
-Agreed. That "free_page_and_swap_cache()" function is odd. Much better
-written as
+Gustavo,
 
-        free_swap_cache();
-        free_page();
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a
+> couple of warnings by explicitly adding break statements instead of
+> just letting the code fall through to the next case.
 
-because there's no real advantage to try to merge the two.
+Applied to 5.14/scsi-staging, thanks!
 
-It's not like the merged function can actually do any optimization
-based on the merging, it just does the above anyway - except it then
-has that extra odd huge_zero_page test that makes no sense
-what-so-ever.
-
-So if anything we should try to get rid of uses of that odd
-free_page_and_swap_cache() thing. But it's not exactly urgent.
-
-             Linus
-             Linus
+-- 
+Martin K. Petersen	Oracle Linux Engineering
