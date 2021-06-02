@@ -2,234 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FED39814A
+	by mail.lfdr.de (Postfix) with ESMTP id 969E039814B
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhFBGnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhFBGnc (ORCPT
+        id S231522AbhFBGoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:44:01 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3505 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231556AbhFBGny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:43:32 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CE3C061760
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 23:41:48 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id a5so1748700lfm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 23:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=JuA6X6SLX6jIYFhYDQ4PSI4qy/mD4F92gXt5+pzqhiw=;
-        b=KCV/BGdWMOqxiMziTgxJG87UDnnpW8xslLWy99uLb7VpB0RQjUpAWx3hwYAp9Kx5Dl
-         IjTIIwlQYDW5T7AXT2g3YaWicvlr0QoZq8pSc/suf79ln6bq3X8planLEx+zhml1LRDt
-         Mun9Yaawf9AiZbfMNOTlrFcP8dbphUV94K0FW0FoGk+JaHCkKpr5nEsWTE46qHOgssXF
-         dhsOdlXifGmZQnIFGM+g2cIN585b68PiWEuCsFf0hMVvWeV2dYsBNs4tCNYIhxqAJ/b8
-         K0oNCfR+mBnCAgtWDyanW4oLNUX9ZWtxwZBpN3Ks13wNdZ57GC5dswRWQGLYavDjHvS5
-         cwmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=JuA6X6SLX6jIYFhYDQ4PSI4qy/mD4F92gXt5+pzqhiw=;
-        b=giSOtMUpUzerSH4x18iNxlR4BxJJxzhpVMLJ+4gsjUyANyXPq7oUNLBFpqUn5Xo4wE
-         qmMhj/h6aRmNMDTmqvpUKtApDqhQUrSbMNfAN/78ALBbX1OskS9+Q50gN+2xQahKa2UZ
-         EacauIYq8ag/538FNRPnCFg9y/UcbkQoP+8tZSk1OjQGGoYQCT6isSXZ1oGAOquFNAbM
-         d/0XbdkR5+AiXh0bIVf4LEUGVjRI7HGGqcusi7vTPE42JBPX1i7vadnvjGTpp85uCpZo
-         SxtmhRFiLS8xDCPORNbDfB+SU62nVwYXjUMLNK/fNeDrl1FiaA8gjfR1sTDJM6btVO40
-         bCzw==
-X-Gm-Message-State: AOAM533GbiXhe5rEo47DS0UhbXqPAdn15dceWdl9nFyT+eW5WZvhh156
-        PoH8vzXC7YdnTlq84z+gT+k=
-X-Google-Smtp-Source: ABdhPJyISRYTRVb7ufM2hmPTe5uCl/aVs5YEhYnXhErkpU6mZCC8AlR8jCTkc4ir85CpRK9jN25aVg==
-X-Received: by 2002:a05:6512:1188:: with SMTP id g8mr21596868lfr.410.1622616106489;
-        Tue, 01 Jun 2021 23:41:46 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:cd07:2759:3eec:1d00? ([2a02:908:1252:fb60:cd07:2759:3eec:1d00])
-        by smtp.gmail.com with ESMTPSA id y8sm146731lfj.192.2021.06.01.23.41.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 23:41:45 -0700 (PDT)
-Subject: Re: [PATCH -next] drm/radeon/radeon_pm: use DEVICE_ATTR_RW macro
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Cc:     Dave Airlie <airlied@linux.ie>, xinhui pan <Xinhui.Pan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
-References: <20210528070217.9204-1-yuehaibing@huawei.com>
- <CADnq5_M2dSDqafpgEvuaRZRHk1j0=obTyYcYX0GGRGiBzs5eMQ@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <2920ae60-0064-a972-94fd-57b0caa0c01d@gmail.com>
-Date:   Wed, 2 Jun 2021 08:41:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 2 Jun 2021 02:43:54 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fvzs90JyszYs96;
+        Wed,  2 Jun 2021 14:39:25 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 14:42:07 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 14:42:07 +0800
+Subject: Re: [PATCH 1/2] ARM: mm: Refactor __do_page_fault()
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jungseung Lee <js07.lee@gmail.com>
+References: <20210529034138.83384-1-wangkefeng.wang@huawei.com>
+ <20210529034138.83384-2-wangkefeng.wang@huawei.com>
+ <20210601143125.GB30436@shell.armlinux.org.uk>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <8b528367-3636-d05b-84d3-754876ff1e6a@huawei.com>
+Date:   Wed, 2 Jun 2021 14:42:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <CADnq5_M2dSDqafpgEvuaRZRHk1j0=obTyYcYX0GGRGiBzs5eMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210601143125.GB30436@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-Am 02.06.21 um 03:53 schrieb Alex Deucher:
-> On Fri, May 28, 2021 at 3:18 AM YueHaibing <yuehaibing@huawei.com> wrote:
->> Use DEVICE_ATTR_RW() helper instead of plain DEVICE_ATTR(),
->> which makes the code a bit shorter and easier to read.
+On 2021/6/1 22:31, Russell King (Oracle) wrote:
+> On Sat, May 29, 2021 at 11:41:37AM +0800, Kefeng Wang wrote:
+>> 1. cleanup access_error(), make vma flags set and check into
+>>     __do_page_fault() and do_page_fault() directly.
 >>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> I'm not convinced this really buys us anything other than code churn,
-> but I don't have a particularly strong opinion of others feel
-> differently.
-
-I agree, especially dropping the amdgpu/radeon prefix from the functions 
-doesn't sound like something we want.
-
-Christian.
-
+>> 2. drop fsr and task argument, instead, using vm_flags in
+>>     __do_page_fault().
+>>
+>> 3. cleans up the multiple goto statements in __do_page_fault().
+>>
+>> 4. use current->mm directly in do_page_fault().
+>>
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> This patch is a really good example of something that is very difficult
+> to review and see that there are no unintended changes.
 >
-> Alex
+> Many people have complained about my patches, where I create a series of
+> many patches where each patch does exactly _one_ simple transformation to
+> the code. This is a good example _why_ I do that - a step by step single
+> transformation approach is way easier to review.
 >
+> Sorry, but I'm not able to sensibly review this patch, and therefore
+> I won't apply it. Please split it into smaller changes.
+Ok, will split it and send v2, thanks.
 >
->> ---
->>   drivers/gpu/drm/radeon/radeon_pm.c | 56 ++++++++++++------------------
->>   1 file changed, 23 insertions(+), 33 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/radeon/radeon_pm.c b/drivers/gpu/drm/radeon/radeon_pm.c
->> index 3861c0b98fcf..edf10cc3947e 100644
->> --- a/drivers/gpu/drm/radeon/radeon_pm.c
->> +++ b/drivers/gpu/drm/radeon/radeon_pm.c
->> @@ -352,9 +352,8 @@ static void radeon_pm_print_states(struct radeon_device *rdev)
->>          }
->>   }
->>
->> -static ssize_t radeon_get_pm_profile(struct device *dev,
->> -                                    struct device_attribute *attr,
->> -                                    char *buf)
->> +static ssize_t power_profile_show(struct device *dev,
->> +                                 struct device_attribute *attr, char *buf)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -366,10 +365,8 @@ static ssize_t radeon_get_pm_profile(struct device *dev,
->>                            (cp == PM_PROFILE_HIGH) ? "high" : "default");
->>   }
->>
->> -static ssize_t radeon_set_pm_profile(struct device *dev,
->> -                                    struct device_attribute *attr,
->> -                                    const char *buf,
->> -                                    size_t count)
->> +static ssize_t power_profile_store(struct device *dev, struct device_attribute *attr,
->> +                                  const char *buf, size_t count)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -406,9 +403,8 @@ static ssize_t radeon_set_pm_profile(struct device *dev,
->>          return count;
->>   }
->>
->> -static ssize_t radeon_get_pm_method(struct device *dev,
->> -                                   struct device_attribute *attr,
->> -                                   char *buf)
->> +static ssize_t power_method_show(struct device *dev,
->> +                                struct device_attribute *attr, char *buf)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -418,10 +414,9 @@ static ssize_t radeon_get_pm_method(struct device *dev,
->>                            (pm == PM_METHOD_PROFILE) ? "profile" : "dpm");
->>   }
->>
->> -static ssize_t radeon_set_pm_method(struct device *dev,
->> -                                   struct device_attribute *attr,
->> -                                   const char *buf,
->> -                                   size_t count)
->> +static ssize_t power_method_store(struct device *dev,
->> +                                 struct device_attribute *attr,
->> +                                 const char *buf, size_t count)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -462,9 +457,8 @@ static ssize_t radeon_set_pm_method(struct device *dev,
->>          return count;
->>   }
->>
->> -static ssize_t radeon_get_dpm_state(struct device *dev,
->> -                                   struct device_attribute *attr,
->> -                                   char *buf)
->> +static ssize_t power_dpm_state_show(struct device *dev,
->> +                                   struct device_attribute *attr, char *buf)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -475,10 +469,9 @@ static ssize_t radeon_get_dpm_state(struct device *dev,
->>                            (pm == POWER_STATE_TYPE_BALANCED) ? "balanced" : "performance");
->>   }
->>
->> -static ssize_t radeon_set_dpm_state(struct device *dev,
->> -                                   struct device_attribute *attr,
->> -                                   const char *buf,
->> -                                   size_t count)
->> +static ssize_t power_dpm_state_store(struct device *dev,
->> +                                    struct device_attribute *attr,
->> +                                    const char *buf, size_t count)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -506,9 +499,9 @@ static ssize_t radeon_set_dpm_state(struct device *dev,
->>          return count;
->>   }
->>
->> -static ssize_t radeon_get_dpm_forced_performance_level(struct device *dev,
->> -                                                      struct device_attribute *attr,
->> -                                                      char *buf)
->> +static ssize_t power_dpm_force_performance_level_show(struct device *dev,
->> +                                                     struct device_attribute *attr,
->> +                                                     char *buf)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -523,10 +516,9 @@ static ssize_t radeon_get_dpm_forced_performance_level(struct device *dev,
->>                            (level == RADEON_DPM_FORCED_LEVEL_LOW) ? "low" : "high");
->>   }
->>
->> -static ssize_t radeon_set_dpm_forced_performance_level(struct device *dev,
->> +static ssize_t power_dpm_force_performance_level_store(struct device *dev,
->>                                                         struct device_attribute *attr,
->> -                                                      const char *buf,
->> -                                                      size_t count)
->> +                                                      const char *buf, size_t count)
->>   {
->>          struct drm_device *ddev = dev_get_drvdata(dev);
->>          struct radeon_device *rdev = ddev->dev_private;
->> @@ -658,12 +650,10 @@ static ssize_t radeon_hwmon_get_pwm1(struct device *dev,
->>          return sprintf(buf, "%i\n", speed);
->>   }
->>
->> -static DEVICE_ATTR(power_profile, S_IRUGO | S_IWUSR, radeon_get_pm_profile, radeon_set_pm_profile);
->> -static DEVICE_ATTR(power_method, S_IRUGO | S_IWUSR, radeon_get_pm_method, radeon_set_pm_method);
->> -static DEVICE_ATTR(power_dpm_state, S_IRUGO | S_IWUSR, radeon_get_dpm_state, radeon_set_dpm_state);
->> -static DEVICE_ATTR(power_dpm_force_performance_level, S_IRUGO | S_IWUSR,
->> -                  radeon_get_dpm_forced_performance_level,
->> -                  radeon_set_dpm_forced_performance_level);
->> +static DEVICE_ATTR_RW(power_profile);
->> +static DEVICE_ATTR_RW(power_method);
->> +static DEVICE_ATTR_RW(power_dpm_state);
->> +static DEVICE_ATTR_RW(power_dpm_force_performance_level);
->>
->>   static ssize_t radeon_hwmon_show_temp(struct device *dev,
->>                                        struct device_attribute *attr,
->> --
->> 2.17.1
->>
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
-
