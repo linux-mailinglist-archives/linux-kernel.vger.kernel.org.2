@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C17398243
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A94C39824E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhFBG67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:58:59 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3338 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhFBG6q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:58:46 -0400
-Received: from dggeme711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fw08273XBz19PCy;
-        Wed,  2 Jun 2021 14:52:18 +0800 (CST)
-Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
- dggeme711-chm.china.huawei.com (10.1.199.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 2 Jun 2021 14:57:01 +0800
-Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
- dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
- Wed, 2 Jun 2021 14:57:01 +0800
-From:   zhengyongjun <zhengyongjun3@huawei.com>
-To:     Sven Eckelmann <sven@narfation.org>,
-        "mareklindner@neomailbox.ch" <mareklindner@neomailbox.ch>,
-        "sw@simonwunderlich.de" <sw@simonwunderlich.de>,
-        "a@unstable.cc" <a@unstable.cc>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "b.a.t.m.a.n@lists.open-mesh.org" <b.a.t.m.a.n@lists.open-mesh.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIG5ldC1uZXh0XSBiYXRtYW4tYWR2OiBGaXggc3BlbGxp?=
- =?gb2312?Q?ng_mistakes?=
-Thread-Topic: [PATCH net-next] batman-adv: Fix spelling mistakes
-Thread-Index: AQHXV3pzyoNQoWpoCEyLGF27cSirc6r/wTEAgACHrbA=
-Date:   Wed, 2 Jun 2021 06:57:01 +0000
-Message-ID: <8b7a220a964f452c8c3ea0c5404c0632@huawei.com>
-References: <20210602065603.106030-1-zhengyongjun3@huawei.com>
- <48077100.4opSpZgCWW@ripper>
-In-Reply-To: <48077100.4opSpZgCWW@ripper>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.64]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S231266AbhFBG76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229955AbhFBG75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 02:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0158F60FDA;
+        Wed,  2 Jun 2021 06:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622617095;
+        bh=txv+la2kohw7oxTrtxAG2QM64KnaR/i2kauGYQpaw6I=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=PjEYlKT9z5a2teYyRQcyEU+TJ/MxGxIh2s/0QOkdW8+BTte7jI+vN+IWFWYHt1G5u
+         SceFiQgosn0ggw3EBEGnwtBux6I/SJvVEFsWCyNqO91bDkUEy7StaOhFesDu6jc1KK
+         sQLRj8X3NT0uQdqCfatXbg1GfHhFp6ubODOQaDInUE01gZPFG7EUo51wx6fBHKHPrw
+         nZ9uQSnynhYR6HrOuyo4ALWT0lvG0HxbOMLWlTGkaV6VmUCBIfaVC5pLrUQtY2cXY8
+         OpCpsB+uvkP7UXTnKgx5a/WK4rtxJbkLPhPBR+nC0sLwbH2OxnpGjnHRTK5iE4Q4A/
+         0KEw2ohL5kK8A==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <162261690404.4130789.10296098922791923637@swboyd.mtv.corp.google.com>
+References: <1619519590-3019-1-git-send-email-tdas@codeaurora.org> <1619519590-3019-2-git-send-email-tdas@codeaurora.org> <20210503191837.GA2220566@robh.at.kernel.org> <162261690404.4130789.10296098922791923637@swboyd.mtv.corp.google.com>
+Subject: Re: [PATCH v2 1/6] dt-bindings: clock: Add SC7280 DISPCC clock binding
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette =?utf-8?q?=C2=A0?= <mturquette@baylibre.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+To:     Rob Herring <robh@kernel.org>, Taniya Das <tdas@codeaurora.org>
+Date:   Tue, 01 Jun 2021 23:58:13 -0700
+Message-ID: <162261709373.4130789.1672298535915353982@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIHN1Z2dlc3QgOikNCkluIGZhY3QsIEkgc2VuZCBwYXRjaCB0aHJvdWdo
-IHRoZSBweXRob24gc2NyaXB0IG1hZGUgYnkgbXlzZWxmLg0KDQpXaGVuIEkgdXNlIGNvbW1hbmQi
-IC4vc2NyaXB0cy9nZXRfbWFpbnRhaW5lci5wbCAwMDAxLWJhdG1hbi1hZHYtRml4LXNwZWxsaW5n
-LW1pc3Rha2VzLnBhdGNoIiwgdGhlIGluZm9ybWF0aW9uIGlzOg0KYGBgDQpNYXJlayBMaW5kbmVy
-IDxtYXJla2xpbmRuZXJAbmVvbWFpbGJveC5jaD4gKG1haW50YWluZXI6QkFUTUFOIEFEVkFOQ0VE
-KQ0KU2ltb24gV3VuZGVybGljaCA8c3dAc2ltb253dW5kZXJsaWNoLmRlPiAobWFpbnRhaW5lcjpC
-QVRNQU4gQURWQU5DRUQpDQpBbnRvbmlvIFF1YXJ0dWxsaSA8YUB1bnN0YWJsZS5jYz4gKG1haW50
-YWluZXI6QkFUTUFOIEFEVkFOQ0VEKQ0KU3ZlbiBFY2tlbG1hbm4gPHN2ZW5AbmFyZmF0aW9uLm9y
-Zz4gKG1haW50YWluZXI6QkFUTUFOIEFEVkFOQ0VEKQ0KIkRhdmlkIFMuIE1pbGxlciIgPGRhdmVt
-QGRhdmVtbG9mdC5uZXQ+IChtYWludGFpbmVyOk5FVFdPUktJTkcgW0dFTkVSQUxdKQ0KSmFrdWIg
-S2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz4gKG1haW50YWluZXI6TkVUV09SS0lORyBbR0VORVJB
-TF0pDQpiLmEudC5tLmEubkBsaXN0cy5vcGVuLW1lc2gub3JnIChtb2RlcmF0ZWQgbGlzdDpCQVRN
-QU4gQURWQU5DRUQpDQpuZXRkZXZAdmdlci5rZXJuZWwub3JnIChvcGVuIGxpc3Q6TkVUV09SS0lO
-RyBbR0VORVJBTF0pDQpsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIChvcGVuIGxpc3QpDQpg
-YGANCg0KTXkgc2VuZCBwYXRjaCBzY3JpcHQgZm9yZ290IHRvIGRlYWwgd2l0aCBsaW5lIGxpa2Ug
-dGhpcyhmb3Jnb3QgZGVhbCB3aXRoIGtleSB3b3JkIG1vZGVyYXRlZCBsaXN0KTogIiBiLmEudC5t
-LmEubkBsaXN0cy5vcGVuLW1lc2gub3JnIChtb2RlcmF0ZWQgbGlzdDpCQVRNQU4gQURWQU5DRUQp
-Ig0KVGhlcmVmb3JlIEkgZm9yZ290IHRvIHNlbmQgaXQgdG8gdGhlIEIuQS5ULk0uQS5OLiBtYWls
-aW5nIGxpc3QuDQoNCkkgd2lsbCBmaXggdGhpcywgdGhhbmsgeW91IGZvciB5b3VyIHN1Z2dlc3Qg
-OikNCg0KLS0tLS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IFN2ZW4gRWNrZWxtYW5uIFttYWlsdG86
-c3ZlbkBuYXJmYXRpb24ub3JnXSANCreiy83KsbzkOiAyMDIxxOo21MIyyNUgMTQ6NDcNCsrVvP7I
-yzogbWFyZWtsaW5kbmVyQG5lb21haWxib3guY2g7IHN3QHNpbW9ud3VuZGVybGljaC5kZTsgYUB1
-bnN0YWJsZS5jYzsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3JnOyBuZXRkZXZA
-dmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyB6aGVuZ3lvbmdq
-dW4gPHpoZW5neW9uZ2p1bjNAaHVhd2VpLmNvbT47IGIuYS50Lm0uYS5uQGxpc3RzLm9wZW4tbWVz
-aC5vcmcNCtb3zOI6IFJlOiBbUEFUQ0ggbmV0LW5leHRdIGJhdG1hbi1hZHY6IEZpeCBzcGVsbGlu
-ZyBtaXN0YWtlcw0KDQpPbiBXZWRuZXNkYXksIDIgSnVuZSAyMDIxIDA4OjU2OjAzIENFU1QgWmhl
-bmcgWW9uZ2p1biB3cm90ZToNCj4gRml4IHNvbWUgc3BlbGxpbmcgbWlzdGFrZXMgaW4gY29tbWVu
-dHM6DQo+IGNvbnRhaW5nICA9PT4gY29udGFpbmluZw0KPiBkb250ICA9PT4gZG9uJ3QNCj4gZGF0
-YXMgID09PiBkYXRhDQo+IGJyb2RjYXN0ICA9PT4gYnJvYWRjYXN0DQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBaaGVuZyBZb25nanVuIDx6aGVuZ3lvbmdqdW4zQGh1YXdlaS5jb20+DQo+IC0tLQ0KPiAg
-bmV0L2JhdG1hbi1hZHYvYnJpZGdlX2xvb3BfYXZvaWRhbmNlLmMgfCA0ICsrLS0NCj4gIG5ldC9i
-YXRtYW4tYWR2L2hhcmQtaW50ZXJmYWNlLmMgICAgICAgIHwgMiArLQ0KPiAgbmV0L2JhdG1hbi1h
-ZHYvaGFzaC5oICAgICAgICAgICAgICAgICAgfCAyICstDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDQg
-aW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCg0KDQpZb3UgZm9yZ290IHRvIHNlbmQgaXQg
-dG8gdGhlIEIuQS5ULk0uQS5OLiBtYWlsaW5nIGxpc3QuIEFuZCBpdCB0aGVyZWZvcmUgZGlkbid0
-IGFwcGVhciBpbiBvdXIgcGF0Y2h3b3JrLiBBbmQgeW91IHNlbmQgc3R1ZmYgZnJvbSB0aGUgZnV0
-dXJlIC0gd2hpY2ggaXMgcmF0aGVyIG9kZC4NCg0KQXBwbGllZCBhbnl3YXkuDQoNClRoYW5rcywN
-CglTdmVuDQo=
+Quoting Stephen Boyd (2021-06-01 23:55:04)
+> Quoting Rob Herring (2021-05-03 12:18:37)
+> > On Tue, Apr 27, 2021 at 04:03:05PM +0530, Taniya Das wrote:
+> > > diff --git a/include/dt-bindings/clock/qcom,dispcc-sc7280.h b/include=
+/dt-bindings/clock/qcom,dispcc-sc7280.h
+> > > new file mode 100644
+> > > index 0000000..2074b30
+> > > --- /dev/null
+> > > +++ b/include/dt-bindings/clock/qcom,dispcc-sc7280.h
+> > > @@ -0,0 +1,55 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> >=20
+> > Dual license please. I'm tired of telling the company that complained t=
+o=20
+> > me about having dual licensing for DT stuff not dual license their
+> > stuff. Please pass that on to your coworkers.
+> >=20
+>=20
+> Taniya, is this going to be resent?
+
+Also, can you update the gcc binding that was already merged?
