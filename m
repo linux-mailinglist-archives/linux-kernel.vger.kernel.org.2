@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CED63985B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65023985BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFBJyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:54:47 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:46901 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhFBJyX (ORCPT
+        id S232448AbhFBJzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229904AbhFBJy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:54:23 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 1529qB4d002312;
-        Wed, 2 Jun 2021 18:52:12 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 1529qB4d002312
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622627532;
-        bh=Jo0cB1deSaGzNI69+zHJ7n0UNjfwKvEu3wKwMihqjSw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KpbCvbu8/kE6zCYouy4wGOpXBAv6oRqudC4bQ2nkZvDkGytibcjlbZXjF3v71zfWy
-         m21WqkBKdYpxhqaxtcCgjDNT0iDpBf/Dc/pJ0g44QWgN+7JyCSK8fcDOzfh2amxTwu
-         BKUoEx9vW/CVVZRe3PsMYtt/wn0CE+xoFRG+56AkWLHJIqQBA77+llCeiLN0PXAhDA
-         TMkVR/QJuXwRIQizRB+UTmfaSj0hauJD6PU8yDWawGWQ1K+EIdKxesWnKy04Ds5XMp
-         MpaSwsa+DZmLW/pKHxoHX4DGLmYXmJFAA1soHuZXwK/hjORS0aJ7Q4foLXybxUyxzW
-         6JwrY3NOZTr3A==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH] kbuild: remove trailing slashes from $(KBUILD_EXTMOD)
-Date:   Wed,  2 Jun 2021 18:52:09 +0900
-Message-Id: <20210602095209.123619-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 2 Jun 2021 05:54:59 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869B9C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:53:15 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id dg27so2135554edb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=R+UA/QItNObeMQQscZ4ivUcRFeqMf57DAC45WgOVgmY=;
+        b=b0rR34OP4uOaXepns0xG74caSrzPD9qMYG1pa3l8duCvyQLD3BLgAOFJ1sqAQCNdja
+         2+CIRHJzfULinBmSF+djnPdbv11fJK5nSTnFYSe/N4o9xal5rbRnNFqUbpi0p+jxoWs4
+         ZXzFL2ndKx/uLucPEjaue4bPpGhuugMG6TyrOXyPCxtJYX6vhDPq/3MPYbCSPQyRwsSl
+         7HCBsFWbkg88xUJ5ns0Tf0RWDUYOgMAkaLMsRew4e9/2+/NvP4v/IasGKo5dQRvlmI8w
+         vXWp+erbEry7ULfFkfhCg8/igaOcKxsqLQ27u8Y7FD9szVtpdaj1hQ09nHIWc57ToeXs
+         1j5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=R+UA/QItNObeMQQscZ4ivUcRFeqMf57DAC45WgOVgmY=;
+        b=A6EETG15D6bc0n/mQBC5QMsAHP04hPNtd6WFGnT6ZWLRYc3hTXWcFvCsLjYug21/QL
+         /amZMuBhW6NKZsgfvl77ZbifxR61xjYUX0p60+0Lv5WSiTltj3z/AJvWtFz70UOHkkXD
+         VRBFYMXej3AU22vI3paj1L1GUkv0vfhtCdFgJ++xYcKY1pIhjqszYAeIUvO9OIvR8p1I
+         gtj1vwQgjsupNaDS2pke9U+PFarfglTSqmrUpVYtjnDfeVNAXec21Nml1w+1E+h8CM0X
+         K2x8Z4H/txjzNnBmXa8O4CoUzTqmu4q+n7csQ8TA0goVKyGibQa2kk2TXhHvX6rEvJZQ
+         kuBA==
+X-Gm-Message-State: AOAM531nj4mgwT4/oP6ZuGuiWvkZ+CFjGs5RdPbLGfL0SxSIsyFdG2Wl
+        uzluv6eNvugNvHAfGv1KX8Xl17sgSXhQDB9V
+X-Google-Smtp-Source: ABdhPJzjmZwyiiQ+KS0RDNdqHKOItIOjEgtddjOKgTLB4VV8zjvl9jry6WRY4MJ8NH7jnQJCjNHb9Q==
+X-Received: by 2002:aa7:d755:: with SMTP id a21mr18386424eds.146.1622627594218;
+        Wed, 02 Jun 2021 02:53:14 -0700 (PDT)
+Received: from [192.168.1.28] (hst-221-100.medicom.bg. [84.238.221.100])
+        by smtp.googlemail.com with ESMTPSA id d11sm935808ede.74.2021.06.02.02.53.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 02:53:13 -0700 (PDT)
+Subject: Re: [PATCH] venus: helper: do not set constrained format for UBWC
+To:     Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org
+References: <1622195288-18541-1-git-send-email-mansur@codeaurora.org>
+ <a66e00f2-af3a-9550-0779-625152cc2719@nexus-software.ie>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <17aaec56-bfad-63a6-b1c4-7562dedb3137@linaro.org>
+Date:   Wed, 2 Jun 2021 12:53:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <a66e00f2-af3a-9550-0779-625152cc2719@nexus-software.ie>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-M= (or KBUILD_EXTMOD) generally expects a directory path without any
-trailing slashes, like M=a/b/c.
+Mansur, could you answer to Bryan's comments?
 
-If you add a trailing slash, like M=a/b/c/, you will get ugly build
-logs (two slashes in a series), but it still works fine as long as it
-is consistent between 'make modules' and 'make modules_install'.
+On 5/28/21 8:23 PM, Bryan O'Donoghue wrote:
+> On 28/05/2021 10:48, Mansur Alisha Shaik wrote:
+>> Do not set constrained format explicitly for UBWC
+>>
+>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> 
+> Could you give a little bit more detail on why, what the side effects are ?
+> 
+> Should this be a Fixes: ?
+> 
+>> ---
+>>   drivers/media/platform/qcom/venus/helpers.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/media/platform/qcom/venus/helpers.c
+>> b/drivers/media/platform/qcom/venus/helpers.c
+>> index b813d6dba..e4b8a2a 100644
+>> --- a/drivers/media/platform/qcom/venus/helpers.c
+>> +++ b/drivers/media/platform/qcom/venus/helpers.c
+>> @@ -1138,8 +1138,12 @@ int venus_helper_set_format_constraints(struct
+>> venus_inst *inst)
+>>       if (!IS_V6(inst->core))
+>>           return 0;
+>>   +    if (inst->opb_fmt == HFI_COLOR_FORMAT_NV12_UBWC)
+>> +        return 0;
+>> +
+>>       pconstraint.buffer_type = HFI_BUFFER_OUTPUT2;
+>>       pconstraint.num_planes = 2;
+>> +
+> 
+> Additional newline should be removed.
+> 
+>>       pconstraint.plane_format[0].stride_multiples = 128;
+>>       pconstraint.plane_format[0].max_stride = 8192;
+>>       pconstraint.plane_format[0].min_plane_buffer_height_multiple = 32;
+>>
+> 
+> ---
+> bod
 
-So, the following code correctly builds and installs the modules.
-
-  $ make M=a/b/c/ modules
-  $ sudo make M=a/b/c/ modules_install
-
-Since commit ccae4cfa7bfb ("kbuild: refactor scripts/Makefile.modinst"),
-a problem happens if you add a trailing slash only for modules_install.
-
-  $ make M=a/b/c modules
-  $ sudo make M=a/b/c/ modules_install
-
-No module is installed in this case, Johannes Berg reported. [1]
-
-Trim any trailing slashes from $(KBUILD_EXTMOD).
-
-I used the 'dirname' command to remove all the trailing slashes in
-case someone plays with a crazy directory path like M=a/b/c/////.
-The Make's built-in function, $(dir ...) cannot take care of such
-a case.
-
-[1]: https://lore.kernel.org/lkml/10cc8522b27a051e6a9c3e158a4c4b6414fd04a0.camel@sipsolutions.net/
-
-Fixes: ccae4cfa7bfb ("kbuild: refactor scripts/Makefile.modinst")
-Reported-by: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Makefile b/Makefile
-index b79e0e8acbe3..6dabf3a1f635 100644
---- a/Makefile
-+++ b/Makefile
-@@ -129,6 +129,11 @@ endif
- $(if $(word 2, $(KBUILD_EXTMOD)), \
- 	$(error building multiple external modules is not supported))
- 
-+ifneq ($(KBUILD_EXTMOD),)
-+# remove trailing slashes
-+KBUILD_EXTMOD := $(shell dirname $(KBUILD_EXTMOD)/.)
-+endif
-+
- export KBUILD_EXTMOD
- 
- # Kbuild will save output files in the current working directory.
 -- 
-2.27.0
-
+regards,
+Stan
