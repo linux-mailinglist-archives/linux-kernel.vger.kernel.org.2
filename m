@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A2A398E72
+	by mail.lfdr.de (Postfix) with ESMTP id CEC0C398E73
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhFBPWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:22:31 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:18831 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbhFBPWS (ORCPT
+        id S232091AbhFBPWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:22:35 -0400
+Received: from mail.efficios.com ([167.114.26.124]:36804 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhFBPWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:22:18 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 02 Jun 2021 08:20:32 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 02 Jun 2021 08:20:31 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 02 Jun 2021 20:50:06 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 3B487211A6; Wed,  2 Jun 2021 20:50:05 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     andy.gross@linaro.org, david.brown@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v2] arm64: dts: qcom: sc7280: Add venus DT node
-Date:   Wed,  2 Jun 2021 20:50:00 +0530
-Message-Id: <1622647200-1487-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 2 Jun 2021 11:22:20 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 6B491303338;
+        Wed,  2 Jun 2021 11:20:36 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id oA9Znan3JO-5; Wed,  2 Jun 2021 11:20:36 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id EA75D3034A8;
+        Wed,  2 Jun 2021 11:20:35 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com EA75D3034A8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1622647235;
+        bh=Uwm6mYAnQeCAyeFqmmDWETNfM8TkaJyhdProBbIWoVY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=IYb5iAHF95VdbAlykkiJH1VcMtofjpo/R7H3jJFwLUTTzLd9OhxPhBIGBlGs8EUqs
+         pQfrQbHRO5KJjCOql7wJv9YiO36Fx0zE1hDUjTfvaHkxVkTalro2J7FtDwSHcNS/hP
+         bV7GNKUX0+FB4exGP8MHYR+EFqyEkiWUwp8jOo9mTpWTQ/OyXLUN2zpiswRIoBnSKj
+         Hhe2RCiuqbPWH5hWAGrXwSXtcAXDLQQznnI3BtbQKEUSp+AS+iixZ+hJwRG/SPOgi9
+         E81ociALpdpcTu1slRN/mZJarsrb+n4CBeggaWR/6dg5pY9s72fLXOhRqb60FkgFbp
+         8pi8Y9CI+BItA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id dHpPiLGh3TOw; Wed,  2 Jun 2021 11:20:35 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id DA1A6303337;
+        Wed,  2 Jun 2021 11:20:35 -0400 (EDT)
+Date:   Wed, 2 Jun 2021 11:20:35 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     git@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+Subject: git feature request: git blame --ignore-cleanup/--ignore-trivial
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4026)
+Thread-Index: CgspAIu30m0Vwa253dc6f6g5DlZX3A==
+Thread-Topic: git feature request: git blame --ignore-cleanup/--ignore-trivial
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT entries for the sc7280 venus encoder/decoder.
+Hi,
 
-Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+Following a discussion with Peter Zijlstra about whether code cleanup
+and functional changes done to the Linux kernel scheduler belong to separate
+patches or should be folded together, the argument for folding cleanup
+and function changes came to be mainly motivated by the current behavior
+of git blame: code cleanup patches end up burying the important changes so
+it becomes cumbersome to find them using git blame.
 
-change since v1:
- - added rpmh power domain and opp table.
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
+Considering the added value brought by splitting cleanups from functional changes
+from a maintainer perspective (easier reverts) and from a reviewer perspective
+(easier to focus on the functional changes), I think it would be good to improve
+the git tooling to allow easily filtering out the noise from git blame.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 4c44a52..4982f96 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -60,6 +60,11 @@
- 			no-map;
- 			reg = <0x0 0x80b00000 0x0 0x100000>;
- 		};
-+
-+		video_mem: memory@8b200000 {
-+			reg = <0x0 0x8b200000 0x0 0x500000>;
-+			no-map;
-+		};
- 	};
- 
- 	cpus {
-@@ -850,6 +855,76 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		venus: video-codec@0aa00000 {
-+			compatible = "qcom,sc7280-venus";
-+			reg = <0 0x0aa00000 0 0xd0600>;
-+			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-+				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-+			clock-names = "core", "bus", "iface",
-+				      "vcodec_core", "vcodec_bus";
-+
-+			power-domains = <&videocc MVSC_GDSC>,
-+					<&videocc MVS0_GDSC>;
-+					<&rpmhpd SC7280_CX>;
-+			power-domain-names = "venus", "vcodec0", "cx";
-+			operating-points-v2 = <&venus_opp_table>;
-+
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
-+					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "cpu-cfg", "video-mem";
-+
-+			iommus = <&apps_smmu 0x2180 0x20>,
-+				 <&apps_smmu 0x2184 0x20>;
-+			memory-region = <&video_mem>;
-+
-+			video-decoder {
-+				compatible = "venus-decoder";
-+			};
-+
-+			video-encoder {
-+				compatible = "venus-encoder";
-+			};
-+
-+			video-firmware {
-+				iommus = <&apps_smmu 0x21a2 0x0>;
-+			};
-+
-+			venus_opp_table: venus-opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-133330000 {
-+					opp-hz = /bits/ 64 <133330000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+				};
-+
-+				opp-240000000 {
-+					opp-hz = /bits/ 64 <240000000>;
-+					required-opps = <&rpmhpd_opp_svs>;
-+				};
-+
-+				opp-335000000 {
-+					opp-hz = /bits/ 64 <335000000>;
-+					required-opps = <&rpmhpd_opp_svs_l1>;
-+				};
-+
-+				opp-424000000 {
-+					opp-hz = /bits/ 64 <424000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+				};
-+
-+				opp-460000000 {
-+					opp-hz = /bits/ 64 <460000000>;
-+					required-opps = <&rpmhpd_opp_turbo>;
-+				};
-+			};
-+
-+		};
-+
- 		videocc: clock-controller@aaf0000 {
- 			compatible = "qcom,sc7280-videocc";
- 			reg = <0 0xaaf0000 0 0x10000>;
+Perhaps a new git blame "--ignore-trivial" and/or "--ignore-cleanup" could solve
+this by filtering out "trivial" and "cleanup" patches from the history it considers.
+
+Tagging patches as trivial and cleanup should be done in the patch commit message
+(possibly in the title), and enforcing proper tagging of commits is already the
+responsibility of the maintainer merging those cleanup/trivial commits into the
+Linux kernel anyway.
+
+Under the hood, I suspect it could use something similar to git log --grep=<pattern>
+--invert-grep.
+
+This should allow git blame users to easily filter out the noise and focus on the relevant
+functional changes.
+
+Any maybe the patterns associated to "cleanup" and "trivial" commits should be something
+that can be configured through a git config file.
+
+Thoughts ?
+
+Thanks,
+
+Mathieu
+
 -- 
-2.7.4
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
