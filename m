@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C37398ADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D085398AE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhFBNj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:39:56 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:35613 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhFBNjz (ORCPT
+        id S229844AbhFBNlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:41:05 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]:34634 "EHLO
+        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhFBNlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:39:55 -0400
-Received: by mail-pg1-f171.google.com with SMTP id 133so2274418pgf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:38:12 -0700 (PDT)
+        Wed, 2 Jun 2021 09:41:04 -0400
+Received: by mail-qt1-f181.google.com with SMTP id v4so1825378qtp.1;
+        Wed, 02 Jun 2021 06:39:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ggtixs2081NFyzFZjKHEZFg0tSmZqU1lORXP6WHti2M=;
-        b=ha4c+/+xV2Tg8r7LY6CYQfILogLoM9qyX2AB2ENNR2Kj4tmR1Nxfwr9QXbdvsl7lBV
-         YgyXtHX+5m8dZz8qw9WvIgH8OkFmaZAo/EXo9KjNSk59rfE710G/8ayFxEg7OAHbAccY
-         /vULJvNphqg35q0iP8wZ/LXRTvhK3fiq+fqtCdYGP4SSk5pBR4Q8egi8U0KOroQwZAO6
-         R9zigCUJy8hwOZWUNJAKfP4EIgVQaXPRrZlxjvD8zLilFXYYqt58eYz8jgfZXbOzfOyw
-         VLYnBKTBzApZAJnBk+nksamtwa/aRXPm5FSbXerumTo4gGpr2eY8WcaluzV5LF/zHdsF
-         o2iA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=fXSd1bu/MjA4kYOL8Ihcm6lOkbPZHxwAQyd0h39bQys=;
+        b=Bdqr8pApaGq+LY69gs/wUXsUFNGo62mZ23+zVlJ6VG8qNtM5rlPLXLdHvvdcZCyBlD
+         +qIIYSnBy7lRIzGa1UIQuzvEcfBx1M1zEURyVDq2rw2Qz8jqrUqSJgP4cmU6R1/9CqV3
+         MdPcUx2ag6vPfItYyFnCcOQSuT3QqV94I3VIwrqYCceJCv9X2spkjEhigVi5priclWVr
+         TMbNyRoXyRD14myyUfrMayFW1QaUQvSrBQM9yySxmDdmYg/fw6yeFUr3eRNRdMxMg/eZ
+         SSyD/sObfKWFr7+qFsWG03Rwkibjto7JZ4SrbLOVSgkAB23tmCoaelWuZipnUZ9mHMUh
+         ZLOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Ggtixs2081NFyzFZjKHEZFg0tSmZqU1lORXP6WHti2M=;
-        b=Y3KOp2gzPEGdtfDvJFADAzVoC+jiS9TAhyIgNcCY1cS1maAWsfbE9Ub0Pap16Kz08z
-         8eApJBT+kcoqkOyLHV7KUxMl2iZSoVkmAPI5IGUcsUjHwBRnEPeQsd17rPS+Xg9wUJ52
-         fzB18qu27NASNrJ9y5suTUb84HmSgto47L9pc0lHR/QEcCyxZvg7mIzWDeLdZaagjolR
-         6AajYv4/YGvqVmxEcvsx8vOGFJ38l35b950HiZqCfbC9VJ+tp7d1Qxh1Lu1gmAm5bBo2
-         i19/BWH/ZAMDmPSfzfZosiIsWkEG4rpuBRKBXyRSKQmr6pwTw8nTyo+YeUaSD62DTQTW
-         pYGg==
-X-Gm-Message-State: AOAM53325t86MbL2a9VQaR2dVdF7oWQQRS8x1qB0Y4tffURjD9m52BqX
-        z4oL1Ly2W2dWzRfqe4GQhJs=
-X-Google-Smtp-Source: ABdhPJxSyat2Sj5uimWbBNoh8uTFj0dKrTGy/R2BnSoK93NYDr6PicCHpALC/bNrjzyERuRv41XHpw==
-X-Received: by 2002:a65:60c5:: with SMTP id r5mr14215853pgv.79.1622641032378;
-        Wed, 02 Jun 2021 06:37:12 -0700 (PDT)
-Received: from localhost.localdomain ([183.82.159.194])
-        by smtp.googlemail.com with ESMTPSA id x6sm907000pfd.173.2021.06.02.06.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 06:37:12 -0700 (PDT)
-From:   sh4nnu <manikishanghantasala@gmail.com>
-Cc:     manikishanghantasala@gmail.com,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        bh=fXSd1bu/MjA4kYOL8Ihcm6lOkbPZHxwAQyd0h39bQys=;
+        b=tPBXjJJZd53lTgPLjNLjw/YIV4PAUND0dOJwi6dYIYOg5DFr+gbAjAdQgW3GIo/9Ob
+         6Mcvbxdix1T1jA0BVwj1uBGZKs3QzihKa5bi2GmPxHorUMa3urHiT/sehF/TFXCb7GaD
+         2Ea3sXoY2H7APASBaCspTar7QUQhuSt5wEu+WwVY9MfUTUFLD7hSIql5DM/VGCrXs+j5
+         GRzSkiaJtK/FCRc/RUNpbtotCEE5Wj9JlgTAj1+cb4KuRMC8Aew7anrzC66B1RzKQ8pO
+         1A013iTzJANbryB0UCcc0CiISYI4HN2J64uXkKlCU1cqOZ1NaDtwX5/9AtzxYaxbKhMy
+         /lAw==
+X-Gm-Message-State: AOAM531YsVlHJ35tJBTBGQ3nQO9VEbRB9/4Uvvc550M6bq44DcJYLZdC
+        /SZratjlJDqtbMlJpWGgDKDTha9QVLs=
+X-Google-Smtp-Source: ABdhPJzylTigPMjfmZV1kPFltHQiGPtbkVJpOB7lOLTl9m/ke4a2fLAZt5LObqaccGLqcYzGFKUs8A==
+X-Received: by 2002:ac8:5392:: with SMTP id x18mr24523589qtp.381.1622641085619;
+        Wed, 02 Jun 2021 06:38:05 -0700 (PDT)
+Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
+        by smtp.gmail.com with ESMTPSA id h8sm11997188qtp.46.2021.06.02.06.38.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 06:38:05 -0700 (PDT)
+Subject: Re: docs: Convert the Speakup guide to rst
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        speakup@linux-speakup.org, corbet@lwn.net,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: greybus: fixed the coding style, labels should not be indented.
-Date:   Wed,  2 Jun 2021 19:06:58 +0530
-Message-Id: <20210602133659.46158-1-manikishanghantasala@gmail.com>
-X-Mailer: git-send-email 2.25.1
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <20210531220754.h4ep2dj65wl6hejf@begin>
+ <b8769ad4-9188-a735-3ac4-4a79b9b06487@gmail.com>
+ <20210601215536.5rhnbwwt66uyqhze@begin>
+ <85969150-6e00-12b8-b56d-5f161436777d@gmail.com> <87pmx4pi29.fsf@intel.com>
+From:   Igor Torrente <igormtorrente@gmail.com>
+Message-ID: <2044b3a6-45e1-5fe9-cabb-88a2758cde24@gmail.com>
+Date:   Wed, 2 Jun 2021 10:38:01 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <87pmx4pi29.fsf@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manikishan Ghantasala <manikishanghantasala@gmail.com>
+Hi Jani,
 
-staging: greybus: gpio.c: Clear coding-style problem
-"labels should not be indented" by removing indentation.
+On 6/2/21 9:27 AM, Jani Nikula wrote:
+> On Tue, 01 Jun 2021, Igor Torrente <igormtorrente@gmail.com> wrote:
+>> Hi Samuel,
+>>
+>> On 6/1/21 6:55 PM, Samuel Thibault wrote:
+>>> Hello,
+>>>
+>>> Igor Torrente, le mar. 01 juin 2021 12:39:01 -0300, a ecrit:
+>>>> I was reading all the emails sent in this thread, but I'm not sure how I
+>>>> should proceed. Do think should I continue to improve the patch with the
+>>>> Jani Nikula suggestions? Or abandon it? Or keep both versions?
+>>>
+>>> It seems that people are fine with the switch to the .rst format, and
+>>> it'll indeed allow much better distribution of its content, so please
+>>> continue improving the patch with the suggestions from Jani, you have an
+>>>
+>>> Acked-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+>>>
+>>> and the review will probably come from Jani, who seems to actually know
+>>> a bit about the rst syntax :)
+>>
+>> OK, I will keep improving it.
+> 
+> Heh, I just made suggestions on things that I thought could be done
+> better, but please see for yourself how it renders and how it actually
+> works with Braille displays. That should have priority over anything I
+> suggest.
 
-Signed-off-by: Manikishan Ghantasala <manikishanghantasala@gmail.com>
+I understand and agree. But I don't have a braille display to test the 
+change, so I will need the help of the community anyway.
+
+And if anything gets worse I can revert the changes in the next patch 
+version based on the feedback.
+
+> 
+> BR,
+> Jani.
+> 
+> 
+
+Thanks,
 ---
- drivers/staging/greybus/gpio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/greybus/gpio.c b/drivers/staging/greybus/gpio.c
-index 7e6347fe93f9..4661f4a251bd 100644
---- a/drivers/staging/greybus/gpio.c
-+++ b/drivers/staging/greybus/gpio.c
-@@ -20,9 +20,9 @@
- struct gb_gpio_line {
- 	/* The following has to be an array of line_max entries */
- 	/* --> make them just a flags field */
--	u8			active:    1,
--				direction: 1,	/* 0 = output, 1 = input */
--				value:     1;	/* 0 = low, 1 = high */
-+	u8			active:1,
-+				direction:1,	/* 0 = output, 1 = input */
-+				value:1;	/* 0 = low, 1 = high */
- 	u16			debounce_usec;
- 
- 	u8			irq_type;
--- 
-2.25.1
-
+Igor M. A. Torrente
