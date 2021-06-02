@@ -2,447 +2,550 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3003989E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886E13989F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhFBMpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhFBMps (ORCPT
+        id S229876AbhFBMrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:47:36 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:57703 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229541AbhFBMre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:45:48 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E36C061574;
-        Wed,  2 Jun 2021 05:44:06 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so2284781otk.5;
-        Wed, 02 Jun 2021 05:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MW8o4EIgVKG5AkNL8mgbNRCVVUkJWDWwo/k1KObUVqA=;
-        b=Y1U55xjwdfHNEis2rGe2ENfvs5hhYL0a5sPtCfj2ff+NGgKlaLHgKd98pn4BmhtjXG
-         m2dQaZpvB0lzD963bCY9ykHF++pbpa/PvGxCG4LRCEbSeMm3wYxnQH2p43cVRPgbQOq0
-         CJNn8jxtcwTjl0h5RFGSj4b9PufUjRQRyKFtwIKOZk1NaqwShjBGkf5GV+h8GKKicO0Y
-         kb7wj3IGvAxXvy2DyGdrMYJSeLnukgSwRofJDA0Fxo90L80pJl6454M6YMtmJKC78OTE
-         Xeq/0JTMNBVA+hkyxbIoSz+WrqzKujjlNLXIIqgVqGtuLxVITR+IXjnSYx+PBhRrLJfU
-         AD2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MW8o4EIgVKG5AkNL8mgbNRCVVUkJWDWwo/k1KObUVqA=;
-        b=gSstIzUj5zSEUMM7nyANFCVmF4qE+ob79p064r8IWeeDO01rjH6etA7FaW2a89BxG8
-         d1O//pA3nJNZhQuCQXiNeWNmtOkk7vJFaY5i9ZsdQVXAYpFZjID7qE0mTz/KJSMExbre
-         lM42lrBcl1drfcut/7sySqHuvuwkurwU3Og2Z9Qs/ojQdd6bhMBI8WqDZZQepRzrUH5N
-         QMvxF+/T1y1OB4hQkxUXxFgHlEbDXaaiCedF4e+wwc+iGOYWsfa88VC5/ieeu04mR7zy
-         w3KCZXbfsNkjkGV7f/FIg/GDCSk8Oy6KuzlSNBBuN91cHQc+i+Q50MjKnWP+95ZcK25X
-         BO3g==
-X-Gm-Message-State: AOAM533Sr6XZtHN0mfPjE3MFdwoKi7Z1ga6WvyAYNdpM2K6hHyCFos9k
-        N53jIl/JnGTp4OmISnPbxQjOfdXEAgMl/Up7fww=
-X-Google-Smtp-Source: ABdhPJw6vHEJd7VGoLXB6NyhLonTIXgEktNNQCsa50N618rAysR8pyXgGTPxJl10wQsk23Cwst2sXV5Mk2S8v9ugsgg=
-X-Received: by 2002:a9d:4f19:: with SMTP id d25mr138576otl.72.1622637845314;
- Wed, 02 Jun 2021 05:44:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
- <20210515124055.22225-3-sergio.paracuellos@gmail.com> <20210531131431.bzsvmefqdyawmeo2@pali>
- <CAMhs-H80=7jctPT70rOmcwcqPw+9iUF84_ZCgGr-TKwJ4eB2Lg@mail.gmail.com>
- <20210531135041.42ovpmbwuc3yfkaw@pali> <CAMhs-H_fR5aXJ=diTm-2yhgjjv9S6N6jA-DOZ0K_BnQ4UHHh3Q@mail.gmail.com>
- <CAMhs-H8EwQDvZtzpPn2u_WOWt1wcixOvz5nVZP2miM6j0+P7EA@mail.gmail.com> <20210602122337.fxwaikulbawwkc2j@pali>
-In-Reply-To: <20210602122337.fxwaikulbawwkc2j@pali>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 2 Jun 2021 14:43:53 +0200
-Message-ID: <CAMhs-H8Gr=ObgMZAZ9VuNqHX4TaKQPPGNNMY4pzh9o=3EbAgUQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] MIPS: pci: Add driver for MT7621 PCIe controller
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        Wed, 2 Jun 2021 08:47:34 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id oQFllEiQrEXL0oQFply6Nu; Wed, 02 Jun 2021 14:45:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622637949; bh=Dc6QaBoyDmn+2746fvBeKcmGoOKA5ei1jXTW6AYJ59E=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=AB3RBDAVd2/POXkWkvAeYjxYtdagZcvVP/4sNAS2IH/1w6B7hDYKgazeee5A+EvhL
+         noaajlTRa619//aAE0CoHPJCtZ+SZJKd6clzowo3GJhmqU0mnMJuhc/tnS0FMTC7KU
+         woO9glMemIQPGsvrcFp020hsuiPCxMp3DD0WveLnn8g61VB4e2yogYcuE7cIoq4VtG
+         TJyeriEejK+nWrEKtZQVY5pzdgq5CUDriDUH2N2r/tqdnpmX58UjRizIK4OwEIWU/D
+         eYZfMg9gXM05Woit4m7VLH+LL8XHGwWO0YcR5KC/JAppJzwsg1e/a8dKxs8tooSNk8
+         chdzK/9CSJang==
+Subject: Re: [PATCH 9/9] media: dwc: dw-hdmi-rx: Add support for CEC
+To:     Nelson Costa <Nelson.Costa@synopsys.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-staging@lists.linux.dev,
-        Greg KH <gregkh@linuxfoundation.org>,
-        NeilBrown <neil@brown.name>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jose Abreu <Jose.Abreu@synopsys.com>
+References: <cover.1622631488.git.nelson.costa@synopsys.com>
+ <86557797e979ce29ed97dd1ed0db8499a6ccbc34.1622631488.git.nelson.costa@synopsys.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <746222a8-4b3f-2655-c5de-15d25e8b8852@xs4all.nl>
+Date:   Wed, 2 Jun 2021 14:45:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <86557797e979ce29ed97dd1ed0db8499a6ccbc34.1622631488.git.nelson.costa@synopsys.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNjulgeh/vKDxlGTa3YoJAWf7LYytDOg2VsUydqam2X2P9SV0iZ1hGiGAcgLVwqDOvG05TehSBAluCy0G/+0TjI83lccA7MRk3kwLFTZQX2MFEfYCQXA
+ Tfb4kFsmr5WrCq83dVb5QuoL9U1G14txyJ4CRTureI7RsqXedutIrZCWWhnPcex7z94S/mUE/2zkq4rxHvkvpSyGCxSW+r9XnCxRY3MQf1DnCEBtOeDGeIzd
+ Sr4PioZtZ00+3EKJaeI8tqR1xylXhIGRlEnwVjiM3w/ze8mFNj4Ogy3vflBvnQP1GCsJbOoFiHcGa3FITxGxxnAKIqd25REEcK1lUs/9HjgnTjTc1WQuiPXX
+ 5MrMravxiJZ7hVVAGimYmfxINEn6rdHhz/R974pKHAZPc43iu8oKL3MAPOvpA6/JXBBEHx8mO7Md575xbYm9/UdklzxIjmMXZpwFB+0R6HDPBLcH+dcEs4yf
+ GzP1RoQ8XjdbrR2hWaCJ8q3QL8ZRSCXgHnHPODnOIVJ7UMu9tHpzHGg0SGo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
+On 02/06/2021 13:24, Nelson Costa wrote:
+> This adds support for the optional HDMI CEC feature
+> for the Synopsys DesignWare HDMI RX Controller.
+> 
+> It uses the generic CEC framework interface.
+> 
+> Signed-off-by: Jose Abreu <jose.abreu@synopsys.com>
+> Signed-off-by: Nelson Costa <nelson.costa@synopsys.com>
+> ---
+>  drivers/media/platform/dwc/Kconfig      |  10 ++
+>  drivers/media/platform/dwc/dw-hdmi-rx.c | 259 +++++++++++++++++++++++++++++++-
+>  drivers/media/platform/dwc/dw-hdmi-rx.h |  57 +++++++
+>  3 files changed, 324 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/dwc/Kconfig b/drivers/media/platform/dwc/Kconfig
+> index e915ca6..b487a92 100644
+> --- a/drivers/media/platform/dwc/Kconfig
+> +++ b/drivers/media/platform/dwc/Kconfig
+> @@ -11,3 +11,13 @@ config VIDEO_DWC_HDMI_RX
+>  
+>  	  To compile this driver as a module, choose M here. The module
+>  	  will be called dw-hdmi-rx.
+> +
+> +config VIDEO_DWC_HDMI_RX_CEC
+> +	bool "Synopsys DesignWare HDMI Receiver CEC support"
+> +	depends on VIDEO_DWC_HDMI_RX
+> +	select CEC_CORE
+> +	help
+> +	  When selected the Synopsys DesignWare HDMI RX controller
+> +	  will support the optional HDMI CEC feature.
+> +
+> +	  It uses the generic CEC framework interface.
+> diff --git a/drivers/media/platform/dwc/dw-hdmi-rx.c b/drivers/media/platform/dwc/dw-hdmi-rx.c
+> index a468a93..5d6b1c0 100644
+> --- a/drivers/media/platform/dwc/dw-hdmi-rx.c
+> +++ b/drivers/media/platform/dwc/dw-hdmi-rx.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/workqueue.h>
+>  #include <linux/rational.h>
+>  #include <linux/hdmi.h>
+> +#include <media/cec.h>
+>  #include <media/v4l2-async.h>
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-device.h>
+> @@ -36,6 +37,7 @@
+>  #define DW_HDMI_JTAG_TAP_WRITE_CMD	1
+>  #define DW_HDMI_JTAG_TAP_READ_CMD	3
+>  #define DW_HDMI_AUDIO_FREQ_RANGE	1000
+> +#define DW_HDMI_CEC_MAX_LOG_ADDRS	CEC_MAX_LOG_ADDRS
+>  
+>  /* EDID for HDMI RX */
+>  static u32 dw_hdmi_edid[] = {
+> @@ -164,6 +166,9 @@ struct dw_hdmi_dev {
+>  	union hdmi_infoframe audioif;
+>  	union hdmi_infoframe vsif;
+>  
+> +	/* CEC */
+> +	struct cec_adapter *cec_adap;
+> +
+>  	/* v4l2 device */
+>  	struct v4l2_subdev sd;
+>  	struct v4l2_ctrl_handler hdl;
+> @@ -365,6 +370,20 @@ static void dw_hdmi_reset(struct dw_hdmi_dev *dw_dev)
+>  	dw_hdmi_main_reset(dw_dev);
+>  
+>  	dw_hdmi_disable_hpd(dw_dev);
+> +
+> +	/* After a main reset try to re-enable the cec adapter in order to
+> +	 * reconfigure the required cec registers. For this the physical address
+> +	 * is invalidated and reconfigured, and with CEC_CAP_NEEDS_HPD allowing
+> +	 * to re-enable the adapter.
+> +	 */
+> +	if (dw_dev->cec_adap) {
+> +		u16 phys_addr = dw_dev->cec_adap->phys_addr;
+> +
+> +		cec_phys_addr_invalidate(dw_dev->cec_adap);
+> +		cec_s_phys_addr(dw_dev->cec_adap, phys_addr, false);
+> +		dev_dbg(dw_dev->dev, "%s: re-enable cec adapter\n",
+> +			__func__);
+> +	}
+>  }
+>  
+>  static inline bool is_off(struct dw_hdmi_dev *dw_dev)
+> @@ -1460,6 +1479,184 @@ static u32 dw_hdmi_get_int_val(struct dw_hdmi_dev *dw_dev, u32 ists, u32 ien)
+>  	return hdmi_readl(dw_dev, ists) & hdmi_readl(dw_dev, ien);
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_VIDEO_DWC_HDMI_RX_CEC)
+> +static void dw_hdmi_cec_enable_ints(struct dw_hdmi_dev *dw_dev)
+> +{
+> +	u32 mask = DW_HDMI_DONE_ISTS | DW_HDMI_EOM_ISTS |
+> +		DW_HDMI_NACK_ISTS | DW_HDMI_ARBLST_ISTS |
+> +		DW_HDMI_ERROR_INIT_ISTS | DW_HDMI_ERROR_FOLL_ISTS;
+> +
+> +	hdmi_writel(dw_dev, mask, DW_HDMI_AUD_CEC_IEN_SET);
+> +	hdmi_writel(dw_dev, 0x0, DW_HDMI_CEC_MASK);
+> +}
+> +
+> +static void dw_hdmi_cec_disable_ints(struct dw_hdmi_dev *dw_dev)
+> +{
+> +	hdmi_writel(dw_dev, ~0x0, DW_HDMI_AUD_CEC_IEN_CLR);
+> +	hdmi_writel(dw_dev, ~0x0, DW_HDMI_CEC_MASK);
+> +}
+> +
+> +static void dw_hdmi_cec_clear_ints(struct dw_hdmi_dev *dw_dev)
+> +{
+> +	hdmi_writel(dw_dev, ~0x0, DW_HDMI_AUD_CEC_ICLR);
+> +}
+> +
+> +static void dw_hdmi_cec_tx_raw_status(struct dw_hdmi_dev *dw_dev, u32 stat)
+> +{
+> +	if (hdmi_readl(dw_dev, DW_HDMI_CEC_CTRL) & DW_HDMI_SEND_MASK) {
+> +		dev_dbg(dw_dev->dev, "%s: tx is busy\n", __func__);
+> +		return;
+> +	}
+> +
+> +	if (stat & DW_HDMI_ARBLST_ISTS) {
+> +		cec_transmit_attempt_done(dw_dev->cec_adap,
+> +					  CEC_TX_STATUS_ARB_LOST);
+> +		return;
+> +	}
+> +
+> +	if (stat & DW_HDMI_NACK_ISTS) {
+> +		cec_transmit_attempt_done(dw_dev->cec_adap, CEC_TX_STATUS_NACK);
+> +		return;
+> +	}
+> +
+> +	if (stat & DW_HDMI_ERROR_INIT_ISTS) {
+> +		dev_dbg(dw_dev->dev, "%s: got low drive error\n", __func__);
+> +		cec_transmit_attempt_done(dw_dev->cec_adap,
+> +					  CEC_TX_STATUS_LOW_DRIVE);
+> +		return;
+> +	}
+> +
+> +	if (stat & DW_HDMI_DONE_ISTS) {
+> +		cec_transmit_attempt_done(dw_dev->cec_adap, CEC_TX_STATUS_OK);
+> +		return;
+> +	}
+> +}
+> +
+> +static void dw_hdmi_cec_received_msg(struct dw_hdmi_dev *dw_dev)
+> +{
+> +	struct cec_msg msg;
+> +	u8 i;
+> +
+> +	msg.len = hdmi_readl(dw_dev, DW_HDMI_CEC_RX_CNT);
+> +	if (!msg.len || msg.len > DW_HDMI_CEC_RX_DATA_MAX)
+> +		return; /* it's an invalid/non-existent message */
+> +
+> +	for (i = 0; i < msg.len; i++)
+> +		msg.msg[i] = hdmi_readl(dw_dev, DW_HDMI_CEC_RX_DATA(i));
+> +
+> +	hdmi_writel(dw_dev, 0x0, DW_HDMI_CEC_LOCK);
+> +	cec_received_msg(dw_dev->cec_adap, &msg);
+> +}
+> +
+> +static int dw_hdmi_cec_adap_enable(struct cec_adapter *adap, bool enable)
+> +{
+> +	struct dw_hdmi_dev *dw_dev = cec_get_drvdata(adap);
+> +
+> +	dev_dbg(dw_dev->dev, "%s: enable=%d\n", __func__, enable);
+> +
+> +	hdmi_writel(dw_dev, 0x0, DW_HDMI_CEC_ADDR_L);
+> +	hdmi_writel(dw_dev, 0x0, DW_HDMI_CEC_ADDR_H);
+> +
+> +	if (enable) {
+> +		hdmi_writel(dw_dev, 0x0, DW_HDMI_CEC_LOCK);
+> +		dw_hdmi_cec_clear_ints(dw_dev);
+> +		dw_hdmi_cec_enable_ints(dw_dev);
+> +	} else {
+> +		dw_hdmi_cec_disable_ints(dw_dev);
+> +		dw_hdmi_cec_clear_ints(dw_dev);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int dw_hdmi_cec_adap_log_addr(struct cec_adapter *adap, u8 addr)
+> +{
+> +	struct dw_hdmi_dev *dw_dev = cec_get_drvdata(adap);
+> +	u32 tmp;
+> +
+> +	dev_dbg(dw_dev->dev, "%s: addr=%d\n", __func__, addr);
+> +
+> +	if (addr == CEC_LOG_ADDR_INVALID) {
+> +		hdmi_writel(dw_dev, 0x0, DW_HDMI_CEC_ADDR_L);
+> +		hdmi_writel(dw_dev, 0x0, DW_HDMI_CEC_ADDR_H);
+> +		return 0;
+> +	}
+> +
+> +	if (addr >= 8) {
+> +		tmp = hdmi_readl(dw_dev, DW_HDMI_CEC_ADDR_H);
+> +		tmp |= BIT(addr - 8);
+> +		hdmi_writel(dw_dev, tmp, DW_HDMI_CEC_ADDR_H);
+> +	} else {
+> +		tmp = hdmi_readl(dw_dev, DW_HDMI_CEC_ADDR_L);
+> +		tmp |= BIT(addr);
+> +		hdmi_writel(dw_dev, tmp, DW_HDMI_CEC_ADDR_L);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int dw_hdmi_cec_adap_transmit(struct cec_adapter *adap, u8 attempts,
+> +				     u32 signal_free_time, struct cec_msg *msg)
+> +{
+> +	struct dw_hdmi_dev *dw_dev = cec_get_drvdata(adap);
+> +	u8 len = msg->len;
+> +	u32 reg;
+> +	u8 i;
+> +
+> +	dev_dbg(dw_dev->dev, "%s: len=%d\n", __func__, len);
+> +
+> +	if (hdmi_readl(dw_dev, DW_HDMI_CEC_CTRL) & DW_HDMI_SEND_MASK) {
+> +		dev_err(dw_dev->dev, "%s: tx is busy\n", __func__);
+> +		return -EBUSY;
+> +	}
+> +
+> +	for (i = 0; i < len; i++)
+> +		hdmi_writel(dw_dev, msg->msg[i], DW_HDMI_CEC_TX_DATA(i));
+> +
+> +	switch (signal_free_time) {
+> +	case CEC_SIGNAL_FREE_TIME_RETRY:
+> +		reg = 0x0;
+> +		break;
+> +	case CEC_SIGNAL_FREE_TIME_NEXT_XFER:
+> +		reg = 0x2;
+> +		break;
+> +	case CEC_SIGNAL_FREE_TIME_NEW_INITIATOR:
+> +	default:
+> +		reg = 0x1;
+> +		break;
+> +	}
+> +
+> +	hdmi_writel(dw_dev, len, DW_HDMI_CEC_TX_CNT);
+> +	hdmi_mask_writel(dw_dev, reg, DW_HDMI_CEC_CTRL,
+> +			 DW_HDMI_FRAME_TYP_OFFSET,
+> +			 DW_HDMI_FRAME_TYP_MASK);
+> +	hdmi_mask_writel(dw_dev, 0x1, DW_HDMI_CEC_CTRL,
+> +			 DW_HDMI_SEND_OFFSET,
+> +			 DW_HDMI_SEND_MASK);
+> +	return 0;
+> +}
+> +
+> +static const struct cec_adap_ops dw_hdmi_cec_adap_ops = {
+> +	.adap_enable = dw_hdmi_cec_adap_enable,
+> +	.adap_log_addr = dw_hdmi_cec_adap_log_addr,
+> +	.adap_transmit = dw_hdmi_cec_adap_transmit,
+> +};
+> +
+> +static void dw_hdmi_cec_irq_handler(struct dw_hdmi_dev *dw_dev)
+> +{
+> +	u32 cec_ists = dw_hdmi_get_int_val(dw_dev, DW_HDMI_AUD_CEC_ISTS,
+> +			DW_HDMI_AUD_CEC_IEN);
+> +
+> +	dw_hdmi_cec_clear_ints(dw_dev);
+> +
+> +	if (cec_ists) {
+> +		dw_hdmi_cec_tx_raw_status(dw_dev, cec_ists);
+> +		if (cec_ists & DW_HDMI_EOM_ISTS)
+> +			dw_hdmi_cec_received_msg(dw_dev);
+> +	}
+> +}
+> +#endif /* CONFIG_VIDEO_DWC_HDMI_RX_CEC */
+> +
+>  static u8 dw_hdmi_get_curr_vic(struct dw_hdmi_dev *dw_dev, bool *is_hdmi_vic)
+>  {
+>  	u8 vic = hdmi_mask_readl(dw_dev, DW_HDMI_PDEC_AVI_PB,
+> @@ -2058,6 +2255,10 @@ static irqreturn_t dw_hdmi_irq_handler(int irq, void *dev_data)
+>  		}
+>  	}
+>  
+> +#if IS_ENABLED(CONFIG_VIDEO_DWC_HDMI_RX_CEC)
+> +	dw_hdmi_cec_irq_handler(dw_dev);
+> +#endif /* CONFIG_VIDEO_DWC_HDMI_RX_CEC */
+> +
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -2556,14 +2757,27 @@ static int dw_hdmi_set_edid(struct v4l2_subdev *sd, struct v4l2_edid *edid)
+>  	struct dw_hdmi_dev *dw_dev = to_dw_dev(sd);
+>  	int input_count = dw_dev->config->phy->input_count;
+>  	int size, ret;
+> +	u16 phys_addr;
+>  	u32 *tmp;
+>  
+>  	memset(edid->reserved, 0, sizeof(edid->reserved));
+>  
+> -	if (edid->pad >= input_count || !edid->edid || !edid->blocks)
+> +	if (edid->pad >= input_count || !edid->edid)
+>  		return -EINVAL;
+>  	if (edid->start_block != 0)
+>  		return -EINVAL;
+> +	if (!edid->blocks) {
+> +		phys_addr = CEC_PHYS_ADDR_INVALID;
+> +		goto set_phys_addr;
+> +	}
+> +
+> +	/* get the source physical address (PA) from edid */
+> +	phys_addr = cec_get_edid_phys_addr(edid->edid, edid->blocks * 128,
+> +					   NULL);
+> +	/* get the own physical address getting the parent of Source PA */
+> +	ret = v4l2_phys_addr_validate(phys_addr, &phys_addr, NULL);
+> +	if (ret)
+> +		return ret;
 
-On Wed, Jun 2, 2021 at 2:23 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> On Wednesday 02 June 2021 14:16:26 Sergio Paracuellos wrote:
-> > Hi Pali,
-> >
-> > On Mon, May 31, 2021 at 4:19 PM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > >
-> > > On Mon, May 31, 2021 at 3:50 PM Pali Roh=C3=A1r <pali@kernel.org> wro=
-te:
-> > > >
-> > > > On Monday 31 May 2021 15:39:55 Sergio Paracuellos wrote:
-> > > > > Hi Pali,
-> > > > >
-> > > > > Thanks for your comments.
-> > > > >
-> > > > > On Mon, May 31, 2021 at 3:14 PM Pali Roh=C3=A1r <pali@kernel.org>=
- wrote:
-> > > > > >
-> > > > > > On Saturday 15 May 2021 14:40:53 Sergio Paracuellos wrote:
-> > > > > > > This patch adds a driver for the PCIe controller of MT7621 So=
-C.
-> > > > > > >
-> > > > > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.c=
-om>
-> > > > > > > ---
-> > > > > > >  arch/mips/pci/Makefile     |   1 +
-> > > > > > >  arch/mips/pci/pci-mt7621.c | 624 +++++++++++++++++++++++++++=
-++++++++++
-> > > > > > >  arch/mips/ralink/Kconfig   |   9 +-
-> > > > > > >  3 files changed, 633 insertions(+), 1 deletion(-)
-> > > > > > >  create mode 100644 arch/mips/pci/pci-mt7621.c
-> > > > > > >
-> > > > > > > diff --git a/arch/mips/pci/Makefile b/arch/mips/pci/Makefile
-> > > > > > > index f3eecc065e5c..178c550739c4 100644
-> > > > > > > --- a/arch/mips/pci/Makefile
-> > > > > > > +++ b/arch/mips/pci/Makefile
-> > > > > > > @@ -24,6 +24,7 @@ obj-$(CONFIG_PCI_AR2315)    +=3D pci-ar2315=
-.o
-> > > > > > >  obj-$(CONFIG_SOC_AR71XX)     +=3D pci-ar71xx.o
-> > > > > > >  obj-$(CONFIG_PCI_AR724X)     +=3D pci-ar724x.o
-> > > > > > >  obj-$(CONFIG_PCI_XTALK_BRIDGE)       +=3D pci-xtalk-bridge.o
-> > > > > > > +obj-$(CONFIG_PCI_MT7621)     +=3D pci-mt7621.o
-> > > > > > >  #
-> > > > > > >  # These are still pretty much in the old state, watch, go bl=
-ind.
-> > > > > > >  #
-> > > > > > > diff --git a/arch/mips/pci/pci-mt7621.c b/arch/mips/pci/pci-m=
-t7621.c
-> > > > > > > new file mode 100644
-> > > > > > > index 000000000000..fe1945819d25
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/arch/mips/pci/pci-mt7621.c
-> > > > > > ...
-> > > > > > > +static int mt7621_pcie_enable_ports(struct mt7621_pcie *pcie=
-)
-> > > > > > > +{
-> > > > > > > +     struct device *dev =3D pcie->dev;
-> > > > > > > +     struct mt7621_pcie_port *port;
-> > > > > > > +     u8 num_slots_enabled =3D 0;
-> > > > > > > +     u32 slot;
-> > > > > > > +     u32 val;
-> > > > > > > +     int err;
-> > > > > > > +
-> > > > > > > +     /* Setup MEMWIN and IOWIN */
-> > > > > > > +     pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE);
-> > > > > > > +     pcie_write(pcie, pcie->io.start, RALINK_PCI_IOBASE);
-> > > > > > > +
-> > > > > > > +     list_for_each_entry(port, &pcie->ports, list) {
-> > > > > > > +             if (port->enabled) {
-> > > > > > > +                     err =3D clk_prepare_enable(port->clk);
-> > > > > > > +                     if (err) {
-> > > > > > > +                             dev_err(dev, "enabling clk pcie=
-%d\n", slot);
-> > > > > > > +                             return err;
-> > > > > > > +                     }
-> > > > > > > +
-> > > > > > > +                     mt7621_pcie_enable_port(port);
-> > > > > > > +                     dev_info(dev, "PCIE%d enabled\n", port-=
->slot);
-> > > > > > > +                     num_slots_enabled++;
-> > > > > > > +             }
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     for (slot =3D 0; slot < num_slots_enabled; slot++) {
-> > > > > > > +             val =3D read_config(pcie, slot, PCI_COMMAND);
-> > > > > > > +             val |=3D PCI_COMMAND_MASTER;
-> > > > > > > +             write_config(pcie, slot, PCI_COMMAND, val);
-> > > > > >
-> > > > > > Hello! Is this part of code correct? Because it looks strange i=
-f PCIe
-> > > > > > controller driver automatically enables PCI bus mastering, prio=
-r device
-> > > > > > driver initialize itself.
-> > > > > >
-> > > > > > Moreover kernel has already function pci_set_master() for this =
-purpose
-> > > > > > which is used by device drivers.
-> > > > > >
-> > > > > > So I think this code can confuse some device drivers...
-> > > > >
-> > > > > I agree that we have pci_set_master() to be used in pci device dr=
-iver
-> > > > > code. Original controller driver set this bit for enabled slots. =
-Since
-> > > > > there is no documentation at all for the PCI in this SoC
-> > > >
-> > > > I see... this is really a big problem to do any driver development.=
-..
-> > >
-> > > For sure it is :(.
-> > >
-> > > >
-> > > > > I have
-> > > > > maintained the setting in the driver in a cleaner way. See origin=
-al
-> > > > > driver code and the setting here [0]. There is no other reason th=
-an
-> > > > > that. I am ok with removing this from here and testing with my tw=
-o
-> > > > > devices that everything is still ok if having this setting in the=
- pci
-> > > > > controller driver is a real problem.
-> > > >
-> > > > You can run lspci -nnvv with and without PCI_COMMAND_MASTER code an=
-d
-> > > > then compare outputs.
-> > > >
-> > > > Device drivers for sure enable PCI_COMMAND_MASTER at the time when =
-it is
-> > > > needed, so it is possible that there would be no difference in lspc=
-i
-> > > > output.
-> > >
-> > > Thanks. I will take this into account when v2 is submitted after more
-> > > review comments come :).
-> >
-> > I have tested to remove this and check lspci -nnvv output with and
-> > without PCI_COMMAND_MASTER code and, as you pointed out, there is no
-> > difference between them. Also, both boards are working without
-> > regressions at all. So I will remove this code for next version.
->
-> Perfect!
->
-> > Thanks,
-> >     Sergio Paracuellos
-> > >
-> > > >
-> > > > > [0]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/stagi=
-ng.git/tree/drivers/staging/mt7621-pci/pci-mt7621.c?h=3Dv4.18#n676
-> > > > >
-> > > > > Best regards,
-> > > > >     Sergio Paracuellos
-> > > > > >
-> > > > > > > +             /* configure RC FTS number to 250 when it leave=
-s L0s */
-> > > > > > > +             val =3D read_config(pcie, slot, PCIE_FTS_NUM);
-> > > > > > > +             val &=3D ~PCIE_FTS_NUM_MASK;
-> > > > > > > +             val |=3D PCIE_FTS_NUM_L0(0x50);
-> > > > > > > +             write_config(pcie, slot, PCIE_FTS_NUM, val);
->
-> Could you look also what is doing this code (PCIE_FTS_NUM)? It is marked
-> as MT specific register. But from this code for me it looks like that it
-> just access config space of some device and therefore it could be some
-> standard PCIe register. Just with hardcoded calculated offset.
->
-> Could you provide output from lspci -nnvv? So other people could look at
-> it and maybe we decode what is this code doing and if it is needed.
+Something I should have asked in my review for 6/9: if there are
+multiple inputs, does each input have its own EDID area?
 
-# lspci -nnvv
-00:02.0 PCI bridge [0604]: Device [0e8d:0801] (rev 01) (prog-if 00
-[Normal decode])
-        Device tree node: /sys/firmware/devicetree/base/pcie@1e140000/pcie@=
-2,0
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 0
-        Interrupt: pin A routed to IRQ 255
-        Region 1: Memory at 60200000 (32-bit, non-prefetchable) [size=3D64K=
-]
-        Bus: primary=3D00, secondary=3D01, subordinate=3D01, sec-latency=3D=
-0
-        I/O behind bridge: 00000000-00000fff [size=3D4K]
-        Memory behind bridge: 60000000-600fffff [size=3D1M]
-        Prefetchable memory behind bridge: 60100000-601fffff [size=3D1M]
-        Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=3Dfast >TAbort-
-<TAbort- <MAbort- <SERR- <PERR-
-        BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B=
--
-                PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-        Capabilities: [40] Power Management version 3
-                Flags: PMEClk- DSI- D1+ D2- AuxCurrent=3D375mA
-PME(D0+,D1+,D2-,D3hot+,D3cold-)
-                Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D0 PME-
-        Capabilities: [50] MSI: Enable- Count=3D1/1 Maskable- 64bit+
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express (v2) Root Port (Slot-), MSI 00
-                DevCap: MaxPayload 128 bytes, PhantFunc 0
-                        ExtTag- RBE+
-                DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
-                        RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
-                        MaxPayload 128 bytes, MaxReadReq 128 bytes
-                DevSta: CorrErr+ NonFatalErr- FatalErr- UnsupReq-
-AuxPwr- TransPend-
-                LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1,
-Exit Latency L0s <512ns, L1 <64us
-                        ClockPM- Surprise- LLActRep+ BwNot- ASPMOptComp-
-                LnkCtl: ASPM Disabled; RCB 128 bytes, Disabled- CommClk-
-                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-                LnkSta: Speed 2.5GT/s (ok), Width x1 (ok)
-                        TrErr- Train- SlotClk+ DLActive+ BWMgmt- ABWMgmt-
-                RootCap: CRSVisible-
-                RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal-
-PMEIntEna- CRSVisible-
-                RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-                DevCap2: Completion Timeout: Not Supported,
-TimeoutDis+ NROPrPrP- LTR-
-                         10BitTagComp- 10BitTagReq- OBFF Not
-Supported, ExtFmt- EETLPPrefix-
-                         EmergencyPowerReduction Not Supported,
-EmergencyPowerReductionInit-
-                         FRS- LN System CLS Not Supported, TPHComp-
-ExtTPHComp- ARIFwd-
-                         AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
-                DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-
-LTR- OBFF Disabled, ARIFwd-
-                         AtomicOpsCtl: ReqEn- EgressBlck-
-                LnkCap2: Supported Link Speeds: 2.5GT/s, Crosslink-
-Retimer- 2Retimers- DRS-
-                LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- Speed=
-Dis-
-                         Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-                         Compliance De-emphasis: -6dB
-                LnkSta2: Current De-emphasis Level: -6dB,
-EqualizationComplete- EqualizationPhase1-
-                         EqualizationPhase2- EqualizationPhase3-
-LinkEqualizationRequest-
-                         Retimer- 2Retimers- CrosslinkRes: unsupported
-        Capabilities: [100 v1] Advanced Error Reporting
-                UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-                UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-                UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-                CESta:  RxErr+ BadTLP- BadDLLP- Rollover- Timeout-
-AdvNonFatalErr-
-                CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout-
-AdvNonFatalErr+
-                AERCap: First Error Pointer: 00, ECRCGenCap+
-ECRCGenEn- ECRCChkCap+ ECRCChkEn-
-                        MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
-                HeaderLog: 00000000 00000000 00000000 00000000
-                RootCmd: CERptEn- NFERptEn- FERptEn-
-                RootSta: CERcvd- MultCERcvd- UERcvd- MultUERcvd-
-                         FirstFatal- NonFatalMsg- FatalMsg- IntMsg 0
-                ErrorSrc: ERR_COR: 0000 ERR_FATAL/NONFATAL: 0000
-        Capabilities: [140 v1] Virtual Channel
-                Caps:   LPEVC=3D0 RefClk=3D100ns PATEntryBits=3D1
-                Arb:    Fixed- WRR32- WRR64- WRR128-
-                Ctrl:   ArbSelect=3DFixed
-                Status: InProgress-
-                VC0:    Caps:   PATOffset=3D00 MaxTimeSlots=3D1 RejSnoopTra=
-ns-
-                        Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR25=
-6-
-                        Ctrl:   Enable+ ID=3D0 ArbSelect=3DFixed TC/VC=3Dff
-                        Status: NegoPending- InProgress-
-lspci: Unable to load libkmod resources: error -12
+If there are multiple inputs, are the CEC lines of each input part
+of the same CEC bus? This is typically the case for e.g. TVs, and as
+far as I can see it's the case for this receiver driver as well.
 
-01:00.0 Network controller [0280]: MEDIATEK Corp. Device [14c3:7612]
-        Subsystem: MEDIATEK Corp. Device [14c3:7612]
-        Device tree node:
-/sys/firmware/devicetree/base/pcie@1e140000/pcie@2,0/wifi@0,0
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 0
-        Interrupt: pin A routed to IRQ 20
-        Region 0: Memory at 60000000 (64-bit, non-prefetchable) [size=3D1M]
-        Expansion ROM at 60100000 [virtual] [disabled] [size=3D64K]
-        Capabilities: [40] Power Management version 3
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D375mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D0 PME-
-        Capabilities: [50] MSI: Enable- Count=3D1/1 Maskable- 64bit+
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express (v2) Endpoint, MSI 00
-                DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s
-unlimited, L1 unlimited
-                        ExtTag- AttnBtn- AttnInd- PwrInd- RBE+
-FLReset- SlotPowerLimit 0.000W
-                DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
-                        RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
-                        MaxPayload 128 bytes, MaxReadReq 128 bytes
-                DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq-
-AuxPwr+ TransPend-
-                LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1,
-Exit Latency L0s <2us, L1 unlimited
-                        ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
-                LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk-
-                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-                LnkSta: Speed 2.5GT/s (ok), Width x1 (ok)
-                        TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-                DevCap2: Completion Timeout: Range ABCD, TimeoutDis+
-NROPrPrP- LTR-
-                         10BitTagComp- 10BitTagReq- OBFF Not
-Supported, ExtFmt- EETLPPrefix-
-                         EmergencyPowerReduction Not Supported,
-EmergencyPowerReductionInit-
-                         FRS- TPHComp- ExtTPHComp-
-                         AtomicOpsCap: 32bit- 64bit- 128bitCAS-
-                DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-
-LTR- OBFF Disabled,
-                         AtomicOpsCtl: ReqEn-
-                LnkCap2: Supported Link Speeds: 2.5GT/s, Crosslink-
-Retimer- 2Retimers- DRS-
-                LnkCtl2: Target Link Speed: 5GT/s, EnterCompliance- SpeedDi=
-s-
-                         Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-                         Compliance De-emphasis: -6dB
-                LnkSta2: Current De-emphasis Level: -3.5dB,
-EqualizationComplete- EqualizationPhase1-
-                         EqualizationPhase2- EqualizationPhase3-
-LinkEqualizationRequest-
-                         Retimer- 2Retimers- CrosslinkRes: unsupported
-        Capabilities: [100 v2] Advanced Error Reporting
-                UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-                UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-                UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-                CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout-
-AdvNonFatalErr-
-                CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout-
-AdvNonFatalErr+
-                AERCap: First Error Pointer: 00, ECRCGenCap+
-ECRCGenEn- ECRCChkCap+ ECRCChkEn-
-                        MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
-                HeaderLog: 00000000 00000000 00000000 00000000
-        Capabilities: [148 v1] Device Serial Number 00-00-00-00-00-00-00-00
-        Capabilities: [158 v1] Latency Tolerance Reporting
-                Max snoop latency: 0ns
-                Max no snoop latency: 0ns
-        Capabilities: [160 v1] L1 PM Substates
-                L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+
-ASPM_L1.1+ L1_PM_Substates+
-                          PortCommonModeRestoreTime=3D50us PortTPowerOnTime=
-=3D10us
-                L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2- ASPM_L1.1-
-                           T_CommonMode=3D0us LTR1.2_Threshold=3D0ns
-                L1SubCtl2: T_PwrOn=3D10us
-        Kernel driver in use: mt76x2e
+>  
+>  	/* Clear old EDID */
+>  	size = dw_dev->curr_edid_blocks[edid->pad] * 128;
+> @@ -2592,7 +2806,9 @@ static int dw_hdmi_set_edid(struct v4l2_subdev *sd, struct v4l2_edid *edid)
+>  	if (ret)
+>  		return ret;
+>  
+> +set_phys_addr:
+>  	dw_dev->curr_edid_blocks[edid->pad] = edid->blocks;
+> +	cec_s_phys_addr(dw_dev->cec_adap, phys_addr, false);
+>  	return 0;
+>  }
+>  
+> @@ -2825,15 +3041,33 @@ static int dw_hdmi_subscribe_event(struct v4l2_subdev *sd, struct v4l2_fh *fh,
+>  static int dw_hdmi_registered(struct v4l2_subdev *sd)
+>  {
+>  	struct dw_hdmi_dev *dw_dev = to_dw_dev(sd);
+> +	int ret;
+> +
+> +	ret = cec_register_adapter(dw_dev->cec_adap, dw_dev->dev);
+> +	if (ret) {
+> +		dev_err(dw_dev->dev, "failed to register CEC adapter\n");
+> +		goto err_adapter;
+> +	}
+> +	cec_s_phys_addr(dw_dev->cec_adap, 0, false);
 
-Best regards,
-    Sergio Paracuellos
+This isn't right. When you set the EDID you will also set the physical
+address, you don't do that when registering the CEC adapter, there is no
+physical address yet.
 
->
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     return 0;
-> > > > > > > +}
+> +	if (dw_dev->cec_adap)
+> +		dev_info(dw_dev->dev,
+> +			 "CEC adapter %s registered for HDMI input\n",
+> +			 dev_name(&dw_dev->cec_adap->devnode.dev));
+>  
+>  	dw_dev->registered = true;
+>  	return 0;
+> +
+> +err_adapter:
+> +	cec_delete_adapter(dw_dev->cec_adap);
+> +	return ret;
+>  }
+>  
+>  static void dw_hdmi_unregistered(struct v4l2_subdev *sd)
+>  {
+>  	struct dw_hdmi_dev *dw_dev = to_dw_dev(sd);
+>  
+> +	cec_unregister_adapter(dw_dev->cec_adap);
+> +
+>  	dw_dev->registered = false;
+>  }
+>  
+> @@ -3194,10 +3428,29 @@ static int dw_hdmi_rx_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_phy_exit;
+>  
+> +	/* CEC */
+> +#if IS_ENABLED(CONFIG_VIDEO_DWC_HDMI_RX_CEC)
+> +	dw_dev->cec_adap = cec_allocate_adapter(&dw_hdmi_cec_adap_ops,
+> +						dw_dev, dev_name(dev),
+> +						(CEC_CAP_DEFAULTS |
+> +						 CEC_CAP_NEEDS_HPD |
+
+This cap makes no sense for a receiver.
+
+> +						 CEC_CAP_CONNECTOR_INFO),
+
+This cap also should be removed: connector info is not (yet) supported
+for receivers, only for transmitters.
+
+Regards,
+
+	Hans
+
+> +						DW_HDMI_CEC_MAX_LOG_ADDRS);
+> +	ret = PTR_ERR_OR_ZERO(dw_dev->cec_adap);
+> +	if (ret) {
+> +		dev_err(dev, "failed to allocate CEC adapter\n");
+> +		goto err_cec;
+> +	}
+> +
+> +	dev_info(dev, "CEC is enabled\n");
+> +#else
+> +	dev_info(dev, "CEC is disabled\n");
+> +#endif /* CONFIG_VIDEO_DWC_HDMI_RX_CEC */
+> +
+>  	ret = v4l2_async_register_subdev(sd);
+>  	if (ret) {
+>  		dev_err(dev, "failed to register subdev\n");
+> -		goto err_phy_exit;
+> +		goto err_cec;
+>  	}
+>  
+>  	/* Fill initial format settings */
+> @@ -3230,6 +3483,8 @@ static int dw_hdmi_rx_probe(struct platform_device *pdev)
+>  
+>  err_subdev:
+>  	v4l2_async_unregister_subdev(sd);
+> +err_cec:
+> +	cec_delete_adapter(dw_dev->cec_adap);
+>  err_phy_exit:
+>  	dw_hdmi_phy_exit(dw_dev);
+>  err_hdl:
+> diff --git a/drivers/media/platform/dwc/dw-hdmi-rx.h b/drivers/media/platform/dwc/dw-hdmi-rx.h
+> index f0ea1d4..775b7a9 100644
+> --- a/drivers/media/platform/dwc/dw-hdmi-rx.h
+> +++ b/drivers/media/platform/dwc/dw-hdmi-rx.h
+> @@ -325,6 +325,25 @@
+>  
+>  #define DW_HDMI_HDCP22_STATUS			0x08fc
+>  
+> +/* id_audio_and_cec_interrupt Registers */
+> +#define DW_HDMI_AUD_CEC_IEN_CLR			0x0f90
+> +#define DW_HDMI_AUD_CEC_IEN_SET			0x0f94
+> +
+> +#define DW_HDMI_AUD_CEC_ISTS			0x0f98
+> +#define DW_HDMI_WAKEUPCTRL_ISTS			BIT(22)
+> +#define DW_HDMI_ERROR_FOLL_ISTS			BIT(21)
+> +#define DW_HDMI_ERROR_INIT_ISTS			BIT(20)
+> +#define DW_HDMI_ARBLST_ISTS			BIT(19)
+> +#define DW_HDMI_NACK_ISTS			BIT(18)
+> +#define DW_HDMI_EOM_ISTS			BIT(17)
+> +#define DW_HDMI_DONE_ISTS			BIT(16)
+> +#define DW_HDMI_SCK_STABLE_ISTS			BIT(1)
+> +#define DW_HDMI_CTSN_CNT_ISTS			BIT(0)
+> +
+> +#define DW_HDMI_AUD_CEC_IEN			0x0f9c
+> +#define DW_HDMI_AUD_CEC_ICLR			0x0fa0
+> +#define DW_HDMI_AUD_CEC_ISET			0x0fa4
+> +
+>  /* id_mode_detection_interrupt Registers */
+>  #define DW_HDMI_MD_IEN_CLR			0x0fc0
+>  #define DW_HDMI_MD_IEN_SET			0x0fc4
+> @@ -426,6 +445,44 @@
+>  #define DW_HDMI_HDMI_ENABLE_MASK		BIT(2)
+>  #define DW_HDMI_HDMI_ENABLE_OFFSET		2
+>  
+> +/* id_cec Registers */
+> +#define DW_HDMI_CEC_CTRL			0x1f00
+> +#define DW_HDMI_STANDBY_MASK			BIT(4)
+> +#define DW_HDMI_STANDBY_OFFSET			4
+> +#define DW_HDMI_BC_NACK_MASK			BIT(3)
+> +#define DW_HDMI_BC_NACK_OFFSET			3
+> +#define DW_HDMI_FRAME_TYP_MASK			GENMASK(2, 1)
+> +#define DW_HDMI_FRAME_TYP_OFFSET		1
+> +#define DW_HDMI_SEND_MASK			BIT(0)
+> +#define DW_HDMI_SEND_OFFSET			0
+> +
+> +#define DW_HDMI_CEC_MASK			0x1f08
+> +#define DW_HDMI_WAKEUP_MASK			BIT(6)
+> +#define DW_HDMI_WAKEUP_OFFSET			6
+> +#define DW_HDMI_ERROR_FLOW_MASK			BIT(5)
+> +#define DW_HDMI_ERROR_FLOW_OFFSET		5
+> +#define DW_HDMI_ERROR_INITITATOR_MASK		BIT(4)
+> +#define DW_HDMI_ERROR_INITITATOR_OFFSET		4
+> +#define DW_HDMI_ARB_LOST_MASK			BIT(3)
+> +#define DW_HDMI_ARB_LOST_OFFSET			3
+> +#define DW_HDMI_NACK_MASK			BIT(2)
+> +#define DW_HDMI_NACK_OFFSET			2
+> +#define DW_HDMI_EOM_MASK			BIT(1)
+> +#define DW_HDMI_EOM_OFFSET			1
+> +#define DW_HDMI_DONE_MASK			BIT(0)
+> +#define DW_HDMI_DONE_OFFSET			0
+> +
+> +#define DW_HDMI_CEC_ADDR_L			0x1f14
+> +#define DW_HDMI_CEC_ADDR_H			0x1f18
+> +#define DW_HDMI_CEC_TX_CNT			0x1f1c
+> +#define DW_HDMI_CEC_RX_CNT			0x1f20
+> +#define DW_HDMI_CEC_TX_DATA(i)			(0x1f40 + ((i) * 4))
+> +#define DW_HDMI_CEC_TX_DATA_MAX			16
+> +#define DW_HDMI_CEC_RX_DATA(i)			(0x1f80 + ((i) * 4))
+> +#define DW_HDMI_CEC_RX_DATA_MAX			16
+> +#define DW_HDMI_CEC_LOCK			0x1fc0
+> +#define DW_HDMI_CEC_WAKEUPCTRL			0x1fc4
+> +
+>  /* id_cbus Registers */
+>  #define DW_HDMI_CBUSIOCTRL			0x3020
+>  #define DW_HDMI_DATAPATH_CBUSZ_MASK		BIT(24)
+> 
+
