@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21DE398885
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDDE398883
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhFBLqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:46:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2965 "EHLO
+        id S229799AbhFBLqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:46:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2964 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhFBLpo (ORCPT
+        with ESMTP id S229482AbhFBLpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:45:44 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw6Y952hNz6933;
-        Wed,  2 Jun 2021 19:41:01 +0800 (CST)
+        Wed, 2 Jun 2021 07:45:42 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw6Y82VBKz68x9;
+        Wed,  2 Jun 2021 19:41:00 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 19:43:57 +0800
+ 15.1.2176.2; Wed, 2 Jun 2021 19:43:58 +0800
 Received: from thunder-town.china.huawei.com (10.174.177.72) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 6/9] mfd: kempld-core: use DEVICE_ATTR_RO macro
-Date:   Wed, 2 Jun 2021 19:43:36 +0800
-Message-ID: <20210602114339.11223-7-thunder.leizhen@huawei.com>
+Subject: [PATCH 7/9] mfd: janz-cmodio: use DEVICE_ATTR_RO macro
+Date:   Wed, 2 Jun 2021 19:43:37 +0800
+Message-ID: <20210602114339.11223-8-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20210602114339.11223-1-thunder.leizhen@huawei.com>
 References: <20210602114339.11223-1-thunder.leizhen@huawei.com>
@@ -51,58 +51,32 @@ the code a bit shorter and easier to read.
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- drivers/mfd/kempld-core.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/mfd/janz-cmodio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
-index 9166075c1f321a4..bb26241c73bdb8f 100644
---- a/drivers/mfd/kempld-core.c
-+++ b/drivers/mfd/kempld-core.c
-@@ -344,16 +344,16 @@ static const char *kempld_get_type_string(struct kempld_device_data *pld)
- 	return version_type;
- }
+diff --git a/drivers/mfd/janz-cmodio.c b/drivers/mfd/janz-cmodio.c
+index 3df4e9a2998f490..70eba4ce496faa3 100644
+--- a/drivers/mfd/janz-cmodio.c
++++ b/drivers/mfd/janz-cmodio.c
+@@ -149,15 +149,15 @@ static int cmodio_probe_submodules(struct cmodio_device *priv)
+  * SYSFS Attributes
+  */
  
--static ssize_t kempld_version_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
-+static ssize_t pld_version_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
+-static ssize_t mbus_show(struct device *dev, struct device_attribute *attr,
+-			 char *buf)
++static ssize_t modulbus_number_show(struct device *dev,
++				    struct device_attribute *attr, char *buf)
  {
- 	struct kempld_device_data *pld = dev_get_drvdata(dev);
+ 	struct cmodio_device *priv = dev_get_drvdata(dev);
  
- 	return scnprintf(buf, PAGE_SIZE, "%s\n", pld->info.version);
+ 	return snprintf(buf, PAGE_SIZE, "%x\n", priv->hex);
  }
  
--static ssize_t kempld_specification_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
-+static ssize_t pld_specification_show(struct device *dev,
-+				      struct device_attribute *attr, char *buf)
- {
- 	struct kempld_device_data *pld = dev_get_drvdata(dev);
+-static DEVICE_ATTR(modulbus_number, S_IRUGO, mbus_show, NULL);
++static DEVICE_ATTR_RO(modulbus_number);
  
-@@ -361,18 +361,17 @@ static ssize_t kempld_specification_show(struct device *dev,
- 		       pld->info.spec_minor);
- }
- 
--static ssize_t kempld_type_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
-+static ssize_t pld_type_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
- {
- 	struct kempld_device_data *pld = dev_get_drvdata(dev);
- 
- 	return scnprintf(buf, PAGE_SIZE, "%s\n", kempld_get_type_string(pld));
- }
- 
--static DEVICE_ATTR(pld_version, S_IRUGO, kempld_version_show, NULL);
--static DEVICE_ATTR(pld_specification, S_IRUGO, kempld_specification_show,
--		   NULL);
--static DEVICE_ATTR(pld_type, S_IRUGO, kempld_type_show, NULL);
-+static DEVICE_ATTR_RO(pld_version);
-+static DEVICE_ATTR_RO(pld_specification);
-+static DEVICE_ATTR_RO(pld_type);
- 
- static struct attribute *pld_attributes[] = {
- 	&dev_attr_pld_version.attr,
+ static struct attribute *cmodio_sysfs_attrs[] = {
+ 	&dev_attr_modulbus_number.attr,
 -- 
 2.26.0.106.g9fadedd
 
