@@ -2,104 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3D43983C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A21D3983CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhFBIEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        id S232250AbhFBIH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhFBIEN (ORCPT
+        with ESMTP id S232335AbhFBIHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:04:13 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735C1C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 01:02:28 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so2981098pjp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=02lHhfAhDq/BBAvi74B9e064tWGyy9vbCO1eroU+qno=;
-        b=u1ryXFkSvsAEYZ+uPIFhIuVePkCzK4HehzqpdC8Am7BJaL2NRh9dd3nf+LP84yrNjJ
-         NAAOuESPsyd2JOuQLAd3ayAEwFD9FKCorwfKoOppIcTaalwONFEH3Rl12W0n/Izr0yvP
-         9scM2jz5fuiagQv1RMDEMTKqrLzkrOyy4Z9EJ5alV+R83ZfzkqWQi7tiBRjj8VSqD1AL
-         YEEpsmzacHB+1WU6VKjkISsDc2lPfhO3GrnwDQArvXgdxZrM9a+lN9/dC1+P9afew0or
-         ubUQNM5Wy5VpBUg40daz+kEBDePJm6/x+3cXcP1hKsjQnKtCletrvGZP1IOG8zH1LN4o
-         GdNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=02lHhfAhDq/BBAvi74B9e064tWGyy9vbCO1eroU+qno=;
-        b=QfL8g6WI7jhE7hBwupVUG7Oeb2Iiz6ljpsGhTEEJZTyaCnsrTA7KBhgmDwz3yZQxlh
-         2GLF1EkzLJ0PYjJK/eZDWHFKaJLHFkRpRjkFAWPcYYHgldg7mycUBUbVXegtV/HcZIAb
-         hKXwPIS9ai88MJXuaB7W5ZmJJIxQXUs4by6BYM8ymebSDxDZyTcblcwfdlA7HbIyp2ED
-         Xa522WgWgRIlNq/TqudexsP7ocy2MRQVqgUwpmv/PTLoUEy8n5jJdZdmPMoKm2RXSYt6
-         vsS4QhK2cKsQmVCa862DemJddJWBiXATRUd+KvbRkGPAqS5YU74HY5Z0Iuynv6bTvdUN
-         dDCA==
-X-Gm-Message-State: AOAM53319RxnxSYebUUvjxaZkRwDcn6rh/KaaB8/QUh67N8KrJT1qRm4
-        XkP2Xsw4cpPw8KXoowoSRZk=
-X-Google-Smtp-Source: ABdhPJwZj521mEUfCJQhdlbkixXBugXjsDZMrppxRTIFdGees+XZ69j8CuVFihztyyqUBF4Il/siOA==
-X-Received: by 2002:a17:90b:4b04:: with SMTP id lx4mr4355874pjb.54.1622620947943;
-        Wed, 02 Jun 2021 01:02:27 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9005:8001:2df9:2568:9194:5f9])
-        by smtp.gmail.com with ESMTPSA id h1sm15379903pfh.72.2021.06.02.01.02.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 01:02:27 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] drm/rockchip: defined struct rockchip_dp_dt_ids[] under CONFIG_OF
-Date:   Wed,  2 Jun 2021 13:32:12 +0530
-Message-Id: <20210602080212.4992-1-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 2 Jun 2021 04:07:24 -0400
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3009C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 01:05:40 -0700 (PDT)
+Received: from localhost.localdomain (83.6.168.57.neoplus.adsl.tpnet.pl [83.6.168.57])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id EA9333EBD7;
+        Wed,  2 Jun 2021 10:05:34 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add bindings for MDM9607
+Date:   Wed,  2 Jun 2021 10:05:16 +0200
+Message-Id: <20210602080518.1589889-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot throws below warning when CONFIG_OF
-is not set.
+Document the newly added MDM9607 pinctrl driver.
 
->> drivers/gpu/drm/rockchip/analogix_dp-rockchip.c:457:34:
-warning: unused variable 'rockchip_dp_dt_ids' [-Wunused-const-variable]
-   static const struct of_device_id rockchip_dp_dt_ids[] = {
-
-Fixed it by defining rockchip_dp_dt_ids[] under CONFIG_OF.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- drivers/gpu/drm/rockchip/analogix_dp-rockchip.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../pinctrl/qcom,mdm9607-pinctrl.yaml         | 149 ++++++++++++++++++
+ 1 file changed, 149 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,mdm9607-pinctrl.yaml
 
-diff --git a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-index ade2327a10e2..9b79ebaeae97 100644
---- a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-@@ -454,12 +454,14 @@ static const struct rockchip_dp_chip_data rk3288_dp = {
- 	.chip_type = RK3288_DP,
- };
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id rockchip_dp_dt_ids[] = {
- 	{.compatible = "rockchip,rk3288-dp", .data = &rk3288_dp },
- 	{.compatible = "rockchip,rk3399-edp", .data = &rk3399_edp },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, rockchip_dp_dt_ids);
-+#endif
- 
- struct platform_driver rockchip_dp_driver = {
- 	.probe = rockchip_dp_probe,
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,mdm9607-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,mdm9607-pinctrl.yaml
+new file mode 100644
+index 000000000000..3802fda140d4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,mdm9607-pinctrl.yaml
+@@ -0,0 +1,149 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,mdm9607-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. MDM9607 TLMM block
++
++maintainers:
++  - Konrad Dybcio <konrad.dybcio@somainline.org>
++
++description: |
++  This binding describes the Top Level Mode Multiplexer block found in the
++  MDM9607 platform.
++
++properties:
++  compatible:
++    const: qcom,mdm9607-pinctrl
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: Specifies the TLMM summary IRQ
++    maxItems: 1
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    description:
++      Specifies the PIN numbers and Flags, as defined in defined in
++      include/dt-bindings/interrupt-controller/irq.h
++    const: 2
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    description: Specifying the pin number and flags, as defined in
++      include/dt-bindings/gpio/gpio.h
++    const: 2
++
++  gpio-ranges:
++    maxItems: 1
++
++patternProperties:
++  '-pins$':
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++    $ref: "/schemas/pinctrl/pincfg-node.yaml"
++
++    properties:
++      pins:
++        description:
++          List of gpio pins affected by the properties specified in this
++          subnode.
++        items:
++          oneOf:
++            - pattern: "^gpio([1-9]|[1-7][0-9]|80)$"
++            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd,
++                      sdc2_data, qdsd_cmd, qdsd_data0, qdsd_data1, qdsd_data2,
++                      qdsd_data3 ]
++        minItems: 1
++        maxItems: 4
++
++      function:
++        description:
++          Specify the alternative function to be configured for the specified
++          pins.
++
++        enum: [ adsp_ext, atest_bbrx0, atest_bbrx1, atest_char, atest_char0,
++                atest_char1, atest_char2, atest_char3,
++                atest_combodac_to_gpio_native, atest_gpsadc_dtest0_native,
++                atest_gpsadc_dtest1_native, atest_tsens, backlight_en_b,
++                bimc_dte0, bimc_dte1, blsp1_spi, blsp2_spi, blsp3_spi,
++                blsp_i2c1, blsp_i2c2, blsp_i2c3, blsp_i2c4, blsp_i2c5,
++                blsp_i2c6, blsp_spi1, blsp_spi2, blsp_spi3, blsp_spi4,
++                blsp_spi5, blsp_spi6, blsp_uart1, blsp_uart2, blsp_uart3,
++                blsp_uart4, blsp_uart5, blsp_uart6, blsp_uim1, blsp_uim2,
++                codec_int, codec_rst, coex_uart, cri_trng, cri_trng0,
++                cri_trng1, dbg_out, ebi0_wrcdc, ebi2_a, ebi2_a_d_8_b,
++                ebi2_lcd, ebi2_lcd_cs_n_b, ebi2_lcd_te_b, eth_irq, eth_rst,
++                gcc_gp1_clk_a, gcc_gp1_clk_b, gcc_gp2_clk_a, gcc_gp2_clk_b,
++                gcc_gp3_clk_a, gcc_gp3_clk_b, gcc_plltest, gcc_tlmm, gmac_mdio,
++                gpio, gsm0_tx, lcd_rst, ldo_en, ldo_update, m_voc, modem_tsync,
++                nav_ptp_pps_in_a, nav_ptp_pps_in_b, nav_tsync_out_a,
++                nav_tsync_out_b, pa_indicator, pbs0, pbs1, pbs2,
++                pri_mi2s_data0_a, pri_mi2s_data1_a, pri_mi2s_mclk_a,
++                pri_mi2s_sck_a, pri_mi2s_ws_a, prng_rosc, ptp_pps_out_a,
++                ptp_pps_out_b, pwr_crypto_enabled_a, pwr_crypto_enabled_b,
++                pwr_modem_enabled_a, pwr_modem_enabled_b, pwr_nav_enabled_a,
++                pwr_nav_enabled_b, qdss_cti_trig_in_a0, qdss_cti_trig_in_a1,
++                qdss_cti_trig_in_b0, qdss_cti_trig_in_b1, qdss_cti_trig_out_a0,
++                qdss_cti_trig_out_a1, qdss_cti_trig_out_b0, qdss_cti_trig_out_b1,
++                qdss_traceclk_a, qdss_traceclk_b, qdss_tracectl_a,
++                qdss_tracectl_b, qdss_tracedata_a, qdss_tracedata_b, rcm_marker1,
++                rcm_marker2, sd_write, sec_mi2s, sensor_en, sensor_int2,
++                sensor_int3, sensor_rst, ssbi1, ssbi2, touch_rst, ts_int,
++                uim1_clk, uim1_data, uim1_present, uim1_reset, uim2_clk,
++                uim2_data, uim2_present, uim2_reset, uim_batt, wlan_en1, ]
++
++      drive-strength:
++        enum: [2, 4, 6, 8, 10, 12, 14, 16]
++        default: 2
++        description:
++          Selects the drive strength for the specified pins, in mA.
++
++      bias-pull-down: true
++
++      bias-pull-up: true
++
++      bias-disable: true
++
++      output-high: true
++
++      output-low: true
++
++    required:
++      - pins
++      - function
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - '#interrupt-cells'
++  - gpio-controller
++  - '#gpio-cells'
++  - gpio-ranges
++
++additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        tlmm: pinctrl@1000000 {
++          compatible = "qcom,mdm9607-pinctrl";
++          reg = <0x01000000 0x300000>;
++          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++          gpio-controller;
++          gpio-ranges = <&msmgpio 0 0 80>;
++          #gpio-cells = <2>;
++          interrupt-controller;
++          #interrupt-cells = <2>;
++        };
 -- 
-2.25.1
+2.31.1
 
