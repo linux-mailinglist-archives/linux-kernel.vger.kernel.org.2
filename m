@@ -2,168 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65A1399494
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC71B3994AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhFBUfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:35:06 -0400
-Received: from gateway33.websitewelcome.com ([192.185.146.80]:13739 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229656AbhFBUfE (ORCPT
+        id S229726AbhFBUj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:39:27 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:58928 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhFBUj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:35:04 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 0CB6CEA27C
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 15:33:06 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id oXY1lUueCVBxyoXY1lyFR2; Wed, 02 Jun 2021 15:33:06 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=+MhsQd5tiNlUqXw8oT14rjbKzGf8+RSzY0HUwHrz/28=; b=lWaAGL4hOhZnX/8WEY+pBwlfZu
-        silUDulrgxJkD4EN9ozzXyLMBN7oiBGTdWlanUSfeJUX0fJsSWPQF3r90THiDhWSn+Mq5KIUJvXcc
-        3Sdx1CLFU+/UIseyDTPiZ5G2HMMzC6EIrN2YDV9KqNhc2/cB+J7oWAemXQlrU6bX4T95D5esrC77+
-        rN0Hg/OwBRB42vUhQ34Os5Z7fzv2tbvDOnxBE9AyBPiV1P2Fea7Gp8KomRbuBbkDd0ghF9uun6SQ1
-        6wpG816qVUrZ2wsWUqd15rxSRQSdJEAGw8WOlYo9NEqkkoAeF+wl+gevBv9bAILf9LkJ1mpW13XEI
-        nqpoapmQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52430 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1loXXw-002fpS-Uf; Wed, 02 Jun 2021 15:33:00 -0500
-Subject: Re: [PATCH][venus-for-next-v5.14] media: venus: hfi_cmds: Fix packet
- size calculation
-To:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210601184616.GA23488@embeddedor>
- <202106021254.39A1561075@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <e40f4067-82e2-31ff-0694-375a59f949de@embeddedor.com>
-Date:   Wed, 2 Jun 2021 15:34:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 2 Jun 2021 16:39:26 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1loXcT-00GZgP-5U; Wed, 02 Jun 2021 14:37:41 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1loXcR-00Efry-DT; Wed, 02 Jun 2021 14:37:40 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     legion@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <cover.1619094428.git.legion@kernel.org>
+        <20210509181205.f0ce806919858efa0e0e0d20@linux-foundation.org>
+Date:   Wed, 02 Jun 2021 15:37:32 -0500
+In-Reply-To: <20210509181205.f0ce806919858efa0e0e0d20@linux-foundation.org>
+        (Andrew Morton's message of "Sun, 9 May 2021 18:12:05 -0700")
+Message-ID: <87o8coq9yr.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <202106021254.39A1561075@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1loXXw-002fpS-Uf
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:52430
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain
+X-XM-SPF: eid=1loXcR-00Efry-DT;;;mid=<87o8coq9yr.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX181tofntvStz1+pRqA2mAhl7FTynzngIXM=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4962]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Andrew Morton <akpm@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 496 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 10 (2.1%), b_tie_ro: 9 (1.9%), parse: 1.14 (0.2%),
+         extract_message_metadata: 17 (3.4%), get_uri_detail_list: 1.16 (0.2%),
+         tests_pri_-1000: 8 (1.6%), tests_pri_-950: 1.65 (0.3%),
+        tests_pri_-900: 1.41 (0.3%), tests_pri_-90: 161 (32.5%), check_bayes:
+        145 (29.2%), b_tokenize: 9 (1.9%), b_tok_get_all: 6 (1.2%),
+        b_comp_prob: 2.6 (0.5%), b_tok_touch_all: 120 (24.1%), b_finish: 4.6
+        (0.9%), tests_pri_0: 278 (56.1%), check_dkim_signature: 0.89 (0.2%),
+        check_dkim_adsp: 4.0 (0.8%), poll_dns_idle: 1.22 (0.2%), tests_pri_10:
+        2.3 (0.5%), tests_pri_500: 10 (2.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v11 0/9] Count rlimits in each user namespace
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Andrew Morton <akpm@linux-foundation.org> writes:
 
+> On Thu, 22 Apr 2021 14:27:07 +0200 legion@kernel.org wrote:
+>
+>> These patches are for binding the rlimit counters to a user in user namespace.
+>
+> It's at v11 and no there has been no acking or reviewing activity?  Or
+> have you not been tracking these?
 
-On 6/2/21 14:55, Kees Cook wrote:
-> On Tue, Jun 01, 2021 at 01:46:16PM -0500, Gustavo A. R. Silva wrote:
->> Now that a one-element array was replaced with a flexible-array member
->> in struct hfi_sys_set_property_pkt, use the struct_size() helper to
->> correctly calculate the packet size.
->>
->> Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array with flexible-array member")
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> BTW... it seems that a similar problem is present in
->> https://lore.kernel.org/linux-hardening/20210211001044.GA69612@embeddedor/ 
->> and that is what is causing the regression. I will send v2 of that
->> patch, shortly. Thanks.
->>
->>  drivers/media/platform/qcom/venus/hfi_cmds.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
->> index 11a8347e5f5c..c86279e5d6e8 100644
->> --- a/drivers/media/platform/qcom/venus/hfi_cmds.c
->> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
->> @@ -27,7 +27,7 @@ void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
->>  {
->>  	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
->>  
->> -	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
->> +	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
-> 
-> I think this should be "1" not "2".
-> 
-> (i.e. there is a single "data" item, followed by an entire *hfi (which
-> starts immediate after data[0]).
+Most of the reviews were noticing things that needed to be changed.
 
-Yeah; I see your point. Here I just wanted to preserve the exact same size
-as the original code, which turns out has a "benign" off-by-one issue.
+For the ack/review by tags I am the one reviewing it and merging the
+change so I guess I didn't give Alex any Acked-by or Reviewed-by
+tags.
 
-I'll fix it up and respin.
+Regardless the changes are sitting in linux-next now and seem to be
+doing fine.
 
-Thanks!
---
-Gustavo
-
-> 
->>  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->>  	pkt->num_properties = 1;
->>  	pkt->data[0] = HFI_PROPERTY_SYS_IDLE_INDICATOR;
->> @@ -39,7 +39,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
->>  {
->>  	struct hfi_debug_config *hfi;
->>  
->> -	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
->> +	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
-> 
-> Same here.
-> 
->>  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->>  	pkt->num_properties = 1;
->>  	pkt->data[0] = HFI_PROPERTY_SYS_DEBUG_CONFIG;
->> @@ -50,7 +50,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
->>  
->>  void pkt_sys_coverage_config(struct hfi_sys_set_property_pkt *pkt, u32 mode)
->>  {
->> -	pkt->hdr.size = sizeof(*pkt) + sizeof(u32);
->> +	pkt->hdr.size = struct_size(pkt, data, 2);
-> 
-> This looks correct.
-> 
->>  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->>  	pkt->num_properties = 1;
->>  	pkt->data[0] = HFI_PROPERTY_SYS_CONFIG_COVERAGE;
->> @@ -116,7 +116,7 @@ void pkt_sys_power_control(struct hfi_sys_set_property_pkt *pkt, u32 enable)
->>  {
->>  	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
->>  
->> -	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
->> +	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
-> 
-> Also 1.
-> 
->>  	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
->>  	pkt->num_properties = 1;
->>  	pkt->data[0] = HFI_PROPERTY_SYS_CODEC_POWER_PLANE_CTRL;
->> -- 
->> 2.27.0
->>
-> 
+Eric
