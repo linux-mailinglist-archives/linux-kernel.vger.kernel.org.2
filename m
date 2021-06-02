@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5D1399266
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07808399251
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhFBSUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:20:41 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:58002 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhFBSUi (ORCPT
+        id S229657AbhFBSSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:18:25 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:37509 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBSSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:20:38 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
- id ecbaeec465f7694a; Wed, 2 Jun 2021 20:18:53 +0200
-Received: from kreacher.localnet (89-64-80-45.dynamic.chello.pl [89.64.80.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 139DE6697FA;
-        Wed,  2 Jun 2021 20:18:53 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 2/5] cpuidle: teo: Cosmetic modification of teo_select()
-Date:   Wed, 02 Jun 2021 20:15:52 +0200
-Message-ID: <3377367.iIbC2pHGDl@kreacher>
-In-Reply-To: <1867445.PYKUYFuaPT@kreacher>
-References: <1867445.PYKUYFuaPT@kreacher>
+        Wed, 2 Jun 2021 14:18:23 -0400
+Received: by mail-ot1-f42.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so3279274otp.4;
+        Wed, 02 Jun 2021 11:16:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YGs3ySUz+5yWOPGnnKcSs4d7r1g1klxeD4AjriZfMMk=;
+        b=Tr81xTfmb1HafzhrqT+YQzEngE/wBfTSh5/aGZ2m/YWSXq2KOy9IHn/OnaIGOkrxgq
+         bwwxhRnzS9yiEN4aibdlomUjUzfRFO9QUbJ2HVD640ZY3LzeFif3P+9DVS746eJmnP5C
+         AbkSuKTLyCBXT4sOaStlZVPUMSbuF3h4ZSeQcvCQATJoA3Xs5qMnrQSRYGEM6Tb4kMc1
+         AAjpqtda8AuaDiy1jhE4+RhVWz6PVOfxP8RgZCcY4u8l2qHGW65AthPfmRgwq6HRHRJ9
+         /GzZ7Djtvtr9mk+QbWCHRNVOjM5+Zgu+SvaJc04ehPBXTxxEQiGZ1Cn0wWpeTaSHh+pM
+         H1zg==
+X-Gm-Message-State: AOAM531vxGmXB+dhey5lGxMPigoLQLWmIEYcJmNLkVNlQyX3/No++5Cv
+        vCEnIeu9q9wbf9henCl5xg==
+X-Google-Smtp-Source: ABdhPJy6S/YWhSYolU2l1/6RinXushQyOPCztVxygHdQZ9YEIyxTE/T30sxKhvx+av2QZ1DrkGThfQ==
+X-Received: by 2002:a9d:729d:: with SMTP id t29mr5989930otj.256.1622657784498;
+        Wed, 02 Jun 2021 11:16:24 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m66sm138702oia.28.2021.06.02.11.16.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 11:16:23 -0700 (PDT)
+Received: (nullmailer pid 3703237 invoked by uid 1000);
+        Wed, 02 Jun 2021 18:16:21 -0000
+Date:   Wed, 2 Jun 2021 13:16:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-arm-msm@vger.kernel.org,
+        Linus W <linus.walleij@linaro.org>,
+        Lyude Paul <lyude@redhat.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        dri-devel@lists.freedesktop.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 04/11] dt-bindings: drm/aux-bus: Add an example
+Message-ID: <20210602181621.GB3692772@robh.at.kernel.org>
+References: <20210525000159.3384921-1-dianders@chromium.org>
+ <20210524165920.v8.4.I79c7ed8815a07d285dd3b38e680e980d1024dbf1@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.45
-X-CLIENT-HOSTNAME: 89-64-80-45.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdeljedguddvfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdektddrgeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrdeghedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=2 Fuz1=2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524165920.v8.4.I79c7ed8815a07d285dd3b38e680e980d1024dbf1@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On Mon, May 24, 2021 at 05:01:52PM -0700, Douglas Anderson wrote:
+> Now that we have an eDP controller that lists aux-bus, we can safely
+> add an example to the aux-bus bindings.
+> 
+> NOTE: this example is just a copy of the one in the 'ti-sn65dsi86'
+> one. It feels useful to have the example in both places simply because
+> it's important to document the interaction between the two bindings in
+> both places.
 
-Initialize local variables in teo_select() where they are declared.
+Don't forget the 3rd copy that exists in some .dts file most likely. 
+That's 3 places to fix when we improve or add some schema.
 
-No functional impact.
+I've generally been trying to de-duplicate examples...
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpuidle/governors/teo.c |   18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
-
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -241,10 +241,15 @@ static int teo_select(struct cpuidle_dri
- {
- 	struct teo_cpu *cpu_data = per_cpu_ptr(&teo_cpus, dev->cpu);
- 	s64 latency_req = cpuidle_governor_latency_req(dev->cpu);
--	int max_early_idx, prev_max_early_idx, constraint_idx, idx0, idx, i;
--	unsigned int hits, misses, early_hits;
-+	int constraint_idx = drv->state_count;
-+	unsigned int hits = 0, misses = 0;
-+	unsigned int early_hits = 0;
-+	int prev_max_early_idx = -1;
-+	int max_early_idx = -1;
-+	int idx0 = -1, idx = -1;
- 	ktime_t delta_tick;
- 	s64 duration_ns;
-+	int i;
- 
- 	if (dev->last_state_idx >= 0) {
- 		teo_update(drv, dev);
-@@ -256,15 +261,6 @@ static int teo_select(struct cpuidle_dri
- 	duration_ns = tick_nohz_get_sleep_length(&delta_tick);
- 	cpu_data->sleep_length_ns = duration_ns;
- 
--	hits = 0;
--	misses = 0;
--	early_hits = 0;
--	max_early_idx = -1;
--	prev_max_early_idx = -1;
--	constraint_idx = drv->state_count;
--	idx = -1;
--	idx0 = idx;
--
- 	for (i = 0; i < drv->state_count; i++) {
- 		struct cpuidle_state *s = &drv->states[i];
- 
-
-
-
+Rob
