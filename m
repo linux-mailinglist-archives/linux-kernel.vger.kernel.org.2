@@ -2,95 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769E4397F1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D67397F1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhFBCeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhFBCeD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:34:03 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098B0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 19:32:20 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 8C2DC83646;
-        Wed,  2 Jun 2021 14:32:15 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1622601135;
-        bh=EQQVSK+0QJTK16+K58HZ49/bcvwdWuz0jHQrnvLd4Rg=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=f4uR3oEr9dZfwpQW/NPhDpbNV3Ljrtr0hrZyn5BtOFIDDvKQ1jkHD1llcvJv/frXU
-         7nnR/5DCWpoTVF1xPhUCIezwUtLoRJeXPdSyhvxr7IbAKS8x/3V9XyxihZEacURcdZ
-         /USqNJ0YcxueNqOK0L+t3+Bmj6bwYbPsCBMznPaJTByl4PQNCVYSTpdSAoERLNoacM
-         4o6E6M0tOxFis2B/jyntHEV9cxt9AakpwCED+ZU6I4Mn0nhswNbO466DcryCCMxsaX
-         wEZS5PCM7TPeyHPByggpnARkh5SGrby06O9FtxZd+5G3Mm6asmfiKhLXgmlEhjAj1M
-         lLXD6kNOE4dCw==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60b6edaf0001>; Wed, 02 Jun 2021 14:32:15 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.18; Wed, 2 Jun 2021 14:32:15 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.018; Wed, 2 Jun 2021 14:32:15 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Ray Jui <ray.jui@broadcom.com>, "wsa@kernel.org" <wsa@kernel.org>,
-        "rjui@broadcom.com" <rjui@broadcom.com>,
-        "sbranden@broadcom.com" <sbranden@broadcom.com>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>
-CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Richard Laing <Richard.Laing@alliedtelesis.co.nz>
-Subject: Re: [PATCH] i2c: bcm-iproc: Add i2c recovery support
-Thread-Topic: [PATCH] i2c: bcm-iproc: Add i2c recovery support
-Thread-Index: AQHXVacbqgXaQg7ZR0qJitirfUU45Kr+3pAAgABb9QA=
-Date:   Wed, 2 Jun 2021 02:32:14 +0000
-Message-ID: <d133a136-11c1-1693-6f9b-e6fcf6a448f6@alliedtelesis.co.nz>
-References: <20210530225659.17138-1-chris.packham@alliedtelesis.co.nz>
- <7962c2ae-f3c6-66a4-e976-f7edbf80781c@broadcom.com>
-In-Reply-To: <7962c2ae-f3c6-66a4-e976-f7edbf80781c@broadcom.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <87BADBB809678C4FA734F022485B7B0B@atlnz.lc>
-Content-Transfer-Encoding: base64
+        id S230189AbhFBCeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:34:25 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43610 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229970AbhFBCeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:34:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622601160; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=N2aWNaK6HbPpRc2PN5lxaYs+zFYsZrJUqGdXKGBg3Nw=;
+ b=IHo3m9FP6jdI53s/7HokI9Cibpcd35yFcE3IcgBki5jJzXlZXXEACHo5DkLPWi1SUoVZjSwC
+ /OXqhCEgQJ/fMsM5tQmnzzs9fd65Gf6W3oY+lznq/Zq1PYCf6fLPV3Zlv1Kq5GJlOLiVxl00
+ MnK33fSHDsKqvzc+U8xYhyKhcwA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60b6edbcabfd22a3dcf05628 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 02:32:28
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 60100C43144; Wed,  2 Jun 2021 02:32:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F10AC43460;
+        Wed,  2 Jun 2021 02:32:26 +0000 (UTC)
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=WOcBoUkR c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=r6YtysWOX24A:10 a=4CoGGOvJKCGszEM0gbIA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 02 Jun 2021 10:32:26 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] scsi: ufs: Let command trace only for the cmd !=
+ null case
+In-Reply-To: <20210531104308.391842-4-huobean@gmail.com>
+References: <20210531104308.391842-1-huobean@gmail.com>
+ <20210531104308.391842-4-huobean@gmail.com>
+Message-ID: <309e9bacdc0a6ab78913036f4c95f142@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAyLzA2LzIxIDk6MDMgYW0sIFJheSBKdWkgd3JvdGU6DQo+DQo+IE9uIDUvMzAvMjAyMSAz
-OjU2IFBNLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4gRnJvbTogUmljaGFyZCBMYWluZyA8cmlj
-aGFyZC5sYWluZ0BhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPj4NCj4+IFRoZSBiY20taXByb2MgY29u
-dHJvbGxlciBjYW4gcHV0IHRoZSBTREEvU0NMIGxpbmVzIGludG8gYml0LWJhbmcgbW9kZSwNCj4+
-IG1ha2UgdXNlIG9mIHRoaXMgdG8gc3VwcG9ydCBpMmMgYnVzIHJlY292ZXJ5Lg0KPj4NCj4+IFNp
-Z25lZC1vZmYtYnk6IFJpY2hhcmQgTGFpbmcgPHJpY2hhcmQubGFpbmdAYWxsaWVkdGVsZXNpcy5j
-by5uej4NCj4+IFNpZ25lZC1vZmYtYnk6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2toYW1AYWxs
-aWVkdGVsZXNpcy5jby5uej4NCj4+IC0tLQ0KPHNuaXA+DQo+ICsNCj4+ICtzdGF0aWMgc3RydWN0
-IGkyY19idXNfcmVjb3ZlcnlfaW5mbyBiY21faXByb2NfcmVjb3ZlcnlfaW5mbyA9IHsNCj4gc3Rh
-dGljIGNvbnN0IHN0cnVjdCAuLi4NCg0KVGhlIGtlcm5lbCB0ZXN0IGJvdCBkb2Vzbid0IGxpa2Ug
-dGhlIHN1Z2dlc3Rpb24uDQoNCiA+PiBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLWJjbS1pcHJvYy5j
-OjEyNjQ6MjY6IGVycm9yOiBhc3NpZ25pbmcgdG8gDQonc3RydWN0IGkyY19idXNfcmVjb3Zlcnlf
-aW5mbyAqJyBmcm9tICdjb25zdCBzdHJ1Y3QgDQppMmNfYnVzX3JlY292ZXJ5X2luZm8gKicgZGlz
-Y2FyZHMgcXVhbGlmaWVycyANClstV2Vycm9yLC1XaW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXMt
-ZGlzY2FyZHMtcXVhbGlmaWVyc10NCg0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFkYXAtPmJ1c19y
-ZWNvdmVyeV9pbmZvID0gJmJjbV9pcHJvY19yZWNvdmVyeV9pbmZvOw0KIMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF4g
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+DQoNCkkgY2FuIHNlZSB3aHkuIEFyZSB5b3UgaGFwcHkg
-Zm9yIG1lIHRvIGRyb3AgdGhlIGNvbnN0IGluIHYzPyBPciBwZXJoYXBzIA0KeW91IGhhdmUgYSBi
-ZXR0ZXIgc3VnZ2VzdGlvbi4NCg==
+On 2021-05-31 18:43, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> For the query request, we already have query_trace, but in
+> ufshcd_send_command (), there will add two more redundant
+> traces. Since lrbp->cmd is null in the query request, the
+> below these two trace events provide nothing except the tag
+> and DB. Instead of letting them take up the limited trace
+> ring buffer, it’s better not to print these traces in case
+> of cmd == null.
+> 
+> ufshcd_command: send_req: ff3b0000.ufs: tag: 28, DB: 0x0, size: -1,
+> IS: 0, LBA: 18446744073709551615, opcode: 0x0 (0x0), group_id: 0x0
+> ufshcd_command: dev_complete: ff3b0000.ufs: tag: 28, DB: 0x0, size:
+> -1, IS: 0, LBA: 18446744073709551615, opcode: 0x0 (0x0), group_id: 0x0
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 44 +++++++++++++++++++--------------------
+>  1 file changed, 21 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index c5754d5486c9..c84bd8e045f6 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -378,35 +378,33 @@ static void ufshcd_add_command_trace(struct
+> ufs_hba *hba, unsigned int tag,
+>  	struct scsi_cmnd *cmd = lrbp->cmd;
+>  	int transfer_len = -1;
+> 
+> +	if (!cmd)
+> +		return;
+> +
+>  	if (!trace_ufshcd_command_enabled()) {
+>  		/* trace UPIU W/O tracing command */
+> -		if (cmd)
+> -			ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
+> +		ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
+>  		return;
+>  	}
+> 
+> -	if (cmd) { /* data phase exists */
+> -		/* trace UPIU also */
+> -		ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
+> -		opcode = cmd->cmnd[0];
+> -		lba = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
+> +	/* trace UPIU also */
+> +	ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
+> +	opcode = cmd->cmnd[0];
+> +	lba = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
+> 
+> -		if ((opcode == READ_10) || (opcode == WRITE_10)) {
+> -			/*
+> -			 * Currently we only fully trace read(10) and write(10)
+> -			 * commands
+> -			 */
+> -			transfer_len = be32_to_cpu(
+> -				lrbp->ucd_req_ptr->sc.exp_data_transfer_len);
+> -			if (opcode == WRITE_10)
+> -				group_id = lrbp->cmd->cmnd[6];
+> -		} else if (opcode == UNMAP) {
+> -			/*
+> -			 * The number of Bytes to be unmapped beginning with the
+> -			 * lba.
+> -			 */
+> -			transfer_len = blk_rq_bytes(cmd->request);
+> -		}
+> +	if (opcode == READ_10 || opcode == WRITE_10) {
+> +		/*
+> +		 * Currently we only fully trace read(10) and write(10) commands
+> +		 */
+> +		transfer_len =
+> +		       be32_to_cpu(lrbp->ucd_req_ptr->sc.exp_data_transfer_len);
+> +		if (opcode == WRITE_10)
+> +			group_id = lrbp->cmd->cmnd[6];
+> +	} else if (opcode == UNMAP) {
+> +		/*
+> +		 * The number of Bytes to be unmapped beginning with the lba.
+> +		 */
+> +		transfer_len = blk_rq_bytes(cmd->request);
+>  	}
+> 
+>  	intr = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+
+Reviewed-by: Can Guo <cang@codeaurora.org>
