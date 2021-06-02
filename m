@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B64398924
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8B4398927
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhFBMRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
+        id S229751AbhFBMRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhFBMRK (ORCPT
+        with ESMTP id S229710AbhFBMR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:17:10 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36B8C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 05:15:27 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id p13-20020a05600c358db029019f44afc845so1534845wmq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:15:27 -0700 (PDT)
+        Wed, 2 Jun 2021 08:17:26 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D475C06175F;
+        Wed,  2 Jun 2021 05:15:42 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so1151927otu.6;
+        Wed, 02 Jun 2021 05:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NYQ0DBLeg82xJUk7GJVvs66y68mmqwOYU+5W+gTFjjU=;
-        b=nT3mPDXaI76rhaGbXrGdOF2tQTVladAr1KfGrc6uARYU2qTKkYje3ge+Tfi3E4pUZJ
-         5g7iayiriAI25OE++iuDiMSkDgYDj0gPG7swtdaRbKRlhKKSMRTaHOKOaJUkv7r1hXeS
-         Qr+6WZN7wFevagpQDD5PRn/0+R9csUoEUYy+TnZcOD5+CqVe4YfCXvNlg2Zau2XUAwPU
-         WfGbPzGGUXE7iBVoyRrL6i7hXprG9zdldXpCuU8Hhv/+UqvAG/K5FKL5bX9ZbMtIACOC
-         /8zVk4WuevEtH0CEEe/HJMObpZwEBsEgIOYX5MZvj9Y56XwE3MMs1GCQ0yfUmNMZ8Xtn
-         tEpg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vHaetPkPYRHDvu2+wyaKBx30j/WfRHRRi21yYZroKbc=;
+        b=UiBPdb5Xpo/NhTFb0DyMRgveRdOFxhrIzHEzapfrt250dlq8eGJ8gGdTw/rf1/whEI
+         oCKjogFCiQzzF7H6JKQlvuWnZD2VVQZzkAPI8ZzBOGAnpMelWIwdK3Lw0hS1+iC6SZyg
+         C7r3uIClhHdySn5LyY6Z8p5jMm6P+tU8XRRP3hZMPeOQwGDrT0SclWbvQuW1RA7GS1B9
+         cTc3YKLT+AC3LyVzdBMS3aj+nae9MKUA4wFQpMFR9xjWGJEnEMragY50FwdCV1/w9Lbr
+         4fwACAmfQp1aPo6EnAz+9OnjkOwsVnYf9G/UMcV+4TYHu/ZrUQ6whYU60CEHkl/EwuWL
+         ncvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NYQ0DBLeg82xJUk7GJVvs66y68mmqwOYU+5W+gTFjjU=;
-        b=F2JgDka6bY0EyK/BDnQskHsAMnc2XVqTrsEpOcwo5srUASgxcBhucVW1xER/YFj3z0
-         /egoiQxqSy2nUXpZqnJlaKsaQk9r6DJPprvPEf+RyqtGGI32u91mEh3lsf0W9Pvad8Yc
-         +BIEugCO/sJ63HErcvhU3c+S1vrVDCm+h5ew4v0l1tVKfyrNRVtiobN6BVvfTAMgTsgV
-         ysJuvdkbPxIXtIc6xu+AELK1PzGeZS+XxVfy7VcU+GLC812AE/BgGz4vBC5q6z71YBi4
-         Z/tem2OHp6aAFQdzBa3+SWzKRh8lWxC/+ixRN2TO5DG7h6XE4BJgAUymbfG1d/EW/hyA
-         yzGQ==
-X-Gm-Message-State: AOAM533fOTHTw3cUroELark3wTn+usT+aRzgLc2/wl3hhlMphGJNS90p
-        Yk+4FNAwIXfyTyw2dzYy7TE=
-X-Google-Smtp-Source: ABdhPJz9eiapwoSn11oUlnVhy+ovN96PWpChVj0Xk0ODghVf8PkV+hJjYAeeRSAVAkfUmKtepo/oVg==
-X-Received: by 2002:a05:600c:2cd2:: with SMTP id l18mr31359961wmc.142.1622636126300;
-        Wed, 02 Jun 2021 05:15:26 -0700 (PDT)
-Received: from ziggy.stardust ([37.223.145.68])
-        by smtp.gmail.com with ESMTPSA id d3sm6341225wrs.41.2021.06.02.05.15.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 05:15:25 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] arm64: dts: mt8183: remove syscon from smi_common
- node
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        chun-jie.chen@mediatek.corp-partner.google.com,
-        Yong Wu <yong.wu@mediatek.com>
-References: <20210601040014.2970805-1-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <27c155d4-6198-08f3-9972-1a8da1a026ba@gmail.com>
-Date:   Wed, 2 Jun 2021 14:15:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vHaetPkPYRHDvu2+wyaKBx30j/WfRHRRi21yYZroKbc=;
+        b=cvZVCbGM7DrQOtWAjIbZ+PTcfGOcFxYCOaBslZR1q/H1heq13l+soVjvQYow8SaC9z
+         I9GxmvQMtmS2BsUAjzH9t36nL8gYoJBG8tvL4IpNDoK7oFejHHSUkNQdRm8T86b1n6J8
+         ORadZuAuBctl+piP+t2vOO0FfwL/PRxyY5toEmErNaUDWBnVF+NiSvSqIJWT3prPylp7
+         vEBIAYaQ94TZ3rnZt+krfSJ2daL4ReBCdIq8hkqUl+/mxELKU/J23da/bzx2zT7bgjb4
+         JTtoK2mN5v+uuvVdjGJbvWCUBZKtsFVAryfHYQtIsJSvECytzO+WNBL/MTE1EkXGLI5x
+         BNwg==
+X-Gm-Message-State: AOAM53176YeBfixvLH9gMQ7ZuEFGIRjEeoCDrtkFWAcSiQOL4sqbnIqZ
+        EiIJQVyAHn7Cps+zxMcQjBpDIBZPS9I=
+X-Google-Smtp-Source: ABdhPJwY7sDLsrEheHpyZSRTmc6IRc04vspGjL1pK0T8w0U4yKh0sAdUA6NPR5YZJTXrcCQQnfutww==
+X-Received: by 2002:a05:6830:15c2:: with SMTP id j2mr24647349otr.367.1622636141573;
+        Wed, 02 Jun 2021 05:15:41 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e11sm132341otk.78.2021.06.02.05.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 05:15:40 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 2 Jun 2021 05:15:39 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Erik Rosen <erik.rosen@metormote.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        Daniel Nilsson <daniel.nilsson@flex.com>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/5] hwmon: (pmbus/pim4328) Add support for reading
+ direct mode coefficients
+Message-ID: <20210602121539.GC2901466@roeck-us.net>
+References: <20210601164320.2907-1-erik.rosen@metormote.com>
+ <20210601164320.2907-3-erik.rosen@metormote.com>
 MIME-Version: 1.0
-In-Reply-To: <20210601040014.2970805-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601164320.2907-3-erik.rosen@metormote.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01/06/2021 06:00, Hsin-Yi Wang wrote:
-> We don't need to register smi_common as syscon. Also add required
-> property power-domains for this node.
+On Tue, Jun 01, 2021 at 06:43:17PM +0200, Erik Rosen wrote:
+> Add support for reading and decoding direct format coefficients to
+> the PMBus core driver. If the new flag PMBUS_USE_COEFFICIENTS_CMD
+> is set, the driver will use the COEFFICIENTS register together with
+> the information in the pmbus_sensor_attr structs to initialize
+> relevant coefficients for the direct mode format.
 > 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
 
-Applied to v5.13-next/dts64
+For my reference:
 
-Thanks!
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> ---
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index c5e822b6b77a..e074c0d402ff 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -1263,13 +1263,14 @@ larb0: larb@14017000 {
->  		};
->  
->  		smi_common: smi@14019000 {
-> -			compatible = "mediatek,mt8183-smi-common", "syscon";
-> +			compatible = "mediatek,mt8183-smi-common";
->  			reg = <0 0x14019000 0 0x1000>;
->  			clocks = <&mmsys CLK_MM_SMI_COMMON>,
->  				 <&mmsys CLK_MM_SMI_COMMON>,
->  				 <&mmsys CLK_MM_GALS_COMM0>,
->  				 <&mmsys CLK_MM_GALS_COMM1>;
->  			clock-names = "apb", "smi", "gals0", "gals1";
-> +			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
->  		};
->  
->  		imgsys: syscon@15020000 {
-> 
+Guenter
