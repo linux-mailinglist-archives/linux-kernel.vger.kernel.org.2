@@ -2,58 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2181E39816D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9724239813A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhFBGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:52:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhFBGwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:52:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8350361090;
-        Wed,  2 Jun 2021 06:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622616621;
-        bh=zLYlC44JwKKSpRlcCYDmPAMa/Zf94xrsm6JGjdW7c5U=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=QON80Ix//rxQJ95d36yEHlASvU3nMORXMjA6g4S6qdzCl196mK9BE4l8idCPt6Dte
-         pSHMHTsyY0FpxmpajkZh3PCrueOYXhXYacCFe7lcvfdEiAL74TDirT3o2eITx2t2v1
-         p60Un9+/65lLfOtRPRfENcfkiaRVnirgaFJWjCU4Dgdk2jURVh2meRQuClHibfVcvX
-         NO2GNDmLLoGvaBROm8UtLRLRYQnvrcSt46hr00vfniTaqml4L+jMnWP3PByWjQa4OD
-         6Snlp5Kv416DUS+yx1omotwNb0UZKuLISW8XpRgRhqJ93mt6I3fmeRpV46FWXogmHS
-         NAsBdpszjVJAQ==
-Content-Type: text/plain; charset="utf-8"
+        id S231421AbhFBGmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:42:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3502 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhFBGmR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 02:42:17 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvzqH1Sy9zYrs8;
+        Wed,  2 Jun 2021 14:37:47 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 14:40:30 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <axboe@kernel.dk>, <io-uring@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <asml.silence@gmail.com>, Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] io_uring: Remove unneeded if-null-free check
+Date:   Wed, 2 Jun 2021 14:54:10 +0800
+Message-ID: <20210602065410.104240-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210313020310.386152-1-konrad.dybcio@somainline.org>
-References: <20210313020310.386152-1-konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 1/2] dt-bindings: clock: Add MDM9607 GCC clock bindings
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        phone-devel@vger.kernel.org
-Date:   Tue, 01 Jun 2021 23:50:20 -0700
-Message-ID: <162261662040.4130789.3654997759500822604@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2021-03-12 18:03:07)
-> Add device tree bindings for global clock controller on MDM9607 SoC.
->=20
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
+Eliminate the following coccicheck warning:
 
-Applied to clk-next
+fs/io_uring.c:6056:4-9: WARNING: NULL check before some freeing functions is not needed.
+fs/io_uring.c:1744:2-7: WARNING: NULL check before some freeing functions is not needed.
+fs/io_uring.c:3340:2-7: WARNING: NULL check before some freeing functions is not needed.
+fs/io_uring.c:4612:2-7: WARNING: NULL check before some freeing functions is not needed.
+fs/io_uring.c:4375:2-7: WARNING: NULL check before some freeing functions is not needed.
+fs/io_uring.c:3441:2-7: WARNING: NULL check before some freeing functions is not needed.
+
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ fs/io_uring.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 5f82954004f6..6d0b3d09d92d 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1740,8 +1740,7 @@ static void io_dismantle_req(struct io_kiocb *req)
+ 		io_put_file(req->file);
+ 	if (req->fixed_rsrc_refs)
+ 		percpu_ref_put(req->fixed_rsrc_refs);
+-	if (req->async_data)
+-		kfree(req->async_data);
++	kfree(req->async_data);
+ 	if (req->work.creds) {
+ 		put_cred(req->work.creds);
+ 		req->work.creds = NULL;
+@@ -3336,8 +3335,7 @@ static int io_read(struct io_kiocb *req, unsigned int issue_flags)
+ 	kiocb_done(kiocb, ret, issue_flags);
+ out_free:
+ 	/* it's faster to check here then delegate to kfree */
+-	if (iovec)
+-		kfree(iovec);
++	kfree(iovec);
+ 	return 0;
+ }
+ 
+@@ -3437,8 +3435,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 	}
+ out_free:
+ 	/* it's reportedly faster than delegating the null check to kfree() */
+-	if (iovec)
+-		kfree(iovec);
++	kfree(iovec);
+ 	return ret;
+ }
+ 
+@@ -4371,8 +4368,7 @@ static int io_sendmsg(struct io_kiocb *req, unsigned int issue_flags)
+ 		ret = -EINTR;
+ 
+ 	/* fast path, check for non-NULL to avoid function call */
+-	if (kmsg->free_iov)
+-		kfree(kmsg->free_iov);
++	kfree(kmsg->free_iov);
+ 	req->flags &= ~REQ_F_NEED_CLEANUP;
+ 	if (ret < min_ret)
+ 		req_set_fail_links(req);
+@@ -4608,8 +4604,7 @@ static int io_recvmsg(struct io_kiocb *req, unsigned int issue_flags)
+ 	if (req->flags & REQ_F_BUFFER_SELECTED)
+ 		cflags = io_put_recv_kbuf(req);
+ 	/* fast path, check for non-NULL to avoid function call */
+-	if (kmsg->free_iov)
+-		kfree(kmsg->free_iov);
++	kfree(kmsg->free_iov);
+ 	req->flags &= ~REQ_F_NEED_CLEANUP;
+ 	if (ret < min_ret || ((flags & MSG_WAITALL) && (kmsg->msg.msg_flags & (MSG_TRUNC | MSG_CTRUNC))))
+ 		req_set_fail_links(req);
+@@ -6052,8 +6047,7 @@ static void io_clean_op(struct io_kiocb *req)
+ 		case IORING_OP_WRITE_FIXED:
+ 		case IORING_OP_WRITE: {
+ 			struct io_async_rw *io = req->async_data;
+-			if (io->free_iovec)
+-				kfree(io->free_iovec);
++			kfree(io->free_iovec);
+ 			break;
+ 			}
+ 		case IORING_OP_RECVMSG:
+-- 
+2.25.1
+
