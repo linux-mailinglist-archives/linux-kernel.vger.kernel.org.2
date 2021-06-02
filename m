@@ -2,213 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FE739889E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0629B3988A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFBLy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51252 "EHLO mail.kernel.org"
+        id S230010AbhFBLzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:55:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhFBLy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:54:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 366ED61242;
-        Wed,  2 Jun 2021 11:52:44 +0000 (UTC)
+        id S229471AbhFBLzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 07:55:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6F261026;
+        Wed,  2 Jun 2021 11:53:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622634764;
-        bh=I//4RBKnWt9wBavL0VfmU2oqhX+9WjJBJW64dSVgtEE=;
+        s=k20201202; t=1622634801;
+        bh=CVmMp9MNkwmTaZ5ecJDVTFhcb8zPuX4G+AS8gdvQ3L8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IIS0hSol21RczplZ6KQVFLpb+OTq1t+cRqvQ+ADWIp9yDbNpr3wJfKrmRGTzYuWKm
-         ogcJflRhNKmcouIS7VMlOEXTf/pgrO7O47A28U7zFA0ILaDcFYNhMwSFC3TLOhz6cw
-         trD4/NH9mz2mKqsAIjNOglrNPmbuGjUu3avHZhshQNdxvA+ACvKvptNNnWHKDR7de1
-         teMbZ35EI4zYgfoPIWdb8nsRbUdGDslkY64mz8marLR4nLQM7pm3jsIRIX1yLkcwf2
-         0Ax4u6V17QjovjZRky2FEsFHa5+zY06p8RpuKwjS/2cDdjhRva3p2Tk2r2dMcGjkz+
-         Cj6P6gRU8cWlw==
+        b=tmDcWEvhc3ketMRqIa4+3ApyRocrxCzYDnR4lm+s1Y7drNiBNLdDTgDo85ILCG888
+         KpdiXMC9B5o3VNaw7L5AJ0D++XLf9jT1H/C7jFeznIfIC1Yh+R/2L21I+v5h1KxZKr
+         rzDU28nmCxPfjEHHuRC6h1j+Ew69dUz+bPwPOkA00H/336/KwLhC/kAW1v6I5qpp7w
+         dcNnbOgQOTL/Q2+TDfB026iJpFSs4cuPt+v0kxJ0bza1A5prayrCYDm0LUGV1fbFvy
+         J2eJv/LZUVDbVuVUge0ZqOJo2Zmv5qiJKCzKpWuFUfaovShdnqk/C4FbpOWY2F1Gzg
+         5W+U72kqgiX9g==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1A44E4011C; Wed,  2 Jun 2021 08:52:41 -0300 (-03)
-Date:   Wed, 2 Jun 2021 08:52:41 -0300
+        id 872D74011C; Wed,  2 Jun 2021 08:53:19 -0300 (-03)
+Date:   Wed, 2 Jun 2021 08:53:19 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH] perf probe: Provide more detail with relocation warning
-Message-ID: <YLdxCdjcLr9HDNra@kernel.org>
-References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
- <20210525214858.33a66846ac09e499c3268a63@kernel.org>
- <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
- <20210526153340.a49ba8292f201493990f210c@kernel.org>
- <YK5FfaxFKUNdDBWz@kernel.org>
- <20210526232020.c1632c2285af811c7531b3cc@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>, jolsa@redhat.com,
+        linux-kernel@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v2] tools/perf: doc: Add permission and sysctl notice
+Message-ID: <YLdxL9QVh5n6xGeP@kernel.org>
+References: <162201967838.287555.4257117900130102987.stgit@devnote2>
+ <162204068898.388434.16842705842611255787.stgit@devnote2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526232020.c1632c2285af811c7531b3cc@kernel.org>
+In-Reply-To: <162204068898.388434.16842705842611255787.stgit@devnote2>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, May 26, 2021 at 11:20:20PM +0900, Masami Hiramatsu escreveu:
-> On Wed, 26 May 2021 09:56:29 -0300
-> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+Em Wed, May 26, 2021 at 11:51:29PM +0900, Masami Hiramatsu escreveu:
+> Add a section to notify the permission and sysctl setting
+> for perf probe. And fix some indentations.
 > 
-> > Em Wed, May 26, 2021 at 03:33:40PM +0900, Masami Hiramatsu escreveu:
-> > > On Wed, 26 May 2021 10:23:18 +0530 Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
-> > > > On 5/25/21 6:18 PM, Masami Hiramatsu wrote:
-> > > > > On Tue, 25 May 2021 10:07:44 +0530 Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
-> > 
-> > > > >> When run as normal user with default sysctl kernel.kptr_restrict=0
-> > > > >> and kernel.perf_event_paranoid=2, perf probe fails with:
-> > 
-> > > > >>    $ ./perf probe move_page_tables
-> > > > >>    Relocated base symbol is not found!
-> > 
-> > > > >> The warning message is not much informative. The reason perf
-> > > > >> fails is because /proc/kallsyms is restricted by
-> > > > >> perf_event_paranoid=2 for normal user and thus perf fails to read
-> > > > >> relocated address of the base symbol.
-> > 
-> > > > >> Tweaking kptr_restrict and perf_event_paranoid can change the
-> > > > >> behavior of perf probe. Also, running as root or privileged user
-> > > > >> works too. Add these details in the warning message.
-> > 
-> > > > >> Plus, kmap->ref_reloc_sym might not be always set even if
-> > > > >> host_machine is initialized. Above is the example of the same.
-> > > > >> Remove that comment.
-> > 
-> > > > > Yes, those are restricted in some cases. Anyway without priviledged
-> > > > > (super) user, perf probe can not set the probe in ftrace.
-> > 
-> > > > > Hmm, I think it should check the effective user-id at first. If it
-> > > > > is not super user and the action will access tracefs and kallsyms,
-> > > > > it should warn at that point.
-> > 
-> > > > If kptr_restrict=2, perf probe fails with same error even for root user.
-> > > > That's why I thought to just change this warning message.
-> > 
-> > > Ah, yes. In that case, perf probe must not use the base symbol.
-> > > (like -D option)
-> > > OK, then, let's merge this fix.
-> > 
-> > > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > 
-> > Thanks, applied as it improves the current situation.
-> > 
-> > But as a follow up, to further improve this, we can reuse what 'perf trace' has:
-> > 
-> >   $ perf trace sleep 1
-> >   Error:	No permissions to read /sys/kernel/tracing/events/raw_syscalls/sys_(enter|exit)
-> >   Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
-> >   $ sudo mount -o remount,mode=755 /sys/kernel/tracing/
-> >   $ perf trace sleep 1
-> >   Error:	Permission denied.
-> >   Hint:	Check /proc/sys/kernel/perf_event_paranoid setting.
-> >   Hint:	For your workloads it needs to be <= 1
-> >   Hint:	For system wide tracing it needs to be set to -1.
-> >   Hint:	Try: 'sudo sh -c "echo -1 > /proc/sys/kernel/perf_event_paranoid"'
-> >   Hint:	The current value is 2.
-> >   $ 
-> 
-> OK, let me check this.
-> BTW, does perf_event_paranoid affect only perf syscall (and kallsyms),
-> not the tracefs correct?
-> 
-> > I.e. go the extra step and show what the current value is and what it
-> > needs to be to achieve what is being attempted.
-> > 
-> > IOW combine error message with relevant documentation, to save steps.
-> > 
-> > See what 'perf top' does for an unpriv user:
-> > 
-> >   $ perf top --stdio
-> >   Error:
-> >   Access to performance monitoring and observability operations is limited.
-> >   Enforced MAC policy settings (SELinux) can limit access to performance
-> >   monitoring and observability operations. Inspect system audit records for
-> >   more perf_event access control information and adjusting the policy.
-> >   Consider adjusting /proc/sys/kernel/perf_event_paranoid setting to open
-> >   access to performance monitoring and observability operations for processes
-> >   without CAP_PERFMON, CAP_SYS_PTRACE or CAP_SYS_ADMIN Linux capability.
-> >   More information can be found at 'Perf events and tool security' document:
-> >   https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html
-> >   perf_event_paranoid setting is 2:
-> >     -1: Allow use of (almost) all events by all users
-> >         Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
-> >   >= 0: Disallow raw and ftrace function tracepoint access
-> >   >= 1: Disallow CPU event access
-> >   >= 2: Disallow kernel profiling
-> >   To make the adjusted perf_event_paranoid setting permanent preserve it
-> >   in /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)
-> 
-> Hmm, I would rather like pointing manpages...
+> Reported-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 
-Man pages are long, if you quote the relevant part of it when the
-problem takes place, IMHO it helps the user.
+Ravi, can I have your Reviewed-by?
 
 - Arnaldo
- 
-> Would we better to have perf-security.7 manpage?
+
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  Changes in v2:
+>   - Add tracefs remount option for --list command.
+>   - Mention uprobe case for kptr_restrict and vmlinux/debuginfo permission.
+> ---
+>  tools/perf/Documentation/perf-probe.txt |   19 ++++++++++++++++---
+>  1 file changed, 16 insertions(+), 3 deletions(-)
 > 
-> Thank you,
+> diff --git a/tools/perf/Documentation/perf-probe.txt b/tools/perf/Documentation/perf-probe.txt
+> index ed3ecfa422e1..080981d38d7b 100644
+> --- a/tools/perf/Documentation/perf-probe.txt
+> +++ b/tools/perf/Documentation/perf-probe.txt
+> @@ -226,7 +226,7 @@ So, "source.c:100-120" shows lines between 100th to l20th in source.c file. And
+>  
+>  LAZY MATCHING
+>  -------------
+> - The lazy line matching is similar to glob matching but ignoring spaces in both of pattern and target. So this accepts wildcards('*', '?') and character classes(e.g. [a-z], [!A-Z]).
+> +The lazy line matching is similar to glob matching but ignoring spaces in both of pattern and target. So this accepts wildcards('*', '?') and character classes(e.g. [a-z], [!A-Z]).
+>  
+>  e.g.
+>   'a=*' can matches 'a=b', 'a = b', 'a == b' and so on.
+> @@ -235,8 +235,8 @@ This provides some sort of flexibility and robustness to probe point definitions
+>  
+>  FILTER PATTERN
+>  --------------
+> - The filter pattern is a glob matching pattern(s) to filter variables.
+> - In addition, you can use "!" for specifying filter-out rule. You also can give several rules combined with "&" or "|", and fold those rules as one rule by using "(" ")".
+> +The filter pattern is a glob matching pattern(s) to filter variables.
+> +In addition, you can use "!" for specifying filter-out rule. You also can give several rules combined with "&" or "|", and fold those rules as one rule by using "(" ")".
+>  
+>  e.g.
+>   With --filter "foo* | bar*", perf probe -V shows variables which start with "foo" or "bar".
+> @@ -295,6 +295,19 @@ Add a probe in a source file using special characters by backslash escape
+>   ./perf probe -x /opt/test/a.out 'foo\+bar.c:4'
+>  
+>  
+> +PERMISSIONS AND SYSCTL
+> +----------------------
+> +Since perf probe depends on ftrace (tracefs) and kallsyms (/proc/kallsyms), you have to care about the permission and some sysctl knobs.
+> +
+> + - Since tracefs and kallsyms requires root or privileged user to access it, the following perf probe commands also require it; --add, --del, --list (except for --cache option)
+> +
+> + - The system admin can remount the tracefs with 755 (`sudo mount -o remount,mode=755 /sys/kernel/tracing/`) to allow unprivileged user to run the perf probe --list command.
+> +
+> + - /proc/sys/kernel/kptr_restrict = 2 (restrict all users) also prevents perf probe to retrieve the important information from kallsyms. You also need to set to 1 (restrict non CAP_SYSLOG users) for the above commands. Since the user-space probe doesn't need to access kallsyms, this is only for probing the kernel function (kprobes).
+> +
+> + - Since the perf probe commands read the vmlinux (for kernel) and/or the debuginfo file (including user-space application), you need to ensure that you can read those files.
+> +
+> +
+>  SEE ALSO
+>  --------
+>  linkperf:perf-trace[1], linkperf:perf-record[1], linkperf:perf-buildid-cache[1]
 > 
-> >   $
-> > 
-> > - Arnaldo
-> > 
-> > > 
-> > > > 
-> > > > Different combinations of privilege, perf_event_paranoid, kptr_restrict:
-> > > > 
-> > > >    Normal/Root user
-> > > >     |   perf_event_paranoid
-> > > >     V    V   kptr_restrict        perf probe error
-> > > >    ----------------------------------------------------------------
-> > > >     N   -1    0     Failed to open kprobe_events: Permission denied
-> > > >     N    0    0     Failed to open kprobe_events: Permission denied
-> > > >     N    1    0     Failed to open kprobe_events: Permission denied
-> > > >     N    2    0     Relocated base symbol is not found!
-> > > >    
-> > > >     N   -1    1     Relocated base symbol is not found!
-> > > >     N    0    1     Relocated base symbol is not found!
-> > > >     N    1    1     Relocated base symbol is not found!
-> > > >     N    2    1     Relocated base symbol is not found!
-> > > >    
-> > > >     N   -1    2     Relocated base symbol is not found!
-> > > >     N    0    2     Relocated base symbol is not found!
-> > > >     N    1    2     Relocated base symbol is not found!
-> > > >     N    2    2     Relocated base symbol is not found!
-> > > >    
-> > > >     R   -1    0     No error.
-> > > >     R    0    0     No error.
-> > > >     R    1    0     No error.
-> > > >     R    2    0     No error.
-> > > >    
-> > > >     R   -1    1     No error.
-> > > >     R    0    1     No error.
-> > > >     R    1    1     No error.
-> > > >     R    2    1     No error.
-> > > >    
-> > > >     R   -1    2     Relocated base symbol is not found!
-> > > >     R    0    2     Relocated base symbol is not found!
-> > > >     R    1    2     Relocated base symbol is not found!
-> > > >     R    2    2     Relocated base symbol is not found!
-> > > > 
-> > > > Ravi
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu <mhiramat@kernel.org>
-> > 
-> > -- 
-> > 
-> > - Arnaldo
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
 
 -- 
 
