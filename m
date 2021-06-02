@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6CD3984CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6E43984CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFBJBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:01:19 -0400
-Received: from mail-bn8nam11on2057.outbound.protection.outlook.com ([40.107.236.57]:6016
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233002AbhFBJBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:01:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ojs0yURDAvKZt+o4u1eL3/ucVWYA2AHn7vhEcB81t3+eGN5RWclAYWIbbGUlOMhTZ83QuTy+GFlF+0KoD2Q3vif2g6yJ547rrspPAHIJAdDgmc6no6lkgmshiwZdA+8JIGNkOpJTqACGPIrRNQf6jUOurJyOOAHRA7nlZpqCp3EgRmenG7pZZ/9bvZq4ebV9YB1nKkV240LDrus7RP9izNl1AZAKbyK//2inHypbwSLEOP7ffxdWtWBmzTlMTCJVaWxhrxNrAwbZ3ywlgrV6ABN1uMfwdQ3n9ceWHSOCx9reXrs1U1IFs5aCLXiTLXXiDJDbxlvMML1jmEZwvJ9aDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4gdjz3Jyl9de9nMt+3kn3lxOXcNuMjoQ451MIf87lMg=;
- b=mUAYKlI2VsZkdxD//oLhDhTtmXo+6w8JA4pH1rM5nUTQi3waoSeg4zbkdAJt7q7qrQXhLzu6ckaipIZJwsPqS/3gxPApvMMQ10o9u77gQ0MVIi4y1e4ITSuDdM5RWPRGX0k1xj+Q8gyInqjkjN9sZ+4L2J6Fl8IvA1/JZpClAE+uNEVtZ2Bd6WNKgFM3a254Z8fUJnvUdMjCN/mHRTQtEuyrKWEUAm92yMZe1i8xS33MYk0BZ48lX7Zf8Y03ed0ZCgnVYYYtTsstRkiZghVdg4CzkhMDYlaR/IqtDmqvG9VOsn2/sdfRhNkUhenSGt7foyKC1rOLPiWdfNy56qwUOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=lists.linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4gdjz3Jyl9de9nMt+3kn3lxOXcNuMjoQ451MIf87lMg=;
- b=Mtr6AYpKI4k6uzBKhMuOmRW5BJ88R4AFMjLE+FxfCfWWlKp42FqhUoEz2UlWgm/KC7zNPuIjemgAVWOLFrX0Z8C06jXOrI1f3t2yulHORgXDYT1oX4VQjrRr01k8QMkvf8zaqAu4czSpRDe+Nzh+hAJLcgAd+XiePJ0DyXyMUvydatzjjJmfEvO6sAAepsYSo+VewAuTP302yDTmJ5ectrnRSt+NuvXfpWyAziXXWuf5cuQkV8MzM0SFV62R2ZO8XqSlUW3ytdsmQHHUAXHq3QwnImRqXOco8e/FkayvC2jt22YplBvWSr1xizNO6X+XIhb3MQ6UOiIgbe0sERrU0Q==
-Received: from MW4PR03CA0262.namprd03.prod.outlook.com (2603:10b6:303:b4::27)
- by MN2PR12MB2989.namprd12.prod.outlook.com (2603:10b6:208:c4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Wed, 2 Jun
- 2021 08:59:30 +0000
-Received: from CO1NAM11FT048.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b4:cafe::74) by MW4PR03CA0262.outlook.office365.com
- (2603:10b6:303:b4::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22 via Frontend
- Transport; Wed, 2 Jun 2021 08:59:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- CO1NAM11FT048.mail.protection.outlook.com (10.13.175.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4150.30 via Frontend Transport; Wed, 2 Jun 2021 08:59:30 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Jun
- 2021 08:59:29 +0000
-Received: from vdi.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Jun 2021 08:59:27 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <elic@nvidia.com>
-Subject: [PATCH] vdpa/mlx5: Clear vq ready indication upon device reset
-Date:   Wed, 2 Jun 2021 11:59:24 +0300
-Message-ID: <20210602085924.62777-1-elic@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S229975AbhFBJBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:01:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22336 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229753AbhFBJBe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:01:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622624391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G01wiBaLKBgH8SUhvu9oGDvUb9DEe5X1aND1gEIw1Uw=;
+        b=hKuxxa9aN0dRi9J1uEMKv5d2m+qIG8REu7EKa+Rl8i71tR5jmLDJfCHIjAYLDiNjPUhAKF
+        gQRG5ixW4nQhQdHWecRVnZw/DR/S4ec3iLa/9xvx3MyBJ3oYIanxYN4alo7x37kYWhPyBy
+        ALtiPJyCWHpbpDDJjWNKmUPAWD+iA9w=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-zwmvb23FO-28UhSOUcWeUg-1; Wed, 02 Jun 2021 04:59:49 -0400
+X-MC-Unique: zwmvb23FO-28UhSOUcWeUg-1
+Received: by mail-wm1-f72.google.com with SMTP id r15-20020a05600c35cfb029017cc4b1e9faso1906728wmq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:59:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=G01wiBaLKBgH8SUhvu9oGDvUb9DEe5X1aND1gEIw1Uw=;
+        b=Rp0b+E5XfXTLe/Xsm8BGechUJ5ltMm8+J68Y1pjtJySqS/IAN+lgl08lhqJAjGhy5D
+         fBW4iAkl9gmtnjk2P/OVHunabuJaILPC/sIPORFnvJEXCqhWoBGrUBa0EHZnVNr3uYvv
+         pCVQwskP2oeQdsccg28T0NDzucxv848c00v8fLCIpheR2GtJWnIznrRm5s9ZpE2IEG96
+         Hzwk4wdp4pdTfaaYnpsl6VA05zImwO66czKIdMdiUVN1KJ9DHupr4GVUstIldSIr5gAQ
+         UFhdXZrKx+hy8fv9ERZAvrFzW3dL4qmuytYmAUMPYgU62ODt17bsjIo2+FLdiWLT4yYI
+         dLTQ==
+X-Gm-Message-State: AOAM531jj0lqMX/JomP0pKjf2AxNnAxTmXVJsYfXVeIgwivA9K1yL9op
+        av2E1kK7NsHqS51AeCOY6/AAkJpHAaJuWTzAIiU2Uk1d1VN1snU8Vs5K0cJnSzmaaO5BzuDZoFo
+        JXT+b+KsiMSCOm4TEAKHEzfHv
+X-Received: by 2002:a1c:b403:: with SMTP id d3mr30619884wmf.79.1622624388640;
+        Wed, 02 Jun 2021 01:59:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwCtRron1WFQC5Hl070ikJ3dyVvR/vrEL+ewi/Nnf7WjDG+gQRJfo9tqov5kPUU764Ml8sA/A==
+X-Received: by 2002:a1c:b403:: with SMTP id d3mr30619871wmf.79.1622624388470;
+        Wed, 02 Jun 2021 01:59:48 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6b6d.dip0.t-ipconnect.de. [91.12.107.109])
+        by smtp.gmail.com with ESMTPSA id m5sm1982332wmq.6.2021.06.02.01.59.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 01:59:48 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mm,memory_hotplug: align code to fit 80 characters
+ per line
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org
+Cc:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        logang@deltatee.com
+References: <20210602084752.3534-1-mgurtovoy@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <d90420a5-ecec-d9cc-8e27-07004701ef94@redhat.com>
+Date:   Wed, 2 Jun 2021 10:59:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd890afc-20e3-427f-4bd8-08d925a4bba7
-X-MS-TrafficTypeDiagnostic: MN2PR12MB2989:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB2989F507588B0F9289B6889CAB3D9@MN2PR12MB2989.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iUKHwQppHXZs3RjO/v/VLi4Zkr0rIQPcYVF8bq621elKM7yiRjZu9sdVWdssma7A9zPkrp/gJ0ErTXA2EuaAUZNaObx4GWBdnZU0lKEk80PHYICoAewZXPa959Q8khOMSHIa1SiaoDztNKqanfe7kXMMvHiGm0eh2VWDZ9pt5waTZ18jn+EfcaaK/d1of8fK6xYqL3tb75+lx9PnNdk6/F6Qawp3D/IOSXk9krJz5YMpcoUyoYHO3zRD12CZ6a/Oz0Ok3r1OW/KAtx+taguz/Fd7tpi1wr0bXpj1arPlFFamRJuS5nfulXcQSMwlixGzu8c4uojcnCW4ZZTGw1dpEW47WY/wQJza0U5gJxWUONheobnPwdWoHeWfmprJHVEduzvCOjyhC268UTzASea2gOsk8ksi19boRAz9yyM7/k4hEWrFNgjxdXc9wzOJ11B03+B1ZkZGW7ANVbglnse8FrSz+e6Bikq/DgaouHJr8rU0GJJTk5K6YGxlSoEoxKAK5ac8t/CP3N2ccBAgYliH6WQQyZBWVI5Qrv+dBdrd8CThO+FZD2/En2ueRs5JJYg38nR0tLVjKmIcDKZUnVNiu/WHmtCgFDMg69sRjCq2FvK0FjJu/Z6vTGotP725dr9uX30+c62gcmAdHr4v4Epl2QjIxilvXCKITlYGfCNMFP0=
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(376002)(136003)(46966006)(36840700001)(82740400003)(86362001)(1076003)(2906002)(82310400003)(8676002)(4326008)(6666004)(36860700001)(70586007)(7636003)(356005)(36906005)(186003)(316002)(5660300002)(336012)(36756003)(4744005)(26005)(7696005)(2616005)(70206006)(110136005)(8936002)(47076005)(107886003)(426003)(478600001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 08:59:30.1843
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd890afc-20e3-427f-4bd8-08d925a4bba7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT048.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2989
+In-Reply-To: <20210602084752.3534-1-mgurtovoy@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After device reset, the virtqueues are not ready so clear the ready
-field.
+On 02.06.21 10:47, Max Gurtovoy wrote:
+> The "if" clause can fit to one line. Also while we're here, fix the end
+> pfn print (use %#lx instead of #%lx).
+> 
 
-Failing to do so can result in virtio_vdpa failing to load if the device
-was previously used by vhost_vdpa and the old values are ready.
-virtio_vdpa expects to find VQs in "not ready" state.
+I think the subject could be more expressive. I'd suggest
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 +
- 1 file changed, 1 insertion(+)
+"mm,memory_hotplug: cleanup alignment checks in check_pfn_span"
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 02a05492204c..e8bc0842b44c 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -862,6 +862,7 @@ static void destroy_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtq
- 		return;
- 	}
- 	umems_destroy(ndev, mvq);
-+	mvq->ready = false;
- }
- 
- static u32 get_rqpn(struct mlx5_vdpa_virtqueue *mvq, bool fw)
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>   mm/memory_hotplug.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 70620d0dd923..8c3b423c1141 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -288,10 +288,9 @@ static int check_pfn_span(unsigned long pfn, unsigned long nr_pages,
+>   		min_align = PAGES_PER_SUBSECTION;
+>   	else
+>   		min_align = PAGES_PER_SECTION;
+> -	if (!IS_ALIGNED(pfn, min_align)
+> -			|| !IS_ALIGNED(nr_pages, min_align)) {
+> -		WARN(1, "Misaligned __%s_pages start: %#lx end: #%lx\n",
+> -				reason, pfn, pfn + nr_pages - 1);
+> +	if (!IS_ALIGNED(pfn, min_align) || !IS_ALIGNED(nr_pages, min_align)) {
+> +		WARN(1, "Misaligned __%s_pages start: %#lx end: %#lx\n",
+> +		     reason, pfn, pfn + nr_pages - 1);
+>   		return -EINVAL;
+>   	}
+>   	return 0;
+> 
+
+
 -- 
-2.31.1
+Thanks,
+
+David / dhildenb
 
