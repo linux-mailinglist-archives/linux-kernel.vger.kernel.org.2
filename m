@@ -2,162 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02758398527
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F359398529
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhFBJWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:22:31 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6137 "EHLO
+        id S231691AbhFBJX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:23:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2849 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFBJWa (ORCPT
+        with ESMTP id S230250AbhFBJX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:22:30 -0400
-Received: from dggeme711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fw3N90mpKzYq0G;
-        Wed,  2 Jun 2021 17:18:01 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggeme711-chm.china.huawei.com (10.1.199.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 2 Jun 2021 17:20:45 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Wed, 2 Jun 2021 17:20:45 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>
-Subject: RE: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
-Thread-Topic: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
-Thread-Index: AQHXVpHLdxqqXqYHy0SNrz7+ZdO1FKr+ElmAgAGnloCAAAEPgIAAArSAgAAnIwCAAANUAIAAAbOAgACIVwA=
-Date:   Wed, 2 Jun 2021 09:20:45 +0000
-Message-ID: <547f8273faa146699dd50173b33f03e2@hisilicon.com>
-References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
- <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
- <YLW+hZwoImx2wjwS@kroah.com>
- <4c9c7c17-e8d1-d601-6262-8064293a06a9@huawei.com>
- <YLcivXNwm75V+I2m@kroah.com>
- <d3c1ec35-fa62-46ed-9227-866e0a3c96b8@huawei.com>
- <CAHp75VeL4UMFX6oZWaFscTX6Ta5s714NeisR=vTh6mYMjyPi6w@mail.gmail.com>
- <f84f92f5-8462-0556-e457-4e302e1e8cb6@huawei.com>
- <YLdKDXYKm7jqorGa@kroah.com>
-In-Reply-To: <YLdKDXYKm7jqorGa@kroah.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.102]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 2 Jun 2021 05:23:28 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fw3M13PKrzWqwt;
+        Wed,  2 Jun 2021 17:17:01 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 17:21:39 +0800
+Received: from [10.174.179.71] (10.174.179.71) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 17:21:39 +0800
+Subject: Re: [PATCH] ACPI: tables: fixes the missed acpi_put_table() in
+ acpi_init_fpdt()
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>, <rui.zhang@intel.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210602011723.23666-1-jingxiangfeng@huawei.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <b70f1c51-08fa-4ddf-51c6-77064e02fe87@huawei.com>
+Date:   Wed, 2 Jun 2021 17:21:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20210602011723.23666-1-jingxiangfeng@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.71]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR3JlZyBLSCBbbWFpbHRv
-OmdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnXQ0KPiBTZW50OiBXZWRuZXNkYXksIEp1bmUgMiwg
-MjAyMSA5OjA2IFBNDQo+IFRvOiB0aWFudGFvIChIKSA8dGlhbnRhbzZAaGlzaWxpY29uLmNvbT4N
-Cj4gQ2M6IEFuZHkgU2hldmNoZW5rbyA8YW5keS5zaGV2Y2hlbmtvQGdtYWlsLmNvbT47IHRpYW50
-YW8gKEgpDQo+IDx0aWFudGFvNkBoaXNpbGljb24uY29tPjsgTGludXggS2VybmVsIE1haWxpbmcg
-TGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IEFuZHJldyBNb3J0b24gPGFr
-cG1AbGludXgtZm91bmRhdGlvbi5vcmc+Ow0KPiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxz
-b25nLmJhby5odWFAaGlzaWxpY29uLmNvbT47IEFuZHkgU2hldmNoZW5rbw0KPiA8YW5kcml5LnNo
-ZXZjaGVua29AbGludXguaW50ZWwuY29tPjsgUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbEBrZXJu
-ZWwub3JnPjsNCj4gSm9uYXRoYW4gQ2FtZXJvbiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29t
-Pg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDEvMl0gdG9wb2xvZ3k6IHVzZSBiaW5fYXR0cmlidXRl
-IHRvIGF2b2lkIGJ1ZmYgb3ZlcmZsb3cNCj4gDQo+IE9uIFdlZCwgSnVuIDAyLCAyMDIxIGF0IDA1
-OjAwOjE2UE0gKzA4MDAsIHRpYW50YW8gKEgpIHdyb3RlOg0KPiA+DQo+ID4g5ZyoIDIwMjEvNi8y
-IDE2OjQ4LCBBbmR5IFNoZXZjaGVua28g5YaZ6YGTOg0KPiA+ID4gT24gV2VkLCBKdW4gMiwgMjAy
-MSBhdCA5OjQ1IEFNIHRpYW50YW8gKEgpIDx0aWFudGFvNkBodWF3ZWkuY29tPiB3cm90ZToNCj4g
-PiA+ID4g5ZyoIDIwMjEvNi8yIDE0OjE4LCBHcmVnIEtIIOWGmemBkzoNCj4gPiA+ID4gPiBPbiBX
-ZWQsIEp1biAwMiwgMjAyMSBhdCAwMjoxNDo0OVBNICswODAwLCB0aWFudGFvIChIKSB3cm90ZToN
-Cj4gPiA+ID4gPiA+IOWcqCAyMDIxLzYvMSAxMjo1OCwgR3JlZyBLSCDlhpnpgZM6DQo+ID4gPiA+
-ID4gPiA+IE9uIFR1ZSwgSnVuIDAxLCAyMDIxIGF0IDEwOjU2OjQ5QU0gKzA4MDAsIFRpYW4gVGFv
-IHdyb3RlOg0KPiA+ID4gLi4uDQo+ID4gPg0KPiA+ID4gPiA+ID4gPiA+ICAgICAvKioNCj4gPiA+
-ID4gPiA+ID4gPiArICogYml0bWFwX3ByaW50X3RvX2J1ZiAtIGNvbnZlcnQgYml0bWFwIHRvIGxp
-c3Qgb3IgaGV4IGZvcm1hdA0KPiBBU0NJSSBzdHJpbmcNCj4gPiA+ID4gPiA+ID4gPiArICogQGxp
-c3Q6IGluZGljYXRlcyB3aGV0aGVyIHRoZSBiaXRtYXAgbXVzdCBiZSBsaXN0DQo+ID4gPiA+ID4g
-PiA+ID4gKyAqIEBidWY6IHBhZ2UgYWxpZ25lZCBidWZmZXIgaW50byB3aGljaCBzdHJpbmcgaXMg
-cGxhY2VkDQo+ID4gPiA+ID4gPiA+ID4gKyAqIEBtYXNrcDogcG9pbnRlciB0byBiaXRtYXAgdG8g
-Y29udmVydA0KPiA+ID4gPiA+ID4gPiA+ICsgKiBAbm1hc2tiaXRzOiBzaXplIG9mIGJpdG1hcCwg
-aW4gYml0cw0KPiA+ID4gPiA+ID4gPiA+ICsgKiBAb2ZmOiBvZmZzZXQgaW4gYnVmDQo+ID4gPiA+
-ID4gPiA+ID4gKyAqIEBjb3VudDogY291bnQgdGhhdCBhbHJlYWR5IG91dHB1dA0KPiA+ID4gPiA+
-ID4gPiA+ICsgKg0KPiA+ID4gPiA+ID4gPiA+ICsgKiB0aGUgcm9sZSBvZiBiaXRtYXBfcHJpbnRf
-dG9fYnVmIGFuZCBiaXRtYXBfcHJpbnRfdG9fcGFnZWJ1Zg0KPiBpcw0KPiA+ID4gPiA+ID4gPiA+
-ICsgKiB0aGUgc2FtZSwgdGhlIGRpZmZlcmVuY2UgaXMgdGhhdCB0aGUgc2Vjb25kIHBhcmFtZXRl
-ciBvZg0KPiA+ID4gPiA+ID4gPiA+ICsgKiBiaXRtYXBfcHJpbnRfdG9fYnVmIGNhbiBiZSBtb3Jl
-IHRoYW4gb25lIHBhZ2VzaXplLg0KPiA+ID4gPiA+ID4gPiA+ICsgKi8NCj4gPiA+ID4gPiA+ID4g
-PiAraW50IGJpdG1hcF9wcmludF90b19idWYoYm9vbCBsaXN0LCBjaGFyICpidWYsIGNvbnN0IHVu
-c2lnbmVkDQo+IGxvbmcgKm1hc2twLA0KPiA+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAg
-ICBpbnQgbm1hc2tiaXRzLCBsb2ZmX3Qgb2ZmLCBzaXplX3QgY291bnQpDQo+ID4gPiA+ID4gPiA+
-ID4gK3sNCj4gPiA+ID4gPiA+ID4gPiArICBpbnQgbGVuLCBzaXplOw0KPiA+ID4gPiA+ID4gPiA+
-ICsgIHZvaWQgKmRhdGE7DQo+ID4gPiA+ID4gPiA+ID4gKyAgY2hhciAqZm10ID0gbGlzdCA/ICIl
-KnBibFxuIiA6ICIlKnBiXG4iOw0KPiA+ID4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ID4gPiAr
-ICBsZW4gPSBzbnByaW50ZihOVUxMLCAwLCBmbXQsIG5tYXNrYml0cywgbWFza3ApOw0KPiA+ID4g
-PiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ID4gPiArICBkYXRhID0ga3ZtYWxsb2MobGVuKzEsIEdG
-UF9LRVJORUwpOw0KPiA+ID4gPiA+ID4gPiA+ICsgIGlmICghZGF0YSkNCj4gPiA+ID4gPiA+ID4g
-PiArICAgICAgICAgIHJldHVybiAtRU5PTUVNOw0KPiA+ID4gPiA+ID4gPiA+ICsNCj4gPiA+ID4g
-PiA+ID4gPiArICBzaXplID0gc2NucHJpbnRmKGRhdGEsIGxlbisxLCBmbXQsIG5tYXNrYml0cywg
-bWFza3ApOw0KPiA+ID4gPiA+ID4gPiA+ICsgIHNpemUgPSBtZW1vcnlfcmVhZF9mcm9tX2J1ZmZl
-cihidWYsIGNvdW50LCAmb2ZmLCBkYXRhLCBzaXplKTsNCj4gPiA+ID4gPiA+ID4gPiArICBrdmZy
-ZWUoZGF0YSk7DQo+ID4gPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gPiA+ICsgIHJldHVybiBz
-aXplOw0KPiA+ID4gPiA+ID4gPiBXaHkgaXMgdGhpcyBzbyBkaWZmZXJlbnQgZnJvbSBiaXRtYXBf
-cHJpbnRfdG9fcGFnZWJ1ZigpPyAgQ2FuJ3QgeW91DQo+IGp1c3QNCj4gPiA+ID4gPiA+ID4gdXNl
-IHRoaXMgZnVuY3Rpb24gYXMgdGhlICJyZWFsIiBmdW5jdGlvbiBhbmQgdGhlbiBjaGFuZ2UNCj4g
-PiA+ID4gPiA+ID4gYml0bWFwX3ByaW50X3RvX3BhZ2VidWYoKSB0byBjYWxsIGl0IHdpdGggYSBz
-aXplIG9mIFBBR0VfU0laRT8NCj4gPiA+ID4gPiA+IERvIHlvdSBtZWFuIGRvIGZvbGxvd2luZyBj
-aGFuZ2UsIGlzIHRoYXQgY29ycmVjdD8gOi0pDQo+ID4gPiA+ID4gTWF5YmUsIGl0IGlzIHdoaXRl
-c3BhY2UgY29ycnVwdGVkLCBhbmQgaXQgc3RpbGwgZmVlbHMgbGlrZSB0aGlzIGZ1bmN0aW9uDQo+
-ID4gPiA+ID4gaXMgbXVjaCBiaWdnZXIgdGhhbiBpdCBuZWVkcyB0byBiZSBnaXZlbiB0aGUgZnVu
-Y3Rpb24gaXQgaXMgcmVwbGFjaW5nDQo+IGlzDQo+ID4gPiA+ID4gb25seSBhIHNpbXBsZSBzcHJp
-bnRmKCkgY2FsbC4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gK2ludCBiaXRtYXBfcHJpbnRfdG9f
-YnVmKGJvb2wgbGlzdCwgY2hhciAqYnVmLCBjb25zdCB1bnNpZ25lZCBsb25nDQo+ICptYXNrcCwN
-Cj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGludCBubWFza2JpdHMsIGxvZmZf
-dCBvZmYsIHNpemVfdCBjb3VudCkNCj4gPiA+ID4gPiA+ICt7DQo+ID4gPiA+ID4gPiArICAgICAg
-IGludCBsZW4sIHNpemU7DQo+ID4gPiA+ID4gPiArICAgICAgIHZvaWQgKmRhdGE7DQo+ID4gPiA+
-ID4gPiArICAgICAgIGNvbnN0IGNoYXIgKmZtdCA9IGxpc3QgPyAiJSpwYmxcbiIgOiAiJSpwYlxu
-IjsNCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICsgICAgICAgaWYgKG9mZiA9PSBMTE9OR19N
-QVggJiYgY291bnQgPT0gUEFHRV9TSVpFIC0gb2Zmc2V0X2luX3BhZ2UoYnVmKSkNCj4gPiA+ID4g
-PiA+ICsgICAgICAgICAgICAgICByZXR1cm4gc2NucHJpbnRmKGJ1ZiwgY291bnQsIGZtdCwgbm1h
-c2tiaXRzLCBtYXNrcCk7DQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArICAgICAgIGxlbiA9
-IHNucHJpbnRmKE5VTEwsIDAsIGZtdCwgbm1hc2tiaXRzLCBtYXNrcCk7DQo+ID4gPiA+ID4gPiAr
-DQo+ID4gPiA+ID4gPiArICAgICAgIGRhdGEgPSBrdm1hbGxvYyhsZW4rMSwgR0ZQX0tFUk5FTCk7
-DQo+ID4gPiA+ID4gV2h5IGRvIHlvdSBuZWVkIHRvIGFsbG9jYXRlIG1vcmUgbWVtb3J5PyAgQW5k
-IHdoeSBrdm1hbGxvYygpPw0KPiA+ID4gPiBCZWNhdXNlIHRoZSBtZW1vcnkgaGVyZSB3aWxsIGV4
-Y2VlZCBhIHBhZ2VzaXplIGFuZCB3ZSBkb24ndCBrbm93IHRoZQ0KPiA+ID4gPiBleGFjdCBzaXpl
-LCB3ZSBoYXZlIHRvIGNhbGwNCj4gPiA+ID4NCj4gPiA+ID4gc25wcmludGYgZmlyc3QgdG8gZ2V0
-IHRoZSBhY3R1YWwgc2l6ZS4ga3ZtYWxsb2MoKSBpcyB1c2VkIGJlY2F1c2Ugd2hlbg0KPiA+ID4g
-PiBwaHlzaWNhbCBtZW1vcnkgaXMgdGlnaHQsIGttYWxsb2MNCj4gPiA+ID4NCj4gPiA+ID4gbWF5
-IGZhaWwsIGJ1dCB2bWFsbG9jIHdpbGwgc3VjY2VlZC4gSXQgaXMgbm90IHNvIGJhZCB0aGF0IHRo
-ZSBtZW1vcnkgaXMNCj4gPiA+ID4gbm90IHJlcXVlc3RlZCBoZXJlLg0KPiA+ID4gVG8gbWUgaXQg
-c291bmRzIGxpa2UgdGhlIGZ1bmN0aW9uIGlzIG92ZXJlbmdpbmVlcmVkIC8gbGFja3MgdGhvdWdo
-dA0KPiA+ID4gdGhyb3VnaCAvIG9wdGltaXphdGlvbi4NCj4gPiA+IENhbiB5b3UgcHJvdmlkZSBh
-IGZldyBleGFtcGxlcyB0aGF0IHJlcXVpcmUgdGhlIGFib3ZlIGFsZ29yaXRobT8NCj4gPg0KPiA+
-IHNvIHlvdSB0aGluayB3ZSBzaG91bGQgdXNlIGttYWxsb2MgaW5zdGVhZCBvZiBrdm1hbGxvYyA/
-DQo+IA0KPiBXaGF0IHNpemUgYml0bWFwIHdvdWxkIHRyaWdnZXIgYSB2bWFsbG9jKCkgY2FsbCB0
-byBiZSBmb3JjZWQgaGVyZT8NCj4gDQoNCkFjY29yZGluZyB0byBrdm1hbGxvY19ub2RlKCksIG9u
-bHkgaWYgc2l6ZSBpcyBsYXJnZXIgdGhhbiBQQUdFX1NJWkUsDQprdm1hbGxvYyB3aWxsIG1vdmUg
-dG8gdm1hbGxvYyBpZiBrbWFsbG9jIGZhaWxzIHRvIGdldCBtZW1vcnkuIE90aGVyd2lzZSwNCml0
-IHdpbGwgcmV0dXJuIGVycm9yLg0Kdm9pZCAqa3ZtYWxsb2Nfbm9kZShzaXplX3Qgc2l6ZSwgZ2Zw
-X3QgZmxhZ3MsIGludCBub2RlKQ0Kew0KCWdmcF90IGttYWxsb2NfZmxhZ3MgPSBmbGFnczsNCgl2
-b2lkICpyZXQ7DQoNCgkuLi4NCg0KCXJldCA9IGttYWxsb2Nfbm9kZShzaXplLCBrbWFsbG9jX2Zs
-YWdzLCBub2RlKTsNCg0KCS8qDQoJICogSXQgZG9lc24ndCByZWFsbHkgbWFrZSBzZW5zZSB0byBm
-YWxsYmFjayB0byB2bWFsbG9jIGZvciBzdWIgcGFnZQ0KCSAqIHJlcXVlc3RzDQoJICovDQoJaWYg
-KHJldCB8fCBzaXplIDw9IFBBR0VfU0laRSkNCgkJcmV0dXJuIHJldDsNCg0KCXJldHVybiBfX3Zt
-YWxsb2Nfbm9kZShzaXplLCAxLCBmbGFncywgbm9kZSwNCgkJCV9fYnVpbHRpbl9yZXR1cm5fYWRk
-cmVzcygwKSk7DQp9DQoNCkZvciBiaXRtYXAsIGl0IGlzIGNsZWFyIGEgbGFyZ2UgTlJfQ1BVUyBj
-YW4gdHJpZ2dlciB2bWFsbG9jOg0KQ29kZSBjb3B5LXBhc3RlIGZyb20gZHJpdmVycy9iYXNlL25v
-ZGUuYzoNCgkvKiAyMDA4LzA0LzA3OiBidWYgY3VycmVudGx5IFBBR0VfU0laRSwgbmVlZCA5IGNo
-YXJzIHBlciAzMiBiaXRzLiAqLw0KCUJVSUxEX0JVR19PTigoTlJfQ1BVUy8zMiAqIDkpID4gKFBB
-R0VfU0laRS0xKSk7DQoNCkJ1dCBmb3IgbGlzdCwgaXQgd291bGQgYmUgbXVjaCBtb3JlIHRyaWNr
-eS4gQXMgYSBsaXN0IGNvdWxkIGJlIGFzIHNpbXBsZQ0KYXM6DQowLTIwNDcNCkl0IGNvdWxkIGFs
-c28gYmUgYXMgY29tcGxleCBhczoNCjAsMSwzLDUsNyw5LDExLDEzLC4uLi4uLDIwNDUsMjA0Nw0K
-DQpJdCB0b3RhbGx5IGRlcGVuZHMgb24gaG93IHRoZSBiaXRtYXAgaXMgbGlrZS4NCg0KVGhhdCdz
-IHdoeSB0aWFudGFvJ3MgY29kZSBpcyBkZXRlY3Rpbmcgc2l6ZSBiZWZvcmUgbWFsbG9jLg0KDQo+
-IHRoYW5rcywNCj4gDQo+IGdyZWcgay1oDQoNClRoYW5rcw0KQmFycnkNCg0K
+The title of this patch is misleading, how about "ACPI: FPDT: Add the
+missed acpi_put_table() in acpi_init_fpdt()" ?
+
+On 2021/6/2 9:17, Jing Xiangfeng wrote:
+> acpi_init_fpdt() misses to call acpi_put_table() in an error path. Add
+> the missed function call to fix it.
+> 
+> Fixes: d1eb86e59be0 ("ACPI: tables: introduce support for FPDT table")
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>   drivers/acpi/acpi_fpdt.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
+> index a89a806a7a2a..4ee2ad234e3d 100644
+> --- a/drivers/acpi/acpi_fpdt.c
+> +++ b/drivers/acpi/acpi_fpdt.c
+> @@ -240,8 +240,10 @@ static int __init acpi_init_fpdt(void)
+>   		return 0;
+>   
+>   	fpdt_kobj = kobject_create_and_add("fpdt", acpi_kobj);
+> -	if (!fpdt_kobj)
+> +	if (!fpdt_kobj) {
+> +		acpi_put_table(header);
+>   		return -ENOMEM;
+> +	}
+
+The code looks good to me.
+
+Thanks
+Hanjun
