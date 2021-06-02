@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E45398FCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6CB398FC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhFBQUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:20:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54522 "EHLO mail.kernel.org"
+        id S229961AbhFBQTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:19:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhFBQTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:19:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3AB761940;
-        Wed,  2 Jun 2021 16:17:19 +0000 (UTC)
+        id S229751AbhFBQTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:19:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDB86161E;
+        Wed,  2 Jun 2021 16:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622650640;
-        bh=Zo37+RknpmwdBx8dA9wXqbVKrPU4uUmppfJSnBmFG4Q=;
+        s=k20201202; t=1622650648;
+        bh=H32PM2qecRNYvcKFMj5jWRXRrg43aAUqm+2D/jxKv9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LdYCSFxli0WYLh6PGEzcJXE60BYhuKT1CRRmUNpZ3yK4UA/rWBQTyMhKAlS4BlfH+
-         0YpmuaKfa/iU9SpFh+eGHlNxcQEbVoti3zM7RPinNA7eQ8ar8BjZ3q/LuOF75xoGkz
-         pWTWrV2uodMK7CTRchTJxVafP7o5YH7ktFdwibjz/0VeTF4lAZVXciW6calCYy83XR
-         jlkL7UABBHLKr1e4M126ZumxVNXk8ZtrD4GKls1aJho9so8Z10iho1o4Fk41hxIllB
-         Npuqd6yTLq16Q4im1r+HbAxmeeipHNu2iDX0+aTgz4MQHmO+g8UjHN9aF+R+DUGEop
-         Dncr8D+r2LW6Q==
+        b=WcfPF7McSmUw1KIX/TI/lOH34wZWRcEz25+xcSu1iQJVGcIxs+Pjt55PF9UCdWrAK
+         j+C2Au7Fov+X2vw74KTFYZ1RuVs0RchIHVkHogmQWWuLgN7MpJiPAHmtOFW+k4lpjs
+         miUDN1tcCKruXMQ2Br3RAupY6MB5Nr7m7FA9RRUoSUdVQ8eJ+WqdL4gZpuX2nirUSY
+         vT5Q4Jst3KJ6H1VvcIjo9rjrAWWRYLyuuw/7s6+Lt1PoK+hc8kddNkkD9L/8zx7YtF
+         EgTeuu+260d6RuImszYStJW/px+77eI3eo7HSxt7JPA4m+Hp+94Haa6UdU3iNnZ2uN
+         VsXdha6ieN1/A==
 From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-Subject: Re: [PATCH v2] regulator: bd718x7: Fix the BUCK7 voltage setting on BD71837
-Date:   Wed,  2 Jun 2021 17:16:51 +0100
-Message-Id: <162265054258.22587.7755311358570811335.b4-ty@kernel.org>
+To:     tiwai@suse.com, yang.jie@linux.intel.com, perex@perex.cz,
+        liam.r.girdwood@linux.intel.com,
+        YueHaibing <yuehaibing@huawei.com>, cezary.rojewski@intel.com,
+        pierre-louis.bossart@linux.intel.com
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ASoC: Intel: Skylake: use DEVICE_ATTR_RO macro
+Date:   Wed,  2 Jun 2021 17:16:54 +0100
+Message-Id: <162265045454.22459.4494001129448611734.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <bd8c00931421fafa57e3fdf46557a83075b7cc17.1622610103.git.matti.vaittinen@fi.rohmeurope.com>
-References: <bd8c00931421fafa57e3fdf46557a83075b7cc17.1622610103.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210524115506.35724-1-yuehaibing@huawei.com>
+References: <20210524115506.35724-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,24 +43,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 08:45:58 +0300, Matti Vaittinen wrote:
-> Changing the BD71837 voltages for other regulators except the first 4 BUCKs
-> should be forbidden when the regulator is enabled. There may be out-of-spec
-> voltage spikes if the voltage of these "non DVS" bucks is changed when
-> enabled. This restriction was accidentally removed when the LDO voltage
-> change was allowed for BD71847. (It was not noticed that the BD71837
-> BUCK7 used same voltage setting function as LDOs).
-> 
-> [...]
+On Mon, 24 May 2021 19:55:06 +0800, YueHaibing wrote:
+> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
+> which makes the code a bit shorter and easier to read.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regulator: bd718x7: Fix the BUCK7 voltage setting on BD71837
-      commit: bc537e65b09a05923f98a31920d1ab170e648dba
+[1/1] ASoC: Intel: Skylake: use DEVICE_ATTR_RO macro
+      commit: ae624a38be37e1a3127d5fa32c996e09974bb88d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
