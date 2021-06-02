@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A569E399599
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAEF3995A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhFBVuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:50:23 -0400
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:41843 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhFBVuW (ORCPT
+        id S229641AbhFBVzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:55:44 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:45569 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFBVzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:50:22 -0400
-Received: by mail-pg1-f172.google.com with SMTP id r1so3412508pgk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 14:48:38 -0700 (PDT)
+        Wed, 2 Jun 2021 17:55:43 -0400
+Received: by mail-pf1-f181.google.com with SMTP id d16so3252911pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 14:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Sc77jpDXsQiAn3sguIpNqwoP6hsPQcr6arGUYdonRno=;
-        b=H2KwaifQBmnFtPqfUo9Dwgzc3FNJcWSyPBG2nVJt062btlYqXPud7kSdZh9Qv7ayMl
-         daWPhsQ1vBf/bJ4LQU7gt/CiPvvmeq0nqrsFGyILfKqGRv5BZGlcrMRlegx7qMXfy9j5
-         ELa8tC4i5imzHRcXofCnluT8CIGxnwII0Yr3M=
+        bh=9ntQT2pZR3LJHS6LUFfJ+Qm+vXWzrrp5nCQGAwU1JB0=;
+        b=hcmQBsf5LoocnIf8a/0Ca0mlBQCzY7GjMf15ueTI3PEpj3E/TBi5Q4d6mn33d2MJoP
+         o9USDMmnfkAKRC+HQmjPpNpm9ItolNHZ1gLqyQzuO6A7JT97S8N4Sxu9N2mExjgaVVfG
+         /6iv9Wdl/GeNVu3eeoA7T88o2yYmvWwncmi+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Sc77jpDXsQiAn3sguIpNqwoP6hsPQcr6arGUYdonRno=;
-        b=WxVkAztf+Yi78DSg1Q8yKzRQQGxnHIAaYm31cuJTY5e9oFlz5ImwbMG3DSM0aUgW+2
-         TU+1ORKVDVt8pg35clCv6ZPiyovHAL9DhE3mDN49f311dnOgjOxQB6HcpjHKYJXeC9FY
-         8gNoQbgjS1L1OmUT/eF9og8a+tngAhM1rvqvJY0TC9Rmy7vJlwp29X+z3BYggCsy+YUD
-         /VYoXCMSy7sM3oXNSvYB7h14Vg3OPimcEbOHKh9zzRllnJ+T4QgcRPLM9h5902HJRrfR
-         E1MBc0CZRTfePWrVF+q+DyxQoXbV0yRob6RrgfvkEX9RISvwOxJ5x9xHxkSeGvVBu5Jl
-         qRtA==
-X-Gm-Message-State: AOAM531gtpRbe06kz+yrZcvEt9OGMZTIOBCPTV8KRQKVXWc5b2rybEZX
-        nc/2QFlWeic1LRemcohgbtBgPQ==
-X-Google-Smtp-Source: ABdhPJxzOXHhrjOcAujs9o8m8h2aiWUQQFlvs9lwd0D8RLskRxkJPKL3Co+6tCY+ACzTLByxzJm0yA==
-X-Received: by 2002:a63:e255:: with SMTP id y21mr36265038pgj.26.1622670458713;
-        Wed, 02 Jun 2021 14:47:38 -0700 (PDT)
+        bh=9ntQT2pZR3LJHS6LUFfJ+Qm+vXWzrrp5nCQGAwU1JB0=;
+        b=U1UVdTIx38mGBTMfijx4SsNW01b/TktsNFTcn6940ERlx9196dvvwS7TxdNIQlokqa
+         LfyJH/KPgTAP4ZEsJWyjnqav+Oz2/nGwVCp89XBdsG8eBcPwAiChJ2WWt3Q+p7QALd0d
+         ocQiPCFxarGXSDDhF7r/5SifQeoC8HLuWVr5LjgDJE8cB68XgKNyEZ9n17ajFHZzP1A1
+         oJIMLBxiqBnePdIXGOlbWbWQVzLFAUgloioCtpvkQgV8oNUmfCidOl/H+1DpaQkdoDiC
+         2100o4w6hzC3NOVKr6jBRjs29Wrq9QtrSsRuCbWUHaDqvJHD8rq4kR353pwo+/yNDyxx
+         qKCw==
+X-Gm-Message-State: AOAM533HOUqLZPXUEQ2iUfRYvm9VWhLc7s8UsERDz9wlCHMrgXLSGYqX
+        kZYz/rd023Yr/fp2NECBUGKBIw==
+X-Google-Smtp-Source: ABdhPJzeQ5qvww5ymAg1YzwWIo2ptK3WZmfCNVj/MFd8/a2Itlvi0o2veU1w5SbMD5HCoN+TggIUFg==
+X-Received: by 2002:a63:1b52:: with SMTP id b18mr8618637pgm.263.1622670780419;
+        Wed, 02 Jun 2021 14:53:00 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t12sm354849pjw.57.2021.06.02.14.47.37
+        by smtp.gmail.com with ESMTPSA id 60sm338761pjz.42.2021.06.02.14.52.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 14:47:38 -0700 (PDT)
+        Wed, 02 Jun 2021 14:52:59 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Hanjun Guo <guohanjun@huawei.com>
+To:     Dave Airlie <airlied@redhat.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] acpi/arm64: Mark next_platform_timer as __init
-Date:   Wed,  2 Jun 2021 14:46:47 -0700
-Message-Id: <20210602214645.695597-1-keescook@chromium.org>
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Arnd Bergmann <arnd@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: [PATCH 0/3] drm: Fix randconfig link failures
+Date:   Wed,  2 Jun 2021 14:52:49 -0700
+Message-Id: <20210602215252.695994-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=8a71d42d1cd19e130ba6c8c84211498e729326cb; i=0/cv7PwxsF9pO8ulDkXbeiGiNrvyb0nlgjdks8TBZA8=; m=8a1no1XgXXPojMCn5qL1ghMr3xwNMVdb4aYy73d8ALM=; p=rixUFzpGtN79JA9akXsWQVK6E909sQ67a8z3SAVsgh8=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmC3/EUACgkQiXL039xtwCYN5Q//Rdr yP+tAmU3+tnzP0SizepbwDGu9vhBhSqtQj2Vx6V2/fk1DnPP8OtZBlB1Q9eLOIEMlOLxjbyr9UB+s qO9fP+Pj1Lo4x84QTyH1ssLSsg993BbtnzU+ZEW3FoPWzhDPwpagfxjfAY1s6IkfwYGJ0GEAbqwiC v7uIYK9dLRo7AyfCMRBv+nfw1EOpzS0/aNGqUvMddQuyjst2x5GKt7GGfyWgdsTU0KUeKTUBegE2W V0x1oMKugRbIv+tK9NNmGIpXu49kThJEtSZ7KNKzDs5EiIdzvz6DubieJkHEtYxTCrs/Wy3IbMltn ec1gWgi8amatBRmoC4FhdVuMem2UBDayk92Q1nICJg5b9osOoF7B2zK2X2lNpnzvb2m/e1XhIc7h7 Sqv6UHubxQoDpjdT6Q1MLqlIHQGkmFZe9slm7Pg1FNVdNdZ1ONaTrAxXVBcyxVCDsqk3+In+aRQoP UG/SSvfu6mIszIlDK4r9CnmWBUrItfqpXZWdfsFSk6zbkFzEcdjh7mM86iGlDlw03CPEaHoz1ldFO 0fQ7ydSSgpfjlKvAviSJ1pwOM2Xsv8qYJK1M5mjpW9+8eGcqHI3v5NCjKWTk5COqKRD+NPukPk8i5 mUFi3VHP8RgWqF4j396TD9bqjLWNdac+lapQyjAOFK4Qj/IBVZ30aqHMU4jvAZmY=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix section mismatch warning:
+Hi,
 
-WARNING: modpost: vmlinux.o(.text.unlikely+0x95ac): Section mismatch in reference from the function next_platform_timer() to the variable .init.data:acpi_gtdt_desc
-The function next_platform_timer() references
-the variable __initdata acpi_gtdt_desc.
-This is often because next_platform_timer lacks a __initdata
-annotation or the annotation of acpi_gtdt_desc is wrong.
+While tracking down spurious "orphan section" warnings on arm and arm64,
+I needed to fix several other issues that it seems other folks have
+tripped over before.
 
-Suggested-by: Hanjun Guo <guohanjun@huawei.com>
-Link: https://lore.kernel.org/linux-acpi/20200508152653.157663-1-wangkefeng.wang@huawei.com/
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/acpi/arm64/gtdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here's the series that fixed everything for me...
 
-diff --git a/drivers/acpi/arm64/gtdt.c b/drivers/acpi/arm64/gtdt.c
-index 0a0a982f9c28..c3ad42470a7c 100644
---- a/drivers/acpi/arm64/gtdt.c
-+++ b/drivers/acpi/arm64/gtdt.c
-@@ -36,7 +36,7 @@ struct acpi_gtdt_descriptor {
- 
- static struct acpi_gtdt_descriptor acpi_gtdt_desc __initdata;
- 
--static inline void *next_platform_timer(void *platform_timer)
-+static __init void *next_platform_timer(void *platform_timer)
- {
- 	struct acpi_gtdt_header *gh = platform_timer;
- 
+-Kees
+
+
+Arnd Bergmann (1):
+  drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency
+
+Kees Cook (2):
+  drm: Avoid circular dependencies for CONFIG_FB
+  drm/pl111: depend on CONFIG_VEXPRESS_CONFIG
+
+ drivers/gpu/drm/Kconfig       | 2 +-
+ drivers/gpu/drm/msm/Kconfig   | 3 ++-
+ drivers/gpu/drm/pl111/Kconfig | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
 -- 
 2.25.1
 
