@@ -2,117 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759793984FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34E4398500
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFBJKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhFBJKM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:10:12 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCC6C061574;
-        Wed,  2 Jun 2021 02:08:28 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id cb9so2064144edb.1;
-        Wed, 02 Jun 2021 02:08:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cWaydfLjJigmw44FbNxIINxhVVfl1aHGWYAoThRQNfA=;
-        b=r6VuJ7pEBtCEEPA4EV6fBRXoDO7cPrPi4rErjxd2eDYmnfnxxt3cwtbWFRyMcockUO
-         ZY34I1PZa0YSqifgVeOpLEJiuOnIGOks3wi/eoHXi4a7F8e8YmKb3bqFUYXd3jsg60IE
-         uOdZA1saQNT3FP9Xgsoep5U5WiJ1pz7rTaibJX+fA7jgzMbQTx7siZIYGCph5LL/rMRV
-         Cy/VjOiMg7jZ/G09gqqbx0wLoFSELkGwaLVevFY50sZpRrPGdq0kliZHRb/Rb3lo/PWN
-         pwa+i0euj/g4H+GNhvA8wY1nzKRT1YPSRzWAQBSo4+kmTMzHHjNQ31pqFCFh/WG3SFkO
-         AtwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cWaydfLjJigmw44FbNxIINxhVVfl1aHGWYAoThRQNfA=;
-        b=epSKwz/ac+oaha44mNTw5bqViNP80GlJYGvr0TB6O7/Iwl0I73e2s1tbGU+lKAAMXB
-         V2Mq12otdSngUq8A3I+lzs+tibFUNkAlycQU1BkBjHdRITsg2n5BFVHHGWKyVIEyGqxX
-         /hRbN4qOoXF5126y+Vu03xSnj2sRQoN7zkMGAn9zYjZRR7wR1ZibyymMFzpinsP5sdAg
-         x2M09xyMcjvlimg2gryYXRBrwn3irwUmm8VDMa3UPkt/AWfmfr3zN0S9EQcWp/bQYHvz
-         7d9pxeohWyfYq4mMJG/9tDwKePj1DjHn0OSm0kumFWQskcm1YZmxxgU6Mco268Nwl7Oa
-         qOMw==
-X-Gm-Message-State: AOAM532jzXVKtB2AEqQSLlGVz/AN7z6k4bwPW2Diz2pNJLoNuTyKcnFB
-        wObnD6ZD3MaUAtF7u6Ait94=
-X-Google-Smtp-Source: ABdhPJwMmcjyxWw8NqVoM9xbquGbFmpUKx1teZFfigAj7yzd5waQ9nhPqJToLeN/0PGV3u9QpFgBtg==
-X-Received: by 2002:a50:8e57:: with SMTP id 23mr23614571edx.354.1622624907644;
-        Wed, 02 Jun 2021 02:08:27 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id m18sm2059173ejx.56.2021.06.02.02.08.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 02:08:26 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 11:10:02 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/2] NVIDIA Tegra core power domain follow up
-Message-ID: <YLdK6jp0Ybtzdstv@orome.fritz.box>
-References: <20210601231003.9845-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lY82oCsGCzlMcVK0"
-Content-Disposition: inline
-In-Reply-To: <20210601231003.9845-1-digetx@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+        id S231258AbhFBJM5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Jun 2021 05:12:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhFBJMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:12:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD0FB608FE;
+        Wed,  2 Jun 2021 09:11:12 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1loMu6-004zLH-Ha; Wed, 02 Jun 2021 10:11:10 +0100
+Date:   Wed, 02 Jun 2021 10:11:09 +0100
+Message-ID: <87a6o81viq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Vikram Sethi <vsethi@nvidia.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jason Sequeira <jsequeira@nvidia.com>
+Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR region in VMA
+In-Reply-To: <20210504120348.2eec075b@redhat.com>
+References: <20210429162906.32742-1-sdonthineni@nvidia.com>
+        <20210429162906.32742-2-sdonthineni@nvidia.com>
+        <20210429122840.4f98f78e@redhat.com>
+        <470360a7-0242-9ae5-816f-13608f957bf6@nvidia.com>
+        <20210429134659.321a5c3c@redhat.com>
+        <e3d7fda8-5263-211c-3686-f699765ab715@nvidia.com>
+        <87czucngdc.wl-maz@kernel.org>
+        <1edb2c4e-23f0-5730-245b-fc6d289951e1@nvidia.com>
+        <878s4zokll.wl-maz@kernel.org>
+        <BL0PR12MB2532CC436EBF626966B15994BD5E9@BL0PR12MB2532.namprd12.prod.outlook.com>
+        <87eeeqvm1d.wl-maz@kernel.org>
+        <BL0PR12MB25329EF5DFA7BBAA732064A7BD5C9@BL0PR12MB2532.namprd12.prod.outlook.com>
+        <87bl9sunnw.wl-maz@kernel.org>
+        <c1bd514a531988c9@bloch.sibelius.xs4all.nl>
+        <BL0PR12MB253296086906C4A850EC68E6BD5B9@BL0PR12MB2532.namprd12.prod.outlook.com>
+        <20210503084432.75e0126d@x1.home.shazbot.org>
+        <BL0PR12MB2532BEAE226E7D68A8A2F97EBD5B9@BL0PR12MB2532.namprd12.prod.outlook.com>
+        <20210504120348.2eec075b@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: alex.williamson@redhat.com, vsethi@nvidia.com, mark.kettenis@xs4all.nl, sdonthineni@nvidia.com, will@kernel.org, catalin.marinas@arm.com, christoffer.dall@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jsequeira@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 04 May 2021 19:03:48 +0100,
+Alex Williamson <alex.williamson@redhat.com> wrote:
+> 
+> On Mon, 3 May 2021 22:03:59 +0000
+> Vikram Sethi <vsethi@nvidia.com> wrote:
+> 
+> > Hi Alex,
+> > > From: Alex Williamson <alex.williamson@redhat.com>
+> > > On Mon, 3 May 2021 13:59:43 +0000
+> > > Vikram Sethi <vsethi@nvidia.com> wrote:  
+> > > > > From: Mark Kettenis <mark.kettenis@xs4all.nl>  
+> > > > > > From: Marc Zyngier <maz@kernel.org>  
+> > > >
+> > > > snip  
+> > > > > > If, by enumerating the properties of Prefetchable, you can show
+> > > > > > that they are a strict superset of Normal_NC, I'm on board. I
+> > > > > > haven't seen such an enumeration so far.
+> > > > > >  
+> > > > snip  
+> > > > > > Right, so we have made a small step in the direction of mapping
+> > > > > > "prefetchable" onto "Normal_NC", thanks for that. What about all
+> > > > > > the other properties (unaligned accesses, ordering, gathering)?  
+> > > > >  
+> > > > Regarding gathering/write combining, that is also allowed to
+> > > > prefetchable per PCI spec  
+> > > 
+> > > As others have stated, gather/write combining itself is not well defined.
+> > >   
+> > > > From 1.3.2.2 of 5/0 base spec:
+> > > > A PCI Express Endpoint requesting memory resources through a BAR must
+> > > > set the BAR's Prefetchable bit unless the range contains locations
+> > > > with read side-effects or locations in which the Function does not tolerate  
+> > > write merging.
+> > > 
+> > > "write merging"  This is a very specific thing, per PCI 3.0, 3.2.6:
+> > > 
+> > >   Byte Merging – occurs when a sequence of individual memory writes
+> > >   (bytes or words) are merged into a single DWORD.
+> > > 
+> > > The semantics suggest quadword support in addition to dword, but
+> > > don't require it.  Writes to bytes within a dword can be merged,
+> > > but duplicate writes cannot.
+> > > 
+> > > It seems like an extremely liberal application to suggest that
+> > > this one write semantic encompasses full write combining
+> > > semantics, which itself is not clearly defined.
+> > >  
+> > Talking to our PCIe SIG representative, PCIe switches are not
+> > allowed do any of the byte Merging/combining etc as defined in the
+> > PCI spec, and per a rather poorly worded Implementation note in
+> > the spec says that no known PCIe Host Briddges/Root ports do it
+> > either.  So for PCIe we don't think believe there is any byte
+> > merging that happens in the PCIe fabric so it's really a matter of
+> > what happens in the CPU core and interconnect before it gets to
+> > the PCIe hierarchy.
+> 
+> Yes, but merged writes, no matter where they happen, are still the only
+> type of write combining that a prefetchable BAR on an endpoint is
+> required to support.
+> 
+> > Stepping back from this patchset, do you agree that it is
+> > desirable to support Write combining as understood by ioremap_wc
+> > to work in all ISA guests including ARMv8?
+> 
+> Yes, a userspace vfio driver should be able to take advantage of the
+> hardware capabilities.  I think where we disagree is whether it's
+> universally safe to assume write combining based on the PCI
+> prefetchable capability of a BAR.  If that's something that can be
+> assumed universally for ARMv8 based on the architecture specification
+> compatibility with the PCI definition of a prefetchable BAR, then I
+> would expect a helper somewhere in arch code that returns the right
+> page protection flags, so that arch maintainers don't need to scour
+> device drivers for architecture hacks.  Otherwise, it needs to be
+> exposed through the vfio uAPI to allow the userspace device driver
+> itself to select these semantics.
+> 
+> > You note that x86 virtualization doesn't have this issue, but
+> > KVM-ARM does because KVM maps all device BARs as Device Memory
+> > type nGnRE which doesn't allow ioremap_wc from within the guest to
+> > get the actual semantics desired.
+> > 
+> > Marc and others have suggested that userspace should provide the
+> > hints. But the question is how would qemu vfio do this either? We
+> > would be stuck in the same arguments as here, as to what is the
+> > correct way to determine the desired attributes for a given BAR
+> > such that eventually when a driver in the guest asks for
+> > ioremap_wc it actually has a chance of working in the guest, in
+> > all ISAs.  Do you have any suggestions on how to make progress
+> > here?
+> 
+> We do need some way for userspace drivers to also make use of WC
+> semantics, there were some discussions in the past, I think others have
+> referenced them as well, but nothing has been proposed for a vfio API.
+> 
+> If we had that API, QEMU deciding to universally enable WC for all
+> vfio prefetchable BARs seems only marginally better than this approach.
+> Ultimately the mapping should be based on the guest driver semantics,
+> and if you don't have any visibility to that on KVM/arm like we have on
+> KVM/x86, then it seems like there's nothing to trigger a vfio API here
+> anyway.
 
---lY82oCsGCzlMcVK0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There isn't much KVM/arm64 can do here unless it is being told what to
+do. We don't have visibility on the guest's page tables in a reliable
+way, and trusting them is not something I want to entertain anyway.
 
-On Wed, Jun 02, 2021 at 02:10:01AM +0300, Dmitry Osipenko wrote:
-> Remove the lockdep_set_class(), which Ulf Hansson asked for. And
-> prevent core domain syncing if domain node is missing in device-tree,
-> which I accidentally missed to add after squashing the standalone
-> domain driver into the PMC driver.
->=20
-> Dmitry Osipenko (2):
->   soc/tegra: pmc: Don't sync core domain if it's missing in device-tree
->   soc/tegra: pmc: Remove usage of lockdep_set_class()
->=20
->  drivers/soc/tegra/pmc.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
+> If that's the case, I'd probably go back to letting the arch/arm64 folks
+> declare that WC is compatible with the definition of PCI prefetchable
+> and export some sort of pgprot_pci_prefetchable() helper where the
+> default would be to #define it as pgproc_noncached() #ifndef by the
+> arch.
+> 
+> > A device specific list of which BARs are OK to allow ioremap_wc
+> > for seems terrible and I'm not sure if a commandline qemu option
+> > is any better. Is the user of device assignment/sysadmin supposed
+> > to know which BAR of which device is OK to allow ioremap_wc for?
+> 
+> No, a device specific userspace driver should know such device
+> semantics, but QEMU is not such a driver.  Burdening the hypervisor
+> user/admin is not a good solution either.  I'd lean on KVM/arm64 folks
+> to know how the guest driver semantics can be exposed to the
+> hypervisor.  Thanks,
 
-I've squashed these into the corresponding patches of you v6 series and
-added Ulf's reviewed-by to them.
+I don't see a good way for that, unless we make it a per-guest buy-in
+where all PCI prefetchable mappings get the same treatment. I'm
+prepared to bet that this will break when two devices will have
+different requirements. It would also require userspace to buy into
+this scheme though, which is crap.
 
-Ulf, let me know if I misinterpreted the discussion and your reviewed-by
-didn't extend to the original patches.
+Exposing the guest's preference on a per-device basis seems difficult
+(KVM knows nothing about the PCI devices) and would require some PV
+interface that will quickly become unmaintainable.
 
-Thierry
+	M.
 
---lY82oCsGCzlMcVK0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC3SuoACgkQ3SOs138+
-s6GbAA/9FoCHDUUnKIQcWFQKEhXKj4WsIeUsRmhZbK7aF1rj+XwqHCsRNjmFHUOl
-tD77ZXzsf4OMXm5+n24UReYhy+YnRhuDTsOsFEbeb6G2SLDUZYoY2TLlqezZD8Su
-5km2GRhqNh8xxiC41+0oPzQ7d3hfbOmwyBifYtHgk8I5LYB/Txl7PllrFI6lxw1t
-tQvf4MxxWgY6oGAmK2rLWtkGtcb+Nqx/eDHM/IH9T7AjOvYVCc848Wm5fg3Dx3sz
-//TCDQsy3bhu73ZfOGxC6hhCj0mYUcW+OYJ9LSRQeqhvizQrNojwgQpPoL3AmLis
-WMsg6+anSyL1wDIEkP96ytpOuS2x/80FmBSqK3mRDfsLZQWQtHVSsH6tQpBXGQ4w
-X7GweTdY26ENPcRXt6YvI/CO9xUAho+PO9YuzFCdbcP2gB3vuP/IxunixEe/kt7A
-gCxHq7L0NxPzRmhTI48S7U832Hq65wf/DfVShHTux8E5INvXV0HhYC7pJ+LpT2dQ
-pGDVaX2E0zrEkh9tDvP9TAVU0eVfpeRrTl/suZE/nfIxeAoyHOkG4LbGpR4q+wzM
-iA6Gu3I9Eq0YV97ifUzLC1I7kasgG33C0ldlqXCPcgv1msHR2VhSo0j3qOmALXyn
-ubawniK8uzc+4YkQkshcJreq/RDmLuVtroFhM4qWZn5HAV8qJ3Q=
-=wvGX
------END PGP SIGNATURE-----
-
---lY82oCsGCzlMcVK0--
+-- 
+Without deviation from the norm, progress is not possible.
