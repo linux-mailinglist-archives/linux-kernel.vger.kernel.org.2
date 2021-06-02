@@ -2,132 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242C8397F75
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A8D397F76
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhFBD2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:28:35 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6131 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbhFBD2e (ORCPT
+        id S231238AbhFBD3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 23:29:35 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50291 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230511AbhFBD3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:28:34 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvvWp0wMLzYpw3;
-        Wed,  2 Jun 2021 11:24:06 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 11:26:50 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 11:26:49 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "megaraidlinux . pdl" <megaraidlinux.pdl@broadcom.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] scsi: megaraid_mbox: use DEVICE_ATTR_ADMIN_RO macro
-Date:   Wed, 2 Jun 2021 11:25:41 +0800
-Message-ID: <20210602032541.10852-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Tue, 1 Jun 2021 23:29:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Ub.lqm4_1622604468;
+Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0Ub.lqm4_1622604468)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 02 Jun 2021 11:27:48 +0800
+Subject: Re: [PATCH] mm, thp: relax migration wait when failed to get tail
+ page
+To:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com,
+        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+References: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
+ <alpine.LSU.2.11.2106010947370.1090@eggly.anvils>
+ <YLZqKJ4anEGpAZfp@casper.infradead.org>
+ <alpine.LSU.2.11.2106011114580.1045@eggly.anvils>
+From:   Yu Xu <xuyu@linux.alibaba.com>
+Message-ID: <71c320bf-3fcb-f8c0-65e4-ff706af05607@linux.alibaba.com>
+Date:   Wed, 2 Jun 2021 11:27:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+In-Reply-To: <alpine.LSU.2.11.2106011114580.1045@eggly.anvils>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_ADMIN_RO macro helper instead of plain DEVICE_ATTR, which
-makes the code a bit shorter and easier to read.
+On 6/2/21 3:10 AM, Hugh Dickins wrote:
+> On Tue, 1 Jun 2021, Matthew Wilcox wrote:
+>> On Tue, Jun 01, 2021 at 09:55:56AM -0700, Hugh Dickins wrote:
+>>>
+>>> Well caught: you're absolutely right that there's a bug there.
+>>> But isn't cond_resched() just papering over the real bug, and
+>>> what it should do is a "page = compound_head(page);" before the
+>>> get_page_unless_zero()? How does that work out in your testing?
+>>
+>> You do realise you're strengthening my case for folios by suggesting
+>> that, don't you?  ;-)
+> 
+> Hah! Well, I do realize that I'm offering you a marketing opportunity.
+> And you won't believe how many patches I dread to post for fear of that ;-)
+> 
+> But I'm not so sure that it strengthens your case: apparently folios
+> had not detected this?  Or do you have a hoard of folio-detected fixes
+> waiting for the day, and a folio-kit for each of the stable releases?
+> 
+>>
+>> I was going to suggest that it won't make any difference because the
+>> page reference count is frozen, but the freezing happens after the call
+>> to unmap_page(), so it may make a difference.
+> 
+> I think that's a good point: I may have just jumped on the missing
+> compound_head(), without thinking it through as far as you have.
+> 
+> I'm having trouble remembering the dynamics now; but I think there
+> are cond_resched()s in the unmap_page() part, so the splitter may
+> get preempted even on a non-preempt kernel; whereas the frozen
+> part is all done expeditiously, with interrupts disabled.
+> 
+> Greg discovered the same issue recently, but we all got sidetracked,
+> and I don't know where his investigation ended up.  He was in favour
+> of cond_resched(), I was in favour of compound_head(); and I think I
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/scsi/megaraid/megaraid_mbox.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+I ever considered about using compound_head, but isn't there another
+race that, the following put_and_wait_on_page_locked operates on the
+"tail page" which has been split and is now a single page?
 
-diff --git a/drivers/scsi/megaraid/megaraid_mbox.c b/drivers/scsi/megaraid/megaraid_mbox.c
-index d3fac99db786256..d20c2e4ee7934c9 100644
---- a/drivers/scsi/megaraid/megaraid_mbox.c
-+++ b/drivers/scsi/megaraid/megaraid_mbox.c
-@@ -121,8 +121,8 @@ static irqreturn_t megaraid_isr(int, void *);
- 
- static void megaraid_mbox_dpc(unsigned long);
- 
--static ssize_t megaraid_sysfs_show_app_hndl(struct device *, struct device_attribute *attr, char *);
--static ssize_t megaraid_sysfs_show_ldnum(struct device *, struct device_attribute *attr, char *);
-+static ssize_t megaraid_mbox_app_hndl_show(struct device *, struct device_attribute *attr, char *);
-+static ssize_t megaraid_mbox_ld_show(struct device *, struct device_attribute *attr, char *);
- 
- static int megaraid_cmm_register(adapter_t *);
- static int megaraid_cmm_unregister(adapter_t *);
-@@ -302,8 +302,7 @@ static struct pci_driver megaraid_pci_driver = {
- // definitions for the device attributes for exporting logical drive number
- // for a scsi address (Host, Channel, Id, Lun)
- 
--static DEVICE_ATTR(megaraid_mbox_app_hndl, S_IRUSR, megaraid_sysfs_show_app_hndl,
--		   NULL);
-+static DEVICE_ATTR_ADMIN_RO(megaraid_mbox_app_hndl);
- 
- // Host template initializer for megaraid mbox sysfs device attributes
- static struct device_attribute *megaraid_shost_attrs[] = {
-@@ -312,7 +311,7 @@ static struct device_attribute *megaraid_shost_attrs[] = {
- };
- 
- 
--static DEVICE_ATTR(megaraid_mbox_ld, S_IRUSR, megaraid_sysfs_show_ldnum, NULL);
-+static DEVICE_ATTR_ADMIN_RO(megaraid_mbox_ld);
- 
- // Host template initializer for megaraid mbox sysfs device attributes
- static struct device_attribute *megaraid_sdev_attrs[] = {
-@@ -3961,7 +3960,7 @@ megaraid_sysfs_get_ldmap(adapter_t *adapter)
- 
- 
- /**
-- * megaraid_sysfs_show_app_hndl - display application handle for this adapter
-+ * megaraid_mbox_app_hndl_show - display application handle for this adapter
-  * @dev		: class device object representation for the host
-  * @attr	: device attribute (unused)
-  * @buf		: buffer to send data to
-@@ -3971,8 +3970,7 @@ megaraid_sysfs_get_ldmap(adapter_t *adapter)
-  * handle, since we do not interface with applications directly.
-  */
- static ssize_t
--megaraid_sysfs_show_app_hndl(struct device *dev, struct device_attribute *attr,
--			     char *buf)
-+megaraid_mbox_app_hndl_show(struct device *dev, struct device_attribute *attr, char *buf)
- {
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	adapter_t	*adapter = (adapter_t *)SCSIHOST2ADAP(shost);
-@@ -3985,7 +3983,7 @@ megaraid_sysfs_show_app_hndl(struct device *dev, struct device_attribute *attr,
- 
- 
- /**
-- * megaraid_sysfs_show_ldnum - display the logical drive number for this device
-+ * megaraid_mbox_ld_show - display the logical drive number for this device
-  * @dev		: device object representation for the scsi device
-  * @attr	: device attribute to show
-  * @buf		: buffer to send data to
-@@ -4000,7 +3998,7 @@ megaraid_sysfs_show_app_hndl(struct device *dev, struct device_attribute *attr,
-  *   <int>     <int>       <int>            <int>
-  */
- static ssize_t
--megaraid_sysfs_show_ldnum(struct device *dev, struct device_attribute *attr, char *buf)
-+megaraid_mbox_ld_show(struct device *dev, struct device_attribute *attr, char *buf)
- {
- 	struct scsi_device *sdev = to_scsi_device(dev);
- 	adapter_t	*adapter = (adapter_t *)SCSIHOST2ADAP(sdev->host);
+Anyway, I will test and verify compound_head.
+
+> was coming to the conclusion that if cond_resched() is needed, it
+> should not be there in __migration_entry_wait(), but somewhere up
+> in mm/gup.c, so that other faults that retry, expecting to reschedule
+> on return to userspace, do not get trapped in kernelspace this way.
+
+Agreed. I will send v2, if cond_resched is still an option.
+
+> 
+> Waiting on migration entries from THP splitting is an egregious
+> example, but others may be suffering too.
+> 
+> Hugh
+> 
+
 -- 
-2.26.0.106.g9fadedd
-
-
+Thanks,
+Yu
