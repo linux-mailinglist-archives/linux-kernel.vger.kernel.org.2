@@ -2,103 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88929398B55
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD395398B5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhFBOEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:04:39 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:59215 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhFBOEi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:04:38 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 152E2J67002048;
-        Wed, 2 Jun 2021 23:02:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 152E2J67002048
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622642540;
-        bh=wtAw0U8c/H4UdFIA/GtkS9uCoI75g72nADEQDRoSUtA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ChCr9BjshSQtJtKCPucJStiI6FTJrM4F4Vp1RLtvBo/B8G3gpj/Z1d0PG/vTdHfFZ
-         KG8FVb7dwqj0AiSTyhpzmIOuOzqpUCRBmBTdH7vrGvokjLPTNhQE5EUY9xx5J2j+T1
-         YVcRiIM2cdWwUv4AFP7TZANJwk62WPalzquYuWZAsGFrl7iWlpHiewlhwVlGLxexwt
-         G2OemBBzlbAe6v455ByA4nBwm5bah0M+kdlVjt84SCdteAI1Pv2qShhnld5i0iUx/U
-         SJKe+CZmFjFKpo0QbG31RPSCnQgolfzQGEG0rS+HUGfg4jenUfb46pYmwuU9e9eDiN
-         HosqZEo7IJ83Q==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH v2] kbuild: remove trailing slashes from $(KBUILD_EXTMOD)
-Date:   Wed,  2 Jun 2021 23:02:13 +0900
-Message-Id: <20210602140213.132936-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S230157AbhFBOFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229654AbhFBOE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:04:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CE12613B8;
+        Wed,  2 Jun 2021 14:03:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622642595;
+        bh=rVTIekozkKZiHFO8KV73KQ3u8bmmogfis0wnY/V9zMk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j8vmJNJ02mTS2qujW9AuK34CyGewsKEQa3NJI4x54mI/kZ6TFkXgNShYSldLi9wwR
+         iVZIZpo10XmlpdD1gKCLSxI2hAconHrCrMCgpriX/VTH8VoFXTo8owedKrPE/jIZ0c
+         D0z4cOoqJMINruzqON7gaCTnozO9ZlPYtavKjKyFVVT2dZ+EtfNVi3gYHbuLNepcSX
+         +gq/yzfSnUELMMLNTwhQ6DbA0qs/Rfv2LkuAbudO4aFFo53imu8k7hO2V3DMiMK48/
+         BPzuDC2hRRaPw3diNLbn7YRlcBUV1pB+YMb1s77Dpt31JAkWDkRc6hv1mITOzdI2oz
+         pUQhhp2WADSpA==
+Date:   Wed, 2 Jun 2021 17:03:01 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH 4/9] m68k: remove support for DISCONTIGMEM
+Message-ID: <YLePlSaXR0XvtZki@kernel.org>
+References: <20210602105348.13387-1-rppt@kernel.org>
+ <20210602105348.13387-5-rppt@kernel.org>
+ <CAMuHMdUUzMNcWNXCjwZmH-VBC+jH1ShBpeg6EBCdRXv3mwHxsQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUUzMNcWNXCjwZmH-VBC+jH1ShBpeg6EBCdRXv3mwHxsQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-M= (or KBUILD_EXTMOD) generally expects a directory path without any
-trailing slashes, like M=a/b/c.
+On Wed, Jun 02, 2021 at 01:25:24PM +0200, Geert Uytterhoeven wrote:
+> Hi Mike,
+> 
+> On Wed, Jun 2, 2021 at 12:54 PM Mike Rapoport <rppt@kernel.org> wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> >
+> > DISCONTIGMEM was replaced by FLATMEM with freeing of the unused memory map
+> > in v5.11.
+> >
+> > Remove the support for DISCONTIGMEM entirely.
+> >
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Thanks for your patch!
+> 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> > --- a/arch/m68k/include/asm/page_mm.h
+> > +++ b/arch/m68k/include/asm/page_mm.h
+> > @@ -126,25 +126,7 @@ static inline void *__va(unsigned long x)
+> >
+> >  extern int m68k_virt_to_node_shift;
+> >
+> > -#ifndef CONFIG_DISCONTIGMEM
+> >  #define __virt_to_node(addr)   (&pg_data_map[0])
+> 
+> With pg_data_map[] removed, this definition can go as well.
+> Seems to be a leftover from 1008a11590b966b4 ("m68k: switch to MEMBLOCK
+>  + NO_BOOTMEM")
+> 
+> There are a few more:
+> arch/m68k/include/asm/mmzone.h:extern pg_data_t pg_data_map[];
+> arch/m68k/include/asm/mmzone.h:#define NODE_DATA(nid)
+> (&pg_data_map[nid])
 
-If you add a trailing slash, like M=a/b/c/, you will get ugly build
-logs (two slashes in a series), but it still works fine as long as it
-is consistent between 'make modules' and 'make modules_install'.
-
-The following commands correctly build and install the modules.
-
-  $ make M=a/b/c/ modules
-  $ sudo make M=a/b/c/ modules_install
-
-Since commit ccae4cfa7bfb ("kbuild: refactor scripts/Makefile.modinst"),
-a problem happens if you add a trailing slash only for modules_install.
-
-  $ make M=a/b/c modules
-  $ sudo make M=a/b/c/ modules_install
-
-No module is installed in this case, Johannes Berg reported. [1]
-
-Trim any trailing slashes from $(KBUILD_EXTMOD).
-
-I used the 'dirname' command to remove all the trailing slashes in
-case someone adds more slashes like M=a/b/c/////. The Make's built-in
-function, $(dir ...) cannot take care of such a case.
-
-[1]: https://lore.kernel.org/lkml/10cc8522b27a051e6a9c3e158a4c4b6414fd04a0.camel@sipsolutions.net/
-
-Fixes: ccae4cfa7bfb ("kbuild: refactor scripts/Makefile.modinst")
-Reported-by: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-Changes in v2:
-  - Use $(filter %/, ) so that the shell invocation is avoided
-    if M= is already good.
-
- Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Makefile b/Makefile
-index b79e0e8acbe3..8018b8adbcaf 100644
---- a/Makefile
-+++ b/Makefile
-@@ -129,6 +129,11 @@ endif
- $(if $(word 2, $(KBUILD_EXTMOD)), \
- 	$(error building multiple external modules is not supported))
+It seems that arch/m68k/include/asm/mmzone.h can be simply removed.
  
-+# Remove trailing slashes
-+ifneq ($(filter %/, $(KBUILD_EXTMOD)),)
-+KBUILD_EXTMOD := $(shell dirname $(KBUILD_EXTMOD).)
-+endif
-+
- export KBUILD_EXTMOD
- 
- # Kbuild will save output files in the current working directory.
+> > -#else
+> > -extern struct pglist_data *pg_data_table[];
+> > -
+> > -static inline __attribute_const__ int __virt_to_node_shift(void)
+> > -{
+> > -       int shift;
+> > -
+> > -       asm (
+> > -               "1:     moveq   #0,%0\n"
+> > -               m68k_fixup(%c1, 1b)
+> > -               : "=d" (shift)
+> > -               : "i" (m68k_fixup_vnode_shift));
+> > -       return shift;
+> > -}
+> > -
+> > -#define __virt_to_node(addr)   (pg_data_table[(unsigned long)(addr) >> __virt_to_node_shift()])
+> > -#endif
+> 
+> > --- a/arch/m68k/mm/init.c
+> > +++ b/arch/m68k/mm/init.c
+> > @@ -44,28 +44,8 @@ EXPORT_SYMBOL(empty_zero_page);
+> >
+> >  int m68k_virt_to_node_shift;
+> >
+> > -#ifdef CONFIG_DISCONTIGMEM
+> > -pg_data_t pg_data_map[MAX_NUMNODES];
+> > -EXPORT_SYMBOL(pg_data_map);
+> > -
+> > -pg_data_t *pg_data_table[65];
+> > -EXPORT_SYMBOL(pg_data_table);
+> > -#endif
+> > -
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+
 -- 
-2.27.0
-
+Sincerely yours,
+Mike.
