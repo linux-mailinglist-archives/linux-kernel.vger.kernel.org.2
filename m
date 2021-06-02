@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DDD398D6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF67398D77
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhFBOtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230092AbhFBOtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:49:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E82261207;
-        Wed,  2 Jun 2021 14:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622645288;
-        bh=ytbkft451AVHu/sv9O+1yHxWE5QaUUcYpHinzQWGilY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oFaPf/EGcp1bqCNSfbPd9OF2xa7o2Ntfin1h55YHUCHihLqUhuRWFALcsjyJqVvu3
-         Y91bwUZOIsEFC/tL7PsAT3NW2pmuCMMri5f6mMQdOP0nuAVKe9SwYQcmWW9WbZ/XpA
-         PoIpRGydGKIhIKVtHhzVu6FV2kTgGYhx9VOZ08mm/nHsF72YOGlYy3Wo5rD1Ycl6VO
-         iEfCLUY4hdvzrtVG3Pt7BekNhlDuUClohcALpyQQ1KVISUxk8dSk+DozQEt+xxMpvZ
-         6oRLbg4A4VBWbNLsQ8t27gcIkpn2wcsBwsMswN4j9Vrag6G0GPb4whAagnddnPqQmz
-         nNoYUZ6ZDqJdQ==
-Date:   Wed, 2 Jun 2021 15:47:55 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 1/6] sched: Unbreak wakeups
-Message-ID: <20210602144755.GA31179@willie-the-truck>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.271625424@infradead.org>
+        id S230377AbhFBOw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:52:57 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:41639 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhFBOw4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:52:56 -0400
+Received: by mail-pg1-f171.google.com with SMTP id r1so2423501pgk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:51:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i9rBUFdn0o45VyNYIoUSPAP6TWQNEYGbweMgl8R3j2k=;
+        b=ewELyXn1oVOkpjmFF9isG0jWeHDotlUmFjk677kzmx9NkvN6CJODmk4ABhKGE7SShm
+         BmAkoAF5sNQCdyCX2QtuQqzBJhtO/wNKe13dCXLpIEG8QSMgIVMRofZO3APfD/HBwkpx
+         jVboz7cyuf/sGTDv5pP8T6awFTi2Xv/udo8MkgGZ1LstSJ4b+tL3awBU5A7pqkMK/o/C
+         HTrPZWpf+5ivS1nBpJZJurCwSoi9bY+9wfMNZLj2ysaIfdETm63bmkQuGLntKR6XGNNK
+         xPFzjbRqxGCroRFZnCauLtKIdBUma0hvO0afqBTpGidL9vVfsQQaStyQS2tcWyjAJC5v
+         mgiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i9rBUFdn0o45VyNYIoUSPAP6TWQNEYGbweMgl8R3j2k=;
+        b=uL1WXSIRwr1+imOOrTx5rk6bmd0G89N2aXQKorSvAhnH2G52281p707KpoEfBrx7P0
+         OzeT0sLnW8aDpGmlLWniut6RhEelNy+SjjgvSfl5LfqDtU3zgDzCCubomFX+5AOk+ak4
+         Mie+VDRZ2lTUcWHoddpsjguAge2ljJzSpBl46PKhNnRFLgckTyJ2nTKXTO1PAw1zwBOt
+         5O5bHK/UBoxXEYgNgZbDskVI9vIxQ3vm4IIKmjJhtokCd2RbR3vMkYuMjimlQ6Ox/KvR
+         iHp525jXD+Op+ItFkffL6H2CZuv5zBAcZ4/tqdYst/SyrLYu3Zc7080wD95tYabAO9kV
+         dozw==
+X-Gm-Message-State: AOAM532HwBVLee/33bmnGGT9X9cTObA37bju5kW9qK53Nuku3I5DFEtU
+        HCRbdDwPCPIKIEu5uZPm5qI=
+X-Google-Smtp-Source: ABdhPJyQjfmM+BCH1t7EJtFi0BLeF+t4bpsdWs2mSRcIjnc/D7jebkn4YHLTIVMp4REy5jZbC2o+EA==
+X-Received: by 2002:a05:6a00:16cd:b029:2d0:d876:4707 with SMTP id l13-20020a056a0016cdb02902d0d8764707mr28187601pfc.64.1622645413401;
+        Wed, 02 Jun 2021 07:50:13 -0700 (PDT)
+Received: from ojas ([122.177.142.129])
+        by smtp.gmail.com with ESMTPSA id u8sm65892pgg.51.2021.06.02.07.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 07:50:13 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 20:20:00 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     nsaenz@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        phil@raspberrypi.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: staging: vc04_services: Need suggestions on trying to fix sparse
+ warning in vchiq_arm.c
+Message-ID: <20210602145000.GA3999@ojas>
+References: <20210601200513.GA10204@ojas>
+ <20210601202307.GC1955@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602133040.271625424@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210601202307.GC1955@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 03:12:26PM +0200, Peter Zijlstra wrote:
-> Remove broken task->state references and let wake_up_process() DTRT.
+On Tue, Jun 01, 2021 at 11:23:07PM +0300, Dan Carpenter wrote:
+> The problem is not the Sparse warning, the problem is that this code is
+> a mess.  It used to very clearly buggy and I reported the bug.  I think
+> Arnd found the bug again independently and fixed it.
 > 
-> The anti-pattern in these patches breaks the ordering of ->state vs
-> COND as described in the comment near set_current_state() and can lead
-> to missed wakeups:
+> A couple weeks ago Al Viro looked at this code.  Here is his write up:
 > 
-> 	(OoO load, observes RUNNING)<-.
-> 	for (;;) {                    |
-> 	  t->state = UNINTERRUPTIBLE; |
-> 	  smp_mb();          ,-----> ,' (OoO load, observed !COND)
->                              |       |
-> 	                     |       |	COND = 1;
-> 			     |	     `- if (t->state != RUNNING)
->                              |		  wake_up_process(t); // not done
-> 	  if (COND) ---------'
-> 	    break;
-> 	  schedule(); // forever waiting
-> 	}
-> 	t->state = TASK_RUNNING;
+> https://www.spinics.net/lists/kernel/msg3952745.html
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  drivers/net/ethernet/qualcomm/qca_spi.c |    6 ++----
->  drivers/usb/gadget/udc/max3420_udc.c    |   15 +++++----------
->  drivers/usb/host/max3421-hcd.c          |    3 +--
->  kernel/softirq.c                        |    2 +-
->  4 files changed, 9 insertions(+), 17 deletions(-)
+> It shouldn't take Al Viro dozens of pages of detailed analysis to try
+> figure out if the code is safe or not.  Your idea silences the warning
+> but would make the code even more subtle and complicated.
+> 
+> The right thing to do is to re-write the code to be simpler.
+> 
+> regards,
+> dan carpenter
+> 
 
-Acked-by: Will Deacon <will@kernel.org>
+Thank you for the prompt reply and the link, it was very insightful. You
+are right, I was definitely going about this the wrong way and missing
+the larger picture. I'll spend some time trying to understand this
+codebase as I think that'd be a good start to understand how stuff works in
+the kernel (even though some of the things in this driver are anti patterns)
+and hopefully get some ideas on ways to clean this up.
 
-I couldn't spot any others.
+Anyways, thanks again for the help, cheers!
 
-Will
+Ojaswin
