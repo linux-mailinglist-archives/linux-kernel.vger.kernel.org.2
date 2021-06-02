@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B07C398D05
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A46398D08
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhFBOfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        id S231678AbhFBOfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbhFBOf2 (ORCPT
+        with ESMTP id S231570AbhFBOfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:35:28 -0400
+        Wed, 2 Jun 2021 10:35:36 -0400
 Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7F6C06138B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7298C0613CE
         for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:33:37 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so3924859wmk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:33:36 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id h3so1449388wmq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:33:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t1FEEZ6P0S4l/25hBadFVgOVdkrL3aHOBAeW0vMC5CA=;
-        b=nVd+6txbGTkvd96oaTKfulBS8JwdcjwEWSIdrGauDfuARuO8ZRkTn5cTMhfdV6roe/
-         cwP6oO1NmBUt8tuY0zeyaNsQEFZqw1HpHYvfsM1GHddzEOe3Ks+SLzyV/BmZxgFR3Y/j
-         adKn13qmTK8EYIIfEKpiTryxiYMPefvNxH1uQMoK7to9/l3I6opm9WKt8BYa5VzcxUug
-         zt9Rl6tsSESUE5RozQ/us7RYglBBX9AXrcQRfvLqcAuM/cLbWyOB+grqCDYSNzwibxnO
-         P8jt2qL3RrOVVj8Lyfq+0yrt4uigX2fLTFeIvrUrxuYmpvA8cjeygpsiaeCO9Hpg+t2y
-         u+Uw==
+        bh=kVk/K6SiOopKBeZrOFr3ETwL2h0sUuVeJjHQIvLbemo=;
+        b=aOFSzbMh1MJoVmxlcUdFd7U7AXDU29/SRvovXJ/BeXWOGMTp7ZiZ5+ET8rZahi52XC
+         hHDhj0Lx3Wc5PNGUDrKCNTx5QuvAelYzl4pw5OkYJPkUuResbzQ9wEWBDk1JFEgvdzvq
+         7LC0I3lfvRWBsPUeCCHB0McrH101t6G/TFaIl8uVofGuk+LlX2xALid4KW3okkHvPtMl
+         R8YPiaapgbSYH0BtQ0eb3VJ/P9UTdLMwwZYxGHg9ElRG7QaS+dlGKDGjJLn+HLLpoDSQ
+         S5XvxR4cDDxbfSnepK0A7TgnHIpxpwUpvsYtzaydMJ+KHUWD9rv6ca2rd2QY/+PL1Kzt
+         Zk1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t1FEEZ6P0S4l/25hBadFVgOVdkrL3aHOBAeW0vMC5CA=;
-        b=LNu/Kdvyynj43niAgTHGzWXeBA9ggG/S3h8G2x5HT5vhKaoFbj2ZGMVMiJJVUqct4e
-         UGtcAORpWT8HfPB6OtPvmJ4EMcSMvhQ/mcVDjBC3YI3PbFb19PALzZ19B6bu3TFFrs0V
-         bnfzH+WyKww5MqZE+jtO9lmFH97QcqFTULExykFsd1izdWEP46r1GzR2N//i+CUdN8o0
-         vHG3Jn3phLmhJ5/3Kr11YMW/rPrByFl/ulJGR6LA0uUdXBEYLtE95/gbFAqiZnSZoR5O
-         loXiNjLmVxQouC6baQDCJ39HRkH1t/wOFJrzI0y4Jx9QcGj3Yg44zsCYAfcW19/3Rdlz
-         QR/Q==
-X-Gm-Message-State: AOAM530XvVN8YXQAHOGGEKV0X7KOJwCB3B792sT6HVU4mR5xw/Jy6jng
-        DpOoQ0bH1ZhtvKAxC8a9TcbLnA==
-X-Google-Smtp-Source: ABdhPJwkxJ/qPJiDi8CqvBhmwrZs7KTAO5sO/q0DxkmixOUPMnRCW0Ho6IQbwT/mlBfpFSag196fSA==
-X-Received: by 2002:a05:600c:22d7:: with SMTP id 23mr5327853wmg.119.1622644415687;
-        Wed, 02 Jun 2021 07:33:35 -0700 (PDT)
+        bh=kVk/K6SiOopKBeZrOFr3ETwL2h0sUuVeJjHQIvLbemo=;
+        b=KmHOnetifzRzBTTtROiyyLcRtTxzI0WH+QoeFFNsnReQuQPdhPBA9RoBHhRSsU+xoP
+         FwzOc3RWdNDyWIew0KAeFUv0PB49wk9eHFdIpaN4AfXrYE2c8av+wM3epPDD/fBpe7d5
+         BT6/No2dIcPdy9V8HUbgdoBdojZhPg8ea5tOHNgXnW9V/O4+6c2+e9J146n2XolYJJZq
+         JEORS4agCLz/bIL/6Vw5A9EZ9glYKf5f+iwwUEvOsNXxJJP+sEFaNM7yNJsBQQi9ESOJ
+         954VOdgqa2TJJSwpXZSYTS/IFz2qx7HTtZOHJLCwkf1wdZ68sL5MX1LiVX1KdObUCgbx
+         Q5kQ==
+X-Gm-Message-State: AOAM5304b6sCmmdHpTtaCSpSb6DLlZCneZp5plSgs9kd7pMFcvOgEmAS
+        rJ+k241WLkNcqfzNHtX+Ljq3Dw==
+X-Google-Smtp-Source: ABdhPJx7/89qHUI3nSWoMnefrKMkjP5VwkmsVsC8ptnnljyy095o77k3JyChKVY7mNukeFzEjN8Dfg==
+X-Received: by 2002:a7b:cc87:: with SMTP id p7mr5628267wma.85.1622644416555;
+        Wed, 02 Jun 2021 07:33:36 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.34
+        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:33:35 -0700 (PDT)
+        Wed, 02 Jun 2021 07:33:36 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [RESEND 25/26] drm/vboxvideo/hgsmi_base: Place function names into headers
-Date:   Wed,  2 Jun 2021 15:32:59 +0100
-Message-Id: <20210602143300.2330146-26-lee.jones@linaro.org>
+Subject: [RESEND 26/26] drm/vboxvideo/modesetting: Provide function names for prototype headers
+Date:   Wed,  2 Jun 2021 15:33:00 +0100
+Message-Id: <20210602143300.2330146-27-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
 References: <20210602143300.2330146-1-lee.jones@linaro.org>
@@ -68,11 +68,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vboxvideo/hgsmi_base.c:12: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/vboxvideo/hgsmi_base.c:42: warning: expecting prototype for Notify the host of HGSMI(). Prototype was for hgsmi_send_caps_info() instead
- drivers/gpu/drm/vboxvideo/hgsmi_base.c:74: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/vboxvideo/hgsmi_base.c:102: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/vboxvideo/hgsmi_base.c:174: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/vboxvideo/modesetting.c:11: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/vboxvideo/modesetting.c:54: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/vboxvideo/modesetting.c:87: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
 Cc: Hans de Goede <hdegoede@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
@@ -80,67 +78,54 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vboxvideo/hgsmi_base.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/vboxvideo/modesetting.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/vboxvideo/hgsmi_base.c b/drivers/gpu/drm/vboxvideo/hgsmi_base.c
-index 361d3193258ea..8c041d7ce4f1b 100644
---- a/drivers/gpu/drm/vboxvideo/hgsmi_base.c
-+++ b/drivers/gpu/drm/vboxvideo/hgsmi_base.c
-@@ -9,7 +9,8 @@
- #include "hgsmi_ch_setup.h"
+diff --git a/drivers/gpu/drm/vboxvideo/modesetting.c b/drivers/gpu/drm/vboxvideo/modesetting.c
+index 7580b90023792..10b32d986b956 100644
+--- a/drivers/gpu/drm/vboxvideo/modesetting.c
++++ b/drivers/gpu/drm/vboxvideo/modesetting.c
+@@ -8,9 +8,11 @@
+ #include "hgsmi_channels.h"
  
  /**
-- * Inform the host of the location of the host flags in VRAM via an HGSMI cmd.
-+ * hgsmi_report_flags_location - Inform the host of the location of
-+ *                               the host flags in VRAM via an HGSMI cmd.
-  * Return: 0 or negative errno value.
-  * @ctx:        The context of the guest heap to use.
-  * @location:   The offset chosen for the flags within guest VRAM.
-@@ -33,7 +34,8 @@ int hgsmi_report_flags_location(struct gen_pool *ctx, u32 location)
+- * Set a video mode via an HGSMI request.  The views must have been
+- * initialised first using @a VBoxHGSMISendViewInfo and if the mode is being
+- * set on the first display then it must be set first using registers.
++ * hgsmi_process_display_info - Set a video mode via an HGSMI request.
++ *                              The views must have been initialised first
++ *                              using @a VBoxHGSMISendViewInfo and if the mode
++ *                              is being set on the first display then it must
++ *                              be set first using registers.
+  * @ctx:           The context containing the heap to use.
+  * @display:       The screen number.
+  * @origin_x:      The horizontal displacement relative to the first scrn.
+@@ -51,10 +53,12 @@ void hgsmi_process_display_info(struct gen_pool *ctx, u32 display,
  }
  
  /**
-- * Notify the host of HGSMI-related guest capabilities via an HGSMI command.
-+ * hgsmi_send_caps_info - Notify the host of HGSMI-related guest capabilities
-+ *                        via an HGSMI command.
+- * Report the rectangle relative to which absolute pointer events should be
+- * expressed.  This information remains valid until the next VBVA resize event
+- * for any screen, at which time it is reset to the bounding rectangle of all
+- * virtual screens.
++ * hgsmi_update_input_mapping - Report the rectangle relative to which absolute
++ *                              pointer events should be expressed.  This
++ *                              information remains valid until the next VBVA
++ *                              resize event for any screen, at which time it is
++ *                              reset to the bounding rectangle of all virtual
++ *                              screens.
   * Return: 0 or negative errno value.
-  * @ctx:        The context of the guest heap to use.
-  * @caps:       The capabilities to report, see vbva_caps.
-@@ -71,7 +73,8 @@ int hgsmi_test_query_conf(struct gen_pool *ctx)
+  * @ctx:       The context containing the heap to use.
+  * @origin_x:  Upper left X co-ordinate relative to the first screen.
+@@ -84,7 +88,7 @@ int hgsmi_update_input_mapping(struct gen_pool *ctx, s32 origin_x, s32 origin_y,
  }
  
  /**
-- * Query the host for an HGSMI configuration parameter via an HGSMI command.
-+ * hgsmi_query_conf - Query the host for an HGSMI configuration
-+ *                    parameter via an HGSMI command.
+- * Get most recent video mode hints.
++ * hgsmi_get_mode_hints - Get most recent video mode hints.
   * Return: 0 or negative errno value.
-  * @ctx:        The context containing the heap used.
-  * @index:      The index of the parameter to query.
-@@ -99,7 +102,8 @@ int hgsmi_query_conf(struct gen_pool *ctx, u32 index, u32 *value_ret)
- }
- 
- /**
-- * Pass the host a new mouse pointer shape via an HGSMI command.
-+ * hgsmi_update_pointer_shape - Pass the host a new mouse pointer shape
-+ *                              via an HGSMI command.
-  * Return: 0 or negative errno value.
-  * @ctx:        The context containing the heap to be used.
-  * @flags:      Cursor flags.
-@@ -171,9 +175,10 @@ int hgsmi_update_pointer_shape(struct gen_pool *ctx, u32 flags,
- }
- 
- /**
-- * Report the guest cursor position.  The host may wish to use this information
-- * to re-position its own cursor (though this is currently unlikely).  The
-- * current host cursor position is returned.
-+ * hgsmi_cursor_position - Report the guest cursor position.  The host may
-+ *                         wish to use this information to re-position its
-+ *                         own cursor (though this is currently unlikely).
-+ *                         The current host cursor position is returned.
-  * Return: 0 or negative errno value.
-  * @ctx:              The context containing the heap used.
-  * @report_position:  Are we reporting a position?
+  * @ctx:      The context containing the heap to use.
+  * @screens:  The number of screens to query hints for, starting at 0.
 -- 
 2.31.1
 
