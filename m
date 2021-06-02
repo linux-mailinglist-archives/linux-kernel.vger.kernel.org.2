@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C68A39910D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DAA399111
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFBRFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:05:05 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:42458 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhFBRFE (ORCPT
+        id S230247AbhFBRGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:06:08 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:37767 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229625AbhFBRGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:05:04 -0400
-Received: from netfilter.org (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id BE28F641FC;
-        Wed,  2 Jun 2021 19:02:12 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 19:03:17 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     syzbot <syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com>
-Cc:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] general protection fault in nft_set_elem_expr_alloc
-Message-ID: <20210602170317.GA18869@salvia>
-References: <000000000000ef07b205c3cb1234@google.com>
+        Wed, 2 Jun 2021 13:06:07 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id oUHzlWRcIIpGyoUI2lQ4VZ; Wed, 02 Jun 2021 19:04:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622653463; bh=cWSeRZUWGBvdIB1xII9wWpJlbD3hbbRGtK7oE2FDWsw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Yi+bDPV1kCQGQ1PNWfu8oEujLpcVnk7TnONpNtYY4vMFSzXh6Q5QMVdpvvGFFbLyW
+         Buca2xEEioVDxpfYZv15fL95uIFLWwNwCleZEqjID5EsobvZ2RNCg3lCgV/D/HUc2D
+         eOYcXLNHWSE3YaAn6qbviWA+u54Y09QKKI0+SH4JqUtWulO6h6Ml8Pw03XHW0DlLKe
+         EPj6gGVAYF2/vUmx708sJgozfYHKPMesqRPEFjcmkMU8M8L2UUv0xmIOK9DF+6vVl2
+         ey5DuGzLOChZ3fj6Snt7qvG6qElUIwa6aQ2GbUrwCpKqIBK5C1yaY1ba7MYKle06lX
+         GUzEtvkTFEcKA==
+Subject: Re: [PATCH 6/9] media: platform: Add Synopsys DesignWare HDMI RX
+ Controller Driver
+To:     Nelson Costa <Nelson.Costa@synopsys.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+References: <cover.1622631488.git.nelson.costa@synopsys.com>
+ <42b1ff078618a90973f25311eae725f0f151acc5.1622631488.git.nelson.costa@synopsys.com>
+ <19a78e24-b767-e5bb-e932-e704fe8614be@xs4all.nl>
+ <MW3PR12MB44591B23D792BF44BD666CAAC13D9@MW3PR12MB4459.namprd12.prod.outlook.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <2a78fa1e-2243-1956-60ac-a2611e8bf8ad@xs4all.nl>
+Date:   Wed, 2 Jun 2021 19:04:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <MW3PR12MB44591B23D792BF44BD666CAAC13D9@MW3PR12MB4459.namprd12.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <000000000000ef07b205c3cb1234@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfG9oXeheh9RGtrB+v/ODDBPz7UPe5UqV+uM+UmGVVQrgoQ/CTSYdo2/K2C/EbHEkIIkN62Erl9xKy1ym0IsdHYBhyA1lyX0+5txXQ+20u8qHAGt24KeO
+ PMeoP+iserDZDOiWXyOpOlyU4ztl39G0odJj9eUbx0XwZIReStwbWyVNC2MQqs64prhRQ8TOl1J4MAfkSUM6wScdm1ZS9YF5CNlbMoYkTM/EVJ+uBbIzGjrx
+ 1o7ycTLJZWp4/mjRvPdcCwZ6lxWRLby0AElg6AqkxfwGxouT3TD2k+BmSLwZUAdU7Q7LnwVP6Hmg0uFlubLYZQ1mort2hKj3RmVFIc+knS5cK4V/upO+FK7N
+ uTr8u7taOQ4tKq0iC2TP9L0yCcCj6I2GhGKEIKDtY4KXtfhFnNrjB1LHKXtP5JCwvmUvuyrvSyg5smt7hDBShuYd6Yw+U0OHu47BNsLUAmeAwL40MYessDgs
+ YIFX5iJXlyj/QjZrF6VNEdbrcOm9QJqn7NFMaseUkWAIBfEZQivPVVaF+qo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 09:37:26AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    6850ec97 Merge branch 'mptcp-fixes-for-5-13'
-> git tree:       net
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1355504dd00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ce96ca2b1d0b37c6422d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1502d517d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bbbe13d00000
-> 
-> The issue was bisected to:
-> 
-> commit 05abe4456fa376040f6cc3cc6830d2e328723478
-> Author: Pablo Neira Ayuso <pablo@netfilter.org>
-> Date:   Wed May 20 13:44:37 2020 +0000
-> 
->     netfilter: nf_tables: allow to register flowtable with no devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10fa1387d00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12fa1387d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14fa1387d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com
-> Fixes: 05abe4456fa3 ("netfilter: nf_tables: allow to register flowtable with no devices")
-> 
-> general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
-> CPU: 1 PID: 8438 Comm: syz-executor343 Not tainted 5.13.0-rc3-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:nft_set_elem_expr_alloc+0x17e/0x280 net/netfilter/nf_tables_api.c:5321
-> Code: 48 c1 ea 03 80 3c 02 00 0f 85 09 01 00 00 49 8b 9d c0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 70 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d9 00 00 00 48 8b 5b 70 48 85 db 74 21 e8 9a bd
+Hi Nelson,
 
-It's a real bug. Bisect is not correct though.
+On 02/06/2021 17:44, Nelson Costa wrote:
+> Hi Hans,
+> 
+> Thanks for your initial comments and feedback!
+> 
+> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Date: qua, jun 02, 2021 at 12:54:38
+> 
+>> Hi Nelson,
+>>
+>> Thank you for this patch. Some initial comments below, I will
+>> need to go over this another time for some of the colorimetry
+>> related functions.
+>>
+> 
+> Ok.
+> 
+>> BTW, if you are interested in HDCP support, let me know. Cisco worked
+>> on an API for this, but due to various reasons we have not been able
+>> to upstream it. But we do use it in our products.
+>>
+> 
+> Good to know! In that case if in the future we think to upstream 
+> something
+> related with HDCP we will let you know. :)
+> BTW, which versions of HDCP (1.4, 2.2, 2.3) the API supports?
 
-I'll post a patch to fix it. Thanks.
+It's designed for all versions, but it has only been tested with 1.4
+receivers.
+
+You can find it here:
+
+https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=tc358840
+
+BTW, don't wait for the follow-up review w.r.t. colorimetry, it might
+take 1-2 weeks before I get around to that, I need to carve out time
+for that. Feel free to post a v2 based on the current review.
+
+Regards,
+
+	Hans
