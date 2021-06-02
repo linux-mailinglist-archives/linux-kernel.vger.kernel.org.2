@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DDC3994C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A103994CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhFBUpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:45:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50508 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229552AbhFBUpq (ORCPT
+        id S229695AbhFBUtQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Jun 2021 16:49:16 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40690 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229568AbhFBUtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:45:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622666642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OkHNiAD4B9tLTy7xZTNyeTqGaPB3NZ2dH7ouXspLnvY=;
-        b=B0hdBQyeh/fFcy1h4F/H4T2n3CWVNe/8dL4jhiwB4PIAZESOUGG39TNpbbjZn37LwegZaE
-        PU4JH9WNgRabEdIcei8m4LKk2L+kY1h3D4oRSUW+THADGdmUeDDteVpga1wxVuF3K7HWYT
-        1LYJsjNWVY/oGZ0SMytjqhPvIRGvuUw=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-138-8Q9DKAWEMwG4dfBw2vmQlw-1; Wed, 02 Jun 2021 16:44:01 -0400
-X-MC-Unique: 8Q9DKAWEMwG4dfBw2vmQlw-1
-Received: by mail-qv1-f71.google.com with SMTP id k6-20020a0cd6860000b029021936c6e8ffso2746872qvi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:44:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OkHNiAD4B9tLTy7xZTNyeTqGaPB3NZ2dH7ouXspLnvY=;
-        b=bd4AWvyT+9fnAlyNpGdkkDm1BOWuZ4LZ5aFy+2wAQMM+COOTcropK7kBLwO/SfJPuw
-         cByRgkDrLPzF8ragJBG3cfXwSKNM5PnJhFbdvayH1lVdT7oA26hVbg3XPkER18/bSrNg
-         vKYsNzYv/7rC2+Q1UHLXvEEDRFCAJ4e9sXFzsySWU1dCT86iy/Cl5XV65KLLHj9HdWCM
-         W3ScL2et3QhTi0Ck+mWVC68R4JuDj4ZZVaEtpJJf1l35i7QcbleBwyhfB6RAz2jUTjXi
-         VhLwT4Jq3TRC8DMpM/bgvy500GUsiw/zLm8jb2UVOw9a2rB62tswq/8Z6Tn83WkkcjNG
-         emGw==
-X-Gm-Message-State: AOAM532S/slJWmkCdZqnjlFpu3MecCoMaSYi4bVr1oj2bD/K5YEZ5Vph
-        /omYEHcaPHdvpNB0mgxke2Pvvvz89ka5Eiw9kOmPelsr+HzmlYZyx83vtFrQ6nCvk0r6xS1IjLm
-        87uGGqgBfyaLVzE2P3xeNW1vt
-X-Received: by 2002:a37:2c47:: with SMTP id s68mr9162149qkh.16.1622666640036;
-        Wed, 02 Jun 2021 13:44:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz9DmxGJijf+tZr1JHPuNxXrGLuOLFd5XCzqXZCrYg42fjCTrLRu7A2TaENxKK4ZHAixnX6UA==
-X-Received: by 2002:a37:2c47:: with SMTP id s68mr9162133qkh.16.1622666639733;
-        Wed, 02 Jun 2021 13:43:59 -0700 (PDT)
-Received: from treble ([68.52.236.68])
-        by smtp.gmail.com with ESMTPSA id k23sm639247qkk.71.2021.06.02.13.43.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 13:43:59 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 15:43:57 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Lukasz Majczak <lma@semihalf.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        jgross@suse.com, mbenes@suse.com, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com,
-        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
-        =?utf-8?Q?=C5=81ukasz?= Bartosik <lb@semihalf.com>,
-        Guenter Roeck <groeck@google.com>
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <20210602204357.fq2yahccehf6cqjh@treble>
-References: <20210326151159.128534163@infradead.org>
- <20210326151300.320177914@infradead.org>
- <20210329163826.anuqkv5ahvoyus5c@treble>
- <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+        Wed, 2 Jun 2021 16:49:14 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1loXlp-0007Wf-Pq; Wed, 02 Jun 2021 20:47:22 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 206745FBC1; Wed,  2 Jun 2021 13:47:20 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 18D19A040B;
+        Wed,  2 Jun 2021 13:47:20 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Kees Cook <keescook@chromium.org>
+cc:     kernel test robot <lkp@intel.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] net: bonding: Use strscpy() instead of manually-truncated strncpy()
+In-reply-to: <20210602203138.4082470-1-keescook@chromium.org>
+References: <20210602203138.4082470-1-keescook@chromium.org>
+Comments: In-reply-to Kees Cook <keescook@chromium.org>
+   message dated "Wed, 02 Jun 2021 13:31:38 -0700."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7213.1622666840.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Wed, 02 Jun 2021 13:47:20 -0700
+Message-ID: <7214.1622666840@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 05:51:01PM +0200, Lukasz Majczak wrote:
-> Hi Peter,
+Kees Cook <keescook@chromium.org> wrote:
+
+>Silence this warning by just using strscpy_pad() directly:
+>
+>>> drivers/net/bonding/bond_main.c:4877:3: warning: 'strncpy' specified bound 16 equals destination size [-Wstringop-truncation]
+>    4877 |   strncpy(params->primary, primary, IFNAMSIZ);
+>         |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+>Additionally replace other strncpy() uses, as it is considered deprecated:
+>https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+>
+>Reported-by: kernel test robot <lkp@intel.com>
+>Link: https://lore.kernel.org/lkml/202102150705.fdR6obB0-lkp@intel.com
+>Signed-off-by: Kees Cook <keescook@chromium.org>
+
+	There's one more "strncpy(...); primary[IFNAMSIZ - 1] = 0;" set
+in bond_options.c:bond_option_primary_set(), doesn't it also generate
+this warning?
+
+	Either way, the change looks good to me.
+
+Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+
+	-J
+
+
+>---
+>v2:
+> - switch to strscpy_pad() and replace earlier strncpy() too
+>v1: https://lore.kernel.org/lkml/20210602181133.3326856-1-keescook@chromium.org
+>---
+> drivers/net/bonding/bond_main.c | 8 +++-----
+> 1 file changed, 3 insertions(+), 5 deletions(-)
+>
+>diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>index c5a646d06102..e9cb716ad849 100644
+>--- a/drivers/net/bonding/bond_main.c
+>+++ b/drivers/net/bonding/bond_main.c
+>@@ -620,7 +620,7 @@ static int bond_check_dev_link(struct bonding *bond,
+> 		 */
 > 
-> This patch seems to crash on Tigerlake platform (Chromebook delbin), I
-> got the following error:
+> 		/* Yes, the mii is overlaid on the ifreq.ifr_ifru */
+>-		strncpy(ifr.ifr_name, slave_dev->name, IFNAMSIZ);
+>+		strscpy_pad(ifr.ifr_name, slave_dev->name, IFNAMSIZ);
+> 		mii = if_mii(&ifr);
+> 		if (ioctl(slave_dev, &ifr, SIOCGMIIPHY) == 0) {
+> 			mii->reg_num = MII_BMSR;
+>@@ -5329,10 +5329,8 @@ static int bond_check_params(struct bond_params *params)
+> 			(struct reciprocal_value) { 0 };
+> 	}
 > 
-> [    2.103054] pcieport 0000:00:1c.0: PME: Signaling with IRQ 122
-> [    2.110148] pcieport 0000:00:1c.0: pciehp: Slot #7 AttnBtn-
-> PwrCtrl- MRL- AttnInd- PwrInd- HotPlug+ Surprise+ Interlock- NoCompl+
-> IbPresDis- LLActRep+
-> [    2.126754] pcieport 0000:00:1d.0: PME: Signaling with IRQ 123
-> [    2.133946] ACPI: \_SB_.CP00: Found 3 idle states
-> [    2.139708] BUG: kernel NULL pointer dereference, address: 000000000000012b
-> [    2.140704] #PF: supervisor read access in kernel mode
-> [    2.140704] #PF: error_code(0x0000) - not-present page
-> [    2.140704] PGD 0 P4D 0
-> [    2.140704] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> [    2.140704] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G     U
->   5.13.0-rc1 #31
-> [    2.140704] Hardware name: Google Delbin/Delbin, BIOS
-> Google_Delbin.13672.156.3 05/14/2021
-> [    2.140704] RIP: 0010:cpuidle_poll_time+0x9/0x6a
-> [    2.140704] Code: 44 00 00 85 f6 78 19 55 48 89 e5 48 8b 05 16 44
-> 44 01 4c 8b 58 40 4d 85 db 5d 41 ff d3 66 90 00 c3 0f 1f 44 00 00 55
-> 48 89 e5 <48> 8b 46 20 48 85 c0 75 56 4c 63 87 28 04 00 00 b8 24 f49
-> [    2.140704] RSP: 0000:ffffffff9cc03ea8 EFLAGS: 00010282
-> [    2.140704] RAX: 0000000000008e7d RBX: ffffffff9cc1c5fd RCX: 000000007f894e5a
-> [    2.140704] RDX: 000000007f894d4f RSI: 000000000000010b RDI: 0000000002fa1cf6
-> [    2.140704] RBP: ffffffff9cc03ea8 R08: 0000000000000000 R09: 00000000ca948246
-> [    2.140704] R10: 0000000000000000 R11: ffffffff9bf132cb R12: 0000000000000003
-> [    2.140704] R13: ffffbbfdffc21960 R14: 0000000000000000 R15: ffffffff9cdba638
-> [    2.140704] FS:  0000000000000000(0000) GS:ffff928280000000(0000)
-> knlGS:0000000000000000
-> [    2.140704] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    2.140704] CR2: 000000000000012b CR3: 000000027e414001 CR4: 0000000000770ef0
-> [    2.140704] PKRU: 55555554
-> [    2.140704] Call Trace:
-> [    2.140704]  do_idle+0x175/0x1f6
-> [    2.140704]  cpu_startup_entry+0x1d/0x1f
-> [    2.140704]  start_kernel+0x3be/0x420
-> [    2.140704]  secondary_startup_64_no_verify+0xb0/0xbb
+>-	if (primary) {
+>-		strncpy(params->primary, primary, IFNAMSIZ);
+>-		params->primary[IFNAMSIZ - 1] = 0;
+>-	}
+>+	if (primary)
+>+		strscpy_pad(params->primary, primary, sizeof(params->primary));
+> 
+> 	memcpy(params->arp_targets, arp_target, sizeof(arp_target));
+> 
+>-- 
+>2.25.1
 
-Assuming I'm looking at the right code, this is weird.
-
-cpuidle_poll_time()'s only caller is poll_idle(), which isn't even
-listed in the stack trace.  Maybe the function before
-cpuidle_poll_time() fell through into it somehow.  Or execution got
-otherwise hosed.  That would also explain the bad function argument.
-
-In addition to the data Peter requested, it would also be interesting to
-see the disassembly of do_idle() with objdump -dr, to see which function
-got called before it went off the rails.
-
--- 
-Josh
-
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
