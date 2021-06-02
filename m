@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F52397DA1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 02:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0456397DA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 02:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbhFBAVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 20:21:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57706 "EHLO mail.kernel.org"
+        id S229653AbhFBA2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 20:28:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhFBAVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 20:21:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3E7E1613B9;
-        Wed,  2 Jun 2021 00:20:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622593203;
-        bh=QHcB1ZBQ5gr8P8Rpu5DLl7l78+m4kuBhy96eS5I64NQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tHwmPNwX22BH9lEaJYzlauKaG4An9/Y5lm1DDMww7N9Y/lGa8X34wWU+H51BklGcI
-         vNdnITLxqC6nZCj+hh7BMxDdo33VY9cl1H/626zmUC1LqqmjJUzDq3ruckZmhkoUnS
-         gh7tA8qkAtaUuNBb6tlV/2vw2qsJvsjkm1dx53Hv+4gQ1g+PMm8s6bSahp417xkJoW
-         Q9hgeO96nK9yHgj1xJ/bCe5DCDboNLP85KxfnIKDftKqcVLY86ZSZM3yThdWf6POmD
-         2FgmtilaZlf8prIJlJMz2VCYxENNY2jhBi9Du1O4/BdCJRmAaEckoMCSRr+7a6YImp
-         RZyJKgZjddYlw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 32E3660953;
-        Wed,  2 Jun 2021 00:20:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] MAINTAINERS: nfc mailing lists are subscribers-only
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162259320320.27820.4965226473943122963.git-patchwork-notify@kernel.org>
-Date:   Wed, 02 Jun 2021 00:20:03 +0000
-References: <c923aee4b8d21261af2c9f0fdbdd8e3c796da65c.camel@perches.com>
-In-Reply-To: <c923aee4b8d21261af2c9f0fdbdd8e3c796da65c.camel@perches.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     krzysztof.kozlowski@canonical.com, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
+        id S229586AbhFBA2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 20:28:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E2BA6124B;
+        Wed,  2 Jun 2021 00:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622593619;
+        bh=qDr3ZE7diO9NQ3VqHna2Ok1cPmbxMJAtcu+G0KjSh3o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TeHg5CyHAzCr1Pw6ge2pgVf6xLZaoeDP8ZsxqPO5vAUebYvQ9UpPvLpMhqLVl2yI7
+         FzMWwYU700eNhF+fCdOXK32nZFt7P3YuxjUXb3xya+EQGsDl4hPSCi0voHGDcghKqu
+         CU3E6bv8FE8islmq7DdOEfPAbvwjSMBsJV9wWgIo=
+Date:   Tue, 1 Jun 2021 17:26:59 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Stephen Boyd <swboyd@chromium.org>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux-foundation.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v3 4/4] slub: Force on no_hash_pointers when slub_debug
+ is enabled
+Message-Id: <20210601172659.fd8c40a6548a1bd43be1bf11@linux-foundation.org>
+In-Reply-To: <202106020644.UDFIJOUU-lkp@intel.com>
+References: <20210601182202.3011020-5-swboyd@chromium.org>
+        <202106020644.UDFIJOUU-lkp@intel.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, 2 Jun 2021 06:45:55 +0800 kernel test robot <lkp@intel.com> wrote:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+> >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
+>            if (static_branch_unlikely(&slub_debug_enabled))
+>                                        ^
+> >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
+> >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
+> >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
+> >> mm/slub.c:4464:6: error: invalid argument type 'void' to unary expression
+>            if (static_branch_unlikely(&slub_debug_enabled))
+>                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On Tue, 01 Jun 2021 09:38:58 -0700 you wrote:
-> It looks as if the MAINTAINERS entries for the nfc mailing list
-> should be updated as I just got a "rejected" bounce from the nfc list.
-> 
-> -------
-> Your message to the Linux-nfc mailing-list was rejected for the following
-> reasons:
-> 
-> [...]
+Thanks.  Stephen, how about this?
 
-Here is the summary with links:
-  - MAINTAINERS: nfc mailing lists are subscribers-only
-    https://git.kernel.org/netdev/net/c/b000372627ce
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+--- a/mm/slub.c~slub-force-on-no_hash_pointers-when-slub_debug-is-enabled-fix
++++ a/mm/slub.c
+@@ -117,12 +117,26 @@
+  */
+ 
+ #ifdef CONFIG_SLUB_DEBUG
++
+ #ifdef CONFIG_SLUB_DEBUG_ON
+ DEFINE_STATIC_KEY_TRUE(slub_debug_enabled);
+ #else
+ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
+ #endif
+-#endif
++
++static inline bool __slub_debug_enabled(void)
++{
++	return static_branch_unlikely(&slub_debug_enabled);
++}
++
++#else		/* CONFIG_SLUB_DEBUG */
++
++static inline bool __slub_debug_enabled(void)
++{
++	return false;
++}
++
++#endif		/* CONFIG_SLUB_DEBUG */
+ 
+ static inline bool kmem_cache_debug(struct kmem_cache *s)
+ {
+@@ -4493,7 +4507,7 @@ void __init kmem_cache_init(void)
+ 		slub_max_order = 0;
+ 
+ 	/* Print slub debugging pointers without hashing */
+-	if (static_branch_unlikely(&slub_debug_enabled))
++	if (__slub_debug_enabled())
+ 		no_hash_pointers_enable(NULL);
+ 
+ 	kmem_cache_node = &boot_kmem_cache_node;
+_
 
