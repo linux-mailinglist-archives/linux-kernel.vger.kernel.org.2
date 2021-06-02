@@ -2,183 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3290D39865A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2973985CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhFBKVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232720AbhFBKUM (ORCPT
+        id S231210AbhFBKDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:03:19 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:51803 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229694AbhFBKDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:20:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14730C06138A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:18:03 -0700 (PDT)
-Message-Id: <20210602101619.182960608@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622629081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=+8DU0peep4ebfgYPhhRF+e0bN04oe+xitFx5PjSmpQg=;
-        b=0E4GhbLAI7e1+pxnPsqmCBisGnJ6pRO82wASW2opqSnYJf1pFCrGmhPEy/YUEm3Dy/aSUT
-        +2d0D4i0VtqYQ4RVoHDjLJFfHJFPcqJxnOBal+27GWjvY4t1BdruIMstx/sNMxs03dSl5R
-        FdOjc2y9LdoxmfQEhjaV2kxa0fjXrSd1xi/UoMTVQDPqvElposzsG0Ced8DdIFLRkRpMK/
-        XkDt59fBRCJzEAcGJWYHpg94OwR0Yms1/dHCaKDLzDQgv0cbRisdqr2y4FYA0+69lJ6JP7
-        phjM0/Pz7BG5+EnRidVsFRXcDAnMRb3UYkPg/5ZmqhjdKh57PHbzgeAxTVG/bA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622629081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=+8DU0peep4ebfgYPhhRF+e0bN04oe+xitFx5PjSmpQg=;
-        b=tptb5+/UHAOFkuwhKvjl5iUy+LDJ3Do5KyjZsHE1Lf6KGMOV7WpvFr3iUWz2HDU80cHQMV
-        3gV/wRG1F+roiKDA==
-Date:   Wed, 02 Jun 2021 11:55:51 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [patch 8/8] x86/fpu: Deduplicate copy_xxx_to_xstate()
-References: <20210602095543.149814064@linutronix.de>
+        Wed, 2 Jun 2021 06:03:17 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id oNgmlUEuUIpGyoNgplPC4v; Wed, 02 Jun 2021 12:01:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622628091; bh=/QoizLPSJePeB4Gpm1NI058wdS+DU0b8RstN2od348s=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=mH7dGeU1bQOm8jhFRwt0LWrsIjBL8VGBOKq3A3Suy79B4LClqtrPlH5poj9pEpd60
+         BucSHkUBaYh+GpLZGMF+Q8y7ogv9HdwhMCoRCp8z0bcvII5SAFQytMed3ZulZJ8tDN
+         nWjV5K/9zYDom01k0IL/4yyLqfqA5YDElJG6fsGEdBDxAkeGLrsXoLrHQNqpyUXoq/
+         b0JJtk8WVG4s+wgvVnTSl7/IlDRprclJk2gz+SH8nCZxNTpFePD3SoKvOjZQDUWfdd
+         rAfzXmBCMunRf1LF0PmFtlU/Z+GCgz/yCc9tUQ0dqbt9Rnq/qPdURWwQNnnOYphhs4
+         RQabwTieu6BEA==
+Subject: Re: [PATCH 3/3] venus: Add a handling of QC10C compressed format
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
+ <20210429105815.2790770-4-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <37d5e58c-ce5b-07f8-396f-662258a9b229@xs4all.nl>
+Date:   Wed, 2 Jun 2021 12:01:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+In-Reply-To: <20210429105815.2790770-4-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfGuxLyx2fCMs3/3q3zvDQWlvGij9NX8sf5r/BcoO418azIXlnvl+XcZ6McUBStFeN6j+Mby/6xRVhlaGhrs32Ib55chiPxWSSQj6q/YH4edzOLEFMsVv
+ iDi3e8jMaYp29sWg8UGtS/9JFJXpe0e131/MSmp1gTSb7MkHPH/KXxY4AjtsbYRXyv5nFser0W/bTzOtLqdh0OU8mTYGgMsBzxSEBLaZfUI09DWa0CkQXaZV
+ yjohLoyiwhT3D7E2EC/dmDo6rZdIm/A7+daEX4DgoM3MoT3VEipCxF1PypPKhxQw93fHrfyeCYiPKABc0pE8pbMOU/zskYMMGNjM7xwRZYYf0AcaQnbkeZlE
+ IDGJFcnd0WrJwlgBuT50NBgCOF/PtmtuhHSS80e9dlHWO8wStiE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-copy_user_to_xstate() and copy_kernel_to_xstate() are almost identical
-except for the copy function.
+On 29/04/2021 12:58, Stanimir Varbanov wrote:
+> This adds QC10C compressed pixel format in the Venus driver, and
+> make it enumeratable from v4l2 clients.
 
-Unify them.
+enumeratable -> possible to discover
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/fpu/xstate.c |   83 +++++++++++++++----------------------------
- 1 file changed, 29 insertions(+), 54 deletions(-)
+(or possibly 'enumerable', but I prefer the phrase suggested above)
 
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1124,20 +1124,30 @@ void copy_xstate_to_kernel(struct membuf
- 	fill_gap(&to, &last, size);
- }
- 
--/*
-- * Convert from a ptrace standard-format kernel buffer to kernel XSAVES format
-- * and copy to the target thread. This is called from xstateregs_set().
-- */
--int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
-+static int copy_from_buffer(void *dst, unsigned int offset, unsigned int size,
-+			    const void *kbuf, const void __user *ubuf)
-+{
-+	if (kbuf) {
-+		memcpy(dst, kbuf + offset, size);
-+	} else {
-+		if (copy_from_user(dst, ubuf + offset, size))
-+			return -EFAULT;
-+	}
-+	return 0;
-+}
-+
-+static int copy_to_xstate(struct xregs_state *xsave, const void *kbuf,
-+			  const void __user *ubuf)
- {
- 	unsigned int offset, size;
--	int i;
- 	struct xstate_header hdr;
-+	int i;
- 
- 	offset = offsetof(struct xregs_state, header);
- 	size = sizeof(hdr);
- 
--	memcpy(&hdr, kbuf + offset, size);
-+	if (copy_from_buffer(&hdr, offset, size, kbuf, ubuf))
-+		return -EFAULT;
- 
- 	if (validate_user_xstate_header(&hdr))
- 		return -EINVAL;
-@@ -1151,7 +1161,8 @@ int copy_kernel_to_xstate(struct xregs_s
- 			offset = xstate_offsets[i];
- 			size = xstate_sizes[i];
- 
--			memcpy(dst, kbuf + offset, size);
-+			if (copy_from_buffer(dst, offset, size, kbuf, ubuf))
-+				return -EFAULT;
- 		}
- 	}
- 
-@@ -1179,58 +1190,22 @@ int copy_kernel_to_xstate(struct xregs_s
- }
- 
- /*
-+ * Convert from a ptrace standard-format kernel buffer to kernel XSAVES format
-+ * and copy to the target thread. This is called from xstateregs_set().
-+ */
-+int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
-+{
-+	return copy_to_xstate(xsave, kbuf, NULL);
-+}
-+
-+/*
-  * Convert from a sigreturn standard-format user-space buffer to kernel
-  * XSAVES format and copy to the target thread. This is called from the
-  * sigreturn() and rt_sigreturn() system calls.
-  */
- int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf)
- {
--	unsigned int offset, size;
--	int i;
--	struct xstate_header hdr;
--
--	offset = offsetof(struct xregs_state, header);
--	size = sizeof(hdr);
--
--	if (copy_from_user(&hdr, ubuf + offset, size))
--		return -EFAULT;
--
--	if (validate_user_xstate_header(&hdr))
--		return -EINVAL;
--
--	for (i = 0; i < XFEATURE_MAX; i++) {
--		u64 mask = ((u64)1 << i);
--
--		if (hdr.xfeatures & mask) {
--			void *dst = __raw_xsave_addr(xsave, i);
--
--			offset = xstate_offsets[i];
--			size = xstate_sizes[i];
--
--			if (copy_from_user(dst, ubuf + offset, size))
--				return -EFAULT;
--		}
--	}
--
--	if (xfeatures_mxcsr_quirk(hdr.xfeatures)) {
--		offset = offsetof(struct fxregs_state, mxcsr);
--		size = MXCSR_AND_FLAGS_SIZE;
--		if (copy_from_user(&xsave->i387.mxcsr, ubuf + offset, size))
--			return -EFAULT;
--	}
--
--	/*
--	 * The state that came in from userspace was user-state only.
--	 * Mask all the user states out of 'xfeatures':
--	 */
--	xsave->header.xfeatures &= XFEATURE_MASK_SUPERVISOR_ALL;
--
--	/*
--	 * Add back in the features that came in from userspace:
--	 */
--	xsave->header.xfeatures |= hdr.xfeatures;
--
--	return 0;
-+	return copy_to_xstate(xsave, NULL, ubuf);
- }
- 
- /*
+> 
+> Note: The QC10C format shouldn't be possible to enumerate by the
+> client if the decoded bitstream is not 10bits. This is not
+
+10bits -> 10-bits
+
+> implemented in this patch yet.
+
+Obvious question: will this be done in a later patch that is being
+prepared? Would it be better to wait until such a patch is available?
+
+Regards,
+
+	Hans
+
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/helpers.c | 2 ++
+>  drivers/media/platform/qcom/venus/vdec.c    | 6 +++++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index 3a0b07d237a5..58bf2e0654ce 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -563,6 +563,8 @@ static u32 to_hfi_raw_fmt(u32 v4l2_fmt)
+>  		return HFI_COLOR_FORMAT_NV21;
+>  	case V4L2_PIX_FMT_QC8C:
+>  		return HFI_COLOR_FORMAT_NV12_UBWC;
+> +	case V4L2_PIX_FMT_QC10C:
+> +		return HFI_COLOR_FORMAT_YUV420_TP10_UBWC;
+>  	default:
+>  		break;
+>  	}
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index d4cc51fc019c..7ad8cd66b8bc 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -35,6 +35,10 @@ static const struct venus_format vdec_formats[] = {
+>  		.num_planes = 1,
+>  		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
+>  	}, {
+> +		.pixfmt = V4L2_PIX_FMT_QC10C,
+> +		.num_planes = 1,
+> +		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
+> +	},{
+>  		.pixfmt = V4L2_PIX_FMT_NV12,
+>  		.num_planes = 1,
+>  		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
+> @@ -1508,7 +1512,7 @@ static const struct hfi_inst_ops vdec_hfi_ops = {
+>  static void vdec_inst_init(struct venus_inst *inst)
+>  {
+>  	inst->hfi_codec = HFI_VIDEO_CODEC_H264;
+> -	inst->fmt_out = &vdec_formats[6];
+> +	inst->fmt_out = &vdec_formats[8];
+>  	inst->fmt_cap = &vdec_formats[0];
+>  	inst->width = frame_width_min(inst);
+>  	inst->height = ALIGN(frame_height_min(inst), 32);
+> 
 
