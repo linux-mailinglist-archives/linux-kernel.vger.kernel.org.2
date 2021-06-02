@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345CC3987CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6893987CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhFBLS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:18:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31359 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229618AbhFBLS2 (ORCPT
+        id S231490AbhFBLSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:18:55 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64138 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229825AbhFBLSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:18:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622632605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n6ruBB0Ytz1nu7rTAZGTMPhHF3U9i3+0Qv8sww0BF7w=;
-        b=E1P7gWaXkIGEzV+tT9mPoWOhUTS5i+vCxw/NZQoDVrW3BNtm7icwbn/WuixOy8M2f56Qs/
-        qiFdN71RdRoO9LUFs/breWHwaCFmwG5/r/o8b2Jl+q9h4FYjavALh2v1cvec8GKOhQS8HH
-        2xRlFcImUIQp8lv8/f/+6bm0PmRsGB0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-lpjEY_gvPeyypRAkyISe2w-1; Wed, 02 Jun 2021 07:16:44 -0400
-X-MC-Unique: lpjEY_gvPeyypRAkyISe2w-1
-Received: by mail-wm1-f70.google.com with SMTP id v25-20020a1cf7190000b0290197a4be97b7so488052wmh.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:16:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n6ruBB0Ytz1nu7rTAZGTMPhHF3U9i3+0Qv8sww0BF7w=;
-        b=JVW2fxeLdYQhxjXB2wHSaK6VrCG9T/kRSC7lVBcPujGDp+v6xEQJmyWA1Znjz4g2Ee
-         gU0vUQoKmQnNOytXT2QWLnjDh87LFnyWgXMpgaumUVEvuQzJ7Hq/LBlOtIQNCcC9MeKn
-         9gr79QNyhWa31ct/wOLqjm3wO6+I1Zz0ABqK1Bko15pFjMDWNRDggI+80LsqIBXYb1BX
-         ZUX55TFtDEIx7JttIiyO7ggHPaN+87tRIj7T9Kbj0LhlD0feISrfK7KgGo3vUdl1qgx1
-         SZMTPuSCB52BLlwK8qNXSjWSI2xIZmtMZx+UDh5mQDyZMj7sZ+4/jNDpyPLOLGz/W1pH
-         S7AA==
-X-Gm-Message-State: AOAM531Or0gjPBIjeOx+q9UEAn5wpmLqAvvMPM+YhfyK24epKNjoh6Hn
-        PjzunMVtP51AY5uA/ggkKahU38UpEQwMhZAF22/NgzmMDo9rkURgWnypfoeajXOoHIf8LuZhAcm
-        6NUb/OSaY8tJ0IoRKWBFsEmAYL4TL8kOtPkg680/x
-X-Received: by 2002:adf:eac9:: with SMTP id o9mr17338204wrn.78.1622632603303;
-        Wed, 02 Jun 2021 04:16:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvQfVLspuqWRiLVnfyZcyInXdEvPRHne1Wa0GUdhPjf6KYnH2vnLr99kOz5alPu9eAz6IUiT2mUWvuN+eIjQA=
-X-Received: by 2002:adf:eac9:: with SMTP id o9mr17338194wrn.78.1622632603144;
- Wed, 02 Jun 2021 04:16:43 -0700 (PDT)
+        Wed, 2 Jun 2021 07:18:54 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 152B3ZMU112664;
+        Wed, 2 Jun 2021 07:17:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=QtgxRA8gC+M8FY9gSrUuVfrLs5MKyCyevXxvJ0hvpjo=;
+ b=IEVf+v4S8ygNaH/WmpPhxNlWi1P6xSKzYq2fHcSVQMRTjYOH0SQcbqZKPITrFt4dfxMp
+ 68vmbP9h8CEFpUm+k8UTDeLuWVoFgWVTSIOMdilh5AL4d2n9YWZUOBQd4Lu3akilxg1e
+ 1VcQUpt2QBk9acCIjN17otujE3E9dVpZNz2e6+2WPEuikFHEFJ0QKDQr/iPbsRdvh1IU
+ hs4ImEdLPZvdJbPzGusMb7Zky+TJUzjc+EUXLIqx7gbssAzArz2LpiNDQg6gMbZNX2LU
+ AuDNnGh81Kv2WsHdRAvZBKY9gW4ulzCe5AWxPlPbKYEBRtYoWbedCxZlSGCRKtor9+bx AQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38x6bnm9ap-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 07:17:10 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 152B3uVd114578;
+        Wed, 2 Jun 2021 07:17:09 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38x6bnm9ab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 07:17:09 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 152BFEw4015693;
+        Wed, 2 Jun 2021 11:17:08 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 38ud8818n3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 11:17:07 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 152BH5Nm28180752
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Jun 2021 11:17:05 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC348A4040;
+        Wed,  2 Jun 2021 11:17:05 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81E96A4055;
+        Wed,  2 Jun 2021 11:17:05 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Jun 2021 11:17:05 +0000 (GMT)
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH wq/for-next 1/2] workqueue: replace open-coded work_pending()
+Date:   Wed,  2 Jun 2021 13:16:54 +0200
+Message-Id: <20210602111655.3808580-1-jwi@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210531170123.243771-1-agruenba@redhat.com> <20210531170123.243771-5-agruenba@redhat.com>
- <CAHk-=wiB9gvUsebmiOaRXzYVUxJDUt1SozGtRyxR_MDR=Nv7YQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wiB9gvUsebmiOaRXzYVUxJDUt1SozGtRyxR_MDR=Nv7YQ@mail.gmail.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Wed, 2 Jun 2021 13:16:32 +0200
-Message-ID: <CAHc6FU4n_F9sPjP7getGRKLpB-KsZt_qhHctqwY5pJrxGxLr2w@mail.gmail.com>
-Subject: Re: [RFC 4/9] gfs2: Fix mmap + page fault deadlocks (part 1)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     cluster-devel <cluster-devel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: bxN5KlYATNxJXV3NhmtR4_JsNEkfwH7f
+X-Proofpoint-ORIG-GUID: 5YQxgCzzI-uFNjGKJhEUy26bnX_qXwD2
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-02_05:2021-06-02,2021-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=795
+ clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106020071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 8:00 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Mon, May 31, 2021 at 7:01 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> >
-> > Fix that by recognizing the self-recursion case.
->
-> Hmm. I get the feeling that the self-recursion case should never have
-> been allowed to happen in the first place.
->
-> IOW, is there some reason why you can't make the user accesses always
-> be done with page faults disabled (ie using the "atomic" user space
-> access model), and then if you get a partial read (or write) to user
-> space, at that point you drop the locks in read/write, do the "try to
-> make readable/writable" and try again.
->
-> IOW, none of this "detect recursion" thing. Just "no recursion in the
-> first place".
->
-> That way you'd not have these odd rules at fault time at all, because
-> a fault while holding a lock would never get to the filesystem at all,
-> it would be aborted early. And you'd not have any odd "inner/outer"
-> locks, or lock compatibility rules or anything like that. You'd
-> literally have just "oh, I didn't get everything at RW time while I
-> held locks, so let's drop the locks, try to access user space, and
-> retry".
+Use the right helper to check whether a work item is currently pending.
 
-Well, iomap_file_buffered_write() does that by using
-iov_iter_fault_in_readable() and iov_iter_copy_from_user_atomic() as
-in iomap_write_actor(), but the read and direct I/O side doesn't seem
-to have equivalents. I suspect we can't just wrap
-generic_file_read_iter() and iomap_dio_rw() calls in
-pagefault_disable().
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+---
+ kernel/workqueue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Wouldn't that be a lot simpler and more robust?
-
-Sure, with vfs primitives that support atomic user-space access and
-with a iov_iter_fault_in_writeable() like operation, we could do that.
-
-> Because what if the mmap is something a bit more complex, like
-> overlayfs or userfaultfd, and completing the fault isn't about gfs2
-> handling it as a "fault", but about some *other* entity calling back
-> to gfs2 and doing a read/write instead? Now all your "inner/outer"
-> lock logic ends up being entirely pointless, as far as I can tell, and
-> you end up deadlocking on the lock you are holding over the user space
-> access _anyway_.
-
-Yes, those kinds of deadlocks would still be possible.
-
-Until we have a better solution, wouldn't it make sense to at least
-prevent those self-recursion deadlocks? I'll send a separate pull
-request in case you find that acceptable.
-
-Thanks,
-Andreas
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 50142fc08902..8a700ccfa313 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3209,7 +3209,7 @@ EXPORT_SYMBOL(flush_delayed_work);
+  */
+ bool flush_rcu_work(struct rcu_work *rwork)
+ {
+-	if (test_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(&rwork->work))) {
++	if (work_pending(&rwork->work)) {
+ 		rcu_barrier();
+ 		flush_work(&rwork->work);
+ 		return true;
+-- 
+2.25.1
 
