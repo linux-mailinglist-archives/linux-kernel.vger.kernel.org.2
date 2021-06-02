@@ -2,177 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28B8398107
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608A9398112
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhFBGWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:22:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37062 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhFBGWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:22:03 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 26C331FD49;
-        Wed,  2 Jun 2021 06:20:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622614820; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=oLUpoRLLvxuZBzEdtKINYg1RrKnb5TlkKe2Pg3mgTJI=;
-        b=CunjXEnsnQm85l2FuXBAYaVCB7HopXt7sioDE/7/nn9KHAYvxrw8iFjZgBLWamISyM7/CP
-        ElXaJ2r9lUIfK/yFNiEWqeMOq20W4HFIcIjwAmRj37kF4HwIyCQ2mEtqKRFI67S+8WgTYs
-        haNFzwXU8Z3VG3ZSSDX1DPE2v//Fxto=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622614820;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=oLUpoRLLvxuZBzEdtKINYg1RrKnb5TlkKe2Pg3mgTJI=;
-        b=LtI956xwpwO9ssG8NzgPzasGlxFHck86hd/1JBFHdcvWQHiEC+lQQ6/GIcl2PkabQgYCgS
-        FvUmjZLrlAuw51AQ==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 0B7B4A3B91;
-        Wed,  2 Jun 2021 06:20:20 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 16045)
-        id F1437516FAC7; Wed,  2 Jun 2021 08:20:19 +0200 (CEST)
-From:   Hannes Reinecke <hare@suse.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailinglist <linux-kernel@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCHv2] block/genhd: use atomic_t for disk_event->block
-Date:   Wed,  2 Jun 2021 08:20:15 +0200
-Message-Id: <20210602062015.33605-1-hare@suse.de>
-X-Mailer: git-send-email 2.29.2
+        id S231165AbhFBG0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:26:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229566AbhFBG0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 02:26:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18BB460234;
+        Wed,  2 Jun 2021 06:24:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622615066;
+        bh=N2Vql9zUkCZdjQPGQ0SFo8XhgMi+5NBRKKLHIxllk/0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WlKpldkSrE/nRhvJEvu2npGeV/+grLU/9vt9fiaHRnB1GVs+Va6Bhql/0h6ORR7x4
+         OziX5DiHftjzqjielNuprSqolTbWarYKaE7HyqwXItaf4DCcmpEIhspsflBXlXGue+
+         FNv5bGAB6fMBCt7H71KWDuv7ZTWKhbraten65l6eRx0UV2/Wabi+c8VkpO4MQGvCS1
+         IJkA1cmYhyMj/hHOhGzNkDXGD9hulgDoqpTVzyFrJJVXHDS74XfnVVkL/ZGRqTeYf+
+         Y+qKm/vASc+k/HJB4lZj7MludhCdVJ6R6u7/aXw4Kjeju3IDbtFeRS4qKo4dwspr+O
+         6957zSSN9yxsg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Devin Moore <devinmoore@google.com>
+Subject: [PATCH v3 0/6] bootconfig: Add mixed subkeys and value under the same key
+Date:   Wed,  2 Jun 2021 15:24:22 +0900
+Message-Id: <162261506232.255316.12147562546699211199.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__disk_unblock_events() will call queue_delayed_work() with a '0' argument
-under a spin lock. This might cause the queue_work item to be executed
-immediately, and run into a deadlock in disk_check_events() waiting for
-the lock to be released.
+Hi,
 
-This patch converts the 'blocked' counter into an atomic variable, so we don't
-need to hold a spinlock anymore when scheduling the workqueue function.
+Here is the 3rd version of the series which updates bootconfig to
+support mixed subkeys and a value under the same key.
 
-Changes to v1:
-- Fixup wrong mutex_unlock detected by 0-day robot
+Since the kernel cmdline accepts options like 
+"aaa.bbb=val1 aaa.bbb.ccc=val2", it is better that the bootconfig
+also support it.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
+Here is the previous series:
+  https://lore.kernel.org/lkml/162157886618.78209.11141970623539574861.stgit@devnote2/
+
+In this version, I rebased on top of the latest linus tree and
+add the build error fix [1/6](*) and a cleanup patch [6/6].
+
+(*) https://lore.kernel.org/lkml/162087519356.442660.11385099982318160180.stgit@devnote2/
+
+Changes in v3
+ [1/6]:
+     - Added from separated thread. This is a fundamental fix.
+ [6/6]:
+     - New cleanup patch.
+
+
+With this series, sub-keys and a value can co-exist under a parent key.
+For example, following config is allowed.
+
+ foo = value1
+ foo.bar = value2
+
+Note, since there is no syntax to put a raw value directly under a
+structured key, you have to define it outside of the brace. For example,
+
+ foo {
+     bar = value1
+     bar {
+         baz = value2
+         qux = value3
+     }
+ }
+
+Also, the order of the value node under a key is fixed. If there
+are a value and subkeys, the value is always the first child node
+of the key. Thus if user specifies subkeys first, e.g.
+
+ foo.bar = value1
+ foo = value2
+
+In the program (and /proc/bootconfig), it will be shown as below
+
+ foo = value2
+ foo.bar = value1
+
+
+Thank you,
+
 ---
- block/genhd.c | 35 ++++++++++++-----------------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 9f8cb7beaad1..a18a3058728b 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1379,7 +1379,7 @@ struct disk_events {
- 	spinlock_t		lock;
- 
- 	struct mutex		block_mutex;	/* protects blocking */
--	int			block;		/* event blocking depth */
-+	atomic_t		block;		/* event blocking depth */
- 	unsigned int		pending;	/* events already sent out */
- 	unsigned int		clearing;	/* events being cleared */
- 
-@@ -1439,8 +1439,6 @@ static unsigned long disk_events_poll_jiffies(struct gendisk *disk)
- void disk_block_events(struct gendisk *disk)
- {
- 	struct disk_events *ev = disk->ev;
--	unsigned long flags;
--	bool cancel;
- 
- 	if (!ev)
- 		return;
-@@ -1451,11 +1449,7 @@ void disk_block_events(struct gendisk *disk)
- 	 */
- 	mutex_lock(&ev->block_mutex);
- 
--	spin_lock_irqsave(&ev->lock, flags);
--	cancel = !ev->block++;
--	spin_unlock_irqrestore(&ev->lock, flags);
--
--	if (cancel)
-+	if (atomic_inc_return(&ev->block) == 1)
- 		cancel_delayed_work_sync(&disk->ev->dwork);
- 
- 	mutex_unlock(&ev->block_mutex);
-@@ -1467,23 +1461,18 @@ static void __disk_unblock_events(struct gendisk *disk, bool check_now)
- 	unsigned long intv;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&ev->lock, flags);
--
--	if (WARN_ON_ONCE(ev->block <= 0))
--		goto out_unlock;
--
--	if (--ev->block)
--		goto out_unlock;
-+	if (atomic_dec_return(&ev->block) <= 0)
-+		return;
- 
-+	spin_lock_irqsave(&ev->lock, flags);
- 	intv = disk_events_poll_jiffies(disk);
-+	spin_unlock_irqrestore(&ev->lock, flags);
- 	if (check_now)
- 		queue_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, 0);
- 	else if (intv)
- 		queue_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, intv);
--out_unlock:
--	spin_unlock_irqrestore(&ev->lock, flags);
- }
- 
- /**
-@@ -1523,10 +1512,10 @@ void disk_flush_events(struct gendisk *disk, unsigned int mask)
- 
- 	spin_lock_irq(&ev->lock);
- 	ev->clearing |= mask;
--	if (!ev->block)
-+	spin_unlock_irq(&ev->lock);
-+	if (!atomic_read(&ev->block))
- 		mod_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, 0);
--	spin_unlock_irq(&ev->lock);
- }
- 
- /**
-@@ -1638,11 +1627,11 @@ static void disk_check_events(struct disk_events *ev,
- 	*clearing_ptr &= ~clearing;
- 
- 	intv = disk_events_poll_jiffies(disk);
--	if (!ev->block && intv)
-+	spin_unlock_irq(&ev->lock);
-+	if (!atomic_read(&ev->block) && intv)
- 		queue_delayed_work(system_freezable_power_efficient_wq,
- 				&ev->dwork, intv);
- 
--	spin_unlock_irq(&ev->lock);
- 
- 	/*
- 	 * Tell userland about new events.  Only the events listed in
-@@ -1807,7 +1796,7 @@ static void disk_alloc_events(struct gendisk *disk)
- 	ev->disk = disk;
- 	spin_lock_init(&ev->lock);
- 	mutex_init(&ev->block_mutex);
--	ev->block = 1;
-+	atomic_set(&ev->block, 1);
- 	ev->poll_msecs = -1;
- 	INIT_DELAYED_WORK(&ev->dwork, disk_events_workfn);
- 
-@@ -1851,6 +1840,6 @@ static void disk_del_events(struct gendisk *disk)
- static void disk_release_events(struct gendisk *disk)
- {
- 	/* the block count should be 1 from disk_del_events() */
--	WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
-+	WARN_ON_ONCE(disk->ev && atomic_read(&disk->ev->block) != 1);
- 	kfree(disk->ev);
- }
--- 
-2.26.2
+Masami Hiramatsu (6):
+      tools/bootconfig: Fix a build error accroding to undefined fallthrough
+      bootconfig: Change array value to use child node
+      bootconfig: Support mixing a value and subkeys under a key
+      tools/bootconfig: Support mixed value and subkey test cases
+      docs: bootconfig: Update for mixing value and subkeys
+      bootconfig: Share the checksum function with tools
 
+
+ tools/bootconfig/include/linux/bootconfig.h        |    4 +
+ tools/bootconfig/main.c                            |   62 +++++++++++++-------
+ tools/bootconfig/samples/bad-mixed-kv1.bconf       |    3 -
+ tools/bootconfig/samples/bad-mixed-kv2.bconf       |    3 -
+ tools/bootconfig/samples/bad-override.bconf        |    3 -
+ tools/bootconfig/samples/bad-override2.bconf       |    3 -
+ tools/bootconfig/samples/good-mixed-append.bconf   |    4 +
+ tools/bootconfig/samples/good-mixed-kv1.bconf      |    3 +
+ tools/bootconfig/samples/good-mixed-kv2.bconf      |    3 +
+ tools/bootconfig/samples/good-mixed-kv3.bconf      |    6 ++
+ tools/bootconfig/samples/good-mixed-override.bconf |    4 +
+ 11 files changed, 64 insertions(+), 34 deletions(-)
+ delete mode 100644 tools/bootconfig/samples/bad-mixed-kv1.bconf
+ delete mode 100644 tools/bootconfig/samples/bad-mixed-kv2.bconf
+ delete mode 100644 tools/bootconfig/samples/bad-override.bconf
+ delete mode 100644 tools/bootconfig/samples/bad-override2.bconf
+ create mode 100644 tools/bootconfig/samples/good-mixed-append.bconf
+ create mode 100644 tools/bootconfig/samples/good-mixed-kv1.bconf
+ create mode 100644 tools/bootconfig/samples/good-mixed-kv2.bconf
+ create mode 100644 tools/bootconfig/samples/good-mixed-kv3.bconf
+ create mode 100644 tools/bootconfig/samples/good-mixed-override.bconf
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
