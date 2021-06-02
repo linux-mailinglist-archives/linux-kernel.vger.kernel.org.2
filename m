@@ -2,182 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1082398F9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AC3398FA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhFBQI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:08:56 -0400
-Received: from mail-bn1nam07on2045.outbound.protection.outlook.com ([40.107.212.45]:38532
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229668AbhFBQIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:08:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=moE/tftfOuQl/n3wpVOmUomv3GNGo64894oNQgLmTpojX2QPKWUQz2TVYpGB0QqYZWCbYJqdjfoa0GQOtMAQIdK1KxJ/1zQjUIrAeZFTylCslEHeMdCC7u92gRX9fdkn5SPLOKg60+D1V1xsoCqv1dFHDjtsim4CnWl2Wen6aUBq6Lmrf41UL5QTh5CD6x9aRib61r1+PQPT1gIR4GqpcF5eiQon2g5XRLBBkCEgMogoy3RYNSVASE6WiFBjF5GUM7etthmEJzhOk6aaHcLll9aYzo8yN8Znnj4oiimv/rp4HrRf6GxhN+iUrcCcatBX6IxYqCK2x2gMOEIKK17MpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TXxVVVjsUITA1BeRCS65X1i6eOYr+zynRbuJtxbzyzE=;
- b=K2zoTH9T5NmVVzHzb+TrSSRHkrGRuaFypr0oj3j72GH7q5TcN7EnF+EbcFXeZggD4WipdVUuQ0rM6V9HhXBlLbEzgugskuk3GSjzLNBA3zgSuM5L3n7htNCLNrXacNgQEbTrZrUxm2Zyf2qUyEHKAj/x4CJM2/3pJMBkoUoj8xOk0E+dCCgo+qfOJ1yk4AC+0KIsjhzDC0qW3BF+CB7MZ2nDYW/MSTcWKWyEsQIduv1opEX4/h0mFRGdfeg1/+ladA+tJWpGp+hN5QAC3n2TYD7y6jSGKqRfht5j/BICKo4JfBbrvuVMnVoJcWvr2fSHXmG953GXvAqX+ebkK5N58g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TXxVVVjsUITA1BeRCS65X1i6eOYr+zynRbuJtxbzyzE=;
- b=f4Ib+M/GYvejCZRkKzTuyoHG20hsE6x42HZItoWOFBK2pCLS9FT2BFiue/jSn/QWg+vPzby+izDaekFmtyHmFm7OABLn7UZhkr4FwWO+rF3j3NpX9mwMGMF3DAZZeSZN8W8lpwovfVoHJ6wInriq8IRYTm3Dw2yiI7eakeKRl6zjEi1Jl4udGRMCcOtF/6gt4L+sz1ngwuDj4OK0LReC3jpI3TU8iaJLuJE9ONj9uAYhcLAzUWTQfULcM/l4ufAvlMC6SwRsQjVKvwPjng7lNGb7GYkRiJMzxKDI1MHmFhfMx2xE8tOIWt4jX9tLN+DRFhTK5Q9Gk/jft40/Q0+JmA==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5361.namprd12.prod.outlook.com (2603:10b6:208:31f::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Wed, 2 Jun
- 2021 16:07:10 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.020; Wed, 2 Jun 2021
- 16:07:10 +0000
-Date:   Wed, 2 Jun 2021 13:07:08 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210602160708.GW1002214@nvidia.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528200311.GP1002214@nvidia.com>
- <MWHPR11MB188685D57653827B566BF9B38C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210601202834.GR1002214@nvidia.com>
- <1a3b4cf2-f511-640b-6c8c-a85f94a9536d@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1a3b4cf2-f511-640b-6c8c-a85f94a9536d@redhat.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR22CA0005.namprd22.prod.outlook.com
- (2603:10b6:208:238::10) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229738AbhFBQKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:10:12 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:42662 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBQKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:10:11 -0400
+Received: by mail-pj1-f42.google.com with SMTP id l23-20020a17090a0717b029016ae774f973so1427694pjl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ikl83q9gmPX5sD4CmpMRquYv5s+drbTjKeqlpROSetg=;
+        b=xVgTJWGuioCjkqiefNuPItaQCBkRx1TeT/YiH/gh8o/uFIpMZqOnL2J1hyqr8nqNj1
+         g9yQjI0ET/2iSX3C67ni2R1unzyBh0inbhC1XRNRBiX/fUrvITv8U1Z+BtautNqA/Cdu
+         MV352j2B9q1FnSPgggXhUw64WrCI8nMuXKyjg7mPsTOgMjPEFByOvWHTHg2hHLFFrmnh
+         SHWttOFQelDwXFU0T5UCsyBjO9vgf3Q6biMRhQ6vtysIsayUCONKI16vJDXNCZtBnWp2
+         5McWMOoma5Szz5w/V4eRAsHcdr3V4TKg1ibRaTlF1E5c9/HdPdQd0mXsHAlC7X/JipfI
+         3D2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ikl83q9gmPX5sD4CmpMRquYv5s+drbTjKeqlpROSetg=;
+        b=dzwVb7CnMbvg0cM/+uH3fXMOPgCNmmdLz/QbxlhQgkK9QBwf88AcFzSzvK7B8OMOA2
+         QFl2SXKM9idV43I6ClIMH7EwxMjDE1GJ971J1LWUC5C33Wz1nnw0FtSAdo9Qc7szeutd
+         5N3JSeHhCMVJ3K+o+nS8DyKmVabUU2RCsSbSQuY7L7Y+UfhbDIAY+mFZ9yUvvwXSQK1x
+         Gh4/9ABVcCCVSR3UxBJ+3m1gkmlotajpsWRnJP/MA8UYxk0rdINaku5GYPIpgO1Tn1pL
+         5WYq8lVs3lvn5pxm7YtXpBdSmR0Mk7CHIKkAKgjhEVsHgPGwoqCJnTjHH4GuYbkHZ4zC
+         dk1w==
+X-Gm-Message-State: AOAM531AU8EyxjfVeuZ6LrXpSHxcVF//0qJ6CroU3p6sTAleot9L5Tpf
+        x808lxZR17RF0jLWmmO6cu0SSw==
+X-Google-Smtp-Source: ABdhPJwffhlskdNwGn4raK+xCYDqME8xpJ72G6TWz6lAaYst9SV74YPUzLndogudrSHNy3q9HmJSzg==
+X-Received: by 2002:a17:90a:e298:: with SMTP id d24mr14601429pjz.36.1622650038104;
+        Wed, 02 Jun 2021 09:07:18 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id i2sm63913pjj.25.2021.06.02.09.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 09:07:17 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 10:07:15 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] remoteproc: k3-dsp: Add support for IPC-only mode
+ for all K3 DSPs
+Message-ID: <20210602160715.GB1797307@xps15>
+References: <20210522000309.26134-1-s-anna@ti.com>
+ <20210522000309.26134-7-s-anna@ti.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR22CA0005.namprd22.prod.outlook.com (2603:10b6:208:238::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Wed, 2 Jun 2021 16:07:09 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1loTOe-000HKt-Kn; Wed, 02 Jun 2021 13:07:08 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bffe30a4-594d-4e64-9a60-08d925e079e9
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5361:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53618763B03E2F6D5F33CA3EC23D9@BL1PR12MB5361.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wksudrp7SltA9HDruyozKcvqhpfUN9n4eoPtGVqDQzdhNyOwcUK5voQkJ4k3U0UbkcUVMYCSksjkLHCqeP4ar9E8mgcsJCf2Xp3VaPK/vuGbuymFx3uUukXeNCw3R7vaXLKJBQUl+2ClQoy+2j5uxx4TK31udstFbEuS8m0GmlA050QYzQn5hdDEAZyjd+QeUF7N6GT5cgnHkTjzayvPuySFeVp2HRziDJy8g7EDHAJ/oWpc3LIny9gyZK3LLi8VsNsWlvETLUXvZN2ldZBK/Y5+S1eAwgk5FNANxZRWdjMTQnF4WjnU3icpOm3gag3nyn+zz6PE5vz8X98ZoNZUxZEzayVBCFlyVqvlQJf6PzHY3gNOpLUtrxIb38FQnMigkYGVLnP+hu6MiheryQoLqrW1ANYdzmiVQh6nO4CG1oXUEX5BehQy6ANidM9CxQ0GeBNqJn6MFnpTPmC7v8ZHlbKDa/CQeLUIs6mdCKZqZ0g//TPA/Tg75Pt1SCdcMr0uqCMVgJe4WryNDFU8TICpgeB5PFFRrnYeZDDoBVRF5kR6+OWZTJrq0SkjGfykcatJgir9cbTEY2WvS0zU09pMOf1E4FnVyEmsgcjZQ/D/HZM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(396003)(346002)(376002)(5660300002)(4326008)(426003)(7416002)(36756003)(38100700002)(66476007)(54906003)(8676002)(8936002)(33656002)(478600001)(2616005)(6916009)(66946007)(9786002)(2906002)(9746002)(186003)(86362001)(66556008)(26005)(316002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eHloUzhFVjFrbGZaWFV2Q0NNOTFVcHBOaXczZkdwSGNOdnc5cU12N3NiZmhY?=
- =?utf-8?B?ZzRlWktoUEV1TUhRRTI5SnpYTDd6VHFEMWZiZDNJK3FtUmRuZW84VFErbVhH?=
- =?utf-8?B?bTNiT2tvOE0xZWNpL3A2UmQ3VFBrTy9ZZW5oenJlMDhPNWtydk1PbWVhb3JQ?=
- =?utf-8?B?Uyt6RmNtMXJBbGxiKzlidy9QcWlxMkwxM2tudUVmQTN0R2FQalJQNDU4ajMw?=
- =?utf-8?B?OGtpOEZlclhmYTdsZ3cweVp6UENyUkQrcC9DK25aYld6WThzeUVpMUtLNWZQ?=
- =?utf-8?B?VmJ2WVFhMlRtcXZwTmpCQ1o5ZUZ6KzJwdC9wdnpobE5yM0ltQ2dZRTF4NGli?=
- =?utf-8?B?V0hhU292ZzBqR2w3NXNCWll1NjlobktBN1dqRTdlWGVneXVlVkZyMmttRUJV?=
- =?utf-8?B?Qk9GSFY3RHJ0TWZIZ005enZUMEJQMTJxckFuUHJOUEJBZzE3aTVidmcxd3cw?=
- =?utf-8?B?UHhZYlpFQmtseFFzNlhjWnhnYXYxRHB2N3dKUHR2QVRLSUdybzdLclpMSFhm?=
- =?utf-8?B?bXd0NE9hSmxVU2lCeDN3RVpLZ3hRRlpKb3AvNTB3Tkk1SmlINDRqbTl0SmlJ?=
- =?utf-8?B?RWIvNTRqZGJsRDdiYUxwRThzYThaYmNXWE42N09rUnN0MzJhY1hlS1JtU1dQ?=
- =?utf-8?B?aVpHb3orZU92U1JESnFVSi9Mc3ZheXB6WWhRbUFnbFdWZTJIeXhCWlpjMEYz?=
- =?utf-8?B?VzhsY3RFZVlka3d6YXVtTHA5c3YzSm10TWpPOVpGczJLZVZJWDdZeUVqMUdi?=
- =?utf-8?B?cHBrS3JUT1dYUWFLS08wQjk2dlBXV2t2eU1iYWk5ekNJS0h2UmZ6S0syREp1?=
- =?utf-8?B?VDhWMFVrNnMzaFFlajJNNjFtMXJhdklvQ3V3QVFOeTNiRjRoQ1B5QlFhT1Fl?=
- =?utf-8?B?Rm1pdnZRNm90SHVwdmk0VTg1L2d4Z3JncytSS25lbHpxZk9lUTFHa1Nld3Ay?=
- =?utf-8?B?dEJjaWxJNThZdlFsajgwcWhpVHFQdGJoeGtFMjQ0Sm9HMS8xVkRvdFNtOVZn?=
- =?utf-8?B?UkRodDRGcm55UVN5WVlEUmZMekJQakdzVlJPTDNsVW5YR3M1TXg4TWV3SHVE?=
- =?utf-8?B?L0taQ05JQWxHczR2RU83cVF3S0syYkt3V1NBZ0h6TFhNQkx2T0p5RnM0UU5U?=
- =?utf-8?B?M3A0U2Vacmp6NzNBNFRpbDBaT1N2RTJGN1grL0lOR3hCYmswSEtlVm1RZUNs?=
- =?utf-8?B?bjh5N2h5NDJRdmV4UjMxWGY3eCtnb3NvZVhLUGZXMmIvMnd6QmZoNlI5L3JH?=
- =?utf-8?B?elNPM3ZMRlZvZlBXMVdGUTl1dHh3di9OTnAwWVdxWERKVXV4NStqbW9Uelcx?=
- =?utf-8?B?Y25ROE5uRVFuWkZJbjY3c2xKbFVYRStxUHhqMmJHaTR0RHAydGtBNUVVVUk5?=
- =?utf-8?B?eS9lcXRvR1pMMnZ3SVRZbkYzOXpzMGVYVWJtZG9zZGdzRnN2QTc3TUMzeGxW?=
- =?utf-8?B?NVVLWkJKcDExVGZyQ28xN1I3N2lTR2FOSkpzNDc3UE01a3pkd05TUWhlbTgw?=
- =?utf-8?B?UklSSEh4Q2R4a1VybFo4ejdkODZvcS81TWxtNG5KTjN5TGZwWTU4VFJrR3Y4?=
- =?utf-8?B?NUw3Z2lLeU56QWdrenhPSnZjc2xwc1B6dEZzaVpKZURjLzJsb2JUNGFRbkNX?=
- =?utf-8?B?U3d1TGhrN1dDdVVIWEtBOVpKYTJTY281YjlSNElRWDJndGV0VlZyeEpRTytO?=
- =?utf-8?B?VXJpN1JoZExVRkY1YVJzNHQ1R3h4cGJxeWU5cVI3di9LcGxaOUI2Q3N5OUhw?=
- =?utf-8?Q?JWiqRyDNgNPDxGgmC7tFDuMoBDccZI9UMc7POpE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bffe30a4-594d-4e64-9a60-08d925e079e9
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 16:07:09.9353
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JCGhwrbb4QxvyKypzrvDS0ggAqW3UjQ0udJpNtipnD9uKSDzCjLKNPzUljxIQRI1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5361
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210522000309.26134-7-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:52:02PM +0800, Jason Wang wrote:
+On Fri, May 21, 2021 at 07:03:09PM -0500, Suman Anna wrote:
+> Add support to the K3 DSP remoteproc driver to configure all the C66x
+> and C71x cores on J721E SoCs to be either in IPC-only mode or the
+> traditional remoteproc mode. The IPC-only mode expects that the remote
+> processors are already booted by the bootloader, and only perform the
+> minimum steps required to initialize and deinitialize the virtio IPC
+> transports. The remoteproc mode allows the kernel remoteproc driver to
+> do the regular load and boot and other device management operations for
+> a DSP.
 > 
-> 在 2021/6/2 上午4:28, Jason Gunthorpe 写道:
-> > > I summarized five opens here, about:
-> > > 
-> > > 1)  Finalizing the name to replace /dev/ioasid;
-> > > 2)  Whether one device is allowed to bind to multiple IOASID fd's;
-> > > 3)  Carry device information in invalidation/fault reporting uAPI;
-> > > 4)  What should/could be specified when allocating an IOASID;
-> > > 5)  The protocol between vfio group and kvm;
-> > > 
-> > > For 1), two alternative names are mentioned: /dev/iommu and
-> > > /dev/ioas. I don't have a strong preference and would like to hear
-> > > votes from all stakeholders. /dev/iommu is slightly better imho for
-> > > two reasons. First, per AMD's presentation in last KVM forum they
-> > > implement vIOMMU in hardware thus need to support user-managed
-> > > domains. An iommu uAPI notation might make more sense moving
-> > > forward. Second, it makes later uAPI naming easier as 'IOASID' can
-> > > be always put as an object, e.g. IOMMU_ALLOC_IOASID instead of
-> > > IOASID_ALLOC_IOASID.:)
-> > I think two years ago I suggested /dev/iommu and it didn't go very far
-> > at the time.
+> The IPC-only mode for a DSP is detected and configured at driver probe
+> time by querying the System Firmware for the DSP power and reset state
+> and/or status and making sure that the DSP is indeed started by the
+> bootloaders, otherwise the device is configured for remoteproc mode.
 > 
+> Support for IPC-only mode is achieved through .attach(), .detach() and
+> .get_loaded_rsc_table() callback ops and various other flags in both
+> remoteproc core and the K3 DSP remoteproc driver. The resource table
+> follows a design-by-contract approach and is expected to be at the base
+> of the DDR firmware region reserved for each remoteproc, it is mostly
+> expected to contain only the virtio device and trace resource entries.
 > 
-> It looks to me using "/dev/iommu" excludes the possibility of implementing
-> IOASID in a device specific way (e.g through the co-operation with device
-> MMU + platform IOMMU)?
+> NOTE:
+> The driver cannot configure a DSP core for remoteproc mode by any
+> means without rebooting the kernel if that R5F core has been started
+> by a bootloader.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 151 ++++++++++++++++++++--
+>  1 file changed, 138 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> index faf60a274e8d..b154a52f1fa6 100644
+> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> @@ -76,6 +76,7 @@ struct k3_dsp_dev_data {
+>   * @ti_sci_id: TI-SCI device identifier
+>   * @mbox: mailbox channel handle
+>   * @client: mailbox client to request the mailbox channel
+> + * @ipc_only: flag to indicate IPC-only mode
+>   */
+>  struct k3_dsp_rproc {
+>  	struct device *dev;
+> @@ -91,6 +92,7 @@ struct k3_dsp_rproc {
+>  	u32 ti_sci_id;
+>  	struct mbox_chan *mbox;
+>  	struct mbox_client client;
+> +	bool ipc_only;
+>  };
+>  
+>  /**
+> @@ -268,6 +270,10 @@ static int k3_dsp_rproc_prepare(struct rproc *rproc)
+>  	struct device *dev = kproc->dev;
+>  	int ret;
+>  
+> +	/* IPC-only mode does not require the core to be released from reset */
+> +	if (kproc->ipc_only)
+> +		return 0;
+> +
+>  	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
+>  						    kproc->ti_sci_id);
+>  	if (ret)
+> @@ -292,6 +298,10 @@ static int k3_dsp_rproc_unprepare(struct rproc *rproc)
+>  	struct device *dev = kproc->dev;
+>  	int ret;
+>  
+> +	/* do not put back the cores into reset in IPC-only mode */
+> +	if (kproc->ipc_only)
+> +		return 0;
+> +
+>  	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
+>  						    kproc->ti_sci_id);
+>  	if (ret)
+> @@ -314,6 +324,12 @@ static int k3_dsp_rproc_start(struct rproc *rproc)
+>  	u32 boot_addr;
+>  	int ret;
+>  
+> +	if (kproc->ipc_only) {
+> +		dev_err(dev, "%s cannot be invoked in IPC-only mode\n",
+> +			__func__);
+> +		return -EINVAL;
+> +	}
+> +
+>  	ret = k3_dsp_rproc_request_mbox(rproc);
+>  	if (ret)
+>  		return ret;
+> @@ -351,6 +367,13 @@ static int k3_dsp_rproc_start(struct rproc *rproc)
+>  static int k3_dsp_rproc_stop(struct rproc *rproc)
+>  {
+>  	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	struct device *dev = kproc->dev;
+> +
+> +	if (kproc->ipc_only) {
+> +		dev_err(dev, "%s cannot be invoked in IPC-only mode\n",
+> +			__func__);
+> +		return -EINVAL;
+> +	}
+>  
+>  	mbox_free_channel(kproc->mbox);
+>  
+> @@ -359,6 +382,85 @@ static int k3_dsp_rproc_stop(struct rproc *rproc)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Attach to a running DSP remote processor (IPC-only mode)
+> + *
+> + * This rproc attach callback only needs to request the mailbox, the remote
+> + * processor is already booted, so there is no need to issue any TI-SCI
+> + * commands to boot the DSP core.
+> + */
+> +static int k3_dsp_rproc_attach(struct rproc *rproc)
+> +{
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	struct device *dev = kproc->dev;
+> +	int ret;
+> +
+> +	if (!kproc->ipc_only || rproc->state != RPROC_DETACHED) {
+> +		dev_err(dev, "DSP is expected to be in IPC-only mode and RPROC_DETACHED state\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = k3_dsp_rproc_request_mbox(rproc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dev_err(dev, "DSP initialized in IPC-only mode\n");
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Detach from a running DSP remote processor (IPC-only mode)
+> + *
+> + * This rproc detach callback performs the opposite operation to attach callback
+> + * and only needs to release the mailbox, the DSP core is not stopped and will
+> + * be left to continue to run its booted firmware.
+> + */
+> +static int k3_dsp_rproc_detach(struct rproc *rproc)
+> +{
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	struct device *dev = kproc->dev;
+> +
+> +	if (!kproc->ipc_only || rproc->state != RPROC_ATTACHED) {
+> +		dev_err(dev, "DSP is expected to be in IPC-only mode and RPROC_ATTACHED state\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	mbox_free_channel(kproc->mbox);
+> +	dev_err(dev, "DSP deinitialized in IPC-only mode\n");
+> +	return 0;
+> +}
 
-This is intended to be the 'drivers/iommu' subsystem though. I don't
-want to see pluggabilit here beyoned what drivers/iommu is providing.
+Same comment as patch 4/6 regarding k3_dsp_rproc::ipc_only and setting the right
+rproc_ops based on the scenario.
 
-If someone wants to do a something complicated through this interface
-then they need to make a drivers/iommu implementation.
+Thanks,
+Mathieu
 
-Or they need to use the mdev-esque "SW TABLE" mode when their driver
-attaches to the interface.
-
-If this is good enough or not for a specific device is an entirely
-other question though
-
-> What's more, ATS spec doesn't forbid the device #PF to be reported via a
-> device specific way.
-
-And if this is done then a kernel function indicating page fault
-should be triggered on the ioasid handle that the device has. It is
-still drivers/iommu functionality
-
-Jason
+> +
+> +/*
+> + * This function implements the .get_loaded_rsc_table() callback and is used
+> + * to provide the resource table for a booted DSP in IPC-only mode. The K3 DSP
+> + * firmwares follow a design-by-contract approach and are expected to have the
+> + * resource table at the base of the DDR region reserved for firmware usage.
+> + * This provides flexibility for the remote processor to be booted by different
+> + * bootloaders that may or may not have the ability to publish the resource table
+> + * address and size through a DT property.
+> + */
+> +static struct resource_table *k3_dsp_get_loaded_rsc_table(struct rproc *rproc,
+> +							  size_t *rsc_table_sz)
+> +{
+> +	struct k3_dsp_rproc *kproc = rproc->priv;
+> +	struct device *dev = kproc->dev;
+> +
+> +	if (!kproc->rmem[0].cpu_addr) {
+> +		dev_err(dev, "memory-region #1 does not exist, loaded rsc table can't be found");
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	/*
+> +	 * NOTE: The resource table size is currently hard-coded to a maximum
+> +	 * of 256 bytes. The most common resource table usage for K3 firmwares
+> +	 * is to only have the vdev resource entry and an optional trace entry.
+> +	 * The exact size could be computed based on resource table address, but
+> +	 * the hard-coded value suffices to support the IPC-only mode.
+> +	 */
+> +	*rsc_table_sz = 256;
+> +	return (struct resource_table *)kproc->rmem[0].cpu_addr;
+> +}
+> +
+>  /*
+>   * Custom function to translate a DSP device address (internal RAMs only) to a
+>   * kernel virtual address.  The DSPs can access their RAMs at either an internal
+> @@ -421,8 +523,11 @@ static void *k3_dsp_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool
+>  static const struct rproc_ops k3_dsp_rproc_ops = {
+>  	.start		= k3_dsp_rproc_start,
+>  	.stop		= k3_dsp_rproc_stop,
+> +	.attach		= k3_dsp_rproc_attach,
+> +	.detach		= k3_dsp_rproc_detach,
+>  	.kick		= k3_dsp_rproc_kick,
+>  	.da_to_va	= k3_dsp_rproc_da_to_va,
+> +	.get_loaded_rsc_table = k3_dsp_get_loaded_rsc_table,
+>  };
+>  
+>  static int k3_dsp_rproc_of_get_memories(struct platform_device *pdev,
+> @@ -605,6 +710,8 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
+>  	struct k3_dsp_rproc *kproc;
+>  	struct rproc *rproc;
+>  	const char *fw_name;
+> +	bool r_state = false;
+> +	bool p_state = false;
+>  	int ret = 0;
+>  	int ret1;
+>  
+> @@ -683,19 +790,37 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
+>  		goto release_tsp;
+>  	}
+>  
+> -	/*
+> -	 * ensure the DSP local reset is asserted to ensure the DSP doesn't
+> -	 * execute bogus code in .prepare() when the module reset is released.
+> -	 */
+> -	if (data->uses_lreset) {
+> -		ret = reset_control_status(kproc->reset);
+> -		if (ret < 0) {
+> -			dev_err(dev, "failed to get reset status, status = %d\n",
+> -				ret);
+> -			goto release_mem;
+> -		} else if (ret == 0) {
+> -			dev_warn(dev, "local reset is deasserted for device\n");
+> -			k3_dsp_rproc_reset(kproc);
+> +	ret = kproc->ti_sci->ops.dev_ops.is_on(kproc->ti_sci, kproc->ti_sci_id,
+> +					       &r_state, &p_state);
+> +	if (ret) {
+> +		dev_err(dev, "failed to get initial state, mode cannot be determined, ret = %d\n",
+> +			ret);
+> +		goto release_mem;
+> +	}
+> +
+> +	/* configure J721E devices for either remoteproc or IPC-only mode */
+> +	if (p_state) {
+> +		dev_err(dev, "configured DSP for IPC-only mode\n");
+> +		rproc->state = RPROC_DETACHED;
+> +		rproc->detach_on_shutdown = true;
+> +		kproc->ipc_only = true;
+> +	} else {
+> +		dev_err(dev, "configured DSP for remoteproc mode\n");
+> +		/*
+> +		 * ensure the DSP local reset is asserted to ensure the DSP
+> +		 * doesn't execute bogus code in .prepare() when the module
+> +		 * reset is released.
+> +		 */
+> +		if (data->uses_lreset) {
+> +			ret = reset_control_status(kproc->reset);
+> +			if (ret < 0) {
+> +				dev_err(dev, "failed to get reset status, status = %d\n",
+> +					ret);
+> +				goto release_mem;
+> +			} else if (ret == 0) {
+> +				dev_warn(dev, "local reset is deasserted for device\n");
+> +				k3_dsp_rproc_reset(kproc);
+> +			}
+>  		}
+>  	}
+>  
+> -- 
+> 2.30.1
+> 
