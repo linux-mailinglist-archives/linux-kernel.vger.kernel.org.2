@@ -2,126 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06493990FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0556F3990FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFBQ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhFBQ6n (ORCPT
+        id S230339AbhFBRAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:00:25 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:39681 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhFBRAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:58:43 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1177C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 09:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T2u0K1KMY/19F5osPjAwn6XUNQkd2fi1z3UvoZuJe1Y=; b=q/Rx9Dexp9V+HSBKBvoHWlvY5e
-        +sbYzJ4rVIndWyzHLyTJrc5kylL4g5+aLw9iA6e8BtDoSWEwOkf30sZssIltVmHRhfb9WmZzH+CJ3
-        ikuvYjnlE6IuWksR2WMoi7rLy7vOubd7xQOi97Ye7fvcRGsyFQJ0w6misW62P9I/TrGMAMJZAxj8n
-        oO8lWff0UcfXBt2d3l3MJ0PdvDDkHN5BQhz/1DWMk++UQHlsgDpmnUlcUghHCLrKQkr9LUIZAwwvG
-        iX39hDgBfGHkwoZsENUVJQRWW5Q0jTVlMz3l4ZgkRp/9evlwbnCn/ieFjJHpTTuatC18XxBU3rMVM
-        la8YuYxg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1loUAf-002wCS-Em; Wed, 02 Jun 2021 16:56:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B700A30019C;
-        Wed,  2 Jun 2021 18:56:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9BB0E301791F2; Wed,  2 Jun 2021 18:56:51 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 18:56:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lukasz Majczak <lma@semihalf.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        jgross@suse.com, mbenes@suse.com, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com,
-        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
-        =?utf-8?Q?=C5=81ukasz?= Bartosik <lb@semihalf.com>,
-        Guenter Roeck <groeck@google.com>
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <YLe4U9FgmMlYu/JN@hirez.programming.kicks-ass.net>
-References: <20210326151159.128534163@infradead.org>
- <20210326151300.320177914@infradead.org>
- <20210329163826.anuqkv5ahvoyus5c@treble>
- <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+        Wed, 2 Jun 2021 13:00:24 -0400
+Received: by mail-ot1-f44.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so1986452otu.6;
+        Wed, 02 Jun 2021 09:58:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zf5qRUfCpeGGvJMUCSGIUbY/+04iGlClb4uduIjNhR0=;
+        b=aY7HMGXfOa45vXYD49C0wM9/kcwaL6u99FhGGydlkiaD+1VJZGhpFfjHg7CbOGNJ8O
+         +cvBflvJn+2sClkeQAOQmxJX7TbHOQuNoJwbi4pdnMTIVrjzZtAKdQzHjs54ckIzlDQr
+         JjppIu2aVsamXHo5zFL9jrPjRJ066hvB1wcUGBfXWsmCwvobTGzhQ+OtRc6v5R6dyLJv
+         MCOueBfyJ+Zj4yBS6OAG8oMkv9S//HaDty3yizWjVvRDaeqrP+IUzhPxDeGxmc7aKnqA
+         Fe0YGCZDmrcr8MaPdICPTgL5dUMDWKKOBo0qOKO8Htse8Y33WEkc6nmalTUzpH6ZK7h1
+         K8ow==
+X-Gm-Message-State: AOAM532NVaDtaWLyC5XODzKlT4GV2y55tmu8XBJfxUOS05faUu7C35MY
+        cCCd4ONd2U8FpRdnHmGucBGXuTeEBg==
+X-Google-Smtp-Source: ABdhPJx1wdxS3bAZXIYWDE40ru5uXYnHiXfbK4Phi9RGSYCkcilqMyYnar4EpNED8xQ5RgHOGXF/TQ==
+X-Received: by 2002:a9d:1d21:: with SMTP id m30mr27563140otm.145.1622653109495;
+        Wed, 02 Jun 2021 09:58:29 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l128sm90445oif.16.2021.06.02.09.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 09:58:28 -0700 (PDT)
+Received: (nullmailer pid 3566137 invoked by uid 1000);
+        Wed, 02 Jun 2021 16:58:27 -0000
+Date:   Wed, 2 Jun 2021 11:58:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v12 2/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+Message-ID: <20210602165827.GA3558170@robh.at.kernel.org>
+References: <1622307153-3639-1-git-send-email-hector.yuan@mediatek.com>
+ <1622307153-3639-3-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+In-Reply-To: <1622307153-3639-3-git-send-email-hector.yuan@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 05:51:01PM +0200, Lukasz Majczak wrote:
-> Hi Peter,
+On Sun, May 30, 2021 at 12:52:33AM +0800, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
 > 
-> This patch seems to crash on Tigerlake platform (Chromebook delbin), I
-> got the following error:
+> Add devicetree bindings for MediaTek HW driver.
 > 
-> [    2.103054] pcieport 0000:00:1c.0: PME: Signaling with IRQ 122
-> [    2.110148] pcieport 0000:00:1c.0: pciehp: Slot #7 AttnBtn-
-> PwrCtrl- MRL- AttnInd- PwrInd- HotPlug+ Surprise+ Interlock- NoCompl+
-> IbPresDis- LLActRep+
-> [    2.126754] pcieport 0000:00:1d.0: PME: Signaling with IRQ 123
-> [    2.133946] ACPI: \_SB_.CP00: Found 3 idle states
-> [    2.139708] BUG: kernel NULL pointer dereference, address: 000000000000012b
-> [    2.140704] #PF: supervisor read access in kernel mode
-> [    2.140704] #PF: error_code(0x0000) - not-present page
-> [    2.140704] PGD 0 P4D 0
-> [    2.140704] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> [    2.140704] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G     U
->   5.13.0-rc1 #31
-> [    2.140704] Hardware name: Google Delbin/Delbin, BIOS
-> Google_Delbin.13672.156.3 05/14/2021
-> [    2.140704] RIP: 0010:cpuidle_poll_time+0x9/0x6a
-> [    2.140704] Code: 44 00 00 85 f6 78 19 55 48 89 e5 48 8b 05 16 44
-> 44 01 4c 8b 58 40 4d 85 db 5d 41 ff d3 66 90 00 c3 0f 1f 44 00 00 55
-> 48 89 e5 <48> 8b 46 20 48 85 c0 75 56 4c 63 87 28 04 00 00 b8 24 f49
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |   71 ++++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> new file mode 100644
+> index 0000000..1aa4d54
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek's CPUFREQ Bindings
+> +
+> +maintainers:
+> +  - Hector Yuan <hector.yuan@mediatek.com>
+> +
+> +description:
+> +  CPUFREQ HW is a hardware engine used by MediaTek
+> +  SoCs to manage frequency in hardware. It is capable of controlling frequency
+> +  for multiple clusters.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,cpufreq-hw
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+> +      Addresses and sizes for the memory of the
+> +      HW bases in each frequency domain.
+> +
+> +  "#performance-domain-cells":
+> +    description:
+> +      Number of cells in a performance domain specifier. Typically 0 for nodes
+> +      representing a single performance domain and 1 for nodes providing
+> +      multiple performance domains (e.g. performance controllers), but can be
+> +      any value as specified by device tree binding documentation of particular
+> +      provider.
+> +    enum: [ 0, 1 ]
 
-All code
-========
- 0:   44 00 00                add    %r8b,(%rax)
- 3:   85 f6                   test   %esi,%esi
- 5:   78 19                   js     0x20
- 7:   55                      push   %rbp
- 8:   48 89 e5                mov    %rsp,%rbp
- b:   48 8b 05 16 44 44 01    mov    0x1444416(%rip),%rax        # 0x1444428
-12:   4c 8b 58 40             mov    0x40(%rax),%r11
-16:   4d 85 db                test   %r11,%r11
-19:   5d                      pop    %rbp
-1a:   41 ff d3                callq  *%r11
-1d:   66 90                   xchg   %ax,%ax
-1f:   00 c3                   add    %al,%bl
-21:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-26:   55                      push   %rbp
-27:   48 89 e5                mov    %rsp,%rbp
-2a:*  48 8b 46 20             mov    0x20(%rsi),%rax          <-- trapping instruction
-2e:   48 85 c0                test   %rax,%rax
-31:   75 56                   jne    0x89
-33:   4c 63 87 28 04 00 00    movslq 0x428(%rdi),%r8
-3a:   b8                      .byte 0xb8
-3b:   24 49                   and    $0x49,%al
+Can't you restrict this to be 1 for Mediatek h/w? Even if you sometimes 
+have a single domain, it's probably more simple for the driver if this 
+is fixed.
 
-What does something like:
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#performance-domain-cells"
+> +
+> +additionalProperties: true
 
-OBJ=vmlinux.o FUNC=0010:cpuidle_poll_time objdump -wdr $@ $OBJ | awk "/^\$/ { P=0; } /$FUNC[^>]*>:\$/ { P=1; O=strtonum(\"0x\" \$1); } { if (P) { o=strtonum(\"0x\" \$1); printf(\"%04x \", o-O); print \$0; } }"
+Should be false.
 
-look like for that build?
-
-The 1d,1f instructions look exactly like what the alternative would've
-written.
-
-> [    2.140704] RSP: 0000:ffffffff9cc03ea8 EFLAGS: 00010282
-> [    2.140704] RAX: 0000000000008e7d RBX: ffffffff9cc1c5fd RCX: 000000007f894e5a
-> [    2.140704] RDX: 000000007f894d4f RSI: 000000000000010b RDI: 0000000002fa1cf6
-
-That said, your RSI is buggered, and 0x20(%rsi) rightfully blows up.
-
-
+> +
+> +examples:
+> +  - |
+> +    cpus {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            cpu0: cpu@0 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 0>;
+> +                reg = <0x000>;
+> +            };
+> +    };
+> +
+> +    /* ... */
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        performance: performance-controller@11bc00 {
+> +            compatible = "mediatek,cpufreq-hw";
+> +            reg = <0 0x0011bc10 0 0x120>, <0 0x0011bd30 0 0x120>;
+> +
+> +            #performance-domain-cells = <1>;
+> +        };
+> +    };
+> -- 
+> 1.7.9.5
