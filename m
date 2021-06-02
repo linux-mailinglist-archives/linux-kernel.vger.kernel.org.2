@@ -2,168 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985373989AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AB53989C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhFBMgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:36:43 -0400
-Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:45963 "EHLO
-        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229610AbhFBMgl (ORCPT
+        id S230132AbhFBMhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:37:22 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30036 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229610AbhFBMhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:36:41 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id oQ5FlEdPIEXL0oQ5Ily3aK; Wed, 02 Jun 2021 14:34:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622637297; bh=7TiMGW1Zr59Qnryt0yeaJD/8xsdG8zqZCv0gLOdIeZo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=tjQUVIoNgWXHTIYNG9gEkVCtkhfYQLiuszDJUOjnNvEoCDUnllu+io6K5eJqHY65D
-         9cJDAg0tW0nSmH0CrCk0rSqHf12MEXdt1Iplew3ak/hj8JZSbKkCr8pvSf01O7nx+m
-         fQF75AMTwZlRy4JteWUHgOq31/ZR1q64ufOMl6i0CGIvr7mnlNz8QN7r4W/h2iQYuM
-         j0b6/ZNXQ/kgii1z1OvMW69HrfQSvLCXPm6J4FFdQNIGYaLGhi0WtMClAnV0FJKSrU
-         phG6dhOJyps2xqcQYKjCqvTfVrag8hNJu7S9O3ylPcNOa3nCbhOqip0N5J210KrDRy
-         tVV3q/za1HUCw==
-Subject: Re: [PATCH 8/9] media: dwc: dw-hdmi-rx: Add support for Aspect Ratio
-To:     Nelson Costa <Nelson.Costa@synopsys.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>
-References: <cover.1622631488.git.nelson.costa@synopsys.com>
- <79c8b378a0b9d73e8116fe31a1ebb06fcc6b0925.1622631488.git.nelson.costa@synopsys.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <0004bb3f-13dc-b376-d491-f4023c716aa7@xs4all.nl>
-Date:   Wed, 2 Jun 2021 14:34:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Wed, 2 Jun 2021 08:37:21 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 152CYVHZ135012;
+        Wed, 2 Jun 2021 08:35:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=6k50fOEFi7RXAL8U0g6F+fY7m6rM8rdiM5Z6yO1JrRM=;
+ b=KXcEZVzMU8fH0Kj2vqtNHwQLOwfapZzme5cTmzXY3qAbgk7xeM6z0Hlwd/AGCmDr+SgO
+ bBX0pZJxBsbdGMNbtUlmHuxBPRTfd3Tq505uiJkmdaqfEeXgs/xnl5+WzW47RJed/s65
+ bskrGH6Od4F0wTFWF1p8PkBwgtBzwIypSZEOiUe4eaiet/pkmshrgc4OuKOv1z8ca/B6
+ A9GM0fp3EtBz/v4ZNyenhD3xemom7QtYZ1LdZGzDXshsSFS8wQPElxBBK4RlIeF37bGx
+ hkxpS94MV1gcuk6B4H6uE1uQvOzLWpRyE7BAafpVOJXt+3tTrgUoHMEkrNf+ErpCSPlF +Q== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38x9hm16ku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 08:35:36 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 152CSsvd023646;
+        Wed, 2 Jun 2021 12:35:33 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 38ucvh99t0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 12:35:33 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 152CZV4Z23462178
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Jun 2021 12:35:31 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67686AE053;
+        Wed,  2 Jun 2021 12:35:31 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4726FAE05A;
+        Wed,  2 Jun 2021 12:35:31 +0000 (GMT)
+Received: from [9.145.65.140] (unknown [9.145.65.140])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Jun 2021 12:35:31 +0000 (GMT)
+Subject: Re: gcov: NULL pointer dereference with gcc 9.3.1
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     linux-kernel@vger.kernel.org
+References: <YLZYwgs5hyzFZMlw@suse.de>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <0a013450-75eb-de2c-f90a-3df193800cea@linux.ibm.com>
+Date:   Wed, 2 Jun 2021 14:35:31 +0200
 MIME-Version: 1.0
-In-Reply-To: <79c8b378a0b9d73e8116fe31a1ebb06fcc6b0925.1622631488.git.nelson.costa@synopsys.com>
+In-Reply-To: <YLZYwgs5hyzFZMlw@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfHGC7GTrsg3fkrTrrdFa5FFH9baUKH0FmMAoEHdWB2v0dMk8yOyNiTckqvqO+v5EXe/gPDFRfS4KIEoBeiYG9351l2hg29E6qUleRnYSLLaMIMdPyhCd
- xCkXF6KwEIgiPgnG8bYfOrE+w9D21Q0khRMm1syxdfJTZ06EZtiLkJWkteWDp9JK0VTcnM0t82YdLOLD6E9sbgFdhCq/u76NuFcLr8M9n5Q1CCDKBMqQo0yq
- n91Omb8eoL4pZYtIpz/26TbAEqwrz527oJAaBbP99OJMqdMCrm9cyf+6cRdcy1dieHgbqlsxC43378kCMathqLXjmYB04w8DhDHTz8/w86B4N6n8ec/yfJhb
- 4NpKdao2chP9LPkpFu1UokUl2feaC9BCuMEoCBZxHQj/dZMVUUib59df8cbmjMPDbj1zMEIMxzIop4UcEgJ7rb+36XJ9YjW2fxPv7uqf2+h04+rrHLP4phqz
- VDUJUnfYFq+qxpMpza7+8xHeeNUh6OXF2PF9UXbtlZ9s7n88hVuxMJsTVjE=
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: j7QsMlzIdIj-iRysBRinfblzFRBMw2gJ
+X-Proofpoint-GUID: j7QsMlzIdIj-iRysBRinfblzFRBMw2gJ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-02_07:2021-06-02,2021-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106020080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2021 13:24, Nelson Costa wrote:
-> This adds support to get aspect ratio for the current
-> video being received and provide the info through v4l2
-> API query_dv_timings.
+On 01.06.2021 17:56, Luis Henriques wrote:
+> Hi!
 > 
-> Signed-off-by: Nelson Costa <nelson.costa@synopsys.com>
-> ---
->  drivers/media/platform/dwc/dw-hdmi-rx.c | 54 +++++++++++++++++++++++++++++++--
->  1 file changed, 52 insertions(+), 2 deletions(-)
+> Maybe this is a known (gcc?) issue, but I'm seeing a NULL pointer splat if
+> I instrument my kernel (or a module, more specifically) using gcc 9.3.1.
 > 
-> diff --git a/drivers/media/platform/dwc/dw-hdmi-rx.c b/drivers/media/platform/dwc/dw-hdmi-rx.c
-> index b20eccc..a468a93 100644
-> --- a/drivers/media/platform/dwc/dw-hdmi-rx.c
-> +++ b/drivers/media/platform/dwc/dw-hdmi-rx.c
-> @@ -2250,13 +2250,31 @@ static u32 dw_hdmi_get_width(struct dw_hdmi_dev *dw_dev)
->  	return width;
->  }
->  
-> +static int dw_hdmi_vic_to_cea861(u8 hdmi_vic)
-> +{
-> +	switch (hdmi_vic) {
-> +	case 1:
-> +		return 95;
-> +	case 2:
-> +		return 94;
-> +	case 3:
-> +		return 93;
-> +	case 4:
-> +		return 98;
-> +	default:
-> +		return 0;
-> +	}
-> +}
+> It looks like, during initialization in __gcov_init(), gcov_info struct is
+> invalid: the filename seems to be correct but ->function is NULL and
+> ->n_functions contains garbage.
 
-This should be in v4l2-dv-timings.c. It's a useful generic function.
+Thanks for reporting this issue. The symptoms you're seeing look similar
+to those that occur when the struct gcov_info layout emitted by GCC does
+not match the one used by the kernel. In particular a change in the
+GCOV_COUNTER value can cause this behavior.
 
-> +
->  static int dw_hdmi_query_dv_timings(struct v4l2_subdev *sd,
->  				    struct v4l2_dv_timings *timings)
->  {
->  	struct dw_hdmi_dev *dw_dev = to_dw_dev(sd);
->  	struct v4l2_bt_timings *bt = &timings->bt;
-> +	struct v4l2_dv_timings t = {0};
+I've checked upstream GCC 9.3.1 and it seems to match what is used by
+the kernel for that GCC version. Could you provide the exact version of
+the compiler you are using? Both 'gcc --version' output and the GCC
+package version should help. Also what architecture are you seeing this on?
 
-Use '= {}', it looks a bit nicer that way.
-
->  	bool is_hdmi_vic;
->  	u32 htot, hofs;
-> +	u8 cea861_vic;
->  	u32 vtot;
->  	u8 vic;
->  
-> @@ -2351,8 +2369,40 @@ static int dw_hdmi_query_dv_timings(struct v4l2_subdev *sd,
->  		}
->  	}
->  
-> -	dev_dbg(dw_dev->dev, "%s: width=%u, height=%u, mbuscode=%u\n", __func__,
-> -		bt->width, bt->height, dw_hdmi_get_mbus_code(dw_dev));
-> +	if (is_hdmi_vic)
-> +		cea861_vic = dw_hdmi_vic_to_cea861(bt->hdmi_vic);
-> +	else
-> +		cea861_vic = vic;
-
-This definitely is needed, but note that this is unrelated to the Aspect Ratio
-support. This should be done in a separate patch.
-
-> +
-> +	/* picture aspect ratio based on v4l2 dv timings array */
-> +	if (v4l2_find_dv_timings_cea861_vic(&t, cea861_vic)) {
-> +		/* when the numerator/denominator are zero means that the
-> +		 * picture aspect ratio is the same of the active measures ratio
-> +		 */
-> +		if (!t.bt.picture_aspect.numerator) {
-> +			unsigned long n, d;
-> +
-> +			rational_best_approximation(t.bt.width, t.bt.height,
-> +						    t.bt.width, t.bt.height,
-> +						    &n, &d);
-> +			t.bt.picture_aspect.numerator = n;
-> +			t.bt.picture_aspect.denominator = d;
-> +		}
-> +
-> +		bt->picture_aspect = t.bt.picture_aspect;
-
-Why do this? picture_aspect is only used if it is non-square (V4L2_DV_FL_HAS_PICTURE_ASPECT
-is set), so there is no need to set it if V4L2_DV_FL_HAS_PICTURE_ASPECT is cleared.
-
-I don't see any reason for this.
 
 Regards,
+  Peter Oberparleiter
 
-	Hans
-
-> +	} else {
-> +		bt->picture_aspect.numerator = 0;
-> +		bt->picture_aspect.denominator = 0;
-> +		dev_dbg(dw_dev->dev,
-> +			"%s: cea861_vic=%d was not found in v4l2 dv timings",
-> +			__func__, cea861_vic);
-> +	}
-> +
-> +	dev_dbg(dw_dev->dev,
-> +		"%s: width=%u, height=%u, mbuscode=%u, cea861_vic=%d, ar={%d,%d}\n",
-> +		__func__, bt->width, bt->height, dw_hdmi_get_mbus_code(dw_dev),
-> +		cea861_vic, bt->picture_aspect.numerator,
-> +		bt->picture_aspect.denominator);
->  
->  	return 0;
->  }
-> 
-
+-- 
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
