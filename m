@@ -2,505 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6804398A62
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9D9398A6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhFBN1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:27:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhFBN0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:26:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B824613E1;
-        Wed,  2 Jun 2021 13:25:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622640312;
-        bh=qHHLGuHBemx0UKH6oNwa5plGSJM0T2B9DQ8jFJeW12A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CnLplKVSCBUpxgBD3kNV3RBM7m4l3hRfFjJI99bHZ1J+bzCzOSw/B3SyUAJ2jk2ny
-         22KkcDshopcC+odXpodk8vxgkdEQxxtl+3KO/xJmcSP9BaThz9BGZH+iPE8Tenl72m
-         4gYlbii6nFR7MOKpqanpeaWiY+0x6+/Yzym29HXzyNrYYshS6d0m8QAtj2fl14zfzt
-         +Z2m0iAd7uCgNy+ErPelDu8SJX/1WS9zZnOt10AV4bYY2k1/qTxU6tNsfj1DEnAa0l
-         9+tutk3KVqJrcmhwxYim70Hjliu8bfvkua1OUZIMXW9QN+SSuDXDW3vp+RszhDAPSn
-         ZErnx7bW42vmw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1loQru-006UPH-1o; Wed, 02 Jun 2021 15:25:10 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH 3/3] media: docs: move DVB audio/video docs to staging
-Date:   Wed,  2 Jun 2021 15:25:09 +0200
-Message-Id: <d0a651714b4c24222672d48f2effdbb3796f1395.1622639751.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1622639751.git.mchehab+huawei@kernel.org>
-References: <cover.1622639751.git.mchehab+huawei@kernel.org>
+        id S229907AbhFBN31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:29:27 -0400
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:45949 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhFBN3W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 09:29:22 -0400
+Received: by mail-lj1-f176.google.com with SMTP id m3so2540100lji.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6QUQTM0AkdKdsRfJ9OiMiSDtt7D+DtGJYlIDoQLZ5eE=;
+        b=FITduHZYBwuAhxMvOsGB8UcGnqNFIROBY5AKYJA+8U6uoM47yhl4cvux/wb0Vdv3GX
+         ltt4xTzrRaDis6EaMb6zIoZipT0b4+1q+VzIgqj3jckULzfF7zwjH43TDAwtk4+47F9S
+         kr4TF2VPqyQw4i8J/fAZOn7xSZ8HiRVZgUj2U7QEmRlNHOvZKq52weiJ0fDssn1znsOy
+         kGSZmMDgIg3O4f2wByLuPIXbCD0GTd6JiSoY9NLfhJcaP16wo9CdYZI+24ym70JVGwTb
+         Gw6kT7VQu8b37DJlLbb1lJafCevO3EjFHVopVMxy6d1/qSe05kb2/YOx91jvVr7xDvHZ
+         zd3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6QUQTM0AkdKdsRfJ9OiMiSDtt7D+DtGJYlIDoQLZ5eE=;
+        b=U0mzasqNzbmdQQdIUvipij8DXUNOYwtBsAeUGfMebBc2Nwz986VwkkdA6El4kISwWk
+         aD3750hD3xrmAoL/hOsekJrcaRgzlJvspt2EjqPCnQAkrQRS9rr5RutSFIZaTVIjWJYy
+         u+EqyQ5yrPgEvlg7Mq+IwB3Y9EKv525lJqb8pcFilA1wgY4wwNtWb2sAuGM21K06BNjv
+         lIRRj9vS3UhFQmlSd3ZPNWQuHnoYj7tHHq3YYs1NQXHOFbUUzOn1DlVIii5kpcV05Rfm
+         87SALPRH5AVSU+yfCmtSKmOoSHB1Cpg3idsoYBjci1pGUmgo5mTsLqNqIBD6v9qLqlqA
+         W11A==
+X-Gm-Message-State: AOAM530FA2P6yq7YZeDLx5w3IeKY42Tp3P7v4AFC7wKG++FpLz6Saf6y
+        rbBxGs7nIw2o2srYk+zq9Y17wjyoISGRlmw7XB/hvw==
+X-Google-Smtp-Source: ABdhPJzQnwVv5EqjF7hZhROp75GkQ6sl8lugxpN91owLXiluLcCfiYOfnieOF84j6DKSrJYH7XDKO2e+haznsR/3J/E=
+X-Received: by 2002:a2e:b4a8:: with SMTP id q8mr13344132ljm.401.1622640397941;
+ Wed, 02 Jun 2021 06:26:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210602122555.10082-1-laoar.shao@gmail.com> <CAKfTPtCS6bVGK1EFUHygj+uZL5N2kEzyyEeoyT4Cuc7r-65yVw@mail.gmail.com>
+ <CALOAHbA=bSVsmJMG_q5vkkk9U+CeoULgdSEgf95RxfzPh9TC2A@mail.gmail.com>
+In-Reply-To: <CALOAHbA=bSVsmJMG_q5vkkk9U+CeoULgdSEgf95RxfzPh9TC2A@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 2 Jun 2021 15:26:26 +0200
+Message-ID: <CAKfTPtDAW_Ttg_hM+GoH87nriATck4yHKE-y7HZbFd9ujLp3YQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched: do active load balance on the new idle cpu
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.co>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only upstream driver using the API described there is the
-av7110 driver.
+On Wed, 2 Jun 2021 at 14:58, Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> On Wed, Jun 2, 2021 at 8:37 PM Vincent Guittot
+> <vincent.guittot@linaro.org> wrote:
+> >
+> > On Wed, 2 Jun 2021 at 14:26, Yafang Shao <laoar.shao@gmail.com> wrote:
+> > >
+> > > We monitored our latency-sensitive RT tasks are randomly preempted by the
+> > > kthreads migration/n, which means to migrate tasks on CPUn to other new
+> > > idle CPU. The logical as follows,
+> > >
+> > >   new idle CPU                          CPU n
+> > >   (no task to run)                      (busy running)
+> > >   wakeup migration/n                    (busy running)
+> > >   (idle)                                migraion/n preempts current task
+> > >   run the migrated task                 (busy running)
+> >
+> > migration thread is only used when we want to migrate the currently
+> > running task of the source cpu.
+>
+> Could you pls explain it in detail ?
 
-As the driver was moved to staging, move the API bits to staging
-as well.
+CPU A
+become idle
+call newidle_balance()
+  ...
+  load_balance()
+    ... CPU B is the busiest cpu
+    env.src_cpu = CPU B;
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/userspace-api/media/Makefile    | 10 +----
- .../media/audio.h.rst.exceptions              | 19 ---------
- .../userspace-api/media/dvb/headers.rst       |  7 ----
- .../media/dvb/legacy_dvb_apis.rst             |  7 ----
- .../media/video.h.rst.exceptions              | 39 -------------------
- .../audio-bilingual-channel-select.rst        |  0
- .../media/av7110}/audio-channel-select.rst    |  0
- .../media/av7110}/audio-clear-buffer.rst      |  0
- .../staging/media/av7110}/audio-continue.rst  |  0
- .../staging/media/av7110}/audio-fclose.rst    |  0
- .../staging/media/av7110}/audio-fopen.rst     |  0
- .../staging/media/av7110}/audio-fwrite.rst    |  0
- .../media/av7110}/audio-get-capabilities.rst  |  0
- .../media/av7110}/audio-get-status.rst        |  0
- .../staging/media/av7110}/audio-pause.rst     |  0
- .../staging/media/av7110}/audio-play.rst      |  0
- .../media/av7110}/audio-select-source.rst     |  0
- .../media/av7110}/audio-set-av-sync.rst       |  0
- .../media/av7110}/audio-set-bypass-mode.rst   |  0
- .../staging/media/av7110}/audio-set-id.rst    |  0
- .../staging/media/av7110}/audio-set-mixer.rst |  0
- .../staging/media/av7110}/audio-set-mute.rst  |  0
- .../media/av7110}/audio-set-streamtype.rst    |  0
- .../staging/media/av7110}/audio-stop.rst      |  0
- .../staging/media/av7110}/audio.rst           |  0
- .../media/av7110}/audio_data_types.rst        |  0
- .../media/av7110}/audio_function_calls.rst    |  0
- .../media/av7110}/video-clear-buffer.rst      |  0
- .../staging/media/av7110}/video-command.rst   |  0
- .../staging/media/av7110}/video-continue.rst  |  0
- .../media/av7110}/video-fast-forward.rst      |  0
- .../staging/media/av7110}/video-fclose.rst    |  0
- .../staging/media/av7110}/video-fopen.rst     |  0
- .../staging/media/av7110}/video-freeze.rst    |  0
- .../staging/media/av7110}/video-fwrite.rst    |  0
- .../media/av7110}/video-get-capabilities.rst  |  0
- .../staging/media/av7110}/video-get-event.rst |  0
- .../media/av7110}/video-get-frame-count.rst   |  0
- .../staging/media/av7110}/video-get-pts.rst   |  0
- .../staging/media/av7110}/video-get-size.rst  |  0
- .../media/av7110}/video-get-status.rst        |  0
- .../staging/media/av7110}/video-play.rst      |  0
- .../media/av7110}/video-select-source.rst     |  0
- .../staging/media/av7110}/video-set-blank.rst |  0
- .../av7110}/video-set-display-format.rst      |  0
- .../media/av7110}/video-set-format.rst        |  0
- .../media/av7110}/video-set-streamtype.rst    |  0
- .../media/av7110}/video-slowmotion.rst        |  0
- .../media/av7110}/video-stillpicture.rst      |  0
- .../staging/media/av7110}/video-stop.rst      |  0
- .../media/av7110}/video-try-command.rst       |  0
- .../staging/media/av7110}/video.rst           |  0
- .../media/av7110}/video_function_calls.rst    |  0
- .../staging/media/av7110}/video_types.rst     |  0
- 54 files changed, 2 insertions(+), 80 deletions(-)
- delete mode 100644 Documentation/userspace-api/media/audio.h.rst.exceptions
- delete mode 100644 Documentation/userspace-api/media/video.h.rst.exceptions
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-bilingual-channel-select.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-channel-select.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-clear-buffer.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-continue.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-fclose.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-fopen.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-fwrite.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-get-capabilities.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-get-status.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-pause.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-play.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-select-source.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-av-sync.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-bypass-mode.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-id.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-mixer.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-mute.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-set-streamtype.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio-stop.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio_data_types.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/audio_function_calls.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-clear-buffer.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-command.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-continue.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fast-forward.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fclose.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fopen.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-freeze.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-fwrite.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-capabilities.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-event.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-frame-count.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-pts.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-size.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-get-status.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-play.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-select-source.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-blank.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-display-format.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-format.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-set-streamtype.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-slowmotion.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-stillpicture.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-stop.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video-try-command.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video_function_calls.rst (100%)
- rename {Documentation/userspace-api/media/dvb => drivers/staging/media/av7110}/video_types.rst (100%)
+    if (busiest->nr_running > 1) {
+      ...
+      There is more than 1 runnable threads on CPU B
+      Try to migrate cfs runnable but not running tasks from CPU B to CPU A
+      in your case, the migration of cfs task should happen here
+because the RT task is running
 
-diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
-index 81a4a1a53bce..00922aa7efde 100644
---- a/Documentation/userspace-api/media/Makefile
-+++ b/Documentation/userspace-api/media/Makefile
-@@ -7,8 +7,8 @@ PARSER = $(srctree)/Documentation/sphinx/parse-headers.pl
- UAPI = $(srctree)/include/uapi/linux
- KAPI = $(srctree)/include/linux
- 
--FILES = audio.h.rst ca.h.rst dmx.h.rst frontend.h.rst net.h.rst video.h.rst \
--	  videodev2.h.rst media.h.rst cec.h.rst lirc.h.rst
-+FILES = ca.h.rst dmx.h.rst frontend.h.rst net.h.rst \
-+	videodev2.h.rst media.h.rst cec.h.rst lirc.h.rst
- 
- TARGETS := $(addprefix $(BUILDDIR)/, $(FILES))
- 
-@@ -21,9 +21,6 @@ quiet_gen_rst = echo '  PARSE   $(patsubst $(srctree)/%,%,$<)'; \
- 
- silent_gen_rst = ${gen_rst}
- 
--$(BUILDDIR)/audio.h.rst: ${UAPI}/dvb/audio.h ${PARSER} $(SRC_DIR)/audio.h.rst.exceptions
--	@$($(quiet)gen_rst)
--
- $(BUILDDIR)/ca.h.rst: ${UAPI}/dvb/ca.h ${PARSER} $(SRC_DIR)/ca.h.rst.exceptions
- 	@$($(quiet)gen_rst)
- 
-@@ -36,9 +33,6 @@ $(BUILDDIR)/frontend.h.rst: ${UAPI}/dvb/frontend.h ${PARSER} $(SRC_DIR)/frontend
- $(BUILDDIR)/net.h.rst: ${UAPI}/dvb/net.h ${PARSER} $(SRC_DIR)/net.h.rst.exceptions
- 	@$($(quiet)gen_rst)
- 
--$(BUILDDIR)/video.h.rst: ${UAPI}/dvb/video.h ${PARSER} $(SRC_DIR)/video.h.rst.exceptions
--	@$($(quiet)gen_rst)
--
- $(BUILDDIR)/videodev2.h.rst: ${UAPI}/videodev2.h ${PARSER} $(SRC_DIR)/videodev2.h.rst.exceptions
- 	@$($(quiet)gen_rst)
- 
-diff --git a/Documentation/userspace-api/media/audio.h.rst.exceptions b/Documentation/userspace-api/media/audio.h.rst.exceptions
-deleted file mode 100644
-index cf6620477f73..000000000000
---- a/Documentation/userspace-api/media/audio.h.rst.exceptions
-+++ /dev/null
-@@ -1,19 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--
--# Ignore header name
--ignore define _DVBAUDIO_H_
--
--# Undocumented audio caps, as this is a deprecated API anyway
--ignore define AUDIO_CAP_DTS
--ignore define AUDIO_CAP_LPCM
--ignore define AUDIO_CAP_MP1
--ignore define AUDIO_CAP_MP2
--ignore define AUDIO_CAP_MP3
--ignore define AUDIO_CAP_AAC
--ignore define AUDIO_CAP_OGG
--ignore define AUDIO_CAP_SDDS
--ignore define AUDIO_CAP_AC3
--
--# some typedefs should point to struct/enums
--replace typedef audio_mixer_t :c:type:`audio_mixer`
--replace typedef audio_status_t :c:type:`audio_status`
-diff --git a/Documentation/userspace-api/media/dvb/headers.rst b/Documentation/userspace-api/media/dvb/headers.rst
-index 9743ffc35096..88c3eb33a89e 100644
---- a/Documentation/userspace-api/media/dvb/headers.rst
-+++ b/Documentation/userspace-api/media/dvb/headers.rst
-@@ -14,10 +14,3 @@ Digital TV uAPI headers
- .. kernel-include:: $BUILDDIR/ca.h.rst
- 
- .. kernel-include:: $BUILDDIR/net.h.rst
--
--Legacy uAPI
--***********
--
--.. kernel-include:: $BUILDDIR/audio.h.rst
--
--.. kernel-include:: $BUILDDIR/video.h.rst
-diff --git a/Documentation/userspace-api/media/dvb/legacy_dvb_apis.rst b/Documentation/userspace-api/media/dvb/legacy_dvb_apis.rst
-index 6104879d728a..b97d56ee543c 100644
---- a/Documentation/userspace-api/media/dvb/legacy_dvb_apis.rst
-+++ b/Documentation/userspace-api/media/dvb/legacy_dvb_apis.rst
-@@ -11,11 +11,6 @@ The APIs described here **should not** be used on new drivers or applications.
- The DVBv3 frontend API has issues with new delivery systems, including
- DVB-S2, DVB-T2, ISDB, etc.
- 
--There's just one driver for a very legacy hardware using the Digital TV
--audio and video APIs. No modern drivers should use it. Instead, audio and
--video should be using the V4L2 and ALSA APIs, and the pipelines should
--be set via the Media Controller API.
--
- .. attention::
- 
-    The APIs described here doesn't necessarily reflect the current
-@@ -28,5 +23,3 @@ be set via the Media Controller API.
-     :maxdepth: 1
- 
-     frontend_legacy_dvbv3_api
--    video
--    audio
-diff --git a/Documentation/userspace-api/media/video.h.rst.exceptions b/Documentation/userspace-api/media/video.h.rst.exceptions
-deleted file mode 100644
-index ea9de59ad8b7..000000000000
---- a/Documentation/userspace-api/media/video.h.rst.exceptions
-+++ /dev/null
-@@ -1,39 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--
--# Ignore header name
--ignore define _UAPI_DVBVIDEO_H_
--
--# This is a deprecated obscure API. Just ignore things we don't know
--ignore define VIDEO_CMD_PLAY
--ignore define VIDEO_CMD_STOP
--ignore define VIDEO_CMD_FREEZE
--ignore define VIDEO_CMD_CONTINUE
--ignore define VIDEO_CMD_FREEZE_TO_BLACK
--ignore define VIDEO_CMD_STOP_TO_BLACK
--ignore define VIDEO_CMD_STOP_IMMEDIATELY
--ignore define VIDEO_PLAY_FMT_NONE
--ignore define VIDEO_PLAY_FMT_GOP
--ignore define VIDEO_VSYNC_FIELD_UNKNOWN
--ignore define VIDEO_VSYNC_FIELD_ODD
--ignore define VIDEO_VSYNC_FIELD_EVEN
--ignore define VIDEO_VSYNC_FIELD_PROGRESSIVE
--ignore define VIDEO_EVENT_SIZE_CHANGED
--ignore define VIDEO_EVENT_FRAME_RATE_CHANGED
--ignore define VIDEO_EVENT_DECODER_STOPPED
--ignore define VIDEO_EVENT_VSYNC
--ignore define VIDEO_CAP_MPEG1
--ignore define VIDEO_CAP_MPEG2
--ignore define VIDEO_CAP_SYS
--ignore define VIDEO_CAP_PROG
--ignore define VIDEO_CAP_SPU
--ignore define VIDEO_CAP_NAVI
--ignore define VIDEO_CAP_CSS
--
--# some typedefs should point to struct/enums
--replace typedef video_format_t :c:type:`video_format`
--replace typedef video_system_t :c:type:`video_system`
--replace typedef video_displayformat_t :c:type:`video_displayformat`
--replace typedef video_size_t :c:type:`video_size`
--replace typedef video_stream_source_t :c:type:`video_stream_source`
--replace typedef video_play_state_t :c:type:`video_play_state`
--replace typedef video_navi_pack_t :c:type:`video_navi_pack`
-diff --git a/Documentation/userspace-api/media/dvb/audio-bilingual-channel-select.rst b/drivers/staging/media/av7110/audio-bilingual-channel-select.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-bilingual-channel-select.rst
-rename to drivers/staging/media/av7110/audio-bilingual-channel-select.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-channel-select.rst b/drivers/staging/media/av7110/audio-channel-select.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-channel-select.rst
-rename to drivers/staging/media/av7110/audio-channel-select.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-clear-buffer.rst b/drivers/staging/media/av7110/audio-clear-buffer.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-clear-buffer.rst
-rename to drivers/staging/media/av7110/audio-clear-buffer.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-continue.rst b/drivers/staging/media/av7110/audio-continue.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-continue.rst
-rename to drivers/staging/media/av7110/audio-continue.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-fclose.rst b/drivers/staging/media/av7110/audio-fclose.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-fclose.rst
-rename to drivers/staging/media/av7110/audio-fclose.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-fopen.rst b/drivers/staging/media/av7110/audio-fopen.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-fopen.rst
-rename to drivers/staging/media/av7110/audio-fopen.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-fwrite.rst b/drivers/staging/media/av7110/audio-fwrite.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-fwrite.rst
-rename to drivers/staging/media/av7110/audio-fwrite.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-get-capabilities.rst b/drivers/staging/media/av7110/audio-get-capabilities.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-get-capabilities.rst
-rename to drivers/staging/media/av7110/audio-get-capabilities.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-get-status.rst b/drivers/staging/media/av7110/audio-get-status.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-get-status.rst
-rename to drivers/staging/media/av7110/audio-get-status.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-pause.rst b/drivers/staging/media/av7110/audio-pause.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-pause.rst
-rename to drivers/staging/media/av7110/audio-pause.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-play.rst b/drivers/staging/media/av7110/audio-play.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-play.rst
-rename to drivers/staging/media/av7110/audio-play.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-select-source.rst b/drivers/staging/media/av7110/audio-select-source.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-select-source.rst
-rename to drivers/staging/media/av7110/audio-select-source.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-set-av-sync.rst b/drivers/staging/media/av7110/audio-set-av-sync.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-set-av-sync.rst
-rename to drivers/staging/media/av7110/audio-set-av-sync.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-set-bypass-mode.rst b/drivers/staging/media/av7110/audio-set-bypass-mode.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-set-bypass-mode.rst
-rename to drivers/staging/media/av7110/audio-set-bypass-mode.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-set-id.rst b/drivers/staging/media/av7110/audio-set-id.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-set-id.rst
-rename to drivers/staging/media/av7110/audio-set-id.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-set-mixer.rst b/drivers/staging/media/av7110/audio-set-mixer.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-set-mixer.rst
-rename to drivers/staging/media/av7110/audio-set-mixer.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-set-mute.rst b/drivers/staging/media/av7110/audio-set-mute.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-set-mute.rst
-rename to drivers/staging/media/av7110/audio-set-mute.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-set-streamtype.rst b/drivers/staging/media/av7110/audio-set-streamtype.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-set-streamtype.rst
-rename to drivers/staging/media/av7110/audio-set-streamtype.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio-stop.rst b/drivers/staging/media/av7110/audio-stop.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio-stop.rst
-rename to drivers/staging/media/av7110/audio-stop.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio.rst b/drivers/staging/media/av7110/audio.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio.rst
-rename to drivers/staging/media/av7110/audio.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio_data_types.rst b/drivers/staging/media/av7110/audio_data_types.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio_data_types.rst
-rename to drivers/staging/media/av7110/audio_data_types.rst
-diff --git a/Documentation/userspace-api/media/dvb/audio_function_calls.rst b/drivers/staging/media/av7110/audio_function_calls.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/audio_function_calls.rst
-rename to drivers/staging/media/av7110/audio_function_calls.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-clear-buffer.rst b/drivers/staging/media/av7110/video-clear-buffer.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-clear-buffer.rst
-rename to drivers/staging/media/av7110/video-clear-buffer.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-command.rst b/drivers/staging/media/av7110/video-command.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-command.rst
-rename to drivers/staging/media/av7110/video-command.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-continue.rst b/drivers/staging/media/av7110/video-continue.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-continue.rst
-rename to drivers/staging/media/av7110/video-continue.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-fast-forward.rst b/drivers/staging/media/av7110/video-fast-forward.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-fast-forward.rst
-rename to drivers/staging/media/av7110/video-fast-forward.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-fclose.rst b/drivers/staging/media/av7110/video-fclose.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-fclose.rst
-rename to drivers/staging/media/av7110/video-fclose.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-fopen.rst b/drivers/staging/media/av7110/video-fopen.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-fopen.rst
-rename to drivers/staging/media/av7110/video-fopen.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-freeze.rst b/drivers/staging/media/av7110/video-freeze.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-freeze.rst
-rename to drivers/staging/media/av7110/video-freeze.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-fwrite.rst b/drivers/staging/media/av7110/video-fwrite.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-fwrite.rst
-rename to drivers/staging/media/av7110/video-fwrite.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-get-capabilities.rst b/drivers/staging/media/av7110/video-get-capabilities.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-get-capabilities.rst
-rename to drivers/staging/media/av7110/video-get-capabilities.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-get-event.rst b/drivers/staging/media/av7110/video-get-event.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-get-event.rst
-rename to drivers/staging/media/av7110/video-get-event.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-get-frame-count.rst b/drivers/staging/media/av7110/video-get-frame-count.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-get-frame-count.rst
-rename to drivers/staging/media/av7110/video-get-frame-count.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-get-pts.rst b/drivers/staging/media/av7110/video-get-pts.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-get-pts.rst
-rename to drivers/staging/media/av7110/video-get-pts.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-get-size.rst b/drivers/staging/media/av7110/video-get-size.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-get-size.rst
-rename to drivers/staging/media/av7110/video-get-size.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-get-status.rst b/drivers/staging/media/av7110/video-get-status.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-get-status.rst
-rename to drivers/staging/media/av7110/video-get-status.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-play.rst b/drivers/staging/media/av7110/video-play.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-play.rst
-rename to drivers/staging/media/av7110/video-play.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-select-source.rst b/drivers/staging/media/av7110/video-select-source.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-select-source.rst
-rename to drivers/staging/media/av7110/video-select-source.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-set-blank.rst b/drivers/staging/media/av7110/video-set-blank.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-set-blank.rst
-rename to drivers/staging/media/av7110/video-set-blank.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-set-display-format.rst b/drivers/staging/media/av7110/video-set-display-format.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-set-display-format.rst
-rename to drivers/staging/media/av7110/video-set-display-format.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-set-format.rst b/drivers/staging/media/av7110/video-set-format.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-set-format.rst
-rename to drivers/staging/media/av7110/video-set-format.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-set-streamtype.rst b/drivers/staging/media/av7110/video-set-streamtype.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-set-streamtype.rst
-rename to drivers/staging/media/av7110/video-set-streamtype.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-slowmotion.rst b/drivers/staging/media/av7110/video-slowmotion.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-slowmotion.rst
-rename to drivers/staging/media/av7110/video-slowmotion.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-stillpicture.rst b/drivers/staging/media/av7110/video-stillpicture.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-stillpicture.rst
-rename to drivers/staging/media/av7110/video-stillpicture.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-stop.rst b/drivers/staging/media/av7110/video-stop.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-stop.rst
-rename to drivers/staging/media/av7110/video-stop.rst
-diff --git a/Documentation/userspace-api/media/dvb/video-try-command.rst b/drivers/staging/media/av7110/video-try-command.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video-try-command.rst
-rename to drivers/staging/media/av7110/video-try-command.rst
-diff --git a/Documentation/userspace-api/media/dvb/video.rst b/drivers/staging/media/av7110/video.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video.rst
-rename to drivers/staging/media/av7110/video.rst
-diff --git a/Documentation/userspace-api/media/dvb/video_function_calls.rst b/drivers/staging/media/av7110/video_function_calls.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video_function_calls.rst
-rename to drivers/staging/media/av7110/video_function_calls.rst
-diff --git a/Documentation/userspace-api/media/dvb/video_types.rst b/drivers/staging/media/av7110/video_types.rst
-similarity index 100%
-rename from Documentation/userspace-api/media/dvb/video_types.rst
-rename to drivers/staging/media/av7110/video_types.rst
--- 
-2.31.1
+      Handle case of pinned tasks
 
+
+    if (!ld_moved)
+      no runnable but not running task was moved so we might want to
+migrate the current running task
+
+      need_active_balance() should not return true in your case
+because tasks should have been migrated during the step above
+
+      wake up stop/migration thread to preempt the current running
+thread so we can migrate it
+
+
+so you have has a UC which doesn't migrate task in the 1st step when
+trying to pull runnable and not running tasks but it makes
+need_active_balance() return true. Woudl be good to know which
+condition makes  need_active_balance() to return true
+
+
+> But I find the migration/n will pick a task from src_rq->cfs_tasks
+> rather than the current running task, see also detach_one_task():
+
+The current running task is migration/n one at that time
+
+>
+> detach_one_task
+>     list_for_each_entry_reverse(p, &env->src_rq->cfs_tasks, se.group_node) {
+>         detach_task(p, env);
+>    }
+>
+>
+> > This doesn't seem to be your case as it's a RT thread that is
+> > currently running so the migration thread should not be woken up as we
+> > don't need it to migrate a runnable but not running cfs thread from
+> > coin to new idle CPU
+> >
+> > Do you have more details about the UC. Could it be a race between new
+> > idle load balance starting migration thread to pull the cfs running
+> > thread and the RT thread waking up and preempting cfs task before
+> > migration threads which then preempt your RT threads
+> >
+> >
+>
+> No, it is not a race. Below is the detail from sched:sched_swith tracepoint:
+>
+> sensing_node-8880 [007] d... 4300.544185: sched_switch:
+> prev_comm=sensing_node prev_pid=8880 prev_prio=98 prev_state=S ==>
+> next_comm=sensing_node next_pid=8897 next_prio=98
+> sensing_node-8897 [007] d... 4300.544214: sched_switch:
+> prev_comm=sensing_node prev_pid=8897 prev_prio=98 prev_state=S ==>
+> next_comm=sensing_node next_pid=8880 next_prio=98
+> sensing_node-8880 [007] d... 4300.544506: sched_switch:
+> prev_comm=sensing_node prev_pid=8880 prev_prio=98 prev_state=R ==>
+> next_comm=migration/7 next_pid=47 next_prio=0
+> migration/7-47 [007] d... 4300.544509: sched_switch:
+> prev_comm=migration/7 prev_pid=47 prev_prio=0 prev_state=S ==>
+> next_comm=sensing_node next_pid=8880 next_prio=98
+>
+> sensing_node is a RR task and it was preempted by migration/7.
+>
+> >
+> > >
+> > > As the new idle CPU is going to be idle, we'd better move the migration
+> > > work on it instead of burdening the busy CPU. After this change, the
+> > > logic is,
+> > >  new idle CPU                           CPU n
+> > >  (no task to run)                       (busy running)
+> > >  migrate task from CPU n                (busy running)
+> > >  run the migrated task                  (busy running)
+> > >
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > ---
+> > >  kernel/sched/fair.c | 17 +++++------------
+> > >  1 file changed, 5 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 3248e24a90b0..3e8b98b982ff 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -9807,13 +9807,11 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+> > >                                 busiest->push_cpu = this_cpu;
+> > >                                 active_balance = 1;
+> > >                         }
+> > > -                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
+> > >
+> > > -                       if (active_balance) {
+> > > -                               stop_one_cpu_nowait(cpu_of(busiest),
+> > > -                                       active_load_balance_cpu_stop, busiest,
+> > > -                                       &busiest->active_balance_work);
+> > > -                       }
+> > > +                       if (active_balance)
+> > > +                               active_load_balance_cpu_stop(busiest);
+> >
+> > this doesn't make sense because we reach this point if we want to
+> > migrate the current running task of the busiest cpu and in order to do
+> > this we need the preempt this current running thread
+> >
+> > > +
+> > > +                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
+> > >                 }
+> > >         } else {
+> > >                 sd->nr_balance_failed = 0;
+> > > @@ -9923,7 +9921,6 @@ static int active_load_balance_cpu_stop(void *data)
+> > >         struct task_struct *p = NULL;
+> > >         struct rq_flags rf;
+> > >
+> > > -       rq_lock_irq(busiest_rq, &rf);
+> > >         /*
+> > >          * Between queueing the stop-work and running it is a hole in which
+> > >          * CPUs can become inactive. We should not move tasks from or to
+> > > @@ -9933,8 +9930,7 @@ static int active_load_balance_cpu_stop(void *data)
+> > >                 goto out_unlock;
+> > >
+> > >         /* Make sure the requested CPU hasn't gone down in the meantime: */
+> > > -       if (unlikely(busiest_cpu != smp_processor_id() ||
+> > > -                    !busiest_rq->active_balance))
+> > > +       if (unlikely(!busiest_rq->active_balance))
+> > >                 goto out_unlock;
+> > >
+> > >         /* Is there any task to move? */
+> > > @@ -9981,13 +9977,10 @@ static int active_load_balance_cpu_stop(void *data)
+> > >         rcu_read_unlock();
+> > >  out_unlock:
+> > >         busiest_rq->active_balance = 0;
+> > > -       rq_unlock(busiest_rq, &rf);
+> > >
+> > >         if (p)
+> > >                 attach_one_task(target_rq, p);
+> > >
+> > > -       local_irq_enable();
+> > > -
+> > >         return 0;
+> > >  }
+> > >
+> > > --
+> > > 2.17.1
+> > >
+>
+>
+>
+> --
+> Thanks
+> Yafang
