@@ -2,157 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DA8399187
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F3C39918B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhFBRXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:23:53 -0400
-Received: from mail-dm6nam12on2078.outbound.protection.outlook.com ([40.107.243.78]:23931
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S229962AbhFBRYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:24:38 -0400
+Received: from mail-bn7nam10on2041.outbound.protection.outlook.com ([40.107.92.41]:59777
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231515AbhFBRXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:23:41 -0400
+        id S229982AbhFBRYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 13:24:31 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Voyae/w4hfdRUtXu5cHLpGk6BsbTGScJAdVnujgqRjrrrQbhbIM4SxhAKcsdrWytzrGbEQeTCO0Fub0NBY0tioFaLnkmv3ZbXWvmrBPAQfYgEh6lBgRMTE1QUf987fGRfMEklglIDte3HOGG5IbGZY1Ix+h03O56LURhUNVBFCttUMlfJvPL9Pghwz2H+X/R8ZU+rLuDA5MQ5SyhHoVfUzweTRmT//ukEhw1XBoOJQFtmTktTA6m0xtU8fXZ+pXgSCEaQ09QCc5fhO25rA+VvP8s23uaQLBVxXxwcIDISn5QtD6wZlFIHLOkgN8JhpzYhb4G6NEBsTvzDsfTrm4koQ==
+ b=Rl6S5SwKzm0dJii5d3u0WQvDFxin31fC4djDLsRfQA9gOjOzbUwtuYNUwGNd6yoOInKyWQZUDeHteclNhqcE83+hTJAiCVC287TFbEJC1ST3piRgRi/Z9wCFgHUQtYw+x2ByofnoXtgVJEkNM6S8fes2osLQOO/V2tITALYcBSVg0UbUHA+wbTZDOR1H2h7g7xNkkL6dQKI/O/hJTRaWPKGIT50boYjzQNlNbdc6Ysef8Kptm4+9ghbBUNoWFKQPvd30MxtcwIyO8lTBfY0+IThdS4WNyP25s904GE2d6pag8KdlfsJljzp7LQQA/cg7CrYT+TVhsK+VfETxUEbIpA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EAFOBvu/BHMIz42D60r0XvW0IDdMrJjol+tMYgaINCA=;
- b=HeQDQ20LMF4ZJyQi7TrgLDhHAovjlHA+l0GNmxgHo2OWEhNDnk5CMR8chPlAnFhZHSi5UPRCQbN4ABxjcRXynpIIJzHwzBFio1yDIKd6e7Ehyp5HwkyxFfMyMRZt6bAuARPrrDGqySHBk5X7cZwB6u8F4xi5setQx3qVC5Zq90JlWQMiUfITIg0q2FFtguruCuI3SRZG579c0pUnEjbQMxtwSMF+8OCqQJVewPEnLPi4S16juhGqWc5cYKZyIOJ+t5LIZN/WAQtFI99xLEmrvN4Y9JwR1wio2PTDNVbfabbjiyU38u7VbbkyyP/SaYmetuH35v+217IqPVWYyZJGbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=LnKqczGP2hjpyhGidIp1jAkSTxN5qG9HjC715KuvORo=;
+ b=ZG6ssGcYbMddk3b5ouRmHTR6bU3IgmGVMVFduD7HElFjr3fHYk1AnNOv1nvIFA6mnAeHVNCe4xjOUONZS41QEQE+1bZypuvFAJoQ1SLJFa1syvGvxwYW/f24t24inlungIH4MRJ4LoWM+/5DyA4UuMWXz1oov7jKDl6W6KcVCYb5OFHmhk/SahDILdJMUmzWnc5BTaevGSask3JbhC/RG3i+SYfRqBHuTLxixSFS/8VMT1msRLl6nh4xr0L6bSmIKmXO/Ot+ME8n3dK1bybcfXBrK9rJkGRNK9JvO/o9InxFvJnb0oXbIS6h3g89L+2N7qwWWE3DITb2EumHdmEH8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=none pct=100) action=none header.from=amd.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EAFOBvu/BHMIz42D60r0XvW0IDdMrJjol+tMYgaINCA=;
- b=M/hYcWdHlsYpf1wNESp5i1CfCoBVKba7MWtZpou57qqWq2ESLBs239r7bVDv8hQ2kZZF50eXTvP1Am9mIA5wF1hF1KpANpdl3UBx1qjbfV1GA1JJ0o1Z3Yr7qzEVZ+EvV6fUCrzfPCXAhtwt5591wvdqlb/Sp6O1sFRIJ97pdN0vAYOkKQW3JZxNmXWr5b2N2WidNB/U3169TvjZcZi6bsPf07e3goztcooFqqki8PAfTp4dMLazWPsaKUsSrNRpBDqwlvxoRoplPHZWYmDLqunBBnQueba6WbEhRmLurWNOKPTAaJzLJFp7mC81X4sY6/aSyQxiHiUAqsC1f1X1WQ==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Wed, 2 Jun
- 2021 17:21:56 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.020; Wed, 2 Jun 2021
- 17:21:55 +0000
-Date:   Wed, 2 Jun 2021 14:21:54 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Liu Yi L <yi.l.liu@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
-        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210602172154.GC1002214@nvidia.com>
-References: <20210601113152.6d09e47b@yiliu-dev>
- <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
- <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
- <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
- <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
- <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
- <20210601173138.GM1002214@nvidia.com>
- <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0210.namprd13.prod.outlook.com
- (2603:10b6:208:2be::35) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ bh=LnKqczGP2hjpyhGidIp1jAkSTxN5qG9HjC715KuvORo=;
+ b=xAupjHPVBrOSlTwVkK64QdF+c7q1wIKtR/y3Dqs+nnx2ekhQErYbe1OIvgplOGwt6m/G/qqUe3QYGjtwJCAxXS1w5WlAvocghP0+nAnogH8bIM+9Z/3MSXtdfMsD24ZouTGTKPFKJX6z9eC/b5Dcuv1kHtcSg2sdgXbSVUzxNJQ=
+Received: from BN6PR1101CA0008.namprd11.prod.outlook.com
+ (2603:10b6:405:4a::18) by DM6PR12MB4863.namprd12.prod.outlook.com
+ (2603:10b6:5:1b9::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Wed, 2 Jun
+ 2021 17:22:45 +0000
+Received: from BN8NAM11FT041.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:405:4a:cafe::8c) by BN6PR1101CA0008.outlook.office365.com
+ (2603:10b6:405:4a::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend
+ Transport; Wed, 2 Jun 2021 17:22:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT041.mail.protection.outlook.com (10.13.177.18) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4150.30 via Frontend Transport; Wed, 2 Jun 2021 17:22:45 +0000
+Received: from sanjuamdntb2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 2 Jun 2021
+ 12:22:41 -0500
+From:   Sanjay R Mehta <Sanju.Mehta@amd.com>
+To:     <vkoul@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <dan.j.williams@intel.com>,
+        <Thomas.Lendacky@amd.com>, <Shyam-sundar.S-k@amd.com>,
+        <Nehal-bakulchandra.Shah@amd.com>, <robh@kernel.org>,
+        <mchehab+samsung@kernel.org>, <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>
+Subject: [PATCH v9 0/3] Add support for AMD PTDMA controller driver
+Date:   Wed, 2 Jun 2021 12:22:28 -0500
+Message-ID: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0210.namprd13.prod.outlook.com (2603:10b6:208:2be::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.12 via Frontend Transport; Wed, 2 Jun 2021 17:21:55 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1loUZ0-000IRj-OY; Wed, 02 Jun 2021 14:21:54 -0300
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 77dad0c1-b9c7-46dd-b9ca-08d925eaeb9b
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5144:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5144040F20A049DFB80B9F32C23D9@BL1PR12MB5144.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 7c26b156-a35d-4341-7430-08d925eb096d
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4863:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB486308B3FFA7E766F0DDCEF7E53D9@DM6PR12MB4863.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KrjKq+sKueuQNPTHuS8C7Cub7yla+fleEvyVGbv5v+ifSnIFsRW/lwqUgdwktPk87nxdcJW6nYVwhPzGPaDDSMdkhGhcqkSF55I1IA0TbLEpPxcq3AqVSBJBf7p0YGjvTpxU3bV7B/nR2WKF0Js673BiF7ecI6Ioh5I5vahb4LsstG23Cwc8xiK2UwVWWhDak6QHvqklPgzbQWlD1gd4lSHJ05qXbxFJ9++gVRqHvQDjljq2Z0Wb7g/cpm5diLisNkXGfp0hInDFjuRYXqsk7UshgxRlmfxz5EKNYt6t2LhjuNXQzyjY+SkkWLk2+hNJfY5qcOp3z8dCDHMUxkoTxmKXb6KNwHyuYFh34vDHqL04kQl7WB5/YBCJkkO+jpdGICTuIhCSb9jvjswR/MRxitKsJ6YgD/SXcqm5mN7CklvQbwgYyZbZO+NyO+X1SI5/PHfJhF71oQs5hkhY+qfgfxla+5FVT4ZtdppOC+eyZXKXxxBuRQGDdzbUPRvs0FhaUTDGIy/67/XGlEQqanhDsYYE3DwHkpJsGyQj+AEnshOO6ignArA3ldIOQHhPgMNsKC4MujokGcrLQwyXvK1aqIPKegjQuBG7RwEAJIzd8co=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(366004)(346002)(36756003)(478600001)(2906002)(4326008)(7416002)(5660300002)(8936002)(9746002)(66476007)(66946007)(38100700002)(26005)(8676002)(2616005)(9786002)(426003)(66556008)(316002)(186003)(54906003)(1076003)(33656002)(6916009)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cGk2d2ZQVTZnS0oyeXhuMmR4b2NBUEdyd3o4SjkrZ0d3cThtdXNKWXRrc0FF?=
- =?utf-8?B?cFRlcGpPbDlrdmZ2RCtZcnkvV3c2MmNJYVUrdHRXMkREclB2R3BZSngva3Zp?=
- =?utf-8?B?RGpsQmtXZElpMGJEMVZxVnowNnlCZUtOWEJFOWo4ZytpaUhadk1RdnVGU1RY?=
- =?utf-8?B?VS96OVFCalVzY2pBaTNLWHlCclJtdnpIblN2cHU3T29yM0dHZG9QOW9nMDZx?=
- =?utf-8?B?c2Rkd1luV3VMWCszWkRrYld0eVpzM0kwMGoreDJrekhobFVnSHZIRFd3ajc5?=
- =?utf-8?B?TitBcHBVSmpNalVSOFlMcUdvaHZ1K3dYQWwxYTZ0dWszQnRQMXFjM0ZWUFZi?=
- =?utf-8?B?ZFZrYmQ4MzBmcjgrSGtSYjkwQVdPVEkwbU5TeisxVlBJQzZHeU13dGF3blc4?=
- =?utf-8?B?bHRhT01rdTZjWmZ1VE4wUjh6VTI5L2VQUzREUnZDS0ZkazJ1TjJhQ0hmWXdy?=
- =?utf-8?B?Q0pCVWhGMmpFUEVLcE9kRXFyb1hSRDd3VEdOL0RLSTF4ODMvOWRrMVM4cE9p?=
- =?utf-8?B?eUtzWXo3K0FXWXU2dmQza0hpSUpod1J2K1hEN2o4Z3piTVJNdnIybnQrWlV2?=
- =?utf-8?B?Y2F1b1hidXN4bHJHVEtUU2tKUjhiRkUxSlFyVnl4ck84YjRJaWJ4T2Y0WCtJ?=
- =?utf-8?B?d3VERmNhYmp6YzFWVW80RmRLVE9hSURqMmpMYml6MmdjRWxBN1pmMVhuSTFh?=
- =?utf-8?B?QnAyZkFFdTJod0UrMWJQTCsvNHlMVjd1Qi92dFU1RXlHcDg3M2U4N3FjdFBD?=
- =?utf-8?B?T1NDYjdIZWVMREpZZ2FVSkhkRGtSSUhEdFF1d1BSbEpZWE96Nk8wVkR3QmRa?=
- =?utf-8?B?L2NLNytFOU91N0U2NG9WV1cwVFlHVTUrRTFRakV3STR3dHVjRENEbGdMQkl6?=
- =?utf-8?B?VzRUZElOU0g2NGlYbXN0NVBQM1lLYlovMnZ1VWRNRTdZQXdZd1JlTUxjNDdJ?=
- =?utf-8?B?clBlbENsRFViS3dmQVNGQ1hXUWdsMGFhaS9KZStmcjdWaXVTNENFRUVQM2lP?=
- =?utf-8?B?aXpzcjVwRXV5Tm1xSndGTjVRcVJHcmZyajNzR1lwQnROZEYva2lYSDA5a2N0?=
- =?utf-8?B?MXZ5eXBLL2IxRUIyckhzY0xiT0s0MVpQamJ6c2JkQUZFYW1zM0ZjbkNkdU1p?=
- =?utf-8?B?NForYlVhZDY0NG4wM2grSitGRlhENE91VS9tWHBSWTRCR0pES1lueGxydWZo?=
- =?utf-8?B?MXVVQ2ptdkowQ1AyWUl2RGd3NG1TMHE0N1NWVkZ0akNIb1lxMExZZG1FalJN?=
- =?utf-8?B?N24vRFJtVXpyd2RkcVZMRzZNTEVhbnhKY0xCTVNXclc0N2hKMWxBdW1SRjFF?=
- =?utf-8?B?ckd3UzlzMG9obk1Fckt1UXV2TTA5dXA0aTRFdmhaeG1RQmpBWWRwb2FCMHFl?=
- =?utf-8?B?TXYxUXNwWmZ1S2JITFRMd09IazQrYWRTenVSSnFSRmtnc243SzBlMUdvdlI1?=
- =?utf-8?B?TlVPS3Ira0Q3TVZ0N0pBaDR5T0x0bUhjSk1oY1B1czM4VFV5c1BjUEdObjAz?=
- =?utf-8?B?R0RIaEhHc3g1aGVLTisrWVJMWC9SNlZmc1prejhLMnJwNmdJM1YySWdSdm5C?=
- =?utf-8?B?clZWU1JUVHZRQjNlSmdCeWoyeHRPTzFVc2ZvcFRyKzF4UzNRZXNVbmdtNStU?=
- =?utf-8?B?YlZkc2hYckVUOFAwNjBRSHhoYmU0NXpvcHozdVlOK0ZwRGxIMVd5WVluQjNP?=
- =?utf-8?B?YU54ektHeDZLdTNDNE9WdjlTakR3bkRLdHhHaWxBK0lkakR2M3dtM2tUWHIx?=
- =?utf-8?Q?SbQhp+x3Pgjq2P3gMi3fGmbJqvjIdR3VWp7UmQt?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77dad0c1-b9c7-46dd-b9ca-08d925eaeb9b
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 17:21:55.6067
+X-Microsoft-Antispam-Message-Info: SRMH/Wdr6aJnK2zE8N6XvqK3Yno0UlOLDbAdYlAzGTVoI0l0kdpmcLNewRII65r241ZtG8mZOSsp25GiSby3ZvCvbykcFaq+RzrAGQhfmil3T/jmL02vjpXVN+ar6KeK2FSmS9j1CR+xQlMU7xHrr8x5TAeMPCnibEEBDqyQMtrRC3ly2lwyUUfnNSgDfppF7R1+DfRH2psepBipsj5evb/eJ/GbHRHnWlcRVRLDO/4PGg8l1wEhYeI+4wzH49D61+armazysEBoyvY0n2u/YzvnqrOBV23KNlu0o4rPqucnWZlM0lZpFKcWAVCoKzMrOi56q+t0zl+infYPLtLNEeL9zcgreIl+IXGAC1yCqyt6K/J8Jkf+/BXVscgwcl3fKQKNR6R476jo7kK2GvN6q2ha5KUXOWIg76P1ZiOPaQavK8AIVeZ9E1FxxQha00m9qnhG2kXEIxl6M7IShiByDBwldoE2BVDVN4/V48y83sU5upNOB6ls0mgBNQ5aVRw7KIdDJNuVNBFJQtk7TQr0edTxa0VWObmGQ4bJYj/MZf5dio6bjj3KKA5iJJQTZIeuXVc8DWcxbFBwfaFCQlQAqzxdTE/buWVDLshtAho23oucOPJ5uRZSIQ6qQnN11ftaoSSJMyAd9kRKpKSi5cJ0zVEjcjMN1F+XyGmzn3j9X7Q9LZqGdkTOApOO5KzEElJkVXj6qFqjgXbw8SEV7Ifn0LEACQKLELO5k7BztzFX24Tj50GlupEXjUbk4ye68MBhlmtxy2dafu44d5oG9Vdm5feeavul6Blh1B6eM1zYpDxChTOtYej1jAqQCFvliNhYUM1Rg8Fj6MFI1V0LBP2Pqg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(36840700001)(46966006)(36756003)(2906002)(336012)(316002)(54906003)(5660300002)(83380400001)(70206006)(82310400003)(70586007)(426003)(36860700001)(47076005)(7696005)(16526019)(82740400003)(8676002)(186003)(6916009)(8936002)(966005)(356005)(2616005)(86362001)(478600001)(4326008)(6666004)(26005)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 17:22:45.4916
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zp5LsK5rD8jI9zrYrH/zKc4lYzm5pDr/sNq3I3WAGJmQxnpoNDhCNFfKQjClrfjF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5144
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c26b156-a35d-4341-7430-08d925eb096d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT041.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4863
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:54:26PM +0800, Jason Wang wrote:
-> 
-> 在 2021/6/2 上午1:31, Jason Gunthorpe 写道:
-> > On Tue, Jun 01, 2021 at 04:47:15PM +0800, Jason Wang wrote:
-> > > We can open up to ~0U file descriptors, I don't see why we need to restrict
-> > > it in uAPI.
-> > There are significant problems with such large file descriptor
-> > tables. High FD numbers man things like select don't work at all
-> > anymore and IIRC there are more complications.
-> 
-> 
-> I don't see how much difference for IOASID and other type of fds. People can
-> choose to use poll or epoll.
+From: Sanjay R Mehta <sanju.mehta@amd.com>
 
-Not really, once one thing in an applicate uses a large number FDs the
-entire application is effected. If any open() can return 'very big
-number' then nothing in the process is allowed to ever use select.
+This patch series add support for AMD PTDMA controller which
+performs high bandwidth memory-to-memory and IO copy operation,
+performs DMA transfer through queue based descriptor management.
 
-It is not a trivial thing to ask for
+AMD Processor has multiple ptdma device instances with each controller
+having single queue. The driver also adds support for for multiple PTDMA
+instances, each device will get an unique identifier and uniquely
+named resources.
 
-> And with the current proposal, (assuming there's a N:1 ioasid to ioasid). I
-> wonder how select can work for the specific ioasid.
+v9:
+	- Modified the help message in Kconfig as per Randy's comment.
+	- reverted the split of code for "pt_handle_active_desc" as there
+	  was driver hang being observerd after few iterations.
 
-pagefault events are one thing that comes to mind. Bundling them all
-together into a single ring buffer is going to be necessary. Multifds
-just complicate this too
+v8:
+	- splitted the code into different functions, one to find active desc 
+	  and second to	complete and invoke callback.
+	- used FIELD_PREP & FIELD_GET instead of union struct bitfields.
+	- modified all style fixes as per the comments.
 
-Jason
+v7:
+	- Fixed module warnings reported ( by kernel test robot <lkp@intel.com> ).
+
+v6:
+	- Removed debug artifacts and made the suggested cosmetic changes.
+	- implemented and used to_pt_chan and to_pt_desc inline functions.
+	- Removed src and dst address check as framework does this.
+	- Removed devm_kcalloc() usage and used devm_kzalloc() api.
+	- Using framework debugfs directory to store dma info.
+
+v5:
+	- modified code to submit next tranction in ISR itself and removed the tasklet.
+	- implemented .device_synchronize API.
+	- converted debugfs code by using DEFINE_SHOW_ATTRIBUTE()
+	- using dbg_dev_root for debugfs root directory.
+	- removed dma_status from pt_dma_chan
+	- removed module parameter cmd_queue_lenght.
+	- removed global device list for multiple devics.
+	- removed code related to dynamic adding/deleting to device list
+	- removed pt_add_device and pt_del_device functions
+
+v4:
+	- modified DMA channel and descriptor management using virt-dma layer
+	  instead of list based management.
+	- return only status of the cookie from pt_tx_status
+	- copyright year changed from 2019 to 2020
+	- removed dummy code for suspend & resume
+	- used bitmask and genmask
+
+v3:
+        - Fixed the sparse warnings.
+
+v2:
+        - Added controller description in cover letter
+        - Removed "default m" from Kconfig
+        - Replaced low_address() and high_address() functions with kernel
+          API's lower_32_bits & upper_32_bits().
+        - Removed the BH handler function pt_core_irq_bh() and instead
+          handling transaction in irq handler itself.
+        - Moved presetting of command queue registers into new function
+          "init_cmdq_regs()"
+        - Removed the kernel thread dependency to submit transaction.
+        - Increased the hardware command queue size to 32 and adding it
+          as a module parameter.
+        - Removed backlog command queue handling mechanism.
+        - Removed software command queue handling and instead submitting
+          transaction command directly to
+          hardware command queue.
+        - Added tasklet structure variable in "struct pt_device".
+          This is used to invoke pt_do_cmd_complete() upon receiving interrupt
+          for command completion.
+        - pt_core_perform_passthru() function parameters are modified and it is
+          now used to submit command directly to hardware from dmaengine framew
+        - Removed below structures, enums, macros and functions, as these value
+          constants. Making command submission simple,
+           - Removed "union pt_function"  and several macros like PT_VERSION,
+             PT_BYTESWAP, PT_CMD_* etc..
+           - enum pt_passthru_bitwise, enum pt_passthru_byteswap, enum pt_memty
+             struct pt_dma_info, struct pt_data, struct pt_mem, struct pt_passt
+             struct pt_op,
+
+Links of the review comments for v7:
+1. https://lkml.org/lkml/2020/11/18/351
+2. https://lkml.org/lkml/2020/11/18/384
+
+Links of the review comments for v5:
+1. https://lkml.org/lkml/2020/7/3/154
+2. https://lkml.org/lkml/2020/8/25/431
+3. https://lkml.org/lkml/2020/7/3/177
+4. https://lkml.org/lkml/2020/7/3/186
+
+Links of the review comments for v5:
+1. https://lkml.org/lkml/2020/5/4/42
+2. https://lkml.org/lkml/2020/5/4/45
+3. https://lkml.org/lkml/2020/5/4/38
+4. https://lkml.org/lkml/2020/5/26/70
+
+Links of the review comments for v4:
+1. https://lkml.org/lkml/2020/1/24/12
+2. https://lkml.org/lkml/2020/1/24/17
+
+Links of the review comments for v2:
+1https://lkml.org/lkml/2019/12/27/630
+2. https://lkml.org/lkml/2020/1/3/23
+3. https://lkml.org/lkml/2020/1/3/314
+4. https://lkml.org/lkml/2020/1/10/100
+
+Links of the review comments for v1:
+1. https://lkml.org/lkml/2019/9/24/490
+2. https://lkml.org/lkml/2019/9/24/399
+3. https://lkml.org/lkml/2019/9/24/862
+4. https://lkml.org/lkml/2019/9/24/122
+
+Sanjay R Mehta (3):
+  dmaengine: ptdma: Initial driver for the AMD PTDMA
+  dmaengine: ptdma: register PTDMA controller as a DMA resource
+  dmaengine: ptdma: Add debugfs entries for PTDMA
+
+ MAINTAINERS                         |   6 +
+ drivers/dma/Kconfig                 |   2 +
+ drivers/dma/Makefile                |   1 +
+ drivers/dma/ptdma/Kconfig           |  13 +
+ drivers/dma/ptdma/Makefile          |  10 +
+ drivers/dma/ptdma/ptdma-debugfs.c   | 115 +++++++++
+ drivers/dma/ptdma/ptdma-dev.c       | 327 +++++++++++++++++++++++++
+ drivers/dma/ptdma/ptdma-dmaengine.c | 460 ++++++++++++++++++++++++++++++++++++
+ drivers/dma/ptdma/ptdma-pci.c       | 251 ++++++++++++++++++++
+ drivers/dma/ptdma/ptdma.h           | 342 +++++++++++++++++++++++++++
+ 10 files changed, 1527 insertions(+)
+ create mode 100644 drivers/dma/ptdma/Kconfig
+ create mode 100644 drivers/dma/ptdma/Makefile
+ create mode 100644 drivers/dma/ptdma/ptdma-debugfs.c
+ create mode 100644 drivers/dma/ptdma/ptdma-dev.c
+ create mode 100644 drivers/dma/ptdma/ptdma-dmaengine.c
+ create mode 100644 drivers/dma/ptdma/ptdma-pci.c
+ create mode 100644 drivers/dma/ptdma/ptdma.h
+
+-- 
+2.7.4
+
