@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27558398FC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCA7398FD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFBQTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:19:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229911AbhFBQTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:19:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF1861943;
-        Wed,  2 Jun 2021 16:17:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622650650;
-        bh=8NTOtVAUlWpijIjD+K59+VsdlOTTwWVBZEPEICpdQiU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gBjTIE9LH9twgKWQYnj4/GAKhRzPCNCrdnNFa9Xr6aOEZ1AFkPtayHjNw+AmqO/mi
-         aBP+qQ2zlR4jaUg/g+wy4DyDTyc+C6XfdQ6rssF2nBHx3Gau5320aMLbTVENlwHDm+
-         W2Hr0xmGUweNXSgS+Fq6WwC125ZIKFs20umhwNctDX7/jOW0TiklK+QVwW85BodTMq
-         ZfjgTix5aLIYIwPzz/bmVwUKnZFmi/gt2UkJc3vQjJCD/d4Mgf0JAfiwU9nZCP7HmL
-         YudRKOfIfyXq01Vd7yUfE+LpPEnknjtRkSGJP8obPh74rrJs2Un9Nc5k3xmkXZoBsx
-         qm0Aafr3SW07w==
-From:   Mark Brown <broonie@kernel.org>
-To:     Vincent Knecht <vincent.knecht@mailoo.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, alsa-devel@alsa-project.org,
-        phone-devel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH v1 1/4] ASoC: dt-bindings: nxp,tfa989x: Add tfa9897 support
-Date:   Wed,  2 Jun 2021 17:16:55 +0100
-Message-Id: <162265045454.22459.11419124227044779135.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210528105101.508254-1-vincent.knecht@mailoo.org>
-References: <20210528105101.508254-1-vincent.knecht@mailoo.org>
+        id S229980AbhFBQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhFBQWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:22:32 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF96C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 09:20:49 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7A88CD97;
+        Wed,  2 Jun 2021 18:20:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622650846;
+        bh=cxdEdqSOuqJ2Db1fe9dCOUd2kzYtl1woUTU5rFP9sjI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=olDbqIyBZ25R4ClHJp1wh/tS9eaEtU/2Z4fk787abAcCejjh7O/MYz38Q/4RxBhTD
+         huAXEXqpYKbDEjUP7CQMS9G5dC87Efd6XHIMsdItM+2+bNXs7SqwdSMqdQ0plS4DYj
+         UA8R+cAkBbESq0M3Gb6zOOiJivLuC8jLmZaHe3Vg=
+Date:   Wed, 2 Jun 2021 19:20:35 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND 17/26] drm/xlnx/zynqmp_disp: Fix incorrectly named enum
+ 'zynqmp_disp_layer_id'
+Message-ID: <YLev02lSORBOlqw+@pendragon.ideasonboard.com>
+References: <20210602143300.2330146-1-lee.jones@linaro.org>
+ <20210602143300.2330146-18-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602143300.2330146-18-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 12:50:58 +0200, Vincent Knecht wrote:
-> Document TFA9897 bindings.
+Hi Lee,
 
-Applied to
+Thank you for the patch.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Wed, Jun 02, 2021 at 03:32:51PM +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c:101: warning: expecting prototype for enum zynqmp_disp_id. Prototype was for enum zynqmp_disp_layer_id instead
+> 
+> Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Thanks!
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[1/4] ASoC: dt-bindings: nxp,tfa989x: Add tfa9897 support
-      commit: 513df99993857863e42bf3d7d65d87c191ce9493
-[2/4] ASoC: codecs: tfa989x: Add support for tfa9897
-      commit: 1ba1d69d8aa938f64cb07604b320a5074c3bb107
-[3/4] ASoC: dt-bindings: nxp, tfa989x: Add vddd-supply property
-      commit: 9cf1a98e2b0171e2586a13197a9a1ad605336166
-[4/4] ASoC: codecs: tfa989x: Add support for optional vddd-supply
-      commit: 8e5607e9941ce915187785bd09805bf7df9f7349
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> index 109d627968ac0..ca1161ec9e16f 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -91,7 +91,7 @@ struct zynqmp_disp_format {
+>  };
+>  
+>  /**
+> - * enum zynqmp_disp_id - Layer identifier
+> + * enum zynqmp_disp_layer_id - Layer identifier
+>   * @ZYNQMP_DISP_LAYER_VID: Video layer
+>   * @ZYNQMP_DISP_LAYER_GFX: Graphics layer
+>   */
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-- 
+Regards,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Laurent Pinchart
