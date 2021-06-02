@@ -2,87 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C860399396
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7923993A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhFBTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:36:58 -0400
-Received: from mail-pf1-f179.google.com ([209.85.210.179]:35352 "EHLO
-        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBTg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:36:58 -0400
-Received: by mail-pf1-f179.google.com with SMTP id h12so162079pfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 12:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bYV9p2tuNrJ599IxGk8dIW77JyAflkTh2/fE68VmgyM=;
-        b=aWp5GUM/bhCW6yAY39LTLAsipqiKUrlLxMqLXUInHoEbRrU1LZiWbcU9BecnAlRxYX
-         AMnpitbU77d+KFXqgGCpCgQOb1xyRjS9irXXC7eYpEW2/CdRFXA1a+6HiraPp/mGRUeE
-         rMqIeuOivzbmCBt89n0taf6cwzdsP+aX0wZoRfZ/aY97MLGZ/yPtiw1tkUjWGHFXvD+z
-         gC/7gLRItTVcJuiTiFS/gvXKJTtn42OgFeflFcxDZXd3a5DkZv8CPyfTdXPlUahLRG2i
-         XlYqasofmvqiD2zu12hTHMzGapNFyayXZZzdjCKbSof+qrtTBtUKzzTfyGPgb0d7RJVr
-         wi9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bYV9p2tuNrJ599IxGk8dIW77JyAflkTh2/fE68VmgyM=;
-        b=OYr5Whsc19eXpKvsU2FNJv0j5zdn3AqxXs4wVagCOczAayLqQxQsrUwtUuHbIMqygU
-         H99D/+cwGp8zsYxZLL/t95XJXS7zxtmMD4vHEQKvXJ1WL4ag+yldrNEoVKRvNSUXclRn
-         m6M4iS65LeybJQzfSlib6PFsmYnZrHmcnMoi5bvVVZwh70SuoiGPXoQXp3KwRgrXw1m3
-         QZOy8gGBg/5WVGKUV2+/lNZBcu1GbHO09ZMv967lsrexVIdPePTRfomyZVDj4Zxe9tPD
-         A47AqnVPncROhLsicTV3WEL0nlB7uMwcW+9PZxU+nKGUWU83S3axZ/m7rthCaeMixvZG
-         kU1A==
-X-Gm-Message-State: AOAM5313WUta5igxOzUXcrJlDYkVFiXEtHauI8kb3BzFSW3yIsST7WN5
-        jUKZBlrAEanuB3fsbSU7rcA=
-X-Google-Smtp-Source: ABdhPJxCNxOm6FEb2uuA5Yft/f308qmvjpEITztw8xKT9HG6SwUfrp6FFHjxFHKBzEQQQ/21hmTQaQ==
-X-Received: by 2002:a63:1316:: with SMTP id i22mr18055328pgl.150.1622662441778;
-        Wed, 02 Jun 2021 12:34:01 -0700 (PDT)
-Received: from localhost.localdomain ([183.82.156.141])
-        by smtp.googlemail.com with ESMTPSA id 30sm520570pgo.7.2021.06.02.12.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 12:34:01 -0700 (PDT)
-From:   Manikishan Ghantasala <manikishanghantasala@gmail.com>
-Cc:     manikishanghantasala@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] staging: rtl8192u: fix spaces in r8192U_hw.h
-Date:   Thu,  3 Jun 2021 01:03:32 +0530
-Message-Id: <20210602193334.11687-4-manikishanghantasala@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210602193334.11687-1-manikishanghantasala@gmail.com>
-References: <20210602193334.11687-1-manikishanghantasala@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        id S229774AbhFBTiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229489AbhFBTiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:38:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A9650613F5;
+        Wed,  2 Jun 2021 19:36:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622662586;
+        bh=i/gBplijkKmXL1Xfk3sSdjVJgUyfzpjzejfTwk1vr8Q=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=fJQ80oCkhow9bcGlTVzRncXCU85iqUwYfP4szpsn8fN513eqqUu3bx+lJ2Tm6LeVL
+         AreebQ3bVcFSNNlEJlhKEudNJffwU2xz3teZPVAlCoVjpmqbAjtpzbhIJ/wMBD8drr
+         iYIoGGORzRuiuhK6spqicpw3c0V+ItSPnZpFx3ScVcXrTAlRgruUTtjCPhxTPwXA72
+         /k8j2Toyi53tnXJuXEiecXPGTasbzJeXhU/yWdRWrOJHLHoZTyTa89so153tPUa0My
+         5xZd+kynjPEfv291ZaSBIphDoAPT77sD4Z6wp5/gqijukHWOaXNYq7xWEBWcvOhWAg
+         p1iey+bo4nntw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 95061609D9;
+        Wed,  2 Jun 2021 19:36:26 +0000 (UTC)
+Subject: Re: [GIT PULL] hwmon fixes for v5.13-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210602112858.2870288-1-linux@roeck-us.net>
+References: <20210602112858.2870288-1-linux@roeck-us.net>
+X-PR-Tracked-List-Id: <linux-hwmon.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210602112858.2870288-1-linux@roeck-us.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.13-rc4
+X-PR-Tracked-Commit-Id: f0fb26c456a30d6009faa2c9d44aa22f5bf88c90
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3bfc6ffb616f14dc268aa121b71637ef06654e92
+Message-Id: <162266258654.13029.13947068784073650137.pr-tracker-bot@kernel.org>
+Date:   Wed, 02 Jun 2021 19:36:26 +0000
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed "please, no space before tabs" checkpatch warning.
+The pull request you sent on Wed,  2 Jun 2021 04:28:58 -0700:
 
-Signed-off-by: Manikishan Ghantasala <manikishanghantasala@gmail.com>
----
- drivers/staging/rtl8192u/r8192U_hw.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.13-rc4
 
-diff --git a/drivers/staging/rtl8192u/r8192U_hw.h b/drivers/staging/rtl8192u/r8192U_hw.h
-index 1de0605a9423..217e77766442 100644
---- a/drivers/staging/rtl8192u/r8192U_hw.h
-+++ b/drivers/staging/rtl8192u/r8192U_hw.h
-@@ -88,7 +88,7 @@ enum _RTL8192Usb_HW {
- #define RX_FIFO_THRESHOLD_MASK (BIT(13) | BIT(14) | BIT(15))
- #define RX_FIFO_THRESHOLD_SHIFT 13
- #define RX_FIFO_THRESHOLD_NONE 7
--#define MAX_RX_DMA_MASK 	(BIT(8) | BIT(9) | BIT(10))
-+#define MAX_RX_DMA_MASK	(BIT(8) | BIT(9) | BIT(10))
- #define RCR_MXDMA_OFFSET	8
- #define RCR_FIFO_OFFSET		13
- #define RCR_ONLYERLPKT		BIT(31)			// Early Receiving based on Packet Size.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3bfc6ffb616f14dc268aa121b71637ef06654e92
+
+Thank you!
+
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
