@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7957397D9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 02:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D237397D9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 02:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbhFBARt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 20:17:49 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49544 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229586AbhFBARs (ORCPT
+        id S229629AbhFBASM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 20:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhFBASK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 20:17:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Ub-YtjV_1622592962;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Ub-YtjV_1622592962)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 02 Jun 2021 08:16:03 +0800
-Subject: Re: [RFC PATCH 1/4] x86/entry/nmi: Switch to the entry stack before
- switching to the thread stack
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-References: <20210601065217.23540-1-jiangshanlai@gmail.com>
- <20210601065217.23540-2-jiangshanlai@gmail.com>
- <20210601130537.7b389804@oasis.local.home>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <0ef25497-2714-ea2d-3797-5dac64636640@linux.alibaba.com>
-Date:   Wed, 2 Jun 2021 08:16:02 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Tue, 1 Jun 2021 20:18:10 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B60C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 17:16:27 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id f11so514048lfq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 17:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=78E6NeFKcH8MSEsBcY8Ia9gaTJw+NSrBe9gb2Q2dGXU=;
+        b=KgV8JLk9OZeIr9xXubuaCOwIYB48/EcV0RA9tYYQILr3jxIqTQpsPYOs+sD4eJmsxk
+         lk8YcXMZHBMNQrsqe7Bk4oH5L6NBC/0E8b5MToiLw6umt6moJbtqlrVAik3SlkR/4SLt
+         bIqUM9GxeyML5v81eUzQTXLO/OWJA6oy7bzSA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=78E6NeFKcH8MSEsBcY8Ia9gaTJw+NSrBe9gb2Q2dGXU=;
+        b=swdiHPXY6+5QEVJEZjJFpUqBZ2a2f3+5DdFN8CRRgsTqkqbqlPHeJ/0i/lj0O1uizm
+         /lhjXW9Uw74rnxLehLu7/tCnqMY2hzjDkMDp5W0ZCrrkvlPzugkn38Tb+bPX8gAZ0bXL
+         jytN/sMYEKlU2qrAc/MQP4nyz6pYXgVITJTAnEY56Y/ttfWvuX3hyBlRCG21YeCS/OF/
+         9L5Up7QC3yIF1HelxddL2iUNzzLzcv16RtcBEZyVCMYgzDudeuYU8ZtibpQR+ygRdAm1
+         fdifofCTfpEtmagOykjFpwjloVfxiEVXTTpR5ynqLsORtyYOEy8IZcSpuuYwVPCUCtqB
+         Ew3Q==
+X-Gm-Message-State: AOAM5334jvpET2Yw4YrRO0+Hc+wsLHDjXPOYpyfCFdiW+XfvhwCgc99+
+        q6Pp+Ervnp+hM3fPGKkdQg4ky0AWZIFMsZMSp0g=
+X-Google-Smtp-Source: ABdhPJxgXaD9f9GVWgpVUgf7y9aBRgwJQxMxGRe/Q7Ix7GycyAipQPhJodTnHyImoV6MaDsNrl/m4g==
+X-Received: by 2002:ac2:554d:: with SMTP id l13mr16138678lfk.228.1622592985495;
+        Tue, 01 Jun 2021 17:16:25 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id n15sm1821220lft.169.2021.06.01.17.16.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 17:16:24 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 131so306552ljj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 17:16:24 -0700 (PDT)
+X-Received: by 2002:a05:651c:1311:: with SMTP id u17mr22578068lja.48.1622592983882;
+ Tue, 01 Jun 2021 17:16:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210601130537.7b389804@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1622589753-9206-1-git-send-email-mlin@kernel.org> <1622589753-9206-3-git-send-email-mlin@kernel.org>
+In-Reply-To: <1622589753-9206-3-git-send-email-mlin@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 1 Jun 2021 14:16:08 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wip5urjbGkPsoATGRbFoXSf5bq1qMwNAWEz5OpeanE+DA@mail.gmail.com>
+Message-ID: <CAHk-=wip5urjbGkPsoATGRbFoXSf5bq1qMwNAWEz5OpeanE+DA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem read
+To:     Ming Lin <mlin@kernel.org>
+Cc:     Hugh Dickins <hughd@google.com>, Simon Ser <contact@emersion.fr>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series passes my "looks fine, is simple and straightforward" test.
 
+One nit:
 
-On 2021/6/2 01:05, Steven Rostedt wrote:
-> On Tue,  1 Jun 2021 14:52:14 +0800
-> Lai Jiangshan <jiangshanlai@gmail.com> wrote:
-> 
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> Current kernel has no code to enforce data breakpoint not on the thread
->> stack.  If there is any data breakpoint on the top area of the thread
->> stack, there might be problem.
->>
->> For example, when NMI hits on userspace in this setting, the code copies
->> the exception frame from the NMI stack to the thread stack and it will
->> cause #DB and after #DB is handled, the not yet copied portion on the
->> NMI stack is in danger of corruption because the NMI is unmasked.
->>
->> Stashing the exception frame on the entry stack before touching the
->> entry stack can fix the problem.
->>
->> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
->> ---
->>   arch/x86/entry/entry_64.S     | 22 ++++++++++++++++++++++
->>   arch/x86/kernel/asm-offsets.c |  1 +
->>   2 files changed, 23 insertions(+)
->>
->> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
->> index a5f02d03c585..4190e668f346 100644
->> --- a/arch/x86/entry/entry_64.S
->> +++ b/arch/x86/entry/entry_64.S
->> @@ -1121,8 +1121,30 @@ SYM_CODE_START(asm_exc_nmi)
->>   	 *
->>   	 * We also must not push anything to the stack before switching
->>   	 * stacks lest we corrupt the "NMI executing" variable.
->> +	 *
->> +	 * Before switching to the thread stack, it switches to the entry
->> +	 * stack first lest there is any data breakpoint in the thread
->> +	 * stack and the iret of #DB will cause NMI unmasked before
->> +	 * finishing switching.
->>   	 */
->>   
->> +	/* Switch stack to entry stack */
->> +	movq	%rsp, %rdx
->> +	addq	$(+6*8			/* to NMI stack top */		\
->> +		  -EXCEPTION_STKSZ	/* to NMI stack bottom */	\
->> +		  -CPU_ENTRY_AREA_nmi_stack /* to entry area */		\
-> 
-> Just so that I understand this correctly. This "entry area" is not part
-> of the NMI stack, but just at the bottom of it? That is, this part of
-> the stack will never be touched by an NMI coming in from kernel space,
-> correct?
+On Tue, Jun 1, 2021 at 1:22 PM Ming Lin <mlin@kernel.org> wrote:
+>
+> +               error = vm_insert_page(vma, (unsigned long)vmf->address,
+> +                                       ZERO_PAGE(0));
 
-The NMI stack, exception stacks, entry stack, TSS, GDT are part of this
-"entry area" (struct cpu_entry_area).
+On architectures where this matters - bad virtual caches - it would be
+better to use ZERO_PAGE(vmf->address).
 
-> 
-> -- Steve
-> 
-> 
->> +		  +CPU_ENTRY_AREA_entry_stack /* to entry stack bottom */\
->> +		  +SIZEOF_entry_stack	/* to entry stack top */	\
->> +		), %rsp
->> +
->> +	/* Stash exception frame and %rdx to entry stack */
->> +	pushq	5*8(%rdx)	/* pt_regs->ss */
->> +	pushq	4*8(%rdx)	/* pt_regs->rsp */
->> +	pushq	3*8(%rdx)	/* pt_regs->flags */
->> +	pushq	2*8(%rdx)	/* pt_regs->cs */
->> +	pushq	1*8(%rdx)	/* pt_regs->rip */
->> +	pushq	0*8(%rdx)	/* %rdx */
->> +
->>   	swapgs
->>   	cld
->>   	FENCE_SWAPGS_USER_ENTRY
->> diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
->> index ecd3fd6993d1..dfafa0c7e887 100644
->> --- a/arch/x86/kernel/asm-offsets.c
->> +++ b/arch/x86/kernel/asm-offsets.c
->> @@ -88,6 +88,7 @@ static void __used common(void)
->>   	OFFSET(CPU_ENTRY_AREA_entry_stack, cpu_entry_area, entry_stack_page);
->>   	DEFINE(SIZEOF_entry_stack, sizeof(struct entry_stack));
->>   	DEFINE(MASK_entry_stack, (~(sizeof(struct entry_stack) - 1)));
->> +	OFFSET(CPU_ENTRY_AREA_nmi_stack, cpu_entry_area, estacks.NMI_stack);
->>   
->>   	/* Offset for fields in tss_struct */
->>   	OFFSET(TSS_sp0, tss_struct, x86_tss.sp0);
+It doesn't make a difference on any sane architecture, but it's the
+RightThing(tm) to do.
+
+            Linus
