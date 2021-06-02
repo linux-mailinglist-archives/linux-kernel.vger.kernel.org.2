@@ -2,167 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A82039859E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F3B3985AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhFBJuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:50:17 -0400
-Received: from mga09.intel.com ([134.134.136.24]:43507 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232385AbhFBJuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:50:10 -0400
-IronPort-SDR: eQ3HEn+p6ZSFy1PVIGrpmxTVdVuX0X3lHs4PxR7ag/g3E9VXKtDtbkCgjrE/ze2ofpftqdoyy7
- FzDlL6eWiWWw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="203744559"
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="203744559"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 02:48:27 -0700
-IronPort-SDR: T9kP3vBxFolMa+dSg63YErrLDz4poagG0ixBgmUKb4GyLFYEYHYsB5WrlZUmuz7ADjxozYlrVu
- LYmtU3EEDBow==
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="447337560"
-Received: from tstaplex-mobl1.ger.corp.intel.com (HELO [10.213.195.193]) ([10.213.195.193])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 02:48:24 -0700
-Subject: Re: [Intel-gfx] [PATCH -next] drm/i915: use DEVICE_ATTR_RO macro
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-To:     YueHaibing <yuehaibing@huawei.com>, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, chris@chris-wilson.co.uk,
-        tvrtko.ursulin@intel.com
-Cc:     intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20210528100403.21548-1-yuehaibing@huawei.com>
- <7e60320b-3a1b-0cdc-136d-29c139b27af7@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <80d29f19-f429-875f-d255-259a73051f51@linux.intel.com>
-Date:   Wed, 2 Jun 2021 10:48:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232425AbhFBJwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:52:08 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41183 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231140AbhFBJv7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:51:59 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1529nCrT004370;
+        Wed, 2 Jun 2021 11:49:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=EWRidho0dnsJM1LKzQGAhZ8GVYTIGNPTjg8OhRES9Og=;
+ b=aQULshdvaG7MYq/d5lr5El5lk8iXogePW9WADjwm5glQgx90j8NTufRnreS+EK2hZOXW
+ ZxKGiBEdZnSx9bOQtT1IBPDzs5IWxboF3GyAR0oNqU+uHPoW7bVPL9QAPZvARpVBoZqG
+ FJjeRCS86ha/b5h+2XaYhEXEz48uRwyqax8x8TMJen3WcyOE3e3Izt1Sf08yQTNoGNq/
+ TbQpk/0buLkvMmOb/uoygw2Y2lMUjivtge30Bblgpo9OJEVLuq+FFazPBgwHPyH5lJMf
+ nneYoj7cAZj89bgmBYJqGDUyuwmeVWFjImyu6WPmWh3PTZFZHcIxAh+djlmCgSyvy3Ub CQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38x3gxmkpv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 11:49:56 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BE8B810002A;
+        Wed,  2 Jun 2021 11:49:54 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92491216ED7;
+        Wed,  2 Jun 2021 11:49:54 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Jun 2021 11:49:53
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: [PATCH v5 0/3]  mtd: spinand: add SPI-NAND MTD resume handler
+Date:   Wed, 2 Jun 2021 11:49:10 +0200
+Message-ID: <20210602094913.26472-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <7e60320b-3a1b-0cdc-136d-29c139b27af7@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-02_05:2021-06-02,2021-06-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-On 01/06/2021 10:15, Tvrtko Ursulin wrote:
-> 
-> On 28/05/2021 11:04, YueHaibing wrote:
->> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
->> which makes the code a bit shorter and easier to read.
->>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>   drivers/gpu/drm/i915/i915_pmu.c   |  8 +++-----
->>   drivers/gpu/drm/i915/i915_sysfs.c | 30 +++++++++++++++---------------
->>   2 files changed, 18 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/i915_pmu.c 
->> b/drivers/gpu/drm/i915/i915_pmu.c
->> index 41651ac255fa..fb215929b05b 100644
->> --- a/drivers/gpu/drm/i915/i915_pmu.c
->> +++ b/drivers/gpu/drm/i915/i915_pmu.c
->> @@ -834,15 +834,13 @@ static ssize_t i915_pmu_event_show(struct device 
->> *dev,
->>       return sprintf(buf, "config=0x%lx\n", eattr->val);
->>   }
->> -static ssize_t
->> -i915_pmu_get_attr_cpumask(struct device *dev,
->> -              struct device_attribute *attr,
->> -              char *buf)
->> +static ssize_t cpumask_show(struct device *dev,
->> +                struct device_attribute *attr, char *buf)
->>   {
->>       return cpumap_print_to_pagebuf(true, buf, &i915_pmu_cpumask);
->>   }
->> -static DEVICE_ATTR(cpumask, 0444, i915_pmu_get_attr_cpumask, NULL);
->> +static DEVICE_ATTR_RO(cpumask);
->>   static struct attribute *i915_cpumask_attrs[] = {
->>       &dev_attr_cpumask.attr,
->> diff --git a/drivers/gpu/drm/i915/i915_sysfs.c 
->> b/drivers/gpu/drm/i915/i915_sysfs.c
->> index 4c6b5d52b5ca..183517d1a73d 100644
->> --- a/drivers/gpu/drm/i915/i915_sysfs.c
->> +++ b/drivers/gpu/drm/i915/i915_sysfs.c
->> @@ -58,8 +58,8 @@ static u32 calc_residency(struct drm_i915_private 
->> *dev_priv,
->>       return DIV_ROUND_CLOSEST_ULL(res, 1000);
->>   }
->> -static ssize_t
->> -show_rc6_mask(struct device *kdev, struct device_attribute *attr, 
->> char *buf)
->> +static ssize_t rc6_enable_show(struct device *kdev,
->> +                   struct device_attribute *attr, char *buf)
->>   {
->>       struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->>       unsigned int mask;
->> @@ -75,43 +75,43 @@ show_rc6_mask(struct device *kdev, struct 
->> device_attribute *attr, char *buf)
->>       return sysfs_emit(buf, "%x\n", mask);
->>   }
->> -static ssize_t
->> -show_rc6_ms(struct device *kdev, struct device_attribute *attr, char 
->> *buf)
->> +static ssize_t rc6_residency_ms_show(struct device *kdev,
->> +                     struct device_attribute *attr, char *buf)
->>   {
->>       struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->>       u32 rc6_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6);
->>       return sysfs_emit(buf, "%u\n", rc6_residency);
->>   }
->> -static ssize_t
->> -show_rc6p_ms(struct device *kdev, struct device_attribute *attr, char 
->> *buf)
->> +static ssize_t rc6p_residency_ms_show(struct device *kdev,
->> +                      struct device_attribute *attr, char *buf)
->>   {
->>       struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->>       u32 rc6p_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6p);
->>       return sysfs_emit(buf, "%u\n", rc6p_residency);
->>   }
->> -static ssize_t
->> -show_rc6pp_ms(struct device *kdev, struct device_attribute *attr, 
->> char *buf)
->> +static ssize_t rc6pp_residency_ms_show(struct device *kdev,
->> +                       struct device_attribute *attr, char *buf)
->>   {
->>       struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->>       u32 rc6pp_residency = calc_residency(dev_priv, GEN6_GT_GFX_RC6pp);
->>       return sysfs_emit(buf, "%u\n", rc6pp_residency);
->>   }
->> -static ssize_t
->> -show_media_rc6_ms(struct device *kdev, struct device_attribute *attr, 
->> char *buf)
->> +static ssize_t media_rc6_residency_ms_show(struct device *kdev,
->> +                       struct device_attribute *attr, char *buf)
->>   {
->>       struct drm_i915_private *dev_priv = kdev_minor_to_i915(kdev);
->>       u32 rc6_residency = calc_residency(dev_priv, VLV_GT_MEDIA_RC6);
->>       return sysfs_emit(buf, "%u\n", rc6_residency);
->>   }
->> -static DEVICE_ATTR(rc6_enable, S_IRUGO, show_rc6_mask, NULL);
->> -static DEVICE_ATTR(rc6_residency_ms, S_IRUGO, show_rc6_ms, NULL);
->> -static DEVICE_ATTR(rc6p_residency_ms, S_IRUGO, show_rc6p_ms, NULL);
->> -static DEVICE_ATTR(rc6pp_residency_ms, S_IRUGO, show_rc6pp_ms, NULL);
->> -static DEVICE_ATTR(media_rc6_residency_ms, S_IRUGO, 
->> show_media_rc6_ms, NULL);
->> +static DEVICE_ATTR_RO(rc6_enable);
->> +static DEVICE_ATTR_RO(rc6_residency_ms);
->> +static DEVICE_ATTR_RO(rc6p_residency_ms);
->> +static DEVICE_ATTR_RO(rc6pp_residency_ms);
->> +static DEVICE_ATTR_RO(media_rc6_residency_ms);
->>   static struct attribute *rc6_attrs[] = {
->>       &dev_attr_rc6_enable.attr,
->>
-> 
-> Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Changes in v5:
+  - spinand_init_cfg_cache() only allocates spinand->cfg_cache array,
+    spinand_read_cfg() is called directly in spinand_init().
 
-Pushed thanks for the patch!
+Changes in v4:
+  - Add spinand_init_flash helper()
+  - Remove no more needed spinand_block_unlock() helper introduced in v2	
 
-Regards,
+Changes in v3:
+  - Add spinand_read_cfg() helper 
+  - Add spinand_read_cfg() call to repopulate cache during resume
+  - Split v2 patch in 3 patches
 
-Tvrtko
+Changes in v2:
+  - Add helper spinand_block_unlock().
+  - Add spinand_ecc_enable() call.
+  - Remove some dev_err().
+  - Fix commit's title and message.
+
+Patrice Chotard (3):
+  mtd: spinand: add spinand_read_cfg() helper
+  mtd: spinand: Add spinand_init_flash() helper
+  mtd: spinand: add SPI-NAND MTD resume handler
+
+ drivers/mtd/nand/spi/core.c | 112 +++++++++++++++++++++++++-----------
+ 1 file changed, 78 insertions(+), 34 deletions(-)
+
+-- 
+2.17.1
+
