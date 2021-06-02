@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7B03987F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5324C3987F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhFBLW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232252AbhFBLWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:22:52 -0400
-Received: from mailserv1.kapsi.fi (mailserv1.kapsi.fi [IPv6:2001:67c:1be8::25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E56C061574;
-        Wed,  2 Jun 2021 04:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=ext.kapsi.fi; s=20161220; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=pTMDdwyY3se7ek/n/DJtuBUdgsXKAqw0dSJWJKXqcA0=; b=PWMct+5rxQ4tyKOsNWCff+5qEc
-        +Fs2+5OCkxwcFZExbJJBLvWwyGz0EJBJthz1WMB1c64OajSxVru0oFeTEOgTSUqT1h2gUOeqLJf1b
-        p+2zyP268IhhYUAB6xYzVu4sn36ackNuhzkRuTPavrM47zu/2EDLpvEHrWNoTsV2TGp6b3jfa9Puc
-        sOAq1p+T5s759lbYCcT+ymjUs6zQPr6GFgdbYfwgRM/s5/4sxCZbjnq+qGVKMisuyEuWD9UsP1n3z
-        PwWCGUILjyPJzBFIeTDLV2hozBmK92NzDEjvxrLYVm83FoYR8xoJmNZU3lYR6YF5KNXBmh6rbuOje
-        i+aMvFcw==;
-Received: from sein11.ut.ee ([193.40.12.11]:11475 helo=[172.17.163.37])
-        by mailserv1.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <maukka@ext.kapsi.fi>)
-        id 1loOvn-0008TD-SD; Wed, 02 Jun 2021 14:21:06 +0300
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mauri Sandberg <sandberg@mailfence.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210530161333.3996-1-maukka@ext.kapsi.fi>
- <20210530161333.3996-2-maukka@ext.kapsi.fi>
- <CACRpkdZfdd=ogHoNGuLzGGZYkvw7xtNO2VJm-t-2vMibGNy=dA@mail.gmail.com>
- <866ff376-6d74-49c9-9e4c-2bf36bbd5981@ext.kapsi.fi>
- <CACRpkda9LD00=mUjLbb+wG3mnEVHbyqj-3L98=c-k-bV54gmTg@mail.gmail.com>
-From:   Mauri Sandberg <maukka@ext.kapsi.fi>
-Message-ID: <3548155a-e634-c433-7173-77b56180ed98@ext.kapsi.fi>
-Date:   Wed, 2 Jun 2021 14:21:02 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S230456AbhFBLWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:22:34 -0400
+Received: from mga07.intel.com ([134.134.136.100]:44699 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229825AbhFBLWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 07:22:32 -0400
+IronPort-SDR: yRXCL5WybYVQ8m/h1msb1SZ+vVQYyLzU5V8sCqZguFmu5+igSSmV2bmvyhxKWY2bZa5XUurZ4u
+ ZXgo+KvO9g0g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="267636760"
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="267636760"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 04:20:49 -0700
+IronPort-SDR: 4m0gHXhGvtUJ1qswUHHxLfFeUPjV8wDPYc6Muh1nqT8FTFRUcP7OzZQmHFhf8RLKScCzNbSImJ
+ CTLA0JZuG18Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="479673306"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by orsmga001.jf.intel.com with ESMTP; 02 Jun 2021 04:20:44 -0700
+Subject: Re: [PATCH v2 6/8] perf auxtrace: Drop legacy __sync functions
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-7-leo.yan@linaro.org>
+ <fc7bfa25-d96e-ea6d-2756-f94653dc4771@intel.com>
+ <20210602111620.GD10272@leoy-ThinkPad-X240s>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d179137e-4bbc-0026-3273-622f6dedb002@intel.com>
+Date:   Wed, 2 Jun 2021 14:21:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CACRpkda9LD00=mUjLbb+wG3mnEVHbyqj-3L98=c-k-bV54gmTg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210602111620.GD10272@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 193.40.12.11
-X-SA-Exim-Mail-From: maukka@ext.kapsi.fi
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mailserv1.kapsi.fi
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v4 1/2] dt-bindings: gpio-mux-input: add documentation
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on mailserv1.kapsi.fi)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On 2.6.2021 13.35, Linus Walleij wrote:
-> On Wed, Jun 2, 2021 at 11:31 AM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
+On 2/06/21 2:16 pm, Leo Yan wrote:
+> Hi Adrian,
 > 
->> But there is a small detail that needs to be sorted out.
->> The name 'gpio-mux'
->> has already been taken by 'mux-gpio' driver [2] [3].
+> On Wed, Jun 02, 2021 at 01:47:42PM +0300, Adrian Hunter wrote:
 > 
-> What about "gpio-multiplexer"?
+> [...]
 > 
-> It is not good that the thing using GPIOs to do multiplexing
-> has take a name that seem to infer that GPIOs are being
-> multiplexed. Now we can't do much about that we just have
-> to live with it. How typical of formal languages to screw
-> with the semantics of natural languages and create confusion...
+>>> @@ -451,11 +445,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
+>>>  static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+>>>  {
+>>>  	struct perf_event_mmap_page *pc = mm->userpg;
+>>> -#if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
+>>
+>> The test and setup for HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT is not needed anymore either.
 > 
+> Yes, I think there have two files should be cleaned:
+> 
+>   Makefile.config
+>   util/auxtrace.c
+> 
+> If still miss anything, please let me know (I remembered there have a
+> test case for __sync_xxx_compare_and_swap, but I cannot find it now,
+> so this is why I am concern if I miss anything not).
 
-I am afraid having 'gpio-mux' and 'gpio-multiplexer' would create too 
-many what-were-they-thinking moments for any unfortunate reader so I 
-would rather choose something else. Can we just call it 'gpio-cascade' 
-without referral to the underlying mux? Maybe at somepoint in future 
-something else could be used in its place too.
-
--- Mauri
-
+tools/build/feature/test-sync-compare-and-swap.c
