@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E890397E10
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FF0397E38
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhFBBdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 21:33:55 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3498 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhFBBdy (ORCPT
+        id S230180AbhFBBsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 21:48:32 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6126 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230135AbhFBBsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 21:33:54 -0400
-Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvrzT3cVXzYsPN;
-        Wed,  2 Jun 2021 09:29:25 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+        Tue, 1 Jun 2021 21:48:31 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvsJM3z25zYpms;
+        Wed,  2 Jun 2021 09:44:03 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 09:46:47 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 2 Jun 2021 09:32:08 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <mchehab@kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-CC:     <sakari.ailus@linux.intel.com>, <gregkh@linuxfoundation.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v2 -next] media: atomisp: Remove unneeded if-null-free check
-Date:   Wed, 2 Jun 2021 09:45:47 +0800
-Message-ID: <20210602014547.4135423-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ 15.1.2176.2; Wed, 2 Jun 2021 09:46:46 +0800
+Subject: Re: [PATCH 4.14 00/79] 4.14.235-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210531130636.002722319@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <29c1fbce-0eae-902d-651f-87ac934e344c@huawei.com>
+Date:   Wed, 2 Jun 2021 09:46:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme760-chm.china.huawei.com (10.3.19.106)
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
 
-drivers/staging/media/atomisp/pci/sh_css_firmware.c:367:4-10: WARNING:
-NULL check before some freeing functions is not needed.
-drivers/staging/media/atomisp/pci/sh_css_firmware.c:369:4-10: WARNING:
-NULL check before some freeing functions is not needed.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/staging/media/atomisp/pci/sh_css_firmware.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On 2021/5/31 21:13, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.235 release.
+> There are 79 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.235-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_firmware.c b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-index f4ce8ace9d50..5301cc014c7e 100644
---- a/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-@@ -363,10 +363,8 @@ void sh_css_unload_firmware(void)
- 		unsigned int i = 0;
- 
- 		for (i = 0; i < sh_css_num_binaries; i++) {
--			if (fw_minibuffer[i].name)
--				kfree((void *)fw_minibuffer[i].name);
--			if (fw_minibuffer[i].buffer)
--				kvfree(fw_minibuffer[i].buffer);
-+			kfree((void *)fw_minibuffer[i].name);
-+			kvfree(fw_minibuffer[i].buffer);
- 		}
- 		kfree(fw_minibuffer);
- 		fw_minibuffer = NULL;
--- 
-2.25.1
+Tested on x86 for 4.14.235-rc1,
 
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.14.y
+Version: 4.14.235-rc1
+Commit: 709fde45859bbcf6ad058f7f29761df9adfc26b4
+Compiler: gcc version 7.3.0 (GCC)
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8835
+passed: 8835
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
