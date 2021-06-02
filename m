@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FC43980B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02C23980B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhFBFk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 01:40:28 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58104 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229748AbhFBFk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 01:40:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622612325; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=g2jQLvmNDkv0M+pVgOjszfDqwE56kNAfKvmEEL+w9Uw=;
- b=ch+xbNAHLLRBVPunNBNbXgEjHnae/S41ZetTpa6xB/UcI9149/WaCKaT32WZxfpUxgiWc/OL
- VWh1r3f5vUwGsz/5e3+KElO22WXwWh3PtRiJ2cfko7ppFGcPYqCSwuNxbK5UoEtNPC6XdyR5
- m4qPsur5Prz1lOJ8NC3/LUQXkYQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60b719646ddc3305c4d4f54a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 05:38:44
- GMT
-Sender: rajeevny=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D95B5C43144; Wed,  2 Jun 2021 05:38:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S230044AbhFBFmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 01:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229748AbhFBFmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 01:42:49 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07FBC061574;
+        Tue,  1 Jun 2021 22:41:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: rajeevny)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28564C433D3;
-        Wed,  2 Jun 2021 05:38:42 +0000 (UTC)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvyYm0Nlpz9s5R;
+        Wed,  2 Jun 2021 15:41:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622612463;
+        bh=kPeF2ypexQ5j7kpsHIFTGppjeBxQ/8AoFIpFe07ssak=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kOWUWT8DwmNnNB8oEBdp6vsKHswrtko+Km/xqZbsmeRbIkSn9xgzEiODHu6P/jtZM
+         EShreXHryfkcfZ7v2VVS9/uSMhJXdn+jJdap1TvkAodHcXib6fZDIqdFJRTujpJ/kS
+         Q6n8pyEjQFgbcybSNe/mlxkQ1syRPtbGYfAN5/X4Kd2n5IRaSRQoyNC1Y8FBTgIpKy
+         41O+j6+AnkeumL24li6odujShKXq8MTpZeuW4RHIqdP3GNDLBmKs/fDf1C2eKaHHv1
+         TzWu16mVI1x9MTiuDBIhjcuFMRaeb5/VBVLuxG8C4Awgo0XmaJqU0GuBFvNzmy7DUk
+         1r9DMeIGHEPcg==
+Date:   Wed, 2 Jun 2021 15:40:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Yue Hu <huyue2@yulong.com>
+Subject: linux-next: manual merge of the akpm-current tree with the block
+ tree
+Message-ID: <20210602154057.409ca400@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 02 Jun 2021 11:08:42 +0530
-From:   rajeevny@codeaurora.org
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thierry.reding@gmail.com, sam@ravnborg.org, robdclark@gmail.com,
-        dianders@chromium.org, jani.nikula@intel.com, robh@kernel.org,
-        laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
-        daniel.thompson@linaro.org, hoegsberg@chromium.org,
-        abhinavk@codeaurora.org, seanpaul@chromium.org,
-        kalyan_t@codeaurora.org, mkrishn@codeaurora.org
-Subject: Re: [v4 1/4] drm/panel-simple: Add basic DPCD backlight support
-In-Reply-To: <4df7dcddd5aca799361642ea91c37fa94e8a4fef.camel@redhat.com>
-References: <1621927831-29471-1-git-send-email-rajeevny@codeaurora.org>
- <1621927831-29471-2-git-send-email-rajeevny@codeaurora.org>
- <4df7dcddd5aca799361642ea91c37fa94e8a4fef.camel@redhat.com>
-Message-ID: <5baa08346ac035a9b72098b1e514b7d6@codeaurora.org>
-X-Sender: rajeevny@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; boundary="Sig_//XGu7_NQ8de0/CpwNUas+sl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-06-2021 03:50, Lyude Paul wrote:
-> oh-looks like my patches just got reviewed, so hopefully I should get a 
-> chance
-> to get a look at this in the next day or two :)
-> 
+--Sig_//XGu7_NQ8de0/CpwNUas+sl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Lyude,
+Hi all,
 
-That's great!
-I have updated v5 [1] of this series addressing Doug's review comments 
-on v4 [2]. 
-Please review the v5.
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-[1] 
-https://lore.kernel.org/linux-arm-msm/1622390172-31368-1-git-send-email-rajeevny@codeaurora.org/
-[2] 
-https://lore.kernel.org/linux-arm-msm/CAD=FV=WzQ0Oc=e3kmNeBZUA+P1soKhBk8zt7bG1gqJ-Do-Tq_w@mail.gmail.com/
+  drivers/block/zram/zram_drv.h
 
+between commit:
 
-Thanks,
-Rajeev
+  a8698707a183 ("block: move bd_mutex to struct gendisk")
+
+from the block tree and commit:
+
+  53dc46e0dbcf ("zram: move backing_dev under macro CONFIG_ZRAM_WRITEBACK")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/block/zram/zram_drv.h
+index 74c411911b6e,6e73dc3c2769..000000000000
+--- a/drivers/block/zram/zram_drv.h
++++ b/drivers/block/zram/zram_drv.h
+@@@ -112,9 -112,9 +112,9 @@@ struct zram=20
+  	/*
+  	 * zram is claimed so open request will be failed
+  	 */
+ -	bool claim; /* Protected by bdev->bd_mutex */
+ +	bool claim; /* Protected by disk->open_mutex */
+- 	struct file *backing_dev;
+  #ifdef CONFIG_ZRAM_WRITEBACK
++ 	struct file *backing_dev;
+  	spinlock_t wb_limit_lock;
+  	bool wb_limit_enable;
+  	u64 bd_wb_limit;
+
+--Sig_//XGu7_NQ8de0/CpwNUas+sl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC3GekACgkQAVBC80lX
+0GzSLQgAo9uW8F2mkELIJyN7bT+vLdiZGt9Tfje4mApZFyL4ZR/opoL+kwwaE5/m
+dgZ3H+9df6PYsKokuPqyPEAz7MntWK5lpYQ9V1EEmb/X2Qr+mJcC4PsP6w4kJMeN
+1c1lhE6wtTDsod9UT7qvbCIO7yCfqnk1H6z6iHlQTy+cEJsAVp5pTgLMXqz3pzBa
+vgB0dlNeK2m5HwPVrKoUWn3Mk84Wsnd+juvZPXO0VFd3OM1jJMMhLcZCy3+qnTL3
+adWfhU5d9w3lYIpq9BFHkhIKvYARcUfzdZFghziM1k0x8FxbT29rDT0QvLhB+VC/
+CTs1TkbBdJtoShres3Ozih1NxiTThA==
+=HL2K
+-----END PGP SIGNATURE-----
+
+--Sig_//XGu7_NQ8de0/CpwNUas+sl--
