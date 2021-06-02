@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273CF398886
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB27639888A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhFBLqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:46:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2966 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhFBLpo (ORCPT
+        id S230094AbhFBLqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhFBLqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:45:44 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw6Y95rBmz693t;
-        Wed,  2 Jun 2021 19:41:01 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 19:43:59 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 19:43:58 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        patches <patches@opensource.cirrus.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 9/9] mfd: ab8500-core: use DEVICE_ATTR_RO/RW macro
-Date:   Wed, 2 Jun 2021 19:43:39 +0800
-Message-ID: <20210602114339.11223-10-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210602114339.11223-1-thunder.leizhen@huawei.com>
-References: <20210602114339.11223-1-thunder.leizhen@huawei.com>
+        Wed, 2 Jun 2021 07:46:43 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7114BC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:45:00 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 65so520673qkg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c7B5VYXb1hXtkVcmsAu7YE6fWHrPkvp7djNJpQjD+rs=;
+        b=BmaSnXy652DnCLCEJF2G/suHHDbSWIFut2HaKZ1zEHXvfKqDuhcu9Jh4Uns2kYVXaT
+         Y8RQDVfQ7Z0tH9hDxpziy7OaTdQivkbuhxXFsrcWPV5yeUX9Dp3lsHpGy0EAV/pewSgN
+         jjvzx8ZVlVxwj2qknWzzSYbPVoCNPzrqngSx+jfT0XIa2iRhoFta1p/xfK4c6+OKhmqr
+         InhlBsRkJfN9mqFkRr5ovnDbVk2PIz2m7YE5uQzLbTg5PzH23P34iKvQDRg+UEqFqNET
+         Wu0lLP6BNRLbX7k3tBderTuuRbjZEXHYgBwCJ6/egPM9TQa8rsDd2SFoAvvxElGKf39v
+         UbeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=c7B5VYXb1hXtkVcmsAu7YE6fWHrPkvp7djNJpQjD+rs=;
+        b=PCcT5Ci62Xr3+sra9txJm2SFm0hSPnnNrrmRZKSyitu+Q/3p8aeukhydjAFj/tXQZH
+         qndEIHc/z662a2esETSCccw3yYjhxXELdWVCrcAa6ohbDbpiD9ejUYOfDX+L+iFnD3hJ
+         6zjlPyMwnnGOj09Zxx8iCKi/DaGrjWjrCm8kxZqTEgef5Ftk9qwHUYfM8bJn8VgPtG9L
+         7Zz2gkNzmZ0DTrXIxpMHiZVODzNqeL7BeeK77qRBjwniiZECl35RQ+E4hPTUD6ae/1NZ
+         l6kkzaUI5yUQfQx5SfksbU9ZtjTixcKbdSmfQP1ypfl+ZDdGMOePz88N3T5hvukAORq0
+         aesQ==
+X-Gm-Message-State: AOAM533cWw6TUAMPgkR+HtpHNiwlku9BykPZOWIM531cbZMSfmIhpg4R
+        yjyuFeG3xqHyYkZ0rzi5Iv9l69j5v/U=
+X-Google-Smtp-Source: ABdhPJzPWKYZSEVv1uxrhRoBGEXuC+r96UHXUE5SDSp4iC5LR31tYYuU+Ckg7gTga8yxoE85Tn4kSg==
+X-Received: by 2002:a37:86c3:: with SMTP id i186mr19154779qkd.151.1622634299539;
+        Wed, 02 Jun 2021 04:44:59 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t6sm13207713qkh.117.2021.06.02.04.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 04:44:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 2 Jun 2021 04:44:57 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.13-rc4
+Message-ID: <20210602114457.GA2899409@roeck-us.net>
+References: <CAHk-=wjKJ5Mw7P=U0AyhFJbGB+4TT=SE=tmf=md0cqEn527HFg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjKJ5Mw7P=U0AyhFJbGB+4TT=SE=tmf=md0cqEn527HFg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_RO/RW macro helper instead of plain DEVICE_ATTR, which
-makes the code a bit shorter and easier to read.
+On Sun, May 30, 2021 at 12:19:14PM -1000, Linus Torvalds wrote:
+> So after two small rc releases, the other show finally dropped, and
+> rc4 is fairly sizable.
+> 
+> It's not the biggest rc4 we've ever had, but it's certainly up there,
+> believably competing for the title.
+> 
+> That said, exactly because of the calm rc2 and rc3, the size of rc4
+> doesn't worry me, and I think the 5.13 release looks fairly normal.
+> This bump is just because we had some stable work finally hit my tree.
+> Notably the networking tree, but there's a lot of driver tree fixes
+> too.
+> 
+> The fixes are fairly spread out, and mostly small. Some of the bigger
+> chunks are for new self tests (both bpf and kvm), and outside of those
+> new tests the diffstat looks nice and flat (ie lots of smaller changes
+> rather than big peaks). Networking (both core and drivers) does stand
+> out, but there are filesystem fixes too (xfs, nfs, cifs), various
+> random driver subsystems (sound, i2c, tty, usb, iio, scsi, spi..). And
+> some arch updates (mostly kvm-related, but small arm64, s390, MIPS
+> fixes - and some powerpc perf event descriptions too).
+> 
+> Please do go test, and let's make sure 5.13 is solid.
+> 
+Build results:
+	total: 151 pass: 151 fail: 0
+Qemu test results:
+	total: 462 pass: 462 fail: 0
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/mfd/ab8500-core.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
-index c2ba498ad302dcd..30489670ea528ce 100644
---- a/drivers/mfd/ab8500-core.c
-+++ b/drivers/mfd/ab8500-core.c
-@@ -827,8 +827,8 @@ static const struct mfd_cell ab8540_cut2_devs[] = {
- 	},
- };
- 
--static ssize_t show_chip_id(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t chip_id_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
- {
- 	struct ab8500 *ab8500;
- 
-@@ -848,8 +848,8 @@ static ssize_t show_chip_id(struct device *dev,
-  * 0x40 Power on key 1 pressed longer than 10 seconds
-  * 0x80 DB8500 thermal shutdown
-  */
--static ssize_t show_switch_off_status(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t switch_off_status_show(struct device *dev,
-+				      struct device_attribute *attr, char *buf)
- {
- 	int ret;
- 	u8 value;
-@@ -883,8 +883,8 @@ void ab8500_override_turn_on_stat(u8 mask, u8 set)
-  * 0x40 UsbIDDetect
-  * 0x80 Reserved
-  */
--static ssize_t show_turn_on_status(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t turn_on_status_show(struct device *dev,
-+				   struct device_attribute *attr, char *buf)
- {
- 	int ret;
- 	u8 value;
-@@ -912,8 +912,8 @@ static ssize_t show_turn_on_status(struct device *dev,
- 	return sprintf(buf, "%#x\n", value);
- }
- 
--static ssize_t show_turn_on_status_2(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t turn_on_status_2_show(struct device *dev,
-+				     struct device_attribute *attr, char *buf)
- {
- 	int ret;
- 	u8 value;
-@@ -927,8 +927,8 @@ static ssize_t show_turn_on_status_2(struct device *dev,
- 	return sprintf(buf, "%#x\n", (value & 0x1));
- }
- 
--static ssize_t show_ab9540_dbbrstn(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t dbbrstn_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
- {
- 	struct ab8500 *ab8500;
- 	int ret;
-@@ -945,7 +945,7 @@ static ssize_t show_ab9540_dbbrstn(struct device *dev,
- 			(value & AB9540_MODEM_CTRL2_SWDBBRSTN_BIT) ? 1 : 0);
- }
- 
--static ssize_t store_ab9540_dbbrstn(struct device *dev,
-+static ssize_t dbbrstn_store(struct device *dev,
- 	struct device_attribute *attr, const char *buf, size_t count)
- {
- 	struct ab8500 *ab8500;
-@@ -980,12 +980,11 @@ static ssize_t store_ab9540_dbbrstn(struct device *dev,
- 	return ret;
- }
- 
--static DEVICE_ATTR(chip_id, S_IRUGO, show_chip_id, NULL);
--static DEVICE_ATTR(switch_off_status, S_IRUGO, show_switch_off_status, NULL);
--static DEVICE_ATTR(turn_on_status, S_IRUGO, show_turn_on_status, NULL);
--static DEVICE_ATTR(turn_on_status_2, S_IRUGO, show_turn_on_status_2, NULL);
--static DEVICE_ATTR(dbbrstn, S_IRUGO | S_IWUSR,
--			show_ab9540_dbbrstn, store_ab9540_dbbrstn);
-+static DEVICE_ATTR_RO(chip_id);
-+static DEVICE_ATTR_RO(switch_off_status);
-+static DEVICE_ATTR_RO(turn_on_status);
-+static DEVICE_ATTR_RO(turn_on_status_2);
-+static DEVICE_ATTR_RW(dbbrstn);
- 
- static struct attribute *ab8500_sysfs_entries[] = {
- 	&dev_attr_chip_id.attr,
--- 
-2.26.0.106.g9fadedd
-
-
+Guenter
