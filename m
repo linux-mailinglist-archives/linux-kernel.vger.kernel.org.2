@@ -2,71 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C813986F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FB23986F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhFBKwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
+        id S232019AbhFBKw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhFBKvR (ORCPT
+        with ESMTP id S230131AbhFBKvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:51:17 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B197C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:49:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=EkbXm6SBuZ2S0H9NVmaaiVML0Iec/wK4VouHyYsGZAY=; b=SVuQF9CmJN0EofsAoaGVsndKk
-        EXJIlYIhoKZzXD0d/7t+XDiGdnPUc5ue6Mrspcj5xWXqXossC5eF315bJYzCCREK0/21pHpVzqlWm
-        TBAPlyOEq2RQyWyBSLXNmwhLnJSO0I7A2tTM/rHXfYLXo6YhEjsSqfIwpkCj3YywBvWTfZh8gCiL9
-        krXR74D8cKT7LymxFF79pnYtzBPlNciOEZd24p1YCX+YSImGSshHLLEeydNJZ/tLDwECNXwh3eJpH
-        REaEXqsVkw0dwEYkxQEAGE4XntUy4YVGoer3m3ucM6+IjbNoLJydpDfWuzDzKkOwfPMqOsIajWGUK
-        W9lgJA4RQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44620)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1loORF-00013O-R8; Wed, 02 Jun 2021 11:49:29 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1loORF-00014N-DZ; Wed, 02 Jun 2021 11:49:29 +0100
-Date:   Wed, 2 Jun 2021 11:49:29 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
+        Wed, 2 Jun 2021 06:51:46 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB91C061763
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:49:55 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so1434215wmq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iBPgoenc4+VXFgVYv4Mb1skeP6ikfbF6DUFZDuY5ah0=;
+        b=qMBk9o3bcP5GtSnrBEjM+uWb62KPrE2rQIg+ZFejyIJ7KDc7EuHbWv6Ier5kZTigIR
+         5mXf3/3MmGJskgrxiaqGw4px5jD+G+hWfPNKX0VB3Q90xVaVC9W2ub5I3+4rYkIr8C6L
+         chxtaxQI8hnb/YGqTd3MdhmSJpqeWk8UrZcTCfv9IvFWRmdLQcBX8tWbGKN4KBvbOEJ+
+         EETPihJUuo8Fv747IZjxQehWVelRce/UwRVy83oJFO+hbvPTHpQi+IVjW3yMXgmJzK+H
+         F27yNQMNOwh5K9XYmMwdm2gEuDDNQoEjQcctogIZhgnGP8eVl1utqqHRhFOj1a+KnMcs
+         NNSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iBPgoenc4+VXFgVYv4Mb1skeP6ikfbF6DUFZDuY5ah0=;
+        b=HmxkOjF8yAr9csDjpw/562y6ckUuGjCnKgblsR3Nf6Cbc6Lc162ZzMfxu9YNBtMxHs
+         dbcqR3J+IgHIOyU8avDXYmsn/cjK7Yqf9e/67HpzARxLcsP6lGFMmD8WNxKO6wIQXl4e
+         YHsz2wjpNYZLxcnQ15XRca5/2AtZ5DA2IBzwir2N7C5xRwdVe6fw5VCRyGWXZutUxCw0
+         YY5g8o6ZO2A8BOcSobdyi7PF/QlIffnAKPaychmfNZX6Rwy05BMjLjE8FctnuOrgpRjk
+         pNnv5M/h784m2Vqt40nUzwStW/ygmSSr/43SoMJvoLZtfqJeZvt+IH69eAPtiDQP9vcE
+         IFMQ==
+X-Gm-Message-State: AOAM532WEZPNd1Em9Dk9ECAm/Mej+rJWtH6IYTnYZqyoe/mTFdIhYkzo
+        hd/oKU1kBIwLda6Z4kmjrRRNwQ==
+X-Google-Smtp-Source: ABdhPJxJX3H2bjJ6ZWWGMvygaz55JMVzxmecp5Rkf4VcZ3RHRl9KDTV+xgJcccrQmFsHPJCg9w3A/w==
+X-Received: by 2002:a7b:cc8f:: with SMTP id p15mr4585583wma.111.1622630993639;
+        Wed, 02 Jun 2021 03:49:53 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id a123sm2687146wmd.2.2021.06.02.03.49.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 03:49:53 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 10:49:50 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Yanan Wang <wangyanan55@huawei.com>, Will Deacon <will@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jungseung Lee <js07.lee@gmail.com>
-Subject: Re: [PATCH v2 6/7] ARM: mm: Provide die_kernel_fault() helper
-Message-ID: <20210602104929.GJ30436@shell.armlinux.org.uk>
-References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
- <20210602070246.83990-7-wangkefeng.wang@huawei.com>
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v5 2/6] KVM: arm64: Move D-cache flush to the fault
+ handlers
+Message-ID: <YLdiTnfuhMimU4dE@google.com>
+References: <20210415115032.35760-1-wangyanan55@huawei.com>
+ <20210415115032.35760-3-wangyanan55@huawei.com>
+ <877djc1sca.wl-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602070246.83990-7-wangkefeng.wang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <877djc1sca.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wednesday 02 Jun 2021 at 11:19:49 (+0100), Marc Zyngier wrote:
+> On Thu, 15 Apr 2021 12:50:28 +0100,
+> > @@ -583,6 +589,7 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+> >  {
+> >  	kvm_pte_t new, old = *ptep;
+> >  	u64 granule = kvm_granule_size(level), phys = data->phys;
+> > +	struct kvm_pgtable *pgt = data->mmu->pgt;
+> >  	struct kvm_pgtable_mm_ops *mm_ops = data->mm_ops;
+> >  
+> >  	if (!kvm_block_mapping_supported(addr, end, phys, level))
+> > @@ -606,6 +613,13 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+> >  		stage2_put_pte(ptep, data->mmu, addr, level, mm_ops);
+> >  	}
+> >  
+> > +	/* Perform CMOs before installation of the guest stage-2 PTE */
+> > +	if (pgt->flags & KVM_PGTABLE_S2_GUEST) {
+> > +		if (stage2_pte_cacheable(pgt, new) && !stage2_has_fwb(pgt))
+> > +			__flush_dcache_area(mm_ops->phys_to_virt(phys),
+> > +					    granule);
+> > +	}
+> 
+> Rather than this, why not provide new callbacks in mm_ops, even if we
+> have to provide one that is specific to guests (and let the protected
+> stuff do its own thing)?
 
-On Wed, Jun 02, 2021 at 03:02:45PM +0800, Kefeng Wang wrote:
-> Provide die_kernel_fault() helper to do the kernel fault reporting,
-> which with msg argument, it could report different message in different
-> scenes, and the later patch "ARM: mm: Fix PXN process with LPAE feature"
-> will use it.
+Ack, an optional callback in the mm_ops sounds much nicer.
 
-This looks fine to me, thanks.
+> One thing I really dislike though is that the page-table code is
+> starting to be littered with things that are not directly related to
+> page tables. We are re-creating the user_mem_abort() mess in a
+> different place.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
++1, we should probably keep the page-table code as close as possible
+to a standalone and architecturally-compliant library as opposed to a
+mess of unrelated logic, simply because that will lead to a cleaner and
+more maintainable design in the long run, and because that will ease the
+interoperability with EL2 in protected mode.
+
+Thanks,
+Quentin
