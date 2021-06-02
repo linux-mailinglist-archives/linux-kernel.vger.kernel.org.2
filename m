@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86E0397F32
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E2E397F34
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhFBCuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:50:20 -0400
-Received: from m12-18.163.com ([220.181.12.18]:36782 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhFBCuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:50:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=DM3i/
-        sEar+rgTXWuUpWQOQV9DGRjv3jpGVAH42azir8=; b=mT0ED5EyN6g/yVX5zve1h
-        tc6GPVOZO9NYtYyT0ffcpB7sjlKGWGGXByOX6dSoHa/9BKrnm01hl54xTwA0bDla
-        vqecklzyrfgtW5GADD7QXmiFm4aNSzCys1gZRctnJ/I+NqoFKmwqyp71FjJHgUzS
-        TlBldhjwovX+BOKaTlrEow=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowAC3vOR58bZgNm7tmw--.26211S2;
-        Wed, 02 Jun 2021 10:48:26 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lijian <lijian@yulong.com>
-Subject: [PATCH] video: fbdev: kyro: STG4000OverlayDevice.c: deleted the repeated word
-Date:   Wed,  2 Jun 2021 10:47:28 +0800
-Message-Id: <20210602024728.74862-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230102AbhFBCv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:51:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6129 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhFBCvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:51:55 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvtjW0D8FzYpwD;
+        Wed,  2 Jun 2021 10:47:27 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 10:49:59 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 10:49:58 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] scsi: qedi: use DEVICE_ATTR_RO macro
+Date:   Wed, 2 Jun 2021 10:49:40 +0800
+Message-ID: <20210602024940.10746-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAC3vOR58bZgNm7tmw--.26211S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZryxJrW5Zw1kGFWkKry8Krg_yoWfZFX_C3
-        9FvF4fWrWkKFy8G3ZxJFnIvr90va9rZFyrWF12q3s3GrZxJ3ySq3yjqr1FgrykGrs8Z3WD
-        W3ZFqr18Zrn3CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5bVy3UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiHRqlUFSIq--YGAAAs6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+Use DEVICE_ATTR_RO macro helper instead of plain DEVICE_ATTR, which makes
+the code a bit shorter and easier to read.
 
-deleted the repeated word 'number' in the comments
-
-Signed-off-by: lijian <lijian@yulong.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- drivers/video/fbdev/kyro/STG4000OverlayDevice.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/qedi/qedi_sysfs.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/video/fbdev/kyro/STG4000OverlayDevice.c b/drivers/video/fbdev/kyro/STG4000OverlayDevice.c
-index 9fde0e3b69ec..7a09178024a6 100644
---- a/drivers/video/fbdev/kyro/STG4000OverlayDevice.c
-+++ b/drivers/video/fbdev/kyro/STG4000OverlayDevice.c
-@@ -398,7 +398,9 @@ int SetOverlayViewPort(volatile STG4000REG __iomem *pSTGReg,
- 		ulDecimated =
- 		    (ulBits * ulApplied) + Overlap((ulSrc % 32),
- 						   ulPattern);
--		ulSrc = ulSrc - ulDecimated;	/* the number number of lines that will go into the scaler */
-+
-+		/* the number of lines that will go into the scaler */
-+		ulSrc = ulSrc - ulDecimated;
- 	}
+diff --git a/drivers/scsi/qedi/qedi_sysfs.c b/drivers/scsi/qedi/qedi_sysfs.c
+index 04ee68e6499c912..be174d30eb7c275 100644
+--- a/drivers/scsi/qedi/qedi_sysfs.c
++++ b/drivers/scsi/qedi/qedi_sysfs.c
+@@ -16,9 +16,9 @@ static inline struct qedi_ctx *qedi_dev_to_hba(struct device *dev)
+ 	return iscsi_host_priv(shost);
+ }
  
- 	if (ulBits && (ulBits != 32)) {
+-static ssize_t qedi_show_port_state(struct device *dev,
+-				    struct device_attribute *attr,
+-				    char *buf)
++static ssize_t port_state_show(struct device *dev,
++			       struct device_attribute *attr,
++			       char *buf)
+ {
+ 	struct qedi_ctx *qedi = qedi_dev_to_hba(dev);
+ 
+@@ -28,8 +28,8 @@ static ssize_t qedi_show_port_state(struct device *dev,
+ 		return sprintf(buf, "Linkdown\n");
+ }
+ 
+-static ssize_t qedi_show_speed(struct device *dev,
+-			       struct device_attribute *attr, char *buf)
++static ssize_t speed_show(struct device *dev,
++			  struct device_attribute *attr, char *buf)
+ {
+ 	struct qedi_ctx *qedi = qedi_dev_to_hba(dev);
+ 	struct qed_link_output if_link;
+@@ -39,8 +39,8 @@ static ssize_t qedi_show_speed(struct device *dev,
+ 	return sprintf(buf, "%d Gbit\n", if_link.speed / 1000);
+ }
+ 
+-static DEVICE_ATTR(port_state, 0444, qedi_show_port_state, NULL);
+-static DEVICE_ATTR(speed, 0444, qedi_show_speed, NULL);
++static DEVICE_ATTR_RO(port_state);
++static DEVICE_ATTR_RO(speed);
+ 
+ struct device_attribute *qedi_shost_attrs[] = {
+ 	&dev_attr_port_state,
 -- 
-2.25.1
+2.26.0.106.g9fadedd
 
 
