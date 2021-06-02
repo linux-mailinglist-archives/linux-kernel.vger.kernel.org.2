@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E73398C8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470FE398C95
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhFBOVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:21:46 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:39570 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231660AbhFBOVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:21:08 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C304AA0042;
-        Wed,  2 Jun 2021 16:19:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C304AA0042
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1622643562; bh=t6iwHzWxaZURGvRkNNG6PD03fsxL4O2Nu2eQKG2T8Tc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=n1Cn3L0XrZwFTsCJyIEPXafWyWLVRQuFfem59YOdeD51dXu8Z0CY8Vqbuuwvd3YT8
-         pN7SQdm0Mof50fxryJwyRS2xPn0/gxhxCokpw/Q+NQXr1mz7krNXX94cBV6+wAOA3j
-         2HUO/1g1Wqvem/g9DlafVtAYnHMvqJ1kkzp2kJHk=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Wed,  2 Jun 2021 16:19:13 +0200 (CEST)
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in snd_timer_user_ccallback
-To:     Dongliang Mu <mudongliangabcd@gmail.com>, allen.lkml@gmail.com,
-        alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>,
+        id S230219AbhFBOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231238AbhFBOWZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:22:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD28C06138A;
+        Wed,  2 Jun 2021 07:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jwYPkOxp8bIiCCDES8Qxb1QGLyBu3SVZdBROZyNFfA0=; b=mmUA1Je16oWX5CdXJuvtR6xs1N
+        wW3tTPUR68zcqTjjDSPB93BEhwqAUqHvLU5H+MFPkTIN2UpdIfa+9ZN7d2074KYDkuFl+cHoz57Fp
+        O5LZB385l+07/5YpxDwddQU+q4TD+Py4LnPih7JBxujXQzl5rJNsp48vSRqitn4DkerTeXs1LdVkj
+        HUFXQTgRf46a3y3W9InIcHbOVfNmxrq0eLVlvopde2wRVXV/1aOq+Oz4H6SMV2zlNqu9LF32FSRYG
+        60clDhnQeg1eugNBFWGwKkKQMZEBWMRyPA5yrD+y7FK77e88bMNsFG1gtJEySxqSudKctsQlwdsPk
+        w42Sd/TQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1loRjR-00BCKg-MA; Wed, 02 Jun 2021 14:20:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 153E1300299;
+        Wed,  2 Jun 2021 16:20:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EBF7120223DBF; Wed,  2 Jun 2021 16:20:28 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 16:20:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        dm-devel <dm-devel@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        paulmck <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        pierre-louis.bossart@linux.intel.com, romain.perier@gmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>, tiwai@suse.com
-References: <CAD-N9QUDYbzkZXnDzf2P4b4Qk_kBQ_9ZVL3B4jhe9Xf2rgtpGA@mail.gmail.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <5c3fbdf8-bfa3-a50e-edb9-81fbce84d9cb@perex.cz>
-Date:   Wed, 2 Jun 2021 16:19:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        linux-block <linux-block@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        cgroups <cgroups@vger.kernel.org>,
+        kgdb-bugreport <kgdb-bugreport@lists.sourceforge.net>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        linux-pm <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, KVM list <kvm@vger.kernel.org>
+Subject: Re: [PATCH 6/6] sched: Change task_struct::state
+Message-ID: <YLeTrNDgBnAMMwEX@hirez.programming.kicks-ass.net>
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.587042016@infradead.org>
+ <896642516.5866.1622642818225.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD-N9QUDYbzkZXnDzf2P4b4Qk_kBQ_9ZVL3B4jhe9Xf2rgtpGA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <896642516.5866.1622642818225.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02. 06. 21 15:18, Dongliang Mu wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit: 5ff2756a Merge tag 'nfs-for-5.13-2' of git://git.linux-nfs..
->> git tree: upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=17872d5bd00000
->> kernel config: https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
->> dashboard link: https://syzkaller.appspot.com/bug?extid=d102fa5b35335a7e544e
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+d102fa...@syzkaller.appspotmail.com
->>
->> ================================================================================
->> UBSAN: shift-out-of-bounds in sound/core/timer.c:1376:23
->> shift exponent 105 is too large for 32-bit type 'int'
->> CPU: 1 PID: 10368 Comm: syz-executor.1 Not tainted 5.13.0-rc3-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->> __dump_stack lib/dump_stack.c:79 [inline]
->> dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->> ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
->> __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
->> snd_timer_user_ccallback.cold+0x19/0x1e sound/core/timer.c:1376
->>
->> snd_timer_notify1+0x243/0x3b0 sound/core/timer.c:525
-> 
-> The root cause of this bug is in the snd_timer_notify1 [1]. At the end
-> of this function, it calls "ts->ccallback(ts, event + 100, &tstamp,
-> resolution)".
-> 
-> Here the variable event is 5. It adds 100 and is passed as 2nd
-> argument of snd_timer_user_ccallback.
-> 
->>From the variable naming, the 2nd argument should an event, and in the
-> range of event enumeration. In fact, 105 (event + 100) is out of this
-> range. I don't quite understand the meaning of adding 100. Any thought
-> here?
+On Wed, Jun 02, 2021 at 10:06:58AM -0400, Mathieu Desnoyers wrote:
+> ----- On Jun 2, 2021, at 9:12 AM, Peter Zijlstra peterz@infradead.org wrote:
 
-It seems that the original intent was to move the event to the M... events:
-
-     SNDRV_TIMER_EVENT_MSTART = SNDRV_TIMER_EVENT_START + 10,
-
-So the added value should be 10 which should not break the shift range (8
-/resume/ + 10 = 18).
-
-					Jaroslav
-
+> > @@ -134,14 +134,14 @@ struct task_group;
+> > 	do {							\
+> > 		WARN_ON_ONCE(is_special_task_state(state_value));\
+> > 		current->task_state_change = _THIS_IP_;		\
+> > -		current->state = (state_value);			\
+> > +		WRITE_ONCE(current->__state, (state_value));	\
+> > 	} while (0)
 > 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/core/timer.c?id=5ff2756afde08b266fbb673849899fec694f39f1#n497
-> 
-> --
-> My best regards to you.
-> 
->      No System Is Safe!
->      Dongliang Mu
-> 
+> Why not introduce set_task_state(p) and get_task_state(p) rather than sprinkle
+> READ_ONCE() and WRITE_ONCE() all over the kernel ?
 
+set_task_state() is fundamentally unsound, there's very few sites that
+_set_ state on anything other than current, and those sites are super
+tricky, eg. ptrace.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Having get_task_state() would seem to suggest it's actually a sane thing
+to do, it's not really. Inspecting remote state is full of races, and
+some of that really wants cleaning up, but that's for another day.
