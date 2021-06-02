@@ -2,66 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA783995FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 00:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DB4399603
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 00:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhFBWhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 18:37:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
+        id S229791AbhFBWlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 18:41:45 -0400
+Received: from ozlabs.org ([203.11.71.1]:36977 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229604AbhFBWhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 18:37:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F22D9613D6;
-        Wed,  2 Jun 2021 22:36:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622673367;
-        bh=GxpUd87XU+MpRXZ2PlmVvtGMToV2jbK/XAXadLJc3Ek=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=B0f90I0IPVDpINHUZhHINCCb4mVM7ylkWMMqbnJwDr0CcXwdyF3mCb8FmTmSk0Vdi
-         VJQ+4HxM7CeXzFsx6Iqo8q1vVe2P78XqCP5xqESVQVT4DoBp9g9/ftL6Pve6SSYeUD
-         iJzFOQbHveg39VR7xkrDaa63fDGZIHAtrOscrlWk=
-Date:   Wed, 2 Jun 2021 15:36:06 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3 00/27] userfaultfd-wp: Support shmem and hugetlbfs
-Message-Id: <20210602153606.93cfe1dfdaa2e11a2d863df2@linux-foundation.org>
-In-Reply-To: <YLeYREkg/RrNjQ7v@t490s>
-References: <20210527201927.29586-1-peterx@redhat.com>
-        <YLeYREkg/RrNjQ7v@t490s>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229583AbhFBWln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 18:41:43 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FwP9T6wpsz9s5R;
+        Thu,  3 Jun 2021 08:39:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622673598;
+        bh=eSmdbww5uAebfQnXWkSodhU6+6V8IRdVNTEcNSlPh78=;
+        h=Date:From:To:Cc:Subject:From;
+        b=i7t7fcc8nzq2IDlViut7SKYB0Vitz12QcDcOo1VyR9LB1lw8G3cq0sKhYcWxX+5UH
+         eD6vi2ySn6Bo6Peblq0At+pVD8ZKEWK13vYiEIDdtzIhqBOCGFx+T1tokQjrLL98qn
+         QvaakgjJttlqmKQjDb0BTq95NyZHMtveW7Y4fcohFpo4ZUTvqFAMPtijD9jcr699Xj
+         F8Z9vCsgDLCnk5u9bN/ahkIsSQdNzvb6UpLp6xGZHeWiGKoYkgKYWsn9xuowtYVl7u
+         i1ELdtNtxITV3OK8AmXaoSq/JepJgfpaz9NdofsHoXqLlGBFsjU2WnR2/ygaTboqLP
+         JLRG2ACrNsqLA==
+Date:   Thu, 3 Jun 2021 08:39:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Michel =?UTF-8?B?RMOkbnplcg==?= <mdaenzer@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the amdgpu tree
+Message-ID: <20210603083957.2ad2f30d@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/wu7vjIO3zTBdmIcxdw+NV0h";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 10:40:04 -0400 Peter Xu <peterx@redhat.com> wrote:
+--Sig_/wu7vjIO3zTBdmIcxdw+NV0h
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Thu, May 27, 2021 at 04:19:00PM -0400, Peter Xu wrote:
-> > This is v3 of uffd-wp shmem & hugetlbfs support, which completes uffd-wp as a
-> > kernel full feature, as it only supports anonymous before this series.  It's
-> > based on latest v5.13-rc3-mmots-2021-05-25-20-12.
-> 
-> Andrew,
-> 
-> Any suggestion on how I should move on with this series?
-> 
+Hi all,
 
-It is large, and thinly reviewed.  I haven't seriously looked at it
-yet.  If nothing much else happens I might toss it in there for some
-additional exposure but I do think more input from other developers is
-needed before we go further.
+In commit
 
+  56b019f8eda0 ("drm/amdgpu: Use drm_dbg_kms for reporting failure to get a=
+ GEM FB")
+
+Fixes tag
+
+  Fixes: f258907fdd835e "drm/amdgpu: Verify bo size can fit framebuffer
+
+has these problem(s):
+
+  - Subject has leading but no trailing quotes
+
+Please do not split Fixes tags over more than one line.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/wu7vjIO3zTBdmIcxdw+NV0h
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC4CL0ACgkQAVBC80lX
+0Gwx2Qf/YRSiS+PSGkeqA5E1Tv1urId6MhwVrdCSXOYlnZjhRdJUwJ+XoBxZ5gV0
+2vMMU5QvvL7dXtAWQeVomAFdSlvKSjWqEsoXD2jkUaBiSSsHbs7lnhgMc8aOkA2T
+wrpfRYB/yNI5llQgpFkYRrV1GVD5PRecfxEF+QvRePcroXsRg9CFrHpCmwhd1Jnb
+Pxjd3jaY8OG9W0oZExnYFJ+cI19VV4vWLB8QDy7vb1juL/FSSsGSz4+apT80ZOfV
+2klbYeH0fcBrPWJpF1UJFV2fqg0RhaJ/FOPCyEllQAS5ij4r5m20OKbR84QsRgdu
+NSp5ECctxJbCTMY+cmyr3v5ekgs3/Q==
+=MY2Z
+-----END PGP SIGNATURE-----
+
+--Sig_/wu7vjIO3zTBdmIcxdw+NV0h--
