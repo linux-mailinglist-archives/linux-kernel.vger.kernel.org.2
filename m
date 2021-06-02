@@ -2,89 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200C839895C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BE139895A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhFBMZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
+        id S229667AbhFBMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhFBMZB (ORCPT
+        with ESMTP id S229524AbhFBMYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:25:01 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAE9C06174A;
-        Wed,  2 Jun 2021 05:23:17 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id jz2-20020a17090b14c2b0290162cf0b5a35so3337385pjb.5;
-        Wed, 02 Jun 2021 05:23:17 -0700 (PDT)
+        Wed, 2 Jun 2021 08:24:55 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49A0C061574;
+        Wed,  2 Jun 2021 05:23:10 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id o2-20020a05600c4fc2b029019a0a8f959dso1570235wmq.1;
+        Wed, 02 Jun 2021 05:23:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=61g9R/SKW/xm7il3qPI05FSd7d+7M0NWtrU6rmPq764=;
-        b=UeCgZ/dl3En00cmYUN2qlBuOEnsvZEShLbNlMBFh47nfAboFuPVMr6cFMFio+eunyq
-         4gEVrG5igNLqlAIIkrrHnapGVzTam71B4EP6EVGAFwdJ800Q3rGMfQYXWiRYO1CfqKdh
-         Rcfg3vgXfZLTHveyW2KSJK0Nv38UVAVxwjXnWnm2M7Vt7gso0kKpBKjUjjjv1LXxX8jx
-         IYjMuhvhyJetFTwLAIMqpG0a/Y834RA3+7qQJLcTJlH5+mmVyv334QuBsh2roBGyvriO
-         dgN3Rbww7eVGbbKKgXrcgsbYtCSBiL1CMhZSG1twDLF51NYUCVe2IEJFx6AZxMwmY3lc
-         fIVA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xXTfKeisJ+d2G9OgHki0LrMi+N+ThHP407zug8OKubM=;
+        b=C7IaWtyHWotLA3nR2EHAY8F5rSdnzjKCmjCsDd9VzLcMIbqehAmx+oFZfyOErOYwje
+         07vftXUnuDJrX7PHt0HjpReCrLqdCUWnLP3ziYhOIXnlGsxICd9lpUv4X7LWzIe3d1a/
+         TQPNZbsRI7T7CDtcdYa+9bMmOSp80pIUY3OFt6WiSbC8xCtqI0ANYbmfUf2qDpuA1sev
+         AJdphGzG470UsFzROd1qE8hnnuxnRXtvuYEexEzoOw9rEnnTydEDtRqz9pZOyrNJbaei
+         W5x2jzUoE8MSp0xqcbWQ876y3MNzs9esPtFqPmw92w7i5D4hmjAlXKIh/aIffYTvkH4A
+         4j9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=61g9R/SKW/xm7il3qPI05FSd7d+7M0NWtrU6rmPq764=;
-        b=qW8Y2hTdWNApQUK27qp91wYuE9c+Am/2V4Ow/soBLWTsaL08li+OTFJajYvzHRzRQl
-         rgym3khHBRo/m42uYD+SdUk2eqTm8Yug97tIIqAaq1Mbo+tsfUdMmBBpjtV13RtZERnK
-         4kGtfhxU3CS2hVLXQeICDoEE22rEjLEJf2hpz+vt5QHBWSb4g1d/yiBrn1bfbcyTAbsK
-         4irMLC/xOUGxSVluevB0GxG0XAzvPi+6GWarTmTdMS4NiJfIG4BEaNczuuhMdpKiFVyU
-         vj8CPoRDqJD4ouvMPNb9EL0FBRshf77dw7LxVwM6Bu19OPJSQALcJK2zS3T6d4mGNPZn
-         /oTA==
-X-Gm-Message-State: AOAM531Ckxt1JLy6uN0R+WY2/ncgmB5J3ZTMyPP8eqmmAKf5NQ4imLTG
-        epb0hqRZl0hlee9B7UUmulwIFnafP1DYYjB1qsg=
-X-Google-Smtp-Source: ABdhPJwGR1WJNulFIuAVi2mNytnkij3AnwS5zf1TWhgGy6Im64WSY05Qf4ac4AXqIcMehQeBYP6oEg==
-X-Received: by 2002:a17:902:a988:b029:101:86c3:df24 with SMTP id bh8-20020a170902a988b029010186c3df24mr24046315plb.64.1622636597398;
-        Wed, 02 Jun 2021 05:23:17 -0700 (PDT)
-Received: from localhost.localdomain ([84.17.41.94])
-        by smtp.gmail.com with ESMTPSA id m13sm16736401pgq.1.2021.06.02.05.23.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 05:23:16 -0700 (PDT)
-From:   Alex <zgxgoo@gmail.com>
-To:     trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
-Cc:     linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        zgxgoo@gmail.com
-Subject: [PATCH] =?UTF-8?q?fs/nfs:=20fix=20some=20-Wmissing-prototypes=20w?= =?UTF-8?q?arnings=20we=20get=20a=20warning=20when=20building=20kernel=20w?= =?UTF-8?q?ith=20W=3D1:=20=20=20fs/nfs/nfs4file.c:318:1:=20warning:=20no?= =?UTF-8?q?=20previous=20prototype=20for=20=E2=80=98nfs42=5Fssc=5Fopen?= =?UTF-8?q?=E2=80=99=20[-Wmissing-prototypes]=20=20=20fs/nfs/nfs4file.c:40?= =?UTF-8?q?2:6:=20warning:=20no=20previous=20prototype=20for=20=E2=80=98nf?= =?UTF-8?q?s42=5Fssc=5Fclose=E2=80=99=20[-Wmissing-prototypes]?=
-Date:   Wed,  2 Jun 2021 05:21:37 -0700
-Message-Id: <20210602122137.1161772-1-zgxgoo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=xXTfKeisJ+d2G9OgHki0LrMi+N+ThHP407zug8OKubM=;
+        b=TsRO2X0YEvxHm7f9eGWtGp55aArqy1ElKTn43xPt4WK5AJ01T6mA8TQQu294hOU5nG
+         vQm4qHC2pnUPY4XpAGzCw3j7qiY1Dgd26RVnMYuqwB8E7Jj+aho/1LpiPvSnfY3XZpAf
+         38tNAIODkQk5CoAzA+KFdIz83k3pCNp3xYncrBiIjgz/+aznyO1Vh/cwgeEEEEe1/Lt7
+         u5hiB5wOeyobvzZeiZAVsudwgr3OPGoENZFEX1CSD6Qp1wQBtMkCgcVby19tJy4ELa3f
+         E4z/VF6efQFEoFfdhhxM8RKzaPpjtl+Ch08xe+UQupQ6qfjD7MnPHkuhO4oE5+hAjpDQ
+         fjIg==
+X-Gm-Message-State: AOAM533WCdx33hlQdrNjiEwSVGDRqHd4a86feCkJgJuoePfRNHS/flDy
+        GjtdgeoECmJygm3lBUmXBRoSBniJmAs=
+X-Google-Smtp-Source: ABdhPJysKE2gyVGbc/4vvjXVWq5HJ1UgNq7ruN5kz26olg90yWxtfinAk/bAf6HpX/vpIl7+7pN+Kg==
+X-Received: by 2002:a05:600c:3545:: with SMTP id i5mr4819578wmq.43.1622636589361;
+        Wed, 02 Jun 2021 05:23:09 -0700 (PDT)
+Received: from ziggy.stardust ([37.223.145.68])
+        by smtp.gmail.com with ESMTPSA id n20sm2548429wmk.12.2021.06.02.05.23.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 05:23:08 -0700 (PDT)
+Subject: Re: [PATCH v21 RESEND 4/4] arm64: dts: mt8183: add supply name for
+ eeprom
+To:     Hsin-Yi Wang <hsinyi@chromium.org>, Wolfram Sang <wsa@kernel.org>,
+        Jean Delvare <khali@linux-fr.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210527075556.1709140-1-hsinyi@chromium.org>
+ <20210527075556.1709140-5-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <e7db756c-2563-ee03-55ee-5e84e1444cb0@gmail.com>
+Date:   Wed, 2 Jun 2021 14:23:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210527075556.1709140-5-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing declaration in head file fs/nfs/nfs4_fs.h to fix this.
 
-Signed-off-by: Alex <zgxgoo@gmail.com>
----
- fs/nfs/nfs4_fs.h | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
-index 0c9505dc852c..0cb79afa0a63 100644
---- a/fs/nfs/nfs4_fs.h
-+++ b/fs/nfs/nfs4_fs.h
-@@ -656,4 +656,10 @@ static inline void nfs4_xattr_cache_zap(struct inode *inode)
- 
- 
- #endif /* CONFIG_NFS_V4 */
-+
-+/* nfs4file.c */
-+#ifdef CONFIG_NFS_V4_2
-+struct file *nfs42_ssc_open(struct vfsmount *ss_mnt, struct nfs_fh *src_fh, nfs4_stateid *stateid);
-+void nfs42_ssc_close(struct file *filep);
-+#endif
- #endif /* __LINUX_FS_NFS_NFS4_FS.H */
--- 
-2.25.1
+On 27/05/2021 09:55, Hsin-Yi Wang wrote:
+> Add supplies for eeprom for mt8183 boards.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
+Applied to v5.13-next/dts64
+
+Thanks!
+
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi | 4 ++++
+>  arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi | 4 ++++
+>  arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi  | 4 ++++
+>  3 files changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
+> index b442e38a3156..28966a65391b 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
+> @@ -88,11 +88,13 @@ &i2c2 {
+>  	pinctrl-0 = <&i2c2_pins>;
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> +	vbus-supply = <&mt6358_vcamio_reg>;
+>  
+>  	eeprom@58 {
+>  		compatible = "atmel,24c32";
+>  		reg = <0x58>;
+>  		pagesize = <32>;
+> +		vcc-supply = <&mt6358_vcama2_reg>;
+>  	};
+>  };
+>  
+> @@ -101,11 +103,13 @@ &i2c4 {
+>  	pinctrl-0 = <&i2c4_pins>;
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> +	vbus-supply = <&mt6358_vcn18_reg>;
+>  
+>  	eeprom@54 {
+>  		compatible = "atmel,24c32";
+>  		reg = <0x54>;
+>  		pagesize = <32>;
+> +		vcc-supply = <&mt6358_vcn18_reg>;
+>  	};
+>  };
+>  
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
+> index 2f5234a16ead..3aa79403c0c2 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
+> @@ -62,11 +62,13 @@ &i2c2 {
+>  	pinctrl-0 = <&i2c2_pins>;
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> +	vbus-supply = <&mt6358_vcamio_reg>;
+>  
+>  	eeprom@58 {
+>  		compatible = "atmel,24c64";
+>  		reg = <0x58>;
+>  		pagesize = <32>;
+> +		vcc-supply = <&mt6358_vcamio_reg>;
+>  	};
+>  };
+>  
+> @@ -75,11 +77,13 @@ &i2c4 {
+>  	pinctrl-0 = <&i2c4_pins>;
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> +	vbus-supply = <&mt6358_vcn18_reg>;
+>  
+>  	eeprom@54 {
+>  		compatible = "atmel,24c64";
+>  		reg = <0x54>;
+>  		pagesize = <32>;
+> +		vcc-supply = <&mt6358_vcn18_reg>;
+>  	};
+>  };
+>  
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+> index fbc471ccf805..30c183c96a54 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+> @@ -71,11 +71,13 @@ &i2c2 {
+>  	pinctrl-0 = <&i2c2_pins>;
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> +	vbus-supply = <&mt6358_vcamio_reg>;
+>  
+>  	eeprom@58 {
+>  		compatible = "atmel,24c32";
+>  		reg = <0x58>;
+>  		pagesize = <32>;
+> +		vcc-supply = <&mt6358_vcama2_reg>;
+>  	};
+>  };
+>  
+> @@ -84,11 +86,13 @@ &i2c4 {
+>  	pinctrl-0 = <&i2c4_pins>;
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> +	vbus-supply = <&mt6358_vcn18_reg>;
+>  
+>  	eeprom@54 {
+>  		compatible = "atmel,24c32";
+>  		reg = <0x54>;
+>  		pagesize = <32>;
+> +		vcc-supply = <&mt6358_vcn18_reg>;
+>  	};
+>  };
+>  
+> 
