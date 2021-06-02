@@ -2,192 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45FE399633
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2DA399639
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhFBXQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 19:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhFBXQb (ORCPT
+        id S229962AbhFBXRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 19:17:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38376 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229828AbhFBXRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 19:16:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054A0C06174A;
-        Wed,  2 Jun 2021 16:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=OWeI8yG+U4QiJiOTGgtyXdt04jv4M8JxUTJKKLhJHis=; b=K3dDtRTDLWuarsG6HH4dUCTDhK
-        ayzVzx79W9wDddoVbJs6MnB7pyXNJwdQTucHJ8IU0JqwIUhtqVfjvdTxO+9EwXZluWB0KQtKEn86/
-        s8I3Yej3DUSuC0wdqB9fTToYth2gWn+oneGoE4n6SEC5w2yLEXXrSN3WXA83F8IpqS0guuSh9/XIG
-        55QB9OGkI8rTCKxvKnxaBn8Z6oflvopqxarkkagQOH7r1P2CqmYUWmGMj2zz9t4I5gXrYheeU1aU1
-        /YR6dzHw3UswFU+0MVqkT889ZWkrdXmvJTQhhSyzygrgt2sUYoY7Qju75xHonzqEKnsGJFDetKENr
-        fy/nnfyQ==;
-Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1loa4U-006Rln-Fh; Wed, 02 Jun 2021 23:14:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
-Subject: [PATCH 4/4] sh: fix READ/WRITE redefinition warnings
-Date:   Wed,  2 Jun 2021 16:14:43 -0700
-Message-Id: <20210602231443.4670-4-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210602231443.4670-1-rdunlap@infradead.org>
-References: <20210602231443.4670-1-rdunlap@infradead.org>
+        Wed, 2 Jun 2021 19:17:45 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 466A4219DB;
+        Wed,  2 Jun 2021 23:16:00 +0000 (UTC)
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 4AECA118DD;
+        Wed,  2 Jun 2021 23:15:48 +0000 (UTC)
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id VMCuCCQRuGAfYQAALh3uQQ
+        (envelope-from <dave@stgolabs.net>); Wed, 02 Jun 2021 23:15:48 +0000
+Date:   Wed, 2 Jun 2021 16:15:42 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
+Message-ID: <20210602231542.ejrjbilfggq4whg7@offworld>
+Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>,
+        dm-devel@redhat.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cgroups@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.334970485@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210602133040.334970485@infradead.org>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel.h defines READ and WRITE, so rename the SH math-emu macros
-to MREAD and MWRITE.
+On Wed, 02 Jun 2021, Peter Zijlstra wrote:
 
-Fixes these warnings:
+>Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
+>task_is_running(p).
+>
+>Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-../arch/sh/math-emu/math.c:54: warning: "WRITE" redefined
-   54 | #define WRITE(d,a) ({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-In file included from ../arch/sh/math-emu/math.c:10:
-../include/linux/kernel.h:37: note: this is the location of the previous definition
-   37 | #define WRITE   1
-../arch/sh/math-emu/math.c:55: warning: "READ" redefined
-   55 | #define READ(d,a) ({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-In file included from ../arch/sh/math-emu/math.c:10:
-../include/linux/kernel.h:36: note: this is the location of the previous definition
-   36 | #define READ   0
+Acked-by: Davidlohr Bueso
 
-Fixes: 4b565680d163 ("sh: math-emu support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
----
- arch/sh/math-emu/math.c |   44 +++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+But afaict ....
 
---- linux-next-20210528.orig/arch/sh/math-emu/math.c
-+++ linux-next-20210528/arch/sh/math-emu/math.c
-@@ -51,8 +51,8 @@
- #define Rn	(regs->regs[n])
- #define Rm	(regs->regs[m])
- 
--#define WRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
--#define READ(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-+#define MWRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-+#define MREAD(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
- 
- #define PACK_S(r,f)	FP_PACK_SP(&r,f)
- #define UNPACK_S(f,r)	FP_UNPACK_SP(f,&r)
-@@ -157,11 +157,11 @@ fmov_idx_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + R0 + 4);
-+		MREAD(FRn, Rm + R0 + 4);
- 		n++;
--		READ(FRn, Rm + R0);
-+		MREAD(FRn, Rm + R0);
- 	} else {
--		READ(FRn, Rm + R0);
-+		MREAD(FRn, Rm + R0);
- 	}
- 
- 	return 0;
-@@ -173,11 +173,11 @@ fmov_mem_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + 4);
-+		MREAD(FRn, Rm + 4);
- 		n++;
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 	} else {
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 	}
- 
- 	return 0;
-@@ -189,12 +189,12 @@ fmov_inc_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + 4);
-+		MREAD(FRn, Rm + 4);
- 		n++;
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 		Rm += 8;
- 	} else {
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 		Rm += 4;
- 	}
- 
-@@ -207,11 +207,11 @@ fmov_reg_idx(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
--		WRITE(FRm, Rn + R0 + 4);
-+		MWRITE(FRm, Rn + R0 + 4);
- 		m++;
--		WRITE(FRm, Rn + R0);
-+		MWRITE(FRm, Rn + R0);
- 	} else {
--		WRITE(FRm, Rn + R0);
-+		MWRITE(FRm, Rn + R0);
- 	}
- 
- 	return 0;
-@@ -223,11 +223,11 @@ fmov_reg_mem(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
--		WRITE(FRm, Rn + 4);
-+		MWRITE(FRm, Rn + 4);
- 		m++;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	} else {
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	}
- 
- 	return 0;
-@@ -240,12 +240,12 @@ fmov_reg_dec(struct sh_fpu_soft_struct *
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
- 		Rn -= 8;
--		WRITE(FRm, Rn + 4);
-+		MWRITE(FRm, Rn + 4);
- 		m++;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	} else {
- 		Rn -= 4;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	}
- 
- 	return 0;
-@@ -445,11 +445,11 @@ id_sys(struct sh_fpu_soft_struct *fregs,
- 	case 0x4052:
- 	case 0x4062:
- 		Rn -= 4;
--		WRITE(*reg, Rn);
-+		MWRITE(*reg, Rn);
- 		break;
- 	case 0x4056:
- 	case 0x4066:
--		READ(*reg, Rn);
-+		MREAD(*reg, Rn);
- 		Rn += 4;
- 		break;
- 	default:
+>---
+> arch/x86/kernel/process.c |    4 ++--
+> block/blk-mq.c            |    2 +-
+> include/linux/sched.h     |    2 ++
+> kernel/locking/lockdep.c  |    2 +-
+> kernel/rcu/tree_plugin.h  |    2 +-
+> kernel/sched/core.c       |    6 +++---
+> kernel/sched/stats.h      |    2 +-
+> kernel/signal.c           |    2 +-
+> kernel/softirq.c          |    3 +--
+> mm/compaction.c           |    2 +-
+> 10 files changed, 14 insertions(+), 13 deletions(-)
+
+there are also (on top of the already mentioned arch/):
+
+kernel/kcsan/report.c:  const bool is_running = current->state == TASK_RUNNING;
+kernel/locking/lockdep.c:       if (p->state == TASK_RUNNING && p != current)
