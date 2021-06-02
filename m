@@ -2,56 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39B1397DD7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B33E397DD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhFBBCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 21:02:44 -0400
-Received: from befuddled.reisers.ca ([206.248.184.127]:57820 "EHLO
-        befuddled.reisers.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhFBBCf (ORCPT
+        id S229796AbhFBBEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 21:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229754AbhFBBD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 21:02:35 -0400
-Received: by befuddled.reisers.ca (Postfix, from userid 65534)
-        id A4141382581; Tue,  1 Jun 2021 20:55:45 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=reisers.ca;
-        s=befuddled; t=1622595345;
-        bh=7l945M6cdmhQCZ4oD40xLF7t8MXTqtcGK04d5qAA3VI=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=BfGdG7PWyI603MqfnEF/vwq9cwna2VFNeb9wfUeKZJp+H6B31was4LWvd0DmwpkNL
-         4WvFI3Bg0/FXLk9e8YTu/G0dZzYORIaN3rxks8evTDHZZKbmjssiEUew5cceCYlRai
-         KLLSkhdOy0yidaORNdkdOtGoVGskISwLan86DBiM=
-Received: from localhost (localhost [IPv6:::1])
-        by befuddled.reisers.ca (Postfix) with ESMTPS id C07D6380EFE;
-        Tue,  1 Jun 2021 20:55:44 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=reisers.ca;
-        s=befuddled; t=1622595344;
-        bh=7l945M6cdmhQCZ4oD40xLF7t8MXTqtcGK04d5qAA3VI=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=ix+ILaTzR4T2/mvNLeMYzNCaaP67OF5MWSwIsV/d/j4JuJV1IjVoLgNEPktaXWm+7
-         EHEpBmY7Mfw1RlLQ4f7ck1id6bCSTpPIj0QBjh3HB9i7iw3zdM5lkX9ENL5xtApLV/
-         7+JGQb4WrPeAoOz5WodGKO6M+FCmtkQIUdAmqYrc=
-Date:   Tue, 1 Jun 2021 20:55:44 -0400 (EDT)
-From:   Kirk Reiser <kirk@reisers.ca>
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>
-cc:     speakup@linux-speakup.org, Jonathan Corbet <corbet@lwn.net>,
-        Christopher Brannon <chris@the-brannons.com>,
-        William Hubbs <w.d.hubbs@gmail.com>,
-        Steve Holmes <steve.holmes88@gmail.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        Tue, 1 Jun 2021 21:03:59 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9ECC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 18:02:16 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id e11so351155ljn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 18:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a6baHQsAJ9xJh2UaKZ3zO4HQerzx/uv7qHQfFuXijes=;
+        b=QwaNkysrxExUHUCmiUg6v8xYRKL/2KiOI9ujaADlLfkmQ/8/mQNVQ1aB5ZoERrK2Yg
+         /Jc5JyUlDXFeoY3zs6Yk9GCmVWRgS/Z37ec8WaE1gwEDHuu4GFwy6c6yxhr5noQqdLvy
+         DNjVF2K+qfvPOj6Y33eGZtpqAnhMtfbnNuxPulYTK1jrfI7ATsVced/tHzzqLxzzClUl
+         6mSo3dyi7ZcTvL6qOlEroKqDXCvqcLXDKDVbNFtrYVDTbAMRjwZCsFBAFwF2rqj/hgCd
+         A6SDsLlF7zQRIW4Nz45zY7qWGyQsjt5KurklM3h0ZWh3sCRk6Cy7biH/293Lhbmmam1t
+         /Ntg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a6baHQsAJ9xJh2UaKZ3zO4HQerzx/uv7qHQfFuXijes=;
+        b=o+K4R7a9tDoJee2A++K541eKRfMU+RWc428cJNdlOBoaU/UIzVobm7uHIx1wxugjHg
+         EmCaqQmKPwdpWDfnPWMqsn1nQIc9DWdlElGrMD+iZJyh5xKVj7TMaDbagq01cMHMR7sL
+         LUyqxP2QzbrJudwqPKL3GRZ0f20dfKvhu+9w3/2F0bOAS3kKQCSehHTYiu221yWwrqd1
+         +QIcaW/26piiQ98yHWoF6pgrqnKt+y92OFdwBTjfy69z+6Vrs3c2fnfScKjmaSmj8wbn
+         p2WaPcEu6LfQAvwGxAgA2NR5dzF4YcDW4JarnPWxkW7mcjUZmGqx4vpSKkoELrDNeXiL
+         Gh+A==
+X-Gm-Message-State: AOAM531iMQESLyaoVmN/xWQgpcDqcskYwomOSUT2DeaFxpdV+c9k9zLt
+        IxZK+9SxlfjQNdvq6ge2/AsDzjrWSwj/n9oC
+X-Google-Smtp-Source: ABdhPJx8XxJ4bI1yXGVQSTK2EagS2wfDCfTT2XfxbPT3S1IKb/r+Gnrea1nvB8oY4vD1YIwucKnF2Q==
+X-Received: by 2002:a2e:9c99:: with SMTP id x25mr457943lji.310.1622595735151;
+        Tue, 01 Jun 2021 18:02:15 -0700 (PDT)
+Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4yb9bh06yk5jm2qt-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:3d09:bda0:2327:559b])
+        by smtp.gmail.com with ESMTPSA id d7sm1825403lfg.253.2021.06.01.18.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 18:02:14 -0700 (PDT)
+From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>, samitolvanen@google.com,
+        morbo@google.com, keescook@chromium.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
-In-Reply-To: <afc570ec-dfe1-2a37-6fd3-aeaefece4aa6@reisers.ca>
-Message-ID: <fe1265e9-7914-aee9-08e-ca2ac539fd73@reisers.ca>
-References: <20210531215737.8431-1-igormtorrente@gmail.com> <875yyxbenm.fsf@meer.lwn.net> <20210601220643.uzep2ju2zlcmpa57@begin> <874keh9qk9.fsf@meer.lwn.net> <20210601223743.carif4gkzcz5jo7j@begin> <20210601224452.sqblwctwiu47xgqg@begin>
- <20210601224554.6kc5syoy2tscisiv@begin> <20210601224854.iug2arwes64k7fxr@begin> <afc570ec-dfe1-2a37-6fd3-aeaefece4aa6@reisers.ca>
+Subject: [PATCH 0/1] pgo: Fix allocate_node() handling of non-vmlinux nodes
+Date:   Wed,  2 Jun 2021 03:57:02 +0300
+Message-Id: <20210602005702.9650-1-jarmo.tiitto@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-Bogosity: Ham, tests=bogofilter, spamicity=0.000000, version=1.2.5
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Um, make that gene@collinsnet.net. I need new fingers obviously.
+Currently allocate_node() will reserve nodes even if *p
+doesn't point into __llvm_prf_data_start - __llvm_prf_data_end
+range.
+
+This is wrong:
+
+Any instrumented modules that are not part of vmlinux
+(built-in) will "steal" available nodes away from vmlinux.
+This can result in exhaustion of nodes for vmlinux
+and less accurate profile data.
+
+Either way, any profiling data generated by loaded modules, 
+if any, is unusable from vmlinux.profraw.
+So just filtter them out.
+
+Jarmo Tiitto (1):
+  pgo: Fix allocate_node() handling of non-vmlinux nodes.
+
+ kernel/pgo/instrument.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+-- 
+2.31.1
+
