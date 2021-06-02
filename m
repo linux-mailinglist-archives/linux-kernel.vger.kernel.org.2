@@ -2,171 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1B63995B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 00:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3E83995B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 00:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhFBWDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 18:03:09 -0400
-Received: from gateway33.websitewelcome.com ([192.185.146.195]:22770 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFBWDI (ORCPT
+        id S229736AbhFBWG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 18:06:59 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48774 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBWG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 18:03:08 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 45BC75AB7B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 17:01:24 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id oYvUlWVhSVBxyoYvUlznkR; Wed, 02 Jun 2021 17:01:24 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=QGxXXmCFwyQE+vVNSEra/v2uZBYm6bBxxjB0/bpHJj0=; b=K5w/is1y6OWG4J4JsHJi+SeTNn
-        KC5+nKnTyg0qCm7TTgmHdYyHcGZSDwvSN3rxxEkZpbQb4uMQQmA89McPTAA2ge9a6wpzh6KGYi+Jt
-        H6CMyO0Rz5ZDD4aDVpqOrZ6vVdNYfOByVCuZEkZO55B9XEqvLMnphnrJJsF8aK6tR8QenuKt9AOoQ
-        xtpQZL44B8QYYAvqUZlosIbkrRFFjeYp6WWykaOWBuwwtlCtn0cvc9j7ie99NBGG2myMMC47LASOv
-        SFcWek5q4WzBsT5OLQahxjUBdwW6RSnIxN0531p+usneuWK2IZ61ii6knQ4RE4zTq6AltdFXuIXXq
-        S3S9cuKw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52554 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1loYvQ-00061U-Lg; Wed, 02 Jun 2021 17:01:20 -0500
-Subject: Re: [PATCH][venus-for-next-v5.14] media: venus: hfi_cmds: Fix packet
- size calculation
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210601184616.GA23488@embeddedor>
- <202106021254.39A1561075@keescook>
- <e40f4067-82e2-31ff-0694-375a59f949de@embeddedor.com>
-Message-ID: <113fd896-464c-6aef-215a-a53ac6103a62@embeddedor.com>
-Date:   Wed, 2 Jun 2021 17:02:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 2 Jun 2021 18:06:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 152M508o030312;
+        Wed, 2 Jun 2021 17:05:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622671500;
+        bh=j3t5c9mN7k2JsE5wtJ311Gk1Snmmw2xtUpavCue0hr4=;
+        h=From:To:CC:Subject:Date;
+        b=dijCnpt1Mde11TyBg4lClI8w2/Tglvi0A3UhcApEO1CGzp5pdg9chF2POPcu+n59k
+         jo1X6iBwbAvVqTQtojjjpgmfY+axv5dc7af2aKBFiTnvQU4xUXp4CvqGu+KS1Dxr51
+         dw5qtEx7HDPnYj2xKj30H9/vkYDBrXvi8tThDFEw=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 152M503f010712
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 2 Jun 2021 17:05:00 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 2 Jun
+ 2021 17:05:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 2 Jun 2021 17:05:00 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 152M50Vs050993;
+        Wed, 2 Jun 2021 17:05:00 -0500
+From:   Gowtham Tammana <g-tammana@ti.com>
+To:     Suman Anna <s-anna@ti.com>, <tony@atomide.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        <bcousson@baylibre.com>
+CC:     <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nisanth Menon <nm@ti.com>,
+        Gowtham Tammana <g-tammana@ti.com>
+Subject: [PATCH v4] ARM: dts: dra7: Fix duplicate USB4 target module node
+Date:   Wed, 2 Jun 2021 17:04:58 -0500
+Message-ID: <20210602220458.9728-1-g-tammana@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <e40f4067-82e2-31ff-0694-375a59f949de@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1loYvQ-00061U-Lg
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:52554
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+With [1] USB4 target-module node got defined in dra74x.dtsi file.
+However, the earlier definition in [2] was not removed, and this
+duplication of the target module is causing boot failure on dra74
+variant boards - dra7-evm, dra76-evm.
+
+USB4 is only present in DRA74x variants, so keeping the entry in
+dra74x.dtsi and removing it from the top level interconnect hierarchy
+dra7-l4.dtsi file. This change makes the USB4 target module no longer
+visible to AM5718, DRA71x and DRA72x so removing references to it in
+their respective dts files.
+
+[1]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
+dra7 dwc3")
+[2]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
+hierarchy and ti-sysc data")
+
+Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
+Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
+---
+v4:
+  - moved the node under l4_per3 instead of ocp as per Tony and
+    Grygorii suggestion 
+v3:
+  - https://lore.kernel.org/linux-arm-kernel/20210526213035.15448-1-g-tammana@ti.com/
+  - fixed error in references to the commits
+  - mentioned the boards that failed
+v2:
+  - https://lore.kernel.org/linux-arm-kernel/20210526172038.17542-1-g-tammana@ti.com/
+  - changed reference to commit sha instead of line numbers
+  - added Fixes: tag
+  - moved the defintion to dra74.dtsi as per Suman and Tony review comments
+v1:
+  - https://lore.kernel.org/linux-arm-kernel/20210521211851.14674-1-g-tammana@ti.com/
 
 
-On 6/2/21 15:34, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 6/2/21 14:55, Kees Cook wrote:
->> On Tue, Jun 01, 2021 at 01:46:16PM -0500, Gustavo A. R. Silva wrote:
->>> Now that a one-element array was replaced with a flexible-array member
->>> in struct hfi_sys_set_property_pkt, use the struct_size() helper to
->>> correctly calculate the packet size.
->>>
->>> Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array with flexible-array member")
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> ---
->>> BTW... it seems that a similar problem is present in
->>> https://lore.kernel.org/linux-hardening/20210211001044.GA69612@embeddedor/ 
->>> and that is what is causing the regression. I will send v2 of that
->>> patch, shortly. Thanks.
->>>
->>>  drivers/media/platform/qcom/venus/hfi_cmds.c | 8 ++++----
->>>  1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
->>> index 11a8347e5f5c..c86279e5d6e8 100644
->>> --- a/drivers/media/platform/qcom/venus/hfi_cmds.c
->>> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
->>> @@ -27,7 +27,7 @@ void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
->>>  {
->>>  	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
->>>  
->>> -	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
->>> +	pkt->hdr.size = struct_size(pkt, data, 2) + sizeof(*hfi);
->>
->> I think this should be "1" not "2".
->>
->> (i.e. there is a single "data" item, followed by an entire *hfi (which
->> starts immediate after data[0]).
-> 
-> Yeah; I see your point. Here I just wanted to preserve the exact same size
-> as the original code, which turns out has a "benign" off-by-one issue.
+ arch/arm/boot/dts/am5718.dtsi  |  6 +--
+ arch/arm/boot/dts/dra7-l4.dtsi | 22 --------
+ arch/arm/boot/dts/dra71x.dtsi  |  4 --
+ arch/arm/boot/dts/dra72x.dtsi  |  4 --
+ arch/arm/boot/dts/dra74x.dtsi  | 92 ++++++++++++++++++----------------
+ 5 files changed, 50 insertions(+), 78 deletions(-)
 
-And the reason why I say it's a "benign" off-by-one (which is actually off-by-four-bytes)
-issue is because of this piece of code:
+diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
+index ebf4d3cc1cfb..6d7530a48c73 100644
+--- a/arch/arm/boot/dts/am5718.dtsi
++++ b/arch/arm/boot/dts/am5718.dtsi
+@@ -17,17 +17,13 @@
+  * VCP1, VCP2
+  * MLB
+  * ISS
+- * USB3, USB4
++ * USB3
+  */
+ 
+ &usb3_tm {
+ 	status = "disabled";
+ };
+ 
+-&usb4_tm {
+-	status = "disabled";
+-};
+-
+ &atl_tm {
+ 	status = "disabled";
+ };
+diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+index 149144cdff35..648d23f7f748 100644
+--- a/arch/arm/boot/dts/dra7-l4.dtsi
++++ b/arch/arm/boot/dts/dra7-l4.dtsi
+@@ -4129,28 +4129,6 @@
+ 			};
+ 		};
+ 
+-		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
+-			compatible = "ti,sysc-omap4", "ti,sysc";
+-			reg = <0x140000 0x4>,
+-			      <0x140010 0x4>;
+-			reg-names = "rev", "sysc";
+-			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
+-			ti,sysc-midle = <SYSC_IDLE_FORCE>,
+-					<SYSC_IDLE_NO>,
+-					<SYSC_IDLE_SMART>,
+-					<SYSC_IDLE_SMART_WKUP>;
+-			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
+-					<SYSC_IDLE_NO>,
+-					<SYSC_IDLE_SMART>,
+-					<SYSC_IDLE_SMART_WKUP>;
+-			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
+-			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
+-			clock-names = "fck";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			ranges = <0x0 0x140000 0x20000>;
+-		};
+-
+ 		target-module@170000 {			/* 0x48970000, ap 21 0a.0 */
+ 			compatible = "ti,sysc-omap4", "ti,sysc";
+ 			reg = <0x170010 0x4>;
+diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
+index cad0e4a2bd8d..9c270d8f75d5 100644
+--- a/arch/arm/boot/dts/dra71x.dtsi
++++ b/arch/arm/boot/dts/dra71x.dtsi
+@@ -11,7 +11,3 @@
+ &rtctarget {
+ 	status = "disabled";
+ };
+-
+-&usb4_tm {
+-	status = "disabled";
+-};
+diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
+index d403acc754b6..f3e934ef7d3e 100644
+--- a/arch/arm/boot/dts/dra72x.dtsi
++++ b/arch/arm/boot/dts/dra72x.dtsi
+@@ -108,7 +108,3 @@
+ &pcie2_rc {
+ 	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
+ };
+-
+-&usb4_tm {
+-	status = "disabled";
+-};
+diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
+index e1850d6c841a..b4e07d99ffde 100644
+--- a/arch/arm/boot/dts/dra74x.dtsi
++++ b/arch/arm/boot/dts/dra74x.dtsi
+@@ -49,49 +49,6 @@
+ 			reg = <0x41500000 0x100>;
+ 		};
+ 
+-		target-module@48940000 {
+-			compatible = "ti,sysc-omap4", "ti,sysc";
+-			reg = <0x48940000 0x4>,
+-			      <0x48940010 0x4>;
+-			reg-names = "rev", "sysc";
+-			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
+-			ti,sysc-midle = <SYSC_IDLE_FORCE>,
+-					<SYSC_IDLE_NO>,
+-					<SYSC_IDLE_SMART>,
+-					<SYSC_IDLE_SMART_WKUP>;
+-			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
+-					<SYSC_IDLE_NO>,
+-					<SYSC_IDLE_SMART>,
+-					<SYSC_IDLE_SMART_WKUP>;
+-			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
+-			clock-names = "fck";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			ranges = <0x0 0x48940000 0x20000>;
+-
+-			omap_dwc3_4: omap_dwc3_4@0 {
+-				compatible = "ti,dwc3";
+-				reg = <0 0x10000>;
+-				interrupts = <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
+-				#address-cells = <1>;
+-				#size-cells = <1>;
+-				utmi-mode = <2>;
+-				ranges;
+-				status = "disabled";
+-				usb4: usb@10000 {
+-					compatible = "snps,dwc3";
+-					reg = <0x10000 0x17000>;
+-					interrupts = <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
+-						     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
+-						     <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
+-					interrupt-names = "peripheral",
+-							  "host",
+-							  "otg";
+-					maximum-speed = "high-speed";
+-					dr_mode = "otg";
+-				};
+-			};
+-		};
+ 
+ 		target-module@41501000 {
+ 			compatible = "ti,sysc-omap2", "ti,sysc";
+@@ -224,3 +181,52 @@
+ &pcie2_rc {
+ 	compatible = "ti,dra746-pcie-rc", "ti,dra7-pcie";
+ };
++
++&l4_per3 {
++	segment@0 {
++		usb4_tm: target-module@140000 {         /* 0x48940000, ap 75 3c.0 */
++			compatible = "ti,sysc-omap4", "ti,sysc";
++			reg = <0x140000 0x4>,
++			      <0x140010 0x4>;
++			reg-names = "rev", "sysc";
++			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
++			ti,sysc-midle = <SYSC_IDLE_FORCE>,
++					<SYSC_IDLE_NO>,
++					<SYSC_IDLE_SMART>,
++					<SYSC_IDLE_SMART_WKUP>;
++			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
++					<SYSC_IDLE_NO>,
++					<SYSC_IDLE_SMART>,
++					<SYSC_IDLE_SMART_WKUP>;
++			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
++			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
++			clock-names = "fck";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0x0 0x140000 0x20000>;
++
++			omap_dwc3_4: omap_dwc3_4@0 {
++				compatible = "ti,dwc3";
++				reg = <0 0x10000>;
++				interrupts = <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				utmi-mode = <2>;
++				ranges;
++				status = "disabled";
++				usb4: usb@10000 {
++					compatible = "snps,dwc3";
++					reg = <0x10000 0x17000>;
++					interrupts = <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
++						     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
++						     <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
++					interrupt-names = "peripheral",
++							  "host",
++							  "otg";
++					maximum-speed = "high-speed";
++					dr_mode = "otg";
++				};
++			};
++		};
++	};
++};
+-- 
+2.17.1
 
-drivers/media/platform/qcom/venus/hfi_venus.c:
- 864 static int venus_sys_set_idle_message(struct venus_hfi_device *hdev,
- 865                                       bool enable)
- 866 {
- 867         struct hfi_sys_set_property_pkt *pkt;
- 868         u8 packet[IFACEQ_VAR_SMALL_PKT_SIZE];
- 869         int ret;
- 870
- 871         if (!enable)
- 872                 return 0;
- 873
- 874         pkt = (struct hfi_sys_set_property_pkt *)packet;
- 875
- 876         pkt_sys_idle_indicator(pkt, enable);
- 877
- 878         ret = venus_iface_cmdq_write(hdev, pkt, false);
- 879         if (ret)
- 880                 return ret;
- 881
- 882         return 0;
- 883 }
-
-IFACEQ_VAR_SMALL_PKT_SIZE at line 868 is of size 100, which is greater than
-
-sizeof(*pkt) + sizeof(*hfi) + sizeof(u32); in the original code:
-
-drivers/media/platform/qcom/venus/hfi_cmds.c:
-  26 void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
-  27 {
-  28         struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
-  29
-  30         pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-  31         pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
-  32         pkt->num_properties = 1;
-  33         pkt->data[0] = HFI_PROPERTY_SYS_IDLE_INDICATOR;
-  34         hfi->enable = enable;
-  35 }
-
---
-Gustavo
-
-> I'll fix it up and respin.
-> 
-> Thanks!
-> --
-> Gustavo
