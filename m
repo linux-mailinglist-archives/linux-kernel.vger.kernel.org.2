@@ -2,84 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8B4398927
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53485398929
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhFBMRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
+        id S229801AbhFBMRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhFBMR0 (ORCPT
+        with ESMTP id S229541AbhFBMRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:17:26 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D475C06175F;
-        Wed,  2 Jun 2021 05:15:42 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so1151927otu.6;
-        Wed, 02 Jun 2021 05:15:42 -0700 (PDT)
+        Wed, 2 Jun 2021 08:17:44 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1749DC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 05:16:00 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id h8so2057576wrz.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vHaetPkPYRHDvu2+wyaKBx30j/WfRHRRi21yYZroKbc=;
-        b=UiBPdb5Xpo/NhTFb0DyMRgveRdOFxhrIzHEzapfrt250dlq8eGJ8gGdTw/rf1/whEI
-         oCKjogFCiQzzF7H6JKQlvuWnZD2VVQZzkAPI8ZzBOGAnpMelWIwdK3Lw0hS1+iC6SZyg
-         C7r3uIClhHdySn5LyY6Z8p5jMm6P+tU8XRRP3hZMPeOQwGDrT0SclWbvQuW1RA7GS1B9
-         cTc3YKLT+AC3LyVzdBMS3aj+nae9MKUA4wFQpMFR9xjWGJEnEMragY50FwdCV1/w9Lbr
-         4fwACAmfQp1aPo6EnAz+9OnjkOwsVnYf9G/UMcV+4TYHu/ZrUQ6whYU60CEHkl/EwuWL
-         ncvg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YWSY2cvkvidrGJauSm19Qmn4FgCLAu02zP7qkPvv6YY=;
+        b=kQQsl2UpBlB6F2Fk5+FuEtjEbKlu1rn2IDj2N3IsksURVjrcDfzgw0akVFK2ZJrium
+         7B9DHOzOfhCN1pHe+R7wqs9Bwy7HFnI6PeLGLEQN+Bz/YlJ2qPWQf2QIk2gt/siQyP66
+         kx0pTnpoUKSqZ1bVspuqO00aRF+mZ/e6mpEipknqziVjKuxTHTbYkNY9JJy9I8vmBM6V
+         8zrOmG5ohKCSYLrZQbXQpN0iTSHwaqv6Vdug5QTyZHKv4BonHDYQSWF4EG4L/i4j7sYa
+         W8QgIgOPl6GG3UDgukR4o6+gnS8RO2MzJuMI4EMhtQ4hY0EykvhjeaustbCZLYXOBjdP
+         KGfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vHaetPkPYRHDvu2+wyaKBx30j/WfRHRRi21yYZroKbc=;
-        b=cvZVCbGM7DrQOtWAjIbZ+PTcfGOcFxYCOaBslZR1q/H1heq13l+soVjvQYow8SaC9z
-         I9GxmvQMtmS2BsUAjzH9t36nL8gYoJBG8tvL4IpNDoK7oFejHHSUkNQdRm8T86b1n6J8
-         ORadZuAuBctl+piP+t2vOO0FfwL/PRxyY5toEmErNaUDWBnVF+NiSvSqIJWT3prPylp7
-         vEBIAYaQ94TZ3rnZt+krfSJ2daL4ReBCdIq8hkqUl+/mxELKU/J23da/bzx2zT7bgjb4
-         JTtoK2mN5v+uuvVdjGJbvWCUBZKtsFVAryfHYQtIsJSvECytzO+WNBL/MTE1EkXGLI5x
-         BNwg==
-X-Gm-Message-State: AOAM53176YeBfixvLH9gMQ7ZuEFGIRjEeoCDrtkFWAcSiQOL4sqbnIqZ
-        EiIJQVyAHn7Cps+zxMcQjBpDIBZPS9I=
-X-Google-Smtp-Source: ABdhPJwY7sDLsrEheHpyZSRTmc6IRc04vspGjL1pK0T8w0U4yKh0sAdUA6NPR5YZJTXrcCQQnfutww==
-X-Received: by 2002:a05:6830:15c2:: with SMTP id j2mr24647349otr.367.1622636141573;
-        Wed, 02 Jun 2021 05:15:41 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e11sm132341otk.78.2021.06.02.05.15.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 05:15:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 2 Jun 2021 05:15:39 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Erik Rosen <erik.rosen@metormote.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Daniel Nilsson <daniel.nilsson@flex.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] hwmon: (pmbus/pim4328) Add support for reading
- direct mode coefficients
-Message-ID: <20210602121539.GC2901466@roeck-us.net>
-References: <20210601164320.2907-1-erik.rosen@metormote.com>
- <20210601164320.2907-3-erik.rosen@metormote.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YWSY2cvkvidrGJauSm19Qmn4FgCLAu02zP7qkPvv6YY=;
+        b=aO0o3LTH8MoxUdI8XHeDqjPM/NsPe/Ylew0GTLM8RABN2s3Zkhw1ozkoy0EJc3G2Py
+         LiRGrOFhFHmM0g5HtR1X4HXFNxYbqEt/YAP5FXljZZro7dmsLh8xDZ+lOzUxau2vjjMI
+         2mrx46EE8+gPlfQZuyhO4K/WDVg3P9ILYvQIx7jGMI7Y+DRXGV7XZJIqdK1JqzAwdcUV
+         6M7rPWIa5OXStSoChvm5miSwfHYTVbx6ADw+gl6UafJgqxsX4GIzBCtsHoS+9QlFyRNh
+         wX0XjH2UWgKog+IUv54jscuVeciPq3h/ca+sPYpz45zHuEJgEa6V7z3JKd4TMG3HfnFC
+         v18w==
+X-Gm-Message-State: AOAM532FY2TqgBJ6LffieY+CgXj7eKvnoBS8RFGdGp/tlYPqTgc4TWTs
+        y56L1pZVIMAP8fndxIfIw/8uP5DfR3I=
+X-Google-Smtp-Source: ABdhPJx5bX8sIxUb03oSEQ/bL4H3N6FDIFHL2loduI+1H+Ag//xzJ8LAxuqAT2oUTbeKxIxzvqX1PA==
+X-Received: by 2002:adf:a193:: with SMTP id u19mr17638169wru.9.1622636158691;
+        Wed, 02 Jun 2021 05:15:58 -0700 (PDT)
+Received: from ziggy.stardust ([37.223.145.68])
+        by smtp.gmail.com with ESMTPSA id s7sm7187825wrf.91.2021.06.02.05.15.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 05:15:58 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] soc: mtk-pm-domains: Fix the clock prepared issue
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        chun-jie.chen@mediatek.corp-partner.google.com,
+        Yong Wu <yong.wu@mediatek.com>
+References: <20210601035905.2970384-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <d13c74d7-845f-40bc-1969-2e419d49e78e@gmail.com>
+Date:   Wed, 2 Jun 2021 14:15:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601164320.2907-3-erik.rosen@metormote.com>
+In-Reply-To: <20210601035905.2970384-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 06:43:17PM +0200, Erik Rosen wrote:
-> Add support for reading and decoding direct format coefficients to
-> the PMBus core driver. If the new flag PMBUS_USE_COEFFICIENTS_CMD
-> is set, the driver will use the COEFFICIENTS register together with
-> the information in the pmbus_sensor_attr structs to initialize
-> relevant coefficients for the direct mode format.
+
+
+On 01/06/2021 05:59, Hsin-Yi Wang wrote:
+> From: Weiyi Lu <weiyi.lu@mediatek.com>
 > 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+> In this new power domain driver, when adding one power domain
+> it will prepare the dependent clocks at the same.
+> So we only do clk_bulk_enable/disable control during power ON/OFF.
+> When system suspend, the pm runtime framework will forcely power off
+> power domains. However, the dependent clocks are disabled but kept
+> prepared.
+> 
+> In MediaTek clock drivers, PLL would be turned ON when we do
+> clk_bulk_prepare control.
+> 
+> Clock hierarchy:
+> PLL -->
+>        DIV_CK -->
+>                  CLK_MUX
+>                  (may be dependent clocks)
+>                          -->
+>                              SUBSYS_CG
+>                              (may be dependent clocks)
+> 
+> It will lead some unexpected clock states during system suspend.
+> This patch will fix by doing prepare_enable/disable_unprepare on
+> dependent clocks at the same time while we are going to power on/off
+> any power domain.
+> 
+> Fixes: 59b644b01cf4 ("soc: mediatek: Add MediaTek SCPSYS power domains")
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: chun-jie.chen <chun-jie.chen@mediatek.com>
+> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-For my reference:
+Both patches applied to v5.13-next/soc
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Thanks!
 
-Guenter
+> ---
+>  drivers/soc/mediatek/mtk-pm-domains.c | 31 +++++++--------------------
+>  1 file changed, 8 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index 0af00efa0ef8..536d8c64b2b4 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -211,7 +211,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = clk_bulk_enable(pd->num_clks, pd->clks);
+> +	ret = clk_bulk_prepare_enable(pd->num_clks, pd->clks);
+>  	if (ret)
+>  		goto err_reg;
+>  
+> @@ -229,7 +229,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>  	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_ISO_BIT);
+>  	regmap_set_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+>  
+> -	ret = clk_bulk_enable(pd->num_subsys_clks, pd->subsys_clks);
+> +	ret = clk_bulk_prepare_enable(pd->num_subsys_clks, pd->subsys_clks);
+>  	if (ret)
+>  		goto err_pwr_ack;
+>  
+> @@ -246,9 +246,9 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>  err_disable_sram:
+>  	scpsys_sram_disable(pd);
+>  err_disable_subsys_clks:
+> -	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
+> +	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+>  err_pwr_ack:
+> -	clk_bulk_disable(pd->num_clks, pd->clks);
+> +	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>  err_reg:
+>  	scpsys_regulator_disable(pd->supply);
+>  	return ret;
+> @@ -269,7 +269,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
+> +	clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+>  
+>  	/* subsys power off */
+>  	regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+> @@ -284,7 +284,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	clk_bulk_disable(pd->num_clks, pd->clks);
+> +	clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>  
+>  	scpsys_regulator_disable(pd->supply);
+>  
+> @@ -405,14 +405,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>  		pd->subsys_clks[i].clk = clk;
+>  	}
+>  
+> -	ret = clk_bulk_prepare(pd->num_clks, pd->clks);
+> -	if (ret)
+> -		goto err_put_subsys_clocks;
+> -
+> -	ret = clk_bulk_prepare(pd->num_subsys_clks, pd->subsys_clks);
+> -	if (ret)
+> -		goto err_unprepare_clocks;
+> -
+>  	/*
+>  	 * Initially turn on all domains to make the domains usable
+>  	 * with !CONFIG_PM and to get the hardware in sync with the
+> @@ -427,7 +419,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>  		ret = scpsys_power_on(&pd->genpd);
+>  		if (ret < 0) {
+>  			dev_err(scpsys->dev, "%pOF: failed to power on domain: %d\n", node, ret);
+> -			goto err_unprepare_clocks;
+> +			goto err_put_subsys_clocks;
+>  		}
+>  	}
+>  
+> @@ -435,7 +427,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>  		ret = -EINVAL;
+>  		dev_err(scpsys->dev,
+>  			"power domain with id %d already exists, check your device-tree\n", id);
+> -		goto err_unprepare_subsys_clocks;
+> +		goto err_put_subsys_clocks;
+>  	}
+>  
+>  	if (!pd->data->name)
+> @@ -455,10 +447,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>  
+>  	return scpsys->pd_data.domains[id];
+>  
+> -err_unprepare_subsys_clocks:
+> -	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+> -err_unprepare_clocks:
+> -	clk_bulk_unprepare(pd->num_clks, pd->clks);
+>  err_put_subsys_clocks:
+>  	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+>  err_put_clocks:
+> @@ -537,10 +525,7 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
+>  			"failed to remove domain '%s' : %d - state may be inconsistent\n",
+>  			pd->genpd.name, ret);
+>  
+> -	clk_bulk_unprepare(pd->num_clks, pd->clks);
+>  	clk_bulk_put(pd->num_clks, pd->clks);
+> -
+> -	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+>  	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+>  }
+>  
+> 
