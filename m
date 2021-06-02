@@ -2,170 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B0F399222
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2634399226
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229467AbhFBSFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhFBSFb (ORCPT
+        id S229665AbhFBSHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:07:41 -0400
+Received: from smtprelay0140.hostedemail.com ([216.40.44.140]:48374 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229541AbhFBSHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:05:31 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB53C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 11:03:43 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id 76so3237313qkn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 11:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ANAeE0VrfGPo3nZoQc7JNldEPh+NOYQtryVGV16Nb/M=;
-        b=Hn4oSGrcAoVc5WZUoD1f57fz1Rxk4gIUN9BNSzzTxf3ThAA8tJ1CDIGQ0YCW4JFom1
-         +u27UgUv13u5ZTABJcXzjBs4NMsGM6j1uIFwsdLdHJRzkFWCrmPHcT0Wkyak25UBHLWv
-         p12mHy8p0qgZY4lfDlQ76V53adijiiJ9EWC1FlO1GSNsis8qvuTSq19T1P48+anpmjVI
-         2/UXyQFqNHv467RFR5l2k69AQUkljVOa1hknhvGgGX1L66NU9zBHDrVi4dpNMayF4IUP
-         8gLdIKfFTACVfCtpx0GPMBWrqco1TLD86PDM+QJNesR40EDvtRIeT0IpmbszrHVdc5cD
-         SfWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ANAeE0VrfGPo3nZoQc7JNldEPh+NOYQtryVGV16Nb/M=;
-        b=dO4u66T8+ghyWefZHakiwpKu5h3NCpYu9YztGGDh1mSrzrYtPAihY7refFhTIyaosH
-         CVLK56/ZS3wFd5WYheSmGx1hNgmbBA1aAfeIMtByIGXtmE5u/ep8FUx2wvWC560WYVRd
-         /E1Cw60qNTQ71jTIzRMNC0ArBZijxKcRjI+hLbRSiH7Vacz1s1xdw2dwwkLGP586IQoc
-         Vg/4M4ORpU5IIVECEpOFZOjiZDsNNqGFcRihfPvelW6xfjMzm5zTUq4tF8mStMyRHpma
-         I3tv3YArrMTkZltRJAa2ZNriMBOVNWyAoiu6lIdKSZ+6dzg9ysW9IpoCrvOnQbaO8gSj
-         ud4w==
-X-Gm-Message-State: AOAM533fFGDkK08mtvnuAcf/gKiasN3nJod/Aac8Nl+kCQPS9Wspv8Xz
-        KLSD4bJ3JjLtu6rnIrhWlixFA7iPf4M=
-X-Google-Smtp-Source: ABdhPJwlkeWPOYX2y5/WvipYuRcwWejxc8AKFHmGt5uBx0KtgffYsUGpDrDlcMWetL7yUqrbIBWYpQ==
-X-Received: by 2002:a05:620a:1230:: with SMTP id v16mr28999544qkj.14.1622657022784;
-        Wed, 02 Jun 2021 11:03:42 -0700 (PDT)
-Received: from tannerlove.nyc.corp.google.com ([2620:0:1003:1000:56ea:5ee7:bba5:d755])
-        by smtp.gmail.com with ESMTPSA id f130sm316511qke.37.2021.06.02.11.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 11:03:42 -0700 (PDT)
-From:   Tanner Love <tannerlove.kernel@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Garry <john.garry@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Tanner Love <tannerlove@google.com>
-Subject: [PATCH] genirq: change force_irqthreads from bool test to static key
-Date:   Wed,  2 Jun 2021 14:03:38 -0400
-Message-Id: <20210602180338.3324213-1-tannerlove.kernel@gmail.com>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+        Wed, 2 Jun 2021 14:07:40 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6A4E618224D63;
+        Wed,  2 Jun 2021 18:05:56 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 87A622448C2;
+        Wed,  2 Jun 2021 18:05:55 +0000 (UTC)
+Message-ID: <ef68a1ece1a2db3dca73c326f65304fd640c6a7e.camel@perches.com>
+Subject: Re: [PATCH v2] kernel/time: Improve performance of time64_to_tm.
+ Add tests.
+From:   Joe Perches <joe@perches.com>
+To:     Cassio Neri <cassio.neri@gmail.com>, john.stultz@linaro.org,
+        tglx@linutronix.de
+Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 02 Jun 2021 11:05:54 -0700
+In-Reply-To: <20210602174651.37874-1-cassio.neri@gmail.com>
+References: <20210602174651.37874-1-cassio.neri@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.35
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 87A622448C2
+X-Stat-Signature: 4c58457tdrg68zsn9csgyczrimgbd7e4
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/s5kfWtyTAB33qPzDHWJUT64S+55llffo=
+X-HE-Tag: 1622657155-651289
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tanner Love <tannerlove@google.com>
+On Wed, 2021-06-02 at 18:46 +0100, Cassio Neri wrote:
+> The current implementation of time64_to_tm contains unnecessary loops,
+> branches and look-up tables. The new one uses an arithmetic-based algorithm
+> appeared in [1] and is ~3.2 times faster (YMMV).
 
-With CONFIG_IRQ_FORCED_THREADING=y, testing the bool force_irqthreads
-could incur a cache line miss in invoke_softirq().
+trivia:
 
-Replace the test with a static key to avoid the potential cache miss.
+> diff --git a/kernel/time/timeconv.c b/kernel/time/timeconv.c
+[]
+>  void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
+>  {
+> -	long days, rem, y;
+> +	long days, rem;
+>  	int remainder;
+> -	const unsigned short *ip;
+> +
+> +	u64 u64tmp, udays, century, year;
+> +	u32 u32tmp, day_of_century, year_of_century, day_of_year, month,
+> +		day, janOrFeb, is_leap;
 
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
----
- drivers/ide/ide-iops.c    | 7 +++----
- include/linux/interrupt.h | 4 +++-
- kernel/irq/manage.c       | 6 +++---
- 3 files changed, 9 insertions(+), 8 deletions(-)
+janOrFeb is an odd name choice and it and is_leap could be bool
+which _might_ improve performance in some memory access cases.
 
-diff --git a/drivers/ide/ide-iops.c b/drivers/ide/ide-iops.c
-index f2be127ee96e..f86cdb8451e6 100644
---- a/drivers/ide/ide-iops.c
-+++ b/drivers/ide/ide-iops.c
-@@ -109,7 +109,6 @@ int __ide_wait_stat(ide_drive_t *drive, u8 good, u8 bad,
- 	ide_hwif_t *hwif = drive->hwif;
- 	const struct ide_tp_ops *tp_ops = hwif->tp_ops;
- 	unsigned long flags;
--	bool irqs_threaded = force_irqthreads;
- 	int i;
- 	u8 stat;
- 
-@@ -117,7 +116,7 @@ int __ide_wait_stat(ide_drive_t *drive, u8 good, u8 bad,
- 	stat = tp_ops->read_status(hwif);
- 
- 	if (stat & ATA_BUSY) {
--		if (!irqs_threaded) {
-+		if (!force_irqthreads) {
- 			local_save_flags(flags);
- 			local_irq_enable_in_hardirq();
- 		}
-@@ -133,13 +132,13 @@ int __ide_wait_stat(ide_drive_t *drive, u8 good, u8 bad,
- 				if ((stat & ATA_BUSY) == 0)
- 					break;
- 
--				if (!irqs_threaded)
-+				if (!force_irqthreads)
- 					local_irq_restore(flags);
- 				*rstat = stat;
- 				return -EBUSY;
- 			}
- 		}
--		if (!irqs_threaded)
-+		if (!force_irqthreads)
- 			local_irq_restore(flags);
- 	}
- 	/*
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 4777850a6dc7..9e676c351f23 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -13,6 +13,7 @@
- #include <linux/hrtimer.h>
- #include <linux/kref.h>
- #include <linux/workqueue.h>
-+#include <linux/jump_label.h>
- 
- #include <linux/atomic.h>
- #include <asm/ptrace.h>
-@@ -504,7 +505,8 @@ extern int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
- # ifdef CONFIG_PREEMPT_RT
- #  define force_irqthreads	(true)
- # else
--extern bool force_irqthreads;
-+DECLARE_STATIC_KEY_FALSE(force_irqthreads_key);
-+#  define force_irqthreads	(static_branch_unlikely(&force_irqthreads_key))
- # endif
- #else
- #define force_irqthreads	(0)
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 4c14356543d9..395945e54929 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -25,12 +25,12 @@
- #include "internals.h"
- 
- #if defined(CONFIG_IRQ_FORCED_THREADING) && !defined(CONFIG_PREEMPT_RT)
--__read_mostly bool force_irqthreads;
--EXPORT_SYMBOL_GPL(force_irqthreads);
-+DEFINE_STATIC_KEY_FALSE(force_irqthreads_key);
-+EXPORT_SYMBOL_GPL(force_irqthreads_key);
- 
- static int __init setup_forced_irqthreads(char *arg)
- {
--	force_irqthreads = true;
-+	static_branch_enable(&force_irqthreads_key);
- 	return 0;
- }
- early_param("threadirqs", setup_forced_irqthreads);
--- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
+> +	year_of_century = (u32) (u64tmp >> 32);
+
+Perhaps
+	year_of_century = upper_32_bits(u64tmp);
+
+> +	day_of_year     = ((u32) u64tmp) / 2939745 / 4;
+
+and
+	day_of_year = lower_32_bits(u64tmp) / 2939745 / 4;
+
+> +	is_leap         = year_of_century != 0 ?
+> +		year_of_century % 4 == 0 : century % 4 == 0;
+> +
+> +	u32tmp          = 2141 * day_of_year + 132377;
+> +	month           = u32tmp >> 16;
+> +	day             = ((u16) u32tmp) / 2141;
+> +
+> +	/* Recall that January 01 is the 306-th day of the year in the
+> +	 * computational (not Gregorian) calendar.
+> +	 */
+> +	janOrFeb        = day_of_year >= 306;
+> +
+> +	/* Converts to the Gregorian calendar and adjusts to Unix time. */
+> +	year            = year + janOrFeb - 6313183731940000ULL;
+> +	month           = janOrFeb ? month - 12 : month;
+> +	day             = day + 1;
+> +	day_of_year     = janOrFeb ?
+> +		day_of_year - 306 : day_of_year + 31 + 28 + is_leap;
+
+I believe the extended naming improves readability, thanks.
 
