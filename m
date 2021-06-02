@@ -2,61 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA33398F1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25E9398F1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhFBPpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:45:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46832 "EHLO mail.kernel.org"
+        id S232587AbhFBPpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:45:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232376AbhFBPpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232340AbhFBPpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Jun 2021 11:45:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7867E6140C;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 695AE61406;
         Wed,  2 Jun 2021 15:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622648602;
-        bh=0MELa+vkFf8qciInEiANCeWuJgsCWdc+iIN4XgabBlU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ow5ucdX+cLyyshfYKKgUmaN7u1vT8JE6wpcqUKxTUm3f4VAqfL+vN/ipg7eINBHcs
-         5myl1FE98NtMXFFNDejrwHifMf/IbOWqgFNtE+klnW+5/PCO4dWEcwpTfDeeVN6Ckn
-         JvczV9Y13kiuvQ2CanTKQdGdOzLB1jTQO4uU50i8/+hZ241IyBQ7yZ1+WRb4p5SFpk
-         EUvYoaJtuDfi/UdKVyvZWcnoFLquBLPz4d3uwoHmZIEwE+ahs53PrxMsQovuDF6qo9
-         sI0gAHsVnC3iacI5pyrpN+81xksmA46ctCWF+HtJhVLTBaKuRBj1aOhgCo0bi3Z0n0
-         AK5H0lWSJ7oUA==
+        bh=6qXUkFnfiQfecs6mzHsdnwU/nAODiuGruDmsYLHNq7I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UZ6iTswno7Z5eDssTs9LpH56tcpYZGtYCWMOnrkhw7TttWKtUMj7JDX9LN5KubBxE
+         FYQnsbxGGGOzlQtx9ktFH6knIcs/1cjl9U0+0B13m3gYty05uQWHtUZ1sGdlrLa9qi
+         NC5GiH8q5K3YGyOd1MaBOPqZ5SryUThO/c3XlyNeBKj0ZV7ee40QOyPcltzYkjsbbm
+         IhsHY0jip++71qxUB5Aqv7rW7qVtNLkPVMTs/f3JYh9YCdJkehGCrt4RR8BA31nF8H
+         ElKvf4SX0ScIIarT1Ew1sM+YTUn0YNwLkTR4Uotx3tidMlZrFVRxV9tyHqT1+b4QgX
+         TKMAx78Y2Q+yQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1loT1b-006XbY-6u; Wed, 02 Jun 2021 17:43:19 +0200
+        id 1loT1b-006Xbb-8t; Wed, 02 Jun 2021 17:43:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Keerthy <j-keerthy@ti.com>, Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Peter Rosin <peda@axentia.se>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Lee Jones <lee.jones@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 00/12] Fix broken docs references at next-20210602
-Date:   Wed,  2 Jun 2021 17:43:06 +0200
-Message-Id: <cover.1622648507.git.mchehab+huawei@kernel.org>
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 01/12] dt-bindings: power: supply: cpcap-battery: update cpcap-battery.yaml reference
+Date:   Wed,  2 Jun 2021 17:43:07 +0200
+Message-Id: <1d0c8d50db22d9e5540a42be874fcd39fb7fc2a7.1622648507.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1622648507.git.mchehab+huawei@kernel.org>
+References: <cover.1622648507.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
@@ -64,43 +48,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some broken references at today's linux-next with regards
-to files inside Documentation/.
+Changeset 3c5be0454972 ("dt-bindings: power: supply: cpcap-battery: Convert to DT schema format")
+renamed: Documentation/devicetree/bindings/power/supply/cpcap-battery.txt
+to: Documentation/devicetree/bindings/power/supply/cpcap-battery.yaml.
 
-Address them.
+Update its cross-reference accordingly.
 
-Mauro Carvalho Chehab (12):
-  dt-bindings: power: supply: cpcap-battery: update cpcap-battery.yaml
-    reference
-  dt-bindings: power: supply: cpcap-charger: update cpcap-charger.yaml
-    reference
-  dt-bindings: soc: ti: update sci-pm-domain.yaml references
-  dt-bindings: clock: update ti,sci-clk.yaml references
-  dt-bindings: reset: update ti,sci-reset.yaml references
-  dt-bindings: iio: io-channel-mux.yaml: fix a typo
-  docs: accounting: update delay-accounting.rst reference
-  MAINTAINERS: update faraday,ftrtc010.yaml reference
-  MAINTAINERS: update marvell,armada-3700-utmi-phy.yaml reference
-  MAINTAINERS: update ti,omap-gpio.yaml reference
-  MAINTAINERS: update ti,sci.yaml reference
-  MAINTAINERS: update nxp,imx8-jpeg.yaml reference
+Fixes: 3c5be0454972 ("dt-bindings: power: supply: cpcap-battery: Convert to DT schema format")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ Documentation/devicetree/bindings/mfd/motorola-cpcap.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- Documentation/admin-guide/sysctl/kernel.rst      |  2 +-
- .../devicetree/bindings/dma/ti-edma.txt          |  4 ++--
- .../devicetree/bindings/gpio/gpio-davinci.txt    |  2 +-
- .../devicetree/bindings/i2c/i2c-davinci.txt      |  4 ++--
- .../bindings/iio/multiplexer/io-channel-mux.yaml |  2 +-
- .../devicetree/bindings/mfd/motorola-cpcap.txt   |  4 ++--
- .../devicetree/bindings/mmc/ti-omap-hsmmc.txt    |  4 ++--
- .../devicetree/bindings/net/can/c_can.txt        |  4 ++--
- .../bindings/remoteproc/ti,keystone-rproc.txt    |  4 ++--
- .../devicetree/bindings/spi/spi-davinci.txt      |  2 +-
- .../devicetree/bindings/usb/ti,j721e-usb.yaml    |  2 +-
- .../bindings/usb/ti,keystone-dwc3.yaml           |  2 +-
- MAINTAINERS                                      | 16 ++++++++--------
- 13 files changed, 26 insertions(+), 26 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mfd/motorola-cpcap.txt b/Documentation/devicetree/bindings/mfd/motorola-cpcap.txt
+index b52e7a33f0f9..e656e6f08fed 100644
+--- a/Documentation/devicetree/bindings/mfd/motorola-cpcap.txt
++++ b/Documentation/devicetree/bindings/mfd/motorola-cpcap.txt
+@@ -16,7 +16,7 @@ Optional subnodes:
+ The sub-functions of CPCAP get their own node with their own compatible values,
+ which are described in the following files:
+ 
+-- Documentation/devicetree/bindings/power/supply/cpcap-battery.txt
++- Documentation/devicetree/bindings/power/supply/cpcap-battery.yaml
+ - Documentation/devicetree/bindings/power/supply/cpcap-charger.txt
+ - Documentation/devicetree/bindings/regulator/cpcap-regulator.txt
+ - Documentation/devicetree/bindings/phy/phy-cpcap-usb.txt
 -- 
 2.31.1
-
 
