@@ -2,251 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A69398094
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A51A398097
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhFBFMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 01:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
+        id S229905AbhFBFPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 01:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhFBFMe (ORCPT
+        with ESMTP id S229790AbhFBFPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 01:12:34 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B313C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 22:10:51 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id g17so988008qtk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 22:10:51 -0700 (PDT)
+        Wed, 2 Jun 2021 01:15:34 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50F6C061574;
+        Tue,  1 Jun 2021 22:13:50 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id u18so1248801pfk.11;
+        Tue, 01 Jun 2021 22:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ExIpSQCdUwQfXC0k/E0C5WUAuuKOheQBwXBTxYKix0I=;
-        b=STzLNIJWj8eSwze6PaSGbS2jgX2PN9mTUdR3AZocy0a+Dv2M26CMnpTuuaGQY4nqRr
-         +lpuL3wJhK2bZFqxQ43phy8dmWhWzE8vi8fJsKB4LstuOUpjc/57085NSDg2GhMGqG9Z
-         Hqq1FpJJ8EusDSyX8bQbDgcvckRJMLEXKeBG/+Zexcz8nytd2XqqZdMgKyjM25jr/oJZ
-         XambXD5ocTl1KV5ySsAdUisO82Udtf4axBl8lygFyT1j18gHcvzNirZk22wwUp3JatsK
-         29uyTCz+x+iKE25dxTS48QOq6vLwDWzuiFrXNMNl/XPmqf+ct2CaNBXXb17kAfeX8pII
-         ABEA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zL1wvqyfXO+HW4dTElnGK+sL97cvui1bm1K7ZTkih8o=;
+        b=VTNw7g1ryf4OovZTbyimx1r3x9HsIdmA7EyNVte4VZTvWqAYsMKSj00i/tHOJDeVKp
+         7EFafkCuhhOuufThSHijAliYIsF21fxJnKR8ct+TzWplx/gsKaewQks40+34+/Wq3fPv
+         JF2779DPA9WVdwOrOyIcpzKtukUoIg8euVIeRJ6wTL1dlyvXvLAjquO1Y0Cwf1yPb3SV
+         G+Mw82a9bxf+FXxojCmf0B3UWbKy7kW92o4tGJP+hDSkrWXEsfkzVFF8ZBEoyxlZFpi5
+         HTKbKgv39Pr84dS1zUkmAyjtUheieWt3IdsO1Yf62l2MAhieb6Dbjm36Ya5NdOd79Ac3
+         8KcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ExIpSQCdUwQfXC0k/E0C5WUAuuKOheQBwXBTxYKix0I=;
-        b=ayL8qyVExiM4m8J5exticGyan5vhOIZAlz5ALa9QYx7DvakCJHeqWz2LTA5RhBGGsv
-         7pD2yQVs6MOLX6uoFWUOeVPSrbpgMu4UyKmymkEhF0yzI+H08jxoWMK+2ZS0O9JUxU63
-         5pG/UBBX5p/MDVuardtY6Pcbj6R99mQuxfyaBMHZXmmZPpZ1AC7iG4FB8w7E/WrHEBUK
-         6ydp17ErFRsyg4gGXW+PkcryyuWc1VUhmGTE4ZWQfi8rWS+vo0jAhKBixKh2lAvdtbNL
-         5oK8ST0uoAEauUcKEMz6HDkqaQmDZKFlQEx5iF/fbYMll2QZEbZQe864AK4eoxP1jMMI
-         muDg==
-X-Gm-Message-State: AOAM533lOc55YXS4CB+ogurGkCgUGrAtUy+m9hBUzvUZOi7qNhjxWpzF
-        EH/2dEqkU3mgt7uYc3g6up8v8kyAJTX66ndqx78=
-X-Google-Smtp-Source: ABdhPJwB9pywpwivFns6/pIIRJnxkmdM8mXssJGaRGWWqE3qHGQGTPoCyNB6gaK/jkX+QCN8lQOXAuAe+0kxMvmWGyc=
-X-Received: by 2002:ac8:5fc1:: with SMTP id k1mr22725424qta.275.1622610650620;
- Tue, 01 Jun 2021 22:10:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zL1wvqyfXO+HW4dTElnGK+sL97cvui1bm1K7ZTkih8o=;
+        b=pNSdtuMLWy8e9z+dYW4oyr6we96HKe0haXw4AmyIXv1WTsdFf2sOkTt2sKdX2jgb1W
+         XeuSbe26V6xQTc27cWDcvkWGPRJrerLuU30njJwdzXiIQe5EMMvM+Hm/2nlL4zWDBssl
+         MXgmbt6JHgHihqcXLOIR2/PMAICvJ+dbPt1dYH4aBcd7+P5r5CFRKwbLzx9y+0eNHpDz
+         CcZLESh/1QE40NOk7zA2JfoMVFy0VIxWJcq46lH7U2cFFKzKQI2FndUxr2Hr1pv2qob4
+         nML9ZxSvwXz6HlkHBtoJfKCokwF3yPE9lfoZI9dbqZUFEhqfWoC61RlLPLABYPyP+b0m
+         zhsQ==
+X-Gm-Message-State: AOAM533O1R6GmVq4P75ZOS0weeJ38KN/ilaHQzzQ+mwF/kqn3HaLsQPu
+        W8wb6rvQ9yRvlf6nYcTd2Ew=
+X-Google-Smtp-Source: ABdhPJwS2fPg55Vd/UKuXsco3dr3OjGO9zKoLGadpmct7e2l7DwE/WppZsNFCr5UG8LaFPwfmpVZQQ==
+X-Received: by 2002:a63:f815:: with SMTP id n21mr32460255pgh.2.1622610830371;
+        Tue, 01 Jun 2021 22:13:50 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a596:b3cb:1a6:1ee4])
+        by smtp.gmail.com with ESMTPSA id f13sm15213630pfa.207.2021.06.01.22.13.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 22:13:48 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 22:13:46 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Qiang Ma <maqianga@uniontech.com>
+Cc:     wangxiongfeng2@huawei.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: psmouse - fix psmouse detect function is a NULL
+ pointer
+Message-ID: <YLcTilSGgW6jMKEy@google.com>
+References: <20210519032335.19326-1-maqianga@uniontech.com>
 MIME-Version: 1.0
-References: <20210429012909.GA3958584@paulmck-ThinkPad-P17-Gen-1>
- <CAJRGBZxre5=xt-RQFo6HU3rBYu7YuVtXZxNHicbKFX3FMB1T7A@mail.gmail.com>
- <20210430051059.GE975577@paulmck-ThinkPad-P17-Gen-1> <CAJRGBZzQ-eQMLHBVzhcTjqQMYEtop3SK=7TAMmC+5tNsfxM_GQ@mail.gmail.com>
- <20210501042834.GK975577@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210501042834.GK975577@paulmck-ThinkPad-P17-Gen-1>
-From:   Luming Yu <luming.yu@gmail.com>
-Date:   Wed, 2 Jun 2021 13:10:37 +0800
-Message-ID: <CAJRGBZzgXyNA1C12uiTo-ffa7Af5FB4ABRK_K9KgT9t4duRsdA@mail.gmail.com>
-Subject: Re: [PATCH V11 clocksource 0/6] Do not mark clocks unstable due to
- delays for v5.13
-To:     paulmck@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>, sboyd@kernel.org,
-        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
-        kernel-team@fb.com, neeraju@codeaurora.org,
-        Andi Kleen <ak@linux.intel.com>, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519032335.19326-1-maqianga@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hi Qiang,
 
-It appears that the patch set is not in 5.13.  Will it be in 5.14?
-And more data proof seems to indciate that  tsc is more stable than
-tsc-watchdog.
-and we need the patch set to dis-arm wrong actions when watch dog is
-hit by a spik.
+On Wed, May 19, 2021 at 11:23:35AM +0800, Qiang Ma wrote:
+> Add a check for psmouse_do_detect(), when the detect is NULL pointer,
+> returning false, avoiding this possible NULL pointer exception.
+> 
+> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+> ---
+>  drivers/input/mouse/psmouse-base.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
+> index 0b4a3039f312..86b095728587 100644
+> --- a/drivers/input/mouse/psmouse-base.c
+> +++ b/drivers/input/mouse/psmouse-base.c
+> @@ -1006,6 +1006,9 @@ static bool psmouse_do_detect(int (*detect)(struct psmouse *, bool),
+>  	if (set_properties)
+>  		psmouse_apply_defaults(psmouse);
+>  
+> +	if (!detect)
+> +		return false;
 
-On Sat, May 1, 2021 at 12:28 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Fri, Apr 30, 2021 at 02:52:58PM +0800, Luming Yu wrote:
-> > On Fri, Apr 30, 2021 at 1:11 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Thu, Apr 29, 2021 at 07:13:40PM +0800, Luming Yu wrote:
-> > > > On Thu, Apr 29, 2021 at 9:30 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > Hello!
-> > > > >
-> > > > > If there is a sufficient delay between reading the watchdog clock and the
-> > > > > clock under test, the clock under test will be marked unstable through no
-> > > > > fault of its own.  This series checks for this, doing limited retries
-> > > > > to get a good set of clock reads.  If the clock is marked unstable
-> > > > > and is marked as being per-CPU, cross-CPU synchronization is checked.
-> > > > > This series also provides delay injection, which may be enabled via
-> > > > > kernel boot parameters to test the checking for delays.
-> > > > >
-> > > > > Note that "sufficient delay" can be provided by SMIs, NMIs, and of course
-> > > > > vCPU preemption.
-> > > > >
-> > > > > 1.      Provide module parameters to inject delays in watchdog.
-> > > > >
-> > > > > 2.      Retry clock read if long delays detected.
-> > > > >
-> > > > > 3.      Check per-CPU clock synchronization when marked unstable.
-> > > > >
-> > > > > 4.      Provide a module parameter to fuzz per-CPU clock checking.
-> > > > >
-> > > > > 5.      Limit number of CPUs checked for clock synchronization.
-> > > > >
-> > > > > 6.      Reduce clocksource-skew threshold for TSC.
-> > > > >
-> > > > > Changes since v10, based on feedback from Thomas Gleixner, Peter Zijlstra,
-> > > > > Feng Tang, Andi Kleen, Luming Yu, Xing Zhengju, and the indefatigible
-> > > > > kernel test robot:
-> > > > >
-> > > > > o       Automatically compute the uncertainty margin for clocksource, and
-> > > > >         also allow them to be specified manually before that clocksource
-> > > > >         is registered.
-> > > > >
-> > > > > o       For the automatically computed uncertainty margins, bound them
-> > > > >         below by 100 microseconds (2 * WATCHDOG_MAX_SKEW).
-> > > > >
-> > > > > o       For the manually specified uncertainty margins, splat (but
-> > > > >         continue) if they are less than 100 microseconds (again 2 *
-> > > > >         WATCHDOG_MAX_SKEW).  The purpose of splatting is to discourage
-> > > > >         production use of this clock-skew-inducing debugging technique.
-> > > > >
-> > > > > o       Manually set the uncertainty margin for clocksource_jiffies
-> > > > >         (and thus refined_jiffies) to TICK_NSEC to compensate for the
-> > > > >         very low frequency of these clocks.
-> > > > >
-> > > > > o       Manually set the uncertainty margin for clocksource_tsc_early
-> > > > >         to 32 milliseconds.
-> > > > >
-> > > > > o       Apply numerous "Link:" fields to all patches.
-> > > > >
-> > > > > o       Add some acks and CCs.
-> > > > >
-> > > > > Changes since v9:
-> > > > >
-> > > > > o       Forgive tsc_early drift, based on feedback from Feng Tang; Xing,
-> > > > >         Zhengjun; and Thomas Gleixner.
-> > > > >
-> > > > > o       Improve CPU selection for clock-synchronization checking.
-> > > > >
-> > > > > Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
-> > > > >
-> > > > > Changes since v8, based on Thomas Gleixner feedback:
-> > > > >
-> > > > > o       Reduced clock-skew threshold to 200us and delay limit to 50us.
-> > > > >
-> > > > > o       Split out a cs_watchdog_read() function.
-> > > > >
-> > > > > o       Removed the pointless CLOCK_SOURCE_VERIFY_PERCPU from kvm_clock.
-> > > > >
-> > > > > o       Initialized cs_nsec_max and cs_nsec_min to avoid firsttime checks.
-> > > > >
-> > > > > Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
-> > > > >
-> > > > > Changes since v7, based on Thomas Gleixner feedback:
-> > > > >
-> > > > > o       Fix embarrassing git-format-patch operator error.
-> > > > >
-> > > > > o       Merge pairwise clock-desynchronization checking into the checking
-> > > > >         of per-CPU clock synchronization when marked unstable.
-> > > > >
-> > > > > o       Do selective per-CPU checking rather than blindly checking all
-> > > > >         CPUs.  Provide a clocksource.verify_n_cpus kernel boot parameter
-> > > > >         to control this behavior, with the value -1 choosing the old
-> > > > >         check-all-CPUs behavior.  The default is to randomly check 8 CPUs.
-> > > > >
-> > > > > o       Fix the clock-desynchronization checking to avoid a potential
-> > > > >         use-after-free error for dynamically allocated clocksource
-> > > > >         structures.
-> > > > >
-> > > > > o       Remove redundance "wdagain_nsec < 0" from clocksource_watchdog()
-> > > > >         clocksource skew checking.
-> > > > >
-> > > > > o       Update commit logs and do code-style updates.
-> > > > >
-> > > > > Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
-> > > > >
-> > > > > Changes since v5:
-> > > > >
-> > > > > o       Rebased to v5.12-rc5.
-> > > > >
-> > > > > Changes since v4:
-> > > > >
-> > > > > o       Rebased to v5.12-rc1.
-> > > > >
-> > > > > Changes since v3:
-> > > > >
-> > > > > o       Rebased to v5.11.
-> > > > >
-> > > > > o       Apply Randy Dunlap feedback.
-> > > > >
-> > > > > Changes since v2:
-> > > > >
-> > > > > o       Rebased to v5.11-rc6.
-> > > > >
-> > > > > o       Updated Cc: list.
-> > > > >
-> > > > > Changes since v1:
-> > > > >
-> > > > > o       Applied feedback from Rik van Riel.
-> > > > >
-> > > > > o       Rebased to v5.11-rc3.
-> > > > >
-> > > > > o       Stripped "RFC" from the subject lines.
-> > > > >
-> > > > >                                                 Thanx, Paul
-> > > > >
-> > > > > ------------------------------------------------------------------------
-> > > > >
-> > > > >  Documentation/admin-guide/kernel-parameters.txt   |   32 +++
-> > > > >  arch/x86/kernel/tsc.c                             |    1
-> > > > >  b/Documentation/admin-guide/kernel-parameters.txt |   21 ++
-> > > > >  b/arch/x86/kernel/tsc.c                           |    3
-> > > > >  b/include/linux/clocksource.h                     |    2
-> > > > >  b/kernel/time/clocksource.c                       |   23 ++
-> > > > >  b/kernel/time/jiffies.c                           |   15 -
-> > > > >  include/linux/clocksource.h                       |    3
-> > > > >  kernel/time/clocksource.c                         |  227 ++++++++++++++++++++--
-> > > > >  9 files changed, 304 insertions(+), 23 deletions(-)
-> > > >
-> > > > Hi Paul,
-> > > > using the v11, I added a approve flag and made it work for my early
-> > > > inject test  where tsc is good
-> > > > through a cross tsc sync test. Ideally with the small tweak, we could
-> > > > get less tsc issues to debug.
-> > > >  And I'm not sure it would help in real trouble shooting cases. But we
-> > > > will see if it would help.
-> > >
-> > > Thank you for the patch!
-> > >
-> > > However, Thomas had me rework this code to put the error injection into
-> > > a kernel module, so this effect is now obtained in a different way.
-> > > So I am unable to make use of your patch.
-> >
-> > np, thanks for the heads up.
-> >
-> > we will also need to measure the tsc sync retest and prove it's robust
-> >  enough to trump the bad decision from clocksource watchdog based on HPET
-> > or other slow and old clocks while leaving good decisions pass through.
-> >
-> > we will re-spin the tsc story when your code is settled and landed in
-> > the mainline.
->
-> My current series exports clocksource_verify_percpu(), which might help
-> measuring TSC synchronization.
->
->                                                         Thanx, Paul
+There are no protocols that do not define detect() method, so this
+condition is not possible.
+
+> +
+>  	return detect(psmouse, set_properties) == 0;
+>  }
+>  
+
+Thanks.
+
+-- 
+Dmitry
