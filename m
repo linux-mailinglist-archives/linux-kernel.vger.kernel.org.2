@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D04339950F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9525139951D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbhFBVDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:03:49 -0400
-Received: from mga01.intel.com ([192.55.52.88]:44909 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhFBVDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:03:48 -0400
-IronPort-SDR: vu1nzEQCRwtGrmv/puk5JPep95Hn+0KktcbWosg1H/s3zWvjoH9dggb9anDP2geNlEFJaWw1Lx
- MJ1NR4/3p9iw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="225189230"
-X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
-   d="scan'208";a="225189230"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 14:01:28 -0700
-IronPort-SDR: J2wKdPazg82ORk0RGAZtvxrW6bZfilHAJDJ3Z2cv1VC3xjRHF8j0sev2eNp+5JM8uSkjojzilB
- XOCGnoqCS2hw==
-X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
-   d="scan'208";a="550322215"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.87.193]) ([10.209.87.193])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 14:01:27 -0700
-Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Handle in-kernel MMIO
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
- <20210602194220.2227863-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210602194220.2227863-3-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <aac39d2e-c812-71c0-c769-e505ff6c5b40@linux.intel.com>
-Date:   Wed, 2 Jun 2021 14:01:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229726AbhFBVFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:05:33 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:47038 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBVFa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 17:05:30 -0400
+Received: by mail-oi1-f175.google.com with SMTP id x15so4008751oic.13;
+        Wed, 02 Jun 2021 14:03:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dLnYTEbSZ20S1sAYbhXfu4nsy5YD5/Va1Hrjfwf4SZI=;
+        b=iQlgGwkEZYwVNGxgOPja8tdFFSMsqOsI/VRJwkIAgciQH/Y4TVb6/ddCDn821BSXJ3
+         ZXCqoUkWno+xtBtwBauoyIePzmrb4ML4kkMDTa1pIMA11opS4Edstl847AcRpkiwDUPE
+         gWYmvOqTeWzwrEGNOX2+uARfVbYrcOtMJlemCKY+L3OqTLF0U1kp5cqE4DaXQ38kmedY
+         JVu94JVwZy64SUIR3WUgFuLeqq0oHTaln73Lum7jUZWhvReRwJcsRUPGw3gxCBqTgyfK
+         VrAHDqwbrBZTe3hTfEWA6INw7aPFP0qrm/Bm/DKmGK9hwOISM7DFRlcYVdI2xCmb2cSl
+         TX3Q==
+X-Gm-Message-State: AOAM530JBkcGFE6Uio0eQwH6hS2OGdav9ImtpbejV5VrlbnSBRfK+0dS
+        v8xmqknMBuxVO9AVsgJPsQ==
+X-Google-Smtp-Source: ABdhPJwzqC2XJXHhkwYt4RptxqcSdFcN/kP0H0MQF9MHuOZBc6phW4g8h6Op9s6Ub7E54um+kyvYNA==
+X-Received: by 2002:a05:6808:a97:: with SMTP id q23mr7233255oij.39.1622667812829;
+        Wed, 02 Jun 2021 14:03:32 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q63sm234944oic.15.2021.06.02.14.03.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 14:03:32 -0700 (PDT)
+Received: (nullmailer pid 4037543 invoked by uid 1000);
+        Wed, 02 Jun 2021 21:03:30 -0000
+Date:   Wed, 2 Jun 2021 16:03:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     dmaengine@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-remoteproc@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-usb@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nishanth Menon <nm@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-can@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>, Jakub Kicinski <kuba@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-mmc@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 03/12] dt-bindings: soc: ti: update sci-pm-domain.yaml
+ references
+Message-ID: <20210602210330.GA4037450@robh.at.kernel.org>
+References: <cover.1622648507.git.mchehab+huawei@kernel.org>
+ <c03020ff281054c3bd2527c510659e05fec6f181.1622648507.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210602194220.2227863-3-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c03020ff281054c3bd2527c510659e05fec6f181.1622648507.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User-space
-> access triggers SIGBUS.
+On Wed, 02 Jun 2021 17:43:09 +0200, Mauro Carvalho Chehab wrote:
+> Changeset fda55c7256fe ("dt-bindings: soc: ti: Convert ti,sci-pm-domain to json schema")
+> renamed: Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
+> to: Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml.
+> 
+> Update the cross-references accordingly.
+> 
+> Fixes: fda55c7256fe ("dt-bindings: soc: ti: Convert ti,sci-pm-domain to json schema")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/dma/ti-edma.txt             | 4 ++--
+>  Documentation/devicetree/bindings/i2c/i2c-davinci.txt         | 2 +-
+>  Documentation/devicetree/bindings/mmc/ti-omap-hsmmc.txt       | 2 +-
+>  Documentation/devicetree/bindings/net/can/c_can.txt           | 2 +-
+>  .../devicetree/bindings/remoteproc/ti,keystone-rproc.txt      | 2 +-
+>  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml       | 2 +-
+>  Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml   | 2 +-
+>  MAINTAINERS                                                   | 2 +-
+>  8 files changed, 9 insertions(+), 9 deletions(-)
+> 
 
-Actually it looks like it's implemented below now, so that sentence 
-could be dropped.
-
-
-> +
-> +	if (user_mode(regs)) {
-> +		ret = insn_fetch_from_user(regs, buffer);
-> +		if (!ret)
-> +			return -EFAULT;
-> +		if (!insn_decode_from_regs(&insn, regs, buffer, ret))
-> +			return -EFAULT;
-> +	} else {
-> +		ret = copy_from_kernel_nofault(buffer, (void *)regs->ip,
-> +					       MAX_INSN_SIZE);
-> +		if (ret)
-> +			return -EFAULT;
-> +		insn_init(&insn, buffer, MAX_INSN_SIZE, 1);
-> +		insn_get_length(&insn);
-> +	}
-> +
+Applied, thanks!
