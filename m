@@ -2,118 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3AA399423
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A86399429
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhFBUD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:03:59 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:31196 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBUD5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:03:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622664134; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uiSY2nPfub1TorMuwMxTsRCZaabvu7VFakvdKWWqHMg=;
- b=SZLt/O87LuqyAq1HpR8ZbGjxyvpqHlYSkZ+gInS+eE7aX4J38+qvjRF9hdPNlYuRbQdWWe1F
- vEW0cnUbZoxG24fCRfc1o9aZWpkDL9MrNwRe3iRtnRTlLBaWOWs2IvJafc8zGd3k3vpnUUYG
- hWe0pgt28lLmYYIMRJCCHN9E7NE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60b7e3c481efe91cda8c2125 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 20:02:12
- GMT
-Sender: rajeevny=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AC119C43460; Wed,  2 Jun 2021 20:02:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajeevny)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 811C1C433D3;
-        Wed,  2 Jun 2021 20:02:09 +0000 (UTC)
+        id S229803AbhFBUE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229752AbhFBUE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 16:04:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 269EC6139A;
+        Wed,  2 Jun 2021 20:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622664164;
+        bh=/fsI+8xYtRvNMRIeYtJqfD6bAKJycNv7BMWKfSa6geA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=JBEcZLW0jtEv+p1uV00PnFD0ChOa3hXqUitpq5rBPHRY5URzhOL0U154KKtH0ZO7d
+         ho63PEcvyhPFbY3A2SYLK6oh/fFY5gT+jarXF7mRJixPReVmVZmpa4ytqxH4ogUGba
+         XEbxXdtepn/qHIaiS5oQtswtT2oUdft7GxSO0iXUrE42JnAK/0aRR6lUUdFXVoWQZg
+         3JQQjW+1ORLrmaEk0oX6UiQR9htdmAdMvj+PiM6iAmUiZFjhbrw8Rf5DjHO4oLgPmZ
+         xqfinU6S/VA/9MJsibwuBYeKf3qkELBn+DqmkFXn30W1KSpx7nWgxHMYYNK8EONXjY
+         8xeOquGwNRY2w==
+Subject: Re: drivers/net/ethernet/micrel/ks8851_common.c:995:6: warning:
+ variable 'ret' set but not used
+To:     kernel test robot <lkp@intel.com>, Marek Vasut <marex@denx.de>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
+References: <202106030332.tmiMOCF7-lkp@intel.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <b34e07af-4559-7707-b00b-5a36789e566d@kernel.org>
+Date:   Wed, 2 Jun 2021 13:02:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <202106030332.tmiMOCF7-lkp@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Jun 2021 01:32:09 +0530
-From:   rajeevny@codeaurora.org
-To:     Rob Herring <robh@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
-        abhinavk@codeaurora.org, kalyan_t@codeaurora.org,
-        mkrishn@codeaurora.org, jonathan@marek.ca
-Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
-In-Reply-To: <20210601205848.GA1025498@robh.at.kernel.org>
-References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
- <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
- <20210601205848.GA1025498@robh.at.kernel.org>
-Message-ID: <ec1bcb4e734b784ab17c4fc558a5fab9@codeaurora.org>
-X-Sender: rajeevny@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-06-2021 02:28, Rob Herring wrote:
-> On Mon, May 31, 2021 at 07:03:53PM +0530, Rajeev Nandan wrote:
-
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - const: qcom,dsi-phy-7nm
+On 6/2/2021 12:32 PM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   231bc539066760aaa44d46818c85b14ca2f56d9f
+> commit: 797047f875b5463719cc70ba213eb691d453c946 net: ks8851: Implement Parallel bus operations
+> date:   1 year ago
+> config: x86_64-randconfig-a004-20210601 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project d41cb6bb2607fa5c7a9df2b3dab361353657d225)
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install x86_64 cross compiling tool for clang build
+>          # apt-get install binutils-x86-64-linux-gnu
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=797047f875b5463719cc70ba213eb691d453c946
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout 797047f875b5463719cc70ba213eb691d453c946
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
 > 
-> When would one use this?
-This is for SM8250.
-
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
->> +      - const: qcom,dsi-phy-7nm-7280
->> +      - const: qcom,dsi-phy-7nm-8150
+> All warnings (new ones prefixed by >>):
 > 
-> These don't look like full SoC names (sm8150?) and it's
-> <vendor>,<soc>-<block>.
+>>> drivers/net/ethernet/micrel/ks8851_common.c:995:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+>             int ret = 0;
+>                 ^
+>     1 warning generated.
 
-Thanks, Rob, for the review.
+This warning is newly implemented in clang, it was not caused by the 
+above commit. As you can see from the blame below, this has been an 
+issue since this driver's introduction. I wonder if it was intended to 
+return ret in the places that return 0?
 
-I just took the `compatible` property currently used in the DSI PHY 
-driver
-(drivers/gpu/drm/msm/dsi/phy/dsi_phy.c), and added a new entry for 
-sc7280.
-A similar pattern of `compatible` names are used in other variants of 
-the
-DSI PHY driver e.g. qcom,qcom,dsi-phy-10nm-8998, qcom,dsi-phy-14nm-660 
-etc.
+Cheers,
+Nathan
 
-The existing compatible names "qcom,dsi-phy-7nm-8150" (SoC at the end) 
-make
-some sense, if we look at the organization of the dsi phy driver code.
-I am new to this and don't know the reason behind the current code
-organization and this naming.
-
-Yes, I agree with you, we should use full SoC names. Adding
-the SoC name at the end does not feel very convincing, so I will change 
-this
-to the suggested format e.g. "qcom,sm8250-dsi-phy-7nm", and will rename 
-the
-occurrences in the driver and device tree accordingly.
-Do I need to make changes for 10nm, 14nm, 20nm, and 28nm DSI PHY too?
-Bindings doc for these PHYs recently got merged to msm-next [1]
-
-
-[1] 
-https://gitlab.freedesktop.org/drm/msm/-/commit/8fc939e72ff80116c090aaf03952253a124d2a8e
-
-
-Thanks,
-Rajeev
+> vim +/ret +995 drivers/net/ethernet/micrel/ks8851_common.c
+> 
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   985
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   986  /**
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   987   * ks8851_read_selftest - read the selftest memory info.
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   988   * @ks: The device state
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   989   *
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   990   * Read and check the TX/RX memory selftest information.
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   991   */
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   992  static int ks8851_read_selftest(struct ks8851_net *ks)
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   993  {
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   994  	unsigned both_done = MBIR_TXMBF | MBIR_RXMBF;
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  @995  	int ret = 0;
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   996  	unsigned rd;
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   997
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   998  	rd = ks8851_rdreg16(ks, KS_MBIR);
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16   999
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1000  	if ((rd & both_done) != both_done) {
+> 0dc7d2b3cbfcf4 drivers/net/ks8851.c Joe Perches 2010-02-27  1001  		netdev_warn(ks->netdev, "Memory selftest not finished\n");
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1002  		return 0;
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1003  	}
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1004
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1005  	if (rd & MBIR_TXMBFA) {
+> 0dc7d2b3cbfcf4 drivers/net/ks8851.c Joe Perches 2010-02-27  1006  		netdev_err(ks->netdev, "TX memory selftest fail\n");
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1007  		ret |= 1;
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1008  	}
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1009
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1010  	if (rd & MBIR_RXMBFA) {
+> 0dc7d2b3cbfcf4 drivers/net/ks8851.c Joe Perches 2010-02-27  1011  		netdev_err(ks->netdev, "RX memory selftest fail\n");
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1012  		ret |= 2;
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1013  	}
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1014
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1015  	return 0;
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1016  }
+> 3ba81f3ece3cfa drivers/net/ks8851.c Ben Dooks   2009-07-16  1017
+> 
+> :::::: The code at line 995 was first introduced by commit
+> :::::: 3ba81f3ece3cfa4ffb06d21ac93b8cad7fbe6a73 net: Micrel KS8851 SPI network driver
+> 
+> :::::: TO: Ben Dooks <ben@simtec.co.uk>
+> :::::: CC: David S. Miller <davem@davemloft.net>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
