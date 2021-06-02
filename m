@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7919399486
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB51A399489
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhFBU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34690 "EHLO
+        id S229724AbhFBUbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhFBU3o (ORCPT
+        with ESMTP id S229568AbhFBUbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:29:44 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B874C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 13:27:46 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id o9so407393pgd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:27:46 -0700 (PDT)
+        Wed, 2 Jun 2021 16:31:02 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5162BC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 13:29:19 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id l1so3255409pgm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GIZNwarF6dxowAlJnu/euGWQJ/DCZEKi8RX1cLE3XwY=;
-        b=Z29cQUT1u4Ruq2SmaNGdbhoTrg5E1p9PRbg1JPKW4xbPOEDsM4XXkQZ5kbNnxuBW5D
-         2E+DiTHf5lbtsSPPQ62UgMiz3bd9ETPPxAP9nCUi3uONdQB7SxblJHfyIAMrpb4p62hH
-         tDZ3EuzVPa+ougVa3uJXMXi25ocfLBS9TKC98=
+        bh=MD+isL8cNVT/yF1S1l/22CEEX+JBBjfdFhs5HrJbFZ0=;
+        b=MFN/v6HAtmbiBcr/rW9sBIkkjZbiudr1DhMvzrLq1O3AAnYMn02NQr+HwsvapcGEZX
+         CPjt9kjtmYpyWkdPiKYURP5yTbv+wmC1WETW/uTaTgKT5cQEkRthljpjgQeylXoCA2qZ
+         n963YCHB30oxbOj9um4IKM24KUgQ+iStfwknk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GIZNwarF6dxowAlJnu/euGWQJ/DCZEKi8RX1cLE3XwY=;
-        b=qut5qURihYHALEB3DjnoZWh8CDz5WSkPOt/7Za3Q92Uk8zbCVtM9byNFECU3xQER2/
-         Oiy7CEkL9Yn6q0h/ntPr/MtUBchrL14ju7GzWBssCPWNnxxracTWvTidZbavlLJ0RtEz
-         7BhSky3TF7GaD2zafR+AcIRBz3LomBMJypCICe/w74qolNVB6g9RPKY0LAgtVxB0MDTw
-         huwZC6LXlNM2UOuG1QiZDwg/HyXp77zT3XZzFKGD15mnuWlO35xaE7O5uksd/Kjj2Uy2
-         h1ZSrkhI2vO2e7fps0Zjvg1ZPX+nePnqd33Uxx7TyldOn7NDmbVh1wDzOUG5qCkLh3G2
-         j82w==
-X-Gm-Message-State: AOAM5323TTTA3k3BDGrIBobYKuVP/EgxJa0/LJv3K8Dqd/ex22s6ByDJ
-        RqqVF9IzrZQMTaTn2loQlkiFmyFyOQ8m1g==
-X-Google-Smtp-Source: ABdhPJx4kdIDojs7PJXi3sg5skx6t7uFGam5IAIWurMMhyZ8wNgAgppAdKXTkt8F9XvtkOcyJDN9og==
-X-Received: by 2002:a63:cd11:: with SMTP id i17mr11533244pgg.348.1622665665582;
-        Wed, 02 Jun 2021 13:27:45 -0700 (PDT)
+        bh=MD+isL8cNVT/yF1S1l/22CEEX+JBBjfdFhs5HrJbFZ0=;
+        b=jj7mUuRTNjnw7LFROHwRwVWF9ur4MUbihjZDhxFVX7rCEXt8tVF0JcZtLFnPtXqaNR
+         UZSk31ojvAmYQdJ/XToW+egoo8XfZe1ckoIpYdhJLJ2JMbLkgEMQsKwZNH4430BW9+B5
+         vyxqWZEZw8uIlNO8aqoYwwHu0Zp9hqtbQhwPk233hEVACekb+2j3gIoLu+blVQUyUhNG
+         i4GaWLJbmAL92PZ9ln8bAQAH2xip55SR1VAljU8ezA9Ti2K3ufFMWnnkLvHn5AiqrsyV
+         +yoUPCKnL6Iza3YgcO8JLxJyjhmpQwk5+bZVBWaFsQhymAG2QltJam4qVyQEgCXhaBxH
+         0o9Q==
+X-Gm-Message-State: AOAM531911OlFdS/YzZ7Cp1ZaI2OoiVo5MCMVxWdGl9+UdeeTneTGUAy
+        QZkMbHDLX0k5adB/RzHJ+nLzy7yo7mxYcQ==
+X-Google-Smtp-Source: ABdhPJyg1lwfSzxzEISHF+uwm+A+ZRndlFWtVzrGgCDaE4ivIe5hOhAxzRoZmPk9Fxyx/dV5kW2jsg==
+X-Received: by 2002:a65:41c8:: with SMTP id b8mr35391636pgq.196.1622665758956;
+        Wed, 02 Jun 2021 13:29:18 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l128sm585740pgl.18.2021.06.02.13.27.44
+        by smtp.gmail.com with ESMTPSA id c17sm596607pgm.3.2021.06.02.13.29.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 13:27:44 -0700 (PDT)
+        Wed, 02 Jun 2021 13:29:18 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     "David S. Miller" <davem@davemloft.net>
+To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net: vlan: Avoid using strncpy()
-Date:   Wed,  2 Jun 2021 13:27:41 -0700
-Message-Id: <20210602202741.4078789-1-keescook@chromium.org>
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Maxim Krasnyansky <maxk@qti.qualcomm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH] docs: networking: Replace strncpy() with strscpy()
+Date:   Wed,  2 Jun 2021 13:29:14 -0700
+Message-Id: <20210602202914.4079123-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=88816f8807de23dfa0b0dd3e00a4510275a736b2; i=E6vyLUaKYvlfizHY96CoIZkTnxuv3thEHFef0cl9Wew=; m=qgZWEVcHV6EOQQGK82kq1AwupK+IS9seUUAKn+Svxnk=; p=Vau8YbH5AGuE9RMmHWWxXTFxNJzGEGEyDbqLpLODzzE=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmC36b0ACgkQiXL039xtwCY27RAAlUK AybI2ga1SMQVVI05kppeQdyQdJGd1fiHoKTIkxE02jQ60jDyZ+x4EHQtLQKXXvnz0O50BKglH7YuF LbBWPeHxxqdL4bqbCqbmO5XT+AiJ8PVcWRXBV9QMO8Ejct5BmzmQ50M9O//qVzXh/ogDMc+pWS9fG VMijkpEjvQQ+ID5wGgGPbIehjIbiyRdKINNf6674FsRCnkonFsmE24Ls+hhc+tT4uO+ndb1a+xuha 0hscBZLYVBR1DRHwZNCHUpJIsdUQ5UgSoUFeOx86wcAQZiEAMP0uS0OBs5MdHTG5qle+KOpFCnrw9 9vJQMFFmtyG028U1kxCg3N4nO27JiJ6fx8LO1BAOICxSQjysPH+isJAdWZoDVSdxQgoCDI2PAkDWb 4+YU3xcgcixf6H672T2Pbz8NrRNX6tT1SgeHmkbPHG1GiP7tis3Z1QEe3fWtC3VDUAAB2U91t2Oyd xfTN9FEKuH/q5Ji+4Ui/rHVQWvni2hBMtrSKtcB69jieuq5BS2HwGFgx7XwlOD8VocoZ9hKBvLAhN itw7/v9bOSLzjpGhmjowlmSOq8wytMhxnCJvBTfITrWQWl8OxOMdZ8pACFsecZGmCCpiTX1ikUtvH d4MZsbvKABfmZLxMxgzMqWkPgtbONMO83uf336pEsFLuhTXCA0v8/oQo6KnZ5F9M=
+X-Patch-Hashes: v=1; h=sha256; g=08a021de6652594e6002a3fa2779560fbfe4687c; i=OtS/j+af/fe4GVQBQBUoq9mDVJJ7GbT1sWYBCoEQ36k=; m=gAU3qSQ85FC8trlGFWM3KtcCVKh49fUAyHP3MClMFZg=; p=x25iameOGPjYX/6T3Mx1eg/f0np3ZbIi5+Bk5dRwABo=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmC36hkACgkQiXL039xtwCaRMw/7BAD suzqyeGDnSLe/rc/lhfELAz/dIUzadYBlY6Po3Mjhl2SFXMB3ehLUAL/+Pu48v3H0P5TMM1/TuAXs jEg8JUmwkKSKslqWXRGuSDlhd0f/s0d2Zx8eprgIRQArAtCrMwGBgxpcQtCBSGBZUSqSFhtf/AUid FOgAN+2tyXObxmwoFmpp1osEZYqyQUGQY9mhUiTPiaj5F0Ba1Fsm2ajqPaUC0iPeiP7b7YiBbdPbB sgJy53vMebfmFevoJwAulBV+FHI8z5XhGHflTiGB4MDHQkMplQuyXVoCdt2V+NFYPPr3TasjCalLU 3WelN3uzN140SAKe393Xh/uVF/Ktv1nqLKfT83+t2hC4k8bz8jbY1HcqVDh4CuOaXpfrIoLfR2e0G D1C4QKu7gNcfWxA6RFignhiNcjqRRgKK/0eWYFywFvVJEhY0gKUY1NeWWzAFVMlB3WCDnNI3au7Y+ +78VLNn+Ay0hd0UUK6r7io1kIgXvMBZIV0bZfQ833RLsQNYFAc8KznhD/5mkqb3tqEkFY0Da99JVC QEKz9kbcUB6mt5Rn8roJsUoZSqEmilJcZEKk1CkGYuSeZoQXnFni/zVqWBuXE81BgrEo8yjLxW6TQ ppwwDAxmY4lHuBJ90zGnafPLdRWg78AtSfPZwzDW8+TYO1Cmf24NCXnd2fGNDF+A=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use strscpy_pad() instead of strncpy() which is considered deprecated:
+Replace example code's use of strncpy() with strscpy() functions. Using
+strncpy() is considered deprecated:
 https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- net/8021q/vlan.c     | 3 ++-
- net/8021q/vlan.h     | 3 ++-
- net/8021q/vlan_dev.c | 6 +++---
- 3 files changed, 7 insertions(+), 5 deletions(-)
+ Documentation/input/joydev/joystick-api.rst | 2 +-
+ Documentation/networking/packet_mmap.rst    | 2 +-
+ Documentation/networking/tuntap.rst         | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
-index fb3d3262dc1a..4cdf8416869d 100644
---- a/net/8021q/vlan.c
-+++ b/net/8021q/vlan.c
-@@ -638,7 +638,8 @@ static int vlan_ioctl_handler(struct net *net, void __user *arg)
+diff --git a/Documentation/input/joydev/joystick-api.rst b/Documentation/input/joydev/joystick-api.rst
+index af5934c10c1c..5db6dc6fe1c5 100644
+--- a/Documentation/input/joydev/joystick-api.rst
++++ b/Documentation/input/joydev/joystick-api.rst
+@@ -263,7 +263,7 @@ possible overrun should the name be too long::
  
- 	case GET_VLAN_REALDEV_NAME_CMD:
- 		err = 0;
--		vlan_dev_get_realdev_name(dev, args.u.device2);
-+		vlan_dev_get_realdev_name(dev, args.u.device2,
-+					  sizeof(args.u.device2));
- 		if (copy_to_user(arg, &args,
- 				 sizeof(struct vlan_ioctl_args)))
- 			err = -EFAULT;
-diff --git a/net/8021q/vlan.h b/net/8021q/vlan.h
-index fa3ad3d4d58c..e3f6ff05a528 100644
---- a/net/8021q/vlan.h
-+++ b/net/8021q/vlan.h
-@@ -129,7 +129,8 @@ void vlan_dev_set_ingress_priority(const struct net_device *dev,
- int vlan_dev_set_egress_priority(const struct net_device *dev,
- 				 u32 skb_prio, u16 vlan_prio);
- int vlan_dev_change_flags(const struct net_device *dev, u32 flag, u32 mask);
--void vlan_dev_get_realdev_name(const struct net_device *dev, char *result);
-+void vlan_dev_get_realdev_name(const struct net_device *dev, char *result,
-+			       size_t size);
+ 	char name[128];
+ 	if (ioctl(fd, JSIOCGNAME(sizeof(name)), name) < 0)
+-		strncpy(name, "Unknown", sizeof(name));
++		strscpy(name, "Unknown", sizeof(name));
+ 	printf("Name: %s\n", name);
  
- int vlan_check_real_dev(struct net_device *real_dev,
- 			__be16 protocol, u16 vlan_id,
-diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
-index 4db3f0621959..a0367b37512d 100644
---- a/net/8021q/vlan_dev.c
-+++ b/net/8021q/vlan_dev.c
-@@ -239,9 +239,9 @@ int vlan_dev_change_flags(const struct net_device *dev, u32 flags, u32 mask)
- 	return 0;
- }
  
--void vlan_dev_get_realdev_name(const struct net_device *dev, char *result)
-+void vlan_dev_get_realdev_name(const struct net_device *dev, char *result, size_t size)
- {
--	strncpy(result, vlan_dev_priv(dev)->real_dev->name, 23);
-+	strscpy_pad(result, vlan_dev_priv(dev)->real_dev->name, size);
- }
+diff --git a/Documentation/networking/packet_mmap.rst b/Documentation/networking/packet_mmap.rst
+index 500ef60b1b82..c5da1a5d93de 100644
+--- a/Documentation/networking/packet_mmap.rst
++++ b/Documentation/networking/packet_mmap.rst
+@@ -153,7 +153,7 @@ As capture, each frame contains two parts::
+     struct ifreq s_ifr;
+     ...
  
- bool vlan_dev_inherit_address(struct net_device *dev,
-@@ -360,7 +360,7 @@ static int vlan_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 	struct ifreq ifrr;
- 	int err = -EOPNOTSUPP;
+-    strncpy (s_ifr.ifr_name, "eth0", sizeof(s_ifr.ifr_name));
++    strscpy_pad (s_ifr.ifr_name, "eth0", sizeof(s_ifr.ifr_name));
  
--	strncpy(ifrr.ifr_name, real_dev->name, IFNAMSIZ);
-+	strscpy_pad(ifrr.ifr_name, real_dev->name, IFNAMSIZ);
- 	ifrr.ifr_ifru = ifr->ifr_ifru;
+     /* get interface index of eth0 */
+     ioctl(this->socket, SIOCGIFINDEX, &s_ifr);
+diff --git a/Documentation/networking/tuntap.rst b/Documentation/networking/tuntap.rst
+index a59d1dd6fdcc..4d7087f727be 100644
+--- a/Documentation/networking/tuntap.rst
++++ b/Documentation/networking/tuntap.rst
+@@ -107,7 +107,7 @@ Note that the character pointer becomes overwritten with the real device name
+        */
+       ifr.ifr_flags = IFF_TUN;
+       if( *dev )
+-	 strncpy(ifr.ifr_name, dev, IFNAMSIZ);
++	 strscpy_pad(ifr.ifr_name, dev, IFNAMSIZ);
  
- 	switch (cmd) {
+       if( (err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0 ){
+ 	 close(fd);
 -- 
 2.25.1
 
