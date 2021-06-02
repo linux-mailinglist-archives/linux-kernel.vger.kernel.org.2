@@ -2,234 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80345397E50
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473DE397E54
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhFBCBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:01:05 -0400
-Received: from mail-dm6nam11on2063.outbound.protection.outlook.com ([40.107.223.63]:14528
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229635AbhFBCBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:01:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O7L0p30xfy3a/CesindZajSRTYAZYspUyr03oMzbcGSWyEpx3wCjXDpol/wBQEQANDVU8rKOa9OWadcDzEFf/ItphiShfu7hjIg3prtXu1rDAGOF1PsFZ+D9fToEAtHo/drMpyMxsXQMxx4Xt9LHsW/s39DP1UHvjghN1KSGSvd6nXLDOYibgt7cZOn7drgqq9dvKv6qfb0BrADtuwBzCLjmydU32K1HllYw3LYnSQqMcGuHjuLHBgiIaxoYgvvt7Qm0A+UQb0IF5PBOuxjfHCT4LUo0+8f30Dup0Bb361/AMXHfb+S+NJQwFMlr/uY1Pkh1C/UOZdHeZShbgt1Llg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oHI4+Qucd0Hu1dlyb5yYiDuNnX/F0omoptxftED+YC4=;
- b=Y8jYADFVUNxggGv3RfGwdT6fcNfhtOFgSCkA5UKkNHnOxbZOz9GIKKWZmapiNR+NR6rsT+i6YJTEs2YkzKcEjPuffjStuKUpeYyHS0N1AYoAdzsSynFas+bO5wGgiSwuk4BsFRQFkh116wNhce7kd5ak8IYWmpitgTDsp00eZkiMcvxaNDVAtGZD4384Cz3HeMbBpaYdgqmJIzb5F7pZ7s6qvap5iJzrvcZ26vtYnC2ikVhm8x6MziyEFU4TktkzEseGfsmMafDd6egQFOjfOAJDhY5+3J1YdjbvONQfDAbkx1Adp46DmviI9+RL9CF1NLDZ2x87fHAAliXJHNPmdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oHI4+Qucd0Hu1dlyb5yYiDuNnX/F0omoptxftED+YC4=;
- b=jGoC4QhAV/exxC2/urTOwmeYf6ZDavaIz8Lf1SNaWsTC13SkrhTya5sCPFX9fq7P4vwRJZRyVsd0ecz/xPW/rO9n6R+Cyo+fEgwAGmy0lGcU/y0d1joc+rgRAOVldHQtM9vlXenyUh9W76whl86QjV28lhwO/9hYnl6lOBeMuXj9PIEpbUnSDcS/fho13o4UIOL7P4EEAn6hghuQ6Luuqt6mQaFJUgh4fUDiXCJG060rNGzaCLnpJj/KS62Y1IawsIMJAsyyn4KFnArg+c6eDq4xGi3BE34usNy/H9U3pB2Isgpk78yph5fY5riTYUgeB1XJMI7GN2ZWhpx8BHYYTw==
-Received: from DM6PR12CA0021.namprd12.prod.outlook.com (2603:10b6:5:1c0::34)
- by DM5PR12MB1579.namprd12.prod.outlook.com (2603:10b6:4:c::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4173.26; Wed, 2 Jun 2021 01:59:19 +0000
-Received: from DM6NAM11FT040.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1c0:cafe::14) by DM6PR12CA0021.outlook.office365.com
- (2603:10b6:5:1c0::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Wed, 2 Jun 2021 01:59:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT040.mail.protection.outlook.com (10.13.173.133) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4150.30 via Frontend Transport; Wed, 2 Jun 2021 01:59:19 +0000
-Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Jun
- 2021 01:59:16 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Hugh Dickins <hughd@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Naoya Horiguchi" <naoya.horiguchi@nec.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/7] mm/thp: try_to_unmap() use TTU_SYNC for safe DEBUG_VM splitting
-Date:   Wed, 2 Jun 2021 11:59:13 +1000
-Message-ID: <5096506.aDjlqC2hHN@nvdebian>
-In-Reply-To: <alpine.LSU.2.11.2106011405510.2148@eggly.anvils>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011405510.2148@eggly.anvils>
+        id S230258AbhFBCBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFBCBu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:01:50 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAF2C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 19:00:07 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so1148443otl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 19:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=dEnLLx1tkRZoNKWtmVCz6hV85sEb57r1guLX8xpZjyo=;
+        b=g6GirZuUiOk5ToppH7B4pWFsZdHwFM+mqHbMV3kUzl/EKBopUUPpTXsK+vJ8rcTO0B
+         kFJa6AVebp/mYmG3+IR+zG/kCXhWEk3ZlfgeUIqS9kuQhY9U75I5A/KqWIjSwzicHfsF
+         wgoM44oOLVW/400gxKU0C97CgTsIkHlkjkxXQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=dEnLLx1tkRZoNKWtmVCz6hV85sEb57r1guLX8xpZjyo=;
+        b=Vqv6ldMvKsXQunAOhrwYLha8CDo47ttmxBIebzgxOcanlkBtbqZtd1qHW7hk6icuX6
+         5E8F5kSP0IGhGOY5hXcdgrVSUDFfqRJBzfCzls8/7f5dQ/f6h3NrFHgBWEPrhujPp6gI
+         Gvq6xs2hYxLJQapxq6BdvGds4c4DMN1uigcVCfah4K0rQYLbjVcErWkxkXFpqlzFzxlK
+         zpRL0DhgClHNgbscu1eJlPhX9H6eJbatXlM6Eicwx32aIq2pNz0HzDV0BkAjMY0wMmK/
+         JQuhi5+ohNNlQOUfwKF0f+tkeN879pAW85cM4vuRld7f9Ho4AuTqxwcI14Zi4KZ2Hb6d
+         RnFQ==
+X-Gm-Message-State: AOAM533Sc6Rko9YNRLCvGo0aa3dReRzGcC4SMAg7hORF0BH0CHO9L4CA
+        CocVkOZhPGlGTsxr4H2V1/N9J41gxvSK4XuPpS1tOw==
+X-Google-Smtp-Source: ABdhPJyx3D5dt9HhEl4vjIYswJL7/b+W9JLEakEh7TMCg3c3Iq0lypuLPEbmafmsmlf4YjeBaSV75iQt/60XKjuXHsU=
+X-Received: by 2002:a9d:18e:: with SMTP id e14mr5051666ote.34.1622599206303;
+ Tue, 01 Jun 2021 19:00:06 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 1 Jun 2021 19:00:05 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fb162bcf-3d79-43dd-4880-08d9256a08ed
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1579:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB15791A4E941BC9C4AE668B67DF3D9@DM5PR12MB1579.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ieA9MD/HO0znhspe3KaAJhFYsj0ScUbSbw3uSHtZ9kxcSKEMPCMw1EduEf/69PvnVI0U8wzia7onHhtFEhhiW1bA2P2sn5gjpHp0s6meXURMgJZBAOl3N/Bsn9bwO3Ozzx/MATznzlQgNQOTHMT8j95I289sMLf4wtW7QXyD4NBkKCynJt6RNAkrj7O4WD+BKi/KVzIZNzZ5X/9SryrTZNOTP6DQo0ZNedpWrXQMZLRNCsNZJz0mv0CxyrQc6taxtgMGC/x/waEEotm1hrFSNKHtzV3ZGcw/G+TKRqLzS/KINc8q7yfplU/nz6LT+wdbyfTDRErTb7ai3zQpuky09vXc7eCCURt2WkOc4Rxj6giVXvhzIXzriG0QfCYKlMcAcqYcMMopLet+DSguK/NRPJIHrEMsZcBRbRgxA3RSe293mJfk0egxYoEZ0A2PgGYR/q9RelSf2LurWUurwiGVFYTLlydh46Y4NIVD9RJ3RUq3N04Sou8H310gonCLg+Jnk0iwtO/o3UUnta+C++t5AoQEQEsuav4ySML5opZu0xwdAfrrRagqn3+udKziuPCZdboWs4U1xLE1JcSXveRZBKvN3oGbqzTIKZQlOs+uhjIHV5f7aqhA73Rcu00g3SHQkDg39QFwLoOiO7J44CycP3nRIH4bS7HtvuEX82ceZxY=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(136003)(46966006)(36840700001)(33716001)(26005)(6666004)(82310400003)(70206006)(36906005)(47076005)(54906003)(16526019)(478600001)(316002)(36860700001)(82740400003)(356005)(426003)(83380400001)(9576002)(86362001)(2906002)(7636003)(8936002)(9686003)(4326008)(336012)(6916009)(8676002)(5660300002)(7416002)(70586007)(186003)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 01:59:19.5125
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb162bcf-3d79-43dd-4880-08d9256a08ed
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT040.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1579
+In-Reply-To: <1622591408-5465-1-git-send-email-khsieh@codeaurora.org>
+References: <1622591408-5465-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 1 Jun 2021 19:00:05 -0700
+Message-ID: <CAE-0n52wAmQ1ZZ0pfGfXwsM23D+R5FFVBrpzr1a8YGDdWNb_gw@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/msm/dp: power off DP phy at suspend
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 2 June 2021 7:07:53 AM AEST Hugh Dickins wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> Stressing huge tmpfs often crashed on unmap_page()'s VM_BUG_ON_PAGE
-> (!unmap_success): with dump_page() showing mapcount:1, but then its
-> raw struct page output showing _mapcount ffffffff i.e. mapcount 0.
-> 
-> And even if that particular VM_BUG_ON_PAGE(!unmap_success) is removed,
-> it is immediately followed by a VM_BUG_ON_PAGE(compound_mapcount(head)),
-> and further down an IS_ENABLED(CONFIG_DEBUG_VM) total_mapcount BUG():
-> all indicative of some mapcount difficulty in development here perhaps.
-> But the !CONFIG_DEBUG_VM path handles the failures correctly and silently.
-> 
-> I believe the problem is that once a racing unmap has cleared pte or pmd,
-> try_to_unmap_one() may skip taking the page table lock, and emerge from
-> try_to_unmap() before the racing task has reached decrementing mapcount.
-> 
-> Instead of abandoning the unsafe VM_BUG_ON_PAGE(), and the ones that
-> follow, use PVMW_SYNC in try_to_unmap_one() in this case: adding TTU_SYNC
-> to the options, and passing that from unmap_page() when CONFIG_DEBUG_VM=y.
-> It could be passed in the non-debug case too, but that would sometimes add
-> a little overhead, whereas it's rare for this race to result in failure.
-> 
-> mm/memory-failure.c:hwpoison_user_mappings() should probably use the new
-> TTU_SYNC option too, just in case this race coincides with its attempts to
-> unmap a failing page (THP or not); but this commit does not add that.
-> 
-> Fixes: fec89c109f3a ("thp: rewrite freeze_page()/unfreeze_page() with
-> generic rmap walkers") Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+Please add dri-devel@lists.freedesktop.org next time
+
+Quoting Kuogee Hsieh (2021-06-01 16:50:08)
+> Normal DP suspend operation contains two steps, display off followed
+> by dp suspend, to complete system wide suspending cycle if display is
+> up at that time. In this case, DP phy will be powered off at display
+> off. However there is an exception case that depending on the timing
+> of dongle plug in during system wide suspending, sometimes display off
+> procedure may be skipped and dp suspend was called directly. In this
+> case, dp phy is stay at powered on (phy->power_count = 1) so that at
+> next resume dp driver crash at main link clock enable due to phy is
+> not physically powered on. This patch will call dp_ctrl_off_link_stream()
+> to tear down main link and power off phy at dp_pm_suspend() if main link
+> had been brought up.
+>
+> Changes in V2:
+> -- stashed changes into dp_ctrl.c
+> -- add is_phy_on to monitor phy state
+>
+> Changes in V3:
+> -- delete is_phy_on
+> -- call dp_ctrl_off_link_stream() from dp_pm_suspend()
+>
+> Fixes: 0114f31a2903 ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly)
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 > ---
->  include/linux/rmap.h |  3 ++-
->  mm/huge_memory.c     |  4 ++++
->  mm/page_vma_mapped.c |  8 ++++++++
->  mm/rmap.c            | 17 ++++++++++++++++-
->  4 files changed, 30 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index def5c62c93b3..891599a4cb8d 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -97,7 +97,8 @@ enum ttu_flags {
->                                          * do a final flush if necessary */
->         TTU_RMAP_LOCKED         = 0x80, /* do not grab rmap lock:
->                                          * caller holds it */
-> -       TTU_SPLIT_FREEZE        = 0x100,                /* freeze pte under
-> splitting thp */ +       TTU_SPLIT_FREEZE        = 0x100, /* freeze pte
-> under splitting thp */ +       TTU_SYNC                = 0x200, /* avoid
-> racy checks with PVMW_SYNC */ };
-> 
->  #ifdef CONFIG_MMU
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 9fb7b47da87e..305f709a7aca 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2357,6 +2357,10 @@ static void unmap_page(struct page *page)
->         if (PageAnon(page))
->                 ttu_flags |= TTU_SPLIT_FREEZE;
-> 
-> +       /* Make sure that the BUGs will not bite */
-> +       if (IS_ENABLED(CONFIG_DEBUG_VM))
-> +               ttu_flags |= TTU_SYNC;
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 10 +++++++++-
+>  drivers/gpu/drm/msm/dp/dp_display.c |  4 +++-
+>  drivers/gpu/drm/msm/dp/dp_power.c   | 15 +++++++++++++++
+>  3 files changed, 27 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index dbd8943..8324a453 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1414,6 +1414,7 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+>         phy = dp_io->phy;
+>
+>         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
 > +
->         unmap_success = try_to_unmap(page, ttu_flags);
->         VM_BUG_ON_PAGE(!unmap_success, page);
->  }
-> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> index 2cf01d933f13..b45d22738b45 100644
-> --- a/mm/page_vma_mapped.c
-> +++ b/mm/page_vma_mapped.c
-> @@ -212,6 +212,14 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk
-> *pvmw) pvmw->ptl = NULL;
->                 }
->         } else if (!pmd_present(pmde)) {
-> +               /*
-> +                * If PVMW_SYNC, take and drop THP pmd lock so that we
-> +                * cannot return prematurely, while zap_huge_pmd() has
-> +                * cleared *pmd but not decremented compound_mapcount().
-> +                */
-> +               if ((pvmw->flags & PVMW_SYNC) &&
-> +                   PageTransCompound(pvmw->page))
-> +                       spin_unlock(pmd_lock(mm, pvmw->pmd));
->                 return false;
+>         phy_exit(phy);
+>
+>         DRM_DEBUG_DP("Host deinitialized successfully\n");
+> @@ -1457,6 +1458,7 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
+>                 return ret;
 >         }
->         if (!map_pte(pvmw))
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 693a610e181d..07811b4ae793 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1405,6 +1405,15 @@ static bool try_to_unmap_one(struct page *page,
-> struct vm_area_struct *vma, struct mmu_notifier_range range;
->         enum ttu_flags flags = (enum ttu_flags)(long)arg;
-> 
-> +       /*
-> +        * When racing against e.g. zap_pte_range() on another cpu,
-> +        * in between its ptep_get_and_clear_full() and page_remove_rmap(),
-> +        * try_to_unmap() may return false when it is about to become true,
-> +        * if page table locking is skipped: use TTU_SYNC to wait for that.
-> +        */
-> +       if (flags & TTU_SYNC)
-> +               pvmw.flags = PVMW_SYNC;
+>         phy_power_off(phy);
 > +
+>         /* hw recommended delay before re-enabling clocks */
+>         msleep(20);
+>
+> @@ -1488,6 +1490,7 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
+>         }
+>
+>         phy_power_off(phy);
+> +
+>         phy_exit(phy);
+>
+>         return 0;
 
-If this gets applied on top of my series then I think we would also need to 
-add this to the start of try_to_migrate_one() as I assume you can hit this bug 
-regardless of whether unmapping vs. installing swap migration entries.
+None of these hunks are useful. Can we drop them?
 
-We would also need to update the flag check at the start of try_to_migrate() 
-to allow passing TTU_SYNC.
+> @@ -1816,12 +1819,16 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+>         struct dp_ctrl_private *ctrl;
+>         struct dp_io *dp_io;
+>         struct phy *phy;
+> -       int ret;
+> +       int ret = 0;
 
->         /* munlock has nothing to gain from examining un-locked vmas */
->         if ((flags & TTU_MUNLOCK) && !(vma->vm_flags & VM_LOCKED))
->                 return true;
-> @@ -1777,7 +1786,13 @@ bool try_to_unmap(struct page *page, enum ttu_flags
-> flags) else
->                 rmap_walk(page, &rwc);
-> 
-> -       return !page_mapcount(page) ? true : false;
-> +       /*
-> +        * When racing against e.g. zap_pte_range() on another cpu,
-> +        * in between its ptep_get_and_clear_full() and page_remove_rmap(),
-> +        * try_to_unmap() may return false when it is about to become true,
-> +        * if page table locking is skipped: use TTU_SYNC to wait for that.
-> +        */
-> +       return !page_mapcount(page);
->  }
-> 
->  /**
-> --
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
+Drop this.
 
+>
+>         ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+>         dp_io = &ctrl->parser->io;
+>         phy = dp_io->phy;
+>
+> +       /* main link is off */
+> +       if (!dp_power_clk_status(ctrl->power, DP_CTRL_PM))
+> +               return ret;
 
+and then return 0?
 
+> +
+>         /* set dongle to D3 (power off) mode */
+>         dp_link_psm_config(ctrl->link, &ctrl->panel->link_info, true);
+>
+> @@ -1894,6 +1901,7 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+>         }
+>
+>         phy_power_off(phy);
+> +
+>         phy_exit(phy);
+>
+>         DRM_DEBUG_DP("DP off done\n");
 
+Drop?
+
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index cdec0a3..5abd769 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1327,8 +1327,10 @@ static int dp_pm_suspend(struct device *dev)
+>
+>         mutex_lock(&dp->event_mutex);
+>
+> -       if (dp->core_initialized == true)
+> +       if (dp->core_initialized == true) {
+> +               dp_ctrl_off_link_stream(dp->ctrl);
+
+Why not just check here for dp_power_clk_status()?
+
+>                 dp_display_host_deinit(dp);
+> +       }
+>
+>         dp->hpd_state = ST_SUSPENDED;
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_power.c b/drivers/gpu/drm/msm/dp/dp_power.c
+> index 9c4ea00..980924a9 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_power.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_power.c
+> @@ -262,6 +262,21 @@ int dp_power_clk_enable(struct dp_power *dp_power,
+>                         }
+>                         dp_power->core_clks_on = true;
+>                 }
+> +       } else {
+> +               if (pm_type == DP_CORE_PM && !dp_power->core_clks_on) {
+> +                       DRM_DEBUG_DP("core clks already disabled\n");
+> +                       return 0;
+> +               }
+> +
+> +               if (pm_type == DP_CTRL_PM && !dp_power->link_clks_on) {
+> +                       DRM_DEBUG_DP("links clks already disabled\n");
+> +                       return 0;
+> +               }
+> +
+> +               if (pm_type == DP_STREAM_PM && !dp_power->stream_clks_on) {
+> +                       DRM_DEBUG_DP("pixel clks already disabled\n");
+> +                       return 0;
+> +               }
+>         }
+
+If this happens isn't something wrong? Like we've somehow lost track of
+the proper state and no we're trying to disable clks when we don't need
+to. And given that clks already manage their own refcount that would be
+pretty obvious if it went wrong
+
+>
+>         rc = dp_power_clk_set_rate(power, pm_type, enable);
