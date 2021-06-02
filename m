@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE07D398659
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3290D39865A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbhFBKVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S232877AbhFBKVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232715AbhFBKUJ (ORCPT
+        with ESMTP id S232720AbhFBKUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:20:09 -0400
+        Wed, 2 Jun 2021 06:20:12 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72B6C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:18:01 -0700 (PDT)
-Message-Id: <20210602101619.066082349@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14730C06138A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:18:03 -0700 (PDT)
+Message-Id: <20210602101619.182960608@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622629080;
+        s=2020; t=1622629081;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XRwu2tBwbJbE66W8htkdqYDObArz5fBrfQZs42pzrI0=;
-        b=JtSSUTWPqaNyQsZhzDxer5xGQ0x+tMWdOZiw6AhGpVlHeHeWw/Cwgql/5VsYEsBcsxkrRt
-        3LyTHsbcIZmaJsZOr/jhgeyQ8errWJlWwbIC3vnN5y4mXmj7g3h+g/a+btVRaNecqO0Ngb
-        +3BLsgUwwKL+t/P6VpHfTKUJeI7cwW3Nofry5OvlVDZJ337G58sA8wSHE+cAcsghFmwxPe
-        /P1bUX8j9RYRu+Gr9KGc90eSe5mTvO/RbV/qItAjppgXc+0jtdX2xd0j25o/Kf0uqgodXP
-        QEsg7fb1Jpib5Mm0Vx0KoCN46zu3jEMM9PXIR2OYF9Vio0X6LVXz2663/LDOyA==
+        bh=+8DU0peep4ebfgYPhhRF+e0bN04oe+xitFx5PjSmpQg=;
+        b=0E4GhbLAI7e1+pxnPsqmCBisGnJ6pRO82wASW2opqSnYJf1pFCrGmhPEy/YUEm3Dy/aSUT
+        +2d0D4i0VtqYQ4RVoHDjLJFfHJFPcqJxnOBal+27GWjvY4t1BdruIMstx/sNMxs03dSl5R
+        FdOjc2y9LdoxmfQEhjaV2kxa0fjXrSd1xi/UoMTVQDPqvElposzsG0Ced8DdIFLRkRpMK/
+        XkDt59fBRCJzEAcGJWYHpg94OwR0Yms1/dHCaKDLzDQgv0cbRisdqr2y4FYA0+69lJ6JP7
+        phjM0/Pz7BG5+EnRidVsFRXcDAnMRb3UYkPg/5ZmqhjdKh57PHbzgeAxTVG/bA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622629080;
+        s=2020e; t=1622629081;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XRwu2tBwbJbE66W8htkdqYDObArz5fBrfQZs42pzrI0=;
-        b=rrpJ42+DFyvDoxxICb4NWT3D9hQANHPK5RFVCWy6ZigGYx7Jxbgw2FrRCAZ7mFWyuPqM+o
-        ohFHauS+p21TnqBA==
-Date:   Wed, 02 Jun 2021 11:55:50 +0200
+        bh=+8DU0peep4ebfgYPhhRF+e0bN04oe+xitFx5PjSmpQg=;
+        b=tptb5+/UHAOFkuwhKvjl5iUy+LDJ3Do5KyjZsHE1Lf6KGMOV7WpvFr3iUWz2HDU80cHQMV
+        3gV/wRG1F+roiKDA==
+Date:   Wed, 02 Jun 2021 11:55:51 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -43,7 +43,7 @@ Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
         Fenghua Yu <fenghua.yu@intel.com>,
         Tony Luck <tony.luck@intel.com>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [patch 7/8] x86/fpu: Clean up the fpu__clear() variants
+Subject: [patch 8/8] x86/fpu: Deduplicate copy_xxx_to_xstate()
 References: <20210602095543.149814064@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,117 +52,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+copy_user_to_xstate() and copy_kernel_to_xstate() are almost identical
+except for the copy function.
 
-fpu__clear() currently resets both register state and kernel XSAVE buffer
-state.  It has two modes: one for all state (supervisor and user) and
-another for user state only.  fpu__clear_all() uses the "all state"
-(user_only=0) mode, while a number of signal paths use the user_only=1
-mode.
+Unify them.
 
-Make fpu__clear() work only for user state (user_only=1) and remove the
-"all state" (user_only=0) code.  Rename it to match so it can be used by
-the signal paths.
-
-Replace the "all state" (user_only=0) fpu__clear() functionality.  Use the
-TIF_NEED_FPU_LOAD functionality instead of making any actual hardware
-registers changes in this path.
-
-[ Changelog polished by Dave Hansen ]
-
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/fpu/core.c |   62 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 42 insertions(+), 20 deletions(-)
+ arch/x86/kernel/fpu/xstate.c |   83 +++++++++++++++----------------------------
+ 1 file changed, 29 insertions(+), 54 deletions(-)
 
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -354,45 +354,67 @@ static inline void copy_init_fpstate_to_
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1124,20 +1124,30 @@ void copy_xstate_to_kernel(struct membuf
+ 	fill_gap(&to, &last, size);
+ }
+ 
+-/*
+- * Convert from a ptrace standard-format kernel buffer to kernel XSAVES format
+- * and copy to the target thread. This is called from xstateregs_set().
+- */
+-int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
++static int copy_from_buffer(void *dst, unsigned int offset, unsigned int size,
++			    const void *kbuf, const void __user *ubuf)
++{
++	if (kbuf) {
++		memcpy(dst, kbuf + offset, size);
++	} else {
++		if (copy_from_user(dst, ubuf + offset, size))
++			return -EFAULT;
++	}
++	return 0;
++}
++
++static int copy_to_xstate(struct xregs_state *xsave, const void *kbuf,
++			  const void __user *ubuf)
+ {
+ 	unsigned int offset, size;
+-	int i;
+ 	struct xstate_header hdr;
++	int i;
+ 
+ 	offset = offsetof(struct xregs_state, header);
+ 	size = sizeof(hdr);
+ 
+-	memcpy(&hdr, kbuf + offset, size);
++	if (copy_from_buffer(&hdr, offset, size, kbuf, ubuf))
++		return -EFAULT;
+ 
+ 	if (validate_user_xstate_header(&hdr))
+ 		return -EINVAL;
+@@ -1151,7 +1161,8 @@ int copy_kernel_to_xstate(struct xregs_s
+ 			offset = xstate_offsets[i];
+ 			size = xstate_sizes[i];
+ 
+-			memcpy(dst, kbuf + offset, size);
++			if (copy_from_buffer(dst, offset, size, kbuf, ubuf))
++				return -EFAULT;
+ 		}
+ 	}
+ 
+@@ -1179,58 +1190,22 @@ int copy_kernel_to_xstate(struct xregs_s
  }
  
  /*
-- * Clear the FPU state back to init state.
-- *
-- * Called by sys_execve(), by the signal handler code and by various
-- * error paths.
-+ * Reset current's user FPU states to the init states.  current's
-+ * supervisor states, if any, are not modified by this function.  The
-+ * caller guarantees that the XSTATE header in memory is intact.
-  */
--static void fpu__clear(struct fpu *fpu, bool user_only)
-+void fpu__clear_user_states(struct fpu *fpu)
- {
- 	WARN_ON_FPU(fpu != &current->thread.fpu);
- 
- 	if (!static_cpu_has(X86_FEATURE_FPU)) {
--		fpu__drop(fpu);
--		fpu__initialize(fpu);
-+		fpu__clear_all(fpu);
- 		return;
- 	}
- 
- 	fpregs_lock();
- 
--	if (user_only) {
--		if (!fpregs_state_valid(fpu, smp_processor_id()) &&
--		    xfeatures_mask_supervisor())
--			copy_kernel_to_xregs(&fpu->state.xsave,
--					     xfeatures_mask_supervisor());
--		copy_init_fpstate_to_fpregs(xfeatures_mask_user());
--	} else {
--		copy_init_fpstate_to_fpregs(xfeatures_mask_all);
-+	/*
-+	 * Ensure that current's supervisor states are loaded into
-+	 * their corresponding registers.
-+	 */
-+	if (xfeatures_mask_supervisor() &&
-+	    !fpregs_state_valid(fpu, smp_processor_id())) {
-+		copy_kernel_to_xregs(&fpu->state.xsave,
-+				     xfeatures_mask_supervisor());
- 	}
- 
-+	/* Reset user states in registers. */
-+	copy_init_fpstate_to_fpregs(xfeatures_mask_user());
-+
-+	/*
-+	 * Now all FPU registers have their desired values.  Inform the
-+	 * FPU state machine that current's FPU registers are in the
-+	 * hardware registers.
-+	 */
- 	fpregs_mark_activate();
-+
- 	fpregs_unlock();
- }
- 
--void fpu__clear_user_states(struct fpu *fpu)
--{
--	fpu__clear(fpu, true);
--}
- 
-+/*
-+ * Reset current's FPU registers (user and supervisor) to their INIT values.
-+ * This is used by execve(); out of an abundance of caution, it completely
-+ * wipes and resets the XSTATE buffer in memory.
-+ *
-+ * Note that XSAVE (unlike XSAVES) expects the XSTATE buffer in memory to
-+ * be valid, so there are certain forms of corruption of the XSTATE buffer
-+ * in memory that would survive initializing the FPU registers and XSAVEing
-+ * them to memory.
++ * Convert from a ptrace standard-format kernel buffer to kernel XSAVES format
++ * and copy to the target thread. This is called from xstateregs_set().
 + */
- void fpu__clear_all(struct fpu *fpu)
++int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
++{
++	return copy_to_xstate(xsave, kbuf, NULL);
++}
++
++/*
+  * Convert from a sigreturn standard-format user-space buffer to kernel
+  * XSAVES format and copy to the target thread. This is called from the
+  * sigreturn() and rt_sigreturn() system calls.
+  */
+ int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf)
  {
--	fpu__clear(fpu, false);
-+	fpregs_lock();
-+	fpu__drop(fpu);
-+	/*
-+	 * This does not change the actual hardware registers; when
-+	 * fpu__clear_all() returns, TIF_NEED_FPU_LOAD will be set, and a
-+	 * subsequent exit to user mode will reload the hardware registers
-+	 * from memory.
-+	 */
-+	fpu__initialize(fpu);
-+	fpregs_unlock();
+-	unsigned int offset, size;
+-	int i;
+-	struct xstate_header hdr;
+-
+-	offset = offsetof(struct xregs_state, header);
+-	size = sizeof(hdr);
+-
+-	if (copy_from_user(&hdr, ubuf + offset, size))
+-		return -EFAULT;
+-
+-	if (validate_user_xstate_header(&hdr))
+-		return -EINVAL;
+-
+-	for (i = 0; i < XFEATURE_MAX; i++) {
+-		u64 mask = ((u64)1 << i);
+-
+-		if (hdr.xfeatures & mask) {
+-			void *dst = __raw_xsave_addr(xsave, i);
+-
+-			offset = xstate_offsets[i];
+-			size = xstate_sizes[i];
+-
+-			if (copy_from_user(dst, ubuf + offset, size))
+-				return -EFAULT;
+-		}
+-	}
+-
+-	if (xfeatures_mxcsr_quirk(hdr.xfeatures)) {
+-		offset = offsetof(struct fxregs_state, mxcsr);
+-		size = MXCSR_AND_FLAGS_SIZE;
+-		if (copy_from_user(&xsave->i387.mxcsr, ubuf + offset, size))
+-			return -EFAULT;
+-	}
+-
+-	/*
+-	 * The state that came in from userspace was user-state only.
+-	 * Mask all the user states out of 'xfeatures':
+-	 */
+-	xsave->header.xfeatures &= XFEATURE_MASK_SUPERVISOR_ALL;
+-
+-	/*
+-	 * Add back in the features that came in from userspace:
+-	 */
+-	xsave->header.xfeatures |= hdr.xfeatures;
+-
+-	return 0;
++	return copy_to_xstate(xsave, NULL, ubuf);
  }
  
  /*
