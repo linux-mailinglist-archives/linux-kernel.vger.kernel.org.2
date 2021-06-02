@@ -2,149 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DF93994C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DDC3994C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhFBUp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:45:57 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:33430 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhFBUp4 (ORCPT
+        id S229611AbhFBUpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:45:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50508 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229552AbhFBUpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:45:56 -0400
-Received: by mail-ej1-f47.google.com with SMTP id g20so5908747ejt.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=m11y4i1SvujGuRzAdjBSm08F3vbFRf7B2NZgAGBozGg=;
-        b=RX5rlD+C4/B8bJewy4253z4LESQmaLz1GAHGt55FYSpDA/jDWJciy4Yd62p+3UiDpe
-         QA4WhZbDPolAp/wjlJvVy18gZ8IW0FpjsEwEj/IpPOjcRaj8hi0xz22+i+xWLifDUXvn
-         LZAsc5BxufYNKSnLa0v+w4y2Z87pCrnYK0dLh4SDFruhk5ginR4Sk7btgTNbQ5c+gPfN
-         ukoC0PnhDBl23h+LMZitJJN2q56IoPLCCDmxWZeO6+Ns4teAAPvYW1tgG+ro7INrZF9H
-         EZd5aS+pjSqcaFXbtmNWD8Qrjjxk390HSsYVhMqjWUiWfzOzPT3eDQo+kFienlpMQNNZ
-         9+Bw==
+        Wed, 2 Jun 2021 16:45:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622666642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OkHNiAD4B9tLTy7xZTNyeTqGaPB3NZ2dH7ouXspLnvY=;
+        b=B0hdBQyeh/fFcy1h4F/H4T2n3CWVNe/8dL4jhiwB4PIAZESOUGG39TNpbbjZn37LwegZaE
+        PU4JH9WNgRabEdIcei8m4LKk2L+kY1h3D4oRSUW+THADGdmUeDDteVpga1wxVuF3K7HWYT
+        1LYJsjNWVY/oGZ0SMytjqhPvIRGvuUw=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-8Q9DKAWEMwG4dfBw2vmQlw-1; Wed, 02 Jun 2021 16:44:01 -0400
+X-MC-Unique: 8Q9DKAWEMwG4dfBw2vmQlw-1
+Received: by mail-qv1-f71.google.com with SMTP id k6-20020a0cd6860000b029021936c6e8ffso2746872qvi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:44:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m11y4i1SvujGuRzAdjBSm08F3vbFRf7B2NZgAGBozGg=;
-        b=QSxJ1vNVBHPKF1tPQXpeLIFLVyIQLjpzt4sypxbxZEoiO315+Y8oFPkm5fCqebkoAp
-         fIw0IH9nEJkzvjEcx+vvLxF+IjqLhfcL8YXZgNFfJ0rVRRoiN/IBvxkmpGkns1r8ULU5
-         1WaqFHJhLE698gyS9TTgiDaIUjX3yjwdGtmpylI7IIkYxYOovcH4r90tukvXrhzY9sVe
-         wR32r8zU8j6EayTBcHKdNW/yi6tM4okOsLjV20yjRzuJyloVcwYxiLEYG42Sui2UILA1
-         8Ud0jDeCFcDlEoVijWns5Z32EfpI8MRD2Dr34b2fJekwbWG/zdJJ/+77Z8jm85RBSFYY
-         L9Fg==
-X-Gm-Message-State: AOAM532hKG7KjONn+KdCFQl9WsUK2MqsRicAP0brrqEjJsGlamcCm/Mp
-        TNU0sE7iA3CM3UU5Sjrue7kW9w==
-X-Google-Smtp-Source: ABdhPJyZX7/9wQ9yx28ATg5R+fCoxCBPvTMELfrFneki7veMc5yQlCqhc7STaVWvl3GJcUIfVSYIDg==
-X-Received: by 2002:a17:906:b4b:: with SMTP id v11mr13129300ejg.359.1622666592047;
-        Wed, 02 Jun 2021 13:43:12 -0700 (PDT)
-Received: from [192.168.1.28] (hst-221-39.medicom.bg. [84.238.221.39])
-        by smtp.googlemail.com with ESMTPSA id y1sm510485ejl.7.2021.06.02.13.43.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 13:43:11 -0700 (PDT)
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add venus DT node
-To:     Dikshita Agarwal <dikshita@codeaurora.org>, andy.gross@linaro.org,
-        david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
-        devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1622647200-1487-1-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <134691c7-e939-879f-c897-befc4b71268b@linaro.org>
-Date:   Wed, 2 Jun 2021 23:43:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OkHNiAD4B9tLTy7xZTNyeTqGaPB3NZ2dH7ouXspLnvY=;
+        b=bd4AWvyT+9fnAlyNpGdkkDm1BOWuZ4LZ5aFy+2wAQMM+COOTcropK7kBLwO/SfJPuw
+         cByRgkDrLPzF8ragJBG3cfXwSKNM5PnJhFbdvayH1lVdT7oA26hVbg3XPkER18/bSrNg
+         vKYsNzYv/7rC2+Q1UHLXvEEDRFCAJ4e9sXFzsySWU1dCT86iy/Cl5XV65KLLHj9HdWCM
+         W3ScL2et3QhTi0Ck+mWVC68R4JuDj4ZZVaEtpJJf1l35i7QcbleBwyhfB6RAz2jUTjXi
+         VhLwT4Jq3TRC8DMpM/bgvy500GUsiw/zLm8jb2UVOw9a2rB62tswq/8Z6Tn83WkkcjNG
+         emGw==
+X-Gm-Message-State: AOAM532S/slJWmkCdZqnjlFpu3MecCoMaSYi4bVr1oj2bD/K5YEZ5Vph
+        /omYEHcaPHdvpNB0mgxke2Pvvvz89ka5Eiw9kOmPelsr+HzmlYZyx83vtFrQ6nCvk0r6xS1IjLm
+        87uGGqgBfyaLVzE2P3xeNW1vt
+X-Received: by 2002:a37:2c47:: with SMTP id s68mr9162149qkh.16.1622666640036;
+        Wed, 02 Jun 2021 13:44:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9DmxGJijf+tZr1JHPuNxXrGLuOLFd5XCzqXZCrYg42fjCTrLRu7A2TaENxKK4ZHAixnX6UA==
+X-Received: by 2002:a37:2c47:: with SMTP id s68mr9162133qkh.16.1622666639733;
+        Wed, 02 Jun 2021 13:43:59 -0700 (PDT)
+Received: from treble ([68.52.236.68])
+        by smtp.gmail.com with ESMTPSA id k23sm639247qkk.71.2021.06.02.13.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 13:43:59 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 15:43:57 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Lukasz Majczak <lma@semihalf.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        jgross@suse.com, mbenes@suse.com, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com,
+        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
+        =?utf-8?Q?=C5=81ukasz?= Bartosik <lb@semihalf.com>,
+        Guenter Roeck <groeck@google.com>
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <20210602204357.fq2yahccehf6cqjh@treble>
+References: <20210326151159.128534163@infradead.org>
+ <20210326151300.320177914@infradead.org>
+ <20210329163826.anuqkv5ahvoyus5c@treble>
+ <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1622647200-1487-1-git-send-email-dikshita@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/2/21 6:20 PM, Dikshita Agarwal wrote:
-> Add DT entries for the sc7280 venus encoder/decoder.
+On Wed, Jun 02, 2021 at 05:51:01PM +0200, Lukasz Majczak wrote:
+> Hi Peter,
 > 
-> Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> This patch seems to crash on Tigerlake platform (Chromebook delbin), I
+> got the following error:
 > 
-> change since v1:
->  - added rpmh power domain and opp table.
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 75 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 4c44a52..4982f96 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -60,6 +60,11 @@
->  			no-map;
->  			reg = <0x0 0x80b00000 0x0 0x100000>;
->  		};
-> +
-> +		video_mem: memory@8b200000 {
-> +			reg = <0x0 0x8b200000 0x0 0x500000>;
-> +			no-map;
-> +		};
->  	};
->  
->  	cpus {
-> @@ -850,6 +855,76 @@
->  			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
->  		};
->  
-> +		venus: video-codec@0aa00000 {
-> +			compatible = "qcom,sc7280-venus";
-> +			reg = <0 0x0aa00000 0 0xd0600>;
-> +			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-> +				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-> +				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-> +				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-> +				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-> +			clock-names = "core", "bus", "iface",
-> +				      "vcodec_core", "vcodec_bus";
-> +
-> +			power-domains = <&videocc MVSC_GDSC>,
-> +					<&videocc MVS0_GDSC>;
-> +					<&rpmhpd SC7280_CX>;
-> +			power-domain-names = "venus", "vcodec0", "cx";
-> +			operating-points-v2 = <&venus_opp_table>;
-> +
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
-> +					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-> +			interconnect-names = "cpu-cfg", "video-mem";
-> +
-> +			iommus = <&apps_smmu 0x2180 0x20>,
-> +				 <&apps_smmu 0x2184 0x20>;
-> +			memory-region = <&video_mem>;
-> +
-> +			video-decoder {
-> +				compatible = "venus-decoder";
-> +			};
-> +
-> +			video-encoder {
-> +				compatible = "venus-encoder";
-> +			};
-> +
-> +			video-firmware {
-> +				iommus = <&apps_smmu 0x21a2 0x0>;
-> +			};
+> [    2.103054] pcieport 0000:00:1c.0: PME: Signaling with IRQ 122
+> [    2.110148] pcieport 0000:00:1c.0: pciehp: Slot #7 AttnBtn-
+> PwrCtrl- MRL- AttnInd- PwrInd- HotPlug+ Surprise+ Interlock- NoCompl+
+> IbPresDis- LLActRep+
+> [    2.126754] pcieport 0000:00:1d.0: PME: Signaling with IRQ 123
+> [    2.133946] ACPI: \_SB_.CP00: Found 3 idle states
+> [    2.139708] BUG: kernel NULL pointer dereference, address: 000000000000012b
+> [    2.140704] #PF: supervisor read access in kernel mode
+> [    2.140704] #PF: error_code(0x0000) - not-present page
+> [    2.140704] PGD 0 P4D 0
+> [    2.140704] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [    2.140704] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G     U
+>   5.13.0-rc1 #31
+> [    2.140704] Hardware name: Google Delbin/Delbin, BIOS
+> Google_Delbin.13672.156.3 05/14/2021
+> [    2.140704] RIP: 0010:cpuidle_poll_time+0x9/0x6a
+> [    2.140704] Code: 44 00 00 85 f6 78 19 55 48 89 e5 48 8b 05 16 44
+> 44 01 4c 8b 58 40 4d 85 db 5d 41 ff d3 66 90 00 c3 0f 1f 44 00 00 55
+> 48 89 e5 <48> 8b 46 20 48 85 c0 75 56 4c 63 87 28 04 00 00 b8 24 f49
+> [    2.140704] RSP: 0000:ffffffff9cc03ea8 EFLAGS: 00010282
+> [    2.140704] RAX: 0000000000008e7d RBX: ffffffff9cc1c5fd RCX: 000000007f894e5a
+> [    2.140704] RDX: 000000007f894d4f RSI: 000000000000010b RDI: 0000000002fa1cf6
+> [    2.140704] RBP: ffffffff9cc03ea8 R08: 0000000000000000 R09: 00000000ca948246
+> [    2.140704] R10: 0000000000000000 R11: ffffffff9bf132cb R12: 0000000000000003
+> [    2.140704] R13: ffffbbfdffc21960 R14: 0000000000000000 R15: ffffffff9cdba638
+> [    2.140704] FS:  0000000000000000(0000) GS:ffff928280000000(0000)
+> knlGS:0000000000000000
+> [    2.140704] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.140704] CR2: 000000000000012b CR3: 000000027e414001 CR4: 0000000000770ef0
+> [    2.140704] PKRU: 55555554
+> [    2.140704] Call Trace:
+> [    2.140704]  do_idle+0x175/0x1f6
+> [    2.140704]  cpu_startup_entry+0x1d/0x1f
+> [    2.140704]  start_kernel+0x3be/0x420
+> [    2.140704]  secondary_startup_64_no_verify+0xb0/0xbb
 
-The assumption for all Qualcomm SoCs was that the firmware will be
-loaded by TZ, i.e. the platform has TZ firmware. I'd like to continue on
-that assumption, and propose to move video-firmware subnode into
-appropriate board dts file, in this case sc7280-idp.dts.
+Assuming I'm looking at the right code, this is weird.
+
+cpuidle_poll_time()'s only caller is poll_idle(), which isn't even
+listed in the stack trace.  Maybe the function before
+cpuidle_poll_time() fell through into it somehow.  Or execution got
+otherwise hosed.  That would also explain the bad function argument.
+
+In addition to the data Peter requested, it would also be interesting to
+see the disassembly of do_idle() with objdump -dr, to see which function
+got called before it went off the rails.
 
 -- 
-regards,
-Stan
+Josh
+
