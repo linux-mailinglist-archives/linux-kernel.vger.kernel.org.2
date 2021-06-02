@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B26339931E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC1C399328
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhFBTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:04:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhFBTEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:04:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06146613DE;
-        Wed,  2 Jun 2021 19:03:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622660585;
-        bh=UmpCat1vUqyqVee399R6xx/T2Sz4LjLr8R8Go7S3p1k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IslsaRMEZqqFu3ZzSgqNdLrDRXTjEsWWBTdbepFtuZAlmqCW7jni6jsPwMosOCRva
-         hVL4+t36l+lWWC9rTXUuGHZZNChuQuVPwsgAcgarySIPQWhv3ySLboMSW6JMAf2YId
-         ToOOtiPdJHHzvzYjHqjjfZEO2eYA4AX3Aljp7kAmGXZVA7L2lL6g56NGyyXCmMhVl1
-         sQBuEtFrWqF1K+sFvakhAFEVFj0EMbQqcXRB118BwCBgCvQ2560yN11nj7Z+69id6J
-         JER6VIjNBqPeimx5Ez/tElO4wGeBBVyTueFWmNTpZMfSZeX2/qtGWJoWzcr8IJn95m
-         meDf8kBhp6UbA==
-Received: by pali.im (Postfix)
-        id 81EBA1534; Wed,  2 Jun 2021 21:03:02 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 21:03:02 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-pci@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: Disallow retraining link for Atheros chips on
- non-Gen1 PCIe bridges
-Message-ID: <20210602190302.d3ibdtwti4yq57vi@pali>
-References: <20210602120816.axi4dtnyg5gl2h2z@pali>
- <20210602155559.GA2028037@bjorn-Precision-5520>
+        id S229807AbhFBTHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:07:08 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:37627 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhFBTGx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:06:53 -0400
+Received: by mail-pj1-f44.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so4005771pjs.2;
+        Wed, 02 Jun 2021 12:04:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2jsgl46qTXUFETegG4YX4Eozd/vKYgq51F4jK7XaaDw=;
+        b=qrUFRUSkdhOR3lV5nkM1VAwpsSIurtbX4VDOCCTalyBAwEACBB0wnrdgTiTeeLShUg
+         2Ij2HXYlNanQGlQXiS4/0uRDXCFe8s0gBIcmSyww2NS3G8UGZlCp5mO/4GJuA9CROGA2
+         e+it5RPObVcuByaiIhXldUSbxfnySjIxD314WPi2OY+lP/+q3K/9Si35DJwg2I5rALjO
+         9bAA4pFv/ds72ceApWHE+xLKyqp9klPwBf+smAm3I451C2Uz7m8RSxOSBYdqFDCk76hg
+         cUlP7qdkZaWPyiyCsjsJbifO0NgXkHwYLbOhlXkhhaGxzQtcu55cvUfafk4sjHStyB3g
+         0ZIg==
+X-Gm-Message-State: AOAM532IuSCEMX4WFsHXlRumFgHNOk3usBYG71TF5PX5cqriFXMWwzWZ
+        aAsBQO15sgekIKrDEXtk13s=
+X-Google-Smtp-Source: ABdhPJyBzZGUV9/yaTEs3Kcnxd6x6X+34BJRqwqWmPR0/3+Kbl5QzLZJiFIJOxnFARVPW9Gh6dMjLA==
+X-Received: by 2002:a17:90a:7842:: with SMTP id y2mr7143661pjl.68.1622660648117;
+        Wed, 02 Jun 2021 12:04:08 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id x9sm464893pgp.5.2021.06.02.12.04.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 12:04:07 -0700 (PDT)
+Subject: Re: [PATCH v11 3/3] scsi: set max_bio_bytes with queue max sectors
+To:     Changheun Lee <nanich.lee@samsung.com>, hch@infradead.org,
+        Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
+        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        jaegeuk@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com, osandov@fb.com,
+        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com,
+        yi.zhang@redhat.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+References: <20210602121037.11083-1-nanich.lee@samsung.com>
+ <CGME20210602122912epcas1p4faff714cc9457b0d482fc1a4b63a49a9@epcas1p4.samsung.com>
+ <20210602121037.11083-4-nanich.lee@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <10c02317-7528-bbad-3cfb-75db54d2ab91@acm.org>
+Date:   Wed, 2 Jun 2021 12:04:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210602121037.11083-4-nanich.lee@samsung.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210602155559.GA2028037@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 02 June 2021 10:55:59 Bjorn Helgaas wrote:
-> On Wed, Jun 02, 2021 at 02:08:16PM +0200, Pali Rohár wrote:
-> > On Tuesday 01 June 2021 19:00:36 Bjorn Helgaas wrote:
+On 6/2/21 5:10 AM, Changheun Lee wrote:
+> Set max_bio_bytes same with queue max sectors. It will lead to fast bio
+> submit when bio size is over than queue max sectors. And it might be helpful
+> to align submit bio size in some case.
 > 
-> > > I wonder if this could be restructured as a generic quirk in quirks.c
-> > > that simply set the bridge's TLS to 2.5 GT/s during enumeration.  Or
-> > > would the retrain fail even in that case?
-> > 
-> > If I understand it correctly then PCIe link is already up when kernel
-> > starts enumeration. So setting Bridge TLS to 2.5 GT/s does not change
-> > anything here.
-> > 
-> > Moreover it would have side effect that cards which are already set to
-> > 5+ GT/s would be downgraded to 2.5 GT/s during enumeration and for
-> > increasing speed would be needed another round of "enumeration" to set a
-> > new TLS and retrain link again. As TLS affects link only after link goes
-> > into Recovery state.
-> > 
-> > So this would just complicate card enumeration and settings.
+> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> ---
+>  drivers/scsi/scsi_lib.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> The current quirk complicates the ASPM code.  I'm hoping that if we
-> set the bridge's Target Link Speed during enumeration, the link
-> retrain will "just work" without complicating the ASPM code.
-> 
-> An enumeration quirk wouldn't have to set the bridge's TLS to 2.5
-> GT/s; the quirk would be attached to specific endpoint devices and
-> could set the bridge's TLS to whatever the endpoint supports.
+> diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+> index 532304d42f00..f6269268b0e0 100644
+> --- a/drivers/scsi/scsi_lib.c
+> +++ b/drivers/scsi/scsi_lib.c
+> @@ -1837,6 +1837,8 @@ void __scsi_init_queue(struct Scsi_Host *shost, struct request_queue *q)
+>  	blk_queue_virt_boundary(q, shost->virt_boundary_mask);
+>  	dma_set_max_seg_size(dev, queue_max_segment_size(q));
+>  
+> +	blk_queue_max_bio_bytes(q, queue_max_sectors(q));
+> +
+>  	/*
+>  	 * Set a reasonable default alignment:  The larger of 32-byte (dword),
+>  	 * which is a common minimum for HBAs, and the minimum DMA alignment,
 
-Now I see what you mean. Yes, I agree this is a good idea and can
-simplify code. Quirk is not related to ASPM code and basically has
-nothing with it, just I put it into aspm.c because this is the only
-place where link retraining was activated.
+Has this patch been tested with dm-crypt on top of a SCSI device? I'm
+concerned that this patch will trigger data corruption with dm-crypt on
+top because the above change will make the following dm-crypt code fail
+for a sufficiently large bio:
 
-But with this proposal there is one issue. Some kernel drivers already
-overwrite PCI_EXP_LNKCTL2_TLS value. So if PCI enumeration code set some
-value into PCI_EXP_LNKCTL2_TLS bits then drivers can change it and once
-ASPM will try to retrain link this may cause this issue.
+		bio_add_page(clone, page, len, 0);
 
-> > Moreover here we are dealing with specific OTP/EEPROM bug in Atheros
-> > chips, which was confirmed that exists. As I wrote in previous email, I
-> > was told that semi-official workaround is do Warm Reset or Cold Reset
-> > with turning power off from card. Which on most platforms / boards is
-> > not possible.
-> 
-> If there's a specific bug with a real root-cause analysis, please cite
-> it.  The threads mentioned in the current commit log are basically
-> informed speculation.
+When testing dm-crypt on top of this patch series, please change the
+above dm-crypt code into the following before running any tests:
 
-I had (private) discussion with Adrian Chadd about ABCD device id issue.
-I hope that nobody is against if I put there summary and important parts
-about secondary bus reset (=hot reset):
+		WARN_ON(bio_add_page(clone, page, len, 0) < len);
 
+Thanks,
 
-The reason for abcd is because:
-* the MAC has hardware that upon cold reset, will read EEPROM/OTP
-  values for things like PCIe and other register defaults, and squirt
-  them into the MAC/PHY/etc registers
-* the default values for the PCIe bus pre-AR9300 were 0x168c:0xff<id>,
-  where <id> is the normal chip ID
-* the default values for the PCIe bus POST-AR9300 were 0x168c:0xabcd,
-  where they're always that regardless of the chip family
-* so yeah, all you know with 0x168c:0xabcd is there's an atheros
-  device there, but not WHICH it is.
-
-* the bug is that the reset line isn't held low for long enough, or it's
-  bounced twice in quick succession, before the MAC has time to program
-  in the defaults from EEPROM/OTP and it doesn't do it a second time.
-
-* the MAC has hardware that upon cold reset, will read EEPROM/OTP
-  values for things like PCIe and other register defaults, and squirt
-  them into the MAC/PHY/etc registers
-
-* need to use the external reset line OR try using D3, not D3hot
-  (I assume that "external reset line" means PERST# - PCIe Warm Reset
-  and "D3, not D3hot" means D3cold)
-
-
-And now my experiments: Disabling and Enabling link via root bridge has
-exactly same syndromes as hot reset on all tested cards. See that
-different chips (pre-AR9300 and post-AR9300) have slightly different
-behavior and it matches all my experiments (I wrote test details in
-commit message). And doing link retrain when root bridge has non-2.5GT/s
-value in PCI_EXP_LNKCTL2_TLS has also same effect as hot reset.
-So based on same results from my experiments all these actions
-(disabling link, hot reset and link retrain) have common issue.
+Bart.
