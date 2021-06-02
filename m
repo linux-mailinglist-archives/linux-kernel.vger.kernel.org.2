@@ -2,116 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FB23986F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C783E3986F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhFBKw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhFBKvq (ORCPT
+        id S232123AbhFBKxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:53:10 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6139 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhFBKvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:51:46 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB91C061763
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:49:55 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so1434215wmq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iBPgoenc4+VXFgVYv4Mb1skeP6ikfbF6DUFZDuY5ah0=;
-        b=qMBk9o3bcP5GtSnrBEjM+uWb62KPrE2rQIg+ZFejyIJ7KDc7EuHbWv6Ier5kZTigIR
-         5mXf3/3MmGJskgrxiaqGw4px5jD+G+hWfPNKX0VB3Q90xVaVC9W2ub5I3+4rYkIr8C6L
-         chxtaxQI8hnb/YGqTd3MdhmSJpqeWk8UrZcTCfv9IvFWRmdLQcBX8tWbGKN4KBvbOEJ+
-         EETPihJUuo8Fv747IZjxQehWVelRce/UwRVy83oJFO+hbvPTHpQi+IVjW3yMXgmJzK+H
-         F27yNQMNOwh5K9XYmMwdm2gEuDDNQoEjQcctogIZhgnGP8eVl1utqqHRhFOj1a+KnMcs
-         NNSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iBPgoenc4+VXFgVYv4Mb1skeP6ikfbF6DUFZDuY5ah0=;
-        b=HmxkOjF8yAr9csDjpw/562y6ckUuGjCnKgblsR3Nf6Cbc6Lc162ZzMfxu9YNBtMxHs
-         dbcqR3J+IgHIOyU8avDXYmsn/cjK7Yqf9e/67HpzARxLcsP6lGFMmD8WNxKO6wIQXl4e
-         YHsz2wjpNYZLxcnQ15XRca5/2AtZ5DA2IBzwir2N7C5xRwdVe6fw5VCRyGWXZutUxCw0
-         YY5g8o6ZO2A8BOcSobdyi7PF/QlIffnAKPaychmfNZX6Rwy05BMjLjE8FctnuOrgpRjk
-         pNnv5M/h784m2Vqt40nUzwStW/ygmSSr/43SoMJvoLZtfqJeZvt+IH69eAPtiDQP9vcE
-         IFMQ==
-X-Gm-Message-State: AOAM532WEZPNd1Em9Dk9ECAm/Mej+rJWtH6IYTnYZqyoe/mTFdIhYkzo
-        hd/oKU1kBIwLda6Z4kmjrRRNwQ==
-X-Google-Smtp-Source: ABdhPJxJX3H2bjJ6ZWWGMvygaz55JMVzxmecp5Rkf4VcZ3RHRl9KDTV+xgJcccrQmFsHPJCg9w3A/w==
-X-Received: by 2002:a7b:cc8f:: with SMTP id p15mr4585583wma.111.1622630993639;
-        Wed, 02 Jun 2021 03:49:53 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id a123sm2687146wmd.2.2021.06.02.03.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 03:49:53 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 10:49:50 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Yanan Wang <wangyanan55@huawei.com>, Will Deacon <will@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v5 2/6] KVM: arm64: Move D-cache flush to the fault
- handlers
-Message-ID: <YLdiTnfuhMimU4dE@google.com>
-References: <20210415115032.35760-1-wangyanan55@huawei.com>
- <20210415115032.35760-3-wangyanan55@huawei.com>
- <877djc1sca.wl-maz@kernel.org>
+        Wed, 2 Jun 2021 06:51:54 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fw5MG3jqzzYpXh;
+        Wed,  2 Jun 2021 18:47:22 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 18:50:03 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 2 Jun
+ 2021 18:50:03 +0800
+Subject: Re: [PATCH v2 1/9] perf: Add EVENT_ATTR_ID to simplify event
+ attributes
+To:     Will Deacon <will@kernel.org>
+CC:     Linuxarm <linuxarm@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+References: <1621417919-6632-1-git-send-email-liuqi115@huawei.com>
+ <1621417919-6632-2-git-send-email-liuqi115@huawei.com>
+ <20210601131020.GD28025@willie-the-truck>
+ <30abdbec-3174-1f8a-47d4-63a4de3b1e47@huawei.com>
+ <20210602094922.GA30503@willie-the-truck>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <9b764f1c-3c69-b825-5d5e-640d26be79e4@huawei.com>
+Date:   Wed, 2 Jun 2021 18:49:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877djc1sca.wl-maz@kernel.org>
+In-Reply-To: <20210602094922.GA30503@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 02 Jun 2021 at 11:19:49 (+0100), Marc Zyngier wrote:
-> On Thu, 15 Apr 2021 12:50:28 +0100,
-> > @@ -583,6 +589,7 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
-> >  {
-> >  	kvm_pte_t new, old = *ptep;
-> >  	u64 granule = kvm_granule_size(level), phys = data->phys;
-> > +	struct kvm_pgtable *pgt = data->mmu->pgt;
-> >  	struct kvm_pgtable_mm_ops *mm_ops = data->mm_ops;
-> >  
-> >  	if (!kvm_block_mapping_supported(addr, end, phys, level))
-> > @@ -606,6 +613,13 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
-> >  		stage2_put_pte(ptep, data->mmu, addr, level, mm_ops);
-> >  	}
-> >  
-> > +	/* Perform CMOs before installation of the guest stage-2 PTE */
-> > +	if (pgt->flags & KVM_PGTABLE_S2_GUEST) {
-> > +		if (stage2_pte_cacheable(pgt, new) && !stage2_has_fwb(pgt))
-> > +			__flush_dcache_area(mm_ops->phys_to_virt(phys),
-> > +					    granule);
-> > +	}
+
+Hi Will,
+On 2021/6/2 17:49, Will Deacon wrote:
+> On Wed, Jun 02, 2021 at 04:45:23PM +0800, liuqi (BA) wrote:
+>>
+>> Hi Will,
+>>
+>> Thanks for reviewing this patch.
+>>
+>> On 2021/6/1 21:10, Will Deacon wrote:
+>>> On Wed, May 19, 2021 at 05:51:51PM +0800, Qi Liu wrote:
+>>>> Similar EVENT_ATTR macros are defined in many PMU drivers,
+>>>> like HiSilicon PMU driver, Arm PMU driver, Arm SMMU PMU
+>>>> driver. So Add a generic macro to simplify code.
+>>>>
+>>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>>> Cc: Ingo Molnar <mingo@redhat.com>
+>>>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+>>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>>>> ---
+>>>>    include/linux/perf_event.h | 6 ++++++
+>>>>    kernel/events/core.c       | 2 ++
+>>>>    2 files changed, 8 insertions(+)
+>>>>
+>>>> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+>>>> index f5a6a2f..d0aa74e 100644
+>>>> --- a/include/linux/perf_event.h
+>>>> +++ b/include/linux/perf_event.h
+>>>> @@ -1576,6 +1576,12 @@ static struct perf_pmu_events_attr _var = {				    \
+>>>>    	.event_str	= _str,						    \
+>>>>    };
+>>>> +#define PMU_EVENT_ATTR_ID(_name, _id)					     \
+>>>> +	(&((struct perf_pmu_events_attr[]) {				     \
+>>>> +		{ .attr = __ATTR(_name, 0444, perf_event_sysfs_show, NULL),  \
+>>>> +		  .id = _id, }						     \
+>>>> +	})[0].attr.attr)
+>>>> +
+>>>>    #define PMU_FORMAT_ATTR(_name, _format)					\
+>>>>    static ssize_t								\
+>>>>    _name##_show(struct device *dev,					\
+>>>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>>>> index 0ac818b..330d9cc 100644
+>>>> --- a/kernel/events/core.c
+>>>> +++ b/kernel/events/core.c
+>>>> @@ -13295,6 +13295,8 @@ ssize_t perf_event_sysfs_show(struct device *dev, struct device_attribute *attr,
+>>>>    	if (pmu_attr->event_str)
+>>>>    		return sprintf(page, "%s\n", pmu_attr->event_str);
+>>>> +	else
+>>>> +		return sprintf(page, "config=%#llx\n", pmu_attr->id);
+>>>
+>>> I think it's a really bad idea to hardcode this here. For example, I think
+>>> this patch series breaks user ABI for the SMMU PMU which used to print:
+>>>
+>>> 	"event=0x%02llx\n"
+>>>
+>>> and by the looks of it many of the other conversions are unsound too.
+>>>
+>> Got it, so I'll use pmu_attr->event_str here, for example,
+>> SMMU_EVENT_ATTR(cycles, "event=0x00")
 > 
-> Rather than this, why not provide new callbacks in mm_ops, even if we
-> have to provide one that is specific to guests (and let the protected
-> stuff do its own thing)?
+> You could, but honestly I don't really see this being any better than the
+> current code. The advantage of using "event=0x%02llx\n" is that things are
+> consistent by construction and therefore userspace can parse the information
+> easily. We lose that if we just hardcode the string and it's error-prone to
+> extend.
+> 
+> Will
+Got it, thanks.
+So how about adding a common macro like this:
 
-Ack, an optional callback in the mm_ops sounds much nicer.
+#define PMU_EVENT_ATTR_ID(_name,_func, _id)					     \
+(&((struct perf_pmu_events_attr[]) {				     \
+	{ .attr = __ATTR(_name, 0444, _func, NULL),  \
+	  .id = _id, }						     \
+})[0].attr.attr)
 
-> One thing I really dislike though is that the page-table code is
-> starting to be littered with things that are not directly related to
-> page tables. We are re-creating the user_mem_abort() mess in a
-> different place.
-
-+1, we should probably keep the page-table code as close as possible
-to a standalone and architecturally-compliant library as opposed to a
-mess of unrelated logic, simply because that will lead to a cleaner and
-more maintainable design in the long run, and because that will ease the
-interoperability with EL2 in protected mode.
+Drivers could define thir private macro, like SMMU_PMU_EVENT_ATTR, and 
+use their private event_show() functions if they need, or use the common 
+function perf_event_sysfs_show().
 
 Thanks,
-Quentin
+Qi
+> .
+> 
+
