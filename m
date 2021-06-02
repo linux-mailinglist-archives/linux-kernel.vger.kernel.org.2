@@ -2,97 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2269B3983E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0853983EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhFBINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:13:49 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3342 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhFBINn (ORCPT
+        id S232404AbhFBIOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:14:50 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37530 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229583AbhFBIOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:13:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fw1pX0GhYz19S5g;
-        Wed,  2 Jun 2021 16:07:16 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 16:11:57 +0800
-Received: from [10.174.179.129] (10.174.179.129) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 2 Jun 2021 16:11:57 +0800
-Subject: Re: [PATCH] clk: socfpga: remove set but not used variable 'rc'
-To:     Stephen Boyd <sboyd@kernel.org>, <dinguyen@kernel.org>,
-        <mturquette@baylibre.com>, <s.trumtrar@pengutronix.de>
-CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20210514062234.3534615-1-yukuai3@huawei.com>
- <162262008540.4130789.916741380026683860@swboyd.mtv.corp.google.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <86e34f50-ad3b-f34a-c5dd-0849496ffd67@huawei.com>
-Date:   Wed, 2 Jun 2021 16:11:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 2 Jun 2021 04:14:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Ub1gYK1_1622621580;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Ub1gYK1_1622621580)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 02 Jun 2021 16:13:01 +0800
+Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210527023922.2017-1-jiangshanlai@gmail.com>
+ <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
+ <YK/FGYejaIu6EzSn@google.com>
+ <d96f8c11-19e6-2c2d-91ff-6a7a51fa1b9c@linux.alibaba.com>
+ <YLA4peMjgeVvKlEn@google.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <dda200b3-5037-1c38-5780-7b154a5aebcc@linux.alibaba.com>
+Date:   Wed, 2 Jun 2021 16:13:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <162262008540.4130789.916741380026683860@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.129]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YLA4peMjgeVvKlEn@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/06/02 15:48, Stephen Boyd wrote:
-> Quoting Yu Kuai (2021-05-13 23:22:34)
->> Fixes gcc '-Wunused-but-set-variable' warning:
->>
->> drivers/clk/socfpga/clk-pll.c:83:6: warning: variable ‘rc’ set but
->> not used [-Wunused-but-set-variable]
->>
->> The returned value of of_clk_add_provider() is never used, and so
->> can be removed.
->>
->> Fixes: 97259e99bdc9 ("clk: socfpga: split clk code")
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/clk/socfpga/clk-pll.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/clk/socfpga/clk-pll.c b/drivers/clk/socfpga/clk-pll.c
->> index dcb573d44034..127cc849c5ee 100644
->> --- a/drivers/clk/socfpga/clk-pll.c
->> +++ b/drivers/clk/socfpga/clk-pll.c
->> @@ -80,7 +80,6 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
->>          const char *parent_name[SOCFPGA_MAX_PARENTS];
->>          struct clk_init_data init;
->>          struct device_node *clkmgr_np;
->> -       int rc;
->>          int err;
->>   
->>          of_property_read_u32(node, "reg", &reg);
->> @@ -114,7 +113,7 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
->>                  kfree(pll_clk);
->>                  return ERR_PTR(err);
->>          }
->> -       rc = of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
->> +       of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
-> 
-> Shouldn't we fail if of_clk_add_provider() fails? So return some sort of
-> error pointer and unwind allocations, etc.
 
-Will send a v2 patch. By the way, do you think it's better to
-return error pointer instead of NULL pointer when kzalloc() failed?
+
+On 2021/5/28 08:26, Sean Christopherson wrote:
+> On Fri, May 28, 2021, Lai Jiangshan wrote:
+>>
+>> On 2021/5/28 00:13, Sean Christopherson wrote:
+>>> And making a request won't work without revamping the order of request handling
+>>> in vcpu_enter_guest(), e.g. KVM_REQ_MMU_RELOAD and KVM_REQ_MMU_SYNC are both
+>>> serviced before KVM_REQ_STEAL_UPDATE.
+>>
+>> Yes, it just fixes the said problem in the simplest way.
+>> I copied KVM_REQ_MMU_RELOAD from kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
+>> (If the guest is not preempted, it will call invpcid_flush_all() and will be handled
+>> by this way)
+> 
+> The problem is that record_steal_time() is called after KVM_REQ_MMU_RELOAD
+> in vcpu_enter_guest() and so the reload request won't be recognized until the
+> next VM-Exit.  It works for kvm_handle_invpcid() because vcpu_enter_guest() is
+> guaranteed to run between the invcpid code and VM-Enter.
+> 
+>> The improvement code will go later, and will not be backported.
+> 
+> I would argue that introducing a potential performance regression is in itself a
+> bug.  IMO, going straight to kvm_mmu_sync_roots() is not high risk.
+
+Hello, Sean
+
+Patch V2 address all these concerns. And it uses the minimal fix as you
+suggested in your previous reply (fix it directly in kvm_vcpu_flush_tlb_guest())
+
+Could you have a review again please?
 
 Thanks
-Yu Kuai
+Lai.
+
 > 
->>          return hw_clk;
->>   }
+>> The proper way to flush guest is to use code in
 >>
-> .
+>> https://lore.kernel.org/lkml/20210525213920.3340-1-jiangshanlai@gmail.com/
+>> as:
+>> +		kvm_mmu_sync_roots(vcpu);
+>> +		kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu); //or just call flush_current directly
+>> +		for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
+>> +			vcpu->arch.mmu->prev_roots[i].need_sync = true;
+>>
+>> If need_sync patch is not accepted, we can just use kvm_mmu_sync_roots(vcpu)
+>> to keep the current pagetable and use kvm_mmu_free_roots() to free all the other
+>> roots in prev_roots.
 > 
+> I like the idea, I just haven't gotten around to reviewing that patch yet.
+> 
+>>> Cleaning up and documenting the MMU related requests is on my todo list, but the
+>>> immediate fix should be tiny and I can do my cleanups on top.
+>>>
+>>> I believe the minimal fix is:
+>>>
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index 81ab3b8f22e5..b0072063f9bf 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
+>>>    static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
+>>>    {
+>>>           ++vcpu->stat.tlb_flush;
+>>> +
+>>> +       if (!tdp_enabled)
+>>> +               kvm_mmu_sync_roots(vcpu);
+>>
+>> it doesn't handle prev_roots which are also needed as
+>> shown in kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
+> 
+> Ya, I belated realized this :-)
+> 
+>>>           static_call(kvm_x86_tlb_flush_guest)(vcpu);
+>>
+>> For tdp_enabled, I think it is better to use kvm_x86_tlb_flush_current()
+>> to make it consistent with other shadowpage code.
+>>
+>>>    }
+>>>
