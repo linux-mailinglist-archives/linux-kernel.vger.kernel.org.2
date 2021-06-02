@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455513987DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8739D3987E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhFBLUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:20:18 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:36619 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhFBLUQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:20:16 -0400
-Received: by mail-il1-f197.google.com with SMTP id s5-20020a056e021a05b02901e07d489107so1298330ild.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:18:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=fUuOkxrIdoQmAb56CsmjGA6rmm8IFaIzsgB206kzii4=;
-        b=RS7Rs+4KGR2j0DGe/CRvyspDCpDN2z+bDm9jL3nR59MwP/S5Da2ozlge+Ejkzf3UaF
-         UkV1CsnXZa1Wuwv5DkoR5zt9EK+r4NcMyMqkYsqg1AtPbUmb4aYi6NU4NRdigx3Au/Ij
-         I0Dr0B83z4KlVDhwaYzV60lUzS8G0Cr4DE4dqNzpFJsH2NwTKMxAk5mPYB8JTGxXzmpV
-         OyIKRMcGYRJuf+GfGGWGIOYNK+zJ3LlfLu2Vz/qCAISG6SYYZed/tFGww7XCKFKFcvPx
-         gG90n89ufQKiUaja/VmMCI8QhvUyPjsVsqm8qHDO3rlC4QWmsRiJ9pPXIpAaQlsUbfVC
-         HlEA==
-X-Gm-Message-State: AOAM532UUBPydsfEocEKKojI2tQm0OFdj9GWOWdA/PpLmQmDIN6CUnb6
-        qroAjjz0jZL7ph/6bPl83246vDJ5dwCbBFZw9FcG2kCxOPyz
-X-Google-Smtp-Source: ABdhPJz7V5+svtllpxH9nzf4ovxVaVuS5+ylKIbKxC0l1D+WwRHYpJWQy/Nm9+9mMbCvDsJopVTIjAVhfqs6ZSYfC97n2tcnqNcJ
+        id S231927AbhFBLUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:20:25 -0400
+Received: from mga11.intel.com ([192.55.52.93]:54588 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229695AbhFBLUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 07:20:25 -0400
+IronPort-SDR: PcnN1ZYgQXagXXVh8549c/4nm++knddi+8z3vp+7m1WXcocGAiqX380u6WDKtSEGTz/LBvm6wZ
+ ubM3rOVMTYZA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="200753169"
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="200753169"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 04:18:31 -0700
+IronPort-SDR: jBFkqpqJsLwCoFu1dX6G+w7cN+0fUYsPhXufsWCi5oP2GRnVnyNnwRSImg6Xrfn5l0Tcuog1B2
+ cdnGu2ae0uKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="479672850"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by orsmga001.jf.intel.com with ESMTP; 02 Jun 2021 04:18:26 -0700
+Subject: Re: [PATCH v2 8/8] perf record: Directly bail out for compat case
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-9-leo.yan@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
+Date:   Wed, 2 Jun 2021 14:18:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:c5ad:: with SMTP id r13mr14881585ilt.238.1622632713370;
- Wed, 02 Jun 2021 04:18:33 -0700 (PDT)
-Date:   Wed, 02 Jun 2021 04:18:33 -0700
-In-Reply-To: <YLdo77SkmGLgPUBi@casper.infradead.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007b451b05c3c69e4d@google.com>
-Subject: Re: [syzbot] WARNING in idr_get_next
-From:   syzbot <syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     anmol.karan123@gmail.com, bjorn.andersson@linaro.org,
-        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
-        ebiggers@google.com, ebiggers@kernel.org, eric.dumazet@gmail.com,
-        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        necip@google.com, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210602103007.184993-9-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> #syz fixed qrtr: Convert qrtr_ports from IDR to XArray
+On 2/06/21 1:30 pm, Leo Yan wrote:
+> Since the 64-bit atomicity is not promised in 32-bit perf, directly
+> report the error and bail out for this case.
+> 
+> Now only applies on x86_64 and Arm64 platforms.
+> 
+> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
 
-unknown command "fixed"
+Maybe we can do better for the compat case.
 
->
-> On Wed, Jun 02, 2021 at 03:30:06AM -0700, syzbot wrote:
->> syzbot suspects this issue was fixed by commit:
->> 
->> commit 43016d02cf6e46edfc4696452251d34bba0c0435
->> Author: Florian Westphal <fw@strlen.de>
->> Date:   Mon May 3 11:51:15 2021 +0000
->
-> Your bisect went astray.
+We can assume the upper 32-bits change very seldom,
+and always increase. So for the 'read' case:
+
+	u64 first, second, last;
+	u64 mask = (u64)((u32)-1) << 32;
+
+	do {
+		first = READ_ONCE(pc->aux_head);
+		rmb();
+		second = READ_ONCE(pc->aux_head);
+		rmb();
+		last = READ_ONCE(pc->aux_head);
+	} while ((first & mask) != (last & mask));
+	return second;
+
+For the write case, we can cause a fatal error only if the new
+tail has non-zero upper 32-bits.  That gives up to 4GiB of data
+before aborting:
+
+	if (tail & mask)
+		return -1;
+	smp_mb();
+	WRITE_ONCE(pc->aux_tail, tail);
+
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/builtin-record.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 3337b5f93336..f47e298281f7 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -74,6 +74,7 @@
+>  #include <linux/zalloc.h>
+>  #include <linux/bitmap.h>
+>  #include <sys/time.h>
+> +#include <sys/utsname.h>
+>  
+>  struct switch_output {
+>  	bool		 enabled;
+> @@ -848,6 +849,22 @@ static int record__mmap_evlist(struct record *rec,
+>  				  opts->auxtrace_sample_mode;
+>  	char msg[512];
+>  
+> +#ifndef __LP64__
+> +	struct utsname uts;
+> +	int ret;
+> +
+> +	ret = uname(&uts);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (!strncmp(uts.machine, "x86_64", 6) || !strncmp(uts.machine, "aarch64", 7) ||
+> +	    !strncmp(uts.machine, "arm64", 5)) {
+> +		pr_err("Error, 32-bit perf cannot record from a 64-bit kernel.\n"
+> +		       "Please use a 64-bit version of perf instead.\n");
+> +		return -ENOTSUP;
+> +	}
+> +#endif
+> +
+>  	if (opts->affinity != PERF_AFFINITY_SYS)
+>  		cpu__setup_cpunode_map();
+>  
+> 
+
