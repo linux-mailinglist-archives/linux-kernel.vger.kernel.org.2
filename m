@@ -2,289 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3E83995B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 00:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958D43995BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 00:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhFBWG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 18:06:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48774 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFBWG5 (ORCPT
+        id S229774AbhFBWK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 18:10:28 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:56097 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBWK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 18:06:57 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 152M508o030312;
-        Wed, 2 Jun 2021 17:05:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622671500;
-        bh=j3t5c9mN7k2JsE5wtJ311Gk1Snmmw2xtUpavCue0hr4=;
-        h=From:To:CC:Subject:Date;
-        b=dijCnpt1Mde11TyBg4lClI8w2/Tglvi0A3UhcApEO1CGzp5pdg9chF2POPcu+n59k
-         jo1X6iBwbAvVqTQtojjjpgmfY+axv5dc7af2aKBFiTnvQU4xUXp4CvqGu+KS1Dxr51
-         dw5qtEx7HDPnYj2xKj30H9/vkYDBrXvi8tThDFEw=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 152M503f010712
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Jun 2021 17:05:00 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 2 Jun
- 2021 17:05:00 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 2 Jun 2021 17:05:00 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 152M50Vs050993;
-        Wed, 2 Jun 2021 17:05:00 -0500
-From:   Gowtham Tammana <g-tammana@ti.com>
-To:     Suman Anna <s-anna@ti.com>, <tony@atomide.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        <bcousson@baylibre.com>
-CC:     <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nisanth Menon <nm@ti.com>,
-        Gowtham Tammana <g-tammana@ti.com>
-Subject: [PATCH v4] ARM: dts: dra7: Fix duplicate USB4 target module node
-Date:   Wed, 2 Jun 2021 17:04:58 -0500
-Message-ID: <20210602220458.9728-1-g-tammana@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 2 Jun 2021 18:10:27 -0400
+Received: by mail-pj1-f53.google.com with SMTP id k7so2450222pjf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 15:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uYs0Sxp8Sy73eeh5FIi2PBG1V/3yb9REY1eEkFzXkvg=;
+        b=fUk0AN3TZocnKupxpFytCVvLNDx2P+WnbxjtE6IfKbkK7kEii0By42gvoIcjAKCfIA
+         kLdXG9vN3Qk901Pu9ANJt7E33MziTDdJDcrRpangq3MACaAtmjYY7mpwlHIne3wdk7Dc
+         hMukGXLuzzPwjQyw02l8IndzzmWFwSkT46jc1zaEElXfdca6gI7e+9IROC0R34xGjYog
+         qT7THaa0+0tXO5dad8YKLcPA6JgQyd60xt5Uf0Svuk3R7abEvHhHK94nIarEARQXZSN/
+         YrCV1aSEGCsKSHh6N3vao0Hmo/NoU8fRkbx6JdFjf2QQ18jzg+4K3iat6QxDWcL1ig0x
+         j07Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uYs0Sxp8Sy73eeh5FIi2PBG1V/3yb9REY1eEkFzXkvg=;
+        b=VJjUIKmucE6GfohGVgUzcsxG0xca2Bojve/FG00Rj0QWtGvjBSteXLURAkWJw9ZZHM
+         KX2PGwRFOvVOPMbiE/G5dgxriuNWBV1Zg7tMnU01wzjIaS9x1zkq4jnU1hhTJ40IAA9c
+         BSXSjv1fIjj7k/Zms3mnkJugl8Ok4SCrV/n6PCL7Fz/KuNLTSF01C+s8zgT5B4a/C51C
+         e+y8LjzRjSmstEKUkpB3QlALYfej9fmvrU1+MNHv6No/DS90Iin9fX/VcBbb9jxVDPrW
+         31z1dGr5VZ1aRMxu7jq/7FDPM+/IVYnL2GSJ6PuD3abn6stIfmp2xdFud638KGn1OA3/
+         VlPA==
+X-Gm-Message-State: AOAM530Pyzx+GR3udA+aTsx3taZxO/YpHFtO9k4pVftzSJSV/qw5qr+l
+        mYHbSjZ1csLwmkHNZF+FJhh5qg==
+X-Google-Smtp-Source: ABdhPJwMvfdpjjJ6qovbOXgJRhCSiMC2kz5bLxpaBxvtzZAaCzqCZZHR+wOipPP1xSGdVuStuwnyCg==
+X-Received: by 2002:a17:902:da8a:b029:f1:f2a1:cfe4 with SMTP id j10-20020a170902da8ab02900f1f2a1cfe4mr32574742plx.46.1622671663334;
+        Wed, 02 Jun 2021 15:07:43 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id k10sm471700pfu.175.2021.06.02.15.07.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 15:07:42 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 22:07:38 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
+Message-ID: <YLgBKh43SRvjKeB1@google.com>
+References: <20210527023922.2017-1-jiangshanlai@gmail.com>
+ <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
+ <YK/FGYejaIu6EzSn@google.com>
+ <YK/FbFzKhZEmI40C@google.com>
+ <YK/y3QgSg+aYk9Z+@google.com>
+ <fc0f8b39-11a9-da21-dc5b-fc9695292556@linux.alibaba.com>
+ <YLefHNgePAs+lPQJ@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLefHNgePAs+lPQJ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With [1] USB4 target-module node got defined in dra74x.dtsi file.
-However, the earlier definition in [2] was not removed, and this
-duplication of the target module is causing boot failure on dra74
-variant boards - dra7-evm, dra76-evm.
+On Wed, Jun 02, 2021, Sean Christopherson wrote:
+> On Fri, May 28, 2021, Lai Jiangshan wrote:
+> > 
+> > 
+> > On 2021/5/28 03:28, Sean Christopherson wrote:
+> > > On Thu, May 27, 2021, Sean Christopherson wrote:
+> > > > > KVM_REQ_MMU_RELOAD is overkill, nuking the shadow page tables will completely
+> > > > > offset the performance gains of the paravirtualized flush.
+> > > 
+> > > Argh, I take that back.  The PV KVM_VCPU_FLUSH_TLB flag doesn't distinguish
+> > > between flushing a specific mm and flushing the entire TLB.  The HyperV usage
+> > > (via KVM_REQ) also throws everything into a single bucket.  A full RELOAD still
+> > > isn't necessary as KVM just needs to sync all roots, not blast them away.  For
+> > > previous roots, KVM doesn't have a mechanism to defer the sync, so the immediate
+> > > fix will need to unload those roots.
+> > > 
+> > > And looking at KVM's other flows, __kvm_mmu_new_pgd() and kvm_set_cr3() are also
+> > > broken with respect to previous roots.  E.g. if the guest does a MOV CR3 that
+> > > flushes the entire TLB, followed by a MOV CR3 with PCID_NOFLUSH=1, KVM will fail
+> > > to sync the MMU on the second flush even though the guest can technically rely
+> > > on the first MOV CR3 to have synchronized any previous changes relative to the
+> > > fisrt MOV CR3.
+> > 
+> > Could you elaborate the problem please?
+> > When can a MOV CR3 that needs to flush the entire TLB if PCID is enabled?
+> 
+> Scratch that, I was wrong.  The SDM explicitly states that other PCIDs don't
+> need to be flushed if CR4.PCIDE=1.
 
-USB4 is only present in DRA74x variants, so keeping the entry in
-dra74x.dtsi and removing it from the top level interconnect hierarchy
-dra7-l4.dtsi file. This change makes the USB4 target module no longer
-visible to AM5718, DRA71x and DRA72x so removing references to it in
-their respective dts files.
+*sigh*
 
-[1]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
-dra7 dwc3")
-[2]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
-hierarchy and ti-sysc data")
+I was partially right.  If the guest does
 
-Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
-Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
----
-v4:
-  - moved the node under l4_per3 instead of ocp as per Tony and
-    Grygorii suggestion 
-v3:
-  - https://lore.kernel.org/linux-arm-kernel/20210526213035.15448-1-g-tammana@ti.com/
-  - fixed error in references to the commits
-  - mentioned the boards that failed
-v2:
-  - https://lore.kernel.org/linux-arm-kernel/20210526172038.17542-1-g-tammana@ti.com/
-  - changed reference to commit sha instead of line numbers
-  - added Fixes: tag
-  - moved the defintion to dra74.dtsi as per Suman and Tony review comments
-v1:
-  - https://lore.kernel.org/linux-arm-kernel/20210521211851.14674-1-g-tammana@ti.com/
+  1: MOV    B, %rax
+     MOV %rax, %cr3
 
+  2: <modify PTEs in B>
 
- arch/arm/boot/dts/am5718.dtsi  |  6 +--
- arch/arm/boot/dts/dra7-l4.dtsi | 22 --------
- arch/arm/boot/dts/dra71x.dtsi  |  4 --
- arch/arm/boot/dts/dra72x.dtsi  |  4 --
- arch/arm/boot/dts/dra74x.dtsi  | 92 ++++++++++++++++++----------------
- 5 files changed, 50 insertions(+), 78 deletions(-)
-
-diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
-index ebf4d3cc1cfb..6d7530a48c73 100644
---- a/arch/arm/boot/dts/am5718.dtsi
-+++ b/arch/arm/boot/dts/am5718.dtsi
-@@ -17,17 +17,13 @@
-  * VCP1, VCP2
-  * MLB
-  * ISS
-- * USB3, USB4
-+ * USB3
-  */
+  3: MOV    A, %rax
+     MOV %rax, %cr3
  
- &usb3_tm {
- 	status = "disabled";
- };
- 
--&usb4_tm {
--	status = "disabled";
--};
--
- &atl_tm {
- 	status = "disabled";
- };
-diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
-index 149144cdff35..648d23f7f748 100644
---- a/arch/arm/boot/dts/dra7-l4.dtsi
-+++ b/arch/arm/boot/dts/dra7-l4.dtsi
-@@ -4129,28 +4129,6 @@
- 			};
- 		};
- 
--		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
--			compatible = "ti,sysc-omap4", "ti,sysc";
--			reg = <0x140000 0x4>,
--			      <0x140010 0x4>;
--			reg-names = "rev", "sysc";
--			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
--			ti,sysc-midle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
--			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
--			clock-names = "fck";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges = <0x0 0x140000 0x20000>;
--		};
--
- 		target-module@170000 {			/* 0x48970000, ap 21 0a.0 */
- 			compatible = "ti,sysc-omap4", "ti,sysc";
- 			reg = <0x170010 0x4>;
-diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
-index cad0e4a2bd8d..9c270d8f75d5 100644
---- a/arch/arm/boot/dts/dra71x.dtsi
-+++ b/arch/arm/boot/dts/dra71x.dtsi
-@@ -11,7 +11,3 @@
- &rtctarget {
- 	status = "disabled";
- };
--
--&usb4_tm {
--	status = "disabled";
--};
-diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
-index d403acc754b6..f3e934ef7d3e 100644
---- a/arch/arm/boot/dts/dra72x.dtsi
-+++ b/arch/arm/boot/dts/dra72x.dtsi
-@@ -108,7 +108,3 @@
- &pcie2_rc {
- 	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
- };
--
--&usb4_tm {
--	status = "disabled";
--};
-diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
-index e1850d6c841a..b4e07d99ffde 100644
---- a/arch/arm/boot/dts/dra74x.dtsi
-+++ b/arch/arm/boot/dts/dra74x.dtsi
-@@ -49,49 +49,6 @@
- 			reg = <0x41500000 0x100>;
- 		};
- 
--		target-module@48940000 {
--			compatible = "ti,sysc-omap4", "ti,sysc";
--			reg = <0x48940000 0x4>,
--			      <0x48940010 0x4>;
--			reg-names = "rev", "sysc";
--			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
--			ti,sysc-midle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
--			clock-names = "fck";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges = <0x0 0x48940000 0x20000>;
--
--			omap_dwc3_4: omap_dwc3_4@0 {
--				compatible = "ti,dwc3";
--				reg = <0 0x10000>;
--				interrupts = <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
--				#address-cells = <1>;
--				#size-cells = <1>;
--				utmi-mode = <2>;
--				ranges;
--				status = "disabled";
--				usb4: usb@10000 {
--					compatible = "snps,dwc3";
--					reg = <0x10000 0x17000>;
--					interrupts = <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
--						     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
--						     <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
--					interrupt-names = "peripheral",
--							  "host",
--							  "otg";
--					maximum-speed = "high-speed";
--					dr_mode = "otg";
--				};
--			};
--		};
- 
- 		target-module@41501000 {
- 			compatible = "ti,sysc-omap2", "ti,sysc";
-@@ -224,3 +181,52 @@
- &pcie2_rc {
- 	compatible = "ti,dra746-pcie-rc", "ti,dra7-pcie";
- };
-+
-+&l4_per3 {
-+	segment@0 {
-+		usb4_tm: target-module@140000 {         /* 0x48940000, ap 75 3c.0 */
-+			compatible = "ti,sysc-omap4", "ti,sysc";
-+			reg = <0x140000 0x4>,
-+			      <0x140010 0x4>;
-+			reg-names = "rev", "sysc";
-+			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
-+			ti,sysc-midle = <SYSC_IDLE_FORCE>,
-+					<SYSC_IDLE_NO>,
-+					<SYSC_IDLE_SMART>,
-+					<SYSC_IDLE_SMART_WKUP>;
-+			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
-+					<SYSC_IDLE_NO>,
-+					<SYSC_IDLE_SMART>,
-+					<SYSC_IDLE_SMART_WKUP>;
-+			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
-+			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
-+			clock-names = "fck";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0x0 0x140000 0x20000>;
-+
-+			omap_dwc3_4: omap_dwc3_4@0 {
-+				compatible = "ti,dwc3";
-+				reg = <0 0x10000>;
-+				interrupts = <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				utmi-mode = <2>;
-+				ranges;
-+				status = "disabled";
-+				usb4: usb@10000 {
-+					compatible = "snps,dwc3";
-+					reg = <0x10000 0x17000>;
-+					interrupts = <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
-+						     <GIC_SPI 346 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupt-names = "peripheral",
-+							  "host",
-+							  "otg";
-+					maximum-speed = "high-speed";
-+					dr_mode = "otg";
-+				};
-+			};
-+		};
-+	};
-+};
--- 
-2.17.1
+  4: MOV    B, %rax
+     BTS  $63, %rax
+     MOV %rax, %cr3
 
+where A and B are CR3 values with the same PCID, then KVM will fail to sync B at
+step (4) due to PCID_NOFLUSH, even though the guest can technically rely on
+its modifications at step (2) to become visible at step (3) when the PCID is
+flushed on CR3 load.
+
+So it's not a full TLB flush, rather a flush of the PCID, which can theoretically
+impact previous CR3 values.
