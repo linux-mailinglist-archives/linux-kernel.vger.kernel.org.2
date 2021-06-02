@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFC53983FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313AC3983FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbhFBIVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhFBIVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:21:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D540613C1;
-        Wed,  2 Jun 2021 08:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622622000;
-        bh=uOICQFyuTW1fDMnFlP4AIf5ElcaKnmpesLxSuT2IWcM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aIzubGdyD2JbnrmHZxJskmPYPI+GxlQ5NspWPeT0rQDaqeRMeHkeqKlAICTjoiDAJ
-         wpEED2aWdeNUsHjmT9woLQG/r8uKH4E23+lF0CBc9nbWK1wNIZ7PrCowzxyEAOYgkD
-         lo8BbRsLRPuA7R8I18ptriL0RoZKGoq42rXZr5X5QecmnM7eGLCL89LOOZ/NcsENI4
-         LkHWGKXnNp7q0qY8HYyJ8u2JT4lSQ5atOehaZGJWvq8qcAvrncpxjIFfNo3o/k9dJm
-         f+UAV1U3xG2TTTN2qdjNUAjkyix/RQ4fPgZbAg71DEywvaC1PAcPHKwVZFaOpJPtcC
-         xXOAzdfDUT3PA==
-Date:   Wed, 2 Jun 2021 11:19:55 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Subject: Re: [PATCH rdma-rc v2] RDMA/core: Sanitize WQ state received from
- the userspace
-Message-ID: <YLc/KwUKErsDGM3f@unreal>
-References: <ac41ad6a81b095b1a8ad453dcf62cf8d3c5da779.1621413310.git.leonro@nvidia.com>
+        id S231407AbhFBIWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhFBIWa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:22:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040CDC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 01:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BOYTXHsr3/NGHIkPpWFO5gwA9QGF5Yb1FGgPaFrZlcw=; b=OWONBN/K8i+KtZkz9jUUxv9GY6
+        WDYXwB6PD1JVmqajD2V+XAbzKv3uTyQ+zAyC5kPZdynuiXb+jJ6FNwaP1w1SkiJnepySkOCYWKV+z
+        a1+Bm1lUbNic7jWGz3d5cOoXlL/BZ27yqIy3elFnQcQJfSVfSqd8bzeDnb2XHoB2nFB51whCNvqFh
+        OwlWvHql6JduHjkA6wxU3Vez8ht9QWyhUeCOu6R396/MWCJFQp6Z6p9yeXufOAi1BnQAjkOtjykTV
+        Mr8u+Qgeh4kR5hcl7K5oACt22QfqxhU25DCKEExpNUun9GOGqCjkRp5M/KMFByjvyO3xXI07F3FsP
+        i2tVfTmw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1loM6r-00Ashr-Bb; Wed, 02 Jun 2021 08:20:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 059C7300299;
+        Wed,  2 Jun 2021 10:20:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E01CC2016D6C1; Wed,  2 Jun 2021 10:20:16 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 10:20:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/alternative: Align insn bytes vertically
+Message-ID: <YLc/QIpcfjHUoOgf@hirez.programming.kicks-ass.net>
+References: <20210601193713.16190-1-bp@alien8.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ac41ad6a81b095b1a8ad453dcf62cf8d3c5da779.1621413310.git.leonro@nvidia.com>
+In-Reply-To: <20210601193713.16190-1-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:37:31AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, Jun 01, 2021 at 09:37:13PM +0200, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
 > 
-> The mlx4 and mlx5 implemented differently the WQ input checks.
-> Instead of duplicating mlx4 logic in the mlx5, let's prepare
-> the input in the central place.
+> For easier inspection which bytes have changed.
 > 
-> The mlx5 implementation didn't check for validity of state input.
-> It is not real bug because our FW checked that, but still worth to fix.
+> For example:
 > 
-> Fixes: f213c0527210 ("IB/uverbs: Add WQ support")
-> Reported-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
-> Changelog:
-> v2:
->  * Extended commit message
-> v1: https://lore.kernel.org/lkml/0433d8013ed3a2ffdd145244651a5edb2afbd75b.1621342527.git.leonro@nvidia.com
->  * Removed IB_WQS_RESET state checks because it is zero and wq states
->    declared as u32, so can't be less than IB_WQS_RESET.
-> v0: https://lore.kernel.org/lkml/932f87b48c07278730c3c760b3a707d6a984b524.1621332736.git.leonro@nvidia.com
-> ---
->  drivers/infiniband/core/uverbs_cmd.c | 21 +++++++++++++++++++--
->  drivers/infiniband/hw/mlx4/qp.c      |  9 ++-------
->  drivers/infiniband/hw/mlx5/qp.c      |  6 ++----
->  3 files changed, 23 insertions(+), 13 deletions(-)
+>   feat: 7*32+12, old: (__x86_indirect_thunk_r10+0x0/0x20 (ffffffff81c02480) len: 17), repl: (ffffffff897813aa, len: 17)
+>   ffffffff81c02480:   old_insn: 41 ff e2 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+>   ffffffff897813aa:   rpl_insn: e8 07 00 00 00 f3 90 0f ae e8 eb f9 4c 89 14 24 c3
+>   ffffffff81c02480: final_insn: e8 07 00 00 00 f3 90 0f ae e8 eb f9 4c 89 14 24 c3
+> 
+> No functional changes.
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-Any reason for not merging it?
+Nice!
 
-Thanks
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
