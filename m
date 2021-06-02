@@ -2,160 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471C23988A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFFE3988A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhFBLzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
+        id S229790AbhFBL4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhFBLzV (ORCPT
+        with ESMTP id S229917AbhFBL4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:55:21 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955AAC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:53:37 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id v13so1818089ilh.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:53:37 -0700 (PDT)
+        Wed, 2 Jun 2021 07:56:12 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05324C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:54:30 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id f84so3525841ybg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Y+f8ZC3pggvAlytodd8J3dP2kKeOn4tDj09TwyRew7M=;
-        b=T4oSCjFneO/8llGx7/wanVbe+MIBafoE/zLb5uHnMDq9ybw3AdFPlAI+v32H52cKt+
-         LYXLX9go+3fnMP/22f3I5osiNgIFgIvjjp53YW5E/jbZVk8ZBTxiBNMHAt3P/m56PXm3
-         m1ZF5zJo0hAdUFMVK1JxEvy/nyzvPr+e2afjJpeoH08MXotYydIRagJjZImEgrt6qoG0
-         EVM6hJ/umTDPQ++vlJUCaQLMyWSexAhpIbdloYoU8sBqol8e3S2RIFznZ6SKfPt56xc1
-         gEslYUQgbYnsjqWEKB5N9csEwaoS0nDQKiWQnp8k2uAY8EC6Z/xwfZO5tRETlqWk/8l2
-         2trg==
+         :cc;
+        bh=yg+v5/kXrzHYvX0Jw+7F773cEOq2rwIlZqjbglsclKE=;
+        b=UmNEJw6Nr0gpzWivO1xV/PjQKAM5QEpkxO4PIWKdvqnVFtdgmN2aovcHDwnTBERh7z
+         4t+EsYtXq4JQSY11zALaw3jYg6yLyTqwMbO0HX8RT2u26GAQzMBMrlUSoju/2pFeGGba
+         VttsmK8ffaSnEyYT9lLwIwFLroLHWLNR2qOx68fh9ItdNTA1bcrNpRI89B+m9WgTX0Eb
+         rutmtKlxgkL4s1hWfEGp/5L2VUu2enP7NrAvWbIz1tPyKf4fd1KrHDLlJg46xfdWggfq
+         p64Bfkeq4Tiv/7fJcnTwM6gCzOjxW1QykND+ElnBrzSDoTThKomwrOgWdD/bPG8P//6J
+         mUkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Y+f8ZC3pggvAlytodd8J3dP2kKeOn4tDj09TwyRew7M=;
-        b=U2NxYWwbfPyrLe7oDgL9AVxF9DkYksoKtfPWK01Z/KaLr9nbXOSajAsLCSP2H64ZEu
-         kwRiVDJsdw3DZgk6W43e0sqYN84OpK73qBiLWHNRW2vL1czDZc6B91ADFlyysXeIMndK
-         eA2TK0JZOhYozGcqFjbBrHF9/2i80uJFBEudtvhBLwZ0grSIcBT14zFTmmg0wubxR1M8
-         AoQhpN/gXsudFX9rpxKZK7xFg53zWzSC/hrI+QcQJj46MmVvk2WRmD4qUTW0pRbl6xjM
-         RJ/noAz0W5zykP0/DKA43gniopmcyOUJXb/SMgeE8ULhf9R8Xg/AL/fj4X7VWltH7VqI
-         Vv9w==
-X-Gm-Message-State: AOAM532W4S453IHUXYV8w6xfoBuJFy/1wLZ0M6wETBZ0yM6chiB87At0
-        ipQey0zxWZdg4l1c6BMZl7Rpz6+s1u4Wl/tKXk8aRQ==
-X-Google-Smtp-Source: ABdhPJyR31QpK5+jKZDo2Nelykw3yV4iau+qrQNWwMumrRWU21qkpXQjO2HL9kAYnyAXMJWqy3OEoAfr9SZMjtdezRE=
-X-Received: by 2002:a92:260b:: with SMTP id n11mr25634930ile.134.1622634816997;
- Wed, 02 Jun 2021 04:53:36 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=yg+v5/kXrzHYvX0Jw+7F773cEOq2rwIlZqjbglsclKE=;
+        b=j/saWsfM8ZnyRjSOn5gDl8LLTLZ6gFdFBZID9Wi8GN/XAVAff6SPFcjFA/8/A+Fp+H
+         TkRFLbYm0U2DcCelMTDfx41qjYWiGaRpb8jPp2EXlKzxUpVBL9eQ8NHK4XiWErjTvnGv
+         dol7e9T1o5pxqlz/c/BP2W8iPHiaZ+KP2X8TkkOvt98wweQYVUbrO92dk3SwyF+HIoK0
+         rqHmAAIeQ2BU483A6AoM7LryHKWMI/akY6qLi/6I4Ck2rHt1pYzh7RIX3dFGGBo5gN4f
+         +D96B9rgRbjQRUlgSJ1E8UGXSIFC4sACgg4HsWJWgb8SFdztxM0JFzK2eZESSlXJXcrU
+         T0AQ==
+X-Gm-Message-State: AOAM530PKqsgw7YUNyCaN/yfUnqKcqylR1H8JU3G0A3LqwnOo6oPoMoy
+        lgelXXM/V+oEZfvkZeF4U14e+cbGPxsZkAjgiIucMw==
+X-Google-Smtp-Source: ABdhPJw7bRhoYK3Ux5ni1GXhoeIH3eF72GV4KTg37uWDy3Ygzg/e/Jfol28vMdjJzcXgSmBy2djug+FawUB9D8iKn2w=
+X-Received: by 2002:a25:1ec2:: with SMTP id e185mr2000202ybe.23.1622634869238;
+ Wed, 02 Jun 2021 04:54:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531125143.257622-1-robert.marko@sartura.hr> <20210602104904.GJ2173308@dell>
-In-Reply-To: <20210602104904.GJ2173308@dell>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Wed, 2 Jun 2021 13:53:26 +0200
-Message-ID: <CA+HBbNEiy+yUriGzx8oMUsUbwX1+WKwusYs0FqAd792ZJAM6Xg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] mfd: simple-mfd-i2c: Add Delta TN48M CPLD support
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
+References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+ <cf34b0268bf298314392b0ed8831a4d9cd14efca.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+ <8c1f817e48bce8a4cb730d79c1ef0330@walle.cc>
+In-Reply-To: <8c1f817e48bce8a4cb730d79c1ef0330@walle.cc>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 2 Jun 2021 13:54:18 +0200
+Message-ID: <CAMpxmJWmmB1tuYS-zy-n165WFnAmz12-7+3LDQxxh+jvk=QD_Q@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] gpio: gpio-regmap: Use devm_add_action_or_reset()
+To:     Michael Walle <michael@walle.cc>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
-        jmp@epiphyte.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 12:49 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, May 28, 2021 at 7:17 PM Michael Walle <michael@walle.cc> wrote:
 >
-> On Mon, 31 May 2021, Robert Marko wrote:
-> 65;6200;1c
-> > Delta TN48M switches have a Lattice CPLD that serves
-> > multiple purposes including being a GPIO expander.
-> >
-> > So, lets use the simple I2C MFD driver to provide the MFD core.
-> >
-> > Also add a virtual symbol which pulls in the simple-mfd-i2c driver and
-> > provide a common symbol on which the subdevice drivers can depend on.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > ---
-> > Changes in v2:
-> > * Drop the custom MFD driver and header
-> > * Use simple I2C MFD driver
-> >
-> >  drivers/mfd/Kconfig          | 10 ++++++++++
-> >  drivers/mfd/simple-mfd-i2c.c |  1 +
-> >  2 files changed, 11 insertions(+)
-> >
-> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > index b74efa469e90..2b5ad314125d 100644
-> > --- a/drivers/mfd/Kconfig
-> > +++ b/drivers/mfd/Kconfig
-> > @@ -297,6 +297,16 @@ config MFD_ASIC3
-> >         This driver supports the ASIC3 multifunction chip found on many
-> >         PDAs (mainly iPAQ and HTC based ones)
-> >
-> > +config MFD_TN48M_CPLD
-> > +     tristate "Delta Networks TN48M switch CPLD driver"
-> > +     depends on I2C
-> > +     select MFD_SIMPLE_MFD_I2C
-> > +     help
-> > +       Select this option to enable support for Delta Networks TN48M s=
-witch
-> > +       CPLD. It consists of MFD and GPIO drivers. CPLD provides GPIOS-=
-s
+> Am 2021-05-26 08:10, schrieb Matti Vaittinen:
+> > Slightly simplify the devm_gpio_regmap_register() by using the
+> > devm_add_action_or_reset().
 >
-> Not entirely sure what MFD means in this context.
+> Reviewed-by: Michael Walle <michael@walle.cc>
 >
-> Please replace the MFD mention with Reset.
-Sure, that is a leftover from before.
+> -michael
 
->
-> > +       for the SFP slots as well as power supply related information.
-> > +       SFP support depends on the GPIO driver being selected.
-> > +
-> >  config PMIC_DA903X
-> >       bool "Dialog Semiconductor DA9030/DA9034 PMIC Support"
-> >       depends on I2C=3Dy
-> > diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.=
-c
-> > index 87f684cff9a1..af8e91781417 100644
-> > --- a/drivers/mfd/simple-mfd-i2c.c
-> > +++ b/drivers/mfd/simple-mfd-i2c.c
-> > @@ -39,6 +39,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2=
-c)
-> >
-> >  static const struct of_device_id simple_mfd_i2c_of_match[] =3D {
-> >       { .compatible =3D "kontron,sl28cpld" },
-> > +     { .compatible =3D "delta,tn48m-cpld" },
-> >       {}
-> >  };
-> >  MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
->
-> Once fixed, please apply my:
->
-> For my own reference (apply this as-is to your sign-off block):
->
->   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+This doesn't apply on its own - looks like it depends on patch 1/3.
+Would you mind sending it separately rebased on top of my for-next
+branch at https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git/?
 
-Sure, will do.
-Regards,
-Robert
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
-
-
-
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+Bart
