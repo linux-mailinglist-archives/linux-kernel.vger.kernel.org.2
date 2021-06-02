@@ -2,136 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2B0397FC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9114C397FEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhFBD7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:59:25 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20015 "EHLO m43-7.mailgun.net"
+        id S231572AbhFBEA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 00:00:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhFBD7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:59:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622606261; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FpopyC/KpB73Pap09OPQncklp1G3/PkcWqP7TyBkzLk=;
- b=bO03BtvIxZrHoPPgqSK6of05ABaUmCSp9jCm5Imda62irRtY5fiLv+sfOaT8F10TqzaUgpzf
- LdGtVkWjlTWC8QpwmsS5OlbiXRwCmJCqa8vvGZTKhwEB3RCejaYKf/R0TElwTDvvP8iiA5zX
- 3jdhnC8o9G3FwnzZmIa10chhYZc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60b7018df726fa4188c0bbe4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 03:57:01
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3E606C433D3; Wed,  2 Jun 2021 03:57:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5EEFBC433F1;
-        Wed,  2 Jun 2021 03:56:59 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 02 Jun 2021 09:26:59 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>, mathieu.poirier@linaro.org,
-        robh+dt@kernel.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
-        agross@kernel.org, ohad@wizery.com, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        rishabhb@codeaurora.org, sidgup@codeaurora.org
-Subject: Re: [PATCH 02/12] soc: qcom: aoss: Drop power domain support
-In-Reply-To: <YLBsCLNLBlWwoPQj@builder.lan>
-References: <1618574638-5117-1-git-send-email-sibis@codeaurora.org>
- <1618574638-5117-3-git-send-email-sibis@codeaurora.org>
- <161871128938.46595.8658084266884500136@swboyd.mtv.corp.google.com>
- <7adff8e58784bb85ea844ad338bfb19c@codeaurora.org>
- <YLBsCLNLBlWwoPQj@builder.lan>
-Message-ID: <7d371c8ac3ad4dbc45739481ec19c62f@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S231356AbhFBEAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 00:00:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5DC40613B1;
+        Wed,  2 Jun 2021 03:58:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622606305;
+        bh=+4Pe4fPtemE7mpMXhFS36EOqMJqKYI8Mp2VQKCEYmW8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=V7OYk9dZX0Ca5AQP6fLWuJsdw1adIuJfzSMEOQ2kHaC+nUDZ8QCYw11Lhc9z5v8ct
+         hzbB9AgB7z1YEoyhsRCVeuETOw9aIH4MBNdpxugo/XSQQsOMgZKOVG3OXCdhZFl04x
+         7GCVO9TJ2zCsnahROntcGIiE4IW7Ch1teZigIPzcxr8ojqDc+ifkPRtBgElpcNjuF7
+         Gb6k05BrWyKKQdImO+dn48mwWWlJ8wlOWNMWwdfe5yMHofl79n1lmdeIHxOY1PgMvN
+         B16v5Rkv/y8HdgSkv9wNKzCJBHgqvHv55HxeYbJLAQnGlvfkcL0c+eLh8z+PF0Z6Rp
+         AVOg0p2KK64Tg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A66A60A5C;
+        Wed,  2 Jun 2021 03:58:25 +0000 (UTC)
+Subject: Re: [GIT PULL] Revert "gfs2: Fix mmap locking for write faults"
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210601212200.318607-1-agruenba@redhat.com>
+References: <20210601212200.318607-1-agruenba@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210601212200.318607-1-agruenba@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-rc2-fixes2
+X-PR-Tracked-Commit-Id: d5b8145455c629e7f157d2da46a9b2fba483f235
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 00151f515adda740f4688c529eca61a20359903a
+Message-Id: <162260630524.21167.4225798479990860158.pr-tracker-bot@kernel.org>
+Date:   Wed, 02 Jun 2021 03:58:25 +0000
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-28 09:35, Bjorn Andersson wrote:
-> On Tue 27 Apr 01:25 CDT 2021, Sibi Sankar wrote:
-> 
->> On 2021-04-18 07:31, Stephen Boyd wrote:
->> > Quoting Sibi Sankar (2021-04-16 05:03:48)
->> > > The load state resources are expected to follow the life cycle of the
->> > > remote processor it tracks. However, modeling load state resources as
->> > > power-domains result in them getting turned off during system suspend
->> > > and thereby falling out of sync with the remote processors that are
->> > > still
->> > > on. Fix this by replacing load state resource control through the
->> > > generic
->> > > qmp message send interface instead.
->> > >
->> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> > > ---
->> >
->> > Is it possible to keep this code around for a cycle so that there isn't
->> > the chance that someone is using the deprecated DT bindings with a new
->> > kernel? I worry that ripping the code out will cause them angst.
->> 
->> deprecated bindings with a newer kernel
->> shouldn't cause any problems since it is
->> the driver changes that make AOSS PD
->> mandatory or not. So the newer kernel will
->> just use qmp_send and leave the PD unused.
->> 
-> 
-> Maybe I'm missing something in your argument here, but I see two 
-> issues:
-> * The changes here requires that the new qcom,qmp property is defined,
->   or the qcom_qmp_get() will be unable to find the qmp instance.
-> * Between patch 2 and 5 there's no load_state handling.
-> 
-> Perhaps we can carry the power-domain handling as a fallback i
-> qcom_qmp_get() fails, for a few releases?
+The pull request you sent on Tue,  1 Jun 2021 23:22:00 +0200:
 
-The load_state implementation is currently
-broken i.e. it currently sends that the
-remoteproc is down during suspend. AFAIK it
-can be safely dropped without side-effects.
-I'll respin the series fixing Rob's comments.
+> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-rc2-fixes2
 
-> 
-> 
-> Other than the ordering and backwards compatibility issue I think this
-> looks good. So can you please respin this based on the later revision 
-> of
-> the qmp patch? (And fix Rob's request on the commit message)
-> 
-> https://lore.kernel.org/linux-arm-msm/1620320818-2206-2-git-send-email-deesin@codeaurora.org/
-> 
-> Regards,
-> Bjorn
-> 
->> > Certainly we have to keep the code in place until DT is updated, so this
->> > patch should come last?
->> 
->> sure I don't mind, as long as it simplifies
->> the merge process.
->> 
->> --
->> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
->> a Linux Foundation Collaborative Project.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/00151f515adda740f4688c529eca61a20359903a
+
+Thank you!
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
