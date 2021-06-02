@@ -2,141 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F7F398A55
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F56398A58
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhFBNYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:24:54 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:39643 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhFBNYy (ORCPT
+        id S229762AbhFBN0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:26:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56248 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhFBN0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:24:54 -0400
-Received: by mail-wr1-f44.google.com with SMTP id l2so2302381wrw.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:23:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=X0vC9gjEiFrFKn0k/ysh+fIfdHP8TqqV8LRqsN9KMx0=;
-        b=Gz055sbh5dNdYNGv5RTV/1V4YRMcdvT2ZgFOaF59DZFmdhzFBmnRFsQU4AguQSLTdc
-         7kvcTmZM+PaJ/M3vAEiAb8y50b6+sYZqipmlicvmvKVvx+wFP818HywfJt4fhnZwiqch
-         poPfzXXcjzFPjbYKKBmH3RF6ucNEuL0UCOTQPH3PLBvo7ArEysRa29+1kr0BcTn954DY
-         Q1C/8kxFv36FwG7F3pjlVEdWFl7GtkoHnoDP1tECNYApA4pgSdrpervyi1bint3Wukr5
-         o2WaqN6v5Ysrrx4+/V+mjjSHTrWOOAh5AI3f+8uHlFtwBg/tdxkaQAo8m0cmMmURawQh
-         Luig==
+        Wed, 2 Jun 2021 09:26:20 -0400
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1loQrM-0006SC-8K
+        for linux-kernel@vger.kernel.org; Wed, 02 Jun 2021 13:24:36 +0000
+Received: by mail-ed1-f71.google.com with SMTP id s20-20020a0564025214b029038752a2d8f3so1409034edd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:24:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=X0vC9gjEiFrFKn0k/ysh+fIfdHP8TqqV8LRqsN9KMx0=;
-        b=bdB4RlhcvgUpN1h2TM4upf0LFvDOC2NUhGETsAXDqC9f0qAC7jSRL7nOcSRpFKAVDI
-         f+lVaW7y8dfdJuIe0XFkJ4oxi1jIXdLcO1b93KY4AMDYoYPuKSS2ZeFXi68SEZitlqET
-         AlR1kOEeVZJZ4+lw4rEmcnwa1gVksyUu+CUQfs+tv3Ug+BN4kwRI87zlkvGrnuq0MSjI
-         dd7eb3nbMxt7yaOeqNTrYC8WX03hgt4stIau4KCgVKK+YoqSuxiRA1efg+qEU9mQkUaE
-         wEibg7j2hOVF0mjvbjcIrBkeb+MjC9ZSfxBaQS6chAP7+dplGW9bs/g/W6QQhwH8G+C6
-         viZQ==
-X-Gm-Message-State: AOAM533jb7GPpPYMVOgupFYRPZQyorvEVjcTCwWcA0PScJkhJfKYkBss
-        1idhBSNFMdHCfgh1Vm1X4iBGTw==
-X-Google-Smtp-Source: ABdhPJxKy1GZAQ26fFiaEtlgdOhXyKH+PMPZPd1AuSiu7gTiW+550K1/ERKILAnn7CGlsNwRncjtsw==
-X-Received: by 2002:adf:e404:: with SMTP id g4mr7752730wrm.414.1622640130235;
-        Wed, 02 Jun 2021 06:22:10 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id l8sm8931766wrf.0.2021.06.02.06.22.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZbqO9leiYLcpHf1/CeWaekIOBlRRyOOvjknnxl/dSpE=;
+        b=dQ7PqsonUA6ePVelSJFiNYEzxEvWJyB7kuXIJ4aOLMx5p39VIljdhOHWWuF3iyxwu4
+         8qeG3igPctDLQjYQr9dHbYNB/z/PwbEt7xgTxehJixsPGV0VN+stH6558ZJXDCgKhWGN
+         zI3CWRAq2zjMGureozkI3ix6cUYu2tuh46C8BycYya3CDOMq/b3cr/sBcKs+AtCCrRo0
+         RJ5y1fFMUwNg3Lr0z/uY+gL2+8bcpgTXJwi59YXsnf3TvSYOifi6wNpHIW+8jW1FRvau
+         pZ/bzaxda8LmFWX846RrYGwmY2SykB22BkiUoijhFSjovDAB67WJoV94XTIgW8S4fv4s
+         5ueA==
+X-Gm-Message-State: AOAM530gPX6SeHMZoYINCz0e9NHObYfMxEcZunA+WqpQo88MceVugwX7
+        /tsSbm3Vki4nZLmSOFEyG60eBUXDBg1a4Q5LzNupKUrTQKOgTarmrSHAPZXXCDfSxO2bruF+b6a
+        HEKPf4qN5wOV7OTaHUonn9EcnSXboHOghLSK6Xp9DQQ==
+X-Received: by 2002:a17:906:c00f:: with SMTP id e15mr36561522ejz.458.1622640275809;
+        Wed, 02 Jun 2021 06:24:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwtzGMwLAUU1O9hso14QGvyxJCgY0jrcJpE7S4rWWpRuQMT/j0VxL2N2oXQPuieX0XXAyNhoQ==
+X-Received: by 2002:a17:906:c00f:: with SMTP id e15mr36561505ejz.458.1622640275665;
+        Wed, 02 Jun 2021 06:24:35 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id bc4sm928548edb.63.2021.06.02.06.24.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 06:22:09 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 13:22:07 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        zhang.lyra@gmail.com, xuewyan@foxmail.com,
-        patrick.bellasi@matbug.net, tj@kernel.org
-Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than
- cpu.uclamp.max
-Message-ID: <YLeF/556Wbvx1Ssc@google.com>
-References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
+        Wed, 02 Jun 2021 06:24:35 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-samsung-soc@vger.kernel.org, krzk@kernel.org
+Subject: Re: [PATCH] arm64: defconfig: Enable Exynos UFS driver
+Date:   Wed,  2 Jun 2021 15:24:32 +0200
+Message-Id: <162264024536.63589.10570196675573160566.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210531170057.7730-1-alim.akhtar@samsung.com>
+References: <CGME20210531165414epcas5p1aae4ea3815fcbadad8b48a9210742489@epcas5p1.samsung.com> <20210531170057.7730-1-alim.akhtar@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210602123803.15738-1-xuewen.yan94@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+CC Patrick and Tejun
+On Mon, 31 May 2021 22:30:57 +0530, Alim Akhtar wrote:
+> Enable the Exynos UFS controller and PHY configs. They need to be
+> buildin to ensure UFS devices gets detected on exynos7 and its
+> variant boards.
 
-On Wednesday 02 Jun 2021 at 20:38:03 (+0800), Xuewen Yan wrote:
-> From: Xuewen Yan <xuewen.yan@unisoc.com>
-> 
-> When setting cpu.uclamp.min/max in cgroup, there is no validating
-> like uclamp_validate() in __sched_setscheduler(). It may cause the
-> cpu.uclamp.min is bigger than cpu.uclamp.max.
+Applied, thanks!
 
-ISTR this was intentional. We also allow child groups to ask for
-whatever clamps they want, but that is always limited by the parent, and
-reflected in the 'effective' values, as per the cgroup delegation model.
+[1/1] arm64: defconfig: Enable Exynos UFS driver
+      commit: 5be91fe8d91b3aed5192b763fd6f2d11c7cd354d
 
-> Although there is protection in cpu_util_update_eff():
-> “eff[UCLAMP_MIN] = min(eff[UCLAMP_MIN], eff[UCLAMP_MAX])”, it's better
-> not to let it happen.
-> 
-> Judging the uclamp value before setting uclamp_min/max, avoid
-> the cpu.uclamp.min is bigger than cpu.uclamp.max.
-> 
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> ---
->  kernel/sched/core.c | 26 +++++++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 5226cc26a095..520a2da40dc9 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8867,6 +8867,30 @@ static ssize_t cpu_uclamp_write(struct kernfs_open_file *of, char *buf,
->  	rcu_read_lock();
->  
->  	tg = css_tg(of_css(of));
-> +
-> +	switch (clamp_id) {
-> +	case UCLAMP_MIN: {
-> +		unsigned int uc_req_max = tg->uclamp_req[UCLAMP_MAX].value;
-> +
-> +		if (req.util > uc_req_max) {
-> +			nbytes = -EINVAL;
-> +			goto unlock;
-> +		}
-> +		break;
-> +	}
-> +	case UCLAMP_MAX: {
-> +		unsigned int uc_req_min = tg->uclamp_req[UCLAMP_MIN].value;
-> +
-> +		if (req.util < uc_req_min) {
-> +			nbytes = -EINVAL;
-> +			goto unlock;
-> +		}
-> +		break;
-> +	}
-> +	default:
-> +		nbytes = -EINVAL;
-> +		goto unlock;
-> +	}
->  	if (tg->uclamp_req[clamp_id].value != req.util)
->  		uclamp_se_set(&tg->uclamp_req[clamp_id], req.util, false);
->  
-> @@ -8878,7 +8902,7 @@ static ssize_t cpu_uclamp_write(struct kernfs_open_file *of, char *buf,
->  
->  	/* Update effective clamps to track the most restrictive value */
->  	cpu_util_update_eff(of_css(of));
-> -
-> +unlock:
->  	rcu_read_unlock();
->  	mutex_unlock(&uclamp_mutex);
->  
-> -- 
-> 2.25.1
-> 
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
