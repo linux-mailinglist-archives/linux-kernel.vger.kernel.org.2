@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262AF3992D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B073992D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhFBSvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:51:09 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:45626 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBSvH (ORCPT
+        id S229640AbhFBSwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:52:14 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:46629 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBSwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:51:07 -0400
-Received: by mail-ot1-f54.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so3328542otc.12;
-        Wed, 02 Jun 2021 11:49:24 -0700 (PDT)
+        Wed, 2 Jun 2021 14:52:13 -0400
+Received: by mail-ot1-f45.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso3329976otl.13;
+        Wed, 02 Jun 2021 11:50:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RlxUj7bGsFvw2USIB98VuWjgVTpSrZLSh88VYHOyjxA=;
-        b=QnGFM0E8v5y48nSkgN0iN7TD4rsuCt4GapuUaagKy2h0kn96EVx+0fwSGU/Iu9FUnj
-         5NTkQ+vzrLDtKOPHvhcQ5CA5yg2KDfcwBXhK9FYO3R/MG+iWk07lYvN9SiaL+kipdrMN
-         TpIl9Mop7jwv/LtyR0xoIspKseEZfZicvExovusV/C80Mpmf4u+HeBm8s6kctFJa4UYL
-         vaVATcoxKTqO5gcLb4vzVoUl5ub9iu/Mf9dVCB9rgbUv5kkH65kaYYqiqLuKneEaoRLv
-         pz5+QqbcLX36KwWaDoaxk65yl5vlOd0oXfSuVCxd/CT4jEplGoFlZr2BO8j1G1uyjZ/w
-         8e+A==
-X-Gm-Message-State: AOAM532/L/YiCZDboiUJvaHE4MNFIp2cyLmIerthDIcWeSku3HJQV43m
-        aaVJbc1850we8x+q+AKSaw==
-X-Google-Smtp-Source: ABdhPJx5XNMY1INJmrlMN0TFHO/2shEZyUm45YJTxt3+Wj19EVMqfUT3u4NxHJre+JeoflKmJQZw6Q==
-X-Received: by 2002:a05:6830:119a:: with SMTP id u26mr4585253otq.87.1622659764221;
-        Wed, 02 Jun 2021 11:49:24 -0700 (PDT)
+        bh=6JSBLV3AbgQUQqZ+//+KR0chbfSCGefVmTRUF4wGaZM=;
+        b=es8I3h3Pq6So4Xs/Z73IPNdILD0MshV6K4gJfTxiYHRv/SwE2ltZxbEaFPUS/O/yhR
+         MoIMqy+zFs7BCrWCBRXvg+Zx3LSffYIsDb4JhTLRrlayyoypNkOdJnRUPo60N2WNxoX9
+         tekKa9UFw6H4rz2GplrPxW32VMDeWUDbPfyg0mrTMe90GhtZEgTMoJHGhhDp2fAmphfJ
+         VdQRfsxFQZOrmnRTBZCt+0Oz1tgv4vRhaB04AKI0jc5O9wP1W+K3W4eT41lAoR4fI0DH
+         51TyJOU8ZP+ZFK/0fyg0d4oABTc1DWCllz6RsOF3yB22aiWIh/DhLE8M8SsSVR39zwbo
+         EKVg==
+X-Gm-Message-State: AOAM531g6grBmPtllVE9tVRKduyyRi86CsGJ6M03OfxeDAb3OdjZht5P
+        LwRDtZ5Io0tn+6skJjPzRw==
+X-Google-Smtp-Source: ABdhPJz6z2k5H2t3bFOQMZBDPa55Sf1dUHpBxRc7unbKawa8fBP3+CT+MRJzYKeSxsOqNbDBtjkziA==
+X-Received: by 2002:a05:6830:18ee:: with SMTP id d14mr2298198otf.347.1622659818966;
+        Wed, 02 Jun 2021 11:50:18 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x8sm140181oiv.51.2021.06.02.11.49.22
+        by smtp.gmail.com with ESMTPSA id x9sm130135ooo.27.2021.06.02.11.50.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 11:49:23 -0700 (PDT)
-Received: (nullmailer pid 3762130 invoked by uid 1000);
-        Wed, 02 Jun 2021 18:49:22 -0000
-Date:   Wed, 2 Jun 2021 13:49:22 -0500
+        Wed, 02 Jun 2021 11:50:18 -0700 (PDT)
+Received: (nullmailer pid 3763838 invoked by uid 1000);
+        Wed, 02 Jun 2021 18:50:17 -0000
+Date:   Wed, 2 Jun 2021 13:50:17 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-gpio@vger.kernel.org, Andy Gross <agross@kernel.org>,
+To:     Irui Wang <irui.wang@mediatek.com>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        linux-media@vger.kernel.org,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
         devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kgunda@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4] dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom
- pmic gpio bindings to YAML
-Message-ID: <20210602184922.GA3762097@robh.at.kernel.org>
-References: <1621578615-4613-1-git-send-email-skakit@codeaurora.org>
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        srv_heupstream@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4,2/6] dt-bindings: media: mtk-vcodec: Add dma-ranges
+ property
+Message-ID: <20210602185017.GA3763804@robh.at.kernel.org>
+References: <20210521070139.20644-1-irui.wang@mediatek.com>
+ <20210521070139.20644-3-irui.wang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621578615-4613-1-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <20210521070139.20644-3-irui.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 12:00:15 +0530, satya priya wrote:
-> Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
+On Fri, 21 May 2021 15:01:35 +0800, Irui Wang wrote:
+> The mt8192 iommu support 0~16GB iova. We separate it to four banks:
+> 0~4G; 4G~8G; 8G~12G; 12G~16G.
 > 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
+> The "dma-ranges" could be used to adjust the bank we locate.
+> If we don't set this property. The default range always is 0~4G.
+> 
+> Here we don't have actual bus/parent concept here.  And the iova
+> requirement is for our HW. Thus put the property in our node.
+> 
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
 > ---
-> Changes in V2:
->  - As per Rob's comments fixed bot erros.
->  - Moved this patch to end of the series so that other patches are not
->    blocked on this.
-> 
-> Changes in V3:
->  - As per Rob's comments, added maxItems for reg and interrupts.
->    Added reference of "pinmux-node.yaml" and "pincfg-node.yaml".
->    Made 'additionalProperties' as false.
-> 
-> Changes in V4:
->  - As per Rob's comments, added description for interrupts, defined
->    constraints for "qcom,drive-strength", dropped description for function
->    property.
-> 
->  .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 286 ---------------------
->  .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 256 ++++++++++++++++++
->  2 files changed, 256 insertions(+), 286 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+>  Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
