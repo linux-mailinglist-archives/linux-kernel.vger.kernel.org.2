@@ -2,120 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2973985CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D019B3985D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhFBKDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:03:19 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:51803 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229694AbhFBKDR (ORCPT
+        id S231271AbhFBKEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:04:51 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:55187 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229967AbhFBKEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:03:17 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id oNgmlUEuUIpGyoNgplPC4v; Wed, 02 Jun 2021 12:01:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622628091; bh=/QoizLPSJePeB4Gpm1NI058wdS+DU0b8RstN2od348s=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=mH7dGeU1bQOm8jhFRwt0LWrsIjBL8VGBOKq3A3Suy79B4LClqtrPlH5poj9pEpd60
-         BucSHkUBaYh+GpLZGMF+Q8y7ogv9HdwhMCoRCp8z0bcvII5SAFQytMed3ZulZJ8tDN
-         nWjV5K/9zYDom01k0IL/4yyLqfqA5YDElJG6fsGEdBDxAkeGLrsXoLrHQNqpyUXoq/
-         b0JJtk8WVG4s+wgvVnTSl7/IlDRprclJk2gz+SH8nCZxNTpFePD3SoKvOjZQDUWfdd
-         rAfzXmBCMunRf1LF0PmFtlU/Z+GCgz/yCc9tUQ0dqbt9Rnq/qPdURWwQNnnOYphhs4
-         RQabwTieu6BEA==
-Subject: Re: [PATCH 3/3] venus: Add a handling of QC10C compressed format
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
- <20210429105815.2790770-4-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <37d5e58c-ce5b-07f8-396f-662258a9b229@xs4all.nl>
-Date:   Wed, 2 Jun 2021 12:01:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210429105815.2790770-4-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfGuxLyx2fCMs3/3q3zvDQWlvGij9NX8sf5r/BcoO418azIXlnvl+XcZ6McUBStFeN6j+Mby/6xRVhlaGhrs32Ib55chiPxWSSQj6q/YH4edzOLEFMsVv
- iDi3e8jMaYp29sWg8UGtS/9JFJXpe0e131/MSmp1gTSb7MkHPH/KXxY4AjtsbYRXyv5nFser0W/bTzOtLqdh0OU8mTYGgMsBzxSEBLaZfUI09DWa0CkQXaZV
- yjohLoyiwhT3D7E2EC/dmDo6rZdIm/A7+daEX4DgoM3MoT3VEipCxF1PypPKhxQw93fHrfyeCYiPKABc0pE8pbMOU/zskYMMGNjM7xwRZYYf0AcaQnbkeZlE
- IDGJFcnd0WrJwlgBuT50NBgCOF/PtmtuhHSS80e9dlHWO8wStiE=
+        Wed, 2 Jun 2021 06:04:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Ub2X3Cs_1622628181;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ub2X3Cs_1622628181)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 02 Jun 2021 18:03:03 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jejb@linux.ibm.com
+Cc:     aradford@gmail.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] scsi: 3ware: fix return 0 on the error path of probe
+Date:   Wed,  2 Jun 2021 18:02:56 +0800
+Message-Id: <1622628176-84924-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2021 12:58, Stanimir Varbanov wrote:
-> This adds QC10C compressed pixel format in the Venus driver, and
-> make it enumeratable from v4l2 clients.
+When tw_reset_sequence() failed and returns 1, the tw_probe() returns 
+retval with a value of 0. We set retval to -ENOMEM in this case.
 
-enumeratable -> possible to discover
+Clean up smatch warning:
+drivers/scsi/3w-xxxx.c:2309 tw_probe() warn: missing error code
+'retval'.
 
-(or possibly 'enumerable', but I prefer the phrase suggested above)
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/scsi/3w-xxxx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> 
-> Note: The QC10C format shouldn't be possible to enumerate by the
-> client if the decoded bitstream is not 10bits. This is not
-
-10bits -> 10-bits
-
-> implemented in this patch yet.
-
-Obvious question: will this be done in a later patch that is being
-prepared? Would it be better to wait until such a patch is available?
-
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/helpers.c | 2 ++
->  drivers/media/platform/qcom/venus/vdec.c    | 6 +++++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-> index 3a0b07d237a5..58bf2e0654ce 100644
-> --- a/drivers/media/platform/qcom/venus/helpers.c
-> +++ b/drivers/media/platform/qcom/venus/helpers.c
-> @@ -563,6 +563,8 @@ static u32 to_hfi_raw_fmt(u32 v4l2_fmt)
->  		return HFI_COLOR_FORMAT_NV21;
->  	case V4L2_PIX_FMT_QC8C:
->  		return HFI_COLOR_FORMAT_NV12_UBWC;
-> +	case V4L2_PIX_FMT_QC10C:
-> +		return HFI_COLOR_FORMAT_YUV420_TP10_UBWC;
->  	default:
->  		break;
->  	}
-> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> index d4cc51fc019c..7ad8cd66b8bc 100644
-> --- a/drivers/media/platform/qcom/venus/vdec.c
-> +++ b/drivers/media/platform/qcom/venus/vdec.c
-> @@ -35,6 +35,10 @@ static const struct venus_format vdec_formats[] = {
->  		.num_planes = 1,
->  		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
->  	}, {
-> +		.pixfmt = V4L2_PIX_FMT_QC10C,
-> +		.num_planes = 1,
-> +		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-> +	},{
->  		.pixfmt = V4L2_PIX_FMT_NV12,
->  		.num_planes = 1,
->  		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-> @@ -1508,7 +1512,7 @@ static const struct hfi_inst_ops vdec_hfi_ops = {
->  static void vdec_inst_init(struct venus_inst *inst)
->  {
->  	inst->hfi_codec = HFI_VIDEO_CODEC_H264;
-> -	inst->fmt_out = &vdec_formats[6];
-> +	inst->fmt_out = &vdec_formats[8];
->  	inst->fmt_cap = &vdec_formats[0];
->  	inst->width = frame_width_min(inst);
->  	inst->height = ALIGN(frame_height_min(inst), 32);
-> 
+diff --git a/drivers/scsi/3w-xxxx.c b/drivers/scsi/3w-xxxx.c
+index a729288..6557663 100644
+--- a/drivers/scsi/3w-xxxx.c
++++ b/drivers/scsi/3w-xxxx.c
+@@ -2305,8 +2305,10 @@ static int tw_probe(struct pci_dev *pdev, const struct pci_device_id *dev_id)
+ 	TW_DISABLE_INTERRUPTS(tw_dev);
+ 
+ 	/* Initialize the card */
+-	if (tw_reset_sequence(tw_dev))
++	if (tw_reset_sequence(tw_dev)) {
++		retval = -ENOMEM;
+ 		goto out_release_mem_region;
++	}
+ 
+ 	/* Set host specific parameters */
+ 	host->max_id = TW_MAX_UNITS;
+-- 
+1.8.3.1
 
