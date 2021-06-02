@@ -2,79 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7986E3983B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4CD3983B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbhFBH7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:59:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229810AbhFBH7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFE3E60FD8;
-        Wed,  2 Jun 2021 07:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622620688;
-        bh=DRqgDVHEI5XQuxNrJTei+XmsXziLJ9TYY3WEAhS6QXs=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=l8gfvl7CeAVaq5wLzKKHaC+/Zi0wqTbeWs35J1jRWij9QOCwUDwYAAfdNbq5RiKrv
-         hGPfh2z1Q3plSM8VarP74qyjtRM7uagHN7b5RLJUkpD5KAVO1Gc73l3cEXOWda6G8x
-         shJbKKxWqbBIgNvHD6gn3VgmEWN3WQCKZvNNEgby37kbP+Hu1AEsxNVj+nZWCpHwkL
-         y/Uqv4YDXwXaHa/UYQ9UYvs1M4GgGGe9eKqs+m7dFtWpx/8ufIY3nu3pTBNLQzPoJ+
-         WOjNCCR0aDaBbwC1AT5xlcoK7rU4G+fyePOIANTLb/jGmmVdQI4Ij24Ll9h4mFSlFO
-         ghPJ3x+RuoM4Q==
-Content-Type: text/plain; charset="utf-8"
+        id S232292AbhFBIAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232136AbhFBIAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:00:39 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764D5C061574;
+        Wed,  2 Jun 2021 00:58:55 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id q7so1564721iob.4;
+        Wed, 02 Jun 2021 00:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qabcrgcfhEwhuxn/j/3+LSWfxN4EJWq76mgUFbPSQfc=;
+        b=OT9pI1cLDfVtJEbjcRrOd63nDT0/5O6el+Z/j0fD2emf6m06YRE71xYgt5DqE1ub97
+         N7kRd/cSxZJ/2Mz6OD3kPnuzof4+lSudMwU5nKWfEhU7fkDwWpCrLVOUQUMjchCEdc2A
+         83tv4Z/IyeqJM3gp44zcBiF2QJlwTzgXC+8YD+0smMxtZg9Ay6xt8rONKGV0/gLNnbcv
+         hGo6IOM64QaN1vV2Ti60Zy2WIXuL+yOQ7x47a7J6TyK5HrFFgjJYKArhAS9r8dFF0PL6
+         Qw+/kAZwePxzJBCIvKbS/Rg4IC6h71q0wTnLJxVwIHhwX4554FgPu23eRm7agH4Lgml+
+         ngGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qabcrgcfhEwhuxn/j/3+LSWfxN4EJWq76mgUFbPSQfc=;
+        b=ijCdTpAOyEKqmv60kU+EwINK/WDibY23ifL1vEhQq+ymPEsG1WVYcYo3laWGcnF6ZV
+         nz9JOW0kmvv4aK0dWaj1LnCdv3Uja+xNQ+XKUXB+S/8Iz3xCjNcVaydSALmGgUu3/F3B
+         4d19xwBxSYksbNJM6DX0h7M1MKqKdEjZAL+QMZntptzV2dMvcCj4AAHaNc2E/rGCt5Ce
+         UqPhdAxHc1XfRS+FBsWeihgClw9vta1gbzdtbrJVC0Wpz823kjTsWU3LqGDwsq1HzoW2
+         ZtoVoZc8m7QJAKn1cpugzP4GsZbBK1yNbYtmJPd9JOX17qOBWpx6twSRQTeE52ebH8tu
+         D/TQ==
+X-Gm-Message-State: AOAM532e/3Spv+KOHWBIiMqC+U6gpRSRllh2U4eQc5ztjq/KaUeYhY2B
+        9Bsdokj332T8bdX9sXMTf3XS5RyoqEIxr02Nov2jwosj3U/aOA==
+X-Google-Smtp-Source: ABdhPJxPmYmfcLfSgGMSYk2vkiJxCMXDTKTmlWHFzeWkXcxGhSG2pycZS4aQblPDVuwAFtckoD3DSwANLPwvKnENa+E=
+X-Received: by 2002:a6b:ef04:: with SMTP id k4mr24866061ioh.182.1622620734797;
+ Wed, 02 Jun 2021 00:58:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210518044247.605370-1-yangyingliang@huawei.com>
-References: <20210518044247.605370-1-yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] clk: tegra: tegra124-emc: fix missing clk_disable_unprepare() on error in emc_set_timing()
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     jonathanh@nvidia.com, thierry.reding@gmail.com
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Date:   Wed, 02 Jun 2021 00:58:07 -0700
-Message-ID: <162262068754.4130789.12258910664512101759@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210602065635.106561-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210602065635.106561-1-zhengyongjun3@huawei.com>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Wed, 2 Jun 2021 09:58:58 +0200
+Message-ID: <CAOi1vP-QtGyRGT-y2naZPzfMOEvv4MQY_iWDhws5e7hagAQQrQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] libceph: Fix spelling mistakes
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Why does the subject have -next in it?
-
-Quoting Yang Yingliang (2021-05-17 21:42:47)
-> After calling clk_prepare_enable(), clk_disable_unprepare() need
-> be called when prepare_timing_change() failed.
->=20
-> Fixes: 2db04f16b589 ("clk: tegra: Add EMC clock driver")
-
-And then the Fixes tag is for a patch that was merged in v4.10?
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+On Wed, Jun 2, 2021 at 8:42 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+>
+> Fix some spelling mistakes in comments:
+> enconding  ==> encoding
+> ambigous  ==> ambiguous
+> orignal  ==> original
+> encyption  ==> encryption
+>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 > ---
->  drivers/clk/tegra/clk-tegra124-emc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/tegra/clk-tegra124-emc.c b/drivers/clk/tegra/clk=
--tegra124-emc.c
-> index bdf6f4a51617..74c1d894cca8 100644
-> --- a/drivers/clk/tegra/clk-tegra124-emc.c
-> +++ b/drivers/clk/tegra/clk-tegra124-emc.c
-> @@ -249,8 +249,10 @@ static int emc_set_timing(struct tegra_clk_emc *tegr=
-a,
->         div =3D timing->parent_rate / (timing->rate / 2) - 2;
-> =20
->         err =3D tegra->prepare_timing_change(emc, timing->rate);
-> -       if (err)
-> +       if (err) {
-> +               clk_disable_unprepare(timing->parent);
->                 return err;
-> +       }
-> =20
->         spin_lock_irqsave(tegra->lock, flags);
-> =20
+>  net/ceph/auth_x_protocol.h | 2 +-
+>  net/ceph/mon_client.c      | 2 +-
+>  net/ceph/osdmap.c          | 4 ++--
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/net/ceph/auth_x_protocol.h b/net/ceph/auth_x_protocol.h
+> index 792fcb974dc3..9c60feeb1bcb 100644
+> --- a/net/ceph/auth_x_protocol.h
+> +++ b/net/ceph/auth_x_protocol.h
+> @@ -87,7 +87,7 @@ struct ceph_x_authorize_reply {
+>
+>
+>  /*
+> - * encyption bundle
+> + * encryption bundle
+>   */
+>  #define CEPHX_ENC_MAGIC 0xff009cad8826aa55ull
+>
+> diff --git a/net/ceph/mon_client.c b/net/ceph/mon_client.c
+> index 195ceb8afb06..013cbdb6cfe2 100644
+> --- a/net/ceph/mon_client.c
+> +++ b/net/ceph/mon_client.c
+> @@ -1508,7 +1508,7 @@ static struct ceph_msg *mon_alloc_msg(struct ceph_connection *con,
+>                         return get_generic_reply(con, hdr, skip);
+>
+>                 /*
+> -                * Older OSDs don't set reply tid even if the orignal
+> +                * Older OSDs don't set reply tid even if the original
+>                  * request had a non-zero tid.  Work around this weirdness
+>                  * by allocating a new message.
+>                  */
+> diff --git a/net/ceph/osdmap.c b/net/ceph/osdmap.c
+> index c959320c4775..75b738083523 100644
+> --- a/net/ceph/osdmap.c
+> +++ b/net/ceph/osdmap.c
+> @@ -1309,7 +1309,7 @@ static int get_osdmap_client_data_v(void **p, void *end,
+>                         return -EINVAL;
+>                 }
+>
+> -               /* old osdmap enconding */
+> +               /* old osdmap encoding */
+>                 struct_v = 0;
+>         }
+>
+> @@ -3010,7 +3010,7 @@ static bool is_valid_crush_name(const char *name)
+>   * parent, returns 0.
+>   *
+>   * Does a linear search, as there are no parent pointers of any
+> - * kind.  Note that the result is ambigous for items that occur
+> + * kind.  Note that the result is ambiguous for items that occur
+>   * multiple times in the map.
+>   */
+>  static int get_immediate_parent(struct crush_map *c, int id,
 
-Looks correct to me. I assume Thierry will pick it up for the next merge
-window.
+Applied.
+
+Thanks,
+
+                Ilya
