@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398B4398798
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7813E39879C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbhFBLGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbhFBLGc (ORCPT
+        id S232555AbhFBLG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:06:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52346 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231906AbhFBLGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:06:32 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4594FC06138D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:04:41 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id b13so3262014ybk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=eOvUj57ZPA4+yT/KqN6kzCD66yqu4Ev5aKqKNcM4ZJs=;
-        b=Vr/M/UT0xshuUV3ke2sVEsh41oV5uR11CnxwVV83/jra4xkoL/RRhFgldX1JdAamxk
-         HOfFwd+QC9/fC/tSkd6iW0oQlzQYwIf5m+gAGvx6u3glPpz4DRBhKXcdh4QKkFsn7+Tj
-         wQ9hBCOmFZYi4LxXklX7QCaRn1smXGik/235IhWv3ggZ/FTl+VBwhMlrOfzsVdu4skSi
-         +4+yO6LkEwNNX/L6/hwc+8ZPS3JZ6zIGHzCmVSHu6NXNeyYDrTweIfTBiq4XKjMD44VO
-         Q+9jq6kIWARJ+r07V/r3meoU6NruHscp7B89XEAalnHkNlspnahUk8Q6vAVtm9BVQZkk
-         aqHg==
+        Wed, 2 Jun 2021 07:06:38 -0400
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1loOgA-0003vB-Hi
+        for linux-kernel@vger.kernel.org; Wed, 02 Jun 2021 11:04:54 +0000
+Received: by mail-wr1-f69.google.com with SMTP id x9-20020a5d49090000b0290118d8746e06so865577wrq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:04:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=eOvUj57ZPA4+yT/KqN6kzCD66yqu4Ev5aKqKNcM4ZJs=;
-        b=d7xGVlmLES72aA3dguV4Y09KRVmjV23XZ2icblBhjbZFlmmP7XIpHJdkzxrO4waABc
-         xs1W4XULTp/ss+2h4nGak/eZtXz2U4vJnabppUIN/KxUuFg0QMRiaDmflUQ+ReiLmgYE
-         cXYDM8o8W75/Uh2fyhKJucB8QqqLy9AesPrvXpBYun4CwToYsFqMS0TfZ0NLPb8bfnej
-         6obFE/n57x2Lr0Kd9mi0nY71JPpfYqxJxkPETpD7WRVbmR/8W3CVUSL8BCRlbKN2WJCc
-         wWrA16yR5GJ2Iq1EsZ86SO7RnihdyU4jk9yhhK04K2RPZ/R9FnRrM4wplusQnkDdI/jd
-         NcGA==
-X-Gm-Message-State: AOAM530scRUkBBmT++081QmpuFgRdTOnqlFp4hhJyZxx71SeBt022Iue
-        6vFOklbexK7pnKPhzBkuRcwYJ/D8Soyhbdm1olM=
-X-Google-Smtp-Source: ABdhPJxryezK9Q+gTeBWvmAW7CY780lxyUtdxyphqiEdmWX39iVHqMf8kmsmt2mobmpd7rVQxDIqwzhAct6woaEuOPY=
-X-Received: by 2002:a25:3483:: with SMTP id b125mr36979098yba.355.1622631880097;
- Wed, 02 Jun 2021 04:04:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ji+tC5V5g/Ce+vgR+BJKn16Nmk3kGVreTbAerQ8gR/A=;
+        b=TvkO1q6+vabvS2cSLZbQy0KcyjIug7+1FULZk5c0jkeRa5EM9A5yNFAJ67OXNt8CFk
+         sZOE+zBOkZ1KP2FB/x2xBe7arIPpHOJcDXSSI777LSD5xcZWaw3e4Uclfv3XLkyNVY8c
+         mEiAC4xmashC3rWM6fxTrElYBObfp5+31OGccT3Qd9v7MX/1f4hgTc845OSzh8nG0832
+         rTF7CLDNvnc5+7aW68bTHDHs6cdP40+FvjeCbijTNv6If7L3ddP3jp9SqLr1vSi8WVHw
+         hqhv3CSfd0joBxg/DJraXx8XqKZab2tNWDBVSCPofObXWMJwRieSo+/Ie69EX0IRdh+3
+         JxTw==
+X-Gm-Message-State: AOAM532rNqFubKqmN2MYOgIUhg8youJjUevheyg4YtQjTzglhl7NP38+
+        HxXZ3/aBM/WtyAIS0UYDuTy2opSEjb1tb+pe3TiHLzwL3/gPNVKzaA/KF1UBS6ec40BtVS4APhK
+        xouY82SDA+2EtZoFp9Zy7eq4wuznG4LwTkNs6pcQKXg==
+X-Received: by 2002:a1c:f316:: with SMTP id q22mr31373947wmq.152.1622631894327;
+        Wed, 02 Jun 2021 04:04:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUi60Islv2sP9zukPKfLBZO8KAnwQYQoa56n07SmYetGNc/q6ebYs8y1pFF8rJvd04u2vnXw==
+X-Received: by 2002:a1c:f316:: with SMTP id q22mr31373922wmq.152.1622631894111;
+        Wed, 02 Jun 2021 04:04:54 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id f5sm6948175wrf.22.2021.06.02.04.04.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 04:04:53 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [RESEND PATCH v2 1/4] mfd: sec-irq: Do not enforce (incorrect) interrupt trigger type
+Date:   Wed,  2 Jun 2021 13:04:42 +0200
+Message-Id: <20210602110445.33536-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Sender: wzack034@gmail.com
-Received: by 2002:a26:8c2:0:0:0:0:0 with HTTP; Wed, 2 Jun 2021 04:04:39 -0700 (PDT)
-From:   MRS ORGIL BAATAR <mrs.orgilbaatar21@gmail.com>
-Date:   Wed, 2 Jun 2021 04:04:39 -0700
-X-Google-Sender-Auth: NHDdJeGq4--mf0qIAWB5JoB7jzs
-Message-ID: <CAG4K-g3D9g5NW+eC+HhMdMfBCZxC=HAgNvp+2o=J=FWcJzLTYw@mail.gmail.com>
-Subject: Your long awaited part payment of $14.5.000.00Usd
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention: Beneficiary,
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-My name is Mrs. Orgil Baatar and i am citizen of Australia and i have
-company here in Burkina Faso West Africa as a business woman dealing
-with Gold / Diamond export and import, however i have been suffering
-from ovarian cancer disease,i surprise the doctor says that i will not
-survive to live longer because of the damage infection.
+Interrupt line can be configured on different hardware in different way,
+even inverted.  Therefore driver should not enforce specific trigger
+type - edge falling - but instead rely on Devicetree to configure it.
 
-I have $ 14. 5 Million US Dollars at UBA BANK here in Burkina Faso,
-and i instructed the UBA management to transfer the capital to a
-foreigner that will apply in my name after i have gone to released the
-riches to the person,because i sent to UBAbank the doctor report of my
-physical condition says i will not survived. I will give you more
-details when i hear from you.
+The Samsung PMIC drivers are used only on Devicetree boards.
 
-Best regard
-Yours Sick Sister
-Mrs. Mrs. Orgil Baatar
+Additionally, the PMIC datasheets describe the interrupt line as active
+low with a requirement of acknowledge from the CPU therefore the edge
+falling is not correct.
+
+Marek Szyprowski reports that together with DTS change (proper level in
+DTS) it fixes RTC alarm failure that he observed from time to time on
+TM2e board.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+---
+
+Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next
+
+Changes since v1:
+1. Mention in commit msg that this fixes TM2e RTC alarm.
+2. Add Marek's tested-by.
+---
+ drivers/mfd/sec-irq.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/mfd/sec-irq.c b/drivers/mfd/sec-irq.c
+index e473c2fb42d5..f5f59fdc72fe 100644
+--- a/drivers/mfd/sec-irq.c
++++ b/drivers/mfd/sec-irq.c
+@@ -479,8 +479,7 @@ int sec_irq_init(struct sec_pmic_dev *sec_pmic)
+ 	}
+ 
+ 	ret = devm_regmap_add_irq_chip(sec_pmic->dev, sec_pmic->regmap_pmic,
+-				       sec_pmic->irq,
+-				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++				       sec_pmic->irq, IRQF_ONESHOT,
+ 				       0, sec_irq_chip, &sec_pmic->irq_data);
+ 	if (ret != 0) {
+ 		dev_err(sec_pmic->dev, "Failed to register IRQ chip: %d\n", ret);
+-- 
+2.27.0
+
