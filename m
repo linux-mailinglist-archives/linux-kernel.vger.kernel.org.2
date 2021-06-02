@@ -2,192 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22507398A31
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DF9398A3A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhFBNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:05:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:44354 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhFBNFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:05:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 532A91063;
-        Wed,  2 Jun 2021 06:04:06 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D001E3F719;
-        Wed,  2 Jun 2021 06:04:03 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 14:03:55 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210602130355.GA19640@e120325.cambridge.arm.com>
-References: <20210527153842.17567-1-beata.michalska@arm.com>
- <20210527153842.17567-3-beata.michalska@arm.com>
- <87eedkfn1u.mognet@arm.com>
+        id S229640AbhFBNOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhFBNO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 09:14:29 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E419C061574;
+        Wed,  2 Jun 2021 06:12:46 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f0e00eeb0fb45e4479fa5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:e00:eeb0:fb45:e447:9fa5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F2241EC03D2;
+        Wed,  2 Jun 2021 15:12:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622639564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IinqjbSWeoabF0QmaUNNBv38d7v6vXyIK8neZqnz8q4=;
+        b=rycYARL02BpEmdJ1FQ3jhabykdaVumGareEHhsrECJc4ozzj9ncaby8N+ZOgPpufVUv391
+        vwuLqtQOTiy0BH07bATdt+7hpnl1fF4FKcwfoHJGtkK1wxUrE+hb0ZRscEpWsXcI+AkVKm
+        Hm3Ezk4P3U9y/ixWfx4dhROc4lGCclE=
+Date:   Wed, 2 Jun 2021 15:12:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com,
+        stable@vger.kernel.org
+Subject: Re: [patch 2/8] x86/fpu: Prevent state corruption in
+ __fpu__restore_sig()
+Message-ID: <YLeDx+EohkPpjabd@zn.tnic>
+References: <20210602095543.149814064@linutronix.de>
+ <20210602101618.462908825@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87eedkfn1u.mognet@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602101618.462908825@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 01:50:21PM +0100, Valentin Schneider wrote:
-> On 27/05/21 16:38, Beata Michalska wrote:
-> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > Suggested-by: Valentin Schneider <valentin.schneider@arm.com>
-> > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+On Wed, Jun 02, 2021 at 11:55:45AM +0200, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> I ran this through the usual series of tests ('exotic' topologies, hotplug
-> and exclusive cpusets), it all behaves as expected.
+> The non-compacted slowpath uses __copy_from_user() and copies the entire
+> user buffer into the kernel buffer, verbatim.  This means that the kernel
+> buffer may now contain entirely invalid state on which XRSTOR will #GP.
+> validate_user_xstate_header() can detect some of that corruption, but that
+> leaves the onus on callers to clear the buffer.
 > 
-Thanks for that!
+> Prior to XSAVES support it was possible just to reinitialize the buffer,
+> completely, but with supervisor states that is not longer possible as the
+> buffer clearing code split got it backwards. Fixing that is possible, but
+> not corrupting the state in the first place is more robust.
+> 
+> Avoid corruption of the kernel XSAVE buffer by using copy_user_to_xstate()
+> which validates the XSAVE header contents before copying the actual states
+> to the kernel. copy_user_to_xstate() was previously only called for
+> compacted-format kernel buffers, but it works for both compacted and
+> non-compacted forms.
+> 
+> Using it for the non-compacted form is slower because of multiple
+> __copy_from_user() operations, but that cost is less important than robust
+> code in an already slow path.
+> 
+> [ Changelog polished by Dave Hansen ]
 
-> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> 
-> Some tiny cosmetic nits below, which don't warrant a new revision, and a
-> comment wrt purely symmetric systems.
-> 
-> > ---
-> >  kernel/sched/topology.c | 194 ++++++++++++++++++++++++----------------
-> >  1 file changed, 118 insertions(+), 76 deletions(-)
-> >
-> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > index 55a0a243e871..77e6f79235ad 100644
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> 
-> > +/*
-> > + * Verify whether there is any CPU capacity asymmetry in a given sched domain.
-> > + * Provides sd_flags reflecting the asymmetry scope.
-> > + */
-> > +static inline int
-> > +asym_cpu_capacity_classify(struct sched_domain *sd,
-> > +			   const struct cpumask *cpu_map)
-> > +{
-> > +	struct asym_cap_data *entry;
-> > +	int sd_asym_flags = 0;
-> > +	int asym_cap_count = 0;
-> > +	int asym_cap_miss = 0;
-> > +
-> > +	/*
-> > +	 * Count how many unique CPU capacities this domain spans across
-> > +	 * (compare sched_domain CPUs mask with ones representing  available
-> > +	 * CPUs capacities). Take into account CPUs that might be offline:
-> > +	 * skip those.
-> > +	 */
-> > +	list_for_each_entry(entry, &asym_cap_list, link) {
-> > +		if (cpumask_intersects(sched_domain_span(sd),
-> > +				       cpu_capacity_span(entry)))
-> 
-> IMO this is one such place where the 80 chars limit can be omitted.
-> 
-> > +			++asym_cap_count;
-> > +		else if (cpumask_intersects(cpu_capacity_span(entry), cpu_map))
-> > +			++asym_cap_miss;
-> > +	}
-> 
-> > +/*
-> > + * Build-up/update list of CPUs grouped by their capacities
-> > + * An update requires explicit request to rebuild sched domains
-> > + * with state indicating CPU topology changes.
-> > + */
-> > +static void asym_cpu_capacity_scan(void)
-> > +{
-> > +	struct asym_cap_data *entry, *next;
-> > +	int cpu;
-> > +
-> > +	list_for_each_entry(entry, &asym_cap_list, link)
-> > +		cpumask_clear(cpu_capacity_span(entry));
-> > +
-> > +	for_each_cpu_and(cpu, cpu_possible_mask,
-> > +			 housekeeping_cpumask(HK_FLAG_DOMAIN))
-> 
-> Ditto on keeping this on a single line.
-> 
-> > +		asym_cpu_capacity_update_data(cpu);
-> > +
-> > +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
-> > +		if (cpumask_empty(cpu_capacity_span(entry))) {
-> > +			list_del(&entry->link);
-> > +			kfree(entry);
-> > +		}
-> > +	}
-> > +}
-> 
-> One "corner case" that comes to mind is systems / architectures which are
-> purely symmetric wrt CPU capacity. Our x86 friends might object to us
-> reserving a puny 24 bytes + cpumask_size() in a corner of their
-> memory.
-> 
-> Perhaps we could clear the list in the list_is_singular_case(), and since
-> the rest of the code only does list iteration, this should 'naturally'
-> cover this case:
->
-Can do that.
-I am also waiting for a reply regarding the asymmetry detected on an SMT level.
-Once I get that solved, I will push new version with embedding your suggestions
-as well.
+Nice polishing!
 
-Thanks for having a look!
-
----
-BR
-B.
+> Fixes: b860eb8dce59 ("x86/fpu/xstate: Define new functions for clearing fpregs and xstates")
+> Reported-by: syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: stable@vger.kernel.org
 > ---
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 62d412013df8..b06d277fa280 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1305,14 +1305,13 @@ asym_cpu_capacity_classify(struct sched_domain *sd,
->  	 * skip those.
->  	 */
->  	list_for_each_entry(entry, &asym_cap_list, link) {
-> -		if (cpumask_intersects(sched_domain_span(sd),
-> -				       cpu_capacity_span(entry)))
-> +		if (cpumask_intersects(sched_domain_span(sd), cpu_capacity_span(entry)))
->  			++asym_cap_count;
->  		else if (cpumask_intersects(cpu_capacity_span(entry), cpu_map))
->  			++asym_cap_miss;
->  	}
->  	/* No asymmetry detected */
-> -	if (WARN_ON_ONCE(!asym_cap_count) || asym_cap_count == 1)
-> +	if (asym_cap_count < 2)
->  		goto leave;
+>  arch/x86/include/asm/fpu/xstate.h |    4 ----
+>  arch/x86/kernel/fpu/signal.c      |    9 +--------
+>  arch/x86/kernel/fpu/xstate.c      |    2 +-
+>  3 files changed, 2 insertions(+), 13 deletions(-)
+> 
+> --- a/arch/x86/include/asm/fpu/xstate.h
+> +++ b/arch/x86/include/asm/fpu/xstate.h
+> @@ -112,8 +112,4 @@ void copy_supervisor_to_kernel(struct xr
+>  void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
+>  void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask);
 >  
->  	sd_asym_flags |= SD_ASYM_CPUCAPACITY;
-> @@ -1360,8 +1359,7 @@ static void asym_cpu_capacity_scan(void)
->  	list_for_each_entry(entry, &asym_cap_list, link)
->  		cpumask_clear(cpu_capacity_span(entry));
+> -
+> -/* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
+> -int validate_user_xstate_header(const struct xstate_header *hdr);
+> -
+>  #endif
+> --- a/arch/x86/kernel/fpu/signal.c
+> +++ b/arch/x86/kernel/fpu/signal.c
+> @@ -405,14 +405,7 @@ static int __fpu__restore_sig(void __use
+>  	if (use_xsave() && !fx_only) {
+>  		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
 >  
-> -	for_each_cpu_and(cpu, cpu_possible_mask,
-> -			 housekeeping_cpumask(HK_FLAG_DOMAIN))
-> +	for_each_cpu_and(cpu, cpu_possible_mask, housekeeping_cpumask(HK_FLAG_DOMAIN))
->  		asym_cpu_capacity_update_data(cpu);
+> -		if (using_compacted_format()) {
+> -			ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
+> -		} else {
+> -			ret = __copy_from_user(&fpu->state.xsave, buf_fx, state_size);
+> -
+> -			if (!ret && state_size > offsetof(struct xregs_state, header))
+> -				ret = validate_user_xstate_header(&fpu->state.xsave.header);
+> -		}
+> +		ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
+>  		if (ret)
+>  			goto err_out;
 >  
->  	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
-> @@ -1370,6 +1368,16 @@ static void asym_cpu_capacity_scan(void)
->  			kfree(entry);
->  		}
->  	}
-> +
-> +	/*
-> +	 * There's only one capacity value, i.e. this system is symmetric.
-> +	 * No need to keep this data around.
-> +	 */
-> +	if (list_is_singular(&asym_cap_list)) {
-> +		entry = list_first_entry(&asym_cap_list, typeof(*entry), link);
-> +		list_del(&entry->link);
-> +		kfree(entry);
-> +	}
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -515,7 +515,7 @@ int using_compacted_format(void)
 >  }
 >  
->  /*
+>  /* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
+> -int validate_user_xstate_header(const struct xstate_header *hdr)
+> +static int validate_user_xstate_header(const struct xstate_header *hdr)
+
+Can't do that yet - that one is still called from regset.c:
+
+arch/x86/kernel/fpu/regset.c: In function ‘xstateregs_set’:
+arch/x86/kernel/fpu/regset.c:135:10: error: implicit declaration of function ‘validate_user_xstate_header’ [-Werror=implicit-function-declaration]
+  135 |    ret = validate_user_xstate_header(&xsave->header);
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+
+Maybe after the 5th patch which kills that usage too.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
