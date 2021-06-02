@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1FE3991E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AA43991E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhFBRqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        id S230520AbhFBRrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhFBRqp (ORCPT
+        with ESMTP id S230514AbhFBRq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:46:45 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD45C06174A;
-        Wed,  2 Jun 2021 10:45:01 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f0e00ae3ef7328f799462.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:e00:ae3e:f732:8f79:9462])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 377D61EC0521;
-        Wed,  2 Jun 2021 19:44:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622655899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=AzM3xhTrlH7s73CtL8W+qobgXBYEp/7QTHcuM3yZjUk=;
-        b=bSI/YpWeMhu1qHX5eFypbKURlxDJn/X/QNsHOjgChw1Ftauxji3MkZI95g6OCG4Gf968dN
-        N/mRgivrKA1bFXZ/1JzKmu2GfVd826sUNOBg4EUzBVB/UhdQpumOtQyXCxG4Wl9+nC0LE4
-        Dn3zFJE+I5TvDHLuyBkLlZi6GPkVHSo=
-Date:   Wed, 2 Jun 2021 19:44:53 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>, stable@vger.kernel.org
-Subject: Re: [patch 4/8] x86/fpu: Limit xstate copy size in xstateregs_set()
-Message-ID: <YLfDleG9X32a/KaU@zn.tnic>
-References: <20210602095543.149814064@linutronix.de>
- <20210602101618.736036127@linutronix.de>
+        Wed, 2 Jun 2021 13:46:59 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD17C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 10:45:00 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id l1so5089867ejb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=V+ujQUElFdPvyySutDIS2BMJiANhFPiYP2AfmTZQYCQ=;
+        b=MoxBwVunlvc5WExf5U8dAGyX5mGVBbaXvRq7g6sVJYtSZ89Ly9FKNQX8eVoJrEiDHx
+         yu66/L60MpSbu7J7dTAnd5OI/J1TqbpjBjzMVhLjfpMHt0Jxz9YpFQXVuJSUhdS8hrWE
+         44tjcxv/LYwksH5QUCs0J1kU9hV0+6bAaA9iY2DAhxiudEVha18h098t1gQJoGyK7ROr
+         0K49RUYGi9OVM3a1Wsj8TYM8Sk09ue6WvGdT5jaZPSpkydDHVc5Hi8Kcake4JHppFqmB
+         ie6RVmPQf3iG06n3pHi9UH9t+8cF0c1Kg1P7uD6mMBnP6KyGK9q+RHJ7X8X+O1gWVnS9
+         Uo1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=V+ujQUElFdPvyySutDIS2BMJiANhFPiYP2AfmTZQYCQ=;
+        b=F+faOg+MkrCouPhw1tXIqt+CGd9I1gaq6DeMlUsNgQZd6awLCG8rfw1SCK5A8sL7ku
+         z1t8bLSEQU2IngmTp3E/qwW+pMPmT3aS/zSB9PJ/WHTJgvozEBqAd2z/v/9lp4JJa+R/
+         YS0bl3LDfO8WdwjX1fhTxSsplEt9BsX3ZaroVi+PmCEdztfiR+iF82hnWe8lp4Z+/aA7
+         +AB9ZSFfYVVLhO5O/zdDBHjoV2RADgi+WLLuW5yEEFUvgm9nauwO8TQHq7sRUwLXUT33
+         ceRIcSFKv0CEVX3VkWXYx5hDcjWBRee3mpm+qWUCy2WB8tM9tD/cyvrdIxRps73C/bq5
+         bu+Q==
+X-Gm-Message-State: AOAM530wDwOuzUQBdPQtMT/BcU0tv5UVTW5MfEFr+jKhK7VYcAii/CQP
+        L652/WWuFqZXS6lE20Datbc=
+X-Google-Smtp-Source: ABdhPJxi+7Cy/pwbPaqalxY+ZPbeFwdQJPHqs8BUSDrs0dl7Sm3Ac4yzGCwapULMRbWGdDsQpSNDkQ==
+X-Received: by 2002:a17:906:c1c5:: with SMTP id bw5mr35268384ejb.552.1622655899492;
+        Wed, 02 Jun 2021 10:44:59 -0700 (PDT)
+Received: from gmail.com (563BAF3B.dsl.pool.telekom.hu. [86.59.175.59])
+        by smtp.gmail.com with ESMTPSA id bh3sm348149ejb.19.2021.06.02.10.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 10:44:59 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 2 Jun 2021 19:44:57 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] EFI fixes
+Message-ID: <YLfDmYv1VSoaaVpq@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602101618.736036127@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:55:47AM +0200, Thomas Gleixner wrote:
-> If the count argument is larger than the xstate size, this will happily
-> copy beyond the end of xstate.
-> 
-> Fixes: 91c3dba7dbc1 ("x86/fpu/xstate: Fix PTRACE frames for XSAVES")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/x86/kernel/fpu/regset.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/arch/x86/kernel/fpu/regset.c
-> +++ b/arch/x86/kernel/fpu/regset.c
-> @@ -117,7 +117,7 @@ int xstateregs_set(struct task_struct *t
->  	/*
->  	 * A whole standard-format XSAVE buffer is needed:
->  	 */
-> -	if ((pos != 0) || (count < fpu_user_xstate_size))
-> +	if (pos != 0 || count != fpu_user_xstate_size)
->  		return -EFAULT;
->  
->  	xsave = &fpu->state.xsave;
+Linus,
 
-Looking at this one, I guess it and all the CC:stable ones should be at
-the beginning of the set so that they go to Linus now...
+Please pull the latest efi/urgent git tree from:
 
--- 
-Regards/Gruss,
-    Boris.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-urgent-2021-06-02
 
-https://people.kernel.org/tglx/notes-about-netiquette
+   # HEAD: e169fba4f464760dd9734c9e39e1c2e88e374f32 Merge tag 'efi-urgent-for-v5.13-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/urgent
+
+A handful of EFI fixes:
+
+ - Fix/robustify a diagnostic printk
+ - Fix a (normally not triggered) parser bug in the libstub code
+ - Allow !EFI_MEMORY_XP && !EFI_MEMORY_RO entries in the memory map
+ - Stop Risc-V from crashing on boot if there's no FDT table
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Changbin Du (1):
+      efi/fdt: fix panic when no valid fdt found
+
+Dan Carpenter (1):
+      efi/libstub: prevent read overflow in find_file_option()
+
+Heiner Kallweit (1):
+      efi: Allow EFI_MEMORY_XP and EFI_MEMORY_RO both to be cleared
+
+Rasmus Villemoes (1):
+      efi: cper: fix snprintf() use in cper_dimm_err_location()
+
+
+ drivers/firmware/efi/cper.c         | 4 +---
+ drivers/firmware/efi/fdtparams.c    | 3 +++
+ drivers/firmware/efi/libstub/file.c | 2 +-
+ drivers/firmware/efi/memattr.c      | 5 -----
+ 4 files changed, 5 insertions(+), 9 deletions(-)
