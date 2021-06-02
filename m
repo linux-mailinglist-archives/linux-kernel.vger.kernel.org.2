@@ -2,168 +2,557 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14E939926A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2C639926C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhFBSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:21:00 -0400
-Received: from mail-bn8nam12on2077.outbound.protection.outlook.com ([40.107.237.77]:7866
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229758AbhFBSU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:20:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WKmAn+E2vVdxLtDuRVyNWe2lQTaDQsDHb/FrmrseYJNb1t7F+JAlrh2pzzQzdvOQfgOtGFuk25MxVCqSZO05HBKfoVhbqec64cA3Y8ZVCj+i8oJNyid90iYy/tgKdZw41eTXlktzHxgmayzcBIZZkSBmq0vdJvW/5QNMX76Q1SFpTOlsQezhJzBLL35dCwWjE7BC9W05RxcuSPV3bO1x4AG5e7DUPgLU6woUPcJwQ//kpNdemgAh8QOcPLYwtprWaBv80U3QUS3f/FfAsk8BUUM1hT0WtVgvEcl7+gtDTZGfF/i0Sj7P1ZltQsTW4NVU6LLz8AvML6Hv3WbcStqW4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/FGpZTPjEb9FCUJaJlCmOwSOOntKM2EOA1VBpM8zOX4=;
- b=gQqCC9VSPzwzNZ37pcTJlhaVciv6l3JKCylF0oJ5x/Q4yQ4mnvKyq6joPJTxIrhGQhfrhpiWr6SedioJ94EWKsHuCh1nnS/FkU+HLeXvsxGwil908B7fsUVJDsR69E0Cpjs5wY4qGYmrq7Qq6xP63GsBMwAs14EDTG4OWRXU+hwUxkrYrFQE5vLEopj49GsGbHU9t9XvKVIAv/3zTt1Z5WaVGzOFxUPGph5R5VPQPfMA7e8jbxrGbwBgAkVB22Wx8wjydM35KhsPXXdLRsEpvGHaOgyDk5xLEXM/+IbGKK3+ZXTB3qpihwWup8dENRR32TOMhqAV3VO/8wVY0chrvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/FGpZTPjEb9FCUJaJlCmOwSOOntKM2EOA1VBpM8zOX4=;
- b=TBDE82SR7xOVjuxwlbZe+qhLEtpiOEAToP0kE5LtepXeX2FiQ6+NeKiBXZH17chRC+mUFOocjLtDWbUZJbvG7Zl4CeVyMljTfjj1FCHvXNU6irpR4P2pF1bcFh4ZlU+izW5jZNCozq4tIHzIzhOJnSDPJrwWLXvcuJyR7Y+6/yc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR1201MB0123.namprd12.prod.outlook.com (2603:10b6:4:50::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.20; Wed, 2 Jun 2021 18:19:10 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
- 18:19:10 +0000
-Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
- abstraction
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
+        id S229867AbhFBSVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229828AbhFBSVG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 14:21:06 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB0CC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 11:19:23 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id f17so1884485wmf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 11:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LJescyDSFEAtxwhrRpXsY/OUBaA3CWiu6Pu9ogBgGJM=;
+        b=P5avIvYvF2UaUss1jye3cQaQQEg/3JLN2vNdP1qPSGG7x6Xi/EFgl2O5cgqTerjrWU
+         R9ICdRUNAGO2FblMsMZhkhlNOpzbsXqiaOwBVVuaIJbbwVJODwpCsZNep5d8bdT9jtq9
+         9cuuh+Qp3grBX87M8E/Sd7UUkjFuD3TTnL8UxM9CojNkwK0i5CCG6S8VPhseCeJY5qjh
+         IA30zDWToMl4/wz1Ww7noBszNsZG/PCByfjD9Vu7WaT8ohO3O+n+YKQ/HaInRAeefx5l
+         q20DZG9GasaTkYMbdeaShbU01d5cGeVSLHXdcI8tYmew+i8+iZALyfD+pbev4EsFSn0z
+         LFDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LJescyDSFEAtxwhrRpXsY/OUBaA3CWiu6Pu9ogBgGJM=;
+        b=JLkveEfTGAzQG/9kkblOlrom2Z5itrtIHqtMRce0Rxpoo7TLT9aEsxCQogTDrwoz8Z
+         mQcxsyFqKc+HwOqd0T2NZpWSYP+ES//U1TNw/QELWj3twrE20UMVGmlyvOc00eZVHdR8
+         35Dc93orVZtdqapQEgz3gMbM/sn+RLZtTFqEK+bLAbX0vv31FDSioApBS74IZp07BeKE
+         9fStQJQXtrjsRqdrpXJdiGvD6ALmDlvYWJ69MXCt52kgrMyUbQDvV44KATvtj5fSZOCL
+         zoTaCMQyhjDg1J9Oqmr2twtdUZWhPr2AiK9VgohSmtnUANArS7mQ72KyLNZHBWAVniY/
+         qPHg==
+X-Gm-Message-State: AOAM533WOkrA4bI1fZX1eT2qEKJt5O/ZV0t++Ke0pkvB+Os8yUB0DmEN
+        Jqx903+h9uTaMEEqH8JAVe4aSEgxqA32Jw==
+X-Google-Smtp-Source: ABdhPJxxU/GUZC3JeUxzYmxwpVodI1HU5PE7dv8MtmhFfgCG7bD3VFVq28gBV/4gw5qV25o2Of2PsA==
+X-Received: by 2002:a1c:f605:: with SMTP id w5mr6399936wmc.93.1622657961572;
+        Wed, 02 Jun 2021 11:19:21 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:70d3:6c26:978:999d? ([2a01:e34:ed2f:f020:70d3:6c26:978:999d])
+        by smtp.googlemail.com with ESMTPSA id h46sm926063wrh.44.2021.06.02.11.19.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 11:19:21 -0700 (PDT)
+Subject: Re: [PATCH RFC 1/2] thermal: qcom: tsens-v1: Add support for MSM8994
+ TSENS
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Amit Kucheria <amitk@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <dfb6b319-97ad-4c16-67ae-de4ce4ef415b@amd.com>
-Date:   Wed, 2 Jun 2021 13:19:07 -0500
+References: <20210209195346.457803-1-konrad.dybcio@somainline.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <a4b76d12-a659-da87-7d97-9b34e3cf7edf@linaro.org>
+Date:   Wed, 2 Jun 2021 20:19:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
-In-Reply-To: <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+MIME-Version: 1.0
+In-Reply-To: <20210209195346.457803-1-konrad.dybcio@somainline.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SN4PR0701CA0047.namprd07.prod.outlook.com
- (2603:10b6:803:2d::20) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SN4PR0701CA0047.namprd07.prod.outlook.com (2603:10b6:803:2d::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Wed, 2 Jun 2021 18:19:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2f21f7bb-78c0-4de0-7403-08d925f2eaad
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0123:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB012344BFC0F743A9CF1EF80BEC3D9@DM5PR1201MB0123.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Cx+f5XtyaHK1BSr/uXDjXJCUAa9Zvf6x9Oy7owMUNMCvG0YvmkRbYAI+W+Adk8rhO0nVjelAakJMvWhkhJSobb8EhSEy5QvQ50ch4DoNtdVleRXlDhK5hOr//72t7I9BK6CXn2aqhjk+VA7efKXzVuBKJU2VHCIts6OrkIMvb2F/FaY9mOm4Roz1RHsPDITcl4NZnc0LS4oMTA2LoUbds7LpwcP+I3AWsIcXV1vL+d2F8YmHswGnji5AUUZRHZDWTZviSTn9q4pKt+/TGLugxw7rQtYmDQf1u07Yqvw9556Wfdu24g0NzGk0IlxKbiqvBTGi11IToSMstptbvVB2v0C9jFMD8+kUHzcsTk+kpRTlSCdcJA7VXWklv5r3XOdRKwnt9y7o5NYmPCAcz9n9ZKSCXK944otn6/mpejP4rrwH5rV3G/AZLo48zT6NFwJi0o5qZi/lyg9IZJZyE0RTpRCpRv4FRCfOLXxA7QXYVxsmj4pVissIiAorzsz12ychIxsHm2bpLBMhjhdtbX8ePK6GU1QJ4E28UxTesjSnI8jgMFDsUHT48v7ZOa3EuWVJuOvKyRFd95ScLXm+cWxSqMDh7VkOeR4W6tDAbHUq6ToBcDv2N+B1B6Min+VukS2Ra4r4La9dM0bdiCSCEizu7Dlp7KdaI8LxqIjOlbxlNI/64bFDzqp6vWK8dphEEbzGTX0+6kZywwDDxcR+FVLVgg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(16526019)(186003)(478600001)(8676002)(36756003)(26005)(6486002)(6512007)(316002)(53546011)(2616005)(6506007)(956004)(2906002)(86362001)(66556008)(31686004)(5660300002)(7416002)(66476007)(4326008)(31696002)(110136005)(66946007)(54906003)(8936002)(38100700002)(41533002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VlZ3YWFsOStndW0wZnpJbnduWGdXVXdkMTVoTE40dUg3RGlDVTcxamF4VW1a?=
- =?utf-8?B?dE92bm1SWEppYytHUlNpMGt0VUd1cVRUVlpsbFpGVmN4V0NFTUo5SWJFWnJj?=
- =?utf-8?B?amJxQXROaEJuRFhFSktvdTJDQjJ2ZWhGV1JCTFNWU2kxQ1ViaklVZDBpdmlU?=
- =?utf-8?B?M0N1QTJNN2Y0czFiQ01wUC9ocWZVOHRGYkx0bTFxNm1PR0FNUnQ1UGh3VDdR?=
- =?utf-8?B?cjIxNkdKcld0aHZPN3VuamFXSmxGeCtESnFtY0xWd2k3R3hxL05xMU9qbm94?=
- =?utf-8?B?T0VuSnpyRDNqK3hPTnlFekZMUnNsRkRKd1dmVUtmRWpUSmJsaFYrRTJKV0VR?=
- =?utf-8?B?RUt2T0RlTno5SVB0a1RwZ0IrUHR4dmdPemI0T0JNVUlwZkZhYzRUUUtrODNY?=
- =?utf-8?B?V2VneXZwbi9TOWZ2THV4aUYwWXl5V3ZxcjJHZnNVYnNnVm5uN29IZlJWVzI1?=
- =?utf-8?B?RllTYWtVQVpBZW1sZHp5RDJMbTIzaGt1T21JbVBiRDNUQ2dZYzZOSDJ5Mnd1?=
- =?utf-8?B?MUF0RXZiSG1WaDJEODNlL3lMSjcyRWhMbDFaN0VVRDZmakRoMkQrZDcwMW9Q?=
- =?utf-8?B?dlRvMFg0TlF2aFl2Z3l1c21vYi9xRlRpdHFlRTlydzVmNkwwNW9SMFhNV2V2?=
- =?utf-8?B?TWh6QytWZDdhQm1ud0thUUFKVjVFckk2U2pWb0o4NWQ3eC8rRkFpRnJaeGlp?=
- =?utf-8?B?WllzWlg0MUhYVmdMZENzWnl2RG5CUnU3UldHVFl5QlpLd0c0ZjcvanlTRW5a?=
- =?utf-8?B?QTNnQnlRRVo4dVBMZHU3ZGlTb2E5dmk3Sm8yT3ZUQmloTXJBQTVteWF4YzJK?=
- =?utf-8?B?VlQwZ0ZheWpYbDhuNkxSb0lkMlB0dEZzeU1OWElEb095NUY0MXFqYlFIQnZL?=
- =?utf-8?B?WFlRZ01mZnZiV0krQmt1WmwwL2ZvZGZVMkorK0IvNVMySUhHZ2dtS3lxVGky?=
- =?utf-8?B?d2JIRk84cGJLL0Z1alhxeXVBb3lUbFUrcWxqK3pwck4vL0cyUTQyQlh1QmJW?=
- =?utf-8?B?eDhsaXpmVEtSRWFLdG9UNHJ5dytuLzh6MUJOc1MydlB0TUZTaEdlNGtZb2hX?=
- =?utf-8?B?aEZEUEs0VFdHdmJtK0hKays1Y1FDSnRpSUw3TEwvRkRmdzNmRWFJUjdEeUJa?=
- =?utf-8?B?L2t5TG1jb3luMjhObGhjNHdvMlQ0cG4vY20rejlKdGNLUVFoMmtsdmY1U3Bu?=
- =?utf-8?B?Rm15NlJLcDBuRmlqM0JJcXREbUxic3NmWjRjdk9zeXFlbDR5LzUxbU83UmVX?=
- =?utf-8?B?d1E2SGM3akhRSlZRRkV0WEV4bTZsZHNrb0t5Y2syUkhTMHFjL3pWYkl6V2FN?=
- =?utf-8?B?T3QwdFo5OWRZb2tZVGs5eS9YMjh1UXNvRTUvbGJHa2pwLzRuaDFENk50U0tN?=
- =?utf-8?B?NWtkWEd2RThuZ3Q0cXhNRjZnNXdiSXlHTHUyVVBoYXQzdnFNNjlxMldGakxF?=
- =?utf-8?B?cmxkMUwwQ3p2a3FGTFNEMzVVNHE0cXVhT0V5ZjQzaXdZU0tiRnpnNStwRkpy?=
- =?utf-8?B?dDNYOG5VbUFoeWpXY0RoZzBmS0g0QW1KTGNtcGFFUkVCN3R5K3VhSW15WXB1?=
- =?utf-8?B?S0JzS0pFQitCT3pPdWNySW9rcExOUTcvelZKZW1SSXhrWk1QbzlxZEhFb2NC?=
- =?utf-8?B?WHRBc3lic3dVM201bHk1Qll0YTVQMlBiWkF1SStycDlveHJwWkNmK0xidjN2?=
- =?utf-8?B?TnFrMnVzc1EzbDl0bkhuUkUyMnppc25vclgrMDUxOU1ITzdJekdvclR2ZFJ3?=
- =?utf-8?Q?GAVvm0DkItJGo5ppM2mX0qBvZCtJI34maBSwo6G?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f21f7bb-78c0-4de0-7403-08d925f2eaad
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 18:19:10.0314
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fAnGfUcYza9u3rREEazRgProFrtStUubU09q99CjL3n/u816XTExuodmJPuYY8md92LVI8eFtFB6iDUzZo6/pQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 4:14 PM, Kuppuswamy Sathyanarayanan wrote:
-> Add a generic way to check if we run with an encrypted guest,
-> without requiring x86 specific ifdefs. This can then be used in
-> non architecture specific code. 
+Hi Konrad,
+
+
+On 09/02/2021 20:53, Konrad Dybcio wrote:
+> MSM8994, despite being heavily based on MSM8974, uses the
+> 1.2 version of TSENS. Also, 8994 being 8994, it has a custom
+> way of calculating the slope.
 > 
-> protected_guest_has() is used to check for protected guest
-> feature flags.
+> Also tested on 8976 (by a person who didn't want to be named)
+> to make sure the 11->16 max_sensors changes didn't break anything.
 > 
-> Originally-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
-> Changes since RFC v2-fix-v1:
->  * Changed the title from "tdx: Introduce generic protected_guest
->    abstraction" to "x86: Introduce generic protected guest"
->  * Removed usage of ARCH_HAS_PROTECTED_GUEST and directly called TDX
->    and AMD specific xx_protected_guest_has() variants from
->    linux/protected_guest.h.
->  * Added support for amd_protected_guest_has() helper function.
->  * Removed redundant is_tdx_guest() check in tdx_protected_guest_has()
->    function.
->  * Fixed commit log to reflect the latest changes.
+>  .../bindings/thermal/qcom-tsens.yaml          |   1 +
 
-...
+Please split binding and code into two separate patches.
 
+Without full understanding of the changes it is hard to comment the code
+but, AFAICT, these changes should have a set of cleanups before (see below).
+
+>  drivers/thermal/qcom/tsens-v1.c               | 291 +++++++++++++++++-
+>  drivers/thermal/qcom/tsens.c                  |   3 +
+>  drivers/thermal/qcom/tsens.h                  |   2 +-
+>  4 files changed, 284 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> index 95462e071ab4..f194e914a62e 100644
+> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> @@ -31,6 +31,7 @@ properties:
+>          items:
+>            - enum:
+>                - qcom,msm8976-tsens
+> +              - qcom,msm8994-tsens
+>                - qcom,qcs404-tsens
+>            - const: qcom,tsens-v1
 >  
-> +bool amd_protected_guest_has(unsigned long flag)
+> diff --git a/drivers/thermal/qcom/tsens-v1.c b/drivers/thermal/qcom/tsens-v1.c
+> index 3c19a3800c6d..2127b6edd1ae 100644
+> --- a/drivers/thermal/qcom/tsens-v1.c
+> +++ b/drivers/thermal/qcom/tsens-v1.c
+> @@ -142,6 +142,99 @@
+>  #define CAL_SEL_MASK	7
+>  #define CAL_SEL_SHIFT	0
+>  
+> +/* eeprom layout data for 8994 */
+> +#define MSM8994_BASE0_MASK	0x3ff
+> +#define MSM8994_BASE1_MASK	0xffc00
+> +#define MSM8994_BASE0_SHIFT	0
+> +#define MSM8994_BASE1_SHIFT	10
+> +
+> +#define MSM8994_S0_MASK	0xf00000
+> +#define MSM8994_S1_MASK	0xf000000
+> +#define MSM8994_S2_MASK	0xf0000000
+> +#define MSM8994_S3_MASK	0xf
+> +#define MSM8994_S4_MASK	0xf0
+> +#define MSM8994_S5_MASK	0xf00
+> +#define MSM8994_S6_MASK	0xf000
+> +#define MSM8994_S7_MASK	0xf0000
+> +#define MSM8994_S8_MASK	0xf00000
+> +#define MSM8994_S9_MASK	0xf000000
+> +#define MSM8994_S10_MASK	0xf0000000
+> +#define MSM8994_S11_MASK	0xf
+> +#define MSM8994_S12_MASK	0xf0
+> +#define MSM8994_S13_MASK	0xf00
+> +#define MSM8994_S14_MASK	0xf000
+> +#define MSM8994_S15_MASK	0xf0000
+> +
+> +#define MSM8994_S0_SHIFT	20
+> +#define MSM8994_S1_SHIFT	24
+> +#define MSM8994_S2_SHIFT	28
+> +#define MSM8994_S3_SHIFT	0
+> +#define MSM8994_S4_SHIFT	4
+> +#define MSM8994_S5_SHIFT	8
+> +#define MSM8994_S6_SHIFT	12
+> +#define MSM8994_S7_SHIFT	16
+> +#define MSM8994_S8_SHIFT	20
+> +#define MSM8994_S9_SHIFT	24
+> +#define MSM8994_S10_SHIFT	28
+> +#define MSM8994_S11_SHIFT	0
+> +#define MSM8994_S12_SHIFT	4
+> +#define MSM8994_S13_SHIFT	8
+> +#define MSM8994_S14_SHIFT	12
+> +#define MSM8994_S15_SHIFT	16
+> +
+> +#define MSM8994_CAL_SEL_MASK	0x700000
+> +#define MSM8994_CAL_SEL_SHIFT	20
+> +
+> +#define MSM8994_BASE0_REDUN_MASK	0x7fe00000
+> +#define MSM8994_BASE1_BIT0_REDUN_MASK	0x80000000
+> +#define MSM8994_BASE1_BIT1_9_REDUN_MASK	0x1ff
+> +#define MSM8994_BASE0_REDUN_SHIFT	21
+> +#define MSM8994_BASE1_BIT0_REDUN_SHIFT_COMPUTE	31
+> +
+> +#define MSM8994_S0_REDUN_MASK	0x1e00
+> +#define MSM8994_S1_REDUN_MASK	0x1e000
+> +#define MSM8994_S2_REDUN_MASK	0x1e0000
+> +#define MSM8994_S3_REDUN_MASK	0x1e00000
+> +#define MSM8994_S4_REDUN_MASK	0x1e000000
+> +#define MSM8994_S5_REDUN_MASK_BIT0_2	0xe0000000
+> +#define MSM8994_S5_REDUN_MASK_BIT3	0x800000
+> +#define MSM8994_S6_REDUN_MASK	0xf000000
+> +#define MSM8994_S7_REDUN_MASK	0xf0000000
+> +#define MSM8994_S8_REDUN_MASK	0xf
+> +#define MSM8994_S9_REDUN_MASK	0xf0
+> +#define MSM8994_S10_REDUN_MASK	0xf00
+> +#define MSM8994_S11_REDUN_MASK	0xf000
+> +#define MSM8994_S12_REDUN_MASK	0xf0000
+> +#define MSM8994_S13_REDUN_MASK	0xf00000
+> +#define MSM8994_S14_REDUN_MASK	0xf000000
+> +#define MSM8994_S15_REDUN_MASK	0xf0000000
+> +
+> +#define MSM8994_S0_REDUN_SHIFT	9
+> +#define MSM8994_S1_REDUN_SHIFT	13
+> +#define MSM8994_S2_REDUN_SHIFT	17
+> +#define MSM8994_S3_REDUN_SHIFT	21
+> +#define MSM8994_S4_REDUN_SHIFT	25
+> +#define MSM8994_S5_REDUN_SHIFT_BIT0_2	29
+> +#define MSM8994_S5_REDUN_SHIFT_BIT3	23
+> +#define MSM8994_S6_REDUN_SHIFT	24
+> +#define MSM8994_S7_REDUN_SHIFT	28
+> +#define MSM8994_S8_REDUN_SHIFT	0
+> +#define MSM8994_S9_REDUN_SHIFT	4
+> +#define MSM8994_S10_REDUN_SHIFT	8
+> +#define MSM8994_S11_REDUN_SHIFT	12
+> +#define MSM8994_S12_REDUN_SHIFT	16
+> +#define MSM8994_S13_REDUN_SHIFT	20
+> +#define MSM8994_S14_REDUN_SHIFT	24
+> +#define MSM8994_S15_REDUN_SHIFT	28
+> +
+> +#define MSM8994_REDUN_SEL_MASK		0x7
+> +#define MSM8994_CAL_SEL_REDUN_MASK	0xe0000000
+> +#define MSM8994_CAL_SEL_REDUN_SHIFT	29
+> +
+> +#define BKP_SEL			0x3
+> +#define BKP_REDUN_SEL		0xe0000000
+> +#define BKP_REDUN_SHIFT		29
+> +
+>  static void compute_intercept_slope_8976(struct tsens_priv *priv,
+>  			      u32 *p1, u32 *p2, u32 mode)
+>  {
+> @@ -166,6 +259,37 @@ static void compute_intercept_slope_8976(struct tsens_priv *priv,
+>  	}
+>  }
+>  
+
+That deserves a cartdrige with a good explanation of why this function
+is doing all this. Without enough details, it is hard to review the code.
+
+> +static void compute_intercept_slope_8994(struct tsens_priv *priv,
+> +			      u32 *base0, u32 *base1, u32 *p, u32 mode)
 > +{
-> +	switch (flag) {
-> +	case VM_MEM_ENCRYPT:
-> +	case VM_MEM_ENCRYPT_ACTIVE:
-> +		return true;
+> +	int adc_code_of_tempx, i, num, den;
+> +
+> +	for (i = 0; i < priv->num_sensors; i++) {
+> +		dev_dbg(priv->dev,
+> +			"%s: sensor%d - data_point1:%#x data_point2:%#x\n",
+> +			__func__, i, base0[i], base1[i]);
+> +
+> +		priv->sensor[i].slope = SLOPE_DEFAULT;
+> +		if (mode == TWO_PT_CALIB) {
+> +			/*
+> +			 * slope (m) = adc_code2 - adc_code1 (y2 - y1)/
+> +			 *	temp_120_degc - temp_30_degc (x2 - x1)
+> +			 */
+> +			num = base1[i] - base0[i];
+
+As the caller of the function is copying the value of base[0] to the
+entire array, whatever 'i', base[i] == base[0], so the parameters can be
+replaced by a single int.
+
+Then the code becomes:
+
+	num = base1 - base0;
+	num *= SLOPE_FACTOR;
+	den = CAL_DEGC_PT2 - CAL_DEGC_PT1;
+	slope = num / den;
+
+There is no change in the values, so 'slope' can be precomputed before
+the loop. We end up with:
+
+	int adc_code_of_tempx, i, num, den;
+	int slope;
+
+	/*
+	 * slope (m) = adc_code2 - adc_code1 (y2 - y1)/
+	 *	temp_120_degc - temp_30_degc (x2 - x1)
+	 */
+	num = base1 - base0;
+	num *= SLOPE_FACTOR;
+	den = CAL_DEGC_PT2 - CAL_DEGC_PT1;
+	slope = num / den;
+
+	for (i = 0; i < priv->num_sensors; i++) {
+
+		priv->sensor[i].slope = mode == TWO_PT_CALIB ? slope :
+			SLOPE_DEFAULT;
+
+
+> +		adc_code_of_tempx = base0[i] + p[i];
+> +
+> +		priv->sensor[i].offset = (adc_code_of_tempx * SLOPE_FACTOR) -
+> +				(CAL_DEGC_PT1 *	priv->sensor[i].slope);
+> +		dev_dbg(priv->dev, "%s: offset:%d\n", __func__,
+> +			priv->sensor[i].offset);
+> +	}
+> +}
+> +
+>  static int calibrate_v1(struct tsens_priv *priv)
+>  {
+>  	u32 base0 = 0, base1 = 0;
+> @@ -297,14 +421,143 @@ static int calibrate_8976(struct tsens_priv *priv)
+>  	return 0;
+>  }
+
+Same comment as above. The more the details, the easier for the people
+to review the code.
+
+> -/* v1.x: msm8956,8976,qcs404,405 */
+> +static int calibrate_8994(struct tsens_priv *priv)
+> +{
+> +	int base0[16] = { 0 }, base1[16] = { 0 }, i;
+> +	u32 p[16];
+
+p stands for ?
+
+> +	int mode = 0;
+> +	u32 *calib0, *calib1, *calib2, *calib_mode, *calib_rsel;
+> +	u32 calib_redun_sel;
+> +
+> +	/* 0x40d0-0x40dc */
+> +	calib0 = (u32 *)qfprom_read(priv->dev, "calib");
+
+Fix qfprom_read, by returning an int and using nvmem_cell_read_u32
+(separate series).
+
+It seems like all call sites are expecting an int.
+
+> +	if (IS_ERR(calib0))
+> +		return PTR_ERR(calib0);
+> +
+> +	dev_dbg(priv->dev, "%s: calib0: [0] = %i, [1] = %i, [2] = %i\n",
+> +		__func__, calib0[0], calib0[1], calib0[2]);
+> +
+> +	/* 0x41c0-0x41c8 */
+> +	calib1 = (u32 *)qfprom_read(priv->dev, "calib_redun1_2");> +	if (IS_ERR(calib1))
+> +		return PTR_ERR(calib1);
+> +
+> +	dev_dbg(priv->dev, "%s: calib1: [0] = %i, [1] = %i\n",
+> +		__func__, calib1[0], calib1[1]);
+> +
+> +	/* 0x41cc-0x41d0 */
+> +	calib2 = (u32 *)qfprom_read(priv->dev, "calib_redun3");
+> +	if (IS_ERR(calib2))
+> +		return PTR_ERR(calib2);
+> +
+> +	dev_dbg(priv->dev, "%s: calib2: [0] = %i\n", __func__, calib2[0]);
+> +
+> +	/* 0x4440-0x4448 */
+> +	calib_mode = (u32 *)qfprom_read(priv->dev, "calib_redun4_5");
+> +	if (IS_ERR(calib_mode))
+> +		return PTR_ERR(calib_mode);
+> +
+> +	dev_dbg(priv->dev, "%s: calib_mode: [0] = %i, [1] = %i\n",
+> +		__func__, calib1[0], calib1[1]);
+> +
+> +	/* 0x4464-0x4468 */
+> +	calib_rsel = (u32 *)qfprom_read(priv->dev, "calib_rsel");
+> +	if (IS_ERR(calib_mode))
+> +		return PTR_ERR(calib_mode);
+> +
+> +	dev_dbg(priv->dev, "%s: calib_rsel: [0] = %i\n", __func__, calib_rsel[0]);
+> +
+> +	calib_redun_sel =  calib_rsel[0] & MSM8994_CAL_SEL_REDUN_MASK;
+> +	calib_redun_sel >>= MSM8994_CAL_SEL_REDUN_SHIFT;
+> +
+> +	if (calib_redun_sel == BKP_SEL) {
+> +		dev_dbg(priv->dev, "%s: Calibrating in REDUN mode, calib_redun_sel = %i",
+> +			__func__, calib_redun_sel);
+> +		mode = calib_mode[1] & MSM8994_REDUN_SEL_MASK;
+> +
+> +		if (mode == TWO_PT_CALIB) {
+> +			dev_dbg(priv->dev, "%s: REDUN TWO_PT mode, mode = %i", __func__, mode);
+> +			base0[0] = (calib1[0] & MSM8994_BASE0_REDUN_MASK) >> MSM8994_BASE0_REDUN_SHIFT;
+> +			base1[0] = (calib1[0] & MSM8994_BASE1_BIT0_REDUN_MASK) >> MSM8994_BASE1_BIT0_REDUN_SHIFT_COMPUTE;
+> +			base1[0] |= calib1[1] & MSM8994_BASE1_BIT1_9_REDUN_MASK;
+> +			p[0] = (calib1[1] & MSM8994_S0_REDUN_MASK) >> MSM8994_S0_REDUN_SHIFT;
+> +			p[1] = (calib1[1] & MSM8994_S1_REDUN_MASK) >> MSM8994_S1_REDUN_SHIFT;
+> +			p[2] = (calib1[1] & MSM8994_S2_REDUN_MASK) >> MSM8994_S2_REDUN_SHIFT;
+> +			p[3] = (calib1[1] & MSM8994_S3_REDUN_MASK) >> MSM8994_S3_REDUN_SHIFT;
+> +			p[4] = (calib1[1] & MSM8994_S4_REDUN_MASK) >> MSM8994_S4_REDUN_SHIFT;
+> +			p[5] = (calib1[1] & MSM8994_S5_REDUN_MASK_BIT0_2) >> MSM8994_S5_REDUN_SHIFT_BIT0_2;
+> +			p[5] |= (calib2[0] & MSM8994_S5_REDUN_MASK_BIT3) >> MSM8994_S5_REDUN_SHIFT_BIT3;
+> +			p[6] = (calib2[0] & MSM8994_S6_REDUN_MASK) >> MSM8994_S6_REDUN_SHIFT;
+> +			p[7] = (calib2[0] & MSM8994_S7_REDUN_MASK) >> MSM8994_S7_REDUN_SHIFT;
+> +			p[8] = (calib2[0] & MSM8994_S8_REDUN_MASK) >> MSM8994_S8_REDUN_SHIFT;
+> +			p[9] = (calib2[0] & MSM8994_S9_REDUN_MASK) >> MSM8994_S9_REDUN_SHIFT;
+> +			p[10] = (calib2[0] & MSM8994_S10_REDUN_MASK) >> MSM8994_S10_REDUN_SHIFT;
+> +			p[11] = (calib2[0] & MSM8994_S11_REDUN_MASK) >> MSM8994_S11_REDUN_SHIFT;
+> +			p[12] = (calib2[0] & MSM8994_S12_REDUN_MASK) >> MSM8994_S12_REDUN_SHIFT;
+> +			p[13] = (calib2[0] & MSM8994_S13_REDUN_MASK) >> MSM8994_S13_REDUN_SHIFT;
+> +			p[14] = (calib2[0] & MSM8994_S14_REDUN_MASK) >> MSM8994_S14_REDUN_SHIFT;
+> +			p[15] = (calib2[0] & MSM8994_S15_REDUN_MASK) >> MSM8994_S15_REDUN_SHIFT;
+
+IMO, it is possible to do something simpler (probably bits.h could have
+interesting helpers).
+
+> +		} else {
+> +			dev_dbg(priv->dev, "%s: REDUN NON-TWO_PT mode, mode = %i",
+> +			__func__, mode);
+> +			for (i = 0; i < 16; i++)
+> +				p[i] = 532;
+
+No litterals, macros please
+
+And it would be simpler to iniatialize the array with the value.
+
+u32 p[16] = { [ 0 ... 15 ] = MY_532_MACRO };
+
+So no need to use this loop and the other one beliw.
+
+What about replacing 16 by TSENS_SENSOR_MAX ?
+
+> +		}
+> +	} else {
+> +		dev_dbg(priv->dev, "%s: Calibrating in NOT-REDUN mode, calib_redun_sel = %i",
+> +			__func__, calib_redun_sel);
+> +		mode = (calib0[2] & MSM8994_CAL_SEL_MASK) >> MSM8994_CAL_SEL_SHIFT;
+> +
+> +		if (mode == TWO_PT_CALIB) {
+> +			dev_dbg(priv->dev, "%s: NOT-REDUN TWO_PT mode, mode = %i", __func__, mode);
+> +			base0[0] = (calib0[0] & MSM8994_BASE0_MASK) >> MSM8994_BASE0_SHIFT;
+> +			base1[0] = (calib0[0] & MSM8994_BASE1_MASK) >> MSM8994_BASE1_SHIFT;
+> +			p[0] = (calib0[0] & MSM8994_S0_MASK) >> MSM8994_S0_SHIFT;
+> +			p[1] = (calib0[0] & MSM8994_S1_MASK) >> MSM8994_S1_SHIFT;
+> +			p[2] = (calib0[1] & MSM8994_S2_MASK) >> MSM8994_S2_SHIFT;
+> +			p[3] = (calib0[1] & MSM8994_S3_MASK) >> MSM8994_S3_SHIFT;
+> +			p[4] = (calib0[1] & MSM8994_S4_MASK) >> MSM8994_S4_SHIFT;
+> +			p[5] = (calib0[1] & MSM8994_S5_MASK) >> MSM8994_S5_SHIFT;
+> +			p[6] = (calib0[1] & MSM8994_S6_MASK) >> MSM8994_S6_SHIFT;
+> +			p[7] = (calib0[1] & MSM8994_S7_MASK) >> MSM8994_S7_SHIFT;
+> +			p[8] = (calib0[1] & MSM8994_S8_MASK) >> MSM8994_S8_SHIFT;
+> +			p[9] = (calib0[1] & MSM8994_S9_MASK) >> MSM8994_S9_SHIFT;
+> +			p[10] = (calib0[1] & MSM8994_S10_MASK) >> MSM8994_S10_SHIFT;
+> +			p[11] = (calib0[2] & MSM8994_S11_MASK) >> MSM8994_S11_SHIFT;
+> +			p[12] = (calib0[2] & MSM8994_S12_MASK) >> MSM8994_S12_SHIFT;
+> +			p[13] = (calib0[2] & MSM8994_S13_MASK) >> MSM8994_S13_SHIFT;
+> +			p[14] = (calib0[2] & MSM8994_S14_MASK) >> MSM8994_S14_SHIFT;
+> +			p[15] = (calib0[2] & MSM8994_S15_MASK) >> MSM8994_S15_SHIFT;
+> +		} else {
+> +			dev_dbg(priv->dev, "%s: NOT-REDUN NON-TWO_PT mode, mode = %i", __func__, mode);
+> +			for (i = 0; i < 16; i++)
+> +				p[i] = 532;
+> +		}
 > +	}
 > +
-> +	return false;
+> +	/* 8994 does the slope calc a bit differently than others. */
+> +	for (i = 1; i < 16; i++) {
+> +		base0[i] = base0[0];
+> +		base1[i] = base1[0];
+> +	}
+> +
+> +	compute_intercept_slope_8994(priv, base0, base1, p, mode);
+> +	kfree(calib0);
+> +	kfree(calib1);
+> +	kfree(calib2);
+> +	kfree(calib_mode);
+> +
+> +	return 0;
 > +}
-> +EXPORT_SYMBOL_GPL(amd_protected_guest_has);
+> +
+> +/* v1.x: msm8956/8976, msm8994 (v1.2), qcs404/qcs405 */
+>  
+>  static struct tsens_features tsens_v1_feat = {
+>  	.ver_major	= VER_1_X,
+>  	.crit_int	= 0,
+>  	.adc		= 1,
+>  	.srot_split	= 1,
+> -	.max_sensors	= 11,
+> +	.max_sensors	= 16,
+>  };
+>  
+>  static const struct reg_field tsens_v1_regfields[MAX_REGFIELDS] = {
+> @@ -323,12 +576,12 @@ static const struct reg_field tsens_v1_regfields[MAX_REGFIELDS] = {
+>  	[INT_EN]     = REG_FIELD(TM_INT_EN_OFF, 0, 0),
+>  
+>  	/* UPPER/LOWER TEMPERATURE THRESHOLDS */
+> -	REG_FIELD_FOR_EACH_SENSOR11(LOW_THRESH,    TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF,  0,  9),
+> -	REG_FIELD_FOR_EACH_SENSOR11(UP_THRESH,     TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF, 10, 19),
+> +	REG_FIELD_FOR_EACH_SENSOR16(LOW_THRESH,    TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF,  0,  9),
+> +	REG_FIELD_FOR_EACH_SENSOR16(UP_THRESH,     TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF, 10, 19),
+>  
+>  	/* UPPER/LOWER INTERRUPTS [CLEAR/STATUS] */
+> -	REG_FIELD_FOR_EACH_SENSOR11(LOW_INT_CLEAR, TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF, 20, 20),
+> -	REG_FIELD_FOR_EACH_SENSOR11(UP_INT_CLEAR,  TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF, 21, 21),
+> +	REG_FIELD_FOR_EACH_SENSOR16(LOW_INT_CLEAR, TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF, 20, 20),
+> +	REG_FIELD_FOR_EACH_SENSOR16(UP_INT_CLEAR,  TM_Sn_UPPER_LOWER_STATUS_CTRL_OFF, 21, 21),
+>  	[LOW_INT_STATUS_0] = REG_FIELD(TM_HIGH_LOW_INT_STATUS_OFF,  0,  0),
+>  	[LOW_INT_STATUS_1] = REG_FIELD(TM_HIGH_LOW_INT_STATUS_OFF,  1,  1),
+>  	[LOW_INT_STATUS_2] = REG_FIELD(TM_HIGH_LOW_INT_STATUS_OFF,  2,  2),
+> @@ -349,14 +602,14 @@ static const struct reg_field tsens_v1_regfields[MAX_REGFIELDS] = {
+>  	/* NO CRITICAL INTERRUPT SUPPORT on v1 */
+>  
+>  	/* Sn_STATUS */
+> -	REG_FIELD_FOR_EACH_SENSOR11(LAST_TEMP,    TM_Sn_STATUS_OFF,  0,  9),
+> -	REG_FIELD_FOR_EACH_SENSOR11(VALID,        TM_Sn_STATUS_OFF, 14, 14),
+> +	REG_FIELD_FOR_EACH_SENSOR16(LAST_TEMP,    TM_Sn_STATUS_OFF,  0,  9),
+> +	REG_FIELD_FOR_EACH_SENSOR16(VALID,        TM_Sn_STATUS_OFF, 14, 14),
+>  	/* xxx_STATUS bits: 1 == threshold violated */
+> -	REG_FIELD_FOR_EACH_SENSOR11(MIN_STATUS,   TM_Sn_STATUS_OFF, 10, 10),
+> -	REG_FIELD_FOR_EACH_SENSOR11(LOWER_STATUS, TM_Sn_STATUS_OFF, 11, 11),
+> -	REG_FIELD_FOR_EACH_SENSOR11(UPPER_STATUS, TM_Sn_STATUS_OFF, 12, 12),
+> +	REG_FIELD_FOR_EACH_SENSOR16(MIN_STATUS,   TM_Sn_STATUS_OFF, 10, 10),
+> +	REG_FIELD_FOR_EACH_SENSOR16(LOWER_STATUS, TM_Sn_STATUS_OFF, 11, 11),
+> +	REG_FIELD_FOR_EACH_SENSOR16(UPPER_STATUS, TM_Sn_STATUS_OFF, 12, 12),
+>  	/* No CRITICAL field on v1.x */
+> -	REG_FIELD_FOR_EACH_SENSOR11(MAX_STATUS,   TM_Sn_STATUS_OFF, 13, 13),
+> +	REG_FIELD_FOR_EACH_SENSOR16(MAX_STATUS,   TM_Sn_STATUS_OFF, 13, 13),
+>  
+>  	/* TRDY: 1=ready, 0=in progress */
+>  	[TRDY] = REG_FIELD(TM_TRDY_OFF, 0, 0),
+> @@ -388,3 +641,17 @@ struct tsens_plat_data data_8976 = {
+>  	.feat		= &tsens_v1_feat,
+>  	.fields		= tsens_v1_regfields,
+>  };
+> +
+> +static const struct tsens_ops ops_8994 = {
+> +	.init		= init_common,
+> +	.calibrate	= calibrate_8994,
+> +	.get_temp	= get_temp_tsens_valid,
+> +};
+> +
+> +struct tsens_plat_data data_8994 = {
+> +	.num_sensors	= 16,
+> +	.ops		= &ops_8994,
+> +	.hw_ids		= (unsigned int []){ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
 
-This certainly doesn't capture all of the situations where true would need
-to be returned. For example, SEV, but not SEV-ES, requires that string I/O
-be unrolled, etc.
+If you have time, in another series, replace this by a single int used
+as a bitmask and fix the hw_id loop in tsens.c.
 
-Thanks,
-Tom
+> +	.feat		= &tsens_v1_feat,
+> +	.fields	= tsens_v1_regfields,
+> +};
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index d8ce3a687b80..96d17afe3460 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -903,6 +903,9 @@ static const struct of_device_id tsens_table[] = {
+>  	}, {
+>  		.compatible = "qcom,msm8974-tsens",
+>  		.data = &data_8974,
+> +	}, {
+> +		.compatible = "qcom,msm8994-tsens",
+> +		.data = &data_8994,
+>  	}, {
+>  		.compatible = "qcom,msm8976-tsens",
+>  		.data = &data_8976,
+> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+> index f40b625f897e..dfbff7f6442c 100644
+> --- a/drivers/thermal/qcom/tsens.h
+> +++ b/drivers/thermal/qcom/tsens.h
+> @@ -588,7 +588,7 @@ extern struct tsens_plat_data data_8960;
+>  extern struct tsens_plat_data data_8916, data_8939, data_8974;
+>  
+>  /* TSENS v1 targets */
+> -extern struct tsens_plat_data data_tsens_v1, data_8976;
+> +extern struct tsens_plat_data data_tsens_v1, data_8976, data_8994;
+>  
+>  /* TSENS v2 targets */
+>  extern struct tsens_plat_data data_8996, data_tsens_v2;
+> 
 
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
