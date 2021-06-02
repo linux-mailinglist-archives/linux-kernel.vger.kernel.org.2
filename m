@@ -2,134 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA7B39930B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C43F39930F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhFBTCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:02:23 -0400
-Received: from mail-bn8nam08on2058.outbound.protection.outlook.com ([40.107.100.58]:38049
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229489AbhFBTCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:02:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yh/jrMPTHfiz+/bxPWwFKc/uGn2s16wbKuxuFMRzkcVggQ5bzCklPjDqrSi4ZJ/8EbBXI9XffXhZKgUkGqq6+OidJ0a/T19/HE8BKZeG6vCigRLE62lhSW04HU1bhkQf1AymbI+BTVmL69Qnx7S/WM8NQ2KnksooEpkzFkq0qZRxruv4QnWJqbn7AYfPs7KRl3zgVnoHC9wZAuh2jc79gZPVtK2GiKy4VbcTIM8Feylnv5qWbDwiHqU48RGvpwHcbwK/JOeZTiETzctcNlSAm1RVrnX1iu7cvy6Vn+nzxNdkp4lBu17W7Dkk4hAQsd3guXoBH14a+eKoV648qh97iA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0yjjfltbxTW1ACHVKAGkewF2D+DYNepyqlu9k+MErW0=;
- b=P4e9UCzUrgkTnKZ8nG/ZaLvvmgkVUEX2ZSMaQfoIVBy2HhOhL0Y/4gkX5dJ9bdBOFSUV1Fc6oMvyOgsicUqepr+L6uPyEwSCeAclowOe9PxYjTBLJF+g/ziGukPziA3kuPjDeCKHu8JinW5N7+/VAwz/QKFT4/RNzuSpKFFfbEFNgvD3FvZoJtUSuuPXT3oKQBHLDdAcNzIEuDUb/lofS9NAY92OjIl/2kpSUp8NH6S5SkqGD0+DHpYJhYl4ba5bAgEFFYLc6HjCbR+rX5YfRvbqbbiVrbIZaw9GVxGV+XUr6ZEGYTFgZJK/4hycak+1bj7Vhx16FvR2KpzGmorxhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0yjjfltbxTW1ACHVKAGkewF2D+DYNepyqlu9k+MErW0=;
- b=kHkO9DXIVUkKWpD2swX/XCKoprsTDtaqXJXKTm0TvfMQXFiGxJm7fqflungHhMZlW1w/dYw8u9qBKHHNRHDH2mAlmHj2F3dKrqA6aJ3gbuuozlf+kq90NTaiAA5KGDBZmwfouiHTfs0dndisgL+BhJSVAaanj0CjcZdCHevUdCE1nzvYz2ru0ow9ZMzewIu+Xq8T1N8fb5115srR4gTLtdw2R7KVin5vh0ZoBn3ggOJzGw91ldiOmkN1+u1muDu20wV5cbsF5tmJB9exsoEbc+5r5yLjIs03YCIQXaIxTeFdY5CLYA3YwN/th3hj9ZwDccr/pYgXuBZEu92/nUqS/g==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5538.namprd12.prod.outlook.com (2603:10b6:208:1c9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Wed, 2 Jun
- 2021 19:00:37 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.020; Wed, 2 Jun 2021
- 19:00:37 +0000
-Date:   Wed, 2 Jun 2021 16:00:35 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mark Zhang <markzhang@nvidia.com>,
-        Roland Dreier <rolandd@cisco.com>,
-        Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-next v4 0/8] Fix memory corruption in CM
-Message-ID: <20210602190035.GA140508@nvidia.com>
-References: <cover.1622629024.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1622629024.git.leonro@nvidia.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0127.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::12) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229702AbhFBTCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:02:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54245 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229640AbhFBTCl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:02:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622660457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MXz63wHFCtBChG1iHvZvXLJp7K/v2y7oMTVIZRydq2I=;
+        b=b2X2uSLOiD2nTJfjhPhwh6TPwda/5s3DBuavmbeqah5Z+vB5hs2pS0bqsUlF4UQd+styPE
+        ZBvVWOMn0t7RD+qhvJqXukltV6MBimHPL+QMKaGI5L9K1+Akn/FVjHTSvX68/TvJZiWsFz
+        ni+smoPMiJ0/tScx+PkOaF6QD2cYWU4=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-BWBfMCmaO9iV3qzsI2rMYw-1; Wed, 02 Jun 2021 15:00:56 -0400
+X-MC-Unique: BWBfMCmaO9iV3qzsI2rMYw-1
+Received: by mail-oo1-f71.google.com with SMTP id o2-20020a4ad4820000b0290208a2516d36so2008956oos.16
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 12:00:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MXz63wHFCtBChG1iHvZvXLJp7K/v2y7oMTVIZRydq2I=;
+        b=UHJMgCiE5BF4JQIr7RTGxc0PVtUV3gZ7QfofbqieZzI4pfCrWE0CTZg/wZ3vxTQdlg
+         OX0QdxthiZXr1Y8tCzFS1nzTBXm1dBvJOanS5zk1YZzvdZEFobvGKX1XVpCTUFtKkqPP
+         mn/L3aNEiA5pb0gM44WQu/F5aW3aegJHKhMr9vbqFgZHMAiFOt+FN+CFUErH1UrhqMA4
+         YReEd+w0SSuS3X5IU7dWu5E6C9ESLHGdNLoOkEQu7aHZ+Dko4LehcSRfnQf9+3ajojeW
+         PckpaUtrBxY+eP+lNYTiDcAGjqkgynAvu+1yAc0knNTkzkzwpImsqOyG32eunk5cJ0C7
+         ib2w==
+X-Gm-Message-State: AOAM531wMEq4kogCy14TRDJufa+H5Y1+U/m5dU53DsAjo7DTPK8ZYhPO
+        PfknwYuIA76BywFRMKb8PYjun3L5PH8IAVzjMIaV5yk2nEKs07QVZHpzlwDicR65hb0zc2YIFjD
+        OwHAGRQff9SiTdJe/oQjFrJZx
+X-Received: by 2002:a05:6830:15c2:: with SMTP id j2mr26008328otr.367.1622660455933;
+        Wed, 02 Jun 2021 12:00:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/5Q90CWT9NIdQ1XwO+Gtz3HwUCNmtONxlvq8I6Bn9cXQgzMIAVDQ/kll8JXgHVYLqh2a7KA==
+X-Received: by 2002:a05:6830:15c2:: with SMTP id j2mr26008303otr.367.1622660455621;
+        Wed, 02 Jun 2021 12:00:55 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id q5sm163159oia.31.2021.06.02.12.00.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 12:00:54 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 13:00:53 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210602130053.615db578.alex.williamson@redhat.com>
+In-Reply-To: <20210602180925.GH1002214@nvidia.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210528200311.GP1002214@nvidia.com>
+        <MWHPR11MB188685D57653827B566BF9B38C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210601162225.259923bc.alex.williamson@redhat.com>
+        <MWHPR11MB1886E8454A58661DC2CDBA678C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210602160140.GV1002214@nvidia.com>
+        <20210602111117.026d4a26.alex.williamson@redhat.com>
+        <20210602173510.GE1002214@nvidia.com>
+        <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+        <20210602180925.GH1002214@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0127.namprd13.prod.outlook.com (2603:10b6:208:2bb::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.9 via Frontend Transport; Wed, 2 Jun 2021 19:00:36 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1loW6V-000aYv-OG; Wed, 02 Jun 2021 16:00:35 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 63d0fa92-c26c-4cc5-8b5a-08d925f8b4ff
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5538:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB553885BEA940290ECF05839DC23D9@BL0PR12MB5538.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y58VtlLtakPqrqfVj2l82vrtHhYemVRdGkHvPri6UT0XL+MU2u0rS1w3Vpjqmcn6z1h5TaiFoUFzChneQUbYqhrwKLscoNi79UMaFRKqD+qwR7sJIFIWkCgVRtMBSZhDj6zfJEX5RlxuHmhh1EdZO9Ld0/EE3waJOMelSIMplFW9xbIr8RkN6WdPc3GT3vQEFLyY7dotiIQ1wlJtMwhyYIwesQeHD1oPE9tDtgIL3BS8B0MEHnOwW0ZsvVntZa/O8iUhqsjOYMb0zRnKPRNm1oSOpttZnekSCsAU94gzqcZWJFidc8CllIJNMgBSP7+t0vbOCbkkqGGyH1faQCgKf10eRSfDCYhTgMezGXPOvpYXhGUbFRDt6CatR8m75r9IG/1jqcufgV6Nkmprnki8MsbA7FGJlqks7MZYzY/Efi84Z4NeCXb3Ch1rNMwVKs+el2jEd/2QA0fsX8AdEkLRPSYsZP4+Iry3WeTUBcYjC2uC7PHwQdEFMVPBDEa5j/t2Kk64TTB3Tf///K30L0KZNEQP46kp9Z3Lu7yL+tu7HANfuQ+DDblC/2CWSk2ojE6Y0W3mEFxpDf+iYQ5c/NU3afUPNbX3ueck5WXsl5A/2lR5f5AJReWpG1I5ox0Px0OY2MKfBtzap+cCyY0wjIt/cHvJNEaP8RR8C1XhdNWozZTqcxrQ9j78i5q3Iv6pMyM11B/R+z6FCV8QbnnmVKTc4mrr5DfSNlKrIZG5mnzT6kARoPyp+Ds0LWRHO/++y0gIRs1opsMSIq7iqq1joGvvE6H+GYwBE5NmE7oXdWnkZgMisX7WP+ByDKFvcOFhXzqn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(39850400004)(366004)(346002)(9786002)(86362001)(38100700002)(33656002)(9746002)(1076003)(6916009)(36756003)(8676002)(4326008)(8936002)(2906002)(316002)(426003)(54906003)(2616005)(478600001)(5660300002)(966005)(83380400001)(186003)(26005)(66556008)(66946007)(66476007)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ZByjz0m1tVJ7ckuyki2B7j8kH08FM2C4UomR9vOG6X48uAQbyLVmVJXUwldWjTYTW0BL4Zv/jQJsuHeJIPsh9KSl3CHbNiUVV+MkhxxDJz/9H/aLieJxNTDMKcYtAQAR5ItlM2pKddLfW1I221LRdWAGV8626CFsDhZ+TODSo7iYf2eJ9fv2DMMIhS7P3fbEyzBGMDSYvbx1yN8e/7zTzuStnk24pRzVfR/WVVQ9HBeWAKtOey54LZjCKixy96StDWgNunaNsCpvaUJcvupSJlBw1zj1cxICt/V1LR160NxRzni0i1kNLVsMFaUHEthQDAiIpkpEag6fZJoav78HbJcQeJRupWi6MCdyNsHxx9EDhX/Vbua+N8fJBPi72ViYtq6cafwg8kJIbyu3tG1FgmOQzG+jlD43ToHsEgTJNgC2P8EuJw+QaWPMp5ZXz6VGtLfS+rpBfA2jWPExAvx9dq0+nNQEb6YqcBEJpVAtmR661opLpVRp3wAavc+Po+dV0kMxNqySP1Ix4D7qIzk3vbCNPTYXP6KZfVTJAfpk1LLmJ9yLgK60EWyY2cvf/IqCACAgeOP7CYPsZhFizUMXqzVNgqvBfaySN0x3reTePU0jJMaMGk79jN34xOwuLJXTrSA8wyWptFw5UjPvPlcpssxq+QUHkpotc5Hjh33rMZOcuxNx0aWjqGyZ6a1lJTJ/VfIbvpi995KfuNUm63rIGs1PzBx3XIQh5/UYny0VMtOXIIYHev6I9tVLWBCgXxKc
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63d0fa92-c26c-4cc5-8b5a-08d925f8b4ff
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 19:00:36.9912
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oBJtjpSNKPGPNKwdfhUNsqfQew+rucxAyTyEDkFuxU4bZ/EU3ru8HYiYXLBZiFAW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5538
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 01:27:00PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Changelog:
-> v4:
->  * Added comment near cm_destroy_av()
->  * Changed "unregistration lock" to be "mad_agent_lock" in the comment
->  * Removed unclear comment
-> v3: https://lore.kernel.org/lkml/cover.1620720467.git.leonro@nvidia.com
->  * Removed double unlock
->  * Changes in cma_release flow
-> v2: https://lore.kernel.org/lkml/cover.1619004798.git.leonro@nvidia.com
->  * Included Jason's patches in this series
-> v1: https://lore.kernel.org/linux-rdma/20210411122152.59274-1-leon@kernel.org
->  * Squashed "remove mad_agent ..." patches to make sure that we don't
->    need to check for the NULL argument.
-> v0: https://lore.kernel.org/lkml/20210318100309.670344-1-leon@kernel.org
-> 
-> -------------------------------------------------------------------------------
-> 
-> Hi,
-> 
-> This series from Mark fixes long standing bug in CM migration logic,
-> reported by Ryan [1].
-> 
-> Thanks
-> 
-> [1] https://lore.kernel.org/linux-rdma/CAFMmRNx9cg--NUnZjFM8yWqFaEtsmAWV4EogKb3a0+hnjdtJFA@mail.gmail.com/
-> 
-> Jason Gunthorpe (4):
->   IB/cm: Pair cm_alloc_response_msg() with a cm_free_response_msg()
->   IB/cm: Split cm_alloc_msg()
->   IB/cm: Call the correct message free functions in cm_send_handler()
->   IB/cm: Tidy remaining cm_msg free paths
-> 
-> Mark Zhang (4):
->   Revert "IB/cm: Mark stale CM id's whenever the mad agent was
->     unregistered"
->   IB/cm: Simplify ib_cancel_mad() and ib_modify_mad() calls
->   IB/cm: Improve the calling of cm_init_av_for_lap and
->     cm_init_av_by_path
->   IB/cm: Protect cm_dev, cm_ports and mad_agent with kref and lock
+On Wed, 2 Jun 2021 15:09:25 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Applied to for-next, thanks
+> On Wed, Jun 02, 2021 at 12:01:11PM -0600, Alex Williamson wrote:
+> > On Wed, 2 Jun 2021 14:35:10 -0300
+> > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >   
+> > > On Wed, Jun 02, 2021 at 11:11:17AM -0600, Alex Williamson wrote:
+> > >   
+> > > > > > > present and be able to test if DMA for that device is cache
+> > > > > > > coherent.      
+> > > > > 
+> > > > > Why is this such a strong linkage to VFIO and not just a 'hey kvm
+> > > > > emulate wbinvd' flag from qemu?    
+> > > > 
+> > > > IIRC, wbinvd has host implications, a malicious user could tell KVM to
+> > > > emulate wbinvd then run the op in a loop and induce a disproportionate
+> > > > load on the system.  We therefore wanted a way that it would only be
+> > > > enabled when required.    
+> > > 
+> > > I think the non-coherentness is vfio_device specific? eg a specific
+> > > device will decide if it is coherent or not?  
+> > 
+> > No, this is specifically whether DMA is cache coherent to the
+> > processor, ie. in the case of wbinvd whether the processor needs to
+> > invalidate its cache in order to see data from DMA.  
+> 
+> I'm confused. This is x86, all DMA is cache coherent unless the device
+> is doing something special.
+> 
+> > > If yes I'd recast this to call kvm_arch_register_noncoherent_dma()
+> > > from the VFIO_GROUP_NOTIFY_SET_KVM in the struct vfio_device
+> > > implementation and not link it through the IOMMU.  
+> > 
+> > The IOMMU tells us if DMA is cache coherent, VFIO_DMA_CC_IOMMU maps to
+> > IOMMU_CAP_CACHE_COHERENCY for all domains within a container.  
+> 
+> And this special IOMMU mode is basically requested by the device
+> driver, right? Because if you use this mode you have to also use
+> special programming techniques.
+> 
+> This smells like all the "snoop bypass" stuff from PCIE (for GPUs
+> even) in a different guise - it is device triggered, not platform
+> triggered behavior.
 
-Jason
+Right, the device can generate the no-snoop transactions, but it's the
+IOMMU that essentially determines whether those transactions are
+actually still cache coherent, AIUI.
+
+I did experiment with virtually hardwiring the Enable No-Snoop bit in
+the Device Control Register to zero, which would be generically allowed
+by the PCIe spec, but then we get into subtle dependencies in the device
+drivers and clearing the bit again after any sort of reset and the
+backdoor accesses to config space which exist mostly in the class of
+devices that might use no-snoop transactions (yes, GPUs suck).
+
+It was much easier and more robust to ignore the device setting and rely
+on the IOMMU behavior.  Yes, maybe we sometimes emulate wbinvd for VMs
+where the device doesn't support no-snoop, but it seemed like platforms
+were headed in this direction where no-snoop was ignored anyway.
+Thanks,
+
+Alex
+
