@@ -2,184 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2FBB3992AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579BF3992A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhFBSiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:38:07 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:28370 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhFBSiG (ORCPT
+        id S229626AbhFBShv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhFBShu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:38:06 -0400
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 152Ia13v008012;
-        Thu, 3 Jun 2021 03:36:02 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 152Ia13v008012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622658963;
-        bh=4rjqEYty1xRucIxhdoYP7TQh4oZHpVT0ZE4vGRSQlX0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=feZYW9awkmO4vA2dWCEJRRiEZrWJ4sCV/aprRmv/HMoyS6KmNWWWrPSd8BMe6Qlx0
-         Lgwkhb2XeW3Yhmx/3RuaQCdb2YohiEujPIjJJe+4+fc0ZWUGO4jRdCm9jyTDkvmqRP
-         U1PHANkA8xz8o7vB0KJY7y4llIykhY5S4D1p9ZRAyCqj18u0UQ6NZhN/VUYKDzF41p
-         fUzQFDpJ8LHoOatS3PKgqYVo2jDiM5XrxdqVmVLKRsMRPPWkBeJPN4KQmCCnVfM6DB
-         0dsUio0GXLFLuqDJhoC+ruND62DDC4KwNYVW9Ht5rWXuhOWEANP7xEwb+qgieL9trG
-         GfVbEBL6cug6g==
-X-Nifty-SrcIP: [209.85.210.169]
-Received: by mail-pf1-f169.google.com with SMTP id u18so2863186pfk.11;
-        Wed, 02 Jun 2021 11:36:02 -0700 (PDT)
-X-Gm-Message-State: AOAM532FnVUWgrrLhBTMZktIX++EGekpyJjiqWywkuJayHaXwD/mzqnO
-        zzjQUghWZO5p/50dgCimlGHZQklRi5w7m9etYEE=
-X-Google-Smtp-Source: ABdhPJx62CPmFW4UZmubLRwjlJHMz1KrzuAvxFpd8XF2qptlSfiVKtnVYjUZYACBoTtRx4Sf+t2NJHxdB9VKNjJpxE4=
-X-Received: by 2002:a63:36c1:: with SMTP id d184mr35339938pga.47.1622658961444;
- Wed, 02 Jun 2021 11:36:01 -0700 (PDT)
+        Wed, 2 Jun 2021 14:37:50 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B037AC061574;
+        Wed,  2 Jun 2021 11:36:06 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 2E2B32E0;
+        Wed,  2 Jun 2021 18:36:06 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2E2B32E0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1622658966; bh=W/vpT+iI0rchh3VZVeVOnpqOaOwv9O6V0VgVswk0/g0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=LSXthPXOmpX/n+ndSxtzyxlCGepQIfoPYYqCN1C+RnIZt9Be1Qb2OL9krezxYXjsW
+         6dW0I7ch/FgEoTtrc5jUk6D50PDU8TTYUujLQfTL5p5K24yFUIsC0IrO4FO1IWfOtg
+         lZI2L5uk8LkeJilGm73QhKex16dLbZ4dc9EgdjS5bSuvNcizOTuZP6nw5CHgrEiGcO
+         QbKTO9zCTsOyeW5MgqFzVqwCEhLlUvlxGvr4p8PHKIfFOYOG3vtpkfrlsaFCas4pnM
+         J8EsT0qJ8qsbOEcbvDlNFwTDq3uBjxcyTu9hM8CGqdir2iBAkdRjrbwzw47Eklsge4
+         s736sGtw3nVRg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lepton Wu <ytht.net@gmail.com>, Mel Gorman <mgorman@suse.de>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Stephen Kitt <steve@sk2.org>, Wang Qing <wangqing@vivo.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/12] docs: accounting: update delay-accounting.rst
+ reference
+In-Reply-To: <20210602200121.64a828a1@coco.lan>
+References: <cover.1622648507.git.mchehab+huawei@kernel.org>
+ <629b0bd21d02c8faef9a6d17d9eee8ff612715e0.1622648507.git.mchehab+huawei@kernel.org>
+ <YLe0BQcrnfRgH1dV@hirez.programming.kicks-ass.net>
+ <20210602200121.64a828a1@coco.lan>
+Date:   Wed, 02 Jun 2021 12:36:05 -0600
+Message-ID: <871r9k6rmy.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210526173855.5963-1-msuchanek@suse.de> <CAK7LNASEqKwQeLPXedyut+ykSJGPuq3CO1g_fS=sVDaZrwBPBQ@mail.gmail.com>
- <20210526202825.GB8544@kitsune.suse.cz> <CAK7LNAQ=DiayZ8YqgMTrTWyP_fuEpPL80+BSzj9VB+RQDKD27g@mail.gmail.com>
- <20210529053512.GT8544@kitsune.suse.cz> <CAK7LNAT-78qWBa-TzTTQ-PN7Cr5DdaAEgKzUiVkkB=uOgcAsDQ@mail.gmail.com>
- <20210602100315.GL8544@kitsune.suse.cz> <CAK7LNAT0AfTb=SVp+iO0rGkLm8__=O+uW-20_iuPvvNkxkbpuA@mail.gmail.com>
- <20210602175929.GN8544@kitsune.suse.cz>
-In-Reply-To: <20210602175929.GN8544@kitsune.suse.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 3 Jun 2021 03:35:24 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQLC4VFzcgx90T7w-sew0EJmhYOzmuG+AMNLgWMJxRO=A@mail.gmail.com>
-Message-ID: <CAK7LNAQLC4VFzcgx90T7w-sew0EJmhYOzmuG+AMNLgWMJxRO=A@mail.gmail.com>
-Subject: Re: [PATCH] Revert "kbuild: merge scripts/mkmakefile to top Makefile"
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 2:59 AM Michal Such=C3=A1nek <msuchanek@suse.de> wro=
-te:
->
-> On Thu, Jun 03, 2021 at 12:44:48AM +0900, Masahiro Yamada wrote:
-> > On Thu, Jun 3, 2021 at 12:18 AM Michal Such=C3=A1nek <msuchanek@suse.de=
-> wrote:
-> > >
-> > > On Wed, Jun 02, 2021 at 06:45:58PM +0900, Masahiro Yamada wrote:
-> > > > On Sat, May 29, 2021 at 2:35 PM Michal Such=C3=A1nek <msuchanek@sus=
-e.de> wrote:
-> > > > >
-> > > > > On Sat, May 29, 2021 at 02:15:55AM +0900, Masahiro Yamada wrote:
-> > > > > > On Thu, May 27, 2021 at 5:28 AM Michal Such=C3=A1nek <msuchanek=
-@suse.de> wrote:
-> > > > > > >
-> > > > > > > On Thu, May 27, 2021 at 03:56:41AM +0900, Masahiro Yamada wro=
-te:
-> > > > > > > > On Thu, May 27, 2021 at 2:39 AM Michal Suchanek <msuchanek@=
-suse.de> wrote:
-> > > > > > > > >
-> > > > > > > > > This reverts commit 243b50c141d71fcf7b88e94474b3b9269f0b1=
-f9d.
-> > > > > > > > >
-> > > > > > > > > When packaging the kernel it is built in different place =
-from the one in
-> > > > > > > > > which it will be installed. After build the makefile need=
-s to be
-> > > > > > > > > regenerated with the target location but with mkmakefile =
-merged into
-> > > > > > > > > Makefile tehre is no way to do that.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > > > > >
-> > > > > > > > My patch was not working as expected
-> > > > > > > > regardless of packaging.
-> > > > > > > >
-> > > > > > > > Does the following fix-up work for you?
-> > > > > > >
-> > > > > > > For the packaging I need some way to regenerate the Makefile =
-and fake
-> > > > > > > the directory where the Makefile will be on the user system (=
-ie DESTDIR)
-> > > > > > >
-> > > > > > > Without the mkmakefile I do not see any way to do it.
-> > > > > > >
-> > > > > > > If the kernel makefile is no longer location dependent there =
-is no need
-> > > > > > > any more, of course.
-> > > > > > >
-> > > > > > > Thanks
-> > > > > > >
-> > > > > > > Michal
-> > > > > >
-> > > > > > Sorry, I do not understand this.
-> > > > > >
-> > > > > > IIUC, this patch does not change any functionality.
-> > > > > > The generated Makefile is still the same.
-> > > > > > Why is it a problem?
-> > > > >
-> > > > > It cannot be regenerated.
-> > > >
-> > > > This is an issue regardless of your packaging.
-> > > > That is why I suggested a patch in my previous reply.
-> > > >
-> > > > https://lore.kernel.org/linux-kbuild/CAK7LNASEqKwQeLPXedyut+ykSJGPu=
-q3CO1g_fS=3DsVDaZrwBPBQ@mail.gmail.com/
-> > > >
-> > > >
-> > > > Anyway, please try next-20210602
-> > > > and see if you still have a problem.
-> > >
-> > > Yes, I still have a problem.
-> > >
-> > > My packaging script calls mkmakefile which no longer exists.
-> >
-> >
-> > So, we are not talking about the functionality any more.
-> >
-> > What is important for you is, you have a separate file.
-> >
-> > You overwrite scripts/mkmakefile for doing
-> > whatever hacks you like.
-> >
-> > If the code is moved into the Makefile,
-> > it will be more difficult to insert hacks.
-> >
-> > This is what I understood from your statement.
->
-> I did not insert hacks. I called the script that your patch removes.
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
+> That's said, automarkup.py has a rule to convert Documentation/<foo>.rst
+> into :doc:`<foo>`. So, an alternative approach would be to convert
+> treewide all :doc:`<foo>` into Documentation/<foo>.rst and add something 
+> at checkpatch.pl to recommend to avoid :doc: notation.
 
-You can copy scripts/mkmakefile
-to your packaging project if it is needed.
+That seems like the right approach to me.  We have the automarkup
+capability, we might as well make use of it...
 
-It is a very short code that generates two lines.
+Thanks,
 
-cat << EOF > Makefile
-# Automatically generated by $0: don't edit
-include $1/Makefile
-EOF
-
-You can also copy-paste it to your packaging script.
-
-
-
-
-
-
-
-> That's functionality that is lost.
->
-> Now without the script separate from the makefile inserting hacks will
-> be required.
->
-> I would like to avoid that.
->
-> Thanks
->
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+jon
