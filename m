@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3147B398E1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D29C398E29
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhFBPR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:17:27 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:40328 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231961AbhFBPRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:17:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622646942; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Mvr6DwYqAdmQs+y9t8n9U1xRbG7Nq+qmosOSCCtPFKg=; b=h7+863DeOjsiLIgmGgWwQokO1Igam+WY7r48WG1bCW1/qGcVBLxQM2H+Zr2aav8IfGGdQbgJ
- DFA0MULgjX8Gzm90foXqFOT62KIRJFkMAz0WZE18X5RdP6uz30QvaUKnVXISyxzeu2nBM0Nn
- H2pJvuUDq8XMchOE0DPOVKPQueI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60b7a08ee27c0cc77f943e8b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 15:15:26
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 78FB3C4360C; Wed,  2 Jun 2021 15:15:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A267C4323A;
-        Wed,  2 Jun 2021 15:15:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0A267C4323A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=okukatla@codeaurora.org
-From:   Odelu Kukatla <okukatla@codeaurora.org>
-To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        evgreen@google.com, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sboyd@kernel.org, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        Odelu Kukatla <okukatla@codeaurora.org>
-Subject: [V3 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
-Date:   Wed,  2 Jun 2021 20:44:53 +0530
-Message-Id: <1622646894-7833-4-git-send-email-okukatla@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622646894-7833-1-git-send-email-okukatla@codeaurora.org>
-References: <1622646894-7833-1-git-send-email-okukatla@codeaurora.org>
+        id S232129AbhFBPSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:18:13 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:40517 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230456AbhFBPSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:18:11 -0400
+Received: by mail-wr1-f45.google.com with SMTP id z17so2683030wrq.7;
+        Wed, 02 Jun 2021 08:16:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nG2h+dsXOe28vkZpaDbeym2PJCsPOYRsxGnjFtvlKgQ=;
+        b=DlpmpZi94ktt+VaFNUSDRWJ574JoV+bqABDFDvzY7JgJ3tJNCpHak1peEFF1sD50xh
+         Lr+z4zJs/SdWJDQ826vk9QR/M3U6LJKor3NcxhQsykl07KwRlNEXH3G4Fjo0CyxVkxqZ
+         gfL65GC34BV+EmwN53B7f4fEb879EVgxK0AxSBdPeWU3kEhKN9RjiqJ0mb9CUh0vseBb
+         jYEzO7Ep3JvlBU35MISPd9dh7CxlWjJqw3DMUpQVQm/10Ejo1AnCYWSEiL+n0dkACLHx
+         bwyx+LXn8EOkhyjRDTB8myYl5frIGHz6QRUizOc3qioZ6Vk9b9RjZBsQFG3EnRJ7xmgb
+         2zRw==
+X-Gm-Message-State: AOAM530iqVX4aGAoJTbiwML4zpEa8h9IT49IzqRTeADZTXzxv3iLaxsR
+        91PUJw9eBDYKIoV8wZTReWs=
+X-Google-Smtp-Source: ABdhPJxu4W9eU4IekY+OKY0b69pZvGTHUneXL0vHN1e92pb37CF2UI6bcWeZCMnMFY4reeYNjr45YA==
+X-Received: by 2002:a5d:6e04:: with SMTP id h4mr33389490wrz.256.1622646974413;
+        Wed, 02 Jun 2021 08:16:14 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id y2sm3563646wmq.45.2021.06.02.08.16.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 08:16:14 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 15:16:12 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, nunodasneves@linux.microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH] x86/hyperv: LP creation with lp_index on same CPU-id
+Message-ID: <20210602151612.7wz2ni4iyw7uzufm@liuwe-devbox-debian-v2>
+References: <20210531074046.113452-1-kumarpraveen@linux.microsoft.com>
+ <20210531105732.muzbpk4yksttsfwz@liuwe-devbox-debian-v2>
+ <572da60e-714f-b207-a89e-6dc40209e2da@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <572da60e-714f-b207-a89e-6dc40209e2da@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
-SoCs.
+On Mon, May 31, 2021 at 04:31:04PM +0530, Praveen Kumar wrote:
+> 
+> 
+> On 5/31/2021 4:27 PM, Wei Liu wrote:
+> > On Mon, May 31, 2021 at 01:10:46PM +0530, Praveen Kumar wrote:
+> >> The hypervisor expects the lp_index to be same as cpu-id during LP creation
+> >> This fix correct the same, as cpu_physical_id can give different cpu-id.
+> > 
+> > Code looks fine to me, but the commit message can be made clearer.
+> > 
+> > """
+> > The hypervisor expects the logical processor index to be the same as
+> > CPU's id during logical processor creation. Using cpu_physical_id
+> > confuses Microsoft Hypervisor's scheduler. That causes the root
+> > partition not boot when core scheduler is used.
+> > 
+> > This patch removes the call to cpu_physical_id and uses the CPU index
+> > directly for bringing up logical processor. This scheme works for both
+> > classic scheduler and core scheduler.
+> > 
+> > Fixes: 333abaf5abb3 (x86/hyperv: implement and use hv_smp_prepare_cpus)
+> > """
+> > 
+> > No action is required from you. If you are fine with this commit message
+> > I can incorporate it and update the subject line when committing this
+> > patch.
+> > 
+> 
+> Thanks Wei for your comments. I'm fine with your inputs. Please go ahead. Thanks.
 
-Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 38a7f55..7690d7e 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -1153,6 +1153,15 @@
- 			};
- 		};
- 
-+		epss_l3: interconnect@18590000 {
-+			compatible = "qcom,sc7280-epss-l3";
-+			reg = <0 0x18590000 0 1000>, <0 0x18591000 0 0x100>,
-+				<0 0x18592000 0 0x100>, <0 0x18593000 0 0x100>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
-+			clock-names = "xo", "alternate";
-+			#interconnect-cells = <1>;
-+		};
-+
- 		clk_virt: interconnect {
- 			compatible = "qcom,sc7280-clk-virt";
- 			#interconnect-cells = <2>;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Pushed to hyperv-next. Thanks.
