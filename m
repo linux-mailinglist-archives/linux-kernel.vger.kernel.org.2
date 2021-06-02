@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD46398CBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64368398CC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhFBOaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhFBOaJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:30:09 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16472C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:28:13 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id t6-20020a4ae9a60000b0290245a5133898so590691ood.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=why64ASda6N09T/+Pwk+bfH6/nnxuW96QOGPqoMB+sM=;
-        b=himWBiHE+VwxlklDa6IC/8V2dgK5fHFbNVESgDjbuQkANYRI9k0+hKXBLAbaEuxicz
-         uLcOW2dY/k9sQjzclIR4InK9NJ5+38dQ7yEmw8F1vjSSqslzVNKFvxaKTKOQnN0H/Kia
-         9vsvC27W49445LgbTn18qjoyk4NjDGgjL35SFVLmDfm/6yfBSlpYGRlmX6WOeXQuXvn4
-         UN4ylBkDbb2vP150ZIvMXmqauG8i2nmtTWt3ca36LLMbOI3CyBUC2nUomEVwRjU5txfL
-         Agc1Cpgxcbv97HUroQY6VKa8FGmEq501uN4IXGhu9IaniGyLy4JH0QSuDfK4196sAcd0
-         TebQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=why64ASda6N09T/+Pwk+bfH6/nnxuW96QOGPqoMB+sM=;
-        b=sVmmFb0x/fw+JCbtqdb+1ttmVJ9HtDI1x10FCj7WpVfVsfL7wn5FpzkTQeVZKvtD7d
-         MQYFr94FkswxUtFIUslZG4c3ZRnbjsUZGD8qsrg8+0SyENxkyhvQl3ar8iTO537YB1Ay
-         cl6skW3P1en8x3TdyUrfiVIx1H2r13ErLBFRfsVxBhD4BSC9zTt9aGZXnoS0S3GdHZkS
-         n36RivrAoni0NxjJWMHNr7Zd2V7hgIOkCkt7/ACkwIj4J2H+qgCPJ90DWa/NsPNBGPei
-         IvOuR+4IawMfP6aXa6pzp0ONsf+1/uoMDEzdgdjVrHctoTMGwzcim3AKadnnEmbeZ/Bb
-         ZAxw==
-X-Gm-Message-State: AOAM532s45/USvNBOB+7s8k0Qv0ajs2C3rU5+YtL+nO2vsy7O3+5lZYF
-        AIKlO1aMmz2WcPvIbpd70nRjgpdSmfwzZijV+BU=
-X-Google-Smtp-Source: ABdhPJxepnMcyOj6FxxdtG9fSGVa2ciFY7Sih7dFE8PhB6aUFACp+QiahnamVGV7J9Q0DPtOO/4MWYKTn6cIfZqLdBs=
-X-Received: by 2002:a4a:e084:: with SMTP id w4mr24438208oos.59.1622644091377;
- Wed, 02 Jun 2021 07:28:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210602133659.46158-1-manikishanghantasala@gmail.com> <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
-In-Reply-To: <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
-From:   Manikishan Ghantasala <manikishanghantasala@gmail.com>
-Date:   Wed, 2 Jun 2021 19:57:35 +0530
-Message-ID: <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
-Subject: Re: [PATCH] staging: greybus: fixed the coding style, labels should
- not be indented.
-To:     Alex Elder <elder@ieee.org>
-Cc:     Rui Miguel Silva <rmfrfs@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        id S230342AbhFBOcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:32:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:46354 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230031AbhFBOcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:32:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 379C011FB;
+        Wed,  2 Jun 2021 07:30:32 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.31.212])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D16593F73D;
+        Wed,  2 Jun 2021 07:30:19 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 15:30:16 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        acme <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        paulmck <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        linux-usb@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        cgroups <cgroups@vger.kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu <rcu@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        KVM list <kvm@vger.kernel.org>
+Subject: Re: [PATCH 3/6] sched,perf,kvm: Fix preemption condition
+Message-ID: <20210602143016.GE12753@C02TD0UTHF1T.local>
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.398289363@infradead.org>
+ <1873020549.5854.1622642347895.JavaMail.zimbra@efficios.com>
+ <YLeRVQbXt2hCiO8f@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLeRVQbXt2hCiO8f@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sending this mail again as I missed to reply to all.
- Hi Alex,
+On Wed, Jun 02, 2021 at 04:10:29PM +0200, Peter Zijlstra wrote:
+> On Wed, Jun 02, 2021 at 09:59:07AM -0400, Mathieu Desnoyers wrote:
+> > ----- On Jun 2, 2021, at 9:12 AM, Peter Zijlstra peterz@infradead.org wrote:
+> > 
+> > > When ran from the sched-out path (preempt_notifier or perf_event),
+> > > p->state is irrelevant to determine preemption. You can get preempted
+> > > with !task_is_running() just fine.
+> > > 
+> > > The right indicator for preemption is if the task is still on the
+> > > runqueue in the sched-out path.
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > ---
+> > > kernel/events/core.c |    7 +++----
+> > > virt/kvm/kvm_main.c  |    2 +-
+> > > 2 files changed, 4 insertions(+), 5 deletions(-)
+> > > 
+> > > --- a/kernel/events/core.c
+> > > +++ b/kernel/events/core.c
+> > > @@ -8568,13 +8568,12 @@ static void perf_event_switch(struct tas
+> > > 		},
+> > > 	};
+> > > 
+> > > -	if (!sched_in && task->state == TASK_RUNNING)
+> > > +	if (!sched_in && current->on_rq) {
+> > 
+> > This changes from checking task->state to current->on_rq, but this change
+> > from "task" to "current" is not described in the commit message, which is odd.
+> > 
+> > Are we really sure that task == current here ?
+> 
+> Yeah, @task == @prev == current at this point, but yes, not sure why I
+> changed that... lemme change that back to task.
 
-I agree those are called bit-field member names rather than labels.
-But the reason I mentioned is because the ./scripts/checkpatch.pl
-gave out a warning saying "labels should not be indented".
+FWIW, with that:
 
-Sorry for the confusion in the name I referred to. So, I think this
-change is needed as I feel this is not following the coding-style by
-having indent before the width for bit field member. I went through
-other places in source code to make sure this is correct, and sent the
-patch after confirmation.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Regards,
-Manikishan Ghantasala
+I have no strong feelings either way w.r.t. the whitespace cleanup. ;)
 
-On Wed, 2 Jun 2021 at 19:13, Alex Elder <elder@ieee.org> wrote:
->
-> On 6/2/21 8:36 AM, sh4nnu wrote:
-> > From: Manikishan Ghantasala <manikishanghantasala@gmail.com>
-> >
-> > staging: greybus: gpio.c: Clear coding-style problem
-> > "labels should not be indented" by removing indentation.
->
-> These are not labels.
->
-> I don't really understand what you're doing here.
->
-> Can you please explain why you think this needs changing?
->
->                                         -Alex
->
-> > Signed-off-by: Manikishan Ghantasala <manikishanghantasala@gmail.com>
-> > ---
-> >   drivers/staging/greybus/gpio.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/staging/greybus/gpio.c b/drivers/staging/greybus/gpio.c
-> > index 7e6347fe93f9..4661f4a251bd 100644
-> > --- a/drivers/staging/greybus/gpio.c
-> > +++ b/drivers/staging/greybus/gpio.c
-> > @@ -20,9 +20,9 @@
-> >   struct gb_gpio_line {
-> >       /* The following has to be an array of line_max entries */
-> >       /* --> make them just a flags field */
-> > -     u8                      active:    1,
-> > -                             direction: 1,   /* 0 = output, 1 = input */
-> > -                             value:     1;   /* 0 = low, 1 = high */
-> > +     u8                      active:1,
-> > +                             direction:1,    /* 0 = output, 1 = input */
-> > +                             value:1;        /* 0 = low, 1 = high */
-> >       u16                     debounce_usec;
-> >
-> >       u8                      irq_type;
-> >
->
+Thanks,
+Mark
