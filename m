@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8A23987FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7B03987F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhFBLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
+        id S232341AbhFBLW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232229AbhFBLWx (ORCPT
+        with ESMTP id S232252AbhFBLWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:22:53 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B64C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:21:10 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id i67so1907199qkc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gchpafLKJ6F6uOATukxao5S0fzx1QuO5gM2w3naYObs=;
-        b=RYDTY0QjdOGb7GBWzWXSIgmp3riEMTtlJ6ePjnS+zHZaqHYFqkBg61i+LUjT8vT0yX
-         0aFpRQzdhdiMFqLC0g8cGKUzYmQ+6Uvp5324tCxg7MgufCsg5COzkVbUDxigOpidKyj0
-         DfE61GhP1X/GTu1+yxXuVjsqsxs+5CW7o4mkpLeONuCCNft/BESAatIMWgCmnsIdnmvl
-         aR9+WJswy89YDIvJ/HT1wB296lsOy7zulRpyVy1u04f604IifYk4496HUh8S5UOkGiKq
-         VXJ4JzhBsS2k6HdiksLiL0UqPD8JZjTSwUNnY9Td8DpldjOrRbnm7CLOtyewUJAz7VnE
-         QFeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gchpafLKJ6F6uOATukxao5S0fzx1QuO5gM2w3naYObs=;
-        b=mF+5KqBHxBSoVeu+z45KxwmdCIvBIRgKExZRxZ/Uar3Mi6rvEUlVv7SJVvQAVmGyuN
-         OZWxrizLxRlwMP+fzxw7Yf8Irp3v1z6EkBNx8yOU4pEuu6X/mzPkNnLRmwvVPV/jGXsX
-         KhU93Sp8YmQq+IwDicrSScIBuBDZkekZCDiVr8zBaX37xq9oFNS+oPxT7CDzKPqRvQsD
-         8rWF0Rz8/RFr1dxAdFtCxDEN2URXAzuERVgMxMIEnA/3zYgYONuyu6L+fYjLM/H72qpv
-         RKnkBK1yumiYARXeFjdj0It/nqVREcGg3VzYvzjRE8CJZp2CKGMevEOvP6s3wNptvRrt
-         yNxA==
-X-Gm-Message-State: AOAM532a0CIdqG/d+zQc1dr/RH+rvWEGgR2rhOBMFsudT1UcVhFZ184E
-        Jg0wufszzgOIzQ5GzrydjgLBPXLa0p5zGhAnMw3bYg==
-X-Google-Smtp-Source: ABdhPJxkQvzCyua+2YCHkeNe+i/7cmwbKWtNkqHYzH1bZ1etsu2/XFklrkSEo8/9k2tD2Ih4LDt8IMgD4M2z0xhIp6w=
-X-Received: by 2002:a05:620a:15b:: with SMTP id e27mr19426423qkn.501.1622632869281;
- Wed, 02 Jun 2021 04:21:09 -0700 (PDT)
+        Wed, 2 Jun 2021 07:22:52 -0400
+Received: from mailserv1.kapsi.fi (mailserv1.kapsi.fi [IPv6:2001:67c:1be8::25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E56C061574;
+        Wed,  2 Jun 2021 04:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=ext.kapsi.fi; s=20161220; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pTMDdwyY3se7ek/n/DJtuBUdgsXKAqw0dSJWJKXqcA0=; b=PWMct+5rxQ4tyKOsNWCff+5qEc
+        +Fs2+5OCkxwcFZExbJJBLvWwyGz0EJBJthz1WMB1c64OajSxVru0oFeTEOgTSUqT1h2gUOeqLJf1b
+        p+2zyP268IhhYUAB6xYzVu4sn36ackNuhzkRuTPavrM47zu/2EDLpvEHrWNoTsV2TGp6b3jfa9Puc
+        sOAq1p+T5s759lbYCcT+ymjUs6zQPr6GFgdbYfwgRM/s5/4sxCZbjnq+qGVKMisuyEuWD9UsP1n3z
+        PwWCGUILjyPJzBFIeTDLV2hozBmK92NzDEjvxrLYVm83FoYR8xoJmNZU3lYR6YF5KNXBmh6rbuOje
+        i+aMvFcw==;
+Received: from sein11.ut.ee ([193.40.12.11]:11475 helo=[172.17.163.37])
+        by mailserv1.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <maukka@ext.kapsi.fi>)
+        id 1loOvn-0008TD-SD; Wed, 02 Jun 2021 14:21:06 +0300
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Mauri Sandberg <sandberg@mailfence.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>
+References: <20210325122832.119147-1-sandberg@mailfence.com>
+ <20210530161333.3996-1-maukka@ext.kapsi.fi>
+ <20210530161333.3996-2-maukka@ext.kapsi.fi>
+ <CACRpkdZfdd=ogHoNGuLzGGZYkvw7xtNO2VJm-t-2vMibGNy=dA@mail.gmail.com>
+ <866ff376-6d74-49c9-9e4c-2bf36bbd5981@ext.kapsi.fi>
+ <CACRpkda9LD00=mUjLbb+wG3mnEVHbyqj-3L98=c-k-bV54gmTg@mail.gmail.com>
+From:   Mauri Sandberg <maukka@ext.kapsi.fi>
+Message-ID: <3548155a-e634-c433-7173-77b56180ed98@ext.kapsi.fi>
+Date:   Wed, 2 Jun 2021 14:21:02 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <000000000000c98d7205ae300144@google.com> <0000000000003e409f05c3c5f190@google.com>
- <YLdo77SkmGLgPUBi@casper.infradead.org>
-In-Reply-To: <YLdo77SkmGLgPUBi@casper.infradead.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 2 Jun 2021 13:20:57 +0200
-Message-ID: <CACT4Y+YUa41KMCO3n9WSvsbLqXo=F5nxpnoYWyiyB=AFWZ-KVA@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in idr_get_next
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     syzbot <syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com>,
-        anmol.karan123@gmail.com,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
-        dsahern@kernel.org, Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Necip Fazil Yildiran <necip@google.com>,
-        netdev <netdev@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACRpkda9LD00=mUjLbb+wG3mnEVHbyqj-3L98=c-k-bV54gmTg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 193.40.12.11
+X-SA-Exim-Mail-From: maukka@ext.kapsi.fi
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mailserv1.kapsi.fi
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v4 1/2] dt-bindings: gpio-mux-input: add documentation
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on mailserv1.kapsi.fi)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 1:19 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> #syz fixed qrtr: Convert qrtr_ports from IDR to XArray
+Hi Linus,
 
-This would be:
+On 2.6.2021 13.35, Linus Walleij wrote:
+> On Wed, Jun 2, 2021 at 11:31 AM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
+> 
+>> But there is a small detail that needs to be sorted out.
+>> The name 'gpio-mux'
+>> has already been taken by 'mux-gpio' driver [2] [3].
+> 
+> What about "gpio-multiplexer"?
+> 
+> It is not good that the thing using GPIOs to do multiplexing
+> has take a name that seem to infer that GPIOs are being
+> multiplexed. Now we can't do much about that we just have
+> to live with it. How typical of formal languages to screw
+> with the semantics of natural languages and create confusion...
+> 
 
-#syz fix: qrtr: Convert qrtr_ports from IDR to XArray
+I am afraid having 'gpio-mux' and 'gpio-multiplexer' would create too 
+many what-were-they-thinking moments for any unfortunate reader so I 
+would rather choose something else. Can we just call it 'gpio-cascade' 
+without referral to the underlying mux? Maybe at somepoint in future 
+something else could be used in its place too.
 
-Thanks for looking up the proper fix.
+-- Mauri
 
-
-> On Wed, Jun 02, 2021 at 03:30:06AM -0700, syzbot wrote:
-> > syzbot suspects this issue was fixed by commit:
-> >
-> > commit 43016d02cf6e46edfc4696452251d34bba0c0435
-> > Author: Florian Westphal <fw@strlen.de>
-> > Date:   Mon May 3 11:51:15 2021 +0000
->
-> Your bisect went astray.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/YLdo77SkmGLgPUBi%40casper.infradead.org.
