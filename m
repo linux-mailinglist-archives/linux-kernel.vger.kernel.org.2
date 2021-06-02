@@ -2,154 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27784398118
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064D739811A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhFBG1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:27:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231253AbhFBG1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:27:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DE2961242;
-        Wed,  2 Jun 2021 06:25:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622615120;
-        bh=CN8Scw9JiOUjDS8oyeIUr7XIx5aiC/gWsMtxKDZjltE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AWumsQOQE8xEDlCg8ICPEX8ajmMPVgLrJNE6DiPUCpyweW5UdKS6e4ux90OkPK/mn
-         BKExYH8RJtR3UMr4JNg8e9PznzaYoLsEbvRy0+aqy0p/7+LEz5865SiGiaU5UVqBdw
-         eQfGI4AHIwgIs8q7PynOHGvMKl20+ZPM+HjrUPtBcG18ePUxP1aTDzKXoffVjLKdtO
-         6xH3W5E3nLKWIajNsDA2vuOG0wXqRNrHEhBehj14JjFlhP0Ipf7026mJidaEBagvdW
-         ddjbuYT6yYpF3Ob1lH60Kw+N5b2dQx1/VJInLt+qf3yVN501xiPAzLG7oROiN4BG2d
-         TM6YlRCB5A6KQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Devin Moore <devinmoore@google.com>
-Subject: [PATCH v3 6/6] bootconfig: Share the checksum function with tools
-Date:   Wed,  2 Jun 2021 15:25:17 +0900
-Message-Id: <162261511700.255316.7845877611885532107.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162261506232.255316.12147562546699211199.stgit@devnote2>
-References: <162261506232.255316.12147562546699211199.stgit@devnote2>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
+        id S229617AbhFBG1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:27:23 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2944 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231312AbhFBG1L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 02:27:11 -0400
+Received: from dggeme710-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvzTd1CrYz693w;
+        Wed,  2 Jun 2021 14:22:29 +0800 (CST)
+Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
+ dggeme710-chm.china.huawei.com (10.1.199.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 14:25:26 +0800
+Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
+ dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
+ Wed, 2 Jun 2021 14:25:26 +0800
+From:   zhengyongjun <zhengyongjun3@huawei.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "rjui@broadcom.com" <rjui@broadcom.com>,
+        "sbranden@broadcom.com" <sbranden@broadcom.com>,
+        "bcm-kernel-feedback-list@broadcom.com" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "khilman@baylibre.com" <khilman@baylibre.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>
+CC:     "opendmb@gmail.com" <opendmb@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+        "martin.blumenstingl@googlemail.com" 
+        <martin.blumenstingl@googlemail.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjIgbmV0LW5leHRdIG5ldDogbWRpbzogRml4IHNw?=
+ =?utf-8?Q?elling_mistakes?=
+Thread-Topic: [PATCH v2 net-next] net: mdio: Fix spelling mistakes
+Thread-Index: AQHXV0/0yeESSU45Zkat1EPmshxhFKr/kyaAgACuOKA=
+Date:   Wed, 2 Jun 2021 06:25:26 +0000
+Message-ID: <8f437442d492476bbb0a9d7c4672a65b@huawei.com>
+References: <20210602015151.4135891-1-zhengyongjun3@huawei.com>
+ <ce8d1b78-47ce-9211-d948-093d316ea647@gmail.com>
+In-Reply-To: <ce8d1b78-47ce-9211-d948-093d316ea647@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.64]
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the checksum calculation function into the header for sharing it
-with tools/bootconfig.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/bootconfig/main.c |   15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
-
-diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index e49043ac77c9..6bdd94cff4e2 100644
---- a/include/linux/bootconfig.h
-+++ b/include/linux/bootconfig.h
-@@ -16,6 +16,26 @@
- #define BOOTCONFIG_ALIGN	(1 << BOOTCONFIG_ALIGN_SHIFT)
- #define BOOTCONFIG_ALIGN_MASK	(BOOTCONFIG_ALIGN - 1)
- 
-+/**
-+ * xbc_calc_checksum() - Calculate checksum of bootconfig
-+ * @data: Bootconfig data.
-+ * @size: The size of the bootconfig data.
-+ *
-+ * Calculate the checksum value of the bootconfig data.
-+ * The checksum will be used with the BOOTCONFIG_MAGIC and the size for
-+ * embedding the bootconfig in the initrd image.
-+ */
-+static inline __init u32 xbc_calc_checksum(void *data, u32 size)
-+{
-+	unsigned char *p = data;
-+	u32 ret = 0;
-+
-+	while (size--)
-+		ret += *p++;
-+
-+	return ret;
-+}
-+
- /* XBC tree node */
- struct xbc_node {
- 	u16 next;
-diff --git a/init/main.c b/init/main.c
-index eb01e121d2f1..43914e675421 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -386,16 +386,6 @@ static char * __init xbc_make_cmdline(const char *key)
- 	return new_cmdline;
- }
- 
--static u32 boot_config_checksum(unsigned char *p, u32 size)
--{
--	u32 ret = 0;
--
--	while (size--)
--		ret += *p++;
--
--	return ret;
--}
--
- static int __init bootconfig_params(char *param, char *val,
- 				    const char *unused, void *arg)
- {
-@@ -439,7 +429,7 @@ static void __init setup_boot_config(void)
- 		return;
- 	}
- 
--	if (boot_config_checksum((unsigned char *)data, size) != csum) {
-+	if (xbc_calc_checksum(data, size) != csum) {
- 		pr_err("bootconfig checksum failed\n");
- 		return;
- 	}
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index 5441b254eb7c..9e2c6eedacb1 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -128,17 +128,6 @@ static void xbc_show_list(void)
- 	}
- }
- 
--/* Simple real checksum */
--static int checksum(unsigned char *buf, int len)
--{
--	int i, sum = 0;
--
--	for (i = 0; i < len; i++)
--		sum += buf[i];
--
--	return sum;
--}
--
- #define PAGE_SIZE	4096
- 
- static int load_xbc_fd(int fd, char **buf, int size)
-@@ -234,7 +223,7 @@ static int load_xbc_from_initrd(int fd, char **buf)
- 		return ret;
- 
- 	/* Wrong Checksum */
--	rcsum = checksum((unsigned char *)*buf, size);
-+	rcsum = xbc_calc_checksum(*buf, size);
- 	if (csum != rcsum) {
- 		pr_err("checksum error: %d != %d\n", csum, rcsum);
- 		return -EINVAL;
-@@ -383,7 +372,7 @@ static int apply_xbc(const char *path, const char *xbc_path)
- 		return ret;
- 	}
- 	size = strlen(buf) + 1;
--	csum = checksum((unsigned char *)buf, size);
-+	csum = xbc_calc_checksum(buf, size);
- 
- 	/* Backup the bootconfig data */
- 	data = calloc(size + BOOTCONFIG_ALIGN +
-
+RmluZSwgSSB3aWxsIHNlbmQgdGhlIHBhdGNoIHJpZ2h0IG5vdyA6KQ0KDQotLS0tLemCruS7tuWO
+n+S7ti0tLS0tDQrlj5Hku7bkuro6IEZsb3JpYW4gRmFpbmVsbGkgW21haWx0bzpmLmZhaW5lbGxp
+QGdtYWlsLmNvbV0gDQrlj5HpgIHml7bpl7Q6IDIwMjHlubQ25pyIMuaXpSAxMjowMQ0K5pS25Lu2
+5Lq6OiB6aGVuZ3lvbmdqdW4gPHpoZW5neW9uZ2p1bjNAaHVhd2VpLmNvbT47IGFuZHJld0BsdW5u
+LmNoOyBoa2FsbHdlaXQxQGdtYWlsLmNvbTsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJu
+ZWwub3JnOyByanVpQGJyb2FkY29tLmNvbTsgc2JyYW5kZW5AYnJvYWRjb20uY29tOyBiY20ta2Vy
+bmVsLWZlZWRiYWNrLWxpc3RAYnJvYWRjb20uY29tOyBuYXJtc3Ryb25nQGJheWxpYnJlLmNvbTsg
+a2hpbG1hbkBiYXlsaWJyZS5jb207IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5l
+bEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFtbG9naWNAbGlzdHMuaW5mcmFkZWFkLm9yZw0K5oqE
+6YCBOiBvcGVuZG1iQGdtYWlsLmNvbTsgZi5mYWluZWxsaUBnbWFpbC5jb207IGxpbnV4QGFybWxp
+bnV4Lm9yZy51azsgamJydW5ldEBiYXlsaWJyZS5jb207IG1hcnRpbi5ibHVtZW5zdGluZ2xAZ29v
+Z2xlbWFpbC5jb20NCuS4u+mimDogUmU6IFtQQVRDSCB2MiBuZXQtbmV4dF0gbmV0OiBtZGlvOiBG
+aXggc3BlbGxpbmcgbWlzdGFrZXMNCg0KDQoNCk9uIDYvMS8yMDIxIDY6NTEgUE0sIFpoZW5nIFlv
+bmdqdW4gd3JvdGU6DQo+IGluZm9ybWF0aW9ucyAgPT0+IGluZm9ybWF0aW9uDQo+IHR5cGljYWx5
+ICA9PT4gdHlwaWNhbGx5DQo+IGRlcnJpdmUgID09PiBkZXJpdmUNCj4gZXZlbnRob3VnaCAgPT0+
+IGV2ZW4gdGhvdWdoDQo+IGh6ID09PiBIeg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWmhlbmcgWW9u
+Z2p1biA8emhlbmd5b25nanVuM0BodWF3ZWkuY29tPg0KDQpZb3VyIHYxIHdhcyBhcHBsaWVkIGFs
+cmVhZHk6DQoNCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvbmV0ZGV2L25ldC1uZXh0L2MvZTY1YzI3
+OTM4ZDhlDQoNCnNvIHlvdSB3b3VsZCBuZWVkIHRvIHN1Ym1pdCBhbiBpbmNyZW1lbnRhbCBwYXRj
+aCB0aGFua3MhDQotLSANCkZsb3JpYW4NCg==
