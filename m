@@ -2,66 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2CD39846C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195F4398434
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhFBIoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:44:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:33702 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230100AbhFBIoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:44:11 -0400
-IronPort-SDR: SVn4bMPRCdOcVFp5gLb9SIznncJ3td9OtAiOz9/qxnKQN1kYTJS8EdpJb1H3gq3+0bmeJwsFs3
- LD35wMgA67LA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="267613345"
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="267613345"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 01:42:20 -0700
-IronPort-SDR: U2SIb0jBSHa6gNWgBJXZlkEHg9F04hR8OrJUpNQPlI4PPrlDhJ+QmQ/ygJlfZZdttiJEZOZRjE
- LeepV/J8tpLA==
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="399646773"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 01:42:17 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1loMS6-00Gf3j-Pa; Wed, 02 Jun 2021 11:42:14 +0300
-Date:   Wed, 2 Jun 2021 11:42:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Javier =?iso-8859-1?B?VGnh?= <javier.tia@gmail.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed
- kernel
-Message-ID: <YLdEZoSWI41fcTB1@smile.fi.intel.com>
-References: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
+        id S229571AbhFBIf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:35:29 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3345 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232654AbhFBIf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:35:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fw2Hb2Ktfz19S5d;
+        Wed,  2 Jun 2021 16:28:59 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 16:33:41 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 2 Jun
+ 2021 16:33:41 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <dinguyen@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>
+CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH V2] clk: socfpga: err out if of_clk_add_provider() failed in __socfpga_pll_init()
+Date:   Wed, 2 Jun 2021 16:42:59 +0800
+Message-ID: <20210602084259.1267768-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <162262008540.4130789.916741380026683860@swboyd.mtv.corp.google.com>
+References: <162262008540.4130789.916741380026683860@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 02, 2016 at 09:54:14PM +0200, Andy Shevchenko wrote:
-> Until now DMI information is lost when kexec'ing. Fix this in the same way as
-> it has been done for ACPI RSDP.
-> 
-> Series has been tested on Galileo Gen2 where DMI is used by drivers, in
-> particular the default I2C host speed is choosen based on DMI system
-> information and now gets it correct.
+__socfpga_pll_init() should fail if of_clk_add_provider() failed.
+remove 'rc' in the meantime to avoid gcc
+'-Wunused-but-set-variable' warning.
 
-Still nothing happens for a while and problem still exists.
-Can we do something about it, please?
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+changes in V2:
+ - remove 'rc' and use err' instead of 'rc'
+ - err out if of_clk_add_provider() failed
 
+ drivers/clk/socfpga/clk-pll.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/clk/socfpga/clk-pll.c b/drivers/clk/socfpga/clk-pll.c
+index dcb573d44034..5a9eec2eca80 100644
+--- a/drivers/clk/socfpga/clk-pll.c
++++ b/drivers/clk/socfpga/clk-pll.c
+@@ -80,7 +80,6 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
+ 	const char *parent_name[SOCFPGA_MAX_PARENTS];
+ 	struct clk_init_data init;
+ 	struct device_node *clkmgr_np;
+-	int rc;
+ 	int err;
+ 
+ 	of_property_read_u32(node, "reg", &reg);
+@@ -110,12 +109,16 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
+ 	hw_clk = &pll_clk->hw.hw;
+ 
+ 	err = clk_hw_register(NULL, hw_clk);
+-	if (err) {
+-		kfree(pll_clk);
+-		return ERR_PTR(err);
+-	}
+-	rc = of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
++	if (err)
++		goto err_out;
++	err = of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
++	if (err)
++		goto err_out;
+ 	return hw_clk;
++
++err_out:
++	kfree(pll_clk);
++	return ERR_PTR(err);
+ }
+ 
+ void __init socfpga_pll_init(struct device_node *node)
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.31.1
 
