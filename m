@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A53398E1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D0E398E17
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhFBPRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:17:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:38173 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhFBPRO (ORCPT
+        id S231891AbhFBPQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:16:41 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7076 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231515AbhFBPQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:17:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622646931; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=wONkowc2aU9yIojYgYnWALe2g/vOfIdV4AybmMpsICE=; b=hpPvu+QFLKgIyp8SYYNGQrqFGYJwuhNWj4o214p9rdifaW26YBvyCLrCOLsXSUoxnBv1nfhg
- RXoYZmSmlNjkRuI9MRgZXj8EpZSU7UbgcxFtXfq5KS8DnuSvUCp4pEuWXHJ0ruHfgox0QpXz
- HXHET3qSCjXjjUE1YQCG86y3Wms=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60b7a07ff726fa4188e7a33e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 15:15:11
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18EC5C43147; Wed,  2 Jun 2021 15:15:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 341C0C433F1;
-        Wed,  2 Jun 2021 15:15:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 341C0C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=okukatla@codeaurora.org
-From:   Odelu Kukatla <okukatla@codeaurora.org>
-To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        evgreen@google.com
-Cc:     sboyd@kernel.org, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        Odelu Kukatla <okukatla@codeaurora.org>
-Subject: [V3 0/3] Add L3 provider support for SC7280
-Date:   Wed,  2 Jun 2021 20:44:50 +0530
-Message-Id: <1622646894-7833-1-git-send-email-okukatla@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 2 Jun 2021 11:16:39 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FwCDl5T2yzYptM;
+        Wed,  2 Jun 2021 23:12:07 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 23:14:52 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 23:14:51 +0800
+Subject: Re: [PATCH] Revert "arm: mm: qsd8x50: Fix incorrect permission
+ faults"
+To:     Russell King <linux@armlinux.org.uk>
+CC:     Nathan Chancellor <nathan@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210528074444.17291-1-wangkefeng.wang@huawei.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <248320ed-494b-937d-734c-c97e0c32038a@huawei.com>
+Date:   Wed, 2 Jun 2021 23:14:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210528074444.17291-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Epoch Subsystem (EPSS) L3 provider support on SM7280 SoCs.
+Hi Russell, any comment about this patch, thanks.
 
-v3:
- - Addressed review comments (Rob Herring)
- 
-Depends on: https://lore.kernel.org/patchwork/cover/1418814/
- 
-Odelu Kukatla (3):
-  dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
-  interconnect: qcom: Add EPSS L3 support on SC7280
-  arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
-
- .../bindings/interconnect/qcom,osm-l3.yaml         |   4 +-
- arch/arm64/boot/dts/qcom/sc7280.dtsi               |   9 ++
- drivers/interconnect/qcom/osm-l3.c                 | 135 ++++++++++++++++-----
- drivers/interconnect/qcom/sc7280.h                 |  10 ++
- include/dt-bindings/interconnect/qcom,osm-l3.h     |  10 +-
- 5 files changed, 137 insertions(+), 31 deletions(-)
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+On 2021/5/28 15:44, Kefeng Wang wrote:
+> This reverts commit e220ba60223a9d63e70217e5b112160df8c21cea.
+>
+> The VERIFY_PERMISSION_FAULT is introduced since 2009 but no
+> one use it, just revert it and clean unused comment.
+>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   arch/arm/mm/Kconfig     |  2 --
+>   arch/arm/mm/abort-ev7.S | 26 --------------------------
+>   2 files changed, 28 deletions(-)
+>
+> diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+> index 35f43d0aa056..8355c3895894 100644
+> --- a/arch/arm/mm/Kconfig
+> +++ b/arch/arm/mm/Kconfig
+> @@ -601,8 +601,6 @@ config CPU_TLB_V6
+>   config CPU_TLB_V7
+>   	bool
+>   
+> -config VERIFY_PERMISSION_FAULT
+> -	bool
+>   endif
+>   
+>   config CPU_HAS_ASID
+> diff --git a/arch/arm/mm/abort-ev7.S b/arch/arm/mm/abort-ev7.S
+> index f7cc5d68444b..f81bceacc660 100644
+> --- a/arch/arm/mm/abort-ev7.S
+> +++ b/arch/arm/mm/abort-ev7.S
+> @@ -17,31 +17,5 @@ ENTRY(v7_early_abort)
+>   	mrc	p15, 0, r1, c5, c0, 0		@ get FSR
+>   	mrc	p15, 0, r0, c6, c0, 0		@ get FAR
+>   	uaccess_disable ip			@ disable userspace access
+> -
+> -	/*
+> -	 * V6 code adjusts the returned DFSR.
+> -	 * New designs should not need to patch up faults.
+> -	 */
+> -
+> -#if defined(CONFIG_VERIFY_PERMISSION_FAULT)
+> -	/*
+> -	 * Detect erroneous permission failures and fix
+> -	 */
+> -	ldr	r3, =0x40d			@ On permission fault
+> -	and	r3, r1, r3
+> -	cmp	r3, #0x0d
+> -	bne	do_DataAbort
+> -
+> -	mcr	p15, 0, r0, c7, c8, 0   	@ Retranslate FAR
+> -	isb
+> -	mrc	p15, 0, ip, c7, c4, 0   	@ Read the PAR
+> -	and	r3, ip, #0x7b   		@ On translation fault
+> -	cmp	r3, #0x0b
+> -	bne	do_DataAbort
+> -	bic	r1, r1, #0xf			@ Fix up FSR FS[5:0]
+> -	and	ip, ip, #0x7e
+> -	orr	r1, r1, ip, LSR #1
+> -#endif
+> -
+>   	b	do_DataAbort
+>   ENDPROC(v7_early_abort)
