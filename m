@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AE439955D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D872399570
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhFBVZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:25:31 -0400
-Received: from mail-pl1-f180.google.com ([209.85.214.180]:39440 "EHLO
-        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFBVZa (ORCPT
+        id S229774AbhFBVcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:32:14 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:46992 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229619AbhFBVcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:25:30 -0400
-Received: by mail-pl1-f180.google.com with SMTP id q16so1778218pls.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 14:23:47 -0700 (PDT)
+        Wed, 2 Jun 2021 17:32:12 -0400
+Received: by mail-wr1-f45.google.com with SMTP id a11so1801676wrt.13;
+        Wed, 02 Jun 2021 14:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DfdDU6e0YWhm8GiUYoVOU7IBIs5ShVcV9zH63gd4jZ4=;
-        b=Kcf8fIi2m7QQeqwOGqxUXvq/8ArpV2yVIYX2G1i8mIh5gudU+6xEYqa+1SPGY0+iMQ
-         Jkq0tSxPygDE6bZE5SMOS9B8YWILXzOgQ/w6Us+rr0cN0YFMWzdLz4ZcnTWolLTxcBcT
-         CrhEz31FUVk1qO+iPxohJZIiJay0Tr/F8byLP1S7Xnz23s9haOpquscRvi3nkNbCEOyn
-         EUP//GzFm6cHYod3ZrgXW2fb4HHimQZRgVm6MWf8neSaDECstQ+sT03YySSXYGAAtrNr
-         42GdmDp1NP2vWUiz3UEYTcteCaYl0tvBIrn+3uOj9rLUh7hTucGGabqRowTC0w7VPD7K
-         3Wnw==
+        bh=4s+WtVD0z1zrvcjIi7mvIhu9JKhygKLIdbwXXCCDpJ8=;
+        b=UOENaWmX3PzGWYoKPFhCQXlJ9/5W38ns2q5K3buxLEbFhE0ynImXXyXe0xjWaUw+2k
+         3+HrtTIKZNHqHbPiOVtemxOy27y0wGopobb4amoi+NnmxXjOhatFWAoBLD/1dwECQvrb
+         76+T7NF9tD5xlnQ7EFqs6SrBVxRihaibGjEqi2PuMRhbTmheHCdCIdRW3Qcfc8HBhss1
+         0hugAJNGNvrWgLacfV+jzs0ATYO7VeUNzAMvq19O9/7PAU7y0ydzdJWkrAxXmbcUi4hO
+         C+r0lGgqUNzttSv8I7Rj38rxxUZjbg9ss5eXjhx8UilqupeVKU1cm8j0SQ48/seiaoyL
+         BepQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=DfdDU6e0YWhm8GiUYoVOU7IBIs5ShVcV9zH63gd4jZ4=;
-        b=Ag9S1HE76lFXk0HNfkuh+k7B1bmRwgeyIjbispRtllwBSoNAuArjRo9/+/ibG3VEc6
-         We+PEC9UL4v/X+sxLiR+tiDo4Hbp5oWIgbgAcwwnt1R3WBFszitoJl+c7oJ/p7sTGe5R
-         ax3SoaMG1bkHtV93ji4IsOglgio9mlbnUvmj3Hg0b/DBMbvgR7+mLaaCIuYM016pb4Y6
-         5sQCyBwttt3KqhLCP2g/8jgWA8XDefY8llUPMDciSic6bjjjIJHGcZTwsM713HR2fBXH
-         RpHl2iIEWVmnb94BKI1IxypIWlUeMjrg7N8MZfy0nVYfBhyK+fpqjIGs8N9uRYteCkov
-         pAGw==
-X-Gm-Message-State: AOAM532pzKne+/ZIl3Ci9RenDwANsk++4i5zu6230UeyNR0bqPDHB23S
-        X48eJIkY0pCbYc4KY13pfyc=
-X-Google-Smtp-Source: ABdhPJwS7aUccz9RxesR7aabyMA4HV1mDe/stEG3I5dkgQT2sP9qn/zgivFinuhglXlQE8mntmg9ng==
-X-Received: by 2002:a17:90b:247:: with SMTP id fz7mr7461964pjb.137.1622668966827;
-        Wed, 02 Jun 2021 14:22:46 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:ea44:6c81:cb03:abf2])
-        by smtp.gmail.com with ESMTPSA id z9sm435860pfc.101.2021.06.02.14.22.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4s+WtVD0z1zrvcjIi7mvIhu9JKhygKLIdbwXXCCDpJ8=;
+        b=sELs9bzCVuZ58J9AGg6QIF3qlTemapa8ETXaI3qFuR7pBk5t1jXdVuBy3nD6r/9s6e
+         5kdYSOOM44Bn3i/MYf69YURD7BOSK4/hv9Uv0dRSbSS7Pt9Si/6ChodfbVUKNGl3+ijK
+         k1L5511FHNkCV3bYs6qImQnp0xfklBTA0VX2PWJpq7w8Llpnr/xXVVdjlweiZUNv0EDR
+         xNbPvBcgHIUPMwRWc3sae9twMvfUFGOCmpg7SDnFRdlXP5cJGgoSNQokBdfPW1uQhKq8
+         XCANvw0wbku4x8OPsFkmQaZSxtpzBmY5xYaBYtTKeVHiuckRCBI0zuRs7HgG2Q/H4JLT
+         g9KQ==
+X-Gm-Message-State: AOAM531f2UvGhP9W46ptHN8K+jTj34EvLI7IwxhGSCMy8zckFMySqDOz
+        ArwNgthOJ3A9bcKqNpE4id1A27TAqGLafw==
+X-Google-Smtp-Source: ABdhPJzjiDdoclNUldyrUeLFcTnrcPHIcR9mw6VbQ4HURvNHqRXQdc6ch3lj36KtL5Jsp1ptwwIdxg==
+X-Received: by 2002:adf:ef06:: with SMTP id e6mr24281131wro.393.1622669367880;
+        Wed, 02 Jun 2021 14:29:27 -0700 (PDT)
+Received: from localhost.localdomain ([185.199.80.151])
+        by smtp.gmail.com with ESMTPSA id 62sm1272616wrm.1.2021.06.02.14.29.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 14:22:46 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH 3/3] perf stat: Honor event config name on --no-merge
-Date:   Wed,  2 Jun 2021 14:22:41 -0700
-Message-Id: <20210602212241.2175005-3-namhyung@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-In-Reply-To: <20210602212241.2175005-1-namhyung@kernel.org>
-References: <20210602212241.2175005-1-namhyung@kernel.org>
+        Wed, 02 Jun 2021 14:29:27 -0700 (PDT)
+From:   Kurt Manucredo <fuzzybritches0@gmail.com>
+To:     syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com, nathan@kernel.org,
+        ndesaulniers@google.com, clang-built-linux@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        Kurt Manucredo <fuzzybritches0@gmail.com>
+Subject: [PATCH v3] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+Date:   Wed,  2 Jun 2021 21:27:26 +0000
+Message-Id: <20210602212726.7-1-fuzzybritches0@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <000000000000c2987605be907e41@google.com>
+References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If user gave an event name explicitly, it should be displayed in the
-output as is.  But with --no-merge option it adds a pmu name at the
-end so might confuse users.
+UBSAN: shift-out-of-bounds in kernel/bpf/core.c:1414:2
+shift exponent 248 is too large for 32-bit type 'unsigned int'
 
-Actually this is true for hybrid pmus, I think we should do the same
-for others.
-
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
 ---
- tools/perf/util/stat-display.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 04afd41b6067..f7cb9bba673b 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -541,7 +541,7 @@ static void uniquify_event_name(struct evsel *counter)
- 	char *config;
- 	int ret = 0;
- 
--	if (counter->uniquified_name ||
-+	if (counter->uniquified_name || counter->use_config_name ||
- 	    !counter->pmu_name || !strncmp(counter->name, counter->pmu_name,
- 					   strlen(counter->pmu_name)))
- 		return;
-@@ -555,10 +555,8 @@ static void uniquify_event_name(struct evsel *counter)
+https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
+
+Changelog:
+----------
+v3 - Make it clearer what the fix is for.
+v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+check in check_alu_op() in verifier.c.
+v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+check in ___bpf_prog_run().
+
+Hi everyone,
+
+I hope this fixes it!
+
+kind regards
+
+ kernel/bpf/verifier.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 94ba5163d4c5..04e3bf344ecd 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7880,13 +7880,25 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 			return -EINVAL;
  		}
- 	} else {
- 		if (perf_pmu__has_hybrid()) {
--			if (!counter->use_config_name) {
--				ret = asprintf(&new_name, "%s/%s/",
--					       counter->pmu_name, counter->name);
--			}
-+			ret = asprintf(&new_name, "%s/%s/",
-+				       counter->pmu_name, counter->name);
- 		} else {
- 			ret = asprintf(&new_name, "%s [%s]",
- 				       counter->name, counter->pmu_name);
+ 
+-		if ((opcode == BPF_LSH || opcode == BPF_RSH ||
+-		     opcode == BPF_ARSH) && BPF_SRC(insn->code) == BPF_K) {
++		if (opcode == BPF_LSH || opcode == BPF_RSH ||
++		     opcode == BPF_ARSH) {
+ 			int size = BPF_CLASS(insn->code) == BPF_ALU64 ? 64 : 32;
+ 
+-			if (insn->imm < 0 || insn->imm >= size) {
+-				verbose(env, "invalid shift %d\n", insn->imm);
+-				return -EINVAL;
++			if (BPF_SRC(insn->code) == BPF_K) {
++				if (insn->imm < 0 || insn->imm >= size) {
++					verbose(env, "invalid shift %d\n", insn->imm);
++					return -EINVAL;
++				}
++			}
++			if (BPF_SRC(insn->code) == BPF_X) {
++				struct bpf_reg_state *src_reg;
++
++				src_reg = &regs[insn->src_reg];
++				if (src_reg->umax_value >= size) {
++					verbose(env, "invalid shift %lld\n",
++							src_reg->umax_value);
++					return -EINVAL;
++				}
+ 			}
+ 		}
+ 
 -- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
+2.30.2
 
