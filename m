@@ -2,65 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7A3399542
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54CF399549
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFBVMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhFBVLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:11:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5956A613F3;
-        Wed,  2 Jun 2021 21:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622668206;
-        bh=z0LigpFrYJVEfe2RvNMkxORLJxJtKdKqBW24cP/i2OA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uYzes3lng/6SXeO6s0E0RonIQZ4zXgF2gHmy6pG04yyvnYz5DgXFtwEP4bpg4z8m/
-         5O4imxPgVrGiLMKMgJs8ScijAGXWAhqyWC3DKOGwsxmo8vyYdBa9hJL+08TnjsAg4q
-         fsLMEch63RcMlkhrkhwbzEIBsw2qazo+7lx++/IufXtegyb/SyFAGdFh0xtQPERKJq
-         qKIPEXORuSwc+ZgZuoUg5ai9BMI7OKVJG6LqNEa03rqqLVqcbGHrbp8hUjCabrOQ3G
-         ACNll25Ql/zQLDsyoTHQo87zNzpxfBgjZo+TNy4XHG4xBVlI4RzrfH0cCn9GAM3z5V
-         G8YsUeoVKCUBQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4DBF260CE0;
-        Wed,  2 Jun 2021 21:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] ethtool: Fix a typo
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162266820631.24657.258503896682078355.git-patchwork-notify@kernel.org>
-Date:   Wed, 02 Jun 2021 21:10:06 +0000
-References: <20210602065428.104529-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210602065428.104529-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S229641AbhFBVSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBVSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 17:18:40 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05CFC06174A;
+        Wed,  2 Jun 2021 14:16:56 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so902578ool.1;
+        Wed, 02 Jun 2021 14:16:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=OR0vZLC69IiyT4ypo7Eh+2A/eWbHPbW4MgdKpUyG+Uw=;
+        b=AWo4Qm+h17+bQmjN2afrOjbyMxcUf9Rt/frA3X3zSzVGH+vvZ3sVsQfgy0jmeUzi8T
+         mh4+0uhpcGizcDzhnu6Zs2pPInN2vjNgk92TSH5MnpPAC8Xin2Lb6UUcnDyAo8W87b7g
+         /I4IX4HuIRxxJUj2T2T5S2dx0kE3hzGgPhA0b9YZNzCwi3KjRfOoMVDUgWKpe+QWji3y
+         DuforVJehGdkBqWJG7a0g7i4HLT2gUls5ChLOHkN9n8K1jGubVP8iqinlGKzP07CN8Q2
+         wEb5Ly0idE2JUxZNH9JNRe4CkvC/ODl5iBWKDE2wgUFgjsIGOOQty+8RdHgQevz/bOCX
+         VAwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=OR0vZLC69IiyT4ypo7Eh+2A/eWbHPbW4MgdKpUyG+Uw=;
+        b=eKJ45Goz6mgTxpzMtgU6lxWFpEo9YLyf07mCSjGa3eVqs3rC13OuYX2FiqXUvpOZR4
+         N4ACJl1pGLYxLCskzkifcFGD1NbFM/z9TQCx30sMyOJvC+NgiMpsnGJ5FDR2JZ/gQh5O
+         0QtykIfU/ap7z3e6QJRqeNSflQqXwSCJWKBarqXW2TNWeq/cYmDZhkN0SOmc5GCZk/4s
+         Xi2TetsRvMXTYIDl1ZEXboAism8p8bCl+lXNqNC9QpPlC3ksgjqv8SFkOOWVYubMezFI
+         EJAtof49yahZ1iWWWAoE0303Mjyi5GoIiWXg0viMrImpj+QYYZ/DVz6DA8quWoE2dbU0
+         t4ng==
+X-Gm-Message-State: AOAM533Slb5easrdPgbCpPkvfXMYyZ3ghaMiNQ/FRajVQRStHbykQ8s1
+        Kzlwubr9MyRdc9Tgam66+GgRp7lV2aiWhw==
+X-Google-Smtp-Source: ABdhPJxo1f2+kgOVPuhkc967KnJYlFthltXeJhCzAKvT38tQoM7Ms9tBYEbybdd8g4wCPQZ9hnuqkw==
+X-Received: by 2002:a05:6820:386:: with SMTP id r6mr3191559ooj.25.1622668616258;
+        Wed, 02 Jun 2021 14:16:56 -0700 (PDT)
+Received: from localhost (fixed-187-190-78-172.totalplay.net. [187.190.78.172])
+        by smtp.gmail.com with ESMTPSA id o20sm236330otl.2.2021.06.02.14.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 14:16:55 -0700 (PDT)
+Date:   Wed, 02 Jun 2021 16:16:54 -0500
+From:   Felipe Contreras <felipe.contreras@gmail.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        git@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <60b7f54697fda_16925f2083d@natae.notmuch>
+In-Reply-To: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+References: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+Subject: RE: git feature request: git blame --ignore-cleanup/--ignore-trivial
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Mathieu Desnoyers wrote:
+> Perhaps a new git blame "--ignore-trivial" and/or "--ignore-cleanup" could solve
+> this by filtering out "trivial" and "cleanup" patches from the history it considers.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+While this feature would be a good addition, more often than not I need
+to look behind the latest commit regardless of whether or not it's a
+trivial one.
 
-On Wed, 2 Jun 2021 14:54:28 +0800 you wrote:
-> atribute  ==> attribute
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  net/ethtool/netlink.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+So what I often end up doing is a `git blame --incremental`:
 
-Here is the summary with links:
-  - [net-next] ethtool: Fix a typo
-    https://git.kernel.org/netdev/net-next/c/b676c7f1c383
+  git blame --incremental -L100,+6 file.c | grep -o -e '^[0-9a-f]\{40\}'
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This can be fed to `git log --stdin --oneline --no-walk` for more
+user-friendliness.
 
+Of course you could just do:
 
+  git log -L100,+6:file.c --oneline --no-patch
+
+But for some reason that's much slower on my system.
+
+Cheers.
+
+-- 
+Felipe Contreras
