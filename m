@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35BD398574
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152CD398575
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhFBJpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S232226AbhFBJpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbhFBJpl (ORCPT
+        with ESMTP id S232143AbhFBJpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:45:41 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F51C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:43:56 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id k12-20020a0cfd6c0000b029020df9543019so1267823qvs.14
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:43:56 -0700 (PDT)
+        Wed, 2 Jun 2021 05:45:42 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F74EC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:43:59 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id x9-20020a5d49090000b0290118d8746e06so781778wrq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:43:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=iZUQk8fIlBvRNxDOUvgxujyUIWimZaPXfaVXd2+o6PY=;
-        b=VLEyklUT17eTyvASVE7D7VJJlhe5fAE1d9RgPZBqibyIBB6t1KdUSjsMDHUTzawsYb
-         kX7dTP9UCIcEy4saEDT8A1ACHMYxFaTwbasSzUy9XUR/Y2LxVJc9AKyM8VvhpSZRZ3NL
-         MxZ1AY2eP2/bBpheP6r59nKkqlZ/ZGdBOqYGu8KXHl7lSkugmxTEnm+8Wu68jUWSVkJL
-         0xrNW3CgzLjbiR2UH+ZZSedoZtMHG+8aASS7O0TbNhnJBXFav94x+bAlSa4Vz6cWhaK6
-         egWJUSMlQpeb1mS5RVmlTwu/ULC5Aw0INHSbGNgFhYW0WNgXxCvaRJ0qlrTHoPcNIdkK
-         Jcnw==
+        bh=t3AUZFExsqOFXJcxe9KexRvl4zPYmY7UlKUPgsp6CsY=;
+        b=LFwQebQ6RePwquLH6Tgf97KIl837thuo7ff3+yEFRV3EDeRV7KsrNUL4rJGqrD/AbB
+         p2fG3lpP5GJrkCuXydJyrK6l3MPS9cDudqAWsO3YQULj7Q4AOqp7BDGmmpJp/eXbLYpV
+         +5P5yzxlkadOG9jbu+nc1D8MblpcOvziNBMVqojWWhCX4+5izrXG+RLP2yKvIEZi0h+R
+         ngCmZjOtMrzWzG3OFo9IKaI2e0JNd9mdg0XBe9KHPAyxvFHyO9lEYZv5scf2wpx6aGFS
+         DkXeFZdRq0VAD3MvwlBjH47tUQD4ah6BqCdvnt4mowpP/VcWY3K+bRZHAEl55a2mfUld
+         fhcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=iZUQk8fIlBvRNxDOUvgxujyUIWimZaPXfaVXd2+o6PY=;
-        b=BsAZ/XaH6qJfjjvegrk+3HNv1B1aA06K9p+h5ZA1WOa++kslZq6DeWvUV/CviZCMpp
-         Nt0rfWwjcQJbWfYbH82Nnooyvz2YV5L38iaDkicHliDEKSXmrwhCgw4gCGCPKA+npoRl
-         vMoCCfE1y6MfMh2zPQazhiY5BBzVK6oMigRomhrzqDqyiyMRyZzOL3Oa6URDbLoX3RzK
-         pV/JTpcAaAPFPFfJsNx2O7lS6zsNK6cpQGMr0sUiuqLucFPi96r4Hm1LfvN0gqX2Tcko
-         YNDdTiTdK11hdl5MOeAf8fPQ5PMG8Kgb2FH9qXefCSA1bYYJdmZksUnpLgVPw1pkks+/
-         dFSg==
-X-Gm-Message-State: AOAM531OzWxvt+cvbRl2ELMFBaw8Hk6LlNxk7MIdFwyhQJrYVebhtUtR
-        0ae2icbjfmW7G8ZmNDZBObUAuT4Rpg/9
-X-Google-Smtp-Source: ABdhPJw5u97rh4yWHjSnTxNGWaGWtM7mSfMb+qJ6Mxm9lPPMCbPzQl92O3It3Tn7cZ0dBOcajFXTAP9JCzwj
+        bh=t3AUZFExsqOFXJcxe9KexRvl4zPYmY7UlKUPgsp6CsY=;
+        b=FhzaVv6FF94sgjKG4ZCSetiKSpOeB7gl6M5sKdTnIKMtU4sXvHsJxFHfCk9v71IXxE
+         fKjAeyadTFtS5bW/Y4etAT9A81lUFSiFVuQh4mPTAMsC3pc3Tau/lJY8h1akZtgOPfVe
+         K1agK/JeGtay93LiJ/BFaotG3ZAmLuGov0GeqvPRE9eqBrUMtx1rI0ANWc0Kh+JvTaVP
+         ThCIbeMUlz80dspkMmCyVXKNGN9BpJm85TThVelv+iDnJ8oG6SRxnVflNh109yAjLrC6
+         O1aMHu1VKLXfedZr0rxZcQ0q6eHUGKfv/kmkYP8pDKi1Mi3OQ1ihLGxSl2mxgtn00QaH
+         0zZA==
+X-Gm-Message-State: AOAM533xEUu8Wmz7R4Wji4XIvIrRdIk+rB1kCuVbCYpjrKW/Nauct6xP
+        lNhOvqd4wVtDCBqrxiZeWBFz1xrXj7As
+X-Google-Smtp-Source: ABdhPJz2xb5KXzKaMGgfcMmLyy8tV7f+4qajv6QtgpSO7AfdaazrcE0h7oP3513BqmP33p6OpeLOE/kr6fO4
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a05:6214:c88:: with SMTP id
- r8mr6671320qvr.58.1622627036015; Wed, 02 Jun 2021 02:43:56 -0700 (PDT)
-Date:   Wed,  2 Jun 2021 09:43:42 +0000
+ (user=qperret job=sendgmr) by 2002:a5d:5752:: with SMTP id
+ q18mr5245469wrw.419.1622627038040; Wed, 02 Jun 2021 02:43:58 -0700 (PDT)
+Date:   Wed,  2 Jun 2021 09:43:43 +0000
 In-Reply-To: <20210602094347.3730846-1-qperret@google.com>
-Message-Id: <20210602094347.3730846-3-qperret@google.com>
+Message-Id: <20210602094347.3730846-4-qperret@google.com>
 Mime-Version: 1.0
 References: <20210602094347.3730846-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH v2 2/7] KVM: arm64: Use refcount at hyp to check page availability
+Subject: [PATCH v2 3/7] KVM: arm64: Remove list_head from hyp_page
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, will@kernel.org, james.morse@arm.com,
         alexandru.elisei@arm.com, catalin.marinas@arm.com,
@@ -63,74 +63,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hyp buddy allocator currently checks the struct hyp_page list node
-to see if a page is available for allocation or not when trying to
-coalesce memory. Now that decrementing the refcount and attaching to
-the buddy tree is done in the same critical section, we can rely on the
-refcount of the buddy page to be in sync, which allows to replace the
-list node check by a refcount check. This will ease removing the list
-node from struct hyp_page later on.
+The list_head member of struct hyp_page is only needed when the page is
+attached to a free-list, which by definition implies the page is free.
+As such, nothing prevents us from using the page itself to store the
+list_head, hence reducing the size of the vmemmap.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/nvhe/page_alloc.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ arch/arm64/kvm/hyp/include/nvhe/memory.h |  1 -
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c     | 39 ++++++++++++++++++++----
+ 2 files changed, 33 insertions(+), 7 deletions(-)
 
+diff --git a/arch/arm64/kvm/hyp/include/nvhe/memory.h b/arch/arm64/kvm/hyp/include/nvhe/memory.h
+index fd78bde939ee..7691ab495eb4 100644
+--- a/arch/arm64/kvm/hyp/include/nvhe/memory.h
++++ b/arch/arm64/kvm/hyp/include/nvhe/memory.h
+@@ -12,7 +12,6 @@ struct hyp_page {
+ 	unsigned int refcount;
+ 	unsigned int order;
+ 	struct hyp_pool *pool;
+-	struct list_head node;
+ };
+ 
+ extern u64 __hyp_vmemmap;
 diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-index d666f4789e31..2602577daa00 100644
+index 2602577daa00..34f0eb026dd2 100644
 --- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
 +++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-@@ -55,7 +55,7 @@ static struct hyp_page *__find_buddy_avail(struct hyp_pool *pool,
- {
- 	struct hyp_page *buddy = __find_buddy_nocheck(pool, p, order);
+@@ -62,6 +62,34 @@ static struct hyp_page *__find_buddy_avail(struct hyp_pool *pool,
  
--	if (!buddy || buddy->order != order || list_empty(&buddy->node))
-+	if (!buddy || buddy->order != order || buddy->refcount)
- 		return NULL;
- 
- 	return buddy;
-@@ -133,6 +133,12 @@ static inline void hyp_set_page_refcounted(struct hyp_page *p)
- 	p->refcount = 1;
  }
  
-+static void __hyp_put_page(struct hyp_pool *pool, struct hyp_page *p)
++/*
++ * Pages that are available for allocation are tracked in free-lists, so we use
++ * the pages themselves to store the list nodes to avoid wasting space. As the
++ * allocator always returns zeroed pages (which are zeroed on the hyp_put_page()
++ * path to optimize allocation speed), we also need to clean-up the list node in
++ * each page when we take it out of the list.
++ */
++static inline void page_remove_from_list(struct hyp_page *p)
 +{
-+	if (hyp_page_ref_dec_and_test(p))
-+		__hyp_attach_page(pool, p);
++	struct list_head *node = hyp_page_to_virt(p);
++
++	__list_del_entry(node);
++	memset(node, 0, sizeof(*node));
 +}
 +
- /*
-  * Changes to the buddy tree and page refcounts must be done with the hyp_pool
-  * lock held. If a refcount change requires an update to the buddy tree (e.g.
-@@ -146,8 +152,7 @@ void hyp_put_page(void *addr)
- 	struct hyp_pool *pool = hyp_page_to_pool(p);
++static inline void page_add_to_list(struct hyp_page *p, struct list_head *head)
++{
++	struct list_head *node = hyp_page_to_virt(p);
++
++	INIT_LIST_HEAD(node);
++	list_add_tail(node, head);
++}
++
++static inline struct hyp_page *node_to_page(struct list_head *node)
++{
++	return hyp_virt_to_page(node);
++}
++
+ static void __hyp_attach_page(struct hyp_pool *pool,
+ 			      struct hyp_page *p)
+ {
+@@ -83,14 +111,14 @@ static void __hyp_attach_page(struct hyp_pool *pool,
+ 			break;
  
- 	hyp_spin_lock(&pool->lock);
--	if (hyp_page_ref_dec_and_test(p))
--		__hyp_attach_page(pool, p);
-+	__hyp_put_page(pool, p);
- 	hyp_spin_unlock(&pool->lock);
- }
- 
-@@ -202,15 +207,16 @@ int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsigned int nr_pages,
- 
- 	/* Init the vmemmap portion */
- 	p = hyp_phys_to_page(phys);
--	memset(p, 0, sizeof(*p) * nr_pages);
- 	for (i = 0; i < nr_pages; i++) {
- 		p[i].pool = pool;
-+		p[i].order = 0;
- 		INIT_LIST_HEAD(&p[i].node);
-+		hyp_set_page_refcounted(&p[i]);
+ 		/* Take the buddy out of its list, and coallesce with @p */
+-		list_del_init(&buddy->node);
++		page_remove_from_list(buddy);
+ 		buddy->order = HYP_NO_ORDER;
+ 		p = min(p, buddy);
  	}
  
- 	/* Attach the unused pages to the buddy tree */
- 	for (i = reserved_pages; i < nr_pages; i++)
--		__hyp_attach_page(pool, &p[i]);
-+		__hyp_put_page(pool, &p[i]);
- 
- 	return 0;
+ 	/* Mark the new head, and insert it */
+ 	p->order = order;
+-	list_add_tail(&p->node, &pool->free_area[order]);
++	page_add_to_list(p, &pool->free_area[order]);
  }
+ 
+ static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
+@@ -99,7 +127,7 @@ static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
+ {
+ 	struct hyp_page *buddy;
+ 
+-	list_del_init(&p->node);
++	page_remove_from_list(p);
+ 	while (p->order > order) {
+ 		/*
+ 		 * The buddy of order n - 1 currently has HYP_NO_ORDER as it
+@@ -110,7 +138,7 @@ static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
+ 		p->order--;
+ 		buddy = __find_buddy_nocheck(pool, p, p->order);
+ 		buddy->order = p->order;
+-		list_add_tail(&buddy->node, &pool->free_area[buddy->order]);
++		page_add_to_list(buddy, &pool->free_area[buddy->order]);
+ 	}
+ 
+ 	return p;
+@@ -182,7 +210,7 @@ void *hyp_alloc_pages(struct hyp_pool *pool, unsigned int order)
+ 	}
+ 
+ 	/* Extract it from the tree at the right order */
+-	p = list_first_entry(&pool->free_area[i], struct hyp_page, node);
++	p = node_to_page(pool->free_area[i].next);
+ 	p = __hyp_extract_page(pool, p, order);
+ 
+ 	hyp_set_page_refcounted(p);
+@@ -210,7 +238,6 @@ int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsigned int nr_pages,
+ 	for (i = 0; i < nr_pages; i++) {
+ 		p[i].pool = pool;
+ 		p[i].order = 0;
+-		INIT_LIST_HEAD(&p[i].node);
+ 		hyp_set_page_refcounted(&p[i]);
+ 	}
+ 
 -- 
 2.32.0.rc0.204.g9fa02ecfa5-goog
 
