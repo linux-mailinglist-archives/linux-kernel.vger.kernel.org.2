@@ -2,130 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0853983EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C77E3983EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhFBIOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:14:50 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37530 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229583AbhFBIOp (ORCPT
+        id S232425AbhFBIRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhFBIRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:14:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Ub1gYK1_1622621580;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Ub1gYK1_1622621580)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 02 Jun 2021 16:13:01 +0800
-Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210527023922.2017-1-jiangshanlai@gmail.com>
- <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
- <YK/FGYejaIu6EzSn@google.com>
- <d96f8c11-19e6-2c2d-91ff-6a7a51fa1b9c@linux.alibaba.com>
- <YLA4peMjgeVvKlEn@google.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <dda200b3-5037-1c38-5780-7b154a5aebcc@linux.alibaba.com>
-Date:   Wed, 2 Jun 2021 16:13:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Wed, 2 Jun 2021 04:17:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A269DC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 01:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yONE1d8i5hfR07uAKblTaH+2S9CKA1GaJ8pZJcWFjE0=; b=Zc1uEjIml6Ejdkjr/M1BqcdGZN
+        EV/Z2d8fQZpsbXSOAKxkdSgrGhRmDvGCTs4LEjJf16w9bK619n952NTDIg/E/qnRSdZb8DG6diD7q
+        cm5N22tzlkznHqZ62Rl02xvJpANkwY5mDgKatoiLR73vLz1Y7DbHTbJhha4SbmUTu367WQGMi7Hn2
+        ea2OJvEONMLf40A+viN52ho8Q4q9Q3/Zek7Qixazjw9/zoOutJuQoPdSJ0NZD53yOi/7c+yaESOxu
+        t0krxiBbGeV3h0kCTV37B59Cm9H7qf6Sw4McRw1lL5PGj5z0lh046SzkgS9W2vDRRKMcGminx6mCJ
+        rt4wUFmw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1loM1j-00AsT0-Hv; Wed, 02 Jun 2021 08:15:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E28A830019C;
+        Wed,  2 Jun 2021 10:14:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C16782016D6C3; Wed,  2 Jun 2021 10:14:58 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 10:14:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Richard Narron <richard@aaazen.com>
+Subject: Re: [PATCH] x86/alternative: Optimize single-byte NOPs at an
+ arbitrary position
+Message-ID: <YLc+AniWgFBdMbX6@hirez.programming.kicks-ass.net>
+References: <20210601212125.17145-1-bp@alien8.de>
 MIME-Version: 1.0
-In-Reply-To: <YLA4peMjgeVvKlEn@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601212125.17145-1-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 01, 2021 at 11:21:25PM +0200, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Up until now the assumption was that an alternative patching site would
+> have some instructions at the beginning and trailing single-byte NOPs
+> (0x90) padding. Therefore, the patching machinery would go and optimize
+> those single-byte NOPs into longer ones.
+> 
+> However, this assumption is broken on 32-bit when code like
+> hv_do_hypercall() in hyperv_init() would use the ratpoline speculation
+> killer CALL_NOSPEC. The 32-bit version of that macro would align certain
+> insns to 16 bytes, leading to the compiler issuing a one or more
+> single-byte NOPs, depending on the holes it needs to fill for alignment.
 
+Who again insisted that wouldn't happen? :-)
 
-On 2021/5/28 08:26, Sean Christopherson wrote:
-> On Fri, May 28, 2021, Lai Jiangshan wrote:
->>
->> On 2021/5/28 00:13, Sean Christopherson wrote:
->>> And making a request won't work without revamping the order of request handling
->>> in vcpu_enter_guest(), e.g. KVM_REQ_MMU_RELOAD and KVM_REQ_MMU_SYNC are both
->>> serviced before KVM_REQ_STEAL_UPDATE.
->>
->> Yes, it just fixes the said problem in the simplest way.
->> I copied KVM_REQ_MMU_RELOAD from kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
->> (If the guest is not preempted, it will call invpcid_flush_all() and will be handled
->> by this way)
-> 
-> The problem is that record_steal_time() is called after KVM_REQ_MMU_RELOAD
-> in vcpu_enter_guest() and so the reload request won't be recognized until the
-> next VM-Exit.  It works for kvm_handle_invpcid() because vcpu_enter_guest() is
-> guaranteed to run between the invcpid code and VM-Enter.
-> 
->> The improvement code will go later, and will not be backported.
-> 
-> I would argue that introducing a potential performance regression is in itself a
-> bug.  IMO, going straight to kvm_mmu_sync_roots() is not high risk.
+> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> index 6974b5174495..7baf13b11952 100644
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -182,42 +182,68 @@ recompute_jump(struct alt_instr *a, u8 *orig_insn, u8 *repl_insn, u8 *insn_buff)
+>  		n_dspl, (unsigned long)orig_insn + n_dspl + repl_len);
+>  }
+>  
+> +/*
+> + * @instr: instruction byte stream
+> + * @instrlen: length of the above
+> + * @off: offset within @instr where the first NOP has been detected
+> + */
 
-Hello, Sean
+That's almost a proper comment, might as well finish it
 
-Patch V2 address all these concerns. And it uses the minimal fix as you
-suggested in your previous reply (fix it directly in kvm_vcpu_flush_tlb_guest())
+/*
+ * optimize_nops_range() - Optimize a sequence of single byte NOPs (0x90)
+ * @instr: instruction byte stream
+ * @instrlen: length of the above
+ * @off: offset within @instr where the first NOP has been detected
+ *
+ * Return: number of NOPs found (and replaced)
+ */
+> +static __always_inline int optimize_nops_range(u8 *instr, u8 instrlen, int off)
+> +{
+> +	unsigned long flags;
+> +	int i = off, nnops;
+> +
+> +	while (i < instrlen) {
+> +		if (instr[i] != 0x90)
+> +			break;
+> +
+> +		i++;
+> +	}
 
-Could you have a review again please?
+	for (; i < instrlen && instr[i] == 0x90; i++)
+		;
 
-Thanks
-Lai.
+perhaps? (possibly too dense, up to you)
 
-> 
->> The proper way to flush guest is to use code in
->>
->> https://lore.kernel.org/lkml/20210525213920.3340-1-jiangshanlai@gmail.com/
->> as:
->> +		kvm_mmu_sync_roots(vcpu);
->> +		kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu); //or just call flush_current directly
->> +		for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
->> +			vcpu->arch.mmu->prev_roots[i].need_sync = true;
->>
->> If need_sync patch is not accepted, we can just use kvm_mmu_sync_roots(vcpu)
->> to keep the current pagetable and use kvm_mmu_free_roots() to free all the other
->> roots in prev_roots.
-> 
-> I like the idea, I just haven't gotten around to reviewing that patch yet.
-> 
->>> Cleaning up and documenting the MMU related requests is on my todo list, but the
->>> immediate fix should be tiny and I can do my cleanups on top.
->>>
->>> I believe the minimal fix is:
->>>
->>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>> index 81ab3b8f22e5..b0072063f9bf 100644
->>> --- a/arch/x86/kvm/x86.c
->>> +++ b/arch/x86/kvm/x86.c
->>> @@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
->>>    static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
->>>    {
->>>           ++vcpu->stat.tlb_flush;
->>> +
->>> +       if (!tdp_enabled)
->>> +               kvm_mmu_sync_roots(vcpu);
->>
->> it doesn't handle prev_roots which are also needed as
->> shown in kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
-> 
-> Ya, I belated realized this :-)
-> 
->>>           static_call(kvm_x86_tlb_flush_guest)(vcpu);
->>
->> For tdp_enabled, I think it is better to use kvm_x86_tlb_flush_current()
->> to make it consistent with other shadowpage code.
->>
->>>    }
->>>
+> +
+> +	nnops = i - off;
+> +
+> +	if (nnops <= 1)
+> +		return nnops;
+
+!nnops would be an error, no?
+
+> +
+> +	local_irq_save(flags);
+> +	add_nops(instr + off, nnops);
+> +	local_irq_restore(flags);
+> +
+> +	DUMP_BYTES(instr, instrlen, "%px: [%d:%d) optimized NOPs: ",
+> +		   instr, off, i);
+> +
+> +	return nnops;
+> +}
+> +
+> +
+
+We really needs that extra line?
+
+>  /*
+>   * "noinline" to cause control flow change and thus invalidate I$ and
+>   * cause refetch after modification.
+>   */
+>  static void __init_or_module noinline optimize_nops(struct alt_instr *a, u8 *instr)
+>  {
+>  	struct insn insn;
+> +	int i = 0;
+>  
+>  	/*
+> +	 * Jump over the non-NOP insns and optimize single-byte NOPs into bigger
+> +	 * ones.
+>  	 */
+>  	for (;;) {
+>  		if (insn_decode_kernel(&insn, &instr[i]))
+>  			return;
+>  
+> +		/*
+> +		 * See if this and any potentially following NOPs can be
+> +		 * optimized.
+> +		 */
+>  		if (insn.length == 1 && insn.opcode.bytes[0] == 0x90)
+> +			i += optimize_nops_range(instr, a->instrlen, i);
+> +		else
+> +			i += insn.length;
+>  
+> +		if (i >= a->instrlen)
+>  			return;
+>  	}
+>  }
+
+Anyway, irrespective of nits:
+
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
