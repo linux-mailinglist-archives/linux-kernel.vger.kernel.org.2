@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1C03985FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20182398604
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhFBKLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
+        id S232091AbhFBKOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhFBKLm (ORCPT
+        with ESMTP id S231934AbhFBKOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:11:42 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA667C061574;
-        Wed,  2 Jun 2021 03:09:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=nPmfDu3O74mL+IcHu+Wc9SQ6GHgafd370qmEKo52PsM=; b=gy17awE98yI8P6+rFtZfMfLX+
-        xwQFH96xRbCtJb0s7Yr5+NPXcMlLOHUHIbd06D/m+NXDyRVhJr52Boihz5gyjmyN5m72MNsQCZCVi
-        enFKkziJdCPfYiXEx9gA8VuQPLcRmpyJJw1aL3ZJk3mbVXikptjsO87wgjUMGRQ0oN11lABVkWPHq
-        kHzPDWd9V2FimfPAHAC6p+s70mnCtmFeINrZpQn65Q6fQNwwhfoE7Eyo8zZc0cb8He0YC1EadUbbT
-        sVbrDrKwpukZQwKRwWzWPRNcWqsocUHunzGKyPtuTkbEAHBvnzTFpPVBAkeYMzvbMGDz5SLxx+DCa
-        6iDkOFH4w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44606)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1loNox-0000wZ-I1; Wed, 02 Jun 2021 11:09:55 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1loNox-00011W-AM; Wed, 02 Jun 2021 11:09:55 +0100
-Date:   Wed, 2 Jun 2021 11:09:55 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     zhengyongjun <zhengyongjun3@huawei.com>
-Cc:     Joe Perches <joe@perches.com>, "andrew@lunn.ch" <andrew@lunn.ch>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "opendmb@gmail.com" <opendmb@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>
-Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH net-next] net: mdio:
- Fix a typo
-Message-ID: <20210602100955.GA1350@shell.armlinux.org.uk>
-References: <20210602063914.89177-1-zhengyongjun3@huawei.com>
- <76fd35fe623867c3be3f93b51d5d3461a2eabed9.camel@perches.com>
- <264010307fb24b0193cfd451152bd71d@huawei.com>
- <20210602100749.GC30436@shell.armlinux.org.uk>
+        Wed, 2 Jun 2021 06:14:14 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649DFC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:12:31 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id bn21so1926540ljb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=slzS5YZjZxl565Kd+2lXyghUenj3OYVJLEop1Uqbr+w=;
+        b=oMkbusaI+atgT4iQ2MrSJwQ489dT1MD7I9rbptbNlBVQ4o7cpLIC8AbaY03ZmzXVn5
+         zjzJe0XDnJrD3JD1soMrauHuOgjOiGXCY4DT2AxDWW7u9QhPXPi+G1P6g32mv0uB4yxV
+         JudFNjxWyxpJp/1dXd7E/4a4RvAkyNMNQUgDLbRpSJqcf9U86YcxmFqK32cUAKGdzSLn
+         Mx0UabYcvmpB3DtRjLuKWkUUoTddVzZrSaRxoGowFvqbUyGGta99sltyMw5A99aA+Yib
+         kdaoJI5ffUZiPSvuacnfrl0d0sC2kzzWe11Qxmew+60F8dWNurpM3UbISlpdrbWV4HyX
+         KAHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=slzS5YZjZxl565Kd+2lXyghUenj3OYVJLEop1Uqbr+w=;
+        b=LNkD10BZznA4p2p9qiWOicTyni198UvQou67tOzSY3OY6xc3NGXBK7FzhoCtwRtYjO
+         YA/k6tamRp88KkvKxfSISHPYiTxAp7fmUp8Acrx9wuDCbxA7xc52ViEO0Ok7r4gKCwJx
+         DWGKnCDJT6Uz8AF8TX/pnmPub047jzVwR17GcSjivB38fTaZly5ln+ebHC9XTxMgDX7Q
+         U5OCQQmH6QkIMAaq0NjE8dLX3aokPqGnj1zlBdIz1z9j8IfaXlNdRpBvzLz+aSkrz++v
+         JAEPcx8jEyCSfo79DkQRaDROkawgEpf5pKOu5yftmbC9/zEU5aSGi4CvqyegdXAxB8yh
+         uR+Q==
+X-Gm-Message-State: AOAM532aOrIwnhHNi6eWkhrf3qUU0sgoFvKYKgm/1FJxQqLD2xTag+AU
+        jaDL+uTaUwjFS4GhlSy/35rMQw==
+X-Google-Smtp-Source: ABdhPJyLUiGKrkXuEIpXMj03EEh0a0syVDYqqtQUysi0GWfDCtQYSve4ntEt1YwOshobDqSD8KBEug==
+X-Received: by 2002:a2e:b0e4:: with SMTP id h4mr13970498ljl.463.1622628749599;
+        Wed, 02 Jun 2021 03:12:29 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id y35sm1948938lfa.122.2021.06.02.03.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 03:12:28 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] PM: domains: Avoid boilerplate code for DVFS in subsystem/drivers
+Date:   Wed,  2 Jun 2021 12:12:12 +0200
+Message-Id: <20210602101215.78094-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602100749.GC30436@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:07:49AM +0100, Russell King (Oracle) wrote:
-> On Wed, Jun 02, 2021 at 07:43:19AM +0000, zhengyongjun wrote:
-> > Russell King told me to do so...  Did I understand it wrong?  
-> > But from your opinion, I think "Hz" is more appropriate :)
-> 
-> Sadly, you understood wrong. I requested to change from hz to Hz.
+Various discussions on LKML have pointed out that many subsystem/drivers for
+devices that may be attached to a genpd and which manages DVFS/OPP though the
+genpd performance states, would need very similar updates.
 
-... which is odd, because you did the correct thing in your v2 spelling
-fix patch posted previously.
+More precisely, they would likely have to call dev_pm_opp_set_rate|opp() to
+drop and restore OPPs (which propagates upwards into performance states votes
+in genpd), every time their devices should enter/exit a low power state, via
+their device PM callbacks.
+
+Rather than having to add the boilerplate code for these things into the
+subsystems/drivers, this series implements the logic internally into genpd.
+
+Concerns have been raised about this approach, mostly by myself, around that it
+limits flexibility. On the other hand, it starts to look like more and more
+people are requesting this to be manged internally in genpd, for good reasons.
+So, I think it's worth to give this a try.
+
+In the long run, if it turns out that the flexibility was indeed needed, we can
+always deal with that as special cases on top.
+
+Test and reviews are of course greatly appreciated!
+
+Kind regards
+Ulf Hansson
+
+Ulf Hansson (3):
+  PM: domains: Split code in dev_pm_genpd_set_performance_state()
+  PM: domains: Drop/restore performance state votes for devices at
+    runtime PM
+  PM: domains: Drop/restore performance state votes for devices at
+    system PM
+
+ drivers/base/power/domain.c | 66 +++++++++++++++++++++++++++++--------
+ include/linux/pm_domain.h   |  2 ++
+ 2 files changed, 54 insertions(+), 14 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.25.1
+
