@@ -2,218 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CEE398B0E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8853398B10
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhFBNxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhFBNx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:53:28 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7D7C061574;
-        Wed,  2 Jun 2021 06:51:45 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (unknown [IPv6:2001:2003:f75d:b010::e64])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S230010AbhFBNx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:53:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229852AbhFBNx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 09:53:57 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 3A7391B005D7;
-        Wed,  2 Jun 2021 16:51:38 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1622641898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9IV/vIcRwyEal3HXySNvtHK7MT+y8kpQ9zcFjS4CbmQ=;
-        b=FclW3wh7hGy6E40k7CkAMO0X3d3yotizBQjk7cq7Ee1+/vD02XYjS1S7LJGl2TZtFQ23SE
-        WkFcPwjVOXc1JJ64wAQ28149KhbW7LuAceZZN2C6L+gB46vX1SuDJaWGXIaMMUkcrVdMKX
-        G0pY/Pqmo1jXWa98W4r1xyH2x2wbd07KR/8QyPsXGwxVxabqCNrCf49I+npKVioCNp3Zg9
-        bEeZ8ZgCtpxbW8WDQiMQCZLpCj6Jzx4gXvLoSpQrepXhOtp+FFAqvvdM4fM2KFWHE2+6Ca
-        x+oS95w42gTPzTrqz4hfO5I8WrM2GkMRzPXUEAj73+HUo8eto2K65aJT6Ji/fw==
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id D87A1634C87;
-        Wed,  2 Jun 2021 16:50:44 +0300 (EEST)
-Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
-        by valkosipuli.localdomain with esmtp (Exim 4.92)
-        (envelope-from <sakari.ailus@iki.fi>)
-        id 1loRHV-0002Uc-OA; Wed, 02 Jun 2021 16:51:37 +0300
-Date:   Wed, 2 Jun 2021 16:51:37 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        devicetree@vger.kernel.org, kernel@puri.sm,
-        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, paul.kocialkowski@bootlin.com,
-        robh@kernel.org, shawnx.tu@intel.com
-Subject: Re: [PATCH v2 2/5] dt-bindings: media: document SK Hynix Hi-846 MIPI
- CSI-2 8M pixel sensor
-Message-ID: <20210602135137.GW3@valkosipuli.retiisi.eu>
-References: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
- <20210528081336.3858700-3-martin.kepplinger@puri.sm>
+        by mail.kernel.org (Postfix) with ESMTPSA id 86E99613D6;
+        Wed,  2 Jun 2021 13:52:13 +0000 (UTC)
+Date:   Wed, 2 Jun 2021 09:52:11 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
+Cc:     <keescook@chromium.org>, <ccross@android.com>,
+        <linux-kernel@vger.kernel.org>,
+        Zhangjinhao <zhangjinhao2@huawei.com>,
+        Anton Vorontsov <anton@enomsg.org>
+Subject: Re: [BUG] I found a bug when try to enable record_ftrace
+Message-ID: <20210602095211.3c16b2da@oasis.local.home>
+In-Reply-To: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
+References: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528081336.3858700-3-martin.kepplinger@puri.sm>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1622641898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9IV/vIcRwyEal3HXySNvtHK7MT+y8kpQ9zcFjS4CbmQ=;
-        b=wPnsmgLAAXrmvd4FCyQ/xPA4CRCwKhNRgHOHlhy/KISEBPmmXobvJSa7aEIfj9L7W7ikvp
-        WXGLni8W2h3GGpGtslfr8wlD0kV65iV6MtpcK3872f7EBS9HcIYmhvaDJ49PsHYvc6sAeU
-        DzXxRyvBrIinz9URpIF3tnlg32MB0d8hwSijkIi+WoSHPTwFC8Dk2bf3g/VKD08cq4sDKQ
-        9XrMz78+/WdOScUn+AogI9E6MBtopiIi/z1j95nKi6q2JRXA7onkiVSj4XRTxH8Ijab1Ua
-        vJkyhW92WJumY4V78FykFT/xlisNEfBiJ5NMolZMGfBma7sqf7YfDSfJh1vO6g==
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1622641898; a=rsa-sha256;
-        cv=none;
-        b=BZ0WZQQsDEYZS7RWjr2kHuUxkCDaw3+qZbG+GybxUhfmmC36MgKPOgYiV2yhrH+hfxiTJk
-        CjFPis7Evct6LgTqIkpTKJpmyEK8JWwflDz3NqitIBG09TT7tP6vNamcKXeLZCpBF3GgP5
-        I3KeGjHiLtrg2JILpGVzMxkESYm0J5fSSUSWHscCKPQV1poWdZqix2hfIclTQN5jdR8d54
-        Zgyh7L73aAzjlC2dAq26YaR2CsUf4k9UpmYQWyEH4kDabm/L2uHptk36smz/j1iuuzevCu
-        CWVQarhtzg/oGwEM3GDm+UjrpRACy84W/wHYrP9gccEjBGPS2Q84Je9zqEOH9w==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Wed, 2 Jun 2021 15:42:23 +0800
+"Zhengyejian (Zetta)" <zhengyejian1@huawei.com> wrote:
 
-On Fri, May 28, 2021 at 10:13:33AM +0200, Martin Kepplinger wrote:
-> Document the bindings used for the SK Hynix Hi-846 CMOS camera driver.
+> Hello,
 > 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-
-Could you read Documentation/driver-api/media/camera-sensor.rst, please?
-
-I believe you'll need assigned-clock-rates device property as well as
-link-frequencies endpoint property.
-
-> ---
->  .../bindings/media/i2c/hynix,hi846.yaml       | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> There may be a deadlock caused by ftrace recursion when try to enable 
+> record_ftrace.
+> I'd like to known if the patchset 
+> (https://lore.kernel.org/lkml/20201106023235.367190737@goodmis.org/) is 
+> trying to fix it.
 > 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> new file mode 100644
-> index 000000000000..2991108e23e5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/hynix,hi846.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SK Hynix Hi-846 1/4" 8M Pixel MIPI CSI-2 sensor
-> +
-> +maintainers:
-> +  - Martin Kepplinger <martin.kepplinger@puri.sm>
-> +
-> +description: |-
-> +  The Hi-846 is a raw image sensor with an MIPI CSI-2 image data
-> +  interface and CCI (I2C compatible) control bus. The output format
-> +  is 10bit Bayer.
+> Procedure for reproducing the problem is:
+>    1) this problem appears both in 5.13-rc4 and 5.10;
+> 
+>    2) my work environment is:
+>      qemu-arm version 4.0.0
+>      arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
+> 
+>    3) then try to enable record_ftrace:
+>      / # mount -t pstore pstore /sys/fs/pstore
+>      / # echo 1 > /sys/kernel/debug/pstore/record_ftrace
+> 
+>    4) then system appears to be stuck, and use arm-linux-gnueabi-gdb 
+> dump the following call stack:
+>      #0  arch_spin_lock (lock=0x811a0f98) at 
+> /home/zyj/Linux/linux-master/arch/arm/include/asm/spinlock.h:74
+>      #1  do_raw_spin_lock_flags (flags=<synthetic pointer>, 
+> lock=0x811a0f98) at 
+> /home/zyj/Linux/linux-master/include/linux/spinlock.h:195
+>      #2  __raw_spin_lock_irqsave (lock=0x811a0f98) at 
+> /home/zyj/Linux/linux-master/include/linux/spinlock_api_smp.h:119
+>      #3  _raw_spin_lock_irqsave (lock=lock@entry=0x811a0f98) at 
+> /home/zyj/Linux/linux-master/kernel/locking/spinlock.c:159
+>      #4  0x8046c6e0 in buffer_size_add (prz=prz@entry=0x811a0f80, 
+> a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:82
+>      #5  0x8046cc20 in persistent_ram_write (prz=0x811a0f80, 
+> s=0x81137b80, count=16) at 
+> /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
+>      #6  0x8046b438 in ramoops_pstore_write (record=0x81137b90) at 
+> /home/zyj/Linux/linux-master/fs/pstore/ram.c:331
+>      #7  0x8046add8 in pstore_ftrace_call (ip=2156609456, 
+> parent_ip=2152122068, op=<optimized out>, fregs=<optimized out>)
+>          at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
+>      #8  0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0, 
+> parent_ip=2152122068, ip=2156609456) at 
+> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
+>      #9  ftrace_ops_list_func (ip=2156609456, parent_ip=2152122068, 
+> op=<optimized out>, fregs=0x0) at 
+> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
+>      #10 0x801109f8 in ftrace_caller () at 
+> /home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
+>      #11 0x808b3fb4 in _raw_spin_unlock_irqrestore 
+> (lock=lock@entry=0x811a0f98, flags=1610612883) at 
+> /home/zyj/Linux/linux-master/kernel/locking/spinlock.c:190
+>      #12 0x8046c6d4 in buffer_size_add (prz=prz@entry=0x811a0f80, 
+> a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:95
+>      #13 0x8046cc20 in persistent_ram_write (prz=0x811a0f80, 
+> s=0x81137cf8, count=16) at 
+> /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
+>      #14 0x8046b438 in ramoops_pstore_write (record=0x81137d08) at 
+> /home/zyj/Linux/linux-master/fs/pstore/ram.c:331
+>      #15 0x8046add8 in pstore_ftrace_call (ip=2148632188, 
+> parent_ip=2148601660, op=<optimized out>, fregs=<optimized out>)
+>          at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
+>      #16 0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0, 
+> parent_ip=2148601660, ip=2148632188) at 
+> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
+>      #17 ftrace_ops_list_func (ip=2148632188, parent_ip=2148601660, 
+> op=<optimized out>, fregs=0x0) at 
+> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
+>      #18 0x801109f8 in ftrace_caller () at 
+> /home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
+>      #19 0x80118680 in __set_fixmap (idx=idx@entry=FIX_TEXT_POKE0, 
+> phys=phys@entry=0, prot=prot@entry=0) at 
+> /home/zyj/Linux/linux-master/arch/arm/mm/mmu.c:385
+>      #20 0x80110f3c in patch_unmap (flags=<synthetic pointer>, 
+> fixmap=129) at /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:45
+>      #21 __patch_text_real (addr=addr@entry=0x808b3fb0 
+> <_raw_spin_unlock_irqrestore+16>, insn=insn@entry=3957420680, 
+> remap=remap@entry=true)
+>          at /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:104
+>      #22 0x80110b40 in __patch_text (insn=3957420680, addr=0x808b3fb0 
+> <_raw_spin_unlock_irqrestore+16>) at 
+> /home/zyj/Linux/linux-master/arch/arm/include/asm/patch.h:10
+>      #23 ftrace_modify_code (pc=2156609456, old=3904716800, 
+> new=3957420680, validate=true) at 
+> /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:95
+>      #24 0x80110cf4 in ftrace_make_call (rec=rec@entry=0x81007ce0, 
+> addr=addr@entry=2148600280) at 
+> /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:132
+>      #25 0x801dda40 in __ftrace_replace_code (rec=rec@entry=0x81007ce0, 
+> enable=enable@entry=true) at 
+> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2524
+>      #26 0x801de17c in ftrace_replace_code (mod_flags=mod_flags@entry=1) 
+> at /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2554
+>      #27 0x801de39c in ftrace_modify_all_code (command=5) at 
+> /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2698
+>      #28 0x80110ad8 in __ftrace_modify_code (data=<optimized out>) at 
+> /home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:39
+>      #29 0x801d4da4 in multi_cpu_stop (data=data@entry=0x81c69d84) at 
+> /home/zyj/Linux/linux-master/kernel/stop_machine.c:240
+>      #30 0x801d4a14 in cpu_stopper_thread (cpu=<optimized out>) at 
+> /home/zyj/Linux/linux-master/kernel/stop_machine.c:511
+>      #31 0x8014de3c in smpboot_thread_fn (data=0x810c1c80) at 
+> /home/zyj/Linux/linux-master/kernel/smpboot.c:165
+>      #32 0x8014a0dc in kthread (_create=0x810c1d40) at 
+> /home/zyj/Linux/linux-master/kernel/kthread.c:313
+>      #33 0x80100150 in ret_from_fork () at 
+> /home/zyj/Linux/linux-master/arch/arm/kernel/entry-common.S:158
+>      Backtrace stopped: previous frame identical to this frame (corrupt 
+> stack?)
+> 
+> See above #7~#15, there is a recursion in function pstore_ftrace_call(), 
+> and a spin_lock(lock=0x811a0f98) is hold since unlock operation in above 
+> #11 not finished. Then in above #0, trying to acquire same lock cause a 
+> deadlock.
+> 
+> Enabling 'record_ftrace' seems a basic operation of pstore/ftrace, Does 
+> it mean this feature is not available for a while?
 
-Virtually all Bayer sensors can do 8 bpp, too. I'd drop the sentence
-mentoning 10 bits.
+I don't use pstore or arm. That is a question for the pstore folks.
 
-> +
-> +properties:
-> +  compatible:
-> +    const: hynix,hi846
-> +
-> +  reg:
-> +    description: I2C device address.
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description: Reference to the mclk clock.
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: mclk
-> +
-> +  rst-gpios:
-> +    description: Reference to the GPIO connected to the reset pin. Active low.
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description: Definition of the regulator used as 1.8V digital power supply.
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
-> +    additionalProperties: false
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
-> +        unevaluatedProperties: false
-> +
-> +        properties:
-> +          data-lanes:
-> +            oneOf:
-> +              - items:
-> +                  - const: 1
-> +                  - const: 2
-> +                  - const: 3
-> +                  - const: 4
-> +              - items:
-> +                  - const: 1
-> +                  - const: 2
-> +
-> +        required:
-> +          - data-lanes
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - rst-gpios
-> +  - vdd-supply
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        hi846: camera@20 {
-> +            compatible = "hynix,hi846";
-> +            reg = <0x20>;
-> +            clocks = <&clk>;
-> +            clock-names = "mclk";
-> +            vdd-supply = <&reg_camera_pwr_en>; /* 1.8v */
-> +            rst-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-> +
-> +            port {
-> +                camera_out: endpoint {
-> +                    remote-endpoint = <&csi1_ep1>;
-> +                    data-lanes = <1 2>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-
--- 
-Kind regards,
-
-Sakari Ailus
+-- Steve
