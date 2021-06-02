@@ -2,122 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423183992BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB20D3992C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhFBSoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:44:39 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:48390 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFBSoi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:44:38 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1loVpL-00G6Zj-Ds; Wed, 02 Jun 2021 12:42:51 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1loVpG-00Dbdm-VU; Wed, 02 Jun 2021 12:42:51 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jiashuo Liang <liangjs@pku.edu.cn>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210601085203.40214-1-liangjs@pku.edu.cn> (Jiashuo Liang's
-        message of "Tue, 1 Jun 2021 16:52:03 +0800")
-References: <20210601085203.40214-1-liangjs@pku.edu.cn>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Wed, 02 Jun 2021 13:42:22 -0500
-Message-ID: <87wnrcqfap.fsf@disp2133>
+        id S229746AbhFBSpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:45:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229736AbhFBSp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 14:45:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 974BE61359;
+        Wed,  2 Jun 2021 18:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622659422;
+        bh=PNatpOdGGG0QpSFk4pCtbC1etv95lkYpYdeUjO3mnaA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s648wJOSbwYMNKfElAE9jbYgbFl2QdWu0EgbydpfkAm71bvLvgtxc7uaIOkY7deNG
+         Zsh4/e9Km6kaetXm5peYnHfGGcYZaYOn6WGGhvLHa8o6kzyRt7fKpr/IxcAh6gyR/e
+         VNbGfJWwj+Uibs5Z7cHQDpczTmjHYYq4nvbiLGSwY3JFdmMfKKZSxIgujPFVAEbakL
+         W2L12EBsKZ2gSXbPodXONQjD3Fj04YlWdjL1wGDaEXgiGw04V9wOexJtqRQpR0Rg0h
+         P7hQG7tv3IfmwhEnSHHyxEo4TNJ08ivYSiLG7mL/5t2mqsrHCLQMgmH+xnyptQI9Wl
+         /Bc+f3AO3Wz1g==
+Date:   Wed, 2 Jun 2021 21:43:32 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org
+Subject: Re: [RFC/RFT PATCH 2/5] memblock: introduce generic
+ memblock_setup_resources()
+Message-ID: <YLfRVGC+tq5L0TZ6@kernel.org>
+References: <20210531122959.23499-1-rppt@kernel.org>
+ <20210531122959.23499-3-rppt@kernel.org>
+ <20210601135415.GZ30436@shell.armlinux.org.uk>
+ <YLdCRoldZFYMZ0BG@linux.ibm.com>
+ <20210602101521.GD30436@shell.armlinux.org.uk>
+ <YLeNiUkIw+aFpMcz@linux.ibm.com>
+ <20210602155141.GM30436@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1loVpG-00Dbdm-VU;;;mid=<87wnrcqfap.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/RFpTRdnELpHk43fPsNaIe6o6GVXXfTp0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4700]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Jiashuo Liang <liangjs@pku.edu.cn>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 3822 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.5 (0.1%), b_tie_ro: 3.2 (0.1%), parse: 1.05
-        (0.0%), extract_message_metadata: 14 (0.4%), get_uri_detail_list: 1.56
-        (0.0%), tests_pri_-1000: 12 (0.3%), tests_pri_-950: 1.03 (0.0%),
-        tests_pri_-900: 0.80 (0.0%), tests_pri_-90: 137 (3.6%), check_bayes:
-        135 (3.5%), b_tokenize: 4.9 (0.1%), b_tok_get_all: 5 (0.1%),
-        b_comp_prob: 1.47 (0.0%), b_tok_touch_all: 120 (3.1%), b_finish: 0.79
-        (0.0%), tests_pri_0: 222 (5.8%), check_dkim_signature: 0.36 (0.0%),
-        check_dkim_adsp: 2.7 (0.1%), poll_dns_idle: 3409 (89.2%),
-        tests_pri_10: 2.2 (0.1%), tests_pri_500: 3426 (89.6%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH] signal/x86: Don't send SIGSEGV twice on SEGV_PKUERR
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602155141.GM30436@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiashuo Liang <liangjs@pku.edu.cn> writes:
+On Wed, Jun 02, 2021 at 04:51:41PM +0100, Russell King (Oracle) wrote:
+> On Wed, Jun 02, 2021 at 04:54:17PM +0300, Mike Rapoport wrote:
+> > On Wed, Jun 02, 2021 at 11:15:21AM +0100, Russell King (Oracle) wrote:
+> > > On Wed, Jun 02, 2021 at 11:33:10AM +0300, Mike Rapoport wrote:
+> > > > On Tue, Jun 01, 2021 at 02:54:15PM +0100, Russell King (Oracle) wrote:
+> > > > > If I look at one of my kernels:
+> > > > > 
+> > > > > c0008000 T _text
+> > > > > c0b5b000 R __end_rodata
+> > > > > ... exception and unwind tables live here ...
+> > > > > c0c00000 T __init_begin
+> > > > > c0e00000 D _sdata
+> > > > > c0e68870 D _edata
+> > > > > c0e68870 B __bss_start
+> > > > > c0e995d4 B __bss_stop
+> > > > > c0e995d4 B _end
+> > > > > 
+> > > > > So the original covers _text..__init_begin-1 which includes the
+> > > > > exception and unwind tables. Your version above omits these, which
+> > > > > leaves them exposed.
+> > > > 
+> > > > Right, this needs to be fixed. Is there any reason the exception and unwind
+> > > > tables cannot be placed between _sdata and _edata? 
+> > > > 
+> > > > It seems to me that they were left outside for purely historical reasons.
+> > > > Commit ee951c630c5c ("ARM: 7568/1: Sort exception table at compile time")
+> > > > moved the exception tables out of .data section before _sdata existed.
+> > > > Commit 14c4a533e099 ("ARM: 8583/1: mm: fix location of _etext") moved
+> > > > _etext before the unwind tables and didn't bother to put them into data or
+> > > > rodata areas.
+> > > 
+> > > You can not assume that all sections will be between these symbols. This
+> > > isn't specific to 32-bit ARM. If you look at x86's vmlinux.lds.in, you
+> > > will see that BUG_TABLE and ORC_UNWIND_TABLE are after _edata, along
+> > > with many other undiscarded sections before __bss_start.
+> > 
+> > But if you look at x86's setup_arch() all these never make it to the
+> > resource tree. So there are holes in /proc/iomem between the kernel
+> > resources.
+> 
+> Also true. However, my point was to counter your claim that these
+> sections should be part of the .text/.data/.rodata etc sections in the
+> output vmlinux.
+> 
+> There is, however, a more important point. The __ex_table section
+> must exist and be separate from the .text/.data/.rodata sections in
+> the output ELF file, as sorttable (the exception table sorter) relies
+> on this to be able to find the table and sort it.
+> 
+> So, it isn't entirely "for historical reasons" as you said two messages
+> ago.
 
-> Before this patch, the __bad_area_nosemaphore function calls both
-> force_sig_pkuerr and force_sig_fault when handling SEGV_PKUERR. This does
-> not cause problems because the second signal is filtered by the
-> legacy_queue check in __send_signal. But it causes the kernel to do
-> unnecessary work.
+Back then when __ex_table was moved from .data section, _sdata and _edata
+were part of the .data section. Today they are not. So something like the
+patch below will ensure for instance that __ex_table would be a part of
+"Kernel data" in /proc/iomem without moving it to the .data section:
+
+diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
+index f7f4620d59c3..2991feceab31 100644
+--- a/arch/arm/kernel/vmlinux.lds.S
++++ b/arch/arm/kernel/vmlinux.lds.S
+@@ -72,13 +72,6 @@ SECTIONS
+ 
+ 	RO_DATA(PAGE_SIZE)
+ 
+-	. = ALIGN(4);
+-	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
+-		__start___ex_table = .;
+-		ARM_MMU_KEEP(*(__ex_table))
+-		__stop___ex_table = .;
+-	}
+-
+ #ifdef CONFIG_ARM_UNWIND
+ 	ARM_UNWIND_SECTIONS
+ #endif
+@@ -143,6 +136,14 @@ SECTIONS
+ 	__init_end = .;
+ 
+ 	_sdata = .;
++
++	. = ALIGN(4);
++	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
++		__start___ex_table = .;
++		ARM_MMU_KEEP(*(__ex_table))
++		__stop___ex_table = .;
++	}
++
+ 	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+ 	_edata = .;
+ 
+ 
+> Now, bear in mind that /proc/iomem is a user API, one which userspace
+> depends on. If we start going around making /proc/iomem report stuff
+> like kernel boot time reservations as "reserved" memory, we will end up
+> breaking the kexec tooling on some platforms. For example, kexec
+> tooling for 32-bit ARM parses /proc/iomem, looking for "System RAM",
+> "System RAM (boot alias)" and "reserved" regions.
 >
-> This patch should fix it.
+> So, I think changes to make this "more consistent" come with high
+> risk.
 
-Have you been able to test this patch?
+I agree there is a risk but I don't think it's high. It does not look like
+the minor changes in "reserved" reporting in /proc/iomem will break kexec
+tooling. Anyway the amount of reserved and free memory depends on a
+particular system, kernel version, configuration and command line.
+I have no intention to report kernel boot time reservations
+to /proc/iomem on architectures that do not report them there today,
+although this also does not seem like a significant factor.
 
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+On the other hand, making /proc/iomem reporting consistent among
+architectures will allow to reduce complexity of both the kernel and kexec
+tools in the long run.
 
-Does one of the x86 maintainers want to pick up this trivial fix or
-should I pick it up?
-
-Eric
-
-
-> Fixes: 9db812dbb29d ("signal/x86: Call force_sig_pkuerr from __bad_area_nosemaphore")
-> Suggested-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> Signed-off-by: Jiashuo Liang <liangjs@pku.edu.cn>
-> ---
->  arch/x86/mm/fault.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 1c548ad00752..6bda7f67d737 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -836,8 +836,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
->  
->  	if (si_code == SEGV_PKUERR)
->  		force_sig_pkuerr((void __user *)address, pkey);
-> -
-> -	force_sig_fault(SIGSEGV, si_code, (void __user *)address);
-> +	else
-> +		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
->  
->  	local_irq_disable();
->  }
+-- 
+Sincerely yours,
+Mike.
