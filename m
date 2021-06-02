@@ -2,89 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D29C398E29
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0593D398E2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhFBPSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:18:13 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:40517 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbhFBPSL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:18:11 -0400
-Received: by mail-wr1-f45.google.com with SMTP id z17so2683030wrq.7;
-        Wed, 02 Jun 2021 08:16:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nG2h+dsXOe28vkZpaDbeym2PJCsPOYRsxGnjFtvlKgQ=;
-        b=DlpmpZi94ktt+VaFNUSDRWJ574JoV+bqABDFDvzY7JgJ3tJNCpHak1peEFF1sD50xh
-         Lr+z4zJs/SdWJDQ826vk9QR/M3U6LJKor3NcxhQsykl07KwRlNEXH3G4Fjo0CyxVkxqZ
-         gfL65GC34BV+EmwN53B7f4fEb879EVgxK0AxSBdPeWU3kEhKN9RjiqJ0mb9CUh0vseBb
-         jYEzO7Ep3JvlBU35MISPd9dh7CxlWjJqw3DMUpQVQm/10Ejo1AnCYWSEiL+n0dkACLHx
-         bwyx+LXn8EOkhyjRDTB8myYl5frIGHz6QRUizOc3qioZ6Vk9b9RjZBsQFG3EnRJ7xmgb
-         2zRw==
-X-Gm-Message-State: AOAM530iqVX4aGAoJTbiwML4zpEa8h9IT49IzqRTeADZTXzxv3iLaxsR
-        91PUJw9eBDYKIoV8wZTReWs=
-X-Google-Smtp-Source: ABdhPJxu4W9eU4IekY+OKY0b69pZvGTHUneXL0vHN1e92pb37CF2UI6bcWeZCMnMFY4reeYNjr45YA==
-X-Received: by 2002:a5d:6e04:: with SMTP id h4mr33389490wrz.256.1622646974413;
-        Wed, 02 Jun 2021 08:16:14 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id y2sm3563646wmq.45.2021.06.02.08.16.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 08:16:14 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 15:16:12 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, nunodasneves@linux.microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH] x86/hyperv: LP creation with lp_index on same CPU-id
-Message-ID: <20210602151612.7wz2ni4iyw7uzufm@liuwe-devbox-debian-v2>
-References: <20210531074046.113452-1-kumarpraveen@linux.microsoft.com>
- <20210531105732.muzbpk4yksttsfwz@liuwe-devbox-debian-v2>
- <572da60e-714f-b207-a89e-6dc40209e2da@linux.microsoft.com>
+        id S232140AbhFBPSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:18:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230257AbhFBPSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:18:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 636F760698;
+        Wed,  2 Jun 2021 15:16:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622647013;
+        bh=lvYohB8dPwE3okTGYTh9dQbHk9rf70vFR58clKh7b4E=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=kT0oaaY62O5Yu43fykdDzm6qnpNU/zuqgF66BN3/L7HXTRC8Fy0OEEFuRT2qgHeCa
+         AdMGX5JBGkdEdvWcT4RcpJ7ElQT3S+CSGWo38QAMRLaf8XdpX/eRz27egwXG6LEExy
+         ZUbQWNTK40rc6g//Dj5hp+y42IJw4Lromkjg25ylETrvLiR6aR6n5vqcfiwJiIaJzv
+         SzdNdnu6Uaykjcv9FeyuWoTLlyRU09iEwQSnLraEjyaZv+iBevNG9QWCQRrTKDFZe4
+         D7HDVkS/KrRdFbYT3DZGS/PwxOQ396CO7howY7FkH1NuP675sKlfFlsvdtemzvSyLa
+         m7XWcwdtATo9g==
+Subject: Re: [f2fs-dev] [PATCH 2/2 v3] f2fs: support RO feature
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20210521190217.2484099-1-jaegeuk@kernel.org>
+ <20210521190217.2484099-2-jaegeuk@kernel.org> <YK5UOfzwdZni7c5W@google.com>
+ <YK5edM0igwfd47LV@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <39527645-b889-311f-cded-9d50b5b6a960@kernel.org>
+Date:   Wed, 2 Jun 2021 23:16:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <572da60e-714f-b207-a89e-6dc40209e2da@linux.microsoft.com>
+In-Reply-To: <YK5edM0igwfd47LV@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 04:31:04PM +0530, Praveen Kumar wrote:
-> 
-> 
-> On 5/31/2021 4:27 PM, Wei Liu wrote:
-> > On Mon, May 31, 2021 at 01:10:46PM +0530, Praveen Kumar wrote:
-> >> The hypervisor expects the lp_index to be same as cpu-id during LP creation
-> >> This fix correct the same, as cpu_physical_id can give different cpu-id.
-> > 
-> > Code looks fine to me, but the commit message can be made clearer.
-> > 
-> > """
-> > The hypervisor expects the logical processor index to be the same as
-> > CPU's id during logical processor creation. Using cpu_physical_id
-> > confuses Microsoft Hypervisor's scheduler. That causes the root
-> > partition not boot when core scheduler is used.
-> > 
-> > This patch removes the call to cpu_physical_id and uses the CPU index
-> > directly for bringing up logical processor. This scheme works for both
-> > classic scheduler and core scheduler.
-> > 
-> > Fixes: 333abaf5abb3 (x86/hyperv: implement and use hv_smp_prepare_cpus)
-> > """
-> > 
-> > No action is required from you. If you are fine with this commit message
-> > I can incorporate it and update the subject line when committing this
-> > patch.
-> > 
-> 
-> Thanks Wei for your comments. I'm fine with your inputs. Please go ahead. Thanks.
+On 2021/5/26 22:43, Jaegeuk Kim wrote:
+> Given RO feature in superblock, we don't need to check provisioning/reserve
+> spaces and SSA area.
 
-Pushed to hyperv-next. Thanks.
+It needs to update below two sysfs entries for RO feature?
+/sys/fs/f2fs/<device>/features
+/sys/fs/f2fs/features/..
+
+Thanks,
+
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+> Change log from v2:
+>   - allow curseg updates
+>   - fix some bugs
+> 
+>   fs/f2fs/f2fs.h    |  2 ++
+>   fs/f2fs/segment.c |  4 ++++
+>   fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
+>   3 files changed, 37 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index eaf57b5f3c4b..9ad502f92529 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -168,6 +168,7 @@ struct f2fs_mount_info {
+>   #define F2FS_FEATURE_SB_CHKSUM		0x0800
+>   #define F2FS_FEATURE_CASEFOLD		0x1000
+>   #define F2FS_FEATURE_COMPRESSION	0x2000
+> +#define F2FS_FEATURE_RO			0x4000
+>   
+>   #define __F2FS_HAS_FEATURE(raw_super, mask)				\
+>   	((raw_super->feature & cpu_to_le32(mask)) != 0)
+> @@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+>   #define	NR_CURSEG_DATA_TYPE	(3)
+>   #define NR_CURSEG_NODE_TYPE	(3)
+>   #define NR_CURSEG_INMEM_TYPE	(2)
+> +#define NR_CURSEG_RO_TYPE	(2)
+>   #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
+>   #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
+>   
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 8668df7870d0..02e0c38be7eb 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+>   		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
+>   		unsigned int blkofs = curseg->next_blkoff;
+>   
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
+> +			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
+> +			continue;
+> +
+>   		sanity_check_seg_type(sbi, curseg->seg_type);
+>   
+>   		if (f2fs_test_bit(blkofs, se->cur_valid_map))
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index e70aca8f97bd..6788e7b71e27 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   	int ret;
+>   
+>   	if (!options)
+> -		return 0;
+> +		goto default_check;
+>   
+>   	while ((p = strsep(&options, ",")) != NULL) {
+>   		int token;
+> @@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   			return -EINVAL;
+>   		}
+>   	}
+> +default_check:
+>   #ifdef CONFIG_QUOTA
+>   	if (f2fs_check_quota_options(sbi))
+>   		return -EINVAL;
+> @@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   	 */
+>   	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
+>   		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+> +
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
+> +		f2fs_err(sbi, "Allow to mount readonly mode only");
+> +		return -EROFS;
+> +	}
+>   	return 0;
+>   }
+>   
+> @@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>   static void default_options(struct f2fs_sb_info *sbi)
+>   {
+>   	/* init some FS parameters */
+> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
+> +	else
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +
+>   	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+>   	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+>   	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+> @@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
+>   		goto skip;
+>   
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
+> +		err = -EROFS;
+> +		goto restore_opts;
+> +	}
+> +
+>   #ifdef CONFIG_QUOTA
+>   	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
+>   		err = dquot_suspend(sb, -1);
+> @@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+>   	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+>   
+> -	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+> +	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
+> +			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+>   			ovp_segments == 0 || reserved_segments == 0)) {
+>   		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
+>   		return 1;
+>   	}
+> -
+>   	user_block_count = le64_to_cpu(ckpt->user_block_count);
+> -	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
+> +	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
+> +			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
+>   	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
+>   	if (!user_block_count || user_block_count >=
+>   			segment_count_main << log_blocks_per_seg) {
+> @@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +			goto check_data;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_node_segno[j])) {
+> @@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> +check_data:
+>   	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
+>   		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +			goto skip_cross;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_data_segno[j])) {
+> @@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> -
+> +skip_cross:
+>   	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
+>   	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
+>   
+> 
