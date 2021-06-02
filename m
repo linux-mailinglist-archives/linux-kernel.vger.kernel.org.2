@@ -2,211 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473DE397E54
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D11397E57
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhFBCBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhFBCBu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:01:50 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAF2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 19:00:07 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so1148443otl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 19:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=dEnLLx1tkRZoNKWtmVCz6hV85sEb57r1guLX8xpZjyo=;
-        b=g6GirZuUiOk5ToppH7B4pWFsZdHwFM+mqHbMV3kUzl/EKBopUUPpTXsK+vJ8rcTO0B
-         kFJa6AVebp/mYmG3+IR+zG/kCXhWEk3ZlfgeUIqS9kuQhY9U75I5A/KqWIjSwzicHfsF
-         wgoM44oOLVW/400gxKU0C97CgTsIkHlkjkxXQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=dEnLLx1tkRZoNKWtmVCz6hV85sEb57r1guLX8xpZjyo=;
-        b=Vqv6ldMvKsXQunAOhrwYLha8CDo47ttmxBIebzgxOcanlkBtbqZtd1qHW7hk6icuX6
-         5E8F5kSP0IGhGOY5hXcdgrVSUDFfqRJBzfCzls8/7f5dQ/f6h3NrFHgBWEPrhujPp6gI
-         Gvq6xs2hYxLJQapxq6BdvGds4c4DMN1uigcVCfah4K0rQYLbjVcErWkxkXFpqlzFzxlK
-         zpRL0DhgClHNgbscu1eJlPhX9H6eJbatXlM6Eicwx32aIq2pNz0HzDV0BkAjMY0wMmK/
-         JQuhi5+ohNNlQOUfwKF0f+tkeN879pAW85cM4vuRld7f9Ho4AuTqxwcI14Zi4KZ2Hb6d
-         RnFQ==
-X-Gm-Message-State: AOAM533Sc6Rko9YNRLCvGo0aa3dReRzGcC4SMAg7hORF0BH0CHO9L4CA
-        CocVkOZhPGlGTsxr4H2V1/N9J41gxvSK4XuPpS1tOw==
-X-Google-Smtp-Source: ABdhPJyx3D5dt9HhEl4vjIYswJL7/b+W9JLEakEh7TMCg3c3Iq0lypuLPEbmafmsmlf4YjeBaSV75iQt/60XKjuXHsU=
-X-Received: by 2002:a9d:18e:: with SMTP id e14mr5051666ote.34.1622599206303;
- Tue, 01 Jun 2021 19:00:06 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 1 Jun 2021 19:00:05 -0700
+        id S230271AbhFBCCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:02:08 -0400
+Received: from mga01.intel.com ([192.55.52.88]:19651 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230262AbhFBCCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:02:06 -0400
+IronPort-SDR: 60Dg4R4Wo8Fw7/EcX5MVb7Ajcbibu5d7Tz2UKME1pvaxVUYOVltRfxQeVU+lOKRdVn24aZ8V6m
+ 0P20X4mZrGNg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="224966107"
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="224966107"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 19:00:21 -0700
+IronPort-SDR: 25+6Y7LXK47ISarLYi6xRSNGLRyZDrIpUmj0Va5L/K39MmT+HoTUi1rzZURnw17L2UOG4yXjFz
+ A9h0h54+CeVg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="416688240"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga002.jf.intel.com with ESMTP; 01 Jun 2021 19:00:21 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Tue, 1 Jun 2021 19:00:21 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Tue, 1 Jun 2021 19:00:21 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Tue, 1 Jun 2021 19:00:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FHv4QcdOaBm3FjNskRP6yPUkD9DxdQozs+l2ZiQDWydN1cvPyRgtrS0uzWpO3UP6eHJ/CUOvqUI8rLbEmZC2BQz7qvu5bnxmHVFYAPdoAPYoScB/wDtMauRnj5Le+0lUKKWxRUWbcRbnXUqwuGSpgIVg5Ni1eg8JTZu5Fte6G2JUrRmyoIxrdqv2GNjA9RAh1OXDEd461WBzsrmDXdg3mtebzVX4NZiU7C0xINtUl25qffoH8OGBzpLp4n1TAhOqQ7SUZWrPaDZfaK3sgskrgUQEbUpApuZxdCLgf43s9zjCsIvXlnRrjipN5cRuK3P0wlFQmP6QG3Bre+pWKzr84Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YQpX802ARBgYunDY8oTHpKBWLmspJouGHpXDjn9YAb0=;
+ b=XQe2grOyi4yva4gsdow/qegTvsZTLhn3fp5BL6CiITaHWgjkzdn3lQ99Flx5Eu8kk4RUuYIKIxFDNBGiUyqfCJkjrYthJptKY5ckhI8e7lJSvei2i/PoGCNEe8o4m2R3QaF5GlD3Zm2pRTA5RMhVaz0ceB5g3miiLIbgq6vp6dl8t3Gl0QTAQw+k+EY9/Nft/sN5DD2feMy7xoBliYa1CxzE+YijCxJmQA/OCHXCFZHcCt4KOzH+3gF9TVNl+JgOZON0/Tk5J0KHCvprfCy1sppEzVyOXyxFdBqj5vyvvPB3wFTeZ35FUdqaQVn06UgqXbKlUUl8G6EhiIqsTrkPWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YQpX802ARBgYunDY8oTHpKBWLmspJouGHpXDjn9YAb0=;
+ b=SVSpdU4hEcs36vuUNTBRE8kZLgDSVSj/+Z095eHPweKODmpaX7XPTL7/lmcZWAG/H6qkMGNB+vCFy1pKpvkPSU3VlSmCnCAukDFhuLJNP1sEYHhhBV5fpWN4tEPEO/UTXnVWJeHOQtHXP/d5TH4JCCJiUbljd8ZCINeADu5se6U=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MWHPR1101MB2336.namprd11.prod.outlook.com (2603:10b6:300:75::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Wed, 2 Jun
+ 2021 02:00:17 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
+ 02:00:17 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Robin Murphy" <robin.murphy@arm.com>
+Subject: RE: [RFC] /dev/ioasid uAPI proposal
+Thread-Topic: [RFC] /dev/ioasid uAPI proposal
+Thread-Index: AddSzQ970oLnVHLeQca/ysPD8zMJZwBLsqGAALCWeVAAFFHFgAAQEjDA
+Date:   Wed, 2 Jun 2021 02:00:17 +0000
+Message-ID: <MWHPR11MB1886DE76EDAA9D7FFDDC7FA28C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210528195839.GO1002214@nvidia.com>
+ <MWHPR11MB1886A17F36CF744857C531148C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210601175643.GQ1002214@nvidia.com>
+In-Reply-To: <20210601175643.GQ1002214@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.143.24]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 68f6f446-1314-4cab-9abc-08d9256a2b48
+x-ms-traffictypediagnostic: MWHPR1101MB2336:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1101MB2336018566CEE7E6216CAA578C3D9@MWHPR1101MB2336.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W/KB65TPmvL+IDBn0DbpylaqkpSzMDggdjDz403jLxvWACNIUhb91rMNIUfOqtYN2nQpbbEsRtSnMMw8/2py4d2vtfg0TqgixO0oXLZDA2uIewsSFKFGp82mYRsO457HloDHPqRcluX4uLR4PgrpLycEUlRWtie8J75+9KKpCboVsSfs6bVDf+ltusLr6CI66T/ZIUriCDMi6vdOe6q9O9BC7r3wUxGxWNsExmGTZOvTBfGWyjDf8uv8N54r8WBAaq1D2pohVJ1+nIUpFXuvV8VKM084Qka8rd1l0EiSjjWe9sTr8ORmgl6QNCYBm1TpA+R8JOI+k+7dENxeGwFZ1oc2fCreZJ4NiXFhDqkxafOMN7dbGggKK/YCFs7bhVNj2FyCnKpagTJ1h3946zc2lEJAtB3krM+i8re/MgAbUHbLoJkZLOgVPjivRslmNpEiZfxVNALJhEiRN1ymX1wKamE8fKAyjiqa80bOIkoQ9JpP/sTTyd9+qwJ9LQcb153auOR4pB576xUacTGgw3y8R3zCph2xFxUd8DCDCbaFE5co74ohClDI59tiNa9mAWjKXr7z4DeNMmxWxX0Tg1Uw7Eu3l6bGuD4prFm0aNwGQnA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(396003)(376002)(366004)(26005)(64756008)(52536014)(9686003)(83380400001)(8676002)(76116006)(86362001)(122000001)(5660300002)(7416002)(186003)(66446008)(71200400001)(2906002)(478600001)(4326008)(316002)(55016002)(6916009)(66946007)(7696005)(54906003)(66556008)(8936002)(66476007)(6506007)(38100700002)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?pSp2/x6Bh2RkIO+JNxSHvg7QNwp1ZSpJGEGFVZ7f4Kln1FYhg6p4CP4CWN9f?=
+ =?us-ascii?Q?BghYQ6IxW97O814kSuEKi90ifWE/uJgZ4Z0OzeCeCv2avJ88Xt0fBEdO/dW1?=
+ =?us-ascii?Q?8+MFyrX2ktktemDb7/qfzozTgbNOY+dfzyZrfAeU7aV63vZQNaf1PE05LuN4?=
+ =?us-ascii?Q?d3DIriDNG7K4ikGWSZ3Iv1g1rJeffVj2/sz61aCa6u7CUk8KejIHil6y+tlD?=
+ =?us-ascii?Q?gStsfjjcktdmzHTH4fs8Y2esdHJIBYjxqXth51Gi2fHKCP+DtSHSOaK3oxYu?=
+ =?us-ascii?Q?o/UD2IQ/efEVHVonQWySyaiXXN/pxhe46TWYOO4m+SoDPCCrdd7poSJZR7cw?=
+ =?us-ascii?Q?52qtMoi+wceCjNm9i/OVoRv+GJqz2u5iSYOVqM4zj361J5EKONdgxCNQHxVu?=
+ =?us-ascii?Q?kewOAeWg8BZchRtZ6s924lFTvvNuO5/0dl54L1KA6iZvL87ppP87FA/c0aNo?=
+ =?us-ascii?Q?AMtsRzlYRJ4NR+Pk9FgCZQecNgVBCyhu5T2rdL92A/CtKjRUhQ9HGXXtWy7s?=
+ =?us-ascii?Q?dSvSGdZ80FSrBQ65B5V+t1dEcaAGQdcrNfoP4BbrN1hQ/k1oA64B7yM881uD?=
+ =?us-ascii?Q?G/UXYX2pVr32JWXxP1dyGCJMemn0ZCFgWZebVXE/Ygi7purMaH8qXBLSTH36?=
+ =?us-ascii?Q?a5CL5j5pbRd1ObX1RNIW7ItMAKAJwg1+WQb3UZ558Y+2foqUesM2KLKSdW3Z?=
+ =?us-ascii?Q?XjFpI5Rvut8LGjlTtiNcFMbhDm/HPaO8S9Nt7QZx/CkEXq6XoBtJTgUmB65p?=
+ =?us-ascii?Q?0ShE4QXw/V4yk1AGjPpRpaUDRGCiX3mGiK7O9eXYI8F5Gh/4RWsdeRk7oq0j?=
+ =?us-ascii?Q?4Jv1K7Ne0Z3FIoybXnlQ/zUIgePv3+Hzu1rgUsqmhr8lCS/e8F1E19MmC5mZ?=
+ =?us-ascii?Q?VyzSBNpAb0mr4LxLJTq9FB084G++ds+wIYS9g+l+Z81eTwChTOjQh+vkkw6P?=
+ =?us-ascii?Q?eWejt2pyQO0Bl3muvQu/q+k4VhHLCJExWQ5wDnqxtYLlasjaOBkmQ4GuHJNo?=
+ =?us-ascii?Q?ATNQOzdF9fdWX3yr5vwjM+imQZCAvagY0DFCogereAoE819Puw9Gqaik/+pQ?=
+ =?us-ascii?Q?WzvMK75rwpZySB2GKZiQDXvSwEnYT8NWjKP5DhSA9x1tN5LPdhxaka756Ql5?=
+ =?us-ascii?Q?GDYXntrpPC29iOxUbC5yXVpKPRU6ST3l+CcSmvyQWZbeRRTz05Np9TkCu0WK?=
+ =?us-ascii?Q?ZZtjEBb/I5G+OxA6LSw2FNhoRs9N4wS1nWjaMi+Hb06/MHHTq1OXKl+7Ch2+?=
+ =?us-ascii?Q?KO+QXwxPkzBkUfUZCr47JurhSVQX4CW1qCQa1n7YuWdU7wdCG20R6jjzn02P?=
+ =?us-ascii?Q?tydJpFJxt2AIc9ZTUJZPDY3i?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1622591408-5465-1-git-send-email-khsieh@codeaurora.org>
-References: <1622591408-5465-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 1 Jun 2021 19:00:05 -0700
-Message-ID: <CAE-0n52wAmQ1ZZ0pfGfXwsM23D+R5FFVBrpzr1a8YGDdWNb_gw@mail.gmail.com>
-Subject: Re: [PATCH v3] drm/msm/dp: power off DP phy at suspend
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68f6f446-1314-4cab-9abc-08d9256a2b48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jun 2021 02:00:17.1765
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SOX1mjUX/hPNvseLjnf/iHj59y1Pu63v+J2mZYH/C1YHCG6PjUkSOMgRohbDifg5e72TX9IhKK+lhUZeON9jKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2336
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please add dri-devel@lists.freedesktop.org next time
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Wednesday, June 2, 2021 1:57 AM
+>=20
+> On Tue, Jun 01, 2021 at 08:38:00AM +0000, Tian, Kevin wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Saturday, May 29, 2021 3:59 AM
+> > >
+> > > On Thu, May 27, 2021 at 07:58:12AM +0000, Tian, Kevin wrote:
+> > > >
+> > > > 5. Use Cases and Flows
+> > > >
+> > > > Here assume VFIO will support a new model where every bound device
+> > > > is explicitly listed under /dev/vfio thus a device fd can be acquir=
+ed w/o
+> > > > going through legacy container/group interface. For illustration pu=
+rpose
+> > > > those devices are just called dev[1...N]:
+> > > >
+> > > > 	device_fd[1...N] =3D open("/dev/vfio/devices/dev[1...N]", mode);
+> > > >
+> > > > As explained earlier, one IOASID fd is sufficient for all intended =
+use
+> cases:
+> > > >
+> > > > 	ioasid_fd =3D open("/dev/ioasid", mode);
+> > > >
+> > > > For simplicity below examples are all made for the virtualization s=
+tory.
+> > > > They are representative and could be easily adapted to a non-
+> virtualization
+> > > > scenario.
+> > >
+> > > For others, I don't think this is *strictly* necessary, we can
+> > > probably still get to the device_fd using the group_fd and fit in
+> > > /dev/ioasid. It does make the rest of this more readable though.
+> >
+> > Jason, want to confirm here. Per earlier discussion we remain an
+> > impression that you want VFIO to be a pure device driver thus
+> > container/group are used only for legacy application.
+>=20
+> Let me call this a "nice wish".
+>=20
+> If you get to a point where you hard need this, then identify the hard
+> requirement and let's do it, but I wouldn't bloat this already large
+> project unnecessarily.
+>=20
 
-Quoting Kuogee Hsieh (2021-06-01 16:50:08)
-> Normal DP suspend operation contains two steps, display off followed
-> by dp suspend, to complete system wide suspending cycle if display is
-> up at that time. In this case, DP phy will be powered off at display
-> off. However there is an exception case that depending on the timing
-> of dongle plug in during system wide suspending, sometimes display off
-> procedure may be skipped and dp suspend was called directly. In this
-> case, dp phy is stay at powered on (phy->power_count = 1) so that at
-> next resume dp driver crash at main link clock enable due to phy is
-> not physically powered on. This patch will call dp_ctrl_off_link_stream()
-> to tear down main link and power off phy at dp_pm_suspend() if main link
-> had been brought up.
->
-> Changes in V2:
-> -- stashed changes into dp_ctrl.c
-> -- add is_phy_on to monitor phy state
->
-> Changes in V3:
-> -- delete is_phy_on
-> -- call dp_ctrl_off_link_stream() from dp_pm_suspend()
->
-> Fixes: 0114f31a2903 ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly)
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 10 +++++++++-
->  drivers/gpu/drm/msm/dp/dp_display.c |  4 +++-
->  drivers/gpu/drm/msm/dp/dp_power.c   | 15 +++++++++++++++
->  3 files changed, 27 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> index dbd8943..8324a453 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> @@ -1414,6 +1414,7 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
->         phy = dp_io->phy;
->
->         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
-> +
->         phy_exit(phy);
->
->         DRM_DEBUG_DP("Host deinitialized successfully\n");
-> @@ -1457,6 +1458,7 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
->                 return ret;
->         }
->         phy_power_off(phy);
-> +
->         /* hw recommended delay before re-enabling clocks */
->         msleep(20);
->
-> @@ -1488,6 +1490,7 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
->         }
->
->         phy_power_off(phy);
-> +
->         phy_exit(phy);
->
->         return 0;
+OK, got your point. So let's start by keeping this room. For new
+sub-systems like vDPA,  they don't need inventing group fd uAPI
+and just leave to their user to meet the group limitation. For existing
+sub-system i.e. VFIO, it could keep a stronger group enforcement
+uAPI like today. One day, we may revisit it if the simple policy works
+well for all other new sub-systems.
 
-None of these hunks are useful. Can we drop them?
+> Similarly I wouldn't depend on the group fd existing in this design
+> so it could be changed later.
 
-> @@ -1816,12 +1819,16 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
->         struct dp_ctrl_private *ctrl;
->         struct dp_io *dp_io;
->         struct phy *phy;
-> -       int ret;
-> +       int ret = 0;
+Yes, this is guaranteed. /dev/ioasid uAPI has no group concept.
 
-Drop this.
+>=20
+> > From this comment are you suggesting that VFIO can still keep
+> > container/ group concepts and user just deprecates the use of vfio
+> > iommu uAPI (e.g. VFIO_SET_IOMMU) by using /dev/ioasid (which has a
+> > simple policy that an IOASID will reject cmd if partially-attached
+> > group exists)?
+>=20
+> I would say no on the container. /dev/ioasid =3D=3D the container, having
+> two competing objects at once in a single process is just a mess.
+>=20
+> If the group fd can be kept requires charting a path through the
+> ioctls where the container is not used and /dev/ioasid is sub'd in
+> using the same device FD specific IOCTLs you show here.
 
->
->         ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
->         dp_io = &ctrl->parser->io;
->         phy = dp_io->phy;
->
-> +       /* main link is off */
-> +       if (!dp_power_clk_status(ctrl->power, DP_CTRL_PM))
-> +               return ret;
+yes
 
-and then return 0?
+>=20
+> I didn't try to chart this out carefully.
+>=20
+> Also, ultimately, something need to be done about compatability with
+> the vfio container fd. It looks clear enough to me that the the VFIO
+> container FD is just a single IOASID using a special ioctl interface
+> so it would be quite rasonable to harmonize these somehow.
 
-> +
->         /* set dongle to D3 (power off) mode */
->         dp_link_psm_config(ctrl->link, &ctrl->panel->link_info, true);
->
-> @@ -1894,6 +1901,7 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
->         }
->
->         phy_power_off(phy);
-> +
->         phy_exit(phy);
->
->         DRM_DEBUG_DP("DP off done\n");
+Possibly multiple IOASIDs as VFIO container cay hold incompatible devices
+today. Suppose helper functions will be provided for VFIO container to
+create IOASID and then use map/unmap to manage its I/O page table.
+This is the shim iommu driver concept in previous discussion between
+you and Alex.
 
-Drop?
+This can be done at a later stage. Let's focus on /dev/ioasid uAPI, and
+bear some code duplication between it and vfio type1 for now.=20
 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index cdec0a3..5abd769 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1327,8 +1327,10 @@ static int dp_pm_suspend(struct device *dev)
->
->         mutex_lock(&dp->event_mutex);
->
-> -       if (dp->core_initialized == true)
-> +       if (dp->core_initialized == true) {
-> +               dp_ctrl_off_link_stream(dp->ctrl);
+>=20
+> But that is too complicated and far out for me at least to guess on at
+> this point..
 
-Why not just check here for dp_power_clk_status()?
+We're working on a prototype in parallel with this discussion. Based on
+this work we'll figure out what's the best way to start with.
 
->                 dp_display_host_deinit(dp);
-> +       }
->
->         dp->hpd_state = ST_SUSPENDED;
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_power.c b/drivers/gpu/drm/msm/dp/dp_power.c
-> index 9c4ea00..980924a9 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_power.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_power.c
-> @@ -262,6 +262,21 @@ int dp_power_clk_enable(struct dp_power *dp_power,
->                         }
->                         dp_power->core_clks_on = true;
->                 }
-> +       } else {
-> +               if (pm_type == DP_CORE_PM && !dp_power->core_clks_on) {
-> +                       DRM_DEBUG_DP("core clks already disabled\n");
-> +                       return 0;
-> +               }
-> +
-> +               if (pm_type == DP_CTRL_PM && !dp_power->link_clks_on) {
-> +                       DRM_DEBUG_DP("links clks already disabled\n");
-> +                       return 0;
-> +               }
-> +
-> +               if (pm_type == DP_STREAM_PM && !dp_power->stream_clks_on) {
-> +                       DRM_DEBUG_DP("pixel clks already disabled\n");
-> +                       return 0;
-> +               }
->         }
-
-If this happens isn't something wrong? Like we've somehow lost track of
-the proper state and no we're trying to disable clks when we don't need
-to. And given that clks already manage their own refcount that would be
-pretty obvious if it went wrong
-
->
->         rc = dp_power_clk_set_rate(power, pm_type, enable);
+Thanks
+Kevin
