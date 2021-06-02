@@ -2,649 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6513994B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4533994B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbhFBUlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:41:11 -0400
-Received: from mout.gmx.net ([212.227.15.15]:34661 "EHLO mout.gmx.net"
+        id S229812AbhFBUlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhFBUlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:41:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1622666364;
-        bh=qPN21NCT+HHcm9R8yZvFBBtIw+Myk1emvASQT+MMASc=;
-        h=X-UI-Sender-Class:From:To:Subject:Date;
-        b=Nb1wng+qjZc1JAnIMp2b2oBiipTV6VCrY77ZaHZGwLm60H0Rxx0vs1wmS/nTyxZM0
-         9o5b1lztB+RoXyJMAWBELwA3SWDOJqV/dLajE/BnQqQ8sZNXnLqVWA0E1OBsfOOx2A
-         6iooycWwuoUbOU3bjn7oOG3jEg7isN0z4EjhnPRU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [93.194.223.136] ([93.194.223.136]) by web-mail.gmx.net
- (3c-app-gmx-bs30.server.lan [172.19.170.82]) (via HTTP); Wed, 2 Jun 2021
- 22:39:24 +0200
+        id S229635AbhFBUlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 16:41:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B3523613E9;
+        Wed,  2 Jun 2021 20:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622666403;
+        bh=XmuAynM0hvpRQItZ9xBkL6PmdQ/eIq6AizBpJd1B7so=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YRFiAf9691w5eeYVSy6YhuMCy0jAF6ZrSUzWiP9VqhE34nIe/4rQ1oJp8szcOdpaM
+         UujtSabHXeCJgcfdwmcZ4UzLUyfigJi63mjNrjAA8RKPj86SbVOQUqQyp42s+INafB
+         vCn0B56WnIbsQB7bZjcq++zx0kf6lPqyntc7vBJn1XJtgU8BO2NcWZ1/WuWN2YA+Vn
+         MIyWU9hpDqJtQF/P9PYpiRs/4rATqWW4o3L6g1YVtp7eA2StTVrFdCHfGaaTLMhyEy
+         7VVHSfmpOY0g83cdY6s6ZF6O/WlWnDv+wg6jPF2ibjTzcUe48r5u015Y5lktdBPY8K
+         d2R54kRVivJaQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A55D160BFB;
+        Wed,  2 Jun 2021 20:40:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Message-ID: <trinity-28ae5c84-2f2a-41bc-b4cf-feb825ec538d-1622666364612@3c-app-gmx-bs30>
-From:   Roman <klangrausch@wolke7.net>
-To:     linux-kernel@vger.kernel.org
-Subject: Allen&Heath Xone43C: USB communication
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 2 Jun 2021 22:39:24 +0200
-Importance: normal
-Sensitivity: Normal
-Content-Transfer-Encoding: quoted-printable
-X-Priority: 3
-X-Provags-ID: V03:K1:1gwpd1mAHbvpo4GOO8JwkRDV9utBOllS3Yby/OhlhDUgyXpSs/Bhujknv2yQEhPzD7fav
- bLewlMGxtu5PPPMDgm99xpAOSPjpxIEzJDfsZk07//IjK+X/kFLFHmdqsCw0/BpyN4A9j+24PKJw
- ru+BiBcxOazcNvUbCbIzvKYwmArWpIkdL0Py9rWOsB3ISC/ZHZsXLEZUcUmuWReLXSPYaxRPe08G
- nAXDzY/VPbVQS7qudtCMNTCy0o3MIQwhSZEu5WT+RM0csh+IFnQa7I+NXtbuGm7jmvUOqDjBPcI9
- mE=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z80NaGKnJvQ=:mwLrXMw6tL24ZuUR3zii9H
- lgHEoWHwRp4GaVzAV91DD8Dp4fRKLadaRiSwkOBeSt7IQvcpABH1VzDUU/hs1tO6N49rNFLRc
- +vwLA76udC9+XTfCcsQ6SRSwQHyZP4QFGQ1KqlhY60gZd/7RS+YzjfrBlphlrZmRdWWO1tD/o
- 4HU9NM1Szn5hv/RaVfB7H5/gh0nl527ybQ0PuHMKOiVSMcAy0rEi5yugUA39She2Ai7p9TkLn
- Fn++KMDNI1B87zHc7ocwcBks19puyRJA0pukNQZDbJQZdNRdgXslLtARvJ5w7z+Ak4Ep2kSGq
- DgbSoRhic3yLkXfiDIUSZFgGAolTki/bLknBcnuBq5hRT4C5OrUYqgpa8JbVxUI5on1dNwD2W
- Xau3WVWoDpVBeq9pQi9sMxGtBiR+B4mlkOv+drUT11ZgjaEb3SzJWN2Yf7uCM8pNGR6zwdDPg
- IpkDVB4nPD9wypXczd5wI+o5uLMhGIdmeWthwaA7/DdatvrqVHx0RTKBCGrfEmb6fukEG5leL
- nyvCsgLXksdTm5E3y4htT4A9lWICErc1d4VY4qa/qKyJaHYhJnOh9KJclwY9mxcBPyTG84XH9
- 1cQMQBgMFEw/f8MfJ0WaWWN6RckV0X1zC9L3GWOeJIwkVBvmKb289nKfgch2oFFUHk+aZbCot
- uAsNs4+Hbd8ln8Oo4r63jC71VcPJpgc/6t5TNa/7qNqcKLyCWhFXl8l+tCp90GMNr6dLT/KZj
- uDFBZZcKc5JZ5IczVxn5kDa+dkvQ8p16hJyqmY/Cfufx0C1Jng/d+VBkJp0aGPeq0U23acZMB
- HsW7mE2qDs7Imy49/eGLYlUEXt/QsxW8JgnoclWt1piNoRdk1H34F3226Ydy6WOKaNbbt7NtM
- dvog29XE440v1VTBa46w==
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/1] net: stmmac: fix issue where clk is being unprepared
+ twice
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162266640367.10923.8870511595725834118.git-patchwork-notify@kernel.org>
+Date:   Wed, 02 Jun 2021 20:40:03 +0000
+References: <20210602023125.1263950-1-vee.khee.wong@linux.intel.com>
+In-Reply-To: <20210602023125.1263950-1-vee.khee.wong@linux.intel.com>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, qiangqing.zhang@nxp.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all, hello list,
-I am not sure whether this is the correct list, since it's not strictly an
-ALSA affair (fw to kernel-devel)=2E Recent progress on driver support for
-Pioneer devices encouraged me to dissect USB communication with an
-Allen&Heath Xone43C, a mixer with USB interface=2E It does feature 16 chan=
-nels
-(8 in, 8 out), but only 4 (2 in, 2 out) show up, 2 of which remain automag=
-ically
-silent=2E There is no linux driver yet, and maybe I can help?
+Hello:
 
-Addresses are:
-0x80 =C2=A0 =C2=A0Endpoint 0 (in)
-0x00 =C2=A0 =C2=A0Endpoint 0 (out)
-0x81 =C2=A0 =C2=A0Endpoint 1 (in) =C2=A0=C2=A0 Interface 2=2E1 and Interfa=
-ce 2=2E2 (vendor spec)
-0x02 =C2=A0 =C2=A0Endpoint 2 (out)=C2=A0  Interface 1=2E1 and Interface 1=
-=2E2 (vendor spec)
-0x85 =C2=A0 =C2=A0Endpoint 5 (in) =C2=A0=C2=A0 Interface 1=2E1
-0x83 =C2=A0 =C2=A0Endpoint 3 (in) =C2=A0=C2=A0 Interface 3 MIDI
-0x04 =C2=A0 =C2=A0Endpoint 4 (out)=C2=A0  Interface 3 MIDI
-=C2=A0
-----------------------------------
-=C2=A0
-I have a sniff here:
-https://drive=2Egoogle=2Ecom/file/d/1UPXCN-r7jc9hfm1d-Hip8vckSs2RQNtC/view=
-?usp=3Dsharing
-=C2=A0
----------------------------------
+This patch was applied to netdev/net.git (refs/heads/master):
 
-USB info:
-=C2=A0
-Bus 001 Device 006: ID 22f0:000f Allen&Heath Xone:43C
-Device Descriptor:
-=C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A018
-=C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 bcdUSB =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 2=2E00
-=C2=A0 bDeviceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0239 Miscellaneous De=
-vice
-=C2=A0 bDeviceSubClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 2
-=C2=A0 bDeviceProtocol =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Interface Association
-=C2=A0 bMaxPacketSize0 =C2=A0 =C2=A0 =C2=A0 =C2=A064
-=C2=A0 idVendor =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x22f0
-=C2=A0 idProduct =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x000f
-=C2=A0 bcdDevice =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A02=2E00
-=C2=A0 iManufacturer =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Allen&Heath
-=C2=A0 iProduct =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A02 X=
-one:43C
-=C2=A0 iSerial =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 3 n=
-o serial number
-=C2=A0 bNumConfigurations =C2=A0 =C2=A0 =C2=A01
-=C2=A0 Configuration Descriptor:
-=C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 9
-=C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 2
-=C2=A0 =C2=A0 wTotalLength =C2=A0 =C2=A0 =C2=A0 0x0126
-=C2=A0 =C2=A0 bNumInterfaces =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A04
-=C2=A0 =C2=A0 bConfigurationValue =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 iConfiguration =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 0xc0
-=C2=A0 =C2=A0 =C2=A0 Self Powered
-=C2=A0 =C2=A0 MaxPower =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00mA
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Audio
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A01 Control Devi=
-ce
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 =C2=A0 AudioControl Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A011
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A01 (HEAD=
-ER)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bcdADC =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 1=2E00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wTotalLength =C2=A0 =C2=A0 =C2=A0 0x0035
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInCollection =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 3
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 baInterfaceNr(0) =C2=A0 =C2=A0 =C2=A0 =C2=A01
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 baInterfaceNr(1) =C2=A0 =C2=A0 =C2=A0 =C2=A02
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 baInterfaceNr(2) =C2=A0 =C2=A0 =C2=A0 =C2=A03
-=C2=A0 =C2=A0 =C2=A0 AudioControl Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A012
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A02 (INPU=
-T_TERMINAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bTerminalID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wTerminalType =C2=A0 =C2=A0 =C2=A00x0101 USB S=
-treaming
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bAssocTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bNrChannels =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wChannelConfig =C2=A0 =C2=A0 0x0003
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Left Front (L)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Right Front (R)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iChannelNames =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 AudioControl Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A03 (OUTP=
-UT_TERMINAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bTerminalID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wTerminalType =C2=A0 =C2=A0 =C2=A00x0602 Digit=
-al Audio Interface
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bAssocTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSourceID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 AudioControl Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A012
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A02 (INPU=
-T_TERMINAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bTerminalID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 3
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wTerminalType =C2=A0 =C2=A0 =C2=A00x0602 Digit=
-al Audio Interface
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bAssocTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bNrChannels =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wChannelConfig =C2=A0 =C2=A0 0x0003
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Left Front (L)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Right Front (R)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iChannelNames =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 AudioControl Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A03 (OUTP=
-UT_TERMINAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bTerminalID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wTerminalType =C2=A0 =C2=A0 =C2=A00x0101 USB S=
-treaming
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bAssocTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSourceID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 3
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iTerminal =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A01
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Audio
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A02 Streaming
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A01
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Audio
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A02 Streaming
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 =C2=A0 AudioStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 7
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A01 (AS_G=
-ENERAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bTerminalLink =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDelay =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A01 frames
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wFormatTag =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x0001 =
-PCM
-=C2=A0 =C2=A0 =C2=A0 AudioStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A011
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A02 (FORM=
-AT_TYPE)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bFormatType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 1 (FORMAT_TYPE_I)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bNrChannels =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSubframeSize =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 3
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bBitResolution =C2=A0 =C2=A0 =C2=A0 =C2=A0 24
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSamFreqType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A01 Discrete
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 tSamFreq[ 0] =C2=A0 =C2=A0 =C2=A0 =C2=A048000
-=C2=A0 =C2=A0 =C2=A0 Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bEndpointAddress =C2=A0 =C2=A0 0x02 =C2=A0EP 2=
- OUT
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A05
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Transfer Type =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0Isochronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Synch Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Asynchronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Usage Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Data
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wMaxPacketSize =C2=A0 =C2=A0 0x0126 =C2=A01x 2=
-94 bytes
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInterval =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bRefresh =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSynchAddress =C2=A0 =C2=A0 =C2=A0 =C2=A0 133
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 AudioStreaming Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 7
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =
-=C2=A037
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A0=
-1 (EP_GENERAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0x01
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Sampling Frequency
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bLockDelayUnits =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 2 Decoded PCM samples
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 wLockDelay =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-0x0000
-=C2=A0 =C2=A0 =C2=A0 Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bEndpointAddress =C2=A0 =C2=A0 0x85 =C2=A0EP 5=
- IN
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A01
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Transfer Type =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0Isochronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Synch Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 None
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Usage Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Data
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wMaxPacketSize =C2=A0 =C2=A0 0x0003 =C2=A01x 3=
- bytes
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInterval =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bRefresh =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A05
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSynchAddress =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A01
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 255 Vendor Speci=
-fic Class
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 =C2=A0 Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bEndpointAddress =C2=A0 =C2=A0 0x02 =C2=A0EP 2=
- OUT
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A05
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Transfer Type =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0Isochronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Synch Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Asynchronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Usage Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Data
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wMaxPacketSize =C2=A0 =C2=A0 0x0200 =C2=A01x 5=
-12 bytes
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInterval =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bRefresh =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSynchAddress =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A02
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Audio
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A02 Streaming
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A02
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Audio
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A02 Streaming
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 =C2=A0 AudioStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 7
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A01 (AS_G=
-ENERAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bTerminalLink =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 4
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDelay =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A01 frames
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wFormatTag =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x0001 =
-PCM
-=C2=A0 =C2=A0 =C2=A0 AudioStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A011
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A02 (FORM=
-AT_TYPE)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bFormatType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 1 (FORMAT_TYPE_I)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bNrChannels =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSubframeSize =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 3
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bBitResolution =C2=A0 =C2=A0 =C2=A0 =C2=A0 24
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSamFreqType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A01 Discrete
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 tSamFreq[ 0] =C2=A0 =C2=A0 =C2=A0 =C2=A048000
-=C2=A0 =C2=A0 =C2=A0 Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bEndpointAddress =C2=A0 =C2=A0 0x81 =C2=A0EP 1=
- IN
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A05
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Transfer Type =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0Isochronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Synch Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Asynchronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Usage Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Data
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wMaxPacketSize =C2=A0 =C2=A0 0x0126 =C2=A01x 2=
-94 bytes
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInterval =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bRefresh =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSynchAddress =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 AudioStreaming Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 7
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =
-=C2=A037
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A0=
-1 (EP_GENERAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0x01
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Sampling Frequency
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bLockDelayUnits =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 2 Decoded PCM samples
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 wLockDelay =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-0x0000
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A02
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 255 Vendor Speci=
-fic Class
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 =C2=A0 Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bEndpointAddress =C2=A0 =C2=A0 0x81 =C2=A0EP 1=
- IN
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A05
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Transfer Type =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0Isochronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Synch Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Asynchronous
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Usage Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Data
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wMaxPacketSize =C2=A0 =C2=A0 0x0200 =C2=A01x 5=
-12 bytes
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInterval =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bRefresh =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSynchAddress =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 bInterfaceNumber =C2=A0 =C2=A0 =C2=A0 =C2=A03
-=C2=A0 =C2=A0 =C2=A0 bAlternateSetting =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 bNumEndpoints =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 bInterfaceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 1 Audio
-=C2=A0 =C2=A0 =C2=A0 bInterfaceSubClass =C2=A0 =C2=A0 =C2=A03 MIDI Streami=
-ng
-=C2=A0 =C2=A0 =C2=A0 bInterfaceProtocol =C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 iInterface =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A00
-=C2=A0 =C2=A0 =C2=A0 MIDIStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 7
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A01 (HEAD=
-ER)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bcdADC =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 1=2E00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wTotalLength =C2=A0 =C2=A0 =C2=A0 0x0041
-=C2=A0 =C2=A0 =C2=A0 MIDIStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 6
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A02 (MIDI=
-_IN_JACK)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 1 Embedded
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iJack =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 MIDIStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 6
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A02 (MIDI=
-_IN_JACK)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 2 External
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 2
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iJack =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 MIDIStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A03 (MIDI=
-_OUT_JACK)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 1 Embedded
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 3
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bNrInputPins =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A01
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 baSourceID( 0) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A02
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 BaSourcePin( 0) =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iJack =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 MIDIStreaming Interface Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A036
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A03 (MIDI=
-_OUT_JACK)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackType =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 2 External
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bJackID =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bNrInputPins =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A01
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 baSourceID( 0) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A01
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 BaSourcePin( 0) =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 iJack =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 =C2=A0 =C2=A0 Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bEndpointAddress =C2=A0 =C2=A0 0x83 =C2=A0EP 3=
- IN
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A02
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Transfer Type =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0Bulk
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Synch Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 None
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Usage Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Data
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wMaxPacketSize =C2=A0 =C2=A0 0x0200 =C2=A01x 5=
-12 bytes
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInterval =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bRefresh =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSynchAddress =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 MIDIStreaming Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =
-=C2=A037
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A0=
-1 (GENERAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bNumEmbMIDIJack =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 baAssocJackID( 0) =C2=A0 =C2=A0 =C2=A0 =
-3
-=C2=A0 =C2=A0 =C2=A0 Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 9
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bEndpointAddress =C2=A0 =C2=A0 0x04 =C2=A0EP 4=
- OUT
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bmAttributes =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A03
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Transfer Type =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0Interrupt
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Synch Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 None
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Usage Type =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 Data
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 wMaxPacketSize =C2=A0 =C2=A0 0x0010 =C2=A01x 1=
-6 bytes
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bInterval =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 4
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bRefresh =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A00
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 bSynchAddress =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 0
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 MIDIStreaming Endpoint Descriptor:
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 5
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =
-=C2=A037
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bDescriptorSubtype =C2=A0 =C2=A0 =C2=A0=
-1 (GENERAL)
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bNumEmbMIDIJack =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 baAssocJackID( 0) =C2=A0 =C2=A0 =C2=A0 =
-1
-Device Qualifier (for other device speed):
-=C2=A0 bLength =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A010
-=C2=A0 bDescriptorType =C2=A0 =C2=A0 =C2=A0 =C2=A0 6
-=C2=A0 bcdUSB =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 2=2E00
-=C2=A0 bDeviceClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
-=C2=A0 bDeviceSubClass =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 bDeviceProtocol =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
-=C2=A0 bMaxPacketSize0 =C2=A0 =C2=A0 =C2=A0 =C2=A064
-=C2=A0 bNumConfigurations =C2=A0 =C2=A0 =C2=A01
-Device Status: =C2=A0 =C2=A0 0x0001
-=C2=A0 Self Powered
-=C2=A0
----
-Best wishes,
-Roman
+On Wed,  2 Jun 2021 10:31:25 +0800 you wrote:
+> In the case of MDIO bus registration failure due to no external PHY
+> devices is connected to the MAC, clk_disable_unprepare() is called in
+> stmmac_bus_clk_config() and intel_eth_pci_probe() respectively.
+> 
+> The second call in intel_eth_pci_probe() will caused the following:-
+> 
+> [   16.578605] intel-eth-pci 0000:00:1e.5: No PHY found
+> [   16.583778] intel-eth-pci 0000:00:1e.5: stmmac_dvr_probe: MDIO bus (id: 2) registration failed
+> [   16.680181] ------------[ cut here ]------------
+> [   16.684861] stmmac-0000:00:1e.5 already disabled
+> [   16.689547] WARNING: CPU: 13 PID: 2053 at drivers/clk/clk.c:952 clk_core_disable+0x96/0x1b0
+> [   16.697963] Modules linked in: dwc3 iTCO_wdt mei_hdcp iTCO_vendor_support udc_core x86_pkg_temp_thermal kvm_intel marvell10g kvm sch_fq_codel nfsd irqbypass dwmac_intel(+) stmmac uio ax88179_178a pcs_xpcs phylink uhid spi_pxa2xx_platform usbnet mei_me pcspkr tpm_crb mii i2c_i801 dw_dmac dwc3_pci thermal dw_dmac_core intel_rapl_msr libphy i2c_smbus mei tpm_tis intel_th_gth tpm_tis_core tpm intel_th_acpi intel_pmc_core intel_th i915 fuse configfs snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec snd_hda_core snd_pcm snd_timer snd soundcore
+> [   16.746785] CPU: 13 PID: 2053 Comm: systemd-udevd Tainted: G     U            5.13.0-rc3-intel-lts #76
+> [   16.756134] Hardware name: Intel Corporation Alder Lake Client Platform/AlderLake-S ADP-S DRR4 CRB, BIOS ADLIFSI1.R00.1494.B00.2012031421 12/03/2020
+> [   16.769465] RIP: 0010:clk_core_disable+0x96/0x1b0
+> [   16.774222] Code: 00 8b 05 45 96 17 01 85 c0 7f 24 48 8b 5b 30 48 85 db 74 a5 8b 43 7c 85 c0 75 93 48 8b 33 48 c7 c7 6e 32 cc b7 e8 b2 5d 52 00 <0f> 0b 5b 5d c3 65 8b 05 76 31 18 49 89 c0 48 0f a3 05 bc 92 1a 01
+> [   16.793016] RSP: 0018:ffffa44580523aa0 EFLAGS: 00010086
+> [   16.798287] RAX: 0000000000000000 RBX: ffff8d7d0eb70a00 RCX: 0000000000000000
+> [   16.805435] RDX: 0000000000000002 RSI: ffffffffb7c62d5f RDI: 00000000ffffffff
+> [   16.812610] RBP: 0000000000000287 R08: 0000000000000000 R09: ffffa445805238d0
+> [   16.819759] R10: 0000000000000001 R11: 0000000000000001 R12: ffff8d7d0eb70a00
+> [   16.826904] R13: ffff8d7d027370c8 R14: 0000000000000006 R15: ffffa44580523ad0
+> [   16.834047] FS:  00007f9882fa2600(0000) GS:ffff8d80a0940000(0000) knlGS:0000000000000000
+> [   16.842177] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   16.847966] CR2: 00007f9882bea3d8 CR3: 000000010b126001 CR4: 0000000000370ee0
+> [   16.855144] Call Trace:
+> [   16.857614]  clk_core_disable_lock+0x1b/0x30
+> [   16.861941]  intel_eth_pci_probe.cold+0x11d/0x136 [dwmac_intel]
+> [   16.867913]  pci_device_probe+0xcf/0x150
+> [   16.871890]  really_probe+0xf5/0x3e0
+> [   16.875526]  driver_probe_device+0x64/0x150
+> [   16.879763]  device_driver_attach+0x53/0x60
+> [   16.883998]  __driver_attach+0x9f/0x150
+> [   16.887883]  ? device_driver_attach+0x60/0x60
+> [   16.892288]  ? device_driver_attach+0x60/0x60
+> [   16.896698]  bus_for_each_dev+0x77/0xc0
+> [   16.900583]  bus_add_driver+0x184/0x1f0
+> [   16.904469]  driver_register+0x6c/0xc0
+> [   16.908268]  ? 0xffffffffc07ae000
+> [   16.911598]  do_one_initcall+0x4a/0x210
+> [   16.915489]  ? kmem_cache_alloc_trace+0x305/0x4e0
+> [   16.920247]  do_init_module+0x5c/0x230
+> [   16.924057]  load_module+0x2894/0x2b70
+> [   16.927857]  ? __do_sys_finit_module+0xb5/0x120
+> [   16.932441]  __do_sys_finit_module+0xb5/0x120
+> [   16.936845]  do_syscall_64+0x42/0x80
+> [   16.940476]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   16.945586] RIP: 0033:0x7f98830e5ccd
+> [   16.949177] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 93 31 0c 00 f7 d8 64 89 01 48
+> [   16.967970] RSP: 002b:00007ffc66b60168 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> [   16.975583] RAX: ffffffffffffffda RBX: 000055885de35ef0 RCX: 00007f98830e5ccd
+> [   16.982725] RDX: 0000000000000000 RSI: 00007f98832541e3 RDI: 0000000000000012
+> [   16.989868] RBP: 0000000000020000 R08: 0000000000000000 R09: 0000000000000000
+> [   16.997042] R10: 0000000000000012 R11: 0000000000000246 R12: 00007f98832541e3
+> [   17.004222] R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffc66b60328
+> [   17.011369] ---[ end trace df06a3dab26b988c ]---
+> [   17.016062] ------------[ cut here ]------------
+> [   17.020701] stmmac-0000:00:1e.5 already unprepared
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/1] net: stmmac: fix issue where clk is being unprepared twice
+    https://git.kernel.org/netdev/net/c/ab00f3e051e8
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
