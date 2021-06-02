@@ -2,71 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313AC3983FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C485C3983FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbhFBIWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhFBIWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:22:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040CDC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 01:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BOYTXHsr3/NGHIkPpWFO5gwA9QGF5Yb1FGgPaFrZlcw=; b=OWONBN/K8i+KtZkz9jUUxv9GY6
-        WDYXwB6PD1JVmqajD2V+XAbzKv3uTyQ+zAyC5kPZdynuiXb+jJ6FNwaP1w1SkiJnepySkOCYWKV+z
-        a1+Bm1lUbNic7jWGz3d5cOoXlL/BZ27yqIy3elFnQcQJfSVfSqd8bzeDnb2XHoB2nFB51whCNvqFh
-        OwlWvHql6JduHjkA6wxU3Vez8ht9QWyhUeCOu6R396/MWCJFQp6Z6p9yeXufOAi1BnQAjkOtjykTV
-        Mr8u+Qgeh4kR5hcl7K5oACt22QfqxhU25DCKEExpNUun9GOGqCjkRp5M/KMFByjvyO3xXI07F3FsP
-        i2tVfTmw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1loM6r-00Ashr-Bb; Wed, 02 Jun 2021 08:20:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 059C7300299;
-        Wed,  2 Jun 2021 10:20:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E01CC2016D6C1; Wed,  2 Jun 2021 10:20:16 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 10:20:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/alternative: Align insn bytes vertically
-Message-ID: <YLc/QIpcfjHUoOgf@hirez.programming.kicks-ass.net>
-References: <20210601193713.16190-1-bp@alien8.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601193713.16190-1-bp@alien8.de>
+        id S232517AbhFBIWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:22:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230159AbhFBIWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:22:42 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45BEA613AC;
+        Wed,  2 Jun 2021 08:21:00 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1loM7V-004ykh-UW; Wed, 02 Jun 2021 09:20:58 +0100
+Date:   Wed, 02 Jun 2021 09:20:49 +0100
+Message-ID: <87czt41xum.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        madvenka@linux.microsoft.com
+Subject: Re: [PATCH 04/18] arm64: kernel: add helper for booted at EL2 and not VHE
+In-Reply-To: <CA+CK2bChDqMKGAG8_rEigWcXRaBN=rnuV_WLnU=1TPjJRtpc5A@mail.gmail.com>
+References: <20210527150526.271941-1-pasha.tatashin@soleen.com>
+        <20210527150526.271941-5-pasha.tatashin@soleen.com>
+        <87pmx52212.wl-maz@kernel.org>
+        <CA+CK2bChDqMKGAG8_rEigWcXRaBN=rnuV_WLnU=1TPjJRtpc5A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org, ebiederm@xmission.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, corbet@lwn.net, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, vladimir.murzin@arm.com, matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com, steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de, selindag@gmail.com, tyhicks@linux.microsoft.com, kernelfans@gmail.com, akpm@linux-foundation.org, madvenka@linux.microsoft.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 09:37:13PM +0200, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
+On Wed, 02 Jun 2021 02:33:52 +0100,
+Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
 > 
-> For easier inspection which bytes have changed.
+> On Tue, Jun 1, 2021 at 8:38 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 27 May 2021 16:05:12 +0100,
+> > Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
+> > >
+> > > Replace places that contain logic like this:
+> > >       is_hyp_mode_available() && !is_kernel_in_hyp_mode()
+> > >
+> > > With a dedicated boolean function  is_hyp_callable(). This will be needed
+> > > later in kexec in order to sooner switch back to EL2.
+> >
+> > This looks like the very definition of "run in nVHE mode", so I'd
+> > rather you call it like this, rather than "callable", which is
+> > extremely ambiguous (if running at EL2, I call it any time I want, for
+> > free).
 > 
-> For example:
+> Hi Marc,
 > 
->   feat: 7*32+12, old: (__x86_indirect_thunk_r10+0x0/0x20 (ffffffff81c02480) len: 17), repl: (ffffffff897813aa, len: 17)
->   ffffffff81c02480:   old_insn: 41 ff e2 90 90 90 90 90 90 90 90 90 90 90 90 90 90
->   ffffffff897813aa:   rpl_insn: e8 07 00 00 00 f3 90 0f ae e8 eb f9 4c 89 14 24 c3
->   ffffffff81c02480: final_insn: e8 07 00 00 00 f3 90 0f ae e8 eb f9 4c 89 14 24 c3
-> 
-> No functional changes.
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Naming is hard.
 
-Nice!
+News flash!
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Are you proposing s/is_hyp_callable/run_in_nvhe_mode/ ? This is also
+> not a very good name because it does not sound like a boolean, but
+> instead that we know that there is nvhe mode available and we can
+> switch to it.
+
+No, what I suggest is "is_hyp_nvhe()", or something along those
+lines. It clearly identifies that we are in control of EL2, and which
+mode it is in.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
