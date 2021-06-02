@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6A9398EF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F474398F23
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhFBPpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:45:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232229AbhFBPpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:45:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D327613D2;
-        Wed,  2 Jun 2021 15:43:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622648602;
-        bh=dfyq1ej1GuFOxiozvo87VpGxQt5FWXfaH6ex5RqWXkI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l9/vBKNARuxY5c1d+I9KFGWW9QFxo2xQ+8ItWSqP8nj4UkWk6TnZN7fT4U0+OB35N
-         OGez8D1CMidIQ7hjzq9E3Frg7blMdzqYBQ5HCQr0DanwcCx9it50HKmJWbci7Ywl64
-         Y5ky4LiEj0umY+7F9QiOo2PO9gQxfKDC77F4+JjmsxsjYlkq6DFESmkRXtqFYU4erA
-         pclscoFpHj/1iK5I4U3JQxYBgEadrx+zDFuVPw5Uaza1+A+O9ZRinuBEYYZlnTWyHf
-         icerDaoWJYcg45+laJBOFlRvW3EHTm/+m8aoMN8bhk1lj81JI76a84R6uUyC84O6C8
-         QGr9JskQRxTJQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1loT1b-006XcJ-Ni; Wed, 02 Jun 2021 17:43:19 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 12/12] MAINTAINERS: update nxp,imx8-jpeg.yaml reference
-Date:   Wed,  2 Jun 2021 17:43:18 +0200
-Message-Id: <7b6df64c2c5af0990b9644acad18d4a4b700cce3.1622648507.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1622648507.git.mchehab+huawei@kernel.org>
-References: <cover.1622648507.git.mchehab+huawei@kernel.org>
+        id S232063AbhFBPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232271AbhFBPqH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:46:07 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1874CC06138F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:44:02 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id f30so4134844lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 08:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OBblrHGCs55cViW00rNijqacDYoorI2gMf91bLN8H6A=;
+        b=VstgI3Ch9IUJL9QEJ7w2wz1Y5FqrOIB5LeLRPYhI+Y+BW3jN0++iSF7+3gaFX0A/sD
+         RKgw8wEnssMKzm8dlJHQYhh2CRYsTi1G3Mid27IGhB34PujdNlv2V5DXn0LJPRiaVfYh
+         Zk93v5k0AldhWQ6prr+RBo9gkfik8nlv7GFHFPfjnrAMuH74yHNILeeDTwhmkq4DKVba
+         +ZtthrbaGwljl5F0ZDVVw6qLajvIPWu38YgA35tvnX6sCE2+LE6Njxw6N28L7t6OqYx/
+         ruHTrgpVUz9kgqtx6Pw2ExDIOOyhOGBfMnpM7g/3adZgEoPgVWR3Pewt51pfjCiHn3qT
+         oY8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OBblrHGCs55cViW00rNijqacDYoorI2gMf91bLN8H6A=;
+        b=FvTMhXUVEo5WftqzhrozsAOQ6OexrSbudA71Wi8ymy+8xWUERjJErjqGS92qyR1amt
+         4enfbMzk9CZu+/VdhwAGSeIfPLb4zlsbUidDjxNUIKx4Bwhqi8M5zTuhUSc3OE11zLO7
+         epZgn3dNJMiPyV9R4vtBbaRmn+FmVE/1ncOJs8gIU7dDQbXhe8cUxBbx0rwj8ylSpQfg
+         5JHDAg+jad5IDsd0cWkv0Ti9iO7lVq35KTRkgutNiYNO7FxGWaft7eAA2QdKKglPY/xX
+         txujmBmxHJ6W37bsImuYBcXbul5RBCh0SaOeNrZAIPS3cscZ7Hbm0WvVTYG/eZGxmsex
+         079w==
+X-Gm-Message-State: AOAM531dM578YvK4ndtSxZ5fdMGOepldWVZRC+zJdMrWLj/dtjt0eZEF
+        w79wP48gIFnmSywA8+nzANvC03Vda8VCZr74HNU=
+X-Google-Smtp-Source: ABdhPJzdK7pAHWYASLkeaOmnuhJjmfN6soue4SZRfA3dMZz+X3wo1Jhzd9myvH2AuzGDmUg82lgYxpIsOTh6tU5E6hg=
+X-Received: by 2002:ac2:51a9:: with SMTP id f9mr5025625lfk.223.1622648641044;
+ Wed, 02 Jun 2021 08:44:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 2 Jun 2021 12:43:49 -0300
+Message-ID: <CAOMZO5An-v0mLAvjofiWLc4ufJiE4EzG1b4NDwToPSvgODrHjQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: change dev_err to dev_dbg for defer probe
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file name: Documentation/devicetree/bindings/media/imx8-jpeg.yaml
-should be, instead: Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml.
+Hi Shengjiu,
 
-Update its cross-reference accordingly.
+On Wed, Jun 2, 2021 at 3:59 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> Don't need to print error message for defer probe
+...
+>         if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
+> -               dev_err(&pdev->dev, "failed to find codec device\n");
+> +               dev_dbg(&pdev->dev, "failed to find codec device\n");
 
-Fixes: be157db0a3d8 ("media: Add maintainer for IMX jpeg v4l2 driver")
-Fixes: b16ed1e66008 ("media: dt-bindings: Add bindings for i.MX8QXP/QM JPEG driver")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a737ba26bdcd..37baabb1e7a5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13303,7 +13303,7 @@ M:	Mirela Rabulea <mirela.rabulea@nxp.com>
- R:	NXP Linux Team <linux-imx@nxp.com>
- L:	linux-media@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/media/imx8-jpeg.yaml
-+F:	Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
- F:	drivers/media/platform/imx-jpeg
- 
- NZXT-KRAKEN2 HARDWARE MONITORING DRIVER
--- 
-2.31.1
-
+You may consider using dev_err_probe() here, which fits exactly this purpose.
