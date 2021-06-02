@@ -2,57 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C69E3982BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A693982BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhFBHOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230099AbhFBHOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:14:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 342CA61363;
-        Wed,  2 Jun 2021 07:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622617975;
-        bh=kRV1Drag7CbSClLLcWRTsmI1ANuI53K82Smrumm0QvU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=twUk8MepfSgaCtWiFwWEpa2o7ClkhTTF+wz0UGw+XVrN6BOEjKDDhQE771JXdAe4B
-         u1mBhexiGh+Q7MaCsKLNiwmEIHHZ3TrGerShT0t0WkjFLPAKVOKryMSGRXrW2L7dRw
-         i9YPT7JPYU89P73b+3zRChit7YmytPXuiFtM0XQKMuraBiL66uoON9QQ7gKRM2Z2MX
-         JeS/0R5T7d3ZjV69mnxNrUr/nrz62lFH7VvzPtAKTWBWxWvDaO6ABHXOlBWGja3Qfn
-         8z8S1oTciIJJSwBfZ9hAUSuHiblIcYXH/lpnm4xJZXV8P5tc1U8QKTpqO8pVR0Ud16
-         ATIx0lBfssofg==
-Content-Type: text/plain; charset="utf-8"
+        id S231524AbhFBHPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231330AbhFBHPq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 03:15:46 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9A6C061574;
+        Wed,  2 Jun 2021 00:14:03 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i13so1648028edb.9;
+        Wed, 02 Jun 2021 00:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/f50rQ3Hj37wUXH5nfanlIPj/c7ymzF9J75qigcECQM=;
+        b=Br63ftDpd90klS89BXOX3WDtsQHHd4rosGzKpA1z1sS/4JsdQu3aSUD6PqajpcICk2
+         l2Vl75dxa8GT+Le31nGSgLTLwxGpRamq96ZGmix36PIYOx1hyD7I1OUs0Q7E8C20+7jh
+         FCdtjCmQXbtXl7oae4X4esSLHIbd6lHlQqnTJueHLkBw5hoUh2im5C75hwR8IdjCzKwc
+         yjScmhFcP8aFf6MuaERoAqLFqE96oeyIc3gCVrmquRwkVuWyU8Sq2S5TZ4QTIx//bs7K
+         AOzx9AYVrYDSDVkWFYKilZS23e+P9LItnPm6LSdoQAuJ22xV5se133C6jZJttftUWT3Z
+         6sKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/f50rQ3Hj37wUXH5nfanlIPj/c7ymzF9J75qigcECQM=;
+        b=oC1FK15ulJhvIVi44vr7Rzrl68efqbCJ2rGB6iOtkIoYm/TP+5lL/KnSZVl7Rst6UJ
+         CBQgD3WJoeyrFA5Yzs7Rqh3GmzY/eTqCqXBaT5n+TNOq2VCDlrcAxA/jx6dEGTChuLsj
+         WxDOP9OJ4X9aB5uG5mV73GFKHEgRZLz7U/sppj/o/frON5W421wiLImcqhtgnYQpernB
+         MPfC5hJFxIrJUjMYfa6Yb+J9pbQJDT5rMqhLlKNqNCHOvOXlwd0RfZ6EH9TbzCfCw0e0
+         JBS0iH8ZYiBPoiX5Yo3eI7BdfZC6V1+2la7zR40jk2sgBd/Ra5DFJoxoo912uszQcjlQ
+         3nlQ==
+X-Gm-Message-State: AOAM532mIwBBaBmxMMAzCi0sXSzsVOfSXKfamtpOu0Da8iKm1OGjQlsG
+        ezS32GCUajJFcGNB99IHYhFLSGFmW0Q6keqSJAp6IV+Vk9gEH2H4
+X-Google-Smtp-Source: ABdhPJy4ExPeTUtj7wTzdl+dCZi252Vl9UBtl+EJWJK5HyYAtyLLG6XpytySfU1Vpn5tD1iWQHW4Ko45wULJG06PxXw=
+X-Received: by 2002:a05:6402:54f:: with SMTP id i15mr14842417edx.339.1622618041596;
+ Wed, 02 Jun 2021 00:14:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210523211556.731976-2-martin.botka@somainline.org>
-References: <20210523211556.731976-1-martin.botka@somainline.org> <20210523211556.731976-2-martin.botka@somainline.org>
-Subject: Re: [PATCH V2 2/5] rpmcc: Add sm6125 compatible
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Martin Botka <martin.botka@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org
-To:     Martin Botka <martin.botka@somainline.org>
-Date:   Wed, 02 Jun 2021 00:12:53 -0700
-Message-ID: <162261797390.4130789.3128084410343392163@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210602170946.37a2c6ec@canb.auug.org.au>
+In-Reply-To: <20210602170946.37a2c6ec@canb.auug.org.au>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Wed, 2 Jun 2021 15:13:35 +0800
+Message-ID: <CAD-N9QVwA2+k82DRo1DvieXYXazdOwvBoerLtVBb4xrz=qwKSA@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the sound-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Martin Botka (2021-05-23 14:15:53)
-> Add a compatible for SM6125 and assing correct data
->=20
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> ---
+On Wed, Jun 2, 2021 at 3:09 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> In commit
+>
+>   b3531c648d87 ("ALSA: control led: fix memory leak in snd_ctl_led_register")
+>
+> Fixes tag
+>
+>   Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
+>
+> has these problem(s):
+>
+>   - SHA1 should be at least 12 digits long
+>
+> This is probably not worth rebasing to fix, but can be avoided in the
+> future by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
+> just making sure it is not set (or set to "auto").
 
-Please send this patch series with a cover letter and the proper To:
-field. My MUA is having trouble viewing this thread. Thanks.
+:/ Sorry about this tag. The right SHA should be a135dfb5de15.
+
+>
+> --
+> Cheers,
+> Stephen Rothwell
