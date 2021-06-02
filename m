@@ -2,139 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE2139848A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2932398492
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbhFBIw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbhFBIwZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:52:25 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D79C061574;
-        Wed,  2 Jun 2021 01:50:42 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id k7so1267424pjf.5;
-        Wed, 02 Jun 2021 01:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o9lxecdQ+sUFtyWEQYnGHVSA9kUb7tM0XtaGYDbglIU=;
-        b=EHucTEQtsxnfYE2QIpFkB+b80UKPVtGTuj44cfEGTctDfweDXFNWILx2kT/juLet+7
-         oBhCr11wzlo8i3a1kMBkNGW2KgkQ3mL4ZdNrvSnEz/Q7rkxkl386Ip3wJ5rYkzSFOCqo
-         1zamko+VpG6K/7JTBgdROITcvin5vhpWh6Ts6QOaJTg1HC88CFOon2Ut2v59IkScKCTj
-         SexhOHCDaGtsqxI5BtUNlmmeY0E5hYObhyd8wqYN2Jzv0Jpbfh5n7Edss6F6dEFLlD4f
-         32xH8cG/3ZD0vLVicGYr+P+g7E5syLUrogiZ/hqtvZHLW6GDp5MH71RbPal+/6f5MOCS
-         hb/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o9lxecdQ+sUFtyWEQYnGHVSA9kUb7tM0XtaGYDbglIU=;
-        b=PEzdKcSOpUrMS3aRhzmyeg5KFWGXy/vo3OnI0eFnxEoxo9LO/JbJmTdnG1ia0xRkHf
-         1/GJ7I7+hfHuEX/oltRz2yBalEm082xDgwwZq8QwVetDPMWPOGC1Tz0alIR2doideKMo
-         PWUdyg5VnuvAJNG9Pky2QP4WG3xVRuKxZ+qWzG1coJlAGPNalYBbhWK2rInujLp1/CPl
-         EhqQO/Y3o46k+FqwNMCcYkCPCoUboQgOo1d6ZLPPcHluxVgZODATLOJ/p0ozJmzw0om4
-         KChzv2B+pNNMifEn5YAvijSz3EhuCNk0IlURNAVT0+d34GMxDBo9PtLJj80N6Ao0AZp+
-         jGfA==
-X-Gm-Message-State: AOAM533a7bMX+ioI0/XJWkV/MIpezFD+KLvrVDZLu7REwFFu5m0a1dCO
-        14W1OLDVhPdeU2zq0hr9l54=
-X-Google-Smtp-Source: ABdhPJyaugF6+CYwrJI3pVkj2b4jzGpeXPEYzpUFLG3awQAK21ZuritpgNYaqMGnLzReJocPn1YhKg==
-X-Received: by 2002:a17:90a:6e07:: with SMTP id b7mr4431857pjk.7.1622623841640;
-        Wed, 02 Jun 2021 01:50:41 -0700 (PDT)
-Received: from localhost (60-242-95-222.static.tpgi.com.au. [60.242.95.222])
-        by smtp.gmail.com with ESMTPSA id nn6sm5443508pjb.57.2021.06.02.01.50.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 01:50:40 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 18:50:37 +1000
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
-        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hch@infradead.org, jglisse@redhat.com, willy@infradead.org,
-        jgg@nvidia.com, peterx@redhat.com, hughd@google.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v9 07/10] mm: Device exclusive memory access
-Message-ID: <YLdGXSw0zdiovn4i@balbir-desktop>
-References: <20210524132725.12697-1-apopple@nvidia.com>
- <20210524132725.12697-8-apopple@nvidia.com>
- <20210524151157.2dc5d2bb510ff86dc449bf0c@linux-foundation.org>
- <YKzk0ILRsyazMs2W@balbir-desktop>
- <8844f8c1-d78c-e0f9-c046-592bd75d4c07@nvidia.com>
+        id S232851AbhFBIxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:53:03 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29864 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232840AbhFBIxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:53:02 -0400
+IronPort-SDR: Gq9nV6jLliQbKpXHOxdKqgqhTV9v4+mdayAw9/LBf7OjSWOFVpEN7xKSvFcHPjDT/DTKRE7UxM
+ 9J3QIYLp/1xQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="201881011"
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="201881011"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 01:51:18 -0700
+IronPort-SDR: 7O3HAkimY4ZMDtM0oGELnrPG3JJ6fXO1KDNJb2CPEYDECtirmOnx2RVej2XYigb/qgbPgmuRq5
+ fuuHuCOm5+JA==
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="438328450"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 01:51:13 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1loMak-00GfA7-SC; Wed, 02 Jun 2021 11:51:10 +0300
+Date:   Wed, 2 Jun 2021 11:51:10 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, corbet@lwn.net,
+        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Gordeev <agordeev@redhat.com>,
+        Jonathan Derrick <jonathan.derrick@intel.com>,
+        Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: Re: [PATCH v5 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <YLdGfmrk6+FbTbNN@smile.fi.intel.com>
+References: <20210226155056.1068534-2-zhengdejin5@gmail.com>
+ <20210323224710.GA610170@bjorn-Precision-5520>
+ <20210505162716.GB1851@nuc8i5>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8844f8c1-d78c-e0f9-c046-592bd75d4c07@nvidia.com>
+In-Reply-To: <20210505162716.GB1851@nuc8i5>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:17:18AM -0700, John Hubbard wrote:
-> On 5/25/21 4:51 AM, Balbir Singh wrote:
-> ...
-> > > How beneficial is this code to nouveau users?  I see that it permits a
-> > > part of OpenCL to be implemented, but how useful/important is this in
-> > > the real world?
+On Thu, May 06, 2021 at 12:27:16AM +0800, Dejin Zheng wrote:
+> On Tue, Mar 23, 2021 at 05:47:10PM -0500, Bjorn Helgaas wrote:
+> > [+cc Christoph, Thomas, Alexander, in case you're interested]
+> > [+cc Jonathan, Kurt, Logan: vmd.c and switchtec.c use managed resources
+> > and pci_alloc_irq_vectors()]
+
+> > On Fri, Feb 26, 2021 at 11:50:53PM +0800, Dejin Zheng wrote:
+> > > Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> > > pci_alloc_irq_vectors(). Introducing this function can simplify
+> > > the error handling path in many drivers.
+> > > 
+> > > And use pci_free_irq_vectors() to replace some code in pcim_release(),
+> > > they are equivalent, and no functional change. It is more explicit
+> > > that pcim_alloc_irq_vectors() is a device-managed function.
+> > > 
+> > > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 > > 
-> > That is a very good question! I've not reviewed the code, but a sample
-> > program with the described use case would make things easy to parse.
-> > I suspect that is not easy to build at the moment?
+> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 > > 
+> > Let me know if you'd like me to take the series.
+> >
+> Hi Bjorn,
 > 
-> The cover letter says this:
-> 
-> This has been tested with upstream Mesa 21.1.0 and a simple OpenCL program
-> which checks that GPU atomic accesses to system memory are atomic. Without
-> this series the test fails as there is no way of write-protecting the page
-> mapping which results in the device clobbering CPU writes. For reference
-> the test is available at https://ozlabs.org/~apopple/opencl_svm_atomics/
-> 
-> Further testing has been performed by adding support for testing exclusive
-> access to the hmm-tests kselftests.
-> 
-> ...so that seems to cover the "sample program" request, at least.
+> These patches are still invisible on the mainline, could you help me to
+> take it? Thanks very much!
 
-Thanks, I'll take a look
+I guess you have to rebase them on top of the latest rc (or PCI for-next) and
+send with a cover letter.
 
-> 
-> > I wonder how we co-ordinate all the work the mm is doing, page migration,
-> > reclaim with device exclusive access? Do we have any numbers for the worst
-> > case page fault latency when something is marked away for exclusive access?
-> 
-> CPU page fault latency is approximately "terrible", if a page is resident on
-> the GPU. We have to spin up a DMA engine on the GPU and have it copy the page
-> over the PCIe bus, after all.
-> 
-> > I presume for now this is anonymous memory only? SWP_DEVICE_EXCLUSIVE would
-> 
-> Yes, for now.
-> 
-> > only impact the address space of programs using the GPU. Should the exclusively
-> > marked range live in the unreclaimable list and recycled back to active/in-active
-> > to account for the fact that
-> > 
-> > 1. It is not reclaimable and reclaim will only hurt via page faults?
-> > 2. It ages the page correctly or at-least allows for that possibility when the
-> >     page is used by the GPU.
-> 
-> I'm not sure that that is *necessarily* something we can conclude. It depends upon
-> access patterns of each program. For example, a "reduction" parallel program sends
-> over lots of data to the GPU, and only a tiny bit of (reduced!) data comes back
-> to the CPU. In that case, freeing the physical page on the CPU is actually the
-> best decision for the OS to make (if the OS is sufficiently prescient).
->
+-- 
+With Best Regards,
+Andy Shevchenko
 
-With a shared device or a device exclusive range, it would be good to get the device
-usage pattern and update the mm with that knowledge, so that the LRU can be better
-maintained. With your comment you seem to suggest that a page used by the GPU might
-be a good candidate for reclaim based on the CPU's understanding of the age of
-the page should not account for use by the device
-(are GPU workloads - access once and discard?) 
-
-Balbir Singh.
 
