@@ -2,102 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A8D399207
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95AF39920B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhFBR7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:59:45 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33898 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBR7o (ORCPT
+        id S231192AbhFBSBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:01:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48322 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBSBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:59:44 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BE81AD97;
-        Wed,  2 Jun 2021 19:57:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622656679;
-        bh=j5Dto5uF6GSs+WOklTsW00y8nQqle4dGp7ECq4A6QHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PG7YMTpI+ungokDfiRoie5c19S7Y0col6BJU4wH8TzxuUfV41QBb+kcrJrjzdo1hU
-         6Qx/WN9u9v2SU2qNzNbQkljQfYvQcvdOWI23DQGCXJqOccqbk4A6Jq1kLt1oGcwkfD
-         pwfNrpPvpVso7mIzfq6rI9aSNqYwOEu4qJHIpiLk=
-Date:   Wed, 2 Jun 2021 20:57:47 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     pavel@ucw.cz, krzysztof.kozlowski@canonical.com,
-        mchehab@kernel.org, paul.kocialkowski@bootlin.com, robh@kernel.org,
-        shawnx.tu@intel.com, devicetree@vger.kernel.org, kernel@puri.sm,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] media: i2c: add driver for the SK Hynix Hi-846 8M
- pixel camera
-Message-ID: <YLfGm0TD4m3fXEao@pendragon.ideasonboard.com>
-References: <20210531120737.168496-1-martin.kepplinger@puri.sm>
- <20210531120737.168496-4-martin.kepplinger@puri.sm>
- <YLV7+tuTZbr3boTw@pendragon.ideasonboard.com>
- <84292af283a5a37289940478a25402631018c973.camel@puri.sm>
+        Wed, 2 Jun 2021 14:01:14 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9ECD2219CA;
+        Wed,  2 Jun 2021 17:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622656770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lv2W2BbaouY2kvTCEbr3zmxmLYXOPicvRruaH//3Ko8=;
+        b=NeI0ovzG2VGhhiTewnb/Y+DtJODuw4+4HiktT+2DUC5v81CATuayOTcQLHezcLH2G0+LZF
+        MrUF/28Qr7OXU5jZ+nmgyRQGjXnfxKyMKoamUIcVcpCZ0zEZEQcToqirdXVnk3ZnWMHjA1
+        rY++3FEJVD3NJ9prKWeALkzxjbs/UcU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622656770;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lv2W2BbaouY2kvTCEbr3zmxmLYXOPicvRruaH//3Ko8=;
+        b=f90bObkv7j4RSdgmb56wlKL2mejczyMdNJP+gNbiSK3n1Q6jkfYppU8I/8U//Evtc90kqb
+        aj44/+0o6vYqvNAQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 7F81D118DD;
+        Wed,  2 Jun 2021 17:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622656770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lv2W2BbaouY2kvTCEbr3zmxmLYXOPicvRruaH//3Ko8=;
+        b=NeI0ovzG2VGhhiTewnb/Y+DtJODuw4+4HiktT+2DUC5v81CATuayOTcQLHezcLH2G0+LZF
+        MrUF/28Qr7OXU5jZ+nmgyRQGjXnfxKyMKoamUIcVcpCZ0zEZEQcToqirdXVnk3ZnWMHjA1
+        rY++3FEJVD3NJ9prKWeALkzxjbs/UcU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622656770;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lv2W2BbaouY2kvTCEbr3zmxmLYXOPicvRruaH//3Ko8=;
+        b=f90bObkv7j4RSdgmb56wlKL2mejczyMdNJP+gNbiSK3n1Q6jkfYppU8I/8U//Evtc90kqb
+        aj44/+0o6vYqvNAQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id dNgfHgLHt2D4WgAALh3uQQ
+        (envelope-from <msuchanek@suse.de>); Wed, 02 Jun 2021 17:59:30 +0000
+Date:   Wed, 2 Jun 2021 19:59:29 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "kbuild: merge scripts/mkmakefile to top Makefile"
+Message-ID: <20210602175929.GN8544@kitsune.suse.cz>
+References: <20210526173855.5963-1-msuchanek@suse.de>
+ <CAK7LNASEqKwQeLPXedyut+ykSJGPuq3CO1g_fS=sVDaZrwBPBQ@mail.gmail.com>
+ <20210526202825.GB8544@kitsune.suse.cz>
+ <CAK7LNAQ=DiayZ8YqgMTrTWyP_fuEpPL80+BSzj9VB+RQDKD27g@mail.gmail.com>
+ <20210529053512.GT8544@kitsune.suse.cz>
+ <CAK7LNAT-78qWBa-TzTTQ-PN7Cr5DdaAEgKzUiVkkB=uOgcAsDQ@mail.gmail.com>
+ <20210602100315.GL8544@kitsune.suse.cz>
+ <CAK7LNAT0AfTb=SVp+iO0rGkLm8__=O+uW-20_iuPvvNkxkbpuA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <84292af283a5a37289940478a25402631018c973.camel@puri.sm>
+In-Reply-To: <CAK7LNAT0AfTb=SVp+iO0rGkLm8__=O+uW-20_iuPvvNkxkbpuA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-On Wed, Jun 02, 2021 at 02:00:11PM +0200, Martin Kepplinger wrote:
-> Am Dienstag, dem 01.06.2021 um 03:14 +0300 schrieb Laurent Pinchart:
-> > On Mon, May 31, 2021 at 02:07:35PM +0200, Martin Kepplinger wrote:
-> > > The SK Hynix Hi-846 is a 1/4" 8M Pixel CMOS Image Sensor. It supports
-> > > usual features like I2C control, CSI-2 for frame data, digital/analog
-> > > gain control or test patterns.
-> > > 
-> > > This driver supports the 640x480, 1280x720 and 1632x1224 resolution
-> > > modes. It supports runtime PM in order not to draw any unnecessary
-> > > power.
-> > > 
-> > > The part is also called YACG4D0C9SHC and a datasheet can be found at
-> > > https://product.skhynix.com/products/cis/cis.go
-> > > 
-> > > The large sets of partly undocumented register values are for example
-> > > found when searching for the hi846_mipi_raw_Sensor.c Android driver.
-> > 
-> > A common story, unfortunately :-S
-> > 
-> > I've done an initial review, I'll likely have more comments on v4, but
-> > you should have quite a few things to address already :-)
-> > 
-> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > > ---
-> > >  MAINTAINERS                |    6 +
-> > >  drivers/media/i2c/Kconfig  |   13 +
-> > >  drivers/media/i2c/Makefile |    1 +
-> > >  drivers/media/i2c/hi846.c  | 2138 ++++++++++++++++++++++++++++++++++++
-> > >  4 files changed, 2158 insertions(+)
-> > >  create mode 100644 drivers/media/i2c/hi846.c
-
-[snip]
-
-> Thank you, Laurent for that wonderful review. It made me rework/fix the
-> power supply interface + sequencing in the driver (and even better
-> understand how it's supplied on my board).
+On Thu, Jun 03, 2021 at 12:44:48AM +0900, Masahiro Yamada wrote:
+> On Thu, Jun 3, 2021 at 12:18 AM Michal Such�nek <msuchanek@suse.de> wrote:
+> >
+> > On Wed, Jun 02, 2021 at 06:45:58PM +0900, Masahiro Yamada wrote:
+> > > On Sat, May 29, 2021 at 2:35 PM Michal Such�nek <msuchanek@suse.de> wrote:
+> > > >
+> > > > On Sat, May 29, 2021 at 02:15:55AM +0900, Masahiro Yamada wrote:
+> > > > > On Thu, May 27, 2021 at 5:28 AM Michal Such�nek <msuchanek@suse.de> wrote:
+> > > > > >
+> > > > > > On Thu, May 27, 2021 at 03:56:41AM +0900, Masahiro Yamada wrote:
+> > > > > > > On Thu, May 27, 2021 at 2:39 AM Michal Suchanek <msuchanek@suse.de> wrote:
+> > > > > > > >
+> > > > > > > > This reverts commit 243b50c141d71fcf7b88e94474b3b9269f0b1f9d.
+> > > > > > > >
+> > > > > > > > When packaging the kernel it is built in different place from the one in
+> > > > > > > > which it will be installed. After build the makefile needs to be
+> > > > > > > > regenerated with the target location but with mkmakefile merged into
+> > > > > > > > Makefile tehre is no way to do that.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > > > >
+> > > > > > > My patch was not working as expected
+> > > > > > > regardless of packaging.
+> > > > > > >
+> > > > > > > Does the following fix-up work for you?
+> > > > > >
+> > > > > > For the packaging I need some way to regenerate the Makefile and fake
+> > > > > > the directory where the Makefile will be on the user system (ie DESTDIR)
+> > > > > >
+> > > > > > Without the mkmakefile I do not see any way to do it.
+> > > > > >
+> > > > > > If the kernel makefile is no longer location dependent there is no need
+> > > > > > any more, of course.
+> > > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > > Michal
+> > > > >
+> > > > > Sorry, I do not understand this.
+> > > > >
+> > > > > IIUC, this patch does not change any functionality.
+> > > > > The generated Makefile is still the same.
+> > > > > Why is it a problem?
+> > > >
+> > > > It cannot be regenerated.
+> > >
+> > > This is an issue regardless of your packaging.
+> > > That is why I suggested a patch in my previous reply.
+> > >
+> > > https://lore.kernel.org/linux-kbuild/CAK7LNASEqKwQeLPXedyut+ykSJGPuq3CO1g_fS=sVDaZrwBPBQ@mail.gmail.com/
+> > >
+> > >
+> > > Anyway, please try next-20210602
+> > > and see if you still have a problem.
+> >
+> > Yes, I still have a problem.
+> >
+> > My packaging script calls mkmakefile which no longer exists.
 > 
-> I want to take all your review into account for a next revision, except
-> for the additional bits for the register definitions, that should
-> encode the length, if that's ok. We can choose whether to write 1 or 2
-> bytes at a given address and it just looks nice and simple to me as it
-> is.
+> 
+> So, we are not talking about the functionality any more.
+> 
+> What is important for you is, you have a separate file.
+> 
+> You overwrite scripts/mkmakefile for doing
+> whatever hacks you like.
+> 
+> If the code is moved into the Makefile,
+> it will be more difficult to insert hacks.
+> 
+> This is what I understood from your statement.
 
-I won't push strongly, but in my experience it's error-prone, as it's
-easy to select the incorrect number of bytes. That's what led me to
-create this mechanism to bundle register addresses and sizes, it has
-simplified my life when writing drivers. I think it should actually be
-turned into a helper, possibly provided by regmap.
+I did not insert hacks. I called the script that your patch removes.
 
--- 
-Regards,
+That's functionality that is lost.
 
-Laurent Pinchart
+Now without the script separate from the makefile inserting hacks will
+be required.
+
+I would like to avoid that.
+
+Thanks
+
+Michal
+
+> > Regardless of whther the new code works correctly or not in the usual
+> > case it removes the ability to regenearte the makefile for a specific
+> > target location.
+> >
+> > Thanks
+> >
+> > Michal
+> >
+> > > >
+> > > > During package build you have four directories
+> > > >
+> > > >  - the source directory
+> > > >  - the build directory
+> > > >  - the staging directory where files are installed to be included in the
+> > > >    package
+> > > >  - the target directory where files will be installed on the target
+> > > >    system once the package is installed by the user
+> > > >
+> > > > The makefile is generated for the build directory, not the target
+> > > > directory. What is needed is a way to generate a makefile in the staging
+> > > > directory that will work when installed in the target directory.
+> > > > When mkmakefile is folded into makefile the makefile can no longer be
+> > > > regenerated because it is up-to-date, and it can no longer be specified
+> > > > that it should be generated for the target directory, not the staging
+> > > > directory.
+> > > >
+> > > > Thanks
+> > > >
+> > > > Michal
+> > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > > Masahiro Yamada
+> 
+> 
+> 
+> -- 
+> Best Regards
+> Masahiro Yamada
