@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68493397F12
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89208397F15
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhFBCaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:30:13 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:40078 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229828AbhFBCaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:30:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=4JoMGfga1VbTByDb+krUTuutqYAcuOdoQ70Y27jTzf8=; b=fJXgFc/GRD6OG68GN6GC7fmcNJ
-        sCxWFlYEPPu4yPMgLkS+5YrzUpNY5fCDZ0fhqbHEIo9tjUD3owCdEJNgisENn7quOI6GK7UPcesrt
-        1I8Qv271k43/RVjJiIT/byYplg7l0n5DINSoQjQynWPfsSi4PXfnM+ZMOGjUgGwdSuSs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1loGcD-007NlP-ME; Wed, 02 Jun 2021 04:28:17 +0200
-Date:   Wed, 2 Jun 2021 04:28:17 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/1] net: stmmac: enable platform specific
- safety features
-Message-ID: <YLbswWVdgGgAKpwo@lunn.ch>
-References: <20210601135235.1058841-1-vee.khee.wong@linux.intel.com>
- <YLawrTO4pkgc6tnb@lunn.ch>
- <20210601225332.GA28151@linux.intel.com>
+        id S230354AbhFBCbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:31:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2834 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhFBCbT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:31:19 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvtCS5LzfzWptN;
+        Wed,  2 Jun 2021 10:24:52 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 10:29:35 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 10:29:34 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-fbdev <linux-fbdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] video: fbdev: sm501fb: use DEVICE_ATTR_RO macro
+Date:   Wed, 2 Jun 2021 10:28:34 +0800
+Message-ID: <20210602022834.10693-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601225332.GA28151@linux.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 06:53:32AM +0800, Wong Vee Khee wrote:
-> On Wed, Jun 02, 2021 at 12:11:57AM +0200, Andrew Lunn wrote:
-> > On Tue, Jun 01, 2021 at 09:52:35PM +0800, Wong Vee Khee wrote:
-> > > On Intel platforms, not all safety features are enabled on the hardware.
-> > 
-> > Is it possible to read a register is determine what safety features
-> > have been synthesised?
-> >
-> 
-> No. The value of these registers after reset are 0x0. We need to set it
-> manually.
+Use DEVICE_ATTR_RO macro helper instead of plain DEVICE_ATTR, which makes
+the code a bit shorter and easier to read.
 
-That is not what i asked. Sometimes with IP you synthesise from VHDL
-or Verilog, there are registers which describe which features you have
-actually enabled/disabled in the synthesis. Maybe the stmmac has such
-a register describing which safety features are actually available in
-your specific version of the IP? You could go ask your ASIC engineers.
-Or maybe Synopsys can say that there are no such registers.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/video/fbdev/sm501fb.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-     Andrew
+diff --git a/drivers/video/fbdev/sm501fb.c b/drivers/video/fbdev/sm501fb.c
+index 6a52eba645596a4..d26afcfec4239aa 100644
+--- a/drivers/video/fbdev/sm501fb.c
++++ b/drivers/video/fbdev/sm501fb.c
+@@ -1238,8 +1238,8 @@ static int sm501fb_show_regs(struct sm501fb_info *info, char *ptr,
+  * show the crt control and cursor registers
+ */
+ 
+-static ssize_t sm501fb_debug_show_crt(struct device *dev,
+-				  struct device_attribute *attr, char *buf)
++static ssize_t fbregs_crt_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
+ {
+ 	struct sm501fb_info *info = dev_get_drvdata(dev);
+ 	char *ptr = buf;
+@@ -1250,15 +1250,15 @@ static ssize_t sm501fb_debug_show_crt(struct device *dev,
+ 	return ptr - buf;
+ }
+ 
+-static DEVICE_ATTR(fbregs_crt, 0444, sm501fb_debug_show_crt, NULL);
++static DEVICE_ATTR_RO(fbregs_crt);
+ 
+ /* sm501fb_debug_show_pnl
+  *
+  * show the panel control and cursor registers
+ */
+ 
+-static ssize_t sm501fb_debug_show_pnl(struct device *dev,
+-				  struct device_attribute *attr, char *buf)
++static ssize_t fbregs_pnl_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
+ {
+ 	struct sm501fb_info *info = dev_get_drvdata(dev);
+ 	char *ptr = buf;
+@@ -1269,7 +1269,7 @@ static ssize_t sm501fb_debug_show_pnl(struct device *dev,
+ 	return ptr - buf;
+ }
+ 
+-static DEVICE_ATTR(fbregs_pnl, 0444, sm501fb_debug_show_pnl, NULL);
++static DEVICE_ATTR_RO(fbregs_pnl);
+ 
+ static struct attribute *sm501fb_attrs[] = {
+ 	&dev_attr_crt_src.attr,
+-- 
+2.26.0.106.g9fadedd
+
+
