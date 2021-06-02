@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF6339933E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0768A399346
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhFBTLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:11:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:52458 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhFBTLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:11:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CCC11063;
-        Wed,  2 Jun 2021 12:10:08 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9D973F774;
-        Wed,  2 Jun 2021 12:10:06 -0700 (PDT)
-Subject: Re: [PATCH v6 0/3] Rework CPU capacity asymmetry detection
-To:     Beata Michalska <beata.michalska@arm.com>,
+        id S229695AbhFBTML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:12:11 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:45628 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhFBTMB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:12:01 -0400
+Received: by mail-ot1-f53.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so3388160otc.12;
+        Wed, 02 Jun 2021 12:10:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZEERWraqaTvOVc7wyj1T8RShA6NakK3wsqC/mYbNn14=;
+        b=pMH54XNtFio6i1VSM6jYqigV5xJ0W5wq1CO/U5kj+a7YhwGEpd9EpSW10P3Otx4ovj
+         cxVg8DrxEmEcwh9ZdRey4KX1wd7xrFMQQED1lmEnvmdWutME+mAHEw4VOQsvXlgxh/9h
+         JV32Grqc+IRLhip7SzK+yETTODyt+R6KjVG7XYT7jRJVzXxQyKnxFoj1URGWportinPs
+         33fyKdYPEv7PN32Vl1c0klobUjSqcxVC6pGYGm90mWxjnbBxGyZFZOgTKUv9nAiysZV7
+         YvmmtjTf4OYHmhLZ9jXHYC3sCX7Jrg0jrJGejQQY1s5eI59KOkcnlUNv8Lyautm3Mlih
+         InaA==
+X-Gm-Message-State: AOAM533SIRaatFUG0vDmSMhBV+svzbcj+QcyLHvZNKbmFqMAB89z1vMU
+        /ix72xngzot/rA3FbDyB6g==
+X-Google-Smtp-Source: ABdhPJzwJEilCndd97PDM8ZXwEX1XcVZNVoMeSoGE1P7XZXISMz1XOH7Ip/al4ikZFZNcb0rLCJiiA==
+X-Received: by 2002:a9d:6c81:: with SMTP id c1mr11877842otr.316.1622661017937;
+        Wed, 02 Jun 2021 12:10:17 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v6sm145698oou.14.2021.06.02.12.10.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 12:10:17 -0700 (PDT)
+Received: (nullmailer pid 3800149 invoked by uid 1000);
+        Wed, 02 Jun 2021 19:10:16 -0000
+Date:   Wed, 2 Jun 2021 14:10:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, valentin.schneider@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-References: <20210527153842.17567-1-beata.michalska@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <0e0f8202-4acc-5092-33c1-82d268b3fd5b@arm.com>
-Date:   Wed, 2 Jun 2021 21:10:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: Re: [PATCH V3 2/2] clk: qcom: Add SM6125 (TRINKET) GCC driver
+Message-ID: <20210602191016.GA3798477@robh.at.kernel.org>
+References: <20210526184325.675736-1-martin.botka@somainline.org>
+ <20210526184325.675736-2-martin.botka@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <20210527153842.17567-1-beata.michalska@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526184325.675736-2-martin.botka@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/2021 17:38, Beata Michalska wrote:
-
-[...]
-
-> Beata Michalska (3):
->   sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL sched_domain flag
->   sched/topology: Rework CPU capacity asymmetry detection
->   sched/doc: Update the CPU capacity asymmetry bits
+On Wed, May 26, 2021 at 08:43:21PM +0200, Martin Botka wrote:
+> From: Konrad Dybcio <konrad.dybcio@somainline.org>
 > 
->  Documentation/scheduler/sched-capacity.rst |   6 +-
->  Documentation/scheduler/sched-energy.rst   |   2 +-
->  include/linux/sched/sd_flags.h             |  10 ++
->  kernel/sched/topology.c                    | 194 +++++++++++++--------
->  4 files changed, 133 insertions(+), 79 deletions(-)
+> Add the clocks supported in global clock controller, which clock the
+> peripherals like BLSPs, SDCC, USB, MDSS etc. Register all the clocks
+> to the clock framework for the clients to be able to request for them.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> ---
+> Changes in V2:
+> None
+> Changes in V3:
+> use parent_hws instead of one-clock parent_data
+> abandon global parent name lookup
+> remove a stray "//"
+>  drivers/clk/qcom/Kconfig                    |    7 +
+>  drivers/clk/qcom/Makefile                   |    1 +
+>  drivers/clk/qcom/gcc-sm6125.c               | 4190 +++++++++++++++++++
 
-Looks good to me, even though I would like to see a more compact version
-of asym_cpu_capacity_classify(). Details in my response to [PATCH v6 2/3].
+>  include/dt-bindings/clock/qcom,gcc-sm6125.h |  240 ++
 
-Did some level of testing myself and wasn't able to break it.
+This goes in the binding patch.
 
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>  4 files changed, 4438 insertions(+)
+>  create mode 100644 drivers/clk/qcom/gcc-sm6125.c
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6125.h
