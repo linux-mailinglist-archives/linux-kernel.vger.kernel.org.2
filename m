@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25A5398149
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FED39814A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhFBGnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
+        id S231607AbhFBGnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhFBGnb (ORCPT
+        with ESMTP id S231565AbhFBGnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:43:31 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8F8C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 23:41:35 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id e11so1148966ljn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 23:41:35 -0700 (PDT)
+        Wed, 2 Jun 2021 02:43:32 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CE3C061760
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 23:41:48 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id a5so1748700lfm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 23:41:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=R9/y5IYzZfRPi/Fhac+yR1YulSNV9LadEvMh90LaCeo=;
-        b=fNktISO3ADDDsqDFNCHQNvS3oGdIRn90B+HEZhYWQIOATUmuiqRmBFT/MYEXvpeILU
-         4C+xjCwTKEj9/is8jhqvBxyfJtuRVUEvzhRGsilHbsXkyaGn8Lu9EuCxobg+OhaqOpGX
-         lWhUWqJo/fubku/juKeHOhh/KbKp8HBlRYJcaj8QzvCC3SFQcvkGSBmMyt/KEBu+ulaP
-         ggV4lU2XPaz1kzNDBxYkfIYRtiZLbvC8G1Am5Q2YHOU+pB9g9LTdC5Ht8nYAxrP9QFXk
-         Nt6dHOjNKPseUN/43FwZag3PUV8JuU8QfTxiNZEdmhWh/M6Ogz/dswY4Z5dgsl6Zh93G
-         R84w==
+        bh=JuA6X6SLX6jIYFhYDQ4PSI4qy/mD4F92gXt5+pzqhiw=;
+        b=KCV/BGdWMOqxiMziTgxJG87UDnnpW8xslLWy99uLb7VpB0RQjUpAWx3hwYAp9Kx5Dl
+         IjTIIwlQYDW5T7AXT2g3YaWicvlr0QoZq8pSc/suf79ln6bq3X8planLEx+zhml1LRDt
+         Mun9Yaawf9AiZbfMNOTlrFcP8dbphUV94K0FW0FoGk+JaHCkKpr5nEsWTE46qHOgssXF
+         dhsOdlXifGmZQnIFGM+g2cIN585b68PiWEuCsFf0hMVvWeV2dYsBNs4tCNYIhxqAJ/b8
+         K0oNCfR+mBnCAgtWDyanW4oLNUX9ZWtxwZBpN3Ks13wNdZ57GC5dswRWQGLYavDjHvS5
+         cwmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=R9/y5IYzZfRPi/Fhac+yR1YulSNV9LadEvMh90LaCeo=;
-        b=Wk5FN+/VfObk/meJtb/ZJm8eMeWnWSRClu0sVixRczeI6zgQWJnlgZeT7pfxYmE9l3
-         4NbEKc40A7iGdldCOeki39pO9BFymLxDPHPiiBtTAMvLcRrbdioBno4VijhgWzgnA6YQ
-         pqx+dP/huXSWPGugNGiZBSZ9xon8+YFSjpzyemBZzMBw99jO0GsKeT627Jn+Q+qISM9H
-         V+Zxc80C1GgvQps9ODCapFhUGhSt9y5WeKnDCVp6cWUDHSKQlPkCITRuKQnz8nwVy6jI
-         lrNzaNuq48QExIIC5PryhUcxVeO+/DU7nJ2TEYjDVbmrwhnTtiV3XayyJyvNj2jlCh5K
-         dWlg==
-X-Gm-Message-State: AOAM533p/vsTpNzpjGp0Gmk+2x/7EBI49GavDt4gq3VCK0dmJJEQsCdB
-        xqYhAca53C7xNJ/MQc3gMYQ=
-X-Google-Smtp-Source: ABdhPJzIYkFbmi5Oc3PCYAwJ8UX0rROeI+UMxIzbiDuMK1nt2p50i5/fIbdVxXEjQoGuBZlJZMSTzg==
-X-Received: by 2002:a2e:9182:: with SMTP id f2mr12972872ljg.223.1622616093901;
-        Tue, 01 Jun 2021 23:41:33 -0700 (PDT)
+        bh=JuA6X6SLX6jIYFhYDQ4PSI4qy/mD4F92gXt5+pzqhiw=;
+        b=giSOtMUpUzerSH4x18iNxlR4BxJJxzhpVMLJ+4gsjUyANyXPq7oUNLBFpqUn5Xo4wE
+         qmMhj/h6aRmNMDTmqvpUKtApDqhQUrSbMNfAN/78ALBbX1OskS9+Q50gN+2xQahKa2UZ
+         EacauIYq8ag/538FNRPnCFg9y/UcbkQoP+8tZSk1OjQGGoYQCT6isSXZ1oGAOquFNAbM
+         d/0XbdkR5+AiXh0bIVf4LEUGVjRI7HGGqcusi7vTPE42JBPX1i7vadnvjGTpp85uCpZo
+         SxtmhRFiLS8xDCPORNbDfB+SU62nVwYXjUMLNK/fNeDrl1FiaA8gjfR1sTDJM6btVO40
+         bCzw==
+X-Gm-Message-State: AOAM533GbiXhe5rEo47DS0UhbXqPAdn15dceWdl9nFyT+eW5WZvhh156
+        PoH8vzXC7YdnTlq84z+gT+k=
+X-Google-Smtp-Source: ABdhPJyISRYTRVb7ufM2hmPTe5uCl/aVs5YEhYnXhErkpU6mZCC8AlR8jCTkc4ir85CpRK9jN25aVg==
+X-Received: by 2002:a05:6512:1188:: with SMTP id g8mr21596868lfr.410.1622616106489;
+        Tue, 01 Jun 2021 23:41:46 -0700 (PDT)
 Received: from ?IPv6:2a02:908:1252:fb60:cd07:2759:3eec:1d00? ([2a02:908:1252:fb60:cd07:2759:3eec:1d00])
-        by smtp.gmail.com with ESMTPSA id q7sm581480ljm.109.2021.06.01.23.41.32
+        by smtp.gmail.com with ESMTPSA id y8sm146731lfj.192.2021.06.01.23.41.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 23:41:33 -0700 (PDT)
+        Tue, 01 Jun 2021 23:41:45 -0700 (PDT)
 Subject: Re: [PATCH -next] drm/radeon/radeon_pm: use DEVICE_ATTR_RW macro
 To:     Alex Deucher <alexdeucher@gmail.com>,
         YueHaibing <yuehaibing@huawei.com>
@@ -63,8 +63,8 @@ Cc:     Dave Airlie <airlied@linux.ie>, xinhui pan <Xinhui.Pan@amd.com>,
 References: <20210528070217.9204-1-yuehaibing@huawei.com>
  <CADnq5_M2dSDqafpgEvuaRZRHk1j0=obTyYcYX0GGRGiBzs5eMQ@mail.gmail.com>
 From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <39b4c939-9f40-3e44-13d8-f98b01808d05@gmail.com>
-Date:   Wed, 2 Jun 2021 08:41:31 +0200
+Message-ID: <2920ae60-0064-a972-94fd-57b0caa0c01d@gmail.com>
+Date:   Wed, 2 Jun 2021 08:41:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
@@ -88,7 +88,7 @@ Am 02.06.21 um 03:53 schrieb Alex Deucher:
 > but I don't have a particularly strong opinion of others feel
 > differently.
 
-I agree, especially dropping the amdgpu prefix from the functions 
+I agree, especially dropping the amdgpu/radeon prefix from the functions 
 doesn't sound like something we want.
 
 Christian.
