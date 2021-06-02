@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD99B39815C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD43398160
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhFBGs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:48:57 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:36674 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhFBGsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:48:55 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 9B59FA003F;
-        Wed,  2 Jun 2021 08:47:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 9B59FA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1622616430; bh=9oZydlE7ZvsDH6T9qh0iMZKszEstZjjcoeV/i59z/mE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=M2C6beweJKaC2OtGnhH8ZlHfEitgurkfioMrWGLO3yHZrVOeHi0nDavbWPLAIzGaF
-         kdMhKP9KO5i1XnOua7KzrGJpqA0cS2i5AozuSx59u1uu/+rPfZJWztqlKKzVhouRQT
-         vr23yqiL0CihyZawpR6EH90q0w/AAiov7hiBiNsY=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S229938AbhFBGtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:49:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57662 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229966AbhFBGtR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 02:49:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622616454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HVcJbN/KT1+fyetrnk2iAeiqGIXFm+abamxXaSbzX64=;
+        b=aCbniVSoxED9tvY13FSMQ9T8Z9BrqtnWGZYYW4BtXTlv/zStbXb58SK60i3XrnFknFhVLG
+        Et91Gbd4kKUElewNhOKP2LxG2EsKuyeCvUU7QP0MOAGjo0RgOv032Y9ff1icCV10LwNYU9
+        IQjvEYZHmIDQnyS6KkC3lbZjIm2lgNc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-49-09wOAkscMgeBsiscxpu5_A-1; Wed, 02 Jun 2021 02:47:31 -0400
+X-MC-Unique: 09wOAkscMgeBsiscxpu5_A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Wed,  2 Jun 2021 08:47:04 +0200 (CEST)
-Subject: Re: [PATCH v2] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-To:     Dongliang Mu <mudongliangabcd@gmail.com>, tiwai@suse.com,
-        dan.carpenter@oracle.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-References: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <1032c823-90aa-0144-eb7a-ff1a019c3094@perex.cz>
-Date:   Wed, 2 Jun 2021 08:47:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5B6E107ACE8;
+        Wed,  2 Jun 2021 06:47:29 +0000 (UTC)
+Received: from T590 (ovpn-13-164.pek2.redhat.com [10.72.13.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 459DFE460;
+        Wed,  2 Jun 2021 06:47:22 +0000 (UTC)
+Date:   Wed, 2 Jun 2021 14:47:16 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailinglist <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv2] block/genhd: use atomic_t for disk_event->block
+Message-ID: <YLcpdKnt28vS6waI@T590>
+References: <20210602062015.33605-1-hare@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602062015.33605-1-hare@suse.de>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02. 06. 21 5:41, Dongliang Mu wrote:
-> The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
-> the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
-> to decrease the refcount to zero, which causes device_release never to
-> be invoked. This leads to memory leak to some resources, like struct
-> device_private. In addition, we also free some other similar memory
-> leaks in snd_ctl_led_init/snd_ctl_led_exit.
-> 
-> Fix this by replacing device_del to device_unregister
-> in snd_ctl_led_sysfs_remove/snd_ctl_led_init/snd_ctl_led_exit.
-> 
-> Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
-> call kobject_release and delay the release of kobject, which will cause
-> use-after-free when the memory backing the kobject is freed at once.
-> 
-> Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-> Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+On Wed, Jun 02, 2021 at 08:20:15AM +0200, Hannes Reinecke wrote:
+> __disk_unblock_events() will call queue_delayed_work() with a '0' argument
+> under a spin lock. This might cause the queue_work item to be executed
+> immediately, and run into a deadlock in disk_check_events() waiting for
+> the lock to be released.
 
-Many thanks to you and Dan to cover this.
+The above commit log isn't correct, and the current usage shouldn't cause such
+deadlock, so can you root cause the task hang report[1] on 5.3.18?
 
-Revieved-by: Jaroslav Kysela <perex@perex.cz>
+[1] https://lore.kernel.org/linux-block/73783f6f-a3ec-907f-ea19-966e9d1457dc@suse.de/T/#mcde381522bdb95740e04ced555ec017a25c993cc
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Thanks,
+Ming
+
