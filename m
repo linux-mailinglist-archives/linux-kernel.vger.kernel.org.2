@@ -2,134 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5E7398868
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9359398857
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbhFBLbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhFBLbh (ORCPT
+        id S232769AbhFBL23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:28:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7072 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232785AbhFBL1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:31:37 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74910C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:29:53 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mq2-20020a17090b3802b0290162428291f5so1575002pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s9ut0Q0wZ8z+hzL9g91MMtw0Pf9H9Qkn8s5w5ouk4Co=;
-        b=HbqMhFoDB9o5ql6A94HCPeFWNEzFAaio81BcgTmSk5yu3kWBWsCpNElWsglMyc+8WH
-         FVKqPfyDWUEth9hSxW+8vYySSvftQPHXBOMMPkgFk9BNb3J7TeiWEwJtH1qOTaq5BNWy
-         uSvls9K0LJURCCRfbuutuNKDwIH8AFzhzZASg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s9ut0Q0wZ8z+hzL9g91MMtw0Pf9H9Qkn8s5w5ouk4Co=;
-        b=GuJJLlKRw9WIYD+OJShuafb2EIGs4el9S5554BlX1ZuU672Kzi75jk8tSoKR+EZSbC
-         0UCoWmO1IeBZ8+027cc6dp+5VEMVFumz70sOkZLvDmqJcZZ8rz7EkF98KWw9I/JTjaUZ
-         VQbV6mbzgS1lqQcoqfj1VXniYCJiFrgllnNKXwP1t80cxkesr0W7oPj5kd6JTpES8CGC
-         uacBzZghIkavqzqkAE5AvFlrUsa32CQ0ZeZFW24ny94BPgfrh3wDU/S0YAWC00c4gqoc
-         O4D4blXw+OkqOrNZVisKwnXFOTVduxyT6skX1TfLK17123XO4/FgnGADnHficcnOQVk0
-         4goA==
-X-Gm-Message-State: AOAM5313rRbsV2fyGZbzUVDZEzb1CX1/fd84uHKAXzNQ5xa8ko91OsMc
-        yZxxdkcLmMiIopbAxV5m81RrTw==
-X-Google-Smtp-Source: ABdhPJy5LratcIzMM1/wtvTH7ZK1dsqsXfEOTHho4XhCDhLPd4uo+to8MvlYmGO1Bn7vjmlNM5S5pg==
-X-Received: by 2002:a17:902:8c91:b029:ef:aa9a:af35 with SMTP id t17-20020a1709028c91b02900efaa9aaf35mr30543421plo.24.1622633392911;
-        Wed, 02 Jun 2021 04:29:52 -0700 (PDT)
-Received: from 5f9be87369f8 ([124.170.34.40])
-        by smtp.gmail.com with ESMTPSA id w26sm17660269pgl.50.2021.06.02.04.29.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Jun 2021 04:29:52 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 11:29:47 +0000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Cc:     broonie@kernel.org, ezequiel@collabora.com, chenjh@rock-chips.com,
-        pgwipeout@gmail.com
-Subject: [PATCH 2/2 v2] regulator: fan53555: add tcs4526
-Message-ID: <20210602112943.GA119@5f9be87369f8>
-Reply-To: 20210602112452.GA98@5f9be87369f8
-References: <20210602112452.GA98@5f9be87369f8>
+        Wed, 2 Jun 2021 07:27:50 -0400
+Received: from dggeml759-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fw68k6WpRzYnC8;
+        Wed,  2 Jun 2021 19:23:18 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 19:26:02 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Chris Morgan <macromorgan@hotmail.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] ASoC: rk817: Constify static struct snd_soc_dai_ops
+Date:   Wed, 2 Jun 2021 11:36:43 +0000
+Message-ID: <20210602113643.3037374-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602112452.GA98@5f9be87369f8>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeml759-chm.china.huawei.com (10.1.199.138)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For rk3399pro boards the tcs4526 regulator supports the vdd_gpu
-regulator. The tcs4526 regulator has a chip id of <0>.
-Add the compatibile tcs,tcs4526  
+The snd_soc_dai_ops structures is only stored in the ops field of a
+snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
+const to allow the compiler to put it in read-only memory.
 
-without this patch, the dmesg output is:
-  fan53555-regulator 0-0010: Chip ID 0 not supported!
-  fan53555-regulator 0-0010: Failed to setup device!
-  fan53555-regulator: probe of 0-0010 failed with error -22
-with this patch, the dmesg output is:
-  vdd_gpu: supplied by vcc5v0_sys
-
-The regulators are described as:
-- Dedicated power management IC TCS4525
-- Lithium battery protection chip TCS4526
-
-This has been tested with a Radxa Rock Pi N10.
-
-Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- drivers/regulator/fan53555.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/rk817_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
-index 2695be617373..ddab9359ea20 100644
---- a/drivers/regulator/fan53555.c
-+++ b/drivers/regulator/fan53555.c
-@@ -93,6 +93,10 @@ enum {
- 	TCS4525_CHIP_ID_12 = 12,
- };
+diff --git a/sound/soc/codecs/rk817_codec.c b/sound/soc/codecs/rk817_codec.c
+index 17e672b85ee5..9a896e4326c3 100644
+--- a/sound/soc/codecs/rk817_codec.c
++++ b/sound/soc/codecs/rk817_codec.c
+@@ -382,7 +382,7 @@ static int rk817_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
+ 			SNDRV_PCM_FMTBIT_S24_LE |\
+ 			SNDRV_PCM_FMTBIT_S32_LE)
  
-+enum {
-+	TCS4526_CHIP_ID_00 = 0,
-+};
-+
- /* IC mask revision */
- enum {
- 	FAN53555_CHIP_REV_00 = 0x3,
-@@ -374,6 +375,7 @@ static int fan53555_voltages_setup_silergy(struct fan53555_device_info *di)
- {
- 	switch (di->chip_id) {
- 	case TCS4525_CHIP_ID_12:
-+	case TCS4526_CHIP_ID_00:
- 		di->slew_reg = TCS4525_TIME;
- 		di->slew_mask = TCS_SLEW_MASK;
- 		di->slew_shift = TCS_SLEW_MASK;
-@@ -564,6 +566,9 @@ static const struct of_device_id __maybe_unused fan53555_dt_ids[] = {
- 	}, {
- 		.compatible = "tcs,tcs4525",
- 		.data = (void *)FAN53526_VENDOR_TCS
-+	}, {
-+		.compatible = "tcs,tcs4526",
-+		.data = (void *)FAN53526_VENDOR_TCS
- 	},
- 	{ }
- };
-@@ -672,6 +677,9 @@ static const struct i2c_device_id fan53555_id[] = {
- 	}, {
- 		.name = "tcs4525",
- 		.driver_data = FAN53526_VENDOR_TCS
-+	}, {
-+		.name = "tcs4526",
-+		.driver_data = FAN53526_VENDOR_TCS
- 	},
- 	{ },
- };
--- 
-2.29.2
-
+-static struct snd_soc_dai_ops rk817_dai_ops = {
++static const struct snd_soc_dai_ops rk817_dai_ops = {
+ 	.hw_params	= rk817_hw_params,
+ 	.set_fmt	= rk817_set_dai_fmt,
+ 	.set_sysclk	= rk817_set_dai_sysclk,
 
