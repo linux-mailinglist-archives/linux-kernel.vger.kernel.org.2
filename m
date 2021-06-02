@@ -2,142 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69220399504
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0677339950B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFBU4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:56:51 -0400
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:34451 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhFBU4A (ORCPT
+        id S229657AbhFBVAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBVAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:56:00 -0400
-Received: by mail-pg1-f169.google.com with SMTP id l1so3308354pgm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:54:01 -0700 (PDT)
+        Wed, 2 Jun 2021 17:00:20 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B33C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 13:58:24 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id l1so3320597pgm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:58:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wvBVKKuCkHy2pwXOhSmYF/8asqpcAnySspHtL7Uf0EY=;
-        b=GDb7DdnITH1/95qRk77G6hq5OLr2t1g+co9KRVhEi+aWul1jaq6z2UDQvaMBNXNCkd
-         XU1hsCa6WHRjDmMikEUzUuYq/c5MBH2aD7ZaQ8j3rC3CyvpdEuVEVGT2JGwp+R1oNaau
-         Zx+hSd72dIvWSuFCrKKhXruFxv7IB2leWk3FA=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nArN1r78vaOvHv/VuXchBWF7aTVLFLFg7TatmXuNnm8=;
+        b=JP/lfhP8mKZT2FZ7oyzfZwmEOzZCe11cmZQRivpG9B4lijtim35gvlcrWwl1PXr3or
+         HixccN4Wdktu0dbau/BtMU9jkEt6O+poY1xsouDgYQSNq4bjoXcftFS8unk6lA9xkOcl
+         V3dmVAMtg+BNUWlDKvv04rv/3fmU77EjE3t98=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wvBVKKuCkHy2pwXOhSmYF/8asqpcAnySspHtL7Uf0EY=;
-        b=PdEgwS8op3LndOR7ehafIMHUoktZppJdF2GuarcfQR1jNn7i1DYyu+OjAL/kxPZOXB
-         xH7FIFt7AdQ3eUKn+idjFIXLiylfnSuvffTMH5c/VWboyAswIKhL/fd97Rh/2FcsTqIb
-         lyBFrB27FemA+1ZwY41jlkQ/YtDuniFEMuqCsemFocsCkFc59/yWkqXIr5Y36R4q4H25
-         GfFYkaej89bYE+KpuohLequCNzbSEaS8P0UuWKGpbafyJRyiB4d4Vp6ItQR7xiABqz10
-         tQeFkS2/SenxrFRvZwwLeGOQrVBbt2GZO4rBS81UhvE4LNb8SLO0NpEVzVE/hEyNkmU1
-         poEw==
-X-Gm-Message-State: AOAM533Ox6ZwoJ3AreNzRoj7qpZmNDX3u9XFULHJB4KK55Dcwb83c0Ax
-        lno3N5fgZrm+UA7p+tPDctrZ6A==
-X-Google-Smtp-Source: ABdhPJzQA2Kuv7FOGj+yBnevenaxOfCwvvS+TKqCt5Se8cg0JQNeLpwmhDa3WvqEYQgAIc8sX114Bw==
-X-Received: by 2002:a05:6a00:84f:b029:2be:3b80:e9eb with SMTP id q15-20020a056a00084fb02902be3b80e9ebmr28959717pfk.39.1622667181114;
-        Wed, 02 Jun 2021 13:53:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nArN1r78vaOvHv/VuXchBWF7aTVLFLFg7TatmXuNnm8=;
+        b=c7qaV2z64Gw+ZWRE56t1Uo9vU5sgCEefse+KlIKYnMKUfwtwjFwpUBroWre7WBB7kc
+         bi2/gmAAN6c59UjGW/wdRRFX3f8Qxx6F46bYvTSKwhJxdMDqTB/phgN/siYyCk9TFF/6
+         wInshWe7Iod8L6gD8OlooYdW1P4nVtjgMP/zQLM1CicDtXcShVduJ0Oa/q7NnXEDCiPq
+         EMbUUxpFCNdNtNIfoWuFilplr29mbBx1K/nyr/EVvzv1PofZLFAUcQhZRWhYNpRNjnBC
+         8iUTcdMcnHTMRzk/2NT9/+YJALku8pzHJSmJm6UKrfBkPgN1B7KnJDUcVMkdQIpJoW5Q
+         ymCA==
+X-Gm-Message-State: AOAM531jUWp1G5e2L+dnobuP20f+RH/YimXt0+iEFvnAPrP7kZe8X1vJ
+        rJZTPWXhkvt+7asQMgdnIhjh7g==
+X-Google-Smtp-Source: ABdhPJwJZxJa96y31AaDzXH+m2XwM9AWhSlzDLpgj2RugUjUogkJiZnaxBb/6GIApWloivcNO6dxcw==
+X-Received: by 2002:a63:7204:: with SMTP id n4mr36385133pgc.78.1622667504096;
+        Wed, 02 Jun 2021 13:58:24 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f28sm545147pgb.12.2021.06.02.13.53.00
+        by smtp.gmail.com with ESMTPSA id o17sm618351pgj.25.2021.06.02.13.58.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 13:53:00 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 13:52:59 -0700
+        Wed, 02 Jun 2021 13:58:23 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     kernel test robot <lkp@intel.com>,
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
         Veaceslav Falico <vfalico@gmail.com>,
         Andy Gospodarek <andy@greyhouse.net>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] net: bonding: Use strscpy() instead of
- manually-truncated strncpy()
-Message-ID: <202106021352.484D660@keescook>
-References: <20210602203138.4082470-1-keescook@chromium.org>
- <7214.1622666840@famine>
+Subject: [PATCH v3] net: bonding: Use strscpy_pad() instead of manually-truncated strncpy()
+Date:   Wed,  2 Jun 2021 13:58:20 -0700
+Message-Id: <20210602205820.361846-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7214.1622666840@famine>
+X-Patch-Hashes: v=1; h=sha256; g=2e11e60ff27ee8b34974fbad6036bc136589716a; i=HjH5SohPsTIA+ATf9MAz+FmJX9yY3N0haOkHTcGQcac=; m=18UDZYY/68QHWKtZdgvmTol8lJm0hlosSnAKcsyXgI4=; p=DNYQYvFG1gRT/TAGQtHMHwmlxYhPMjyU3dkOCM2XDVI=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmC38OsACgkQiXL039xtwCae2xAAoNv o/7bpXPBKOahHSRsZ0kh/GDtEnAFmgCExukTsbrFbHPXcMX45G6Eh2lhbsTrYlDgasa8Mz+quqzFe UpEUU1I6BiNs5Xz31YSM/jgdyh09HRKIrVKbyBpVUHYxhp8si/DpEMKCAOjp6RqCuW3YG+8tjQUFr 40UUkUcqrCh2lx7g5ElYjTG1sAFc2o2MgTWgNSs4eIbaCfNo2kHTI1+IgwWkPfzC3EZKM5lsy1xiJ omRPX5blHuj0b+wD7absV36LjqkAw5UF8UjqxtRGBF+vc3sxubIUuHT/D9CX/Qn9s6Dvp170edWLD Zm7lT7qQNnCzcdVAGzcgmz2nDLihsA5RFBL3/qnBwvFuXTl66ibgrKEPE9jx2OliAqlta5XG+1FnS iDxt4d2c+qHzJR60YOyMJkrPQLCLqZYqSc879keDPsipkRIevzFNb4lW+dyUnYpJGU1uml4zzoAOV 37MRn+HnPTsnPA5tQSdQG+/DeM8xTWXQ8kcOwzUU/SNl0bJa/KaLXwtTcHlhvzCt5HsoYNUXSv+nn 1/V1l5sJO69cvRepC1BcjNjtxASyo8r9oJRLCAxqr4BpMKB2gP8Y33llLn3Wg7EeLE2OU7DgtrPXF 1SLpetJm9GC8XS0i0iqWq5LjPQ55zPbt6atoZQrsqdRvYUXIZs6CUnpctQT0pDxY=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 01:47:20PM -0700, Jay Vosburgh wrote:
-> Kees Cook <keescook@chromium.org> wrote:
-> 
-> >Silence this warning by just using strscpy_pad() directly:
-> >
-> >>> drivers/net/bonding/bond_main.c:4877:3: warning: 'strncpy' specified bound 16 equals destination size [-Wstringop-truncation]
-> >    4877 |   strncpy(params->primary, primary, IFNAMSIZ);
-> >         |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> >Additionally replace other strncpy() uses, as it is considered deprecated:
-> >https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> >
-> >Reported-by: kernel test robot <lkp@intel.com>
-> >Link: https://lore.kernel.org/lkml/202102150705.fdR6obB0-lkp@intel.com
-> >Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> 	There's one more "strncpy(...); primary[IFNAMSIZ - 1] = 0;" set
-> in bond_options.c:bond_option_primary_set(), doesn't it also generate
-> this warning?
+Silence this warning by using strscpy_pad() directly:
 
-Gah, I was looking only in the same file not the whole directory. :)
+drivers/net/bonding/bond_main.c:4877:3: warning: 'strncpy' specified bound 16 equals destination size [-Wstringop-truncation]
+    4877 |   strncpy(params->primary, primary, IFNAMSIZ);
+         |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-v3 on the way!
+Additionally replace other strncpy() uses, as it is considered deprecated:
+https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
 
-> 
-> 	Either way, the change looks good to me.
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/202102150705.fdR6obB0-lkp@intel.com
+Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v3: - other files in drivers/net/bonding/ too!
+v2: https://lore.kernel.org/lkml/20210602203138.4082470-1-keescook@chromium.org
+v1: https://lore.kernel.org/lkml/20210602181133.3326856-1-keescook@chromium.org
 
-Thanks!
+---
+ drivers/net/bonding/bond_main.c    | 8 +++-----
+ drivers/net/bonding/bond_options.c | 3 +--
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-> 
-> Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-> 
-> 	-J
-> 
-> 
-> >---
-> >v2:
-> > - switch to strscpy_pad() and replace earlier strncpy() too
-> >v1: https://lore.kernel.org/lkml/20210602181133.3326856-1-keescook@chromium.org
-> >---
-> > drivers/net/bonding/bond_main.c | 8 +++-----
-> > 1 file changed, 3 insertions(+), 5 deletions(-)
-> >
-> >diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> >index c5a646d06102..e9cb716ad849 100644
-> >--- a/drivers/net/bonding/bond_main.c
-> >+++ b/drivers/net/bonding/bond_main.c
-> >@@ -620,7 +620,7 @@ static int bond_check_dev_link(struct bonding *bond,
-> > 		 */
-> > 
-> > 		/* Yes, the mii is overlaid on the ifreq.ifr_ifru */
-> >-		strncpy(ifr.ifr_name, slave_dev->name, IFNAMSIZ);
-> >+		strscpy_pad(ifr.ifr_name, slave_dev->name, IFNAMSIZ);
-> > 		mii = if_mii(&ifr);
-> > 		if (ioctl(slave_dev, &ifr, SIOCGMIIPHY) == 0) {
-> > 			mii->reg_num = MII_BMSR;
-> >@@ -5329,10 +5329,8 @@ static int bond_check_params(struct bond_params *params)
-> > 			(struct reciprocal_value) { 0 };
-> > 	}
-> > 
-> >-	if (primary) {
-> >-		strncpy(params->primary, primary, IFNAMSIZ);
-> >-		params->primary[IFNAMSIZ - 1] = 0;
-> >-	}
-> >+	if (primary)
-> >+		strscpy_pad(params->primary, primary, sizeof(params->primary));
-> > 
-> > 	memcpy(params->arp_targets, arp_target, sizeof(arp_target));
-> > 
-> >-- 
-> >2.25.1
-> 
-> ---
-> 	-Jay Vosburgh, jay.vosburgh@canonical.com
-
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index c5a646d06102..e9cb716ad849 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -620,7 +620,7 @@ static int bond_check_dev_link(struct bonding *bond,
+ 		 */
+ 
+ 		/* Yes, the mii is overlaid on the ifreq.ifr_ifru */
+-		strncpy(ifr.ifr_name, slave_dev->name, IFNAMSIZ);
++		strscpy_pad(ifr.ifr_name, slave_dev->name, IFNAMSIZ);
+ 		mii = if_mii(&ifr);
+ 		if (ioctl(slave_dev, &ifr, SIOCGMIIPHY) == 0) {
+ 			mii->reg_num = MII_BMSR;
+@@ -5329,10 +5329,8 @@ static int bond_check_params(struct bond_params *params)
+ 			(struct reciprocal_value) { 0 };
+ 	}
+ 
+-	if (primary) {
+-		strncpy(params->primary, primary, IFNAMSIZ);
+-		params->primary[IFNAMSIZ - 1] = 0;
+-	}
++	if (primary)
++		strscpy_pad(params->primary, primary, sizeof(params->primary));
+ 
+ 	memcpy(params->arp_targets, arp_target, sizeof(arp_target));
+ 
+diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+index c9d3604ae129..81c039531e66 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -1206,8 +1206,7 @@ static int bond_option_primary_set(struct bonding *bond,
+ 		RCU_INIT_POINTER(bond->primary_slave, NULL);
+ 		bond_select_active_slave(bond);
+ 	}
+-	strncpy(bond->params.primary, primary, IFNAMSIZ);
+-	bond->params.primary[IFNAMSIZ - 1] = 0;
++	strscpy_pad(bond->params.primary, primary, IFNAMSIZ);
+ 
+ 	netdev_dbg(bond->dev, "Recording %s as primary, but it has not been enslaved yet\n",
+ 		   primary);
 -- 
-Kees Cook
+2.25.1
+
