@@ -2,143 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D11399043
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B34D399048
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhFBQql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
+        id S230172AbhFBQsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhFBQqk (ORCPT
+        with ESMTP id S229772AbhFBQsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:46:40 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943CDC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 09:44:41 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id l1so2733835pgm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v1f6CY6XzYIBDy4/kZuiiMp2Rh7Gg1cKpg7RU77/HAg=;
-        b=Plf/wGF5S49Noco4Lig+ZtpLaf/nj2FWSq4m/6+/1iRatd/EzSpCq3HI3yM/phuTDg
-         yLlOMxzhO3nO4qurZzgww8yeslx0ID5Oft7SF536Et0+q9iaUveoiSGuGprHU2r5aU9N
-         tDK89CSSG06nSXiuhleCfCjYeyYcrSXSCVubM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v1f6CY6XzYIBDy4/kZuiiMp2Rh7Gg1cKpg7RU77/HAg=;
-        b=SyNy6n24beg+IRQ1WEq8p+12ekN/hNXbJ3VtwJq9JrPDQ8aifcOftkGjYkxx/EnMl1
-         PEmREjHFq/fU4tHp2D8iTxO+KeqONJJhaj9iopNjCGtVZeuzmhzaelNoqbMPDgqySn1g
-         BA3nmtvnemNlRL1KyhRw0Xfj5PfVZKBsgthQ819dF8waA1cK3/cf25WoOHR5g6S4UAxS
-         phJ0NihcpDWYZGFDmUzA4YgnXgTEr/jyIvtsgiHmc6r2Agz8qtG5B3A8DtN6KtqoeJQh
-         VuteZsqG1jIkmu4m4CJPXj7E/icuOi0X/bfcVa8y9jnPshZ7NBHHyL6IOyqiJic6zyYg
-         QoKA==
-X-Gm-Message-State: AOAM530BlMIsWeP/GpMKqIlhdQGeVcB20NK/ozMxFovwB4vZXPx6EEq9
-        NOoeBw8ZgNQgysfWv5jjJ3pNkg==
-X-Google-Smtp-Source: ABdhPJyXVRE3MD31LcQEETFgTuL3GaZyuB8KTIU0GRkdXTHFP3v/4uWJaCnCXuP/7U112M4am8+zlA==
-X-Received: by 2002:aa7:8b44:0:b029:2dd:4cfc:7666 with SMTP id i4-20020aa78b440000b02902dd4cfc7666mr28339371pfd.73.1622652281039;
-        Wed, 02 Jun 2021 09:44:41 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:d737:2805:1403:7c09])
-        by smtp.gmail.com with UTF8SMTPSA id z7sm275711pgr.28.2021.06.02.09.44.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 09:44:40 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 09:44:38 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: pm6150: Add thermal zone for PMIC
- on-die temperature
-Message-ID: <YLe1dmEWq9+MjfTR@google.com>
-References: <20210602090525.1.Id4510e9e4baaa3f6c9fdd5cdf4d8606e63c262e3@changeid>
- <CAD=FV=XcoLLCn+H6h9cX+qPjoueVFgK8BssvUXQ6WjVAapRyMg@mail.gmail.com>
+        Wed, 2 Jun 2021 12:48:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140ABC061574;
+        Wed,  2 Jun 2021 09:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7tohifuv5JYW3E7Hk1sVQuIjPI/C8MKSY3MQl5vvB4s=; b=kdu4BwlchYINw3C+EcBocsHDUy
+        a91P+WO2n/ztNAZpC4i1gw7tqOKUFzwWu58suQdLAjM2YXFikv/5/oaqPmf99JVYKCNj2WJKpDQ0i
+        S0c8GI0OlAIisTgxakan8G10HFtH5HuNw7Hqdqi3RHiYYq3zdmBzXy5lsDnRzF3TJVEtdO68TnpgS
+        8K25eJH4v8dAAo7rswaiwcEE8nXrQyqHEIrzfWlp7ORDwYUd2bEDZxmNSuwBFuW4xEFDNeWs3Yg6U
+        o+Kb0+cIMahvxPwVt/nlQwL5AtLXT/J6J+qePZba4xfUkA84xt+DhB39swRCy3609n/Mv+E85Mgmt
+        FcuTDgEw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1loU0X-00BKKW-No; Wed, 02 Jun 2021 16:46:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7E12300299;
+        Wed,  2 Jun 2021 18:46:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8A73D2016D6DD; Wed,  2 Jun 2021 18:46:16 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 18:46:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
+Message-ID: <YLe12Ba4CrvhMhFI@hirez.programming.kicks-ass.net>
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.334970485@infradead.org>
+ <20210602145921.GB31179@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=XcoLLCn+H6h9cX+qPjoueVFgK8BssvUXQ6WjVAapRyMg@mail.gmail.com>
+In-Reply-To: <20210602145921.GB31179@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-
-On Wed, Jun 02, 2021 at 09:36:07AM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Jun 2, 2021 at 9:06 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> >
-> > Add a thermal zone for the pm6150 on-die temperature. The system should
-> > try to shut down orderly when the temperature reaches 95degC, otherwise
-> > the PMIC will power off at 115degC.
-> >
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+On Wed, Jun 02, 2021 at 03:59:21PM +0100, Will Deacon wrote:
+> On Wed, Jun 02, 2021 at 03:12:27PM +0200, Peter Zijlstra wrote:
+> > Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
+> > task_is_running(p).
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > > ---
-> >
-> >  arch/arm64/boot/dts/qcom/pm6150.dtsi | 24 ++++++++++++++++++++++++
-> >  1 file changed, 24 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/pm6150.dtsi b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-> > index 8ab4f1f78bbf..de7fb129f739 100644
-> > --- a/arch/arm64/boot/dts/qcom/pm6150.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-> > @@ -7,6 +7,30 @@
-> >  #include <dt-bindings/spmi/spmi.h>
-> >  #include <dt-bindings/thermal/thermal.h>
-> >
-> > +/ {
-> > +       thermal-zones {
-> > +               pm6150_thermal: pm6150-thermal {
-> > +                       polling-delay-passive = <100>;
-> > +                       polling-delay = <0>;
-> > +                       thermal-sensors = <&pm6150_temp>;
-> > +
-> > +                       trips {
-> > +                               pm6150_trip0: trip0 {
-> > +                                       temperature = <95000>;
-> > +                                       hysteresis = <0>;
-> > +                                       type = "passive";
-> > +                               };
-> > +
-> > +                               pm6150_crit: pm6150-crit {
+> >  arch/x86/kernel/process.c |    4 ++--
+> >  block/blk-mq.c            |    2 +-
+> >  include/linux/sched.h     |    2 ++
+> >  kernel/locking/lockdep.c  |    2 +-
+> >  kernel/rcu/tree_plugin.h  |    2 +-
+> >  kernel/sched/core.c       |    6 +++---
+> >  kernel/sched/stats.h      |    2 +-
+> >  kernel/signal.c           |    2 +-
+> >  kernel/softirq.c          |    3 +--
+> >  mm/compaction.c           |    2 +-
+> >  10 files changed, 14 insertions(+), 13 deletions(-)
+> > 
+> > --- a/arch/x86/kernel/process.c
+> > +++ b/arch/x86/kernel/process.c
+> > @@ -931,7 +931,7 @@ unsigned long get_wchan(struct task_stru
+> >  	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
+> >  	int count = 0;
+> >  
+> > -	if (p == current || p->state == TASK_RUNNING)
+> > +	if (p == current || task_is_running(p))
 > 
-> Nit that the node names are not symmetric. One is "trip0" and the
-> other is "pm6510-crit". Seems like you can remove the "pm6150-" prefix
-> from this one (but keep it in the label?)
+> Looks like this one in get_wchan() has been cargo-culted across most of
+> arch/ so they'll need fixing up before you rename the struct member.
 
-Sounds good.
+Yeah, this was x86_64 allmodconfig driven, I've already got a bunch of
+robot mail telling me other archs need help, I'll fix it iup.
 
-> > +                                       temperature = <115000>;
-> > +                                       hysteresis = <0>;
-> > +                                       type = "critical";
-> > +                               };
-> > +                       };
-> > +               };
-> 
-> Correct me if I'm misunderstanding, but I don't think that the
-> description of this patch matches the contents. You're saying that the
-> PMIC will power itself off at 115C and that we want to do an orderly
-> shutdown _before_ the PMIC powers off. Doesn't that mean that the
-> "critical" trip needs to be at some temperature _lower_ than 115C? As
-> I remember it the system performs an orderly shutdown starting when it
-> sees the critical temperature.
+> There's also a weird one in tools/bpf/runqslower/runqslower.bpf.c (!)
 
-Yeah, you are right. Polling starts at 95degC, the system should try to
-shutdown at 115degC and based on that configuration the emergency
-shutdown would happen at 145degC:
-
-  static const long temp_map_gen2_v1[THRESH_COUNT][STAGE_COUNT] = {
-        {  90000, 110000, 140000 },
-  	{  95000, 115000, 145000 },
-  	{ 100000, 120000, 150000 },
-  	{ 105000, 125000, 155000 },
-  };
-
-I'll fix the commit message in the v2.
+I'm tempted to let the bpf people sort their own gunk. This is not an
+ABI. I so don't care breaking every script out there.
