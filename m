@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548AB3993E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0083993E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhFBTvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhFBTvL (ORCPT
+        id S229654AbhFBTwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:52:13 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:36621 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhFBTwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:51:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA7DC061756;
-        Wed,  2 Jun 2021 12:49:23 -0700 (PDT)
-Date:   Wed, 02 Jun 2021 19:49:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622663361;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=C09bN34SsG6eH0tihYOwKojMT+kiJay7MLv+ig5T4V8=;
-        b=yiToU+DgEoG8um8XZXymNvPv/dYo73cgJLJ8rObS+KI77z1YWw5Yx6qn3jJnLF/IEELzRx
-        oQgD4RHdZumam/VUUWEGKQN/nViOIKkYZIntsPmNwS5NTix1oTftZZnulhC+RD4pPY6Kz2
-        A+6EKDXsa6JENdz0qzShnC+jY1oEL4TpCVlC/yqnftu0hBH9wL/nd1rmPl5/EZVnjXwA9B
-        a/3zNQKfJLMJ0fExjRp6ztZbc6vkV2fUBN5ArphK9ttO4HQN5lCM4PVrIwdpFw/rAw85UZ
-        PcLoYhnPLLuXce6+2yVuGRc6qKRB5OhEjF87pOxPDY3HlNqjdibdG1PCZYaAkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622663361;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=C09bN34SsG6eH0tihYOwKojMT+kiJay7MLv+ig5T4V8=;
-        b=AyBSRAqaAX8fynVNT+92Jg4DjanBs0yRIRnSN8HI+d5FUndbidMRjjrGPX/nIrGI/v9J/q
-        oPazmxLMcY8MqsCQ==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] dmaengine: idxd: Use cpu_feature_enabled()
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        <stable@vger.kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Wed, 2 Jun 2021 15:52:10 -0400
+Received: by mail-ot1-f51.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3559686otl.3;
+        Wed, 02 Jun 2021 12:50:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CUWpmv8NyLUpVOwTkWcNjRzPnLFgadVxSly1gM51pJ4=;
+        b=RCc1BlwBI7a7S2/4ey4AbEAbnlmcctjA67rodie6R8tbAw3SGeNVZIkSHJp/vVoHsu
+         kRJpxfN5S8RKUtK/jZ3EMkekIbyYEhuhsUtGybdWlrj+DhxZUFN79sqSYfz4d2kMRsxx
+         UDBuxiXMd+a6vO5yn++hBZRElyK9jbnYWSbbMsRQaas2F1cNCw7o46dukyj90Uwni7yg
+         4xC7niHu0zbBDD295uSHuwq2AKgveYRu7Kqy+b0BUTzhiXvOetWtHVhz7I1K8P8sIgUM
+         0fg+uKudO1Tjf4C/2pkN7Do/ah3OKyoyfq+LOivXbtGtptiuHQzgN+FTOtHcKk2sldbb
+         HOog==
+X-Gm-Message-State: AOAM532ohCR5at+MWEAwZG6zZ6Ms2zy08mfC7/lgb0gdiNW0YU+U0FrX
+        Hflask08XduRFQnQ7YYOPw==
+X-Google-Smtp-Source: ABdhPJwNzfmaJMe3pyCXt76BAd3dBGxl7RBQK0yyIv7ohyjx5Db9CBZx6lUWeAp45W1AoXlRQiaMaA==
+X-Received: by 2002:a9d:1d49:: with SMTP id m67mr9340022otm.76.1622663411410;
+        Wed, 02 Jun 2021 12:50:11 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v19sm189648otk.22.2021.06.02.12.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 12:50:10 -0700 (PDT)
+Received: (nullmailer pid 3872156 invoked by uid 1000);
+        Wed, 02 Jun 2021 19:50:09 -0000
+Date:   Wed, 2 Jun 2021 14:50:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        kernel@dh-electronics.com
+Subject: Re: [PATCH V2] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM
+ DRC02 boards
+Message-ID: <20210602195009.GA3870858@robh.at.kernel.org>
+References: <20210525143001.9298-1-cniedermaier@dh-electronics.com>
 MIME-Version: 1.0
-Message-ID: <162266336134.29796.6074714821595459988.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525143001.9298-1-cniedermaier@dh-electronics.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Tue, May 25, 2021 at 04:30:01PM +0200, Christoph Niedermaier wrote:
+> Add DH electronics DHCOM PicoITX and DHCOM DRC02 boards.
+> 
+> Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: robh+dt@kernel.org
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: kernel@dh-electronics.com
+> To: devicetree@vger.kernel.org
+> ---
+> V2: Remove line with fsl,imx6s on the DRC02 Board
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index fce2a8670b49..3c4ff79a3be7 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -407,6 +407,12 @@ properties:
+>            - const: dfi,fs700e-m60
+>            - const: fsl,imx6dl
+>  
+> +      - description: i.MX6DL DHCOM PicoITX Board
+> +        items:
+> +          - const: dh,imx6dl-dhcom-picoitx
+> +          - const: dh,imx6dl-dhcom-som
+> +          - const: fsl,imx6dl
+> +
+>        - description: i.MX6DL Gateworks Ventana Boards
+>          items:
+>            - enum:
+> @@ -458,6 +464,12 @@ properties:
+>            - const: toradex,colibri_imx6dl          # Colibri iMX6 Module
+>            - const: fsl,imx6dl
+>  
+> +      - description: i.MX6S DHCOM DRC02 Board
+> +        items:
+> +          - const: dh,imx6s-dhcom-drc02
+> +          - const: dh,imx6s-dhcom-som
+> +          - const: fsl,imx6dl
 
-Commit-ID:     db099bafbf5e9c421a3a11cf33965c7b0afb3f89
-Gitweb:        https://git.kernel.org/tip/db099bafbf5e9c421a3a11cf33965c7b0afb3f89
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Wed, 02 Jun 2021 12:07:52 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 02 Jun 2021 12:29:00 +02:00
+fsl,imx6s?
 
-dmaengine: idxd: Use cpu_feature_enabled()
-
-When testing x86 feature bits, use cpu_feature_enabled() so that
-build-disabled features can remain off, regardless of what CPUID says.
-
-Fixes: 8e50d392652f ("dmaengine: idxd: Add shared workqueue support")
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: <stable@vger.kernel.org>
----
- drivers/dma/idxd/init.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 2a926be..776fd44 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -745,12 +745,12 @@ static int __init idxd_init_module(void)
- 	 * If the CPU does not support MOVDIR64B or ENQCMDS, there's no point in
- 	 * enumerating the device. We can not utilize it.
- 	 */
--	if (!boot_cpu_has(X86_FEATURE_MOVDIR64B)) {
-+	if (!cpu_feature_enabled(X86_FEATURE_MOVDIR64B)) {
- 		pr_warn("idxd driver failed to load without MOVDIR64B.\n");
- 		return -ENODEV;
- 	}
- 
--	if (!boot_cpu_has(X86_FEATURE_ENQCMD))
-+	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
- 		pr_warn("Platform does not have ENQCMD(S) support.\n");
- 	else
- 		support_enqcmd = true;
+> +
+>        - description: i.MX6SL based Boards
+>          items:
+>            - enum:
+> -- 
+> 2.11.0
