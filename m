@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EC2398DDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F6E398DE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhFBPHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231163AbhFBPHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:07:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9E18613D8;
-        Wed,  2 Jun 2021 15:05:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622646327;
-        bh=/VW98BgUxBbnSJt1QxDOoQylKRCwxutfrTn0iL4Fd+c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fjab3ZAN6VOblK9+K+BfCs3qvRr83jIvsquOfOPwICcGmGj1wHAXxnigg8Nx73Hr/
-         Iekz8fljMvBFTWhvt9ZvwY+rMl/CUtK+d1Z+C5nEkOGXnuFJSegQAbTnRPEylob7/B
-         z76RTJVF512p3TUVYoX7MsELJu9UNOsXbF9XdGvzOCtB1ddUcgWUJ4ZSZBDKFrgHO1
-         sekdekop49Pb6U9VV4cmp8FBl7+SB1hD8EBDNE7czMleN4E2Tdn/+p1x73Y85U9Ykv
-         PcMHVH7vLfHKJqtp9NZey8xYwwAo1EXatXBtWGGQE6CeCcoi7/FHXGaYwMTTDMMBoj
-         aqTr4TTTJ0t1w==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1loSQu-006War-Un; Wed, 02 Jun 2021 17:05:24 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sean Young <sean@mess.org>, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH 5/6] media: rc: ite-cir: replace some an EN DASH
-Date:   Wed,  2 Jun 2021 17:05:22 +0200
-Message-Id: <2b66c88a59b270f26c826e6eeb498a12168de7ef.1622646256.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1622646256.git.mchehab+huawei@kernel.org>
-References: <cover.1622646256.git.mchehab+huawei@kernel.org>
+        id S232184AbhFBPHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:07:35 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:55461 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232086AbhFBPHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:07:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622646338; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=b58AXVipv2czeTZD7vN1C4eQotA0VCcV+WTBefkUG/M=;
+ b=VeEOEpaOrghAGG+SbJvO432c5/ru7b1ytMa+cG4NBXNkA6GhZwJ7lLjoyj3i/LRv/mycaFsV
+ KBx5ada0OdyAZfk+x/dv2QP0v/BEI682qs51QO8Wd1W3lJkytw+Vc2kP1oT9EcaTZ2ZgleLB
+ +LNHIKv+Mb11QamBWi0gEHF8lZI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60b79e36e570c05619dc46be (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 15:05:26
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3041C4338A; Wed,  2 Jun 2021 15:05:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52809C433F1;
+        Wed,  2 Jun 2021 15:05:23 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 02 Jun 2021 20:35:23 +0530
+From:   okukatla@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     elder@linaro.org, bjorn.andersson@linaro.org,
+        seansw@qti.qualcomm.com, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org, devicetree@vger.kernel.org,
+        Georgi Djakov <djakov@kernel.org>,
+        linux-arm-msm@vger.kernel.org, sboyd@kernel.org,
+        sibis@codeaurora.org, Andy Gross <agross@kernel.org>,
+        evgreen@google.com, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm-owner@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [V2 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on
+ SC7280
+In-Reply-To: <1621392491.220233.1905257.nullmailer@robh.at.kernel.org>
+References: <1621359242-18641-1-git-send-email-okukatla@codeaurora.org>
+ <1621359242-18641-2-git-send-email-okukatla@codeaurora.org>
+ <1621392491.220233.1905257.nullmailer@robh.at.kernel.org>
+Message-ID: <115d8e912d8c986c5a9689c080dfbe3d@codeaurora.org>
+X-Sender: okukatla@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of using U+2013 ('–'): EN DASH, let's just use an
-hyphen there, as this was probably introduced by some cut-and-paste
-from some other place.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/rc/ite-cir.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/rc/ite-cir.h b/drivers/media/rc/ite-cir.h
-index ce7a40b10828..4b4294d77555 100644
---- a/drivers/media/rc/ite-cir.h
-+++ b/drivers/media/rc/ite-cir.h
-@@ -167,7 +167,7 @@ struct ite_dev {
-  * hardware data obtained from:
-  *
-  * IT8712F
-- * Environment Control – Low Pin Count Input / Output
-+ * Environment Control - Low Pin Count Input / Output
-  * (EC - LPC I/O)
-  * Preliminary Specification V0. 81
-  */
--- 
-2.31.1
-
+On 2021-05-19 08:18, Rob Herring wrote:
+> On Tue, 18 May 2021 23:04:00 +0530, Odelu Kukatla wrote:
+>> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+>> SoCs.
+>> 
+>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  3 
+>> ++-
+>>  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 
+>> +++++++++-
+>>  2 files changed, 11 insertions(+), 2 deletions(-)
+>> 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.example.dt.yaml:
+> interconnect@17d41000: reg: [[399773696, 5120]] is too short
+> 	From schema:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> 
+> See https://patchwork.ozlabs.org/patch/1480367
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+Thanks Rob!.
+I will address this in next revision.
