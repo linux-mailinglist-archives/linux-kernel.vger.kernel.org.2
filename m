@@ -2,88 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F09398F74
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA93398F75
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhFBQAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
+        id S232559AbhFBQBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbhFBQAf (ORCPT
+        with ESMTP id S229618AbhFBQBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:00:35 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71290C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=xE3+bSp5Uq0gZUInDE6RsIp0ZZwW4TKitUfgOu4xU6o=; b=0dBsKgvLd8j9MEogNOQasu51H
-        f0UAVkQZNLu3Zwid7ejnCBZPonLqsFVB9IUiyzI/s7Ncg6kxw6MnHxY+kt6upYfDIKTpP/3HY+zkb
-        XBPEd+gfR+n5+uaMTiRPj2qZ2tpVKnDDCowmsf7aOIBec2sTo8lyJ7jLU63+BCGsXZWImuJlwDAcg
-        RtZGoyS1pUlR/jBv9ejYJCUlh0LVP40euTM4/73VMihvO3QTiWPrrEj1iUSc7R4v1q2j3+BZbtbyu
-        SGorxmNi3W495y8aSOdVwHWkf1aKK8AwbsSbj83i82ant6V9yb8N7eIXHqD0HLJo+f/VoVtKAAVdC
-        lmoZj+1kA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44634)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1loTGY-0001TQ-OH; Wed, 02 Jun 2021 16:58:46 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1loTGV-0001Fi-DN; Wed, 02 Jun 2021 16:58:43 +0100
-Date:   Wed, 2 Jun 2021 16:58:43 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jungseung Lee <js07.lee@gmail.com>
-Subject: Re: [PATCH v2 7/7] ARM: mm: Fix PXN process with LPAE feature
-Message-ID: <20210602155843.GN30436@shell.armlinux.org.uk>
-References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
- <20210602070246.83990-8-wangkefeng.wang@huawei.com>
- <20210602105255.GK30436@shell.armlinux.org.uk>
- <62f08378-85e7-2a07-3fd0-b287047ce1b5@huawei.com>
+        Wed, 2 Jun 2021 12:01:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81851C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:59:23 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622649562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gtqgNyP6/hJrjA3qRG24qJZDHkKlGR9Q7wllBp7oG20=;
+        b=1x7iq9KO0VQ296Qcvg77kSVhJYnVaWmh+XoAPJmf5OsE31s6FGWf8gkG3j5nDAPn7gF+bs
+        vNX0v7Obi/MSLbqh64Cxe8QjAygQU+gt0+qZwpwpADoqIei+WnzN8obl3unCwEgE/h/3uz
+        ybFx50QFegARuS8vRXEDpevf7rAkR1jH2b2c2UC26wsFVdV/0sAiOF7shfv6bsEljIePVP
+        JO9hja8LMtHiURY7CL5g+OK43wP3Ud3uR3qANBtDtN4diGbZMi4MgiXfQ5BIqeN/7Kgf4H
+        4zTXVxlUhqHl+A+FPY2jw4c/VC4iLAoAuBM9a19CzDu6wFS/9nalXdXDGAQqhg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622649562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gtqgNyP6/hJrjA3qRG24qJZDHkKlGR9Q7wllBp7oG20=;
+        b=lniSH70t13TQic9v1h4MLmAgdaQgN7BxMo4TkuuYTC1nXix4zaP5O8mi4OJH0yy19wli5p
+        aRNRDYoLaoXKUNAg==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [patch V2 1/8] selftests/x86: Test signal frame XSTATE header corruption handling
+In-Reply-To: <20210602101618.285452223@linutronix.de>
+References: <20210602095543.149814064@linutronix.de> <20210602101618.285452223@linutronix.de>
+Date:   Wed, 02 Jun 2021 17:59:21 +0200
+Message-ID: <87v96wz292.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <62f08378-85e7-2a07-3fd0-b287047ce1b5@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:13:14PM +0800, Kefeng Wang wrote:
->   IFSR format when using the Short-descriptor translation table format
-> 
->     Domain fault      01001            First level   01011     Second level
-> 
->     Permission fault 01101            First level   01111     Second level
-> 
->   IFSR format when using the Long-descriptor translation table format
-> 
->    0011LL Permission fault. LL bits indicate levelb.
-> 
-> After check the ARM spec, I think for the permission fault,  we should panic
-> with or without LPAE, will change to
+From: Andy Lutomirski <luto@kernel.org>
 
-As I explained in one of the previous patches, the page tables that get
-used for mapping kernel space are the _tasks_ own page tables. Any new
-kernel mappings are lazily copied to the task page tables - such as
-when a module is loaded.
+This is very heavily based on some code from Thomas Gleixner.  On a system
+without XSAVES, it triggers the WARN_ON():
 
-The first time we touch a page, we could end up with a page translation
-fault. This will call do_page_fault(), and so with your proposal,
-loading a module will potentially cause a kernel panic in this case,
-probably leading to systems that panic early during userspace boot.
+    Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V2: main() -> main(void) (Borislav)
+---
+ tools/testing/selftests/x86/Makefile                |    3 
+ tools/testing/selftests/x86/corrupt_xstate_header.c |  114 ++++++++++++++++++++
+ 2 files changed, 116 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/x86/corrupt_xstate_header.c
+
+--- a/tools/testing/selftests/x86/Makefile
++++ b/tools/testing/selftests/x86/Makefile
+@@ -17,7 +17,8 @@ TARGETS_C_BOTHBITS := single_step_syscal
+ TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
+ 			test_FCMOV test_FCOMI test_FISTTP \
+ 			vdso_restorer
+-TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering
++TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering \
++			corrupt_xstate_header
+ # Some selftests require 32bit support enabled also on 64bit systems
+ TARGETS_C_32BIT_NEEDED := ldt_gdt ptrace_syscall
+ 
+--- /dev/null
++++ b/tools/testing/selftests/x86/corrupt_xstate_header.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Corrupt the XSTATE header in a signal frame
++ *
++ * Based on analysis and a test case from Thomas Gleixner.
++ */
++
++#define _GNU_SOURCE
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
++#include <sched.h>
++#include <signal.h>
++#include <err.h>
++#include <unistd.h>
++#include <stdint.h>
++#include <sys/wait.h>
++
++static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
++			   unsigned int *ecx, unsigned int *edx)
++{
++	asm volatile(
++		"cpuid;"
++		: "=a" (*eax),
++		  "=b" (*ebx),
++		  "=c" (*ecx),
++		  "=d" (*edx)
++		: "0" (*eax), "2" (*ecx));
++}
++
++static inline int xsave_enabled(void)
++{
++	unsigned int eax, ebx, ecx, edx;
++
++	eax = 0x1;
++	ecx = 0x0;
++	__cpuid(&eax, &ebx, &ecx, &edx);
++
++	/* Is CR4.OSXSAVE enabled ? */
++	return ecx & (1U << 27);
++}
++
++static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
++		       int flags)
++{
++	struct sigaction sa;
++
++	memset(&sa, 0, sizeof(sa));
++	sa.sa_sigaction = handler;
++	sa.sa_flags = SA_SIGINFO | flags;
++	sigemptyset(&sa.sa_mask);
++	if (sigaction(sig, &sa, 0))
++		err(1, "sigaction");
++}
++
++static void sigusr1(int sig, siginfo_t *info, void *uc_void)
++{
++	ucontext_t *uc = uc_void;
++	uint8_t *fpstate = (uint8_t *)uc->uc_mcontext.fpregs;
++	uint64_t *xfeatures = (uint64_t *)(fpstate + 512);
++
++	printf("\tWreckage XSTATE header\n");
++	/* Wreckage the first reserved byte in the header */
++	*(xfeatures + 2) = 0xfffffff;
++}
++
++static void sigsegv(int sig, siginfo_t *info, void *uc_void)
++{
++	printf("\tGot SIGSEGV\n");
++}
++
++int main()
++{
++	cpu_set_t set;
++
++	sethandler(SIGUSR1, sigusr1, 0);
++	sethandler(SIGSEGV, sigsegv, 0);
++
++	if (!xsave_enabled()) {
++		printf("[SKIP] CR4.OSXSAVE disabled.\n");
++		return 0;
++	}
++
++	CPU_ZERO(&set);
++	CPU_SET(0, &set);
++
++	/*
++	 * Enforce that the child runs on the same CPU
++	 * which in turn forces a schedule.
++	 */
++	sched_setaffinity(getpid(), sizeof(set), &set);
++
++	printf("[RUN]\tSend ourselves a signal\n");
++	raise(SIGUSR1);
++
++	printf("[OK]\tBack from the signal.  Now schedule.\n");
++	pid_t child = fork();
++	if (child < 0)
++		err(1, "fork");
++	if (child == 0)
++		return 0;
++	if (child)
++		waitpid(child, NULL, 0);
++	printf("[OK]\tBack in the main thread.\n");
++
++	/*
++	 * We could try to confirm that extended state is still preserved
++	 * when we schedule.  For now, the only indication of failure is
++	 * a warning in the kernel logs.
++	 */
++
++	return 0;
++}
