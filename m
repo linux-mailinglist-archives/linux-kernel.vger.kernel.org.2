@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C2C3983F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5C73983F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhFBIUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:20:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37078 "EHLO mail.kernel.org"
+        id S232466AbhFBIUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:20:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232437AbhFBIU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:20:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A016100A;
-        Wed,  2 Jun 2021 08:18:45 +0000 (UTC)
+        id S232437AbhFBIUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:20:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED463613CA;
+        Wed,  2 Jun 2021 08:18:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622621925;
-        bh=xEDqrLXeDqjFw9bTsbFpSHECzMDTrZ/GON+d4W0pqCs=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=EgCBMhMwVfJFODSt/HMPw+CKJ6rfgQZ0GsFOwOj22FpfJvLlln1yon3eP0PNfKTMF
-         8BzIio1MIlXPnbQfK+ibAoxklCgBLicFdFBzpPLAZzGxBsdC36l+7MKFrO1lyEd8hU
-         EvJwwpDmrRpERqdtbsEXh9UtRbnE7u7oD2vedbbZRL4AI5WpRos94durRuD3CKrbU3
-         qZkwMvqHuFH0OgovpudQ9tqFN/zZ0ThXVTdfe/oKWm1vos8fYtAulRyQHB11jnp9pG
-         Zd8LKPiifxG8l4pdyjApAoDrQy7rUijcesMPDdbIaGoAf8WMcp+ycN9XP+oOyeZAsE
-         tiLQdTaVLHFKg==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1622621933;
+        bh=NIYhNZ3lq0gLH456sCAhQIBe2NS15yV6wh66f39yazQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RAXshY48Q2UYuZqtb8H2PSB5HFH9pPC0R685aUDcjRqzN84Ss6P+blPh2GK01MVR0
+         L1GFiVMW4O54WpqtbgmrEOVC4yTrbz8tVW8vDmV/4wJXoFHIYnmuqePVy2Pw5xRlfE
+         5ay0srqu7lKOlFSPbXs71e5JZxy+E43ubJ1XRdAPLOfSPAWkROp3DbuTT6nknMfWIM
+         OVmq/znJZBDlxkd7hRmss9Uvi35raQL3CxzqrzPTQ8sFcYBg/nuUA62eHmTNYKn1py
+         bmjrf+4zj7tsl7uEBvFCdpcJb6fzhayxdLzSsFEmnvOAPGbDULH+JuEx1XJcIFjvhW
+         D9TxD8/OSKDxA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Devin Moore <devinmoore@google.com>
+Subject: [PATCH v4 1/6] tools/bootconfig: Fix a build error accroding to undefined fallthrough
+Date:   Wed,  2 Jun 2021 17:18:50 +0900
+Message-Id: <162262192986.264090.4181938468540696580.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <162262192121.264090.6540508908529705156.stgit@devnote2>
+References: <162262192121.264090.6540508908529705156.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210528113403.5374-1-peng.fan@oss.nxp.com>
-References: <20210528113403.5374-1-peng.fan@oss.nxp.com>
-Subject: Re: [PATCH 0/3] clk: support regmap
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
-        Peng Fan <peng.fan@nxp.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-To:     Peng Fan (OSS) <peng.fan@oss.nxp.com>, mturquette@baylibre.com
-Date:   Wed, 02 Jun 2021 01:18:44 -0700
-Message-ID: <162262192433.4130789.1017942859005253343@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Peng Fan (OSS) (2021-05-28 04:34:00)
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> To i.MX8ULP, a PCC register provides clk(mux, gate, divider) and peripher=
-al
-> reset functionality, so we need make sure the access to the PCC register
-> be protected to avoid concurrent access from clk and reset subsystem.
->=20
-> So let's use regmap here.
->=20
-> The i.MX specific code will be posted if this patchset is ok for you.
+Since the "fallthrough" is defined only in the kernel, building
+lib/bootconfig.c as a part of user-space tools causes a build
+error.
 
-We have a couple regmap clk drivers in the tree. Either combine the
-different regmap clk drivers or duplicate it into the imx directory. I'd
-prefer we combine them but last time I couldn't agree on the approach
-when Jerome wanted to do it. Maybe now is the time to combine them all
-into one common piece of code.
+Add a dummy fallthrough to avoid the build error.
 
->=20
-> Peng Fan (3):
->   clk: mux: support regmap
->   clk: fractional-divider: support regmap
->   clk: gate: support regmap
+Cc: stable@vger.kernel.org
+Fixes: 4c1ca831adb1 ("Revert "lib: Revert use of fallthrough pseudo-keyword in lib/"")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ tools/bootconfig/include/linux/bootconfig.h |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/bootconfig/include/linux/bootconfig.h b/tools/bootconfig/include/linux/bootconfig.h
+index 078cbd2ba651..de7f30f99af3 100644
+--- a/tools/bootconfig/include/linux/bootconfig.h
++++ b/tools/bootconfig/include/linux/bootconfig.h
+@@ -4,4 +4,8 @@
+ 
+ #include "../../../../include/linux/bootconfig.h"
+ 
++#ifndef fallthrough
++# define fallthrough
++#endif
++
+ #endif
+
