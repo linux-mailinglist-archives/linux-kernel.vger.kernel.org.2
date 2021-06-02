@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE60397E3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51BF397E27
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhFBBuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 21:50:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6127 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhFBBur (ORCPT
+        id S230106AbhFBBkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 21:40:00 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3377 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229988AbhFBBj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 21:50:47 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvsLz6L99zYpmR;
-        Wed,  2 Jun 2021 09:46:19 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 09:49:02 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 09:49:01 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] sparc64: vcc: use DEVICE_ATTR_*() macro
-Date:   Wed, 2 Jun 2021 09:48:39 +0800
-Message-ID: <20210602014839.10587-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Tue, 1 Jun 2021 21:39:59 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fvs5L517Tz67kb;
+        Wed,  2 Jun 2021 09:34:30 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 09:38:12 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <rjui@broadcom.com>, <sbranden@broadcom.com>,
+        <bcm-kernel-feedback-list@broadcom.com>, <narmstrong@baylibre.com>,
+        <khilman@baylibre.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-amlogic@lists.infradead.org>
+CC:     <opendmb@gmail.com>, <f.fainelli@gmail.com>,
+        <linux@armlinux.org.uk>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v2 net-next] net: mdio: Fix spelling mistakes
+Date:   Wed, 2 Jun 2021 09:51:51 +0800
+Message-ID: <20210602015151.4135891-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_*() macro helper instead of plain DEVICE_ATTR, which makes
-the code a bit shorter and easier to read.
+informations  ==> information
+typicaly  ==> typically
+derrive  ==> derive
+eventhough  ==> even though
+hz ==> Hz
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/tty/vcc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/mdio/mdio-bcm-unimac.c     | 2 +-
+ drivers/net/mdio/mdio-mux-bcm-iproc.c  | 2 +-
+ drivers/net/mdio/mdio-mux-meson-g12a.c | 2 +-
+ drivers/net/mdio/of_mdio.c             | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
-index 0355f4579ecf203..d06bcc3b4c07762 100644
---- a/drivers/tty/vcc.c
-+++ b/drivers/tty/vcc.c
-@@ -473,9 +473,9 @@ static struct vio_version vcc_versions[] = {
+diff --git a/drivers/net/mdio/mdio-bcm-unimac.c b/drivers/net/mdio/mdio-bcm-unimac.c
+index 5d171e7f118d..63348716b426 100644
+--- a/drivers/net/mdio/mdio-bcm-unimac.c
++++ b/drivers/net/mdio/mdio-bcm-unimac.c
+@@ -203,7 +203,7 @@ static void unimac_mdio_clk_set(struct unimac_mdio_priv *priv)
+ 		return;
+ 	}
  
- static struct tty_port_operations vcc_port_ops = { 0 };
+-	/* The MDIO clock is the reference clock (typicaly 250Mhz) divided by
++	/* The MDIO clock is the reference clock (typically 250MHz) divided by
+ 	 * 2 x (MDIO_CLK_DIV + 1)
+ 	 */
+ 	reg = unimac_mdio_readl(priv, MDIO_CFG);
+diff --git a/drivers/net/mdio/mdio-mux-bcm-iproc.c b/drivers/net/mdio/mdio-mux-bcm-iproc.c
+index 03261e6b9ceb..239e88c7a272 100644
+--- a/drivers/net/mdio/mdio-mux-bcm-iproc.c
++++ b/drivers/net/mdio/mdio-mux-bcm-iproc.c
+@@ -65,7 +65,7 @@ static void mdio_mux_iproc_config(struct iproc_mdiomux_desc *md)
+ 	writel(val, md->base + MDIO_SCAN_CTRL_OFFSET);
  
--static ssize_t vcc_sysfs_domain_show(struct device *dev,
--				     struct device_attribute *attr,
--				     char *buf)
-+static ssize_t domain_show(struct device *dev,
-+			   struct device_attribute *attr,
-+			   char *buf)
- {
- 	struct vcc_port *port;
- 	int rv;
-@@ -505,9 +505,9 @@ static int vcc_send_ctl(struct vcc_port *port, int ctl)
- 	return rv;
- }
+ 	if (md->core_clk) {
+-		/* use rate adjust regs to derrive the mdio's operating
++		/* use rate adjust regs to derive the mdio's operating
+ 		 * frequency from the specified core clock
+ 		 */
+ 		divisor = clk_get_rate(md->core_clk) / MDIO_OPERATING_FREQUENCY;
+diff --git a/drivers/net/mdio/mdio-mux-meson-g12a.c b/drivers/net/mdio/mdio-mux-meson-g12a.c
+index bf86c9c7a288..b8866bc3f2e8 100644
+--- a/drivers/net/mdio/mdio-mux-meson-g12a.c
++++ b/drivers/net/mdio/mdio-mux-meson-g12a.c
+@@ -95,7 +95,7 @@ static int g12a_ephy_pll_enable(struct clk_hw *hw)
  
--static ssize_t vcc_sysfs_break_store(struct device *dev,
--				     struct device_attribute *attr,
--				     const char *buf, size_t count)
-+static ssize_t break_store(struct device *dev,
-+			   struct device_attribute *attr,
-+			   const char *buf, size_t count)
- {
- 	struct vcc_port *port;
- 	unsigned long flags;
-@@ -530,8 +530,8 @@ static ssize_t vcc_sysfs_break_store(struct device *dev,
- 	return rv;
- }
- 
--static DEVICE_ATTR(domain, 0400, vcc_sysfs_domain_show, NULL);
--static DEVICE_ATTR(break, 0200, NULL, vcc_sysfs_break_store);
-+static DEVICE_ATTR_ADMIN_RO(domain);
-+static DEVICE_ATTR_WO(break);
- 
- static struct attribute *vcc_sysfs_entries[] = {
- 	&dev_attr_domain.attr,
+ 	/* Poll on the digital lock instead of the usual analog lock
+ 	 * This is done because bit 31 is unreliable on some SoC. Bit
+-	 * 31 may indicate that the PLL is not lock eventhough the clock
++	 * 31 may indicate that the PLL is not lock even though the clock
+ 	 * is actually running
+ 	 */
+ 	return readl_poll_timeout(pll->base + ETH_PLL_CTL0, val,
+diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+index 094494a68ddf..8e97d5b825f5 100644
+--- a/drivers/net/mdio/of_mdio.c
++++ b/drivers/net/mdio/of_mdio.c
+@@ -466,7 +466,7 @@ EXPORT_SYMBOL(of_phy_get_and_connect);
+  * of_phy_is_fixed_link() and of_phy_register_fixed_link() must
+  * support two DT bindings:
+  * - the old DT binding, where 'fixed-link' was a property with 5
+- *   cells encoding various informations about the fixed PHY
++ *   cells encoding various information about the fixed PHY
+  * - the new DT binding, where 'fixed-link' is a sub-node of the
+  *   Ethernet device.
+  */
 -- 
-2.26.0.106.g9fadedd
-
+2.25.1
 
