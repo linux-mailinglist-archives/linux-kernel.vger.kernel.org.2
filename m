@@ -2,232 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEE539877A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7AA39877E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhFBLAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:00:03 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:55835 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230257AbhFBK7E (ORCPT
+        id S231899AbhFBLAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232086AbhFBLA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:59:04 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 881EA580848;
-        Wed,  2 Jun 2021 06:57:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 02 Jun 2021 06:57:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        hicz7SF3oGEqmbc00AwySe4ddZzZcswVvfWIu4CzVnk=; b=SnKT/O+Z5heYCfrt
-        Tx0VoD5AVLmZ0gXtXuqCTgTJDBb8DN2aPVn5CI/s9MoGtJoT+oBG5YoiMcwmuJSZ
-        t6tmqmJQjVhIBmQTlH50LGS9u326oZnoNWZuTxMjigZQRtEfWxNSs4legmSakaK0
-        RN2cWLl6m5C/q45Tn5m3mXCwPlojxnVl4dFVxLfiv1RmDuTDgEQzNvuBMTi614ZT
-        fX3zilBaai5VRDd0kUr4AqbIszkbqHBGZuxZveu41BJTBUQqe0GujD3v2CTID3iG
-        8RwQCeXVgayuCQ5WBQRtzABtNgr1xYAADpnW//qm9GeMUYogWcrznhCL5NuXnnZz
-        3OCM6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=hicz7SF3oGEqmbc00AwySe4ddZzZcswVvfWIu4CzV
-        nk=; b=WLk6P9DnxFXIO5eCVZG/ZvpUjQNdk0XG1LdHpN7RbmhRA8SosrtkyvxQX
-        1iecKLu/pyYOnYL5rOR+slQyBIXAXe/KrFQBteP780467vkEtkRgm59Qvq6zousv
-        Eh3rCPh5msm676vouIsqknn5wv9hRxqCionG/eiJZLdhZz8apCYTC/aaZhseUwJP
-        FXK+gdAjOfoczFhKnw3wwo+p1qt2qb4BJlv4w30GDMqiCy0PBZzCrRGF+ma1ulyW
-        lqKxHmLwQIUMj5Pk0LuviwxzD1/py537Lc92DhHddZf1KLb0qMhbWsS+p/JRLu6t
-        ndwGXe2LogTuSNHBUXpre/hqakLRw==
-X-ME-Sender: <xms:D2S3YIr9Q5Bh8-VI5rYWDGOlAKH8A1oOhXX1SiqrA34e4Muq4ej-nA>
-    <xme:D2S3YOoL6zHIea76kNkZGFYnyC8vErgXzofR8KwrlSAoZ3sng6O0vDKdJiEm0g0oE
-    9VNhRBUlPGv>
-X-ME-Received: <xmr:D2S3YNOm4EyiwnVHdlKCYuSh_s5GCvvXJojZPZ8yeXSWbrpISWXA7ZlHeKeBKPz9-UtXP7S9SFb7kPxGb3SFHqedSzgSkA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeljedgfeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:D2S3YP4F8JpgzfhC64V3FPFG91fxsFliKD5iD4iybthZm8galllFSQ>
-    <xmx:D2S3YH6FAKTZX8uuRJnPy4GWTsjy7NomF4wnbFAGJzKdDY7GKvt6nw>
-    <xmx:D2S3YPimNiG5JGzVxtPWCtxaSBY7TFXj2XX6Btci8MypYponF17gpA>
-    <xmx:EWS3YEGiKkt6CrGa_sFxkiryNuouZkN5ATKj-6ZFMHUYx-EGbCPoDA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 2 Jun 2021 06:57:15 -0400 (EDT)
-Message-ID: <08388e183b17e70a3383eb38af469125f8643a07.camel@themaw.net>
-Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
-From:   Ian Kent <raven@themaw.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 02 Jun 2021 18:57:11 +0800
-In-Reply-To: <CAJfpegsLqowjMPCAgsFe6eQK_CeixrevUPyA04V2hdYvc0HpLQ@mail.gmail.com>
-References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
-         <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
-         <CAJfpeguUj5WKtKZsn_tZZNpiL17ggAPcPBXdpA03aAnjaexWug@mail.gmail.com>
-         <972701826ebb1b3b3e00b12cde821b85eebc9749.camel@themaw.net>
-         <CAJfpegsLqowjMPCAgsFe6eQK_CeixrevUPyA04V2hdYvc0HpLQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 2 Jun 2021 07:00:27 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB184C061343
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:58:32 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id n4so1844664wrw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O4j3rnMAVVtQuafSexYtSyjSly5WDUnGVtpX8LTwkWk=;
+        b=d9OMAA5JQL8jC8IxP/OtQ63ClDX5Ld+AUFGF/BIOaD/SPONLkodo+0jo+RoR5mTEoG
+         PgEtpTeFjZuBJL9c8NqbqT4O2UEaEcx8ML3eRmuh0UsgOU9zhHUnaTUwSksBRv50EFc4
+         /5c1l39b3D/IhKxRwmtDrUarmu7vHmsK2uTIYSofXXK4E/7OAeHrYCBLWmlw0NiySvuD
+         8OQG/6n06I2QQCQrFJvnYGrFmG3Xm6Oa5OvJSwdktqi9f0XB5AWk5Z8d943IYaK4XrOZ
+         NIJ+adU/E5fxPEDKhHTWUPvO89BHwHgJ1hxssujS/JX1wQNwa0PwvOnQC6krwwxh+nWU
+         q3WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O4j3rnMAVVtQuafSexYtSyjSly5WDUnGVtpX8LTwkWk=;
+        b=Ro3862mCevRVzx7PGvCgbH+fNxuM+rQedM4/C8PNB5VGnO5Zrcsw9U1gFiwBXU89Y2
+         ledg9Bo+UkNabyJLuxZLR6AgbYRff+pmWE2olBubk9j8EEAxrt3XwkHIS8EFW8nH42/p
+         yE8YOnAdjCRNb720A76Zru+V4k9Onb8RkeLvnaM3UvxOlbbeNrBxplnATxySC3mwPRYI
+         QWEtFBm47LUD5/IvIofyw6q9IX2e3YHOLkjekiOrGnKDxViHZJruw41Z7+5a/KIC5Dpq
+         s8zuY+GqOCCbDNcFyWXOz0u3BO0vKP0WekR0D6lrtMAwe5NSk5dKGvL9aXstsKi1yLfq
+         raCQ==
+X-Gm-Message-State: AOAM533LFTEdjzoHWjRUgdXkM2FekzSs6sB2Xlbu5oWoAczdDWZRYTgp
+        cJ0d+qi/rvs+sywZsF9E+tou5g==
+X-Google-Smtp-Source: ABdhPJxQ4Mw6GmqjL/VfVeU2WxB50DVhQpumz9XVUbL+idgnhTuIw21b4d+fUny6pxwYk9C9Mijxyw==
+X-Received: by 2002:adf:f346:: with SMTP id e6mr5572912wrp.179.1622631511395;
+        Wed, 02 Jun 2021 03:58:31 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id p20sm2282579wmq.10.2021.06.02.03.58.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 03:58:30 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 10:58:28 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v5 5/6] KVM: arm64: Move I-cache flush to the fault
+ handlers
+Message-ID: <YLdkVH0G2Lq9vPc5@google.com>
+References: <20210415115032.35760-1-wangyanan55@huawei.com>
+ <20210415115032.35760-6-wangyanan55@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415115032.35760-6-wangyanan55@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-02 at 10:58 +0200, Miklos Szeredi wrote:
-> On Wed, 2 Jun 2021 at 05:44, Ian Kent <raven@themaw.net> wrote:
-> > 
-> > On Tue, 2021-06-01 at 14:41 +0200, Miklos Szeredi wrote:
-> > > On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net> wrote:
-> > > > 
-> > > > If there are many lookups for non-existent paths these negative
-> > > > lookups
-> > > > can lead to a lot of overhead during path walks.
-> > > > 
-> > > > The VFS allows dentries to be created as negative and hashed,
-> > > > and
-> > > > caches
-> > > > them so they can be used to reduce the fairly high overhead
-> > > > alloc/free
-> > > > cycle that occurs during these lookups.
-> > > 
-> > > Obviously there's a cost associated with negative caching too. 
-> > > For
-> > > normal filesystems it's trivially worth that cost, but in case of
-> > > kernfs, not sure...
-> > > 
-> > > Can "fairly high" be somewhat substantiated with a microbenchmark
-> > > for
-> > > negative lookups?
-> > 
-> > Well, maybe, but anything we do for a benchmark would be totally
-> > artificial.
-> > 
-> > The reason I added this is because I saw appreciable contention
-> > on the dentry alloc path in one case I saw.
+On Thursday 15 Apr 2021 at 19:50:31 (+0800), Yanan Wang wrote:
+> In this patch, we move invalidation of I-cache to the fault handlers to
+
+Nit: please avoid using 'This patch' in commit messages, see
+Documentation/process/submitting-patches.rst.
+
+> avoid unnecessary I-cache maintenances. On the map path, invalidate the
+> I-cache if we are going to create an executable stage-2 mapping for guest.
+> And on the permission path, invalidate the I-cache if we are going to add
+> an executable permission to the existing guest stage-2 mapping.
 > 
-> If multiple tasks are trying to look up the same negative dentry in
-> parallel, then there will be contention on the parent inode lock.
-> Was this the issue?   This could easily be reproduced with an
-> artificial benchmark.
-
-Not that I remember, I'll need to dig up the sysrq dumps to have a
-look and get back to you.
-
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  arch/arm64/include/asm/kvm_mmu.h | 15 --------------
+>  arch/arm64/kvm/hyp/pgtable.c     | 35 +++++++++++++++++++++++++++++++-
+>  arch/arm64/kvm/mmu.c             |  9 +-------
+>  3 files changed, 35 insertions(+), 24 deletions(-)
 > 
-> > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > > > index 4c69e2af82dac..5151c712f06f5 100644
-> > > > --- a/fs/kernfs/dir.c
-> > > > +++ b/fs/kernfs/dir.c
-> > > > @@ -1037,12 +1037,33 @@ static int kernfs_dop_revalidate(struct
-> > > > dentry *dentry, unsigned int flags)
-> > > >         if (flags & LOOKUP_RCU)
-> > > >                 return -ECHILD;
-> > > > 
-> > > > -       /* Always perform fresh lookup for negatives */
-> > > > -       if (d_really_is_negative(dentry))
-> > > > -               goto out_bad_unlocked;
-> > > > +       mutex_lock(&kernfs_mutex);
-> > > > 
-> > > >         kn = kernfs_dentry_node(dentry);
-> > > > -       mutex_lock(&kernfs_mutex);
-> > > > +
-> > > > +       /* Negative hashed dentry? */
-> > > > +       if (!kn) {
-> > > > +               struct kernfs_node *parent;
-> > > > +
-> > > > +               /* If the kernfs node can be found this is a
-> > > > stale
-> > > > negative
-> > > > +                * hashed dentry so it must be discarded and
-> > > > the
-> > > > lookup redone.
-> > > > +                */
-> > > > +               parent = kernfs_dentry_node(dentry->d_parent);
-> > > 
-> > > This doesn't look safe WRT a racing sys_rename().  In this case
-> > > d_move() is called only with parent inode locked, but not with
-> > > kernfs_mutex while ->d_revalidate() may not have parent inode
-> > > locked.
-> > > After d_move() the old parent dentry can be freed, resulting in
-> > > use
-> > > after free.  Easily fixed by dget_parent().
-> > 
-> > Umm ... I'll need some more explanation here ...
-> > 
-> > We are in ref-walk mode so the parent dentry isn't going away.
-> 
-> The parent that was used to lookup the dentry in __d_lookup() isn't
-> going away.  But it's not necessarily equal to dentry->d_parent
-> anymore.
-> 
-> > And this is a negative dentry so rename is going to bail out
-> > with ENOENT way early.
-> 
-> You are right.  But note that negative dentry in question could be
-> the
-> target of a rename.  Current implementation doesn't switch the
-> target's parent or name, but this wasn't always the case (commit
-> 076515fc9267 ("make non-exchanging __d_move() copy ->d_parent rather
-> than swap them")), so a backport of this patch could become incorrect
-> on old enough kernels.
-
-Right, that __lookup_hash() will find the negative target.
-
-> 
-> So I still think using dget_parent() is the correct way to do this.
-
-The rename code does my head in, ;)
-
-The dget_parent() would ensure we had an up to date parent so
-yes, that would be the right thing to do regardless.
-
-But now I'm not sure that will be sufficient for kernfs. I'm still
-thinking about it.
-
-I'm wondering if there's a missing check in there to account for
-what happens with revalidate after ->rename() but before move.
-There's already a kernfs node check in there so it's probably ok
-...
- 
-> 
-> > > 
-> > > > +               if (parent) {
-> > > > +                       const void *ns = NULL;
-> > > > +
-> > > > +                       if (kernfs_ns_enabled(parent))
-> > > > +                               ns = kernfs_info(dentry->d_sb)-
-> > > > >ns;
-> > > > +                       kn = kernfs_find_ns(parent, dentry-
-> > > > > d_name.name, ns);
-> > > 
-> > > Same thing with d_name.  There's
-> > > take_dentry_name_snapshot()/release_dentry_name_snapshot() to
-> > > properly
-> > > take care of that.
-> > 
-> > I don't see that problem either, due to the dentry being negative,
-> > but please explain what your seeing here.
-> 
-> Yeah.  Negative dentries' names weren't always stable, but that was a
-> long time ago (commit 8d85b4845a66 ("Allow sharing external names
-> after __d_move()")).
-
-Right, I'll make that change too.
-
-> 
-> Thanks,
-> Miklos
+> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+> index e9b163c5f023..155492fe5b15 100644
+> --- a/arch/arm64/include/asm/kvm_mmu.h
+> +++ b/arch/arm64/include/asm/kvm_mmu.h
+> @@ -187,21 +187,6 @@ static inline bool vcpu_has_cache_enabled(struct kvm_vcpu *vcpu)
+>  	return (vcpu_read_sys_reg(vcpu, SCTLR_EL1) & 0b101) == 0b101;
+>  }
+>  
+> -static inline void __invalidate_icache_guest_page(kvm_pfn_t pfn,
+> -						  unsigned long size)
+> -{
+> -	if (icache_is_aliasing()) {
+> -		/* any kind of VIPT cache */
+> -		__flush_icache_all();
+> -	} else if (is_kernel_in_hyp_mode() || !icache_is_vpipt()) {
+> -		/* PIPT or VPIPT at EL2 (see comment in __kvm_tlb_flush_vmid_ipa) */
+> -		void *va = page_address(pfn_to_page(pfn));
+> -
+> -		invalidate_icache_range((unsigned long)va,
+> -					(unsigned long)va + size);
+> -	}
+> -}
+> -
+>  void kvm_set_way_flush(struct kvm_vcpu *vcpu);
+>  void kvm_toggle_cache(struct kvm_vcpu *vcpu, bool was_enabled);
+>  
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index b480f6d1171e..9f4429d80df0 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -568,6 +568,26 @@ static bool stage2_pte_cacheable(struct kvm_pgtable *pgt, kvm_pte_t pte)
+>  	return memattr == KVM_S2_MEMATTR(pgt, NORMAL);
+>  }
+>  
+> +static bool stage2_pte_executable(kvm_pte_t pte)
+> +{
+> +	return !(pte & KVM_PTE_LEAF_ATTR_HI_S2_XN);
+> +}
+> +
+> +static void stage2_invalidate_icache(void *addr, u64 size)
+> +{
+> +	if (icache_is_aliasing()) {
+> +		/* Any kind of VIPT cache */
+> +		__flush_icache_all();
+> +	} else if (is_kernel_in_hyp_mode() || !icache_is_vpipt()) {
 
 
+> +		/*
+> +		 * See comment in __kvm_tlb_flush_vmid_ipa().
+> +		 * Invalidate PIPT, or VPIPT at EL2.
+> +		 */
+> +		invalidate_icache_range((unsigned long)addr,
+> +					(unsigned long)addr + size);
+> +	}
+> +}
+> +
+>  static void stage2_put_pte(kvm_pte_t *ptep, struct kvm_s2_mmu *mmu, u64 addr,
+>  			   u32 level, struct kvm_pgtable_mm_ops *mm_ops)
+>  {
+> @@ -618,6 +638,10 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>  		if (stage2_pte_cacheable(pgt, new) && !stage2_has_fwb(pgt))
+>  			__flush_dcache_area(mm_ops->phys_to_virt(phys),
+>  					    granule);
+> +
+> +		if (stage2_pte_executable(new))
+> +			stage2_invalidate_icache(mm_ops->phys_to_virt(phys),
+> +						 granule);
+>  	}
+>  
+>  	smp_store_release(ptep, new);
+> @@ -896,8 +920,17 @@ static int stage2_attr_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+>  	 * but worst-case the access flag update gets lost and will be
+>  	 * set on the next access instead.
+>  	 */
+> -	if (data->pte != pte)
+> +	if (data->pte != pte) {
+> +		/*
+> +		 * Invalidate the instruction cache before updating
+> +		 * if we are going to add the executable permission
+> +		 * for the guest stage-2 PTE.
+> +		 */
+> +		if (!stage2_pte_executable(*ptep) && stage2_pte_executable(pte))
+> +			stage2_invalidate_icache(kvm_pte_follow(pte, data->mm_ops),
+> +						 kvm_granule_size(level));
+>  		WRITE_ONCE(*ptep, pte);
+> +	}
+
+As for the dcache stuff, it seems like this would be best placed in an
+optional mm_ops callback, and have the kernel implement it.
+
+Thanks,
+Quentin
