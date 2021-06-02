@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD903993C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE6E3993CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhFBTro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:47:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50200 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhFBTrm (ORCPT
+        id S229721AbhFBTsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:48:08 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:38685 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBTsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:47:42 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5FAF51FD3C;
-        Wed,  2 Jun 2021 19:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622663158; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/oc7YZVc05AvuONiWEUclRuOrK26WvFpQMDXLOqQ9c=;
-        b=UVlFEgG3USHB6GmF2UBb4j2hKuSpBF1PUQK2tZZvFfFKLvQwzIHFvKOr52vbvFRZJcbqHy
-        /KQU5u0CoKFdVaXQTEkEVTr3HwaKCa3NiIUFmHKYR9XT+7uxKzTthxvH4TLUrYI/alTFMF
-        r/VTLvI8Evom92o9sMeNIvilmjd/bk4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622663158;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/oc7YZVc05AvuONiWEUclRuOrK26WvFpQMDXLOqQ9c=;
-        b=c7ryAEr6OsnLL2688tPFa+O88w77ef77Ecd6ZYceexmGhQpm9tnDi1snWK5pTruXCA8tcS
-        A+rmZ9QdxEpbYzCQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 531DD118DD;
-        Wed,  2 Jun 2021 19:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622663158; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/oc7YZVc05AvuONiWEUclRuOrK26WvFpQMDXLOqQ9c=;
-        b=UVlFEgG3USHB6GmF2UBb4j2hKuSpBF1PUQK2tZZvFfFKLvQwzIHFvKOr52vbvFRZJcbqHy
-        /KQU5u0CoKFdVaXQTEkEVTr3HwaKCa3NiIUFmHKYR9XT+7uxKzTthxvH4TLUrYI/alTFMF
-        r/VTLvI8Evom92o9sMeNIvilmjd/bk4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622663158;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/oc7YZVc05AvuONiWEUclRuOrK26WvFpQMDXLOqQ9c=;
-        b=c7ryAEr6OsnLL2688tPFa+O88w77ef77Ecd6ZYceexmGhQpm9tnDi1snWK5pTruXCA8tcS
-        A+rmZ9QdxEpbYzCQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id BIbxE/bft2BXDAAALh3uQQ
-        (envelope-from <osalvador@suse.de>); Wed, 02 Jun 2021 19:45:58 +0000
+        Wed, 2 Jun 2021 15:48:01 -0400
+Received: by mail-oi1-f181.google.com with SMTP id z3so3823386oib.5;
+        Wed, 02 Jun 2021 12:46:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2kBzbHf+t2QwClNMpCYUx+9WwCp8xziT/Ti8nd8I4XU=;
+        b=Du6VGJNM9BJr6taS00B9Ozjf29zmmSjfpz0rUvmgGzrD+ace96IO3LGSUoC3ERxkfH
+         yVSirPoqyOLwtekBReLE/dKQByGkgxAuunYVApMrXbSlyrxkWLBC3AtYh7ZvMmm6MK/k
+         ag6QSuhYEokF26Fkgcxn/MR7ElROu/cp+s1iHRokvzxElH7knO5FfZIliFZM0bHCUJqL
+         eiuj/8a4hO72zkazkt5TvkD3ChdH8bafjyGvQqqcFN39E4nKD+pp5+d183PCehzgFfxX
+         qGue5x4WLGTQf1hAMMW2EUc6JaB2eOBFnbaapmFeotuxBCHxZ5NQGpXxxZGyWvexYa8L
+         NR1w==
+X-Gm-Message-State: AOAM530j8o7ZzLi1+4zebgIkYxtaeBl75CdAdB7oLWDTET4S7RYjIIqx
+        aO6nWFOIMj5mXkSzANM+m6FCu4jArQ==
+X-Google-Smtp-Source: ABdhPJy+S0VAadtTwv3K5X6cKfI4p9bsh4HO8pKRa2oJ5/0+EPOIdtF2PP4Mx+/YixuSBx61JN17Hg==
+X-Received: by 2002:a54:4d01:: with SMTP id v1mr3723606oix.82.1622663178009;
+        Wed, 02 Jun 2021 12:46:18 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q5sm190055oia.31.2021.06.02.12.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 12:46:17 -0700 (PDT)
+Received: (nullmailer pid 3864945 invoked by uid 1000);
+        Wed, 02 Jun 2021 19:46:16 -0000
+Date:   Wed, 2 Jun 2021 14:46:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     linux-kernel@vger.kernel.org, marijn.suijten@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        konrad.dybcio@somainline.org, Stephen Boyd <sboyd@kernel.org>,
+        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        angelogioacchino.delregno@somainline.org
+Subject: Re: [PATCH V2 4/5] dt-bindings: clk: qcom: smd-rpm: Document SM6125
+ compatible
+Message-ID: <20210602194616.GA3864860@robh.at.kernel.org>
+References: <20210523211556.731976-1-martin.botka@somainline.org>
+ <20210523211556.731976-4-martin.botka@somainline.org>
 MIME-Version: 1.0
-Date:   Wed, 02 Jun 2021 21:45:58 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
- stable zone's values
-In-Reply-To: <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
-References: <20210602091457.17772-1-osalvador@suse.de>
- <20210602091457.17772-2-osalvador@suse.de>
- <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
-User-Agent: Roundcube Webmail
-Message-ID: <ed17a39ad61edeb19b04c0f4308d5d36@suse.de>
-X-Sender: osalvador@suse.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210523211556.731976-4-martin.botka@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-02 20:37, David Hildenbrand wrote:
-> Long story short, using get_online_mems() looks wrong.
+On Sun, 23 May 2021 23:15:55 +0200, Martin Botka wrote:
+> Document the newly added compatible for sm6125 rpmcc.
 > 
-> Maybe the current lightweight reader/writer protection does serve a 
-> purpose?
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> ---
+> Changes in V2:
+> None
+>  Documentation/devicetree/bindings/clock/qcom,rpmcc.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-It was too nice and easy to be true I guess.
-Yeah, I missed the point that blocking might be an issue here, and 
-hotplug operations can take really long, so not an option.
-I must have switched my brain off back there, because now it is just too 
-obvious.
-
-Then I guwmess that seqlock must stay and the only thing than can go is 
-the pgdat resize lock from the hotplug code.
-
-Meh.
-
--- 
-Oscar Salvador
-SUSE L3
+Acked-by: Rob Herring <robh@kernel.org>
