@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384CB399568
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38EF399569
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbhFBV3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:29:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
+        id S229747AbhFBV3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:29:47 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7445 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhFBV3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:29:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16A2E613D2;
-        Wed,  2 Jun 2021 21:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622669257;
-        bh=lE85p69QGI6y7QaTePnues/2c+5McsZT084K1YrweNw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=B8DV6wOh3MIm5mi1YrXGOznlrfUuCZOeXpQiKZ6Y4RGio/y0ayYK32131jJflfu2o
-         7L6x9BIPlQ1HSWw84GBx2YkogJbaBC81Awr1gVz/gr+zmbrAPf7as0TWosv1VxAHq2
-         2K4CBf/t8TIjcl8XMfpbfIfe/bX2VT8/rIArQu/jJvj90vt/sZApPTQZJj6KQa7g4a
-         bygk9u92h8RhN+PfppdIqOtKIU8qjuGbYMWwnrACnzm/QNw5RJTcynYC9nA+Uo/jeB
-         I+i9L28XGEauUq4h7HxmU3Pb96IyJinOVmYSdJUTUwnoXO4eV4fewHyxx1jvDEizAa
-         Qnq/CagdimW8Q==
-Content-Type: text/plain; charset="utf-8"
+        id S229467AbhFBV3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 17:29:45 -0400
+IronPort-SDR: bSFxWQNZ6JC2QMdjY7AiG4f0PosZCFcNX9BgzLEGyJT5Ihx5gs+BOM48CpiqZNgEfGpcZ26gZG
+ Zq5eNnr9jI+A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="203930965"
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="203930965"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 14:28:01 -0700
+IronPort-SDR: Kj8OAPusdJl3fZe5jCIQLhmxFadTkVB9CsifIUCcHqitenzm66LdM0+ihKbnoEOVtCilLC4UH4
+ mwiasflJVtgg==
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="479879953"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.95.91]) ([10.212.95.91])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 14:28:00 -0700
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Subject: Re: [patch 0/8] x86/fpu: Mop up XSAVES and related damage
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <20210602095543.149814064@linutronix.de>
+Message-ID: <9c5c90bf-fbf6-7e45-4668-2f40f11e8b36@intel.com>
+Date:   Wed, 2 Jun 2021 14:28:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210519001802.1863-2-jonathan@marek.ca>
-References: <20210519001802.1863-1-jonathan@marek.ca> <20210519001802.1863-2-jonathan@marek.ca>
-Subject: Re: [PATCH v2 2/2] dt-bindings: clock: add QCOM SM8350 display clock bindings
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Date:   Wed, 02 Jun 2021 14:27:35 -0700
-Message-ID: <162266925581.4130789.10178141366818328902@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210602095543.149814064@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Marek (2021-05-18 17:18:02)
-> Add sm8350 DISPCC bindings, which are simply a symlink to the sm8250
-> bindings. Update the documentation with the new compatible.
->=20
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+On 6/2/2021 2:55 AM, Thomas Gleixner wrote:
+> syszbot reported a warnon for XRSTOR raising #GP:
+> 
+>   https://lore.kernel.org/r/0000000000004c453905c30f8334@google.com
+> 
+> with a syzcaller reproducer and a conclusive bisect result.
+> 
+> It took a while to destill a simple C reproducer out of it which allowed to
+> pin point the root cause: The recent addition of supervisor XSTATEs broke
+> the signal restore path for the case where the signal handler wreckaged the
+> XSTATE on stack because it does not sanitize the XSTATE header which causes
+> a subsequent XRSTOR to fail and #GP.
+> 
+> The following series addresses the problem and fixes related issues which
+> were found while inspecting the related changes.
+> 
+> Thanks to Andy and Dave for working on this with me!
+> 
+> Thanks,
+> 
+> 	tglx
 > ---
->  .../devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml       | 6 ++++--
->  include/dt-bindings/clock/qcom,dispcc-sm8350.h              | 1 +
+>   arch/x86/include/asm/fpu/xstate.h                     |    4
+>   arch/x86/kernel/fpu/core.c                            |   62 ++++++---
+>   arch/x86/kernel/fpu/regset.c                          |   43 ++----
+>   arch/x86/kernel/fpu/signal.c                          |   30 +++-
+>   arch/x86/kernel/fpu/xstate.c                          |   95 +++++----------
+>   b/tools/testing/selftests/x86/corrupt_xstate_header.c |  114 ++++++++++++++++++
+>   tools/testing/selftests/x86/Makefile                  |    3
+>   7 files changed, 234 insertions(+), 117 deletions(-)
+> 
 
->  2 files changed, 5 insertions(+), 2 deletions(-)
->  create mode 120000 include/dt-bindings/clock/qcom,dispcc-sm8350.h
+With the series applied, glibc pkey test fails sometimes.  I will try to 
+find out the cause.
 
-Why the symlink? Can we have the dt authors use the existing header file
-instead?
+The test:
 
->=20
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.y=
-aml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> index 0cdf53f41f84..8f414642445e 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> @@ -4,24 +4,26 @@
->  $id: http://devicetree.org/schemas/clock/qcom,dispcc-sm8x50.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
-> =20
-> -title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM82=
-50
-> +title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM82=
-50/SM8350
+https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/tst-pkey.c
 
-Maybe just "Binding for SM8x50 SoCs"
+The output:
 
-> =20
->  maintainers:
->    - Jonathan Marek <jonathan@marek.ca>
-> =20
->  description: |
->    Qualcomm display clock control module which supports the clocks, reset=
-s and
-> -  power domains on SM8150 and SM8250.
-> +  power domains on SM8150/SM8250/SM8350.
-
-same 8x50 comment.
-
-> =20
->    See also:
->      dt-bindings/clock/qcom,dispcc-sm8150.h
->      dt-bindings/clock/qcom,dispcc-sm8250.h
-> +    dt-bindings/clock/qcom,dispcc-sm8350.h
-> =20
->  properties:
->    compatible:
->      enum:
->        - qcom,sm8150-dispcc
->        - qcom,sm8250-dispcc
-> +      - qcom,sm8350-dispcc
-> =20
->    clocks:
->      items:
-> diff --git a/include/dt-bindings/clock/qcom,dispcc-sm8350.h b/include/dt-=
-bindings/clock/qcom,dispcc-sm8350.h
-> new file mode 120000
-> index 000000000000..0312b4544acb
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/qcom,dispcc-sm8350.h
-> @@ -0,0 +1 @@
-> +qcom,dispcc-sm8250.h
-> \ No newline at end of file
+error: ../sysdeps/unix/sysv/linux/tst-pkey.c:161: not true: 
+!check_page_access (i, false)
+error: ../sysdeps/unix/sysv/linux/tst-pkey.c:162: not true: 
+!check_page_access (i, true)
+error: ../sysdeps/unix/sysv/linux/tst-pkey.c:161: not true: 
+!check_page_access (i, false)
+error: ../sysdeps/unix/sysv/linux/tst-pkey.c:162: not true: 
+!check_page_access (i, true)
+error: ../sysdeps/unix/sysv/linux/tst-pkey.c:161: not true: 
+!check_page_access (i, false)
+error: ../sysdeps/unix/sysv/linux/tst-pkey.c:162: not true: 
+!check_page_access (i, true)
+../sysdeps/unix/sysv/linux/tst-pkey.c:238: numeric comparison failure
+    left: 0 (0x0); from: result->access_rights[i]
+   right: 1 (0x1); from: PKEY_DISABLE_ACCESS
+../sysdeps/unix/sysv/linux/tst-pkey.c:238: numeric comparison failure
+    left: 0 (0x0); from: result->access_rights[i]
+   right: 1 (0x1); from: PKEY_DISABLE_ACCESS
+../sysdeps/unix/sysv/linux/tst-pkey.c:238: numeric comparison failure
+    left: 0 (0x0); from: result->access_rights[i]
+   right: 1 (0x1); from: PKEY_DISABLE_ACCESS
+../sysdeps/unix/sysv/linux/tst-pkey.c:242: numeric comparison failure
+    left: 0 (0x0); from: result->access_rights[i]
+   right: 1 (0x1); from: PKEY_DISABLE_ACCESS
+../sysdeps/unix/sysv/linux/tst-pkey.c:242: numeric comparison failure
+    left: 0 (0x0); from: result->access_rights[i]
+   right: 1 (0x1); from: PKEY_DISABLE_ACCESS
+../sysdeps/unix/sysv/linux/tst-pkey.c:242: numeric comparison failure
+    left: 0 (0x0); from: result->access_rights[i]
+   right: 1 (0x1); from: PKEY_DISABLE_ACCESS
+error: 12 test failures
