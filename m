@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CA839929B
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0F6399298
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbhFBSeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:34:11 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:47040 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhFBSeK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:34:10 -0400
-Received: by mail-oi1-f171.google.com with SMTP id x15so3558456oic.13;
-        Wed, 02 Jun 2021 11:32:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hCqTrOn+AB8J/ZYPKhnhDqNUe6g4nA/fipGWwsGP4PY=;
-        b=T0qXw4CcJJe33M3crkONuPqcRfAgK+1Sq9sUJ7oK9qN9UN/xGFUxgw6NdiXC2lxav6
-         7T3+BFhcey171b1RWaZci9C21lQ2IiCcMKukhNeOOafhUMER26cfRoWuw0jHtZKZ5z0L
-         biBkVmJ6/zxAdFMYZxymTszn1npPyqfXBl2+eMIyT0oTHPpJfd7Ygx9MnErstasMlmpl
-         e/8flEVntRl7iO2NsGorrfc3e/hc5rbIPMLkDlMgtTV0QaYYxC8ewWEhn/PnxOfAj1xG
-         fm/Xba/PBL61bbCahgoCveaI+9UHLgqnsLm/wI0Z+y9+othE4e0VaX4m3sPOG2tfM4cQ
-         QZmg==
-X-Gm-Message-State: AOAM530ZAKBKM5+lEBO+FuTDHVyWme00SVvZ4zvFbrZKbfelbIXQzWmu
-        fjNIvYPgMvJzMn0f82nqPFx3UA87lA==
-X-Google-Smtp-Source: ABdhPJzRAVxVl6cfhH69D4gC0mt9+iv2cH3EyCBvPqUnrK1WDRNdNyslnzimBv3AQs8IxANOPxdH4w==
-X-Received: by 2002:a05:6808:138e:: with SMTP id c14mr23320942oiw.55.1622658729875;
-        Wed, 02 Jun 2021 11:32:09 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b6sm139334oic.12.2021.06.02.11.32.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 11:32:09 -0700 (PDT)
-Received: (nullmailer pid 3731322 invoked by uid 1000);
-        Wed, 02 Jun 2021 18:32:07 -0000
-Date:   Wed, 2 Jun 2021 13:32:07 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     chinnikishore369@gmail.com, mdf@kernel.org, trix@redhat.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, iwamatsu@nigauri.org, arnd@arndb.de,
-        zou_wei@huawei.com, michal.simek@xilinx.com, rajan.vaja@xilinx.com,
-        ravi.patel@xilinx.com, linux-fpga@vger.kernel.org,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        amit.sunil.dhamne@xilinx.com,
-        lakshmi.sai.krishna.potthuri@xilinx.com, tejas.patel@xilinx.com,
-        git@xilinx.com, linux-arm-kernel@lists.infradead.org,
-        wendy.liang@xilinx.com, robh+dt@kernel.org
-Subject: Re: [PATCH v6 2/4] dt-bindings: fpga: Add binding doc for versal
- fpga manager
-Message-ID: <20210602183207.GA3731262@robh.at.kernel.org>
-References: <20210520080954.1393-1-nava.manne@xilinx.com>
- <20210520080954.1393-3-nava.manne@xilinx.com>
+        id S229657AbhFBSeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:34:09 -0400
+Received: from mga05.intel.com ([192.55.52.43]:15002 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229491AbhFBSeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 14:34:08 -0400
+IronPort-SDR: qSzcJ6vEEhuz39jfvm/EBMIMrT5g5CyIP7IRVN8NM+gkjFU0fTC6Vfl7NdHzPw14XgntG3U3aw
+ 7zHrssDvvZqA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="289491191"
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="289491191"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 11:32:24 -0700
+IronPort-SDR: Snxc011GgogXJqsC+9Sp8J19YPMSfXmifamcEF1xyu1dLigo0akW4/e2Rhx7yNcOtmsl1LXUt5
+ ZBlHRAZq3iJA==
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="416998102"
+Received: from sboinap-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.150.149])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 11:32:22 -0700
+Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
+ abstraction
+To:     Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YLe92NXx1jZPtPqB@google.com> <3036a655-9d09-0f04-62a2-7a72ba9af5c7@amd.com>
+ <YLfOApYdX/KL1wKF@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <23225953-2052-8e72-5eb0-6b30f2a5c84b@linux.intel.com>
+Date:   Wed, 2 Jun 2021 11:32:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520080954.1393-3-nava.manne@xilinx.com>
+In-Reply-To: <YLfOApYdX/KL1wKF@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 13:39:52 +0530, Nava kishore Manne wrote:
-> From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-> 
-> This patch adds binding doc for versal fpga manager driver.
-> 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-> ---
-> Changes for v2:
->                 -Fixed file format and syntax issues.
-> Changes for v3:
->                 -Removed unwated extra spaces.
-> Changes for v4:
->                 -Rebased the changes on linux-next.
->                  No functional changes
-> Changes for v5:
->                 -Updated fpga node name to versal_fpga.
-> 
-> Changes for v6:
->                -None.
-> 
->  .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+On 6/2/21 11:29 AM, Borislav Petkov wrote:
+> If you can point me to a tree with your patches, I can try to hack up
+> what I mean.
+
+https://github.com/intel/tdx/commit/8515b66a0cb27d5ab66eda201285090faee742f7
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
