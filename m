@@ -2,137 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B53398556
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A33398559
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhFBJej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhFBJei (ORCPT
+        id S231926AbhFBJf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:35:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37802 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229583AbhFBJf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:34:38 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6C1C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:32:55 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id h5-20020a05600c3505b029019f0654f6f1so2804114wmq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=+4n68OhQQoaJqMJRmFarUHWhO6SLp5CZpVwSs3bY57M=;
-        b=QdtCH6OwgAWbnUTfXQQobKbEMVCsv/NfJBaCfk/cjIBLyX30zRtdf7I9yQR+a8zN7w
-         So9FhMuKA51H7t0Iz3VwB3j6Y+y0rR9b07MQUlWinb/vlJWd8I5IBTtQb069NU9HuDWP
-         fLeP7MfTvg2JL45gQzLpPV4+slEzo5rsKvvV2WtDTNP6vjH/3CInyKKzEF6Ma1rj2bM9
-         HUvJfc0h6LLqF35WgVDrMEElaxEE5nvXub1O7TidzmVnkRo0rYXaHG4Qmpj4k4njYByT
-         fxtAjVXR+oCPy33idGpVPAxm0H1Tchr1vktUJ8TIScJuR/CrW7k2vq9fxUDhLbJ2xoMh
-         mZcA==
+        Wed, 2 Jun 2021 05:35:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622626425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=N9Sh/QOE9Zh9rY3P1FOigUDT0+nzaPyFTdrh3FzN9+k=;
+        b=PJUYSVSPKySZpR9vG6Igah8fd8RTrrg4uCHOVqeWFNyqwtUQikKFFOjsdLZeDBKjezYMh+
+        ZoXwO1ycnayAes8pRBGiaIlmU2I6AcT8oFjSsTM+95HnsPNvILLU0HLzg1hj99wM6mgUTm
+        mDwr4uMQlbn1Opkss2VuE6Bv8JyIUEs=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-400-o626dd4dP1S5lSxmkzPL1g-1; Wed, 02 Jun 2021 05:33:44 -0400
+X-MC-Unique: o626dd4dP1S5lSxmkzPL1g-1
+Received: by mail-wr1-f71.google.com with SMTP id x9-20020adfffc90000b02901178add5f60so769571wrs.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:33:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=+4n68OhQQoaJqMJRmFarUHWhO6SLp5CZpVwSs3bY57M=;
-        b=g5S6VqFo02JOY33e1KMl4QZ+xpVluWK/Ei65NPRMMRviH/QVUnE5hyNjoWkS5nsmM/
-         jDwerPmc/KnAXDbmjcSFUu0EFI+63yHTq5hfYzJlDFYqvSvHRFavPZBbiPQqD1aioLr/
-         eyQu49zYs0hpG7biffW+H/CTrXf5xUTJTvas4hWF2ZnGRB7kbKu/sg8O2cx5a7mWavR6
-         iLksoyc4vZcIdW5SW1TDAXQdo2+EUcqLbGajC6P5kHv53Do0Fr/db7Tya8nXsUX0rlgj
-         kXzSEVzXzdZIeieY9NGAqRZH///4J18dE31Tnb2RW6y2vowfzgIZNcZRHHFpV+Rbdu8m
-         I69g==
-X-Gm-Message-State: AOAM530TmR3sTSOXRUrMwoIQ4E0Nby9IDNnYJDcbZbaGJ2tqfiebEOFZ
-        xh3IZQONIpcUlVZhJv6rY+3tRA==
-X-Google-Smtp-Source: ABdhPJwZcWsNVrWqTEgyqX4RTciLjOYhDu9RIA3kyZPccOlhw3ys9rCcBYEhOiKNeMrrX03S7NOU+g==
-X-Received: by 2002:a1c:bcd6:: with SMTP id m205mr4378881wmf.12.1622626373963;
-        Wed, 02 Jun 2021 02:32:53 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id j14sm2093415wmi.32.2021.06.02.02.32.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N9Sh/QOE9Zh9rY3P1FOigUDT0+nzaPyFTdrh3FzN9+k=;
+        b=mPY0wlXUa4efRT/+pSpX2Hi5FZHxeQE/5dLxCESzPx6Zp55qb4i7NPvwBigwO7E1+4
+         2bf/5rftjl4cgozgq7ENFeG5/gJiGsxF2XWe7KSuTkp1aVfFAdXRwndALxg75Auk+r6S
+         cmcDr+cD7A1y6hUhBXe68b4OyYYWDCLNe82f6MelR+7kKoGG2JJMEVHxqv8HEPF9Mc5l
+         swIML0MsHk0JgRFnEgQezASG/KGu1FU0sVYMKD1Ji/Fm6XEnObtj0guF2LUbM1FTZTNf
+         WjaRsx0S/NfJmugwyiaxdgCEoxRBGkbJiWVU9GrJkLs/3qhSYUeJFLzblPSFBLQobsIE
+         26Yw==
+X-Gm-Message-State: AOAM530pf/KcnZGjbg2eurJM6CHG0gSuid6WEr4uFygzkMIDMvesS2JJ
+        mBvI2O3MdkoF+WUopsy0CkemIkePOux8CPb5ebzGI1IeSI8/a48ewGaw5mDfgktozTgBKteUXJN
+        Uh53nsgoS0eQg1Ma5giP9FeJP
+X-Received: by 2002:a7b:c3d4:: with SMTP id t20mr30242753wmj.13.1622626422990;
+        Wed, 02 Jun 2021 02:33:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyGc8ClC7bCKOsyy/VLX3opMH9cizkHQaqiNprhVMyoO37dTAB84jL7XmYIVQImG/cs1qd2cg==
+X-Received: by 2002:a7b:c3d4:: with SMTP id t20mr30242740wmj.13.1622626422872;
+        Wed, 02 Jun 2021 02:33:42 -0700 (PDT)
+Received: from vian.redhat.com ([2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f])
+        by smtp.gmail.com with ESMTPSA id b7sm5781142wri.83.2021.06.02.02.33.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 02:32:53 -0700 (PDT)
-References: <20210528113403.5374-1-peng.fan@oss.nxp.com>
- <162262192433.4130789.1017942859005253343@swboyd.mtv.corp.google.com>
- <a5833012-3e86-5be0-71f2-de4d9b32a152@pengutronix.de>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, mturquette@baylibre.com
-Cc:     Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/3] clk: support regmap
-In-reply-to: <a5833012-3e86-5be0-71f2-de4d9b32a152@pengutronix.de>
-Message-ID: <1j1r9kobln.fsf@starbuckisacylon.baylibre.com>
-Date:   Wed, 02 Jun 2021 11:32:52 +0200
+        Wed, 02 Jun 2021 02:33:42 -0700 (PDT)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     rostedt@goodmis.org, linux-kernel@vger.kernel.org
+Cc:     mingo@redhat.com, mtosatti@redhat.com, nsaenzju@redhat.com,
+        frederic@kernel.org
+Subject: [PATCH] ring_buffer: Offload wakeup IPI to housekeeping CPUs
+Date:   Wed,  2 Jun 2021 11:33:26 +0200
+Message-Id: <20210602093326.15355-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In order to minimize trace's effect on nohz_full CPUs, offload the
+ring-buffer consumer wakeup IPI into one of the housekeeping CPUs.
+Systems not using nohz_full will still run the wakeup IPI locally (as
+per housekeeping_any_cpu()'s implementation).
 
-On Wed 02 Jun 2021 at 10:21, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+This wakeup IPI, although negligible for the vast majority of trace
+workloads, may cause unwarranted latencies on systems tracing events on
+nohz_full CPUs. This is made worse on PREEMPT_RT kernels, as they defer
+the irq_work handling into ksoftirqd, forcing unwarranted context
+switches on the otherwise extremely busy CPU.
 
-> On 6/2/21 10:18 AM, Stephen Boyd wrote:
->> Quoting Peng Fan (OSS) (2021-05-28 04:34:00)
->>> From: Peng Fan <peng.fan@nxp.com>
->>>
->>> To i.MX8ULP, a PCC register provides clk(mux, gate, divider) and peripheral
->>> reset functionality, so we need make sure the access to the PCC register
->>> be protected to avoid concurrent access from clk and reset subsystem.
->>>
->>> So let's use regmap here.
->>>
->>> The i.MX specific code will be posted if this patchset is ok for you.
->> 
->> We have a couple regmap clk drivers in the tree. Either combine the
->> different regmap clk drivers or duplicate it into the imx directory. I'd
->> prefer we combine them but last time I couldn't agree on the approach
->> when Jerome wanted to do it. Maybe now is the time to combine them all
->> into one common piece of code.
->
-> IMHO for the basic drivers, such as gate, divider, mux, mux-div, etc... it makes
-> no sense to have them in an arch specific subdir, like meson.
+Note that the local IPI can't be avoided when tracing in NMI context, as
+irq_work_queue() is the only mechanism supported in that context.
 
-Indeed, those basic types were not meant to remain platform
-specific. Some framework (ASoC for ex) make heavy use of regmap and
-could welcome regmap based basic clock types.
+To illustrate this, tracing on a nohz_full CPU with PREEMPT_RT=y (plus a
+good amount of extra isolation options). I see:
+  - 50-100 μs latency spikes while tracing without this patch
+  - 10-14 μs latency spikes while tracing with this patch
+  - 8-11 μs latency spikes when not tracing at all
 
-At the time, Stephen (qcom) and I (meson) had slightly different
-approaches. Before having those types spread through the kernel, I think
-testing things out was a good thing ... this is why these are platform
-specific ATM.
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+---
+ kernel/trace/ring_buffer.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-It's been 3 years now ... and it has not been a total disaster :)
-
-In the end things are not so different. Let's compare:
-a. Both have a generic "clk_regmap" type common to all regmap based
-  types. This is very useful to easily fix the regmap pointer in static
-  clocks (which are heavily used by both platform)
-
-b. Meson uses a generic pointer to store the type specific info.
-  Qcom embeds the generic clk_regmap into the specific type one.
-  => In the end, I don't see any advantage to the meson
-  approach. Switching to the qcom method would be quite a big bang
-  for meson but it is doable (nothing difficult, just a huge line count)
-  
-c. Qcom basic regmap type deviates a bit from the regular basic ones
-  when it comes to the actual data. The qcom "clk_regmap" also provides
-  the gate, mux have the qcom "parent_map". In meson, I tried to keep as
-  close as possible to regular basic types ... at least what they were 3
-  years ago. Only the register poking part should be different actually.
-  => I'd be in favor of keeping close to meson here.
-
-A possible plan could be:
-1. Rework meson as explained in [b] above.
-2. reword types in qcom where necessary to avoid name clashes (add
-   "_qcom" extension for ex)
-3. Move the clk_regmap implementation out of meson to drivers/clk
-4. Things are yours to play with ...
-
-I can take care of 1. and 3. I would welcome help for 2. especially since
-I won't be able to test it.
-
->
-> regards,
-> Marc
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 2c0ee6484990..ce7817861c5e 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2008 Steven Rostedt <srostedt@redhat.com>
+  */
+ #include <linux/trace_recursion.h>
++#include <linux/sched/isolation.h>
+ #include <linux/trace_events.h>
+ #include <linux/ring_buffer.h>
+ #include <linux/trace_clock.h>
+@@ -3052,6 +3053,20 @@ static void rb_commit(struct ring_buffer_per_cpu *cpu_buffer,
+ 	rb_end_commit(cpu_buffer);
+ }
+ 
++/*
++ * Offload the irq_work into a housekeeping CPU unless in NMI context, which
++ * doesn't support it. Systems not using nohz_full trigger the IPI locally.
++ *
++ * Note that irq_work supplies its own memory barriers.
++ */
++static __always_inline void rb_irq_work_queue(struct irq_work *work)
++{
++	if (in_nmi())
++		irq_work_queue(work);
++	else
++		irq_work_queue_on(work, housekeeping_any_cpu(HK_FLAG_MISC));
++}
++
+ static __always_inline void
+ rb_wakeups(struct trace_buffer *buffer, struct ring_buffer_per_cpu *cpu_buffer)
+ {
+@@ -3061,14 +3076,12 @@ rb_wakeups(struct trace_buffer *buffer, struct ring_buffer_per_cpu *cpu_buffer)
+ 
+ 	if (buffer->irq_work.waiters_pending) {
+ 		buffer->irq_work.waiters_pending = false;
+-		/* irq_work_queue() supplies it's own memory barriers */
+-		irq_work_queue(&buffer->irq_work.work);
++		rb_irq_work_queue(&buffer->irq_work.work);
+ 	}
+ 
+ 	if (cpu_buffer->irq_work.waiters_pending) {
+ 		cpu_buffer->irq_work.waiters_pending = false;
+-		/* irq_work_queue() supplies it's own memory barriers */
+-		irq_work_queue(&cpu_buffer->irq_work.work);
++		rb_irq_work_queue(&cpu_buffer->irq_work.work);
+ 	}
+ 
+ 	if (cpu_buffer->last_pages_touch == local_read(&cpu_buffer->pages_touched))
+@@ -3090,8 +3103,7 @@ rb_wakeups(struct trace_buffer *buffer, struct ring_buffer_per_cpu *cpu_buffer)
+ 
+ 	cpu_buffer->irq_work.wakeup_full = true;
+ 	cpu_buffer->irq_work.full_waiters_pending = false;
+-	/* irq_work_queue() supplies it's own memory barriers */
+-	irq_work_queue(&cpu_buffer->irq_work.work);
++	rb_irq_work_queue(&cpu_buffer->irq_work.work);
+ }
+ 
+ #ifdef CONFIG_RING_BUFFER_RECORD_RECURSION
+-- 
+2.31.1
 
