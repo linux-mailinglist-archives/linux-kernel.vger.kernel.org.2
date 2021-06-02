@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E377239952A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678F139952E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhFBVGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:06:09 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:33625 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhFBVGH (ORCPT
+        id S229818AbhFBVGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:06:35 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:36463 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFBVGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:06:07 -0400
-Received: by mail-oi1-f177.google.com with SMTP id b25so4115429oic.0;
-        Wed, 02 Jun 2021 14:04:16 -0700 (PDT)
+        Wed, 2 Jun 2021 17:06:34 -0400
+Received: by mail-ot1-f54.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3753513otl.3;
+        Wed, 02 Jun 2021 14:04:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gdRC3LaNJoq06zLg1AOtbFc2nZThyPvFpI3uvfhfMnA=;
-        b=rJOYtueqhk5GbKX695oKTfbshyUDbpZSSENODS55osEF+p+ynrnggxzEgtaow1qAj5
-         6aDYc2YfO31OAblVMrcfi1YyiHAMQFk+eArhD8BzW2vG7Bzw2hOQwtgObFVqfzkEX8th
-         qFWqpmehUnd9QQP401mK1B3T0qUZnxJMyeofJl7ZbxvwTulR7E101gXmrT9F2g4IvBKC
-         DlwmCEcUcLhKE/Zs35hc7BBc8QTxHVjG0FkQy56FYIQoocQcDXTFBTRe/m1oKqKNSGfu
-         TjIe74hzppMfXWa7OCk7MNvUlMvnMLO8dXLZ6m9gnXfaXD0VjdI09OyvJUErdfVPXFrQ
-         aIcg==
-X-Gm-Message-State: AOAM5321mo3VqKiLf6Dn4oslhm1nsP0mNFVXjsTSIFJCn1lWV78I65Wk
-        mbEtY9gwDX3Lac7dmSDtow==
-X-Google-Smtp-Source: ABdhPJzsuqB0B2FmVvlfKgaKW5qgFsDoIoouMag1IdPrnw7c+sKjsdJM5xKuENGv+I6/Pxv68hNCUg==
-X-Received: by 2002:aca:3c4:: with SMTP id 187mr15504809oid.116.1622667856053;
-        Wed, 02 Jun 2021 14:04:16 -0700 (PDT)
+        bh=xAwzBxtQTrOqLv+2WBqI2b5XM27v8MHwB+MvKVWKET4=;
+        b=YZ7zcEfot4JIwuaJOnDJA8ox4l+HtBH7O5ogCeG2yR/GBLc7CTwNNP/0+4BT8Ygo0c
+         28GgHx89x8FppeDwoxBmO8RtxECR6jZFZEknfO1/QqvEsKGDWvaIDJp7E8LTRjvoZD/n
+         MTZqfj/y6ye2c3tdW00aqoMoAh8Qk5poERAtqOpMz6u02KunTirR48gt+eHo6s6BiFhT
+         t96bfXnE/uUKPU5xsQd1TNEOrfXLJd4KEcrHUavTSNmKbd22GklcqGH95sjfXdC9+znD
+         tGy9aybds0Pu69ec+44dQ/M53xr8y9o6NHMgvXjIw8sy81wwjJvSMT8N23ZDxhUntD8+
+         ueXg==
+X-Gm-Message-State: AOAM531fDEp7rKV64lUEYlmMQUYZdbiHRoeV2ilUXymRctRLMLmGZAXZ
+        xDttvL8LD5j4Z/PyD/J+Vk1zFdck3Q==
+X-Google-Smtp-Source: ABdhPJxyCi29NpDw4UBMNf7/x2arc26qns1BXNlRTTrJ0SKUOzkD/d45d99TWolrPLPxYB2zjwjyDA==
+X-Received: by 2002:a9d:18e:: with SMTP id e14mr8406853ote.34.1622667878147;
+        Wed, 02 Jun 2021 14:04:38 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x29sm220066ott.68.2021.06.02.14.04.14
+        by smtp.gmail.com with ESMTPSA id d19sm213492oop.26.2021.06.02.14.04.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 14:04:15 -0700 (PDT)
-Received: (nullmailer pid 4039201 invoked by uid 1000);
-        Wed, 02 Jun 2021 21:04:14 -0000
-Date:   Wed, 2 Jun 2021 16:04:14 -0500
+        Wed, 02 Jun 2021 14:04:37 -0700 (PDT)
+Received: (nullmailer pid 4040019 invoked by uid 1000);
+        Wed, 02 Jun 2021 21:04:36 -0000
+Date:   Wed, 2 Jun 2021 16:04:36 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>, Stephen Boyd <sboyd@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        devicetree@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH 05/12] dt-bindings: reset: update ti,sci-reset.yaml
- references
-Message-ID: <20210602210414.GA4039146@robh.at.kernel.org>
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Peter Rosin <peda@axentia.se>
+Subject: Re: [PATCH 06/12] dt-bindings: iio: io-channel-mux.yaml: fix a typo
+Message-ID: <20210602210436.GA4039908@robh.at.kernel.org>
 References: <cover.1622648507.git.mchehab+huawei@kernel.org>
- <e9b505d900d898c0d030deb168ab291206c203ee.1622648507.git.mchehab+huawei@kernel.org>
+ <ab0d1f89cf64ff4904155c92e1895763fb0bf173.1622648507.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9b505d900d898c0d030deb168ab291206c203ee.1622648507.git.mchehab+huawei@kernel.org>
+In-Reply-To: <ab0d1f89cf64ff4904155c92e1895763fb0bf173.1622648507.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Jun 2021 17:43:11 +0200, Mauro Carvalho Chehab wrote:
-> Changeset 9a81b8cbc245 ("dt-bindings: reset: Convert ti,sci-reset to json schema")
-> renamed: Documentation/devicetree/bindings/reset/ti,sci-reset.txt
-> to: Documentation/devicetree/bindings/reset/ti,sci-reset.yaml.
+On Wed, 02 Jun 2021 17:43:12 +0200, Mauro Carvalho Chehab wrote:
+> The file name: Documentation/device-tree/bindings/mux/mux-controller.yaml
+> should be, instead: Documentation/devicetree/bindings/mux/mux-controller.yaml.
 > 
-> Update the cross-references accordingly.
+> Update its cross-reference accordingly.
 > 
-> Fixes: 9a81b8cbc245 ("dt-bindings: reset: Convert ti,sci-reset to json schema")
+> Fixes: a66cec598f49 ("dt-bindings: iio: multiplexer: Convert io-channel-mux bindings to DT schema")
 > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  .../devicetree/bindings/remoteproc/ti,keystone-rproc.txt        | 2 +-
->  MAINTAINERS                                                     | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml     | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
 Applied, thanks!
