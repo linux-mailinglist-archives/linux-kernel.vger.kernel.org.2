@@ -2,142 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B551D397ECA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B87397E9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhFBCTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:19:30 -0400
-Received: from mga14.intel.com ([192.55.52.115]:9254 "EHLO mga14.intel.com"
+        id S229975AbhFBCQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:16:37 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17230 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhFBCT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:19:28 -0400
-IronPort-SDR: B85cK0bSB0T8gCTMU98Id41eLuO3DwdYlzQOlgQcRJvAwHqGjUfSPEGYED9LcIjyCNY8Mgv0EQ
- y2O34U/C7WCA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="203497823"
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="203497823"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 19:17:34 -0700
-IronPort-SDR: XMHcq5bDc6ajWtIGwzl5ndwyM39lwgqjwaKdV2OLCggpj/0fv92TAcZvJw2ZovlbF0O+LJlBVz
- afsJPZGodIWA==
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="635700815"
-Received: from mjdelaro-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.3.23])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 19:17:33 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v1 00/11] Add TDX Guest Support (Initial support)
-Date:   Tue,  1 Jun 2021 19:14:30 -0700
-Message-Id: <20210602021430.2186131-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229471AbhFBCQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:16:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622600094; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=iOQwgqabrc1MbfT07CPHtQODLtRaNjncaWi9mJJSGlQ=;
+ b=G7TqxZz7NYfTW6FC5UCMgRIzR5h498GWyxDz8HNcBPxpOjOzJ/Lg8Cs78OvciSqsbKj5iNzC
+ mvIgshlhUVCF3OTDFgWp0f1rsXcITXgx78VJe6+Rg9P9j0uNK/O95hbvvvKXfHtP57mdiXl3
+ aybqmVvwBshKjWf6d1umLVajhzA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60b6e993f726fa4188928ac5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 02:14:43
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1EC6BC4338A; Wed,  2 Jun 2021 02:14:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61B2DC433F1;
+        Wed,  2 Jun 2021 02:14:39 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 02 Jun 2021 10:14:39 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Stanley Chu <stanley.chu@mediatek.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer requests
+ send/compl paths
+In-Reply-To: <6d6d296a84f1e62f65fda4d172a85bb35d9a3684.camel@gmail.com>
+References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+ <1621845419-14194-3-git-send-email-cang@codeaurora.org>
+ <6d6d296a84f1e62f65fda4d172a85bb35d9a3684.camel@gmail.com>
+Message-ID: <adc85803e27226bc8d24c53061e39214@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hi Bean,
 
-Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
-hosts and some physical attacks. This series adds the basic TDX guest
-infrastructure support (including #VE handler support, and #VE support
-for halt and CPUID). This is just a subset of patches in the bare minimum
-TDX support patch list which is required for supporting minimal
-functional TDX guest. Other basic feature features like #VE support for
-IO, MMIO, boot optimization fixes and shared-mm support will be submitted
-in a separate patch set. To make reviewing easier we split it into smaller
-series. This series alone is not necessarily fully functional.
+On 2021-06-01 00:04, Bean Huo wrote:
+> On Mon, 2021-05-24 at 01:36 -0700, Can Guo wrote:
+>> Current UFS IRQ handler is completely wrapped by host lock, and
+>> because
+>> 
+>> ufshcd_send_command() is also protected by host lock, when IRQ
+>> handler
+>> 
+>> fires, not only the CPU running the IRQ handler cannot send new
+>> requests,
+>> 
+>> the rest CPUs can neither. Move the host lock wrapping the IRQ
+>> handler into
+>> 
+>> specific branches, i.e., ufshcd_uic_cmd_compl(),
+>> ufshcd_check_errors(),
+>> 
+>> ufshcd_tmc_handler() and ufshcd_transfer_req_compl(). Meanwhile, to
+>> further
+>> 
+>> reduce occpuation of host lock in ufshcd_transfer_req_compl(), host
+>> lock is
+>> 
+>> no longer required to call __ufshcd_transfer_req_compl(). As per
+>> test, the
+>> 
+>> optimization can bring considerable gain to random read/write
+>> performance.
+>> 
+>> 
+>> 
+>> Cc: Stanley Chu <stanley.chu@mediatek.com>
+>> 
+>> Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
+>> 
+>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+> 
+> Can,
+> The patch looks good to me.
+> I did a UFS queue limitation test before, observed that once the queue
+> is full, then the active task number in the queue will get down. For
+> the Nvme, the scenario is the same. You can refer to the slide 23, and
+> slide 24 in the pdf:
+> https://elinux.org/images/6/6c/Linux_Storage_System_Bottleneck_Exploration_V0.3.pdf
+> I don't know if your patch can fix this
+> issue.
 
-Also, the host-side support patches, and support for advanced TD guest
-features like attestation or debug-mode will be submitted at a later time.
-Also, at this point it is not secure with some known holes in drivers, and
-also hasn’t been fully audited and fuzzed yet.
+I've studied these slides made by you many times, it is really good.
+I will do some study later on this. Thanks for the slides.
 
-TDX has a lot of similarities to SEV. It enhances confidentiality and
-of guest memory and state (like registers) and includes a new exception
-(#VE) for the same basic reasons as SEV-ES. Like SEV-SNP (not merged
-yet), TDX limits the host's ability to effect changes in the guest
-physical address space. With TDX the host cannot access the guest memory,
-so various functionality that would normally be done in KVM has moved
-into a (paravirtualized) guest. Partially this is done using the
-Virtualization Exception (#VE) and partially with direct paravirtual hooks.
+> 
+> Unfortunately, I cannot verify UTRLCNR usage flow since my platform is
+> v2.1. But at least my test can prove that the patch doesn't impact the
+> legacy(UFSHCI is less than v3.0) doorbell usage flow.
+> 
 
-The TDX architecture also includes a new CPU mode called
-Secure-Arbitration Mode (SEAM). The software (TDX module) running in this
-mode arbitrates interactions between host and guest and implements many of
-the guarantees of the TDX architecture.
+Thanks for your time :).
 
-Some of the key differences between TD and regular VM is,
+Regards,
+Can Guo.
 
-1. Multi CPU bring-up is done using the ACPI MADT wake-up table.
-2. A new #VE exception handler is added. The TDX module injects #VE exception
-   to the guest TD in cases of instructions that need to be emulated, disallowed
-   MSR accesses, etc.
-3. By default memory is marked as private, and TD will selectively share it with
-   VMM based on need.
-   
-Note that the kernel will also need to be hardened against low level inputs from
-the now untrusted hosts. This will be done in follow on patches.
-
-You can find TDX related documents in the following link.
-
-https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
-
-Kirill A. Shutemov (7):
-  x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT
-  x86/tdx: Get TD execution environment information via TDINFO
-  x86/traps: Add #VE support for TDX guest
-  x86/tdx: Add HLT support for TDX guest
-  x86/tdx: Wire up KVM hypercalls
-  x86/tdx: Add MSR support for TDX guest
-  x86/tdx: Handle CPUID via #VE
-
-Kuppuswamy Sathyanarayanan (4):
-  x86/tdx: Introduce INTEL_TDX_GUEST config option
-  x86/cpufeatures: Add TDX Guest CPU feature
-  x86/x86: Add is_tdx_guest() interface
-  x86/tdx: Add __tdx_module_call() and __tdx_hypercall() helper
-    functions
-
- arch/x86/Kconfig                      |  20 ++
- arch/x86/boot/compressed/Makefile     |   1 +
- arch/x86/boot/compressed/tdx.c        |  32 ++++
- arch/x86/include/asm/cpufeatures.h    |   1 +
- arch/x86/include/asm/idtentry.h       |   4 +
- arch/x86/include/asm/irqflags.h       |  40 ++--
- arch/x86/include/asm/kvm_para.h       |  21 +++
- arch/x86/include/asm/paravirt.h       |  20 +-
- arch/x86/include/asm/paravirt_types.h |   3 +-
- arch/x86/include/asm/tdx.h            | 153 ++++++++++++++++
- arch/x86/kernel/Makefile              |   1 +
- arch/x86/kernel/asm-offsets.c         |  22 +++
- arch/x86/kernel/head64.c              |   3 +
- arch/x86/kernel/idt.c                 |   6 +
- arch/x86/kernel/paravirt.c            |   4 +-
- arch/x86/kernel/tdcall.S              | 254 ++++++++++++++++++++++++++
- arch/x86/kernel/tdx.c                 | 254 ++++++++++++++++++++++++++
- arch/x86/kernel/traps.c               |  69 +++++++
- 18 files changed, 877 insertions(+), 31 deletions(-)
- create mode 100644 arch/x86/boot/compressed/tdx.c
- create mode 100644 arch/x86/include/asm/tdx.h
- create mode 100644 arch/x86/kernel/tdcall.S
- create mode 100644 arch/x86/kernel/tdx.c
-
--- 
-2.25.1
-
+> Reviewed-by: Bean Huo <beanhuo@micron.com>
+> 
+> 
+> Bean
