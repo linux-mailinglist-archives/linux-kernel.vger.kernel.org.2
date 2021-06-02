@@ -2,191 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD27E397F9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE95397F9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhFBDne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhFBDnc (ORCPT
+        id S231225AbhFBDou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 23:44:50 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:45956 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhFBDos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:43:32 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47869C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 20:41:49 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 29so1108515pgu.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 20:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zLdktgE0a9sEXZ0/b+s3AebnOjlZIpwVaCTKFoWaY6o=;
-        b=PyV8FeSKyEIVaDpLD1OQklsC0+U/xDfysW1/zZXRwfV+KdD6NggGTMgx0BhlkyFcVW
-         SuRX+ExKpACmEe4VXNzThsolvdMl99oWRC4cLxxUJxJlxkG0WEAH1BeLWZGowj3e2+g6
-         FJO0au3vJfJ7e2KFHuA73+gMVKDUzYq2QluuHh17e5HzHEMzFAru7FLzovFHeQfaJo9T
-         vCQqxmaUsbR50lSrCAYy3QdXiuzV+sGsjOpaavnZMj/xQtrfLs+PJJ7/WqjISF4F35zF
-         N2NNaZShZivIOJpEWbo8EQErq/+YBkkSsgADbfH0ePpBC4RyEdspM4G+RqHvPec+CQgF
-         o7zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zLdktgE0a9sEXZ0/b+s3AebnOjlZIpwVaCTKFoWaY6o=;
-        b=j6oYIJIADqS9dtYLJABEPR5ffyeydZvweOJNeICanp0gIt1pkNpGhwYv+5U1VMljD+
-         dE44pIlQtRnvRqEXvZ3ttvebyLxz2Hkbz/t+MOk7pa6AroV9cPArr9EjHLkwsH6XO9Eg
-         0K1BvzLuvjy/Hu+dVKIXwliNcDA4JztmhLH23ckUYhqY4qTwVPtBiYkj7ZY/Q4bpC3HQ
-         1eC4BRWpPuQpS8Qyeg5v45V6VE/NLe8dNUh1+90em92/XT5wshQuknrghMd//TC1zhZi
-         tgPQXCOWvFfW/WBXouKc9fpGeKlWNRHhpukhJIwQyKr23nuvX+/Z/NkdmnyjaylD21L/
-         r3KA==
-X-Gm-Message-State: AOAM532sXdLuz1kzDWDqeCnVFMHTUQrvXskxHC1v5SC/7oxPzvB1VSKw
-        bOsCh6mBR5xEEJydvGdd36A=
-X-Google-Smtp-Source: ABdhPJzPeLvDeBppfezgwtWuGF9uxgIOTAtzej3GgkpTc/DSKL2YdMFF0UIb8N/mqAv4ufvrNDH0ew==
-X-Received: by 2002:aa7:80d3:0:b029:28e:f117:4961 with SMTP id a19-20020aa780d30000b029028ef1174961mr25291555pfn.37.1622605308627;
-        Tue, 01 Jun 2021 20:41:48 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.140])
-        by smtp.gmail.com with ESMTPSA id 141sm10746460pgf.20.2021.06.01.20.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 20:41:48 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com, dan.carpenter@oracle.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Subject: [PATCH v2] ALSA: control led: fix memory leak in snd_ctl_led_register
-Date:   Wed,  2 Jun 2021 11:41:36 +0800
-Message-Id: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Jun 2021 23:44:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622605386; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3RWpGH7+ADvxSKf9v9v8j26Fd2ClOYJsOneqcbpTZIE=;
+ b=ms7SZ3RSyvEQBBtN9Z+L7Qz/O7OXb4sxJY5Vv373IcRTRbx30ZsJM5ySCUSpxFXOVed5PAG6
+ z9QmODQc1jNC/5Qht6YYsv/OWAyb8ZxL01L636WhIXu3Qz/kpn/jTxWQt4AQIhv7+g2kcyPN
+ PMh1j7z8bXPXfRy/3Q21T63mrcA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60b6fe47e27c0cc77f2d443a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 03:43:03
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DC209C4338A; Wed,  2 Jun 2021 03:43:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1FA98C433F1;
+        Wed,  2 Jun 2021 03:43:02 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 02 Jun 2021 09:13:02 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, dianders@chromium.org,
+        mka@chromium.org, sboyd@kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] cpufreq: blacklist SC7280 in cpufreq-dt-platdev
+In-Reply-To: <YLUpE6NK3WC+Nu2S@builder.lan>
+References: <1620807083-5451-1-git-send-email-sibis@codeaurora.org>
+ <1620807083-5451-2-git-send-email-sibis@codeaurora.org>
+ <20210520035622.e276tqpl4gg5fxhk@vireshk-i7>
+ <6f5b1d0992243ff5d71362f463a5f1cf@codeaurora.org>
+ <YLUpE6NK3WC+Nu2S@builder.lan>
+Message-ID: <c3c598fe616a567721abc4a5151b779c@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
-the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
-to decrease the refcount to zero, which causes device_release never to
-be invoked. This leads to memory leak to some resources, like struct
-device_private. In addition, we also free some other similar memory
-leaks in snd_ctl_led_init/snd_ctl_led_exit.
+On 2021-05-31 23:51, Bjorn Andersson wrote:
+> On Thu 20 May 02:20 CDT 2021, Sibi Sankar wrote:
+> 
+>> On 2021-05-20 09:26, Viresh Kumar wrote:
+>> > On 12-05-21, 13:41, Sibi Sankar wrote:
+>> > > Add SC7280 to cpufreq-dt-platdev blacklist since the actual scaling is
+>> > > handled by the 'qcom-cpufreq-hw' driver.
+>> > >
+>> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> > > ---
+>> > >  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+>> > >  1 file changed, 1 insertion(+)
+>> > >
+>> > > diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c
+>> > > b/drivers/cpufreq/cpufreq-dt-platdev.c
+>> > > index 5e07065ec22f..345418b8250e 100644
+>> > > --- a/drivers/cpufreq/cpufreq-dt-platdev.c
+>> > > +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+>> > > @@ -137,6 +137,7 @@ static const struct of_device_id blacklist[]
+>> > > __initconst = {
+>> > >  	{ .compatible = "qcom,msm8996", },
+>> > >  	{ .compatible = "qcom,qcs404", },
+>> > >  	{ .compatible = "qcom,sc7180", },
+>> > > +	{ .compatible = "qcom,sc7280", },
+>> > >  	{ .compatible = "qcom,sdm845", },
+>> > >
+>> > >  	{ .compatible = "st,stih407", },
+>> >
+>> > Applied 1/2. Thanks.
+>> >
+>> > What do you want to do for 2/2 ? Go through my tree? need an update ?
+>> 
+>> Lets skip pulling in 2/2 for now.
+> 
+> In particular it's ripe for merge conflicts, so I'd prefer to take it
+> through my tree.
+> 
+>> It depends on a few other changes to land first and the cpufreq node
+>> for sc7280 needs a re-spin.
+> 
+> What other dependencies do we have?
+> 
+> I dropped the reg-names from the cpufreq node and merged that change.
 
-Fix this by replacing device_del to device_unregister
-in snd_ctl_led_sysfs_remove/snd_ctl_led_init/snd_ctl_led_exit.
+It depends on the epss cpufreq and l3 node.
+The reg regions used by the cpufreq and
+l3 regions currently overlap and that needs
+to be sorted out in cpufreq.
 
-Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
-call kobject_release and delay the release of kobject, which will cause
-use-after-free when the memory backing the kobject is freed at once.
+> 
+> Regards,
+> Bjorn
 
-Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
-v1->v2: fix other similar memory leaks; move kfree(led_card) to a
-release function.
- sound/core/control_led.c | 33 ++++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
-
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index 25f57c14f294..a90e31dbde61 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -17,6 +17,9 @@ MODULE_LICENSE("GPL");
- #define MAX_LED (((SNDRV_CTL_ELEM_ACCESS_MIC_LED - SNDRV_CTL_ELEM_ACCESS_SPK_LED) \
- 			>> SNDRV_CTL_ELEM_ACCESS_LED_SHIFT) + 1)
- 
-+#define to_led_card_dev(_dev) \
-+	container_of(_dev, struct snd_ctl_led_card, dev)
-+
- enum snd_ctl_led_mode {
- 	 MODE_FOLLOW_MUTE = 0,
- 	 MODE_FOLLOW_ROUTE,
-@@ -371,6 +374,21 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
- 	snd_ctl_led_refresh();
- }
- 
-+static void snd_ctl_led_card_release(struct device *dev)
-+{
-+	struct snd_ctl_led_card *led_card = to_led_card_dev(dev);
-+
-+	kfree(led_card);
-+}
-+
-+static void snd_ctl_led_release(struct device *dev)
-+{
-+}
-+
-+static void snd_ctl_led_dev_release(struct device *dev)
-+{
-+}
-+
- /*
-  * sysfs
-  */
-@@ -663,6 +681,7 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
- 		led_card->number = card->number;
- 		led_card->led = led;
- 		device_initialize(&led_card->dev);
-+		led_card->dev.release = snd_ctl_led_card_release;
- 		if (dev_set_name(&led_card->dev, "card%d", card->number) < 0)
- 			goto cerr;
- 		led_card->dev.parent = &led->dev;
-@@ -681,7 +700,6 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
- 		put_device(&led_card->dev);
- cerr2:
- 		printk(KERN_ERR "snd_ctl_led: unable to add card%d", card->number);
--		kfree(led_card);
- 	}
- }
- 
-@@ -700,8 +718,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
- 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
- 		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
- 		sysfs_remove_link(&led_card->dev.kobj, "card");
--		device_del(&led_card->dev);
--		kfree(led_card);
-+		device_unregister(&led_card->dev);
- 		led->cards[card->number] = NULL;
- 	}
- }
-@@ -723,6 +740,7 @@ static int __init snd_ctl_led_init(void)
- 
- 	device_initialize(&snd_ctl_led_dev);
- 	snd_ctl_led_dev.class = sound_class;
-+	snd_ctl_led_dev.release = snd_ctl_led_dev_release;
- 	dev_set_name(&snd_ctl_led_dev, "ctl-led");
- 	if (device_add(&snd_ctl_led_dev)) {
- 		put_device(&snd_ctl_led_dev);
-@@ -733,15 +751,16 @@ static int __init snd_ctl_led_init(void)
- 		INIT_LIST_HEAD(&led->controls);
- 		device_initialize(&led->dev);
- 		led->dev.parent = &snd_ctl_led_dev;
-+		led->dev.release = snd_ctl_led_release;
- 		led->dev.groups = snd_ctl_led_dev_attr_groups;
- 		dev_set_name(&led->dev, led->name);
- 		if (device_add(&led->dev)) {
- 			put_device(&led->dev);
- 			for (; group > 0; group--) {
- 				led = &snd_ctl_leds[group - 1];
--				device_del(&led->dev);
-+				device_unregister(&led->dev);
- 			}
--			device_del(&snd_ctl_led_dev);
-+			device_unregister(&snd_ctl_led_dev);
- 			return -ENOMEM;
- 		}
- 	}
-@@ -767,9 +786,9 @@ static void __exit snd_ctl_led_exit(void)
- 	}
- 	for (group = 0; group < MAX_LED; group++) {
- 		led = &snd_ctl_leds[group];
--		device_del(&led->dev);
-+		device_unregister(&led->dev);
- 	}
--	device_del(&snd_ctl_led_dev);
-+	device_unregister(&snd_ctl_led_dev);
- 	snd_ctl_led_clean(NULL);
- }
- 
 -- 
-2.25.1
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
