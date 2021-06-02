@@ -2,172 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5419B398F91
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3BD398F94
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhFBQG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:06:57 -0400
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:40649 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhFBQG4 (ORCPT
+        id S232560AbhFBQII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhFBQIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:06:56 -0400
-Received: by mail-pf1-f169.google.com with SMTP id q25so2544255pfh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:05:13 -0700 (PDT)
+        Wed, 2 Jun 2021 12:08:07 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEF6C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 09:06:23 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id e22so2611203pgv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:06:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XKxsJlne+LArk5awxmh1nwPa7SN5h9s/re93Xtt4ka8=;
-        b=FjEfvrJD0PcwRixn9+ipYc2UVI2BVVXxHzEBpdpdib/cTv5yJ75wIJx+OrYoVpxajD
-         wj2ZV3OQxeN8Ily3fsGw06aAiUR198DJqYG8plUdI8K6LKjkv1/qHgqmSxSvjh1UWK0k
-         k9/x+DtgsGZ9BrtzsjvfIAoDHHEcn550Qs0pUuddetVdM8fXClwxuZzWD9fdbZALjHUr
-         xAfvKcoYYg8i1UdPItt4lObs+J5rspbn9XCEXmwH/YynjaMQ1BxeVXzJNirYDqGu6x2y
-         wCjDJVYA44ppLpbjwsY5H6PTzRYZCgIzA2aU+0I2PBrftmIxDK/eICpD3WtVJgFYjqu2
-         g73g==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bGVJ1fEqd+Kmtn4CZUiicvmSxzhYZxgsSiEwCJsJFPs=;
+        b=gaKK+caiwwpAV1acAj90mEj+I+G3WF84YlHQoghHtaMb21r1BPmcOdmERodSw7gckN
+         v+rrAMqvANdGQ9qsYyLdAMup2LVONj2nqhjUPhtvOzKSVIP7ROgIHsc4qy4Rq4IQQGo3
+         cho/IKi31EFebhHza+L5urNVrf3jB6bn7CgVo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XKxsJlne+LArk5awxmh1nwPa7SN5h9s/re93Xtt4ka8=;
-        b=o2AGiePe4OYt8h5NlaPLtWHyWx+t6f4eRFL+f7GWrclfQB9dS1vcOAi3oiGLnETQFV
-         xzTlfIp7Eh+TqA+/gVBOBiaB9E7ggyUWcJzyMZsH2TF426G3DidPFaWXSOaQ8a3mlkVy
-         oWgROoxQS1g2w+xTgJeKZP/DCp+0QQTBd7+hZhmJfwhRz9vMSk68PZaZUCo1TNbNF4AW
-         pxSlQWHye74vFz8oxWaGuTvcGdzs1wz7z8Kh4Efksf47DHuJz1U+nZbD+B7BrnmR4bop
-         lqqbFs+wmK1CwuWziMoHvzJtDW0lZVaq45yby2NOQgqB8uDrR7c2l867gaEXhG/dAUx0
-         ZhjQ==
-X-Gm-Message-State: AOAM530bMFqhuUTPOBRzrERGrfxiWKzp2gRGvfBkhaMtFIn++2dlddTh
-        ePne+PHk+F3B4NAsMrb4eNSXBA==
-X-Google-Smtp-Source: ABdhPJwMUb2pY+sg5TfsR33k8PDKyPC3ae62iZt5DGmYIGl1OkmztCpjP4ArzfBhi8o7V/STIGWjTA==
-X-Received: by 2002:a05:6a00:c86:b029:2e9:3041:162f with SMTP id a6-20020a056a000c86b02902e93041162fmr27619121pfv.78.1622649853558;
-        Wed, 02 Jun 2021 09:04:13 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id c130sm103715pfc.51.2021.06.02.09.04.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 09:04:12 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 10:04:10 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] remoteproc: k3-dsp: Refactor mbox request code in
- start
-Message-ID: <20210602160410.GA1797307@xps15>
-References: <20210522000309.26134-1-s-anna@ti.com>
- <20210522000309.26134-6-s-anna@ti.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bGVJ1fEqd+Kmtn4CZUiicvmSxzhYZxgsSiEwCJsJFPs=;
+        b=HcCfmhFqVNl6VCBn2qKkXvff1HkZtyRHDtHzwflumRMMtCfkzKfVTUX8uQLjBmkV4B
+         l5aCuKY7nDEHJns3K5FN7Z3YkglkHjY+g9WctXPbvF4cvCjdLDlcl/+gQrUfhT9IANHN
+         yZb8G40XQsucvAmyqskqE/l/dAavAFaajhuvFvhWS48XgRj7BTBUZgV2NAFeY6+TLjKN
+         lqLRvk5SQenTCya4Bn4w4eyE8xPICQFMX73DouhL+QcP1WxGg8DImF17E6YLQ6ApPChV
+         hmKDpFjlNjNgDhhJDaruf4MHnXOUwg5mn8mVn60zfFA9/R79kBQBGVt2nhC49O5+Z/P1
+         T+GA==
+X-Gm-Message-State: AOAM5312ZNLSt82tzHaYMw8YcNGYLqiHny65wGzcIZYk9iZiZFSIWCHb
+        USF2M58FqGZBV3EH6Pamqb4Q1A==
+X-Google-Smtp-Source: ABdhPJyEAwrGnHc8J9VsjWkA60Q3J0sEYJly49WpAkjmIW6xj6PdM9vaVC+MXdKwGxM6v4qPP9MNcg==
+X-Received: by 2002:aa7:9537:0:b029:2ea:2312:d2cb with SMTP id c23-20020aa795370000b02902ea2312d2cbmr3313322pfp.27.1622649983304;
+        Wed, 02 Jun 2021 09:06:23 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:d737:2805:1403:7c09])
+        by smtp.gmail.com with UTF8SMTPSA id s6sm61385pjr.29.2021.06.02.09.06.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 09:06:22 -0700 (PDT)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH] arm64: dts: qcom: pm6150: Add thermal zone for PMIC on-die temperature
+Date:   Wed,  2 Jun 2021 09:06:14 -0700
+Message-Id: <20210602090525.1.Id4510e9e4baaa3f6c9fdd5cdf4d8606e63c262e3@changeid>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210522000309.26134-6-s-anna@ti.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 07:03:08PM -0500, Suman Anna wrote:
-> Refactor out the mailbox request and associated ping logic code
-> from k3_dsp_rproc_start() function into its own separate function
-> so that it can be re-used in the soon to be added .attach() ops
-> callback.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
->  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 65 ++++++++++++++---------
->  1 file changed, 39 insertions(+), 26 deletions(-)
+Add a thermal zone for the pm6150 on-die temperature. The system should
+try to shut down orderly when the temperature reaches 95degC, otherwise
+the PMIC will power off at 115degC.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+---
 
-> 
-> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> index fd4eb67a6681..faf60a274e8d 100644
-> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> @@ -216,6 +216,43 @@ static int k3_dsp_rproc_release(struct k3_dsp_rproc *kproc)
->  	return ret;
->  }
->  
-> +static int k3_dsp_rproc_request_mbox(struct rproc *rproc)
-> +{
-> +	struct k3_dsp_rproc *kproc = rproc->priv;
-> +	struct mbox_client *client = &kproc->client;
-> +	struct device *dev = kproc->dev;
-> +	int ret;
-> +
-> +	client->dev = dev;
-> +	client->tx_done = NULL;
-> +	client->rx_callback = k3_dsp_rproc_mbox_callback;
-> +	client->tx_block = false;
-> +	client->knows_txdone = false;
-> +
-> +	kproc->mbox = mbox_request_channel(client, 0);
-> +	if (IS_ERR(kproc->mbox)) {
-> +		ret = -EBUSY;
-> +		dev_err(dev, "mbox_request_channel failed: %ld\n",
-> +			PTR_ERR(kproc->mbox));
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * Ping the remote processor, this is only for sanity-sake for now;
-> +	 * there is no functional effect whatsoever.
-> +	 *
-> +	 * Note that the reply will _not_ arrive immediately: this message
-> +	 * will wait in the mailbox fifo until the remote processor is booted.
-> +	 */
-> +	ret = mbox_send_message(kproc->mbox, (void *)RP_MBOX_ECHO_REQUEST);
-> +	if (ret < 0) {
-> +		dev_err(dev, "mbox_send_message failed: %d\n", ret);
-> +		mbox_free_channel(kproc->mbox);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
->  /*
->   * The C66x DSP cores have a local reset that affects only the CPU, and a
->   * generic module reset that powers on the device and allows the DSP internal
-> @@ -273,37 +310,13 @@ static int k3_dsp_rproc_unprepare(struct rproc *rproc)
->  static int k3_dsp_rproc_start(struct rproc *rproc)
->  {
->  	struct k3_dsp_rproc *kproc = rproc->priv;
-> -	struct mbox_client *client = &kproc->client;
->  	struct device *dev = kproc->dev;
->  	u32 boot_addr;
->  	int ret;
->  
-> -	client->dev = dev;
-> -	client->tx_done = NULL;
-> -	client->rx_callback = k3_dsp_rproc_mbox_callback;
-> -	client->tx_block = false;
-> -	client->knows_txdone = false;
-> -
-> -	kproc->mbox = mbox_request_channel(client, 0);
-> -	if (IS_ERR(kproc->mbox)) {
-> -		ret = -EBUSY;
-> -		dev_err(dev, "mbox_request_channel failed: %ld\n",
-> -			PTR_ERR(kproc->mbox));
-> +	ret = k3_dsp_rproc_request_mbox(rproc);
-> +	if (ret)
->  		return ret;
-> -	}
-> -
-> -	/*
-> -	 * Ping the remote processor, this is only for sanity-sake for now;
-> -	 * there is no functional effect whatsoever.
-> -	 *
-> -	 * Note that the reply will _not_ arrive immediately: this message
-> -	 * will wait in the mailbox fifo until the remote processor is booted.
-> -	 */
-> -	ret = mbox_send_message(kproc->mbox, (void *)RP_MBOX_ECHO_REQUEST);
-> -	if (ret < 0) {
-> -		dev_err(dev, "mbox_send_message failed: %d\n", ret);
-> -		goto put_mbox;
-> -	}
->  
->  	boot_addr = rproc->bootaddr;
->  	if (boot_addr & (kproc->data->boot_align_addr - 1)) {
-> -- 
-> 2.30.1
-> 
+ arch/arm64/boot/dts/qcom/pm6150.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/pm6150.dtsi b/arch/arm64/boot/dts/qcom/pm6150.dtsi
+index 8ab4f1f78bbf..de7fb129f739 100644
+--- a/arch/arm64/boot/dts/qcom/pm6150.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm6150.dtsi
+@@ -7,6 +7,30 @@
+ #include <dt-bindings/spmi/spmi.h>
+ #include <dt-bindings/thermal/thermal.h>
+ 
++/ {
++	thermal-zones {
++		pm6150_thermal: pm6150-thermal {
++			polling-delay-passive = <100>;
++			polling-delay = <0>;
++			thermal-sensors = <&pm6150_temp>;
++
++			trips {
++				pm6150_trip0: trip0 {
++					temperature = <95000>;
++					hysteresis = <0>;
++					type = "passive";
++				};
++
++				pm6150_crit: pm6150-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++		};
++	};
++};
++
+ &spmi_bus {
+ 	pm6150_lsid0: pmic@0 {
+ 		compatible = "qcom,pm6150", "qcom,spmi-pmic";
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
+
