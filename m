@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211AB397EA1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EBD397EAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbhFBCQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:16:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57055 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229606AbhFBCQu (ORCPT
+        id S230041AbhFBCRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229739AbhFBCRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:16:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622600108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cle+/CWEjt+Ggeb0RHpQ+aAs+qfHNk8GUbIdw+15kXg=;
-        b=YSKgRbdWguVx12SQf35gaGbXhTXgq0UuWgay/WF6abphoJmMZkjDwlKB53966bZ6J2qjNs
-        EDK/ZF968cDDyvkiIZoR/rWNm1XqNBv/lvfde2rvv44N58YVs4A2Nq3mMUln6NPXAbDHlU
-        ToZmlHgyoN0Fz5PnEPHOX+9VmabXeTI=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-519-HfTQLxinMT-XPUxD2i9u-w-1; Tue, 01 Jun 2021 22:15:07 -0400
-X-MC-Unique: HfTQLxinMT-XPUxD2i9u-w-1
-Received: by mail-pg1-f200.google.com with SMTP id s14-20020a63450e0000b029021f631b8861so692922pga.20
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 19:15:06 -0700 (PDT)
+        Tue, 1 Jun 2021 22:17:15 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146B5C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 19:15:31 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso1138643otu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 19:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B8W7mQck0zs774kTbT+4Y+xlf8nCc+MK9JC+2lYg3zE=;
+        b=qHJOGBXsNCjbuu1M9YqCpqq1RfvnCzeoKXJHOi7f50s8kzMuGq/2TH1aeim4YfVPWE
+         WuGlRuf+7W5KDX9ImbTKpto3udXjuRr1brQa2rEoWKqe4fpX5Cl47XFstY+mlkgZdS4s
+         bh6toS4Yhu18tWEFxLZp1RvD93zT8ur7rz/CeN7MxoX2S7GBkEGf/hANVq+9XCbFzuNI
+         W8FEDkf2LU3OaVDXOVQdNIM38qWX6blvgojVE3chWCwP/Y7nHpcCzJnE5/XWbpJmuPq6
+         wOF6rQUXREd+WaJAoF7YNCtzdVSTZtoMkyJDcZ4/othzCAmBg8g5HRw4SuOSUYAaNg3X
+         aQ6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Cle+/CWEjt+Ggeb0RHpQ+aAs+qfHNk8GUbIdw+15kXg=;
-        b=gi8pRnd3vbwmGfigLcowAi/5uv/iNRtbz2a+RKOGYSVWxaNzFpon1MCSbntNEkftMv
-         srQffo6SaKLcFWnLliiSQ0kn1A+d5/aUvd1Jb8V/7e9dtrB90+5q7OmjjYmR91ucPGMa
-         G+jP/Aq0EeJXEKMfwzhL0g8UWvbGeVnHqweHq3sUTZ7NwNizaFoSCnCALxMFzF/uj+eS
-         p8BOLcy5WMsoHn4Jm3Y0qXCO24XTkqRYizNZkc5XS+fpJbIm+VxdqLpwj6Ju23Kvpj8b
-         1PF/PROneMvlO90PAnvF5yE+aU7cpVrzzSxyAU3QW4Z25TO0TWLV0aRGu9XVY7i6S2hp
-         gOgA==
-X-Gm-Message-State: AOAM530S6O++Us+ft+L1PmPXnoVhHszq9Bc/BCTPCYRAX1OveSPd/CfS
-        01BuuiRb+TmWgwFHLClD2Xm0QtCHllqAQymlSSajOKAts/8ZmeGwf0S9RzASlUCz5eX8uLAqg7J
-        dvsLHP64UmxVT147PxXp8yp0O
-X-Received: by 2002:a17:90a:a08c:: with SMTP id r12mr2883169pjp.204.1622600106065;
-        Tue, 01 Jun 2021 19:15:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykGnr2O1DetdkzyvT3UnCkBGf69svfeCgS6uB7/1SFywbpMZIzEMp+JZbR6AtEywCmSjue0w==
-X-Received: by 2002:a17:90a:a08c:: with SMTP id r12mr2883149pjp.204.1622600105909;
-        Tue, 01 Jun 2021 19:15:05 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l201sm5847594pfd.183.2021.06.01.19.15.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 19:15:05 -0700 (PDT)
-Subject: Re: [PATCH V2 0/4]
-To:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     eli@mellanox.com
-References: <20210602021043.39201-1-jasowang@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3a1f66f8-12af-3853-49a9-3bd27062a3bf@redhat.com>
-Date:   Wed, 2 Jun 2021 10:15:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B8W7mQck0zs774kTbT+4Y+xlf8nCc+MK9JC+2lYg3zE=;
+        b=O/qmnjxKIqX5RMnBVH3rzDiNG9zyINF3Fk6fIZCgWN1OqxMMNsvPe4t8cJxHyiK09p
+         +zEkUHtb3NA8uzdFEAAqzuDo3j/6EeRsUN8Rsfjf28IYodASjHlL6CX6bTOw4vVP5U8L
+         nnBXQcQ+bWGshPCjV/I6dAeXCG+H1l4YhiSadovQ/WlSBcazgrnTT0S0f9PvcVB3zawA
+         /JU/55ESgSOaMt2x9uyKR2nZRHhl2tOiNQPB6lJ+ktPVQclx+kFwbwxANF26Ewq+hrvf
+         pHxhmwT4INVBu1Wh0mElswb4MEkHJPXIisUdw31fTiTGo0ib0C9ZJOisbriRwacZkNpN
+         7+FA==
+X-Gm-Message-State: AOAM532/0CdFM8dj+IcaUi8+qRMHfBGPGWWdwMkI5PByZwCLuojGD0r5
+        H8s5YtHT16nDzOod/Dv6zdnP+GlQRlBZVxv0+3E=
+X-Google-Smtp-Source: ABdhPJzYlfRlP9uhCedE+PX9MiStThS6tMzO/MIxFMIq/6cuN1r9zaxs1LVhr62SBosE9437BvCp3d9x1Sn39n1ihp4=
+X-Received: by 2002:a9d:74c6:: with SMTP id a6mr24935473otl.132.1622600130512;
+ Tue, 01 Jun 2021 19:15:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210602021043.39201-1-jasowang@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210601142055.4132163-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210601142055.4132163-1-zhengyongjun3@huawei.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 1 Jun 2021 22:15:19 -0400
+Message-ID: <CADnq5_PoERXyB7f08X9uxZ-jQj6jw2_PpXxj2YFGJM=Z+iBFPQ@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/amdgpu: Remove unneeded semicolon
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
-ÔÚ 2021/6/2 ÉÏÎç10:10, Jason Wang Ð´µÀ:
-> *** BLURB HERE ***
-
-
-Missing blurb...
-
-Will resend a new version.
-
-Thanks
-
-
+On Tue, Jun 1, 2021 at 10:07 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
 >
-> Eli Cohen (1):
->    virtio/vdpa: clear the virtqueue state during probe
+> Remove unneeded semicolon.
 >
-> Jason Wang (3):
->    vdpa: support packed virtqueue for set/get_vq_state()
->    virtio-pci library: introduce vp_modern_get_driver_features()
->    vp_vdpa: allow set vq state to initial state after reset
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/aldebaran.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
->   drivers/vdpa/ifcvf/ifcvf_main.c        |  4 +--
->   drivers/vdpa/mlx5/net/mlx5_vnet.c      |  8 ++---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c       |  4 +--
->   drivers/vdpa/virtio_pci/vp_vdpa.c      | 42 ++++++++++++++++++++++++--
->   drivers/vhost/vdpa.c                   |  4 +--
->   drivers/virtio/virtio_pci_modern_dev.c | 21 +++++++++++++
->   drivers/virtio/virtio_vdpa.c           | 15 +++++++++
->   include/linux/vdpa.h                   | 25 +++++++++++++--
->   include/linux/virtio_pci_modern.h      |  1 +
->   9 files changed, 109 insertions(+), 15 deletions(-)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/aldebaran.c b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
+> index 65b1dca4b02e..148f6c3343ab 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/aldebaran.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
+> @@ -227,7 +227,7 @@ static int aldebaran_mode2_restore_ip(struct amdgpu_device *adev)
+>                         break;
+>                 default:
+>                         break;
+> -               };
+> +               }
+>         }
 >
-
+>         /* Reinit NBIF block */
+> --
+> 2.25.1
+>
