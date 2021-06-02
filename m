@@ -2,176 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5488B398D5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DDD398D6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhFBOs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:48:27 -0400
-Received: from mail-mw2nam10on2048.outbound.protection.outlook.com ([40.107.94.48]:31172
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229586AbhFBOs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:48:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OhrbHEusELjc5eua7DuWVGyKeLKwAl++ypCpXada9OquYZUUH/cCh+nqDGU/u9R8X3Z75OoqLTaNOf1hfgrmP7Q3TylIk5FQfMjkVWlmZI1RomLtoXjMGpCuGsiMwlibAeqPn9rZg22T1FJJX/Dr/TdT50ycqQXp0SMLTXvnD/iWGz4dMrCDAzYvGKfnIAa6bO+LhSiK/0rE9LWLBynRGwD8LJ8chkKmD8Xw9oTScuwQRU+5f32lRlvhOyI9bVS8O3+5BcYl0Ot56br6UISzv0vKTnCRF3uOWy6SBHbIq/ren4JHVq+L9H05SNrNlfcv5vjcrkN66+3+EZgLzSf0Zg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RkVjyZycQAzy3DcttIDxhi0b4z3JKNqMY3HJLE8BMgc=;
- b=e7DBVQepsONIIIn6jt/NfUabRQBOWrcqppB+qSIogZCx8AaZPaqTWMcnfh/ayoj44gtXYzkyD65BmsIYJngun74IcuDAUjiUfSoODvaxtfVxHbEIN3w+fZSyL+XeqLbZA+xPSeg1Uh6lcMMyXMmkZmYwICqJ9mTt2D447ICeWq9U2FQ9Io0J9zoMCg9zLUUUFqoI9njY/lI4XFK7LvJBO7CZe9mig1EbMfXpYj+7uI3RmucI9F+uoh6FX88o3D8OueaI7yGmlnrrXfMjAwJU4rDw9TAWbJ1Tp6jnJpx1kzWOi+F9Zlyja7Rb4LMkPZyld2V693Yw7zv738cMdIyLcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RkVjyZycQAzy3DcttIDxhi0b4z3JKNqMY3HJLE8BMgc=;
- b=ZaRmiYZQwFWUk1jdyUov6aKtspVii4mfVKcDQ0ANUCmM74yrmY3bCT3OvEZy8zIfDSUMCm3U6opCNTDFK266FcBPpv063rMVjn/U77pn5TOJpaukFlx0wqtktswciVrJRJjL8VJpx+EEdJ3KZC/4X1fkWMxsiCpWU8kMusyrvOQ=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by CO6PR12MB5426.namprd12.prod.outlook.com (2603:10b6:5:35d::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Wed, 2 Jun
- 2021 14:46:40 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::f455:b0b4:439:2753]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::f455:b0b4:439:2753%3]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
- 14:46:40 +0000
-Subject: Re: [RESEND 16/26] drm/amd/display/dc/dce/dce_transform: Remove
- superfluous re-initialisation of DCFE_MEM_LIGHT_SLEEP_CNTL,
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-References: <20210602143300.2330146-1-lee.jones@linaro.org>
- <20210602143300.2330146-17-lee.jones@linaro.org>
-From:   Harry Wentland <harry.wentland@amd.com>
-Message-ID: <38291a94-4f21-d725-282f-5faabdc31cef@amd.com>
-Date:   Wed, 2 Jun 2021 10:46:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-In-Reply-To: <20210602143300.2330146-17-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [198.200.67.154]
-X-ClientProxiedBy: YQBPR0101CA0168.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:f::11) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        id S231565AbhFBOtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:49:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230092AbhFBOtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:49:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E82261207;
+        Wed,  2 Jun 2021 14:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622645288;
+        bh=ytbkft451AVHu/sv9O+1yHxWE5QaUUcYpHinzQWGilY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oFaPf/EGcp1bqCNSfbPd9OF2xa7o2Ntfin1h55YHUCHihLqUhuRWFALcsjyJqVvu3
+         Y91bwUZOIsEFC/tL7PsAT3NW2pmuCMMri5f6mMQdOP0nuAVKe9SwYQcmWW9WbZ/XpA
+         PoIpRGydGKIhIKVtHhzVu6FV2kTgGYhx9VOZ08mm/nHsF72YOGlYy3Wo5rD1Ycl6VO
+         iEfCLUY4hdvzrtVG3Pt7BekNhlDuUClohcALpyQQ1KVISUxk8dSk+DozQEt+xxMpvZ
+         6oRLbg4A4VBWbNLsQ8t27gcIkpn2wcsBwsMswN4j9Vrag6G0GPb4whAagnddnPqQmz
+         nNoYUZ6ZDqJdQ==
+Date:   Wed, 2 Jun 2021 15:47:55 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 1/6] sched: Unbreak wakeups
+Message-ID: <20210602144755.GA31179@willie-the-truck>
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.271625424@infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.50.3] (198.200.67.154) by YQBPR0101CA0168.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:f::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.27 via Frontend Transport; Wed, 2 Jun 2021 14:46:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c265e05a-379b-4a61-5262-08d925d53b1e
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5426:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR12MB542617FB2002D074037542108C3D9@CO6PR12MB5426.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:177;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 743lbOXrFOmXwlvNb72s165N1zyDA9hj6r+8xlumuP4nkLiaTrXT94TUNvTKfrLnNNPyqP7AcPaaffpP7i6s/1JvyWeViXIoMjHCtM/8OUjC1EpC7vi2zAQo39gvFBLEFkOLS3/zC2qwnwzJaRKdGgj0df64wLdJcerR+dRKvrWJFAIVTk935j/raOBV7Hlq5PXMDkzvbA9C2rByerb80C62gwmJxTI6RucYLxJ1t8ph/Xv6BJZcDCQEDI93W1PgNXKfpEAH0FnFZZPfJaWt3t7CLz75tLOMryIEhgc+AniVDnvlRis7umnXVdEZlSaPMlPlbXkHYVkKyd98JMXRl4mK2GHad8mwvugRGOwAamtRAJ201471MkgvU7Jser+cMzZqoMsixpzreAAn5qj1QaEkA/9YuQovlwwNFiaBNz2JHGNNi+nBGv+Yx11TijuSe20CVY2ckD2WeJUWXrfqAnnCTqZLVJ4P9ADM5vC09JXiL1krjVm2casp4rkke8dFZ2zv2S8OfcEjVsiFsEqaq0XHfV4QbYeCHl3Nvhuh1BVS6T3xmd62NT4lQcGia5exdsWiL1rhmXCUXy8GjqZFee7EIZD4jb5RNLtiG91RQbHLY33zxLsb47m1Il1MYWKZun8f/k3yNM9pvXT3uc8AcuvNr0pnAWzKegrDbLeZ6/eIn/bq+1XNKHO3t70W5Pxh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(186003)(6916009)(16526019)(31686004)(4326008)(86362001)(53546011)(26005)(6486002)(66574015)(316002)(2616005)(36756003)(8676002)(956004)(8936002)(16576012)(54906003)(83380400001)(478600001)(31696002)(5660300002)(38100700002)(66946007)(66476007)(2906002)(66556008)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T0pCNWQvUUkybktYWDUrUTdFc3lSSS9KVUR3RDFMSFNWcUdZbkowNXVCaFpt?=
- =?utf-8?B?d2sxT0ttV3I2NitSTHZjNlNoVnJGRzNMbFcrajdBdmlxNnhqOXlObXF4c3JO?=
- =?utf-8?B?Z0V0aFhpdm1GL2lTbmdpTnV4emFBYzIrYWFYUWZOV05qdnhrRG5YR2kzU2F5?=
- =?utf-8?B?a0pKNGR4L05uSDRvL2RFQVNESWRiV2F0S1BvQVRYdWxNZS9YZ3RoQ1lVQTU1?=
- =?utf-8?B?dkl6TmQ5YmhtcUpJUEdXUVpyRDVEM1ZpL1N0dy9ZN2JmS2F6WDVhdDE0dzBG?=
- =?utf-8?B?WUNyVUdjNnk5blRhVkhVMU5KaUNvTnQwRDJjS0EzbjBTVEVNMkd2ZkR6a3Jn?=
- =?utf-8?B?TTcyczVZVmN4R0dHUHFnTysxazhQR3Jkai9UL0ZaYmZVV2hqRi8xY0xVNjNq?=
- =?utf-8?B?TU9sb3NRMVZzYzA4S0FVTWMrV1FiZ1hVNW9XaVJIclpjSTJyY1lhVm8yRUF1?=
- =?utf-8?B?dXhvL2E0WjB1cFIvUFBlZkpKZTFHdmxmZDVFT3ZmSVNrSFRMNFRBdXJTVHZD?=
- =?utf-8?B?eWliWk02dnFDN3k2UjdpaWlURU9YLzVZR0dGWWdoUlFlaE5JNkJxb051MTlP?=
- =?utf-8?B?ekdkSG1VMFpqSklxWnVBYUV5Mnl5bkpHVXVJcThLVmpWcE5TcGQ3VjRFdDZD?=
- =?utf-8?B?MVd2VUlyMGx1anl5Si8zRlVwNFFvNmd0QzdDcXJRaUVJR3A3Wmx1V2x2djdx?=
- =?utf-8?B?YkZQbEc1eU9kL1JqT2Q1TUVhdi96KzNhTmsxYllmOEkwUjVrZytUV0hpMGhC?=
- =?utf-8?B?aVFuejJEY1FhT0czQzA0MWRVSUM4MzNST2hoMit0U1YvTUc2c1kzUzZSemhp?=
- =?utf-8?B?UXYxbHRFcFhMNGNhR1Y0cm0yVWJodUJiamo2STZTeHpxd0ZmMzNZay9sS3VE?=
- =?utf-8?B?cUVNR3AzbW1JeHJTNDlwSFRzSXVIUmZPQU5oQVZmTEVIWDR3a0FsZ1IzYmly?=
- =?utf-8?B?cUI2ZWhSdjJWVGZWMnJZZ2tOdW1nRFBCSWxKZVpqcXd3bkdRU1JTWVoxbWpn?=
- =?utf-8?B?TjhHZzB4V2JNbzhOdWVxYW54QmtSYXU2S1dCeFFaRkx6eENNNXVKd3dJMExX?=
- =?utf-8?B?Q3g5cTIrZXNKV1hha1Z1U3BkOXF6cFBpdzBUZjFzUVpYVEZBK2FUWHRhcjVh?=
- =?utf-8?B?L2tRWWszK24xSGJTekt5R0dYbWg5cWFTYmdxZnFEVmt5K0VtWFFGekhwYXdR?=
- =?utf-8?B?ZmNoTzFMU1FER2oxb1RHMm1lRVVlTU1vQjl6QlJMOVV3OVRRTG1CbGVvN2Fn?=
- =?utf-8?B?Z09iSjUzTHNDQjEzSjVwVjhJcXNqcW1XYnRKYXJkaTRqQ3U2L1RraTJTYnow?=
- =?utf-8?B?cmlMOVc0aGJMOUt1ZHY3MWtlZkVod1grWjJoSTVka29LWTNmQ3BVSTU5Ui9a?=
- =?utf-8?B?amlqSmIwZkpQRVF1K0NORThzY3dMWWpNZ25OaEdqTks3TEhROExDb21rcXk2?=
- =?utf-8?B?cTVJVVM1NEJPWGNiUHRqZG9VTVloT29wenhCYmFBSDhuRE9XZ1o0OHZmNERK?=
- =?utf-8?B?NUllOWdKMklkbzJhU2grdHoweVd6V3ZHbWU3aXRtVG1GamlpMGZHTnRJcGVL?=
- =?utf-8?B?dXRTWS9mQjlHSzBEdUVuUzNkWUo5Y1RjYXFSOGc1NVJhOGE4OC8rRFNORXpZ?=
- =?utf-8?B?cFkwWEI2TktyM3JlSGVDMGtxbUFHZUc0eUF0M3g1S1YzbjFhN2oxaUlGd28x?=
- =?utf-8?B?Z2lRQTB0T3JvWDN5V0Z1YlZiMCtQS1JmazRuenduVzVSMklFQlROVXNNZW5G?=
- =?utf-8?Q?6vdo9prhU9PfJjWdLAu6OzooeowoiwZ/c+htn0Y?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c265e05a-379b-4a61-5262-08d925d53b1e
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 14:46:40.1184
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7YKqC2H7GacR8yeJi5BFLOwbdSjoOBNnipE6qIgKrvWc1MZRz7Y1eLus4LOggVV5PtWjLjmSeLREMQbZdRQqJQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5426
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602133040.271625424@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-02 10:32 a.m., Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Wed, Jun 02, 2021 at 03:12:26PM +0200, Peter Zijlstra wrote:
+> Remove broken task->state references and let wake_up_process() DTRT.
 > 
->  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp_psp.c:374:22: warning: no previous prototype for ‘mod_hdcp_hdcp1_get_link_encryption_status’
->  In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:28:
->  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:568:43: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:157:14: note: in expansion of macro ‘mmCRTC0_DCFE_MEM_LIGHT_SLEEP_CNTL’
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_transform.h:170:2: note: in expansion of macro ‘SRI’
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:183:3: note: in expansion of macro ‘XFM_COMMON_REG_LIST_DCE60’
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:187:3: note: in expansion of macro ‘transform_regs’
->  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:568:43: note: (near initialization for ‘xfm_regs[0].DCFE_MEM_LIGHT_SLEEP_CNTL’)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:157:14: note: in expansion of macro ‘mmCRTC0_DCFE_MEM_LIGHT_SLEEP_CNTL’
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_transform.h:170:2: note: in expansion of macro ‘SRI’
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:183:3: note: in expansion of macro ‘XFM_COMMON_REG_LIST_DCE60’
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:187:3: note: in expansion of macro ‘transform_regs’
->  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:645:43: warning: initialized field overwritten [-Woverride-init]
+> The anti-pattern in these patches breaks the ordering of ->state vs
+> COND as described in the comment near set_current_state() and can lead
+> to missed wakeups:
 > 
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian König" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Mauro Rossi <issor.oruam@gmail.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Thanks for the fix.
-
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-
-Harry
-
+> 	(OoO load, observes RUNNING)<-.
+> 	for (;;) {                    |
+> 	  t->state = UNINTERRUPTIBLE; |
+> 	  smp_mb();          ,-----> ,' (OoO load, observed !COND)
+>                              |       |
+> 	                     |       |	COND = 1;
+> 			     |	     `- if (t->state != RUNNING)
+>                              |		  wake_up_process(t); // not done
+> 	  if (COND) ---------'
+> 	    break;
+> 	  schedule(); // forever waiting
+> 	}
+> 	t->state = TASK_RUNNING;
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  drivers/gpu/drm/amd/display/dc/dce/dce_transform.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
-> index cbce194ec7b82..e98b5d4141739 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
-> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
-> @@ -166,8 +166,7 @@
->  	SRI(SCL_F_SHARP_CONTROL, SCL, id)
->  
->  #define XFM_COMMON_REG_LIST_DCE60(id) \
-> -	XFM_COMMON_REG_LIST_DCE60_BASE(id), \
-> -	SRI(DCFE_MEM_LIGHT_SLEEP_CNTL, CRTC, id)
-> +	XFM_COMMON_REG_LIST_DCE60_BASE(id)
->  #endif
->  
->  #define XFM_SF(reg_name, field_name, post_fix)\
-> 
+>  drivers/net/ethernet/qualcomm/qca_spi.c |    6 ++----
+>  drivers/usb/gadget/udc/max3420_udc.c    |   15 +++++----------
+>  drivers/usb/host/max3421-hcd.c          |    3 +--
+>  kernel/softirq.c                        |    2 +-
+>  4 files changed, 9 insertions(+), 17 deletions(-)
 
+Acked-by: Will Deacon <will@kernel.org>
+
+I couldn't spot any others.
+
+Will
