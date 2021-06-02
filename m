@@ -2,134 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D872399570
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384CB399568
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhFBVcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:32:14 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:46992 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbhFBVcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:32:12 -0400
-Received: by mail-wr1-f45.google.com with SMTP id a11so1801676wrt.13;
-        Wed, 02 Jun 2021 14:30:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4s+WtVD0z1zrvcjIi7mvIhu9JKhygKLIdbwXXCCDpJ8=;
-        b=UOENaWmX3PzGWYoKPFhCQXlJ9/5W38ns2q5K3buxLEbFhE0ynImXXyXe0xjWaUw+2k
-         3+HrtTIKZNHqHbPiOVtemxOy27y0wGopobb4amoi+NnmxXjOhatFWAoBLD/1dwECQvrb
-         76+T7NF9tD5xlnQ7EFqs6SrBVxRihaibGjEqi2PuMRhbTmheHCdCIdRW3Qcfc8HBhss1
-         0hugAJNGNvrWgLacfV+jzs0ATYO7VeUNzAMvq19O9/7PAU7y0ydzdJWkrAxXmbcUi4hO
-         C+r0lGgqUNzttSv8I7Rj38rxxUZjbg9ss5eXjhx8UilqupeVKU1cm8j0SQ48/seiaoyL
-         BepQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4s+WtVD0z1zrvcjIi7mvIhu9JKhygKLIdbwXXCCDpJ8=;
-        b=sELs9bzCVuZ58J9AGg6QIF3qlTemapa8ETXaI3qFuR7pBk5t1jXdVuBy3nD6r/9s6e
-         5kdYSOOM44Bn3i/MYf69YURD7BOSK4/hv9Uv0dRSbSS7Pt9Si/6ChodfbVUKNGl3+ijK
-         k1L5511FHNkCV3bYs6qImQnp0xfklBTA0VX2PWJpq7w8Llpnr/xXVVdjlweiZUNv0EDR
-         xNbPvBcgHIUPMwRWc3sae9twMvfUFGOCmpg7SDnFRdlXP5cJGgoSNQokBdfPW1uQhKq8
-         XCANvw0wbku4x8OPsFkmQaZSxtpzBmY5xYaBYtTKeVHiuckRCBI0zuRs7HgG2Q/H4JLT
-         g9KQ==
-X-Gm-Message-State: AOAM531f2UvGhP9W46ptHN8K+jTj34EvLI7IwxhGSCMy8zckFMySqDOz
-        ArwNgthOJ3A9bcKqNpE4id1A27TAqGLafw==
-X-Google-Smtp-Source: ABdhPJzjiDdoclNUldyrUeLFcTnrcPHIcR9mw6VbQ4HURvNHqRXQdc6ch3lj36KtL5Jsp1ptwwIdxg==
-X-Received: by 2002:adf:ef06:: with SMTP id e6mr24281131wro.393.1622669367880;
-        Wed, 02 Jun 2021 14:29:27 -0700 (PDT)
-Received: from localhost.localdomain ([185.199.80.151])
-        by smtp.gmail.com with ESMTPSA id 62sm1272616wrm.1.2021.06.02.14.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 14:29:27 -0700 (PDT)
-From:   Kurt Manucredo <fuzzybritches0@gmail.com>
-To:     syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com, nathan@kernel.org,
-        ndesaulniers@google.com, clang-built-linux@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        Kurt Manucredo <fuzzybritches0@gmail.com>
-Subject: [PATCH v3] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-Date:   Wed,  2 Jun 2021 21:27:26 +0000
-Message-Id: <20210602212726.7-1-fuzzybritches0@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <000000000000c2987605be907e41@google.com>
-References: 
+        id S229663AbhFBV3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:29:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229467AbhFBV3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 17:29:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16A2E613D2;
+        Wed,  2 Jun 2021 21:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622669257;
+        bh=lE85p69QGI6y7QaTePnues/2c+5McsZT084K1YrweNw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=B8DV6wOh3MIm5mi1YrXGOznlrfUuCZOeXpQiKZ6Y4RGio/y0ayYK32131jJflfu2o
+         7L6x9BIPlQ1HSWw84GBx2YkogJbaBC81Awr1gVz/gr+zmbrAPf7as0TWosv1VxAHq2
+         2K4CBf/t8TIjcl8XMfpbfIfe/bX2VT8/rIArQu/jJvj90vt/sZApPTQZJj6KQa7g4a
+         bygk9u92h8RhN+PfppdIqOtKIU8qjuGbYMWwnrACnzm/QNw5RJTcynYC9nA+Uo/jeB
+         I+i9L28XGEauUq4h7HxmU3Pb96IyJinOVmYSdJUTUwnoXO4eV4fewHyxx1jvDEizAa
+         Qnq/CagdimW8Q==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210519001802.1863-2-jonathan@marek.ca>
+References: <20210519001802.1863-1-jonathan@marek.ca> <20210519001802.1863-2-jonathan@marek.ca>
+Subject: Re: [PATCH v2 2/2] dt-bindings: clock: add QCOM SM8350 display clock bindings
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
+Date:   Wed, 02 Jun 2021 14:27:35 -0700
+Message-ID: <162266925581.4130789.10178141366818328902@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UBSAN: shift-out-of-bounds in kernel/bpf/core.c:1414:2
-shift exponent 248 is too large for 32-bit type 'unsigned int'
+Quoting Jonathan Marek (2021-05-18 17:18:02)
+> Add sm8350 DISPCC bindings, which are simply a symlink to the sm8250
+> bindings. Update the documentation with the new compatible.
+>=20
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml       | 6 ++++--
+>  include/dt-bindings/clock/qcom,dispcc-sm8350.h              | 1 +
 
-Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
----
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+>  create mode 120000 include/dt-bindings/clock/qcom,dispcc-sm8350.h
 
-https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
+Why the symlink? Can we have the dt authors use the existing header file
+instead?
 
-Changelog:
-----------
-v3 - Make it clearer what the fix is for.
-v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-check in check_alu_op() in verifier.c.
-v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-check in ___bpf_prog_run().
+>=20
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.y=
+aml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> index 0cdf53f41f84..8f414642445e 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> @@ -4,24 +4,26 @@
+>  $id: http://devicetree.org/schemas/clock/qcom,dispcc-sm8x50.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+> =20
+> -title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM82=
+50
+> +title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM82=
+50/SM8350
 
-Hi everyone,
+Maybe just "Binding for SM8x50 SoCs"
 
-I hope this fixes it!
+> =20
+>  maintainers:
+>    - Jonathan Marek <jonathan@marek.ca>
+> =20
+>  description: |
+>    Qualcomm display clock control module which supports the clocks, reset=
+s and
+> -  power domains on SM8150 and SM8250.
+> +  power domains on SM8150/SM8250/SM8350.
 
-kind regards
+same 8x50 comment.
 
- kernel/bpf/verifier.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 94ba5163d4c5..04e3bf344ecd 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7880,13 +7880,25 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			return -EINVAL;
- 		}
- 
--		if ((opcode == BPF_LSH || opcode == BPF_RSH ||
--		     opcode == BPF_ARSH) && BPF_SRC(insn->code) == BPF_K) {
-+		if (opcode == BPF_LSH || opcode == BPF_RSH ||
-+		     opcode == BPF_ARSH) {
- 			int size = BPF_CLASS(insn->code) == BPF_ALU64 ? 64 : 32;
- 
--			if (insn->imm < 0 || insn->imm >= size) {
--				verbose(env, "invalid shift %d\n", insn->imm);
--				return -EINVAL;
-+			if (BPF_SRC(insn->code) == BPF_K) {
-+				if (insn->imm < 0 || insn->imm >= size) {
-+					verbose(env, "invalid shift %d\n", insn->imm);
-+					return -EINVAL;
-+				}
-+			}
-+			if (BPF_SRC(insn->code) == BPF_X) {
-+				struct bpf_reg_state *src_reg;
-+
-+				src_reg = &regs[insn->src_reg];
-+				if (src_reg->umax_value >= size) {
-+					verbose(env, "invalid shift %lld\n",
-+							src_reg->umax_value);
-+					return -EINVAL;
-+				}
- 			}
- 		}
- 
--- 
-2.30.2
-
+> =20
+>    See also:
+>      dt-bindings/clock/qcom,dispcc-sm8150.h
+>      dt-bindings/clock/qcom,dispcc-sm8250.h
+> +    dt-bindings/clock/qcom,dispcc-sm8350.h
+> =20
+>  properties:
+>    compatible:
+>      enum:
+>        - qcom,sm8150-dispcc
+>        - qcom,sm8250-dispcc
+> +      - qcom,sm8350-dispcc
+> =20
+>    clocks:
+>      items:
+> diff --git a/include/dt-bindings/clock/qcom,dispcc-sm8350.h b/include/dt-=
+bindings/clock/qcom,dispcc-sm8350.h
+> new file mode 120000
+> index 000000000000..0312b4544acb
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/qcom,dispcc-sm8350.h
+> @@ -0,0 +1 @@
+> +qcom,dispcc-sm8250.h
+> \ No newline at end of file
