@@ -2,269 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A3B39931B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B26339931E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhFBTEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:04:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33998 "EHLO mail.kernel.org"
+        id S229778AbhFBTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:04:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhFBTEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:04:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E155613E7;
-        Wed,  2 Jun 2021 19:02:57 +0000 (UTC)
+        id S229755AbhFBTEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:04:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06146613DE;
+        Wed,  2 Jun 2021 19:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622660577;
-        bh=lajGP6QzgBhYP9J6PHuzTJjJCvfkqE4Ga+mXgAeu7oY=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=Q0OLqLuC+xKRjrfsHU/tuLp0RKYhdMj1F3dTebp17sQmXrGOs3un3CkBsRRtDsxzx
-         4Ri5heUNuBrd9gp4Atn0xZMz4zcElHC9jfEPxKFgK88QGcbX3jcpjZnl0XmJafiTsx
-         75f/HD6ldah1JMZ0V2Ybw9Yvw9EM7BhJlEvvfzCef23LuPMt9j1z+cbYYN6uxwpxMD
-         zm2AUYYW2rYLzb71YqIyMwLP+74qS7cI7ASLeXuF9YD03yDaP2ERnSf+8uVtlHiD9j
-         INXJEMLu0txKwXtGk62N3EJptrDwwMj9QxiUazBquVKYQB59IJ16ibLuh3RYZkQ92n
-         98ZOKBgPITNWg==
-Date:   Wed, 2 Jun 2021 12:02:56 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH 2/2 v4] f2fs: support RO feature
-Message-ID: <YLfV4EPW5Yw6wP+v@google.com>
-References: <20210521190217.2484099-1-jaegeuk@kernel.org>
- <20210521190217.2484099-2-jaegeuk@kernel.org>
- <YK5UOfzwdZni7c5W@google.com>
- <YK5edM0igwfd47LV@google.com>
+        s=k20201202; t=1622660585;
+        bh=UmpCat1vUqyqVee399R6xx/T2Sz4LjLr8R8Go7S3p1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IslsaRMEZqqFu3ZzSgqNdLrDRXTjEsWWBTdbepFtuZAlmqCW7jni6jsPwMosOCRva
+         hVL4+t36l+lWWC9rTXUuGHZZNChuQuVPwsgAcgarySIPQWhv3ySLboMSW6JMAf2YId
+         ToOOtiPdJHHzvzYjHqjjfZEO2eYA4AX3Aljp7kAmGXZVA7L2lL6g56NGyyXCmMhVl1
+         sQBuEtFrWqF1K+sFvakhAFEVFj0EMbQqcXRB118BwCBgCvQ2560yN11nj7Z+69id6J
+         JER6VIjNBqPeimx5Ez/tElO4wGeBBVyTueFWmNTpZMfSZeX2/qtGWJoWzcr8IJn95m
+         meDf8kBhp6UbA==
+Received: by pali.im (Postfix)
+        id 81EBA1534; Wed,  2 Jun 2021 21:03:02 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 21:03:02 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-pci@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] PCI: Disallow retraining link for Atheros chips on
+ non-Gen1 PCIe bridges
+Message-ID: <20210602190302.d3ibdtwti4yq57vi@pali>
+References: <20210602120816.axi4dtnyg5gl2h2z@pali>
+ <20210602155559.GA2028037@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YK5edM0igwfd47LV@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602155559.GA2028037@bjorn-Precision-5520>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given RO feature in superblock, we don't need to check provisioning/reserve
-spaces and SSA area.
+On Wednesday 02 June 2021 10:55:59 Bjorn Helgaas wrote:
+> On Wed, Jun 02, 2021 at 02:08:16PM +0200, Pali Rohár wrote:
+> > On Tuesday 01 June 2021 19:00:36 Bjorn Helgaas wrote:
+> 
+> > > I wonder if this could be restructured as a generic quirk in quirks.c
+> > > that simply set the bridge's TLS to 2.5 GT/s during enumeration.  Or
+> > > would the retrain fail even in that case?
+> > 
+> > If I understand it correctly then PCIe link is already up when kernel
+> > starts enumeration. So setting Bridge TLS to 2.5 GT/s does not change
+> > anything here.
+> > 
+> > Moreover it would have side effect that cards which are already set to
+> > 5+ GT/s would be downgraded to 2.5 GT/s during enumeration and for
+> > increasing speed would be needed another round of "enumeration" to set a
+> > new TLS and retrain link again. As TLS affects link only after link goes
+> > into Recovery state.
+> > 
+> > So this would just complicate card enumeration and settings.
+> 
+> The current quirk complicates the ASPM code.  I'm hoping that if we
+> set the bridge's Target Link Speed during enumeration, the link
+> retrain will "just work" without complicating the ASPM code.
+> 
+> An enumeration quirk wouldn't have to set the bridge's TLS to 2.5
+> GT/s; the quirk would be attached to specific endpoint devices and
+> could set the bridge's TLS to whatever the endpoint supports.
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
+Now I see what you mean. Yes, I agree this is a good idea and can
+simplify code. Quirk is not related to ASPM code and basically has
+nothing with it, just I put it into aspm.c because this is the only
+place where link retraining was activated.
 
-Change log from v3:
- - add feature sysfs entries
+But with this proposal there is one issue. Some kernel drivers already
+overwrite PCI_EXP_LNKCTL2_TLS value. So if PCI enumeration code set some
+value into PCI_EXP_LNKCTL2_TLS bits then drivers can change it and once
+ASPM will try to retrain link this may cause this issue.
 
- fs/f2fs/f2fs.h    |  3 +++
- fs/f2fs/segment.c |  4 ++++
- fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
- fs/f2fs/sysfs.c   |  8 ++++++++
- 4 files changed, 46 insertions(+), 6 deletions(-)
+> > Moreover here we are dealing with specific OTP/EEPROM bug in Atheros
+> > chips, which was confirmed that exists. As I wrote in previous email, I
+> > was told that semi-official workaround is do Warm Reset or Cold Reset
+> > with turning power off from card. Which on most platforms / boards is
+> > not possible.
+> 
+> If there's a specific bug with a real root-cause analysis, please cite
+> it.  The threads mentioned in the current commit log are basically
+> informed speculation.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index eaf57b5f3c4b..8903c43091f8 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -168,6 +168,7 @@ struct f2fs_mount_info {
- #define F2FS_FEATURE_SB_CHKSUM		0x0800
- #define F2FS_FEATURE_CASEFOLD		0x1000
- #define F2FS_FEATURE_COMPRESSION	0x2000
-+#define F2FS_FEATURE_RO			0x4000
- 
- #define __F2FS_HAS_FEATURE(raw_super, mask)				\
- 	((raw_super->feature & cpu_to_le32(mask)) != 0)
-@@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
- #define	NR_CURSEG_DATA_TYPE	(3)
- #define NR_CURSEG_NODE_TYPE	(3)
- #define NR_CURSEG_INMEM_TYPE	(2)
-+#define NR_CURSEG_RO_TYPE	(2)
- #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
- #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
- 
-@@ -4128,6 +4130,7 @@ F2FS_FEATURE_FUNCS(verity, VERITY);
- F2FS_FEATURE_FUNCS(sb_chksum, SB_CHKSUM);
- F2FS_FEATURE_FUNCS(casefold, CASEFOLD);
- F2FS_FEATURE_FUNCS(compression, COMPRESSION);
-+F2FS_FEATURE_FUNCS(readonly, RO);
- 
- #ifdef CONFIG_BLK_DEV_ZONED
- static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 380ef34e1a59..376c33ab71e2 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
- 		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
- 		unsigned int blkofs = curseg->next_blkoff;
- 
-+		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-+			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
-+			continue;
-+
- 		sanity_check_seg_type(sbi, curseg->seg_type);
- 
- 		if (f2fs_test_bit(blkofs, se->cur_valid_map))
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 2fa59c674cd9..fb490383c767 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 	int ret;
- 
- 	if (!options)
--		return 0;
-+		goto default_check;
- 
- 	while ((p = strsep(&options, ",")) != NULL) {
- 		int token;
-@@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 			return -EINVAL;
- 		}
- 	}
-+default_check:
- #ifdef CONFIG_QUOTA
- 	if (f2fs_check_quota_options(sbi))
- 		return -EINVAL;
-@@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 	 */
- 	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
- 		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-+
-+	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
-+		f2fs_err(sbi, "Allow to mount readonly mode only");
-+		return -EROFS;
-+	}
- 	return 0;
- }
- 
-@@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
- static void default_options(struct f2fs_sb_info *sbi)
- {
- 	/* init some FS parameters */
--	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-+	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-+		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
-+	else
-+		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-+
- 	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
- 	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
- 	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
-@@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
- 		goto skip;
- 
-+	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
-+		err = -EROFS;
-+		goto restore_opts;
-+	}
-+
- #ifdef CONFIG_QUOTA
- 	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
- 		err = dquot_suspend(sb, -1);
-@@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
- 	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
- 
--	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
-+	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-+			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
- 			ovp_segments == 0 || reserved_segments == 0)) {
- 		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
- 		return 1;
- 	}
--
- 	user_block_count = le64_to_cpu(ckpt->user_block_count);
--	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
-+	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
-+			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
- 	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
- 	if (!user_block_count || user_block_count >=
- 			segment_count_main << log_blocks_per_seg) {
-@@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
- 			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
- 			return 1;
-+
-+		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-+			goto check_data;
-+
- 		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
- 			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
- 				le32_to_cpu(ckpt->cur_node_segno[j])) {
-@@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 			}
- 		}
- 	}
-+check_data:
- 	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
- 		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
- 			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
- 			return 1;
-+
-+		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-+			goto skip_cross;
-+
- 		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
- 			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
- 				le32_to_cpu(ckpt->cur_data_segno[j])) {
-@@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 			}
- 		}
- 	}
--
-+skip_cross:
- 	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
- 	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
- 
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 09e3f258eb52..62fbe4f20dd6 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -158,6 +158,9 @@ static ssize_t features_show(struct f2fs_attr *a,
- 	if (f2fs_sb_has_casefold(sbi))
- 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
- 				len ? ", " : "", "casefold");
-+	if (f2fs_sb_has_readonly(sbi))
-+		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-+				len ? ", " : "", "readonly");
- 	if (f2fs_sb_has_compression(sbi))
- 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
- 				len ? ", " : "", "compression");
-@@ -578,6 +581,7 @@ enum feat_id {
- 	FEAT_SB_CHECKSUM,
- 	FEAT_CASEFOLD,
- 	FEAT_COMPRESSION,
-+	FEAT_RO,
- 	FEAT_TEST_DUMMY_ENCRYPTION_V2,
- };
- 
-@@ -599,6 +603,7 @@ static ssize_t f2fs_feature_show(struct f2fs_attr *a,
- 	case FEAT_SB_CHECKSUM:
- 	case FEAT_CASEFOLD:
- 	case FEAT_COMPRESSION:
-+	case FEAT_RO:
- 	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
- 		return sprintf(buf, "supported\n");
- 	}
-@@ -723,12 +728,14 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
- #ifdef CONFIG_UNICODE
- F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
- #endif
-+F2FS_FEATURE_RO_ATTR(readonly, FEAT_RO);
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
- #endif
-+
- /* For ATGC */
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_ratio, candidate_ratio);
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_count);
-@@ -834,6 +841,7 @@ static struct attribute *f2fs_feat_attrs[] = {
- #ifdef CONFIG_UNICODE
- 	ATTR_LIST(casefold),
- #endif
-+	ATTR_LIST(readonly),
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	ATTR_LIST(compression),
- #endif
--- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
+I had (private) discussion with Adrian Chadd about ABCD device id issue.
+I hope that nobody is against if I put there summary and important parts
+about secondary bus reset (=hot reset):
 
+
+The reason for abcd is because:
+* the MAC has hardware that upon cold reset, will read EEPROM/OTP
+  values for things like PCIe and other register defaults, and squirt
+  them into the MAC/PHY/etc registers
+* the default values for the PCIe bus pre-AR9300 were 0x168c:0xff<id>,
+  where <id> is the normal chip ID
+* the default values for the PCIe bus POST-AR9300 were 0x168c:0xabcd,
+  where they're always that regardless of the chip family
+* so yeah, all you know with 0x168c:0xabcd is there's an atheros
+  device there, but not WHICH it is.
+
+* the bug is that the reset line isn't held low for long enough, or it's
+  bounced twice in quick succession, before the MAC has time to program
+  in the defaults from EEPROM/OTP and it doesn't do it a second time.
+
+* the MAC has hardware that upon cold reset, will read EEPROM/OTP
+  values for things like PCIe and other register defaults, and squirt
+  them into the MAC/PHY/etc registers
+
+* need to use the external reset line OR try using D3, not D3hot
+  (I assume that "external reset line" means PERST# - PCIe Warm Reset
+  and "D3, not D3hot" means D3cold)
+
+
+And now my experiments: Disabling and Enabling link via root bridge has
+exactly same syndromes as hot reset on all tested cards. See that
+different chips (pre-AR9300 and post-AR9300) have slightly different
+behavior and it matches all my experiments (I wrote test details in
+commit message). And doing link retrain when root bridge has non-2.5GT/s
+value in PCI_EXP_LNKCTL2_TLS has also same effect as hot reset.
+So based on same results from my experiments all these actions
+(disabling link, hot reset and link retrain) have common issue.
