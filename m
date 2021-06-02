@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F51F398D4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15838398D47
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhFBOmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhFBOmK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:42:10 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AFFC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:40:13 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id v142so2433840oie.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RWVAxqbt2ragLnej0S2guhkFqxl9f5X2TG9vofPgr5g=;
-        b=pIK5I0OJGNcUZKY6fYRPbWFjK/lbB/dhyRXSbbm+CTTMFSRjrlWjvL5G5XGfbhX3K6
-         CGKXNujPs93Tr1f+duXmLRro7Rtvvd3PeoeSAXXamUOCFow3NZdJtOCk5nQkQ2yerRhJ
-         lAX7VU/YBPjMjMeh1RioPTnUaliC6N+lg0eaH0xWmF9VxYspJTWHZjWx1kX9HAPNSlMQ
-         33kL5izgAkE9rx0Rp6qUuU8yFyE8JEVfvqBSI5MjHgAdwniQ7cKoSUlr/71XclJ92/G3
-         A13Bxker1PmlMbws/jkuzEZs0rumjVtvDPb5kh1183ZsbwmdsA971Gu2+kYYPbWqqoes
-         5fdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RWVAxqbt2ragLnej0S2guhkFqxl9f5X2TG9vofPgr5g=;
-        b=mnYsKsj0aJMqQbLD/4OXiswAQEnhvzc3KQEcKiPq/9tdE0cTtCBKsHQtTPQcRjAEyB
-         BfzILNx+1Oly8ruYl65ffXcrzW2zyAdyuCBORfiNDdPaPDxQdR9Bw+jrVmLM30UNi9ZO
-         kgeyJo548YOkH3I4L/V3p+5EOpso7h3DQZzFpUKzEJsgOqL4uW+xenEELLpX4m3aKyD3
-         ZduCBKeOId2/Q9FN8zrHcNlbuYk+1pouSFpliPgW1ZM772RI+TN7mhTzg51lo82s4UCX
-         er+YAcxLSfzE1z+aqKUDp09cAgT7Ah3MUVLL62HH7VGTo6a7wzzC1Bk4lZbBh47ddW9O
-         ibgg==
-X-Gm-Message-State: AOAM531tZhM+7pmhRHBhENFkODLLIqjQVnboMWm6a3Pw93KSGX0pGLOj
-        NoaOUI+hXABBeVx1x15Acl+IA11THg2mxnqKH/o=
-X-Google-Smtp-Source: ABdhPJw9W8YmUacJHRTLRKCSRcE6AT1Zu3kRNDtCEpiYsKWDEmet6F863hn0P5W2iDFQ+YX04vhuiOFjMdEZ014wjcU=
-X-Received: by 2002:a05:6808:244:: with SMTP id m4mr3971937oie.37.1622644813198;
- Wed, 02 Jun 2021 07:40:13 -0700 (PDT)
+        id S231173AbhFBOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhFBOl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:41:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF6D7613AA;
+        Wed,  2 Jun 2021 14:39:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622644783;
+        bh=jI+GIBfW+TTSPEkqnl9cajZsedb1xU15s5PN+0Ulsm4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XLA8dEJsn5AN9LP9sVq8efoYniWRR1tfgU0lv7D1Z1C0PGsBAIivJU601YNX0koiX
+         ZAfeGHRjs49+Nj1WYzTRQ+pFlQKUtNpi7FXoxto+ya+HEffNbDKjmWGhb0uBBXmUMG
+         omPTip3iY20rdDSiiUkUeqZHFGc6FcoMBxzTNKgIT95Q4RmueG7vq5nWQIKpFwQRVv
+         kPZpqWrtB+vSQZvfh89RPF9UiNSwaMYxAZba80cZWBHUoz0D8eP8atmVW04j7IlY9U
+         FTFtalztjYK6q9/YGuMQrNqgAXj7dpilUUMuWZbm1+KiwNnwSKTKsLw3BK/vK9pmB2
+         0Glq1dhflBldw==
+Date:   Wed, 2 Jun 2021 07:39:40 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     linux-nvme@lists.infradead.org, dan.j.williams@intel.com,
+        logang@deltatee.com, linux-mm@kvack.org, hch@lst.de,
+        sagi@grimberg.me, david@redhat.com, oren@nvidia.com,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Subject: Re: [PATCH 3/3] nvme-pci: align CMB size according to P2PMEM
+ alignment
+Message-ID: <20210602143940.GA5751@dhcp-10-100-145-180.wdc.com>
+References: <20210602111055.10480-1-mgurtovoy@nvidia.com>
+ <20210602111055.10480-4-mgurtovoy@nvidia.com>
 MIME-Version: 1.0
-References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
- <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org> <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
- <YLeXoQH2/iJjxkc+@kroah.com>
-In-Reply-To: <YLeXoQH2/iJjxkc+@kroah.com>
-From:   Manikishan Ghantasala <manikishanghantasala@gmail.com>
-Date:   Wed, 2 Jun 2021 20:09:27 +0530
-Message-ID: <CAKzJ-FPZeM1QettgDyNaXy4xXpXX0YVm1TNVaKHOopiYevALjA@mail.gmail.com>
-Subject: Re: [PATCH] staging: greybus: fixed the coding style, labels should
- not be indented.
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alex Elder <elder@ieee.org>, Rui Miguel Silva <rmfrfs@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602111055.10480-4-mgurtovoy@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-Thanks for the clarification.
-Regards,
-Manikishan Ghantasala
+On Wed, Jun 02, 2021 at 02:10:55PM +0300, Max Gurtovoy wrote:
+> P2PMEM is using mhp framework to connect to the memory subsystem. In
+> case the CMB size is not compatible to mhp alignment, the CMB mapping
+> will fail. Use pci_p2pdma_align_size to align CMB size in order to
+> successfully map non-aligned original CMB.
+> 
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>  drivers/nvme/host/pci.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index a29b170701fc..1197263b4cd0 100644
+> --- a/drivers/nvme/host/pci.c
+> +++ b/drivers/nvme/host/pci.c
+> @@ -1817,6 +1817,7 @@ static void nvme_map_cmb(struct nvme_dev *dev)
+>  	u64 size, offset;
+>  	resource_size_t bar_size;
+>  	struct pci_dev *pdev = to_pci_dev(dev->dev);
+> +	unsigned long nr_pages, min_align;
 
-On Wed, 2 Jun 2021 at 20:07, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jun 02, 2021 at 07:57:35PM +0530, Manikishan Ghantasala wrote:
-> > Sending this mail again as I missed to reply to all.
-> >  Hi Alex,
-> >
-> > I agree those are called bit-field member names rather than labels.
-> > But the reason I mentioned is because the ./scripts/checkpatch.pl
-> > gave out a warning saying "labels should not be indented".
->
-> checkpatch is a perl script that does it's best, but does not always get
-> it right.  In this case, it is incorrect, the existing code is just
-> fine.
->
-> thanks,
->
-> greg k-h
+These new variables don't appear to be used anywhere.
+
+>  	int bar;
+>  
+>  	if (dev->cmb_size)
+> @@ -1856,6 +1857,12 @@ static void nvme_map_cmb(struct nvme_dev *dev)
+>  	if (size > bar_size - offset)
+>  		size = bar_size - offset;
+>  
+> +	size = pci_p2pdma_align_size(size);
+> +	if (!size) {
+> +		dev_warn(dev->ctrl.device, "CMB size is 0 after alignment\n");
+> +		return;
+> +	}
+> +
+>  	if (pci_p2pdma_add_resource(pdev, bar, size, offset)) {
+>  		dev_warn(dev->ctrl.device,
+>  			 "failed to register the CMB\n");
+> -- 
