@@ -2,94 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6453C3980DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A921339810C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhFBGBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:01:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
+        id S231202AbhFBGWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:22:07 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:39330 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229779AbhFBGBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:01:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB97D61027;
-        Wed,  2 Jun 2021 05:59:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622613570;
-        bh=WFGn28PIenT8iwgpyo1Uh1UYGjMQG1gWUpqwqXSvJlk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PfDD9zftySnlohgnH0popDk3aWgGYjbEafnbJopaPd7jvH+1yCL5jnQgWlZ2ahGI/
-         34+u5QMuxWSbIYs+srYytLppF3vvE37DCrQquvxNh6bFaEUvCVJuvNVol36aXBnXd9
-         2+V11/33toVh4lB/DD3MH/exJbS8sHyeTWICoCjUXdNtaHyPnXYTiUYG59NWugIJuk
-         tEboug6LCa/Y5ByPtTBuFNgq9A2g5pbrmZpCbuW6Hr9o7nkHNglUBqVy009PIYUkvD
-         dhlkBkRWpo5G+bN9nSd9y2mbpvEf9H6yCrMiSqRsQuPMyaM/9V4L9K44Dgz2mmvkdF
-         ota0lbaMbWaLQ==
-Date:   Wed, 2 Jun 2021 08:59:26 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, davem@davemloft.net,
-        kuba@kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virtio_net: Remove BUG() to aviod machine dead
-Message-ID: <YLcePtKhnt9gXq8E@unreal>
-References: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
- <20210518055336-mutt-send-email-mst@kernel.org>
- <4aaf5125-ce75-c72a-4b4a-11c91cb85a72@linux.alibaba.com>
- <72f284c6-b2f5-a395-a68f-afe801eb81be@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <72f284c6-b2f5-a395-a68f-afe801eb81be@redhat.com>
+        id S231147AbhFBGWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 02:22:06 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A4AD61A35AA;
+        Wed,  2 Jun 2021 08:20:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com A4AD61A35AA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+        s=nselector3; t=1622614822;
+        bh=916qkDrbfLsKea6v3J9EiWiH16tJt1dJtsGTn8zGZMM=;
+        h=From:To:Subject:Date:From;
+        b=osPWG7HF4wbDUh6UkQpDFSqdLTOzxNN0k9Ej83Unbhh9ktSyxgehINw8ZDR1nnAFG
+         FMX+E5a7dNtNMrcV6EhBg7K7XrZkfisvwH0lg2/nKqJhwVT+B0bySseDmq8dFDU/W6
+         3+OrgsnwqhgjnmJbRiQ2mHQH9sSMgdFF3ZtKdQlTq9EMZbsxGUacHpEU3Ss/jiXyt/
+         yAAb6A4GUGvk9Sv0YxDwBL8+eVU8uF9B28l+pczF8b5OOsyOnb/uY5quq9fStxvNf/
+         IW1DTgnbXttRdNzN+9XcGnlvJDg7KOubIYqnPyLP5ODub+d+Mi+QmxNVbNt1BeNS0F
+         8jyadsRh7WXFA==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EDCA81A1E65;
+        Wed,  2 Jun 2021 08:20:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com EDCA81A1E65
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AE51F4028B;
+        Wed,  2 Jun 2021 14:20:16 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: fsl-sai: Add compatible string for imx8mm/8mn/8mp/8ulp
+Date:   Wed,  2 Jun 2021 14:02:50 +0800
+Message-Id: <1622613770-10220-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 02:19:03PM +0800, Jason Wang wrote:
-> 
-> 在 2021/5/19 下午10:18, Xianting Tian 写道:
-> > thanks, I submit the patch as commented by Andrew
-> > https://lkml.org/lkml/2021/5/18/256
-> > 
-> > Actually, if xmit_skb() returns error, below code will give a warning
-> > with error code.
-> > 
-> >     /* Try to transmit */
-> >     err = xmit_skb(sq, skb);
-> > 
-> >     /* This should not happen! */
-> >     if (unlikely(err)) {
-> >         dev->stats.tx_fifo_errors++;
-> >         if (net_ratelimit())
-> >             dev_warn(&dev->dev,
-> >                  "Unexpected TXQ (%d) queue failure: %d\n",
-> >                  qnum, err);
-> >         dev->stats.tx_dropped++;
-> >         dev_kfree_skb_any(skb);
-> >         return NETDEV_TX_OK;
-> >     }
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 在 2021/5/18 下午5:54, Michael S. Tsirkin 写道:
-> > > typo in subject
-> > > 
-> > > On Tue, May 18, 2021 at 05:46:56PM +0800, Xianting Tian wrote:
-> > > > When met error, we output a print to avoid a BUG().
-> 
-> 
-> So you don't explain why you need to remove BUG(). I think it deserve a
-> BUG().
+Add compatible string for imx8mm/8mn/8mp/8ulp, these platforms all
+support SAI IP.
 
-BUG() will crash the machine and virtio_net is not kernel core
-functionality that must stop the machine to prevent anything truly
-harmful and basic.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-I would argue that code in drivers/* shouldn't call BUG() macros at all.
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 0dc83cc4a236..c71c5861d787 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -9,8 +9,10 @@ Required properties:
+ 
+   - compatible		: Compatible list, contains "fsl,vf610-sai",
+ 			  "fsl,imx6sx-sai", "fsl,imx6ul-sai",
+-			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai" or
+-			  "fsl,imx8qm-sai".
++			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai",
++			  "fsl,imx8qm-sai", "fsl,imx8mm-sai",
++			  "fsl,imx8mn-sai", "fsl,imx8mp-sai", or
++			  "fsl,imx8ulp-sai".
+ 
+   - reg			: Offset and length of the register set for the device.
+ 
+-- 
+2.27.0
 
-If it is impossible, don't check for that or add WARN_ON() and recover,
-but don't crash whole system.
-
-Thanks
