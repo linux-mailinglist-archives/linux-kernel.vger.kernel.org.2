@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54F0399133
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1181F399132
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhFBROq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:14:46 -0400
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:43584 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhFBROp (ORCPT
+        id S229921AbhFBRN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:13:59 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45007 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhFBRN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:14:45 -0400
-Received: by mail-pg1-f172.google.com with SMTP id e22so2772702pgv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RMQ4zkN3UjhpVnRb+6Z5gguZ7ZmItZ+EG9/DteNvdzU=;
-        b=XaAr9HUu/4UGuz2abpnUvpTxMtpc1MNCv4DAkdZhcbjxxniLgdUb2gJjNnWAqkn4CY
-         cqBxpEeKQlGf5Qj2h/IaTjcprp/xtv62qM5QHjkSlKJpXEzE/IvE8iNHUeGUqYhNVMSG
-         Hm8U6of7mFwP/og/De6P8RQRQRhWCLlCayP3nS0iHWfL/PwTxf+5uxtkXtM01pIVseVt
-         NOCJcNFMAzjhH8pp1WYO0EIQ6ifpcaXtj5UocnOLG02EneGb7D1+C1mzYsymblr4ok90
-         D/B7UVafMrnhLwxjAnX7hq5l/9fUsaV1DsaTLdIHOkXkcBYkNuaMf0zud01tjfSwpx4g
-         HNkA==
+        Wed, 2 Jun 2021 13:13:58 -0400
+Received: by mail-oi1-f173.google.com with SMTP id d21so3323720oic.11;
+        Wed, 02 Jun 2021 10:12:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RMQ4zkN3UjhpVnRb+6Z5gguZ7ZmItZ+EG9/DteNvdzU=;
-        b=p4sAeRBJP2GsbmSs9KTKTEw0N/Ad5dBatoDI41XZUefgmSAsLCDjw3AGlxg8c4Mi6O
-         um85Mb3/qq+xYLBFVniHBnk+KtFnqXf90mrPsEmI4RTQyjqga/i4Se4oDvnUin5tRJBx
-         KxfQP+i/aHhzeuM3Oj5L14FPLVEv0G1DxhRI3U9gPYHyBfdHJERmghyvdC4cVegRKsOn
-         CF1bTOPKdrnuvZyjkzLez7BOpwIEPHEgIiAMDpbtW+VK1k9DoIEgjIhG3HuJC5/YHd0n
-         AYPRZovVU9DVk3soYup3VAiF3+y49tb0SHhiLjYcjMpjXVdtX8SdAEfMLm+h43LnTDcS
-         ouaQ==
-X-Gm-Message-State: AOAM532OjIcBy0SB5kqvKGGR0jd7EdFqJHSjvQIQN0FO9MCMHJMmGxWQ
-        LeTPYvf7ZEEasjxIKHMmujY9Cg==
-X-Google-Smtp-Source: ABdhPJx7aZRYWPxgyaLsb3rWTFhgpWgBVnEhABLHSWLlsqW3wSa01vLh8FLdwM6U0GFJVL7rrTGFuQ==
-X-Received: by 2002:aa7:8426:0:b029:2e9:bc0e:5c3f with SMTP id q6-20020aa784260000b02902e9bc0e5c3fmr20166593pfn.22.1622653921969;
-        Wed, 02 Jun 2021 10:12:01 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id w1sm195010pfi.162.2021.06.02.10.12.01
+        bh=COKp8u2ZXVU0CymIjovVJV/hDUHC7QysfTLqbeCPlLA=;
+        b=Adjldz+oq4KFHDqvU1eRqQef907OlddrGe9cdNa753BgVW1rQbgNDNGV3UGpCua9Iz
+         c8jRZMwkLA3MN2Oh4vwk6KOjOR409WBHR3ti/a09dMyuppfoCLQcXhYJb2cE8z/rQk4C
+         zI2gq2qHxwmRuM9WMszXWt75l9sgoNjpCnplsQdYoJ0rnG6MPvZgYuXsD4durC6Hct3k
+         kSnLBILuhFOwhY2N5Tl2zXFw2ZmgU+QQXuVzoyzhuv2l1Kiph1YAvF66j9MRjujNRVRX
+         uiHmsiEVG+FBBUFAhV9vFQwJ6n2qQn6t30wjjXXXhSsFjl7Razwu6t1O6ncZu6GxajxF
+         wkJQ==
+X-Gm-Message-State: AOAM530rmo2rRuraARcP17U8Dtearb6FI9zQ/8DBEuYW2HSEG9Y3yjLl
+        NHidTwZ+EjaeoMqyF6DWPg==
+X-Google-Smtp-Source: ABdhPJyP/3UlWlRYRDmsD0pTWPUKVDZroExh5v+MUz02ZfHdTYEFo7ZHdLt3LYHa0h3JIS3nfHzYVA==
+X-Received: by 2002:a54:4609:: with SMTP id p9mr21746605oip.107.1622653923200;
+        Wed, 02 Jun 2021 10:12:03 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a6sm89629oon.20.2021.06.02.10.12.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 10:12:01 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 17:11:57 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@aculab.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Message-ID: <YLe73YcUeXBaLwHr@google.com>
-References: <cover.1620186182.git.jpoimboe@redhat.com>
- <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
+        Wed, 02 Jun 2021 10:12:02 -0700 (PDT)
+Received: (nullmailer pid 3589893 invoked by uid 1000);
+        Wed, 02 Jun 2021 17:12:01 -0000
+Date:   Wed, 2 Jun 2021 12:12:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Subject: Re: [PATCH v9 01/22] dt-bindings: ARM: Mediatek: Add new document
+ bindings of imp i2c wrapper controller
+Message-ID: <20210602171201.GA3566462@robh.at.kernel.org>
+References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
+ <20210524122053.17155-2-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
+In-Reply-To: <20210524122053.17155-2-chun-jie.chen@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021, Josh Poimboeuf wrote:
-> The x86 uaccess code uses barrier_nospec() in various places to prevent
-> speculative dereferencing of user-controlled pointers (which might be
-> combined with further gadgets or CPU bugs to leak data).
+On Mon, May 24, 2021 at 08:20:32PM +0800, Chun-Jie Chen wrote:
+> This patch adds the new binding documentation of imp i2c wrapper controller
+> for Mediatek MT8192.
 > 
-> There are some issues with the current implementation:
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> Signed-off-by: chun-jie.chen <chun-jie.chen@mediatek.com>
+> ---
+>  .../arm/mediatek/mediatek,imp_iic_wrap.yaml   | 80 +++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
 > 
-> - The barrier_nospec() in copy_from_user() was inadvertently removed
->   with: 4b842e4e25b1 ("x86: get rid of small constant size cases in
->   raw_copy_{to,from}_user()")
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
+> new file mode 100644
+> index 000000000000..fb6cb9e60ee2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,imp_iic_wrap.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek IMP I2C Wrapper Controller
+> +
+> +maintainers:
+> +  - Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> +
+> +description:
+> +  The Mediatek imp i2c wrapper controller provides functional configurations and clocks to the system.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - mediatek,mt8192-imp_iic_wrap_c
+> +          - mediatek,mt8192-imp_iic_wrap_e
+> +          - mediatek,mt8192-imp_iic_wrap_s
+> +          - mediatek,mt8192-imp_iic_wrap_ws
+> +          - mediatek,mt8192-imp_iic_wrap_w
+> +          - mediatek,mt8192-imp_iic_wrap_n
 
-Mostly out of curiosity, wasn't copy_{from,to}_user() flawed even before that
-patch?  Non-constant sizes would go straight to copy_user_generic(), and even if
-string ops are used and strings are magically not vulnerable, small sizes would
-skip to normal loads/stores in _copy_short_string when using
-copy_user_enhanced_fast_string().
+Looks to me like these are all the same h/w, but just have differing 
+sets of clocks. That's not really a reason to have different 
+compatibles. 
+
+If you need to know what clocks are present, you can walk the DT for 
+all 'clocks' properties matching this clock controller instance. Or use 
+'clock-indices' to define which ones are present.
+
+Rob
