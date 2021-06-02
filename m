@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58E9398272
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985F1398291
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhFBHED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:04:03 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:55155 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhFBHEB (ORCPT
+        id S231450AbhFBHGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230204AbhFBHGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:04:01 -0400
-Received: by mail-io1-f69.google.com with SMTP id 21-20020a05660220d5b0290495d8456ee4so850182ioz.21
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 00:02:18 -0700 (PDT)
+        Wed, 2 Jun 2021 03:06:00 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78228C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 00:04:16 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id r13so546424wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 00:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mtcJF4D20naeNnEs0Zx/Q0Y+XC41jEFEF4kHOZDgNa0=;
+        b=IDyBDoZbFzb7qwT31jzph7Ztl4UCpqBDTFYzg/bjN/q+1kcY8cHQPIh3BDWYwIRAAW
+         y9E5QNyO32djUBRk4fYmEi08EArjk0+Wqriz4zcK9iraNhNOFutWm8oRtrogFCNMfSPC
+         ttxHH1L4LgtDrUUkDrUzoMvS0RhFCStE858bpb3pTwTWtpALlMA2tS8phNDe6W1yNr3U
+         yisV5bWn1XX+hSc6Uplrd0GN+M5FYZ+FmDxifREO8octqi2u5Mfjg0wWyv4bA54EkoTq
+         7e/icvfdd5NPWYlHznYU96MSoXIUKbcpX990YLISjO6Lo2Sljsxa59k7l7h4OdjgfF+S
+         m9ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3wQWAXuGRWxkImBMjPFQQPlnnvn12avsURmlKQ4Pu/E=;
-        b=UZvZXmoZFMPab3XgpsYi4YcnHYcrf/Cw/mAaLO/qsFmR6WZoWggu+0xpnWTQ0tcGEi
-         qJG4d0mI4A+z7OFlyS+6REHYwZXy3Y/VTFh0YE+jK2Ww4O7rT4GJGm1t3rppV0lZ1hjs
-         KGgWetCDyRuO7Gbgm9lciF/owioczSQxJAN7GneW8ET/CnPAaCzQJ02jYbBu2JPTartG
-         gCJb0xR1w9Se1k7zu6dAPK+BfNCTyWrjY8lXTEGxa0zI6xyWdGBEheLADewEnGNxWYhA
-         5v/3M79s2YdzqScVbmGRvxhIpcZa9BwSrzr1UsDAans//fhPyxuYbqUwGb2VG/pL+MPX
-         l7GA==
-X-Gm-Message-State: AOAM532k/sKVIzKSQlZHJaTg/TlTJDlGZ+1OyWSIqgT/uJ2zBUynUISp
-        ZzoBbDvLVJBI8Y6ToOP+xHnP5uSDstgxCF7jQSBhtslDgn63
-X-Google-Smtp-Source: ABdhPJyUtBpaAPNdOottevQyUSlbdmztszRLcxMPviPcaT93+BiKy2src7rsGzkSACHHopoHFNE7yzWu2Z9YFAiT5eRtbZd4Ton0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mtcJF4D20naeNnEs0Zx/Q0Y+XC41jEFEF4kHOZDgNa0=;
+        b=ReHFdf21AHZLEvPBSlr/KLiO73X+nFJ00IJBGCgFhNDDN+iegKB/tn9ixiqcn+lt/t
+         7/gQSoVLRPkT60wPOmPeFERb6AUAmwikXyOgdmrZDhkbRx7sePNVM6aPg1H4HVupQLLF
+         SVUdLIOclKaYWWtedYdDB6aE+vL6h1/E373FaVoqJyKXXxKubLzWs/Gsp8jJl8kAzdb1
+         vFTrRWlK7o/znUe2s0GfBpSKQYVdxO5Nx30q9zsqmX2mBHgWBtM6j3zp/HB65sRE1R7w
+         cbQU6I0Eb64uQJiknGsKUBnn0NAmI0RrJsfLH1GX3AYoQo0uOsJz2/Lv4wJr+Zmsc5ia
+         HJ9w==
+X-Gm-Message-State: AOAM532HQrZXAEKSoctok6IAMpJX1/FDUdRF500eDN60NCd5zcokGxj1
+        +e7MjmB4BjlgqPbBdC9mRFA7Hw==
+X-Google-Smtp-Source: ABdhPJxX/9WU/SgxzH+ZyQgQR6B/ZRBTBVIOZNRce8o7bxoTkEzw37IgWFtvOv6OCmH2YZ7iNUDm7Q==
+X-Received: by 2002:a7b:cb01:: with SMTP id u1mr3635505wmj.188.1622617455114;
+        Wed, 02 Jun 2021 00:04:15 -0700 (PDT)
+Received: from dell ([91.110.221.214])
+        by smtp.gmail.com with ESMTPSA id y9sm1853276wrh.11.2021.06.02.00.04.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 00:04:14 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 08:04:12 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Fei Shao <fshao@chromium.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Yuchen Huang <yuchen.huang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: [GIT PULL] Immutable branch between MFD, Regulator and RTC due for
+ the v5.14 merge window
+Message-ID: <20210602070412.GD2173308@dell>
+References: <1622011927-359-1-git-send-email-hsin-hsiung.wang@mediatek.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13c7:: with SMTP id v7mr11853277ilj.231.1622617338409;
- Wed, 02 Jun 2021 00:02:18 -0700 (PDT)
-Date:   Wed, 02 Jun 2021 00:02:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000ff96b05c3c30a16@google.com>
-Subject: [syzbot] general protection fault in mac80211_hwsim_tx_frame_nl
-From:   syzbot <syzbot+3a2811a83af0f441ef5f@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1622011927-359-1-git-send-email-hsin-hsiung.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Enjoy!
 
-syzbot found the following issue on:
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-HEAD commit:    05924717 bpf, tnums: Provably sound, faster, and more prec..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a3b90bd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7b1a53f9a0b5a801
-dashboard link: https://syzkaller.appspot.com/bug?extid=3a2811a83af0f441ef5f
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+are available in the Git repository at:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3a2811a83af0f441ef5f@syzkaller.appspotmail.com
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tb-mfd-regulator-rtc-v5.14
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 31562 Comm: kworker/u4:6 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy89 hw_scan_work
-RIP: 0010:mac80211_hwsim_tx_frame_nl+0x3fd/0xdb0 drivers/net/wireless/mac80211_hwsim.c:1315
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 50 08 00 00 4c 8b ab 90 3c 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d 7d 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 09 84 d2 74 05 e8
-RSP: 0018:ffffc900017efa90 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: ffff888061fab1e0 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff852894df RDI: 0000000000000004
-RBP: ffff888063455dc0 R08: 0000000000000000 R09: ffff88805de76093
-R10: ffffffff852894d1 R11: 000000000000003f R12: ffffc900017efb18
-R13: 0000000000000000 R14: ffff888063455140 R15: ffff888061fa8d00
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b32431000 CR3: 000000004e282000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-Call Trace:
- mac80211_hwsim_tx_frame+0x10d/0x1e0 drivers/net/wireless/mac80211_hwsim.c:1773
- hw_scan_work+0x7be/0xc20 drivers/net/wireless/mac80211_hwsim.c:2331
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace bd7d02fa1bf956f5 ]---
-RIP: 0010:mac80211_hwsim_tx_frame_nl+0x3fd/0xdb0 drivers/net/wireless/mac80211_hwsim.c:1315
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 50 08 00 00 4c 8b ab 90 3c 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d 7d 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 09 84 d2 74 05 e8
-RSP: 0018:ffffc900017efa90 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: ffff888061fab1e0 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff852894df RDI: 0000000000000004
-RBP: ffff888063455dc0 R08: 0000000000000000 R09: ffff88805de76093
-R10: ffffffff852894d1 R11: 000000000000003f R12: ffffc900017efb18
-R13: 0000000000000000 R14: ffff888063455140 R15: ffff888061fa8d00
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b32431000 CR3: 000000004e282000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+for you to fetch changes up to 4cfc965475124c4eed2b7b5d8b6fc5048a21ecfd:
 
+  regulator: mt6359: Add support for MT6359P regulator (2021-06-01 16:44:36 +0100)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+----------------------------------------------------------------
+Immutable branch between MFD, Regulator and RTC due for the v5.14 merge window
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+----------------------------------------------------------------
+Hsin-Hsiung Wang (6):
+      mfd: mt6358: Refine interrupt code
+      rtc: mt6397: refine RTC_TC_MTH
+      dt-bindings: mfd: Add compatible for the MediaTek MT6359 PMIC
+      dt-bindings: regulator: Add document for MT6359 regulator
+      mfd: Add support for the MediaTek MT6359 PMIC
+      regulator: mt6359: Add support for MT6359P regulator
+
+Wen Su (1):
+      regulator: mt6359: Add support for MT6359 regulator
+
+ Documentation/devicetree/bindings/mfd/mt6397.txt   |    1 +
+ .../bindings/regulator/mt6359-regulator.yaml       |  385 ++++++++
+ drivers/mfd/mt6358-irq.c                           |   89 +-
+ drivers/mfd/mt6397-core.c                          |   24 +
+ drivers/regulator/Kconfig                          |    9 +
+ drivers/regulator/Makefile                         |    1 +
+ drivers/regulator/mt6359-regulator.c               | 1036 ++++++++++++++++++++
+ drivers/rtc/rtc-mt6397.c                           |    2 +-
+ include/linux/mfd/mt6358/core.h                    |    8 +-
+ include/linux/mfd/mt6359/core.h                    |  133 +++
+ include/linux/mfd/mt6359/registers.h               |  529 ++++++++++
+ include/linux/mfd/mt6359p/registers.h              |  249 +++++
+ include/linux/mfd/mt6397/core.h                    |    1 +
+ include/linux/mfd/mt6397/rtc.h                     |    1 +
+ include/linux/regulator/mt6359-regulator.h         |   59 ++
+ 15 files changed, 2494 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+ create mode 100644 drivers/regulator/mt6359-regulator.c
+ create mode 100644 include/linux/mfd/mt6359/core.h
+ create mode 100644 include/linux/mfd/mt6359/registers.h
+ create mode 100644 include/linux/mfd/mt6359p/registers.h
+ create mode 100644 include/linux/regulator/mt6359-regulator.h
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
