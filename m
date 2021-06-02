@@ -2,207 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730B8398446
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322CC398451
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhFBIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:39:23 -0400
-Received: from mga14.intel.com ([192.55.52.115]:56010 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230074AbhFBIjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:39:21 -0400
-IronPort-SDR: 6mV5iKyuCPyF/VXfKuGI1ZQoWbFIpveX2qJa/5NQozMtJ1nnEs2Pz5NwE4LhMJsP03o+JMUiIN
- D3LJY7aaok+w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="203552545"
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="203552545"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 01:37:36 -0700
-IronPort-SDR: 3HcU50jAvQQdG4lEivqVDlJNYPW5yq7Tw66p37ZP/PkNh1n2kHYR95vaS1khN+LKc3HNi0uWlF
- GEC1J5OYbOXA==
-X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
-   d="scan'208";a="467376011"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 01:37:32 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1loMNV-00Gf0T-Kx; Wed, 02 Jun 2021 11:37:29 +0300
-Date:   Wed, 2 Jun 2021 11:37:29 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Javier =?iso-8859-1?B?VGnh?= <javier.tia@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Dave Young <dyoung@redhat.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Kexec Mailing List <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH v1 2/2] firmware: dmi_scan: Pass dmi_entry_point to
- kexec'ed kernel
-Message-ID: <YLdDSeYjgCaarCpN@smile.fi.intel.com>
-References: <20161202195416.58953-3-andriy.shevchenko@linux.intel.com>
- <20161215122856.7d24b7a8@endymion>
- <20161216023213.GA4505@dhcp-128-65.nay.redhat.com>
- <1481890738.9552.70.camel@linux.intel.com>
- <20161216143330.69e9c8ee@endymion>
- <20161217105721.GB6922@dhcp-128-65.nay.redhat.com>
- <20200120121927.GJ32742@smile.fi.intel.com>
- <87a76i9ksr.fsf@x220.int.ebiederm.org>
- <CAHp75VdjwWfqHtJ3n-UK_n5nzpgcpERbM+_9-Z3FrjJx7nHQzQ@mail.gmail.com>
- <CAKv+Gu-sVSWNYHEjzjOfbEryOR_XruwH=qQphq4uTXMLPK18tw@mail.gmail.com>
+        id S232718AbhFBIkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:40:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230074AbhFBIkf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:40:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622623132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sTZTtBNUa2GqpMgr3TsfApPZ9E5Jnhf92Yl0Bbd6O1k=;
+        b=N8NKZJLHztsTWaiI4i+o+1eRs3wBImf0FNCL46X8ETRW0WhO2D9zN9zq2m6jL2GEog/1iq
+        mB5y4S/tgCm3O2TiydeYjaCZJwfL1KhmqwCiHlejg16v942CBzFj/gTDgjEljN4aiivxde
+        l8J9IG2jj7BYxsAvqyFz0v1aV0P+g7I=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-d35jH_TrM_KDkz7ZCz1SXw-1; Wed, 02 Jun 2021 04:38:51 -0400
+X-MC-Unique: d35jH_TrM_KDkz7ZCz1SXw-1
+Received: by mail-ed1-f72.google.com with SMTP id h23-20020aa7c5d70000b029038fed7b27d5so956011eds.21
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:38:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=sTZTtBNUa2GqpMgr3TsfApPZ9E5Jnhf92Yl0Bbd6O1k=;
+        b=k12q/Wxu88Y5iX5t2x/3UItJTIKVceN3i5NduNnEQwVRPy3IPG42ZdN47l/N/Qg4Ci
+         dN2ktqDQO3C9LuvY5M0O9DiqvyTrWrejfoPjQE7qIxd0GN/AgLvL68v37ig4HcbR+WOC
+         8SCn0mSU25SPy92d23/Uyf2gd4QoLR0Rp9ELImcYBeb8rLwNF9Uvy+k85VYAZDJouUTh
+         z8ETjKWhWZgHca1LH1+f1h/b0Bcjyz5t8oXrVUwRPKwEBL3yGuIblNhoodXWLEls2wfq
+         TAzmgCuTGa3xZwnaKpyHLvKETcZQu78BLLUFc1r++KbRKCRc6KWdshNxvXs1w6yCtDSI
+         45mA==
+X-Gm-Message-State: AOAM530hZl4w48oBXv4cO5a7kI8c5eIK+PGzcbuwcaUjNZiAkxNJsAjb
+        fpNeJN0Y56pJDOf8PFdQaKqTH4QFvPuj8ubvm9zlqVvYZKDnf3j9pR7XuJFI6oEvgp3p6yUNpGF
+        y+ZP29t29AV/n/bvdLeZjErLu
+X-Received: by 2002:a50:cb85:: with SMTP id k5mr32554927edi.170.1622623129843;
+        Wed, 02 Jun 2021 01:38:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznNx1BKF2wb6aAOnoMMX1IU04QbC3N7r29/JqfnA7jMn5hjgExL0f5PSdJyUQIWvBLHfs6/g==
+X-Received: by 2002:a50:cb85:: with SMTP id k5mr32554918edi.170.1622623129709;
+        Wed, 02 Jun 2021 01:38:49 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id cz14sm840407edb.84.2021.06.02.01.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 01:38:49 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 878F5180726; Wed,  2 Jun 2021 10:38:47 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Wang Hai <wanghai38@huawei.com>
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] xsk: Return -EINVAL instead of -EBUSY after
+ xsk_get_pool_from_qid() fails
+In-Reply-To: <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
+References: <20210602031001.18656-1-wanghai38@huawei.com>
+ <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 02 Jun 2021 10:38:47 +0200
+Message-ID: <87a6o8bqzs.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKv+Gu-sVSWNYHEjzjOfbEryOR_XruwH=qQphq4uTXMLPK18tw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 12:18:03AM +0100, Ard Biesheuvel wrote:
-> On Mon, 20 Jan 2020 at 23:31, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Mon, Jan 20, 2020 at 9:28 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
-> > > > On Sat, Dec 17, 2016 at 06:57:21PM +0800, Dave Young wrote:
-> > > >> Ccing efi people.
-> > > >>
-> > > >> On 12/16/16 at 02:33pm, Jean Delvare wrote:
-> > > >> > On Fri, 16 Dec 2016 14:18:58 +0200, Andy Shevchenko wrote:
-> > > >> > > On Fri, 2016-12-16 at 10:32 +0800, Dave Young wrote:
-> > > >> > > > On 12/15/16 at 12:28pm, Jean Delvare wrote:
-> > > >> > > > > I am no kexec expert but this confuses me. Shouldn't the second
-> > > >> > > > > kernel have access to the EFI systab as the first kernel does? It
-> > > >> > > > > includes many more pointers than just ACPI and DMI tables, and it
-> > > >> > > > > would seem inconvenient to have to pass all these addresses
-> > > >> > > > > individually explicitly.
-> > > >> > > >
-> > > >> > > > Yes, in modern linux kernel, kexec has the support for EFI, I think it
-> > > >> > > > should work naturally at least in x86_64.
-> > > >> > >
-> > > >> > > Thanks for this good news!
-> > > >> > >
-> > > >> > > Unfortunately Intel Galileo is 32-bit platform.
-> > > >> >
-> > > >> > If it was done for X86_64 then maybe it can be generalized to X86?
-> > > >>
-> > > >> For X86_64, we have a new way for efi runtime memmory mapping, in i386
-> > > >> code it still use old ioremap way. It is impossible to use same way as
-> > > >> the X86_64 since the virtual address space is limited.
-> > > >>
-> > > >> But maybe for 32bit, kexec kernel can run in physical mode, but I'm not
-> > > >> sure, I would suggest Andy to do a test first with efi=noruntime for
-> > > >> kexec 2nd kernel.
-> > > >
-> > > > Guys, it was quite a long no hear from you. As I told you the proposed work
-> > > > around didn't help. Today I found that Microsoft Surface 3 also affected
-> > > > by this.
-> > > >
-> > > > Can we apply these patches for now until you will find better
-> > > > solution?
-> > >
-> > > Not a chance.  The patches don't apply to any kernel in the git history.
-> > >
-> > > Which may be part of your problem.  You are or at least were running
-> > > with code that has not been merged upstream.
-> >
-> > It's done against linux-next.
-> > Applied clearly. (Not the version in this more than yearly old series
-> > of course, that's why I told I can resend)
-> >
-> > > > P.S. I may resend them rebased on recent vanilla.
-> > >
-> > > Second.  I looked at your test results and they don't directly make
-> > > sense.  dmidecode bypasses the kernel completely or it did last time
-> > > I looked so I don't know why you would be using that to test if
-> > > something in the kernel is working.
-> > >
-> > > However dmidecode failing suggests that the actual problem is something
-> > > in the first kernel is stomping the dmi tables.
-> >
-> > See below.
-> >
-> > > Adding a command line option won't fix stomped tables.
-> >
-> > It provides a mechanism, which seems to be absent, to the second
-> > kernel to know where to look for SMBIOS tables.
-> >
-> > > So what I would suggest is:
-> > > a) Verify that dmidecode works before kexec.
-> >
-> > Yes, it does.
-> >
-> > > b) Test to see if dmidecode works after kexec.
-> >
-> > No, it doesn't.
-> >
-> > > c) Once (a) shows that dmidecode works and (b) shows that dmidecode
-> > >    fails figure out what is stomping your dmi tables during or before
-> > >    kexec and that is what should get fixed.
-> >
-> > The problem here as I can see it that EFI and kexec protocols are not
-> > friendly to each other.
-> > I'm not an expert in either. That's why I'm asking for possible
-> > solutions. And this needs to be done in kernel to allow drivers to
-> > work.
-> >
-> > Does the
-> >
-> > commit 4996c02306a25def1d352ec8e8f48895bbc7dea9
-> > Author: Takao Indoh <indou.takao@jp.fujitsu.com>
-> > Date:   Thu Jul 14 18:05:21 2011 -0400
-> >
-> >     ACPI: introduce "acpi_rsdp=" parameter for kdump
-> >
-> > description shed a light on this?
-> >
-> > > Now using a non-efi method of dmi detection relies on the
-> > > tables being between 0xF0000 and 0x10000. AKA the last 64K
-> > > of the first 1MiB of memory.  You might check to see if your
-> > > dmi tables are in that address range.
-> >
-> > # dmidecode --no-sysfs
-> > # dmidecode 3.2
-> > Scanning /dev/mem for entry point.
-> > # No SMBIOS nor DMI entry point found, sorry.
-> >
-> > === with patch applied ===
-> > # dmidecode
-> > ...
-> >         Release Date: 03/10/2015
-> > ...
-> >
-> > >
-> > > Otherwise I suspect the good solution is to give efi it's own page
-> > > tables in the kernel and switch to it whenever efi functions are called.
-> > >
-> >
-> > > But on 32bit the Linux kernel has historically been just fine directly
-> > > accessing the hardware, and ignoring efi and all of the other BIOS's.
-> >
-> > It seems not only for 32-bit Linux kernel anymore. MS Surface 3 runs
-> > 64-bit code.
-> >
-> > > So if that doesn't work on Intel Galileo that is probably a firmware
-> > > problem.
-> >
-> > It's not only about Galileo anymore.
-> >
-> 
-> Looking at the x86 kexec EFI code, it seems that it has special
-> handling for the legacy SMBIOS table address, but not for the SMBIOS3
-> table address, which was introduced to accommodate SMBIOS tables
-> living in memory that is not 32-bit addressable.
-> 
-> Could anyone check whether these systems provide SMBIOS 3.0 tables,
-> and whether their address gets virtually remapped at ExitBootServices?
+Magnus Karlsson <magnus.karlsson@gmail.com> writes:
 
-Can you tell how to do this and I will try to get information?
+> On Wed, Jun 2, 2021 at 6:02 AM Wang Hai <wanghai38@huawei.com> wrote:
+>>
+>> xsk_get_pool_from_qid() fails not because the device's queues are busy,
+>> but because the queue_id exceeds the current number of queues.
+>> So when it fails, it is better to return -EINVAL instead of -EBUSY.
+>>
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> ---
+>>  net/xdp/xsk_buff_pool.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+>> index 8de01aaac4a0..30ece117117a 100644
+>> --- a/net/xdp/xsk_buff_pool.c
+>> +++ b/net/xdp/xsk_buff_pool.c
+>> @@ -135,7 +135,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+>>                 return -EINVAL;
+>>
+>>         if (xsk_get_pool_from_qid(netdev, queue_id))
+>> -               return -EBUSY;
+>> +               return -EINVAL;
+>
+> I guess your intent here is to return -EINVAL only when the queue_id
+> is larger than the number of active queues. But this patch also
+> changes the return code when the queue id is already in use and in
+> that case we should continue to return -EBUSY. As this function is
+> used by a number of drivers, the easiest way to accomplish this is to
+> introduce a test for queue_id out of bounds before this if-statement
+> and return -EINVAL there.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Isn't the return code ABI by now, though?
 
+-Toke
 
