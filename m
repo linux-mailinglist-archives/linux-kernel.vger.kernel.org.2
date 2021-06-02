@@ -2,91 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F380398A2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22507398A31
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhFBNEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:04:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36540 "EHLO mail.kernel.org"
+        id S229801AbhFBNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:05:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:44354 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhFBNEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:04:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E87FE613D6;
-        Wed,  2 Jun 2021 13:02:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622638971;
-        bh=9GVCr1LuCvcjTrKzbRTyT/1HGLmEne+W2aNyF5fY9Ug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FGDC1pckBbHFpilSlrP5ficerhpwZc0XRBn9Ghsgg4tiIrjuM8yFGhFATo4EU121z
-         f+j34bWeyvWnMhSQ/KYq5AiWQi2CONmNNDeEmkLGcl77whH7PARMfnZADZZhLWlPOJ
-         Ri3Ys/c3QfphLNRC49FJyAQoVnL6c1F/n2LFTm3Hk9O4sSKAOindmOa7e3ShRUqXro
-         /tarCoUoHDQiHG0GI0LfgqfdtWIUUcNaQEFKTDqlh1VT4AEIbSSTNwRZNMcpG5nK8U
-         wvMzuXQ9nSv7oMFpX2ygLn7bH63SYxQsTGZnABZVvC6NloZ7tlqHsX4mx/Yli16Ny8
-         HkpIWbjdJGkvg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1loQWG-0000Mb-0x; Wed, 02 Jun 2021 15:02:48 +0200
-Date:   Wed, 2 Jun 2021 15:02:48 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     mdf@kernel.org, trix@redhat.com, robh+dt@kernel.org,
-        michal.simek@xilinx.com, linux-fpga@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, git@xilinx.com
-Subject: Re: [PATCH 3/3] fpga: region: Adds runtime PM support
-Message-ID: <YLeBeJjwki/9VVR2@hovoldconsulting.com>
-References: <20210402092049.479-1-nava.manne@xilinx.com>
- <20210402092049.479-4-nava.manne@xilinx.com>
+        id S229579AbhFBNFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 09:05:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 532A91063;
+        Wed,  2 Jun 2021 06:04:06 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D001E3F719;
+        Wed,  2 Jun 2021 06:04:03 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 14:03:55 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210602130355.GA19640@e120325.cambridge.arm.com>
+References: <20210527153842.17567-1-beata.michalska@arm.com>
+ <20210527153842.17567-3-beata.michalska@arm.com>
+ <87eedkfn1u.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210402092049.479-4-nava.manne@xilinx.com>
+In-Reply-To: <87eedkfn1u.mognet@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 02:50:49PM +0530, Nava kishore Manne wrote:
-> Adds support to handle FPGA/PL power domain. With this patch,
-> the PL power domain will be turned on before loading the bitstream
-> and turned off while removing/unloading the bitstream using overlays.
-> This can be achieved by adding the runtime PM support.
+On Wed, Jun 02, 2021 at 01:50:21PM +0100, Valentin Schneider wrote:
+> On 27/05/21 16:38, Beata Michalska wrote:
+> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > Suggested-by: Valentin Schneider <valentin.schneider@arm.com>
+> > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
 > 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> I ran this through the usual series of tests ('exotic' topologies, hotplug
+> and exclusive cpusets), it all behaves as expected.
+> 
+Thanks for that!
+
+> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> 
+> Some tiny cosmetic nits below, which don't warrant a new revision, and a
+> comment wrt purely symmetric systems.
+> 
+> > ---
+> >  kernel/sched/topology.c | 194 ++++++++++++++++++++++++----------------
+> >  1 file changed, 118 insertions(+), 76 deletions(-)
+> >
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index 55a0a243e871..77e6f79235ad 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> 
+> > +/*
+> > + * Verify whether there is any CPU capacity asymmetry in a given sched domain.
+> > + * Provides sd_flags reflecting the asymmetry scope.
+> > + */
+> > +static inline int
+> > +asym_cpu_capacity_classify(struct sched_domain *sd,
+> > +			   const struct cpumask *cpu_map)
+> > +{
+> > +	struct asym_cap_data *entry;
+> > +	int sd_asym_flags = 0;
+> > +	int asym_cap_count = 0;
+> > +	int asym_cap_miss = 0;
+> > +
+> > +	/*
+> > +	 * Count how many unique CPU capacities this domain spans across
+> > +	 * (compare sched_domain CPUs mask with ones representing  available
+> > +	 * CPUs capacities). Take into account CPUs that might be offline:
+> > +	 * skip those.
+> > +	 */
+> > +	list_for_each_entry(entry, &asym_cap_list, link) {
+> > +		if (cpumask_intersects(sched_domain_span(sd),
+> > +				       cpu_capacity_span(entry)))
+> 
+> IMO this is one such place where the 80 chars limit can be omitted.
+> 
+> > +			++asym_cap_count;
+> > +		else if (cpumask_intersects(cpu_capacity_span(entry), cpu_map))
+> > +			++asym_cap_miss;
+> > +	}
+> 
+> > +/*
+> > + * Build-up/update list of CPUs grouped by their capacities
+> > + * An update requires explicit request to rebuild sched domains
+> > + * with state indicating CPU topology changes.
+> > + */
+> > +static void asym_cpu_capacity_scan(void)
+> > +{
+> > +	struct asym_cap_data *entry, *next;
+> > +	int cpu;
+> > +
+> > +	list_for_each_entry(entry, &asym_cap_list, link)
+> > +		cpumask_clear(cpu_capacity_span(entry));
+> > +
+> > +	for_each_cpu_and(cpu, cpu_possible_mask,
+> > +			 housekeeping_cpumask(HK_FLAG_DOMAIN))
+> 
+> Ditto on keeping this on a single line.
+> 
+> > +		asym_cpu_capacity_update_data(cpu);
+> > +
+> > +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
+> > +		if (cpumask_empty(cpu_capacity_span(entry))) {
+> > +			list_del(&entry->link);
+> > +			kfree(entry);
+> > +		}
+> > +	}
+> > +}
+> 
+> One "corner case" that comes to mind is systems / architectures which are
+> purely symmetric wrt CPU capacity. Our x86 friends might object to us
+> reserving a puny 24 bytes + cpumask_size() in a corner of their
+> memory.
+> 
+> Perhaps we could clear the list in the list_is_singular_case(), and since
+> the rest of the code only does list iteration, this should 'naturally'
+> cover this case:
+>
+Can do that.
+I am also waiting for a reply regarding the asymmetry detected on an SMT level.
+Once I get that solved, I will push new version with embedding your suggestions
+as well.
+
+Thanks for having a look!
+
+---
+BR
+B.
 > ---
->  drivers/fpga/of-fpga-region.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-
->  /**
-> @@ -411,9 +416,16 @@ static int of_fpga_region_probe(struct platform_device *pdev)
->  		goto eprobe_mgr_put;
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 62d412013df8..b06d277fa280 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1305,14 +1305,13 @@ asym_cpu_capacity_classify(struct sched_domain *sd,
+>  	 * skip those.
+>  	 */
+>  	list_for_each_entry(entry, &asym_cap_list, link) {
+> -		if (cpumask_intersects(sched_domain_span(sd),
+> -				       cpu_capacity_span(entry)))
+> +		if (cpumask_intersects(sched_domain_span(sd), cpu_capacity_span(entry)))
+>  			++asym_cap_count;
+>  		else if (cpumask_intersects(cpu_capacity_span(entry), cpu_map))
+>  			++asym_cap_miss;
 >  	}
+>  	/* No asymmetry detected */
+> -	if (WARN_ON_ONCE(!asym_cap_count) || asym_cap_count == 1)
+> +	if (asym_cap_count < 2)
+>  		goto leave;
 >  
-> +	pm_runtime_enable(&pdev->dev);
-> +	ret = pm_runtime_get_sync(&pdev->dev);
-> +	if (ret < 0)
-> +		goto err_pm;
+>  	sd_asym_flags |= SD_ASYM_CPUCAPACITY;
+> @@ -1360,8 +1359,7 @@ static void asym_cpu_capacity_scan(void)
+>  	list_for_each_entry(entry, &asym_cap_list, link)
+>  		cpumask_clear(cpu_capacity_span(entry));
+>  
+> -	for_each_cpu_and(cpu, cpu_possible_mask,
+> -			 housekeeping_cpumask(HK_FLAG_DOMAIN))
+> +	for_each_cpu_and(cpu, cpu_possible_mask, housekeeping_cpumask(HK_FLAG_DOMAIN))
+>  		asym_cpu_capacity_update_data(cpu);
+>  
+>  	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
+> @@ -1370,6 +1368,16 @@ static void asym_cpu_capacity_scan(void)
+>  			kfree(entry);
+>  		}
+>  	}
 > +
-> +	pm_runtime_put(&pdev->dev);
-> +
->  	ret = fpga_region_register(region);
->  	if (ret)
-> -		goto eprobe_mgr_put;
-> +		goto err_pm;
-
-Just a drive-by comment: you have PM usage counter imbalance here
-(double put).
-
->  	of_platform_populate(np, fpga_region_of_match, NULL, &region->dev);
->  	platform_set_drvdata(pdev, region);
-> @@ -422,6 +434,9 @@ static int of_fpga_region_probe(struct platform_device *pdev)
+> +	/*
+> +	 * There's only one capacity value, i.e. this system is symmetric.
+> +	 * No need to keep this data around.
+> +	 */
+> +	if (list_is_singular(&asym_cap_list)) {
+> +		entry = list_first_entry(&asym_cap_list, typeof(*entry), link);
+> +		list_del(&entry->link);
+> +		kfree(entry);
+> +	}
+>  }
 >  
->  	return 0;
->  
-> +err_pm:
-> +	pm_runtime_put(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
->  eprobe_mgr_put:
->  	fpga_mgr_put(mgr);
->  	return ret;
-
-Johan
+>  /*
