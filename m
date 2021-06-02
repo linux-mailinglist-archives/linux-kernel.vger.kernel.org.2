@@ -2,133 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A084F3984E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6873984DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbhFBJIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:08:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230099AbhFBJII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:08:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78E93613AC;
-        Wed,  2 Jun 2021 09:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622624784;
-        bh=bYcNDOKdBmTW3M+pfiUN2wg1jTBSFQ4m469qCqR2dhI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q44HcwhxipmzgGNQoqO2WvwJ+Ulc3XZW+zyFHGbjKONnWTSKLVpUNNkRNcBAt17Qc
-         RYeNLsAKlCcstML2PZTRmCxOKv+eZDC7xylxhp+/xGJBAcOSYZrw+jtleKymwwxxaR
-         Lfhz6ezO+5FWaMAEJ9jAFn+FdaYZQGqBqhaa4e9s=
-Date:   Wed, 2 Jun 2021 11:06:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "tiantao (H)" <tiantao6@huawei.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>
-Subject: Re: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
-Message-ID: <YLdKDXYKm7jqorGa@kroah.com>
-References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
- <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
- <YLW+hZwoImx2wjwS@kroah.com>
- <4c9c7c17-e8d1-d601-6262-8064293a06a9@huawei.com>
- <YLcivXNwm75V+I2m@kroah.com>
- <d3c1ec35-fa62-46ed-9227-866e0a3c96b8@huawei.com>
- <CAHp75VeL4UMFX6oZWaFscTX6Ta5s714NeisR=vTh6mYMjyPi6w@mail.gmail.com>
- <f84f92f5-8462-0556-e457-4e302e1e8cb6@huawei.com>
+        id S229754AbhFBJGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhFBJGx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:06:53 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0BBC06174A;
+        Wed,  2 Jun 2021 02:05:09 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id g18so5813edq.8;
+        Wed, 02 Jun 2021 02:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UPjJ+Xb/IPe8pQPzEHkVZDRwhuI4BNPAjDSbmUBiWK0=;
+        b=C48RQJmJAtd4uOk6nkxwpndWiwOB3NmwUxkeVK5Bd0WOJWVcR6FpsM7agf1QworTJm
+         kkhTyUzQYf7AeZb9SOLYfnb7EfC+rs9+pu65ZYtigfxM5gf57wPJBia5JF58ADC/0MfP
+         dzkU0vnbXb2A4NILKkGFg0QoCpggjQ39LzpMDQKTGWQb47IPTAzrSGxod1kOiU+XlRfi
+         e9PFEOYnn/iFY0uMvRGor+kvyZwVKbjRSmZf/PzHCSB9VsNx+fWIDV895dZivDqcyxv9
+         4xXDORvnAUE/EGWxXvc/o8jZui5sLse6oNNw0LnfXEn5qf0VT/TLl65Q0Zh0+GrCgyDL
+         +YPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UPjJ+Xb/IPe8pQPzEHkVZDRwhuI4BNPAjDSbmUBiWK0=;
+        b=lgK0X5pxwQ6rES5+MfMPz9HlIaIvkPFT60dEHDjY+fkQUmiKHrm4llRFwRWVHF67SC
+         d1zWNoP0+FsGTZZOPGOP8GPuPRQdeEBTGLKvOfjgUCZ9kirPTOgCT5rz/DvZlq/dPckB
+         NrKdhD6mdtGMB4R8mWztWniFaTwKOOWaAvHHzhpnjxdsM7g1A96VvEtZTmcBNzhIk88C
+         kp6GMLxJgvUlexscoXdiNtVrxTekwIBunjwM2qFiL4SyzZuYwprrN8W65RUhozVG0kSl
+         ok/CMPTpvKgZjJgO6bU/hdb4YuhpiqUEWoEXCqHhPFHN/pbl6BJYZJE+a3Nak6gahrO5
+         X4yg==
+X-Gm-Message-State: AOAM531JMI5hLDVI798v7m45WTFKAT0j6fdOaArGtZhAiq8vFrb3TYp4
+        WFq6FYYDsfV9l1pwbMDBwzY=
+X-Google-Smtp-Source: ABdhPJxJE/zSSZ+HLNiWD6Xj7xK3sL+zpdcPs/dmbEViW4cvOWW82ieaLYXQN4ylGZnxlj7x98bl5w==
+X-Received: by 2002:a05:6402:1111:: with SMTP id u17mr37633778edv.87.1622624708541;
+        Wed, 02 Jun 2021 02:05:08 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id y9sm887281edc.46.2021.06.02.02.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 02:05:06 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 11:06:42 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, jonathanh@nvidia.com
+Subject: Re: [PATCH -next] clk: tegra: tegra124-emc: fix missing
+ clk_disable_unprepare() on error in emc_set_timing()
+Message-ID: <YLdKIqyqaOwlXw9v@orome.fritz.box>
+References: <20210518044247.605370-1-yangyingliang@huawei.com>
+ <162262068754.4130789.12258910664512101759@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xNOpmisMFYQeyVNT"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f84f92f5-8462-0556-e457-4e302e1e8cb6@huawei.com>
+In-Reply-To: <162262068754.4130789.12258910664512101759@swboyd.mtv.corp.google.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 05:00:16PM +0800, tiantao (H) wrote:
-> 
-> 在 2021/6/2 16:48, Andy Shevchenko 写道:
-> > On Wed, Jun 2, 2021 at 9:45 AM tiantao (H) <tiantao6@huawei.com> wrote:
-> > > 在 2021/6/2 14:18, Greg KH 写道:
-> > > > On Wed, Jun 02, 2021 at 02:14:49PM +0800, tiantao (H) wrote:
-> > > > > 在 2021/6/1 12:58, Greg KH 写道:
-> > > > > > On Tue, Jun 01, 2021 at 10:56:49AM +0800, Tian Tao wrote:
-> > ...
-> > 
-> > > > > > >     /**
-> > > > > > > + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
-> > > > > > > + * @list: indicates whether the bitmap must be list
-> > > > > > > + * @buf: page aligned buffer into which string is placed
-> > > > > > > + * @maskp: pointer to bitmap to convert
-> > > > > > > + * @nmaskbits: size of bitmap, in bits
-> > > > > > > + * @off: offset in buf
-> > > > > > > + * @count: count that already output
-> > > > > > > + *
-> > > > > > > + * the role of bitmap_print_to_buf and bitmap_print_to_pagebuf is
-> > > > > > > + * the same, the difference is that the second parameter of
-> > > > > > > + * bitmap_print_to_buf can be more than one pagesize.
-> > > > > > > + */
-> > > > > > > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> > > > > > > +                  int nmaskbits, loff_t off, size_t count)
-> > > > > > > +{
-> > > > > > > +  int len, size;
-> > > > > > > +  void *data;
-> > > > > > > +  char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> > > > > > > +
-> > > > > > > +  len = snprintf(NULL, 0, fmt, nmaskbits, maskp);
-> > > > > > > +
-> > > > > > > +  data = kvmalloc(len+1, GFP_KERNEL);
-> > > > > > > +  if (!data)
-> > > > > > > +          return -ENOMEM;
-> > > > > > > +
-> > > > > > > +  size = scnprintf(data, len+1, fmt, nmaskbits, maskp);
-> > > > > > > +  size = memory_read_from_buffer(buf, count, &off, data, size);
-> > > > > > > +  kvfree(data);
-> > > > > > > +
-> > > > > > > +  return size;
-> > > > > > Why is this so different from bitmap_print_to_pagebuf()?  Can't you just
-> > > > > > use this function as the "real" function and then change
-> > > > > > bitmap_print_to_pagebuf() to call it with a size of PAGE_SIZE?
-> > > > > Do you mean do following change, is that correct? :-)
-> > > > Maybe, it is whitespace corrupted, and it still feels like this function
-> > > > is much bigger than it needs to be given the function it is replacing is
-> > > > only a simple sprintf() call.
-> > > > 
-> > > > > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> > > > > +                       int nmaskbits, loff_t off, size_t count)
-> > > > > +{
-> > > > > +       int len, size;
-> > > > > +       void *data;
-> > > > > +       const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> > > > > +
-> > > > > +       if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
-> > > > > +               return scnprintf(buf, count, fmt, nmaskbits, maskp);
-> > > > > +
-> > > > > +       len = snprintf(NULL, 0, fmt, nmaskbits, maskp);
-> > > > > +
-> > > > > +       data = kvmalloc(len+1, GFP_KERNEL);
-> > > > Why do you need to allocate more memory?  And why kvmalloc()?
-> > > Because the memory here will exceed a pagesize and we don't know the
-> > > exact size, we have to call
-> > > 
-> > > snprintf first to get the actual size. kvmalloc() is used because when
-> > > physical memory is tight, kmalloc
-> > > 
-> > > may fail, but vmalloc will succeed. It is not so bad that the memory is
-> > > not requested here.
-> > To me it sounds like the function is overengineered / lacks thought
-> > through / optimization.
-> > Can you provide a few examples that require the above algorithm?
-> 
-> so you think we should use kmalloc instead of kvmalloc ?
 
-What size bitmap would trigger a vmalloc() call to be forced here?
+--xNOpmisMFYQeyVNT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Wed, Jun 02, 2021 at 12:58:07AM -0700, Stephen Boyd wrote:
+> Why does the subject have -next in it?
+>=20
+> Quoting Yang Yingliang (2021-05-17 21:42:47)
+> > After calling clk_prepare_enable(), clk_disable_unprepare() need
+> > be called when prepare_timing_change() failed.
+> >=20
+> > Fixes: 2db04f16b589 ("clk: tegra: Add EMC clock driver")
+>=20
+> And then the Fixes tag is for a patch that was merged in v4.10?
 
-greg k-h
+To be honest, I'm not sure it's worth backporting this. The probability
+of this happening is very small and the worst that will happen is that
+the parent clock may stay enabled even if it doesn't have to. However,
+the parent clock for these is one of pll_p, pll_c or pll_m, all of which
+are usually sourced from other peripherals.
+
+Yes, it's nice to fix this, but I don't think it warrants a backport, so
+I think I'll just drop the Fixes tag.
+
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > ---
+> >  drivers/clk/tegra/clk-tegra124-emc.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/clk/tegra/clk-tegra124-emc.c b/drivers/clk/tegra/c=
+lk-tegra124-emc.c
+> > index bdf6f4a51617..74c1d894cca8 100644
+> > --- a/drivers/clk/tegra/clk-tegra124-emc.c
+> > +++ b/drivers/clk/tegra/clk-tegra124-emc.c
+> > @@ -249,8 +249,10 @@ static int emc_set_timing(struct tegra_clk_emc *te=
+gra,
+> >         div =3D timing->parent_rate / (timing->rate / 2) - 2;
+> > =20
+> >         err =3D tegra->prepare_timing_change(emc, timing->rate);
+> > -       if (err)
+> > +       if (err) {
+> > +               clk_disable_unprepare(timing->parent);
+> >                 return err;
+> > +       }
+> > =20
+> >         spin_lock_irqsave(tegra->lock, flags);
+> > =20
+>=20
+> Looks correct to me. I assume Thierry will pick it up for the next merge
+> window.
+
+Yes, I can do that. I've got a couple of minor fixes queued already, so
+this will fit right in.
+
+Thierry
+
+--xNOpmisMFYQeyVNT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC3SiAACgkQ3SOs138+
+s6GKpxAAuesuCLZB+eIUpak/TE7XduGdf2+ojeeewKxlhqLuAhklZUqfOu2UU/r6
+uSB98Rbq21cjwHrkdPxgGfV1FoGZqm4VpY3cBEABWOTmgZQJhsOOPsQPX72RF8b8
+ogjXli1BznABlN9LYDbf80NJnirFq7Z67e837/ormYq69Wz0Vm9RjGI6gATxB2CP
+FJRrg831A/RBxaadhVJAm8dXbHp7Q3hk+Mg79GBcGcQEfm/ebr1RknVBeXqOPXHL
+/stQRUlQiHxphM9J5VionfJYZegaHBdHN+zWfoCFbdxYPVH9F6t7f9PG3nKTaDvR
+nQKyT6o4f+SB8jfAhvQ9q/coVY6VLzj/FxtZqMcUgwpabnY3NV4tkqxRfdg+IJYD
+wttTBeOgoYCRgCBaiOT6RE/s6eBeGAkEDS7/CZrikDvfD9Ky/pVptdyZ4cWiqkB+
+ysKn5Y24W5NEKoh6e1ZtJkItOLrtuwLaQxdw6/6ku7t4uuYeF4co0t90xehQuxVq
+QImfmpVY5Al19fmlSpdRd9l7G06MaMgRKWjs97n5ZXnTqiasH5iKew0EyYMpUx2U
+AK8vzkNegtwC6xt9apskwxW/PiVGpfdbarVIGvMDXuyA62kD+txDKaeiyze2XJZp
+42WYOEWZDG08UPBndnOmPXs9pg6+iE1Ewv1H1C+l9Uw5ufLPo78=
+=tsva
+-----END PGP SIGNATURE-----
+
+--xNOpmisMFYQeyVNT--
