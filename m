@@ -2,160 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D8E398923
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B64398924
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhFBMQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:16:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29115 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229579AbhFBMQg (ORCPT
+        id S229682AbhFBMRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhFBMRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:16:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622636092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+WZvzkWyoU33l+EoH2um7bddlB7uqhofjcxdl6V4QOM=;
-        b=DrrQhr1R91S2ShJkNeOOWFIK8Co0EQUEvqlap6vdjK5OpwSm0ANJyhHp776LeXNEr4m9Tg
-        nhzESGQkwDy1zguZvxAqVYM8JiQ1ZehvJYX+y9mle56aormTzjh4HPp2EPgbLP3rC96rJC
-        4ujHSZgH3VQtJyoJWowK9Z3llfVq/TQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-kR6bnAMrP-SAbZlaEkx47w-1; Wed, 02 Jun 2021 08:14:51 -0400
-X-MC-Unique: kR6bnAMrP-SAbZlaEkx47w-1
-Received: by mail-wr1-f70.google.com with SMTP id g14-20020a5d698e0000b0290117735bd4d3so923451wru.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:14:51 -0700 (PDT)
+        Wed, 2 Jun 2021 08:17:10 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36B8C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 05:15:27 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id p13-20020a05600c358db029019f44afc845so1534845wmq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NYQ0DBLeg82xJUk7GJVvs66y68mmqwOYU+5W+gTFjjU=;
+        b=nT3mPDXaI76rhaGbXrGdOF2tQTVladAr1KfGrc6uARYU2qTKkYje3ge+Tfi3E4pUZJ
+         5g7iayiriAI25OE++iuDiMSkDgYDj0gPG7swtdaRbKRlhKKSMRTaHOKOaJUkv7r1hXeS
+         Qr+6WZN7wFevagpQDD5PRn/0+R9csUoEUYy+TnZcOD5+CqVe4YfCXvNlg2Zau2XUAwPU
+         WfGbPzGGUXE7iBVoyRrL6i7hXprG9zdldXpCuU8Hhv/+UqvAG/K5FKL5bX9ZbMtIACOC
+         /8zVk4WuevEtH0CEEe/HJMObpZwEBsEgIOYX5MZvj9Y56XwE3MMs1GCQ0yfUmNMZ8Xtn
+         tEpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=+WZvzkWyoU33l+EoH2um7bddlB7uqhofjcxdl6V4QOM=;
-        b=SCQTIMAgz7evSozaWz89zgmPmpdefBbsggNgcw2QUn8ZLjVQf8Bn6hFc8oqwmmVBPn
-         lIZ0dFbBnnFz9eQz9DqPjBQQDFsXD/nV85a4/bH4y6V9MMkbarIEn3JLNOiVJV3i8Ui/
-         CI90jb+FEOtDBaHkwtHZQ39zsR/vGo7t9IoB9JJ5vcUIOT6qt4gxgt30sjz+BCT+RwoI
-         WUkBTpHnFiy86ygR03vgvdv1s16m+0NTm4ISL3L1FFRZqqluVfkl5aQDkODfPvzsyIfQ
-         ybfmfimlmg5NRqNL7p9Cefl7PUns+U1hSd4wwN6qYuWzD47y0BLsDfZWlbfInrKW0qSk
-         Uv+A==
-X-Gm-Message-State: AOAM533+9UTrnx/N5+1MDB9//IL3KSGUt4kYajl1pLH8MK44GNDKoQfh
-        oxXQx1YHtN7Hgi4l1QeJNQ36KVFMXHMo44s3H3hmrM6fgkWV6cBM2jjOSpfru5OVw8S+uJzb3x6
-        PrCWpTMDyX7oQdiPVdwOO6lLf
-X-Received: by 2002:a7b:c396:: with SMTP id s22mr10160296wmj.131.1622636090058;
-        Wed, 02 Jun 2021 05:14:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGpbVgDrSlfIRKic51uMtC0PdZNIeN370u1E5fK+jYKeWSaQQbVkV3u6Hl/kPrdrf6iUsjYQ==
-X-Received: by 2002:a7b:c396:: with SMTP id s22mr10160274wmj.131.1622636089857;
-        Wed, 02 Jun 2021 05:14:49 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6b6d.dip0.t-ipconnect.de. [91.12.107.109])
-        by smtp.gmail.com with ESMTPSA id r7sm2581509wmq.3.2021.06.02.05.14.49
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NYQ0DBLeg82xJUk7GJVvs66y68mmqwOYU+5W+gTFjjU=;
+        b=F2JgDka6bY0EyK/BDnQskHsAMnc2XVqTrsEpOcwo5srUASgxcBhucVW1xER/YFj3z0
+         /egoiQxqSy2nUXpZqnJlaKsaQk9r6DJPprvPEf+RyqtGGI32u91mEh3lsf0W9Pvad8Yc
+         +BIEugCO/sJ63HErcvhU3c+S1vrVDCm+h5ew4v0l1tVKfyrNRVtiobN6BVvfTAMgTsgV
+         ysJuvdkbPxIXtIc6xu+AELK1PzGeZS+XxVfy7VcU+GLC812AE/BgGz4vBC5q6z71YBi4
+         Z/tem2OHp6aAFQdzBa3+SWzKRh8lWxC/+ixRN2TO5DG7h6XE4BJgAUymbfG1d/EW/hyA
+         yzGQ==
+X-Gm-Message-State: AOAM533fOTHTw3cUroELark3wTn+usT+aRzgLc2/wl3hhlMphGJNS90p
+        Yk+4FNAwIXfyTyw2dzYy7TE=
+X-Google-Smtp-Source: ABdhPJz9eiapwoSn11oUlnVhy+ovN96PWpChVj0Xk0ODghVf8PkV+hJjYAeeRSAVAkfUmKtepo/oVg==
+X-Received: by 2002:a05:600c:2cd2:: with SMTP id l18mr31359961wmc.142.1622636126300;
+        Wed, 02 Jun 2021 05:15:26 -0700 (PDT)
+Received: from ziggy.stardust ([37.223.145.68])
+        by smtp.gmail.com with ESMTPSA id d3sm6341225wrs.41.2021.06.02.05.15.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 05:14:49 -0700 (PDT)
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        linux-nvme@lists.infradead.org, dan.j.williams@intel.com,
-        logang@deltatee.com, linux-mm@kvack.org, hch@lst.de
-Cc:     sagi@grimberg.me, oren@nvidia.com, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-References: <20210602111055.10480-1-mgurtovoy@nvidia.com>
- <20210602111055.10480-2-mgurtovoy@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 1/3] mm,memory_hotplug: export mhp min alignment
-Message-ID: <283740c3-db3f-3c9a-2954-f1c037a13e86@redhat.com>
-Date:   Wed, 2 Jun 2021 14:14:48 +0200
+        Wed, 02 Jun 2021 05:15:25 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] arm64: dts: mt8183: remove syscon from smi_common
+ node
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        chun-jie.chen@mediatek.corp-partner.google.com,
+        Yong Wu <yong.wu@mediatek.com>
+References: <20210601040014.2970805-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <27c155d4-6198-08f3-9972-1a8da1a026ba@gmail.com>
+Date:   Wed, 2 Jun 2021 14:15:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210602111055.10480-2-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210601040014.2970805-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.06.21 13:10, Max Gurtovoy wrote:
-> Hotplugged memory has alignmet restrictions. E.g, it disallows all
-> operations smaller than a sub-section and only allow operations smaller
-> than a section for SPARSEMEM_VMEMMAP. Export the alignment restrictions
-> for mhp users.
+
+
+On 01/06/2021 06:00, Hsin-Yi Wang wrote:
+> We don't need to register smi_common as syscon. Also add required
+> property power-domains for this node.
 > 
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Applied to v5.13-next/dts64
+
+Thanks!
+
 > ---
->   include/linux/memory_hotplug.h |  5 +++++
->   mm/memory_hotplug.c            | 33 +++++++++++++++++++--------------
->   2 files changed, 24 insertions(+), 14 deletions(-)
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-> index 28f32fd00fe9..c55a9049b11e 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -76,6 +76,7 @@ struct mhp_params {
->   
->   bool mhp_range_allowed(u64 start, u64 size, bool need_mapping);
->   struct range mhp_get_pluggable_range(bool need_mapping);
-> +unsigned long mhp_get_min_align(void);
->   
->   /*
->    * Zone resizing functions
-> @@ -248,6 +249,10 @@ void mem_hotplug_done(void);
->   	___page;				\
->    })
->   
-> +static inline unsigned long mhp_get_min_align(void)
-> +{
-> +	return 0;
-> +}
->   static inline unsigned zone_span_seqbegin(struct zone *zone)
->   {
->   	return 0;
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 9e86e9ee0a10..161bb6704a9b 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -270,24 +270,29 @@ void __init register_page_bootmem_info_node(struct pglist_data *pgdat)
->   }
->   #endif /* CONFIG_HAVE_BOOTMEM_INFO_NODE */
->   
-> +/*
-> + * Disallow all operations smaller than a sub-section and only
-> + * allow operations smaller than a section for
-> + * SPARSEMEM_VMEMMAP. Note that check_hotplug_memory_range()
-> + * enforces a larger memory_block_size_bytes() granularity for
-> + * memory that will be marked online, so this check should only
-> + * fire for direct arch_{add,remove}_memory() users outside of
-> + * add_memory_resource().
-> + */
-> +unsigned long mhp_get_min_align(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
-> +		return PAGES_PER_SUBSECTION;
-> +	return PAGES_PER_SECTION;
-> +}
-> +EXPORT_SYMBOL_GPL(mhp_get_min_align);
-
-We have to main interfaces to "hotplug" memory:
-
-a) add_memory() and friends for System RAM, which have memory block 
-alignment requirements.
-
-b) memremap_pages(), which has the alignemnt requirements you mention here.
-
-I feel like what you need would better be exposed in mm/memremap.c, for 
-example, via "memremap_min_alignment" so it matches the "memremap_pages" 
-semantics.
-
-And then, memremap_pages() is only available with CONFIG_ZONE_DEVICE, 
-which depends on SPARSEMEM_VMEMMAP. So you'll always have 
-PAGES_PER_SUBSECTION.
-
-I can already spot "memremap_compat_align", maybe you can reuse that or 
-handle it accordingly in there?
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index c5e822b6b77a..e074c0d402ff 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -1263,13 +1263,14 @@ larb0: larb@14017000 {
+>  		};
+>  
+>  		smi_common: smi@14019000 {
+> -			compatible = "mediatek,mt8183-smi-common", "syscon";
+> +			compatible = "mediatek,mt8183-smi-common";
+>  			reg = <0 0x14019000 0 0x1000>;
+>  			clocks = <&mmsys CLK_MM_SMI_COMMON>,
+>  				 <&mmsys CLK_MM_SMI_COMMON>,
+>  				 <&mmsys CLK_MM_GALS_COMM0>,
+>  				 <&mmsys CLK_MM_GALS_COMM1>;
+>  			clock-names = "apb", "smi", "gals0", "gals1";
+> +			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+>  		};
+>  
+>  		imgsys: syscon@15020000 {
+> 
