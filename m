@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97364399394
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C860399396
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhFBTfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhFBTfw (ORCPT
+        id S229769AbhFBTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:36:58 -0400
+Received: from mail-pf1-f179.google.com ([209.85.210.179]:35352 "EHLO
+        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBTg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:35:52 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AB9C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 12:33:56 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso2374022pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 12:33:56 -0700 (PDT)
+        Wed, 2 Jun 2021 15:36:58 -0400
+Received: by mail-pf1-f179.google.com with SMTP id h12so162079pfe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 12:35:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JfnxRQTN3fYAopB3rM/EPd4f4ei3Y6CI77SLlRBX5lE=;
-        b=ak1rWd/+dydnlScK/+KBUfeK9WwMoemosKP3vGZ99cBy1SojbMbGOL6ATH8hYYPvwd
-         eJUvPYb2FeiCQgYpUYy9/Emtbyj9lBxOW876aOrO4V0RuFNC2MbGNBBRpS/wQUYg82lt
-         2YtItGAMmPGb+S0QVFJq1Ze9fLaSF2rc6qVsp3Ch1GLpjBsz3rmhywRo7NiSEg07WNqT
-         UEJFQKHr7yHUoBecsNYqxGZ1KtJbI/Belx1jONuogKELstOFMOB/1vCFY1HURbZWI46h
-         oga/UBPEmeXXL2WX8NILmkmquz8eLgPAVqbw6q407tLb29FlDCLW450aUi9HkSvitmp6
-         Hnpw==
+        bh=bYV9p2tuNrJ599IxGk8dIW77JyAflkTh2/fE68VmgyM=;
+        b=aWp5GUM/bhCW6yAY39LTLAsipqiKUrlLxMqLXUInHoEbRrU1LZiWbcU9BecnAlRxYX
+         AMnpitbU77d+KFXqgGCpCgQOb1xyRjS9irXXC7eYpEW2/CdRFXA1a+6HiraPp/mGRUeE
+         rMqIeuOivzbmCBt89n0taf6cwzdsP+aX0wZoRfZ/aY97MLGZ/yPtiw1tkUjWGHFXvD+z
+         gC/7gLRItTVcJuiTiFS/gvXKJTtn42OgFeflFcxDZXd3a5DkZv8CPyfTdXPlUahLRG2i
+         XlYqasofmvqiD2zu12hTHMzGapNFyayXZZzdjCKbSof+qrtTBtUKzzTfyGPgb0d7RJVr
+         wi9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JfnxRQTN3fYAopB3rM/EPd4f4ei3Y6CI77SLlRBX5lE=;
-        b=eu0NdtxWdqO7PDkUfl+QZMqDtW/rMJf55W1fmn+TqvfNlh1WxVUI7yLGPuEynG7z0x
-         DjyNs01tFaQH6uDfJXyLMfH1aewxEz9jfwkPldXroxJPNPOnLSUJ2gGkpH21gIUNWPV+
-         2XiuCLIGLNVeFd80QA+EwVm+Az0mIf83+hWzykE18Oo4+2ySUgpgKlCoTGRGK566al6z
-         A53lD6fVSbUAZQ8WPYbDBbg3LFbw11t9mWHdmGHQOeoBuXEuzDP287WitytkLbAE/0uL
-         zCA3DMlQVGU2EVY1pzZdoUaapnY1YtiZsiot4OAYGxhh8ukG06du8ejzfCXQ5cg61yTR
-         iLbQ==
-X-Gm-Message-State: AOAM530CRMQB3e2WdewcV+Iv6fe7s0iFCQJsXV7/0MzuV8AJKlNm3lsX
-        0lBstV36+ktSYc9wP9Pry5o=
-X-Google-Smtp-Source: ABdhPJx2RUoc6lWmR30Dng5SUbQyKOkySPlHFXM59H7D2maTkKUm32HpjN7DXhSumYn/h2QEuiTTLg==
-X-Received: by 2002:a17:902:db0f:b029:f3:e5f4:87f1 with SMTP id m15-20020a170902db0fb02900f3e5f487f1mr31689978plx.26.1622662435026;
-        Wed, 02 Jun 2021 12:33:55 -0700 (PDT)
+        bh=bYV9p2tuNrJ599IxGk8dIW77JyAflkTh2/fE68VmgyM=;
+        b=OYr5Whsc19eXpKvsU2FNJv0j5zdn3AqxXs4wVagCOczAayLqQxQsrUwtUuHbIMqygU
+         H99D/+cwGp8zsYxZLL/t95XJXS7zxtmMD4vHEQKvXJ1WL4ag+yldrNEoVKRvNSUXclRn
+         m6M4iS65LeybJQzfSlib6PFsmYnZrHmcnMoi5bvVVZwh70SuoiGPXoQXp3KwRgrXw1m3
+         QZOy8gGBg/5WVGKUV2+/lNZBcu1GbHO09ZMv967lsrexVIdPePTRfomyZVDj4Zxe9tPD
+         A47AqnVPncROhLsicTV3WEL0nlB7uMwcW+9PZxU+nKGUWU83S3axZ/m7rthCaeMixvZG
+         kU1A==
+X-Gm-Message-State: AOAM5313WUta5igxOzUXcrJlDYkVFiXEtHauI8kb3BzFSW3yIsST7WN5
+        jUKZBlrAEanuB3fsbSU7rcA=
+X-Google-Smtp-Source: ABdhPJxCNxOm6FEb2uuA5Yft/f308qmvjpEITztw8xKT9HG6SwUfrp6FFHjxFHKBzEQQQ/21hmTQaQ==
+X-Received: by 2002:a63:1316:: with SMTP id i22mr18055328pgl.150.1622662441778;
+        Wed, 02 Jun 2021 12:34:01 -0700 (PDT)
 Received: from localhost.localdomain ([183.82.156.141])
-        by smtp.googlemail.com with ESMTPSA id 30sm520570pgo.7.2021.06.02.12.33.52
+        by smtp.googlemail.com with ESMTPSA id 30sm520570pgo.7.2021.06.02.12.33.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 12:33:54 -0700 (PDT)
+        Wed, 02 Jun 2021 12:34:01 -0700 (PDT)
 From:   Manikishan Ghantasala <manikishanghantasala@gmail.com>
 Cc:     manikishanghantasala@gmail.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] staging: rtl8192u: put parentheses on macros with complex values in r8192U_hw.h
-Date:   Thu,  3 Jun 2021 01:03:31 +0530
-Message-Id: <20210602193334.11687-3-manikishanghantasala@gmail.com>
+Subject: [PATCH 3/3] staging: rtl8192u: fix spaces in r8192U_hw.h
+Date:   Thu,  3 Jun 2021 01:03:32 +0530
+Message-Id: <20210602193334.11687-4-manikishanghantasala@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210602193334.11687-1-manikishanghantasala@gmail.com>
 References: <20210602193334.11687-1-manikishanghantasala@gmail.com>
@@ -66,38 +63,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Macros with complex values should be enclosed in parentheses" checkpatch error.
+Fixed "please, no space before tabs" checkpatch warning.
 
 Signed-off-by: Manikishan Ghantasala <manikishanghantasala@gmail.com>
 ---
- drivers/staging/rtl8192u/r8192U_hw.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/staging/rtl8192u/r8192U_hw.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/rtl8192u/r8192U_hw.h b/drivers/staging/rtl8192u/r8192U_hw.h
-index b72cef3871b6..1de0605a9423 100644
+index 1de0605a9423..217e77766442 100644
 --- a/drivers/staging/rtl8192u/r8192U_hw.h
 +++ b/drivers/staging/rtl8192u/r8192U_hw.h
-@@ -221,13 +221,13 @@ enum _RTL8192Usb_HW {
- #define	RATR_MCS14		0x04000000
- #define	RATR_MCS15		0x08000000
- // ALL CCK Rate
--#define RATE_ALL_CCK		RATR_1M | RATR_2M | RATR_55M | RATR_11M
--#define RATE_ALL_OFDM_AG	RATR_6M | RATR_9M | RATR_12M | RATR_18M |\
--				 RATR_24M | RATR_36M | RATR_48M | RATR_54M
--#define RATE_ALL_OFDM_1SS	RATR_MCS0 | RATR_MCS1 | RATR_MCS2 | RATR_MCS3 |\
--				 RATR_MCS4 | RATR_MCS5 | RATR_MCS6 | RATR_MCS7
--#define RATE_ALL_OFDM_2SS	RATR_MCS8 | RATR_MCS9 | RATR_MCS10 | RATR_MCS11 |\
--				 RATR_MCS12 | RATR_MCS13 | RATR_MCS14 | RATR_MCS15
-+#define RATE_ALL_CCK		(RATR_1M | RATR_2M | RATR_55M | RATR_11M)
-+#define RATE_ALL_OFDM_AG	(RATR_6M | RATR_9M | RATR_12M | RATR_18M |\
-+				 RATR_24M | RATR_36M | RATR_48M | RATR_54M)
-+#define RATE_ALL_OFDM_1SS	(RATR_MCS0 | RATR_MCS1 | RATR_MCS2 | RATR_MCS3 |\
-+				 RATR_MCS4 | RATR_MCS5 | RATR_MCS6 | RATR_MCS7)
-+#define RATE_ALL_OFDM_2SS	(RATR_MCS8 | RATR_MCS9 | RATR_MCS10 | RATR_MCS11 |\
-+				 RATR_MCS12 | RATR_MCS13 | RATR_MCS14 | RATR_MCS15)
- 	EPROM_CMD		= 0xfe58,
- #define Cmd9346CR_9356SEL	BIT(4)
- #define EPROM_CMD_OPERATING_MODE_SHIFT 6
+@@ -88,7 +88,7 @@ enum _RTL8192Usb_HW {
+ #define RX_FIFO_THRESHOLD_MASK (BIT(13) | BIT(14) | BIT(15))
+ #define RX_FIFO_THRESHOLD_SHIFT 13
+ #define RX_FIFO_THRESHOLD_NONE 7
+-#define MAX_RX_DMA_MASK 	(BIT(8) | BIT(9) | BIT(10))
++#define MAX_RX_DMA_MASK	(BIT(8) | BIT(9) | BIT(10))
+ #define RCR_MXDMA_OFFSET	8
+ #define RCR_FIFO_OFFSET		13
+ #define RCR_ONLYERLPKT		BIT(31)			// Early Receiving based on Packet Size.
 -- 
 2.25.1
 
