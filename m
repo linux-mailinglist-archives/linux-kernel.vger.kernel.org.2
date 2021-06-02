@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A8D397F76
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E463397F91
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 05:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhFBD3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 23:29:35 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50291 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230511AbhFBD3e (ORCPT
+        id S229625AbhFBDdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 23:33:33 -0400
+Received: from gateway22.websitewelcome.com ([192.185.47.163]:35501 "EHLO
+        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229615AbhFBDdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 23:29:34 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Ub.lqm4_1622604468;
-Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0Ub.lqm4_1622604468)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 02 Jun 2021 11:27:48 +0800
-Subject: Re: [PATCH] mm, thp: relax migration wait when failed to get tail
- page
-To:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com,
-        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
- <alpine.LSU.2.11.2106010947370.1090@eggly.anvils>
- <YLZqKJ4anEGpAZfp@casper.infradead.org>
- <alpine.LSU.2.11.2106011114580.1045@eggly.anvils>
-From:   Yu Xu <xuyu@linux.alibaba.com>
-Message-ID: <71c320bf-3fcb-f8c0-65e4-ff706af05607@linux.alibaba.com>
-Date:   Wed, 2 Jun 2021 11:27:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Tue, 1 Jun 2021 23:33:31 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway22.websitewelcome.com (Postfix) with ESMTP id 286B4A6B5
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 22:31:48 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id oHbglB1cRVBxyoHbgleud9; Tue, 01 Jun 2021 22:31:48 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AfWP1Z4PsKQNJdy+qj3nFeR73DG6rWnP+m6kb1hdY5U=; b=NPhBLL6zu1P27XysgHWpg1WaJ1
+        n4sjgEcqMkf618mQ0A8pbL+d9ez2y519I+4UflOYFvrneazglHKzOu7Ol5rxII96fSiEsPF7RIBUz
+        T54EHLJtfAIpLocBKmN25PZSFd8Onj5dhoFmAgsOiXNatdON/gmwTLC5bixkB/TfgJfQzjeXNtMjy
+        XGr3K2e46+OHSqkfhXU/VjzdimBzlG8HP7CvMZFDUyhSzQYdy/8g9FPE033DAOhG+/hOq3xpTIf+o
+        afY8CnMNfUZiu5ezGS09s6dHs1EkhC/zB5dHVaWQa5KXBjpVEGwafXcWjRjZ5v1KHKuMwM97yyW/4
+        dkvaylog==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:54416 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1loHbc-001hKJ-Js; Tue, 01 Jun 2021 22:31:44 -0500
+Subject: Re: [PATCH][next] scsi: mpt3sas: Fix fall-through warnings for Clang
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210528200828.GA39349@embeddedor>
+ <yq1v96xosp0.fsf@ca-mkp.ca.oracle.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <3fed84fc-ee7d-86f2-b0a2-d80a30fb1907@embeddedor.com>
+Date:   Tue, 1 Jun 2021 22:32:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2106011114580.1045@eggly.anvils>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <yq1v96xosp0.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1loHbc-001hKJ-Js
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:54416
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/21 3:10 AM, Hugh Dickins wrote:
-> On Tue, 1 Jun 2021, Matthew Wilcox wrote:
->> On Tue, Jun 01, 2021 at 09:55:56AM -0700, Hugh Dickins wrote:
->>>
->>> Well caught: you're absolutely right that there's a bug there.
->>> But isn't cond_resched() just papering over the real bug, and
->>> what it should do is a "page = compound_head(page);" before the
->>> get_page_unless_zero()? How does that work out in your testing?
->>
->> You do realise you're strengthening my case for folios by suggesting
->> that, don't you?  ;-)
-> 
-> Hah! Well, I do realize that I'm offering you a marketing opportunity.
-> And you won't believe how many patches I dread to post for fear of that ;-)
-> 
-> But I'm not so sure that it strengthens your case: apparently folios
-> had not detected this?  Or do you have a hoard of folio-detected fixes
-> waiting for the day, and a folio-kit for each of the stable releases?
-> 
->>
->> I was going to suggest that it won't make any difference because the
->> page reference count is frozen, but the freezing happens after the call
->> to unmap_page(), so it may make a difference.
-> 
-> I think that's a good point: I may have just jumped on the missing
-> compound_head(), without thinking it through as far as you have.
-> 
-> I'm having trouble remembering the dynamics now; but I think there
-> are cond_resched()s in the unmap_page() part, so the splitter may
-> get preempted even on a non-preempt kernel; whereas the frozen
-> part is all done expeditiously, with interrupts disabled.
-> 
-> Greg discovered the same issue recently, but we all got sidetracked,
-> and I don't know where his investigation ended up.  He was in favour
-> of cond_resched(), I was in favour of compound_head(); and I think I
 
-I ever considered about using compound_head, but isn't there another
-race that, the following put_and_wait_on_page_locked operates on the
-"tail page" which has been split and is now a single page?
 
-Anyway, I will test and verify compound_head.
+On 6/1/21 22:23, Martin K. Petersen wrote:
 
-> was coming to the conclusion that if cond_resched() is needed, it
-> should not be there in __migration_entry_wait(), but somewhere up
-> in mm/gup.c, so that other faults that retry, expecting to reschedule
-> on return to userspace, do not get trapped in kernelspace this way.
+> Applied to 5.14/scsi-staging, thanks!
 
-Agreed. I will send v2, if cond_resched is still an option.
-
-> 
-> Waiting on migration entries from THP splitting is an egregious
-> example, but others may be suffering too.
-> 
-> Hugh
-> 
-
--- 
-Thanks,
-Yu
+Thanks, Martin.
+--
+Gustavo
