@@ -2,115 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02C23980B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116363980BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFBFmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 01:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhFBFmt (ORCPT
+        id S230112AbhFBFnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 01:43:43 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:55983 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230055AbhFBFnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 01:42:49 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07FBC061574;
-        Tue,  1 Jun 2021 22:41:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvyYm0Nlpz9s5R;
-        Wed,  2 Jun 2021 15:41:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622612463;
-        bh=kPeF2ypexQ5j7kpsHIFTGppjeBxQ/8AoFIpFe07ssak=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kOWUWT8DwmNnNB8oEBdp6vsKHswrtko+Km/xqZbsmeRbIkSn9xgzEiODHu6P/jtZM
-         EShreXHryfkcfZ7v2VVS9/uSMhJXdn+jJdap1TvkAodHcXib6fZDIqdFJRTujpJ/kS
-         Q6n8pyEjQFgbcybSNe/mlxkQ1syRPtbGYfAN5/X4Kd2n5IRaSRQoyNC1Y8FBTgIpKy
-         41O+j6+AnkeumL24li6odujShKXq8MTpZeuW4RHIqdP3GNDLBmKs/fDf1C2eKaHHv1
-         TzWu16mVI1x9MTiuDBIhjcuFMRaeb5/VBVLuxG8C4Awgo0XmaJqU0GuBFvNzmy7DUk
-         1r9DMeIGHEPcg==
-Date:   Wed, 2 Jun 2021 15:40:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yue Hu <huyue2@yulong.com>
-Subject: linux-next: manual merge of the akpm-current tree with the block
- tree
-Message-ID: <20210602154057.409ca400@canb.auug.org.au>
+        Wed, 2 Jun 2021 01:43:41 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id EDC0158095D;
+        Wed,  2 Jun 2021 01:41:57 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 02 Jun 2021 01:41:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        QB/0xZpsDFsfe7kzn9RW18VuOpTUDa+ex8OTHsbhbEk=; b=vwog3kS7l73qGDW/
+        K43KByzvpATQAElJsTcfdHaPhzbgGsKwvVDbKBioK6OCYVfNba1QfaKkc51iBC60
+        1CJJAITKHSWTeibTBXJB93VWlXdAEmeWSufQNYgeO6guJeRJUfJvks4lnxGDjHaj
+        BkWpaNkiFlUPXFIszHN81/vv/UNzdcuCa8J4IPGfs7Wl8ryDYRck7ohgrDtPNe7a
+        Vlbn9f0xOIniP/AVhmaUSU5pey9QzzIwJUdgJp8ONN23BgTwP/I3HjZ4DO6EsmA/
+        wb+HYAvUCFw4HqlWyTPGL6oiTOTNwGwaduKnZMYRH74sgJchqMG7L8bxNJVmVU9r
+        O32S/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=QB/0xZpsDFsfe7kzn9RW18VuOpTUDa+ex8OTHsbhb
+        Ek=; b=QdQTkTSATCay/eoWzoctc94OjUF/QI/8LXeeJRVIsNPixE3tzNs9c166F
+        7gPjWRe4e5i45hJVq4WL3/KmV9chDGSWFR1rz4Z2qUaWZpg3V868HleY9CO/+6g/
+        2pmuSPjtgq5N6Glbk3HWzhfKj98Hpk+Dvpa/4mQdMthydCHaD4CIf9JaGwHW/8t4
+        i5eV9UUglRXYEp8ek0RLkx4nEZ6g8sAMsCifQXR9NR2ksuGFGmFErVL2v8GjFVTs
+        ekai6hGC2tCXedJ/79crO/YyXL9qrfUjgzY8NLDQSyq2/JbXkPAkk+rszciEygeP
+        5iTMuWYlTSqYJdNJhKNd6DqF/odKA==
+X-ME-Sender: <xms:JRq3YOp_DcVCtmdIehCGUi-SGqn6C5jN5WVO4m2sXUCv_4zD3FI5nQ>
+    <xme:JRq3YMrOWSdTV7nxMb5EKC9yvbNJpqAPMJ-RaNqhL1KIJEH2fUOTdcO2Zhz4CAgel
+    _PZRuvYwP9O>
+X-ME-Received: <xmr:JRq3YDPgnjaiwCCYsnfpv7kRwarAILWbCb-eqyrsYeWu9ncvT5eWB_-gyxkGrhba2VkXsZo6DKwYw0NSIQLisqslpEnCTg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeliedgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:JRq3YN6z-izXAu3Qts8xjw_dMHR2xy3nm2yAO0m8GLREAtp3VrCA4w>
+    <xmx:JRq3YN7NQ_Xju-knnmMTxKXG4_iQIZ_bVc0KMJhUk7HC3jTIgBrC5g>
+    <xmx:JRq3YNi3YibGJCR0MEIQtA_B7k_0o5m5g1YT0vq04saBmHAYXGCPjA>
+    <xmx:JRq3YCGIvD4F5wttcceUczQQRjJEuqNDpa4_DrEw3ljHwQvJNV93SQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 2 Jun 2021 01:41:52 -0400 (EDT)
+Message-ID: <b92354fb396cd9a93fce1b3d2bb2744f0535d22f.camel@themaw.net>
+Subject: Re: [REPOST PATCH v4 4/5] kernfs: use i_lock to protect concurrent
+ inode updates
+From:   Ian Kent <raven@themaw.net>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 02 Jun 2021 13:41:38 +0800
+In-Reply-To: <CAJfpegshedor_ZiQ_8EdLGRG0AEWb5Sy5Pa4SwPg9+f196_mGg@mail.gmail.com>
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+         <162218366632.34379.11311748209082333016.stgit@web.messagingengine.com>
+         <CAJfpegshedor_ZiQ_8EdLGRG0AEWb5Sy5Pa4SwPg9+f196_mGg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//XGu7_NQ8de0/CpwNUas+sl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//XGu7_NQ8de0/CpwNUas+sl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2021-06-01 at 15:18 +0200, Miklos Szeredi wrote:
+> On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net> wrote:
+> > 
+> > The inode operations .permission() and .getattr() use the kernfs
+> > node
+> > write lock but all that's needed is to keep the rb tree stable
+> > while
+> > updating the inode attributes as well as protecting the update
+> > itself
+> > against concurrent changes.
+> > 
+> > And .permission() is called frequently during path walks and can
+> > cause
+> > quite a bit of contention between kernfs node operations and path
+> > walks when the number of concurrent walks is high.
+> > 
+> > To change kernfs_iop_getattr() and kernfs_iop_permission() to take
+> > the rw sem read lock instead of the write lock an additional lock
+> > is
+> > needed to protect against multiple processes concurrently updating
+> > the inode attributes and link count in kernfs_refresh_inode().
+> > 
+> > The inode i_lock seems like the sensible thing to use to protect
+> > these
+> > inode attribute updates so use it in kernfs_refresh_inode().
+> > 
+> > Signed-off-by: Ian Kent <raven@themaw.net>
+> > ---
+> >  fs/kernfs/inode.c |   10 ++++++----
+> >  fs/kernfs/mount.c |    4 ++--
+> >  2 files changed, 8 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
+> > index 3b01e9e61f14e..6728ecd81eb37 100644
+> > --- a/fs/kernfs/inode.c
+> > +++ b/fs/kernfs/inode.c
+> > @@ -172,6 +172,7 @@ static void kernfs_refresh_inode(struct
+> > kernfs_node *kn, struct inode *inode)
+> >  {
+> >         struct kernfs_iattrs *attrs = kn->iattr;
+> > 
+> > +       spin_lock(&inode->i_lock);
+> >         inode->i_mode = kn->mode;
+> >         if (attrs)
+> >                 /*
+> > @@ -182,6 +183,7 @@ static void kernfs_refresh_inode(struct
+> > kernfs_node *kn, struct inode *inode)
+> > 
+> >         if (kernfs_type(kn) == KERNFS_DIR)
+> >                 set_nlink(inode, kn->dir.subdirs + 2);
+> > +       spin_unlock(&inode->i_lock);
+> >  }
+> > 
+> >  int kernfs_iop_getattr(struct user_namespace *mnt_userns,
+> > @@ -191,9 +193,9 @@ int kernfs_iop_getattr(struct user_namespace
+> > *mnt_userns,
+> >         struct inode *inode = d_inode(path->dentry);
+> >         struct kernfs_node *kn = inode->i_private;
+> > 
+> > -       down_write(&kernfs_rwsem);
+> > +       down_read(&kernfs_rwsem);
+> >         kernfs_refresh_inode(kn, inode);
+> > -       up_write(&kernfs_rwsem);
+> > +       up_read(&kernfs_rwsem);
+> > 
+> >         generic_fillattr(&init_user_ns, inode, stat);
+> >         return 0;
+> > @@ -284,9 +286,9 @@ int kernfs_iop_permission(struct user_namespace
+> > *mnt_userns,
+> > 
+> >         kn = inode->i_private;
+> > 
+> > -       down_write(&kernfs_rwsem);
+> > +       down_read(&kernfs_rwsem);
+> >         kernfs_refresh_inode(kn, inode);
+> > -       up_write(&kernfs_rwsem);
+> > +       up_read(&kernfs_rwsem);
+> > 
+> >         return generic_permission(&init_user_ns, inode, mask);
+> >  }
+> > diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+> > index baa4155ba2edf..f2f909d09f522 100644
+> > --- a/fs/kernfs/mount.c
+> > +++ b/fs/kernfs/mount.c
+> > @@ -255,9 +255,9 @@ static int kernfs_fill_super(struct super_block
+> > *sb, struct kernfs_fs_context *k
+> >         sb->s_shrink.seeks = 0;
+> > 
+> >         /* get root inode, initialize and unlock it */
+> > -       down_write(&kernfs_rwsem);
+> > +       down_read(&kernfs_rwsem);
+> >         inode = kernfs_get_inode(sb, info->root->kn);
+> > -       up_write(&kernfs_rwsem);
+> > +       up_read(&kernfs_rwsem);
+> >         if (!inode) {
+> >                 pr_debug("kernfs: could not get root inode\n");
+> >                 return -ENOMEM;
+> > 
+> 
+> This last hunk is not mentioned in the patch header.  Why is this
+> needed?
 
-Hi all,
+Yes, that's right.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+The lock is needed to keep the node rb tree stable.
 
-  drivers/block/zram/zram_drv.h
+kernfs_get_inode() calls kernfs_refresh_inode() indirectly so
+since the i_lock is probably not needed here this hunk could
+just as well have gone into the rwsem change but because of
+that kernfs_refresh_inode() call it also makes sense to put
+it here.
 
-between commit:
+I'd prefer to keep it here and clearly what's going on isn't
+as obvious as I thought so I can add this reasoning to the
+description if you still think it's worth while?
 
-  a8698707a183 ("block: move bd_mutex to struct gendisk")
+> 
+> Otherwise looks good.
+> 
+> Thanks,
+> Miklos
 
-from the block tree and commit:
 
-  53dc46e0dbcf ("zram: move backing_dev under macro CONFIG_ZRAM_WRITEBACK")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/block/zram/zram_drv.h
-index 74c411911b6e,6e73dc3c2769..000000000000
---- a/drivers/block/zram/zram_drv.h
-+++ b/drivers/block/zram/zram_drv.h
-@@@ -112,9 -112,9 +112,9 @@@ struct zram=20
-  	/*
-  	 * zram is claimed so open request will be failed
-  	 */
- -	bool claim; /* Protected by bdev->bd_mutex */
- +	bool claim; /* Protected by disk->open_mutex */
-- 	struct file *backing_dev;
-  #ifdef CONFIG_ZRAM_WRITEBACK
-+ 	struct file *backing_dev;
-  	spinlock_t wb_limit_lock;
-  	bool wb_limit_enable;
-  	u64 bd_wb_limit;
-
---Sig_//XGu7_NQ8de0/CpwNUas+sl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC3GekACgkQAVBC80lX
-0GzSLQgAo9uW8F2mkELIJyN7bT+vLdiZGt9Tfje4mApZFyL4ZR/opoL+kwwaE5/m
-dgZ3H+9df6PYsKokuPqyPEAz7MntWK5lpYQ9V1EEmb/X2Qr+mJcC4PsP6w4kJMeN
-1c1lhE6wtTDsod9UT7qvbCIO7yCfqnk1H6z6iHlQTy+cEJsAVp5pTgLMXqz3pzBa
-vgB0dlNeK2m5HwPVrKoUWn3Mk84Wsnd+juvZPXO0VFd3OM1jJMMhLcZCy3+qnTL3
-adWfhU5d9w3lYIpq9BFHkhIKvYARcUfzdZFghziM1k0x8FxbT29rDT0QvLhB+VC/
-CTs1TkbBdJtoShres3Ozih1NxiTThA==
-=HL2K
------END PGP SIGNATURE-----
-
---Sig_//XGu7_NQ8de0/CpwNUas+sl--
