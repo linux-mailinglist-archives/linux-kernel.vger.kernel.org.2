@@ -2,66 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97B93985E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405063985E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhFBKIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:08:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50837 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhFBKIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:08:47 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1loNm7-0006tS-AK; Wed, 02 Jun 2021 10:06:59 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-block@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] null_blk: Fix null pointer dereference on nullb->disk on blk_cleanup_disk call
-Date:   Wed,  2 Jun 2021 11:06:59 +0100
-Message-Id: <20210602100659.11058-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S231649AbhFBKI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:08:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:40214 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230178AbhFBKI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 06:08:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C349E1042;
+        Wed,  2 Jun 2021 03:07:13 -0700 (PDT)
+Received: from [10.57.73.64] (unknown [10.57.73.64])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22D5A3F73D;
+        Wed,  2 Jun 2021 03:07:12 -0700 (PDT)
+Subject: Re: [PATCH] drm/rockchip: defined struct rockchip_dp_dt_ids[] under
+ CONFIG_OF
+To:     Souptick Joarder <jrdr.linux@gmail.com>, hjc@rock-chips.com,
+        heiko@sntech.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20210602080212.4992-1-jrdr.linux@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <8027801c-5260-8b1b-c758-fdfb8c18e9a7@arm.com>
+Date:   Wed, 2 Jun 2021 11:07:06 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602080212.4992-1-jrdr.linux@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 2021-06-02 09:02, Souptick Joarder wrote:
+> Kernel test robot throws below warning when CONFIG_OF
+> is not set.
+> 
+>>> drivers/gpu/drm/rockchip/analogix_dp-rockchip.c:457:34:
+> warning: unused variable 'rockchip_dp_dt_ids' [-Wunused-const-variable]
+>     static const struct of_device_id rockchip_dp_dt_ids[] = {
+> 
+> Fixed it by defining rockchip_dp_dt_ids[] under CONFIG_OF.
 
-The error handling on a nullb->disk allocation currently jumps to
-out_cleanup_disk that calls blk_cleanup_disk with a null pointer causing
-a null pointer dereference issue. Fix this by jumping to out_cleanup_tags
-instead.
+I think the __maybe_unused annotation is generally preferred over 
+#ifdefs these days. However, since these drivers only work with 
+devicetree anyway, it probably makes more sense to just remove the 
+of_match_ptr() uses which lead to these warnings in the first place.
 
-Addresses-Coverity: ("Dereference after null check")
-Fixes: 132226b301b5 ("null_blk: convert to blk_alloc_disk/blk_cleanup_disk")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/block/null_blk/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Robin.
 
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index d8e098f1e5b5..83d803cb57c8 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -1856,7 +1856,7 @@ static int null_add_dev(struct nullb_device *dev)
- 			goto out_cleanup_tags;
- 		nullb->disk = alloc_disk_node(1, nullb->dev->home_node);
- 		if (!nullb->disk)
--			goto out_cleanup_disk;
-+			goto out_cleanup_tags;
- 		nullb->disk->queue = nullb->q;
- 	} else if (dev->queue_mode == NULL_Q_BIO) {
- 		rv = -ENOMEM;
--- 
-2.31.1
-
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> ---
+>   drivers/gpu/drm/rockchip/analogix_dp-rockchip.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
+> index ade2327a10e2..9b79ebaeae97 100644
+> --- a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
+> +++ b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
+> @@ -454,12 +454,14 @@ static const struct rockchip_dp_chip_data rk3288_dp = {
+>   	.chip_type = RK3288_DP,
+>   };
+>   
+> +#ifdef CONFIG_OF
+>   static const struct of_device_id rockchip_dp_dt_ids[] = {
+>   	{.compatible = "rockchip,rk3288-dp", .data = &rk3288_dp },
+>   	{.compatible = "rockchip,rk3399-edp", .data = &rk3399_edp },
+>   	{}
+>   };
+>   MODULE_DEVICE_TABLE(of, rockchip_dp_dt_ids);
+> +#endif
+>   
+>   struct platform_driver rockchip_dp_driver = {
+>   	.probe = rockchip_dp_probe,
+> 
