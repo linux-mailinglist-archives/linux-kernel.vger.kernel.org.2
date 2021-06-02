@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA8F3985C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11843985CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhFBKB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:01:26 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:33475 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229754AbhFBKBZ (ORCPT
+        id S230325AbhFBKCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFBKCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:01:25 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id oNezlUEHIIpGyoNf3lPBjw; Wed, 02 Jun 2021 11:59:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622627981; bh=FWzRnbfqVvfgcr0ooi3vW4RiJLyjwwJA8ILaGIqTI3Q=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=CLtcCRE1R3/NSScca0v4qXC2CqpStwOyQA9voG5JquNyBg62QYQtd0dye+bbpGnrc
-         Qh+lNcAxc4MRD1I8kiTZ9ldFxCATbHELv6a8Hnk5gxO+OUhevZj4y/ZtmuThxcYYMR
-         +slGq1SXqZOa+CEtzVGJVCcXfKDEeuBHKT/iN8LKDUbM2Z1G3rikDe7tF9fblPyYWX
-         2qM+DvdIU8U/y1aRiAUD8W8S9l+wmzPowh/JL7a54JL9l4761/kfZDbzVhkwRsmHrE
-         fMZfS17GSfaAFc4ZfyaPiWmLHHUZWaWPEwzIB4vX+sh52x2tq8pRST10y0G5r6YMQ4
-         4JBjHvdJQLVvw==
-Subject: Re: [PATCH 2/3] venus: Add a handling of QC8C compressed format
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
- <20210429105815.2790770-3-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <d2960304-f119-aff2-3be7-9b50ad67a650@xs4all.nl>
-Date:   Wed, 2 Jun 2021 11:59:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Wed, 2 Jun 2021 06:02:36 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80889C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:00:52 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id d13so275643uav.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kYQ8JYBEy7lvKWQDIggyE7Q8g8ZfvSMvIgvFNwg3PWA=;
+        b=E7Y13F9E1P6m6uPrdeFtPtTyYgp71GUHcDG9b9SG8pVTvWIHYbMnx/rfh4IhUwekXb
+         kgTN/r9RzgHk0eTXxUfuovQCmUIyHmpwSR5akNx2dGwSuRMgIkLlQ9PRoG2X7j7Tr/87
+         U/oT823NKr5UYBcq/D8JtV4dVXpXHAPfb1FWslbbRW5msN9zrWv8K7ELqb6ILqKpN2s4
+         ViMW9C02GJ53Ojoc4SlzfIMuldlbTQ7gqqUmeEnyScTop1AJMBRpdAoY5QBn0OqjyQp5
+         9sKPPbvXSrlKMxZvV/V/13nUFxAVVYBxNvLW3+gTus1I4ECirhL2p2o/2tM2DLSKhkMR
+         Rbew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kYQ8JYBEy7lvKWQDIggyE7Q8g8ZfvSMvIgvFNwg3PWA=;
+        b=PlboN0ZuDXz+5XCJ0J2/pKqkXipkcPgVdAtN31N2MFay02kMGWYe6I8AyO2F6C8Sfi
+         8A2duRAChEHxYunLi02WCOno1Vi8We8RyQ0pom3VSjjtQTv8xtv74NvTeTQVLdz85KC/
+         Maqfh4iCzLfUQx2ztAdY8YrX7MFpBYw8eJ68j7miNsH+W0WAegzUSudms8MY/gm2bIkT
+         y2X35Iz0hiJqzpTb4sy+U0sXEpjz8vcnF4m6evnSp23NgIHgj5UZIDAqzCLochQl3iTc
+         JMBa6P78NgQ+K7wkl+T48Ovj+2ojbjtgY7rX2YaFNjxm/G7G8VIkSOptaajypdNGdPaG
+         yHXg==
+X-Gm-Message-State: AOAM533pq4PV+FkgbGfa9gUH8G0niSNCiS28UwyK3RexmWFCqqFRM0Np
+        x/jsFaP4IzyomOFH74mJ9IWERa3zB9SzxvBIQitCSg==
+X-Google-Smtp-Source: ABdhPJz+fWUP1yrioI1DOXyLCqHIl9Xjim3WV7PVlH8e8dZ1YoqCIkdxvp3qv5nY5bNL/sVkprcAt/yj67IgR33BiIA=
+X-Received: by 2002:a9f:35b3:: with SMTP id t48mr20019416uad.129.1622628051636;
+ Wed, 02 Jun 2021 03:00:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210429105815.2790770-3-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKjA6GTJ/+QFuKZ3BFX6a3PWHnRPUSN6SwngD065rvxRykgTC48HDu4i3Er643lTGFixpzLY7OLrvy0Ykn/hPj0T+Eyx2GGeB9NzkPY7jijGlXBlvsNh
- MP8iJ9EAIRsTXrlSFI++QNR+cj+a+BeMqpjB7ouHr6gOm/XO7bXT+gM7JIbSxQ88nypUSOTFPmyyXV1RjKYDvcYx8d1x2Ykm8kryzZCHmjkN31+ApWK0eqP2
- Gu54viWeQVgUdjFQI8ESUrzniK1p7nKu3ZdNATRpOM9lP1KIYDK+3HqWO+jhAluI6GD9LY9SssFUNtvZwqpZDCmvOmitbQz7WjxOSJYBNLheJ9p10ekG2hVl
- SIocdwNS9fTuvVz6eAq7gGEUkUJth48YjAdk+TAUAN6PZRiWKIc=
+References: <20210601231003.9845-1-digetx@gmail.com> <YLdK6jp0Ybtzdstv@orome.fritz.box>
+In-Reply-To: <YLdK6jp0Ybtzdstv@orome.fritz.box>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 2 Jun 2021 12:00:15 +0200
+Message-ID: <CAPDyKFogXwT_C+hP8mW4EdoXnsiXCuF2m3cjURO6ijuUsV0sXQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] NVIDIA Tegra core power domain follow up
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2021 12:58, Stanimir Varbanov wrote:
-> This adds QC8C compressed pixel format in the Venus driver, and
-> make it enumeratable from v4l2 clients.
+On Wed, 2 Jun 2021 at 11:08, Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> On Wed, Jun 02, 2021 at 02:10:01AM +0300, Dmitry Osipenko wrote:
+> > Remove the lockdep_set_class(), which Ulf Hansson asked for. And
+> > prevent core domain syncing if domain node is missing in device-tree,
+> > which I accidentally missed to add after squashing the standalone
+> > domain driver into the PMC driver.
+> >
+> > Dmitry Osipenko (2):
+> >   soc/tegra: pmc: Don't sync core domain if it's missing in device-tree
+> >   soc/tegra: pmc: Remove usage of lockdep_set_class()
+> >
+> >  drivers/soc/tegra/pmc.c | 21 +++++++++++----------
+> >  1 file changed, 11 insertions(+), 10 deletions(-)
+>
+> I've squashed these into the corresponding patches of you v6 series and
+> added Ulf's reviewed-by to them.
+>
+> Ulf, let me know if I misinterpreted the discussion and your reviewed-by
+> didn't extend to the original patches.
 
-enumeratable -> possible to discover
+Nope, looks good to me! Thanks!
 
-(or possibly 'enumerable', but I prefer the phrase suggested above)
-
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/helpers.c |  2 ++
->  drivers/media/platform/qcom/venus/vdec.c    | 12 +++++++++++-
->  2 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-> index 9b8ff76e3c43..3a0b07d237a5 100644
-> --- a/drivers/media/platform/qcom/venus/helpers.c
-> +++ b/drivers/media/platform/qcom/venus/helpers.c
-> @@ -561,6 +561,8 @@ static u32 to_hfi_raw_fmt(u32 v4l2_fmt)
->  		return HFI_COLOR_FORMAT_NV12;
->  	case V4L2_PIX_FMT_NV21:
->  		return HFI_COLOR_FORMAT_NV21;
-> +	case V4L2_PIX_FMT_QC8C:
-> +		return HFI_COLOR_FORMAT_NV12_UBWC;
->  	default:
->  		break;
->  	}
-> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> index 5e5584fc21e9..d4cc51fc019c 100644
-> --- a/drivers/media/platform/qcom/venus/vdec.c
-> +++ b/drivers/media/platform/qcom/venus/vdec.c
-> @@ -31,6 +31,10 @@
->   */
->  static const struct venus_format vdec_formats[] = {
->  	{
-> +		.pixfmt = V4L2_PIX_FMT_QC8C,
-> +		.num_planes = 1,
-> +		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-> +	}, {
->  		.pixfmt = V4L2_PIX_FMT_NV12,
->  		.num_planes = 1,
->  		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-> @@ -696,7 +700,13 @@ static int vdec_output_conf(struct venus_inst *inst)
->  	inst->output2_buf_size =
->  			venus_helper_get_framesz_raw(out2_fmt, width, height);
->  
-> -	if (is_ubwc_fmt(out_fmt)) {
-> +	if (is_ubwc_fmt(out_fmt) && is_ubwc_fmt(out2_fmt)) {
-> +		inst->output2_buf_size = 0;
-> +		inst->opb_buftype = HFI_BUFFER_OUTPUT;
-> +		inst->opb_fmt = out_fmt;
-> +		inst->dpb_buftype = 0;
-> +		inst->dpb_fmt = 0;
-> +	} else if (is_ubwc_fmt(out_fmt)) {
->  		inst->opb_buftype = HFI_BUFFER_OUTPUT2;
->  		inst->opb_fmt = out2_fmt;
->  		inst->dpb_buftype = HFI_BUFFER_OUTPUT;
-> 
-
+Kind regards
+Uffe
