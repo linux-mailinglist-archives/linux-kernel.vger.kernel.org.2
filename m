@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD59399107
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C68A39910D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhFBRB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:01:59 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:40661 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFBRB4 (ORCPT
+        id S230343AbhFBRFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:05:05 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:42458 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFBRFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:01:56 -0400
-Received: by mail-qk1-f182.google.com with SMTP id u30so3057530qke.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=krdPBd6E7hUIUxi1Nz7QlKa3o1eOrT+mUsytvFlZevg=;
-        b=U2j0n5Ddssabjjp0li32g/LWz+4f0D8lev5wNe2y7k+iTDXO0Np8412sKQ4hKlqrp3
-         rmaStCsnD5f+Q0MCd3RxDfdsouDw+BPK800ob4up7LWuJP6bQGxLAzPFR7oaEVDaC6KW
-         yYkxlTIqLZnX9X1s6kIDjUxZCvA5efeYXpE+s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=krdPBd6E7hUIUxi1Nz7QlKa3o1eOrT+mUsytvFlZevg=;
-        b=JaIplTaEIG18izxOV98vN8RX+WFBypESUzNUgWRGrtaGCXgi5Qu0rPboDSqAW8FDrZ
-         o0ahJ5AfkieDcpW/IUhP1XWA5lQh1lJYXAC+Jr2bt4BqjjJHyLF59S6XZy6jFcOWYE3e
-         FUp/HIKWqEI8cRnGYBAoB9QSp/LnBNvkfcRR5VFZhlOpaF3f1uP0pikpw8ujbGqcy2G8
-         A8F0eoYja4itK5tG/Bm0EkEPL9aI1RIIzgg9YEd+zSQPtA9jWtN0yQhnsb0LYwRoreG4
-         H60OkbLVFV7ekML29z2MhTlYm1tgfgapSuvXCX4Ja4iMKhaF1fYtYfAxRoXGdp/sPq7I
-         DGsQ==
-X-Gm-Message-State: AOAM531L+BNwil1RnXOuvbbIDOjb9xEA161550Y+jUWa031vlnlvVvnT
-        yUZG6/JmxrrM32NyxubeRk5uarAgRteILA==
-X-Google-Smtp-Source: ABdhPJxH5d1woR673jS4Hkbvxs0LcdX0vmaH/IPn9Ix3jEBxUsqa6FjBb5RNyV0xVPxf1oay7chNyQ==
-X-Received: by 2002:a37:a45:: with SMTP id 66mr28776075qkk.138.1622653152558;
-        Wed, 02 Jun 2021 09:59:12 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id t139sm175730qka.85.2021.06.02.09.59.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 09:59:12 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 207so4822725ybd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:59:11 -0700 (PDT)
-X-Received: by 2002:a25:b801:: with SMTP id v1mr51811091ybj.32.1622653151565;
- Wed, 02 Jun 2021 09:59:11 -0700 (PDT)
+        Wed, 2 Jun 2021 13:05:04 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id BE28F641FC;
+        Wed,  2 Jun 2021 19:02:12 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 19:03:17 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     syzbot <syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com>
+Cc:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] general protection fault in nft_set_elem_expr_alloc
+Message-ID: <20210602170317.GA18869@salvia>
+References: <000000000000ef07b205c3cb1234@google.com>
 MIME-Version: 1.0
-References: <20210601184417.3020834-1-swboyd@chromium.org>
-In-Reply-To: <20210601184417.3020834-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 2 Jun 2021 09:59:00 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X52FyU7F4itVjegwTdX9L40Qpb33sdSvi_=McH4KxVrA@mail.gmail.com>
-Message-ID: <CAD=FV=X52FyU7F4itVjegwTdX9L40Qpb33sdSvi_=McH4KxVrA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: Disable PON on Trogdor
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <000000000000ef07b205c3cb1234@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jun 02, 2021 at 09:37:26AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    6850ec97 Merge branch 'mptcp-fixes-for-5-13'
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1355504dd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ce96ca2b1d0b37c6422d
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1502d517d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bbbe13d00000
+> 
+> The issue was bisected to:
+> 
+> commit 05abe4456fa376040f6cc3cc6830d2e328723478
+> Author: Pablo Neira Ayuso <pablo@netfilter.org>
+> Date:   Wed May 20 13:44:37 2020 +0000
+> 
+>     netfilter: nf_tables: allow to register flowtable with no devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10fa1387d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12fa1387d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14fa1387d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com
+> Fixes: 05abe4456fa3 ("netfilter: nf_tables: allow to register flowtable with no devices")
+> 
+> general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
+> CPU: 1 PID: 8438 Comm: syz-executor343 Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:nft_set_elem_expr_alloc+0x17e/0x280 net/netfilter/nf_tables_api.c:5321
+> Code: 48 c1 ea 03 80 3c 02 00 0f 85 09 01 00 00 49 8b 9d c0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 70 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d9 00 00 00 48 8b 5b 70 48 85 db 74 21 e8 9a bd
 
-On Tue, Jun 1, 2021 at 11:44 AM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> We don't use the PON module on Trogdor devices. Instead the reboot
-> reason is sort of stored in the 'eventlog' and the bootloader figures
-> out if the boot is abnormal and records that there. Disable the PON node
-> and then drop the power key disabling because that's a child node that
-> will no longer be enabled if the PON node is disabled.
->
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+It's a real bug. Bisect is not correct though.
 
-Right. So essentially you're saying that the bootloader on trogdor
-(coreboot / depthcharge) doesn't do anything with this and thus it
-doesn't make sense on this board. That sounds right to me. Basically
-there's no way in userspace to tell the bootloader to reboot into
-recovery mode or developer mode. Those things need to be initiated
-manually by the user.
-
-It's possible that Qualcomm internally has some out-of-tree patches
-where they use the PON for ramdump mode. +Rajendra as an FYI in case
-there's somehow he should give a heads up to about this.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+I'll post a patch to fix it. Thanks.
