@@ -2,119 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6E53994AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A063994B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhFBUjm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Jun 2021 16:39:42 -0400
-Received: from mga05.intel.com ([192.55.52.43]:24841 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229629AbhFBUjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:39:40 -0400
-IronPort-SDR: 4svAFfmeR2PEYnI4v+6GX/mmFcSLW3Cosh4fvDYC05+unmHAAmvL+fl/1T2m7AS+T2GrvdFJW3
- 9WMx4WR8MuqQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="289519877"
-X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
-   d="scan'208";a="289519877"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 13:37:53 -0700
-IronPort-SDR: 7o4Ko8qf/YRzlDUJz4aakcBst7Sj7ZsY8RdyqRwMdV8376kw73r6vMeokEPqWEPnk11j7Qk3T3
- JmLdWAInr/6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
-   d="scan'208";a="617366863"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga005.jf.intel.com with ESMTP; 02 Jun 2021 13:37:53 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Wed, 2 Jun 2021 13:37:52 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Wed, 2 Jun 2021 13:37:48 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.008;
- Wed, 2 Jun 2021 13:37:48 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-CC:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Ingo Molnar" <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-Subject: RE: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
- remove update_pasid()
-Thread-Topic: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
- remove update_pasid()
-Thread-Index: AQHXVGt3asHLaBFynUG7zSoQX2rt5Kr9vnIAgAAaOACAA1lTUA==
-Date:   Wed, 2 Jun 2021 20:37:47 +0000
-Message-ID: <36866b38ec92425b879881a88acf547b@intel.com>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
- <87mtsd6gr9.ffs@nanos.tec.linutronix.de> <YLShmFEzddfm7WQs@zn.tnic>
- <87y2bv438p.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87y2bv438p.ffs@nanos.tec.linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229620AbhFBUlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:41:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52150 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229541AbhFBUk7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 16:40:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622666355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E0/XuNlWKmhhWtieuI0wskLS78FwuunVTdLwC/mfCYo=;
+        b=EBx5pfyQKhVVeDRUBc+4TMq4DsuD5Dxt+qI/5T0e96+8zqPzurckzxWyugg+NxYJ8YFCgC
+        Xz9vc0i+ro540sIaoQjjqBnSwjMteaIPZQwONNaYFM83+G1d+Q2P96v33hijZsIsj6U9So
+        rElMRYvv6O+SuPpv4Sz/rLQjgbyVTFM=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-QDQ2pZsHNeydfEgQWtJqXg-1; Wed, 02 Jun 2021 16:39:14 -0400
+X-MC-Unique: QDQ2pZsHNeydfEgQWtJqXg-1
+Received: by mail-oi1-f199.google.com with SMTP id e17-20020aca13110000b02901e586ebcc79so1815554oii.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:39:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=E0/XuNlWKmhhWtieuI0wskLS78FwuunVTdLwC/mfCYo=;
+        b=cxGfRTLrUmf73tyqHohR2uNS3P1qc2b+Pf/WXMdZDxTwlspzpO0FbWdAX17FCvyWb3
+         MmhU0LQHYow76QQ4VTT61HxyJsNLhKifPtVt0mrLUVoen/btF7t8yv2Id9LHXtwrVj+p
+         0q87eTu39oOWaipQEsn1G9nFLTvXjFwBfudCAWPcOgcKaEjSNAFJjrt/EyAjLccvAgmM
+         1BwgcJlX3BPAG6uNr5ntdGRlG/9IY9G31lALcl5PwZTUcnu9sSIO8Qmm2QIRv3nlSWbL
+         2i07sVJH7MnEEnqGkf6gcucUfw/5eg47VL7K72T+CLQDaFvAM9UbjJKocDTY+MCfYM3m
+         0DYw==
+X-Gm-Message-State: AOAM531Qhvg+PG/ZklEePzLfGnxaRzXY7OLSlreA9ck/GpMxsByA7ESV
+        1aSVGOIxTWV6UsODpTWPMA6JAFjKPk/evr0/YL6UIO0nQmExH82vhPMIaYYxXLH/ZrRy2XHdz21
+        WDqi29yroevXgNQleJSlVxgEo
+X-Received: by 2002:a05:6808:992:: with SMTP id a18mr22575057oic.129.1622666353956;
+        Wed, 02 Jun 2021 13:39:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyz2ftAStoo/mrE1T7iYy5n/Cf3MyvtNFl5GUaoW1aAg7LQw1zqt3cIXb7KlwxbYx+Nv62ACw==
+X-Received: by 2002:a05:6808:992:: with SMTP id a18mr22575039oic.129.1622666353816;
+        Wed, 02 Jun 2021 13:39:13 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id h7sm204004ots.44.2021.06.02.13.39.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 13:39:13 -0700 (PDT)
+Subject: Re: [PATCH 3/3] fpga: region: Adds runtime PM support
+To:     Nava kishore Manne <navam@xilinx.com>,
+        Moritz Fischer <mdf@kernel.org>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, git <git@xilinx.com>
+References: <20210402092049.479-1-nava.manne@xilinx.com>
+ <20210402092049.479-4-nava.manne@xilinx.com> <YHDHhf1tQo6vI49W@epycbox.lan>
+ <MWHPR02MB2623E61ABFBB478E95DC863FC2499@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <PH0PR02MB733699A67717E605045728DAC23D9@PH0PR02MB7336.namprd02.prod.outlook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8c7b7fcc-211c-3c22-a105-8c77156fde81@redhat.com>
+Date:   Wed, 2 Jun 2021 13:39:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <PH0PR02MB733699A67717E605045728DAC23D9@PH0PR02MB7336.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> ... so on a PASID system, your trivial reproducer would theoretically
->> fire the same way and corrupt FPU state just as well.
+
+On 6/2/21 3:48 AM, Nava kishore Manne wrote:
+> Ping!
 >
-> This is worse and you can't selftest it because the IPI can just hit in
-> the middle of _any_ FPU state operation and corrupt state.
+>> -----Original Message-----
+>> From: Nava kishore Manne
+>> Sent: Monday, April 19, 2021 10:49 AM
+>> To: Moritz Fischer <mdf@kernel.org>
+>> Cc: trix@redhat.com; robh+dt@kernel.org; Michal Simek
+>> <michals@xilinx.com>; linux-fpga@vger.kernel.org;
+>> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
+>> kernel@lists.infradead.org; git <git@xilinx.com>
+>> Subject: RE: [PATCH 3/3] fpga: region: Adds runtime PM support
+>>
+>> Hi Moritz,
+>>
+>> 	Please find my response inline.
+>>
+>>> -----Original Message-----
+>>> From: Moritz Fischer <mdf@kernel.org>
+>>> Sent: Saturday, April 10, 2021 3:01 AM
+>>> To: Nava kishore Manne <navam@xilinx.com>
+>>> Cc: mdf@kernel.org; trix@redhat.com; robh+dt@kernel.org; Michal Simek
+>>> <michals@xilinx.com>; linux-fpga@vger.kernel.org;
+>>> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-
+>>> kernel@lists.infradead.org; git <git@xilinx.com>
+>>> Subject: Re: [PATCH 3/3] fpga: region: Adds runtime PM support
+>>>
+>>> On Fri, Apr 02, 2021 at 02:50:49PM +0530, Nava kishore Manne wrote:
+>>>> Adds support to handle FPGA/PL power domain. With this patch, the PL
+>>>> power domain will be turned on before loading the bitstream and
+>>>> turned off while removing/unloading the bitstream using overlays.
+>>>> This can be achieved by adding the runtime PM support.
+>>>>
+>>>> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+>>>> ---
+>>>>   drivers/fpga/of-fpga-region.c | 18 +++++++++++++++++-
+>>>>   1 file changed, 17 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/fpga/of-fpga-region.c
+>>>> b/drivers/fpga/of-fpga-region.c index e405309baadc..35fc2f3d4bd8
+>>>> 100644
+>>>> --- a/drivers/fpga/of-fpga-region.c
+>>>> +++ b/drivers/fpga/of-fpga-region.c
+>>>> @@ -15,6 +15,7 @@
+>>>>   #include <linux/of_platform.h>
+>>>>   #include <linux/slab.h>
+>>>>   #include <linux/spinlock.h>
+>>>> +#include <linux/pm_runtime.h>
+>>>>
+>>>>   static const struct of_device_id fpga_region_of_match[] = {
+>>>>   	{ .compatible = "fpga-region", },
+>>>> @@ -302,6 +303,7 @@ static int
+>>>> of_fpga_region_notify_pre_apply(struct
+>>> fpga_region *region,
+>>>>   	}
+>>>>
+>>>>   	region->info = info;
+>>>> +	pm_runtime_get_sync(dev->parent);
+>>>>   	ret = fpga_region_program_fpga(region);
+>>>>   	if (ret) {
+>>>>   		/* error; reject overlay */
+>>>> @@ -324,10 +326,13 @@ static int
+>>>> of_fpga_region_notify_pre_apply(struct fpga_region *region,  static
+>>>> void
+>>> of_fpga_region_notify_post_remove(struct fpga_region *region,
+>>>>   					      struct of_overlay_notify_data
+>>> *nd)  {
+>>>> +	struct device *dev = &region->dev;
+>>>> +
+>>>>   	fpga_bridges_disable(&region->bridge_list);
+>>>>   	fpga_bridges_put(&region->bridge_list);
+>>>>   	fpga_image_info_free(region->info);
+>>>>   	region->info = NULL;
+>>>> +	pm_runtime_put(dev->parent);
+>>>>   }
+>>>>
+>>>>   /**
+>>>> @@ -411,9 +416,16 @@ static int of_fpga_region_probe(struct
+>>> platform_device *pdev)
+>>>>   		goto eprobe_mgr_put;
+>>>>   	}
+>>>>
+>>>> +	pm_runtime_enable(&pdev->dev);
+>>>> +	ret = pm_runtime_get_sync(&pdev->dev);
+>>>> +	if (ret < 0)
+>>>> +		goto err_pm;
+>>>> +
+>>>> +	pm_runtime_put(&pdev->dev);
+>>>> +
+>>>>   	ret = fpga_region_register(region);
+>>>>   	if (ret)
+>>>> -		goto eprobe_mgr_put;
+>>>> +		goto err_pm;
+>>>>
+>>>>   	of_platform_populate(np, fpga_region_of_match, NULL, &region-
+>>>> dev);
+>>>>   	platform_set_drvdata(pdev, region);  @@ -422,6 +434,9 @@ static
+>>>> int of_fpga_region_probe(struct  platform_device *pdev)
+>>>>
+>>>>   	return 0;
+>>>>
+>>>> +err_pm:
+>>>> +	pm_runtime_put(&pdev->dev);
+>>>> +	pm_runtime_disable(&pdev->dev);
+>>>>   eprobe_mgr_put:
+>>>>   	fpga_mgr_put(mgr);
+>>>>   	return ret;
+>>>> @@ -434,6 +449,7 @@ static int of_fpga_region_remove(struct
+>>>> platform_device *pdev)
+>>>>
+>>>>   	fpga_region_unregister(region);
+>>>>   	fpga_mgr_put(mgr);
+>>>> +	pm_runtime_disable(region->dev.parent);
+>>>>
+>>>>   	return 0;
+>>>>   }
+>>>> --
+>>>> 2.18.0
+>>>>
+>>> Does this add a dependency on CONFIG_PM?
+>>>
+>> Yes, the newly added functionality has a dependency on CONFIG_PM if it's
+>> disabled the expected power domain (in our cases it's PL) will not powered
+>> ON/OFF dynamically at runtime and this is as an expected behavior. Other
+>> than this it will not impact the any of the driver existing functionality.
 
-That sounds like we should abandon the "IPI all the other threads
-to force enable the PASID for them" approach. It would just be a
-nightmare of papering over cracks when the IPI was delivered at
-some inconvenient moment when the recipient was in the middle
-of touching xsave state.
+This looks like a general change for a specific board.
 
-I've told Fenghua to dig out the previous iteration of this patch where
-the plan was to lazily fix the PASID_MSR in other threads in the #GP
-handler.
+Why can't this be done at the board level ?
 
-That algorithm is very simple and easy to check. Pseudo-code:
+Tom
 
-#GP
-	if (usermode && current->mm->pasid && rdmsr(PASID_MSR) != valid) {
-		wrmsr(PASID_MSR, current->mm->pasid | PASID_VALID);
-		return;
-	}
+>>
+>> Regards,
+>> Navakishore.
 
-Worst case is that some thread of a multi-threaded process that is using PASID
-takes some unrelated #GP ... this code will try to fix it by enabling the PASID_MSR.
-That will just #GP a second time and this test will see the MSR is already set,
-so fall into the usual #GP handling code.
-
-Seems like a better direction than trying to fix the IPI method. The virtualization
-folks will like this way more because IPI in guest causes a couple of VMEXIT
-so is somewhat expensive.
-
--Tony
