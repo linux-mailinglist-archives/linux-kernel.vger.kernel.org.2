@@ -2,146 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89336398D74
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5488B398D5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbhFBOuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:50:11 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:42528 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhFBOt7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:49:59 -0400
-Received: by mail-pl1-f196.google.com with SMTP id v13so1214537ple.9;
-        Wed, 02 Jun 2021 07:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NVbiioOCcOcyQ1wfFSkXAav6hw3gHoT6PQtqxVwJtos=;
-        b=Ed3Ts1RN+DIPGKvDGNZ63Q2q9KbJdlj50HkhcgroPktbcIy7kRj+I27WbaUyjtGK4C
-         lmhuhGjQ4v3kPADCOc2zMs0gPqVL2t4axB0dTtq9JmobkotB+sgFelgkDe0vMOiRoyQ7
-         RuHZr+shnzLJzlxBnnN0DrGouICaEwtfVOUzhvWQB4yhH2o25LUhH+az/5x+9FW5i1f8
-         fAcvoNyjS72IqLwE8oQqiwJXSb/IofTuQMmKSOGxLvFDUoj00Q7Ua05aXpCEuZJ99xWW
-         rOruciGtHPTCSJztAashQzkbL2qOMFW92U6GeT8sYAD/FEp3k4XKBbNAXgsc25iWXVMk
-         0Bvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NVbiioOCcOcyQ1wfFSkXAav6hw3gHoT6PQtqxVwJtos=;
-        b=a0DzDr5Gc6wqtd7+KSzSdHD1sqs2II0aKTMBGZVLWVXzZj7/3jnt6C+kZ0ZOR3VmlW
-         w8PkJ3OiypGUfoXYE9AIB4GlvMRXNJRT/Tpy3Dv8HyjGbhJ+DQb0q/EeWYCfiTYLn2w0
-         Os4cBHGhfLaW2Z/S2MC5jQ5RsozOaSjsrW0IpqwwIHc6tOewLJVLZaSVqRNXRDdmjtB9
-         N+Wia2VJdCG+xvLJFDvXy5YCpdPjavkQYXqlh6cp8Y7ahAhfNWrxecWlfdXkNpv6Dfco
-         oPJbSN+0sz9QWOc3AsTUyqLFBdo+NYXURoly5W6agXkSBwx+AHugkJ7xzk2DlMD95Ncb
-         qHRw==
-X-Gm-Message-State: AOAM5316/fuV3dwM8xOsQudWbHzUJx1DGHsbCdnGOqwJKhf/E2WhlS7A
-        vZdLGqLtPiV0StiTWHo31BU=
-X-Google-Smtp-Source: ABdhPJxl+7iCOUsaiyRv/SFrxt248HFsWs3hiUFr5CmaTJKN7SYNd+BpRcthFwjAdtgiMxQkixsr7w==
-X-Received: by 2002:a17:902:eb05:b029:fe:e0fa:e1f1 with SMTP id l5-20020a170902eb05b02900fee0fae1f1mr18555789plb.10.1622645236725;
-        Wed, 02 Jun 2021 07:47:16 -0700 (PDT)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id r135sm7315441pfc.184.2021.06.02.07.47.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:47:16 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     christian.brauner@ubuntu.com
-Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
-        samitolvanen@google.com, johan@kernel.org, ojeda@kernel.org,
-        akpm@linux-foundation.org, dong.menglong@zte.com.cn,
-        masahiroy@kernel.org, joe@perches.com, hare@suse.de,
-        axboe@kernel.dk, jack@suse.cz, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org, neilb@suse.de,
-        brho@google.com, mcgrof@kernel.org, palmerdabbelt@google.com,
-        arnd@arndb.de, f.fainelli@gmail.com, linux@rasmusvillemoes.dk,
-        wangkefeng.wang@huawei.com, mhiramat@kernel.org,
-        rostedt@goodmis.org, vbabka@suse.cz, pmladek@suse.com,
-        glider@google.com, chris@chrisdown.name, ebiederm@xmission.com,
-        jojing64@gmail.com, mingo@kernel.org, terrelln@fb.com,
-        geert@linux-m68k.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jeyu@kernel.org, bhelgaas@google.com,
-        josh@joshtriplett.org
-Subject: [PATCH v4 3/3] init/do_mounts.c: fix rootfs_fs_type with ramfs
-Date:   Wed,  2 Jun 2021 22:46:30 +0800
-Message-Id: <20210602144630.161982-4-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.32.0.rc0
-In-Reply-To: <20210602144630.161982-1-dong.menglong@zte.com.cn>
-References: <20210602144630.161982-1-dong.menglong@zte.com.cn>
-MIME-Version: 1.0
+        id S230406AbhFBOs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:48:27 -0400
+Received: from mail-mw2nam10on2048.outbound.protection.outlook.com ([40.107.94.48]:31172
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229586AbhFBOs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:48:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OhrbHEusELjc5eua7DuWVGyKeLKwAl++ypCpXada9OquYZUUH/cCh+nqDGU/u9R8X3Z75OoqLTaNOf1hfgrmP7Q3TylIk5FQfMjkVWlmZI1RomLtoXjMGpCuGsiMwlibAeqPn9rZg22T1FJJX/Dr/TdT50ycqQXp0SMLTXvnD/iWGz4dMrCDAzYvGKfnIAa6bO+LhSiK/0rE9LWLBynRGwD8LJ8chkKmD8Xw9oTScuwQRU+5f32lRlvhOyI9bVS8O3+5BcYl0Ot56br6UISzv0vKTnCRF3uOWy6SBHbIq/ren4JHVq+L9H05SNrNlfcv5vjcrkN66+3+EZgLzSf0Zg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RkVjyZycQAzy3DcttIDxhi0b4z3JKNqMY3HJLE8BMgc=;
+ b=e7DBVQepsONIIIn6jt/NfUabRQBOWrcqppB+qSIogZCx8AaZPaqTWMcnfh/ayoj44gtXYzkyD65BmsIYJngun74IcuDAUjiUfSoODvaxtfVxHbEIN3w+fZSyL+XeqLbZA+xPSeg1Uh6lcMMyXMmkZmYwICqJ9mTt2D447ICeWq9U2FQ9Io0J9zoMCg9zLUUUFqoI9njY/lI4XFK7LvJBO7CZe9mig1EbMfXpYj+7uI3RmucI9F+uoh6FX88o3D8OueaI7yGmlnrrXfMjAwJU4rDw9TAWbJ1Tp6jnJpx1kzWOi+F9Zlyja7Rb4LMkPZyld2V693Yw7zv738cMdIyLcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RkVjyZycQAzy3DcttIDxhi0b4z3JKNqMY3HJLE8BMgc=;
+ b=ZaRmiYZQwFWUk1jdyUov6aKtspVii4mfVKcDQ0ANUCmM74yrmY3bCT3OvEZy8zIfDSUMCm3U6opCNTDFK266FcBPpv063rMVjn/U77pn5TOJpaukFlx0wqtktswciVrJRJjL8VJpx+EEdJ3KZC/4X1fkWMxsiCpWU8kMusyrvOQ=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by CO6PR12MB5426.namprd12.prod.outlook.com (2603:10b6:5:35d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Wed, 2 Jun
+ 2021 14:46:40 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::f455:b0b4:439:2753]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::f455:b0b4:439:2753%3]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
+ 14:46:40 +0000
+Subject: Re: [RESEND 16/26] drm/amd/display/dc/dce/dce_transform: Remove
+ superfluous re-initialisation of DCFE_MEM_LIGHT_SLEEP_CNTL,
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+References: <20210602143300.2330146-1-lee.jones@linaro.org>
+ <20210602143300.2330146-17-lee.jones@linaro.org>
+From:   Harry Wentland <harry.wentland@amd.com>
+Message-ID: <38291a94-4f21-d725-282f-5faabdc31cef@amd.com>
+Date:   Wed, 2 Jun 2021 10:46:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
+In-Reply-To: <20210602143300.2330146-17-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [198.200.67.154]
+X-ClientProxiedBy: YQBPR0101CA0168.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:f::11) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.50.3] (198.200.67.154) by YQBPR0101CA0168.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:f::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.27 via Frontend Transport; Wed, 2 Jun 2021 14:46:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c265e05a-379b-4a61-5262-08d925d53b1e
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5426:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR12MB542617FB2002D074037542108C3D9@CO6PR12MB5426.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:177;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 743lbOXrFOmXwlvNb72s165N1zyDA9hj6r+8xlumuP4nkLiaTrXT94TUNvTKfrLnNNPyqP7AcPaaffpP7i6s/1JvyWeViXIoMjHCtM/8OUjC1EpC7vi2zAQo39gvFBLEFkOLS3/zC2qwnwzJaRKdGgj0df64wLdJcerR+dRKvrWJFAIVTk935j/raOBV7Hlq5PXMDkzvbA9C2rByerb80C62gwmJxTI6RucYLxJ1t8ph/Xv6BJZcDCQEDI93W1PgNXKfpEAH0FnFZZPfJaWt3t7CLz75tLOMryIEhgc+AniVDnvlRis7umnXVdEZlSaPMlPlbXkHYVkKyd98JMXRl4mK2GHad8mwvugRGOwAamtRAJ201471MkgvU7Jser+cMzZqoMsixpzreAAn5qj1QaEkA/9YuQovlwwNFiaBNz2JHGNNi+nBGv+Yx11TijuSe20CVY2ckD2WeJUWXrfqAnnCTqZLVJ4P9ADM5vC09JXiL1krjVm2casp4rkke8dFZ2zv2S8OfcEjVsiFsEqaq0XHfV4QbYeCHl3Nvhuh1BVS6T3xmd62NT4lQcGia5exdsWiL1rhmXCUXy8GjqZFee7EIZD4jb5RNLtiG91RQbHLY33zxLsb47m1Il1MYWKZun8f/k3yNM9pvXT3uc8AcuvNr0pnAWzKegrDbLeZ6/eIn/bq+1XNKHO3t70W5Pxh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(186003)(6916009)(16526019)(31686004)(4326008)(86362001)(53546011)(26005)(6486002)(66574015)(316002)(2616005)(36756003)(8676002)(956004)(8936002)(16576012)(54906003)(83380400001)(478600001)(31696002)(5660300002)(38100700002)(66946007)(66476007)(2906002)(66556008)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T0pCNWQvUUkybktYWDUrUTdFc3lSSS9KVUR3RDFMSFNWcUdZbkowNXVCaFpt?=
+ =?utf-8?B?d2sxT0ttV3I2NitSTHZjNlNoVnJGRzNMbFcrajdBdmlxNnhqOXlObXF4c3JO?=
+ =?utf-8?B?Z0V0aFhpdm1GL2lTbmdpTnV4emFBYzIrYWFYUWZOV05qdnhrRG5YR2kzU2F5?=
+ =?utf-8?B?a0pKNGR4L05uSDRvL2RFQVNESWRiV2F0S1BvQVRYdWxNZS9YZ3RoQ1lVQTU1?=
+ =?utf-8?B?dkl6TmQ5YmhtcUpJUEdXUVpyRDVEM1ZpL1N0dy9ZN2JmS2F6WDVhdDE0dzBG?=
+ =?utf-8?B?WUNyVUdjNnk5blRhVkhVMU5KaUNvTnQwRDJjS0EzbjBTVEVNMkd2ZkR6a3Jn?=
+ =?utf-8?B?TTcyczVZVmN4R0dHUHFnTysxazhQR3Jkai9UL0ZaYmZVV2hqRi8xY0xVNjNq?=
+ =?utf-8?B?TU9sb3NRMVZzYzA4S0FVTWMrV1FiZ1hVNW9XaVJIclpjSTJyY1lhVm8yRUF1?=
+ =?utf-8?B?dXhvL2E0WjB1cFIvUFBlZkpKZTFHdmxmZDVFT3ZmSVNrSFRMNFRBdXJTVHZD?=
+ =?utf-8?B?eWliWk02dnFDN3k2UjdpaWlURU9YLzVZR0dGWWdoUlFlaE5JNkJxb051MTlP?=
+ =?utf-8?B?ekdkSG1VMFpqSklxWnVBYUV5Mnl5bkpHVXVJcThLVmpWcE5TcGQ3VjRFdDZD?=
+ =?utf-8?B?MVd2VUlyMGx1anl5Si8zRlVwNFFvNmd0QzdDcXJRaUVJR3A3Wmx1V2x2djdx?=
+ =?utf-8?B?YkZQbEc1eU9kL1JqT2Q1TUVhdi96KzNhTmsxYllmOEkwUjVrZytUV0hpMGhC?=
+ =?utf-8?B?aVFuejJEY1FhT0czQzA0MWRVSUM4MzNST2hoMit0U1YvTUc2c1kzUzZSemhp?=
+ =?utf-8?B?UXYxbHRFcFhMNGNhR1Y0cm0yVWJodUJiamo2STZTeHpxd0ZmMzNZay9sS3VE?=
+ =?utf-8?B?cUVNR3AzbW1JeHJTNDlwSFRzSXVIUmZPQU5oQVZmTEVIWDR3a0FsZ1IzYmly?=
+ =?utf-8?B?cUI2ZWhSdjJWVGZWMnJZZ2tOdW1nRFBCSWxKZVpqcXd3bkdRU1JTWVoxbWpn?=
+ =?utf-8?B?TjhHZzB4V2JNbzhOdWVxYW54QmtSYXU2S1dCeFFaRkx6eENNNXVKd3dJMExX?=
+ =?utf-8?B?Q3g5cTIrZXNKV1hha1Z1U3BkOXF6cFBpdzBUZjFzUVpYVEZBK2FUWHRhcjVh?=
+ =?utf-8?B?L2tRWWszK24xSGJTekt5R0dYbWg5cWFTYmdxZnFEVmt5K0VtWFFGekhwYXdR?=
+ =?utf-8?B?ZmNoTzFMU1FER2oxb1RHMm1lRVVlTU1vQjl6QlJMOVV3OVRRTG1CbGVvN2Fn?=
+ =?utf-8?B?Z09iSjUzTHNDQjEzSjVwVjhJcXNqcW1XYnRKYXJkaTRqQ3U2L1RraTJTYnow?=
+ =?utf-8?B?cmlMOVc0aGJMOUt1ZHY3MWtlZkVod1grWjJoSTVka29LWTNmQ3BVSTU5Ui9a?=
+ =?utf-8?B?amlqSmIwZkpQRVF1K0NORThzY3dMWWpNZ25OaEdqTks3TEhROExDb21rcXk2?=
+ =?utf-8?B?cTVJVVM1NEJPWGNiUHRqZG9VTVloT29wenhCYmFBSDhuRE9XZ1o0OHZmNERK?=
+ =?utf-8?B?NUllOWdKMklkbzJhU2grdHoweVd6V3ZHbWU3aXRtVG1GamlpMGZHTnRJcGVL?=
+ =?utf-8?B?dXRTWS9mQjlHSzBEdUVuUzNkWUo5Y1RjYXFSOGc1NVJhOGE4OC8rRFNORXpZ?=
+ =?utf-8?B?cFkwWEI2TktyM3JlSGVDMGtxbUFHZUc0eUF0M3g1S1YzbjFhN2oxaUlGd28x?=
+ =?utf-8?B?Z2lRQTB0T3JvWDN5V0Z1YlZiMCtQS1JmazRuenduVzVSMklFQlROVXNNZW5G?=
+ =?utf-8?Q?6vdo9prhU9PfJjWdLAu6OzooeowoiwZ/c+htn0Y?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c265e05a-379b-4a61-5262-08d925d53b1e
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 14:46:40.1184
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7YKqC2H7GacR8yeJi5BFLOwbdSjoOBNnipE6qIgKrvWc1MZRz7Y1eLus4LOggVV5PtWjLjmSeLREMQbZdRQqJQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5426
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On 2021-06-02 10:32 a.m., Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp_psp.c:374:22: warning: no previous prototype for ‘mod_hdcp_hdcp1_get_link_encryption_status’
+>  In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:28:
+>  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:568:43: warning: initialized field overwritten [-Woverride-init]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:157:14: note: in expansion of macro ‘mmCRTC0_DCFE_MEM_LIGHT_SLEEP_CNTL’
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_transform.h:170:2: note: in expansion of macro ‘SRI’
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:183:3: note: in expansion of macro ‘XFM_COMMON_REG_LIST_DCE60’
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:187:3: note: in expansion of macro ‘transform_regs’
+>  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:568:43: note: (near initialization for ‘xfm_regs[0].DCFE_MEM_LIGHT_SLEEP_CNTL’)
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:157:14: note: in expansion of macro ‘mmCRTC0_DCFE_MEM_LIGHT_SLEEP_CNTL’
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_transform.h:170:2: note: in expansion of macro ‘SRI’
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:183:3: note: in expansion of macro ‘XFM_COMMON_REG_LIST_DCE60’
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:187:3: note: in expansion of macro ‘transform_regs’
+>  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:645:43: warning: initialized field overwritten [-Woverride-init]
+> 
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Mauro Rossi <issor.oruam@gmail.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-As for the existence of second mount which is introduced in previous
-patch, 'rootfs_fs_type', which is used as the root of mount tree, is
-not used directly any more. So it make no sense to make it tmpfs
-while 'CONFIG_INITRAMFS_MOUNT' is enabled.
+Thanks for the fix.
 
-Make 'rootfs_fs_type' ramfs when 'CONFIG_INITRAMFS_MOUNT' enabled.
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- include/linux/init.h |  4 ++++
- init/do_mounts.c     | 16 ++++++++++------
- 2 files changed, 14 insertions(+), 6 deletions(-)
+Harry
 
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 045ad1650ed1..45ab6970851f 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -148,7 +148,11 @@ extern unsigned int reset_devices;
- /* used by init/main.c */
- void setup_arch(char **);
- void prepare_namespace(void);
-+#ifndef CONFIG_INITRAMFS_MOUNT
- void __init init_rootfs(void);
-+#else
-+static inline void __init init_rootfs(void) { }
-+#endif
- extern struct file_system_type rootfs_fs_type;
- 
- #if defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX)
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 5f82db43ac0f..fcdc849a102a 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -700,7 +700,10 @@ void __init finish_mount_rootfs(bool success)
- 	init_chdir("/");
- 	init_umount(".", 0);
- }
--#endif
-+
-+#define rootfs_init_fs_context ramfs_init_fs_context
-+
-+#else
- 
- static bool is_tmpfs;
- static int rootfs_init_fs_context(struct fs_context *fc)
-@@ -711,13 +714,14 @@ static int rootfs_init_fs_context(struct fs_context *fc)
- 	return ramfs_init_fs_context(fc);
- }
- 
-+void __init init_rootfs(void)
-+{
-+	is_tmpfs = check_tmpfs_enabled();
-+}
-+#endif
-+
- struct file_system_type rootfs_fs_type = {
- 	.name		= "rootfs",
- 	.init_fs_context = rootfs_init_fs_context,
- 	.kill_sb	= kill_litter_super,
- };
--
--void __init init_rootfs(void)
--{
--	is_tmpfs = check_tmpfs_enabled();
--}
--- 
-2.32.0.rc0
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce/dce_transform.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
+> index cbce194ec7b82..e98b5d4141739 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
+> @@ -166,8 +166,7 @@
+>  	SRI(SCL_F_SHARP_CONTROL, SCL, id)
+>  
+>  #define XFM_COMMON_REG_LIST_DCE60(id) \
+> -	XFM_COMMON_REG_LIST_DCE60_BASE(id), \
+> -	SRI(DCFE_MEM_LIGHT_SLEEP_CNTL, CRTC, id)
+> +	XFM_COMMON_REG_LIST_DCE60_BASE(id)
+>  #endif
+>  
+>  #define XFM_SF(reg_name, field_name, post_fix)\
+> 
 
