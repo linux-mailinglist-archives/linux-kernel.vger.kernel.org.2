@@ -2,100 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A51A398097
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7641039809E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 07:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhFBFPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 01:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhFBFPe (ORCPT
+        id S229955AbhFBFY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 01:24:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25584 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229637AbhFBFY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 01:15:34 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50F6C061574;
-        Tue,  1 Jun 2021 22:13:50 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id u18so1248801pfk.11;
-        Tue, 01 Jun 2021 22:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zL1wvqyfXO+HW4dTElnGK+sL97cvui1bm1K7ZTkih8o=;
-        b=VTNw7g1ryf4OovZTbyimx1r3x9HsIdmA7EyNVte4VZTvWqAYsMKSj00i/tHOJDeVKp
-         7EFafkCuhhOuufThSHijAliYIsF21fxJnKR8ct+TzWplx/gsKaewQks40+34+/Wq3fPv
-         JF2779DPA9WVdwOrOyIcpzKtukUoIg8euVIeRJ6wTL1dlyvXvLAjquO1Y0Cwf1yPb3SV
-         G+Mw82a9bxf+FXxojCmf0B3UWbKy7kW92o4tGJP+hDSkrWXEsfkzVFF8ZBEoyxlZFpi5
-         HTKbKgv39Pr84dS1zUkmAyjtUheieWt3IdsO1Yf62l2MAhieb6Dbjm36Ya5NdOd79Ac3
-         8KcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zL1wvqyfXO+HW4dTElnGK+sL97cvui1bm1K7ZTkih8o=;
-        b=pNSdtuMLWy8e9z+dYW4oyr6we96HKe0haXw4AmyIXv1WTsdFf2sOkTt2sKdX2jgb1W
-         XeuSbe26V6xQTc27cWDcvkWGPRJrerLuU30njJwdzXiIQe5EMMvM+Hm/2nlL4zWDBssl
-         MXgmbt6JHgHihqcXLOIR2/PMAICvJ+dbPt1dYH4aBcd7+P5r5CFRKwbLzx9y+0eNHpDz
-         CcZLESh/1QE40NOk7zA2JfoMVFy0VIxWJcq46lH7U2cFFKzKQI2FndUxr2Hr1pv2qob4
-         nML9ZxSvwXz6HlkHBtoJfKCokwF3yPE9lfoZI9dbqZUFEhqfWoC61RlLPLABYPyP+b0m
-         zhsQ==
-X-Gm-Message-State: AOAM533O1R6GmVq4P75ZOS0weeJ38KN/ilaHQzzQ+mwF/kqn3HaLsQPu
-        W8wb6rvQ9yRvlf6nYcTd2Ew=
-X-Google-Smtp-Source: ABdhPJwS2fPg55Vd/UKuXsco3dr3OjGO9zKoLGadpmct7e2l7DwE/WppZsNFCr5UG8LaFPwfmpVZQQ==
-X-Received: by 2002:a63:f815:: with SMTP id n21mr32460255pgh.2.1622610830371;
-        Tue, 01 Jun 2021 22:13:50 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a596:b3cb:1a6:1ee4])
-        by smtp.gmail.com with ESMTPSA id f13sm15213630pfa.207.2021.06.01.22.13.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 22:13:48 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 22:13:46 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Qiang Ma <maqianga@uniontech.com>
-Cc:     wangxiongfeng2@huawei.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: psmouse - fix psmouse detect function is a NULL
- pointer
-Message-ID: <YLcTilSGgW6jMKEy@google.com>
-References: <20210519032335.19326-1-maqianga@uniontech.com>
+        Wed, 2 Jun 2021 01:24:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622611394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l55W7bIxW0wl/QN0OmeznpSfL2au6N3qY2w60LTECMg=;
+        b=S7wIufhfT7kV8HHdMySxKs71f2e6MgM3KQSO9K6Au8AnDp3Lga3CchcWr8jwU4hYz36M9I
+        tIO02vjLOeTIjkittDPIQLD9fY5nGC8bOpfbx9S2dBOUa/Tv4vsuEZOCbQdHsyQAKvr/iJ
+        3FH9GMsQYjn1tIHnroaJYCaF1fUTuJY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-DMDq7yAXNEaGgu7A-4GjhQ-1; Wed, 02 Jun 2021 01:23:10 -0400
+X-MC-Unique: DMDq7yAXNEaGgu7A-4GjhQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A9BB501E5;
+        Wed,  2 Jun 2021 05:23:09 +0000 (UTC)
+Received: from localhost (ovpn-13-33.pek2.redhat.com [10.72.13.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EA75F6A03A;
+        Wed,  2 Jun 2021 05:23:01 +0000 (UTC)
+Date:   Wed, 2 Jun 2021 13:22:59 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     HAGIO =?utf-8?B?S0FaVUhJVE8o6JCp5bC+44CA5LiA5LuBKQ==?= 
+        <k-hagio-ab@nec.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Dong Aisheng <dongas86@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+Subject: Re: [PATCH V2 4/6] mm: rename the global section array to
+ mem_sections
+Message-ID: <20210602052259.GB409140@MiWiFi-R3L-srv>
+References: <20210531091908.1738465-1-aisheng.dong@nxp.com>
+ <20210531091908.1738465-5-aisheng.dong@nxp.com>
+ <42617372-c846-85fe-4739-abbe55eca8f6@redhat.com>
+ <CAA+hA=Ss4j8qeoe7RtDJ14nuqy+TpOk2qi-A9+YN6=2y8c_CGg@mail.gmail.com>
+ <f7f77368-72cf-e15d-cc3c-b0ddf86e14fd@redhat.com>
+ <20210601165246.99d7374d07661b7e91e49cb6@linux-foundation.org>
+ <TYYPR01MB67775E2EC60DEE1195A49577DD3D9@TYYPR01MB6777.jpnprd01.prod.outlook.com>
+ <20210602030353.GA409140@MiWiFi-R3L-srv>
+ <TYYPR01MB67770ED42E65667E304F2FF9DD3D9@TYYPR01MB6777.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210519032335.19326-1-maqianga@uniontech.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <TYYPR01MB67770ED42E65667E304F2FF9DD3D9@TYYPR01MB6777.jpnprd01.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qiang,
-
-On Wed, May 19, 2021 at 11:23:35AM +0800, Qiang Ma wrote:
-> Add a check for psmouse_do_detect(), when the detect is NULL pointer,
-> returning false, avoiding this possible NULL pointer exception.
+On 06/02/21 at 05:02am, HAGIO KAZUHITO(萩尾 一仁) wrote:
+> -----Original Message-----
+> > On 06/02/21 at 01:11am, HAGIO KAZUHITO(萩尾 一仁) wrote:
+> > > -----Original Message-----
+> > > > On Tue, 1 Jun 2021 10:40:09 +0200 David Hildenbrand <david@redhat.com> wrote:
+> > > >
+> > > > > > Thanks, i explained the reason during my last reply.
+> > > > > > Andrew has already picked this patch to -mm tree.
+> > > > >
+> > > > > Just because it's in Andrews tree doesn't mean it will end up upstream. ;)
+> > > > >
+> > > > > Anyhow, no really strong opinion, it's simply unnecessary code churn
+> > > > > that makes bisecting harder without real value IMHO.
+> > > >
+> > > > I think it's a good change - mem_sections refers to multiple instances
+> > > > of a mem_section.  Churn is a pain, but that's the price we pay for more
+> > > > readable code.  And for having screwed it up originally ;)
+> > >
+> > > From a makedumpfile/crash-utility viewpoint, I don't deny kernel improvement
+> > > and probably the change will not be hard for them to support, but I'd like
+> > > you to remember that the tool users will need to update them for the change.
+> > 
+> > As VIM user, I can understand Aisheng's feeling on the mem_section
+> > variable which has the same symbol name as its type. Meanwhile it does
+> > cause makedumpfile/crash having to be changed accordingly.
+> > 
+> > Maybe we can carry it when any essential change is needed in both kernel
+> > and makedumpfile/crash around it.
 > 
-> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
-> ---
->  drivers/input/mouse/psmouse-base.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Yes, that is a possible option.
 > 
-> diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
-> index 0b4a3039f312..86b095728587 100644
-> --- a/drivers/input/mouse/psmouse-base.c
-> +++ b/drivers/input/mouse/psmouse-base.c
-> @@ -1006,6 +1006,9 @@ static bool psmouse_do_detect(int (*detect)(struct psmouse *, bool),
->  	if (set_properties)
->  		psmouse_apply_defaults(psmouse);
->  
-> +	if (!detect)
-> +		return false;
+> > 
+> > >
+> > > The situation where we need to update the tools for new kernels is usual, but
+> > > there are not many cases that they cannot even start session, and this change
+> > 
+> > By the way, Kazu, about a case starting session, could you be more specific
+> > or rephrase? I may not get it clearly. Thanks.
+> 
+> As for the current crash, the "mem_section" symbol is used to determine
+> which memory model is used.
+> 
+>         if (kernel_symbol_exists("mem_section"))
+>                 vt->flags |= SPARSEMEM;
+>         else if (kernel_symbol_exists("mem_map")) {
+>                 get_symbol_data("mem_map", sizeof(char *), &vt->mem_map);
+>                 vt->flags |= FLATMEM;
+>         } else
+>                 vt->flags |= DISCONTIGMEM;
+> 
+> So without updating, crash will assume that the memory model is DISCONTIGMEM,
+> fail during vm_init() and cannot start a session.  This is an imitation of
+> the situation though:
+> 
+> -       if (kernel_symbol_exists("mem_section"))
+> +       if (kernel_symbol_exists("mem_sectionX"))
+> 
+> # crash
+> ...
+> crash: invalid structure member offset: pglist_data_node_mem_map
+>            FILE: memory.c  LINE: 16420  FUNCTION: dump_memory_nodes()
+> 
+> [/root/bin/crash] error trace: 465304 => 4ac2bf => 4aae19 => 57f4d7
+> 
+>   57f4d7: OFFSET_verify+164
+>   4aae19: dump_memory_nodes+5321
+>   4ac2bf: vm_init+4031
+>   465304: main_loop+392
+> 
+> #
+> 
+> Every time a kernel is released, there are some changes that crash can
+> start up with but cannot run a specific crash's command, but a change
+> that crash cannot start up like this case does not occur often.
 
-There are no protocols that do not define detect() method, so this
-condition is not possible.
+Ah,I see. You mean this patch will cause startup failure of crash/makedumpfile
+during application's earlier stage, and this is a severer situation than
+others. Then we may need defer the patch acceptance to a future suitable
+time. Thanks for explanation.
 
-> +
->  	return detect(psmouse, set_properties) == 0;
->  }
->  
+> 
+> Also as for makedumpfile, the "SYMBOL(mem_section)" vmcore entry is used
+> to determine the memory model, so it will fail with the following error
+> without an update.
+> 
+> # ./makedumpfile --mem-usage /proc/kcore 
+> get_mem_map: Can't distinguish the memory type.
+> 
+> makedumpfile Failed.
+> 
+> Thanks,
+> Kazu
 
-Thanks.
-
--- 
-Dmitry
