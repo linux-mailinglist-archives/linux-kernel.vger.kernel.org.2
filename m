@@ -2,164 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64F6398354
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B64839835B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhFBHoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:44:18 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2950 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbhFBHoI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:44:08 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw1BQ4gKpz68n0;
-        Wed,  2 Jun 2021 15:39:26 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 15:42:24 +0800
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 15:42:24 +0800
-To:     <rostedt@goodmis.org>, <keescook@chromium.org>
-CC:     <ccross@android.com>, <linux-kernel@vger.kernel.org>,
-        Zhangjinhao <zhangjinhao2@huawei.com>
-Reply-To: <20201106023546.720372267@goodmis.org>
-From:   "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
-Subject: [BUG] I found a bug when try to enable record_ftrace
-Message-ID: <01472d0f-55c1-15ea-9beb-5d64b322bb44@huawei.com>
-Date:   Wed, 2 Jun 2021 15:42:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S231975AbhFBHo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:44:57 -0400
+Received: from mail-mw2nam10on2049.outbound.protection.outlook.com ([40.107.94.49]:33553
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230348AbhFBHow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 03:44:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d4PPomrXyTRHykXQKoP9sukor4fZC4XwywxtwQkdrB33iunTzgv3FriU/RSzvbQHTx+S2G4zw34TJL9llBQROr5D+UkhqYJNHZIPWxCJCRZbazjekpV+3+vlvIMIaRbDFkx9phrKwIoK07mo23XfTneuO4+t3pqphYx1QhpaD/+3nkmaNmqF1hzMOtu+y0wpLvJMAWJtHJ+0CRJEsGjQTis46MfBf/W9b4fHxVva8v3ze2WBcMLuZxvaIK87BZopkUUAVAUb3dRTK7a2jXGrKu8KrM5runWuVHnX7PQM8LFj4Cig6Zn/DaerJsJ3YfJ2YSYrh7oh8UZv0xAAszqBXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NfsldBZNUgmsn/wKRUKfG57ue4JWD62tkyW8zyWV5tI=;
+ b=hPESrmOFv6dlElLAO/d24PTYjZnSZIDOUDMMPvuXOWlAquX88X67t2AaRD8BDit9p4Xw/u0AeIy9tBbtIEutEKlHQpT1S2m68ynQ/Zc+v+H9cKxglZZ2eGIf0eCib6aLm2dl5ZzV8MOBXw1k0MotoM5zB74rdQPlVVtmQSQp70hXackQ3BSyfv9ADD9IIxrtKtEstfar1+xBZFlZ660lU3u6gXvuqK1/PVryQpDkpgI5i+8EQf20CJaiIXE8GYFUvDteJfXw6RW0KU9Rv3Ay7t/XEvqfsUpS9vGHu4mBiWRB6VPL8za2WuMSdMitCFtj+OGQ/pRmE3lSjHfah/zCQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NfsldBZNUgmsn/wKRUKfG57ue4JWD62tkyW8zyWV5tI=;
+ b=gs4hnUvvxVq9/P2Qr4Um7iRD5debhR+Bd59hKQ3SN4fVsOSzFp9Z44QO4Mtq5r2+DjdKNcH1R4jpxkIj3raDQBC8B0Fe3kyH3F5mLmH+A12tFCJXue8gRgiuvdzUOTujL4SqD4zuPqndnzpq0hGPou6BGAL6NjQa5FoXIdZLpMzSUV6xOMUFvU8q2pHmIWExc7fxSie1dy1AhurSqjTyquc4+GO1b0YoKHd2N1yqf0s7VN0g1ii7U4hf8OQEkke/kNBIlAvcXpa7Le7tY1L8KNLLGfkaSQ+IBJeNeFwZReD75S5mh12hGPV82fmKdHs8/TS9yyh/q5ggmeKVrl+vEw==
+Received: from BN0PR04CA0016.namprd04.prod.outlook.com (2603:10b6:408:ee::21)
+ by BYAPR12MB3112.namprd12.prod.outlook.com (2603:10b6:a03:ae::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.27; Wed, 2 Jun
+ 2021 07:43:08 +0000
+Received: from BN8NAM11FT009.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:ee:cafe::a0) by BN0PR04CA0016.outlook.office365.com
+ (2603:10b6:408:ee::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend
+ Transport; Wed, 2 Jun 2021 07:43:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT009.mail.protection.outlook.com (10.13.176.65) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4150.30 via Frontend Transport; Wed, 2 Jun 2021 07:43:08 +0000
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.187.5) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 2 Jun 2021 07:43:04 +0000
+Date:   Wed, 2 Jun 2021 10:43:00 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <eli@mellanox.com>
+Subject: Re: [PATCH V2 4/4] virtio/vdpa: clear the virtqueue state during
+ probe
+Message-ID: <20210602074300.GB12498@mtl-vdi-166.wap.labs.mlnx>
+References: <20210602021043.39201-1-jasowang@redhat.com>
+ <20210602021043.39201-5-jasowang@redhat.com>
+ <20210602061723.GB8662@mtl-vdi-166.wap.labs.mlnx>
+ <7ce52bd6-60b7-b733-9881-682cfba51ad8@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7ce52bd6-60b7-b733-9881-682cfba51ad8@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8ccc604c-6553-4fa5-d42a-08d9259a10c7
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3112:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB311266D5A2A31F5B282806B3AB3D9@BYAPR12MB3112.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Jm2CooIPpTlAS4DmqZxa4xta0jiQT00TSnoPTiX0n9fNuRm6kpzCLCtLhJX0XFbaZRDxT5yn2Un7NgkYprjANwCLfQKKrO+hORjcXxI9NY8viP4X/JvpoHiiiV5aCsVlI6+5GMAoove+ir9M0mU4tMRuQD+5Pq+dK52bHyaKpHjjIrU0kbqzbNQIqYNOYpry9kcICdLeoB0Ki5HIs3B1cmzXQW/mg3DUvYSMplayCqU3yEfllmgr/GFE/kfHETbJbzoJBL4/Z1fT9CrwFMUOY14RtxywmhMJNmBNAyiJftf68H72rm9OoK8CC4VEskvvcWlcyu2bPsrVfi0zhNeU1cuEmABL6ef8av0N6wPoohfRkIvSxlP8N6IUFdVQpp2TR8wpixZOe9G9dySOPraRyZRCoxZBW6UAuaz8ElyvhGPM7Tz5vEQQGkVMqzF5xqRHjHBLmYr/yk9Sjnpln3gleYs4nfBLfIUAqoy8Dn2xu5RuSLqtWfvFJIvFHQVPHxKVT9bqAY6G6fbh+Q6ftJprFmpu1GYNSNfNuhmQoTf8+l+vZsqT4NafCna5AX5ZD0tPt3T/cbYA9200ef/TIOlU05980mOuNKhVuz9L8epqHyn6u7P4bZDY+D+CnjapKl6lEPPUrRY9KEV5NlSMfJXQEQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39860400002)(36840700001)(46966006)(316002)(8676002)(70586007)(8936002)(6916009)(54906003)(6666004)(70206006)(86362001)(47076005)(107886003)(7636003)(356005)(33656002)(16526019)(478600001)(9686003)(186003)(336012)(82310400003)(2906002)(5660300002)(426003)(36860700001)(55016002)(4326008)(82740400003)(26005)(7696005)(1076003)(83380400001)(36906005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 07:43:08.4089
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ccc604c-6553-4fa5-d42a-08d9259a10c7
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT009.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jun 02, 2021 at 03:07:00PM +0800, Jason Wang wrote:
+> 
+> 在 2021/6/2 下午2:17, Eli Cohen 写道:
+> > On Wed, Jun 02, 2021 at 10:10:43AM +0800, Jason Wang wrote:
+> > > From: Eli Cohen <elic@nvidia.com>
+> > > 
+> > > Clear the available index as part of the initialization process to
+> > > clear and values that might be left from previous usage of the device.
+> > > For example, if the device was previously used by vhost_vdpa and now
+> > > probed by vhost_vdpa, you want to start with indices.
+> > > 
+> > > Fixes: c043b4a8cf3b ("virtio: introduce a vDPA based transport")
+> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > ---
+> > >   drivers/virtio/virtio_vdpa.c | 15 +++++++++++++++
+> > >   1 file changed, 15 insertions(+)
+> > > 
+> > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > > index e28acf482e0c..e1a141135992 100644
+> > > --- a/drivers/virtio/virtio_vdpa.c
+> > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > @@ -142,6 +142,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > >   	struct vdpa_callback cb;
+> > >   	struct virtqueue *vq;
+> > >   	u64 desc_addr, driver_addr, device_addr;
+> > > +	/* Assume split virtqueue, switch to packed if necessary */
+> > > +	struct vdpa_vq_state state = {0};
+> > >   	unsigned long flags;
+> > >   	u32 align, num;
+> > >   	int err;
+> > > @@ -191,6 +193,19 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> > >   		goto err_vq;
+> > >   	}
+> > > +	/* reset virtqueue state index */
+> > > +	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED)) {
+> > > +		struct vdpa_vq_state_packed *s = &state.packed;
+> > > +
+> > > +		s->last_avail_counter = 1;
+> > > +		s->last_avail_idx = 0;
+> > It's already 0
+> > 
+> > > +		s->last_used_counter = 1;
+> > > +		s->last_used_idx = 0;
+> > already 0
+> 
+> 
+> Yes, but for completeness and make code easy to read, it's no harm to keep
+> them I think.
+> 
 
-There may be a deadlock caused by ftrace recursion when try to enable 
-record_ftrace.
-I'd like to known if the patchset 
-(https://lore.kernel.org/lkml/20201106023235.367190737@goodmis.org/) is 
-trying to fix it.
+OK.
 
-Procedure for reproducing the problem is:
-   1) this problem appears both in 5.13-rc4 and 5.10;
-
-   2) my work environment is:
-     qemu-arm version 4.0.0
-     arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
-
-   3) then try to enable record_ftrace:
-     / # mount -t pstore pstore /sys/fs/pstore
-     / # echo 1 > /sys/kernel/debug/pstore/record_ftrace
-
-   4) then system appears to be stuck, and use arm-linux-gnueabi-gdb 
-dump the following call stack:
-     #0  arch_spin_lock (lock=0x811a0f98) at 
-/home/zyj/Linux/linux-master/arch/arm/include/asm/spinlock.h:74
-     #1  do_raw_spin_lock_flags (flags=<synthetic pointer>, 
-lock=0x811a0f98) at 
-/home/zyj/Linux/linux-master/include/linux/spinlock.h:195
-     #2  __raw_spin_lock_irqsave (lock=0x811a0f98) at 
-/home/zyj/Linux/linux-master/include/linux/spinlock_api_smp.h:119
-     #3  _raw_spin_lock_irqsave (lock=lock@entry=0x811a0f98) at 
-/home/zyj/Linux/linux-master/kernel/locking/spinlock.c:159
-     #4  0x8046c6e0 in buffer_size_add (prz=prz@entry=0x811a0f80, 
-a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:82
-     #5  0x8046cc20 in persistent_ram_write (prz=0x811a0f80, 
-s=0x81137b80, count=16) at 
-/home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
-     #6  0x8046b438 in ramoops_pstore_write (record=0x81137b90) at 
-/home/zyj/Linux/linux-master/fs/pstore/ram.c:331
-     #7  0x8046add8 in pstore_ftrace_call (ip=2156609456, 
-parent_ip=2152122068, op=<optimized out>, fregs=<optimized out>)
-         at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
-     #8  0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0, 
-parent_ip=2152122068, ip=2156609456) at 
-/home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
-     #9  ftrace_ops_list_func (ip=2156609456, parent_ip=2152122068, 
-op=<optimized out>, fregs=0x0) at 
-/home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
-     #10 0x801109f8 in ftrace_caller () at 
-/home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
-     #11 0x808b3fb4 in _raw_spin_unlock_irqrestore 
-(lock=lock@entry=0x811a0f98, flags=1610612883) at 
-/home/zyj/Linux/linux-master/kernel/locking/spinlock.c:190
-     #12 0x8046c6d4 in buffer_size_add (prz=prz@entry=0x811a0f80, 
-a=a@entry=16) at /home/zyj/Linux/linux-master/fs/pstore/ram_core.c:95
-     #13 0x8046cc20 in persistent_ram_write (prz=0x811a0f80, 
-s=0x81137cf8, count=16) at 
-/home/zyj/Linux/linux-master/fs/pstore/ram_core.c:327
-     #14 0x8046b438 in ramoops_pstore_write (record=0x81137d08) at 
-/home/zyj/Linux/linux-master/fs/pstore/ram.c:331
-     #15 0x8046add8 in pstore_ftrace_call (ip=2148632188, 
-parent_ip=2148601660, op=<optimized out>, fregs=<optimized out>)
-         at /home/zyj/Linux/linux-master/fs/pstore/ftrace.c:54
-     #16 0x801dd580 in __ftrace_ops_list_func (ignored=0x0, fregs=0x0, 
-parent_ip=2148601660, ip=2148632188) at 
-/home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7003
-     #17 ftrace_ops_list_func (ip=2148632188, parent_ip=2148601660, 
-op=<optimized out>, fregs=0x0) at 
-/home/zyj/Linux/linux-master/kernel/trace/ftrace.c:7028
-     #18 0x801109f8 in ftrace_caller () at 
-/home/zyj/Linux/linux-master/arch/arm/kernel/entry-ftrace.S:224
-     #19 0x80118680 in __set_fixmap (idx=idx@entry=FIX_TEXT_POKE0, 
-phys=phys@entry=0, prot=prot@entry=0) at 
-/home/zyj/Linux/linux-master/arch/arm/mm/mmu.c:385
-     #20 0x80110f3c in patch_unmap (flags=<synthetic pointer>, 
-fixmap=129) at /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:45
-     #21 __patch_text_real (addr=addr@entry=0x808b3fb0 
-<_raw_spin_unlock_irqrestore+16>, insn=insn@entry=3957420680, 
-remap=remap@entry=true)
-         at /home/zyj/Linux/linux-master/arch/arm/kernel/patch.c:104
-     #22 0x80110b40 in __patch_text (insn=3957420680, addr=0x808b3fb0 
-<_raw_spin_unlock_irqrestore+16>) at 
-/home/zyj/Linux/linux-master/arch/arm/include/asm/patch.h:10
-     #23 ftrace_modify_code (pc=2156609456, old=3904716800, 
-new=3957420680, validate=true) at 
-/home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:95
-     #24 0x80110cf4 in ftrace_make_call (rec=rec@entry=0x81007ce0, 
-addr=addr@entry=2148600280) at 
-/home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:132
-     #25 0x801dda40 in __ftrace_replace_code (rec=rec@entry=0x81007ce0, 
-enable=enable@entry=true) at 
-/home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2524
-     #26 0x801de17c in ftrace_replace_code (mod_flags=mod_flags@entry=1) 
-at /home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2554
-     #27 0x801de39c in ftrace_modify_all_code (command=5) at 
-/home/zyj/Linux/linux-master/kernel/trace/ftrace.c:2698
-     #28 0x80110ad8 in __ftrace_modify_code (data=<optimized out>) at 
-/home/zyj/Linux/linux-master/arch/arm/kernel/ftrace.c:39
-     #29 0x801d4da4 in multi_cpu_stop (data=data@entry=0x81c69d84) at 
-/home/zyj/Linux/linux-master/kernel/stop_machine.c:240
-     #30 0x801d4a14 in cpu_stopper_thread (cpu=<optimized out>) at 
-/home/zyj/Linux/linux-master/kernel/stop_machine.c:511
-     #31 0x8014de3c in smpboot_thread_fn (data=0x810c1c80) at 
-/home/zyj/Linux/linux-master/kernel/smpboot.c:165
-     #32 0x8014a0dc in kthread (_create=0x810c1d40) at 
-/home/zyj/Linux/linux-master/kernel/kthread.c:313
-     #33 0x80100150 in ret_from_fork () at 
-/home/zyj/Linux/linux-master/arch/arm/kernel/entry-common.S:158
-     Backtrace stopped: previous frame identical to this frame (corrupt 
-stack?)
-
-See above #7~#15, there is a recursion in function pstore_ftrace_call(), 
-and a spin_lock(lock=0x811a0f98) is hold since unlock operation in above 
-#11 not finished. Then in above #0, trying to acquire same lock cause a 
-deadlock.
-
-Enabling 'record_ftrace' seems a basic operation of pstore/ftrace, Does 
-it mean this feature is not available for a while?
-
-Best Regards,
-Zheng
+> Thanks
+> 
+> 
+> > 
+> > > +	}
+> > > +	err = ops->set_vq_state(vdpa, index, &state);
+> > > +	if (err)
+> > > +		goto err_vq;
+> > > +
+> > >   	ops->set_vq_ready(vdpa, index, 1);
+> > >   	vq->priv = info;
+> > > -- 
+> > > 2.25.1
+> > > 
+> 
