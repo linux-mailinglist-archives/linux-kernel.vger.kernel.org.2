@@ -2,112 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D37398A6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B01398A80
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFBNaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:30:10 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34211 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229583AbhFBNaI (ORCPT
+        id S229844AbhFBNcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:32:17 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:46785 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhFBNcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:30:08 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 75A235C005A;
-        Wed,  2 Jun 2021 09:28:25 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 02 Jun 2021 09:28:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=b
-        HeXkbF7PvwsXcWBA66Xyay/weKYecQSlLwIvV/2OEo=; b=XBwGzzC1ogFFij2Os
-        22qeO5mo4QKEoCwlNnOPqtF3wMkTRN0Ob89TWEN1psfO0PINwHc3qPGnzUH1ZbME
-        rW1ZRm4TgPyq9luKq1n59SGCBmgv2O/pAJo5x9AEI2mRg1jkUYDW950Da8abWW0j
-        EHJ6WDqn1+VYhMNT+RI3DHg/5/XzYp3I+keEaDe1zbsSm2RLY4wG2itUksfgRlqc
-        ZjR3vyzgKQZ1MpF8WsexxcdBznOO598XywMZmDZdSOD9z6LMwQ581zCR6dFWvw4V
-        x23L+yl6C5chOQTGR/v5MPlWWmHVEiQp6wgbebBJtri/qQw3BhRIkPHLUzO0GrXN
-        l3g6w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=bHeXkbF7PvwsXcWBA66Xyay/weKYecQSlLwIvV/2O
-        Eo=; b=nonIEzU560WGMqfwElLCUueaHtt2kZZFdj5MzSU3a2c+L+XeDgh+Oxcja
-        EynLVUVFKDRI9dMKchxHHCAvuly/gbRhcuN5QnBYE4gDqc67iWmI195gTEGpu/hY
-        FWHVCg3DiTnSas8V07UslxyD1hmd0CDlbLlAhiK+eWvbkSh7Z/20KSh1+xVXIWZ7
-        s+n8C0WyCKppw8Gn5ZjTeZLNnNKcXNESwaAUSY4Wcd016nLF+bRnGoF5vFASyVIS
-        Jde3fDq8n8h0btgYy8+EEMyRg06C82GYLo+YcRXtPH2b7/5bPLEJokdnVXnhkosa
-        6FVtqtuJaqB0/hA8HrGj4XjUUmVWA==
-X-ME-Sender: <xms:eYe3YIpWoxaViKKaiqnb10joNsTe2eogJk_lf_Z0Q3MP4612pYFnxA>
-    <xme:eYe3YOrweR48yVJ1oNv5gu4ZmMGtmtC0BpafmgmRlflRDaSDH_5WTwSF1SRMgpLrH
-    ESoY_MysKYXCaM0v4Q>
-X-ME-Received: <xmr:eYe3YNMndoOVzI2jCmIWP3SsJQlP2gPuWBnmIY8BrPW0HoIwMzI400gjDstaQQv2T6aK2RnqjhSa5UfnAORpTY0wwiSWtVBmn5Xp>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeljedgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
-    gedvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:eYe3YP7yfRZ3He1Pwhqo29iH5vrCkbPveAWy2HsK4lpLqn4GWiPSPQ>
-    <xmx:eYe3YH5uXD6PznHg6Fa0jMfkHxvcTKQ0XfNOHl_laBmkgl34AhUpVg>
-    <xmx:eYe3YPjbrjmGj8XVWh3YugOMmoWcGPt0k_LyWfK5-nIfSG5ADZ68lQ>
-    <xmx:eYe3YK1-I-AgbjtGftEaH0j01XDk-Pc1WY-x1kLxNj56JfXlGWYu7g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 2 Jun 2021 09:28:24 -0400 (EDT)
-Date:   Wed, 2 Jun 2021 15:28:22 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     nicolas saenz julienne <nsaenz@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Doug Berger <opendmb@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: Kernel Panic in skb_release_data using genet
-Message-ID: <20210602132822.5hw4yynjgoomcfbg@gilmour>
-References: <20210524130147.7xv6ih2e3apu2zvu@gilmour>
- <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
- <20210524151329.5ummh4dfui6syme3@gilmour>
- <1482eff4-c5f4-66d9-237c-55a096ae2eb4@gmail.com>
- <6caa98e7-28ba-520c-f0cc-ee1219305c17@gmail.com>
- <20210528163219.x6yn44aimvdxlp6j@gilmour>
- <77d412b4-cdd6-ea86-d7fd-adb3af8970d9@gmail.com>
- <9e99ade5-ebfc-133e-ac61-1aba07ca80a2@gmail.com>
- <483c73edf02fa0139aae2b81e797534817655ea0.camel@kernel.org>
+        Wed, 2 Jun 2021 09:32:09 -0400
+Received: by mail-ed1-f48.google.com with SMTP id r11so2886340edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZONPVevPrQ8kgbLjTG/JbKJkdCcwfXG19PWEk0gLLz8=;
+        b=Pu00urgWpWIirMQ/SnHIyILnSmFYl5efJUfM/avAHQoV3zciv3sBvGrz7KcB1nBokf
+         zwNvbSkdBvO49VNx5q2Zj81dNtjrqU0Mz+qPuJkdsJo78RVM8/dV2qHIfxaYpVJlYDbg
+         dgz5Hs352CDX5gEp4NB0OXazoWWv8JXoqsGS76P4ZbjazJVoqRKLaEoIB6Vy5jZdh+vc
+         WnHc25WuYaTkqfkm6ar44Z9TEw3TMPZL2w7RLyfBAeO4Am+XtJrB/06/Sllg5A+DYzXl
+         XBFNCZkaz3FVB3cqym2YDeY+sVuAx2b0E2SWqoSZrZc+BohhpYlCDIKa9JMAGyjCiFNy
+         74NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZONPVevPrQ8kgbLjTG/JbKJkdCcwfXG19PWEk0gLLz8=;
+        b=rm0tJ9uzrwNxipF1ZNOmdK/Pu1c7vNhcYIRBp93a4oLJVkcOhqQLAh/UsHgmsSr71I
+         81tIVJsEN0pd54ZLKd+ZSH4zme+/RBnLwp6+nvS28dxP8vI8u11BiYk6Q/3yPddNkV7W
+         V3DWm/31Sna3woFPs6cYj5Bgq+iamB7JwXGTxDQCFPPGl56uhr3M9u0yh2IGZRACVLGH
+         e9u6CHMrSmSEBMKSvNROPEY0XPRF3pRe6jADRXQaHTotMH7hRA67G5Sfh4igO0nuKcBw
+         sTwfXlB2A8I9V7EWbFbcQT47f+mdAyf9ct31cIke8LLbpwkC/xFTdjmM0rgf0z0q1oIh
+         PyzA==
+X-Gm-Message-State: AOAM5322uhtCegSh/Fdkv+z/gbOHWb+fuTYoWQPm6VlgygUDW2Aig4xa
+        aPJhL6fxduZKSJaIbUP2wSsYgQ==
+X-Google-Smtp-Source: ABdhPJywkRCY1c6rYh5cyHIY/U67rtIChrhtM3oBEa7Sqq51T+PU5O6ZFcrUf1JWHwutz6QUObW9Mg==
+X-Received: by 2002:aa7:cc97:: with SMTP id p23mr38160427edt.372.1622640550284;
+        Wed, 02 Jun 2021 06:29:10 -0700 (PDT)
+Received: from [192.168.1.28] (hst-221-100.medicom.bg. [84.238.221.100])
+        by smtp.googlemail.com with ESMTPSA id b22sm1337371eds.71.2021.06.02.06.29.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 06:29:09 -0700 (PDT)
+Subject: Re: [PATCH 1/3] v4l: Add Qualcomm custom compressed pixel formats
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
+ <20210429105815.2790770-2-stanimir.varbanov@linaro.org>
+ <b58061ff-aeb1-c48b-ea53-2366997bd825@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <7a8a3b86-0c0a-f190-b6e7-d83d7d6b6433@linaro.org>
+Date:   Wed, 2 Jun 2021 16:29:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <483c73edf02fa0139aae2b81e797534817655ea0.camel@kernel.org>
+In-Reply-To: <b58061ff-aeb1-c48b-ea53-2366997bd825@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 11:33:18AM +0200, nicolas saenz julienne wrote:
-> On Mon, 2021-05-31 at 19:36 -0700, Florian Fainelli wrote:
-> > > That is also how I boot my Pi4 at home, and I suspect you are right, =
-if
-> > > the VPU does not shut down GENET's DMA, and leaves buffer addresses in
-> > > the on-chip descriptors that point to an address space that is managed
-> > > totally differently by Linux, then we can have a serious problem and
-> > > create some memory corruption when the ring is being reclaimed. I will
-> > > run a few experiments to test that theory and there may be a solution
-> > > using the SW_INIT reset controller to have a big reset of the control=
-ler
-> > > before handing it over to the Linux driver.
-> >=20
-> > Adding a WARN_ON(reg & DMA_EN) in bcmgenet_dma_disable() has not shown
-> > that the TX or RX DMA have been left running during the hand over from
-> > the VPU to the kernel. I checked out drm-misc-next-2021-05-17 to reduce
-> > as much as possible the differences between your set-up and my set-up
-> > but so far have not been able to reproduce the crash in booting from NFS
-> > repeatedly, I will try again.
->=20
-> FWIW I can reproduce the error too. That said it's rather hard to reprodu=
-ce,
-> something in the order of 1 failure every 20 tries.
 
-Yeah, it looks like it's only from a cold boot and comes in "bursts",
-where you would get like 5 in a row and be done with it for a while.
 
-Maxime
+On 6/2/21 12:56 PM, Hans Verkuil wrote:
+> On 29/04/2021 12:58, Stanimir Varbanov wrote:
+>> Here we add custom Qualcomm raw compressed pixel formats. They are
+>> used in Qualcomm SoCs to optimaize the interconnect bandwidth.
+> 
+> optimize
+> 
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  .../userspace-api/media/v4l/pixfmt-reserved.rst      | 12 ++++++++++++
+>>  drivers/media/v4l2-core/v4l2-ioctl.c                 |  2 ++
+>>  include/uapi/linux/videodev2.h                       |  2 ++
+>>  3 files changed, 16 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+>> index 0b879c0da713..30b9cef4cbf0 100644
+>> --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+>> @@ -260,6 +260,18 @@ please make a proposal on the linux-media mailing list.
+>>  	of tiles, resulting in 32-aligned resolutions for the luminance plane
+>>  	and 16-aligned resolutions for the chrominance plane (with 2x2
+>>  	subsampling).
+>> +    * .. _V4L2-PIX-FMT-QC8C:
+>> +
+>> +      - ``V4L2_PIX_FMT_QC8C``
+>> +      - 'QC8C'
+>> +      - Compressed Macro-tile 8Bit YUV420 format used by Qualcomm platforms.
+> 
+> 8Bit -> 8-bit
+> 
+>> +	The compression is lossless. It contains four planes.
+>> +    * .. _V4L2-PIX-FMT-QC10C:
+>> +
+>> +      - ``V4L2_PIX_FMT_QC10C``
+>> +      - 'QC10C'
+>> +      - Compressed Macro-tile 10Bit YUV420 format used by Qualcomm platforms.
+> 
+> 10Bit -> 10-bit
+> 
+>> +	The compression is lossless. It contains four planes.
+> 
+> What is not clear from this description is if these formats are opaque, i.e. the
+> only way to decompress is through hardware, or if they can be decompressed in
+> software. If so, a reference to Qualcomm documentation would be useful. See e.g.
+> the V4L2_PIX_FMT_MT21C description (that's an opaque format).
+
+Yes, the formats are opaque and can be decompressed by hardware blocks
+only. I'll clear that in v2. Thanks for the review.
+
+-- 
+regards,
+Stan
