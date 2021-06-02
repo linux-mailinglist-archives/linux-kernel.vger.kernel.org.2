@@ -2,151 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8AC398B03
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E924398B0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhFBNu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:50:57 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4287 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhFBNuy (ORCPT
+        id S229818AbhFBNx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:53:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37726 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229586AbhFBNx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:50:54 -0400
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fw9HX303Dz1BHDr;
-        Wed,  2 Jun 2021 21:44:24 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 2 Jun 2021 21:49:06 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <akpm@linux-foundation.org>
-CC:     <jonathan.cameron@huawei.com>, <song.bao.hua@hisilicon.com>,
-        <linux-kernel@vger.kernel.org>, Tian Tao <tiantao6@hisilicon.com>
-Subject: [PATCH v2 3/3] drivers/base/node.c: use bin_attribute to avoid buff overflow
-Date:   Wed, 2 Jun 2021 21:48:54 +0800
-Message-ID: <1622641734-22538-4-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622641734-22538-1-git-send-email-tiantao6@hisilicon.com>
-References: <1622641734-22538-1-git-send-email-tiantao6@hisilicon.com>
+        Wed, 2 Jun 2021 09:53:27 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 152DgEDC168782;
+        Wed, 2 Jun 2021 09:51:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qfNM/XhBX5lWNVZn2ehIENB7gU1KS89SDpB1ynLYkBQ=;
+ b=psmPypP4PYkDCWpl+ks/+ZPbf60VRONdS7zOFTfRU8XzPII9WIeT4wB3qAnCChfOgoSe
+ lyCjZJ/THp9WC2/jPv8+oK0xzuMBuK2FTxEqEvq+O/TUTjMG8GfZ0wPQBRkgq2IQR249
+ mR79yPCv78B6KcQu4B9Y6p9qKB6WNVBRvhbr/IW2kkWi+n5NoEgbQfy40brfBEqHJ2RP
+ HvZzz4/2gpvgWSWL5gqQKtg9+AXJY2lWDKGY3QT6KW5hy8qYZBHg+RcRqCkHp1B+7vEA
+ r3W+wqvNl0Lh49XM1+ibGXYFCeCqPb0XBE2iqSpBOt7M+iB+VlnZbi1fRGMXCXu0JTuN ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38xb3u0884-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 09:51:43 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 152DhtX1179375;
+        Wed, 2 Jun 2021 09:51:43 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38xb3u0876-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 09:51:43 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 152DlFlc029681;
+        Wed, 2 Jun 2021 13:51:40 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 38ucvhacnu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Jun 2021 13:51:40 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 152DpbRC33751452
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Jun 2021 13:51:37 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 196F14C04E;
+        Wed,  2 Jun 2021 13:51:37 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 506404C050;
+        Wed,  2 Jun 2021 13:51:35 +0000 (GMT)
+Received: from [9.199.40.47] (unknown [9.199.40.47])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Jun 2021 13:51:35 +0000 (GMT)
+Subject: Re: [PATCH v2] tools/perf: doc: Add permission and sysctl notice
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, jolsa@redhat.com,
+        linux-kernel@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <162201967838.287555.4257117900130102987.stgit@devnote2>
+ <162204068898.388434.16842705842611255787.stgit@devnote2>
+ <YLdxL9QVh5n6xGeP@kernel.org>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <e12e3fcb-15a7-42c3-7994-2fc9e8b854a1@linux.ibm.com>
+Date:   Wed, 2 Jun 2021 19:21:34 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme759-chm.china.huawei.com (10.3.19.105)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YLdxL9QVh5n6xGeP@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: h3w06jUYOOWQNfE0svOMe0vmkQCoqDAQ
+X-Proofpoint-ORIG-GUID: BQcaJBW992kVslz0jV1W336dBQ92Vryp
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-02_07:2021-06-02,2021-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ clxscore=1015 adultscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106020088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reading sys/devices/system/cpu/cpuX/nodeX/ returns cpumap and cpulist.
-However, the size of this file is limited to PAGE_SIZE because of the
-limitation for sysfs attribute. so we use bin_attribute instead of
-attribute to avoid NR_CPUS too big to cause buff overflow.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/base/node.c | 52 ++++++++++++++++++++++++++++++++++------------------
- 1 file changed, 34 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index f449dbb..2659bb44 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -27,42 +27,45 @@ static struct bus_type node_subsys = {
- };
- 
- 
--static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
-+static ssize_t node_read_cpumap(struct device *dev, bool list,
-+				char *buf, loff_t off, size_t count)
- {
- 	ssize_t n;
- 	cpumask_var_t mask;
- 	struct node *node_dev = to_node(dev);
- 
--	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
--	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
--
- 	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
- 		return 0;
- 
- 	cpumask_and(mask, cpumask_of_node(node_dev->dev.id), cpu_online_mask);
--	n = cpumap_print_to_pagebuf(list, buf, mask);
-+	n = cpumap_print_to_buf(list, buf, mask, off, count);
- 	free_cpumask_var(mask);
- 
- 	return n;
- }
- 
--static inline ssize_t cpumap_show(struct device *dev,
--				  struct device_attribute *attr,
--				  char *buf)
-+static inline ssize_t cpumap_read(struct file *file, struct kobject *kobj,
-+				  struct bin_attribute *attr, char *buf,
-+				  loff_t off, size_t count)
- {
--	return node_read_cpumap(dev, false, buf);
-+	struct device *dev = kobj_to_dev(kobj);
-+
-+	return node_read_cpumap(dev, false, buf, off, count);
- }
- 
--static DEVICE_ATTR_RO(cpumap);
- 
--static inline ssize_t cpulist_show(struct device *dev,
--				   struct device_attribute *attr,
--				   char *buf)
-+static BIN_ATTR_RO(cpumap, 0);
-+
-+static inline ssize_t cpulist_read(struct file *file, struct kobject *kobj,
-+				   struct bin_attribute *attr, char *buf,
-+				   loff_t off, size_t count)
- {
--	return node_read_cpumap(dev, true, buf);
-+	struct device *dev = kobj_to_dev(kobj);
-+
-+	return node_read_cpumap(dev, true, buf, off, count);
- }
- 
--static DEVICE_ATTR_RO(cpulist);
-+static BIN_ATTR_RO(cpulist, 0);
- 
- /**
-  * struct node_access_nodes - Access class device to hold user visible
-@@ -557,15 +560,28 @@ static ssize_t node_read_distance(struct device *dev,
- static DEVICE_ATTR(distance, 0444, node_read_distance, NULL);
- 
- static struct attribute *node_dev_attrs[] = {
--	&dev_attr_cpumap.attr,
--	&dev_attr_cpulist.attr,
- 	&dev_attr_meminfo.attr,
- 	&dev_attr_numastat.attr,
- 	&dev_attr_distance.attr,
- 	&dev_attr_vmstat.attr,
- 	NULL
- };
--ATTRIBUTE_GROUPS(node_dev);
-+
-+static struct bin_attribute *node_dev_bin_attrs[] = {
-+	&bin_attr_cpumap,
-+	&bin_attr_cpulist,
-+	NULL,
-+};
-+
-+static const struct attribute_group node_dev_group = {
-+	.attrs = node_dev_attrs,
-+	.bin_attrs = node_dev_bin_attrs
-+};
-+
-+static const struct attribute_group *node_dev_groups[] = {
-+	&node_dev_group,
-+	NULL,
-+};
- 
- #ifdef CONFIG_HUGETLBFS
- /*
--- 
-2.7.4
+On 6/2/21 5:23 PM, Arnaldo Carvalho de Melo wrote:
+> Em Wed, May 26, 2021 at 11:51:29PM +0900, Masami Hiramatsu escreveu:
+>> Add a section to notify the permission and sysctl setting
+>> for perf probe. And fix some indentations.
+>>
+>> Reported-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> 
+> Ravi, can I have your Reviewed-by?
 
+Yes please. Thanks for checking.
+
+Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
