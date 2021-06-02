@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CDE39812F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2397398134
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhFBGib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:38:31 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:34018 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229711AbhFBGia (ORCPT
+        id S231296AbhFBGkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:40:21 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2839 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231200AbhFBGkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:38:30 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1526YhjH014970;
-        Wed, 2 Jun 2021 06:36:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=+gOexGANZZS/oRgP/lTbcgKz1yPXMtQU2iZfikPHFaM=;
- b=Gezj5ThDljD/iCcK+OwqhPtV9mwHPE1NNSD1g4TyGeFKHDHSR7mTKZRR3HnARmaOG9zB
- AD17ZQ6hbpV9plez57LQxwtZySLKRbR+EYVasm62cBud1IxPaVPUlUSKh8gn3ihr+koR
- 1rGp6AALyBEK/eOuA+4jEkW77Lu1t6Y9wtOdntdVQ3b24WnE1X0pMeM7Tw0WFHKOCv0U
- yMYopfZNzktSvM0HzdEkyrVt10BH+DA4ncJNQyfPJ9+65vaXgO6V4HpMRQMXaWQJ70GC
- /w56rymUKBMX0Sq1tk/bS9Yi8PLqnZZzKxj88zfnuQ3+aXwWFVDlW/dQBJHe3xGcF1On 1g== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38wx9fr3q5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 06:36:01 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1526a0B3168714;
-        Wed, 2 Jun 2021 06:36:00 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38udeayrnh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 06:36:00 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1526Zxo6168609;
-        Wed, 2 Jun 2021 06:35:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 38udeayrkj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Jun 2021 06:35:59 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1526Zo7V020192;
-        Wed, 2 Jun 2021 06:35:55 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Jun 2021 23:35:50 -0700
-Date:   Wed, 2 Jun 2021 09:35:43 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-Message-ID: <20210602063543.GB10983@kadam>
-References: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
+        Wed, 2 Jun 2021 02:40:19 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fvzkl3k5QzWq60;
+        Wed,  2 Jun 2021 14:33:51 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 14:38:34 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 14:38:33 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] rtc: x1205: use DEVICE_ATTR_RO macro
+Date:   Wed, 2 Jun 2021 14:38:28 +0800
+Message-ID: <20210602063828.10958-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: lZx4N9uLYLfLPXlB1XU0SPq9KH3jp0Eq
-X-Proofpoint-ORIG-GUID: lZx4N9uLYLfLPXlB1XU0SPq9KH3jp0Eq
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:41:36AM +0800, Dongliang Mu wrote:
-> The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
-> the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
-> to decrease the refcount to zero, which causes device_release never to
-> be invoked. This leads to memory leak to some resources, like struct
-> device_private. In addition, we also free some other similar memory
-> leaks in snd_ctl_led_init/snd_ctl_led_exit.
-> 
-> Fix this by replacing device_del to device_unregister
-> in snd_ctl_led_sysfs_remove/snd_ctl_led_init/snd_ctl_led_exit.
-> 
-> Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
-> call kobject_release and delay the release of kobject, which will cause
-> use-after-free when the memory backing the kobject is freed at once.
+Use DEVICE_ATTR_RO macro helper instead of plain DEVICE_ATTR, which makes
+the code a bit shorter and easier to read.
 
-(Hopefully it's clear to everyone that this is in the original code and
-fixed in your patch).
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/rtc/rtc-x1205.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> 
-> Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-> Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
+diff --git a/drivers/rtc/rtc-x1205.c b/drivers/rtc/rtc-x1205.c
+index d1d5a44d9122ad9..351e4725a7a5439 100644
+--- a/drivers/rtc/rtc-x1205.c
++++ b/drivers/rtc/rtc-x1205.c
+@@ -566,8 +566,8 @@ static const struct rtc_class_ops x1205_rtc_ops = {
+ 	.set_alarm	= x1205_rtc_set_alarm,
+ };
+ 
+-static ssize_t x1205_sysfs_show_atrim(struct device *dev,
+-				struct device_attribute *attr, char *buf)
++static ssize_t atrim_show(struct device *dev,
++			  struct device_attribute *attr, char *buf)
+ {
+ 	int err, atrim;
+ 
+@@ -577,10 +577,10 @@ static ssize_t x1205_sysfs_show_atrim(struct device *dev,
+ 
+ 	return sprintf(buf, "%d.%02d pF\n", atrim / 1000, atrim % 1000);
+ }
+-static DEVICE_ATTR(atrim, S_IRUGO, x1205_sysfs_show_atrim, NULL);
++static DEVICE_ATTR_RO(atrim);
+ 
+-static ssize_t x1205_sysfs_show_dtrim(struct device *dev,
+-				struct device_attribute *attr, char *buf)
++static ssize_t dtrim_show(struct device *dev,
++			  struct device_attribute *attr, char *buf)
+ {
+ 	int err, dtrim;
+ 
+@@ -590,7 +590,7 @@ static ssize_t x1205_sysfs_show_dtrim(struct device *dev,
+ 
+ 	return sprintf(buf, "%d ppm\n", dtrim);
+ }
+-static DEVICE_ATTR(dtrim, S_IRUGO, x1205_sysfs_show_dtrim, NULL);
++static DEVICE_ATTR_RO(dtrim);
+ 
+ static int x1205_sysfs_register(struct device *dev)
+ {
+-- 
+2.26.0.106.g9fadedd
 
-Looks perfect to me!
-
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-regards,
-dan carpenter
 
