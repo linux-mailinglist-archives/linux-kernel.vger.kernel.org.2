@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0083993E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279193993EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbhFBTwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:52:13 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:36621 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhFBTwK (ORCPT
+        id S229608AbhFBTwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:52:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53419 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229724AbhFBTwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:52:10 -0400
-Received: by mail-ot1-f51.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3559686otl.3;
-        Wed, 02 Jun 2021 12:50:11 -0700 (PDT)
+        Wed, 2 Jun 2021 15:52:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622663430;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y+mlRznXk5uF6iXxffuwd5UPE2tHtEL5uBgD2A9gsuo=;
+        b=I2wANYvm6kqKPXIIsjDsL7nmJxj/evBpmytG7Or0puWuLuSAFVCu3D9BXI7hPEWC0BuCVG
+        4q5CfOsadW9oBxsEN731JoSPrveiD2Io8XJ0Pebds4Gl/tYFplfbIcj/ja1H2NoHVCqWKy
+        gt/ZtpnzZ6gSLEQhixRVajyc74ScmqQ=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-CRE9yyuvPV2Dlq3EiGWt6Q-1; Wed, 02 Jun 2021 15:50:29 -0400
+X-MC-Unique: CRE9yyuvPV2Dlq3EiGWt6Q-1
+Received: by mail-qv1-f70.google.com with SMTP id h11-20020a0ceecb0000b0290211ed54e716so2650629qvs.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 12:50:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CUWpmv8NyLUpVOwTkWcNjRzPnLFgadVxSly1gM51pJ4=;
-        b=RCc1BlwBI7a7S2/4ey4AbEAbnlmcctjA67rodie6R8tbAw3SGeNVZIkSHJp/vVoHsu
-         kRJpxfN5S8RKUtK/jZ3EMkekIbyYEhuhsUtGybdWlrj+DhxZUFN79sqSYfz4d2kMRsxx
-         UDBuxiXMd+a6vO5yn++hBZRElyK9jbnYWSbbMsRQaas2F1cNCw7o46dukyj90Uwni7yg
-         4xC7niHu0zbBDD295uSHuwq2AKgveYRu7Kqy+b0BUTzhiXvOetWtHVhz7I1K8P8sIgUM
-         0fg+uKudO1Tjf4C/2pkN7Do/ah3OKyoyfq+LOivXbtGtptiuHQzgN+FTOtHcKk2sldbb
-         HOog==
-X-Gm-Message-State: AOAM532ohCR5at+MWEAwZG6zZ6Ms2zy08mfC7/lgb0gdiNW0YU+U0FrX
-        Hflask08XduRFQnQ7YYOPw==
-X-Google-Smtp-Source: ABdhPJwNzfmaJMe3pyCXt76BAd3dBGxl7RBQK0yyIv7ohyjx5Db9CBZx6lUWeAp45W1AoXlRQiaMaA==
-X-Received: by 2002:a9d:1d49:: with SMTP id m67mr9340022otm.76.1622663411410;
-        Wed, 02 Jun 2021 12:50:11 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v19sm189648otk.22.2021.06.02.12.50.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 12:50:10 -0700 (PDT)
-Received: (nullmailer pid 3872156 invoked by uid 1000);
-        Wed, 02 Jun 2021 19:50:09 -0000
-Date:   Wed, 2 Jun 2021 14:50:09 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        kernel@dh-electronics.com
-Subject: Re: [PATCH V2] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM
- DRC02 boards
-Message-ID: <20210602195009.GA3870858@robh.at.kernel.org>
-References: <20210525143001.9298-1-cniedermaier@dh-electronics.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=y+mlRznXk5uF6iXxffuwd5UPE2tHtEL5uBgD2A9gsuo=;
+        b=R07aTX8ndHX6SKr37ujx2D8zBipwSg1G6F9eMqnWiv4g08Js/n5lVw1/aLlpO/fkIn
+         hZMx2EhRbAwpWVw6SQKXrYxXoBjnH2EqnMphYCquY23PkII5Vc8QLfjRulfutAX5ZvJZ
+         whryUDwuSF5//jisLUNIY+pbGZ/4nTKfn2/Z1knwzF5TiP1thXJOBjQvS1I7aszfhlu8
+         GdDTwrBb2wpcyMM/fpLc5o1ApeDQqqXswtNRY84J1CkdtLrWeZc/YtvdEFDgTX+TE9UV
+         3VNSnBshDRzelgX599Dx2vpuUhQAB4ZsjHPJOUmX8pZgTfwz9BWJXMvubQt7s+l3jzx5
+         WPPQ==
+X-Gm-Message-State: AOAM5303wGnajPzU2I69pVlrZZBLWLcp9v0Vs/ifU8iBKawxp+7wa2og
+        T4sWnlGEHi4u3uE5ZBTETlGJSPHaace4KG5LQMcAamXrwu+nBAqoU0HULWk6HmEzNvibk4TdeIY
+        QOkDZaHK/bibe3I5zaFAV2W2Uu32DVxg84y/IzJetnWGMbkhUrXkDfyCznXWdaSf+Cc3TcG8KiQ
+        ==
+X-Received: by 2002:a05:620a:28c6:: with SMTP id l6mr28652837qkp.155.1622663429133;
+        Wed, 02 Jun 2021 12:50:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwzFJHBmcUbD55J5L4sZyDu1eqC9Fnu8R9UkmhdgxORBAi0xGp+SYGoDpH2tKnts8hKPDkz2w==
+X-Received: by 2002:a05:620a:28c6:: with SMTP id l6mr28652815qkp.155.1622663428868;
+        Wed, 02 Jun 2021 12:50:28 -0700 (PDT)
+Received: from [192.168.0.106] ([24.225.235.43])
+        by smtp.gmail.com with ESMTPSA id p3sm469425qti.31.2021.06.02.12.50.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 12:50:28 -0700 (PDT)
+Subject: Re: The value of FB_MTU eats two pages
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     ying.xue@windriver.com, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, etdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CADxym3baupJJ7Q9otxtoQ-DH5e-J2isg-LZj2CsOqRPo70AL4A@mail.gmail.com>
+From:   Jon Maloy <jmaloy@redhat.com>
+Message-ID: <e91baaba-e00a-4b16-0787-e9460dacfbb9@redhat.com>
+Date:   Wed, 2 Jun 2021 15:50:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525143001.9298-1-cniedermaier@dh-electronics.com>
+In-Reply-To: <CADxym3baupJJ7Q9otxtoQ-DH5e-J2isg-LZj2CsOqRPo70AL4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 04:30:01PM +0200, Christoph Niedermaier wrote:
-> Add DH electronics DHCOM PicoITX and DHCOM DRC02 boards.
-> 
-> Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: robh+dt@kernel.org
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: kernel@dh-electronics.com
-> To: devicetree@vger.kernel.org
-> ---
-> V2: Remove line with fsl,imx6s on the DRC02 Board
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index fce2a8670b49..3c4ff79a3be7 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -407,6 +407,12 @@ properties:
->            - const: dfi,fs700e-m60
->            - const: fsl,imx6dl
->  
-> +      - description: i.MX6DL DHCOM PicoITX Board
-> +        items:
-> +          - const: dh,imx6dl-dhcom-picoitx
-> +          - const: dh,imx6dl-dhcom-som
-> +          - const: fsl,imx6dl
-> +
->        - description: i.MX6DL Gateworks Ventana Boards
->          items:
->            - enum:
-> @@ -458,6 +464,12 @@ properties:
->            - const: toradex,colibri_imx6dl          # Colibri iMX6 Module
->            - const: fsl,imx6dl
->  
-> +      - description: i.MX6S DHCOM DRC02 Board
-> +        items:
-> +          - const: dh,imx6s-dhcom-drc02
-> +          - const: dh,imx6s-dhcom-som
-> +          - const: fsl,imx6dl
 
-fsl,imx6s?
 
-> +
->        - description: i.MX6SL based Boards
->          items:
->            - enum:
-> -- 
-> 2.11.0
+On 6/1/21 10:18 AM, Menglong Dong wrote:
+> Hello!
+>
+> I have a question about the value of FB_MTU in tipc, how does the '3744' form?
+> I notice that it is used in 'tipc_msg_build()' when memory allocation
+> fails, and it
+> tries to fall back to a smaller MTU to avoid unnecessary sending failures.
+>
+> However, the size of the data allocated will be more than 4096 when FB_MTU
+> is 3744. I did a rough calculation, the size of data will more than 4200:
+>
+> (FB_MTU + TIPCHDR + BUF_HEADROOM + sizeof(struct skb_shared_info))
+>
+> Therefore, 8192 will be allocated from slab, and about 4000 of it will
+> not be used.
+>
+> FB_MTU is used for low memory, and I think eating two pages will make it worse.
+> Do I miss something?
+>
+> Thanks!
+> Menglong Dong
+>
+Hi Dong,
+The value is based on empiric knowledge.
+When I determined it I made a small loop in a kernel driver where I 
+allocated skbs (using tipc_buf_acquire) with an increasing size 
+(incremented with 1 each iteration), and then printed out the 
+corresponding truesize.
+
+That gave the value we are using now.
+
+Now, when re-running the test I get a different value, so something has 
+obviously changed since then.
+
+[ 1622.158586] skb(513) =>> truesize 2304, prev skb(512) => prev 
+truesize 1280
+[ 1622.162074] skb(1537) =>> truesize 4352, prev skb(1536) => prev 
+truesize 2304
+[ 1622.165984] skb(3585) =>> truesize 8448, prev skb(3584) => prev 
+truesize 4352
+
+As you can see, the optimal value now, for an x86_64 machine compiled 
+with gcc, is 3584 bytes, not 3744.
+
+Feel free to post a patch for this if you want to.
+
+Thanks
+///Jon Maloy
+
