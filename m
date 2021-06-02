@@ -2,102 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CFE3986C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53373986C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhFBKpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
+        id S230462AbhFBKpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhFBKp1 (ORCPT
+        with ESMTP id S229603AbhFBKps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:45:27 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D319FC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:43:44 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id p13-20020a05600c358db029019f44afc845so1376190wmq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:43:44 -0700 (PDT)
+        Wed, 2 Jun 2021 06:45:48 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B631CC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:44:05 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id c5so1772580wrq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uetljnpMVagZUL5muUxDZIQ/D9uiCnsyXeZAzCtugkc=;
-        b=S5AMEA55e6WiHfILJvvLPJjjSa/Yq2hHfihL5FLlwc0nkqiEigDVv6zGaQ9Zqw30CZ
-         ZcNArqEE1KLDPi62Lj3DON4XRA4lRQEPl3mkiGXqf1NuzcbVyz2xB5213Beslcbi0VY+
-         vsODVyRmobfR1fCmUKCnp2nQgPmer3uq6shiln93ca9H6FsgwmDg30qGDQ8d9/7e24Mp
-         CSLPgs6X+XyQ7pC/c2x8ETo1zkBVPUtq9sPOkmehhhoJFv3lhBEv40tvpOSBlEY1/b8H
-         QUE7F5ZbBoi4Gyi+g8C3tw7hkEOfNdrM3DT6aidkaFGmRGF0N81BVxOpbVVxuR5GQeKr
-         JnRA==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ole7lO4EyLGinmZ8kUSEG9cz+TpAxKO/SXaZD0DSzF0=;
+        b=zLctya8nFGOpjiADxV6+6MKc4Xq6E8Lxwv6ip7ffav9gMpcG73fAmznNqHuh7YZM1n
+         LH8RAtsoM+ItO1+nfvLc+wggdWn+YXTue7oUj+zw8kophFRhEKJWejDH9BksEmkQd+9T
+         pqWXovq/ljsy5DRNIMZMauGzzcJncdwRGzIVrjpNgz2PEnZBdYwHi5hXl9yGOyDz40+Z
+         Tk1k+h4hxC/FaJJacBLHBFDM8JautNH3ZIIl1Gt2njZf6Y+phCjqdRWvJEr/kfvMxKve
+         CHY/LwcVcM0GeeBT6kUmnyPlgDus2plwRD/H4MnR0FP37QgBgr0bhHigkKDoTRf2+ves
+         nM4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uetljnpMVagZUL5muUxDZIQ/D9uiCnsyXeZAzCtugkc=;
-        b=hiki7Y41Zorr2eJdzzYbYVLan7wZd7rnSiNingIn+MCe8PFnjVXY29pZZJie+ErniR
-         hQy2JHPd9J9v6RzFmzPIhr2cS5bMw3uPakeh0Uqb/GIKbgfbZKcjTNBdtC1YP8vd7hfY
-         BzI9Gs837+X12PzvbdGpKP6BGEJRIHxbI3jXXtViqbhz4cXF30wr4N9wkP0TLnIFxcNB
-         swfwvZZ+kNz0CYcoPFyCC5MHOtAoBj1ii/vAFUDtOAY9R0TMNt8RznRe5RKT9AH/xtu+
-         yM1743YiKSI7aYCd8DgZitxtTGAjj2slMAnJim1ixDAECfQFqguf9I7ty14OM2pPw9+P
-         DLFw==
-X-Gm-Message-State: AOAM531mmBsbLCsHb3aVJMzLLnAiRd1bvTL1S3p5j1lSUv5E/G7hsMB6
-        7wPT9D4yvvy/9lw1oeyhJMMZHA==
-X-Google-Smtp-Source: ABdhPJwVt/mkHfPZsWQ7XeVPY+TVxGZoc9ruOznSEZgl2V+JcARglYdu24JT3h1Ue3fGnhgc5QDPqA==
-X-Received: by 2002:a7b:c042:: with SMTP id u2mr30819876wmc.127.1622630623364;
-        Wed, 02 Jun 2021 03:43:43 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id 31sm7003760wrc.96.2021.06.02.03.43.42
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ole7lO4EyLGinmZ8kUSEG9cz+TpAxKO/SXaZD0DSzF0=;
+        b=Ql9HF6k6wPd1ZKYcmYzpuUPXwiupfrGpEELFGCtlOSeVD+u/6hVKhb+QIpchoRbuS6
+         1frGHQ7KP8LXKSBSnAE/bRIZRufMhIV59iwFdOXxnqSmyV1h+JdrDbt3PrHOALmNZCT2
+         M2TKvm1DTqRc754tCfyJX/tyV4fC5kvuI9iXn/i7qj5VG4FnGV1GIplcIQ1XBTucLe+J
+         B/3/wpxSRB8Ot5c9gEoRhtGGrY4dcZoASFIvDS0s76NkFe0/T5h4+aXOoZpzwe31iMS0
+         3HvGoM9ZqeYjOWQbAeTdgFwfzxh8UeAzNugeGKT7qSPEVrDETqMkNDyokbP7TRLwyRd2
+         bNBw==
+X-Gm-Message-State: AOAM5305FxM/Ih+CIedhhdNZCtrz3GVF72Y9DrEPYuCl4txAt49GlUyD
+        /TjMkD4HfwWJXgAfoOHAdPozaw==
+X-Google-Smtp-Source: ABdhPJwDqgbP/SHb06O2H30yLG/kSQpCc/ed/6ikkEiiCozM8oxPNF8qMXZV8rBwVRyi/g2dNSgrTA==
+X-Received: by 2002:adf:f28b:: with SMTP id k11mr14056396wro.89.1622630644414;
+        Wed, 02 Jun 2021 03:44:04 -0700 (PDT)
+Received: from dell ([91.110.221.214])
+        by smtp.gmail.com with ESMTPSA id u17sm6216067wrt.61.2021.06.02.03.44.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 03:43:42 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 10:43:40 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v5 1/6] KVM: arm64: Introduce KVM_PGTABLE_S2_GUEST
- stage-2 flag
-Message-ID: <YLdg3K6m0P+cis2P@google.com>
-References: <20210415115032.35760-1-wangyanan55@huawei.com>
- <20210415115032.35760-2-wangyanan55@huawei.com>
+        Wed, 02 Jun 2021 03:44:03 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 11:44:02 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <20210602104402.GH2173308@dell>
+References: <20210524230940.GA1350504@robh.at.kernel.org>
+ <20210525074649.GC4005783@dell>
+ <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+ <20210526075255.GG4005783@dell>
+ <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
+ <20210601081933.GU543307@dell>
+ <50ced58164999f51a8c8b9c8dc01468e@walle.cc>
+ <20210601135816.GG543307@dell>
+ <20210601144826.GI543307@dell>
+ <bb73c46de48094759099e244e09b333c@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210415115032.35760-2-wangyanan55@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bb73c46de48094759099e244e09b333c@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yanan,
+On Wed, 02 Jun 2021, Michael Walle wrote:
 
-On Thursday 15 Apr 2021 at 19:50:27 (+0800), Yanan Wang wrote:
-> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> index c3674c47d48c..a43cbe697b37 100644
-> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> @@ -61,10 +61,12 @@ struct kvm_pgtable_mm_ops {
->   * @KVM_PGTABLE_S2_NOFWB:	Don't enforce Normal-WB even if the CPUs have
->   *				ARM64_HAS_STAGE2_FWB.
->   * @KVM_PGTABLE_S2_IDMAP:	Only use identity mappings.
-> + * @KVM_PGTABLE_S2_GUEST:	Whether the page-tables are guest stage-2.
->   */
->  enum kvm_pgtable_stage2_flags {
->  	KVM_PGTABLE_S2_NOFWB			= BIT(0),
->  	KVM_PGTABLE_S2_IDMAP			= BIT(1),
-> +	KVM_PGTABLE_S2_GUEST			= BIT(2),
+> Am 2021-06-01 16:48, schrieb Lee Jones:
+> > On Tue, 01 Jun 2021, Lee Jones wrote:
+> > 
+> > > On Tue, 01 Jun 2021, Michael Walle wrote:
+> > > 
+> > > > Am 2021-06-01 10:19, schrieb Lee Jones:
+> > > > > Why do you require one single Regmap anyway?  Are they register banks
+> > > > > not neatly separated on a per-function basis?
+> > > >
+> > > > AFAIK you can only have one I2C device driver per device, hence the
+> > > > simple-mfd-i2c.
+> > > 
+> > > Sorry, can you provide more detail.
+> > 
+> > I'd still like further explanation to be sure, but if you mean what I
+> > think you mean then, no, I don't think that's correct.
+> 
+> We've already discussed this:
+> 
+> https://lore.kernel.org/lkml/20200622075145.1464020-1-lee.jones@linaro.org/
+> https://lore.kernel.org/lkml/20200605065709.GD3714@dell/
+> 
+> And how would a device tree binding look like if you have multiple
+> i2c devices with the same i2c address?
 
-Assuming that we need this flag (maybe not given Marc's suggestion on
-another patch), I'd recommend re-naming it to explain _what_ it does,
-rather than _who_ is using it.
+Ah yes, I remember.
 
-That's the principle we followed for e.g. KVM_PGTABLE_S2_IDMAP, so we
-should be consistent here as well.
+I suppose the saving grace of this scenario is the presence of the
+Reset driver, since this confirms the device's MFD status.  If it were
+missing however, I'm not entirely sure how we'd solve this issue.
 
-Thanks,
-Quentin
+I'll go have another look at the latest submission.  Bear with.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
