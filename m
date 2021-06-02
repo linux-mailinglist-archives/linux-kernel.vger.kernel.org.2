@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6579E3984A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C917A3984A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhFBIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhFBIzt (ORCPT
+        id S232921AbhFBI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:56:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29242 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232907AbhFBI4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:55:49 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A605C061574;
-        Wed,  2 Jun 2021 01:54:05 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id u7so762358plq.4;
-        Wed, 02 Jun 2021 01:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3jN1riE8G5x/joSgn6CfxsOWR+MfQo/IZ4OM91hdWRU=;
-        b=XZU0/5kihTt1Fi5lrecm22ldzuh1Z2j9FstXTpn0PlY3qTcINdmC9RcSfoEQ1xiXMA
-         95aXNc3q/HsQL1Jk6ygkSS2wXzcHu9SARdpmZ7gSJUqXYsJjwcsXw38kE+AZ+nvglZef
-         34RV21IbdUiRv6IbsE552aI/z6s456Eai+7IqCa+klsJAEXqdFQUlWraEPHrOBUf/dwg
-         TyNG9gUOMNvvxqVqQM09JXxM1KUjjk5XACh0Kn5vkBWHenlzVT8DxUa+iQIHcb2GDUV1
-         bYcULpOBdi/vB6bgwU1Y+d26N3F6n69AVqUJxkn7X7cb9SMjRHL1/kBUZ172oBIwSn1i
-         uTaA==
+        Wed, 2 Jun 2021 04:56:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622624074;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TOI6E9j/kLUqqLzfWVG9w8giJlysUj5C+KWef8bCQ8I=;
+        b=iey3U79HA+VvTZDpvn1WzZuVy5l3v5TtkaaFIzHe2il5HHOOGPHzbDXGtiQDNBsOFN19sO
+        mNTCWKrpE+y6XmGPFu41oA/AWk/aqGo8VO6vkp0q+3NJdCwM6Iezl+7WPJ+YfRIsxQXClb
+        E0mOrFzHtGAgKY6sPrOW8RlG6yeWu6k=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-v7X_3FsnNJa7bcVV6WOzfA-1; Wed, 02 Jun 2021 04:54:33 -0400
+X-MC-Unique: v7X_3FsnNJa7bcVV6WOzfA-1
+Received: by mail-pl1-f197.google.com with SMTP id o9-20020a1709026b09b0290102b8314d05so754469plk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:54:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3jN1riE8G5x/joSgn6CfxsOWR+MfQo/IZ4OM91hdWRU=;
-        b=cR5Znf4kYnsL4VLEIWpEgi6RZPT+vOjBiVLILXFtJc79ZsiFoEAJoIvtrRHiWvpW/p
-         R46F7uTVQ/GcZHHnaYYt87jxq6XFIP6CBGHFg6p+W0JM26gIfMHjATjustemsS0bQMV1
-         DE9QvpT86agJGPL3fehMuWRqgBBdhFCUTmdNwjYmbgJpuwJLlYrpbovoX/o7x41xyX3c
-         eLOzj+Te5FAIvQJkAQUMG2LyrsRsqpdFNe9nBBpefq9FaJATE/CXL1KK7URJpUjAYEB5
-         1B8jRj7TeSc6Rgil6jXMa4gPrvcr/dU1cneTJhkk17drIqXNKDc+b9jWmia9Qe6FGZTI
-         oIIQ==
-X-Gm-Message-State: AOAM533Cak8UnsW5SCW5tBxxwLz4ISULegfphUdas6H30VIIMFI2Qxe1
-        eH1jOQkhlMDoPpyTTTQRLYJ0HhB9/5vaPw+RwfY=
-X-Google-Smtp-Source: ABdhPJyam0wFcKF8z4CzmgGzK2e/33Enjt0y/yByEDIOJq499UTxgEmKGB9lI6M+5aRiSprbuu7B+8ipdGhw2VfN5ws=
-X-Received: by 2002:a17:90a:a08c:: with SMTP id r12mr4431756pjp.204.1622624045045;
- Wed, 02 Jun 2021 01:54:05 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=TOI6E9j/kLUqqLzfWVG9w8giJlysUj5C+KWef8bCQ8I=;
+        b=U0LjsEu08TbhsYK9Fq3FyOEIasnlJFm1ssRmwTnOwfHiBGPsd3iHa4b6ugNDo4F1Zo
+         /ARKLVnikNtR4ih6uqpd5/WLcK6qH9T0vxkDyN9LzVZase41hzS3TUY8cupFDClel3DI
+         wzGfL6YlZms50Zve5Qoc+5Y5TUXA0B24VGb8tM5SEdSiipe75pkcP19pFnKX+SAM/ry6
+         zTgvPkIrPJ8AbU5pibDBGlYxUH6XpvXpCFeHqIXx862QjEb2z/pXHyUNYcvSg1pBMgh/
+         bPOyABGkR6jQ87puxco+pYQC/l0wVR/tSR0by7OaivxAp3aEPXxEk0f3sSDddH/+1feE
+         Mmvw==
+X-Gm-Message-State: AOAM530VNoP8GoJSDEysgqe94H9MxbH600XKAbJs3zvyyjYqkFd4GIbd
+        ZVY3Vhp1G+Vsa6RT3Fjf/fWqXxG3S8Ja/mgJV76ucFqhzB+yEzDSF0vN1wEjGa0Qp6cRXnvMNby
+        ftguve8gTk+rr3gpk1OlEriZz
+X-Received: by 2002:a17:90a:7306:: with SMTP id m6mr4486579pjk.217.1622624072029;
+        Wed, 02 Jun 2021 01:54:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQ9jinHicYAMXd7FQEuh3El0Ofh9v6RECp7TK6Os2FVDpLb1bDFUCefzQjoGn2stvAL6/t8g==
+X-Received: by 2002:a17:90a:7306:: with SMTP id m6mr4486565pjk.217.1622624071836;
+        Wed, 02 Jun 2021 01:54:31 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w2sm4060045pfc.126.2021.06.02.01.54.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 01:54:31 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Liu Yi L <yi.l.liu@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
+References: <20210531164118.265789ee@yiliu-dev>
+ <78ee2638-1a03-fcc8-50a5-81040f677e69@redhat.com>
+ <20210601113152.6d09e47b@yiliu-dev>
+ <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
+ <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
+ <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
+ <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
+ <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
+ <20210601173138.GM1002214@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
+Date:   Wed, 2 Jun 2021 16:54:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210602031001.18656-1-wanghai38@huawei.com> <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
- <87a6o8bqzs.fsf@toke.dk>
-In-Reply-To: <87a6o8bqzs.fsf@toke.dk>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 2 Jun 2021 10:53:54 +0200
-Message-ID: <CAJ8uoz1_fzpZkKZd=h=tEQG7_V+waYjGN5ocnC29pPaBGLrg4w@mail.gmail.com>
-Subject: Re: [PATCH net-next] xsk: Return -EINVAL instead of -EBUSY after
- xsk_get_pool_from_qid() fails
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Wang Hai <wanghai38@huawei.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210601173138.GM1002214@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 10:38 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Magnus Karlsson <magnus.karlsson@gmail.com> writes:
->
-> > On Wed, Jun 2, 2021 at 6:02 AM Wang Hai <wanghai38@huawei.com> wrote:
-> >>
-> >> xsk_get_pool_from_qid() fails not because the device's queues are busy=
-,
-> >> but because the queue_id exceeds the current number of queues.
-> >> So when it fails, it is better to return -EINVAL instead of -EBUSY.
-> >>
-> >> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> >> ---
-> >>  net/xdp/xsk_buff_pool.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> >> index 8de01aaac4a0..30ece117117a 100644
-> >> --- a/net/xdp/xsk_buff_pool.c
-> >> +++ b/net/xdp/xsk_buff_pool.c
-> >> @@ -135,7 +135,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
-> >>                 return -EINVAL;
-> >>
-> >>         if (xsk_get_pool_from_qid(netdev, queue_id))
-> >> -               return -EBUSY;
-> >> +               return -EINVAL;
-> >
-> > I guess your intent here is to return -EINVAL only when the queue_id
-> > is larger than the number of active queues. But this patch also
-> > changes the return code when the queue id is already in use and in
-> > that case we should continue to return -EBUSY. As this function is
-> > used by a number of drivers, the easiest way to accomplish this is to
-> > introduce a test for queue_id out of bounds before this if-statement
-> > and return -EINVAL there.
->
-> Isn't the return code ABI by now, though?
 
-You are probably right and in that case this should not change at all.
-It has been returning this for quite a while too as it is nothing new.
-But I leave the final decision to other people on the list.
+ÔÚ 2021/6/2 ÉÏÎç1:31, Jason Gunthorpe Ð´µÀ:
+> On Tue, Jun 01, 2021 at 04:47:15PM +0800, Jason Wang wrote:
+>   
+>> We can open up to ~0U file descriptors, I don't see why we need to restrict
+>> it in uAPI.
+> There are significant problems with such large file descriptor
+> tables. High FD numbers man things like select don't work at all
+> anymore and IIRC there are more complications.
 
-> -Toke
+
+I don't see how much difference for IOASID and other type of fds. People 
+can choose to use poll or epoll.
+
+And with the current proposal, (assuming there's a N:1 ioasid to 
+ioasid). I wonder how select can work for the specific ioasid.
+
+Thanks
+
+
 >
+> A huge number of FDs for typical usages should be avoided.
+>
+> Jason
+>
+
