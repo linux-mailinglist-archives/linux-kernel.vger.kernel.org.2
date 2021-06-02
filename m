@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11190399551
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AFC39955A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 23:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhFBVU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 17:20:26 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:39565 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhFBVUZ (ORCPT
+        id S229640AbhFBVY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 17:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhFBVY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:20:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622668722; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+CMCzWdXYW36gvLhqspzCb5O76RlF7D5cgvfnUD5vAs=; b=WytgUox4Om6I0SVPzRFJ8vmm9cIuN+wchqYBR1LucO8boc+Sq1phmVrpv2bop26OhKHYfABS
- kvXRPu7AzwDta3zFhnCyt19bmTd29+c5VutGqtSIb/0k3V7XZ95ydIcfI5vrYTFxJ67GSh8G
- AK45+GHLgj8fTukJkwj08ZVuF7A=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60b7f5b1e27c0cc77f7e5b70 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 21:18:41
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1434AC43146; Wed,  2 Jun 2021 21:18:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1BD5CC433D3;
-        Wed,  2 Jun 2021 21:18:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1BD5CC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer requests
- send/compl paths
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Can Guo <cang@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
- <1621845419-14194-3-git-send-email-cang@codeaurora.org>
- <41a08b3e-122d-4f1a-abbd-4b5730f880b2@acm.org>
- <d4ff8e1a-f368-6720-798a-a2a31a4d41fb@codeaurora.org>
- <DM6PR04MB65752DD2F442C178B2D0233AFC259@DM6PR04MB6575.namprd04.prod.outlook.com>
- <DM6PR04MB657525D67B70FF3418511694FC229@DM6PR04MB6575.namprd04.prod.outlook.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <e7605343-5785-e708-751b-72a66e4e0b67@codeaurora.org>
-Date:   Wed, 2 Jun 2021 14:18:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 2 Jun 2021 17:24:27 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412EAC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 14:22:44 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 27so3377774pgy.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 14:22:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BsbmirkQTrn5Y/d7vxsXgoXVmSWKzfg79YhqEox9cnI=;
+        b=V8RMV2L26lg4HUyruFenGz+7Zt7ri1MvrSCM/6mwECE/TDuvP7nuOdtCViEv1okUO+
+         8ZnULGMy7biqOairR7J5qvPq7I7f10qnwguHulr3b/t8q2npXcZixmB94QYu1zLhEy14
+         7ccKoON9kEZ6VN4KH0/eek2/5z6o0AnezdNDPbvtw2F/vT58NI4r1Y9UFP5NwO1ZY7G4
+         hcXc1tpsJdMRz0qQh4xDZXZ2k0JBN1dFARWEogjrENC8i0ejNhktcDUnDWQw8dGSuefq
+         Ln3Z3LzCmlJGjhFkFy++nmcabCEq5MaTcT6jr6srGr/auS56E2kwuKWtZ+f2gzo6JwE8
+         /75A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=BsbmirkQTrn5Y/d7vxsXgoXVmSWKzfg79YhqEox9cnI=;
+        b=stwr2TcLdmsEbnnU/im11ze4EQnfL7c1SKsUHEx+WSvGVEhpdT6oiH6euDt7LO7+Ok
+         GEOaEHKz76AS/BNY+e2KNBlC3aDlDouqcV16zbCbD284gXoxQXBHgqyte1thaxaxb9/I
+         JsXmKNz+FYkigp26U5sUZ8eylO3oteRoqvh/QnStoiJk3skR/IWNvku3YR6j/JLLxbYL
+         09Pur2Xicb857dHspLSY1AtqLHotIK+1BRSQUlc3F+nwixjLsRwU8Xjvp8XRhPqP5xyY
+         3dwt4nNxj1syO9xQXtB//wsg5p8havk1p+h7tyqFrNbk+I88NDpWCNJ2KZ7S+yOYUSzp
+         +M7A==
+X-Gm-Message-State: AOAM5332l9/vN6da1kZ14efOcMQqX3faau+lTgWigbBh598l2z2KfN1S
+        8sGMfYYLnKP9e8Qv2id01/U=
+X-Google-Smtp-Source: ABdhPJwwzbfhJPjbbQR1lld3DtsKic4FCHHvEvdOhrpXdZZQnbmbjvmlK+VpDoT2h8VuIXuJLVgl1w==
+X-Received: by 2002:a63:125d:: with SMTP id 29mr19569288pgs.151.1622668963822;
+        Wed, 02 Jun 2021 14:22:43 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:ea44:6c81:cb03:abf2])
+        by smtp.gmail.com with ESMTPSA id z9sm435860pfc.101.2021.06.02.14.22.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 14:22:43 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH 1/3] perf stat: Check return value of asprintf() properly
+Date:   Wed,  2 Jun 2021 14:22:39 -0700
+Message-Id: <20210602212241.2175005-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
-In-Reply-To: <DM6PR04MB657525D67B70FF3418511694FC229@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/2021 12:30 AM, Avri Altman wrote:
->>> Hi Bart,
->>> No it's not necessary to serialize both the paths. I think this series
->>> attempts to remove this serialization to a certain degree, which is
->>> what's giving the performance improvement.
-> Btw, Is this performance improvement is on top of rq_affinity 2 or 1?
-> 
-It's on 1.
+It returns -1 on error, so checking with 0 would not work.
 
-> Thanks,
-> Avri
-> 
->>>
->>> Even if multiqueue support would be available in the future, I think
->>> this change is apt now for the current available specification.
->> I agree - this looks like the harbinger of a major change,
->> And going further with respect of hw queues,
->> will need the spec support - e.g. doorbell per lane, etc.
->>
->> Thanks,
->> Avri
->>
->>>> Thanks,
->>>>
->>>> Bart.
->>>>
->>>
->>>
->>> Thanks,
->>> -asd
->>>
->>> --
->>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
->>> Forum,
->>> Linux Foundation Collaborative Project
+Fixes: 12279429d862 ("perf stat: Uniquify hybrid event name")
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/stat-display.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index b759dfd633b4..04afd41b6067 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -564,7 +564,7 @@ static void uniquify_event_name(struct evsel *counter)
+ 				       counter->name, counter->pmu_name);
+ 		}
+ 
+-		if (ret) {
++		if (ret > 0) {
+ 			free(counter->name);
+ 			counter->name = new_name;
+ 		}
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+2.32.0.rc0.204.g9fa02ecfa5-goog
+
