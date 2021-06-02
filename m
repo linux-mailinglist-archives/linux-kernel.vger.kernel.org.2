@@ -2,155 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2B5398552
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B53398556
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhFBJd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
+        id S231691AbhFBJej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhFBJdY (ORCPT
+        with ESMTP id S229583AbhFBJei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:33:24 -0400
-Received: from mailserv1.kapsi.fi (mailserv1.kapsi.fi [IPv6:2001:67c:1be8::25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE6BC061574;
-        Wed,  2 Jun 2021 02:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=ext.kapsi.fi; s=20161220; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=AjV7/JHcEMe19kxGoVpLU0xcuOHEXaPt4n0m5dWna2g=; b=CT2Kn/6BMWX/PeaMqTRJg124K7
-        /Q9OCBDYUnUEqxr/XMf4++kJb94L7XAZcXlVT7F4VSxBuMasP1I03hZzl5+xVIFJQj7czZXhDuKzf
-        pR0oWQ8hGCjizI/41IfRQiCUmPr1Drb484jhg58uweDD+pZjxrWo7fCuFwjtcbbi97ZLpMHQYSi7S
-        te21dgWhOaRnKmN9kFKMys/eWFDbUOdFCGPjvVcAfKOWcmbM0T6chtTOjzgKN0NnQqzdL658UBX1J
-        /evDLZhftQkR+INEorR8mzG1exCxw+H0jbwpBGaxorZZGPfzXKnY24z051lpOPZVeSy4BgXl0bCXT
-        z59pC7QQ==;
-Received: from 164-105-191-90.dyn.estpak.ee ([90.191.105.164]:61130 helo=[192.168.3.116])
-        by mailserv1.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <maukka@ext.kapsi.fi>)
-        id 1loNDr-0001WS-JF; Wed, 02 Jun 2021 12:31:36 +0300
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mauri Sandberg <sandberg@mailfence.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210530161333.3996-1-maukka@ext.kapsi.fi>
- <20210530161333.3996-2-maukka@ext.kapsi.fi>
- <CACRpkdZfdd=ogHoNGuLzGGZYkvw7xtNO2VJm-t-2vMibGNy=dA@mail.gmail.com>
-From:   Mauri Sandberg <maukka@ext.kapsi.fi>
-Message-ID: <866ff376-6d74-49c9-9e4c-2bf36bbd5981@ext.kapsi.fi>
-Date:   Wed, 2 Jun 2021 12:31:34 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Wed, 2 Jun 2021 05:34:38 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6C1C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 02:32:55 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id h5-20020a05600c3505b029019f0654f6f1so2804114wmq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 02:32:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=+4n68OhQQoaJqMJRmFarUHWhO6SLp5CZpVwSs3bY57M=;
+        b=QdtCH6OwgAWbnUTfXQQobKbEMVCsv/NfJBaCfk/cjIBLyX30zRtdf7I9yQR+a8zN7w
+         So9FhMuKA51H7t0Iz3VwB3j6Y+y0rR9b07MQUlWinb/vlJWd8I5IBTtQb069NU9HuDWP
+         fLeP7MfTvg2JL45gQzLpPV4+slEzo5rsKvvV2WtDTNP6vjH/3CInyKKzEF6Ma1rj2bM9
+         HUvJfc0h6LLqF35WgVDrMEElaxEE5nvXub1O7TidzmVnkRo0rYXaHG4Qmpj4k4njYByT
+         fxtAjVXR+oCPy33idGpVPAxm0H1Tchr1vktUJ8TIScJuR/CrW7k2vq9fxUDhLbJ2xoMh
+         mZcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=+4n68OhQQoaJqMJRmFarUHWhO6SLp5CZpVwSs3bY57M=;
+        b=g5S6VqFo02JOY33e1KMl4QZ+xpVluWK/Ei65NPRMMRviH/QVUnE5hyNjoWkS5nsmM/
+         jDwerPmc/KnAXDbmjcSFUu0EFI+63yHTq5hfYzJlDFYqvSvHRFavPZBbiPQqD1aioLr/
+         eyQu49zYs0hpG7biffW+H/CTrXf5xUTJTvas4hWF2ZnGRB7kbKu/sg8O2cx5a7mWavR6
+         iLksoyc4vZcIdW5SW1TDAXQdo2+EUcqLbGajC6P5kHv53Do0Fr/db7Tya8nXsUX0rlgj
+         kXzSEVzXzdZIeieY9NGAqRZH///4J18dE31Tnb2RW6y2vowfzgIZNcZRHHFpV+Rbdu8m
+         I69g==
+X-Gm-Message-State: AOAM530TmR3sTSOXRUrMwoIQ4E0Nby9IDNnYJDcbZbaGJ2tqfiebEOFZ
+        xh3IZQONIpcUlVZhJv6rY+3tRA==
+X-Google-Smtp-Source: ABdhPJwZcWsNVrWqTEgyqX4RTciLjOYhDu9RIA3kyZPccOlhw3ys9rCcBYEhOiKNeMrrX03S7NOU+g==
+X-Received: by 2002:a1c:bcd6:: with SMTP id m205mr4378881wmf.12.1622626373963;
+        Wed, 02 Jun 2021 02:32:53 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id j14sm2093415wmi.32.2021.06.02.02.32.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 02:32:53 -0700 (PDT)
+References: <20210528113403.5374-1-peng.fan@oss.nxp.com>
+ <162262192433.4130789.1017942859005253343@swboyd.mtv.corp.google.com>
+ <a5833012-3e86-5be0-71f2-de4d9b32a152@pengutronix.de>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, mturquette@baylibre.com
+Cc:     Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/3] clk: support regmap
+In-reply-to: <a5833012-3e86-5be0-71f2-de4d9b32a152@pengutronix.de>
+Message-ID: <1j1r9kobln.fsf@starbuckisacylon.baylibre.com>
+Date:   Wed, 02 Jun 2021 11:32:52 +0200
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZfdd=ogHoNGuLzGGZYkvw7xtNO2VJm-t-2vMibGNy=dA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-SA-Exim-Connect-IP: 90.191.105.164
-X-SA-Exim-Mail-From: maukka@ext.kapsi.fi
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mailserv1.kapsi.fi
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,TVD_RCVD_IP,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: Re: [PATCH v4 1/2] dt-bindings: gpio-mux-input: add documentation
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on mailserv1.kapsi.fi)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 1.6.2021 13.44, Linus Walleij wrote:
-> On Sun, May 30, 2021 at 6:16 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
->
->> Add documentation for a general GPIO multiplexer.
->>
->> Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
->> Tested-by: Drew Fustini <drew@beagleboard.org>
->> Reviewed-by: Drew Fustini <drew@beagleboard.org>
-> After some thinking I realized these bindings should not
-> be restricted to just input. There exist electronic constructions
-> such as open drain that would make it possible to mux also
-> outputs.
->
->>   .../bindings/gpio/gpio-mux-input.yaml         | 75 +++++++++++++++++++
-> Rename it just gpio-mux.yaml
->
->> +$id: http://devicetree.org/schemas/gpio/gpio-mux-input.yaml#
-> Also here
->
->> +title: Generic GPIO input multiplexer
-> Generic GPIO multiplexer
->
->> +description: |
->> +  A generic GPIO based input multiplexer
-> Not just input
->
->> +  This driver uses a mux-controller to drive the multiplexer and has a single
->> +  output pin for reading the inputs to the mux.
-> Make this clearer and do not mention "driver".
-> Here is a suggestion:
->
-> This hardware construction multiplexes (cascades) several GPIO
-> lines from one-to-many using a software controlled multiplexer.
-> The most common use case is probably reading several inputs
-> by switching the multiplexer over several input lines, which in
-> practice works well since input lines has high impedance.
->
-> Constructions with multiplexed outputs are also possible using
-> open drain electronics.
->
->> +  For GPIO consumer documentation see gpio.txt.
-> No need to mention this I think, not your problem :D
->
->> +  pin-gpios:
-> I still want this renamed like in my previous mail.
->
-> Hope all is clear!
->
-> Yours,
-> Linus Walleij
+On Wed 02 Jun 2021 at 10:21, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 
-Hi and thanks the  comments.
+> On 6/2/21 10:18 AM, Stephen Boyd wrote:
+>> Quoting Peng Fan (OSS) (2021-05-28 04:34:00)
+>>> From: Peng Fan <peng.fan@nxp.com>
+>>>
+>>> To i.MX8ULP, a PCC register provides clk(mux, gate, divider) and peripheral
+>>> reset functionality, so we need make sure the access to the PCC register
+>>> be protected to avoid concurrent access from clk and reset subsystem.
+>>>
+>>> So let's use regmap here.
+>>>
+>>> The i.MX specific code will be posted if this patchset is ok for you.
+>> 
+>> We have a couple regmap clk drivers in the tree. Either combine the
+>> different regmap clk drivers or duplicate it into the imx directory. I'd
+>> prefer we combine them but last time I couldn't agree on the approach
+>> when Jerome wanted to do it. Maybe now is the time to combine them all
+>> into one common piece of code.
+>
+> IMHO for the basic drivers, such as gate, divider, mux, mux-div, etc... it makes
+> no sense to have them in an arch specific subdir, like meson.
 
-Generally I agree with everything you noted above and elsewhere and will 
-make changes
-accordingly. But there is a small detail that needs to be sorted out. 
-The name 'gpio-mux'
-has already been taken by 'mux-gpio' driver [2] [3].
+Indeed, those basic types were not meant to remain platform
+specific. Some framework (ASoC for ex) make heavy use of regmap and
+could welcome regmap based basic clock types.
 
-Should we look for another name for this driver and it's bindings or 
-refactor the mux-gpio's bindings
-first? I would be inclined to do the latter as the config symbol for 
-mux-gpio is the same way around,
-MUX_GPIO.
+At the time, Stephen (qcom) and I (meson) had slightly different
+approaches. Before having those types spread through the kernel, I think
+testing things out was a good thing ... this is why these are platform
+specific ATM.
 
-The bindings for mux-gpio need to be converted to .yaml anyhow and maybe 
-the issues with the schema
-that Rob pointed out elsewhere would go away too. Otherwise I cannot 
-really say what's wrong as the
-errors look unrelated to me.
+It's been 3 years now ... and it has not been a total disaster :)
 
--- Mauri
+In the end things are not so different. Let's compare:
+a. Both have a generic "clk_regmap" type common to all regmap based
+  types. This is very useful to easily fix the regmap pointer in static
+  clocks (which are heavily used by both platform)
 
-[2] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/mux/gpio-mux.txt
-[3] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mux/gpio.c
+b. Meson uses a generic pointer to store the type specific info.
+  Qcom embeds the generic clk_regmap into the specific type one.
+  => In the end, I don't see any advantage to the meson
+  approach. Switching to the qcom method would be quite a big bang
+  for meson but it is doable (nothing difficult, just a huge line count)
+  
+c. Qcom basic regmap type deviates a bit from the regular basic ones
+  when it comes to the actual data. The qcom "clk_regmap" also provides
+  the gate, mux have the qcom "parent_map". In meson, I tried to keep as
+  close as possible to regular basic types ... at least what they were 3
+  years ago. Only the register poking part should be different actually.
+  => I'd be in favor of keeping close to meson here.
 
+A possible plan could be:
+1. Rework meson as explained in [b] above.
+2. reword types in qcom where necessary to avoid name clashes (add
+   "_qcom" extension for ex)
+3. Move the clk_regmap implementation out of meson to drivers/clk
+4. Things are yours to play with ...
 
+I can take care of 1. and 3. I would welcome help for 2. especially since
+I won't be able to test it.
 
-
+>
+> regards,
+> Marc
 
