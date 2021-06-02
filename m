@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF8C398067
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D7D39806F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 06:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhFBEi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 00:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhFBEiY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 00:38:24 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5AFC061574;
-        Tue,  1 Jun 2021 21:36:42 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id v12so445540plo.10;
-        Tue, 01 Jun 2021 21:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KTf2Z6MKvY8sheO1d8MEddPyrsTpIrIEJxqzm3TzrA4=;
-        b=uR6J2dSEP1OKp5UxswuSHcxR0MWh824sc/eaO0h38A8FJXcY2LNW1Sxh31Xx4gqtnG
-         syptW6UKkNBqbFfiBYUcqvw0A+G7SPI/h0I+HWeRjeNrTVpLj8ExgHZL4RSqDRlH5+oa
-         dXh3aUhwbnMzMVM28P9wGI47mKjW8YS2q8XVA+dsXcdB3Qj6tRzvlo2GlpPSqhh6vZXL
-         dM161TM5rabaCclhHpw16+nZctAKOyDk7RPyiZgX+2xBU+YiGbTHom8v5FwfbarDvSZt
-         nzhJl1ClazXJ/A2INO5XRqYdtwcJOSR3niAk/rlb/M8Ya92qF4rMzqAyu67LeKUpzM+F
-         Cpmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KTf2Z6MKvY8sheO1d8MEddPyrsTpIrIEJxqzm3TzrA4=;
-        b=ZhPotWn8z88KtU/dL+AqGT0GSB5N1Fp9DfUg3a+NcZXZDDKoehX33RxdMFc00V9hD1
-         ehMQZQlOnFx0BysQ4NPwDBcLRFQuiblMaKoCs+gyDAmNioJcR9ZxAMPWeb4OIpX5/1Vn
-         LhheycVNo9b7EnS2CR37+ppbVGi3JckVJ7Jx9XjwCIUJcQFZOwy/eknnYJ3RDBBui3hq
-         xKypDolCQhxJD2OSuZQmaMKjPn+GLvnAkcMH26R2oidMCFEBGwZZmAZZXUckpAaGv1Yc
-         nKDKmtEYVn9iX8AVmAeZikckxZ1cW7CqMZhEFwQ1YHFk+fvYSWzeWBmKHr18hS+qTIRr
-         nRjg==
-X-Gm-Message-State: AOAM530Xx6DqBQwmeGETo6JPrIx5maor3xdEMzQge2leI+bvQ2Ok5els
-        i/HE07DQB1I6LOrqFT/hpZI=
-X-Google-Smtp-Source: ABdhPJxrMPYyqzW1DClbrvN9pPlagr9x09huXer5s+LsC8rOinkkaZV4vikyVUL8843z6isIah4zUQ==
-X-Received: by 2002:a17:90a:9511:: with SMTP id t17mr28971813pjo.108.1622608602298;
-        Tue, 01 Jun 2021 21:36:42 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a596:b3cb:1a6:1ee4])
-        by smtp.gmail.com with ESMTPSA id f3sm14007054pfd.21.2021.06.01.21.36.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 21:36:38 -0700 (PDT)
-Date:   Tue, 1 Jun 2021 21:36:36 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Andy Yan <andy.yan@rock-chips.com>
-Subject: Re: [PATCH V3 2/5] dt-bindings: input: pm8941-pwrkey: add pmk8350
- compatible strings
-Message-ID: <YLcK1P2/3v01XCHb@google.com>
-References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
- <1620630064-16354-3-git-send-email-skakit@codeaurora.org>
+        id S229701AbhFBEkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 00:40:24 -0400
+Received: from mga11.intel.com ([192.55.52.93]:28865 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229516AbhFBEkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 00:40:24 -0400
+IronPort-SDR: cPtzjus+TvFU7UGrYXUrbhfmrjdwHQvxPIeyydEudbKopFw8Ywv3wetgYQFeZ9W1HB850BiReb
+ z75sYEkKphDg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="200688619"
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="200688619"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 21:38:36 -0700
+IronPort-SDR: WnxDIDJVtYV3cqi62LfVUsTHx0jekxNgcPoporyzqfr3Kmq/YTcQXgtBigUP9h1PnoepDUO6vb
+ CcHBzb8MVLZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="633098715"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.105]) ([10.239.159.105])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Jun 2021 21:38:34 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] iommu: Allow IOVA rcache range be configured
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com
+References: <1622557781-211697-1-git-send-email-john.garry@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <834ad35a-7310-1738-7d17-7c061ca73e4c@linux.intel.com>
+Date:   Wed, 2 Jun 2021 12:37:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620630064-16354-3-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <1622557781-211697-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:31:01PM +0530, satya priya wrote:
-> From: David Collins <collinsd@codeaurora.org>
+On 6/1/21 10:29 PM, John Garry wrote:
+> For streaming DMA mappings involving an IOMMU and whose IOVA len regularly
+> exceeds the IOVA rcache upper limit (meaning that they are not cached),
+> performance can be reduced.
 > 
-> Add power key and resin compatible strings for the PMK8350 PMIC.
-> These are needed to distinguish key PON_HLOS register differences
-> between PMK8350 and previous PMIC PON modules.
+> This is much more pronounced from commit 4e89dce72521 ("iommu/iova: Retry
+> from last rb tree node if iova search fails"), as discussed at [0].
 > 
-> Signed-off-by: David Collins <collinsd@codeaurora.org>
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Acked-by: Rob Herring <robh@kernel.org>
+> IOVAs which cannot be cached are highly involved in the IOVA ageing issue,
+> as discussed at [1].
+> 
+> This series allows the IOVA rcache range be configured, so that we may
+> cache all IOVAs per domain, thus improving performance.
+> 
+> A new IOMMU group sysfs file is added - max_opt_dma_size - which is used
+> indirectly to configure the IOVA rcache range:
+> /sys/kernel/iommu_groups/X/max_opt_dma_size
+> 
+> This file is updated same as how the IOMMU group default domain type is
+> updated, i.e. must unbind the only device in the group first.
 
-Applied, thank you.
+Could you explain why it requires singleton group and driver unbinding
+if the user only wants to increase the upper limit? I haven't dived into
+the details yet, sorry if this is a silly question.
 
--- 
-Dmitry
+Best regards,
+baolu
