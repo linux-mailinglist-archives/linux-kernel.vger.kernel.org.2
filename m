@@ -2,175 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C48398BE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35D6398BF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhFBOKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:10:43 -0400
-Received: from mail.efficios.com ([167.114.26.124]:37898 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231589AbhFBOIr (ORCPT
+        id S231534AbhFBOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231765AbhFBOLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:08:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 03FAA302C40;
-        Wed,  2 Jun 2021 10:07:03 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 3QMH2CT0qLws; Wed,  2 Jun 2021 10:06:58 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 79BFA302868;
-        Wed,  2 Jun 2021 10:06:58 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 79BFA302868
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1622642818;
-        bh=GwH0GdcKUFmXjwdSc5PC6qayNfPYEbeSfo7iFd8LGlc=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=IzY7rj9bG67qO5MhQCvNkTZ6NmKLl+j7CGAPSRZx3M3VXN4GE9cW/xiqKbb0lMrag
-         set1cTsKpmrC3scRLhvadBwRFL0ucET03FgN+RYhAetywU7SMjz4Jzot43Al7b42/w
-         wRf/j9ODOuM7qSvP03brlcfNA9m+dmMrwW5plmJFJwkQAs2hFyj/Dx0kstoADKFw0s
-         PShGdCuiX9KikFibuSZcET8LNklvf4YN8WFNh0QHjOaoJ5JxioNYTizyl5WrJqstOz
-         gIo6cZK3qsMar7jMzCrxaFOM5us8879gVttQyPgo4y+VuhrGp7sB3x4o9l+rwPGYzG
-         yQHn8ljzHTpmw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6Uyf8mgW0DhK; Wed,  2 Jun 2021 10:06:58 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 548823029F3;
-        Wed,  2 Jun 2021 10:06:58 -0400 (EDT)
-Date:   Wed, 2 Jun 2021 10:06:58 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        dm-devel <dm-devel@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        paulmck <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        cgroups <cgroups@vger.kernel.org>,
-        kgdb-bugreport <kgdb-bugreport@lists.sourceforge.net>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        linux-pm <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, KVM list <kvm@vger.kernel.org>
-Message-ID: <896642516.5866.1622642818225.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210602133040.587042016@infradead.org>
-References: <20210602131225.336600299@infradead.org> <20210602133040.587042016@infradead.org>
-Subject: Re: [PATCH 6/6] sched: Change task_struct::state
+        Wed, 2 Jun 2021 10:11:22 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172E3C061353;
+        Wed,  2 Jun 2021 07:07:24 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id p20so2739155ljj.8;
+        Wed, 02 Jun 2021 07:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z8hbjBK7j112IEgpMKXyOaZgsSb/pH89ZJTpUTkpOss=;
+        b=W6B3KdY82r3xcjgNU6UXSMiKDnJ8J68vCs6Wbp3oZS0BP1N8YTztDR2uoGkzbFRXcm
+         UJiGgDysGNfYiBKuZ80CF4vQCkI69Q0LFv83xeTxLEPi7qbYo6komXiYJF6G/6jKmz3D
+         uWkAkReEaK1O1eecLDAlA7UelJmqpvjYPX0lKCykdpPZQsucmLd7iNtSObiVsGATd8t8
+         qx0pZh4OCqbM7iiYeHvJdxp9Op9hN4I6miHLo7nvbKLyGMWTiIqhsUdZtnxLJV4rPiVy
+         pJaN6Wbjmn6/Cs/rX3mYFxHTnh3oC1nqqTdwDCiFxbzVMiTGA0+L8XYPLgbkmAn6XNa0
+         v4nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z8hbjBK7j112IEgpMKXyOaZgsSb/pH89ZJTpUTkpOss=;
+        b=oMeungAz9JqC2iCYXwYLLZDIgmxn1fH7kWqCUiCy1+yBNX+cmt/uNxo9g6i16Ig3Pa
+         wZLvbHiJ1HvWKgLJAbctCX0URyMNX01GVLR+te1rgreTWQUoUKg93SHSjiIF/lxJ52zx
+         Rx2xO59tbNKtDx+Giv+RSE7z+K2QyVVUTjFzQ7Z4ZY1jOCoX1DgY1xK9UMcoxtDSz/zc
+         Hju2hnaAFQMmNE9lRfbHzHKNVRpY3tKxu0Kb/kns8GH5y6LuOduUteI7dfcHqKCUri1s
+         DtBJrJbnDXm0gA4KeBYVxquLJTG2R7eySN0GGiyEFRLgDFBIInK8TuAX/akRigl9KSR6
+         KdhQ==
+X-Gm-Message-State: AOAM5309OGLdWQfXa+Ss3piPbrqvL18U1zqYj59GRy0JzptnnypGFSYJ
+        U/ne7FZrPqjHHMRssv5hQH4=
+X-Google-Smtp-Source: ABdhPJxLpbcOykqL4m+9pYr73IVufWicfc4V2JM/quQzjgJlLFnLplyOWc4OE80V16Lfp4namWY3RA==
+X-Received: by 2002:a05:651c:292:: with SMTP id b18mr24596186ljo.456.1622642842106;
+        Wed, 02 Jun 2021 07:07:22 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id j8sm2216251lfg.250.2021.06.02.07.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 07:07:21 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 17:07:19 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v1 1/2] gpio: dwapb: Drop redundant check in
+ dwapb_irq_set_type()
+Message-ID: <20210602140719.roop7gm6i56uagen@mobilestation>
+References: <20210601162128.35663-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4026)
-Thread-Topic: sched: Change task_struct::state
-Thread-Index: DzXPoSkxk24gPNa4OEu5k5Jl7651YA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601162128.35663-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jun 2, 2021, at 9:12 AM, Peter Zijlstra peterz@infradead.org wrote:
+On Tue, Jun 01, 2021 at 07:21:27PM +0300, Andy Shevchenko wrote:
+> For more than 15 years we may not get into ->irq_set_type()
+> without any meaningful type provided.
+> 
+> Drop redundant check in dwapb_irq_set_type().
+> 
+> See the commit e76de9f8eb67 ("[PATCH] genirq: add SA_TRIGGER support")
+> out of curiosity.
 
-> Change the type and name of task_struct::state. Drop the volatile and
-> shrink it to an 'unsigned int'. Rename it in order to find all uses
-> such that we can use READ_ONCE/WRITE_ONCE as appropriate.
-> 
-[...]
-> 
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
+Why not. Thanks for the patch.
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-[...]
-> @@ -1559,7 +1560,8 @@ static int fill_psinfo(struct elf_prpsin
-> 	psinfo->pr_pgrp = task_pgrp_vnr(p);
-> 	psinfo->pr_sid = task_session_vnr(p);
-> 
-> -	i = p->state ? ffz(~p->state) + 1 : 0;
-> +	state = READ_ONCE(p->__state);
-> +	i = state ? ffz(~state) + 1 : 0;
-> 	psinfo->pr_state = i;
-> 	psinfo->pr_sname = (i > 5) ? '.' : "RSDTZW"[i];
-> 	psinfo->pr_zomb = psinfo->pr_sname == 'Z';
+-Sergey
 
-[...]
-
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -113,13 +113,13 @@ struct task_group;
-> 					 __TASK_TRACED | EXIT_DEAD | EXIT_ZOMBIE | \
-> 					 TASK_PARKED)
 > 
-> -#define task_is_running(task)		(READ_ONCE((task)->state) == TASK_RUNNING)
-> +#define task_is_running(task)		(READ_ONCE((task)->__state) == TASK_RUNNING)
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/gpio/gpio-dwapb.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> -#define task_is_traced(task)		((task->state & __TASK_TRACED) != 0)
-> +#define task_is_traced(task)		((READ_ONCE(task->__state) & __TASK_TRACED) != 0)
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index d3233cc4b76b..939701c1465e 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -297,9 +297,6 @@ static int dwapb_irq_set_type(struct irq_data *d, u32 type)
+>  	irq_hw_number_t bit = irqd_to_hwirq(d);
+>  	unsigned long level, polarity, flags;
+>  
+> -	if (type & ~IRQ_TYPE_SENSE_MASK)
+> -		return -EINVAL;
+> -
+>  	spin_lock_irqsave(&gc->bgpio_lock, flags);
+>  	level = dwapb_read(gpio, GPIO_INTTYPE_LEVEL);
+>  	polarity = dwapb_read(gpio, GPIO_INT_POLARITY);
+> -- 
+> 2.30.2
 > 
-> -#define task_is_stopped(task)		((task->state & __TASK_STOPPED) != 0)
-> +#define task_is_stopped(task)		((READ_ONCE(task->__state) & __TASK_STOPPED) !=
-> 0)
-> 
-> -#define task_is_stopped_or_traced(task)	((task->state & (__TASK_STOPPED |
-> __TASK_TRACED)) != 0)
-> +#define task_is_stopped_or_traced(task)	((READ_ONCE(task->__state) &
-> (__TASK_STOPPED | __TASK_TRACED)) != 0)
-> 
-> #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
-> 
-> @@ -134,14 +134,14 @@ struct task_group;
-> 	do {							\
-> 		WARN_ON_ONCE(is_special_task_state(state_value));\
-> 		current->task_state_change = _THIS_IP_;		\
-> -		current->state = (state_value);			\
-> +		WRITE_ONCE(current->__state, (state_value));	\
-> 	} while (0)
-
-Why not introduce set_task_state(p) and get_task_state(p) rather than sprinkle
-READ_ONCE() and WRITE_ONCE() all over the kernel ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
