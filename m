@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A348C39898B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32190398919
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhFBMbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:31:12 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:61657 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhFBMbA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:31:00 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210602122915epoutp04e5cb5c615339b282c9ea6270b024fb97~Ew7bhAAf60057300573epoutp04N
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 12:29:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210602122915epoutp04e5cb5c615339b282c9ea6270b024fb97~Ew7bhAAf60057300573epoutp04N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1622636956;
-        bh=m1WrSqMs1IZOEKia4Fv/1t0N4iuq4aefNOXRjbdjIrM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqkAxwt87rVjjD9sIZGP1MrYw2C9a/uTXIKPKk4d+J/o4nSqVMv1zMcsNBWJdLMuY
-         Gzpzv6X8KhfSg0pcJ4CeLH/J3tF3B5lr55yW0Bldikc+jCZvQUeh3WlbNu2rxsTA+z
-         Ds40gFOYwC7VP8cWVU1VeEVf0grojXGOjZipE0o4=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210602122915epcas1p3da9960f17a09d745b1921381d04c4277~Ew7anNcSq0844208442epcas1p3_;
-        Wed,  2 Jun 2021 12:29:15 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Fw7cn4qtMz4x9Py; Wed,  2 Jun
-        2021 12:29:13 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E3.56.09824.99977B06; Wed,  2 Jun 2021 21:29:13 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210602122912epcas1p4faff714cc9457b0d482fc1a4b63a49a9~Ew7YmROlp0807908079epcas1p4G;
-        Wed,  2 Jun 2021 12:29:12 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210602122912epsmtrp1e7bda9a122343de7ba2b95498d1848f0~Ew7YlE1GJ2602326023epsmtrp1_;
-        Wed,  2 Jun 2021 12:29:12 +0000 (GMT)
-X-AuditID: b6c32a37-04bff70000002660-73-60b7799931d3
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        13.1C.08637.89977B06; Wed,  2 Jun 2021 21:29:12 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210602122912epsmtip1ea7e9ccfe55c7b0c136fa93847e045e0~Ew7YPcZ8M0228902289epsmtip1x;
-        Wed,  2 Jun 2021 12:29:12 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     hch@infradead.org, Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
-        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
-        bvanassche@acm.org, damien.lemoal@wdc.com,
-        gregkh@linuxfoundation.org, jaegeuk@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com, yi.zhang@redhat.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
-Subject: [PATCH v11 3/3] scsi: set max_bio_bytes with queue max sectors
-Date:   Wed,  2 Jun 2021 21:10:37 +0900
-Message-Id: <20210602121037.11083-4-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210602121037.11083-1-nanich.lee@samsung.com>
+        id S229772AbhFBMOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:14:51 -0400
+Received: from mail-am6eur05on2049.outbound.protection.outlook.com ([40.107.22.49]:39392
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229482AbhFBMOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 08:14:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=obbt51DOpAoSVMNZWcfYdxCJ/2aD31EJ6ki17AnaVWRWqUrUuha2scEfKnBKZGXdBuFR1ryVZ5VY6ehZK85fL/5BHdX4I8v43TxxtHrnneFt55ckPDTdPOLxWXhjdmXCRXYl7S3x70bnDnl/SMDzjYZ7fWE3crcUq4N+CVJBfpM1X9OGCEUxFmt4RT3dXbHFb9Lg/LzBSeEE7mDe/aE9ZK65Bst3BhX8oMx1vXQon738R27+YXd3mljbMxa2FBI5aI5jGUSsxsy+emZcEHcKG2rz5h6Q2Oc1cm5Kje2qtZwkExITysnZlpjMC75aijuwkzycDPyzgL5RoNGKTKLlCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H85OxNMfeKkGr+YsvyL9ZrTif5J99fhLol3iZhPK0zg=;
+ b=ZtIVb0hHlREmhT1I1FHmxAZkD0wXuNle0UkCamSWggwWbYbL6rWuePKDlMXDkhsktNHZYPt8sBWPr1WcSE1nUi2ndz/zgOmatPrYlX6jc0YQrj4/95H5lnIvtw/1+UtqfITHvyzivo7j1yaJP6BpZhKYVuGKBZriA/EHJzY1jmmvkZHO8bVjiWTXVfn9DS8TI4jegZelwzJfT47CX+c9gNMOMIJqzV1mUScr16CjbLZ9ANrEWMx8F/WQbi8Aj2RPPO18c1YudcZ5wNF66ezZkplKb6P+7f8zsv14LmOld4IU/cnYKDaNclSj7i7yg3iAzVIy4E+wzvR+vR73MK7ZkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H85OxNMfeKkGr+YsvyL9ZrTif5J99fhLol3iZhPK0zg=;
+ b=e04hyy/t1k6tpJu2wHxsf6KnxwNi7wfIbioKeu5kK45K8RsDxIlUZxc1xfI7yF2pZN3TtMQR6ZQ2Y0Z1KisRLf23b/hjiBdd3bG4UpibJY1+XPl4998jzLT3ivXC9uYsyDIqnOUv7sie4llQKOQjksp/GwfXtB+GsePqzuWij00=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB6PR04MB3208.eurprd04.prod.outlook.com (2603:10a6:6:3::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.24; Wed, 2 Jun 2021 12:13:01 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4173.030; Wed, 2 Jun 2021
+ 12:13:01 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, peppe.cavallaro@st.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com
+Subject: [PATCH net 0/3] net: ethernet: fixes for stmmac and fec
+Date:   Wed,  2 Jun 2021 20:12:35 +0800
+Message-Id: <20210602121238.12693-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR02CA0119.apcprd02.prod.outlook.com
+ (2603:1096:4:92::35) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxje10NPC1vHscD41hmEE0xsEWwpl28IxA3Fs6Cm2ZZsaExb4Kzg
-        Stv1tHNMtzluIhcpweGsYBEJU8bFVW5lXEzNRpiMjSEjIQKKDJRYQZiom5q1FDL+Pe+X53mf
-        932+vFyMf4Ij4GZoDLReo1STuJdH2zWhOPRMVrtCXF4ehJpuNnBQZX0bQN+Pl+Koc8gCUMXC
-        UwzlHV9moZwLzTi6bqphoelmM4aKp7PZ6HnhBAs9us2g7rEQNNxZiSN7eQ4Lnb5SiaE/Jwc4
-        6NrEiAe6XVuGocH+RTY6d2cH+ue7nwCafzLKQb90lGNodLACR83dT/EdAmr4RhJVlvOAQ9nM
-        4xzqykURNfyrkbLWn8Cp3qoGDjXfM4JTJ1vqAbVkDaCOXy1iUXZ7HSZ7Zb86Np1WptH6QFqT
-        qk3L0KjiyKT35AnyyCixJFTyJoomAzXKTDqO3LlHFpqYoXZGQAZ+qlQbnU8yJcOQ2+Jj9Vqj
-        gQ5M1zKGOJLWpal1ErEujFFmMkaNKixVmxkjEYvDI51MhTr9r4nLmM7C+Wy2K+EYyMcLgScX
-        EhFwaLQEKwReXD7RAeBvjtHVYhHAs8WX2O5iGcDlsQucNUlh4wRwYT7RDeCLzn1uvARgSZXI
-        hXFiKzzpGFux8CUsGOwcZ1yNMOIOgDf63d4+xG5YU3xvpakHsRlenJlxYi6XR2yHM3lxbq9N
-        8NlkMebCnkQstN6yrkh5xAbYf2baw4UxJyen9ezK1JCweMIcRyPbLd4J+35YXh3aB871taxi
-        AbxXms9xC4oAzMm3AHdhArB2to7lZknh4tIScE2EEULY3LnN/RwEbf9WAbfzq/DBo2K2iwIJ
-        HizI57spwXAgdxJb85pttK12pGBedftqvKXORLtnWSYQaF63kHndQub/nasBVg9eo3VMpopm
-        JDrp+h+2gpWbEEV3gArHQpgdsLjADiAXI315uzWtCj4vTZn1Oa3XyvVGNc3YQaQz7TJM4Jeq
-        dR6VxiCXRIZLpVIUERUdFSkl/XmqhCMKPqFSGuiPaVpH69d0LK6n4BirYH/a+/ORrfiPR/b1
-        +JNjwix5eNF5Bz4gF8nnP+xI+j3072z23dpDuMnvoz3x6mdmc4Cff3TzZkUKxWOmZPFbUlTy
-        d1vEQllTYp4167HMp3fSFnq+78tbwcviqYqDX0/JN5hNb3yhqJ9MtlyaM/ef0+waPGxiDghj
-        tmi++vkto9lrl0Yo6Ok97T2nPnjXQlaEbKx5XrPphciRfPjQRm9vilTGfNt6IGgE5DLfaN4p
-        afTvTYy4nzJzdHvPy8mXbZaHaYVd1OO+4BCfPx72xfvZnrS3deU23J9puumbPVR91GfvB9dP
-        7S2kF6JkAQWCqvlP6q6mtm5tj2lwSA32otfffslOejDpSokI0zPK/wCtMZEKnAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Rf0yMcRzHfZ/nnh+dbh5XW0+nMrdZhDhjvhM5qfWYjQybH7PuuMdpuut2
-        T9evsakknUSLkxwRK86P7NQlQu6Q/Dj6za0urUQhiuLIj7uazX/vfV6vvd9/fEhUWMsTkXHq
-        RFarlseLcT7PYhMHzSlMrZLNa26YAa+2Xyag0WQB8FLHYRzebCgG0PDZhcKs7BEEZp4rx+GT
-        IyUI7CkvQmFuTwYGf+mdCBzu4uBtxyzYdNOIQ2tBJgKPXzeisLXzKQFtzhYe7Dqfj0J7/RAG
-        T3dL4Y+yBwB++t5GwMc3ClDYZjfgsPy2C5eKmKbmVUx+5gDBVBd1EMz1CyFM0zMdYzbl4Mzd
-        U5cJ5tOdFpzJqzAB5os5iMmuPYgwVmspGuO9mb9EwcbHJbHaueEy/s43zmuopphIeVuzYi/Y
-        j+uBF0lTC2j9FSfQAz4ppG4B+tVPAzYORHTdo4/uTLqzD22zcePOIKC/5bzkeRycmk3nfXSM
-        FflSlSjdvW+qR0Kp94DWd5eMST5UNF2S20d4Mo+aTl/o7SU8pQIqjO7NWjq+NZUe7cxFPdmL
-        WkKbX5txjyJ0K4ajmzxnATWZrj/RM9aIuvXMypPoEUAV/YeK/kNnAGIC/qyGUylVnEQjUbPJ
-        oZxcxenUytDtCSozGHtyyMwboMr0OdQKEBJYAU2iYl9BtLpSJhQo5KlprDYhVquLZzkrmELy
-        xH6CF/r6WCGllCeyu1hWw2r/UYT0Eu1Fat5Fm4fn62ZPCFFKAn73r425uPv9/lf+I6l+uWUS
-        LDmxGTi0/RfTF85Z1FKzun9ofZjPKKYfuJ+v2pwV3jbJsuz+msKR7slvXBvmT9gj1cR6990L
-        jjJu2104VD0Y1KyI87dTf7BWZutJ35z1cEeyZMgJAlXlgwN2fkXjFZnUPdz1zvLBcEaeXh3h
-        iJiW/qG9uFJG1n09e8xVZsOUSdOkisCm1prItIzl7ZH2KG5iQkArlvJMuqW073mpdMdDveLc
-        d8Qqqt0YGey61FgxgB0d9UpVP11cHDAv6vjhLso46KdrqJIq6+82hq+sezG67tCBpKz+xAez
-        HGmaQkmepUDM43bKJSGolpP/BQh16bdTAwAA
-X-CMS-MailID: 20210602122912epcas1p4faff714cc9457b0d482fc1a4b63a49a9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210602122912epcas1p4faff714cc9457b0d482fc1a4b63a49a9
-References: <20210602121037.11083-1-nanich.lee@samsung.com>
-        <CGME20210602122912epcas1p4faff714cc9457b0d482fc1a4b63a49a9@epcas1p4.samsung.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0119.apcprd02.prod.outlook.com (2603:1096:4:92::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 2 Jun 2021 12:12:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 24600364-49d6-4da8-79dc-08d925bfc433
+X-MS-TrafficTypeDiagnostic: DB6PR04MB3208:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR04MB3208F0F6290C050F665288A5E63D9@DB6PR04MB3208.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: elgDNFcpf5HX4imjgQQnfhdqkcYtWyRFSwwE60eCDMue4AUeBmDYVPFfbicBRmuvySGwto6HZpaKmf6ugWSiPcP5bVuhExYZ+BcqkVl74NyKcJiQVak8YxSQXCUlUtDuIPuDuCO48gRqBRUw/mhx3wVDLW/TDz+y1LvU1Bf6WgKDmdPjU6b0hnT0rpCH0H09kH3V5Gi8/iy3nuZcW/l6J/nCV5CoP3Ew6lC3KkKCpN/CX49lBNz8K0+yJaneBgQDQ451anQPTqiWwn6mc5q705jGgutRsXjfnvS6waRdX9HOWujNE9wBKH80wp37iXkz++d9kz4k1azyPlr/N6YSBwq26JXV94y8rjm0CGWi/FtohejeLQcYrtwDYTLZA5SuhLtJuodhGHz4Q79P/okq/U8Y4dLfRYBHGO1C8P9AgJtHsnwSlPNEb3KJ0HoYuGdPBqkYKNvNWHxug8KOQw/P3Zd0YJXvV5ZBsSUnysW+obt4RXGBK12p+RS+BiwxofqqO5SNS4NaS0hRhAaJZeHeDnJeSA2hlg/YH4ukfsTgatvrtgoV38yZV5cI9fU4Y2cS3kKqMroSH7C8KG1zIsAhZ0JLkxEePTplNzKsqkB72s1iMHCjZ0TZaeDjxcwcMETkK3HMwLFAMCdGqWTIywifSKdS74LurhFwpx1fDSOqYi8bMGYd0AbkcZYqyQsx8nvY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(66556008)(5660300002)(66476007)(4744005)(4326008)(2616005)(66946007)(16526019)(38350700002)(956004)(8676002)(36756003)(316002)(26005)(1076003)(83380400001)(478600001)(6512007)(6666004)(8936002)(6506007)(186003)(38100700002)(52116002)(2906002)(86362001)(7416002)(6486002)(69590400013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hIR7SMqgTaM4w/9VxqGHQcJtAElvxVUapNUh5vSUZ3N4Mpj6Qc2tKo5WlpYS?=
+ =?us-ascii?Q?a/HZEqWwu0W1tV+W3GjJGDILxruLlgiAhFi69mSpG5aCxzpkdrp4az3B5oo3?=
+ =?us-ascii?Q?wWU8hG88WABJ/B7NnwjF1TX3phGIpIiRoPiU28JE8EAjFP8KCv8RFVBuNcJJ?=
+ =?us-ascii?Q?Z/WbYJgCwcFGUOP3P6IuCqtAc9tAW8yIn8/EeMmYC0K+TGjUvdYYa4SmnafA?=
+ =?us-ascii?Q?S8ZAcYaOBIqDQ7mFdK3ACsiXLCVVIacubKFK+jYrX0v1nHbTdeGLawi4Hza+?=
+ =?us-ascii?Q?ND8nFuWdd3vlJSVf+sHlpevqygi4+XYtT0zjLHa9FP3eniw5+4R1OCQ7oCT9?=
+ =?us-ascii?Q?MnHIDqe+7iAEBfBOj4XS0uhm6PqrxVLs6DWFL+G0OGwqe2K+dgh7oELXwvhF?=
+ =?us-ascii?Q?KLdsrIRHH6Pgxe4NjP7aEULx+hVBRXOzfxnUxSZqzMpkvWawJb/sNGVF3mck?=
+ =?us-ascii?Q?wBPvGb5oZvG/J3NmGUvHJy0Y1OYoybhqAq8th5ZUpHfKYN9YIJ3yDIAyay8O?=
+ =?us-ascii?Q?O0P1ij+Toby5CcrbZgP/PrAVkLGOIsHeEzXq5ePA0jZ6t+hTl5YBjYzEd/ht?=
+ =?us-ascii?Q?h/Kb1y2WUF9Yz8Z3Jk3EJBpSdCIrpgikYA+Dnkdmp1GxSnNiQQ9/4acpMPpX?=
+ =?us-ascii?Q?6Lf+ZS0ql3kD8/MW+aIyGL3IT6NANi/YaCc7qQLUZnnKcrkhIsbR+J2PJEU7?=
+ =?us-ascii?Q?N/3h2A951hK4Dp5szcYwv7E+9HVNc7krIvPb/zQB5Pc0eN0MBxewJt8EjZfb?=
+ =?us-ascii?Q?0ppNWXmWvbUM+c6oBu2zbTYqyucrQdzTDDfAQ+Sh1VMVOKm33pl7VcjDQhG6?=
+ =?us-ascii?Q?9/DJMVw9vvbDTOuq5ayygxpJymeLiZNt154dGowdiqGGtxKkbFbL///RMm7S?=
+ =?us-ascii?Q?It9WJqg0z/xI9obrbE/isE32myBcH196l7DqJUGs2bVPyEBLUKXiWrYLzp97?=
+ =?us-ascii?Q?hGJmkG9D2GlHKW+iLCXbz2sbBgPwt0g6ujMV9097StcIv1KKdMPOLfEhLB18?=
+ =?us-ascii?Q?Kfk83v/Hrl5WBZLLs8dfBMRs626UHHxCmD0cOFkKmLfojk8JOs3pBhUfRP3C?=
+ =?us-ascii?Q?HSJvYyGhUlAEIm+710JLpddZZfxNAEisFS0EARC8vH+WSNgdOBNLXa4rxAC+?=
+ =?us-ascii?Q?9ZWjMXv2FXZ/FQy+HudmsimLM8t7SWWRcjZIJ8FW1Fvt/yQ7SgupP5nJORn7?=
+ =?us-ascii?Q?4v20vW3KS0lUE9z8X9kotdIjFcFhuphNKZz1OciSqpXo56UbSai5+a4s4DF6?=
+ =?us-ascii?Q?b0WkmwMpabVKlaQfCjVyYN0kNNSAMULXphO1AFJKhH0uAnSt+0xgoHygyDVZ?=
+ =?us-ascii?Q?D56Qshu/W7O1/4QlKVIKEv7W?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24600364-49d6-4da8-79dc-08d925bfc433
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 12:13:01.3959
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h6VP66Gi3BJB3Uu7UdJN6GtK0qpJLCvYQoiOrzhX8z3bFFvtghT+u4JIfulJAkcCN9IxDEirUafqsD7U0rcwQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3208
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set max_bio_bytes same with queue max sectors. It will lead to fast bio
-submit when bio size is over than queue max sectors. And it might be helpful
-to align submit bio size in some case.
+Small fixes for stmmac and fec.
 
-Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
----
- drivers/scsi/scsi_lib.c | 2 ++
- 1 file changed, 2 insertions(+)
+Andy Duan (1):
+  net: fec_ptp: add clock rate zero check
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 532304d42f00..f6269268b0e0 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -1837,6 +1837,8 @@ void __scsi_init_queue(struct Scsi_Host *shost, struct request_queue *q)
- 	blk_queue_virt_boundary(q, shost->virt_boundary_mask);
- 	dma_set_max_seg_size(dev, queue_max_segment_size(q));
- 
-+	blk_queue_max_bio_bytes(q, queue_max_sectors(q));
-+
- 	/*
- 	 * Set a reasonable default alignment:  The larger of 32-byte (dword),
- 	 * which is a common minimum for HBAs, and the minimum DMA alignment,
+Joakim Zhang (2):
+  net: stmmac: disable clocks in stmmac_remove_config_dt()
+  net: stmmac: avoid kernel panic in tc_setup_taprio()
+
+ drivers/net/ethernet/freescale/fec_ptp.c              | 4 ++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 2 ++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c       | 8 +++++---
+ 3 files changed, 11 insertions(+), 3 deletions(-)
+
 -- 
-2.29.0
+2.17.1
 
