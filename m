@@ -2,97 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC71B3994AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059FF3994A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhFBUj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:39:27 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:58928 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhFBUj0 (ORCPT
+        id S229667AbhFBUjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:39:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47477 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229587AbhFBUjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:39:26 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1loXcT-00GZgP-5U; Wed, 02 Jun 2021 14:37:41 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1loXcR-00Efry-DT; Wed, 02 Jun 2021 14:37:40 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     legion@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <cover.1619094428.git.legion@kernel.org>
-        <20210509181205.f0ce806919858efa0e0e0d20@linux-foundation.org>
-Date:   Wed, 02 Jun 2021 15:37:32 -0500
-In-Reply-To: <20210509181205.f0ce806919858efa0e0e0d20@linux-foundation.org>
-        (Andrew Morton's message of "Sun, 9 May 2021 18:12:05 -0700")
-Message-ID: <87o8coq9yr.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 2 Jun 2021 16:39:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622666258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TL5RCeD6URaQW+iNoSmRFKX2AmrwBTs64Rz3fDPVQnU=;
+        b=hkUcOwerbOUHron5RguhWuS74t2Y5bsGy79ijh9Ij3FQmR/SUTJGoUizwaqQGWc+qW4rBk
+        k/Sp70lFXXBybLxVYsFSwUUxK/w4H1/yWzjVRc0QaeMoOWHolXVVjUKF4VY6Y6j49rCzxa
+        yFJRwVb6Pz4hIVl1HqpWc6LXJmIveMk=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-104-4nxbtnyeP6qDzjNP-db3Ww-1; Wed, 02 Jun 2021 16:37:37 -0400
+X-MC-Unique: 4nxbtnyeP6qDzjNP-db3Ww-1
+Received: by mail-oo1-f70.google.com with SMTP id c25-20020a4ad7990000b029020e67cc1879so2137529oou.18
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:37:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TL5RCeD6URaQW+iNoSmRFKX2AmrwBTs64Rz3fDPVQnU=;
+        b=B0yIv7TSuP/qYnIdfHYxpyGyhbqmRGNHw/W+RnWXF7wyMY9zWLIknZcVZdZnfr2+9Z
+         J7MMd3EQ1W5oysYdJajvCcgyFtgzZNuyxG2H2e/RHxQk2kchYa3Ydi/yfRvkjAsDHJNR
+         3/sx2BSRvTHt4wHoFvHLDaDFnbKO7xoeUZJfaEXSzvOiSD497XaI28+x9wN6q/qAIFCB
+         IMxLf31tiMpCQYUacBIYqqnRpoZhkkT9PSxSq0HuwRPS2f+ftT5pDZDM04Gb3T0gnAGU
+         OFf2PFM1S5TEYkvTH2Rd68dNwXApfeXbobkY+vg0qC4lVpXO0KD0STooLx4afFMjRe7t
+         UZ0A==
+X-Gm-Message-State: AOAM531Zv9M1fMjUC3AhbjoXftJWM3Tduo1pL6V31rxuP2ggM3Kh/7Bh
+        IRgBr5Od/o1qFx7HEE4YqA6T3jo9cOvt2mCl/Ng1SvhzMiHwKj7k91Ufw0C/2hvbhil7HvYax+y
+        Z67xLB2d0k3actdfQIz2qzaUU
+X-Received: by 2002:a05:6830:18ee:: with SMTP id d14mr2615010otf.347.1622666256092;
+        Wed, 02 Jun 2021 13:37:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxTGOm/+QC96xO7+b3hYQUsHRLgYBQr4fcc4vLi2KEeMHHCtYSbE2eryQSUu9BcVRPF7Kuerw==
+X-Received: by 2002:a05:6830:18ee:: with SMTP id d14mr2614981otf.347.1622666255750;
+        Wed, 02 Jun 2021 13:37:35 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id t39sm195560ooi.42.2021.06.02.13.37.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 13:37:35 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 14:37:34 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+In-Reply-To: <20210602195404.GI1002214@nvidia.com>
+References: <20210528200311.GP1002214@nvidia.com>
+        <MWHPR11MB188685D57653827B566BF9B38C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210601162225.259923bc.alex.williamson@redhat.com>
+        <MWHPR11MB1886E8454A58661DC2CDBA678C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210602160140.GV1002214@nvidia.com>
+        <20210602111117.026d4a26.alex.williamson@redhat.com>
+        <20210602173510.GE1002214@nvidia.com>
+        <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+        <20210602180925.GH1002214@nvidia.com>
+        <20210602130053.615db578.alex.williamson@redhat.com>
+        <20210602195404.GI1002214@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1loXcR-00Efry-DT;;;mid=<87o8coq9yr.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX181tofntvStz1+pRqA2mAhl7FTynzngIXM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4962]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Andrew Morton <akpm@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 496 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (2.1%), b_tie_ro: 9 (1.9%), parse: 1.14 (0.2%),
-         extract_message_metadata: 17 (3.4%), get_uri_detail_list: 1.16 (0.2%),
-         tests_pri_-1000: 8 (1.6%), tests_pri_-950: 1.65 (0.3%),
-        tests_pri_-900: 1.41 (0.3%), tests_pri_-90: 161 (32.5%), check_bayes:
-        145 (29.2%), b_tokenize: 9 (1.9%), b_tok_get_all: 6 (1.2%),
-        b_comp_prob: 2.6 (0.5%), b_tok_touch_all: 120 (24.1%), b_finish: 4.6
-        (0.9%), tests_pri_0: 278 (56.1%), check_dkim_signature: 0.89 (0.2%),
-        check_dkim_adsp: 4.0 (0.8%), poll_dns_idle: 1.22 (0.2%), tests_pri_10:
-        2.3 (0.5%), tests_pri_500: 10 (2.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v11 0/9] Count rlimits in each user namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Morton <akpm@linux-foundation.org> writes:
+On Wed, 2 Jun 2021 16:54:04 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> On Thu, 22 Apr 2021 14:27:07 +0200 legion@kernel.org wrote:
->
->> These patches are for binding the rlimit counters to a user in user namespace.
->
-> It's at v11 and no there has been no acking or reviewing activity?  Or
-> have you not been tracking these?
+> On Wed, Jun 02, 2021 at 01:00:53PM -0600, Alex Williamson wrote:
+> >=20
+> > Right, the device can generate the no-snoop transactions, but it's the
+> > IOMMU that essentially determines whether those transactions are
+> > actually still cache coherent, AIUI. =20
+>=20
+> Wow, this is really confusing stuff in the code.
+>=20
+> At the PCI level there is a TLP bit called no-snoop that is platform
+> specific. The general intention is to allow devices to selectively
+> bypass the CPU caching for DMAs. GPUs like to use this feature for
+> performance.
 
-Most of the reviews were noticing things that needed to be changed.
+Yes
 
-For the ack/review by tags I am the one reviewing it and merging the
-change so I guess I didn't give Alex any Acked-by or Reviewed-by
-tags.
+> I assume there is some exciting security issues here. Looks like
+> allowing cache bypass does something bad inside VMs? Looks like
+> allowing the VM to use the cache clear instruction that is mandatory
+> with cache bypass DMA causes some QOS issues? OK.
 
-Regardless the changes are sitting in linux-next now and seem to be
-doing fine.
+IIRC, largely a DoS issue if userspace gets to choose when to emulate
+wbinvd rather than it being demanded for correct operation.
 
-Eric
+> So how does it work?
+>=20
+> What I see in the intel/iommu.c is that some domains support "snoop
+> control" or not, based on some HW flag. This indicates if the
+> DMA_PTE_SNP bit is supported on a page by page basis or not.
+>=20
+> Since x86 always leans toward "DMA cache coherent" I'm reading some
+> tea leaves here:
+>=20
+> 	IOMMU_CAP_CACHE_COHERENCY,	/* IOMMU can enforce cache coherent DMA
+> 					   transactions */
+>=20
+> And guessing that IOMMUs that implement DMA_PTE_SNP will ignore the
+> snoop bit in TLPs for IOVA's that have DMA_PTE_SNP set?
+
+That's my understanding as well.
+
+> Further, I guess IOMMUs that don't support PTE_SNP, or have
+> DMA_PTE_SNP clear will always honour the snoop bit. (backwards compat
+> and all)
+
+Yes.
+
+> So, IOMMU_CAP_CACHE_COHERENCY does not mean the IOMMU is DMA
+> incoherent with the CPU caches, it just means that that snoop bit in
+> the TLP cannot be enforced. ie the device *could* do no-shoop DMA
+> if it wants. Devices that never do no-snoop remain DMA coherent on
+> x86, as they always have been.
+
+Yes, IOMMU_CAP_CACHE_COHERENCY=3Dfalse means we cannot force the device
+DMA to be coherent via the IOMMU.
+
+> IOMMU_CACHE does not mean the IOMMU is DMA cache coherent, it means
+> the PCI device is blocked from using no-snoop in its TLPs.
+>=20
+> I wonder if ARM implemented this consistently? I see VDPA is
+> confused.. I was confused. What a terrible set of names.
+>=20
+> In VFIO generic code I see it always sets IOMMU_CACHE:
+>=20
+>         if (iommu_capable(bus, IOMMU_CAP_CACHE_COHERENCY))
+>                 domain->prot |=3D IOMMU_CACHE;
+>=20
+> And thus also always provides IOMMU_CACHE to iommu_map:
+>=20
+>                 ret =3D iommu_map(d->domain, iova, (phys_addr_t)pfn << PA=
+GE_SHIFT,
+>                                 npage << PAGE_SHIFT, prot | d->prot);
+>=20
+> So when the IOMMU supports the no-snoop blocking security feature VFIO
+> turns it on and blocks no-snoop to all pages? Ok..
+
+Yep, I'd forgotten this nuance that we need to enable it via the
+mapping flags.
+
+> But I must be missing something big because *something* in the IOVA
+> map should work with no-snoopable DMA, right? Otherwise what is the
+> point of exposing the invalidate instruction to the guest?
+>=20
+> I would think userspace should be relaying the DMA_PTE_SNP bit from
+> the guest's page tables up to here??
+>=20
+> The KVM hookup is driven by IOMMU_CACHE which is driven by
+> IOMMU_CAP_CACHE_COHERENCY. So we turn on the special KVM support only
+> if the IOMMU can block the SNP bit? And then we map all the pages to
+> block the snoop bit? Huh?
+
+Right.  I don't follow where you're jumping to relaying DMA_PTE_SNP
+from the guest page table... what page table?  We don't necessarily
+have a vIOMMU to expose such things, I don't think it even existed when
+this we added.  Essentially if we can ignore no-snoop at the IOMMU,
+then KVM doesn't need to worry about emulating wbinvd because of an
+assigned device, whether that device uses it or not.  Win-win.
+
+> Your explanation makes perfect sense: Block guests from using the
+> dangerous cache invalidate instruction unless a device that uses
+> no-snoop is plugged in. Block devices from using no-snoop because
+> something about it is insecure. Ok.
+
+No-snoop itself is not insecure, but to support no-snoop in a VM KVM
+can't ignore wbinvd, which has overhead and abuse implications.
+
+> But the conditions I'm looking for "device that uses no-snoop" is:
+>  - The device will issue no-snoop TLPs at all
+
+We can't really know this generically.  We can try to set the enable
+bit to see if the device is capable of no-snoop, but that doesn't mean
+it will use no-snoop.
+
+>  - The IOMMU will let no-snoop through
+>  - The platform will honor no-snoop
+>=20
+> Only if all three are met we should allow the dangerous instruction in
+> KVM, right?
+
+We test at the IOMMU and assume that the IOMMU knowledge encompasses
+whether the platform honors no-snoop (note for example how amd and arm
+report true for IOMMU_CAP_CACHE_COHERENCY but seem to ignore the
+IOMMU_CACHE flag).  We could probably use an iommu_group_for_each_dev
+to test if any devices within the group are capable of no-snoop if the
+IOMMU can't protect us, but at the time it didn't seem worthwhile.  I'm
+still not sure if it is.
+=20
+> Which brings me back to my original point - this is at least partially
+> a device specific behavior. It depends on the content of the IOMMU
+> page table, it depends if the device even supports no-snoop at all.
+>=20
+> My guess is this works correctly for the mdev Intel kvmgt which
+> probably somehow allows no-snoop DMA throught the mdev SW iommu
+> mappings. (assuming I didn't miss a tricky iommu_map without
+> IOMMU_CACHe set in the type1 code?)
+
+This support existed before mdev, IIRC we needed it for direct
+assignment of NVIDIA GPUs.
+=20
+> But why is vfio-pci using it? Hmm?
+
+Use the IOMMU to reduce hypervisor overhead, let the hypervisor learn
+about it, ignore the subtleties of whether the device actually uses
+no-snoop as imprecise and poor ROI given the apparent direction of
+hardware.
+
+=C2=AF\_(=E3=83=84)_/=C2=AF,
+Alex
+
