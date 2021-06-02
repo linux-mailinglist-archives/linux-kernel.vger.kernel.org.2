@@ -2,124 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470FE398C95
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A85398C9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhFBOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhFBOWZ (ORCPT
+        id S230072AbhFBOYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:24:06 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3132 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFBOYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:22:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD28C06138A;
-        Wed,  2 Jun 2021 07:20:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jwYPkOxp8bIiCCDES8Qxb1QGLyBu3SVZdBROZyNFfA0=; b=mmUA1Je16oWX5CdXJuvtR6xs1N
-        wW3tTPUR68zcqTjjDSPB93BEhwqAUqHvLU5H+MFPkTIN2UpdIfa+9ZN7d2074KYDkuFl+cHoz57Fp
-        O5LZB385l+07/5YpxDwddQU+q4TD+Py4LnPih7JBxujXQzl5rJNsp48vSRqitn4DkerTeXs1LdVkj
-        HUFXQTgRf46a3y3W9InIcHbOVfNmxrq0eLVlvopde2wRVXV/1aOq+Oz4H6SMV2zlNqu9LF32FSRYG
-        60clDhnQeg1eugNBFWGwKkKQMZEBWMRyPA5yrD+y7FK77e88bMNsFG1gtJEySxqSudKctsQlwdsPk
-        w42Sd/TQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1loRjR-00BCKg-MA; Wed, 02 Jun 2021 14:20:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 153E1300299;
-        Wed,  2 Jun 2021 16:20:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EBF7120223DBF; Wed,  2 Jun 2021 16:20:28 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 16:20:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        dm-devel <dm-devel@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        paulmck <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        cgroups <cgroups@vger.kernel.org>,
-        kgdb-bugreport <kgdb-bugreport@lists.sourceforge.net>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        linux-pm <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, KVM list <kvm@vger.kernel.org>
-Subject: Re: [PATCH 6/6] sched: Change task_struct::state
-Message-ID: <YLeTrNDgBnAMMwEX@hirez.programming.kicks-ass.net>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.587042016@infradead.org>
- <896642516.5866.1622642818225.JavaMail.zimbra@efficios.com>
+        Wed, 2 Jun 2021 10:24:04 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fw9wp3Md2z6V0mN;
+        Wed,  2 Jun 2021 22:13:14 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 16:22:19 +0200
+Received: from localhost (10.52.124.142) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 2 Jun 2021
+ 15:22:18 +0100
+Date:   Wed, 2 Jun 2021 15:22:17 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Tian Tao <tiantao6@hisilicon.com>
+CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <akpm@linux-foundation.org>,
+        <song.bao.hua@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] lib: bitmap: introduce bitmap_print_to_buf
+Message-ID: <20210602152217.00007f13@Huawei.com>
+In-Reply-To: <1622641734-22538-2-git-send-email-tiantao6@hisilicon.com>
+References: <1622641734-22538-1-git-send-email-tiantao6@hisilicon.com>
+        <1622641734-22538-2-git-send-email-tiantao6@hisilicon.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <896642516.5866.1622642818225.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.142]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 10:06:58AM -0400, Mathieu Desnoyers wrote:
-> ----- On Jun 2, 2021, at 9:12 AM, Peter Zijlstra peterz@infradead.org wrote:
+On Wed, 2 Jun 2021 21:48:52 +0800
+Tian Tao <tiantao6@hisilicon.com> wrote:
 
-> > @@ -134,14 +134,14 @@ struct task_group;
-> > 	do {							\
-> > 		WARN_ON_ONCE(is_special_task_state(state_value));\
-> > 		current->task_state_change = _THIS_IP_;		\
-> > -		current->state = (state_value);			\
-> > +		WRITE_ONCE(current->__state, (state_value));	\
-> > 	} while (0)
+> New API bitmap_print_to_buf() with bin_attribute to avoid maskp
+> exceeding PAGE_SIZE. bitmap_print_to_pagebuf() is a special case
+> of bitmap_print_to_buf(), so in bitmap_print_to_pagebuf() call
+> bitmap_print_to_buf().
 > 
-> Why not introduce set_task_state(p) and get_task_state(p) rather than sprinkle
-> READ_ONCE() and WRITE_ONCE() all over the kernel ?
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Hi,
 
-set_task_state() is fundamentally unsound, there's very few sites that
-_set_ state on anything other than current, and those sites are super
-tricky, eg. ptrace.
+I think you need strlen() + 1 as strlen() doesn't include the null terminator.
+Also good to add () in a few more places to make the hyperlinks work in the
+html docs (fairly sure it needs those)
 
-Having get_task_state() would seem to suggest it's actually a sane thing
-to do, it's not really. Inspecting remote state is full of races, and
-some of that really wants cleaning up, but that's for another day.
+I don't really like the fact we can't get the string length without that
+extra call (as it's buried in the kasprintf() implementation) but this is
+unlikely to be a high performance path so clean code is better.
+
+Otherwise, LGTM
+
+> ---
+>  include/linux/bitmap.h  |  3 +++
+>  include/linux/cpumask.h | 21 +++++++++++++++++++++
+>  lib/bitmap.c            | 38 ++++++++++++++++++++++++++++++++++++--
+>  3 files changed, 60 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 70a9324..bc401bd9b 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -219,6 +219,9 @@ extern unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int
+>  extern int bitmap_print_to_pagebuf(bool list, char *buf,
+>  				   const unsigned long *maskp, int nmaskbits);
+>  
+> +extern int bitmap_print_to_buf(bool list, char *buf,
+> +			       const unsigned long *maskp, int nmaskbits, loff_t off, size_t count);
+> +
+>  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+>  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
+>  
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index 383684e..56852f2 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -928,6 +928,27 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+>  				      nr_cpu_ids);
+>  }
+>  
+> +/**
+> + * cpumap_print_to_buf  - copies the cpumask into the buffer either
+> + *      as comma-separated list of cpus or hex values of cpumask
+> + * @list: indicates whether the cpumap must be list
+> + * @mask: the cpumask to copy
+> + * @buf: the buffer to copy into
+> + * @off: in the string from which we are copying, We copy to @buf + off
+> + * @count: the maximum number of bytes to print
+> + *
+> + * The role of cpumap_print_to_buf and cpumap_print_to_pagebuf is
+
+cpumap_print_to_buf()
++ other cases of the same so that hyperlinks work in the html docs.
+
+
+> + * the same, the difference is that buf of bitmap_print_to_buf
+> + * can be more than one pagesize.
+> + */
+> +static inline ssize_t
+> +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
+> +		    loff_t off, size_t count)
+> +{
+> +	return bitmap_print_to_buf(list, buf, cpumask_bits(mask),
+> +				   nr_cpu_ids, off, count);
+> +}
+> +
+>  #if NR_CPUS <= BITS_PER_LONG
+>  #define CPU_MASK_ALL							\
+>  (cpumask_t) { {								\
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 75006c4..cb64e66 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -460,6 +460,40 @@ int bitmap_parse_user(const char __user *ubuf,
+>  EXPORT_SYMBOL(bitmap_parse_user);
+>  
+>  /**
+> + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
+> + * @list: indicates whether the bitmap must be list
+> + * @buf: the kernel space buffer to read to
+> + * @maskp: pointer to bitmap to convert
+> + * @nmaskbits: size of bitmap, in bits
+> + * @off: offset in data buffer below
+> + * @count: the maximum number of bytes to print
+> + *
+> + * The role of bitmap_print_to_buf and bitmap_print_to_pagebuf() is
+> + * the same, the difference is that buf of bitmap_print_to_buf()
+> + * can be more than one pagesize.
+> + */
+> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> +			int nmaskbits, loff_t off, size_t count)
+> +{
+> +	int size;
+> +	void *data;
+> +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
+> +
+> +	if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
+> +		return scnprintf(buf, count, fmt, nmaskbits, maskp);
+> +
+> +	data = kasprintf(GFP_KERNEL, fmt, nmaskbits, maskp);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data));
+
+strlen(data) + 1 I think...
+
+> +	kfree(data);
+> +
+> +	return size;
+> +}
+> +EXPORT_SYMBOL(bitmap_print_to_buf);
+> +
+> +/**
+>   * bitmap_print_to_pagebuf - convert bitmap to list or hex format ASCII string
+>   * @list: indicates whether the bitmap must be list
+>   * @buf: page aligned buffer into which string is placed
+> @@ -480,8 +514,8 @@ int bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp,
+>  {
+>  	ptrdiff_t len = PAGE_SIZE - offset_in_page(buf);
+>  
+> -	return list ? scnprintf(buf, len, "%*pbl\n", nmaskbits, maskp) :
+> -		      scnprintf(buf, len, "%*pb\n", nmaskbits, maskp);
+> +	return bitmap_print_to_buf(list, buf, maskp, nmaskbits,
+> +				   LLONG_MAX, len);
+>  }
+>  EXPORT_SYMBOL(bitmap_print_to_pagebuf);
+>  
+
