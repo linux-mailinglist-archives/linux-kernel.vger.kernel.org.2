@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7823987EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F2A3987F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbhFBLWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:22:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52952 "EHLO
+        id S231899AbhFBLWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:22:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52957 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbhFBLWH (ORCPT
+        with ESMTP id S229964AbhFBLWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:22:07 -0400
-Received: from mail-ej1-f69.google.com ([209.85.218.69])
+        Wed, 2 Jun 2021 07:22:10 -0400
+Received: from mail-ed1-f72.google.com ([209.85.208.72])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1loOvA-0005EQ-Gc
-        for linux-kernel@vger.kernel.org; Wed, 02 Jun 2021 11:20:24 +0000
-Received: by mail-ej1-f69.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso501156ejt.20
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:20:24 -0700 (PDT)
+        id 1loOvB-0005Ek-OT
+        for linux-kernel@vger.kernel.org; Wed, 02 Jun 2021 11:20:25 +0000
+Received: by mail-ed1-f72.google.com with SMTP id d8-20020a0564020008b0290387d38e3ce0so1211214edu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:20:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DqpBs4pq4Sjb8nYynK90LyYUsmuWivvDhwxtdT36aGM=;
-        b=Qmvcv7eN6cBMX18L6mM5/CHqQKP2EjVnmfsEcHcxoq/qtSsm2Mi93k6S22ep89VKxL
-         5HWa0xEJvpBPZ129U5oZbAwf/XXarJSXPWy0JN8hcFYereoClh/H3C/+x5f2OjHnZXnN
-         uDFL158x/3Cf2i+3MtmDvpbhF4hE2iZwkdPgJx2QXjLyKdxHpLMzwRk1CbLPUmlxbWH0
-         ptQMiO1Sw0gOUqlji39oUR+hA+jufJb2GxSLek64XQK/weYUxc5nO3DlJM2IZR4YpUus
-         onpgWMejloKagOFYkJ73/drd5RizNZxf5mAycJ9Zj26AUaMH4iCD2WsqdnO6AylPeWVs
-         msFw==
-X-Gm-Message-State: AOAM533+OflpfERlNSYNrnoTPSTijxAbAPSUC4PaLsUhwkrKJtROjFrt
-        4OBSc/0yU4HPnSo3NbVH7y8yTv8OUBeB9KuTcIhwoy9Fp1QZyOsFW6AsgGoHYYUjaAuq8ijHEp3
-        tOUIFZ33fvF2Bz4JHd/h6pnhCB15dZTJ3mDMIht9bkA==
-X-Received: by 2002:a17:906:6dd0:: with SMTP id j16mr34042642ejt.208.1622632823958;
-        Wed, 02 Jun 2021 04:20:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5uDKKjhvZNChEoO4ybm2CwDwYSd/9CN/DhLa25b0dk8xmRpWdyHyyezW0S/p4r6YRC2Iqiw==
-X-Received: by 2002:a17:906:6dd0:: with SMTP id j16mr34042633ejt.208.1622632823790;
-        Wed, 02 Jun 2021 04:20:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Dg5RWJfPVjGhObprFebAP1b6q7PFdTvgviRzWEXH+s0=;
+        b=I5qGmHk3dPcDUAwJtS+4ZqGe9UyHvsX6WeBBKfrnsuMJvXV8kWHOy98Zm4ZutbOevZ
+         2mqdtQsTtJUwxu4CtixXEGPtDdWAEGplPtuDleZAtQ3jw/wG+othJJSC03Ovrv0WMmwN
+         vRL8ZTckTrOdu4/cqB/lR+rTRoppYnUdrlSkmbEasnehU2i0yUBEd7+fo662p1xWTJFK
+         uYlPJ5xwj6B5ZdTnVvnvpBkQldRbDwGm/G/pXS1txKnguTYoyGpoc3KGMYa5pME540cU
+         ztmI+Ra5gI2k3T5fC5SGC/jymv56D+HoxfwBCpovH1fQaD1m1hnMyWkrvmtzV7ccz/w+
+         5+Uw==
+X-Gm-Message-State: AOAM530ZeZ4j7UXVC4Vtuxz89Tgq3o5HsPUwtjkcI5od+qQgzxlcUJXl
+        t6XqjGCJh05FsynBZYsKx8q/D2P0oZ2pl1ZwGVtDZv7NUaIobWT6QIQrUXrGrFLQS7lT7FoW1gm
+        wkqwDhD80/3tE5lQQmeK89PlYjxjOarkdNqXK99Ju9Q==
+X-Received: by 2002:a17:906:b6c5:: with SMTP id ec5mr33858444ejb.290.1622632825449;
+        Wed, 02 Jun 2021 04:20:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxrFvwwDfEpK0N6mkxbqvhu2A9BYNI8VLGHKVpdxBN1fSXzF09em7UedqZPCBKEEY+ClkDoQw==
+X-Received: by 2002:a17:906:b6c5:: with SMTP id ec5mr33858433ejb.290.1622632825310;
+        Wed, 02 Jun 2021 04:20:25 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id jp6sm3699705ejb.85.2021.06.02.04.20.22
+        by smtp.gmail.com with ESMTPSA id jp6sm3699705ejb.85.2021.06.02.04.20.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 04:20:23 -0700 (PDT)
+        Wed, 02 Jun 2021 04:20:24 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         "David S. Miller" <davem@davemloft.net>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Joe Perches <joe@perches.com>
-Subject: [PATCH v2 1/2] nfc: mrvl: remove useless "continue" at end of loop
-Date:   Wed,  2 Jun 2021 13:20:10 +0200
-Message-Id: <20210602112011.44473-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v2 2/2] nfc: mrvl: reduce the scope of local variables
+Date:   Wed,  2 Jun 2021 13:20:11 +0200
+Message-Id: <20210602112011.44473-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210602112011.44473-1-krzysztof.kozlowski@canonical.com>
+References: <20210602112011.44473-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "continue" statement at the end of a for loop does not have an
-effect.  Entire loop contents can be slightly simplified to increase
-code readability.  No functional change.
+In two places the 'ep_desc' and 'skb' local variables are used only
+within if() or for() block, so they scope can be reduced which makes the
+entire code slightly easier to follow.  No functional change.
 
 Suggested-by: Joe Perches <joe@perches.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
@@ -68,31 +70,49 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
 
 Changes since v1:
-1. Make it if-else-if as Joe suggested.
+1. New patch
 ---
- drivers/nfc/nfcmrvl/usb.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/nfc/nfcmrvl/usb.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nfc/nfcmrvl/usb.c b/drivers/nfc/nfcmrvl/usb.c
-index bcd563cb556c..6fec20abfd1e 100644
+index 6fec20abfd1e..ec6fd7a3f31f 100644
 --- a/drivers/nfc/nfcmrvl/usb.c
 +++ b/drivers/nfc/nfcmrvl/usb.c
-@@ -319,13 +319,9 @@ static int nfcmrvl_probe(struct usb_interface *intf,
- 		if (!drv_data->bulk_tx_ep &&
- 		    usb_endpoint_is_bulk_out(ep_desc)) {
- 			drv_data->bulk_tx_ep = ep_desc;
--			continue;
--		}
--
--		if (!drv_data->bulk_rx_ep &&
--		    usb_endpoint_is_bulk_in(ep_desc)) {
-+		} else if (!drv_data->bulk_rx_ep &&
-+			   usb_endpoint_is_bulk_in(ep_desc)) {
- 			drv_data->bulk_rx_ep = ep_desc;
--			continue;
- 		}
- 	}
+@@ -68,7 +68,6 @@ static int nfcmrvl_inc_tx(struct nfcmrvl_usb_drv_data *drv_data)
+ static void nfcmrvl_bulk_complete(struct urb *urb)
+ {
+ 	struct nfcmrvl_usb_drv_data *drv_data = urb->context;
+-	struct sk_buff *skb;
+ 	int err;
  
+ 	dev_dbg(&drv_data->udev->dev, "urb %p status %d count %d\n",
+@@ -78,6 +77,8 @@ static void nfcmrvl_bulk_complete(struct urb *urb)
+ 		return;
+ 
+ 	if (!urb->status) {
++		struct sk_buff *skb;
++
+ 		skb = nci_skb_alloc(drv_data->priv->ndev, urb->actual_length,
+ 				    GFP_ATOMIC);
+ 		if (!skb) {
+@@ -296,7 +297,6 @@ static void nfcmrvl_waker(struct work_struct *work)
+ static int nfcmrvl_probe(struct usb_interface *intf,
+ 			 const struct usb_device_id *id)
+ {
+-	struct usb_endpoint_descriptor *ep_desc;
+ 	struct nfcmrvl_usb_drv_data *drv_data;
+ 	struct nfcmrvl_private *priv;
+ 	int i;
+@@ -314,6 +314,8 @@ static int nfcmrvl_probe(struct usb_interface *intf,
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < intf->cur_altsetting->desc.bNumEndpoints; i++) {
++		struct usb_endpoint_descriptor *ep_desc;
++
+ 		ep_desc = &intf->cur_altsetting->endpoint[i].desc;
+ 
+ 		if (!drv_data->bulk_tx_ep &&
 -- 
 2.27.0
 
