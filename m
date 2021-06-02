@@ -2,190 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494ED398F2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6198398F39
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhFBPr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:47:29 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:42666 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhFBPr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:47:28 -0400
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 152FjPNp006288;
-        Thu, 3 Jun 2021 00:45:26 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 152FjPNp006288
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622648726;
-        bh=MnGRRKvbqmuVLLBWpwwf/rFkG2bdE9Xa6VH1ZiplG8Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dWiag1R1/kPIMviwRzD0KBKqGittAlI5LNgZjTlufYyXFoz+rUMHvp5CppR2G/Ip2
-         qLd5xGvFeHVrypCPDom6PnylViU1GiJWBfAoDNifdcIufxRV2hU3UHbmCtyJ9O9XB8
-         +T4zwpFgvSV7yXnET2pjX0jX8FCSJSmODy4sMrU6nYmyE3fo2u3uFmEF64TWnZuEhE
-         EMYm94slRiUyREszBbun3yeXht49uPRjawfzNWfcgRRE7IBOsm5cw8jhOpo+MIcw06
-         WFPRtB0gefF+KN76DWwBbU6u+4kJIbhvTNYNY9GMujdfWzIgQeFT1xQnfnPZekZqv7
-         hZoddLEEuWinQ==
-X-Nifty-SrcIP: [209.85.214.171]
-Received: by mail-pl1-f171.google.com with SMTP id e1so1291980pld.13;
-        Wed, 02 Jun 2021 08:45:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531UYLV3xIbwRqxW0dD5nqsy1+ICU8vbeMhDOYThR4tuZWIia+WJ
-        zPq2LU7wTYmw9K3r2261WUrMkMDZOglEQKtUm00=
-X-Google-Smtp-Source: ABdhPJwdKfLZG9z1Ym+yv3UrG8mLXS+N3stsVfyITLR0iRMmFAPiLTSCQDa365qxtV5ORpDEq91/4+J/syNP+QobMFQ=
-X-Received: by 2002:a17:903:22cf:b029:105:2b81:3915 with SMTP id
- y15-20020a17090322cfb02901052b813915mr15342294plg.71.1622648725367; Wed, 02
- Jun 2021 08:45:25 -0700 (PDT)
+        id S232323AbhFBPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:50:08 -0400
+Received: from mga17.intel.com ([192.55.52.151]:22361 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232143AbhFBPuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:50:07 -0400
+IronPort-SDR: SDMSRLklSO1j6akGRQWdo4pWitya20itBR4HYjO32wwuNTKvcshQ/0dBeKeYbQHqOeDvkgpHn8
+ byu8K9QjJm/w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="184187138"
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="184187138"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 08:47:33 -0700
+IronPort-SDR: DbzsOULsi6zea7J8HpmDoYlaiiYgMPSZ3UyaXePMwK6kXJ/BQumGWmKOp/H5POh+E3pCS+R6pY
+ G1NqnWBRgMKw==
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="550192050"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 08:47:31 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1loT5b-00Gk5b-Fw; Wed, 02 Jun 2021 18:47:27 +0300
+Date:   Wed, 2 Jun 2021 18:47:27 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, jonathan.cameron@huawei.com,
+        song.bao.hua@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] lib: bitmap: introduce bitmap_print_to_buf
+Message-ID: <YLeoDzObZpJwDswB@smile.fi.intel.com>
+References: <1622641734-22538-1-git-send-email-tiantao6@hisilicon.com>
+ <1622641734-22538-2-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-References: <20210526173855.5963-1-msuchanek@suse.de> <CAK7LNASEqKwQeLPXedyut+ykSJGPuq3CO1g_fS=sVDaZrwBPBQ@mail.gmail.com>
- <20210526202825.GB8544@kitsune.suse.cz> <CAK7LNAQ=DiayZ8YqgMTrTWyP_fuEpPL80+BSzj9VB+RQDKD27g@mail.gmail.com>
- <20210529053512.GT8544@kitsune.suse.cz> <CAK7LNAT-78qWBa-TzTTQ-PN7Cr5DdaAEgKzUiVkkB=uOgcAsDQ@mail.gmail.com>
- <20210602100315.GL8544@kitsune.suse.cz>
-In-Reply-To: <20210602100315.GL8544@kitsune.suse.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 3 Jun 2021 00:44:48 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT0AfTb=SVp+iO0rGkLm8__=O+uW-20_iuPvvNkxkbpuA@mail.gmail.com>
-Message-ID: <CAK7LNAT0AfTb=SVp+iO0rGkLm8__=O+uW-20_iuPvvNkxkbpuA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "kbuild: merge scripts/mkmakefile to top Makefile"
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622641734-22538-2-git-send-email-tiantao6@hisilicon.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 12:18 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
-ote:
->
-> On Wed, Jun 02, 2021 at 06:45:58PM +0900, Masahiro Yamada wrote:
-> > On Sat, May 29, 2021 at 2:35 PM Michal Such=C3=A1nek <msuchanek@suse.de=
-> wrote:
-> > >
-> > > On Sat, May 29, 2021 at 02:15:55AM +0900, Masahiro Yamada wrote:
-> > > > On Thu, May 27, 2021 at 5:28 AM Michal Such=C3=A1nek <msuchanek@sus=
-e.de> wrote:
-> > > > >
-> > > > > On Thu, May 27, 2021 at 03:56:41AM +0900, Masahiro Yamada wrote:
-> > > > > > On Thu, May 27, 2021 at 2:39 AM Michal Suchanek <msuchanek@suse=
-.de> wrote:
-> > > > > > >
-> > > > > > > This reverts commit 243b50c141d71fcf7b88e94474b3b9269f0b1f9d.
-> > > > > > >
-> > > > > > > When packaging the kernel it is built in different place from=
- the one in
-> > > > > > > which it will be installed. After build the makefile needs to=
- be
-> > > > > > > regenerated with the target location but with mkmakefile merg=
-ed into
-> > > > > > > Makefile tehre is no way to do that.
-> > > > > > >
-> > > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > > >
-> > > > > > My patch was not working as expected
-> > > > > > regardless of packaging.
-> > > > > >
-> > > > > > Does the following fix-up work for you?
-> > > > >
-> > > > > For the packaging I need some way to regenerate the Makefile and =
-fake
-> > > > > the directory where the Makefile will be on the user system (ie D=
-ESTDIR)
-> > > > >
-> > > > > Without the mkmakefile I do not see any way to do it.
-> > > > >
-> > > > > If the kernel makefile is no longer location dependent there is n=
-o need
-> > > > > any more, of course.
-> > > > >
-> > > > > Thanks
-> > > > >
-> > > > > Michal
-> > > >
-> > > > Sorry, I do not understand this.
-> > > >
-> > > > IIUC, this patch does not change any functionality.
-> > > > The generated Makefile is still the same.
-> > > > Why is it a problem?
-> > >
-> > > It cannot be regenerated.
-> >
-> > This is an issue regardless of your packaging.
-> > That is why I suggested a patch in my previous reply.
-> >
-> > https://lore.kernel.org/linux-kbuild/CAK7LNASEqKwQeLPXedyut+ykSJGPuq3CO=
-1g_fS=3DsVDaZrwBPBQ@mail.gmail.com/
-> >
-> >
-> > Anyway, please try next-20210602
-> > and see if you still have a problem.
->
-> Yes, I still have a problem.
->
-> My packaging script calls mkmakefile which no longer exists.
+On Wed, Jun 02, 2021 at 09:48:52PM +0800, Tian Tao wrote:
+> New API bitmap_print_to_buf() with bin_attribute to avoid maskp
+> exceeding PAGE_SIZE. bitmap_print_to_pagebuf() is a special case
+> of bitmap_print_to_buf(), so in bitmap_print_to_pagebuf() call
+> bitmap_print_to_buf().
+
+...
+
+> + * The role of cpumap_print_to_buf and cpumap_print_to_pagebuf is
+
+ * The role of cpumap_print_to_buf() and cpumap_print_to_pagebuf() is
+
+...
+
+> + * The role of bitmap_print_to_buf and bitmap_print_to_pagebuf() is
+
+ * The role of bitmap_print_to_buf() and bitmap_print_to_pagebuf() is
+
+...
+
+> +	int size;
+
+Strictly speaking it should be ssize_t.
+
+> +	void *data;
+> +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
+
+Can you use reversed xmas tree order?
+
+...
+
+> +	return bitmap_print_to_buf(list, buf, maskp, nmaskbits,
+> +				   LLONG_MAX, len);
+
+It fits one line.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-So, we are not talking about the functionality any more.
-
-What is important for you is, you have a separate file.
-
-You overwrite scripts/mkmakefile for doing
-whatever hacks you like.
-
-If the code is moved into the Makefile,
-it will be more difficult to insert hacks.
-
-This is what I understood from your statement.
-
-
-
-
-
-
-
->
-> Regardless of whther the new code works correctly or not in the usual
-> case it removes the ability to regenearte the makefile for a specific
-> target location.
->
-> Thanks
->
-> Michal
->
-> > >
-> > > During package build you have four directories
-> > >
-> > >  - the source directory
-> > >  - the build directory
-> > >  - the staging directory where files are installed to be included in =
-the
-> > >    package
-> > >  - the target directory where files will be installed on the target
-> > >    system once the package is installed by the user
-> > >
-> > > The makefile is generated for the build directory, not the target
-> > > directory. What is needed is a way to generate a makefile in the stag=
-ing
-> > > directory that will work when installed in the target directory.
-> > > When mkmakefile is folded into makefile the makefile can no longer be
-> > > regenerated because it is up-to-date, and it can no longer be specifi=
-ed
-> > > that it should be generated for the target directory, not the staging
-> > > directory.
-> > >
-> > > Thanks
-> > >
-> > > Michal
-> >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
-
-
-
---=20
-Best Regards
-Masahiro Yamada
