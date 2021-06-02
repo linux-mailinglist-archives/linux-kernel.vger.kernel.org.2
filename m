@@ -2,251 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC4B3986E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235143986E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhFBKtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:49:14 -0400
-Received: from muru.com ([72.249.23.125]:35432 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229695AbhFBKsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:48:33 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 5A6F68150;
-        Wed,  2 Jun 2021 10:46:56 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>
-Subject: [Backport for linux-5.4.y PATCH 4/4] ARM: OMAP2+: Handle dra7 timer wrap errata i940
-Date:   Wed,  2 Jun 2021 13:46:25 +0300
-Message-Id: <20210602104625.6079-4-tony@atomide.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210602104625.6079-1-tony@atomide.com>
-References: <20210602104625.6079-1-tony@atomide.com>
+        id S231792AbhFBKuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230390AbhFBKtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 06:49:36 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78799C06138C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 03:47:23 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id f2so1774996wri.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 03:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UfjIM+LI/qydiCGlRftPibFreQGOXtbFtxYa4Sx2Hfg=;
+        b=xnevntkI/dNZ2dwhnG2Jzo8x5HDNuXJ00GF90aCoRQp5Q3NmcUNyPvXmsrVXZ0b8q7
+         EfpIosGirJyjNr9HLTMcLJR6fvmmCHTTE3xwymcHNRciBWPZru8sAnZEeIW65qmdIvqQ
+         fqQ83mtm0koBI29lngVErjZFDcePOeB4LFV1au84a5pVstqYpiKptHtUdSfdTmRP6eMv
+         WPOX9vs60nFjV6gz4D1462lLnqLmHTjaG44+aVsngHjOgYi/4Qo8qs2HDxczkDVWeCHX
+         0U57h9qBKiZnbGiZlo0ITGsjFPaxY1cGZnHmdz96/s9GrdrkvsNoRLX6CY8t8mocom+/
+         XTjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UfjIM+LI/qydiCGlRftPibFreQGOXtbFtxYa4Sx2Hfg=;
+        b=deqAw/vNYbej1PjNY+lqFnvYKHDa5QlmbBhDIHWI03vHfP+HcpD3BwVHbhGcW7getr
+         Hk5FKQFqeIw6+WytgAulqoG67SL1D8cMotM6fsg83QYfEzfP3D+WNrALF0iVmKUeja+f
+         zRq/WEloR1q3EbfWcsuUoQ45Tb3XXbCWYvIajjbqAAI4fc1Z9awCe1hQXXGiIBxmA+dT
+         kCeaWaHF9a7ICkzBE2YYLTpba/SwBJD/zLLeYVck28LylSYwz0Jk3EbjAAs5EDEcirBp
+         dOlHgeK7SgM/LM9nk9mKOWxe/Y8gU9ttwZytF8kdFm57KxHjE7HUzGDCnRdVvrUi9E2z
+         PfQA==
+X-Gm-Message-State: AOAM532NU1BK06eVB8IE7V2ISfbMxS4EEIVDuaYYdBydmU5vBdVy52wb
+        FWZEsSYZzT+KZJRTIgGVOuGa5g==
+X-Google-Smtp-Source: ABdhPJyfaHxb7cFtFnnTd/H6CkWsGTGR4AZAdxMIa76jXZC2diKeRoEjb7sA6U3fvRWhMPn9LDDLXA==
+X-Received: by 2002:adf:fd82:: with SMTP id d2mr33014640wrr.218.1622630842042;
+        Wed, 02 Jun 2021 03:47:22 -0700 (PDT)
+Received: from dell ([91.110.221.214])
+        by smtp.gmail.com with ESMTPSA id 31sm7015444wrc.96.2021.06.02.03.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 03:47:21 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 11:47:19 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, luka.perkov@sartura.hr,
+        jmp@epiphyte.org, pmenzel@molgen.mpg.de, buczek@molgen.mpg.de
+Subject: Re: [PATCH v3 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <20210602104719.GI2173308@dell>
+References: <20210531125143.257622-1-robert.marko@sartura.hr>
+ <20210531125143.257622-5-robert.marko@sartura.hr>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210531125143.257622-5-robert.marko@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upstream commit 25de4ce5ed02994aea8bc111d133308f6fd62566 backported to
-stable linux-5.4.y mach-omap2/timer instead of drivers/clocksource as
-earlier kernels still depend on legacy platform code for timers. Note
-that earlier stable kernels need also additional patches and will be
-posted separately.
+On Mon, 31 May 2021, Robert Marko wrote:
 
-There is a timer wrap issue on dra7 for the ARM architected timer.
-In a typical clock configuration the timer fails to wrap after 388 days.
+> Add binding documents for the Delta TN48M CPLD drivers.
+> 
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> ---
+> Changes in v3:
+> * Include bindings for reset driver
+> 
+> Changes in v2:
+> * Implement MFD as a simple I2C MFD
+> * Add GPIO bindings as separate
+> 
+>  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 +++++++++
+>  .../bindings/mfd/delta,tn48m-cpld.yaml        | 90 +++++++++++++++++++
+>  .../bindings/reset/delta,tn48m-reset.yaml     | 35 ++++++++
+>  3 files changed, 167 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+>  create mode 100644 Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
 
-To work around the issue, we need to use timer-ti-dm percpu timers instead.
+> +++ b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> @@ -0,0 +1,90 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/delta,tn48m-cpld.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Delta Networks TN48M CPLD controller
+> +
+> +maintainers:
+> +  - Robert Marko <robert.marko@sartura.hr>
+> +
+> +description: |
+> +  Lattice CPLD onboard the TN48M switches is used for system
+> +  management.
+> +
+> +  It provides information about the hardware model, revision,
+> +  PSU status etc.
+> +
+> +  It is also being used as a GPIO expander for the SFP slots and
+> +  reset controller for the switch MAC-s and other peripherals.
+> +
+> +properties:
+> +  compatible:
+> +    const: delta,tn48m-cpld
+> +
+> +  reg:
+> +    description:
+> +      I2C device address.
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +patternProperties:
+> +  "^gpio(@[0-9a-f]+)?$":
+> +    $ref: ../gpio/delta,tn48m-gpio.yaml
+> +
+> +  "^reset-controller?$":
+> +    $ref: ../reset/delta,tn48m-reset.yaml
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        cpld@41 {
+> +            compatible = "delta,tn48m-cpld";
+> +            reg = <0x41>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            gpio@31 {
+> +                compatible = "delta,tn48m-gpio-sfp-tx-disable";
+> +                reg = <0x31>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +            };
+> +
+> +            gpio@3a {
+> +                compatible = "delta,tn48m-gpio-sfp-present";
+> +                reg = <0x3a>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +            };
+> +
+> +            gpio@40 {
+> +                compatible = "delta,tn48m-gpio-sfp-los";
+> +                reg = <0x40>;
+> +                gpio-controller;
+> +                #gpio-cells = <2>;
+> +            };
+> +
+> +            reset-controller {
+> +              compatible = "delta,tn48m-reset";
+> +              #reset-cells = <1>;
+> +            };
 
-Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
-the issue if the dtb is not configured properly.
+How is the Reset component addressed?
 
-For more information, please see the errata for "AM572x Sitara Processors
-Silicon Revisions 1.1, 2.0":
+> +        };
+> +    };
 
-https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
-
-The concept is based on earlier reference patches done by Tero Kristo and
-Keerthy.
-
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- arch/arm/boot/dts/dra7-l4.dtsi      |  4 +--
- arch/arm/boot/dts/dra7.dtsi         | 20 +++++++++++
- arch/arm/mach-omap2/board-generic.c |  4 +--
- arch/arm/mach-omap2/timer.c         | 53 ++++++++++++++++++++++++++++-
- drivers/clk/ti/clk-7xx.c            |  1 +
- include/linux/cpuhotplug.h          |  1 +
- 6 files changed, 78 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
---- a/arch/arm/boot/dts/dra7-l4.dtsi
-+++ b/arch/arm/boot/dts/dra7-l4.dtsi
-@@ -1176,7 +1176,7 @@
- 			};
- 		};
- 
--		target-module@34000 {			/* 0x48034000, ap 7 46.0 */
-+		timer3_target: target-module@34000 {	/* 0x48034000, ap 7 46.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			ti,hwmods = "timer3";
- 			reg = <0x34000 0x4>,
-@@ -1204,7 +1204,7 @@
- 			};
- 		};
- 
--		target-module@36000 {			/* 0x48036000, ap 9 4e.0 */
-+		timer4_target: target-module@36000 {	/* 0x48036000, ap 9 4e.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			ti,hwmods = "timer4";
- 			reg = <0x36000 0x4>,
-diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -46,6 +46,7 @@
- 
- 	timer {
- 		compatible = "arm,armv7-timer";
-+		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
-@@ -766,3 +767,22 @@
- 
- #include "dra7-l4.dtsi"
- #include "dra7xx-clocks.dtsi"
-+
-+/* Local timers, see ARM architected timer wrap erratum i940 */
-+&timer3_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER3_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
-+
-+&timer4_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER4_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
-diff --git a/arch/arm/mach-omap2/board-generic.c b/arch/arm/mach-omap2/board-generic.c
---- a/arch/arm/mach-omap2/board-generic.c
-+++ b/arch/arm/mach-omap2/board-generic.c
-@@ -327,7 +327,7 @@ DT_MACHINE_START(DRA74X_DT, "Generic DRA74X (Flattened Device Tree)")
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra74x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
-@@ -350,7 +350,7 @@ DT_MACHINE_START(DRA72X_DT, "Generic DRA72X (Flattened Device Tree)")
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra72x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
-diff --git a/arch/arm/mach-omap2/timer.c b/arch/arm/mach-omap2/timer.c
---- a/arch/arm/mach-omap2/timer.c
-+++ b/arch/arm/mach-omap2/timer.c
-@@ -42,6 +42,7 @@
- #include <linux/platform_device.h>
- #include <linux/platform_data/dmtimer-omap.h>
- #include <linux/sched_clock.h>
-+#include <linux/cpu.h>
- 
- #include <asm/mach/time.h>
- 
-@@ -420,6 +421,53 @@ static void __init dmtimer_clkevt_init_common(struct dmtimer_clockevent *clkevt,
- 		timer->rate);
- }
- 
-+static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
-+
-+static int omap_gptimer_starting_cpu(unsigned int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+	struct clock_event_device *dev = &clkevt->dev;
-+	struct omap_dm_timer *timer = &clkevt->timer;
-+
-+	clockevents_config_and_register(dev, timer->rate, 3, ULONG_MAX);
-+	irq_force_affinity(dev->irq, cpumask_of(cpu));
-+
-+	return 0;
-+}
-+
-+static int __init dmtimer_percpu_quirk_init(void)
-+{
-+	struct dmtimer_clockevent *clkevt;
-+	struct clock_event_device *dev;
-+	struct device_node *arm_timer;
-+	struct omap_dm_timer *timer;
-+	int cpu = 0;
-+
-+	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
-+	if (of_device_is_available(arm_timer)) {
-+		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
-+		return 0;
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+		dev = &clkevt->dev;
-+		timer = &clkevt->timer;
-+
-+		dmtimer_clkevt_init_common(clkevt, 0, "timer_sys_ck",
-+					   CLOCK_EVT_FEAT_ONESHOT,
-+					   cpumask_of(cpu),
-+					   "assigned-clock-parents",
-+					   500, "percpu timer");
-+	}
-+
-+	cpuhp_setup_state(CPUHP_AP_OMAP_DM_TIMER_STARTING,
-+			  "clockevents/omap/gptimer:starting",
-+			  omap_gptimer_starting_cpu, NULL);
-+
-+	return 0;
-+}
-+
- /* Clocksource code */
- static struct omap_dm_timer clksrc;
- static bool use_gptimer_clksrc __initdata;
-@@ -564,6 +612,9 @@ static void __init __omap_sync32k_timer_init(int clkev_nr, const char *clkev_src
- 					3, /* Timer internal resynch latency */
- 					0xffffffff);
- 
-+	if (soc_is_dra7xx())
-+		dmtimer_percpu_quirk_init();
-+
- 	/* Enable the use of clocksource="gp_timer" kernel parameter */
- 	if (use_gptimer_clksrc || gptimer)
- 		omap2_gptimer_clocksource_init(clksrc_nr, clksrc_src,
-@@ -591,7 +642,7 @@ void __init omap3_secure_sync32k_timer_init(void)
- #endif /* CONFIG_ARCH_OMAP3 */
- 
- #if defined(CONFIG_ARCH_OMAP3) || defined(CONFIG_SOC_AM33XX) || \
--	defined(CONFIG_SOC_AM43XX)
-+	defined(CONFIG_SOC_AM43XX) || defined(CONFIG_SOC_DRA7XX)
- void __init omap3_gptimer_timer_init(void)
- {
- 	__omap_sync32k_timer_init(2, "timer_sys_ck", NULL,
-diff --git a/drivers/clk/ti/clk-7xx.c b/drivers/clk/ti/clk-7xx.c
---- a/drivers/clk/ti/clk-7xx.c
-+++ b/drivers/clk/ti/clk-7xx.c
-@@ -793,6 +793,7 @@ static struct ti_dt_clk dra7xx_clks[] = {
- 	DT_CLK(NULL, "timer_32k_ck", "sys_32k_ck"),
- 	DT_CLK(NULL, "sys_clkin_ck", "timer_sys_clk_div"),
- 	DT_CLK(NULL, "sys_clkin", "sys_clkin1"),
-+	DT_CLK(NULL, "timer_sys_ck", "timer_sys_clk_div"),
- 	DT_CLK(NULL, "atl_dpll_clk_mux", "atl-clkctrl:0000:24"),
- 	DT_CLK(NULL, "atl_gfclk_mux", "atl-clkctrl:0000:26"),
- 	DT_CLK(NULL, "dcan1_sys_clk_mux", "wkupaon-clkctrl:0068:24"),
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -119,6 +119,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ARM_L2X0_STARTING,
- 	CPUHP_AP_EXYNOS4_MCT_TIMER_STARTING,
- 	CPUHP_AP_ARM_ARCH_TIMER_STARTING,
-+	CPUHP_AP_OMAP_DM_TIMER_STARTING,
- 	CPUHP_AP_ARM_GLOBAL_TIMER_STARTING,
- 	CPUHP_AP_JCORE_TIMER_STARTING,
- 	CPUHP_AP_ARM_TWD_STARTING,
 -- 
-2.31.1
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
