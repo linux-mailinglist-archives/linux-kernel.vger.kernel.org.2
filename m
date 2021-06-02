@@ -2,124 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6777C398C3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BB5398C47
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhFBOQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhFBOO2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:14:28 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA205C061761;
-        Wed,  2 Jun 2021 07:12:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FzJfBljo4B8RxU2ilIDhSLr34HFST0rQLNCYNw/HW+w=; b=L9vjUarjZTu6NzihPxyvfr9SrD
-        cXp2K8L/lswul4alVU9a5KXYcmiYKaI0pVqEPrOTObk1bWVjIa727CcohFhQnptUDt9rVM7+wZokD
-        bdiAP5TkdYqfBQHbyzuL3QwjL5RpkYojkJ5M5vFeN5hhURZOWxGVnCDXhqvgtesERKVZoPVmmu+1u
-        zvBuQ/5U6yi+c+8BHLKEGRhN8+mOxmjvdNXmQvv5K7kABrgsWq6TQpgiZuniSUsdWGatjG0TQN4HN
-        iyi9j9XYfQaN+mhBZrOglYAeu1Bmuw53jmWdaNNlHNX9gCtb8Ta+n9yUYscEboZQaYK4WTzPQHe3/
-        3aLE6Hfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1loRbc-002uVV-R0; Wed, 02 Jun 2021 14:12:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D44963002A3;
-        Wed,  2 Jun 2021 16:12:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B760020223DA5; Wed,  2 Jun 2021 16:12:30 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 16:12:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        dm-devel <dm-devel@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        paulmck <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        cgroups <cgroups@vger.kernel.org>,
-        kgdb-bugreport <kgdb-bugreport@lists.sourceforge.net>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        linux-pm <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, KVM list <kvm@vger.kernel.org>
-Subject: Re: [PATCH 4/6] sched: Add get_current_state()
-Message-ID: <YLeRzlEmbdsMrFcG@hirez.programming.kicks-ass.net>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.461908001@infradead.org>
- <1731339790.5856.1622642489232.JavaMail.zimbra@efficios.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1731339790.5856.1622642489232.JavaMail.zimbra@efficios.com>
+        id S232106AbhFBOQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:16:57 -0400
+Received: from comms.puri.sm ([159.203.221.185]:52480 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231669AbhFBOO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 10:14:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 396EBDFAEF;
+        Wed,  2 Jun 2021 07:12:44 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ff76JJN6Hjvg; Wed,  2 Jun 2021 07:12:39 -0700 (PDT)
+Message-ID: <76437d47e5ac920baed3429d8839b6175864d13d.camel@puri.sm>
+Subject: Re: [PATCH v2 2/5] dt-bindings: media: document SK Hynix Hi-846
+ MIPI CSI-2 8M pixel sensor
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     mchehab@kernel.org, devicetree@vger.kernel.org, kernel@puri.sm,
+        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        robh@kernel.org, shawnx.tu@intel.com
+Date:   Wed, 02 Jun 2021 16:12:33 +0200
+In-Reply-To: <YLeQGjDdTX0iohZ0@pendragon.ideasonboard.com>
+References: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
+         <20210528081336.3858700-3-martin.kepplinger@puri.sm>
+         <20210602135137.GW3@valkosipuli.retiisi.eu>
+         <YLeQGjDdTX0iohZ0@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 10:01:29AM -0400, Mathieu Desnoyers wrote:
-> ----- On Jun 2, 2021, at 9:12 AM, Peter Zijlstra peterz@infradead.org wrote:
-> 
-> > Remove yet another few p->state accesses.
-> 
-> [...]
-> 
+Am Mittwoch, dem 02.06.2021 um 17:05 +0300 schrieb Laurent Pinchart:
+> On Wed, Jun 02, 2021 at 04:51:37PM +0300, Sakari Ailus wrote:
+> > Hi Martin,
 > > 
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -212,6 +212,8 @@ struct task_group;
+> > On Fri, May 28, 2021 at 10:13:33AM +0200, Martin Kepplinger wrote:
+> > > Document the bindings used for the SK Hynix Hi-846 CMOS camera
+> > > driver.
+> > > 
+> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 > > 
-> > #endif
+> > Could you read Documentation/driver-api/media/camera-sensor.rst,
+> > please?
 > > 
-> > +#define get_current_state()	READ_ONCE(current->state)
+> > I believe you'll need assigned-clock-rates device property as well
+> > as
 > 
-> Why use a macro rather than a static inline here ?
+> I dn't think assigned-clock-rates should be part of the bindings,
+> it's a
+> mechanism that can be used in any DT device node.
+> 
+> > link-frequencies endpoint property.
+> > 
+> > > ---
+> > >  .../bindings/media/i2c/hynix,hi846.yaml       | 99
+> > > +++++++++++++++++++
+> > >  1 file changed, 99 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > > 
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > > b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > > new file mode 100644
+> > > index 000000000000..2991108e23e5
+> > > --- /dev/null
+> > > +++
+> > > b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+> > > @@ -0,0 +1,99 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/media/i2c/hynix,hi846.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: SK Hynix Hi-846 1/4" 8M Pixel MIPI CSI-2 sensor
+> > > +
+> > > +maintainers:
+> > > +  - Martin Kepplinger <martin.kepplinger@puri.sm>
+> > > +
+> > > +description: |-
+> > > +  The Hi-846 is a raw image sensor with an MIPI CSI-2 image data
+> > > +  interface and CCI (I2C compatible) control bus. The output
+> > > format
+> > > +  is 10bit Bayer.
+> > 
+> > Virtually all Bayer sensors can do 8 bpp, too. I'd drop the
+> > sentence
+> 
+> Not this one according to its datasheet (we can't rule out that this
+> would be possible an undocumented of course).
 
-Mostly to be consistent, all that state stuff is macros. I suppose we
-could try and make them inlines at the end or so -- if the header maze
-allows.
+actually there is one register that mentions raw8 output but I never
+got that to work. I don't have to mention 10bit in this description.
+thanks.
+
+> 
+> > mentoning 10 bits.
+> > 
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: hynix,hi846
+> > > +
+> > > +  reg:
+> > > +    description: I2C device address.
+> > > +    maxItems: 1
+> > > +
+> > > +  clocks:
+> > > +    description: Reference to the mclk clock.
+> > > +    maxItems: 1
+> > > +
+> > > +  clock-names:
+> > > +    const: mclk
+> > > +
+> > > +  rst-gpios:
+> > > +    description: Reference to the GPIO connected to the reset
+> > > pin. Active low.
+> > > +    maxItems: 1
+> > > +
+> > > +  vdd-supply:
+> > > +    description: Definition of the regulator used as 1.8V
+> > > digital power supply.
+> > > +
+> > > +  port:
+> > > +    $ref: /schemas/graph.yaml#/properties/port
+> > > +    additionalProperties: false
+> > > +
+> > > +    properties:
+> > > +      endpoint:
+> > > +        $ref: /schemas/media/video-interfaces.yaml#
+> > > +        unevaluatedProperties: false
+> > > +
+> > > +        properties:
+> > > +          data-lanes:
+> > > +            oneOf:
+> > > +              - items:
+> > > +                  - const: 1
+> > > +                  - const: 2
+> > > +                  - const: 3
+> > > +                  - const: 4
+> > > +              - items:
+> > > +                  - const: 1
+> > > +                  - const: 2
+> > > +
+> > > +        required:
+> > > +          - data-lanes
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - clocks
+> > > +  - clock-names
+> > > +  - rst-gpios
+> > > +  - vdd-supply
+> > > +  - port
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/gpio/gpio.h>
+> > > +
+> > > +    i2c {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        hi846: camera@20 {
+> > > +            compatible = "hynix,hi846";
+> > > +            reg = <0x20>;
+> > > +            clocks = <&clk>;
+> > > +            clock-names = "mclk";
+> > > +            vdd-supply = <&reg_camera_pwr_en>; /* 1.8v */
+> > > +            rst-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+> > > +
+> > > +            port {
+> > > +                camera_out: endpoint {
+> > > +                    remote-endpoint = <&csi1_ep1>;
+> > > +                    data-lanes = <1 2>;
+> > > +                };
+> > > +            };
+> > > +        };
+> > > +    };
+> > > +
+> > > +...
+> 
+
+
