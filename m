@@ -2,129 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD6E398E04
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E342398E01
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhFBPMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230456AbhFBPML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231730AbhFBPMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhFBPML (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Jun 2021 11:12:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73C1A61182;
-        Wed,  2 Jun 2021 15:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622646628;
-        bh=MmmB5edNPbRN/+c+2On4lV0BgwteW7Cw405ip5Z8YuI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eoW8oxXoywj95HF19beDzh3Wa+WhWkiyj9FjvvSEw7ScJ8OuGQbEy6+2TGjP0xVYN
-         XSSJAJXvhI5MOj1+GRdHIbg46k9rJSpJMlo/HDJefXpEwJPCDFcYn8COIR/VQO5DZl
-         47yzM30C6QaWLqEpy6LeVNCLBHEk+aKjfkrC6CQ5ViDR3bMQ0fCKMIt+zFjJNZMY+v
-         SNl2CwOo9QKvwQF6AUEFLQH9ccSyIziiULTl3YApDUWutkiYOLv0+Q04TM9wwWdkfx
-         bdsysjlbcoFBsmj9C1l84fr+oHwMhBsnHonyI6jC2MFd17CoX0BlIS16/UkYyFRS6U
-         MochfZ+/mAepQ==
-Date:   Wed, 2 Jun 2021 16:10:11 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 6/6] sched: Change task_struct::state
-Message-ID: <20210602151010.GE31179@willie-the-truck>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.587042016@infradead.org>
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10638C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:10:21 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id x18so2438330ila.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 08:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
+        b=V1Ou2XAiIxxfYuPVraNEbI5S6OsnWJvbUrRRiYx70V5mkPvpAEoZXuZ71foWAV3/FJ
+         RLm0J90C2fZCoYZRb9FhedvIDlBSRiDNEe50Wb5/zDu5i0W8GvWHeFIdOSzzeRkGym+9
+         uh9Et9hhn8lGJIyOrSutNihjyXCQp5nSmriUFuGSp5avj0ePdub431Fi3QQHcXAp5tcW
+         OH1OAgJ7VEomDufCZvKIqxA9kepFYxAVSOXd5uBx9SR7l23r8Rn3Myn8McriqgS6K8Hz
+         mC6CkkEgFhLFB55NLHCzVREACvYYbQ/iNyQ0UcMNjojzE4HGtFe4KVhFmJB2hRKX7d/G
+         2PXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
+        b=VyzLnI5VfA8QJoARRow/oEtSOkLPnja/dD21lf8lcw09WVEg0cblyZ2Kbl1H4VCzVL
+         35YS0NmOqJXj8IN4d4iZWD4w6ziipguDdLrdkeH7Rho+RLTbR3Y74sUr1Ed9q7Uhmyy/
+         nWkK7dtF9nR0LHg6h6LBT09fPxFXirl5aRuTiH2nGPW/ucmgIt2lVZuC99HuAHDImdpO
+         ojEbsRn9S1ZuBbcCzkKH8Y5Roq5Raa2zwjqN47zY8N7W8TmtWU7iSjGzDOubeEN1zCqa
+         ID9IiKOXgVBYmy5Sy0kOpI679lqbe56Gek/SFLzyYmX1CSnaO4U+Lw4Uu4qED/2duI3W
+         4VaQ==
+X-Gm-Message-State: AOAM532np2F8TTogzRfcEy9ps24PtMVm8HFx+m1X2mZS4XdnI4vSZH+o
+        wvZsb37wmhNEzAbMxrFHjhy6ypXLFFA+C3ZcEtk=
+X-Google-Smtp-Source: ABdhPJyRWRVRD5W07st+hQNf9XQFSotB7lbjvBGD87Y7rHJTgHHQP2oYqZdN0SPmvpzSQN4q5/XIpn2WZPbPDnGySqo=
+X-Received: by 2002:a05:6e02:1a45:: with SMTP id u5mr14981635ilv.142.1622646620350;
+ Wed, 02 Jun 2021 08:10:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602133040.587042016@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: t.a.b.12april1967@gmail.com
+Received: by 2002:a05:6638:cb:0:0:0:0 with HTTP; Wed, 2 Jun 2021 08:10:19
+ -0700 (PDT)
+From:   Alexandra Kelly <alexandrakelly779@gmail.com>
+Date:   Wed, 2 Jun 2021 16:10:19 +0100
+X-Google-Sender-Auth: H-AtjzpQ1ppGGJASgOW1L_EC684
+Message-ID: <CAFYH1Mn+ckT7dJPZKaNSzyHJGCGLLfZbm+zdq=wXKvGBRXiEqA@mail.gmail.com>
+Subject: Urgent Response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 03:12:31PM +0200, Peter Zijlstra wrote:
-> Change the type and name of task_struct::state. Drop the volatile and
-> shrink it to an 'unsigned int'. Rename it in order to find all uses
-> such that we can use READ_ONCE/WRITE_ONCE as appropriate.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  block/blk-mq.c                 |    2 -
->  drivers/md/dm.c                |    6 ++--
->  fs/binfmt_elf.c                |    8 +++---
->  fs/userfaultfd.c               |    4 +--
->  include/linux/sched.h          |   31 +++++++++++------------
->  include/linux/sched/debug.h    |    2 -
->  include/linux/sched/signal.h   |    2 -
->  init/init_task.c               |    2 -
->  kernel/cgroup/cgroup-v1.c      |    2 -
->  kernel/debug/kdb/kdb_support.c |   18 +++++++------
->  kernel/fork.c                  |    4 +--
->  kernel/hung_task.c             |    2 -
->  kernel/kthread.c               |    4 +--
->  kernel/locking/mutex.c         |    6 ++--
->  kernel/locking/rtmutex.c       |    4 +--
->  kernel/locking/rwsem.c         |    2 -
->  kernel/ptrace.c                |   12 ++++-----
->  kernel/rcu/rcutorture.c        |    4 +--
->  kernel/rcu/tree_stall.h        |   12 ++++-----
->  kernel/sched/core.c            |   53 +++++++++++++++++++++--------------------
->  kernel/sched/deadline.c        |   10 +++----
->  kernel/sched/fair.c            |   11 +++++---
->  lib/syscall.c                  |    4 +--
->  net/core/dev.c                 |    2 -
->  24 files changed, 108 insertions(+), 99 deletions(-)
+Dear friend,
 
-I think this makes the code a _lot_ easier to understand, so:
+I am contacting you independently of my investigation in
+my bank and no one is informed of this communication. I need your
+urgent assistance in transferring the sum of $5.3 million dollars to
+your private account,that belongs to one of our foreign customers who
+died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
+money has been here in our Bank lying dormant for years now without
+anybody coming for the claim of it.
 
-Acked-by: Will Deacon <will@kernel.org>
-
-on the assumption that you'll fix get_wchan() for !x86 as well.
-
-Cheers,
-
-Will
+I want to release the money to you as the relative to our deceased
+customer , the Banking laws here does not allow such money to stay
+more than 18 years, because the money will be recalled to the Bank
+treasury account as unclaimed fund. I am ready to share with you 40%
+for you and 60% will be kept for me, by indicating your interest i
+will send you the full details on how the business will be executed, i
+will be waiting for your urgent response.
