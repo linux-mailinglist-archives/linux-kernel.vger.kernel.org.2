@@ -2,202 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5700C399277
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2408C39927D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhFBSW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:22:59 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:49899 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhFBSW6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:22:58 -0400
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 152IKviR021564
-        for <linux-kernel@vger.kernel.org>; Thu, 3 Jun 2021 03:20:58 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 152IKviR021564
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622658058;
-        bh=yCsf8LnkRxLPnoPEquDuilaMalZNFaFdoh+pIQY02MY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DymrX7NCQfNGlE0dFYUKhUyKL6MD7N68ftfFbYwzBNb9cMaXQu2vkvGkF0ZEmURhg
-         KEPBd767KRHPpjl5UndBpf095JAeez4dp1tSaqDSJd02insYbuuyFRjat/ri1Thmp3
-         2TJCIk79e690Wx2ycGUXd/rUgFKIq77FD3nFZIYQFDawTvfbAjvBkemIiVREtJxEdu
-         5jT09te9UdIKD5kUeuYFpWWgawRcsqE3K2GW+xz8YnlVQKE99RzNj08jKVclpSZzJI
-         1VJEJrWeh90MGFfO17eYHIjsQPZ1ZjvhtmAMYqK1qzzaWqOWZNRLVkQ9F+9G39LZiy
-         3DEFMdMBsgVbA==
-X-Nifty-SrcIP: [209.85.215.172]
-Received: by mail-pg1-f172.google.com with SMTP id n12so2928381pgs.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 11:20:58 -0700 (PDT)
-X-Gm-Message-State: AOAM532WH/J2TpBstI3UxoeMA6J3JGQs223qP2wFiT26DlhcVqZWbvUV
-        piH8jEXECZeyw6GfypLGPBJpE0J95SIJyWDLo/s=
-X-Google-Smtp-Source: ABdhPJxQyd6p++VVdrc+VCIElHh7OAKBGEu1DMVjtDdHVrymXvYz5gO8S/yrzWrNTOfmo3PLafZiYUyflZdDbA+3vLs=
-X-Received: by 2002:a63:164f:: with SMTP id 15mr35359811pgw.175.1622658057211;
- Wed, 02 Jun 2021 11:20:57 -0700 (PDT)
+        id S229606AbhFBSZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:25:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229489AbhFBSZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 14:25:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCF3761027;
+        Wed,  2 Jun 2021 18:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622658253;
+        bh=FcWaP6VEUH3gmamy3yxca73Py67LORV/AwGV2Pktn2k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZqLUH0YRyZulAqJ8kRwHql5wOcawzsOfpy58ZqX5OdajDTO0LxeP4+7gok/TBzOZ5
+         QgwlP+IHpU/+5s3xtdW1H+R5XfZvqTpyC6HWMBMckHvjRGu+AvT6sVLpacxIY1WAae
+         cu5yx/tApnvZI78LWmNxM3dELrtcg014L7cjVDAP3EZNpDJArnnr0Z42afQFCtqQHx
+         dhol/sO5B6DvK0//5rSgODoPjl0xuTvdmbrPItbQ38Yj4eyEGwnsVK9/icgl2uEU3a
+         mAB9TBXPdl9Xd8EzeosOogJ/lFEUNyq2xpwYYcjuCry28VsKQzU6yFpA/axHXtzKPw
+         76qCTSRd7xbRw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 93FA35C0176; Wed,  2 Jun 2021 11:24:13 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 11:24:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Luming Yu <luming.yu@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>, sboyd@kernel.org,
+        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
+        kernel-team@fb.com, neeraju@codeaurora.org,
+        Andi Kleen <ak@linux.intel.com>, feng.tang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [PATCH V11 clocksource 0/6] Do not mark clocks unstable due to
+ delays for v5.13
+Message-ID: <20210602182413.GA1159254@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210429012909.GA3958584@paulmck-ThinkPad-P17-Gen-1>
+ <CAJRGBZxre5=xt-RQFo6HU3rBYu7YuVtXZxNHicbKFX3FMB1T7A@mail.gmail.com>
+ <20210430051059.GE975577@paulmck-ThinkPad-P17-Gen-1>
+ <CAJRGBZzQ-eQMLHBVzhcTjqQMYEtop3SK=7TAMmC+5tNsfxM_GQ@mail.gmail.com>
+ <20210501042834.GK975577@paulmck-ThinkPad-P17-Gen-1>
+ <CAJRGBZzgXyNA1C12uiTo-ffa7Af5FB4ABRK_K9KgT9t4duRsdA@mail.gmail.com>
+ <20210602174650.GH4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <YLeot94yAaM4xbMY@gmail.com>
-In-Reply-To: <YLeot94yAaM4xbMY@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 3 Jun 2021 03:20:20 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR54mOqEcUTUmEUfVAwA6XrGLr2J_3+v6fdys9tBLe28w@mail.gmail.com>
-Message-ID: <CAK7LNAR54mOqEcUTUmEUfVAwA6XrGLr2J_3+v6fdys9tBLe28w@mail.gmail.com>
-Subject: Re: kbuild: Ctrl-C of parallel kernel build sometimes corrupts .o.cmd
- files permanently
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602174650.GH4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 12:50 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> There's a sporadic kbuild bug that's been happening for years, maybe you
-> guys can think of where it comes from.
->
-> Sometimes when I Ctrl-C a kernel build job, the .o.cmd file becomes
-> corrupted and this breaks the build:
->
->
->    kernel/.panic.o.cmd:5: *** unterminated call to function 'wildcard': missing ')'.  Stop.
->
->    ...
->
->    drivers/gpu/drm/.drm_blend.o.cmd:5: *** unterminated call to function 'wildcard': missing ')'.  Stop.
->
-> The file was just partially created and didn't get cleaned up:
->
->   kepler:~/tip> ls -l drivers/gpu/drm/.drm_blend.o.cmd.corrupted drivers/gpu/drm/.drm_blend.o.cmd.good
->   -rw-rw-r-- 1 mingo mingo 28672 Jun  2 17:46 drivers/gpu/drm/.drm_blend.o.cmd.corrupted
->   -rw-rw-r-- 1 mingo mingo 51331 Jun  2 17:46 drivers/gpu/drm/.drm_blend.o.cmd.good
->
-> The file just got cut in half due to the Ctrl-C:
->
->  --- drivers/gpu/drm/.drm_blend.o.cmd.corrupted  2021-06-02 17:46:16.951428326 +0200
->  +++ drivers/gpu/drm/.drm_blend.o.cmd.good       2021-06-02 17:46:34.391111668 +0200
->  @@ -646,4 +646,578 @@ deps_drivers/gpu/drm/drm_blend.o := \
->       $(wildcard include/config/OF_OVERLAY) \
->     include/linux/kobject.h \
->       $(wildcard include/config/UEVENT_HELPER) \
->  -    $(wildcard include
->  \ No newline at end of file
->  +    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
->  +  include/linux/sysfs.h \
->  +  include/linux/kernfs.h \
->  +    $(wildcard include/config/KERNFS) \
->
->
-> ... but once in this state it can only be fixed by 'make clean' (which
-> loses all build progress), or by removing the stale file manually.
->
-> It happens more frequently on systems with a lot of CPUs.
->
-> Thanks,
->
->         Ingo
+On Wed, Jun 02, 2021 at 10:46:50AM -0700, Paul E. McKenney wrote:
+> On Wed, Jun 02, 2021 at 01:10:37PM +0800, Luming Yu wrote:
+> > Hi Paul,
+> > 
+> > It appears that the patch set is not in 5.13.  Will it be in 5.14?
+> 
+> Indeed it is not in v5.13.  There were some late-breaking reviews and
+> changes.  I am currently thinking in terms of v5.14.
+> 
+> > And more data proof seems to indciate that  tsc is more stable than
+> > tsc-watchdog.
+> 
+> The tsc-watchdog being HPET?  Or some other clocksource?
+> 
+> > and we need the patch set to dis-arm wrong actions when watch dog is
+> > hit by a spik.
+> 
+> It does depend on the hardware.  Thomas Gleixner provided a most
+> excellent summary of the possibilities here:
+> 
+> https://lore.kernel.org/lkml/87a6pimt1f.ffs@nanos.tec.linutronix.de/
+> 
+> And then if your hardware's TSC is the most trustworthy clocksource
+> on your system, you can always boot with tsc=reliable and avoid the
+> clocksource watchdog completely, with or without this patch series.
 
+Oh, and firmware can and apparently still sometimes does "adjust" the TSC,
+and so booting with tsc=reliable can such adjustments from you.
 
+> Or am I missing your point?
 
-Hmm, I have not observed this.
+							Thanx, Paul
 
-My expectation is, it should work like this:
-
-When scripts/basic/fixdep is interrupted (or fail due to any reason),
-partially written *.o.cmd is left over. So, having incomplete *.o.cmd
-files is expectation.
-
-When .DELETE_ON_ERROR is specified, GNU Make is supposed to
-automatically delete the target on any error.
-(If it is interrupted, it should exit with code 130)
-
-On the next invocation of Make, Kbuild will not include .*.o.cmd files
-whose corresponding *.o files do not exist.
-
-
-
-
-
-When you got the corrupted drivers/gpu/drm/.drm_blend.o.cmd,
-didn't you see the log
-Deleting file 'drivers/gpu/drm/drm_blend.o' ?
-
-
-
-If it works as I expect, the log should look like follows:
-(I marked  the lines with '<---- Deleting')
-
-
-
-  CC      security/keys/keyctl_pkey.o
-  CC      kernel/sys.o
-  CC      arch/x86/power/hibernate_64.o
-^Cmake[5]: *** Deleting file 'drivers/video/fbdev/core/fbcmap.o'  <---- Deleting
-make[5]: *** [scripts/Makefile.build:272:
-drivers/video/fbdev/core/fbmon.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: security/selinux/nlmsgtab.o] Interrupt
-make[2]: *** [scripts/Makefile.build:272: arch/x86/power/cpu.o] Interrupt
-make[2]: *** [scripts/Makefile.build:272:
-arch/x86/power/hibernate_64.o] Interrupt
-make[2]: *** [scripts/Makefile.build:272: arch/x86/pci/legacy.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: arch/x86/mm/srat.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: drivers/pnp/resource.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: drivers/pnp/manager.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: sound/core/ctljack.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: net/core/skbuff.o] Interrupt
-make[2]: *** [scripts/Makefile.build:515: arch/x86/mm] Interrupt
-make[2]: *** [scripts/Makefile.build:272: kernel/signal.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: drivers/acpi/device_sysfs.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: drivers/pci/pci.o] Interrupt
-make[2]: *** [scripts/Makefile.build:272: kernel/sys.o] Interrupt
-make[2]: *** [scripts/Makefile.build:515: net/core] Interrupt
-make[2]: *** [scripts/Makefile.build:272: block/blk-ioc.o] Interrupt
-make[4]: *** [scripts/Makefile.build:272: arch/x86/events/intel/pt.o] Interrupt
-make[2]: *** [scripts/Makefile.build:272: crypto/skcipher.o] Interrupt
-make[3]: *** [scripts/Makefile.build:272: security/keys/keyctl_pkey.o] Interrupt
-make[2]: *** [scripts/Makefile.build:272: fs/namei.o] Interrupt
-make[3]: *** [scripts/Makefile.build:515: arch/x86/events/intel] Interrupt
-make[5]: *** [scripts/Makefile.build:272:
-drivers/video/fbdev/core/fbcmap.o] Interrupt
-make[2]: *** [scripts/Makefile.build:515: arch/x86/events] Interrupt
-make[2]: *** [scripts/Makefile.build:515: security/selinux] Interrupt
-make[2]: *** [scripts/Makefile.build:272: ipc/mq_sysctl.o] Interrupt
-make[2]: *** [scripts/Makefile.build:272: mm/percpu.o] Interrupt
-make[2]: *** [scripts/Makefile.build:515: security/keys] Interrupt
-make[2]: *** [scripts/Makefile.build:515: sound/core] Interrupt
-make[4]: *** [scripts/Makefile.build:515: drivers/video/fbdev/core] Interrupt
-make[3]: *** Deleting file 'arch/x86/kernel/nmi.o'        <---- Deleting
-make[1]: *** [Makefile:1849: arch/x86/pci] Interrupt
-make[2]: *** [scripts/Makefile.build:515: drivers/pnp] Interrupt
-make[1]: *** [Makefile:1849: kernel] Interrupt
-make[1]: *** [Makefile:1849: fs] Interrupt
-make[2]: *** [scripts/Makefile.build:515: drivers/pci] Interrupt
-make[1]: *** [Makefile:1849: ipc] Interrupt
-make[2]: *** [scripts/Makefile.build:515: drivers/acpi] Interrupt
-make[1]: *** [Makefile:1849: security] Interrupt
-make[1]: *** [Makefile:1849: crypto] Interrupt
-make[1]: *** [Makefile:1849: block] Interrupt
-make[1]: *** [Makefile:1849: sound] Interrupt
-make[3]: *** [scripts/Makefile.build:272: arch/x86/kernel/ldt.o] Interrupt
-make[1]: *** [Makefile:1849: net] Interrupt
-make[3]: *** [scripts/Makefile.build:272: arch/x86/kernel/nmi.o] Interrupt
-make[1]: *** [Makefile:1849: arch/x86/power] Interrupt
-make[3]: *** [scripts/Makefile.build:515: drivers/video/fbdev] Interrupt
-make[1]: *** [Makefile:1849: mm] Interrupt
-make[2]: *** [scripts/Makefile.build:515: drivers/video] Interrupt
-make[1]: *** [Makefile:1849: drivers] Interrupt
-make[2]: *** [scripts/Makefile.build:515: arch/x86/kernel] Interrupt
-make[1]: *** [Makefile:1849: arch/x86] Interrupt
-make: *** [Makefile:351: __build_one_by_one] Interrupt
-
-
-
-
-
-
---
-Best Regards
-
-
-Masahiro Yamada
+> > On Sat, May 1, 2021 at 12:28 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Fri, Apr 30, 2021 at 02:52:58PM +0800, Luming Yu wrote:
+> > > > On Fri, Apr 30, 2021 at 1:11 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, Apr 29, 2021 at 07:13:40PM +0800, Luming Yu wrote:
+> > > > > > On Thu, Apr 29, 2021 at 9:30 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > > >
+> > > > > > > Hello!
+> > > > > > >
+> > > > > > > If there is a sufficient delay between reading the watchdog clock and the
+> > > > > > > clock under test, the clock under test will be marked unstable through no
+> > > > > > > fault of its own.  This series checks for this, doing limited retries
+> > > > > > > to get a good set of clock reads.  If the clock is marked unstable
+> > > > > > > and is marked as being per-CPU, cross-CPU synchronization is checked.
+> > > > > > > This series also provides delay injection, which may be enabled via
+> > > > > > > kernel boot parameters to test the checking for delays.
+> > > > > > >
+> > > > > > > Note that "sufficient delay" can be provided by SMIs, NMIs, and of course
+> > > > > > > vCPU preemption.
+> > > > > > >
+> > > > > > > 1.      Provide module parameters to inject delays in watchdog.
+> > > > > > >
+> > > > > > > 2.      Retry clock read if long delays detected.
+> > > > > > >
+> > > > > > > 3.      Check per-CPU clock synchronization when marked unstable.
+> > > > > > >
+> > > > > > > 4.      Provide a module parameter to fuzz per-CPU clock checking.
+> > > > > > >
+> > > > > > > 5.      Limit number of CPUs checked for clock synchronization.
+> > > > > > >
+> > > > > > > 6.      Reduce clocksource-skew threshold for TSC.
+> > > > > > >
+> > > > > > > Changes since v10, based on feedback from Thomas Gleixner, Peter Zijlstra,
+> > > > > > > Feng Tang, Andi Kleen, Luming Yu, Xing Zhengju, and the indefatigible
+> > > > > > > kernel test robot:
+> > > > > > >
+> > > > > > > o       Automatically compute the uncertainty margin for clocksource, and
+> > > > > > >         also allow them to be specified manually before that clocksource
+> > > > > > >         is registered.
+> > > > > > >
+> > > > > > > o       For the automatically computed uncertainty margins, bound them
+> > > > > > >         below by 100 microseconds (2 * WATCHDOG_MAX_SKEW).
+> > > > > > >
+> > > > > > > o       For the manually specified uncertainty margins, splat (but
+> > > > > > >         continue) if they are less than 100 microseconds (again 2 *
+> > > > > > >         WATCHDOG_MAX_SKEW).  The purpose of splatting is to discourage
+> > > > > > >         production use of this clock-skew-inducing debugging technique.
+> > > > > > >
+> > > > > > > o       Manually set the uncertainty margin for clocksource_jiffies
+> > > > > > >         (and thus refined_jiffies) to TICK_NSEC to compensate for the
+> > > > > > >         very low frequency of these clocks.
+> > > > > > >
+> > > > > > > o       Manually set the uncertainty margin for clocksource_tsc_early
+> > > > > > >         to 32 milliseconds.
+> > > > > > >
+> > > > > > > o       Apply numerous "Link:" fields to all patches.
+> > > > > > >
+> > > > > > > o       Add some acks and CCs.
+> > > > > > >
+> > > > > > > Changes since v9:
+> > > > > > >
+> > > > > > > o       Forgive tsc_early drift, based on feedback from Feng Tang; Xing,
+> > > > > > >         Zhengjun; and Thomas Gleixner.
+> > > > > > >
+> > > > > > > o       Improve CPU selection for clock-synchronization checking.
+> > > > > > >
+> > > > > > > Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
+> > > > > > >
+> > > > > > > Changes since v8, based on Thomas Gleixner feedback:
+> > > > > > >
+> > > > > > > o       Reduced clock-skew threshold to 200us and delay limit to 50us.
+> > > > > > >
+> > > > > > > o       Split out a cs_watchdog_read() function.
+> > > > > > >
+> > > > > > > o       Removed the pointless CLOCK_SOURCE_VERIFY_PERCPU from kvm_clock.
+> > > > > > >
+> > > > > > > o       Initialized cs_nsec_max and cs_nsec_min to avoid firsttime checks.
+> > > > > > >
+> > > > > > > Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
+> > > > > > >
+> > > > > > > Changes since v7, based on Thomas Gleixner feedback:
+> > > > > > >
+> > > > > > > o       Fix embarrassing git-format-patch operator error.
+> > > > > > >
+> > > > > > > o       Merge pairwise clock-desynchronization checking into the checking
+> > > > > > >         of per-CPU clock synchronization when marked unstable.
+> > > > > > >
+> > > > > > > o       Do selective per-CPU checking rather than blindly checking all
+> > > > > > >         CPUs.  Provide a clocksource.verify_n_cpus kernel boot parameter
+> > > > > > >         to control this behavior, with the value -1 choosing the old
+> > > > > > >         check-all-CPUs behavior.  The default is to randomly check 8 CPUs.
+> > > > > > >
+> > > > > > > o       Fix the clock-desynchronization checking to avoid a potential
+> > > > > > >         use-after-free error for dynamically allocated clocksource
+> > > > > > >         structures.
+> > > > > > >
+> > > > > > > o       Remove redundance "wdagain_nsec < 0" from clocksource_watchdog()
+> > > > > > >         clocksource skew checking.
+> > > > > > >
+> > > > > > > o       Update commit logs and do code-style updates.
+> > > > > > >
+> > > > > > > Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
+> > > > > > >
+> > > > > > > Changes since v5:
+> > > > > > >
+> > > > > > > o       Rebased to v5.12-rc5.
+> > > > > > >
+> > > > > > > Changes since v4:
+> > > > > > >
+> > > > > > > o       Rebased to v5.12-rc1.
+> > > > > > >
+> > > > > > > Changes since v3:
+> > > > > > >
+> > > > > > > o       Rebased to v5.11.
+> > > > > > >
+> > > > > > > o       Apply Randy Dunlap feedback.
+> > > > > > >
+> > > > > > > Changes since v2:
+> > > > > > >
+> > > > > > > o       Rebased to v5.11-rc6.
+> > > > > > >
+> > > > > > > o       Updated Cc: list.
+> > > > > > >
+> > > > > > > Changes since v1:
+> > > > > > >
+> > > > > > > o       Applied feedback from Rik van Riel.
+> > > > > > >
+> > > > > > > o       Rebased to v5.11-rc3.
+> > > > > > >
+> > > > > > > o       Stripped "RFC" from the subject lines.
+> > > > > > >
+> > > > > > >                                                 Thanx, Paul
+> > > > > > >
+> > > > > > > ------------------------------------------------------------------------
+> > > > > > >
+> > > > > > >  Documentation/admin-guide/kernel-parameters.txt   |   32 +++
+> > > > > > >  arch/x86/kernel/tsc.c                             |    1
+> > > > > > >  b/Documentation/admin-guide/kernel-parameters.txt |   21 ++
+> > > > > > >  b/arch/x86/kernel/tsc.c                           |    3
+> > > > > > >  b/include/linux/clocksource.h                     |    2
+> > > > > > >  b/kernel/time/clocksource.c                       |   23 ++
+> > > > > > >  b/kernel/time/jiffies.c                           |   15 -
+> > > > > > >  include/linux/clocksource.h                       |    3
+> > > > > > >  kernel/time/clocksource.c                         |  227 ++++++++++++++++++++--
+> > > > > > >  9 files changed, 304 insertions(+), 23 deletions(-)
+> > > > > >
+> > > > > > Hi Paul,
+> > > > > > using the v11, I added a approve flag and made it work for my early
+> > > > > > inject test  where tsc is good
+> > > > > > through a cross tsc sync test. Ideally with the small tweak, we could
+> > > > > > get less tsc issues to debug.
+> > > > > >  And I'm not sure it would help in real trouble shooting cases. But we
+> > > > > > will see if it would help.
+> > > > >
+> > > > > Thank you for the patch!
+> > > > >
+> > > > > However, Thomas had me rework this code to put the error injection into
+> > > > > a kernel module, so this effect is now obtained in a different way.
+> > > > > So I am unable to make use of your patch.
+> > > >
+> > > > np, thanks for the heads up.
+> > > >
+> > > > we will also need to measure the tsc sync retest and prove it's robust
+> > > >  enough to trump the bad decision from clocksource watchdog based on HPET
+> > > > or other slow and old clocks while leaving good decisions pass through.
+> > > >
+> > > > we will re-spin the tsc story when your code is settled and landed in
+> > > > the mainline.
+> > >
+> > > My current series exports clocksource_verify_percpu(), which might help
+> > > measuring TSC synchronization.
+> > >
+> > >                                                         Thanx, Paul
