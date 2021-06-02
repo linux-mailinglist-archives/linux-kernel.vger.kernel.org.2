@@ -2,79 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248B6397ED9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3B1397EDC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 04:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhFBCVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 22:21:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:40038 "EHLO vps0.lunn.ch"
+        id S230329AbhFBCVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 22:21:44 -0400
+Received: from mga09.intel.com ([134.134.136.24]:20737 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhFBCVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 22:21:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=K3KCqXEauU6aKWxkMMXwDfluv9Lna1lNjOr9IA8yR50=; b=T/jkor7n0Ct6kXy2F4qShDNK2Z
-        87SmFZM6g/f0GwloGvvWi0Ja41Orn0I4sCRWYW3sZL8E+YtzrndGl/ZKLI6kDiM05Zucl9YZBc9OR
-        Uk8z0lejdQmmPC7utewdJFvnbZ+Hj8PT5+Ea3pJVFEoBJ558+Cclz+XUmockU+hMOyFE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1loGTv-007Ngi-Ln; Wed, 02 Jun 2021 04:19:43 +0200
-Date:   Wed, 2 Jun 2021 04:19:43 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
-Message-ID: <YLbqv0Sy/3E2XaVU@lunn.ch>
-References: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
- <YKz86iMwoP3VT4uh@lunn.ch>
- <20210601104734.GA18984@linux.intel.com>
- <YLYwcx3aHXFu4n5C@lunn.ch>
- <20210601154423.GA27463@linux.intel.com>
- <YLazBrpXbpsb6aXI@lunn.ch>
- <20210601230352.GA28209@linux.intel.com>
+        id S230135AbhFBCVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Jun 2021 22:21:39 -0400
+IronPort-SDR: SQg5o+XHKePK02iKMoX6fp++PfHesrxXxn0v9A1OF18QOysMotFg6mXwUgYMhFfvLBitoFloWC
+ n0ya6roAu+eg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10002"; a="203679576"
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="203679576"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 19:19:56 -0700
+IronPort-SDR: c8LTIqPvgif8BwO6bfSAzuVB5wpgraSVBgvbHRddz+GboCCc38ONIo32jIfEHvISZsoL2Bmlne
+ x0KaU4QcjGHw==
+X-IronPort-AV: E=Sophos;i="5.83,241,1616482800"; 
+   d="scan'208";a="633068403"
+Received: from mjdelaro-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.3.23])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2021 19:19:55 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v1 10/11] x86/tdx: Add MSR support for TDX guest
+Date:   Tue,  1 Jun 2021 19:19:52 -0700
+Message-Id: <20210602021953.2186589-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601230352.GA28209@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Yeah, you're right. Thanks for pointing that out. It should be:
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 1539ea021ac0..73bfde770f2d 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -862,11 +862,22 @@ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
->         c45_ids.mmds_present = 0;
->         memset(c45_ids.device_ids, 0xff, sizeof(c45_ids.device_ids));
-> 
-> -       if (is_c45)
-> +       if (is_c45) {
->                 r = get_phy_c45_ids(bus, addr, &c45_ids);
-> -       else
-> +       } else {
->                 r = get_phy_c22_id(bus, addr, &phy_id);
-> 
-> +               if (phy_id == 0) {
-> +                       r = get_phy_c45_ids(bus, addr, &c45_ids);
-> +                       if (r == -ENOTSUPP || r == -ENODEV)
-> +                               return phy_device_create(bus, addr, phy_id,
-> +                                                        false, &c45_ids);
-> +                       else
-> +                               return phy_device_create(bus, addr, phy_id,
-> +                                                        true, &c45_ids);
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Still not correct. Think about when get_phy_c22_id() returns an
-error. Walk through all the different code paths and check they do the
-right thing. It is actually a lot more complex than what is shown
-here. Think about all the different types of PHYs and all the
-different types of MDIO bus drivers.
+Operations on context-switched MSRs can be run natively. The rest of
+MSRs should be handled through TDVMCALLs.
 
-      Andrew
+TDVMCALL[Instruction.RDMSR] and TDVMCALL[Instruction.WRMSR] provide
+MSR oprations.
+
+You can find RDMSR and WRMSR details in Guest-Host-Communication
+Interface (GHCI) for Intel Trust Domain Extensions (Intel TDX)
+specification, sec 3.10, 3.11.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+ arch/x86/kernel/tdx.c | 67 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 65 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 76b71bf56b81..af7acea500ab 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -115,6 +115,55 @@ static __cpuidle void tdg_safe_halt(void)
+ 	BUG_ON(ret);
+ }
+ 
++static bool tdg_is_context_switched_msr(unsigned int msr)
++{
++	switch (msr) {
++	case MSR_EFER:
++	case MSR_IA32_CR_PAT:
++	case MSR_FS_BASE:
++	case MSR_GS_BASE:
++	case MSR_KERNEL_GS_BASE:
++	case MSR_IA32_SYSENTER_CS:
++	case MSR_IA32_SYSENTER_EIP:
++	case MSR_IA32_SYSENTER_ESP:
++	case MSR_STAR:
++	case MSR_LSTAR:
++	case MSR_SYSCALL_MASK:
++	case MSR_IA32_XSS:
++	case MSR_TSC_AUX:
++	case MSR_IA32_BNDCFGS:
++		return true;
++	}
++	return false;
++}
++
++static u64 tdg_read_msr_safe(unsigned int msr, int *err)
++{
++	u64 ret;
++	struct tdx_hypercall_output out = {0};
++
++	WARN_ON_ONCE(tdg_is_context_switched_msr(msr));
++
++	ret = __tdx_hypercall(EXIT_REASON_MSR_READ, msr, 0, 0, 0, &out);
++
++	*err = ret ? -EIO : 0;
++
++	return out.r11;
++}
++
++static int tdg_write_msr_safe(unsigned int msr, unsigned int low,
++			      unsigned int high)
++{
++	u64 ret;
++
++	WARN_ON_ONCE(tdg_is_context_switched_msr(msr));
++
++	ret = __tdx_hypercall(EXIT_REASON_MSR_WRITE, msr, (u64)high << 32 | low,
++			      0, 0, NULL);
++
++	return ret ? -EIO : 0;
++}
++
+ unsigned long tdg_get_ve_info(struct ve_info *ve)
+ {
+ 	u64 ret;
+@@ -141,19 +190,33 @@ unsigned long tdg_get_ve_info(struct ve_info *ve)
+ int tdg_handle_virtualization_exception(struct pt_regs *regs,
+ 		struct ve_info *ve)
+ {
++	unsigned long val;
++	int ret = 0;
++
+ 	switch (ve->exit_reason) {
+ 	case EXIT_REASON_HLT:
+ 		tdg_halt();
+ 		break;
++	case EXIT_REASON_MSR_READ:
++		val = tdg_read_msr_safe(regs->cx, (unsigned int *)&ret);
++		if (!ret) {
++			regs->ax = val & UINT_MAX;
++			regs->dx = val >> 32;
++		}
++		break;
++	case EXIT_REASON_MSR_WRITE:
++		ret = tdg_write_msr_safe(regs->cx, regs->ax, regs->dx);
++		break;
+ 	default:
+ 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
+ 		return -EFAULT;
+ 	}
+ 
+ 	/* After successful #VE handling, move the IP */
+-	regs->ip += ve->instr_len;
++	if (!ret)
++		regs->ip += ve->instr_len;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ void __init tdx_early_init(void)
+-- 
+2.25.1
+
