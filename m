@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC12398E4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91210398E34
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhFBPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:20:22 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58556 "EHLO
+        id S232065AbhFBPTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:19:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50014 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbhFBPUK (ORCPT
+        with ESMTP id S231998AbhFBPTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:20:10 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E817122BD5;
-        Wed,  2 Jun 2021 15:18:26 +0000 (UTC)
+        Wed, 2 Jun 2021 11:19:47 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 91BF222158;
+        Wed,  2 Jun 2021 15:18:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622647106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1622647083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EExQFawgGd7iNB9vNu/Slav2uxSKgTIBcsMBzXZv3GA=;
-        b=WkSOT0SOldZpcTtjEBQH6MupD+n2D9MSEW02p2DCkoaSx8AMDtvclb+QEWL0ot2okh27dT
-        I+DrC27OP2RI5wshebG4wLe2ypqk5obXoBoEol3nJk3rAKVE2OTD5KkktPB/Jqb/T0fcj5
-        HrXbzcM/0t+8wpJrHLSVKsEuzQNOWFM=
+        bh=5wuqoEIoWxqpFQz0JrbocfIk8+mWjeTL8hH48BsFrio=;
+        b=VnDu0wwelXhxsEbDcNyQ7jNOtAKDLRdCx/mClJOM7xrxWm0iwYSD5e3ftUOWY2bLzMp9xc
+        9K8yG/eCKYN6q9tj8/YhvuxBawcwGiLzcmujIS2djIbFeC1ZzyahluV6Rafu31F6u1jkgz
+        D0Gpw4sMHfX3CG1h3UHQTvuy4av5AUg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622647106;
+        s=susede2_ed25519; t=1622647083;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EExQFawgGd7iNB9vNu/Slav2uxSKgTIBcsMBzXZv3GA=;
-        b=yzQYKBDyRizkQtDd2NGfB/KbTYIyk4CHeQcNd1TjIV886EPeXAZFxIruQUPpYd3VqpLNIN
-        rxeW9ohAz/lECHAA==
-Received: by imap.suse.de (Postfix, from userid 51)
-        id E0B3E11CD5; Wed,  2 Jun 2021 16:04:03 +0000 (UTC)
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id CAE9411EE1;
-        Wed,  2 Jun 2021 14:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622643764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EExQFawgGd7iNB9vNu/Slav2uxSKgTIBcsMBzXZv3GA=;
-        b=sKT6om9kRHiNpIUHSatr7Fbve41lPc/J6+joteUqMdMyUwawbCXLYogM4ZeqXfu9/uhqu8
-        kb6+k4KBhBpuyfa07QA7f/QNlxrK0nHEDHXH03BNU3z55/OB6ZSc3yOj+AwSjyDXN/YLPh
-        tCSe8nHx5NNQTX6xvXcgDJkuf9aNIyM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622643764;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EExQFawgGd7iNB9vNu/Slav2uxSKgTIBcsMBzXZv3GA=;
-        b=5ImJD4SUYB2b4tkRVwSm/D7kHCRbSua36lpV7taCsaWdf/53TI5frd/Z3l+Nfn6mC57Bj5
-        mLysOBBDxaJnKwCA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id tAMPLjOUt2BcZgAALh3uQQ
-        (envelope-from <lhenriques@suse.de>); Wed, 02 Jun 2021 14:22:43 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 5284bd4d;
-        Wed, 2 Jun 2021 14:22:43 +0000 (UTC)
-Date:   Wed, 2 Jun 2021 15:22:42 +0100
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: gcov: NULL pointer dereference with gcc 9.3.1
-Message-ID: <YLeUMit+CTfZl8pw@suse.de>
-References: <YLZYwgs5hyzFZMlw@suse.de>
- <0a013450-75eb-de2c-f90a-3df193800cea@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0a013450-75eb-de2c-f90a-3df193800cea@linux.ibm.com>
+        bh=5wuqoEIoWxqpFQz0JrbocfIk8+mWjeTL8hH48BsFrio=;
+        b=Uvq2cbXvnOMXfHKFe4Yl8NNHtqkEU+Ipuj00FwaqmMMvS2p9oepnwxl9G1xcTANOASKlY+
+        laKy1+BIRFE75XDw==
+Received: by relay2.suse.de (Postfix, from userid 51)
+        id 8DB31A3D7E; Wed,  2 Jun 2021 15:25:10 +0000 (UTC)
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 06E87A7B47;
+        Wed,  2 Jun 2021 14:24:13 +0000 (UTC)
+Date:   Wed, 02 Jun 2021 16:24:13 +0200
+Message-ID: <s5ha6o8wdiq.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jaroslav Kysela <perex@perex.cz>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>, allen.lkml@gmail.com,
+        alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        pierre-louis.bossart@linux.intel.com, romain.perier@gmail.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>, tiwai@suse.com
+Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in snd_timer_user_ccallback
+In-Reply-To: <5c3fbdf8-bfa3-a50e-edb9-81fbce84d9cb@perex.cz>
+References: <CAD-N9QUDYbzkZXnDzf2P4b4Qk_kBQ_9ZVL3B4jhe9Xf2rgtpGA@mail.gmail.com>
+        <5c3fbdf8-bfa3-a50e-edb9-81fbce84d9cb@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 02:35:31PM +0200, Peter Oberparleiter wrote:
-> On 01.06.2021 17:56, Luis Henriques wrote:
-> > Hi!
-> > 
-> > Maybe this is a known (gcc?) issue, but I'm seeing a NULL pointer splat if
-> > I instrument my kernel (or a module, more specifically) using gcc 9.3.1.
-> > 
-> > It looks like, during initialization in __gcov_init(), gcov_info struct is
-> > invalid: the filename seems to be correct but ->function is NULL and
-> > ->n_functions contains garbage.
+On Wed, 02 Jun 2021 16:19:13 +0200,
+Jaroslav Kysela wrote:
 > 
-> Thanks for reporting this issue. The symptoms you're seeing look similar
-> to those that occur when the struct gcov_info layout emitted by GCC does
-> not match the one used by the kernel. In particular a change in the
-> GCOV_COUNTER value can cause this behavior.
+> On 02. 06. 21 15:18, Dongliang Mu wrote:
+> >> Hello,
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit: 5ff2756a Merge tag 'nfs-for-5.13-2' of git://git.linux-nfs..
+> >> git tree: upstream
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=17872d5bd00000
+> >> kernel config: https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=d102fa5b35335a7e544e
+> >>
+> >> Unfortunately, I don't have any reproducer for this issue yet.
+> >>
+> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >> Reported-by: syzbot+d102fa...@syzkaller.appspotmail.com
+> >>
+> >> ================================================================================
+> >> UBSAN: shift-out-of-bounds in sound/core/timer.c:1376:23
+> >> shift exponent 105 is too large for 32-bit type 'int'
+> >> CPU: 1 PID: 10368 Comm: syz-executor.1 Not tainted 5.13.0-rc3-syzkaller #0
+> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> >> Call Trace:
+> >> __dump_stack lib/dump_stack.c:79 [inline]
+> >> dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+> >> ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+> >> __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+> >> snd_timer_user_ccallback.cold+0x19/0x1e sound/core/timer.c:1376
+> >>
+> >> snd_timer_notify1+0x243/0x3b0 sound/core/timer.c:525
+> > 
+> > The root cause of this bug is in the snd_timer_notify1 [1]. At the end
+> > of this function, it calls "ts->ccallback(ts, event + 100, &tstamp,
+> > resolution)".
+> > 
+> > Here the variable event is 5. It adds 100 and is passed as 2nd
+> > argument of snd_timer_user_ccallback.
+> > 
+> >>From the variable naming, the 2nd argument should an event, and in the
+> > range of event enumeration. In fact, 105 (event + 100) is out of this
+> > range. I don't quite understand the meaning of adding 100. Any thought
+> > here?
 > 
-> I've checked upstream GCC 9.3.1 and it seems to match what is used by
-> the kernel for that GCC version. Could you provide the exact version of
-> the compiler you are using? Both 'gcc --version' output and the GCC
-> package version should help. Also what architecture are you seeing this on?
+> It seems that the original intent was to move the event to the M... events:
+> 
+>      SNDRV_TIMER_EVENT_MSTART = SNDRV_TIMER_EVENT_START + 10,
+> 
+> So the added value should be 10 which should not break the shift range (8
+> /resume/ + 10 = 18).
 
-Here's the output of 'gcc --version':
+I've already submitted the fix patch, but it doesn't seem reaching
+properly to ML.  Hmm.  Will resend.
 
-gcc (SUSE Linux) 9.3.1 20200903 [revision 9790fa53b48f3a48e0f7a7ad65e2bbf3b206a7b0]
-Copyright (C) 2019 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-This is the version shipped with openSUSE Tumbleweed, and I'm using it to
-compile an x86_64 kernel.  Regarding the 'package version', I'm assuming
-the packages as per the distro package version, right?  Here's the data
-from 'zypper info':
-
-Information for package gcc9:
------------------------------
-Repository     : Main Repository (OSS)
-Name           : gcc9
-Version        : 9.3.1+git1684-3.5
-Arch           : x86_64
-Vendor         : openSUSE
-Installed Size : 94.6 MiB
-Installed      : Yes (automatically)
-Status         : up-to-date
-Source package : gcc9-9.3.1+git1684-3.5.src
-
-Do you have a link with binaries I could test for upstream 9.3.1?  I
-checked [1] but there's only 9.3.0.
-
-[1] https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/
-
-Cheers,
---
-Luís
+Takashi
