@@ -2,138 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B34D399048
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571C739904E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhFBQsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhFBQsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:48:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140ABC061574;
-        Wed,  2 Jun 2021 09:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7tohifuv5JYW3E7Hk1sVQuIjPI/C8MKSY3MQl5vvB4s=; b=kdu4BwlchYINw3C+EcBocsHDUy
-        a91P+WO2n/ztNAZpC4i1gw7tqOKUFzwWu58suQdLAjM2YXFikv/5/oaqPmf99JVYKCNj2WJKpDQ0i
-        S0c8GI0OlAIisTgxakan8G10HFtH5HuNw7Hqdqi3RHiYYq3zdmBzXy5lsDnRzF3TJVEtdO68TnpgS
-        8K25eJH4v8dAAo7rswaiwcEE8nXrQyqHEIrzfWlp7ORDwYUd2bEDZxmNSuwBFuW4xEFDNeWs3Yg6U
-        o+Kb0+cIMahvxPwVt/nlQwL5AtLXT/J6J+qePZba4xfUkA84xt+DhB39swRCy3609n/Mv+E85Mgmt
-        FcuTDgEw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1loU0X-00BKKW-No; Wed, 02 Jun 2021 16:46:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7E12300299;
-        Wed,  2 Jun 2021 18:46:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8A73D2016D6DD; Wed,  2 Jun 2021 18:46:16 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 18:46:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        id S230351AbhFBQtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:49:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230215AbhFBQtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:49:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D76B860FEE;
+        Wed,  2 Jun 2021 16:47:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622652451;
+        bh=mHZIffR0DdrLEhnAmRnaMyrF2+gcxZ3dunFWbH0rWDA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=X8O9G15WXlPUIbsCT12lVtm4RjLJ4zKx9HySsNAGCx6+dztpHWyFTf/EZyKPUT9jW
+         K90QcC5TS/hhmiLFDbOJWHiGfdP9LVfnIXh8ziBf1Av26VhRnvfxuUM06+uv0ieNJr
+         /WemsMqoaEOhMwMwj9CAcjAXMi0vLjNAJnvl3JM12+T9U7ID41hxxmKjI5ikT/tzWU
+         g1mUG0tVkszEO0DHYLJC81eCOAoXQLmnGFZZUhqSGbaETa0WZ1SUwvOWPnTHUF5Ctp
+         po8TcQcjPb2FtI/eieTLbrNVfcRJMfPoFDpxUd2FDKMdHny3KKiJef0ehjy9VzpcBk
+         qNbIRY+j3Jg8g==
+From:   Will Deacon <will@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Ingo Molnar <mingo@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
-Message-ID: <YLe12Ba4CrvhMhFI@hirez.programming.kicks-ass.net>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.334970485@infradead.org>
- <20210602145921.GB31179@willie-the-truck>
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v8 00/19] Add support for 32-bit tasks on asymmetric AArch32 systems
+Date:   Wed,  2 Jun 2021 17:47:00 +0100
+Message-Id: <20210602164719.31777-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602145921.GB31179@willie-the-truck>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 03:59:21PM +0100, Will Deacon wrote:
-> On Wed, Jun 02, 2021 at 03:12:27PM +0200, Peter Zijlstra wrote:
-> > Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
-> > task_is_running(p).
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  arch/x86/kernel/process.c |    4 ++--
-> >  block/blk-mq.c            |    2 +-
-> >  include/linux/sched.h     |    2 ++
-> >  kernel/locking/lockdep.c  |    2 +-
-> >  kernel/rcu/tree_plugin.h  |    2 +-
-> >  kernel/sched/core.c       |    6 +++---
-> >  kernel/sched/stats.h      |    2 +-
-> >  kernel/signal.c           |    2 +-
-> >  kernel/softirq.c          |    3 +--
-> >  mm/compaction.c           |    2 +-
-> >  10 files changed, 14 insertions(+), 13 deletions(-)
-> > 
-> > --- a/arch/x86/kernel/process.c
-> > +++ b/arch/x86/kernel/process.c
-> > @@ -931,7 +931,7 @@ unsigned long get_wchan(struct task_stru
-> >  	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
-> >  	int count = 0;
-> >  
-> > -	if (p == current || p->state == TASK_RUNNING)
-> > +	if (p == current || task_is_running(p))
-> 
-> Looks like this one in get_wchan() has been cargo-culted across most of
-> arch/ so they'll need fixing up before you rename the struct member.
+Hi again folks,
 
-Yeah, this was x86_64 allmodconfig driven, I've already got a bunch of
-robot mail telling me other archs need help, I'll fix it iup.
+Here is v8 of the asymmetric 32-bit support patches that I previously
+posted here:
 
-> There's also a weird one in tools/bpf/runqslower/runqslower.bpf.c (!)
+  v1: https://lore.kernel.org/r/20201027215118.27003-1-will@kernel.org
+  v2: https://lore.kernel.org/r/20201109213023.15092-1-will@kernel.org
+  v3: https://lore.kernel.org/r/20201113093720.21106-1-will@kernel.org
+  v4: https://lore.kernel.org/r/20201124155039.13804-1-will@kernel.org
+  v5: https://lore.kernel.org/r/20201208132835.6151-1-will@kernel.org
+  v6: https://lore.kernel.org/r/20210518094725.7701-1-will@kernel.org
+  v7: https://lore.kernel.org/r/20210525151432.16875-1-will@kernel.org
 
-I'm tempted to let the bpf people sort their own gunk. This is not an
-ABI. I so don't care breaking every script out there.
+There was also a nice LWN writeup in case you've forgotten what this is
+about:
+
+	https://lwn.net/Articles/838339/
+
+Changes since v7 include:
+
+  * Dropped the scheduler migration fix, as Valentin has kindly fixed
+    this separately in -tip:
+
+    https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=sched/core&id=475ea6c60279e9f2ddf7e4cf2648cd8ae0608361
+
+  * Dropped the freezer/ttwu changes, as Peter is rewriting that:
+
+    https://lore.kernel.org/r/YLYZv4v68OnAlx+3@hirez.programming.kicks-ass.net
+
+  * Reworded documentation wrt KVM behaviour [maz]
+
+  * Tidied up control flow in cpuset_cpus_allowed_fallback() [peterz]
+
+  * Fixed interaction with migrate_disable() [peterz]
+
+  * Don't ignore allocation failure in restrict_cpus_allowed_ptr() [peterz]
+
+  * Reordered the patches to put arm64 prep work first
+
+  * Added some more acks/reviewed-by tags
+
+Cheers,
+
+Will
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Morten Rasmussen <morten.rasmussen@arm.com>
+Cc: Qais Yousef <qais.yousef@arm.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Quentin Perret <qperret@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: kernel-team@android.com
+
+--->8
+
+Will Deacon (19):
+  arm64: cpuinfo: Split AArch32 registers out into a separate struct
+  arm64: Allow mismatched 32-bit EL0 support
+  KVM: arm64: Kill 32-bit vCPUs on systems with mismatched EL0 support
+  arm64: Kill 32-bit applications scheduled on 64-bit-only CPUs
+  sched: Introduce task_cpu_possible_mask() to limit fallback rq
+    selection
+  cpuset: Don't use the cpu_possible_mask as a last resort for cgroup v1
+  cpuset: Honour task_cpu_possible_mask() in guarantee_online_cpus()
+  sched: Reject CPU affinity changes based on task_cpu_possible_mask()
+  sched: Introduce task_struct::user_cpus_ptr to track requested
+    affinity
+  sched: Split the guts of sched_setaffinity() into a helper function
+  sched: Allow task CPU affinity to be restricted on asymmetric systems
+  sched: Introduce task_cpus_dl_admissible() to check proposed affinity
+  arm64: Implement task_cpu_possible_mask()
+  arm64: exec: Adjust affinity for compat tasks with mismatched 32-bit
+    EL0
+  arm64: Prevent offlining first CPU with 32-bit EL0 on mismatched
+    system
+  arm64: Advertise CPUs capable of running 32-bit applications in sysfs
+  arm64: Hook up cmdline parameter to allow mismatched 32-bit EL0
+  arm64: Remove logic to kill 32-bit tasks on 64-bit-only cores
+  Documentation: arm64: describe asymmetric 32-bit support
+
+ .../ABI/testing/sysfs-devices-system-cpu      |   9 +
+ .../admin-guide/kernel-parameters.txt         |  11 +
+ Documentation/arm64/asymmetric-32bit.rst      | 155 ++++++++
+ Documentation/arm64/index.rst                 |   1 +
+ arch/arm64/include/asm/cpu.h                  |  44 +--
+ arch/arm64/include/asm/cpufeature.h           |   8 +-
+ arch/arm64/include/asm/elf.h                  |   6 +-
+ arch/arm64/include/asm/mmu_context.h          |  13 +
+ arch/arm64/kernel/cpufeature.c                | 227 +++++++++---
+ arch/arm64/kernel/cpuinfo.c                   |  53 +--
+ arch/arm64/kernel/process.c                   |  44 ++-
+ arch/arm64/kvm/arm.c                          |  11 +-
+ arch/arm64/tools/cpucaps                      |   3 +-
+ include/linux/cpuset.h                        |   3 +-
+ include/linux/mmu_context.h                   |  11 +
+ include/linux/sched.h                         |  21 ++
+ init/init_task.c                              |   1 +
+ kernel/cgroup/cpuset.c                        |  49 ++-
+ kernel/fork.c                                 |   2 +
+ kernel/sched/core.c                           | 334 ++++++++++++++----
+ kernel/sched/sched.h                          |   1 +
+ 21 files changed, 819 insertions(+), 188 deletions(-)
+ create mode 100644 Documentation/arm64/asymmetric-32bit.rst
+
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
+
