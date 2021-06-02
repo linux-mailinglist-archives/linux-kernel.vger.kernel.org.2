@@ -2,239 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B488D3988B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352833988B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhFBL70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
+        id S229606AbhFBMAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhFBL7X (ORCPT
+        with ESMTP id S229593AbhFBMAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:59:23 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2741C061574;
-        Wed,  2 Jun 2021 04:57:27 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so2170327otk.5;
-        Wed, 02 Jun 2021 04:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fb6RB9fi/rF6AK+iCW4g0jD1m+9qa/FYg2uv3qR8UrM=;
-        b=qmPMNYMs9dRcamDOLeCFnuMl5E/b5gkvIKBLdy0uZO6pOIhRXpuFQkqkOJCyHFI5Zr
-         iZ+GlfM0TSEO2HZR5kku4tjdHsfKuUbQ8vzid9YfN0naevMStikuUB9eiw+ClU5ZBe+j
-         EQWfbdKDhnkh5gzonqlKheX6Eti0v0HocUGf6Nv7oZd1svlGEaB0jZPVVaks2fL4+/tb
-         F1zaHPjVhb+C4K4PIFc2h+vzzmLlwAih4Ysay3oFYoG9gL8t12EqDA+6JzYKdAEszNea
-         V1VMssza6C2+0Lph9oxc31LAnGXDi4Qf5PG+/HrM9ARXXmysOWDJlwAeN1a+DNlREmpQ
-         ikRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=fb6RB9fi/rF6AK+iCW4g0jD1m+9qa/FYg2uv3qR8UrM=;
-        b=VZds9Y1/GrBQgtdEUJ8bFXGhlPTFguNrMb/M7jUBIFzi0ZNc5mQw3+rFDasxYuN8X0
-         eTn3/XOSEwB7lNOBUW4IsDTFAcZHZ3smzqjJrzrip0W8+9Vtgll5DKNDVoWi6wPYMUC6
-         kligS24Uhvom5HYrZf1TEKIDH0GzEFbSJyDncbbfi7BECIZTXdO3IeFhp5T1vjOCctBF
-         f4Zse/x5qK+DigxvOXpgYn/93qPHfhUd35pO4+nnv1sYif/sKQ7ixMCELEH6tiQ4s0d9
-         WRVgpY2vvvoskUJXDCGFOoBnpdGSvzLX3pdbfP4JBZ9Y2UpKiO5AUZxSOLeZT+Wx9vr4
-         0aHQ==
-X-Gm-Message-State: AOAM532GHkzJQNzokQhdZMRB2WF9AawmCOScvbYha4s9rCaXWwAqXN22
-        7cPdpBnuaeft55d/z2Ta2gyFgOFwx+Y=
-X-Google-Smtp-Source: ABdhPJwc+wyUJg732ih2UqDXokblzLPIlaux3j0FQ3LzlB4lSfgawdW6C/eHkO+ni2zHmGgLCV5DRg==
-X-Received: by 2002:a9d:460b:: with SMTP id y11mr16438977ote.330.1622635047058;
-        Wed, 02 Jun 2021 04:57:27 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j26sm370740otp.15.2021.06.02.04.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 04:57:26 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 2 Jun 2021 04:57:25 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Navin Sankar Velliangiri <navin@linumiz.com>,
-        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] hwmon: sht4x: Fix sht4x_read_values return value
-Message-ID: <20210602115725.GA2901603@roeck-us.net>
-References: <60eedce497137eb34448c0c77e01ec9d9c972ad7.camel@perches.com>
+        Wed, 2 Jun 2021 08:00:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8EFC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mQopZOGEyPUPV5G5APHCEl13iaIRug2yhfkIsJePiyA=; b=vZjiGz3Ipz7NThkF9NAxLmGyFJ
+        OIDbNdzRaAE8h3S4YUTFg4S+S59Mii3RlwzclKY4d4ymOwGAacIATCpxbSQ3nqybDFI0SgXGWvlDd
+        jAfyp4JGoQXBCaEJZROGMzT9ueJSAemseIuoK7g4S+hIFHbBqGSN5E7tR59Cb+ZWqumHt9MErBMcw
+        yhF9Qr+By+jiAjcH+qvqjWsLSDPStYCd9KihSd8ruMslDRLS2dWzZ/9fluxUIcx102xm4gHIHOtas
+        nYKdXX/5LGznaeevWjJlPW2CGV7b/zg86PV5E9YujhcT2cXJu4xjPhhFymmrGNyH6E6Wkvp3qO5lL
+        YHdvjQ4g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1loPVk-00B40Q-Nv; Wed, 02 Jun 2021 11:58:19 +0000
+Date:   Wed, 2 Jun 2021 12:58:12 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yu Xu <xuyu@linux.alibaba.com>
+Cc:     Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        gavin.dg@linux.alibaba.com, Greg Thelen <gthelen@google.com>,
+        Wei Xu <weixugc@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm, thp: relax migration wait when failed to get tail
+ page
+Message-ID: <YLdyVEbPs+Gwf3G4@casper.infradead.org>
+References: <bc8567d7a2c08ab6fdbb8e94008157265d5d28a3.1622564942.git.xuyu@linux.alibaba.com>
+ <alpine.LSU.2.11.2106010947370.1090@eggly.anvils>
+ <YLZqKJ4anEGpAZfp@casper.infradead.org>
+ <alpine.LSU.2.11.2106011114580.1045@eggly.anvils>
+ <71c320bf-3fcb-f8c0-65e4-ff706af05607@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60eedce497137eb34448c0c77e01ec9d9c972ad7.camel@perches.com>
+In-Reply-To: <71c320bf-3fcb-f8c0-65e4-ff706af05607@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 02:13:52AM -0700, Joe Perches wrote:
-> Kernel doc for sht4x_read_values() shows 0 on success, 1 on failure but
-> the return value on success is actually always positive as it is set to
-> SHT4X_RESPONSE_LENGTH by a successful call to i2c_master_recv().
+On Wed, Jun 02, 2021 at 11:27:47AM +0800, Yu Xu wrote:
+> On 6/2/21 3:10 AM, Hugh Dickins wrote:
+> > On Tue, 1 Jun 2021, Matthew Wilcox wrote:
+> > > On Tue, Jun 01, 2021 at 09:55:56AM -0700, Hugh Dickins wrote:
+> > > > 
+> > > > Well caught: you're absolutely right that there's a bug there.
+> > > > But isn't cond_resched() just papering over the real bug, and
+> > > > what it should do is a "page = compound_head(page);" before the
+> > > > get_page_unless_zero()? How does that work out in your testing?
+> > > 
+> > > You do realise you're strengthening my case for folios by suggesting
+> > > that, don't you?  ;-)
+> > 
+> > Hah! Well, I do realize that I'm offering you a marketing opportunity.
+> > And you won't believe how many patches I dread to post for fear of that ;-)
+> > 
+> > But I'm not so sure that it strengthens your case: apparently folios
+> > had not detected this?  Or do you have a hoard of folio-detected fixes
+> > waiting for the day, and a folio-kit for each of the stable releases?
+> > 
+> > > 
+> > > I was going to suggest that it won't make any difference because the
+> > > page reference count is frozen, but the freezing happens after the call
+> > > to unmap_page(), so it may make a difference.
+> > 
+> > I think that's a good point: I may have just jumped on the missing
+> > compound_head(), without thinking it through as far as you have.
+> > 
+> > I'm having trouble remembering the dynamics now; but I think there
+> > are cond_resched()s in the unmap_page() part, so the splitter may
+> > get preempted even on a non-preempt kernel; whereas the frozen
+> > part is all done expeditiously, with interrupts disabled.
+> > 
+> > Greg discovered the same issue recently, but we all got sidetracked,
+> > and I don't know where his investigation ended up.  He was in favour
+> > of cond_resched(), I was in favour of compound_head(); and I think I
 > 
-> Miscellanea:
-> 
-> o Update the kernel doc for sht4x_read_values to 0 for success or -ERRNO
-> o Remove incorrectly used kernel doc /** header for other _read functions
-> o Typo fix succesfull->successful
-> o Reverse a test to unindent a block and use goto unlock
-> o Declare cmd[SHT4X_CMD_LEN] rather than cmd[]
-> 
-> At least for gcc 10.2, object size is reduced a tiny bit.
-> 
-> $ size drivers/hwmon/sht4x.o*
->    text	   data	    bss	    dec	    hex	filename
->    1752	    404	    256	   2412	    96c	drivers/hwmon/sht4x.o.new
->    1825	    404	    256	   2485	    9b5	drivers/hwmon/sht4x.o.old
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+> I ever considered about using compound_head, but isn't there another
+> race that, the following put_and_wait_on_page_locked operates on the
+> "tail page" which has been split and is now a single page?
 
-Thanks, applied.
+No, having your own reference on a page prevents the page from being
+split.  But that's a good question to ask.
 
-Guenter
-
-> ---
-> 
-> compiled, untested, no hardware
-> 
->  drivers/hwmon/sht4x.c | 95 ++++++++++++++++++++++++---------------------------
->  1 file changed, 45 insertions(+), 50 deletions(-)
-> 
-> diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-> index 1dc51ee2a72ba..09c2a0b064444 100644
-> --- a/drivers/hwmon/sht4x.c
-> +++ b/drivers/hwmon/sht4x.c
-> @@ -67,7 +67,7 @@ struct sht4x_data {
->  /**
->   * sht4x_read_values() - read and parse the raw data from the SHT4X
->   * @sht4x_data: the struct sht4x_data to use for the lock
-> - * Return: 0 if succesfull, 1 if not
-> + * Return: 0 if successful, -ERRNO if not
->   */
->  static int sht4x_read_values(struct sht4x_data *data)
->  {
-> @@ -75,51 +75,53 @@ static int sht4x_read_values(struct sht4x_data *data)
->  	u16 t_ticks, rh_ticks;
->  	unsigned long next_update;
->  	struct i2c_client *client = data->client;
-> -	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
-> -	cmd[] = {SHT4X_CMD_MEASURE_HPM};
-> +	u8 crc;
-> +	u8 cmd[SHT4X_CMD_LEN] = {SHT4X_CMD_MEASURE_HPM};
-> +	u8 raw_data[SHT4X_RESPONSE_LENGTH];
->  
->  	mutex_lock(&data->lock);
->  	next_update = data->last_updated +
->  		      msecs_to_jiffies(data->update_interval);
-> -	if (!data->valid || time_after(jiffies, next_update)) {
-> -		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-> -		if (ret < 0)
-> -			goto unlock;
-> -
-> -		usleep_range(SHT4X_MEAS_DELAY,
-> -			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
-> -
-> -		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
-> -		if (ret != SHT4X_RESPONSE_LENGTH) {
-> -			if (ret >= 0)
-> -				ret = -ENODATA;
-> -
-> -			goto unlock;
-> -		}
-> -
-> -		t_ticks = raw_data[0] << 8 | raw_data[1];
-> -		rh_ticks = raw_data[3] << 8 | raw_data[4];
-> -
-> -		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-> -		if (crc != raw_data[2]) {
-> -			dev_err(&client->dev, "data integrity check failed\n");
-> -			ret = -EIO;
-> -			goto unlock;
-> -		}
-> -
-> -		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-> -		if (crc != raw_data[5]) {
-> -			dev_err(&client->dev, "data integrity check failed\n");
-> -			ret = -EIO;
-> -			goto unlock;
-> -		}
-> -
-> -		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
-> -		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
-> -		data->last_updated = jiffies;
-> -		data->valid = true;
-> +
-> +	if (data->valid && time_before_eq(jiffies, next_update))
-> +		goto unlock;
-> +
-> +	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-> +	if (ret < 0)
-> +		goto unlock;
-> +
-> +	usleep_range(SHT4X_MEAS_DELAY, SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
-> +
-> +	ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
-> +	if (ret != SHT4X_RESPONSE_LENGTH) {
-> +		if (ret >= 0)
-> +			ret = -ENODATA;
-> +		goto unlock;
-> +	}
-> +
-> +	t_ticks = raw_data[0] << 8 | raw_data[1];
-> +	rh_ticks = raw_data[3] << 8 | raw_data[4];
-> +
-> +	crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-> +	if (crc != raw_data[2]) {
-> +		dev_err(&client->dev, "data integrity check failed\n");
-> +		ret = -EIO;
-> +		goto unlock;
->  	}
->  
-> +	crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-> +	if (crc != raw_data[5]) {
-> +		dev_err(&client->dev, "data integrity check failed\n");
-> +		ret = -EIO;
-> +		goto unlock;
-> +	}
-> +
-> +	data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
-> +	data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
-> +	data->last_updated = jiffies;
-> +	data->valid = true;
-> +	ret = 0;
-> +
->  unlock:
->  	mutex_unlock(&data->lock);
->  	return ret;
-> @@ -132,19 +134,14 @@ static ssize_t sht4x_interval_write(struct sht4x_data *data, long val)
->  	return 0;
->  }
->  
-> -/**
-> - * sht4x_interval_read() - read the minimum poll interval
-> - *			   in milliseconds
-> - */
-> +/* sht4x_interval_read() - read the minimum poll interval in milliseconds */
->  static size_t sht4x_interval_read(struct sht4x_data *data, long *val)
->  {
->  	*val = data->update_interval;
->  	return 0;
->  }
->  
-> -/**
-> - * sht4x_temperature1_read() - read the temperature in millidegrees
-> - */
-> +/* sht4x_temperature1_read() - read the temperature in millidegrees */
->  static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
->  {
->  	int ret;
-> @@ -158,9 +155,7 @@ static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
->  	return 0;
->  }
->  
-> -/**
-> - * sht4x_humidity1_read() - read a relative humidity in millipercent
-> - */
-> +/* sht4x_humidity1_read() - read a relative humidity in millipercent */
->  static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
->  {
->  	int ret;
