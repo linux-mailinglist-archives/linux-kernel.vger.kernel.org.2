@@ -2,199 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6523C398897
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FE739889E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhFBLvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
+        id S229882AbhFBLy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhFBLvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:51:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52D8D610A8;
-        Wed,  2 Jun 2021 11:50:02 +0000 (UTC)
+        id S229471AbhFBLy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 07:54:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 366ED61242;
+        Wed,  2 Jun 2021 11:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622634603;
-        bh=/XDBXOEWDZLJhkPEf7731KU5BWhU+sXSlLO2KR7uOFw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FTid54R9LI0ZIeApYUfTlASbI6qMnp/WYDGInWx7KMHabsTnT+T7eJ6LqN2LjIQAB
-         WJxUr1ETZuQgY0JLwvNDQ8owTT4P/2dm8UTPPGR58QRDRunLpQoRgaOycDE2Qxk+sr
-         X6WK8ptIOKphdNk+9VTK60uixVPdn5t0tKX27r0U9NohfgSRQGQc9uhTmOCDZ/SIIO
-         42G0N1jUSm23z9RU1yhtaVXbOTds4o1Zhg0siDRsDKxUeTfm/OIXpYHpXZxqKL1/1o
-         KtTzP18jWp9MTTaLxBfHZ/oREctuw02ve93wr0cOQoGgK/Pk2B1PWBu1BnlFPl2RdI
-         Fn2E9fcAUlYQg==
-Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: add compress_inode to cache
- compressed blocks
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Chao Yu <yuchao0@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210520115150.4718-1-chao@kernel.org>
- <c82e63e9-e626-f9a6-ddbc-b9acd026dafa@huawei.com>
- <YKz0VJSYYBEnF75V@google.com> <YKz1gGctmOJ+LjOn@google.com>
- <2c4db877-b5e6-1139-98b5-be2d9e7872be@kernel.org>
- <YK0DVi4aTNdXDN3L@google.com>
- <dda2400f-4a06-0ef6-b4f5-8aafe86bd81d@huawei.com>
- <YK5Mewfb3gMg1yGM@google.com>
- <5140516c-e4c6-fd6a-69b2-7566c903cb53@kernel.org>
- <YLZc0y0S3sGkU6f4@google.com> <YLZt+rFClf7xEzOa@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <09fa74d3-a9df-028f-3ebc-2b845e5cd609@kernel.org>
-Date:   Wed, 2 Jun 2021 19:49:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        s=k20201202; t=1622634764;
+        bh=I//4RBKnWt9wBavL0VfmU2oqhX+9WjJBJW64dSVgtEE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IIS0hSol21RczplZ6KQVFLpb+OTq1t+cRqvQ+ADWIp9yDbNpr3wJfKrmRGTzYuWKm
+         ogcJflRhNKmcouIS7VMlOEXTf/pgrO7O47A28U7zFA0ILaDcFYNhMwSFC3TLOhz6cw
+         trD4/NH9mz2mKqsAIjNOglrNPmbuGjUu3avHZhshQNdxvA+ACvKvptNNnWHKDR7de1
+         teMbZ35EI4zYgfoPIWdb8nsRbUdGDslkY64mz8marLR4nLQM7pm3jsIRIX1yLkcwf2
+         0Ax4u6V17QjovjZRky2FEsFHa5+zY06p8RpuKwjS/2cDdjhRva3p2Tk2r2dMcGjkz+
+         Cj6P6gRU8cWlw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1A44E4011C; Wed,  2 Jun 2021 08:52:41 -0300 (-03)
+Date:   Wed, 2 Jun 2021 08:52:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf probe: Provide more detail with relocation warning
+Message-ID: <YLdxCdjcLr9HDNra@kernel.org>
+References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
+ <20210525214858.33a66846ac09e499c3268a63@kernel.org>
+ <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
+ <20210526153340.a49ba8292f201493990f210c@kernel.org>
+ <YK5FfaxFKUNdDBWz@kernel.org>
+ <20210526232020.c1632c2285af811c7531b3cc@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YLZt+rFClf7xEzOa@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526232020.c1632c2285af811c7531b3cc@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/2 1:27, Jaegeuk Kim wrote:
-> On 06/01, Jaegeuk Kim wrote:
->> On 05/26, Chao Yu wrote:
->>> On 2021/5/26 21:26, Jaegeuk Kim wrote:
->>>> On 05/26, Chao Yu wrote:
->>>>> On 2021/5/25 22:01, Jaegeuk Kim wrote:
->>>>>> On 05/25, Chao Yu wrote:
->>>>>>> On 2021/5/25 21:02, Jaegeuk Kim wrote:
->>>>>>>> On 05/25, Jaegeuk Kim wrote:
->>>>>>>>> On 05/25, Chao Yu wrote:
->>>>>>>>>> Also, and queue this?
->>>>>>>>>
->>>>>>>>> Easy to get this?
->>>>>>>>
->>>>>>>> need GFP_NOFS?
->>>>>>>
->>>>>>> Not sure, I use __GFP_IO intentionally here to avoid __GFP_RECLAIM from
->>>>>>> GFP_NOFS, because in low memory case, I don't want to instead page cache
->>>>>>> of normal file with page cache of sbi->compress_inode.
->>>>>>>
->>>>>>> What is memory size in your vm?
->>>>>>
->>>>>> 4GB. If I set GFP_NOFS, I don't see the error anymore, at least.
->>>>>
->>>>> I applied below patch and don't see the warning message anymore.
->>>>>
->>>>> ---
->>>>>    fs/f2fs/compress.c | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>>>> index 701dd0f6f4ec..ed5b7fabc604 100644
->>>>> --- a/fs/f2fs/compress.c
->>>>> +++ b/fs/f2fs/compress.c
->>>>> @@ -1703,7 +1703,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>>>    	avail_ram = si.totalram - si.totalhigh;
->>>>>
->>>>>    	/* free memory is lower than watermark, deny caching compress page */
->>>>> -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
->>>
->>> This is buggy, because sbi->compress_watermark equals to 20, so that
->>> sbi->compress_watermark / 100 * avail_ram always be zero...
->>>
->>> After this change, if free ram is lower, we may just skip caching
->>> compressed blocks here.
->>
->> Can we move this in f2fs_available_free_memory()?
-
-More clean.
-
-One comment below:
-
+Em Wed, May 26, 2021 at 11:20:20PM +0900, Masami Hiramatsu escreveu:
+> On Wed, 26 May 2021 09:56:29 -0300
+> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 > 
-> Testing this.
+> > Em Wed, May 26, 2021 at 03:33:40PM +0900, Masami Hiramatsu escreveu:
+> > > On Wed, 26 May 2021 10:23:18 +0530 Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
+> > > > On 5/25/21 6:18 PM, Masami Hiramatsu wrote:
+> > > > > On Tue, 25 May 2021 10:07:44 +0530 Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
+> > 
+> > > > >> When run as normal user with default sysctl kernel.kptr_restrict=0
+> > > > >> and kernel.perf_event_paranoid=2, perf probe fails with:
+> > 
+> > > > >>    $ ./perf probe move_page_tables
+> > > > >>    Relocated base symbol is not found!
+> > 
+> > > > >> The warning message is not much informative. The reason perf
+> > > > >> fails is because /proc/kallsyms is restricted by
+> > > > >> perf_event_paranoid=2 for normal user and thus perf fails to read
+> > > > >> relocated address of the base symbol.
+> > 
+> > > > >> Tweaking kptr_restrict and perf_event_paranoid can change the
+> > > > >> behavior of perf probe. Also, running as root or privileged user
+> > > > >> works too. Add these details in the warning message.
+> > 
+> > > > >> Plus, kmap->ref_reloc_sym might not be always set even if
+> > > > >> host_machine is initialized. Above is the example of the same.
+> > > > >> Remove that comment.
+> > 
+> > > > > Yes, those are restricted in some cases. Anyway without priviledged
+> > > > > (super) user, perf probe can not set the probe in ftrace.
+> > 
+> > > > > Hmm, I think it should check the effective user-id at first. If it
+> > > > > is not super user and the action will access tracefs and kallsyms,
+> > > > > it should warn at that point.
+> > 
+> > > > If kptr_restrict=2, perf probe fails with same error even for root user.
+> > > > That's why I thought to just change this warning message.
+> > 
+> > > Ah, yes. In that case, perf probe must not use the base symbol.
+> > > (like -D option)
+> > > OK, then, let's merge this fix.
+> > 
+> > > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> > Thanks, applied as it improves the current situation.
+> > 
+> > But as a follow up, to further improve this, we can reuse what 'perf trace' has:
+> > 
+> >   $ perf trace sleep 1
+> >   Error:	No permissions to read /sys/kernel/tracing/events/raw_syscalls/sys_(enter|exit)
+> >   Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+> >   $ sudo mount -o remount,mode=755 /sys/kernel/tracing/
+> >   $ perf trace sleep 1
+> >   Error:	Permission denied.
+> >   Hint:	Check /proc/sys/kernel/perf_event_paranoid setting.
+> >   Hint:	For your workloads it needs to be <= 1
+> >   Hint:	For system wide tracing it needs to be set to -1.
+> >   Hint:	Try: 'sudo sh -c "echo -1 > /proc/sys/kernel/perf_event_paranoid"'
+> >   Hint:	The current value is 2.
+> >   $ 
 > 
-> ---
->   fs/f2fs/compress.c | 14 +-------------
->   fs/f2fs/node.c     | 11 ++++++++++-
->   fs/f2fs/node.h     |  1 +
->   3 files changed, 12 insertions(+), 14 deletions(-)
+> OK, let me check this.
+> BTW, does perf_event_paranoid affect only perf syscall (and kallsyms),
+> not the tracefs correct?
 > 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 9fd62a0a646b..455561826c7d 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1688,8 +1688,6 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->   {
->   	struct page *cpage;
->   	int ret;
-> -	struct sysinfo si;
-> -	unsigned long free_ram, avail_ram;
->   
->   	if (!test_opt(sbi, COMPRESS_CACHE))
->   		return;
-> @@ -1697,17 +1695,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->   	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
->   		return;
->   
-> -	si_meminfo(&si);
-> -	free_ram = si.freeram;
-> -	avail_ram = si.totalram - si.totalhigh;
-> -
-> -	/* free memory is lower than watermark, deny caching compress page */
-> -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
-> -		return;
-> -
-> -	/* cached page count exceed threshold, deny caching compress page */
-> -	if (COMPRESS_MAPPING(sbi)->nrpages >=
-
-Need to cover COMPRESS_MAPPING() with CONFIG_F2FS_FS_COMPRESSION.
-
-Thanks,
-
-> -			free_ram / 100 * sbi->compress_percent)
-> +	if (!f2fs_available_free_memory(sbi, COMPRESS_PAGE))
->   		return;
->   
->   	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index 3a8f7afa5059..67093416ce9c 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -45,7 +45,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
->   	struct f2fs_nm_info *nm_i = NM_I(sbi);
->   	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
->   	struct sysinfo val;
-> -	unsigned long avail_ram;
-> +	unsigned long avail_ram, free_ram;
->   	unsigned long mem_size = 0;
->   	bool res = false;
->   
-> @@ -56,6 +56,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
->   
->   	/* only uses low memory */
->   	avail_ram = val.totalram - val.totalhigh;
-> +	free_ram = val.freeram;
->   
->   	/*
->   	 * give 25%, 25%, 50%, 50%, 50% memory for each components respectively
-> @@ -97,6 +98,14 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
->   		mem_size = (atomic_read(&dcc->discard_cmd_cnt) *
->   				sizeof(struct discard_cmd)) >> PAGE_SHIFT;
->   		res = mem_size < (avail_ram * nm_i->ram_thresh / 100);
-> +	} else if (type == COMPRESS_PAGE) {
-> +		/*
-> +		 * free memory is lower than watermark or cached page count
-> +		 * exceed threshold, deny caching compress page.
-> +		 */
-> +		res = (free_ram > avail_ram * sbi->compress_watermark / 100) &&
-> +			(COMPRESS_MAPPING(sbi)->nrpages <
-> +			 free_ram * sbi->compress_percent / 100);
->   	} else {
->   		if (!sbi->sb->s_bdi->wb.dirty_exceeded)
->   			return true;
-> diff --git a/fs/f2fs/node.h b/fs/f2fs/node.h
-> index d85e8659cfda..84d45385d1f2 100644
-> --- a/fs/f2fs/node.h
-> +++ b/fs/f2fs/node.h
-> @@ -148,6 +148,7 @@ enum mem_type {
->   	EXTENT_CACHE,	/* indicates extent cache */
->   	INMEM_PAGES,	/* indicates inmemory pages */
->   	DISCARD_CACHE,	/* indicates memory of cached discard cmds */
-> +	COMPRESS_PAGE,	/* indicates memory of cached compressed pages */
->   	BASE_CHECK,	/* check kernel status */
->   };
->   
+> > I.e. go the extra step and show what the current value is and what it
+> > needs to be to achieve what is being attempted.
+> > 
+> > IOW combine error message with relevant documentation, to save steps.
+> > 
+> > See what 'perf top' does for an unpriv user:
+> > 
+> >   $ perf top --stdio
+> >   Error:
+> >   Access to performance monitoring and observability operations is limited.
+> >   Enforced MAC policy settings (SELinux) can limit access to performance
+> >   monitoring and observability operations. Inspect system audit records for
+> >   more perf_event access control information and adjusting the policy.
+> >   Consider adjusting /proc/sys/kernel/perf_event_paranoid setting to open
+> >   access to performance monitoring and observability operations for processes
+> >   without CAP_PERFMON, CAP_SYS_PTRACE or CAP_SYS_ADMIN Linux capability.
+> >   More information can be found at 'Perf events and tool security' document:
+> >   https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html
+> >   perf_event_paranoid setting is 2:
+> >     -1: Allow use of (almost) all events by all users
+> >         Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
+> >   >= 0: Disallow raw and ftrace function tracepoint access
+> >   >= 1: Disallow CPU event access
+> >   >= 2: Disallow kernel profiling
+> >   To make the adjusted perf_event_paranoid setting permanent preserve it
+> >   in /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)
 > 
+> Hmm, I would rather like pointing manpages...
+
+Man pages are long, if you quote the relevant part of it when the
+problem takes place, IMHO it helps the user.
+
+- Arnaldo
+ 
+> Would we better to have perf-security.7 manpage?
+> 
+> Thank you,
+> 
+> >   $
+> > 
+> > - Arnaldo
+> > 
+> > > 
+> > > > 
+> > > > Different combinations of privilege, perf_event_paranoid, kptr_restrict:
+> > > > 
+> > > >    Normal/Root user
+> > > >     |   perf_event_paranoid
+> > > >     V    V   kptr_restrict        perf probe error
+> > > >    ----------------------------------------------------------------
+> > > >     N   -1    0     Failed to open kprobe_events: Permission denied
+> > > >     N    0    0     Failed to open kprobe_events: Permission denied
+> > > >     N    1    0     Failed to open kprobe_events: Permission denied
+> > > >     N    2    0     Relocated base symbol is not found!
+> > > >    
+> > > >     N   -1    1     Relocated base symbol is not found!
+> > > >     N    0    1     Relocated base symbol is not found!
+> > > >     N    1    1     Relocated base symbol is not found!
+> > > >     N    2    1     Relocated base symbol is not found!
+> > > >    
+> > > >     N   -1    2     Relocated base symbol is not found!
+> > > >     N    0    2     Relocated base symbol is not found!
+> > > >     N    1    2     Relocated base symbol is not found!
+> > > >     N    2    2     Relocated base symbol is not found!
+> > > >    
+> > > >     R   -1    0     No error.
+> > > >     R    0    0     No error.
+> > > >     R    1    0     No error.
+> > > >     R    2    0     No error.
+> > > >    
+> > > >     R   -1    1     No error.
+> > > >     R    0    1     No error.
+> > > >     R    1    1     No error.
+> > > >     R    2    1     No error.
+> > > >    
+> > > >     R   -1    2     Relocated base symbol is not found!
+> > > >     R    0    2     Relocated base symbol is not found!
+> > > >     R    1    2     Relocated base symbol is not found!
+> > > >     R    2    2     Relocated base symbol is not found!
+> > > > 
+> > > > Ravi
+> > > 
+> > > 
+> > > -- 
+> > > Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> > -- 
+> > 
+> > - Arnaldo
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+-- 
+
+- Arnaldo
