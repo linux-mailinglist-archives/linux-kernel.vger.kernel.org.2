@@ -2,118 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6E43984CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424BD3984D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFBJBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:01:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22336 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229753AbhFBJBe (ORCPT
+        id S230093AbhFBJCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:02:03 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2845 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229754AbhFBJCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:01:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622624391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G01wiBaLKBgH8SUhvu9oGDvUb9DEe5X1aND1gEIw1Uw=;
-        b=hKuxxa9aN0dRi9J1uEMKv5d2m+qIG8REu7EKa+Rl8i71tR5jmLDJfCHIjAYLDiNjPUhAKF
-        gQRG5ixW4nQhQdHWecRVnZw/DR/S4ec3iLa/9xvx3MyBJ3oYIanxYN4alo7x37kYWhPyBy
-        ALtiPJyCWHpbpDDJjWNKmUPAWD+iA9w=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-zwmvb23FO-28UhSOUcWeUg-1; Wed, 02 Jun 2021 04:59:49 -0400
-X-MC-Unique: zwmvb23FO-28UhSOUcWeUg-1
-Received: by mail-wm1-f72.google.com with SMTP id r15-20020a05600c35cfb029017cc4b1e9faso1906728wmq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 01:59:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=G01wiBaLKBgH8SUhvu9oGDvUb9DEe5X1aND1gEIw1Uw=;
-        b=Rp0b+E5XfXTLe/Xsm8BGechUJ5ltMm8+J68Y1pjtJySqS/IAN+lgl08lhqJAjGhy5D
-         fBW4iAkl9gmtnjk2P/OVHunabuJaILPC/sIPORFnvJEXCqhWoBGrUBa0EHZnVNr3uYvv
-         pCVQwskP2oeQdsccg28T0NDzucxv848c00v8fLCIpheR2GtJWnIznrRm5s9ZpE2IEG96
-         Hzwk4wdp4pdTfaaYnpsl6VA05zImwO66czKIdMdiUVN1KJ9DHupr4GVUstIldSIr5gAQ
-         UFhdXZrKx+hy8fv9ERZAvrFzW3dL4qmuytYmAUMPYgU62ODt17bsjIo2+FLdiWLT4yYI
-         dLTQ==
-X-Gm-Message-State: AOAM531jj0lqMX/JomP0pKjf2AxNnAxTmXVJsYfXVeIgwivA9K1yL9op
-        av2E1kK7NsHqS51AeCOY6/AAkJpHAaJuWTzAIiU2Uk1d1VN1snU8Vs5K0cJnSzmaaO5BzuDZoFo
-        JXT+b+KsiMSCOm4TEAKHEzfHv
-X-Received: by 2002:a1c:b403:: with SMTP id d3mr30619884wmf.79.1622624388640;
-        Wed, 02 Jun 2021 01:59:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCtRron1WFQC5Hl070ikJ3dyVvR/vrEL+ewi/Nnf7WjDG+gQRJfo9tqov5kPUU764Ml8sA/A==
-X-Received: by 2002:a1c:b403:: with SMTP id d3mr30619871wmf.79.1622624388470;
-        Wed, 02 Jun 2021 01:59:48 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6b6d.dip0.t-ipconnect.de. [91.12.107.109])
-        by smtp.gmail.com with ESMTPSA id m5sm1982332wmq.6.2021.06.02.01.59.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 01:59:48 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mm,memory_hotplug: align code to fit 80 characters
- per line
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org
-Cc:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        logang@deltatee.com
-References: <20210602084752.3534-1-mgurtovoy@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <d90420a5-ecec-d9cc-8e27-07004701ef94@redhat.com>
-Date:   Wed, 2 Jun 2021 10:59:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 2 Jun 2021 05:02:01 -0400
+Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fw2tF6fY4zWqMK;
+        Wed,  2 Jun 2021 16:55:33 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.144) by dggeme759-chm.china.huawei.com
+ (10.3.19.105) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 2 Jun
+ 2021 17:00:16 +0800
+Subject: Re: [PATCH 1/2] topology: use bin_attribute to avoid buff overflow
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+References: <1622516210-10886-1-git-send-email-tiantao6@hisilicon.com>
+ <1622516210-10886-2-git-send-email-tiantao6@hisilicon.com>
+ <YLW+hZwoImx2wjwS@kroah.com>
+ <4c9c7c17-e8d1-d601-6262-8064293a06a9@huawei.com>
+ <YLcivXNwm75V+I2m@kroah.com>
+ <d3c1ec35-fa62-46ed-9227-866e0a3c96b8@huawei.com>
+ <CAHp75VeL4UMFX6oZWaFscTX6Ta5s714NeisR=vTh6mYMjyPi6w@mail.gmail.com>
+From:   "tiantao (H)" <tiantao6@huawei.com>
+Message-ID: <f84f92f5-8462-0556-e457-4e302e1e8cb6@huawei.com>
+Date:   Wed, 2 Jun 2021 17:00:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210602084752.3534-1-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAHp75VeL4UMFX6oZWaFscTX6Ta5s714NeisR=vTh6mYMjyPi6w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.188.144]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme759-chm.china.huawei.com (10.3.19.105)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.06.21 10:47, Max Gurtovoy wrote:
-> The "if" clause can fit to one line. Also while we're here, fix the end
-> pfn print (use %#lx instead of #%lx).
-> 
 
-I think the subject could be more expressive. I'd suggest
+在 2021/6/2 16:48, Andy Shevchenko 写道:
+> On Wed, Jun 2, 2021 at 9:45 AM tiantao (H) <tiantao6@huawei.com> wrote:
+>> 在 2021/6/2 14:18, Greg KH 写道:
+>>> On Wed, Jun 02, 2021 at 02:14:49PM +0800, tiantao (H) wrote:
+>>>> 在 2021/6/1 12:58, Greg KH 写道:
+>>>>> On Tue, Jun 01, 2021 at 10:56:49AM +0800, Tian Tao wrote:
+> ...
+>
+>>>>>>     /**
+>>>>>> + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
+>>>>>> + * @list: indicates whether the bitmap must be list
+>>>>>> + * @buf: page aligned buffer into which string is placed
+>>>>>> + * @maskp: pointer to bitmap to convert
+>>>>>> + * @nmaskbits: size of bitmap, in bits
+>>>>>> + * @off: offset in buf
+>>>>>> + * @count: count that already output
+>>>>>> + *
+>>>>>> + * the role of bitmap_print_to_buf and bitmap_print_to_pagebuf is
+>>>>>> + * the same, the difference is that the second parameter of
+>>>>>> + * bitmap_print_to_buf can be more than one pagesize.
+>>>>>> + */
+>>>>>> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+>>>>>> +                  int nmaskbits, loff_t off, size_t count)
+>>>>>> +{
+>>>>>> +  int len, size;
+>>>>>> +  void *data;
+>>>>>> +  char *fmt = list ? "%*pbl\n" : "%*pb\n";
+>>>>>> +
+>>>>>> +  len = snprintf(NULL, 0, fmt, nmaskbits, maskp);
+>>>>>> +
+>>>>>> +  data = kvmalloc(len+1, GFP_KERNEL);
+>>>>>> +  if (!data)
+>>>>>> +          return -ENOMEM;
+>>>>>> +
+>>>>>> +  size = scnprintf(data, len+1, fmt, nmaskbits, maskp);
+>>>>>> +  size = memory_read_from_buffer(buf, count, &off, data, size);
+>>>>>> +  kvfree(data);
+>>>>>> +
+>>>>>> +  return size;
+>>>>> Why is this so different from bitmap_print_to_pagebuf()?  Can't you just
+>>>>> use this function as the "real" function and then change
+>>>>> bitmap_print_to_pagebuf() to call it with a size of PAGE_SIZE?
+>>>> Do you mean do following change, is that correct? :-)
+>>> Maybe, it is whitespace corrupted, and it still feels like this function
+>>> is much bigger than it needs to be given the function it is replacing is
+>>> only a simple sprintf() call.
+>>>
+>>>> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+>>>> +                       int nmaskbits, loff_t off, size_t count)
+>>>> +{
+>>>> +       int len, size;
+>>>> +       void *data;
+>>>> +       const char *fmt = list ? "%*pbl\n" : "%*pb\n";
+>>>> +
+>>>> +       if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
+>>>> +               return scnprintf(buf, count, fmt, nmaskbits, maskp);
+>>>> +
+>>>> +       len = snprintf(NULL, 0, fmt, nmaskbits, maskp);
+>>>> +
+>>>> +       data = kvmalloc(len+1, GFP_KERNEL);
+>>> Why do you need to allocate more memory?  And why kvmalloc()?
+>> Because the memory here will exceed a pagesize and we don't know the
+>> exact size, we have to call
+>>
+>> snprintf first to get the actual size. kvmalloc() is used because when
+>> physical memory is tight, kmalloc
+>>
+>> may fail, but vmalloc will succeed. It is not so bad that the memory is
+>> not requested here.
+> To me it sounds like the function is overengineered / lacks thought
+> through / optimization.
+> Can you provide a few examples that require the above algorithm?
 
-"mm,memory_hotplug: cleanup alignment checks in check_pfn_span"
+so you think we should use kmalloc instead of kvmalloc ?
 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> ---
->   mm/memory_hotplug.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 70620d0dd923..8c3b423c1141 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -288,10 +288,9 @@ static int check_pfn_span(unsigned long pfn, unsigned long nr_pages,
->   		min_align = PAGES_PER_SUBSECTION;
->   	else
->   		min_align = PAGES_PER_SECTION;
-> -	if (!IS_ALIGNED(pfn, min_align)
-> -			|| !IS_ALIGNED(nr_pages, min_align)) {
-> -		WARN(1, "Misaligned __%s_pages start: %#lx end: #%lx\n",
-> -				reason, pfn, pfn + nr_pages - 1);
-> +	if (!IS_ALIGNED(pfn, min_align) || !IS_ALIGNED(nr_pages, min_align)) {
-> +		WARN(1, "Misaligned __%s_pages start: %#lx end: %#lx\n",
-> +		     reason, pfn, pfn + nr_pages - 1);
->   		return -EINVAL;
->   	}
->   	return 0;
-> 
-
-
--- 
-Thanks,
-
-David / dhildenb
+>
+>>>> +       if (!data)
+>>>> +               return -ENOMEM;
+>>>> +
+>>>> +       size = scnprintf(data, len+1, fmt, nmaskbits, maskp);
+>>>> +
+>>>> +       size = memory_read_from_buffer(buf, count, &off, data, size);
+>>>> +       kvfree(data);
+>>>> +
+>>>> +       return size;
+>>>> +}
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+> .
+>
 
