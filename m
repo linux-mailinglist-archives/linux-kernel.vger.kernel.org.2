@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD393989DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FD03989DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhFBMoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:44:25 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:45713 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhFBMoT (ORCPT
+        id S230087AbhFBMo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:44:27 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:42626 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhFBMoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:44:19 -0400
-Received: by mail-il1-f176.google.com with SMTP id b5so1951162ilc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:42:36 -0700 (PDT)
+        Wed, 2 Jun 2021 08:44:20 -0400
+Received: by mail-io1-f47.google.com with SMTP id k22so2332454ioa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=X1l7jGyVWidF6uLQ2hGdIjNWnuokOqt3x1cj/hzGKNs=;
-        b=sf7E38MEGXMM+gyDmrNCm9O5Xnth6X9bGVa5y3jYUtGs57a5nrCX5jo/aPzLTyWN2R
-         9fxKNOPGk1W8AhmhL8aprqgoEWYU/ym51GfNYblTFHCwWLL06SqdMg+yXhLmtjjz+IzC
-         NxFVaV5IGxiOjXtVP97YCiD+kpHueRb3k22/jTOdXvvzwlKQJMA9g397Ku2I8Bb8KiQT
-         SKzZ8JsOO767LsOO9CTv1wUqVtVVOjzqzY8tcEJ2Xw/zMPOyh/MX0lsQGnO1wl9ffRpB
-         K6tlzDc71ENo+sO4LwdUlFgb7lfeycWCdtK2VT61oiUp0T2UQ7bqYx2Bk10OoHkHMcB3
-         TkQA==
+        bh=ZomBGs4eHViKX0lomLvHZXS684AyWHKwDi/uxcM0kfk=;
+        b=X/OqE2o/bDI7oS3yDQ3/ISNF9qRVnYqvKykmcyzPbDDb94BR02haXzQnwZGjreaWqf
+         m/YnjyDqiop5o0bPRHxBOj0a9Tm4dkeHAWTM7Ob6c7HqQHRclsjFid7PrIBQKAc8tFL9
+         yU/gwEIYLrYo0GLzo/lEiiul37BCpn+8loGB5O8UhJ31f8Xin0fAOoehhaQlcL+c1koO
+         utTUzEqwRZe5SpQs/YsVhnXQEamdOHEYZa3FM1rhpq7CeCiiJez72fZX2OrbkgrkztiC
+         jgOLUCYqjwM8Z4iqFvWiCGryV6RmWhDFSkryaIt1INIWl5XceOEihUKH1dCdE8tGccr+
+         5pqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X1l7jGyVWidF6uLQ2hGdIjNWnuokOqt3x1cj/hzGKNs=;
-        b=N/tuIDOn5I2CD/T84/MmJWdzbj8UKuzMaAk0faLwqEJw50uCm0P8m1fVbak0PmIhw0
-         Tj/PooiSb4yN/NBEA/iRDoHRjYgE5jG/ECP6+bwEz92gFqLa3L71mHn0SxgVqULwt+F0
-         Z5q5JpydAxXo8Wlfd/Rg3fc+CsJB5JBp1+uF6IZHO/0AIvztJ10pBQBw+2mVfdcvkYbn
-         9OLEp6fFR7kio7Vtv3jYA+FOS8L3C0u70AOB+bVh1ad9GifssL2QmT9icuTdBZYsjT/S
-         PVwox9wRiZQH6jKllJmoIpZraCWNDB6o6DKgUT9um3LNAfjWsj+MmM5ayRL6Sm6131kF
-         FdUg==
-X-Gm-Message-State: AOAM533eEgcYlkzUBO2qN/G1VsC308l9G12uTwZjKj1IaR4Sp3RcG1NO
-        4/xpHdo1lS6UN2XTkpXHsW+fHQ==
-X-Google-Smtp-Source: ABdhPJx0CIK5wwRA6r+XcwIIkDN8UjyW6DYCtu8eYzyxHSLPINbWl+/kdR4/GPuwq9UrkIDqEMrH2w==
-X-Received: by 2002:a05:6e02:12af:: with SMTP id f15mr23514489ilr.77.1622637696584;
-        Wed, 02 Jun 2021 05:41:36 -0700 (PDT)
+        bh=ZomBGs4eHViKX0lomLvHZXS684AyWHKwDi/uxcM0kfk=;
+        b=max+Q8EXZSn0jU9qtqt5ivW/kOx8hIPltpLssArvv/MJOt4n5hwI4fdWDyQqPJ3axF
+         UX5so15VrE9z/BYUlADtDQ5RcTTfBmxqaa2WWYYrAC7uhMOqZZW6+m6zK7ShEshjYnqO
+         cDrVP9IIIi4HqBL/8CAv8neGA08nHuJwm3r4s78p3xtA+z81ofBbrX7X+yItpBGvayVT
+         mHgbhq9OQ0pjaRMspiRgmX9cvZHSqstwDedK/1EZoTuWvMZDD48ueJ8ck1XjCOkIZZ7p
+         /jeoXOUs08UrOcxFCynbkiEDmH2KpnBJ/ftJIzjiEg/Piv7UnFB2imgq8eEvmeikB/FL
+         gYCw==
+X-Gm-Message-State: AOAM531aFwhlXo75QDeZKU2tXaMc57bledjVLPVa14ReWoaua4snDdgF
+        g1lWJXm+BH3HjBVh5hLWE1t5Gg==
+X-Google-Smtp-Source: ABdhPJyl3TdOjVaDYeCNJudukaN6g7+7WsMc1L6Oap/XgFtv+sAKgWrlxsF3XVnzfzUAnVC5bjARgQ==
+X-Received: by 2002:a5d:8501:: with SMTP id q1mr25531804ion.66.1622637697713;
+        Wed, 02 Jun 2021 05:41:37 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id v18sm11087054iob.3.2021.06.02.05.41.35
+        by smtp.gmail.com with ESMTPSA id v18sm11087054iob.3.2021.06.02.05.41.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 05:41:36 -0700 (PDT)
+        Wed, 02 Jun 2021 05:41:37 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         sharathv@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/2] net: ipa: add support for inline checksum offload
-Date:   Wed,  2 Jun 2021 07:41:30 -0500
-Message-Id: <20210602124131.298325-2-elder@linaro.org>
+Subject: [PATCH net-next 2/2] Revert "net: ipa: disable checksum offload for IPA v4.5+"
+Date:   Wed,  2 Jun 2021 07:41:31 -0500
+Message-Id: <20210602124131.298325-3-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210602124131.298325-1-elder@linaro.org>
 References: <20210602124131.298325-1-elder@linaro.org>
@@ -63,135 +63,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with IPA v4.5, IP payload checksum offload is implemented
-differently.
+This reverts commit c88c34fcf8f501d588c0a999aa7e51e18552c5f0.
 
-Prior to v4.5, the IPA hardware appends an rmnet_map_dl_csum_trailer
-structure to each packet if checksum offload is enabled in the
-download direction (modem->AP).  In the upload direction (AP->modem)
-a rmnet_map_ul_csum_header structure is prepended before each sent
-packet.
-
-Starting with IPA v4.5, checksum offload is implemented using a
-single new rmnet_map_v5_csum_header structure which sits between
-the QMAP header and the packet data.  The same header structure
-is used in both directions.
-
-The new header contains a header type (CSUM_OFFLOAD); a checksum
-flag; and a flag indicating whether any other headers follow this
-one.  The checksum flag indicates whether the hardware should
-compute (and insert) the checksum on a sent packet.  On a received
-packet the checksum flag indicates whether the hardware confirms the
-checksum value in the payload is correct.
+The RMNet driver now supports inline checksum offload.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_endpoint.c | 47 ++++++++++++++++++++++++++--------
- drivers/net/ipa/ipa_reg.h      |  1 +
- 2 files changed, 37 insertions(+), 11 deletions(-)
+ drivers/net/ipa/ipa_endpoint.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index ccc99ad983eb5..03719fb6a15a4 100644
+index 03719fb6a15a4..07a81b73306fe 100644
 --- a/drivers/net/ipa/ipa_endpoint.c
 +++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -457,28 +457,34 @@ int ipa_endpoint_modem_exception_reset_all(struct ipa *ipa)
- static void ipa_endpoint_init_cfg(struct ipa_endpoint *endpoint)
+@@ -88,11 +88,6 @@ static bool ipa_endpoint_data_valid_one(struct ipa *ipa, u32 count,
+ 	if (ipa_gsi_endpoint_data_empty(data))
+ 		return true;
+ 
+-	/* IPA v4.5+ uses checksum offload, not yet supported by RMNet */
+-	if (ipa->version >= IPA_VERSION_4_5)
+-		if (data->endpoint.config.checksum)
+-			return false;
+-
+ 	if (!data->toward_ipa) {
+ 		if (data->endpoint.filter_support) {
+ 			dev_err(dev, "filtering not supported for "
+@@ -235,17 +230,6 @@ static bool ipa_endpoint_data_valid(struct ipa *ipa, u32 count,
+ static bool ipa_endpoint_data_valid(struct ipa *ipa, u32 count,
+ 				    const struct ipa_gsi_endpoint_data *data)
  {
- 	u32 offset = IPA_REG_ENDP_INIT_CFG_N_OFFSET(endpoint->endpoint_id);
-+	enum ipa_cs_offload_en enabled;
- 	u32 val = 0;
- 
- 	/* FRAG_OFFLOAD_EN is 0 */
- 	if (endpoint->data->checksum) {
-+		enum ipa_version version = endpoint->ipa->version;
-+
- 		if (endpoint->toward_ipa) {
- 			u32 checksum_offset;
- 
--			val |= u32_encode_bits(IPA_CS_OFFLOAD_UL,
--					       CS_OFFLOAD_EN_FMASK);
- 			/* Checksum header offset is in 4-byte units */
- 			checksum_offset = sizeof(struct rmnet_map_header);
- 			checksum_offset /= sizeof(u32);
- 			val |= u32_encode_bits(checksum_offset,
- 					       CS_METADATA_HDR_OFFSET_FMASK);
-+
-+			enabled = version < IPA_VERSION_4_5
-+					? IPA_CS_OFFLOAD_UL
-+					: IPA_CS_OFFLOAD_INLINE;
- 		} else {
--			val |= u32_encode_bits(IPA_CS_OFFLOAD_DL,
--					       CS_OFFLOAD_EN_FMASK);
-+			enabled = version < IPA_VERSION_4_5
-+					? IPA_CS_OFFLOAD_DL
-+					: IPA_CS_OFFLOAD_INLINE;
- 		}
- 	} else {
--		val |= u32_encode_bits(IPA_CS_OFFLOAD_NONE,
--				       CS_OFFLOAD_EN_FMASK);
-+		enabled = IPA_CS_OFFLOAD_NONE;
- 	}
-+	val |= u32_encode_bits(enabled, CS_OFFLOAD_EN_FMASK);
- 	/* CS_GEN_QMB_MASTER_SEL is 0 */
- 
- 	iowrite32(val, endpoint->ipa->reg_virt + offset);
-@@ -498,6 +504,27 @@ static void ipa_endpoint_init_nat(struct ipa_endpoint *endpoint)
- 	iowrite32(val, endpoint->ipa->reg_virt + offset);
+-	const struct ipa_gsi_endpoint_data *dp = data;
+-	enum ipa_endpoint_name name;
+-
+-	if (ipa->version < IPA_VERSION_4_5)
+-		return true;
+-
+-	/* IPA v4.5+ uses checksum offload, not yet supported by RMNet */
+-	for (name = 0; name < count; name++, dp++)
+-		if (data->endpoint.config.checksum)
+-			return false;
+-
+ 	return true;
  }
  
-+static u32
-+ipa_qmap_header_size(enum ipa_version version, struct ipa_endpoint *endpoint)
-+{
-+	u32 header_size = sizeof(struct rmnet_map_header);
-+
-+	/* Without checksum offload, we just have the MAP header */
-+	if (!endpoint->data->checksum)
-+		return header_size;
-+
-+	if (version < IPA_VERSION_4_5) {
-+		/* Checksum header inserted for AP TX endpoints only */
-+		if (endpoint->toward_ipa)
-+			header_size += sizeof(struct rmnet_map_ul_csum_header);
-+	} else {
-+		/* Checksum header is used in both directions */
-+		header_size += sizeof(struct rmnet_map_v5_csum_header);
-+	}
-+
-+	return header_size;
-+}
-+
- /**
-  * ipa_endpoint_init_hdr() - Initialize HDR endpoint configuration register
-  * @endpoint:	Endpoint pointer
-@@ -526,13 +553,11 @@ static void ipa_endpoint_init_hdr(struct ipa_endpoint *endpoint)
- 	u32 val = 0;
- 
- 	if (endpoint->data->qmap) {
--		size_t header_size = sizeof(struct rmnet_map_header);
- 		enum ipa_version version = ipa->version;
-+		size_t header_size;
- 
--		/* We might supply a checksum header after the QMAP header */
--		if (endpoint->toward_ipa && endpoint->data->checksum)
--			header_size += sizeof(struct rmnet_map_ul_csum_header);
--		val |= ipa_header_size_encoded(version, header_size);
-+		header_size = ipa_qmap_header_size(version, endpoint);
-+		val = ipa_header_size_encoded(version, header_size);
- 
- 		/* Define how to fill fields in a received QMAP header */
- 		if (!endpoint->toward_ipa) {
-diff --git a/drivers/net/ipa/ipa_reg.h b/drivers/net/ipa/ipa_reg.h
-index 286ea9634c49d..b89dec5865a5b 100644
---- a/drivers/net/ipa/ipa_reg.h
-+++ b/drivers/net/ipa/ipa_reg.h
-@@ -368,6 +368,7 @@ enum ipa_cs_offload_en {
- 	IPA_CS_OFFLOAD_NONE		= 0x0,
- 	IPA_CS_OFFLOAD_UL		= 0x1,	/* Before IPA v4.5 (TX) */
- 	IPA_CS_OFFLOAD_DL		= 0x2,	/* Before IPA v4.5 (RX) */
-+	IPA_CS_OFFLOAD_INLINE		= 0x1,	/* IPA v4.5 (TX and RX) */
- };
- 
- /* Valid only for TX (IPA consumer) endpoints */
 -- 
 2.27.0
 
