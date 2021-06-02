@@ -2,134 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945CA39814E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2DC398256
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhFBGoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:44:09 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:13709 "EHLO pegase1.c-s.fr"
+        id S230034AbhFBHBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:01:41 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:59476 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231612AbhFBGny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:43:54 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4FvzwL6RhKzB4DW;
-        Wed,  2 Jun 2021 08:42:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id H9CVo9TAdrt0; Wed,  2 Jun 2021 08:42:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FvzwL5ZXSzB4DS;
-        Wed,  2 Jun 2021 08:42:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B3D578B7D3;
-        Wed,  2 Jun 2021 08:42:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id vz9d4AYzKUVS; Wed,  2 Jun 2021 08:42:10 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 695928B771;
-        Wed,  2 Jun 2021 08:42:10 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 3147364064; Wed,  2 Jun 2021 06:42:10 +0000 (UTC)
-Message-Id: <169310e08152aa1d96c979770291d165ec6896ae.1622616032.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/44x: Implement Kernel Userspace Exec Protection
- (KUEP)
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  2 Jun 2021 06:42:10 +0000 (UTC)
+        id S229958AbhFBHBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 03:01:40 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 746AE1A1E9D;
+        Wed,  2 Jun 2021 08:59:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 746AE1A1E9D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+        s=nselector3; t=1622617197;
+        bh=SWgLA9X2K6gN6TIyMw7jN/rBkJDvoZSmZ7cEH5X1U7M=;
+        h=From:To:Subject:Date:From;
+        b=jDC9TnR4i6xgH8zwaCPLpZl13UR9d0C4rmME9PtLbcPebgyN2/Z16g8lXrWgSZBVr
+         QmTMG8LZ2Txqub8jwsN8LKB5Bn9BMi6psMj5ujnW2eVCJ4QZTIdk9GXYcnUHJiwrwf
+         sKQp7FuPWdo7Ow2NzZ1jN+5SGQ3yZuxfjZkEdLFJx8ERmDV+QA7x/4lFge6td/Gl90
+         Dh53wioGhYD1xeq1o/WyZSmwfm49NqKtCGtsQF62fTNa4MezD6XYbqJGvdlhBANjtc
+         X1nFMI2IQ7/fKFv3O0Dj6ai5C1cYTFYS9mKqTHaVCLJ6F2eQg6xiQL0mHpzN8hRDyL
+         Ow7GAcXDkaxBw==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1050D1A1E8A;
+        Wed,  2 Jun 2021 08:59:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 1050D1A1E8A
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7933B4031D;
+        Wed,  2 Jun 2021 14:59:47 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl-asoc-card: change dev_err to dev_dbg for defer probe
+Date:   Wed,  2 Jun 2021 14:42:12 +0800
+Message-Id: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Powerpc 44x has two bits for exec protection in TLBs: one
-for user (UX) and one for superviser (SX).
+Don't need to print error message for defer probe
 
-Clear SX on user pages in TLB miss handlers to provide KUEP.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- arch/powerpc/include/asm/nohash/32/mmu-44x.h |  1 +
- arch/powerpc/kernel/head_44x.S               |  8 ++++++++
- arch/powerpc/mm/nohash/44x.c                 | 13 +++++++++++++
- arch/powerpc/platforms/Kconfig.cputype       |  1 +
- 4 files changed, 23 insertions(+)
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/include/asm/nohash/32/mmu-44x.h b/arch/powerpc/include/asm/nohash/32/mmu-44x.h
-index 2d92a39d8f2e..43ceca128531 100644
---- a/arch/powerpc/include/asm/nohash/32/mmu-44x.h
-+++ b/arch/powerpc/include/asm/nohash/32/mmu-44x.h
-@@ -113,6 +113,7 @@ typedef struct {
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 4f55b316cf0f..b40ba910ae9d 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -709,7 +709,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	of_node_put(framemaster);
  
- /* patch sites */
- extern s32 patch__tlb_44x_hwater_D, patch__tlb_44x_hwater_I;
-+extern s32 patch__tlb_44x_kuep, patch__tlb_47x_kuep;
- 
- #endif /* !__ASSEMBLY__ */
- 
-diff --git a/arch/powerpc/kernel/head_44x.S b/arch/powerpc/kernel/head_44x.S
-index 5c106ac36626..2cfb496df615 100644
---- a/arch/powerpc/kernel/head_44x.S
-+++ b/arch/powerpc/kernel/head_44x.S
-@@ -532,6 +532,10 @@ finish_tlb_load_44x:
- 	andi.	r10,r12,_PAGE_USER		/* User page ? */
- 	beq	1f				/* nope, leave U bits empty */
- 	rlwimi	r11,r11,3,26,28			/* yes, copy S bits to U */
-+#ifdef CONFIG_PPC_KUEP
-+0:	rlwinm	r11,r11,0,~PPC44x_TLB_SX	/* Clear SX if User page */
-+	patch_site 0b, patch__tlb_44x_kuep
-+#endif
- 1:	tlbwe	r11,r13,PPC44x_TLB_ATTRIB	/* Write ATTRIB */
- 
- 	/* Done...restore registers and get out of here.
-@@ -743,6 +747,10 @@ finish_tlb_load_47x:
- 	andi.	r10,r12,_PAGE_USER		/* User page ? */
- 	beq	1f				/* nope, leave U bits empty */
- 	rlwimi	r11,r11,3,26,28			/* yes, copy S bits to U */
-+#ifdef CONFIG_PPC_KUEP
-+0:	rlwinm	r11,r11,0,~PPC47x_TLB2_SX	/* Clear SX if User page */
-+	patch_site 0b, patch__tlb_47x_kuep
-+#endif
- 1:	tlbwe	r11,r13,2
- 
- 	/* Done...restore registers and get out of here.
-diff --git a/arch/powerpc/mm/nohash/44x.c b/arch/powerpc/mm/nohash/44x.c
-index 3d6ae7c72412..7da6d1e9fc9b 100644
---- a/arch/powerpc/mm/nohash/44x.c
-+++ b/arch/powerpc/mm/nohash/44x.c
-@@ -239,3 +239,16 @@ void __init mmu_init_secondary(int cpu)
+ 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
+-		dev_err(&pdev->dev, "failed to find codec device\n");
++		dev_dbg(&pdev->dev, "failed to find codec device\n");
+ 		ret = -EPROBE_DEFER;
+ 		goto asrc_fail;
  	}
- }
- #endif /* CONFIG_SMP */
-+
-+#ifdef CONFIG_PPC_KUEP
-+void __init setup_kuep(bool disabled)
-+{
-+	if (disabled)
-+		patch_instruction_site(&patch__tlb_44x_kuep, ppc_inst(PPC_RAW_NOP()));
-+	else
-+		pr_info("Activating Kernel Userspace Execution Prevention\n");
-+
-+	if (IS_ENABLED(CONFIG_PPC_47x) && disabled)
-+		patch_instruction_site(&patch__tlb_47x_kuep, ppc_inst(PPC_RAW_NOP()));
-+}
-+#endif
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index 885140055b7a..226c821f1fcd 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -61,6 +61,7 @@ config 44x
- 	select 4xx_SOC
- 	select HAVE_PCI
- 	select PHYS_64BIT
-+	select PPC_HAVE_KUEP
- 
- endchoice
- 
 -- 
-2.25.0
+2.27.0
 
