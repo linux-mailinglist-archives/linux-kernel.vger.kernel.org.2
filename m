@@ -2,190 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1283C399467
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E275D39946C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhFBUTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:19:07 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:36611 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBUTG (ORCPT
+        id S229726AbhFBUTs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Jun 2021 16:19:48 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:42666 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhFBUTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:19:06 -0400
-Received: by mail-ot1-f47.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so3632754otl.3;
-        Wed, 02 Jun 2021 13:17:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/jmVznYmQTH93X26NjVfXHcldPh3SZGCs6s2/JZMXiE=;
-        b=OrwyWOujqXbyo0Dlic9Lds9TIuTbdYNvqjlbDc6FYNWvK9ytF09HQtq1dXPgff35VW
-         8bmu3lF+PD3uxjDls2VD8Jzept0hoPE6btR8Z/Tb1RMlRiIknSJCEAAdwl9iMCM6CJW7
-         JDe2k8IrV6q7mH58V80MEB2z/AVvc3xbjd2+jf9KQwTY5mlt8ytHCbsZi874IhirPNv4
-         nNibUz8yIXD8Ta08tEUVxaaLpLfU3qJuVzATu3zcBF4xHV1OnI4V464FmT9TBlMlBmQQ
-         G5SZ4lSuTAkKbuUi3llKSirDPOCS91+MlhJJder83jtdBbYOKDQ8YnY1o6zD0jvMEJM7
-         IssQ==
-X-Gm-Message-State: AOAM531uFQ24IH4RjzttY4XJY0hcbv1ebhuU+u7j5kCAtIBt05XIU1LU
-        Xyv2Eh6WO4/RWeCp9iKsbg==
-X-Google-Smtp-Source: ABdhPJyniojfQZIQ5XkjjIwjiuhE4C04qsmxU08698rH3heQFT1ZtGUEhu3qHxE4j9cQaciRdXki9Q==
-X-Received: by 2002:a9d:5e8c:: with SMTP id f12mr27237550otl.18.1622665042758;
-        Wed, 02 Jun 2021 13:17:22 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q15sm208624oon.28.2021.06.02.13.17.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 13:17:22 -0700 (PDT)
-Received: (nullmailer pid 3920332 invoked by uid 1000);
-        Wed, 02 Jun 2021 20:17:20 -0000
-Date:   Wed, 2 Jun 2021 15:17:20 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jamin Lin <jamin_lin@aspeedtech.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        ryan_chen@aspeedtech.com, chin-ting_kuo@aspeedtech.com,
-        troy_lee@aspeedtech.com, steven_lee@aspeedtech.com
-Subject: Re: [PATCH v2 1/1] dt-bindings: aspeed-i2c: Convert txt to yaml
- format
-Message-ID: <20210602201720.GA3910963@robh.at.kernel.org>
-References: <20210527102512.20684-1-jamin_lin@aspeedtech.com>
- <20210527102512.20684-2-jamin_lin@aspeedtech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527102512.20684-2-jamin_lin@aspeedtech.com>
+        Wed, 2 Jun 2021 16:19:46 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 69834CED0B;
+        Wed,  2 Jun 2021 22:25:59 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2 00/12] net/Bluetooth: correct the use of print format
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1621576788-48092-1-git-send-email-yekai13@huawei.com>
+Date:   Wed, 2 Jun 2021 22:18:01 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <29FB1C65-7FA6-4110-B953-5281C0587CAF@holtmann.org>
+References: <1621576788-48092-1-git-send-email-yekai13@huawei.com>
+To:     Kai Ye <yekai13@huawei.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 06:25:05PM +0800, Jamin Lin wrote:
-> Convert aspeed i2c to yaml.
+Hi Kai,
+
+> According to Documentation/core-api/printk-formats.rst,
+> Use the correct print format. 
+> 1. Printing an unsigned int value should use %u instead of %d.
+> 2. Printing an unsigned long value should use %lu instead of %ld.
+> Otherwise printk() might end up displaying negative numbers.
 > 
-> Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
-> ---
->  .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 86 +++++++++++++++++++
->  .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 -----------
->  2 files changed, 86 insertions(+), 49 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
->  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
+> changes v1 -> v2:
+> 	fix some style problems
 > 
-> diff --git a/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-> new file mode 100644
-> index 000000000000..1f7064d77708
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-> @@ -0,0 +1,86 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/i2c/aspeed,i2c.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ASPEED I2C on the AST24XX, AST25XX, and AST26XX SoCs Device Tree Bindings
-> +
-> +maintainers:
-> +  - Rayn Chen <rayn_chen@aspeedtech.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/i2c/i2c-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aspeed,ast2400-i2c-bus
-> +      - aspeed,ast2500-i2c-bus
-> +      - aspeed,ast2600-i2c-bus
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  "#address-cells":
-> +    const: 1
+> Kai Ye (12):
+>  net/Bluetooth/bnep - use the correct print format
+>  net/Bluetooth/cmtp - use the correct print format
+>  net/Bluetooth/hidp - use the correct print format
+>  net/Bluetooth/rfcomm - use the correct print format
+>  net/Bluetooth/6lowpan - use the correct print format
+>  net/Bluetooth/a2mp - use the correct print format
+>  net/Bluetooth/amp - use the correct print format
+>  net/Bluetooth/hci - use the correct print format
+>  net/Bluetooth/mgmt - use the correct print format
+>  net/Bluetooth/msft - use the correct print format
+>  net/Bluetooth/sco - use the correct print format
+>  net/Bluetooth/smp - use the correct print format
 
-These 2 are covered by i2c-controller.yaml.
+please fix the commit message to apply with expected style. Fixing up 12 patches manually is not something I am going to do.
 
-> +
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 2
-> +    items:
-> +      - description: address offset and range of bus
-> +      - description: address offset and range of bus buffer
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: interrupt number
+Regards
 
-Drop. Not a useful description.
+Marcel
 
-> +
-> +  clocks:
-> +    maxItems: 1
-> +    description:
-> +      root clock of bus, should reference the APB
-> +      clock in the second cell
-> +
-> +  reset:
-
-resets
-
-> +    maxItems: 1
-> +    description: phandle to reset controller with the reset number in
-> +      the second cell
-
-No need to describe the format of 'resets'.
-
-> +
-> +  bus-frequency:
-> +    minimum: 500
-> +    maximum: 4000000
-> +    default: 100000
-> +    description: frequency of the bus clock in Hz defaults to 100 kHz when not
-> +      specified
-> +
-> +  multi-master:
-> +    type: boolean
-> +    description:
-> +      states that there is another master active on this bus
-> +
-> +required:
-> +  - reg
-> +  - compatible
-> +  - clocks
-> +  - resets
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/aspeed-clock.h>
-> +    i2c0: i2c-bus@40 {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      #interrupt-cells = <1>;
-> +      reg = <0x40 0x40>;
-> +      compatible = "aspeed,ast2500-i2c-bus";
-
-Convention is compatible first in the list of properties.
-
-> +      clocks = <&syscon ASPEED_CLK_APB>;
-> +      resets = <&syscon ASPEED_RESET_I2C>;
-> +      bus-frequency = <100000>;
-> +      interrupts = <0>;
-> +      interrupt-parent = <&i2c_ic>;
-> +      status = "disabled";
-
-Don't show status in examples especially when disabling disables some 
-validation...
-
-> +      /* Does not need pinctrl properties */
-> +    };
