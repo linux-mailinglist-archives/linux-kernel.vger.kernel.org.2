@@ -2,116 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82793988AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B488D3988B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhFBL5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:57:36 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:39583 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhFBL5e (ORCPT
+        id S229586AbhFBL70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhFBL7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:57:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1622634951; x=1654170951;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=9uiXJbJdBlLB2FkzQ5AZnkPGhidX4FD6Ay+QSZ4ofxg=;
-  b=OwOUjZhmrVFp0C3/xExx2ZqZh5Mgc+r9D5qS7DG55tFeruaL7hXN5Pci
-   r1LDvywq8U8ZVZ7rSAHC5mfbjfN9t5UDKnUtDo1sA90kMDuJ75raoGrvL
-   JMCwRJYpiIBGMtVabXkD6V5UGhuSti5amTuI/EFMj10LjL9T1jL06RQ98
-   HPSF/3aFQAqc5bujsmY0saj+TVXZeZR4TUZdomg0Ndv7HTRacWUmyrL8G
-   N5UBqcEpmIDar4Z85FXP3EKL3qlqLmQ24tfv1bTOt+CeA6ymXsflMahf2
-   2v0N2A9pUItXItBB21gPTBlda/E0i6irKNhAOwKfQyYPM1SN6WzmgQuVr
-   g==;
-IronPort-SDR: GzEgCeEgQkzszr0GRguo55rdQ+3zBJPFZ2yA6FvyBVzguyEW8KtIJGV90mCa+csEv+Z3I2prLr
- XOld7nv2lBdXqMXaMVH1PB/5Cw9inq5CPr7+jMige1iGL30gSqJWxJ9sK36vx44aWNT4nxI+Ii
- ja6y2Ae5xhPm9htm/OkIsp1kvjsIrzATVCVRLTiKIlTzwe1qxdkrLo7xjlqXM8juez1vRNMRmi
- s8f5p3IoJpXD0d19MMjygPYDvf7YEJzv/6LEAwkutP8lVNvRvlP2saSGqUaq6+4yvZIDYDYdSb
- eUE=
-X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
-   d="scan'208";a="130381472"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Jun 2021 04:55:50 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 04:55:50 -0700
-Received: from [10.12.72.115] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Wed, 2 Jun 2021 04:55:49 -0700
-Subject: Re: [PATCH] ARM: dts: at91: sama5d4: fix pinctrl muxing
-To:     <Claudiu.Beznea@microchip.com>, <Ludovic.Desroches@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-CC:     <alexandre.belloni@bootlin.com>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <20191025084210.14726-1-ludovic.desroches@microchip.com>
- <e2d81b87-408d-b50d-3e4c-b28367e4cb00@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <c3e7fa48-4105-2aea-a821-0f8b00591b41@microchip.com>
-Date:   Wed, 2 Jun 2021 13:55:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 2 Jun 2021 07:59:23 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2741C061574;
+        Wed,  2 Jun 2021 04:57:27 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so2170327otk.5;
+        Wed, 02 Jun 2021 04:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fb6RB9fi/rF6AK+iCW4g0jD1m+9qa/FYg2uv3qR8UrM=;
+        b=qmPMNYMs9dRcamDOLeCFnuMl5E/b5gkvIKBLdy0uZO6pOIhRXpuFQkqkOJCyHFI5Zr
+         iZ+GlfM0TSEO2HZR5kku4tjdHsfKuUbQ8vzid9YfN0naevMStikuUB9eiw+ClU5ZBe+j
+         EQWfbdKDhnkh5gzonqlKheX6Eti0v0HocUGf6Nv7oZd1svlGEaB0jZPVVaks2fL4+/tb
+         F1zaHPjVhb+C4K4PIFc2h+vzzmLlwAih4Ysay3oFYoG9gL8t12EqDA+6JzYKdAEszNea
+         V1VMssza6C2+0Lph9oxc31LAnGXDi4Qf5PG+/HrM9ARXXmysOWDJlwAeN1a+DNlREmpQ
+         ikRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=fb6RB9fi/rF6AK+iCW4g0jD1m+9qa/FYg2uv3qR8UrM=;
+        b=VZds9Y1/GrBQgtdEUJ8bFXGhlPTFguNrMb/M7jUBIFzi0ZNc5mQw3+rFDasxYuN8X0
+         eTn3/XOSEwB7lNOBUW4IsDTFAcZHZ3smzqjJrzrip0W8+9Vtgll5DKNDVoWi6wPYMUC6
+         kligS24Uhvom5HYrZf1TEKIDH0GzEFbSJyDncbbfi7BECIZTXdO3IeFhp5T1vjOCctBF
+         f4Zse/x5qK+DigxvOXpgYn/93qPHfhUd35pO4+nnv1sYif/sKQ7ixMCELEH6tiQ4s0d9
+         WRVgpY2vvvoskUJXDCGFOoBnpdGSvzLX3pdbfP4JBZ9Y2UpKiO5AUZxSOLeZT+Wx9vr4
+         0aHQ==
+X-Gm-Message-State: AOAM532GHkzJQNzokQhdZMRB2WF9AawmCOScvbYha4s9rCaXWwAqXN22
+        7cPdpBnuaeft55d/z2Ta2gyFgOFwx+Y=
+X-Google-Smtp-Source: ABdhPJwc+wyUJg732ih2UqDXokblzLPIlaux3j0FQ3LzlB4lSfgawdW6C/eHkO+ni2zHmGgLCV5DRg==
+X-Received: by 2002:a9d:460b:: with SMTP id y11mr16438977ote.330.1622635047058;
+        Wed, 02 Jun 2021 04:57:27 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j26sm370740otp.15.2021.06.02.04.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 04:57:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 2 Jun 2021 04:57:25 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Navin Sankar Velliangiri <navin@linumiz.com>,
+        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] hwmon: sht4x: Fix sht4x_read_values return value
+Message-ID: <20210602115725.GA2901603@roeck-us.net>
+References: <60eedce497137eb34448c0c77e01ec9d9c972ad7.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <e2d81b87-408d-b50d-3e4c-b28367e4cb00@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60eedce497137eb34448c0c77e01ec9d9c972ad7.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2019 at 11:15, Claudiu.Beznea@microchip.com wrote:
-> On 25.10.2019 11:42, Ludovic Desroches wrote:
->> Fix pinctrl muxing, PD28, PD29 and PD31 can be muxed to peripheral A. It
->> allows to use SCK0, SCK1 and SPI0_NPCS2 signals.
->>
->> Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
->> Fixes: 679f8d92bb01 ("ARM: at91/dt: sama5d4: add pioD pin mux mask and enable pioD")
->> Cc: stable@vger.kernel.org
-
-Added the version:
-Cc: stable@vger.kernel.org # v4.4+
-
-> Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-
-Claudiu, Ludovic,
-
-I've just realized that this patch was not integrated. Sorry for the 
-delay. Now queued for 5.14 in at91-dt branch.
-
-Thanks, best regards,
-   Nicolas
-
+On Sat, May 29, 2021 at 02:13:52AM -0700, Joe Perches wrote:
+> Kernel doc for sht4x_read_values() shows 0 on success, 1 on failure but
+> the return value on success is actually always positive as it is set to
+> SHT4X_RESPONSE_LENGTH by a successful call to i2c_master_recv().
 > 
->> ---
->>   arch/arm/boot/dts/sama5d4.dtsi | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
->> index 6ab27a7b388d..a4cef07c38cb 100644
->> --- a/arch/arm/boot/dts/sama5d4.dtsi
->> +++ b/arch/arm/boot/dts/sama5d4.dtsi
->> @@ -914,7 +914,7 @@ /*   A          B          C  */
->>   					0xffffffff 0x3ffcfe7c 0x1c010101	/* pioA */
->>   					0x7fffffff 0xfffccc3a 0x3f00cc3a	/* pioB */
->>   					0xffffffff 0x3ff83fff 0xff00ffff	/* pioC */
->> -					0x0003ff00 0x8002a800 0x00000000	/* pioD */
->> +					0xb003ff00 0x8002a800 0x00000000	/* pioD */
->>   					0xffffffff 0x7fffffff 0x76fff1bf	/* pioE */
->>   					>;
->>   
->>
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> Miscellanea:
 > 
+> o Update the kernel doc for sht4x_read_values to 0 for success or -ERRNO
+> o Remove incorrectly used kernel doc /** header for other _read functions
+> o Typo fix succesfull->successful
+> o Reverse a test to unindent a block and use goto unlock
+> o Declare cmd[SHT4X_CMD_LEN] rather than cmd[]
 > 
+> At least for gcc 10.2, object size is reduced a tiny bit.
+> 
+> $ size drivers/hwmon/sht4x.o*
+>    text	   data	    bss	    dec	    hex	filename
+>    1752	    404	    256	   2412	    96c	drivers/hwmon/sht4x.o.new
+>    1825	    404	    256	   2485	    9b5	drivers/hwmon/sht4x.o.old
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 
+Thanks, applied.
 
--- 
-Nicolas Ferre
+Guenter
+
+> ---
+> 
+> compiled, untested, no hardware
+> 
+>  drivers/hwmon/sht4x.c | 95 ++++++++++++++++++++++++---------------------------
+>  1 file changed, 45 insertions(+), 50 deletions(-)
+> 
+> diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
+> index 1dc51ee2a72ba..09c2a0b064444 100644
+> --- a/drivers/hwmon/sht4x.c
+> +++ b/drivers/hwmon/sht4x.c
+> @@ -67,7 +67,7 @@ struct sht4x_data {
+>  /**
+>   * sht4x_read_values() - read and parse the raw data from the SHT4X
+>   * @sht4x_data: the struct sht4x_data to use for the lock
+> - * Return: 0 if succesfull, 1 if not
+> + * Return: 0 if successful, -ERRNO if not
+>   */
+>  static int sht4x_read_values(struct sht4x_data *data)
+>  {
+> @@ -75,51 +75,53 @@ static int sht4x_read_values(struct sht4x_data *data)
+>  	u16 t_ticks, rh_ticks;
+>  	unsigned long next_update;
+>  	struct i2c_client *client = data->client;
+> -	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
+> -	cmd[] = {SHT4X_CMD_MEASURE_HPM};
+> +	u8 crc;
+> +	u8 cmd[SHT4X_CMD_LEN] = {SHT4X_CMD_MEASURE_HPM};
+> +	u8 raw_data[SHT4X_RESPONSE_LENGTH];
+>  
+>  	mutex_lock(&data->lock);
+>  	next_update = data->last_updated +
+>  		      msecs_to_jiffies(data->update_interval);
+> -	if (!data->valid || time_after(jiffies, next_update)) {
+> -		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
+> -		if (ret < 0)
+> -			goto unlock;
+> -
+> -		usleep_range(SHT4X_MEAS_DELAY,
+> -			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
+> -
+> -		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
+> -		if (ret != SHT4X_RESPONSE_LENGTH) {
+> -			if (ret >= 0)
+> -				ret = -ENODATA;
+> -
+> -			goto unlock;
+> -		}
+> -
+> -		t_ticks = raw_data[0] << 8 | raw_data[1];
+> -		rh_ticks = raw_data[3] << 8 | raw_data[4];
+> -
+> -		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
+> -		if (crc != raw_data[2]) {
+> -			dev_err(&client->dev, "data integrity check failed\n");
+> -			ret = -EIO;
+> -			goto unlock;
+> -		}
+> -
+> -		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
+> -		if (crc != raw_data[5]) {
+> -			dev_err(&client->dev, "data integrity check failed\n");
+> -			ret = -EIO;
+> -			goto unlock;
+> -		}
+> -
+> -		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
+> -		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
+> -		data->last_updated = jiffies;
+> -		data->valid = true;
+> +
+> +	if (data->valid && time_before_eq(jiffies, next_update))
+> +		goto unlock;
+> +
+> +	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
+> +	if (ret < 0)
+> +		goto unlock;
+> +
+> +	usleep_range(SHT4X_MEAS_DELAY, SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
+> +
+> +	ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
+> +	if (ret != SHT4X_RESPONSE_LENGTH) {
+> +		if (ret >= 0)
+> +			ret = -ENODATA;
+> +		goto unlock;
+> +	}
+> +
+> +	t_ticks = raw_data[0] << 8 | raw_data[1];
+> +	rh_ticks = raw_data[3] << 8 | raw_data[4];
+> +
+> +	crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
+> +	if (crc != raw_data[2]) {
+> +		dev_err(&client->dev, "data integrity check failed\n");
+> +		ret = -EIO;
+> +		goto unlock;
+>  	}
+>  
+> +	crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
+> +	if (crc != raw_data[5]) {
+> +		dev_err(&client->dev, "data integrity check failed\n");
+> +		ret = -EIO;
+> +		goto unlock;
+> +	}
+> +
+> +	data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
+> +	data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
+> +	data->last_updated = jiffies;
+> +	data->valid = true;
+> +	ret = 0;
+> +
+>  unlock:
+>  	mutex_unlock(&data->lock);
+>  	return ret;
+> @@ -132,19 +134,14 @@ static ssize_t sht4x_interval_write(struct sht4x_data *data, long val)
+>  	return 0;
+>  }
+>  
+> -/**
+> - * sht4x_interval_read() - read the minimum poll interval
+> - *			   in milliseconds
+> - */
+> +/* sht4x_interval_read() - read the minimum poll interval in milliseconds */
+>  static size_t sht4x_interval_read(struct sht4x_data *data, long *val)
+>  {
+>  	*val = data->update_interval;
+>  	return 0;
+>  }
+>  
+> -/**
+> - * sht4x_temperature1_read() - read the temperature in millidegrees
+> - */
+> +/* sht4x_temperature1_read() - read the temperature in millidegrees */
+>  static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
+>  {
+>  	int ret;
+> @@ -158,9 +155,7 @@ static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
+>  	return 0;
+>  }
+>  
+> -/**
+> - * sht4x_humidity1_read() - read a relative humidity in millipercent
+> - */
+> +/* sht4x_humidity1_read() - read a relative humidity in millipercent */
+>  static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
+>  {
+>  	int ret;
