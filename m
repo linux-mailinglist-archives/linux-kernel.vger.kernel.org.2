@@ -2,121 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C4F3989CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566FD3989C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbhFBMlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:41:52 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:39483 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhFBMlu (ORCPT
+        id S229983AbhFBMlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:41:24 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:1824 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229975AbhFBMlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:41:50 -0400
-Received: by mail-pg1-f171.google.com with SMTP id v14so2118908pgi.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tkfGbFk7RbowFQb2pdJ2DiNSH2Hl1PMpHr94hmyAtqs=;
-        b=lxTZN5WbWFKLKZay+tdzygwECcBcBFtb83iQAMQ8lte/ef8eggQE+S6BXoanfnJ/4I
-         dEl0mlNV6UDIdqkQHC32HZwJ89hL6aWyh2WgB3pOoIe9D/z8kfIjRpvSZIH8pmiPlNGS
-         IpFZWdj+7gWvUjS9SyFwBbBo8H1aSB76NwmjvgtpvFHQToHJ+Kuddzdd+0tm+VMTcgg5
-         7H7ew14q/bvkc2Lod182B23azGQ9B9P9FlPuvJk8Dzix8zksKnZ+vJGK2e0WeuzXv25I
-         UkIy8wL7PVXNQ9j6HkPq9Undf92t2TZKM4M2WVAfzXaMeScb3NFjSK/mH/UmRz9bdIUs
-         v5tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tkfGbFk7RbowFQb2pdJ2DiNSH2Hl1PMpHr94hmyAtqs=;
-        b=bPgh+YmCWblq1OTROI1DJWWUJ5Fe0PTFz05nYIOBLvqkffQ5IMgSpkFzxmYWIlvier
-         jCAbOZKKvdLr8RisyogoHIZ9TI2A/f9Ed3eczfM1GuIlECvL20DQCm5ca2FczKZOP0S6
-         7tHRiMo4hBso+Ebmm0QEyNGCSKTY9ApddumTnHfvon051SLzL+aYdJ3I4o/Pg40y01bS
-         ZY53GoZ4EXSJZXnZ1wSe20vGGFIZNQcMqJJK+ZRy04XvVY6XETMu3yHEBPyZ7vpV7N20
-         zlvO9CbV2X+6PZ0ChuWwu1Mjb+lHucFjrcncc3z+1Y/ly6Fc5mpQZjYKp/gIKERlX7nN
-         Y8kA==
-X-Gm-Message-State: AOAM533iWe3hVLeEFJRHJWLPlm1BVTbtgZnOZvMBGTvCFzrioLMR9zSD
-        z8Duks4vkRMvjiFY/zznIZYRow==
-X-Google-Smtp-Source: ABdhPJwZLYHDPPn1a+5bpf3u9GEz+y0iz9ZUQ2qJzz1MLRRwbyl6UAlRYCEn1EZr8YCrCxvzgqY3OA==
-X-Received: by 2002:a63:5c5d:: with SMTP id n29mr33235732pgm.131.1622637534524;
-        Wed, 02 Jun 2021 05:38:54 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
-        by smtp.gmail.com with ESMTPSA id m2sm17340941pgu.85.2021.06.02.05.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 05:38:53 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 20:38:47 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 8/8] perf record: Directly bail out for compat case
-Message-ID: <20210602123847.GE10272@leoy-ThinkPad-X240s>
-References: <20210602103007.184993-1-leo.yan@linaro.org>
- <20210602103007.184993-9-leo.yan@linaro.org>
- <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
+        Wed, 2 Jun 2021 08:41:23 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 152Ca3Hf015153;
+        Wed, 2 Jun 2021 07:39:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=b+kZOYy8iFYeTlGyUQ+o3peomPw8V47ZU6e59cuq6sE=;
+ b=cyF6i0qiCn65+uEcTZeUzTK3V40jyzAdgaZN/xGNc07zInlrfgo7LUfWL0RbiVLy1fGE
+ JUB41adnpvpBTVhvcqSb/txapQlLS3K4lIWsfFXEzchawH0g2PyJ5a8KKYU0szs2jIn3
+ PtWlpHLEXKSwTLVgJbhsjYSG1xwZ97vLxlAKsBl7Lt0tFg07Hpzpo6vtYWtU672tg3X9
+ zQn+KYdB7cfVgKPUT2TRx4PI0e6PlRjay50yUXnz4HJslADIyrWL0GCikbgA7BVyy3ox
+ VVQL3IbiHv7UyTBB7hgwgwZ/RQ229IJbraM1fkH0EyM+6ZQJzkPsbN4RSs1G3/ro4+AX YQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 38x650r8uw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 02 Jun 2021 07:39:27 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 2 Jun 2021
+ 13:39:25 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Wed, 2 Jun 2021 13:39:25 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ACFE52BA;
+        Wed,  2 Jun 2021 12:39:25 +0000 (UTC)
+Date:   Wed, 2 Jun 2021 12:39:25 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        patches <patches@opensource.cirrus.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/9] mfd: wm831x: use DEVICE_ATTR_RO macro
+Message-ID: <20210602123925.GE9223@ediswmail.ad.cirrus.com>
+References: <20210602114339.11223-1-thunder.leizhen@huawei.com>
+ <20210602114339.11223-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
+In-Reply-To: <20210602114339.11223-2-thunder.leizhen@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: -OU_U1jVTOwYmAeYQ1d9ICfcPtKJJwPb
+X-Proofpoint-ORIG-GUID: -OU_U1jVTOwYmAeYQ1d9ICfcPtKJJwPb
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 clxscore=1011 mlxlogscore=936
+ impostorscore=0 spamscore=0 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106020081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrain,
+On Wed, Jun 02, 2021 at 07:43:31PM +0800, Zhen Lei wrote:
+> Use DEVICE_ATTR_RO macro helper instead of plain DEVICE_ATTR, which makes
+> the code a bit shorter and easier to read.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
 
-On Wed, Jun 02, 2021 at 02:18:47PM +0300, Adrian Hunter wrote:
-> On 2/06/21 1:30 pm, Leo Yan wrote:
-> > Since the 64-bit atomicity is not promised in 32-bit perf, directly
-> > report the error and bail out for this case.
-> > 
-> > Now only applies on x86_64 and Arm64 platforms.
-> > 
-> > Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-> 
-> Maybe we can do better for the compat case.
-> 
-> We can assume the upper 32-bits change very seldom,
-> and always increase. So for the 'read' case:
-> 
-> 	u64 first, second, last;
-> 	u64 mask = (u64)((u32)-1) << 32;
-> 
-> 	do {
-> 		first = READ_ONCE(pc->aux_head);
-> 		rmb();
-> 		second = READ_ONCE(pc->aux_head);
-> 		rmb();
-> 		last = READ_ONCE(pc->aux_head);
-> 	} while ((first & mask) != (last & mask));
-> 	return second;
-> 
-> For the write case, we can cause a fatal error only if the new
-> tail has non-zero upper 32-bits.  That gives up to 4GiB of data
-> before aborting:
-> 
-> 	if (tail & mask)
-> 		return -1;
-> 	smp_mb();
-> 	WRITE_ONCE(pc->aux_tail, tail);
-
-Seems to me, it's pointless to only support aux_head for 64-bit and
-support aux_tail for 32-bit.  I understand this can be helpful for the
-snapshot mode which only uses aux_head, but it still fails to support
-the normal case for AUX ring buffer using 64-bit head/tail.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Leo
+Charles
