@@ -2,163 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE17398B24
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D389398B27
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhFBN4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:56:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49130 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229590AbhFBN4v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:56:51 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 152DaiWL008290;
-        Wed, 2 Jun 2021 09:54:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=WmZjR7l62AhdoDS2RktXANR5nkORtTOgYHzx6ctUV/Q=;
- b=kG0JKv/BHTALc3tO3r5A13m7Xay13WCPa+NOcKGpk/mbNx8wNgZstAb6Z3Onmy/APSoU
- LJ0SuNz2jdsq1g3ymHLVt3CerXwq1O6IrUOSr1Sc2GTdvhbETJGoz+NyVNM2UQZHOu0r
- WPy+mmVUbcD0gZXWHuX3Fa0D20m+v0SMLU32Q1iYzhzyW/b/bmMuWKYcOqesOJRItgOF
- mjogp2RwJG0aZyEGnrkOIiw7vEIS0BLdLEXkc95neVeDkt6MRBGJ5VhiQ5FD+JW8J9Z6
- jbgRnB7EO9rLZ7ACN/kEweMvbYJapo72OaidBN4TUIu2ft6f0aYQP1VxwsLXrgoWsoyZ 1w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38x92dm0s1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 09:54:29 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 152Dcx18017122;
-        Wed, 2 Jun 2021 09:54:28 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38x92dm0qe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 09:54:28 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 152Dlt2n024334;
-        Wed, 2 Jun 2021 13:54:25 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 38ud88acyf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Jun 2021 13:54:25 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 152DsNhj27853120
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Jun 2021 13:54:23 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F296711C05C;
-        Wed,  2 Jun 2021 13:54:22 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E020411C054;
-        Wed,  2 Jun 2021 13:54:19 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.77.40])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  2 Jun 2021 13:54:19 +0000 (GMT)
-Date:   Wed, 2 Jun 2021 16:54:17 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org
-Subject: Re: [RFC/RFT PATCH 2/5] memblock: introduce generic
- memblock_setup_resources()
-Message-ID: <YLeNiUkIw+aFpMcz@linux.ibm.com>
-References: <20210531122959.23499-1-rppt@kernel.org>
- <20210531122959.23499-3-rppt@kernel.org>
- <20210601135415.GZ30436@shell.armlinux.org.uk>
- <YLdCRoldZFYMZ0BG@linux.ibm.com>
- <20210602101521.GD30436@shell.armlinux.org.uk>
+        id S229867AbhFBN5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:57:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:9601 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhFBN5k (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 09:57:40 -0400
+IronPort-SDR: /5TwWUqh2wfhfhJSb8xEunJBNK+70CwFEglBmUStauO5kz9ZpNWnezBAqFa0meWfZWYsH/UPPP
+ GWdcquFRrAdQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="191141339"
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="191141339"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 06:55:56 -0700
+IronPort-SDR: TOqMw+oKb5Cl0Oj7ZwRsvLpFeNZ8LYVZe1TUxCQIPol39r05xj9qsWwKI/IS9DjXfMUM2Eqyr/
+ IlS3J7wr3lvA==
+X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
+   d="scan'208";a="479717680"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.255.30.70]) ([10.255.30.70])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 06:55:52 -0700
+Subject: Re: [PATCH 1/4] perf vendor events: Add core event list for Icelake
+ Server
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <Linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>
+References: <20210510012438.6293-1-yao.jin@linux.intel.com>
+ <20210510012438.6293-2-yao.jin@linux.intel.com>
+ <CAP-5=fUPbc0T9283MxxPhqdu+zvxNKvJsY5R5CuyS2K4SPtiJg@mail.gmail.com>
+ <YKgMz52O9mVjPH3K@kernel.org>
+ <c0f27643-bebb-2912-56ed-f7abec7dbde3@linux.intel.com>
+ <YKzwzyM8YSsxRBJ8@kernel.org> <YLdq/H8CXYgHWzCL@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <99bc4c45-d67f-d53f-7ca7-1e770ef585a6@linux.intel.com>
+Date:   Wed, 2 Jun 2021 21:55:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602101521.GD30436@shell.armlinux.org.uk>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: J1pL7ClAT_QwidlIsJz58cbv6Fart2RR
-X-Proofpoint-ORIG-GUID: t-LdfegxWsAyi89ULkkDrRm0-GDDH0TW
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-02_07:2021-06-02,2021-06-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 mlxscore=0 malwarescore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 clxscore=1015 suspectscore=0
- bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106020088
+In-Reply-To: <YLdq/H8CXYgHWzCL@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:15:21AM +0100, Russell King (Oracle) wrote:
-> On Wed, Jun 02, 2021 at 11:33:10AM +0300, Mike Rapoport wrote:
-> > On Tue, Jun 01, 2021 at 02:54:15PM +0100, Russell King (Oracle) wrote:
-> > > On Mon, May 31, 2021 at 03:29:56PM +0300, Mike Rapoport wrote:
-> > > > +	code_resource.start = __pa_symbol(_text);
-> > > > +	code_resource.end = __pa_symbol(_etext)-1;
-> > > > +	rodata_resource.start = __pa_symbol(__start_rodata);
-> > > > +	rodata_resource.end = __pa_symbol(__end_rodata)-1;
-> > > > +	data_resource.start = __pa_symbol(_sdata);
-> > > > +	data_resource.end = __pa_symbol(_edata)-1;
-> > > > +	bss_resource.start = __pa_symbol(__bss_start);
-> > > > +	bss_resource.end = __pa_symbol(__bss_stop)-1;
-> > > 
-> > > This falls short on 32-bit ARM. The old code was:
-> > > 
-> > > -       kernel_code.start   = virt_to_phys(_text);
-> > > -       kernel_code.end     = virt_to_phys(__init_begin - 1);
-> > > -       kernel_data.start   = virt_to_phys(_sdata);                             
-> > > -       kernel_data.end     = virt_to_phys(_end - 1);                           
-> > > 
-> > > If I look at one of my kernels:
-> > > 
-> > > c0008000 T _text
-> > > c0b5b000 R __end_rodata
-> > > ... exception and unwind tables live here ...
-> > > c0c00000 T __init_begin
-> > > c0e00000 D _sdata
-> > > c0e68870 D _edata
-> > > c0e68870 B __bss_start
-> > > c0e995d4 B __bss_stop
-> > > c0e995d4 B _end
-> > > 
-> > > So the original covers _text..__init_begin-1 which includes the
-> > > exception and unwind tables. Your version above omits these, which
-> > > leaves them exposed.
-> > 
-> > Right, this needs to be fixed. Is there any reason the exception and unwind
-> > tables cannot be placed between _sdata and _edata? 
-> > 
-> > It seems to me that they were left outside for purely historical reasons.
-> > Commit ee951c630c5c ("ARM: 7568/1: Sort exception table at compile time")
-> > moved the exception tables out of .data section before _sdata existed.
-> > Commit 14c4a533e099 ("ARM: 8583/1: mm: fix location of _etext") moved
-> > _etext before the unwind tables and didn't bother to put them into data or
-> > rodata areas.
+Hi Arnaldo,
+
+On 6/2/2021 7:26 PM, Arnaldo Carvalho de Melo wrote:
+> Em Tue, May 25, 2021 at 09:42:55AM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Mon, May 24, 2021 at 09:08:12AM +0800, Jin, Yao escreveu:
+>>> Could you pull the top 4 patches from "https://github.com/yaoj/icx-events.git"?
 > 
-> You can not assume that all sections will be between these symbols. This
-> isn't specific to 32-bit ARM. If you look at x86's vmlinux.lds.in, you
-> will see that BUG_TABLE and ORC_UNWIND_TABLE are after _edata, along
-> with many other undiscarded sections before __bss_start.
+>>> perf vendor events: Update event list for Icelake Client
+>>> perf vendor events: Add metrics for Icelake Server
+>>> perf vendor events: Add uncore event list for Icelake Server
+> 
+>>> The patch is too big and it's possibly corrupted by mailing system.
+>   
+>> Thanks, applied.
+> 
+> So, this is failing 'perf test 10', see details below, please run 'perf
+> test' before pushing patches upstream.
+> 
+> Triple checking:
+> 
+> ⬢[acme@toolbox perf]$ git cherry-pick 8f74f0f4dbf6361f0a5d21c5da260fbbf7597286
+> Removing tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+> [perf/core 6971d24f4d04ccfa] Revert "perf vendor events intel: Add metrics for Icelake Server"
+>   Date: Wed Jun 2 08:16:20 2021 -0300
+>   1 file changed, 327 deletions(-)
+>   delete mode 100644 tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+> ⬢[acme@toolbox perf]$ git log --oneline -1
+> 6971d24f4d04ccfa (HEAD -> perf/core) Revert "perf vendor events intel: Add metrics for Icelake Server"
+> ⬢[acme@toolbox perf]$ (rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ; make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin) > /dev/null 2>&1 ; perf test 10
+> 10: PMU events                                                      :
+> 10.1: PMU event table sanity                                        : Ok
+> 10.2: PMU event map aliases                                         : Ok
+> 10.3: Parsing of PMU event table metrics                            : Ok
+> 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> ⬢[acme@toolbox perf]$ git reset --hard HEAD~
+> HEAD is now at 0ab8009b3e8dd6ba Merge remote-tracking branch 'torvalds/master' into perf/core
+> ⬢[acme@toolbox perf]$ (rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ; make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin) > /dev/null 2>&1 ; perf test 10
+> 10: PMU events                                                      :
+> 10.1: PMU event table sanity                                        : Ok
+> 10.2: PMU event map aliases                                         : Ok
+> 10.3: Parsing of PMU event table metrics                            : Ok
+> 10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> ⬢[acme@toolbox perf]$
+> 
+> - Arnaldo
+> 
+> ⬢[acme@toolbox perf]$ git bisect bad
+> d89bf9cab1f613e4496f929d89477b2baaad1ea9 is the first bad commit
+> commit d89bf9cab1f613e4496f929d89477b2baaad1ea9
+> Author: Jin Yao <yao.jin@linux.intel.com>
+> Date:   Sat May 8 13:06:20 2021 +0800
+> 
+>      perf vendor events intel: Add metrics for Icelake Server
+> 
+>      Add JSON metrics for Icelake Server to perf.
+> 
+>      Based on TMA metrics 4.21 at 01.org.:
+> 
+>        https://download.01.org/perfmon/
+> 
+>      Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>      Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>      Acked-by: Ian Rogers <irogers@google.com>
+>      Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>      Cc: Andi Kleen <ak@linux.intel.com>
+>      Cc: Ingo Molnar <mingo@redhat.com>
+>      Cc: Jiri Olsa <jolsa@kernel.org>
+>      Cc: Kan Liang <kan.liang@intel.com>
+>      Cc: Peter Zijlstra <peterz@infradead.org>
+>      Link: http://lore.kernel.org/lkml/c0f27643-bebb-2912-56ed-f7abec7dbde3@linux.intel.com
+>      Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+>   .../pmu-events/arch/x86/icelakex/icx-metrics.json  | 327 +++++++++++++++++++++
+>   1 file changed, 327 insertions(+)
+>   create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+> ⬢[acme@toolbox perf]$
+> 
+> 
+> ⬢[acme@toolbox perf]$ perf test -v 10 |& tail -40
+> parsing 'inst_retired.any / cpu_clk_unhalted.distributed'
+> parsing '( 1 * ( fp_arith_inst_retired.scalar_single + fp_arith_inst_retired.scalar_double ) + 2 * fp_arith_inst_retired.128b_packed_double + 4 * ( fp_arith_inst_retired.128b_packed_single + fp_arith_inst_retired.256b_packed_double ) + 8 * ( fp_arith_inst_retired.256b_packed_single + fp_arith_inst_retired.512b_packed_double ) + 16 * fp_arith_inst_retired.512b_packed_single ) / cpu_clk_unhalted.distributed'
+> parsing 'uops_executed.thread / ( uops_executed.core_cycles_ge_1 / 2 )'
+> parsing 'cpu_clk_unhalted.distributed'
+> parsing 'inst_retired.any / mem_inst_retired.all_loads'
+> parsing 'inst_retired.any / mem_inst_retired.all_stores'
+> parsing 'inst_retired.any / br_inst_retired.all_branches'
+> parsing 'inst_retired.any / br_inst_retired.near_call'
+> parsing 'br_inst_retired.all_branches / br_inst_retired.near_taken'
+> parsing 'inst_retired.any / ( 1 * ( fp_arith_inst_retired.scalar_single + fp_arith_inst_retired.scalar_double ) + 2 * fp_arith_inst_retired.128b_packed_double + 4 * ( fp_arith_inst_retired.128b_packed_single + fp_arith_inst_retired.256b_packed_double ) + 8 * ( fp_arith_inst_retired.256b_packed_single + fp_arith_inst_retired.512b_packed_double ) + 16 * fp_arith_inst_retired.512b_packed_single )'
+> parsing 'inst_retired.any'
+> parsing 'lsd.uops / (idq.dsb_uops + lsd.uops + idq.mite_uops + idq.ms_uops)'
+> parsing 'idq.dsb_uops / (idq.dsb_uops + lsd.uops + idq.mite_uops + idq.ms_uops)'
+> parsing 'l1d_pend_miss.pending / ( mem_load_retired.l1_miss + mem_load_retired.fb_hit )'
+> parsing 'l1d_pend_miss.pending / l1d_pend_miss.pending_cycles'
+> parsing '( itlb_misses.walk_pending + dtlb_load_misses.walk_pending + dtlb_store_misses.walk_pending ) / ( 2 * cpu_clk_unhalted.distributed )'
+> parsing '64 * l1d.replacement / 1000000000 / duration_time'
+> parsing '64 * l2_lines_in.all / 1000000000 / duration_time'
+> parsing '64 * longest_lat_cache.miss / 1000000000 / duration_time'
+> parsing '64 * offcore_requests.all_requests / 1000000000 / duration_time'
+> parsing '1000 * mem_load_retired.l1_miss / inst_retired.any'
+> parsing '1000 * mem_load_retired.l2_miss / inst_retired.any'
+> parsing '1000 * ( ( offcore_requests.all_data_rd - offcore_requests.demand_data_rd ) + l2_rqsts.all_demand_miss + l2_rqsts.swpf_miss ) / inst_retired.any'
+> parsing '1000 * mem_load_retired.l3_miss / inst_retired.any'
+> parsing '1000 * l2_lines_out.silent / inst_retired.any'
+> parsing '1000 * l2_lines_out.non_silent / inst_retired.any'
+> parsing 'cpu_clk_unhalted.ref_tsc / msr@tsc@'
+> parsing '(cpu_clk_unhalted.thread / cpu_clk_unhalted.ref_tsc) * msr@tsc@ / 1000000000 / duration_time'
+> parsing '( ( 1 * ( fp_arith_inst_retired.scalar_single + fp_arith_inst_retired.scalar_double ) + 2 * fp_arith_inst_retired.128b_packed_double + 4 * ( fp_arith_inst_retired.128b_packed_single + fp_arith_inst_retired.256b_packed_double ) + 8 * ( fp_arith_inst_retired.256b_packed_single + fp_arith_inst_retired.512b_packed_double ) + 16 * fp_arith_inst_retired.512b_packed_single ) / 1000000000 ) / duration_time'
+> parsing 'cpu_clk_unhalted.thread / cpu_clk_unhalted.ref_tsc'
+> parsing '1 - cpu_clk_unhalted.one_thread_active / cpu_clk_unhalted.ref_distributed'
+> parsing 'cpu_clk_unhalted.thread:k / cpu_clk_unhalted.thread'
+> parsing '( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time'
+> parsing '1000000000 * ( cha@event\=0x36\,umask\=0x21\,config\=0x40433@ / cha@event\=0x35\,umask\=0x21\,config\=0x40433@ ) / ( cha_0@event\=0x0@ / duration_time )'
+> parsing 'cha@event\=0x36\,umask\=0x21\,config\=0x40433@ / cha@event\=0x36\,umask\=0x21\,config\=0x40433\,thresh\=1@'
+> parsing '( 1000000000 * ( cha@event\=0x36\,umask\=0x21\,config\=0x40433@_pmm / cha@event\=0x35\,umask\=0x21\,config\=0x40433@_pmm ) / cha_0@event\=0x0@ )'
+> check_parse_fake failed
+> test child finished with -1
+> ---- end ----
+> PMU events subtest 4: FAILED!
+> ⬢[acme@toolbox perf]$
+> 
 
-But if you look at x86's setup_arch() all these never make it to the
-resource tree. So there are holes in /proc/iomem between the kernel
-resources.
+Very sorry about the "Parsing of PMU event table metrics with fake PMUs" failure! I will resubmit 
+the patch also with other c-state metrics update.
 
-> So it seems your assumptions in trying to clean this up are somewhat
-> false.
-
-My assumption was that there is complete lack of consistency between what
-is reserved memory and how it is reported in /proc/iomem or
-/sys/firmware/memmap for that matter. I'm not trying to clean this up, I'm
-trying to make different views of the physical memory consistent.
-Consolidating several similar per-arch implementations is the first step in
-this direction.
- 
--- 
-Sincerely yours,
-Mike.
+Thanks
+Jin Yao
