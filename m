@@ -2,171 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA1C398E75
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44158398E89
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhFBPW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:22:57 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:24248 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhFBPW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:22:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622647265; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=FcsDN7GmZwwYCQCaL609+lS+YWE1rX1tMHH+yc9meC2GVwCt0MhzFLscvLbbajY6ji
-    5gbVhIrkGtDYQkaWUzErOmwfawIrk9rSQQJOLeL/kcdFXezLCss3gIdU2YhzvUEba0Fg
-    tB4kEKbS2iyKKstvNm7uQTBN8izIlyAR7y9spPFEdIYmWf9HMrGN+TuPo/35lXlcmjae
-    7a0Ato65rNKcqTmb2Uou6+0InlVcoYtxqs+BD5nDB0uajkNV7HN1ysVPQD0ICl9j93Ii
-    gp0IMI0/C3sRXv3JcPLxWqY/0svyxSjHzpsKAQJolAvHW/6236GMb6SZ2uv03SxvY5OC
-    Y19w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622647265;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=H1gWGyE6aKr6MZYG5AS5yi8wLNX85LARR9MiEBFffXk=;
-    b=BYgfMxlOpoeh/lbVLHFG0u9lbxPn3H+tupF5w/+dG+gRN/ksXSficF9EDyakqr7iI8
-    obd/dK5fzMKW8V0KaSNrUS/o7p3qOl/oTmytPaRbwVyiINuHjfJCcY1l6tr2wj/BBmWx
-    trq6GMnd7Zq4+tnB1iawHI7ZnrxymRmxtWj8hp2CE6gU7OdpnioXLWAZ4RjOio9mIMjD
-    WbIXrFWyDIoTO7cA2szcDbvP3CHyjkQaSWJiTrFcK7y8rIzmjWdUJIQy58QReYrleYcr
-    W6MaVluGIlc+d1QEYmSx1x4hHZ/0AEh3pJYRihkneJvu5F5WJZEngYBH6VxBxUkEXCua
-    yzwA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622647265;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=H1gWGyE6aKr6MZYG5AS5yi8wLNX85LARR9MiEBFffXk=;
-    b=DKk1X0r7oBmqWVVFasJNT6UU3Ad6XU5qBH6sse91drViVF1BiHE8VlhshIULDTQS/g
-    mrFfEcz/wOSXCAgNYoq4Rp6+tlApzSPK3FEajmc5ah1s6UL5Slws+b8pLb5eMFEriipa
-    jHresoQJC2GQo9l/MIS+5++SSUH7RcNnjAolENYG0/oWJfF0rA1Il1+V9rSI2acGijoZ
-    sgc1eB/0yGQbi4xHPOu6hChQifCXzApYUaJQaSHtj3vjGLNBqb69YEolxhGTfzeN031p
-    dnYUKzI5HXIKbaL8jUlbBP3oyBxZNlCkv2aUVSjWyS6z1BCHFRZjkG1HiPIZxtOyeAM6
-    eObA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IcjHBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.27.2 DYNA|AUTH)
-    with ESMTPSA id y01375x52FL43Td
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 2 Jun 2021 17:21:04 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 17:20:57 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Chanwoo Choi <cwchoi00@gmail.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nikita Travkin <nikita@trvn.ru>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v3 2/3] extcon: sm5502: Refactor driver to use
- chip-specific struct
-Message-ID: <YLeh2Q1q3643iFkZ@gerhold.net>
-References: <20210601200007.218802-1-stephan@gerhold.net>
- <20210601200007.218802-3-stephan@gerhold.net>
- <b3a9eed8-0d7c-e935-36d4-13918f5b7b21@gmail.com>
+        id S231886AbhFBP2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:28:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229989AbhFBP2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:28:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4C5761360;
+        Wed,  2 Jun 2021 15:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622647594;
+        bh=LHNYE6qLEHTjBMpXd1FFTxXKp/FfRkEJFT/IqvjWcK4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oOSS4IAArR7BGlZgoGDjTz79THCDczQ2h/gaiMzFJIsBqOlbPE8NyhxfKFjAYKj5e
+         E5Q2LiuAEHXnUyHHi0Xh6PXIAl2B4ZDbCQFbppd6mwAeQN2VhEKeeRqSQqBpEniZr8
+         gQ/8A2D1P2IFA+LjJX9389rvV//yB8G8y4wqRAJrt7bU1TdfCBDvSqwq33iecg0YdC
+         ubVW/JUjYANrfn+Vi37BJn/YhxEEk+MmFYXUVOW61zL9O/uQJUBsnDCu+WB9wS3wgU
+         MUoRdRBeKfrucwyssOc0blDSjGAcUYVscwh/+Fd3M5y6hYsfarpplNECFtLiE2ld81
+         TSu9BMK7cwuiw==
+Date:   Wed, 2 Jun 2021 16:26:29 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 2/2] sched: Plug race between SCA, hotplug and
+ migration_cpu_stop()
+Message-ID: <20210602152629.GF31179@willie-the-truck>
+References: <20210526205751.842360-1-valentin.schneider@arm.com>
+ <20210526205751.842360-3-valentin.schneider@arm.com>
+ <87h7ihfrlf.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3a9eed8-0d7c-e935-36d4-13918f5b7b21@gmail.com>
+In-Reply-To: <87h7ihfrlf.mognet@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 12:13:18AM +0900, Chanwoo Choi wrote:
-> On 21. 6. 2. 오전 5:00, Stephan Gerhold wrote:
-> > Prepare for supporting SM5504 in the extcon-sm5502 driver by replacing
-> > enum sm5504_types with a struct sm5504_type that stores the chip-specific
-> > definitions. This struct can then be defined separately for SM5504
-> > without having to add if (type == TYPE_SM5504) everywhere in the code.
-> > 
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> > Changes in v3: New patch to simplify diff on next patch
-> > ---
-> >   drivers/extcon/extcon-sm5502.c | 64 +++++++++++++++++++++-------------
-> >   drivers/extcon/extcon-sm5502.h |  4 ---
-> >   2 files changed, 40 insertions(+), 28 deletions(-)
-> > 
-> > diff --git a/drivers/extcon/extcon-sm5502.c b/drivers/extcon/extcon-sm5502.c
-> > index 9f40bb9f1f81..951f6ca4c479 100644
-> > --- a/drivers/extcon/extcon-sm5502.c
-> > +++ b/drivers/extcon/extcon-sm5502.c
-> > @@ -40,17 +40,13 @@ struct sm5502_muic_info {
-> >   	struct i2c_client *i2c;
-> >   	struct regmap *regmap;
-> > +	const struct sm5502_type *type;
-> >   	struct regmap_irq_chip_data *irq_data;
-> > -	struct muic_irq *muic_irqs;
-> > -	unsigned int num_muic_irqs;
-> >   	int irq;
-> >   	bool irq_attach;
-> >   	bool irq_detach;
-> >   	struct work_struct irq_work;
-> > -	struct reg_data *reg_data;
-> > -	unsigned int num_reg_data;
-> > -
-> >   	struct mutex mutex;
-> >   	/*
-> > @@ -62,6 +58,17 @@ struct sm5502_muic_info {
-> >   	struct delayed_work wq_detcable;
-> >   };
-> > +struct sm5502_type {
-> > +	struct muic_irq *muic_irqs;
-> > +	unsigned int num_muic_irqs;
-> > +	const struct regmap_irq_chip *irq_chip;
-> > +
-> > +	struct reg_data *reg_data;
-> > +	unsigned int num_reg_data;
-> > +
-> > +	int (*parse_irq)(struct sm5502_muic_info *info, int irq_type);
-> > +};
-> > +
-> >   /* Default value of SM5502 register to bring up MUIC device. */
-> >   static struct reg_data sm5502_reg_data[] = {
-> >   	{
-> > @@ -502,11 +509,11 @@ static irqreturn_t sm5502_muic_irq_handler(int irq, void *data)
-> >   	struct sm5502_muic_info *info = data;
-> >   	int i, irq_type = -1, ret;
-> > -	for (i = 0; i < info->num_muic_irqs; i++)
-> > -		if (irq == info->muic_irqs[i].virq)
-> > -			irq_type = info->muic_irqs[i].irq;
-> > +	for (i = 0; i < info->type->num_muic_irqs; i++)
-> > +		if (irq == info->type->muic_irqs[i].virq)
-> > +			irq_type = info->type->muic_irqs[i].irq;
-> > -	ret = sm5502_parse_irq(info, irq_type);
-> > +	ret = info->type->parse_irq(info, irq_type);
+On Tue, Jun 01, 2021 at 05:59:56PM +0100, Valentin Schneider wrote:
+> On 26/05/21 21:57, Valentin Schneider wrote:
+> > +		dest_cpu = arg->dest_cpu;
+> > +		if (task_on_rq_queued(p)) {
+> > +			/*
+> > +			 * A hotplug operation could have happened between
+> > +			 * set_cpus_allowed_ptr() and here, making dest_cpu no
+> > +			 * longer allowed.
+> > +			 */
+> > +			if (!is_cpu_allowed(p, dest_cpu))
+> > +				dest_cpu = select_fallback_rq(cpu_of(rq), p);
+> > +			/*
+> > +			 * dest_cpu can be victim of hotplug between is_cpu_allowed()
+> > +			 * and here. However, per the synchronize_rcu() in
+> > +			 * sched_cpu_deactivate(), it can't have gone lower than
+> > +			 * CPUHP_AP_ACTIVE, so it's safe to punt it over and let
+> > +			 * balance_push() route it elsewhere.
+> > +			 */
+> > +			update_rq_clock(rq);
+> > +			rq = move_queued_task(rq, &rf, p, dest_cpu);
 > 
-> Looks good to me. But there is only one comment.
-> Need to check the 'parse_irq' as following:
+> So, while digesting this I started having doubts vs pcpu kthreads since
+> they're allowed on online CPUs. The bogus scenario here would be picking a
+> !active && online CPU, and see it go !online before the move_queued_task().
 > 
-> If you agree this suggestion, I'll apply with following changes by myself:
+> Now, to transition from online -> !online, we have to go through
+> take_cpu_down() which is issued via a stop_machine() call. This means the
+> transition can't happen until all online CPUs are running the stopper task
+> and reach MULTI_STOP_RUN.
 > 
-> 	if (!info->type->parse_irq) {
-> 		dev_err(info->dev, "failed to handle irq due to parse_irq\n",
-> 		return IRQ_NONE;
-> 	}
-> 
-> 
+> migration_cpu_stop() being already a stopper callback should thus make it
+> "atomic" vs takedown_cpu(), meaning the above should be fine.
 
-This condition should be impossible, since .parse_irq is set for both
-SM5502 and SM5504:
+I'd be more inclined to agree with your reasoning if migration_cpu_stop()
+couldn't itself call stop_one_cpu_nowait() to queue more work for the
+stopper thread. What guarantees that takedown_cpu() can't queue its stopper
+work in the middle of that?
 
-static const struct sm5502_type sm5502_data = {
-	/* ... */
-	.parse_irq = sm5502_parse_irq,
-};
-
-static const struct sm5502_type sm5504_data = {
-	/* ... */
-	.parse_irq = sm5504_parse_irq,
-};
-
-Which failure case are you trying to handle with that if statement?
-
-Thanks!
-Stephan
+Will
