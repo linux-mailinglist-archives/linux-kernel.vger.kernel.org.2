@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F2A3991BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F463991BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhFBRee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230273AbhFBReg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:34:36 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:43744 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFBRee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Jun 2021 13:34:34 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:28058 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhFBRec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:34:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622655169; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=SVmiorm7TWSt+v+Z1z7VsA4S6rb07Awl149tXn0sKqE=;
- b=HQTDPPjNfexnp/4Pjnd9u8Wr35AxMXKmFcNuVcyqx52ZCNc6twJcphWaxz12bkNnW/Ick2kO
- Knh2VHFBfmVY5l6a3c0/n5OO8l4VXTHLhlTJ9o1dyHVLqQq6IAlxMUs9TgCsbdPix42FcKBY
- mhHtZjRydaT35GaVRHEKBTKhv8o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60b7c0afe27c0cc77f6cda1b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 17:32:31
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8218FC4338A; Wed,  2 Jun 2021 17:32:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5267CC433F1;
-        Wed,  2 Jun 2021 17:32:24 +0000 (UTC)
+Received: by mail-oi1-f170.google.com with SMTP id x196so3017554oif.10;
+        Wed, 02 Jun 2021 10:32:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=RY7O7u2Oyi97lukEthyEStZ/2IoTJtOOho5cKJky/aA=;
+        b=iMeUVCCNePTkJp1FWYpX+xSsbnLhrEDsXNmvGL1ApmIb53COnOJQBQY2nCvgjpC005
+         Olof0XdiRKsNB/9IFghAam4DJyFYcvbRM+j16B8Cu0b8yY43uiPZVN3FEcda6oUFakL0
+         wm5w+ppGxOZ4zzKX+Vn9OqJWqlPDV+W2qLz6BYfDa+36DQ/As8HE+hWDCtUuOAQRCxhc
+         KsHdRLcE+S/0AihDZdW5jKGm29h6zjw0H44Lw8KmniHvbXw1nRjBWW+O7hr7nE1ud6Vx
+         mvkb7HoxDwTGq22HTIXxYozIfBJHZY4mV3xOgXIj9gfT4OPv2Mwme5v74njdsnxwRJV8
+         uapg==
+X-Gm-Message-State: AOAM530/7w3wXZgvdjT0scKP4cE9K/6rDb5pm76QEVdoJTxcrvnvmkde
+        9Gwe75BZfY8rZdWxS+D8nFUP3EKR2IUBv7MrnQH4+rgnpqM=
+X-Google-Smtp-Source: ABdhPJw26p+rXGV5H3AebvAZG4D/DeA5t1pKT/+hjmL2KBaSYIwSY5PztzEh6qErrFdaoHPT0mcaXPnrBtn3HpdxMcE=
+X-Received: by 2002:aca:b406:: with SMTP id d6mr14684243oif.71.1622655170820;
+ Wed, 02 Jun 2021 10:32:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 02 Jun 2021 10:32:24 -0700
-From:   abhinavk@codeaurora.org
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [RESEND 13/26] drm/msm/dp/dp_catalog: Correctly
- document param 'dp_catalog'
-In-Reply-To: <20210602143300.2330146-14-lee.jones@linaro.org>
-References: <20210602143300.2330146-1-lee.jones@linaro.org>
- <20210602143300.2330146-14-lee.jones@linaro.org>
-Message-ID: <fc09554ced22b0603d7f2e32b6c424f4@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 2 Jun 2021 19:32:39 +0200
+Message-ID: <CAJZ5v0hCofs+k5a-U=xcEwBTtTmGweAU1OkhJRmNu9TBuoJzrg@mail.gmail.com>
+Subject: [GIT PULL] ACPI fix for v5.13-rc5
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-02 07:32, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/msm/dp/dp_catalog.c:206: warning: Function parameter
-> or member 'dp_catalog' not described in 'dp_catalog_aux_reset'
->  drivers/gpu/drm/msm/dp/dp_catalog.c:206: warning: Excess function
-> parameter 'aux' description in 'dp_catalog_aux_reset'
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_catalog.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c
-> b/drivers/gpu/drm/msm/dp/dp_catalog.c
-> index f4f53f23e331e..9ba75b994595d 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-> @@ -193,7 +193,7 @@ int dp_catalog_aux_clear_hw_interrupts(struct
-> dp_catalog *dp_catalog)
->  /**
->   * dp_catalog_aux_reset() - reset AUX controller
->   *
-> - * @aux: DP catalog structure
-> + * @dp_catalog: DP catalog structure
->   *
->   * return: void
->   *
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.13-rc5
+
+with top-most commit e4dfe108371214500ee10c2cf19268f53acaa803
+
+ ACPICA: Clean up context mutex during object deletion
+
+on top of commit 8124c8a6b35386f73523d27eacb71b5364a68c4c
+
+ Linux 5.13-rc4
+
+to receive an ACPI fix for 5.13-rc5.
+
+Fix a mutex object memory leak in ACPICA occurring during object
+deletion that was introduced in 5.12-rc1 (Erik Kaneda).
+
+Thanks!
+
+
+---------------
+
+Erik Kaneda (1):
+      ACPICA: Clean up context mutex during object deletion
+
+---------------
+
+ drivers/acpi/acpica/utdelete.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
