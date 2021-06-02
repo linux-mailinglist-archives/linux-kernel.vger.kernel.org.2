@@ -2,325 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812D4398E68
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7F6398E09
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhFBPVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbhFBPUX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:20:23 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FB71C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=rwb1DtLJf8NTuKLIC38nzM9LYY1nrT9VKG
-        X3RwKGehg=; b=BDGbENowCbi2clASEaZGkLm9doeySXU7K+yHJ7Da/fv7hJ95Dg
-        fjypAvKYAu3Vsmq8S9IeXNMdmTPtWCkmC2tAxa8k/O53SldQDc6CJYwt7GUXORIT
-        o6y32bNJNXu0n6+HcmkfKZ/shMXSQm/47zGb0u+tRLQPTkJOTYv1iLcho=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj1srobdgACKAAA--.9785S2;
-        Wed, 02 Jun 2021 23:18:03 +0800 (CST)
-Date:   Wed, 2 Jun 2021 23:12:26 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: mm: init: Consolidate vars, functions
-Message-ID: <20210602231226.0e45524b@xhacker>
-In-Reply-To: <YLaWseLdg5JYElVx@Ryzen-9-3900X.localdomain>
-References: <20210516211556.43c00055@xhacker>
-        <YLaWseLdg5JYElVx@Ryzen-9-3900X.localdomain>
+        id S231163AbhFBPOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:14:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229989AbhFBPOj (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:14:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B16661246;
+        Wed,  2 Jun 2021 15:12:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622646775;
+        bh=0eRTxLcQLfWHZUA9gVYDd/GMy+sRnKvcxDe3lXiOD0Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D51GlJxtm0d9yGmj2mzZcSg2tkxpPx61jb4rinxEaCuwRoDheCMYV9NQ1jwdeJ0oI
+         6mK0bRXkrS/BpWx40XupGB8KMURgpZw9mYCw/LCg68WZKSxmnCoKmdFku41H2rKhDv
+         YbbiAPdkTGIQThbopMb0fsY4Zd5CDNsQdokmgBzwKr7WWrghG0hjznYFVutZwTxXgs
+         38lMNP7occNX6UdxRySQ688Lvh1rsxCxtIhDeNAm4Rfq3BUGQ8Kb3I/Q4gb6SFwHBr
+         Uw5bhho6lXKo9JBFFjBZncKcHT/oXKY4rpiJl2dj51z3CaPs0mUlNMvXS9KDcvcqWu
+         nJKqTwrYEBxxA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B30B640EFC; Wed,  2 Jun 2021 12:12:52 -0300 (-03)
+Date:   Wed, 2 Jun 2021 12:12:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <Linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>
+Subject: Re: [PATCH 1/4] perf vendor events: Add core event list for Icelake
+ Server
+Message-ID: <YLef9FqdloKAHVbq@kernel.org>
+References: <20210510012438.6293-1-yao.jin@linux.intel.com>
+ <20210510012438.6293-2-yao.jin@linux.intel.com>
+ <CAP-5=fUPbc0T9283MxxPhqdu+zvxNKvJsY5R5CuyS2K4SPtiJg@mail.gmail.com>
+ <YKgMz52O9mVjPH3K@kernel.org>
+ <c0f27643-bebb-2912-56ed-f7abec7dbde3@linux.intel.com>
+ <YKzwzyM8YSsxRBJ8@kernel.org>
+ <YLdq/H8CXYgHWzCL@kernel.org>
+ <99bc4c45-d67f-d53f-7ca7-1e770ef585a6@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCHj1srobdgACKAAA--.9785S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Zr43XF1DCrWDKrW8tw4Dtwb_yoWkXFWDpr
-        WDJF4UGF48Jr1DJayIqry5uryYyw1DCa47Gr17Gw1rJ3WUCw18Wr18JrWY9r98ArWkWa1f
-        Jr1vqa1Ivw1UJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUy2b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s02
-        6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
-        I_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
-        6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj4
-        0_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j
-        6r4UYxBIdaVFxhVjvjDU0xZFpf9x07beAp5UUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <99bc4c45-d67f-d53f-7ca7-1e770ef585a6@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 13:21:05 -0700
-Nathan Chancellor <nathan@kernel.org> wrote:
-
-> Hi Jisheng,
-
-Hi Nathan,
-
+Em Wed, Jun 02, 2021 at 09:55:49PM +0800, Jin, Yao escreveu:
+> Hi Arnaldo,
 > 
-> On Sun, May 16, 2021 at 09:15:56PM +0800, Jisheng Zhang wrote:
-> > From: Jisheng Zhang <jszhang@kernel.org>
+> On 6/2/2021 7:26 PM, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, May 25, 2021 at 09:42:55AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Mon, May 24, 2021 at 09:08:12AM +0800, Jin, Yao escreveu:
+> > > > Could you pull the top 4 patches from "https://github.com/yaoj/icx-events.git"?
 > > 
-> > Consolidate the following items in init.c
+> > > > perf vendor events: Update event list for Icelake Client
+> > > > perf vendor events: Add metrics for Icelake Server
+> > > > perf vendor events: Add uncore event list for Icelake Server
 > > 
-> > Staticize global vars as much as possible;
-> > Add __initdata mark if the global var isn't needed after init
-> > Add __init mark if the func isn't needed after init
-> > Add __ro_after_init if the global var is read only after init
+> > > > The patch is too big and it's possibly corrupted by mailing system.
+> > > Thanks, applied.
 > > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >  arch/riscv/include/asm/set_memory.h |  2 +-
-> >  arch/riscv/mm/init.c                | 36 +++++++++++++++--------------
-> >  2 files changed, 20 insertions(+), 18 deletions(-)
+> > So, this is failing 'perf test 10', see details below, please run 'perf
+> > test' before pushing patches upstream.
 > > 
-> > diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-> > index 086f757e8ba3..9d4d455726d4 100644
-> > --- a/arch/riscv/include/asm/set_memory.h
-> > +++ b/arch/riscv/include/asm/set_memory.h
-> > @@ -27,7 +27,7 @@ static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0;
-> >  #endif
-> >  
-> >  #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
-> > -void protect_kernel_linear_mapping_text_rodata(void);
-> > +void __init protect_kernel_linear_mapping_text_rodata(void);
-> >  #else
-> >  static inline void protect_kernel_linear_mapping_text_rodata(void) {}
-> >  #endif
-> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > index 4c4c92ce0bb8..eac2d5c27b3e 100644
-> > --- a/arch/riscv/mm/init.c
-> > +++ b/arch/riscv/mm/init.c
-> > @@ -53,7 +53,7 @@ struct pt_alloc_ops {
-> >  #endif
-> >  };
-> >  
-> > -static phys_addr_t dma32_phys_limit __ro_after_init;
-> > +static phys_addr_t dma32_phys_limit __initdata;
-> >  
-> >  static void __init zone_sizes_init(void)
-> >  {
-> > @@ -184,7 +184,7 @@ extern char _sdata[], _edata[];
-> >  #endif /* CONFIG_XIP_KERNEL */
-> >  
-> >  #ifdef CONFIG_MMU
-> > -static struct pt_alloc_ops _pt_ops __ro_after_init;
-> > +static struct pt_alloc_ops _pt_ops __initdata;
-> >  
-> >  #ifdef CONFIG_XIP_KERNEL
-> >  #define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
-> > @@ -200,13 +200,13 @@ EXPORT_SYMBOL(va_pa_offset);
-> >  #endif
-> >  /* Offset between kernel mapping virtual address and kernel load address */
-> >  #ifdef CONFIG_64BIT
-> > -unsigned long va_kernel_pa_offset;
-> > +unsigned long va_kernel_pa_offset __ro_after_init;
-> >  EXPORT_SYMBOL(va_kernel_pa_offset);
-> >  #endif
-> >  #ifdef CONFIG_XIP_KERNEL
-> >  #define va_kernel_pa_offset    (*((unsigned long *)XIP_FIXUP(&va_kernel_pa_offset)))
-> >  #endif
-> > -unsigned long va_kernel_xip_pa_offset;
-> > +unsigned long va_kernel_xip_pa_offset __ro_after_init;
-> >  EXPORT_SYMBOL(va_kernel_xip_pa_offset);
-> >  #ifdef CONFIG_XIP_KERNEL
-> >  #define va_kernel_xip_pa_offset        (*((unsigned long *)XIP_FIXUP(&va_kernel_xip_pa_offset)))
-> > @@ -216,7 +216,7 @@ EXPORT_SYMBOL(pfn_base);
-> >  
-> >  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-> >  pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-> > -pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
-> > +static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
-> >  
-> >  pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
-> >  
-> > @@ -253,7 +253,7 @@ static inline pte_t *__init get_pte_virt_fixmap(phys_addr_t pa)
-> >  	return (pte_t *)set_fixmap_offset(FIX_PTE, pa);
-> >  }
-> >  
-> > -static inline pte_t *get_pte_virt_late(phys_addr_t pa)
-> > +static inline pte_t *__init get_pte_virt_late(phys_addr_t pa)
-> >  {
-> >  	return (pte_t *) __va(pa);
-> >  }
-> > @@ -272,7 +272,7 @@ static inline phys_addr_t __init alloc_pte_fixmap(uintptr_t va)
-> >  	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
-> >  }
-> >  
-> > -static phys_addr_t alloc_pte_late(uintptr_t va)
-> > +static phys_addr_t __init alloc_pte_late(uintptr_t va)
-> >  {
-> >  	unsigned long vaddr;
-> >  
-> > @@ -296,10 +296,10 @@ static void __init create_pte_mapping(pte_t *ptep,
-> >  
-> >  #ifndef __PAGETABLE_PMD_FOLDED
-> >  
-> > -pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
-> > -pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
-> > -pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
-> > -pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
-> > +static pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
-> > +static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
-> > +static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
-> > +static pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
-> >  
-> >  #ifdef CONFIG_XIP_KERNEL
-> >  #define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
-> > @@ -319,7 +319,7 @@ static pmd_t *__init get_pmd_virt_fixmap(phys_addr_t pa)
-> >  	return (pmd_t *)set_fixmap_offset(FIX_PMD, pa);
-> >  }
-> >  
-> > -static pmd_t *get_pmd_virt_late(phys_addr_t pa)
-> > +static pmd_t *__init get_pmd_virt_late(phys_addr_t pa)
-> >  {
-> >  	return (pmd_t *) __va(pa);
-> >  }
-> > @@ -336,7 +336,7 @@ static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
-> >  	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
-> >  }
-> >  
-> > -static phys_addr_t alloc_pmd_late(uintptr_t va)
-> > +static phys_addr_t __init alloc_pmd_late(uintptr_t va)
-> >  {
-> >  	unsigned long vaddr;
-> >  
-> > @@ -454,14 +454,16 @@ asmlinkage void __init __copy_data(void)
-> >  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
-> >  #endif
-> >  
-> > -uintptr_t load_pa, load_sz;
-> > +static uintptr_t load_pa __initdata;  
+> > Triple checking:
+> > 
+> > ⬢[acme@toolbox perf]$ git cherry-pick 8f74f0f4dbf6361f0a5d21c5da260fbbf7597286
+> > Removing tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+> > [perf/core 6971d24f4d04ccfa] Revert "perf vendor events intel: Add metrics for Icelake Server"
+> >   Date: Wed Jun 2 08:16:20 2021 -0300
+> >   1 file changed, 327 deletions(-)
+> >   delete mode 100644 tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+> > ⬢[acme@toolbox perf]$ git log --oneline -1
+> > 6971d24f4d04ccfa (HEAD -> perf/core) Revert "perf vendor events intel: Add metrics for Icelake Server"
+> > ⬢[acme@toolbox perf]$ (rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ; make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin) > /dev/null 2>&1 ; perf test 10
+> > 10: PMU events                                                      :
+> > 10.1: PMU event table sanity                                        : Ok
+> > 10.2: PMU event map aliases                                         : Ok
+> > 10.3: Parsing of PMU event table metrics                            : Ok
+> > 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> > ⬢[acme@toolbox perf]$ git reset --hard HEAD~
+> > HEAD is now at 0ab8009b3e8dd6ba Merge remote-tracking branch 'torvalds/master' into perf/core
+> > ⬢[acme@toolbox perf]$ (rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ; make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin) > /dev/null 2>&1 ; perf test 10
+> > 10: PMU events                                                      :
+> > 10.1: PMU event table sanity                                        : Ok
+> > 10.2: PMU event map aliases                                         : Ok
+> > 10.3: Parsing of PMU event table metrics                            : Ok
+> > 10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> > ⬢[acme@toolbox perf]$
+> > 
+> > - Arnaldo
+> > 
+> > ⬢[acme@toolbox perf]$ git bisect bad
+> > d89bf9cab1f613e4496f929d89477b2baaad1ea9 is the first bad commit
+> > commit d89bf9cab1f613e4496f929d89477b2baaad1ea9
+> > Author: Jin Yao <yao.jin@linux.intel.com>
+> > Date:   Sat May 8 13:06:20 2021 +0800
+> > 
+> >      perf vendor events intel: Add metrics for Icelake Server
+> > 
+> >      Add JSON metrics for Icelake Server to perf.
+> > 
+> >      Based on TMA metrics 4.21 at 01.org.:
+> > 
+> >        https://download.01.org/perfmon/
+> > 
+> >      Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> >      Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> >      Acked-by: Ian Rogers <irogers@google.com>
+> >      Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> >      Cc: Andi Kleen <ak@linux.intel.com>
+> >      Cc: Ingo Molnar <mingo@redhat.com>
+> >      Cc: Jiri Olsa <jolsa@kernel.org>
+> >      Cc: Kan Liang <kan.liang@intel.com>
+> >      Cc: Peter Zijlstra <peterz@infradead.org>
+> >      Link: http://lore.kernel.org/lkml/c0f27643-bebb-2912-56ed-f7abec7dbde3@linux.intel.com
+> >      Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > 
+> >   .../pmu-events/arch/x86/icelakex/icx-metrics.json  | 327 +++++++++++++++++++++
+> >   1 file changed, 327 insertions(+)
+> >   create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+> > ⬢[acme@toolbox perf]$
+> > 
+> > 
+> > ⬢[acme@toolbox perf]$ perf test -v 10 |& tail -40
+> > parsing 'inst_retired.any / cpu_clk_unhalted.distributed'
+> > parsing '( 1 * ( fp_arith_inst_retired.scalar_single + fp_arith_inst_retired.scalar_double ) + 2 * fp_arith_inst_retired.128b_packed_double + 4 * ( fp_arith_inst_retired.128b_packed_single + fp_arith_inst_retired.256b_packed_double ) + 8 * ( fp_arith_inst_retired.256b_packed_single + fp_arith_inst_retired.512b_packed_double ) + 16 * fp_arith_inst_retired.512b_packed_single ) / cpu_clk_unhalted.distributed'
+> > parsing 'uops_executed.thread / ( uops_executed.core_cycles_ge_1 / 2 )'
+> > parsing 'cpu_clk_unhalted.distributed'
+> > parsing 'inst_retired.any / mem_inst_retired.all_loads'
+> > parsing 'inst_retired.any / mem_inst_retired.all_stores'
+> > parsing 'inst_retired.any / br_inst_retired.all_branches'
+> > parsing 'inst_retired.any / br_inst_retired.near_call'
+> > parsing 'br_inst_retired.all_branches / br_inst_retired.near_taken'
+> > parsing 'inst_retired.any / ( 1 * ( fp_arith_inst_retired.scalar_single + fp_arith_inst_retired.scalar_double ) + 2 * fp_arith_inst_retired.128b_packed_double + 4 * ( fp_arith_inst_retired.128b_packed_single + fp_arith_inst_retired.256b_packed_double ) + 8 * ( fp_arith_inst_retired.256b_packed_single + fp_arith_inst_retired.512b_packed_double ) + 16 * fp_arith_inst_retired.512b_packed_single )'
+> > parsing 'inst_retired.any'
+> > parsing 'lsd.uops / (idq.dsb_uops + lsd.uops + idq.mite_uops + idq.ms_uops)'
+> > parsing 'idq.dsb_uops / (idq.dsb_uops + lsd.uops + idq.mite_uops + idq.ms_uops)'
+> > parsing 'l1d_pend_miss.pending / ( mem_load_retired.l1_miss + mem_load_retired.fb_hit )'
+> > parsing 'l1d_pend_miss.pending / l1d_pend_miss.pending_cycles'
+> > parsing '( itlb_misses.walk_pending + dtlb_load_misses.walk_pending + dtlb_store_misses.walk_pending ) / ( 2 * cpu_clk_unhalted.distributed )'
+> > parsing '64 * l1d.replacement / 1000000000 / duration_time'
+> > parsing '64 * l2_lines_in.all / 1000000000 / duration_time'
+> > parsing '64 * longest_lat_cache.miss / 1000000000 / duration_time'
+> > parsing '64 * offcore_requests.all_requests / 1000000000 / duration_time'
+> > parsing '1000 * mem_load_retired.l1_miss / inst_retired.any'
+> > parsing '1000 * mem_load_retired.l2_miss / inst_retired.any'
+> > parsing '1000 * ( ( offcore_requests.all_data_rd - offcore_requests.demand_data_rd ) + l2_rqsts.all_demand_miss + l2_rqsts.swpf_miss ) / inst_retired.any'
+> > parsing '1000 * mem_load_retired.l3_miss / inst_retired.any'
+> > parsing '1000 * l2_lines_out.silent / inst_retired.any'
+> > parsing '1000 * l2_lines_out.non_silent / inst_retired.any'
+> > parsing 'cpu_clk_unhalted.ref_tsc / msr@tsc@'
+> > parsing '(cpu_clk_unhalted.thread / cpu_clk_unhalted.ref_tsc) * msr@tsc@ / 1000000000 / duration_time'
+> > parsing '( ( 1 * ( fp_arith_inst_retired.scalar_single + fp_arith_inst_retired.scalar_double ) + 2 * fp_arith_inst_retired.128b_packed_double + 4 * ( fp_arith_inst_retired.128b_packed_single + fp_arith_inst_retired.256b_packed_double ) + 8 * ( fp_arith_inst_retired.256b_packed_single + fp_arith_inst_retired.512b_packed_double ) + 16 * fp_arith_inst_retired.512b_packed_single ) / 1000000000 ) / duration_time'
+> > parsing 'cpu_clk_unhalted.thread / cpu_clk_unhalted.ref_tsc'
+> > parsing '1 - cpu_clk_unhalted.one_thread_active / cpu_clk_unhalted.ref_distributed'
+> > parsing 'cpu_clk_unhalted.thread:k / cpu_clk_unhalted.thread'
+> > parsing '( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time'
+> > parsing '1000000000 * ( cha@event\=0x36\,umask\=0x21\,config\=0x40433@ / cha@event\=0x35\,umask\=0x21\,config\=0x40433@ ) / ( cha_0@event\=0x0@ / duration_time )'
+> > parsing 'cha@event\=0x36\,umask\=0x21\,config\=0x40433@ / cha@event\=0x36\,umask\=0x21\,config\=0x40433\,thresh\=1@'
+> > parsing '( 1000000000 * ( cha@event\=0x36\,umask\=0x21\,config\=0x40433@_pmm / cha@event\=0x35\,umask\=0x21\,config\=0x40433@_pmm ) / cha_0@event\=0x0@ )'
+> > check_parse_fake failed
+> > test child finished with -1
+> > ---- end ----
+> > PMU events subtest 4: FAILED!
+> > ⬢[acme@toolbox perf]$
+> > 
 > 
-> Making load_pa static causing clang built kernels to no longer boot,
-> hanging after just a few lines of output in the console:
-> 
-> https://github.com/ClangBuiltLinux/continuous-integration2/runs/2717606254?check_suite_focus=true
-> 
-> I am not sure why that would make a difference nor why GCC is okay with
-> it. If it is a clang bug, it appears to be there for a while, given that
-> it reproduces back to clang-11.
+> Very sorry about the "Parsing of PMU event table metrics with fake PMUs"
+> failure! I will resubmit the patch also with other c-state metrics update.
 
-I can reproduce the issue. Here are my findindings:
+So have you figure out what was wrong from the verbose output above?
 
-* gcc + binutils can't reproduce it
-* clang + llvm-utils + ias can reproduce it
-* clang + binutils can reproduce it
-
-
-All below tests are done with clang + binutils.
-
-Then I applied below modification:
-
--static uintptr_t load_pa __initdata;
-+uintptr_t load_pa __initdata;
-
-I got below panic log:
-[    0.015418] Unable to handle kernel paging request at virtual address fffffffffffffff9
-[    0.016432] Oops [#1]
-[    0.016679] Modules linked in:
-[    0.017103] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc1+ #5
-[    0.017711] Hardware name: riscv-virtio,qemu (DT)
-[    0.018201] epc : trace_hardirqs_on+0x60/0xb2
-[    0.018582]  ra : restore_all+0xe/0x66
-[    0.018879] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03dd0
-[    0.019376]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
-[    0.019870]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03e00
-[    0.020346]  s1 : 0000000000000001 a0 : 0000000000000001 a1 : 0000000000000001
-[    0.020800]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
-[    0.021243]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
-[    0.021717]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
-[    0.022179]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
-[    0.022674]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
-[    0.023176]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
-[    0.023693]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
-[    0.024153] status: 0000000000000100 badaddr: fffffffffffffff9 cause: 000000000000000d
-[    0.025367] Call Trace:
-[    0.025749] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
-[    0.026402] [<ffffffff800027b8>] restore_all+0xe/0x66
-[    0.027261] Unable to handle kernel paging request at virtual address fffffffffffffffa
-[    0.027827] Oops [#2]
-[    0.028013] Modules linked in:
-[    0.028321] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.13.0-rc1+ #5
-[    0.028839] Hardware name: riscv-virtio,qemu (DT)
-[    0.029166] epc : trace_hardirqs_on+0x60/0xb2
-[    0.029505]  ra : restore_all+0xe/0x66
-[    0.029785] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03a80
-[    0.030266]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
-[    0.030748]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03ab0
-[    0.031227]  s1 : 0000000000000001 a0 : 0000000000000002 a1 : 0000000000000002
-[    0.031717]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
-[    0.032199]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
-[    0.032680]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
-[    0.033160]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
-[    0.033642]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
-[    0.034123]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
-[    0.034601]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
-[    0.034965] status: 0000000000000100 badaddr: fffffffffffffffa cause: 000000000000000d
-[    0.035492] Call Trace:
-[    0.035682] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
-[    0.036077] [<ffffffff800027b8>] restore_all+0xe/0x66
-[    0.036545] ---[ end trace 7f4fbff09d927668 ]---
-[    0.037188] Kernel panic - not syncing: Attempted to kill the idle task!
-[    0.038107] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
-
-Then I checked 5.13-rc1, above panic log can be reproduced too. So the issue
-should exist there for a while. I never tried clang with riscv, did you remember
-which last commit or version clang works, I may try to bisect.
-
-Thanks
-
-> 
-> If I can provide any more information or help debug, let me know!
-> 
-> Cheers,
-> Nathan
-> 
-> > +static uintptr_t load_sz __initdata;
-> >  #ifdef CONFIG_XIP_KERNEL
-> >  #define load_pa        (*((uintptr_t *)XIP_FIXUP(&load_pa)))
-> >  #define load_sz        (*((uintptr_t *)XIP_FIXUP(&load_sz)))
-> >  #endif
-> >  
-> >  #ifdef CONFIG_XIP_KERNEL
-> > -uintptr_t xiprom, xiprom_sz;
-> > +static uintptr_t xiprom __inidata;
-> > +static uintptr_t xiprom_sz __initdata;
-> >  #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
-> >  #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
-> >  
-> > @@ -646,7 +648,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
-> >  }
-> >  
-> >  #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
-> > -void protect_kernel_linear_mapping_text_rodata(void)
-> > +void __init protect_kernel_linear_mapping_text_rodata(void)
-> >  {
-> >  	unsigned long text_start = (unsigned long)lm_alias(_start);
-> >  	unsigned long init_text_start = (unsigned long)lm_alias(__init_text_begin);
-> > @@ -858,7 +860,7 @@ static void __init reserve_crashkernel(void)
-> >   * reserved once we call early_init_fdt_scan_reserved_mem()
-> >   * later on.
-> >   */
-> > -static int elfcore_hdr_setup(struct reserved_mem *rmem)
-> > +static int __init elfcore_hdr_setup(struct reserved_mem *rmem)
-> >  {
-> >  	elfcorehdr_addr = rmem->base;
-> >  	elfcorehdr_size = rmem->size;
-> > -- 
-> > 2.31.0
-> >   
-
-
+- Arnaldo
