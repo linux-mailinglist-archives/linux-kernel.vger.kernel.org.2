@@ -2,136 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E4F397DDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A7C397DE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhFBBEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 21:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhFBBEw (ORCPT
+        id S229837AbhFBBGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 21:06:49 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2833 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhFBBGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 21:04:52 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907B3C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 18:03:10 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id c3so1148239oic.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 18:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=6v4d48Zss5FUokcaaUtSt3kui+BNXg1BXI8kRVyRFLk=;
-        b=LtN3231NVNq0mXT34pbs0UuC74vsdSIC+1A9r+79atUSmriT/q2OLfkAhm5aur3USF
-         injadBILLKRZLH8VWLoRib5ugueg457K5frQigf8OGAOl8NI5LOOdl+jHSA67gElje+L
-         neMMZL6Rk4kG2Hyz+Ib/Dc/JhVLSr2KEBekWI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=6v4d48Zss5FUokcaaUtSt3kui+BNXg1BXI8kRVyRFLk=;
-        b=o15ttteLHXlaA/XnXsQaNf00+VWBgzQny7DA6FSyU7k86h3SW0qDRL+WL3dwT2RejT
-         F6x1opmTdefwl86JTIV3cHJ89H0CLOxm15FkHZCuCKoK74xsuHQjERLvIdF75O1NkQCY
-         fmek7Q7WPZe9Z78+UcPU2N30cRO6mRQyPKUdtp8Y2kIAGP0jnxzzN3H0wTqnsnkGUG8+
-         uJScWBUJMsixq5pTsKcDdMhAyHbA3Rzr/Gwb7r4z6SVTPZFpcOg8d5hnqfbO4gxEKmVg
-         A/f9M4rwcbAFYQR6iDuv+5YW+OsZr1I4a5l1CEali9zHGdTCJ5vw0ghZI7nwqj3ygFON
-         zYaA==
-X-Gm-Message-State: AOAM530IwCK+vm2B4yKyNV57j9VR4VX3elE49M7QZTuOVQe+RmtXRSHl
-        jiEi9ON6gsIc/S4+5R/cN8rgvz8nu8O45M7JnOwz4Q==
-X-Google-Smtp-Source: ABdhPJx6nDBP7InIFQYnGr+qlRC/3IhaDQEHA4xty1JZiAIex11jLAGNCc2LjHVj8tfVR+scGQ9IUXtDaweG/6f6QJU=
-X-Received: by 2002:a05:6808:144e:: with SMTP id x14mr2045245oiv.166.1622595789856;
- Tue, 01 Jun 2021 18:03:09 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 1 Jun 2021 18:03:09 -0700
+        Tue, 1 Jun 2021 21:06:47 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FvrKw4VlfzWqsw;
+        Wed,  2 Jun 2021 09:00:20 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 09:05:01 +0800
+Received: from [10.174.179.129] (10.174.179.129) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 09:05:01 +0800
+Subject: Re: [PATCH] perf stat: Fix error return code in bperf__load()
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210517081254.1561564-1-yukuai3@huawei.com>
+ <YLY7qozcJcj8RVe+@kernel.org> <YLY8aKsMvBG+DB1W@kernel.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <360aa666-2a78-d2f5-9547-6ebecd57bcb4@huawei.com>
+Date:   Wed, 2 Jun 2021 09:05:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210601172659.fd8c40a6548a1bd43be1bf11@linux-foundation.org>
-References: <20210601182202.3011020-5-swboyd@chromium.org> <202106020644.UDFIJOUU-lkp@intel.com>
- <20210601172659.fd8c40a6548a1bd43be1bf11@linux-foundation.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 1 Jun 2021 18:03:09 -0700
-Message-ID: <CAE-0n50F0E706Hzu9KyR7+7NRG39f0Rn05XT9mi8ci8csenxtQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] slub: Force on no_hash_pointers when slub_debug is enabled
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux-foundation.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YLY8aKsMvBG+DB1W@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.129]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Andrew Morton (2021-06-01 17:26:59)
-> On Wed, 2 Jun 2021 06:45:55 +0800 kernel test robot <lkp@intel.com> wrote:
->
-> > >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
-> >            if (static_branch_unlikely(&slub_debug_enabled))
-> >                                        ^
-> > >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
-> > >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
-> > >> mm/slub.c:4464:30: error: use of undeclared identifier 'slub_debug_enabled'
-> > >> mm/slub.c:4464:6: error: invalid argument type 'void' to unary expression
-> >            if (static_branch_unlikely(&slub_debug_enabled))
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Thanks.  Stephen, how about this?
+On 2021/06/01 21:55, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Jun 01, 2021 at 10:52:42AM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Mon, May 17, 2021 at 04:12:54PM +0800, Yu Kuai escreveu:
+>>> Fix to return a negative error code from the error handling
+>>> case instead of 0, as done elsewhere in this function.
+>>>
+>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Applied, but I had to add Song to the CC list and also add this line:
+>>
+>> Fixes: 7fac83aaf2eecc9e ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
+>>
+>> So that the stable@kernel.org folks can get this auto-collected.
+>>
+>> Perhaps you guys can make Hulk do that as well? :-)
+>>
+>> Thanks,
+> 
+> Something else to teach Hulk:
+> 
+> util/bpf_counter.c: In function ‘bperf__load’:
+> util/bpf_counter.c:523:9: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+>    523 |         if (evsel->bperf_leader_link_fd < 0 &&
+>        |         ^~
+> util/bpf_counter.c:526:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+>    526 |                 goto out;
+>        |                 ^~~~
+> cc1: all warnings being treated as errors
+> 
+> I'm adding the missing {} for the now multiline if block.
+Sorry for the mistake, and similar errors will be checked in the future.
 
-Looks good to me. Thanks for the quick fix!
-
->
-> --- a/mm/slub.c~slub-force-on-no_hash_pointers-when-slub_debug-is-enabled-fix
-> +++ a/mm/slub.c
-> @@ -117,12 +117,26 @@
->   */
->
->  #ifdef CONFIG_SLUB_DEBUG
-> +
->  #ifdef CONFIG_SLUB_DEBUG_ON
->  DEFINE_STATIC_KEY_TRUE(slub_debug_enabled);
->  #else
->  DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
->  #endif
-> -#endif
-> +
-> +static inline bool __slub_debug_enabled(void)
-> +{
-> +       return static_branch_unlikely(&slub_debug_enabled);
-
-To make this even better it could be
-
-	return static_branch_maybe(CONFIG_SLUB_DEBUG_ON, &slub_debug_enabled);
-
-> +}
-> +
-> +#else          /* CONFIG_SLUB_DEBUG */
-> +
-> +static inline bool __slub_debug_enabled(void)
-> +{
-> +       return false;
-> +}
-> +
-> +#endif         /* CONFIG_SLUB_DEBUG */
->
->  static inline bool kmem_cache_debug(struct kmem_cache *s)
->  {
-> @@ -4493,7 +4507,7 @@ void __init kmem_cache_init(void)
->                 slub_max_order = 0;
->
->         /* Print slub debugging pointers without hashing */
-> -       if (static_branch_unlikely(&slub_debug_enabled))
-> +       if (__slub_debug_enabled())
-
-It would be super cool if static branches could be optimized out when
-they're never changed by any code, nor exported to code, just tested in
-conditions. I've no idea if that is the case though.
-
->                 no_hash_pointers_enable(NULL);
->
->         kmem_cache_node = &boot_kmem_cache_node;
+Thanks
+Yu Kuai
+> 
+> - Arnaldo
+>>
+>>> ---
+>>>   tools/perf/util/bpf_counter.c | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+>>> index ddb52f748c8e..843b20aa6688 100644
+>>> --- a/tools/perf/util/bpf_counter.c
+>>> +++ b/tools/perf/util/bpf_counter.c
+>>> @@ -522,6 +522,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+>>>   	evsel->bperf_leader_link_fd = bpf_link_get_fd_by_id(entry.link_id);
+>>>   	if (evsel->bperf_leader_link_fd < 0 &&
+>>>   	    bperf_reload_leader_program(evsel, attr_map_fd, &entry))
+>>> +		err = -1;
+>>>   		goto out;
+>>>   
+>>>   	/*
+>>> @@ -550,6 +551,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+>>>   	/* Step 2: load the follower skeleton */
+>>>   	evsel->follower_skel = bperf_follower_bpf__open();
+>>>   	if (!evsel->follower_skel) {
+>>> +		err = -1;
+>>>   		pr_err("Failed to open follower skeleton\n");
+>>>   		goto out;
+>>>   	}
+>>> -- 
+>>> 2.25.4
+>>>
+>>
+>> -- 
+>>
+>> - Arnaldo
+> 
