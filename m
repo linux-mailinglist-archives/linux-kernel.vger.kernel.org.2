@@ -2,146 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9388397E16
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC385397E24
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 03:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhFBBgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Jun 2021 21:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhFBBgL (ORCPT
+        id S230138AbhFBBj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Jun 2021 21:39:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6125 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhFBBj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Jun 2021 21:36:11 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B2EC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Jun 2021 18:34:29 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id cb9so925298edb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Jun 2021 18:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yzQRMvD+3GTyeQsWjmhKf7su1vPqupNvqasfaYdmnEM=;
-        b=Tlie0Y+iuMMFltqLLt6YrYeS9DGu33VbHvstCQYs0hOXeC8JSYpuPKLjS6qY/pDd7d
-         W7QTp7v8Ma7NUoSNrDNqAwaxaG9AkEwtBZaDJ1ArEdzn+3T6a3w6OKYElLElx/+W7vsP
-         ZuzJq+uZJ+LNJ6GOs7htiUpOUh5L16uZHgLdhRO3w0qIUokTYCUkfKWeWn/NFoe7Sa2/
-         bUJCGx7Dt43t2aSovWG8oiDfV134+gkAdW3aqBmba8550lahmzQ3ToqQKog9UKi1VhpI
-         LX1Ld2YyU9oExkI5gvEDMBVMtPKNVflrmybQq3ULmADrtL5HsajbOK6y8FyiMshojfVE
-         XRVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yzQRMvD+3GTyeQsWjmhKf7su1vPqupNvqasfaYdmnEM=;
-        b=sQjJF2m1IvJTKoaYWjI07gbW9VI3ANYHh74dH5Cu/TmKPY9154bU8FqyuiKzFGlH2U
-         j961RT1Rv6a4G9beib4hpnhsLyUTLp3N6NpS3r8k0s1VGNLHKBTUsjVohuYoRzX6AXkl
-         0fSmO6AawQZR5tXoK1rHoyxYt0Ikq8rLsX2hOb972o6SI1+7Th+JWuCe1U0gQjK/aFld
-         ARTE8f6BIlPYtTpnstunBu+QtWZMZxmyhTqa7gaIcmQlz9dcJETb5psJkzUad65wer/s
-         eAQnqZ6CBmwsYAbe37DL0X7tf27H8SN+9pOEInXkV4V9GjJh/tIBP5JdgxWMSR5MdaDE
-         hc3Q==
-X-Gm-Message-State: AOAM531zClsmb3vB8cqkXCHNvNzP6PKE5Edin6MMrSJZc2s6q1SrbJDm
-        7J6vNmIU/u56J5NtFSkOz334LMRow6uwyTU8XiDHVg==
-X-Google-Smtp-Source: ABdhPJzJBLev2U/cTkcAahBZDqG98LlZAJfadAqq8754ugipQmIGWvT2RI9yxn+JEBFHT9mqfGvTyPSXtsPca+jZRrk=
-X-Received: by 2002:a05:6402:510b:: with SMTP id m11mr35404936edd.26.1622597667909;
- Tue, 01 Jun 2021 18:34:27 -0700 (PDT)
+        Tue, 1 Jun 2021 21:39:27 -0400
+Received: from dggeme709-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fvs5t6dKwzYn13;
+        Wed,  2 Jun 2021 09:34:58 +0800 (CST)
+Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
+ dggeme709-chm.china.huawei.com (10.1.199.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 09:37:42 +0800
+Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
+ dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
+ Wed, 2 Jun 2021 09:37:42 +0800
+From:   zhengyongjun <zhengyongjun3@huawei.com>
+To:     Russell King <linux@armlinux.org.uk>
+CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "rjui@broadcom.com" <rjui@broadcom.com>,
+        "sbranden@broadcom.com" <sbranden@broadcom.com>,
+        "bcm-kernel-feedback-list@broadcom.com" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "khilman@baylibre.com" <khilman@baylibre.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "opendmb@gmail.com" <opendmb@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+        "martin.blumenstingl@googlemail.com" 
+        <martin.blumenstingl@googlemail.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIG5ldC1uZXh0XSBuZXQ6IG1kaW86IEZpeCBzcGVsbGlu?=
+ =?gb2312?Q?g_mistakes?=
+Thread-Topic: [PATCH net-next] net: mdio: Fix spelling mistakes
+Thread-Index: AQHXVu8poZJ1gXDCckK65ke/PM4ReKr+rcUAgAFD+mA=
+Date:   Wed, 2 Jun 2021 01:37:42 +0000
+Message-ID: <083325fb1314426fb6d4437304a9ed9c@huawei.com>
+References: <20210601141859.4131776-1-zhengyongjun3@huawei.com>
+ <20210601141738.GA30436@shell.armlinux.org.uk>
+In-Reply-To: <20210601141738.GA30436@shell.armlinux.org.uk>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.64]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210527150526.271941-1-pasha.tatashin@soleen.com>
- <20210527150526.271941-5-pasha.tatashin@soleen.com> <87pmx52212.wl-maz@kernel.org>
-In-Reply-To: <87pmx52212.wl-maz@kernel.org>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 1 Jun 2021 21:33:52 -0400
-Message-ID: <CA+CK2bChDqMKGAG8_rEigWcXRaBN=rnuV_WLnU=1TPjJRtpc5A@mail.gmail.com>
-Subject: Re: [PATCH 04/18] arm64: kernel: add helper for booted at EL2 and not VHE
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        James Morse <james.morse@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        madvenka@linux.microsoft.com
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 8:38 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Thu, 27 May 2021 16:05:12 +0100,
-> Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
-> >
-> > Replace places that contain logic like this:
-> >       is_hyp_mode_available() && !is_kernel_in_hyp_mode()
-> >
-> > With a dedicated boolean function  is_hyp_callable(). This will be needed
-> > later in kexec in order to sooner switch back to EL2.
->
-> This looks like the very definition of "run in nVHE mode", so I'd
-> rather you call it like this, rather than "callable", which is
-> extremely ambiguous (if running at EL2, I call it any time I want, for
-> free).
-
-Hi Marc,
-
-Naming is hard. Are you proposing  s/is_hyp_callable/run_in_nvhe_mode/
-? This is also not a very good name because it does not sound like a
-boolean, but instead that we know that there is nvhe mode available
-and we can switch to it.
-
->
-> >
-> > Suggested-by: James Morse <james.morse@arm.com>
-> >
-> > [Fixed merging issues]
-> >
-> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > ---
-> >  arch/arm64/include/asm/virt.h | 5 +++++
-> >  arch/arm64/kernel/cpu-reset.h | 3 +--
-> >  arch/arm64/kernel/hibernate.c | 9 +++------
-> >  arch/arm64/kernel/sdei.c      | 2 +-
-> >  4 files changed, 10 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
-> > index 7379f35ae2c6..4216c8623538 100644
-> > --- a/arch/arm64/include/asm/virt.h
-> > +++ b/arch/arm64/include/asm/virt.h
-> > @@ -128,6 +128,11 @@ static __always_inline bool is_protected_kvm_enabled(void)
-> >               return cpus_have_final_cap(ARM64_KVM_PROTECTED_MODE);
-> >  }
-> >
-> > +static inline bool is_hyp_callable(void)
-> > +{
-> > +     return is_hyp_mode_available() && !is_kernel_in_hyp_mode();
-> > +}
->
-> nit: consider switching the two members of the expression so that you
-> don't have extra memory accesses when running at EL2.
-
-Sure, I will do that.
-
-
-> > -/* Do we need to reset el2? */
-> > -#define el2_reset_needed() (is_hyp_mode_available() && !is_kernel_in_hyp_mode())
-> > -
->
-> Please keep the macro, as it explains *why* we're doing things (we
-> need to reset EL2), and replacing it with a generic macro drops the
-> documentation aspect.
-
-OK, I will keep the macro, and redefine it to use the common macro.
-
-Thank you,
-Pasha
+SSBoYXZlIGRvIHRoaXMgYXMgeW91ciBhZHZpY2UgYW5kIHNlbmQgcGF0Y2ggdjIgOikNCg0KLS0t
+LS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IFJ1c3NlbGwgS2luZyBbbWFpbHRvOmxpbnV4QGFybWxp
+bnV4Lm9yZy51a10gDQq3osvNyrG85DogMjAyMcTqNtTCMcjVIDIyOjE4DQrK1bz+yMs6IHpoZW5n
+eW9uZ2p1biA8emhlbmd5b25nanVuM0BodWF3ZWkuY29tPg0Ks63LzTogYW5kcmV3QGx1bm4uY2g7
+IGhrYWxsd2VpdDFAZ21haWwuY29tOyBkYXZlbUBkYXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5v
+cmc7IHJqdWlAYnJvYWRjb20uY29tOyBzYnJhbmRlbkBicm9hZGNvbS5jb207IGJjbS1rZXJuZWwt
+ZmVlZGJhY2stbGlzdEBicm9hZGNvbS5jb207IG5hcm1zdHJvbmdAYmF5bGlicmUuY29tOyBraGls
+bWFuQGJheWxpYnJlLmNvbTsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZzsgbGludXgtYW1sb2dpY0BsaXN0cy5pbmZyYWRlYWQub3JnOyBvcGVuZG1i
+QGdtYWlsLmNvbTsgZi5mYWluZWxsaUBnbWFpbC5jb207IGpicnVuZXRAYmF5bGlicmUuY29tOyBt
+YXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tDQrW98ziOiBSZTogW1BBVENIIG5ldC1u
+ZXh0XSBuZXQ6IG1kaW86IEZpeCBzcGVsbGluZyBtaXN0YWtlcw0KDQpPbiBUdWUsIEp1biAwMSwg
+MjAyMSBhdCAxMDoxODo1OVBNICswODAwLCBaaGVuZyBZb25nanVuIHdyb3RlOg0KPiBpbmZvcm1h
+dGlvbnMgID09PiBpbmZvcm1hdGlvbg0KPiB0eXBpY2FseSAgPT0+IHR5cGljYWxseQ0KPiBkZXJy
+aXZlICA9PT4gZGVyaXZlDQo+IGV2ZW50aG91Z2ggID09PiBldmVuIHRob3VnaA0KDQpJZiB5b3Un
+cmUgZG9pbmcgdGhpcywgdGhlbiBwbGVhc2UgYWxzbyBjaGFuZ2UgImh6IiB0byAiSHoiLiBUaGUg
+dW5pdCBvZiBmcmVxdWVuY3kgaXMgdGhlIGxhdHRlciwgbm90IHRoZSBmb3JtZXIuIFRoYW5rcy4N
+Cg0KLS0NClJNSydzIFBhdGNoIHN5c3RlbTogaHR0cHM6Ly93d3cuYXJtbGludXgub3JnLnVrL2Rl
+dmVsb3Blci9wYXRjaGVzLw0KRlRUUCBpcyBoZXJlISA0ME1icHMgZG93biAxME1icHMgdXAuIERl
+Y2VudCBjb25uZWN0aXZpdHkgYXQgbGFzdCENCg==
