@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FD2399667
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAE7399670
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhFBXhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 19:37:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40062 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhFBXhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 19:37:02 -0400
-IronPort-SDR: h01bxdGvwnoLZQYpZwaQI+30ZfgIYm+pcesEGExnLesCDWzwNnfxu8l5lM0SsuRpeQk8Cbggtw
- mek2cbBfQ8lw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="267793181"
-X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
-   d="scan'208";a="267793181"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 16:35:13 -0700
-IronPort-SDR: TY/3vp8j2UJAdB+5YHVpmtbplCRFpT9ECukUksTHe7HIVNb0KByfUn5AzkdN7szhcXLi6SLtGF
- AYD72W8cOiGw==
-X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
-   d="scan'208";a="550480767"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.87.193]) ([10.209.87.193])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 16:35:12 -0700
-Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>
-Cc:     bp@alien8.de, hpa@zytor.com, inglorion@google.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        x86@kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-References: <00000000000030293b05c39afd6f@google.com>
- <20210602230054.vyqama2q3koc4bpo@treble>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
-Date:   Wed, 2 Jun 2021 16:35:11 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229620AbhFBXnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 19:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhFBXne (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 19:43:34 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBA8C06174A;
+        Wed,  2 Jun 2021 16:41:36 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so2745907pjq.3;
+        Wed, 02 Jun 2021 16:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+toArruJ3eRIR/A2mvRnWwBK2Vc1ZfxuTnObnbkQWeM=;
+        b=nwIddzopGo1lXM/ErFpAIVU2mAP8V8VYQU0HtzxOig+9z3Yv+DPQAfqpSKQGIKcCbC
+         6MLTdoAuVoSHFsNLlKRmSI5X5PreVkSLfZ5e8ktnm5chxyEC/KYiQhRWdtrLo9ebMkXz
+         8KLYHBFZSChX0zEfbiCO9goGiOr6HZTc7sS/K9Tj9vlo/GfSbCx+eZGuh0woDFmd2eFe
+         iOKq6Am1idc3kY2gYYNikNotA1jPmY6UpZVbr268E18e4b37N0w4pLKpMshGv4zMwAkn
+         F2kqQYmkGXTSx/KTIWTZR8+PwPxJzwhd+gV5+iNzGm7asFY0xmk3H2yLZAoxnXSXyksP
+         qFXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+toArruJ3eRIR/A2mvRnWwBK2Vc1ZfxuTnObnbkQWeM=;
+        b=T09ff5kWaVVmfi6FSTLiHrpNeTc/otusmEigd2AN61X1wI6hgruph7akCgX+TlR0ps
+         uNdgLHpOu3mpCHHDZVmke3DfFmB5MslSDu8G7NwUPj5/L8N/rWUO8stt8k69+f2zz5Z2
+         fwZJG2ly0LGyOS6gi9fKCu3bObeDoLUMAGXZ+5z+8++6WV/Fw4b/ToZOBnvsn7rp+u5+
+         h4qg8e/t2j2fiq+3cAgeMeVOy23FBnE9yPu1R2CqfY4WtIWU1lVM+po26+e6EEPZGdpI
+         6aXzCLJ5jso4T5PmW+mT3igNnX4BAMWw9QfE9gG5Ey0dD1vwkj4xaoN5C+92yfYaW9W4
+         xD8w==
+X-Gm-Message-State: AOAM533aEreJ46fzRELso/RAdTTJjM/dEnNF93uHs2Owp7jaReSSg84O
+        gQjrvMf357SwlpviIRwF7M26cnkwq1FZ+jAQmKc=
+X-Google-Smtp-Source: ABdhPJySLCX1G+ypM9S8wQTFySJ1G3j5In5iPS3hq4FOP+dvba0eMz3Cry3yzrELiQ3V9hCI0LCcH8Afrh32AV1WekQ=
+X-Received: by 2002:a17:90b:33c3:: with SMTP id lk3mr8138470pjb.33.1622677296349;
+ Wed, 02 Jun 2021 16:41:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210602230054.vyqama2q3koc4bpo@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210602054802.GA984@raspberrypi> <CAHC9VhQdAt2EQqP3pQM=5TifTYuXxnU1QOvOT-aFaDaGiLLJXQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhQdAt2EQqP3pQM=5TifTYuXxnU1QOvOT-aFaDaGiLLJXQ@mail.gmail.com>
+From:   Austin Kim <austindh.kim@gmail.com>
+Date:   Thu, 3 Jun 2021 08:41:27 +0900
+Message-ID: <CADLLry7D8OYStDAFsP4dFzS0fwV6bM2__ZEB2py+oca+R5Zuog@mail.gmail.com>
+Subject: Re: [PATCH] selinux: remove duplicated LABEL_INITIALIZED check routine
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>,
+        kernel-team@lge.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> profile_pc() assumes the return address is either directly at regs->sp,
-> or one word adjacent to it due to saved flags, both of which are just
-> completely wrong.  This code has probably never worked with ORC, and
-> nobody noticed apparently.
-
-I presume it used to work because the lock functions were really simple, 
-but that's not true anymore.
-
+2021=EB=85=84 6=EC=9B=94 2=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 11:32, P=
+aul Moore <paul@paul-moore.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> We could just use ORC to unwind to the next frame.  Though, isn't
-> /proc/profile redundant, compared to all the more sophisticated options
-> nowadays?  Is there still a distinct use case for it or can we just
-> remove it?
+> On Wed, Jun 2, 2021 at 1:48 AM Austin Kim <austindh.kim@gmail.com> wrote:
+> >
+> > The 'isec->initialized =3D=3D LABEL_INITIALIZED' is checked twice in a =
+row,
+> > since selinux was mainlined from Linux-2.6.12-rc2.
+> >
+> > Since 'isec->initialized' is protected using spin_lock(&isec->lock)
+> > within various APIs, it had better remove first exceptional routine.
+> >
+> > With this commit, the code look simpler, easier to read and maintain.
+> >
+> > Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+> > ---
+> >  security/selinux/hooks.c | 3 ---
+> >  1 file changed, 3 deletions(-)
+>
+> This is a common pattern when dealing with lock protected variables:
+> first check the variable before taking the lock (fast path) and if
+> necessary take the lock and re-check the variable when we know we have
+> exclusive access.
+>
+> In the majority of cases the SELinux inode initialization value goes
+> from LABEL_INVALID to LABEL_INITIALIZED and stays there; while there
+> is an invalidation function/hook that is used by some
+> network/distributed filesystems, it isn't a common case to the best of
+> my knowledge.  With that understanding it makes perfect sense to do a
+> quick check to first see if the inode is initialized in
+> inode_doinit_with_dentry() and return quickly, without taking a lock,
+> if it is already initialized.  In the case where the inode has not
+> been previously initialized, or has been invalidated, we take the
+> spinlock to guarantee we are not racing with another task and re-check
+> the initialization value to ensure that another task hasn't
+> initialized the inode and act accordingly.
+>
+> The existing code is correct.
+>
 
-It's still needed for some special cases. For example there is no other 
-viable way to profile early boot without a VM
+Understood, after looking into all routines related to 'isec->initialized' =
+again
+where 'isec->initialized' statement is not always protected
+spin_lock(&isec->lock) during initialization progress.
 
-I would just drop the hack to unwind, at least for the early boot 
-profile use case locking profiling is usually not needed.
+Thanks for valuable feedback.
 
--Andi
-
+> --
+> paul moore
+> www.paul-moore.com
