@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22663398D1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B07C398D05
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhFBOhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:37:05 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:53185 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbhFBOgS (ORCPT
+        id S231357AbhFBOfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231610AbhFBOf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:36:18 -0400
-Received: by mail-wm1-f48.google.com with SMTP id f17so1451755wmf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:34:35 -0700 (PDT)
+        Wed, 2 Jun 2021 10:35:28 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7F6C06138B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:33:37 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so3924859wmk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nxy5VbUuJktWYoN5f56DsShh05RPtQyulwCzQanfG8c=;
-        b=x+eowQOPBexKc0gjdhN++Ps5HQm+5bGTLWuF+UQ6C3gZgripNSo2eBrgQ4v/c7P3B/
-         +E+x9qPTRf1nF0Ab63hAIQpqRfG45A67ClrHAnxEyX++oCDb5wVHYSAMDWqmCuaLdRWO
-         DCEMoQS1tVfwxxlCAGr6k3nOzuwIwMxs4A/rucgb9RFiQkVR9VibqzKVMKuXuIuj5HgF
-         rij0SkVqrI3igYoqn331Lrve+WQ/wsDp1xY5XiCL2+NuGoTui+tN/YSZu3gsU5AlAJcI
-         GTWDQ+WlcukducWQBP3VHgu0bmDqVX/nmeDicehdPudN1uXapqOWz+qTWnXKjnRz2Es8
-         mfug==
+        bh=t1FEEZ6P0S4l/25hBadFVgOVdkrL3aHOBAeW0vMC5CA=;
+        b=nVd+6txbGTkvd96oaTKfulBS8JwdcjwEWSIdrGauDfuARuO8ZRkTn5cTMhfdV6roe/
+         cwP6oO1NmBUt8tuY0zeyaNsQEFZqw1HpHYvfsM1GHddzEOe3Ks+SLzyV/BmZxgFR3Y/j
+         adKn13qmTK8EYIIfEKpiTryxiYMPefvNxH1uQMoK7to9/l3I6opm9WKt8BYa5VzcxUug
+         zt9Rl6tsSESUE5RozQ/us7RYglBBX9AXrcQRfvLqcAuM/cLbWyOB+grqCDYSNzwibxnO
+         P8jt2qL3RrOVVj8Lyfq+0yrt4uigX2fLTFeIvrUrxuYmpvA8cjeygpsiaeCO9Hpg+t2y
+         u+Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nxy5VbUuJktWYoN5f56DsShh05RPtQyulwCzQanfG8c=;
-        b=DF2VA0Y3y3RaHYDd5EdhuS/xucFmSmgYkp/8UhFiYvTHtvo4zvfX23t4Bo1xyMwZzr
-         ZkJ4B/6KfaIJzVChUs1wERzPwbNJx24wvfVnqTgRZCS6ySGZrhq/dznm7AkKZrmx2epx
-         eQAM0WEzxJL8SnkF5fH5Yntjhk5TqYLoy01/EOD30YVyObdxOj1p1UA+cGpw+JScfeD+
-         O2e8IVV0keg2FkgAvPihzMimTgxz9fVEUfghD9oB8k4gU2wUKuXTuDQQwYdY8HqtQ3+L
-         cRt5eMhJ2y4hCEfLZRGdMpJx+7KK0cZ4wUGhd3Myb2H2Zn/hv/r3THv7NSAvcKGXMS+B
-         ahNg==
-X-Gm-Message-State: AOAM532cWWqRZvRuMzFyK+mrjUPjGzZCTHv8E5PfFFe1fCm0pLUetZUq
-        MZMsAZbHQVxUP4WFNevuh/+nbQ==
-X-Google-Smtp-Source: ABdhPJx+xBu1BihQ5vQP4ImfnxY1U8nE9Hks2Zw/N4egBmVyT9aUFGosvKogM2eahWcVW20UK7GNQw==
-X-Received: by 2002:a1c:f705:: with SMTP id v5mr5534912wmh.69.1622644414673;
-        Wed, 02 Jun 2021 07:33:34 -0700 (PDT)
+        bh=t1FEEZ6P0S4l/25hBadFVgOVdkrL3aHOBAeW0vMC5CA=;
+        b=LNu/Kdvyynj43niAgTHGzWXeBA9ggG/S3h8G2x5HT5vhKaoFbj2ZGMVMiJJVUqct4e
+         UGtcAORpWT8HfPB6OtPvmJ4EMcSMvhQ/mcVDjBC3YI3PbFb19PALzZ19B6bu3TFFrs0V
+         bnfzH+WyKww5MqZE+jtO9lmFH97QcqFTULExykFsd1izdWEP46r1GzR2N//i+CUdN8o0
+         vHG3Jn3phLmhJ5/3Kr11YMW/rPrByFl/ulJGR6LA0uUdXBEYLtE95/gbFAqiZnSZoR5O
+         loXiNjLmVxQouC6baQDCJ39HRkH1t/wOFJrzI0y4Jx9QcGj3Yg44zsCYAfcW19/3Rdlz
+         QR/Q==
+X-Gm-Message-State: AOAM530XvVN8YXQAHOGGEKV0X7KOJwCB3B792sT6HVU4mR5xw/Jy6jng
+        DpOoQ0bH1ZhtvKAxC8a9TcbLnA==
+X-Google-Smtp-Source: ABdhPJwkxJ/qPJiDi8CqvBhmwrZs7KTAO5sO/q0DxkmixOUPMnRCW0Ho6IQbwT/mlBfpFSag196fSA==
+X-Received: by 2002:a05:600c:22d7:: with SMTP id 23mr5327853wmg.119.1622644415687;
+        Wed, 02 Jun 2021 07:33:35 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.33
+        by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:33:34 -0700 (PDT)
+        Wed, 02 Jun 2021 07:33:35 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
+Cc:     linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [RESEND 24/26] drm/exynos/exynos_drm_ipp: Fix documentation for 'exynos_drm_ipp_get_{caps,res}_ioctl()'
-Date:   Wed,  2 Jun 2021 15:32:58 +0100
-Message-Id: <20210602143300.2330146-25-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [RESEND 25/26] drm/vboxvideo/hgsmi_base: Place function names into headers
+Date:   Wed,  2 Jun 2021 15:32:59 +0100
+Message-Id: <20210602143300.2330146-26-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
 References: <20210602143300.2330146-1-lee.jones@linaro.org>
@@ -72,47 +68,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/exynos/exynos_drm_ipp.c:105: warning: expecting prototype for exynos_drm_ipp_ioctl_get_res_ioctl(). Prototype was for exynos_drm_ipp_get_res_ioctl() instead
- drivers/gpu/drm/exynos/exynos_drm_ipp.c:153: warning: expecting prototype for exynos_drm_ipp_ioctl_get_caps(). Prototype was for exynos_drm_ipp_get_caps_ioctl() instead
+ drivers/gpu/drm/vboxvideo/hgsmi_base.c:12: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/vboxvideo/hgsmi_base.c:42: warning: expecting prototype for Notify the host of HGSMI(). Prototype was for hgsmi_send_caps_info() instead
+ drivers/gpu/drm/vboxvideo/hgsmi_base.c:74: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/vboxvideo/hgsmi_base.c:102: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/vboxvideo/hgsmi_base.c:174: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_ipp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/vboxvideo/hgsmi_base.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_ipp.c b/drivers/gpu/drm/exynos/exynos_drm_ipp.c
-index 4f2b7551b2515..9ae8689353579 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_ipp.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_ipp.c
-@@ -88,7 +88,7 @@ void exynos_drm_ipp_unregister(struct device *dev,
+diff --git a/drivers/gpu/drm/vboxvideo/hgsmi_base.c b/drivers/gpu/drm/vboxvideo/hgsmi_base.c
+index 361d3193258ea..8c041d7ce4f1b 100644
+--- a/drivers/gpu/drm/vboxvideo/hgsmi_base.c
++++ b/drivers/gpu/drm/vboxvideo/hgsmi_base.c
+@@ -9,7 +9,8 @@
+ #include "hgsmi_ch_setup.h"
+ 
+ /**
+- * Inform the host of the location of the host flags in VRAM via an HGSMI cmd.
++ * hgsmi_report_flags_location - Inform the host of the location of
++ *                               the host flags in VRAM via an HGSMI cmd.
+  * Return: 0 or negative errno value.
+  * @ctx:        The context of the guest heap to use.
+  * @location:   The offset chosen for the flags within guest VRAM.
+@@ -33,7 +34,8 @@ int hgsmi_report_flags_location(struct gen_pool *ctx, u32 location)
  }
  
  /**
-- * exynos_drm_ipp_ioctl_get_res_ioctl - enumerate all ipp modules
-+ * exynos_drm_ipp_get_res_ioctl - enumerate all ipp modules
-  * @dev: DRM device
-  * @data: ioctl data
-  * @file_priv: DRM file info
-@@ -136,7 +136,7 @@ static inline struct exynos_drm_ipp *__ipp_get(uint32_t id)
+- * Notify the host of HGSMI-related guest capabilities via an HGSMI command.
++ * hgsmi_send_caps_info - Notify the host of HGSMI-related guest capabilities
++ *                        via an HGSMI command.
+  * Return: 0 or negative errno value.
+  * @ctx:        The context of the guest heap to use.
+  * @caps:       The capabilities to report, see vbva_caps.
+@@ -71,7 +73,8 @@ int hgsmi_test_query_conf(struct gen_pool *ctx)
  }
  
  /**
-- * exynos_drm_ipp_ioctl_get_caps - get ipp module capabilities and formats
-+ * exynos_drm_ipp_get_caps_ioctl - get ipp module capabilities and formats
-  * @dev: DRM device
-  * @data: ioctl data
-  * @file_priv: DRM file info
+- * Query the host for an HGSMI configuration parameter via an HGSMI command.
++ * hgsmi_query_conf - Query the host for an HGSMI configuration
++ *                    parameter via an HGSMI command.
+  * Return: 0 or negative errno value.
+  * @ctx:        The context containing the heap used.
+  * @index:      The index of the parameter to query.
+@@ -99,7 +102,8 @@ int hgsmi_query_conf(struct gen_pool *ctx, u32 index, u32 *value_ret)
+ }
+ 
+ /**
+- * Pass the host a new mouse pointer shape via an HGSMI command.
++ * hgsmi_update_pointer_shape - Pass the host a new mouse pointer shape
++ *                              via an HGSMI command.
+  * Return: 0 or negative errno value.
+  * @ctx:        The context containing the heap to be used.
+  * @flags:      Cursor flags.
+@@ -171,9 +175,10 @@ int hgsmi_update_pointer_shape(struct gen_pool *ctx, u32 flags,
+ }
+ 
+ /**
+- * Report the guest cursor position.  The host may wish to use this information
+- * to re-position its own cursor (though this is currently unlikely).  The
+- * current host cursor position is returned.
++ * hgsmi_cursor_position - Report the guest cursor position.  The host may
++ *                         wish to use this information to re-position its
++ *                         own cursor (though this is currently unlikely).
++ *                         The current host cursor position is returned.
+  * Return: 0 or negative errno value.
+  * @ctx:              The context containing the heap used.
+  * @report_position:  Are we reporting a position?
 -- 
 2.31.1
 
