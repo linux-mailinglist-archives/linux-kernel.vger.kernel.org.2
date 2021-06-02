@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD1E398D9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1923398DA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhFBPBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:01:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59390 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230482AbhFBPBp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:01:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622646002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R+tyWsmFJ1Km9F7N+hZyqQ4T+xLeAXHNhyln3Rs50ZQ=;
-        b=B/GivPnKbnUs6OIwVvVD8MY2TfeB53/Q4Mbhb8oeaXGXho/BfIi7+/p0t3j8Qy/MmuGLLR
-        sHw+Pa+F6A88/YPe6/uYbuBRI2nLA+brw9kDJgVHsXaXg6iR0UO+Kp/l11Ng+gRs3OTiHL
-        Pv19dUwipq0jZqt3gIsihngV51rTfVI=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-ZL2KUF0qOdWizvXoCaNuHg-1; Wed, 02 Jun 2021 11:00:01 -0400
-X-MC-Unique: ZL2KUF0qOdWizvXoCaNuHg-1
-Received: by mail-qk1-f199.google.com with SMTP id s4-20020a3790040000b02902fa7aa987e8so1807998qkd.14
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 08:00:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R+tyWsmFJ1Km9F7N+hZyqQ4T+xLeAXHNhyln3Rs50ZQ=;
-        b=Cw07l3zod+1rMSXw1tO/HJIbD+oR87V34tmgcSq8HLARdircXa8tRiY3xEZSXrwzXp
-         VhNbuE5U8zcur1ePJizMfX3+Dg+wL9CPHqipoSsKJ7iyMb2iUwPGv3GncAfMfT1vnofx
-         vaNp4OaQS3iPgBSrs6VF6ASLi1B6RujqwQpj0I4gNy/Rjv0Y9/eNFgDqMxJF1/T4j3XQ
-         J4xR6kEm951fWs/Iu5rPFGX8lt7eURYJuiqI6n6nElZsTBvfQ/BU+5LcLxQCJcWCV2yL
-         LvyYaD4JjEfWtzg9YQLp9zuhe5EQdpcV8rzTAXbQ7KNRprmlKhXRiTMrh0oqJWjXzn2j
-         I5fQ==
-X-Gm-Message-State: AOAM531hSfUp0qFX+xF6cAxj4OhZQ+yQrxOlH97w8g91a7+tWF2mFtwq
-        7ONWgggwDDcngE9YFH0LLcyGefmWxbHRbjFR5H+cBLx0UAR6yXpg3EI2rLIsofj5PzyXlL1PMIX
-        azIE3RuB6AN0co2eagwiVa+lu
-X-Received: by 2002:a05:620a:40c7:: with SMTP id g7mr28049511qko.365.1622646000724;
-        Wed, 02 Jun 2021 08:00:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypRWZtw6N4jInlLEvM/V8Xz4Qm73OYJN+yfXmZ+SBFlinbVFk1qXOn76wHIC8j5H0stKkxbQ==
-X-Received: by 2002:a05:620a:40c7:: with SMTP id g7mr28049488qko.365.1622646000527;
-        Wed, 02 Jun 2021 08:00:00 -0700 (PDT)
-Received: from treble ([68.52.236.68])
-        by smtp.gmail.com with ESMTPSA id c23sm12599595qtq.87.2021.06.02.07.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 08:00:00 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 09:59:58 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Guenter Roeck <groeck@google.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] sched/debug: remove obsolete init_schedstats()
-Message-ID: <20210602145958.k5232rngg2labzmm@treble>
-References: <20210602112108.1709635-1-eric.dumazet@gmail.com>
+        id S231796AbhFBPCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:02:06 -0400
+Received: from smtp-35.italiaonline.it ([213.209.10.35]:48763 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231695AbhFBPCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:02:00 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([79.17.119.101])
+        by smtp-35.iol.local with ESMTPA
+        id oSLqlJ7WDsptioSLulKArE; Wed, 02 Jun 2021 17:00:15 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1622646015; bh=+sVRheN2hxOIVCCNCGrpAYU/okLJ8F4OSpSvvK3/KsY=;
+        h=From;
+        b=tGoF00FbrlZ94mpZbYxrPChYpyrsSI9dnHmyV2s02ZWDv/qc5mtzGj2NoQCK+5p80
+         MvVoFKlpcQkt0NG42KG9PYfZhWNkQTo2pEPHuZcZ0RKXYy6IUKOmYBiDwZZc2ZnPq/
+         P7Nj3QJd0vNa98D7Uo4XG3O/tbD5iLlaOQLE4KpCLCrV4U246JMFGW/XhBYpgrfV7g
+         34U4qhEa1whfUgK8gFh/G9VYbNLF87AJMBgil7fXF3Gvx0IhmdDugvWx2KCOyr+G6d
+         5S2yh3w93MhGe9G2pWxEUzRZ6ho4ifbonUbAkrU159rbskF2hiNczxBq1F18oLhkkU
+         sSHtEBPDWZt4g==
+X-CNFS-Analysis: v=2.4 cv=Bo1Yfab5 c=1 sm=1 tr=0 ts=60b79cff cx=a_exe
+ a=do1bHx4A/kh2kuTIUQHSxQ==:117 a=do1bHx4A/kh2kuTIUQHSxQ==:17
+ a=IkcTkHD0fZMA:10 a=7lJUY2J14ryrXklOE8AA:9 a=QEXdDO2ut3YA:10
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Dario Binacchi <dariobin@libero.it>,
+        Tero Kristo <kristo@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH v7 0/5] clk: ti: add am33xx spread spectrum clock support
+Date:   Wed,  2 Jun 2021 17:00:03 +0200
+Message-Id: <20210602150009.17531-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210602112108.1709635-1-eric.dumazet@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfGSQLGD2pWymgAK0rBD2YU7Pmmqecdc8EA0H+cr0HKkjs9HfADN3eADfap6TRxYHBIbhKd9eXqeZtHIS20R6+v0eMxJCTRZSVuaqp4JVPXQJ6OdewlFI
+ ABOERsbywLgYSX0G+03OqMPOATnIxcwqFgLnUGpsI+5uUogRNtDvgkMPSasI7zfoK6dvtH39TRoKzu010ZViCmqec+ob6GtCNnq7GCk4dJV6YwG5pggMd1Kj
+ BjH9NcreRIqrjczcG0vAAHDBhbofRlV2NSryFSHNJ3nko+m306Gj4M0MZzeZZ7fsVgJswlsSJeWF6f0BF/fJ3yNZhSpiu6XaaGlqEpSI9wEowOE0qDUGXErQ
+ CorkcFMgUKANb8ag4iEltEdfDawX0312vpQtVsPyW8p0CprHyq6PKIzK0q8z15bkBG8eLB5UdkhzVQ8Sx3hKjrzXAm0/5HYBd8tQk54U3iX5e2SHsDBVANzz
+ pzfjcbb+iH38Z/kso3vaLk38hvYqVIK79WCrTsbP5jvXka36d0CqOdKJA991srhT98tfj3Bv99pDGXxmT/p29JCQI6ptjTkk1vYaTosJaErWeaEYN002WoeM
+ se1HVQLGYbtuxQCHiZdRXxd9P7I7nbYOKSURkcm3dn63sA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:21:08AM -0700, Eric Dumazet wrote:
-> From: Eric Dumazet <edumazet@google.com>
-> 
-> Revert "sched/debug: Fix 'schedstats=enable' cmdline option"
-> 
-> This reverts commit 4698f88c06b893f2acc0b443004a53bf490fde7c.
-> 
-> After commit 6041186a3258 ("init: initialize jump labels before command
-> line option parsing") we can rely on jump label infra being ready for use
-> when setup_schedstats() is called.
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Guenter Roeck <groeck@google.com>
-> Cc: Kees Cook <keescook@chromium.org>
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+As reported by the TI spruh73x/spruhl7x RM, MPU and LCD modules support
+spread spectrum clocking (SSC) on their output clocks. SSC is used to
+spread the spectral peaking of the clock to reduce any electromagnetic
+interference (EMI) that may be caused due to the clock’s fundamental
+or any of its harmonics.
+The series allows you to enable and adjust the spread spectrum clocking
+for all am33xx/am43xx PLLs for which it is supported. All these issues
+have been fixed.
+
+
+Previous versions of the series did not supported SSC for am43xx SOCs,
+causing clock registration failure for DPLLs. Furthermore, for am33xx
+SOCs, clock registration failed for DPLLs for which SSC is not supported.
+
+Changes in v7:
+- Add Tony Lindgren acked tag.
+
+Changes in v6:
+- Add Tero Kristo review tag.
+
+Changes in v5:
+- Remove ssc_ack_mask field from dpll_data structure. It was not used.
+- Change ssc_downspread type from u8 to bool in dpll_data structure.
+
+Changes in v4:
+- Add Stephen Boyd review tag.
+- Add Rob Herring review tag.
+- Add SSC registers for CORE, DDR and PER PLLs.
+- Update commit message.
+- Update commit message.
+
+Changes in v3:
+- Add '-hz' suffix to "ti,ssc-modfreq" binding.
+- Add Tony Lindgren acked tag.
+- Use "ti,ssc-modfreq-hz" binding instead of "ti,ssc-modfreq".
+
+Changes in v2:
+- Remove SSC registers from dpll_core_ck@490 node (SSC is not supported)
+- Add SSC registers to dpll_mpu_ck@488 node.
+- Move the DT changes to the previous patch in the series.
+
+Dario Binacchi (5):
+  clk: ti: fix typo in routine description
+  dt-bindings: ti: dpll: add spread spectrum support
+  ARM: dts: am33xx-clocks: add spread spectrum support
+  ARM: dts: am43xx-clocks: add spread spectrum support
+  clk: ti: add am33xx/am43xx spread spectrum clock support
+
+ .../devicetree/bindings/clock/ti/dpll.txt     | 20 +++++
+ arch/arm/boot/dts/am33xx-clocks.dtsi          | 10 +--
+ arch/arm/boot/dts/am43xx-clocks.dtsi          | 12 +--
+ drivers/clk/ti/dpll.c                         | 39 +++++++++
+ drivers/clk/ti/dpll3xxx.c                     | 87 ++++++++++++++++++-
+ include/linux/clk/ti.h                        | 22 +++++
+ 6 files changed, 178 insertions(+), 12 deletions(-)
 
 -- 
-Josh
+2.17.1
 
