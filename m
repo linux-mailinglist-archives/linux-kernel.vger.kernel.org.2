@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3547398A46
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C48B398A4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 15:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhFBNTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 09:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S229767AbhFBNUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 09:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhFBNTf (ORCPT
+        with ESMTP id S229583AbhFBNUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 09:19:35 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC26DC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 06:17:52 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id d13so567516uav.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:17:52 -0700 (PDT)
+        Wed, 2 Jun 2021 09:20:34 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B5CC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 06:18:41 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id s6so2860718edu.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 06:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uH5yxU+BzRF90wWQwBO4VM5milL3akGJBti5j4uOIZE=;
-        b=s6OLJzCVfowSoFK+Kn+Dhlq9dbdZvw299TRcMkIdw5Yuw3QzvKXt83rm00ZYmdAzHh
-         /1dzY+TZZYI7BxQvrF0FDyUZF9EMiKzASt4L13dLl6SCkUavqGGqBrk3O90KyRB0h+lE
-         5vqtpcRDiNuA4hyi2GEWpaPREnpTT8jFXAL3Ypr8EXcRsTLjM2LEkV+hLkRG4wNmfK+c
-         hawPsG2yo23cDzABvRJQmn8X+GmEu9mJER+1cYC3lQAxQ/foh9xbWloSO7ggqM4k6Djv
-         ehNToKgNW35e/8OEm0Hun2TjV2n0awAldfNx1NCqo7S6PU2Wlxzae8ooaKznyMLri193
-         rSiA==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=8sL249iFh5fLrh4+jcadscDil09cRaUNl+czqTJf9vc=;
+        b=gPYKNhkEJakfzzuddkxy7II9Yimt2kWskOlB6F99t+fPqRNgukyZWgW7mbpDGhAhkt
+         /6l37/9eUD3HgRrZkZq/Z+BH049YxHcCQ2XE0s01YqBEkMjsjm+bFSto9edmE6OregwJ
+         +W7fPneQcN51SdI38E9WhLfBdO0NnEql5uuiTbRH6irmQA6INj1o8T5ETwHasEOnED4K
+         ETLqjA1P9KKVZhTsjZNC705Tp/UoqBJ7PhFEXCSR1LvPf94g+BfrGE7ATntmHfNZ+HQl
+         kNDaZ7gG+M0epS9KTYqKSk1qbUby5fV+GRhjN1KQTekgaNJa3z5mQf78uhy3SBz5cUxI
+         qvyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uH5yxU+BzRF90wWQwBO4VM5milL3akGJBti5j4uOIZE=;
-        b=oP2Iv5xtml/3zc1sH28faC/3Z/j9jSzxb/xAhvWgUy5pQWi3x/7MJZSJWx2QpIB3rT
-         TZBugGTp7zbsnsRljnksHoPAWjh1HZrb30FZu0r/NBv8DMQHuBbyji6rDo0KbhxuT34X
-         LZ68/6ErS1tymG1MiiYSMv0AbMoTji7o6abtI0tDtDzi4Tfa0nMDTRlmOyfucVDhkmsM
-         MykafjYNzWT5dnTEpADRQAlyL2Hgs+rsLKxoyHla/bvdqxzmcIVb/YZWdnQhkOlDgn9P
-         x5sm42TBDAMQDeec01w0fmikzd3kxuZPVbfyRKKew70qFMtP/qaBKO23ChKCrSRLSkuM
-         IR6A==
-X-Gm-Message-State: AOAM533nG3Xi8MHXO3nlE26XGzaKidi3mGRo9qRagZ9Lw2I1aJRScLW3
-        vY5PHOhOZfb8/pocEmSSpu1KM0EfQOtJ8B1PwZRkyg==
-X-Google-Smtp-Source: ABdhPJyvipLZfILhu87oS/az2/HBFVuElK4GQ6Srx/B1cgHvOyXaym3QLEigUlS/OUkA08r+m8+miEhdsQUfZ9i5/94=
-X-Received: by 2002:ab0:100f:: with SMTP id f15mr21456136uab.100.1622639870335;
- Wed, 02 Jun 2021 06:17:50 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=8sL249iFh5fLrh4+jcadscDil09cRaUNl+czqTJf9vc=;
+        b=PDvg/Bspz4HOR3IQHHYgdzvWJtk+fVlOSVehGC4RwiRx6j+b49rvs1mS4nM6z/3wi6
+         5vtn9P/QkM/uIZrxy5J1UnL/ABttj2yENAh9yOXHlpw2pFs9OppxueaSO6Ho8zx7eRZM
+         0X8fj91f76HjLvGSnHhZnZ918l8/PXSrKm/QU+TsXBpwEQ/r6kz108xrKKGQ064b9Mi+
+         QDuWWZLGwQOzwg7C140LOyBaugu4LcC2qLn2/oSPrH7vYak8EGRr9wot61bmw5DssRs8
+         69tuRR4G1rXYZ0OCBwYrCITfS7gRf8Dw5KqVmFCQUC+AmxE+/AjMLQbYtesZEybYWFQO
+         mUlQ==
+X-Gm-Message-State: AOAM53251yRDNxs5f8SDPHP/5iDQq5WWA269tpMU1jVVbN4ltlhyBW8U
+        alLeukYnX1zkr8SB03t1RkSBl3xVG4jPq0BmZCI=
+X-Google-Smtp-Source: ABdhPJz47BocwY9xcSwhxCvikVXfyfuBhdVjPKS/2iDg8AbJPZKbNtAG5EX6IPVWRf+i+9GESg6KeCKKuotUTGvK638=
+X-Received: by 2002:a05:6402:4c5:: with SMTP id n5mr37891601edw.322.1622639920272;
+ Wed, 02 Jun 2021 06:18:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210602112321.2241566-1-anup.patel@wdc.com> <20210602112321.2241566-6-anup.patel@wdc.com>
-In-Reply-To: <20210602112321.2241566-6-anup.patel@wdc.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 2 Jun 2021 15:17:13 +0200
-Message-ID: <CAPDyKFq2tvvAD=2RiePZzce=+OsDaxLWqz+90pTKjTTzqVqcHQ@mail.gmail.com>
-Subject: Re: [PATCH v5 5/8] cpuidle: Factor-out power domain related code from
- PSCI domain driver
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Sandeep Tripathy <milun.tripathy@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Liush <liush@allwinnertech.com>,
-        Anup Patel <anup@brainfault.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Wed, 2 Jun 2021 21:18:13 +0800
+Message-ID: <CAD-N9QUDYbzkZXnDzf2P4b4Qk_kBQ_9ZVL3B4jhe9Xf2rgtpGA@mail.gmail.com>
+Subject: [syzbot] UBSAN: shift-out-of-bounds in snd_timer_user_ccallback
+To:     allen.lkml@gmail.com, alsa-devel@alsa-project.org,
+        Joe Perches <joe@perches.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, perex@perex.cz,
+        pierre-louis.bossart@linux.intel.com, romain.perier@gmail.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>, tiwai@suse.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 at 13:24, Anup Patel <anup.patel@wdc.com> wrote:
+> Hello,
 >
-> The generic power domain related code in PSCI domain driver is largely
-> independent of PSCI and can be shared with RISC-V SBI domain driver
-> hence we factor-out this code into dt_idle_genpd.c and dt_idle_genpd.h.
+> syzbot found the following issue on:
 >
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> HEAD commit: 5ff2756a Merge tag 'nfs-for-5.13-2' of git://git.linux-nfs..
+> git tree: upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17872d5bd00000
+> kernel config: https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d102fa5b35335a7e544e
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d102fa...@syzkaller.appspotmail.com
+>
+> ================================================================================
+> UBSAN: shift-out-of-bounds in sound/core/timer.c:1376:23
+> shift exponent 105 is too large for 32-bit type 'int'
+> CPU: 1 PID: 10368 Comm: syz-executor.1 Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+> __dump_stack lib/dump_stack.c:79 [inline]
+> dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+> ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+> __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+> snd_timer_user_ccallback.cold+0x19/0x1e sound/core/timer.c:1376
+>
+> snd_timer_notify1+0x243/0x3b0 sound/core/timer.c:525
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+The root cause of this bug is in the snd_timer_notify1 [1]. At the end
+of this function, it calls "ts->ccallback(ts, event + 100, &tstamp,
+resolution)".
 
-A small nitpick below.
+Here the variable event is 5. It adds 100 and is passed as 2nd
+argument of snd_timer_user_ccallback.
 
-[...]
+From the variable naming, the 2nd argument should an event, and in the
+range of event enumeration. In fact, 105 (event + 100) is out of this
+range. I don't quite understand the meaning of adding 100. Any thought
+here?
 
-> +EXPORT_SYMBOL_GPL(dt_idle_pd_free);
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/core/timer.c?id=5ff2756afde08b266fbb673849899fec694f39f1#n497
 
-Do we really need to export this symbol? Looks like there are only
-built-in cpuidle drivers that are going to use it. At least for now.
+--
+My best regards to you.
 
-As a matter of fact, the same comment applies to all cases of
-EXPORT_SYMBOL_GPL from $subject patch. Can we drop all of them?
-
-[...]
-
-Kind regards
-Uffe
+     No System Is Safe!
+     Dongliang Mu
