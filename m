@@ -2,83 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F02398773
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C792398776
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhFBK7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhFBK6X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:58:23 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB40BC06138E;
-        Wed,  2 Jun 2021 03:56:21 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id c3so2211859oic.8;
-        Wed, 02 Jun 2021 03:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/47W/OKjxWYCnqnbbKYahszrZqkBdL2uMz2vtDHF81o=;
-        b=Wk7R+3c4RyoAUhByFTAB/zOFTmIL1dQrYvrEZ9MlkrNAV7Y5pAOGrndLj6Artks05z
-         q1Nnf9ELewx/s+AbcsbGJ/X9eeL7G/trJhnuZw94yHptOygbip7GkWQWnq9OsbMXyWhD
-         LUE5ESAL9Li0We2oBhauk1/Kbe1PsWqY/GB1x7CwlTITMdXqiXZJWNjfXtEQGPrSUoO0
-         I38AKk9n3NgBzHy77/fsVDTOcXBfEMpblejneafFSK6/bEdBX9ZGfoUe1U66gOOrpPWj
-         nO33//Cqz7h8xO3vPUtC0s+KuMwVCQzPvgqKyGohK69i/HIvYiQ+1sCe4aInkVg2+wZ7
-         HWUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/47W/OKjxWYCnqnbbKYahszrZqkBdL2uMz2vtDHF81o=;
-        b=Dw+BBVzkS0tsh2OtmOF00cQG0pHfFl7M9aFcvFzXmvITw9ZnWY4MmPBNFzTBkoSYA6
-         w7JUBS/u0wybjEf4qWj5pcy/9MSoJ1kYjs4UHW3tjO6bgfKN0EXoZzuyagVsBGdbMRjQ
-         o9uTVKgLUBZoGHXGB2tNHlEn0FEraJ5H+ha2WRShd4AY7mftZ9ssJCuliMHyLx9gHu86
-         UzUP4KQHhsyluvjUnkKE3E6jCOv363ENJtk2Av+HN/3BeVusj+5R8n5UX3wtp7ZLWRJX
-         KwK+v9xHx5FIiOYSDzAVi8zDxAtt4HvAPCouk8TVK/rRy2tC5xHt5psUt/VzUGiux8NF
-         gVtQ==
-X-Gm-Message-State: AOAM5306OzT3V5bkLz30XOX63p+v0I5CVXDP+LKXcPkTH1+jJDNwcDhh
-        7WZZBr029Vcj7yvwK1sWf6o=
-X-Google-Smtp-Source: ABdhPJwgWit1A4hGoCoGOMzD+KLbNV4Gk7s62w1bG82dN5Xj0QKrgIRDLCfxQ2D7XUmvtx+KAoLbuQ==
-X-Received: by 2002:a05:6808:5cf:: with SMTP id d15mr399174oij.15.1622631381360;
-        Wed, 02 Jun 2021 03:56:21 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o20sm4310047otl.2.2021.06.02.03.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 03:56:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 2 Jun 2021 03:56:19 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Erik Rosen <erik.rosen@metormote.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Daniel Nilsson <daniel.nilsson@flex.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/5] hwmon: (pmbus/pim4328) Add documentation for the
- pim4328 PMBus driver
-Message-ID: <20210602105619.GF1865238@roeck-us.net>
-References: <20210601164320.2907-1-erik.rosen@metormote.com>
- <20210601164320.2907-6-erik.rosen@metormote.com>
+        id S232395AbhFBK76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230382AbhFBK6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 06:58:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FF1460FF2;
+        Wed,  2 Jun 2021 10:57:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622631422;
+        bh=4Kqd06H4tk196Fea2oUyUzPCeW3WtfbykgTc6Olq6aI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NQ54KWhccDSvwlRvVWIWPFBMdCHFM40ckBKp6C0O5pVbaEfpXntyDYDIZR1FIkfVd
+         b03Za3uUGuo/Zj39zpCr1+1lWnv/u0cP4LFi/yd7RtFku3JFlWJf2ZxwT5f7jAgsBP
+         bcQ92lU7Z9HmuqOmHCs32ugqc6ToKMXLQ97btza9X9vl98ZMo0BBTIX/hXmN+tlrjz
+         s3ZeJunw3tPwq38VH4nTDl4fOD0zztQYA6ctd/OsneYD22ko3V9NN+aP7lTyWMDVOC
+         +ZIfuUA6BIgJOAP78YqTd1+yvM9FzcKekN/MsRDOCMeAnVXT1CsRs9IVj5IU+JMc3u
+         k3H3NIyX1NJ8A==
+Date:   Wed, 2 Jun 2021 16:26:58 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>, DTML <devicetree@vger.kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno <freedreno@lists.freedesktop.org>
+Subject: Re: [Freedreno] [RFC PATCH 00/13] drm/msm: Add Display Stream
+ Compression Support
+Message-ID: <YLdj+nu3rUiIQL0k@vkoul-mobl>
+References: <20210521124946.3617862-1-vkoul@kernel.org>
+ <CAOCk7Nqep_Db+z3fr5asHZ1u0j8+6fKkPFs2Ai8CbA_zGqV6ZA@mail.gmail.com>
+ <YK3gxqXBRupN/N+Q@vkoul-mobl.Dlink>
+ <CAOCk7NqvhGvYw8xCBctqj7H+o-Qwp2UuUJK1gatW9EWfXv56xA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210601164320.2907-6-erik.rosen@metormote.com>
+In-Reply-To: <CAOCk7NqvhGvYw8xCBctqj7H+o-Qwp2UuUJK1gatW9EWfXv56xA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 06:43:20PM +0200, Erik Rosen wrote:
-> Add documentation and index link for pim4328 PMBus driver.
-> Update MAINTAINER file for the driver.
+On 26-05-21, 09:00, Jeffrey Hugo wrote:
+> On Tue, May 25, 2021 at 11:46 PM Vinod Koul <vkoul@kernel.org> wrote:
+> > On 21-05-21, 08:09, Jeffrey Hugo wrote:
+> > > On Fri, May 21, 2021 at 6:50 AM Vinod Koul <vkoul@kernel.org> wrote:
+> > > >
+> > > > Display Stream Compression (DSC) compresses the display stream in host which
+> > > > is later decoded by panel. This series enables this for Qualcomm msm driver.
+> > > > This was tested on Google Pixel3 phone which use LGE SW43408 panel.
+> > > >
+> > > > The changes include adding DT properties for DSC then hardware blocks support
+> > > > required in DPU1 driver and support in encoder. We also add support in DSI
+> > > > and introduce required topology changes.
+> > > >
+> > > > In order for panel to set the DSC parameters we add dsc in drm_panel and set
+> > > > it from the msm driver.
+> > > >
+> > > > Complete changes which enable this for Pixel3 along with panel driver (not
+> > > > part of this series) and DT changes can be found at:
+> > > > git.linaro.org/people/vinod.koul/kernel.git pixel/dsc_rfc
+> > > >
+> > > > Comments welcome!
+> > >
+> > > This feels backwards to me.  I've only skimmed this series, and the DT
+> > > changes didn't come through for me, so perhaps I have an incomplete
+> > > view.
+> >
+> > Not sure why, I see it on lore:
+> > https://lore.kernel.org/dri-devel/20210521124946.3617862-3-vkoul@kernel.org/
+> >
+> > > DSC is not MSM specific.  There is a standard for it.  Yet it looks
+> > > like everything is implemented in a MSM specific way, and then pushed
+> > > to the panel.  So, every vendor needs to implement their vendor
+> > > specific way to get the DSC info, and then push it to the panel?
+> > > Seems wrong, given there is an actual standard for this feature.
+> >
+> > I have added slice and bpp info in the DT here under the host and then
+> > pass the generic struct drm_dsc_config to panel which allows panel to
+> > write the pps cmd
+> >
+> > Nothing above is MSM specific.. It can very well work with non MSM
+> > controllers too.
 > 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
-> Acked-by: Daniel Nilsson <daniel.nilsson@flex.com>
+> I disagree.
+> 
+> The DT bindings you defined (thanks for the direct link) are MSM
+> specific.  I'm not talking (yet) about the properties you defined, but
+> purely from the stand point that you defined the binding within the
+> scope of the MSM dsi binding.  No other vendor can use those bindings.
+> Of course, if we look at the properties themselves, they are prefixed
+> with "qcom", which is vendor specific.
+> 
+> So, purely on the face of it, this is MSM specific.
+> 
+> Assuming we want a DT solution for DSC, I think it should be something
+> like Documentation/devicetree/bindings/clock/clock-bindings.txt (the
+> first example that comes to mind), which is a non-vendor specific
+> generic set of properties that each vendor/device specific binding can
+> inherit.  Panel has similar things.
+> 
+> Specific to the properties, I don't much like that you duplicate BPP,
+> which is already associated with the panel (although perhaps not in
+> the scope of DT).  What if the panel and your DSC bindings disagree?
+> Also, I guess I need to ask, have you read the DSC spec?  Last I
+> looked, there were something like 3 dozen properties that could be
+> configured.  You have five in your proposed binding.  To me, this is
+> not a generic DSC solution, this is MSM specific (and frankly I don't
+> think this supports all the configuration the MSM hardware can do,
+> either).
 
-I got a message from Daniel, marked as privileged, which I can not
-use. Please drop the MAINTAINER file update; that will have to be
-handled in a separate patch.
+I would concede the point that DT is msm specific. I dont disagree on
+making them a common dsc biding which anyone can use. I think your idea
+does have merits...
 
-Thanks,
-Guenter
+I am still not sure who should include these properties, would it be the
+panel or host. Either would work and rest of the system can use these
+properties...
+
+-- 
+~Vinod
