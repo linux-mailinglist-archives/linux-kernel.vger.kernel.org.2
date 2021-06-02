@@ -2,128 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE49B39901A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E767B399014
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 18:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhFBQjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 12:39:12 -0400
-Received: from mail-ua1-f47.google.com ([209.85.222.47]:37799 "EHLO
-        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhFBQjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:39:04 -0400
-Received: by mail-ua1-f47.google.com with SMTP id w28so1639007uae.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AvcpwHNjB8ShVBsQrITXz+J70Fl4tyXMM88UbOl1/HI=;
-        b=XU2T5eauZCuFUWc/+36xInqi+boOT7Be2v8/TeWqWW+ceG90g/W7o+Oyt1sAlBRU4o
-         DE/pLgcnvjDWfi4fTe1HAGvmNm5TxSdtHgYsnTDKYhO+g4tZlFnBFHeTUNGFRiyH/1T9
-         NaV2yb/N4MNj/qRiJEjkHQ1Uy+qqltCsF8q/g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AvcpwHNjB8ShVBsQrITXz+J70Fl4tyXMM88UbOl1/HI=;
-        b=HTvXPX1qFqYRyw/JikLn7iaA+pPj8Gycy5ZRcAqqM4G+pEk7GnvdPkw8J423OElL4S
-         nHSH24DcVAd2rcDU8Lv7fC6Ei7GtU2GAewz6n6cNRY8co7X8oHMwXCbllcxSZrRMN5Xb
-         MdvN/Xwq0qrAblg8aKRAlFKML+LOECPQNQtpHXoxICLmdXI8zht5S4y7itCWBPcEOYvP
-         4ocWzk/Q3L5dt1l1CUbZQQ22+RT2xk2EFxPHnO6TpSUSKWJMhuZdlNHb8Wmw567ZXMJw
-         oFY65c3rPfD4bti8J57EzqRS/cG4jN5iWVM/ikd8cbBImOneaC9ao2U7AHw5PgUJSuej
-         /zBA==
-X-Gm-Message-State: AOAM53040KAHTK/NurNNXPU3UxcXPMYgAdyUJhiP9kMJgzGuUm/5PV5H
-        dvSl1x15XB1XiybDNsJThHEw/LUNxzaO4w==
-X-Google-Smtp-Source: ABdhPJzY0p1HR4Vc2sznNXbDgqbebhNeuxcS5vAUtm5LeGazO6ZcU0EdUDgi6KouVWkjj0/hWcP5bg==
-X-Received: by 2002:ab0:4950:: with SMTP id a16mr22168455uad.140.1622651780456;
-        Wed, 02 Jun 2021 09:36:20 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id x184sm44472vsc.9.2021.06.02.09.36.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 09:36:19 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id j15so1428795vsf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 09:36:19 -0700 (PDT)
-X-Received: by 2002:a05:6102:227c:: with SMTP id v28mr25195946vsd.52.1622651779216;
- Wed, 02 Jun 2021 09:36:19 -0700 (PDT)
+        id S229724AbhFBQiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 12:38:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229647AbhFBQiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:38:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 477AA6198F;
+        Wed,  2 Jun 2021 16:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622651792;
+        bh=yxmMBrVLhMXxjOEKOtD+84IT4h6Nyzauv28CSHSree8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lUuNX/KvAS+G97NJOWoQdA4NbnanBK7e2ZO685NZylnaoLYCMRw9CUy3tpDiyoMUX
+         GZamfPuvk8O78eNkrpRFUGyAir2XmYsMo1yNFTULCl53WtJGEODuRxymZuRyKM5lQC
+         Ru6lSoA2cJlbjEiVYqU9Ah+o1WwZfYrtPD9uoPqjGnGFGZG3z1ELowyWyRpuuRZ16P
+         tAWATspjzooXE373vulMByXcnoly+QqtomlIgaDzfS10nxquF3ygDEHNfHxjX87LRj
+         xa37wmRlwWhNWum5V4PqMxEPUi2QLucRzsRyDVJKsiNpzeAcnkf5fNzN9Q2Uie4c2j
+         9I33WjZS2g6mw==
+Date:   Wed, 2 Jun 2021 09:36:31 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        stable@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
+Message-ID: <20210602093631.797db58f@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20210602091632.qijrpc2z6z44wu54@wittgenstein>
+References: <20210531153410.93150-1-changbin.du@gmail.com>
+        <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20210601080654.cl7caplm7rsagl6u@wittgenstein>
+        <20210601132602.02e92678@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20210602091632.qijrpc2z6z44wu54@wittgenstein>
 MIME-Version: 1.0
-References: <20210602090525.1.Id4510e9e4baaa3f6c9fdd5cdf4d8606e63c262e3@changeid>
-In-Reply-To: <20210602090525.1.Id4510e9e4baaa3f6c9fdd5cdf4d8606e63c262e3@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 2 Jun 2021 09:36:07 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XcoLLCn+H6h9cX+qPjoueVFgK8BssvUXQ6WjVAapRyMg@mail.gmail.com>
-Message-ID: <CAD=FV=XcoLLCn+H6h9cX+qPjoueVFgK8BssvUXQ6WjVAapRyMg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: pm6150: Add thermal zone for PMIC
- on-die temperature
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 2 Jun 2021 11:16:32 +0200 Christian Brauner wrote:
+> > diff --git a/net/socket.c b/net/socket.c
+> > index 27e3e7d53f8e..3b44f2700e0c 100644
+> > --- a/net/socket.c
+> > +++ b/net/socket.c
+> > @@ -1081,6 +1081,8 @@ static long sock_do_ioctl(struct net *net, struct socket *sock,
+> >  
+> >  struct ns_common *get_net_ns(struct ns_common *ns)
+> >  {
+> > +       if (!IS_ENABLED(CONFIG_NET_NS))
+> > +               return ERR_PTR(-EOPNOTSUPP);
+> >         return &get_net(container_of(ns, struct net, ns))->ns;
+> >  }
+> >  EXPORT_SYMBOL_GPL(get_net_ns);  
+> 
+> Yeah, that's better than my hack. :) Maybe this function should simply
+> move over to net/core/net_namespace.c with the other netns getters, e.g.
+> get_net_ns_by_fd()?
 
-On Wed, Jun 2, 2021 at 9:06 AM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Add a thermal zone for the pm6150 on-die temperature. The system should
-> try to shut down orderly when the temperature reaches 95degC, otherwise
-> the PMIC will power off at 115degC.
->
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
->
->  arch/arm64/boot/dts/qcom/pm6150.dtsi | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/pm6150.dtsi b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-> index 8ab4f1f78bbf..de7fb129f739 100644
-> --- a/arch/arm64/boot/dts/qcom/pm6150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-> @@ -7,6 +7,30 @@
->  #include <dt-bindings/spmi/spmi.h>
->  #include <dt-bindings/thermal/thermal.h>
->
-> +/ {
-> +       thermal-zones {
-> +               pm6150_thermal: pm6150-thermal {
-> +                       polling-delay-passive = <100>;
-> +                       polling-delay = <0>;
-> +                       thermal-sensors = <&pm6150_temp>;
-> +
-> +                       trips {
-> +                               pm6150_trip0: trip0 {
-> +                                       temperature = <95000>;
-> +                                       hysteresis = <0>;
-> +                                       type = "passive";
-> +                               };
-> +
-> +                               pm6150_crit: pm6150-crit {
-
-Nit that the node names are not symmetric. One is "trip0" and the
-other is "pm6510-crit". Seems like you can remove the "pm6150-" prefix
-from this one (but keep it in the label?)
-
-> +                                       temperature = <115000>;
-> +                                       hysteresis = <0>;
-> +                                       type = "critical";
-> +                               };
-> +                       };
-> +               };
-
-Correct me if I'm misunderstanding, but I don't think that the
-description of this patch matches the contents. You're saying that the
-PMIC will power itself off at 115C and that we want to do an orderly
-shutdown _before_ the PMIC powers off. Doesn't that mean that the
-"critical" trip needs to be at some temperature _lower_ than 115C? As
-I remember it the system performs an orderly shutdown starting when it
-sees the critical temperature.
-
--Doug
+SGTM!
