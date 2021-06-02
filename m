@@ -2,82 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C50A39832A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568A8398335
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhFBHkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 03:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbhFBHkW (ORCPT
+        id S231880AbhFBHlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:41:03 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6133 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231823AbhFBHko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 03:40:22 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA6DC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 00:38:40 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id m23so759706uao.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 00:38:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L+TTh5KqzQy7Y+EAoFlysDwIssfmwwnP8VJI5NXEb/8=;
-        b=ui0SAsqvnSKtekZ5xaMzh11I/7tb6Y8cTj9gTGMe0c2ln73DXlIhrzNtUOa+1vynrg
-         /cmEUeDyzFYRMqdDbOO2EQjxLgQq3Gb9eW376DtmojBSYF9o3PleaIq4+f6J5P8CXTQ5
-         EjEpZfGq6VXaMFeHwTcLGBTwWyrUpenqTZzmX+TYRPp23PnzakSnJZ+Ay7YUp/oPF5Pv
-         o/7jLjZb6EF4Miy//21ONjkRZgV8xLVr8RQOlWoh4/1d9g0/Fhy2ESTiEHyn3Q59VGVy
-         h1eNVx8WS4qLUopqJDSO6fVMGnD38ZAgoyRedhLkHJmKSfPmdTrXplCUxjHLI6RVKv+C
-         xf1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L+TTh5KqzQy7Y+EAoFlysDwIssfmwwnP8VJI5NXEb/8=;
-        b=IZXz50Qn/O/0sm5aVR8vkiTF8Ipm8GkPGdNzP6rMm8+fM5ejFEaWIioUoEaIYEyxHS
-         ep4p8ijyhbH8x4YvNH7C3thTwmfK7pBTvHU+xb/cb9d4aPAGV1C1bGoMOvFDSoLYeumx
-         qmHbibJuEplqlUjr6fm3y4STdJK7yfUfjN969Q+urBg/J5cTv12YLOoBfin9UWdai4+c
-         3pYzDzbe3IgoUHoXUhvyKbIK21Tiw70H32LNV6QC3dbSOFoX+bgE3/6pWxjfwemUSe/M
-         q7RYtvS8KEwB8aMkLDAgoOrF3u3s0en3kYhxSO2qkNBXh3OpBzuo8yRPh6qCnSiFy56z
-         IOMQ==
-X-Gm-Message-State: AOAM530+1/IQTu6gU2J08vphJCxXaN8pdJ53RvrQLiyA6e2IiNIe1Tuz
-        GVwzcBJ2aJVznUN9RP7Wp8zak9mYCtS7CtF41aq8zQ==
-X-Google-Smtp-Source: ABdhPJzyd7BJ2tG/pzaTds/WFODrDilZ8jvrif516usWWpuQ3h/Tm2Vr5Wt8EbH3eFPPfqiJWc+o7XOTCEPsPWLEuEk=
-X-Received: by 2002:ab0:100f:: with SMTP id f15mr20386864uab.100.1622619518153;
- Wed, 02 Jun 2021 00:38:38 -0700 (PDT)
+        Wed, 2 Jun 2021 03:40:44 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fw16N2VMJzYmZS;
+        Wed,  2 Jun 2021 15:35:56 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 15:38:40 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 15:38:40 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Joshua Kinard <kumba@gentoo.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-rtc <linux-rtc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 0/8] rtc: use DEVICE_ATTR_* macro to simplify code
+Date:   Wed, 2 Jun 2021 15:38:12 +0800
+Message-ID: <20210602073820.11011-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-References: <20210601231003.9845-1-digetx@gmail.com>
-In-Reply-To: <20210601231003.9845-1-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 2 Jun 2021 09:38:01 +0200
-Message-ID: <CAPDyKFpMCkp5tHHcZJZf6sC4+C_xGGnhUWJg5+6hHbDT8FD_Bg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] NVIDIA Tegra core power domain follow up
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Jun 2021 at 01:10, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> Remove the lockdep_set_class(), which Ulf Hansson asked for. And
-> prevent core domain syncing if domain node is missing in device-tree,
-> which I accidentally missed to add after squashing the standalone
-> domain driver into the PMC driver.
->
-> Dmitry Osipenko (2):
->   soc/tegra: pmc: Don't sync core domain if it's missing in device-tree
->   soc/tegra: pmc: Remove usage of lockdep_set_class()
->
->  drivers/soc/tegra/pmc.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
->
+DEVICE_ATTR_RO marks ReadOnly file, DEVICE_ATTR_RW marks ReadWrite file,
+it's clearer than DEVICE_ATTR.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Zhen Lei (8):
+  rtc: x1205: use DEVICE_ATTR_RO macro
+  rtc: rx8025: use DEVICE_ATTR_RW macro
+  rtc: rs5c372: use DEVICE_ATTR_RO macro
+  rtc: isl1208: use DEVICE_ATTR_* macro
+  rtc: ds1685: use DEVICE_ATTR_RO macro
+  rtc: ds1343: use DEVICE_ATTR_* macro
+  rtc: bq32k: use DEVICE_ATTR_RW macro
+  rtc: ab8500: use DEVICE_ATTR_RW macro
 
-Kind regards
-Uffe
+ drivers/rtc/rtc-ab8500.c  | 14 ++++++--------
+ drivers/rtc/rtc-bq32k.c   | 16 +++++++---------
+ drivers/rtc/rtc-ds1343.c  | 19 +++++++++----------
+ drivers/rtc/rtc-ds1685.c  | 27 ++++++++++++---------------
+ drivers/rtc/rtc-isl1208.c | 29 ++++++++++++-----------------
+ drivers/rtc/rtc-rs5c372.c | 12 ++++++------
+ drivers/rtc/rtc-rx8025.c  | 16 +++++++---------
+ drivers/rtc/rtc-x1205.c   | 12 ++++++------
+ 8 files changed, 65 insertions(+), 80 deletions(-)
+
+-- 
+2.26.0.106.g9fadedd
+
+
