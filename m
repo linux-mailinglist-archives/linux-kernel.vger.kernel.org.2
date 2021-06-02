@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBC8398D1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8D7398D1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhFBOgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:36:51 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:53179 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbhFBOgQ (ORCPT
+        id S231971AbhFBOhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:37:19 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:40545 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231866AbhFBOg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:36:16 -0400
-Received: by mail-wm1-f48.google.com with SMTP id f17so1451658wmf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:34:32 -0700 (PDT)
+        Wed, 2 Jun 2021 10:36:29 -0400
+Received: by mail-wm1-f47.google.com with SMTP id b145-20020a1c80970000b029019c8c824054so3907735wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 07:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mk39BS0/bKimRA7KpxocWhMuIWwoKnA1Ws/AOAzTtyE=;
-        b=Ze4kBxas7q6PJHQjistPlY3BKGf9WVwTv4ZiKl4je3WZIzsP5ZUjZHbL5lDcXuJMJL
-         Mp6ZI4gjntPB37vX8tuvvailzcv3mf843zkLy888nqtNLvPj8ZftiQaRrgOGdxX6VZPv
-         9nS5yi91WCeR8aHzM7dFITyiGuynODpx8iVVYDuqNe5M2EIRZKaZLj43eza1GyjYePh5
-         z+J1k4ToUKaDQtuIhWkKDvgcsElnM7zMy7MO9zXxOf7D3H7ZVqGhLBpHMxOCkxtIOhqa
-         sF8t34MOtV5ptXDh2nnrsNorYSC9qUdeq8rjnDvFM2KD4u/mC1nLmDW3Pi0ir5dqBI8Y
-         SILw==
+        bh=JvuBm7KpIXmVjvwi2OsKGMdogxy/zdINv8FqDSEvNYM=;
+        b=nH1tswbv/dRTxAbMVL2oQ+YkAIasGdidijupRDL7c3sCfVwK+oNtIhOPL0xok9gzVW
+         t5+ceR05rXZ7uMo2uFij6BvFfqXaDmi0JMWGswWKDBNIILG5hLPYn20T6fCzdxolvyPX
+         +XTqGQ5X5YYinYoN2/mYvDaKDcYXM0/IDw799rIPSAk/3ROkjHPygpnIc7Z8qekh7XqF
+         ANhYI2NCG0tckEoHP506uUWeO9SDw2dESxg+EJ8Be80RUywMFpYsHwunvITnn9pQm8V5
+         0tiSbn6+yxv5bdePKcmjb5leSF3Dh/kD4YgCPLWnT+gapDJbriqm67BYzq1bujgpWvBm
+         NwKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mk39BS0/bKimRA7KpxocWhMuIWwoKnA1Ws/AOAzTtyE=;
-        b=uLzymf2MN/B1rELaqBem3Ucjxve1pMFCO+lfYXl13eYkjVjjVnKdZtd7KNWPUqs7el
-         IS3xA6MK+EZnVSNZNbIBDSPKWAMFI4MrdzFRIlYc020QN0FQXNXf9wS4avazwYl3CI4x
-         hOlg41bk9yUbiTv+rOqPTG/jw5DPO0NW3/zMLG5OnGxEsaHZ9GXzfZVm5/vYNImXh+Dt
-         uR4ixjt1+jQ99EqNLrYSE93cXcFp7VzwxZbM6Eg69P/TrQmNHdQ7w1E5noUPUG6ileQe
-         mv3Z7fCuRJ1ww25tmxaWZT2FOqJkN4zELVL2QZkgQdD8ZDKRtPW9PUuTN5UBSMbz3Dq3
-         QWrA==
-X-Gm-Message-State: AOAM532e4e+jHygqYAWFRGrKBH0g1VkuvcbYh6sRC4bW5R6Qj5zdJsUt
-        3oKxEMmHjpcwHtgieuDRsluF9A==
-X-Google-Smtp-Source: ABdhPJzazpZoPsfKHbTwLRr5XwTVN0m1xuPC8VZ0OMkDvXGUjqhs7uhxKBzSXvOh0BW+8aTEa0oiFA==
-X-Received: by 2002:a05:600c:ad2:: with SMTP id c18mr21789423wmr.93.1622644411800;
-        Wed, 02 Jun 2021 07:33:31 -0700 (PDT)
+        bh=JvuBm7KpIXmVjvwi2OsKGMdogxy/zdINv8FqDSEvNYM=;
+        b=K6boYqxR9ZtI3QDFKIbxG9o3hQ9pi4xqmRcDt68Izy/ZyhQnDKbK8/ikYDB+wfHc/8
+         /v3Nw1YeRMo9RBOXPzBXjnunSSlZUPOI/u9/ycqeZt+xseedIAIkdrkMDtWkJBpOQc0/
+         bnUFEPB1Mg7K/Kfh1XqzsV7M2mbWuxcb+fRgi6kqs7kTfOwbL6+l9H/GVgeJcnkPmm+3
+         +f7UWP0i7JJ077y+XoifMVwku3SsiouwiQJ4tlji6T6q4/OGJX2gwE3Z9kCRvbvUkZUZ
+         hvQGIkwUyaLhP067abqn2WV23uv7A5k6qCeS4d9dI/sv26ehOwkzZc1ZGPQVlzWJeiHr
+         LBWg==
+X-Gm-Message-State: AOAM530BNKJCDfCFzPeoacutppPhYfB41G6Bn0o/aTSPoXVz2olJiHkQ
+        NgR9xWoGTlhq/SHZmhJWrPM03Q==
+X-Google-Smtp-Source: ABdhPJyUgla3FFfynuCl+ad/SpJvdCBqRlxX5f3USSzH6/SPYgduUsfipkbdGBvQZ5pWNouc43kgzw==
+X-Received: by 2002:a1c:41c5:: with SMTP id o188mr5498913wma.60.1622644412785;
+        Wed, 02 Jun 2021 07:33:32 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
         by smtp.gmail.com with ESMTPSA id o11sm132315wrq.93.2021.06.02.07.33.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 07:33:31 -0700 (PDT)
+        Wed, 02 Jun 2021 07:33:32 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [RESEND 21/26] drm/panel/panel-sitronix-st7701: Demote kernel-doc abuse
-Date:   Wed,  2 Jun 2021 15:32:55 +0100
-Message-Id: <20210602143300.2330146-22-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Adam Jackson <ajax@redhat.com>,
+        Ben Widawsky <ben@bwidawsk.net>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [RESEND 22/26] drm/vgem/vgem_drv: Standard comment blocks should not use kernel-doc format
+Date:   Wed,  2 Jun 2021 15:32:56 +0100
+Message-Id: <20210602143300.2330146-23-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
 References: <20210602143300.2330146-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -68,32 +70,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/panel/panel-sitronix-st7701.c:42: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/vgem/vgem_drv.c:47: warning: expecting prototype for This is vgem, a (non-hardware(). Prototype was for DRIVER_NAME() instead
 
-Cc: Jagan Teki <jagan@amarulasolutions.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Adam Jackson <ajax@redhat.com>
+Cc: Ben Widawsky <ben@bwidawsk.net>
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/panel/panel-sitronix-st7701.c | 2 +-
+ drivers/gpu/drm/vgem/vgem_drv.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7701.c b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-index 4d2a149b202cb..320a2a8fd4592 100644
---- a/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-+++ b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-@@ -38,7 +38,7 @@
- #define DSI_CMD2_BK1_SPD2		0xC2 /* Source EQ2 Setting */
- #define DSI_CMD2_BK1_MIPISET1		0xD0 /* MIPI Setting 1 */
+diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+index a0e75f1d5d016..bf38a7e319d14 100644
+--- a/drivers/gpu/drm/vgem/vgem_drv.c
++++ b/drivers/gpu/drm/vgem/vgem_drv.c
+@@ -25,7 +25,7 @@
+  *	Ben Widawsky <ben@bwidawsk.net>
+  */
  
 -/**
 +/*
-  * Command2 with BK function selection.
-  *
-  * BIT[4, 0]: [CN2, BKXSEL]
+  * This is vgem, a (non-hardware-backed) GEM service.  This is used by Mesa's
+  * software renderer and the X server for efficient buffer sharing.
+  */
 -- 
 2.31.1
 
