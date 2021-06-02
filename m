@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A94C39824E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6804398250
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhFBG76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229955AbhFBG75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:59:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0158F60FDA;
-        Wed,  2 Jun 2021 06:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622617095;
-        bh=txv+la2kohw7oxTrtxAG2QM64KnaR/i2kauGYQpaw6I=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=PjEYlKT9z5a2teYyRQcyEU+TJ/MxGxIh2s/0QOkdW8+BTte7jI+vN+IWFWYHt1G5u
-         SceFiQgosn0ggw3EBEGnwtBux6I/SJvVEFsWCyNqO91bDkUEy7StaOhFesDu6jc1KK
-         sQLRj8X3NT0uQdqCfatXbg1GfHhFp6ubODOQaDInUE01gZPFG7EUo51wx6fBHKHPrw
-         nZ9uQSnynhYR6HrOuyo4ALWT0lvG0HxbOMLWlTGkaV6VmUCBIfaVC5pLrUQtY2cXY8
-         OpCpsB+uvkP7UXTnKgx5a/WK4rtxJbkLPhPBR+nC0sLwbH2OxnpGjnHRTK5iE4Q4A/
-         0KEw2ohL5kK8A==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <162261690404.4130789.10296098922791923637@swboyd.mtv.corp.google.com>
-References: <1619519590-3019-1-git-send-email-tdas@codeaurora.org> <1619519590-3019-2-git-send-email-tdas@codeaurora.org> <20210503191837.GA2220566@robh.at.kernel.org> <162261690404.4130789.10296098922791923637@swboyd.mtv.corp.google.com>
-Subject: Re: [PATCH v2 1/6] dt-bindings: clock: Add SC7280 DISPCC clock binding
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette =?utf-8?q?=C2=A0?= <mturquette@baylibre.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-To:     Rob Herring <robh@kernel.org>, Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 01 Jun 2021 23:58:13 -0700
-Message-ID: <162261709373.4130789.1672298535915353982@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S231210AbhFBHAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 03:00:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60086 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229955AbhFBHAq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 03:00:46 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2E02B21935;
+        Wed,  2 Jun 2021 06:59:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622617143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vIrt8EnS10/pgZWAbdX1lqTwmvdy1dlnxZHsnjNKsOs=;
+        b=ovoOoIHkju2CWKL9OqBZl15e4wjGMdCwum1lU4+NbV8EFI1O2WsF9aBVi6N2BYaCroRuz0
+        O7Uvo7dCYFIe3UAKnCD1jj+gXHSiIHimZiLJo7k03ZgXgII1aMrOe+4L/iy9cV+hfGyF/K
+        oZfJ6vyb7YdkHDFE/bKn3YmHZYsDSnw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622617143;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vIrt8EnS10/pgZWAbdX1lqTwmvdy1dlnxZHsnjNKsOs=;
+        b=ixB+6fxum+HeRIbC+nW0TnV4RY1bI+2M1J1tO4McMqyFdi0lU7JNw3JuCEnLKDOVNDbmXS
+        IOBxdPGkASGLdzCw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 17DEFA3B91;
+        Wed,  2 Jun 2021 06:59:03 +0000 (UTC)
+Date:   Wed, 02 Jun 2021 08:59:03 +0200
+Message-ID: <s5hh7igycp4.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, dan.carpenter@oracle.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ALSA: control led: fix memory leak in snd_ctl_led_register
+In-Reply-To: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
+References: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2021-06-01 23:55:04)
-> Quoting Rob Herring (2021-05-03 12:18:37)
-> > On Tue, Apr 27, 2021 at 04:03:05PM +0530, Taniya Das wrote:
-> > > diff --git a/include/dt-bindings/clock/qcom,dispcc-sc7280.h b/include=
-/dt-bindings/clock/qcom,dispcc-sc7280.h
-> > > new file mode 100644
-> > > index 0000000..2074b30
-> > > --- /dev/null
-> > > +++ b/include/dt-bindings/clock/qcom,dispcc-sc7280.h
-> > > @@ -0,0 +1,55 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> >=20
-> > Dual license please. I'm tired of telling the company that complained t=
-o=20
-> > me about having dual licensing for DT stuff not dual license their
-> > stuff. Please pass that on to your coworkers.
-> >=20
->=20
-> Taniya, is this going to be resent?
+On Wed, 02 Jun 2021 05:41:36 +0200,
+Dongliang Mu wrote:
+> 
+> The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
+> the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
+> to decrease the refcount to zero, which causes device_release never to
+> be invoked. This leads to memory leak to some resources, like struct
+> device_private. In addition, we also free some other similar memory
+> leaks in snd_ctl_led_init/snd_ctl_led_exit.
+> 
+> Fix this by replacing device_del to device_unregister
+> in snd_ctl_led_sysfs_remove/snd_ctl_led_init/snd_ctl_led_exit.
+> 
+> Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
+> call kobject_release and delay the release of kobject, which will cause
+> use-after-free when the memory backing the kobject is freed at once.
+> 
+> Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+> Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 
-Also, can you update the gcc binding that was already merged?
+Applied now.  Thanks.
+
+
+Takashi
