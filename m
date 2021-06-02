@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D475139853A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7E539853F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 11:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhFBJ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 05:27:58 -0400
-Received: from muru.com ([72.249.23.125]:35350 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231283AbhFBJ14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 05:27:56 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id D2C858027;
-        Wed,  2 Jun 2021 09:26:18 +0000 (UTC)
-Date:   Wed, 2 Jun 2021 12:26:08 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH 0/3] Apple M1 clock gate driver
-Message-ID: <YLdOsA63GyMj4SgR@atomide.com>
-References: <20210524182745.22923-1-sven@svenpeter.dev>
- <CAL_JsqKqpSQbdj_Crc-LSc12700kyFFkMTU29BDY2bwGNLXn9A@mail.gmail.com>
- <YK32Mmiq9QXGkELF@atomide.com>
- <9ff6ec26-4b78-4684-9c23-16d5cbfef857@www.fastmail.com>
+        id S231907AbhFBJ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 05:29:11 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2959 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhFBJ3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:29:10 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw3Wb3fwbz68S4;
+        Wed,  2 Jun 2021 17:24:27 +0800 (CST)
+Received: from [10.174.176.245] (10.174.176.245) by
+ dggeme766-chm.china.huawei.com (10.3.19.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 17:27:24 +0800
+Subject: Re: [PATCH net-next] xsk: Return -EINVAL instead of -EBUSY after
+ xsk_get_pool_from_qid() fails
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+CC:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210602031001.18656-1-wanghai38@huawei.com>
+ <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <73777ee0-bf6e-ccd2-015f-7539a2cd7687@huawei.com>
+Date:   Wed, 2 Jun 2021 17:27:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ff6ec26-4b78-4684-9c23-16d5cbfef857@www.fastmail.com>
+In-Reply-To: <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.245]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Sven Peter <sven@svenpeter.dev> [210530 11:09]:
-> Hi,
-> 
-> On Wed, May 26, 2021, at 09:18, Tony Lindgren wrote:
-> > Hi,
-> > 
-> > * Rob Herring <robh+dt@kernel.org> [210525 18:09]:
-> > > I would do a single node per mmio region with the register offset (or
-> > > offset / 4) being the clock id. This can still support new SoCs easily
-> > > if you have a fallback compatible. If you want/need to get all the
-> > > clocks, just walk the DT 'clocks' properties and extract all the IDs.
-> > 
-> > I mostly agree.. Except I'd also leave out the artificial clock ID and
-> > just use real register offsets from the clock controller base instead.
-> 
-> Sure, I'll do that.
-> 
-> > 
-> > So a single clock controller node for each MMIO range, then set
-> > #clock=cells = <1>. Then the binding follows what we have for the
-> > interrupts-extended binding for example.
-> > 
-> > If the clock controller optionally needs some data in the dts,
-> > that can be added to the clock controller node. Or it can be driver
-> > internal built-in data. If the data for dts can be described in a
-> > generic way, even better :)
-> 
-> Now the big question is *how* to describe this additional data in the
-> dts. Essentially I need to specify that e.g. to enable clock 0x270
-> I first need to enable the (internal) clocks 0x1c0 and then 0x220.
-> Are you aware of any generic way to describe this? I'm not even sure
-> how a sane non-generic way would look like when I just have a single
-> clock controller node.
+Sorry, I misunderstood here, this is a faulty patch and no changes are 
+needed here. Please ignore this patch
 
-To me it seems you might be able to recycle the assigned-clocks and
-assigned-clock-parents etc properties in the clock controller node.
+在 2021/6/2 16:29, Magnus Karlsson 写道:
+> On Wed, Jun 2, 2021 at 6:02 AM Wang Hai <wanghai38@huawei.com> wrote:
+>> xsk_get_pool_from_qid() fails not because the device's queues are busy,
+>> but because the queue_id exceeds the current number of queues.
+>> So when it fails, it is better to return -EINVAL instead of -EBUSY.
+>>
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> ---
+>>   net/xdp/xsk_buff_pool.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+>> index 8de01aaac4a0..30ece117117a 100644
+>> --- a/net/xdp/xsk_buff_pool.c
+>> +++ b/net/xdp/xsk_buff_pool.c
+>> @@ -135,7 +135,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+>>                  return -EINVAL;
+>>
+>>          if (xsk_get_pool_from_qid(netdev, queue_id))
+>> -               return -EBUSY;
+>> +               return -EINVAL;
+> I guess your intent here is to return -EINVAL only when the queue_id
+> is larger than the number of active queues.
 
-Sure the assigned-clocks property will point to clocks in the
-clock controller itself, and will have tens of entries, but should
-work :)
+Yes, I just confirmed that this has been implemented in xp_assign_dev().
 
-And sounds like you can generate that list with some script from the
-Apple dtb.
+int xp_assign_dev()
 
-Regards,
+{
 
-Tony
+...
+
+     err = xsk_reg_pool_at_qid(netdev, pool, queue_id);
+
+     if (err)
+
+         return err;     //return -EINVAL;
+
+...
+
+}
+
+> But this patch also
+> changes the return code when the queue id is already in use and in
+> that case we should continue to return -EBUSY. As this function is
+> used by a number of drivers, the easiest way to accomplish this is to
+> introduce a test for queue_id out of bounds before this if-statement
+> and return -EINVAL there.
+>
+>>          pool->netdev = netdev;
+>>          pool->queue_id = queue_id;
+>> --
+>> 2.17.1
+>>
+> .
+>
