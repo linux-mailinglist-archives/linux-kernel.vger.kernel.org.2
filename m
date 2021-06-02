@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949F3398D90
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF804398D96
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhFBPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:00:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:47160 "EHLO foss.arm.com"
+        id S231592AbhFBPBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:01:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230072AbhFBPAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:00:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 022D912FC;
-        Wed,  2 Jun 2021 07:58:48 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BE7A3F719;
-        Wed,  2 Jun 2021 07:58:45 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: Fix util_est UTIL_AVG_UNCHANGED handling
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        id S230031AbhFBPBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 11:01:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B95E7613B4;
+        Wed,  2 Jun 2021 14:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622645976;
+        bh=lULBTNw8ShimVVrtBYDbb5vhV5dQ9U6lx3o98b0hW5w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OQiBvXalcmFDhP4VUJkLfFfjUL+AdCowcIIHtwCBDEqTOBmz1OdBU6rrODvuN+9rD
+         mOLZKyuSS6i9EOd55gn+hVr2qB4URf3FK/46utTh8Mh1nd3yfAS9gC2T8qY5RT3IQY
+         b4rlXGea5BqIi+sm9FltOrrnryu0LA5VhApDTgyH63PLiPiZ2y0qibL1ECCDe/bn4n
+         SELGuhZLGN0WPbHVxREPrkTVpEWesEuUbZ+F7OzJ3FIIUPCtX92osJVk5KljY297eg
+         yycYme0OjJHY2hdQ/MWGMhjJv0YWgp66DxbyRygrcbb6F9I+DfNX1xA1IgwfjJU0xb
+         xfBJRIrGQb7lw==
+Date:   Wed, 2 Jun 2021 15:59:21 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210514103748.737809-1-dietmar.eggemann@arm.com>
- <20210519160633.GA230499@e120877-lin.cambridge.arm.com>
- <cb72557a-6039-df95-7e25-a7f37d3f9cef@arm.com>
- <CAB8ipk8POOzM2Dut0gcqsgNO0r2585GGv4SG+a1mOmMnrW=Vrw@mail.gmail.com>
- <a8ab9455-a9be-2349-d23a-676aa89fbf2d@arm.com>
- <CAB8ipk93Qux6C4X01oHJRUNumYxR7QbZXWx28DCyUZo8KDvi3A@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <9309950f-1e6b-44ab-4536-678b4ced4f49@arm.com>
-Date:   Wed, 2 Jun 2021 16:58:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
+Message-ID: <20210602145921.GB31179@willie-the-truck>
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.334970485@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CAB8ipk93Qux6C4X01oHJRUNumYxR7QbZXWx28DCyUZo8KDvi3A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602133040.334970485@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/2021 08:25, Xuewen Yan wrote:
-> On Fri, May 28, 2021 at 6:38 AM Dietmar Eggemann
-> <dietmar.eggemann@arm.com> wrote:
->>
->> On 27/05/2021 07:41, Xuewen Yan wrote:
->>> Hi
->>>
->>> On Wed, May 26, 2021 at 10:59 PM Dietmar Eggemann
->>> <dietmar.eggemann@arm.com> wrote:
->>>>
->>>> On 19/05/2021 18:06, Vincent Donnefort wrote:
->>>>> On Fri, May 14, 2021 at 12:37:48PM +0200, Dietmar Eggemann wrote:
-
-[...]
-
->>> IMHO, Maybe it would be better to put it in the util_est structure
->>> just like UTIL_EST_WEIGHT_SHIFT?
->>
->> Yeah, can do.
->>
->> I just realized that 'kernel/sched/pelt.h' does not include
->> <linux/sched.h> directly (or indirectly via "sched.h". But I can easily
->> move cfs_se_util_change() (which uses UTIL_AVG_UNCHANGED) from pelt.h to
->> pelt.c, its only consumer anyway.
+On Wed, Jun 02, 2021 at 03:12:27PM +0200, Peter Zijlstra wrote:
+> Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
+> task_is_running(p).
 > 
-> Since there are so many questions, why not add ( #include "pelt.h" )
-> directly into (kernel/sched/debug.c)?
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/kernel/process.c |    4 ++--
+>  block/blk-mq.c            |    2 +-
+>  include/linux/sched.h     |    2 ++
+>  kernel/locking/lockdep.c  |    2 +-
+>  kernel/rcu/tree_plugin.h  |    2 +-
+>  kernel/sched/core.c       |    6 +++---
+>  kernel/sched/stats.h      |    2 +-
+>  kernel/signal.c           |    2 +-
+>  kernel/softirq.c          |    3 +--
+>  mm/compaction.c           |    2 +-
+>  10 files changed, 14 insertions(+), 13 deletions(-)
 > 
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 9c882f20803e..dde91171d4ae 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -7,6 +7,7 @@
->   * Copyright(C) 2007, Red Hat, Inc., Ingo Molnar
->   */
->  #include "sched.h"
-> +#include "pelt.h"
+> --- a/arch/x86/kernel/process.c
+> +++ b/arch/x86/kernel/process.c
+> @@ -931,7 +931,7 @@ unsigned long get_wchan(struct task_stru
+>  	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
+>  	int count = 0;
+>  
+> -	if (p == current || p->state == TASK_RUNNING)
+> +	if (p == current || task_is_running(p))
 
-Didn't want to expose PELT internals unnecessarily.
+Looks like this one in get_wchan() has been cargo-culted across most of
+arch/ so they'll need fixing up before you rename the struct member.
 
-And ... turns out that the include dependency `"sched.h" before
-"pelt.h"` exists for much more things than just UTIL_AVG_UNCHANGED. So I
-think I don't have to care about the issue in this case.
+There's also a weird one in tools/bpf/runqslower/runqslower.bpf.c (!)
 
-I sent out a v2 addressing your comment.
+Will
