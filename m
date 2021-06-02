@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D5E398694
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F6E398697
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 12:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhFBKdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 06:33:38 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42776 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232441AbhFBKdg (ORCPT
+        id S232865AbhFBKdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 06:33:55 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:36717 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232695AbhFBKdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:33:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622629913; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=dDtT9RKDST8Kb7cX/QWo/KyCGcfZAqjbXnH9sp+GoxM=;
- b=CeGxE4pbH5DU/18fk6JwYY2GaFVJ0p3Iikn/sJCDNxT7LSfX0T9KwU6VQbaHwV1dld58mA7E
- p2zJCrh5WxYX/hPQftV/UbShcRz1rZy1wTLjQqm0ozdrr3AeHy6vMOimFr1+ukJh/pYQ3Avc
- a4IHtnVqqGh+7wqWv9hPMyCR/Nk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60b75e17e27c0cc77f24f3a8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 10:31:51
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 83569C43148; Wed,  2 Jun 2021 10:31:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E114DC43144;
-        Wed,  2 Jun 2021 10:31:47 +0000 (UTC)
+        Wed, 2 Jun 2021 06:33:53 -0400
+Received: by mail-wm1-f52.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so3454948wmk.1;
+        Wed, 02 Jun 2021 03:32:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vf0+jsnxWv3MUeSQuUrF48fJEizrZe94s4fGa0z+Wtc=;
+        b=pSd+V3KFdbCrUfkQEHXvaEMl/9UX8evR0uMSCMfoyTX9KDNOlqnj+Te9TFlXCfuqbU
+         dDAzv1J1s1t4HDhrJPV6fU1LdIhwDMlgOj9uAggQ9Bw5TR9VIc515LF4Ui4sPxOOio8i
+         Utg5e9UN+M7sIOSGt7duqDf1dQalPVUFFmjDBhHBx2bt1PfUKI2sV2schBKA4OPl9+4R
+         OrHSrHleLIwmHGh0TLasLRfHs54wkprWXCCyHfXbqD5hiCdDMrJrEQaZ8j6xhBGascr/
+         Jtl+Tzxs68ncrwSl9CUEJgmwH/txz6z9s9Sh/k7fuznbHxsjmOmW9/xcoofcC457vffY
+         pdbA==
+X-Gm-Message-State: AOAM532rT9y3J1cF7ix489bmkUcdpFVdsB8vw1PNuGPSqt8/DmD/lcYW
+        7zmW6IuMYINUupoVf4eM0sw=
+X-Google-Smtp-Source: ABdhPJz1xElCXT81jXsY6Mk0wZfrxjyd6riYjK7wy2V+QlDi42tA7HW9Cu2FMF41bVNtxJq4S8xZgg==
+X-Received: by 2002:a7b:cd9a:: with SMTP id y26mr4532738wmj.133.1622629928760;
+        Wed, 02 Jun 2021 03:32:08 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id o17sm5874932wrp.47.2021.06.02.03.32.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 03:32:08 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 10:32:06 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com, wei.liu@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        kys@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pci-hyperv: Add check for hyperv_initialized in
+ init_hv_pci_drv()
+Message-ID: <20210602103206.4nx55xsl3nxqt6zj@liuwe-devbox-debian-v2>
+References: <1621984653-1210-1-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 02 Jun 2021 16:01:47 +0530
-From:   skakit@codeaurora.org
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        kgunda@codeaurora.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V3 4/5] dt-bindings: input: pm8941-pwrkey: Convert pm8941
- power key binding to yaml
-In-Reply-To: <YLcLCmxNOYqj0SN3@google.com>
-References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
- <1620630064-16354-5-git-send-email-skakit@codeaurora.org>
- <1620655299.793818.41438.nullmailer@robh.at.kernel.org>
- <20210510162445.GA230005@robh.at.kernel.org>
- <c4e286ae6bd621a9d84184d5d014d060@codeaurora.org>
- <YLcLCmxNOYqj0SN3@google.com>
-Message-ID: <a308dc5984d80709311a095b8435752f@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621984653-1210-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-02 10:07, Dmitry Torokhov wrote:
-> On Wed, May 12, 2021 at 10:17:43AM +0530, skakit@codeaurora.org wrote:
->> On 2021-05-10 21:54, Rob Herring wrote:
->> > On Mon, May 10, 2021 at 09:01:39AM -0500, Rob Herring wrote:
->> > > On Mon, 10 May 2021 12:31:03 +0530, satya priya wrote:
->> > > > Convert qcom pm8941 power key binding from .txt to .yaml format.
->> > > >
->> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
->> > > > ---
->> > > > Changes in V2:
->> > > >  - Fixed bot errors, took reference from input.yaml for "linux,code"
->> > > >  - Added one complete example for powerkey and resin, and referenced it
->> > > >    in main PON binding.
->> > > >  - Moved this patch to the end of the series.
->> > > >
->> > > > Changes in V3:
->> > > >  - Moved this patch before PON binding patch.
->> > > >  - As per Rob's comments, added allOf at the beginning of binding.
->> > > >    Added maxItems for interrupts.
->> > > >  - Added 'unevaluatedProperties' instead of 'additionalProperties' as
->> > > >    we are using allOf.
->> > > >
->> > > >  .../bindings/input/qcom,pm8941-pwrkey.txt          | 55 --------------
->> > > >  .../bindings/input/qcom,pm8941-pwrkey.yaml         | 87 ++++++++++++++++++++++
->> > > >  2 files changed, 87 insertions(+), 55 deletions(-)
->> > > >  delete mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt
->> > > >  create mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
->> > > >
->> > >
->> > > My bot found errors running 'make DT_CHECKER_FLAGS=-m
->> > > dt_binding_check'
->> > > on your patch (DT_CHECKER_FLAGS is new in v5.13):
->> > >
->> > > yamllint warnings/errors:
->> > >
->> > > dtschema/dtc warnings/errors:
->> > > Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.example.dt.yaml:0:0:
->> > > /example-0/spmi@c440000/pmic@0/pon_hlos@1300: failed to match any
->> > > schema with compatible: ['qcom,pm8998-pon']
->> >
->> > You have the same example in patch 5, so drop the example here. That
->> > will fix this circular dependency.
->> 
->> Earlier I have dropped example from qcom-pon.yaml. Now, I will add the
->> example there and drop here.
+On Tue, May 25, 2021 at 04:17:33PM -0700, Haiyang Zhang wrote:
+> Add check for hv_is_hyperv_initialized() at the top of init_hv_pci_drv(),
+> so if the pci-hyperv driver is force-loaded on non Hyper-V platforms, the
+> init_hv_pci_drv() will exit immediately, without any side effects, like
+> assignments to hvpci_block_ops, etc.
 > 
-> It sounds to me you want to combine patches 4 and 5 since they depend 
-> on
-> each other.
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Reported-and-tested-by: Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
+
+Hello PCI subsystem maintainers, are you going to take this patch or
+shall I?
+
+Wei.
+
+> ---
+>  drivers/pci/controller/pci-hyperv.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-
-No, the idea was to have one complete example, instead of bits. So, 
-initially I have removed the example part from qcom-pon.yaml and added 
-full example here, but it was causing a circular dependency issue. Rob 
-suggested to move it back to qcom-pon.yaml to fix issue.
-
-I have posted V4 making that change.
-https://lore.kernel.org/patchwork/patch/1425638/
-
-Thanks,
-Satya Priya
-
-> Thanks.
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index 6511648271b2..bebe3eeebc4e 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -3476,6 +3476,9 @@ static void __exit exit_hv_pci_drv(void)
+>  
+>  static int __init init_hv_pci_drv(void)
+>  {
+> +	if (!hv_is_hyperv_initialized())
+> +		return -ENODEV;
+> +
+>  	/* Set the invalid domain number's bit, so it will not be used */
+>  	set_bit(HVPCI_DOM_INVALID, hvpci_dom_map);
+>  
+> -- 
+> 2.25.1
+> 
