@@ -2,69 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0F6399298
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86D13992A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhFBSeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:34:09 -0400
-Received: from mga05.intel.com ([192.55.52.43]:15002 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhFBSeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:34:08 -0400
-IronPort-SDR: qSzcJ6vEEhuz39jfvm/EBMIMrT5g5CyIP7IRVN8NM+gkjFU0fTC6Vfl7NdHzPw14XgntG3U3aw
- 7zHrssDvvZqA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="289491191"
-X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
-   d="scan'208";a="289491191"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 11:32:24 -0700
-IronPort-SDR: Snxc011GgogXJqsC+9Sp8J19YPMSfXmifamcEF1xyu1dLigo0akW4/e2Rhx7yNcOtmsl1LXUt5
- ZBlHRAZq3iJA==
-X-IronPort-AV: E=Sophos;i="5.83,242,1616482800"; 
-   d="scan'208";a="416998102"
-Received: from sboinap-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.150.149])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 11:32:22 -0700
-Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
- abstraction
-To:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YLe92NXx1jZPtPqB@google.com> <3036a655-9d09-0f04-62a2-7a72ba9af5c7@amd.com>
- <YLfOApYdX/KL1wKF@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <23225953-2052-8e72-5eb0-6b30f2a5c84b@linux.intel.com>
-Date:   Wed, 2 Jun 2021 11:32:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229554AbhFBSgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:36:21 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:38628 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhFBSgU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 14:36:20 -0400
+Received: by mail-ot1-f53.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so3332549otk.5;
+        Wed, 02 Jun 2021 11:34:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v7bb35jhHDO5KmSChe6UgzAJ2YLdRNf6+3Ot3N3cHEw=;
+        b=DqzDZr5Ap0HnT0ZHmQ3J5qfde43vKW9lVMV6Sh+FbIDnfdLwwHTh2suhlqBMs7G/MS
+         qvqlP5KBYtdPMe01khKFxjSV4QRDwHjESUcPehs5AS2rFBILgnxmr6d5GZz2dULMITmw
+         oj0Oht+OAlsA7oqIqWmEK2tI6kaZwPrHu4fUMzJyS7dzRiLBO+tK+BhyOYnZzaOvNb8/
+         r8jTJ9f7Fqjo9Z9cm1OwlEHOaZrKCR2JooR4SUcsfQaGBoTk89C8bRNcFjuqPPQMpUnS
+         BNYIAa5FjHgcM7WhJFDmVjIeaJR8/rVdO4RWy7YfwC83/XXOiEAdGF/gRQ7Fr5TMTBSn
+         5veg==
+X-Gm-Message-State: AOAM533vlvZN8Tt5vmJPiSnvofna0YeOfyESUubfceLFjrulMoWxwjcx
+        gFCi1AVwG8tPSasqZcqXnw==
+X-Google-Smtp-Source: ABdhPJwpbSJ+FHTZMygd+tTbazR6JvvrPj4e9XhrvI/pZhiv08sY74HxC/wpj1Zvl/Ep4SQSbB2U3g==
+X-Received: by 2002:a9d:460b:: with SMTP id y11mr17785207ote.330.1622658876193;
+        Wed, 02 Jun 2021 11:34:36 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 88sm151977otb.7.2021.06.02.11.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 11:34:35 -0700 (PDT)
+Received: (nullmailer pid 3735855 invoked by uid 1000);
+        Wed, 02 Jun 2021 18:34:33 -0000
+Date:   Wed, 2 Jun 2021 13:34:33 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     thierry.reding@gmail.com, linux-kernel@vger.kernel.org,
+        hoegsberg@chromium.org, sam@ravnborg.org, seanpaul@chromium.org,
+        lyude@redhat.com, kalyan_t@codeaurora.org,
+        daniel.thompson@linaro.org, abhinavk@codeaurora.org,
+        laurent.pinchart@ideasonboard.com, devicetree@vger.kernel.org,
+        dianders@chromium.org, linux-arm-msm@vger.kernel.org,
+        a.hajda@samsung.com, robdclark@gmail.com,
+        freedreno@lists.freedesktop.org, jani.nikula@intel.com,
+        dri-devel@lists.freedesktop.org, mkrishn@codeaurora.org
+Subject: Re: [v5 4/5] dt-bindings: display: simple: Add Samsung ATNA33XC20
+Message-ID: <20210602183433.GA3735793@robh.at.kernel.org>
+References: <1622390172-31368-1-git-send-email-rajeevny@codeaurora.org>
+ <1622390172-31368-5-git-send-email-rajeevny@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <YLfOApYdX/KL1wKF@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622390172-31368-5-git-send-email-rajeevny@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 30 May 2021 21:26:11 +0530, Rajeev Nandan wrote:
+> Add Samsung 13.3" FHD eDP AMOLED panel.
+> 
+> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v4)
+> 
+> Changes in v4:
+> - New
+> 
+>  Documentation/devicetree/bindings/display/panel/panel-simple.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-
-On 6/2/21 11:29 AM, Borislav Petkov wrote:
-> If you can point me to a tree with your patches, I can try to hack up
-> what I mean.
-
-https://github.com/intel/tdx/commit/8515b66a0cb27d5ab66eda201285090faee742f7
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Acked-by: Rob Herring <robh@kernel.org>
