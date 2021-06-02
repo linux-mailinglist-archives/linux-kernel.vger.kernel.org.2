@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F98399285
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC107399289
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 20:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhFBS3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 14:29:35 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:46717 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229467AbhFBS3e (ORCPT
+        id S229635AbhFBSbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 14:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBSbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:29:34 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id oVaklGpIBEXL0oVanlzEVK; Wed, 02 Jun 2021 20:27:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622658470; bh=46li9VZtJl6BBTVp7XJrgX+c1iLy/lAF8MWuxVkhzXc=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=X2XBmdxRFsvM4T2br68L3ySwt6qlOaxE+Jn0f3JrCyPfIzbsUiMxlq3p+WFTzbBHK
-         9wa1FmnF+gChIuk0CutmNgR4PzULrqncGOK5Mz6nHilW1imqZ5pR4k7aXmjpLnvjAh
-         B2/mwfoQQ4vU+jPXqN6ZzuZ+SMU7mK9CqEqYhDnsdPau0dUr5o1MjL95mh4zEPW+Yv
-         JIoxYSY30zPqIFIUH6k4YwnxWxt5eKWjw4jRpQpzcGBsuWbwnr8dDy4D5s85pwhJvw
-         tE9pITAOm7edHiPpwvU67GZEJrwF+PRJseF5YXBVrK5Qst6ka9EGu7Bq0ryIf5DoRv
-         Ttc2klPKisj4g==
-Subject: Re: [PATCH 9/9] media: dwc: dw-hdmi-rx: Add support for CEC
-To:     Nelson Costa <Nelson.Costa@synopsys.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>
-References: <cover.1622631488.git.nelson.costa@synopsys.com>
- <86557797e979ce29ed97dd1ed0db8499a6ccbc34.1622631488.git.nelson.costa@synopsys.com>
- <746222a8-4b3f-2655-c5de-15d25e8b8852@xs4all.nl>
- <MW3PR12MB4459CED2A8E155673DCB6019C13D9@MW3PR12MB4459.namprd12.prod.outlook.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <5ef03a9b-01b0-5401-9db1-65c5e9b24cea@xs4all.nl>
-Date:   Wed, 2 Jun 2021 20:27:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Wed, 2 Jun 2021 14:31:12 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2384C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 11:29:28 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f0e00ae3ef7328f799462.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:e00:ae3e:f732:8f79:9462])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 533BF1EC047D;
+        Wed,  2 Jun 2021 20:29:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622658567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=JcCqV66/MI6K2z/mFaHnloQLOn8x1Hqpj91uv1miXQ8=;
+        b=kYgOZ7M6ZODQfPl84NJOzDeFnm6eovmiQQ7XgE0NysQGCQwLGbzdFPi7xpqm9WJgFkawKe
+        Yv3m7J7tpdPAwL9NTNmmDWT3XkXBzjZOjeW46hML4RR2QSi/FKjbcmkBQmJ93bqhxciJN4
+        3eBRureI2iskTOdBImXTkT3HX44uDe8=
+Date:   Wed, 2 Jun 2021 20:29:22 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
+ abstraction
+Message-ID: <YLfOApYdX/KL1wKF@zn.tnic>
+References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YLe92NXx1jZPtPqB@google.com>
+ <3036a655-9d09-0f04-62a2-7a72ba9af5c7@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <MW3PR12MB4459CED2A8E155673DCB6019C13D9@MW3PR12MB4459.namprd12.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfMsl20ho2O+O7fB1eFdEiI8HfPyFMFHFP6u8Fo1stq729gn0uYALfgb8U2mZF8YulRppIURKGThsBMUPDb5tTbrK0S+j5neZAClyourURyQsJxbfBn6Y
- o8//8MJ2brfjP6aZT+gQZtv9xuuxabxxHMhAPcX1pK8Jpe3c1WWKvLZUi3GUTc8z7T+F6GRXhohYdwMoXqWgXKwNkiJEBMwIwAiSqt2mNzDlV6DGbOo24iGb
- WTorzMPyIuPHQYsux0Kf93UjHga2ihNGr6pHMi7sWCOGCBlwACVUZxNb4n7yr0u6vJGIENaF7/2cMH/mhrySymx83UXOi8HqdoJFkohkp/8gBtUfa8x6vf3A
- fnoxI/tOdUEQDlq09S5CKk6+0gLU5JQSD42x0a7Z/bf8JCLH81Ih0GmH6+mC9djS1LxBwc4UilBcG+GaX3gXsiABdycNPxBTe0AKJmMXV4UVFP5W0iUeTsb0
- lkHC0iFuy0Ajg/R9wtnwoy0hrnc8z7WTpoBB08jPWxoq/Ap0E3rSRZEyfok=
+Content-Disposition: inline
+In-Reply-To: <3036a655-9d09-0f04-62a2-7a72ba9af5c7@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2021 20:20, Nelson Costa wrote:
-> Hi Hans,
+On Wed, Jun 02, 2021 at 01:15:23PM -0500, Tom Lendacky wrote:
+> The original suggestion from Boris, IIRC, was for protected_guest_has()
+> function (below) to be:
 > 
-> Thanks for your comments and feedback!
+> 	if (intel)
+> 		return intel_protected_guest_has();
+> 	else if (amd)
+> 		return amd_protected_guest_has();
+> 	else
+> 		return false;
 > 
-> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Date: qua, jun 02, 2021 at 13:45:45
-> 
->> On 02/06/2021 13:24, Nelson Costa wrote:
->>> @@ -3194,10 +3428,29 @@ static int dw_hdmi_rx_probe(struct platform_device *pdev)
->>>  	if (ret)
->>>  		goto err_phy_exit;
->>>  
->>> +	/* CEC */
->>> +#if IS_ENABLED(CONFIG_VIDEO_DWC_HDMI_RX_CEC)
->>> +	dw_dev->cec_adap = cec_allocate_adapter(&dw_hdmi_cec_adap_ops,
->>> +						dw_dev, dev_name(dev),
->>> +						(CEC_CAP_DEFAULTS |
->>> +						 CEC_CAP_NEEDS_HPD |
->>
->> This cap makes no sense for a receiver.
->>
-> 
-> This cap was added in order to overcome a scenario that we have when 
-> there
-> was an hot plug. The driver performs a main reset that cause the loss of
-> cec controller configuration. And in that case in order to reconfigure 
+> And then you could check for TDX or SME/SEV in the respective functions.
 
-What do you mean with 'there was an hot plug'? Are you talking about the HPD
-signal? Or when a new source/cable is connected? Can you point to the code
-where that happens in the driver?
+Yeah, a single function call which calls vendor-specific functions.
 
-Regards,
+If you can point me to a tree with your patches, I can try to hack up
+what I mean.
 
-	Hans
+> I believe Boris was wanting to replace the areas where sme_active() was
+> specifically checked, too. And so protected_guest_has() can be confusing...
 
-> the
-> cec this cap was added. Because whenever there is a reset the physical
-> address is reconfigured (invalidated and set) and with this cap the cec
-> configuration callback function (adap_enable) is called again allowing to
-> reconfigure the cec.
-> 
-> Does it make sense?
-> 
-> If not, what should be the best approach in order to deal with this 
-> scenario?
+We can always say
+
+	protected_guest_has(SME_ACTIVE);
+
+or so and then it is clear.
+
+> Maybe naming it protected_os_has() or protection_attr_active() might work.
+> This would then work SME or MKTME as well.
+
+But other names are fine too once we're done with the bikeshedding.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
