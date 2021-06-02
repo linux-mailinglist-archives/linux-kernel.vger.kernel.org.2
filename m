@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7C939942B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3AA399423
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 22:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhFBUFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 16:05:01 -0400
-Received: from mail-pl1-f169.google.com ([209.85.214.169]:34590 "EHLO
-        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhFBUFA (ORCPT
+        id S229682AbhFBUD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 16:03:59 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:31196 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBUD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:05:00 -0400
-Received: by mail-pl1-f169.google.com with SMTP id u9so1595665plr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 13:03:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s1sjAr9ezsvGRMG5Tl2f4lo3BdOtvxz+ZJuUyICioUA=;
-        b=X7wS/R9XOO9moLEPu26T44hWfELyEpcKpGf4ejcI6KxP/IHbZzHWm3DrAIIOfjRmMm
-         Hdm5llNjoEWnuOfGRe2+V7O7IxW+pFJj8OPQeUxwVF8268PEctI2ASL8t8M2U59NnRwX
-         N9vxlFaoQV9dpUAA1POoaSmpbc13E3SOXDofg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s1sjAr9ezsvGRMG5Tl2f4lo3BdOtvxz+ZJuUyICioUA=;
-        b=nY7fuUDaF6iJpKPeKnwojQ3LPuMQkvLoz/8MKhC5QYynCPRQKIfJlH51d167eqEHpv
-         0GHbp4XMYil1XUQ6i+l2VcXAKxY9xk+A8KYZ6S6KB40f2ryrdZmK9RTEXr7zKSpxtKoT
-         VF8PNhDSx/9ZugLxRUGZIALEUUlg77ENOVev/rT5bmvSp3mqSoLug0pGNsd1dR5QXMzd
-         XAmSxh1RS6U1hpWFt7tmnCMHvxE+zMgnLQlnmiPSGgjnGGMtgQ+ZhHF2em20zZ+t2U63
-         pEtYKuluRjTgO+yUy5Y8l65SLFaC/tS34vit6QzRWAoNWDaHgzNU3Gu72vforQSSOYBi
-         sbIQ==
-X-Gm-Message-State: AOAM532Qeez4WpGr1iJ/G2XbmNU7TqTb1lOkyM7qfWXqg0bMAVN9xG1T
-        Cx6ylEZhBmlMIbKdb94gykxZTw==
-X-Google-Smtp-Source: ABdhPJwHwskbW0yeyMWaiBjFpL1jphLGqrKFs+hGNBQi+9mFNK0gn2FFWmraiEy5k6AHFpHCD4ViZA==
-X-Received: by 2002:a17:90a:1588:: with SMTP id m8mr7410756pja.226.1622664124481;
-        Wed, 02 Jun 2021 13:02:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l20sm256386pjq.38.2021.06.02.13.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 13:02:03 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 13:02:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Rao Shoaib <rao.shoaib@oracle.com>
-Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net: bonding: Use strscpy() instead of
- manually-truncated strncpy()
-Message-ID: <202106021257.F0DFED3@keescook>
-References: <20210602181133.3326856-1-keescook@chromium.org>
- <b53fc81b-2348-54f1-72ca-d143d34bf780@oracle.com>
+        Wed, 2 Jun 2021 16:03:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622664134; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uiSY2nPfub1TorMuwMxTsRCZaabvu7VFakvdKWWqHMg=;
+ b=SZLt/O87LuqyAq1HpR8ZbGjxyvpqHlYSkZ+gInS+eE7aX4J38+qvjRF9hdPNlYuRbQdWWe1F
+ vEW0cnUbZoxG24fCRfc1o9aZWpkDL9MrNwRe3iRtnRTlLBaWOWs2IvJafc8zGd3k3vpnUUYG
+ hWe0pgt28lLmYYIMRJCCHN9E7NE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60b7e3c481efe91cda8c2125 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 20:02:12
+ GMT
+Sender: rajeevny=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC119C43460; Wed,  2 Jun 2021 20:02:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajeevny)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 811C1C433D3;
+        Wed,  2 Jun 2021 20:02:09 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b53fc81b-2348-54f1-72ca-d143d34bf780@oracle.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 03 Jun 2021 01:32:09 +0530
+From:   rajeevny@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
+        abhinavk@codeaurora.org, kalyan_t@codeaurora.org,
+        mkrishn@codeaurora.org, jonathan@marek.ca
+Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
+In-Reply-To: <20210601205848.GA1025498@robh.at.kernel.org>
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
+ <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
+ <20210601205848.GA1025498@robh.at.kernel.org>
+Message-ID: <ec1bcb4e734b784ab17c4fc558a5fab9@codeaurora.org>
+X-Sender: rajeevny@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 12:46:46PM -0700, Rao Shoaib wrote:
-> Would it make sense to also replace the other strncpy in the same file.
+On 02-06-2021 02:28, Rob Herring wrote:
+> On Mon, May 31, 2021 at 07:03:53PM +0530, Rajeev Nandan wrote:
 
-                strncpy(ifr.ifr_name, slave_dev->name, IFNAMSIZ);
-
-I couldn't tell if this was a non-string, if it needed padding, etc. The
-one I fixed below appears to be null-terminated? (Though now that I look
-at it, perhaps it should be using strscpy_pad().)
-
-And there are a bunch of other manual truncations in the kernel on
-ifr_name:
-
-$ git grep ifr_name | grep 'IFNAMSIZ.*=.*0'
-drivers/net/tun.c:              ifr.ifr_name[IFNAMSIZ-1] = '\0';
-net/core/dev_ioctl.c:   ifr->ifr_name[IFNAMSIZ-1] = 0;
-net/core/dev_ioctl.c:   ifr->ifr_name[IFNAMSIZ-1] = 0;
-net/decnet/dn_dev.c:    ifr->ifr_name[IFNAMSIZ-1] = 0;
-net/ieee802154/socket.c:        ifr.ifr_name[IFNAMSIZ-1] = 0;
-net/ipv4/devinet.c:     ifr->ifr_name[IFNAMSIZ - 1] = 0;
-net/wireless/wext-core.c:       iwr.ifr_name[IFNAMSIZ-1] = 0;
-tools/lib/bpf/xsk.c:    ifr.ifr_name[IFNAMSIZ - 1] = '\0';
-
-And given the copy_to_user() that might happen, I think this should
-absolutely be strscpy_pad(). I will send a v2...
-
--Kees
+>> +
+>> +properties:
+>> +  compatible:
+>> +    oneOf:
+>> +      - const: qcom,dsi-phy-7nm
+> 
+> When would one use this?
+This is for SM8250.
 
 > 
-> Shoaib
+>> +      - const: qcom,dsi-phy-7nm-7280
+>> +      - const: qcom,dsi-phy-7nm-8150
 > 
-> On 6/2/21 11:11 AM, Kees Cook wrote:
-> > Silence this warning by just using strscpy() directly:
-> > 
-> > drivers/net/bonding/bond_main.c:4877:3: warning: 'strncpy' specified bound 16 equals destination size [-Wstringop-truncation]
-> >      4877 |   strncpy(params->primary, primary, IFNAMSIZ);
-> >           |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Link: https://lore.kernel.org/lkml/202102150705.fdR6obB0-lkp@intel.com
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >   drivers/net/bonding/bond_main.c | 6 ++----
-> >   1 file changed, 2 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> > index c5a646d06102..ecfc48f2d0d0 100644
-> > --- a/drivers/net/bonding/bond_main.c
-> > +++ b/drivers/net/bonding/bond_main.c
-> > @@ -5329,10 +5329,8 @@ static int bond_check_params(struct bond_params *params)
-> >   			(struct reciprocal_value) { 0 };
-> >   	}
-> > -	if (primary) {
-> > -		strncpy(params->primary, primary, IFNAMSIZ);
-> > -		params->primary[IFNAMSIZ - 1] = 0;
-> > -	}
-> > +	if (primary)
-> > +		strscpy(params->primary, primary, sizeof(params->primary));
-> >   	memcpy(params->arp_targets, arp_target, sizeof(arp_target));
+> These don't look like full SoC names (sm8150?) and it's
+> <vendor>,<soc>-<block>.
 
--- 
-Kees Cook
+Thanks, Rob, for the review.
+
+I just took the `compatible` property currently used in the DSI PHY 
+driver
+(drivers/gpu/drm/msm/dsi/phy/dsi_phy.c), and added a new entry for 
+sc7280.
+A similar pattern of `compatible` names are used in other variants of 
+the
+DSI PHY driver e.g. qcom,qcom,dsi-phy-10nm-8998, qcom,dsi-phy-14nm-660 
+etc.
+
+The existing compatible names "qcom,dsi-phy-7nm-8150" (SoC at the end) 
+make
+some sense, if we look at the organization of the dsi phy driver code.
+I am new to this and don't know the reason behind the current code
+organization and this naming.
+
+Yes, I agree with you, we should use full SoC names. Adding
+the SoC name at the end does not feel very convincing, so I will change 
+this
+to the suggested format e.g. "qcom,sm8250-dsi-phy-7nm", and will rename 
+the
+occurrences in the driver and device tree accordingly.
+Do I need to make changes for 10nm, 14nm, 20nm, and 28nm DSI PHY too?
+Bindings doc for these PHYs recently got merged to msm-next [1]
+
+
+[1] 
+https://gitlab.freedesktop.org/drm/msm/-/commit/8fc939e72ff80116c090aaf03952253a124d2a8e
+
+
+Thanks,
+Rajeev
