@@ -2,153 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5234398890
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79448398893
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 13:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFBLuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 07:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
+        id S230015AbhFBLud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 07:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhFBLuT (ORCPT
+        with ESMTP id S230004AbhFBLud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 07:50:19 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36284C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 04:48:35 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id b5so1801968ilc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 04:48:35 -0700 (PDT)
+        Wed, 2 Jun 2021 07:50:33 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F2CC061574;
+        Wed,  2 Jun 2021 04:48:49 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id h9so2359784oih.4;
+        Wed, 02 Jun 2021 04:48:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1AE6CMh64N7YKZJf6x8sLxRgE3kDJg7CfrDj+vAQ8yY=;
-        b=VKKIIXCN/WaVHDKgZbutFVr+k276GUR+xO3M4gXkc7s4LMnEWRdc6QWmULBZpebrkJ
-         c8/I/JTM8MJyFhcK2cOnEsJYksTb/R6LqSm9/rmcQZ6eB0QpQJEVt15Mblu9WDFTRZQk
-         zLI69Hwp2elv4H1P2PFbFVAT4UBz/HiQ0IjwyborfOxzXJ3wEXhB90WajB0VCHT8qOP9
-         KIGFFshRFhbwYHjxm8Jmr3AjW6qb7VkVoGYy3pzRZOTHQ7MsVpni3B3bT0NnmLmQRy0F
-         33Xq7KRv4PIuch6wubGC0YEbk2mkc2gn/dEgOqPF3x/L8XaQOmSqmdiYZyWlW45kxzve
-         2zgw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mdeITsS7rFsL0KmD3LwvfOupZFEKnebrPYRqWSo8EYY=;
+        b=TkuVlpqpW7YxoKhDCJa2weJkHDN0c+Dl73LgAfx+KS7+TTH+dloFnmBjdhVRCLe7ag
+         V5pq9kEs35ilkHxFpS5mRgXG+gRSl/Rh9KGTgno9UZPhus8CoiT+d0ZLI6JUmaqMdc9x
+         2WVA6H8B39JI1S9c6cAssyekCfNNmtF+Z706hblR5BFtRH96yh6QiJC0FkwTH6suMmBe
+         /ObLDmv1k5ChS1iUTTjXSIrDPQqcuYKd3ohIaBtXdslug0K2V7Arn8YS17U4NuzBd4VF
+         ysfw4cXnrtqGgLCGbmhU1ZG60wMSfa5zA4ukRRJtmWdF89Q933Id/hVEfk9p1TUGEa3V
+         PDAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1AE6CMh64N7YKZJf6x8sLxRgE3kDJg7CfrDj+vAQ8yY=;
-        b=T2nJ1CsS3I+SHMy4i6Wj8eddnA79Sguw/5mCOQwF3gxHxKWQVhkn+PdLfHqhgxsCwv
-         BPg75Y0auvdj8AuXY1woYKaZaJJhE7CLGBepSASgI44Hpfjh1ykx7xtZTo2Aa6Wow6gZ
-         q09JHrhAdfmQ8l4UquQRdbTxwYQt1peKWY92F0HL/Mmy3g/ownnYtR1sJ3QyJkdB2Uba
-         iqKWZTPVEoPWWc8v/cH597UVE9VqRVhdx9PedXOrsXYlu1itT5FnEatnjkj3ll182LK6
-         Xd8SDVJfk93pXNyciOimYr2RC3ItqIAvvmveYVr1BI8rupaUCxH5nHaBilfoUDjY4R7J
-         mhfA==
-X-Gm-Message-State: AOAM531slFw2GjrxqCdpzdExhiqBcicxqdKp7uwXmK47QGLzxdJ9iRcA
-        7+g0+HW3+VBV52NDt6y3fSDurRjh6hYXrcM+DP50ZA==
-X-Google-Smtp-Source: ABdhPJzLLKFNTjaCiidAPhK0lyaBfj4HpIEdIRiXkJgFvVZwOHb/5hcMsc+hNd9tGh1NgTmazzTNI9ZJ/zk4kqlQwJo=
-X-Received: by 2002:a92:c10a:: with SMTP id p10mr12643828ile.183.1622634514249;
- Wed, 02 Jun 2021 04:48:34 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mdeITsS7rFsL0KmD3LwvfOupZFEKnebrPYRqWSo8EYY=;
+        b=WptNaxT+j8TtPeVGVxnKFFO4jdQ7K8goz7hhVdzcx/bycbfM8GM0fzZ44V9mWpuCqX
+         FstzxHAnT99QyCG7Jj4rrCswZgT/TWm4y9sepHdAW3cPxF17PK/vJPpneub1PwCy0hqe
+         We2HB0AV7FURZAtrb6TVt2uBdShm7jam/vHw2r16tfkNjFeoEoZoemQPiIj7fJIOuzq7
+         55AMxRd/y6u8xLFE4jT+kJP3pOQNbE9E5IutoI2H8dMm/1sURVRBKZiqg3j5w0aYwpx2
+         rkxjLV0Hf27D2RGL+FCD7VmsytOmuw77UgKFoXeepygW4LKy8P9Ezc2jtBC/RwuRY2Jd
+         cllw==
+X-Gm-Message-State: AOAM531NzIeApoCcr1VO/qQ1l6nwPk6tqEm9pOQtUpkbcm68muyrvd9x
+        G9BqFEfPof1eaIFUsZwkE93cPwmAjOw=
+X-Google-Smtp-Source: ABdhPJxHG2Vxf5qW8qsT/Bc8VZ+tpAnZcZzTKhjKrFHkKKNY/BuPC1Z5gDHyxVCHCBDlasAeSnc9Jw==
+X-Received: by 2002:a54:4d03:: with SMTP id v3mr20215973oix.22.1622634528689;
+        Wed, 02 Jun 2021 04:48:48 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k14sm1833341ooi.21.2021.06.02.04.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 04:48:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 2 Jun 2021 04:48:46 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: hwmon: Fix typo in TI ADS7828 bindings
+Message-ID: <20210602114846.GA2900211@roeck-us.net>
+References: <20210531134655.720462-1-iwamatsu@nigauri.org>
 MIME-Version: 1.0
-References: <20210531125143.257622-1-robert.marko@sartura.hr>
- <20210531125143.257622-4-robert.marko@sartura.hr> <20210601153818.GA20254@pengutronix.de>
- <CA+HBbNG3O_QORj1NEKvoC4C5FfyfXyO_PMOZS0pHJimGn+HTUA@mail.gmail.com> <0601d2800a285b44271d2b5a5e28669aa913522b.camel@pengutronix.de>
-In-Reply-To: <0601d2800a285b44271d2b5a5e28669aa913522b.camel@pengutronix.de>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Wed, 2 Jun 2021 13:48:23 +0200
-Message-ID: <CA+HBbNFU=vORe-+py5c3QQP6Fr4EnrVG05Z1Gi-LJdiDLuMSBQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] reset: Add Delta TN48M CPLD reset controller
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531134655.720462-1-iwamatsu@nigauri.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 10:47 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
->
-> On Tue, 2021-06-01 at 19:09 +0200, Robert Marko wrote:
-> [...]
-> > Yes, it's self-clearing, per spec they will be cleared after 100ms.
->
-> Can you make sure the function only returns after the reset is
-> deasserted again, for example by using regmap_read_poll_timeout() on the
-> reset bit?
+On Mon, May 31, 2021 at 10:46:55PM +0900, Nobuhiro Iwamatsu wrote:
+> Fix typo in example for DT binding, changed from 'comatible'
+> to 'compatible'.
+> 
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
 
-Yes, that is simple to implement.
->
-> > Will drop assert then, I saw that reset was for self-clearing, but other
-> > drivers I looked for example implemented both which was confusing.
->
-> If you have full control over the reset line, you can implement .reset
-> by manually asserting and deasserting (possibly after a delay). But if
-> the reset is self-clearing, you can't properly implement .(de)assert,
-> which have an expectation about the state of the reset line after the
-> function returns.
+Applied.
 
-Makes sense, I will drop the assert op.
->
-> > > > +}
-> > > > +
-> > > > +static int tn48m_control_status(struct reset_controller_dev *rcdev,
-> > > > +                             unsigned long id)
-> > > > +{
-> > > > +     struct tn48_reset_data *data = to_tn48_reset_data(rcdev);
-> > > > +     unsigned int regval;
-> > > > +     int ret;
-> > > > +
-> > > > +     ret = regmap_read(data->regmap, TN48M_RESET_REG, &regval);
-> > > > +     if (ret < 0)
-> > > > +             return ret;
-> > > > +
-> > > > +     if (BIT(tn48m_resets[id].bit) & regval)
-> > > > +             return 0;
-> > > > +     else
-> > > > +             return 1;
-> > > > +}
-> > > > +
-> > > > +static const struct reset_control_ops tn48_reset_ops = {
-> > > > +     .reset          = tn48m_control_reset,
-> > > > +     .assert         = tn48m_control_assert,
-> > > > +     .status         = tn48m_control_status,
-> > > > +};
-> > > > +
-> > > > +static int tn48m_reset_probe(struct platform_device *pdev)
-> > > > +{
-> > > > +     struct tn48_reset_data *data;
-> > > > +     struct regmap *regmap;
-> > > > +
-> > > > +     if (!pdev->dev.parent)
-> > > > +             return -ENODEV;
-> > >
-> > > That shouldn't be necessary.
-> >
-> > This driver depends on having a parent as it needs to get the
-> > regmap from it.
-> > The parent is a CPLD using simple-i2c-mfd.
-> > So it's nice to check.
->
-> pdev->dev.parent is always set to &platform_bus if there is no parent.
+Thanks,
+Guenter
 
-Ok, so it's useless to check.
-
-Will send a new version today.
-
-Regards,
-Robert
->
-> regards
-> Philipp
-
-
-
--- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+> ---
+>  Documentation/devicetree/bindings/hwmon/ti,ads7828.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/ti,ads7828.yaml b/Documentation/devicetree/bindings/hwmon/ti,ads7828.yaml
+> index 33ee575bb09da1..926be9a29044b2 100644
+> --- a/Documentation/devicetree/bindings/hwmon/ti,ads7828.yaml
+> +++ b/Documentation/devicetree/bindings/hwmon/ti,ads7828.yaml
+> @@ -49,7 +49,7 @@ examples:
+>          #size-cells = <0>;
+>  
+>          adc@48 {
+> -            comatible = "ti,ads7828";
+> +            compatible = "ti,ads7828";
+>              reg = <0x48>;
+>              vref-supply = <&vref>;
+>              ti,differential-input;
