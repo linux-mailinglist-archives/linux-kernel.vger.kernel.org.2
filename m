@@ -2,129 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5705398E5F
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1C6398E5E
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhFBPUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:20:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60752 "EHLO
+        id S232310AbhFBPUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:20:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59750 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbhFBPUO (ORCPT
+        with ESMTP id S232229AbhFBPUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Jun 2021 11:20:14 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D433C22E0E;
-        Wed,  2 Jun 2021 15:18:30 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9C68F22CE9;
+        Wed,  2 Jun 2021 15:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622647110; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1622647108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0CajeOMnNJBB4wh8qj6KEaEI7/1l4Zc9gcsfQvY7xts=;
-        b=0puWBPqvcb8XWW+CV1eq0j+G5gO7xAbIApbn1Mlg+Rnidl63wd9NZa0I37ophoNvKrPg3C
-        EpXnRCBe78IHT62Fiv2pGOf8H6I5/bX6grH93GdFJe4gdsU8x85SEfF1ely43Onwq7Y8Cc
-        dS8Kbi6TDMjhcmWChaCG/ZBJsBJi0J0=
+        bh=TVCY3kReO4aYtRrCdthZIKAAdWvyFm8FGABuqcsqSSo=;
+        b=ha7u5ub6Q+29Xo8msEqsH3ITn86/03gesPm4HUhbK0E8sMtaSiHedtDdzfU9BR4N7AP3/T
+        g15Z1om/+4MsmDCP7i6kLIgbjtMqNytjM2SCbwnHuASDq5eGB1ScFqbTjnXm3TELxI98rF
+        svB0igQtk3lScqcUc8yGIX3f7pWw67c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622647110;
+        s=susede2_ed25519; t=1622647108;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0CajeOMnNJBB4wh8qj6KEaEI7/1l4Zc9gcsfQvY7xts=;
-        b=83trRDF5ntRAKlXhQEwY1eav//5m8pt9Nz1CijqRgFleCmw/BfqIzRAXqcmf+zXdGEIEYW
-        lOsI+SbKasSzNoCQ==
+        bh=TVCY3kReO4aYtRrCdthZIKAAdWvyFm8FGABuqcsqSSo=;
+        b=D6AlQlqfvEm8M80qGRROcE9GeiHFPH47lierC2gAkoJYPyD0fDxJalxAJAvj6OXHxjp/mO
+        gIcvo+NGUMI+CfDQ==
 Received: by imap.suse.de (Postfix, from userid 51)
-        id C3ECC11CD4; Wed,  2 Jun 2021 15:50:55 +0000 (UTC)
+        id 921C3118DD; Wed,  2 Jun 2021 16:20:03 +0000 (UTC)
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 0500611D4C;
-        Wed,  2 Jun 2021 09:45:47 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 3771F11D64;
+        Wed,  2 Jun 2021 10:03:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622627147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1622628197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0CajeOMnNJBB4wh8qj6KEaEI7/1l4Zc9gcsfQvY7xts=;
-        b=eugKB0bhppvhfKta1LCKA3T7HXLnmZ42X3iOcLch+sELpav7UCXwpMqmAqLW92/AU092q0
-        q6Dx8WvfjmmHCr/3NPKzURzGSrA5GL/h4G/Rbwl69kMfVjvYy/Ye4gp3/hINLOD1+gjX0e
-        9aMSSB8TElQAwwYMr+OFB+YiNAKKxpU=
+        bh=TVCY3kReO4aYtRrCdthZIKAAdWvyFm8FGABuqcsqSSo=;
+        b=U64lAHj1uQBmhw0kd9i9udpIwprErn68zQMfwnVc1hwuQxnjfmpUcuzRM8rRWicXmM34y+
+        B6w27WeWjPvNxD/Q9IoiV+lYTumuwHIgbzo4wO+n0d/VJLA+IL0P1vxy8FyOZPqjLU93ab
+        cwVQuZaT/992+L7HoS7tSsPyePVk/dY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622627147;
+        s=susede2_ed25519; t=1622628197;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0CajeOMnNJBB4wh8qj6KEaEI7/1l4Zc9gcsfQvY7xts=;
-        b=WAMhXP67cbiqInlXsyUilCMEW48KrD+QERq0lM4sbQ86hhwC/CSqpU2NP3GubO1MKGm4P5
-        gJElHLqsYPeOIZCw==
+        bh=TVCY3kReO4aYtRrCdthZIKAAdWvyFm8FGABuqcsqSSo=;
+        b=pGgAcE4KnTbmqOE+hujpUum3zL/WKKjAZkhN3OXvVyZbfpzK1niSe/OXgAOh0kPT1NqzG6
+        fReRrtfkPrtM3KCg==
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id 5c0jAEtTt2AaMgAALh3uQQ
-        (envelope-from <bp@suse.de>); Wed, 02 Jun 2021 09:45:47 +0000
-Date:   Wed, 2 Jun 2021 11:45:42 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     kernel test robot <rong.a.chen@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [tip:x86/cpu 4/4] Warning: Kernel ABI header at
- 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at
- 'arch/x86/include/asm/cpufeatures.h':  111< /* free                                    (
- 3*32+29) */
-Message-ID: <YLdTRopUV9OyulSq@zn.tnic>
-References: <20210602094153.GH1271937@shao2-debian>
+        id PvwVDWVXt2CxPAAALh3uQQ
+        (envelope-from <msuchanek@suse.de>); Wed, 02 Jun 2021 10:03:17 +0000
+Date:   Wed, 2 Jun 2021 12:03:16 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "kbuild: merge scripts/mkmakefile to top Makefile"
+Message-ID: <20210602100315.GL8544@kitsune.suse.cz>
+References: <20210526173855.5963-1-msuchanek@suse.de>
+ <CAK7LNASEqKwQeLPXedyut+ykSJGPuq3CO1g_fS=sVDaZrwBPBQ@mail.gmail.com>
+ <20210526202825.GB8544@kitsune.suse.cz>
+ <CAK7LNAQ=DiayZ8YqgMTrTWyP_fuEpPL80+BSzj9VB+RQDKD27g@mail.gmail.com>
+ <20210529053512.GT8544@kitsune.suse.cz>
+ <CAK7LNAT-78qWBa-TzTTQ-PN7Cr5DdaAEgKzUiVkkB=uOgcAsDQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210602094153.GH1271937@shao2-debian>
+In-Reply-To: <CAK7LNAT-78qWBa-TzTTQ-PN7Cr5DdaAEgKzUiVkkB=uOgcAsDQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ acme.
-
-On Wed, Jun 02, 2021 at 05:41:53PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
-> head:   cbcddaa33d7e11a053cb80a4a635c023b4f8b906
-> commit: cbcddaa33d7e11a053cb80a4a635c023b4f8b906 [4/4] perf/x86/rapl: Use CPUID bit on AMD and Hygon parts
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce:
-> cd tools/perf && ./check-headers.sh
+On Wed, Jun 02, 2021 at 06:45:58PM +0900, Masahiro Yamada wrote:
+> On Sat, May 29, 2021 at 2:35 PM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Sat, May 29, 2021 at 02:15:55AM +0900, Masahiro Yamada wrote:
+> > > On Thu, May 27, 2021 at 5:28 AM Michal Suchánek <msuchanek@suse.de> wrote:
+> > > >
+> > > > On Thu, May 27, 2021 at 03:56:41AM +0900, Masahiro Yamada wrote:
+> > > > > On Thu, May 27, 2021 at 2:39 AM Michal Suchanek <msuchanek@suse.de> wrote:
+> > > > > >
+> > > > > > This reverts commit 243b50c141d71fcf7b88e94474b3b9269f0b1f9d.
+> > > > > >
+> > > > > > When packaging the kernel it is built in different place from the one in
+> > > > > > which it will be installed. After build the makefile needs to be
+> > > > > > regenerated with the target location but with mkmakefile merged into
+> > > > > > Makefile tehre is no way to do that.
+> > > > > >
+> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > >
+> > > > > My patch was not working as expected
+> > > > > regardless of packaging.
+> > > > >
+> > > > > Does the following fix-up work for you?
+> > > >
+> > > > For the packaging I need some way to regenerate the Makefile and fake
+> > > > the directory where the Makefile will be on the user system (ie DESTDIR)
+> > > >
+> > > > Without the mkmakefile I do not see any way to do it.
+> > > >
+> > > > If the kernel makefile is no longer location dependent there is no need
+> > > > any more, of course.
+> > > >
+> > > > Thanks
+> > > >
+> > > > Michal
+> > >
+> > > Sorry, I do not understand this.
+> > >
+> > > IIUC, this patch does not change any functionality.
+> > > The generated Makefile is still the same.
+> > > Why is it a problem?
+> >
+> > It cannot be regenerated.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> This is an issue regardless of your packaging.
+> That is why I suggested a patch in my previous reply.
+> 
+> https://lore.kernel.org/linux-kbuild/CAK7LNASEqKwQeLPXedyut+ykSJGPuq3CO1g_fS=sVDaZrwBPBQ@mail.gmail.com/
 > 
 > 
-> perfheadercheck warnings: (new ones prefixed by >>)
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':   87< #define X86_FEATURE_K7			( 3*32+ 5) /* "" Athlon */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':   87> /* FREE, was #define X86_FEATURE_K7			( 3*32+ 5) "" Athlon */
-> >> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  111< /* free					( 3*32+29) */
-> >> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  111> #define X86_FEATURE_RAPL		( 3*32+29) /* AMD/Hygon RAPL interface */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  239> #define X86_FEATURE_PVUNLOCK		( 8*32+20) /* "" PV unlock function */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  240> #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* "" PV vcpu_is_preempted function */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  295> #define X86_FEATURE_SGX1		(11*32+ 8) /* "" Basic SGX */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  296> #define X86_FEATURE_SGX2		(11*32+ 9) /* "" SGX Enclave Dynamic Memory Management (EDMM) */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  343> #define X86_FEATURE_V_SPEC_CTRL		(15*32+20) /* Virtual SPEC_CTRL */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  362> #define X86_FEATURE_BUS_LOCK_DETECT	(16*32+24) /* Bus Lock detect */
->    Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h':  383> #define X86_FEATURE_HYBRID_CPU		(18*32+15) /* "" This part has CPUs of more than one type */
+> Anyway, please try next-20210602
+> and see if you still have a problem.
+
+Yes, I still have a problem.
+
+My packaging script calls mkmakefile which no longer exists.
+
+Regardless of whther the new code works correctly or not in the usual
+case it removes the ability to regenearte the makefile for a specific
+target location.
+
+Thanks
+
+Michal
+
+> >
+> > During package build you have four directories
+> >
+> >  - the source directory
+> >  - the build directory
+> >  - the staging directory where files are installed to be included in the
+> >    package
+> >  - the target directory where files will be installed on the target
+> >    system once the package is installed by the user
+> >
+> > The makefile is generated for the build directory, not the target
+> > directory. What is needed is a way to generate a makefile in the staging
+> > directory that will work when installed in the target directory.
+> > When mkmakefile is folded into makefile the makefile can no longer be
+> > regenerated because it is up-to-date, and it can no longer be specified
+> > that it should be generated for the target directory, not the staging
+> > directory.
+> >
+> > Thanks
+> >
+> > Michal
 > 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-0day folks, please make a note if you can, to send such cpufeatures.h
-header sync warnings to acme as he's verifying the feature bits modified
-before synching.
-
-Better yet, you can even ignore those altogether but I'm sure acme has a
-preference here.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix ImendÃ¶rffer, HRB 36809, AG NÃ¼rnberg
+> 
+> 
+> -- 
+> Best Regards
+> Masahiro Yamada
