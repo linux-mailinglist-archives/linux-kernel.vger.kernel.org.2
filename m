@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAE7399670
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67F939967B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 01:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbhFBXnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 19:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhFBXne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 19:43:34 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBA8C06174A;
-        Wed,  2 Jun 2021 16:41:36 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so2745907pjq.3;
-        Wed, 02 Jun 2021 16:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+toArruJ3eRIR/A2mvRnWwBK2Vc1ZfxuTnObnbkQWeM=;
-        b=nwIddzopGo1lXM/ErFpAIVU2mAP8V8VYQU0HtzxOig+9z3Yv+DPQAfqpSKQGIKcCbC
-         6MLTdoAuVoSHFsNLlKRmSI5X5PreVkSLfZ5e8ktnm5chxyEC/KYiQhRWdtrLo9ebMkXz
-         8KLYHBFZSChX0zEfbiCO9goGiOr6HZTc7sS/K9Tj9vlo/GfSbCx+eZGuh0woDFmd2eFe
-         iOKq6Am1idc3kY2gYYNikNotA1jPmY6UpZVbr268E18e4b37N0w4pLKpMshGv4zMwAkn
-         F2kqQYmkGXTSx/KTIWTZR8+PwPxJzwhd+gV5+iNzGm7asFY0xmk3H2yLZAoxnXSXyksP
-         qFXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+toArruJ3eRIR/A2mvRnWwBK2Vc1ZfxuTnObnbkQWeM=;
-        b=T09ff5kWaVVmfi6FSTLiHrpNeTc/otusmEigd2AN61X1wI6hgruph7akCgX+TlR0ps
-         uNdgLHpOu3mpCHHDZVmke3DfFmB5MslSDu8G7NwUPj5/L8N/rWUO8stt8k69+f2zz5Z2
-         fwZJG2ly0LGyOS6gi9fKCu3bObeDoLUMAGXZ+5z+8++6WV/Fw4b/ToZOBnvsn7rp+u5+
-         h4qg8e/t2j2fiq+3cAgeMeVOy23FBnE9yPu1R2CqfY4WtIWU1lVM+po26+e6EEPZGdpI
-         6aXzCLJ5jso4T5PmW+mT3igNnX4BAMWw9QfE9gG5Ey0dD1vwkj4xaoN5C+92yfYaW9W4
-         xD8w==
-X-Gm-Message-State: AOAM533aEreJ46fzRELso/RAdTTJjM/dEnNF93uHs2Owp7jaReSSg84O
-        gQjrvMf357SwlpviIRwF7M26cnkwq1FZ+jAQmKc=
-X-Google-Smtp-Source: ABdhPJySLCX1G+ypM9S8wQTFySJ1G3j5In5iPS3hq4FOP+dvba0eMz3Cry3yzrELiQ3V9hCI0LCcH8Afrh32AV1WekQ=
-X-Received: by 2002:a17:90b:33c3:: with SMTP id lk3mr8138470pjb.33.1622677296349;
- Wed, 02 Jun 2021 16:41:36 -0700 (PDT)
+        id S229663AbhFBXvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 19:51:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhFBXvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 19:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DA9A613D8;
+        Wed,  2 Jun 2021 23:49:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622677772;
+        bh=03OVd6l7oQj7vrcl0Aa1QgC37aMuKF9JB7s8GqaXSLg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RWwqLESx/uN0TCUq74s7on3lrH3UFn2rv2kdcIzf1o5Jgnn7d8PgdrYIpePQLuTL6
+         UUBhYp6K0+WSWlYcoCOFDSWk03Zx3dl51cY7bEwFxqfwazFX0rP9sOORPXVWLBVuwb
+         BdzV30lQzXtiCp3gCR6Ee/gAfzVSCX67IJz7EwgwNQeosZ/9kihFo1Ib1aunBzepRE
+         243u5/pct8DogyydXFMXgkhK+sa2xEfGCLgmiXkRn6qGbSEEOZYBQtNvYI1opQQ3ee
+         gsOP+DpRKZlfHP9mawzwBEvOc4tRZ8nbZQCPcAbs0A9uK8VaNqUjbE3ESiu6ycIsW8
+         B1Lhbs6BOfARw==
+Date:   Wed, 2 Jun 2021 16:49:31 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 2/2] f2fs: Advertise encrypted casefolding in sysfs
+Message-ID: <YLgZCwPLenETHx1+@sol.localdomain>
+References: <20210602041539.123097-1-drosen@google.com>
+ <20210602041539.123097-3-drosen@google.com>
+ <YLfh9pv1fDT+Q3pe@sol.localdomain>
+ <CA+PiJmR1vWN7ij7ak4q=C0Wxa++t=SCnEFh_iDt7QVOAZy-VFw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210602054802.GA984@raspberrypi> <CAHC9VhQdAt2EQqP3pQM=5TifTYuXxnU1QOvOT-aFaDaGiLLJXQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhQdAt2EQqP3pQM=5TifTYuXxnU1QOvOT-aFaDaGiLLJXQ@mail.gmail.com>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Thu, 3 Jun 2021 08:41:27 +0900
-Message-ID: <CADLLry7D8OYStDAFsP4dFzS0fwV6bM2__ZEB2py+oca+R5Zuog@mail.gmail.com>
-Subject: Re: [PATCH] selinux: remove duplicated LABEL_INITIALIZED check routine
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>,
-        kernel-team@lge.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+PiJmR1vWN7ij7ak4q=C0Wxa++t=SCnEFh_iDt7QVOAZy-VFw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 6=EC=9B=94 2=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 11:32, P=
-aul Moore <paul@paul-moore.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Wed, Jun 2, 2021 at 1:48 AM Austin Kim <austindh.kim@gmail.com> wrote:
+On Wed, Jun 02, 2021 at 04:22:38PM -0700, Daniel Rosenberg wrote:
+> On Wed, Jun 2, 2021 at 12:54 PM Eric Biggers <ebiggers@kernel.org> wrote:
 > >
-> > The 'isec->initialized =3D=3D LABEL_INITIALIZED' is checked twice in a =
-row,
-> > since selinux was mainlined from Linux-2.6.12-rc2.
+> > On Wed, Jun 02, 2021 at 04:15:39AM +0000, Daniel Rosenberg wrote:
+> > > +#ifdef CONFIG_UNICODE
+> > > +F2FS_FEATURE_RO_ATTR(encrypted_casefold, FEAT_ENCRYPTED_CASEFOLD);
+> > > +#endif
 > >
-> > Since 'isec->initialized' is protected using spin_lock(&isec->lock)
-> > within various APIs, it had better remove first exceptional routine.
+> > Shouldn't it be defined(CONFIG_UNICODE) && defined(CONFIG_FS_ENCRYPTION)?
 > >
-> > With this commit, the code look simpler, easier to read and maintain.
+> > >  #endif
+> > >  #ifdef CONFIG_BLK_DEV_ZONED
+> > >  F2FS_FEATURE_RO_ATTR(block_zoned, FEAT_BLKZONED);
+> > > @@ -815,6 +823,9 @@ static struct attribute *f2fs_feat_attrs[] = {
+> > >  #ifdef CONFIG_FS_ENCRYPTION
+> > >       ATTR_LIST(encryption),
+> > >       ATTR_LIST(test_dummy_encryption_v2),
+> > > +#ifdef CONFIG_UNICODE
+> > > +     ATTR_LIST(encrypted_casefold),
+> > > +#endif
 > >
-> > Signed-off-by: Austin Kim <austindh.kim@gmail.com>
-> > ---
-> >  security/selinux/hooks.c | 3 ---
-> >  1 file changed, 3 deletions(-)
->
-> This is a common pattern when dealing with lock protected variables:
-> first check the variable before taking the lock (fast path) and if
-> necessary take the lock and re-check the variable when we know we have
-> exclusive access.
->
-> In the majority of cases the SELinux inode initialization value goes
-> from LABEL_INVALID to LABEL_INITIALIZED and stays there; while there
-> is an invalidation function/hook that is used by some
-> network/distributed filesystems, it isn't a common case to the best of
-> my knowledge.  With that understanding it makes perfect sense to do a
-> quick check to first see if the inode is initialized in
-> inode_doinit_with_dentry() and return quickly, without taking a lock,
-> if it is already initialized.  In the case where the inode has not
-> been previously initialized, or has been invalidated, we take the
-> spinlock to guarantee we are not racing with another task and re-check
-> the initialization value to ensure that another task hasn't
-> initialized the inode and act accordingly.
->
-> The existing code is correct.
->
+> > Likewise here.
+> >
+> > - Eric
+> 
+> Those are already within an #ifdef CONFIG_FS_ENCRYPTION, so it should
+> be covered already.
 
-Understood, after looking into all routines related to 'isec->initialized' =
-again
-where 'isec->initialized' statement is not always protected
-spin_lock(&isec->lock) during initialization progress.
+Adding a comment to the #endif for CONFIG_FS_ENCRYPTION would make it easier to
+read:
 
-Thanks for valuable feedback.
+	#endif /* CONFIG_FS_ENCRYPTION */
 
-> --
-> paul moore
-> www.paul-moore.com
+> Should I send a v2 set with the
+> 
+> Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
+> Cc: stable@vger.kernel.org # v5.11+
+> 
+> appended?
+
+Yes, please add those tags.
+
+- Eric
