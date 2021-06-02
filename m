@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E7B3991C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76DF3991D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhFBRfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:35:53 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:45845 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhFBRfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:35:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622655249; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=QE3wn3ZMtzTvI5TXNGRhJwPX/5BjO8Hpo3zddXF8OVs=; b=Bd82msatp6AglFb0rmy9+zuUsIWPSgokpRJcID+QrzgXYai/KFjB5NvhdzmFD7vdKM7HdZK7
- kr70Os0gDwY2a60D2DYD/aDEn3mHAjmLyEJ26Z5ck3TW0y1qp1lIeergJQfCvo2hXIqiNuRY
- x4awpYcSvOh25e6ZtpVfHA8tdVg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60b7c107e27c0cc77f6f0cdc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Jun 2021 17:33:59
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5F97BC433F1; Wed,  2 Jun 2021 17:33:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C088CC433D3;
-        Wed,  2 Jun 2021 17:33:56 +0000 (UTC)
+        id S229491AbhFBRiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:38:18 -0400
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:45599 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBRiN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 13:38:13 -0400
+Received: by mail-oo1-f41.google.com with SMTP id h15-20020a4ad00f0000b0290245a068aae6so731412oor.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vo0Dg4bNuKJwo4nsGc+3dTQHi6trR9CwbCHIFpRvYTs=;
+        b=XCl55SvXTjI217am7uNX6tchL7K2HRkFscrE7e3kl8Kk7gmi8wta4Fg9Jol1NlDUXG
+         GNbi2hVwjOs9U3+JSozSr34bx4MsjKDnnI3/71Zeq9YRRKSoaZf7UZavx12Iuzi5ELQE
+         26iamZgpcfIx7j0jFDFIiZjZ7zOX9l/2m6bztPRRSqoep3bBmrdDo2zGgQ6GJ49opBjI
+         z21UtkGQbttC15w8VypNrqWZmIN3GbQrz49FpNFXqvf2vi2TLUCCAR23LHHE+Q0+YGXf
+         VuzCLgylYtcyAVWL/iSOTQk+fowwP3PNE7sPfhq/S3leskKxaIl58P3ojqplrWBOOW5P
+         ubdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vo0Dg4bNuKJwo4nsGc+3dTQHi6trR9CwbCHIFpRvYTs=;
+        b=dpmMdQzu4/pqiI626UKxWgKXzYwLlXMC7+CJvpx7PFPOyUEtRJppfju5p9EpxiIUMY
+         LLfP5a0UnSs3L/uRrkyn2Vy3B8bhn7a9EH13XxEfwEJLApKyaCe+nPADrJxS3eggBlWb
+         Cqq8TZB8clrKBYsoEUPWDga1IN5+aCcnhaPth1w8vE6xdoLwd0zdeS/lg7KWONqOBDQd
+         wJ0QuKRSmOcUGHwaX8r3hEntowQkATm/WfmQJKtIAgdgWM90cep4egAsSnnbvHHmbEp4
+         xDHZDMhXx/935nIk6rk9ZCc2/9M/T6ZgO5HPlbNr5kxAaSSIY0OGpfo7daDbgt3f194M
+         PJBA==
+X-Gm-Message-State: AOAM531hL1E0PlqQ2Hbg6GJISZT/L9A4UViz0HGJpuzq9HKP5Ph1AYkU
+        KX9EZ63aZFBoNV8IauDHf4lTbaBIk3E7Drj+Z94NOGFRW0uYjVA7
+X-Google-Smtp-Source: ABdhPJzXtY55/blnpzkUvI/XEwAGea+QX3r6Avjyclj4Oel9wdgN+ymS83scKqqL/CgSzGs9cN8PHNaU+KGXWGebcbI=
+X-Received: by 2002:a4a:e084:: with SMTP id w4mr25103329oos.59.1622655330563;
+ Wed, 02 Jun 2021 10:35:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 02 Jun 2021 10:33:56 -0700
-From:   abhinavk@codeaurora.org
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [RESEND 14/26] drm/msm/dp/dp_link: Fix some potential
- doc-rot
-Message-ID: <b668e09546c0ce86d90346f99f40853a@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210602160333.62163-1-manikishanghantasala@gmail.com> <YLe8psfQLCb5bn2W@kroah.com>
+In-Reply-To: <YLe8psfQLCb5bn2W@kroah.com>
+From:   Manikishan Ghantasala <manikishanghantasala@gmail.com>
+Date:   Wed, 2 Jun 2021 23:04:53 +0530
+Message-ID: <CAKzJ-FNm-uYoSFvMmNjAtsXmOQ-_P=o3JhpZhzk0tuuNRDTB9Q@mail.gmail.com>
+Subject: Re: [PATCH] staging: rtl8192u: fix coding-style issues in r8192U_hw.h
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-02 07:32, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/msm/dp/dp_link.c:374: warning: expecting prototype
-> for dp_parse_video_pattern_params(). Prototype was for
-> dp_link_parse_video_pattern_params() instead
->  drivers/gpu/drm/msm/dp/dp_link.c:573: warning: expecting prototype
-> for dp_parse_phy_test_params(). Prototype was for
-> dp_link_parse_phy_test_params() instead
->  drivers/gpu/drm/msm/dp/dp_link.c:975: warning: expecting prototype
-> for dp_link_process_downstream_port_status_change(). Prototype was for
-> dp_link_process_ds_port_status_change() instead
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_link.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c 
-> b/drivers/gpu/drm/msm/dp/dp_link.c
-> index be986da78c4a5..1099604bd1c86 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_link.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
-> @@ -364,7 +364,7 @@ static int dp_link_parse_timing_params3(struct
-> dp_link_private *link,
->  }
-> 
->  /**
-> - * dp_parse_video_pattern_params() - parses video pattern parameters 
-> from DPCD
-> + * dp_link_parse_video_pattern_params() - parses video pattern
-> parameters from DPCD
->   * @link: Display Port Driver data
->   *
->   * Returns 0 if it successfully parses the video link pattern and the 
-> link
-> @@ -563,7 +563,7 @@ static int
-> dp_link_parse_link_training_params(struct dp_link_private *link)
->  }
-> 
->  /**
-> - * dp_parse_phy_test_params() - parses the phy link parameters
-> + * dp_link_parse_phy_test_params() - parses the phy link parameters
->   * @link: Display Port Driver data
->   *
->   * Parses the DPCD (Byte 0x248) for the DP PHY link pattern that is 
-> being
-> @@ -961,7 +961,7 @@ static int
-> dp_link_process_link_status_update(struct dp_link_private *link)
->  }
-> 
->  /**
-> - * dp_link_process_downstream_port_status_change() - process port
-> status changes
-> + * dp_link_process_ds_port_status_change() - process port status 
-> changes
->   * @link: Display Port Driver data
->   *
->   * This function will handle downstream port updates that are 
-> initiated by
+On Wed, 2 Jun 2021 at 22:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jun 02, 2021 at 09:33:31PM +0530, Manikishan Ghantasala wrote:
+> > staging: rtl8192u: r8192U_hw.h: Clear the coding-style issue
+>
+> Why is this line here?
+>
+Added it as description and I put a break due to char limit.
+> >
+> > "Macros with complex values should be enclosed in parentheses"
+> > by enclosing values in parantheses.
+>
+> I can not understand this sentence, can you please reword it?
+>
+I meant, I cleared(fixed) the error in quotes by enclosing them in parentheses.
+
+> > Modified spacing around "|" and removed a space before tab.
+>
+> This is not related to the first thing, please break this up into
+> multiple patches like the bot asked...
+>
+Okay, will do. Do I have to make one for the 'space before tab' too?
+or can I ignore it?
+> thanks,
+>
+> greg k-h
+
+
+Thanks,
+Manikishan Ghantasala
