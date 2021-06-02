@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4CD3983B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 09:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FB23983C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 10:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhFBIAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 04:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbhFBIAj (ORCPT
+        id S232327AbhFBICz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 04:02:55 -0400
+Received: from hera.aquilenet.fr ([185.233.100.1]:57574 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232290AbhFBICj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:00:39 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764D5C061574;
-        Wed,  2 Jun 2021 00:58:55 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id q7so1564721iob.4;
-        Wed, 02 Jun 2021 00:58:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qabcrgcfhEwhuxn/j/3+LSWfxN4EJWq76mgUFbPSQfc=;
-        b=OT9pI1cLDfVtJEbjcRrOd63nDT0/5O6el+Z/j0fD2emf6m06YRE71xYgt5DqE1ub97
-         N7kRd/cSxZJ/2Mz6OD3kPnuzof4+lSudMwU5nKWfEhU7fkDwWpCrLVOUQUMjchCEdc2A
-         83tv4Z/IyeqJM3gp44zcBiF2QJlwTzgXC+8YD+0smMxtZg9Ay6xt8rONKGV0/gLNnbcv
-         hGo6IOM64QaN1vV2Ti60Zy2WIXuL+yOQ7x47a7J6TyK5HrFFgjJYKArhAS9r8dFF0PL6
-         Qw+/kAZwePxzJBCIvKbS/Rg4IC6h71q0wTnLJxVwIHhwX4554FgPu23eRm7agH4Lgml+
-         ngGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qabcrgcfhEwhuxn/j/3+LSWfxN4EJWq76mgUFbPSQfc=;
-        b=ijCdTpAOyEKqmv60kU+EwINK/WDibY23ifL1vEhQq+ymPEsG1WVYcYo3laWGcnF6ZV
-         nz9JOW0kmvv4aK0dWaj1LnCdv3Uja+xNQ+XKUXB+S/8Iz3xCjNcVaydSALmGgUu3/F3B
-         4d19xwBxSYksbNJM6DX0h7M1MKqKdEjZAL+QMZntptzV2dMvcCj4AAHaNc2E/rGCt5Ce
-         UqPhdAxHc1XfRS+FBsWeihgClw9vta1gbzdtbrJVC0Wpz823kjTsWU3LqGDwsq1HzoW2
-         ZtoVoZc8m7QJAKn1cpugzP4GsZbBK1yNbYtmJPd9JOX17qOBWpx6twSRQTeE52ebH8tu
-         D/TQ==
-X-Gm-Message-State: AOAM532e/3Spv+KOHWBIiMqC+U6gpRSRllh2U4eQc5ztjq/KaUeYhY2B
-        9Bsdokj332T8bdX9sXMTf3XS5RyoqEIxr02Nov2jwosj3U/aOA==
-X-Google-Smtp-Source: ABdhPJxPmYmfcLfSgGMSYk2vkiJxCMXDTKTmlWHFzeWkXcxGhSG2pycZS4aQblPDVuwAFtckoD3DSwANLPwvKnENa+E=
-X-Received: by 2002:a6b:ef04:: with SMTP id k4mr24866061ioh.182.1622620734797;
- Wed, 02 Jun 2021 00:58:54 -0700 (PDT)
+        Wed, 2 Jun 2021 04:02:39 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 3F5A628C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 10:00:42 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id n9a6q-CQwnge for <linux-kernel@vger.kernel.org>;
+        Wed,  2 Jun 2021 10:00:37 +0200 (CEST)
+Received: from begin.home (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 68834F2
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 10:00:37 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.94.2)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1loKf3-0063x5-7N; Wed, 02 Jun 2021 08:47:29 +0200
+Date:   Wed, 2 Jun 2021 08:47:24 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Christopher Brannon <cmbrannon@cox.net>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        collins@gene3.ait.iastate.edu,
+        Steve Holmes <steve.holmes88@gmail.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: Convert the Speakup guide to rst
+Message-ID: <20210602064724.hzygl3qewillrlqr@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Christopher Brannon <cmbrannon@cox.net>,
+        William Hubbs <w.d.hubbs@gmail.com>, collins@gene3.ait.iastate.edu,
+        Steve Holmes <steve.holmes88@gmail.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <875yyxbenm.fsf@meer.lwn.net>
+ <20210601220643.uzep2ju2zlcmpa57@begin>
+ <874keh9qk9.fsf@meer.lwn.net>
+ <20210601223743.carif4gkzcz5jo7j@begin>
+ <87mts98aom.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210602065635.106561-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210602065635.106561-1-zhengyongjun3@huawei.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Wed, 2 Jun 2021 09:58:58 +0200
-Message-ID: <CAOi1vP-QtGyRGT-y2naZPzfMOEvv4MQY_iWDhws5e7hagAQQrQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] libceph: Fix spelling mistakes
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mts98aom.fsf@meer.lwn.net>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: --
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Server: hera
+X-Rspamd-Queue-Id: 3F5A628C
+X-Spamd-Result: default: False [-2.50 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         PREVIOUSLY_DELIVERED(0.00)[linux-kernel@vger.kernel.org];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         TO_MATCH_ENVRCPT_SOME(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[cox.net];
+         BAYES_HAM(-3.00)[100.00%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 8:42 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> Fix some spelling mistakes in comments:
-> enconding  ==> encoding
-> ambigous  ==> ambiguous
-> orignal  ==> original
-> encyption  ==> encryption
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  net/ceph/auth_x_protocol.h | 2 +-
->  net/ceph/mon_client.c      | 2 +-
->  net/ceph/osdmap.c          | 4 ++--
->  3 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/net/ceph/auth_x_protocol.h b/net/ceph/auth_x_protocol.h
-> index 792fcb974dc3..9c60feeb1bcb 100644
-> --- a/net/ceph/auth_x_protocol.h
-> +++ b/net/ceph/auth_x_protocol.h
-> @@ -87,7 +87,7 @@ struct ceph_x_authorize_reply {
->
->
->  /*
-> - * encyption bundle
-> + * encryption bundle
->   */
->  #define CEPHX_ENC_MAGIC 0xff009cad8826aa55ull
->
-> diff --git a/net/ceph/mon_client.c b/net/ceph/mon_client.c
-> index 195ceb8afb06..013cbdb6cfe2 100644
-> --- a/net/ceph/mon_client.c
-> +++ b/net/ceph/mon_client.c
-> @@ -1508,7 +1508,7 @@ static struct ceph_msg *mon_alloc_msg(struct ceph_connection *con,
->                         return get_generic_reply(con, hdr, skip);
->
->                 /*
-> -                * Older OSDs don't set reply tid even if the orignal
-> +                * Older OSDs don't set reply tid even if the original
->                  * request had a non-zero tid.  Work around this weirdness
->                  * by allocating a new message.
->                  */
-> diff --git a/net/ceph/osdmap.c b/net/ceph/osdmap.c
-> index c959320c4775..75b738083523 100644
-> --- a/net/ceph/osdmap.c
-> +++ b/net/ceph/osdmap.c
-> @@ -1309,7 +1309,7 @@ static int get_osdmap_client_data_v(void **p, void *end,
->                         return -EINVAL;
->                 }
->
-> -               /* old osdmap enconding */
-> +               /* old osdmap encoding */
->                 struct_v = 0;
->         }
->
-> @@ -3010,7 +3010,7 @@ static bool is_valid_crush_name(const char *name)
->   * parent, returns 0.
->   *
->   * Does a linear search, as there are no parent pointers of any
-> - * kind.  Note that the result is ambigous for items that occur
-> + * kind.  Note that the result is ambiguous for items that occur
->   * multiple times in the map.
->   */
->  static int get_immediate_parent(struct crush_map *c, int id,
+Jonathan Corbet, le mar. 01 juin 2021 16:47:05 -0600, a ecrit:
+> Samuel Thibault <samuel.thibault@ens-lyon.org> writes:
+> 
+> > So we'd need Gene's, Christopher's, William's, and Steve's ack on adding
+> > the GPL alternative to the GFDL-1.2 licence.
+> 
+> That would be great.
+> 
+> One other thing that crosses my mind...we'll need to remove the GFDL
+> license text as well.
 
-Applied.
+Yes, sure the SPDX tag will be enough.
 
-Thanks,
-
-                Ilya
+Samuel
