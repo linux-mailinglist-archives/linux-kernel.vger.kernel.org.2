@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3910C3993B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7BB3993AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 21:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhFBTph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 15:45:37 -0400
-Received: from cloud.peff.net ([104.130.231.41]:44350 "EHLO cloud.peff.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229489AbhFBTph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 15:45:37 -0400
-X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Jun 2021 15:45:37 EDT
-Received: (qmail 1998 invoked by uid 109); 2 Jun 2021 19:37:11 -0000
-Received: from Unknown (HELO peff.net) (10.0.1.2)
- by cloud.peff.net (qpsmtpd/0.94) with ESMTP; Wed, 02 Jun 2021 19:37:11 +0000
-Authentication-Results: cloud.peff.net; auth=none
-Received: (qmail 20393 invoked by uid 111); 2 Jun 2021 19:37:11 -0000
-Received: from coredump.intra.peff.net (HELO sigill.intra.peff.net) (10.0.0.2)
- by peff.net (qpsmtpd/0.94) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPS; Wed, 02 Jun 2021 15:37:11 -0400
-Authentication-Results: peff.net; auth=none
-Date:   Wed, 2 Jun 2021 15:37:10 -0400
-From:   Jeff King <peff@peff.net>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     git@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: git feature request: git blame --ignore-cleanup/--ignore-trivial
-Message-ID: <YLfd5pWtRqde1++Y@coredump.intra.peff.net>
-References: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+        id S229738AbhFBTjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 15:39:24 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:41736 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhFBTjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 15:39:22 -0400
+Received: by mail-oi1-f173.google.com with SMTP id c3so3774498oic.8;
+        Wed, 02 Jun 2021 12:37:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4be1Co2ahpvEywks2bnabgr4bPBIPKkuO9TmCoOL1S8=;
+        b=Vb2Zep+x4Wf2VrhbDqucBT1Qh7IwjGfuIUXAKL4fAgguEGrkBzWoK0MsjjhlUxQ5Ow
+         liPxrFjFVXF8mTu7Jd6+v8aPFZw+txcDdTLi90KgJsiFMVHAD5V2+E3NS7wlYEIk9tjM
+         G7iyBdxS4LAHaMqMkoBXjo/zv6qgEytFDwm4OwLcPZYKnTBIiSt3X222+nm7wr9p8oAG
+         rrKkH63ETrtasxJ8wG22hSQnlCV6/I3EYoD1QbSTqjc2lOmRWEOtroQq2FU/gpVen5mw
+         MGrIui9U57NrnXzVYuoDDLjBjg92Lv4OLjspktygXfPRaYadpVoVp22cGbrM2MNIr6Di
+         Hlzw==
+X-Gm-Message-State: AOAM533zeqA0iyrZ7BQusUB+WJ/fMoY2e0QJBMZTWIfk90FCy9Ro/FKR
+        2L6DVj92vaekh6TgCP94tw==
+X-Google-Smtp-Source: ABdhPJx159EyoXWDiSbqQ/Ss9z4HG3rc1+6orGi+OaCxdEJqK7iHQx1rTPfn/vFZtAJ2y/NZCL8uuA==
+X-Received: by 2002:a05:6808:1284:: with SMTP id a4mr15953775oiw.125.1622662644050;
+        Wed, 02 Jun 2021 12:37:24 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c18sm189830otm.1.2021.06.02.12.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 12:37:23 -0700 (PDT)
+Received: (nullmailer pid 3848773 invoked by uid 1000);
+        Wed, 02 Jun 2021 19:37:22 -0000
+Date:   Wed, 2 Jun 2021 14:37:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        linux-kernel@vger.kernel.org, Nikita Travkin <nikita@trvn.ru>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v3 1/3] dt-bindings: extcon: sm5502: Document
+ siliconmitus,sm5504-muic
+Message-ID: <20210602193722.GA3848708@robh.at.kernel.org>
+References: <20210601200007.218802-1-stephan@gerhold.net>
+ <20210601200007.218802-2-stephan@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210601200007.218802-2-stephan@gerhold.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:20:35AM -0400, Mathieu Desnoyers wrote:
-
-> Considering the added value brought by splitting cleanups from functional changes
-> from a maintainer perspective (easier reverts) and from a reviewer perspective
-> (easier to focus on the functional changes), I think it would be good to improve
-> the git tooling to allow easily filtering out the noise from git blame.
+On Tue, 01 Jun 2021 22:00:05 +0200, Stephan Gerhold wrote:
+> Document support for SM5504 with the new siliconmitus,sm5504-muic
+> compatible.
 > 
-> Perhaps a new git blame "--ignore-trivial" and/or "--ignore-cleanup" could solve
-> this by filtering out "trivial" and "cleanup" patches from the history it considers.
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+>  .../bindings/extcon/siliconmitus,sm5502-muic.yaml           | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
 
-There's "-w" to ignore whitespace-only changes. Since Git v2.23.0,
-there's also "--ignore-rev-file", which lets you ignore arbitrary
-commits. Since you have to generate a separate list of commits to feed
-it, it's a little more involved than your "--invert-grep" example. But
-it's also much more flexible (you can generate the file however you
-like, and even tweak it by hand).
-
-I do tend to agree with Al's notion that commits which are _supposed_ to
-be trivial sometimes end up not being so. Or another way of thinking
-about it is: relevance is a property of the query you're making, not the
-original change.
-
-So IMHO the best tool for this kind of thing is the "re-blame from
-parent" feature that many interactive blame viewers have (I use tig, but
-I'm sure other tools like magic have a similar feature). There when you
-land on a boring commit, it's a single key to skip past it and see how
-the earlier code came about.
-
--Peff
+Acked-by: Rob Herring <robh@kernel.org>
