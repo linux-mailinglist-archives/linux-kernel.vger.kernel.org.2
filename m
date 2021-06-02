@@ -2,213 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95EA398DF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFDF398DF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 17:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbhFBPIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 11:08:50 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:2863 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbhFBPIs (ORCPT
+        id S231657AbhFBPJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 11:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232220AbhFBPJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:08:48 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 02 Jun 2021 08:07:05 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 02 Jun 2021 08:07:03 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 02 Jun 2021 20:36:38 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id E033B211A6; Wed,  2 Jun 2021 20:36:36 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     andy.gross@linaro.org, david.brown@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v3] dt-bindings: media: venus: Add sc7280 dt schema
-Date:   Wed,  2 Jun 2021 20:36:32 +0530
-Message-Id: <1622646392-27141-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 2 Jun 2021 11:09:10 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEDCC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 08:07:13 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id c5so2638928wrq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 08:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vs3Wh4eIvni5P/DPP9QB7KFgHPP2DPvUYXX2oG5ziD8=;
+        b=Jv8riBA6hdAzuqqKPOkSJ02ahdlNA9yVktgdWbigMUOdm6bpxDApG6IxbmI1fsDrV0
+         od+qctz8WdJpLMlg/dh65H26zKlKq18C9r5Id/gmGsm86frMckOC7EoWbt0ijn0eL0JF
+         V2eoz1XbjOwarwofM8JZQSrsAfYcO3xSQaU0PbsEdI7qs5udvqBh0EPPIt9kv0811yzh
+         Y1ACLtstrLSq5QF+c1a7+IJpO2MbffII4oH2s6027S/4EDlqAHuOV2aC7HPIfRM+H8i3
+         rqVEckU/2Srs13LwwfmSQVfXeu/H9S/Z6a100JTKutK+gu0RXflckQNcpZ0l/fPiK0Hv
+         oNxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vs3Wh4eIvni5P/DPP9QB7KFgHPP2DPvUYXX2oG5ziD8=;
+        b=M+J1SghQONefSI5ST8ar0FrbvOMVsSjQM9Z7vlcMI7HIFB/ydem4pJZtj+MzgtSX9F
+         OgjyXbMNLIdQaZKfaA3geTRk6vzSkTgqWiXBtq+6yB/VVE9hz1uP4ROFQo0SFNt0tnRe
+         yacF2PbdPueMio7n8Uc6P5Zt4Ff2t/FEj6DCPzeZuQ/xGBeCpvUgTv8tsMyET1sPR2eq
+         ZiGr4BCCwezlSmbFkF3uYPaF/poLev3V651V1h3eMqDkt7GjAKgjh34TkiDagUtWwGum
+         K7Uq3oEfbHP6eB6X/GWPwFpiLEyLOXZxv5RIzwiv4xbrdNonY8u0q6YrjRsVPvCR5iOh
+         D7Ew==
+X-Gm-Message-State: AOAM533x+247s5McHd9dTV+dwqIpSLlMNLlY7eO8GssDF8tC54jtc760
+        JPnBWXRWakTzLflkIIVdbZ8ebhcFI/hTe1kK7WjTuA==
+X-Google-Smtp-Source: ABdhPJwg13/gEhL01WTUQpFs1K3FGrC8NR1Evds3qUYUCeEJOMNXDkC3cHVMY2cPzMBS6YuglZja7OitSEjs3ENc/Bs=
+X-Received: by 2002:a5d:58f6:: with SMTP id f22mr21961347wrd.128.1622646431784;
+ Wed, 02 Jun 2021 08:07:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210602112321.2241566-1-anup.patel@wdc.com> <20210602112321.2241566-6-anup.patel@wdc.com>
+ <CAPDyKFq2tvvAD=2RiePZzce=+OsDaxLWqz+90pTKjTTzqVqcHQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFq2tvvAD=2RiePZzce=+OsDaxLWqz+90pTKjTTzqVqcHQ@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 2 Jun 2021 20:36:59 +0530
+Message-ID: <CAAhSdy0jN1urNFu_mqqg2jbqzsfztQUJN62oB9dhDTH=RgLR-g@mail.gmail.com>
+Subject: Re: [PATCH v5 5/8] cpuidle: Factor-out power domain related code from
+ PSCI domain driver
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Sandeep Tripathy <milun.tripathy@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Liush <liush@allwinnertech.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a schema description for the venus video encoder/decoder on the sc7280.
+On Wed, Jun 2, 2021 at 6:47 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Wed, 2 Jun 2021 at 13:24, Anup Patel <anup.patel@wdc.com> wrote:
+> >
+> > The generic power domain related code in PSCI domain driver is largely
+> > independent of PSCI and can be shared with RISC-V SBI domain driver
+> > hence we factor-out this code into dt_idle_genpd.c and dt_idle_genpd.h.
+> >
+> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+>
+> A small nitpick below.
+>
+> [...]
+>
+> > +EXPORT_SYMBOL_GPL(dt_idle_pd_free);
+>
+> Do we really need to export this symbol? Looks like there are only
+> built-in cpuidle drivers that are going to use it. At least for now.
+>
+> As a matter of fact, the same comment applies to all cases of
+> EXPORT_SYMBOL_GPL from $subject patch. Can we drop all of them?
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- .../bindings/media/qcom,sc7280-venus.yaml          | 159 +++++++++++++++++++++
- 1 file changed, 159 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+I had kept the EXPORT_SYMBOL_GPL() to be in-sync with the
+dt_idle_states.c but in this case I agree we don't need to export.
 
-diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-new file mode 100644
-index 0000000..b8574db
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-@@ -0,0 +1,159 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Qualcomm Venus video encode and decode accelerators
-+
-+maintainers:
-+  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
-+
-+description: |
-+  The Venus Iris2 IP is a video encode and decode accelerator present
-+  on Qualcomm platforms
-+
-+properties:
-+  compatible:
-+    const: qcom,sc7280-venus
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  power-domains:
-+    minItems: 2
-+    maxItems: 3
-+
-+  power-domain-names:
-+    minItems: 2
-+    maxItems: 3
-+    items:
-+      - const: venus
-+      - const: vcodec0
-+      - const: cx
-+
-+  clocks:
-+    maxItems: 5
-+
-+  clock-names:
-+    items:
-+      - const: core
-+      - const: bus
-+      - const: iface
-+      - const: vcodec_core
-+      - const: vcodec_bus
-+
-+  iommus:
-+    maxItems: 2
-+
-+  memory-region:
-+    maxItems: 1
-+
-+  interconnects:
-+    maxItems: 2
-+
-+  interconnect-names:
-+    items:
-+      - const: cpu-cfg
-+      - const: video-mem
-+
-+  video-decoder:
-+    type: object
-+
-+    properties:
-+      compatible:
-+        const: venus-decoder
-+
-+    required:
-+      - compatible
-+
-+    additionalProperties: false
-+
-+  video-encoder:
-+    type: object
-+
-+    properties:
-+      compatible:
-+        const: venus-encoder
-+
-+    required:
-+      - compatible
-+
-+    additionalProperties: false
-+
-+  video-firmware:
-+    type: object
-+
-+    description: |
-+      Firmware subnode is needed when the platform does not
-+      have TrustZone.
-+
-+    properties:
-+      iommus:
-+        maxItems: 1
-+
-+    required:
-+      - iommus
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - power-domains
-+  - power-domain-names
-+  - clocks
-+  - clock-names
-+  - iommus
-+  - memory-region
-+  - video-decoder
-+  - video-encoder
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
-+
-+        venus: video-codec@aa00000 {
-+                compatible = "qcom,sc7280-venus";
-+                reg = <0x0aa00000 0xd0600>;
-+                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+
-+                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-+                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-+                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-+                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-+                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-+                clock-names = "core", "bus", "iface",
-+                              "vcodec_core", "vcodec_bus";
-+
-+                power-domains = <&videocc MVSC_GDSC>,
-+                                <&videocc MVS0_GDSC>;
-+                                <&rpmhpd SC7280_CX>;
-+                power-domain-names = "venus", "vcodec0", "cx";
-+
-+                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>
-+                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-+                interconnect-names = "cpu-cfg", "video-mem";
-+
-+                iommus = <&apps_smmu 0x2180 0x20>,
-+                         <&apps_smmu 0x2184 0x20>;
-+
-+                memory-region = <&video_mem>;
-+
-+                video-decoder {
-+                        compatible = "venus-decoder";
-+                };
-+
-+                video-encoder {
-+                        compatible = "venus-encoder";
-+                };
-+
-+                video-firmware {
-+                        iommus = <&apps_smmu 0x21a2 0x0>;
-+                };
-+        };
--- 
-2.7.4
+I will drop all EXPORT_SYMBOL_GPL() in the next patch revision.
 
+Regards,
+Anup
+
+>
+> [...]
+>
+> Kind regards
+> Uffe
