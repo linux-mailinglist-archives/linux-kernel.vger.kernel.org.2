@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0748D398177
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDB7398172
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 08:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhFBGzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 02:55:53 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3336 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbhFBGzt (ORCPT
+        id S229975AbhFBGze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 02:55:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2946 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhFBGzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 02:55:49 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fw04b1S1Sz19S7R;
-        Wed,  2 Jun 2021 14:49:19 +0800 (CST)
+        Wed, 2 Jun 2021 02:55:32 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fw06L4mC9z66Y3;
+        Wed,  2 Jun 2021 14:50:50 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 14:53:47 +0800
+ 15.1.2176.2; Wed, 2 Jun 2021 14:53:48 +0800
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -31,9 +31,9 @@ CC:     Catalin Marinas <catalin.marinas@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jungseung Lee <js07.lee@gmail.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 3/7] ARM: mm: Cleanup access_error()
-Date:   Wed, 2 Jun 2021 15:02:42 +0800
-Message-ID: <20210602070246.83990-4-wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 4/7] ARM: mm: print out correct page table entries
+Date:   Wed, 2 Jun 2021 15:02:43 +0800
+Message-ID: <20210602070246.83990-5-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
 References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
@@ -48,97 +48,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now the write fault check in do_page_fault() and access_error() twice,
-we can cleanup access_error(), and make the fault check and vma flags set
-into do_page_fault() directly, then pass the vma flags to __do_page_fault.
-
-No functional change.
+Like commit 67ce16ec15ce ("arm64: mm: print out correct page table entries")
+does, drop the struct mm_struct argument of show_pte(), print the tables
+based on the faulting address.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/arm/mm/fault.c | 38 ++++++++++++++------------------------
- 1 file changed, 14 insertions(+), 24 deletions(-)
+ arch/arm/include/asm/bug.h |  2 +-
+ arch/arm/kernel/traps.c    |  2 +-
+ arch/arm/mm/fault.c        | 36 ++++++++++++++++++++----------------
+ 3 files changed, 22 insertions(+), 18 deletions(-)
 
+diff --git a/arch/arm/include/asm/bug.h b/arch/arm/include/asm/bug.h
+index ba8d9d7d242b..d618640e34aa 100644
+--- a/arch/arm/include/asm/bug.h
++++ b/arch/arm/include/asm/bug.h
+@@ -86,7 +86,7 @@ extern asmlinkage void c_backtrace(unsigned long fp, int pmode,
+ 				   const char *loglvl);
+ 
+ struct mm_struct;
+-void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr);
++void show_pte(const char *lvl, unsigned long addr);
+ extern void __show_regs(struct pt_regs *);
+ extern void __show_regs_alloc_free(struct pt_regs *regs);
+ 
+diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+index 64308e3a5d0c..98c904aeee78 100644
+--- a/arch/arm/kernel/traps.c
++++ b/arch/arm/kernel/traps.c
+@@ -736,7 +736,7 @@ baddataabort(int code, unsigned long instr, struct pt_regs *regs)
+ 		pr_err("[%d] %s: bad data abort: code %d instr 0x%08lx\n",
+ 		       task_pid_nr(current), current->comm, code, instr);
+ 		dump_instr(KERN_ERR, regs);
+-		show_pte(KERN_ERR, current->mm, addr);
++		show_pte(KERN_ERR, addr);
+ 	}
+ #endif
+ 
 diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
-index 249db395bdf0..9a6d74f6ea1d 100644
+index 9a6d74f6ea1d..71a5c29488c2 100644
 --- a/arch/arm/mm/fault.c
 +++ b/arch/arm/mm/fault.c
-@@ -183,26 +183,9 @@ void do_bad_area(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
- #define VM_FAULT_BADMAP		0x010000
- #define VM_FAULT_BADACCESS	0x020000
+@@ -27,15 +27,23 @@
+ #ifdef CONFIG_MMU
  
--/*
-- * Check that the permissions on the VMA allow for the fault which occurred.
-- * If we encountered a write fault, we must have write permission, otherwise
-- * we allow any permission.
-- */
--static inline bool access_error(unsigned int fsr, struct vm_area_struct *vma)
--{
--	unsigned int mask = VM_ACCESS_FLAGS;
--
--	if ((fsr & FSR_WRITE) && !(fsr & FSR_CM))
--		mask = VM_WRITE;
--	if (fsr & FSR_LNX_PF)
--		mask = VM_EXEC;
--
--	return vma->vm_flags & mask ? false : true;
--}
--
- static vm_fault_t __kprobes
--__do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
--		unsigned int flags, struct pt_regs *regs)
-+__do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int flags,
-+		unsigned long vma_flags, struct pt_regs *regs)
+ /*
+- * This is useful to dump out the page tables associated with
+- * 'addr' in mm 'mm'.
++ * Dump out the page tables associated with 'addr' in the currently active mm
+  */
+-void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr)
++void show_pte(const char *lvl, unsigned long addr)
  {
- 	struct vm_area_struct *vma = find_vma(mm, addr);
- 	if (unlikely(!vma))
-@@ -218,10 +201,10 @@ __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
- 	}
- 
- 	/*
--	 * Ok, we have a good vm_area for this
--	 * memory access, so we can handle it.
-+	 * ok, we have a good vm_area for this memory access, check the
-+	 * permissions on the VMA allow for the fault which occurred.
- 	 */
--	if (access_error(fsr, vma))
-+	if (!(vma->vm_flags & vma_flags))
- 		return VM_FAULT_BADACCESS;
- 
- 	return handle_mm_fault(vma, addr & PAGE_MASK, flags, regs);
-@@ -234,6 +217,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
- 	int sig, code;
- 	vm_fault_t fault;
- 	unsigned int flags = FAULT_FLAG_DEFAULT;
-+	unsigned long vm_flags = VM_ACCESS_FLAGS;
- 
- 	if (kprobe_page_fault(regs, fsr))
- 		return 0;
-@@ -252,8 +236,14 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
- 
- 	if (user_mode(regs))
- 		flags |= FAULT_FLAG_USER;
--	if ((fsr & FSR_WRITE) && !(fsr & FSR_CM))
+ 	pgd_t *pgd;
+-
+-	if (!mm)
++	struct mm_struct *mm;
 +
-+	if ((fsr & FSR_WRITE) && !(fsr & FSR_CM)) {
- 		flags |= FAULT_FLAG_WRITE;
-+		vm_flags = VM_WRITE;
++	if (addr < TASK_SIZE) {
++		mm = current->active_mm;
++		if (mm == &init_mm) {
++			printk("%s[%08lx] user address but active_mm is swapper\n",
++				lvl, addr);
++			return;
++		}
++	} else {
+ 		mm = &init_mm;
 +	}
-+
-+	if (fsr & FSR_LNX_PF)
-+		vm_flags = VM_EXEC;
  
- 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+ 	printk("%spgd = %p\n", lvl, mm->pgd);
+ 	pgd = pgd_offset(mm, addr);
+@@ -96,7 +104,7 @@ void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr)
+ 	pr_cont("\n");
+ }
+ #else					/* CONFIG_MMU */
+-void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr)
++void show_pte(const char *lvl, unsigned long addr)
+ { }
+ #endif					/* CONFIG_MMU */
  
-@@ -281,7 +271,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
- #endif
+@@ -104,8 +112,7 @@ void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr)
+  * Oops.  The kernel tried to access some page that wasn't present.
+  */
+ static void
+-__do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
+-		  struct pt_regs *regs)
++__do_kernel_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ {
+ 	/*
+ 	 * Are we prepared to handle this kernel fault?
+@@ -122,7 +129,7 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
+ 		 (addr < PAGE_SIZE) ? "NULL pointer dereference" :
+ 		 "paging request", addr);
+ 
+-	show_pte(KERN_ALERT, mm, addr);
++	show_pte(KERN_ALERT, addr);
+ 	die("Oops", regs, fsr);
+ 	bust_spinlocks(0);
+ 	do_exit(SIGKILL);
+@@ -147,7 +154,7 @@ __do_user_fault(unsigned long addr, unsigned int fsr, unsigned int sig,
+ 		pr_err("8<--- cut here ---\n");
+ 		pr_err("%s: unhandled page fault (%d) at 0x%08lx, code 0x%03x\n",
+ 		       tsk->comm, sig, addr, fsr);
+-		show_pte(KERN_ERR, tsk->mm, addr);
++		show_pte(KERN_ERR, addr);
+ 		show_regs(regs);
  	}
+ #endif
+@@ -166,9 +173,6 @@ __do_user_fault(unsigned long addr, unsigned int fsr, unsigned int sig,
  
--	fault = __do_page_fault(mm, addr, fsr, flags, regs);
-+	fault = __do_page_fault(mm, addr, flags, vm_flags, regs);
+ void do_bad_area(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ {
+-	struct task_struct *tsk = current;
+-	struct mm_struct *mm = tsk->active_mm;
+-
+ 	/*
+ 	 * If we are in kernel mode at this point, we
+ 	 * have no context to handle this fault with.
+@@ -176,7 +180,7 @@ void do_bad_area(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 	if (user_mode(regs))
+ 		__do_user_fault(addr, fsr, SIGSEGV, SEGV_MAPERR, regs);
+ 	else
+-		__do_kernel_fault(mm, addr, fsr, regs);
++		__do_kernel_fault(addr, fsr, regs);
+ }
  
- 	/* If we need to retry but a fatal signal is pending, handle the
- 	 * signal first. We do not need to release the mmap_lock because
+ #ifdef CONFIG_MMU
+@@ -336,7 +340,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 	return 0;
+ 
+ no_context:
+-	__do_kernel_fault(mm, addr, fsr, regs);
++	__do_kernel_fault(addr, fsr, regs);
+ 	return 0;
+ }
+ #else					/* CONFIG_MMU */
+@@ -503,7 +507,7 @@ do_DataAbort(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 	pr_alert("8<--- cut here ---\n");
+ 	pr_alert("Unhandled fault: %s (0x%03x) at 0x%08lx\n",
+ 		inf->name, fsr, addr);
+-	show_pte(KERN_ALERT, current->mm, addr);
++	show_pte(KERN_ALERT, addr);
+ 
+ 	arm_notify_die("", regs, inf->sig, inf->code, (void __user *)addr,
+ 		       fsr, 0);
 -- 
 2.26.2
 
