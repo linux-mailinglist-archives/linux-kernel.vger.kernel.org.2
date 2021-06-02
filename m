@@ -2,155 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51ADB3989D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667073989D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 14:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhFBMm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 08:42:27 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46128 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhFBMmV (ORCPT
+        id S229640AbhFBMne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 08:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhFBMnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:42:21 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1loQAj-000D4R-Ns; Wed, 02 Jun 2021 14:40:33 +0200
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1loQAj-000MyV-DJ; Wed, 02 Jun 2021 14:40:33 +0200
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com
-References: <20210517092006.803332-1-omosnace@redhat.com>
- <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
- <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
- <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net>
- <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
- <2e541bdc-ae21-9a07-7ac7-6c6a4dda09e8@iogearbox.net>
- <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3ca181e3-df32-9ae0-12c6-efb899b7ce7a@iogearbox.net>
-Date:   Wed, 2 Jun 2021 14:40:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 2 Jun 2021 08:43:33 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F122BC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 05:41:35 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id b14so1671745ilq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 05:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ODbQe1YSi6NuLMGCT7TprctatBNNgvpkRNoWp17d0T4=;
+        b=gPjQp+GT70eRjAYBjje/x/PQdPOl6yFPytQOp7P1mao9ZEe5pCuMYrJY4bGYU+oDH1
+         wbFEaqIa3xON7y20+yQySQn7hhydul7KGOeviE1o7lKGHfvLox9aKcomLsDXcvc3qi8l
+         y9CmI9XolN2tq1oCdKdoeJhaRZ5BTIBRl+V+oB1NTGf+8OOv75x8dsJ+Rxrk2Q8yFpiq
+         DPRomGaSN6kTY5ze04PbmVSOFPMRABA4a/P35GM+iCxOi5tT5HZsvXF8Kte7QI1tfYqX
+         Ad6/iA6He0Ce4AJ9VXZbNzMxEKUi55BMVdCyiV+JHYNlJeZANedGfK5NfpUL3ZCoXMxl
+         +z7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ODbQe1YSi6NuLMGCT7TprctatBNNgvpkRNoWp17d0T4=;
+        b=eG4qtFH5KDAHNo956xx69k3WEnX2+EsOjG394N670N+DxFeYjkfCwNoPVBZNVOijjK
+         ZhVcvioVvXlJIbBKU2244AJB1rsISPNFxURW4rtpXHMJdFPC5CDE+7yo2Wt1+WUyFw0T
+         BacT88Kwi4YX+jmUG/V4S/4+DGCRUUuXxlA8X3d4gkbFmVwodEL7cyMXkw/S+raYK2ES
+         o/p0BcHSFygMzcF5PoghAkRlckod4EatkwTKrZo48qfTesd5BfSwHGarZwsqEfIh1xLr
+         go9nxSXOZVbOPDDgjQYpbHDua7FOUVqFIWPQH2aE2eoUDPGPpu9yp3DaMk3Kjne9Utv4
+         d4RA==
+X-Gm-Message-State: AOAM533aOV5ucQtuzYLu0E1dUN+m2EJJZ5OCLpC9OnPgqxIuOaZPblqY
+        mtZtPS50Octxk8eYueqAYazMSw==
+X-Google-Smtp-Source: ABdhPJxE5/tPWv1Lb824MsZ8rrXHHy5SF5mUlvLHc+aY0KGxLKdpaYg5Mp+ATKUnG3+eSBXAiPXYig==
+X-Received: by 2002:a05:6e02:1648:: with SMTP id v8mr25141534ilu.289.1622637695128;
+        Wed, 02 Jun 2021 05:41:35 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id v18sm11087054iob.3.2021.06.02.05.41.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 05:41:34 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        sharathv@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/2] net: ipa: support inline checksum offload
+Date:   Wed,  2 Jun 2021 07:41:29 -0500
+Message-Id: <20210602124131.298325-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26189/Wed Jun  2 13:10:34 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 10:47 PM, Paul Moore wrote:
-> On Mon, May 31, 2021 at 4:24 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 5/29/21 8:48 PM, Paul Moore wrote:
->> [...]
->>> Daniel's patch side steps that worry by just doing the lockdown
->>> permission check when the BPF program is loaded, but that isn't a
->>> great solution if the policy changes afterward.  I was hoping there
->>> might be some way to perform the permission check as needed, but the
->>> more I look the more that appears to be difficult, if not impossible
->>> (once again, corrections are welcome).
->>
->> Your observation is correct, will try to clarify below a bit.
->>
->>> I'm now wondering if the right solution here is to make use of the LSM
->>> notifier mechanism.  I'm not yet entirely sure if this would work from
->>> a BPF perspective, but I could envision the BPF subsystem registering
->>> a LSM notification callback via register_blocking_lsm_notifier(), see
->>> if Infiniband code as an example, and then when the LSM(s) policy
->>> changes the BPF subsystem would get a notification and it could
->>> revalidate the existing BPF programs and take block/remove/whatever
->>> the offending BPF programs.  This obviously requires a few things
->>> which I'm not sure are easily done, or even possible:
->>>
->>> 1. Somehow the BPF programs would need to be "marked" at
->>> load/verification time with respect to their lockdown requirements so
->>> that decisions can be made later.  Perhaps a flag in bpf_prog_aux?
->>>
->>> 2. While it looks like it should be possible to iterate over all of
->>> the loaded BPF programs in the LSM notifier callback via
->>> idr_for_each(prog_idr, ...), it is not clear to me if it is possible
->>> to safely remove, or somehow disable, BPF programs once they have been
->>> loaded.  Hopefully the BPF folks can help answer that question.
->>>
->>> 3. Disabling of BPF programs might be preferable to removing them
->>> entirely on LSM policy changes as it would be possible to make the
->>> lockdown state less restrictive at a future point in time, allowing
->>> for the BPF program to be executed again.  Once again, not sure if
->>> this is even possible.
->>
->> Part of why this gets really complex/impossible is that BPF programs in
->> the kernel are reference counted from various sides, be it that there
->> are references from user space to them (fd from application, BPF fs, or
->> BPF links), hooks where they are attached to as well as tail call maps
->> where one BPF prog calls into another. There is currently also no global
->> infra of some sort where you could piggy back to atomically keep track of
->> all the references in a list or such. And the other thing is that BPF progs
->> have no ownership that is tied to a specific task after they have been
->> loaded. Meaning, once they are loaded into the kernel by an application
->> and attached to a specific hook, they can remain there potentially until
->> reboot of the node, so lifecycle of the user space application != lifecycle
->> of the BPF program.
-> 
-> I don't think the disjoint lifecycle or lack of task ownership is a
-> deal breaker from a LSM perspective as the LSMs can stash whatever
-> info they need in the security pointer during the program allocation
-> hook, e.g. selinux_bpf_prog_alloc() saves the security domain which
-> allocates/loads the BPF program.
-> 
-> The thing I'm worried about would be the case where a LSM policy
-> change requires that an existing BPF program be removed or disabled.
-> I'm guessing based on the refcounting that there is not presently a
-> clean way to remove a BPF program from the system, but is this
-> something we could resolve?  If we can't safely remove a BPF program
-> from the system, can we replace/swap it with an empty/NULL BPF
-> program?
+Inline offload--required for checksum offload support on IPA version
+4.5 and above--is now supported by the RMNet driver:
+  https://lore.kernel.org/netdev/162259440606.2786.10278242816453240434.git-patchwork-notify@kernel.org/
 
-Removing progs would somehow mean destroying those references from an
-async event and then /safely/ guaranteeing that nothing is accessing
-them anymore. But then if policy changes once more where they would
-be allowed again we would need to revert back to the original state,
-which brings us to your replace/swap question with an empty/null prog.
-It's not feasible either, because there are different BPF program types
-and they can have different return code semantics that lead to subsequent
-actions. If we were to replace them with an empty/NULL program, then
-essentially this will get us into an undefined system state given it's
-unclear what should be a default policy for each program type, etc.
-Just to pick one simple example, outside of tracing, that comes to mind:
-say, you attached a program with tc to a given device ingress hook. That
-program implements firewalling functionality, and potentially deep down
-in that program there is functionality to record/sample packets along
-with some meta data. Part of what is exported to the ring buffer to the
-user space reader may be a struct net_device field that is otherwise not
-available (or at least not yet), hence it's probe-read with mentioned
-helpers. If you were now to change the SELinux policy for that tc loader
-application, and therefore replace/swap the progs in the kernel that were
-loaded with it (given tc's lockdown policy was recorded in their sec blob)
-with an empty/NULL program, then either you say allow-all or drop-all,
-but either way, you break the firewalling functionality completely by
-locking yourself out of the machine or letting everything through. There
-is no sane way where we could reason about the context/internals of a
-given program where it would be safe to replace with a simple empty/NULL
-prog.
+Add support for it in the IPA driver, and revert the commit that
+disabled it pending acceptance of the RMNet code.
 
-Best,
-Daniel
+					-Alex
+
+Alex Elder (2):
+  net: ipa: add support for inline checksum offload
+  Revert "net: ipa: disable checksum offload for IPA v4.5+"
+
+ drivers/net/ipa/ipa_endpoint.c | 63 +++++++++++++++++++---------------
+ drivers/net/ipa/ipa_reg.h      |  1 +
+ 2 files changed, 37 insertions(+), 27 deletions(-)
+
+-- 
+2.27.0
+
