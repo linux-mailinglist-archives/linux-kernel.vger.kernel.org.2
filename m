@@ -2,108 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E96398C8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A194A398C85
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 16:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhFBOVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 10:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbhFBOUA (ORCPT
+        id S232661AbhFBOTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 10:19:09 -0400
+Received: from mail.efficios.com ([167.114.26.124]:40610 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231982AbhFBORB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 10:20:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE749C061343
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 07:15:13 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622643311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OiC947Q2dhRoFMhU4hnm3hnzs9cb7ezMk8IdRSSaldc=;
-        b=ZTQh1SU8XI4cIVAojGZOkZQdc/4otLiETCCv01ttQB7qRZ4CaCc38o37ecDKcq7sU2GXMt
-        0nQSqapYFve1Le47Ob5uNXe+FK1GAntPdiezQKOS6bZc2dryLtBGxJtRH5ESBE85aDNAfH
-        35BTv0jijvcf6/Rwz9Zew+5XO6s/vZyiZlJ16MH/zWuQ7fTqTtntJjCrhcwhSM55Ne5Gec
-        qM0ckvVMDkXPNQldisD3uTZzAZvRsfTwV5TOLMkY59QenIjF9SzmAeejeWB8kFzk5hhqIj
-        Zk2tWYPHkgxvUgF5eXCXQdsZynKmXHAnuCnREANkU2fuKLmCAY2oLxoixLQuug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622643311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OiC947Q2dhRoFMhU4hnm3hnzs9cb7ezMk8IdRSSaldc=;
-        b=7rw1fcYB6QhwyTvK4mHIXSPKbHP1Jlq6GhSw0DLx6weiHfGVs+VSS5x+BD/PSNb2gntIY2
-        D46ubLXhpb6ViGCQ==
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [patch 1/8] selftests/x86: Test signal frame XSTATE header corruption handling
-In-Reply-To: <YLd7s/cw8MsUlWvM@zn.tnic>
-References: <20210602095543.149814064@linutronix.de> <20210602101618.285452223@linutronix.de> <YLd7s/cw8MsUlWvM@zn.tnic>
-Date:   Wed, 02 Jun 2021 16:15:11 +0200
-Message-ID: <87a6o81hg0.ffs@nanos.tec.linutronix.de>
+        Wed, 2 Jun 2021 10:17:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 2C430302C5A;
+        Wed,  2 Jun 2021 10:15:17 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id MFUulvWoU4e4; Wed,  2 Jun 2021 10:15:16 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 935A5302C57;
+        Wed,  2 Jun 2021 10:15:16 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 935A5302C57
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1622643316;
+        bh=wTS/crR/26N4BDTiNFNNZoqsETfUenagK9Jc/umukAM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=HjuuxeCx/W0ucWdgkdPe4Ltmueov6LEz9QoWVQ9n275sUH5V2BfBx2uLemee8nOgV
+         iEPOUdYsPm3Mmmkxyd2M/xe2NzuiK0lte25kNJqF/D6aBdMudEsd6+/AvYnVI3XvQB
+         I3eKlxdMnA/4sIrtiEyziYHBHFsURA8x1tU1usHbZhQ+Nqw4zpB4HKNzuSQ6QLswXS
+         8VevSWMXfGVlYdJrwg5WBPwEe4w0fAdx0pE768+FRtKKL3etA75RfRjkypdxFoVZY5
+         KUm3EJy+oFxv1WaIjL0MV00CLSuspl8VcSBxV1CpXr+Or5zRpRWJvt+/OT6gN/Sqjt
+         hvtczOpS4cKPQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id toHMU-3uXU92; Wed,  2 Jun 2021 10:15:16 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 702A6302A65;
+        Wed,  2 Jun 2021 10:15:16 -0400 (EDT)
+Date:   Wed, 2 Jun 2021 10:15:16 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>, bristot <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        paulmck <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        linux-usb@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        cgroups <cgroups@vger.kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu <rcu@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        KVM list <kvm@vger.kernel.org>
+Message-ID: <1524365960.5868.1622643316351.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210602133040.398289363@infradead.org>
+References: <20210602131225.336600299@infradead.org> <20210602133040.398289363@infradead.org>
+Subject: Re: [PATCH 3/6] sched,perf,kvm: Fix preemption condition
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4026)
+Thread-Topic: sched,perf,kvm: Fix preemption condition
+Thread-Index: NELkknquBPwUAC7hR8bH+DhrqDwz1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02 2021 at 14:38, Borislav Petkov wrote:
-> On Wed, Jun 02, 2021 at 11:55:44AM +0200, Thomas Gleixner wrote:
->> From: Andy Lutomirski <luto@kernel.org>
->> 
->> This is very heavily based on some code from Thomas Gleixner.  On a system
->> without XSAVES, it triggers the WARN_ON():
->> 
->>     Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
->
-> That triggers
->
-> [  149.497274] corrupt_xstate_[1627] bad frame in rt_sigreturn frame:00000000dad08ab1 ip:7f031449ffe1 sp:7ffd0c5c59f0 orax:ffffffffffffffff in libpthread-2.31.so[7f0314493000+10000]
->
-> on an AMD laptop here.
+----- On Jun 2, 2021, at 9:12 AM, Peter Zijlstra peterz@infradead.org wrote:
+[...]
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -8568,13 +8568,12 @@ static void perf_event_switch(struct tas
+> 		},
+> 	};
+> 
+> -	if (!sched_in && task->state == TASK_RUNNING)
+> +	if (!sched_in && current->on_rq) {
+> 		switch_event.event_id.header.misc |=
+> 				PERF_RECORD_MISC_SWITCH_OUT_PREEMPT;
+> +	}
+> 
+> -	perf_iterate_sb(perf_event_switch_output,
+> -		       &switch_event,
+> -		       NULL);
+> +	perf_iterate_sb(perf_event_switch_output, &switch_event, NULL);
+> }
 
-Yes, that's the ratelimited printk in the signal code.
+There is a lot of code cleanup going on here which does not seem to belong
+to a "Fix" patch.
 
->> +static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
->> +			   unsigned int *ecx, unsigned int *edx)
->> +{
->> +	asm volatile(
->> +		"cpuid;"
->> +		: "=a" (*eax),
->> +		  "=b" (*ebx),
->> +		  "=c" (*ecx),
->> +		  "=d" (*edx)
->> +		: "0" (*eax), "2" (*ecx));
->> +}
->> +
->> +static inline int xsave_enabled(void)
->> +{
->> +	unsigned int eax, ebx, ecx, edx;
->> +
->> +	eax = 0x1;
->> +	ecx = 0x0;
->> +	__cpuid(&eax, &ebx, &ecx, &edx);
->> +
->> +	/* Is CR4.OSXSAVE enabled ? */
->> +	return ecx & (1U << 27);
->> +}
->
-> One fine day someone should sit down and unify all those auxillary
-> functions used in the selftests into a lib...
+Thanks,
 
-Yes please. Shuah, that would be a great newcomer task...
+Mathieu
 
->> +
->> +int main()
->
-> ERROR: Bad function definition - int main() should probably be int main(void)
-
-Bah, I thought I had fixed that.
-
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
