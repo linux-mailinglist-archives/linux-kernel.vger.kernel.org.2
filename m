@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8083991D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8353991D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Jun 2021 19:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFBRkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 13:40:40 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:35836 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhFBRki (ORCPT
+        id S230288AbhFBRlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 13:41:46 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:37875 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhFBRlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 13:40:38 -0400
-Received: by mail-wr1-f51.google.com with SMTP id m18so3140637wrv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:38:54 -0700 (PDT)
+        Wed, 2 Jun 2021 13:41:44 -0400
+Received: by mail-wr1-f48.google.com with SMTP id q5so3139460wrs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 10:40:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+yaTa+zDqmDiAibU5zoH8Z7YnQKRwY03Jyu/LIqtjEI=;
-        b=NweQXUximI5ePuS0XoWrWeT2EWTWo74GFJr3gtWpYr4cBa/glGPCN1MFlztMmepXSt
-         Vd+fbZUDe+a5tB+iB/Wbapbm2KVoW96cmcBe8F2P0kkPLtsDvIfcmdGfmbO7fJzG0Zk7
-         QOp0ET0vMmsIhYhJXvLtUv1MsbC5taoVQH0DQSDnPGXzEZfKkR6aT94XYk0vILzdgB7Y
-         q2SIEJmDPMsjAC2BXzw3yhqibiLA3x+sDITaR01MOpDdMA8usM26KGz0DbZQtDnJDFTV
-         4PhF3is4/MZo9nsFotUgEtsFiBRan+5V8KpuZL2r7CB9s38/kYvyhEd2xo5DwkArz5Ua
-         cbpQ==
+        bh=/02sy6oOViNbHHBaDZqQhDQMJN4Cdi+we0/yqFZJVNw=;
+        b=qS3AVkpFkpnspfrdsD/ehcXaEiyjSswgJzpa5IhLCqCha28PWUn6TCa3e2XgapcpDg
+         Ca6LBSSZeex3sWlJ8FbB/ofiEf5MJSf1tBsFj4WV2SwnxbiwbmQQnPg+BJNzzNZUTZAM
+         h8f5Vf+ol1VPEpFoKxXtG156nbbw/9KdoReNmplwkM2hEO2Zs3kwCDEtxK2MU20XtoYu
+         xH0PfUASUc3QpZlXLyl8vuT3gNLgs2FNCyHBbfONYZsMgNbaEe9jtHhiFNdYLtExOneW
+         WDXisR+4EkJKk9lx69aVyfJc/r9VdD/XL0J97K6IeSEs3ZSKDm0FQ7BfXXRFSmieYCq5
+         Lhrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=+yaTa+zDqmDiAibU5zoH8Z7YnQKRwY03Jyu/LIqtjEI=;
-        b=GF0E8efC7+lx+rzu2h9HN6IXGIjneTVcc+pEyPeldL/ryFfRq/zBk8v4V0wtxBhI1D
-         aXrn0zJnY2pfw1NCB3dR7eaqFoAnUMyRVx+RQ7/tsYUHrllZfjcPatVZFexXUjRxCSg2
-         CQE9Lc9boUgPoZ4FdHoD9YZ7J2chDohxGX4FVAKyCsTvuXY2VZHTtosR2dymdnGoRcRJ
-         8uZLwVuDnDV9zJ4ASoE0XjBzZUzCNE9x41N45LMS0X9WxHZlkFv8sdp7Lgp/IzbjinjZ
-         HRda0auJww3TOR4lGI8jdMPbvWd0E4Tdvvjid/S2qyXP0XQa2XmwMxuHkHCKjBwMVNvE
-         utCQ==
-X-Gm-Message-State: AOAM533+zrRIwt9u8s4W1AqsvV1KUSQlc6sHAK+/oBD2QzR+5o9NujHP
-        AJLcVhBZB0/Vr4zmm/gY53OpFg==
-X-Google-Smtp-Source: ABdhPJweKZb3mxKzWSBDkCYDSjNL1O4y6OXQiFdyWx0qycUJBjK5T89gdX9sOaxWit8bK7NhrooxDQ==
-X-Received: by 2002:a05:6000:186a:: with SMTP id d10mr35384063wri.41.1622655474277;
-        Wed, 02 Jun 2021 10:37:54 -0700 (PDT)
+        bh=/02sy6oOViNbHHBaDZqQhDQMJN4Cdi+we0/yqFZJVNw=;
+        b=unHBQluP0cuktCokNVAzoMxqBcieynOIpjnSi9bnKlXCpnASjBSVUt8OSLJhSlkkyN
+         UQIoRS16Xk+xEF/PNb2BE11Xbgl5EBP+1D2ShkXQoi6HBuc6bBDPp8siXshZmPZOY+9R
+         DPpgBYishBhnvHK2GLLcqovM2gYZvD556xl5TFUPnCSvtg6buYZX5WanCkdIBbdb2kA0
+         QLiCMrGeEdy/wfNRoW/JtwxMUtZOxpx2y5nfrCG74uFafooXajIWOmaDim35VOP3KFiA
+         zWqt5YWZsPtiGFBGrrPFbWUNjt+B1sDzKCfn77yQEZKfK2dVRSCLnYE611BBOm9Fn2S4
+         KT6Q==
+X-Gm-Message-State: AOAM5311hdrYu7eLiejS8WAZ49Aye1PL1QexN0yMBT2CccrlgMzVS4bc
+        KUL7qcvCR0r02s9gcNV6k/9rZS4bPX67kA==
+X-Google-Smtp-Source: ABdhPJyQTX71fqdBlsV3wg1dOqWbDMMRzBm1iAIn1NPZkqVerW/dV9HNP2c4HoFbBIKUOfUoxKBUJw==
+X-Received: by 2002:a05:6000:180f:: with SMTP id m15mr7614479wrh.60.1622655540668;
+        Wed, 02 Jun 2021 10:39:00 -0700 (PDT)
 Received: from dell ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id i34sm788478wri.3.2021.06.02.10.37.53
+        by smtp.gmail.com with ESMTPSA id l13sm611697wrv.57.2021.06.02.10.38.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 10:37:53 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 18:37:52 +0100
+        Wed, 02 Jun 2021 10:39:00 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 18:38:58 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Leo Li <sunpeng.li@amd.com>, Mauro Rossi <issor.oruam@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
         David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [RESEND 16/26] drm/amd/display/dc/dce/dce_transform: Remove
- superfluous re-initialisation of DCFE_MEM_LIGHT_SLEEP_CNTL,
-Message-ID: <20210602173752.GK2173308@dell>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND 18/26] drm/xlnx/zynqmp_dp: Fix incorrectly name function
+ 'zynqmp_dp_train()'
+Message-ID: <20210602173858.GL2173308@dell>
 References: <20210602143300.2330146-1-lee.jones@linaro.org>
- <20210602143300.2330146-17-lee.jones@linaro.org>
- <CADnq5_MHcth1p_00d=0ey+kg8o=_ZQk4t-RcU7zx3fb+35uy+g@mail.gmail.com>
+ <20210602143300.2330146-19-lee.jones@linaro.org>
+ <YLewgiMzhlR//gzQ@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADnq5_MHcth1p_00d=0ey+kg8o=_ZQk4t-RcU7zx3fb+35uy+g@mail.gmail.com>
+In-Reply-To: <YLewgiMzhlR//gzQ@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Jun 2021, Alex Deucher wrote:
+On Wed, 02 Jun 2021, Laurent Pinchart wrote:
 
-> On Wed, Jun 2, 2021 at 10:33 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
+> Hi Lee,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Jun 02, 2021 at 03:32:52PM +0100, Lee Jones wrote:
 > > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp_psp.c:374:22: warning: no previous prototype for ‘mod_hdcp_hdcp1_get_link_encryption_status’
-> >  In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:28:
-> >  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:568:43: warning: initialized field overwritten [-Woverride-init]
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:157:14: note: in expansion of macro ‘mmCRTC0_DCFE_MEM_LIGHT_SLEEP_CNTL’
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_transform.h:170:2: note: in expansion of macro ‘SRI’
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:183:3: note: in expansion of macro ‘XFM_COMMON_REG_LIST_DCE60’
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:187:3: note: in expansion of macro ‘transform_regs’
-> >  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:568:43: note: (near initialization for ‘xfm_regs[0].DCFE_MEM_LIGHT_SLEEP_CNTL’)
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:157:14: note: in expansion of macro ‘mmCRTC0_DCFE_MEM_LIGHT_SLEEP_CNTL’
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_transform.h:170:2: note: in expansion of macro ‘SRI’
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:183:3: note: in expansion of macro ‘XFM_COMMON_REG_LIST_DCE60’
-> >  drivers/gpu/drm/amd/amdgpu/../display/dc/dce60/dce60_resource.c:187:3: note: in expansion of macro ‘transform_regs’
-> >  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_6_0_d.h:645:43: warning: initialized field overwritten [-Woverride-init]
-> >
-> > Cc: Harry Wentland <harry.wentland@amd.com>
-> > Cc: Leo Li <sunpeng.li@amd.com>
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian König" <christian.koenig@amd.com>
+> > 
+> >  drivers/gpu/drm/xlnx/zynqmp_dp.c:806: warning: expecting prototype for zynqmp_dp_link_train(). Prototype was for zynqmp_dp_train() instead
+> > 
+> > Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 > > Cc: David Airlie <airlied@linux.ie>
 > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Mauro Rossi <issor.oruam@gmail.com>
-> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: Michal Simek <michal.simek@xilinx.com>
+> > Cc: Philipp Zabel <p.zabel@pengutronix.de>
 > > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-arm-kernel@lists.infradead.org
 > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > > ---
-> >  drivers/gpu/drm/amd/display/dc/dce/dce_transform.h | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
-> > index cbce194ec7b82..e98b5d4141739 100644
-> > --- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
-> > +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.h
-> > @@ -166,8 +166,7 @@
-> >         SRI(SCL_F_SHARP_CONTROL, SCL, id)
-> >
-> >  #define XFM_COMMON_REG_LIST_DCE60(id) \
-> > -       XFM_COMMON_REG_LIST_DCE60_BASE(id), \
-> > -       SRI(DCFE_MEM_LIGHT_SLEEP_CNTL, CRTC, id)
-> > +       XFM_COMMON_REG_LIST_DCE60_BASE(id)
+> >  drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> > index 82430ca9b9133..a1055d5055eab 100644
+> > --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> > +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> > @@ -797,7 +797,7 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
+> >  }
+> >  
+> >  /**
+> > - * zynqmp_dp_link_train - Train the link
+> > + * zynqmp_dp_train - Train the link
 > 
-> I believe DCFE_MEM_LIGHT_SLEEP_CNTL should be kept here and it should
-> be removed from
-> XFM_COMMON_REG_LIST_DCE60_BASE() to align with other asics.
+> The driver has other functions related to link training that start with
+> the zynqmp_dp_link_train_* prefix. I'd prefer renaming this function to
+> zynqmp_dp_link_train(). Bonus points if the same patch could rename
+> zynqmp_dp_train_loop() to zynqmp_dp_link_train_loop() too :-)
 
-Ack.  Sorry for missing this.
+Doesn't have much to do with this patch though? :)
+
+Happy to help though.  Can I fix subsequently?
 
 -- 
 Lee Jones [李琼斯]
