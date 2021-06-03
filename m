@@ -2,129 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88F2399D46
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D569399D4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhFCI7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:59:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45774 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhFCI7d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:59:33 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 31AC0219C5;
-        Thu,  3 Jun 2021 08:57:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622710668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9sDgb2emqxYptX4dZY9/zDI4UOgLdVYYIQHPfS6+CF8=;
-        b=KmJzr1J1myTp5jdxv36oVqaDps4jrGcdLt7HVHm6Rojl8scqhDwIgAwqGBhQu7GLL63uTs
-        wNIpR08sqqmJC0ZURSzsPZzjgY8788AO3BwYKh2qk8Suzd5UW7DzC4HoH7CDilTQkaeTSf
-        1qQ6+0Xb4Rpf63S9QkgWd2VD1oM6+/g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622710668;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9sDgb2emqxYptX4dZY9/zDI4UOgLdVYYIQHPfS6+CF8=;
-        b=R9Tg+TsvkEsLSruud73rOCf4IqRCfMpQzTyhB11G/1qRomiz9EbadycD7gnCmGaI1Sx9xQ
-        nC8g688z9lHro6Bg==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 1BDDFA3B85;
-        Thu,  3 Jun 2021 08:57:48 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DF8151F2C98; Thu,  3 Jun 2021 10:57:47 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 10:57:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 3/5] writeback, cgroup: split out the functional part
- of inode_switch_wbs_work_fn()
-Message-ID: <20210603085747.GF23647@quack2.suse.cz>
-References: <20210603005517.1403689-1-guro@fb.com>
- <20210603005517.1403689-4-guro@fb.com>
+        id S229794AbhFCJAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:00:17 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:54950 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229718AbhFCJAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:00:16 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lojBL-0004B6-0N; Thu, 03 Jun 2021 10:58:27 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>, Vinod Koul <vkoul@kernel.org>
+Cc:     robh+dt@kernel.org, kishon@ti.com, t.schramm@manjaro.org,
+        linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 1/5] dt-bindings: phy: rename phy nodename in phy-rockchip-inno-usb2.yaml
+Date:   Thu, 03 Jun 2021 10:58:26 +0200
+Message-ID: <3601774.Dhsi8hcfAM@diego>
+In-Reply-To: <YLhukPL7jSx3+dBj@vkoul-mobl>
+References: <20210601164800.7670-1-jbx6244@gmail.com> <20210601164800.7670-2-jbx6244@gmail.com> <YLhukPL7jSx3+dBj@vkoul-mobl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603005517.1403689-4-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-06-21 17:55:15, Roman Gushchin wrote:
-> Split out the functional part of the inode_switch_wbs_work_fn()
-> function as inode_do switch_wbs() to reuse it later for switching
-                      ^ underscore here
+Hi Vinod,
 
-> inodes attached to dying cgwbs.
+Am Donnerstag, 3. Juni 2021, 07:54:24 CEST schrieb Vinod Koul:
+> On 01-06-21, 18:47, Johan Jonker wrote:
+> > The pattern: "^(|usb-|usb2-|usb3-|pci-|pcie-|sata-)phy(@[0-9a-f,]+)*$"
+> > in phy-provider.yaml has required "#phy-cells" for phy nodes.
+> > The "phy-cells" in rockchip-inno-usb2 nodes are located in subnodes.
+> > Rename the nodename to pattern "usb2phy@[0-9a-f]+$" to prevent
+> > notifications. Remove unneeded "#phy-cells" from parent node.
+> > Also sort example.
+> > 
+> > make ARCH=arm dtbs_check
+> > DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/schemas/
+> > phy/phy-provider.yaml
+> > 
+> > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml       | 11 +++--------
+> >  Documentation/devicetree/bindings/soc/rockchip/grf.yaml       |  4 ++--
 > 
-> This commit doesn't bring any functional changes.
+> I dont have grf.yaml, I guess it would be easier to split this into two
+> or apply this thru rockchip tree. If you prefer latter:
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-By: Vinod Koul <vkoul@kernel.org>
 
-The patch looks good. Feel free to add:
+before we do any more rounds, I'll just do that with your Ack, thanks :-)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
 
-								Honza
+Heiko
 
-> ---
->  fs/fs-writeback.c | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 09d2770449ef..212494d89cc2 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -351,15 +351,12 @@ static void bdi_up_write_wb_switch_rwsem(struct backing_dev_info *bdi)
->  	up_write(&bdi->wb_switch_rwsem);
->  }
->  
-> -static void inode_switch_wbs_work_fn(struct work_struct *work)
-> +static void inode_do_switch_wbs(struct inode *inode,
-> +				struct bdi_writeback *new_wb)
->  {
-> -	struct inode_switch_wbs_context *isw =
-> -		container_of(to_rcu_work(work), struct inode_switch_wbs_context, work);
-> -	struct inode *inode = isw->inode;
->  	struct backing_dev_info *bdi = inode_to_bdi(inode);
->  	struct address_space *mapping = inode->i_mapping;
->  	struct bdi_writeback *old_wb = inode->i_wb;
-> -	struct bdi_writeback *new_wb = isw->new_wb;
->  	XA_STATE(xas, &mapping->i_pages, 0);
->  	struct page *page;
->  	bool switched = false;
-> @@ -470,11 +467,17 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
->  		wb_wakeup(new_wb);
->  		wb_put(old_wb);
->  	}
-> -	wb_put(new_wb);
-> +}
->  
-> -	iput(inode);
-> -	kfree(isw);
-> +static void inode_switch_wbs_work_fn(struct work_struct *work)
-> +{
-> +	struct inode_switch_wbs_context *isw =
-> +		container_of(to_rcu_work(work), struct inode_switch_wbs_context, work);
->  
-> +	inode_do_switch_wbs(isw->inode, isw->new_wb);
-> +	wb_put(isw->new_wb);
-> +	iput(isw->inode);
-> +	kfree(isw);
->  	atomic_dec(&isw_nr_in_flight);
->  }
->  
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+
