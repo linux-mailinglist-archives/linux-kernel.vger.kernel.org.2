@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6903B399A7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7DA399A86
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhFCGQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:16:32 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:39739 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhFCGQc (ORCPT
+        id S229818AbhFCGTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:19:47 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:33570 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFCGTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:16:32 -0400
-Received: by mail-oi1-f171.google.com with SMTP id m137so1359703oig.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 23:14:40 -0700 (PDT)
+        Thu, 3 Jun 2021 02:19:46 -0400
+Received: by mail-ot1-f51.google.com with SMTP id q9-20020a9d66490000b02903c741e5b703so3656652otm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 23:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=e3PDKrL5MVOFhdI4AdMvQfhjcpRkxau04Ply0138w7E=;
-        b=LAemQ8PV7z/sZ5epDYtMuLEXUGtStxQKEHRht7XgX/IxKUJiGCdh0Eplyp1k9ExmQo
-         bcurPq3MV8FHoiU9iybK/cgbxOzbSfVwIlWcrO47AuMn9lHDa8W4aPQgI9V2SmCZboCS
-         1IKUirWjiGGLdTW2Dy00FWB7sqnBp+gPaN2gM=
+         :subject:to;
+        bh=AORJO5loH8P1GCxBtXakps2SGxdj+XmHegIFz60ntSY=;
+        b=m+a8Q1UpsGAwg2QV2ag3baMSuw4sbbIdKA/R3hm/N9Rbev/uihCBU+7ucdJCdo4I1B
+         sN1FtF3Cn2NxdCrssZOG1BR3kj7NBLlERFQXgAB7OGtNUtF3rf9WinaAi86Z9EecPKOl
+         Zp0/gqK7Ib3OXxPjeLHNnEAowBmn5c7TGgWq8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=e3PDKrL5MVOFhdI4AdMvQfhjcpRkxau04Ply0138w7E=;
-        b=ZD5T/KsEI/+7RHOZm/Yf95fASz8VuwXm69j15Qo1982CEoqZ/lAQq4Rowh8wuaU1ow
-         jW5xJs95TAeFwj/1rL/ShXWloAtmUxPKjgRaYZHUOLDtiFhlA+5w8IlSOdb7fIaM0icI
-         ajNPMBKGMuhxc/K6bV1nUCbbZrtUCASpR/9bx47eXEX0vGXPbsEof8I5O7SwYJf9Xo70
-         kiPWutJtDjlh1JihM6Yvq/7WPFMNn13rkygFNnndSKnaL6wtXl/e/k7KX+SLraA1D7Wp
-         g7iZDoNTkG1u4gP17JT4p1xcwjgL1wGAlTPaTxPbfawq6/By9LKikmbm+nklEq78fnql
-         gaMw==
-X-Gm-Message-State: AOAM531P8jx8xCZO2Tu/r1WCjNNP4mDBxXzkBIw2hUDYmBCk1/k49oy8
-        i/2UJjY+A7zVgfm+qYYP88J04sMSHJZvWg6uS0FpdA==
-X-Google-Smtp-Source: ABdhPJxVRXGh0McY8Kq2QVZFEf5hHPhoESVxSZxB6o4pMi/aki7Vp94/9fv3Xkvv0PvK2plcOuy9w5nX9VR+IhhGzqQ=
-X-Received: by 2002:a54:4501:: with SMTP id l1mr24414113oil.19.1622700820736;
- Wed, 02 Jun 2021 23:13:40 -0700 (PDT)
+         :user-agent:date:message-id:subject:to;
+        bh=AORJO5loH8P1GCxBtXakps2SGxdj+XmHegIFz60ntSY=;
+        b=Dhql+oPtobgr8xAwsz0QLZ1T3wabUBKbZLWxZ24rnv95Dt08Pz9KucpUmOXWEpG0AD
+         Y/jVVmrcsS3S5b16EIe8aAmxVlNk/uRXSI8faQLwNg3bWqEUitzRAWUIfpp/EN4w8eFh
+         9q9frCDtr8sztcv3c0zBgV1rsiwlMx7C3xK4ZXQAorJkRLdA0e2wavl4kJvPvIISFwwu
+         BdXKLEvyFpzn16b+l7vEr7GH0ihh5fuw1HH999BKzCZTeHTOmQSP1vpAinkgSTEhDqUM
+         Cl8nPUW4EZ0kNyWaqiTeEgX/mJmwqwss1ZmPEJteYeAKlOxRo4ctSJqlw3JM5iIH6MCy
+         zbng==
+X-Gm-Message-State: AOAM5318zazTDekvcqzNIu85pyfZ9Er4KXGfI4XZ3nEc2WKoLaOQxMTe
+        j2TWO0aIsOHIGWgKrvanZpIzblbn9KR+iVK2/aHecQ==
+X-Google-Smtp-Source: ABdhPJxyYLeIoldjWEenrhIDKjwGFGHgDtAWhmJTqgX+kVi9DQAsE9OwTaUuSW0wIJ7tz1YPkk2udKnCFrsX4wlP32g=
+X-Received: by 2002:a9d:18e:: with SMTP id e14mr9745672ote.34.1622701022184;
+ Wed, 02 Jun 2021 23:17:02 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 2 Jun 2021 23:13:40 -0700
+ HTTPREST; Wed, 2 Jun 2021 23:17:01 -0700
 MIME-Version: 1.0
-In-Reply-To: <YLhbpYq8/+JUlP27@google.com>
-References: <20210510220012.2003285-1-swboyd@chromium.org> <YJnllh7GfuVlL3ze@google.com>
- <CAE-0n539o_DWqHbPuarWozk4Rev_d++2Da=AvOYALwvB1j3dVA@mail.gmail.com>
- <YLgt2ZJ6GZwUNL8T@google.com> <CAE-0n52S72vWZkzwva2_uqsMMdgdKbX7-MKtNE5PdaetyeqN2Q@mail.gmail.com>
- <YLhbpYq8/+JUlP27@google.com>
+In-Reply-To: <20210603050530.15898-1-srivasam@codeaurora.org>
+References: <20210603050530.15898-1-srivasam@codeaurora.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Wed, 2 Jun 2021 23:13:40 -0700
-Message-ID: <CAE-0n50PZ+vUH_dSQnunViWrkEdQNHyLNHjKbrsbEbO-YL8DRA@mail.gmail.com>
-Subject: Re: [PATCH] Input: elan_i2c: Disable irq on shutdown
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Jingle Wu <jingle.wu@emc.com.tw>, Wolfram Sang <wsa@kernel.org>
+Date:   Wed, 2 Jun 2021 23:17:01 -0700
+Message-ID: <CAE-0n52CyZkRDForR7LumXL7Tcr=48UV7T-wxirMsxk7AJJsmg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: qcom: Fix for DMA interrupt clear reg overwriting
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, alsa-devel@alsa-project.org,
+        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
+        broonie@kernel.org, devicetree@vger.kernel.org,
+        judyhsiao@chromium.org, lgirdwood@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+        tiwai@suse.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Torokhov (2021-06-02 21:33:41)
-> On Wed, Jun 02, 2021 at 06:33:49PM -0700, Stephen Boyd wrote:
-> > Quoting Dmitry Torokhov (2021-06-02 18:18:17)
-> > >
-> > > I do not think keeping counter balanced would be important here, as we
-> > > are shutting down, and upon reboot everything will be reinitialized from
-> > > scratch. Also, we are lucky in that there is just a handful of I2C
-> > > drivers defining shutdown() methods.
-> > >
-> > > > Please don't make me shave this yak.
-> > >
-> > > I'm afraid someone has to... I'm adding Wolfram to CC to get his take on
-> > > this.
-> > >
-> >
-> > I suppose another option would be to introduce some common function that
-> > i2c drivers can use for their shutdown op, like i2c_generic_shutdown()
-> > that would disable the irq? I would guess that it isn't a great idea to
-> > blanket disable the irq in case some i2c driver wants to do something
-> > that may require that irq to come in once more during shutdown to signal
-> > that things are off or something like that.
-> >
-> > Would having this common function that this driver opts into work for
-> > you?
->
-> Opting in in this fashion will still require changes in the majority
-> of drivers (any I2C touchscreen or touchpad may be touched while system
-> is being shut down, so all of them will need to have interrupt freed or
-> disabled, or they may initiate I2C transfer). How about something like
-> this;
+Quoting Srinivasa Rao Mandadapu (2021-06-02 22:05:30)
+> This patch fixes the DMA interrupt registers overwriting
 
-Yes, this approach should work. I assume a device that doesn't have a
-shutdown function will be happy to let the i2c core disable the irq for
-it so it looks low risk.
+ $ git grep "This patch" -- Documentation/process
 
-Will you send a proper patch to Wolfram or would you like me to wrap it
-up and resend?
+> issue in lpass platform interrupt handler.
+
+Can you describe the issue more?
 
 >
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 38107c0c318c..c835e7bb71de 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -603,9 +603,12 @@ static void i2c_device_shutdown(struct device *dev)
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+
+Any Fixes tag?
+
+>  sound/soc/qcom/lpass-platform.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
 >
->         if (!client || !dev->driver)
->                 return;
-> +
->         driver = to_i2c_driver(dev->driver);
->         if (driver->shutdown)
->                 driver->shutdown(client);
-> +       else if (client->irq > 0)
-> +               disable_irq(client->irq);
->  }
+> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+> index 0df9481ea4c6..e02caa121fa4 100644
+> --- a/sound/soc/qcom/lpass-platform.c
+> +++ b/sound/soc/qcom/lpass-platform.c
+> @@ -650,7 +650,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
+>         struct lpass_variant *v = drvdata->variant;
+>         irqreturn_t ret = IRQ_NONE;
+>         int rv;
+> -       unsigned int reg = 0, val = 0;
+> +       unsigned int reg = 0, val = 0, val_clr = 0, val_mask = 0;
+
+Why assign to 0 and then overwrite it?
+
+>         struct regmap *map;
+>         unsigned int dai_id = cpu_dai->driver->id;
 >
->  static void i2c_client_dev_release(struct device *dev)
->
+> @@ -676,8 +676,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
+>         return -EINVAL;
+>         }
+>         if (interrupts & LPAIF_IRQ_PER(chan)) {
+> -
+> -               rv = regmap_write(map, reg, LPAIF_IRQ_PER(chan) | val);
+> +               val_clr = (LPAIF_IRQ_PER(chan) | val);
+
+Is the extra parenthesis useful?
+
+> +               val_mask = LPAIF_IRQ_ALL(chan);
+> +               rv = regmap_update_bits(map, reg, val_mask, val_clr);
+>                 if (rv) {
+>                         dev_err(soc_runtime->dev,
+>                                 "error writing to irqclear reg: %d\n", rv);
