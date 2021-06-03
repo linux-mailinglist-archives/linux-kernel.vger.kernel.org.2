@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEE4399C31
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E200A399C34
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbhFCIBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:01:15 -0400
-Received: from m12-13.163.com ([220.181.12.13]:48155 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhFCIBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:01:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=MG1lq
-        JY+aPmdBeo5Cm5Dp5IGRQlMjpO0NQ3s+uGv+kQ=; b=a+XG4OMJ+CIqHv0EbzAJ+
-        WDYDdmOIIf8ysFxEUcY9A28yGFGuRiUCsu6+eHsL65mKxwbL2V7YzyqYeccMqkQW
-        bs7ajAK9upgk58Sm50cAelmz1ajbOMu8/BgVPyY69+uaILUZdw30ED7nvEiT/aKI
-        YzWxDP1XXMQrfLRvBXB/YA=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowABHT7vbi7hgTcsYEQ--.16506S2;
-        Thu, 03 Jun 2021 15:59:24 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     FlorianSchandinat@gmx.de
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, lijian <lijian@yulong.com>
-Subject: [PATCH] video: fbdev: via: viafbdev.c:  Fix a typo
-Date:   Thu,  3 Jun 2021 15:58:26 +0800
-Message-Id: <20210603075826.64932-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229661AbhFCICk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:02:40 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3134 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhFCICi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 04:02:38 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FwdLK2htKz6J9Tk;
+        Thu,  3 Jun 2021 15:48:25 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 10:00:52 +0200
+Received: from [10.47.80.115] (10.47.80.115) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 3 Jun 2021
+ 09:00:51 +0100
+Subject: Re: [PATCH v3 0/7] iommu: Allow IOVA rcache range be configured
+To:     Lu Baolu <baolu.lu@linux.intel.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>
+CC:     <iommu@lists.linux-foundation.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+References: <1622557781-211697-1-git-send-email-john.garry@huawei.com>
+ <834ad35a-7310-1738-7d17-7c061ca73e4c@linux.intel.com>
+ <1cbf8cc2-8cee-0579-2514-56f664baa9cd@huawei.com>
+ <5e6ff4d6-cd67-d4ab-814c-e10a258191b1@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <74dd66d6-315c-3273-afaa-e6164b4ea33f@huawei.com>
+Date:   Thu, 3 Jun 2021 09:00:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowABHT7vbi7hgTcsYEQ--.16506S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GF4kAw4xJF15AF1DJF48Xrb_yoWfGFX_Cr
-        1kZr9rXryvvw40kryrta17uFWqyrW7ZFn3XF42gr93CFW7Zr1rZr1UZFn2qrWjgF47XFyD
-        Wr4agws5CryfCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe5UUUUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbi3xymUGB0GawFEgAAsD
+In-Reply-To: <5e6ff4d6-cd67-d4ab-814c-e10a258191b1@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.115]
+X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On 03/06/2021 01:39, Lu Baolu wrote:
+>> I did actually try increasing the range for a 'live' domain in the v1 
+>> series, but it turned out too messy. First problem is reallocating the 
+>> memory to hold the rcaches. Second problem is that we need to deal 
+>> with the issue that all IOVAs in the rcache need to be a pow-of-2, 
+>> which is difficult to enforce for IOVAs which weren't being cached 
+>> before, but now would be.
+>>
+>> So now I changed to work similar to how we change the default domain 
+>> type, i.e. don't operate on a 'live' domain.
+> 
+> If these hard restrictions on users are just to walk around the messy
+> code in kernel, I would rather solve those messy code to achieve a
+> better user experience. :-)
 
-Change 'ouput' to 'output'.
+Hi Baolu,
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/video/fbdev/via/viafbdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It's not that the code is messy. I'm just saying that it's difficult to 
+change the rcache range of a live domain. So we take an approach similar 
+to changing the domain default type - it is more straightforward to 
+configure the rcache range that way.
 
-diff --git a/drivers/video/fbdev/via/viafbdev.c b/drivers/video/fbdev/via/viafbdev.c
-index 22deb340a048..86a8f080bb97 100644
---- a/drivers/video/fbdev/via/viafbdev.c
-+++ b/drivers/video/fbdev/via/viafbdev.c
-@@ -766,7 +766,7 @@ static int viafb_cursor(struct fb_info *info, struct fb_cursor *cursor)
- 	if (info->flags & FBINFO_HWACCEL_DISABLED || info != viafbinfo)
- 		return -ENODEV;
- 
--	/* LCD ouput does not support hw cursors (at least on VN896) */
-+	/* LCD output does not support hw cursors (at least on VN896) */
- 	if ((chip_name == UNICHROME_CLE266 && viapar->iga_path == IGA2) ||
- 		viafb_LCD_ON)
- 		return -ENODEV;
--- 
-2.25.1
+Anyway, it would be great if you or anyone could look at the code so 
+that some progress can be made here.
 
-
+Thanks,
+John
