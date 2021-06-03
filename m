@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B446A3997D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446E83997D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbhFCCCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:02:47 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3041 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFCCCp (ORCPT
+        id S229755AbhFCCEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:04:48 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:43750 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFCCEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:02:45 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FwTWz4SWYzWr7k;
-        Thu,  3 Jun 2021 09:56:15 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 10:00:54 +0800
-Received: from [10.174.179.71] (10.174.179.71) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 10:00:54 +0800
-Subject: Re: [PATCH] acpi/arm64: Mark next_platform_timer as __init
-To:     Kees Cook <keescook@chromium.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210602214645.695597-1-keescook@chromium.org>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <e0381edd-92d3-ef3c-b643-f50f962416bc@huawei.com>
-Date:   Thu, 3 Jun 2021 10:00:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 2 Jun 2021 22:04:46 -0400
+Received: by mail-lj1-f181.google.com with SMTP id w15so5051937ljo.10;
+        Wed, 02 Jun 2021 19:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/8IZndxOiLWDoXbA8jpiE1ISCuoDjLto8/f1jFi4j/E=;
+        b=XvBT6QdgkOd/bFWJe4sr1HTGZAB3hFKDQSQQql6Y+63pobzzAazIb4UWMkxG0MfkDE
+         dQNR1dTVSCKrvHKdfbW+b5tway53NGBDd0EOXOYX4i1t+KvNcyIZflkeeKoCpzAZDuY+
+         Q4szIbZopSgOHjCesa0CZ4R/nY8Dwa2XioAAvWueSr5W7DdrjtHKeAxNSwvgU92b49fq
+         4uVkhBhYdDpGTYz+/wZG56dBHrI3lF5I069u965w1XQAWQTEOsIjKAcLmIz1T6Z4HHWV
+         +Im0LxdM1ovlRn+rIxVfaKdMvsVii33VrVA4FCqFhm8a0kun15z9SxPSun7aIRKxJKDA
+         aWuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/8IZndxOiLWDoXbA8jpiE1ISCuoDjLto8/f1jFi4j/E=;
+        b=OEhIY5kgamECwmgl8FKaO9zTEvpGYlSTEwROLgNcma0v/uOxulv5b/qlpNkIyoRIo5
+         ds1V8xETz8cBLQMgjUdoH8Fe3oX7QnzajYfHsetBoWKu1Ur5hVeJSlNEzLAeMmlXaqrP
+         B+nQSksmqiPvCZtIbvrYsUXijG2u9viRjgplnVeSyKWCuGMuyBccSnEbFHpCHk1IS+90
+         E6ogkdSV2sepwSSj/QMNp8wlDkO7o0XWpsEyeFhRst42ol/BFItSZzqwkDfmF7otJ4fn
+         4xdsN/LTQGwd7ByVrNigPovRTsp8hB17+MXYSAE5s6NxoaxY721wQegiaT5+CjeINT/R
+         tsPg==
+X-Gm-Message-State: AOAM531xki25PR4CRl2fvVJBaPT03E482GEO7rEHQ6LgOoulEKt5py1Z
+        zgpcjslytL+9ViI9s17BgvrLilknByc=
+X-Google-Smtp-Source: ABdhPJxK6SCugXeoioO9yW78vOgwhoCh0v4FOVMRToxZ9/D5pkfnAmFfoOb/KzEvYTHUhD+YSwRVQw==
+X-Received: by 2002:a2e:553:: with SMTP id 80mr8891837ljf.144.1622685709295;
+        Wed, 02 Jun 2021 19:01:49 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id r202sm158698lff.251.2021.06.02.19.01.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 19:01:48 -0700 (PDT)
+Subject: Re: linux-next: build warning after merge of the tegra tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Cross <ccross@android.com>,
+        Olof Johansson <olof@lixom.net>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210603103507.304b7626@canb.auug.org.au>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8d8f947e-2ba4-f7b8-cb85-dcee940c96b4@gmail.com>
+Date:   Thu, 3 Jun 2021 05:01:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210602214645.695597-1-keescook@chromium.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.71]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210603103507.304b7626@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/3 5:46, Kees Cook wrote:
-> Fix section mismatch warning:
+03.06.2021 03:35, Stephen Rothwell пишет:
+> Hi all,
 > 
-> WARNING: modpost: vmlinux.o(.text.unlikely+0x95ac): Section mismatch in reference from the function next_platform_timer() to the variable .init.data:acpi_gtdt_desc
-> The function next_platform_timer() references
-> the variable __initdata acpi_gtdt_desc.
-> This is often because next_platform_timer lacks a __initdata
-> annotation or the annotation of acpi_gtdt_desc is wrong.
+> After merging the tegra tree, today's linux-next build (x86_64
+> allmodconfig) produced this warning:
 > 
-> Suggested-by: Hanjun Guo <guohanjun@huawei.com>
-> Link: https://lore.kernel.org/linux-acpi/20200508152653.157663-1-wangkefeng.wang@huawei.com/
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->   drivers/acpi/arm64/gtdt.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> WARNING: unmet direct dependencies detected for TEGRA210_EMC_TABLE
+>   Depends on [n]: MEMORY [=y] && TEGRA_MC [=y] && ARCH_TEGRA_210_SOC [=n]
+>   Selected by [m]:
+>   - TEGRA210_EMC [=m] && MEMORY [=y] && TEGRA_MC [=y] && (ARCH_TEGRA_210_SOC [=n] || COMPILE_TEST [=y])
 > 
-> diff --git a/drivers/acpi/arm64/gtdt.c b/drivers/acpi/arm64/gtdt.c
-> index 0a0a982f9c28..c3ad42470a7c 100644
-> --- a/drivers/acpi/arm64/gtdt.c
-> +++ b/drivers/acpi/arm64/gtdt.c
-> @@ -36,7 +36,7 @@ struct acpi_gtdt_descriptor {
->   
->   static struct acpi_gtdt_descriptor acpi_gtdt_desc __initdata;
->   
-> -static inline void *next_platform_timer(void *platform_timer)
-> +static __init void *next_platform_timer(void *platform_timer)
->   {
->   	struct acpi_gtdt_header *gh = platform_timer;
+> Probably introduced by commit
+> 
+>   08decdd5b448 ("memory: tegra: Enable compile testing for all drivers")
+> 
 
-Thanks for the fix,
+Thank you. This is a new warning to me, apparently this case wasn't previously tested by kernel build bot.
 
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+Perhaps this should fix it:
+
+diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
+index 71bba2345bce..3f2fa7750118 100644
+--- a/drivers/memory/tegra/Kconfig
++++ b/drivers/memory/tegra/Kconfig
+@@ -47,7 +47,6 @@ config TEGRA124_EMC
+ 
+ config TEGRA210_EMC_TABLE
+ 	bool
+-	depends on ARCH_TEGRA_210_SOC
+ 
+ config TEGRA210_EMC
+ 	tristate "NVIDIA Tegra210 External Memory Controller driver"
+
+
+Thierry, please squash this change into the original patch if it looks good to you.
