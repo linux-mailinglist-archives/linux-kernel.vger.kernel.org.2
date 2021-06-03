@@ -2,109 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27A2399C51
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DC1399C53
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFCISI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:18:08 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52622 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhFCISG (ORCPT
+        id S229810AbhFCISa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:18:30 -0400
+Received: from mailout1.secunet.com ([62.96.220.44]:60356 "EHLO
+        mailout1.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFCISa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:18:06 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1538G9Em086091;
-        Thu, 3 Jun 2021 03:16:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622708169;
-        bh=5wwte9CRzT+YNJ2vP9j/C62EmP//YgO8AMYtKlKvqDc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=cFlU62NDbrQ7UvVXWMaEKMDFSa9srdP5LtFjdFAn+YemRMpnOwlSBLhmGz/WmY+Ja
-         XAszj0auUyk2UXjK1pWyRB9TkAyqkXcU+D7K2m/lptnckNV/VqLHCixG0+fbQIFIZn
-         XMuerxx7nhepSUKJIc5szuXqWA+xOoj0cfkmJXjc=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1538G9pw074737
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Jun 2021 03:16:09 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
- 2021 03:16:09 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 3 Jun 2021 03:16:08 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1538G80x052919;
-        Thu, 3 Jun 2021 03:16:08 -0500
-Date:   Thu, 3 Jun 2021 13:46:07 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <dmaengine@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 17/18] phy: dt-bindings: cdns,dphy: make clocks
- optional
-Message-ID: <20210603081605.v7b5peuqjbsivmzb@ti.com>
-References: <20210526152308.16525-1-p.yadav@ti.com>
- <20210526152308.16525-18-p.yadav@ti.com>
- <20210602132728.5lv5n2mgap2o7eyx@gilmour>
+        Thu, 3 Jun 2021 04:18:30 -0400
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout1.secunet.com (Postfix) with ESMTP id E5D41800056;
+        Thu,  3 Jun 2021 10:16:43 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 10:16:43 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 3 Jun 2021
+ 10:16:43 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 3219831801F6; Thu,  3 Jun 2021 10:16:43 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 10:16:43 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+CC:     Varad Gautam <varad.gautam@suse.com>,
+        <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <stable@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Florian Westphal" <fw@strlen.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH v2] xfrm: policy: Read seqcount outside of rcu-read side
+ in xfrm_policy_lookup_bytype
+Message-ID: <20210603081643.GW40979@gauss3.secunet.de>
+References: <20210528120357.29542-1-varad.gautam@suse.com>
+ <20210528160407.32127-1-varad.gautam@suse.com>
+ <YLEd9RS8Cebjv2ho@lx-t490>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210602132728.5lv5n2mgap2o7eyx@gilmour>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YLEd9RS8Cebjv2ho@lx-t490>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/21 03:27PM, Maxime Ripard wrote:
-> Hi,
+On Fri, May 28, 2021 at 06:44:37PM +0200, Ahmed S. Darwish wrote:
+> On Fri, May 28, 2021, Varad Gautam wrote:
+> >
+> > Thead 1 (xfrm_hash_resize)	Thread 2 (xfrm_policy_lookup_bytype)
+> >
+> > 				rcu_read_lock();
+> > mutex_lock(&hash_resize_mutex);
+> > 				read_seqcount_begin(&xfrm_policy_hash_generation);
+> > 				mutex_lock(&hash_resize_mutex); // block
+> > xfrm_bydst_resize();
+> > synchronize_rcu(); // block
+> > 		<RCU stalls in xfrm_policy_lookup_bytype>
+> >
+> ...
+> >
+> > Fixes: 77cc278f7b20 ("xfrm: policy: Use sequence counters with associated lock")
+> > Signed-off-by: Varad Gautam <varad.gautam@suse.com>
 > 
-> On Wed, May 26, 2021 at 08:53:07PM +0530, Pratyush Yadav wrote:
-> > The clocks are not used by the DPHY when used in Rx mode so make them
-> > optional.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > 
-> > ---
-> > 
-> > Changes in v2:
-> > - Re-order subject prefixes.
-> > 
-> >  Documentation/devicetree/bindings/phy/cdns,dphy.yaml | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
-> > index b90a58773bf2..3bb5be05e825 100644
-> > --- a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
-> > +++ b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
-> > @@ -33,8 +33,6 @@ properties:
-> >  required:
-> >    - compatible
-> >    - reg
-> > -  - clocks
-> > -  - clock-names
-> 
-> As far as I can remember from the cadence documentation, those clocks
-> were required. I guess this is the integration that provides a few fixed
-> clocks?
+> Acked-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 
-Yes. The clock divider/frequency has been set via the DPHY pins so no 
-need to set them via software.
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Applied, thanks a lot!
