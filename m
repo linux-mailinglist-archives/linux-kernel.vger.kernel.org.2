@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7D639A91C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627E739A91F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFCR0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53884 "EHLO mail.kernel.org"
+        id S230312AbhFCR2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:28:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhFCR0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:26:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF47B613BA;
-        Thu,  3 Jun 2021 17:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622741091;
-        bh=s8c3WYNwEnlcHkonES0jC3l/FFhEH+u3QYZlANfbx6k=;
+        id S230159AbhFCR17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:27:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34B9B61242;
+        Thu,  3 Jun 2021 17:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622741174;
+        bh=SvjLmqQosOVfAfa0jINxvAceg4v8NligAbCfI+ROPwI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cJDX284AfuG0YWVhlRQCSz+oB/P4kCVP2uvC2hSXl7NTozHsPv4v3xgdWN/W3MHnh
-         8COToyhYoqHvAaNKVl9xJmFy9JWrCnxiw8MLknbpqnORo3U2YMOUv3DDqKCzYUzKUc
-         gkQvltPQJSstJlLUiv9437VgvZvSqYnOl+AQFkkM0yWlRW/My5bCUZXft8smh8th9i
-         seCac16lWvKiwlac0gjsU9C8c93nDgFWG2d7PcTeE6cM90TGx/kNprwQ1Uk4MeSPpv
-         BMyj2nAcHLj8ZrvyUKk7JnuV3nTgNUyQQBAzooyeARPg4m+HKf8AKr4VW0ojBCCNoN
-         QerM5LDQDbMxw==
-Date:   Thu, 3 Jun 2021 18:24:44 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 01/19] arm64: cpuinfo: Split AArch32 registers out
- into a separate struct
-Message-ID: <20210603172444.GA1170@willie-the-truck>
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-2-will@kernel.org>
- <20210603123852.GB48596@C02TD0UTHF1T.local>
+        b=CILVnncXctECCmNZ1x+u+kCqw+UPk0PoA1+DRWaLXHqa5KlqBJBrEHpGr1Y1ctiyS
+         jVFYtzmryIRp8Hz7x2jgQQP6wEQ/ZqyeVlIXWiO3UAV+iQ2xtQ538yUSXdB9KAF/Xq
+         2uelirCdM+K8mUPEd3rqQYopHWF3y5zomHAVu3hI=
+Date:   Thu, 3 Jun 2021 19:26:12 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Daniel Rosenberg <drosen@google.com>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
+Message-ID: <YLkQtDZFG1xKoqE5@kroah.com>
+References: <20210603095038.314949-1-drosen@google.com>
+ <20210603095038.314949-3-drosen@google.com>
+ <YLipSQxNaUDy9Ff1@kroah.com>
+ <YLj36Fmz3dSHmkSG@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603123852.GB48596@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YLj36Fmz3dSHmkSG@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 01:38:52PM +0100, Mark Rutland wrote:
-> On Wed, Jun 02, 2021 at 05:47:01PM +0100, Will Deacon wrote:
-> > In preparation for late initialisation of the "sanitised" AArch32 register
-> > state, move the AArch32 registers out of 'struct cpuinfo' and into their
-> > own struct definition.
+On Thu, Jun 03, 2021 at 08:40:24AM -0700, Jaegeuk Kim wrote:
+> On 06/03, Greg KH wrote:
+> > On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
+> > > Older kernels don't support encryption with casefolding. This adds
+> > > the sysfs entry encrypted_casefold to show support for those combined
+> > > features. Support for this feature was originally added by
+> > > commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
+> > > 
+> > > Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
+> > > Cc: stable@vger.kernel.org # v5.11+
+> > > Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> > > ---
+> > >  fs/f2fs/sysfs.c | 15 +++++++++++++--
+> > >  1 file changed, 13 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> > > index 09e3f258eb52..6604291a3cdf 100644
+> > > --- a/fs/f2fs/sysfs.c
+> > > +++ b/fs/f2fs/sysfs.c
+> > > @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+> > >  	if (f2fs_sb_has_compression(sbi))
+> > >  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > >  				len ? ", " : "", "compression");
+> > > +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
+> > > +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > > +				len ? ", " : "", "encrypted_casefold");
+> > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > >  				len ? ", " : "", "pin_file");
+> > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
 > > 
-> > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > Signed-off-by: Will Deacon <will@kernel.org>
+> > This is a HUGE abuse of sysfs and should not be encouraged and added to.
 > 
-> Makes sense to me; if it's not too painful to change, I'd suggest
-> `aarch32` rather than `32bit` in the name, but either way:
+> This feature entry was originally added in 2017. Let me try to clean this up
+> after merging this.
+
+Thank you.
+
+> > Please make these "one value per file" and do not keep growing a single
+> > file that has to be parsed otherwise you will break userspace tools.
+> > 
+> > And I don't see a Documentation/ABI/ entry for this either :(
 > 
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> There is in Documentation/ABI/testing/sysfs-fs-f2fs.
 
-Thanks. "32bit" is already pervasive in cpufeature.c and we're using arm64
-instead of aarch64 in cpuinfo_arm64, so I'll leave this as-is and offer
-somebody else the refactoring opportunity ;)
+So this new item was documented in the file before the kernel change was
+made?
 
-Will
+greg k-h
