@@ -2,68 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E650C39A287
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AF539A289
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhFCNyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:54:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:51811 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229744AbhFCNyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:54:05 -0400
-IronPort-SDR: LMDMo8rqObo8LLD3STpRDtoooU/w3CZBAYiAs+4vKUQIg5fYGEJ1zfQxivWtcS+N1uXPfvXMos
- glFybxiObfSg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="202188128"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="202188128"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 06:52:21 -0700
-IronPort-SDR: fv56pyERrrhKBW/gDO/7lXeQpqsHLUUKL+t9kRcRwUJuqj95ljzowb3MrW9/EFobTBJqLPu0d5
- PPU2EdRVXORQ==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="550697803"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.7.237]) ([10.209.7.237])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 06:52:20 -0700
-Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>,
-        bp@alien8.de, hpa@zytor.com, inglorion@google.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <00000000000030293b05c39afd6f@google.com>
- <20210602230054.vyqama2q3koc4bpo@treble>
- <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
- <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
- <20210603133914.j2aeadmvhncnlk5q@treble>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <0b71d4f9-f707-3d39-c358-7c06c5689a9d@linux.intel.com>
-Date:   Thu, 3 Jun 2021 06:52:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S230511AbhFCNyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:54:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51570 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230352AbhFCNyU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 09:54:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622728355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aGzYnwJ/79uwHhGm7246c+BQzOFvMTF+2K8gC73yhXY=;
+        b=PRs0PZEdcngDjg5rn2TmVCT0JvWyeb1MqnqQuVuU3NKhDVqkgUw3cTZ8WIRgUYuChjzlKg
+        Qb6t/7uUWS7uEfqut4mz6cfriitXh47HDkmdJ4UGqJ8McA0vDr4uukNGSFk+/aFqw1GviI
+        3w8eVVS+S2qddeARdoqXRJEkmbSMx3w=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-2BEPgwoiNqmhsz5b3HI0sg-1; Thu, 03 Jun 2021 09:52:33 -0400
+X-MC-Unique: 2BEPgwoiNqmhsz5b3HI0sg-1
+Received: by mail-ed1-f69.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso3313578edd.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:52:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=aGzYnwJ/79uwHhGm7246c+BQzOFvMTF+2K8gC73yhXY=;
+        b=OPSkLxFg9L8D0pI4pxJ4slWOR+aFaIctgVrBcEzTDnP6p96Q+D3+/N2WkuNb8eEDi+
+         zO4qz2X2yzult7kjRkHcO4mtOzeyezR4BKUDoLHNtjnPKpJmeA/ASyac+FyAgEwBFxGU
+         wThtPeCQ1S2vutPbRnRQnvqnH236o03+5ZKfrnSXLDLk4iueVN8+AgvcRYc7WQPSO/YF
+         oRQlY/Eo9hvctDgUv4aJA0P3BUGHCUEZAiHH/e9u1anR5Uk2Cb+sJeSq1gu7WcccaWHF
+         tdQVm2Ifixt8GMmPGXkL1/jaz7uUj/XgECYt8D2F4k9nY6Fu3tODqqbzo4cqXqZfNyHA
+         Db+Q==
+X-Gm-Message-State: AOAM533bomPtL68o76S0QdrKvijGR7TuP+WwfG+f+6SnfR60fpx1lLgc
+        nrTPjqsexxjBdAa/9OgdKWt55orpQLgy9n63UTYpx6xrcgsjSM4gAYYedFV3ImtSJ6mcVvkn6CH
+        1OIjM5SHyL4q7hmkjywKjr9+z
+X-Received: by 2002:aa7:db94:: with SMTP id u20mr43820035edt.381.1622728352472;
+        Thu, 03 Jun 2021 06:52:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFTkGs1V14Wf6MLgMSIw4+iLzsxca6I0DcvG4KjZ50QkzIyM+lKtiGeOU4iF2LT4KYVoFfPA==
+X-Received: by 2002:aa7:db94:: with SMTP id u20mr43820025edt.381.1622728352333;
+        Thu, 03 Jun 2021 06:52:32 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p7sm1824947edw.43.2021.06.03.06.52.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 06:52:31 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>, Tao Xu <tao3.xu@intel.com>
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com
+Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
+In-Reply-To: <660ceed2-7569-6ce6-627a-9a4e860b8aa9@intel.com>
+References: <20210525051204.1480610-1-tao3.xu@intel.com>
+ <871r9k36ds.fsf@vitty.brq.redhat.com>
+ <660ceed2-7569-6ce6-627a-9a4e860b8aa9@intel.com>
+Date:   Thu, 03 Jun 2021 15:52:30 +0200
+Message-ID: <87fsxz12e9.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210603133914.j2aeadmvhncnlk5q@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Xiaoyao Li <xiaoyao.li@intel.com> writes:
 
-> True, ftrace does have function profiling (function_profile_enabled).
+> On 6/2/2021 6:31 PM, Vitaly Kuznetsov wrote:
+>> Tao Xu <tao3.xu@intel.com> writes:
+>> 
+>>> There are some cases that malicious virtual machines can cause CPU stuck
+>>> (event windows don't open up), e.g., infinite loop in microcode when
+>>> nested #AC (CVE-2015-5307). No event window obviously means no events,
+>>> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
+>>> hardware CPU can't be used by host or other VM.
+>>>
+>>> To resolve those cases, it can enable a notify VM exit if no event
+>>> window occur in VMX non-root mode for a specified amount of time
+>>> (notify window). Since CPU is first observed the risk of not causing
+>>> forward progress, after notify window time in a units of crystal clock,
+>>> Notify VM exit will happen. Notify VM exit can happen incident to delivery
+>>> of a vectored event.
+>>>
+>>> Expose a module param for configuring notify window, which is in unit of
+>>> crystal clock cycle.
+>>> - A negative value (e.g. -1) is to disable this feature.
+>>> - Make the default as 0. It is safe because an internal threshold is added
+>>> to notify window to ensure all the normal instructions being coverd.
+>>> - User can set it to a large value when they want to give more cycles to
+>>> wait for some reasons, e.g., silicon wrongly kill some normal instruction
+>>> due to internal threshold is too small.
+>>>
+>>> Notify VM exit is defined in latest Intel Architecture Instruction Set
+>>> Extensions Programming Reference, chapter 9.2.
+>>>
+>>> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>>> Signed-off-by: Tao Xu <tao3.xu@intel.com>
+>>> ---
+>>>
+>>> Changelog:
+>>> v2:
+>>>       Default set notify window to 0, less than 0 to disable.
+>>>       Add more description in commit message.
+>> 
+>> Sorry if this was already discussed, but in case of nested
+>> virtualization and when L1 also enables
+>> SECONDARY_EXEC_NOTIFY_VM_EXITING, shouldn't we just reflect NOTIFY exits
+>> during L2 execution to L1 instead of crashing the whole L1?
+>> 
 >
-> Steve, is there a way to enable that on the kernel cmdline?
+> yes. If we expose it to nested, it should reflect the Notify VM exit to 
+> L1 when L1 enables it.
+>
+> But regarding nested, there are more things need to be discussed. e.g.,
+> 1) It has dependence between L0 and L1, for security consideration. When 
+> L0 enables it, it shouldn't be turned off during L2 VM is running.
+>     a. Don't expose to L1 but enable for L1 when L2 VM is running.
+>     b. expose it to L1 and force it enabled.
 
-That's not really comparable. function profiling has a lot more 
-overhead. Also there is various code which has ftrace instrumentation 
-disabled.
+Could you please elaborate on the 'security' concern? My understanding
+that during L2 execution:
+If L0 enables the feature and L1 doesn't, vmexit goes to L0.
+If L1 enables the feature and L0 doesn't, vmexit goes to L1.
+If both L0 and L1 enable the feature, vmexit can probably (I didn't put
+enough though in it I'm afraid) go to the one which has smaller window.
 
-I don't think why you want to kill the old profiler. It's rarely used, 
-but when you need it usually works. It's always good to have simple fall 
-backs. And it's not that it's a lot of difficult code.
+>
+> 2) When expose it to L1, vmcs02.notify_window needs to be 
+> min(L0.notify_window, L1.nofity_window)
+>
+> We don't deal with nested to make this Patch simple.
 
--Andi
+Sure, I just wanted to check with you what's the future plan and if the
+behavior you introduce is desireable in nested case.
+
+-- 
+Vitaly
 
