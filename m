@@ -2,117 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704F339A4A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B25439A4A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhFCPgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229953AbhFCPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhFCPgZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Jun 2021 11:36:25 -0400
-Received: from mx01.ayax.eu ([188.137.98.110]:41572 "EHLO mx01.ayax.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhFCPgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:36:24 -0400
-Received: from [192.168.192.146] (port=48286 helo=nx64de-df6d00)
-        by mx01.ayax.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gszymaszek@short.pl>)
-        id 1lopMR-0005wd-L7; Thu, 03 Jun 2021 17:34:19 +0200
-Date:   Thu, 3 Jun 2021 17:34:18 +0200
-From:   Grzegorz Szymaszek <gszymaszek@short.pl>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v2] ARM: dts: stm32: add a new DCMI pins group
-Message-ID: <YLj2emwxhAVVOeIo@nx64de-df6d00>
-Mail-Followup-To: Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <fcee4f30-446e-f4da-6d95-c9223cf82981@pengutronix.de>
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B5FC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 08:34:40 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso4131365pji.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dUPtvp2h+2uImUipkmU0sy9GVVBMJMgO0OxnHuqRqVI=;
+        b=jRdBKbs/w0rrXeQFwYPcKPEXipJtKT/D2Ljs/5Puaw2vZnaK2AjmiMj9MOtenqoZKM
+         E9MERsYKERGUTZh9ESvN1VM5v7icANR83t7N0kDfRPxV83HF4g+HDIaQOGP13YOFR8Kd
+         EhVplYS+XrTqilwKkmvEFPDVvLA68tnqfbbAzmkO9gT6TqCZaTDhYXRrJuIHukjIlWrY
+         j3aMy3WqppUcurHWoUn2tELrwyO0PW7JKa0Wgod9T1AXTlCtBBVe6udRge4c3ciULffd
+         4Ql0uZqkLC2zunewUq9SQc179WtHEN1FBOdnZiOi54kWVgiwY/jRfHqeeIBpjL3AB0wr
+         JD8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dUPtvp2h+2uImUipkmU0sy9GVVBMJMgO0OxnHuqRqVI=;
+        b=hiWqsnvjIeaPCAr0GK/pvuo+RGQBVimsXkecyRULnb5pyMjwy+OJeuBNYvFrfcOGTJ
+         CtUvzSLVwW+RxC2z+mbJkTn/gS3sow8o9NZ8zRL3a6tx5OiR2GST4B7UQ+xqPHgsiXIf
+         AC+JZYPX1PJFzKyp4wP0LiIXPR5VRKdSOGtzQp0UkgOQRWFkGicZwDCtb2H0TsiDDDmv
+         TCXS2TrGfHvBUsuSS3B77uCqL6vLvdI0F9eAjIadXIWkSmhkBTbTey/Q0Wz+XFQ425d4
+         8i6tqPKykjBEf9kYVQ7t1CjC/LGJBDvp5e/wtWuLc6uQYKMNtqEgX/hnWIQtD0g+UNyk
+         aUhA==
+X-Gm-Message-State: AOAM533/QB9u6QtCvbxvzPj7O60itfuuNGKJ1AO2+AZteKIY1Fz6IkBX
+        GgzuNRR5zsP0ZoAhMX9k3LbOcg==
+X-Google-Smtp-Source: ABdhPJyeNrHA2kVj4qyFnh8E5UqsZtT7NDEnlBu4yJ/PIKwiPADFfe7imukPFXdTL5qfWRDwdeViEg==
+X-Received: by 2002:a17:902:7d92:b029:f5:72d4:c06a with SMTP id a18-20020a1709027d92b02900f572d4c06amr498570plm.33.1622734480153;
+        Thu, 03 Jun 2021 08:34:40 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id c15sm3233916pgt.68.2021.06.03.08.34.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 08:34:39 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 15:34:36 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH 2/2] KVM: LAPIC: reset TMCCT during vCPU reset
+Message-ID: <YLj2jDKMYZatdl3a@google.com>
+References: <1622710841-76604-1-git-send-email-wanpengli@tencent.com>
+ <1622710841-76604-2-git-send-email-wanpengli@tencent.com>
+ <CALMp9eSK-_xOp=WdRbOOHaHHMHuJkPhG+7h4M+_+=4d-GCNzwA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fcee4f30-446e-f4da-6d95-c9223cf82981@pengutronix.de>
+In-Reply-To: <CALMp9eSK-_xOp=WdRbOOHaHHMHuJkPhG+7h4M+_+=4d-GCNzwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Seeed Odyssey-STM32MP157C board has a 20-pin DVP camera output.
-stm32mp15-pinctrl.dtsi contained one pin state definition for the DCMI
-interface, dcmi-0, AKA phandle dcmi_pins_a. This definition was
-incompatible with the pins used on the Odyssey board, where:
-- there are 8 data pins instead of 12,
-- DCMI_HSYNC is available at PA4 instead of PH8,
-- DCMI_D0 is at PC6 instead of PH9,
-- DCMI_D3 is at PE1 instead of PH12,
-- DCMI_D4 is at PE11 instead of PH14,
-- DCMI_D5 is at PD3 instead of PI4,
-- DCMI_D6 is at PE13 instead of PB8,
-- DCMI_D7 is at PB9 instead of PE6.
+On Thu, Jun 03, 2021, Jim Mattson wrote:
+> On Thu, Jun 3, 2021 at 2:01 AM Wanpeng Li <kernellwp@gmail.com> wrote:
+> >
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > The value of current counter register after reset is 0 for both Intel
+> > and AMD, let's do it in kvm.
+> >
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> 
+> How did we miss that?
 
-Add the DCMI pins used on the Odyssey board as a new DCMI pin state
-definition, dcmi-1, AKA phandle dcmi_pins_b.
+I suspect it's not actually a functional issue, and that writing '0' at reset is
+a glorified nop.  The TMCCT is always computed on-demand and never directly
+readable.
 
-Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
----
-V1 -> V2: Removed the pinctrl override from the Odyssey device tree,
-added a new pinctrl in stm32mp15-pinctrl.dtsi instead
+Is there an observable bug being fixed?  If not, the changelog should state that
+this is a cosmetic change of sorts.
 
- arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 33 ++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+static u32 __apic_read(struct kvm_lapic *apic, unsigned int offset)
+{
+	u32 val = 0;
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 060baa8b7e9d..5b60ecbd718f 100644
---- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -118,6 +118,39 @@ pins {
- 		};
- 	};
- 
-+	dcmi_pins_b: dcmi-1 {
-+		pins {
-+			pinmux = <STM32_PINMUX('A', 4,  AF13)>,/* DCMI_HSYNC */
-+				 <STM32_PINMUX('B', 7,  AF13)>,/* DCMI_VSYNC */
-+				 <STM32_PINMUX('A', 6,  AF13)>,/* DCMI_PIXCLK */
-+				 <STM32_PINMUX('C', 6,  AF13)>,/* DCMI_D0 */
-+				 <STM32_PINMUX('H', 10, AF13)>,/* DCMI_D1 */
-+				 <STM32_PINMUX('H', 11, AF13)>,/* DCMI_D2 */
-+				 <STM32_PINMUX('E', 1,  AF13)>,/* DCMI_D3 */
-+				 <STM32_PINMUX('E', 11, AF13)>,/* DCMI_D4 */
-+				 <STM32_PINMUX('D', 3,  AF13)>,/* DCMI_D5 */
-+				 <STM32_PINMUX('E', 13, AF13)>,/* DCMI_D6 */
-+				 <STM32_PINMUX('B', 9,  AF13)>;/* DCMI_D7 */
-+			bias-disable;
-+		};
-+	};
-+
-+	dcmi_sleep_pins_b: dcmi-sleep-1 {
-+		pins {
-+			pinmux = <STM32_PINMUX('A', 4,  ANALOG)>,/* DCMI_HSYNC */
-+				 <STM32_PINMUX('B', 7,  ANALOG)>,/* DCMI_VSYNC */
-+				 <STM32_PINMUX('A', 6,  ANALOG)>,/* DCMI_PIXCLK */
-+				 <STM32_PINMUX('C', 6,  ANALOG)>,/* DCMI_D0 */
-+				 <STM32_PINMUX('H', 10, ANALOG)>,/* DCMI_D1 */
-+				 <STM32_PINMUX('H', 11, ANALOG)>,/* DCMI_D2 */
-+				 <STM32_PINMUX('E', 1,  ANALOG)>,/* DCMI_D3 */
-+				 <STM32_PINMUX('E', 11, ANALOG)>,/* DCMI_D4 */
-+				 <STM32_PINMUX('D', 3,  ANALOG)>,/* DCMI_D5 */
-+				 <STM32_PINMUX('E', 13, ANALOG)>,/* DCMI_D6 */
-+				 <STM32_PINMUX('B', 9,  ANALOG)>;/* DCMI_D7 */
-+		};
-+	};
-+
- 	ethernet0_rgmii_pins_a: rgmii-0 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
--- 
-2.30.2
+	if (offset >= LAPIC_MMIO_LENGTH)
+		return 0;
+
+	switch (offset) {
+	case APIC_ARBPRI:
+		break;
+
+	case APIC_TMCCT:	/* Timer CCR */
+		if (apic_lvtt_tscdeadline(apic))
+			return 0;
+
+		val = apic_get_tmcct(apic);
+		break;
+	...
+}
+
+
+static u32 apic_get_tmcct(struct kvm_lapic *apic)
+{
+	ktime_t remaining, now;
+	s64 ns;
+	u32 tmcct;
+
+	ASSERT(apic != NULL);
+
+	/* if initial count is 0, current count should also be 0 */
+	if (kvm_lapic_get_reg(apic, APIC_TMICT) == 0 ||  <------------
+		apic->lapic_timer.period == 0)
+		return 0;
+
+	now = ktime_get();
+	remaining = ktime_sub(apic->lapic_timer.target_expiration, now);
+	if (ktime_to_ns(remaining) < 0)
+		remaining = 0;
+
+	ns = mod_64(ktime_to_ns(remaining), apic->lapic_timer.period);
+	tmcct = div64_u64(ns,
+			 (APIC_BUS_CYCLE_NS * apic->divide_count));
+
+	return tmcct;
+}
+
+int kvm_apic_get_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
+{
+	memcpy(s->regs, vcpu->arch.apic->regs, sizeof(*s));
+
+	/*
+	 * Get calculated timer current count for remaining timer period (if
+	 * any) and store it in the returned register set.
+	 */
+	__kvm_lapic_set_reg(s->regs, APIC_TMCCT,
+			    __apic_read(vcpu->arch.apic, APIC_TMCCT));  <----
+
+	return kvm_apic_state_fixup(vcpu, s, false);
+}
+
+
 
