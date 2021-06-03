@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C0139AE15
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F277139AE10
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhFCWcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:32:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49616 "EHLO mail.kernel.org"
+        id S231246AbhFCWby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231199AbhFCWbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231185AbhFCWbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Jun 2021 18:31:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F073F61419;
+Received: by mail.kernel.org (Postfix) with ESMTPS id D09FC61412;
         Thu,  3 Jun 2021 22:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622759408;
-        bh=VR2EgFUzkhWsaVeoXpiw3g8oTbmLeCtrOY9/9p+B6Q4=;
+        s=k20201202; t=1622759407;
+        bh=vwEK4zy2QrRV8Apha+U4pwZeSrz1wq6/gqrv2kdatkA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ex1X+fKxL8h1GXmlcf0Mm1Rg93brthMNnpJDKXWKd485kWlGKl1J1w87yXqrCCTMM
-         6try7PpVJgPJzdKeG8EhgNfu1LQRFHT45RNNgYn7wwIzrlmJidrefvbnxvBcvi7luD
-         yc3YUn+ZJpkBz+5sRVDzUhqdD30wxyrbONZ6l/o2wxdRXuoydwQtUU3S1430OtUab+
-         aBqUVmWOQfgBch7GCSa8gH4bkBIOfbPywHCzxCn9BzEHAY/hdOvJu22M0Vzx7svav9
-         mky+9EbVgOb1bnXwC6O7hAO09gbsuAlJnKLHAt+Iv227TomQTyro1pYqk+CqHyJ/gq
-         bDHqLNNZyMHkA==
+        b=U4jYwB3u8WQRL4cm3qJHyFb7ZhryG5vtrZ1u8vaRuwgYpxDdi+s8xxBo6JcDU5h8k
+         MiZaCpa6iq9JAOk/BNl5rTTbHIktaBF0OklMb9GRqgzn3IEHASUJb3FNcBd+0S6X8Q
+         BIM0+VNDZjNH6arnbIDHyFKT2SehVI6gtFCbH54fypux2w3toocCB3WAnilmlKQ9LL
+         7ehzYz5itv1fSMjXCWiA1VV0GfbsSLrc9O2JKjmAbtqfquUI9O1LXbePuOiICBfHyq
+         bAzyPs4YvZj/gsYf2nWHB8rMDdqOe2heVC9kYbW+A8sTs9Lfnm+Qq0Be5gwoFbzXb1
+         ycMDQHzzNgkTQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E182B60BCF;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C470C60BFB;
         Thu,  3 Jun 2021 22:30:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: ks8851: Make ks8851_read_selftest() return void
+Subject: Re: [PATCH] bonding: remove redundant initialization of variable ret
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162275940791.8870.8895420469894707937.git-patchwork-notify@kernel.org>
+Message-Id: <162275940779.8870.16351209876886223050.git-patchwork-notify@kernel.org>
 Date:   Thu, 03 Jun 2021 22:30:07 +0000
-References: <20210603165612.2088040-1-nathan@kernel.org>
-In-Reply-To: <20210603165612.2088040-1-nathan@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        ndesaulniers@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210603131904.85093-1-colin.king@canonical.com>
+In-Reply-To: <20210603131904.85093-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,20 +47,21 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu,  3 Jun 2021 09:56:13 -0700 you wrote:
-> clang points out that ret in ks8851_read_selftest() is set but unused:
+On Thu,  3 Jun 2021 14:19:04 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> drivers/net/ethernet/micrel/ks8851_common.c:1028:6: warning: variable
-> 'ret' set but not used [-Wunused-but-set-variable]
->         int ret = 0;
->             ^
-> 1 warning generated.
+> The variable ret is being initialized with a value that is never read,
+> it is being updated later on.  The assignment is redundant and can be
+> removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next] net: ks8851: Make ks8851_read_selftest() return void
-    https://git.kernel.org/netdev/net-next/c/819fb78f6955
+  - bonding: remove redundant initialization of variable ret
+    https://git.kernel.org/netdev/net-next/c/92e1b57c3865
 
 You are awesome, thank you!
 --
