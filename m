@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647823997F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAF03997FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhFCCUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:20:09 -0400
-Received: from mga09.intel.com ([134.134.136.24]:51886 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhFCCUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:20:08 -0400
-IronPort-SDR: 9Fe6yUzHp/t3G31d4O+3IAGifjumUfGeudE74bz/0S0n3cgF8+aCNUj5sFySZvaNPvZ84YryjG
- 4CGEEuNGNbpQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="203937411"
-X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
-   d="scan'208";a="203937411"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 19:18:22 -0700
-IronPort-SDR: aIgogudB/xgPovZkty4cGTTVDDPkaoIn4LK55UWXjGi7xxn4m2KSblfJrn5zToJE+9XWx2Tmjb
- bp5VXHB4Xb5Q==
-X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
-   d="scan'208";a="550525649"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.87.193]) ([10.209.87.193])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 19:18:21 -0700
-Subject: Re: [PATCH v1 2/8] virtio: Add boundary checks to virtio ring
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org, x86@kernel.org,
-        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20210603004133.4079390-1-ak@linux.intel.com>
- <20210603004133.4079390-3-ak@linux.intel.com>
- <4be00b3a-a15f-7fee-317b-ddabed3c1347@redhat.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <ccf32bdc-a487-040b-5fe6-fcc8e71a57da@linux.intel.com>
-Date:   Wed, 2 Jun 2021 19:18:20 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229707AbhFCCWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFCCWS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 22:22:18 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA61C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 19:20:34 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id o9so4091930ilh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uB50XVLqLm8HgEti+PdVVEanfFXkb0FvvSIprZT7Pmc=;
+        b=pqgesQYtxRDsI2ENE1Hf2iP1rslYHeLh9dKf3KcTzocC5PPt1KvtZqriKLahqP6ocC
+         DTlH0pmxr3jk0jWShApCe0Rh+vq4b9gj1jp1BcySAd9VJyjd5yygfGjYappzYApIehaC
+         e2zvrEPl+g7MXJO4MuyIGMI0s1C76TqR4XSOdFohoENUdkstKxfEjMCdNKsmyZ7VH35Z
+         +Whj4PbzFHpMJ8b6zXoUYGHMnpIZNKznH8orRyjvPTQICPX0Rj8A/LRP8MHW+sj8of+N
+         nOeL/A1Uz1PODa53CUto/QuLRQN8R7IrC6QQSEdz8MVhDcwXgShOZhCH+o3zSFuliFAO
+         ZGmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uB50XVLqLm8HgEti+PdVVEanfFXkb0FvvSIprZT7Pmc=;
+        b=J8hvEprPMq6N2HvUWWRkmo6hMk1XJ8U+v4ZexhxbuZRyRuqJnBm2Z9pQ+RqxFGBehT
+         jY6yg6/cgxfzF/ojngeFr5E6KTeQRP4VYSD2kaQIr9Wirn4Hzm93lUGVp9Vg/wzmvRaP
+         FCCcDviv92jzGoLXYLS8mevg9EBaOf3xgx6OuHc7UwSFVAYiDi7Y/Lr9p4RQqjfH54Ey
+         QtveFHHb5q3e4ReMc5s0rEhKGbYjW2Z2GKn5UNXZHRrKGh3Z2AccmRXXpeUvVAy9SUeU
+         xudsEzoNtMwno4f8PvZEbefl+ndxk7SfzBWE6wNY1QvqMpZqUQb8vyaAuYk2Z8mJQx3o
+         3UrQ==
+X-Gm-Message-State: AOAM533iCs0k+unfYfAcnWr6kiueKtiYh/hIzXBbyN4LLLWo2E4km/5s
+        DVHBLDSGeLN8zL2x1CitgiMBnBJGQJoHOKTm1Dlpik0G
+X-Google-Smtp-Source: ABdhPJyXjJ3EB1RDhPa7UUNEDEKAZBp9HGtFcFRcykIWQUhg2XlT34SUU4HrBaISJ+KGapmR3oEl8Wq8rcP4cHQB9OE=
+X-Received: by 2002:a05:6e02:5ce:: with SMTP id l14mr5217919ils.94.1622686832443;
+ Wed, 02 Jun 2021 19:20:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4be00b3a-a15f-7fee-317b-ddabed3c1347@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210602111655.3808580-1-jwi@linux.ibm.com>
+In-Reply-To: <20210602111655.3808580-1-jwi@linux.ibm.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Thu, 3 Jun 2021 10:20:20 +0800
+Message-ID: <CAJhGHyCq8Zy65XpnH1gFPQKq4+q3GbVAFtpvwz0+mHYqKgaXjw@mail.gmail.com>
+Subject: Re: [PATCH wq/for-next 1/2] workqueue: replace open-coded work_pending()
+To:     Julian Wiedmann <jwi@linux.ibm.com>
+Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For both of these patches
 
-> It looks to me all the evils came from the fact that we depends on the 
-> descriptor ring.
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+
+
+On Wed, Jun 2, 2021 at 7:17 PM Julian Wiedmann <jwi@linux.ibm.com> wrote:
 >
-> So the checks in this patch could is unnecessary if we don't even read 
-> from the descriptor ring which could be manipulated by the device.
+> Use the right helper to check whether a work item is currently pending.
 >
-> This is what my series tries to achieve:
+> Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+> ---
+>  kernel/workqueue.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> https://www.spinics.net/lists/kvm/msg241825.html
-
-I would argue that you should boundary check in any case. It was always 
-a bug to not have boundary checks in such a data structure with multiple 
-users, trust or not.
-
-But yes your patch series is interesting and definitely makes sense for 
-TDX too.
-
-Best would be to have both I guess, and always check the boundaries 
-everywhere.
-
-So what's the merge status of your series?
-
--Andi
-
-
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 50142fc08902..8a700ccfa313 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -3209,7 +3209,7 @@ EXPORT_SYMBOL(flush_delayed_work);
+>   */
+>  bool flush_rcu_work(struct rcu_work *rwork)
+>  {
+> -       if (test_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(&rwork->work))) {
+> +       if (work_pending(&rwork->work)) {
+>                 rcu_barrier();
+>                 flush_work(&rwork->work);
+>                 return true;
+> --
+> 2.25.1
+>
