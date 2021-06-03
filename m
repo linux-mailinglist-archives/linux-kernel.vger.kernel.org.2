@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A64339A26E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BAE39A270
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhFCNpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:45:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34231 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230319AbhFCNpK (ORCPT
+        id S230227AbhFCNrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhFCNrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:45:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622727805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/YoXGStod1h/jERDJXuFzwuJE4tYR48fwiMDlbU5AI=;
-        b=HGJMTlODCcjNoTPyL/qb4QqTcvJHeVSluvsyPemzxL/9TQF0Tg0GVatTKRQwNr3khlrSAD
-        cveLnJSrwMIUVftEYcxkp8+dp82laoViBXNqQh9TFrmtI/pEFRgctJYwVtnx7ZSIyrL2NI
-        WXl103JCaNUpoL904+qjKJphoWa5o+Q=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-yrPikXOAOIqJzRYm0-slSw-1; Thu, 03 Jun 2021 09:43:21 -0400
-X-MC-Unique: yrPikXOAOIqJzRYm0-slSw-1
-Received: by mail-ej1-f69.google.com with SMTP id hz18-20020a1709072cf2b02903fbaae9f4faso1963145ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:43:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=g/YoXGStod1h/jERDJXuFzwuJE4tYR48fwiMDlbU5AI=;
-        b=tFHrbaGQ3efg+QlsnUiPceho6ikAiR7RE2GA4U6P3oCo226n3FhEKJ6A6oN36WaffM
-         fdkfJD4cpG4Q6mELtO67r/wVzGZdJcPLBJQq/yXHhLbV8D9UjzWTQwyee7Ax60Z2cPx1
-         iD2R/o+qV2HNdL2f45NgdShOJSH/TzYwW9loifApTjYLpRSOYIjMAvMZEzt/rNwRihHy
-         G4LkuMSWOBhq4zjj/ZNu//dFgxSW2U2XFMjA4+Z9ho9NKJ/BScneYGIDbd05xbso8bzT
-         2Pnw+WkbCsyMUithlfwk5SuCQ32libGOP9m+sJcfeRYlnNugAklMZalQBszsCSnkhtFu
-         WOzg==
-X-Gm-Message-State: AOAM531R9kj08OlazOggD/3rSRrF3Nn11x9OqoLdx+OZVnhitIm1CPnz
-        so/lz1Skuz2nNwBGW/ercT+XzW96DMWsWphjDeYbT9fArc2ZE4yhcmbxxFGvzwBsXsZ2viHzcvT
-        kfcfILYrXIXrzoWT7rceLTaFa
-X-Received: by 2002:a17:906:c010:: with SMTP id e16mr39287405ejz.214.1622727800185;
-        Thu, 03 Jun 2021 06:43:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwkBAlTramcWK5Md2ZPw/anf2r6EF7CpGQ6+Wmz/53biaTbGsw8MFyAlqZyTTAGWiKmHbfy7Q==
-X-Received: by 2002:a17:906:c010:: with SMTP id e16mr39287382ejz.214.1622727799958;
-        Thu, 03 Jun 2021 06:43:19 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id cw10sm1099269ejb.62.2021.06.03.06.43.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 06:43:19 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Tao Xu <tao3.xu@intel.com>
-Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiaoyao Li <xiaoyao.li@intel.com>, pbonzini@redhat.com,
-        seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-In-Reply-To: <12db5b88-a094-4fb0-eeac-e79396009f44@intel.com>
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <871r9k36ds.fsf@vitty.brq.redhat.com>
- <12db5b88-a094-4fb0-eeac-e79396009f44@intel.com>
-Date:   Thu, 03 Jun 2021 15:43:17 +0200
-Message-ID: <87im2v12tm.fsf@vitty.brq.redhat.com>
+        Thu, 3 Jun 2021 09:47:32 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD81C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 06:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=pOZ1KTG84jUOwZV4iyoT08ALYRTSycIVbayoyIWOUck=; b=XrVgjPIm3zrW47fILGapTjzAv
+        3O/W1kx/TwUDLt6X9dLc49Y/7ll7KNFil833TJX1GSAlD/2QuflP5JRPOqxznYltX9YgAiMzRkvR5
+        QRS/9lR+U5Yrl8QjmZ4jZjtRyNkhERKk5cAjPg+DqxFYgAqFKrOHUGmB1CJKhjWhqfSTXLbGtRPEf
+        TEz2HsIYQLGtLCsapRK06jYPZrVqzd9M0DSCiNPUUi+S19BcJ9HqxxMybN3wpoHCGwN9/JqoV9bMw
+        VW1acw2ZUxk6uToxHYGyu+p8vsBh16FJtRahxxTe+C5eJA9Q81jshXRKDYUSolBDRreubmvLc7FYe
+        jrS04zL7A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44674)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lonfG-0002qw-QE; Thu, 03 Jun 2021 14:45:38 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lonfE-00029t-9E; Thu, 03 Jun 2021 14:45:36 +0100
+Date:   Thu, 3 Jun 2021 14:45:36 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>, arm@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Stefan Agner <stefan@agner.ch>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Stefano Stabellini <stefano.stabellini@eu.citrix.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/6] ARM: xen: Register with kernel restart handler
+Message-ID: <20210603134536.GT30436@shell.armlinux.org.uk>
+References: <20191015145147.1106247-1-thierry.reding@gmail.com>
+ <20191015145147.1106247-3-thierry.reding@gmail.com>
+ <CAF2Aj3hbW7+pNp+_jnMVL8zeSxAvSbV1ZFZ_4PAUj6J0TxMk7g@mail.gmail.com>
+ <20210603131124.GA1040254@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603131124.GA1040254@roeck-us.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tao Xu <tao3.xu@intel.com> writes:
+On Thu, Jun 03, 2021 at 06:11:24AM -0700, Guenter Roeck wrote:
+> On Thu, Jun 03, 2021 at 01:43:36PM +0100, Lee Jones wrote:
+> > On Tue, 15 Oct 2019 at 15:52, Thierry Reding <thierry.reding@gmail.com>
+> > wrote:
+> > 
+> > > From: Guenter Roeck <linux@roeck-us.net>
+> > >
+> > > Register with kernel restart handler instead of setting arm_pm_restart
+> > > directly.
+> > >
+> > > Select a high priority of 192 to ensure that default restart handlers
+> > > are replaced if Xen is running.
+> > >
+> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > > Reviewed-by: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+> > > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> > > Signed-off-by: Thierry Reding <treding@nvidia.com>
+> > > ---
+> > >  arch/arm/xen/enlighten.c | 12 ++++++++++--
+> > >  1 file changed, 10 insertions(+), 2 deletions(-)
+> > >
+> > 
+> > This patch does appear to be useful.
+> > 
+> > Is this just being solved in downstream trees at the moment?
+> > 
+> > It would be nice if we could relinquish people of this burden and get it
+> > into Mainline finally.
+> > 
+> 
+> There must have been half a dozen attempts to send this patch series
+> upstream. I have tried, and others have tried. Each attempt failed with
+> someone else objecting for non-technical reasons (such as "we need more
+> reviews") or no reaction at all, and maintainers just don't pick it up.
+> 
+> So, yes, this patch series can only be found in downstream trees,
+> and it seems pointless to submit it yet again.
 
-> On 6/2/21 6:31 PM, Vitaly Kuznetsov wrote:
->> Tao Xu <tao3.xu@intel.com> writes:
->> 
->>> There are some cases that malicious virtual machines can cause CPU stuck
->>> (event windows don't open up), e.g., infinite loop in microcode when
->>> nested #AC (CVE-2015-5307). No event window obviously means no events,
->>> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
->>> hardware CPU can't be used by host or other VM.
->>>
->>> To resolve those cases, it can enable a notify VM exit if no event
->>> window occur in VMX non-root mode for a specified amount of time
->>> (notify window). Since CPU is first observed the risk of not causing
->>> forward progress, after notify window time in a units of crystal clock,
->>> Notify VM exit will happen. Notify VM exit can happen incident to delivery
->>> of a vectored event.
->>>
->>> Expose a module param for configuring notify window, which is in unit of
->>> crystal clock cycle.
->>> - A negative value (e.g. -1) is to disable this feature.
->>> - Make the default as 0. It is safe because an internal threshold is added
->>> to notify window to ensure all the normal instructions being coverd.
->>> - User can set it to a large value when they want to give more cycles to
->>> wait for some reasons, e.g., silicon wrongly kill some normal instruction
->>> due to internal threshold is too small.
->>>
->>> Notify VM exit is defined in latest Intel Architecture Instruction Set
->>> Extensions Programming Reference, chapter 9.2.
->>>
->>> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>> Signed-off-by: Tao Xu <tao3.xu@intel.com>
->>> ---
->>>
->>> Changelog:
->>> v2:
->>>       Default set notify window to 0, less than 0 to disable.
->>>       Add more description in commit message.
->> 
->> Sorry if this was already discussed, but in case of nested
->> virtualization and when L1 also enables
->> SECONDARY_EXEC_NOTIFY_VM_EXITING, shouldn't we just reflect NOTIFY exits
->> during L2 execution to L1 instead of crashing the whole L1?
->> 
-> Notify VM Exit will not crash L1 guest if VM context valid in exit 
-> qualification. After VM exit, VMM can resume the guest normally.
+It has plenty of reviews and acks, so that's not the problem. If you
+look back at the 2019 attempt:
 
-Wrong choice of words, sorry. Indeed, VMM is free to decide what to do
-upon such vmexit.
+1) there was a pull request sent on the 2 October 2019 to the arm soc
+   guys to merge a series that quite obviously is outside of their
+   remit as it touches mostly ARM core code - it should have been
+   sent to me but wasn't, not even as a Cc.
+
+2) I raised that issue, and as I could find no trace of the patches,
+   I asked for the to be posted - which they were, eventually, two
+   weeks later. It looks like I completely missed the patches amongst
+   all the other email I don't bother to read anymore though. In any
+   case, the pull request by that time would have been completely
+   forgotten about.
+
+And that's where it ended - no apparent follow-ups until now.
+
+*Shrug*.
+
+So in summary, I was expected to notice the patches amongst all the
+other email, and then remember that there was a pull request that
+wasn't even addressed to me...
 
 -- 
-Vitaly
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
