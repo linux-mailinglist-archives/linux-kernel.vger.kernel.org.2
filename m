@@ -2,86 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CFA39AEAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85BD39AEAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhFCXaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
+        id S229991AbhFCXaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCXaL (ORCPT
+        with ESMTP id S229576AbhFCXaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:30:11 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B7DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 16:28:10 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id w15so9182201ljo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 16:28:10 -0700 (PDT)
+        Thu, 3 Jun 2021 19:30:20 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE78C061756;
+        Thu,  3 Jun 2021 16:28:20 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id s6so8999157edu.10;
+        Thu, 03 Jun 2021 16:28:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yp2xRS7FBwt+MIq6S/QXxDvwXDIU2o3m3x2Gm2/0e9o=;
-        b=MPHHM8hgXKQMT2F3JT70zdDS0t7cPi9LrYCnvh+CZ4kgONtffvYF4ixcKpCqqoO1Fs
-         lJ2z7gOX0dMnOUZDsvDEoig7HUnPRq1rZ/Ye6SoLbryAHRbJhWlS4o9Bjo68dOwqmmec
-         F1c6lUNcrK7UQ3b2+QDUfywN8IxfiMOKNfIpCZBVSE2I5EjCxtcpwNB3ySLJ7m+C/DcJ
-         n2hjy3cxhoujdU5akqnPzk4ppjraB4hTA22266tJLfRLaNTqSaGHibK1uKWHHgbwS8ZO
-         B4zbM+2OAZKY2NJaEpT3bmSNiZtXlnzqNNnDvxjzgqyJBaT1jzTOFQ3uGZn7oXSPjY9e
-         9c0Q==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=xfUY0TX7tuXJEEdu4nINq9m/FRxe8qkPqXyMt/FVDPo=;
+        b=S/xTZKg3ARoLNKJrpj4PAaD/NKSurt9tsbgEjJSPtWkk60cEM1KYxnKGAlhygJz3Lk
+         qdPbl6Z0UTO7UoSlkdhAjx4bFqJ3BPagC2U+u+RFp5VcGaG56pK1lWsxnPZzJKm8PG9e
+         KZ0f4OQBNZGmjh8/1AHRSld8Sm0+pgIMvZS/foKu9J9G3QuscalAoj3a8EoFVzGqZHM+
+         kPl0wHgnT1wn4KNLrRlEdH83OGodCrZXL482W+cQK65sJeByqMpYq/oqBw3i1eQcsE6M
+         1cz545UZiIrQVI+oVKXw4bv5sp2tpqCHH7748g0Du7vFq59NFh1mJbX/MV2a3dlKVBIa
+         N+ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yp2xRS7FBwt+MIq6S/QXxDvwXDIU2o3m3x2Gm2/0e9o=;
-        b=brO/ezDTKlTIWQ+bkDE6JHpUaVkCs0hIfgWKDSw4kAScDFV6od8A8EDgA0FAd8oFDg
-         ybql3JfoGpMZMHV4d+eWGDGAm4/nn7tN8UJKM0dmkrI0YrnDfPrXlr4MPsXUhIQ4yBxr
-         0W8tPSjTQKe35rwbdJ1ktcvaJCGmWeWu17zlgIo/ra/EZTe5yxZbC8KXed87wtAixWSY
-         SaxJrrNOLcyQL46Qb9hYiOv1s09/ZlC0ymMNdWmrb9D+Rv08/bq513wCgFuEe6Vcp5CE
-         dbZZVKf3lyJhTbPMdPnSx+PbO8YQgQZJGUj/jYfwDvJo9nKO1M+OZLfmyxcwQ4hQ6rzP
-         Cg3Q==
-X-Gm-Message-State: AOAM530EMytZ5sGMw/btr/KZnkRAkz81PK2XFsfSXipcqQgNWpVz/69w
-        ywOM04siAyE2JJn7W9lXT3x0P59+QCW8V6pIykXSxA==
-X-Google-Smtp-Source: ABdhPJzXbiQOm/LTa/9I1aTG6l1jQZ5G6mYyNqgFW8DJe4zWHMlzneqPaWc1OYbyRPsdbcfjM4egzmVvxwPKp5INQg0=
-X-Received: by 2002:a05:651c:b1f:: with SMTP id b31mr1302202ljr.0.1622762887714;
- Thu, 03 Jun 2021 16:28:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210226164345.3889993-1-arnd@kernel.org> <CAK8P3a2E0pv6PKzcCoRZH0G_gGrhWeiDwN7h090iQpd6c=XG1Q@mail.gmail.com>
-In-Reply-To: <CAK8P3a2E0pv6PKzcCoRZH0G_gGrhWeiDwN7h090iQpd6c=XG1Q@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 3 Jun 2021 16:27:56 -0700
-Message-ID: <CAKwvOdna9KPAsN6+qTDkWMdXYDg5AGUnp=ek5McxtDXLSQdVWg@mail.gmail.com>
-Subject: Re: [PATCH] ARM: ep93xx: don't use clang IAS for crunch
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=xfUY0TX7tuXJEEdu4nINq9m/FRxe8qkPqXyMt/FVDPo=;
+        b=Fsy3Vzv8V0I+5aElFODPtpjbLXDq3cT5bFUL4x3TPYJMQ2gD2pwrsT/x5oIuGueQfF
+         7I/zrweb3T3rr1wl7gfUaGWM88wiYr2CVw4bzHgDEJBt9DJYVqqj/RgbK+6LFhl7Rn6I
+         eTK/7xU5L9SDVNG9kA+uvCf6JTX1IrH7aVI+m51rS2jw9fD3B8BzAPJEUTnc44LKJJ3L
+         0+exxuZLQlSZoLK5bI7bEMvbIfR+ELMB9evyG92571B1SkaykkoGFqc7KBwjUjYaFohI
+         1pH6pcf1n5NCdM3ydLYQK7MmvPaGGyAG9DmJeBL8D1D31wkaZVDSp1rDOjOq2MhVFQ2Q
+         S+zg==
+X-Gm-Message-State: AOAM533/ftTl4ubssI3oQY7tQxWNxwayBJVKak7FCM29nOeDZ36A5onD
+        PSY89s0xt8F3F71idD5xb6U=
+X-Google-Smtp-Source: ABdhPJzgBMMxuetZGn38RWYmHESgf/uKRAWdE3OsttNAtX5gpr0WTvIPnk4EWrerNZypqNyTCveMLA==
+X-Received: by 2002:a05:6402:4316:: with SMTP id m22mr1742860edc.316.1622762899369;
+        Thu, 03 Jun 2021 16:28:19 -0700 (PDT)
+Received: from [192.168.1.15] ([151.29.179.73])
+        by smtp.gmail.com with ESMTPSA id j22sm2131542ejt.11.2021.06.03.16.28.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 16:28:18 -0700 (PDT)
+Message-ID: <c3f5c4ecfc86ec1de29f6db681b2e5fce7ef23a3.camel@gmail.com>
+Subject: Re: [PATCH v6 20/20] perf session: Load data directory files for
+ analysis
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Date:   Fri, 04 Jun 2021 01:28:17 +0200
+In-Reply-To: <be40346cdb384e0721f79d918067ff9026743845.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+References: <cover.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+         <be40346cdb384e0721f79d918067ff9026743845.1622025774.git.alexey.v.bayduraev@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 10:01 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Feb 26, 2021 at 5:44 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> >  obj-$(CONFIG_CRUNCH)           += crunch.o crunch-bits.o
-> > -AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312
-> > +AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312 $(cc-option, -fno-integrated-as)
->
-> I reworked that patch just before sending it out, and ended up with two typos
-> in there, it should be
->
-> +AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312 $(call cc-option,
-> -no-integrated-as)
->
-> I'll wait for others to comment before I send the fixed version.
+Hi,
 
-Probably good for that v2?
--- 
+On Wed, 2021-05-26 at 13:53 +0300, Alexey Bayduraev wrote:
+> Load data directory files and provide basic raw dump and aggregated
+> analysis support of data directories in report mode, still with no
+> memory consumption optimizations.
+> 
+> Design and implementation are based on the prototype [1], [2].
+> 
+> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -
+> b perf/record_threads
+> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+> 
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> ---
+>  tools/perf/util/session.c | 129 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 129 insertions(+)
+> 
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index 041601810b85..dd4ef9749cd0 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -65,6 +65,7 @@ struct reader_state {
+>         u64      data_size;
+>         u64      head;
+>         bool     eof;
+> +       u64      size;
+>  };
+>  
+>  enum {
+> @@ -2319,6 +2320,7 @@ reader__read_event(struct reader *rd, struct
+> perf_session *session,
+>         if (skip)
+>                 size += skip;
+>  
+> +       st->size += size;
+>         st->head += size;
+>         st->file_pos += size;
+>  
+> @@ -2418,6 +2420,130 @@ static int __perf_session__process_events(struct
+> perf_session *session)
+>         return err;
+>  }
+>  
+> +/*
+> + * This function reads, merge and process directory data.
+> + * It assumens the version 1 of directory data, where each
+> + * data file holds per-cpu data, already sorted by kernel.
+> + */
+> +static int __perf_session__process_dir_events(struct perf_session *session)
+> +{
+> +       struct perf_data *data = session->data;
+> +       struct perf_tool *tool = session->tool;
+> +       int i, ret = 0, readers = 1;
+> +       struct ui_progress prog;
+> +       u64 total_size = perf_data__size(session->data);
+> +       struct reader *rd;
+> +
+> +       perf_tool__fill_defaults(tool);
+> +
+> +       ui_progress__init_size(&prog, total_size, "Sorting events...");
+> +
+> +       for (i = 0; i < data->dir.nr; i++) {
+> +               if (data->dir.files[i].size)
+> +                       readers++;
+> +       }
+> +
+> +       rd = session->readers = zalloc(readers * sizeof(struct reader));
+> +       if (!rd)
+> +               return -ENOMEM;
+> +       session->nr_readers = readers;
+> +       readers = 0;
+> +
+> +       rd[readers] = (struct reader) {
+> +               .fd              = perf_data__fd(session->data),
+> +               .path            = session->data->file.path,
+> +               .data_size       = session->header.data_size,
+> +               .data_offset     = session->header.data_offset,
+> +               .in_place_update = session->data->in_place_update,
+> +       };
+> +       ret = reader__init(&rd[readers], NULL);
+> +       if (ret)
+> +               goto out_err;
+> +       ret = reader__mmap(&rd[readers], session);
+> +       if (ret != READER_OK) {
+> +               if (ret == READER_EOF)
+> +                       ret = -EINVAL;
+> +               goto out_err;
+> +       }
+> +       readers++;
+> +
+> +       for (i = 0; i < data->dir.nr; i++) {
+> +               if (data->dir.files[i].size) {
+> +                       rd[readers] = (struct reader) {
+> +                               .fd              = data->dir.files[i].fd,
+> +                               .path            = data->dir.files[i].path,
+> +                               .data_size       = data->dir.files[i].size,
+> +                               .data_offset     = 0,
+> +                               .in_place_update = session->data-
+> >in_place_update,
+> +                       };
+> +                       ret = reader__init(&rd[readers], NULL);
+
+zstd_fini is never called on rd[readers].zstd_data
+Maybe it can be done in perf_session__delete. For example, we could add a new
+reader__fini function to do the cleanup of zstd data and
+perf_decomp__release_events.
+
 Thanks,
-~Nick Desaulniers
+Riccardo
+
+> +                       if (ret)
+> +                               goto out_err;
+> +                       ret = reader__mmap(&rd[readers], session);
+> +                       if (ret != READER_OK) {
+> +                               if (ret == READER_EOF)
+> +                                       ret = -EINVAL;
+> +                               goto out_err;
+> +                       }
+> +                       readers++;
+> +               }
+> +       }
+> +
+> +       i = 0;
+> +
+> +       while ((ret >= 0) && readers) {
+> +               if (session_done())
+> +                       return 0;
+> +
+> +               if (rd[i].state.eof) {
+> +                       i = (i + 1) % session->nr_readers;
+> +                       continue;
+> +               }
+> +
+> +               ret = reader__read_event(&rd[i], session, &prog);
+> +               if (ret < 0)
+> +                       break;
+> +               if (ret == READER_EOF) {
+> +                       ret = reader__mmap(&rd[i], session);
+> +                       if (ret < 0)
+> +                               goto out_err;
+> +                       if (ret == READER_EOF)
+> +                               readers--;
+> +               }
+> +
+> +               /*
+> +                * Processing 10MBs of data from each reader in sequence,
+> +                * because that's the way the ordered events sorting works
+> +                * most efficiently.
+> +                */
+> +               if (rd[i].state.size >= 10*1024*1024) {
+> +                       rd[i].state.size = 0;
+> +                       i = (i + 1) % session->nr_readers;
+> +               }
+> +       }
+> +
+> +       ret = ordered_events__flush(&session->ordered_events,
+> OE_FLUSH__FINAL);
+> +       if (ret)
+> +               goto out_err;
+> +
+> +       ret = perf_session__flush_thread_stacks(session);
+> +out_err:
+> +       ui_progress__finish();
+> +
+> +       if (!tool->no_warn)
+> +               perf_session__warn_about_errors(session);
+> +
+> +       /*
+> +        * We may switching perf.data output, make ordered_events
+> +        * reusable.
+> +        */
+> +       ordered_events__reinit(&session->ordered_events);
+> +
+> +       session->one_mmap = false;
+> +
+> +       return ret;
+> +}
+> +
+>  int perf_session__process_events(struct perf_session *session)
+>  {
+>         if (perf_session__register_idle_thread(session) < 0)
+> @@ -2426,6 +2552,9 @@ int perf_session__process_events(struct perf_session
+> *session)
+>         if (perf_data__is_pipe(session->data))
+>                 return __perf_session__process_pipe_events(session);
+>  
+> +       if (perf_data__is_dir(session->data))
+> +               return __perf_session__process_dir_events(session);
+> +
+>         return __perf_session__process_events(session);
+>  }
+>  
+
+
