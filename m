@@ -2,128 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1B339A202
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0943539A20A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhFCNSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhFCNS3 (ORCPT
+        id S231435AbhFCNT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:19:56 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:38903 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhFCNTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:18:29 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E4BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 06:16:45 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k16so6187563ios.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:16:44 -0700 (PDT)
+        Thu, 3 Jun 2021 09:19:55 -0400
+Received: by mail-wm1-f51.google.com with SMTP id t4-20020a1c77040000b029019d22d84ebdso5864313wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:18:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QMqPQvUnypqLHjPLaT9xyug0EDGENj9f58UV0CdwgRM=;
-        b=CFMc2N12Cx79ffls6ViamhiWoLw/R4+zxBqyCvAFh6ZEjMHmuS0YZZ5LapV3LDUj0c
-         wlysEOLY7aPIvUgp2ksvPoY5T449DrIFEJCdsM4EOTmP8Ghp4WcUZEFwViTIE4CdY2mT
-         q8xV96VO4R3MszAyp+NBaA7X4HnI1/Gg9Ag2s=
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kVmiKNflK1YqQSK946ogFvaiqc4a4AwLLd7mkDQytwo=;
+        b=KJfWoDsEFR+xkEK8fqCohWR3iG7FC4MQxI4/FZw1BOExXFJsTBny46F7WkLIlQrq/z
+         4AjURLtXA8XG8BT4KscUQ35iWl5jD2Dhn2rRidpH7DCPFD1p4A/O66X+nQXGZrqvMxUt
+         GO15rY79//UX2QnH7WBOaIKaM62LKki0oZjQ0/UcqMR7obCyxXO3hBLQ/qcQ+d/olBG/
+         M8cvlZ9YRvx0JcwB+Z/Aq4YjlSceH9SP1xlDIe6csU0ynlhoo+KBs61YofWZUWGwcHEw
+         WQ4qZy99ys4wp6RNmahLclCMS7RByU7fQglZO99NQJkNOp8hZzVdS6BHf93AcqSCbow3
+         lmpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QMqPQvUnypqLHjPLaT9xyug0EDGENj9f58UV0CdwgRM=;
-        b=s/uSJda039KWiMD64Wb3ok0Nqs9QH5qnmZUZ3X/BctL7tA7bQqek8Ba9BSmtMTFmIT
-         t1XjXA3PNX6fflkJtCvVrfkKQRfqPu0Ap1lwYtTT00sBhsb2TOmWK11hWbwidCEMPmUn
-         NNVggoxJj6Q8BbWzZdv4HAbRS8tj90MUYK4E3ILc4pvvk8sFZnS0MxxFl0WeipaoeWuD
-         +8DVGU4EZbBxFnAC2X7sEOvvQBYmy9NcbwHmTFfZvCY58M6oeHLuyTDvhHFALPQT+Mvd
-         BqhALyhzUol2x45AvliezcJmT2nguxPzxbBMC6MVhpl6JrJeYnB3XPYSVlyDTqArsUl8
-         ZdjA==
-X-Gm-Message-State: AOAM533n8Ql9xGLEh27yfVJCI98w2XLSUmDxPKhb5e+j1vzxoUcmkKQ3
-        zFNXVBfY3J2qTZj7BZ6IBbo88A==
-X-Google-Smtp-Source: ABdhPJygkmyBgoBrQOB/rwJPtjellTqkTCsw39wzcGcU21hbYGIad1fCPHc4YWG13IAVVphEY1XfIw==
-X-Received: by 2002:a5e:974d:: with SMTP id h13mr29121397ioq.150.1622726204263;
-        Thu, 03 Jun 2021 06:16:44 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r8sm1737623ile.25.2021.06.03.06.16.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 06:16:43 -0700 (PDT)
-Subject: Re: [patch 1/8] selftests/x86: Test signal frame XSTATE header
- corruption handling
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210602095543.149814064@linutronix.de>
- <20210602101618.285452223@linutronix.de> <YLd7s/cw8MsUlWvM@zn.tnic>
- <87a6o81hg0.ffs@nanos.tec.linutronix.de>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <156569f3-bd44-d2c3-84fa-a363e83e35c4@linuxfoundation.org>
-Date:   Thu, 3 Jun 2021 07:16:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kVmiKNflK1YqQSK946ogFvaiqc4a4AwLLd7mkDQytwo=;
+        b=qWlJOZlyOJbTXvlNXQW6Sta6wKMR6OoeSw6DWsvS41AjB1Ygqb/CprXFuEgu5wMJbu
+         w1qudVx4asQfjjnPpEsXI2EDhzPFJ0Q8vNplZ2H7v9SDHD26R7XMaTfIq8BUcKqN0eq0
+         TnjHsimjmg3HlLSAgXW4IjpQjlUEJd1igP7vbtU/y6C633a9qJXOQoHIjepM5y1qIKkd
+         cGpFgLidx5JkxkZcYMWtumM7KR8/586GlEo+wsqVl5pp8jZULjkl19mZrlHSuDGZwoPs
+         S1z3MIG2yWSUuEckF3AwtVwDI/Owu/gJNwj3PkSZzb/fZylRtemVkcQXtvEUvc9hELw3
+         lBQw==
+X-Gm-Message-State: AOAM531bGZFgKnjhtMEXFyNSGLe/6g7/BI/6x9J7Adtb3S+ISoCsDHx7
+        HULo0+uFISQYZbubghJyTKAvttcqrw9oIuJYVJ/A2w==
+X-Google-Smtp-Source: ABdhPJwrJsJZtC2CbERI2DymWgVkybpTdH/lrVRKG7SsyTSoC3smHhOZwAum9hW1SYerXRcZcLvaDywUzdNnakDxmlM=
+X-Received: by 2002:a05:600c:35cb:: with SMTP id r11mr10350874wmq.152.1622726220166;
+ Thu, 03 Jun 2021 06:17:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87a6o81hg0.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210603082749.1256129-1-alex@ghiti.fr> <20210603082749.1256129-2-alex@ghiti.fr>
+ <20210603202748.2775f739@xhacker> <64cdb4f9-06f0-59b9-acf9-6fc298db37d7@ghiti.fr>
+In-Reply-To: <64cdb4f9-06f0-59b9-acf9-6fc298db37d7@ghiti.fr>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 3 Jun 2021 18:46:47 +0530
+Message-ID: <CAAhSdy2kPPrBzFCA01NSvWptoftY27+PsMzLDWFzvOzNdUByhA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] riscv: Factorize xip and !xip kernel address
+ conversion macros
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/21 8:15 AM, Thomas Gleixner wrote:
-> On Wed, Jun 02 2021 at 14:38, Borislav Petkov wrote:
->> On Wed, Jun 02, 2021 at 11:55:44AM +0200, Thomas Gleixner wrote:
->>> From: Andy Lutomirski <luto@kernel.org>
->>>
->>> This is very heavily based on some code from Thomas Gleixner.  On a system
->>> without XSAVES, it triggers the WARN_ON():
->>>
->>>      Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
->>
->> That triggers
->>
->> [  149.497274] corrupt_xstate_[1627] bad frame in rt_sigreturn frame:00000000dad08ab1 ip:7f031449ffe1 sp:7ffd0c5c59f0 orax:ffffffffffffffff in libpthread-2.31.so[7f0314493000+10000]
->>
->> on an AMD laptop here.
-> 
-> Yes, that's the ratelimited printk in the signal code.
-> 
->>> +static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
->>> +			   unsigned int *ecx, unsigned int *edx)
->>> +{
->>> +	asm volatile(
->>> +		"cpuid;"
->>> +		: "=a" (*eax),
->>> +		  "=b" (*ebx),
->>> +		  "=c" (*ecx),
->>> +		  "=d" (*edx)
->>> +		: "0" (*eax), "2" (*ecx));
->>> +}
->>> +
->>> +static inline int xsave_enabled(void)
->>> +{
->>> +	unsigned int eax, ebx, ecx, edx;
->>> +
->>> +	eax = 0x1;
->>> +	ecx = 0x0;
->>> +	__cpuid(&eax, &ebx, &ecx, &edx);
->>> +
->>> +	/* Is CR4.OSXSAVE enabled ? */
->>> +	return ecx & (1U << 27);
->>> +}
->>
->> One fine day someone should sit down and unify all those auxillary
->> functions used in the selftests into a lib...
-> 
-> Yes please. Shuah, that would be a great newcomer task...
-> 
+On Thu, Jun 3, 2021 at 6:27 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>
+> Hi Jisheng,
+>
+> Le 3/06/2021 =C3=A0 14:27, Jisheng Zhang a =C3=A9crit :
+> > On Thu,  3 Jun 2021 10:27:47 +0200
+> > Alexandre Ghiti <alex@ghiti.fr> wrote:
+> >
+> >> To simplify the kernel address conversion code, make the same definiti=
+on of
+> >> kernel_mapping_pa_to_va and kernel_mapping_va_to_pa compatible for bot=
+h xip
+> >> and !xip kernel by defining XIP_OFFSET to 0 in !xip kernel.
+> >>
+> >> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> >> ---
+> >>   arch/riscv/include/asm/page.h    | 14 +++-----------
+> >>   arch/riscv/include/asm/pgtable.h |  2 ++
+> >>   2 files changed, 5 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/pa=
+ge.h
+> >> index 6a7761c86ec2..6e004d8fda4d 100644
+> >> --- a/arch/riscv/include/asm/page.h
+> >> +++ b/arch/riscv/include/asm/page.h
+> >> @@ -93,9 +93,7 @@ extern unsigned long va_pa_offset;
+> >>   #ifdef CONFIG_64BIT
+> >>   extern unsigned long va_kernel_pa_offset;
+> >>   #endif
+> >> -#ifdef CONFIG_XIP_KERNEL
+> >>   extern unsigned long va_kernel_xip_pa_offset;
+> >> -#endif
+> >>   extern unsigned long pfn_base;
+> >>   #define ARCH_PFN_OFFSET            (pfn_base)
+> >>   #else
+> >> @@ -103,6 +101,7 @@ extern unsigned long pfn_base;
+> >>   #ifdef CONFIG_64BIT
+> >>   #define va_kernel_pa_offset        0
+> >>   #endif
+> >> +#define va_kernel_xip_pa_offset 0
+> >>   #define ARCH_PFN_OFFSET            (PAGE_OFFSET >> PAGE_SHIFT)
+> >>   #endif /* CONFIG_MMU */
+> >>
+> >> @@ -110,29 +109,22 @@ extern unsigned long kernel_virt_addr;
+> >>
+> >>   #ifdef CONFIG_64BIT
+> >>   #define linear_mapping_pa_to_va(x) ((void *)((unsigned long)(x) + va=
+_pa_offset))
+> >> -#ifdef CONFIG_XIP_KERNEL
+> >>   #define kernel_mapping_pa_to_va(y) ({                               =
+               \
+> >>      unsigned long _y =3D y;                                          =
+                 \
+> >>      (_y >=3D CONFIG_PHYS_RAM_BASE) ?
+> >
+> > This CONFIG_PHYS_RAM_BASE is only available for XIP, could result in a
+> > compiler error for !XIP?
+>
+> You're right, I have this patch in my branch and forgot to squash it.
+>
+> >
+> > I'm also concerned with the unecessary overhead of kernel_mapping_pa_to=
+_va()
+> > for !XIP case, there's a "if" condition branch, and extra symbol: va_ke=
+rnel_xip_pa_offset
+>
+> I understand your concerns even if I don't find that the overhead is
+> that important here, I prefer the readability improvement. I can always
+> add unlikely/likely builtin to improve things or completely remove this
+> patch if others agree with you.
 
-Yes. I will add to newcomer task list.
+I would also prefer readable code for long-term maintainability. Currently,
+the nested "#ifdefs" are increasing causing developers to easily break
+untested combinations.
 
-thanks,
--- Shuah
+Regards,
+Anup
+
+>
+> Thanks,
+>
+> Alex
+>
+> >
+> >>              (void *)((unsigned long)(_y) + va_kernel_pa_offset + XIP_=
+OFFSET) :      \
+> >>              (void *)((unsigned long)(_y) + va_kernel_xip_pa_offset); =
+               \
+> >>      })
+> >> -#else
+> >> -#define kernel_mapping_pa_to_va(x)  ((void *)((unsigned long)(x) + va=
+_kernel_pa_offset))
+> >> -#endif
+> >>   #define __pa_to_va_nodebug(x)              linear_mapping_pa_to_va(x=
+)
+> >>
+> >>   #define linear_mapping_va_to_pa(x) ((unsigned long)(x) - va_pa_offse=
+t)
+> >> -#ifdef CONFIG_XIP_KERNEL
+> >>   #define kernel_mapping_va_to_pa(y) ({                               =
+               \
+> >>      unsigned long _y =3D y;                                          =
+         \
+> >>      (_y < kernel_virt_addr + XIP_OFFSET) ?                           =
+       \
+> >>              ((unsigned long)(_y) - va_kernel_xip_pa_offset) :        =
+       \
+> >>              ((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFSET);=
+       \
+> >>      })
+> >
+> > Similar as kernel_mapping_pa_to_va(), an overhead of "if" condition bra=
+nch
+> > for !XIP and extra va_kernel_xip_pa_offset symbol.
+> >
+> >> -#else
+> >> -#define kernel_mapping_va_to_pa(x)  ((unsigned long)(x) - va_kernel_p=
+a_offset)
+> >> -#endif
+> >> +
+> >>   #define __va_to_pa_nodebug(x)      ({                               =
+               \
+> >>      unsigned long _x =3D x;                                          =
+         \
+> >>      (_x < kernel_virt_addr) ?                                        =
+       \
+> >> @@ -141,7 +133,7 @@ extern unsigned long kernel_virt_addr;
+> >>   #else
+> >>   #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa=
+_offset))
+> >>   #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+> >> -#endif
+> >> +#endif /* CONFIG_64BIT */
+> >>
+> >>   #ifdef CONFIG_DEBUG_VIRTUAL
+> >>   extern phys_addr_t __virt_to_phys(unsigned long x);
+> >> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm=
+/pgtable.h
+> >> index bde8ce3bfe7c..d98e931a31e5 100644
+> >> --- a/arch/riscv/include/asm/pgtable.h
+> >> +++ b/arch/riscv/include/asm/pgtable.h
+> >> @@ -77,6 +77,8 @@
+> >>
+> >>   #ifdef CONFIG_XIP_KERNEL
+> >>   #define XIP_OFFSET         SZ_8M
+> >> +#else
+> >> +#define XIP_OFFSET          0
+> >>   #endif
+> >>
+> >>   #ifndef __ASSEMBLY__
+> >
+> >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
