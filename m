@@ -2,190 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3037339A57B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9351439A573
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFCQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:13:25 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:31662 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhFCQNY (ORCPT
+        id S229702AbhFCQLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:11:47 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:58606 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhFCQLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:13:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622736699; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=YPt57uRHkIKCAc3k7uJNjdS1IBPwSdXWYI60IXWNva4=; b=ZLbhcvQyOxUVnF4/Bdqn1bO6+ebbDt0IDZvh1iQVen450OVwhF9GDw9jEPRLIA2hJNB/BT95
- KXJ5BOAjjaymW4cOoq9rKzJqysUuHj7YYnCIlgBOF7E3nbZ1HeOH6+JjEiTO7aRPpo2n95e/
- 23Y2NZq9inYw5G1GqPwXP7Mp5Ek=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60b8feb7ed59bf69cca96c20 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 16:09:27
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 31783C43148; Thu,  3 Jun 2021 16:09:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F054AC4360C;
-        Thu,  3 Jun 2021 16:09:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F054AC4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-Date:   Thu,  3 Jun 2021 09:09:15 -0700
-Message-Id: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 3 Jun 2021 12:11:45 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153Fx6h0191502;
+        Thu, 3 Jun 2021 16:09:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=corp-2020-01-29;
+ bh=NxXgDMs+kTpR6ygD/tA+fXr7QsXk6B7xBB8fE24SViM=;
+ b=E2Pyj6X0sEBPtj1vFwEUtKpzVgHwBne56FwVxuOuysw87jldFhYrwm44FpfO3r40pSPc
+ PtcW6cVuYZSsV9TMP3xbvQTeEUnLR36oaU3f5O5OV+ac2Lx8g0VN0UQg3B9LHruHUCsd
+ WeH4WluiWyTg8AIbekiD/DkmWXj9T/w9rv3mWB6bG8PKKzETkin5iP9Xfa+i0hdTHBAr
+ s1FuPwwY9rUNv6kSdDCcE0yicB4wmKFCcsSHn2LlCiCo1Bgbj0DZ88oVDrywn/9/aV+7
+ TUq6fwJ2xtv/m4Y1AjmEVfY79rpiZFNrW6NJWYCYABZkmcz0MYH1EgRdTCq2TQ6JE0vr NA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 38ub4cuvme-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Jun 2021 16:09:50 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153G65A8011554;
+        Thu, 3 Jun 2021 16:09:50 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by userp3030.oracle.com with ESMTP id 38uaqyem0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Jun 2021 16:09:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y7v+dDls7Te9Qo7KTLmD8xyPYjaBV2Dc2w0p6J3JpjrD0hCpPdcgPMngV5X5qFqnMCy3+cJk/2GYiVNOuj9AGAvjaLnEPdJIUpEgMDbXNwyRdFv8GW3xpN5sfjOqS9+opJ10Wn/Pb4317owH9i2W5n1p93NaMfZc4j69B8bZ3B2/9LzT/mvc4BtIboxlvjmU2Jg7+h5560ZUvR0Ipesnl0EEq9FTMIOXIdzwRznGqAwLVM/ZqKbYHwaMvU/rMsfdyV9LiyqOsfLZJOhQCDkJU4UZDjxipAFBHfYyBfQUhMwZisdTp/WhGqX5BzKiaOjKSRXZodE0hLfeYWcwRGMiOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NxXgDMs+kTpR6ygD/tA+fXr7QsXk6B7xBB8fE24SViM=;
+ b=JQLju6Zq2x/jnyT6D0DExjyzTaVAjWumsjYVdWwYpWtUoHjksmkzCrke/xnvRt6oYEQuCFok9cBc++6trb6vut3p14Wxz1hAh/9q3THjKYuNiLl+yrqLQV3n6VKwufPay+eogA7rw/sWNU+ddUMZw7kTMMtSvx2/GvvEAvLvS7bvl7h4Z/GT2jFpuvsug1p0WALHPq1wtd03dgCVygaFWrVty7G/Adtbbx3O1b0VGUf6UGr8kLHpawljFKKC7tsLhOiF8ViE1N3p/i76ibwpm4XCJKBXoSqylqiq5aZqRzbtCDw1WwA0NHhGMsw1rlJElrJbJHjLwf3ESUIFx/L3Gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NxXgDMs+kTpR6ygD/tA+fXr7QsXk6B7xBB8fE24SViM=;
+ b=evdD4OLwaTqdovpa2lDpreOsPD6hD5ZTZqjWuA2gh+2YLEtJJU/FqR3CfHdjlYMMvF067Zdxmn7t47gzWzOiPDMH+qvZDVgd0PYACTET0O+oMsf6HS6FSnwu6bn8n2m/B7jBltqsW9jSMu3J8mQbk/8MmHHfnkH38JO35Ltmy8o=
+Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
+ by DM6PR10MB2698.namprd10.prod.outlook.com (2603:10b6:5:b9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.29; Thu, 3 Jun
+ 2021 16:09:47 +0000
+Received: from DM6PR10MB4380.namprd10.prod.outlook.com
+ ([fe80::b8b4:5900:668b:c9c2]) by DM6PR10MB4380.namprd10.prod.outlook.com
+ ([fe80::b8b4:5900:668b:c9c2%5]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
+ 16:09:47 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH] drm/amdgpu: Use vma_lookup() in
+ amdgpu_ttm_tt_get_user_pages()
+Thread-Topic: [PATCH] drm/amdgpu: Use vma_lookup() in
+ amdgpu_ttm_tt_get_user_pages()
+Thread-Index: AQHXWJLf9LBXqSSmAk626hIUEgtUSQ==
+Date:   Thu, 3 Jun 2021 16:09:46 +0000
+Message-ID: <20210603160928.3854180-1-Liam.Howlett@Oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.30.2
+authentication-results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+x-originating-ip: [23.233.25.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ee600703-100a-4d5e-cf9b-08d926aa0212
+x-ms-traffictypediagnostic: DM6PR10MB2698:
+x-microsoft-antispam-prvs: <DM6PR10MB269891319BFDF5125E8FDE6EFD3C9@DM6PR10MB2698.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RVrCi9oAeNHqQC2WjGJjoMfg1dBMfjVFnC+VjTzn/gwF4lIM/f5iunI3g/NDVsWlXBCEThXBBQN4h4jDFhxwpNFJ51KbPgK/IyU3SXv/GoufZFIOvLBPxUpdXxzaH1PCmii0XGwr/33qII5nvSxHHpurZNL1Qp6ZiEBBphZaTpzRgrdU13Fs1MSX4/ekNj2nCm4XRkUGUPiJjNl/BGM17JfFU+Dn5jDms9vj+C9XkVFXJStaWyHrUNRHGg23/9JUL3hQq66gcy4agj1VgkwRN30cYwd2AsCNitUQiUDMjADgFHOiM93OxEzOLGKQ++Kts49sflNT2BlDj7z6SmomJlVyrRYzF9aTWKuFLl36lfUbm52/VOA6jcL0dHYM7by5deMsKdz2QvTEehvWg0ri6rGh3YwBXzEBoOINpFrIycSSb/lDkWmgzuR5DQvwMiX1x9ZsCdQ+BZG1aUlle7W6jDlkhkutHZTQKukA+jxJt4fOsJecdHEfXSF4s1UgHs27/C9O/AYHBPsuyJZ2gQVC4Y4VYX6dzKnfYvdLWLvuW5r2eucbG3qo6PZuUaAAAU6t9NBkXek+/5oF/VaXDXZQR4gokjt//SuoB5zV5IwtmkM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(136003)(396003)(376002)(346002)(2616005)(2906002)(71200400001)(6486002)(44832011)(478600001)(6506007)(316002)(4744005)(186003)(26005)(5660300002)(38100700002)(76116006)(122000001)(8936002)(110136005)(66946007)(66556008)(1076003)(66446008)(64756008)(66476007)(91956017)(8676002)(4326008)(83380400001)(54906003)(6512007)(36756003)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?16jtmFU4dyJPhZx4URK59JEZ4mgMZ1WxTrCaeLIwdspwma+jhvCTFjO3HS?=
+ =?iso-8859-1?Q?fvsPEOG8fP6qGFIgeW57xC7tHkZupnga14RcnZglwPLEEKwO7J5841dwk8?=
+ =?iso-8859-1?Q?PDs12woWz3v2cNK7WkCpw/YSIgOpwzqDzF/kpEwTp13TLCYWKUpljm/Bxi?=
+ =?iso-8859-1?Q?aVN8iz1y4+aaFgCKaTz1AjTsZT3YEFxX2+T5hUmow7hWIb3g5rspuPw4wE?=
+ =?iso-8859-1?Q?f97dgvLqqPEFfnE48fWIrLgqw9gDYVBtc2BrxPRVspzg842CD2N9pDouhG?=
+ =?iso-8859-1?Q?W484f9N1ptlDcUWX4xTLIdul1i2FecuQYAylPuhmHjDBRZkK5F1gPENFSv?=
+ =?iso-8859-1?Q?BD6t8qoWx5nGDrgSm3tZqiochHDNy+9j65LzreV5rp0z3ryh3dDS16qvYl?=
+ =?iso-8859-1?Q?fv7FEzPg5DjOlmYRCgpg31DqdG6wmLSPoqtd8x3e4ALRZ8viwi6ek76P9h?=
+ =?iso-8859-1?Q?t9ovFGaZS2le2ZGYs+RXQ0uEcW5FhDUmf/Pc+bxtLWDSgrY4LJqeXtF7xP?=
+ =?iso-8859-1?Q?JdRSNbp5CeqkfZN4n10ivM2OTx6R+Xx++9ZpSuvgu2GMra1cBC2kC9/IzX?=
+ =?iso-8859-1?Q?Rg/IR3IanZm5XRbjBf22vtXnbj86Mur+2KWcxk94OcQTGHO2OHgUrc8p8E?=
+ =?iso-8859-1?Q?y886CUg9veAyU8qMbAkz86/mSN9J5x3a74aSKMlTgNf0skDgWrxvIy5v5Y?=
+ =?iso-8859-1?Q?4qtmScfsJk7kDa+MrBfAu0cRrwMCwgJ4UbjJDDAOjZPd3SI1d26SZDuWF6?=
+ =?iso-8859-1?Q?C19tlRHpTN2vGIuOrXYOJveg7LopxdJZG95jkmErHwghQES3YbfRBvajsf?=
+ =?iso-8859-1?Q?co9vfGF8tJJAFWyP26oc7+44XYzfVOgg5i92N6aEfnqmis6xwTfaIg4vw/?=
+ =?iso-8859-1?Q?PFNVIqiVF4DrZP+RkbC9IfDj8FNuk1HwQa8CN8QeHetx+MkuN+aJbJi/Aj?=
+ =?iso-8859-1?Q?8wrtRTGgB8e9vUn5f1zX4XxRcBfrp3ZPtZ5QXaw/ELDHUD/ZUf1i6j9g34?=
+ =?iso-8859-1?Q?qQJR2AsRm0rW5mbJoQttLV17JzfpTI8Nxs4pd6luAsWXi2LqgvmrasVRKS?=
+ =?iso-8859-1?Q?+O8M5S9708UWxfKmULD25vHIvoHITYqBbFVKKcTMTMgZG02voh/UEGr951?=
+ =?iso-8859-1?Q?bHWNhxS+ONdg/OkWq6ahQa7vnj71ywQQXkTOFUc63M63Yw+kiL7ckHhcsP?=
+ =?iso-8859-1?Q?Ab0h1y/0zHsnDCQ26KMY8sitFRGLPv+WgqWbQE6wdW19RftoK4rxL6jXgd?=
+ =?iso-8859-1?Q?lr2YESUyyCa6GTCAzNNzUrfEPYQ7S6faMNUWSm07mvswJg2CwoEZZoZOZ+?=
+ =?iso-8859-1?Q?m7LZDLM5sRpn24pHuyfOufL6gaoALw4z54t7j/KFxQy15jwlKNJUtoANvW?=
+ =?iso-8859-1?Q?J35aeuvGWR?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee600703-100a-4d5e-cf9b-08d926aa0212
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 16:09:46.9354
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vMe25u+Np4vastpZWwkI0cawWhiMUw3Vl9eL9xSlzWXH7L84vA2t8ddeKgftObU2Y+QMXVoY883IrU9MMuEOXg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB2698
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 spamscore=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106030109
+X-Proofpoint-GUID: kFdw7T7TwsMuP7JuaI__mHg_Kc-hUo4T
+X-Proofpoint-ORIG-GUID: kFdw7T7TwsMuP7JuaI__mHg_Kc-hUo4T
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106030108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DP device node on sc7180.
+Use vma_lookup() to find the VMA at a specific address.  As vma_lookup()
+will return NULL if the address is not within any VMA, the start address
+no longer needs to be validated.
 
-Changes in v2:
--- replace msm_dp with dp
--- replace dp_opp_table with opp_table
-
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  9 ++++
- arch/arm64/boot/dts/qcom/sc7180.dtsi         | 78 ++++++++++++++++++++++++++++
- 2 files changed, 87 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 24d293e..40367a2 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -786,6 +786,15 @@ hp_i2c: &i2c9 {
- 	status = "okay";
- };
- 
-+&dp {
-+        status = "okay";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&dp_hot_plug_det>;
-+        data-lanes = <0 1>;
-+        vdda-1p2-supply = <&vdda_usb_ss_dp_1p2>;
-+        vdda-0p9-supply = <&vdda_usb_ss_dp_core>;
-+};
-+
- &pm6150_adc {
- 	charger-thermistor@4f {
- 		reg = <ADC5_AMUX_THM3_100K_PU>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 6228ba2..05a4133 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -3032,6 +3032,13 @@
- 							remote-endpoint = <&dsi0_in>;
- 						};
- 					};
-+
-+					port@2 {
-+						reg = <2>;
-+						dpu_intf0_out: endpoint {
-+							remote-endpoint = <&dp_in>;
-+						};
-+					};
- 				};
- 
- 				mdp_opp_table: mdp-opp-table {
-@@ -3148,6 +3155,77 @@
- 
- 				status = "disabled";
- 			};
-+
-+			dp: displayport-controller@ae90000 {
-+				compatible = "qcom,sc7180-dp";
-+				status = "disabled";
-+
-+				reg = <0 0x0ae90000 0 0x1400>;
-+
-+				interrupt-parent = <&mdss>;
-+				interrupts = <12>;
-+
-+				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-+				clock-names = "core_iface", "core_aux", "ctrl_link",
-+					      "ctrl_link_iface", "stream_pixel";
-+				#clock-cells = <1>;
-+				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
-+						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
-+				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
-+				phys = <&dp_phy>;
-+				phy-names = "dp";
-+
-+				operating-points-v2 = <&opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
-+
-+				#sound-dai-cells = <0>;
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					port@0 {
-+						reg = <0>;
-+						dp_in: endpoint {
-+							remote-endpoint = <&dpu_intf0_out>;
-+						};
-+					};
-+
-+					port@1 {
-+						reg = <1>;
-+						dp_out: endpoint { };
-+					};
-+				};
-+
-+				opp_table: dp-opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-160000000 {
-+						opp-hz = /bits/ 64 <160000000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-270000000 {
-+						opp-hz = /bits/ 64 <270000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-540000000 {
-+						opp-hz = /bits/ 64 <540000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+
-+					opp-810000000 {
-+						opp-hz = /bits/ 64 <810000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+				};
-+			};
-+
-+
- 		};
- 
- 		dispcc: clock-controller@af00000 {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/=
+amdgpu/amdgpu_ttm.c
+index 7cb7ffdd1900..dfb5ca3f8da8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -680,9 +680,9 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, =
+struct page **pages)
+ 		return -ESRCH;
+=20
+ 	mmap_read_lock(mm);
+-	vma =3D find_vma(mm, start);
++	vma =3D vma_lookup(mm, start);
+ 	mmap_read_unlock(mm);
+-	if (unlikely(!vma || start < vma->vm_start)) {
++	if (unlikely(!vma)) {
+ 		r =3D -EFAULT;
+ 		goto out_putmm;
+ 	}
+--=20
+2.30.2
