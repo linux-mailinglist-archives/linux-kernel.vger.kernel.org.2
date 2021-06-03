@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026D039A650
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA1F39A676
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFCQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:56:20 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:40957 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCQ4T (ORCPT
+        id S230299AbhFCQ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:58:57 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:35663 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230161AbhFCQ64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:56:19 -0400
-Received: by mail-oi1-f180.google.com with SMTP id f30so5633182oij.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 09:54:22 -0700 (PDT)
+        Thu, 3 Jun 2021 12:58:56 -0400
+Received: by mail-oi1-f177.google.com with SMTP id v22so6958770oic.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 09:57:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=iBYxhbY2j6ySAuGmihYVsYnbIsjaqUjkE1YWENFEGdI=;
-        b=szaOaLRXYKAt968AT7xKKmjTg8k/1a7nMo4m2LlLG61kXhN8/uB+6BEwnmH/7Rm3Oi
-         3PGKICoeFamExccTohZRBhj0F07Md4Ey/bzMLyOpWA6RTaeUvGjCsYBwoB8gdwkpJ8ge
-         Q1odEP4/LrfmFkDOV1AD991vCez2qofOHMBOcK1aiBnLuahgoq9M/nkWb6VHmzacnCPv
-         6NYgpyIWT8BcIkUu8S9l2QcruCnaUyVZJN6QnjIN4NhhyPWR5NAct5md2wpJl1KqT8wF
-         C1xAPWbx3vYzjJPfhM/fE1e33PeWHzFBNKwQE0iR7+5SzJKye7SbJdxG2jzc1QpR1t+1
-         2MSg==
+        bh=mX0haAANX9Ohl4Z8WOCYfoEFijudUEJiwohJAuQC02c=;
+        b=E7gdFcfwwZk7HmQ39zxmvX/yTsBZjXSyT/Yh6ZyK3X2oG5Bw6amUuTiTPrsOwy6kgZ
+         B5tW/iWZvcNhruetACGyvRTD0P7EP+pM/4pEhrwTbkdVEFcqoWmBI+nbTzfUzXvm6tId
+         QCDfi7lTrixquP/z55TlYmB+GxG6PB4DmyPJXVEj2dL/4K5XDCEJ90HQlxDV6xa6KT0z
+         W7fkr1RnCW+Hato7dLIZsIGe+vP8u/lM+JRDb5Aw60xNBjoZBWxCV7M+pRVKfwnEeepl
+         kR64NgQ50fSStAbaU0ooPvLmuPoP/QqnSNkkytaSiZmHWGEp1AhH4RmRQGYwlw/dMtxk
+         MdTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iBYxhbY2j6ySAuGmihYVsYnbIsjaqUjkE1YWENFEGdI=;
-        b=UeAbS0nVKRrSMGY1Y2MEBy+AZcszm9PRlY7aWISGk2eUDZJxCqizLbhpoYp02Llykt
-         XBsiSIN+tmrdab892Ve7c01QRx7jakuS7ca798M8zLT1bi2Ng6/ZxaHcCTR9M1csvRDY
-         IomfiyNGWQ6YooOKekk7IrBNtBstLS/4Y60b9FzWXQ45Kxnja7tmDDrI4IGfrDKfyLsa
-         1BIJvmkfLVAWzm1tjYzk6s1u+rMJNE6HH4CTQ3Tdz12/sbuuRx8nPH0tfPFCN+JkIHpG
-         gDg/1K22ROAw5z+MHLSf1nLAKnv16TKOR8Ha/Yn4+Dg5zPtBHFAV7oPdiGl+sV8/lH9G
-         Uabg==
-X-Gm-Message-State: AOAM530/kWWcZkCOBncJdaLiE33993Y5+cJKPPe6CmGVGsDah5nyozvL
-        P1bVXiKCk+6PM/NX8afhHvenTA==
-X-Google-Smtp-Source: ABdhPJzj648Va4opuaa+MJGmQyF9iwtfKcrlzj48E5tYlGvBaBb6SqyGj+OYun1sa/hrf4gT2z6I7A==
-X-Received: by 2002:aca:5b04:: with SMTP id p4mr7898391oib.28.1622739202413;
-        Thu, 03 Jun 2021 09:53:22 -0700 (PDT)
+        bh=mX0haAANX9Ohl4Z8WOCYfoEFijudUEJiwohJAuQC02c=;
+        b=OrFRhNSpfz8hgcwWdJkC4KdtfJJJhCeRr7n5zCHLEZ2FygJRkLtH7kitGEUPtEFab9
+         PozOWC0jVI/V4uxfIahR/Xzn3u2ZwJsMG/ywdZf43a61438QyriEmFdJPb1+pt3xm69l
+         6dyWutoGf3T6+Da/iABL2z9gJl/SSbqAQVBm/xS4OfT25vj9VI6iy3a7WQ2Zsogly/XA
+         s5q/1gZy9sDOhi6gphPpRK3AnygT7Nwwx0cqMwUS3ya2/p1JPqQ28Q+cxMrxJU2GgijR
+         pxDWM9r1OkegQ/Ezl74aXDN97HRVH8relePkXc/cTYq2fGJJuFbcHsTsTDfM9+sl69KK
+         FGMw==
+X-Gm-Message-State: AOAM533kXI7kVSACX3YumVampdvRxPmpiz+zrRjcU87CdmlmhqSAM7Cx
+        2qhnIPO9GFegV1wCsYpJF0BgTklqYgPfLQ==
+X-Google-Smtp-Source: ABdhPJyH8XlibAf+nkUPd+aUoPXdrt4Uu4nVZEpvj3KHhEHg0ADoVLdvXpEkcF8+yqTYU3JWMkFp1Q==
+X-Received: by 2002:aca:be8a:: with SMTP id o132mr7819096oif.3.1622739361220;
+        Thu, 03 Jun 2021 09:56:01 -0700 (PDT)
 Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l28sm326090otd.66.2021.06.03.09.53.21
+        by smtp.gmail.com with ESMTPSA id z25sm818070oic.30.2021.06.03.09.56.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 09:53:22 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 11:53:19 -0500
+        Thu, 03 Jun 2021 09:56:00 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 11:55:58 -0500
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Kuogee Hsieh <khsieh@codeaurora.org>
 Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
@@ -53,18 +53,18 @@ Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
         devicetree@vger.kernel.org, abhinavk@codeaurora.org,
         aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-Message-ID: <YLkI/6ItCz+SbbuJ@yoga>
-References: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH v3] arm64: dts: qcom: sc7180: Add DisplayPort  node
+Message-ID: <YLkJnmYujyPu1Zzu@yoga>
+References: <1622738250-1469-1-git-send-email-khsieh@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
+In-Reply-To: <1622738250-1469-1-git-send-email-khsieh@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03 Jun 11:09 CDT 2021, Kuogee Hsieh wrote:
+On Thu 03 Jun 11:37 CDT 2021, Kuogee Hsieh wrote:
 
 > Add DP device node on sc7180.
 > 
@@ -72,12 +72,16 @@ On Thu 03 Jun 11:09 CDT 2021, Kuogee Hsieh wrote:
 > -- replace msm_dp with dp
 > -- replace dp_opp_table with opp_table
 > 
+> Changes in v3:
+> -- correct text of commit title
 
-I'm sorry for those suggestions, I don't like either one of them.
+In addition to the feedback I gave on v2, please also remove one of the
+two spaces between "DisplayPort" and "node" in $subject.
 
-And for everything but changes to the DRM code the changelog goes below
-the --- line, so it's not part of the git history.
+Thanks,
+Bjorn
 
+> 
 > Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 > ---
 >  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  9 ++++
@@ -97,9 +101,6 @@ the --- line, so it's not part of the git history.
 > +        pinctrl-names = "default";
 > +        pinctrl-0 = <&dp_hot_plug_det>;
 > +        data-lanes = <0 1>;
-
-Is it a limitation of the EC in Trogdor that you can only do 2 lanes?
-
 > +        vdda-1p2-supply = <&vdda_usb_ss_dp_1p2>;
 > +        vdda-0p9-supply = <&vdda_usb_ss_dp_core>;
 > +};
@@ -131,10 +132,6 @@ Is it a limitation of the EC in Trogdor that you can only do 2 lanes?
 >  			};
 > +
 > +			dp: displayport-controller@ae90000 {
-
-If you label this "mdss_dp", then it will naturally group with other
-mdss properties in trogdor.dtsi (which should be sorted alphabetically).
-
 > +				compatible = "qcom,sc7180-dp";
 > +				status = "disabled";
 > +
@@ -159,11 +156,6 @@ mdss properties in trogdor.dtsi (which should be sorted alphabetically).
 > +
 > +				operating-points-v2 = <&opp_table>;
 > +				power-domains = <&rpmhpd SC7180_CX>;
-
-Just curious, but isn't the DP block in the MDSS_GDCS? Or do we need to
-mention CX here in order for the opp framework to apply required-opps
-of CX?
-
 > +
 > +				#sound-dai-cells = <0>;
 > +
@@ -184,13 +176,6 @@ of CX?
 > +				};
 > +
 > +				opp_table: dp-opp-table {
-
-The one and only "opp_table" of the sc7180 :)
-Maybe name it dp_opp_table instead?
-
-Regards,
-Bjorn
-
 > +					compatible = "operating-points-v2";
 > +
 > +					opp-160000000 {
