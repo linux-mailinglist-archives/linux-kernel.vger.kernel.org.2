@@ -2,134 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F2A39A36E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E95F39A379
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhFCOiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbhFCOiC (ORCPT
+        id S231612AbhFCOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:40:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46910 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhFCOkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:38:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E68C06174A;
-        Thu,  3 Jun 2021 07:36:04 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id jt22so9586479ejb.7;
-        Thu, 03 Jun 2021 07:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wK9EVXAXq74ZBV/Us3NrtXVBYQSEq1AIEb2FO6jLjss=;
-        b=fOlFmjKgSlFY/7Lif5C2qicO0BDEQ3FvglhnbTImsBxldUE1H2maGyIFQV+MJHXeO1
-         foSjMEYTSoEfI2cehapelKQbNgXgXwMLMJPDMyC+rxWocCnKJY1fQTD/Iqm1zZDEHeGV
-         5Wxf3k9jqJakZ/+ijFkJHXzo57GiGUVoYG5Fkl/iCA+KZgpUX12k9k7LszZ1Otk4f2pu
-         BPaukvirQHcCqr7QvdAzcSj6uRPzyRDDHNY/JeAR4U5/6uuUENgLPqLOgA7VNtGtLqJ5
-         5J48ABwCm/cqlBC3hfifmb756oVH33HLvj7M/rhIUxqBOeBV21+BWuEyD6HsFZJNsLK4
-         e1cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wK9EVXAXq74ZBV/Us3NrtXVBYQSEq1AIEb2FO6jLjss=;
-        b=XtBh6nidm+TEhwMO/o3c0n/Wj5jO8mh53fIhco/8/R66yn5YfBNBR2xkH7Lai+N1i0
-         hKdobC0E6zSxVU2oW+8NIZEalRIUxpXRiKy2/kLbqOyL6Ahxr7eVuiqwWgrj4vvzIWe1
-         LasX7Uf3wUsCtsXadfMXcJfwniLIEETtc5/3tD3nu71A5hdzCp39cwsYzXZojzq8OrJF
-         uG4gcWoAKAZHPRJ7/3Ckvj2BF67yjmB/XuxQ7EbWacvpPAjiRc3LGyPwhA0SXT9pHnaG
-         ob6KxJ24aRrI7W1PpMrm29P6U2mjKdQyHnZ3YujH1F4UZfONjbScXChGdb5yBhR/kcdv
-         xwBQ==
-X-Gm-Message-State: AOAM5305QSd8aA+tlFVRkUD4MQFoB/3qTEoB8ZTKenjRxOULxdVB/Eyy
-        aodFL1EV6nNOXfF1Nus33X4=
-X-Google-Smtp-Source: ABdhPJyccAJuE5nx9TQlaFSKTX6Lg9Gpxw4Fgv9EM2De08PWT9sgJrr5vmLoKKsbYJjupKRZaUAkdA==
-X-Received: by 2002:a17:906:c316:: with SMTP id s22mr12632780ejz.17.1622730963596;
-        Thu, 03 Jun 2021 07:36:03 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id p7sm1882133edw.43.2021.06.03.07.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 07:36:02 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, linux-tegra@vger.kernel.org,
+        Thu, 3 Jun 2021 10:40:10 -0400
+Date:   Thu, 03 Jun 2021 14:38:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622731104;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sm2ggrAef4nSUjwqaeqwSUsiU9l5NxvixZEowSXC6xY=;
+        b=M6O8j3CkD/GLOrbRvkV29Bjf0SIXoEcsfPgpET5/bWhMlwfK8NdXi4jQjjk4fAE4o46KR0
+        bU37tdGOrhNl9Q/gjPg+CWb2rXylGShtZdScllLTUhjDGb1TqRQ/82XBkSdRzv/ZY/04pr
+        pI+GxW6yJbXJWYa2yzCfATeSjLtqEc5W2QfiZcP/TGU6szRJst/Hh2eVHVKq5PAQqul+fC
+        tCYb1/3B7FyU37H5Gk/8jgsI9tTUu6q1p4SPOUMfGQZibEH7vN5clOUIzT+ILERu0mo0Ni
+        g2tD1HuTRmmWb4qyvyzSX71diR8ATtGooFo+2NfyV0WxXPVhmxKEr3FbYLxaBw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622731104;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sm2ggrAef4nSUjwqaeqwSUsiU9l5NxvixZEowSXC6xY=;
+        b=BEM5Vnd0cwWJhyu+0q6Zp7IPVj5ekok6uiv/rE8Ge/tckyy9hrIztevBrptCYBSS6sJFHW
+        SFeRxgea7qHacCCw==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/alternative: Optimize single-byte NOPs at an
+ arbitrary position
+Cc:     Richard Narron <richard@aaazen.com>, Borislav Petkov <bp@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PULL] memory: tegra: Changes for v5.14-rc1
-Date:   Thu,  3 Jun 2021 16:37:39 +0200
-Message-Id: <20210603143739.787957-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210601212125.17145-1-bp@alien8.de>
+References: <20210601212125.17145-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162273110395.29796.14379457953065896336.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+The following commit has been merged into the x86/urgent branch of tip:
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Commit-ID:     2b31e8ed96b260ce2c22bd62ecbb9458399e3b62
+Gitweb:        https://git.kernel.org/tip/2b31e8ed96b260ce2c22bd62ecbb9458399e3b62
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Tue, 01 Jun 2021 17:51:22 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 03 Jun 2021 16:33:09 +02:00
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+x86/alternative: Optimize single-byte NOPs at an arbitrary position
 
-are available in the Git repository at:
+Up until now the assumption was that an alternative patching site would
+have some instructions at the beginning and trailing single-byte NOPs
+(0x90) padding. Therefore, the patching machinery would go and optimize
+those single-byte NOPs into longer ones.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git tags/tegra-for-5.14-memory
+However, this assumption is broken on 32-bit when code like
+hv_do_hypercall() in hyperv_init() would use the ratpoline speculation
+killer CALL_NOSPEC. The 32-bit version of that macro would align certain
+insns to 16 bytes, leading to the compiler issuing a one or more
+single-byte NOPs, depending on the holes it needs to fill for alignment.
 
-for you to fetch changes up to b4f74b59b99fab61ab97fc0e506f349579d8fefc:
+That would lead to the warning in optimize_nops() to fire:
 
-  memory: tegra30-emc: Use devm_tegra_core_dev_init_opp_table() (2021-06-03 14:24:03 +0200)
+  ------------[ cut here ]------------
+  Not a NOP at 0xc27fb598
+   WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:211 optimize_nops.isra.13
 
-Thanks,
-Thierry
+due to that function verifying whether all of the following bytes really
+are single-byte NOPs.
 
-----------------------------------------------------------------
-memory: tegra: Changes for v5.14-rc1
+Therefore, carve out the NOP padding into a separate function and call
+it for each NOP range beginning with a single-byte NOP.
 
-This stable tag contains Dmitry's power domain work, including all the
-necessary dependencies from the regulator, clock and ARM SoC trees.
+Fixes: 23c1ad538f4f ("x86/alternatives: Optimize optimize_nops()")
+Reported-by: Richard Narron <richard@aaazen.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213301
+Link: https://lkml.kernel.org/r/20210601212125.17145-1-bp@alien8.de
+---
+ arch/x86/kernel/alternative.c | 64 ++++++++++++++++++++++++----------
+ 1 file changed, 46 insertions(+), 18 deletions(-)
 
-----------------------------------------------------------------
-Dmitry Osipenko (18):
-      clk: tegra30: Use 300MHz for video decoder by default
-      clk: tegra: Fix refcounting of gate clocks
-      clk: tegra: Ensure that PLLU configuration is applied properly
-      clk: tegra: Halve SCLK rate on Tegra20
-      clk: tegra: Don't allow zero clock rate for PLLs
-      clk: tegra: cclk: Handle thermal DIV2 CPU frequency throttling
-      clk: tegra: Mark external clocks as not having reset control
-      clk: tegra: Don't deassert reset on enabling clocks
-      regulator: core: Add regulator_sync_voltage_rdev()
-      soc/tegra: regulators: Bump voltages on system reboot
-      soc/tegra: Add stub for soc_is_tegra()
-      soc/tegra: Add devm_tegra_core_dev_init_opp_table()
-      soc/tegra: fuse: Add stubs needed for compile-testing
-      clk: tegra: Add stubs needed for compile-testing
-      memory: tegra: Fix compilation warnings on 64bit platforms
-      memory: tegra: Enable compile testing for all drivers
-      memory: tegra20-emc: Use devm_tegra_core_dev_init_opp_table()
-      memory: tegra30-emc: Use devm_tegra_core_dev_init_opp_table()
-
-Thierry Reding (3):
-      Merge branch 'for-5.14/regulator' into for-5.14/soc
-      Merge branch 'for-5.14/clk' into for-5.14/memory
-      Merge branch 'for-5.14/soc' into for-5.14/memory
-
- drivers/clk/tegra/clk-periph-gate.c      |  80 +++++++++++++++----------
- drivers/clk/tegra/clk-periph.c           |  11 ++++
- drivers/clk/tegra/clk-pll.c              |  12 ++--
- drivers/clk/tegra/clk-tegra-periph.c     |   6 +-
- drivers/clk/tegra/clk-tegra-super-cclk.c |  16 ++++-
- drivers/clk/tegra/clk-tegra20.c          |   6 +-
- drivers/clk/tegra/clk-tegra30.c          |   6 +-
- drivers/clk/tegra/clk.h                  |   4 --
- drivers/memory/tegra/Kconfig             |  18 +++---
- drivers/memory/tegra/tegra124-emc.c      |   4 +-
- drivers/memory/tegra/tegra20-emc.c       |  48 ++-------------
- drivers/memory/tegra/tegra30-emc.c       |  52 ++--------------
- drivers/regulator/core.c                 |  23 +++++++
- drivers/soc/tegra/common.c               |  97 ++++++++++++++++++++++++++++++
- drivers/soc/tegra/pmc.c                  |   5 --
- drivers/soc/tegra/regulators-tegra20.c   |  75 ++++++++++++++++++++++-
- drivers/soc/tegra/regulators-tegra30.c   |  75 ++++++++++++++++++++++-
- include/linux/clk/tegra.h                | 100 ++++++++++++++++++++++++-------
- include/linux/regulator/driver.h         |   1 +
- include/soc/tegra/common.h               |  31 ++++++++++
- include/soc/tegra/fuse.h                 |  20 ++++++-
- 21 files changed, 507 insertions(+), 183 deletions(-)
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 6974b51..6fe5b44 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -183,41 +183,69 @@ done:
+ }
+ 
+ /*
++ * optimize_nops_range() - Optimize a sequence of single byte NOPs (0x90)
++ *
++ * @instr: instruction byte stream
++ * @instrlen: length of the above
++ * @off: offset within @instr where the first NOP has been detected
++ *
++ * Return: number of NOPs found (and replaced).
++ */
++static __always_inline int optimize_nops_range(u8 *instr, u8 instrlen, int off)
++{
++	unsigned long flags;
++	int i = off, nnops;
++
++	while (i < instrlen) {
++		if (instr[i] != 0x90)
++			break;
++
++		i++;
++	}
++
++	nnops = i - off;
++
++	if (nnops <= 1)
++		return nnops;
++
++	local_irq_save(flags);
++	add_nops(instr + off, nnops);
++	local_irq_restore(flags);
++
++	DUMP_BYTES(instr, instrlen, "%px: [%d:%d) optimized NOPs: ", instr, off, i);
++
++	return nnops;
++}
++
++/*
+  * "noinline" to cause control flow change and thus invalidate I$ and
+  * cause refetch after modification.
+  */
+ static void __init_or_module noinline optimize_nops(struct alt_instr *a, u8 *instr)
+ {
+-	unsigned long flags;
+ 	struct insn insn;
+-	int nop, i = 0;
++	int i = 0;
+ 
+ 	/*
+-	 * Jump over the non-NOP insns, the remaining bytes must be single-byte
+-	 * NOPs, optimize them.
++	 * Jump over the non-NOP insns and optimize single-byte NOPs into bigger
++	 * ones.
+ 	 */
+ 	for (;;) {
+ 		if (insn_decode_kernel(&insn, &instr[i]))
+ 			return;
+ 
++		/*
++		 * See if this and any potentially following NOPs can be
++		 * optimized.
++		 */
+ 		if (insn.length == 1 && insn.opcode.bytes[0] == 0x90)
+-			break;
+-
+-		if ((i += insn.length) >= a->instrlen)
+-			return;
+-	}
++			i += optimize_nops_range(instr, a->instrlen, i);
++		else
++			i += insn.length;
+ 
+-	for (nop = i; i < a->instrlen; i++) {
+-		if (WARN_ONCE(instr[i] != 0x90, "Not a NOP at 0x%px\n", &instr[i]))
++		if (i >= a->instrlen)
+ 			return;
+ 	}
+-
+-	local_irq_save(flags);
+-	add_nops(instr + nop, i - nop);
+-	local_irq_restore(flags);
+-
+-	DUMP_BYTES(instr, a->instrlen, "%px: [%d:%d) optimized NOPs: ",
+-		   instr, nop, a->instrlen);
+ }
+ 
+ /*
