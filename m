@@ -2,177 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9351439A573
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E9339A574
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhFCQLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:11:47 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:58606 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhFCQLp (ORCPT
+        id S230382AbhFCQLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:11:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42652 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhFCQLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:11:45 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153Fx6h0191502;
-        Thu, 3 Jun 2021 16:09:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2020-01-29;
- bh=NxXgDMs+kTpR6ygD/tA+fXr7QsXk6B7xBB8fE24SViM=;
- b=E2Pyj6X0sEBPtj1vFwEUtKpzVgHwBne56FwVxuOuysw87jldFhYrwm44FpfO3r40pSPc
- PtcW6cVuYZSsV9TMP3xbvQTeEUnLR36oaU3f5O5OV+ac2Lx8g0VN0UQg3B9LHruHUCsd
- WeH4WluiWyTg8AIbekiD/DkmWXj9T/w9rv3mWB6bG8PKKzETkin5iP9Xfa+i0hdTHBAr
- s1FuPwwY9rUNv6kSdDCcE0yicB4wmKFCcsSHn2LlCiCo1Bgbj0DZ88oVDrywn/9/aV+7
- TUq6fwJ2xtv/m4Y1AjmEVfY79rpiZFNrW6NJWYCYABZkmcz0MYH1EgRdTCq2TQ6JE0vr NA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 38ub4cuvme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Jun 2021 16:09:50 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153G65A8011554;
-        Thu, 3 Jun 2021 16:09:50 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
-        by userp3030.oracle.com with ESMTP id 38uaqyem0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Jun 2021 16:09:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y7v+dDls7Te9Qo7KTLmD8xyPYjaBV2Dc2w0p6J3JpjrD0hCpPdcgPMngV5X5qFqnMCy3+cJk/2GYiVNOuj9AGAvjaLnEPdJIUpEgMDbXNwyRdFv8GW3xpN5sfjOqS9+opJ10Wn/Pb4317owH9i2W5n1p93NaMfZc4j69B8bZ3B2/9LzT/mvc4BtIboxlvjmU2Jg7+h5560ZUvR0Ipesnl0EEq9FTMIOXIdzwRznGqAwLVM/ZqKbYHwaMvU/rMsfdyV9LiyqOsfLZJOhQCDkJU4UZDjxipAFBHfYyBfQUhMwZisdTp/WhGqX5BzKiaOjKSRXZodE0hLfeYWcwRGMiOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NxXgDMs+kTpR6ygD/tA+fXr7QsXk6B7xBB8fE24SViM=;
- b=JQLju6Zq2x/jnyT6D0DExjyzTaVAjWumsjYVdWwYpWtUoHjksmkzCrke/xnvRt6oYEQuCFok9cBc++6trb6vut3p14Wxz1hAh/9q3THjKYuNiLl+yrqLQV3n6VKwufPay+eogA7rw/sWNU+ddUMZw7kTMMtSvx2/GvvEAvLvS7bvl7h4Z/GT2jFpuvsug1p0WALHPq1wtd03dgCVygaFWrVty7G/Adtbbx3O1b0VGUf6UGr8kLHpawljFKKC7tsLhOiF8ViE1N3p/i76ibwpm4XCJKBXoSqylqiq5aZqRzbtCDw1WwA0NHhGMsw1rlJElrJbJHjLwf3ESUIFx/L3Gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NxXgDMs+kTpR6ygD/tA+fXr7QsXk6B7xBB8fE24SViM=;
- b=evdD4OLwaTqdovpa2lDpreOsPD6hD5ZTZqjWuA2gh+2YLEtJJU/FqR3CfHdjlYMMvF067Zdxmn7t47gzWzOiPDMH+qvZDVgd0PYACTET0O+oMsf6HS6FSnwu6bn8n2m/B7jBltqsW9jSMu3J8mQbk/8MmHHfnkH38JO35Ltmy8o=
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
- by DM6PR10MB2698.namprd10.prod.outlook.com (2603:10b6:5:b9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.29; Thu, 3 Jun
- 2021 16:09:47 +0000
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::b8b4:5900:668b:c9c2]) by DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::b8b4:5900:668b:c9c2%5]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
- 16:09:47 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Subject: [PATCH] drm/amdgpu: Use vma_lookup() in
- amdgpu_ttm_tt_get_user_pages()
-Thread-Topic: [PATCH] drm/amdgpu: Use vma_lookup() in
- amdgpu_ttm_tt_get_user_pages()
-Thread-Index: AQHXWJLf9LBXqSSmAk626hIUEgtUSQ==
-Date:   Thu, 3 Jun 2021 16:09:46 +0000
-Message-ID: <20210603160928.3854180-1-Liam.Howlett@Oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.30.2
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=oracle.com;
-x-originating-ip: [23.233.25.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ee600703-100a-4d5e-cf9b-08d926aa0212
-x-ms-traffictypediagnostic: DM6PR10MB2698:
-x-microsoft-antispam-prvs: <DM6PR10MB269891319BFDF5125E8FDE6EFD3C9@DM6PR10MB2698.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RVrCi9oAeNHqQC2WjGJjoMfg1dBMfjVFnC+VjTzn/gwF4lIM/f5iunI3g/NDVsWlXBCEThXBBQN4h4jDFhxwpNFJ51KbPgK/IyU3SXv/GoufZFIOvLBPxUpdXxzaH1PCmii0XGwr/33qII5nvSxHHpurZNL1Qp6ZiEBBphZaTpzRgrdU13Fs1MSX4/ekNj2nCm4XRkUGUPiJjNl/BGM17JfFU+Dn5jDms9vj+C9XkVFXJStaWyHrUNRHGg23/9JUL3hQq66gcy4agj1VgkwRN30cYwd2AsCNitUQiUDMjADgFHOiM93OxEzOLGKQ++Kts49sflNT2BlDj7z6SmomJlVyrRYzF9aTWKuFLl36lfUbm52/VOA6jcL0dHYM7by5deMsKdz2QvTEehvWg0ri6rGh3YwBXzEBoOINpFrIycSSb/lDkWmgzuR5DQvwMiX1x9ZsCdQ+BZG1aUlle7W6jDlkhkutHZTQKukA+jxJt4fOsJecdHEfXSF4s1UgHs27/C9O/AYHBPsuyJZ2gQVC4Y4VYX6dzKnfYvdLWLvuW5r2eucbG3qo6PZuUaAAAU6t9NBkXek+/5oF/VaXDXZQR4gokjt//SuoB5zV5IwtmkM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(136003)(396003)(376002)(346002)(2616005)(2906002)(71200400001)(6486002)(44832011)(478600001)(6506007)(316002)(4744005)(186003)(26005)(5660300002)(38100700002)(76116006)(122000001)(8936002)(110136005)(66946007)(66556008)(1076003)(66446008)(64756008)(66476007)(91956017)(8676002)(4326008)(83380400001)(54906003)(6512007)(36756003)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?16jtmFU4dyJPhZx4URK59JEZ4mgMZ1WxTrCaeLIwdspwma+jhvCTFjO3HS?=
- =?iso-8859-1?Q?fvsPEOG8fP6qGFIgeW57xC7tHkZupnga14RcnZglwPLEEKwO7J5841dwk8?=
- =?iso-8859-1?Q?PDs12woWz3v2cNK7WkCpw/YSIgOpwzqDzF/kpEwTp13TLCYWKUpljm/Bxi?=
- =?iso-8859-1?Q?aVN8iz1y4+aaFgCKaTz1AjTsZT3YEFxX2+T5hUmow7hWIb3g5rspuPw4wE?=
- =?iso-8859-1?Q?f97dgvLqqPEFfnE48fWIrLgqw9gDYVBtc2BrxPRVspzg842CD2N9pDouhG?=
- =?iso-8859-1?Q?W484f9N1ptlDcUWX4xTLIdul1i2FecuQYAylPuhmHjDBRZkK5F1gPENFSv?=
- =?iso-8859-1?Q?BD6t8qoWx5nGDrgSm3tZqiochHDNy+9j65LzreV5rp0z3ryh3dDS16qvYl?=
- =?iso-8859-1?Q?fv7FEzPg5DjOlmYRCgpg31DqdG6wmLSPoqtd8x3e4ALRZ8viwi6ek76P9h?=
- =?iso-8859-1?Q?t9ovFGaZS2le2ZGYs+RXQ0uEcW5FhDUmf/Pc+bxtLWDSgrY4LJqeXtF7xP?=
- =?iso-8859-1?Q?JdRSNbp5CeqkfZN4n10ivM2OTx6R+Xx++9ZpSuvgu2GMra1cBC2kC9/IzX?=
- =?iso-8859-1?Q?Rg/IR3IanZm5XRbjBf22vtXnbj86Mur+2KWcxk94OcQTGHO2OHgUrc8p8E?=
- =?iso-8859-1?Q?y886CUg9veAyU8qMbAkz86/mSN9J5x3a74aSKMlTgNf0skDgWrxvIy5v5Y?=
- =?iso-8859-1?Q?4qtmScfsJk7kDa+MrBfAu0cRrwMCwgJ4UbjJDDAOjZPd3SI1d26SZDuWF6?=
- =?iso-8859-1?Q?C19tlRHpTN2vGIuOrXYOJveg7LopxdJZG95jkmErHwghQES3YbfRBvajsf?=
- =?iso-8859-1?Q?co9vfGF8tJJAFWyP26oc7+44XYzfVOgg5i92N6aEfnqmis6xwTfaIg4vw/?=
- =?iso-8859-1?Q?PFNVIqiVF4DrZP+RkbC9IfDj8FNuk1HwQa8CN8QeHetx+MkuN+aJbJi/Aj?=
- =?iso-8859-1?Q?8wrtRTGgB8e9vUn5f1zX4XxRcBfrp3ZPtZ5QXaw/ELDHUD/ZUf1i6j9g34?=
- =?iso-8859-1?Q?qQJR2AsRm0rW5mbJoQttLV17JzfpTI8Nxs4pd6luAsWXi2LqgvmrasVRKS?=
- =?iso-8859-1?Q?+O8M5S9708UWxfKmULD25vHIvoHITYqBbFVKKcTMTMgZG02voh/UEGr951?=
- =?iso-8859-1?Q?bHWNhxS+ONdg/OkWq6ahQa7vnj71ywQQXkTOFUc63M63Yw+kiL7ckHhcsP?=
- =?iso-8859-1?Q?Ab0h1y/0zHsnDCQ26KMY8sitFRGLPv+WgqWbQE6wdW19RftoK4rxL6jXgd?=
- =?iso-8859-1?Q?lr2YESUyyCa6GTCAzNNzUrfEPYQ7S6faMNUWSm07mvswJg2CwoEZZoZOZ+?=
- =?iso-8859-1?Q?m7LZDLM5sRpn24pHuyfOufL6gaoALw4z54t7j/KFxQy15jwlKNJUtoANvW?=
- =?iso-8859-1?Q?J35aeuvGWR?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 3 Jun 2021 12:11:50 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id AABEC1FD5F;
+        Thu,  3 Jun 2021 16:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622736604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6+MnzhJx6fIYTr/UbIrpDb8TXouK1cYBl9I4mhUEFxE=;
+        b=V5pnjcF7GIxExaoG7yEWuUsP7xIFQhHM9xNUoDHvceYrWEw562g3knUt8YckhQZrJfctoa
+        Nw/QWrzgXuBLFd8wnlCodgOjtk62SeI4Fy3jvZjITpIBsiEJXUITFN06vB56UFhO/9JGxu
+        VvSbN3u9imI1iX+ciJOMs4aB0t3Rdus=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622736604;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6+MnzhJx6fIYTr/UbIrpDb8TXouK1cYBl9I4mhUEFxE=;
+        b=K36Pyj/2RiPj3Zh7YWZ96mrmJZdpPvDD4jXCO9ypy5we2RQElMJSF8DBjSJKZ5/1cirili
+        PjhWsXZjHi0MNzCg==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 58B42A3B87;
+        Thu,  3 Jun 2021 16:10:04 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 2898F1F2C96; Thu,  3 Jun 2021 18:10:04 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 18:10:04 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+Subject: Re: [LKP] [ext4] 05c2c00f37: aim7.jobs-per-min -11.8% regression
+Message-ID: <20210603161004.GL23647@quack2.suse.cz>
+References: <20210227120804.GB22871@xsang-OptiPlex-9020>
+ <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
+ <20210520095119.GA18952@quack2.suse.cz>
+ <e9f776c4-1ade-42a6-54c4-7fe3442e2392@linux.intel.com>
+ <20210521092730.GE18952@quack2.suse.cz>
+ <YKfi6Pv+qwduKxuT@mit.edu>
+ <20210525092205.GA4112@quack2.suse.cz>
+ <20210531165746.GA2610@quack2.suse.cz>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee600703-100a-4d5e-cf9b-08d926aa0212
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 16:09:46.9354
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vMe25u+Np4vastpZWwkI0cawWhiMUw3Vl9eL9xSlzWXH7L84vA2t8ddeKgftObU2Y+QMXVoY883IrU9MMuEOXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB2698
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 mlxscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106030109
-X-Proofpoint-GUID: kFdw7T7TwsMuP7JuaI__mHg_Kc-hUo4T
-X-Proofpoint-ORIG-GUID: kFdw7T7TwsMuP7JuaI__mHg_Kc-hUo4T
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1011 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106030108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531165746.GA2610@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vma_lookup() to find the VMA at a specific address.  As vma_lookup()
-will return NULL if the address is not within any VMA, the start address
-no longer needs to be validated.
+On Mon 31-05-21 18:57:46, Jan Kara wrote:
+> On Tue 25-05-21 11:22:05, Jan Kara wrote:
+> > On Fri 21-05-21 12:42:16, Theodore Y. Ts'o wrote:
+> > > On Fri, May 21, 2021 at 11:27:30AM +0200, Jan Kara wrote:
+> > > > 
+> > > > OK, thanks for testing. So the orphan code is indeed the likely cause of
+> > > > this regression but I probably did not guess correctly what is the
+> > > > contention point there. Then I guess I need to reproduce and do more
+> > > > digging why the contention happens...
+> > > 
+> > > Hmm... what if we only recalculate the superblock checksum when we do
+> > > a commit, via the callback function from the jbd2 layer to file
+> > > system?
+> > 
+> > I actually have to check whether the regression is there because of the
+> > additional locking of the buffer_head (because that's the only thing that
+> > was added to that code in fact, adding some atomic instructions, bouncing
+> > another cacheline) or because of the checksum computation that moved from
+> > ext4_handle_dirty_super() closer to actual superblock update under those
+> > locks.
+> 
+> So I did a few experiments on my test machine. I saw the biggest regression
+> for creat_clo workload for 7 threads. The results look like:
+> 
+>                          orig                   patched                hack1                  hack2
+> Hmean     creat_clo-7    36458.33 (   0.00%)    23836.55 * -34.62%*    32608.70 * -10.56%*    37300.18 (   2.31%)
+> 
+> where hack1 means I've removed the lock_buffer() calls from orphan handling
+> code and hack2 means I've additionally moved checksum recalculation from
+> under orphan lock. Take the numbers with a grain of salt as they are rather
+> variable and this is just an average of 5 runs but the tendency is pretty
+> clear. Both these changes contribute to the regression significantly,
+> additional locking of the buffer head contributes somewhat more.
+> 
+> I will see how various variants of reducing the contention look like (e.g.
+> if just using bh lock for everything helps at all). But honestly I don't
+> want to jump through too big hoops just for this workload - the orphan list
+> contention is pretty pathological here and if we seriously care about
+> workload like this we should rather revive the patchset with hashed orphan
+> list I wrote couple years back... That was able to give like 3x speedup to
+> workloads like this.
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+So I did some more testing. I've found out that due to a configuration
+mistake ramdisk created for previous round of test was tiny (8M instead of
+8G) so I've now rerun all the tests and a few more:
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/=
-amdgpu/amdgpu_ttm.c
-index 7cb7ffdd1900..dfb5ca3f8da8 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -680,9 +680,9 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, =
-struct page **pages)
- 		return -ESRCH;
-=20
- 	mmap_read_lock(mm);
--	vma =3D find_vma(mm, start);
-+	vma =3D vma_lookup(mm, start);
- 	mmap_read_unlock(mm);
--	if (unlikely(!vma || start < vma->vm_start)) {
-+	if (unlikely(!vma)) {
- 		r =3D -EFAULT;
- 		goto out_putmm;
- 	}
---=20
-2.30.2
+                         Orig                   Patched                Hack1                  Hack2                  BH orphan lock
+Hmean     creat_clo-1    12875.54 (   0.00%)    12765.96 (  -0.85%)    12765.96 (  -0.85%)    12820.51 (  -0.43%)    12875.54 (   0.00%)
+Hmean     creat_clo-2    20761.25 (   0.00%)    19736.84 *  -4.93%*    20408.16 (  -1.70%)    19736.84 *  -4.93%*    20477.82 (  -1.37%)
+Hmean     creat_clo-3    22727.27 (   0.00%)    22500.00 (  -1.00%)    24390.24 (   7.32%)    23255.81 (   2.33%)    21176.47 (  -6.82%)
+Hmean     creat_clo-4    27149.32 (   0.00%)    24539.88 *  -9.61%*    27272.73 (   0.45%)    25806.45 (  -4.95%)    21660.65 * -20.22%*
+Hmean     creat_clo-5    32397.41 (   0.00%)    27985.08 * -13.62%*    28957.53 ( -10.62%)    29821.07 *  -7.95%*    23771.79 * -26.62%*
+Hmean     creat_clo-6    33898.30 (   0.00%)    30769.23 (  -9.23%)    30981.07 (  -8.61%)    31858.41 (  -6.02%)    26086.96 * -23.04%*
+Hmean     creat_clo-7    29005.52 (   0.00%)    29661.02 (   2.26%)    30746.71 (   6.00%)    33175.35 (  14.38%)    24970.27 ( -13.91%)
+Hmean     creat_clo-8    30573.25 (   0.00%)    32000.00 (   4.67%)    29702.97 (  -2.85%)    34139.40 (  11.66%)    23668.64 * -22.58%*
+
+Similarly to previous test, 'Orig' is the original state before 05c2c00f37,
+'Patched' is a state after commit 05c2c00f37, 'Hack1' is 05c2c00f37 but with
+lock_buffer() calls removed from orphan handling, 'Hack2' is 05c2c00f37 with
+lock_buffer() calls removed and checksumming moved from under orphan_lock,
+'BH orphan lock' is 05c2c00f37 with orphan_lock replaced with sb buffer
+lock.
+
+As we can see with fixed filesystem size, the regression isn't actually
+that big anymore but it about matches what 0-day reported. Replacing orphan
+lock with superblock buffer_head lock makes things even much worse - not
+really surprising given we are replacing optimized mutex implementation
+with a bitlock. Just removing buffer lock (Hack1 test) doesn't seem to
+improve the results noticeably so that is not a problem. Moving
+checksumming out from under the orphan_lock would probably help noticeably
+(Hack2 test) but there's the problem when to compute checksums for
+nojournal mode and also we'd need to be very careful with all the other
+places updating superblock so that they serialize against orphan operations
+so that they cannot invalidate the checksum - IMO not very compelling.
+
+So as we chatted on today's call probably the best option is to leave the
+code as is for now and instead work on moving away from orphan list
+altogether. I'll revive my patches to do that.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
