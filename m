@@ -2,183 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D67B39A04A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE3D39A07A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhFCLzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:55:38 -0400
-Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:45017
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229804AbhFCLzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:55:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A17yWOHGybCQ3iW+Hd9dYTgS/JX26W8SlwlRaA/o/0sEHFkl0oMmqr25MU/GMD++xtV4FOh3D8hjUWzjNzuEf2V1hWd9G1EEYqgq91IxMpNBNCR5ANYr16QN0KgO451AH5v4eE04w1Q/awVdjfXgsoDEnNz7jOnYgI31CnnBMfKVqChCvQXcQD6FtjIAI4RZG+Tf0LESKLb6tq9C6leig1+yp7VeYW/t64+8lPACSv1iPtwagbud7cW+wya/DpPFpUN524LQsiE9jiFdpUfSiR+OGzdc84iOW6aSd35rYWUdF4U9q9lOmGlEkA8yLxq1qhMa7RUyAp4DCPh78MtHgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K4WUDyJj7gTOYbYEemLtapHbT97B1ctIxxNNdqaJGr4=;
- b=hXyCd5ShIao1M8gTadT9aVanfRnaHAiaqrHNRuVSzIGzNiCQkOeYWBD2omZN6lMsmxgiEeiDn67JD1cQL6VTU9uA1GjCBK0xy7t7VwDkuyshOWOYiuP5NQjBgKnyOh/epXxgJPoRQDYZeMEpaTuZduopxKJ0taUn26X5hhqRRyZZz12U3h+WLiXfmf9BAtKjjdsJWP24VBzV3c8jvUztmDnSHmAuMpNzkhLJuO43ExkmVZo3YxVC7GCbP7okWMWcjAFJ77Qb8VuYt+yKJ7965SlK2QI3fz5TyKiCG4evHtDJmtGRgYWnTyxP3GcLWMJnbGEORfm8w7Or0aduxC6DyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K4WUDyJj7gTOYbYEemLtapHbT97B1ctIxxNNdqaJGr4=;
- b=g19UjXyYLkZCeBlR7Oio7HcYQUS8kNMi4H2/o9coTzI7MxygtLe4RNdAZqqwV0CduGdXRQIlHEl7VKCT1i0yr+ZaL/ValTmKeSH/XDTWXu6Ov87AZU9GArOxoOOxKVNaLVcMvEmqxfff6m+atlcpOCay16yM4r8qdDDLnohJJQihflKx2fLKIJQkgGj/eg7zpsR4rx6wxIyjrD0YZmCpTfk0JFy1FN8rQzGUelZgi9ESefHrUD6ZUu3UGDdGpN89p1WXXcIeal1kNbMUnKcedsQhzlzXCX3Jbf5NHan4FEZN6WU8DX+FwDkOOV2xugzGJjxPeisNPzCZekgHKwJksA==
-Received: from DM5PR2001CA0008.namprd20.prod.outlook.com (2603:10b6:4:16::18)
- by BN8PR12MB2996.namprd12.prod.outlook.com (2603:10b6:408:48::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Thu, 3 Jun
- 2021 11:53:51 +0000
-Received: from DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:16:cafe::34) by DM5PR2001CA0008.outlook.office365.com
- (2603:10b6:4:16::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend
- Transport; Thu, 3 Jun 2021 11:53:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT025.mail.protection.outlook.com (10.13.172.197) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Thu, 3 Jun 2021 11:53:50 +0000
-Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
- 2021 11:53:47 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3 04/27] mm/userfaultfd: Introduce special pte for unmapped file-backed mem
-Date:   Thu, 3 Jun 2021 21:53:45 +1000
-Message-ID: <4688876.HeLTNyGTSD@nvdebian>
-In-Reply-To: <YLDoYusJ9wAeahdZ@t490s>
-References: <20210527201927.29586-1-peterx@redhat.com> <4422901.rTkcW5k3cD@nvdebian> <YLDoYusJ9wAeahdZ@t490s>
+        id S230037AbhFCMBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhFCMBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 08:01:49 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C9F4AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 05:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=uJmDXfbPf6SECK1Hyaw34uZaAEmSYM/b8S
+        VAmF0o1B0=; b=XsAGpZw3Kkk8tB9UVYOYCeZSsI88sqzZ0D7czLmpk9O2pmKH/6
+        Tfyn3JQ6o9nTV2HwM7Fv0/04d93SMpbpH4YikCQ1aHVU5344RBac/hYzgZwJERgx
+        e903/fqL8o1Ji/yUd7N/ci7yCcPz/aYbv3ptHy6YhqathKf+OHUwN6BAY=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3gqAzxLhgdryIAA--.45307S2;
+        Thu, 03 Jun 2021 19:59:48 +0800 (CST)
+Date:   Thu, 3 Jun 2021 19:54:18 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] riscv: mm: init: Consolidate vars, functions
+Message-ID: <20210603195418.21fded50@xhacker>
+In-Reply-To: <20210603082714.6e524f4c@xhacker>
+References: <20210516211556.43c00055@xhacker>
+        <YLaWseLdg5JYElVx@Ryzen-9-3900X.localdomain>
+        <20210602231226.0e45524b@xhacker>
+        <20210602235851.001a0d41@xhacker>
+        <YLfiADFHMyXst55Y@Ryzen-9-3900X.localdomain>
+        <20210603082714.6e524f4c@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fc3faefa-9572-4f11-f897-08d926864111
-X-MS-TrafficTypeDiagnostic: BN8PR12MB2996:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB299651DCD2BB5792EA0FD8C1DF3C9@BN8PR12MB2996.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2YeMRRErlO8GK95ZIsdoODn012hjE2xK5Cyy6RNpuAX7SJTlRgJUDkvNTEMyFf3UZm48ZRpjJk2wLiPa38FoXat2tVCfxA7aUswpRb88LhqSX2/iWGeQl1UecAcHXRffiiPyfTeaKCTn9ue+/qMF6rRqQMNPZyWM+fzBrqiAn3B94Y8l9QwRMPU/MOExvaict7/YdXbIs2yhZ2MxnCG/2bZGdOUjWV+5lx0PMSWF6eZUciOZVC8ob82zKG9t/ke6LvYpFFHNyJaDNqX/XbFx3fsRhsHeb1a2IIzY5HVPVAV2SwYB2mvN1XJRc5j0wP6wOU2aovJScRgCSPXiw++Gj63+NM59OUDe35lgJ8dYKVa8ZxHIZXBVLPjw5+SEZ6IP9TzAMdgdxq22I/zIH6AQeb431Yrw8zQ8O0+HA/6GpFz1xaaUs0fD1JaUgwFamwwLtwKpsilhPHydG/ocJPihjCk2OB9xFB17DcvuZRKQVy3QpVNU2u46VW10rY1KsjMC+4ZjpSMDjINqusXI+AfZlPRBEK9Ulnouyj1hM/m2aeuWlT0Jwx0dzGexzL/AIcbj6EZgQ96wl6q0drbWr2+t7UFLUlzfI9or6r5MVE5tlHqs7Ssixa8KzlbZJ6i6tbMhhoUFUmGvIv0B0ZGs1YhFBPRAKfJIQtmNPTTTis9n7qw=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(36840700001)(46966006)(86362001)(478600001)(9576002)(70206006)(54906003)(82310400003)(82740400003)(426003)(6916009)(316002)(83380400001)(26005)(7636003)(356005)(4326008)(70586007)(2906002)(7416002)(16526019)(47076005)(186003)(36860700001)(336012)(8936002)(5660300002)(9686003)(36906005)(33716001)(8676002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 11:53:50.7737
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc3faefa-9572-4f11-f897-08d926864111
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2996
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygD3gqAzxLhgdryIAA--.45307S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3Aw1kZw4rAFyrur4rXF4kCrg_yoW8Wr1xuo
+        W5Jr17Jw4xGr1UJrn7A3s8XFWUGw1DJFsxAryUAr1DXr17ta1DJrWUGr1rAayaqr15GFWI
+        kr1rtwn5A3WUJr1kn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUU5A7k0a2IF6w4kM7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0
+        x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj4
+        1l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0
+        I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s02
+        6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
+        I_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
+        6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj4
+        0_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
+        6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqEoXUUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 28 May 2021 10:56:02 PM AEST Peter Xu wrote:
-> On Fri, May 28, 2021 at 06:32:52PM +1000, Alistair Popple wrote:
-> > On Friday, 28 May 2021 6:19:04 AM AEST Peter Xu wrote:
-> > > This patch introduces a very special swap-like pte for file-backed
-> > > memories.
-> > > 
-> > > Currently it's only defined for x86_64 only, but as long as any arch
-> > > that
-> > > can properly define the UFFD_WP_SWP_PTE_SPECIAL value as requested, it
-> > > should conceptually work too.
-> > > 
-> > > We will use this special pte to arm the ptes that got either unmapped or
-> > > swapped out for a file-backed region that was previously wr-protected. 
-> > > This special pte could trigger a page fault just like swap entries, and
-> > > as long as the page fault will satisfy pte_none()==false &&
-> > > pte_present()==false.
-> > > 
-> > > Then we can revive the special pte into a normal pte backed by the page
-> > > cache.
-> > > 
-> > > This idea is greatly inspired by Hugh and Andrea in the discussion,
-> > > which is referenced in the links below.
-> > > 
-> > > The other idea (from Hugh) is that we use swp_type==1 and swp_offset=0
-> > > as
-> > > the special pte.  The current solution (as pointed out by Andrea) is
-> > > slightly preferred in that we don't even need swp_entry_t knowledge at
-> > > all
-> > > in trapping these accesses.  Meanwhile, we also reuse _PAGE_SWP_UFFD_WP
-> > > from the anonymous swp entries.
+On Thu, 3 Jun 2021 08:27:14 +0800
+Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+
+> On Wed, 2 Jun 2021 12:54:40 -0700
+> Nathan Chancellor <nathan@kernel.org> wrote:
+> 
+> > On Wed, Jun 02, 2021 at 11:58:51PM +0800, Jisheng Zhang wrote:  
+> > > On Wed, 2 Jun 2021 23:12:26 +0800
+> > > Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+> > >     
+> > > > On Tue, 1 Jun 2021 13:21:05 -0700
+> > > > Nathan Chancellor <nathan@kernel.org> wrote:
+> > > >     
+> > > > > Hi Jisheng,      
+> > > > 
+> > > > Hi Nathan,
+> > > >     
+> > > > > 
+> > > > > On Sun, May 16, 2021 at 09:15:56PM +0800, Jisheng Zhang wrote:      
+> > > > > > From: Jisheng Zhang <jszhang@kernel.org>
+> > > > > > 
+> > > > > > Consolidate the following items in init.c
+> > > > > > 
+> > > > > > Staticize global vars as much as possible;
+> > > > > > Add __initdata mark if the global var isn't needed after init
+> > > > > > Add __init mark if the func isn't needed after init
+> > > > > > Add __ro_after_init if the global var is read only after init
+> > > > > > 
+> > > > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > > > > ---
+> > > > > >  arch/riscv/include/asm/set_memory.h |  2 +-
+> > > > > >  arch/riscv/mm/init.c                | 36 +++++++++++++++--------------
+> > > > > >  2 files changed, 20 insertions(+), 18 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+> > > > > > index 086f757e8ba3..9d4d455726d4 100644
+> > > > > > --- a/arch/riscv/include/asm/set_memory.h
+> > > > > > +++ b/arch/riscv/include/asm/set_memory.h
+> > > > > > @@ -27,7 +27,7 @@ static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0;
+> > > > > >  #endif
+> > > > > >  
+> > > > > >  #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+> > > > > > -void protect_kernel_linear_mapping_text_rodata(void);
+> > > > > > +void __init protect_kernel_linear_mapping_text_rodata(void);
+> > > > > >  #else
+> > > > > >  static inline void protect_kernel_linear_mapping_text_rodata(void) {}
+> > > > > >  #endif
+> > > > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > > > > index 4c4c92ce0bb8..eac2d5c27b3e 100644
+> > > > > > --- a/arch/riscv/mm/init.c
+> > > > > > +++ b/arch/riscv/mm/init.c
+> > > > > > @@ -53,7 +53,7 @@ struct pt_alloc_ops {
+> > > > > >  #endif
+> > > > > >  };
+> > > > > >  
+> > > > > > -static phys_addr_t dma32_phys_limit __ro_after_init;
+> > > > > > +static phys_addr_t dma32_phys_limit __initdata;
+> > > > > >  
+> > > > > >  static void __init zone_sizes_init(void)
+> > > > > >  {
+> > > > > > @@ -184,7 +184,7 @@ extern char _sdata[], _edata[];
+> > > > > >  #endif /* CONFIG_XIP_KERNEL */
+> > > > > >  
+> > > > > >  #ifdef CONFIG_MMU
+> > > > > > -static struct pt_alloc_ops _pt_ops __ro_after_init;
+> > > > > > +static struct pt_alloc_ops _pt_ops __initdata;
+> > > > > >  
+> > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > >  #define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
+> > > > > > @@ -200,13 +200,13 @@ EXPORT_SYMBOL(va_pa_offset);
+> > > > > >  #endif
+> > > > > >  /* Offset between kernel mapping virtual address and kernel load address */
+> > > > > >  #ifdef CONFIG_64BIT
+> > > > > > -unsigned long va_kernel_pa_offset;
+> > > > > > +unsigned long va_kernel_pa_offset __ro_after_init;
+> > > > > >  EXPORT_SYMBOL(va_kernel_pa_offset);
+> > > > > >  #endif
+> > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > >  #define va_kernel_pa_offset    (*((unsigned long *)XIP_FIXUP(&va_kernel_pa_offset)))
+> > > > > >  #endif
+> > > > > > -unsigned long va_kernel_xip_pa_offset;
+> > > > > > +unsigned long va_kernel_xip_pa_offset __ro_after_init;
+> > > > > >  EXPORT_SYMBOL(va_kernel_xip_pa_offset);
+> > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > >  #define va_kernel_xip_pa_offset        (*((unsigned long *)XIP_FIXUP(&va_kernel_xip_pa_offset)))
+> > > > > > @@ -216,7 +216,7 @@ EXPORT_SYMBOL(pfn_base);
+> > > > > >  
+> > > > > >  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> > > > > >  pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> > > > > > -pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+> > > > > > +static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+> > > > > >  
+> > > > > >  pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+> > > > > >  
+> > > > > > @@ -253,7 +253,7 @@ static inline pte_t *__init get_pte_virt_fixmap(phys_addr_t pa)
+> > > > > >  	return (pte_t *)set_fixmap_offset(FIX_PTE, pa);
+> > > > > >  }
+> > > > > >  
+> > > > > > -static inline pte_t *get_pte_virt_late(phys_addr_t pa)
+> > > > > > +static inline pte_t *__init get_pte_virt_late(phys_addr_t pa)
+> > > > > >  {
+> > > > > >  	return (pte_t *) __va(pa);
+> > > > > >  }
+> > > > > > @@ -272,7 +272,7 @@ static inline phys_addr_t __init alloc_pte_fixmap(uintptr_t va)
+> > > > > >  	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> > > > > >  }
+> > > > > >  
+> > > > > > -static phys_addr_t alloc_pte_late(uintptr_t va)
+> > > > > > +static phys_addr_t __init alloc_pte_late(uintptr_t va)
+> > > > > >  {
+> > > > > >  	unsigned long vaddr;
+> > > > > >  
+> > > > > > @@ -296,10 +296,10 @@ static void __init create_pte_mapping(pte_t *ptep,
+> > > > > >  
+> > > > > >  #ifndef __PAGETABLE_PMD_FOLDED
+> > > > > >  
+> > > > > > -pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > -pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > -pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > > -pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > > +static pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > +static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > +static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > > +static pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > >  
+> > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > >  #define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
+> > > > > > @@ -319,7 +319,7 @@ static pmd_t *__init get_pmd_virt_fixmap(phys_addr_t pa)
+> > > > > >  	return (pmd_t *)set_fixmap_offset(FIX_PMD, pa);
+> > > > > >  }
+> > > > > >  
+> > > > > > -static pmd_t *get_pmd_virt_late(phys_addr_t pa)
+> > > > > > +static pmd_t *__init get_pmd_virt_late(phys_addr_t pa)
+> > > > > >  {
+> > > > > >  	return (pmd_t *) __va(pa);
+> > > > > >  }
+> > > > > > @@ -336,7 +336,7 @@ static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
+> > > > > >  	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> > > > > >  }
+> > > > > >  
+> > > > > > -static phys_addr_t alloc_pmd_late(uintptr_t va)
+> > > > > > +static phys_addr_t __init alloc_pmd_late(uintptr_t va)
+> > > > > >  {
+> > > > > >  	unsigned long vaddr;
+> > > > > >  
+> > > > > > @@ -454,14 +454,16 @@ asmlinkage void __init __copy_data(void)
+> > > > > >  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
+> > > > > >  #endif
+> > > > > >  
+> > > > > > -uintptr_t load_pa, load_sz;
+> > > > > > +static uintptr_t load_pa __initdata;        
+> > > > > 
+> > > > > Making load_pa static causing clang built kernels to no longer boot,
+> > > > > hanging after just a few lines of output in the console:
+> > > > > 
+> > > > > https://github.com/ClangBuiltLinux/continuous-integration2/runs/2717606254?check_suite_focus=true
+> > > > > 
+> > > > > I am not sure why that would make a difference nor why GCC is okay with
+> > > > > it. If it is a clang bug, it appears to be there for a while, given that
+> > > > > it reproduces back to clang-11.      
+> > > > 
+> > > > I can reproduce the issue. Here are my findindings:
+> > > > 
+> > > > * gcc + binutils can't reproduce it
+> > > > * clang + llvm-utils + ias can reproduce it
+> > > > * clang + binutils can reproduce it    
 > > 
-> > So to confirm my understanding the reason you use this special swap pte
-> > instead of a new swp_type is that you only need the fault and have no
-> > extra
-> > information that needs storing in the pte?
+> > Yes, this seems like something strictly related to clang so that is what
+> > I have been testing with.
+> >   
+> > > > All below tests are done with clang + binutils.
+> > > > 
+> > > > Then I applied below modification:
+> > > > 
+> > > > -static uintptr_t load_pa __initdata;
+> > > > +uintptr_t load_pa __initdata;
+> > > > 
+> > > > I got below panic log:
+> > > > [    0.015418] Unable to handle kernel paging request at virtual address fffffffffffffff9
+> > > > [    0.016432] Oops [#1]
+> > > > [    0.016679] Modules linked in:
+> > > > [    0.017103] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc1+ #5
+> > > > [    0.017711] Hardware name: riscv-virtio,qemu (DT)
+> > > > [    0.018201] epc : trace_hardirqs_on+0x60/0xb2
+> > > > [    0.018582]  ra : restore_all+0xe/0x66
+> > > > [    0.018879] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03dd0
+> > > > [    0.019376]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
+> > > > [    0.019870]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03e00
+> > > > [    0.020346]  s1 : 0000000000000001 a0 : 0000000000000001 a1 : 0000000000000001
+> > > > [    0.020800]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
+> > > > [    0.021243]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
+> > > > [    0.021717]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
+> > > > [    0.022179]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
+> > > > [    0.022674]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
+> > > > [    0.023176]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
+> > > > [    0.023693]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
+> > > > [    0.024153] status: 0000000000000100 badaddr: fffffffffffffff9 cause: 000000000000000d
+> > > > [    0.025367] Call Trace:
+> > > > [    0.025749] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
+> > > > [    0.026402] [<ffffffff800027b8>] restore_all+0xe/0x66
+> > > > [    0.027261] Unable to handle kernel paging request at virtual address fffffffffffffffa
+> > > > [    0.027827] Oops [#2]
+> > > > [    0.028013] Modules linked in:
+> > > > [    0.028321] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.13.0-rc1+ #5
+> > > > [    0.028839] Hardware name: riscv-virtio,qemu (DT)
+> > > > [    0.029166] epc : trace_hardirqs_on+0x60/0xb2
+> > > > [    0.029505]  ra : restore_all+0xe/0x66
+> > > > [    0.029785] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03a80
+> > > > [    0.030266]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
+> > > > [    0.030748]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03ab0
+> > > > [    0.031227]  s1 : 0000000000000001 a0 : 0000000000000002 a1 : 0000000000000002
+> > > > [    0.031717]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
+> > > > [    0.032199]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
+> > > > [    0.032680]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
+> > > > [    0.033160]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
+> > > > [    0.033642]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
+> > > > [    0.034123]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
+> > > > [    0.034601]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
+> > > > [    0.034965] status: 0000000000000100 badaddr: fffffffffffffffa cause: 000000000000000d
+> > > > [    0.035492] Call Trace:
+> > > > [    0.035682] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
+> > > > [    0.036077] [<ffffffff800027b8>] restore_all+0xe/0x66
+> > > > [    0.036545] ---[ end trace 7f4fbff09d927668 ]---
+> > > > [    0.037188] Kernel panic - not syncing: Attempted to kill the idle task!
+> > > > [    0.038107] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+> > > > 
+> > > > Then I checked 5.13-rc1, above panic log can be reproduced too. So the issue
+> > > > should exist there for a while. I never tried clang with riscv, did you remember
+> > > > which last commit or version clang works, I may try to bisect.
+> > V> >     
+> > > 
+> > > More findings:
+> > > 
+> > > *The above panic issue can also be seen from 5.12-rc2. If disable FTRACE, then
+> > > the panic disappears, kernel can boot
+> > > 
+> > > *so I retested riscv next tree w/ FTRACE disabled, kernel can boot w/ below
+> > > modification:    
+> > 
+> > Yeah, I do not enable CONFIG_FTRACE because it is not enabled in
+> > ARCH=riscv defconfig by default.
+> >   
+> > > -static uintptr_t load_pa __initdata;
+> > > +uintptr_t load_pa __initdata;
+> > > 
+> > > This is a weird issue. Any clue is appreciated.    
+> > 
+> > Unfortunately, this is outside of my realm of expertise, as I am
+> > unfamiliar with RISC-V at this level. Maybe Palmer has some ideas. I
+> > would think that changing this variable to static would be fine given
+> > that the symbol is only used in this translation unit but clearly not. I
+> > have attempted to debug this in gdb but that does not really get me
+> > anywhere: I cannot break on start_kernel() for whatever reason and the
+> > kernel never gets to my breakpoint in setup_vm().
+> > 
+> > I did decide to through a BUG() around arch/riscv/mm/init.c to see
+> > exactly which statement causes everything to hang. I landed on:
+> > 
+> > csr_write(CSR_SATP, PFN_DOWN(__pa_symbol(swapper_pg_dir)) | SATP_MODE);
+> > 
+> > in setup_vm_final(). No idea how that is relevant to this.
+> > 
+> > Some people in the ClangBuiltLinux bi-weekly meeting today pointed out
+> > that since load_pa is assigned to the linker defined symbol _start,
+> > there could be some optimization that goes awry here. I have keyed that  
 > 
-> Yes.
+> Thanks for the inspiration. Below patch fixes the hang issue, but I didn't
+> go through all necessary WRITE_ONCE convertions.
 > 
-> > Personally I think it might be better to define a new swp_type for this
-> > rather than introducing a new arch-specific concept.
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index ae32f78207f0..fa9336a2583f 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -504,7 +504,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  
+>         va_kernel_xip_pa_offset = kernel_virt_addr - xiprom;
+>  #else
+> -       load_pa = (uintptr_t)(&_start);
+> +       WRITE_ONCE(load_pa, (uintptr_t)(&_start));
+>         load_sz = (uintptr_t)(&_end) - load_pa;
+>  #endif
 > 
-> The concept should not be arch-specific, it's the pte that's arch-specific.
 
-Right, agree this is a minor detail.
- 
-> > swp_type entries are portable so wouldn't need extra arch-specific bits
-> > defined. And as I understand things not all architectures (eg. ARM) have
-> > spare bits in their swap entry encoding anyway so would have to reserve a
-> > bit specifically for this which would be less efficient than using a
-> > swp_type.
-> It looks a trade-off to me: I think it's fine to use swap type in my series,
-> as you said it's portable, but it will also waste the swap address space
-> for the arch when the arch enables it.
-> 
-> The format of the special pte to trigger the fault in this series should be
-> only a small portion of the code change.  The main logic should still be the
-> same - we just replace this pte with that one.  IMHO it also means the
-> format can be changed in the future, it's just that I don't know whether
-> it's wise to take over a new swap type from start.
->
-> > Anyway it seems I missed the initial discussion so don't have a strong
-> > opinion here, mainly just wanted to check my understanding of what's
-> > required and how these special entries work.
-> 
-> Thanks for mentioning this and join the discussion. I don't know ARM enough
-> so good to know we may have issue on finding the bits.  Actually before
-> finding this bit for file-backed uffd-wp specifically, we need to firstly
-> find a bit in the normal pte for ARM too anyways (see _PAGE_UFFD_WP).  If
-> there's no strong reason to switch to a new swap type, I'd tend to leave
-> all these to the future when we enable them on ARM.
+I think I found the root cause, but I dunno whether this is clang bug or
+we need WRITE_ONCE patch.
+W/O WRITE_ONCE, the setup_vm() is compiled to
 
-Yeah, makes sense to me. As you say it should be easy to change and other 
-architectures need to find another bit anyway. Not sure how useful it will be 
-but I'll try and take a look over the rest of the series as well.
+ffffffff8040472a <setup_vm>:
+ffffffff8040472a:       1101                    addi    sp,sp,-32
+ffffffff8040472c:       ec06                    sd      ra,24(sp)
+ffffffff8040472e:       e822                    sd      s0,16(sp)
+ffffffff80404730:       e426                    sd      s1,8(sp)
+ffffffff80404732:       e04a                    sd      s2,0(sp)
+ffffffff80404734:       1000                    addi    s0,sp,32
+ffffffff80404736:       892a                    mv      s2,a0
+ffffffff80404738:       001fd517                auipc   a0,0x1fd
+ffffffff8040473c:       8c850513                addi    a0,a0,-1848 # ffffffff80601000 <load_pa>
+ffffffff80404740:       4585                    li      a1,1
+ffffffff80404742:       00b50023                sb      a1,0(a0)     // BUG!
+ffffffff80404746:       001fd517                auipc   a0,0x1fd
+ffffffff8040474a:       8c250513                addi    a0,a0,-1854 # ffffffff80601008 <load_sz>
+ffffffff8040474e:       00b50023                sb      a1,0(a0)     // BUG!
+ffffffff80404752:       ffbfc517                auipc   a0,0xffbfc
+ffffffff80404756:       8ae50513                addi    a0,a0,-1874 # ffffffff80000000 <_start>
+ffffffff8040475a:       55fd                    li      a1,-1
+ffffffff8040475c:       02559613                slli    a2,a1,0x25
+ffffffff80404760:       83018593                addi    a1,gp,-2000 # ffffffff80ca6428 <kernel_virt_addr>
+ffffffff80404764:       618c                    ld      a1,0(a1)
+ffffffff80404766:       8e09                    sub     a2,a2,a0
+...
 
-> --
-> Peter Xu
+It seems load_pa and load_sz are stored with 1, this is obviously not what the
+code expected. 
 
 
+W/ WRITE_ONCE, the setup_vm() is compiled to:
 
+ffffffff8040472a <setup_vm>:
+ffffffff8040472a:       1101                    addi    sp,sp,-32
+ffffffff8040472c:       ec06                    sd      ra,24(sp)
+ffffffff8040472e:       e822                    sd      s0,16(sp)
+ffffffff80404730:       e426                    sd      s1,8(sp)
+ffffffff80404732:       e04a                    sd      s2,0(sp)
+ffffffff80404734:       1000                    addi    s0,sp,32
+ffffffff80404736:       892a                    mv      s2,a0
+ffffffff80404738:       001fd597                auipc   a1,0x1fd
+ffffffff8040473c:       8c858593                addi    a1,a1,-1848 # ffffffff80601000 <load_pa>
+ffffffff80404740:       ffbfc517                auipc   a0,0xffbfc
+ffffffff80404744:       8c050513                addi    a0,a0,-1856 # ffffffff80000000 <_start>
+ffffffff80404748:       e188                    sd      a0,0(a1)
+ffffffff8040474a:       001fd597                auipc   a1,0x1fd
+ffffffff8040474e:       8be58593                addi    a1,a1,-1858 # ffffffff80601008 <load_sz>
+ffffffff80404752:       4605                    li      a2,1
+ffffffff80404754:       00c58023                sb      a2,0(a1)
+ffffffff80404758:       55fd                    li      a1,-1
+ffffffff8040475a:       02559613                slli    a2,a1,0x25
+ffffffff8040475e:       83018593                addi    a1,gp,-2000 # ffffffff80ca6428 <kernel_virt_addr>
+ffffffff80404762:       618c                    ld      a1,0(a1)
+ffffffff80404764:       8e09                    sub     a2,a2,a0
+...
+
+This is what the code expected.
 
