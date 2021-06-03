@@ -2,142 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BF839AA99
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729C039AA9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhFCTBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:01:32 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:40191 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFCTBc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:01:32 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id D174E5C0056;
-        Thu,  3 Jun 2021 14:59:46 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 03 Jun 2021 14:59:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to:from; s=fm1; bh=1HhH0nGpEofBMD6mVIRlFI
-        +fgZCZWFL3gEjf84ZKlKM=; b=PLxp/ZK6P3puogga2z7T88SLMK5XAGmBoxfAA2
-        ZNrIRVwMmNxtc6MitszLU8BZwc/lTgqWGFKeT1/VSkQOV1Tw5DY7EhnHo1axTeSb
-        FTBVDF6rnhFOuj4JRIJAXXiFN2tYYekodHgLqRFH0xHEL5Kvyjw3zmxT4i4W5ZsE
-        CnNm6XEAi9Kge7xD11VOKwml6iu1YQrdXovgvaXNSBXECBsZCK2QjiOVH/s/jPPJ
-        /EBbmgBhtj+VYRMzPf15wzGOvO6srjVTLDL2oOhiXY306OnaIdBLE8Rew10Qs+Mu
-        gWDvwVBVNok5Ow5v37Ta1uouvWN44ZpPFX3677NUoWjTBgkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1HhH0n
-        GpEofBMD6mVIRlFI+fgZCZWFL3gEjf84ZKlKM=; b=BXECjmeyA/5BTs5G79EV9E
-        Afkp2S/ZaD415CyImVnr7P69xjykxGDXNTakYKrLWFbrBKO22xtaZDTiNBwLQaLx
-        SkuBje6TmI3H/G30Muxr4+OOcKVj4mf/IHJkMZlsV8Xm5Lz9x+ie2NtSTZ9DrPet
-        hQ5nyDtS8felCLpl0ryC81TIWnTwHpM67AVgWOpifNAGIYjQG+5w+Q9xgBSntnYQ
-        iA3UbsCi8Ali0U4MRFxh1vtyITmrAgIZplX5CHFzZqj9k8LDJwKoHBHkjgiennQX
-        hpqHnS8jwq+yCcbqdGVm7CXbc9H6m82VZ5LyevS8Y0xKKFEP6C9Pm5njNAPPewBw
-        ==
-X-ME-Sender: <xms:oSa5YHnCSU-QEoW89XaSjt5bgWMA7D6-z2OgEVxWteGLmBPpE-plcQ>
-    <xme:oSa5YK2fooSex2kXuCNK3UJ2kUh1VgqLtzBFKNnzrGwUoN0SmMPcKTBpg4XxYZ2Lg
-    PMn8JQ8zLr-qtb8Zw>
-X-ME-Received: <xmr:oSa5YNrCj8VuBfwKvWVXwvFI-BBxDJ3qigC6DFL9jiWtQDtwnakNUmOEl_KW8txpE7rhERiS3H4ftmplcEljPXM44zPzYo9_irS9Iu_vzC79A14EBpmAV7fnCdTw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgudeftdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffvffukfhfgggtuggjhfesthdtredttddtvdenucfhrhhomheptehnughr
-    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
-    grthhtvghrnhepkeelheeguedvhfffgeegkefgteeuueelffdvvddtieevgeejkeejgfek
-    teevvddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:oSa5YPk-ITmcGc24u3SDOFRTFFMtH2eGDe6GmYyOsGCpWSGeL4G94Q>
-    <xmx:oSa5YF1Ki2lP1aBaeqsV98ph8hv6nNCQWpDXGZ8AS4mGn7UdW05fVQ>
-    <xmx:oSa5YOvTwMmOZYhXynmh4FAQsgi7JmCc7bgD_phxfQGMfjR0ulAwZw>
-    <xmx:oia5YClvVx8vg0zpbZUqm_uyxHlfq54lSHHTZpd7rh9Cssgzh98Weg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Jun 2021 14:59:45 -0400 (EDT)
-Date:   Thu, 3 Jun 2021 11:59:43 -0700
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 0/4] futex request support
-Message-ID: <20210603185943.eeav4sfkrxyuhytp@alap3.anarazel.de>
-CFrom:  Andres Freund <andres@anarazel.de>
-References: <cover.1622558659.git.asml.silence@gmail.com>
+        id S229629AbhFCTDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:03:16 -0400
+Received: from mail-bn8nam11on2117.outbound.protection.outlook.com ([40.107.236.117]:36065
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229576AbhFCTDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:03:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T5b0WDViU3QbWlJyMhVhEDm13QhY2yOf/ZYqT/Vs7VNNpGdn8GsJ8+XieVks8182I2loAmCg1LqdG3dulAh3D1BnUoGP4x6RHPD5EOSszeOK8/nkIdJixvayP9ibBfh2gNo/CyWMhUmnpFbVrrxt+yRrBTKSGsVjpo3kSJlpKrLusqNooS/4p+oblsjFWVtjuvWjbEFUR1+R3nLLnYtz9UvOec01U7PjNv4A8eMKpqqOMbLAb2Othqackoz9RXK+iL96qsm2lljsIinjJ4EI5QcCjhcBiCGdXjxO8LpqTbnyAcN4w16NWRbpxm4nRg/eEKnSwQM9l+vLjvViN07xUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gD/QxJQQPdA0THscN7h1DufyKdz40ny0nAot6Ze4MuA=;
+ b=M49qzu+KmmBQMVBIVpeEVadWQtgSD73Px5DgYWjyPKLFkd+/Q0TKyYjzj5PGoiAXA3VFpNU8tJ/1BkXTbuuh1uagP55Jkx3DS3OJcxNW3AD36rSjFMsS0yWMnqbL2uYY9b4vAEoF1Almd+ZcPu5djpVkQ6+LhgcrNt5PLQL5XyWxgeDXo4ZCNCOeon1z5aqyMXj67gT722btlmegR1TyNpePRLqb2O07zhNK3NN1DtUmq8N1mW3U951WBN1TjIR6Yqp4Y8pQpIJWHIuzQAW0/31b7uNc65jxh7546Z5kAIZ2ErF0Xqo9M0RSr0MZD3H+tkSr5atjORRV6fx/1AKZ8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gD/QxJQQPdA0THscN7h1DufyKdz40ny0nAot6Ze4MuA=;
+ b=Aci1ts8e6awrQNU4nq4zH5YGLqi5/86PT28GN1bRpX5p+a/+A/QxcHkw9zkkyrAcF9Q86hYdMG4f/hMw4PQr46Q3dn9XK7Pdd81kQAy7827aBGLJftQMBWkNWXIQskGVlPqwc0FkRVLnJ5KYNeKj971YXflIxF2+MRv2i2XwWLg=
+Received: from DM6PR21MB1513.namprd21.prod.outlook.com (2603:10b6:5:25c::19)
+ by DM5PR21MB0634.namprd21.prod.outlook.com (2603:10b6:3:127::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.5; Thu, 3 Jun
+ 2021 19:01:27 +0000
+Received: from DM6PR21MB1513.namprd21.prod.outlook.com
+ ([fe80::c1bb:3431:eedf:cd08]) by DM6PR21MB1513.namprd21.prod.outlook.com
+ ([fe80::c1bb:3431:eedf:cd08%9]) with mapi id 15.20.4219.012; Thu, 3 Jun 2021
+ 19:01:27 +0000
+From:   Long Li <longli@microsoft.com>
+To:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+CC:     Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] block: return the correct first bvec when checking for
+ gaps
+Thread-Topic: [PATCH] block: return the correct first bvec when checking for
+ gaps
+Thread-Index: AQHXWKjPe/0y7BnaoUqIWYyLD3dggKsCpAZQ
+Date:   Thu, 3 Jun 2021 19:01:27 +0000
+Message-ID: <DM6PR21MB151319DCEC69835549413643CE3C9@DM6PR21MB1513.namprd21.prod.outlook.com>
+References: <1622746005-10785-1-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <1622746005-10785-1-git-send-email-longli@linuxonhyperv.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3661959d-f836-4ba1-9870-4b4753409653;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-06-03T19:00:08Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: linuxonhyperv.com; dkim=none (message not signed)
+ header.d=none;linuxonhyperv.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [76.22.9.184]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cdd0c1b1-6c14-4dfb-8b6f-08d926c1fdda
+x-ms-traffictypediagnostic: DM5PR21MB0634:
+x-microsoft-antispam-prvs: <DM5PR21MB06346B99562F0B2D63FDA744CE3C9@DM5PR21MB0634.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:469;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7EH+JS6Qf1QNcRNzlbUo9xFHz3SM+FXyCkGaZq/z/FooYAm6OSmns1AI+7LAxA2hK3dWzvpFY9RGXy6E+B61gv7GZb2sAyq4EovqipORGgKWssa/L5+XJc6EU5K+UZk0L+XYNdLoz3kPggTF9Dq/yT9Wto0GgdE2S+R8T3KcQw8KLpGTY7QjMPAdy7oVD1QJUYSNHmzXW/WtiVhoUOBpGo2T1Tscp2Ztd5xwS6dvP75YVl8jS/anTgNz/y2A1LINI6+81DhryIi7URTFqMu9ZYvRGgRMYXfN4S1XyZzAlZbEH6uskyaLoJLtXXMVxsHiNHt0cpN6ORrXabQ5y7k3rzzEl3IWRWclWdwRAv24StDQXf4X5MJca5xLrmYUnrjkesitxnW6EaW5XQdvbMQbZrhHBNrmQvQb8W8Txr6T8mexPhff7i2WGgy3Eefm39tNY6ddEx+x8sok7b8RQJWAiaOKiacnDfRSTP/zxiJ8Dn5oAl5iif8yLVLHMDIO01mdijrIoZ3BII7umfiRm0AnKqUBWkbBBsiHr2JHi3KURTvukGLXE0StmBMy0LeGAViHoGms4Pz5d5q/Ecwn6gH4miUXoJK9EkhzXU4VGavxYR4XXk9dP1fKF5BrMOrEFGex7blylxs2AKDw81iUfti8pQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1513.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(186003)(26005)(5660300002)(83380400001)(8990500004)(8676002)(6506007)(53546011)(82950400001)(2906002)(7696005)(66556008)(64756008)(4326008)(71200400001)(86362001)(38100700002)(9686003)(55016002)(122000001)(66946007)(76116006)(66476007)(66446008)(33656002)(478600001)(316002)(110136005)(54906003)(10290500003)(8936002)(52536014)(82960400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SWc+D/Q6QJWG4oAkzzTcs0nDmiyXaT1uwDvkXKAmDlVWxGZ+iatSrwLmfJEK?=
+ =?us-ascii?Q?1rF7Szn0bmT9hbkZdxp48x9+7seteKASBajps29H8secq4clSa5BulG/Ex0p?=
+ =?us-ascii?Q?4GVXvyANJk2LWRoMaxmi+eLq+VjZcwgwCNUKauZgqPG+rPfe5ohLLDolidXp?=
+ =?us-ascii?Q?Y3V46HkmU3XWq0hhoxwqlBQW/MKFNXKIuH3dXvHL9CFNnRqfasQ0DK3g8GZo?=
+ =?us-ascii?Q?fdCQ4bUw1xFXdlExtQo8Ls5Ulb1hR/CuPramtYwxqvWQLhKU0CL6KaSoyMjS?=
+ =?us-ascii?Q?7SuTF22TE5ir85GLq4bPX+pxyTr9BmjOiYIqlQd6CrauDSBRjb9hs9Dv+8R7?=
+ =?us-ascii?Q?I5i3Et3Vj4mOijVeY9+3sKM3drV23gSlxdewz0iEc+sHLHJD7/NgA1KL4qJB?=
+ =?us-ascii?Q?4b92EQ66pdhdYWShgj4oqtVcrUT+lXfcyQRwvfJANvWJ9ops0KWL2COEQiNq?=
+ =?us-ascii?Q?esZOChosjXDbAD1p67nJF8Q/c0m/vJkRkHhlkBkqLz4DaoVvxHalflHlrIRj?=
+ =?us-ascii?Q?Ek6BfeAn+qxCz8QKZkKZ+l6Ww4INac5EjvX6Q5DsNbTnXJtQvLWskuMYYSBv?=
+ =?us-ascii?Q?xNilr6QISimBDLqaK8LnXpxvQI5STY26B+TzmcaRE2UzXBx5af043x3xXEEn?=
+ =?us-ascii?Q?JJF/lGNiGutJZUvtHUq8OdL2WSk2qxOAm7Dzj+4bjqsLEom+YsZ/umGj9nit?=
+ =?us-ascii?Q?X5qkdhmx31i/S3MR7UIHkjvFanURLN4kvNzpJqkBtj8Q4u5AkKZ+il0/m3fY?=
+ =?us-ascii?Q?zMGYiLuYHmbbznoTUw5LysZC7j1joNfG7QhvYI6D4bvrB9tTXFaNwxiguhVr?=
+ =?us-ascii?Q?OnD3DmbKREoX1d2/wNyLPQ1gADB9WkWUCvGsjH1WCWTT1aRxj291xSCn5j8a?=
+ =?us-ascii?Q?vSaye1tWCL2N/q6Uf0tKPfn5839c7xyLj5hx5oQi1r/fU7ev8VGHRz3INW/l?=
+ =?us-ascii?Q?ReukwddHB//57xFKYiIZJiymY1dLWBYrcc7q5ddr?=
+x-ms-exchange-antispam-messagedata-1: 0ycpuLHYnEbZhTL4CdEBx6Vnhxpu4KYjmB3EnYxgZNHuHtLbpZ9eEu2YAnxX1PFmruXqieGmkEJygiw4FTduv/jX8bEoLehGZtBIEQdv0o5vCo75iGvQujN925ogkMoQAeLa0NNhsJhs4i+ADpJ6q0bSvKtAyq18cR8sexPfcbXYQG/qYjuITL8V40TSyxmLJjljQjg1H8vi7OqIjmsAd3/chloFO2ldKr47Mgoq6H+/2RLrN7A1YIKMmqELsGXiUOwWh36PbYsu8otpeTBNthAl03zBnEslMxOo9Ryp+DDuV9FbRYJlsPZAZTH55V7v7Ng=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1622558659.git.asml.silence@gmail.com>
-From:   Andres Freund <andres@anarazel.de>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1513.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdd0c1b1-6c14-4dfb-8b6f-08d926c1fdda
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 19:01:27.8112
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2ha1OFx6hz0TnziUSsy3UsLiNpR8DjfO2U0EvvHx38AYP+Siht0rmP8RU/0+bE2jfFF+NeKJBnGoPj39gW2z/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB0634
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 2021-06-01 15:58:25 +0100, Pavel Begunkov wrote:
-> Should be interesting for a bunch of people, so we should first
-> outline API and capabilities it should give. As I almost never
-> had to deal with futexes myself, would especially love to hear
-> use case, what might be lacking and other blind spots.
+Please discard this patch as it's from a wrong work branch. The patch is no=
+t complete. I'll resubmit.
 
-I did chat with Jens about how useful futex support would be in io_uring, so I
-should outline our / my needs. I'm off work this week though, so I don't think
-I'll have much time to experiment.
+Long
 
-For postgres's AIO support (which I am working on) there are two, largely
-independent, use-cases for desiring futex support in io_uring.
+> -----Original Message-----
+> From: longli@linuxonhyperv.com <longli@linuxonhyperv.com>
+> Sent: Thursday, June 3, 2021 11:47 AM
+> To: linux-block@vger.kernel.org
+> Cc: Long Li <longli@microsoft.com>; Jens Axboe <axboe@kernel.dk>;
+> Johannes Thumshirn <johannes.thumshirn@wdc.com>; Pavel Begunkov
+> <asml.silence@gmail.com>; Ming Lei <ming.lei@redhat.com>; Tejun Heo
+> <tj@kernel.org>; Matthew Wilcox (Oracle) <willy@infradead.org>; Jeffle Xu
+> <jefflexu@linux.alibaba.com>; linux-kernel@vger.kernel.org;
+> stable@vger.kernel.org
+> Subject: [PATCH] block: return the correct first bvec when checking for g=
+aps
+>=20
+> From: Long Li <longli@microsoft.com>
+>=20
+> After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec can
+> have multiple pages. But bio_will_gap() still assumes one page bvec while
+> checking for merging. This causes data corruption on drivers relying on t=
+he
+> correct merging on virt_boundary_mask.
+>=20
+> Fix this by returning the bvec for multi-page bvec.
+>=20
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Cc: Ming Lei <ming.lei@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> Fixes: 07173c3ec276 ("block: enable multipage bvecs")
+> Signed-off-by: Long Li <longli@microsoft.com>
+> ---
+>  include/linux/bio.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/include/linux/bio.h b/include/linux/bio.h index
+> a0b4cfdf62a4..e89242a53bbc 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -271,7 +271,7 @@ static inline void bio_clear_flag(struct bio *bio,
+> unsigned int bit)
+>=20
+>  static inline void bio_get_first_bvec(struct bio *bio, struct bio_vec *b=
+v)  {
+> -	*bv =3D bio_iovec(bio);
+> +	*bv =3D mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
+>  }
+>=20
+>  static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec *bv=
+)
+> --
+> 2.17.1
 
-The first is the ability to wait for locks (queued r/w locks, blocking
-implemented via futexes) and IO at the same time, within one task. Quickly and
-efficiently processing IO completions can improve whole-system latency and
-throughput substantially in some cases (journalling, indexes and other
-high-contention areas - which often have a low queue depth). This is true
-*especially* when there also is lock contention, which tends to make efficient
-IO scheduling harder.
-
-The second use case is the ability to efficiently wait in several tasks for
-one IO to be processed. The prototypical example here is group commit/journal
-flush, where each task can only continue once the journal flush has
-completed. Typically one of waiters has to do a small amount of work with the
-completion (updating a few shared memory variables) before the other waiters
-can be released. It is hard to implement this efficiently and race-free with
-io_uring right now without adding locking around *waiting* on the completion
-side (instead of just consumption of completions). One cannot just wait on the
-io_uring, because of a) the obvious race that another process could reap all
-completions between check and wait b) there is no good way to wake up other
-waiters once the userspace portion of IO completion is through.
-
-
-All answers for postgres:
-
-> 1) Do we need PI?
-
-Not right now.
-
-Not related to io_uring: I do wish there were a lower overhead (and lower
-guarantees) version of PI futexes. Not for correctness reasons, but
-performance. Granting the waiter's timeslice to the lock holder would improve
-common contention scenarios with more runnable tasks than cores.
-
-
-> 2) Do we need requeue? Anything else?
-
-I can see requeue being useful, but I haven't thought it through fully.
-
-Do the wake/wait ops as you have them right now support bitsets?
-
-
-> 3) How hot waits are? May be done fully async avoiding io-wq, but
-> apparently requires more changes in futex code.
-
-The waits can be quite hot, most prominently on low latency storage, but not
-just.
-
-Greetings,
-
-Andres Freund
