@@ -2,136 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12802399CFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35086399D10
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhFCIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:48:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45466 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhFCIsZ (ORCPT
+        id S229734AbhFCIvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:51:23 -0400
+Received: from mail-ed1-f50.google.com ([209.85.208.50]:39534 "EHLO
+        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhFCIvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:48:25 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4F6D8219E1;
-        Thu,  3 Jun 2021 08:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622710000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZGYew5SGmdoU7MaUMjCQJu6CUQQRyZgDm/ugr7FJkik=;
-        b=UPdBAscVGcKfIB7r1rdiArP5E4b1W4s6cD6RmUVdMU5EgYQRCbmCPX7Qkx+g1xCdv/3Rdi
-        DHnBiT88YrNR5y8rcINSabGbteTumqIaq9E3RRuJ6ahND8FbdUOgIS/PT2NnG8ZwaJDVrx
-        Y57qWHI1PWHfiAByh8IrKX8SDb9DVv4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622710000;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZGYew5SGmdoU7MaUMjCQJu6CUQQRyZgDm/ugr7FJkik=;
-        b=8rGAUYu9J4Ro+7/kzBAGvQIRAbyD6+G0cvtEO8GNulsXy0sRHYzt0/SPREI5C17fltgMAS
-        ktPOPIOwHMbo7CCg==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 26201A3B90;
-        Thu,  3 Jun 2021 08:46:40 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EAABE1F2C98; Thu,  3 Jun 2021 10:46:39 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 10:46:39 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 1/5] writeback, cgroup: switch to rcu_work API in
- inode_switch_wbs()
-Message-ID: <20210603084639.GD23647@quack2.suse.cz>
-References: <20210603005517.1403689-1-guro@fb.com>
- <20210603005517.1403689-2-guro@fb.com>
+        Thu, 3 Jun 2021 04:51:21 -0400
+Received: by mail-ed1-f50.google.com with SMTP id dj8so6189921edb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 01:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vPAp0cDqkozZvEWRxxBHH5RxVtokOPhreu0KnKBlDT8=;
+        b=Dfc5iwcBu7xHR6cCUm7AXpRC3Am+2tgSjO2cK3b+y81daO+VUcDnqv5aiqhlX2f8ET
+         6onChdoAnMmIk5UTlu73QIpDDtNnf1X2MUG0IL1DmsIJFdqoA6heSynaLiB8Ryp9ysYy
+         aHhDS1NSxmydVwhy0JCxhpd7kO6T0dhC7iCfU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=vPAp0cDqkozZvEWRxxBHH5RxVtokOPhreu0KnKBlDT8=;
+        b=btVQnFfsZJdQNQ+TTr3CEn972/SxRFl50ZbzsqNVpBdW62tUy5EukcGNFFYq2NRMIq
+         dFmrmlD8lQ1bA/W1Oo6lulwzGbmGrIbtqTyxb7eyVCEeZncgkKkuU749CSnBDxzT2LtW
+         0n55a7/IdsE1sK5p3+M7wcxvCZXYliPtJ7NRExoqHFdmxR93nEXVIAWtYDcR6AXQOU6i
+         IQZ+04qv9+jmt3CZmUbOQkm/lyagDYz1LN4YK5KBrNWNlOjqNoTnU6ZyQlYJnHm82Cs9
+         6GXG1dk8oTYnWZlq08nAelIeaFnFEviZzVxU6a1d9ScPGxRFJznctMaDIrlp53AXxBC7
+         egUw==
+X-Gm-Message-State: AOAM531PimdzfK5A5+0eO0pyVH79uXrVjmMOJRVFNDi3VuhDGJcUmCud
+        ivMErKkz7x9tlMkUSbZCIqOxEA==
+X-Google-Smtp-Source: ABdhPJwv4djZniG7P4/1rgxf9Fevn796Yj3QoQ3lNQh0vjHJ+sYM0uCv+TLIpzDfNoN6sGHi5HwO+Q==
+X-Received: by 2002:aa7:dd57:: with SMTP id o23mr42071917edw.98.1622710116626;
+        Thu, 03 Jun 2021 01:48:36 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z17sm1232609ejc.69.2021.06.03.01.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 01:48:36 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 10:48:33 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dave Airlie <airlied@redhat.com>, Arnd Bergmann <arnd@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        kernel test robot <lkp@intel.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH 1/3] drm: Avoid circular dependencies for CONFIG_FB
+Message-ID: <YLiXYa8OG9hlaEE5@phenom.ffwll.local>
+Mail-Followup-To: Kees Cook <keescook@chromium.org>,
+        Dave Airlie <airlied@redhat.com>, Arnd Bergmann <arnd@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, kernel test robot <lkp@intel.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+References: <20210602215252.695994-1-keescook@chromium.org>
+ <20210602215252.695994-2-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603005517.1403689-2-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210602215252.695994-2-keescook@chromium.org>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-06-21 17:55:13, Roman Gushchin wrote:
-> Inode's wb switching requires two steps divided by an RCU grace
-> period. It's currently implemented as an RCU callback
-> inode_switch_wbs_rcu_fn(), which schedules inode_switch_wbs_work_fn()
-> as a work.
+On Wed, Jun 02, 2021 at 02:52:50PM -0700, Kees Cook wrote:
+> When cleaning up other drm config dependencies, it is too easy to create
+> larger problems. Instead, mark CONFIG_FB as a "depends":
 > 
-> Switching to the rcu_work API allows to do the same in a cleaner and
-> slightly shorter form.
+> drivers/gpu/drm/Kconfig:74:error: recursive dependency detected!
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> Link: https://lore.kernel.org/lkml/CAK8P3a3jUQs6c5tESSNMbqfuymewj9FhqRizyHcfOXf8Rgy-nA@mail.gmail.com/
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
+I rebased this one for -next and applied all three patches to
+drm-misc-next.
+-Daniel
 
 > ---
->  fs/fs-writeback.c | 18 ++++--------------
->  1 file changed, 4 insertions(+), 14 deletions(-)
+>  drivers/gpu/drm/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index e91980f49388..1f51857e41d1 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -335,8 +335,7 @@ struct inode_switch_wbs_context {
->  	struct inode		*inode;
->  	struct bdi_writeback	*new_wb;
->  
-> -	struct rcu_head		rcu_head;
-> -	struct work_struct	work;
-> +	struct rcu_work		work;
->  };
->  
->  static void bdi_down_write_wb_switch_rwsem(struct backing_dev_info *bdi)
-> @@ -352,7 +351,7 @@ static void bdi_up_write_wb_switch_rwsem(struct backing_dev_info *bdi)
->  static void inode_switch_wbs_work_fn(struct work_struct *work)
->  {
->  	struct inode_switch_wbs_context *isw =
-> -		container_of(work, struct inode_switch_wbs_context, work);
-> +		container_of(to_rcu_work(work), struct inode_switch_wbs_context, work);
->  	struct inode *inode = isw->inode;
->  	struct backing_dev_info *bdi = inode_to_bdi(inode);
->  	struct address_space *mapping = inode->i_mapping;
-> @@ -469,16 +468,6 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
->  	atomic_dec(&isw_nr_in_flight);
->  }
->  
-> -static void inode_switch_wbs_rcu_fn(struct rcu_head *rcu_head)
-> -{
-> -	struct inode_switch_wbs_context *isw = container_of(rcu_head,
-> -				struct inode_switch_wbs_context, rcu_head);
-> -
-> -	/* needs to grab bh-unsafe locks, bounce to work item */
-> -	INIT_WORK(&isw->work, inode_switch_wbs_work_fn);
-> -	queue_work(isw_wq, &isw->work);
-> -}
-> -
->  /**
->   * inode_switch_wbs - change the wb association of an inode
->   * @inode: target inode
-> @@ -534,7 +523,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	 * lock so that stat transfer can synchronize against them.
->  	 * Let's continue after I_WB_SWITCH is guaranteed to be visible.
->  	 */
-> -	call_rcu(&isw->rcu_head, inode_switch_wbs_rcu_fn);
-> +	INIT_RCU_WORK(&isw->work, inode_switch_wbs_work_fn);
-> +	queue_rcu_work(isw_wq, &isw->work);
->  
->  	atomic_inc(&isw_nr_in_flight);
->  	return;
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index 3c16bd1afd87..90891284ccec 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -83,7 +83,7 @@ config DRM_KMS_HELPER
+>  config DRM_KMS_FB_HELPER
+>  	bool
+>  	depends on DRM_KMS_HELPER
+> -	select FB
+> +	depends on FB
+>  	select FRAMEBUFFER_CONSOLE if !EXPERT
+>  	select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CONSOLE
+>  	select FB_SYS_FOPS
 > -- 
-> 2.31.1
+> 2.25.1
 > 
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
