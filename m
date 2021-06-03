@@ -2,284 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3976939A479
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2521039A44B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhFCPYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbhFCPY3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:24:29 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 91E7FC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 08:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=NrqTccpLIylkR0T9OgNeAoE3H+cHZLBXN0
-        4t97OMHQ8=; b=vtM8/ejS6bnxVqpyfw/SMDNyJ0fh6QJg1euouSwVMWMKGJUNQp
-        r6yLzW7uwQlbMAs3wStvSHeiEUwfNK9cT10q1/ztb1koOVzGyXcwQ1pMY4CNPEKh
-        /d32vZ2lyY5KYxZyQUOXLmH7VMhclKka1sIplryr6Om6geTYwYDhAWG0s=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3taOu87hgvc2JAA--.45389S2;
-        Thu, 03 Jun 2021 23:22:22 +0800 (CST)
-Date:   Thu, 3 Jun 2021 23:16:56 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] riscv: Factorize xip and !xip kernel address
- conversion macros
-Message-ID: <20210603231656.47ca101f@xhacker>
-In-Reply-To: <e50b56f5-7405-2eef-f8e9-7d9fa4df7c77@ghiti.fr>
-References: <20210603082749.1256129-1-alex@ghiti.fr>
-        <20210603082749.1256129-2-alex@ghiti.fr>
-        <20210603202748.2775f739@xhacker>
-        <64cdb4f9-06f0-59b9-acf9-6fc298db37d7@ghiti.fr>
-        <CAAhSdy2kPPrBzFCA01NSvWptoftY27+PsMzLDWFzvOzNdUByhA@mail.gmail.com>
-        <20210603215337.4da052e2@xhacker>
-        <e50b56f5-7405-2eef-f8e9-7d9fa4df7c77@ghiti.fr>
+        id S231579AbhFCPSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:18:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:43882 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232116AbhFCPSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:18:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1537F1424;
+        Thu,  3 Jun 2021 08:17:00 -0700 (PDT)
+Received: from monolith.localdoman (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0068F3F73D;
+        Thu,  3 Jun 2021 08:16:58 -0700 (PDT)
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sanm@codeaurora.org
+Subject: [PATCH] Revert "usb: dwc3: core: Add shutdown callback for dwc3"
+Date:   Thu,  3 Jun 2021 16:17:42 +0100
+Message-Id: <20210603151742.298243-1-alexandru.elisei@arm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID: LkAmygA3taOu87hgvc2JAA--.45389S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF1kuryxKFy5AFWDuF4DArb_yoWxAr17pr
-        1DGF1UKr4rJryYk3yqv3s0kryYywnrJry3Wrn8G348Za4DtF1UWF1UXw15uryqqF15JF4f
-        Xry7Gr13uw1UJwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkmb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqEoXUUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 17:06:39 +0200
-Alex Ghiti <alex@ghiti.fr> wrote:
+This reverts commit 568262bf5492a9bb2fcc4c204b8d38fd6be64e28.
 
-> Le 3/06/2021 =C3=A0 15:53, Jisheng Zhang a =C3=A9crit=C2=A0:
-> > On Thu, 3 Jun 2021 18:46:47 +0530
-> > Anup Patel <anup@brainfault.org> wrote:
-> >  =20
-> >> On Thu, Jun 3, 2021 at 6:27 PM Alex Ghiti <alex@ghiti.fr> wrote: =20
-> >>>
-> >>> Hi Jisheng, =20
-> >=20
-> > Hi,
-> >  =20
-> >>>
-> >>> Le 3/06/2021 =C3=A0 14:27, Jisheng Zhang a =C3=A9crit : =20
-> >>>> On Thu,  3 Jun 2021 10:27:47 +0200
-> >>>> Alexandre Ghiti <alex@ghiti.fr> wrote:
-> >>>>    =20
-> >>>>> To simplify the kernel address conversion code, make the same defin=
-ition of
-> >>>>> kernel_mapping_pa_to_va and kernel_mapping_va_to_pa compatible for =
-both xip
-> >>>>> and !xip kernel by defining XIP_OFFSET to 0 in !xip kernel.
-> >>>>>
-> >>>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> >>>>> ---
-> >>>>>    arch/riscv/include/asm/page.h    | 14 +++-----------
-> >>>>>    arch/riscv/include/asm/pgtable.h |  2 ++
-> >>>>>    2 files changed, 5 insertions(+), 11 deletions(-)
-> >>>>>
-> >>>>> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm=
-/page.h
-> >>>>> index 6a7761c86ec2..6e004d8fda4d 100644
-> >>>>> --- a/arch/riscv/include/asm/page.h
-> >>>>> +++ b/arch/riscv/include/asm/page.h
-> >>>>> @@ -93,9 +93,7 @@ extern unsigned long va_pa_offset;
-> >>>>>    #ifdef CONFIG_64BIT
-> >>>>>    extern unsigned long va_kernel_pa_offset;
-> >>>>>    #endif
-> >>>>> -#ifdef CONFIG_XIP_KERNEL
-> >>>>>    extern unsigned long va_kernel_xip_pa_offset;
-> >>>>> -#endif
-> >>>>>    extern unsigned long pfn_base;
-> >>>>>    #define ARCH_PFN_OFFSET            (pfn_base)
-> >>>>>    #else
-> >>>>> @@ -103,6 +101,7 @@ extern unsigned long pfn_base;
-> >>>>>    #ifdef CONFIG_64BIT
-> >>>>>    #define va_kernel_pa_offset        0
-> >>>>>    #endif
-> >>>>> +#define va_kernel_xip_pa_offset 0
-> >>>>>    #define ARCH_PFN_OFFSET            (PAGE_OFFSET >> PAGE_SHIFT)
-> >>>>>    #endif /* CONFIG_MMU */
-> >>>>>
-> >>>>> @@ -110,29 +109,22 @@ extern unsigned long kernel_virt_addr;
-> >>>>>
-> >>>>>    #ifdef CONFIG_64BIT
-> >>>>>    #define linear_mapping_pa_to_va(x) ((void *)((unsigned long)(x) =
-+ va_pa_offset))
-> >>>>> -#ifdef CONFIG_XIP_KERNEL
-> >>>>>    #define kernel_mapping_pa_to_va(y) ({                           =
-                   \
-> >>>>>       unsigned long _y =3D y;                                      =
-                     \
-> >>>>>       (_y >=3D CONFIG_PHYS_RAM_BASE) ? =20
-> >>>>
-> >>>> This CONFIG_PHYS_RAM_BASE is only available for XIP, could result in=
- a
-> >>>> compiler error for !XIP? =20
-> >>>
-> >>> You're right, I have this patch in my branch and forgot to squash it
-> >>>    =20
-> >>>>
-> >>>> I'm also concerned with the unecessary overhead of kernel_mapping_pa=
-_to_va()
-> >>>> for !XIP case, there's a "if" condition branch, and extra symbol: va=
-_kernel_xip_pa_offset =20
-> >>>
-> >>> I understand your concerns even if I don't find that the overhead is
-> >>> that important here, I prefer the readability improvement. I can alwa=
-ys =20
-> >=20
-> > For readability, we still can avoid introducing va_kernel_xip_pa_offset
-> > symbol by simply define va_kernel_xip_pa_offset as 0 if XIP as you did
-> > for XIP_OFFSET
-> >=20
-> > PS: this may need a preparation patch:
-> > http://lists.infradead.org/pipermail/linux-riscv/2021-June/006802.html =
-=20
->=20
-> IIUC, that won't improve readability, just avoid to allocate=20
-> va_kernel_xip_pa_offset in !XIP kernel right?
+The commit causes the following panic when shutting down a rockpro64-v2
+board:
 
-I mean even we can improve code readability while still avoid the
-va_kernel_xip_pa_offset symbol for !XIP case. Probably it's implemented
-as you did for XIP_OFFSET:
+[..]
+[   41.684569] xhci-hcd xhci-hcd.2.auto: USB bus 1 deregistered
+[   41.686301] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000a0
+[   41.687096] Mem abort info:
+[   41.687345]   ESR = 0x96000004
+[   41.687615]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   41.688082]   SET = 0, FnV = 0
+[   41.688352]   EA = 0, S1PTW = 0
+[   41.688628] Data abort info:
+[   41.688882]   ISV = 0, ISS = 0x00000004
+[   41.689219]   CM = 0, WnR = 0
+[   41.689481] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000073b2000
+[   41.690046] [00000000000000a0] pgd=0000000000000000, p4d=0000000000000000
+[   41.690654] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[   41.691143] Modules linked in:
+[   41.691416] CPU: 5 PID: 1 Comm: shutdown Not tainted 5.13.0-rc4 #43
+[   41.691966] Hardware name: Pine64 RockPro64 v2.0 (DT)
+[   41.692409] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[   41.692937] pc : down_read_interruptible+0xec/0x200
+[   41.693373] lr : simple_recursive_removal+0x48/0x280
+[   41.693815] sp : ffff800011fab910
+[   41.694107] x29: ffff800011fab910 x28: ffff0000008fe480 x27: ffff0000008fe4d8
+[   41.694736] x26: ffff800011529a90 x25: 00000000000000a0 x24: ffff800011edd030
+[   41.695364] x23: 0000000000000080 x22: 0000000000000000 x21: ffff800011f23994
+[   41.695992] x20: ffff800011f23998 x19: ffff0000008fe480 x18: ffffffffffffffff
+[   41.696620] x17: 000c0400bb44ffff x16: 0000000000000009 x15: ffff800091faba3d
+[   41.697248] x14: 0000000000000004 x13: 0000000000000000 x12: 0000000000000020
+[   41.697875] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f x9 : 6f6c746364716e62
+[   41.698502] x8 : 7f7f7f7f7f7f7f7f x7 : fefefeff6364626d x6 : 0000000000000440
+[   41.699130] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000000000a0
+[   41.699758] x2 : 0000000000000001 x1 : 0000000000000000 x0 : 00000000000000a0
+[   41.700386] Call trace:
+[   41.700602]  down_read_interruptible+0xec/0x200
+[   41.701003]  debugfs_remove+0x5c/0x80
+[   41.701328]  dwc3_debugfs_exit+0x1c/0x6c
+[   41.701676]  dwc3_remove+0x34/0x1a0
+[   41.701988]  platform_remove+0x28/0x60
+[   41.702322]  __device_release_driver+0x188/0x22c
+[   41.702730]  device_release_driver+0x2c/0x44
+[   41.703106]  bus_remove_device+0x124/0x130
+[   41.703468]  device_del+0x16c/0x424
+[   41.703777]  platform_device_del.part.0+0x1c/0x90
+[   41.704193]  platform_device_unregister+0x28/0x44
+[   41.704608]  of_platform_device_destroy+0xe8/0x100
+[   41.705031]  device_for_each_child_reverse+0x64/0xb4
+[   41.705470]  of_platform_depopulate+0x40/0x84
+[   41.705853]  __dwc3_of_simple_teardown+0x20/0xd4
+[   41.706260]  dwc3_of_simple_shutdown+0x14/0x20
+[   41.706652]  platform_shutdown+0x28/0x40
+[   41.706998]  device_shutdown+0x158/0x330
+[   41.707344]  kernel_power_off+0x38/0x7c
+[   41.707684]  __do_sys_reboot+0x16c/0x2a0
+[   41.708029]  __arm64_sys_reboot+0x28/0x34
+[   41.708383]  invoke_syscall+0x48/0x114
+[   41.708716]  el0_svc_common.constprop.0+0x44/0xdc
+[   41.709131]  do_el0_svc+0x28/0x90
+[   41.709426]  el0_svc+0x2c/0x54
+[   41.709698]  el0_sync_handler+0xa4/0x130
+[   41.710045]  el0_sync+0x198/0x1c0
+[   41.710342] Code: c8047c62 35ffff84 17fffe5f f9800071 (c85ffc60)
+[   41.710881] ---[ end trace 406377df5178f75c ]---
+[   41.711299] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[   41.712084] Kernel Offset: disabled
+[   41.712391] CPU features: 0x10001031,20000846
+[   41.712775] Memory Limit: none
+[   41.713049] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
 
-#ifdef CONFIG_XIP_KERNEL
-extern unsigned long va_kernel_xip_pa_offset;
-#else
-#define va_kernel_xip_pa_offset 0
-#endif
+As Felipe explained: "dwc3_shutdown() is just called dwc3_remove()
+directly, then we end up calling debugfs_remove_recursive() twice."
 
-But since currently va_kernel_xip_pa_offset always exisits no matter XIP
-is enabled or not, so you may need the preparation patch to clean up, other=
-wise
-there may be compiler error.
->=20
-> >  =20
-> >>> add unlikely/likely builtin to improve things or completely remove th=
-is
-> >>> patch if others agree with you. =20
-> >>
-> >> I would also prefer readable code for long-term maintainability. Curre=
-ntly,
-> >> the nested "#ifdefs" are increasing causing developers to easily break
-> >> untested combinations.
-> >>
-> >> Regards,
-> >> Anup
-> >> =20
-> >>>
-> >>> Thanks,
-> >>>
-> >>> Alex
-> >>>    =20
-> >>>>    =20
-> >>>>>               (void *)((unsigned long)(_y) + va_kernel_pa_offset + =
-XIP_OFFSET) :      \
-> >>>>>               (void *)((unsigned long)(_y) + va_kernel_xip_pa_offse=
-t);                \
-> >>>>>       })
-> >>>>> -#else
-> >>>>> -#define kernel_mapping_pa_to_va(x)  ((void *)((unsigned long)(x) +=
- va_kernel_pa_offset))
-> >>>>> -#endif
-> >>>>>    #define __pa_to_va_nodebug(x)              linear_mapping_pa_to_=
-va(x)
-> >>>>>
-> >>>>>    #define linear_mapping_va_to_pa(x) ((unsigned long)(x) - va_pa_o=
-ffset)
-> >>>>> -#ifdef CONFIG_XIP_KERNEL
-> >>>>>    #define kernel_mapping_va_to_pa(y) ({                           =
-                   \
-> >>>>>       unsigned long _y =3D y;                                      =
-             \
-> >>>>>       (_y < kernel_virt_addr + XIP_OFFSET) ?                       =
-           \
-> >>>>>               ((unsigned long)(_y) - va_kernel_xip_pa_offset) :    =
-           \
-> >>>>>               ((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFS=
-ET);       \
-> >>>>>       }) =20
-> >>>>
-> >>>> Similar as kernel_mapping_pa_to_va(), an overhead of "if" condition =
-branch
-> >>>> for !XIP and extra va_kernel_xip_pa_offset symbol.
-> >>>>    =20
-> >>>>> -#else
-> >>>>> -#define kernel_mapping_va_to_pa(x)  ((unsigned long)(x) - va_kerne=
-l_pa_offset)
-> >>>>> -#endif
-> >>>>> +
-> >>>>>    #define __va_to_pa_nodebug(x)      ({                           =
-                   \
-> >>>>>       unsigned long _x =3D x;                                      =
-             \
-> >>>>>       (_x < kernel_virt_addr) ?                                    =
-           \
-> >>>>> @@ -141,7 +133,7 @@ extern unsigned long kernel_virt_addr;
-> >>>>>    #else
-> >>>>>    #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + v=
-a_pa_offset))
-> >>>>>    #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offse=
-t)
-> >>>>> -#endif
-> >>>>> +#endif /* CONFIG_64BIT */
-> >>>>>
-> >>>>>    #ifdef CONFIG_DEBUG_VIRTUAL
-> >>>>>    extern phys_addr_t __virt_to_phys(unsigned long x);
-> >>>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/=
-asm/pgtable.h
-> >>>>> index bde8ce3bfe7c..d98e931a31e5 100644
-> >>>>> --- a/arch/riscv/include/asm/pgtable.h
-> >>>>> +++ b/arch/riscv/include/asm/pgtable.h
-> >>>>> @@ -77,6 +77,8 @@
-> >>>>>
-> >>>>>    #ifdef CONFIG_XIP_KERNEL
-> >>>>>    #define XIP_OFFSET         SZ_8M
-> >>>>> +#else
-> >>>>> +#define XIP_OFFSET          0
-> >>>>>    #endif
-> >>>>>
-> >>>>>    #ifndef __ASSEMBLY__ =20
-> >>>>
-> >>>>
-> >>>>
-> >>>> _______________________________________________
-> >>>> linux-riscv mailing list
-> >>>> linux-riscv@lists.infradead.org
-> >>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >>>>    =20
-> >=20
-> >=20
-> >=20
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >  =20
+Reverting the commit fixes the panic.
 
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+---
+ drivers/usb/dwc3/core.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index b6e53d8212cd..21129d357f29 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1690,11 +1690,6 @@ static int dwc3_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static void dwc3_shutdown(struct platform_device *pdev)
+-{
+-	dwc3_remove(pdev);
+-}
+-
+ #ifdef CONFIG_PM
+ static int dwc3_core_init_for_resume(struct dwc3 *dwc)
+ {
+@@ -2012,7 +2007,6 @@ MODULE_DEVICE_TABLE(acpi, dwc3_acpi_match);
+ static struct platform_driver dwc3_driver = {
+ 	.probe		= dwc3_probe,
+ 	.remove		= dwc3_remove,
+-	.shutdown   = dwc3_shutdown,
+ 	.driver		= {
+ 		.name	= "dwc3",
+ 		.of_match_table	= of_match_ptr(of_dwc3_match),
+-- 
+2.31.1
 
