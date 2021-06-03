@@ -2,163 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1538E39977E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00721399784
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhFCB34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 21:29:56 -0400
-Received: from mail-dm6nam12on2101.outbound.protection.outlook.com ([40.107.243.101]:23265
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229568AbhFCB3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 21:29:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Aw2QR8SADwt5dKNUCouJF2qkfhFwkN0gdGfpdztfBrEL2EPPr0vWZR0MTR2c+sLyvgg4UgQKvMrh2FvfEFoStZWSGC2PM8VbSomAVQozuSfnju7IlIgRn7EAH9L6coPIF6k8XQJ5ayI9fttnHZRpSRmZPvJh161sl5Lks2MfLji/KNaX2yBlEJjGZAHBC9FNHXAF8K2y53TwwIwTOeE05b0mNfoUwfbMXWi7bqH3StvgS4lmuW5IEiYc1vFgqV2Q6XQZz5VKOZRiqnawCIFgv8P06eo7JP/ZUa7TkXF7MYZLfEsKE5rKA0enFvbOHtux6TOa+rMfHOsfN1YrTzZ50g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IX4nXgGk1siZU0Bf0PqqTO7mnRLXWvPrHkMU9yVwG98=;
- b=i+dfOmVph7+RFqcjUueD26FN6ykEnPXwmwyfH4lKvKBJ2a3aIXyYnB8xttVFzacLrJ8TA1+Fxw56A10IzJtMoVrle+svgBi/KVcG8QN6iAhfds/ADE3t0ZyS4Z+Y9IQPxw0Ijp0E+FyVQlXnXRDlbRpAh5nQu27K+KCf6eGjyZnDWo2mRcFmCsWq5JnD7gwk55GcbWpHP5KwUEkV0/8PMSIqV0ogVkQg7stpfwxP7Hj/gY4KVSuQAHQxE0ztL9H6dTqnz5GtUhH2IO8IG3Zpt2WFJPfl17YWxhg1kFMrduY/Flm/S4zUGgEed12x7cQt4fZdyfoSzgaFIpwFb2ut2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IX4nXgGk1siZU0Bf0PqqTO7mnRLXWvPrHkMU9yVwG98=;
- b=RMgkz87JeMZOCK4nROHjUlbdPG2OF5EYOuaLdfwTV+9LK3xQYtOe++wyiJEbab8y+KoiRa5JrYlBdVxt3nWSNQhdkMsABEIKMNN7Nvq8vt0Grkkeny33fgDv+4wIf0EwiC/anjGgGG9uPO202G2A6W2d2Om+1OZkXCQiNR2aMNY=
-Received: from MW4PR21MB2004.namprd21.prod.outlook.com (2603:10b6:303:68::24)
- by MW2PR2101MB0922.namprd21.prod.outlook.com (2603:10b6:302:10::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.3; Thu, 3 Jun
- 2021 01:28:08 +0000
-Received: from MW4PR21MB2004.namprd21.prod.outlook.com
- ([fe80::bd8a:c616:27d:77a2]) by MW4PR21MB2004.namprd21.prod.outlook.com
- ([fe80::bd8a:c616:27d:77a2%8]) with mapi id 15.20.4219.010; Thu, 3 Jun 2021
- 01:28:08 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: RE: [PATCH 03/19] drivers/hv: minimal mshv module (/dev/mshv/)
-Thread-Topic: [PATCH 03/19] drivers/hv: minimal mshv module (/dev/mshv/)
-Thread-Index: AQHXVBLqkkWi1wc3SES2ayhRv8Vib6sBXHLg
-Date:   Thu, 3 Jun 2021 01:28:08 +0000
-Message-ID: <MW4PR21MB2004EB3380731C8102DB7D16C03C9@MW4PR21MB2004.namprd21.prod.outlook.com>
-References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1622241819-21155-4-git-send-email-nunodasneves@linux.microsoft.com>
-In-Reply-To: <1622241819-21155-4-git-send-email-nunodasneves@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.microsoft.com; dkim=none (message not signed)
- header.d=none;linux.microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:602:9400:570:88be:327a:d038:fef5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fa92c9b8-4960-4cd5-74c3-08d9262ed818
-x-ms-traffictypediagnostic: MW2PR2101MB0922:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MW2PR2101MB0922F3441D8A416467BAA9E0C03C9@MW2PR2101MB0922.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lRObCj0I5ZbIAvw4yT3KpPsnRfkcLatJrQ3rIfjR7JG2nbmnUMe5R1cWEpbqfgT6MZAp13Ep1oRFa3d30odJKjfpisHRQtnLYKsa1av7DONtXnJX0Ovo3sk/DkliAueJ62/cp04swDTGlN/Y1n58Zc91M1Mp8V6YoQ2GN/stTWGCJLrmrpl3XFpsNn9sWOxdCXPrI68TzfxtDQzBMB5S9c9WfINgKq0HADwA11oqgvToPW9l3mkK7HN0dZNxgTDedGbJpeGX/Xd+D1gPSBqxlZ9W53sZTp7VzfwJbjzakRf0aNwYCpCPQVhMrdJI6+sndQaM3hQVh6Gz0VKDUqnKofa4tq7dMWsegiV2i+6tE5aEg7dFroFUHM7LsnYvFNJXjaVN0lk08mP5qQ4Z9UnU5n8lRatrFcNBwFLuGKVe9VqZcbWsXbWbI14VCb5nhOedwOrb3XWhvQC9ZPgRkg8FRJg45ley2WL2LZA9PoXfvqAyu60ScKh4taTC9JvpsPGPTvEaUG/OzAp1QJ1iyCfUOnGay/2uiPwFVvmbyZMemCr36yXdWQ3kqOt/lpWGelukHlVsNBV1PT2MVpTW6PEBMg52g7qUKnritgPiaQBKE8OyBMgizc+Fa43u7K8r9ltrQNzHLKfHbjvS77tPKWzE1A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB2004.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8990500004)(110136005)(316002)(5660300002)(54906003)(86362001)(83380400001)(82950400001)(82960400001)(10290500003)(186003)(4326008)(478600001)(52536014)(9686003)(107886003)(38100700002)(122000001)(8936002)(7696005)(33656002)(8676002)(71200400001)(66946007)(76116006)(2906002)(55016002)(66556008)(66476007)(6506007)(66446008)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?txckjnTgZfz5mEdntOG5RXwcOy2QBrQqBdXw+sTRnRyRYUy12h2mqpO93f4x?=
- =?us-ascii?Q?RmY+MtgOToB4CguLsamMBNIPxS9dzbZwwnWtGV9otpt633I7i/xhBMe5ILbF?=
- =?us-ascii?Q?tsX5Edkp+YWVzDcOHuBjYG8V4qWwCWHJsAbN7f7xJw7V8h4mhw539pIArKn4?=
- =?us-ascii?Q?ap8Dqn3yQnnj8E5DEIrE/FGORW+yDQdA5w/BubdiWD0qPd8OpJIxoo2zV28i?=
- =?us-ascii?Q?xiQG/nB2Wbglw2o5tibo0vZlWnNchEyREN7fy6Pr1otBasGO+xgXfUWXlV4G?=
- =?us-ascii?Q?2Uji+2hdR4phcJsYDAGS8uTNBTF/oqXD4QI5tg/KpN5i4rRaHkufF/okPgdf?=
- =?us-ascii?Q?33HWl31R7lKaCBPvKcqdBSuUwtfqQXgko5ZcmCJUJvIblapdtqfZuEABNKbJ?=
- =?us-ascii?Q?cRV3U5U78kly/ZGFiBNRTUmZ0jvfYf6nbdE3BlUeUl/HRto/EPokPYeK+266?=
- =?us-ascii?Q?B5PD6zN0uZ5TTMNk10gfqwPcBZ1zNSRz9nbG1jxgBc07C8kPtO5VYvQ/Uc3y?=
- =?us-ascii?Q?ZCoMGLecwHyl43t2Bc+eUijgWZ7U4Wpc6RalJdtLsBlQWhrbAzCYpZC+wrN6?=
- =?us-ascii?Q?2/1nlSt5pSa8J5YwBnkj6xA44le1Xszc9YSGQyrwNmwodAEnWX7kGJykOmPS?=
- =?us-ascii?Q?izcTCwPM1B2N3v7pNLjfu9SK9WD4BBwpyEV/pHot3WvnA0PjgIaOofAWvfQg?=
- =?us-ascii?Q?4n8jFBXsiNTw56gkKbMyMUQH7bkqZX+bVbUXZn9TxaYqsdRMggR5QzDzYh0N?=
- =?us-ascii?Q?do+Vx8R4GOS3Gc3MHUfBREB3sC+E4OFChRGTCPmdFlMvNrfSkhX2eZG6NLy7?=
- =?us-ascii?Q?pQP+3QqVJlv9A3oRqGLMK4ezXcZea1K1gi4smRWQfCThK6UCvO0k39aMcu73?=
- =?us-ascii?Q?NhB6JbEPq2ZhVZYe+jDIT5EIoWnOAO2mJsPXmpds5e1aVALrzWYs/6B+75Xd?=
- =?us-ascii?Q?9AgQ9kHRhKX16sVVclZa2cr6ByPY343tzDQpkKbW?=
-x-ms-exchange-antispam-messagedata-1: zy5eQjynOE0IidPB/kw8Pd5v9MmmE/ZqBeqd4JzxITmVk2ysu5Jq+hF3xEpN8LFQzo2bHtcqaN229FmDQI11UgKueNKQhyPj79qj+pEhnK+R1/yFSNQ0MjChITCCyvrDhn0bvLY9XP88NTccFVjj56FOV4URI8XqcWd1v0TEYoCpZzCVLV45YajFChLNhe00GjE5d1Zfz6xZB9CKI1GgUNZfox1ddZ4r+0kACeXcWS6OZB+idXuNym3yDlWYWkWsaT4ah7jOUI/UULwJhJLuV1A1pTnl/NX1X39+MKbKBM8qXD58wscgGzwiKPa2YCYtn6DGhQG+ru+xFHVIDrpCi/0XJ8k/BtMjmbEG5EdoLg6jrVGtMyabTcS3VnqH2STXfzO3y1Y3pCrJDJytBSzJ2bKn
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229775AbhFCBb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 21:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhFCBb6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 21:31:58 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A08EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 18:30:05 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id 5so4642655ioe.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 18:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1EPsUK3ZQl7+7uFNMBcrFht4n1vdJ7J24h+88KiwMpc=;
+        b=KvuAjAnHVVVRfdZwaDotfcinb83HIkWpWCsSC7O8ghX/HKcwyr0UXcmASSiSQBk/Vg
+         oeCwg1ugPS+CvdMdjYU4l/bRYp1BkktHAFO4fMI6ouiYNRxTLnkxeQo0NiL1auj/Y600
+         Ao6bH12q5NCUvhBoAEVTzIXrTBfNgY5ldnWl3sxa8xQWS4kv5xF0NfklLhpa0uZwYBS4
+         SZQwJ+Jh8auS1WP5QDXydiFKUTmq5AahoKnff7rZ0SEA925/43wNbjh/vFjV5EbPTElw
+         WFGjD1dJlO6WaPNuOMkSBR3GA2pqbCZNzi6ezhwSNueTatzHU/o69wxILx9eeB7b3skd
+         SiEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1EPsUK3ZQl7+7uFNMBcrFht4n1vdJ7J24h+88KiwMpc=;
+        b=a1BobB4uT1/5KO+4Ruj48L/aJE+igxUOXV55o4Qx4/cn3vS8M72gEOCpFmWpBaUIfN
+         6V+RS5tm1BYNW7IDJpU1PTkBFIhuaoaMfDriQWvnFQdyGapAT+XLvVQDivu83cWEK5WJ
+         d8JjDQ4k7C4vpp6uhinA7guBn/Db7vDCizZ4TZeL2sZipjQjQq3cVYHrkMrvRNd+n0dw
+         aUa+R2GF2j89m8PSyDUt5R9YezQYHSh+SLr0ltbReC1FAcOqA2lv0x9N1RLooSOsCOpQ
+         m15SDiYZhgN0p9GhHKYCPoRm1CbE8L0hXzsRHnC61rKvq+TXamhqBE6gJHKVWmWphp6E
+         wUzg==
+X-Gm-Message-State: AOAM532eaCF2kYjPpVrZuQ2RyZ0+uKHFfwlg01lNSvvhTzH1VABS8n0n
+        9J4KvxHQrTKnPWQW8lXX8BdQdB8gmxIfdS/K7Do=
+X-Google-Smtp-Source: ABdhPJyPN8ijrJIbeAIUbnecL1Bof/mESSLz02vwmgD/9X5xR3EoAgO02mQHs/h0SaRAlM5yfugUvOXcVlWv5cCiV5U=
+X-Received: by 2002:a05:6602:2bef:: with SMTP id d15mr27361468ioy.13.1622683804926;
+ Wed, 02 Jun 2021 18:30:04 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB2004.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa92c9b8-4960-4cd5-74c3-08d9262ed818
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 01:28:08.3337
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mMtVC0ESQ++Er74NaXWZ2ug0M8E9UHgtj+kqB1ADT3CNgqYXBf2pyToXGyomBdKZmvTL2O1wRsFg29RbzzjXEpoNYbISvNNsoNGmUyll2Yk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0922
+References: <20210602122555.10082-1-laoar.shao@gmail.com> <CAKfTPtCS6bVGK1EFUHygj+uZL5N2kEzyyEeoyT4Cuc7r-65yVw@mail.gmail.com>
+ <CALOAHbA=bSVsmJMG_q5vkkk9U+CeoULgdSEgf95RxfzPh9TC2A@mail.gmail.com> <CAKfTPtDAW_Ttg_hM+GoH87nriATck4yHKE-y7HZbFd9ujLp3YQ@mail.gmail.com>
+In-Reply-To: <CAKfTPtDAW_Ttg_hM+GoH87nriATck4yHKE-y7HZbFd9ujLp3YQ@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 3 Jun 2021 09:29:28 +0800
+Message-ID: <CALOAHbDbROJyEi=haWT5S0Veae1EOV=4mEX7SkvZyudfFaxaGQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched: do active load balance on the new idle cpu
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-> index 66c794d92391..d618b1fab2bb 100644
-> --- a/drivers/hv/Kconfig
-> +++ b/drivers/hv/Kconfig
-> @@ -27,4 +27,22 @@ config HYPERV_BALLOON
->  	help
->  	  Select this option to enable Hyper-V Balloon driver.
->=20
-> +config HYPERV_ROOT_API
+On Wed, Jun 2, 2021 at 9:26 PM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Wed, 2 Jun 2021 at 14:58, Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> > On Wed, Jun 2, 2021 at 8:37 PM Vincent Guittot
+> > <vincent.guittot@linaro.org> wrote:
+> > >
+> > > On Wed, 2 Jun 2021 at 14:26, Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > >
+> > > > We monitored our latency-sensitive RT tasks are randomly preempted by the
+> > > > kthreads migration/n, which means to migrate tasks on CPUn to other new
+> > > > idle CPU. The logical as follows,
+> > > >
+> > > >   new idle CPU                          CPU n
+> > > >   (no task to run)                      (busy running)
+> > > >   wakeup migration/n                    (busy running)
+> > > >   (idle)                                migraion/n preempts current task
+> > > >   run the migrated task                 (busy running)
+> > >
+> > > migration thread is only used when we want to migrate the currently
+> > > running task of the source cpu.
+> >
+> > Could you pls explain it in detail ?
+>
+> CPU A
+> become idle
+> call newidle_balance()
+>   ...
+>   load_balance()
+>     ... CPU B is the busiest cpu
+>     env.src_cpu = CPU B;
+>
+>     if (busiest->nr_running > 1) {
+>       ...
+>       There is more than 1 runnable threads on CPU B
+>       Try to migrate cfs runnable but not running tasks from CPU B to CPU A
+>       in your case, the migration of cfs task should happen here
+> because the RT task is running
+>
+>       Handle case of pinned tasks
+>
+>
+>     if (!ld_moved)
+>       no runnable but not running task was moved so we might want to
+> migrate the current running task
+>
+>       need_active_balance() should not return true in your case
+> because tasks should have been migrated during the step above
+>
+>       wake up stop/migration thread to preempt the current running
+> thread so we can migrate it
+>
 
-A more suitable place to put this would be under the "VIRTUALIZATION"
-config menu option, where we have the "KVM" option today.
+Thanks for the explanation.
 
-> +	tristate "Microsoft Hypervisor root partition interfaces: /dev/mshv"
-> +	depends on HYPERV
-> +	help
-> +	  Provides access to interfaces for managing guest virtual machines
-> +	  running under the Microsoft Hypervisor.
+>
+> so you have has a UC which doesn't migrate task in the 1st step when
+> trying to pull runnable and not running tasks but it makes
+> need_active_balance() return true. Woudl be good to know which
+> condition makes  need_active_balance() to return true
+>
 
-These are technically not "root" interfaces. As you say it too, these are
-interfaces to manage guest VMs. Calling it "HYPERV_ROOT_API" would
-be confusing. Something along the lines of "HYPERV_VMM_API" or
-"HYPERV_VM_API" seems more appropriate to me.
+I will analyze why need_active_balance() returns true.
 
-> new file mode 100644
-> index 000000000000..c68cc84fb983
-> --- /dev/null
-> +++ b/drivers/hv/mshv_main.c
-Why not in /virt/hv or something under /virt?
+>
+> > But I find the migration/n will pick a task from src_rq->cfs_tasks
+> > rather than the current running task, see also detach_one_task():
+>
+> The current running task is migration/n one at that time
+>
+> >
+> > detach_one_task
+> >     list_for_each_entry_reverse(p, &env->src_rq->cfs_tasks, se.group_node) {
+> >         detach_task(p, env);
+> >    }
+> >
+> >
+> > > This doesn't seem to be your case as it's a RT thread that is
+> > > currently running so the migration thread should not be woken up as we
+> > > don't need it to migrate a runnable but not running cfs thread from
+> > > coin to new idle CPU
+> > >
+> > > Do you have more details about the UC. Could it be a race between new
+> > > idle load balance starting migration thread to pull the cfs running
+> > > thread and the RT thread waking up and preempting cfs task before
+> > > migration threads which then preempt your RT threads
+> > >
+> > >
+> >
+> > No, it is not a race. Below is the detail from sched:sched_swith tracepoint:
+> >
+> > sensing_node-8880 [007] d... 4300.544185: sched_switch:
+> > prev_comm=sensing_node prev_pid=8880 prev_prio=98 prev_state=S ==>
+> > next_comm=sensing_node next_pid=8897 next_prio=98
+> > sensing_node-8897 [007] d... 4300.544214: sched_switch:
+> > prev_comm=sensing_node prev_pid=8897 prev_prio=98 prev_state=S ==>
+> > next_comm=sensing_node next_pid=8880 next_prio=98
+> > sensing_node-8880 [007] d... 4300.544506: sched_switch:
+> > prev_comm=sensing_node prev_pid=8880 prev_prio=98 prev_state=R ==>
+> > next_comm=migration/7 next_pid=47 next_prio=0
+> > migration/7-47 [007] d... 4300.544509: sched_switch:
+> > prev_comm=migration/7 prev_pid=47 prev_prio=0 prev_state=S ==>
+> > next_comm=sensing_node next_pid=8880 next_prio=98
+> >
+> > sensing_node is a RR task and it was preempted by migration/7.
+> >
+> > >
+> > > >
+> > > > As the new idle CPU is going to be idle, we'd better move the migration
+> > > > work on it instead of burdening the busy CPU. After this change, the
+> > > > logic is,
+> > > >  new idle CPU                           CPU n
+> > > >  (no task to run)                       (busy running)
+> > > >  migrate task from CPU n                (busy running)
+> > > >  run the migrated task                  (busy running)
+> > > >
+> > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > > ---
+> > > >  kernel/sched/fair.c | 17 +++++------------
+> > > >  1 file changed, 5 insertions(+), 12 deletions(-)
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index 3248e24a90b0..3e8b98b982ff 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -9807,13 +9807,11 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+> > > >                                 busiest->push_cpu = this_cpu;
+> > > >                                 active_balance = 1;
+> > > >                         }
+> > > > -                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
+> > > >
+> > > > -                       if (active_balance) {
+> > > > -                               stop_one_cpu_nowait(cpu_of(busiest),
+> > > > -                                       active_load_balance_cpu_stop, busiest,
+> > > > -                                       &busiest->active_balance_work);
+> > > > -                       }
+> > > > +                       if (active_balance)
+> > > > +                               active_load_balance_cpu_stop(busiest);
+> > >
+> > > this doesn't make sense because we reach this point if we want to
+> > > migrate the current running task of the busiest cpu and in order to do
+> > > this we need the preempt this current running thread
+> > >
+> > > > +
+> > > > +                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
+> > > >                 }
+> > > >         } else {
+> > > >                 sd->nr_balance_failed = 0;
+> > > > @@ -9923,7 +9921,6 @@ static int active_load_balance_cpu_stop(void *data)
+> > > >         struct task_struct *p = NULL;
+> > > >         struct rq_flags rf;
+> > > >
+> > > > -       rq_lock_irq(busiest_rq, &rf);
+> > > >         /*
+> > > >          * Between queueing the stop-work and running it is a hole in which
+> > > >          * CPUs can become inactive. We should not move tasks from or to
+> > > > @@ -9933,8 +9930,7 @@ static int active_load_balance_cpu_stop(void *data)
+> > > >                 goto out_unlock;
+> > > >
+> > > >         /* Make sure the requested CPU hasn't gone down in the meantime: */
+> > > > -       if (unlikely(busiest_cpu != smp_processor_id() ||
+> > > > -                    !busiest_rq->active_balance))
+> > > > +       if (unlikely(!busiest_rq->active_balance))
+> > > >                 goto out_unlock;
+> > > >
+> > > >         /* Is there any task to move? */
+> > > > @@ -9981,13 +9977,10 @@ static int active_load_balance_cpu_stop(void *data)
+> > > >         rcu_read_unlock();
+> > > >  out_unlock:
+> > > >         busiest_rq->active_balance = 0;
+> > > > -       rq_unlock(busiest_rq, &rf);
+> > > >
+> > > >         if (p)
+> > > >                 attach_one_task(target_rq, p);
+> > > >
+> > > > -       local_irq_enable();
+> > > > -
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > --
+> > > > 2.17.1
+> > > >
+> >
+> >
+> >
+> > --
+> > Thanks
+> > Yafang
 
-> +static int mshv_dev_open(struct inode *inode, struct file *filp);
-> +static int mshv_dev_release(struct inode *inode, struct file *filp);
-> +static long mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsign=
-ed long arg);
 
-Do we need to have both 'mshv' & 'dev' in the name? How about just
-calling these 'mshv_xyz'? Like you have for init/exit.
 
-> +
-> +static struct miscdevice mshv_dev =3D {
-> +	.minor =3D MISC_DYNAMIC_MINOR,
-> +	.name =3D "mshv",
-> +	.fops =3D &mshv_dev_fops,
-> +	.mode =3D 600,
-> +};
-For the default mode, I think we want to keep it the same as that for 'kvm'=
-.
-
-- Sunil
-
+-- 
+Thanks
+Yafang
