@@ -2,189 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E408D39A927
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8393D39A92E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhFCR3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:29:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:47042 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhFCR3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:29:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8FD611B3;
-        Thu,  3 Jun 2021 10:27:32 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B6A33F73D;
-        Thu,  3 Jun 2021 10:27:31 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 18:27:22 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     longli@linuxonhyperv.com
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Long Li <longli@microsoft.com>
-Subject: Re: [Patch v3 2/2] PCI: hv: Remove unused refcount and supporting
- functions for handling bus device removal
-Message-ID: <20210603172713.GA20531@lpieralisi>
-References: <1620806809-31055-1-git-send-email-longli@linuxonhyperv.com>
+        id S230413AbhFCRa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhFCRa0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:30:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C18C06174A;
+        Thu,  3 Jun 2021 10:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=C2x93GCoZiin4wmQCRttzlu4GmKci1Z97/29V5OUIBQ=; b=GRDRbyMv6qCSE0sh84jmHsdNkF
+        Ca7KqDDXhE6PMeMjq9YlXaVzupQWhipW2IItm4ocsfSpw+d/efAwGK8FtYyzr6e9U2OdG0QNXnu1+
+        4QMVh94o4r91Nb9pKuH/aEiHNN/RaaYLJk1EDj7snekcEw+wEoPAM7KtleMUX7IvQ0ursPrzg7ZF/
+        gXXzGmAwjg3XV30CvwWJ354CMua5g6UeT0oN8FI3A0frhhHpPWm8cujn3JtHZoyDZpU/SxKz+S99B
+        vDFcvTD2d81achEPArKXYaS7aFfuHurRAPSgV0E+UgPbkBvDEdjoVzzfxyhE5YcHK539uoPArzXor
+        gytVNA5Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lor85-00COf2-Ei; Thu, 03 Jun 2021 17:27:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63300300269;
+        Thu,  3 Jun 2021 19:27:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 400C72BF86F79; Thu,  3 Jun 2021 19:27:35 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 19:27:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
+Message-ID: <YLkRB3qxjrXB99He@hirez.programming.kicks-ass.net>
+References: <20210603164315.682994-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620806809-31055-1-git-send-email-longli@linuxonhyperv.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210603164315.682994-1-senozhatsky@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 01:06:49AM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
+On Fri, Jun 04, 2021 at 01:43:15AM +0900, Sergey Senozhatsky wrote:
+> Add KVM suspend/hibernate PM-notifier which lets architectures
+> to implement arch-specific VM suspend code. For instance, on x86
+> this sets PVCLOCK_GUEST_STOPPED on all the VCPUs.
 > 
-> With the new method of flushing/stopping the workqueue before doing bus
-> removal, the old mechanism of using refcount and wait for completion
-> is no longer needed. Remove those dead code.
+> Our case is that user puts the host system into sleep multiple
+> times a day (e.g. closes the laptop's lid) so we need a reliable
+> way to suspend VMs properly.
 > 
-> Signed-off-by: Long Li <longli@microsoft.com>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 > ---
->  drivers/pci/controller/pci-hyperv.c | 34 +++--------------------------
->  1 file changed, 3 insertions(+), 31 deletions(-)
-
-I'd be grateful if in the future you can send threaded patch series so
-that tools like b4 can detect the thread and create the mbox
-accordingly.
-
-No need to resend this one (maybe I need to trim patch(2) Subject).
-
-Thanks,
-Lorenzo
-
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index c6122a1b0c46..9499ae3275fe 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -452,7 +452,6 @@ struct hv_pcibus_device {
->  	/* Protocol version negotiated with the host */
->  	enum pci_protocol_version_t protocol_version;
->  	enum hv_pcibus_state state;
-> -	refcount_t remove_lock;
->  	struct hv_device *hdev;
->  	resource_size_t low_mmio_space;
->  	resource_size_t high_mmio_space;
-> @@ -460,7 +459,6 @@ struct hv_pcibus_device {
->  	struct resource *low_mmio_res;
->  	struct resource *high_mmio_res;
->  	struct completion *survey_event;
-> -	struct completion remove_event;
->  	struct pci_bus *pci_bus;
->  	spinlock_t config_lock;	/* Avoid two threads writing index page */
->  	spinlock_t device_list_lock;	/* Protect lists below */
-> @@ -593,9 +591,6 @@ static void put_pcichild(struct hv_pci_dev *hpdev)
->  		kfree(hpdev);
->  }
->  
-> -static void get_hvpcibus(struct hv_pcibus_device *hv_pcibus);
-> -static void put_hvpcibus(struct hv_pcibus_device *hv_pcibus);
-> -
->  /*
->   * There is no good way to get notified from vmbus_onoffer_rescind(),
->   * so let's use polling here, since this is not a hot path.
-> @@ -2067,10 +2062,8 @@ static void pci_devices_present_work(struct work_struct *work)
->  	}
->  	spin_unlock_irqrestore(&hbus->device_list_lock, flags);
->  
-> -	if (!dr) {
-> -		put_hvpcibus(hbus);
-> +	if (!dr)
->  		return;
-> -	}
->  
->  	/* First, mark all existing children as reported missing. */
->  	spin_lock_irqsave(&hbus->device_list_lock, flags);
-> @@ -2153,7 +2146,6 @@ static void pci_devices_present_work(struct work_struct *work)
->  		break;
->  	}
->  
-> -	put_hvpcibus(hbus);
->  	kfree(dr);
->  }
->  
-> @@ -2194,12 +2186,10 @@ static int hv_pci_start_relations_work(struct hv_pcibus_device *hbus,
->  	list_add_tail(&dr->list_entry, &hbus->dr_list);
->  	spin_unlock_irqrestore(&hbus->device_list_lock, flags);
->  
-> -	if (pending_dr) {
-> +	if (pending_dr)
->  		kfree(dr_wrk);
-> -	} else {
-> -		get_hvpcibus(hbus);
-> +	else
->  		queue_work(hbus->wq, &dr_wrk->wrk);
-> -	}
->  
->  	return 0;
->  }
-> @@ -2342,8 +2332,6 @@ static void hv_eject_device_work(struct work_struct *work)
->  	put_pcichild(hpdev);
->  	put_pcichild(hpdev);
->  	/* hpdev has been freed. Do not use it any more. */
-> -
-> -	put_hvpcibus(hbus);
->  }
->  
->  /**
-> @@ -2367,7 +2355,6 @@ static void hv_pci_eject_device(struct hv_pci_dev *hpdev)
->  	hpdev->state = hv_pcichild_ejecting;
->  	get_pcichild(hpdev);
->  	INIT_WORK(&hpdev->wrk, hv_eject_device_work);
-> -	get_hvpcibus(hbus);
->  	queue_work(hbus->wq, &hpdev->wrk);
->  }
->  
-> @@ -2967,17 +2954,6 @@ static int hv_send_resources_released(struct hv_device *hdev)
->  	return 0;
->  }
->  
-> -static void get_hvpcibus(struct hv_pcibus_device *hbus)
-> -{
-> -	refcount_inc(&hbus->remove_lock);
-> -}
-> -
-> -static void put_hvpcibus(struct hv_pcibus_device *hbus)
-> -{
-> -	if (refcount_dec_and_test(&hbus->remove_lock))
-> -		complete(&hbus->remove_event);
-> -}
-> -
->  #define HVPCI_DOM_MAP_SIZE (64 * 1024)
->  static DECLARE_BITMAP(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
->  
-> @@ -3097,14 +3073,12 @@ static int hv_pci_probe(struct hv_device *hdev,
->  	hbus->sysdata.domain = dom;
->  
->  	hbus->hdev = hdev;
-> -	refcount_set(&hbus->remove_lock, 1);
->  	INIT_LIST_HEAD(&hbus->children);
->  	INIT_LIST_HEAD(&hbus->dr_list);
->  	INIT_LIST_HEAD(&hbus->resources_for_children);
->  	spin_lock_init(&hbus->config_lock);
->  	spin_lock_init(&hbus->device_list_lock);
->  	spin_lock_init(&hbus->retarget_msi_interrupt_lock);
-> -	init_completion(&hbus->remove_event);
->  	hbus->wq = alloc_ordered_workqueue("hv_pci_%x", 0,
->  					   hbus->sysdata.domain);
->  	if (!hbus->wq) {
-> @@ -3341,8 +3315,6 @@ static int hv_pci_remove(struct hv_device *hdev)
->  	hv_pci_free_bridge_windows(hbus);
->  	irq_domain_remove(hbus->irq_domain);
->  	irq_domain_free_fwnode(hbus->sysdata.fwnode);
-> -	put_hvpcibus(hbus);
-> -	wait_for_completion(&hbus->remove_event);
->  
->  	hv_put_dom_num(hbus->sysdata.domain);
->  
-> -- 
-> 2.27.0
+>  arch/arm64/kvm/arm.c       |  4 ++++
+>  arch/mips/kvm/mips.c       |  4 ++++
+>  arch/powerpc/kvm/powerpc.c |  4 ++++
+>  arch/s390/kvm/kvm-s390.c   |  4 ++++
+>  arch/x86/kvm/x86.c         | 21 ++++++++++++++++++++
+>  include/linux/kvm_host.h   |  8 ++++++++
+>  virt/kvm/kvm_main.c        | 40 ++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 85 insertions(+)
 > 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 1126eae27400..547dbe44d039 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1311,6 +1311,10 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
+>  	}
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+> index 4d4af97dcc88..d4408acd2be6 100644
+> --- a/arch/mips/kvm/mips.c
+> +++ b/arch/mips/kvm/mips.c
+> @@ -980,6 +980,10 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+>  	kvm_flush_remote_tlbs(kvm);
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>  {
+>  	long r;
+> diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+> index a2a68a958fa0..96e8a7b6fcf0 100644
+> --- a/arch/powerpc/kvm/powerpc.c
+> +++ b/arch/powerpc/kvm/powerpc.c
+> @@ -2334,6 +2334,10 @@ static int kvmppc_get_cpu_char(struct kvm_ppc_cpu_char *cp)
+>  }
+>  #endif
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>                         unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index 1296fc10f80c..c5f86fc1e497 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -2367,6 +2367,10 @@ static int kvm_s390_handle_pv(struct kvm *kvm, struct kvm_pv_cmd *cmd)
+>  	return r;
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+
+What looks like you wants a __weak function.
