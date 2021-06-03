@@ -2,176 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93269399819
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652DF39981B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbhFCCkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:40:40 -0400
-Received: from mail-pj1-f52.google.com ([209.85.216.52]:33560 "EHLO
-        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhFCCkj (ORCPT
+        id S229695AbhFCCnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:43:42 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:19372 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFCCnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:40:39 -0400
-Received: by mail-pj1-f52.google.com with SMTP id k22-20020a17090aef16b0290163512accedso2613666pjz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xbfOBa4V4NfcCRLvjCYR6j0+uuKti8SF2SJo2woyW5k=;
-        b=ceDw3cpkamXUfVJ1HR6HD28oQSpaJbLTLqOnymfgzJlu+4IctogqB3VOppxeVEot8q
-         lNi6Yf2RnJCsjJUN/wAalfOoObiZs4C4hYyjftsLmyEqBEQYVzboF2j/ysZJztDg1AtL
-         GAV681ZM8z3q01aXojfylxQzLp2KI8R+qMdsOkVI0J1p8FqQ0M2+gDuQhF6c+lLVOZ1X
-         3Okh3+q5sVG00D1BrTUtuT/2RKyKRxp7kvMNQ0Abh4F5V06hWnJMvgOAoMeZV1LDj94k
-         QXc2oR0IuZ6JM2vozHFPGw6bT27yMfp+n+sVyL/dI0/An/QVTA6mncucRyw8UBxUgzjh
-         b8mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xbfOBa4V4NfcCRLvjCYR6j0+uuKti8SF2SJo2woyW5k=;
-        b=loZ1hLprH7f9yuGvKan6b86bd/nt2P63kdBYrp7k5cX0xzCDW6AHt6lBNcGQi9LVqg
-         v52nhAdSp1W0PMq9XZ3emr7G2mr5T3fPo5iNhJ2R9ZWTW70fr2fGM+vP6DHNOoAcfbr1
-         Vt26xWXvZOUag+DE1Y231GzFXiy5CeNoiVj9ZdrZQ5JKS/mhZhZk5zfvSh60oU3TZ2RQ
-         7jrQmxVE2YDj4N9zxcJLQ4S4YGnyy6ccZ8K0a/VO+ezUZ1hZcRIjruTP1kfP9Zt3gOW/
-         CXLGeS0JIJPJzAj0fnxjySzwXDKPDzDgM2eppAZ4fL0NQo5FTnEczlNzBcAnEtCyH/sX
-         N7Uw==
-X-Gm-Message-State: AOAM533GkAFGQlwtnUB/uZnYwJAyYDCxM2N9GKUVvOs+6LZZYNltC5Kd
-        aayb+smRZAzH+r+p+l/o9bjUQg==
-X-Google-Smtp-Source: ABdhPJwNjVsy9G2E0nDNUrLhwAEvQ/PJG4VNWAnP8MGjn/84SwkXjIInnYsKhYwPONr1jI8ldsblQg==
-X-Received: by 2002:a17:90b:3584:: with SMTP id mm4mr8704483pjb.171.1622687861987;
-        Wed, 02 Jun 2021 19:37:41 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id r5sm633056pjd.2.2021.06.02.19.37.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 19:37:41 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 08:07:39 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] PM: domains: Drop/restore performance state votes
- for devices at runtime PM
-Message-ID: <20210603023739.mds4eir4i6olaiwz@vireshk-i7>
-References: <20210602101215.78094-1-ulf.hansson@linaro.org>
- <20210602101215.78094-3-ulf.hansson@linaro.org>
- <20210603023441.bs47nwtmskrdz2el@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603023441.bs47nwtmskrdz2el@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+        Wed, 2 Jun 2021 22:43:41 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id AD808AC034F;
+        Thu,  3 Jun 2021 10:41:54 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        John Clements <john.clements@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>, Huang Rui <ray.huang@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Wenhui Sheng <Wenhui.Sheng@amd.com>,
+        Liu ChengZhe <ChengZhe.Liu@amd.com>,
+        Victor Zhao <Victor.Zhao@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        Oak Zeng <Oak.Zeng@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] drm: amdgpu: Remove duplicate include of drm_drv.h
+Date:   Thu,  3 Jun 2021 10:41:45 +0800
+Message-Id: <1622688107-20340-1-git-send-email-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGR9OSFYdHUtDSEtPTElDSU9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hOSFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ME06Ejo4Ez8UHRUvGDBITTQ3
+        L1EwFBJVSlVKTUlJTUNDSkpOTE5JVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTktVSkxNVUlJQllXWQgBWUFJTEtPNwY+
+X-HM-Tid: 0a79cfbfaac1b039kuuuad808ac034f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-06-21, 08:04, Viresh Kumar wrote:
-> On 02-06-21, 12:12, Ulf Hansson wrote:
-> > A subsystem/driver that need to manage OPPs for its device, should
-> > typically drop its vote for the OPP when the device becomes runtime
-> > suspended. In this way, the corresponding aggregation of the performance
-> > state votes that is managed in genpd for the attached PM domain, may find
-> > that the aggregated vote can be decreased. Hence, it may allow genpd to set
-> > the lower performance state for the PM domain, thus avoiding to waste
-> > energy.
-> > 
-> > To accomplish this, typically a subsystem/driver would need to call
-> > dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
-> > callback, to drop the vote for the OPP. Accordingly, it needs another call
-> > to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
-> > ->runtime_resume() callback.
-> > 
-> > To avoid boilerplate code in subsystems/driver to deal with these things,
-> > let's instead manage this internally in genpd.
-> > 
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >  drivers/base/power/domain.c | 21 +++++++++++++++++++--
-> >  include/linux/pm_domain.h   |  1 +
-> >  2 files changed, 20 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > index a3b6e751f366..81b9d4652b90 100644
-> > --- a/drivers/base/power/domain.c
-> > +++ b/drivers/base/power/domain.c
-> > @@ -397,6 +397,18 @@ static int genpd_set_performance_state(struct device *dev, unsigned int state)
-> >  	return ret;
-> >  }
-> >  
-> > +static int genpd_drop_performance_state(struct device *dev)
-> > +{
-> > +	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
-> > +	unsigned int prev_state;
-> > +
-> > +	prev_state = gpd_data->performance_state;
-> > +	if (prev_state && !genpd_set_performance_state(dev, 0))
-> 
-> What about adding this prev_state check in
-> genpd_set_performance_state() itself ? We already have one for the
-> genpd in _genpd_set_performance_state(), why not one for the device ?
-> 
-> > +		return prev_state;
-> > +
-> > +	return 0;
-> 
-> Hmm, we will return 0 in case genpd_set_performance_state() fails,
-> which will make us set the state to 0 again on resume. Maybe add a
-> comment for this somewhere ?
+drm_drv.h is included at line 28, remove the duplicate here.
 
-No, we won't as you check for rpm_saved_pstate there, so the device
-will stay disabled.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Again adding the check into genpd_set_performance_state() may help
-reducing similar checks elsewhere.
-
-> > +}
-> > +
-> >  /**
-> >   * dev_pm_genpd_set_performance_state- Set performance state of device's power
-> >   * domain.
-> > @@ -839,7 +851,8 @@ static int genpd_runtime_suspend(struct device *dev)
-> >  {
-> >  	struct generic_pm_domain *genpd;
-> >  	bool (*suspend_ok)(struct device *__dev);
-> > -	struct gpd_timing_data *td = &dev_gpd_data(dev)->td;
-> > +	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
-> > +	struct gpd_timing_data *td = &gpd_data->td;
-> >  	bool runtime_pm = pm_runtime_enabled(dev);
-> >  	ktime_t time_start;
-> >  	s64 elapsed_ns;
-> > @@ -896,6 +909,7 @@ static int genpd_runtime_suspend(struct device *dev)
-> >  		return 0;
-> >  
-> >  	genpd_lock(genpd);
-> > +	gpd_data->rpm_saved_pstate = genpd_drop_performance_state(dev);
-> >  	genpd_power_off(genpd, true, 0);
-> >  	genpd_unlock(genpd);
-> >  
-> > @@ -913,7 +927,8 @@ static int genpd_runtime_suspend(struct device *dev)
-> >  static int genpd_runtime_resume(struct device *dev)
-> >  {
-> >  	struct generic_pm_domain *genpd;
-> > -	struct gpd_timing_data *td = &dev_gpd_data(dev)->td;
-> > +	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
-> > +	struct gpd_timing_data *td = &gpd_data->td;
-> >  	bool runtime_pm = pm_runtime_enabled(dev);
-> >  	ktime_t time_start;
-> >  	s64 elapsed_ns;
-> > @@ -937,6 +952,8 @@ static int genpd_runtime_resume(struct device *dev)
-> >  
-> >  	genpd_lock(genpd);
-> >  	ret = genpd_power_on(genpd, 0);
-> > +	if (!ret && gpd_data->rpm_saved_pstate)
-> > +		genpd_set_performance_state(dev, gpd_data->rpm_saved_pstate);
-> >  	genpd_unlock(genpd);
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+index 3ff76cb..131cff0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+@@ -41,8 +41,6 @@
+ #include "amdgpu_securedisplay.h"
+ #include "amdgpu_atomfirmware.h"
+ 
+-#include <drm/drm_drv.h>
+-
+ static int psp_sysfs_init(struct amdgpu_device *adev);
+ static void psp_sysfs_fini(struct amdgpu_device *adev);
+ 
 -- 
-viresh
+2.7.4
+
