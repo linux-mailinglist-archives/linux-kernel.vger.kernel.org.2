@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1A5399E1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA835399E23
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhFCJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:52:46 -0400
-Received: from mga05.intel.com ([192.55.52.43]:7576 "EHLO mga05.intel.com"
+        id S229916AbhFCJxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:53:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45515 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhFCJwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:52:45 -0400
-IronPort-SDR: jcHeadFD4jmcVkjxTAhoJF/rRfGGL7VBd8pz9xBQlOCeH8U0wxqV/re5Oz9Pxyas5gzelFfzWe
- G5C/tXGBg4Uw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="289637732"
-X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
-   d="scan'208";a="289637732"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 02:50:48 -0700
-IronPort-SDR: egrW79uVlQVySoOBpQjcExImZeWGgQciy1ymwqfJNC0je8AQlvRDGBB5mWJGsR5mM1hxLbqETO
- bhmZXxDnoNQA==
-X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
-   d="scan'208";a="467905605"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 02:50:44 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lojzt-00GuV7-Hf; Thu, 03 Jun 2021 12:50:41 +0300
-Date:   Thu, 3 Jun 2021 12:50:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        jonathan.cameron@huawei.com, song.bao.hua@hisilicon.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v3 1/3] lib: bitmap: introduce bitmap_print_to_buf
-Message-ID: <YLil8ZOpQSsAB5i0@smile.fi.intel.com>
-References: <1622712162-7028-1-git-send-email-tiantao6@hisilicon.com>
- <1622712162-7028-2-git-send-email-tiantao6@hisilicon.com>
+        id S229620AbhFCJxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:53:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622713887; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=poSSyi8cMM0a7SyTqY0avbbxnfzwDuJlj6c4rORP8Qo=; b=srvQ+5Q9mS65CIzGqViOKJQKgItYLfMhEFeTGogwJtKB9hoIQmVci5goqZW2KoFyZgYM3o/7
+ YLKxbB76I56DQreMa5NdHL3NcDQIgbNxppmy9JhHv8nvRjb9KgUOx13XYBTxel+gwiYQacel
+ 0fBgVduOMvlzhvsb8EjvwnnaQaM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60b8a6092eaeb98b5e46cb6a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 09:51:05
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F1DCFC433D3; Thu,  3 Jun 2021 09:51:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C3EFC433D3;
+        Thu,  3 Jun 2021 09:51:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2C3EFC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     chris.chiu@canonical.com
+Cc:     Jes.Sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] rtl8xxxu: unset the hw capability HAS_RATE_CONTROL
+References: <20210531090254.86830-1-chris.chiu@canonical.com>
+        <20210531090254.86830-2-chris.chiu@canonical.com>
+Date:   Thu, 03 Jun 2021 12:51:00 +0300
+In-Reply-To: <20210531090254.86830-2-chris.chiu@canonical.com> (chris chiu's
+        message of "Mon, 31 May 2021 17:02:53 +0800")
+Message-ID: <878s3r1dkr.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622712162-7028-2-git-send-email-tiantao6@hisilicon.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 05:22:40PM +0800, Tian Tao wrote:
-> New API bitmap_print_to_buf() with bin_attribute to avoid maskp
-> exceeding PAGE_SIZE. bitmap_print_to_pagebuf() is a special case
-> of bitmap_print_to_buf(), so in bitmap_print_to_pagebuf() call
-> bitmap_print_to_buf().
+chris.chiu@canonical.com writes:
 
-...
+> From: Chris Chiu <chris.chiu@canonical.com>
+>
+> The HAS_RATE_CONTROL hw capability needs to be unset for the rate
+> control of mac80211 to work. Since the ieee80211_start_tx_ba_session
+> is started by the method .get_rate of rate_control_ops. We need to
+> unset it so the ampdu can be handled by mac80211.
 
->  /**
-> + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
-> + * @list: indicates whether the bitmap must be list
-> + * @buf: the kernel space buffer to read to
-> + * @maskp: pointer to bitmap to convert
-> + * @nmaskbits: size of bitmap, in bits
-> + * @off: offset in data buffer below
-> + * @count: the maximum number of bytes to print
-> + *
-> + * The role of bitmap_print_to_buf() and bitmap_print_to_pagebuf() is
-> + * the same, the difference is that buf of bitmap_print_to_buf()
-> + * can be more than one pagesize.
-> + */
-> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> +			int nmaskbits, loff_t off, size_t count)
-> +{
-> +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> +	ssize_t size;
-> +	void *data;
-> +
-> +	if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
-> +		return scnprintf(buf, count, fmt, nmaskbits, maskp);
-> +
-> +	data = kasprintf(GFP_KERNEL, fmt, nmaskbits, maskp);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
-
-Are you sure you have put parameters in the correct order?
-
-> +	kfree(data);
-> +
-> +	return size;
-> +}
-
-I guess you have to provide the test case(s).
+The commit log is not really describing in detail _why_ you are doing
+this. Switching the rate control from hardware/firmware to mac80211 is a
+major change and I want to see a good explanation why this is the right
+thing to do and does not cause any regressions.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
