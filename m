@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D49139A12D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFC239A12F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFCMhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:37:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7093 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFCMhw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:37:52 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fwlg32jSmzYqSD;
-        Thu,  3 Jun 2021 20:33:19 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 20:36:04 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 20:36:02 +0800
-Subject: Re: [PATCH v5 1/6] KVM: arm64: Introduce KVM_PGTABLE_S2_GUEST stage-2
- flag
-To:     Quentin Perret <qperret@google.com>
-CC:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Alexandru Elisei" <alexandru.elisei@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
-References: <20210415115032.35760-1-wangyanan55@huawei.com>
- <20210415115032.35760-2-wangyanan55@huawei.com> <YLdg3K6m0P+cis2P@google.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <2d5ed3b0-5e8f-572e-cee9-84d6c9d2410c@huawei.com>
-Date:   Thu, 3 Jun 2021 20:36:02 +0800
+        id S230247AbhFCMin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:38:43 -0400
+Received: from mga06.intel.com ([134.134.136.31]:55086 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229966AbhFCMim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 08:38:42 -0400
+IronPort-SDR: hSf7E9petHXXdovaPsOnzPGHbntXlZz795wFr9gkckrkAC0hWw98hRA1cy7lLzzBuJd1dHOUHO
+ 0UNvcRT9K9kg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="265204211"
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="265204211"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 05:36:55 -0700
+IronPort-SDR: DMsT4IunyzTkMTPF0j+HWuKSdADAefIJviCOAMI8H+DVHk0IbyopR6+wX1W0nFTnGGRm62w+1Y
+ H1wyY/+b4K/Q==
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="550676961"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.7.237]) ([10.209.7.237])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 05:36:54 -0700
+Subject: Re: [PATCH v1 6/8] dma: Add return value to dma_unmap_page
+To:     Robin Murphy <robin.murphy@arm.com>, mst@redhat.com
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        hch@lst.de, m.szyprowski@samsung.com,
+        iommu@lists.linux-foundation.org, x86@kernel.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20210603004133.4079390-1-ak@linux.intel.com>
+ <20210603004133.4079390-7-ak@linux.intel.com>
+ <c3b15bc2-104b-dace-1f23-608197b18107@arm.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <dbca06fa-d708-3c76-2890-82ca5a781366@linux.intel.com>
+Date:   Thu, 3 Jun 2021 05:36:53 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <YLdg3K6m0P+cis2P@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <c3b15bc2-104b-dace-1f23-608197b18107@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
 
-On 2021/6/2 18:43, Quentin Perret wrote:
-> Hi Yanan,
 >
-> On Thursday 15 Apr 2021 at 19:50:27 (+0800), Yanan Wang wrote:
->> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
->> index c3674c47d48c..a43cbe697b37 100644
->> --- a/arch/arm64/include/asm/kvm_pgtable.h
->> +++ b/arch/arm64/include/asm/kvm_pgtable.h
->> @@ -61,10 +61,12 @@ struct kvm_pgtable_mm_ops {
->>    * @KVM_PGTABLE_S2_NOFWB:	Don't enforce Normal-WB even if the CPUs have
->>    *				ARM64_HAS_STAGE2_FWB.
->>    * @KVM_PGTABLE_S2_IDMAP:	Only use identity mappings.
->> + * @KVM_PGTABLE_S2_GUEST:	Whether the page-tables are guest stage-2.
->>    */
->>   enum kvm_pgtable_stage2_flags {
->>   	KVM_PGTABLE_S2_NOFWB			= BIT(0),
->>   	KVM_PGTABLE_S2_IDMAP			= BIT(1),
->> +	KVM_PGTABLE_S2_GUEST			= BIT(2),
-> Assuming that we need this flag (maybe not given Marc's suggestion on
-> another patch), I'd recommend re-naming it to explain _what_ it does,
-> rather than _who_ is using it.
-I agree with this.
-> That's the principle we followed for e.g. KVM_PGTABLE_S2_IDMAP, so we
-> should be consistent here as well.
-But I think maybe we don't need the new flag anymore with Marc's suggestion.
-Currently the CMOs right before installation or update of a PTE are 
-guest-specific.
-So if we also take the new optional callbacks as guest specific, then a 
-new flag is
-not necessary because we can check whether the callbacks have been 
-initialized
-to determine if we are managing a guest S2 PTE.
+> What it looks like to me is abusing SWIOTLB's internal housekeeping to 
+> keep track of virtio-specific state. The DMA API does not attempt to 
+> validate calls in general since in many cases the additional overhead 
+> would be prohibitive. It has always been callers' responsibility to 
+> keep track of what they mapped and make sure sync/unmap calls match, 
+> and there are many, many, subtle and not-so-subtle ways for things to 
+> go wrong if they don't. If virtio is not doing a good enough job of 
+> that, what's the justification for making it the DMA API's problem?
 
-Thanks,
-Yanan
-> Thanks,
-> Quentin
-> .
+In this case it's not prohibitive at all. Just adding a few error 
+returns, and checking the overlap (which seems to have been already 
+solved anyways) I would argue the error returns are good practice 
+anyways, so that API users can check that something bad happening and 
+abort.  The DMA API was never very good at proper error handling, but 
+there's no reason at all to continue being bad it forever.
+
+AFAIK the rest just works anyways, so it's not really a new problem to 
+be solved.
+
+>
+>> A new callback is used to avoid changing all the IOMMU drivers.
+>
+> Nit: presumably by "IOMMU drivers" you actually mean arch DMA API 
+> backends?
+Yes
+>
+>  Furthermore, AFAICS it's still not going to help against exfiltrating 
+> guest memory by over-unmapping the original SWIOTLB slot *without* 
+> going past the end of the whole buffer,
+
+That would be just exfiltrating data that is already shared, unless I'm 
+misunderstanding you.
+
+-Andi
+
 
