@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46787399DDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A243B399DE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFCJec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhFCJeb (ORCPT
+        id S229854AbhFCJhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:37:31 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:45716 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhFCJha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:34:31 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B40C06174A;
-        Thu,  3 Jun 2021 02:32:47 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fwgfg3bPVz9sPf;
-        Thu,  3 Jun 2021 19:32:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622712765;
-        bh=O+KtTbQf+6wyiQAN9S+ojq8+vfTh0V/4wgvl1In0Auk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Zwv/UCWmaj5l9RvqEEpiR+TlcPcXtSsSTpEyU/WVHcwwypWkftK7CrbfGztIaEcFJ
-         fUTCsMeDgohvqH0p0F/gpufk4dO7wPaaR+yUb/3g2USt8KGB/9aSspU9s3ajT2gwFd
-         l8IrbiRC0NjEl+m9m5Blr/MTrauZoT0GxGK4OggDcnjijoXSdfxA8vNNZcHdfev+Fj
-         DH21adlx0tgdCnPJIeT9IVrU+AgNM/CPwPYgL0HfZqeIWZeE6ptewgxWs8LUqu1uUq
-         Z2xmFTEVGRn3Z5GqWWDI2RyRaclLXTbKHhKMV8MpBUgvoFcCqab5BuXgRRbQ9vk5zx
-         3U4P7lE90ek3Q==
-Date:   Thu, 3 Jun 2021 19:32:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Matthew Auld <matthew.auld@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the drm tree
-Message-ID: <20210603193242.1ce99344@canb.auug.org.au>
+        Thu, 3 Jun 2021 05:37:30 -0400
+Received: by mail-lf1-f53.google.com with SMTP id j10so7798736lfb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 02:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W2qohUx5zvhRLc6tyEmW8SgJ1vqoJNLaHxoGTkcoMlw=;
+        b=nk8B/VdWmx3KAqA42yHHA3SMsqWeaAApkaBxCr8d7U/DoYUBhJk2eMiGbLG2xY3KSn
+         8yfkDnfYsyyB+JRo+vWsEoV3urS7U355PL27lVoLO4lo0N6ulYRZOeJOB/K4C1L3IJcJ
+         qHgHTUEVUWH4EqPFK4iYVeDx0T5WA6VNFSGqTBilmHVAGUwShzf7rzqoewS5bm5T+YZD
+         OTB4FxcnNFGJvSA3FIZxZEYEYJWGv6xZGTPrTcfr5amf61fOLQ7jp+1FYDAZR2lh8ETA
+         y6/3fGJPh+DpX579pnaw9pO77k42Fyz6/xFcBupTzmOrccUjwFa49RazJ+ayor3O4Kbs
+         02Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W2qohUx5zvhRLc6tyEmW8SgJ1vqoJNLaHxoGTkcoMlw=;
+        b=af9Ncc3VMW2SdhMOdyA6OirVvyro839fkIRLRqvq+fH4qu+mLuaap6ljVu/rN4WPsl
+         ZUjX62YUsZCu4oeHqqIOeflGXuCc9/XnUpzsuPCbHMZwzxutvzUWMGwYeJZQk910DTWl
+         D8fbXhuMJJq/NzTgWPJlR0hR0VoIHnwuY/5+ZLHIVpGIK324pJQkkme3Oi4w2tC8M5pw
+         wlfRBqp5WRr2d7gCtt2DpsM5JCMzcbWgmyW5OzMA7Mcre/cCSTc2y9XKVNbdyzvsfVpC
+         9ljkPQvoSfwP8HAYPoR+dCGwtt4EYrtRzur2bE2vU5HateBflXKX3I5OCjF5hDlR6Xkk
+         CCJw==
+X-Gm-Message-State: AOAM5332gd6cY5JULnuWKACofEtho3kbvKiEPpi3n2m3a+2y73kd8RH5
+        psin3Tur3QNYCmKkMvy6JRc/1A==
+X-Google-Smtp-Source: ABdhPJxKARwFPjRnFkZHuPnu3FusqFdLnePffuVIc/oEngA5mhIyEyAAbQBPSM/kS6I3xgVoFP6VWQ==
+X-Received: by 2002:ac2:443b:: with SMTP id w27mr6921374lfl.295.1622712885178;
+        Thu, 03 Jun 2021 02:34:45 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id q4sm263373lfc.172.2021.06.03.02.34.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 02:34:44 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] PM: domains: Avoid boilerplate code for DVFS in subsystem/drivers
+Date:   Thu,  3 Jun 2021 11:34:34 +0200
+Message-Id: <20210603093438.138705-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X=z7ep.m8R.YqP5_zcYmvjT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X=z7ep.m8R.YqP5_zcYmvjT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Various discussions on LKML have pointed out that many subsystem/drivers for
+devices that may be attached to a genpd and which manages DVFS/OPP though the
+genpd performance states, would need very similar updates.
 
-Hi all,
+More precisely, they would likely have to call dev_pm_opp_set_rate|opp() to
+drop and restore OPPs (which propagates upwards into performance states votes
+in genpd), every time their devices should enter/exit a low power state, via
+their device PM callbacks.
 
-After merging the drm tree, today's linux-next build (htmldocs) produced
-these warnings:
+Rather than having to add the boilerplate code for these things into the
+subsystems/drivers, this series implements the logic internally into genpd.
 
-Documentation/gpu/driver-uapi.rst:2412: WARNING: Duplicate C declaration, a=
-lso defined at gpu/rfc/i915_gem_lmem:1393.
-Declaration is '.. c:enum:: drm_i915_gem_memory_class'.
-Documentation/gpu/driver-uapi.rst:2484: WARNING: Duplicate C declaration, a=
-lso defined at gpu/rfc/i915_gem_lmem:2484.
-Declaration is '.. c:struct:: drm_i915_gem_memory_class_instance'.
-Documentation/gpu/driver-uapi.rst:7: WARNING: Duplicate C declaration, also=
- defined at gpu/rfc/i915_gem_lmem:7.
-Declaration is '.. c:struct:: drm_i915_memory_region_info'.
-Documentation/gpu/driver-uapi.rst:2531: WARNING: Duplicate C declaration, a=
-lso defined at gpu/rfc/i915_gem_lmem:2531.
-Declaration is '.. c:struct:: drm_i915_query_memory_regions'.
-Documentation/gpu/driver-uapi.rst:2595: WARNING: Duplicate C declaration, a=
-lso defined at gpu/rfc/i915_gem_lmem:1393.
-Declaration is '.. c:struct:: drm_i915_gem_create_ext'.
-Documentation/gpu/driver-uapi.rst:2615: WARNING: Duplicate C declaration, a=
-lso defined at gpu/rfc/i915_gem_lmem:1393.
-Declaration is '.. c:struct:: drm_i915_gem_create_ext_memory_regions'.
+Concerns have been raised about this approach, mostly by myself, around that it
+limits flexibility. On the other hand, it starts to look like more and more
+people are requesting this to be manged internally in genpd, for good reasons.
+So, I think it's worth to give this a try.
 
-Introduced by (one or more of) commits
+In the long run, if it turns out that the flexibility was indeed needed, we can
+always deal with that as special cases on top.
 
-  0c1a77cbdafb ("drm/doc: add section for driver uAPI")
-  2bc9c04ea702 ("drm/doc/rfc: i915 DG1 uAPI")
-  727ecd99a4c9 ("drm/doc/rfc: drop the i915_gem_lmem.h header")
+Test and reviews are of course greatly appreciated!
 
---=20
-Cheers,
-Stephen Rothwell
+Kind regards
+Ulf Hansson
 
---Sig_/X=z7ep.m8R.YqP5_zcYmvjT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Ulf Hansson (4):
+  PM: domains: Split code in dev_pm_genpd_set_performance_state()
+  PM: domains: Return early if perf state is already set for the device
+  PM: domains: Drop/restore performance state votes for devices at
+    runtime PM
+  PM: domains: Drop/restore performance state votes for devices at
+    system PM
 
------BEGIN PGP SIGNATURE-----
+ drivers/base/power/domain.c | 70 +++++++++++++++++++++++++++++--------
+ include/linux/pm_domain.h   |  2 ++
+ 2 files changed, 58 insertions(+), 14 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC4oboACgkQAVBC80lX
-0GyAIwgAlnugat8uTrMp3uyPGuQQYyGtaz4KuUlZm3b30TPz3bvCpyXUHNmho5B5
-LvgpqfOtGZv9DxDzS9OCTZFZNt2MpNRRz3drBvxtkP0E6nnRuSKQLc60LdWmp1SQ
-6tX7wtb5MDk3UXDXc2ui6hlf0/B3pxdyeWYWGxFlBCAnFbUQc4Cfl5H5roFvwXW+
-WcSIasiR/cyR8AWrhIQOW3X5X4JJtGMmB4UyAkLqLiwrAHkmtKp5SKdqi0BxlUPQ
-HJXboTW38wzgVnMKSIhZ8DflHDU9F2mvSLkmNYk3OQbs9wgAw6pUajR+X4NfncsK
-pt5WP8DoQgTM0KUWNYldhXWvimCb3g==
-=io8C
------END PGP SIGNATURE-----
+-- 
+2.25.1
 
---Sig_/X=z7ep.m8R.YqP5_zcYmvjT--
