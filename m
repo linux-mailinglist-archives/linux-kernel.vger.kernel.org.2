@@ -2,160 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E4B399FA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A6A399FAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhFCLT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhFCLT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:19:57 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C83C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 04:17:56 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id f21so1050328vsl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J4ObDIp6BcuLfbXjzjA+gyGEMD4dFtav2yXYyJcMRtQ=;
-        b=UA0/7uockS4ysIkv6KrOoSyHbe66enVPJ+TPG+u5e9lopkcEFg5aFQZcZBJwy4UqXA
-         QJy9pk2CTMDVX5RuIjC//eUktpneTYvzkiDegW7kqAOsITRsJymo5KhZbhhShF9TGPzV
-         e4gKZOoKBQeoCs0tnF10/hh7lsWGaBgH4SsjhOkQE7ap8r+tE9q6OodvFhoTIniodAlO
-         glAvhw4x11uXQxPKqeL2LdtZ/04/uZERRY5O/08s842rYD0oo388E9tXKfqB4UwJJp8V
-         NzE0pog6T3jx5o9+Bpeby2qAt0lfeNst3qGbFxjEx3Mbty5EyGSiIkLI/MkDq5RksAmr
-         0Jng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J4ObDIp6BcuLfbXjzjA+gyGEMD4dFtav2yXYyJcMRtQ=;
-        b=NOVClHccA2EUDiXlEeaXWEDYHgEcSOJVfcQE9sgfWyidRuh6AN0Ciw+WXHJR+0iZIT
-         Y2GLd/U9CblhzQuqESDMa4avTnq9ThJyJTPF19x6h4DvdU2w7qJRMcAfZ0J3Lk9ki3y0
-         OLyxgGYPP344Wl4ycawxeYc6ejyi4Sq8jWxqTfMSZsFAGXkEH0SPlj5atfKkcMrXyQqY
-         OdmWkCqAEc2jsEM6gvTu1IQ7euVP6NEPgsZYfJ2ycilAsa4OLLT0AICTd5yLj76cpNJH
-         HVoO5AKbjPCzyrELF6DND+aO4Ut/hNmSxrpxSCjQWfoAWQ1pTBcZV2dhKTNQrBpUQ/Xg
-         rsJA==
-X-Gm-Message-State: AOAM532P/nAkA9zMP7kjSfb4zqVqwt7SppCbx6lktR3q/g753EiyjH68
-        alP/FpQ6IRmAwHfTN1h5Ec9LrfRoC96fzBelbcMCyPEm9BkDhg==
-X-Google-Smtp-Source: ABdhPJyttrR1f0i6p93DW3UL+QBi7kipiNBNI1S0EoDnYGaGmoeAD7V4no8SOj3dUlgXTgT4pA/0US3xSn86y0NvYBQ=
-X-Received: by 2002:a67:e359:: with SMTP id s25mr2203007vsm.55.1622719074185;
- Thu, 03 Jun 2021 04:17:54 -0700 (PDT)
+        id S229791AbhFCLWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:22:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229629AbhFCLWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:22:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77519613E6;
+        Thu,  3 Jun 2021 11:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622719230;
+        bh=yvu1ioWFgeXoiNI15+SCoMtyfAMfsZdkNLqkvbW5ChA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kuUpuVw6pZ0+xCWatONfbiD7PZPYm3CYPslvjBhz43wurBSp8e/Lf/cepm9y9RA6j
+         SpU7YOwwjb6x0MbNkWXmUiv5Vz0O+A4iSJ9Z64Kk+vU2ws5lda5ih7wn2WGdIYDaQl
+         lg4xvtwu9Rps0VVIJk6B2Wb0BoB4H9O+dtg1uCZkqCqEQaT3V/2v/O7znsM8iXuT2W
+         53UM+etyclo69iNcWVx1U/V8ZjuS9Fg6c4mtjrT+5MWmPdevIHvqUGXsYxlwP+pd5I
+         DDMjDH8C18ecxj8lpm1JP4sBrgkoHaDy0hXVBQFRKIL9cbWzUx6xQPAGnT+2U7uQii
+         zWOzBxa1vF9Wg==
+Date:   Thu, 3 Jun 2021 16:50:26 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
+ remove update_pasid()
+Message-ID: <YLi6+vICUmu07b0E@vkoul-mobl>
+References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
+ <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
+ <87mtsd6gr9.ffs@nanos.tec.linutronix.de>
+ <YLdZ7bZDPNup1n9c@zn.tnic>
 MIME-Version: 1.0
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-4-ulf.hansson@linaro.org> <20210603095538.b2t3cq25tq7v7kih@vireshk-i7>
- <CAPDyKFqNNeeMo6+gKgaPtPvgC_NuMxxYKkr+TzyP3vjYoHoDOw@mail.gmail.com>
-In-Reply-To: <CAPDyKFqNNeeMo6+gKgaPtPvgC_NuMxxYKkr+TzyP3vjYoHoDOw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 3 Jun 2021 13:17:18 +0200
-Message-ID: <CAPDyKFofsuY_RAMGsRLtKo=JxJ11DgGqOijZEEf1HEANCvomzg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes
- for devices at runtime PM
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLdZ7bZDPNup1n9c@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 at 12:31, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Thu, 3 Jun 2021 at 11:55, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 03-06-21, 11:34, Ulf Hansson wrote:
-> > > A subsystem/driver that need to manage OPPs for its device, should
-> > > typically drop its vote for the OPP when the device becomes runtime
-> > > suspended. In this way, the corresponding aggregation of the performance
-> > > state votes that is managed in genpd for the attached PM domain, may find
-> > > that the aggregated vote can be decreased. Hence, it may allow genpd to set
-> > > the lower performance state for the PM domain, thus avoiding to waste
-> > > energy.
-> > >
-> > > To accomplish this, typically a subsystem/driver would need to call
-> > > dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
-> > > callback, to drop the vote for the OPP. Accordingly, it needs another call
-> > > to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
-> > > ->runtime_resume() callback.
-> > >
-> > > To avoid boilerplate code in subsystems/driver to deal with these things,
-> > > let's instead manage this internally in genpd.
-> > >
-> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > ---
-> > >
-> > > Changes in v2:
-> > >       - Rebased.
-> > >       - A few minor cosmetic changes.
-> > >       - Deal with the error path in genpd_runtime_resume().
-> > >
-> > > ---
-> > >  drivers/base/power/domain.c | 27 +++++++++++++++++++++++++--
-> > >  include/linux/pm_domain.h   |  1 +
-> > >  2 files changed, 26 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > > index ef25a5b18587..e5d97174c254 100644
-> > > --- a/drivers/base/power/domain.c
-> > > +++ b/drivers/base/power/domain.c
-> > > @@ -400,6 +400,23 @@ static int genpd_set_performance_state(struct device *dev, unsigned int state)
-> > >       return ret;
-> > >  }
-> > >
-> > > +static int genpd_drop_performance_state(struct device *dev)
-> >
-> > What about passing the state pointer here? that will simplify the
-> > callers to just a call.
->
-> Not sure I get that. Can you elaborate a bit more?
->
-> >
-> > > +{
-> > > +     unsigned int prev_state = dev_gpd_data(dev)->performance_state;
-> > > +
-> > > +     if (!genpd_set_performance_state(dev, 0))
-> > > +             return prev_state;
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static void genpd_restore_performance_state(struct device *dev,
-> > > +                                         unsigned int state)
-> > > +{
-> > > +     if (state)
-> >
-> > I will skip this check, as we are checking it in
-> > genpd_set_performance_state() anyway ?
->
-> I don't want us to override OPP votes made by the subsystem/driver
-> level runtime PM callbacks. For example, if the drivers manage this
-> thing themselves, that should be preserved.
->
-> That said, by the check above I want to avoid setting the state to
-> zero internally by genpd, if the driver level ->runtime_resume()
-> callback has already restored the state.
+On 02-06-21, 12:14, Borislav Petkov wrote:
+> ---
+> From: Borislav Petkov <bp@suse.de>
+> Date: Wed, 2 Jun 2021 12:07:52 +0200
+> Subject: [PATCH] dmaengine: idxd: Use cpu_feature_enabled()
+> 
+> When testing x86 feature bits, use cpu_feature_enabled() so that
+> build-disabled features can remain off, regardless of what CPUID says.
 
-Ehh, forget about what I said about the ->runtime_resume() callback.
+Applied, thanks
 
-I am mostly trying to avoid restoring a state that is zero, just to be
-sure nobody else on some different level outside gendp, have decided
-to set a new OPP in-between our calls to
-genpd_drop|restore_performance state.
-
-[...]
-
-Kind regards
-Uffe
+-- 
+~Vinod
