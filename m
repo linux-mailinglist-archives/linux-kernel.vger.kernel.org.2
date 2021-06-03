@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A834539984F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175B4399848
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhFCC6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:58:07 -0400
-Received: from mail-qv1-f41.google.com ([209.85.219.41]:42861 "EHLO
-        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhFCC6G (ORCPT
+        id S229849AbhFCC4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:56:47 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54469 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229812AbhFCC4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:58:06 -0400
-Received: by mail-qv1-f41.google.com with SMTP id u33so2501272qvf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L3qETxpua5Szzx3IugrqwdN2RVBVS+htIlKHHGHgjcE=;
-        b=lAu355Dg9iol96NUognh3Z9XUcRdsebrjJDTLIdA0MB3bNopNWwQxCdRUYRX5sAb/Y
-         cGUf0l8eVRCedzkRA6AGkEjrkmrHlWSm7nvbhYMMLu9iMNPphZ5SZ/a+Bpa5bo1aiYEo
-         dIE2o8o3V3yvHP9fvL9p26aKPWF1n1rF1uiUk/ohboF9EEsQGAsVDBlQW58TXUp3RdAv
-         Fvk6VaayMCGK4kT7U63ylfbABmr93wlLZ8IEFKsunB8FgRlvW0igaOt4Ss15ZGYruu2R
-         oc0Y44YuKWQTykQrCrMj0huXHvbxsxHM3HDo28txiTevaaW241YRYpyfEsHTd6HFCrO+
-         puLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L3qETxpua5Szzx3IugrqwdN2RVBVS+htIlKHHGHgjcE=;
-        b=RG1M99QwY7MpAxLKmXMJThSD9eJ6feuU8J2jZ8wZvjAYgkqFl66rXnoyWbXEh6BwJW
-         MIn8oDKwLiKf+qf17AzcgQ4y7NzPlEvFD/P8vIOBstmtTQt87yKjZjjOc759Y11tFqAo
-         Rz8IWRxguhOMNimM3UkZUz966zSYlwond16gDiADQvCuVFynjv8M5RVVIWUeCwAG+GZb
-         FnfZK0a2xhVJhS9k8rwX5lgm67QTQ55+B+GwtDMc5zfiQzNZg6gwMS2vku8sFo0KF7pi
-         PLxjJqAp2hV+52LX/KYxe+iI7Ohjq//jjy9Rq6AGeFQ/DjqYOIQgS+0ThnUx108xKqHv
-         T6Wg==
-X-Gm-Message-State: AOAM531jVjjLkpjju80bghCBgJBweGciE23gxIVGtViH3TgmZTBvP0ny
-        /HSR9KkWa29KPtdEGYUYExUbCuoykhKmzugC98M=
-X-Google-Smtp-Source: ABdhPJxezezpVM5btuESQMr8sQAiEXZQElm22pIaMrpGjdBnAbnRFJ9jW78E4wHzQhgfJltscBSnDG0cUu3iIS9EoZk=
-X-Received: by 2002:a0c:dc92:: with SMTP id n18mr8866816qvk.8.1622688907466;
- Wed, 02 Jun 2021 19:55:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com> <CAOMZO5An-v0mLAvjofiWLc4ufJiE4EzG1b4NDwToPSvgODrHjQ@mail.gmail.com>
-In-Reply-To: <CAOMZO5An-v0mLAvjofiWLc4ufJiE4EzG1b4NDwToPSvgODrHjQ@mail.gmail.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Thu, 3 Jun 2021 10:54:56 +0800
-Message-ID: <CAA+D8AMYmy=NdQU+9gTwa_7j23kmxgU1Xj-pkzuHPCNX649iYQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: change dev_err to dev_dbg for defer probe
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+        Wed, 2 Jun 2021 22:56:46 -0400
+X-UUID: 144e700ae6a044128ab6d0af69907f6c-20210603
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pihTp1DwQK+HeV7mk+RNkiNU9/T3ejwlYv/tON4uSVU=;
+        b=K8dISz8A3sCqVuZ7Dv3NqYr+YwmqdYVXSrdlzyJPC8LGmlZH7DX2UQZ7lvnBnFIMu95rYcjVPBJDyOIYrmi1DRO3y4xCR5HY+WujmZcYbExluZLTc5CDFr0I+uvGrYi4X/NQNgvm662hGVzuCB4AfSCGMF1g/BMAs1YQVeVxSco=;
+X-UUID: 144e700ae6a044128ab6d0af69907f6c-20210603
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1431275690; Thu, 03 Jun 2021 10:55:00 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
+ 2021 10:54:59 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 3 Jun 2021 10:54:59 +0800
+Message-ID: <1622688899.7096.7.camel@mtkswgap22>
+Subject: Re: [PATCH v1 3/3] scsi: ufs: Utilize Transfer Request List
+ Completion Notification Register
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Caleb Connolly <caleb@connolly.tech>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 3 Jun 2021 10:54:59 +0800
+In-Reply-To: <1621845419-14194-4-git-send-email-cang@codeaurora.org>
+References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+         <1621845419-14194-4-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 11:45 PM Fabio Estevam <festevam@gmail.com> wrote:
->
-> Hi Shengjiu,
->
-> On Wed, Jun 2, 2021 at 3:59 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
-> >
-> > Don't need to print error message for defer probe
-> ...
-> >         if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
-> > -               dev_err(&pdev->dev, "failed to find codec device\n");
-> > +               dev_dbg(&pdev->dev, "failed to find codec device\n");
->
-> You may consider using dev_err_probe() here, which fits exactly this purpose.
+SGkgQ2FuLA0KDQpPbiBNb24sIDIwMjEtMDUtMjQgYXQgMDE6MzYgLTA3MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IEJ5IHJlYWRpbmcgdGhlIFVUUCBUcmFuc2ZlciBSZXF1ZXN0IExpc3QgQ29tcGxldGlv
+biBOb3RpZmljYXRpb24gUmVnaXN0ZXIsDQo+IHdoaWNoIGlzIGFkZGVkIGluIFVGU0hDSSBWZXIg
+My4wLCBTVyBjYW4gZWFzaWx5IGdldCB0aGUgY29tcGVsZXRlZCB0cmFuc2Zlcg0KPiByZXF1ZXN0
+cy4gVGh1cywgU1cgY2FuIGdldCByaWQgb2YgaG9zdCBsb2NrLCB3aGljaCBpcyB1c2VkIHRvIHN5
+bmNocm9uaXplDQo+IHRoZSB0cl9kb29yYmVsbCBhbmQgb3V0c3RhbmRpbmdfcmVxcywgb24gdHJh
+bnNmZXIgcmVxdWVzdHMgZGlzcGF0Y2ggYW5kDQo+IGNvbXBsZXRpb24gcGF0aHMuIFRoaXMgY2Fu
+IGZ1cnRoZXIgYmVuZWZpdCByYW5kb20gcmVhZC93cml0ZSBwZXJmb3JtYW5jZS4NCj4gDQo+IENj
+OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KPiBDby1kZXZlbG9wZWQt
+Ynk6IEFzdXRvc2ggRGFzIDxhc3V0b3NoZEBjb2RlYXVyb3JhLm9yZz4NCj4gU2lnbmVkLW9mZi1i
+eTogQXN1dG9zaCBEYXMgPGFzdXRvc2hkQGNvZGVhdXJvcmEub3JnPg0KPiBTaWduZWQtb2ZmLWJ5
+OiBDYW4gR3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KDQpSZXZpZXdlZC1ieTogU3RhbmxleSBD
+aHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCg0KDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91
+ZnMvdWZzaGNpLmgNCj4gQEAgLTM5LDYgKzM5LDcgQEAgZW51bSB7DQo+ICAJUkVHX1VUUF9UUkFO
+U0ZFUl9SRVFfRE9PUl9CRUxMCQk9IDB4NTgsDQo+ICAJUkVHX1VUUF9UUkFOU0ZFUl9SRVFfTElT
+VF9DTEVBUgkJPSAweDVDLA0KPiAgCVJFR19VVFBfVFJBTlNGRVJfUkVRX0xJU1RfUlVOX1NUT1AJ
+PSAweDYwLA0KPiArCVJFR19VVFBfVFJBTlNGRVJfUkVRX0xJU1RfQ09NUEwJCT0gMHg2NCwNCj4g
+IAlSRUdfVVRQX1RBU0tfUkVRX0xJU1RfQkFTRV9MCQk9IDB4NzAsDQo+ICAJUkVHX1VUUF9UQVNL
+X1JFUV9MSVNUX0JBU0VfSAkJPSAweDc0LA0KPiAgCVJFR19VVFBfVEFTS19SRVFfRE9PUl9CRUxM
+CQk9IDB4NzgsDQoNCg==
 
-ok, let me update it.
-
-best regards
-wang shengjiu
