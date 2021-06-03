@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6276039A63C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5695F39A641
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFCQw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:52:58 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51088 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhFCQw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:52:58 -0400
-IronPort-SDR: FP8/IeF4W2QbkxtdY9lfbu15QBrNsBkbXApBX/h75lrv797QKZQ+6eRfb4hWZY0NFmcOPPWeaa
- mJ0WncRYn8aA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="203902845"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="203902845"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 09:51:10 -0700
-IronPort-SDR: CjEgiKaKQl05KKifFCuIPD1z4v5Kgpnm/0eBOCXaWASGlOdDIxlsK6UO356OUjh/qQ10jjKNj8
- fR3bJrner2vw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="480294004"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 03 Jun 2021 09:51:09 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 406E1269; Thu,  3 Jun 2021 19:51:31 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v1 1/1] mfd: intel-lpss: Add Intel Cannon Lake ACPI IDs
-Date:   Thu,  3 Jun 2021 19:51:28 +0300
-Message-Id: <20210603165128.46586-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230080AbhFCQxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhFCQxv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 12:53:51 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE88C06174A;
+        Thu,  3 Jun 2021 09:52:06 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 45A3D1F417BA
+Received: by earth.universe (Postfix, from userid 1000)
+        id 272DC3C0C95; Thu,  3 Jun 2021 18:52:03 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 18:52:03 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: ab8500: Drop unnecessary NULL check after
+ container_of
+Message-ID: <20210603165203.qxueroi77sb4xwsx@earth.universe>
+References: <20210511203711.1673001-1-linux@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="c4hmboxfmrz4g6am"
+Content-Disposition: inline
+In-Reply-To: <20210511203711.1673001-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the machines, like Dell Precision 3630,
-may expose LPSS devices via ACPI.
 
-Add their IDs to the list.
+--c4hmboxfmrz4g6am
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mfd/intel-lpss-acpi.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Hi,
 
-diff --git a/drivers/mfd/intel-lpss-acpi.c b/drivers/mfd/intel-lpss-acpi.c
-index 1f396039d58f..3f1d976eb67c 100644
---- a/drivers/mfd/intel-lpss-acpi.c
-+++ b/drivers/mfd/intel-lpss-acpi.c
-@@ -89,6 +89,11 @@ static const struct intel_lpss_platform_info apl_i2c_info = {
- 	.swnode = &apl_i2c_node,
- };
- 
-+static const struct intel_lpss_platform_info cnl_i2c_info = {
-+	.clk_rate = 216000000,
-+	.swnode = &spt_i2c_node,
-+};
-+
- static const struct acpi_device_id intel_lpss_acpi_ids[] = {
- 	/* SPT */
- 	{ "INT3440", (kernel_ulong_t)&spt_info },
-@@ -102,6 +107,19 @@ static const struct acpi_device_id intel_lpss_acpi_ids[] = {
- 	{ "INT3448", (kernel_ulong_t)&spt_uart_info },
- 	{ "INT3449", (kernel_ulong_t)&spt_uart_info },
- 	{ "INT344A", (kernel_ulong_t)&spt_uart_info },
-+	/* CNL */
-+	{ "INT34B0", (kernel_ulong_t)&spt_info },
-+	{ "INT34B1", (kernel_ulong_t)&spt_info },
-+	{ "INT34B2", (kernel_ulong_t)&cnl_i2c_info },
-+	{ "INT34B3", (kernel_ulong_t)&cnl_i2c_info },
-+	{ "INT34B4", (kernel_ulong_t)&cnl_i2c_info },
-+	{ "INT34B5", (kernel_ulong_t)&cnl_i2c_info },
-+	{ "INT34B6", (kernel_ulong_t)&cnl_i2c_info },
-+	{ "INT34B7", (kernel_ulong_t)&cnl_i2c_info },
-+	{ "INT34B8", (kernel_ulong_t)&spt_uart_info },
-+	{ "INT34B9", (kernel_ulong_t)&spt_uart_info },
-+	{ "INT34BA", (kernel_ulong_t)&spt_uart_info },
-+	{ "INT34BC", (kernel_ulong_t)&spt_info },
- 	/* BXT */
- 	{ "80860AAC", (kernel_ulong_t)&bxt_i2c_info },
- 	{ "80860ABC", (kernel_ulong_t)&bxt_info },
--- 
-2.30.2
+On Tue, May 11, 2021 at 01:37:11PM -0700, Guenter Roeck wrote:
+> The result of container_of() operations is never NULL unless the element
+> is the first element of the embedded structure, which is not the case her=
+e.
+> The NULL check is therefore unnecessary and misleading. Remove it.
+>=20
+> This change was made automatically with the following Coccinelle script.
+>=20
+> @@
+> type t;
+> identifier v;
+> statement s;
+> @@
+>=20
+> <+...
+> (
+>   t v =3D container_of(...);
+> |
+>   v =3D container_of(...);
+> )
+>   ...
+>   when !=3D v
+> - if (\( !v \| v =3D=3D NULL \) ) s
+> ...+>
+>=20
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
 
+Thanks, queued.
+
+-- Sebastian
+
+>  drivers/power/supply/ab8500_charger.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply=
+/ab8500_charger.c
+> index a9be10eb2c22..f407cec49aa3 100644
+> --- a/drivers/power/supply/ab8500_charger.c
+> +++ b/drivers/power/supply/ab8500_charger.c
+> @@ -3171,9 +3171,6 @@ static int ab8500_charger_usb_notifier_call(struct =
+notifier_block *nb,
+>  	enum ab8500_usb_state bm_usb_state;
+>  	unsigned mA =3D *((unsigned *)power);
+> =20
+> -	if (!di)
+> -		return NOTIFY_DONE;
+> -
+>  	if (event !=3D USB_EVENT_VBUS) {
+>  		dev_dbg(di->dev, "not a standard host, returning\n");
+>  		return NOTIFY_DONE;
+> --=20
+> 2.25.1
+>=20
+
+--c4hmboxfmrz4g6am
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC5CLMACgkQ2O7X88g7
++podVQ//ZlOKk8I8xZGuRAT8gKtTnB0d2jIrG9J0rH2iQwTJDJP7lqjZY6dCTfx9
+G/HQPSDUNt5Swz4dtJwQJ2cb4KFDdVqoJvHfqKZbLE80iSRUOAd7gpLnKSU9TrW2
+Lovjm3++qrQ6BksvMhR4JcF1U9mZ+3JIatd9zCIY1KGyXO6vtj6tqjZEi6NEdUlE
+gHt8lmlBWFDfYEawecs/djKCIoTCEpXkklSX0IAwX6U5gOvnGHNX4MRrjtYA8B1R
+odibul9OSJ3cK+1aBHH4sjvtUmVzpDdRcaGhZMewr0UxJBFJJ4N9ALxoC2RhBlbF
+0J7P7WttjSvxc/FG/LG90ZFtM8Rd6L5LM1vr6x1aDuk9QxkRfySS+9oFs7KQxTGJ
+N4nU4zl8sPCCrPc4oYvOIM00kgKgWLt6TC6s7BLWjBpTQRG1OqXIOmE7zgTabZGm
+J9lKdbeV+3POZFCqGUrIaaz6zuUGwDNJgSB968cVai/v3VH3VWZm6bKtQFxN3qFC
+FmuZnTQobTFAPQD03ZwKZYxKvLWOkDk70adbN6P9HYEJDq7zpJIsee5ACQAjX3WG
+/vazolvNy0Xyaj0z9XT7hLIHxshIFN6FeEREKG0ZEj8stFR52xJunn8zTVLMdLkl
+o1279P1oJxE91w7MUO0kVVKpItj/1/jaEqJOyodNuF4rfeC7I0M=
+=K2AW
+-----END PGP SIGNATURE-----
+
+--c4hmboxfmrz4g6am--
