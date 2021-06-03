@@ -2,367 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3727D399C9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB12399D03
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhFCIdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:33:00 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:39825 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhFCIdA (ORCPT
+        id S230010AbhFCIsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:48:50 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:51801 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhFCIst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:33:00 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 463401C001F;
-        Thu,  3 Jun 2021 08:31:09 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v3 3/3] riscv: Map the kernel with correct permissions the first time
-Date:   Thu,  3 Jun 2021 10:27:49 +0200
-Message-Id: <20210603082749.1256129-4-alex@ghiti.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603082749.1256129-1-alex@ghiti.fr>
-References: <20210603082749.1256129-1-alex@ghiti.fr>
+        Thu, 3 Jun 2021 04:48:49 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210603084703epoutp023dd72d2741b01a2776f8a1ac8385b746~FBiseqksD0318903189epoutp02q
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 08:47:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210603084703epoutp023dd72d2741b01a2776f8a1ac8385b746~FBiseqksD0318903189epoutp02q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1622710023;
+        bh=09QmnMglhhRnkvKZwSVbk1nin4oV4zY1v9T5OJOFL0Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MVTAOgfne2fe36RKTQbzKC7YStZTTRm2kyw2idlqwJQu+cCBO3f/+4LXZKb/ZD6PP
+         +ofANU8kg3ON6RRWbjjRoKd8AfVuyFjcbDtuDXTgLlOXql+wRSf8yjoeZLA6LmzFlW
+         0xTBP6z4yzd6gqdhRL2C+6pO4nXuEvHExTJ5cZaI=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210603084701epcas1p23a557b305c8a06fe78a87369fb181dce~FBireFznI0053300533epcas1p2x;
+        Thu,  3 Jun 2021 08:47:01 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4Fwfdw2vDKz4x9Px; Thu,  3 Jun
+        2021 08:47:00 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DF.72.09578.40798B06; Thu,  3 Jun 2021 17:47:00 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210603084659epcas1p1bc7b425e65bdc6517f69cf5a0e0628dc~FBipd_SWE2902929029epcas1p1b;
+        Thu,  3 Jun 2021 08:46:59 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210603084659epsmtrp1925b1bed0faa1489b308c91ac59b226d~FBipcyG1B1283912839epsmtrp1f;
+        Thu,  3 Jun 2021 08:46:59 +0000 (GMT)
+X-AuditID: b6c32a35-fcfff7000000256a-74-60b8970466b2
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BB.E2.08163.30798B06; Thu,  3 Jun 2021 17:46:59 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210603084659epsmtip24dbba2a6bbb97374993a4f5a6ae45ac9~FBipLrrga1193711937epsmtip2J;
+        Thu,  3 Jun 2021 08:46:59 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     damien.lemoal@wdc.com
+Cc:     Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
+        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        bvanassche@acm.org, gregkh@linuxfoundation.org, hch@infradead.org,
+        jaegeuk@kernel.org, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, nanich.lee@samsung.com, osandov@fb.com,
+        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
+        woosung2.lee@samsung.com, yi.zhang@redhat.com,
+        yt0928.kim@samsung.com
+Subject: Re: [PATCH v11 1/3] bio: control bio max size
+Date:   Thu,  3 Jun 2021 17:28:21 +0900
+Message-Id: <20210603082821.17278-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <DM6PR04MB70819D1D9C6301E399FC1A67E73D9@DM6PR04MB7081.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Te1BUZRTn27t7d5fcuoDmF2OCKxgiC7vC4iePRCC8jZaUTc40o+xtubMw
+        LcvO3qUpqElZ3gsLiEiuoPjiFUHyCjCTVip55BSgzFjAKIxEBNLySCSclr1Q/Pc75/x+5/ed
+        880RYM55fFdBvEZP6zSUWow7cltu7ZRIuCWtCmlvrROq+62Wj0prWgD6YigfR+2/XADozMwi
+        htIzFzjIcLkeRz0FlzhorN6ModyxVB5azhnmoPkHDLpxfxfqby/FkaXIwEEljaUYujfSy0e3
+        hu9y0YMrhRi602XlofOjYehp5fcAPX4yyEfdrUUYGrxzBkf1NxbxMFeyf+AgWWiY5pNt5iE+
+        2VjlTfb/lEQ21GTj5M2yWj75+Nu7OGlqqgHkbMNWMrPDyCEtlgosesN76pA4moqlde60RpkY
+        G69RhYoPHomJiJEHSmUS2V60R+yuoRLoUHHkoWhJVLzatgKx+4eUOsmWiqYYRuz3aoguMUlP
+        u8clMvpQMa2NVWtlUq0vQyUwSRqVrzIxIUgmle6W25gKdVyjpRLX3o7+qHrid/4JYA3KAUIB
+        JAJg5TUTLwc4CpyJVgC76zpxNrAC2Fh+EmODWQCtlUWcNYnxah2HLbQD+OvpPP5/rLGmz/kr
+        LJzwgaap+/gK3ki8BLsn5ux9MWKQC9Mbu+wFFyIQdl0f5q5gLuEJH35XbbcQEcEwfTJ31c4N
+        /jOSi61gIXEM/pw9AFiOE+w6O2bXYjaOofmc/a2QuCyEHZMlXFYcCXtNxTiLXeAfPzbxWewK
+        J/Iz+KzACKAh4wJggwIAr4xXrFr7Q+vsrK0gsFnshPXtfmx6G2xbKgOs8/Nwej6Xt0KBhAhm
+        ZTizFA/YmzaCrXmNf9m22pGEpeYcLruur2zrLnuKFwB387qBzOsGMv/vXA6wGvAirWUSVDQj
+        08rW/3IDsN+Ft7wVFE7N+FoARwAsAAow8UbRNztaFc6iWOrjZFqXGKNLUtOMBcht6y7EXDcp
+        E22HpdHHyOS7/f39UUDgnkC5v3izSBWRonAmVJSe/oCmtbRuTccRCF1PcNzEbZ+qn0s+9FnP
+        lnMR8xvGudPVf1c1UyfjP9k+OqTJ+msy6q17qR4mp+Bih1dm9FRnBrL0MVvjdj3Lqljavu+4
+        OrKz65Rb8028Z8Bl9qGiykiE/JD5hvW1cFV8wPn9fe1v+hm0+cb9wkbJ19l7y/vqSmlw9PAT
+        c69P8Gm1Bl/ycNY5OHgZfdIXnbYcjXxkSulLT/UUBvB4CdUlooubHPOVRwJly9mPru1IK5Ar
+        RiRzamu49PWzLUoyxeXiyOGF5NF4kkp7oSW4J1O54HcV9kW5HrtueOdZmgy8zAx5jtFBx5cO
+        LOcNhYn+3LdN6PV+wKUDQdKMiI7wKa+3s+aK3918W8xl4iiZN6ZjqH8BPsz3I6AEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra1BMYRyHvedsZ09L5lip14rGmdGYlchQb25TMzHHbSbGZdymlo6ittae
+        ctkvYpG2FYkaKzEWW1tTlM2Kpc5qsqFZU20jtS4tySWVSC6D3caMb8/M88z/9+FP4mKrQELu
+        TEljlSmyZJoQCaqtdOBMvMAcN7u6MwiVd5QJUaGxGqDSzhMEqnlyAaD8vmEcHcn8iiG1voJA
+        D09ewpCrQocjreuQF/qlcWLoy0sOWdpnoOaaQgLxeWoMFVQV4sjx/JEQWZ2tAvTyci6OmmwD
+        XqioKxJ9N9QD9OlbmxA1mvNw1NaUT6AKyzARKWGaW1YwuepeIXNL1ylkqoqlTPPjdKbSmEUw
+        986XCZlPd1sJJueGETCfK6cwmbXZGMPzV/GYMZtEC+PZ5J17WOWsxXGixCreQCgexOwr6Xkr
+        zAAD8zXAm4TUXJh9pRzTABEppswA9hwz4SNCAhsefPTSAPIvj4dWKzfS9AOoHT5BuBuCCoY5
+        H9s97EtNhI09g4Q7wqkhAbyX+cYjxlNh0HbbKXCzgJoGX9WVYG72oRbAI++12MhYIPz5XOsZ
+        9qa2QntWC3CzmNoCjz59Kxzpx0HbWZfnDv63V5vO4ScBpftP6f5TFwFmBBNZBSdPkHOhijkp
+        7N4QTibn0lMSQranyiuB589SqRncMfaF8AAjAQ8gidO+PneCzHFin3jZfhWrTI1VpiezHA8m
+        kQLa38euscWKqQRZGpvEsgpW+c9ipLckA4vJUNuIzeHLI+5fPDDQn+cXsKzedivCgW8+WEWN
+        MqYmmTbJJ/gSX4pIJ1oJksOu041p73SsIz2XjZrh51jNL+JXPbNnO/Nvq8L9o/UBZUnSK+un
+        G3aXhnXHLk4c1GcX1y5oDe+M6rg2uVXVLlIWN5TuCoq3n9asr7y/5uwgUXrIZMGvu3LqJ3do
+        t1y2152fRx00RFydVB3oUOjqQn+c6tX3dgTfDCg4LA9e1xRRYj4evn0jlxVp+UAnWvzW/o41
+        vA46ox1drlo67R2R4ZLM/B7V9iTza922Imn5VBQ9tqllK012R/cqa+kdL2r8D/y4phqapzdt
+        ILsalhz/nHd3iBZwibJQKa7kZH8Az+M14lYDAAA=
+X-CMS-MailID: 20210603084659epcas1p1bc7b425e65bdc6517f69cf5a0e0628dc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210603084659epcas1p1bc7b425e65bdc6517f69cf5a0e0628dc
+References: <DM6PR04MB70819D1D9C6301E399FC1A67E73D9@DM6PR04MB7081.namprd04.prod.outlook.com>
+        <CGME20210603084659epcas1p1bc7b425e65bdc6517f69cf5a0e0628dc@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For 64b kernels, we map all the kernel with write and execute permissions
-and afterwards remove writability from text and executability from data.
+> On 2021/06/02 21:29, Changheun Lee wrote:
+> > bio size can grow up to 4GB after muli-page bvec has been enabled.
+> > But sometimes large size of bio would lead to inefficient behaviors.
+> > Control of bio max size will be helpful to improve inefficiency.
+> > 
+> > Below is a example for inefficient behaviours.
+> > In case of large chunk direct I/O, - 32MB chunk read in user space -
+> > all pages for 32MB would be merged to a bio structure if the pages
+> > physical addresses are contiguous. It makes some delay to submit
+> > until merge complete. bio max size should be limited to a proper size.
+> > 
+> > When 32MB chunk read with direct I/O option is coming from userspace,
+> > kernel behavior is below now in do_direct_IO() loop. It's timeline.
+> > 
+> >  | bio merge for 32MB. total 8,192 pages are merged.
+> >  | total elapsed time is over 2ms.
+> >  |------------------ ... ----------------------->|
+> >                                                  | 8,192 pages merged a bio.
+> >                                                  | at this time, first bio submit is done.
+> >                                                  | 1 bio is split to 32 read request and issue.
+> >                                                  |--------------->
+> >                                                   |--------------->
+> >                                                    |--------------->
+> >                                                               ......
+> >                                                                    |--------------->
+> >                                                                     |--------------->|
+> >                           total 19ms elapsed to complete 32MB read done from device. |
+> > 
+> > If bio max size is limited with 1MB, behavior is changed below.
+> > 
+> >  | bio merge for 1MB. 256 pages are merged for each bio.
+> >  | total 32 bio will be made.
+> >  | total elapsed time is over 2ms. it's same.
+> >  | but, first bio submit timing is fast. about 100us.
+> >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+> >       | 256 pages merged a bio.
+> >       | at this time, first bio submit is done.
+> >       | and 1 read request is issued for 1 bio.
+> >       |--------------->
+> >            |--------------->
+> >                 |--------------->
+> >                                       ......
+> >                                                  |--------------->
+> >                                                   |--------------->|
+> >         total 17ms elapsed to complete 32MB read done from device. |
+> > 
+> > As a result, read request issue timing is faster if bio max size is limited.
+> > Current kernel behavior with multipage bvec, super large bio can be created.
+> > And it lead to delay first I/O request issue.
+> > 
+> > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> > ---
+> >  block/bio.c            | 17 ++++++++++++++---
+> >  block/blk-settings.c   | 19 +++++++++++++++++++
+> >  include/linux/bio.h    |  4 +++-
+> >  include/linux/blkdev.h |  3 +++
+> >  4 files changed, 39 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/block/bio.c b/block/bio.c
+> > index 44205dfb6b60..c52639bb80cd 100644
+> > --- a/block/bio.c
+> > +++ b/block/bio.c
+> > @@ -255,6 +255,13 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+> >  }
+> >  EXPORT_SYMBOL(bio_init);
+> >  
+> > +unsigned int bio_max_size(struct bio *bio)
+> 
+> It would be nice to call this function the same as the limit name: bio_max_bytes().
 
-For 32b kernels, the kernel mapping resides in the linear mapping, so we
-map all the linear mapping as writable and executable and afterwards we
-remove those properties for unused memory and kernel mapping as
-described above.
+I'll do in next version.
 
-Change this behavior to directly map the kernel with correct permissions
-and avoid going through the whole mapping to fix the permissions.
+> 
+> > +{
+> > +	struct block_device *bdev = bio->bi_bdev;
+> > +
+> > +	return bdev ? bdev->bd_disk->queue->limits.max_bio_bytes : UINT_MAX;
+> 
+> My personal preference goes to a plain if() instead of this.
+> 
+> > +}
+> > +
+> >  /**
+> >   * bio_reset - reinitialize a bio
+> >   * @bio:	bio to reset
+> > @@ -866,7 +873,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+> >  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+> >  
+> >  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> > +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+> >  				*same_page = false;
+> >  				return false;
+> >  			}
+> > @@ -995,6 +1002,7 @@ static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+> >  {
+> >  	unsigned short nr_pages = bio->bi_max_vecs - bio->bi_vcnt;
+> >  	unsigned short entries_left = bio->bi_max_vecs - bio->bi_vcnt;
+> > +	unsigned int bytes_left = bio_max_size(bio) - bio->bi_iter.bi_size;
+> >  	struct bio_vec *bv = bio->bi_io_vec + bio->bi_vcnt;
+> >  	struct page **pages = (struct page **)bv;
+> >  	bool same_page = false;
+> > @@ -1010,7 +1018,8 @@ static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+> >  	BUILD_BUG_ON(PAGE_PTRS_PER_BVEC < 2);
+> >  	pages += entries_left * (PAGE_PTRS_PER_BVEC - 1);
+> >  
+> > -	size = iov_iter_get_pages(iter, pages, LONG_MAX, nr_pages, &offset);
+> > +	size = iov_iter_get_pages(iter, pages, bytes_left, nr_pages,
+> > +				  &offset);
+> >  	if (unlikely(size <= 0))
+> >  		return size ? size : -EFAULT;
+> >  
+> > @@ -1038,6 +1047,7 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
+> >  {
+> >  	unsigned short nr_pages = bio->bi_max_vecs - bio->bi_vcnt;
+> >  	unsigned short entries_left = bio->bi_max_vecs - bio->bi_vcnt;
+> > +	unsigned int bytes_left = bio_max_size(bio) - bio->bi_iter.bi_size;
+> >  	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
+> >  	unsigned int max_append_sectors = queue_max_zone_append_sectors(q);
+> >  	struct bio_vec *bv = bio->bi_io_vec + bio->bi_vcnt;
+> > @@ -1058,7 +1068,8 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
+> >  	BUILD_BUG_ON(PAGE_PTRS_PER_BVEC < 2);
+> >  	pages += entries_left * (PAGE_PTRS_PER_BVEC - 1);
+> >  
+> > -	size = iov_iter_get_pages(iter, pages, LONG_MAX, nr_pages, &offset);
+> > +	size = iov_iter_get_pages(iter, pages, bytes_left, nr_pages,
+> > +				  &offset);
+> >  	if (unlikely(size <= 0))
+> >  		return size ? size : -EFAULT;
+> >  
+> > diff --git a/block/blk-settings.c b/block/blk-settings.c
+> > index 902c40d67120..e270e31519a1 100644
+> > --- a/block/blk-settings.c
+> > +++ b/block/blk-settings.c
+> > @@ -32,6 +32,7 @@ EXPORT_SYMBOL_GPL(blk_queue_rq_timeout);
+> >   */
+> >  void blk_set_default_limits(struct queue_limits *lim)
+> >  {
+> > +	lim->max_bio_bytes = UINT_MAX;
+> >  	lim->max_segments = BLK_MAX_SEGMENTS;
+> >  	lim->max_discard_segments = 1;
+> >  	lim->max_integrity_segments = 0;
+> 
+> What about the limit setup for stacked devices ? Leaving it to UINT_MAX is OK ?
+> If for your use case you add dm-linear on top of the device and rerun your test,
+> don't you get again slow performance ?
 
-At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
-("riscv: Move kernel mapping outside of linear mapping") as reported
-here https://github.com/starfive-tech/linux/issues/17.
+After applying of multipage bvec, max bio size is UINT_MAX. So set to UINT_MAX
+as a default. As you comment, performance is not improved if limitation of bio
+size is not in stacked device. Limit of bio size is needed in both of physical
+device and statcked device to improve performance.
+Currently I want to focus on physical devices only. After this, I'll prepare
+patch for stacked devices.
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/include/asm/page.h       |  13 +++-
- arch/riscv/include/asm/sections.h   |  17 +++++
- arch/riscv/include/asm/set_memory.h |   8 ---
- arch/riscv/kernel/setup.c           |  11 +--
- arch/riscv/mm/init.c                | 102 ++++++++++++----------------
- 5 files changed, 75 insertions(+), 76 deletions(-)
+> 
+> > @@ -100,6 +101,24 @@ void blk_queue_bounce_limit(struct request_queue *q, enum blk_bounce bounce)
+> >  }
+> >  EXPORT_SYMBOL(blk_queue_bounce_limit);
+> >  
+> > +/**
+> > + * blk_queue_max_bio_bytes - set bio max size for queue
+> > + * @q: the request queue for the device
+> > + * @bytes : bio max bytes to be set
+> > + *
+> > + * Description:
+> > + *    Set proper bio max size to optimize queue operating.
+> > + **/
+> > +void blk_queue_max_bio_bytes(struct request_queue *q, unsigned int bytes)
+> > +{
+> > +	struct queue_limits *limits = &q->limits;
+> > +	unsigned int max_bio_bytes = round_up(bytes, PAGE_SIZE);
+> > +
+> > +	limits->max_bio_bytes = max_t(unsigned int, max_bio_bytes,
+> > +				      BIO_MAX_VECS * PAGE_SIZE);
+> > +}
+> > +EXPORT_SYMBOL(blk_queue_max_bio_bytes);
+> 
+> Why does this need to be exported ?
 
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 6e004d8fda4d..349e4f9874cc 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -95,6 +95,7 @@ extern unsigned long va_kernel_pa_offset;
- #endif
- extern unsigned long va_kernel_xip_pa_offset;
- extern unsigned long pfn_base;
-+extern uintptr_t load_sz;
- #define ARCH_PFN_OFFSET		(pfn_base)
- #else
- #define va_pa_offset		0
-@@ -108,6 +109,11 @@ extern unsigned long pfn_base;
- extern unsigned long kernel_virt_addr;
- 
- #ifdef CONFIG_64BIT
-+#define is_kernel_mapping(x)	\
-+	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-+#define is_linear_mapping(x)	\
-+	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
-+
- #define linear_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_pa_offset))
- #define kernel_mapping_pa_to_va(y)	({						\
- 	unsigned long _y = y;								\
-@@ -127,10 +133,15 @@ extern unsigned long kernel_virt_addr;
- 
- #define __va_to_pa_nodebug(x)	({						\
- 	unsigned long _x = x;							\
--	(_x < kernel_virt_addr) ?						\
-+	is_linear_mapping(_x) ?							\
- 		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
- 	})
- #else
-+#define is_kernel_mapping(x)	\
-+	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-+#define is_linear_mapping(x)	\
-+	((x) >= PAGE_OFFSET)
-+
- #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
- #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
- #endif /* CONFIG_64BIT */
-diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-index 8a303fb1ee3b..32336e8a17cb 100644
---- a/arch/riscv/include/asm/sections.h
-+++ b/arch/riscv/include/asm/sections.h
-@@ -6,6 +6,7 @@
- #define __ASM_SECTIONS_H
- 
- #include <asm-generic/sections.h>
-+#include <linux/mm.h>
- 
- extern char _start[];
- extern char _start_kernel[];
-@@ -13,4 +14,20 @@ extern char __init_data_begin[], __init_data_end[];
- extern char __init_text_begin[], __init_text_end[];
- extern char __alt_start[], __alt_end[];
- 
-+static inline bool is_va_kernel_text(uintptr_t va)
-+{
-+	uintptr_t start = (uintptr_t)_start;
-+	uintptr_t end = (uintptr_t)__init_data_begin;
-+
-+	return va >= start && va < end;
-+}
-+
-+static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
-+{
-+	uintptr_t start = (uintptr_t)lm_alias(_start);
-+	uintptr_t end = (uintptr_t)lm_alias(__init_data_begin);
-+
-+	return va >= start && va < end;
-+}
-+
- #endif /* __ASM_SECTIONS_H */
-diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-index 7a411fed9e0e..c0b41ed218e1 100644
---- a/arch/riscv/include/asm/set_memory.h
-+++ b/arch/riscv/include/asm/set_memory.h
-@@ -17,13 +17,11 @@ int set_memory_x(unsigned long addr, int numpages);
- int set_memory_nx(unsigned long addr, int numpages);
- int set_memory_rw_nx(unsigned long addr, int numpages);
- int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int));
--void protect_kernel_text_data(void);
- #else
- static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
--static inline void protect_kernel_text_data(void) {}
- static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
- static inline int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int))
- {
-@@ -31,12 +29,6 @@ static inline int set_kernel_memory(char *start, char *end, int (*set_memory)(un
- }
- #endif
- 
--#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
--void protect_kernel_linear_mapping_text_rodata(void);
--#else
--static inline void protect_kernel_linear_mapping_text_rodata(void) {}
--#endif
--
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
- bool kernel_page_present(struct page *page);
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 4db4d0b5911f..b3d0895ce5f7 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -290,11 +290,6 @@ void __init setup_arch(char **cmdline_p)
- 	init_resources();
- 	sbi_init();
- 
--	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
--		protect_kernel_text_data();
--		protect_kernel_linear_mapping_text_rodata();
--	}
--
- #ifdef CONFIG_SWIOTLB
- 	swiotlb_init(1);
- #endif
-@@ -333,11 +328,9 @@ subsys_initcall(topology_init);
- 
- void free_initmem(void)
- {
--	unsigned long init_begin = (unsigned long)__init_begin;
--	unsigned long init_end = (unsigned long)__init_end;
--
- 	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
--		set_memory_rw_nx(init_begin, (init_end - init_begin) >> PAGE_SHIFT);
-+		set_kernel_memory(lm_alias(__init_begin), lm_alias(__init_end),
-+				  IS_ENABLED(CONFIG_64BIT) ? set_memory_rw : set_memory_rw_nx);
- 
- 	free_initmem_default(POISON_FREE_INITMEM);
- }
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 2d80088f33d5..6b70c345cfc4 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -425,6 +425,42 @@ asmlinkage void __init __copy_data(void)
- }
- #endif
- 
-+#ifdef CONFIG_STRICT_KERNEL_RWX
-+static __init pgprot_t pgprot_from_va(uintptr_t va)
-+{
-+	if (is_va_kernel_text(va))
-+		return PAGE_KERNEL_READ_EXEC;
-+
-+	/*
-+	 * In 64b kernel, the kernel mapping is outside the linear mapping so we
-+	 * must protect its linear mapping alias from being executed and written.
-+	 * And rodata section is marked readonly in mark_rodata_ro.
-+	 */
-+	if (IS_ENABLED(CONFIG_64BIT) && is_va_kernel_lm_alias_text(va))
-+		return PAGE_KERNEL_READ;
-+
-+	return PAGE_KERNEL;
-+}
-+
-+void mark_rodata_ro(void)
-+{
-+	set_kernel_memory(__start_rodata, _data, set_memory_ro);
-+	if (IS_ENABLED(CONFIG_64BIT))
-+		set_kernel_memory(lm_alias(__start_rodata), lm_alias(_data),
-+				  set_memory_ro);
-+
-+	debug_checkwx();
-+}
-+#else
-+static __init pgprot_t pgprot_from_va(uintptr_t va)
-+{
-+	if (IS_ENABLED(CONFIG_64BIT) && !is_kernel_mapping(va))
-+		return PAGE_KERNEL;
-+
-+	return PAGE_KERNEL_EXEC;
-+}
-+#endif /* CONFIG_STRICT_KERNEL_RWX */
-+
- /*
-  * setup_vm() is called from head.S with MMU-off.
-  *
-@@ -454,7 +490,8 @@ uintptr_t xiprom, xiprom_sz;
- #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
- #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
- 
--static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-+static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
-+					    __always_unused bool early)
- {
- 	uintptr_t va, end_va;
- 
-@@ -473,7 +510,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
- 				   map_size, PAGE_KERNEL);
- }
- #else
--static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-+static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
- {
- 	uintptr_t va, end_va;
- 
-@@ -481,7 +518,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
- 	for (va = kernel_virt_addr; va < end_va; va += map_size)
- 		create_pgd_mapping(pgdir, va,
- 				   load_pa + (va - kernel_virt_addr),
--				   map_size, PAGE_KERNEL_EXEC);
-+				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
- }
- #endif
- 
-@@ -558,7 +595,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	 * us to reach paging_init(). We map all memory banks later
- 	 * in setup_vm_final() below.
- 	 */
--	create_kernel_page_table(early_pg_dir, map_size);
-+	create_kernel_page_table(early_pg_dir, map_size, true);
- 
- #ifndef __PAGETABLE_PMD_FOLDED
- 	/* Setup early PMD for DTB */
-@@ -634,22 +671,6 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- #endif
- }
- 
--#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
--void protect_kernel_linear_mapping_text_rodata(void)
--{
--	unsigned long text_start = (unsigned long)lm_alias(_start);
--	unsigned long init_text_start = (unsigned long)lm_alias(__init_text_begin);
--	unsigned long rodata_start = (unsigned long)lm_alias(__start_rodata);
--	unsigned long data_start = (unsigned long)lm_alias(_data);
--
--	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
--	set_memory_nx(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
--
--	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--}
--#endif
--
- static void __init setup_vm_final(void)
- {
- 	uintptr_t va, map_size;
-@@ -682,21 +703,15 @@ static void __init setup_vm_final(void)
- 		map_size = best_map_size(start, end - start);
- 		for (pa = start; pa < end; pa += map_size) {
- 			va = (uintptr_t)__va(pa);
--			create_pgd_mapping(swapper_pg_dir, va, pa,
--					   map_size,
--#ifdef CONFIG_64BIT
--					   PAGE_KERNEL
--#else
--					   PAGE_KERNEL_EXEC
--#endif
--					);
- 
-+			create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
-+					   pgprot_from_va(va));
- 		}
- 	}
- 
- #ifdef CONFIG_64BIT
- 	/* Map the kernel */
--	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
-+	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
- #endif
- 
- 	/* Clear fixmap PTE and PMD mappings */
-@@ -727,35 +742,6 @@ static inline void setup_vm_final(void)
- }
- #endif /* CONFIG_MMU */
- 
--#ifdef CONFIG_STRICT_KERNEL_RWX
--void __init protect_kernel_text_data(void)
--{
--	unsigned long text_start = (unsigned long)_start;
--	unsigned long init_text_start = (unsigned long)__init_text_begin;
--	unsigned long init_data_start = (unsigned long)__init_data_begin;
--	unsigned long rodata_start = (unsigned long)__start_rodata;
--	unsigned long data_start = (unsigned long)_data;
--	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
--
--	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
--	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
--	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
--	/* rodata section is marked readonly in mark_rodata_ro */
--	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
--}
--
--void mark_rodata_ro(void)
--{
--	unsigned long rodata_start = (unsigned long)__start_rodata;
--	unsigned long data_start = (unsigned long)_data;
--
--	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--
--	debug_checkwx();
--}
--#endif
--
- #ifdef CONFIG_KEXEC_CORE
- /*
-  * reserve_crashkernel() - reserves memory for crash kernel
--- 
-2.30.2
+I think it might be good for usability in the other module, like as
+the other exported functions in blk-settings.c
 
+> 
+> > +
+> >  /**
+> >   * blk_queue_max_hw_sectors - set max sectors for a request for this queue
+> >   * @q:  the request queue for the device
+> > diff --git a/include/linux/bio.h b/include/linux/bio.h
+> > index a0b4cfdf62a4..f1a99f0a240c 100644
+> > --- a/include/linux/bio.h
+> > +++ b/include/linux/bio.h
+> > @@ -106,6 +106,8 @@ static inline void *bio_data(struct bio *bio)
+> >  	return NULL;
+> >  }
+> >  
+> > +extern unsigned int bio_max_size(struct bio *bio);
+> 
+> No need for extern.
+
+If not, compile error - implicit declaration of function -  is occured
+in some environment(-Werror=implicit-function-declaration).
+
+> 
+> > +
+> >  /**
+> >   * bio_full - check if the bio is full
+> >   * @bio:	bio to check
+> > @@ -119,7 +121,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+> >  	if (bio->bi_vcnt >= bio->bi_max_vecs)
+> >  		return true;
+> >  
+> > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> > +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
+> >  		return true;
+> >  
+> >  	return false;
+> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> > index 1255823b2bc0..861888501fc0 100644
+> > --- a/include/linux/blkdev.h
+> > +++ b/include/linux/blkdev.h
+> > @@ -326,6 +326,8 @@ enum blk_bounce {
+> >  };
+> >  
+> >  struct queue_limits {
+> > +	unsigned int		max_bio_bytes;
+> > +
+> >  	enum blk_bounce		bounce;
+> >  	unsigned long		seg_boundary_mask;
+> >  	unsigned long		virt_boundary_mask;
+> > @@ -1132,6 +1134,7 @@ extern void blk_abort_request(struct request *);
+> >   * Access functions for manipulating queue properties
+> >   */
+> >  extern void blk_cleanup_queue(struct request_queue *);
+> > +extern void blk_queue_max_bio_bytes(struct request_queue *, unsigned int);
+> 
+> No need for extern.
+> 
+> >  void blk_queue_bounce_limit(struct request_queue *q, enum blk_bounce limit);
+> >  extern void blk_queue_max_hw_sectors(struct request_queue *, unsigned int);
+> >  extern void blk_queue_chunk_sectors(struct request_queue *, unsigned int);
+> > 
