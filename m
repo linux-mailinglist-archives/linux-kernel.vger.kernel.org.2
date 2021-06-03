@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD84399C24
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B1C399C1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhFCH4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 03:56:35 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:56144 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhFCH4d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 03:56:33 -0400
-Received: by mail-wm1-f47.google.com with SMTP id g204so2784313wmf.5;
-        Thu, 03 Jun 2021 00:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=RJdmLE/yTkNDz8TCaPxLdRAfZfSVzNL4J+UU5OLCt1g=;
-        b=o1IkbqQGQr7h0i/k+AVsIyb8JB2BCvbN38sh47wgpqSEEDaMjyv7wpT4oxt2SPSAeE
-         liczbEXHDdG1adJg+tKaZfOHpXyV4/rzOoOM+LLpUel+GGLLEDxF98lEUFL3vdan8p/Q
-         fEkGkAv1TX5axLTr40kz+IXkId5xc+waKPtlg3uxYYmSzIN/x7IbFIiRLJuCS5E+uxd8
-         k+LP3a1r0v96/GlJRm+A7ettxHxMswzt3IHR5YrUMoLhelvTFgv8zFwWgSTCrzz4nM0K
-         q4RqfgaJeeED2xv7Q41CLCArLN/VLwk/o0uSeTsiQxSogbFVTw7wdP2fkG8zjWBchbZq
-         zzUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=RJdmLE/yTkNDz8TCaPxLdRAfZfSVzNL4J+UU5OLCt1g=;
-        b=tCgUMGIpVNw1ohwvvHUzxoPYiNeN9Irrp8tfT0aHPdft44AXpdlesahyMhj8v9sOwX
-         v+1Xs8KL10NMSs5M+eJiV1l9a2PeJIB5hCwFPbPRkGoJZiXOx4VejXXnq3PRc3hDaiMV
-         wzuPAyhEJZe78Txj2zsH1nN/UiX2ac6cgJx+2fvek5h7dQDuaDSD0a8AkfxOY13qUWX9
-         l5mhBLx3tmd3A9u1/6VhFoJLMAi09FttnXI7YlQ8W+Vc3iTky98I6KbRl2W0ded+KPfj
-         Jo9GPxec9WQWDjAjHCGWOtdeln4qxvZs/aac9WsgGnwp9bjJY3B2ROeUrdzMixs0X/Cq
-         iB3g==
-X-Gm-Message-State: AOAM531lCfFpGPlkslDgFv00XtnhAerJ2Fu/XDOysqStw7ZsGjddqYVA
-        BrOoVvbWuRqe+IrPKem0gQPz65F/zADtJA==
-X-Google-Smtp-Source: ABdhPJzsPjhtRZ+svmkVZt8PJrH8VRNr12TkMbyxTyDn/h281WfcT0y5hhIOm8S5q7tya3pT7myzNw==
-X-Received: by 2002:a05:600c:1913:: with SMTP id j19mr8782353wmq.167.1622706828428;
-        Thu, 03 Jun 2021 00:53:48 -0700 (PDT)
-Received: from [192.168.178.196] ([171.33.179.232])
-        by smtp.gmail.com with ESMTPSA id z188sm1941611wme.38.2021.06.03.00.53.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 00:53:48 -0700 (PDT)
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Lauren=c8=9biu_P=c4=83ncescu?= <lpancescu@gmail.com>
-Subject: Backporting fix for #199981 to 4.19.y?
-Message-ID: <c75fcd12-e661-bc03-e077-077799ef1c44@gmail.com>
-Date:   Thu, 3 Jun 2021 09:53:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S229925AbhFCHzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 03:55:38 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:12499 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhFCHzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 03:55:37 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FwdSb5ljZzB9vM;
+        Thu,  3 Jun 2021 09:53:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RYPKLwJGT-wU; Thu,  3 Jun 2021 09:53:51 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FwdSZ1MPZzB9tX;
+        Thu,  3 Jun 2021 09:53:50 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 01BEC8B846;
+        Thu,  3 Jun 2021 09:53:50 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ge7X32-R1Vfi; Thu,  3 Jun 2021 09:53:49 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B95918B842;
+        Thu,  3 Jun 2021 09:53:49 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 7BE7964948; Thu,  3 Jun 2021 07:53:49 +0000 (UTC)
+Message-Id: <bf1e074f6fb213a1c4cc4964370bdce4b648d647.1622706812.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: Remove CONFIG_PPC_MMU_NOHASH_32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, trix@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  3 Jun 2021 07:53:49 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there,
+Since commit Fixes: 555904d07eef ("powerpc/8xx: MM_SLICE is not needed anymore"),
+CONFIG_PPC_MMU_NOHASH_32 has not been used.
 
-I'm running Debian Buster on an old Asus EeePC and I see the battery 
-always at 100% when unplugged, with an estimated battery life of 4200 
-hours, no matter how long I've been using it without AC power.
+Remove it.
 
-I suspect this might be bug #201351, marked as duplicate of #199981 and 
-fixed in 5.0-rc1. Would you please consider backporting it to the 4.19 
-LTS kernel?
+Reported-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/platforms/Kconfig.cputype | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Salvatore Bonaccorso of the Debian Kernel Team wrote me on debian-kernel 
-they follow the upstream 4.19.y, so the best chance of getting the fix 
-in Debian is for you to include the patch.
+diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
+index 885140055b7a..dc7c46f92302 100644
+--- a/arch/powerpc/platforms/Kconfig.cputype
++++ b/arch/powerpc/platforms/Kconfig.cputype
+@@ -424,10 +424,6 @@ config PPC_MMU_NOHASH
+ 	def_bool y
+ 	depends on !PPC_BOOK3S
+ 
+-config PPC_MMU_NOHASH_32
+-	def_bool y
+-	depends on PPC_MMU_NOHASH && PPC32
+-
+ config PPC_BOOK3E_MMU
+ 	def_bool y
+ 	depends on FSL_BOOKE || PPC_BOOK3E
+-- 
+2.25.0
 
-Many thanks,
-Laurențiu
-
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=201351
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=199981
-[3] 
-https://patchwork.kernel.org/project/linux-acpi/patch/4426745.BlFkQnxG1M@aspire.rjw.lan/
