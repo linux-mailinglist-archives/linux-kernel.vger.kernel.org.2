@@ -2,231 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8A739A510
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E0239A516
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhFCP4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
+        id S229982AbhFCP4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhFCP40 (ORCPT
+        with ESMTP id S229956AbhFCP4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:56:26 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04C5C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 08:54:27 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id w15so7725682ljo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:54:27 -0700 (PDT)
+        Thu, 3 Jun 2021 11:56:47 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895D2C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 08:54:47 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id d9so6844768ioo.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:54:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KnUxfFc49U1kaTX0xn6lq4EXnbOa1XnWH3SflMbe0J0=;
-        b=QXKKkyGMMu+GZVJ73OGf9WXp6o4asES7jH+vvLnZsa7hB5TrvgK4gDk17Jos8H6BBJ
-         92lYztrSblt6SBQWB4xI4NqTHbG+H5UYzrTsoyNDe7upeAnw8t0CAZ4b54e7LUyC/d2U
-         yIbnNLkPi1cL96b9jSaaqXvOMatOPUTS0cc1dHgatknnWV+XHcDl/ALnH8gk4WCbhKVG
-         9kcsvVOqpoF0aeyMJWfI7Q2vOoyPCHgS0uw8etz7Yq4juAT5aQgv+/Ywu9IG0MiJK8Je
-         UuXgpmD91YtxhVTQsH/RwyCqrBbxv+Sut/hFCCnAp8tU1U7e/qf0Ke/wfG351VhKnAwR
-         DRzg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OQ8/izGugLT2mg1DaIwELKOTXax/WeIQBPj5/sAmtrM=;
+        b=sWRObvHAN4uM8PnmujHncknfBPxl21ZOniXu3Dux67+WGcu23NMh3W6RrJOkoxB8QA
+         2OU+0KkLfMZIVPk1kNPOPv7swr00MTbUX6ZKkP/YEFnc/WK+mf58qnArZuxOspM88n0y
+         LpTS5ZXOO2bJ7nVweslbdch4xpF6+GL+r+TVUGMoXsRIw7N1rJM0wvnJabdSSjXtkRnc
+         g4LnDYFI35vBVCcwun/cXvfB+zOKM9jMUBIZnA2+uZFzKEZzUn2jJ/EdPb4vo6PjTHw9
+         N9HUkRZU6hA2vXjjzTFurjLEkd6gbsPzExUJazanOQoj3bVj3VlB/VnM3okLFx+MtMq1
+         /Lbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=KnUxfFc49U1kaTX0xn6lq4EXnbOa1XnWH3SflMbe0J0=;
-        b=QTQ8BYtdA5pMDRJ+CWo3cNoml4cwPWAWDghWmCAJFlUdxTq3ga9Gf0L8L8hP+Z30Df
-         jmvZq/eL/DKYoigjXmw5kC9Fg6vODcijWKhH+G78ADL8jrrQPctikWbe32I5dBQQ9mqF
-         L5oSGb0OJLEvvIA9cx1Q+kP7mFnyIhgw4eI2FuUA8uXXtOnQvsKI9Pzpc2W/BSU9WVYy
-         PG3RbDDS/BDxpdxuA/xi1h5SYjnjxhd13d3yZxCrIqqGYwMybcKNkpbMTFkrCk4lzlrg
-         Lt7N7Gbipbqk/gnzEzOGmBdOZh6IbziSQfa3KjYN+Ur4KbQ7G8jQe0/KjBpJVDdKaagS
-         rLww==
-X-Gm-Message-State: AOAM530POJLjdqp42F9KLEKYrG9Od/H2oJZDcRZhAnel8dx93rGxwTP7
-        1qEZWnZpBQnYrsnGFQ6Reoc=
-X-Google-Smtp-Source: ABdhPJw6ql5YqT4qqLEeeUQpckJoVIJmEGAZWi30Y5kgGMRh3n12ueFCjClKbkiML+hGidTojlzamA==
-X-Received: by 2002:a05:651c:50f:: with SMTP id o15mr57865ljp.452.1622735666031;
-        Thu, 03 Jun 2021 08:54:26 -0700 (PDT)
-Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4yb9bh06yk5jm2qt-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:3d09:bda0:2327:559b])
-        by smtp.gmail.com with ESMTPSA id a20sm401857ljn.94.2021.06.03.08.54.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 08:54:25 -0700 (PDT)
-From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
-To:     Sami Tolvanen <samitolvanen@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>, morbo@google.com
-Subject: [PATCH v2 1/1] pgo: Fix sleep in atomic section in prf_open()
-Date:   Thu,  3 Jun 2021 18:53:17 +0300
-Message-Id: <20210603155318.46346-1-jarmo.tiitto@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        bh=OQ8/izGugLT2mg1DaIwELKOTXax/WeIQBPj5/sAmtrM=;
+        b=aOs7bDArSrwXVg3AAOsAt0G8JLkV5S1GCn42FoIlHvhLa3HwLXlkvdSyK+xVzwpKs0
+         2rvXJfYmshcha0Yse0EK65xaHRHfw9tXjfl3SdRyVZAoIxdU5duPuS39EKRLRRytDA5O
+         DMx/98HlGs0D4FkwOjqzfiA+vE91G+y5k2mYaTPtgr/QDi0d1wtwtYn9UzITTy/DLC9X
+         VLmPt0rR4ZhCS6Pfd7bDYd0kZULFT5UpqV68FcSY36mO2IYJ19oBZ5mtVDARkNLU5g6u
+         VN2XEgi7DUhP/jmLEWqlAVmCJuH2BDla+VxPKi8cHyF1Y61PWkX5uTV5m8yfgILGFKS3
+         VfIw==
+X-Gm-Message-State: AOAM531ZbljyahV9sjxoPImAf6kGr9yJOlkfFLrKxTSkUZ+sYlgEfdhe
+        BYthl/uoVaCdHiK71h2gQxsfNrHmMqiuC4Q1
+X-Google-Smtp-Source: ABdhPJzaVvt+H2s1I25emL3iM4LnUpQGECU4+1p6n6DiGlCBOlOcFHd7oP51g1mmEsRRfRUYZSP7rA==
+X-Received: by 2002:a6b:7b0a:: with SMTP id l10mr6024iop.120.1622735686716;
+        Thu, 03 Jun 2021 08:54:46 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id x6sm2002769ilg.87.2021.06.03.08.54.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 08:54:46 -0700 (PDT)
+Subject: Re: [PATCH][next] null_blk: Fix null pointer dereference on
+ nullb->disk on blk_cleanup_disk call
+To:     Colin King <colin.king@canonical.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-block@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210602100659.11058-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ce16729c-01c6-7ce8-6c06-c43439186683@kernel.dk>
+Date:   Thu, 3 Jun 2021 09:54:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602100659.11058-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In prf_open() the required buffer size can be so large that
-vzalloc() may sleep thus triggering bug:
+On 6/2/21 4:06 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The error handling on a nullb->disk allocation currently jumps to
+> out_cleanup_disk that calls blk_cleanup_disk with a null pointer causing
+> a null pointer dereference issue. Fix this by jumping to out_cleanup_tags
+> instead.
 
-======
- BUG: sleeping function called from invalid context at include/linux/sched/mm.h:201
- in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 337, name: cat
- CPU: 1 PID: 337 Comm: cat Not tainted 5.13.0-rc2-24-hack+ #154
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
- Call Trace:
-  dump_stack+0xc7/0x134
-  ___might_sleep+0x177/0x190
-  __might_sleep+0x5a/0x90
-  kmem_cache_alloc_node_trace+0x6b/0x3a0
-  ? __get_vm_area_node+0xcd/0x1b0
-  ? dput+0x283/0x300
-  __get_vm_area_node+0xcd/0x1b0
-  __vmalloc_node_range+0x7b/0x420
-  ? prf_open+0x1da/0x580
-  ? prf_open+0x32/0x580
-  ? __llvm_profile_instrument_memop+0x36/0x50
-  vzalloc+0x54/0x60
-  ? prf_open+0x1da/0x580
-  prf_open+0x1da/0x580
-  full_proxy_open+0x211/0x370
-  ....
-======
+Applied, thanks.
 
-Since we can't vzalloc while holding pgo_lock,
-split the code into steps:
-* First get buffer size via prf_buffer_size()
-  and release the lock.
-* Round up to the page size and allocate the buffer.
-* Finally re-acquire the pgo_lock and call prf_serialize().
-  prf_serialize() will now check if the buffer is large enough
-  and returns -EAGAIN if it is not.
-
-New in this v2 patch:
-The -EAGAIN case was determined to be such rare event that
-running following in a loop:
-
-$cat /sys/kernel/debug/pgo/vmlinux.profraw > vmlinux.profdata;
-
-Didn't trigger it, and I don't know if it ever may occur at all.
-
-Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
----
- kernel/pgo/fs.c | 52 ++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 38 insertions(+), 14 deletions(-)
-
-diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
-index ef985159dad3..9afd6f001a1b 100644
---- a/kernel/pgo/fs.c
-+++ b/kernel/pgo/fs.c
-@@ -24,13 +24,14 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
-+#include <linux/mm.h>
- #include "pgo.h"
- 
- static struct dentry *directory;
- 
- struct prf_private_data {
- 	void *buffer;
--	unsigned long size;
-+	size_t size;
- };
- 
- /*
-@@ -213,6 +214,7 @@ static inline unsigned long prf_get_padding(unsigned long size)
- 	return 7 & (sizeof(u64) - size % sizeof(u64));
- }
- 
-+/* Note: caller *must* hold pgo_lock */
- static unsigned long prf_buffer_size(void)
- {
- 	return sizeof(struct llvm_prf_header) +
-@@ -225,18 +227,21 @@ static unsigned long prf_buffer_size(void)
- 
- /*
-  * Serialize the profiling data into a format LLVM's tools can understand.
-+ * Note: p->buffer must point into vzalloc()'d
-+ * area of at least prf_buffer_size() in size.
-  * Note: caller *must* hold pgo_lock.
-  */
--static int prf_serialize(struct prf_private_data *p)
-+static int prf_serialize(struct prf_private_data *p, size_t buf_size)
- {
- 	int err = 0;
- 	void *buffer;
- 
-+	/* get buffer size, again. */
- 	p->size = prf_buffer_size();
--	p->buffer = vzalloc(p->size);
- 
--	if (!p->buffer) {
--		err = -ENOMEM;
-+	/* check for unlikely overflow. */
-+	if (p->size > buf_size) {
-+		err = -EAGAIN;
- 		goto out;
- 	}
- 
-@@ -259,27 +264,46 @@ static int prf_open(struct inode *inode, struct file *file)
- {
- 	struct prf_private_data *data;
- 	unsigned long flags;
--	int err;
-+	size_t buf_size;
-+	int err = 0;
- 
- 	data = kzalloc(sizeof(*data), GFP_KERNEL);
- 	if (!data) {
- 		err = -ENOMEM;
--		goto out;
-+		goto out_free;
- 	}
- 
-+	/* get buffer size */
- 	flags = prf_lock();
-+	buf_size = prf_buffer_size();
-+	prf_unlock(flags);
- 
--	err = prf_serialize(data);
--	if (unlikely(err)) {
--		kfree(data);
--		goto out_unlock;
-+	/* allocate, round up to page size. */
-+	buf_size = PAGE_ALIGN(buf_size);
-+	data->buffer = vzalloc(buf_size);
-+
-+	if (!data->buffer) {
-+		err = -ENOMEM;
-+		goto out_free;
- 	}
- 
-+	/* try serialize and get actual
-+	 * data length in data->size
-+	 */
-+	flags = prf_lock();
-+	err = prf_serialize(data, buf_size);
-+	prf_unlock(flags);
-+
-+	if (err)
-+		goto out_free;
-+
- 	file->private_data = data;
-+	return 0;
- 
--out_unlock:
--	prf_unlock(flags);
--out:
-+out_free:
-+	if (data)
-+		vfree(data->buffer);
-+	kfree(data);
- 	return err;
- }
- 
-
-base-commit: 5d0cda65918279ada060417c5fecb7e86ccb3def
 -- 
-2.31.1
+Jens Axboe
 
