@@ -2,143 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137F9399C38
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A266399C3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhFCIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:04:12 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:44742 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhFCIEL (ORCPT
+        id S229744AbhFCIFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhFCIFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:04:11 -0400
-Received: by mail-il1-f200.google.com with SMTP id h6-20020a92c0860000b02901e0cde08c7fso3561570ile.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 01:02:27 -0700 (PDT)
+        Thu, 3 Jun 2021 04:05:03 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E47AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 01:03:19 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id t16-20020a05600c1990b02901a0d45ff03aso1754974wmq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 01:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pGTUuUf++uwHiEUpZfhT2pKcEjTOJkErHvQn5crRwjM=;
+        b=S5e16vNu62dzer1qQ3cJcSDC0M//nivFeGLBGF4KnfmA/NrqjSG8gSUfV7xSCLlUCA
+         xvPSUZVfrnBjRcbux0UqhZ+Zbeu3q4H9/WvcR9EpykcVHKDcwWw+Q8Uu1ha91QpygkwM
+         SMB931+6LfQD45yAQO2gigT0f1O/EB+irUAYXB7xLdNk/JlgyAzjY1EmkdBSPUbtSB57
+         yRBAnNSC9WAEYBMDoGsTvHLypmyytKFzNXES2qc0Lm6Q9fj2spfOmPKsT8e1M+852jTU
+         UnsoF1rqZpwNrYFW9JNwmBzIVTq0PukwUGGKSuDiyQJWGVrxrOS3qjSVPuEqbSYAbO6+
+         8o1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=A2xCjM9zw3BoyRpLyyOu6YxuC9UXqbQYs5IWirkFgts=;
-        b=CEuB4mdO1oQdhCddqJyUcWp3scyl04qkfI2lgwKGAj8egxRHuLAhqQ7Aa9ujlpujrz
-         b4dqyCU8jr8s+b7PC8JHJd2PDgyLSFSdC6GReGriVyQzr69xTsNPu+eq011FBAqc29ZV
-         FosmLuEIhU53knyUcuPc6qxcRdBIvZLZgrgVANv8yrRhWebC6ZvaVbfBdsqpaSklDj12
-         Kmka71/mMQk1CFV/gEwlWvUz4HeSh2deyoGzhFI16f156lZOWQx4eW3XCgxjZaGhrRXg
-         NBhm3GbwTDTVEMDFon63s+bRVTZFh4BCD47L4wztYXptNTE3SmUzo+Ji7gaB8mvTCylc
-         u7zg==
-X-Gm-Message-State: AOAM530xXeyRZgkoLgkfh3gWI7GFOlo/DS50W8lG27lW9dSx4b5LJz1D
-        DHBhYWV5NE+f15JWC69HXrk9SO9JTEQHGkmIl+oG2hFsUv7C
-X-Google-Smtp-Source: ABdhPJzIZv4eIgpza57l6WszkbQE/7A4q2V43YjWjffz1KBcLLZZz45Y/j9w4D9qWWqZPxWDBE59MLTDQfpAvmRdEHDE29PL7viM
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pGTUuUf++uwHiEUpZfhT2pKcEjTOJkErHvQn5crRwjM=;
+        b=V5RZL4j/oZyACuSDB5GClI1xaW3ADUZI6F9Ti6qN6je8CM939sMVVoC084mY5Pg/cF
+         +oU8cGIUsxp3KE4KBImxIIHmHDD/vlOWwM7URO6ii3+IyelhEPnbb2bV3lwCQMI9B2Ai
+         RTftYYuvV6OtNemRpdcZ18PQVndb/WnE/OttNq+WnDi+7VNqr2kCnoDOC6AXMslsiuhz
+         ZvRXSBsajxWHvXJzwOU1BHi9/Njo2nnvv1XJJeBcNUOpFSmvXLBLwNklpxk8QzsVrxkZ
+         x5uj6nv2DyXbOTo+2EWRLR+NbfTVuuvkWGyP0RUpAhMoIRsOoXo22BzuLQWSUdBQW8BY
+         5rSA==
+X-Gm-Message-State: AOAM532g0W2IQdO1g9x/gfP2smwkHt23LntlSkx+6JkNc/AR+nYRmEO3
+        Lc5KEbkqzzSqW9yw4qtaiZSnPQ==
+X-Google-Smtp-Source: ABdhPJxkpZubE33cVuHKuAxAAy/Tp7QqD1UrHyJjxrReWhZ3BOInha8oib7kcBJJs+ySvan+sAD8xg==
+X-Received: by 2002:a7b:c4d0:: with SMTP id g16mr18421968wmk.181.1622707397928;
+        Thu, 03 Jun 2021 01:03:17 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id m65sm1975644wmm.19.2021.06.03.01.03.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Jun 2021 01:03:17 -0700 (PDT)
+Subject: Re: [PATCH v4 2/4] nvmem: bootcount: add bootcount driver
+To:     Nandor Han <nandor.han@vaisala.com>, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     =?UTF-8?B?VmVzYSBKw6TDpHNrZWzDpGluZW4=?= 
+        <vesa.jaaskelainen@vaisala.com>,
+        Tomas Melin <tomas.melin@vaisala.com>
+References: <cover.1620211180.git.nandor.han@vaisala.com>
+ <43e36704e9acbf89b3b29113554d3a79417d42db.1620211180.git.nandor.han@vaisala.com>
+ <b973f433-5aa6-5c93-4d60-1017495ae0a7@linaro.org>
+ <a456396b-3950-7bd2-8f5c-af2699276f82@vaisala.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <78af96b3-b07b-342b-edf2-c898c31e956e@linaro.org>
+Date:   Thu, 3 Jun 2021 09:03:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:de08:: with SMTP id e8mr3758068iok.25.1622707346829;
- Thu, 03 Jun 2021 01:02:26 -0700 (PDT)
-Date:   Thu, 03 Jun 2021 01:02:26 -0700
-In-Reply-To: <00000000000030293b05c39afd6f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fb7af205c3d7fe69@google.com>
-Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
-From:   syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>
-To:     ak@linux.intel.com, bp@alien8.de, hpa@zytor.com,
-        inglorion@google.com, jpoimboe@redhat.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a456396b-3950-7bd2-8f5c-af2699276f82@vaisala.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    324c92e5 Merge tag 'efi-urgent-2021-06-02' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1653122fd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ad5040c83f09b8e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=84fe685c02cd112a2ac3
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171e0683d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1723cc47d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: stack-out-of-bounds in profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
-Read of size 8 at addr ffffc9000163f620 by task syz-executor815/8426
-
-CPU: 1 PID: 8426 Comm: syz-executor815 Not tainted 5.13.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x202/0x31e lib/dump_stack.c:120
- print_address_description+0x5f/0x3b0 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report+0x15c/0x200 mm/kasan/report.c:436
- profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
- profile_tick+0xcd/0x120 kernel/profile.c:408
- tick_sched_handle kernel/time/tick-sched.c:227 [inline]
- tick_sched_timer+0x287/0x420 kernel/time/tick-sched.c:1373
- __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
- __hrtimer_run_queues+0x4cb/0xa60 kernel/time/hrtimer.c:1601
- hrtimer_interrupt+0x3b3/0x1040 kernel/time/hrtimer.c:1663
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
- __sysvec_apic_timer_interrupt+0xf9/0x270 arch/x86/kernel/apic/apic.c:1106
- sysvec_apic_timer_interrupt+0x8c/0xb0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:647
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0xbc/0x120 kernel/locking/spinlock.c:191
-Code: f0 48 c1 e8 03 42 80 3c 20 00 74 08 4c 89 f7 e8 ea e7 03 f8 f6 44 24 21 02 75 4e 41 f7 c7 00 02 00 00 74 01 fb bf 01 00 00 00 <e8> 1f b3 93 f7 65 8b 05 50 c4 3e 76 85 c0 74 3f 48 c7 04 24 0e 36
-RSP: 0018:ffffc9000163f620 EFLAGS: 00000206
-RAX: 1ffff920002c7ec8 RBX: ffffffff9117f258 RCX: ffffffff90e85703
-RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: ffffc9000163f6b8 R08: ffffffff818560c0 R09: fffffbfff222fe4c
-R10: fffffbfff222fe4c R11: 0000000000000000 R12: dffffc0000000000
-R13: 1ffff920002c7ec4 R14: ffffc9000163f640 R15: 0000000000000a02
- __debug_check_no_obj_freed lib/debugobjects.c:997 [inline]
- debug_check_no_obj_freed+0x5a2/0x650 lib/debugobjects.c:1018
- free_pages_prepare mm/page_alloc.c:1303 [inline]
- __free_pages_ok+0x2f5/0x1180 mm/page_alloc.c:1572
- destroy_compound_page include/linux/mm.h:939 [inline]
- __put_compound_page mm/swap.c:111 [inline]
- release_pages+0x600/0x1b80 mm/swap.c:948
- tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
- tlb_flush_mmu+0x780/0x910 mm/mmu_gather.c:249
- tlb_finish_mmu+0xcb/0x200 mm/mmu_gather.c:340
- exit_mmap+0x2c6/0x5f0 mm/mmap.c:3210
- __mmput+0x111/0x370 kernel/fork.c:1096
- exit_mm+0x67e/0x7d0 kernel/exit.c:502
- do_exit+0x6b9/0x23d0 kernel/exit.c:813
- do_group_exit+0x168/0x2d0 kernel/exit.c:923
- __do_sys_exit_group+0x13/0x20 kernel/exit.c:934
- __se_sys_exit_group+0x10/0x10 kernel/exit.c:932
- __x64_sys_exit_group+0x37/0x40 kernel/exit.c:932
- do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x446bc9
-Code: Unable to access opcode bytes at RIP 0x446b9f.
-RSP: 002b:00007ffdae409208 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004b8390 RCX: 0000000000446bc9
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
-RBP: 0000000000000001 R08: ffffffffffffffc4 R09: 0000000000000004
-R10: 00000000004004a0 R11: 0000000000000246 R12: 00000000004b8390
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
 
 
-addr ffffc9000163f620 is located in stack of task syz-executor815/8426 at offset 0 in frame:
- _raw_spin_unlock_irqrestore+0x0/0x120 kernel/locking/spinlock.c:184
+On 01/06/2021 08:58, Nandor Han wrote:
+> Hi and thanks for your answers.
+> 
+> 
+> On 5/28/21 11:23 AM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 05/05/2021 11:42, Nandor Han wrote:
+>>> In order to have a robust system we want to be able to identify and take
+>>> actions if a boot loop occurs. This is possible by using the bootcount
+>>> feature, which can be used to identify the number of times device has
+>>> booted since bootcount was last time reset. Bootcount feature (1)
+>>> requires a collaboration between bootloader and user-space, where
+>>> the bootloader will increase a counter and user-space reset it.
+>>> If the counter is not reset and a pre-established threshold is reached,
+>>> bootloader can react and take action.
+>>>
+>>> This is the kernel side implementation, which can be used to
+>>> identify the number of times device has booted since bootcount was
+>>> last time reset.
+>>>
+>>
+>> If I understand this correctly, this driver is basically exposing a 
+>> nvmem cell via sysfs.
+>>
+>> Firstly, This sounds like totally a generic functionality that needs 
+>> to go into nvmem core rather than individual drivers.
+>>
+>> Do you see any reason for this not be in core?
+> 
+> I agree that exposing a NVMEM cell via sysfs does look as a generic 
+> functionality. However, the bootcount feature contains also a magic
+> value that needs to be taken in consideration when extracting the
+> bootcount value. The size of the field storing the magic and value combo
+> is configurable as well. The driver will handle this values 
+> transparentlry for the user and expose only the validated
+> bootcount value. In case we will only use a generic implementation for
+> exposing a NVMEM cell via sysfs the aformention functionality will have
+> to be handled by userspace and this will force the userspace to have
+> knolwdge about bootcount value format and magic since they will have
+> to implement it's own functionality about this. In the current solution
+> the user only have to reset the value to 0 and that's it, the driver
+> will take care of the rest.
 
-this frame has 1 object:
- [32, 40) 'flags.i.i.i.i'
+Should this not live in userspace HAL, kernel would provide an abstract 
+interface. User space in this case which is programming the bootcount is 
+already aware of this, so am hoping that it would be able to encapsulate 
+the magic as well with in.
 
-Memory state around the buggy address:
- ffffc9000163f500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc9000163f580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc9000163f600: 00 00 00 00 f1 f1 f1 f1 00 f3 f3 f3 00 00 00 00
-                               ^
- ffffc9000163f680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc9000163f700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+Instead of accessing sysfs directly, its always recommended to access it 
+via a some abstraction HAL programs, so as to not break the userspace 
+across kernel releases, more info at 
+./Documentation/admin-guide/sysfs-rules.rst
 
+Other problem with having this in kernel is that we would endup with 
+endless number of drivers for each nvmem cell which is totally not 
+necessary.
+
+Personally I do not want to endup in such a situation where people start 
+writing drivers for each cell.
+
+
+
+> 
+>>
+>> Secondly, creating sysfs entries like this in probe will race with 
+>> userspace udev. udev might not notice this new entry in such cases.
+> 
+> Thanks for point this out. I will have a look how to fix this. I'll 
+> appriciate any advice.
+> 
+
+There is a good document from Greg KH, 
+http://kroah.com/log/blog/2013/06/26/how-to-create-a-sysfs-file-correctly/
+
+
+--srini
+>>
+>> Thirdly, You would need to document this in Documentation/ABI/
+>>
+> 
+> I'll do that.
+> 
+> 
+>> Finally I noticed that the changes to snvs_lpgpr.c  have not been cced 
+>> to the original author.
+>>
+> 
+> Sorry, my mistake. I will add it in the next patch-set.
+> <snip>
+> 
