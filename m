@@ -2,136 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6DF39A3F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4DA39A3F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhFCPHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbhFCPHW (ORCPT
+        id S231614AbhFCPId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:08:33 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:41635 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230138AbhFCPIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:07:22 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC088C06174A;
-        Thu,  3 Jun 2021 08:05:22 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id i10so9341805lfj.2;
-        Thu, 03 Jun 2021 08:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4iH2YqRuX9TbVqFy+5J3qDQrY5ch5XHp+h4ttxH/MyQ=;
-        b=GBnM2wZp9yQXhA9CUrLSHUX1wWuLlZkbRRtUXHAPLCZ1V7zajz8yxdfEwyvE4DEjsh
-         P2Dlyrpxs1d+ZmkjjKeQsho0s6nBsMjb/+pMEGEzR6dyVzdsevm8uI0CkC3c/NKhbJYU
-         VVzWOb7PsuN2XsC0qoARfu7PP+NfeRhDvL0u0fedqQP+6OHY+Jv2E0odXgj/DvepbTO5
-         pjn68Lth2HK8rnUn/58kE9yuhZ9ITKXuFUteBZJk4U0HmsIG8N5wCNSJJmMX9eQjZXhZ
-         4WOUB1xs5KKsIlqCSazCqnJtk5lKYBpTKYmsEhvweu15RDIJmEisOSPcekOZdKrjNRcv
-         QIlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4iH2YqRuX9TbVqFy+5J3qDQrY5ch5XHp+h4ttxH/MyQ=;
-        b=uktsQtlcWMV2naGt08lm+ArnN9qY5YNSkqoOutJlqIBLHA+HSjsMr+O0FudX0x21wy
-         aDH9+7AKlu5hd/jqRfKbht2+dhoZuE0tJEW7W2VQYS9wKXdJkJUiLe2Xrj1G2yruQZK6
-         Hm2KFQKg9IumVaTTbEmTeFQP8LSaUH5fZTUwYp993kHwY4wbI3TZdqgyR311VZXTK4NI
-         9mPoQm+jEK8CmjIOFm+yRwtXHu0NA35sO/5m3oJsyK7v+hrU+KxDUzj4B9aqUxxMbyN9
-         Jxe9biCraTSq912Sw3a6xONX5wKKZGLm9jRq/9uREzLlpxQqIZCg4TXDKxB5hGp4Pfzs
-         ZW+g==
-X-Gm-Message-State: AOAM533G6I2CBvB7sfueOtFY7zwm9GQWGAffZUkUkmVnysDFDL7c/BCC
-        yuxa3bzGLCAeCTNHonKQAx1+AYMJkplK5quHFts=
-X-Google-Smtp-Source: ABdhPJwQ9xBB550TWDnlNqjgr2U+Dv+fy/cjvhUI+PgFCJdk3956J4GG9gr2F9/dSF7ycTmRZePJzjgXKUZvoUjsZHo=
-X-Received: by 2002:a05:6512:3045:: with SMTP id b5mr77288lfb.273.1622732720453;
- Thu, 03 Jun 2021 08:05:20 -0700 (PDT)
+        Thu, 3 Jun 2021 11:08:31 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1FC0CE0004;
+        Thu,  3 Jun 2021 15:06:39 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] riscv: Factorize xip and !xip kernel address
+ conversion macros
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Anup Patel <anup@brainfault.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+References: <20210603082749.1256129-1-alex@ghiti.fr>
+ <20210603082749.1256129-2-alex@ghiti.fr> <20210603202748.2775f739@xhacker>
+ <64cdb4f9-06f0-59b9-acf9-6fc298db37d7@ghiti.fr>
+ <CAAhSdy2kPPrBzFCA01NSvWptoftY27+PsMzLDWFzvOzNdUByhA@mail.gmail.com>
+ <20210603215337.4da052e2@xhacker>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <e50b56f5-7405-2eef-f8e9-7d9fa4df7c77@ghiti.fr>
+Date:   Thu, 3 Jun 2021 17:06:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210602144630.161982-1-dong.menglong@zte.com.cn>
- <20210602144630.161982-3-dong.menglong@zte.com.cn> <20210603133015.gvr5wpbotkyhhtqx@wittgenstein>
-In-Reply-To: <20210603133015.gvr5wpbotkyhhtqx@wittgenstein>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 3 Jun 2021 23:05:08 +0800
-Message-ID: <CADxym3YWUBf6W4pgeSPuYKFXPXeGse0t=DW8fAm-3WvgjWkRnA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] init/do_mounts.c: create second mount for initramfs
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
-        ojeda@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Menglong Dong <dong.menglong@zte.com.cn>, masahiroy@kernel.org,
-        joe@perches.com, hare@suse.de, Jens Axboe <axboe@kernel.dk>,
-        Jan Kara <jack@suse.cz>, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org,
-        NeilBrown <neilb@suse.de>, Barret Rhoden <brho@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, palmerdabbelt@google.com,
-        arnd@arndb.de, f.fainelli@gmail.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        wangkefeng.wang@huawei.com, Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
-        pmladek@suse.com, Alexander Potapenko <glider@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, jojing64@gmail.com,
-        mingo@kernel.org, terrelln@fb.com, geert@linux-m68k.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        jeyu@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210603215337.4da052e2@xhacker>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 9:30 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-[...]
->
-> In fact you seem to be only using this struct you're introducing in this
-> single place which makes me think that it's not needed at all. So what's
-> preventing us from doing:
->
-> > +
-> > +     return do_mount_root(root->dev_name,
-> > +                          root->fs_name,
-> > +                          root_mountflags & ~MS_RDONLY,
-> > +                          root_mount_data);
-> > +}
->
-> int __init prepare_mount_rootfs(void)
-> {
->         if (is_tmpfs_enabled())
->                 return do_mount_root("tmpfs", "tmpfs",
->                                      root_mountflags & ~MS_RDONLY,
->                                      root_mount_data);
->
->         return do_mount_root("ramfs", "ramfs",
->                              root_mountflags & ~MS_RDONLY,
->                              root_mount_data);
-> }
+Le 3/06/2021 à 15:53, Jisheng Zhang a écrit :
+> On Thu, 3 Jun 2021 18:46:47 +0530
+> Anup Patel <anup@brainfault.org> wrote:
+> 
+>> On Thu, Jun 3, 2021 at 6:27 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>
+>>> Hi Jisheng,
+> 
+> Hi,
+> 
+>>>
+>>> Le 3/06/2021 à 14:27, Jisheng Zhang a écrit :
+>>>> On Thu,  3 Jun 2021 10:27:47 +0200
+>>>> Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>>>   
+>>>>> To simplify the kernel address conversion code, make the same definition of
+>>>>> kernel_mapping_pa_to_va and kernel_mapping_va_to_pa compatible for both xip
+>>>>> and !xip kernel by defining XIP_OFFSET to 0 in !xip kernel.
+>>>>>
+>>>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>>>>> ---
+>>>>>    arch/riscv/include/asm/page.h    | 14 +++-----------
+>>>>>    arch/riscv/include/asm/pgtable.h |  2 ++
+>>>>>    2 files changed, 5 insertions(+), 11 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+>>>>> index 6a7761c86ec2..6e004d8fda4d 100644
+>>>>> --- a/arch/riscv/include/asm/page.h
+>>>>> +++ b/arch/riscv/include/asm/page.h
+>>>>> @@ -93,9 +93,7 @@ extern unsigned long va_pa_offset;
+>>>>>    #ifdef CONFIG_64BIT
+>>>>>    extern unsigned long va_kernel_pa_offset;
+>>>>>    #endif
+>>>>> -#ifdef CONFIG_XIP_KERNEL
+>>>>>    extern unsigned long va_kernel_xip_pa_offset;
+>>>>> -#endif
+>>>>>    extern unsigned long pfn_base;
+>>>>>    #define ARCH_PFN_OFFSET            (pfn_base)
+>>>>>    #else
+>>>>> @@ -103,6 +101,7 @@ extern unsigned long pfn_base;
+>>>>>    #ifdef CONFIG_64BIT
+>>>>>    #define va_kernel_pa_offset        0
+>>>>>    #endif
+>>>>> +#define va_kernel_xip_pa_offset 0
+>>>>>    #define ARCH_PFN_OFFSET            (PAGE_OFFSET >> PAGE_SHIFT)
+>>>>>    #endif /* CONFIG_MMU */
+>>>>>
+>>>>> @@ -110,29 +109,22 @@ extern unsigned long kernel_virt_addr;
+>>>>>
+>>>>>    #ifdef CONFIG_64BIT
+>>>>>    #define linear_mapping_pa_to_va(x) ((void *)((unsigned long)(x) + va_pa_offset))
+>>>>> -#ifdef CONFIG_XIP_KERNEL
+>>>>>    #define kernel_mapping_pa_to_va(y) ({                                              \
+>>>>>       unsigned long _y = y;                                                           \
+>>>>>       (_y >= CONFIG_PHYS_RAM_BASE) ?
+>>>>
+>>>> This CONFIG_PHYS_RAM_BASE is only available for XIP, could result in a
+>>>> compiler error for !XIP?
+>>>
+>>> You're right, I have this patch in my branch and forgot to squash it
+>>>   
+>>>>
+>>>> I'm also concerned with the unecessary overhead of kernel_mapping_pa_to_va()
+>>>> for !XIP case, there's a "if" condition branch, and extra symbol: va_kernel_xip_pa_offset
+>>>
+>>> I understand your concerns even if I don't find that the overhead is
+>>> that important here, I prefer the readability improvement. I can always
+> 
+> For readability, we still can avoid introducing va_kernel_xip_pa_offset
+> symbol by simply define va_kernel_xip_pa_offset as 0 if XIP as you did
+> for XIP_OFFSET
+> 
+> PS: this may need a preparation patch:
+> http://lists.infradead.org/pipermail/linux-riscv/2021-June/006802.html
 
-It seems to make sense, but I just feel that it is a little hardcode.
-What if a new file system
-of rootfs arises? Am I too sensitive?
+IIUC, that won't improve readability, just avoid to allocate 
+va_kernel_xip_pa_offset in !XIP kernel right?
 
-[...]
->
-> This is convoluted imho. I would simply use two tiny helpers:
->
-> void __init finish_mount_rootfs(void)
-> {
->         init_mount(".", "/", NULL, MS_MOVE, NULL);
->
->         if (ramdisk_exec_exist())
->                 init_chroot(".");
-> }
->
-> void __init revert_mount_rootfs(void)
-> {
->         init_chdir("/");
->         init_umount(".", 0);
-> }
->
-
-This looks nice.
-
-
-Thanks!
-Menglong Dong
+> 
+>>> add unlikely/likely builtin to improve things or completely remove this
+>>> patch if others agree with you.
+>>
+>> I would also prefer readable code for long-term maintainability. Currently,
+>> the nested "#ifdefs" are increasing causing developers to easily break
+>> untested combinations.
+>>
+>> Regards,
+>> Anup
+>>
+>>>
+>>> Thanks,
+>>>
+>>> Alex
+>>>   
+>>>>   
+>>>>>               (void *)((unsigned long)(_y) + va_kernel_pa_offset + XIP_OFFSET) :      \
+>>>>>               (void *)((unsigned long)(_y) + va_kernel_xip_pa_offset);                \
+>>>>>       })
+>>>>> -#else
+>>>>> -#define kernel_mapping_pa_to_va(x)  ((void *)((unsigned long)(x) + va_kernel_pa_offset))
+>>>>> -#endif
+>>>>>    #define __pa_to_va_nodebug(x)              linear_mapping_pa_to_va(x)
+>>>>>
+>>>>>    #define linear_mapping_va_to_pa(x) ((unsigned long)(x) - va_pa_offset)
+>>>>> -#ifdef CONFIG_XIP_KERNEL
+>>>>>    #define kernel_mapping_va_to_pa(y) ({                                              \
+>>>>>       unsigned long _y = y;                                                   \
+>>>>>       (_y < kernel_virt_addr + XIP_OFFSET) ?                                  \
+>>>>>               ((unsigned long)(_y) - va_kernel_xip_pa_offset) :               \
+>>>>>               ((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFSET);       \
+>>>>>       })
+>>>>
+>>>> Similar as kernel_mapping_pa_to_va(), an overhead of "if" condition branch
+>>>> for !XIP and extra va_kernel_xip_pa_offset symbol.
+>>>>   
+>>>>> -#else
+>>>>> -#define kernel_mapping_va_to_pa(x)  ((unsigned long)(x) - va_kernel_pa_offset)
+>>>>> -#endif
+>>>>> +
+>>>>>    #define __va_to_pa_nodebug(x)      ({                                              \
+>>>>>       unsigned long _x = x;                                                   \
+>>>>>       (_x < kernel_virt_addr) ?                                               \
+>>>>> @@ -141,7 +133,7 @@ extern unsigned long kernel_virt_addr;
+>>>>>    #else
+>>>>>    #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
+>>>>>    #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+>>>>> -#endif
+>>>>> +#endif /* CONFIG_64BIT */
+>>>>>
+>>>>>    #ifdef CONFIG_DEBUG_VIRTUAL
+>>>>>    extern phys_addr_t __virt_to_phys(unsigned long x);
+>>>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>>>>> index bde8ce3bfe7c..d98e931a31e5 100644
+>>>>> --- a/arch/riscv/include/asm/pgtable.h
+>>>>> +++ b/arch/riscv/include/asm/pgtable.h
+>>>>> @@ -77,6 +77,8 @@
+>>>>>
+>>>>>    #ifdef CONFIG_XIP_KERNEL
+>>>>>    #define XIP_OFFSET         SZ_8M
+>>>>> +#else
+>>>>> +#define XIP_OFFSET          0
+>>>>>    #endif
+>>>>>
+>>>>>    #ifndef __ASSEMBLY__
+>>>>
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> linux-riscv mailing list
+>>>> linux-riscv@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>>   
+> 
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
