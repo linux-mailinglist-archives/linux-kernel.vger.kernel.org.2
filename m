@@ -2,79 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A900399E71
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CAC399E74
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbhFCKHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:07:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhFCKHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:07:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CBA2611CA;
-        Thu,  3 Jun 2021 10:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622714699;
-        bh=ruv4xX6Eg/YETRybxUhFp8CkZkACBGmGpdG3fCfTNYU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G45+ZBzfThzxAH4ZUIGo4rpnqPa6od3F0KNjIxTAh/TfAMROu2xvHCoQTFNLRtRb7
-         BVcbWAi/urwY1OQkhDRsSjlzoctHOVjWIvz/j86jj2PtZ3fpaiABbrWwE8vyQqkfIB
-         KiKruC8CbO0DqbV4tOWh2O0khvtt4TUDlSTFEYV8=
-Date:   Thu, 3 Jun 2021 12:04:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
-Message-ID: <YLipSQxNaUDy9Ff1@kroah.com>
-References: <20210603095038.314949-1-drosen@google.com>
- <20210603095038.314949-3-drosen@google.com>
+        id S229885AbhFCKH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:07:26 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:40944 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229789AbhFCKHY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:07:24 -0400
+X-UUID: 63a1aa9b14684da080441495dea5dee1-20210603
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=L75spOTlvZqmrkmdca+z60GCtC1z1RwEtUymYBIXVJU=;
+        b=n/Dmt/Q4aLhASlB3eJm2MDq1ck2dO+uKV9lPSVnuMpWgqzbYr2LNJpT2XOZeHqNJmHXf/j8vFh/xvR2UGU3sRPU7HrR+v0GkfvKP/KiSVJG+NZJXYUuPxGWG+p1DzcWsl3x4cbxHuweEwZWi5EgZoo0EvvXeuso7VKolYYqC/9c=;
+X-UUID: 63a1aa9b14684da080441495dea5dee1-20210603
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1036515460; Thu, 03 Jun 2021 18:05:37 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
+ 2021 18:05:35 +0800
+Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
+ MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Thu, 3 Jun 2021 18:05:33 +0800
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-pwm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
+        <cawa.cheng@mediatek.com>, <bibby.hsieh@mediatek.com>,
+        <ck.hu@mediatek.com>, <stonea168@163.com>,
+        <huijuan.xie@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
+Subject: [PATCH v4 0/3] fix the clock on/off mismatch and switch pwm api to atomic API
+Date:   Thu, 3 Jun 2021 18:05:28 +0800
+Message-ID: <20210603100531.161901-1-jitao.shi@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603095038.314949-3-drosen@google.com>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 22F37F3A8C28D6193C7C5BF83EA9545E74F51CA51945BC54C8BC7DD6ABDDF0672000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
-> Older kernels don't support encryption with casefolding. This adds
-> the sysfs entry encrypted_casefold to show support for those combined
-> features. Support for this feature was originally added by
-> commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> 
-> Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> Cc: stable@vger.kernel.org # v5.11+
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
->  fs/f2fs/sysfs.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> index 09e3f258eb52..6604291a3cdf 100644
-> --- a/fs/f2fs/sysfs.c
-> +++ b/fs/f2fs/sysfs.c
-> @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
->  	if (f2fs_sb_has_compression(sbi))
->  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
->  				len ? ", " : "", "compression");
-> +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
-> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> +				len ? ", " : "", "encrypted_casefold");
->  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
->  				len ? ", " : "", "pin_file");
->  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
+Q2hhbmdlIHNpbmNlIHYzOg0KIC0gU2VwZXJhdGUgdGhlIGNsb2NrIHNlcXVlbmNlIGFzIHNpbmds
+ZSBwYXRjaC4NCiAtIGZpeHVwIHRoZSByZWcgY29tbWl0IHdoZW4gY2xvY2tzIHNlcXVlbmNlIGNo
+YW5nZWQNCiAtIE1lcmVnZSB0aGUgYXBwbHkgYW5kIGdldF9zdGF0ZSBhcyBzaW5nbGUgcGF0Y2gN
+Cg0KQ2hhbmdlIHNpbmNlIHYyOg0KIC0gQ2hhbmdlIGNvbW1pdCBtZXNzYWdlcyB0byByZW1vdmUg
+dGhlIGNsb2NrIG9wZXJhdGlvbnMgZm9yIGF0b21pYyBBUElzLg0KIC0gUmViYXNlIHRvIHY1LjEz
+IHJjMQ0KDQpDaGFuZ2VzIHNpbmNlIHYxOg0KIC0gU2VwZXJhdGUgY2xvY2sgb3BlcmF0aW9uIGFz
+IHNpbmdsZSBwYXRjaC4NCiAtIFNlcGVyYXRlIGFwcGx5KCkgYXMgc2luZ2xlIHBhdGNoLg0KIC0g
+U2VwZXJhdGUgZ2V0X3N0YXRlKCkgb3BlcmF0aW9uIGFzIHNpbmdsZSBwYXRjaC4NCg0KSml0YW8g
+U2hpICgzKToNCiAgcHdtOiBtdGstZGlzcDogYWRqdXN0IHRoZSBjbG9ja3MgdG8gYXZvaWQgdGhl
+bSBtaXNtYXRjaA0KICBwd206IG10ay1kaXNwOiBtb3ZlIHRoZSBjb21taXQgdG8gY2xvY2sgZW5h
+YmxlZA0KICBwd206IG10ay1kaXNwOiBTd2l0Y2ggdG8gYXRvbWljIEFQSQ0KDQogZHJpdmVycy9w
+d20vcHdtLW10ay1kaXNwLmMgfCAxNjcgKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0t
+LS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCA5MyBpbnNlcnRpb25zKCspLCA3NCBkZWxldGlvbnMoLSkN
+Cg0KLS0gDQoyLjI1LjENCg==
 
-This is a HUGE abuse of sysfs and should not be encouraged and added to.
-
-Please make these "one value per file" and do not keep growing a single
-file that has to be parsed otherwise you will break userspace tools.
-
-And I don't see a Documentation/ABI/ entry for this either :(
-
-not good...
-
-greg k-h
