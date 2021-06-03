@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3908D3996DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DC13996E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhFCARp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 20:17:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhFCARo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 20:17:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D65AA6100A;
-        Thu,  3 Jun 2021 00:15:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622679360;
-        bh=yEdkcwuAhilPBcLbUWO28NG4GTX7d4iKHu4aVHEwMBE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uu9+1ZBQo/EZmWv5FGp1qdyQb2TwPdVMUd8Gai0Lzd076/EBqKLci9m3hKubk0xuE
-         uS3cEkN6UgTpNA4mA1QTke4r2EIl6gRgDkchsERpkEbZvPhr0mcrMm7dTuxX80mjAm
-         SeAybvHtyu1siOVw/IWuhYVEOjBS4YLV9oPxB6IPRaIj533yA1Z/gditQfHWpFqWzw
-         r7W8o/40j7TpPH8K8udH4G+lIX+kPDg3E6gWFuwe6rhylHRPH/TD1t24shUYbmUanD
-         li7WTp24O6Qogx8sgCREjrM47vfsDsOW3sZi5YSLLh6ddChslNiy1TUmgCEMaHPh9N
-         gKnazDIguyOQQ==
-Date:   Wed, 2 Jun 2021 19:17:08 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH v3][venus-for-next-v5.14] media: venus: hfi_cmds: Fix packet
- size calculation
-Message-ID: <20210603001708.GA55239@embeddedor>
+        id S229702AbhFCAUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 20:20:40 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:39857 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFCAUj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 20:20:39 -0400
+Received: by mail-pj1-f50.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so4418638pjp.4;
+        Wed, 02 Jun 2021 17:18:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J5zd1hQ722vpm1HO3eh2WAzXPsJQcOGu8eyeuVd42ws=;
+        b=QmxK6DDKOhJp2aHA3nEw3v4VGS3ltE9Sl2ZjZjsUrmDOxIK6X5SGv4ZfnrT3WI8nyj
+         4bONG1/FTBSJEzxvxAIAt3K2NI1T/5AJChGxLgyk8LUCA5sW6c18kqUokkk5MUMdv2Yb
+         WFUPKX8JaMGfz4tyyFq56EDhG6y+rxZ0Yz1+g9WM+qrFfH53pNGs6mefWPtdgN1n+DOU
+         Yu9acYB4qWHLvJV9hZv3uwNM6LjajSZtEoMTqLV4BYrw8AYJdCjPoEXyUyDSS+g3xZiq
+         zU3Xe8SjGkqU0DmA+Zfp6tpB3MNJDG3DT4/QfOAzc6q/5Qp/3g1M9cvmsHQrpF98/if/
+         0yYg==
+X-Gm-Message-State: AOAM533x1ZEqoGuNvedKYPa7OB8pCmD+m4qDbvrpjGSPBgyAM5WCsFTT
+        U7cau4UD8sBfdptp+KvxH1U=
+X-Google-Smtp-Source: ABdhPJyluBOAMWA/V2/RAthcvrAXnZ9wwZk0KipnaoZNTQWPqtc0SjnM7Pu8HK2uBGzRggYYyo6+0w==
+X-Received: by 2002:a17:90a:414d:: with SMTP id m13mr7956152pjg.115.1622679535334;
+        Wed, 02 Jun 2021 17:18:55 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id h8sm547606pfv.60.2021.06.02.17.18.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 17:18:54 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer requests
+ send/compl paths
+To:     Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Stanley Chu <stanley.chu@mediatek.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+ <1621845419-14194-3-git-send-email-cang@codeaurora.org>
+ <6d6d296a84f1e62f65fda4d172a85bb35d9a3684.camel@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <200da9c5-ea20-819e-2b11-7f45e8b05cbb@acm.org>
+Date:   Wed, 2 Jun 2021 17:18:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <6d6d296a84f1e62f65fda4d172a85bb35d9a3684.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that a one-element array was replaced with a flexible-array member
-in struct hfi_sys_set_property_pkt, use the struct_size() helper to
-correctly calculate the packet size.
+On 5/31/21 9:04 AM, Bean Huo wrote:
+> I did a UFS queue limitation test before, observed that once the
+> queue is full, then the active task number in the queue will get
+> down. For the Nvme, the scenario is the same. You can refer to the
+> slide 23, and slide 24 in the pdf: 
+> https://elinux.org/images/6/6c/Linux_Storage_System_Bottleneck_Exploration_V0.3.pdf
+> I don't know if your patch can fix this issue.
 
-Fixes: 701e10b3fd9f ("media: venus: hfi_cmds.h: Replace one-element array with flexible-array member")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v3:
- - Fix size calculation in call to struct_size().
-   Link: https://lore.kernel.org/linux-hardening/202106021254.39A1561075@keescook/
-   Link: https://lore.kernel.org/linux-hardening/113fd896-464c-6aef-215a-a53ac6103a62@embeddedor.com/
+Hi Bean,
 
-Changes in v2:
- - Include linux/overflow.h for struct_size().
+That's a very interesting presentation. Unfortunately the overhead for
+SCSI in that presentation includes the SCSI core + UFS driver. Given the
+use of the host lock in the version of the UFS driver that was used to
+prepare that presentation, the overhead introduced by the UFS driver may
+be significant. Maybe someone should measure the overhead of the
+scsi_debug driver and compare it with the NVMe loopback driver to get a
+better idea of how the overhead of these two subsystems compare to each
+other?
 
- drivers/media/platform/qcom/venus/hfi_cmds.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 4b9dea7f6940..f51024786991 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
-  * Copyright (C) 2017 Linaro Ltd.
-  */
-+#include <linux/overflow.h>
- #include <linux/errno.h>
- #include <linux/hash.h>
- 
-@@ -27,7 +28,7 @@ void pkt_sys_idle_indicator(struct hfi_sys_set_property_pkt *pkt, u32 enable)
- {
- 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
- 
--	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 1) + sizeof(*hfi);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_IDLE_INDICATOR;
-@@ -39,7 +40,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
- {
- 	struct hfi_debug_config *hfi;
- 
--	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 1) + sizeof(*hfi);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_DEBUG_CONFIG;
-@@ -50,7 +51,7 @@ void pkt_sys_debug_config(struct hfi_sys_set_property_pkt *pkt, u32 mode,
- 
- void pkt_sys_coverage_config(struct hfi_sys_set_property_pkt *pkt, u32 mode)
- {
--	pkt->hdr.size = sizeof(*pkt) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 2);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_CONFIG_COVERAGE;
-@@ -116,7 +117,7 @@ void pkt_sys_power_control(struct hfi_sys_set_property_pkt *pkt, u32 enable)
- {
- 	struct hfi_enable *hfi = (struct hfi_enable *)&pkt->data[1];
- 
--	pkt->hdr.size = sizeof(*pkt) + sizeof(*hfi) + sizeof(u32);
-+	pkt->hdr.size = struct_size(pkt, data, 1) + sizeof(*hfi);
- 	pkt->hdr.pkt_type = HFI_CMD_SYS_SET_PROPERTY;
- 	pkt->num_properties = 1;
- 	pkt->data[0] = HFI_PROPERTY_SYS_CODEC_POWER_PLANE_CTRL;
--- 
-2.27.0
-
+Bart.
