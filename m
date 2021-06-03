@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC7939AAA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FC739AAA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhFCTFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCTFB (ORCPT
+        id S229902AbhFCTF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:05:29 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:57431 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhFCTF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:05:01 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC26C061756;
-        Thu,  3 Jun 2021 12:03:02 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id d2so4304015ljj.11;
-        Thu, 03 Jun 2021 12:03:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CKsULA7rThjPaUHGFT8H1xt4qomXuIlWh+26mqVq67o=;
-        b=aya4yneFWMDMGtWFiZacm/sMQaQS4ElC2xTGZQ3N49LFvla8PRz9lrV/j2MfJzFIAK
-         gljbcs2qelv8/ksXND77uXLkOsAFdJoTJlKK+4QImPgyb+EX7gfelSQafCIUF4BxsyOU
-         RyYAag8SW7Kx6X/6ped2sveIGmwi9YHcO9v60HyWlTTitNbdk1afs9+RRPuXYUnIdKr1
-         2ebCIC573NuMB6krZqgQXKLHQrkA1iYfwYOx1UAu99PoQqu2WWCB/TJWFuaURA3nUiCA
-         Kyel1WEbQaMeY/z1uAOIxvac38Q12381yHXno4QCplZ3/N+bXeS+zg4+NvswJiL+2TKy
-         xstg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CKsULA7rThjPaUHGFT8H1xt4qomXuIlWh+26mqVq67o=;
-        b=nG79rG9T6WU9oLTO06E0O00DBrC3W8vWazu2RTRQLWck2AOtqyzdrQPMlXjx9/ogRm
-         XdIwDilBwjWbX3h/3dnc3wpc4c6818YVjf71jGy2Gr2A8AqxAGirTmMVhrYUap5r1aR3
-         +dlPvSztAH46KzIdPsaVXjgHDH/z6+Ci6qJ3xA4QznFfLJJnRvNFJ51euOUJXCnC8DWn
-         DeRjgFAvUHIvkglnM+pOWZg/sR0WaVHS0qc55G4UxIMjvqxLo7j4EbWpz7Yt7VEXc0fD
-         QFZfWbaUNnRN+LrK59FuuF04e6tZKdJ/RTE27tex1qM1evhjLmaeR9NVPM3auTtzByXL
-         1Pog==
-X-Gm-Message-State: AOAM533XK2bK5+I236x5Vceifh7PI6nKzDN6ggCQaCG6g71IF71Feeqn
-        eb327TA7nW7ScQTdFmjStDg58u1xua8=
-X-Google-Smtp-Source: ABdhPJzDgjsNGfQa4Aq8TvhzEWXv55Rt2l5v11MPCBxr2Daq0yo1wOfHUon9pH+FgEtIKU0W6I9ToA==
-X-Received: by 2002:a05:651c:292:: with SMTP id b18mr560499ljo.456.1622746980700;
-        Thu, 03 Jun 2021 12:03:00 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.googlemail.com with ESMTPSA id w4sm449277ljo.1.2021.06.03.12.02.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 12:03:00 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes
- for devices at runtime PM
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-4-ulf.hansson@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a7f55fce-dd4a-22ab-f7e2-4821e765a634@gmail.com>
-Date:   Thu, 3 Jun 2021 22:02:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 3 Jun 2021 15:05:26 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0EDDD5C01B2;
+        Thu,  3 Jun 2021 15:03:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 03 Jun 2021 15:03:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=i85yA63Hrpapc8XvmqBhkPew63p
+        noUlzHiEl9Tj5xH4=; b=R2VsRxEmcPP9SiXDiwUNTvFUz2CZlwdItv96yx+/YaL
+        l6ZMUhgpVpeYCmLaoR5JK8G94pa5KhIju75m/yWnKJfL+TIsOhGjIknGFfXEUzYZ
+        PudkgZ/ajaceIrg/d2okNNsnF2chVWwTMFRgFLLZ9JAM6EXZ/bxS1wW6y0CHbu2h
+        NxStF62/Yu3PAJ5gmylv1RksyBNzcwH9lCfszACCt5KXLB+dbMpHVZ2DK6Xo+P9/
+        ytGhdpoRDz/NjY63jh3tNCG2nOMLk71ePoZJ3JIvf8KNpXUc1kVZ+Arx15c+M99x
+        Bzu1Eb70NRFTKjD88TvoHWhIkwelzzO4rOgBqqeNduQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=i85yA6
+        3Hrpapc8XvmqBhkPew63pnoUlzHiEl9Tj5xH4=; b=S/gB/ekYPaxAWdhcDgbNCA
+        79YEGmeVhIfVtX0DVWrkFJCEtkynv2eRFByX9pIlfXJMTwCMLJ9o34K2oVG+aofE
+        1w7ngeS/gwzd5yVXkjI5AMeNyhn6pr/SRupmWsDqMC9psvBOkj8pV0W8WDHqPUyU
+        qP0pvIrDv+j17OUxd1+BRZJVhpYfGeRiwOj3xltvNddtI930jC7j2ysIxzzrHMzn
+        dQMxd7vSIVWR/4jJUZQJdjC+c31pYs049RjgOYopElLZqWYAIwordXVm/wss3myl
+        /O8xWL/s21TOpWrrklaw9qNWfxDr075vHqisFgID44AkNI05H3Y3xGzoSWgMGX9g
+        ==
+X-ME-Sender: <xms:jCe5YNFaf8DCymtlKS6doxUCxkyP-qSZfsK69AmiPm6BKBbGQnxOHg>
+    <xme:jCe5YCWNc6DweONlxyMXlMnsgltqyJ-Mequhb-Ipe9It7QWWTJUPtx7HpTBgHuW-O
+    5Rajr19zZ4RjLksNA>
+X-ME-Received: <xmr:jCe5YPKufk2LFFCg_RWtaFy3kjeGlF-IpulQ74nJV5gN7XTI8NLcIzSE1Pj4Ykjn5BE5phqw_DP1Xh4Xb74w8UIIisJIkRupCCZPvKccaHjpHM5uOZN-8W-VBTw3>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgudeftdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
+    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
+    grthhtvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeff
+    hfeuffdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:jCe5YDFVGThhiLHb65EDXfUWCv9W6XSwcykTaz06JtxTFbLvqQXpOA>
+    <xmx:jCe5YDUQw-gKUcpyQmw2BLH6S7ODhUzmDcgIvFHmuwVxY3yYeUq8CQ>
+    <xmx:jCe5YOMgYMMAa7xu9xqs21euUoeiFx2qv9A0Fb94FI9R8w5XrDa7Dw>
+    <xmx:jSe5YKGqnmt7mk3u_4pKgzQLRcuOWuvZ604vAhF3rlUbmx5ZmYUsmQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Jun 2021 15:03:39 -0400 (EDT)
+Date:   Thu, 3 Jun 2021 12:03:38 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 4/4] io_uring: implement futex wait
+Message-ID: <20210603190338.gfykgkc7ac2akvdt@alap3.anarazel.de>
+References: <cover.1622558659.git.asml.silence@gmail.com>
+ <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
+ <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
+ <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
+ <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
+ <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com>
+ <87sg211ccj.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210603093438.138705-4-ulf.hansson@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sg211ccj.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.06.2021 12:34, Ulf Hansson пишет:
-> A subsystem/driver that need to manage OPPs for its device, should
-> typically drop its vote for the OPP when the device becomes runtime
-> suspended. In this way, the corresponding aggregation of the performance
-> state votes that is managed in genpd for the attached PM domain, may find
-> that the aggregated vote can be decreased. Hence, it may allow genpd to set
-> the lower performance state for the PM domain, thus avoiding to waste
-> energy.
-> 
-> To accomplish this, typically a subsystem/driver would need to call
-> dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
-> callback, to drop the vote for the OPP. Accordingly, it needs another call
-> to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
-> ->runtime_resume() callback.
-> 
-> To avoid boilerplate code in subsystems/driver to deal with these things,
-> let's instead manage this internally in genpd.
-> 
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
-> 
-> Changes in v2:
-> 	- Rebased.
-> 	- A few minor cosmetic changes.
-> 	- Deal with the error path in genpd_runtime_resume().
+On 2021-06-01 23:53:00 +0200, Thomas Gleixner wrote:
+> You surely made your point that this is well thought out.
 
-I tested this on NVIDIA Tegra by removing the boilerplate code from
-drivers' RPM and haven't noticed any problems, the performance state is
-dropped/restored as expected. Thank you.
+Really impressed with your effort to generously interpret the first
+version of a proof of concept patch that explicitly was aimed at getting
+feedback on the basic design and the different use cases.
