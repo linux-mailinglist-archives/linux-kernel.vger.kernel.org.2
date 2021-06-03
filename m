@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A7939A266
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6599D39A25B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhFCNn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:43:56 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:37696 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbhFCNnz (ORCPT
+        id S230502AbhFCNlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:41:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229957AbhFCNlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:43:55 -0400
-Received: by mail-lf1-f44.google.com with SMTP id f11so8860315lfq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hNbuwVCZ+C+A91GjVTfRrYyB2m5hEsern9MfCM1f69Y=;
-        b=Um/NnAYIVDGEVpkG9oUzlGAuXt2pMWqP+jguiv9Koq9Zv3gxb44POA96fMA2MGxwsL
-         k0DTFKgeWVAJBsSDsEKdhmqmSP4vi2qT1OejNHBwHPT6/UIqIJDJ1jBV+OEORGIRiMW4
-         cOCgFqANYYuu9XV8KAwJLyiMmWlOm3aNaUij3WZ6wK0aAq08A/ll+M1i65QWinbuhEjr
-         pCuc29hs86cCbnf7M6YUG3RbaKgoZ1pEA1AXXiX5LOg75Wnudf7QZpPoIsCBndkgbma+
-         x+fgA5ZhL8wDy/YQZBbPNuFsTTbBJbze4S0UZgnxGFY4UJ7uweg8Y6HP7faidkLUhjAc
-         rMiA==
+        Thu, 3 Jun 2021 09:41:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622727559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SA7kk4GuCt9QFLH5/3wDPsFvRhVEbhYlaqmjy8ZBvG4=;
+        b=iexNL8HmEbP748dBY3HfJCJHyj1XvOzAHzv7ew+7t8xWrX3U8PSe1c82PUS1QzE6pdofxv
+        3IjxzYvNtkFCyzvgLhI3RP3etSsrVAeDqZ19tByYu8HCVvakYUk7u+4I/0Ua0jSCCqLcLH
+        RIyAxgUWk6/CHpZpkKh0+j1GZQ8eBDM=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-tO9JgV6EP6Ge8RD6rgoDWg-1; Thu, 03 Jun 2021 09:39:18 -0400
+X-MC-Unique: tO9JgV6EP6Ge8RD6rgoDWg-1
+Received: by mail-qt1-f197.google.com with SMTP id a12-20020ac8108c0000b029023c90fba3dcso3110037qtj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:39:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hNbuwVCZ+C+A91GjVTfRrYyB2m5hEsern9MfCM1f69Y=;
-        b=SZ4jK6M/DdYQopLplw/Fni7JcIjDuzJL0EEdm0XaLktKeJZIs4XKoBsZYAmoqfZzAR
-         RqEY66lSgFEaZyAMFwwI4Eh9aZ2sQBBHKhSBYpZWk2oifOdGvgk3OKCgc5GczwFkjPrI
-         GdR9VCi+5EkOn0ogZkBd/Uc8wBI/Zp2fJ4IHK8a2DWn6UcH7RFVAsB0bIV0QPVEXZf/0
-         8atjcgOnXrFIIWnsn5rYBFDJw0Ta03YOv6IiyurM3/S26MLcW9n5VrcdczJKCivA9DLt
-         ZSzAdsE8GzFsiuCVm2T3WgpXptrFE9hrQAlcCX89gYvDaPT14S8FTyNbI7RbjGVVF463
-         gXIQ==
-X-Gm-Message-State: AOAM530yPJopsXDXXFhb2oyw/j6/lPI0MVda/x/gUrzLdmibwX+4U2dE
-        yNM7kt+DVghyTkvjBJ/aQt0=
-X-Google-Smtp-Source: ABdhPJyD9rQrA/peCDanigOUTFzH1CS9PzPzRoHXK9X0BcfFgrxwEEA9uiBGRHZP6scDdkZm9Ls6/A==
-X-Received: by 2002:a19:8181:: with SMTP id c123mr15119652lfd.533.1622727670314;
-        Thu, 03 Jun 2021 06:41:10 -0700 (PDT)
-Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4yb9bh06yk5jm2qt-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:3d09:bda0:2327:559b])
-        by smtp.gmail.com with ESMTPSA id a1sm322079lff.215.2021.06.03.06.41.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SA7kk4GuCt9QFLH5/3wDPsFvRhVEbhYlaqmjy8ZBvG4=;
+        b=HwFCtyxFC2dBMzuUh23a8KmU4hj6e6uhHWVqt2gYNAHXhRyrQp5kyx/th9E8riOZjX
+         y4HyqGDayis2ZLVw7CAQPIsS7POAz18CFmBdRbO0lJWOmlIjcb3EX9ZO6r9nfp1ZKBCw
+         F6aIgLqJQaSLfUayArmUJrhvQNmlJilx/153E2GeOzucwYI//Q0/26cRq0o9FOT4Ni8P
+         80NbUhMuvww5wgLRX/h5Wgxbw0ALYU2rU93QnDbHRU6uq/JK4zbg60x4cMlp7dvWG0uh
+         oiuMVuEPMu+3qFdPmTfaeZAAk5WOgxFW2BqbWxxA2LxFLf5WcuFqv3LAAPmjBFtcVt4k
+         2Dcw==
+X-Gm-Message-State: AOAM532US7kMUDVsFo/51wHApdOB9k4gf6kzY/cPhvL4C3NQvmkKEzfD
+        cOR5WlOrkGuTm0Lgx5YEOKEKWuSPXkBlUEWLvFp+NoImTvDigqqyOY3Gp7ULXILchVe1aoSNV29
+        TXIEwPS7WiF4iKos6Ov6XVXts
+X-Received: by 2002:a37:b9c7:: with SMTP id j190mr7807893qkf.234.1622727557328;
+        Thu, 03 Jun 2021 06:39:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFP191PEiGc2JTyRmAZaeTTddu15ECZ8TyOyq5IjYv34kMomQFMcGsMsiaLWwy+NuX8g5Vyg==
+X-Received: by 2002:a37:b9c7:: with SMTP id j190mr7807872qkf.234.1622727557135;
+        Thu, 03 Jun 2021 06:39:17 -0700 (PDT)
+Received: from treble ([68.52.236.68])
+        by smtp.gmail.com with ESMTPSA id d136sm2017547qkg.9.2021.06.03.06.39.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 06:41:09 -0700 (PDT)
-From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
-To:     Sami Tolvanen <samitolvanen@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>, morbo@google.com
-Subject: [PATCH v2 1/1] pgo: Fix allocate_node() v2
-Date:   Thu,  3 Jun 2021 16:38:52 +0300
-Message-Id: <20210603133853.5383-1-jarmo.tiitto@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 03 Jun 2021 06:39:16 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 08:39:14 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>,
+        bp@alien8.de, hpa@zytor.com, inglorion@google.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
+Message-ID: <20210603133914.j2aeadmvhncnlk5q@treble>
+References: <00000000000030293b05c39afd6f@google.com>
+ <20210602230054.vyqama2q3koc4bpo@treble>
+ <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
+ <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on Kees and others feedback here is v2 patch
-that clarifies why the current checks in allocate_node()
-are flawed. I did fair amount of KGDB time on it.
+On Thu, Jun 03, 2021 at 03:30:10PM +0200, Peter Zijlstra wrote:
+> On Wed, Jun 02, 2021 at 04:35:11PM -0700, Andi Kleen wrote:
+> 
+> > > We could just use ORC to unwind to the next frame.  Though, isn't
+> > > /proc/profile redundant, compared to all the more sophisticated options
+> > > nowadays?  Is there still a distinct use case for it or can we just
+> > > remove it?
+> > 
+> > It's still needed for some special cases. For example there is no other
+> > viable way to profile early boot without a VM
+> > 
+> > I would just drop the hack to unwind, at least for the early boot profile
+> > use case locking profiling is usually not needed.
+> 
+> Surely we can cook up something else there and delete this thing? ftrace
+> buffers are available really early, it shouldn't be hard to dump some
+> data in there during boot.
 
-When clang instrumentation eventually calls allocate_node()
-the struct llvm_prf_data *p argument tells us from what section
-we should reserve the vnode: It either points into vmlinux's
-core __llvm_prf_data section or some loaded module's
-__llvm_prf_data section.
+True, ftrace does have function profiling (function_profile_enabled).
 
-But since we don't have access to corresponding
-__llvm_prf_vnds section(s) for any module, the function
-should return just NULL and ignore any profiling attempts
-from modules for now.
+Steve, is there a way to enable that on the kernel cmdline?
 
-Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
----
- kernel/pgo/instrument.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
-index 0e07ee1b17d9..afe9982b07a3 100644
---- a/kernel/pgo/instrument.c
-+++ b/kernel/pgo/instrument.c
-@@ -23,6 +23,7 @@
- #include <linux/export.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
-+#include <asm-generic/sections.h>
- #include "pgo.h"
- 
- /*
-@@ -55,17 +56,19 @@ void prf_unlock(unsigned long flags)
- static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
- 						 u32 index, u64 value)
- {
--	if (&__llvm_prf_vnds_start[current_node + 1] >= __llvm_prf_vnds_end)
--		return NULL; /* Out of nodes */
--
--	current_node++;
--
--	/* Make sure the node is entirely within the section */
--	if (&__llvm_prf_vnds_start[current_node] >= __llvm_prf_vnds_end ||
--	    &__llvm_prf_vnds_start[current_node + 1] > __llvm_prf_vnds_end)
-+	const int max_vnds = prf_vnds_count();
-+	/* Check that p is within vmlinux __llvm_prf_data section.
-+	 * If not, don't allocate since we can't handle modules yet.
-+	 */
-+	if (!memory_contains(__llvm_prf_data_start,
-+		__llvm_prf_data_end, p, sizeof(*p)))
- 		return NULL;
- 
--	return &__llvm_prf_vnds_start[current_node];
-+	if (WARN_ON_ONCE(current_node >= max_vnds))
-+		return NULL; /* Out of nodes */
-+
-+	/* reserve vnode for vmlinux */
-+	return &__llvm_prf_vnds_start[current_node++];
- }
- 
- /*
-
-base-commit: 5d0cda65918279ada060417c5fecb7e86ccb3def
 -- 
-2.31.1
+Josh
 
