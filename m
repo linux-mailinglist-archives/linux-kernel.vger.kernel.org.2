@@ -2,427 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3168339AB6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C303B39AB7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFCUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:03:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53062 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230271AbhFCUDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:03:05 -0400
-IronPort-SDR: sb5W6pUO7QFtwPG0Ub8QMMeFHyrfxmb+HjpX8SU+96ipmYQ2PMt5HFJyYIIwdFW9w/gD+zddj/
- +u3360qVwEWw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="201121000"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="201121000"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 13:00:49 -0700
-IronPort-SDR: ZIdi119SmA54O1UEyZN4sogHhzn9Rt2itcPQ24EDp1DJwHho7bTV19PI+tg2aMrwgybBgQZdAl
- 0ONG4xrgXkAA==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="550288746"
-Received: from tienngu2-mobl.amr.corp.intel.com ([10.212.248.234])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 13:00:49 -0700
-Message-ID: <dd13ee6019987ff23b34bfb10e2c2fbe13f999dd.camel@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] iio: hid-sensors: lighten the exported symbols
- by introducing IIO_HID namespace
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ye Xiang <xiang.ye@intel.com>, linux-input@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Date:   Thu, 03 Jun 2021 13:00:48 -0700
-In-Reply-To: <20210603180700.3206eda0@jic23-huawei>
-References: <20210525132119.21800-1-andriy.shevchenko@linux.intel.com>
-         <20210603180700.3206eda0@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S230245AbhFCUDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:03:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21610 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229617AbhFCUDy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:03:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622750528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F6+LhEY/maKDsGguwuWfmgtdd1oJK4V5TtjaYZTDv20=;
+        b=Y0F0KdvMnwGgWCrLfEyWC1IUUvHJXSdSH07C+VuIfMVmPSq7q7pO4CWRl+T2k9NXEGORvt
+        8UmCb3fZO0Y05uD6sZBn6FalNvJZItn1dqVgQRKNwSILYNrkcirnfo2ydqqZ7Usf3buhMY
+        YawVsJmSg7Hsn3b4YWirWaKV2Cvt/Z8=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-Di-CJ6oTNXOwm5HolbqYrg-1; Thu, 03 Jun 2021 16:01:49 -0400
+X-MC-Unique: Di-CJ6oTNXOwm5HolbqYrg-1
+Received: by mail-ot1-f70.google.com with SMTP id 59-20020a9d0dc10000b02902a57e382ca1so3811318ots.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:01:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=F6+LhEY/maKDsGguwuWfmgtdd1oJK4V5TtjaYZTDv20=;
+        b=asjKaoPLoGercp+ekFSUe43goa/5lUxR5G3wQywtU3nG7b4+N6T1dSoTAT5Y2E/PH3
+         oOn2XauIdMajbavDH0TPp2KaPt98AfYY2ItdTPcGccchqn+0Ezq8Is4PdOZkTg9QKYby
+         0nFNX6UYEQ1gAz4mxEOF/LLTwuG0L5lszV17Qns6U4gGeGplhOqfO0OgyEkLVX1mmU3G
+         I7Zm8KDe7KBeRzfQ5P5TA7pNn5/xpqO3FW+3gYWiggBpVVD2OETUwSDChSgORW6kC8Ba
+         Olb27S+HKO6goFxitfzLOh4oxKIYC2SRRRZz7l9Qs6Bj8rJz0dQkOlKOiglxwZ2PHDO+
+         R9wQ==
+X-Gm-Message-State: AOAM531tY7fxM+lSgfQ0qBNnj2pvX2sdILr/MZaGnCWfH+4fCh6iOUdZ
+        f5cy0QlkMWy5rr1fBFbJyap2Ls7SSUen7HgUF5AhEaVZYjL9xtZzMBZ+/3IBnD77ZqKXIZ8b1/e
+        5rM6zMCOVUWqEeGcr+8jXCMxa
+X-Received: by 2002:a05:6820:169:: with SMTP id k9mr788072ood.92.1622750508899;
+        Thu, 03 Jun 2021 13:01:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJybJFE1PtzN0iAak9GBGh+YKYVXBvdZUdaTPamYD6BYxoi0dVe3UA/w7oY39pMfZVQl/8UgAw==
+X-Received: by 2002:a05:6820:169:: with SMTP id k9mr788045ood.92.1622750508679;
+        Thu, 03 Jun 2021 13:01:48 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id p9sm891275otl.64.2021.06.03.13.01.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 13:01:48 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 14:01:46 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210603140146.5ce4f08a.alex.williamson@redhat.com>
+In-Reply-To: <20210603123401.GT1002214@nvidia.com>
+References: <20210602160140.GV1002214@nvidia.com>
+        <20210602111117.026d4a26.alex.williamson@redhat.com>
+        <20210602173510.GE1002214@nvidia.com>
+        <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+        <20210602180925.GH1002214@nvidia.com>
+        <20210602130053.615db578.alex.williamson@redhat.com>
+        <20210602195404.GI1002214@nvidia.com>
+        <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+        <20210602224536.GJ1002214@nvidia.com>
+        <20210602205054.3505c9c3.alex.williamson@redhat.com>
+        <20210603123401.GT1002214@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-03 at 18:07 +0100, Jonathan Cameron wrote:
-> On Tue, 25 May 2021 16:21:19 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > A namespace for exported symbols makes clear who is a provider and
-> > who is
-> > a consumer of the certain resources. Besides that, it doesn't
-> > pollute
-> > the common namespace.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> I'm fine with this, but looking for input from Srinivas and Jiri
-> before
-> I apply it.
+On Thu, 3 Jun 2021 09:34:01 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-I see these names are using "IIO_HID" and "IIO_HID_ATTRIBUTES".
-Since they are only used in hid-sensors, may be explicitly define
-"HID_SENSOR_IIO". Also prefer only one name space.
+> On Wed, Jun 02, 2021 at 08:50:54PM -0600, Alex Williamson wrote:
+> > On Wed, 2 Jun 2021 19:45:36 -0300
+> > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >   
+> > > On Wed, Jun 02, 2021 at 02:37:34PM -0600, Alex Williamson wrote:
+> > >   
+> > > > Right.  I don't follow where you're jumping to relaying DMA_PTE_SNP
+> > > > from the guest page table... what page table?      
+> > > 
+> > > I see my confusion now, the phrasing in your earlier remark led me
+> > > think this was about allowing the no-snoop performance enhancement in
+> > > some restricted way.
+> > > 
+> > > It is really about blocking no-snoop 100% of the time and then
+> > > disabling the dangerous wbinvd when the block is successful.
+> > > 
+> > > Didn't closely read the kvm code :\
+> > > 
+> > > If it was about allowing the optimization then I'd expect the guest to
+> > > enable no-snoopable regions via it's vIOMMU and realize them to the
+> > > hypervisor and plumb the whole thing through. Hence my remark about
+> > > the guest page tables..
+> > > 
+> > > So really the test is just 'were we able to block it' ?  
+> > 
+> > Yup.  Do we really still consider that there's some performance benefit
+> > to be had by enabling a device to use no-snoop?  This seems largely a
+> > legacy thing.  
+> 
+> I've recently had some no-snoopy discussions lately.. The issue didn't
+> vanish, it is still expensive going through all that cache hardware.
+> 
+> > > But Ok, back the /dev/ioasid. This answers a few lingering questions I
+> > > had..
+> > > 
+> > > 1) Mixing IOMMU_CAP_CACHE_COHERENCY and !IOMMU_CAP_CACHE_COHERENCY
+> > >    domains.
+> > > 
+> > >    This doesn't actually matter. If you mix them together then kvm
+> > >    will turn on wbinvd anyhow, so we don't need to use the DMA_PTE_SNP
+> > >    anywhere in this VM.
+> > > 
+> > >    This if two IOMMU's are joined together into a single /dev/ioasid
+> > >    then we can just make them both pretend to be
+> > >    !IOMMU_CAP_CACHE_COHERENCY and both not set IOMMU_CACHE.  
+> > 
+> > Yes and no.  Yes, if any domain is !IOMMU_CAP_CACHE_COHERENCY then we
+> > need to emulate wbinvd, but no we'll use IOMMU_CACHE any time it's
+> > available based on the per domain support available.  That gives us the
+> > most consistent behavior, ie. we don't have VMs emulating wbinvd
+> > because they used to have a device attached where the domain required
+> > it and we can't atomically remap with new flags to perform the same as
+> > a VM that never had that device attached in the first place.  
+> 
+> I think we are saying the same thing..
 
-Thanks,
-Srinivas
+Hrm?  I think I'm saying the opposite of your "both not set
+IOMMU_CACHE".  IOMMU_CACHE is the mapping flag that enables
+DMA_PTE_SNP.  Maybe you're using IOMMU_CACHE as the state reported to
+KVM?
 
-> 
-> > ---
+> > > 2) How to fit this part of kvm in some new /dev/ioasid world
+> > > 
+> > >    What we want to do here is iterate over every ioasid associated
+> > >    with the group fd that is passed into kvm.  
 > > 
-> > Jonothan et al. This is just a work against HID IIO sensor drivers,
-> > I think
-> > that entire IIO can gain from namespaces. But I leave it for you to
-> > decide and
-> > how to proceed / convert.
+> > Yeah, we need some better names, binding a device to an ioasid (fd) but
+> > then attaching a device to an allocated ioasid (non-fd)... I assume
+> > you're talking about the latter ioasid.  
 > 
-> It's been on the todo list since Jon Corbetts recent LWN article
-> pointing out
-> how underused this feature is which reminded me of it's existence.
+> Fingers crossed on RFCv2.. Here I mean the IOASID object inside the
+> /dev/iommu FD. The vfio_device would have some kref handle to the
+> in-kernel representation of it. So we can interact with it..
 > 
-> I agree in principle with doing it, but that is going to be a rather
-> big
-> single shot patch.  One for early in a cycle I think.
+> > >    Or perhaps more directly: an op attaching the vfio_device to the
+> > >    kvm and having some simple helper 
+> > >          '(un)register ioasid with kvm (kvm, ioasid)'
+> > >    that the vfio_device driver can call that just sorts this out.  
+> >
+> > We could almost eliminate the device notion altogether here, use an
+> > ioasidfd_for_each_ioasid() but we really want a way to trigger on each
+> > change to the composition of the device set for the ioasid, which is
+> > why we currently do it on addition or removal of a group, where the
+> > group has a consistent set of IOMMU properties.  
 > 
-> We have a lot of multi-module drivers as well where this might have
-> benefits
-> and would be a rather more contained change.
+> That is another quite good option, just forget about trying to be
+> highly specific and feed in the /dev/ioasid FD and have kvm ask "does
+> anything in here not enforce snoop?"
 > 
-> Jonathan
+> With something appropriate to track/block changing that answer.
 > 
-> > Yes, due to nature of this (kind of) change it may not be split.
-> > 
-> >  drivers/iio/accel/hid-sensor-accel-3d.c       |  1 +
-> >  .../hid-sensors/hid-sensor-attributes.c       | 26 +++++++++----
-> > ------
-> >  .../common/hid-sensors/hid-sensor-trigger.c   |  9 ++++---
-> >  drivers/iio/gyro/hid-sensor-gyro-3d.c         |  1 +
-> >  drivers/iio/humidity/hid-sensor-humidity.c    |  1 +
-> >  drivers/iio/light/hid-sensor-als.c            |  1 +
-> >  drivers/iio/light/hid-sensor-prox.c           |  1 +
-> >  drivers/iio/magnetometer/hid-sensor-magn-3d.c |  1 +
-> >  drivers/iio/orientation/hid-sensor-incl-3d.c  |  1 +
-> >  drivers/iio/orientation/hid-sensor-rotation.c |  1 +
-> >  .../position/hid-sensor-custom-intel-hinge.c  |  1 +
-> >  drivers/iio/pressure/hid-sensor-press.c       |  1 +
-> >  .../iio/temperature/hid-sensor-temperature.c  |  1 +
-> >  13 files changed, 29 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/drivers/iio/accel/hid-sensor-accel-3d.c
-> > b/drivers/iio/accel/hid-sensor-accel-3d.c
-> > index 27f47e1c251e..bcafca7b2eac 100644
-> > --- a/drivers/iio/accel/hid-sensor-accel-3d.c
-> > +++ b/drivers/iio/accel/hid-sensor-accel-3d.c
-> > @@ -465,3 +465,4 @@
-> > module_platform_driver(hid_accel_3d_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor Accel 3D");
-> >  MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> > ");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c 
-> > b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> > index cb52b4fd6bf7..a81a0b206af6 100644
-> > --- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> > +++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> > @@ -176,7 +176,7 @@ s32 hid_sensor_read_poll_value(struct
-> > hid_sensor_common *st)
-> >  
-> >  	return value;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_read_poll_value);
-> > +EXPORT_SYMBOL_NS(hid_sensor_read_poll_value, IIO_HID_ATTRIBUTES);
-> >  
-> >  int hid_sensor_read_samp_freq_value(struct hid_sensor_common *st,
-> >  				int *val1, int *val2)
-> > @@ -203,7 +203,7 @@ int hid_sensor_read_samp_freq_value(struct
-> > hid_sensor_common *st,
-> >  
-> >  	return IIO_VAL_INT_PLUS_MICRO;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_read_samp_freq_value);
-> > +EXPORT_SYMBOL_NS(hid_sensor_read_samp_freq_value, IIO_HID);
-> >  
-> >  int hid_sensor_write_samp_freq_value(struct hid_sensor_common *st,
-> >  				int val1, int val2)
-> > @@ -238,7 +238,7 @@ int hid_sensor_write_samp_freq_value(struct
-> > hid_sensor_common *st,
-> >  
-> >  	return 0;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_write_samp_freq_value);
-> > +EXPORT_SYMBOL_NS(hid_sensor_write_samp_freq_value, IIO_HID);
-> >  
-> >  int hid_sensor_read_raw_hyst_value(struct hid_sensor_common *st,
-> >  				int *val1, int *val2)
-> > @@ -261,7 +261,7 @@ int hid_sensor_read_raw_hyst_value(struct
-> > hid_sensor_common *st,
-> >  
-> >  	return IIO_VAL_INT_PLUS_MICRO;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_read_raw_hyst_value);
-> > +EXPORT_SYMBOL_NS(hid_sensor_read_raw_hyst_value, IIO_HID);
-> >  
-> >  int hid_sensor_read_raw_hyst_rel_value(struct hid_sensor_common
-> > *st, int *val1,
-> >  				       int *val2)
-> > @@ -283,7 +283,7 @@ int hid_sensor_read_raw_hyst_rel_value(struct
-> > hid_sensor_common *st, int *val1,
-> >  
-> >  	return IIO_VAL_INT_PLUS_MICRO;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_read_raw_hyst_rel_value);
-> > +EXPORT_SYMBOL_NS(hid_sensor_read_raw_hyst_rel_value, IIO_HID);
-> >  
-> >  
-> >  int hid_sensor_write_raw_hyst_value(struct hid_sensor_common *st,
-> > @@ -315,7 +315,7 @@ int hid_sensor_write_raw_hyst_value(struct
-> > hid_sensor_common *st,
-> >  
-> >  	return 0;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_write_raw_hyst_value);
-> > +EXPORT_SYMBOL_NS(hid_sensor_write_raw_hyst_value, IIO_HID);
-> >  
-> >  int hid_sensor_write_raw_hyst_rel_value(struct hid_sensor_common
-> > *st,
-> >  					int val1, int val2)
-> > @@ -346,7 +346,7 @@ int hid_sensor_write_raw_hyst_rel_value(struct
-> > hid_sensor_common *st,
-> >  
-> >  	return 0;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_write_raw_hyst_rel_value);
-> > +EXPORT_SYMBOL_NS(hid_sensor_write_raw_hyst_rel_value, IIO_HID);
-> >  
-> >  /*
-> >   * This fuction applies the unit exponent to the scale.
-> > @@ -430,14 +430,14 @@ int hid_sensor_format_scale(u32 usage_id,
-> >  
-> >  	return IIO_VAL_INT_PLUS_NANO;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_format_scale);
-> > +EXPORT_SYMBOL_NS(hid_sensor_format_scale, IIO_HID);
-> >  
-> >  int64_t hid_sensor_convert_timestamp(struct hid_sensor_common *st,
-> >  				     int64_t raw_value)
-> >  {
-> >  	return st->timestamp_ns_scale * raw_value;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_convert_timestamp);
-> > +EXPORT_SYMBOL_NS(hid_sensor_convert_timestamp, IIO_HID);
-> >  
-> >  static
-> >  int hid_sensor_get_reporting_interval(struct hid_sensor_hub_device
-> > *hsdev,
-> > @@ -484,7 +484,7 @@ int hid_sensor_get_report_latency(struct
-> > hid_sensor_common *st)
-> >  
-> >  	return value;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_get_report_latency);
-> > +EXPORT_SYMBOL_NS(hid_sensor_get_report_latency,
-> > IIO_HID_ATTRIBUTES);
-> >  
-> >  int hid_sensor_set_report_latency(struct hid_sensor_common *st,
-> > int latency_ms)
-> >  {
-> > @@ -492,13 +492,13 @@ int hid_sensor_set_report_latency(struct
-> > hid_sensor_common *st, int latency_ms)
-> >  				      st->report_latency.index,
-> >  				      sizeof(latency_ms), &latency_ms);
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_set_report_latency);
-> > +EXPORT_SYMBOL_NS(hid_sensor_set_report_latency,
-> > IIO_HID_ATTRIBUTES);
-> >  
-> >  bool hid_sensor_batch_mode_supported(struct hid_sensor_common *st)
-> >  {
-> >  	return st->report_latency.index > 0 && st-
-> > >report_latency.report_id > 0;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_batch_mode_supported);
-> > +EXPORT_SYMBOL_NS(hid_sensor_batch_mode_supported,
-> > IIO_HID_ATTRIBUTES);
-> >  
-> >  int hid_sensor_parse_common_attributes(struct
-> > hid_sensor_hub_device *hsdev,
-> >  					u32 usage_id,
-> > @@ -590,7 +590,7 @@ int hid_sensor_parse_common_attributes(struct
-> > hid_sensor_hub_device *hsdev,
-> >  
-> >  	return 0;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_parse_common_attributes);
-> > +EXPORT_SYMBOL_NS(hid_sensor_parse_common_attributes, IIO_HID);
-> >  
-> >  MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> > ");
-> >  MODULE_DESCRIPTION("HID Sensor common attribute processing");
-> > diff --git a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> > b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> > index c06537e106e9..60e85d675387 100644
-> > --- a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> > +++ b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> > @@ -150,7 +150,7 @@ static int _hid_sensor_power_state(struct
-> > hid_sensor_common *st, bool state)
-> >  
-> >  	return 0;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_power_state);
-> > +EXPORT_SYMBOL_NS(hid_sensor_power_state, IIO_HID);
-> >  
-> >  int hid_sensor_power_state(struct hid_sensor_common *st, bool
-> > state)
-> >  {
-> > @@ -225,7 +225,7 @@ void hid_sensor_remove_trigger(struct iio_dev
-> > *indio_dev,
-> >  	iio_trigger_free(attrb->trigger);
-> >  	iio_triggered_buffer_cleanup(indio_dev);
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_remove_trigger);
-> > +EXPORT_SYMBOL_NS(hid_sensor_remove_trigger, IIO_HID);
-> >  
-> >  static const struct iio_trigger_ops hid_sensor_trigger_ops = {
-> >  	.set_trigger_state = &hid_sensor_data_rdy_trigger_set_state,
-> > @@ -291,7 +291,7 @@ int hid_sensor_setup_trigger(struct iio_dev
-> > *indio_dev, const char *name,
-> >  	iio_triggered_buffer_cleanup(indio_dev);
-> >  	return ret;
-> >  }
-> > -EXPORT_SYMBOL(hid_sensor_setup_trigger);
-> > +EXPORT_SYMBOL_NS(hid_sensor_setup_trigger, IIO_HID);
-> >  
-> >  static int __maybe_unused hid_sensor_suspend(struct device *dev)
-> >  {
-> > @@ -321,8 +321,9 @@ const struct dev_pm_ops hid_sensor_pm_ops = {
-> >  	SET_RUNTIME_PM_OPS(hid_sensor_suspend,
-> >  			   hid_sensor_runtime_resume, NULL)
-> >  };
-> > -EXPORT_SYMBOL(hid_sensor_pm_ops);
-> > +EXPORT_SYMBOL_NS(hid_sensor_pm_ops, IIO_HID);
-> >  
-> >  MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> > ");
-> >  MODULE_DESCRIPTION("HID Sensor trigger processing");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID_ATTRIBUTES);
-> > diff --git a/drivers/iio/gyro/hid-sensor-gyro-3d.c
-> > b/drivers/iio/gyro/hid-sensor-gyro-3d.c
-> > index dad26ee4fd1f..2ed2a8effb86 100644
-> > --- a/drivers/iio/gyro/hid-sensor-gyro-3d.c
-> > +++ b/drivers/iio/gyro/hid-sensor-gyro-3d.c
-> > @@ -400,3 +400,4 @@
-> > module_platform_driver(hid_gyro_3d_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor Gyroscope 3D");
-> >  MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> > ");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/humidity/hid-sensor-humidity.c
-> > b/drivers/iio/humidity/hid-sensor-humidity.c
-> > index 74383abc0d44..8a9091d71d2a 100644
-> > --- a/drivers/iio/humidity/hid-sensor-humidity.c
-> > +++ b/drivers/iio/humidity/hid-sensor-humidity.c
-> > @@ -295,3 +295,4 @@
-> > module_platform_driver(hid_humidity_platform_driver);
-> >  MODULE_DESCRIPTION("HID Environmental humidity sensor");
-> >  MODULE_AUTHOR("Song Hongyan <hongyan.song@intel.com>");
-> >  MODULE_LICENSE("GPL v2");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/light/hid-sensor-als.c
-> > b/drivers/iio/light/hid-sensor-als.c
-> > index 85c8a05b73cb..a63d577493e2 100644
-> > --- a/drivers/iio/light/hid-sensor-als.c
-> > +++ b/drivers/iio/light/hid-sensor-als.c
-> > @@ -392,3 +392,4 @@
-> > module_platform_driver(hid_als_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor ALS");
-> >  MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> > ");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/light/hid-sensor-prox.c
-> > b/drivers/iio/light/hid-sensor-prox.c
-> > index 17d167c3d595..99de268563d6 100644
-> > --- a/drivers/iio/light/hid-sensor-prox.c
-> > +++ b/drivers/iio/light/hid-sensor-prox.c
-> > @@ -350,3 +350,4 @@
-> > module_platform_driver(hid_prox_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor Proximity");
-> >  MODULE_AUTHOR("Archana Patni <archana.patni@intel.com>");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/magnetometer/hid-sensor-magn-3d.c
-> > b/drivers/iio/magnetometer/hid-sensor-magn-3d.c
-> > index b78691523dd4..a66f9e933628 100644
-> > --- a/drivers/iio/magnetometer/hid-sensor-magn-3d.c
-> > +++ b/drivers/iio/magnetometer/hid-sensor-magn-3d.c
-> > @@ -587,3 +587,4 @@
-> > module_platform_driver(hid_magn_3d_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor Magnetometer 3D");
-> >  MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> > ");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/orientation/hid-sensor-incl-3d.c
-> > b/drivers/iio/orientation/hid-sensor-incl-3d.c
-> > index 7af48d336285..cc905b0fa835 100644
-> > --- a/drivers/iio/orientation/hid-sensor-incl-3d.c
-> > +++ b/drivers/iio/orientation/hid-sensor-incl-3d.c
-> > @@ -425,3 +425,4 @@
-> > module_platform_driver(hid_incl_3d_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor Inclinometer 3D");
-> >  MODULE_AUTHOR("Srinivas Pandruvada <
-> > srinivas.pandruvada@linux.intel.com>");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/orientation/hid-sensor-rotation.c
-> > b/drivers/iio/orientation/hid-sensor-rotation.c
-> > index cf7f57a47681..6570bfd22035 100644
-> > --- a/drivers/iio/orientation/hid-sensor-rotation.c
-> > +++ b/drivers/iio/orientation/hid-sensor-rotation.c
-> > @@ -373,3 +373,4 @@
-> > module_platform_driver(hid_dev_rot_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor Device Rotation");
-> >  MODULE_AUTHOR("Srinivas Pandruvada <
-> > srinivas.pandruvada@linux.intel.com>");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> > b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> > index 738b5f4626ce..4478ad9387c5 100644
-> > --- a/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> > +++ b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> > @@ -376,3 +376,4 @@
-> > module_platform_driver(hid_hinge_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor INTEL Hinge");
-> >  MODULE_AUTHOR("Ye Xiang <xiang.ye@intel.com>");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/pressure/hid-sensor-press.c
-> > b/drivers/iio/pressure/hid-sensor-press.c
-> > index c416d261e3e3..79b3399e4095 100644
-> > --- a/drivers/iio/pressure/hid-sensor-press.c
-> > +++ b/drivers/iio/pressure/hid-sensor-press.c
-> > @@ -357,3 +357,4 @@
-> > module_platform_driver(hid_press_platform_driver);
-> >  MODULE_DESCRIPTION("HID Sensor Pressure");
-> >  MODULE_AUTHOR("Archana Patni <archana.patni@intel.com>");
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_IMPORT_NS(IIO_HID);
-> > diff --git a/drivers/iio/temperature/hid-sensor-temperature.c
-> > b/drivers/iio/temperature/hid-sensor-temperature.c
-> > index dc534ed784c3..21aa952b9f6d 100644
-> > --- a/drivers/iio/temperature/hid-sensor-temperature.c
-> > +++ b/drivers/iio/temperature/hid-sensor-temperature.c
-> > @@ -291,3 +291,4 @@
-> > module_platform_driver(hid_temperature_platform_driver);
-> >  MODULE_DESCRIPTION("HID Environmental temperature sensor");
-> >  MODULE_AUTHOR("Song Hongyan <hongyan.song@intel.com>");
-> >  MODULE_LICENSE("GPL v2");
-> > +MODULE_IMPORT_NS(IIO_HID);
+> It doesn't solve the problem to connect kvm to AP and kvmgt though
+
+It does not, we'll probably need a vfio ioctl to gratuitously announce
+the KVM fd to each device.  I think some devices might currently fail
+their open callback if that linkage isn't already available though, so
+it's not clear when that should happen, ie. it can't currently be a
+VFIO_DEVICE ioctl as getting the device fd requires an open, but this
+proposal requires some availability of the vfio device fd without any
+setup, so presumably that won't yet call the driver open callback.
+Maybe that's part of the attach phase now... I'm not sure, it's not
+clear when the vfio device uAPI starts being available in the process
+of setting up the ioasid.  Thanks,
+
+Alex
 
