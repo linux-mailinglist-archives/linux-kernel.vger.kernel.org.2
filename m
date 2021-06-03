@@ -2,100 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2739739ACDF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D5139ACED
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhFCVav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:30:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhFCVau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:30:50 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33EFB613F9;
-        Thu,  3 Jun 2021 21:29:04 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 17:29:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH V3 7/9] tracing: Add __print_ns_to_secs() and
- __print_ns_without_secs() helpers
-Message-ID: <20210603172902.41648183@gandalf.local.home>
-In-Reply-To: <2c59beee3b36b15592bfbb9f26dee7f8b55fd814.1621024265.git.bristot@redhat.com>
-References: <cover.1621024265.git.bristot@redhat.com>
-        <2c59beee3b36b15592bfbb9f26dee7f8b55fd814.1621024265.git.bristot@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230334AbhFCVcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:32:05 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:40606 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbhFCVcC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 17:32:02 -0400
+Received: by mail-pf1-f175.google.com with SMTP id q25so5896887pfh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2Yeh/FjvoGmDvMVI3FhndKEAnDxbRTGa5PVumREo+/U=;
+        b=CxbhIwPtH10NEUgChjJXFAa/Kma9UcNFh/9cCYSjXEjz+Z+xBYH79qxj2tLoiCcBxh
+         VTKyd/9ozWk/aUphLEgt+/m2POjsNqpzx8S1J6xAdQ+By8aUx6MwBbH6+6TPDadxXfwG
+         hGJGk1CkZzfssRK7krjAHRRCm2Ehd0Gncf8rY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2Yeh/FjvoGmDvMVI3FhndKEAnDxbRTGa5PVumREo+/U=;
+        b=MpWq4z9h7Be2AlkMkUSRaSOodrpkZlwbzWiPEc+zsR1igCBhMh/Z7cy2qx7XzArruo
+         oGRV2CEzWDS83wzyhV+u7Qgyt7l4iFi6SPhm1C5uZpZ9QbtlDBcGW6enj05EIEZrmpjU
+         gi56YiyGJgKnOd+tjNL5+GgkLEyddzuRaGplDlM3g6tUzH0odG0fsnJkjJgIMljATcMv
+         Z1ooLXlpDievFAreTw1yVZKVZRabCQ7WRPR7Dkqdun7wOBZLYdAe86xl/clblPPixntz
+         rtqtIGCTq1zKNlI86mroXCmIrs5S1LrDZjQ6rdl7NsZngnxpvSnm8qTuzsKjXDWZ1CDz
+         rjYQ==
+X-Gm-Message-State: AOAM530Ds4hkca37QNzlesDMB0tIGLDE+Y1xYoZ89f2Pe8LqbWcgfwYM
+        lZWRUVtTBNkleKWXCDRS6utjKg==
+X-Google-Smtp-Source: ABdhPJyAQKUVj6xeGTKI/EB0Y3dsmWB0IM9MSfak1uIoG3Yp+fIAM1Il/NoO3cJ2xnooyk2IosedYA==
+X-Received: by 2002:a63:be45:: with SMTP id g5mr1386784pgo.311.1622755747756;
+        Thu, 03 Jun 2021 14:29:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u73sm22479pfc.169.2021.06.03.14.29.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 14:29:07 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 14:29:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Rob Herring <robh@kernel.org>, Dave Airlie <airlied@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Arnd Bergmann <arnd@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>
+Subject: Re: [PATCH 3/3] drm/pl111: depend on CONFIG_VEXPRESS_CONFIG
+Message-ID: <202106031422.FD9E3C5755@keescook>
+References: <20210602215252.695994-1-keescook@chromium.org>
+ <20210602215252.695994-4-keescook@chromium.org>
+ <CAL_JsqLO_YbT3VU0+uHH2t6ONs_dWfBhqds9okYD0254ZiBf=A@mail.gmail.com>
+ <CAKMK7uFBQk+KA0fPdjkB9=7By2a9V5i=u84ufO+n3dmjayq+vw@mail.gmail.com>
+ <202106031357.BE2A09DA8F@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202106031357.BE2A09DA8F@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 22:51:16 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+On Thu, Jun 03, 2021 at 02:19:52PM -0700, Kees Cook wrote:
+> On Thu, Jun 03, 2021 at 09:19:42PM +0200, Daniel Vetter wrote:
+> > On Thu, Jun 3, 2021 at 8:43 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Wed, Jun 2, 2021 at 4:53 PM Kees Cook <keescook@chromium.org> wrote:
+> > > >
+> > > > Avoid randconfig build failures by requiring VEXPRESS_CONFIG:
+> > > >
+> > > > aarch64-linux-gnu-ld: drivers/gpu/drm/pl111/pl111_versatile.o: in function `pl111_vexpress_clcd_init':
+> > > > pl111_versatile.c:(.text+0x220): undefined reference to `devm_regmap_init_vexpress_config'
+> > >
+> > > pl111_vexpress_clcd_init() starts with:
+> > >
+> > > if (!IS_ENABLED(CONFIG_VEXPRESS_CONFIG))
+> > >                 return -ENODEV;
+> > >
+> > > Isn't that supposed to be enough to avoid an undefined reference?
+> 
+> Ah! I missed that when reading the code. I see the problem now. It's
+> because of:
+> 
+> CONFIG_VEXPRESS_CONFIG=m
+> CONFIG_DRM_PL111=y
+> 
+> I think the right fix is:
+> 
+> diff --git a/drivers/gpu/drm/pl111/Kconfig b/drivers/gpu/drm/pl111/Kconfig
+> index 80f6748055e3..662fc38f92ba 100644
+> --- a/drivers/gpu/drm/pl111/Kconfig
+> +++ b/drivers/gpu/drm/pl111/Kconfig
+> @@ -3,6 +3,7 @@ config DRM_PL111
+>  	tristate "DRM Support for PL111 CLCD Controller"
+>  	depends on DRM
+>  	depends on ARM || ARM64 || COMPILE_TEST
+> +	depends on VEXPRESS_CONFIG=y || VEXPRESS_CONFIG=DRM
 
-> +++ b/include/trace/trace_events.h
-> @@ -358,6 +358,21 @@ TRACE_MAKE_SYSTEM_STR();
->  	trace_print_hex_dump_seq(p, prefix_str, prefix_type,		\
->  				 rowsize, groupsize, buf, len, ascii)
->  
-> +#undef __print_ns_to_secs
-> +#define __print_ns_to_secs(value)			\
-> +	({						\
-> +		u64 ____val = (u64)value;		\
-> +		do_div(____val, NSEC_PER_SEC);		\
-> +		____val;				\
-> +	})
+Oops, no, I had this backwairds:
 
-I know my name is on this, but we need parenthesis around "value".
+	depends on !VEXPRESS_CONFIG || VEXPRESS_CONFIG=DRM
 
-> +
-> +#undef __print_ns_without_secs
-> +#define __print_ns_without_secs(value)			\
-> +	({						\
-> +		u64 ____val = (u64)value;		\
+_that_ lets me build with:
 
-Here too.
+# CONFIG_VEXPRESS_CONFIG is not set
+CONFIG_DRM_PL111=y
 
-> +		(u32) do_div(____val, NSEC_PER_SEC);	\
-> +	})
-> +
->  #undef DECLARE_EVENT_CLASS
->  #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
->  static notrace enum print_line_t					\
-> @@ -736,6 +751,16 @@ static inline void ftrace_test_probe_##call(void)			\
->  #undef __print_array
->  #undef __print_hex_dump
->  
-> +/*
-> + * The below is not executed in the kernel. It is only what is
-> + * displayed in the print format for userspace to parse.
-> + */
-> +#undef __print_ns_to_secs
-> +#define __print_ns_to_secs(val) val / 1000000000UL
-> +
-> +#undef __print_ns_without_secs
-> +#define __print_ns_without_secs(val) val % 1000000000UL
+CONFIG_VEXPRESS_CONFIG=y
+CONFIG_DRM_PL111=y
 
-And around "val" in the above two macros.
+CONFIG_VEXPRESS_CONFIG=m
+CONFIG_DRM_PL111=m
 
--- Steve
+CONFIG_VEXPRESS_CONFIG=y
+CONFIG_DRM_PL111=m
 
-> +
->  #undef TP_printk
->  #define TP_printk(fmt, args...) "\"" fmt "\", "  __stringify(args)
->  
+and disallows:
 
+CONFIG_VEXPRESS_CONFIG=m
+CONFIG_DRM_PL111=y
+
+(this will force CONFIG_DRM_PL111=m)
+
+-Kees
+
+>  	depends on COMMON_CLK
+>  	select DRM_KMS_HELPER
+>  	select DRM_KMS_CMA_HELPER
+> 
+> I will go check the defconfigs Rob mentioned...
+> 
+> > > Making the whole file depend on VEXPRESS_CONFIG is not right either.
+> > > Not all platforms need it.
+> > 
+> > It needs a compile-time status inline then for the functions we're
+> > using in pl111.
+> 
+> FYI, this is the config I was working from, which was throwing link errors:
+> https://lore.kernel.org/lkml/202105300926.fX0MYySp-lkp@intel.com/
+> 
+> > -Daniel
+> > 
+> > >
+> > > >
+> > > > Fixes: 826fc86b5903 ("drm: pl111: Move VExpress setup into versatile init")
+> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > > ---
+> > > >  drivers/gpu/drm/pl111/Kconfig | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/pl111/Kconfig b/drivers/gpu/drm/pl111/Kconfig
+> > > > index 80f6748055e3..c5210a5bef1b 100644
+> > > > --- a/drivers/gpu/drm/pl111/Kconfig
+> > > > +++ b/drivers/gpu/drm/pl111/Kconfig
+> > > > @@ -2,7 +2,7 @@
+> > > >  config DRM_PL111
+> > > >         tristate "DRM Support for PL111 CLCD Controller"
+> > > >         depends on DRM
+> > > > -       depends on ARM || ARM64 || COMPILE_TEST
+> > > > +       depends on VEXPRESS_CONFIG
+> > > >         depends on COMMON_CLK
+> > > >         select DRM_KMS_HELPER
+> > > >         select DRM_KMS_CMA_HELPER
+> > > > --
+> > > > 2.25.1
+> > > >
+> > 
+> > 
+> > 
+> > -- 
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+> 
+> -- 
+> Kees Cook
+
+-- 
+Kees Cook
