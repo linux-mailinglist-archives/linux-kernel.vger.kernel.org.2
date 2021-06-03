@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A550C39A003
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B62C39A00E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhFCLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFCLo3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:44:29 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05DCC06174A;
-        Thu,  3 Jun 2021 04:42:44 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f138500cdba27e87082b0ea.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:cdba:27e8:7082:b0ea])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 150541EC0523;
-        Thu,  3 Jun 2021 13:42:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622720563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kHR69sSnlQU4XT3ZHfXIo1egrOHDxOfisxy4DiTmTKs=;
-        b=kxTskGjoKduUe9Ji81kD1Z5sBuTuPnicMYhK3yQJ0UXYvJ/lQ/oc4VEEcDmMfLXmdJjaWF
-        teI8hWz63WIbrXIAQzoIDmoF90c5/fxWASmN5YqLktqoXry4oF2BSDlEryi6efXNbVkWPH
-        yfNpQ3QVGrQvZPApZmp4Zd75MjNABjQ=
-Date:   Thu, 3 Jun 2021 13:42:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
- remove update_pasid()
-Message-ID: <YLjALi9hoxv2kubX@zn.tnic>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
- <87mtsd6gr9.ffs@nanos.tec.linutronix.de>
- <YLdZ7bZDPNup1n9c@zn.tnic>
- <YLi6+vICUmu07b0E@vkoul-mobl>
+        id S229878AbhFCLrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229736AbhFCLrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:47:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18BBD613E3;
+        Thu,  3 Jun 2021 11:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622720708;
+        bh=zyubrDY6PgAJro5tE3EZoArdhuv1Wnp1dBHHVd5rV5Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lBOy6uhLHT5dd8gfGWKdDHeB9iQVObwB5de9/luN/ATpIJ+d6g1Q0ugQMAmN5Afnv
+         1I+ASzQPBGuhzP4YE85HEp8LwT/5Il+Q8N4F9CsrbPPH1hN1WqxsTKONbfjJuk3GVC
+         PAFhyNeP/IYJqBoLRfM+8yevVrkG+uiL3McW+Oos=
+Date:   Thu, 3 Jun 2021 13:45:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tong Tiangen <tongtiangen@huawei.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] usb: isp1760: Fix meaningless check in
+ isp1763_run()
+Message-ID: <YLjAweuyJXzDn9pe@kroah.com>
+References: <20210601100311.70200-1-tongtiangen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLi6+vICUmu07b0E@vkoul-mobl>
+In-Reply-To: <20210601100311.70200-1-tongtiangen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 04:50:26PM +0530, Vinod Koul wrote:
-> Applied, thanks
+On Tue, Jun 01, 2021 at 06:03:11PM +0800, Tong Tiangen wrote:
+> There's a meaningless check in isp1763_run. According to the
+> similar implement in isp1760_run, the proper check should remove
+> retval = 0;
+> 
+> Fixes: 60d789f3bfbb ("usb: isp1760: add support for isp1763")
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+> ---
+>  drivers/usb/isp1760/isp1760-hcd.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/usb/isp1760/isp1760-hcd.c b/drivers/usb/isp1760/isp1760-hcd.c
+> index 016a54ea76f4..27168b4a4ef2 100644
+> --- a/drivers/usb/isp1760/isp1760-hcd.c
+> +++ b/drivers/usb/isp1760/isp1760-hcd.c
+> @@ -1648,7 +1648,6 @@ static int isp1763_run(struct usb_hcd *hcd)
+>  	down_write(&ehci_cf_port_reset_rwsem);
+>  	retval = isp1760_hcd_set_and_wait(hcd, FLAG_CF, 250 * 1000);
+>  	up_write(&ehci_cf_port_reset_rwsem);
+> -	retval = 0;
+>  	if (retval)
+>  		return retval;
+>  
+> -- 
+> 2.18.0.huawei.25
+> 
 
-Actually, I'd prefer if I take it through the tip tree:
+Did you test this change to verify that the driver still works properly?
+You are now checking something that never was checked before...
 
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?h=x86/urgent
+thanks,
 
-because it is needed for the following patch by tglx:
-
-6867ee8bcb75 x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and remove update_pasid()
-db099bafbf5e dmaengine: idxd: Use cpu_feature_enabled()
-
-if you don't mind.
-
-I'll be sending this to Linus this weekend.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
