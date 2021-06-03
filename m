@@ -2,186 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D1339A502
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8770D39A501
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhFCPyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:54:22 -0400
-Received: from mail-yb1-f181.google.com ([209.85.219.181]:33556 "EHLO
-        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhFCPyV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:54:21 -0400
-Received: by mail-yb1-f181.google.com with SMTP id f84so9571028ybg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V0E1bQ+uKUVeIFgvkIlglV33FCznGkcgKYHmyJqXHZ4=;
-        b=L6c8kr29xlQkfikA6a4PIf875euklpqQN8EDPNIOkcCRGCACOIUxKiYzdH59e2Gdz+
-         llM+M3HbTJjzz6D1YkvrdHTH9mma5v1oj3jm5hcu8R+6tfq84GXqAJp4V1WLddFy0ZQI
-         wFzBY0zW2VLkGcBJY5JoJV2nZ1aADn2s7hVRk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V0E1bQ+uKUVeIFgvkIlglV33FCznGkcgKYHmyJqXHZ4=;
-        b=WstAp8+LSD8WzWOyeeGzgDZZ0ikW9Xjc1lM/oQoIpU7RRTPcOCOSLtMOgbhjD8/tQO
-         S8TXHpbA/S7tk/xnO53s27IvmVVUELl1LP688CXftk1D5l6vODFTjc+PpHd7YcDtxCHc
-         YmH8ILNZWvu3dZfaXPqF0x2NwaKBEUYSJCwCa2dQc3G70kksZsOPh72RL9CJVm2EbTAt
-         Io12TcTKRJDXsjvfWbAYXfkuYXXnzmhvTiVDkT8wePVsOPSQ/ypFxLkfAPciuWa3Ai51
-         69ru/miG+DJXNL0cMLbOMkTjHRxuezut9vjM8I1gyx0RmDQ6Sw0mRYTtptWArYf8K0Of
-         0aqg==
-X-Gm-Message-State: AOAM532GJqfvp7lcjX+6EuicQfy4tjevbotz5uAO8u17sISWUR6jLTd/
-        VGR0iAHPocun/jjIQh+t1CmPJl9kBWHausCCcdLbIw==
-X-Google-Smtp-Source: ABdhPJyP9W19k/Ki6c2DwddIwJwVZOUopod0HSUrSsvq+oGgiLZQc/+ykQGJfWEIsf0Ermak0Nf58vUycg2mFIDfLuQ=
-X-Received: by 2002:a25:d256:: with SMTP id j83mr825910ybg.421.1622735496472;
- Thu, 03 Jun 2021 08:51:36 -0700 (PDT)
+        id S229809AbhFCPyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:54:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229617AbhFCPyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:54:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE4E2613DA;
+        Thu,  3 Jun 2021 15:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622735551;
+        bh=ALfngd/AzLPASHcVjomPrxMSCKAg7yfJ1wHcHYwvtBc=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=TbgpQ8Qf5W45YxV+0l+irYqf6fVnbcO4dg/osTPpoqHf2M5AlW5/JJdNzFhuwZj2B
+         5WEKfQpq442LQy9sBf/x5BIhYKaPMjLi2Ftvo67BxOcpwZ6nqkDdRwa328Svt97RyY
+         ePcT6qqXawvVtt3i+q7gcsuxephEKc5vO56P9jRhQc2Ty2xYGEvo4V/24nIJs9DxB6
+         m4Dkb5IAXVoeuUyyN/vwto97IdWy1K+iUmjX7rp8BZS7RcN1iiuk+AmtcdLQPOircm
+         rrI2wi5vsFmCpfl2YrGnGtntCLdzdoEajlAV246dfr6xoZPTRGvA00whQO9JJ2v+Xx
+         asuOh3rAArwGA==
+Subject: Re: [f2fs-dev] [PATCH 2/2 v4] f2fs: support RO feature
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20210521190217.2484099-1-jaegeuk@kernel.org>
+ <20210521190217.2484099-2-jaegeuk@kernel.org> <YK5UOfzwdZni7c5W@google.com>
+ <YK5edM0igwfd47LV@google.com> <YLfV4EPW5Yw6wP+v@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <900914f9-aedc-7379-e14d-1ddd5092d710@kernel.org>
+Date:   Thu, 3 Jun 2021 23:52:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210603082749.1256129-1-alex@ghiti.fr> <20210603082749.1256129-2-alex@ghiti.fr>
- <20210603202748.2775f739@xhacker> <20210603204942.703c9cb4@xhacker>
-In-Reply-To: <20210603204942.703c9cb4@xhacker>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Thu, 3 Jun 2021 17:51:25 +0200
-Message-ID: <CAM4kBBKo2qzgfXZMk4Zfkw-wgMnwNRcdj_ZCJHg4=JAG0kb9oQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] riscv: Factorize xip and !xip kernel address
- conversion macros
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Alexandre Ghiti <alex@ghiti.fr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YLfV4EPW5Yw6wP+v@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021, 14:57 Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
->
-> On Thu, 3 Jun 2021 20:27:48 +0800
-> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
->
-> > On Thu,  3 Jun 2021 10:27:47 +0200
-> > Alexandre Ghiti <alex@ghiti.fr> wrote:
-> >
-> > > To simplify the kernel address conversion code, make the same definition of
-> > > kernel_mapping_pa_to_va and kernel_mapping_va_to_pa compatible for both xip
-> > > and !xip kernel by defining XIP_OFFSET to 0 in !xip kernel.
-> > >
-> > > Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> > > ---
-> > >  arch/riscv/include/asm/page.h    | 14 +++-----------
-> > >  arch/riscv/include/asm/pgtable.h |  2 ++
-> > >  2 files changed, 5 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> > > index 6a7761c86ec2..6e004d8fda4d 100644
-> > > --- a/arch/riscv/include/asm/page.h
-> > > +++ b/arch/riscv/include/asm/page.h
-> > > @@ -93,9 +93,7 @@ extern unsigned long va_pa_offset;
-> > >  #ifdef CONFIG_64BIT
-> > >  extern unsigned long va_kernel_pa_offset;
-> > >  #endif
-> > > -#ifdef CONFIG_XIP_KERNEL
-> > >  extern unsigned long va_kernel_xip_pa_offset;
-> > > -#endif
-> > >  extern unsigned long pfn_base;
-> > >  #define ARCH_PFN_OFFSET            (pfn_base)
-> > >  #else
-> > > @@ -103,6 +101,7 @@ extern unsigned long pfn_base;
-> > >  #ifdef CONFIG_64BIT
-> > >  #define va_kernel_pa_offset        0
-> > >  #endif
-> > > +#define va_kernel_xip_pa_offset 0
-> > >  #define ARCH_PFN_OFFSET            (PAGE_OFFSET >> PAGE_SHIFT)
-> > >  #endif /* CONFIG_MMU */
-> > >
-> > > @@ -110,29 +109,22 @@ extern unsigned long kernel_virt_addr;
-> > >
-> > >  #ifdef CONFIG_64BIT
-> > >  #define linear_mapping_pa_to_va(x) ((void *)((unsigned long)(x) + va_pa_offset))
-> > > -#ifdef CONFIG_XIP_KERNEL
-> > >  #define kernel_mapping_pa_to_va(y) ({                                              \
-> > >     unsigned long _y = y;                                                           \
-> > >     (_y >= CONFIG_PHYS_RAM_BASE) ?
-> >
-> > This CONFIG_PHYS_RAM_BASE is only available for XIP, could result in a
-> > compiler error for !XIP?
-> >
-> > I'm also concerned with the unecessary overhead of kernel_mapping_pa_to_va()
-> > for !XIP case, there's a "if" condition branch, and extra symbol: va_kernel_xip_pa_offset
->
-> Err, I just found this symobl always exists no matter XIP is enabled or not.
-> I will send out a patch for this clean up
+On 2021/6/3 3:02, Jaegeuk Kim wrote:
+> Given RO feature in superblock, we don't need to check provisioning/reserve
+> spaces and SSA area.
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+> 
+> Change log from v3:
+>   - add feature sysfs entries
+> 
+>   fs/f2fs/f2fs.h    |  3 +++
+>   fs/f2fs/segment.c |  4 ++++
+>   fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
+>   fs/f2fs/sysfs.c   |  8 ++++++++
+>   4 files changed, 46 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index eaf57b5f3c4b..8903c43091f8 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -168,6 +168,7 @@ struct f2fs_mount_info {
+>   #define F2FS_FEATURE_SB_CHKSUM		0x0800
+>   #define F2FS_FEATURE_CASEFOLD		0x1000
+>   #define F2FS_FEATURE_COMPRESSION	0x2000
+> +#define F2FS_FEATURE_RO			0x4000
+>   
+>   #define __F2FS_HAS_FEATURE(raw_super, mask)				\
+>   	((raw_super->feature & cpu_to_le32(mask)) != 0)
+> @@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+>   #define	NR_CURSEG_DATA_TYPE	(3)
+>   #define NR_CURSEG_NODE_TYPE	(3)
+>   #define NR_CURSEG_INMEM_TYPE	(2)
+> +#define NR_CURSEG_RO_TYPE	(2)
+>   #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
+>   #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
+>   
+> @@ -4128,6 +4130,7 @@ F2FS_FEATURE_FUNCS(verity, VERITY);
+>   F2FS_FEATURE_FUNCS(sb_chksum, SB_CHKSUM);
+>   F2FS_FEATURE_FUNCS(casefold, CASEFOLD);
+>   F2FS_FEATURE_FUNCS(compression, COMPRESSION);
+> +F2FS_FEATURE_FUNCS(readonly, RO);
 
-What cleanup?
+If so, we'd better to use f2fs_sb_has_readonly() instead of F2FS_HAS_FEATURE()?
 
-Best regards,
-   Vitaly
+Thanks,
 
->
-> >
-> > >             (void *)((unsigned long)(_y) + va_kernel_pa_offset + XIP_OFFSET) :      \
-> > >             (void *)((unsigned long)(_y) + va_kernel_xip_pa_offset);                \
-> > >     })
-> > > -#else
-> > > -#define kernel_mapping_pa_to_va(x) ((void *)((unsigned long)(x) + va_kernel_pa_offset))
-> > > -#endif
-> > >  #define __pa_to_va_nodebug(x)              linear_mapping_pa_to_va(x)
-> > >
-> > >  #define linear_mapping_va_to_pa(x) ((unsigned long)(x) - va_pa_offset)
-> > > -#ifdef CONFIG_XIP_KERNEL
-> > >  #define kernel_mapping_va_to_pa(y) ({                                              \
-> > >     unsigned long _y = y;                                                   \
-> > >     (_y < kernel_virt_addr + XIP_OFFSET) ?                                  \
-> > >             ((unsigned long)(_y) - va_kernel_xip_pa_offset) :               \
-> > >             ((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFSET);       \
-> > >     })
-> >
-> > Similar as kernel_mapping_pa_to_va(), an overhead of "if" condition branch
-> > for !XIP and extra va_kernel_xip_pa_offset symbol.
-> >
-> > > -#else
-> > > -#define kernel_mapping_va_to_pa(x) ((unsigned long)(x) - va_kernel_pa_offset)
-> > > -#endif
-> > > +
-> > >  #define __va_to_pa_nodebug(x)      ({                                              \
-> > >     unsigned long _x = x;                                                   \
-> > >     (_x < kernel_virt_addr) ?                                               \
-> > > @@ -141,7 +133,7 @@ extern unsigned long kernel_virt_addr;
-> > >  #else
-> > >  #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
-> > >  #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
-> > > -#endif
-> > > +#endif /* CONFIG_64BIT */
-> > >
-> > >  #ifdef CONFIG_DEBUG_VIRTUAL
-> > >  extern phys_addr_t __virt_to_phys(unsigned long x);
-> > > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> > > index bde8ce3bfe7c..d98e931a31e5 100644
-> > > --- a/arch/riscv/include/asm/pgtable.h
-> > > +++ b/arch/riscv/include/asm/pgtable.h
-> > > @@ -77,6 +77,8 @@
-> > >
-> > >  #ifdef CONFIG_XIP_KERNEL
-> > >  #define XIP_OFFSET         SZ_8M
-> > > +#else
-> > > +#define XIP_OFFSET         0
-> > >  #endif
-> > >
-> > >  #ifndef __ASSEMBLY__
-> >
-> >
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>   
+>   #ifdef CONFIG_BLK_DEV_ZONED
+>   static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 380ef34e1a59..376c33ab71e2 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+>   		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
+>   		unsigned int blkofs = curseg->next_blkoff;
+>   
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
+> +			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
+> +			continue;
+> +
+>   		sanity_check_seg_type(sbi, curseg->seg_type);
+>   
+>   		if (f2fs_test_bit(blkofs, se->cur_valid_map))
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 2fa59c674cd9..fb490383c767 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   	int ret;
+>   
+>   	if (!options)
+> -		return 0;
+> +		goto default_check;
+>   
+>   	while ((p = strsep(&options, ",")) != NULL) {
+>   		int token;
+> @@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   			return -EINVAL;
+>   		}
+>   	}
+> +default_check:
+>   #ifdef CONFIG_QUOTA
+>   	if (f2fs_check_quota_options(sbi))
+>   		return -EINVAL;
+> @@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   	 */
+>   	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
+>   		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+> +
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
+> +		f2fs_err(sbi, "Allow to mount readonly mode only");
+> +		return -EROFS;
+> +	}
+>   	return 0;
+>   }
+>   
+> @@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>   static void default_options(struct f2fs_sb_info *sbi)
+>   {
+>   	/* init some FS parameters */
+> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
+> +	else
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +
+>   	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+>   	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+>   	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+> @@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
+>   		goto skip;
+>   
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
+> +		err = -EROFS;
+> +		goto restore_opts;
+> +	}
+> +
+>   #ifdef CONFIG_QUOTA
+>   	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
+>   		err = dquot_suspend(sb, -1);
+> @@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+>   	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+>   
+> -	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+> +	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
+> +			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+>   			ovp_segments == 0 || reserved_segments == 0)) {
+>   		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
+>   		return 1;
+>   	}
+> -
+>   	user_block_count = le64_to_cpu(ckpt->user_block_count);
+> -	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
+> +	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
+> +			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
+>   	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
+>   	if (!user_block_count || user_block_count >=
+>   			segment_count_main << log_blocks_per_seg) {
+> @@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +			goto check_data;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_node_segno[j])) {
+> @@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> +check_data:
+>   	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
+>   		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +			goto skip_cross;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_data_segno[j])) {
+> @@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> -
+> +skip_cross:
+>   	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
+>   	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
+>   
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 09e3f258eb52..62fbe4f20dd6 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -158,6 +158,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+>   	if (f2fs_sb_has_casefold(sbi))
+>   		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>   				len ? ", " : "", "casefold");
+> +	if (f2fs_sb_has_readonly(sbi))
+> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> +				len ? ", " : "", "readonly");
+>   	if (f2fs_sb_has_compression(sbi))
+>   		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>   				len ? ", " : "", "compression");
+> @@ -578,6 +581,7 @@ enum feat_id {
+>   	FEAT_SB_CHECKSUM,
+>   	FEAT_CASEFOLD,
+>   	FEAT_COMPRESSION,
+> +	FEAT_RO,
+>   	FEAT_TEST_DUMMY_ENCRYPTION_V2,
+>   };
+>   
+> @@ -599,6 +603,7 @@ static ssize_t f2fs_feature_show(struct f2fs_attr *a,
+>   	case FEAT_SB_CHECKSUM:
+>   	case FEAT_CASEFOLD:
+>   	case FEAT_COMPRESSION:
+> +	case FEAT_RO:
+>   	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
+>   		return sprintf(buf, "supported\n");
+>   	}
+> @@ -723,12 +728,14 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
+>   #ifdef CONFIG_UNICODE
+>   F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
+>   #endif
+> +F2FS_FEATURE_RO_ATTR(readonly, FEAT_RO);
+>   #ifdef CONFIG_F2FS_FS_COMPRESSION
+>   F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
+>   F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
+>   F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
+>   F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
+>   #endif
+> +
+>   /* For ATGC */
+>   F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_ratio, candidate_ratio);
+>   F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_count);
+> @@ -834,6 +841,7 @@ static struct attribute *f2fs_feat_attrs[] = {
+>   #ifdef CONFIG_UNICODE
+>   	ATTR_LIST(casefold),
+>   #endif
+> +	ATTR_LIST(readonly),
+>   #ifdef CONFIG_F2FS_FS_COMPRESSION
+>   	ATTR_LIST(compression),
+>   #endif
+> 
