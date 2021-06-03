@@ -2,190 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7193997A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A11939979E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhFCBtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 21:49:00 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:51535 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhFCBs7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 21:48:59 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1531X0kq099798;
-        Thu, 3 Jun 2021 09:33:00 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
- 2021 09:46:28 +0800
-Date:   Thu, 3 Jun 2021 09:46:26 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        "Brendan Higgins" <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
-        Troy Lee <troy_lee@aspeedtech.com>,
-        Steven Lee <steven_lee@aspeedtech.com>
-Subject: Re: [PATCH v2 1/1] dt-bindings: aspeed-i2c: Convert txt to yaml
- format
-Message-ID: <20210603014625.GA1759@aspeedtech.com>
-References: <20210527102512.20684-1-jamin_lin@aspeedtech.com>
- <20210527102512.20684-2-jamin_lin@aspeedtech.com>
- <20210602201720.GA3910963@robh.at.kernel.org>
+        id S229611AbhFCBsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 21:48:40 -0400
+Received: from ozlabs.org ([203.11.71.1]:41029 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhFCBsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 21:48:38 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FwTK82g8wz9sW7;
+        Thu,  3 Jun 2021 11:46:51 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622684813;
+        bh=ynMpJRWwCkz86MbxAZ5P7Fs8o/NBJCBM3ePrUfjkQZw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Og5qbeWUW5IMVC/ZzrSS73TsyKrRt39tzHE0cVftwMnKcCRBGwIk1qy/+O+kYcSU9
+         VPTamEAEifp8s+XWJSEOTQYMC7XNx46Rb8saNvY7kxow12BU8kmv3HdJpmfwAvDMIh
+         d3Mof3dSLM9SbscPr5vaLP92PUdA58ZNnKnrHGM/iZ/cQBPQnsazxGHDz2+Ib960L9
+         D74XtFTa6bjaGN0+DvoBl28eEGhXuwK8GIgu1vKxcJkIx7nEmsu/EA1PJrz7JZVMqK
+         l4dQOvl8UyTHrkeeUzKj8TAiUd93/XAJRVmKiTeA1p8qBaNwW9PnDahz4KBRmyMsw0
+         x7M25pCKgTcrA==
+Date:   Thu, 3 Jun 2021 11:46:50 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210603114650.70163765@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210602201720.GA3910963@robh.at.kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1531X0kq099798
+Content-Type: multipart/signed; boundary="Sig_/BO0FPj7bs4EEMlgyakhYDM_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/02/2021 20:17, Rob Herring wrote:
-> On Thu, May 27, 2021 at 06:25:05PM +0800, Jamin Lin wrote:
-> > Convert aspeed i2c to yaml.
-> > 
-> > Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
-> > ---
-> >  .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 86 +++++++++++++++++++
-> >  .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 -----------
-> >  2 files changed, 86 insertions(+), 49 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-> > new file mode 100644
-> > index 000000000000..1f7064d77708
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-> > @@ -0,0 +1,86 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/i2c/aspeed,i2c.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: ASPEED I2C on the AST24XX, AST25XX, and AST26XX SoCs Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Rayn Chen <rayn_chen@aspeedtech.com>
-> > +
-> > +allOf:
-> > +  - $ref: /schemas/i2c/i2c-controller.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - aspeed,ast2400-i2c-bus
-> > +      - aspeed,ast2500-i2c-bus
-> > +      - aspeed,ast2600-i2c-bus
-> > +
-> > +  "#size-cells":
-> > +    const: 0
-> > +
-> > +  "#address-cells":
-> > +    const: 1
-> 
-> These 2 are covered by i2c-controller.yaml.
->
-Will remove them.
-> > +
-> > +  reg:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +    items:
-> > +      - description: address offset and range of bus
-> > +      - description: address offset and range of bus buffer
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +    description: interrupt number
-> 
-> Drop. Not a useful description.
-> 
-Will remove it.
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +    description:
-> > +      root clock of bus, should reference the APB
-> > +      clock in the second cell
-> > +
-> > +  reset:
-> 
-> resets
-> 
-Thanks to find the typo.
-> > +    maxItems: 1
-> > +    description: phandle to reset controller with the reset number in
-> > +      the second cell
-> 
-> No need to describe the format of 'resets'.
-> 
-> > +
-> > +  bus-frequency:
-> > +    minimum: 500
-> > +    maximum: 4000000
-> > +    default: 100000
-> > +    description: frequency of the bus clock in Hz defaults to 100 kHz when not
-> > +      specified
-> > +
-> > +  multi-master:
-> > +    type: boolean
-> > +    description:
-> > +      states that there is another master active on this bus
-> > +
-> > +required:
-> > +  - reg
-> > +  - compatible
-> > +  - clocks
-> > +  - resets
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/aspeed-clock.h>
-> > +    i2c0: i2c-bus@40 {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      #interrupt-cells = <1>;
-> > +      reg = <0x40 0x40>;
-> > +      compatible = "aspeed,ast2500-i2c-bus";
-> 
-> Convention is compatible first in the list of properties.
->
-Will move compatible first in the list of properties.
-> > +      clocks = <&syscon ASPEED_CLK_APB>;
-> > +      resets = <&syscon ASPEED_RESET_I2C>;
-> > +      bus-frequency = <100000>;
-> > +      interrupts = <0>;
-> > +      interrupt-parent = <&i2c_ic>;
-> > +      status = "disabled";
-> 
-> Don't show status in examples especially when disabling disables some 
-> validation...
-> 
-Will remove it.
-> > +      /* Does not need pinctrl properties */
-> > +    };
-Thanks for your suggestion. I will send v3 patch.
+--Sig_/BO0FPj7bs4EEMlgyakhYDM_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+Today's linux-next merge of the net-next tree got a conflict in:
+
+  drivers/net/virtio_net.c
+
+between commits:
+
+  5c37711d9f27 ("virtio-net: fix for unable to handle page fault for addres=
+s")
+  8fb7da9e9907 ("virtio_net: get build_skb() buf by data ptr")
+
+from the net tree and commits:
+
+  6c66c147b9a4 ("virtio-net: fix for unable to handle page fault for addres=
+s")
+  7bf64460e3b2 ("virtio-net: get build_skb() buf by data ptr")
+
+from the net-next tree.
+
+These patches are different version of the same idea.
+
+I fixed it up (just used the latter versions) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/BO0FPj7bs4EEMlgyakhYDM_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC4NIoACgkQAVBC80lX
+0GyzKAgAo54mdzqKe5Pjbpc5sG0EVUqLSLMMGXLufC6FrzZL7zvJuFkmd+93x03E
+Sl4QUCsVu8geuQJFx/eyjbdzzHOVQKp65o/lZIb1ukSoJSmwSaAtX1oUKYPn8f12
+hBhsmumN/WFS9xpPUbhm8Xkx41hEzVBWqvuqC4kn/0jnBM9OVuqgjqqUQyuQDm7B
+hHkX+tHIxA6FaDcgah7lAsS1HH7adCwdhngyU4iQH2JCNbYFzEgCKUq26+URWwYl
+257nmq5FlyuOSks2VEYus8ffLFdNwDwfw/YI4XnUqBCHacvIltsL0Myr8+GtHOaZ
+59MPhSDlRAaHeV8hdmQEsAEqD5eUTw==
+=X3LT
+-----END PGP SIGNATURE-----
+
+--Sig_/BO0FPj7bs4EEMlgyakhYDM_--
