@@ -2,142 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3510F39AEC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1109539AECE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhFCXmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:42:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36803 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhFCXmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:42:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622763665; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Fz8Sw+CAHxzQ1wTzwGA8ftbArfy52ptDiPNLw8/pJ58=;
- b=fWcDAgTRjXHwxgyIwmdmffD1DnZugfzYvSJfvbHJofmZ7a8iGBcCMtmG5ryaB+J04Cn+GqUy
- zjnrNQE++ZZsgXopU1YV8dCHM8Z6sADRyAGUPbKPJ8TH2tsXK38erMhILJz7lJPUg6R/Aovh
- 43FtuN1zQ5H7zBZ/AB7mxkaJWVA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60b96875e27c0cc77f68319e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 23:40:37
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A73DBC43217; Thu,  3 Jun 2021 23:40:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7794C433F1;
-        Thu,  3 Jun 2021 23:40:35 +0000 (UTC)
+        id S229786AbhFCXrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCXro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 19:47:44 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C54BC06174A;
+        Thu,  3 Jun 2021 16:45:44 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id f20so123910wmg.0;
+        Thu, 03 Jun 2021 16:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3CgvK6mP0QW9sFdMKMBwLGrltbNn3STDZujxPwSb3s0=;
+        b=toQvauYIYaxK+64eW0m/teo1WO7qG+E6rvyBjOo2/RsBhhRaKvtVwcsl60yfYr+1+C
+         Wv1hk3d8ezwhdH1VDu0egjpyUk/Is0EQwXmnN2xaceWcC5k8AJCKQkAa7JV3zD5dKoxd
+         baeU6vjw+BL0zTr3vaobJ+G8IzibFoVc0iBsE1RslaE1r8K00LyFnHp846rEjwWJVDeZ
+         jJ81ZKPYGmNQhF+B4GPsnDyq9ulxlaE9ibrNtVAY7fiAa3MNe7D3KV6Zh2KdqWeUU84T
+         ultGwZGoclirp6nrL3Qh1p+zCuTOXU3JWvT7iG8zu8zXBMEvhTtgpr6jFOOBIPCRTSU9
+         VXHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3CgvK6mP0QW9sFdMKMBwLGrltbNn3STDZujxPwSb3s0=;
+        b=YW9SxOR4W1mVJkGjc9OO/RI12yIrrM1bTmfw97ofKzf3yLV1WDlBrLxjWM8bjiFtI6
+         o93kqK9KBh5OmRugPdZrswpFBMHY/ra2ZeOZyBnwyTfLpj9mFPwpiYeXaiM1oBv3rWjO
+         ZV6S+ohN1jRB0bfXBpBjwzFi6UHrze+F7GKZxBUWgkAI/XHxNUWl+cISKa2vbf9mt2rY
+         U+oFcb2KdLi5+65BMihBWNjjR2Q+roWgbp2SsAGjka6MikNM4LYujrvl57D2YayEUPzy
+         ccLaijDfo7ayilJ5idnD4AnB+EowZjLRxWDfaCt/sDxjsEbxtgmQ+pFRkGfMz0oRngTO
+         wHKg==
+X-Gm-Message-State: AOAM533VHzlepbazBnboMrFb5FRG1/eZAVnNP1H7TU02lWr43zeK0R3U
+        LFSBLwzJTZ8+jcTsQOvYodk=
+X-Google-Smtp-Source: ABdhPJyfVdmAt9flIwqHJTXh5UV7De7hWH7rXeVmiO7dO7Dz0uJzG8X0y2hGWz8ChBS1YUTdW0fI/Q==
+X-Received: by 2002:a1c:e915:: with SMTP id q21mr772896wmc.110.1622763942808;
+        Thu, 03 Jun 2021 16:45:42 -0700 (PDT)
+Received: from xws.localdomain ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id a11sm4743386wrr.48.2021.06.03.16.45.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 16:45:42 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] platform/surface: aggregator: Extend user-space interface for events
+Date:   Fri,  4 Jun 2021 01:45:19 +0200
+Message-Id: <20210603234526.2503590-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Jun 2021 16:40:35 -0700
-From:   abhinavk@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>, DTML <devicetree@vger.kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Subject: Re: [Freedreno] [RFC PATCH 00/13] drm/msm: Add Display Stream
- Compression Support
-In-Reply-To: <YLdlEB3Ea6OWaLw4@vkoul-mobl>
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <CAOCk7Nqep_Db+z3fr5asHZ1u0j8+6fKkPFs2Ai8CbA_zGqV6ZA@mail.gmail.com>
- <YK3gxqXBRupN/N+Q@vkoul-mobl.Dlink>
- <CAOCk7NqvhGvYw8xCBctqj7H+o-Qwp2UuUJK1gatW9EWfXv56xA@mail.gmail.com>
- <CAF6AEGuoyPr8PgfwFX0JCYZ7S_pryn_OXacHBqoMAAPvSq6aRw@mail.gmail.com>
- <YLdlEB3Ea6OWaLw4@vkoul-mobl>
-Message-ID: <a14c18a2545408e8156dcafc846b17a2@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-02 04:01, Vinod Koul wrote:
-> On 27-05-21, 16:30, Rob Clark wrote:
->> On Wed, May 26, 2021 at 8:00 AM Jeffrey Hugo 
->> <jeffrey.l.hugo@gmail.com> wrote:
->> > On Tue, May 25, 2021 at 11:46 PM Vinod Koul <vkoul@kernel.org> wrote:
-> 
->> > Frankly, I don't like the MSM ACPI solution that I've seen on the laptops.
->> > The ACPI assumes the entire MDSS (including DSI parts) and GPU is one
->> > device, and ultimately handled by one driver.  That driver needs to
->> > get a value from UEFI (set by the bootloader) that is the "panel id".
->> > Then the driver calls into ACPI (I think its _ROM, but I might be
->> > mistaken, doing this from memory) with that id.  It gets back a binary
->> > blob which is mostly an xml file (format is publicly documented) that
->> > contains the panel timings and such.
->> 
->> tbh, I kinda suspect that having a single "gpu" device (which also
->> includes venus, in addition to display, IIRC) in the ACPI tables is a
->> windowsism, trying to make things look to userspace like a single "GPU
->> card" in the x86 world.. but either way, I think the ACPI tables on
->> the windows arm laptops which use dsi->bridge->edp is too much of a
->> lost cause to even consider here.  Possibly ACPI boot on these devices
->> would be more feasible on newer devices which have direct eDP out of
->> the SoC without requiring external bridge/panel glue.
-> 
-> yeah that is always a very different world. although it might make 
-> sense
-> to use information in tables and try to deduce information about the
-> system can be helpful...
-> 
->> I'd worry more about what makes sense in a DT world, when it comes to
->> DT bindings.
-> 
-> And do you have thoughts on that..?
+Extend the user-space debug interface so that it can be used to receive
+SSAM events in user-space.
 
-At the moment, I will comment on the bindings first and my idea on how 
-to proceed.
-The bindings mentioned here: 
-https://lore.kernel.org/dri-devel/20210521124946.3617862-3-vkoul@kernel.org/ 
-seem to be just
-taken directly from downstream which was not the plan.
+Currently, inspecting SSAM events requires writing a custom client
+device and corresponding driver. This is not particularly user-friendly
+for quick testing and comes with higher iteration times. Since we
+already have a user-space interface, we can extend this to forward
+events from SSAM via the controller device file to user-space. With this
+we can then essentially write user-space SSAM clients for testing and
+reverse-engineering, providing us with all the essential functionality
+that previously only a kernel driver would have access to. Note that
+this is still only intended to be an interface for debugging and
+reverse-engineering purposes.
 
-I think all of these should be part of the generic panel bindings as 
-none of these are QC specific:
+To achieve this, we need to extend the core to decouple events from
+notifiers. Right now, enabling an event group requires registering a
+notifier for that group. This notifier provides a callback that is
+called when the event occurs. For user-space forwarding, we need to run
+all events through the same file. In the current implementation, this
+presents a problem as, when we don't know the exact events or can't
+filter for them, multiple notifiers for the same target category will
+lead to duplicate events to be sent through the file, one per notifier.
 
-@@ -188,6 +195,14 @@ Example:
-  		qcom,master-dsi;
-  		qcom,sync-dual-dsi;
+Decoupling notifier registration from event enable-/disablement (and the
+corresponding reference counting) allows us to avoid this issue. We can
+then register one notifier for a whole target category and enable or
+disable events independently of this notifier. Since events are strictly
+separated by their target category, this will not lead to duplicate
+events.
 
-+		qcom,mdss-dsc-enabled;
-+		qcom,mdss-slice-height = <16>;
-+		qcom,mdss-slice-width = <540>;
-+		qcom,mdss-slice-per-pkt = <1>;
-+		qcom,mdss-bit-per-component = <8>;
-+		qcom,mdss-bit-per-pixel = <8>;
-+		qcom,mdss-block-prediction-enable;
-+
+With this, we can then provide user-space with two new IOCTLs for
+registering notifiers for a specific target category of events they are
+interested in. This allows us to forward all events received by those
+notifiers to the internal buffer of the device file, from which they can
+be read by user-space. In other words, user-space can, via those two
+IOCTLs, select which event target categories they are interested in.
 
-How about having a panel-dsc.yaml which will have these properties and 
-have a panel-dsc node to have this information?
+Furthermore, we add another two IOCTLs for enabling and disabling events
+via the controller. While events can already be enabled and disabled via
+generic requests, this does not respect the controller-internal
+reference counting mechanism. Due to that, this can lead to an event
+group being disabled even though a kernel-driver has requested it to be
+enabled. Or in other words: Without this, a user-space client cannot
+safely reset the state as it has only two options, keeping the event
+group enabled and not attempt cleanup at all, or disable the event group
+for all clients and potentially stop them from working properly.
 
-I would like to hear the feedback on this proposal then the series can 
-be reworked.
+Also update the copyright lines since we're already doing some work on
+the core.
 
-Thanks
+Maximilian Luz (7):
+  platform/surface: aggregator: Allow registering notifiers without
+    enabling events
+  platform/surface: aggregator: Allow enabling of events without
+    notifiers
+  platform/surface: aggregator: Update copyright
+  platform/surface: aggregator_cdev: Add support for forwarding events
+    to user-space
+  platform/surface: aggregator_cdev: Allow enabling of events from
+    user-space
+  platform/surface: aggregator_cdev: Add lockdep support
+  docs: driver-api: Update Surface Aggregator user-space interface
+    documentation
 
-Abhinav
+ .../surface_aggregator/clients/cdev.rst       | 127 ++++-
+ .../userspace-api/ioctl/ioctl-number.rst      |   2 +-
+ drivers/platform/surface/aggregator/Kconfig   |   2 +-
+ drivers/platform/surface/aggregator/Makefile  |   2 +-
+ drivers/platform/surface/aggregator/bus.c     |   2 +-
+ drivers/platform/surface/aggregator/bus.h     |   2 +-
+ .../platform/surface/aggregator/controller.c  | 206 ++++++-
+ .../platform/surface/aggregator/controller.h  |   2 +-
+ drivers/platform/surface/aggregator/core.c    |   2 +-
+ .../platform/surface/aggregator/ssh_msgb.h    |   2 +-
+ .../surface/aggregator/ssh_packet_layer.c     |   2 +-
+ .../surface/aggregator/ssh_packet_layer.h     |   2 +-
+ .../platform/surface/aggregator/ssh_parser.c  |   2 +-
+ .../platform/surface/aggregator/ssh_parser.h  |   2 +-
+ .../surface/aggregator/ssh_request_layer.c    |   2 +-
+ .../surface/aggregator/ssh_request_layer.h    |   2 +-
+ drivers/platform/surface/aggregator/trace.h   |   2 +-
+ .../surface/surface_aggregator_cdev.c         | 531 +++++++++++++++++-
+ include/linux/surface_aggregator/controller.h |  27 +-
+ include/linux/surface_aggregator/device.h     |   2 +-
+ include/linux/surface_aggregator/serial_hub.h |   2 +-
+ include/uapi/linux/surface_aggregator/cdev.h  |  73 ++-
+ 22 files changed, 921 insertions(+), 77 deletions(-)
+
+-- 
+2.31.1
+
