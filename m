@@ -2,50 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D935C399C4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27A2399C51
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhFCIOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:14:35 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:57644 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229769AbhFCIOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:14:34 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1loiT5-0005Rj-I2; Thu, 03 Jun 2021 16:12:43 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1loiT0-0000JW-UU; Thu, 03 Jun 2021 16:12:39 +0800
-Date:   Thu, 3 Jun 2021 16:12:38 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Liu Shixin <liushixin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] crypto: algboss - Replaced simple_strtol() with
- kstrtouint()
-Message-ID: <20210603081238.GA1160@gondor.apana.org.au>
-References: <20210524120834.1580343-1-liushixin2@huawei.com>
- <YKwhXlrJzdOjS9lJ@gmail.com>
+        id S229800AbhFCISI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:18:08 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52622 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhFCISG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 04:18:06 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1538G9Em086091;
+        Thu, 3 Jun 2021 03:16:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622708169;
+        bh=5wwte9CRzT+YNJ2vP9j/C62EmP//YgO8AMYtKlKvqDc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=cFlU62NDbrQ7UvVXWMaEKMDFSa9srdP5LtFjdFAn+YemRMpnOwlSBLhmGz/WmY+Ja
+         XAszj0auUyk2UXjK1pWyRB9TkAyqkXcU+D7K2m/lptnckNV/VqLHCixG0+fbQIFIZn
+         XMuerxx7nhepSUKJIc5szuXqWA+xOoj0cfkmJXjc=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1538G9pw074737
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Jun 2021 03:16:09 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 03:16:09 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 3 Jun 2021 03:16:08 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1538G80x052919;
+        Thu, 3 Jun 2021 03:16:08 -0500
+Date:   Thu, 3 Jun 2021 13:46:07 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <dmaengine@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v2 17/18] phy: dt-bindings: cdns,dphy: make clocks
+ optional
+Message-ID: <20210603081605.v7b5peuqjbsivmzb@ti.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <20210526152308.16525-18-p.yadav@ti.com>
+ <20210602132728.5lv5n2mgap2o7eyx@gilmour>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <YKwhXlrJzdOjS9lJ@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210602132728.5lv5n2mgap2o7eyx@gilmour>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 02:57:50PM -0700, Eric Biggers wrote:
->
-> It would be better to just remove all the code related to CRYPTOA_U32 and
-> crypto_attr_u32, as it is never used.
+On 02/06/21 03:27PM, Maxime Ripard wrote:
+> Hi,
+> 
+> On Wed, May 26, 2021 at 08:53:07PM +0530, Pratyush Yadav wrote:
+> > The clocks are not used by the DPHY when used in Rx mode so make them
+> > optional.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > 
+> > ---
+> > 
+> > Changes in v2:
+> > - Re-order subject prefixes.
+> > 
+> >  Documentation/devicetree/bindings/phy/cdns,dphy.yaml | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> > index b90a58773bf2..3bb5be05e825 100644
+> > --- a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> > +++ b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> > @@ -33,8 +33,6 @@ properties:
+> >  required:
+> >    - compatible
+> >    - reg
+> > -  - clocks
+> > -  - clock-names
+> 
+> As far as I can remember from the cadence documentation, those clocks
+> were required. I guess this is the integration that provides a few fixed
+> clocks?
 
-I agree, it's been unused for over a decade.
+Yes. The clock divider/frequency has been set via the DPHY pins so no 
+need to set them via software.
 
-Thanks,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
