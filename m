@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DB239A34D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2708E39A350
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhFCOf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhFCOf0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:35:26 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7722C061756;
-        Thu,  3 Jun 2021 07:33:41 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f13850038a9e66fdc616f42.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:38a9:e66f:dc61:6f42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 35C261EC0288;
-        Thu,  3 Jun 2021 16:33:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622730820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=v3uLhwvoQ2U0ccwLZNAng7garG6ceRKAsS1cWo3FxGE=;
-        b=TbMLnSs+xjHJ2zv7bGB2HOM5OdBW/ymiYLTb8DcTvCbjG9TvwcIHi4Q+yxRfppfSMfwtU6
-        XambKTiz9jdQEUUJ3tLZGqM3qq3dloPb+RpUUzc95cpW6S89NM+64dav7k3HPnGhoTHrof
-        KNVeGYG91J8VM5Z2Ncg3jFW5tmMKKCY=
-Date:   Thu, 3 Jun 2021 16:33:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
- remove update_pasid()
-Message-ID: <YLjoPS32PFDon48f@zn.tnic>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
- <87mtsd6gr9.ffs@nanos.tec.linutronix.de>
- <YLdZ7bZDPNup1n9c@zn.tnic>
- <YLi6+vICUmu07b0E@vkoul-mobl>
- <YLjALi9hoxv2kubX@zn.tnic>
- <YLjPSAfBPIfQvmha@vkoul-mobl>
+        id S231627AbhFCOfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:35:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230446AbhFCOfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:35:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EF69613D6;
+        Thu,  3 Jun 2021 14:34:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622730842;
+        bh=ePguWSm6IUi7J34haJRKbL48baqv/od3GKakWa5lKjo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Pg6QMJVd+uqWPoQ5YTL67bi/qfHAdh47SYlgExCc7uwCMxNx9BxkcVbJNW4lFTAkh
+         hKZU11Frz4QU2/94opn3MUTlz/5iTNcgjHSgqo6JKWHJTnlp9CijdvOLj+NzlFv+QB
+         DgbS656upfoLPxf46E7n9v7NXphrCrfJ4pUd4+WJ9JNtyo28uJZJ/VKlHcFUFoonMC
+         6xzhKTRtVN2bbTvKLIqrKysQKUU1ZbheQISm3u6RN5K0wXoGhCt2xGYxfsMjsySceO
+         GZ1yfS3/9DQV1Upqn64Bg88SrwL7p1u0FfH3JMFaY0bM+GAbGcWmD7mWGBRCjfFUB5
+         8ZSCFEVgk/P6Q==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 1/1] usb: phy: isp1301: Deduplicate
+ of_find_i2c_device_by_node()
+In-Reply-To: <20210521145243.87911-1-andriy.shevchenko@linux.intel.com>
+References: <20210521145243.87911-1-andriy.shevchenko@linux.intel.com>
+Date:   Thu, 03 Jun 2021 17:33:54 +0300
+Message-ID: <87a6o7c90t.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YLjPSAfBPIfQvmha@vkoul-mobl>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 06:17:04PM +0530, Vinod Koul wrote:
-> You can add:
-> 
-> Acked-By: Vinod Koul <vkoul@kernel.org>
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Done.
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
 
-Thx.
+> The driver is using open-coded variant of of_find_i2c_device_by_node().
+> Replace it by the actual call to the above mentioned API.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
--- 
-Regards/Gruss,
-    Boris.
+Acked-by: Felipe Balbi <balbi@kernel.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC46FIRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUjI6Af/dcHPqnojZ4vC7RuGGLl4Y12R5LYRqnO4
+71jGMI14lASrV3cp4DK2D4QkiKVxXj7VlIX2XHqoHDel5EXH4gvEG0m9k/Gjh/9K
+hvYf0H4+VhvgQFpBQPHIOklQwMsow9stfH2GDwknZ+sfVMJcm/f3xqcRTZ0ZVeWO
+2rVFcTJsezQsrN3z95mWp00YTaNHgebpiFLcyavF0JNEqtsq3gBehMCamXgTl7wk
+qnD2W1v85dM3WF+8LbLOnPowGmtEQ+ZNh34z2Wa4i/+55bCZQWB3wsnMB/9vWrU4
+s2ZL9hv4JVCIQdi9nRclc0KaAlGm/xoUbb2WU5Huz9Rk5Chxt10QIA==
+=LFRq
+-----END PGP SIGNATURE-----
+--=-=-=--
