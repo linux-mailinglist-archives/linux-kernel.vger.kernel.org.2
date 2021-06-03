@@ -2,130 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605B039A24C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5125939A252
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhFCNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        id S230299AbhFCNjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhFCNhs (ORCPT
+        with ESMTP id S230523AbhFCNjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:37:48 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106DAC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 06:35:52 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so4673463otu.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:35:52 -0700 (PDT)
+        Thu, 3 Jun 2021 09:39:12 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B270C06174A;
+        Thu,  3 Jun 2021 06:37:15 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id gb17so9265699ejc.8;
+        Thu, 03 Jun 2021 06:37:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SSOZn7NeOxtNAr4b0FWuz+EfX/KEGNf2pixj/JYi27A=;
-        b=b2ZiPMTMK0z2jIOFY2UNLrgwmt+7m8+y8A0XTLvoF9Z8GLkdoO4vh+/OkwfbxSPOa9
-         E+VjhvpG2v0CzpGPM+fdgsMfJOxK5Oiix3ApM55K0ZBCiD8LbTACd1XYnwgDVRhll0XT
-         m0UNRuKzJrIHCM1kVtG3vd+9/LMRZJmMAPnyjX2s2+JRUQWawHqxIkTEWxZn8cBzlWKw
-         dyYTaRwg6biI8J70RfcYIX0vqQ5VipfmLXwJ8ymiUxSM0bW6iE4lgfFaUmtd888BIc83
-         1bvMyhJZXdTr3nnBko1jytmqVKuMNm5N3jiREZuptB+HJ9yM8jb9TWlfxl6hagWc6rGb
-         rAog==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0U34XCf7Z6UY7gNvwBH2H99XRLQXoEj2LFoDREg120o=;
+        b=cAWS+aBgAaeBFSWsR1u55pI/vEHI48buy7FPD5AeUWRQ/3K3Y6dbX9yMhtIL8ox7yL
+         iO6meaDNtnFFhPpBPotqtIQDEByDuTVhurcgGrhFkhH5V8pBC0xh3MNCO4DOJdeAVB63
+         ztWE0H/U/BfR3xzG1Ka7Mc5mZCfqDgaiTLEFhPVyb/+paWOz6AWdy/8iveR1XBCnzMNM
+         iaR45TxYohhemggr79SSELsuUcBjwcrakmLI+JMGV/UQnJPyPWW4890KU/xIk0gZy7HB
+         2wUBTXrS9t2c5lFHJF0HsmBnz1a+2UGJOOwxL7cgcmDFpju102dWN79vQDcmJ0oH1WE1
+         pOyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SSOZn7NeOxtNAr4b0FWuz+EfX/KEGNf2pixj/JYi27A=;
-        b=CXY83gqDqD2APmc4Emf05GTKId11psLWVnJ5LUva3jdE7EYaglHgImPHVtnMsHSjfj
-         g+ZwauYKRdDI8nLnODrEI/LZLDr446PcCEonaNKXGhxopkmOuX6eL7DX6SiXI6SBx2lM
-         g/ZBbdnoOJeoUtpjKFtWQXOuK76CZdxugtScWlucjd288N4eYi4h3fTtYq71Gw+MkOg/
-         YdbCvPkRDmpAm5mfA8QmdBhTLeijNAbPsxLkYrjg9JqvalCjNbE1T4gewKEs/5hd9/DI
-         JWIbhk5+sqBeF0kVW0s6b/UUv8vlvF/WEFBN++NlAwyDTcuY5PaOt9moPRJq4XpWhRX3
-         tqgA==
-X-Gm-Message-State: AOAM532IXANsQRTMfbnfttP+pMCRhtsFRUZXl4QAjrOeHkF8COQ25rN6
-        ZlXqKyTX63S5nQZnCnMdfRK5AuXxLA9fDmw4tkPXhw==
-X-Google-Smtp-Source: ABdhPJyyRDeU6xsWT9ff4ufDNsEg24ZcRpZFsQAYVpwmpMHnLCT8tvYOzrcQqm8NpZv/XYnKbtEH+GzQCJG5rno+WkQ=
-X-Received: by 2002:a9d:5786:: with SMTP id q6mr30221203oth.56.1622727351073;
- Thu, 03 Jun 2021 06:35:51 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0U34XCf7Z6UY7gNvwBH2H99XRLQXoEj2LFoDREg120o=;
+        b=eK2CWIJHX1DjML6twZ3Zu9eQGR30exVonNzSbnh+tcoXYVP2AloNakvnc3hzZyPHOU
+         Cn2zCIHJu1DF9o05PNwpYmUert4J+wBTIRGa1SMgm/uFu6fraX5cGac9fqpAe6NMc+M7
+         cX9kG243eAnoSkRtDdkGE+fTgfbDu5rgBN3hjF24tN1yLGsgCMM8A4HzSHyA9wmd6Gv1
+         v2ZCMWZusJdhE17r1HPxNfJDeUhoonKQlBdzQYPU4YeQ1t/9bw/mnyiDEwkFZevObpHA
+         jFlfiA3mMmOXF0wC0OkU8vwKPn3c3gXkhIVwM/O0lwBkQMLbZ7fBcwPBOLIpVipSvPls
+         bpIg==
+X-Gm-Message-State: AOAM5335aZpmjgm1RKtybi5zeZcdbyWU7ge3rh0p8IYrReQ1CHQX0na5
+        eG1ATex22VMQKAZI5cJYJgK4YcwH2GrBQLzCd2Fy8w==
+X-Google-Smtp-Source: ABdhPJygLKLl2SRZUz7RKv0nLgI2d6GY6ptu3TwvF5LEQsU2LCfLGXhdO11gSV/b/+M1Uqz/0sMX4g==
+X-Received: by 2002:a17:906:714d:: with SMTP id z13mr10956917ejj.48.1622727433813;
+        Thu, 03 Jun 2021 06:37:13 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:502:1d80:c45a:f355:cc4:bbb0? ([2a04:241e:502:1d80:c45a:f355:cc4:bbb0])
+        by smtp.gmail.com with ESMTPSA id i12sm1766975edx.13.2021.06.03.06.37.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 06:37:13 -0700 (PDT)
+Subject: Re: [RFCv2 1/3] tcp: Use smaller mtu probes if RACK is enabled
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Matt Mathis <mattmathis@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        John Heffner <johnwheffner@gmail.com>,
+        Leonard Crestez <lcrestez@drivenets.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1622025457.git.cdleonard@gmail.com>
+ <750563aba3687119818dac09fc987c27c7152324.1622025457.git.cdleonard@gmail.com>
+ <CADVnQynoD=NF2hG6Bs44A0jrnKG=3f97OywS-tq-p-KQAsf5Fg@mail.gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <3251fc35-ef83-26fd-4b71-7d5d50945096@gmail.com>
+Date:   Thu, 3 Jun 2021 16:37:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210525051204.1480610-1-tao3.xu@intel.com> <871r9k36ds.fsf@vitty.brq.redhat.com>
- <660ceed2-7569-6ce6-627a-9a4e860b8aa9@intel.com>
-In-Reply-To: <660ceed2-7569-6ce6-627a-9a4e860b8aa9@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 3 Jun 2021 06:35:40 -0700
-Message-ID: <CALMp9eSVK_ZszVS83H6vPN1ZY3BqHwK0OKAn_Bj4mUBJBqO4Bw@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, Tao Xu <tao3.xu@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CADVnQynoD=NF2hG6Bs44A0jrnKG=3f97OywS-tq-p-KQAsf5Fg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 6:25 PM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
->
-> On 6/2/2021 6:31 PM, Vitaly Kuznetsov wrote:
-> > Tao Xu <tao3.xu@intel.com> writes:
-> >
-> >> There are some cases that malicious virtual machines can cause CPU stuck
-> >> (event windows don't open up), e.g., infinite loop in microcode when
-> >> nested #AC (CVE-2015-5307). No event window obviously means no events,
-> >> e.g. NMIs, SMIs, and IRQs will all be blocked, may cause the related
-> >> hardware CPU can't be used by host or other VM.
-> >>
-> >> To resolve those cases, it can enable a notify VM exit if no event
-> >> window occur in VMX non-root mode for a specified amount of time
-> >> (notify window). Since CPU is first observed the risk of not causing
-> >> forward progress, after notify window time in a units of crystal clock,
-> >> Notify VM exit will happen. Notify VM exit can happen incident to delivery
-> >> of a vectored event.
-> >>
-> >> Expose a module param for configuring notify window, which is in unit of
-> >> crystal clock cycle.
-> >> - A negative value (e.g. -1) is to disable this feature.
-> >> - Make the default as 0. It is safe because an internal threshold is added
-> >> to notify window to ensure all the normal instructions being coverd.
-> >> - User can set it to a large value when they want to give more cycles to
-> >> wait for some reasons, e.g., silicon wrongly kill some normal instruction
-> >> due to internal threshold is too small.
-> >>
-> >> Notify VM exit is defined in latest Intel Architecture Instruction Set
-> >> Extensions Programming Reference, chapter 9.2.
-> >>
-> >> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> >> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> >> Signed-off-by: Tao Xu <tao3.xu@intel.com>
-> >> ---
-> >>
-> >> Changelog:
-> >> v2:
-> >>       Default set notify window to 0, less than 0 to disable.
-> >>       Add more description in commit message.
-> >
-> > Sorry if this was already discussed, but in case of nested
-> > virtualization and when L1 also enables
-> > SECONDARY_EXEC_NOTIFY_VM_EXITING, shouldn't we just reflect NOTIFY exits
-> > during L2 execution to L1 instead of crashing the whole L1?
-> >
->
-> yes. If we expose it to nested, it should reflect the Notify VM exit to
-> L1 when L1 enables it.
->
-> But regarding nested, there are more things need to be discussed. e.g.,
-> 1) It has dependence between L0 and L1, for security consideration. When
-> L0 enables it, it shouldn't be turned off during L2 VM is running.
->     a. Don't expose to L1 but enable for L1 when L2 VM is running.
->     b. expose it to L1 and force it enabled.
->
-> 2) When expose it to L1, vmcs02.notify_window needs to be
-> min(L0.notify_window, L1.nofity_window)
 
-I don't think this can be a simple 'min', since L1's clock may run at
-a different frequency from L0's clock.
+
+On 5/26/21 3:11 PM, Neal Cardwell wrote:
+> On Wed, May 26, 2021 at 6:38 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+>>
+>> RACK allows detecting a loss in rtt + min_rtt / 4 based on just one
+>> extra packet. If enabled use this instead of relying of fast retransmit.
+> 
+> IMHO it would be worth adding some more text to motivate the change,
+> to justify the added complexity and risk from the change. The
+> substance of the change seems to be decreasing the requirement for
+> PMTU probing from needing roughly 5 packets worth of data to needing
+> roughly 3 packets worth of data. It's not clear to me as a reader of
+> this patch by itself that there are lots of applications that very
+> often only have 3-4 packets worth of data to send and yet can benefit
+> greatly from PMTU discovery.
+> 
+>> Suggested-by: Neal Cardwell <ncardwell@google.com>
+>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>> ---
+>>   Documentation/networking/ip-sysctl.rst |  5 +++++
+>>   include/net/netns/ipv4.h               |  1 +
+>>   net/ipv4/sysctl_net_ipv4.c             |  7 +++++++
+>>   net/ipv4/tcp_ipv4.c                    |  1 +
+>>   net/ipv4/tcp_output.c                  | 26 +++++++++++++++++++++++++-
+>>   5 files changed, 39 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+>> index a5c250044500..7ab52a105a5d 100644
+>> --- a/Documentation/networking/ip-sysctl.rst
+>> +++ b/Documentation/networking/ip-sysctl.rst
+>> @@ -349,10 +349,15 @@ tcp_mtu_probe_floor - INTEGER
+>>          If MTU probing is enabled this caps the minimum MSS used for search_low
+>>          for the connection.
+>>
+>>          Default : 48
+>>
+>> +tcp_mtu_probe_rack - BOOLEAN
+>> +       Try to use shorter probes if RACK is also enabled
+>> +
+>> +       Default: 1
+> 
+> I  would vote to not have a sysctl for this. If we think it's a good
+> idea to allow MTU probing with a smaller amount of data if RACK is
+> enabled (which seems true to me), then this is a low-risk enough
+> change that we should just change the behavior.
+> 
+>>   tcp_min_snd_mss - INTEGER
+>>          TCP SYN and SYNACK messages usually advertise an ADVMSS option,
+>>          as described in RFC 1122 and RFC 6691.
+>>
+>>          If this ADVMSS option is smaller than tcp_min_snd_mss,
+>> diff --git a/include/net/netns/ipv4.h b/include/net/netns/ipv4.h
+>> index 746c80cd4257..b4ff12f25a7f 100644
+>> --- a/include/net/netns/ipv4.h
+>> +++ b/include/net/netns/ipv4.h
+>> @@ -112,10 +112,11 @@ struct netns_ipv4 {
+>>   #ifdef CONFIG_NET_L3_MASTER_DEV
+>>          u8 sysctl_tcp_l3mdev_accept;
+>>   #endif
+>>          u8 sysctl_tcp_mtu_probing;
+>>          int sysctl_tcp_mtu_probe_floor;
+>> +       int sysctl_tcp_mtu_probe_rack;
+>>          int sysctl_tcp_base_mss;
+>>          int sysctl_tcp_min_snd_mss;
+>>          int sysctl_tcp_probe_threshold;
+>>          u32 sysctl_tcp_probe_interval;
+>>
+>> diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
+>> index 4fa77f182dcb..275c91fb9cf8 100644
+>> --- a/net/ipv4/sysctl_net_ipv4.c
+>> +++ b/net/ipv4/sysctl_net_ipv4.c
+>> @@ -847,10 +847,17 @@ static struct ctl_table ipv4_net_table[] = {
+>>                  .mode           = 0644,
+>>                  .proc_handler   = proc_dointvec_minmax,
+>>                  .extra1         = &tcp_min_snd_mss_min,
+>>                  .extra2         = &tcp_min_snd_mss_max,
+>>          },
+>> +       {
+>> +               .procname       = "tcp_mtu_probe_rack",
+>> +               .data           = &init_net.ipv4.sysctl_tcp_mtu_probe_rack,
+>> +               .maxlen         = sizeof(int),
+>> +               .mode           = 0644,
+>> +               .proc_handler   = proc_dointvec,
+>> +       },
+>>          {
+>>                  .procname       = "tcp_probe_threshold",
+>>                  .data           = &init_net.ipv4.sysctl_tcp_probe_threshold,
+>>                  .maxlen         = sizeof(int),
+>>                  .mode           = 0644,
+>> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+>> index 4f5b68a90be9..ed8af4a7325b 100644
+>> --- a/net/ipv4/tcp_ipv4.c
+>> +++ b/net/ipv4/tcp_ipv4.c
+>> @@ -2892,10 +2892,11 @@ static int __net_init tcp_sk_init(struct net *net)
+>>          net->ipv4.sysctl_tcp_base_mss = TCP_BASE_MSS;
+>>          net->ipv4.sysctl_tcp_min_snd_mss = TCP_MIN_SND_MSS;
+>>          net->ipv4.sysctl_tcp_probe_threshold = TCP_PROBE_THRESHOLD;
+>>          net->ipv4.sysctl_tcp_probe_interval = TCP_PROBE_INTERVAL;
+>>          net->ipv4.sysctl_tcp_mtu_probe_floor = TCP_MIN_SND_MSS;
+>> +       net->ipv4.sysctl_tcp_mtu_probe_rack = 1;
+>>
+>>          net->ipv4.sysctl_tcp_keepalive_time = TCP_KEEPALIVE_TIME;
+>>          net->ipv4.sysctl_tcp_keepalive_probes = TCP_KEEPALIVE_PROBES;
+>>          net->ipv4.sysctl_tcp_keepalive_intvl = TCP_KEEPALIVE_INTVL;
+>>
+>> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+>> index bde781f46b41..9691f435477b 100644
+>> --- a/net/ipv4/tcp_output.c
+>> +++ b/net/ipv4/tcp_output.c
+>> @@ -2311,10 +2311,19 @@ static bool tcp_can_coalesce_send_queue_head(struct sock *sk, int len)
+>>          }
+>>
+>>          return true;
+>>   }
+>>
+>> +/* Check if rack is supported for current connection */
+>> +static int tcp_mtu_probe_is_rack(const struct sock *sk)
+>> +{
+>> +       struct net *net = sock_net(sk);
+>> +
+>> +       return (net->ipv4.sysctl_tcp_recovery & TCP_RACK_LOSS_DETECTION &&
+>> +                       net->ipv4.sysctl_tcp_mtu_probe_rack);
+>> +}
+> 
+> You may want to use the existing helper, tcp_is_rack(), by moving it
+> to include/net/tcp.h
+
+OK, for this and other comments.
+
+Initially I though that maybe a more elaborate check is required but it 
+seems to be only up to the sender to keep individual timeouts.
+
+--
+Regards,
+Leonard
