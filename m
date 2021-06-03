@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6EA399C84
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6938E399C83
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhFCI2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:28:41 -0400
-Received: from mail-m121144.qiye.163.com ([115.236.121.144]:13934 "EHLO
-        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhFCI2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:28:40 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
-        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id E6A66AC0217;
-        Thu,  3 Jun 2021 16:26:53 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
-        Qiang Ma <maqianga@uniontech.com>,
-        Marco Cesati <marcocesati@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] staging: rtl8723bs: core: fix some incorrect type warnings
-Date:   Thu,  3 Jun 2021 16:24:59 +0800
-Message-Id: <1622708703-8561-1-git-send-email-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQx1DHlZNHh9OGkNOSktISENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6FAw5Cz8cQhQsLAIBARku
-        Q08KCy1VSlVKTUlJTEtDQ0pPTklMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTktVSkxNVUlJQllXWQgBWUFOTUlPNwY+
-X-HM-Tid: 0a79d0fb817bb039kuuue6a66ac0217
+        id S229718AbhFCI23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:28:29 -0400
+Received: from m12-13.163.com ([220.181.12.13]:33982 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhFCI21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 04:28:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=v8hdr
+        MCBGacUEfiNlWE57cjpHLpNbsXqVFC3i2ws2ac=; b=qOhzDo5CcHt7J//MJRaTT
+        5P7G5FgS4OP/k9pGu/YFbn/wThrtYI7OGkUu/KfdQgPpiZ1HhdwavKNfYLQ+xIgi
+        s56RJ3f32Tj9msR9WnrhIomyhF+XJ+cEAYE/X2JCntYc3rs4UprA9Rq/x/bt8m84
+        gYWiK9kMS3lTvxIcmqy3MY=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp9 (Coremail) with SMTP id DcCowABnbKD9kbhg_RscEQ--.16583S2;
+        Thu, 03 Jun 2021 16:25:34 +0800 (CST)
+From:   13145886936@163.com
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] mm: opt the use of space and tabs
+Date:   Thu,  3 Jun 2021 01:25:26 -0700
+Message-Id: <20210603082526.5753-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowABnbKD9kbhg_RscEQ--.16583S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxArW3KF47WF4kKF13JFyrWFg_yoW5CFW3pr
+        WfGw1DWrWSqwsI9a97JF4ku343Aw1xKayxJrW2yr1rZ3Wagr1Yvr93KFy7ur1Yyr97Aa4a
+        va1avF18Aw45ZwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bbCzNUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiXB6mg1Xlz1amnwAAs3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some "incorrect type in assignment" in rtw_security.c.
+From: gushengxian <gushengxian@yulong.com>
 
-The sparse warings:
-drivers/staging//rtl8723bs/core/rtw_security.c:72:50: warning: incorrect type in assignment
-drivers/staging//rtl8723bs/core/rtw_security.c:72:50:    expected restricted __le32 [usertype]
-drivers/staging//rtl8723bs/core/rtw_security.c:72:50:    got unsigned int
-drivers/staging//rtl8723bs/core/rtw_security.c:80:50: warning: incorrect type in assignment
-drivers/staging//rtl8723bs/core/rtw_security.c:80:50:    expected restricted __le32 [usertype]
-drivers/staging//rtl8723bs/core/rtw_security.c:80:50:    got unsigned int
-drivers/staging//rtl8723bs/core/rtw_security.c:124:33: warning: cast to restricted __le32
-drivers/staging//rtl8723bs/core/rtw_security.c:509:58: warning: incorrect type in assignment
-drivers/staging//rtl8723bs/core/rtw_security.c:509:58:    expected restricted __le32 [usertype]
-drivers/staging//rtl8723bs/core/rtw_security.c:509:58:    got unsigned int
-drivers/staging//rtl8723bs/core/rtw_security.c:517:58: warning: incorrect type in assignment
-drivers/staging//rtl8723bs/core/rtw_security.c:517:58:    expected restricted __le32 [usertype]
-drivers/staging//rtl8723bs/core/rtw_security.c:517:58:    got unsigned int
-drivers/staging//rtl8723bs/core/rtw_security.c:621:41: warning: cast to restricted __le32
+Revised the use of space and tabs.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Signed-off-by: gushengxian <gushengxian@yulong.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_security.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ mm/memory.c     | 2 +-
+ mm/page_alloc.c | 2 +-
+ mm/vmscan.c     | 2 +-
+ mm/vmstat.c     | 8 ++++----
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index a99f439..4760999 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -36,7 +36,7 @@ const char *security_type_str(u8 value)
- void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- {																	/*  exclude ICV */
+diff --git a/mm/memory.c b/mm/memory.c
+index f85c2c322a23..aec804080ad9 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1683,7 +1683,7 @@ void zap_vma_ptes(struct vm_area_struct *vma, unsigned long address,
+ 		unsigned long size)
+ {
+ 	if (address < vma->vm_start || address + size > vma->vm_end ||
+-	    		!(vma->vm_flags & VM_PFNMAP))
++			!(vma->vm_flags & VM_PFNMAP))
+ 		return;
  
--	unsigned char crc[4];
-+	u8 crc[4];
+ 	zap_page_range_single(vma, address, size, NULL);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 4c468aa596aa..de1ab8073cc6 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8908,7 +8908,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+  * need to be freed with free_contig_range().
+  */
+ int alloc_contig_range(unsigned long start, unsigned long end,
+-		       unsigned migratetype, gfp_t gfp_mask)
++			unsigned migratetype, gfp_t gfp_mask)
+ {
+ 	unsigned long outer_start, outer_end;
+ 	unsigned int order;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 60a19fd6ea3f..939bf138478a 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -4303,7 +4303,7 @@ static int __init kswapd_init(void)
  
- 	signed int	curfragnum, length;
- 	u32 keylength;
-@@ -69,7 +69,7 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 
- 				length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
- 
--				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+				*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
- 
- 				arc4_setkey(ctx, wepkey, 3 + keylength);
- 				arc4_crypt(ctx, payload, payload, length);
-@@ -77,7 +77,7 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 
- 			} else {
- 				length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
--				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+				*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
- 				arc4_setkey(ctx, wepkey, 3 + keylength);
- 				arc4_crypt(ctx, payload, payload, length);
- 				arc4_crypt(ctx, payload + length, crc, 4);
-@@ -121,7 +121,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- 		arc4_crypt(ctx, payload, payload,  length);
- 
- 		/* calculate icv and compare the icv */
--		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+		*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length - 4));
- 
- 	}
+ 	swap_setup();
+ 	for_each_node_state(nid, N_MEMORY)
+- 		kswapd_run(nid);
++		kswapd_run(nid);
+ 	return 0;
  }
-@@ -506,7 +506,7 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
  
- 				if ((curfragnum+1) == pattrib->nr_frags) {	/* 4 the last fragment */
- 					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
--					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index b0534e068166..23504a605c7c 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -200,7 +200,7 @@ int calculate_normal_threshold(struct zone *zone)
+ 	 * The threshold scales with the number of processors and the amount
+ 	 * of memory per zone. More memory means that we can defer updates for
+ 	 * longer, more processors could lead to more contention.
+- 	 * fls() is used to have a cheap way of logarithmic scaling.
++	 * fls() is used to have a cheap way of logarithmic scaling.
+ 	 *
+ 	 * Some sample thresholds:
+ 	 *
+@@ -439,7 +439,7 @@ void __dec_zone_state(struct zone *zone, enum zone_stat_item item)
  
- 					arc4_setkey(ctx, rc4key, 16);
- 					arc4_crypt(ctx, payload, payload, length);
-@@ -514,7 +514,7 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 	v = __this_cpu_dec_return(*p);
+ 	t = __this_cpu_read(pcp->stat_threshold);
+-	if (unlikely(v < - t)) {
++	if (unlikely(v < -t)) {
+ 		s8 overstep = t >> 1;
  
- 				} else {
- 					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
--					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
+ 		zone_page_state_add(v - overstep, zone, item);
+@@ -457,7 +457,7 @@ void __dec_node_state(struct pglist_data *pgdat, enum node_stat_item item)
  
- 					arc4_setkey(ctx, rc4key, 16);
- 					arc4_crypt(ctx, payload, payload, length);
-@@ -618,7 +618,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 			arc4_setkey(ctx, rc4key, 16);
- 			arc4_crypt(ctx, payload, payload, length);
+ 	v = __this_cpu_dec_return(*p);
+ 	t = __this_cpu_read(pcp->stat_threshold);
+-	if (unlikely(v < - t)) {
++	if (unlikely(v < -t)) {
+ 		s8 overstep = t >> 1;
  
--			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+			*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+ 		node_page_state_add(v - overstep, pgdat, item);
+@@ -1063,7 +1063,7 @@ static int __fragmentation_index(unsigned int order, struct contig_page_info *in
+ 	 * 0 => allocation would fail due to lack of memory
+ 	 * 1 => allocation would fail due to fragmentation
+ 	 */
+-	return 1000 - div_u64( (1000+(div_u64(info->free_pages * 1000ULL, requested))), info->free_blocks_total);
++	return 1000 - div_u64((1000+(div_u64(info->free_pages * 1000ULL, requested))), info->free_blocks_total);
+ }
  
- 			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
- 			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
+ /*
 -- 
-2.7.4
+2.25.1
+
 
