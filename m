@@ -2,122 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A19399814
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93269399819
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhFCCjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:39:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42857 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229541AbhFCCjB (ORCPT
+        id S229799AbhFCCkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:40:40 -0400
+Received: from mail-pj1-f52.google.com ([209.85.216.52]:33560 "EHLO
+        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhFCCkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:39:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622687837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uxm0/+m5dcFG2sDWbRYCYBLYAMI7JPbdvwfiFb7Glz8=;
-        b=jPUVQjCqHaVQqDqa33ItVh8ZmLjwc97mhnlftCiGf26RFpvXYkndxB+x1YPP2w3RiAAnLy
-        Yi0HcLNfAlmc7So5YI22dqbSgA0Aim8+bqqkZL7OiTJXow2F3bjH2I+fllvIWtjwjbz8S2
-        Hj6o9FBazMCA0+4UXT8yHRB4Vnc/hsU=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-HQtqnpoAOJCjKo3eLaEnNg-1; Wed, 02 Jun 2021 22:37:16 -0400
-X-MC-Unique: HQtqnpoAOJCjKo3eLaEnNg-1
-Received: by mail-pj1-f72.google.com with SMTP id j1-20020a17090a7381b02901605417540bso2401897pjg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:37:15 -0700 (PDT)
+        Wed, 2 Jun 2021 22:40:39 -0400
+Received: by mail-pj1-f52.google.com with SMTP id k22-20020a17090aef16b0290163512accedso2613666pjz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:38:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xbfOBa4V4NfcCRLvjCYR6j0+uuKti8SF2SJo2woyW5k=;
+        b=ceDw3cpkamXUfVJ1HR6HD28oQSpaJbLTLqOnymfgzJlu+4IctogqB3VOppxeVEot8q
+         lNi6Yf2RnJCsjJUN/wAalfOoObiZs4C4hYyjftsLmyEqBEQYVzboF2j/ysZJztDg1AtL
+         GAV681ZM8z3q01aXojfylxQzLp2KI8R+qMdsOkVI0J1p8FqQ0M2+gDuQhF6c+lLVOZ1X
+         3Okh3+q5sVG00D1BrTUtuT/2RKyKRxp7kvMNQ0Abh4F5V06hWnJMvgOAoMeZV1LDj94k
+         QXc2oR0IuZ6JM2vozHFPGw6bT27yMfp+n+sVyL/dI0/An/QVTA6mncucRyw8UBxUgzjh
+         b8mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=uxm0/+m5dcFG2sDWbRYCYBLYAMI7JPbdvwfiFb7Glz8=;
-        b=h7+2HNdAk/GxQ2RD6cx2Qr/MFgsutVQraLuNkbLZxy++OeDtoUywSeg5+efkngbKlF
-         254BxbHvKauzumWymRLbe3DR59484+LZVRb3FGVf/p+DhOvE7Yhn1KkqrhgNrkbAU2BM
-         Uy0dCSaQdCSJuABhMr6xQ637uT2g5JmYtOWtdpgrCsDkQwkiHodWyQk3o0TCudXeP/Gx
-         r6Jb8n6LG3mkG66YT5GeFQxLkTdwHxrQkl2iYjpMsHcra0f4wWMdSczrOgRCjPa37Nk3
-         eAH/xlbkdOac0TqXz6vY4GPetuipf0fGnqVFEkVs8lteTMIj3mabK7Ny2j27uMjKpVaW
-         PY0A==
-X-Gm-Message-State: AOAM530c1OiuSNfefT9670y7j74Gh1NDz4bL12FTV0/I5etbqbBT4tnl
-        5HJAWK7+WZAWyTIooSqj9FHHnXib+CAxmvMXJgCN95hnfzWrr7ay/CXkho3QJ7evCZaobUhSWyg
-        QueJohtJhxAmIn1qZhDM3zJz2zDhY1BIuQ+oLuXR3vpnCWiaER5iOEI7WWCI5pRQv4RQEr0zu4O
-        Ak
-X-Received: by 2002:a63:7a01:: with SMTP id v1mr3478951pgc.307.1622687834853;
-        Wed, 02 Jun 2021 19:37:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztGLN1yD3vajwb+JLkpQMmH6Ptgg5CL3UiebwVquPa3KIGm5002XUJvK1+Nc1pzYyR5Kivcw==
-X-Received: by 2002:a63:7a01:: with SMTP id v1mr3478922pgc.307.1622687834579;
-        Wed, 02 Jun 2021 19:37:14 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x6sm767172pfd.173.2021.06.02.19.37.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 19:37:14 -0700 (PDT)
-Subject: Re: [PATCH v1 2/8] virtio: Add boundary checks to virtio ring
-To:     Andi Kleen <ak@linux.intel.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org, x86@kernel.org,
-        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20210603004133.4079390-1-ak@linux.intel.com>
- <20210603004133.4079390-3-ak@linux.intel.com>
- <4be00b3a-a15f-7fee-317b-ddabed3c1347@redhat.com>
- <ccf32bdc-a487-040b-5fe6-fcc8e71a57da@linux.intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <6a5cae8f-0a29-8401-34b9-d9c977d11513@redhat.com>
-Date:   Thu, 3 Jun 2021 10:36:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xbfOBa4V4NfcCRLvjCYR6j0+uuKti8SF2SJo2woyW5k=;
+        b=loZ1hLprH7f9yuGvKan6b86bd/nt2P63kdBYrp7k5cX0xzCDW6AHt6lBNcGQi9LVqg
+         v52nhAdSp1W0PMq9XZ3emr7G2mr5T3fPo5iNhJ2R9ZWTW70fr2fGM+vP6DHNOoAcfbr1
+         Vt26xWXvZOUag+DE1Y231GzFXiy5CeNoiVj9ZdrZQ5JKS/mhZhZk5zfvSh60oU3TZ2RQ
+         7jrQmxVE2YDj4N9zxcJLQ4S4YGnyy6ccZ8K0a/VO+ezUZ1hZcRIjruTP1kfP9Zt3gOW/
+         CXLGeS0JIJPJzAj0fnxjySzwXDKPDzDgM2eppAZ4fL0NQo5FTnEczlNzBcAnEtCyH/sX
+         N7Uw==
+X-Gm-Message-State: AOAM533GkAFGQlwtnUB/uZnYwJAyYDCxM2N9GKUVvOs+6LZZYNltC5Kd
+        aayb+smRZAzH+r+p+l/o9bjUQg==
+X-Google-Smtp-Source: ABdhPJwNjVsy9G2E0nDNUrLhwAEvQ/PJG4VNWAnP8MGjn/84SwkXjIInnYsKhYwPONr1jI8ldsblQg==
+X-Received: by 2002:a17:90b:3584:: with SMTP id mm4mr8704483pjb.171.1622687861987;
+        Wed, 02 Jun 2021 19:37:41 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id r5sm633056pjd.2.2021.06.02.19.37.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 19:37:41 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 08:07:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] PM: domains: Drop/restore performance state votes
+ for devices at runtime PM
+Message-ID: <20210603023739.mds4eir4i6olaiwz@vireshk-i7>
+References: <20210602101215.78094-1-ulf.hansson@linaro.org>
+ <20210602101215.78094-3-ulf.hansson@linaro.org>
+ <20210603023441.bs47nwtmskrdz2el@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <ccf32bdc-a487-040b-5fe6-fcc8e71a57da@linux.intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603023441.bs47nwtmskrdz2el@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03-06-21, 08:04, Viresh Kumar wrote:
+> On 02-06-21, 12:12, Ulf Hansson wrote:
+> > A subsystem/driver that need to manage OPPs for its device, should
+> > typically drop its vote for the OPP when the device becomes runtime
+> > suspended. In this way, the corresponding aggregation of the performance
+> > state votes that is managed in genpd for the attached PM domain, may find
+> > that the aggregated vote can be decreased. Hence, it may allow genpd to set
+> > the lower performance state for the PM domain, thus avoiding to waste
+> > energy.
+> > 
+> > To accomplish this, typically a subsystem/driver would need to call
+> > dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
+> > callback, to drop the vote for the OPP. Accordingly, it needs another call
+> > to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
+> > ->runtime_resume() callback.
+> > 
+> > To avoid boilerplate code in subsystems/driver to deal with these things,
+> > let's instead manage this internally in genpd.
+> > 
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > ---
+> >  drivers/base/power/domain.c | 21 +++++++++++++++++++--
+> >  include/linux/pm_domain.h   |  1 +
+> >  2 files changed, 20 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> > index a3b6e751f366..81b9d4652b90 100644
+> > --- a/drivers/base/power/domain.c
+> > +++ b/drivers/base/power/domain.c
+> > @@ -397,6 +397,18 @@ static int genpd_set_performance_state(struct device *dev, unsigned int state)
+> >  	return ret;
+> >  }
+> >  
+> > +static int genpd_drop_performance_state(struct device *dev)
+> > +{
+> > +	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
+> > +	unsigned int prev_state;
+> > +
+> > +	prev_state = gpd_data->performance_state;
+> > +	if (prev_state && !genpd_set_performance_state(dev, 0))
+> 
+> What about adding this prev_state check in
+> genpd_set_performance_state() itself ? We already have one for the
+> genpd in _genpd_set_performance_state(), why not one for the device ?
+> 
+> > +		return prev_state;
+> > +
+> > +	return 0;
+> 
+> Hmm, we will return 0 in case genpd_set_performance_state() fails,
+> which will make us set the state to 0 again on resume. Maybe add a
+> comment for this somewhere ?
 
-ÔÚ 2021/6/3 ÉÏÎç10:18, Andi Kleen Ð´µÀ:
->
->> It looks to me all the evils came from the fact that we depends on 
->> the descriptor ring.
->>
->> So the checks in this patch could is unnecessary if we don't even 
->> read from the descriptor ring which could be manipulated by the device.
->>
->> This is what my series tries to achieve:
->>
->> https://www.spinics.net/lists/kvm/msg241825.html
->
-> I would argue that you should boundary check in any case. It was 
-> always a bug to not have boundary checks in such a data structure with 
-> multiple users, trust or not.
->
-> But yes your patch series is interesting and definitely makes sense 
-> for TDX too.
->
-> Best would be to have both I guess, and always check the boundaries 
-> everywhere.
+No, we won't as you check for rpm_saved_pstate there, so the device
+will stay disabled.
 
+Again adding the check into genpd_set_performance_state() may help
+reducing similar checks elsewhere.
 
-I agree but some of the checks are unnecessary in we do this series on 
-top of my series.
+> > +}
+> > +
+> >  /**
+> >   * dev_pm_genpd_set_performance_state- Set performance state of device's power
+> >   * domain.
+> > @@ -839,7 +851,8 @@ static int genpd_runtime_suspend(struct device *dev)
+> >  {
+> >  	struct generic_pm_domain *genpd;
+> >  	bool (*suspend_ok)(struct device *__dev);
+> > -	struct gpd_timing_data *td = &dev_gpd_data(dev)->td;
+> > +	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
+> > +	struct gpd_timing_data *td = &gpd_data->td;
+> >  	bool runtime_pm = pm_runtime_enabled(dev);
+> >  	ktime_t time_start;
+> >  	s64 elapsed_ns;
+> > @@ -896,6 +909,7 @@ static int genpd_runtime_suspend(struct device *dev)
+> >  		return 0;
+> >  
+> >  	genpd_lock(genpd);
+> > +	gpd_data->rpm_saved_pstate = genpd_drop_performance_state(dev);
+> >  	genpd_power_off(genpd, true, 0);
+> >  	genpd_unlock(genpd);
+> >  
+> > @@ -913,7 +927,8 @@ static int genpd_runtime_suspend(struct device *dev)
+> >  static int genpd_runtime_resume(struct device *dev)
+> >  {
+> >  	struct generic_pm_domain *genpd;
+> > -	struct gpd_timing_data *td = &dev_gpd_data(dev)->td;
+> > +	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
+> > +	struct gpd_timing_data *td = &gpd_data->td;
+> >  	bool runtime_pm = pm_runtime_enabled(dev);
+> >  	ktime_t time_start;
+> >  	s64 elapsed_ns;
+> > @@ -937,6 +952,8 @@ static int genpd_runtime_resume(struct device *dev)
+> >  
+> >  	genpd_lock(genpd);
+> >  	ret = genpd_power_on(genpd, 0);
+> > +	if (!ret && gpd_data->rpm_saved_pstate)
+> > +		genpd_set_performance_state(dev, gpd_data->rpm_saved_pstate);
+> >  	genpd_unlock(genpd);
 
-
->
-> So what's the merge status of your series?
-
-
-If I understand correctly from Michael, I will send a formal series and 
-he will try to merge it for the 5.14.
-
-Thanks
-
-
->
-> -Andi
->
->
-
+-- 
+viresh
