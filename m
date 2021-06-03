@@ -2,121 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE185399F4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D399399F4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhFCKyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:54:31 -0400
-Received: from mail-qk1-f174.google.com ([209.85.222.174]:41633 "EHLO
-        mail-qk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhFCKya (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:54:30 -0400
-Received: by mail-qk1-f174.google.com with SMTP id c124so5424847qkd.8;
-        Thu, 03 Jun 2021 03:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1VhTPRv1m3MXWutv7NtxxxaGMbYU/PIOi1ihYHRt+TU=;
-        b=beDTfz77A2PJ7ZfyZZuLrMwX/o/EYeMgsXbJT2/xEgX0m3Qu/sJCxyqoOFxPjA9Qft
-         F1PDS59GwizYtmbqhwivT5tTDL4NFTgaylmvaoJwf13Hek1vu1r0+t8qMdqlfEuLP4GN
-         9/R4UDoythMlE198kcditRLcKJ6Iak9eE2fqYCpRwn6453aX/HGO4oFev7U3YlZ+OGEw
-         aPCfb/S4yrhJf3ge+3N1+m9ZRW1Mk4lQmHIw1P06hKNJriCDPjnUWXIWMc/d3HMRoK0L
-         Y8p7rJuLH1ofmjuQkLxM5Jx4RgvZfrohBu9scFaW6uupwmhqLdfrYg/BWDYXli86HPhQ
-         orzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=1VhTPRv1m3MXWutv7NtxxxaGMbYU/PIOi1ihYHRt+TU=;
-        b=kygo0Xispso2vx+NWrKlv3IwtJdMS11paj6t+Dko6ZvIyLToWehMPwu/Bug3t5gCUU
-         Zj8ZYjSwH9oMW0SBjACBhmU1C5mZ7GR/AW6QxlD1vmqFmAoOX82nR4bHrNBZoBwrCsHP
-         pMTtf2DNMKKIyGKxX3NnMR8KJAYoR8CqNItgLC85DxbitNTcZjHQXY28OiBrZdc+JEPZ
-         xJto1yRBQX+Yiv0hga3eKouZImPpkYvhTcoN9kDuhLJeU400GN0LA4h58bmk/RGQ+K1L
-         k3InbFjchEnRySq5dZOIye/eBp5E4CwVQK0vCJ98F9Rf594WuBpkaXr7ZbejlEfIE01v
-         G7Vg==
-X-Gm-Message-State: AOAM532UA6YTN+EFL7FmjfQ+J10X8oNyb5ywHN3FYoaSFShLz+GTeaoK
-        qIUeaA0Js9beLfNFoBMAh6b9EXVwGAU=
-X-Google-Smtp-Source: ABdhPJyW5ma9LYAngWW5bFrP5ckO5i7BStX+ZfbEg250NneM13IAS0XUEScdtBK/KEGoroWfLzy/7w==
-X-Received: by 2002:a05:620a:22f3:: with SMTP id p19mr31836084qki.281.1622717489186;
-        Thu, 03 Jun 2021 03:51:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z2sm1682243qkc.111.2021.06.03.03.51.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 03:51:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 3 Jun 2021 03:51:27 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Riwen Lu <luriwen@kylinos.cn>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xin Chen <chenxin@kylinos.cn>
-Subject: Re: [PATCH v2] hwmon: (scpi-hwmon) shows the negative temperature
- properly
-Message-ID: <20210603105127.GB644104@roeck-us.net>
-References: <20210603083845.569751-1-luriwen@kylinos.cn>
+        id S229620AbhFCKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:54:53 -0400
+Received: from mail-dm6nam11on2056.outbound.protection.outlook.com ([40.107.223.56]:21372
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229885AbhFCKyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:54:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kc/6m8yQEL/Dw14ziIzJNGVsxzCKLmYgcU+GKa+3c/A/9FwnKt94xNuXhLUDTsIROcA4LNcH4PO6gSMEe12vyVorbD2GHS7xwxeMpc8xTOAoQlA1NXg/o9yaEuh0+6yvxbHe1G9WK1kcC1IECWx4R5SyS1/Jjb3WeM71W1YKCd+3UFhXOw0HR4eIXHChJXAx671Owfay6nLUDRyz0WUOiEpMisHTZP+E6GtCgR8N3CUbMsa6L2w3ULOQQdZ4I/+K3O5bxS7Lbko1IA5Zgi76uRLlB49cMRwf7EMtlDRfb89X4vvepUcBxdP6aFOI8Hfw667KuD0+J0THO/eODnm/sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ifcF+1oKwZHIn+s3rLQCg4Qe6LYnZYYMgf1eTUfJeAY=;
+ b=AuyM5r5Y5EkcG5AymY8UenPayrLi/svrQN0fkATXKC4CiHQoCQZej5Ee9zc7Db5gF02/ZgzFrawCsXU+1L1TEgyGqGwnSbr2LRcX+lzHFhPtxIiylJqXtnHVfMlR1rElL57VZhYnqYV8Yl/NOQr77pjSBHm5fc9+d3cKUhaBHBQcOA3X3FdEufyJqfzR0iTgP82VQ8nCBan/ksqMXtlLKl4476OpxT0LEKVooU5XHbnu3a9RUv+UNeesQgej0sgx4c9rzUpImK2JnNhTBYL5fBlBkn+cppetDMytHNxzKiF8A2bOOoWh1pmIW3U0VqD7AmFreKFXErngN9JeP769eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ifcF+1oKwZHIn+s3rLQCg4Qe6LYnZYYMgf1eTUfJeAY=;
+ b=Mk3s+ROq/q3SDC5uL240OW0kVtlO6+wieKKyWcPqom/Ei0kwDYe3wB/184wb2kJO4ShxqNyhMnIpimQmaXsh1TlQ1lcQeujIs5gjibZdUMeS2gaBzqqTX0fOjPiZ97v4CvGVXF5XcNeRhlQzSiU5MUAZ1nVwLPR8hAoj9C9bo8eheMM+3ETCLV7jyazWnGHqpr1fD2Tv2BEgfHSvjmKR/ggI40iA99z4MSEOfIaia174UAofJKKSBmOTtua/3FU+Q7MhpWaXaPNPKOCNSOBc9oLQE6vcAvU0wFejRXh5iI6OTxmk+RBfxk7q1lzR+8xWy+xWlEar1R3j2wxrXl/2uQ==
+Received: from BN6PR19CA0116.namprd19.prod.outlook.com (2603:10b6:404:a0::30)
+ by BN8PR12MB3635.namprd12.prod.outlook.com (2603:10b6:408:46::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Thu, 3 Jun
+ 2021 10:53:06 +0000
+Received: from BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:a0:cafe::41) by BN6PR19CA0116.outlook.office365.com
+ (2603:10b6:404:a0::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend
+ Transport; Thu, 3 Jun 2021 10:53:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT060.mail.protection.outlook.com (10.13.177.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Thu, 3 Jun 2021 10:53:06 +0000
+Received: from [172.27.14.209] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
+ 2021 10:53:02 +0000
+Subject: Re: [PATCH 1/3] mm,memory_hotplug: export mhp min alignment
+To:     David Hildenbrand <david@redhat.com>,
+        <linux-nvme@lists.infradead.org>, <dan.j.williams@intel.com>,
+        <logang@deltatee.com>, <linux-mm@kvack.org>, <hch@lst.de>
+CC:     <sagi@grimberg.me>, <oren@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>
+References: <20210602111055.10480-1-mgurtovoy@nvidia.com>
+ <20210602111055.10480-2-mgurtovoy@nvidia.com>
+ <283740c3-db3f-3c9a-2954-f1c037a13e86@redhat.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <46524325-8e2a-9395-e0d0-7d559c753c67@nvidia.com>
+Date:   Thu, 3 Jun 2021 13:52:59 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603083845.569751-1-luriwen@kylinos.cn>
+In-Reply-To: <283740c3-db3f-3c9a-2954-f1c037a13e86@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 40e2e3b1-5947-4d61-9c9f-08d9267dc4d4
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3635:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3635135CE9F54B099BDE9839DE3C9@BN8PR12MB3635.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O4FHQMuVvrnlje7lTo+7yUC+h9/v6NiiEJjTzsEBflaRv1uAOCmzTGWO8orInBmv4xu0K8p/iyohC3mftiaoQaaxKyr4c1GzdZ1acWHIpO4oG+B6BNK//qkwLKMciFTdpFPTWSoeiQ2xH/GN2lx1gAy56iLl0NVnbkw+Dj4NjYqKYuO5QhPQJswxS/FMjcRY7rSBaMF1ICLO34E/bnH9GllsG5ZZLsCEoXWjGg6SJgXEqkxSKMhiVecijoAMzGp3P7W+ID4u95CT1HX6iCreL2EDRZWrIVrQxYC57z4tp+njzAs246eSl3onbpxwr2ipYqmReHL6o6GsxhubIIYskGk80NqjJQbZoXSTgB8Wu1XZbmbb0aDgNMX+n6po2p+cySVb1G5zSeR1cR70utEM0yf0/EUDUT15A5i3tUAEdpe21680cc/mVL1TkLorDi1ZOaBn4UF6KO+m6rE9ve5iNxvmrfJak7CYxD7EJhwCBXWbiEsrIWaIYIBoEUI/iPnQ0WvAtdxerwrFZ3Q4GGtH2kWMnmbdMN2Aso4KE8g1yBYLFPuabraqhzfNBljR/wLrGrdvNMmGl2f38lvRe8D/0Xjhzso4CM3Ei83R6Al8Vq+fcgMeHgFNpRy/q4gyx6iRyl3fzcMmPzeIiV3GRESvpnrj99uf8Ux9MwzsGEGUBTGYUCzxg8tTkf4zSKl8EwffIwq/Yqz5EkTlc4jb2dc6MQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39860400002)(376002)(46966006)(36840700001)(82310400003)(426003)(53546011)(5660300002)(316002)(4326008)(36906005)(31696002)(82740400003)(47076005)(16576012)(36756003)(7636003)(356005)(110136005)(2616005)(8936002)(70586007)(478600001)(31686004)(336012)(70206006)(16526019)(2906002)(8676002)(6666004)(26005)(36860700001)(186003)(54906003)(86362001)(83380400001)(2101003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 10:53:06.2670
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40e2e3b1-5947-4d61-9c9f-08d9267dc4d4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3635
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 04:38:45PM +0800, Riwen Lu wrote:
-> The scpi hwmon shows the sub-zero temperature in an unsigned integer,
-> which would confuse the users when the machine works in low temperature
-> environment. This shows the sub-zero temperature in an signed value and
-> users can get it properly from sensors.
-> 
-> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-> Tested-by: Xin Chen <chenxin@kylinos.cn>
 
-Please ask Xin Chen to send a separate Tested-by: tag.
+On 6/2/2021 3:14 PM, David Hildenbrand wrote:
+> On 02.06.21 13:10, Max Gurtovoy wrote:
+>> Hotplugged memory has alignmet restrictions. E.g, it disallows all
+>> operations smaller than a sub-section and only allow operations smaller
+>> than a section for SPARSEMEM_VMEMMAP. Export the alignment restrictions
+>> for mhp users.
+>>
+>> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+>> ---
+>>   include/linux/memory_hotplug.h |  5 +++++
+>>   mm/memory_hotplug.c            | 33 +++++++++++++++++++--------------
+>>   2 files changed, 24 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/include/linux/memory_hotplug.h 
+>> b/include/linux/memory_hotplug.h
+>> index 28f32fd00fe9..c55a9049b11e 100644
+>> --- a/include/linux/memory_hotplug.h
+>> +++ b/include/linux/memory_hotplug.h
+>> @@ -76,6 +76,7 @@ struct mhp_params {
+>>     bool mhp_range_allowed(u64 start, u64 size, bool need_mapping);
+>>   struct range mhp_get_pluggable_range(bool need_mapping);
+>> +unsigned long mhp_get_min_align(void);
+>>     /*
+>>    * Zone resizing functions
+>> @@ -248,6 +249,10 @@ void mem_hotplug_done(void);
+>>       ___page;                \
+>>    })
+>>   +static inline unsigned long mhp_get_min_align(void)
+>> +{
+>> +    return 0;
+>> +}
+>>   static inline unsigned zone_span_seqbegin(struct zone *zone)
+>>   {
+>>       return 0;
+>> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+>> index 9e86e9ee0a10..161bb6704a9b 100644
+>> --- a/mm/memory_hotplug.c
+>> +++ b/mm/memory_hotplug.c
+>> @@ -270,24 +270,29 @@ void __init 
+>> register_page_bootmem_info_node(struct pglist_data *pgdat)
+>>   }
+>>   #endif /* CONFIG_HAVE_BOOTMEM_INFO_NODE */
+>>   +/*
+>> + * Disallow all operations smaller than a sub-section and only
+>> + * allow operations smaller than a section for
+>> + * SPARSEMEM_VMEMMAP. Note that check_hotplug_memory_range()
+>> + * enforces a larger memory_block_size_bytes() granularity for
+>> + * memory that will be marked online, so this check should only
+>> + * fire for direct arch_{add,remove}_memory() users outside of
+>> + * add_memory_resource().
+>> + */
+>> +unsigned long mhp_get_min_align(void)
+>> +{
+>> +    if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>> +        return PAGES_PER_SUBSECTION;
+>> +    return PAGES_PER_SECTION;
+>> +}
+>> +EXPORT_SYMBOL_GPL(mhp_get_min_align);
+>
+> We have to main interfaces to "hotplug" memory:
+>
+> a) add_memory() and friends for System RAM, which have memory block 
+> alignment requirements.
+>
+> b) memremap_pages(), which has the alignemnt requirements you mention 
+> here.
+>
+> I feel like what you need would better be exposed in mm/memremap.c, 
+> for example, via "memremap_min_alignment" so it matches the 
+> "memremap_pages" semantics.
+>
+> And then, memremap_pages() is only available with CONFIG_ZONE_DEVICE, 
+> which depends on SPARSEMEM_VMEMMAP. So you'll always have 
+> PAGES_PER_SUBSECTION.
+>
+> I can already spot "memremap_compat_align", maybe you can reuse that 
+> or handle it accordingly in there?
 
-> 
-> ---
-> Changes since v1:
-> - Add judgment for sensor->info.class. If it is TEMPERATURE situation,
->   return the sensor value as a signed value, otherwise return it as a
->   unsigned value.
-> ---
->  drivers/hwmon/scpi-hwmon.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/scpi-hwmon.c b/drivers/hwmon/scpi-hwmon.c
-> index 25aac40f2764..45a7e319143d 100644
-> --- a/drivers/hwmon/scpi-hwmon.c
-> +++ b/drivers/hwmon/scpi-hwmon.c
-> @@ -99,7 +99,10 @@ scpi_show_sensor(struct device *dev, struct device_attribute *attr, char *buf)
->  
->  	scpi_scale_reading(&value, sensor);
->  
-> -	return sprintf(buf, "%llu\n", value);
-> +	if (sensor->info.class == TEMPERATURE)
-> +		return sprintf(buf, "%lld\n", value);
+Yes I think that since subsection is aligned to PAGE_SIZE I can do:
 
-'value' is u64, so it needs a typecast to s64.
+size_t pci_p2pdma_align_size(size_t size)
+{
+         unsigned long min_align;
 
-Also, please add a comment ahead of the if statement explaining that temperature
-sensor values are treated as signed values based on observation even though that
-is not explicitly specified, and because an unsigned u64 temperature does not
-really make practical sense.
+         min_align = memremap_compat_align();
+         if (!IS_ALIGNED(size, min_align))
+                 return ALIGN_DOWN(size, min_align);
 
-> +	else
+         return size;
+}
 
-else after return is not needed
 
-Thanks,
-Guenter
+thoughts ?
 
-> +		return sprintf(buf, "%llu\n", value);
->  }
->  
->  static ssize_t
-> -- 
-> 2.25.1
-> 
-> 
-> No virus found
-> 		Checked by Hillstone Network AntiVirus
+>
