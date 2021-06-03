@@ -2,138 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C9A39AC71
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9AF39AC92
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhFCVQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:16:15 -0400
-Received: from mail-mw2nam12on2089.outbound.protection.outlook.com ([40.107.244.89]:47681
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230055AbhFCVQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:16:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JPbXfnnfyMaJDN/v5S6EiRpDd1mnyXlwHpX4ZSX1YUzSx/oe4YqTZAocw05PGqoaSPBI+g7t/vcIPXiK6er29EmiYQfm8uGxG6qrfUaeMgTNmSFNMzgohhVyenneOzyIBUi4oJYZvEKayXxLhBMb3rS7GPNm2hx81zwi0KgfwuEJvnnm+6FfhLLtUR6k8igdM/U/47DRYOqZ0n4Mn4p+BSLyxODlbQGD8LYvuhHXjxZMMyJWVMJyPeuux1SxOZd3IJaGumE3UDj8fWl2ue7fNxt1G4s6eIaag6cS2sdzsmNSxYJL60borLDqm0oC/6a5/GR6GZph9QU//znI6/bcWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M1RkRmP6TgTWx7eexbejDpjD/2DRihWpeo5KcWB+Ja4=;
- b=R0BZuEQJreM2GskvecR3FZdzqKJDvsQx6GPlBR7vnM4sXMr0H0ZaU84Zk5fvs+yPGdegHQmA945ifvkcm5P7vaXCGHlT7XlX9Ki9BWlPAMHkTYUcMQmW8apfAEfxYYogwmNOowE3X5aVA5K0LlCokEz8xPivWoS4yzTJdW3f2SxtIDszrLJsad9J6mklm6pqVqBYrIGl82cFCIn3CHGLGghzON9EzGjBACRtuvKua4MxzJ+QtY+9dTDCyeERV3cwD3XO7CgXbw8K4zwMQbpu3Uw+7p1EoOaZOVUB3dS6THunmUKpwA4CVe3xBTqw9yUMMQvudw3HOR9APWI/NlyJIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M1RkRmP6TgTWx7eexbejDpjD/2DRihWpeo5KcWB+Ja4=;
- b=Uhi/CiUxRTJDnFABTKOa4J0uw5UWQdej7Bwk5/epQvZc3z1QhV38vS0C3/BXSRMsMDp/oSEw5DH5pmjfYTLJ8rXFV5xRSK2jxYJC2oQpzsr1vkT0AGGpyDvo519JnJoLdjg+cgoOMyC3p0yy/D41yh3oub12yc9SyyJSKXlbDxU=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR12MB1748.namprd12.prod.outlook.com (2603:10b6:404:105::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Thu, 3 Jun
- 2021 21:14:27 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::453f:6e2a:468d:ad6e]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::453f:6e2a:468d:ad6e%5]) with mapi id 15.20.4173.030; Thu, 3 Jun 2021
- 21:14:27 +0000
-Date:   Thu, 3 Jun 2021 17:14:25 -0400
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>, linux-edac@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] EDAC/mce_amd: Fix typo "FIfo" -> "Fifo"
-Message-ID: <20210603211425.GB1410@aus-x-yghannam.amd.com>
-References: <20210603103349.79117-1-colin.king@canonical.com>
+        id S229973AbhFCVSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCVSh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 17:18:37 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93448C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 14:16:37 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id t8so6104680pgb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:16:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kvk9gslJOENTo6gRzwBFIjsERHiJMZgRHbw94r2xW9A=;
+        b=VXgaTUaYAJDtDx/9sRAupTT/6+VvFP1y46HCUvnq4hGT+/pyTJuNzjTbXKEWExBUsU
+         cxwGk7v+dkoI3+XN4I54OifcaSE/GQRa4D1jk2TcIzt9s1leutsX11/AxM7grfK4/WT1
+         k9KOP1QrRf5vSI/qWUfIM4omB09fWJ71qi1eQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kvk9gslJOENTo6gRzwBFIjsERHiJMZgRHbw94r2xW9A=;
+        b=hZa6nXt58GJgDh7vc0BzpUaYHCw4/Jo1Dg8bQ9vhmMcmWgAxJ+iQZ9ybsQ/PhgXmSn
+         OoT+2Y2962L6cLWG1i9QsyR1oCpL2J8887k1zQCi+U+sq448z1SgI+Cqv72F66A29FnM
+         ECsmiQ0kPAc+EaodSxveb+7ZmzcLjw4w6Qa5yoxchb6kJjGh/5h5pGbvWdw1nHFCw6vB
+         nGTyLCgQqmtJeaxTD1Z8110vCDzeBNzir/YsUwY/CmUJa/vWeyaCu5MGTByWVcCOYxQ8
+         JcixQS9hj54/+LNfWbiaOWNzrKH8HgxCyYWNqTm4J5yfubFR5zNRfryGzHL/1rVJsihQ
+         bdSg==
+X-Gm-Message-State: AOAM532yQVUQWCDamOWXOsXjXdxXyQ1wq/Ww1h94/arJhTD4kc45MlJH
+        uuhR2WstfB6ay8zqfc3MnAkRZQ==
+X-Google-Smtp-Source: ABdhPJwZSwvbOF7F+yQSC2HeThqJ0Rt+yj7Kcehm2KQ5tifHrhsvzKkzsO9SXD9CPsG0VjPAPVbkxg==
+X-Received: by 2002:a63:1161:: with SMTP id 33mr1411868pgr.270.1622754997011;
+        Thu, 03 Jun 2021 14:16:37 -0700 (PDT)
+Received: from google.com ([2601:646:8e00:b2f0:9b75:481:32db:356b])
+        by smtp.gmail.com with ESMTPSA id c62sm22833pfa.12.2021.06.03.14.16.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 14:16:36 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 14:16:33 -0700
+From:   Sujit Kautkar <sujitka@chromium.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7180: SD-card GPIO pin set
+ bias-pull up
+Message-ID: <YLlGseTHHCTDN68V@google.com>
+References: <20210602191338.1995827-1-sujitka@chromium.org>
+ <20210602121313.v3.2.I52f30ddfe62041b7e6c3c362f0ad8f695ac28224@changeid>
+ <CAD=FV=WzgvkT-F-LoDHJXsRamHH2g0GVUzoU4Qe8wAc4Y_L2Dg@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603103349.79117-1-colin.king@canonical.com>
-X-Originating-IP: [165.204.25.250]
-X-ClientProxiedBy: BN6PR1201CA0016.namprd12.prod.outlook.com
- (2603:10b6:405:4c::26) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aus-x-yghannam.amd.com (165.204.25.250) by BN6PR1201CA0016.namprd12.prod.outlook.com (2603:10b6:405:4c::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend Transport; Thu, 3 Jun 2021 21:14:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e03d3339-9ab1-4af5-7b12-08d926d491bc
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1748:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB1748A90325C730164E3DEAFBF83C9@BN6PR12MB1748.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9gs0Gq6GDJ0g0Pk7VnYSCpk4M/evIE8F23ingHt/2gg9kbDXnb5t2GZ1HeE0DZJCfVFOpU2Ug6kYrgeZBnAr1EKIzn7QCrIXjanfkuSxgQg59dJyNcdXRs8L7d7wwcDcZm3/CRR9uyvOrClZzMm4fyLMhPiGlZpXXNzk0ZA833RpYdP6ZPdjp5IHuLtkWAZLw5msWhgp9EA3jw1t2vUByWD0F+6l9HYcOoCISKAO1eisztY8jc7T2yKy4dTLBzFDV+PFVBmOMcZmZIUEbnd0GMfHuopnniARC/rWINtVAiz/VJkEdjBvBEiGKoGyACRUFY8qyCmMUT2JIcdBsgSYMf/f5EznQyWFaoHzqMVbpuSSUzmWxSAR+FKehTJ9y7bZmtvpb/xgVNnmZDCnNn8AAXDF9qJBmk6XIwYySpslYxUrBlkxL+Wnfa8Wy2/4NXRxhIgj86OfhBrqyqEifLkrdw4OgJ5VDdytW66PJjG/Pf3MGzrApoZ3olIvbvsrPiMzRi5qllxrpgMqOvwvJwiDmYbvpyvFN9FYQgxgIQ+zVozjYtVABJ76604Mz8/SRKsHWA/AEZVPcm6oPbHFITvyxlhRpFUbiZtocwH8xryyewoxJOWXokngsZFJcpii8qa8XmtRA4iOiIbkhHV6pwRtXWffgu4Cb5WecjJCZSvkF7k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(136003)(366004)(376002)(396003)(83380400001)(16526019)(6916009)(33656002)(38100700002)(38350700002)(956004)(86362001)(44832011)(66946007)(54906003)(55016002)(8936002)(8676002)(66476007)(26005)(7696005)(4744005)(5660300002)(52116002)(4326008)(478600001)(1076003)(2906002)(316002)(186003)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PRxKQfgs9BCsuyxx4dNY6t5CagO+PUZI76yOMK2SEwtvFgeQvvrNahqGF/ie?=
- =?us-ascii?Q?2vwvZkyOyL53VN8f/ELqsQ5UYNzVPO3pv2mVMEfyp0/vsmUZwIrmGpdS1BPX?=
- =?us-ascii?Q?IjpRSjAs1vOesNEYLw6HcCyKxQrbmmrPfdzYsDStkmCIcIAjA95Uz461xXIk?=
- =?us-ascii?Q?Xg3CBS9zIHzeGx+/Da7I30+QKgsSACHFmmS7I27Hp6oDY6AOYZvoypS+7jEw?=
- =?us-ascii?Q?/4eaK/63PLtrHpZjtkgi7MI/Js4ElmC1xH/ioQUhhOL/h0oOoOQophDEMByZ?=
- =?us-ascii?Q?JgYS2m1uP6RJ9dBE98D3CtKCehwPmNvqaRy9JDUBdRCSX3vg+UrL7w96S20B?=
- =?us-ascii?Q?KYOoNL9jh615cBVYs+h7mIyQ9aWsAlYn/PjrwLroV2z0fzZWGM3Uw5DSBxa6?=
- =?us-ascii?Q?5p7z8l0NBpbOV30Z0h/dRKIK8taOgBF+6P0VH/hi3BtsUtzGSsRbl5Sw1ga6?=
- =?us-ascii?Q?KHhkVkk1o8YK07QpnsUz+6wZl1KeHji9mo+uVEqfs+xAKR78wsMtuSLGJKXI?=
- =?us-ascii?Q?hM0chhiyM/Rsvj1eR+y3mROE/DISXh41e4TcQK0ZWfxQvn0ify1MnxGVTuEQ?=
- =?us-ascii?Q?L7m44JSQqAJu6m6IGeQmbRckO1QqO3bA0iSg9Sswb4E32/ORKyAhQZUK4d1j?=
- =?us-ascii?Q?lbavYnCVRTHtgnLcIHZPWanFNlD3ji7ox9D9pR1hYFcIopoiZ99YuxVQPIoM?=
- =?us-ascii?Q?+GnSwblk4sWwe7GKq7IzjrxX42HAerpmn82URJ1CvYEstRVhgliLv24Qrvlr?=
- =?us-ascii?Q?XDmqh4GhndnKsRia+UXBe5kFoLrGkUXqD7OC/UPcZjRxyv/445xx252ajMnt?=
- =?us-ascii?Q?J9uSRPnq0iiXYH9/gLQbyMx51rRjDO5YtJsKXyjA125leoqczlBt/QIJHOE3?=
- =?us-ascii?Q?GjW/74RlYi5gLdZMzJ2oD5z+pKkNJCczObuGXli7y1JBbqWIfvjGmqM7toC9?=
- =?us-ascii?Q?EoaYIGOX5c6e1v0wdVzU+x94L5P/NzqV7cjxGcATDthT5wCbcfdDxtN31WWJ?=
- =?us-ascii?Q?Jx5mM4Jg+ZdCkhCjExze1jhWD4WmqiLpT+s0+ryydHqEg0K4M0XopZkZ+RfD?=
- =?us-ascii?Q?e/0HpSk36aS+yj4bmeCAjvaMknbRuIcJR/n9jUyr1kP6Hb6a+4aWB6MDzUnc?=
- =?us-ascii?Q?H/eef/eA3o4cxpm9XM1/VRVzcG2SRqka5u3FmZOzoWZc1me26Fxjp7mcK0Z9?=
- =?us-ascii?Q?lo3b2S2hZDKZHrfKhuieeX/gTvdlBSHWXaIHZRj0qXSkrHn5MatGlDBeVGbS?=
- =?us-ascii?Q?ucdwBjIa/s+FMEi7TV+ZevZeXqbxZUl8wyVzq/Z6KzE5HmzulyVIchA95rKt?=
- =?us-ascii?Q?Zt3ZEiBOHEn0kxzw5wq7Pu9+?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e03d3339-9ab1-4af5-7b12-08d926d491bc
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 21:14:27.1065
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l2R+sw7kSkWL0kp8Ey6jIQaSGcefiI0ebHrA2mczRYkjcTjXdKeO7mhoas01NNNZiYxb1omulurf7P+9fSuysA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1748
+In-Reply-To: <CAD=FV=WzgvkT-F-LoDHJXsRamHH2g0GVUzoU4Qe8wAc4Y_L2Dg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:33:49AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is an uppercase letter I in the text instead of a lowercase
-> one. Fix this.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/edac/mce_amd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-> index 43ba0f931629..27d56920b469 100644
-> --- a/drivers/edac/mce_amd.c
-> +++ b/drivers/edac/mce_amd.c
-> @@ -431,7 +431,7 @@ static const char * const smca_xgmipcs_mce_desc[] = {
->  	"Replay Buffer Parity Error",
->  	"Data Parity Error",
->  	"Replay Fifo Overflow Error",
-> -	"Replay FIfo Underflow Error",
-> +	"Replay Fifo Underflow Error",
->  	"Elastic Fifo Overflow Error",
->  	"Deskew Error",
->  	"Flow Control CRC Error",
-> -- 
+Hi,
 
-Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
-
-Thanks!
-
--Yazen
+On Thu, Jun 03, 2021 at 01:33:07PM -0700, Doug Anderson wrote:
+> Hi,
 > 
+> On Wed, Jun 2, 2021 at 12:14 PM Sujit Kautkar <sujitka@chromium.org> wrote:
+> >
+> > Some SC7180 based board do not have external pull-up for cd-gpio.
+> 
+> nit: s/board/boards
+> 
+> Presumably Bjorn could fix this when he applies the patch. I wouldn't
+> re-post just for this fix unless Bjorn asks you to.
+I can repost this patch again with this fix if required
+
+> FYI: I had my Reviewed-by tag on v2. While you did make changes
+> between v2 and v3, in this case I don't think the changes were
+> significant enough to warrant removing my Reviewed-by tag and I would
+> have been happy if you'd kept it.
+> 
+> In general, if you ever have questions about whether you should keep
+> someone's reviewed tag, it never hurts to mention your logic "after
+> the cut" (I think you use patman so this would be "Commit-notes:").
+> For instance, you could say this if you removed Reviewed-by tags:
+>
+It is good to know this.
+
+> I totally recombobulated the frobnication logic in v3 and removed
+> previous Reviewed-by tags. Hopefully reviewers can re-add if they
+> still think the patch is good.
+> 
+> ...or, you could say this if you kept them but you weren't totally
+> sure it was OK:
+> 
+> Even though every single line in the v3 patch changed from v2, it's
+> only because I fixed a stoopid spelling Mistake. Thus, I kept previous
+> Reviewed-by tags. Please yell if you object. Who knew that the only
+> acceptable spelling of the English word "stupid" in kerneldoc comments
+> was written as "stoopid". Live and learn.
+> 
+> :-)
+> 
+> In any case, here's my Reviewed-by tag again. I also agree that
+> Bjorn's comments made sense and were good to fix...
+> 
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Thanks for adding review tag again. I intended to keep this tag since
+only commit message is updated, but I forgot to add it back while
+posting latest version.
+
+-Sujit
+
