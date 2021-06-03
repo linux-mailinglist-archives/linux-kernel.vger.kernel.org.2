@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF2F39AEB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310F539AEB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhFCXcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:32:03 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:57611 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFCXcC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:32:02 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D7F1458095D;
-        Thu,  3 Jun 2021 19:30:16 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Thu, 03 Jun 2021 19:30:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=PyTavatY3hkR5hhSwC8qiixLyB/GxmS
-        SiDs9xXK0dVo=; b=pi2VUTI6N3kPFrEb+86tzq3LHQ4k7GLiPTkYwAkvc0veauW
-        BRX8qiy78INkoypHs4xJL5pO37AjLAG3DV7l/Z0iPmNAp/6BvK/sK02h9qZ0zzS4
-        sIb8n9Y9sDCSnMJwce5Y8Ioaf0jOnrTmjfvtn8pcqCScGprUAoD5u7DkdY5g03Pq
-        mPOfn2lEKJ8SWAyV2WIUmfoh5zK93llbwJXpoQGgjpsTt/qz2h0vZv4+JbV2WVM+
-        pduhP54ZxB8gwqRh5XfTu/GkeoHSMrDA+MA9MITMom4FiyFrIzYFMen20tcu8s7B
-        X/guG59pVqjY8yeWhPHPKT2IassYGqtGLR4o6wQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=PyTava
-        tY3hkR5hhSwC8qiixLyB/GxmSSiDs9xXK0dVo=; b=AB+PklDCM7+7IZETf1VuCA
-        NDIyHP5tBgcifkRwUEJy/Sbfm1cclI+DMW5Xc+ECRsRnUhrojsaXdr0vaN5cRBd7
-        4r458kGvc3TeCI7U3b4RGubELzguTHAT+mm7bNbYt1COY1VXTdkOoZx2fal6REeC
-        7WCbYA1fylCdQt2KIvfFAJ4UVkgovSY9p7JGlPLDy8qVsdp1CZlEUsORpEcGBqWX
-        FBao6H5Wuj8IhPeO55lG0E6HGCkHQoNZrPJrVQ9UXocliUt8ihIjckgnvjWhmlEZ
-        HrpsNtTOpNn+LTaNhj1awxKPxroy3DXW/lCbqgPuAKMVXDpDV17dK6tW3Plisoiw
-        ==
-X-ME-Sender: <xms:B2a5YA8HM-qnoQIMLZcUBifScl2gOSP6Tsb1pLs54LP4PpLHm7LPFw>
-    <xme:B2a5YIuX21vTIOf40SBU7NQDpFcvErcTdHojdtRjYsDsy1v2rN2kKEz3dU6V3rKi9
-    QIukxDbvB0qREBrpg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddgudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:B2a5YGDAKpyzCRhBotF1l0EpaMCv2Npkdet4eV8fJ1lf5rIU3q51pw>
-    <xmx:B2a5YAeVbcTt9hKC7vErq2uQUbMuEX9E6HDgC64AUqWJBtY-uB4f0A>
-    <xmx:B2a5YFOCRMfMj32WKJazI_Snmr27_xEdE7DYRk7AnZBA9HiWlQUjtQ>
-    <xmx:CGa5YGFPbN8Ej2gu12XjNH1xMPWzOhwjCc5TYl3jh8Ze_HJekxdUaQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D32B3AC0062; Thu,  3 Jun 2021 19:30:15 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <fcd435d9-4432-414e-9881-6044757a6fac@www.fastmail.com>
-In-Reply-To: <20210603101822.9645-3-steven_lee@aspeedtech.com>
-References: <20210603101822.9645-1-steven_lee@aspeedtech.com>
- <20210603101822.9645-3-steven_lee@aspeedtech.com>
-Date:   Fri, 04 Jun 2021 08:59:55 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "open list" <linux-kernel@vger.kernel.org>
-Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Billy Tsai" <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v3 2/5] ARM: dts: aspeed-g6: Add SGPIO node.
-Content-Type: text/plain
+        id S229764AbhFCXet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:34:49 -0400
+Received: from mga01.intel.com ([192.55.52.88]:61135 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFCXer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 19:34:47 -0400
+IronPort-SDR: aACU/vHrmMuvBhCVVvIjYpiyCN9AujtYh5Wbqx0vPrjwOD20MJ87T3OgPK1PAT4/AlsUNWSj4h
+ 8SwLawDUN2WQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="225488691"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="225488691"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 16:33:00 -0700
+IronPort-SDR: qAh/G4h1oAVmxnpXqZzvzXCuEocjpQVTLKofsVYdH1zoxAHAjOZW/w7M8EFkVDo5EB13y1/Kmd
+ 5P5MI2NAPGSw==
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="550880326"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.7.237]) ([10.209.7.237])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 16:32:59 -0700
+Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
+To:     Andy Lutomirski <luto@kernel.org>, mst@redhat.com
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org,
+        the arch/x86 maintainers <x86@kernel.org>,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210603004133.4079390-1-ak@linux.intel.com>
+ <20210603004133.4079390-2-ak@linux.intel.com>
+ <cc5c8265-83f7-aeb1-bc30-3367fe68bc97@kernel.org>
+ <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
+ <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
+ <3159e1f4-77cd-e071-b6f2-a2bb83cfc69a@linux.intel.com>
+ <b8b39b76-8d07-4e4a-804a-746269787b61@www.fastmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <884f34e0-fcd2-bb82-9e9e-4269823fa9b2@linux.intel.com>
+Date:   Thu, 3 Jun 2021 16:32:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
+MIME-Version: 1.0
+In-Reply-To: <b8b39b76-8d07-4e4a-804a-746269787b61@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> We do not need an increasing pile of kludges
 
-On Thu, 3 Jun 2021, at 19:48, Steven Lee wrote:
-> AST2600 supports 2 SGPIO master interfaces one with 128 pins another one
-> with 80 pins.
-> 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> ---
->  arch/arm/boot/dts/aspeed-g6.dtsi | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-> index f96607b7b4e2..e56e92e206f1 100644
-> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-> @@ -377,6 +377,36 @@
->  				#interrupt-cells = <2>;
->  			};
->  
-> +			sgpiom0: sgpiom@1e780500 {
-> +				#gpio-cells = <2>;
-> +				gpio-controller;
-> +				compatible = "aspeed,ast2600-sgpiom1";
+Do you mean disabling features is a kludge?
 
-See my comment on the compatible names on the binding document.
+If yes I disagree with that characterization.
 
-Andrew
+
+> to make TDX and SEV “secure”.  We need the actual loaded driver to be secure.  The virtio architecture is full of legacy nonsense,
+> and there is no good reason for SEV and TDX to be a giant special case.
+
+I don't know where you see a "giant special case". Except for the 
+limited feature negotiation all the changes are common, and the 
+disabling of features (which is not new BTW, but already done e.g. with 
+forcing DMA API in some cases) can be of course used by all these other 
+technologies too. But it just cannot be done by default for everything 
+because it would break compatibility. So every technology with such 
+requirements has to explicitly opt-in.
+
+
+>
+> As I said before, real PCIe (Thunderbolt/USB-C or anything else) has the exact same problem.  The fact that TDX has encrypted memory is, at best, a poor proxy for the actual condition.  The actual condition is that the host does not trust the device to implement the virtio protocol correctly.
+
+Right they can do similar limitations of feature sets. But again it 
+cannot be default.
+
+
+>
+>>
+>> TDX and SEV use the arch hook to enforce DMA API, so that part is also
+>> solved.
+>>
+> Can you point me to the code you’re referring to?
+
+See 4/8 in this patch kit. It uses an existing hook which is already 
+used in tree by s390.
+
+
+-Andi
+
+
+
