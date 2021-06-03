@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76C839A699
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E547039A69C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFCREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:04:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhFCREk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:04:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AF74613C9;
-        Thu,  3 Jun 2021 17:02:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622739775;
-        bh=O6NOUaKgzbYFsX5Lzl4BmVAchR/zLTywxKBCZMccuWo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PkLn7TRVk8848CsbgwxHgS+YDVLBpP0hT0YssguUgEi/tmAJ4J0allFYEjaVaNlKf
-         uMeHQFQgke+ORea3E/2xWshTAp08+ei1TecprNMJC+6kdlMIWHY2OsVyI1ey0Eh/YW
-         rEwn6yqfTChiP284/YvGKhucasYz8RsQHYOzxOiUyPV2i1B//V+seYWFd2c8HN3Zv+
-         +BVKrY/7vGCctpc2fCtWkqU6yFVB6s3hiu5MmAHGmoOpCUfruzzuz8gsXQeCqh8fmW
-         XL5Caly0WGDej+Stz8urXFVhU42I9mv44jbHZI4hYoCvzwMS+JWo5KZtHLSjyoxoR1
-         06WnkkQmcHRBw==
-Received: by pali.im (Postfix)
-        id 068341229; Thu,  3 Jun 2021 19:02:52 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 19:02:52 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/42] PCI: aardvark: Various driver fixes
-Message-ID: <20210603170252.vxeqyvnoepgumyu4@pali>
-References: <20210506153153.30454-1-pali@kernel.org>
- <20210603151605.GA18917@lpieralisi>
+        id S229955AbhFCRGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:06:36 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3151 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhFCRGe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:06:34 -0400
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FwsXl6FVKz6V03M;
+        Fri,  4 Jun 2021 00:58:15 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 19:04:48 +0200
+Received: from [10.47.80.115] (10.47.80.115) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 3 Jun 2021
+ 18:04:47 +0100
+Subject: Re: [PATCH v10 1/3] iommu: Enhance IOMMU default DMA mode build
+ options
+To:     Randy Dunlap <rdunlap@infradead.org>, <joro@8bytes.org>,
+        <will@kernel.org>, <dwmw2@infradead.org>,
+        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        <chenxiang66@hisilicon.com>
+References: <1622728715-209296-1-git-send-email-john.garry@huawei.com>
+ <1622728715-209296-2-git-send-email-john.garry@huawei.com>
+ <c8107ae9-b099-459f-eea4-b9b5a0929ee2@infradead.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <18764b43-6c60-eb6d-783f-b7d4fe146b8e@huawei.com>
+Date:   Thu, 3 Jun 2021 18:04:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603151605.GA18917@lpieralisi>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <c8107ae9-b099-459f-eea4-b9b5a0929ee2@infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.115]
+X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 03 June 2021 16:16:05 Lorenzo Pieralisi wrote:
-> May I ask you please to split this series in smaller sets so that
-> it is easier to merge ?
+On 03/06/2021 18:00, Randy Dunlap wrote:
+>> +config IOMMU_DEFAULT_STRICT
+>> +	bool "strict"
+>> +	help
+>> +	  For every IOMMU DMA unmap operation, the flush operation of IOTLB and
+>> +	  the free operation of IOVA are guaranteed to be done in the unmap
+>> +	  function.
+>> +
+>> +	  This mode is safer than the two above, but it maybe slower in some
+> There don't seem to be two above?
+> 
 
-No problem!
+Right, it's a remnant from a previous version - will fix, pending other 
+reviews
 
-> Let's start with the more urgent fixes that don't involve rework (or
-> you have not received change requests for since they are simple).
+>> +	  high performace scenarios.
+> 	       performance
+> 
 
-Ok, I will do it.
+ok
 
-> Thanks,
-> Lorenzo
+>> +
+>> +endchoice
+
+Thanks!
