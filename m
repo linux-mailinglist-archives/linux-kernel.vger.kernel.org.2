@@ -2,278 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F9739AEE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A8939AEEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhFCXxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:53:13 -0400
-Received: from mga02.intel.com ([134.134.136.20]:31635 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229799AbhFCXxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:53:12 -0400
-IronPort-SDR: lRwpSNLo/WMB9A/H6RpAIc6vjaxiIKQXNbsfpxPCUg8sGbzAzdwP74oqpCEn/F1EAGNv7ptuV+
- SCpZaVlj8L1Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="191290763"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="191290763"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 16:51:27 -0700
-IronPort-SDR: uDPo3sUR12giQd8x5Lil60MuuLE/37nWUUwgcL0bCMlAj8KO4UM6Eu6NzIItvYm2is46TawDjZ
- BMtrr9GGtLag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="439025520"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 03 Jun 2021 16:51:26 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lox7V-0006TR-D7; Thu, 03 Jun 2021 23:51:25 +0000
-Date:   Fri, 04 Jun 2021 07:51:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- fcf6631f3736985ec89bdd76392d3c7bfb60119f
-Message-ID: <60b96af0.9IqVfnaUuX8keTJV%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229775AbhFCX7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:59:41 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:49251 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhFCX7j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 19:59:39 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 994A3E14;
+        Thu,  3 Jun 2021 19:57:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 03 Jun 2021 19:57:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        dmiAczoWlOvQnmmC04pzx+Xz0r8ekAJSbv8Td3zeOlg=; b=OcozWK6buUWWRUVP
+        GmtfIcDT0rFj6FHJBmkR1k2sCTfORlynbfT0E6n9N7p4yKjkJZPFM9NG6JGeWIyh
+        foXbIIIaAP8Wqh/xRCrB13UdYqH15uyY6b6Dbmlbw+8bR/nmZOQR6S+IjkcaJHPz
+        UIkCKUI0NSYpEmDjCkxMoGlAJgguUNAIGRGGtpK0DgvkoARpr+AjJzdEbdFTJKkD
+        XoGEKkvR7LTom7Ms/4bJRsWypppN15MVeNFMYnEqBO5tmNIanVY5V+KUrpInKZ4i
+        kBecRagA4r1euS4XZ3W+K3nxeJPoeesrGFK61+Pv9orWx7ZVaAkkp2zIpa+m8pB7
+        iBs5+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=dmiAczoWlOvQnmmC04pzx+Xz0r8ekAJSbv8Td3zeO
+        lg=; b=Y+p8e1mxu3USMyihm3MvVe9Pt120bFTx5XtCPAC6MqANAU2ZhVhonjv4r
+        UgAyvIPaTs/I20JvsLwXDtdm5mDy81utiS7DxmkOYQcykAFagMTZ+pJDkhNE+vgd
+        kdFr3TnYdojhFgIZrbYfI1aYSf8t+w0qdti3F9uSW1wsLeX8Ulz1RfItmnN+hJ0g
+        72vO+U1W4yqj0A+A7L6gJSLvPHwltPJCtzD/sh5/3KtWJ9+FQMMkAfNNtsWaOD9p
+        HzZNUC44fG4+bEilGOPbXcGCeiBEPUIQB0KZ5jlkkfIv+zVe8yYIkOnZqLuHCXnj
+        oGfa2R5e/QKO8P0Ke0A+EU3kT5MjQ==
+X-ME-Sender: <xms:gGy5YM5F6D1jmWFDEKs8Xe94UqWieL6ZSbHNJIJxjSUhlyR0KIrQZQ>
+    <xme:gGy5YN7oelA8aAbTXEkhp6MSQeFtGuhM5r42QP-_H2P8P5MDR1I27ZKtqc0lc56K7
+    ShZ2JBfx6-Y>
+X-ME-Received: <xmr:gGy5YLfylNkJAR3c5e5XhGCuqCwRakHxSLHJ1ukcelhCbSc0LK55i9h8g9sEHQsnWP_bo_0G6vBKTq6K7EWBMxSifOxFovy9q3fkUSMuT_ZArWVSHNmEHQp2iFM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddgvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:gGy5YBIuEy4iByeelGuc3pKiOxt_lsjLBPZeOpEi4z6uX7KcKwuvew>
+    <xmx:gGy5YAKOaip2temNzSPFpbHMlu17J4gbzZxsrlEqpNPjKX9qyUP59Q>
+    <xmx:gGy5YCzfsvGCmyzBPseWPgNAFJ5LJAggxBvQPuSaJX6SArsmHKIahQ>
+    <xmx:gWy5YFX3d5a9-zFRYjNo_pyz4-3Io3an58iPzxK_oRddwjyXjA7HOyC6wI4>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Jun 2021 19:57:47 -0400 (EDT)
+Message-ID: <d4554297b41148c7cc5eba1c9c16c5aa4a93d7e3.camel@themaw.net>
+Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
+From:   Ian Kent <raven@themaw.net>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 04 Jun 2021 07:57:43 +0800
+In-Reply-To: <32069e28a520c29773ebc24e248823d45ebb50b3.camel@themaw.net>
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+         <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
+         <CAJfpeguUj5WKtKZsn_tZZNpiL17ggAPcPBXdpA03aAnjaexWug@mail.gmail.com>
+         <972701826ebb1b3b3e00b12cde821b85eebc9749.camel@themaw.net>
+         <CAJfpegsLqowjMPCAgsFe6eQK_CeixrevUPyA04V2hdYvc0HpLQ@mail.gmail.com>
+         <08388e183b17e70a3383eb38af469125f8643a07.camel@themaw.net>
+         <32069e28a520c29773ebc24e248823d45ebb50b3.camel@themaw.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
-branch HEAD: fcf6631f3736985ec89bdd76392d3c7bfb60119f  sched/pelt: Ensure that *_sum is always synced with *_avg
+On Thu, 2021-06-03 at 10:15 +0800, Ian Kent wrote:
+> On Wed, 2021-06-02 at 18:57 +0800, Ian Kent wrote:
+> > On Wed, 2021-06-02 at 10:58 +0200, Miklos Szeredi wrote:
+> > > On Wed, 2 Jun 2021 at 05:44, Ian Kent <raven@themaw.net> wrote:
+> > > > 
+> > > > On Tue, 2021-06-01 at 14:41 +0200, Miklos Szeredi wrote:
+> > > > > On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net>
+> > > > > wrote:
+> > > > > > 
+> > > > > > If there are many lookups for non-existent paths these
+> > > > > > negative
+> > > > > > lookups
+> > > > > > can lead to a lot of overhead during path walks.
+> > > > > > 
+> > > > > > The VFS allows dentries to be created as negative and
+> > > > > > hashed,
+> > > > > > and
+> > > > > > caches
+> > > > > > them so they can be used to reduce the fairly high overhead
+> > > > > > alloc/free
+> > > > > > cycle that occurs during these lookups.
+> > > > > 
+> > > > > Obviously there's a cost associated with negative caching
+> > > > > too. 
+> > > > > For
+> > > > > normal filesystems it's trivially worth that cost, but in
+> > > > > case
+> > > > > of
+> > > > > kernfs, not sure...
+> > > > > 
+> > > > > Can "fairly high" be somewhat substantiated with a
+> > > > > microbenchmark
+> > > > > for
+> > > > > negative lookups?
+> > > > 
+> > > > Well, maybe, but anything we do for a benchmark would be
+> > > > totally
+> > > > artificial.
+> > > > 
+> > > > The reason I added this is because I saw appreciable contention
+> > > > on the dentry alloc path in one case I saw.
+> > > 
+> > > If multiple tasks are trying to look up the same negative dentry
+> > > in
+> > > parallel, then there will be contention on the parent inode lock.
+> > > Was this the issue?   This could easily be reproduced with an
+> > > artificial benchmark.
+> > 
+> > Not that I remember, I'll need to dig up the sysrq dumps to have a
+> > look and get back to you.
+> 
+> After doing that though I could grab Fox Chen's reproducer and give
+> it varying sysfs paths as well as some percentage of non-existent
+> sysfs paths and see what I get ...
+> 
+> That should give it a more realistic usage profile and, if I can
+> get the percentage of non-existent paths right, demonstrate that
+> case as well ... but nothing is easy, so we'll have to wait and
+> see, ;)
 
-elapsed time: 754m
+Ok, so I grabbed Fox's benckmark repo. and used a non-existent path
+to check the negative dentry contention.
 
-configs tested: 216
-configs skipped: 2
+I've taken the baseline readings and the contention is see is the
+same as I originally saw. It's with d_alloc_parallel() on lockref.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+While I haven't run the patched check I'm pretty sure that using
+dget_parent() and taking a snapshot will move the contention to
+that. So if I do retain the negative dentry caching change I would
+need to use the dentry seq lock for it to be useful.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                            allyesconfig
-mips                           ip27_defconfig
-powerpc                      pasemi_defconfig
-m68k                       m5249evb_defconfig
-arm                         lpc32xx_defconfig
-powerpc                    adder875_defconfig
-m68k                         apollo_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                      arches_defconfig
-h8300                     edosk2674_defconfig
-sparc64                          alldefconfig
-arm                     am200epdkit_defconfig
-arm                        multi_v5_defconfig
-mips                          rm200_defconfig
-arm                             mxs_defconfig
-sh                            titan_defconfig
-arm                           h5000_defconfig
-powerpc                     tqm8548_defconfig
-sh                         ap325rxa_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                         apsh4a3a_defconfig
-arc                         haps_hs_defconfig
-arm                         mv78xx0_defconfig
-sh                         ecovec24_defconfig
-m68k                        m5407c3_defconfig
-m68k                        mvme16x_defconfig
-arc                    vdk_hs38_smp_defconfig
-s390                       zfcpdump_defconfig
-arm                         socfpga_defconfig
-arm                         bcm2835_defconfig
-mips                            ar7_defconfig
-powerpc                  storcenter_defconfig
-m68k                             alldefconfig
-arm                         lpc18xx_defconfig
-arc                      axs103_smp_defconfig
-mips                         mpc30x_defconfig
-sh                        dreamcast_defconfig
-sh                          r7780mp_defconfig
-arm                           h3600_defconfig
-arm                            mps2_defconfig
-arc                          axs103_defconfig
-arm                         s3c6400_defconfig
-sparc                       sparc32_defconfig
-powerpc                     tqm8540_defconfig
-sh                               alldefconfig
-powerpc                     sbc8548_defconfig
-arm                       netwinder_defconfig
-mips                           rs90_defconfig
-m68k                         amcore_defconfig
-arm                        cerfcube_defconfig
-powerpc                 canyonlands_defconfig
-powerpc64                        alldefconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                        warp_defconfig
-arm                        neponset_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                            zeus_defconfig
-xtensa                generic_kc705_defconfig
-m68k                          amiga_defconfig
-mips                            gpr_defconfig
-nios2                         3c120_defconfig
-powerpc                      pcm030_defconfig
-nds32                             allnoconfig
-powerpc                   lite5200b_defconfig
-arm                           u8500_defconfig
-um                                  defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                        cell_defconfig
-mips                        bcm63xx_defconfig
-powerpc                      walnut_defconfig
-mips                      pic32mzda_defconfig
-mips                           jazz_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                      acadia_defconfig
-nios2                               defconfig
-mips                         db1xxx_defconfig
-powerpc                     pseries_defconfig
-sh                           se7343_defconfig
-powerpc                      tqm8xx_defconfig
-sh                          urquell_defconfig
-powerpc                      cm5200_defconfig
-arm                  colibri_pxa270_defconfig
-sh                            hp6xx_defconfig
-um                            kunit_defconfig
-mips                       bmips_be_defconfig
-powerpc                     mpc83xx_defconfig
-mips                  decstation_64_defconfig
-ia64                      gensparse_defconfig
-m68k                            q40_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                     skiroot_defconfig
-sh                   rts7751r2dplus_defconfig
-xtensa                    xip_kc705_defconfig
-arm                      tct_hammer_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                           sunxi_defconfig
-mips                           mtx1_defconfig
-sh                           se7712_defconfig
-powerpc                     rainier_defconfig
-arm                         orion5x_defconfig
-arm                         axm55xx_defconfig
-sh                             espt_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                           stm32_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                  cavium_octeon_defconfig
-arm                         palmz72_defconfig
-mips                          rb532_defconfig
-arm                           tegra_defconfig
-powerpc                          allmodconfig
-sh                              ul2_defconfig
-mips                         tb0219_defconfig
-mips                     loongson2k_defconfig
-arc                              alldefconfig
-mips                      pistachio_defconfig
-sh                        sh7757lcr_defconfig
-arm                       aspeed_g4_defconfig
-sh                           sh2007_defconfig
-xtensa                  cadence_csp_defconfig
-arm                      pxa255-idp_defconfig
-arm                           spitz_defconfig
-arm                        vexpress_defconfig
-arm                           viper_defconfig
-arm                         shannon_defconfig
-powerpc                     tqm8541_defconfig
-sh                        sh7785lcr_defconfig
-arm                          simpad_defconfig
-powerpc                      bamboo_defconfig
-powerpc                       ppc64_defconfig
-arc                        nsimosci_defconfig
-arm                          moxart_defconfig
-sh                        edosk7705_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                       mainstone_defconfig
-powerpc                 mpc8315_rdb_defconfig
-sh                           se7721_defconfig
-powerpc                         ps3_defconfig
-sh                           se7206_defconfig
-powerpc                    gamecube_defconfig
-mips                      maltasmvp_defconfig
-m68k                        stmark2_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210603
-i386                 randconfig-a006-20210603
-i386                 randconfig-a004-20210603
-i386                 randconfig-a001-20210603
-i386                 randconfig-a002-20210603
-i386                 randconfig-a005-20210603
-x86_64               randconfig-a015-20210603
-x86_64               randconfig-a011-20210603
-x86_64               randconfig-a012-20210603
-x86_64               randconfig-a014-20210603
-x86_64               randconfig-a016-20210603
-x86_64               randconfig-a013-20210603
-i386                 randconfig-a015-20210603
-i386                 randconfig-a013-20210603
-i386                 randconfig-a011-20210603
-i386                 randconfig-a016-20210603
-i386                 randconfig-a014-20210603
-i386                 randconfig-a012-20210603
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Thoughts Miklos, anyone?
 
-clang tested configs:
-x86_64               randconfig-b001-20210603
-x86_64               randconfig-a002-20210603
-x86_64               randconfig-a004-20210603
-x86_64               randconfig-a003-20210603
-x86_64               randconfig-a006-20210603
-x86_64               randconfig-a005-20210603
-x86_64               randconfig-a001-20210603
+> 
+> > 
+> > > 
+> > > > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > > > > > index 4c69e2af82dac..5151c712f06f5 100644
+> > > > > > --- a/fs/kernfs/dir.c
+> > > > > > +++ b/fs/kernfs/dir.c
+> > > > > > @@ -1037,12 +1037,33 @@ static int
+> > > > > > kernfs_dop_revalidate(struct
+> > > > > > dentry *dentry, unsigned int flags)
+> > > > > >         if (flags & LOOKUP_RCU)
+> > > > > >                 return -ECHILD;
+> > > > > > 
+> > > > > > -       /* Always perform fresh lookup for negatives */
+> > > > > > -       if (d_really_is_negative(dentry))
+> > > > > > -               goto out_bad_unlocked;
+> > > > > > +       mutex_lock(&kernfs_mutex);
+> > > > > > 
+> > > > > >         kn = kernfs_dentry_node(dentry);
+> > > > > > -       mutex_lock(&kernfs_mutex);
+> > > > > > +
+> > > > > > +       /* Negative hashed dentry? */
+> > > > > > +       if (!kn) {
+> > > > > > +               struct kernfs_node *parent;
+> > > > > > +
+> > > > > > +               /* If the kernfs node can be found this is
+> > > > > > a
+> > > > > > stale
+> > > > > > negative
+> > > > > > +                * hashed dentry so it must be discarded
+> > > > > > and
+> > > > > > the
+> > > > > > lookup redone.
+> > > > > > +                */
+> > > > > > +               parent = kernfs_dentry_node(dentry-
+> > > > > > > d_parent);
+> > > > > 
+> > > > > This doesn't look safe WRT a racing sys_rename().  In this
+> > > > > case
+> > > > > d_move() is called only with parent inode locked, but not
+> > > > > with
+> > > > > kernfs_mutex while ->d_revalidate() may not have parent inode
+> > > > > locked.
+> > > > > After d_move() the old parent dentry can be freed, resulting
+> > > > > in
+> > > > > use
+> > > > > after free.  Easily fixed by dget_parent().
+> > > > 
+> > > > Umm ... I'll need some more explanation here ...
+> > > > 
+> > > > We are in ref-walk mode so the parent dentry isn't going away.
+> > > 
+> > > The parent that was used to lookup the dentry in __d_lookup()
+> > > isn't
+> > > going away.  But it's not necessarily equal to dentry->d_parent
+> > > anymore.
+> > > 
+> > > > And this is a negative dentry so rename is going to bail out
+> > > > with ENOENT way early.
+> > > 
+> > > You are right.  But note that negative dentry in question could
+> > > be
+> > > the
+> > > target of a rename.  Current implementation doesn't switch the
+> > > target's parent or name, but this wasn't always the case (commit
+> > > 076515fc9267 ("make non-exchanging __d_move() copy ->d_parent
+> > > rather
+> > > than swap them")), so a backport of this patch could become
+> > > incorrect
+> > > on old enough kernels.
+> > 
+> > Right, that __lookup_hash() will find the negative target.
+> > 
+> > > 
+> > > So I still think using dget_parent() is the correct way to do
+> > > this.
+> > 
+> > The rename code does my head in, ;)
+> > 
+> > The dget_parent() would ensure we had an up to date parent so
+> > yes, that would be the right thing to do regardless.
+> > 
+> > But now I'm not sure that will be sufficient for kernfs. I'm still
+> > thinking about it.
+> > 
+> > I'm wondering if there's a missing check in there to account for
+> > what happens with revalidate after ->rename() but before move.
+> > There's already a kernfs node check in there so it's probably ok
+> > ...
+> >  
+> > > 
+> > > > > 
+> > > > > > +               if (parent) {
+> > > > > > +                       const void *ns = NULL;
+> > > > > > +
+> > > > > > +                       if (kernfs_ns_enabled(parent))
+> > > > > > +                               ns = kernfs_info(dentry-
+> > > > > > > d_sb)-
+> > > > > > > ns;
+> > > > > > +                       kn = kernfs_find_ns(parent, dentry-
+> > > > > > > d_name.name, ns);
+> > > > > 
+> > > > > Same thing with d_name.  There's
+> > > > > take_dentry_name_snapshot()/release_dentry_name_snapshot() to
+> > > > > properly
+> > > > > take care of that.
+> > > > 
+> > > > I don't see that problem either, due to the dentry being
+> > > > negative,
+> > > > but please explain what your seeing here.
+> > > 
+> > > Yeah.  Negative dentries' names weren't always stable, but that
+> > > was
+> > > a
+> > > long time ago (commit 8d85b4845a66 ("Allow sharing external names
+> > > after __d_move()")).
+> > 
+> > Right, I'll make that change too.
+> > 
+> > > 
+> > > Thanks,
+> > > Miklos
+> > 
+> 
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
