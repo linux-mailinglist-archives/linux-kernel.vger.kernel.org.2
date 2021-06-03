@@ -2,136 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9B839A5DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3C739A5D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhFCQkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:40:25 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:39717 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhFCQkY (ORCPT
+        id S229837AbhFCQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:39:45 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12132 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhFCQjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:40:24 -0400
-Received: by mail-lj1-f177.google.com with SMTP id c11so7931992ljd.6;
-        Thu, 03 Jun 2021 09:38:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dg1cMbsNNvwB5OdWxFGfb7KgRwPXh4V5fRmUP5p6A38=;
-        b=RrrueZy9r9DKDF26hY7QWRZMiPiuU/NUMwjn9bjRwczXNpUWyOMueFeUpbSJBVl4uC
-         Yhp3lmS4NQQGk6NMbS7/PONLZEotmEa6VJ3/ukmRQpgz3MroFeA/pDchkQGAM3A+X7Qv
-         Nxnjze6YJ/C5wveqwwjT8PhKCZwypevofZSgyKwpVzvIsJkUkfCPMPWcnqQ7WZmLLfEm
-         Renqgr7go8J+cgZ2/WyTMNO3Arh+4F4+4aJOnyUum7DhcDXxhAgVMgS0LuBurVvd/HBW
-         W2XY243joefQYORdGSF2qJ6zfOjU31ulu/W7fmJpSoSyRe5LK32n7Y/43T2csRv4/kGF
-         b5og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dg1cMbsNNvwB5OdWxFGfb7KgRwPXh4V5fRmUP5p6A38=;
-        b=s89mL0QbCZz70A9MsKrkm19wgbGQyCCpcC/7cNQiUG8M+BzWYWSNXXOQBGCZwNFQgI
-         ldn868Q2gGn0ji1hiEfUt/YhnK3GE+Ibp/O1vm+zdwH9Vg+IoRJkRRm1UoTlDuB2hfXw
-         TtSG8VKBY86T9a0Wt+DuE25eudj+8XCHXzsVRZO0JhSwooLWmWm98uEkcr2LCTdTxJHT
-         QqkFm+zkWe00ecix2z4eT2CAtmL7KAmmwWx1LM4wxNk1231AcS3tX3NAD4mYJF4EttHM
-         fybcKdo8RkdT2ot65NjzDidRpNMK4e+zVPznlXcMONLpAoffu2cW/kT+rcqCMGrE+CiQ
-         piYQ==
-X-Gm-Message-State: AOAM532U7mNb6ME2SuWvZPUr22elWbOYe2cdpOslAOCagU/3KmNQymmS
-        C3qFzlfIv4YFihpa7elZNmw=
-X-Google-Smtp-Source: ABdhPJwq2FHuCJ3LCjyNk09uOXvaSyHbq7RBi7/+zBxt8W/o7kB0TkaFaA8sVLJOUd3aHk9rrCWoJg==
-X-Received: by 2002:a2e:6e19:: with SMTP id j25mr182995ljc.476.1622738258343;
-        Thu, 03 Jun 2021 09:37:38 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.224.40])
-        by smtp.gmail.com with ESMTPSA id d26sm280461lja.74.2021.06.03.09.37.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 09:37:37 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org,
-        sjur.brandeland@stericsson.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 0/4] net: caif: fix 2 memory leaks
-Date:   Thu,  3 Jun 2021 19:37:27 +0300
-Message-Id: <cover.1622737854.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 3 Jun 2021 12:39:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622738280; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=IOHUtOukDXpuyt3YY40+bowFnid37YHYNxe6N7kY+Yk=; b=bo7dpZsP6/zRYmndCUSXqDzBX8a0T5QyBG6+foj3UKcJNa0wUetCXXDOpf0M5CSM9sgtZce4
+ OVr7OsMLdlQ/vqAPwBVxbnAyssS+tzVmxa72W0kuIqc+G68R8GyUA45ctYiPSv3KjrIOBvNZ
+ wu+CxXv4dH99u8Ywrl/VKQhExwU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60b90555e27c0cc77fcfa811 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 16:37:41
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D197AC4323A; Thu,  3 Jun 2021 16:37:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32F30C433F1;
+        Thu,  3 Jun 2021 16:37:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 32F30C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] arm64: dts: qcom: sc7180: Add DisplayPort  node
+Date:   Thu,  3 Jun 2021 09:37:30 -0700
+Message-Id: <1622738250-1469-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series fix 2 memory leaks in caif
-interface.
+Add DP device node on sc7180.
 
-Syzbot reported memory leak in cfserl_create().
-The problem was in cfcnfg_add_phy_layer() function.
-This function accepts struct cflayer *link_support and
-assign it to corresponting structures, but it can fail
-in some cases.
+Changes in v2:
+-- replace msm_dp with dp
+-- replace dp_opp_table with opp_table
 
-These cases must be handled to prevent leaking allocated
-struct cflayer *link_support pointer, because if error accured
-before assigning link_support pointer to somewhere, this pointer
-must be freed.
+Changes in v3:
+-- correct text of commit title
 
-Fail log:
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  9 ++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi         | 78 ++++++++++++++++++++++++++++
+ 2 files changed, 87 insertions(+)
 
-[   49.051872][ T7010] caif:cfcnfg_add_phy_layer(): Too many CAIF Link Layers (max 6)
-[   49.110236][ T7042] caif:cfcnfg_add_phy_layer(): Too many CAIF Link Layers (max 6)
-[   49.134936][ T7045] caif:cfcnfg_add_phy_layer(): Too many CAIF Link Layers (max 6)
-[   49.163083][ T7043] caif:cfcnfg_add_phy_layer(): Too many CAIF Link Layers (max 6)
-[   55.248950][ T6994] kmemleak: 4 new suspected memory leaks (see /sys/kernel/debug/kmemleak)
-
-int cfcnfg_add_phy_layer(..., struct cflayer *link_support, ...)
-{
-...
-	/* CAIF protocol allow maximum 6 link-layers */
-	for (i = 0; i < 7; i++) {
-		phyid = (dev->ifindex + i) & 0x7;
-		if (phyid == 0)
-			continue;
-		if (cfcnfg_get_phyinfo_rcu(cnfg, phyid) == NULL)
-			goto got_phyid;
-	}
-	pr_warn("Too many CAIF Link Layers (max 6)\n");
-	goto out;
-...
-	if (link_support != NULL) {
-		link_support->id = phyid;
-		layer_set_dn(frml, link_support);
-		layer_set_up(link_support, frml);
-		layer_set_dn(link_support, phy_layer);
-		layer_set_up(phy_layer, link_support);
-	}
-...
-}
-
-As you can see, if cfcnfg_add_phy_layer fails before layer_set_*,
-link_support becomes leaked.
-
-So, in this series, I made cfcnfg_add_phy_layer() 
-return an int and added error handling code to prevent
-leaking link_support pointer in caif_device_notify()
-and cfusbl_device_notify() functions.
-
-NOTE: this series was tested by syzbot
-https://syzkaller.appspot.com/bug?id=62bc71b5fa73349e2e6b6280eca9c9615ddeb585)
-
-Pavel Skripkin (4):
-  net: caif: added cfserl_release function
-  net: caif: add proper error handling
-  net: caif: fix memory leak in caif_device_notify
-  net: caif: fix memory leak in cfusbl_device_notify
-
- include/net/caif/caif_dev.h |  2 +-
- include/net/caif/cfcnfg.h   |  2 +-
- include/net/caif/cfserl.h   |  1 +
- net/caif/caif_dev.c         | 13 +++++++++----
- net/caif/caif_usb.c         | 14 +++++++++++++-
- net/caif/cfcnfg.c           | 16 +++++++++++-----
- net/caif/cfserl.c           |  5 +++++
- 7 files changed, 41 insertions(+), 12 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 24d293e..40367a2 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -786,6 +786,15 @@ hp_i2c: &i2c9 {
+ 	status = "okay";
+ };
+ 
++&dp {
++        status = "okay";
++        pinctrl-names = "default";
++        pinctrl-0 = <&dp_hot_plug_det>;
++        data-lanes = <0 1>;
++        vdda-1p2-supply = <&vdda_usb_ss_dp_1p2>;
++        vdda-0p9-supply = <&vdda_usb_ss_dp_core>;
++};
++
+ &pm6150_adc {
+ 	charger-thermistor@4f {
+ 		reg = <ADC5_AMUX_THM3_100K_PU>;
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6228ba2..05a4133 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -3032,6 +3032,13 @@
+ 							remote-endpoint = <&dsi0_in>;
+ 						};
+ 					};
++
++					port@2 {
++						reg = <2>;
++						dpu_intf0_out: endpoint {
++							remote-endpoint = <&dp_in>;
++						};
++					};
+ 				};
+ 
+ 				mdp_opp_table: mdp-opp-table {
+@@ -3148,6 +3155,77 @@
+ 
+ 				status = "disabled";
+ 			};
++
++			dp: displayport-controller@ae90000 {
++				compatible = "qcom,sc7180-dp";
++				status = "disabled";
++
++				reg = <0 0x0ae90000 0 0x1400>;
++
++				interrupt-parent = <&mdss>;
++				interrupts = <12>;
++
++				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
++				clock-names = "core_iface", "core_aux", "ctrl_link",
++					      "ctrl_link_iface", "stream_pixel";
++				#clock-cells = <1>;
++				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
++						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
++				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
++				phys = <&dp_phy>;
++				phy-names = "dp";
++
++				operating-points-v2 = <&opp_table>;
++				power-domains = <&rpmhpd SC7180_CX>;
++
++				#sound-dai-cells = <0>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						dp_in: endpoint {
++							remote-endpoint = <&dpu_intf0_out>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						dp_out: endpoint { };
++					};
++				};
++
++				opp_table: dp-opp-table {
++					compatible = "operating-points-v2";
++
++					opp-160000000 {
++						opp-hz = /bits/ 64 <160000000>;
++						required-opps = <&rpmhpd_opp_low_svs>;
++					};
++
++					opp-270000000 {
++						opp-hz = /bits/ 64 <270000000>;
++						required-opps = <&rpmhpd_opp_svs>;
++					};
++
++					opp-540000000 {
++						opp-hz = /bits/ 64 <540000000>;
++						required-opps = <&rpmhpd_opp_svs_l1>;
++					};
++
++					opp-810000000 {
++						opp-hz = /bits/ 64 <810000000>;
++						required-opps = <&rpmhpd_opp_nom>;
++					};
++				};
++			};
++
++
+ 		};
+ 
+ 		dispcc: clock-controller@af00000 {
 -- 
-2.31.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
