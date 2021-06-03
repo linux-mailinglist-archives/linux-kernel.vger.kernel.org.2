@@ -2,127 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7112D3996B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C397A3996AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhFCAIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 20:08:35 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]:42635 "EHLO
-        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhFCAIe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 20:08:34 -0400
-Received: by mail-qk1-f172.google.com with SMTP id o27so4277304qkj.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 17:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mjcG7yb0p2PCjeChIEZx/qwcbpSV6pjnKIr2LM5z6DM=;
-        b=NrcYLu/c53UvNnWkwbC+Vo+HdEds3SEb3xPgCuHxo4K2YM1dbNKZNmSzwYZHDBimzc
-         /HlEvWxgkdSDYuT61IXOSAgsufEDnEsWcHBZGATvUQlpot1ws1yWvFR0PLqUAmoWOF2Z
-         O4ys4RorI7/0D48LzE7XFm+v2Hdo8l1d1u9rY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mjcG7yb0p2PCjeChIEZx/qwcbpSV6pjnKIr2LM5z6DM=;
-        b=ulkKhOBt7LnLuF40KZWAUBj7QthJxhjeYNL86NNY682GC1dyzY5+ug+RuRP0RBUXkk
-         FErEH4X9UH+C90W/N67eiMk8hoQr5S/xPLfD5+e535ouEJQD7DkHJKx5L4pnY5EsJjiT
-         YwEgVBw9ymLaOmevd+3170+nYZr/hRFv3WPfCA04B3orz2LW4U5H5ncrBCiPyA7NWS//
-         i1X/dDB6fOfjpxRM1l0oUAbzUFH+VrMQv8kkDRafKuvemyoNpyLdJFoQUMMdGlFWLXzp
-         068NND0ajqIXd18anywBC7iAcFYNVRXcSt/aoxeMMS2ydj4EKYgWwSlzmRGulmitbeKD
-         T3Sg==
-X-Gm-Message-State: AOAM531ctY01qOUeUy5brzDYQ5QVM3t3idPsFwEJDXC1NUe56B8li6kX
-        R5PqVDPKb5WM67Ij8iKv9kLvbEV/0JAVzg==
-X-Google-Smtp-Source: ABdhPJx4cgkqigPrNJS6SToLbiPPh3AsNHdduEr9LrTyz8epdOcByK0X7+CBlNMjJexog0jaQJCBcw==
-X-Received: by 2002:a37:6084:: with SMTP id u126mr30334487qkb.294.1622678734137;
-        Wed, 02 Jun 2021 17:05:34 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id o26sm917617qkm.4.2021.06.02.17.05.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 17:05:34 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id q21so6265718ybg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 17:05:33 -0700 (PDT)
-X-Received: by 2002:a25:8191:: with SMTP id p17mr50542159ybk.405.1622678728912;
- Wed, 02 Jun 2021 17:05:28 -0700 (PDT)
+        id S229727AbhFCAHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 20:07:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhFCAH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 20:07:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54D5C613E7;
+        Thu,  3 Jun 2021 00:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622678742;
+        bh=TtQqRvmnABCXwzNCvY4Sr+kkdewQDVf/VDvbiAiSo5c=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=CC13/UOgfauAzqtzZ3D4nwEQtKuZVeOcJXovzgSTBFcexfAdU36LUzMtmR2hb0tt6
+         /gdjPuVghRRyM8H5zTbkdWuhWOo3jjhtsXHYq0vWLj5qGY36C23+RYdhWcRr9+gCYh
+         U4Xtd1zz8MKu629Og/ggRUeJtPy4wL4h18WsEbyEk6iNi+7DjXJGPsqO5Warf2GieR
+         wKgdZrf70pquGL4hyQKlbYQAyTBZ1SnFPICb8tvCW6EkfApmqgI4y9xEY5an2X+ZnL
+         4h0zvJ8flBbYSXAAti098zF+L/MrJ1iSE4UsZSIlNYvSGmwE5C5MBcQHP8Gb8C7Bw6
+         PM4hQMh2PErMg==
+Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem
+ read
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Simon Ser <contact@emersion.fr>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <1622589753-9206-1-git-send-email-mlin@kernel.org>
+ <1622589753-9206-3-git-send-email-mlin@kernel.org>
+ <alpine.LSU.2.11.2106011913590.3353@eggly.anvils>
+From:   Ming Lin <mlin@kernel.org>
+Message-ID: <79a27014-5450-1345-9eea-12fc9ae25777@kernel.org>
+Date:   Wed, 2 Jun 2021 17:05:41 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <1622390172-31368-1-git-send-email-rajeevny@codeaurora.org> <1622390172-31368-3-git-send-email-rajeevny@codeaurora.org>
-In-Reply-To: <1622390172-31368-3-git-send-email-rajeevny@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 2 Jun 2021 17:05:17 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WuWKHo1YLRTtN_dcMDuoc9erpwaGTb6WNgwHeDLuz8qw@mail.gmail.com>
-Message-ID: <CAD=FV=WuWKHo1YLRTtN_dcMDuoc9erpwaGTb6WNgwHeDLuz8qw@mail.gmail.com>
-Subject: Re: [v5 2/5] drm/panel-simple: Support DP AUX backlight
-To:     Rajeev Nandan <rajeevny@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Clark <robdclark@gmail.com>, Lyude Paul <lyude@redhat.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>, linux-fbdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <alpine.LSU.2.11.2106011913590.3353@eggly.anvils>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 6/1/2021 8:49 PM, Hugh Dickins wrote:
 
-On Sun, May 30, 2021 at 8:57 AM Rajeev Nandan <rajeevny@codeaurora.org> wrote:
->
-> If there is no backlight specified in the device tree and the panel
-> has access to the DP AUX channel then create a DP AUX backlight if
-> supported by the panel.
->
-> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
-> ---
->
-> This patch depends on [1] (drm/panel: panel-simple: Stash DP AUX bus;
-> allow using it for DDC) and the previous patch (2/5) of this series.
->
-> Changes in v4:
-> - New
->
-> Changes in v5:
-> - Address review comments and move backlight functions to drm_panel.c (Douglas)
-> - Create and register DP AUX backlight if there is no backlight specified in the
->   device tree and panel has the DP AUX channel. (Douglas)
-> - The new drm_panel_dp_aux_backlight() will do the drm_edp_backlight_supported() check.
->
-> [1] https://lore.kernel.org/dri-devel/20210524165920.v8.7.I18e60221f6d048d14d6c50a770b15f356fa75092@changeid/
->
->  drivers/gpu/drm/panel/panel-simple.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index b09be6e..047fad5 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -800,6 +800,12 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc,
->         if (err)
->                 goto disable_pm_runtime;
->
-> +       if (!panel->base.backlight && panel->aux) {
-> +               err = drm_panel_dp_aux_backlight(&panel->base, panel->aux);
-> +               if (err)
-> +                       goto disable_pm_runtime;
-> +       }
+>> index 096bba4..69cd856 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -1419,6 +1419,9 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+>>   	if (!len)
+>>   		return -EINVAL;
+>>   
+>> +	if ((flags & MAP_NOSIGBUS) && ((prot & PROT_WRITE) || !shmem_file(file)))
+>> +		return -EINVAL;
+>> +
+> 
+> No, for several reasons.
+> 
+> This has nothing to do with shmem really, that's just where this patch
+> hacks it in - and where you have a first user in mind.  If this goes
+> forward, please modify mm/memory.c not mm/shmem.c, to make
+> VM_FAULT_SIGBUS on fault to VM_NOSIGBUS vma do the mapping of zero page.
+> 
+> (prot & PROT_WRITE) tells you about the mmap() flags, but says nothing
+> about what mprotect() could do later on.  Look out for VM_SHARED and
+> VM_MAYSHARE and VM_MAYWRITE further down; and beware the else (!file)
+> block below them, shared anonymous would need more protection too.
+> 
+> Constructive comment: I guess much of my objection to this feature
+> comes from allowing it in the MAP_SHARED case.  If you restrict it
+> to MAP_PRIVATE mapping of file, then it's less objectionable, and
+> you won't have to worry (so much?) about write protection.  Copy
+> on write is normal there, and it's well established that subsequent
+> changes in the file will not be shared; you'd just be extending that
+> behaviour from writes to sigbusy reads.
+> 
+> And by restricting to MAP_PRIVATE, you would allow for adding a
+> proper MAP_SHARED implementation later, if it's thought useful
+> (that being the implementation which can subsequently unmap a
+> zero page to let new page cache be mapped).
 
-It's so nice now!
+This is what I wrote so far.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+---
+  include/linux/mm.h                     |  2 ++
+  include/linux/mman.h                   |  1 +
+  include/uapi/asm-generic/mman-common.h |  1 +
+  mm/memory.c                            | 12 ++++++++++++
+  mm/mmap.c                              |  4 ++++
+  5 files changed, 20 insertions(+)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index e9d67bc..af9e277 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -373,6 +373,8 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+  # define VM_UFFD_MINOR		VM_NONE
+  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+  
++#define VM_NOSIGBUS		VM_FLAGS_BIT(38)	/* Do not SIGBUS on fault */
++
+  /* Bits set in the VMA until the stack is in its final location */
+  #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
+  
+diff --git a/include/linux/mman.h b/include/linux/mman.h
+index b2cbae9..c966b08 100644
+--- a/include/linux/mman.h
++++ b/include/linux/mman.h
+@@ -154,6 +154,7 @@ static inline bool arch_validate_flags(unsigned long flags)
+  	       _calc_vm_trans(flags, MAP_DENYWRITE,  VM_DENYWRITE ) |
+  	       _calc_vm_trans(flags, MAP_LOCKED,     VM_LOCKED    ) |
+  	       _calc_vm_trans(flags, MAP_SYNC,	     VM_SYNC      ) |
++	       _calc_vm_trans(flags, MAP_NOSIGBUS,   VM_NOSIGBUS  ) |
+  	       arch_calc_vm_flag_bits(flags);
+  }
+  
+diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
+index f94f65d..a2a5333 100644
+--- a/include/uapi/asm-generic/mman-common.h
++++ b/include/uapi/asm-generic/mman-common.h
+@@ -29,6 +29,7 @@
+  #define MAP_HUGETLB		0x040000	/* create a huge page mapping */
+  #define MAP_SYNC		0x080000 /* perform synchronous page faults for the mapping */
+  #define MAP_FIXED_NOREPLACE	0x100000	/* MAP_FIXED which doesn't unmap underlying mapping */
++#define MAP_NOSIGBUS		0x200000	/* do not SIGBUS on fault */
+  
+  #define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could be
+  					 * uninitialized */
+diff --git a/mm/memory.c b/mm/memory.c
+index eff2a47..7195dac 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3676,6 +3676,18 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
+  	}
+  
+  	ret = vma->vm_ops->fault(vmf);
++	if (unlikely(ret & VM_FAULT_SIGBUS) && (vma->vm_flags & VM_NOSIGBUS)) {
++		/*
++		 * Get zero page for MAP_NOSIGBUS mapping, which isn't
++		 * coherent wrt shmem contents that are expanded and
++		 * filled in later.
++		 */
++		vma->vm_flags |= VM_MIXEDMAP;
++		if (!vm_insert_page(vma, (unsigned long)vmf->address,
++				ZERO_PAGE(vmf->address)))
++			return VM_FAULT_NOPAGE;
++	}
++
+  	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY |
+  			    VM_FAULT_DONE_COW)))
+  		return ret;
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 096bba4..74fb49a 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1419,6 +1419,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+  	if (!len)
+  		return -EINVAL;
+  
++	/* Restrict MAP_NOSIGBUS to MAP_PRIVATE mapping */
++	if ((flags & MAP_NOSIGBUS) && !(flags & MAP_PRIVATE))
++		return -EINVAL;
++
+  	/*
+  	 * Does the application expect PROT_READ to imply PROT_EXEC?
+  	 *
+
+> 
+>>   	/*
+>>   	 * Does the application expect PROT_READ to imply PROT_EXEC?
+>>   	 *
+>> diff --git a/mm/shmem.c b/mm/shmem.c
+>> index 5d46611..5d15b08 100644
+>> --- a/mm/shmem.c
+>> +++ b/mm/shmem.c
+>> @@ -1812,7 +1812,22 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>>   repeat:
+>>   	if (sgp <= SGP_CACHE &&
+>>   	    ((loff_t)index << PAGE_SHIFT) >= i_size_read(inode)) {
+>> -		return -EINVAL;
+>> +		if (!vma || !(vma->vm_flags & VM_NOSIGBUS))
+>> +			return -EINVAL;
+>> +
+>> +		vma->vm_flags |= VM_MIXEDMAP;
+> 
+> No.  Presumably you hit the BUG_ON(mmap_read_trylock(vma->vm_mm))
+> in vm_insert_page(), so decided to modify the vm_flags here: no,
+> that BUG is saying you need mmap_write_lock() to write vm_flags.
+
+But the comments above vm_insert_page() told me to set VM_MIXEDMAP on vma
+
+  * Usually this function is called from f_op->mmap() handler
+  * under mm->mmap_lock write-lock, so it can change vma->vm_flags.
+  * Caller must set VM_MIXEDMAP on vma if it wants to call this
+  * function from other places, for example from page-fault handler.
+
+> 
+> One other thing while it crosses my mind.  You'll need to decide
+> what truncating or hole-punching the file does to the zero pages
+> in its userspace mappings.  I may turn out wrong, but I think you'll
+> find that truncation removes them, but hole-punch leaves them, and
+> ought to be modified to remove them too (it's a matter of how the
+> "even_cows" arg to unmap_mapping_range() is treated).
+
+I did a quick test, after inserting zero pages, seems that truncation
+also leaves the mappings.
+
+I'm still reading code to learn this part ...
