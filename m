@@ -2,110 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704D039A38C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0EC39A390
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhFCOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:44:37 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57238 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhFCOog (ORCPT
+        id S231704AbhFCOoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:44:46 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51155 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231594AbhFCOop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:44:36 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153EgOXB104770;
-        Thu, 3 Jun 2021 09:42:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622731344;
-        bh=8Ijv9UhqrX4N4JBpKzCRsR+ej46JBo6anCxAPeEUMPQ=;
-        h=From:To:CC:Subject:Date;
-        b=q9XSpqFptmst7UmoFKzsfIWJFK7OUdT/oIPVqFHtK3OQpPiLUocAMH6GkKCAfau3p
-         ujJBD1j0Bn0N8WaY/HzJnsrIUe/xBTbVcHlkMlsuj7Qn8gkBIQhKr8lhVSZt8SwSI8
-         sP9Zr9C4j4fd04rfBpYToFeEc1NbARZk8vejoBVg=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153EgOgQ078876
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Jun 2021 09:42:24 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
- 2021 09:42:24 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 3 Jun 2021 09:42:24 -0500
-Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153EgOGP078619;
-        Thu, 3 Jun 2021 09:42:24 -0500
-Received: from localhost ([10.250.35.153])
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 153EgOTq031160;
-        Thu, 3 Jun 2021 09:42:24 -0500
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wilken Gottwalt <wilken.gottwalt@posteo.net>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, <devicetree@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-sunxi@lists.linux.dev>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [RFC PATCH] dt-bindings: hwlock: sun6i: Fix various warnings in binding
-Date:   Thu, 3 Jun 2021 09:42:16 -0500
-Message-ID: <20210603144216.10327-1-s-anna@ti.com>
-X-Mailer: git-send-email 2.30.1
+        Thu, 3 Jun 2021 10:44:45 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 153EgnfG008612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 3 Jun 2021 10:42:50 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id AC16D15C3CAF; Thu,  3 Jun 2021 10:42:49 -0400 (EDT)
+Date:   Thu, 3 Jun 2021 10:42:49 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: Correct encrypted_casefolding sysfs entry
+Message-ID: <YLjqaRHlGG1Err80@mit.edu>
+References: <20210603094849.314342-1-drosen@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603094849.314342-1-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The allwinner,sun6i-a31-hwspinlock.yaml binding has a mismatched
-$id and fails to compile the example due to undefined args specifier
-values for clocks and resets. Fix both of these issues.
+On Thu, Jun 03, 2021 at 09:48:49AM +0000, Daniel Rosenberg wrote:
+> Encrypted casefolding is only supported when both encryption and
+> casefolding are both enabled in the config.
+> 
+> Fixes: 471fbbea7ff7 ("ext4: handle casefolding with encryption")
+> Cc: stable@vger.kernel.org # 5.13+
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
 
-Fixes: f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock")
-Signed-off-by: Suman Anna <s-anna@ti.com>
----
-Hi Wilken,
+Thanks, applied.
 
-This fixes the warnings for now on linux-next, but I think the example
-should be including sun6i-a31-ccu.h files instead to be accurate, and
-those files are missing the definitions for CLK_BUS_SPINLOCK and
-RST_BUS_SPINLOCK. Feel free to send a newer version or do an incremental
-patch on top.
-
-regards
-Suman
-
- .../bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml      | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
-index 733c3d01e56c..10e5a53e447b 100644
---- a/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
-+++ b/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/hwlock/allwinner,sun6i-hwspinlock.yaml#
-+$id: http://devicetree.org/schemas/hwlock/allwinner,sun6i-a31-hwspinlock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
- title: SUN6I hardware spinlock driver for Allwinner sun6i compatible SoCs
-@@ -36,6 +36,9 @@ additionalProperties: false
- 
- examples:
-   - |
-+    #include <dt-bindings/clock/sun8i-a23-a33-ccu.h>
-+    #include <dt-bindings/reset/sun8i-a23-a33-ccu.h>
-+
-     hwlock@1c18000 {
-         compatible = "allwinner,sun6i-a31-hwspinlock";
-         reg = <0x01c18000 0x1000>;
--- 
-2.30.1
-
+					- Ted
