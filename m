@@ -2,130 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0365399865
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 05:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F2C39986A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 05:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhFCDJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 23:09:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhFCDJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 23:09:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 304BF613F2;
-        Thu,  3 Jun 2021 03:07:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622689675;
-        bh=NkB4QL7iqQMZQPhSZsQKDdEvp47UO6zsVNxvnyMI1JU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L+ulzMVwggK5/7YfsAnW44PvoD9DN2fkHaGKGRcWB7H+rFw/yH5X6Xuw/JKRc3qdz
-         EDuqfSLZCqkx4qV+UuynixpK/PB5MjkLMfh5NZykJvhZRoKIY78c3PPc+Sfe6zIDWJ
-         Z5WAI9yl7ySgwCyai4xgeastGU4F1BiMBgqsKO8T57wS9lXinXyseN5iHSzn9NaIWY
-         Bmi5Ivr7czbNz9FJ/CqQifgluqgSIcIACkmKHJXTXWzAGuuC8EaDHPtU2If/tEaD+w
-         gos6Hfh95pW7m2XHRup0m7Haa2cnXD1NQ4Jqa5yOS0nH8TgpkslEQGHTHXbL3dPLGL
-         7POuo5VoWn2Bw==
-Date:   Thu, 3 Jun 2021 11:07:50 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     balbi@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        sanm@codeaurora.org
-Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
-Message-ID: <20210603030750.GA29274@nchen>
-References: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
+        id S229807AbhFCDLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 23:11:42 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:12106 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhFCDKt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 23:10:49 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210603030904epoutp0293e66b8099444cadb410cc883da5fb85~E87mdgYzf1030510305epoutp02M
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 03:09:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210603030904epoutp0293e66b8099444cadb410cc883da5fb85~E87mdgYzf1030510305epoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1622689744;
+        bh=uXFNGr7iIsoHmsC2Yt6YGJWzJGS7MPdT00sEobYt6ec=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=PWywPvofIg9/oyD6MT1nThOAjoM1vqOWghA+ZlCM/9d2TvGbALMO/imIEL1t+fU9I
+         9Styh9KSyGRwGWS/abQ/yxq5IEUTQC9tSdeHXMtCvs5gclEgAdoMKOuWtkK3R+L/nY
+         zpA3ow/JYxNQ3JnSRbmeQNhjHEB6+35FXOD5S31I=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210603030903epcas2p1ca60f2b01db2715c57e10f243bcd2b14~E87mB5fn22844428444epcas2p1S;
+        Thu,  3 Jun 2021 03:09:03 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.190]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4FwW7x5hN3z4x9Q8; Thu,  3 Jun
+        2021 03:09:01 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        10.B3.09717.AC748B06; Thu,  3 Jun 2021 12:08:58 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210603030857epcas2p3538825761fc42b6ca798b259c9da6970~E87gZ9alc0640906409epcas2p3u;
+        Thu,  3 Jun 2021 03:08:57 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210603030857epsmtrp2c5ad286f1d1a512f7b34f3720e48c4b8~E87gZK3im1293512935epsmtrp2k;
+        Thu,  3 Jun 2021 03:08:57 +0000 (GMT)
+X-AuditID: b6c32a48-4e5ff700000025f5-5d-60b847ca0282
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FB.08.08163.9C748B06; Thu,  3 Jun 2021 12:08:57 +0900 (KST)
+Received: from KORDO039821 (unknown [10.229.8.133]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210603030857epsmtip242bc5a7f346995b4973bb5fe07820b2a~E87gIAeaJ0795707957epsmtip29;
+        Thu,  3 Jun 2021 03:08:57 +0000 (GMT)
+From:   =?ks_c_5601-1987?B?waTBvrnO?= <jjmin.jeong@samsung.com>
+To:     "'Christoph Hellwig'" <hch@infradead.org>
+Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <cang@codeaurora.org>, <beanhuo@micron.com>,
+        <adrian.hunter@intel.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+In-Reply-To: <YK9RkXoLsUT38cTP@infradead.org>
+Subject: RE: [PATCH 1/3] scsi: ufs: add quirk to handle broken UIC command
+Date:   Thu, 3 Jun 2021 12:08:57 +0900
+Message-ID: <000001d75825$cb0ab5f0$612021d0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIoW8PMwO5SDtoUto4XDMUWk4sZmgFpFnawAa5jbJkC4eUAGqovwbbQ
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNJsWRmVeSWpSXmKPExsWy7bCmue4p9x0JBmt6eS1OPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxaf0yVovTExYxWSy6sY3J4vKuOWwW3dd3sFksP/6PyYHL43JfL5PH5hVa
+        Hov3vGTymLDoAKPH9/UdbB4fn95i8ejbsorR4/MmOY/2A91MAZxROTYZqYkpqUUKqXnJ+SmZ
+        eem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QIcqKZQl5pQChQISi4uV9O1sivJL
+        S1IVMvKLS2yVUgtScgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMi4vPM5a8IK14v+GOcwN
+        jEdZuhg5OSQETCSuvp7C2MXIxSEksINR4tHjl2wQzidGidtfW5hBqoQEPjNKtG0K6WLkAOvY
+        8CYAIryLUeL6FgWI+heMEnNmzWcESbAJ2EpsOfyICcQWEdCVOLvwBdgGZoEvjBJ71p0AK+IE
+        SqxsuwxmCwt4STz5Nw1sGYuAisTVhgOsIDavgKVE/6of7BC2oMTJmU/AzmYWMJJYsno+E4Qt
+        L7H97RxmiHcUJH4+XcYKsdhN4tbyC8wQNSISszvbmEGOkBA4wyHRue4tVIOLRPPkBVC2sMSr
+        41vYIWwpic/v9rJB2PUSuxv2QDVPYJTo7rwKDTx7iV/Tt7BCgkVZ4sgtqOP4JDoO/2WHCPNK
+        dLQJQVSrSmxZvJERwpaWWLr2OMsERqVZSF6bheS1WUhem4XkhQWMLKsYxVILinPTU4uNCkyQ
+        Y3sTIzgVa3nsYJz99oPeIUYmDsZDjBIczEoivHvUdiQI8aYkVlalFuXHF5XmpBYfYjQFhvZE
+        ZinR5HxgNsgriTc0NTIzM7A0tTA1M7JQEuf9mVqXICSQnliSmp2aWpBaBNPHxMEp1cDk2R5Z
+        2RIcv1m4vCpsdmbcjF+ar9inZ35XCdwgck/1zGHPjp0Wxiwsem/9/Ru6T/1d/SV9m/VMJQXT
+        pWfFPziHL5DYPfl9tIDTM7mQl0s/1ds6yt+Yp8IjJfV8+WnfZVdWHmNb4bF478QyL/2NDG//
+        8tSqc3hzaqtfiHy4pGdPamr0Y+fz3ZntrT48H3yX2W5JvbolvFJHUMsuZ50w97IOdhHpB13T
+        vO/FaAZPdSm/KL5EYVH1mc/JISum1OV6ebVPXaLYcLNLROYA4yNOvZvbz6Rs1vHcdnD3lY+d
+        k0tnM+dyHLGwXrps6urakD4B5338oTuCGF61BLy/EHj4yYaUwo0PPunx5GRdz/3alK3EUpyR
+        aKjFXFScCADdzMbbTgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCIsWRmVeSWpSXmKPExsWy7bCSvO5J9x0JBj/WqlmcfLKGzeLBvG1s
+        Fi9/XmWzOPiwk8Xi0/plrBanJyxislh0YxuTxeVdc9gsuq/vYLNYfvwfkwOXx+W+XiaPzSu0
+        PBbvecnkMWHRAUaP7+s72Dw+Pr3F4tG3ZRWjx+dNch7tB7qZAjijuGxSUnMyy1KL9O0SuDIu
+        LzzOWvCCteL/hjnMDYxHWboYOTgkBEwkNrwJ6GLk4hAS2MEo8fTpfKi4tMSaPdJdjJxAprDE
+        /ZYjrCC2kMAzRol52wVBbDYBW4kthx8xgdgiAroSZxe+YASZwyzwj1Fi+9dvLBBDHzBKLJn9
+        F6ybE6hqZdtlRhBbWMBL4sm/acwgNouAisTVhgNgNbwClhL9q36wQ9iCEidnPmEBsZmBDm08
+        3A1ly0tsfzuHGeI6BYmfT5exQlzhJnFr+QVmiBoRidmdbcwTGIVnIRk1C8moWUhGzULSsoCR
+        ZRWjZGpBcW56brFhgVFearlecWJucWleul5yfu4mRnBEamntYNyz6oPeIUYmDsZDjBIczEoi
+        vHvUdiQI8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9sSQ1OzW1ILUIJsvEwSnVwGT2
+        61tCXIZYS1tBKtue+yv+XvOXPv1zrujRSzb8m87ZJM54NOEiMzujUIrirJjg1RYKD7uXiXs/
+        fsWp98Ss5GKnlXIF+9+lt6I3PF90+IMWz/Zk7rM9EX/zv847++OEo07H4q33lzN+2Os/cWpC
+        gZVEW+MGq7VWf+oNO2fdb+8+opTYt/nC1FWLjauLPKziuQKXPp/tuWDOgsA9KgJHtCQfhz/X
+        lzUS4GzbrbPb5Fr5tuTjHwzDd/RuPvdcSXIb61TDHQd6g3ee13+ULH82rvjd3O31vHGetizt
+        9pfi7HSvb29vyMhKdXZv73t0h2nVM7XGuc7fb3rxFT/nZu+dyHRvifCcLaarX4l2SbyWuqzE
+        UpyRaKjFXFScCADsX5h5NwMAAA==
+X-CMS-MailID: 20210603030857epcas2p3538825761fc42b6ca798b259c9da6970
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210527031219epcas2p313fcf248833cf14ec9a164dd91a1ca13
+References: <20210527030901.88403-1-jjmin.jeong@samsung.com>
+        <CGME20210527031219epcas2p313fcf248833cf14ec9a164dd91a1ca13@epcas2p3.samsung.com>
+        <20210527030901.88403-2-jjmin.jeong@samsung.com>
+        <YK9RkXoLsUT38cTP@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-06-01 12:02:34, Alexandru Elisei wrote:
-> I've been seeing the following panic when shutting down my rockpro64:
+> > samsung ExynosAuto SoC has two types of host controller interface to
+> > support the virtualization of UFS Device.
+> > One is the physical host(PH) that the same as conventaional UFSHCI,
+> > and the other is the virtual host(VH) that support data transfer
+> function only.
 > 
-> [   21.459064] xhci-hcd xhci-hcd.0.auto: USB bus 5 deregistered
-> [   21.683077] Unable to handle kernel NULL pointer dereference at virtual address
-> 00000000000000a0
-> [   21.683858] Mem abort info:
-> [   21.684104]   ESR = 0x96000004
-> [   21.684375]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [   21.684841]   SET = 0, FnV = 0
-> [   21.685111]   EA = 0, S1PTW = 0
-> [   21.685389] Data abort info:
-> [   21.685644]   ISV = 0, ISS = 0x00000004
-> [   21.686024]   CM = 0, WnR = 0
-> [   21.686288] user pgtable: 4k pages, 48-bit VAs, pgdp=000000000757a000
-> [   21.686853] [00000000000000a0] pgd=0000000000000000, p4d=0000000000000000
-> [   21.687452] Internal error: Oops: 96000004EEMPT SMP
-> [   21.687941] Modules linked in:
-> [   21.688214] CPU: 4 PID: 1 Comm: shutdown Not tainted
-> 5.12.0-rc7-00262-g568262bf5492 #33
-> [   21.688915] Hardware name: Pine64 RockPro64 v2.0 (DT)
-> [   21.689357] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> [   21.689884] pc : down_read_interruptible+0xec/0x200
-> [   21.690321] lr : simple_recursive_removal+0x48/0x280
-> [   21.690761] sp : ffff800011f4b940
-> [   21.691053] x29: ffff800011f4b940 x28: ffff000000809b40
-> [   21.691522] x27: ffff000000809b98 x26: ffff8000114f5170
-> [   21.691990] x25: 00000000000000a0 x24: ffff800011e84030
-> [   21.692459] x23: 0000000000000080 x22: 0000000000000000
-> [   21.692927] x21: ffff800011ecaa5c x20: ffff800011ecaa60
-> [   21.693395] x19: ffff000000809b40 x18: ffffffffffffffff
-> [   21.693863] x17: 0000000000000000 x16: 0000000000000000
-> [   21.694331] x15: ffff800091f4ba6d x14: 0000000000000004
-> [   21.694799] x13: 0000000000000000 x12: 0000000000000020
-> [   21.695267] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
-> [   21.695735] x9 : 6f6c746364716e62 x8 : 7f7f7f7f7f7f7f7f
-> [   21.696203] x7 : fefefeff6364626d x6 : 0000000000001bd8
-> [   21.696671] x5 : 0000000000000000 x4 : 0000000000000000
-> [   21.697138] x3 : 00000000000000a0 x2 : 0000000000000001
-> [   21.697606] x1 : 0000000000000000 x0 : 00000000000000a0
-> [   21.698075] Call trace:
-> [   21.698291]  down_read_interruptible+0xec/0x200
-> [   21.698690]  debugfs_remove+0x60/0x84
-> [   21.699016]  dwc3_debugfs_exit+0x1c/0x6c
-> [   21.699363]  dwc3_remove+0x34/0x1a0
-> [   21.699672]  platform_remove+0x28/0x60
-> [   21.700005]  __device_release_driver+0x188/0x230
-> [   21.700414]  device_release_driver+0x2c/0x44
-> [   21.700791]  bus_remove_device+0x124/0x130
-> [   21.701154]  device_del+0x168/0x420
-> [   21.701462]  platform_device_del.part.0+0x1c/0x90
-> [   21.701877]  platform_device_unregister+0x28/0x44
-> [   21.702291]  of_platform_device_destroy+0xe8/0x100
-> [   21.702716]  device_for_each_child_reverse+0x64/0xb4
-> [   21.703153]  of_platform_depopulate+0x40/0x84
-> [   21.703538]  __dwc3_of_simple_teardown+0x20/0xd4
-> [   21.703945]  dwc3_of_simple_shutdown+0x14/0x20
-> [   21.704337]  platform_shutdown+0x28/0x40
-> [   21.704683]  device_shutdown+0x158/0x330
-> [   21.705029]  kernel_power_off+0x38/0x7c
-> [   21.705372]  __do_sys_reboot+0x16c/0x2a0
-> [   21.705719]  __arm64_sys_reboot+0x28/0x34
-> [   21.706074]  el0_svc_common.constprop.0+0x60/0x120
-> [   21.706499]  do_el0_svc+0x28/0x94
-> [   21.706794]  el0_svc+0x2c/0x54
-> [   21.707067]  el0_sync_handler+0xa4/0x130
-> [   21.707414]  el0_sync+0x170/0x180
-> [   21.707711] Code: c8047c62 35ffff84 17fffe5f f9800071 (c85ffc60)
-> [   21.708250] ---[ end trace 5ae08147542eb468 ]---
-> [   21.708667] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> [   21.709456] Kernel Offset: disabled
-> [   21.709762] CPU features: 0x00240022,2100600c
-> [   21.710146] Memory Limit: 2048 MB
-> [   21.710443] ---[ end Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x0000000b ]---
+> You forgot to include the hunk that actually sets the quirk.
+
+thanks for your review.
+We will set up the quirk in exynos ufs driver.
+I will upload the patch together in v2 patchs.
+
 > 
+> Also please work on the commit log formatting.
 
-I find down_read_interruptible is called at sys_perf_event_open, could you find the
-relationship between remove debugfs and perf event functions?
+I'll erase the change-id log next patch too. Thank you.
 
--- 
+> 
+> > Change-Id: Ie528726b29bcb643149440bf1c90eaa5995c5ac1
+> 
+> This kind of crap has no business in a commit log.
 
-Thanks,
-Peter Chen
+Best Regards,
+Jongmin jeong
 
