@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263C439AA40
+	by mail.lfdr.de (Postfix) with ESMTP id 9819D39AA41
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhFCSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53132 "EHLO mail.kernel.org"
+        id S230122AbhFCSoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230090AbhFCSoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:44:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54D4A613E3;
-        Thu,  3 Jun 2021 18:42:27 +0000 (UTC)
+        id S230109AbhFCSoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:44:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D825F613E3;
+        Thu,  3 Jun 2021 18:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622745747;
-        bh=gZ2Rm6evSOWowhlfUYvshPZr79z61vRuWyiSg76ynts=;
+        s=k20201202; t=1622745750;
+        bh=OhDeH7wWzA5gNUXZDplIugn3Ka5ziot0S7byMHURK6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l6fXn2zl1C4X7JHdT5uUWW4Z9naLRCYI+hSoCSTvE/MhuR54CDaIilMKk0w02jbUi
-         81ZCV6HxbJfquldRlRBeYfiPVzZrxOQA7DwLXmNpkFLIpQtbHBFxI4LtV7AgAQGfdQ
-         W3bUn+XRBOLutEZB/Fv3YM5O5ZG1YH8cH4Et+SK1EV82sm6cWt4D1hZCn7rYvq+CIN
-         TS5jkPcu6+nVEBT6yEY2ltIv/Geoy+057T1aAx8AX6TOQh5Z6lrG8gdjJIvsN3R1R0
-         c/0KLSrlKAsXOeg0hR09VDQ+bVyLo7Aa+Bgj8M4wzuaQy2nzsAowsP02bLBdal+OfO
-         je+AwaE0sTHIw==
+        b=SptbDN1CA+4o0pXZinDmdNi4hmt9q6XW8bgl+xZOSU4nIiMGC+bJkB1+AR3do6E3g
+         Ffwkz7K1fmZTvjoLBWD1t/NoHacjsY90aS/xVTjc9uT2D+kYe4Zwp1gzEq+eNJw7UK
+         lCOM7BSpbp3RMXgYQOmmFKbMsArqEvA5VRHaQP/siJs5f7soh4ff3ry8yS76XL13Vi
+         4AKoYzgAotZSJN4l9I/K4I3OZVayBo3icmsLs0gOcBi2YoElFj/GQir7aZUOMh+UjG
+         pWVzlWbMq1JiSLg6uIOf5wpDZ5RQTOumhcGoTbCatEkc2bs6YEx6gkHNvJHLaqWcir
+         xNNJrgR62l44w==
 From:   Mark Brown <broonie@kernel.org>
-To:     cy_huang <u0084500@gmail.com>, robh+dt@kernel.org,
-        lgirdwood@gmail.com
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, cy_huang@richtek.com
-Subject: Re: [PATCH v3 1/2] regulator: rt6245: Add the binding document for Richtek RT6245
-Date:   Thu,  3 Jun 2021 19:41:48 +0100
-Message-Id: <162274566700.14958.271975117890891609.b4-ty@kernel.org>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Javier Martinez Canillas <javier@dowhile0.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] regulator: max77802: Remove .set_ramp_delay from max77802_buck_dvs_ops
+Date:   Thu,  3 Jun 2021 19:41:49 +0100
+Message-Id: <162274566701.14958.716535450165078033.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1622699844-19203-1-git-send-email-u0084500@gmail.com>
-References: <1622699844-19203-1-git-send-email-u0084500@gmail.com>
+In-Reply-To: <20210523072320.2174443-1-axel.lin@ingics.com>
+References: <20210523072320.2174443-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,8 +42,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 13:57:23 +0800, cy_huang wrote:
-> Add the binding document for Richtek RT6245.
+On Sun, 23 May 2021 15:23:19 +0800, Axel Lin wrote:
+> max77802_set_ramp_delay_2bit() returns -EINVAL when id > MAX77802_BUCK4.
+> This was a leftover in commit b0615f1da543
+> ("regulator: max77802: Split regulator operations for BUCKs").
 
 Applied to
 
@@ -50,10 +53,10 @@ Applied to
 
 Thanks!
 
-[1/2] regulator: rt6245: Add the binding document for Richtek RT6245
-      commit: 1623d767c7ec563d6e52ab76426377bfdde68f97
-[2/2] regulator: rt6245: Add support for Richtek RT6245
-      commit: a747070e9b629eeb70118651dfbd500bf8bb5ebe
+[1/2] regulator: max77802: Remove .set_ramp_delay from max77802_buck_dvs_ops
+      commit: 8f4ef0788c68bf99370a91df5cb83f90d707583e
+[2/2] regulator: max77802: Convert to use regulator_set_ramp_delay_regmap
+      commit: 8cdded982a6cf95d5ed7e3a014fb3d8dde6b3a94
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
