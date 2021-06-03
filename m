@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C06F39A45A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F3239A45E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhFCPUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:20:37 -0400
-Received: from mg.richtek.com ([220.130.44.152]:47188 "EHLO mg.richtek.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231213AbhFCPUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:20:37 -0400
-X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
-        LIVER,40,3)
-Received: from 192.168.10.47
-        by mg.richtek.com with MailGates ESMTP Server V5.0(4323:0:AUTH_RELAY)
-        (envelope-from <cy_huang@richtek.com>); Thu, 03 Jun 2021 23:18:45 +0800 (CST)
-Received: from ex3.rt.l (192.168.10.46) by ex4.rt.l (192.168.10.47) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Thu, 3 Jun 2021
- 23:18:44 +0800
-Received: from ex3.rt.l ([fe80::ede0:40a5:8f78:963e]) by ex3.rt.l
- ([fe80::ede0:40a5:8f78:963e%2]) with mapi id 15.02.0858.010; Thu, 3 Jun 2021
- 23:18:44 +0800
-From:   =?utf-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
-To:     "axel.lin@ingics.com" <axel.lin@ingics.com>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "u0084500@gmail.com" <u0084500@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>
-Subject: Re: [PATCH] regulator: rt6160: Convert to use
- regulator_set_ramp_delay_regmap
-Thread-Topic: [PATCH] regulator: rt6160: Convert to use
- regulator_set_ramp_delay_regmap
-Thread-Index: AQHXWFw5/k6L4YuRIk+OmEhH2dJ5iKsBjWCAgAACLwCAAAOxAIAATWcA
-Date:   Thu, 3 Jun 2021 15:18:44 +0000
-Message-ID: <1622733524.3635.10.camel@richtek.com>
-References: <20210603093809.1108629-1-axel.lin@ingics.com>
-         <1622715641.1034.5.camel@richtek.com>
-         <CAFRkauDs6nyuboPBf9Q-=KDFkSjwQ4z9mDjzm3o95uzdu5bKCw@mail.gmail.com>
-         <1622716902.1034.15.camel@richtek.com>
-In-Reply-To: <1622716902.1034.15.camel@richtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.18.5.2-0ubuntu3.2 
-x-originating-ip: [192.168.8.47]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8BF7CFB6D14DC24AA7D037F1B8046158@rt.l>
-Content-Transfer-Encoding: base64
+        id S231872AbhFCPV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231589AbhFCPV5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:21:57 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C58C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 08:20:12 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id d5-20020a17090ab305b02901675357c371so5341030pjr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EM5lQ+MrZan5XXagwUBW9ttdhkPzpL4+w0s0X2CVGAY=;
+        b=hQuy1dTxwDnv46KdNYBfAe/cdq8Wu5hRmeKWwVzoL1v4TqhFkcT9LWH9tjLcaaewtu
+         0a6XUewjLCk4qxcP394ZVbZLW9IvuvGlb7m4oxkKRYwc8Uu8Jwabjg+ZlSE7+0v+a2hy
+         /JbKOCQWuN4vqH2ryfeePbDzp1DpQJqxGubXm5Clnv8Osd0jWAP1Hld60lGFRhKPJ5kW
+         WoK6cLMSJ3VWWayuActX2VL6ndQy88A46Id9wO83rOLIaMwZ7L4r3iKkWWy3OFpW5CL/
+         WMO2wDvHIQ0kN23PuBbh8xehdlq+RFX6pInLAAxQTqSZi6IOyDChLDNqOzCr9LU0cfN9
+         ULMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EM5lQ+MrZan5XXagwUBW9ttdhkPzpL4+w0s0X2CVGAY=;
+        b=XEA/cgbwqAaR5hBOeaQqfWnmxlwEd8V7w5e/nusysWEEfxIgOgWcNtYjv5rEyx2IVg
+         fHH9X/Q32hltnAYP9QEoSG47vGYdqo4eqUdjlIxLWoDdRCB3uhlOxVe43PoaKtJV/P/B
+         nBMZ9/DHbMCc+B1G8Ia/gasyq5fESo1H/lUYf/xrO0vBUNt9fPijPSor6MAkICasdhvl
+         yW5Lg3mfmFZc2zHBqUZe3t17iSqN/XEYpQmP2JZnad01Ky5A7JG37q/FLI37RY++Ccsn
+         vrUeKvVSNCRKYnWFXKBVY8wU9jlGU+QuvXKKE3tGX7dNtP8hb+hlzVaKwpAnc7o1Zyo+
+         cljQ==
+X-Gm-Message-State: AOAM531fpiy6xnaJXCtM10VX+/6mlw8kLg3YAoVxu3NeC3tRKWxkuW+K
+        Z8sv+TyBMxrP6zx5zCNqVHruCQ==
+X-Google-Smtp-Source: ABdhPJy8UTjIiya3x+RJ7uVRs7WAk635j+A5JJEh7H9/tGIOH6RkCCeCYudrlbrRQhOW5o4dDyrCNA==
+X-Received: by 2002:a17:90a:a60d:: with SMTP id c13mr11766792pjq.172.1622733611957;
+        Thu, 03 Jun 2021 08:20:11 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id j1sm2536349pgq.23.2021.06.03.08.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 08:20:11 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 15:20:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH 1/2] KVM: LAPIC: write 0 to TMICT should also cancel
+ vmx-preemption timer
+Message-ID: <YLjzJ59HPqGfhhvm@google.com>
+References: <1622710841-76604-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622710841-76604-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksPiA+DQo+ID4gY3lfaHVhbmco6buD5ZWf5Y6fKSA8Y3lfaHVhbmdAcmljaHRlay5jb20+IOaW
-vCAyMDIx5bm0NuaciDPml6Ug6YCx5ZubIOS4i+WNiDY6MjDlr6vpgZPvvJoNCj4gPiA+DQo+ID4g
-Pg0KPiA+ID4NCj4gPiA+IEhpLCBBeGVsOj4gVXNlIHJlZ3VsYXRvcl9zZXRfcmFtcF9kZWxheV9y
-ZWdtYXAgaW5zdGVhZCBvZiBvcGVuLWNvZGVkLg0KPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPg0K
-PiA+ID4gVGhlcmUncyBzb21lIHJlYXNvbi4NCj4gPiA+IFlvdSBjYW4gcmVmZXIgdG8gaHR0cHM6
-Ly9sa21sLm9yZy9sa21sLzIwMjEvNi8xLzExNDUuDQo+ID4gPg0KPiA+ID4gSXQncyBiZWNhdXNl
-IG91ciByYW1wIHZhbHVlIG9yZGVyIGlzIGZyb20gc21hbGwgdG8gbGFyZ2UsIG5vdCBsYXJnZSB0
-bw0KPiA+ID4gc21hbGwuDQo+ID4gPiBJdCBjb25mbGljdHMgd2l0aCBmaW5kX2Nsb3Nlc3RfYmln
-Z2VyIHZhbHVlIGNob3NlbiBsb2dpYy4NCj4gPiBJIGhhdmUgdmVyaWZpZWQgdGhlIHJ0NjE2MF9z
-ZXRfcmFtcF9kZWxheSgpIGJlaGF2aW9yIGV4YWN0bHkgdGhlIHNhbWUgYXMNCj4gPiByZWd1bGF0
-b3Jfc2V0X3JhbXBfZGVsYXlfcmVnbWFwLiAoYm90aCBmdW5jdGlvbnMgZ2V0IHRoZSBzYW1lIHNl
-bGVjdG9yDQo+ID4gZm9yIGEgZ2l2ZW4gZGVsYXkpDQo+ID4NCj4gPiBDb3VsZCB5b3UgY2hlY2sg
-aWYgdGhpcyBwYXRjaCB3b3Jrcz8NCj4gU3VyZS4NCkFmdGVyIG15IHRlc3Qgc2FtcGxlIGNvZGUs
-IGJlbG93J3MgdGhlIHJlc3VsdC4NCmFzY2VuZGluZyBbMTAwMCAyNTAwIDUwMDAgMTAwMDBdDQp0
-YXJnZXQgPSAgMTAwMCA9PnNlbCA9IDANCnRhcmdldCA9ICAyNTAwID0+c2VsID0gMQ0KdGFyZ2V0
-ID0gIDUwMDAgPT5zZWwgPSAyDQp0YXJnZXQgPSAxMDAwMCA9PnNlbCA9IDMNCnRhcmdldCA9ICAx
-NzAwID0+c2VsID0gMQ0KdGFyZ2V0ID0gIDI3NTAgPT5zZWwgPSAyDQp0YXJnZXQgPSAgNzUwMCA9
-PnNlbCA9IDMNCnRhcmdldCA9IDE1MDAwID0+ZmFpbGVkIHRvIGZpbmQgYmVzdCBzZWxlY3QsIHNl
-bCA9IDMNCnRhcmdldCA9ICAgICAwID0+c2VsID0gMA0KZGVzY2VuZGluZyBbMTAwMDAgNTAwMCAy
-NTAwIDEwMDBdDQp0YXJnZXQgPSAgMTAwMCA9PnNlbCA9IDMNCnRhcmdldCA9ICAyNTAwID0+c2Vs
-ID0gMg0KdGFyZ2V0ID0gIDUwMDAgPT5zZWwgPSAxDQp0YXJnZXQgPSAxMDAwMCA9PnNlbCA9IDAN
-CnRhcmdldCA9ICAxNzAwID0+c2VsID0gMg0KdGFyZ2V0ID0gIDI3NTAgPT5zZWwgPSAxDQp0YXJn
-ZXQgPSAgNzUwMCA9PnNlbCA9IDANCnRhcmdldCA9IDE1MDAwID0+ZmFpbGVkIHRvIGZpbmQgYmVz
-dCBzZWxlY3QsIHNlbCA9IDANCnRhcmdldCA9ICAgICAwID0+c2VsID0gMw0KDQoNCkl0IG1lYW5z
-IHdoZW4gdGFyZ2V0IGlzIGluIHJhbmdlIG9yIGV2ZW4gb3ZlciwgdGhlIHJlc3VsdCBhcmUgYWxs
-IGNvcnJlY3QuDQpCdXQgbGlrZSBhcyB0aGUgcmFtcCB0YXJnZXQgaXMgZXF1YWwgdG8gMCwgdGhl
-IHNlbGVjdGlvbiB3aWxsIG9ubHkgY2hvb3NlIHRoZSBtaW5pbXVtIG9uZS4NCldoZW4gdGhlIHJh
-bXAgdGFyZ2V0IGlzIGVxdWFsIHRvIDAsIGl0IG1lYW5zIHRoZSB1c2VyIHdhbnQgdG8gZGlzYWJs
-ZSB0aGUgcmFtbXBwaW5nIGZ1bmN0aW9uLg0KDQpBcyBJIGtub3csIGlmIHRhcmdldCBpcyBlcXVh
-bCB0byAwLCBpdCBtdXN0IGZpbmQgdGhlIGZhc3Rlc3QgcmFtcHBpbmcgdmFsdWUgYXMgdGhlIGJl
-c3Qgc2VsZWN0aW9uLg0KPiA+DQo+ID4NCj4gPiBUaGFua3MsDQo+ID4gQXhlbA0KKioqKioqKioq
-KioqKiBFbWFpbCBDb25maWRlbnRpYWxpdHkgTm90aWNlICoqKioqKioqKioqKioqKioqKioqDQoN
-ClRoZSBpbmZvcm1hdGlvbiBjb250YWluZWQgaW4gdGhpcyBlLW1haWwgbWVzc2FnZSAoaW5jbHVk
-aW5nIGFueSBhdHRhY2htZW50cykgbWF5IGJlIGNvbmZpZGVudGlhbCwgcHJvcHJpZXRhcnksIHBy
-aXZpbGVnZWQsIG9yIG90aGVyd2lzZSBleGVtcHQgZnJvbSBkaXNjbG9zdXJlIHVuZGVyIGFwcGxp
-Y2FibGUgbGF3cy4gSXQgaXMgaW50ZW5kZWQgdG8gYmUgY29udmV5ZWQgb25seSB0byB0aGUgZGVz
-aWduYXRlZCByZWNpcGllbnQocykuIEFueSB1c2UsIGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlv
-biwgcHJpbnRpbmcsIHJldGFpbmluZyBvciBjb3B5aW5nIG9mIHRoaXMgZS1tYWlsIChpbmNsdWRp
-bmcgaXRzIGF0dGFjaG1lbnRzKSBieSB1bmludGVuZGVkIHJlY2lwaWVudChzKSBpcyBzdHJpY3Rs
-eSBwcm9oaWJpdGVkIGFuZCBtYXkgYmUgdW5sYXdmdWwuIElmIHlvdSBhcmUgbm90IGFuIGludGVu
-ZGVkIHJlY2lwaWVudCBvZiB0aGlzIGUtbWFpbCwgb3IgYmVsaWV2ZSB0aGF0IHlvdSBoYXZlIHJl
-Y2VpdmVkIHRoaXMgZS1tYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgaW1t
-ZWRpYXRlbHkgKGJ5IHJlcGx5aW5nIHRvIHRoaXMgZS1tYWlsKSwgZGVsZXRlIGFueSBhbmQgYWxs
-IGNvcGllcyBvZiB0aGlzIGUtbWFpbCAoaW5jbHVkaW5nIGFueSBhdHRhY2htZW50cykgZnJvbSB5
-b3VyIHN5c3RlbSwgYW5kIGRvIG5vdCBkaXNjbG9zZSB0aGUgY29udGVudCBvZiB0aGlzIGUtbWFp
-bCB0byBhbnkgb3RoZXIgcGVyc29uLiBUaGFuayB5b3UhDQo=
+On Thu, Jun 03, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
+>  
+> According to the SDM 10.5.4.1:
+> 
+>   A write of 0 to the initial-count register effectively stops the local
+>   APIC timer, in both one-shot and periodic mode.
+> 
+> The lapic timer oneshot/periodic mode which is emulated by vmx-preemption 
+> timer doesn't stop since vmx->hv_deadline_tsc is still set.
+
+But the VMX preemption timer is only used for deadline, never for oneshot or
+periodic.  Am I missing something?
+
+static bool start_hv_timer(struct kvm_lapic *apic)
+{
+	struct kvm_timer *ktimer = &apic->lapic_timer;
+	struct kvm_vcpu *vcpu = apic->vcpu;
+	bool expired;
+
+	WARN_ON(preemptible());
+	if (!kvm_can_use_hv_timer(vcpu))
+		return false;
+
+	if (!ktimer->tscdeadline)  <-------
+		return false;
+
+	...
+}
