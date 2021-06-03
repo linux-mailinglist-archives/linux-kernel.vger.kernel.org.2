@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3818539AD88
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E3039AD8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFCWS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:18:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53114 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCWS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:18:56 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1loveH-0002Cx-Vv; Thu, 03 Jun 2021 22:17:10 +0000
-To:     Damien Le Moal <damien.lemoal@wdc.com>
-Cc:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: dm: Forbid requeue of writes to zones
-Message-ID: <7e7530a9-7939-2ad6-bfe1-d3aeeeed1f77@canonical.com>
-Date:   Thu, 3 Jun 2021 23:17:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230414AbhFCWTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:19:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFCWTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 18:19:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16EAB613DA;
+        Thu,  3 Jun 2021 22:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622758680;
+        bh=iBpJa3hzL2XnQctU7nWWRQdmYnS2ODgfQmpUYL+CSCM=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=goelUiYeT6Jd2Jmn9BB/fItRWSNuABe7n2yK6Y+YJPyGwSX01/AthAUxdUNw+ZBdH
+         SuI8LPItlruF68n+9wr3nEQOW+uYYfMZUBYrszZFMo2SmLpAk8GsqKT6u9BCvL11Bx
+         uZRMvXJkNTJy06TL1KjRejiWcrQTNBFDUfs9Zi/gTSEIUsYx/6eh4Ij5+RUQIixemD
+         8jHtfO2OfqpJi80x/AB6iHrf1XMwdrpN45cVP45y32uyXpkv1FDCf/r1uQ6I/oKpzI
+         JJzK1yHiXw0s9MbQP0YbtwS4NlzJGdQzA5XkVHJkSGL/5RlC9hrb7xq8AbMJeGvGFG
+         NLxrgQsCUFDhQ==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1243527C005B;
+        Thu,  3 Jun 2021 18:17:58 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Thu, 03 Jun 2021 18:17:58 -0400
+X-ME-Sender: <xms:FVW5YLRT78JmV-bHZ9AoDryQjuJpR4-ypqJw1C0C-16TJxC2oFmriQ>
+    <xme:FVW5YMx3AI9fPNWvmQAADBmyIDRWJL7yTyuHGXL28y9SAPgQq7VzirqRGx0xVpkia
+    IsFuAxUtvKzFe502yw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:FVW5YA2iRJ4l6-6aEvi8DGy-dOXy17TT6tfVLK03N4Hb0RZn4VKu8g>
+    <xmx:FVW5YLAZsPvtN18ZwPhBUul2PsMO1NgC1Ex4mVj-HhEuYLXza_GjtQ>
+    <xmx:FVW5YEjUkutjA5TYGDJ6a-6t_a3_9zu1FdRmxDgB735q-gZm4hkPBQ>
+    <xmx:FlW5YHMGvwhS2Xfc4aFRCXzjJLsEN6zIXvE9D9II2fdsqgvYRnWx5j0x4FjxAr4r>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id F0C3351C0060; Thu,  3 Jun 2021 18:17:56 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <b8b39b76-8d07-4e4a-804a-746269787b61@www.fastmail.com>
+In-Reply-To: <3159e1f4-77cd-e071-b6f2-a2bb83cfc69a@linux.intel.com>
+References: <20210603004133.4079390-1-ak@linux.intel.com>
+ <20210603004133.4079390-2-ak@linux.intel.com>
+ <cc5c8265-83f7-aeb1-bc30-3367fe68bc97@kernel.org>
+ <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
+ <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
+ <3159e1f4-77cd-e071-b6f2-a2bb83cfc69a@linux.intel.com>
+Date:   Thu, 03 Jun 2021 15:17:34 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Andi Kleen" <ak@linux.intel.com>, mst@redhat.com
+Cc:     "Jason Wang" <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Static analysis with Coverity on Linux next has found and issue in
-drivers/md/dm.c with the following commit:
 
-commit 2c243153d1d4be4e23735cd10984ac17c7a54531
-Author: Damien Le Moal <damien.lemoal@wdc.com>
-Date:   Wed May 26 06:24:58 2021 +0900
+On Thu, Jun 3, 2021, at 12:53 PM, Andi Kleen wrote:
+>=20
+> > Tell that to every crypto downgrade attack ever.
+>=20
+> That's exactly what this patch addresses.
+>=20
+> >
+> > I see two credible solutions:
+> >
+> > 1. Actually harden the virtio driver.
+> That's exactly what this patchkit, and the alternative approaches, lik=
+e=20
+> Jason's, are doing.
+> >
+> > 2. Have a new virtio-modern driver and use it for modern use cases. =
+Maybe rename the old driver virtio-legacy or virtio-insecure.  They can =
+share code.
+>=20
+> In most use cases the legacy driver is not insecure because there is n=
+o=20
+> memory protection anyways.
+>=20
+> Yes maybe such a split would be a good idea for maintenance and maybe=20=
 
-    dm: Forbid requeue of writes to zones
+> performance reasons, but at least from the security perspective I don'=
+t=20
+> see any need for it.
 
-The analysis is as follows:
 
- 828 static void dec_pending(struct dm_io *io, blk_status_t error)
- 829 {
- 830        unsigned long flags;
- 831        blk_status_t io_error;
+Please reread my email.
 
-    1. var_decl: Declaring variable bio without initializer.
+We do not need an increasing pile of kludges to make TDX and SEV =E2=80=9C=
+secure=E2=80=9D.  We need the actual loaded driver to be secure.  The vi=
+rtio architecture is full of legacy nonsense, and there is no good reaso=
+n for SEV and TDX to be a giant special case.
 
- 832        struct bio *bio;
- 833        struct mapped_device *md = io->md;
- 834
- 835        /* Push-back supersedes any I/O errors */
+As I said before, real PCIe (Thunderbolt/USB-C or anything else) has the=
+ exact same problem.  The fact that TDX has encrypted memory is, at best=
+, a poor proxy for the actual condition.  The actual condition is that t=
+he host does not trust the device to implement the virtio protocol corre=
+ctly.
 
-    2. Condition !!error, taking true branch.
+>=20
+> >
+> > Another snag you may hit: virtio=E2=80=99s heuristic for whether to =
+use proper DMA ops or to bypass them is a giant kludge. I=E2=80=99m very=
+ slightly optimistic that getting the heuristic wrong will make the driv=
+er fail to operate but won=E2=80=99t allow the host to take over the gue=
+st, but I=E2=80=99m not really convinced. And I wrote that code!  A virt=
+io-modern mode probably should not have a heuristic, and the various iom=
+mu-bypassing modes should be fixed to work at the bus level, not the dev=
+ice level
+>=20
+> TDX and SEV use the arch hook to enforce DMA API, so that part is also=
+=20
+> solved.
+>=20
 
- 836        if (unlikely(error)) {
- 837                spin_lock_irqsave(&io->endio_lock, flags);
+Can you point me to the code you=E2=80=99re referring to?
 
-    3. Condition io->status == 11 /* (blk_status_t)11 */, taking false
-branch.
-
- 838                if (!(io->status == BLK_STS_DM_REQUEUE &&
-__noflush_suspending(md)))
- 839                        io->status = error;
- 840                spin_unlock_irqrestore(&io->endio_lock, flags);
- 841        }
- 842
-
-    4. Condition atomic_dec_and_test(&io->io_count), taking true branch.
-
- 843        if (atomic_dec_and_test(&io->io_count)) {
-
-    5. Condition io->status == 11 /* (blk_status_t)11 */, taking true
-branch.
-
- 844                if (io->status == BLK_STS_DM_REQUEUE) {
- 845                        /*
- 846                         * Target requested pushing back the I/O.
- 847                         */
- 848                        spin_lock_irqsave(&md->deferred_lock, flags);
-
-    6. Condition __noflush_suspending(md), taking true branch.
-
- 849                        if (__noflush_suspending(md) &&
-
-Uninitialized pointer read
-    7. uninit_use_in_call: Using uninitialized value bio when calling
-dm_is_zone_write.
-
- 850                            !WARN_ON_ONCE(dm_is_zone_write(md, bio)))
- 851                                /* NOTE early return due to
-BLK_STS_DM_REQUEUE below */
- 852                                bio_list_add_head(&md->deferred,
-io->orig_bio);
-
-The pointer bio is not initialized and yet is being used in the call to
-function dm_is_zone_write where pointer bio is being accessed. I'm not
-sure what the original intent was, but this looks incorrect.
-
-Colin
+>=20
+> -Andi
+>=20
+>=20
