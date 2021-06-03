@@ -2,327 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EFF3999F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 07:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03D43999F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 07:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhFCF1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 01:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhFCF1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 01:27:08 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B5CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 22:25:23 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 5E500806B6;
-        Thu,  3 Jun 2021 17:25:20 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1622697920;
-        bh=x6haR024OvYHKI8eySrrs/NAdfpgdjcvs9Ke2ox1u4E=;
-        h=From:To:Cc:Subject:Date;
-        b=BpMfdZ/7K8LRIPwGzxQ+I+jyh3BMQZ85qhTs+DanVswo7WgmvT7pt+Epsv+MsKCWE
-         nDZiv6xqCF2z4o4FsYJob4nSkmgA6ffxXmAyOi7vpMKTLoq5m1PCIj5IhwlYNzUeE8
-         ncwWHOvp5lTAPZwknZNERSo+hKT+T4Xclt2pDRdtczKidIlDE751zF2GtXzaINE1uu
-         aiCZwyv6zirRKd02tD+fSGnzFutyVj9DmPxpIkl0b7S4actT/bzxp+0LS2AZwSeyAI
-         AlWfnU/NaZNkEy3ErZqFayKhM4851a4Iih4Ob+BTR2uL00kziR8K+6mrY+l0qWJvO+
-         qAKuz57PjZIHw==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60b867c00000>; Thu, 03 Jun 2021 17:25:20 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by pat.atlnz.lc (Postfix) with ESMTP id 298C813ECA5;
-        Thu,  3 Jun 2021 17:25:20 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 229AD283A55; Thu,  3 Jun 2021 17:25:20 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     wsa@kernel.org, rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Richard Laing <richard.laing@alliedtelesis.co.nz>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v3] i2c: bcm-iproc: Add i2c recovery support
-Date:   Thu,  3 Jun 2021 17:25:15 +1200
-Message-Id: <20210603052515.11178-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.31.1
+        id S229738AbhFCF2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 01:28:23 -0400
+Received: from mga03.intel.com ([134.134.136.65]:1953 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229617AbhFCF2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 01:28:22 -0400
+IronPort-SDR: pDF2Qgt8VIL8r1WVzRzTAOFP689hEcAF4upUo/NNkGCrvP0yQm0skJPmfQEL/TCdQUxq2BAXiK
+ EZG29ms/mTOw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="203998012"
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="203998012"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 22:26:37 -0700
+IronPort-SDR: z/Jpcp96KX39tUbaWm1AyeFMJslqbLpHT6Zvc9f9OOcGcKRkXqhdCR5/c86p4Kp+yADxRfdZcw
+ DFTrtcZ/JR+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="438685759"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by orsmga007.jf.intel.com with ESMTP; 02 Jun 2021 22:26:37 -0700
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 2 Jun 2021 22:26:35 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Wed, 2 Jun 2021 22:26:35 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.177)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Wed, 2 Jun 2021 22:26:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NsxzXEkNxNqX+spTiXOCGLcDUHlZX5LlvurTJrfGAzlJkMTBhxqGUFixz0SJMDkfCVOUIyJdVN2kZdzu89H0SemDW0HbBYehnxxp1RL26pD1nwzNn85N+MGwL/RxvLYjtSr5+SZqyRL2hviXpM0ZLjMLdDX5tkWVEktsem+K3g4Ig58B5UiZfzFjxtfOQzbxvvnDNJ55lmMeSWvjBo1BaUZe+hqPkkvFLlupku7mFrgd6lmaHs3Keuc5GoWCWJqIc2epL3CRURyao4K4OOc9l+rPqJL+KHjs3mHdu+DFbmEgL/i1ZyrQMkrcrG79iYaZGaEIu8QaHacwVhskrQM7Pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sI5gCS29aedWXbpqLnOvb8Mtgea6kntxs1PVitOzF/k=;
+ b=M/8Lac3UicJnZSm89X8O38CERLFMLznj488XbDNbiimwyh4h3wC24vFHfLOYDe6KmKL9i3PxrsMwZub8P4q7I7lox/0yWeNekG3G2WCuB+ySPNtKtphLgkUzghKqpFIBGT9YNm6v7QzrL8tuuAW19xp4LFa3/ZgX9uOP/jhsdqAj1F8kYpC/SkHsxg+e4e1D6gTTUhtsaSo9msTwfWZ2CCeHFA5ECdKoDqGTDLfpPgIvGRGz+ZXpQ6eP1ZMw7E0WFR/ZIBoSYRkKsvHwnZ4WRPJi6efaPNLxShbSyP3rgpMkQoYW0LBpEGLU+CzgzE9yvHPIGnv/WVt9ZrGvoBIPrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sI5gCS29aedWXbpqLnOvb8Mtgea6kntxs1PVitOzF/k=;
+ b=uTlQ0JJ+0GBg4hNRr391NVIiufpJuDEY8ZSuLGFJSpxZUHeIUX6HLEzn+Ki7AFc8vsaApJfIgEsqLxNIQqQxn6mRqNQ6uOpxvaskdsWclH6CxtvQ8BKJ62Oy8eK3F3iFFlgFVNRDAqfkdb2Em+tQsekSb2qfxz8lA+ZkSWwxNGQ=
+Received: from DM8PR11MB5670.namprd11.prod.outlook.com (2603:10b6:8:37::12) by
+ DM8PR11MB5670.namprd11.prod.outlook.com (2603:10b6:8:37::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4195.22; Thu, 3 Jun 2021 05:26:33 +0000
+Received: from DM8PR11MB5670.namprd11.prod.outlook.com
+ ([fe80::ccbb:37d7:aba8:2f8e]) by DM8PR11MB5670.namprd11.prod.outlook.com
+ ([fe80::ccbb:37d7:aba8:2f8e%8]) with mapi id 15.20.4195.022; Thu, 3 Jun 2021
+ 05:26:33 +0000
+From:   "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+To:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Andrew Jones <drjones@redhat.com>
+Subject: RE: [PATCH] selftests: kvm: fix overlapping addresses in
+ memslot_perf_test
+Thread-Topic: [PATCH] selftests: kvm: fix overlapping addresses in
+ memslot_perf_test
+Thread-Index: AQHXWAQL6SMHSFvTjkWRmgbneIuUFKsBuTfw
+Date:   Thu, 3 Jun 2021 05:26:33 +0000
+Message-ID: <DM8PR11MB5670B1AA392BF7502501D43B923C9@DM8PR11MB5670.namprd11.prod.outlook.com>
+References: <20210528191134.3740950-1-pbonzini@redhat.com>
+ <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
+ <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
+ <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
+ <68bda0ef-b58f-c335-a0c7-96186cbad535@oracle.com>
+In-Reply-To: <68bda0ef-b58f-c335-a0c7-96186cbad535@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [111.205.14.57]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d0200e69-e94b-4ab7-d346-08d9265026a0
+x-ms-traffictypediagnostic: DM8PR11MB5670:
+x-microsoft-antispam-prvs: <DM8PR11MB567002225C22E6C47953B57D923C9@DM8PR11MB5670.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ePB0VYSxF70VuPbToWQHheGBDcwMlym42ZEinx0oLRNy6zLBOsqE1a53HjvlbFGTwZ8dCNrlku9o51fJA2HP6M+kJBrxdNNYa4R0iRS4DxPfsZOayVvz0zpL6zKem8KZtWYG+yl4Rb5O9ft2whrL4N3GTkRCuXH3O391WyOlQ/VBMHzy/s30hBMwR36aKNwaJbTmytMRSKnwbtzvIq8XZF5A/nftnczF1CjOB2k2xRQwt8FENR8i6g1KwlhlvoGOuk9N8K+pu/o326F0X+yr2Gh6ReVOenUD8U5WNn2NQw0z25+pou8UAz8qH5eDtYSho1RgGT+/848+Askmq7MMTh3P51PcI/fLFQiLRi+NKV1PJsZIyFvphsJP/g1elRfKozD5GAHfqSOpFcZMx1jyLwXyxuNBzmtcRu8f9NolLGFqDULOBM5ozISzLsa6PTeh93s4ri5t+uSfPULtWoGT+5uMZuO1XwtmG1qSJ4jGXXDHQ/bDmMJmjeGiziou2Ea443+lB81bbUGkHq4wUsZx5dH1R1ezlcRN7IkUeBGXIVZO01mmS4sgCiiAhI1B65AIyl0dKa1IsoL6HcExHv4dJ6aq20t2mH+oeitn2E83aS4VK69yBoZqJvUD+c0YYoF6C07fzcdakoD2g7PT4yTeEA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5670.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(346002)(376002)(39860400002)(52536014)(55016002)(8676002)(9686003)(8936002)(478600001)(110136005)(54906003)(83380400001)(76116006)(2906002)(66946007)(66476007)(64756008)(38100700002)(122000001)(5660300002)(66556008)(66446008)(71200400001)(6506007)(316002)(86362001)(186003)(7696005)(4326008)(26005)(53546011)(33656002)(13296009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?emVnNnpkcEY2QUpBU1R2N3dVYzFqWVJ5S01QQmdtYUhmUjhvK0t6WFV0b3Fx?=
+ =?utf-8?B?S01tNjc3YkN1WnVEbG1ETVlrbU0vRytGZDNuZ2s4QjBpZW9nYnlJdGNnaG1t?=
+ =?utf-8?B?TklWZ3JZR24yVTJ1clBCYkJpSGdIRFBIQUhUOVFUQWx4MCtaS2orVXlUN2dQ?=
+ =?utf-8?B?L3MwaWZmNG9rMGpnd20zSUNWSDVtZTBSbXAzN1M5UlcyNWlnU2c5QUkzSzRk?=
+ =?utf-8?B?ZVpmMHhFMXNGdkJiNjVkejdJWTlNbjc0emZQZ0NReGlxODhQVG53YlhrM1Vw?=
+ =?utf-8?B?T3h5REFvaU5kL2hUSk5EMlVIMEIzOVF3VFYra1pCV1lrT2QvNzBtUGl4Y1pE?=
+ =?utf-8?B?WmxtYk5sQ1pseFExMS8vS0JwY1F1b0Z6Ky9UU2JxczVJM21WLzdKRXltbjVs?=
+ =?utf-8?B?VmV3dVdYUXU4bk1vVmFTbVp1a1Fzb3NPUnZ2NUJxRDF1RFg2Ulc5TzFyMHEz?=
+ =?utf-8?B?MVFaS2hCT2ZYVGtyamUvOFFnNG1heUdpRnk3R2FxR3d4QWdseEs5bVN5YTdV?=
+ =?utf-8?B?Y1l0bTRIcGV3VEVyTFliTmdiekZQRkx4SDI3SURqYldTWVdjSVk3aXVUeWwv?=
+ =?utf-8?B?ZlpWalFSczNqa2gwTWEzTGFubWZWSExYYjVwMDk3Mm1VSmVvV3hDMkFLSzQ3?=
+ =?utf-8?B?bzVHejJLMGhXa1F3SnU3dWZiNW44UUVjTzBxRDF0MVB1bFY0N2UwTzcrRE14?=
+ =?utf-8?B?Z2o5NWJQWlFIOUZtY095TCtMMm1DMnk1ekxKQmtyTUtIRDh6aVBJcFRCTEJT?=
+ =?utf-8?B?SllRQUV1MStRbmVVUzhpSU5XR2wzc1UwTnphNTJtREVVUkl3RjJqWDhTTzBz?=
+ =?utf-8?B?YUlZTHl2NVZxck95aVlua1BYZThxT0c2NkxxUjkraUwrbHNWOFBxQThWSXhr?=
+ =?utf-8?B?K1JyN0djLzlLNmlMOVFZTVd1aW8yY3RqaXpUalkrS2oxd1hRM3VpcHFSZDZK?=
+ =?utf-8?B?NWtjVFU3UEV4LzVUdi90SEJPby9NWTZxa1A2M0V3WFE3VldvbUlZVi9YUE5B?=
+ =?utf-8?B?Tkp4RGNXWUIvNUZROEZjdFVWR1R4ejM3Z1AwM1hXYkk1R3NsTUFzY1NaKzg1?=
+ =?utf-8?B?eWVwK0hVTDBTd2tLckNNRzZuRWhPWEZ2ZG1lRHBwZWZuMVlqc1RxbGVRZnkz?=
+ =?utf-8?B?OUxHVlpNZ0dYRU96QXpGeE5ROXA5aFFGREdUdUJLT1lhODhvUEdqVXVpZmIr?=
+ =?utf-8?B?VVRldzh1MEZqWXVNTnhTUHlNd29IK0Jsanpsc2JKdzI3RTlhWlZteEoxanh0?=
+ =?utf-8?B?SEZQbDhjRTU2VDNrM081ZWtiU0FOWmxibkF3ZzQ1NGp1djBUQzc4Tmt6S0dI?=
+ =?utf-8?B?WUNmcjhVbStlM2puSHltcDBoRWNzazE3bUZ6VmdQak5KWjhPRUJTNDFnVEhX?=
+ =?utf-8?B?QW90YjBqT0Q2R2xwQ2tGcmtFdDhkWVd3bVRFU1M2MjdjNjlqTjdWVjUwQkxL?=
+ =?utf-8?B?OWtEOENkT2s4VHBJWnNpTjB3SFM3a1JaQjN6K0ZJdjEvZEUvY04rQ2ZiVUJN?=
+ =?utf-8?B?d3VsMGVaVXFiMkxLbUF2TGRsRXVGOWoxVGtKaGgvTEwvaHE4aWFCNG5zTmlM?=
+ =?utf-8?B?RjBCMis5MHFNMTJLUlh2ZHZTODNmZkdvQ2t3OFhPa2hiZE4yeUEzZ1daWFZI?=
+ =?utf-8?B?SVZGRlJaMXJueDVuNUlkN1ovV2FReFNuWCtadjJUeHd6cnp2TE5ucDgzSU5v?=
+ =?utf-8?B?TXB4TEg1SVoyOTZ6cDNwWnJ3Q2NXc0poM01WWkg1K1RzUzBySi90MnEzQ050?=
+ =?utf-8?Q?OCGGJLCHlyOm83EgzQ=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=WOcBoUkR c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=r6YtysWOX24A:10 a=p0chULUzsp4gKrt3FYkA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5670.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0200e69-e94b-4ab7-d346-08d9265026a0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 05:26:33.3783
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +0rpRLBp4WsnmJLKblV8mgFddiXWq5vc/9Yix0OCOvbksvjaHVayTsScNoTfYAUnMnYZQoyLqepkZ0cE6By1EDr5XXsDPqQdt8FxW001JnI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR11MB5670
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Laing <richard.laing@alliedtelesis.co.nz>
-
-The bcm-iproc controller can put the SDA/SCL lines into bit-bang mode,
-make use of this to support i2c bus recovery.
-
-Signed-off-by: Richard Laing <richard.laing@alliedtelesis.co.nz>
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-Richard did most of the work on this. I'm just cleaning it up to get it
-upstream.
-
-Changes in v3:
-- drop const from bcm_iproc_recovery_info due to build error from the
-  kernel test bot
-
-Changes in v2:
-- Incorporate feedback from Ray Jui
-- Move bcm_iproc_i2c_resume so it can be re-used to return the i2c bus
-  to normal operation at the correct speed after a recovery.
-- Add iproc_i2c_lockup_recover() helper to only trigger recovery if sda
-  is actually stuck
-- Use usleep_range() instead of udelay()
-- Cosmetic changes to register bit definitions
-
- drivers/i2c/busses/i2c-bcm-iproc.c | 176 +++++++++++++++++++++++++----
- 1 file changed, 151 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-=
-bcm-iproc.c
-index cceaf69279a9..fdbb98a848e3 100644
---- a/drivers/i2c/busses/i2c-bcm-iproc.c
-+++ b/drivers/i2c/busses/i2c-bcm-iproc.c
-@@ -25,6 +25,7 @@
- #define CFG_OFFSET                   0x00
- #define CFG_RESET_SHIFT              31
- #define CFG_EN_SHIFT                 30
-+#define CFG_BIT_BANG_SHIFT           29
- #define CFG_SLAVE_ADDR_0_SHIFT       28
- #define CFG_M_RETRY_CNT_SHIFT        16
- #define CFG_M_RETRY_CNT_MASK         0x0f
-@@ -66,6 +67,12 @@
- #define S_FIFO_RX_THLD_SHIFT         8
- #define S_FIFO_RX_THLD_MASK          0x3f
-=20
-+#define M_BB_CTRL_OFFSET             0x14
-+#define M_BB_SMBCLK_IN_SHIFT         31
-+#define M_BB_SMBCLK_OUT_EN_SHIFT     30
-+#define M_BB_SMBDAT_IN_SHIFT         29
-+#define M_BB_SMBDAT_OUT_EN_SHIFT     28
-+
- #define M_CMD_OFFSET                 0x30
- #define M_CMD_START_BUSY_SHIFT       31
- #define M_CMD_STATUS_SHIFT           25
-@@ -713,6 +720,147 @@ static void bcm_iproc_i2c_enable_disable(struct bcm=
-_iproc_i2c_dev *iproc_i2c,
- 	iproc_i2c_wr_reg(iproc_i2c, CFG_OFFSET, val);
- }
-=20
-+static int bcm_iproc_i2c_resume(struct device *dev)
-+{
-+	struct bcm_iproc_i2c_dev *iproc_i2c =3D dev_get_drvdata(dev);
-+	int ret;
-+	u32 val;
-+
-+	/*
-+	 * Power domain could have been shut off completely in system deep
-+	 * sleep, so re-initialize the block here
-+	 */
-+	ret =3D bcm_iproc_i2c_init(iproc_i2c);
-+	if (ret)
-+		return ret;
-+
-+	/* configure to the desired bus speed */
-+	val =3D iproc_i2c_rd_reg(iproc_i2c, TIM_CFG_OFFSET);
-+	val &=3D ~BIT(TIM_CFG_MODE_400_SHIFT);
-+	val |=3D (iproc_i2c->bus_speed =3D=3D I2C_MAX_FAST_MODE_FREQ) << TIM_CF=
-G_MODE_400_SHIFT;
-+	iproc_i2c_wr_reg(iproc_i2c, TIM_CFG_OFFSET, val);
-+
-+	bcm_iproc_i2c_enable_disable(iproc_i2c, true);
-+
-+	return 0;
-+}
-+
-+static void bcm_iproc_i2c_prepare_recovery(struct i2c_adapter *adap)
-+{
-+	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
-+	u32 tmp;
-+
-+	dev_dbg(iproc_i2c->device, "Prepare recovery\n");
-+
-+	/* Disable interrupts */
-+	writel(0, iproc_i2c->base + IE_OFFSET);
-+	readl(iproc_i2c->base + IE_OFFSET);
-+	synchronize_irq(iproc_i2c->irq);
-+
-+	/* Place controller in reset */
-+	tmp =3D readl(iproc_i2c->base + CFG_OFFSET);
-+	tmp |=3D BIT(CFG_RESET_SHIFT);
-+	writel(tmp, iproc_i2c->base + CFG_OFFSET);
-+	usleep_range(100, 200);
-+
-+	/* Switch to bit-bang mode */
-+	tmp =3D readl(iproc_i2c->base + CFG_OFFSET);
-+	tmp |=3D BIT(CFG_BIT_BANG_SHIFT);
-+	writel(tmp, iproc_i2c->base + CFG_OFFSET);
-+	usleep_range(100, 200);
-+}
-+
-+static void bcm_iproc_i2c_unprepare_recovery(struct i2c_adapter *adap)
-+{
-+	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
-+	u32 tmp;
-+
-+	/* Switch to normal mode */
-+	tmp =3D readl(iproc_i2c->base + CFG_OFFSET);
-+	tmp &=3D ~BIT(CFG_BIT_BANG_SHIFT);
-+	writel(tmp, iproc_i2c->base + CFG_OFFSET);
-+	usleep_range(100, 200);
-+
-+	bcm_iproc_i2c_resume(iproc_i2c->device);
-+
-+	dev_dbg(iproc_i2c->device, "Recovery complete\n");
-+}
-+
-+static int bcm_iproc_i2c_get_scl(struct i2c_adapter *adap)
-+{
-+	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
-+	u32 tmp;
-+
-+	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
-+
-+	return !!(tmp & BIT(M_BB_SMBCLK_IN_SHIFT));
-+}
-+
-+static void bcm_iproc_i2c_set_scl(struct i2c_adapter *adap, int val)
-+{
-+	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
-+	u32 tmp;
-+
-+	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
-+	if (val)
-+		tmp |=3D BIT(M_BB_SMBCLK_OUT_EN_SHIFT);
-+	else
-+		tmp &=3D ~BIT(M_BB_SMBCLK_OUT_EN_SHIFT);
-+
-+	writel(tmp, iproc_i2c->base + M_BB_CTRL_OFFSET);
-+}
-+
-+static void bcm_iproc_i2c_set_sda(struct i2c_adapter *adap, int val)
-+{
-+	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
-+	u32 tmp;
-+
-+	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
-+	if (val)
-+		tmp |=3D BIT(M_BB_SMBDAT_OUT_EN_SHIFT);
-+	else
-+		tmp &=3D ~BIT(M_BB_SMBDAT_OUT_EN_SHIFT);
-+
-+	writel(tmp, iproc_i2c->base + M_BB_CTRL_OFFSET);
-+}
-+
-+static int bcm_iproc_i2c_get_sda(struct i2c_adapter *adap)
-+{
-+	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
-+	u32 tmp;
-+
-+	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
-+
-+	return !!(tmp & BIT(M_BB_SMBDAT_IN_SHIFT));
-+}
-+
-+/* Check if bus lockup occurred, and invoke recovery if so. */
-+static void iproc_i2c_lockup_recover(struct bcm_iproc_i2c_dev *iproc_i2c=
-)
-+{
-+	/*
-+	 * assume bus lockup if SDA line is low;
-+	 * note that there is no need to switch to
-+	 * bit-bang mode for this check.
-+	 */
-+	if (!bcm_iproc_i2c_get_sda(&iproc_i2c->adapter)) {
-+		/* locked up - invoke i2c bus recovery. */
-+		int ret =3D i2c_recover_bus(&iproc_i2c->adapter);
-+
-+		if (ret)
-+			dev_err(iproc_i2c->device, "bus recovery: error %d\n", ret);
-+	}
-+}
-+
-+static struct i2c_bus_recovery_info bcm_iproc_recovery_info =3D {
-+	.recover_bus =3D i2c_generic_scl_recovery,
-+	.prepare_recovery =3D bcm_iproc_i2c_prepare_recovery,
-+	.unprepare_recovery =3D bcm_iproc_i2c_unprepare_recovery,
-+	.set_scl =3D bcm_iproc_i2c_set_scl,
-+	.get_scl =3D bcm_iproc_i2c_get_scl,
-+	.set_sda =3D bcm_iproc_i2c_set_sda,
-+	.get_sda =3D bcm_iproc_i2c_get_sda,
-+};
-+
- static int bcm_iproc_i2c_check_status(struct bcm_iproc_i2c_dev *iproc_i2=
-c,
- 				      struct i2c_msg *msg)
- {
-@@ -806,6 +954,7 @@ static int bcm_iproc_i2c_xfer_wait(struct bcm_iproc_i=
-2c_dev *iproc_i2c,
- 		/* flush both TX/RX FIFOs */
- 		val =3D BIT(M_FIFO_RX_FLUSH_SHIFT) | BIT(M_FIFO_TX_FLUSH_SHIFT);
- 		iproc_i2c_wr_reg(iproc_i2c, M_FIFO_CTRL_OFFSET, val);
-+		iproc_i2c_lockup_recover(iproc_i2c);
- 		return -ETIMEDOUT;
- 	}
-=20
-@@ -814,6 +963,7 @@ static int bcm_iproc_i2c_xfer_wait(struct bcm_iproc_i=
-2c_dev *iproc_i2c,
- 		/* flush both TX/RX FIFOs */
- 		val =3D BIT(M_FIFO_RX_FLUSH_SHIFT) | BIT(M_FIFO_TX_FLUSH_SHIFT);
- 		iproc_i2c_wr_reg(iproc_i2c, M_FIFO_CTRL_OFFSET, val);
-+		iproc_i2c_lockup_recover(iproc_i2c);
- 		return ret;
- 	}
-=20
-@@ -1111,6 +1261,7 @@ static int bcm_iproc_i2c_probe(struct platform_devi=
-ce *pdev)
- 		of_node_full_name(iproc_i2c->device->of_node));
- 	adap->algo =3D &bcm_iproc_algo;
- 	adap->quirks =3D &bcm_iproc_i2c_quirks;
-+	adap->bus_recovery_info =3D &bcm_iproc_recovery_info;
- 	adap->dev.parent =3D &pdev->dev;
- 	adap->dev.of_node =3D pdev->dev.of_node;
-=20
-@@ -1159,31 +1310,6 @@ static int bcm_iproc_i2c_suspend(struct device *de=
-v)
- 	return 0;
- }
-=20
--static int bcm_iproc_i2c_resume(struct device *dev)
--{
--	struct bcm_iproc_i2c_dev *iproc_i2c =3D dev_get_drvdata(dev);
--	int ret;
--	u32 val;
--
--	/*
--	 * Power domain could have been shut off completely in system deep
--	 * sleep, so re-initialize the block here
--	 */
--	ret =3D bcm_iproc_i2c_init(iproc_i2c);
--	if (ret)
--		return ret;
--
--	/* configure to the desired bus speed */
--	val =3D iproc_i2c_rd_reg(iproc_i2c, TIM_CFG_OFFSET);
--	val &=3D ~BIT(TIM_CFG_MODE_400_SHIFT);
--	val |=3D (iproc_i2c->bus_speed =3D=3D I2C_MAX_FAST_MODE_FREQ) << TIM_CF=
-G_MODE_400_SHIFT;
--	iproc_i2c_wr_reg(iproc_i2c, TIM_CFG_OFFSET, val);
--
--	bcm_iproc_i2c_enable_disable(iproc_i2c, true);
--
--	return 0;
--}
--
- static const struct dev_pm_ops bcm_iproc_i2c_pm_ops =3D {
- 	.suspend_late =3D &bcm_iproc_i2c_suspend,
- 	.resume_early =3D &bcm_iproc_i2c_resume
---=20
-2.31.1
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYWNpZWogUy4gU3ptaWdpZXJv
+IDxtYWNpZWouc3ptaWdpZXJvQG9yYWNsZS5jb20+DQo+IFNlbnQ6IFRodXJzZGF5LCBKdW5lIDMs
+IDIwMjEgNzowNyBBTQ0KPiBUbzogUGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT47
+IER1YW4sIFpoZW56aG9uZw0KPiA8emhlbnpob25nLmR1YW5AaW50ZWwuY29tPg0KPiBDYzogbGlu
+dXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsga3ZtQHZnZXIua2VybmVsLm9yZzsgQW5kcmV3IEpv
+bmVzDQo+IDxkcmpvbmVzQHJlZGhhdC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHNlbGZ0
+ZXN0czoga3ZtOiBmaXggb3ZlcmxhcHBpbmcgYWRkcmVzc2VzIGluDQo+IG1lbXNsb3RfcGVyZl90
+ZXN0DQo+IA0KPiBPbiAzMC4wNS4yMDIxIDAxOjEzLCBNYWNpZWogUy4gU3ptaWdpZXJvIHdyb3Rl
+Og0KPiA+IE9uIDI5LjA1LjIwMjEgMTI6MjAsIFBhb2xvIEJvbnppbmkgd3JvdGU6DQo+ID4+IE9u
+IDI4LzA1LzIxIDIxOjUxLCBNYWNpZWogUy4gU3ptaWdpZXJvIHdyb3RlOg0KPiA+Pj4gT24gMjgu
+MDUuMjAyMSAyMToxMSwgUGFvbG8gQm9uemluaSB3cm90ZToNCj4gPj4+PiBUaGUgbWVtb3J5IHRo
+YXQgaXMgYWxsb2NhdGVkIGluIHZtX2NyZWF0ZSBpcyBhbHJlYWR5IG1hcHBlZCBjbG9zZQ0KPiA+
+Pj4+IHRvIEdQQSAwLCBiZWNhdXNlIHRlc3RfZXhlY3V0ZSBwYXNzZXMgdGhlIHJlcXVlc3RlZCBt
+ZW1vcnkgdG8NCj4gPj4+PiBwcmVwYXJlX3ZtLsKgIFRoaXMgY2F1c2VzIG92ZXJsYXBwaW5nIG1l
+bW9yeSByZWdpb25zIGFuZCB0aGUgdGVzdA0KPiA+Pj4+IGNyYXNoZXMuwqAgRm9yIHNpbXBsaWNp
+dHkganVzdCBtb3ZlIE1FTV9HUEEgaGlnaGVyLg0KPiA+Pj4+DQo+ID4+Pj4gU2lnbmVkLW9mZi1i
+eTogUGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT4NCj4gPj4+DQo+ID4+PiBJIGFt
+IG5vdCBzdXJlIHRoYXQgSSB1bmRlcnN0YW5kIHRoZSBpc3N1ZSBjb3JyZWN0bHksIGlzDQo+ID4+
+PiB2bV9jcmVhdGVfZGVmYXVsdCgpIGFscmVhZHkgcmVzZXJ2aW5nIGxvdyBHUEFzIChhcm91bmQg
+MHgxMDAwMDAwMCkNCj4gPj4+IG9uIHNvbWUgYXJjaGVzIG9yIHJ1biBlbnZpcm9ubWVudHM/DQo+
+ID4+DQo+ID4+IEl0IG1hcHMgdGhlIG51bWJlciBvZiBwYWdlcyB5b3UgcGFzcyBpbiB0aGUgc2Vj
+b25kIGFyZ3VtZW50LCBzZWUNCj4gPj4gdm1fY3JlYXRlLg0KPiA+Pg0KPiA+PiDCoMKgIGlmIChw
+aHlfcGFnZXMgIT0gMCkNCj4gPj4gwqDCoMKgwqAgdm1fdXNlcnNwYWNlX21lbV9yZWdpb25fYWRk
+KHZtLCBWTV9NRU1fU1JDX0FOT05ZTU9VUywNCj4gPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwLCAwLCBwaHlfcGFnZXMs
+IDApOw0KPiA+Pg0KPiA+PiBJbiB0aGlzIGNhc2U6DQo+ID4+DQo+ID4+IMKgwqAgZGF0YS0+dm0g
+PSB2bV9jcmVhdGVfZGVmYXVsdChWQ1BVX0lELCBtZW1wYWdlcywgZ3Vlc3RfY29kZSk7DQo+ID4+
+DQo+ID4+IGNhbGxlZCBoZXJlOg0KPiA+Pg0KPiA+PiDCoMKgIGlmICghcHJlcGFyZV92bShkYXRh
+LCBuc2xvdHMsIG1heHNsb3RzLCB0ZGF0YS0+Z3Vlc3RfY29kZSwNCj4gPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1lbV9zaXplLCBzbG90X3J1bnRpbWUpKSB7DQo+ID4+
+DQo+ID4+IHdoZXJlIG1lbXBhZ2VzIGlzIG1lbV9zaXplLCB3aGljaCBpcyBkZWNsYXJlZCBhczoN
+Cj4gPj4NCj4gPj4gwqDCoMKgwqDCoMKgwqDCoCB1aW50NjRfdCBtZW1fc2l6ZSA9IHRkYXRhLT5t
+ZW1fc2l6ZSA/IDogTUVNX1NJWkVfUEFHRVM7DQo+ID4+DQo+ID4+IGJ1dCBhY3R1YWxseSBhIGJl
+dHRlciBmaXggaXMganVzdCB0byBwYXNzIGEgc21hbGwgZml4ZWQgdmFsdWUgKGUuZy4NCj4gPj4g
+MTAyNCkgdG8gdm1fY3JlYXRlX2RlZmF1bHQsIHNpbmNlIGFsbCBvdGhlciByZWdpb25zIGFyZSBh
+ZGRlZCBieSBoYW5kDQo+ID4NCj4gPiBZZXMsIGJ1dCB0aGUgYXJndW1lbnQgdGhhdCBpcyBwYXNz
+ZWQgdG8gdm1fY3JlYXRlX2RlZmF1bHQoKSAobWVtX3NpemUNCj4gPiBpbiB0aGUgY2FzZSBvZiB0
+aGUgdGVzdCkgaXMgbm90IHBhc3NlZCBhcyBwaHlfcGFnZXMgdG8gdm1fY3JlYXRlKCkuDQo+ID4g
+UmF0aGVyLCB2bV9jcmVhdGVfd2l0aF92Y3B1cygpIGNhbGN1bGF0ZXMgc29tZSB1cHBlciBib3Vu
+ZCBvZiBleHRyYQ0KPiA+IG1lbW9yeSB0aGF0IGlzIG5lZWRlZCB0byBjb3ZlciB0aGF0IG11Y2gg
+Z3Vlc3QgbWVtb3J5IChpbmNsdWRpbmcgZm9yDQo+ID4gaXRzIHBhZ2UgdGFibGVzKS4NCj4gPg0K
+PiA+IFRoZSBiaWdnZXN0IHBvc3NpYmxlIG1lbV9zaXplIGZyb20gbWVtc2xvdF9wZXJmX3Rlc3Qg
+aXMgNTEyIE1pQiArIDENCj4gPiBwYWdlLCBhY2NvcmRpbmcgdG8gbXkgY2FsY3VsYXRpb25zIHRo
+aXMgcmVzdWx0cyBpbiBwaHlfcGFnZXMgb2YgMTAyOQ0KPiA+ICh+NCBNaUIpIGluIHRoZSB4ODYt
+NjQgY2FzZSBhbmQgYXJvdW5kIDE1NDAgKH42IE1pQikgaW4gdGhlIHMzOTB4IGNhc2UNCj4gPiAo
+aGVyZSBJIGFtIG5vdCBzdXJlIGFib3V0IHRoZSBleGFjdCBudW1iZXIsIHNpbmNlIHMzOTB4IGhh
+cyBzb21lDQo+ID4gYWRkaXRpb25hbCBhbGlnbm1lbnQgcmVxdWlyZW1lbnRzKS4NCj4gPg0KPiA+
+IEJvdGggdmFsdWVzIGFyZSB3ZWxsIGJlbG93IDI1NiBNaUIgKDB4MTAwMDAwMDBVTCksIHNvIEkg
+d2FzIHdvbmRlcmluZw0KPiA+IHdoYXQga2luZCBvZiBjaXJjdW1zdGFuY2VzIGNhbiBtYWtlIHRo
+ZXNlIGFsbG9jYXRpb25zIGNvbGxpZGUgKG1heWJlIEkNCj4gPiBhbSBtaXNzaW5nIHNvbWV0aGlu
+ZyBpbiBteSBhbmFseXNpcykuDQo+IA0KPiBJIHNlZSBub3cgdGhhdCB0aGVyZSBoYXMgYmVlbiBh
+IHBhdGNoIG1lcmdlZCBsYXN0IHdlZWsgY2FsbGVkDQo+ICJzZWxmdGVzdHM6IGt2bTogbWFrZSBh
+bGxvY2F0aW9uIG9mIGV4dHJhIG1lbW9yeSB0YWtlIGVmZmVjdCIgYnkgWmhlbnpob25nDQo+IHRo
+YXQgbm93IGFsbG9jYXRlcyBhbHNvIHRoZSB3aG9sZSBtZW1vcnkgc2l6ZSBwYXNzZWQgdG8NCj4g
+dm1fY3JlYXRlX2RlZmF1bHQoKSAoaW5zdGVhZCBvZiBqdXN0IHBhZ2UgdGFibGVzIGZvciB0aGF0
+IG11Y2ggbWVtb3J5KS4NCj4gDQo+IFRoZSBjb21taXQgbWVzc2FnZSBvZiB0aGlzIHBhdGNoIHNh
+eXMgdGhhdCAicGVyZl90ZXN0X3V0aWwgYW5kDQo+IGt2bV9wYWdlX3RhYmxlX3Rlc3QgdXNlIGl0
+IHRvIGFsbG9jIGV4dHJhIG1lbW9yeSBjdXJyZW50bHkiLCBob3dldmVyIGJvdGgNCj4ga3ZtX3Bh
+Z2VfdGFibGVfdGVzdCBhbmQgbGliL3BlcmZfdGVzdF91dGlsIGZyYW1ld29yayBleHBsaWNpdGx5
+IGFkZCB0aGUNCj4gcmVxdWlyZWQgbWVtb3J5IGFsbG9jYXRpb24gYnkgZG9pbmcgYSB2bV91c2Vy
+c3BhY2VfbWVtX3JlZ2lvbl9hZGQoKQ0KPiBjYWxsIGZvciB0aGUgc2FtZSBtZW1vcnkgc2l6ZSB0
+aGF0IHRoZXkgcGFzcyB0byB2bV9jcmVhdGVfZGVmYXVsdCgpLg0KPiANCj4gU28gbm93IHRoZXkg
+YWxsb2NhdGUgdGhpcyBtZW1vcnkgdHdpY2UuDQo+IA0KPiBAWmhlbnpob25nOiBkaWQgeW91IG5v
+dGljZSBpbXByb3BlciBvcGVyYXRpb24gb2YgZWl0aGVyDQo+IGt2bV9wYWdlX3RhYmxlX3Rlc3Qg
+b3IgcGVyZl90ZXN0X3V0aWwtYmFzZWQgdGVzdHMgKGRlbWFuZF9wYWdpbmdfdGVzdCwNCj4gZGly
+dHlfbG9nX3BlcmZfdGVzdCwNCj4gbWVtc2xvdF9tb2RpZmljYXRpb25fc3RyZXNzX3Rlc3QpIGJl
+Zm9yZSB5b3VyIHBhdGNoPw0KTm8NCg0KPiANCj4gVGhleSBzZWVtIHRvIHdvcmsgZmluZSBmb3Ig
+bWUgd2l0aG91dCB0aGUgcGF0Y2ggKGFuZCBJIGd1ZXNzIG90aGVyIHBlb3BsZQ0KPiB3b3VsZCBo
+YXZlIG5vdGljZWQgZWFybGllciwgdG9vLCBpZiB0aGV5IHdlcmUgYnJva2VuKS4NCj4gDQo+IEFm
+dGVyIHRoaXMgcGF0Y2ggbm90IG9ubHkgdGhlc2UgdGVzdHMgYWxsb2NhdGUgdGhlaXIgbWVtb3J5
+IHR3aWNlIGJ1dCBpdCBpcw0KPiBoYXJkZXIgdG8gbWFrZSB2bV9jcmVhdGVfZGVmYXVsdCgpIGFs
+bG9jYXRlIHRoZSByaWdodCBhbW91bnQgb2YgbWVtb3J5IGZvcg0KPiB0aGUgcGFnZSB0YWJsZXMg
+aW4gY2FzZXMgd2hlcmUgdGhlIHRlc3QgbmVlZHMgdG8gZXhwbGljaXRseSB1c2UNCj4gdm1fdXNl
+cnNwYWNlX21lbV9yZWdpb25fYWRkKCkgZm9yIGl0cyBhbGxvY2F0aW9ucyAoYmVjYXVzZSBpdCB3
+YW50cyB0aGUNCj4gYWxsb2NhdGlvbiBwbGFjZWQgYXQgYSBzcGVjaWZpYyBHUEEgb3IgaW4gYSBz
+cGVjaWZpYyBtZW1zbG90KS4NCj4gDQo+IE9uZSBoYXMgdG8gYmFzaWNhbGx5IG9wZW4tY29kZSB0
+aGUgcGFnZSB0YWJsZSBzaXplIGNhbGN1bGF0aW9ucyBmcm9tDQo+IHZtX2NyZWF0ZV93aXRoX3Zj
+cHVzKCkgaW4gdGhlIHBhcnRpY3VsYXIgdGVzdCB0aGVuLCB0YWtpbmcgYWxzbyBpbnRvIGFjY291
+bnQNCj4gdGhhdCB2bV9jcmVhdGVfd2l0aF92Y3B1cygpIHdpbGwgbm90IG9ubHkgYWxsb2NhdGUg
+dGhlIHBhc3NlZCBtZW1vcnkgc2l6ZQ0KPiAoY2FsY3VsYXRlZCBwYWdlIHRhYmxlcyBzaXplKSBi
+dXQgYWxzbyBiZWhhdmUgbGlrZSBpdCB3YXMgYWxsb2NhdGluZyBzcGFjZSBmb3INCj4gcGFnZSB0
+YWJsZXMgZm9yIHRoZXNlIHBhZ2UgdGFibGVzIChldmVuIHRob3VnaCB0aGUgcGFzc2VkIG1lbW9y
+eSBzaXplIGl0c2VsZg0KPiBpcyBzdXBwb3NlZCB0byBjb3ZlciB0aGVtKS4NCkxvb2tzIHdlIGhh
+dmUgZGlmZmVyZW50IHVuZGVyc3RhbmRpbmcgdG8gdGhlIHBhcmFtZXRlciBleHRyYV9tZW1fcGFn
+ZXMgb2Ygdm1fY3JlYXRlX2RlZmF1bHQoKS4NCg0KSW4geW91ciB1c2FnZSwgZXh0cmFfbWVtX3Bh
+Z2VzIGlzIG9ubHkgdXNlZCBmb3IgcGFnZSB0YWJsZSBjYWxjdWxhdGlvbnMsIHJlYWwgZXh0cmEg
+bWVtb3J5IGFsbG9jYXRpb24NCmhhcHBlbnMgaW4gdGhlIGV4dHJhIGNhbGwgb2Ygdm1fdXNlcnNw
+YWNlX21lbV9yZWdpb25fYWRkKCkuDQoNCkluIG15IHVuZGVyc3RhbmRpbmcsIGV4dHJhX21lbV9w
+YWdlcyBpcyB1c2VkIGZvciBhIFZNIHdobyB3YW50cyBhIGN1c3RvbSBtZW1vcnkgc2l6ZSBpbiBz
+bG90MCwgDQpyYXRoZXIgdGhhbiB0aGUgZGVmYXVsdCBERUZBVUxUX0dVRVNUX1BIWV9QQUdFUyBz
+aXplLg0KDQpJIHVuZGVyc3Rvb2QgeW91ciBjb21tZW50cyBhbmQgZG8gYWdyZWUgdGhhdCBteSBw
+YXRjaCBicmluZyBzb21lIHRyb3VibGUgdG8geW91ciBjb2RlLCBzb3JyeSBmb3IgdGhhdC4NCkkn
+bSBmaW5lIHRvIHJldmVydCB0aGF0IHBhdGNoIGFuZCBJIHRoaW5rIGl0J3MgYmV0dGVyIHRvIGxl
+dCB0aGUgbWFpbnRhaW5lcnMgdG8gZGVjaWRlIHdoYXQgZXh0cmFfbWVtX3BhZ2VzDQpJcyB1c2Vk
+IGZvci4NCg0KVGhhbmtzDQpaaGVuemhvbmcNCj4gDQo+IER1ZSB0byB0aGUgYWJvdmUsIEkgc3Vz
+cGVjdCB0aGUgcHJldmlvdXMgYmVoYXZpb3Igd2FzLCBpbiBmYWN0LCBjb3JyZWN0Lg0KPiANCj4g
+VGhhbmtzLA0KPiBNYWNpZWoNCg==
