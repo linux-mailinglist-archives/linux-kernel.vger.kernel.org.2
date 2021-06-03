@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2797039A156
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673E239A159
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhFCMp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFCMp7 (ORCPT
+        id S230504AbhFCMqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:46:35 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16518 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229966AbhFCMqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:45:59 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41846C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 05:44:01 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id s6so6921494edu.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 05:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cY9zsFfpkOdR2m3AOTwm913YpwUGVvMqfshNZL/oNro=;
-        b=ehJK2oqClwfwtPNWL3C/udY8/MUItvfUJBoviT3cYLfq6G2mtv9TEVs3HemnjwAwI/
-         fIFvncpFhm6mYn2Vr9bPwhM8bRpd/KNOuRG2xT+V+w1x60i4kzHyTqlrPQbto0JGDlX2
-         yyHfFYdq0M4W0wyfIH/YSknyjESbejfEB1rTFKrzIwZ5cDntwoHY9heKaq3DJynSmhZO
-         Cx0ZvetdLYPJvt+rIbmT+Hxn38TUrYkm82c26FzgaLLiqtsF3TzFTB6lQr7ZCsLR6G0u
-         0/s7nVJH5ljgzpB2z5ge8EWWcIZZh1Yd2uMYiicTonE95MQb0e3qrDTtZNzAkvRCGtii
-         BpuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=cY9zsFfpkOdR2m3AOTwm913YpwUGVvMqfshNZL/oNro=;
-        b=SaMEJXNxa9RpgItJGVtSqvmkKuh679HH2EA61KG+RRKiY9we7nUjy2VjhH675kM9CJ
-         M4EV39tKpuTgJj9azav3IfILj79gjiMZtR6s6XH1NsDm/gaz8ewztzCCra4UaVvUg0T+
-         v//3H85Q3Hvdril94TSZKD3hR0ObGEJcwnr+1WGpKuj47d0RX4fOixeAItIDQTfMKFea
-         BdhvTnflzx/88ltXerQI/LprKkT/imH6DC4Y9lXWZxzgf/C062qdEuQsqYXNrC2zmlyM
-         SgUYFPzpxEZiSQE0d9DNUrTQdBLg2PQWUUOToeA80hEfgYgjrpPVRggdlZ2/98ikqnbm
-         6x/Q==
-X-Gm-Message-State: AOAM5312kyIUYyuLOaNiEXZxMC7gi7wBM6LQDr8fUweau9BKPAGK6eML
-        1m4tc/lzKv05pwzQ6TRe0qI=
-X-Google-Smtp-Source: ABdhPJwyw283p6k0/iEi/b4DUjUwM2Ookyr34sYBt8ImWPf8DrNwCKl+dPuAhXTE8JGc04dUfXIZvg==
-X-Received: by 2002:a50:ee18:: with SMTP id g24mr14705617eds.11.1622724239786;
-        Thu, 03 Jun 2021 05:43:59 -0700 (PDT)
-Received: from gmail.com (563BAF3B.dsl.pool.telekom.hu. [86.59.175.59])
-        by smtp.gmail.com with ESMTPSA id f18sm1476331ejz.119.2021.06.03.05.43.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 05:43:59 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 3 Jun 2021 14:43:57 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: kbuild: Ctrl-C of parallel kernel build sometimes corrupts
- .o.cmd files permanently
-Message-ID: <YLjOjZVetM4UbUPn@gmail.com>
-References: <YLeot94yAaM4xbMY@gmail.com>
- <CAK7LNAR54mOqEcUTUmEUfVAwA6XrGLr2J_3+v6fdys9tBLe28w@mail.gmail.com>
- <YLjNa7vaYOfVhBFm@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLjNa7vaYOfVhBFm@gmail.com>
+        Thu, 3 Jun 2021 08:46:34 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 153Cb2UZ043771;
+        Thu, 3 Jun 2021 08:44:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=oGrl/dxatTV8oTyTC4Z4yYBQXQWCw7AGoOuMKI4J2eE=;
+ b=BQOpPFkDuot4FJ+wlGbim3wAZ84W+l+VFxYGGVzLr/Kkpr0sEH8ICnnTJgBnDY8XpXMa
+ oCWG2SNCzgA1cTyEJVYhvxhiwOVOpKJzNXznf+YS2aaQ5ssDOUOTOCt8klTPD1Ahmf+X
+ aGpCqFGohZthBYVWcXdXRulw0JHNQ6oq6J2FjniZvaNuFqSN2V8OcblUl5myNUaiHS0w
+ LfNOuzDoI895/Z6ILwfSW2OhmohfP5o9LJd9desS6rcwtU6YCDshnRCCyAtWMc7rtYAi
+ A5hUfjTGygQmIraJg9eDCrn4Q3/g59psuiP/lg3G+89ZFS/EHo6Z180z9w9OisLnEZI/ DA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38xy85872v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Jun 2021 08:44:42 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 153Cd6Sv012236;
+        Thu, 3 Jun 2021 12:44:40 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 38ucvh9nbx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Jun 2021 12:44:40 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 153Ci3dD33685930
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Jun 2021 12:44:03 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E165611C058;
+        Thu,  3 Jun 2021 12:44:37 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1312411C04A;
+        Thu,  3 Jun 2021 12:44:36 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.13.122])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Jun 2021 12:44:35 +0000 (GMT)
+Message-ID: <9e5f5ddca94fb1915fb15302e2b7b5f2bf4a68a7.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 6/7] ima: Define new template evm-sig
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@srcf.ucam.org
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 03 Jun 2021 08:44:35 -0400
+In-Reply-To: <20210528073812.407936-7-roberto.sassu@huawei.com>
+References: <20210528073812.407936-1-roberto.sassu@huawei.com>
+         <20210528073812.407936-7-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: K_vGcFicJc80uRntXPnB2i8tkMIQCBxf
+X-Proofpoint-ORIG-GUID: K_vGcFicJc80uRntXPnB2i8tkMIQCBxf
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-03_08:2021-06-02,2021-06-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 clxscore=1015 phishscore=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106030085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Ingo Molnar <mingo@kernel.org> wrote:
-
-> >   CC      security/keys/keyctl_pkey.o
-> >   CC      kernel/sys.o
-> >   CC      arch/x86/power/hibernate_64.o
-> > ^Cmake[5]: *** Deleting file 'drivers/video/fbdev/core/fbcmap.o'  <---- Deleting
-> > make[5]: *** [scripts/Makefile.build:272:
-> > drivers/video/fbdev/core/fbmon.o] Interrupt
-> > make[3]: *** [scripts/Makefile.build:272: security/selinux/nlmsgtab.o] Interrupt
-> > make[2]: *** [scripts/Makefile.build:272: arch/x86/power/cpu.o] Interrupt
-> > make[2]: *** [scripts/Makefile.build:272:
+On Fri, 2021-05-28 at 09:38 +0200, Roberto Sassu wrote:
+> With the recent introduction of the evmsig template field, remote verifiers
+> can obtain the EVM portable signature instead of the IMA signature, to
+> verify file metadata.
 > 
-> Interestingly I don't get *any* interruption messages at all:
+> After introducing the new fields to include file metadata in the
+> measurement list, this patch finally defines the evm-sig template, whose
+> format is:
 > 
->   CC      drivers/dma/dw/acpi.o
->   CC      sound/pci/ice1712/ice1712.o
->   CC      drivers/char/ipmi/ipmi_watchdog.o
->   CC      fs/overlayfs/export.o
->   CC      fs/nls/nls_cp936.o
->   CC      drivers/char/ipmi/ipmi_poweroff.o
->  ^Ckepler:~/tip> 
+> d-ng|n-ng|evmsig|xattrnames|xattrlengths|xattrvalues|iuid|igid|imode
 > 
-> The '^C' there - it just stops, make never prints anything for me.
+> xattrnames, xattrlengths and xattrvalues are populated only from defined
+> EVM protected xattrs, i.e. the ones that EVM considers to verify the
+> portable signature. xattrnames and xattrlengths are populated only if the
+> xattr is present.
+> 
+> xattrnames and xattrlengths are not necessary for verifying the EVM
+> portable signature, but they are included for completeness of information,
+> if a remote verifier wants to infer more from file metadata.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  Documentation/security/IMA-templates.rst | 1 +
+>  security/integrity/ima/ima_template.c    | 3 +++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/security/IMA-templates.rst b/Documentation/security/IMA-templates.rst
+> index 6a58760a0a35..5adc22f99496 100644
+> --- a/Documentation/security/IMA-templates.rst
+> +++ b/Documentation/security/IMA-templates.rst
+> @@ -91,6 +91,7 @@ Below, there is the list of defined template descriptors:
+>   - "ima-sig": its format is ``d-ng|n-ng|sig``;
+>   - "ima-buf": its format is ``d-ng|n-ng|buf``;
+>   - "ima-modsig": its format is ``d-ng|n-ng|sig|d-modsig|modsig``;
+> + - "evm-sig": its format is ``d-ng|n-ng|evmsig|xattrnames|xattrlengths|xattrvalues|iuid|igid|imode``;
+>  
+>  
+>  Use
+> diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
+> index 159a31d2fcdf..be435efe6122 100644
+> --- a/security/integrity/ima/ima_template.c
+> +++ b/security/integrity/ima/ima_template.c
+> @@ -22,6 +22,9 @@ static struct ima_template_desc builtin_templates[] = {
+>  	{.name = "ima-sig", .fmt = "d-ng|n-ng|sig"},
+>  	{.name = "ima-buf", .fmt = "d-ng|n-ng|buf"},
+>  	{.name = "ima-modsig", .fmt = "d-ng|n-ng|sig|d-modsig|modsig"},
+> +	{.name = "evm-sig",
+> +	 .fmt = "d-ng|n-ng|evmsig|"
+> +		"xattrnames|xattrlengths|xattrvalues|iuid|igid|imode"},
 
-Found something - seems to be related whether the build is going into a 
-pipe or not.
+checkpatch is complaining "WARNING: quoted string split across lines".
 
+>  	{.name = "", .fmt = ""},	/* placeholder for a custom format */
+>  };
+>  
 
-I usually build this way (directly or via a script):
+The MAX_TEMPLATE_NAME_LEN needs to be updated.
 
-   make -j96 bzImage ARCH=x86 2>&1 | tee e
+thanks,
 
-Ctrl-C interruption is not handled by kbuild in this case:
+Mimi
 
-  CC      fs/jffs2/xattr_trusted.o
-  CC      sound/firewire/motu/motu-transaction.o
-  CC      sound/usb/clock.o
-  ^Ckepler:~/tip> 
-
-Immediate prompt - no cleanup sequence.
-
-But if I do it without 'tee', I get the expected cleanup sequence by make:
-
-  kepler:~/tip> make -j96 bzImage ARCH=x86 2>&1
-
-  CC      fs/jffs2/acl.o
-  CC      sound/pci/echoaudio/mona.o
-  CC      fs/nls/nls_iso8859-9.o
-  ^Cmake[2]: *** Deleting file 'drivers/reset/core.o'
-    make[3]: *** Deleting file 'sound/pci/mixart/mixart.o'
-    make[3]: *** Deleting file 'sound/pci/emu10k1/voice.o'
-    make[2]: *** Deleting file 'fs/gfs2/aops.o'
-
-Thanks,
-
-	Ingo
