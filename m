@@ -2,1115 +2,927 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A786399D1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD280399D26
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhFCIwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:52:22 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51709 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229754AbhFCIwT (ORCPT
+        id S229907AbhFCIxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhFCIxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:52:19 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 649F1580F12;
-        Thu,  3 Jun 2021 04:50:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 03 Jun 2021 04:50:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=aHTLORIJnWP6g
-        XjyjoxcNazEa1yBNVAq2jyuIskc8tU=; b=cXnbugboHoNYufAxIMD0Arnq4BzXp
-        5MfcpmFbttJdy+7JpIcv3d6shl5uxdcdMK7ZOMR1UsRYYmYq+pqxiQ5usLD/y77o
-        DxoLmjEKDiObMGqc7viI7HjstAK4q7yoADz2mwyytey5vXio/NgP7ec+xQ/ZRedj
-        n22H8std4yv4PuOEib5AYnmawkFcWUS+fTGl9G1lhNwWjKhbVbXj1Z831ddace6E
-        Lb7F9P6HJq4gOdoTg+r5h8y4svqOwCAFkWVbcIUhJzH3cRucEnJGsRgSmph6gmDH
-        /2znWSMrhi+Ft4MhaZ2fd6DchBLuI5PJmS38QTbN98y6ryWlRDbD+B2qQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=aHTLORIJnWP6gXjyjoxcNazEa1yBNVAq2jyuIskc8tU=; b=B5KA27Ho
-        Zdrsv8ruYaSUj/WvvaFHFx6WL8TfK1NwiJdZM0rW6+wsolM/Lx9tbuZV6iH8MYLz
-        fi5hSDzc5seijFldTL06UZAt+AZsnqGA/jjB0zcvH2byYd6r4h/T+6S1ckf8ovNY
-        zOaNTzSQJX7g1AjUzei4D/pTUqufb5A3i+H5QESnq2IL3GOu+m1SOab3wDq6PZJc
-        PbE0aXNebvMPWq0fsQs0aGi+l8UsCfjlNNCfqgB+6uwzw9vv0XinH9u8Rg6YXTMW
-        23omFf0GBLKGXxCFA7wP6OM49fpobMXHeOnb+LBMVQriNQUo99Wde6wwYvxa5oSo
-        Ptvvy2fYjlL7BA==
-X-ME-Sender: <xms:2pe4YG7gF4BEC7E8_VbMb34CPTarzlZs8XDJFvroxJuc3ilkxtjd-w>
-    <xme:2pe4YP5-K4_kxXVAAh40zRkcUJ48Va0Rsex3ABGOafbPN0tguxvujl5FcVphr5l7B
-    ch6SOitgR20oOelAck>
-X-ME-Received: <xmr:2pe4YFeeJVegUjxZfhFZ_kCZH88wAyLxMzqx7BwCURHqM5m1eY-AP4vg3-D_kLVoXZ1YSXsLPcZaL3vamTaywjoSYryL8HctzU-weANB7OiqvaSqTcD6pCROH6IZaw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcu
-    rfgvthgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvg
-    hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
-    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
-    hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:2pe4YDIBXpZGvIbvkWiqUHKwLnA2ze5mbKeG3P9wqY6pu7VjnRMNMQ>
-    <xmx:2pe4YKIydS0Bgy7W58Clz0BRyXx0fA0mux0DFi3b5WgGnKEf49PZSQ>
-    <xmx:2pe4YEy3olAw0AXU9hzJ_N-_2-znbqnQNzgXWee63EXQpI2Ihda3Rg>
-    <xmx:2pe4YMj7m7yL2pfm7JHvImAAQ5u3uaHS4_X43QTsx7qtRSkCsVeX0w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Jun 2021 04:50:32 -0400 (EDT)
-From:   Sven Peter <sven@svenpeter.dev>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Sven Peter <sven@svenpeter.dev>, Arnd Bergmann <arnd@kernel.org>,
-        devicetree@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        iommu@lists.linux-foundation.org, Alexander Graf <graf@amazon.com>
-Subject: [PATCH v3 3/3] iommu: dart: Add DART iommu driver
-Date:   Thu,  3 Jun 2021 10:50:03 +0200
-Message-Id: <20210603085003.50465-4-sven@svenpeter.dev>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20210603085003.50465-1-sven@svenpeter.dev>
-References: <20210603085003.50465-1-sven@svenpeter.dev>
+        Thu, 3 Jun 2021 04:53:42 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D66C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 01:51:49 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id h24so8103523ejy.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 01:51:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NnBJzuMRU1ena3ZILIuXFWIpnH5uEG60vFcd3Ivc7h0=;
+        b=Rg4jls0Jz7o9+tQzndkJRKdtyVegU60pdRaYLZGH4L4QRDkw/aSXt2CymGO1lxUU4p
+         XG/xLOEIH/I9LCy5O5QUs/q4lBQZXkmV74c2SeK2ntyZE9PLB0BeBnvah9LnwsuBGgpp
+         Pdj2hhOym1BPVHB6CYFfRCIKzSBrTG7u45xzQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=NnBJzuMRU1ena3ZILIuXFWIpnH5uEG60vFcd3Ivc7h0=;
+        b=M6/u9HqdfKOrNsgJ/vX9q3soM2YAKTdqQ8+iI4Dhyc1GASUQxV7gDGoAmqtfr5wid9
+         avbd+C5wlJGmDLitECsfuItChC/IaL41mSTkG6Bk+uAaOEhboifeIaHkwH3UC2ic4FcS
+         6gIe0jEVvsqS/bnDJd5sAs06R84P3AqSsXONxmRyQ3LWL5sKUkaHJNZ86+2NihbfJlRk
+         TGt0TyXg0FigJ2Apeiex0Ec9wJzD+R7Op/PLop0zVJolFPdtoj2eou9FoAk8sioxG3RZ
+         UP/q8r21TjYCBWjC0ih3UHGRaUuNATH3+MC1KeYcFMPD/I4yncoS04Kh10N5uhdawH7R
+         /5YA==
+X-Gm-Message-State: AOAM530OBpSvFzE5Jik7SKqQLc6gN2byPq/SEyEwCHVesSlP+PVqhP0a
+        xa7nAsXiQ/0aVjQofQfua3v1ug==
+X-Google-Smtp-Source: ABdhPJyCqLh2mdh4CbYXxDs1TBYv7xofgnEiI2L1s7ae+K991zUd5FPgzyEuyZ2Qt1VBTjYqs2ulIw==
+X-Received: by 2002:a17:907:e86:: with SMTP id ho6mr30734478ejc.333.1622710305995;
+        Thu, 03 Jun 2021 01:51:45 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f3sm1389932eds.59.2021.06.03.01.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 01:51:45 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 10:51:43 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Hridya Valsaraju <hridya@google.com>
+Cc:     daniel@ffwll.ch, Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-doc@vger.kernel.org, kernel-team@android.com,
+        john.stultz@linaro.org, surenb@google.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v5] dmabuf: Add the capability to expose DMA-BUF stats in
+ sysfs
+Message-ID: <YLiYH/FdHIXPTAUX@phenom.ffwll.local>
+Mail-Followup-To: Hridya Valsaraju <hridya@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-doc@vger.kernel.org, kernel-team@android.com,
+        john.stultz@linaro.org, surenb@google.com,
+        kernel test robot <lkp@intel.com>
+References: <20210602222937.2628266-1-hridya@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602222937.2628266-1-hridya@google.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apple's new SoCs use iommus for almost all peripherals. These Device
-Address Resolution Tables must be setup before these peripherals can
-act as DMA masters.
+On Wed, Jun 02, 2021 at 03:29:30PM -0700, Hridya Valsaraju wrote:
+> Overview
+> ========
+> The patch adds DMA-BUF statistics to /sys/kernel/dmabuf/buffers. It
+> allows statistics to be enabled for each DMA-BUF in sysfs by enabling
+> the config CONFIG_DMABUF_SYSFS_STATS.
+> 
+> The following stats will be exposed by the interface:
+> 
+> /sys/kernel/dmabuf/buffers/<inode_number>/exporter_name
+> /sys/kernel/dmabuf/buffers/<inode_number>/size
+> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/device
+> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/map_counter
+> 
+> The inode_number is unique for each DMA-BUF and was added earlier [1]
+> in order to allow userspace to track DMA-BUF usage across different
+> processes.
+> 
+> Use Cases
+> =========
+> The interface provides a way to gather DMA-BUF per-buffer statistics
+> from production devices. These statistics will be used to derive DMA-BUF
+> per-exporter stats and per-device usage stats for Android Bug reports.
+> The corresponding userspace changes can be found at [2].
+> Telemetry tools will also capture this information(along with other
+> memory metrics) periodically as well as on important events like a
+> foreground app kill (which might have been triggered by Low Memory
+> Killer). It will also contribute to provide a snapshot of the system
+> memory usage on other events such as OOM kills and Application Not
+> Responding events.
+> 
+> Background
+> ==========
+> Currently, there are two existing interfaces that provide information
+> about DMA-BUFs.
+> 1) /sys/kernel/debug/dma_buf/bufinfo
+> debugfs is however unsuitable to be mounted in production systems and
+> cannot be considered as an alternative to the sysfs interface being
+> proposed.
+> 2) proc/<pid>/fdinfo/<fd>
+> The proc/<pid>/fdinfo/<fd> files expose information about DMA-BUF fds.
+> However, the existing procfs interfaces can only provide information
+> about the buffers for which processes hold fds or have the buffers
+> mmapped into their address space. Since the procfs interfaces alone
+> cannot provide a full picture of all DMA-BUFs in the system, there is
+> the need for an alternate interface to provide this information on
+> production systems.
+> 
+> The patch contains the following major improvements over v1:
+> 1) Each attachment is represented by its own directory to allow creating
+> a symlink to the importing device and to also provide room for future
+> expansion.
+> 2) The number of distinct mappings of each attachment is exposed in a
+> separate file.
+> 3) The per-buffer statistics are now in /sys/kernel/dmabuf/buffers
+> inorder to make the interface expandable in future.
+> 
+> All of the improvements above are based on suggestions/feedback from
+> Daniel Vetter and Christian König.
+> 
+> A shell script that can be run on a classic Linux environment to read
+> out the DMA-BUF statistics can be found at [3](suggested by John
+> Stultz).
+> 
+> [1]: https://lore.kernel.org/patchwork/patch/1088791/
+> [2]: https://android-review.googlesource.com/q/topic:%22dmabuf-sysfs%22+(status:open%20OR%20status:merged)
+> [3]: https://android-review.googlesource.com/c/platform/system/memory/libmeminfo/+/1549734
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+> 
+> Hi Daniel,
+> 
+> I rewrote the commit message and added a new section to
+> Documentation/driver-api/dma-buf.rst as per your suggestions. Please
+> do take another look when you get a chance. Thanks again for the
+> guidance.
+> 
+> Regards,
+> Hridya
+> 
+> Change in v5:
+> -Added a section on DMA-BUF statistics to
+> Documentation/driver-api/dma-buf.rst. Organized the commit message to
+> clearly state the need for the new interface and provide the
+> background on why the existing means of DMA-BUF accounting will not
+> suffice. Based on feedback from Daniel Vetter.
+> 
+> Changes in v4:
+> -Suppress uevents from kset creation to avoid waking up uevent listeners
+> on DMA-BUF export/release.
+> 
+> Changes in v3:
+> -Fix a warning reported by the kernel test robot.
+> 
+> Changes in v2:
+> -Move statistics to /sys/kernel/dmabuf/buffers in oder to allow addition
+> of other DMA-BUF-related sysfs stats in future. Based on feedback from
+> Daniel Vetter.
+> -Each attachment has its own directory to represent attached devices as
+> symlinks and to introduce map_count as a separate file. Based on
+> feedback from Daniel Vetter and Christian König. Thank you both!
+> -Commit messages updated to point to userspace code in AOSP that will
+> read the DMA-BUF sysfs stats.
+> 
+>  .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  52 +++
+>  Documentation/driver-api/dma-buf.rst          |  34 ++
+>  drivers/dma-buf/Kconfig                       |  11 +
+>  drivers/dma-buf/Makefile                      |   1 +
+>  drivers/dma-buf/dma-buf-sysfs-stats.c         | 300 ++++++++++++++++++
+>  drivers/dma-buf/dma-buf-sysfs-stats.h         |  62 ++++
+>  drivers/dma-buf/dma-buf.c                     |  37 +++
+>  include/linux/dma-buf.h                       |  20 ++
+>  8 files changed, 517 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
+>  create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.c
+>  create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.h
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers b/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
+> new file mode 100644
+> index 000000000000..a243984ed420
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
+> @@ -0,0 +1,52 @@
+> +What:		/sys/kernel/dmabuf/buffers
+> +Date:		May 2021
+> +KernelVersion:	v5.13
+> +Contact:	Hridya Valsaraju <hridya@google.com>
+> +Description:	The /sys/kernel/dmabuf/buffers directory contains a
+> +		snapshot of the internal state of every DMA-BUF.
+> +		/sys/kernel/dmabuf/buffers/<inode_number> will contain the
+> +		statistics for the DMA-BUF with the unique inode number
+> +		<inode_number>
+> +Users:		kernel memory tuning/debugging tools
+> +
+> +What:		/sys/kernel/dmabuf/buffers/<inode_number>/exporter_name
+> +Date:		May 2021
+> +KernelVersion:	v5.13
+> +Contact:	Hridya Valsaraju <hridya@google.com>
+> +Description:	This file is read-only and contains the name of the exporter of
+> +		the DMA-BUF.
+> +
+> +What:		/sys/kernel/dmabuf/buffers/<inode_number>/size
+> +Date:		May 2021
+> +KernelVersion:	v5.13
+> +Contact:	Hridya Valsaraju <hridya@google.com>
+> +Description:	This file is read-only and specifies the size of the DMA-BUF in
+> +		bytes.
+> +
+> +What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments
+> +Date:		May 2021
+> +KernelVersion:	v5.13
+> +Contact:	Hridya Valsaraju <hridya@google.com>
+> +Description:	This directory will contain subdirectories representing every
+> +		attachment of the DMA-BUF.
+> +
+> +What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_uid>
+> +Date:		May 2021
+> +KernelVersion:	v5.13
+> +Contact:	Hridya Valsaraju <hridya@google.com>
+> +Description:	This directory will contain information on the attached device
+> +		and the number of current distinct device mappings.
+> +
+> +What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_uid>/device
+> +Date:		May 2021
+> +KernelVersion:	v5.13
+> +Contact:	Hridya Valsaraju <hridya@google.com>
+> +Description:	This file is read-only and is a symlink to the attached device's
+> +		sysfs entry.
+> +
+> +What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_uid>/map_counter
+> +Date:		May 2021
+> +KernelVersion:	v5.13
+> +Contact:	Hridya Valsaraju <hridya@google.com>
+> +Description:	This file is read-only and contains a map_counter indicating the
+> +		number of distinct device mappings of the attachment.
+> diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
+> index 7f37ec30d9fd..4027762a824a 100644
+> --- a/Documentation/driver-api/dma-buf.rst
+> +++ b/Documentation/driver-api/dma-buf.rst
+> @@ -106,6 +106,40 @@ Implicit Fence Poll Support
+>  .. kernel-doc:: drivers/dma-buf/dma-buf.c
+>     :doc: implicit fence polling
+>  
+> +DMA-BUF statistics
+> +~~~~~~~~~~~~~~~~~~
+> +
+> +``/sys/kernel/debug/dma_buf/bufinfo`` provides an overview of every DMA-BUF in the
+> +system. However, since debugfs is not safe to be mounted in production,
+> +procfs and sysfs can be used to gather DMA-BUF statistics on production systems.
+> +
+> +The ``/proc/<pid>/fdinfo/<fd>`` files in procfs can be used to gather information
+> +about DMA-BUF fds. Detailed documentation about the interface is present in
+> +Documentation/filesystems/proc.rst.
+> +Unfortunately, the existing procfs interfaces can only provide information about
+> +the DMA-BUFs for which processes hold fds or have the buffers mmapped into their
+> +address space. This necessitated the creation of the DMA-BUF sysfs statistics
+> +interface to provide per-buffer information on production systems.
+> +
+> +The interface at ``/sys/kernel/dma-buf/buffers`` exposes information about
+> +every DMA-BUF when ``CONFIG_DMABUF_SYSFS_STATS`` is enabled.
+> +
+> +The following stats are exposed by the interface:
+> +
+> +* ``/sys/kernel/dmabuf/buffers/<inode_number>/exporter_name``
+> +* ``/sys/kernel/dmabuf/buffers/<inode_number>/size``
+> +* ``/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/device``
+> +* ``/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/map_counter``
+> +
+> +The information in the interface can also be used to derive per-exporter and
+> +per-device usage statistics. The data from the interface can be gathered
+> +on error conditions or other important events to provide a snapshot of
+> +DMA-BUF usage. It can also be collected periodically by telemetry to monitor
+> +various metrics.
+> +
+> +Detailed documentation about the interface is present in
+> +Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
 
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
----
- MAINTAINERS                      |   1 +
- drivers/iommu/Kconfig            |  15 +
- drivers/iommu/Makefile           |   1 +
- drivers/iommu/apple-dart-iommu.c | 966 +++++++++++++++++++++++++++++++
- 4 files changed, 983 insertions(+)
- create mode 100644 drivers/iommu/apple-dart-iommu.c
+Ok this looks neat, but I prefer if this is done as a DOC: overview
+section in the source code, and pulled into the documentation with an
+include directive. That way the docs are closer to the code, and so higher
+chances they get updated if something changes.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4373d63f9ccf..cb9200ad05fe 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1245,6 +1245,7 @@ M:	Sven Peter <sven@svenpeter.dev>
- L:	iommu@lists.linux-foundation.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/iommu/apple,dart.yaml
-+F:	drivers/iommu/apple-dart-iommu.c
- 
- APPLE SMC DRIVER
- M:	Henrik Rydberg <rydberg@bitmath.org>
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 1f111b399bca..87882c628b46 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -249,6 +249,21 @@ config SPAPR_TCE_IOMMU
- 	  Enables bits of IOMMU API required by VFIO. The iommu_ops
- 	  is not implemented as it is not necessary for VFIO.
- 
-+config IOMMU_APPLE_DART
-+	tristate "Apple DART IOMMU Support"
-+	depends on ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64)
-+	select IOMMU_API
-+	select IOMMU_IO_PGTABLE
-+	select IOMMU_IO_PGTABLE_LPAE
-+	default ARCH_APPLE
-+	help
-+	  Support for Apple DART (Device Address Resolution Table) IOMMUs
-+	  found in Apple ARM SoCs like the M1.
-+	  This IOMMU is required for most peripherals using DMA to access
-+	  the main memory.
-+
-+	  Say Y here if you are using an Apple SoC with a DART IOMMU.
-+
- # ARM IOMMU support
- config ARM_SMMU
- 	tristate "ARM Ltd. System MMU (SMMU) Support"
-diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-index c0fb0ba88143..8c813f0ebc54 100644
---- a/drivers/iommu/Makefile
-+++ b/drivers/iommu/Makefile
-@@ -29,3 +29,4 @@ obj-$(CONFIG_HYPERV_IOMMU) += hyperv-iommu.o
- obj-$(CONFIG_VIRTIO_IOMMU) += virtio-iommu.o
- obj-$(CONFIG_IOMMU_SVA_LIB) += iommu-sva-lib.o io-pgfault.o
- obj-$(CONFIG_SPRD_IOMMU) += sprd-iommu.o
-+obj-$(CONFIG_IOMMU_APPLE_DART) += apple-dart-iommu.o
-diff --git a/drivers/iommu/apple-dart-iommu.c b/drivers/iommu/apple-dart-iommu.c
-new file mode 100644
-index 000000000000..2777852498de
---- /dev/null
-+++ b/drivers/iommu/apple-dart-iommu.c
-@@ -0,0 +1,966 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Apple DART (Device Address Resolution Table) IOMMU driver
-+ *
-+ * Copyright (C) 2021 The Asahi Linux Contributors
-+ *
-+ * Based on arm/arm-smmu/arm-ssmu.c and arm/arm-smmu-v3/arm-smmu-v3.c
-+ *  Copyright (C) 2013 ARM Limited
-+ *  Copyright (C) 2015 ARM Limited
-+ * and on exynos-iommu.c
-+ *  Copyright (c) 2011,2016 Samsung Electronics Co., Ltd.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/dma-iommu.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/err.h>
-+#include <linux/interrupt.h>
-+#include <linux/io-pgtable.h>
-+#include <linux/iopoll.h>
-+#include <linux/list.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_iommu.h>
-+#include <linux/of_platform.h>
-+#include <linux/pci.h>
-+#include <linux/platform_device.h>
-+#include <linux/ratelimit.h>
-+#include <linux/slab.h>
-+#include <linux/pci.h>
-+
-+#define DART_MAX_STREAMS 16
-+#define DART_MAX_TTBR 4
-+
-+#define DART_STREAM_ALL 0xffff
-+
-+#define DART_PARAMS1 0x00
-+#define DART_PARAMS_PAGE_SHIFT GENMASK(27, 24)
-+
-+#define DART_PARAMS2 0x04
-+#define DART_PARAMS_BYPASS_SUPPORT BIT(0)
-+
-+#define DART_STREAM_COMMAND 0x20
-+#define DART_STREAM_COMMAND_BUSY BIT(2)
-+#define DART_STREAM_COMMAND_INVALIDATE BIT(20)
-+
-+#define DART_STREAM_SELECT 0x34
-+
-+#define DART_ERROR 0x40
-+#define DART_ERROR_STREAM GENMASK(27, 24)
-+#define DART_ERROR_CODE GENMASK(23, 0)
-+#define DART_ERROR_FLAG BIT(31)
-+#define DART_ERROR_READ_FAULT BIT(4)
-+#define DART_ERROR_WRITE_FAULT BIT(3)
-+#define DART_ERROR_NO_PTE BIT(2)
-+#define DART_ERROR_NO_PMD BIT(1)
-+#define DART_ERROR_NO_TTBR BIT(0)
-+
-+#define DART_CONFIG 0x60
-+#define DART_CONFIG_LOCK BIT(15)
-+
-+#define DART_STREAM_COMMAND_BUSY_TIMEOUT 100
-+
-+#define DART_STREAM_REMAP 0x80
-+
-+#define DART_ERROR_ADDR_HI 0x54
-+#define DART_ERROR_ADDR_LO 0x50
-+
-+#define DART_TCR(sid) (0x100 + 4 * (sid))
-+#define DART_TCR_TRANSLATE_ENABLE BIT(7)
-+#define DART_TCR_BYPASS0_ENABLE BIT(8)
-+#define DART_TCR_BYPASS1_ENABLE BIT(12)
-+
-+#define DART_TTBR(sid, idx) (0x200 + 16 * (sid) + 4 * (idx))
-+#define DART_TTBR_VALID BIT(31)
-+#define DART_TTBR_SHIFT 12
-+
-+/*
-+ * Private structure associated with each DART device.
-+ *
-+ * @dev: device struct
-+ * @regs: mapped MMIO region
-+ * @irq: interrupt number, can be shared with other DARTs
-+ * @clks: clocks associated with this DART
-+ * @num_clks: number of @clks
-+ * @lock: lock for @used_sids and hardware operations involving this dart
-+ * @used_sids: bitmap of streams attached to a domain
-+ * @pgsize: pagesize supported by this DART
-+ * @supports_bypass: indicates if this DART supports bypass mode
-+ * @force_bypass: force bypass mode due to pagesize mismatch?
-+ * @iommu: iommu core device
-+ */
-+struct apple_dart {
-+	struct device *dev;
-+
-+	void __iomem *regs;
-+
-+	int irq;
-+	struct clk_bulk_data *clks;
-+	int num_clks;
-+
-+	spinlock_t lock;
-+
-+	u32 used_sids;
-+	u32 pgsize;
-+
-+	u32 supports_bypass : 1;
-+	u32 force_bypass : 1;
-+	u64 force_bypass_offset;
-+	u64 force_bypass_len;
-+
-+	struct iommu_device iommu;
-+};
-+
-+/*
-+ * This structure is used to identify a single stream attached to a domain.
-+ * It's used as a list inside that domain to be able to attach multiple
-+ * streams to a single domain. Since multiple devices can use a single stream
-+ * it additionally keeps track of how many devices are represented by this
-+ * stream. Once that number reaches zero it is detached from the IOMMU domain
-+ * and all translations from this stream are disabled.
-+ *
-+ * @dart: DART instance to which this stream belongs
-+ * @sid: stream id within the DART instance
-+ * @num_devices: count of devices attached to this stream
-+ * @stream_head: list head for the next stream
-+ */
-+struct apple_dart_stream {
-+	struct apple_dart *dart;
-+	u32 sid;
-+
-+	u32 num_devices;
-+
-+	struct list_head stream_head;
-+};
-+
-+/*
-+ * This structure is attached to each iommu domain handled by a DART.
-+ * A single domain is used to represent a single virtual address spaces.
-+ * It is always allocated together with a page table.
-+ *
-+ * Streams are the smallest units the DART hardware can differentiate.
-+ * These are pointed to the page table of a domain whenever a device is
-+ * attached to it. A single stream can only be assigned to a single domain.
-+ *
-+ * Devices are assigned to at least a single and sometimes multiple individual
-+ * streams (using the iommus property in the device tree). Multiple devices
-+ * can theoretically be represented by the same stream, though this is usually
-+ * not the case.
-+ *
-+ * We only keep track of streams here and just count how many devices are
-+ * represented by each stream. When the last device is removed the whole stream
-+ * is removed from the domain.
-+ *
-+ * @dart: pointer to the DART instance
-+ * @pgtbl_ops: pagetable ops allocated by io-pgtable
-+ * @type: domain type IOMMU_DOMAIN_IDENTITY_{IDENTITY,DMA,UNMANAGED,BLOCKED}
-+ * @streams: list of streams attached to this domain
-+ * @lock: spinlock for operations involving the list of streams
-+ * @domain: core iommu domain pointer
-+ */
-+struct apple_dart_domain {
-+	struct apple_dart *dart;
-+	struct io_pgtable_ops *pgtbl_ops;
-+
-+	unsigned int type;
-+
-+	struct list_head streams;
-+
-+	spinlock_t lock;
-+
-+	struct iommu_domain domain;
-+};
-+
-+/*
-+ * This structure is attached to devices with dev_iommu_priv_set() on of_xlate
-+ * and contains a list of streams bound to this device as defined in the
-+ * device tree. Multiple DART instances can be attached to a single device
-+ * and each stream is identified by its stream id.
-+ * It's usually reference by a pointer called *cfg.
-+ *
-+ * A dynamic array instead of a linked list is used here since in almost
-+ * all cases a device will just be attached to a single stream and streams
-+ * are never removed after they have been added.
-+ *
-+ * @num_streams: number of streams attached
-+ * @streams: array of structs to identify attached streams and the device link
-+ *           to the iommu
-+ */
-+struct apple_dart_master_cfg {
-+	int num_streams;
-+	struct {
-+		struct apple_dart *dart;
-+		u32 sid;
-+
-+		struct device_link *link;
-+	} streams[];
-+};
-+
-+static struct platform_driver apple_dart_driver;
-+static const struct iommu_ops apple_dart_iommu_ops;
-+static const struct iommu_flush_ops apple_dart_tlb_ops;
-+
-+static struct apple_dart_domain *to_dart_domain(struct iommu_domain *dom)
-+{
-+	return container_of(dom, struct apple_dart_domain, domain);
-+}
-+
-+static void apple_dart_hw_enable_translation(struct apple_dart *dart, u16 sid)
-+{
-+	writel(DART_TCR_TRANSLATE_ENABLE, dart->regs + DART_TCR(sid));
-+}
-+
-+static void apple_dart_hw_disable_dma(struct apple_dart *dart, u16 sid)
-+{
-+	writel(0, dart->regs + DART_TCR(sid));
-+}
-+
-+static void apple_dart_hw_enable_bypass(struct apple_dart *dart, u16 sid)
-+{
-+	WARN_ON(!dart->supports_bypass);
-+	writel(DART_TCR_BYPASS0_ENABLE | DART_TCR_BYPASS1_ENABLE,
-+	       dart->regs + DART_TCR(sid));
-+}
-+
-+static void apple_dart_hw_set_ttbr(struct apple_dart *dart, u16 sid, u16 idx,
-+				   phys_addr_t paddr)
-+{
-+	writel(DART_TTBR_VALID | (paddr >> DART_TTBR_SHIFT),
-+	       dart->regs + DART_TTBR(sid, idx));
-+}
-+
-+static void apple_dart_hw_clear_ttbr(struct apple_dart *dart, u16 sid, u16 idx)
-+{
-+	writel(0, dart->regs + DART_TTBR(sid, idx));
-+}
-+
-+static void apple_dart_hw_clear_all_ttbrs(struct apple_dart *dart, u16 sid)
-+{
-+	int i;
-+
-+	for (i = 0; i < 4; ++i)
-+		apple_dart_hw_clear_ttbr(dart, sid, i);
-+}
-+
-+static int apple_dart_hw_stream_command(struct apple_dart *dart, u16 sid_bitmap,
-+					u32 command)
-+{
-+	unsigned long flags;
-+	int ret;
-+	u32 command_reg;
-+
-+	spin_lock_irqsave(&dart->lock, flags);
-+
-+	writel(sid_bitmap, dart->regs + DART_STREAM_SELECT);
-+	writel(command, dart->regs + DART_STREAM_COMMAND);
-+
-+	ret = readl_poll_timeout_atomic(
-+		dart->regs + DART_STREAM_COMMAND, command_reg,
-+		!(command_reg & DART_STREAM_COMMAND_BUSY), 1,
-+		DART_STREAM_COMMAND_BUSY_TIMEOUT);
-+
-+	spin_unlock_irqrestore(&dart->lock, flags);
-+
-+	if (ret) {
-+		dev_err(dart->dev,
-+			"busy bit did not clear after command %x for streams %x\n",
-+			command, sid_bitmap);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int apple_dart_hw_invalidate_tlb_global(struct apple_dart *dart)
-+{
-+	return apple_dart_hw_stream_command(dart, DART_STREAM_ALL,
-+					    DART_STREAM_COMMAND_INVALIDATE);
-+}
-+
-+static int apple_dart_hw_invalidate_tlb_stream(struct apple_dart *dart, u16 sid)
-+{
-+	return apple_dart_hw_stream_command(dart, 1 << sid,
-+					    DART_STREAM_COMMAND_INVALIDATE);
-+}
-+
-+static int apple_dart_hw_reset(struct apple_dart *dart)
-+{
-+	int sid;
-+	u32 config;
-+
-+	config = readl(dart->regs + DART_CONFIG);
-+	if (config & DART_CONFIG_LOCK) {
-+		dev_err(dart->dev, "DART is locked down until reboot: %08x\n",
-+			config);
-+		return -EINVAL;
-+	}
-+
-+	for (sid = 0; sid < DART_MAX_STREAMS; ++sid) {
-+		apple_dart_hw_disable_dma(dart, sid);
-+		apple_dart_hw_clear_all_ttbrs(dart, sid);
-+		apple_dart_hw_enable_translation(dart, sid);
-+	}
-+
-+	/* restore stream identity map */
-+	writel(0x03020100, dart->regs + DART_STREAM_REMAP);
-+	writel(0x07060504, dart->regs + DART_STREAM_REMAP + 4);
-+	writel(0x0b0a0908, dart->regs + DART_STREAM_REMAP + 8);
-+	writel(0x0f0e0d0c, dart->regs + DART_STREAM_REMAP + 12);
-+
-+	/* clear any pending errors before the interrupt is unmasked */
-+	writel(readl(dart->regs + DART_ERROR), dart->regs + DART_ERROR);
-+
-+	return apple_dart_hw_invalidate_tlb_global(dart);
-+}
-+
-+static void apple_dart_domain_flush_tlb(struct apple_dart_domain *domain)
-+{
-+	unsigned long flags;
-+	struct apple_dart_stream *stream;
-+	struct apple_dart *dart = domain->dart;
-+
-+	if (!dart)
-+		return;
-+
-+	spin_lock_irqsave(&domain->lock, flags);
-+	list_for_each_entry(stream, &domain->streams, stream_head) {
-+		apple_dart_hw_invalidate_tlb_stream(stream->dart, stream->sid);
-+	}
-+	spin_unlock_irqrestore(&domain->lock, flags);
-+}
-+
-+static void apple_dart_flush_iotlb_all(struct iommu_domain *domain)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+
-+	apple_dart_domain_flush_tlb(dart_domain);
-+}
-+
-+static void apple_dart_iotlb_sync(struct iommu_domain *domain,
-+				  struct iommu_iotlb_gather *gather)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+
-+	apple_dart_domain_flush_tlb(dart_domain);
-+}
-+
-+static void apple_dart_iotlb_sync_map(struct iommu_domain *domain,
-+				      unsigned long iova, size_t size)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+
-+	apple_dart_domain_flush_tlb(dart_domain);
-+}
-+
-+static void apple_dart_tlb_flush_all(void *cookie)
-+{
-+	struct apple_dart_domain *domain = cookie;
-+
-+	apple_dart_domain_flush_tlb(domain);
-+}
-+
-+static void apple_dart_tlb_flush_walk(unsigned long iova, size_t size,
-+				      size_t granule, void *cookie)
-+{
-+	struct apple_dart_domain *domain = cookie;
-+
-+	apple_dart_domain_flush_tlb(domain);
-+}
-+
-+static const struct iommu_flush_ops apple_dart_tlb_ops = {
-+	.tlb_flush_all = apple_dart_tlb_flush_all,
-+	.tlb_flush_walk = apple_dart_tlb_flush_walk,
-+	.tlb_add_page = NULL,
-+};
-+
-+static phys_addr_t apple_dart_iova_to_phys(struct iommu_domain *domain,
-+					   dma_addr_t iova)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+	struct io_pgtable_ops *ops = dart_domain->pgtbl_ops;
-+
-+	if (domain->type == IOMMU_DOMAIN_IDENTITY)
-+		return iova;
-+	if (!ops)
-+		return -ENODEV;
-+
-+	return ops->iova_to_phys(ops, iova);
-+}
-+
-+static int apple_dart_map(struct iommu_domain *domain, unsigned long iova,
-+			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+	struct io_pgtable_ops *ops = dart_domain->pgtbl_ops;
-+
-+	if (!ops)
-+		return -ENODEV;
-+	if (prot & IOMMU_MMIO)
-+		return -EINVAL;
-+	if (prot & IOMMU_NOEXEC)
-+		return -EINVAL;
-+
-+	return ops->map(ops, iova, paddr, size, prot, gfp);
-+}
-+
-+static size_t apple_dart_unmap(struct iommu_domain *domain, unsigned long iova,
-+			       size_t size, struct iommu_iotlb_gather *gather)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+	struct io_pgtable_ops *ops = dart_domain->pgtbl_ops;
-+
-+	if (!ops)
-+		return 0;
-+
-+	return ops->unmap(ops, iova, size, gather);
-+}
-+
-+static int apple_dart_domain_needs_pgtbl_ops(struct apple_dart *dart,
-+					     struct iommu_domain *domain)
-+{
-+	if (domain->type == IOMMU_DOMAIN_DMA)
-+		return 1;
-+	if (domain->type == IOMMU_DOMAIN_UNMANAGED)
-+		return 1;
-+	if (!dart->supports_bypass && domain->type == IOMMU_DOMAIN_IDENTITY)
-+		return 1;
-+	return 0;
-+}
-+
-+/* must be called with held dart_domain->lock */
-+static int apple_dart_finalize_domain(struct iommu_domain *domain)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+	struct apple_dart *dart = dart_domain->dart;
-+	struct io_pgtable_cfg pgtbl_cfg;
-+
-+	if (dart_domain->pgtbl_ops)
-+		return 0;
-+	if (!apple_dart_domain_needs_pgtbl_ops(dart, domain))
-+		return 0;
-+
-+	pgtbl_cfg = (struct io_pgtable_cfg){
-+		.pgsize_bitmap = dart->pgsize,
-+		.ias = 32,
-+		.oas = 36,
-+		.coherent_walk = 1,
-+		.tlb = &apple_dart_tlb_ops,
-+		.iommu_dev = dart->dev,
-+	};
-+
-+	dart_domain->pgtbl_ops =
-+		alloc_io_pgtable_ops(ARM_APPLE_DART, &pgtbl_cfg, domain);
-+	if (!dart_domain->pgtbl_ops)
-+		return -ENOMEM;
-+
-+	domain->pgsize_bitmap = pgtbl_cfg.pgsize_bitmap;
-+	domain->geometry.aperture_start = 0;
-+	domain->geometry.aperture_end = DMA_BIT_MASK(32);
-+	domain->geometry.force_aperture = true;
-+
-+	// HACK: create a static pagetable to fake bypass mode
-+	if (domain->type == IOMMU_DOMAIN_IDENTITY) {
-+		u64 addr;
-+
-+		for (addr = 0; addr < dart->force_bypass_len;
-+		     addr += dart->pgsize)
-+			dart_domain->pgtbl_ops->map(
-+				dart_domain->pgtbl_ops, addr,
-+				dart->force_bypass_offset + addr, dart->pgsize,
-+				IOMMU_READ | IOMMU_WRITE, GFP_ATOMIC);
-+	}
-+
-+	return 0;
-+}
-+
-+static void apple_dart_stream_setup_ttbrs(struct apple_dart_domain *domain,
-+					  struct apple_dart *dart, u32 sid)
-+{
-+	int i;
-+	struct io_pgtable_cfg *pgtbl_cfg =
-+		&io_pgtable_ops_to_pgtable(domain->pgtbl_ops)->cfg;
-+
-+	for (i = 0; i < pgtbl_cfg->apple_dart_cfg.n_ttbrs; ++i)
-+		apple_dart_hw_set_ttbr(dart, sid, i,
-+				       pgtbl_cfg->apple_dart_cfg.ttbr[i]);
-+	for (; i < DART_MAX_TTBR; ++i)
-+		apple_dart_hw_clear_ttbr(dart, sid, i);
-+}
-+
-+/* must be called with held domain->lock */
-+static int apple_dart_attach_stream(struct apple_dart_domain *domain,
-+				    struct apple_dart *dart, u32 sid)
-+{
-+	unsigned long flags;
-+	struct apple_dart_stream *stream;
-+	int ret;
-+
-+	if (WARN_ON(dart->force_bypass &&
-+		    domain->type != IOMMU_DOMAIN_IDENTITY))
-+		return -EINVAL;
-+
-+	/*
-+	 * we can't mix and match DARTs that support bypass mode with those who don't
-+	 * because the iova space in fake bypass mode generally has an offset
-+	 */
-+	if (WARN_ON(domain->type == IOMMU_DOMAIN_IDENTITY &&
-+		    (domain->dart->supports_bypass != dart->supports_bypass)))
-+		return -EINVAL;
-+
-+	list_for_each_entry(stream, &domain->streams, stream_head) {
-+		if (stream->dart == dart && stream->sid == sid) {
-+			stream->num_devices++;
-+			return 0;
-+		}
-+	}
-+
-+	spin_lock_irqsave(&dart->lock, flags);
-+
-+	if (WARN_ON(dart->used_sids & BIT(sid))) {
-+		ret = -EINVAL;
-+		goto error;
-+	}
-+
-+	stream = kzalloc(sizeof(*stream), GFP_ATOMIC);
-+	if (!stream) {
-+		ret = -ENOMEM;
-+		goto error;
-+	}
-+
-+	stream->dart = dart;
-+	stream->sid = sid;
-+	stream->num_devices = 1;
-+	list_add(&stream->stream_head, &domain->streams);
-+
-+	dart->used_sids |= BIT(sid);
-+	spin_unlock_irqrestore(&dart->lock, flags);
-+
-+	apple_dart_hw_clear_all_ttbrs(stream->dart, stream->sid);
-+
-+	switch (domain->type) {
-+	case IOMMU_DOMAIN_IDENTITY:
-+		if (stream->dart->supports_bypass) {
-+			apple_dart_hw_enable_bypass(stream->dart, stream->sid);
-+		} else {
-+			apple_dart_stream_setup_ttbrs(domain, stream->dart,
-+						      stream->sid);
-+			apple_dart_hw_enable_translation(stream->dart,
-+							 stream->sid);
-+			apple_dart_hw_invalidate_tlb_stream(stream->dart,
-+							    stream->sid);
-+		}
-+		break;
-+	case IOMMU_DOMAIN_BLOCKED:
-+		apple_dart_hw_disable_dma(stream->dart, stream->sid);
-+		break;
-+	case IOMMU_DOMAIN_UNMANAGED:
-+	case IOMMU_DOMAIN_DMA:
-+		apple_dart_stream_setup_ttbrs(domain, stream->dart,
-+					      stream->sid);
-+		apple_dart_hw_enable_translation(stream->dart, stream->sid);
-+		apple_dart_hw_invalidate_tlb_stream(stream->dart, stream->sid);
-+		break;
-+	}
-+
-+	return 0;
-+
-+error:
-+	spin_unlock_irqrestore(&dart->lock, flags);
-+	return ret;
-+}
-+
-+static void apple_dart_disable_stream(struct apple_dart *dart, u32 sid)
-+{
-+	unsigned long flags;
-+
-+	apple_dart_hw_disable_dma(dart, sid);
-+	apple_dart_hw_clear_all_ttbrs(dart, sid);
-+	apple_dart_hw_invalidate_tlb_stream(dart, sid);
-+
-+	spin_lock_irqsave(&dart->lock, flags);
-+	dart->used_sids &= ~BIT(sid);
-+	spin_unlock_irqrestore(&dart->lock, flags);
-+}
-+
-+/* must be called with held domain->lock */
-+static void apple_dart_detach_stream(struct apple_dart_domain *domain,
-+				     struct apple_dart *dart, u32 sid)
-+{
-+	struct apple_dart_stream *stream;
-+
-+	list_for_each_entry(stream, &domain->streams, stream_head) {
-+		if (stream->dart == dart && stream->sid == sid) {
-+			stream->num_devices--;
-+
-+			if (stream->num_devices == 0) {
-+				apple_dart_disable_stream(dart, sid);
-+				list_del(&stream->stream_head);
-+				kfree(stream);
-+			}
-+			return;
-+		}
-+	}
-+}
-+
-+static int apple_dart_attach_dev(struct iommu_domain *domain,
-+				 struct device *dev)
-+{
-+	int ret;
-+	int i, j;
-+	unsigned long flags;
-+	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+	struct apple_dart *dart = cfg->streams[0].dart;
-+
-+	spin_lock_irqsave(&dart_domain->lock, flags);
-+
-+	if (!dart_domain->dart)
-+		dart_domain->dart = dart;
-+
-+	if (WARN_ON(dart->force_bypass &&
-+		    dart_domain->type != IOMMU_DOMAIN_IDENTITY)) {
-+		dev_warn(
-+			dev,
-+			"IOMMU must be in bypass mode but trying to attach to translated domain.\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = apple_dart_finalize_domain(domain);
-+	if (ret)
-+		goto out;
-+
-+	for (i = 0; i < cfg->num_streams; ++i) {
-+		ret = apple_dart_attach_stream(
-+			dart_domain, cfg->streams[i].dart, cfg->streams[i].sid);
-+		if (ret) {
-+			/* try to undo what we did before returning */
-+			for (j = 0; j < i; ++j)
-+				apple_dart_detach_stream(dart_domain,
-+							 cfg->streams[j].dart,
-+							 cfg->streams[j].sid);
-+
-+			goto out;
-+		}
-+	}
-+
-+	ret = 0;
-+
-+out:
-+	spin_unlock_irqrestore(&dart_domain->lock, flags);
-+	return ret;
-+}
-+
-+static void apple_dart_detach_dev(struct iommu_domain *domain,
-+				  struct device *dev)
-+{
-+	int i;
-+	unsigned long flags;
-+	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+
-+	spin_lock_irqsave(&dart_domain->lock, flags);
-+
-+	for (i = 0; i < cfg->num_streams; ++i)
-+		apple_dart_detach_stream(dart_domain, cfg->streams[i].dart,
-+					 cfg->streams[i].sid);
-+
-+	spin_unlock_irqrestore(&dart_domain->lock, flags);
-+}
-+
-+static struct iommu_device *apple_dart_probe_device(struct device *dev)
-+{
-+	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
-+	int i;
-+
-+	if (!cfg)
-+		return ERR_PTR(-ENODEV);
-+
-+	for (i = 0; i < cfg->num_streams; ++i) {
-+		cfg->streams[i].link =
-+			device_link_add(dev, cfg->streams[i].dart->dev,
-+					DL_FLAG_PM_RUNTIME | DL_FLAG_STATELESS);
-+	}
-+
-+	return &cfg->streams[0].dart->iommu;
-+}
-+
-+static void apple_dart_release_device(struct device *dev)
-+{
-+	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
-+	int i;
-+
-+	if (!cfg)
-+		return;
-+
-+	for (i = 0; i < cfg->num_streams; ++i)
-+		device_link_del(cfg->streams[i].link);
-+
-+	dev_iommu_priv_set(dev, NULL);
-+	kfree(cfg);
-+}
-+
-+static struct iommu_domain *apple_dart_domain_alloc(unsigned int type)
-+{
-+	struct apple_dart_domain *dart_domain;
-+
-+	if (type != IOMMU_DOMAIN_DMA && type != IOMMU_DOMAIN_UNMANAGED &&
-+	    type != IOMMU_DOMAIN_IDENTITY && type != IOMMU_DOMAIN_BLOCKED)
-+		return NULL;
-+
-+	dart_domain = kzalloc(sizeof(*dart_domain), GFP_KERNEL);
-+	if (!dart_domain)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&dart_domain->streams);
-+	spin_lock_init(&dart_domain->lock);
-+	iommu_get_dma_cookie(&dart_domain->domain);
-+	dart_domain->type = type;
-+
-+	return &dart_domain->domain;
-+}
-+
-+static void apple_dart_domain_free(struct iommu_domain *domain)
-+{
-+	struct apple_dart_domain *dart_domain = to_dart_domain(domain);
-+
-+	WARN_ON(!list_empty(&dart_domain->streams));
-+
-+	kfree(dart_domain);
-+}
-+
-+static int apple_dart_of_xlate(struct device *dev, struct of_phandle_args *args)
-+{
-+	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
-+	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
-+	unsigned int num_streams = cfg ? cfg->num_streams : 0;
-+	struct apple_dart_master_cfg *cfg_new;
-+	struct apple_dart *dart = platform_get_drvdata(iommu_pdev);
-+
-+	if (args->args_count != 1)
-+		return -EINVAL;
-+
-+	cfg_new = krealloc(cfg, struct_size(cfg, streams, num_streams + 1),
-+			   GFP_KERNEL);
-+	if (!cfg_new)
-+		return -ENOMEM;
-+
-+	cfg = cfg_new;
-+	dev_iommu_priv_set(dev, cfg);
-+
-+	cfg->num_streams = num_streams;
-+	cfg->streams[cfg->num_streams].dart = dart;
-+	cfg->streams[cfg->num_streams].sid = args->args[0];
-+	cfg->num_streams++;
-+
-+	return 0;
-+}
-+
-+static struct iommu_group *apple_dart_device_group(struct device *dev)
-+{
-+#ifdef CONFIG_PCI
-+	struct iommu_group *group;
-+
-+	if (dev_is_pci(dev))
-+		group = pci_device_group(dev);
-+	else
-+		group = generic_device_group(dev);
-+
-+	return group;
-+#else
-+	return generic_device_group(dev);
-+#endif
-+}
-+
-+static const struct iommu_ops apple_dart_iommu_ops = {
-+	.domain_alloc = apple_dart_domain_alloc,
-+	.domain_free = apple_dart_domain_free,
-+	.attach_dev = apple_dart_attach_dev,
-+	.detach_dev = apple_dart_detach_dev,
-+	.map = apple_dart_map,
-+	.unmap = apple_dart_unmap,
-+	.flush_iotlb_all = apple_dart_flush_iotlb_all,
-+	.iotlb_sync = apple_dart_iotlb_sync,
-+	.iotlb_sync_map = apple_dart_iotlb_sync_map,
-+	.iova_to_phys = apple_dart_iova_to_phys,
-+	.probe_device = apple_dart_probe_device,
-+	.release_device = apple_dart_release_device,
-+	.device_group = apple_dart_device_group,
-+	.of_xlate = apple_dart_of_xlate,
-+	.pgsize_bitmap = -1UL, /* Restricted during dart probe */
-+};
-+
-+static irqreturn_t apple_dart_irq(int irq, void *dev)
-+{
-+	struct apple_dart *dart = dev;
-+	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
-+				      DEFAULT_RATELIMIT_BURST);
-+	const char *fault_name = NULL;
-+	u32 error = readl(dart->regs + DART_ERROR);
-+	u32 error_code = FIELD_GET(DART_ERROR_CODE, error);
-+	u32 addr_lo = readl(dart->regs + DART_ERROR_ADDR_LO);
-+	u32 addr_hi = readl(dart->regs + DART_ERROR_ADDR_HI);
-+	u64 addr = addr_lo | (((u64)addr_hi) << 32);
-+	u8 stream_idx = FIELD_GET(DART_ERROR_STREAM, error);
-+
-+	if (!(error & DART_ERROR_FLAG))
-+		return IRQ_NONE;
-+
-+	if (error_code & DART_ERROR_READ_FAULT)
-+		fault_name = "READ FAULT";
-+	else if (error_code & DART_ERROR_WRITE_FAULT)
-+		fault_name = "WRITE FAULT";
-+	else if (error_code & DART_ERROR_NO_PTE)
-+		fault_name = "NO PTE FOR IOVA";
-+	else if (error_code & DART_ERROR_NO_PMD)
-+		fault_name = "NO PMD FOR IOVA";
-+	else if (error_code & DART_ERROR_NO_TTBR)
-+		fault_name = "NO TTBR FOR IOVA";
-+
-+	if (WARN_ON(fault_name == NULL))
-+		fault_name = "unknown";
-+
-+	if (__ratelimit(&rs)) {
-+		dev_err(dart->dev,
-+			"translation fault: status:0x%x stream:%d code:0x%x (%s) at 0x%llx",
-+			error, stream_idx, error_code, fault_name, addr);
-+	}
-+
-+	writel(error, dart->regs + DART_ERROR);
-+	return IRQ_HANDLED;
-+}
-+
-+static int apple_dart_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	u32 dart_params[2];
-+	struct resource *res;
-+	struct apple_dart *dart;
-+	struct device *dev = &pdev->dev;
-+
-+	dart = devm_kzalloc(dev, sizeof(*dart), GFP_KERNEL);
-+	if (!dart)
-+		return -ENOMEM;
-+
-+	dart->dev = dev;
-+	spin_lock_init(&dart->lock);
-+
-+	if (pdev->num_resources < 1)
-+		return -ENODEV;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (resource_size(res) < 0x4000) {
-+		dev_err(dev, "MMIO region too small (%pr)\n", res);
-+		return -EINVAL;
-+	}
-+
-+	dart->regs = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(dart->regs))
-+		return PTR_ERR(dart->regs);
-+
-+	ret = devm_clk_bulk_get_all(dev, &dart->clks);
-+	if (ret < 0)
-+		return ret;
-+	dart->num_clks = ret;
-+
-+	ret = clk_bulk_prepare_enable(dart->num_clks, dart->clks);
-+	if (ret)
-+		return ret;
-+
-+	ret = apple_dart_hw_reset(dart);
-+	if (ret)
-+		return ret;
-+
-+	dart_params[0] = readl(dart->regs + DART_PARAMS1);
-+	dart_params[1] = readl(dart->regs + DART_PARAMS2);
-+	dart->pgsize = 1 << FIELD_GET(DART_PARAMS_PAGE_SHIFT, dart_params[0]);
-+	dart->supports_bypass = dart_params[1] & DART_PARAMS_BYPASS_SUPPORT;
-+	dart->force_bypass = dart->pgsize > PAGE_SIZE;
-+
-+	// HACK: these shouldn't be hardcoded here but come from the device tree
-+	dart->force_bypass_offset = 0x0800000000;
-+	dart->force_bypass_len = 0x0100000000;
-+
-+	dart->irq = platform_get_irq(pdev, 0);
-+	if (dart->irq < 0)
-+		return -ENODEV;
-+
-+	ret = devm_request_irq(dart->dev, dart->irq, apple_dart_irq,
-+			       IRQF_SHARED, "apple-dart fault handler", dart);
-+	if (ret)
-+		return ret;
-+
-+	platform_set_drvdata(pdev, dart);
-+
-+	ret = iommu_device_sysfs_add(&dart->iommu, dev, NULL, "apple-dart.%s",
-+				     dev_name(&pdev->dev));
-+	if (ret)
-+		return ret;
-+
-+	ret = iommu_device_register(&dart->iommu, &apple_dart_iommu_ops, dev);
-+	if (ret)
-+		return ret;
-+
-+	if (dev->bus->iommu_ops != &apple_dart_iommu_ops) {
-+		ret = bus_set_iommu(dev->bus, &apple_dart_iommu_ops);
-+		if (ret)
-+			return ret;
-+	}
-+#ifdef CONFIG_PCI
-+	if (dev->bus->iommu_ops != pci_bus_type.iommu_ops) {
-+		ret = bus_set_iommu(&pci_bus_type, &apple_dart_iommu_ops);
-+		if (ret)
-+			return ret;
-+	}
-+#endif
-+
-+	dev_info(
-+		&pdev->dev,
-+		"DART [pagesize %x, bypass support: %d, bypass forced: %d] initialized\n",
-+		dart->pgsize, dart->supports_bypass, dart->force_bypass);
-+	return 0;
-+}
-+
-+static int apple_dart_remove(struct platform_device *pdev)
-+{
-+	struct apple_dart *dart = platform_get_drvdata(pdev);
-+
-+	devm_free_irq(dart->dev, dart->irq, dart);
-+
-+	iommu_device_unregister(&dart->iommu);
-+	iommu_device_sysfs_remove(&dart->iommu);
-+
-+	clk_bulk_disable(dart->num_clks, dart->clks);
-+	clk_bulk_unprepare(dart->num_clks, dart->clks);
-+
-+	return 0;
-+}
-+
-+static void apple_dart_shutdown(struct platform_device *pdev)
-+{
-+	apple_dart_remove(pdev);
-+}
-+
-+static const struct of_device_id apple_dart_of_match[] = {
-+	{ .compatible = "apple,t8103-dart", .data = NULL },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, apple_dart_of_match);
-+
-+static struct platform_driver apple_dart_driver = {
-+	.driver	= {
-+		.name			= "apple-dart",
-+		.of_match_table		= apple_dart_of_match,
-+	},
-+	.probe	= apple_dart_probe,
-+	.remove	= apple_dart_remove,
-+	.shutdown = apple_dart_shutdown,
-+};
-+module_platform_driver(apple_dart_driver);
-+
-+MODULE_DESCRIPTION("IOMMU API for Apple's DART");
-+MODULE_AUTHOR("Sven Peter <sven@svenpeter.dev>");
-+MODULE_LICENSE("GPL v2");
+And since add an entire new file for this I think this makes more sense.
+
+Can you pls respin once more with that? I think then we're really good for
+sure.
+-Daniel
+
+> +
+>  Kernel Functions and Structures Reference
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  
+> diff --git a/drivers/dma-buf/Kconfig b/drivers/dma-buf/Kconfig
+> index 4e16c71c24b7..9561e3d2d428 100644
+> --- a/drivers/dma-buf/Kconfig
+> +++ b/drivers/dma-buf/Kconfig
+> @@ -72,6 +72,17 @@ menuconfig DMABUF_HEAPS
+>  	  allows userspace to allocate dma-bufs that can be shared
+>  	  between drivers.
+>  
+> +menuconfig DMABUF_SYSFS_STATS
+> +	bool "DMA-BUF sysfs statistics"
+> +	select DMA_SHARED_BUFFER
+> +	help
+> +	   Choose this option to enable DMA-BUF sysfs statistics
+> +	   in location /sys/kernel/dmabuf/buffers.
+> +
+> +	   /sys/kernel/dmabuf/buffers/<inode_number> will contain
+> +	   statistics for the DMA-BUF with the unique inode number
+> +	   <inode_number>.
+> +
+>  source "drivers/dma-buf/heaps/Kconfig"
+>  
+>  endmenu
+> diff --git a/drivers/dma-buf/Makefile b/drivers/dma-buf/Makefile
+> index 995e05f609ff..40d81f23cacf 100644
+> --- a/drivers/dma-buf/Makefile
+> +++ b/drivers/dma-buf/Makefile
+> @@ -6,6 +6,7 @@ obj-$(CONFIG_DMABUF_HEAPS)	+= heaps/
+>  obj-$(CONFIG_SYNC_FILE)		+= sync_file.o
+>  obj-$(CONFIG_SW_SYNC)		+= sw_sync.o sync_debug.o
+>  obj-$(CONFIG_UDMABUF)		+= udmabuf.o
+> +obj-$(CONFIG_DMABUF_SYSFS_STATS) += dma-buf-sysfs-stats.o
+>  
+>  dmabuf_selftests-y := \
+>  	selftest.o \
+> diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.c b/drivers/dma-buf/dma-buf-sysfs-stats.c
+> new file mode 100644
+> index 000000000000..45717c8108c8
+> --- /dev/null
+> +++ b/drivers/dma-buf/dma-buf-sysfs-stats.c
+> @@ -0,0 +1,300 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * DMA-BUF sysfs statistics.
+> + *
+> + * Copyright (C) 2021 Google LLC.
+> + */
+> +
+> +#include <linux/dma-buf.h>
+> +#include <linux/dma-resv.h>
+> +#include <linux/kobject.h>
+> +#include <linux/printk.h>
+> +#include <linux/slab.h>
+> +#include <linux/sysfs.h>
+> +
+> +#include "dma-buf-sysfs-stats.h"
+> +
+> +#define to_dma_buf_entry_from_kobj(x) container_of(x, struct dma_buf_sysfs_entry, kobj)
+> +
+> +struct dma_buf_stats_attribute {
+> +	struct attribute attr;
+> +	ssize_t (*show)(struct dma_buf *dmabuf,
+> +			struct dma_buf_stats_attribute *attr, char *buf);
+> +};
+> +#define to_dma_buf_stats_attr(x) container_of(x, struct dma_buf_stats_attribute, attr)
+> +
+> +static ssize_t dma_buf_stats_attribute_show(struct kobject *kobj,
+> +					    struct attribute *attr,
+> +					    char *buf)
+> +{
+> +	struct dma_buf_stats_attribute *attribute;
+> +	struct dma_buf_sysfs_entry *sysfs_entry;
+> +	struct dma_buf *dmabuf;
+> +
+> +	attribute = to_dma_buf_stats_attr(attr);
+> +	sysfs_entry = to_dma_buf_entry_from_kobj(kobj);
+> +	dmabuf = sysfs_entry->dmabuf;
+> +
+> +	if (!dmabuf || !attribute->show)
+> +		return -EIO;
+> +
+> +	return attribute->show(dmabuf, attribute, buf);
+> +}
+> +
+> +static const struct sysfs_ops dma_buf_stats_sysfs_ops = {
+> +	.show = dma_buf_stats_attribute_show,
+> +};
+> +
+> +static ssize_t exporter_name_show(struct dma_buf *dmabuf,
+> +				  struct dma_buf_stats_attribute *attr,
+> +				  char *buf)
+> +{
+> +	return sysfs_emit(buf, "%s\n", dmabuf->exp_name);
+> +}
+> +
+> +static ssize_t size_show(struct dma_buf *dmabuf,
+> +			 struct dma_buf_stats_attribute *attr,
+> +			 char *buf)
+> +{
+> +	return sysfs_emit(buf, "%zu\n", dmabuf->size);
+> +}
+> +
+> +static struct dma_buf_stats_attribute exporter_name_attribute =
+> +	__ATTR_RO(exporter_name);
+> +static struct dma_buf_stats_attribute size_attribute = __ATTR_RO(size);
+> +
+> +static struct attribute *dma_buf_stats_default_attrs[] = {
+> +	&exporter_name_attribute.attr,
+> +	&size_attribute.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(dma_buf_stats_default);
+> +
+> +static void dma_buf_sysfs_release(struct kobject *kobj)
+> +{
+> +	struct dma_buf_sysfs_entry *sysfs_entry;
+> +
+> +	sysfs_entry = to_dma_buf_entry_from_kobj(kobj);
+> +	kfree(sysfs_entry);
+> +}
+> +
+> +static struct kobj_type dma_buf_ktype = {
+> +	.sysfs_ops = &dma_buf_stats_sysfs_ops,
+> +	.release = dma_buf_sysfs_release,
+> +	.default_groups = dma_buf_stats_default_groups,
+> +};
+> +
+> +#define to_dma_buf_attach_entry_from_kobj(x) container_of(x, struct dma_buf_attach_sysfs_entry, kobj)
+> +
+> +struct dma_buf_attach_stats_attribute {
+> +	struct attribute attr;
+> +	ssize_t (*show)(struct dma_buf_attach_sysfs_entry *sysfs_entry,
+> +			struct dma_buf_attach_stats_attribute *attr, char *buf);
+> +};
+> +#define to_dma_buf_attach_stats_attr(x) container_of(x, struct dma_buf_attach_stats_attribute, attr)
+> +
+> +static ssize_t dma_buf_attach_stats_attribute_show(struct kobject *kobj,
+> +						   struct attribute *attr,
+> +						   char *buf)
+> +{
+> +	struct dma_buf_attach_stats_attribute *attribute;
+> +	struct dma_buf_attach_sysfs_entry *sysfs_entry;
+> +
+> +	attribute = to_dma_buf_attach_stats_attr(attr);
+> +	sysfs_entry = to_dma_buf_attach_entry_from_kobj(kobj);
+> +
+> +	if (!attribute->show)
+> +		return -EIO;
+> +
+> +	return attribute->show(sysfs_entry, attribute, buf);
+> +}
+> +
+> +static const struct sysfs_ops dma_buf_attach_stats_sysfs_ops = {
+> +	.show = dma_buf_attach_stats_attribute_show,
+> +};
+> +
+> +static ssize_t map_counter_show(struct dma_buf_attach_sysfs_entry *sysfs_entry,
+> +				struct dma_buf_attach_stats_attribute *attr,
+> +				char *buf)
+> +{
+> +	return sysfs_emit(buf, "%u\n", sysfs_entry->map_counter);
+> +}
+> +
+> +static struct dma_buf_attach_stats_attribute map_counter_attribute =
+> +	__ATTR_RO(map_counter);
+> +
+> +static struct attribute *dma_buf_attach_stats_default_attrs[] = {
+> +	&map_counter_attribute.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(dma_buf_attach_stats_default);
+> +
+> +static void dma_buf_attach_sysfs_release(struct kobject *kobj)
+> +{
+> +	struct dma_buf_attach_sysfs_entry *sysfs_entry;
+> +
+> +	sysfs_entry = to_dma_buf_attach_entry_from_kobj(kobj);
+> +	kfree(sysfs_entry);
+> +}
+> +
+> +static struct kobj_type dma_buf_attach_ktype = {
+> +	.sysfs_ops = &dma_buf_attach_stats_sysfs_ops,
+> +	.release = dma_buf_attach_sysfs_release,
+> +	.default_groups = dma_buf_attach_stats_default_groups,
+> +};
+> +
+> +void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach)
+> +{
+> +	struct dma_buf_attach_sysfs_entry *sysfs_entry;
+> +
+> +	sysfs_entry = attach->sysfs_entry;
+> +	if (!sysfs_entry)
+> +		return;
+> +
+> +	sysfs_delete_link(&sysfs_entry->kobj, &attach->dev->kobj, "device");
+> +
+> +	kobject_del(&sysfs_entry->kobj);
+> +	kobject_put(&sysfs_entry->kobj);
+> +}
+> +
+> +int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
+> +			       unsigned int uid)
+> +{
+> +	struct dma_buf_attach_sysfs_entry *sysfs_entry;
+> +	int ret;
+> +	struct dma_buf *dmabuf;
+> +
+> +	if (!attach)
+> +		return -EINVAL;
+> +
+> +	dmabuf = attach->dmabuf;
+> +
+> +	sysfs_entry = kzalloc(sizeof(struct dma_buf_attach_sysfs_entry),
+> +			      GFP_KERNEL);
+> +	if (!sysfs_entry)
+> +		return -ENOMEM;
+> +
+> +	sysfs_entry->kobj.kset = dmabuf->sysfs_entry->attach_stats_kset;
+> +
+> +	attach->sysfs_entry = sysfs_entry;
+> +
+> +	ret = kobject_init_and_add(&sysfs_entry->kobj, &dma_buf_attach_ktype,
+> +				   NULL, "%u", uid);
+> +	if (ret)
+> +		goto kobj_err;
+> +
+> +	ret = sysfs_create_link(&sysfs_entry->kobj, &attach->dev->kobj,
+> +				"device");
+> +	if (ret)
+> +		goto link_err;
+> +
+> +	return 0;
+> +
+> +link_err:
+> +	kobject_del(&sysfs_entry->kobj);
+> +kobj_err:
+> +	kobject_put(&sysfs_entry->kobj);
+> +	attach->sysfs_entry = NULL;
+> +
+> +	return ret;
+> +}
+> +void dma_buf_stats_teardown(struct dma_buf *dmabuf)
+> +{
+> +	struct dma_buf_sysfs_entry *sysfs_entry;
+> +
+> +	sysfs_entry = dmabuf->sysfs_entry;
+> +	if (!sysfs_entry)
+> +		return;
+> +
+> +	kset_unregister(sysfs_entry->attach_stats_kset);
+> +	kobject_del(&sysfs_entry->kobj);
+> +	kobject_put(&sysfs_entry->kobj);
+> +}
+> +
+> +
+> +/* Statistics files do not need to send uevents. */
+> +static int dmabuf_sysfs_uevent_filter(struct kset *kset, struct kobject *kobj)
+> +{
+> +	return 0;
+> +}
+> +
+> +static const struct kset_uevent_ops dmabuf_sysfs_no_uevent_ops = {
+> +	.filter = dmabuf_sysfs_uevent_filter,
+> +};
+> +
+> +static struct kset *dma_buf_stats_kset;
+> +static struct kset *dma_buf_per_buffer_stats_kset;
+> +int dma_buf_init_sysfs_statistics(void)
+> +{
+> +	dma_buf_stats_kset = kset_create_and_add("dmabuf",
+> +						 &dmabuf_sysfs_no_uevent_ops,
+> +						 kernel_kobj);
+> +	if (!dma_buf_stats_kset)
+> +		return -ENOMEM;
+> +
+> +	dma_buf_per_buffer_stats_kset = kset_create_and_add("buffers",
+> +							    &dmabuf_sysfs_no_uevent_ops,
+> +							    &dma_buf_stats_kset->kobj);
+> +	if (!dma_buf_per_buffer_stats_kset) {
+> +		kset_unregister(dma_buf_stats_kset);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void dma_buf_uninit_sysfs_statistics(void)
+> +{
+> +	kset_unregister(dma_buf_per_buffer_stats_kset);
+> +	kset_unregister(dma_buf_stats_kset);
+> +}
+> +
+> +int dma_buf_stats_setup(struct dma_buf *dmabuf)
+> +{
+> +	struct dma_buf_sysfs_entry *sysfs_entry;
+> +	int ret;
+> +	struct kset *attach_stats_kset;
+> +
+> +	if (!dmabuf || !dmabuf->file)
+> +		return -EINVAL;
+> +
+> +	if (!dmabuf->exp_name) {
+> +		pr_err("exporter name must not be empty if stats needed\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	sysfs_entry = kzalloc(sizeof(struct dma_buf_sysfs_entry), GFP_KERNEL);
+> +	if (!sysfs_entry)
+> +		return -ENOMEM;
+> +
+> +	sysfs_entry->kobj.kset = dma_buf_per_buffer_stats_kset;
+> +	sysfs_entry->dmabuf = dmabuf;
+> +
+> +	dmabuf->sysfs_entry = sysfs_entry;
+> +
+> +	/* create the directory for buffer stats */
+> +	ret = kobject_init_and_add(&sysfs_entry->kobj, &dma_buf_ktype, NULL,
+> +				   "%lu", file_inode(dmabuf->file)->i_ino);
+> +	if (ret)
+> +		goto err_sysfs_dmabuf;
+> +
+> +	/* create the directory for attachment stats */
+> +	attach_stats_kset = kset_create_and_add("attachments",
+> +						&dmabuf_sysfs_no_uevent_ops,
+> +						&sysfs_entry->kobj);
+> +	if (!attach_stats_kset) {
+> +		ret = -ENOMEM;
+> +		goto err_sysfs_attach;
+> +	}
+> +
+> +	sysfs_entry->attach_stats_kset = attach_stats_kset;
+> +
+> +	return 0;
+> +
+> +err_sysfs_attach:
+> +	kobject_del(&sysfs_entry->kobj);
+> +err_sysfs_dmabuf:
+> +	kobject_put(&sysfs_entry->kobj);
+> +	dmabuf->sysfs_entry = NULL;
+> +	return ret;
+> +}
+> diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.h b/drivers/dma-buf/dma-buf-sysfs-stats.h
+> new file mode 100644
+> index 000000000000..5f4703249117
+> --- /dev/null
+> +++ b/drivers/dma-buf/dma-buf-sysfs-stats.h
+> @@ -0,0 +1,62 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * DMA-BUF sysfs statistics.
+> + *
+> + * Copyright (C) 2021 Google LLC.
+> + */
+> +
+> +#ifndef _DMA_BUF_SYSFS_STATS_H
+> +#define _DMA_BUF_SYSFS_STATS_H
+> +
+> +#ifdef CONFIG_DMABUF_SYSFS_STATS
+> +
+> +int dma_buf_init_sysfs_statistics(void);
+> +void dma_buf_uninit_sysfs_statistics(void);
+> +
+> +int dma_buf_stats_setup(struct dma_buf *dmabuf);
+> +int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
+> +			       unsigned int uid);
+> +static inline void dma_buf_update_attachment_map_count(struct dma_buf_attachment *attach,
+> +						       int delta)
+> +{
+> +	struct dma_buf_attach_sysfs_entry *entry = attach->sysfs_entry;
+> +
+> +	entry->map_counter += delta;
+> +}
+> +void dma_buf_stats_teardown(struct dma_buf *dmabuf);
+> +void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach);
+> +static inline unsigned int dma_buf_update_attach_uid(struct dma_buf *dmabuf)
+> +{
+> +	struct dma_buf_sysfs_entry *entry = dmabuf->sysfs_entry;
+> +
+> +	return entry->attachment_uid++;
+> +}
+> +#else
+> +
+> +static inline int dma_buf_init_sysfs_statistics(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void dma_buf_uninit_sysfs_statistics(void) {}
+> +
+> +static inline int dma_buf_stats_setup(struct dma_buf *dmabuf)
+> +{
+> +	return 0;
+> +}
+> +static inline int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
+> +					     unsigned int uid)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void dma_buf_stats_teardown(struct dma_buf *dmabuf) {}
+> +static inline void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach) {}
+> +static inline void dma_buf_update_attachment_map_count(struct dma_buf_attachment *attach,
+> +						       int delta) {}
+> +static inline unsigned int dma_buf_update_attach_uid(struct dma_buf *dmabuf)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +#endif // _DMA_BUF_SYSFS_STATS_H
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index f264b70c383e..184dd7acb1ed 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -29,6 +29,8 @@
+>  #include <uapi/linux/dma-buf.h>
+>  #include <uapi/linux/magic.h>
+>  
+> +#include "dma-buf-sysfs-stats.h"
+> +
+>  static inline int is_dma_buf_file(struct file *);
+>  
+>  struct dma_buf_list {
+> @@ -79,6 +81,7 @@ static void dma_buf_release(struct dentry *dentry)
+>  	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+>  		dma_resv_fini(dmabuf->resv);
+>  
+> +	dma_buf_stats_teardown(dmabuf);
+>  	module_put(dmabuf->owner);
+>  	kfree(dmabuf->name);
+>  	kfree(dmabuf);
+> @@ -580,6 +583,10 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+>  	file->f_mode |= FMODE_LSEEK;
+>  	dmabuf->file = file;
+>  
+> +	ret = dma_buf_stats_setup(dmabuf);
+> +	if (ret)
+> +		goto err_sysfs;
+> +
+>  	mutex_init(&dmabuf->lock);
+>  	INIT_LIST_HEAD(&dmabuf->attachments);
+>  
+> @@ -589,6 +596,14 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+>  
+>  	return dmabuf;
+>  
+> +err_sysfs:
+> +	/*
+> +	 * Set file->f_path.dentry->d_fsdata to NULL so that when
+> +	 * dma_buf_release() gets invoked by dentry_ops, it exits
+> +	 * early before calling the release() dma_buf op.
+> +	 */
+> +	file->f_path.dentry->d_fsdata = NULL;
+> +	fput(file);
+>  err_dmabuf:
+>  	kfree(dmabuf);
+>  err_module:
+> @@ -723,6 +738,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
+>  {
+>  	struct dma_buf_attachment *attach;
+>  	int ret;
+> +	unsigned int attach_uid;
+>  
+>  	if (WARN_ON(!dmabuf || !dev))
+>  		return ERR_PTR(-EINVAL);
+> @@ -748,8 +764,13 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
+>  	}
+>  	dma_resv_lock(dmabuf->resv, NULL);
+>  	list_add(&attach->node, &dmabuf->attachments);
+> +	attach_uid = dma_buf_update_attach_uid(dmabuf);
+>  	dma_resv_unlock(dmabuf->resv);
+>  
+> +	ret = dma_buf_attach_stats_setup(attach, attach_uid);
+> +	if (ret)
+> +		goto err_sysfs;
+> +
+>  	/* When either the importer or the exporter can't handle dynamic
+>  	 * mappings we cache the mapping here to avoid issues with the
+>  	 * reservation object lock.
+> @@ -776,6 +797,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
+>  			dma_resv_unlock(attach->dmabuf->resv);
+>  		attach->sgt = sgt;
+>  		attach->dir = DMA_BIDIRECTIONAL;
+> +		dma_buf_update_attachment_map_count(attach, 1 /* delta */);
+>  	}
+>  
+>  	return attach;
+> @@ -792,6 +814,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
+>  	if (dma_buf_is_dynamic(attach->dmabuf))
+>  		dma_resv_unlock(attach->dmabuf->resv);
+>  
+> +err_sysfs:
+>  	dma_buf_detach(dmabuf, attach);
+>  	return ERR_PTR(ret);
+>  }
+> @@ -841,6 +864,7 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attach)
+>  			dma_resv_lock(attach->dmabuf->resv, NULL);
+>  
+>  		__unmap_dma_buf(attach, attach->sgt, attach->dir);
+> +		dma_buf_update_attachment_map_count(attach, -1 /* delta */);
+>  
+>  		if (dma_buf_is_dynamic(attach->dmabuf)) {
+>  			dma_buf_unpin(attach);
+> @@ -854,6 +878,7 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attach)
+>  	if (dmabuf->ops->detach)
+>  		dmabuf->ops->detach(dmabuf, attach);
+>  
+> +	dma_buf_attach_stats_teardown(attach);
+>  	kfree(attach);
+>  }
+>  EXPORT_SYMBOL_GPL(dma_buf_detach);
+> @@ -993,6 +1018,9 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *attach,
+>  	}
+>  #endif /* CONFIG_DMA_API_DEBUG */
+>  
+> +	if (!IS_ERR(sg_table))
+> +		dma_buf_update_attachment_map_count(attach, 1 /* delta */);
+> +
+>  	return sg_table;
+>  }
+>  EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
+> @@ -1030,6 +1058,8 @@ void dma_buf_unmap_attachment(struct dma_buf_attachment *attach,
+>  	if (dma_buf_is_dynamic(attach->dmabuf) &&
+>  	    !IS_ENABLED(CONFIG_DMABUF_MOVE_NOTIFY))
+>  		dma_buf_unpin(attach);
+> +
+> +	dma_buf_update_attachment_map_count(attach, -1 /* delta */);
+>  }
+>  EXPORT_SYMBOL_GPL(dma_buf_unmap_attachment);
+>  
+> @@ -1480,6 +1510,12 @@ static inline void dma_buf_uninit_debugfs(void)
+>  
+>  static int __init dma_buf_init(void)
+>  {
+> +	int ret;
+> +
+> +	ret = dma_buf_init_sysfs_statistics();
+> +	if (ret)
+> +		return ret;
+> +
+>  	dma_buf_mnt = kern_mount(&dma_buf_fs_type);
+>  	if (IS_ERR(dma_buf_mnt))
+>  		return PTR_ERR(dma_buf_mnt);
+> @@ -1495,5 +1531,6 @@ static void __exit dma_buf_deinit(void)
+>  {
+>  	dma_buf_uninit_debugfs();
+>  	kern_unmount(dma_buf_mnt);
+> +	dma_buf_uninit_sysfs_statistics();
+>  }
+>  __exitcall(dma_buf_deinit);
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index efdc56b9d95f..342585bd6dff 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -295,6 +295,9 @@ struct dma_buf_ops {
+>   * @poll: for userspace poll support
+>   * @cb_excl: for userspace poll support
+>   * @cb_shared: for userspace poll support
+> + * @sysfs_entry: for exposing information about this buffer in sysfs.
+> + * The attachment_uid member of @sysfs_entry is protected by dma_resv lock
+> + * and is incremented on each attach.
+>   *
+>   * This represents a shared buffer, created by calling dma_buf_export(). The
+>   * userspace representation is a normal file descriptor, which can be created by
+> @@ -330,6 +333,15 @@ struct dma_buf {
+>  
+>  		__poll_t active;
+>  	} cb_excl, cb_shared;
+> +#ifdef CONFIG_DMABUF_SYSFS_STATS
+> +	/* for sysfs stats */
+> +	struct dma_buf_sysfs_entry {
+> +		struct kobject kobj;
+> +		struct dma_buf *dmabuf;
+> +		unsigned int attachment_uid;
+> +		struct kset *attach_stats_kset;
+> +	} *sysfs_entry;
+> +#endif
+>  };
+>  
+>  /**
+> @@ -379,6 +391,7 @@ struct dma_buf_attach_ops {
+>   * @importer_ops: importer operations for this attachment, if provided
+>   * dma_buf_map/unmap_attachment() must be called with the dma_resv lock held.
+>   * @importer_priv: importer specific attachment data.
+> + * @sysfs_entry: For exposing information about this attachment in sysfs.
+>   *
+>   * This structure holds the attachment information between the dma_buf buffer
+>   * and its user device(s). The list contains one attachment struct per device
+> @@ -399,6 +412,13 @@ struct dma_buf_attachment {
+>  	const struct dma_buf_attach_ops *importer_ops;
+>  	void *importer_priv;
+>  	void *priv;
+> +#ifdef CONFIG_DMABUF_SYSFS_STATS
+> +	/* for sysfs stats */
+> +	struct dma_buf_attach_sysfs_entry {
+> +		struct kobject kobj;
+> +		unsigned int map_counter;
+> +	} *sysfs_entry;
+> +#endif
+>  };
+>  
+>  /**
+> -- 
+> 2.32.0.rc0.204.g9fa02ecfa5-goog
+> 
+
 -- 
-2.25.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
