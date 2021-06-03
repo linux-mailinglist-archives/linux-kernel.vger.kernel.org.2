@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878F139A19A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAEB39A191
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhFCMzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:55:51 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:44787 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhFCMzu (ORCPT
+        id S231148AbhFCMyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:54:52 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51670 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhFCMyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:55:50 -0400
-Received: by mail-pg1-f171.google.com with SMTP id 29so5025859pgu.11;
-        Thu, 03 Jun 2021 05:53:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=P9XdF4IQa4HICLHDrIl6ecj193EbDBWLk7oFGC3LTNE=;
-        b=pMLaMz4C7sgoxAN7CQFAJ5+pEG2Z5L9VuYYCsiIMFZ1PhBdpB0a5srLkrthUfo5aZB
-         XNhdhN79/SH80c0R5npENFUDJ++PmRzITiVPRV7XI7xDPg3tUlo6OsIWwXdRoxb9CPKM
-         V9c2iz4oTeloF1bNjm9wi8D1zq+GW4MNeItOmvyb4zNFXIPKw56gXvZnUNUnydgOFCll
-         2h22Q/g6+Ne4zm1n3p87ngsPYXcaePA4F4zZkLFuSe3ERfT/0wv2QIzLOG8TlTb2X4Rh
-         r0aqXaY8WJY/HU6aJikDnhNyRrxBDchQxSkQxdfmhtlT+MqXcckoJXQ3VowXpiVt0pIZ
-         gzWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=P9XdF4IQa4HICLHDrIl6ecj193EbDBWLk7oFGC3LTNE=;
-        b=nDGEoXwiSTHB7vzCkIr9jPDtN3NwMDR3lfMICVvL9aWXNkTZHSd1nDE6OUIpa7i1cv
-         ThKZdeJA1mnJnxy0rhLfYj56yKa8ZDSfK1vGcouzxgxTt7E972SQIYiXcTg7nqI0l6By
-         hKM+sHq4KNJaEjMPp5NR2JjU5nCtqRyHHTJzfLftgxNEvwj0/SQs1hFUDmpR+ST2Sdyx
-         PYvVml+PyaqQxO/VKzTcZ5ypH/GU4dPHcDi7t9q20TO3IsbiKchevLW6Ph6iS7BbYQ8z
-         qsNYkzpb3sFwxEOvO69uDYj2E0eeQzQzZ3ZRGZYtSYXdoKcpvh2QFfzizzD7vUTb3cS1
-         ckdw==
-X-Gm-Message-State: AOAM533cDzfOE9IfuieI+HTl+RnL9wiRiHJQqIHC3shUoWELyOCY3IG/
-        GczBfrIBzLVd+ytuKBicHWjrpRrXYKTxNt6l
-X-Google-Smtp-Source: ABdhPJxx20lQ+jQGl9QqaPoW7vZEl7Z6gK7J8BE5VLB5oDyEbR56TL6tocuucFNeHeepYfODfM4ofA==
-X-Received: by 2002:a63:4706:: with SMTP id u6mr38960272pga.152.1622724770644;
-        Thu, 03 Jun 2021 05:52:50 -0700 (PDT)
-Received: from mi-HP-ProDesk-600-G5-PCI-MT.mioffice.cn ([209.9.72.213])
-        by smtp.gmail.com with ESMTPSA id y14sm2253754pjr.51.2021.06.03.05.52.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 05:52:50 -0700 (PDT)
-From:   chenguanyou <chenguanyou9338@gmail.com>
-X-Google-Original-From: chenguanyou <chenguanyou@xiaomi.com>
-To:     miklos@szeredi.hu
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chenguanyou <chenguanyou@xiaomi.com>
-Subject: [PATCH] [fuse] alloc_page nofs avoid deadlock
-Date:   Thu,  3 Jun 2021 20:52:42 +0800
-Message-Id: <20210603125242.31699-1-chenguanyou@xiaomi.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 3 Jun 2021 08:54:49 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153Cqs0e105157;
+        Thu, 3 Jun 2021 07:52:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622724775;
+        bh=kX3Vnpe0CNzmIKQsx1/9iW1gdYworEm0x0O1S6UEdgo=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=NMHfxgpV3fmYV5dV4UqR6MMC57Gtw6PXEqSOYV75BsBUKfE3aH+Y1WGETHQR0IfrS
+         jV3SLan5dl+rNqbxKZwsBcZ/tLb8k5s2jVzxfCQdkZjHIPYaw6aXAgK5j5RVHXFzPS
+         9hpHegxR1jk2RqmmzKK9ABXKFP58D9xd9Yp21Fq0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153CqsNq078084
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Jun 2021 07:52:54 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 07:52:54 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 3 Jun 2021 07:52:54 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153CqrvG081814;
+        Thu, 3 Jun 2021 07:52:54 -0500
+Date:   Thu, 3 Jun 2021 18:22:53 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+CC:     Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <dmaengine@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v2 00/18] CSI2RX support on J721E
+Message-ID: <20210603125251.nmzibyvfzkkxfbtj@ti.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <83bcd60a-2a45-59b2-8ebe-26ad5d828965@ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <83bcd60a-2a45-59b2-8ebe-26ad5d828965@ideasonboard.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ABA deadlock
+On 27/05/21 04:23PM, Tomi Valkeinen wrote:
+> Hi Pratyush,
+> 
+> On 26/05/2021 18:22, Pratyush Yadav wrote:
+> > Hi,
+> > 
+> > This series adds support for CSI2 capture on J721E. It includes some
+> > fixes to the Cadence CSI2RX driver, adds Rx support to Cadence DPHY
+> > driver, and finally adds the TI CSI2RX wrapper driver.
+> > 
+> > Tested on TI's J721E with OV5640 sensor.
+> 
+> I also see this after a few captures:
 
-PID: 17172 TASK: ffffffc0c162c000 CPU: 6 COMMAND: "Thread-21"
-0 [ffffff802d16b400] __switch_to at ffffff8008086a4c
-1 [ffffff802d16b470] __schedule at ffffff80091ffe58
-2 [ffffff802d16b4d0] schedule at ffffff8009200348
-3 [ffffff802d16b4f0] bit_wait at ffffff8009201098
-4 [ffffff802d16b510] __wait_on_bit at ffffff8009200a34
-5 [ffffff802d16b5b0] inode_wait_for_writeback at ffffff800830e1e8
-6 [ffffff802d16b5e0] evict at ffffff80082fb15c
-7 [ffffff802d16b620] iput at ffffff80082f9270
-8 [ffffff802d16b680] dentry_unlink_inode at ffffff80082f4c90
-9 [ffffff802d16b6a0] __dentry_kill at ffffff80082f1710
-10 [ffffff802d16b6d0] shrink_dentry_list at ffffff80082f1c34
-11 [ffffff802d16b750] prune_dcache_sb at ffffff80082f18a8
-12 [ffffff802d16b770] super_cache_scan at ffffff80082d55ac
-13 [ffffff802d16b860] shrink_slab at ffffff8008266170
-14 [ffffff802d16b900] shrink_node at ffffff800826b420
-15 [ffffff802d16b980] do_try_to_free_pages at ffffff8008268460
-16 [ffffff802d16ba60] try_to_free_pages at ffffff80082680d0
-17 [ffffff802d16bbe0] __alloc_pages_nodemask at ffffff8008256514
-18 [ffffff802d16bc60] fuse_copy_fill at ffffff8008438268
-19 [ffffff802d16bd00] fuse_dev_do_read at ffffff8008437654
-20 [ffffff802d16bdc0] fuse_dev_splice_read at ffffff8008436f40
-21 [ffffff802d16be60] sys_splice at ffffff8008315d18
-22 [ffffff802d16bff0] __sys_trace at ffffff8008084014
+Can you share the application/command you are using to test? I used 
+yavta to test and didn't see any problems after leaving the stream on 
+for around 10 minutes.
 
-PID: 9652 TASK: ffffffc0c9ce0000 CPU: 4 COMMAND: "kworker/u16:8"
-0 [ffffff802e793650] __switch_to at ffffff8008086a4c
-1 [ffffff802e7936c0] __schedule at ffffff80091ffe58
-2 [ffffff802e793720] schedule at ffffff8009200348
-3 [ffffff802e793770] __fuse_request_send at ffffff8008435760
-4 [ffffff802e7937b0] fuse_simple_request at ffffff8008435b14
-5 [ffffff802e793930] fuse_flush_times at ffffff800843a7a0
-6 [ffffff802e793950] fuse_write_inode at ffffff800843e4dc
-7 [ffffff802e793980] __writeback_single_inode at ffffff8008312740
-8 [ffffff802e793aa0] writeback_sb_inodes at ffffff80083117e4
-9 [ffffff802e793b00] __writeback_inodes_wb at ffffff8008311d98
-10 [ffffff802e793c00] wb_writeback at ffffff8008310cfc
-11 [ffffff802e793d00] wb_workfn at ffffff800830e4a8
-12 [ffffff802e793d90] process_one_work at ffffff80080e4fac
-13 [ffffff802e793e00] worker_thread at ffffff80080e5670
-14 [ffffff802e793e60] kthread at ffffff80080eb650
+> 
+> [   84.115503] ------------[ cut here ]------------
+> [   84.120144] DMA-API: ti-udma 31150000.dma-controller: mapping sg segment longer than device claims to support [len=1900544] [max=65536]
+> [   84.132376] WARNING: CPU: 1 PID: 594 at kernel/dma/debug.c:1172 debug_dma_map_sg+0x304/0x390
+> [   84.140804] Modules linked in: ov5640 ti_cal j721e_csi2rx cdns_csi2rx cdns_dphy v4l2_fwnode tidss ti_tfp410 tc358767 display_connector cdns_mhdp8546 panel_simple drm_kms_helper d
+> rm drm_panel_orientation_quirks cfbfillrect cfbimgblt cfbcopyarea phy_j721e_wiz phy_cadence_torrent
+> [   84.165298] CPU: 1 PID: 594 Comm: cam-mplex.py Not tainted 5.13.0-rc1-00206-g98bb91e95a28-dirty #5
+> [   84.174236] Hardware name: Texas Instruments K3 J721E SoC (DT)
+> [   84.180051] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> [   84.186041] pc : debug_dma_map_sg+0x304/0x390
+> [   84.190383] lr : debug_dma_map_sg+0x304/0x390
+> [   84.194725] sp : ffff800014d0f730
+> [   84.198026] x29: ffff800014d0f730 x28: ffff000801544680 x27: ffffffffffffffff
+> [   84.205148] x26: 0000000000000000 x25: 0000000000000002 x24: 0000000000000001
+> [   84.212269] x23: ffff80001163abe0 x22: 0000000000000000 x21: 0000000000000001
+> [   84.219390] x20: ffff000801fa3010 x19: ffff0008075c7580 x18: 0000000000000000
+> [   84.226510] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000030
+> [   84.233630] x14: 6e61687420726567 x13: 6e6f6c20746e656d x12: 7420736d69616c63
+> [   84.240751] x11: 2065636976656420 x10: ffff8000116b18f8 x9 : ffff8000100eb920
+> [   84.247871] x8 : ffff8000116598f8 x7 : ffff8000116b18f8 x6 : 0000000000000001
+> [   84.254991] x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+> [   84.262111] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0008066f8000
+> [   84.269230] Call trace:
+> [   84.271665]  debug_dma_map_sg+0x304/0x390
+> [   84.275660]  dma_map_sg_attrs+0x70/0xb0
+> [   84.279486]  drm_gem_map_dma_buf+0x6c/0xf0 [drm]
+> [   84.284177]  __map_dma_buf+0x28/0x80
+> [   84.287742]  dma_buf_map_attachment+0xe4/0x200
+> [   84.292172]  vb2_dc_map_dmabuf+0x3c/0x150
+> [   84.296171]  __prepare_dmabuf+0x1dc/0x514
+> [   84.300168]  __buf_prepare+0x1a0/0x25c
+> [   84.303903]  vb2_core_qbuf+0x3d4/0x72c
+> [   84.307638]  vb2_qbuf+0x9c/0xf4
+> [   84.310767]  vb2_ioctl_qbuf+0x68/0x7c
+> [   84.314416]  v4l_qbuf+0x54/0x70
+> [   84.317545]  __video_do_ioctl+0x194/0x400
+> [   84.321541]  video_usercopy+0x19c/0x910
+> [   84.325362]  video_ioctl2+0x24/0x40
+> [   84.328837]  v4l2_ioctl+0x4c/0x70
+> [   84.332141]  __arm64_sys_ioctl+0xb4/0xfc
+> [   84.336053]  invoke_syscall+0x50/0x120
+> [   84.339791]  el0_svc_common.constprop.0+0x68/0x104
+> [   84.344569]  do_el0_svc+0x30/0x9c
+> [   84.347872]  el0_svc+0x2c/0x54
+> [   84.350916]  el0_sync_handler+0x1a8/0x1ac
+> [   84.354911]  el0_sync+0x198/0x1c0
+> [   84.358215] irq event stamp: 0
+> [   84.361256] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [   84.367507] hardirqs last disabled at (0): [<ffff80001004fe2c>] copy_process+0x44c/0x1800
+> [   84.375667] softirqs last  enabled at (0): [<ffff80001004fe2c>] copy_process+0x44c/0x1800
+> [   84.383824] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [   84.390073] ---[ end trace af3448c784059129 ]---
 
-Signed-off-by: chenguanyou <chenguanyou@xiaomi.com>
----
- fs/fuse/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-index c0fee830a34e..d36125ff0405 100644
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -721,7 +721,7 @@ static int fuse_copy_fill(struct fuse_copy_state *cs)
- 			if (cs->nr_segs >= cs->pipe->max_usage)
- 				return -EIO;
- 
--			page = alloc_page(GFP_HIGHUSER);
-+			page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
- 			if (!page)
- 				return -ENOMEM;
- 
 -- 
-2.17.1
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
