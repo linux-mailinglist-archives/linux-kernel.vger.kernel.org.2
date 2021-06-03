@@ -2,263 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB2D399844
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64AD399846
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhFCC4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:56:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49582 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFCC4D (ORCPT
+        id S229620AbhFCC4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:56:13 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54171 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229541AbhFCC4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:56:03 -0400
-Received: from mail-pl1-f197.google.com ([209.85.214.197])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <koba.ko@canonical.com>)
-        id 1lodUw-0004Up-Dk
-        for linux-kernel@vger.kernel.org; Thu, 03 Jun 2021 02:54:18 +0000
-Received: by mail-pl1-f197.google.com with SMTP id 37-20020a1709020328b02900f916f1d504so1987488pld.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:54:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mw+siqoTUjrd2Ed54WevdVgzIPvaVKMKX23ULyv1JWs=;
-        b=iOE0mAcj9KtRMUK6xx15VayvsZFNjfhyNsveFNKf7ExmrOgckf/nqs/cZdRWzg1HFT
-         thic+RbKaADcMnzDB53Xrx3YO2zx+WcvYjtCo4r7kCTU/dZ5xqMQMUYdH9vQxgGHLKRG
-         FjHgq0zH8v7bsyVpgPcGIQXRranbW2P6rSrRkFKEvh7vBz+RFR9GYE2s47WrlJOBXyxA
-         inMI5ezQJw9ZWHBOb/m2znzgTmfl5t14FY46hE2IX6tcKdPxR4sodERSYJozkzrQ5k/X
-         7/Jjz7WvV5dzrAAAHFTwXAyROIwhQs5NwoGo5fRHbNpsoNSMzbZ8K4BYSgtlICnCPUpp
-         ye+Q==
-X-Gm-Message-State: AOAM532bX7C77AOlzZz1TVZKcUQ5vOIAbTKlVrRZyNfQVnK/WpbKNCat
-        a/7qd4UhFA99CT3BDOLm/2pU69+uZAtpviQOfPfoWPU3Mi8nzCBuAfJGcMxgB/rZJHbkAdqIcpc
-        gTh5pH95OM4+EyP+NJSgpOAOxPJVdrgYBbF64L2YQDA==
-X-Received: by 2002:a17:90b:3587:: with SMTP id mm7mr32577906pjb.71.1622688856955;
-        Wed, 02 Jun 2021 19:54:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNx3bzFrgiDyC9RROwaF6Ib2BOfmglttAokA/csgymay2MwlGh+eY8SgBNf9we4FSp+GR9pw==
-X-Received: by 2002:a17:90b:3587:: with SMTP id mm7mr32577880pjb.71.1622688856593;
-        Wed, 02 Jun 2021 19:54:16 -0700 (PDT)
-Received: from canonical.com (61-220-137-34.HINET-IP.hinet.net. [61.220.137.34])
-        by smtp.gmail.com with ESMTPSA id o24sm942570pgl.55.2021.06.02.19.54.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 19:54:16 -0700 (PDT)
-From:   Koba Ko <koba.ko@canonical.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] r8169: introduce polling method for link change
-Date:   Thu,  3 Jun 2021 10:54:14 +0800
-Message-Id: <20210603025414.226526-1-koba.ko@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 2 Jun 2021 22:56:13 -0400
+X-UUID: 05c7891aec4c4d7c963a539b75deee66-20210603
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=T1f3ciz9FJ4+c/XRklk7ljIC8zMrcEktrNSPUm0vuD8=;
+        b=PIDq4YzCmHMgZC8LQ2xeznDU81jF9iTSuYwjaUGtzWj3LKC+sEq717XiH92YKAcI5IxcRBiKAdEDMvya3DqmMeFC8IpEm1kV5dDGy5olQPGaYg3LDPt/xZacc23A5e/ZLSBER6+rwg6ACd6vVY1bblILovg7yOE5n9ZHp0dGyN8=;
+X-UUID: 05c7891aec4c4d7c963a539b75deee66-20210603
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 869516845; Thu, 03 Jun 2021 10:54:26 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 3 Jun 2021 10:54:25 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 3 Jun 2021 10:54:25 +0800
+Message-ID: <1622688865.7096.6.camel@mtkswgap22>
+Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer
+ requests send/compl paths
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 3 Jun 2021 10:54:25 +0800
+In-Reply-To: <1621845419-14194-3-git-send-email-cang@codeaurora.org>
+References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+         <1621845419-14194-3-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For RTL8106E, it's a Fast-ethernet chip.
-If ASPM is enabled, the link chang interrupt wouldn't be triggered
-immediately and must wait a very long time to get link change interrupt.
-Even the link change interrupt isn't triggered, the phy link is already
-established.
-
-Introduce a polling method to watch the status of phy link and disable
-the link change interrupt.
-Also add a quirk for those realtek devices have the same issue.
-
-Signed-off-by: Koba Ko <koba.ko@canonical.com>
----
- drivers/net/ethernet/realtek/r8169.h      |   2 +
- drivers/net/ethernet/realtek/r8169_main.c | 112 ++++++++++++++++++----
- 2 files changed, 98 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
-index 2728df46ec41..a8c71adb1b57 100644
---- a/drivers/net/ethernet/realtek/r8169.h
-+++ b/drivers/net/ethernet/realtek/r8169.h
-@@ -11,6 +11,8 @@
- #include <linux/types.h>
- #include <linux/phy.h>
- 
-+#define RTL8169_LINK_TIMEOUT (1 * HZ)
-+
- enum mac_version {
- 	/* support for ancient RTL_GIGA_MAC_VER_01 has been removed */
- 	RTL_GIGA_MAC_VER_02,
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 2c89cde7da1e..70aacc83d641 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -178,6 +178,11 @@ static const struct pci_device_id rtl8169_pci_tbl[] = {
- 
- MODULE_DEVICE_TABLE(pci, rtl8169_pci_tbl);
- 
-+static const struct pci_device_id rtl8169_linkChg_polling_enabled[] = {
-+	{ PCI_VDEVICE(REALTEK, 0x8136), RTL_CFG_NO_GBIT },
-+	{ 0 }
-+};
-+
- enum rtl_registers {
- 	MAC0		= 0,	/* Ethernet hardware address. */
- 	MAC4		= 4,
-@@ -618,6 +623,7 @@ struct rtl8169_private {
- 	u16 cp_cmd;
- 	u32 irq_mask;
- 	struct clk *clk;
-+	struct timer_list link_timer;
- 
- 	struct {
- 		DECLARE_BITMAP(flags, RTL_FLAG_MAX);
-@@ -1179,6 +1185,16 @@ static void rtl8168ep_stop_cmac(struct rtl8169_private *tp)
- 	RTL_W8(tp, IBCR0, RTL_R8(tp, IBCR0) & ~0x01);
- }
- 
-+static int rtl_link_chng_polling_quirk(struct rtl8169_private *tp)
-+{
-+	struct pci_dev *pdev = tp->pci_dev;
-+
-+	if (pdev->vendor == 0x10ec && pdev->device == 0x8136 && !tp->supports_gmii)
-+		return 1;
-+
-+	return 0;
-+}
-+
- static void rtl8168dp_driver_start(struct rtl8169_private *tp)
- {
- 	r8168dp_oob_notify(tp, OOB_CMD_DRIVER_START);
-@@ -4608,6 +4624,75 @@ static void rtl_task(struct work_struct *work)
- 	rtnl_unlock();
- }
- 
-+static void r8169_phylink_handler(struct net_device *ndev)
-+{
-+	struct rtl8169_private *tp = netdev_priv(ndev);
-+
-+	if (netif_carrier_ok(ndev)) {
-+		rtl_link_chg_patch(tp);
-+		pm_request_resume(&tp->pci_dev->dev);
-+	} else {
-+		pm_runtime_idle(&tp->pci_dev->dev);
-+	}
-+
-+	if (net_ratelimit())
-+		phy_print_status(tp->phydev);
-+}
-+
-+static unsigned int
-+rtl8169_xmii_link_ok(struct net_device *dev)
-+{
-+	struct rtl8169_private *tp = netdev_priv(dev);
-+	unsigned int retval;
-+
-+	retval = (RTL_R8(tp, PHYstatus) & LinkStatus) ? 1 : 0;
-+
-+	return retval;
-+}
-+
-+static void
-+rtl8169_check_link_status(struct net_device *dev)
-+{
-+	struct rtl8169_private *tp = netdev_priv(dev);
-+	int link_status_on;
-+
-+	link_status_on = rtl8169_xmii_link_ok(dev);
-+
-+	if (netif_carrier_ok(dev) == link_status_on)
-+		return;
-+
-+	phy_mac_interrupt(tp->phydev);
-+
-+	r8169_phylink_handler (dev);
-+}
-+
-+static void rtl8169_link_timer(struct timer_list *t)
-+{
-+	struct rtl8169_private *tp = from_timer(tp, t, link_timer);
-+	struct net_device *dev = tp->dev;
-+	struct timer_list *timer = t;
-+	unsigned long flags;
-+
-+	rtl8169_check_link_status(dev);
-+
-+	if (timer_pending(&tp->link_timer))
-+		return;
-+
-+	mod_timer(timer, jiffies + RTL8169_LINK_TIMEOUT);
-+}
-+
-+static inline void rtl8169_delete_link_timer(struct net_device *dev, struct timer_list *timer)
-+{
-+	del_timer_sync(timer);
-+}
-+
-+static inline void rtl8169_request_link_timer(struct net_device *dev)
-+{
-+	struct rtl8169_private *tp = netdev_priv(dev);
-+
-+	timer_setup(&tp->link_timer, rtl8169_link_timer, TIMER_INIT_FLAGS);
-+}
-+
- static int rtl8169_poll(struct napi_struct *napi, int budget)
- {
- 	struct rtl8169_private *tp = container_of(napi, struct rtl8169_private, napi);
-@@ -4624,21 +4709,6 @@ static int rtl8169_poll(struct napi_struct *napi, int budget)
- 	return work_done;
- }
- 
--static void r8169_phylink_handler(struct net_device *ndev)
--{
--	struct rtl8169_private *tp = netdev_priv(ndev);
--
--	if (netif_carrier_ok(ndev)) {
--		rtl_link_chg_patch(tp);
--		pm_request_resume(&tp->pci_dev->dev);
--	} else {
--		pm_runtime_idle(&tp->pci_dev->dev);
--	}
--
--	if (net_ratelimit())
--		phy_print_status(tp->phydev);
--}
--
- static int r8169_phy_connect(struct rtl8169_private *tp)
- {
- 	struct phy_device *phydev = tp->phydev;
-@@ -4769,6 +4839,10 @@ static int rtl_open(struct net_device *dev)
- 		goto err_free_irq;
- 
- 	rtl8169_up(tp);
-+
-+	if (rtl_link_chng_polling_quirk(tp))
-+		mod_timer(&tp->link_timer, jiffies + RTL8169_LINK_TIMEOUT);
-+
- 	rtl8169_init_counter_offsets(tp);
- 	netif_start_queue(dev);
- out:
-@@ -4991,7 +5065,10 @@ static const struct net_device_ops rtl_netdev_ops = {
- 
- static void rtl_set_irq_mask(struct rtl8169_private *tp)
- {
--	tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
-+	tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
-+
-+	if (!rtl_link_chng_polling_quirk(tp))
-+		tp->irq_mask |= LinkChg;
- 
- 	if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
- 		tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
-@@ -5436,6 +5513,9 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (pci_dev_run_wake(pdev))
- 		pm_runtime_put_sync(&pdev->dev);
- 
-+	if (rtl_link_chng_polling_quirk(tp))
-+		rtl8169_request_link_timer(dev);
-+
- 	return 0;
- }
- 
--- 
-2.25.1
+SGkgQ2FuLA0KDQpPbiBNb24sIDIwMjEtMDUtMjQgYXQgMDE6MzYgLTA3MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IEN1cnJlbnQgVUZTIElSUSBoYW5kbGVyIGlzIGNvbXBsZXRlbHkgd3JhcHBlZCBieSBo
+b3N0IGxvY2ssIGFuZCBiZWNhdXNlDQo+IHVmc2hjZF9zZW5kX2NvbW1hbmQoKSBpcyBhbHNvIHBy
+b3RlY3RlZCBieSBob3N0IGxvY2ssIHdoZW4gSVJRIGhhbmRsZXINCj4gZmlyZXMsIG5vdCBvbmx5
+IHRoZSBDUFUgcnVubmluZyB0aGUgSVJRIGhhbmRsZXIgY2Fubm90IHNlbmQgbmV3IHJlcXVlc3Rz
+LA0KPiB0aGUgcmVzdCBDUFVzIGNhbiBuZWl0aGVyLiBNb3ZlIHRoZSBob3N0IGxvY2sgd3JhcHBp
+bmcgdGhlIElSUSBoYW5kbGVyIGludG8NCj4gc3BlY2lmaWMgYnJhbmNoZXMsIGkuZS4sIHVmc2hj
+ZF91aWNfY21kX2NvbXBsKCksIHVmc2hjZF9jaGVja19lcnJvcnMoKSwNCj4gdWZzaGNkX3RtY19o
+YW5kbGVyKCkgYW5kIHVmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoKS4gTWVhbndoaWxlLCB0byBm
+dXJ0aGVyDQo+IHJlZHVjZSBvY2NwdWF0aW9uIG9mIGhvc3QgbG9jayBpbiB1ZnNoY2RfdHJhbnNm
+ZXJfcmVxX2NvbXBsKCksIGhvc3QgbG9jayBpcw0KPiBubyBsb25nZXIgcmVxdWlyZWQgdG8gY2Fs
+bCBfX3Vmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoKS4gQXMgcGVyIHRlc3QsIHRoZQ0KPiBvcHRp
+bWl6YXRpb24gY2FuIGJyaW5nIGNvbnNpZGVyYWJsZSBnYWluIHRvIHJhbmRvbSByZWFkL3dyaXRl
+IHBlcmZvcm1hbmNlLg0KPiANCj4gQ2M6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRl
+ay5jb20+DQo+IENvLWRldmVsb3BlZC1ieTogQXN1dG9zaCBEYXMgPGFzdXRvc2hkQGNvZGVhdXJv
+cmEub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBBc3V0b3NoIERhcyA8YXN1dG9zaGRAY29kZWF1cm9y
+YS5vcmc+DQo+IFNpZ25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQoN
+CkFjY29yZGluZyB0byBteSB0ZXN0LCB0aGUgcGVyZm9ybWFuY2UgaW5kZWVkIGhhcyBpbXByZXNz
+aXZlIGltcHJvdmVtZW50DQp3aXRoIHRoaXMgc2VyaWVzIQ0KDQpSZXZpZXdlZC1ieTogU3Rhbmxl
+eSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCg0KDQoNCg0KPiAgI2VuZGlmDQo+ICAN
+Cj4gIAlib29sIHJlcV9hYm9ydF9za2lwOw0KPiAtCWJvb2wgaW5fdXNlOw0KPiAgfTsNCj4gIA0K
+PiAgLyoqDQoNCg==
 
