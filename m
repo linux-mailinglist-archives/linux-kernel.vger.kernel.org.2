@@ -2,147 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E9339A574
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B301D39A584
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhFCQLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:11:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42652 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhFCQLu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:11:50 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id AABEC1FD5F;
-        Thu,  3 Jun 2021 16:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622736604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+MnzhJx6fIYTr/UbIrpDb8TXouK1cYBl9I4mhUEFxE=;
-        b=V5pnjcF7GIxExaoG7yEWuUsP7xIFQhHM9xNUoDHvceYrWEw562g3knUt8YckhQZrJfctoa
-        Nw/QWrzgXuBLFd8wnlCodgOjtk62SeI4Fy3jvZjITpIBsiEJXUITFN06vB56UFhO/9JGxu
-        VvSbN3u9imI1iX+ciJOMs4aB0t3Rdus=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622736604;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+MnzhJx6fIYTr/UbIrpDb8TXouK1cYBl9I4mhUEFxE=;
-        b=K36Pyj/2RiPj3Zh7YWZ96mrmJZdpPvDD4jXCO9ypy5we2RQElMJSF8DBjSJKZ5/1cirili
-        PjhWsXZjHi0MNzCg==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 58B42A3B87;
-        Thu,  3 Jun 2021 16:10:04 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2898F1F2C96; Thu,  3 Jun 2021 18:10:04 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 18:10:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-Subject: Re: [LKP] [ext4] 05c2c00f37: aim7.jobs-per-min -11.8% regression
-Message-ID: <20210603161004.GL23647@quack2.suse.cz>
-References: <20210227120804.GB22871@xsang-OptiPlex-9020>
- <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
- <20210520095119.GA18952@quack2.suse.cz>
- <e9f776c4-1ade-42a6-54c4-7fe3442e2392@linux.intel.com>
- <20210521092730.GE18952@quack2.suse.cz>
- <YKfi6Pv+qwduKxuT@mit.edu>
- <20210525092205.GA4112@quack2.suse.cz>
- <20210531165746.GA2610@quack2.suse.cz>
+        id S230053AbhFCQPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:15:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhFCQPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 12:15:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CBA66135D;
+        Thu,  3 Jun 2021 16:13:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622736835;
+        bh=oy5ydTPfTDR/G+eayzloFwE8KarET66/fooyad/r0Bk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aDjtSKf8Cb4W8yoI2XuWwrxNuaQ4ONoW2FCxFQSXyXlTD2C5nLj8QlLrSt/jI8xkS
+         Cu6AoXvceAhkY1nO3PrwZLKgpKAu+pB6tDsuKIFnXVUCeFurzaRULQxS3yAzD0nO7c
+         R2uZdDqAopmGGq6p9lgQUCsBhg3G5MoL2uhz9tZtqavoO1TxbotibiZNlPDhtrYEY8
+         JTdaU/LmPhJ85QVm4CdG9qxoIvTChtQpWr+0c1Xl6jJRq5jD7Q4W78mUl7+xLMaBon
+         JWy+a08agfrAllB/iNZUDooko+StGEU3UyA3nCxr3aKw64OtFZ7NOZio9X53jXxaC7
+         //00yhaf4coSw==
+Date:   Thu, 3 Jun 2021 09:13:53 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: add compress_inode to
+ cache compressed blocks
+Message-ID: <YLj/wWEFj793rgLY@google.com>
+References: <2c4db877-b5e6-1139-98b5-be2d9e7872be@kernel.org>
+ <YK0DVi4aTNdXDN3L@google.com>
+ <dda2400f-4a06-0ef6-b4f5-8aafe86bd81d@huawei.com>
+ <YK5Mewfb3gMg1yGM@google.com>
+ <5140516c-e4c6-fd6a-69b2-7566c903cb53@kernel.org>
+ <YLZc0y0S3sGkU6f4@google.com>
+ <YLZt+rFClf7xEzOa@google.com>
+ <09fa74d3-a9df-028f-3ebc-2b845e5cd609@kernel.org>
+ <YLek7U+BaFvHhz58@google.com>
+ <eb52cab7-d9b3-c84b-1c7b-8fee463b06c5@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210531165746.GA2610@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <eb52cab7-d9b3-c84b-1c7b-8fee463b06c5@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 31-05-21 18:57:46, Jan Kara wrote:
-> On Tue 25-05-21 11:22:05, Jan Kara wrote:
-> > On Fri 21-05-21 12:42:16, Theodore Y. Ts'o wrote:
-> > > On Fri, May 21, 2021 at 11:27:30AM +0200, Jan Kara wrote:
-> > > > 
-> > > > OK, thanks for testing. So the orphan code is indeed the likely cause of
-> > > > this regression but I probably did not guess correctly what is the
-> > > > contention point there. Then I guess I need to reproduce and do more
-> > > > digging why the contention happens...
+On 06/03, Chao Yu wrote:
+> On 2021/6/2 23:34, Jaegeuk Kim wrote:
+> > On 06/02, Chao Yu wrote:
+> > > On 2021/6/2 1:27, Jaegeuk Kim wrote:
+> > > > On 06/01, Jaegeuk Kim wrote:
+> > > > > On 05/26, Chao Yu wrote:
+> > > > > > On 2021/5/26 21:26, Jaegeuk Kim wrote:
+> > > > > > > On 05/26, Chao Yu wrote:
+> > > > > > > > On 2021/5/25 22:01, Jaegeuk Kim wrote:
+> > > > > > > > > On 05/25, Chao Yu wrote:
+> > > > > > > > > > On 2021/5/25 21:02, Jaegeuk Kim wrote:
+> > > > > > > > > > > On 05/25, Jaegeuk Kim wrote:
+> > > > > > > > > > > > On 05/25, Chao Yu wrote:
+> > > > > > > > > > > > > Also, and queue this?
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Easy to get this?
+> > > > > > > > > > > 
+> > > > > > > > > > > need GFP_NOFS?
+> > > > > > > > > > 
+> > > > > > > > > > Not sure, I use __GFP_IO intentionally here to avoid __GFP_RECLAIM from
+> > > > > > > > > > GFP_NOFS, because in low memory case, I don't want to instead page cache
+> > > > > > > > > > of normal file with page cache of sbi->compress_inode.
+> > > > > > > > > > 
+> > > > > > > > > > What is memory size in your vm?
+> > > > > > > > > 
+> > > > > > > > > 4GB. If I set GFP_NOFS, I don't see the error anymore, at least.
+> > > > > > > > 
+> > > > > > > > I applied below patch and don't see the warning message anymore.
+> > > > > > > > 
+> > > > > > > > ---
+> > > > > > > >     fs/f2fs/compress.c | 2 +-
+> > > > > > > >     1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > > > > > > index 701dd0f6f4ec..ed5b7fabc604 100644
+> > > > > > > > --- a/fs/f2fs/compress.c
+> > > > > > > > +++ b/fs/f2fs/compress.c
+> > > > > > > > @@ -1703,7 +1703,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > > > > >     	avail_ram = si.totalram - si.totalhigh;
+> > > > > > > > 
+> > > > > > > >     	/* free memory is lower than watermark, deny caching compress page */
+> > > > > > > > -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
+> > > > > > 
+> > > > > > This is buggy, because sbi->compress_watermark equals to 20, so that
+> > > > > > sbi->compress_watermark / 100 * avail_ram always be zero...
+> > > > > > 
+> > > > > > After this change, if free ram is lower, we may just skip caching
+> > > > > > compressed blocks here.
+> > > > > 
+> > > > > Can we move this in f2fs_available_free_memory()?
 > > > 
-> > > Hmm... what if we only recalculate the superblock checksum when we do
-> > > a commit, via the callback function from the jbd2 layer to file
-> > > system?
+> > > More clean.
+> > > 
+> > > One comment below:
+> > > 
+> > > > 
+> > > > Testing this.
+> > > > 
+> > > > ---
+> > > >    fs/f2fs/compress.c | 14 +-------------
+> > > >    fs/f2fs/node.c     | 11 ++++++++++-
+> > > >    fs/f2fs/node.h     |  1 +
+> > > >    3 files changed, 12 insertions(+), 14 deletions(-)
+> > > > 
+> > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > > index 9fd62a0a646b..455561826c7d 100644
+> > > > --- a/fs/f2fs/compress.c
+> > > > +++ b/fs/f2fs/compress.c
+> > > > @@ -1688,8 +1688,6 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > >    {
+> > > >    	struct page *cpage;
+> > > >    	int ret;
+> > > > -	struct sysinfo si;
+> > > > -	unsigned long free_ram, avail_ram;
+> > > >    	if (!test_opt(sbi, COMPRESS_CACHE))
+> > > >    		return;
+> > > > @@ -1697,17 +1695,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > >    	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> > > >    		return;
+> > > > -	si_meminfo(&si);
+> > > > -	free_ram = si.freeram;
+> > > > -	avail_ram = si.totalram - si.totalhigh;
+> > > > -
+> > > > -	/* free memory is lower than watermark, deny caching compress page */
+> > > > -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
+> > > > -		return;
+> > > > -
+> > > > -	/* cached page count exceed threshold, deny caching compress page */
+> > > > -	if (COMPRESS_MAPPING(sbi)->nrpages >=
+> > > 
+> > > Need to cover COMPRESS_MAPPING() with CONFIG_F2FS_FS_COMPRESSION.
 > > 
-> > I actually have to check whether the regression is there because of the
-> > additional locking of the buffer_head (because that's the only thing that
-> > was added to that code in fact, adding some atomic instructions, bouncing
-> > another cacheline) or because of the checksum computation that moved from
-> > ext4_handle_dirty_super() closer to actual superblock update under those
-> > locks.
+> > Added like this.
+> > 
+> > --- a/fs/f2fs/node.c
+> > +++ b/fs/f2fs/node.c
+> > @@ -99,6 +99,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+> >                                  sizeof(struct discard_cmd)) >> PAGE_SHIFT;
+> >                  res = mem_size < (avail_ram * nm_i->ram_thresh / 100);
+> >          } else if (type == COMPRESS_PAGE) {
+> > +#ifdef CONFIG_F2FS_FS_COMPRESSION
 > 
-> So I did a few experiments on my test machine. I saw the biggest regression
-> for creat_clo workload for 7 threads. The results look like:
+> How about adding free_ram definition and assigment here?
 > 
->                          orig                   patched                hack1                  hack2
-> Hmean     creat_clo-7    36458.33 (   0.00%)    23836.55 * -34.62%*    32608.70 * -10.56%*    37300.18 (   2.31%)
+> unsigned long free_ram = val.freeram;
+
+Done.
+
 > 
-> where hack1 means I've removed the lock_buffer() calls from orphan handling
-> code and hack2 means I've additionally moved checksum recalculation from
-> under orphan lock. Take the numbers with a grain of salt as they are rather
-> variable and this is just an average of 5 runs but the tendency is pretty
-> clear. Both these changes contribute to the regression significantly,
-> additional locking of the buffer head contributes somewhat more.
+> Thanks,
 > 
-> I will see how various variants of reducing the contention look like (e.g.
-> if just using bh lock for everything helps at all). But honestly I don't
-> want to jump through too big hoops just for this workload - the orphan list
-> contention is pretty pathological here and if we seriously care about
-> workload like this we should rather revive the patchset with hashed orphan
-> list I wrote couple years back... That was able to give like 3x speedup to
-> workloads like this.
-
-So I did some more testing. I've found out that due to a configuration
-mistake ramdisk created for previous round of test was tiny (8M instead of
-8G) so I've now rerun all the tests and a few more:
-
-                         Orig                   Patched                Hack1                  Hack2                  BH orphan lock
-Hmean     creat_clo-1    12875.54 (   0.00%)    12765.96 (  -0.85%)    12765.96 (  -0.85%)    12820.51 (  -0.43%)    12875.54 (   0.00%)
-Hmean     creat_clo-2    20761.25 (   0.00%)    19736.84 *  -4.93%*    20408.16 (  -1.70%)    19736.84 *  -4.93%*    20477.82 (  -1.37%)
-Hmean     creat_clo-3    22727.27 (   0.00%)    22500.00 (  -1.00%)    24390.24 (   7.32%)    23255.81 (   2.33%)    21176.47 (  -6.82%)
-Hmean     creat_clo-4    27149.32 (   0.00%)    24539.88 *  -9.61%*    27272.73 (   0.45%)    25806.45 (  -4.95%)    21660.65 * -20.22%*
-Hmean     creat_clo-5    32397.41 (   0.00%)    27985.08 * -13.62%*    28957.53 ( -10.62%)    29821.07 *  -7.95%*    23771.79 * -26.62%*
-Hmean     creat_clo-6    33898.30 (   0.00%)    30769.23 (  -9.23%)    30981.07 (  -8.61%)    31858.41 (  -6.02%)    26086.96 * -23.04%*
-Hmean     creat_clo-7    29005.52 (   0.00%)    29661.02 (   2.26%)    30746.71 (   6.00%)    33175.35 (  14.38%)    24970.27 ( -13.91%)
-Hmean     creat_clo-8    30573.25 (   0.00%)    32000.00 (   4.67%)    29702.97 (  -2.85%)    34139.40 (  11.66%)    23668.64 * -22.58%*
-
-Similarly to previous test, 'Orig' is the original state before 05c2c00f37,
-'Patched' is a state after commit 05c2c00f37, 'Hack1' is 05c2c00f37 but with
-lock_buffer() calls removed from orphan handling, 'Hack2' is 05c2c00f37 with
-lock_buffer() calls removed and checksumming moved from under orphan_lock,
-'BH orphan lock' is 05c2c00f37 with orphan_lock replaced with sb buffer
-lock.
-
-As we can see with fixed filesystem size, the regression isn't actually
-that big anymore but it about matches what 0-day reported. Replacing orphan
-lock with superblock buffer_head lock makes things even much worse - not
-really surprising given we are replacing optimized mutex implementation
-with a bitlock. Just removing buffer lock (Hack1 test) doesn't seem to
-improve the results noticeably so that is not a problem. Moving
-checksumming out from under the orphan_lock would probably help noticeably
-(Hack2 test) but there's the problem when to compute checksums for
-nojournal mode and also we'd need to be very careful with all the other
-places updating superblock so that they serialize against orphan operations
-so that they cannot invalidate the checksum - IMO not very compelling.
-
-So as we chatted on today's call probably the best option is to leave the
-code as is for now and instead work on moving away from orphan list
-altogether. I'll revive my patches to do that.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> >                  /*
+> >                   * free memory is lower than watermark or cached page count
+> >                   * exceed threshold, deny caching compress page.
+> > @@ -106,6 +107,9 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+> >                  res = (free_ram > avail_ram * sbi->compress_watermark / 100) &&
+> >                          (COMPRESS_MAPPING(sbi)->nrpages <
+> >                           free_ram * sbi->compress_percent / 100);
+> > +#else
+> > +               res = false;
+> > +#endif
+> >          } else {
+> >                  if (!sbi->sb->s_bdi->wb.dirty_exceeded)
+> >                          return true;
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > > -			free_ram / 100 * sbi->compress_percent)
+> > > > +	if (!f2fs_available_free_memory(sbi, COMPRESS_PAGE))
+> > > >    		return;
+> > > >    	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
+> > > > diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> > > > index 3a8f7afa5059..67093416ce9c 100644
+> > > > --- a/fs/f2fs/node.c
+> > > > +++ b/fs/f2fs/node.c
+> > > > @@ -45,7 +45,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+> > > >    	struct f2fs_nm_info *nm_i = NM_I(sbi);
+> > > >    	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
+> > > >    	struct sysinfo val;
+> > > > -	unsigned long avail_ram;
+> > > > +	unsigned long avail_ram, free_ram;
+> > > >    	unsigned long mem_size = 0;
+> > > >    	bool res = false;
+> > > > @@ -56,6 +56,7 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+> > > >    	/* only uses low memory */
+> > > >    	avail_ram = val.totalram - val.totalhigh;
+> > > > +	free_ram = val.freeram;
+> > > >    	/*
+> > > >    	 * give 25%, 25%, 50%, 50%, 50% memory for each components respectively
+> > > > @@ -97,6 +98,14 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+> > > >    		mem_size = (atomic_read(&dcc->discard_cmd_cnt) *
+> > > >    				sizeof(struct discard_cmd)) >> PAGE_SHIFT;
+> > > >    		res = mem_size < (avail_ram * nm_i->ram_thresh / 100);
+> > > > +	} else if (type == COMPRESS_PAGE) {
+> > > > +		/*
+> > > > +		 * free memory is lower than watermark or cached page count
+> > > > +		 * exceed threshold, deny caching compress page.
+> > > > +		 */
+> > > > +		res = (free_ram > avail_ram * sbi->compress_watermark / 100) &&
+> > > > +			(COMPRESS_MAPPING(sbi)->nrpages <
+> > > > +			 free_ram * sbi->compress_percent / 100);
+> > > >    	} else {
+> > > >    		if (!sbi->sb->s_bdi->wb.dirty_exceeded)
+> > > >    			return true;
+> > > > diff --git a/fs/f2fs/node.h b/fs/f2fs/node.h
+> > > > index d85e8659cfda..84d45385d1f2 100644
+> > > > --- a/fs/f2fs/node.h
+> > > > +++ b/fs/f2fs/node.h
+> > > > @@ -148,6 +148,7 @@ enum mem_type {
+> > > >    	EXTENT_CACHE,	/* indicates extent cache */
+> > > >    	INMEM_PAGES,	/* indicates inmemory pages */
+> > > >    	DISCARD_CACHE,	/* indicates memory of cached discard cmds */
+> > > > +	COMPRESS_PAGE,	/* indicates memory of cached compressed pages */
+> > > >    	BASE_CHECK,	/* check kernel status */
+> > > >    };
+> > > > 
