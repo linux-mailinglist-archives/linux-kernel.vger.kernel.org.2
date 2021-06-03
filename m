@@ -2,138 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6F939AC6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C9A39AC71
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFCVQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:16:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhFCVQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:16:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74340613EA;
-        Thu,  3 Jun 2021 21:14:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622754865;
-        bh=CxBbmUenIBFNJFx7O27MK3tssmpiShEcuKEzQF2jLcc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pu+42oUaDgPWMp7MbNEM8xQNlCSB4wtURC8zRbNB49a3mi5KACYdlWJbmsDGU48kZ
-         O8wIwObqvk8vw32O9if29gFFEgwqQ5/3SGupaV0giSYgLLCQhUGaUpAu8+Rb1IhI0u
-         LQrmp7hx25jk5wmAJjHpK06rJe3EZyAyLfWUWpVXZ9UEZWawWmJ2HqTTa1lvVwXuvY
-         a+HXTz7RAoSTLSGyw8NEJWU81Ly8TX8Aa/2LB33QEk2qI0flAtcJn02n9NQaDxHeA/
-         KDl6lM8p+OWtIcotDQ+SKamUdGokysMRnXVL2k+LKtKh+nr5pF2Kwhvv4xJrVjYbId
-         ELSUUEv172uXg==
-Subject: Re: [PATCH v2 1/1] pgo: Fix allocate_node() v2
-To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Cc:     morbo@google.com
-References: <20210603133853.5383-1-jarmo.tiitto@gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <d7e94352-0b24-1ab1-8b54-b6ffd4347963@kernel.org>
-Date:   Thu, 3 Jun 2021 14:14:24 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S230114AbhFCVQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:16:15 -0400
+Received: from mail-mw2nam12on2089.outbound.protection.outlook.com ([40.107.244.89]:47681
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230055AbhFCVQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 17:16:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JPbXfnnfyMaJDN/v5S6EiRpDd1mnyXlwHpX4ZSX1YUzSx/oe4YqTZAocw05PGqoaSPBI+g7t/vcIPXiK6er29EmiYQfm8uGxG6qrfUaeMgTNmSFNMzgohhVyenneOzyIBUi4oJYZvEKayXxLhBMb3rS7GPNm2hx81zwi0KgfwuEJvnnm+6FfhLLtUR6k8igdM/U/47DRYOqZ0n4Mn4p+BSLyxODlbQGD8LYvuhHXjxZMMyJWVMJyPeuux1SxOZd3IJaGumE3UDj8fWl2ue7fNxt1G4s6eIaag6cS2sdzsmNSxYJL60borLDqm0oC/6a5/GR6GZph9QU//znI6/bcWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M1RkRmP6TgTWx7eexbejDpjD/2DRihWpeo5KcWB+Ja4=;
+ b=R0BZuEQJreM2GskvecR3FZdzqKJDvsQx6GPlBR7vnM4sXMr0H0ZaU84Zk5fvs+yPGdegHQmA945ifvkcm5P7vaXCGHlT7XlX9Ki9BWlPAMHkTYUcMQmW8apfAEfxYYogwmNOowE3X5aVA5K0LlCokEz8xPivWoS4yzTJdW3f2SxtIDszrLJsad9J6mklm6pqVqBYrIGl82cFCIn3CHGLGghzON9EzGjBACRtuvKua4MxzJ+QtY+9dTDCyeERV3cwD3XO7CgXbw8K4zwMQbpu3Uw+7p1EoOaZOVUB3dS6THunmUKpwA4CVe3xBTqw9yUMMQvudw3HOR9APWI/NlyJIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M1RkRmP6TgTWx7eexbejDpjD/2DRihWpeo5KcWB+Ja4=;
+ b=Uhi/CiUxRTJDnFABTKOa4J0uw5UWQdej7Bwk5/epQvZc3z1QhV38vS0C3/BXSRMsMDp/oSEw5DH5pmjfYTLJ8rXFV5xRSK2jxYJC2oQpzsr1vkT0AGGpyDvo519JnJoLdjg+cgoOMyC3p0yy/D41yh3oub12yc9SyyJSKXlbDxU=
+Authentication-Results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR12MB1748.namprd12.prod.outlook.com (2603:10b6:404:105::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Thu, 3 Jun
+ 2021 21:14:27 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::453f:6e2a:468d:ad6e]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::453f:6e2a:468d:ad6e%5]) with mapi id 15.20.4173.030; Thu, 3 Jun 2021
+ 21:14:27 +0000
+Date:   Thu, 3 Jun 2021 17:14:25 -0400
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>, linux-edac@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] EDAC/mce_amd: Fix typo "FIfo" -> "Fifo"
+Message-ID: <20210603211425.GB1410@aus-x-yghannam.amd.com>
+References: <20210603103349.79117-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603103349.79117-1-colin.king@canonical.com>
+X-Originating-IP: [165.204.25.250]
+X-ClientProxiedBy: BN6PR1201CA0016.namprd12.prod.outlook.com
+ (2603:10b6:405:4c::26) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-In-Reply-To: <20210603133853.5383-1-jarmo.tiitto@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aus-x-yghannam.amd.com (165.204.25.250) by BN6PR1201CA0016.namprd12.prod.outlook.com (2603:10b6:405:4c::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend Transport; Thu, 3 Jun 2021 21:14:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e03d3339-9ab1-4af5-7b12-08d926d491bc
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1748:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB1748A90325C730164E3DEAFBF83C9@BN6PR12MB1748.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9gs0Gq6GDJ0g0Pk7VnYSCpk4M/evIE8F23ingHt/2gg9kbDXnb5t2GZ1HeE0DZJCfVFOpU2Ug6kYrgeZBnAr1EKIzn7QCrIXjanfkuSxgQg59dJyNcdXRs8L7d7wwcDcZm3/CRR9uyvOrClZzMm4fyLMhPiGlZpXXNzk0ZA833RpYdP6ZPdjp5IHuLtkWAZLw5msWhgp9EA3jw1t2vUByWD0F+6l9HYcOoCISKAO1eisztY8jc7T2yKy4dTLBzFDV+PFVBmOMcZmZIUEbnd0GMfHuopnniARC/rWINtVAiz/VJkEdjBvBEiGKoGyACRUFY8qyCmMUT2JIcdBsgSYMf/f5EznQyWFaoHzqMVbpuSSUzmWxSAR+FKehTJ9y7bZmtvpb/xgVNnmZDCnNn8AAXDF9qJBmk6XIwYySpslYxUrBlkxL+Wnfa8Wy2/4NXRxhIgj86OfhBrqyqEifLkrdw4OgJ5VDdytW66PJjG/Pf3MGzrApoZ3olIvbvsrPiMzRi5qllxrpgMqOvwvJwiDmYbvpyvFN9FYQgxgIQ+zVozjYtVABJ76604Mz8/SRKsHWA/AEZVPcm6oPbHFITvyxlhRpFUbiZtocwH8xryyewoxJOWXokngsZFJcpii8qa8XmtRA4iOiIbkhHV6pwRtXWffgu4Cb5WecjJCZSvkF7k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(136003)(366004)(376002)(396003)(83380400001)(16526019)(6916009)(33656002)(38100700002)(38350700002)(956004)(86362001)(44832011)(66946007)(54906003)(55016002)(8936002)(8676002)(66476007)(26005)(7696005)(4744005)(5660300002)(52116002)(4326008)(478600001)(1076003)(2906002)(316002)(186003)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PRxKQfgs9BCsuyxx4dNY6t5CagO+PUZI76yOMK2SEwtvFgeQvvrNahqGF/ie?=
+ =?us-ascii?Q?2vwvZkyOyL53VN8f/ELqsQ5UYNzVPO3pv2mVMEfyp0/vsmUZwIrmGpdS1BPX?=
+ =?us-ascii?Q?IjpRSjAs1vOesNEYLw6HcCyKxQrbmmrPfdzYsDStkmCIcIAjA95Uz461xXIk?=
+ =?us-ascii?Q?Xg3CBS9zIHzeGx+/Da7I30+QKgsSACHFmmS7I27Hp6oDY6AOYZvoypS+7jEw?=
+ =?us-ascii?Q?/4eaK/63PLtrHpZjtkgi7MI/Js4ElmC1xH/ioQUhhOL/h0oOoOQophDEMByZ?=
+ =?us-ascii?Q?JgYS2m1uP6RJ9dBE98D3CtKCehwPmNvqaRy9JDUBdRCSX3vg+UrL7w96S20B?=
+ =?us-ascii?Q?KYOoNL9jh615cBVYs+h7mIyQ9aWsAlYn/PjrwLroV2z0fzZWGM3Uw5DSBxa6?=
+ =?us-ascii?Q?5p7z8l0NBpbOV30Z0h/dRKIK8taOgBF+6P0VH/hi3BtsUtzGSsRbl5Sw1ga6?=
+ =?us-ascii?Q?KHhkVkk1o8YK07QpnsUz+6wZl1KeHji9mo+uVEqfs+xAKR78wsMtuSLGJKXI?=
+ =?us-ascii?Q?hM0chhiyM/Rsvj1eR+y3mROE/DISXh41e4TcQK0ZWfxQvn0ify1MnxGVTuEQ?=
+ =?us-ascii?Q?L7m44JSQqAJu6m6IGeQmbRckO1QqO3bA0iSg9Sswb4E32/ORKyAhQZUK4d1j?=
+ =?us-ascii?Q?lbavYnCVRTHtgnLcIHZPWanFNlD3ji7ox9D9pR1hYFcIopoiZ99YuxVQPIoM?=
+ =?us-ascii?Q?+GnSwblk4sWwe7GKq7IzjrxX42HAerpmn82URJ1CvYEstRVhgliLv24Qrvlr?=
+ =?us-ascii?Q?XDmqh4GhndnKsRia+UXBe5kFoLrGkUXqD7OC/UPcZjRxyv/445xx252ajMnt?=
+ =?us-ascii?Q?J9uSRPnq0iiXYH9/gLQbyMx51rRjDO5YtJsKXyjA125leoqczlBt/QIJHOE3?=
+ =?us-ascii?Q?GjW/74RlYi5gLdZMzJ2oD5z+pKkNJCczObuGXli7y1JBbqWIfvjGmqM7toC9?=
+ =?us-ascii?Q?EoaYIGOX5c6e1v0wdVzU+x94L5P/NzqV7cjxGcATDthT5wCbcfdDxtN31WWJ?=
+ =?us-ascii?Q?Jx5mM4Jg+ZdCkhCjExze1jhWD4WmqiLpT+s0+ryydHqEg0K4M0XopZkZ+RfD?=
+ =?us-ascii?Q?e/0HpSk36aS+yj4bmeCAjvaMknbRuIcJR/n9jUyr1kP6Hb6a+4aWB6MDzUnc?=
+ =?us-ascii?Q?H/eef/eA3o4cxpm9XM1/VRVzcG2SRqka5u3FmZOzoWZc1me26Fxjp7mcK0Z9?=
+ =?us-ascii?Q?lo3b2S2hZDKZHrfKhuieeX/gTvdlBSHWXaIHZRj0qXSkrHn5MatGlDBeVGbS?=
+ =?us-ascii?Q?ucdwBjIa/s+FMEi7TV+ZevZeXqbxZUl8wyVzq/Z6KzE5HmzulyVIchA95rKt?=
+ =?us-ascii?Q?Zt3ZEiBOHEn0kxzw5wq7Pu9+?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e03d3339-9ab1-4af5-7b12-08d926d491bc
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 21:14:27.1065
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l2R+sw7kSkWL0kp8Ey6jIQaSGcefiI0ebHrA2mczRYkjcTjXdKeO7mhoas01NNNZiYxb1omulurf7P+9fSuysA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1748
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/2021 6:38 AM, Jarmo Tiitto wrote:
-> Based on Kees and others feedback here is v2 patch
-> that clarifies why the current checks in allocate_node()
-> are flawed. I did fair amount of KGDB time on it.
+On Thu, Jun 03, 2021 at 11:33:49AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> When clang instrumentation eventually calls allocate_node()
-> the struct llvm_prf_data *p argument tells us from what section
-> we should reserve the vnode: It either points into vmlinux's
-> core __llvm_prf_data section or some loaded module's
-> __llvm_prf_data section.
+> There is an uppercase letter I in the text instead of a lowercase
+> one. Fix this.
 > 
-> But since we don't have access to corresponding
-> __llvm_prf_vnds section(s) for any module, the function
-> should return just NULL and ignore any profiling attempts
-> from modules for now.
-> 
-> Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
-
-I agree with Nick on the comments about the commit message. A few more 
-small nits below, not sure they necessitate a v3, up to you. Thank you 
-for the patch!
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->   kernel/pgo/instrument.c | 21 ++++++++++++---------
->   1 file changed, 12 insertions(+), 9 deletions(-)
+>  drivers/edac/mce_amd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
-> index 0e07ee1b17d9..afe9982b07a3 100644
-> --- a/kernel/pgo/instrument.c
-> +++ b/kernel/pgo/instrument.c
-> @@ -23,6 +23,7 @@
->   #include <linux/export.h>
->   #include <linux/spinlock.h>
->   #include <linux/types.h>
-> +#include <asm-generic/sections.h>
+> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
+> index 43ba0f931629..27d56920b469 100644
+> --- a/drivers/edac/mce_amd.c
+> +++ b/drivers/edac/mce_amd.c
+> @@ -431,7 +431,7 @@ static const char * const smca_xgmipcs_mce_desc[] = {
+>  	"Replay Buffer Parity Error",
+>  	"Data Parity Error",
+>  	"Replay Fifo Overflow Error",
+> -	"Replay FIfo Underflow Error",
+> +	"Replay Fifo Underflow Error",
+>  	"Elastic Fifo Overflow Error",
+>  	"Deskew Error",
+>  	"Flow Control CRC Error",
+> -- 
 
-Not sure that it actually matters but I think this should be
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
 
-#include <asm/sections.h>
+Thanks!
 
-instead. Might be nice to keep this sorted by moving it to the top as well.
-
->   #include "pgo.h"
->   
->   /*
-> @@ -55,17 +56,19 @@ void prf_unlock(unsigned long flags)
->   static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
->   						 u32 index, u64 value)
->   {
-> -	if (&__llvm_prf_vnds_start[current_node + 1] >= __llvm_prf_vnds_end)
-> -		return NULL; /* Out of nodes */
-> -
-> -	current_node++;
-> -
-> -	/* Make sure the node is entirely within the section */
-> -	if (&__llvm_prf_vnds_start[current_node] >= __llvm_prf_vnds_end ||
-> -	    &__llvm_prf_vnds_start[current_node + 1] > __llvm_prf_vnds_end)
-> +	const int max_vnds = prf_vnds_count();
-
-A blank line between this variable and the comment below would look nice.
-
-> +	/* Check that p is within vmlinux __llvm_prf_data section. > +	 * If not, don't allocate since we can't handle modules yet.
-> +	 */
-
-For every subsystem except for netdev, there should be a blank line at 
-the beginning of a comment. In other works:
-
-/*
-  * Check that p is within vmlinux __llvm_prf_data section.
-  * If not, don't allocate since we can't handle modules yet.
-  */
-
-> +	if (!memory_contains(__llvm_prf_data_start,
-> +		__llvm_prf_data_end, p, sizeof(*p)))
->   		return NULL;
->   
-> -	return &__llvm_prf_vnds_start[current_node];
-> +	if (WARN_ON_ONCE(current_node >= max_vnds))
-> +		return NULL; /* Out of nodes */
-> +
-> +	/* reserve vnode for vmlinux */
-> +	return &__llvm_prf_vnds_start[current_node++];
->   }
->   
->   /*
+-Yazen
 > 
-> base-commit: 5d0cda65918279ada060417c5fecb7e86ccb3def
-> 
-
