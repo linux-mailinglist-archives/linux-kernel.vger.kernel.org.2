@@ -2,141 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D68C399DED
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E859399DEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhFCJk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhFCJk0 (ORCPT
+        id S229727AbhFCJkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:40:39 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2975 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhFCJki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:40:26 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15A1C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 02:38:32 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so5129973pjp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 02:38:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OJVx2e8jat3LPO0MA1mW/6NjqK86xYwclQVAjIDvpFA=;
-        b=kBobC8J/q1beY+q9QDF5JLY0qin7W7RjZ64fi3os6tbVPFzE0I4A5pxH7B9owHQj5M
-         ClyOMue/B/dQFcY7pookBtDqUSCxiDECsajGir9/wigxLOstMCZOq7opaxxoBS/T/q6b
-         Os1MNKphrsEx3mN9zOOqPn7kOSmCV9UIKm5yKi7AlHtMRPTVji+jk/87RfTqjaXWhydb
-         zt9iiK+T1Ia+DQ8st4rSUnXKjiy8GwD8p6e6hooP5WkDyxHbC4Ubxdazdcg9LwAp5ZLM
-         KR2sijgKvtrPoQM4du14qPgLE6AJrVu2Qogt9NNysFBKzRbGZ/yPc06QgqF87DmSom4M
-         eIew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OJVx2e8jat3LPO0MA1mW/6NjqK86xYwclQVAjIDvpFA=;
-        b=AXuKkSJBxtGGhCt9MvaTRYjZL+a+qBO0jWs75krX0YNOlkK4wtXji7RZtx+BpmE5CU
-         pB4wAJFndsk9ZaS9m/IJ/VyLAzcXkb9OKDG4OV+U/FMCYOp/3N45G6JCbtYG2Evs/JGu
-         /HoK2QvoVsZQGMCpOGu4xrbIm/0Yth3BujjCCBq+ZsIFwd1nAw7aAx/H7jpuloaLYEnJ
-         xUbiIOd4rN28ZVb8YIHPtF186r4RBQeDhGU1nYky0e2TLNndKRaASljr20AdVX77uzSb
-         yC2XGhs+ihWnb7G/jGXUvqKkm13aBS4mGMSJ18PuP1pbyxsJ2LWa9zYsxSpMgBIcGKUm
-         avRw==
-X-Gm-Message-State: AOAM530uHt/do6Lo7b0IjUEbb5FvpPYtcopivXkLAeSp5BOY0u0JKd2N
-        RBqLAhZyeE00Wr/dbDUqP19+mQ==
-X-Google-Smtp-Source: ABdhPJzQ32iQ8G9hEXLzGLpc27HQPuir4y1ykDqoWbVXwHhz3UjreiRgIwLCksgyAtEczTsEilwa7A==
-X-Received: by 2002:a17:90a:5507:: with SMTP id b7mr10062739pji.27.1622713112150;
-        Thu, 03 Jun 2021 02:38:32 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id s23sm1712113pjg.15.2021.06.03.02.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 02:38:31 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     ChiYuan Huang <cy_huang@richtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: rt6160: Convert to use regulator_set_ramp_delay_regmap
-Date:   Thu,  3 Jun 2021 17:38:09 +0800
-Message-Id: <20210603093809.1108629-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 3 Jun 2021 05:40:38 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FwgkK4zVLz6tlp;
+        Thu,  3 Jun 2021 17:35:53 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 17:38:52 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 17:38:51 +0800
+Subject: Re: [PATCH v2 7/7] ARM: mm: Fix PXN process with LPAE feature
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jungseung Lee <js07.lee@gmail.com>
+References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
+ <20210602070246.83990-8-wangkefeng.wang@huawei.com>
+ <20210602105255.GK30436@shell.armlinux.org.uk>
+ <62f08378-85e7-2a07-3fd0-b287047ce1b5@huawei.com>
+ <20210602155843.GN30436@shell.armlinux.org.uk>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <c9c4a8ec-da51-4de9-4404-b5bf7f017441@huawei.com>
+Date:   Thu, 3 Jun 2021 17:38:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210602155843.GN30436@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use regulator_set_ramp_delay_regmap instead of open-coded.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/rt6160-regulator.c | 35 +++++++---------------------
- 1 file changed, 9 insertions(+), 26 deletions(-)
+On 2021/6/2 23:58, Russell King (Oracle) wrote:
+> On Wed, Jun 02, 2021 at 11:13:14PM +0800, Kefeng Wang wrote:
+>>    IFSR format when using the Short-descriptor translation table format
+>>
+>>      Domain fault      01001            First level   01011     Second level
+>>
+>>      Permission fault 01101            First level   01111     Second level
+>>
+>>    IFSR format when using the Long-descriptor translation table format
+>>
+>>     0011LL Permission fault. LL bits indicate levelb.
+>>
+>> After check the ARM spec, I think for the permission fault,  we should panic
+>> with or without LPAE, will change to
+> As I explained in one of the previous patches, the page tables that get
+> used for mapping kernel space are the _tasks_ own page tables. Any new
+> kernel mappings are lazily copied to the task page tables - such as
+> when a module is loaded.
+>
+> The first time we touch a page, we could end up with a page translation
+> fault. This will call do_page_fault(), and so with your proposal,
+> loading a module will potentially cause a kernel panic in this case,
+> probably leading to systems that panic early during userspace boot.
 
-diff --git a/drivers/regulator/rt6160-regulator.c b/drivers/regulator/rt6160-regulator.c
-index 4588ae0748a5..69550284083d 100644
---- a/drivers/regulator/rt6160-regulator.c
-+++ b/drivers/regulator/rt6160-regulator.c
-@@ -46,6 +46,10 @@ struct rt6160_priv {
- 	bool enable_state;
- };
- 
-+static const unsigned int rt6160_ramp_tables[] = {
-+	1000, 2500, 5000, 10000
-+};
+Could we add some FSR_FS check， only panic when the permission fault， eg，
+
++static inline bool is_permission_fault(unsigned int fsr)
++{
++       int fs = fsr_fs(fsr);
++#ifdef CONFIG_ARM_LPAE
++       if ((fs & FS_PERM_NOLL_MASK) == FS_PERM_NOLL)
++               return true;
++#else
++       if (fs == FS_L1_PERM || fs == )
++               return true;
++#endif
++       return false;
++}
 +
- static int rt6160_enable(struct regulator_dev *rdev)
- {
- 	struct rt6160_priv *priv = rdev_get_drvdata(rdev);
-@@ -140,31 +144,6 @@ static int rt6160_set_suspend_voltage(struct regulator_dev *rdev, int uV)
- 	return regmap_update_bits(regmap, reg, RT6160_VSEL_MASK, vsel);
- }
- 
--static int rt6160_set_ramp_delay(struct regulator_dev *rdev, int target)
--{
--	struct regmap *regmap = rdev_get_regmap(rdev);
--	const int ramp_tables[] = { 1000, 2500, 5000, 10000 };
--	unsigned int i, sel;
--
--	/* Find closest larger or equal */
--	for (i = 0; i < ARRAY_SIZE(ramp_tables); i++) {
--		sel = i;
--
--		/* If ramp delay is equal to 0, directly set ramp speed to fastest */
--		if (target == 0) {
--			sel = ARRAY_SIZE(ramp_tables) - 1;
--			break;
--		}
--
--		if (target <= ramp_tables[i])
--			break;
--	}
--
--	sel <<= ffs(RT6160_RAMPRATE_MASK) - 1;
--
--	return regmap_update_bits(regmap, RT6160_REG_CNTL, RT6160_RAMPRATE_MASK, sel);
--}
--
- static int rt6160_get_error_flags(struct regulator_dev *rdev, unsigned int *flags)
- {
- 	struct regmap *regmap = rdev_get_regmap(rdev);
-@@ -203,7 +182,7 @@ static const struct regulator_ops rt6160_regulator_ops = {
- 	.set_mode = rt6160_set_mode,
- 	.get_mode = rt6160_get_mode,
- 	.set_suspend_voltage = rt6160_set_suspend_voltage,
--	.set_ramp_delay = rt6160_set_ramp_delay,
-+	.set_ramp_delay = regulator_set_ramp_delay_regmap,
- 	.get_error_flags = rt6160_get_error_flags,
- };
- 
-@@ -292,6 +271,10 @@ static int rt6160_probe(struct i2c_client *i2c)
- 	priv->desc.vsel_reg = RT6160_REG_VSELH;
- 	priv->desc.vsel_mask = RT6160_VSEL_MASK;
- 	priv->desc.n_voltages = RT6160_N_VOUTS;
-+	priv->desc.ramp_reg = RT6160_REG_CNTL;
-+	priv->desc.ramp_mask = RT6160_RAMPRATE_MASK;
-+	priv->desc.ramp_delay_table = rt6160_ramp_tables;
-+	priv->desc.n_ramp_values = ARRAY_SIZE(rt6160_ramp_tables);
- 	priv->desc.of_map_mode = rt6160_of_map_mode;
- 	priv->desc.ops = &rt6160_regulator_ops;
- 	if (priv->vsel_active_low)
--- 
-2.25.1
+  static int __kprobes
+  do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+  {
+@@ -255,8 +268,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, 
+struct pt_regs *regs)
 
+         if (fsr & FSR_LNX_PF) {
+                 vm_flags = VM_EXEC;
+-
+-               if (!user_mode(regs))
++               if (is_permission_fault && !user_mode(regs))
+                         die_kernel_fault("execution of memory",
+                                          mm, addr, fsr, regs);
+         }
+
+diff --git a/arch/arm/mm/fault.h b/arch/arm/mm/fault.h
+index 9ecc2097a87a..187954b4acca 100644
+--- a/arch/arm/mm/fault.h
++++ b/arch/arm/mm/fault.h
+@@ -14,6 +14,8 @@
+
+  #ifdef CONFIG_ARM_LPAE
+  #define FSR_FS_AEA             17
++#define FS_PERM_NOLL           0xC
++#define FS_PERM_NOLL_MASK      0x3C
+
+  static inline int fsr_fs(unsigned int fsr)
+  {
+@@ -21,6 +23,8 @@ static inline int fsr_fs(unsigned int fsr)
+  }
+  #else
+  #define FSR_FS_AEA             22
++#define FS_L1_PERM             0xD
++#define FS_L2_PERM             0xF
+
+and suggestion or proper solution to solve the issue？
+
+>
