@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD4B39A5A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D087B39A59D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhFCQVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:21:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:45146 "EHLO foss.arm.com"
+        id S229845AbhFCQUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:20:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhFCQVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:21:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5066E11B3;
-        Thu,  3 Jun 2021 09:19:46 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1BE83F73D;
-        Thu,  3 Jun 2021 09:19:44 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 17:19:39 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     l.stach@pengutronix.de, andrew.smirnov@gmail.com,
-        shawnguo@kernel.org, kw@linux.com, bhelgaas@google.com,
-        stefan@agner.ch, linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, robh@kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: imx6q-pcie: Add "vph-supply" for PHY
- supply voltageg
-Message-ID: <20210603161939.GA19835@lpieralisi>
-References: <1622183383-3287-1-git-send-email-hongxing.zhu@nxp.com>
- <1622183383-3287-2-git-send-email-hongxing.zhu@nxp.com>
+        id S229506AbhFCQU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 12:20:29 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44611613D2;
+        Thu,  3 Jun 2021 16:18:41 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 17:20:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Meng.Li@windriver.com
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, pmeerw@pmeerw.net,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Subject: Re: [PATCH] driver: adc: ltc2497: return directly after reading the
+ adc conversion value
+Message-ID: <20210603172025.314b5ced@jic23-huawei>
+In-Reply-To: <20210601092805.18385-1-Meng.Li@windriver.com>
+References: <20210601092805.18385-1-Meng.Li@windriver.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622183383-3287-2-git-send-email-hongxing.zhu@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 02:29:42PM +0800, Richard Zhu wrote:
-> The i.MX8MQ PCIe PHY can use either a 1.8V or a 3.3V power supply.
-> Add a "vph-supply" property to indicate which regulator supplies
-> power for the PHY.
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt | 3 +++
->  1 file changed, 3 insertions(+)
+On Tue,  1 Jun 2021 17:28:05 +0800
+Meng.Li@windriver.com wrote:
 
-For DT bindings you must CC devicetree@vger.kernel.org, please resend.
+> From: Meng Li <Meng.Li@windriver.com>
+> 
+> When read adc conversion value with below command:
+> cat /sys/.../iio:device0/in_voltage0-voltage1_raw
+> There is an error reported as below:
+> ltc2497 0-0014: i2c transfer failed: -EREMOTEIO
+> This i2c transfer issue is introduced by commit 69548b7c2c4f ("iio:
+> adc: ltc2497: split protocol independent part in a separate module").
+> When extract the common code into ltc2497-core.c, it change the
+> code logic of function ltc2497core_read(). With wrong reading
+> sequence, the action of enable adc channel is sent to chip again
+> during adc channel is in conversion status. In this way, there is
+> no ack from chip, and then cause i2c transfer failed.
+> In order to keep the code logic is the same with original ideal,
+> it is need to return direct after reading the adc conversion value.
+> 
+> v2:
+> According to ltc2497 datasheet, the max value of conversion time is
+> 149.9 ms. So, add 20% to the 150msecs so that there is enough time
+> for data conversion.
+
+Version change logs go below the --- as we don't want to preserve them
+forever in the git history.
+
+I may have lost track of the discussion, but I thought the idea was that perhaps
+the longer time period would remove the need for the early return?
 
 Thanks,
-Lorenzo
 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> index de4b2baf91e8..d8971ab99274 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> @@ -38,6 +38,9 @@ Optional properties:
->    The regulator will be enabled when initializing the PCIe host and
->    disabled either as part of the init process or when shutting down the
->    host.
-> +- vph-supply: Should specify the regulator in charge of VPH one of the three
-> +  PCIe PHY powers. This regulator can be supplied by both 1.8v and 3.3v voltage
-> +  supplies.
->  
->  Additional required properties for imx6sx-pcie:
->  - clock names: Must include the following additional entries:
-> -- 
-> 2.17.1
+Jonathan
 > 
+> Fixes: 69548b7c2c4f ("iio: adc: ltc2497: split protocol independent part in a separate module ")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+> ---
+>  drivers/iio/adc/ltc2497.c | 2 ++
+>  drivers/iio/adc/ltc2497.h | 2 +-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/ltc2497.c b/drivers/iio/adc/ltc2497.c
+> index 1adddf5a88a9..fd5a66860a47 100644
+> --- a/drivers/iio/adc/ltc2497.c
+> +++ b/drivers/iio/adc/ltc2497.c
+> @@ -41,6 +41,8 @@ static int ltc2497_result_and_measure(struct ltc2497core_driverdata *ddata,
+>  		}
+>  
+>  		*val = (be32_to_cpu(st->buf) >> 14) - (1 << 17);
+> +
+> +		return ret;
+>  	}
+>  
+>  	ret = i2c_smbus_write_byte(st->client,
+> diff --git a/drivers/iio/adc/ltc2497.h b/drivers/iio/adc/ltc2497.h
+> index d0b42dd6b8ad..e451930837d8 100644
+> --- a/drivers/iio/adc/ltc2497.h
+> +++ b/drivers/iio/adc/ltc2497.h
+> @@ -2,7 +2,7 @@
+>  
+>  #define LTC2497_ENABLE			0xA0
+>  #define LTC2497_CONFIG_DEFAULT		LTC2497_ENABLE
+> -#define LTC2497_CONVERSION_TIME_MS	150ULL
+> +#define LTC2497_CONVERSION_TIME_MS	180ULL
+>  
+>  struct ltc2497core_driverdata {
+>  	struct regulator *ref;
+
