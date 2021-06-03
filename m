@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E747C39AA42
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9192539AA44
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhFCSoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:44:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
+        id S230162AbhFCSoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:44:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230128AbhFCSoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:44:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA9E613BA;
-        Thu,  3 Jun 2021 18:42:32 +0000 (UTC)
+        id S230129AbhFCSoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:44:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05366613E3;
+        Thu,  3 Jun 2021 18:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622745753;
-        bh=3KdWGBPvkJwUZ0r2CJ97kkuVeCB4zB3ZQdgB2okBzhs=;
+        s=k20201202; t=1622745755;
+        bh=/2lVcoMomY359dN1VAbK/0PvRcfNCHXPjJD7BjmQ4QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KbRTFPL3rfLaZVtxX1oDPfQnIVEsb9pZgY59BmX3i5xXNK4jE4C6yAOpdrC0RnMre
-         e074+HnLYuYYczRDzhjNp/fxSCZANOAVTrPHDWt5qrtxA80dgStIW4Hrs3M/PFfeKC
-         6R9reoGGJ6JfQYuAxaiOAWiT2rYrlWAvrgct31Yl70GdM5eyo37vkOjwnR3Pc9QQld
-         q9T/DCymTuGxaRLjgyXQivlRvl7eB5VACO9wCugcEnAjFeDMVCB8Nax+140W/najTj
-         aAvEfXmtxqdoWVW2pj7hk0wJQct6L6Gzt139ag0Q3RZQMp+cJUA5q4N6VPPqKHoOfR
-         N9d6hzUPovERg==
+        b=iqUlVxV2F3jEqObyb4qDwolSRUT3TZdHKrNMLnXlMPiJaDYR1tSPrytUJE8YdKUI5
+         oBZi3Cvm+FWkK0FFNAqe8rKQqxkaD7nYEM6CGeEwbTQsQv3dmUkdioj6mZAwBb7ljY
+         IKHu+v93rQwjCG6HiqvmFl3RvULnrB04/bR3SHVhRF5JBL1Ar7qLucXdbjZzBnc1kX
+         PkoxGGeIF4yT6K1uAmITX/vR2QYExKmY6xcuB9B4V/Lw8dPJxMOgW5ahfrssShuMSw
+         eD1lAnxVerF/ZLe7Pq4SQadxHcnHzI6go7pZluTbSW/b/gqfYLMPXmdiqRh/UmDgIY
+         yZqt5q3XpN6/g==
 From:   Mark Brown <broonie@kernel.org>
 To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: bd9576: Constify the voltage tables
-Date:   Thu,  3 Jun 2021 19:41:50 +0100
-Message-Id: <162274566700.14958.6483450138806989060.b4-ty@kernel.org>
+        ChiYuan Huang <cy_huang@richtek.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL
+Date:   Thu,  3 Jun 2021 19:41:51 +0100
+Message-Id: <162274566701.14958.10688450781965712146.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210525100405.2506483-1-axel.lin@ingics.com>
-References: <20210525100405.2506483-1-axel.lin@ingics.com>
+In-Reply-To: <20210603094944.1114156-1-axel.lin@ingics.com>
+References: <20210603094944.1114156-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,8 +42,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 18:04:05 +0800, Axel Lin wrote:
-> Also use unsigned int instead of int for the voltage tables.
+On Thu, 3 Jun 2021 17:49:44 +0800, Axel Lin wrote:
+> devm_gpiod_get_array_optional may return NULL if no GPIO was assigned.
 
 Applied to
 
@@ -51,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: bd9576: Constify the voltage tables
-      commit: 6041d5fe512cd6ceaf730cdfa1786f2bc9b5b1b5
+[1/1] regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL
+      commit: cb2381cbecb81a8893b2d1e1af29bc2e5531df27
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
