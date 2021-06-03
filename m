@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D15399AF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F750399AF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhFCGt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:49:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhFCGtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 977A9613B4;
-        Thu,  3 Jun 2021 06:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622702861;
-        bh=whQ5awbfuf7TtbPdUWFwRctWP18k3gRZdJxFleFXT4o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BcWqz17SJhPIKm5LyoKTIC46oMedZf+LuOoFcwvZMgK6dNeENmuU385rSWx2VQdEf
-         jBD7i9H7C1Tvy0CKuWnCmoxNNYxa69AYDYbQ+aE1fNZO6+FZ2iQYrY0S7qpRlDd97R
-         gpuQfP8s9bENHKxQxKMJb6+q44LvXoG//md61u3rSjMW5d1mxXr+DvA1uP3A18Ybqp
-         pFDR8dcqIpXrvax7NxMI9lh4u0CJYp9UshBirA5NOmkRI0r7Ly2wz0cXWWwe0MczTm
-         t+315o11WUsIl2jWywiKhT73gaEgYGjbWDCjx4wkgU5b4uCl3xTzsz1FBkyd695ORO
-         RaRGp4Vy98Rdw==
-Date:   Thu, 3 Jun 2021 09:47:38 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, zohar@linux.ibm.com, nayna@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/2] Add support for ECDSA-signed kernel modules
-Message-ID: <20210603064738.pwfq3n7erzmncdmw@kernel.org>
-References: <20210602143537.545132-1-stefanb@linux.ibm.com>
+        id S229758AbhFCGu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFCGu4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 02:50:56 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDB6C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 23:48:54 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id e1so2365344pld.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 23:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2iWLIuP7OKecPhyH76mPQ1jEgA38aQDAwKIavoDRN/s=;
+        b=TPnfIOFBGcYjEh9ERq0OZHQTTwvZySY2cbP7/BCaYp3NBkdEhMBLgtjHZmym0ixxEc
+         k9KujWM95g8vZviWJPy4bvNxQCbJMVTm4XHv0d4kMA0OqnkEgVujJql2s+ta+uUtZ83M
+         cW9PF8nNZFCOXsNpQzO9tTcSekujyFG/CzokE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2iWLIuP7OKecPhyH76mPQ1jEgA38aQDAwKIavoDRN/s=;
+        b=uVjr5llmBpiab9gmUO7cyWbmFm490d5SdAXj0IxlDazDwHELiqR+ZjsERJOsFx0v1x
+         iQkL9qY2bNwuySFQ2W+10VIB52Tm0t6nQlYUFeD39zN6x14PwPyU0xGaNIhb1esu63XB
+         FHRQwu4W0RtlLfy1vXokItrqX5+InT4k/Fqv28Sk3UvsTdbrlGwC0DmdZztT0AiItgIJ
+         8nLB2xxjy5VUOFlO0h+9SuXM0R/EW90Zuvbf4ba40DbyuxRmvY6005FziAWRHak6B7MT
+         cUIRNQBWi5zaPvPtWprjQy+Qi0kXYm39YMz4rxjRwsVxBAO23Q1FyNImFu4wEBpItdt9
+         +jQg==
+X-Gm-Message-State: AOAM532aJ7jgVPBAxlVCEEOC7wysRfcd5g7XgrFjjenM1bVWX+GyxqJ5
+        yfUTFU3GaLcOtuLXTp+tqHQbSg==
+X-Google-Smtp-Source: ABdhPJycEpDd6sKWgHuHytP9Tud9xOmBTuh5STdm6mFkgd8rBSlGBtF2QFS1LvU7r5ON55kE147iNA==
+X-Received: by 2002:a17:902:7e4e:b029:f0:d949:8ab3 with SMTP id a14-20020a1709027e4eb02900f0d9498ab3mr34281272pln.40.1622702930740;
+        Wed, 02 Jun 2021 23:48:50 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:7d6f:aade:22b5:5a63])
+        by smtp.gmail.com with ESMTPSA id p36sm1632743pgm.74.2021.06.02.23.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 23:48:50 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH] driver core: Make dev_info() messages dev_dbg()
+Date:   Wed,  2 Jun 2021 23:48:49 -0700
+Message-Id: <20210603064849.1376107-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602143537.545132-1-stefanb@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 10:35:35AM -0400, Stefan Berger wrote:
-> This series adds support for ECDSA-signed kernel modules. It also
-> attempts to address a kbuild issue where a developer created an ECDSA
-> key for signing kernel modules and then builds an older version of the
-> kernel, when bisecting the kernel for example, that does not support
-> ECDSA keys.
-> 
-> The first patch addresses the kbuild issue of needing to delete that
-> ECDSA key if it is in certs/signing_key.pem and trigger the creation
-> of an RSA key. However, for this to work this patch would have to be
-> backported to previous versions of the kernel but would also only work
-> for the developer if he/she used a stable version of the kernel to which
-> this patch was applied. So whether this patch actually achieves the
-> wanted effect is not always guaranteed.
-> 
-> The 2nd patch adds the support for the ECSDA-signed kernel modules.
-> 
-> This patch depends on the ECDSA support series currently queued here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/log/?h=ecc
-> 
->   Stefan
-> 
-> v5:
->   - do not touch the key files if openssl is not installed; likely
->     addresses an issue pointed out by kernel test robot
-> 
-> v4:
->   - extending 'depends on' with MODULES to (IMA_APPRAISE_MODSIG && MODULES)
->   
-> v3:
->   - added missing OIDs for ECDSA signed hashes to pkcs7_sig_note_pkey_algo
->   - added recommendation to use string hash to Kconfig help text
-> 
-> v2:
->   - Adjustment to ECDSA key detector string in 2/2
->   - Rephrased cover letter and patch descriptions with Mimi
-> 
-> 
-> Stefan Berger (2):
->   certs: Trigger creation of RSA module signing key if it's not an RSA
->     key
->   certs: Add support for using elliptic curve keys for signing modules
-> 
->  certs/Kconfig                         | 26 ++++++++++++++++++++++++++
->  certs/Makefile                        | 21 +++++++++++++++++++++
->  crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
->  3 files changed, 55 insertions(+)
-> 
-> -- 
-> 2.29.2
-> 
-> 
+These seem to mostly print debug information about device link stuff at
+boot. They don't seem very useful outside of debugging so move them to
+dev_dbg().
 
-Please instead send a fix.
+Cc: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/base/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-/Jarkko
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 628e33939aca..066880a843bc 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -865,7 +865,7 @@ static void __device_link_del(struct kref *kref)
+ {
+ 	struct device_link *link = container_of(kref, struct device_link, kref);
+ 
+-	dev_info(link->consumer, "Dropping the link to %s\n",
++	dev_dbg(link->consumer, "Dropping the link to %s\n",
+ 		 dev_name(link->supplier));
+ 
+ 	pm_runtime_drop_link(link);
+@@ -1732,7 +1732,7 @@ static int fw_devlink_create_devlink(struct device *con,
+ 		 */
+ 		if (!device_link_add(con, sup_dev, flags) &&
+ 		    !(flags & DL_FLAG_SYNC_STATE_ONLY)) {
+-			dev_info(con, "Fixing up cyclic dependency with %s\n",
++			dev_dbg(con, "Fixing up cyclic dependency with %s\n",
+ 				 dev_name(sup_dev));
+ 			device_links_write_lock();
+ 			fw_devlink_relax_cycle(con, sup_dev);
+
+base-commit: 5fcd0bc17e451e8f140067131fd12be0f5f1204c
+-- 
+https://chromeos.dev
+
