@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4343C39AE19
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1153139AE1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhFCWcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231200AbhFCWbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:31:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 05FEC6141B;
-        Thu,  3 Jun 2021 22:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622759408;
-        bh=J9wf8zkw1dW/Mu1ya+LKho5I1K9UfTmXpSZ9P1yt9jA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=h2ktKrqVCKHFlHRBAaQkukWAaQ9684BSH+7Ja0791rldEYBdTAQp8cj9+y7QvErvN
-         SsUG7n9/TJICLOpNv27zEaYRlfxhKNXjxWLBzEx/s+qJYsCa6Mqe+CI/1gBvqA1vIP
-         ef7VXO43GLWrytyfYNfVJvAwrc9xS9lVOv/vMo5vnGVLO++61MHXxDboclXthpOFdW
-         ofkBr0mkgcID4rKIG/QobkbmbEf7PNtrCc/vv+AM4Q/xxsrSZAYWnKOigft17pO2VV
-         N/1ZGO9p3OUmaDF3K2lvOW6KmjZWlkCH3agy2pmAqmdw/9lysr33A0c8icmdIvHLJk
-         Ue5hKAeYbSyPA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E97CA60CD2;
-        Thu,  3 Jun 2021 22:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231467AbhFCWeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230158AbhFCWeM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 18:34:12 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BA1C061756;
+        Thu,  3 Jun 2021 15:32:15 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id y15so6001066pfl.4;
+        Thu, 03 Jun 2021 15:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VUfhHlJEUkLIR0EIxU6jXP1bVKyAro32mftomoJHVSQ=;
+        b=dUPVKRvL4ucDTigXFTP29OZzBupoPFAqKnumC/amO0ZZob6v9CW5aE4LOAqGxSf8wr
+         ANTBNXdTwzx5qLAEqsY0zwPXZIx6ivvToN4ROae9vwyVyWlzoasf45Ox7dB46fDqOYZK
+         iPcfopWe8E3qRgMt5BMYXfcgNfns7gNV7kHNZHtew3gwZ2E4NRXEGnNgJQpSwH2iJMCh
+         jaoruUrycy6WDokpMWZC7egJxhYWTzLCjfEThi6hvCdTvxgj0gNN0ZtqrKUrmqIltoux
+         Fk7/XOj4c/3WhFXPst67wIAQXDZxqAKKPpCQdJOlc8SvfBINGYo1sFqzkr2heuecq6pY
+         /Kbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VUfhHlJEUkLIR0EIxU6jXP1bVKyAro32mftomoJHVSQ=;
+        b=MfXYNwKUK3NeWuUpuOoeYbEgXHtTp1FSIcN6iCXbTz1RT7er4vx65zH/o7kTLWYUi/
+         OdCETT17SAgCkK+cTHxkY2jOfBS6rLABAqLM70DM55Gs4JrsvUl+35QviDJ3WpqpLeCd
+         6TXtn4yw1ElUpwBWYcnZu7DkkEyxxTZEQjtBNUpEL6F+Ca2Wh8nx11s+uefQg3rTTuLI
+         yGbwewWbxjtgQlZcHdA6lWblVnsZUtZpbDPXX4+JqXlK4km6GE8KjoWfIvvOCMU025VV
+         J7ARfzpQMMnAzSQVghrrZsd8xp2TWfKrssyqNDV8654VCvB4awOVISbqcyk9HtApl4ix
+         qatg==
+X-Gm-Message-State: AOAM530UhQfw7ovtvn926adnMLaIu7sYfR6GP4cFDhxF7Bd6fCDayD/C
+        gtVLcZmLCcKsNfb0rQawzXSFybbAJmdmWC8KISDO1cNi1H3vPQ==
+X-Google-Smtp-Source: ABdhPJzOTpRU3MtYwgO5eoq3M8jObwOxfDBiaRLRIFQsvqlRRCSPIIi4n0fauN6h3W6Gzr4IxnzGjlhxqWzJRB8nn/Y=
+X-Received: by 2002:a63:571d:: with SMTP id l29mr1628701pgb.179.1622759534685;
+ Thu, 03 Jun 2021 15:32:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] net: ipa: support inline checksum offload
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162275940795.8870.3183008297597746085.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Jun 2021 22:30:07 +0000
-References: <20210602124131.298325-1-elder@linaro.org>
-In-Reply-To: <20210602124131.298325-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, sharathv@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210602192640.13597-1-paskripkin@gmail.com>
+In-Reply-To: <20210602192640.13597-1-paskripkin@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 3 Jun 2021 15:32:03 -0700
+Message-ID: <CAM_iQpU+1UUZhP9wHok4bajmRFeocr8d2mLZ8TtxqwyWuLgMAw@mail.gmail.com>
+Subject: Re: [PATCH] net: kcm: fix memory leak in kcm_sendmsg
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tom Herbert <tom@herbertland.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot+b039f5699bd82e1fb011@syzkaller.appspotmail.com,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Jun 2, 2021 at 12:29 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> Syzbot reported memory leak in kcm_sendmsg()[1].
+> The problem was in non-freed frag_list in case of error.
+>
+> In the while loop:
+>
+>         if (head == skb)
+>                 skb_shinfo(head)->frag_list = tskb;
+>         else
+>                 skb->next = tskb;
+>
+> frag_list filled with skbs, but nothing was freeing them.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+What do you mean by "nothing was freeing them"?
 
-On Wed,  2 Jun 2021 07:41:29 -0500 you wrote:
-> Inline offload--required for checksum offload support on IPA version
-> 4.5 and above--is now supported by the RMNet driver:
->   https://lore.kernel.org/netdev/162259440606.2786.10278242816453240434.git-patchwork-notify@kernel.org/
-> 
-> Add support for it in the IPA driver, and revert the commit that
-> disabled it pending acceptance of the RMNet code.
-> 
-> [...]
+I am sure kfree_skb() will free those in frag_list:
 
-Here is the summary with links:
-  - [net-next,1/2] net: ipa: add support for inline checksum offload
-    https://git.kernel.org/netdev/net-next/c/5567d4d9e738
-  - [net-next,2/2] Revert "net: ipa: disable checksum offload for IPA v4.5+"
-    https://git.kernel.org/netdev/net-next/c/d15ec1933309
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ 654 static void skb_release_data(struct sk_buff *skb)
+ 655 {
+ 656         struct skb_shared_info *shinfo = skb_shinfo(skb);
+ 657         int i;
+...
+ 669         if (shinfo->frag_list)
+ 670                 kfree_skb_list(shinfo->frag_list);
 
 
+>
+> backtrace:
+>   [<0000000094c02615>] __alloc_skb+0x5e/0x250 net/core/skbuff.c:198
+>   [<00000000e5386cbd>] alloc_skb include/linux/skbuff.h:1083 [inline]
+>   [<00000000e5386cbd>] kcm_sendmsg+0x3b6/0xa50 net/kcm/kcmsock.c:967 [1]
+>   [<00000000f1613a8a>] sock_sendmsg_nosec net/socket.c:652 [inline]
+>   [<00000000f1613a8a>] sock_sendmsg+0x4c/0x60 net/socket.c:672
+>
+> Reported-and-tested-by: syzbot+b039f5699bd82e1fb011@syzkaller.appspotmail.com
+> Fixes: ab7ac4eb9832 ("kcm: Kernel Connection Multiplexor module")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  net/kcm/kcmsock.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+> index 6201965bd822..1c572c8daced 100644
+> --- a/net/kcm/kcmsock.c
+> +++ b/net/kcm/kcmsock.c
+> @@ -1066,6 +1066,11 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+>                 goto partial_message;
+>         }
+>
+> +       if (skb_has_frag_list(head)) {
+> +               kfree_skb_list(skb_shinfo(head)->frag_list);
+> +               skb_shinfo(head)->frag_list = NULL;
+> +       }
+> +
+>         if (head != kcm->seq_skb)
+>                 kfree_skb(head);
+
+This exact kfree_skb() should free those in frag_list. If the above
+if condition does not meet for some reason, then fix that condition?
+
+Thanks.
