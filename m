@@ -2,184 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC7239AB3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04AF39AB51
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFCUCF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Jun 2021 16:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhFCUCE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:02:04 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40B8C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 13:00:18 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 631241F434FB
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel@collabora.com, linux-kernel@vger.kernel.org,
-        Guillaume Tucker <gtucker.collabora@gmail.com>,
-        Enric =?utf-8?Q?Balletb=C3=B2?= <enric.balletbo@collabora.com>
-Subject: Re: [RFC PATCH 1/1] drivers: base: Expose probe failures via debugfs
-In-Reply-To: <YLjWKwhp7akqyR1S@kroah.com>
-References: <20210603125534.638672-1-adrian.ratiu@collabora.com>
- <20210603125534.638672-2-adrian.ratiu@collabora.com>
- <YLjWKwhp7akqyR1S@kroah.com>
-Date:   Thu, 03 Jun 2021 23:00:14 +0300
-Message-ID: <87wnrawwfl.fsf@collabora.com>
+        id S230138AbhFCUC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230078AbhFCUC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:02:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5E226140A;
+        Thu,  3 Jun 2021 20:00:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622750441;
+        bh=bL91cu6ogtTyGxRPIZri6Ql+FCiu+SF6QSQHbM1zYpU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Tr2eRL2ruuI3sDRg5RflhkOkyV9mFTujf1VRSwWuWzGKIhZvbVCaAxYpgxsOn967z
+         NSAD7IYMIoOO8cgexRa8htj5TMa5JoT3Wkv0szF26PJNQMzsXvJWAGYrsny6UgxWOB
+         0DSG8won1tshR1VxRhArAz/SO25OQjYrnL5dyQS242aahuCLuEtgIYx6YTOuGDajz0
+         VHL9LXHRxKII0rPps4b8g2l1RYIZFPwbgL/Xx11gmnvOpzM53mf3Uy04x4VbkhOV+Z
+         glYdnkCOfixzeKFSHUpB7CAwyKWxHMoZF81Ql2bUy103FcIKpKZNrY/s3wN0K43mHs
+         i4TDGELShuacg==
+Received: by mail-ej1-f51.google.com with SMTP id a11so10323612ejf.3;
+        Thu, 03 Jun 2021 13:00:41 -0700 (PDT)
+X-Gm-Message-State: AOAM532vyxjdQayA5RHN/BZ3eSM5VLUqqhLnZp8Z0LjUv6v41+SWwB5I
+        gzz1Ys23MifmIGCwdrRsLZQ4Ow6jF77dUPl5Hg==
+X-Google-Smtp-Source: ABdhPJw+IpYqfuukI2sJnNmANmuAWrENFVxO3xUzzlu0fu/6+LhA82SGF/btdHtPoNYDNnkITP5uV0NhDBINu7IILPI=
+X-Received: by 2002:a17:906:1d0a:: with SMTP id n10mr868094ejh.341.1622750440433;
+ Thu, 03 Jun 2021 13:00:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <cover.1622648507.git.mchehab+huawei@kernel.org>
+In-Reply-To: <cover.1622648507.git.mchehab+huawei@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 3 Jun 2021 15:00:29 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKLwfgj1khYFxTykjaYPjbNRd=Ajr-bfEnNYY0cu0Z18A@mail.gmail.com>
+Message-ID: <CAL_JsqKLwfgj1khYFxTykjaYPjbNRd=Ajr-bfEnNYY0cu0Z18A@mail.gmail.com>
+Subject: Re: [PATCH 00/12] Fix broken docs references at next-20210602
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Keerthy <j-keerthy@ti.com>, Lars-Peter Clausen <lars@metafoo.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Peter Rosin <peda@axentia.se>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021, Greg Kroah-Hartman 
-<gregkh@linuxfoundation.org> wrote:
-> On Thu, Jun 03, 2021 at 03:55:34PM +0300, Adrian Ratiu wrote: 
->> This adds a new devices_failed debugfs attribute to list driver 
->> probe failures excepting -EPROBE_DEFER which are still handled 
->> as before via their own devices_deferred attribute. 
-> 
-> Who is going to use this? 
-> 
+On Wed, Jun 2, 2021 at 10:43 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> There are some broken references at today's linux-next with regards
+> to files inside Documentation/.
+>
+> Address them.
 
-It's for KernelCI testing, I explained the background in my other 
-reply.
+I've finally added this to my automated checks, so now anyone that
+breaks this on binding schema patches should get notified (with the
+exception of patches not Cc'ed to the DT list).
 
->> This is useful on automated test systems like KernelCI to avoid 
->> filtering dmesg dev_err() messages to extract potential probe 
->> failures. 
-> 
-> I thought we listed these already some other way today? 
->
-
-The only other place is the printk buffer via dev_err() and only 
-the result subset of -EPROBE_DEFER info is exported via debugfs.
-
-An additional problem with this new interface implementation is 
-that it is based on the new-ish driver core "dev_err_probe" helper 
-to which not all drivers have been converted (yet...), so there 
-will be a mismatch between printk and this new interface.
- 
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org> Cc: "Rafael 
->> J. Wysocki" <rafael@kernel.org> Cc: Guillaume Tucker 
->> <gtucker.collabora@gmail.com> Suggested-by: Enric Balletbò 
->> <enric.balletbo@collabora.com> Signed-off-by: Adrian Ratiu 
->> <adrian.ratiu@collabora.com> --- 
->>  drivers/base/core.c | 76 
->>  +++++++++++++++++++++++++++++++++++++++++++-- 
->>  lib/Kconfig.debug   | 23 ++++++++++++++ 2 files changed, 96 
->>  insertions(+), 3 deletions(-) 
->>  diff --git a/drivers/base/core.c b/drivers/base/core.c index 
->> b8a8c96dca58..74bf057234b8 100644 --- a/drivers/base/core.c +++ 
->> b/drivers/base/core.c @@ -9,7 +9,9 @@ 
->>   */ 
->>   #include <linux/acpi.h> 
->> +#include <linux/circ_buf.h> 
->>  #include <linux/cpufreq.h> 
->> +#include <linux/debugfs.h> 
->>  #include <linux/device.h> #include <linux/err.h> #include 
->>  <linux/fwnode.h> 
->> @@ -53,6 +55,15 @@ static DEFINE_MUTEX(fwnode_link_lock); 
->>  static bool fw_devlink_is_permissive(void); static bool 
->>  fw_devlink_drv_reg_done;  
->> +#ifdef CONFIG_DEBUG_FS_PROBE_ERR +#define 
->> PROBE_ERR_BUF_ELEM_SIZE	64 +#define PROBE_ERR_BUF_SIZE	(1 
->> << CONFIG_DEBUG_FS_PROBE_ERR_BUF_SHIFT) +static struct circ_buf 
->> probe_err_crbuf; +static char 
->> failed_probe_buffer[PROBE_ERR_BUF_SIZE]; +static 
->> DEFINE_MUTEX(failed_probe_mutex); +static struct dentry 
->> *devices_failed_probe; +#endif 
-> 
-> All of this just for a log buffer?  The kernel provides a great 
-> one, printk, let's not create yet-another-log-buffer if at all 
-> possible please.
-
-Yes, that is correct, this is esentially duplicating information 
-already exposed via the printk buffer.
- 
-> 
-> If the existing messages are "hard to parse", what can we do to 
-> make them "easier" that would allow systems to do something with 
-> them? 
-> 
-> What _do_ systems want to do with this information anyway?  What 
-> does it help with exactly? 
->
-
-I know driver core probe error message formats are unlikely to 
-change over time and debugfs in theory is as "stable" as printk, 
-but I think the main concern is to find a a more reliable way than 
-parsing printk to extract probe erros, like for the existing 
-devices_deferred in debugfs.
-
-The idea in my specific case is to be able to reliably run driver 
-tests in KernelCI for expected or unexpected probe errors like 
--EINVAL.
-
->
->
->> +
->>  /**
->>   * fwnode_link_add - Create a link between two fwnode_handles.
->>   * @con: Consumer end of the link.
->> @@ -3769,6 +3780,29 @@ struct device *device_find_child_by_name(struct device *parent,
->>  }
->>  EXPORT_SYMBOL_GPL(device_find_child_by_name);
->>  
->> +/*
->> + * failed_devs_show() - Show devices & drivers which failed to probe.
->> + */
->> +#ifdef CONFIG_DEBUG_FS_PROBE_ERR
->
-> .c files shouldn't have #ifdefs if at all possible, so this patch isn't
-> good for that reason alone :(
->
->
->> +static int failed_devs_show(struct seq_file *s, void *data)
->> +{
->> +	size_t offset;
->> +
->> +	mutex_lock(&failed_probe_mutex);
->> +
->> +	for (offset = 0;
->> +	     offset < PROBE_ERR_BUF_SIZE;
->> +	     offset += PROBE_ERR_BUF_ELEM_SIZE)
->> +		if (probe_err_crbuf.buf[offset])
->> +			seq_printf(s, "%s\n", probe_err_crbuf.buf + offset);
->> +
->> +	mutex_unlock(&failed_probe_mutex);
->> +
->> +	return 0;
->> +}
->> +DEFINE_SHOW_ATTRIBUTE(failed_devs);
->> +#endif
->> +
->>  int __init devices_init(void)
->>  {
->>  	devices_kset = kset_create_and_add("devices", &device_uevent_ops, NULL);
->> @@ -3784,6 +3818,12 @@ int __init devices_init(void)
->>  	if (!sysfs_dev_char_kobj)
->>  		goto char_kobj_err;
->>  
->> +#ifdef CONFIG_DEBUG_FS_PROBE_ERR
->> +	devices_failed_probe = debugfs_create_file("devices_failed", 0444, NULL,
->> +						   NULL, &failed_devs_fops);
->> +	probe_err_crbuf.buf = failed_probe_buffer;
->
-> Nit, no need to save the dentry here, you can look it up if you really
-> need it later on, but most importantly, you NEVER do anything with this
-> dentry so why save it at all?
->
-> And again, #ifdef is not ok, that makes the code much more
-> unmaintainable over time.
->
-> thanks,
->
-> greg k-h
+Rob
