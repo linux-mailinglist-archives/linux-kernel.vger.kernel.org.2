@@ -2,179 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C2839AA93
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BF839AA99
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFCTAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:00:04 -0400
-Received: from smtprelay0051.hostedemail.com ([216.40.44.51]:42810 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229620AbhFCTAD (ORCPT
+        id S229957AbhFCTBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:01:32 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:40191 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhFCTBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:00:03 -0400
-Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A3C66181D3043;
-        Thu,  3 Jun 2021 18:58:17 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 72A13255108;
-        Thu,  3 Jun 2021 18:58:16 +0000 (UTC)
-Message-ID: <9499203f1e993872b384aabdec59ac223a8ab931.camel@perches.com>
-Subject: General kernel misuse of vsnprintf SPECIAL %#<foo> (was: Re: [PATCH
- v2 0/4] iio: Drop use of %hhx and %hx format strings)
-From:   Joe Perches <joe@perches.com>
-To:     Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 03 Jun 2021 11:58:15 -0700
-In-Reply-To: <20210603180612.3635250-1-jic23@kernel.org>
-References: <20210603180612.3635250-1-jic23@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 3 Jun 2021 15:01:32 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id D174E5C0056;
+        Thu,  3 Jun 2021 14:59:46 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 03 Jun 2021 14:59:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to:from; s=fm1; bh=1HhH0nGpEofBMD6mVIRlFI
+        +fgZCZWFL3gEjf84ZKlKM=; b=PLxp/ZK6P3puogga2z7T88SLMK5XAGmBoxfAA2
+        ZNrIRVwMmNxtc6MitszLU8BZwc/lTgqWGFKeT1/VSkQOV1Tw5DY7EhnHo1axTeSb
+        FTBVDF6rnhFOuj4JRIJAXXiFN2tYYekodHgLqRFH0xHEL5Kvyjw3zmxT4i4W5ZsE
+        CnNm6XEAi9Kge7xD11VOKwml6iu1YQrdXovgvaXNSBXECBsZCK2QjiOVH/s/jPPJ
+        /EBbmgBhtj+VYRMzPf15wzGOvO6srjVTLDL2oOhiXY306OnaIdBLE8Rew10Qs+Mu
+        gWDvwVBVNok5Ow5v37Ta1uouvWN44ZpPFX3677NUoWjTBgkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1HhH0n
+        GpEofBMD6mVIRlFI+fgZCZWFL3gEjf84ZKlKM=; b=BXECjmeyA/5BTs5G79EV9E
+        Afkp2S/ZaD415CyImVnr7P69xjykxGDXNTakYKrLWFbrBKO22xtaZDTiNBwLQaLx
+        SkuBje6TmI3H/G30Muxr4+OOcKVj4mf/IHJkMZlsV8Xm5Lz9x+ie2NtSTZ9DrPet
+        hQ5nyDtS8felCLpl0ryC81TIWnTwHpM67AVgWOpifNAGIYjQG+5w+Q9xgBSntnYQ
+        iA3UbsCi8Ali0U4MRFxh1vtyITmrAgIZplX5CHFzZqj9k8LDJwKoHBHkjgiennQX
+        hpqHnS8jwq+yCcbqdGVm7CXbc9H6m82VZ5LyevS8Y0xKKFEP6C9Pm5njNAPPewBw
+        ==
+X-ME-Sender: <xms:oSa5YHnCSU-QEoW89XaSjt5bgWMA7D6-z2OgEVxWteGLmBPpE-plcQ>
+    <xme:oSa5YK2fooSex2kXuCNK3UJ2kUh1VgqLtzBFKNnzrGwUoN0SmMPcKTBpg4XxYZ2Lg
+    PMn8JQ8zLr-qtb8Zw>
+X-ME-Received: <xmr:oSa5YNrCj8VuBfwKvWVXwvFI-BBxDJ3qigC6DFL9jiWtQDtwnakNUmOEl_KW8txpE7rhERiS3H4ftmplcEljPXM44zPzYo9_irS9Iu_vzC79A14EBpmAV7fnCdTw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgudeftdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffvffukfhfgggtuggjhfesthdtredttddtvdenucfhrhhomheptehnughr
+    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
+    grthhtvghrnhepkeelheeguedvhfffgeegkefgteeuueelffdvvddtieevgeejkeejgfek
+    teevvddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:oSa5YPk-ITmcGc24u3SDOFRTFFMtH2eGDe6GmYyOsGCpWSGeL4G94Q>
+    <xmx:oSa5YF1Ki2lP1aBaeqsV98ph8hv6nNCQWpDXGZ8AS4mGn7UdW05fVQ>
+    <xmx:oSa5YOvTwMmOZYhXynmh4FAQsgi7JmCc7bgD_phxfQGMfjR0ulAwZw>
+    <xmx:oia5YClvVx8vg0zpbZUqm_uyxHlfq54lSHHTZpd7rh9Cssgzh98Weg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Jun 2021 14:59:45 -0400 (EDT)
+Date:   Thu, 3 Jun 2021 11:59:43 -0700
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/4] futex request support
+Message-ID: <20210603185943.eeav4sfkrxyuhytp@alap3.anarazel.de>
+CFrom:  Andres Freund <andres@anarazel.de>
+References: <cover.1622558659.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 72A13255108
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: 313qdhu7rq3cd3o9yjo7a7mfhm7r5zwz
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/U5V365+iUHUiPEgFbzw14eYA9Pmn8Flg=
-X-HE-Tag: 1622746696-625043
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1622558659.git.asml.silence@gmail.com>
+From:   Andres Freund <andres@anarazel.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-03 at 19:06 +0100, Jonathan Cameron wrote:
-> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> A wrong use of one of these in
-> https://lore.kernel.org/linux-iio/20210514135927.2926482-1-arnd@kernel.org/
-> included a reference from Nathan to a patch discouraging the use of
-> these strings in general:
-> https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
-> 
-> I did a quick grep and established we only have a few instances of these in
-> IIO anyway, so in the interests of avoiding those existing cases getting
-> cut and paste into new drivers, let's just clear them out now.
-> 
-> Note that patch from Arnd is now also part of this series, due to the
-> length specifier related issue Joe raised.
-> 
-> I have chosen to go with 0x%02x rather than %#04x as I find it more readable.
-> 
-> V2:
-> Use 0x%02x (Joe Perches)
-> Include Arnd's original patch, modified for the above.
+Hi,
 
-Hello again.
+On 2021-06-01 15:58:25 +0100, Pavel Begunkov wrote:
+> Should be interesting for a bunch of people, so we should first
+> outline API and capabilities it should give. As I almost never
+> had to deal with futexes myself, would especially love to hear
+> use case, what might be lacking and other blind spots.
 
-It looks to me as though %#<foo> is relatively commonly misused in the kernel.
+I did chat with Jens about how useful futex support would be in io_uring, so I
+should outline our / my needs. I'm off work this week though, so I don't think
+I'll have much time to experiment.
 
-Pehaps for the decimal portion of the format, checkpatch could have some
-test for use of non-standard lengths.
+For postgres's AIO support (which I am working on) there are two, largely
+independent, use-cases for desiring futex support in io_uring.
 
-Given the use is generally meant for a u8, u16, u32, or u64, perhaps
-checkpatch should emit a warning whenever the length is not 4, 6, 10, or 18.
+The first is the ability to wait for locks (queued r/w locks, blocking
+implemented via futexes) and IO at the same time, within one task. Quickly and
+efficiently processing IO completions can improve whole-system latency and
+throughput substantially in some cases (journalling, indexes and other
+high-contention areas - which often have a low queue depth). This is true
+*especially* when there also is lock contention, which tends to make efficient
+IO scheduling harder.
 
-(possible checkpatch patch below)
+The second use case is the ability to efficiently wait in several tasks for
+one IO to be processed. The prototypical example here is group commit/journal
+flush, where each task can only continue once the journal flush has
+completed. Typically one of waiters has to do a small amount of work with the
+completion (updating a few shared memory variables) before the other waiters
+can be released. It is hard to implement this efficiently and race-free with
+io_uring right now without adding locking around *waiting* on the completion
+side (instead of just consumption of completions). One cannot just wait on the
+io_uring, because of a) the obvious race that another process could reap all
+completions between check and wait b) there is no good way to wake up other
+waiters once the userspace portion of IO completion is through.
 
-$ git grep -P -h -o '%#\d+\w+' | sort | uniq -c | sort -rn
-    392 %#08x
-    238 %#04x
-    144 %#02x
-    114 %#06x
-     92 %#010x
-     58 %#010Lx
-     55 %#018llx
-     47 %#010llx
-     45 %#010lx
-     38 %#016llx
-     27 %#0x
-     23 %#2x
-     18 %#016lx
-     17 %#3lx
-     17 %#08lx
-     17 %#018Lx
-     15 %#3x
-     14 %#03x
-     10 %#06hx
-      9 %#08zx
-      8 %#10x
-      7 %#16llx
-      6 %#8x
-      6 %#04X
-      6 %#04llx
-      6 %#012llx
-      5 %#16
-      4 %#08llx
-      4 %#06llx
-      4 %#05x
-      4 %#02X
-      4 %#016Lx
-      3 %#04hx
-      3 %#01x
-      2 %#6x
-      2 %#4x
-      2 %#10
-      2 %#09x
-      2 %#05lx
-      1 %#8lx
-      1 %#5x
-      1 %#5lx
-      1 %#2Lx
-      1 %#2llx
-      1 %#16x
-      1 %#16lx
-      1 %#12x
-      1 %#0x10000
-      1 %#0lx
-      1 %#08
-      1 %#05llx
-      1 %#04o
-      1 %#04lx
-      1 %#03X
-      1 %#018lx
-      1 %#010zx
 
----
- scripts/checkpatch.pl | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+All answers for postgres:
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index d65334588eb4c..5840f3f2aee6f 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6695,6 +6695,31 @@ sub process {
- 				my $fmt = get_quoted_string($lines[$count - 1], raw_line($count, 0));
- 				$fmt =~ s/%%//g;
- 
-+				while ($fmt =~ /\%#([\d]+)/g) {
-+					my $length = $1;
-+					my $pref_len;
-+					if ($length < 4) {
-+						$pref_len = '04';
-+					} elsif ($length == 5) {
-+						$pref_len = '06';
-+					} elsif ($length > 6 && $length < 10) {
-+						$pref_len = '010';
-+					} elsif ($length > 10 && $length < 18) {
-+						$pref_len = '018';
-+					} elsif ($length > 18) {
-+						$pref_len = '<something else>';
-+					}
-+					if (defined($pref_len)) {
-+						if (!defined($stat_real)) {
-+							$stat_real = get_stat_real($linenr, $lc);
-+						}
-+						WARN("VSPRINTF_SPECIAL_LENGTH",
-+						     "Unusual special length '%#$length' in 0x prefixed output, length is usually 2 more than the desired width - perhaps use '%#${pref_len}'\n" . "$here\n$stat_real");
-+					}
-+				}
-+
-+				pos($fmt) = 0;
-+
- 				while ($fmt =~ /(\%[\*\d\.]*p(\w)(\w*))/g) {
- 					$specifier = $1;
- 					$extension = $2;
+> 1) Do we need PI?
 
+Not right now.
+
+Not related to io_uring: I do wish there were a lower overhead (and lower
+guarantees) version of PI futexes. Not for correctness reasons, but
+performance. Granting the waiter's timeslice to the lock holder would improve
+common contention scenarios with more runnable tasks than cores.
+
+
+> 2) Do we need requeue? Anything else?
+
+I can see requeue being useful, but I haven't thought it through fully.
+
+Do the wake/wait ops as you have them right now support bitsets?
+
+
+> 3) How hot waits are? May be done fully async avoiding io-wq, but
+> apparently requires more changes in futex code.
+
+The waits can be quite hot, most prominently on low latency storage, but not
+just.
+
+Greetings,
+
+Andres Freund
