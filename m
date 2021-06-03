@@ -2,149 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED8C39AE87
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662DD39AE8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhFCXVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCXVf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:21:35 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AB5C06174A;
-        Thu,  3 Jun 2021 16:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=EXOT9La8+XXIxW3bXOSmdGcimnnQ90QAJmf1D9koF+g=; b=j8pOIRuKWI6jM6Gukk/aAkc+iz
-        TabD2ULmBAGbEpx+PAaBNS9jOqflUWzli+HkkwpsT7clsvGl1WK0+cEhbcJIC2aTQAAudt/ozzsoQ
-        qFUkmi2g5bBULlRiAxsU6w8svI1+cMVKAaYAsOtM/xCSFZY4vs+Zq5Oz6VD5Cs8AnmqGRRFx59SjT
-        7xam4n28lhGiYCcGPQp3Fpfxk+qkywbBTk3dyT8DqGIOKzMUdEDBnkfXycM3C26tHri0h6tn50U7V
-        A86nihcbL90QwGXNiVOE2N3FSO0KRVLvNV5eKosRzlBTe1or58prSWZ4pMHTT6F3CH6ZW/QV/BkXr
-        L13kTLEQ==;
-Received: from [2601:1c0:6280:3f0::ce7d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lowcs-00Atf5-PU; Thu, 03 Jun 2021 23:19:46 +0000
-Subject: Re: [RFC PATCH 3/4] sh: define __BIG_ENDIAN for math-emu
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-References: <20210602231443.4670-1-rdunlap@infradead.org>
- <20210602231443.4670-3-rdunlap@infradead.org>
- <CAMuHMdX1aCJPASd0vvuo+=sjnS8dv24eB_xY8Fn0L2TkJ8NWiQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <cde0b1fc-eec3-2267-3872-1099840f5670@infradead.org>
-Date:   Thu, 3 Jun 2021 16:19:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229878AbhFCXXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFCXXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 19:23:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A6BF6140A;
+        Thu,  3 Jun 2021 23:21:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622762492;
+        bh=Gak9x0Jsv0qhm09RFUhZ1Xt3qmQIL2Xcnz1VL+vQr28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hnm0DfXImrd2t+ksfCfL4lH+3Bf6b0GvdQogi1TgrfkZF7HYbH7FbBFZ3QdIVScqB
+         kPoVBtJWEzjR9CFggZf4ciU8taNYZjseLf6viVUl+ZGxIIuPyAmhwdgqWa3HrlM2dv
+         puzF5QVdwhMevqBw3EQeUTF0ubVH/zc5Xa1hMZJzGUs+UNJXbqJButL5V/ag5jooF0
+         nQtclPG5xz9E4T4Z3DBiIXuJF9xz/RqNCF6cQleau46SrFB4JFUVERTjt11OhzE4h9
+         6ysQXwp96mroYEYleFG758g251MtnRrKJv53y51agwjEf5HxSzH5+DpmWni15U18oq
+         PJiXQGc58+GhQ==
+Date:   Thu, 3 Jun 2021 16:21:30 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
+Message-ID: <YLlj+h4RiT6FvyK6@sol.localdomain>
+References: <20210603095038.314949-1-drosen@google.com>
+ <20210603095038.314949-3-drosen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdX1aCJPASd0vvuo+=sjnS8dv24eB_xY8Fn0L2TkJ8NWiQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603095038.314949-3-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 12:54 AM, Geert Uytterhoeven wrote:
-> Hi Randy,
+On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
+> Older kernels don't support encryption with casefolding. This adds
+> the sysfs entry encrypted_casefold to show support for those combined
+> features. Support for this feature was originally added by
+> commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
 > 
-> On Thu, Jun 3, 2021 at 1:17 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->> The headers in include/math-emu/ test for __BYTE_ORDER == __BIG_ENDIAN
->> without checking to see if these macros are defined, so add
->> a define for __BIG_ENDIAN before pulling in these headers.
->>
->> This placates these build warnings:
->>
->> In file included from ../arch/sh/math-emu/math.c:23:
->> ../include/math-emu/single.h:50:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
->>    50 | #if __BYTE_ORDER == __BIG_ENDIAN
->> In file included from ../arch/sh/math-emu/math.c:24:
->> ../include/math-emu/double.h:59:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
->>    59 | #if __BYTE_ORDER == __BIG_ENDIAN
->>
->> Fixes: 4b565680d163 ("sh: math-emu support")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
+> Cc: stable@vger.kernel.org # v5.11+
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> ---
+>  fs/f2fs/sysfs.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
 > 
-> Thanks for your patch!
-> 
->> --- linux-next-20210528.orig/arch/sh/math-emu/sfp-util.h
->> +++ linux-next-20210528/arch/sh/math-emu/sfp-util.h
->> @@ -70,4 +70,4 @@
->>
->>  #define __BYTE_ORDER __LITTLE_ENDIAN
->>
->> -
->> +#define __BIG_ENDIAN 0
-> 
-> I don't think this is the right fix.
-> 
-> I think the right values should be picked up from:
-> 
->     include/uapi/linux/byteorder/big_endian.h:#define __BIG_ENDIAN 4321
->     include/uapi/linux/byteorder/little_endian.h:#define __LITTLE_ENDIAN 1234
-> 
-> How is this picked up on other architectures using <math-emu/single.h>?
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 09e3f258eb52..6604291a3cdf 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+>  	if (f2fs_sb_has_compression(sbi))
+>  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>  				len ? ", " : "", "compression");
+> +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
+> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> +				len ? ", " : "", "encrypted_casefold");
+>  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>  				len ? ", " : "", "pin_file");
+>  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
+> @@ -579,6 +582,7 @@ enum feat_id {
+>  	FEAT_CASEFOLD,
+>  	FEAT_COMPRESSION,
+>  	FEAT_TEST_DUMMY_ENCRYPTION_V2,
+> +	FEAT_ENCRYPTED_CASEFOLD,
+>  };
 
-Hi Geert,
+Actually looking at it more closely, this patch is wrong.
 
-There isn't very much to compare to in other arch/.
-I've made a v2 patch that is done like arch/nds32/ does.
-What do you think about this one?
+It only makes sense to declare "encrypted_casefold" as a feature of the
+filesystem implementation, i.e. /sys/fs/f2fs/features/encrypted_casefold.
 
-thanks.
----
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [RFC PATCH 2/3 v2] sh: define __BIG_ENDIAN for math-emu
+It does *not* make sense to declare it as a feature of a particular filesystem
+instance, i.e. /sys/fs/f2fs/$disk/features, as it is already implied by the
+filesystem instance having both the encryption and casefold features enabled.
 
-Fix this by defining both ENDIAN macros in
-<asm/sfp-machine.h> so that they can be utilized in
-<math-emu/soft-fp.h> according to the latter's comment:
-/* Allow sfp-machine to have its own byte order definitions. */
+Can we add /sys/fs/f2fs/features/encrypted_casefold only?
 
-(This is what is done in arch/nds32/include/asm/sfp-machine.h.)
-
-This placates these build warnings:
-
-In file included from ../arch/sh/math-emu/math.c:23:
-../include/math-emu/single.h:50:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
-   50 | #if __BYTE_ORDER == __BIG_ENDIAN
-In file included from ../arch/sh/math-emu/math.c:24:
-../include/math-emu/double.h:59:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
-   59 | #if __BYTE_ORDER == __BIG_ENDIAN
-
-Fixes: 4b565680d163 ("sh: math-emu support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
----
- arch/sh/include/asm/sfp-machine.h |    8 ++++++++
- 1 file changed, 8 insertions(+)
-
---- linux-next-20210528.orig/arch/sh/include/asm/sfp-machine.h
-+++ linux-next-20210528/arch/sh/include/asm/sfp-machine.h
-@@ -13,6 +13,14 @@
- #ifndef _SFP_MACHINE_H
- #define _SFP_MACHINE_H
- 
-+#ifdef __BIG_ENDIAN__
-+#define __BYTE_ORDER __BIG_ENDIAN
-+#define __LITTLE_ENDIAN 0
-+#else
-+#define __BYTE_ORDER __LITTLE_ENDIAN
-+#define __BIG_ENDIAN 0
-+#endif
-+
- #define _FP_W_TYPE_SIZE		32
- #define _FP_W_TYPE		unsigned long
- #define _FP_WS_TYPE		signed long
-
-
+- Eric
