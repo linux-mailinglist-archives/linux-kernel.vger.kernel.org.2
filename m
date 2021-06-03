@@ -2,110 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2349D399E02
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE4C399E08
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhFCJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:47:58 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28025 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhFCJr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:47:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622713573; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=RWtLvLidpPamb4dlK5e/Mfjt23fvsVFCcB3loo+yQwM=; b=V7gF/LD/UaYPewKNEWsae0RnP5ezokbA7m5f5QV1f3IENMS9WeR3R16QzY04a9NieYuYD7gW
- +5arhtTq+/w+SqTt2mMc2pXaO4nzrheDKWEYwjXtjKqqu505AdGj5JYU5/NGIaLDoRl+Yz71
- w+Hexq3Y4fH2HhBwnya348OAzxg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60b8a4dc81efe91cda8bd766 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 09:46:04
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DE112C43460; Thu,  3 Jun 2021 09:46:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD124C433F1;
-        Thu,  3 Jun 2021 09:46:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DD124C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Christian Lamparter <chunkeey@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3] wireless: carl9170: fix LEDS build errors & warnings
-References: <20210530031134.23274-1-rdunlap@infradead.org>
-        <8043ff50-d592-7666-f001-7505efa0d4c2@gmail.com>
-        <c49c07d5-1d6e-5b99-30b4-bc8f48b0fde3@infradead.org>
-Date:   Thu, 03 Jun 2021 12:46:00 +0300
-In-Reply-To: <c49c07d5-1d6e-5b99-30b4-bc8f48b0fde3@infradead.org> (Randy
-        Dunlap's message of "Sun, 30 May 2021 07:32:07 -0700")
-Message-ID: <87czt31dt3.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S229707AbhFCJtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:49:19 -0400
+Received: from m12-14.163.com ([220.181.12.14]:54615 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhFCJtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:49:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=l/H8n
+        C4YoHj05n2BIqJHaCdtBf6rJsdXXUyPoceBaCI=; b=TbRC8odVXPMcv5YTLjAAt
+        N+rDPEE/S3Zu9HVEpnQnEUfZ1QC8ALpPgL3qVnRX1Fwb45m93HwpzDoqFHhY4Iuu
+        JCsO5WMb9qka0fZBHHLhdDvTt+g3pxblVuXrEbU1M52UdPiwm2Q5QAMTODP85zXS
+        wpJ/cvHUOE6Ni0FP2LriEM=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp10 (Coremail) with SMTP id DsCowAB3C2Awpbhgr_tpMg--.46694S2;
+        Thu, 03 Jun 2021 17:47:29 +0800 (CST)
+From:   Jian Xin <xinjian34324@163.com>
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jian Xin <xinjian@yulong.com>
+Subject: [PATCH] power: supply: ab8500_fg: Fix typo
+Date:   Thu,  3 Jun 2021 17:47:18 +0800
+Message-Id: <20210603094718.229553-1-xinjian34324@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowAB3C2Awpbhgr_tpMg--.46694S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF4rKr17CryxKryUtF4fZrb_yoWxtrX_ua
+        1rX3W2gry5Kr1a9F1qkFnrXry09a18XFWIva17Kr43tF98ur43JFyUur1DArn5Xr4jkwsI
+        9a9FyFWruryxCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnfb1UUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: x0lqyxtdqtkjisu6il2tof0z/1tbiLBGmCFspaqIkBwAAsK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+From: Jian Xin <xinjian@yulong.com>
 
-> On 5/30/21 2:31 AM, Christian Lamparter wrote:
->> On 30/05/2021 05:11, Randy Dunlap wrote:
->>> kernel test robot reports over 200 build errors and warnings
->>> that are due to this Kconfig problem when CARL9170=3Dm,
->>> MAC80211=3Dy, and LEDS_CLASS=3Dm.
->>>
->>> WARNING: unmet direct dependencies detected for MAC80211_LEDS
->>> =C2=A0=C2=A0 Depends on [n]: NET [=3Dy] && WIRELESS [=3Dy] && MAC80211 =
-[=3Dy] &&
->>> (LEDS_CLASS [=3Dm]=3Dy || LEDS_CLASS [=3Dm]=3DMAC80211 [=3Dy])
->>> =C2=A0=C2=A0 Selected by [m]:
->>> =C2=A0=C2=A0 - CARL9170_LEDS [=3Dy] && NETDEVICES [=3Dy] && WLAN [=3Dy]=
- &&
->>> WLAN_VENDOR_ATH [=3Dy] && CARL9170 [=3Dm]
->>>
->>> CARL9170_LEDS selects MAC80211_LEDS even though its kconfig
->>> dependencies are not met. This happens because 'select' does not follow
->>> any Kconfig dependency chains.
->>>
->>> Fix this by making CARL9170_LEDS depend on MAC80211_LEDS, where
->>> the latter supplies any needed dependencies on LEDS_CLASS.
->>=20
->> Ok, this is not what I was expecting... I though you would just
->> add a "depends on / imply MAC80211_LEDS" on your v2. (this was
->> based on the assumption of what mac80211,=C2=A0 ath9k/_htc and mt76
->> solutions of the same problem looked like).
->
-> Do you want the user choice/prompt removed, like MT76 is?
->
->> But since (I assuming here) this patch passed the build-bots
->> testing with flying colors in the different config permutations.
->
-> It hasn't passed any build-bots testing that I know of.
-> I did 8 combinations of kconfigs (well, 2 of them were invalid),
-> but they all passed my own build testing.
+fix misspelled 'interrupts'
 
-So is this ok to take now? Or will there be v4?
+Signed-off-by: Jian Xin <xinjian@yulong.com>
+---
+ drivers/power/supply/ab8500_fg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+diff --git a/drivers/power/supply/ab8500_fg.c b/drivers/power/supply/ab8500_fg.c
+index 06ff42c71f24..64c6037cb0bc 100644
+--- a/drivers/power/supply/ab8500_fg.c
++++ b/drivers/power/supply/ab8500_fg.c
+@@ -58,7 +58,7 @@
+ 	((y1) + ((((y2) - (y1)) * ((x) - (x1))) / ((x2) - (x1))));
+ 
+ /**
+- * struct ab8500_fg_interrupts - ab8500 fg interupts
++ * struct ab8500_fg_interrupts - ab8500 fg interrupts
+  * @name:	name of the interrupt
+  * @isr		function pointer to the isr
+  */
+-- 
+2.25.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
