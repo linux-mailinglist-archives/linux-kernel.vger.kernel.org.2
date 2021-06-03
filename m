@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FD9399A9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA307399A9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhFCG2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:28:13 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11389 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFCG2L (ORCPT
+        id S229813AbhFCG2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:28:53 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3396 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFCG2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:28:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622701586; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JQ5eM5aH4kIpWWTZt6DlDA3K6TzSLosXUzhL8Jtxdjs=;
- b=XxTje0pLEQu9lT4iB87OkaZiwRq5w9TYojmDEX35Jkk/6PnvH/VX4ZmtptF1dPly+fdwu7fT
- mAklk6d19IYqaacaLcst4WsaspaDieEqFrIEZMjfRYRym13iTLU1IKURtwhEhmO5DEFSZ6mL
- eo/zdpxxgbBmNtd8rBmyJ5AQi0A=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60b87612f726fa41881220c7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 06:26:26
- GMT
-Sender: rajeevny=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 41F6DC4360C; Thu,  3 Jun 2021 06:26:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajeevny)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B7A8C433D3;
-        Thu,  3 Jun 2021 06:26:24 +0000 (UTC)
+        Thu, 3 Jun 2021 02:28:52 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FwbS91VT8z67mC;
+        Thu,  3 Jun 2021 14:23:21 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 14:27:06 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 3 Jun 2021
+ 14:27:06 +0800
+Subject: Re: [PATCH 1/1] tpm_tis: Use DEFINE_RES_MEM() to simplify code
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210601064507.9989-1-thunder.leizhen@huawei.com>
+ <20210601175728.gyi3yepdtvu4hald@kernel.org>
+ <277d929b-0602-ffbb-5866-64731a19ff14@huawei.com>
+ <20210603052954.ms7s4cmkejpxo2lc@kernel.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <427a9ec1-a841-e42a-0970-81f2a890db1f@huawei.com>
+Date:   Thu, 3 Jun 2021 14:27:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210603052954.ms7s4cmkejpxo2lc@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Jun 2021 11:56:24 +0530
-From:   rajeevny@codeaurora.org
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Clark <robdclark@gmail.com>, Lyude Paul <lyude@redhat.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>, linux-fbdev@vger.kernel.org
-Subject: Re: [v5 1/5] drm/panel: add basic DP AUX backlight support
-In-Reply-To: <CAD=FV=XMVKP=nK+-eTpxNK-AQ66rqvfMj_Q0TZrsG-CEWtbw8Q@mail.gmail.com>
-References: <1622390172-31368-1-git-send-email-rajeevny@codeaurora.org>
- <1622390172-31368-2-git-send-email-rajeevny@codeaurora.org>
- <CAD=FV=XMVKP=nK+-eTpxNK-AQ66rqvfMj_Q0TZrsG-CEWtbw8Q@mail.gmail.com>
-Message-ID: <3f088fcc07800323b4cb24af4b972514@codeaurora.org>
-X-Sender: rajeevny@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-06-2021 05:35, Doug Anderson wrote:
-> Hi,
-> 
-> On Sun, May 30, 2021 at 8:57 AM Rajeev Nandan <rajeevny@codeaurora.org> 
-> wrote:
->> 
-
-> 
-> Other than the two nits (ordering of memory allocation and word
-> wrapping in a comment), this looks good to me. Feel free to add my
-> Reviewed-by tag when you fix the nits.
-> 
-> NOTE: Even though I have commit access to drm-misc now, I wouldn't
-> feel comfortable merging this to drm-misc myself without review
-> feedback from someone more senior. Obviously we're still blocked on my
-> and Lyude's series landing first, but even assuming those just land
-> as-is we'll need some more adult supervision before this can land. ;-)
-> That being said, I personally think this looks pretty nice now.
-> 
-> 
-> -Doug
-
-Thank you, Doug.
-
-I'll address the review comments of this patch and another patch (v5 
-3/5)
-in the next spin. I'll wait for Lyude to check this series, as she 
-wanted
-to review it in a few days.
 
 
-Thanks,
-Rajeev
+On 2021/6/3 13:29, Jarkko Sakkinen wrote:
+> On Wed, Jun 02, 2021 at 09:11:47AM +0800, Leizhen (ThunderTown) wrote:
+>>
+>>
+>> On 2021/6/2 1:57, Jarkko Sakkinen wrote:
+>>> On Tue, Jun 01, 2021 at 02:45:07PM +0800, Zhen Lei wrote:
+>>>> No functional change.
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>
+>>> No change, no need to apply?
+>>
+>> But it can make the code look simpler, easier to read and maintain(The start
+>> address does not need to appear twice). I think that's why these DEFINE_RES_*
+>> macros are defined.
+>>
+>> By the way, would it be better to change the letters in 0xFED40000 to lowercase?
+> 
+> I mean "No functional change" does not really tell anything about anything.
+> 
+> Please just describe what the commit does.
+
+I'm sorry to have misunderstood your intention. OK, I rewrite the commit message.
+
+> 
+> /Jarkko
+> 
+>>
+>>>
+>>> /Jarkko
+>>>
+>>>> ---
+>>>>  drivers/char/tpm/tpm_tis.c | 6 +-----
+>>>>  1 file changed, 1 insertion(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+>>>> index 4ed6e660273a414..d3f2e5364c275f4 100644
+>>>> --- a/drivers/char/tpm/tpm_tis.c
+>>>> +++ b/drivers/char/tpm/tpm_tis.c
+>>>> @@ -363,11 +363,7 @@ static int tpm_tis_force_device(void)
+>>>>  {
+>>>>  	struct platform_device *pdev;
+>>>>  	static const struct resource x86_resources[] = {
+>>>> -		{
+>>>> -			.start = 0xFED40000,
+>>>> -			.end = 0xFED40000 + TIS_MEM_LEN - 1,
+>>>> -			.flags = IORESOURCE_MEM,
+>>>> -		},
+>>>> +		DEFINE_RES_MEM(0xFED40000, TIS_MEM_LEN)
+>>>>  	};
+>>>>  
+>>>>  	if (!force)
+>>>> -- 
+>>>> 2.26.0.106.g9fadedd
+>>>>
+>>>>
+>>>>
+>>>
+>>> .
+>>>
+>>
+>>
+> 
+> .
+> 
 
