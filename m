@@ -2,65 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A8A39ADD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FCA39ADDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhFCWVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:21:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230340AbhFCWVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:21:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4031F6140C;
-        Thu,  3 Jun 2021 22:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622758806;
-        bh=qMWKhQ9zVPFs5TLEZd8S+qNKxpNh8ZmKeEJ9BLZATJ0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=upEr3lVKkcsiVdatUkTxKa0L+cMURmjLvH2Yl94T2w3Aw6FPhzcZQYrous2JZG0Ci
-         v5IGn7zR8cQuSfow7d7O+53JL0Qdh7s9TALjCA+kMrmbLJYdAoDSBeKHHjgolA4Dgq
-         F7NgrP7DbD0fkjK0FI0YbmRq7AHAhCYGcpyiE2e0ormjzuvEF/iFYGq4gpVvh1PLWi
-         Vsh6QOm62/IveQhDNNVmw6I3jm9iWfh1AVQKVzoZJJqsT9zF6W+s0LKZuTjejWAM3R
-         lFbECjLELh4XMpWp+X3w+9RfuuPDHpCFnPP+LqoSRvpxWejqYDc1ZCbUNmusUNIfgl
-         N/t4Xi+F4NEbw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2EA3060CFD;
-        Thu,  3 Jun 2021 22:20:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231450AbhFCWWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230387AbhFCWWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 18:22:17 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA73C06174A;
+        Thu,  3 Jun 2021 15:20:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fx0hY5YQTz9s1l;
+        Fri,  4 Jun 2021 08:20:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622758830;
+        bh=nnwk3nDmz6mD1Mpm3cLyQowQcGZnGHtqIwI/HIBo+F0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=M0/SBKWVmhw2/xUOVYBhGXmKLDNYdJpXaHiczFY4ck8FIj+FXW0XeGa7rTBD9Rqq3
+         rrw5pJrry+TT+DjnDbTCwcy/gPdN/ZwMku7ZbK9gIfrTbfU5TZIlspZvBbKOn4EHfe
+         MQVZKBcJ52wRodAAcD34U8bS6GVolKgc4rBkT7e+KSxpg90Zz5TckxCNDBQlyV14+x
+         t65H2/qPQ/lqqDsc2uM6i90rF3YUdXgSUXMTPkzvhDzVNe1lIdz5GSP7AVu4FLAVdQ
+         2xrPNLk1LekNKZdYqVhzgr7AQnzTkpBW6jXHSXO2UabhoDxtn+heHSDBvPdqE68+o9
+         9YvQF6cHWrWkA==
+Date:   Fri, 4 Jun 2021 08:20:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Trond Myklebust <trondmy@gmail.com>
+Cc:     Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the nfs tree
+Message-ID: <20210604082029.4b923ff5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] fib: Return the correct errno code
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162275880618.4249.18033822749874020105.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Jun 2021 22:20:06 +0000
-References: <20210602140658.486553-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210602140658.486553-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; boundary="Sig_/O.ateFYYUfFwX.oy0jk/0f9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+--Sig_/O.ateFYYUfFwX.oy0jk/0f9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Hi all,
 
-On Wed, 2 Jun 2021 22:06:58 +0800 you wrote:
-> When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  net/core/fib_rules.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+In commit
 
-Here is the summary with links:
-  - [net-next] fib: Return the correct errno code
-    https://git.kernel.org/netdev/net/c/59607863c54e
+  476bdb04c501 ("NFS: Fix use-after-free in nfs4_init_client()")
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Fixes tag
 
+  Fixes: 8dcbec6d20 ("NFSv41: Handle EXCHID4_FLAG_CONFIRMED_R during NFSv4.=
+1 migration")
 
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/O.ateFYYUfFwX.oy0jk/0f9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC5Va0ACgkQAVBC80lX
+0GwW7AgAgfziKZqFP+HbjgxXvCGoo2USzetDo+6c/6KiXAs81tg03nv37mkSx5Dm
+yDoCPL8DGtV8HnvBvdhwmCW1wm2+sjeFk2hB6cy5aSpzJXFkJY3df7hrtwut7L1G
+prqJQJXbjkOtzX6Rn2rjwMzuwVIO2dtL3py3o+AW9ivdB7R9a6q8BFrugnIxSy3z
+SNWHG1qhmih3+4PG8tEAylTFPtzRoX/ITeUMIN31i1oR5sok5rH9/Mcgz8OD3QpN
+ZbR9e7gldzyzOribFb2CSQKfj7kAd7a65e0r2lM6jWKSNelx6eWiiAg+IcuK9ZsL
+Wj0PGivDijOCRekIHjo/K3mC3UviwQ==
+=d6ma
+-----END PGP SIGNATURE-----
+
+--Sig_/O.ateFYYUfFwX.oy0jk/0f9--
