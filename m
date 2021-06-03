@@ -2,224 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221C039A3CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A2E39A3C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhFCO7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhFCO7e (ORCPT
+        id S231871AbhFCO7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:59:01 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52304 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231411AbhFCO7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:59:34 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E84C06174A;
-        Thu,  3 Jun 2021 07:57:36 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id g17so4532695qtk.9;
-        Thu, 03 Jun 2021 07:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VS+AJIREtfm1DlPcOn40z4ON87bSHZWbgG5Synn7ZO8=;
-        b=iqVXOUWgNzwFwPHNnw49sUum1PihyLT+VlXKBaoLQVjZNTXlL77kj1c5hbxB2Ufp/N
-         GVmpehFau9dW4saGmdfHwOc/FGW5w3MSGilMwRfcbBzrB16nJZpr31NieB8BUlm2Qc9m
-         +7kyP0wQtsnHb03EH94bmx/SFEb8TJaPSJDKw2SSKBAgaNdtHvd3LMFnOFZzdP48cAiH
-         JWcqN8MYDf1CjzNJZ5q0q3b8P4C2egE3Yy3n0N9wZqizYpUyqy4DuZlNyeprOeKRrwFs
-         ZxtKeWlqXeKIWrBQ+rjB0CmEVPtdpGpql25Ur5NBNUVQTV8KBBmSkMTDWLxXXRDMAy+0
-         O1Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VS+AJIREtfm1DlPcOn40z4ON87bSHZWbgG5Synn7ZO8=;
-        b=YzfECg8TGLKGYgJMM85Ly+9NbvOb8YNjseZ4OEoC2DBAwSbbipeQ2IEtAaMqvR2EMo
-         ojSEx0M2J8b+hdOnaDR23BjERiVvPJ+nKMqm8EyCMsqeeMe/AYgu2xzq52CzBN9P2AIG
-         2CsqN54+8Djwjr3/VFl+45srOHXeLatY0GU2i8uOhwiFQtiLTxZRY8gmql8LUAZ8ih24
-         TTd/RjngeiDo/+rvXsQ6b2OBbjmwQC0czejdeMJSyviNiZ0NNtMAXGmnQ2zZFz/kEOWk
-         it2rp4FXsMx5x3pgFPPr25xJlH6RXbWteCGqSjwpDo+dyRV/eMQNXy/dSz+kBbgIdBZM
-         aJoQ==
-X-Gm-Message-State: AOAM532ZNT4TefHFvmY2magvKW2QqAUnY0+5UQEORE2J7G/kxHX5kca1
-        MBwz5fmYlmokzLcI/0Zi9+9f8uBvUeVVGg==
-X-Google-Smtp-Source: ABdhPJwyDhFJ1ML31Q77HmPbsCFBze3Wz4jAme3SKplFkaqQaGf05FO+JDf3Vg0NJJx0oyEsVAboRg==
-X-Received: by 2002:ac8:594a:: with SMTP id 10mr255630qtz.293.1622732254896;
-        Thu, 03 Jun 2021 07:57:34 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:8008])
-        by smtp.gmail.com with ESMTPSA id t19sm1581541qkp.2.2021.06.03.07.57.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 07:57:34 -0700 (PDT)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org (open list:BLOCK LAYER),
-        linux-kernel@vger.kernel.org (open list),
-        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
-        linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Chris Down <chris@chrisdown.name>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: [PATCH 2/3] mm: Charge active memcg when no mm is set
-Date:   Thu,  3 Jun 2021 07:57:06 -0700
-Message-Id: <20210603145707.4031641-3-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603145707.4031641-1-schatzberg.dan@gmail.com>
-References: <20210603145707.4031641-1-schatzberg.dan@gmail.com>
+        Thu, 3 Jun 2021 10:59:00 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153EvBsq024559;
+        Thu, 3 Jun 2021 09:57:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622732231;
+        bh=56huKwRlLg6wHxl74+mcw0K510xjIjJoSphjPUdFpY4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=t+WaMVi51NmxDwKzFaYiqhF/twb9MtR8muWbS5MVvvDzXgpLGsl287GLtB/B5Gh+7
+         UYonoiKG3uVSiH4mElUhQH3He+o/Nsi0gIaZ6a2Ehmt35NciG2+1IhAbANa00s/unr
+         mxI8SyNCP9kWEFO4IjTSibTmQ3W4e5Tb/3vQNqlU=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153EvBtL051675
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Jun 2021 09:57:11 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 09:57:11 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 3 Jun 2021 09:57:11 -0500
+Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153EvBlF012635;
+        Thu, 3 Jun 2021 09:57:11 -0500
+Subject: Re: [PATCH 6/6] remoteproc: k3-dsp: Add support for IPC-only mode for
+ all K3 DSPs
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210522000309.26134-1-s-anna@ti.com>
+ <20210522000309.26134-7-s-anna@ti.com> <20210602160715.GB1797307@xps15>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <5ef182f0-cb68-2872-dde2-0ef7b152c92b@ti.com>
+Date:   Thu, 3 Jun 2021 09:57:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602160715.GB1797307@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_active_memcg() worked for kernel allocations but was silently
-ignored for user pages.
+Hi Mathieu,
 
-This patch establishes a precedence order for who gets charged:
+On 6/2/21 11:07 AM, Mathieu Poirier wrote:
+> On Fri, May 21, 2021 at 07:03:09PM -0500, Suman Anna wrote:
+>> Add support to the K3 DSP remoteproc driver to configure all the C66x
+>> and C71x cores on J721E SoCs to be either in IPC-only mode or the
+>> traditional remoteproc mode. The IPC-only mode expects that the remote
+>> processors are already booted by the bootloader, and only perform the
+>> minimum steps required to initialize and deinitialize the virtio IPC
+>> transports. The remoteproc mode allows the kernel remoteproc driver to
+>> do the regular load and boot and other device management operations for
+>> a DSP.
+>>
+>> The IPC-only mode for a DSP is detected and configured at driver probe
+>> time by querying the System Firmware for the DSP power and reset state
+>> and/or status and making sure that the DSP is indeed started by the
+>> bootloaders, otherwise the device is configured for remoteproc mode.
+>>
+>> Support for IPC-only mode is achieved through .attach(), .detach() and
+>> .get_loaded_rsc_table() callback ops and various other flags in both
+>> remoteproc core and the K3 DSP remoteproc driver. The resource table
+>> follows a design-by-contract approach and is expected to be at the base
+>> of the DDR firmware region reserved for each remoteproc, it is mostly
+>> expected to contain only the virtio device and trace resource entries.
+>>
+>> NOTE:
+>> The driver cannot configure a DSP core for remoteproc mode by any
+>> means without rebooting the kernel if that R5F core has been started
+>> by a bootloader.
+>>
+>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> ---
+>>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 151 ++++++++++++++++++++--
+>>  1 file changed, 138 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+>> index faf60a274e8d..b154a52f1fa6 100644
+>> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+>> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+>> @@ -76,6 +76,7 @@ struct k3_dsp_dev_data {
+>>   * @ti_sci_id: TI-SCI device identifier
+>>   * @mbox: mailbox channel handle
+>>   * @client: mailbox client to request the mailbox channel
+>> + * @ipc_only: flag to indicate IPC-only mode
+>>   */
+>>  struct k3_dsp_rproc {
+>>  	struct device *dev;
+>> @@ -91,6 +92,7 @@ struct k3_dsp_rproc {
+>>  	u32 ti_sci_id;
+>>  	struct mbox_chan *mbox;
+>>  	struct mbox_client client;
+>> +	bool ipc_only;
+>>  };
+>>  
+>>  /**
+>> @@ -268,6 +270,10 @@ static int k3_dsp_rproc_prepare(struct rproc *rproc)
+>>  	struct device *dev = kproc->dev;
+>>  	int ret;
+>>  
+>> +	/* IPC-only mode does not require the core to be released from reset */
+>> +	if (kproc->ipc_only)
+>> +		return 0;
+>> +
+>>  	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
+>>  						    kproc->ti_sci_id);
+>>  	if (ret)
+>> @@ -292,6 +298,10 @@ static int k3_dsp_rproc_unprepare(struct rproc *rproc)
+>>  	struct device *dev = kproc->dev;
+>>  	int ret;
+>>  
+>> +	/* do not put back the cores into reset in IPC-only mode */
+>> +	if (kproc->ipc_only)
+>> +		return 0;
+>> +
+>>  	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
+>>  						    kproc->ti_sci_id);
+>>  	if (ret)
+>> @@ -314,6 +324,12 @@ static int k3_dsp_rproc_start(struct rproc *rproc)
+>>  	u32 boot_addr;
+>>  	int ret;
+>>  
+>> +	if (kproc->ipc_only) {
+>> +		dev_err(dev, "%s cannot be invoked in IPC-only mode\n",
+>> +			__func__);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>>  	ret = k3_dsp_rproc_request_mbox(rproc);
+>>  	if (ret)
+>>  		return ret;
+>> @@ -351,6 +367,13 @@ static int k3_dsp_rproc_start(struct rproc *rproc)
+>>  static int k3_dsp_rproc_stop(struct rproc *rproc)
+>>  {
+>>  	struct k3_dsp_rproc *kproc = rproc->priv;
+>> +	struct device *dev = kproc->dev;
+>> +
+>> +	if (kproc->ipc_only) {
+>> +		dev_err(dev, "%s cannot be invoked in IPC-only mode\n",
+>> +			__func__);
+>> +		return -EINVAL;
+>> +	}
+>>  
+>>  	mbox_free_channel(kproc->mbox);
+>>  
+>> @@ -359,6 +382,85 @@ static int k3_dsp_rproc_stop(struct rproc *rproc)
+>>  	return 0;
+>>  }
+>>  
+>> +/*
+>> + * Attach to a running DSP remote processor (IPC-only mode)
+>> + *
+>> + * This rproc attach callback only needs to request the mailbox, the remote
+>> + * processor is already booted, so there is no need to issue any TI-SCI
+>> + * commands to boot the DSP core.
+>> + */
+>> +static int k3_dsp_rproc_attach(struct rproc *rproc)
+>> +{
+>> +	struct k3_dsp_rproc *kproc = rproc->priv;
+>> +	struct device *dev = kproc->dev;
+>> +	int ret;
+>> +
+>> +	if (!kproc->ipc_only || rproc->state != RPROC_DETACHED) {
+>> +		dev_err(dev, "DSP is expected to be in IPC-only mode and RPROC_DETACHED state\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	ret = k3_dsp_rproc_request_mbox(rproc);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	dev_err(dev, "DSP initialized in IPC-only mode\n");
+>> +	return 0;
+>> +}
+>> +
+>> +/*
+>> + * Detach from a running DSP remote processor (IPC-only mode)
+>> + *
+>> + * This rproc detach callback performs the opposite operation to attach callback
+>> + * and only needs to release the mailbox, the DSP core is not stopped and will
+>> + * be left to continue to run its booted firmware.
+>> + */
+>> +static int k3_dsp_rproc_detach(struct rproc *rproc)
+>> +{
+>> +	struct k3_dsp_rproc *kproc = rproc->priv;
+>> +	struct device *dev = kproc->dev;
+>> +
+>> +	if (!kproc->ipc_only || rproc->state != RPROC_ATTACHED) {
+>> +		dev_err(dev, "DSP is expected to be in IPC-only mode and RPROC_ATTACHED state\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	mbox_free_channel(kproc->mbox);
+>> +	dev_err(dev, "DSP deinitialized in IPC-only mode\n");
+>> +	return 0;
+>> +}
+> 
+> Same comment as patch 4/6 regarding k3_dsp_rproc::ipc_only and setting the right
+> rproc_ops based on the scenario.
 
-1. If there is a memcg associated with the page already, that memcg is
-   charged. This happens during swapin.
+OK, I will make the switch since both you and Bjorn prefer it this way. And we
+can revisit later when we want to scale it to support proper shutdown as well.
+FWIW, I have given my reasons for doing it the current way in a previous
+response to Bjorn for similar comments.
 
-2. If an explicit mm is passed, mm->memcg is charged. This happens
-   during page faults, which can be triggered in remote VMs (eg gup).
+Note that I won't be able to define a separate ops structure but rather
+overwrite the ops upon detection of IPC-only mode, since I won't be able to
+detect the mode until I parse the dt and query our central system processor. The
+dt parsing is all done post rproc_alloc, and I need to supply a rproc_ops first.
 
-3. Otherwise consult the current process context. If there is an
-   active_memcg, use that. Otherwise, current->mm->memcg.
+Btw, any comments on patch 1 which is just a cleanup patch.
 
-Previously, if a NULL mm was passed to mem_cgroup_charge (case 3) it
-would always charge the root cgroup. Now it looks up the active_memcg
-first (falling back to charging the root cgroup if not set).
+regards
+Suman
 
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Tejun Heo <tj@kernel.org>
-Acked-by: Chris Down <chris@chrisdown.name>
-Acked-by: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
----
- mm/filemap.c    |  2 +-
- mm/memcontrol.c | 48 +++++++++++++++++++++++++++++++-----------------
- mm/shmem.c      |  4 ++--
- 3 files changed, 34 insertions(+), 20 deletions(-)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 66f7e9fdfbc4..ac82a93d4f38 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -872,7 +872,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
- 	page->index = offset;
- 
- 	if (!huge) {
--		error = mem_cgroup_charge(page, current->mm, gfp);
-+		error = mem_cgroup_charge(page, NULL, gfp);
- 		if (error)
- 			goto error;
- 		charged = true;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 64ada9e650a5..26dc2dc0056a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -886,13 +886,24 @@ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p)
- }
- EXPORT_SYMBOL(mem_cgroup_from_task);
- 
-+static __always_inline struct mem_cgroup *active_memcg(void)
-+{
-+	if (in_interrupt())
-+		return this_cpu_read(int_active_memcg);
-+	else
-+		return current->active_memcg;
-+}
-+
- /**
-  * get_mem_cgroup_from_mm: Obtain a reference on given mm_struct's memcg.
-  * @mm: mm from which memcg should be extracted. It can be NULL.
-  *
-- * Obtain a reference on mm->memcg and returns it if successful. Otherwise
-- * root_mem_cgroup is returned. However if mem_cgroup is disabled, NULL is
-- * returned.
-+ * Obtain a reference on mm->memcg and returns it if successful. If mm
-+ * is NULL, then the memcg is chosen as follows:
-+ * 1) The active memcg, if set.
-+ * 2) current->mm->memcg, if available
-+ * 3) root memcg
-+ * If mem_cgroup is disabled, NULL is returned.
-  */
- struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
- {
-@@ -901,13 +912,23 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
- 	if (mem_cgroup_disabled())
- 		return NULL;
- 
-+	/*
-+	 * Page cache insertions can happen without an
-+	 * actual mm context, e.g. during disk probing
-+	 * on boot, loopback IO, acct() writes etc.
-+	 */
-+	if (unlikely(!mm)) {
-+		memcg = active_memcg();
-+		if (unlikely(memcg)) {
-+			/* remote memcg must hold a ref */
-+			css_get(&memcg->css);
-+			return memcg;
-+		}
-+		mm = current->mm;
-+	}
-+
- 	rcu_read_lock();
- 	do {
--		/*
--		 * Page cache insertions can happen without an
--		 * actual mm context, e.g. during disk probing
--		 * on boot, loopback IO, acct() writes etc.
--		 */
- 		if (unlikely(!mm))
- 			memcg = root_mem_cgroup;
- 		else {
-@@ -921,14 +942,6 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
- }
- EXPORT_SYMBOL(get_mem_cgroup_from_mm);
- 
--static __always_inline struct mem_cgroup *active_memcg(void)
--{
--	if (in_interrupt())
--		return this_cpu_read(int_active_memcg);
--	else
--		return current->active_memcg;
--}
--
- static __always_inline bool memcg_kmem_bypass(void)
- {
- 	/* Allow remote memcg charging from any context. */
-@@ -6541,7 +6554,8 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
-  * @gfp_mask: reclaim mode
-  *
-  * Try to charge @page to the memcg that @mm belongs to, reclaiming
-- * pages according to @gfp_mask if necessary.
-+ * pages according to @gfp_mask if necessary. if @mm is NULL, try to
-+ * charge to the active memcg.
-  *
-  * Do not use this for pages allocated for swapin.
-  *
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 5d46611cba8d..2e7af1725ff6 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1695,7 +1695,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- {
- 	struct address_space *mapping = inode->i_mapping;
- 	struct shmem_inode_info *info = SHMEM_I(inode);
--	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
-+	struct mm_struct *charge_mm = vma ? vma->vm_mm : NULL;
- 	struct page *page;
- 	swp_entry_t swap;
- 	int error;
-@@ -1816,7 +1816,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 	}
- 
- 	sbinfo = SHMEM_SB(inode->i_sb);
--	charge_mm = vma ? vma->vm_mm : current->mm;
-+	charge_mm = vma ? vma->vm_mm : NULL;
- 
- 	page = pagecache_get_page(mapping, index,
- 					FGP_ENTRY | FGP_HEAD | FGP_LOCK, 0);
--- 
-2.30.2
+> 
+> Thanks,
+> Mathieu
+> 
+>> +
+>> +/*
+>> + * This function implements the .get_loaded_rsc_table() callback and is used
+>> + * to provide the resource table for a booted DSP in IPC-only mode. The K3 DSP
+>> + * firmwares follow a design-by-contract approach and are expected to have the
+>> + * resource table at the base of the DDR region reserved for firmware usage.
+>> + * This provides flexibility for the remote processor to be booted by different
+>> + * bootloaders that may or may not have the ability to publish the resource table
+>> + * address and size through a DT property.
+>> + */
+>> +static struct resource_table *k3_dsp_get_loaded_rsc_table(struct rproc *rproc,
+>> +							  size_t *rsc_table_sz)
+>> +{
+>> +	struct k3_dsp_rproc *kproc = rproc->priv;
+>> +	struct device *dev = kproc->dev;
+>> +
+>> +	if (!kproc->rmem[0].cpu_addr) {
+>> +		dev_err(dev, "memory-region #1 does not exist, loaded rsc table can't be found");
+>> +		return ERR_PTR(-ENOMEM);
+>> +	}
+>> +
+>> +	/*
+>> +	 * NOTE: The resource table size is currently hard-coded to a maximum
+>> +	 * of 256 bytes. The most common resource table usage for K3 firmwares
+>> +	 * is to only have the vdev resource entry and an optional trace entry.
+>> +	 * The exact size could be computed based on resource table address, but
+>> +	 * the hard-coded value suffices to support the IPC-only mode.
+>> +	 */
+>> +	*rsc_table_sz = 256;
+>> +	return (struct resource_table *)kproc->rmem[0].cpu_addr;
+>> +}
+>> +
+>>  /*
+>>   * Custom function to translate a DSP device address (internal RAMs only) to a
+>>   * kernel virtual address.  The DSPs can access their RAMs at either an internal
+>> @@ -421,8 +523,11 @@ static void *k3_dsp_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool
+>>  static const struct rproc_ops k3_dsp_rproc_ops = {
+>>  	.start		= k3_dsp_rproc_start,
+>>  	.stop		= k3_dsp_rproc_stop,
+>> +	.attach		= k3_dsp_rproc_attach,
+>> +	.detach		= k3_dsp_rproc_detach,
+>>  	.kick		= k3_dsp_rproc_kick,
+>>  	.da_to_va	= k3_dsp_rproc_da_to_va,
+>> +	.get_loaded_rsc_table = k3_dsp_get_loaded_rsc_table,
+>>  };
+>>  
+>>  static int k3_dsp_rproc_of_get_memories(struct platform_device *pdev,
+>> @@ -605,6 +710,8 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
+>>  	struct k3_dsp_rproc *kproc;
+>>  	struct rproc *rproc;
+>>  	const char *fw_name;
+>> +	bool r_state = false;
+>> +	bool p_state = false;
+>>  	int ret = 0;
+>>  	int ret1;
+>>  
+>> @@ -683,19 +790,37 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
+>>  		goto release_tsp;
+>>  	}
+>>  
+>> -	/*
+>> -	 * ensure the DSP local reset is asserted to ensure the DSP doesn't
+>> -	 * execute bogus code in .prepare() when the module reset is released.
+>> -	 */
+>> -	if (data->uses_lreset) {
+>> -		ret = reset_control_status(kproc->reset);
+>> -		if (ret < 0) {
+>> -			dev_err(dev, "failed to get reset status, status = %d\n",
+>> -				ret);
+>> -			goto release_mem;
+>> -		} else if (ret == 0) {
+>> -			dev_warn(dev, "local reset is deasserted for device\n");
+>> -			k3_dsp_rproc_reset(kproc);
+>> +	ret = kproc->ti_sci->ops.dev_ops.is_on(kproc->ti_sci, kproc->ti_sci_id,
+>> +					       &r_state, &p_state);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to get initial state, mode cannot be determined, ret = %d\n",
+>> +			ret);
+>> +		goto release_mem;
+>> +	}
+>> +
+>> +	/* configure J721E devices for either remoteproc or IPC-only mode */
+>> +	if (p_state) {
+>> +		dev_err(dev, "configured DSP for IPC-only mode\n");
+>> +		rproc->state = RPROC_DETACHED;
+>> +		rproc->detach_on_shutdown = true;
+>> +		kproc->ipc_only = true;
+>> +	} else {
+>> +		dev_err(dev, "configured DSP for remoteproc mode\n");
+>> +		/*
+>> +		 * ensure the DSP local reset is asserted to ensure the DSP
+>> +		 * doesn't execute bogus code in .prepare() when the module
+>> +		 * reset is released.
+>> +		 */
+>> +		if (data->uses_lreset) {
+>> +			ret = reset_control_status(kproc->reset);
+>> +			if (ret < 0) {
+>> +				dev_err(dev, "failed to get reset status, status = %d\n",
+>> +					ret);
+>> +				goto release_mem;
+>> +			} else if (ret == 0) {
+>> +				dev_warn(dev, "local reset is deasserted for device\n");
+>> +				k3_dsp_rproc_reset(kproc);
+>> +			}
+>>  		}
+>>  	}
+>>  
+>> -- 
+>> 2.30.1
+>>
 
