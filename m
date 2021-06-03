@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F2839ABBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509E139ABC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhFCU0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhFCU0D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:26:03 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2404C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 13:24:05 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id a15so5421472qta.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K0U2vfO0s/gXz3YV0/zSFcReO1Jx7LkT5Q9OOSBMSss=;
-        b=j1A98YTafAPvHjzQY+ZV3QAOa/LBVzmJgVhIbhQLSvdy7bXiODny1yOlaQlb7LWls1
-         opVdTQxQBf3Q8hayY4a9lm9mPaZjJGGYSQ2H30V1xIUhm1pwHvYQ50/PtHnXUA6ijneI
-         dnlEKejOa4+paYKemXhcp2qBAN9dE/b3ctD14=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K0U2vfO0s/gXz3YV0/zSFcReO1Jx7LkT5Q9OOSBMSss=;
-        b=bHdXV2FK+6N8GZC6SXyl6Ky9uemLA6i00xPZ0NYtddmPmL1EusLY0nBGLAw3rwTShS
-         fHtyxqVn5Vu8YzzIetfWR/EcfhJR2/urGngwyhMS9xLQs0/FwYzmU03vOBq302EWt79z
-         S356oimF52JBFBPNCvJfDmWiUy/hPNd96c4UfJhtEB+sHyKFMNBk+SB1UuKhxKsrE5o/
-         IGyZIMFiTZaC1M0nVNmDFHyIFA4kz2BAyHfRuPBMj7dC7J+vkBtO9/kcq3KkQ67AtwDe
-         NEbgagkvj6ulskoO3v/YuC9UdmhIW/ohty4HLptYOrrUudVBb44NpVKUF5eS+OhSOBas
-         8i1Q==
-X-Gm-Message-State: AOAM533Y1V1f0XsBvF3zz2GTeF1rvL3PP4co0vPp8lcLonoVgL/+Uoyw
-        ubwpw0smHojYD+OLuNOYLnJZkkPWJgudbg==
-X-Google-Smtp-Source: ABdhPJxdQIYW92hGYBc02Abeg9usQrrRTk38UQo6z2x1BMti1NsuuKUJPDURKv/KoZCD0dUs7a+NtA==
-X-Received: by 2002:a05:622a:553:: with SMTP id m19mr1292788qtx.234.1622751844658;
-        Thu, 03 Jun 2021 13:24:04 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id 7sm2521503qtu.38.2021.06.03.13.24.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 13:24:04 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id b13so10583992ybk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:24:03 -0700 (PDT)
-X-Received: by 2002:a25:8191:: with SMTP id p17mr361035ybk.405.1622751843264;
- Thu, 03 Jun 2021 13:24:03 -0700 (PDT)
+        id S230008AbhFCU1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhFCU10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:27:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE3466108D;
+        Thu,  3 Jun 2021 20:25:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622751941;
+        bh=14e4ANwC5usN+7RNn9d1zueQxt3zXg2RzNznhChwp28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AO4Smmr1c730nbLDhch/dZyD7ed0xEprHQ/ZTN7v7dZbgbyyF+5B8w+0IVWh5g2gW
+         ThGqfU1oN0IracroeMGZLW/tHFx8WAZ4vcHbp37hITyghxsoD/YFSXuIJAMRcYDSJa
+         LaaOWdECV6o1nEjqc1WUKwZnFYEa8Z4lDbpqTmhjZmZe+L1Ek2544WAO4UlsiRvJbh
+         qXhir2ged+fzXrvlR3HBHfsi89/V7GHapL+f/gxwlo7WSjAcCgIiPn8DRMI9872eJU
+         Nw3AG03gT9TlMDEsTI/O276pMq6qRL4SXEFO9gyZ3N39g9OswqV936a7/XH3rGmDwE
+         5KK9ejPg17pdQ==
+Date:   Thu, 3 Jun 2021 22:25:38 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thor Thayer <thor.thayer@linux.intel.com>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 04/16] i2c: busses: i2c-altera: Fix formatting issue in
+ struct and demote unworthy kernel-doc headers
+Message-ID: <YLk6wgE0o9f9WQCT@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Thor Thayer <thor.thayer@linux.intel.com>,
+        linux-i2c@vger.kernel.org
+References: <20210520190105.3772683-1-lee.jones@linaro.org>
+ <20210520190105.3772683-5-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20210602191338.1995827-1-sujitka@chromium.org> <20210602121313.v3.1.Ia83c80aec3b9535f01441247b6c3fb6f80b0ec7f@changeid>
-In-Reply-To: <20210602121313.v3.1.Ia83c80aec3b9535f01441247b6c3fb6f80b0ec7f@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 3 Jun 2021 13:23:51 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vfi6SZsgJN3Jm+DrmW8KrySbn14BMOWQjW9ib-fqZd8Q@mail.gmail.com>
-Message-ID: <CAD=FV=Vfi6SZsgJN3Jm+DrmW8KrySbn14BMOWQjW9ib-fqZd8Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] arm64: dts: qcom: sc7180: Move sdc pinconf to
- board specific DT files
-To:     Sujit Kautkar <sujitka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/sWLq9UAENoQS1je"
+Content-Disposition: inline
+In-Reply-To: <20210520190105.3772683-5-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, Jun 2, 2021 at 12:14 PM Sujit Kautkar <sujitka@chromium.org> wrote:
->
-> Move sdc1/sdc2 pinconf from SoC specific DT file to board specific DT
-> files
->
-> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
-> ---
->
-> (no changes since v1)
->
->  arch/arm64/boot/dts/qcom/sc7180-idp.dts      | 102 +++++++++++++++++++
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 102 +++++++++++++++++++
->  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 102 -------------------
->  3 files changed, 204 insertions(+), 102 deletions(-)
+--/sWLq9UAENoQS1je
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-FYI: Since there were no changes from v2 so you should have kept my
-reviewed-by tag from v2. Here it is again, though:
+On Thu, May 20, 2021 at 08:00:53PM +0100, Lee Jones wrote:
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/i2c/busses/i2c-altera.c:74: warning: cannot understand function =
+prototype: 'struct altr_i2c_dev '
+>  drivers/i2c/busses/i2c-altera.c:180: warning: Function parameter or memb=
+er 'idev' not described in 'altr_i2c_transfer'
+>  drivers/i2c/busses/i2c-altera.c:180: warning: Function parameter or memb=
+er 'data' not described in 'altr_i2c_transfer'
+>  drivers/i2c/busses/i2c-altera.c:193: warning: Function parameter or memb=
+er 'idev' not described in 'altr_i2c_empty_rx_fifo'
+>  drivers/i2c/busses/i2c-altera.c:209: warning: Function parameter or memb=
+er 'idev' not described in 'altr_i2c_fill_tx_fifo'
+>=20
+> Cc: Thor Thayer <thor.thayer@linux.intel.com>
+> Cc: linux-i2c@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Applied to for-current, thanks!
+
+
+--/sWLq9UAENoQS1je
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmC5OsIACgkQFA3kzBSg
+KbYwlxAAjtOk+RWF1LLBMIWxdpvmoiZG3q0c6jlyKGUXyni+ZxT8Y0r70YOqLL1A
+PAkI4P3+r6b9fdpd37G5T71MmwUfFk9WUWKe/v4iGDy9XwQLCmUMrQm9efDjvOmu
+Fbhsgb+Q1DHyQ3YfpjaeJYf+ufeYot7ZclNEKUkHzE1cDOfigNXXJ2zI945uUkFh
+DtJVCAZJ8EJv+6BO6ccSuXytL3TJIV08dwbMiDUROs5DoXy+9aECwKBUyCvt/j2L
+oshNd1shanwp/+VKXgjPIwo81ji2nPKPbICVDcJ14taV5lmR3H75mpBhtAobHtUx
+YC8zMaCL7lU0ByoH1ROVJKf+PQBGumh0BSTiUSf4VUBSGaObu5PeqCTxwbkfGp0I
+PwuWXvdTWPsGK/ee7HolQqA+vc9QnieqGRPMDhER5lhL3Hw02LP6UUlZuaWv2UKz
+Ac9zHc4DZlauAFaGGVm+USCwcuv4NIIYSne21kfMPf6hct41yl39Shd7QtsqE9q4
+n2SqctQj/N7sKlMid+rpK+SWKui89Sg7kK1q+RoLDiqScO5OGMaKfabhz3IC7kvz
+963XjX0x6wssOvo2WKUmDXfVOVifNdq0hbK5zfM8f3YGTyQb+qaMfXzRv+OAXei5
+wGyruv8vvmBdWUtRIVQYJCj0OYp2Lgy96AKt0M3sFEsc9GI8MwM=
+=3bbQ
+-----END PGP SIGNATURE-----
+
+--/sWLq9UAENoQS1je--
