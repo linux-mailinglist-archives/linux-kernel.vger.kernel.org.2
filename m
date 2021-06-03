@@ -2,137 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7EA39A68D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8625339A690
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhFCRCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:02:08 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:14324 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhFCRCI (ORCPT
+        id S230300AbhFCRCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhFCRCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:02:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622739623; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=/pHlYIqIuh+eZ1QKQJtdnJ5xmRU/hum2lRn0qX6Gm0U=; b=qj3OaMC7RW5Wz1Vj7onovszXRIYtwn1RtR4SPgl/gjbHqopZdoRqgI/sxxwwweA/YlYBW0Wa
- tUTFZr/t0SKyH8qL6TuHlR+2k2fRV0a6Sf7/IzjcEWVLp8ZZVCZ0TqFd7jl8NpnVXkvoA1x2
- Oo0SOlB9+0R+PIPOTnA5/W/TRGM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60b90a8fe27c0cc77fe313eb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 16:59:59
- GMT
-Sender: bcain=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D7C9FC4323A; Thu,  3 Jun 2021 16:59:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B4F76C4338A;
-        Thu,  3 Jun 2021 16:59:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B4F76C4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'Nathan Chancellor'" <nathan@kernel.org>,
-        "'Andrew Morton'" <akpm@linux-foundation.org>
-Cc:     "'Nick Desaulniers'" <ndesaulniers@google.com>,
-        <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>
-References: <20210521011239.1332345-1-nathan@kernel.org> <20210521011239.1332345-3-nathan@kernel.org>
-In-Reply-To: <20210521011239.1332345-3-nathan@kernel.org>
-Subject: RE: [PATCH 2/3] hexagon: Use common DISCARDS macro
-Date:   Thu, 3 Jun 2021 11:59:57 -0500
-Message-ID: <09a801d75899$e24c97f0$a6e5c7d0$@codeaurora.org>
+        Thu, 3 Jun 2021 13:02:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33285C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 10:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Lp4IX8ac6vnef/I1ayxIo0SkojWoNqyo+RY9PrlOTJY=; b=49qoomEpvq2032jf8PA3bwkUHj
+        lwGa0PH17D5GtVo8274LPi/C3yjj5jpeQ2vCNFNSO0WEbUgCQQ/Ygs9VtJjFUiaV4fAhQr81sAXr+
+        DVl6EN0mwf9OWl5Uzz+zCaZCxGj96JpTZxK+I3002uhxMz1KPp93RlS42kE2opFmujSAnIY63tsGR
+        5/m4Kt/wTpQjnhazcrtYgfwnwzuzME4hH3Vzjx0qEvtFQbIxjjH3CJXmAZq+v3370PWEccam5I7S+
+        ntNdjMzwfPY/HXd/xynxm17nnglDNkkHrzGfQi8UH2K7f/mUQoxtxafyEr4VosGMAtUroo6O8dGIQ
+        BxBT/wow==;
+Received: from [2601:1c0:6280:3f0::ce7d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1loqiA-009gxg-MQ; Thu, 03 Jun 2021 17:00:51 +0000
+Subject: Re: [PATCH v10 1/3] iommu: Enhance IOMMU default DMA mode build
+ options
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org, baolu.lu@linux.intel.com,
+        robin.murphy@arm.com
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linuxarm@huawei.com, thunder.leizhen@huawei.com,
+        chenxiang66@hisilicon.com
+References: <1622728715-209296-1-git-send-email-john.garry@huawei.com>
+ <1622728715-209296-2-git-send-email-john.garry@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c8107ae9-b099-459f-eea4-b9b5a0929ee2@infradead.org>
+Date:   Thu, 3 Jun 2021 10:00:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+In-Reply-To: <1622728715-209296-2-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQImhg45Cwtn7gWc92+5nwbl9gAFPwIEvSIiqlQBjtA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Nathan Chancellor <nathan@kernel.org>
-> Sent: Thursday, May 20, 2021 8:13 PM
-> To: Brian Cain <bcain@codeaurora.org>; Andrew Morton <akpm@linux-
-> foundation.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>; linux-
-> hexagon@vger.kernel.org; linux-kernel@vger.kernel.org; clang-built-
-> linux@googlegroups.com; Nathan Chancellor <nathan@kernel.org>
-> Subject: [PATCH 2/3] hexagon: Use common DISCARDS macro
+On 6/3/21 6:58 AM, John Garry wrote:
+> From: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> ld.lld warns that the '.modinfo' section is not currently handled:
+> First, add build options IOMMU_DEFAULT_{LAZY|STRICT}, so that we have the
+> opportunity to set {lazy|strict} mode as default at build time. Then put
+> the two config options in an choice, as they are mutually-exclusive.
 > 
-> ld.lld: warning: kernel/built-in.a(workqueue.o):(.modinfo) is being placed
-in
-> '.modinfo'
-> ld.lld: warning: kernel/built-in.a(printk/printk.o):(.modinfo) is being
-placed in
-> '.modinfo'
-> ld.lld: warning: kernel/built-in.a(irq/spurious.o):(.modinfo) is being
-placed in
-> '.modinfo'
-> ld.lld: warning: kernel/built-in.a(rcu/update.o):(.modinfo) is being
-placed in
-> '.modinfo'
-> 
-> The '.modinfo' section was added in commit 898490c010b5 ("moduleparam:
-> Save information about built-in modules in separate file") to the
-> DISCARDS macro but Hexagon has never used that macro. The unification of
-> DISCARDS happened in commit 023bf6f1b8bf ("linker script: unify usage of
-> discard definition") in 2009, prior to Hexagon being added in 2011.
-> 
-> Switch Hexagon over to the DISCARDS macro so that anything that is
-> expected to be discarded gets discarded.
-> 
-> Fixes: e95bf452a9e2 ("Hexagon: Add configuration and makefiles for the
-> Hexagon architecture.")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> [jpg: Make choice between strict and lazy only (and not passthrough)]
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
 > ---
->  arch/hexagon/kernel/vmlinux.lds.S | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
+>  drivers/iommu/Kconfig | 34 ++++++++++++++++++++++++++++++++++
+>  drivers/iommu/iommu.c |  3 ++-
+>  2 files changed, 36 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/hexagon/kernel/vmlinux.lds.S
-> b/arch/hexagon/kernel/vmlinux.lds.S
-> index 20f19539c5fc..57465bff1fe4 100644
-> --- a/arch/hexagon/kernel/vmlinux.lds.S
-> +++ b/arch/hexagon/kernel/vmlinux.lds.S
-> @@ -61,14 +61,9 @@ SECTIONS
-> 
->  	_end = .;
-> 
-> -	/DISCARD/ : {
-> -		EXIT_TEXT
-> -		EXIT_DATA
-> -		EXIT_CALL
-> -	}
-> -
->  	STABS_DEBUG
->  	DWARF_DEBUG
->  	ELF_DETAILS
-> 
-> +	DISCARDS
->  }
-> --
-> 2.32.0.rc0
+> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> index 1f111b399bca..12ef90256df8 100644
+> --- a/drivers/iommu/Kconfig
+> +++ b/drivers/iommu/Kconfig
+> @@ -90,6 +90,40 @@ config IOMMU_DEFAULT_PASSTHROUGH
+>  
+>  	  If unsure, say N here.
+>  
+> +choice
+> +	prompt "IOMMU default DMA mode"
+> +	depends on IOMMU_API
+> +
+> +	default IOMMU_DEFAULT_STRICT
+> +	help
+> +	  This option allows an IOMMU DMA mode to be chosen at build time, to
+> +	  override the default DMA mode of each ARCH, removing the need to
+> +	  pass in kernel parameters through command line. It is still possible
+> +	  to provide ARCH-specific or common boot options to override this
+> +	  option.
+> +
+> +	  If unsure, keep the default.
+> +
+> +config IOMMU_DEFAULT_LAZY
+> +	bool "lazy"
+> +	help
+> +	  Support lazy mode, where for every IOMMU DMA unmap operation, the
+> +	  flush operation of IOTLB and the free operation of IOVA are deferred.
+> +	  They are only guaranteed to be done before the related IOVA will be
+> +	  reused.
+> +
+> +config IOMMU_DEFAULT_STRICT
+> +	bool "strict"
+> +	help
+> +	  For every IOMMU DMA unmap operation, the flush operation of IOTLB and
+> +	  the free operation of IOVA are guaranteed to be done in the unmap
+> +	  function.
+> +
+> +	  This mode is safer than the two above, but it maybe slower in some
 
-Acked-by: Brian Cain <bcain@codeaurora.org>
+There don't seem to be two above?
+
+> +	  high performace scenarios.
+
+	       performance
+
+> +
+> +endchoice
+
+
+thanks.
+-- 
+~Randy
 
