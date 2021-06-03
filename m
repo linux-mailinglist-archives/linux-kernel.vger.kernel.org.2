@@ -2,71 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D6D399811
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD9839981D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhFCCgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:36:07 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7078 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFCCgE (ORCPT
+        id S229675AbhFCCqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFCCqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:36:04 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FwVJj4rB0zYqFf;
-        Thu,  3 Jun 2021 10:31:33 +0800 (CST)
-Received: from dggpeml500005.china.huawei.com (7.185.36.59) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 10:34:18 +0800
-Received: from huawei.com (10.175.112.125) by dggpeml500005.china.huawei.com
- (7.185.36.59) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 3 Jun 2021
- 10:34:17 +0800
-From:   Yongqiang Liu <liuyongqiang13@huawei.com>
-To:     <f.fainelli@gmail.com>, <bcm-kernel-feedback-list@broadcom.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] soc: bcm: brcmstb: Remove unused variable brcmstb_machine_match.
-Date:   Thu, 3 Jun 2021 02:44:26 +0000
-Message-ID: <20210603024426.1124761-1-liuyongqiang13@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 2 Jun 2021 22:46:44 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12BBC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 19:44:44 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id f30so3537562oij.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZZQYKNjkzbXDm9CIMxGhmOJ08FkC41qsAMnb0o1Bjxs=;
+        b=RgmSNlHKZ4fxhOVgzUIKQnKC6KAXoEYn2tb6HQBdFU84JbJrOkZ5dz4BlNToJLPlKS
+         mcF9s+xJzVC3oKtTR0TshLDyHMTrAogZ1+DlIJ+4Gu4wzhgAW2nYqsOjudeh/0Rcye7R
+         P6lH7cd2Z0BgP/houfZYs3LAv1w7lR4Nj2mGj8Vao3+7x8QlrKAiRqtpJ7qhgD9l3WxE
+         Z4UFAg4TFDt01v1w17duqgAQaJR9RTa993ESYgM5kqSCJoKSigvEUZi5bbiufFv4yvY2
+         h7aobkWFvg4wi6hHGNGNW9/HjPxE1Wc0LiAtBNrnJ0Bvr81akcULkAjUYq1QCcEMdPMA
+         6wcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZZQYKNjkzbXDm9CIMxGhmOJ08FkC41qsAMnb0o1Bjxs=;
+        b=JBYpLTU1EN/fEJNGnjfO1E76dYv73Q1XQihyyiuv0yI9LBmCd+z9aMzFe3zooW4k4o
+         odHQkh8+hGKqallWLDvhXzpkU1iKiaVh8hMhLOAj9Xbx3Ahm5vdhcSfCYfzbKxzWQG/a
+         sZq1xiho5wg374QHPNCJhjXqKEsYtbXGDiSjnntOBkqLoARY+RwefKR8oxDrXh3O3jQ3
+         Qy9l2JgZjdqWFQoC9XQFnru8tqF1RFRew1b3QPXf8mqdY4btuggt9XvPj4SyGfeOvOQn
+         5Z6S/UGHAmwp4rqWRVkTWHmw6SMudDqdivwLuxDUwD6A/ywBG8GhMUavz1FP2ISIDrMr
+         wyFg==
+X-Gm-Message-State: AOAM531XV+SMl9Anoib+6XOzsybzWMQr3M2e0kq64XC0PR1JLttDS121
+        cl6P5flp+FNRNbyRT5AA3aQ5cA==
+X-Google-Smtp-Source: ABdhPJw6sYb54WexwW6J95QUpKdekjtsw1V+SnInNWc6uSj7hBZ3jhLGszsEKSNzU3VDIM1bm7ldXg==
+X-Received: by 2002:aca:4bd6:: with SMTP id y205mr6134307oia.5.1622688283169;
+        Wed, 02 Jun 2021 19:44:43 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v8sm410008oiv.5.2021.06.02.19.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 19:44:42 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 21:44:40 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Maulik Shah <mkshah@codeaurora.org>, evgreen@chromium.org,
+        mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v8 3/5] arm64: dts: qcom: sc7180: Enable SoC sleep stats
+Message-ID: <YLhCGC/qgP6ESNl7@yoga>
+References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
+ <1621596371-26482-4-git-send-email-mkshah@codeaurora.org>
+ <CAE-0n53ySKwDwzRYFYjnQnqVAujVrkik2U-PeCuS61xQU-hbWA@mail.gmail.com>
+ <YLUjbwFSJOSWS0IV@builder.lan>
+ <CAE-0n53hdd1tEmYwTL0CNi=S6CUxRhWnkJz-KoTj2UnedNKXmg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500005.china.huawei.com (7.185.36.59)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n53hdd1tEmYwTL0CNi=S6CUxRhWnkJz-KoTj2UnedNKXmg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 8b8f095b9076 ("soc: bcm: brcmstb: Remove soc_is_brcmstb()")
-remove the function soc_is_brcmstb(), the global variable
-brcmstb_machine_match is no longer useful. So remove it.
+On Wed 02 Jun 19:26 CDT 2021, Stephen Boyd wrote:
 
-Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
----
- drivers/soc/bcm/brcmstb/common.c | 5 -----
- 1 file changed, 5 deletions(-)
+> Quoting Bjorn Andersson (2021-05-31 10:57:03)
+> > On Wed 26 May 18:30 CDT 2021, Stephen Boyd wrote:
+> >
+> > > Quoting Maulik Shah (2021-05-21 04:26:09)
+> > > > Add device node for SoC sleep stats driver which provides various
+> > > > low power mode stats.
+> > > >
+> > > > Also update the reg size of aoss_qmp device to 0x400.
+> > > >
+> > > > Cc: devicetree@vger.kernel.org
+> > > > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > > ---
+> > > >  arch/arm64/boot/dts/qcom/sc7180.dtsi | 7 ++++++-
+> > > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > > index 6228ba2..889d04d 100644
+> > > > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > > @@ -3215,7 +3215,7 @@
+> > > >
+> > > >                 aoss_qmp: power-controller@c300000 {
+> > > >                         compatible = "qcom,sc7180-aoss-qmp";
+> > > > -                       reg = <0 0x0c300000 0 0x100000>;
+> > > > +                       reg = <0 0x0c300000 0 0x400>;
+> > > >                         interrupts = <GIC_SPI 389 IRQ_TYPE_EDGE_RISING>;
+> > > >                         mboxes = <&apss_shared 0>;
+> > > >
+> > > > @@ -3223,6 +3223,11 @@
+> > > >                         #power-domain-cells = <1>;
+> > > >                 };
+> > > >
+> > > > +               rpmh-sleep-stats@c3f0000 {
+> > > > +                       compatible = "qcom,rpmh-sleep-stats";
+> > > > +                       reg = <0 0x0c3f0000 0 0x400>;
+> > > > +               };
+> > > > +
+> > >
+> > > Does this need to be in DT? Can the sc7180-aoss-qmp driver use the
+> > > aux-bus and stick the sleep stats device on there?
+> > >
+> >
+> > The AOSS memory space has N chunks of "message ram", one is used for the
+> > QMP protocol (presumably the APSS specific one), a different one is used
+> > for the sleep stats.
+> >
+> > I presume we could have come up with a binding for the entire AOSS/AOP
+> > and then describe (either implicit or explicitly) the QMP and
+> > debug-stats under that.
+> >
+> > But we'd also have to come up with the same container-device for the RPM
+> > case.
+> 
+> Because the rpm node doesn't include this region of memory today? I
+> still fail to see why we're changing the existing binding and adding a
+> DT node for this new region that is basically a debug feature.
 
-diff --git a/drivers/soc/bcm/brcmstb/common.c b/drivers/soc/bcm/brcmstb/common.c
-index e87dfc6660f3..2a010881f4b6 100644
---- a/drivers/soc/bcm/brcmstb/common.c
-+++ b/drivers/soc/bcm/brcmstb/common.c
-@@ -14,11 +14,6 @@
- static u32 family_id;
- static u32 product_id;
- 
--static const struct of_device_id brcmstb_machine_match[] = {
--	{ .compatible = "brcm,brcmstb", },
--	{ }
--};
--
- u32 brcmstb_get_family_id(void)
- {
- 	return family_id;
--- 
-2.19.1
+We're not changing the binding, the memory region for the "AOSS QMP"
+thing was never larger than 0x400.
 
+0x100000 is the size of all the AOSS "msg_ram" regions. We don't have
+this whole thing described in a binding and we don't have an
+implementation for the whole thing.
+
+If we're going for that we'd need to extend the binding to indicate
+which of the msg_ram regions are used for APSS QMP and for debug stats
+on particular platform (either by compatible, explicit properties or as
+some subnodes).
+
+
+That said, as I looked into my other objection, for the RPM
+(non-hardened) case it seems that we're actually describing the RPM
+region. So there it would make sense to describe it as such in DT - but
+we don't have any other code (that I'm aware of) that would implement
+the "qcom,<platform>-rpm".
+
+Regards,
+Bjorn
