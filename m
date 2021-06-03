@@ -2,193 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34B439A349
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453C339A368
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhFCOfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:35:20 -0400
-Received: from mail-bn8nam08on2054.outbound.protection.outlook.com ([40.107.100.54]:31713
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230386AbhFCOfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:35:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ntCgKMNLsQe3ExnQ5JvQDL4Hjz8ry1JmKl8l/u5HjqAqJtJ7Mt7hks3HlMPwL2eEikSwmmqqlAcDbDfus+HcY+mZLNJ9JqsnVu+kn+a4hHxzSf0oDp5HNhlhNrS8vE89wbi1hk/5zDUdglIkj8RE5igBqfAfeOrzQq0ZhZbvZ79RfIth9gDhtdhhzw4e2QPm5PG/fLcnh5B0kncUO7nIdU2i+VI71e6qDEf+KduUamN6BkhIIa9f028/5RdwU/aYS197IYT7nmPdHD91mRZXZHxBm7l8IDyw6imtwZlRh7Vwn90LhHSDba7+eZYKqrOddZ42fkSz+JtGVMhfPb1Vxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qvnLXUAltcfGxhfGQi0OG+zV2ObzUlLlpUcjS8KUjSA=;
- b=TBBeQxlCzVT7nCk6ia8bV+fvvElFmoh/nXAbmTLIjLUwm1gpiR+Eo6wI4B3l64ZDBkjkGerH3Pzo+Mcm2NGyIQ6wC2kNXCrczVJ4Fi3oFx9lmAzHOg9C9CgqQdvlfKdM/U48xwC4PHThVEm7kVAB6aDLW5UxYtIhqRgTC9GDQ+QiA/KvDZiB3swQNAHxalBTxUiajU0EO0HFMxR2X/HBi1WJls++b6XsPiB/gYXg9jhFrn/2zjymYXuT19xZdi5pT3O+TLjdWQhY1u7PzJEqjd/2ZmefapJMe/fRgDsy/VZgvaVsDQ9bjO3yh7C25lVXklur7Y/s1XUII/cF+wJWGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=lixom.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qvnLXUAltcfGxhfGQi0OG+zV2ObzUlLlpUcjS8KUjSA=;
- b=lATyGb9W1OCScnrqe4QJu3GXG6m5/hvNJZ+t8bIMwbhkPP+mApRjaD8VkzMtr8kql2LmZKZaDcg1+mtSyt1JIMsL6ujZqI5aOkffE1syBL1HCjI0GE4XEYt7qSzeRfgzsOFSGcgQ+55TSWEzI1TYSggJ73sDWvfnRyUdodmabiJA9LyI+jlc7G4j03XDcbarg1UxjNp2IgckGeDPveZRgi5V1CMT48+OesshbXpomSI8TNOc0PlBoAHnz/Y/4X26jxVgKAZ1fTgURZYEcig2ZKcpnvq6wNT8QtyFas82ER78N89QXp+RhG6TwCgwsGctFR1qKCHtpDqW90d74rW7Mw==
-Received: from DS7PR03CA0244.namprd03.prod.outlook.com (2603:10b6:5:3b3::9) by
- BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4173.21; Thu, 3 Jun 2021 14:33:31 +0000
-Received: from DM6NAM11FT046.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b3:cafe::60) by DS7PR03CA0244.outlook.office365.com
- (2603:10b6:5:3b3::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23 via Frontend
- Transport; Thu, 3 Jun 2021 14:33:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; lixom.net; dkim=none (message not signed)
- header.d=none;lixom.net; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT046.mail.protection.outlook.com (10.13.172.121) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Thu, 3 Jun 2021 14:33:31 +0000
-Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
- 2021 14:33:30 +0000
-Date:   Thu, 3 Jun 2021 16:35:06 +0200
-From:   Thierry Reding <treding@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Cross <ccross@android.com>,
-        Olof Johansson <olof@lixom.net>,
+        id S231806AbhFCOhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:37:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231539AbhFCOhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:37:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C035613F1;
+        Thu,  3 Jun 2021 14:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622730953;
+        bh=pPTuoKWX4d7acsLmcXrA1+Gnm3Uox3TQwafM4ulr3Kc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=e9VHqGAnGRelCzpKXym98XkeVsTq/Wsf54M0iBoVdJ3DFy+gOyNOeiIUvQ++zgyvq
+         VpLR33KVJWeIbAzS2Jof5fGYNIyrFeQstCQOqhJEtkSzh8aP1XUBuap8jcEHcCzLPW
+         xgakhwoQYrUNj1N1cEVYsmvO1E8mBEieV5ZN3IjczHc/RW2V0f+ISZC0g7G8K5IY+v
+         58OZsMJY+xSxQETCdgKq2tZtdWc9AJWmQpR6+rL/sGvMEmUQe649MQxKX0oOEZA13U
+         R7SQxxILd/xg0WRfhxNPCLBQoFgZ9r17UTDbjzm1t/4g87bzyJFShzUtxPixY1sbqH
+         CD6kryvGJoICg==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tegra tree
-Message-ID: <YLjomqomVuJ3QZNC@orome.fritz.box>
-References: <20210603103507.304b7626@canb.auug.org.au>
- <8d8f947e-2ba4-f7b8-cb85-dcee940c96b4@gmail.com>
- <YLjIqfeiaJqeJQtw@orome.fritz.box>
- <8966e56c-4da4-b360-7ce6-19d0af114bb7@gmail.com>
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        sanm@codeaurora.org
+Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
+In-Reply-To: <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
+References: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
+ <87r1hjcvf6.fsf@kernel.org> <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
+ <YLi/u9J5f+nQO4Cm@kroah.com>
+ <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
+Date:   Thu, 03 Jun 2021 17:35:45 +0300
+Message-ID: <877djbc8xq.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Rp0EjJNSdc/8+ji6"
-Content-Disposition: inline
-In-Reply-To: <8966e56c-4da4-b360-7ce6-19d0af114bb7@gmail.com>
-X-NVConfidentiality: public
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed14c9ac-70be-4be1-87a8-08d9269c8f90
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB35872BE5439403C4E85669DECF3C9@BN8PR12MB3587.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:454;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Fr4cw76rLRWyoeKUXd/UHrfVgrf2F5IT5/y/G8rQplD2OUYSDl8HvzCoyuwMuXdLOtY7nnskGdnFBnbSQO55sJNvytIJYrIWpDMy7nuqpuqnLVyGsvMiZNRtDL1LZQCszY0eMrLj279Cbz6Z4wP46bvywrpCUeH+LO5yN5FKNBnKVzurezg72dtuDG+4rFKkB4BceB7lENaRVR9r7sswwM7HJT5vsh0kQOlc0HurrM/Cez1RFsHuJdnJ9FObfgNDh/D+Jn/3MJr9brWl6twW7sTnaYlo9t+aTtnuLT/3rlneUZIHzB+FnU5CCkHBLBKDi0ScIOGpthEt4YVnW4Cp0+vwwSzFsgfJGPAuM74lCRku7JzBaTtUwaPGkYDFWAfdIALu2TB2rHDO0skRyU4+WqhmDI5WX07DMZ/YQXTegP5frMLncLT7P1hhMud9lwjbIKewkcWin7iPcAz6F1STna3mR6qr5NCjo6xE8lkeYUIKipAFy8lQFY7SB2sTaA8Im8q2O+vzNOJjuJvyM4VvokZQh/b1Uwmqn4LIwnxlVzvd4Yt/blWDIR0Fi1S5mTkP4yrlhnOaejFu/h5pMdpLWp0l8MgLawgxaoVmqBU7XLHvRTAzC0T0nGUaq9J7rmu9b1ABCco9ay7tSCKkJvGmwwFUpGxtUDABHI2dBPbYiVXKUPh65sMACJrHVCRe7E0f
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(36840700001)(46966006)(7636003)(8676002)(83380400001)(47076005)(16526019)(356005)(86362001)(26005)(70206006)(54906003)(6666004)(478600001)(316002)(36860700001)(44144004)(82310400003)(36906005)(5660300002)(9686003)(2906002)(186003)(82740400003)(21480400003)(8936002)(426003)(33964004)(6916009)(336012)(4326008)(70586007)(2700100001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 14:33:31.3930
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed14c9ac-70be-4be1-87a8-08d9269c8f90
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT046.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3587
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Rp0EjJNSdc/8+ji6
+--=-=-=
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 
-On Thu, Jun 03, 2021 at 05:03:38PM +0300, Dmitry Osipenko wrote:
-> 03.06.2021 15:18, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Thu, Jun 03, 2021 at 05:01:48AM +0300, Dmitry Osipenko wrote:
-> >> 03.06.2021 03:35, Stephen Rothwell =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> Hi all,
-> >>>
-> >>> After merging the tegra tree, today's linux-next build (x86_64
-> >>> allmodconfig) produced this warning:
-> >>>
-> >>> WARNING: unmet direct dependencies detected for TEGRA210_EMC_TABLE
-> >>>   Depends on [n]: MEMORY [=3Dy] && TEGRA_MC [=3Dy] && ARCH_TEGRA_210_=
-SOC [=3Dn]
-> >>>   Selected by [m]:
-> >>>   - TEGRA210_EMC [=3Dm] && MEMORY [=3Dy] && TEGRA_MC [=3Dy] && (ARCH_=
-TEGRA_210_SOC [=3Dn] || COMPILE_TEST [=3Dy])
-> >>>
-> >>> Probably introduced by commit
-> >>>
-> >>>   08decdd5b448 ("memory: tegra: Enable compile testing for all driver=
-s")
-> >>>
-> >>
-> >> Thank you. This is a new warning to me, apparently this case wasn't pr=
-eviously tested by kernel build bot.
-> >>
-> >> Perhaps this should fix it:
-> >>
-> >> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconf=
-ig
-> >> index 71bba2345bce..3f2fa7750118 100644
-> >> --- a/drivers/memory/tegra/Kconfig
-> >> +++ b/drivers/memory/tegra/Kconfig
-> >> @@ -47,7 +47,6 @@ config TEGRA124_EMC
-> >> =20
-> >>  config TEGRA210_EMC_TABLE
-> >>  	bool
-> >> -	depends on ARCH_TEGRA_210_SOC
-> >=20
-> > Why not just add a || COMPILE_TEST like we do for TEGRA210_EMC? Because
-> > TEGRA210_EMC being pulled in under COMPILE_TEST (and then pulling in
-> > TEGRA210_EMC_TABLE which is missing the alternative path) seems to be
-> > the root cause for this.
->=20
-> The anonymous Kconfig entry is unavailable by default, it can be only
-> selected by other entry, IIUC. In our case the TEGRA210_EMC_TABLE is
-> selected by TEGRA210_EMC, hence additional dependencies aren't needed
-> for TEGRA210_EMC_TABLE.
+DQpIaSwNCg0KQWxleGFuZHJ1IEVsaXNlaSA8YWxleGFuZHJ1LmVsaXNlaUBhcm0uY29tPiB3cml0
+ZXM6DQo+IE9uIDYvMy8yMSAxMjo0MCBQTSwgR3JlZyBLcm9haC1IYXJ0bWFuIHdyb3RlOg0KPj4g
+T24gVGh1LCBKdW4gMDMsIDIwMjEgYXQgMTE6NDE6NDVBTSArMDEwMCwgQWxleGFuZHJ1IEVsaXNl
+aSB3cm90ZToNCj4+PiBIZWxsbyBGZWxpcGUsDQo+Pj4NCj4+PiBUaGFuayB5b3UgZm9yIGhhdmlu
+ZyBhIGxvb2shDQo+Pj4NCj4+PiBPbiA2LzMvMjEgNzozMCBBTSwgRmVsaXBlIEJhbGJpIHdyb3Rl
+Og0KPj4+PiBIaSwNCj4+Pj4NCj4+Pj4gQWxleGFuZHJ1IEVsaXNlaSA8YWxleGFuZHJ1LmVsaXNl
+aUBhcm0uY29tPiB3cml0ZXM6DQo+Pj4+PiBJJ3ZlIGJlZW4gc2VlaW5nIHRoZSBmb2xsb3dpbmcg
+cGFuaWMgd2hlbiBzaHV0dGluZyBkb3duIG15IHJvY2twcm82NDoNCj4+Pj4+DQo+Pj4+PiBbw6/C
+v8K9w6/Cv8K9IDIxLjQ1OTA2NF0geGhjaS1oY2QgeGhjaS1oY2QuMC5hdXRvOiBVU0IgYnVzIDUg
+ZGVyZWdpc3RlcmVkDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4MzA3N10gVW5hYmxlIHRvIGhh
+bmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IHZpcnR1YWwgYWRkcmVzcw0K
+Pj4+Pj4gMDAwMDAwMDAwMDAwMDBhMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODM4NThdIE1l
+bSBhYm9ydCBpbmZvOg0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODQxMDRdw6/Cv8K9w6/Cv8K9
+IEVTUiA9IDB4OTYwMDAwMDQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg0Mzc1XcOvwr/CvcOv
+wr/CvSBFQyA9IDB4MjU6IERBQlQgKGN1cnJlbnQgRUwpLCBJTCA9IDMyIGJpdHMNCj4+Pj4+IFvD
+r8K/wr3Dr8K/wr0gMjEuNjg0ODQxXcOvwr/CvcOvwr/CvSBTRVQgPSAwLCBGblYgPSAwDQo+Pj4+
+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4NTExMV3Dr8K/wr3Dr8K/wr0gRUEgPSAwLCBTMVBUVyA9IDAN
+Cj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg1Mzg5XSBEYXRhIGFib3J0IGluZm86DQo+Pj4+PiBb
+w6/Cv8K9w6/Cv8K9IDIxLjY4NTY0NF3Dr8K/wr3Dr8K/wr0gSVNWID0gMCwgSVNTID0gMHgwMDAw
+MDAwNA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODYwMjRdw6/Cv8K9w6/Cv8K9IENNID0gMCwg
+V25SID0gMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODYyODhdIHVzZXIgcGd0YWJsZTogNGsg
+cGFnZXMsIDQ4LWJpdCBWQXMsIHBnZHA9MDAwMDAwMDAwNzU3YTAwMA0KPj4+Pj4gW8Ovwr/CvcOv
+wr/CvSAyMS42ODY4NTNdIFswMDAwMDAwMDAwMDAwMGEwXSBwZ2Q9MDAwMDAwMDAwMDAwMDAwMCwg
+cDRkPTAwMDAwMDAwMDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg3NDUyXSBJbnRl
+cm5hbCBlcnJvcjogT29wczogOTYwMDAwMDRFRU1QVCBTTVANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0g
+MjEuNjg3OTQxXSBNb2R1bGVzIGxpbmtlZCBpbjoNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg4
+MjE0XSBDUFU6IDQgUElEOiAxIENvbW06IHNodXRkb3duIE5vdCB0YWludGVkDQo+Pj4+PiA1LjEy
+LjAtcmM3LTAwMjYyLWc1NjgyNjJiZjU0OTIgIzMzDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4
+ODkxNV0gSGFyZHdhcmUgbmFtZTogUGluZTY0IFJvY2tQcm82NCB2Mi4wIChEVCkNCj4+Pj4+IFvD
+r8K/wr3Dr8K/wr0gMjEuNjg5MzU3XSBwc3RhdGU6IDYwMDAwMDA1IChuWkN2IGRhaWYgLVBBTiAt
+VUFPIC1UQ08gQlRZUEU9LS0pDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4OTg4NF0gcGMgOiBk
+b3duX3JlYWRfaW50ZXJydXB0aWJsZSsweGVjLzB4MjAwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIx
+LjY5MDMyMV0gbHIgOiBzaW1wbGVfcmVjdXJzaXZlX3JlbW92YWwrMHg0OC8weDI4MA0KPj4+Pj4g
+W8Ovwr/CvcOvwr/CvSAyMS42OTA3NjFdIHNwIDogZmZmZjgwMDAxMWY0Yjk0MA0KPj4+Pj4gW8Ov
+wr/CvcOvwr/CvSAyMS42OTEwNTNdIHgyOTogZmZmZjgwMDAxMWY0Yjk0MCB4Mjg6IGZmZmYwMDAw
+MDA4MDliNDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjkxNTIyXSB4Mjc6IGZmZmYwMDAwMDA4
+MDliOTggeDI2OiBmZmZmODAwMDExNGY1MTcwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5MTk5
+MF0geDI1OiAwMDAwMDAwMDAwMDAwMGEwIHgyNDogZmZmZjgwMDAxMWU4NDAzMA0KPj4+Pj4gW8Ov
+wr/CvcOvwr/CvSAyMS42OTI0NTldIHgyMzogMDAwMDAwMDAwMDAwMDA4MCB4MjI6IDAwMDAwMDAw
+MDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjkyOTI3XSB4MjE6IGZmZmY4MDAwMTFl
+Y2FhNWMgeDIwOiBmZmZmODAwMDExZWNhYTYwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5MzM5
+NV0geDE5OiBmZmZmMDAwMDAwODA5YjQwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPj4+Pj4gW8Ov
+wr/CvcOvwr/CvSAyMS42OTM4NjNdIHgxNzogMDAwMDAwMDAwMDAwMDAwMCB4MTY6IDAwMDAwMDAw
+MDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk0MzMxXSB4MTU6IGZmZmY4MDAwOTFm
+NGJhNmQgeDE0OiAwMDAwMDAwMDAwMDAwMDA0DQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NDc5
+OV0geDEzOiAwMDAwMDAwMDAwMDAwMDAwIHgxMjogMDAwMDAwMDAwMDAwMDAyMA0KPj4+Pj4gW8Ov
+wr/CvcOvwr/CvSAyMS42OTUyNjddIHgxMTogMDEwMTAxMDEwMTAxMDEwMSB4MTA6IDdmN2Y3Zjdm
+N2Y3ZjdmN2YNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk1NzM1XSB4OSA6IDZmNmM3NDYzNjQ3
+MTZlNjIgeDggOiA3ZjdmN2Y3ZjdmN2Y3ZjdmDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NjIw
+M10geDcgOiBmZWZlZmVmZjYzNjQ2MjZkIHg2IDogMDAwMDAwMDAwMDAwMWJkOA0KPj4+Pj4gW8Ov
+wr/CvcOvwr/CvSAyMS42OTY2NzFdIHg1IDogMDAwMDAwMDAwMDAwMDAwMCB4NCA6IDAwMDAwMDAw
+MDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk3MTM4XSB4MyA6IDAwMDAwMDAwMDAw
+MDAwYTAgeDIgOiAwMDAwMDAwMDAwMDAwMDAxDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NzYw
+Nl0geDEgOiAwMDAwMDAwMDAwMDAwMDAwIHgwIDogMDAwMDAwMDAwMDAwMDBhMA0KPj4+Pj4gW8Ov
+wr/CvcOvwr/CvSAyMS42OTgwNzVdIENhbGwgdHJhY2U6DQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIx
+LjY5ODI5MV3Dr8K/wr0gZG93bl9yZWFkX2ludGVycnVwdGlibGUrMHhlYy8weDIwMA0KPj4+Pj4g
+W8Ovwr/CvcOvwr/CvSAyMS42OTg2OTBdw6/Cv8K9IGRlYnVnZnNfcmVtb3ZlKzB4NjAvMHg4NA0K
+Pj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTkwMTZdw6/Cv8K9IGR3YzNfZGVidWdmc19leGl0KzB4
+MWMvMHg2Yw0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTkzNjNdw6/Cv8K9IGR3YzNfcmVtb3Zl
+KzB4MzQvMHgxYTANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk5NjcyXcOvwr/CvSBwbGF0Zm9y
+bV9yZW1vdmUrMHgyOC8weDYwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMDAwNV3Dr8K/wr0g
+X19kZXZpY2VfcmVsZWFzZV9kcml2ZXIrMHgxODgvMHgyMzANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0g
+MjEuNzAwNDE0XcOvwr/CvSBkZXZpY2VfcmVsZWFzZV9kcml2ZXIrMHgyYy8weDQ0DQo+Pj4+PiBb
+w6/Cv8K9w6/Cv8K9IDIxLjcwMDc5MV3Dr8K/wr0gYnVzX3JlbW92ZV9kZXZpY2UrMHgxMjQvMHgx
+MzANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAxMTU0XcOvwr/CvSBkZXZpY2VfZGVsKzB4MTY4
+LzB4NDIwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMTQ2Ml3Dr8K/wr0gcGxhdGZvcm1fZGV2
+aWNlX2RlbC5wYXJ0LjArMHgxYy8weDkwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMTg3N13D
+r8K/wr0gcGxhdGZvcm1fZGV2aWNlX3VucmVnaXN0ZXIrMHgyOC8weDQ0DQo+Pj4+PiBbw6/Cv8K9
+w6/Cv8K9IDIxLjcwMjI5MV3Dr8K/wr0gb2ZfcGxhdGZvcm1fZGV2aWNlX2Rlc3Ryb3krMHhlOC8w
+eDEwMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDI3MTZdw6/Cv8K9IGRldmljZV9mb3JfZWFj
+aF9jaGlsZF9yZXZlcnNlKzB4NjQvMHhiNA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDMxNTNd
+w6/Cv8K9IG9mX3BsYXRmb3JtX2RlcG9wdWxhdGUrMHg0MC8weDg0DQo+Pj4+PiBbw6/Cv8K9w6/C
+v8K9IDIxLjcwMzUzOF3Dr8K/wr0gX19kd2MzX29mX3NpbXBsZV90ZWFyZG93bisweDIwLzB4ZDQN
+Cj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAzOTQ1XcOvwr/CvSBkd2MzX29mX3NpbXBsZV9zaHV0
+ZG93bisweDE0LzB4MjANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA0MzM3XcOvwr/CvSBwbGF0
+Zm9ybV9zaHV0ZG93bisweDI4LzB4NDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA0NjgzXcOv
+wr/CvSBkZXZpY2Vfc2h1dGRvd24rMHgxNTgvMHgzMzANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEu
+NzA1MDI5XcOvwr/CvSBrZXJuZWxfcG93ZXJfb2ZmKzB4MzgvMHg3Yw0KPj4+Pj4gW8Ovwr/CvcOv
+wr/CvSAyMS43MDUzNzJdw6/Cv8K9IF9fZG9fc3lzX3JlYm9vdCsweDE2Yy8weDJhMA0KPj4+Pj4g
+W8Ovwr/CvcOvwr/CvSAyMS43MDU3MTldw6/Cv8K9IF9fYXJtNjRfc3lzX3JlYm9vdCsweDI4LzB4
+MzQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA2MDc0XcOvwr/CvSBlbDBfc3ZjX2NvbW1vbi5j
+b25zdHByb3AuMCsweDYwLzB4MTIwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwNjQ5OV3Dr8K/
+wr0gZG9fZWwwX3N2YysweDI4LzB4OTQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA2Nzk0XcOv
+wr/CvSBlbDBfc3ZjKzB4MmMvMHg1NA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDcwNjddw6/C
+v8K9IGVsMF9zeW5jX2hhbmRsZXIrMHhhNC8weDEzMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43
+MDc0MTRdw6/Cv8K9IGVsMF9zeW5jKzB4MTcwLzB4MTgwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIx
+LjcwNzcxMV0gQ29kZTogYzgwNDdjNjIgMzVmZmZmODQgMTdmZmZlNWYgZjk4MDAwNzEgKGM4NWZm
+YzYwKQ0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDgyNTBdIC0tLVsgZW5kIHRyYWNlIDVhZTA4
+MTQ3NTQyZWI0NjggXS0tLQ0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDg2NjddIEtlcm5lbCBw
+YW5pYyAtIG5vdCBzeW5jaW5nOiBBdHRlbXB0ZWQgdG8ga2lsbCBpbml0ISBleGl0Y29kZT0weDAw
+MDAwMDBiDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwOTQ1Nl0gS2VybmVsIE9mZnNldDogZGlz
+YWJsZWQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA5NzYyXSBDUFUgZmVhdHVyZXM6IDB4MDAy
+NDAwMjIsMjEwMDYwMGMNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzEwMTQ2XSBNZW1vcnkgTGlt
+aXQ6IDIwNDggTUINCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzEwNDQzXSAtLS1bIGVuZCBLZXJu
+ZWwgcGFuaWMgLSBub3Qgc3luY2luZzogQXR0ZW1wdGVkIHRvIGtpbGwgaW5pdCENCj4+Pj4+IGV4
+aXRjb2RlPTB4MDAwMDAwMGIgXS0tLQ0KPj4+Pj4NCj4+Pj4+IEkndmUgYmVlbiBhYmxlIHRvIGJp
+c2VjdCB0aGUgcGFuaWMgYW5kIHRoZSBvZmZlbmRpbmcgY29tbWl0IGlzIDU2ODI2MmJmNTQ5MiAo
+InVzYjoNCj4+Pj4+IGR3YzM6IGNvcmU6IEFkZCBzaHV0ZG93biBjYWxsYmFjayBmb3IgZHdjMyIp
+LiBJIGNhbiBwcm92aWRlIG1vcmUgZGlhZ25vc3RpYw0KPj4+Pj4gaW5mb3JtYXRpb24gaWYgbmVl
+ZGVkIGFuZCBJIGNhbiBoZWxwIHRlc3QgdGhlIGZpeC4NCj4+Pj4gaWYgeW91IHNpbXBseSByZXZl
+cnQgdGhhdCBjb21taXQgaW4gSEVBRCwgZG9lcyB0aGUgcHJvYmxlbSByZWFsbHkgZ28NCj4+Pj4g
+YXdheT8NCj4+PiBLZXJuZWwgYnVpbHQgZnJvbSBjb21taXQgMzI0YzkyZTVlMGVlLCB3aGljaCBp
+cyB0aGUga2VybmVsIHRpcCB0b2RheSwgdGhlIHBhbmljIGlzDQo+Pj4gdGhlcmUuIFJldmVydGlu
+ZyB0aGUgb2ZmZW5kaW5nIGNvbW1pdCwgNTY4MjYyYmY1NDkyLCBtYWtlcyB0aGUgcGFuaWMgZGlz
+YXBwZWFyLg0KPj4gV2FudCB0byBzZW5kIGEgcmV2ZXJ0IHNvIEkgY2FuIHRha2UgaXQgbm93Pw0K
+Pg0KPiBJIGNhbiBzZW5kIGEgcmV2ZXJ0LCBidXQgRmVsaXBlIHdhcyBhc2tpbmcgU2FuZGVlcCAo
+dGhlIGNvbW1pdCBhdXRob3IpIGZvciBhIGZpeCwNCj4gc28gSSdsbCBsZWF2ZSBpdCB1cCB0byBG
+ZWxpcGUgdG8gZGVjaWRlIGhvdyB0byBwcm9jZWVkLg0KDQpJJ20gb2theSB3aXRoIGEgcmV2ZXJ0
+LiBGZWVsIGZyZWUgdG8gYWRkIG15IEFja2VkLWJ5OiBGZWxpcGUgQmFsYmkNCjxiYWxiaUBrZXJu
+ZWwub3JnPiBvciBpdC4NCg0KU2FuZGVlcCwgcGxlYXNlIHNlbmQgYSBuZXcgdmVyc2lvbiB0aGF0
+IGRvZXNuJ3QgZW5jb3VudGVyIHRoZSBzYW1lDQppc3N1ZS4gTWFrZSBzdXJlIHRvIHRlc3QgYnkg
+cmVsb2FkaW5nIHRoZSBkcml2ZXIgaW4gYSB0aWdodCBsb29wIGZvcg0Kc2V2ZXJhbCBpdGVyYXRp
+b25zLg0KDQotLSANCmJhbGJpDQo=
 
-The code guarded by TEGRA210_EMC_TABLE makes use of some symbols that
-are only available if ARCH_TEGRA_210_SOC is also defined. If we don't
-list the dependencies via Kconfig this could lead to a problem where
-somebody selected TEGRA210_EMC_TABLE without having a dependency on
-ARCH_TEGRA_210_SOC, which would then lead to a build error.
-
-If we do represent the dependency in Kconfig, we'll get a warning like
-the above during the configuration step and the offending Kconfig option
-will end up disabled, and avoid the build failure.
-
-Granted, this could be caught during patch review, and yes, there's not
-technically a need to encode this using Kconfig dependencies, but at the
-same time there's also no reason not to use the safeguards we have at
-our disposal to avoid this in a more automated way.
-
-I'd prefer to stick with the explicit dependency in Kconfig, so I've
-updated the patch to match the dependencies to that of TEGRA210_EMC.
-
-Thierry
-
---Rp0EjJNSdc/8+ji6
+--=-=-=
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC46JgACgkQ3SOs138+
-s6Fu/Q//aSAS4+BnIjvq2EW0zNG191Iq2KO8Sx1UHPKj8ZXhYCknAlohyS0iJuXC
-g9rNYmZQDi7UeSU7w0hi7vU3sdiEMP2J/KK5Xsu+ZaZ0bh+ScXM6A9LAYNqtlSjY
-jpAMpKXt3ImM0opvChaZFruor/VEhZqPTgxelo4Rqng011OuAc8tXL2NbyLPePsI
-CVEF9jvM9EIq+yNLjNMJXkeRaHh5i6/M2vfjAShAmZRwU3r+mdqFC6r/uPMX4gtl
-wd1aeW/ejdpwAGpVowDD1Wb3UK3by88XBWjinKO6oSvc3KDcWvLLk23zzU6jl6XS
-JBGZEZpNNMINgVpefOefjffEXnaXjvRAb2h9754o8gFPRB5Bl3rQkqztBCnODLJS
-Bc3IaBuuM4MQfVXqylFXmieLAvYQLTU6Y9FbZgsjTLH5hX3cY4PFyOH8E+sMdNKw
-vlq95/Z1DLPvv0h1VwZkT2j/qPtoX5iYMMO8W85+BiaqWoIxoVWLSsnTGJYm6UNt
-5Rm3MTT2IKmCaFuUSsIzAn9JK3648zg4lLrs/i35NqbOulP5Ug2VLs9ox3qpM37x
-u+nYmtWM7lXIYVoY338Z+Wg31MDT/u/rnBkdFQzFlV1e1GSckGTGtgX/nuRUGsrV
-KJUuzq5bVBTlb71tmPGIWWN19ayAVgfXXeSBgD2O+/oz/wMIxjY=
-=Sd+M
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC46MERHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUjYmQf+KFPnwL3j3fKDQ4Agu3Yc1wFDyMP4fkEt
+Gw13bagAVALtsDOHR5f37rIsMMcUTwQlW0mAm2qJCltdP3+ljH2gU77C0Riioc1M
+h040X4XggNihXEBbhQT8UdqDHQ/H06NqWm6yzgGS/1rhdj9R61O74ACTXmMbc4qD
+JrK8U1+iz1mvrs/O40Ni4jQR6BmDTBujqFA8YR7uDrQTyTP3MVxyMOF/ByLLxLNM
+MNMh2y3N2iOtrcLgnSeUbQZk+opHa5cSmTNJDoFpOilsbKZCK6V/YJPCyXFpvFt0
+TZWLWOEoc59nhsmjr54qJwwXGKRwsAgxkcvzZi5s0ePg1DI7KgKTqg==
+=H6RB
 -----END PGP SIGNATURE-----
-
---Rp0EjJNSdc/8+ji6--
+--=-=-=--
