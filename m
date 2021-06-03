@@ -2,149 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6ED39A97A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E501139A988
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhFCRsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhFCRsK (ORCPT
+        id S231259AbhFCRtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:49:47 -0400
+Received: from mail-ed1-f47.google.com ([209.85.208.47]:42893 "EHLO
+        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhFCRtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:48:10 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA3DC06174A;
-        Thu,  3 Jun 2021 10:46:11 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id n4so6718799wrw.3;
-        Thu, 03 Jun 2021 10:46:11 -0700 (PDT)
+        Thu, 3 Jun 2021 13:49:45 -0400
+Received: by mail-ed1-f47.google.com with SMTP id i13so8096981edb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 10:47:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TNHNoyIPc56JzvVDn+fQoTPRGO3k2WWty4qeqb/AesU=;
-        b=B9hDeW0WbnAZidcvhpT+0xu5iLMKTSrBjYuow6ssTqM/0K4FTi7irW5EO/NwypOe32
-         LbHTvarsy0ZS6pebaKI7+nQI8hHp2WDYb6++qq7r3lSQ/tL0wcXsSK/9vQdintAjN6Kp
-         0DvCugCBQ/LRUHndP7LQe8+49fEk2Pt7nwvTCVRj7Myu1Azvc5SdQjAwHDF2QHZNzlJy
-         z3M6aqFbePyN0CF7Yqk03G6hhizbWnoRff26KK8rRTxPZNOUQMM+40O67j9kU8bEo1EZ
-         YDQ8CWfHAdDTaJ7/aA8/EIumC+9iBa0EU98va53s/VN9m9dJTedBft0tRlF6/Za/tVy1
-         fxzA==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PjKM+TjEr+V3wE7MxndA3ubsqd3UWDYCTnVADiaOAMc=;
+        b=shlAJEj66Pg/XbiEGnmtQJmvdrbwexBkOjTFbaM6kXGwG5oJROkd58SfFaUCx4WL+/
+         tODxUyrXscc/Xvf5JwzKCpG6jRb4my/mtPtIsBZYV08pQnGbBqbaGI6fBKFEKipP4cXU
+         GFh2OB4R/ASbyqyVt7ucNm8NVOx0I9wP/Pcr9qveSO3M7keNfDPxGNuMmo4L2PNCAm4W
+         hQ7fgrFa3MxyEs3Zr4PMhDb+v8w0Xmg4RAtyGqWV2HjlCBpSlLhCLi8EjRz+S7QYLBCX
+         RPorF7im0+mnzXvz4Uz34h/6sNN2tPN2iJNvf5C5QvboRZsdgJdnXwgebuGyZYOdrEOX
+         cFJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TNHNoyIPc56JzvVDn+fQoTPRGO3k2WWty4qeqb/AesU=;
-        b=cKOOErThMimKcxR24n6XXr22HAXnKtl6Mfp9ARmDKOU+JeFgYxZn1k7sofmRcdCjPH
-         n1F2GaBuXC8qyQEyMcaG7ilrx1ol17+ZIUHpDENmqn/Z7DZUcfaqMzPxIZif0zomZnQO
-         7aR4kaaMkG8NEc2fA8s6DcZHReLaNe2v4SDNprgxbX3dn4YgtOGGOLGB/l3iJ88MCF11
-         XyMFWokQXxyGNZmpTg/afrzij4iCu3NDZOMDt2jfvT/lOYs6iMEs4GCgwPCDitwX5B/t
-         sq8Lwch2VGGEAhM7d0IgcKtTVmOsDEKAXBk2aaJbAQeOZHfI/Zud5Db5JFCRKXr0Yvrn
-         joWw==
-X-Gm-Message-State: AOAM530FDqufKJ8UcTlW1nPBskag5tKhKceVIOvdnaERExGdP3Mboxhe
-        q/M5WM95pG4xEvLQHrd5jg8=
-X-Google-Smtp-Source: ABdhPJzmelXmMojIaThGJLerEKR3ZHv8GnmRuap9Pmzthk93MEz3Msq9ANIri+xeybPllvt47KtDmw==
-X-Received: by 2002:adf:a503:: with SMTP id i3mr166016wrb.334.1622742370252;
-        Thu, 03 Jun 2021 10:46:10 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id h1sm7458431wmq.0.2021.06.03.10.46.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 10:46:09 -0700 (PDT)
-Subject: Re: [PATCH v2] arm64: dts: mt8183-kukui: Enable thermal Tboard
-To:     Ben Tseng <ben.tseng@mediatek.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com
-Cc:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, hsinyi@chromium.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Michael Kao <michael.kao@mediatek.com>
-References: <20210603105901.21552-1-ben.tseng@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <b8c4023e-498c-c30e-e4cd-35fbadaf6b5d@gmail.com>
-Date:   Thu, 3 Jun 2021 19:46:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PjKM+TjEr+V3wE7MxndA3ubsqd3UWDYCTnVADiaOAMc=;
+        b=GkC4wNbLb2Tw/fP0lNKhcAx/CRKGrTmaAD1MzCEnJ7UvnG6bzvdRsb8MS1U74IcjY/
+         E+vZ+fAD3d1iltD5o02Bhci/yRJK+hmhErSMaoWKmq/s4b2IZJlbVEZm7dZdgR6f/EPg
+         97e/ytEwcw+joa/8KO7uBCUDmfDQguCXF2DN2YnFXHLKQrsiI/8DF7YCwOgLTofA8xs1
+         j9rrVkKFrufP93I9E8s3usNWHuMY7qdfFWuspGGeE7IYmmgJWls917EyZxRRDrcfnbah
+         z8IGEPXYXZcX1UE0iUAH85upQMxNg2XmLjwG8Lk04itsSkrSdwcddpvtpI6Oq3Pgi433
+         MojA==
+X-Gm-Message-State: AOAM532l+bAC/Wn7Cz9fw3gIAGIUgYs+Xn8BHMoj++L9aMISCs+yCIGY
+        fEgb6ry2aHElrNfFZFkSIVv617Pa98Emldehga/H
+X-Google-Smtp-Source: ABdhPJzNqWL5QVDNquVrcGn1MGIJNhAiKJcWV+1LAqjA+bM6E9oqpMkI7ks0NoUxqbfii5o8QZYzm5h9oCdO6q1txNE=
+X-Received: by 2002:aa7:c7cd:: with SMTP id o13mr622240eds.269.1622742403464;
+ Thu, 03 Jun 2021 10:46:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210603105901.21552-1-ben.tseng@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <CAFqZXNsh9njbFUNBugidbdiNqD3QbKzsw=KgNKSmW5hv-fD6tA@mail.gmail.com>
+In-Reply-To: <CAFqZXNsh9njbFUNBugidbdiNqD3QbKzsw=KgNKSmW5hv-fD6tA@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 3 Jun 2021 13:46:31 -0400
+Message-ID: <CAHC9VhQj_FvBqSGE+eZtbzvDoRAEbbo-6t_2E6MVuyiGA9N8Hw@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 2, 2021 at 9:40 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> On Fri, May 28, 2021 at 3:37 AM Paul Moore <paul@paul-moore.com> wrote:
+> > On Mon, May 17, 2021 at 5:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > >
+> > > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> > > lockdown") added an implementation of the locked_down LSM hook to
+> > > SELinux, with the aim to restrict which domains are allowed to perform
+> > > operations that would breach lockdown.
+> > >
+> > > However, in several places the security_locked_down() hook is called in
+> > > situations where the current task isn't doing any action that would
+> > > directly breach lockdown, leading to SELinux checks that are basically
+> > > bogus.
+> > >
+> > > Since in most of these situations converting the callers such that
+> > > security_locked_down() is called in a context where the current task
+> > > would be meaningful for SELinux is impossible or very non-trivial (and
+> > > could lead to TOCTOU issues for the classic Lockdown LSM
+> > > implementation), fix this by modifying the hook to accept a struct cred
+> > > pointer as argument, where NULL will be interpreted as a request for a
+> > > "global", task-independent lockdown decision only. Then modify SELinux
+> > > to ignore calls with cred == NULL.
+> >
+> > I'm not overly excited about skipping the access check when cred is
+> > NULL.  Based on the description and the little bit that I've dug into
+> > thus far it looks like using SECINITSID_KERNEL as the subject would be
+> > much more appropriate.  *Something* (the kernel in most of the
+> > relevant cases it looks like) is requesting that a potentially
+> > sensitive disclosure be made, and ignoring it seems like the wrong
+> > thing to do.  Leaving the access control intact also provides a nice
+> > avenue to audit these requests should users want to do that.
+> >
+> > Those users that generally don't care can grant kernel_t all the
+> > necessary permissions without much policy.
+>
+> Seems kind of pointless to me, but it's a relatively simple change to
+> do a check against SECINITSID_KERNEL, so I don't mind doing it like
+> that.
 
+It's not pointless, the granularity isn't as great as one would like,
+but it doesn't mean it is pointless.  *Someone* is acting, in this
+case it just happens to be the kernel.  It is likely the most admins
+and policy developers will not care, but some might, and we should
+enable that.
 
-On 03/06/2021 12:59, Ben Tseng wrote:
-> From: Michael Kao <michael.kao@mediatek.com>
-> 
-> Add Tboard thermal sensor settings.
-> 
-> pull-up voltage: 1800 mv
-> pull-up resistor: 75K
-> 
-> Vsense = pull-up voltage * Rntc / ( pull-up resistor + Rntc )
-> AuxIn = Vsense * 4096 / 1500
-> 
-> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
-> Signed-off-by: Ben Tseng <ben.tseng@mediatek.com>
-> Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> Change in v2:
->         - Rebase to kernel-v5.13-rc1
->         - Resend
-> ---
->  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 14 ++++++++++++++
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi       |  2 +-
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index ff56bcf..65768ab 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -847,6 +847,20 @@
->  	status = "okay";
->  };
->  
-> +&thermal_zones {
-> +	Tboard1 {
+> > > Since most callers will just want to pass current_cred() as the cred
+> > > parameter, rename the hook to security_cred_locked_down() and provide
+> > > the original security_locked_down() function as a simple wrapper around
+> > > the new hook.
+> >
+> > I know you and Casey went back and forth on this in v1, but I agree
+> > with Casey that having two LSM hooks here is a mistake.  I know it
+> > makes backports hard, but spoiler alert: maintaining complex software
+> > over any non-trivial period of time is hard, reeeeally hard sometimes
+> > ;)
+>
+> Do you mean having two slots in lsm_hook_defs.h or also having two
+> security_*() functions? (It's not clear to me if you're just
+> reiterating disagreement with v1 or if you dislike the simplified v2
+> as well.)
 
-Lower-case please. It would be also good to know what tboard1 and 2 stands for.
+To be clear I don't think there should be two functions for this, just
+make whatever changes are necessary to the existing
+security_locked_down() LSM hook.  Yes, the backport is hard.  Yes, it
+will touch a lot of code.  Yes, those are lame excuses to not do the
+right thing.
 
-Regards,
-Matthias
+> > > The callers migrated to the new hook, passing NULL as cred:
+> > > 1. arch/powerpc/xmon/xmon.c
+> > >      Here the hook seems to be called from non-task context and is only
+> > >      used for redacting some sensitive values from output sent to
+> > >      userspace.
+> >
+> > This definitely sounds like kernel_t based on the description above.
+>
+> Here I'm a little concerned that the hook might be called from some
+> unusual interrupt, which is not masked by spin_lock_irqsave()... We
+> ran into this with PMI (Platform Management Interrupt) before, see
+> commit 5ae5fbd21079 ("powerpc/perf: Fix handling of privilege level
+> checks in perf interrupt context"). While I can't see anything that
+> would suggest something like this happening here, the whole thing is
+> so foreign to me that I'm wary of making assumptions :)
+>
+> @Michael/PPC devs, can you confirm to us that xmon_is_locked_down() is
+> only called from normal syscall/interrupt context (as opposed to
+> something tricky like PMI)?
 
-> +		polling-delay = <1000>; /* milliseconds */
-> +		polling-delay-passive = <0>; /* milliseconds */
-> +		thermal-sensors = <&tboard_thermistor1>;
-> +	};
-> +
-> +	Tboard2 {
-> +		polling-delay = <1000>; /* milliseconds */
-> +		polling-delay-passive = <0>; /* milliseconds */
-> +		thermal-sensors = <&tboard_thermistor2>;
-> +	};
-> +};
-> +
->  &u3phy {
->  	status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index c5e822b..4173a5d 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -673,7 +673,7 @@
->  			nvmem-cell-names = "calibration-data";
->  		};
->  
-> -		thermal-zones {
-> +		thermal_zones: thermal-zones {
->  			cpu_thermal: cpu_thermal {
->  				polling-delay-passive = <100>;
->  				polling-delay = <500>;
-> 
+You did submit the code change so I assumed you weren't concerned
+about it :)  If it is a bad hook placement that is something else
+entirely.
+
+Hopefully we'll get some guidance from the PPC folks.
+
+> > > 4. net/xfrm/xfrm_user.c:copy_to_user_*()
+> > >      Here a cryptographic secret is redacted based on the value returned
+> > >      from the hook. There are two possible actions that may lead here:
+> > >      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
+> > >         task context is relevant, since the dumped data is sent back to
+> > >         the current task.
+> >
+> > If the task context is relevant we should use it.
+>
+> Yes, but as I said it would create an asymmetry with case b), which
+> I'll expand on below...
+>
+> > >      b) When deleting an SA via XFRM_MSG_DELSA, the dumped SAs are
+> > >         broadcasted to tasks subscribed to XFRM events - here the
+> > >         SELinux check is not meningful as the current task's creds do
+> > >         not represent the tasks that could potentially see the secret.
+> >
+> > This looks very similar to the BPF hook discussed above, I believe my
+> > comments above apply here as well.
+>
+> Using the current task is just logically wrong in this case. The
+> current task here is just simply deleting an SA that happens to have
+> some secret value in it. When deleting an SA, a notification is sent
+> to a group of subscribers (some group of other tasks), which includes
+> a dump of the secret value. The current task isn't doing any attempt
+> to breach lockdown, it's just deleting an SA.
+>
+> It also makes it really awkward to make policy decisions around this.
+> Suppose that domains A, B, and C need to be able to add/delete SAs and
+> domains D, E, and F need to receive notifications about changes in
+> SAs. Then if, say, domain E actually needs to see the secret values in
+> the notifications, you must grant the confidentiality permission to
+> all of A, B, C to keep things working. And now you have opened up the
+> door for A, B, C to do other lockdown-confidentiality stuff, even
+> though these domains themselves actually don't request/need any
+> confidential data from the kernel. That's just not logical and you may
+> actually end up (slightly) worse security-wise than if you just
+> skipped checking for XFRM secrets altogether, because you need to
+> allow confidentiality to domains for which it may be excessive.
+
+It sounds an awful lot like the lockdown hook is in the wrong spot.
+It sounds like it would be a lot better to relocate the hook than
+remove it.
+
+-- 
+paul moore
+www.paul-moore.com
