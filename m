@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5600039A22E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7EE39A233
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhFCN3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:29:42 -0400
-Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:5151 "EHLO
-        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhFCN3l (ORCPT
+        id S230256AbhFCNa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:30:58 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:42873 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhFCNa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:29:41 -0400
+        Thu, 3 Jun 2021 09:30:57 -0400
+Received: by mail-ed1-f48.google.com with SMTP id i13so7107180edb.9;
+        Thu, 03 Jun 2021 06:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1622726877; x=1654262877;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=mhdX3ValGWDxD19fMXddG/g8FPmralooTe7o3wFMNuw=;
-  b=WmIQva4yowCcEsAF1g4knywDRR54JfwPtaHqnmzhYU+GPEK40hZJIUuf
-   OUD8G/Vcer8spO82b1yAROmloxAvgP88qrf/E/zsFQGgHAVS6rLP2Fh4b
-   oO2wPKLFFfpvJGhFdwOTIqTdCoDRgeufWSGvVth0Hblnagc4vD8+Zn6y6
-   k=;
-X-IronPort-AV: E=Sophos;i="5.83,246,1616457600"; 
-   d="scan'208";a="4731771"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 03 Jun 2021 13:27:49 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 69B0BA2086;
-        Thu,  3 Jun 2021 13:27:45 +0000 (UTC)
-Received: from uc8bbc9586ea454.ant.amazon.com (10.43.161.201) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 3 Jun 2021 13:27:39 +0000
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-CC:     Siddharth Chandrasekaran <sidcha@amazon.de>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] KVM: hyper-v: housekeeping: Remove unnecessary type cast
-Date:   Thu, 3 Jun 2021 15:27:12 +0200
-Message-ID: <20210603132712.518-1-sidcha@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AsY4CC2jUsbhA7Sh7zEuXYTCJ/q9mQ3pTZZVOhrOvaw=;
+        b=YI+sslnEov5+3qblH1HHF/85Z7lGvnkhNs9kvYTyd8zfuO3C2acB8IK0YN3hPZrlII
+         mmeqPrcJ2ci2otKqp3ZygBHDes6X7oiyCxj5ImpkmheOTInQLuO59NIB0lCg7/fVEO8d
+         nXjGfvrYthHtj13R6iRTCjgbT4haRmRVJhaduDFaoBFW1E54z1sxs7YGG04jt3e7JFC8
+         7I945rGXSK4fGdjAgwHfvyfNLfnN5zi5Joe/GjgxPMxSD8e/UI5J5NJQAX93N64jCDLX
+         /7fwjPOMqlEO/LXzIBgWiWkgztzmEn9/TANNSQfDQfQiYKaAFN/7xkRgykObXZCFK+CZ
+         fwiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AsY4CC2jUsbhA7Sh7zEuXYTCJ/q9mQ3pTZZVOhrOvaw=;
+        b=ncFTo333HcWi18cbmEqMGk+8m83V1CBmPS5yby1bSBmV4k9IIfpJ/EI3XwOPYHitdV
+         13TJeidTEcCkXavz7rYW+kVSKSPcRPCAYlOG4ep/Eu8352OSWIXp7oNOsVxj6K+cqFYB
+         36LQ0GRoVePn0Tg/6xAYyjDLfymPUSyMG4NVjCw4byUh5EfuhHVTL5JaIEZV44UMCbqt
+         +82ADutS39+0Wb/qKKB6sJGYvbBejjL5kv29cIl9+npRKQO17mHM2Xru1nRIVIjLQI1U
+         +HggpanCOZCtsm/9VJHkTBsN6rjtSzJX7TVjVcBIz5P4D8k3g5P6CX9p0pg7yv8oyEq8
+         CzZQ==
+X-Gm-Message-State: AOAM530+ZHz7hfOoq24EIN79lKvnVFaCMGbtlPZ/7/jwuzY/IikIeUbP
+        aT6mLh7FSZUmNLalsYptdl4=
+X-Google-Smtp-Source: ABdhPJwC4Eb4uhIsV+JBMZdkSQBTOHkx9nuChPxQic5GV974vvB4qh3kqgw+xBz93xsL3q9Jdwurjw==
+X-Received: by 2002:aa7:c799:: with SMTP id n25mr41586057eds.16.1622726891599;
+        Thu, 03 Jun 2021 06:28:11 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id u4sm1515033eje.81.2021.06.03.06.28.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 06:28:11 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 16:28:09 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        kuba@kernel.org, netdev@vger.kernel.org, peppe.cavallaro@st.com,
+        alexandre.torgue@foss.st.com, davem@davemloft.net,
+        mcoquelin.stm32@gmail.com, weifeng.voon@intel.com,
+        boon.leong.ong@intel.com, tee.min.tan@intel.com,
+        vee.khee.wong@linux.intel.com, vee.khee.wong@intel.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH net-next v4 0/3] Enable 2.5Gbps speed for stmmac
+Message-ID: <20210603132809.2z3jhpuxaryaql6v@skbuf>
+References: <20210603115032.2470-1-michael.wei.hong.sit@intel.com>
+ <20210603130851.GS30436@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.201]
-X-ClientProxiedBy: EX13D38UWC004.ant.amazon.com (10.43.162.204) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603130851.GS30436@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary type cast of 'u8 instructions[]' to
-'unsigned char *'.
+Michael,
 
-Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
----
- arch/x86/kvm/hyperv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Jun 03, 2021 at 02:08:51PM +0100, Russell King (Oracle) wrote:
+> Hi,
+> 
+> On Thu, Jun 03, 2021 at 07:50:29PM +0800, Michael Sit Wei Hong wrote:
+> > Intel mGbE supports 2.5Gbps link speed by overclocking the clock rate
+> > by 2.5 times to support 2.5Gbps link speed. In this mode, the serdes/PHY
+> > operates at a serial baud rate of 3.125 Gbps and the PCS data path and
+> > GMII interface of the MAC operate at 312.5 MHz instead of 125 MHz.
+> > This is configured in the BIOS during boot up. The kernel driver is not able
+> > access to modify the clock rate for 1Gbps/2.5G mode on the fly. The way to
+> > determine the current 1G/2.5G mode is by reading a dedicated adhoc
+> > register through mdio bus.
+> 
+> How does this interact with Vladimir's "Convert xpcs to phylink_pcs_ops"
+> series? Is there an inter-dependency between these, or a preferred order
+> that they should be applied?
+> 
+> Thanks.
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index f00830e5202f..7d9eb13174b6 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1252,7 +1252,7 @@ static int kvm_hv_set_msr_pw(struct kvm_vcpu *vcpu, u32 msr, u64 data,
- 		i += 3;
- 
- 		/* ret */
--		((unsigned char *)instructions)[i++] = 0xc3;
-+		instructions[i++] = 0xc3;
- 
- 		addr = data & HV_X64_MSR_HYPERCALL_PAGE_ADDRESS_MASK;
- 		if (kvm_vcpu_write_guest(vcpu, addr, instructions, i))
--- 
-2.17.1
+My preferred order would be for my series to go in first, if possible,
+because I don't have hardware readily available to test, and VK already
+has tested my patches a few times until they reached a stable state.
 
+I went through your patches and I think rebasing on top of my
+phylink_pcs_ops conversion should be easy.
 
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+Thanks.
