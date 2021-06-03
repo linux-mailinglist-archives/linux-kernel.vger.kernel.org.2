@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747ED39ABD6
+	by mail.lfdr.de (Postfix) with ESMTP id F24E939ABD7
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhFCUb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:31:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42718 "EHLO mail.kernel.org"
+        id S230109AbhFCUcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhFCUbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229801AbhFCUbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Jun 2021 16:31:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AF87E613DE;
+Received: by mail.kernel.org (Postfix) with ESMTPS id A0143613E3;
         Thu,  3 Jun 2021 20:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622752204;
-        bh=v33Y8hzSzAz8bXs5qBcy2kpzpIi3EjMSZcslhv84Ksk=;
+        bh=7UVILHlYdovfcc+PGt1dpo0CJ2ONA+U4rhwsS/F/a0c=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cgEokcKE6eEj27mtzb4wTWSyg8cwjcQd7A/iX/HuuC7L74OpIeXArzS+a1xcUNjpA
-         qhOs+IXcwKrfR5i1L482dHKTJlUD/62quTgvN7ZnLYUhLJDIqANcqL7XVJAHP2/Mtd
-         q/35Qn2XxGMTmz7k/4UVYzHiJ6sR1cyLJhVjA8ovrAOws5qqMWnqTDA6/P/4OekKq+
-         l651YjlCETde5pJIC3+VO2SyA7UDPdpIzt7xW/M1ELt29PsvL96neB5X6nCb/GHsdQ
-         LzvnCbGo4P+48/SPsZeY0PLb9TLWDpS8b11lXxg5GAz6zkgWhKyTVHfFssGvZiFqLS
-         JN0mWsuJ0+fWQ==
+        b=RiH8/GBVRSH2qYeYrRCzBBqbHgZMe5kjKnL0J9XxJX6ycc1F3qWOCAD2tRiw7CBQo
+         LtpWScYPkIfajRmFPRVp9tLY7ZUULEdu32gZjAki0spyCB4DgfRdNh2FtTd1syEwCZ
+         vznUUnbVIbsmCyzlNYWb3E+FgUhjorms7LvQPmELafsjK1kSIdlTxgSeU+t+2PT0VH
+         i2Tg7h2ebpQweEmwVK8QLsX2ZG7TsbK0449M1ZIOKjEM0jOU9ruIVlztUf+jrbvA//
+         LxxN3TDigSvRYXG5Quf+keGeSYshBUn3XeeH+tNRt7WmgCLpbqLbhSb7RQFzsi1/L4
+         cJSw3a4FXPe2Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9DB2760A6C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 92B8660ACA;
         Thu,  3 Jun 2021 20:30:04 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] libceph: Fix spelling mistakes
+Subject: Re: [PATCH net-next 0/6] net: hdlc_cisci: clean up some code style issues
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162275220464.19203.17231827580306620053.git-patchwork-notify@kernel.org>
+Message-Id: <162275220459.19203.14503519672467316957.git-patchwork-notify@kernel.org>
 Date:   Thu, 03 Jun 2021 20:30:04 +0000
-References: <20210602065635.106561-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210602065635.106561-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, ceph-devel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        idryomov@gmail.com, jlayton@kernel.org
+References: <1622631676-34037-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1622631676-34037-1-git-send-email-huangguangbin2@huawei.com>
+To:     huangguangbin (A) <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, xie.he.0141@gmail.com,
+        ms@dev.tdt.de, willemb@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com,
+        tanhuazhong@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 2 Jun 2021 14:56:35 +0800 you wrote:
-> Fix some spelling mistakes in comments:
-> enconding  ==> encoding
-> ambigous  ==> ambiguous
-> orignal  ==> original
-> encyption  ==> encryption
+On Wed, 2 Jun 2021 19:01:10 +0800 you wrote:
+> From: Peng Li <lipeng321@huawei.com>
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> This patchset clean up some code style issues.
+> 
+> Peng Li (6):
+>   net: hdlc_cisco: remove redundant blank lines
+>   net: hdlc_cisco: fix the code style issue about "foo* bar"
+>   net: hdlc_cisco: add some required spaces
+>   net: hdlc_cisco: remove unnecessary out of memory message
+>   net: hdlc_cisco: add blank line after declaration
+>   net: hdlc_cisco: remove redundant space
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next] libceph: Fix spelling mistakes
-    https://git.kernel.org/netdev/net-next/c/dd0d91b91398
+  - [net-next,1/6] net: hdlc_cisco: remove redundant blank lines
+    https://git.kernel.org/netdev/net-next/c/5abaf211c4a5
+  - [net-next,2/6] net: hdlc_cisco: fix the code style issue about "foo* bar"
+    https://git.kernel.org/netdev/net-next/c/001aa274300d
+  - [net-next,3/6] net: hdlc_cisco: add some required spaces
+    https://git.kernel.org/netdev/net-next/c/c1300f37ea99
+  - [net-next,4/6] net: hdlc_cisco: remove unnecessary out of memory message
+    https://git.kernel.org/netdev/net-next/c/05ff5525aa82
+  - [net-next,5/6] net: hdlc_cisco: add blank line after declaration
+    https://git.kernel.org/netdev/net-next/c/4e38d514788c
+  - [net-next,6/6] net: hdlc_cisco: remove redundant space
+    https://git.kernel.org/netdev/net-next/c/4a20f8ecbf61
 
 You are awesome, thank you!
 --
