@@ -2,127 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3924839AC26
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99FD39AC25
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhFCU7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:59:40 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53446 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhFCU7j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:59:39 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D246B31F06F;
-        Thu,  3 Jun 2021 16:57:53 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id NAhXqpSvLK0Q; Thu,  3 Jun 2021 16:57:53 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 40D7B31F447;
-        Thu,  3 Jun 2021 16:57:53 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 40D7B31F447
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1622753873;
-        bh=YaPGgTAtjE+jspV8TrcYK7HBAIzOUt4Oip6vpWG66w8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=rDlcQEwRsRzzCJbtG9UwCtSn62kOPuERIE1zZm7AlP76ch1YABigHMxrplSzCUTeD
-         VtgwK808ejBrN0K320M3ILms4y3aUBhGEiHwQAYq0dLxZOK/hoNDX5DifuWdF1iQLe
-         AbJ2eIRtdiqNGT0BQzt/bAcTyPS5kOiQx5K8rq0C7dSwg3fotbtkn2vBxkBzL1tl92
-         fXHazpBQXKmMmVigw4QdmN5KeJNUmy6gXaIBtr50eeL0uClGkt7z03f3k1JUt+U2SQ
-         8EonPFAWcHyfIcXD6vX5lGPxY2uEvQcqjT/jmrUnYxf63j6cHE71ZnyTHjUOfgC7rE
-         Ylt3RSS+9s3Jw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id slnI4CuQ0G_G; Thu,  3 Jun 2021 16:57:53 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 3168231EFFB;
-        Thu,  3 Jun 2021 16:57:53 -0400 (EDT)
-Date:   Thu, 3 Jun 2021 16:57:53 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     linux-kernel@vger.kernel.org, lttng-dev@lists.lttng.org,
-        rp@svcs.cs.pdx.edu
-Cc:     "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Message-ID: <293749719.7760.1622753873071.JavaMail.zimbra@efficios.com>
-Subject: [RELEASE] Userspace RCU 0.13.0
+        id S229959AbhFCU5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:57:31 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49788 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229702AbhFCU5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:57:31 -0400
+IronPort-SDR: a8UHUQzXeCCct5iRLQjh54zfo0Di1P+RaEo4T/+yggl/05A3ylQnmc1LAeI5Sbfe+LZG77xtqe
+ MbFJNNLr7tmw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184521561"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="184521561"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 13:55:32 -0700
+IronPort-SDR: MjfM7yT9NG79x395JzZW/keo/oszVCbdecgt/yty7PosWCm9vajnPWokqPWAK11mHE//JujYHK
+ b3hP56vtGhcA==
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="550306458"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 13:55:30 -0700
+Date:   Thu, 3 Jun 2021 13:58:07 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210603135807.40684468@jacob-builder>
+In-Reply-To: <PH0PR12MB54811863B392C644E5365446DC3E9@PH0PR12MB5481.namprd12.prod.outlook.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <PH0PR12MB54811863B392C644E5365446DC3E9@PH0PR12MB5481.namprd12.prod.outlook.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4026)
-Thread-Index: sEBXQE/MhfBlDpmhebxv28mTBCxeXg==
-Thread-Topic: Userspace RCU 0.13.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Parav,
 
-The Userspace RCU 0.13 release is mostly a library soname version bump
-to address an ABI incompatibility between the 0.10 and { 0.11, 0.12 }
-releases.
+On Tue, 1 Jun 2021 17:30:51 +0000, Parav Pandit <parav@nvidia.com> wrote:
 
-The observed application vs library compatibility problem occurs as follows:
+> > From: Tian, Kevin <kevin.tian@intel.com>
+> > Sent: Thursday, May 27, 2021 1:28 PM  
+> 
+> > 5.6. I/O page fault
+> > +++++++++++++++
+> > 
+> > (uAPI is TBD. Here is just about the high-level flow from host IOMMU
+> > driver to guest IOMMU driver and backwards).
+> > 
+> > -   Host IOMMU driver receives a page request with raw fault_data {rid,
+> >     pasid, addr};
+> > 
+> > -   Host IOMMU driver identifies the faulting I/O page table according
+> > to information registered by IOASID fault handler;
+> > 
+> > -   IOASID fault handler is called with raw fault_data (rid, pasid,
+> > addr), which is saved in ioasid_data->fault_data (used for response);
+> > 
+> > -   IOASID fault handler generates an user fault_data (ioasid, addr),
+> > links it to the shared ring buffer and triggers eventfd to userspace;
+> > 
+> > -   Upon received event, Qemu needs to find the virtual routing
+> > information (v_rid + v_pasid) of the device attached to the faulting
+> > ioasid. If there are multiple, pick a random one. This should be fine
+> > since the purpose is to fix the I/O page table on the guest;
+> > 
+> > -   Qemu generates a virtual I/O page fault through vIOMMU into guest,
+> >     carrying the virtual fault data (v_rid, v_pasid, addr);
+> >   
+> Why does it have to be through vIOMMU?
+I think this flow is for fully emulated IOMMU, the same IOMMU and device
+drivers run in the host and guest. Page request interrupt is reported by
+the IOMMU, thus reporting to vIOMMU in the guest.
 
-- An application executable is built with _LGPL_SOURCE defined, includes
-  any of the Userspace RCU 0.10 urcu flavor headers, and is built
-  without the -fpic compiler option.
+> For a VFIO PCI device, have you considered to reuse the same PRI
+> interface to inject page fault in the guest? This eliminates any new
+> v_rid. It will also route the page fault request and response through the
+> right vfio device.
+> 
+I am curious how would PCI PRI can be used to inject fault. Are you talking
+about PCI config PRI extended capability structure? The control is very
+limited, only enable and reset. Can you explain how would page fault
+handled in generic PCI cap?
+Some devices may have device specific way to handle page faults, but I
+guess this is not the PCI PRI method you are referring to?
 
-- The Userspace RCU 0.10 library shared objects are updated to 0.11
-  or 0.12 without rebuilding the application.
+> > -   Guest IOMMU driver fixes up the fault, updates the I/O page table,
+> > and then sends a page response with virtual completion data (v_rid,
+> > v_pasid, response_code) to vIOMMU;
+> >   
+> What about fixing up the fault for mmu page table as well in guest?
+> Or you meant both when above you said "updates the I/O page table"?
+> 
+> It is unclear to me that if there is single nested page table maintained
+> or two (one for cr3 references and other for iommu). Can you please
+> clarify?
+> 
+I think it is just one, at least for VT-d, guest cr3 in GPA is stored
+in the host iommu. Guest iommu driver calls handle_mm_fault to fix the mmu
+page tables which is shared by the iommu.
 
-- The application will hang, typically when RCU grace period
-  (synchronize_rcu) is invoked.
+> > -   Qemu finds the pending fault event, converts virtual completion data
+> >     into (ioasid, response_code), and then calls a /dev/ioasid ioctl to
+> >     complete the pending fault;
+> >   
+> For VFIO PCI device a virtual PRI request response interface is done, it
+> can be generic interface among multiple vIOMMUs.
+> 
+same question above, not sure how this works in terms of interrupts and
+response queuing etc.
 
-Some possible work-arounds for this are:
+> > -   /dev/ioasid finds out the pending fault data {rid, pasid, addr}
+> > saved in ioasid_data->fault_data, and then calls iommu api to complete
+> > it with {rid, pasid, response_code};
+> >  
 
-- Rebuild the application against Userspace RCU 0.11+,
-- Rebuild the application with -fpic.
-- Upgrade Userspace RCU to 0.13+ without installing 0.11 nor 0.12.
-
-
-* Explanation of the issue
-
-In URCU 0.11, we introduced new symbols to clean up the library symbol
-namespacing, using the "alias" attribute to keep emitting the old
-symbols, expecting to preserve ABI backward compatibility.
-Unfortunately, it turns out that even though it works well for function
-symbols, it is broken for public global variables due to the way ELF
-copy relocation works.
-
-When building a non-PIC executable that uses an extern variable, a .bss
-symbol is emitted in the executable. This will take precedence over the
-symbol implemented within the library in the Global Symbol Table.
-Unfortunately, the alias within the library will not be aware that the
-actual GST symbol differs from its alias within the library, and the
-addresses for the symbol and its alias will differ at runtime.
-
-Considering that this compatibility issue affects official library
-releases, there is little we can do beyond documenting this issue, and
-bumping the Userspace RCU major soname for the next (0.13) release.
-
-In summary, do not upgrade from Userspace RCU 0.10 to 0.11 or 0.12 if 
-you have applications which:
-
-- define _LGPL_SOURCE
-- use Userspace RCU 0.10 headers
-- are not compiled with -fpic
-
-We recommend instead to upgrade to Userspace RCU 0.13, which bumps the
-library soname major number.
 
 Thanks,
 
-Mathieu
-
-Project website: http://liburcu.org
-Git repository: git://git.liburcu.org/urcu.git
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Jacob
