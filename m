@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73B639AADC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A8A39AAE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbhFCTWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:22:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCTWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:22:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B2E613E4;
-        Thu,  3 Jun 2021 19:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622748029;
-        bh=yViDPULjzd1GROS9kt+NbcpBZPAN/s2nBt8ZDRoOfKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J0Huz00hKusFjvT9o349sTs31CLOqXbI0iBXLR2l2rDbYwLQGMSye6k0CN3fo4uoo
-         6PbD36MuOP04epUbr4YcjCt4oWcJu6a1yd+w4kC/mFDHWNCA6jB+mlclDZkB9qCPBz
-         dCGJEXDPZQGbyrkicEI1IAM/uP32NNXqAxqpmy9K1cbvnn1LMQ0H8s92zCGawTu5+Y
-         M1QIWYn4299MvQczpqYI8DVbCTWUKKlgMxDWpNArKe9pHYNV6u+DhBuCuUoTGA2949
-         6bmpQm0aFebKrasVxz488zaHwTlROSnueQIhxLmf1xkuglOH7TnrafCJj+C+nMCydM
-         7rdfb5TS8JumA==
-Date:   Thu, 3 Jun 2021 12:20:28 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Daniel Rosenberg <drosen@google.com>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
-Message-ID: <YLkrfL2dF+B9gR8r@google.com>
-References: <20210603095038.314949-1-drosen@google.com>
- <20210603095038.314949-3-drosen@google.com>
- <YLipSQxNaUDy9Ff1@kroah.com>
- <YLj36Fmz3dSHmkSG@google.com>
- <YLkQtDZFG1xKoqE5@kroah.com>
- <YLkXFu4ep8tP3jsh@google.com>
- <YLkblVt+v68KFXf7@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLkblVt+v68KFXf7@kroah.com>
+        id S229813AbhFCT0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhFCT0o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:26:44 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CC0C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 12:24:59 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d16so5631149pfn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 12:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=VKOvv1TfivesDpA9bfyoNG/IGgKCAjb7/e1zzaiAOEk=;
+        b=YHJtOqmPmvkFRQD2wSYjf5pEKJlBfTPGaQOnmvD/5Z9Y4F5422uvqf19ecqh+AZHI8
+         yAVvX4M8R1gI6PVHLKRqdskhOY3wedR4+hxBr18GaFfPA/pR52s6ev3ZvjQj8A45N1Fx
+         U389vkuek419vpSY0Lgx/aC0pjQ6UHGKHXs0wAy1tUHt/hVdhxBn1Xmt3Q0vDEEbk2gt
+         rSmuBEXFguqfGN2nqGbExMh2omMlRV9s8qDzIsBBpxkKAdz9Jrdi5vmtaaZtw//SVwNO
+         gaQTYGHkxnc/EpICvm1ylvW4QsOvmk05/ZVNMKMo3HBcx3RqJv3RtxBueIbs2U8JMwGH
+         PRNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=VKOvv1TfivesDpA9bfyoNG/IGgKCAjb7/e1zzaiAOEk=;
+        b=ITVhI2kYfu6vdXe585Q13LlasvL1IhmVqliKRgx3TQFc48mz9fniyFgIJDX5N9Nr8l
+         0YwiYVNo9JdzW4J6pXQ4+zW8wsp7N2ETKh6cfegXWeL5o2mZcVUFbl6aXMdrbgQ6QTvD
+         pUbxfnQCOctIsUKQTO50xfNz5Vq5HvliMbF8qJ2BwMGxvnP55meT34sY/+jsl3XLrovi
+         h8dCRid0FIzLuaG6RGiVUZG1zqJVd+VSUQov/qw1H0aEEC5Rs0tTszKvdaRnwBhEpE3U
+         nCAvXLtNfbm+sDtVZbGHDobluJMuXPu/cxae1HG0htStaVRouqIT1ODF1oXA/E0SOM76
+         DjJQ==
+X-Gm-Message-State: AOAM533Q4gwFiaZdYiXSMQM8V3TaQQutCOKdxzSKrGXuu4qYY5zuLt8m
+        61wkRH9JxE8bMcd5P45ia+QakQaXTPlATQ==
+X-Google-Smtp-Source: ABdhPJy1l1e1qBBumUKmmUFg1ps6/AplTMQguP1JhPTC2mJ0/V2yYMHkrXdmtj1HUyX2mi7TcLfapw==
+X-Received: by 2002:a62:2e04:0:b029:2db:4c99:614f with SMTP id u4-20020a622e040000b02902db4c99614fmr575083pfu.47.1622748299253;
+        Thu, 03 Jun 2021 12:24:59 -0700 (PDT)
+Received: from smtpclient.apple ([2600:1010:b04a:17e9:b873:a3cc:f7b1:9d6d])
+        by smtp.gmail.com with ESMTPSA id n23sm3300321pgv.76.2021.06.03.12.24.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 12:24:58 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem read
+Date:   Thu, 3 Jun 2021 12:24:56 -0700
+Message-Id: <1FD047D2-F5F3-4AC6-A4E4-DB8FB1568821@amacapital.net>
+References: <CAHk-=wiNT0RhwHkLa14ts0PGQtVtDZbJniOQJ66wxzXz4Co2mw@mail.gmail.com>
+Cc:     Hugh Dickins <hughd@google.com>, Ming Lin <mlin@kernel.org>,
+        Simon Ser <contact@emersion.fr>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+In-Reply-To: <CAHk-=wiNT0RhwHkLa14ts0PGQtVtDZbJniOQJ66wxzXz4Co2mw@mail.gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: iPhone Mail (18E212)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/03, Greg KH wrote:
-> On Thu, Jun 03, 2021 at 10:53:26AM -0700, Jaegeuk Kim wrote:
-> > On 06/03, Greg KH wrote:
-> > > On Thu, Jun 03, 2021 at 08:40:24AM -0700, Jaegeuk Kim wrote:
-> > > > On 06/03, Greg KH wrote:
-> > > > > On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
-> > > > > > Older kernels don't support encryption with casefolding. This adds
-> > > > > > the sysfs entry encrypted_casefold to show support for those combined
-> > > > > > features. Support for this feature was originally added by
-> > > > > > commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > > > > > 
-> > > > > > Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > > > > > Cc: stable@vger.kernel.org # v5.11+
-> > > > > > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> > > > > > ---
-> > > > > >  fs/f2fs/sysfs.c | 15 +++++++++++++--
-> > > > > >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> > > > > > index 09e3f258eb52..6604291a3cdf 100644
-> > > > > > --- a/fs/f2fs/sysfs.c
-> > > > > > +++ b/fs/f2fs/sysfs.c
-> > > > > > @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
-> > > > > >  	if (f2fs_sb_has_compression(sbi))
-> > > > > >  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > > > > >  				len ? ", " : "", "compression");
-> > > > > > +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
-> > > > > > +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > > > > > +				len ? ", " : "", "encrypted_casefold");
-> > > > > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > > > > >  				len ? ", " : "", "pin_file");
-> > > > > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
-> > > > > 
-> > > > > This is a HUGE abuse of sysfs and should not be encouraged and added to.
-> > > > 
-> > > > This feature entry was originally added in 2017. Let me try to clean this up
-> > > > after merging this.
-> > > 
-> > > Thank you.
-> > > 
-> > > > > Please make these "one value per file" and do not keep growing a single
-> > > > > file that has to be parsed otherwise you will break userspace tools.
-> > > > > 
-> > > > > And I don't see a Documentation/ABI/ entry for this either :(
-> > > > 
-> > > > There is in Documentation/ABI/testing/sysfs-fs-f2fs.
-> > > 
-> > > So this new item was documented in the file before the kernel change was
-> > > made?
-> > 
-> > Do we need to describe all the strings in this entry?
-> > 
-> > 203 What:           /sys/fs/f2fs/<disk>/features
-> > 204 Date:           July 2017
-> > 205 Contact:        "Jaegeuk Kim" <jaegeuk@kernel.org>
-> > 206 Description:    Shows all enabled features in current device.
-> 
-> Of course!  Especially as this is a total violation of normal sysfs
-> files, how else are you going to parse the thing?
-> 
-> Why wouldn't you describe the contents?
 
-Because I was lazy. :P
 
-Daniel, let me clean up all together in another patch. :)
+> On Jun 3, 2021, at 12:14 PM, Linus Torvalds <torvalds@linux-foundation.org=
+> wrote:
+>=20
+> =EF=BB=BFOn Thu, Jun 3, 2021 at 12:07 PM Hugh Dickins <hughd@google.com> w=
+rote:
+>>=20
+>> But the point that we've arrived at, that I'm actually now fairly
+>> happy with, is do *not* permit MAP_NOSIGBUS on MAP_SHARED mappings.
+>=20
+> Yeah, if that's sufficient, then that original patch should just work as-i=
+s.
+>=20
+> But there was some reason why people didn't like that patch
+> originally, and I think it was literally about how it only worked on
+> private mappings (the "we don't have a flag for it in the vm_flags"
+> part was just a small detail.
+>=20
+> I guess that objection ended up changing over time.
+>=20
+>=20
 
-> 
-> But again, please obsolete this file and make the features all
-> individual
-> files like they should be so that you do not have any parsing problems.
-
-Yup, will do.
-
-> 
-> thanks,
-> 
-> greg k-h
+I don=E2=80=99t understand the use case well enough to comment on whether MA=
+P_PRIVATE is sufficient, but I=E2=80=99m with Hugh: if this feature is imple=
+mented for MAP_SHARED, it should be fully coherent.=
