@@ -2,336 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8D039A4C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F30639A4CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhFCPkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:40:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51825 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229888AbhFCPkF (ORCPT
+        id S229885AbhFCPlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:41:47 -0400
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:45929 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhFCPlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:40:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622734700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MAfOCgAL+/4c+u2cKFnHe9PJR7//GbNGS7l7MR7qaKc=;
-        b=Heq5GbA9t7o3e0vkYrfC6gKYXOEXCGMzsO7VV5DE4SSh/7NPcYVjnw0g+Po/YN6ydTR78C
-        w34N8DGLeJ/qkOHjiageYN3BthIeA9D/T8pHknwtYb5YbPQe+z7VVj2HUq6wkN/3hwTY+6
-        /hRX+mTnPP5aw6V5C77keO07YyvlN4M=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-2fzsJYenNmGCwg175qbTvw-1; Thu, 03 Jun 2021 11:38:07 -0400
-X-MC-Unique: 2fzsJYenNmGCwg175qbTvw-1
-Received: by mail-ej1-f72.google.com with SMTP id gs18-20020a1709072d12b02903f19777c38aso2096390ejc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:38:07 -0700 (PDT)
+        Thu, 3 Jun 2021 11:41:46 -0400
+Received: by mail-pl1-f173.google.com with SMTP id 11so3066316plk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xiSNoTsQAWFB9DVX3RD/cDXCI3SDa7h02xABzqIqJJ4=;
+        b=WRx+02TnyU9B+J6Bx5LcciqVLSJgdpGAxTnH+jm10R1cMtfbG4GXGkTtx+7IB21AXt
+         yQjPHKTTVCH79rlaXsvWBhesONX8S8ZfvqUKnjq8EduouYjEXgxVWaQAPgQTOnldsSxq
+         T8a6ORlPrOsLRO3/vuumDa3cM0EoVxQ6t49k1j1QAWhjPbAijrJHop93H/0mYsV3pnUs
+         0Mbkq2F/P5oMs6BBPtTPdZuQ0DKNLbD5Yew3DZrELC21l4AsHzy6+tijUQAMmsfDFhYq
+         Rr/tr7TPMVvSaLkhKDB+YLTdqWbgMJsdxt523Juw4PP2V05QfnBs4SneDRJ3xD4ClYVB
+         PnnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MAfOCgAL+/4c+u2cKFnHe9PJR7//GbNGS7l7MR7qaKc=;
-        b=kIo8nPrkwg+ZEmt53hziQydSV6uKPZHQSHKh9tb93u3Xnbq0p4FyE/J6lnaQEOkMJj
-         C19emRDcUth5ylPlQodNRMiJ8PRfVfwVct2lwavZHVmMdKLeUFtUY01ywH70F74LwL78
-         JrtjZSHthnMhuIawUmA2T1LRzunaXNIDBXA20hMrSBZFoLfUpNHAwzw4NqLYqnERT9hA
-         vgdpQ+L6R5WgTIz3sBaASVwVCPqoyaVPKn/FScIBMW9RJCT4yMFdxU3NIfgnyzZMoOzy
-         ZV5K1gfdYJGWK6eGMTr/SAu1AWVMvqp6kfPOGfBe60FnYJWrg+SZ3EQE5vZVChe7h/LO
-         Sdag==
-X-Gm-Message-State: AOAM531x/NmHCZ2pdGGQ6y7xTvDLGioED/et/Mz7LiTPUB+I+3j+pGRr
-        6WZHosQjcEH/lAcPDJvD1sAX4nq/Et742t1HYjx+8adYC313Z8crQ6vsScG4qmNyr4smSdIOd3U
-        mtTHhKVYndvceo8yxBZpsjP3L
-X-Received: by 2002:a05:6402:b1a:: with SMTP id bm26mr61515edb.387.1622734686331;
-        Thu, 03 Jun 2021 08:38:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCg4RiY3uWsOMEkG7pXj17Pm1AGWGs6kIw12MPkL7qvmBz82U9B68S6pavqH2tLMDPO5l1tw==
-X-Received: by 2002:a05:6402:b1a:: with SMTP id bm26mr61493edb.387.1622734686165;
-        Thu, 03 Jun 2021 08:38:06 -0700 (PDT)
-Received: from steredhat ([5.170.129.82])
-        by smtp.gmail.com with ESMTPSA id z20sm1641999ejd.18.2021.06.03.08.38.03
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=xiSNoTsQAWFB9DVX3RD/cDXCI3SDa7h02xABzqIqJJ4=;
+        b=nZB+is0/dBcmbZ8j+xdNB09dQwgNfX8XoYayiXNE2LHPcZbodTPOX9A4N8gObRPKSN
+         UbERXKcPPyo/ytOjgjMtKw5k2TdYqYkoWQso/K1las+PugtZdEzjF5DLH1CG+pIDRzcq
+         TXbFHis4mn2dRnp8APibbCBXmaqpIaA9JVpe+dToWAt2GIblmswNTGjwNpi56UmhbrQI
+         1hW2ScX1966Ro5A3983bLXVeDHTwcbR3nW+DNhsAycoCq0Ao2ZG1gjOD1p3IdkXOA050
+         lzdVDN/7wr65j9zlnten68LXJQ5RE85xEfvbVJ2Y4JmG1V/4co/cgG2chcbkB+qajDHl
+         dX9g==
+X-Gm-Message-State: AOAM531urTT1O/icumMq+V7yCL1SH98G9rt6DUH+Zosk4DBi/VVvf2QG
+        R4skZ6LYTPQrbd2a+jpNlf9cTw==
+X-Google-Smtp-Source: ABdhPJxDHapyTneuf10BOIYnHCD/30vlCMwfZHqN9aC4Dfoefbey30fBxmi4a504pBs7/DIEYY0ihA==
+X-Received: by 2002:a17:902:bc81:b029:ef:3f99:9f76 with SMTP id bb1-20020a170902bc81b02900ef3f999f76mr97314plb.33.1622734742010;
+        Thu, 03 Jun 2021 08:39:02 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id r28sm2993442pgm.53.2021.06.03.08.39.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 08:38:05 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 17:38:01 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
-Subject: Re: [PATCH v10 17/18] vsock_test: add SOCK_SEQPACKET tests
-Message-ID: <20210603153801.xyew6p5d4x4orwka@steredhat>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
- <20210520191953.1272798-1-arseny.krasnov@kaspersky.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210520191953.1272798-1-arseny.krasnov@kaspersky.com>
+        Thu, 03 Jun 2021 08:39:01 -0700 (PDT)
+Date:   Thu, 03 Jun 2021 08:39:01 -0700 (PDT)
+X-Google-Original-Date: Thu, 03 Jun 2021 08:38:58 PDT (-0700)
+Subject:     RE: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+In-Reply-To: <CO6PR04MB7812D8905C6EEBDE8513866F8D3C9@CO6PR04MB7812.namprd04.prod.outlook.com>
+CC:     guoren@kernel.org, anup@brainfault.org, drew@beagleboard.org,
+        Christoph Hellwig <hch@lst.de>, wefu@redhat.com,
+        lazyparser@gmail.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, guoren@linux.alibaba.com,
+        Paul Walmsley <paul.walmsley@sifive.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Anup Patel <Anup.Patel@wdc.com>
+Message-ID: <mhng-3875d1bc-74dd-4dc8-b71d-18a8f004039a@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:19:50PM +0300, Arseny Krasnov wrote:
->Implement two tests of SOCK_SEQPACKET socket: first sends data by
->several 'write()'s and checks that number of 'read()' were same.
->Second test checks MSG_TRUNC flag. Cases for connect(), bind(),
->etc. are not tested, because it is same as for stream socket.
+On Wed, 02 Jun 2021 23:00:29 PDT (-0700), Anup Patel wrote:
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v9 -> v10:
-> 1) Commit message updated.
-> 2) Add second test for message bounds.
+>
+>> -----Original Message-----
+>> From: Palmer Dabbelt <palmer@dabbelt.com>
+>> Sent: 03 June 2021 09:43
+>> To: guoren@kernel.org
+>> Cc: anup@brainfault.org; drew@beagleboard.org; Christoph Hellwig
+>> <hch@lst.de>; Anup Patel <Anup.Patel@wdc.com>; wefu@redhat.com;
+>> lazyparser@gmail.com; linux-riscv@lists.infradead.org; linux-
+>> kernel@vger.kernel.org; linux-arch@vger.kernel.org; linux-
+>> sunxi@lists.linux.dev; guoren@linux.alibaba.com; Paul Walmsley
+>> <paul.walmsley@sifive.com>
+>> Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+>> 
+>> On Sat, 29 May 2021 17:30:18 PDT (-0700), Palmer Dabbelt wrote:
+>> > On Fri, 21 May 2021 17:36:08 PDT (-0700), guoren@kernel.org wrote:
+>> >> On Wed, May 19, 2021 at 3:15 PM Anup Patel <anup@brainfault.org>
+>> wrote:
+>> >>>
+>> >>> On Wed, May 19, 2021 at 12:24 PM Drew Fustini
+>> <drew@beagleboard.org> wrote:
+>> >>> >
+>> >>> > On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph Hellwig
+>> wrote:
+>> >>> > > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
+>> >>> > > > Since the existing RISC-V ISA cannot solve this problem, it is
+>> >>> > > > better to provide some configuration for the SOC vendor to
+>> customize.
+>> >>> > >
+>> >>> > > We've been talking about this problem for close to five years.
+>> >>> > > So no, if you don't manage to get the feature into the ISA it
+>> >>> > > can't be supported.
+>> >>> >
+>> >>> > Isn't it a good goal for Linux to support the capabilities present
+>> >>> > in the SoC that a currently being fab'd?
+>> >>> >
+>> >>> > I believe the CMO group only started last year [1] so the RV64GC
+>> >>> > SoCs that are going into mass production this year would not have
+>> >>> > had the opporuntiy of utilizing any RISC-V ISA extension for
+>> >>> > handling cache management.
+>> >>>
+>> >>> The current Linux RISC-V policy is to only accept patches for frozen
+>> >>> or ratified ISA specs.
+>> >>> (Refer, Documentation/riscv/patch-acceptance.rst)
+>> >>>
+>> >>> This means even if emulate CMO instructions in OpenSBI, the Linux
+>> >>> patches won't be taken by Palmer because CMO specification is still
+>> >>> in draft stage.
+>> >> Before CMO specification release, could we use a sbi_ecall to solve
+>> >> the current problem? This is not against the specification, when CMO
+>> >> is ready we could let users choose to use the new CMO in Linux.
+>> >>
+>> >> From a tech view, CMO trap emulation is the same as sbi_ecall.
+>> >>
+>> >>>
+>> >>> Also, we all know how much time it takes for RISCV international to
+>> >>> freeze some spec. Judging by that we are looking at another
+>> >>> 3-4 years at minimum.
+>> >
+>> > Sorry for being slow here, this thread got buried.
+>> >
+>> > I've been trying to work with a handful of folks at the RISC-V
+>> > foundation to try and get a subset of the various in-development
+>> > specifications (some simple CMOs, something about non-caching in the
+>> > page tables, and some way to prevent speculative accesse from
+>> > generating coherence traffic that will break non-coherent systems).
+>> > I'm not sure we can get this together quickly, but I'd prefer to at
+>> > least try before we jump to taking vendor-specificed behavior here.
+>> > It's obviously an up-hill battle to try and get specifications through
+>> > the process and I'm certainly not going to promise it will work, but
+>> > I'm hoping that the impending need to avoid forking the ISA will be
+>> > sufficient to get people behind producing some specifications in a timely
+>> fashion.
+>> >
+>> > I wasn't aware than this chip had non-coherent devices until I saw
+>> > this thread, so we'd been mostly focused on the Beagle V chip.  That
+>> > was in a sense an easier problem because the SiFive IP in it was never
+>> > designed to have non-coherent devices so we'd have to make anything
+>> > work via a series of slow workarounds, which would make emulating the
+>> > eventually standardized behavior reasonable in terms of performance
+>> > (ie, everything would be super slow so who really cares).
+>> >
+>> > I don't think relying on some sort of SBI call for the CMOs whould be
+>> > such a performance hit that it would prevent these systems from being
+>> > viable, but assuming you have reasonable performance on your
+>> > non-cached accesses then that's probably not going to be viable to
+>> > trap and emulate.  At that point it really just becomes silly to
+>> > pretend that we're still making things work by emulating the
+>> > eventually ratified behavior, as anyone who actually tries to use this
+>> > thing to do IO would need out of tree patches.  I'm not sure exactly
+>> > what the plan is for the page table bits in the specification right
+>> > now, but if you can give me a pointer to some documentation then I'm
+>> > happy to try and push for something compatible.
+>> >
+>> > If we can't make the process work at the foundation then I'd be
+>> > strongly in favor of just biting the bullet and starting to take
+>> > vendor-specific code that's been implemented in hardware and is
+>> > necessarry to make things work acceptably.  That's obviously a
+>> > sub-optimal solution as it'll lead to a bunch of ISA fragmentation,
+>> > but at least we'll be able to keep the software stack together.
+>> >
+>> > Can you tell us when these will be in the hands of users?  That's
+>> > pretty important here, as I don't want to be blocking real users from
+>> > having their hardware work.  IIRC there were some plans to distribute
+>> > early boards, but it looks like the foundation got involved and I
+>> > guess I lost the thread at that point.
+>> >
+>> > Sorry this is all such a headache, but hopefully we can get things
+>> > sorted out.
+>> 
+>> I talked with some of the RISC-V foundation folks, we're not going to have an
+>> ISA specification for the non-coherent stuff any time soon.  I took a look at
+>> this code and I definately don't want to take it as is, but I'm not opposed to
+>> taking something that makes the hardware work as long as it's a lot cleaner.
+>> We've already got two of these non-coherent chips, I'm sure more will come,
+>> and I'd rather have the extra headaches than make everyone fork the software
+>> stack.
+>
+> Thanks for confirming. The CMO extension is still in early stages so it will
+> certainly take more time for them. After CMO extension is finalized, it will
+> take some more time to have actual RISC-V platforms with CMO implemented.
 
-This patch LGTM, but I'll review better with the next version, running 
-also the test suite on my VMs.
+Agreed.  It's going to take two or three years from the standard to get 
+hardware to supporting it, so that means we're three or four years away 
+(at least, there's not even any solid timeline for a spec a year from 
+now) from having hardware.  There's just going to be too much 
+non-standard hardware here to try to ignore it all.
 
-Thanks,
-Stefano
+>> After talking to Atish it looks like there's likely to be an SBI extension to
+>> handle the CMOs, which should let us avoid the bulk of the vendor-specific
+>> behavior in the kernel.  I know some people are worried about adding to the
+>> SBI surface.  I'm worried about that too, but that's way better than sticking a
+>> bunch of vendor-specific instructions into the kernel.  The SBI extension
+>> should make for a straight-forward cache flush implementation in Linux, so
+>> let's just plan on that getting through quickly (as has been done before).
+>
+> Yes, I agree. We can have just a single SBI call which is meant for DMA sync
+> purpose only which means it will flush/invalidate pages from all cache
+> levels irrespective of the cache hierarchy (i.e. flush/invalidate to RAM). The
+> CMO extension might more generic cache operations which can target
+> any cache level.
+>
+> I am already preparing a write-up for SBI DMA sync call in SBI spec. I will
+> share it with you separately as well.
 
->
-> tools/testing/vsock/util.c       |  32 +++++++--
-> tools/testing/vsock/util.h       |   3 +
-> tools/testing/vsock/vsock_test.c | 116 +++++++++++++++++++++++++++++++
-> 3 files changed, 146 insertions(+), 5 deletions(-)
->
->diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
->index 93cbd6f603f9..2acbb7703c6a 100644
->--- a/tools/testing/vsock/util.c
->+++ b/tools/testing/vsock/util.c
->@@ -84,7 +84,7 @@ void vsock_wait_remote_close(int fd)
-> }
->
-> /* Connect to <cid, port> and return the file descriptor. */
->-int vsock_stream_connect(unsigned int cid, unsigned int port)
->+static int vsock_connect(unsigned int cid, unsigned int port, int type)
-> {
-> 	union {
-> 		struct sockaddr sa;
->@@ -101,7 +101,7 @@ int vsock_stream_connect(unsigned int cid, unsigned int port)
->
-> 	control_expectln("LISTENING");
->
->-	fd = socket(AF_VSOCK, SOCK_STREAM, 0);
->+	fd = socket(AF_VSOCK, type, 0);
->
-> 	timeout_begin(TIMEOUT);
-> 	do {
->@@ -120,11 +120,21 @@ int vsock_stream_connect(unsigned int cid, unsigned int port)
-> 	return fd;
-> }
->
->+int vsock_stream_connect(unsigned int cid, unsigned int port)
->+{
->+	return vsock_connect(cid, port, SOCK_STREAM);
->+}
->+
->+int vsock_seqpacket_connect(unsigned int cid, unsigned int port)
->+{
->+	return vsock_connect(cid, port, SOCK_SEQPACKET);
->+}
->+
-> /* Listen on <cid, port> and return the first incoming connection.  The remote
->  * address is stored to clientaddrp.  clientaddrp may be NULL.
->  */
->-int vsock_stream_accept(unsigned int cid, unsigned int port,
->-			struct sockaddr_vm *clientaddrp)
->+static int vsock_accept(unsigned int cid, unsigned int port,
->+			struct sockaddr_vm *clientaddrp, int type)
-> {
-> 	union {
-> 		struct sockaddr sa;
->@@ -145,7 +155,7 @@ int vsock_stream_accept(unsigned int cid, unsigned int port,
-> 	int client_fd;
-> 	int old_errno;
->
->-	fd = socket(AF_VSOCK, SOCK_STREAM, 0);
->+	fd = socket(AF_VSOCK, type, 0);
->
-> 	if (bind(fd, &addr.sa, sizeof(addr.svm)) < 0) {
-> 		perror("bind");
->@@ -189,6 +199,18 @@ int vsock_stream_accept(unsigned int cid, unsigned int port,
-> 	return client_fd;
-> }
->
->+int vsock_stream_accept(unsigned int cid, unsigned int port,
->+			struct sockaddr_vm *clientaddrp)
->+{
->+	return vsock_accept(cid, port, clientaddrp, SOCK_STREAM);
->+}
->+
->+int vsock_seqpacket_accept(unsigned int cid, unsigned int port,
->+			   struct sockaddr_vm *clientaddrp)
->+{
->+	return vsock_accept(cid, port, clientaddrp, SOCK_SEQPACKET);
->+}
->+
-> /* Transmit one byte and check the return value.
->  *
->  * expected_ret:
->diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
->index e53dd09d26d9..a3375ad2fb7f 100644
->--- a/tools/testing/vsock/util.h
->+++ b/tools/testing/vsock/util.h
->@@ -36,8 +36,11 @@ struct test_case {
-> void init_signals(void);
-> unsigned int parse_cid(const char *str);
-> int vsock_stream_connect(unsigned int cid, unsigned int port);
->+int vsock_seqpacket_connect(unsigned int cid, unsigned int port);
-> int vsock_stream_accept(unsigned int cid, unsigned int port,
-> 			struct sockaddr_vm *clientaddrp);
->+int vsock_seqpacket_accept(unsigned int cid, unsigned int port,
->+			   struct sockaddr_vm *clientaddrp);
-> void vsock_wait_remote_close(int fd);
-> void send_byte(int fd, int expected_ret, int flags);
-> void recv_byte(int fd, int expected_ret, int flags);
->diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->index 5a4fb80fa832..67766bfe176f 100644
->--- a/tools/testing/vsock/vsock_test.c
->+++ b/tools/testing/vsock/vsock_test.c
->@@ -14,6 +14,8 @@
-> #include <errno.h>
-> #include <unistd.h>
-> #include <linux/kernel.h>
->+#include <sys/types.h>
->+#include <sys/socket.h>
->
-> #include "timeout.h"
-> #include "control.h"
->@@ -279,6 +281,110 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
-> 	close(fd);
-> }
->
->+#define MESSAGES_CNT 7
->+static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
->+{
->+	int fd;
->+
->+	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->+	if (fd < 0) {
->+		perror("connect");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	/* Send several messages, one with MSG_EOR flag */
->+	for (int i = 0; i < MESSAGES_CNT; i++)
->+		send_byte(fd, 1, 0);
->+
->+	control_writeln("SENDDONE");
->+	close(fd);
->+}
->+
->+static void test_seqpacket_msg_bounds_server(const struct test_opts *opts)
->+{
->+	int fd;
->+	char buf[16];
->+	struct msghdr msg = {0};
->+	struct iovec iov = {0};
->+
->+	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->+	if (fd < 0) {
->+		perror("accept");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_expectln("SENDDONE");
->+	iov.iov_base = buf;
->+	iov.iov_len = sizeof(buf);
->+	msg.msg_iov = &iov;
->+	msg.msg_iovlen = 1;
->+
->+	for (int i = 0; i < MESSAGES_CNT; i++) {
->+		if (recvmsg(fd, &msg, 0) != 1) {
->+			perror("message bound violated");
->+			exit(EXIT_FAILURE);
->+		}
->+	}
->+
->+	close(fd);
->+}
->+
->+#define MESSAGE_TRUNC_SZ 32
->+static void test_seqpacket_msg_trunc_client(const struct test_opts *opts)
->+{
->+	int fd;
->+	char buf[MESSAGE_TRUNC_SZ];
->+
->+	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->+	if (fd < 0) {
->+		perror("connect");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (send(fd, buf, sizeof(buf), 0) != sizeof(buf)) {
->+		perror("send failed");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_writeln("SENDDONE");
->+	close(fd);
->+}
->+
->+static void test_seqpacket_msg_trunc_server(const struct test_opts *opts)
->+{
->+	int fd;
->+	char buf[MESSAGE_TRUNC_SZ / 2];
->+	struct msghdr msg = {0};
->+	struct iovec iov = {0};
->+
->+	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->+	if (fd < 0) {
->+		perror("accept");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_expectln("SENDDONE");
->+	iov.iov_base = buf;
->+	iov.iov_len = sizeof(buf);
->+	msg.msg_iov = &iov;
->+	msg.msg_iovlen = 1;
->+
->+	ssize_t ret = recvmsg(fd, &msg, MSG_TRUNC);
->+
->+	if (ret != MESSAGE_TRUNC_SZ) {
->+		printf("%zi\n", ret);
->+		perror("MSG_TRUNC doesn't work");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (!(msg.msg_flags & MSG_TRUNC)) {
->+		fprintf(stderr, "MSG_TRUNC expected\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	close(fd);
->+}
->+
-> static struct test_case test_cases[] = {
-> 	{
-> 		.name = "SOCK_STREAM connection reset",
->@@ -309,6 +415,16 @@ static struct test_case test_cases[] = {
-> 		.run_client = test_stream_msg_peek_client,
-> 		.run_server = test_stream_msg_peek_server,
-> 	},
->+	{
->+		.name = "SOCK_SEQPACKET msg bounds",
->+		.run_client = test_seqpacket_msg_bounds_client,
->+		.run_server = test_seqpacket_msg_bounds_server,
->+	},
->+	{
->+		.name = "SOCK_SEQPACKET MSG_TRUNC flag",
->+		.run_client = test_seqpacket_msg_trunc_client,
->+		.run_server = test_seqpacket_msg_trunc_server,
->+	},
-> 	{},
-> };
->
->-- 
->2.25.1
->
+Great, thanks.  Atish sort of mentioned that, but I didn't want to put 
+words in your mouth (and I assume you were aleep or something, due to 
+time zones).
 
+>> Unfortunately we've yet to come up with a way to handle the non-cacheable
+>> mappings without introducing a degree of vendor-specific behavior or
+>> seriously impacting performance (mark them as not valid and deal with them
+>> in the trap handler).  I'm not really sure it counts as supporting the hardware
+>> if it's massively slow, so that really leaves us with vendor-specific mappings as
+>> the only option to make these chips work.
+>
+> A RISC-V platform can have non-cacheable mappings is following possible
+> ways:
+> 1) Fixed physical address range as non-cacheable using PMAs
+> 2) Custom page table attributes
+> 3) Svpmbt extension being defined by RVI
+>
+> Atish and me both think it is possible to have RISC-V specific DMA ops
+> implementation which can handle all above case. Atish is already working
+> on DMA ops implementation for RISC-V.
+
+Great, thanks.  I haven't started writing any code, but I think we're 
+going to be able to get a big chunk of #1 from the "dma-ranges" device 
+tree stuff.  I think we still need some arch-specific allocation work to 
+make sure we don't alias, though.
+
+The page table attributes are definately going to need dma ops.  I'd 
+been assuming we'd have multiple DMA op tables for the multiple flavors, 
+but if they fit into a single op table cleanly that's fine -- that sort 
+of stuff really needs the code here.
+
+Since you guys have already started I'll just wait for patches.
+
+Thanks!
+
+>> This implementation, which adds some Kconfig entries that control page table
+>> bits, definately isn't suitable for upstream.  Allowing users to set arbitrary
+>> page table bits will eventually conflict with the standard, and is just going to
+>> be a mess.  It'll also lead to kernels that are only compatible with specific
+>> designs, which we're trying very hard to avoid.  At a bare minimum we'll need
+>> some way to detect systems with these page table bits before setting them,
+>> and some description of what the bits actually do so we can reason about
+>> them.
+>
+> Yes, vendor specific Kconfig options are strict NO NO. We can't give-up the
+> goal of unified kernel image for all platforms.
+
+I think this is just a phrasing issue, but just to be sure:
+
+IMO it's not that they're vendor-specific Kconfig options, it's that 
+turning them on will conflict with standard systems (and other vendors).  
+We've already got the ability to select sets of Kconfig settings that 
+will only boot on one vendor's system, which is fine, as long as there 
+remains a set of Kconfig settings that will boot on all systems.
+
+An example here would be the errata: every system has errata of some 
+sort, so if we start flipping off various vendor's errata Kconfigs 
+you'll end up with kernels that only function properly on some systems.  
+That's fine with me, as long as it's possible to turn on all vendor's 
+errata Kconfigs at the same time and the resulting kernel functions 
+correctly on all systems.
+
+> Regards,
+> Anup
