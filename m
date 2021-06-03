@@ -2,166 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEFB39993A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D87E399941
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhFCEk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 00:40:26 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:51105 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhFCEkY (ORCPT
+        id S229710AbhFCEnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 00:43:22 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:39684 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFCEnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 00:40:24 -0400
-Received: by mail-pj1-f54.google.com with SMTP id i22so2944368pju.0;
-        Wed, 02 Jun 2021 21:38:40 -0700 (PDT)
+        Thu, 3 Jun 2021 00:43:16 -0400
+Received: by mail-pl1-f169.google.com with SMTP id q16so2243476pls.6;
+        Wed, 02 Jun 2021 21:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sId2ExzAnq7rqy61mih6ScWMic6zfpfyFkAfotLhFTg=;
-        b=UGpvhahrKOZD62tyRn42uCscBYd4ckwMgN1rN6/zg6EjQRUdkJaD8JxEbkh9QIb5+7
-         OXNJofE42BQMwFkqYqLvGIgyXOS0suux7wNLeDoGbVmDXlsvD5suZ/aeiIKwABCHAZid
-         czQKdZxYOV6aCsn6uuCaFIFMG25LiJ6JxubglKSjTlxyVdejmN/m78mIud9ByPjIjOYP
-         nkNu2fxkA7Ak2WeRDXDU5DcaTMACOpRYnJPlewICA03o4utgLMDi5MGfhoUJLaCs7l+N
-         u5+9Y/Irn579fw3cUMhXBlIsoCDZysS57rxol50RG4NRDugZIacGFCSmxyNcpwx7cJW6
-         K9UA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xnrr2w6iocDmMx7+v3CvqnKF/FYjeeIOjuctS7i/Pvk=;
+        b=Z/klsuCIkcvnFhXm67qeLH9LYlnM9y4AQLXm1ctuXb5oiY5NhU2B3VCuXQsqQqgJ4M
+         SCn+k4nvGyiFG1So/YaJ1Pvij2uSI+wnrjjFZWb6ix15qCR5pgRHibV4rjjjuaARpUSf
+         blsf+XX2flelnQeaDLYNzZwL3wsZ9ynpREI62v6t6ACaa82g//Un15Itxo+2IVXm9XM2
+         VNRWegu+kxezO1AGpciDw09eFphOhIoxwz0q7vn0uTGd3ZDA64tF5xGm5xYnUuPAO3fh
+         AU0/z7our6T1Ugoy6gEW3R2wq2659gkaNGvsTXKHHBUGsVICDU1/p+S8YW0iJ6osSIPm
+         mhSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sId2ExzAnq7rqy61mih6ScWMic6zfpfyFkAfotLhFTg=;
-        b=n8VV8TpklJEOl+KZNRlgylgU1T3tsebaqY9QMD6Y6z0B9NmhGec9x8932mEBo4bHNQ
-         qT34UtNAHMwJgO3ce3hrpWlpsuiI5Za73JihxaMRtD1qB2RS0sz0tAmSydozd60GaWVS
-         SzOAFyXnnlp1HkLAKTmpaeFdqKVxZptOnPJZdyQx34IuwoXc3CConbKCbnCmKCpd+cSn
-         dAYZnTJ5BNmUUWWbwFWegRFNxldU181yAeNjoOq+jGLmnysqyjxbcKTVds63FrWG5icz
-         4aj0UIjLFNOB9IZLxoZRxuGC0i2xL7kzeB56YyxjSeLF+E9Aycnj4hpxzkrMZchhOV+k
-         W8fw==
-X-Gm-Message-State: AOAM530DS1XFyaY24pXW5gfwzhQvcF8uMXtwoNOb3Ui5mNbzz17tGZ5H
-        T11htx5I4lUVuepLap6f5At18o5qIZk=
-X-Google-Smtp-Source: ABdhPJx8dOYSl4dbKAnA6zL2QvbS9lBitKuBAyNnPH5FZnsBem9tK10fBdC/+kwHv+ythNtVUfnsMg==
-X-Received: by 2002:a17:90b:1283:: with SMTP id fw3mr30106775pjb.133.1622695059852;
-        Wed, 02 Jun 2021 21:37:39 -0700 (PDT)
-Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:fc6a:97ca:f00c:8377])
-        by smtp.gmail.com with ESMTPSA id f28sm1132414pgb.12.2021.06.02.21.37.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xnrr2w6iocDmMx7+v3CvqnKF/FYjeeIOjuctS7i/Pvk=;
+        b=HMbyDwflonXZvZeP80gNF7i+A50JqOOFQlqL4i6C5yRxBpmp/TGrDulhczzsBHrFgF
+         FD/5xNCMo/sTFn2ytHK6z0Fo7bHUllKorKEPgkJDqGUYPw2wa1IAfHteVgw5CvYc2Uup
+         n3dh8BBpSDsrEWAI4iRBbHsEYCeOPH/mdxc6PYys+DWTN1TPFvRVVZHywqup1v2cbvau
+         kcWTHFmn6tbE/4xHWb83w6h7B1fJyZwZFIh934YVCdRzejAk9wUGsIX+PdxLyu0LcFVJ
+         Jek5H6fklw87w5BS33MBtn7L7l3cR4gxeHIygjawJWBO23Zl1chE0jRkrdy6t9VO+HTo
+         bjbg==
+X-Gm-Message-State: AOAM530v+VN4ctAhNaWKuFUa3kKeiSlQ+S0G3SVQZjTehIhuE6YalYAe
+        fEtuIheb8AwPhFPvmUkf4cI=
+X-Google-Smtp-Source: ABdhPJz/aCAZKYQNPD03WCFx0yF91euUFLrJihtUmKLW7W/8aNPO77fCoGNf30KEguCE8Sl+BQu7gA==
+X-Received: by 2002:a17:90b:1283:: with SMTP id fw3mr30116462pjb.133.1622695232178;
+        Wed, 02 Jun 2021 21:40:32 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:fc6a:97ca:f00c:8377])
+        by smtp.gmail.com with ESMTPSA id bv3sm894880pjb.1.2021.06.02.21.40.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 21:37:39 -0700 (PDT)
+        Wed, 02 Jun 2021 21:40:31 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 21:40:28 -0700
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] Input: cy8ctmg110_ts - switch to using gpiod API
-Date:   Wed,  2 Jun 2021 21:37:26 -0700
-Message-Id: <20210603043726.3793876-7-dmitry.torokhov@gmail.com>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-In-Reply-To: <20210603043726.3793876-1-dmitry.torokhov@gmail.com>
-References: <20210603043726.3793876-1-dmitry.torokhov@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Maxim Krasnyansky <maxk@qti.qualcomm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] docs: networking: Replace strncpy() with strscpy()
+Message-ID: <YLhdPEFO2zdzWef+@google.com>
+References: <20210602202914.4079123-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602202914.4079123-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of legacy gpio API let's use newer gpiod API. This also allows us
-to get rid of platform data.
+On Wed, Jun 02, 2021 at 01:29:14PM -0700, Kees Cook wrote:
+> Replace example code's use of strncpy() with strscpy() functions. Using
+> strncpy() is considered deprecated:
+> https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  Documentation/input/joydev/joystick-api.rst | 2 +-
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/touchscreen/cy8ctmg110_ts.c | 41 +++++++++--------------
- 1 file changed, 15 insertions(+), 26 deletions(-)
+FWIW:
 
-diff --git a/drivers/input/touchscreen/cy8ctmg110_ts.c b/drivers/input/touchscreen/cy8ctmg110_ts.c
-index 33ccb31cad52..3e2d64fb1620 100644
---- a/drivers/input/touchscreen/cy8ctmg110_ts.c
-+++ b/drivers/input/touchscreen/cy8ctmg110_ts.c
-@@ -7,15 +7,13 @@
-  * Some cleanups by Alan Cox <alan@linux.intel.com>
-  */
- 
--#include <linux/module.h>
--#include <linux/kernel.h>
-+#include <linux/i2c.h>
- #include <linux/input.h>
--#include <linux/slab.h>
- #include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/i2c.h>
--#include <linux/gpio.h>
--#include <linux/input/cy8ctmg110_pdata.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
- #include <asm/byteorder.h>
- 
- #define CY8CTMG110_DRIVER_NAME      "cy8ctmg110"
-@@ -46,7 +44,7 @@ struct cy8ctmg110 {
- 	struct input_dev *input;
- 	char phys[32];
- 	struct i2c_client *client;
--	int reset_pin;
-+	struct gpio_desc *reset_gpio;
- };
- 
- /*
-@@ -55,8 +53,8 @@ struct cy8ctmg110 {
-  */
- static void cy8ctmg110_power(struct cy8ctmg110 *ts, bool poweron)
- {
--	if (ts->reset_pin)
--		gpio_direction_output(ts->reset_pin, 1 - poweron);
-+	if (ts->reset_gpio)
-+		gpiod_set_value_cansleep(ts->reset_gpio, !poweron);
- }
- 
- static int cy8ctmg110_write_regs(struct cy8ctmg110 *tsc, unsigned char reg,
-@@ -172,17 +170,10 @@ static void cy8ctmg110_shut_off(void *_ts)
- static int cy8ctmg110_probe(struct i2c_client *client,
- 					const struct i2c_device_id *id)
- {
--	const struct cy8ctmg110_pdata *pdata = dev_get_platdata(&client->dev);
- 	struct cy8ctmg110 *ts;
- 	struct input_dev *input_dev;
- 	int err;
- 
--	/* No pdata no way forward */
--	if (pdata == NULL) {
--		dev_err(&client->dev, "no pdata\n");
--		return -ENODEV;
--	}
--
- 	if (!i2c_check_functionality(client->adapter,
- 					I2C_FUNC_SMBUS_READ_WORD_DATA))
- 		return -EIO;
-@@ -197,7 +188,6 @@ static int cy8ctmg110_probe(struct i2c_client *client,
- 
- 	ts->client = client;
- 	ts->input = input_dev;
--	ts->reset_pin = pdata->reset_pin;
- 
- 	snprintf(ts->phys, sizeof(ts->phys),
- 		 "%s/input0", dev_name(&client->dev));
-@@ -212,14 +202,13 @@ static int cy8ctmg110_probe(struct i2c_client *client,
- 	input_set_abs_params(input_dev, ABS_Y,
- 			CY8CTMG110_Y_MIN, CY8CTMG110_Y_MAX, 4, 0);
- 
--	if (ts->reset_pin) {
--		err = devm_gpio_request(&client->dev, ts->reset_pin, NULL);
--		if (err) {
--			dev_err(&client->dev,
--				"Unable to request GPIO pin %d.\n",
--				ts->reset_pin);
--			return err;
--		}
-+	ts->reset_gpio = devm_gpiod_get_optional(&client->dev, NULL,
-+						 GPIOD_OUT_HIGH);
-+	if (IS_ERR(ts->reset_gpio)) {
-+		err = PTR_ERR(ts->reset_gpio);
-+		dev_err(&client->dev,
-+			"Unable to request reset GPIO: %d\n", err);
-+		return err;
- 	}
- 
- 	cy8ctmg110_power(ts, true);
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+>  Documentation/networking/packet_mmap.rst    | 2 +-
+>  Documentation/networking/tuntap.rst         | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/input/joydev/joystick-api.rst b/Documentation/input/joydev/joystick-api.rst
+> index af5934c10c1c..5db6dc6fe1c5 100644
+> --- a/Documentation/input/joydev/joystick-api.rst
+> +++ b/Documentation/input/joydev/joystick-api.rst
+> @@ -263,7 +263,7 @@ possible overrun should the name be too long::
+>  
+>  	char name[128];
+>  	if (ioctl(fd, JSIOCGNAME(sizeof(name)), name) < 0)
+> -		strncpy(name, "Unknown", sizeof(name));
+> +		strscpy(name, "Unknown", sizeof(name));
+>  	printf("Name: %s\n", name);
+>  
+>  
+> diff --git a/Documentation/networking/packet_mmap.rst b/Documentation/networking/packet_mmap.rst
+> index 500ef60b1b82..c5da1a5d93de 100644
+> --- a/Documentation/networking/packet_mmap.rst
+> +++ b/Documentation/networking/packet_mmap.rst
+> @@ -153,7 +153,7 @@ As capture, each frame contains two parts::
+>      struct ifreq s_ifr;
+>      ...
+>  
+> -    strncpy (s_ifr.ifr_name, "eth0", sizeof(s_ifr.ifr_name));
+> +    strscpy_pad (s_ifr.ifr_name, "eth0", sizeof(s_ifr.ifr_name));
+>  
+>      /* get interface index of eth0 */
+>      ioctl(this->socket, SIOCGIFINDEX, &s_ifr);
+> diff --git a/Documentation/networking/tuntap.rst b/Documentation/networking/tuntap.rst
+> index a59d1dd6fdcc..4d7087f727be 100644
+> --- a/Documentation/networking/tuntap.rst
+> +++ b/Documentation/networking/tuntap.rst
+> @@ -107,7 +107,7 @@ Note that the character pointer becomes overwritten with the real device name
+>         */
+>        ifr.ifr_flags = IFF_TUN;
+>        if( *dev )
+> -	 strncpy(ifr.ifr_name, dev, IFNAMSIZ);
+> +	 strscpy_pad(ifr.ifr_name, dev, IFNAMSIZ);
+>  
+>        if( (err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0 ){
+>  	 close(fd);
+> -- 
+> 2.25.1
+> 
+
+Thanks.
+
 -- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
-
+Dmitry
