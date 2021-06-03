@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6536439AA25
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 593C239AA27
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhFCSi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:38:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51896 "EHLO mail.kernel.org"
+        id S229995AbhFCSjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:39:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45128 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCSi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:38:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2197B613D7;
-        Thu,  3 Jun 2021 18:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622745402;
-        bh=FwhSCnFU0UJW2nRbWaqzvrhP+56z8E67kW2nPD73Yz0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PCSfGVR5MIP2734dt3tsc1wkIpv2avXJCGZ7wQkCN/71MeuQSzy/scHwUgS5DRlhe
-         bQbqrfnM3K/bv3Ohh+kgKdHnYWVIZ+i+Q0bWAAH4myZ0Ha+ExXYzmF3bHUKQKT/m1v
-         /gVyZhATL/V+i694vAdzjvfHnwR/jys1fXM3sSYY=
-Date:   Thu, 3 Jun 2021 20:36:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     SyzScope <syzscope@gmail.com>
-Cc:     syzbot <syzbot+305a91e025a73e4fd6ce@syzkaller.appspotmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in hci_chan_del
-Message-ID: <YLkhOFPU5mb5vspm@kroah.com>
-References: <000000000000adea7f05abeb19cf@google.com>
- <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com>
- <c40de1fa-c152-4c94-041a-7e014085c66e@gmail.com>
+        id S229576AbhFCSjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:39:01 -0400
+Received: from zn.tnic (p200300ec2f13850043af4c4d530a3258.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:43af:4c4d:530a:3258])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 087CE1EC04A6;
+        Thu,  3 Jun 2021 20:37:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622745436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=BEr//xjV1GqZSBzi3bsF+G1FWwbefcv6uCbPmM9RANQ=;
+        b=pplRkp7EY+j9InipnsnnnKO/1sbfKryAA3g8xS3VlD8O/OBPlMooUIp264da5HsrdXfEyh
+        ltmTCqJ4TnzY3bzBjOC2Vzg0boeUt9epLGfJEsCOTdb8MtiZn+XtCNwroE/9Kv016b6Rtt
+        XrduIsQT/Endddr+FRp8lWaSbL82QkI=
+Date:   Thu, 3 Jun 2021 20:37:11 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jiashuo Liang <liangjs@pku.edu.cn>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] signal/x86: Don't send SIGSEGV twice on SEGV_PKUERR
+Message-ID: <YLkhV+lSqXlcfUc5@zn.tnic>
+References: <20210601085203.40214-1-liangjs@pku.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c40de1fa-c152-4c94-041a-7e014085c66e@gmail.com>
+In-Reply-To: <20210601085203.40214-1-liangjs@pku.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:30:08AM -0700, SyzScope wrote:
-> Hi developers,
-> 
-> Besides the control flow hijacking primitive we sent before, we managed to
-> discover an additional double free primitive in this bug, making this bug
-> even more dangerous.
-> 
-> We created a web page with detailed descriptions: https://sites.google.com/view/syzscope/kasan-use-after-free-read-in-hci_chan_del
-> 
-> We understand that creating a patch can be time-consuming and there is
-> probably a long list of bugs pending fixes. We hope that our security
-> analysis can enable an informed decision on which bugs to fix first
-> (prioritization).
-> 
-> Since the bug has been on syzbot for over ten months (first found on
-> 08-03-2020 and still can be triggered on 05-08-2021), it is best to have the
-> bug fixed early enough to avoid it being weaponized.
+On Tue, Jun 01, 2021 at 04:52:03PM +0800, Jiashuo Liang wrote:
+> Before this patch, the __bad_area_nosemaphore function calls both
+> force_sig_pkuerr and force_sig_fault when handling SEGV_PKUERR. This does
+> not cause problems because the second signal is filtered by the
+> legacy_queue check in __send_signal.
 
-Wonderful, please help out by sending a fix for this.
+I'm likely missing something but the first signal gets filtered by that
+same legacy_queue() check too, no?
 
-thanks,
+Because both calls end up in
 
-greg k-h
+	force_sig_info_to_task(info, current);
+
+with the info struct populated with:
+
+	info.si_signo = SIGSEGV;
+        info.si_errno = 0;
+        info.si_code  = SEGV_PKUERR;
+        info.si_addr  = addr;
+        info.si_pkey  = pkey;
+
+except the second call - force_sig_fault() - doesn't put pkey in
+->si_pkey.
+
+So what's up?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
