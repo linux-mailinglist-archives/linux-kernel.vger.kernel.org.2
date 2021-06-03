@@ -2,189 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBC43998E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BFA3998E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhFCEPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 00:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhFCEP3 (ORCPT
+        id S229718AbhFCEQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 00:16:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49351 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229441AbhFCEQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 00:15:29 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D06C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 21:13:29 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id h16so2892191pjv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 21:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id;
-        bh=mdQe7rcfBv/z++/4DywE65Kjg4R/h0ApRxAanaCZhPk=;
-        b=fd+ibb1AZny+F8WluQ/jIE1zbUfUvf9P+Lnr32S0iD+PghCPDh2X2uqJSxvmZ8/1IL
-         n8ROE/oO/fe7kZsF+WyG14vqVqE3FZjp2VMnXhWXkiwq53p5wObdEI9f2GQHH61kr7Ie
-         ax3ZmpAh6zdQhXyVC6/Niw8nCnJowg9RJKGvsXnhE9tpbJpPLwtKHopnBaA5fVrLzRcg
-         WDkUDJclcaCJG2p+mMuvw9hYxL+RpnNlSbJXa0vyEwAiSDyX+tsHniubp2yoQHhv60+F
-         6xY345bBCAf9+NDh9wSJBGz2MulrXgBdpGs6hkhoO+jKkNw968xbek1hakK9GopdyEsb
-         OCGw==
+        Thu, 3 Jun 2021 00:16:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622693699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c2PxtKW9qJ+Vtox4Ih/NvHqS0Jy9B5n5YztFOiLLauQ=;
+        b=AWIycqS6B6h5zwy0MerKa7Ykrhv09Feovcd+InUOIi1vQ8n5wwMwVbZ4X4LbhunOXYKMm5
+        zKCAl1Vy2uERzYK+BNrMfZLDIOgutcQWEb+yZBAOLJAWI6vUFoSWfm3CMn7Mkmf7O58/Mg
+        RL1nAbylv6uWh9vHED/rz0k3Bs6dXXw=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-ipp0CUazNimzHJ5vtc5m4Q-1; Thu, 03 Jun 2021 00:14:58 -0400
+X-MC-Unique: ipp0CUazNimzHJ5vtc5m4Q-1
+Received: by mail-ot1-f71.google.com with SMTP id 88-20020a9d06e10000b029030513a66c79so2719161otx.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 21:14:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id;
-        bh=mdQe7rcfBv/z++/4DywE65Kjg4R/h0ApRxAanaCZhPk=;
-        b=nsTjdaWL3I5QxLY2dOFZmT/FHD43VUSdkgd4YZoHpFK7LOkdJdr3E6MD8bboOA1zmi
-         Kqnb9INCA0cv9XANEuS9Mn3VOdCmhgVqqYhjGg0N2nbxaHrGJvllTfVfT/X1Hv/ZHzsJ
-         nLY0sH54CQQtGmcpu2uANLMiVxGJZsmf7YjbmIOpe0PosA6renw3FwTIoBlTmieBarK/
-         qg2Gng9l1LGuf7gt8W0UsSb/MdvgncaKzHvuTbbihqME4I6l/BqSpxHrwWZp72W2+qBl
-         qv1s/dUc+Ts4nhDeYxveso1F576oT9NaW3rrDd8W5f4Ie4rVkrmc6XSe0m8HHJapz3hC
-         VE3A==
-X-Gm-Message-State: AOAM533kWWwraLgYsRanMmzaPb/IAnoOg7ogTA1Fqp7QFlefglVIy+nR
-        dCMs7FX2SXi//Gze43P/nCy0eg==
-X-Google-Smtp-Source: ABdhPJyhCDbdVRbt5r/8ORm86+o6k/4hlsjsYyPQRuc0fTEcbN0So+HCQlNKs9itq7iVgl7kUmYVmg==
-X-Received: by 2002:a17:902:eac1:b029:108:4a7c:ff2d with SMTP id p1-20020a170902eac1b02901084a7cff2dmr11472514pld.62.1622693608838;
-        Wed, 02 Jun 2021 21:13:28 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id q21sm934029pfn.81.2021.06.02.21.13.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=c2PxtKW9qJ+Vtox4Ih/NvHqS0Jy9B5n5YztFOiLLauQ=;
+        b=b6zqr1aH15RtcZdMVaR09NNnFGfipv4900M3BIEW9wuu7I4Zzt7xYIAFmVt4AFL4lS
+         qh9gOu9n/UP4CtiS2qbrejCepwwruvFaVJ+FVqVfEPNRtdXzrA1vfphbAOSykGCnfBVT
+         EzKIIgPSO9xOJy+xYdvadsGJWChNnt3Puwwwpw9hRf+9H/hZO6e57syG6kbdfPmVzpUB
+         i52dMNdDNEtYtDh0Y9gUnzGgQfwbBtJdc6OhHiIwMuoJM3370Uw3X3mRNRc0kbgB6J5D
+         fBCCQC9TtDd6Mx7Qv207PAPI0libZnKijPcVpWStBZp+EdB108DkiXmNVZtL4TbzCI/P
+         sDuw==
+X-Gm-Message-State: AOAM531EtD1jurJZkKHLZYHMaSUgscqI9yAfK2U8G2K8ZQaC3gaXvYWu
+        HZ4fUyxT3anFARdencp6sZIf08Brp8zj+2Xi5dZg9w5jexvWRNf04wVW6cbcgXvB76ZJhB8X5ql
+        vESzSUYeh/WPfgdyn3t7U1P0+
+X-Received: by 2002:a9d:75d2:: with SMTP id c18mr28307576otl.219.1622693697185;
+        Wed, 02 Jun 2021 21:14:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMVK/MDbfe2aoBwzokzamUhEXIbT+izHOFTQ060sbCY3SaNEqBjqgWXgPdNAX/pdyZ+/rtsA==
+X-Received: by 2002:a9d:75d2:: with SMTP id c18mr28307561otl.219.1622693696891;
+        Wed, 02 Jun 2021 21:14:56 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id t39sm415459ooi.42.2021.06.02.21.14.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 21:13:28 -0700 (PDT)
-Date:   Wed, 02 Jun 2021 21:13:28 -0700 (PDT)
-X-Google-Original-Date: Wed, 02 Jun 2021 21:11:20 PDT (-0700)
-Subject:     Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-In-Reply-To: <mhng-a5f8374f-350b-4c13-86e8-c6aa5e697454@palmerdabbelt-glaptop>
-CC:     anup@brainfault.org, drew@beagleboard.org,
-        Christoph Hellwig <hch@lst.de>,
-        Anup Patel <Anup.Patel@wdc.com>, wefu@redhat.com,
-        lazyparser@gmail.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, guoren@linux.alibaba.com,
-        Paul Walmsley <paul.walmsley@sifive.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     guoren@kernel.org
-Message-ID: <mhng-c0406cea-776b-49d2-a223-13a83d3a7433@palmerdabbelt-glaptop>
+        Wed, 02 Jun 2021 21:14:56 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 22:14:55 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "David Woodhouse" <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210602221455.79a42878.alex.williamson@redhat.com>
+In-Reply-To: <MWHPR11MB1886DC8ECF5D56FE485D13D58C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210601162225.259923bc.alex.williamson@redhat.com>
+        <MWHPR11MB1886E8454A58661DC2CDBA678C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210602160140.GV1002214@nvidia.com>
+        <20210602111117.026d4a26.alex.williamson@redhat.com>
+        <20210602173510.GE1002214@nvidia.com>
+        <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+        <20210602180925.GH1002214@nvidia.com>
+        <20210602130053.615db578.alex.williamson@redhat.com>
+        <20210602195404.GI1002214@nvidia.com>
+        <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+        <20210602224536.GJ1002214@nvidia.com>
+        <20210602205054.3505c9c3.alex.williamson@redhat.com>
+        <MWHPR11MB1886DC8ECF5D56FE485D13D58C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021 17:30:18 PDT (-0700), Palmer Dabbelt wrote:
-> On Fri, 21 May 2021 17:36:08 PDT (-0700), guoren@kernel.org wrote:
->> On Wed, May 19, 2021 at 3:15 PM Anup Patel <anup@brainfault.org> wrote:
->>>
->>> On Wed, May 19, 2021 at 12:24 PM Drew Fustini <drew@beagleboard.org> wrote:
->>> >
->>> > On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph Hellwig wrote:
->>> > > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
->>> > > > Since the existing RISC-V ISA cannot solve this problem, it is better
->>> > > > to provide some configuration for the SOC vendor to customize.
->>> > >
->>> > > We've been talking about this problem for close to five years.  So no,
->>> > > if you don't manage to get the feature into the ISA it can't be
->>> > > supported.
->>> >
->>> > Isn't it a good goal for Linux to support the capabilities present in
->>> > the SoC that a currently being fab'd?
->>> >
->>> > I believe the CMO group only started last year [1] so the RV64GC SoCs
->>> > that are going into mass production this year would not have had the
->>> > opporuntiy of utilizing any RISC-V ISA extension for handling cache
->>> > management.
->>>
->>> The current Linux RISC-V policy is to only accept patches for frozen or
->>> ratified ISA specs.
->>> (Refer, Documentation/riscv/patch-acceptance.rst)
->>>
->>> This means even if emulate CMO instructions in OpenSBI, the Linux
->>> patches won't be taken by Palmer because CMO specification is
->>> still in draft stage.
->> Before CMO specification release, could we use a sbi_ecall to solve
->> the current problem? This is not against the specification, when CMO
->> is ready we could let users choose to use the new CMO in Linux.
->>
->> From a tech view, CMO trap emulation is the same as sbi_ecall.
->>
->>>
->>> Also, we all know how much time it takes for RISCV international
->>> to freeze some spec. Judging by that we are looking at another
->>> 3-4 years at minimum.
->
-> Sorry for being slow here, this thread got buried.
->
-> I've been trying to work with a handful of folks at the RISC-V
-> foundation to try and get a subset of the various in-development
-> specifications (some simple CMOs, something about non-caching in the
-> page tables, and some way to prevent speculative accesse from generating
-> coherence traffic that will break non-coherent systems).  I'm not sure
-> we can get this together quickly, but I'd prefer to at least try before
-> we jump to taking vendor-specificed behavior here.  It's obviously an
-> up-hill battle to try and get specifications through the process and I'm
-> certainly not going to promise it will work, but I'm hoping that the
-> impending need to avoid forking the ISA will be sufficient to get people
-> behind producing some specifications in a timely fashion.
->
-> I wasn't aware than this chip had non-coherent devices until I saw this
-> thread, so we'd been mostly focused on the Beagle V chip.  That was in a
-> sense an easier problem because the SiFive IP in it was never designed
-> to have non-coherent devices so we'd have to make anything work via a
-> series of slow workarounds, which would make emulating the eventually
-> standardized behavior reasonable in terms of performance (ie, everything
-> would be super slow so who really cares).
->
-> I don't think relying on some sort of SBI call for the CMOs whould be
-> such a performance hit that it would prevent these systems from being
-> viable, but assuming you have reasonable performance on your non-cached
-> accesses then that's probably not going to be viable to trap and
-> emulate.  At that point it really just becomes silly to pretend that
-> we're still making things work by emulating the eventually ratified
-> behavior, as anyone who actually tries to use this thing to do IO would
-> need out of tree patches.  I'm not sure exactly what the plan is for the
-> page table bits in the specification right now, but if you can give me a
-> pointer to some documentation then I'm happy to try and push for
-> something compatible.
->
-> If we can't make the process work at the foundation then I'd be strongly
-> in favor of just biting the bullet and starting to take vendor-specific
-> code that's been implemented in hardware and is necessarry to make
-> things work acceptably.  That's obviously a sub-optimal solution as
-> it'll lead to a bunch of ISA fragmentation, but at least we'll be able
-> to keep the software stack together.
->
-> Can you tell us when these will be in the hands of users?  That's pretty
-> important here, as I don't want to be blocking real users from having
-> their hardware work.  IIRC there were some plans to distribute early
-> boards, but it looks like the foundation got involved and I guess I lost
-> the thread at that point.
->
-> Sorry this is all such a headache, but hopefully we can get things
-> sorted out.
+On Thu, 3 Jun 2021 03:22:27 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-I talked with some of the RISC-V foundation folks, we're not going to 
-have an ISA specification for the non-coherent stuff any time soon.  I 
-took a look at this code and I definately don't want to take it as is, 
-but I'm not opposed to taking something that makes the hardware work as 
-long as it's a lot cleaner.  We've already got two of these non-coherent 
-chips, I'm sure more will come, and I'd rather have the extra headaches 
-than make everyone fork the software stack.
+> > From: Alex Williamson <alex.williamson@redhat.com>
+> > Sent: Thursday, June 3, 2021 10:51 AM
+> > 
+> > On Wed, 2 Jun 2021 19:45:36 -0300
+> > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >   
+> > > On Wed, Jun 02, 2021 at 02:37:34PM -0600, Alex Williamson wrote:
+> > >  
+> > > > Right.  I don't follow where you're jumping to relaying DMA_PTE_SNP
+> > > > from the guest page table... what page table?  
+> > >
+> > > I see my confusion now, the phrasing in your earlier remark led me
+> > > think this was about allowing the no-snoop performance enhancement in
+> > > some restricted way.
+> > >
+> > > It is really about blocking no-snoop 100% of the time and then
+> > > disabling the dangerous wbinvd when the block is successful.
+> > >
+> > > Didn't closely read the kvm code :\
+> > >
+> > > If it was about allowing the optimization then I'd expect the guest to
+> > > enable no-snoopable regions via it's vIOMMU and realize them to the
+> > > hypervisor and plumb the whole thing through. Hence my remark about
+> > > the guest page tables..
+> > >
+> > > So really the test is just 'were we able to block it' ?  
+> > 
+> > Yup.  Do we really still consider that there's some performance benefit
+> > to be had by enabling a device to use no-snoop?  This seems largely a
+> > legacy thing.  
+> 
+> Yes, there is indeed performance benefit for device to use no-snoop,
+> e.g. 8K display and some imaging processing path, etc. The problem is
+> that the IOMMU for such devices is typically a different one from the
+> default IOMMU for most devices. This special IOMMU may not have
+> the ability of enforcing snoop on no-snoop PCI traffic then this fact
+> must be understood by KVM to do proper mtrr/pat/wbinvd virtualization 
+> for such devices to work correctly.
 
-After talking to Atish it looks like there's likely to be an SBI 
-extension to handle the CMOs, which should let us avoid the bulk of the 
-vendor-specific behavior in the kernel.  I know some people are worried 
-about adding to the SBI surface.  I'm worried about that too, but that's 
-way better than sticking a bunch of vendor-specific instructions into 
-the kernel.  The SBI extension should make for a straight-forward cache 
-flush implementation in Linux, so let's just plan on that getting 
-through quickly (as has been done before).
+The case where the IOMMU does not support snoop-control for such a
+device already works fine, we can't prevent no-snoop so KVM will
+emulate wbinvd.  The harder one is if we should opt to allow no-snoop
+even if the IOMMU does support snoop-control.
+ 
+> > > > This support existed before mdev, IIRC we needed it for direct
+> > > > assignment of NVIDIA GPUs.  
+> > >
+> > > Probably because they ignored the disable no-snoop bits in the control
+> > > block, or reset them in some insane way to "fix" broken bioses and
+> > > kept using it even though by all rights qemu would have tried hard to
+> > > turn it off via the config space. Processing no-snoop without a
+> > > working wbinvd would be fatal. Yeesh
+> > >
+> > > But Ok, back the /dev/ioasid. This answers a few lingering questions I
+> > > had..
+> > >
+> > > 1) Mixing IOMMU_CAP_CACHE_COHERENCY  
+> > and !IOMMU_CAP_CACHE_COHERENCY  
+> > >    domains.
+> > >
+> > >    This doesn't actually matter. If you mix them together then kvm
+> > >    will turn on wbinvd anyhow, so we don't need to use the DMA_PTE_SNP
+> > >    anywhere in this VM.
+> > >
+> > >    This if two IOMMU's are joined together into a single /dev/ioasid
+> > >    then we can just make them both pretend to be
+> > >    !IOMMU_CAP_CACHE_COHERENCY and both not set IOMMU_CACHE.  
+> > 
+> > Yes and no.  Yes, if any domain is !IOMMU_CAP_CACHE_COHERENCY then
+> > we
+> > need to emulate wbinvd, but no we'll use IOMMU_CACHE any time it's
+> > available based on the per domain support available.  That gives us the
+> > most consistent behavior, ie. we don't have VMs emulating wbinvd
+> > because they used to have a device attached where the domain required
+> > it and we can't atomically remap with new flags to perform the same as
+> > a VM that never had that device attached in the first place.
+> >   
+> > > 2) How to fit this part of kvm in some new /dev/ioasid world
+> > >
+> > >    What we want to do here is iterate over every ioasid associated
+> > >    with the group fd that is passed into kvm.  
+> > 
+> > Yeah, we need some better names, binding a device to an ioasid (fd) but
+> > then attaching a device to an allocated ioasid (non-fd)... I assume
+> > you're talking about the latter ioasid.
+> >   
+> > >    Today the group fd has a single container which specifies the
+> > >    single ioasid so this is being done trivially.
+> > >
+> > >    To reorg we want to get the ioasid from the device not the
+> > >    group (see my note to David about the groups vs device rational)
+> > >
+> > >    This is just iterating over each vfio_device in the group and
+> > >    querying the ioasid it is using.  
+> > 
+> > The IOMMU API group interfaces is largely iommu_group_for_each_dev()
+> > anyway, we still need to account for all the RIDs and aliases of a
+> > group.
+> >   
+> > >    Or perhaps more directly: an op attaching the vfio_device to the
+> > >    kvm and having some simple helper
+> > >          '(un)register ioasid with kvm (kvm, ioasid)'
+> > >    that the vfio_device driver can call that just sorts this out.  
+> > 
+> > We could almost eliminate the device notion altogether here, use an
+> > ioasidfd_for_each_ioasid() but we really want a way to trigger on each
+> > change to the composition of the device set for the ioasid, which is
+> > why we currently do it on addition or removal of a group, where the
+> > group has a consistent set of IOMMU properties.  Register a notifier
+> > callback via the ioasidfd?  Thanks,
+> >   
+> 
+> When discussing I/O page fault support in another thread, the consensus
+> is that an device handle will be registered (by user) or allocated (return
+> to user) in /dev/ioasid when binding the device to ioasid fd. From this 
+> angle we can register {ioasid_fd, device_handle} to KVM and then call 
+> something like ioasidfd_device_is_coherent() to get the property. 
+> Anyway the coherency is a per-device property which is not changed 
+> by how many I/O page tables are attached to it.
 
-Unfortunately we've yet to come up with a way to handle the 
-non-cacheable mappings without introducing a degree of vendor-specific 
-behavior or seriously impacting performance (mark them as not valid and 
-deal with them in the trap handler).  I'm not really sure it counts as 
-supporting the hardware if it's massively slow, so that really leaves us 
-with vendor-specific mappings as the only option to make these chips 
-work.
+The mechanics are different, but this is pretty similar in concept to
+KVM learning coherence using the groupfd today.  Do we want to
+compromise on kernel control of wbinvd emulation to allow userspace to
+make such decisions?  Ownership of a device might be reason enough to
+allow the user that privilege.  Thanks,
 
-This implementation, which adds some Kconfig entries that control page 
-table bits, definately isn't suitable for upstream.  Allowing users to 
-set arbitrary page table bits will eventually conflict with the 
-standard, and is just going to be a mess.  It'll also lead to kernels 
-that are only compatible with specific designs, which we're trying very 
-hard to avoid.  At a bare minimum we'll need some way to detect systems 
-with these page table bits before setting them, and some description of 
-what the bits actually do so we can reason about them.
+Alex
+
