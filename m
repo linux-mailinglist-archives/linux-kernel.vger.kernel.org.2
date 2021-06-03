@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5D939AB0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8770F39AB19
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhFCTup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
+        id S229697AbhFCTzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:55:49 -0400
+Received: from mga17.intel.com ([192.55.52.151]:45226 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCTum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:50:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 701E961361;
-        Thu,  3 Jun 2021 19:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622749737;
-        bh=VnDzWQzG7TYNgACf0mkYi5azW9YcI6L4zi7Vryt/j4M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IvSRxJ+LXm7Z43EaLZ8Ex9/npfUbIf1WU0Kcb+girUiHtEeV6v5EL4c189TN63AY9
-         Y6vxdqgl8S4ipeJ6/joRnhLdt4L7F2mQ065mA+WrPaSwQQZ4PRwuBKP0hI7p0hGCQJ
-         HsJHGr7mU9KPFSQp1aPXqMsASCoIdgJJc4xIZmEsKb4d2gkh1p0+sUar+3XlwWIcpD
-         t+G9TWEHruf06uFdeQCQLKFqite2Cfm7SaPzIuLyBIMVzGQRlXS7pvgihKGi668UUw
-         XV7joZBm9hIUILhZQ7ufVAEj2tmyMmDBZkg/33lSO9JKLe+qQ09MymHcMi1X+2nxDa
-         oxtZKb9HPFo4A==
-Received: by pali.im (Postfix)
-        id 0866E1229; Thu,  3 Jun 2021 21:48:53 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 21:48:53 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Igal Liberman <Igal.Liberman@freescale.com>,
-        Shruti Kanetkar <Shruti@freescale.com>,
-        Emil Medve <Emilian.Medve@freescale.com>,
-        Scott Wood <oss@buserror.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Unsupported phy-connection-type sgmii-2500 in
- arch/powerpc/boot/dts/fsl/t1023rdb.dts
-Message-ID: <20210603194853.ngz4jdso3kfncnj4@pali>
-References: <20210603143453.if7hgifupx5k433b@pali>
- <YLjxX/XPDoRRIvYf@lunn.ch>
+        id S229576AbhFCTzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:55:48 -0400
+IronPort-SDR: cNWS7CAQAEfPotZtFLpnSONR1pv3JNA3uD6UIgIfBcYVYSK11r4LBYQ9VHgn9gHbqNl7A3lh0O
+ HyfDijBCgxYA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184507803"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="184507803"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 12:53:45 -0700
+IronPort-SDR: j796NHDs2Zozxq/wBHEuvMXvyPgtLyCvrhm5igEiL3IiR3qXnYzpqEuyF5uad7fplBhS/dqAsL
+ 5gvTbni69t6A==
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="550819682"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.7.237]) ([10.209.7.237])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 12:53:44 -0700
+Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
+To:     Andy Lutomirski <luto@kernel.org>, mst@redhat.com
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org,
+        the arch/x86 maintainers <x86@kernel.org>,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210603004133.4079390-1-ak@linux.intel.com>
+ <20210603004133.4079390-2-ak@linux.intel.com>
+ <cc5c8265-83f7-aeb1-bc30-3367fe68bc97@kernel.org>
+ <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
+ <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <3159e1f4-77cd-e071-b6f2-a2bb83cfc69a@linux.intel.com>
+Date:   Thu, 3 Jun 2021 12:53:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YLjxX/XPDoRRIvYf@lunn.ch>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 03 June 2021 17:12:31 Andrew Lunn wrote:
-> On Thu, Jun 03, 2021 at 04:34:53PM +0200, Pali Rohár wrote:
-> > Hello!
-> > 
-> > In commit 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to
-> > the board device tree(s)") was added following DT property into DT node:
-> > arch/powerpc/boot/dts/fsl/t1023rdb.dts fm1mac3: ethernet@e4000
-> > 
-> >     phy-connection-type = "sgmii-2500";
-> > 
-> > But currently kernel does not recognize this "sgmii-2500" phy mode. See
-> > file include/linux/phy.h. In my opinion it should be "2500base-x" as
-> > this is mode which operates at 2.5 Gbps.
-> > 
-> > I do not think that sgmii-2500 mode exist at all (correct me if I'm
-> > wrong).
-> 
-> Kind of exist, unofficially. Some vendors run SGMII over clocked at
-> 2500. But there is no standard for it, and it is unclear how inband
-> signalling should work. Whenever i see code saying 2.5G SGMII, i
-> always ask, are you sure, is it really 2500BaseX? Mostly it gets
-> changed to 2500BaseX after review.
 
-So this is question for authors of that commit 84e0f1c13806. But it
-looks like I cannot send them emails because of following error:
+> Tell that to every crypto downgrade attack ever.
 
-<Minghuan.Lian@freescale.com>: connect to freescale.com[192.88.156.33]:25: Connection timed out
+That's exactly what this patch addresses.
 
-Do you have other way how to contact maintainers of that DTS file?
-arch/powerpc/boot/dts/fsl/t1023rdb.dts
+>
+> I see two credible solutions:
+>
+> 1. Actually harden the virtio driver.
+That's exactly what this patchkit, and the alternative approaches, like 
+Jason's, are doing.
+>
+> 2. Have a new virtio-modern driver and use it for modern use cases. Maybe rename the old driver virtio-legacy or virtio-insecure.  They can share code.
 
-> PHY mode sgmii-2500 does not exist in mainline.
+In most use cases the legacy driver is not insecure because there is no 
+memory protection anyways.
 
-Yes, this is reason why I sent this email. In DTS is specified this mode
-which does not exist.
+Yes maybe such a split would be a good idea for maintenance and maybe 
+performance reasons, but at least from the security perspective I don't 
+see any need for it.
 
-> 	Andrew
-> 
+>
+> Another snag you may hit: virtio’s heuristic for whether to use proper DMA ops or to bypass them is a giant kludge. I’m very slightly optimistic that getting the heuristic wrong will make the driver fail to operate but won’t allow the host to take over the guest, but I’m not really convinced. And I wrote that code!  A virtio-modern mode probably should not have a heuristic, and the various iommu-bypassing modes should be fixed to work at the bus level, not the device level
+
+TDX and SEV use the arch hook to enforce DMA API, so that part is also 
+solved.
+
+
+-Andi
+
