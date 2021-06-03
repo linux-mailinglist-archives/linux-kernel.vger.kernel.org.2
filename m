@@ -2,89 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B272C399D5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD498399D54
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhFCJEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:04:35 -0400
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:40638 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhFCJEe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:04:34 -0400
-Received: by mail-pl1-f175.google.com with SMTP id e7so2538037plj.7;
-        Thu, 03 Jun 2021 02:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VHW0SKHklWAgWtYYy5kuW4QSKesps7dxwkUE5RXkEhA=;
-        b=GcvWwgMudrXyFjgg8ItvU/VICVB/GoG64AMRkrGnbe1n4+th8Mp97hulVtrvjEtqbW
-         Ygc7cKGOXddU440w0h4QEMQj2NJ+9a2+jvHxsntM1eHY5da3Huggs2hlavSuOvdARCHT
-         nzHXK/6hLhIXdVh/FZRX6LiUcHsDEQ19Av3IYP7V6lValhhOE+nI7ZOsMBtR4xOZOS7M
-         1ND0nV4wTSZoGS65Dq4tSADTHigdzkU7AwuG43VVr6Rgw0XezwLrYNPzzyiiYhOepg6e
-         1gQuwrVgiTF1oFfIRclQoH0pSsvK00fY09ig5w6coJ57gFOrU9D6ilHOi5MeiXDEz3VJ
-         8HwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VHW0SKHklWAgWtYYy5kuW4QSKesps7dxwkUE5RXkEhA=;
-        b=uoA9vJcZtWD6FrjKvVIqlInep6KVrA45MVMzK6mAyFGxCcvp6rI3np103FWLJWvUjh
-         SKFVxKjCMWg/myvOdV9ZxTRO8A5qiqKOFj4wgZV2hL7a4/hgvw2o54VKiuwiafTQUZiO
-         24rqiHqSrtmKx69pgJFlifb/fCCbwg6WxhWhi7lnRkFPm1OfEylAHCg/Jl7Se7jTFdQY
-         ts1M+2QIUWDD48GnDnRkQ+OrqGdbb2GUZMwqInWTYZiti8O1YkArr4zfTdzWSdedvl1f
-         DGwg/kN6Au1frzZBSKVBjCOTjsplD003E+2SzvfbpeN6NbB5PWqHf63xYvJk7XdlYeSy
-         g/Xg==
-X-Gm-Message-State: AOAM531j/gv35C441E5W9iygQzVBk+7yQrWUVQXEZ37LMSxdA+HKMEe7
-        WotFTucPT7FAqOzEqmSY++Rw9HfZP2U=
-X-Google-Smtp-Source: ABdhPJwHHTrq4XTUIKdTtX0gb0TcKKTPTlExm7KXMsPb8IuTLnsK9l0KuF60kQeGrlW5xScqgAn5EA==
-X-Received: by 2002:a17:90a:b796:: with SMTP id m22mr34695887pjr.220.1622710896563;
-        Thu, 03 Jun 2021 02:01:36 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.56])
-        by smtp.googlemail.com with ESMTPSA id gg22sm1625668pjb.17.2021.06.03.02.01.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Jun 2021 02:01:36 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH 2/2] KVM: LAPIC: reset TMCCT during vCPU reset
-Date:   Thu,  3 Jun 2021 02:00:41 -0700
-Message-Id: <1622710841-76604-2-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622710841-76604-1-git-send-email-wanpengli@tencent.com>
-References: <1622710841-76604-1-git-send-email-wanpengli@tencent.com>
+        id S229774AbhFCJDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:03:51 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:43177 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229610AbhFCJDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:03:50 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FwfzK3y4rzBC9d;
+        Thu,  3 Jun 2021 11:02:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id WW5h__d2IDPy; Thu,  3 Jun 2021 11:02:05 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FwfzK340MzBC9Q;
+        Thu,  3 Jun 2021 11:02:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 447808B848;
+        Thu,  3 Jun 2021 11:02:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ts5HaJDFzI4O; Thu,  3 Jun 2021 11:02:05 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E57808B767;
+        Thu,  3 Jun 2021 11:02:04 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id B654364923; Thu,  3 Jun 2021 09:02:04 +0000 (UTC)
+Message-Id: <4cd1c10f45220c5f78fc13e1731a696037a4d559.1622710910.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/8xx: Allow disabling KUAP at boot time
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  3 Jun 2021 09:02:04 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+PPC64 uses MMU features to enable/disable KUAP at boot time.
+But feature fixups are applied way too early on PPC32.
 
-The value of current counter register after reset is 0 for both Intel 
-and AMD, let's do it in kvm.
+But since commit c16728835eec ("powerpc/32: Manage KUAP in C"),
+all KUAP is in C so it is now possible to use static branches.
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/x86/kvm/lapic.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/include/asm/nohash/32/kup-8xx.h | 41 ++++++++++++++++++--
+ arch/powerpc/mm/nohash/8xx.c                 | 10 +++--
+ 2 files changed, 45 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 20dd2ae..9ba539b 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2352,6 +2352,7 @@ void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	kvm_lapic_set_reg(apic, APIC_ICR2, 0);
- 	kvm_lapic_set_reg(apic, APIC_TDCR, 0);
- 	kvm_lapic_set_reg(apic, APIC_TMICT, 0);
-+	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
- 	for (i = 0; i < 8; i++) {
- 		kvm_lapic_set_reg(apic, APIC_IRR + 0x10 * i, 0);
- 		kvm_lapic_set_reg(apic, APIC_ISR + 0x10 * i, 0);
+diff --git a/arch/powerpc/include/asm/nohash/32/kup-8xx.h b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
+index 295ef5639609..04ed17db6d3c 100644
+--- a/arch/powerpc/include/asm/nohash/32/kup-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
+@@ -11,8 +11,18 @@
+ 
+ #include <asm/reg.h>
+ 
++extern struct static_key_false disable_kuap_key;
++
++static __always_inline bool kuap_is_disabled(void)
++{
++	return static_branch_unlikely(&disable_kuap_key);
++}
++
+ static inline void kuap_save_and_lock(struct pt_regs *regs)
+ {
++	if (kuap_is_disabled())
++		return;
++
+ 	regs->kuap = mfspr(SPRN_MD_AP);
+ 	mtspr(SPRN_MD_AP, MD_APG_KUAP);
+ }
+@@ -23,12 +33,20 @@ static inline void kuap_user_restore(struct pt_regs *regs)
+ 
+ static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long kuap)
+ {
++	if (kuap_is_disabled())
++		return;
++
+ 	mtspr(SPRN_MD_AP, regs->kuap);
+ }
+ 
+ static inline unsigned long kuap_get_and_assert_locked(void)
+ {
+-	unsigned long kuap = mfspr(SPRN_MD_AP);
++	unsigned long kuap;
++
++	if (kuap_is_disabled())
++		return MD_APG_INIT;
++
++	kuap = mfspr(SPRN_MD_AP);
+ 
+ 	if (IS_ENABLED(CONFIG_PPC_KUAP_DEBUG))
+ 		WARN_ON_ONCE(kuap >> 16 != MD_APG_KUAP >> 16);
+@@ -38,25 +56,36 @@ static inline unsigned long kuap_get_and_assert_locked(void)
+ 
+ static inline void kuap_assert_locked(void)
+ {
+-	if (IS_ENABLED(CONFIG_PPC_KUAP_DEBUG))
++	if (IS_ENABLED(CONFIG_PPC_KUAP_DEBUG) && !kuap_is_disabled())
+ 		kuap_get_and_assert_locked();
+ }
+ 
+ static inline void allow_user_access(void __user *to, const void __user *from,
+ 				     unsigned long size, unsigned long dir)
+ {
++	if (kuap_is_disabled())
++		return;
++
+ 	mtspr(SPRN_MD_AP, MD_APG_INIT);
+ }
+ 
+ static inline void prevent_user_access(void __user *to, const void __user *from,
+ 				       unsigned long size, unsigned long dir)
+ {
++	if (kuap_is_disabled())
++		return;
++
+ 	mtspr(SPRN_MD_AP, MD_APG_KUAP);
+ }
+ 
+ static inline unsigned long prevent_user_access_return(void)
+ {
+-	unsigned long flags = mfspr(SPRN_MD_AP);
++	unsigned long flags;
++
++	if (kuap_is_disabled())
++		return MD_APG_INIT;
++
++	flags = mfspr(SPRN_MD_AP);
+ 
+ 	mtspr(SPRN_MD_AP, MD_APG_KUAP);
+ 
+@@ -65,12 +94,18 @@ static inline unsigned long prevent_user_access_return(void)
+ 
+ static inline void restore_user_access(unsigned long flags)
+ {
++	if (kuap_is_disabled())
++		return;
++
+ 	mtspr(SPRN_MD_AP, flags);
+ }
+ 
+ static inline bool
+ bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
+ {
++	if (kuap_is_disabled())
++		return false;
++
+ 	return !((regs->kuap ^ MD_APG_KUAP) & 0xff000000);
+ }
+ 
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index 71bfdbedacee..a8d44e9342f3 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -256,12 +256,16 @@ void __init setup_kuep(bool disabled)
+ #endif
+ 
+ #ifdef CONFIG_PPC_KUAP
++struct static_key_false disable_kuap_key;
++
+ void __init setup_kuap(bool disabled)
+ {
+-	pr_info("Activating Kernel Userspace Access Protection\n");
++	if (disabled) {
++		static_branch_enable(&disable_kuap_key);
++		return;
++	}
+ 
+-	if (disabled)
+-		pr_warn("KUAP cannot be disabled yet on 8xx when compiled in\n");
++	pr_info("Activating Kernel Userspace Access Protection\n");
+ 
+ 	mtspr(SPRN_MD_AP, MD_APG_KUAP);
+ }
 -- 
-2.7.4
+2.25.0
 
