@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50436399E83
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF8C399EB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhFCKMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:12:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42618 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCKMn (ORCPT
+        id S230075AbhFCKSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:18:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49310 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhFCKSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:12:43 -0400
+        Thu, 3 Jun 2021 06:18:17 -0400
 Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 045A21FD56;
-        Thu,  3 Jun 2021 10:10:58 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id E994F219B8;
+        Thu,  3 Jun 2021 10:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622715058; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        t=1622715391;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dl1cSFiS5eKqztKERplBtFE3q8X+b7XPT0PQ/DFNCvM=;
-        b=tPuCzD1fQp7yP6anCTvYzIYNpUk9tc3LVokNr+FsYzOzm74PZesjrtCYB8WUDID5WbX6lb
-        Eh1+21542gh0yxrTadXYt2VbTT5S0myebYY0wbrvIkodTZMSVCFALWL/WxzoUsO2luaJ1a
-        3l4cCvlm8BgUKgQd4xaj4JkkJG2sVJE=
+        bh=s2dYAEKF3sS13bEvDeeDpxNGlMMkDWtT4qYijuEzx0g=;
+        b=PW9nAJvkvO1KE0428ou0opl/nhtgeiZ0V9lsxjb51H7EWs9WycMoxg0q2GqK9dWHCSlynK
+        nKjNYuYqJfC0ag2pb1JyEqx1hPNsjYDEJ3YKUBeO8Kj5PNbn5zgf89Zoga8O4gUy1Exth4
+        Vd/fQID4dbc9CnA2XSt5bXGM5cfda88=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622715058;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1622715391;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dl1cSFiS5eKqztKERplBtFE3q8X+b7XPT0PQ/DFNCvM=;
-        b=rGD56/LecjA4ecN9EDCJM0AZenCGGzEQBAm2KixEVmJVBebVq3OzFJkGR0UI7gz9tau0ce
-        aetK6i7QWZCzUJCw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id E934CA3B85;
-        Thu,  3 Jun 2021 10:10:57 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C765C1F2C98; Thu,  3 Jun 2021 12:10:57 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 12:10:57 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 4/5] writeback, cgroup: support switching multiple
- inodes at once
-Message-ID: <20210603101057.GH23647@quack2.suse.cz>
-References: <20210603005517.1403689-1-guro@fb.com>
- <20210603005517.1403689-5-guro@fb.com>
+        bh=s2dYAEKF3sS13bEvDeeDpxNGlMMkDWtT4qYijuEzx0g=;
+        b=t3CvZQ9OQMOUOKQ4oSM+hp3r0UBcIqAskoHDlrHbqmbPeoyerxQu0gwk58nLbVSIH2TSuE
+        h0f8L2uLoTgk44Dw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id D2520A3B8A;
+        Thu,  3 Jun 2021 10:16:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E0ECFDA734; Thu,  3 Jun 2021 12:13:50 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 12:13:50 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        git@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: git feature request: git blame --ignore-cleanup/--ignore-trivial
+Message-ID: <20210603101350.GW31483@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Al Viro <viro@zeniv.linux.org.uk>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        git@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+ <YLej6F24Emm7SX35@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603005517.1403689-5-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YLej6F24Emm7SX35@zeniv-ca.linux.org.uk>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-06-21 17:55:16, Roman Gushchin wrote:
-> Currently only a single inode can be switched to another writeback
-> structure at once. That means to switch an inode a separate
-> inode_switch_wbs_context structure must be allocated, and a separate
-> rcu callback and work must be scheduled.
+On Wed, Jun 02, 2021 at 03:29:44PM +0000, Al Viro wrote:
+> On Wed, Jun 02, 2021 at 11:20:35AM -0400, Mathieu Desnoyers wrote:
+> > Hi,
+> > 
+> > Following a discussion with Peter Zijlstra about whether code cleanup
+> > and functional changes done to the Linux kernel scheduler belong to separate
+> > patches or should be folded together, the argument for folding cleanup
+> > and function changes came to be mainly motivated by the current behavior
+> > of git blame: code cleanup patches end up burying the important changes so
+> > it becomes cumbersome to find them using git blame.
+> > 
+> > Considering the added value brought by splitting cleanups from functional changes
+> > from a maintainer perspective (easier reverts) and from a reviewer perspective
+> > (easier to focus on the functional changes), I think it would be good to improve
+> > the git tooling to allow easily filtering out the noise from git blame.
+> > 
+> > Perhaps a new git blame "--ignore-trivial" and/or "--ignore-cleanup" could solve
+> > this by filtering out "trivial" and "cleanup" patches from the history it considers.
+> > 
+> > Tagging patches as trivial and cleanup should be done in the patch commit message
+> > (possibly in the title), and enforcing proper tagging of commits is already the
+> > responsibility of the maintainer merging those cleanup/trivial commits into the
+> > Linux kernel anyway.
+> > 
+> > Under the hood, I suspect it could use something similar to git log --grep=<pattern>
+> > --invert-grep.
+> > 
+> > This should allow git blame users to easily filter out the noise and focus on the relevant
+> > functional changes.
+> > 
+> > Any maybe the patterns associated to "cleanup" and "trivial" commits should be something
+> > that can be configured through a git config file.
+> > 
+> > Thoughts ?
 > 
-> It's fine for the existing ad-hoc switching, which is not happening
-> that often, but sub-optimal for massive switching required in order to
-> release a writeback structure. To prepare for it, let's add a support
-> for switching multiple inodes at once.
-> 
-> Instead of containing a single inode pointer, inode_switch_wbs_context
-> will contain a NULL-terminated array of inode
-> pointers. inode_do_switch_wbs() will be called for each inode.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Just an observation: quite a few subtle bugs arise from mistakes in
+> what should've been a trivial cleanup.
 
-Two small comments below:
-
-> @@ -473,10 +473,14 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
->  {
->  	struct inode_switch_wbs_context *isw =
->  		container_of(to_rcu_work(work), struct inode_switch_wbs_context, work);
-> +	struct inode **inodep;
-> +
-> +	for (inodep = &isw->inodes[0]; *inodep; inodep++) {
-                      ^^^^ why not just isw->inodes?
-
-> +		inode_do_switch_wbs(*inodep, isw->new_wb);
-> +		iput(*inodep);
-> +	}
-
-I was kind of hoping that we would save the repeated locking of
-bdi->wb_switch_rwsem, old_wb->list_lock, and new_wb->list_lock for multiple
-inodes. Maybe we can have 'old_wb' as part of isw as well and assert that
-all inodes are still attached to the old_wb at this point to make this a
-bit simpler. Or we can fetch old_wb from the first inode and then just
-lock & assert using that one.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I was about to write such comment. Cleanups that are eg. mechanically
+switching names/types/variables/... and need some manual fixup are hot
+candidates for buggy patches.
