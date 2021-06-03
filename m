@@ -2,92 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A270739AAA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93BD39AAA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFCTGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:06:53 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:55701 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFCTGw (ORCPT
+        id S229692AbhFCTJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCTJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:06:52 -0400
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 03 Jun 2021 12:05:07 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com ([10.134.64.25])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 03 Jun 2021 12:05:06 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id 4E79D20FC9; Thu,  3 Jun 2021 12:05:06 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 12:05:06 -0700
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH -next] mfd: pm8008: Fix return value check in
- pm8008_probe()
-Message-ID: <20210603190506.GA24042@codeaurora.org>
-References: <20210603141357.572347-1-yangyingliang@huawei.com>
- <20210603171253.GA25742@codeaurora.org>
- <CAA8EJprf+ipk45c-niM1PAHCwn5huBEyvBpQA=dgQMohN43E5g@mail.gmail.com>
+        Thu, 3 Jun 2021 15:09:18 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212F1C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 12:07:33 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id u30so7020211qke.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 12:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=j1A5KVJOcx2Sm/u6BzmYkKLVORkN+8973B9sz+toaOM=;
+        b=DxJJe+sS3pZmKekJ7WUEU3udkpFiy/cthYRmwPXFXjO2t48zZcaDEQtfe95cyb0nh2
+         Ty5LJLkKnflgq4BScb5FM3CWAhaiJnk88gFHBAgw+V0xG4eQgIXAJ2cEqTlQv0Icxmyy
+         J2JTuNFMIYeACbppEwU/kYMwCZQ3/hVpN9M8bUunh9aeCxT+Py7p8K/dPdtb8O3avyQp
+         dBK97ei4/1FXNfqBi+fKboPMNKZOz3dnRTPsxL8bBl8Rwe1coC5uyY0WSaUo7n3KIQyy
+         HTXnFw32p9oV8LhjMDc0nSJpFKTLDdgrTosILMhS05fLozoUjpsUTe1Ok5390BX2f1nA
+         2LrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=j1A5KVJOcx2Sm/u6BzmYkKLVORkN+8973B9sz+toaOM=;
+        b=akylpLEbKEJ6Ll2FjiO1wn85So8Lr6fmWUIlbGVq+jDvlxn9j1t7Dg8n7mXtsTM6tI
+         e9P0m7IUaWBKwfFWvauQzz0UXC+XwHRLkfrz/AgjV9PLzremyEbu6D72MRV6Xjq3vSSi
+         WDraOGFO/VDOiqZHiRcMzs4UdQ2sxFJI/WqMhuCoFOO4+JfjF2zo2SjtsREwIKqB/F4C
+         5yddsFy7VpNjgSvuv3+uMxanE7d6cUrmrAko/lD+BEoQc+tcLerm3scYZ4QR0ANkvs6K
+         PBwqeKGdDyrDh7uEtImZ68xsydUXIQNLuABq0+Oc5gaC5M6Pk71iJOvGhKILrZBlf5yT
+         Hazg==
+X-Gm-Message-State: AOAM530z3MgQ94j2imzWlUFNrOIdRAUqwUW7mMa5W+i8ziMrmqV0BsO0
+        nhGU3VPys09WuSWJonG2bHC9bxHgdNOXAQ==
+X-Google-Smtp-Source: ABdhPJy0iLvQA3EpRpciKhPlEkLxhoPyCANwdMooLs3uoQCCY5zReAZamVDSUB5Nz1XmH4UP27XScg==
+X-Received: by 2002:ae9:f310:: with SMTP id p16mr697061qkg.267.1622747251960;
+        Thu, 03 Jun 2021 12:07:31 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id v8sm2451410qkg.102.2021.06.03.12.07.30
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 03 Jun 2021 12:07:31 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 12:07:18 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>, Ming Lin <mlin@kernel.org>,
+        Simon Ser <contact@emersion.fr>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem
+ read
+In-Reply-To: <CAHk-=wiHJ2GF503wnhCC4jsaSWNyq5=NqOy7jpF_v_t82AY0UA@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2106031142250.11088@eggly.anvils>
+References: <1622589753-9206-1-git-send-email-mlin@kernel.org> <1622589753-9206-3-git-send-email-mlin@kernel.org> <alpine.LSU.2.11.2106011913590.3353@eggly.anvils> <79a27014-5450-1345-9eea-12fc9ae25777@kernel.org> <alpine.LSU.2.11.2106021719500.8333@eggly.anvils>
+ <CAHk-=wiHJ2GF503wnhCC4jsaSWNyq5=NqOy7jpF_v_t82AY0UA@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJprf+ipk45c-niM1PAHCwn5huBEyvBpQA=dgQMohN43E5g@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 08:31:28PM +0300, Dmitry Baryshkov wrote:
-> On Thu, 3 Jun 2021 at 20:18, Guru Das Srinagesh <gurus@codeaurora.org> wrote:
+On Thu, 3 Jun 2021, Linus Torvalds wrote:
+> On Wed, Jun 2, 2021 at 5:46 PM Hugh Dickins <hughd@google.com> wrote:
 > >
-> > On Thu, Jun 03, 2021 at 10:13:57PM +0800, Yang Yingliang wrote:
-> > > In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
-> > > and never returns NULL. The NULL test in the return value check
-> > > should be replaced with IS_ERR().
-> > >
-> > > Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
-> > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> >
-> > Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > Ideally you can simply call do_anonymous_page() from __do_fault()
+> > in the VM_FAULT_SIGBUS on VM_NOSIGBUS case.
 > 
-> Interestingly, the change does not correspond to the changelog
-> message. And the code is correct as devm_kzalloc returns NULL if I
-> remember correctly.
+> Heh.
+> 
+> We're actually then back to my original patch.
+> 
+> That one doesn't handle shared mappings (even read-only ones), for the
+> simple reason that do_anonymous_page() refuses to insert anonymous
+> pages into a shared mapping, and has
+> 
+>         /* File mapping without ->vm_ops ? */
+>         if (vma->vm_flags & VM_SHARED)
+>                 return VM_FAULT_SIGBUS;
+> 
+> at the very top.
+> 
+> But yes, if we just remove that check, I think my original patch
+> should actually "JustWork(tm)".
 
-Thanks for pointing that out - I missed that. I would like to retract my
-Acked-by for this patch.
+But no!
+
+Sorry, I don't have time for this at present, so haven't looked at
+your original patch.
+
+But the point that we've arrived at, that I'm actually now fairly
+happy with, is do *not* permit MAP_NOSIGBUS on MAP_SHARED mappings.
+
+I didn't check the placement yet, easy to get wrong, but I believe
+Ming Lin is now enforcing that over at the mmap() end.
+
+On a MAP_PRIVATE mapping, the nasty opaque blob of zeroes can
+claim some precedent in what already happens with COW'ed pages.
+
+Which leaves MAP_NOSIGBUS on MAP_SHARED as currently unsupported,
+perhaps never supported on anything, perhaps one day supported on
+shmem; but if it's ever supported then that one will naturally be
+transparent to future changes in page cache - we call that "shared".
+
+Of course, internally, there's the in-between case of MAP_SHARED
+without PROT_WRITE and without writable fd: VM_MAYSHARE without
+VM_SHARED or VM_MAYWRITE.  We *could* let that one accept
+MAP_NOSIGBUS, but who wants to write the manpage for it?
+
+Please stick to MAP_PRIVATE: that's good enough.
 
 > 
-> >
-> > > ---
-> > >  drivers/mfd/qcom-pm8008.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
-> > > index c472d7f8103c..dfefa60d693b 100644
-> > > --- a/drivers/mfd/qcom-pm8008.c
-> > > +++ b/drivers/mfd/qcom-pm8008.c
-> > > @@ -223,7 +223,7 @@ static int pm8008_probe(struct i2c_client *client)
-> > >       struct pm8008_data *chip;
-> > >
-> > >       chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
-> > > -     if (!chip)
-> > > +     if (IS_ERR(chip))
-> > >               return -ENOMEM;
-> > >
-> > >       chip->dev = &client->dev;
-> > > --
-> > > 2.25.1
-> > >
+> I'm attaching it again, with old name and old commentary (ie that
 > 
+>     /* FIXME! We don't have a VM_NOFAULT bit */
 > 
+> should just be replaced with that VM_NOSIGBUS bit instead, and the
+> #if'ed out region should be enabled.
 > 
-> -- 
-> With best wishes
-> Dmitry
+> Oh, and we need to think hard about one more case: mprotect().
+> 
+> In particular, I think the attached patch fails horribly for the case
+> of a shared mapping that starts out read-only, then inserts a zero
+> page, then somebody does mprotect(MAP_WRITE), and then writes to the
+> page. I haven't checked what the write protect fault handler does, but
+> I think that for a shared mapping it will just make the page dirty and
+> writable.
+
+Obviously the finished patch will need to be scrutinized carefully, but
+I think the mprotect() questions vanish when restricted to MAP_PRIVATE.
+
+> 
+> Which would be horribly wrong for VM_NOSIGBUS.
+> 
+> So that support infrastructure that adds MAP_NOSIGBUS, and checks that
+> it is only done on a read-only mapping, also has to make sure that it
+> clears the VM_MAYWRITE bit when it sets VM_NOSIGBUS.
+> 
+> That way mprotect can't then later make it writable.
+> 
+> Hugh, comments on this approach?
+
+Comments above, just stick to MAP_PRIVATE.
+
+Hugh
+
+> 
+> Again: this patch is my *OLD* one, I didn't try to update it to the
+> new world order. It requires
+> 
+>  - Ming's MAP_NOSIGBUS ccode
+> 
+>  - removal of that "File mapping without ->vm_ops" case
+> 
+>  - that FIXME fixed and name updated
+> 
+>  - and that VM_MAYWRITE clearing if VM_NOSIGBUS is set, to avoid the
+> mprotect issue.
+> 
+> Hmm?
+> 
+>                   Linus
