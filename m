@@ -2,165 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A9A39AB25
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A69939AB2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFCT6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCT6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:58:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AA1E6139A;
-        Thu,  3 Jun 2021 19:57:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622750224;
-        bh=81DqeO774s33h+YAwWrBAiXQa7KeTEOqSdKa8sghF9M=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cnjbZym8K9qCgQHxspSMzsHaHSF/RlTIzutUDrU8l5AVE+Y6KL0kum7iau+vYj1Gz
-         x3w9EZwjJdgqclXYwgm8KFsMTLm7iF8wzcgXwYL42JH6Fz7bv1gcAuSMCH89GbDSSv
-         c+xc9tdT04HVkKeKhM+xP2VT1W81C5nlPjmeb1xbGYHJ8L1OCnkrHYYfFgtfHbKZd3
-         2jBdLE/5WSQan772gkgaQDQaW1qMdngdBZZbzGPoP6mLs08iDhj8wTf7ndC4oJqodB
-         RLJaTrvJz4aCaj82E/lqKjkS4tiw1kHRqDqNNUtgj3RcDpFBaJ2gy8/6sCy9KdkA64
-         nBRfjO3Mmhb0w==
-Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem
- read
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Simon Ser <contact@emersion.fr>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <1622589753-9206-1-git-send-email-mlin@kernel.org>
- <1622589753-9206-3-git-send-email-mlin@kernel.org>
- <alpine.LSU.2.11.2106011913590.3353@eggly.anvils>
- <79a27014-5450-1345-9eea-12fc9ae25777@kernel.org>
- <alpine.LSU.2.11.2106021719500.8333@eggly.anvils>
-From:   Ming Lin <mlin@kernel.org>
-Message-ID: <e46d1453-b1ff-e665-7312-1b97f2f44f4f@kernel.org>
-Date:   Thu, 3 Jun 2021 12:57:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229964AbhFCT7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhFCT7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:59:07 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49D4C06174A;
+        Thu,  3 Jun 2021 12:57:22 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f13850043af4c4d530a3258.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:43af:4c4d:530a:3258])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3D0071EC0246;
+        Thu,  3 Jun 2021 21:57:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622750241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CsONDc5/hMgH+lPatsnuVGGoG9v+Dt4ffCqJHaqP7Dw=;
+        b=PCsxWln+GSXdcrrOO6u7gyG5ZIMYDxTanA5BrUafnti30zPJ3l/VZM3cStmo9pm63XlOPN
+        i0OuoEdNS63MBHcVvVLEGlwag2FJT9/goaw3F9mNNRb4rMA4lembyJSSyynfRpsVTfa5pe
+        SyLuqtyEz5I8P/g3jyRufj8hoAiG288=
+Date:   Thu, 3 Jun 2021 21:57:16 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 03/22] x86/sev: Save the negotiated GHCB
+ version
+Message-ID: <YLk0HO3SqspIilCD@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-4-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2106021719500.8333@eggly.anvils>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602140416.23573-4-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/2021 5:46 PM, Hugh Dickins wrote
-> 
-> It's do_anonymous_page()'s business to map in the zero page on
-> read fault (see "my_zero_pfn(vmf->address)" in there), or fill
-> a freshly allocated page with zeroes on write fault - and now
-> you're sticking to MAP_PRIVATE, write faults in VM_WRITE areas
-> are okay for VM_NOSIGBUS.
-> 
-> Ideally you can simply call do_anonymous_page() from __do_fault()
-> in the VM_FAULT_SIGBUS on VM_NOSIGBUS case.  That's what to start
-> from anyway: but look to see if there's state to be adjusted to
-> achieve that; and it won't be surprising if somewhere down in
-> do_anonymous_page() or something it calls, there's a BUG on it
-> being called when vma->vm_file is set, or something like that.
-> May need some tweaking.
+On Wed, Jun 02, 2021 at 09:03:57AM -0500, Brijesh Singh wrote:
+> +/*
+> + * Since feature negotiation related variables are set early in the boot
+> + * process they must reside in the .data section so as not to be zeroed
+> + * out when the .bss section is later cleared.
+> + */
 
-do_anonymous_page() works nicely for read fault and write fault.
-I didn't see any BUG() thing in my test.
+From previous review:
 
-But I'm still struggling with how to do "punch hole should remove the mapping of zero page".
-Here is the hack I have now.
+ ...
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 46ecda5..6b5a897 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1241,7 +1241,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
-                         struct page *page;
-  
-                         page = vm_normal_page(vma, addr, ptent);
--                       if (unlikely(details) && page) {
-+                       if (unlikely(details) && page && !(vma->vm_flags & VM_NOSIGBUS)) {
-                                 /*
-                                  * unmap_shared_mapping_pages() wants to
-                                  * invalidate cache without truncating:
+   *
+   * GHCB protocol version negotiated with the hypervisor.
+   */
 
+You need to document what this variable is used for so add a comment
+over it please.
 
-And other parts of the patch is following,
+> +static u16 ghcb_version __section(".data");
+> +
 
-----
+-- 
+Regards/Gruss,
+    Boris.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index e9d67bc..af9e277 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -373,6 +373,8 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
-  # define VM_UFFD_MINOR		VM_NONE
-  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
-  
-+#define VM_NOSIGBUS		VM_FLAGS_BIT(38)	/* Do not SIGBUS on fault */
-+
-  /* Bits set in the VMA until the stack is in its final location */
-  #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
-  
-diff --git a/include/linux/mman.h b/include/linux/mman.h
-index b2cbae9..c966b08 100644
---- a/include/linux/mman.h
-+++ b/include/linux/mman.h
-@@ -154,6 +154,7 @@ static inline bool arch_validate_flags(unsigned long flags)
-  	       _calc_vm_trans(flags, MAP_DENYWRITE,  VM_DENYWRITE ) |
-  	       _calc_vm_trans(flags, MAP_LOCKED,     VM_LOCKED    ) |
-  	       _calc_vm_trans(flags, MAP_SYNC,	     VM_SYNC      ) |
-+	       _calc_vm_trans(flags, MAP_NOSIGBUS,   VM_NOSIGBUS  ) |
-  	       arch_calc_vm_flag_bits(flags);
-  }
-  
-diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
-index f94f65d..a2a5333 100644
---- a/include/uapi/asm-generic/mman-common.h
-+++ b/include/uapi/asm-generic/mman-common.h
-@@ -29,6 +29,7 @@
-  #define MAP_HUGETLB		0x040000	/* create a huge page mapping */
-  #define MAP_SYNC		0x080000 /* perform synchronous page faults for the mapping */
-  #define MAP_FIXED_NOREPLACE	0x100000	/* MAP_FIXED which doesn't unmap underlying mapping */
-+#define MAP_NOSIGBUS		0x200000	/* do not SIGBUS on fault */
-  
-  #define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could be
-  					 * uninitialized */
-diff --git a/mm/memory.c b/mm/memory.c
-index eff2a47..46ecda5 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3676,6 +3676,17 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
-  	}
-  
-  	ret = vma->vm_ops->fault(vmf);
-+	if (unlikely(ret & VM_FAULT_SIGBUS) && (vma->vm_flags & VM_NOSIGBUS)) {
-+		/*
-+		 * For MAP_NOSIGBUS mapping, map in the zero page on read fault
-+		 * or fill a freshly allocated page with zeroes on write fault
-+		 */
-+		ret = do_anonymous_page(vmf);
-+		if (!ret)
-+			ret = VM_FAULT_NOPAGE;
-+		return ret;
-+	}
-+
-  	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY |
-  			    VM_FAULT_DONE_COW)))
-  		return ret;
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 096bba4..74fb49a 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1419,6 +1419,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
-  	if (!len)
-  		return -EINVAL;
-  
-+	/* Restrict MAP_NOSIGBUS to MAP_PRIVATE mapping */
-+	if ((flags & MAP_NOSIGBUS) && !(flags & MAP_PRIVATE))
-+		return -EINVAL;
-+
-  	/*
-  	 * Does the application expect PROT_READ to imply PROT_EXEC?
-  	 *
+https://people.kernel.org/tglx/notes-about-netiquette
