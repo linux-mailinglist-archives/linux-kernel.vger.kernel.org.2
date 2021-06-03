@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0E639A120
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D6A39A11B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhFCMgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:36:35 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:32772 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230255AbhFCMge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:36:34 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lomYb-0002Da-T8; Thu, 03 Jun 2021 20:34:41 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lomYa-0001iF-5L; Thu, 03 Jun 2021 20:34:40 +0800
-Date:   Thu, 3 Jun 2021 20:34:40 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Hongbo Li <herbert.tencent@gmail.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        ebiggers@kernel.org, dhowells@redhat.com, jarkko@kernel.org,
-        tianjia.zhang@linux.alibaba.com, herberthbli@tencent.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: sm2 - fix a memory leak in sm2
-Message-ID: <20210603123357.GM6161@gondor.apana.org.au>
-References: <1622552752-15501-1-git-send-email-herbert.tencent@gmail.com>
+        id S230375AbhFCMg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:36:29 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37125 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhFCMg1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 08:36:27 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lomYa-0002Qk-AQ; Thu, 03 Jun 2021 12:34:40 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amdgpu: remove redundant assignment of variable k
+Date:   Thu,  3 Jun 2021 13:34:40 +0100
+Message-Id: <20210603123440.83936-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622552752-15501-1-git-send-email-herbert.tencent@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 09:05:52PM +0800, Hongbo Li wrote:
-> From: Hongbo Li <herberthbli@tencent.com>
-> 
-> SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
-> test_akcipher_one(), it will set public key for every test vector,
-> and don't free ec->Q. This will cause a memory leak.
-> 
-> This patch alloc ec->Q in sm2_ec_ctx_init().
-> 
-> Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
-> Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-> Cc: stable@vger.kernel.org # v5.10+
-> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->  crypto/sm2.c | 24 ++++++++++--------------
->  1 file changed, 10 insertions(+), 14 deletions(-)
+From: Colin Ian King <colin.king@canonical.com>
 
-Your patch has been discarded by patchwork because you didn't
-update the Subject.  The usual method is to use a version prefix
-such as v2, v3, etc. so that the Subject remains distinct.
+The variable k is being assigned a value that is never read, the
+assignment is redundant and can be removed.
 
-Please resubmit with a new Subject.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Oh and don't cc stable@vger.kernel.org.
-
-Thanks,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+index 2a7bed66d50b..f545dc1248b8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+@@ -278,7 +278,7 @@ static int amdgpu_amdkfd_remove_eviction_fence(struct amdgpu_bo *bo,
+ 	write_seqcount_end(&resv->seq);
+ 
+ 	/* Drop the references to the removed fences or move them to ef_list */
+-	for (i = j, k = 0; i < old->shared_count; ++i) {
++	for (i = j; i < old->shared_count; ++i) {
+ 		struct dma_fence *f;
+ 
+ 		f = rcu_dereference_protected(new->shared[i],
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.31.1
+
