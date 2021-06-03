@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EFE39AAED
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7510A39AAF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhFCTaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhFCTaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:30:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10FE26124B;
-        Thu,  3 Jun 2021 19:28:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622748515;
-        bh=L1bDZ0alG/5e7gBpSxuoaamS+QVgRnLecZ9WFAr+uTY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=euxD5jCS9J8wMyg0ayyPfIjoTa1VlOWovui5tcMFLxFSbEdsSz68IdFzFlkN3/cXJ
-         ZKL2ubCuBh+rjFPC2UPe5fyiMIObcYMoWTtu8lDSGj5YplbIHKw93UpTBw3ybi6VjC
-         BmDQdoBu+KxZr3R2r3wXa6Lx5tIg7tbLRdhJWmApEqR9QUX3P7XyK/ZV1JIVP1rt7/
-         YZKnaLYwYz3RpEDRDBxphzjPW+ceBe5aj2Wj79Pg0xm84rCEoUpeu6rRbMlZAZKw+t
-         5K6kll9JKhqCtkSS6xUCWLXAyAZA3zJL/d1fB8VBwtescCmBNvB2xBCLNE+G1yoUOq
-         CfiJyj8JJPzHQ==
-Message-ID: <d7d38bb6686df957df2f962451e24800535024e8.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5e: Fix an error code in
- mlx5e_arfs_create_tables()
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Mark Zhang <markzhang@nvidia.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-Cc:     leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 03 Jun 2021 12:28:34 -0700
-In-Reply-To: <7b14006a-4528-bdd9-dd12-0785d8409a5d@nvidia.com>
-References: <1622628553-89257-1-git-send-email-yang.lee@linux.alibaba.com>
-         <7b14006a-4528-bdd9-dd12-0785d8409a5d@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229932AbhFCTau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhFCTas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:30:48 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DECDC06174A;
+        Thu,  3 Jun 2021 12:29:03 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f13850043af4c4d530a3258.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:43af:4c4d:530a:3258])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A959D1EC0246;
+        Thu,  3 Jun 2021 21:29:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622748541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=6paDKQJHEjIdx6NGu5KmRam+YlvwZVZiDbV6ggOOvIc=;
+        b=d8k6qjUhDgO7FqHQANt/hqbfXBXWj0sQ/K8HMPLp6zfg/ou9wrZESr2pctZcVbB5w2ruFd
+        mwCXnAL0kR7Z7+rqToEaabhuzT+D8HoOP0ZLQRJtlzsEEnNOe/EYlRaau5EEwD7PXMT2Zr
+        uj3pipgy3Z3Cy1VeK8uKPcW6dnItmuw=
+Date:   Thu, 3 Jun 2021 21:28:56 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>, stable@vger.kernel.org
+Subject: Re: [patch 3/8] x86/fpu: Invalidate FPU state after a failed XRSTOR
+ from a user buffer
+Message-ID: <YLkteEfyD3mqcCnO@zn.tnic>
+References: <20210602095543.149814064@linutronix.de>
+ <20210602101618.627715436@linutronix.de>
+ <YLeedfdsnsKqcbGx@zn.tnic>
+ <6220f2da-1d5b-843c-fa82-58a28fbcdd6b@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6220f2da-1d5b-843c-fa82-58a28fbcdd6b@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-02 at 19:49 +0800, Mark Zhang wrote:
-> On 6/2/2021 6:09 PM, Yang Li wrote:
-> > When the code execute 'if (!priv->fs.arfs->wq)', the value of err
-> > is 0.
-> > So, we use -ENOMEM to indicate that the function
-> > create_singlethread_workqueue() return NULL.
-> > 
-> > Clean up smatch warning:
-> > drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c:373
-> > mlx5e_arfs_create_tables() warn: missing error code 'err'.
-> > 
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Fixes: 'commit f6755b80d693 ("net/mlx5e: Dynamic alloc arfs table
-> > for netdev when needed")'
+On Thu, Jun 03, 2021 at 10:30:05AM -0700, Andy Lutomirski wrote:
+> Think "complex microarchitectural conditions".
 
-This is not the right format.
+Ah, the magic phrase.
 
-Please use the following command to generate the fixes tag:
-git log -1 --abbrev=12 --format='Fixes: %h ("%s")' f6755b80d693
-
-> > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> > ---
-> >   drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > index 5cd466e..2949437 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > @@ -369,8 +369,10 @@ int mlx5e_arfs_create_tables(struct mlx5e_priv
-> > *priv)
-> >         spin_lock_init(&priv->fs.arfs->arfs_lock);
-> >         INIT_LIST_HEAD(&priv->fs.arfs->rules);
-> >         priv->fs.arfs->wq =
-> > create_singlethread_workqueue("mlx5e_arfs");
-> > -       if (!priv->fs.arfs->wq)
-> > +       if (!priv->fs.arfs->wq) {
-> > +               err = -ENOMEM;
-> >                 goto err;
-> > +       }
-> >   
-
-you can just initialize err to -ENOMEM; on declaration. 
-
-> >         for (i = 0; i < ARFS_NUM_TYPES; i++) {
-> >                 err = arfs_create_table(priv, i);
+> How about:
 > 
-> Maybe also need to "destroy_workqueue(priv->fs.arfs->wq);" in
-> err_des.
+> As far as I can tell, both Intel and AMD consider it to be
+> architecturally valid for XRSTOR to fail with #PF but nonetheless change
+> user state.  The actual conditions under which this might occur are
+> unclear [1], but it seems plausible that this might be triggered if one
+> sibling thread unmaps a page and invalidates the shared TLB while
+> another sibling thread is executing XRSTOR on the page in question.
+> 
+> __fpu__restore_sig() can execute XRSTOR while the hardware registers are
+> preserved on behalf of a different victim task (using the
+> fpu_fpregs_owner_ctx mechanism), and, in theory, XRSTOR could fail but
+> modify the registers.  If this happens, then there is a window in which
+> __fpu__restore_sig() could schedule out and the victim task could
+> schedule back in without reloading its own FPU registers.  This would
+> result in part of the FPU state that __fpu__restore_sig() was attempting
+> to load leaking into the victim task's user-visible state.
+> 
+> Invalidate preserved FPU registers on XRSTOR failure to prevent this
+> situation from corrupting any state.
+> 
+> [1] Frequent readers of the errata lists might imagine "complex
+> microarchitectural conditions".
 
-yes, it can be in the same patch.
+Yap, very nice, thanks!
 
-Thanks a lot.  
+> > I'm wondering if that comment can simply be above the TIF_NEED_FPU_LOAD
+> > testing, standalone, instead of having it in an empty else? And then get
+> > rid of that else.
+> 
+> I'm fine either way.
 
+Ok, then let's aim for common, no-surprise-there patterns as we're in a
+mine field here anyway.
 
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
