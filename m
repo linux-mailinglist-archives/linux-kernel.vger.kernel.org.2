@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC33399F17
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29434399F22
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhFCKkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhFCKkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:40:19 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E0EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 03:38:35 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id v12so2645327plo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 03:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MBGbqvseaowVXgAUsLtxjTmL1uju2aQqqvQPrdOEUMI=;
-        b=PtUIFX5j6+rZW5fTyueSPbez0QVHLoGyxaF0Xk260gvCiKzzUF/F057MwftAPyketT
-         IOEzWxFOg5qGolkIJfCnFB4WQArM3fALgXkuTxBIZxs/x5ItQ6D08Gwg4D7JVFyrpQYk
-         CgOLh21NWiEuMxa2EZ4Ji1KTUAtTS6mFeMnCALAc3UvKJDfR6ekbSXilJJmbt+RypvI/
-         JvQh31+mFFJu2OAC0lc4L02wK8rz4sJWUUBfRaSQmysIyzW/favy1J5BRxSfEnXFraJv
-         kkXjmoTXN3833DbXVge3JAIilnlTZFUve2s/k56YRWk0EG4bhzpPtibJQTzTkXRzJUiV
-         xDSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MBGbqvseaowVXgAUsLtxjTmL1uju2aQqqvQPrdOEUMI=;
-        b=rfQRWiqby1i8w2db7BnK0Csb3PuF+zezw7Wfb/VnswcWTpTRqh6+3oHpCNpJbIfqhN
-         OCAu+8urDNcOCK9BlsmrKCjSwVwqwifp2iUj5P/TB7vOyD8ogbqXO/WIp4w56rKbtKgz
-         zAqQC8dLySaAjTjFDH2VjIXckdjZSbLpzSo55HoeNJWaO9YGg9mVJ3pGNO1Vcbz3xNo4
-         h8wHPpFZQEmFFCmvvvLCY2fSf37I5FJ/5qMWpod6ZokLzLP47cv2mMP6rOwgjFPGHUs7
-         hucTF8qbMrC0OLzr4MJX8KHZC5ihHWyqxPlucUtZY+tYNnqqjO9ww8cKSYC/5VH5lQzY
-         zgBg==
-X-Gm-Message-State: AOAM530bUDnznR3wx0DADIC0+3ZD5Jkz+pSCnizbDPQoWWh+SDk1Gtoz
-        UgzePhuiFhqc+f836MXFI1tC
-X-Google-Smtp-Source: ABdhPJwFnpLXEPr9AyaW4L1Hrgj1B6bqjOOn9Hd9qW37QhWeTeQE8lPs1HMgmrYB44H/jybAqv5pog==
-X-Received: by 2002:a17:902:8a8b:b029:10d:af46:f3d5 with SMTP id p11-20020a1709028a8bb029010daf46f3d5mr3117703plo.22.1622716714689;
-        Thu, 03 Jun 2021 03:38:34 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.12.41])
-        by smtp.gmail.com with ESMTPSA id v67sm2053370pfb.193.2021.06.03.03.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 03:38:34 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 3/3] MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
-Date:   Thu,  3 Jun 2021 16:08:14 +0530
-Message-Id: <20210603103814.95177-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
-References: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
+        id S229794AbhFCKlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:41:45 -0400
+Received: from mg.richtek.com ([220.130.44.152]:49406 "EHLO mg.richtek.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229597AbhFCKlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:41:44 -0400
+X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
+        LIVER,40,3)
+Received: from 192.168.10.46
+        by mg.richtek.com with MailGates ESMTP Server V5.0(4326:0:AUTH_RELAY)
+        (envelope-from <cy_huang@richtek.com>); Thu, 03 Jun 2021 18:39:52 +0800 (CST)
+Received: from ex3.rt.l (192.168.10.46) by ex3.rt.l (192.168.10.46) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Thu, 3 Jun 2021
+ 18:39:52 +0800
+Received: from ex3.rt.l ([fe80::ede0:40a5:8f78:963e]) by ex3.rt.l
+ ([fe80::ede0:40a5:8f78:963e%2]) with mapi id 15.02.0858.010; Thu, 3 Jun 2021
+ 18:39:52 +0800
+From:   =?utf-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
+To:     "axel.lin@ingics.com" <axel.lin@ingics.com>,
+        "broonie@kernel.org" <broonie@kernel.org>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] regulator: rt4801: Fix NULL pointer dereference if
+ priv->enable_gpios is NULL
+Thread-Topic: [PATCH] regulator: rt4801: Fix NULL pointer dereference if
+ priv->enable_gpios is NULL
+Thread-Index: AQHXWF3W9ZPy12H82kGo4cvVJ5UzdasBkriA
+Date:   Thu, 3 Jun 2021 10:39:51 +0000
+Message-ID: <1622716791.1034.13.camel@richtek.com>
+References: <20210603094944.1114156-1-axel.lin@ingics.com>
+In-Reply-To: <20210603094944.1114156-1-axel.lin@ingics.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.18.5.2-0ubuntu3.2 
+x-originating-ip: [192.168.8.47]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <530ECB73A7BC924483363760B680EBD8@rt.l>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for Qualcomm PCIe Endpoint driver and its
-devicetree binding. While at it, let's also fix the PCIE RC entry to
-cover only the RC driver.
-
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- MAINTAINERS | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..cdd370138b9f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14254,7 +14254,15 @@ M:	Stanimir Varbanov <svarbanov@mm-sol.com>
- L:	linux-pci@vger.kernel.org
- L:	linux-arm-msm@vger.kernel.org
- S:	Maintained
--F:	drivers/pci/controller/dwc/*qcom*
-+F:	drivers/pci/controller/dwc/pcie-qcom.c
-+
-+PCIE ENDPOINT DRIVER FOR QUALCOMM
-+M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+L:	linux-pci@vger.kernel.org
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-+F:	drivers/pci/controller/dwc/pcie-qcom-ep.c
- 
- PCIE DRIVER FOR ROCKCHIP
- M:	Shawn Lin <shawn.lin@rock-chips.com>
--- 
-2.25.1
-
+SGksIEF4ZWw6DQoNCldoaWNoIGNhc2Ugd2lsbCBjYXVzZSB0aGlzIGVycm9yPyBJJ20gbm90IHJl
+YWxseSBzdXJlLg0KQnV0IGlmIGRldm1fZ3Bpb2RfZ2V0X2FycmF5X29wdGlvbmFsIHdpbGwgcmV0
+dXJuIG51bGwsIHRoZW4gaXQgbXVzdCBiZSBjaGVjaw0KZWFybGllciBpbiBwcm9iZSBmdW5jdGlv
+bg0KDQogICAgICAgIHByaXYtPmVuYWJsZV9ncGlvcyA9IGRldm1fZ3Bpb2RfZ2V0X2FycmF5X29w
+dGlvbmFsKCZpMmMtPmRldiwgImVuYWJsZSIsDQpHUElPRF9PVVRfSElHSCk7DQotICAgICAgIGlm
+IChJU19FUlIocHJpdi0+ZW5hYmxlX2dwaW9zKSkgeysgICAgICAgaWYgKElTX0VSUl9PUl9OVUxM
+KHByaXYtPmVuYWJsZV9ncGlvcykpIHsNCg0KSWYgc28sIHRoaXMgY2hhbmdlIHdpbGwgYmUgbW9y
+ZSByZWFzb25hYmxlLg0KQ2F1c2UgaW4gYmluZGluZyBkb2N1bWVudCwgSSBhbHJlYWR5IHdyaXRl
+IHRoZSBtaW4gaXRlbSBtdXN0IGJlICcxJy4NCioqKioqKioqKioqKiogRW1haWwgQ29uZmlkZW50
+aWFsaXR5IE5vdGljZSAqKioqKioqKioqKioqKioqKioqKg0KDQpUaGUgaW5mb3JtYXRpb24gY29u
+dGFpbmVkIGluIHRoaXMgZS1tYWlsIG1lc3NhZ2UgKGluY2x1ZGluZyBhbnkgYXR0YWNobWVudHMp
+IG1heSBiZSBjb25maWRlbnRpYWwsIHByb3ByaWV0YXJ5LCBwcml2aWxlZ2VkLCBvciBvdGhlcndp
+c2UgZXhlbXB0IGZyb20gZGlzY2xvc3VyZSB1bmRlciBhcHBsaWNhYmxlIGxhd3MuIEl0IGlzIGlu
+dGVuZGVkIHRvIGJlIGNvbnZleWVkIG9ubHkgdG8gdGhlIGRlc2lnbmF0ZWQgcmVjaXBpZW50KHMp
+LiBBbnkgdXNlLCBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24sIHByaW50aW5nLCByZXRhaW5p
+bmcgb3IgY29weWluZyBvZiB0aGlzIGUtbWFpbCAoaW5jbHVkaW5nIGl0cyBhdHRhY2htZW50cykg
+YnkgdW5pbnRlbmRlZCByZWNpcGllbnQocykgaXMgc3RyaWN0bHkgcHJvaGliaXRlZCBhbmQgbWF5
+IGJlIHVubGF3ZnVsLiBJZiB5b3UgYXJlIG5vdCBhbiBpbnRlbmRlZCByZWNpcGllbnQgb2YgdGhp
+cyBlLW1haWwsIG9yIGJlbGlldmUgdGhhdCB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGUtbWFpbCBp
+biBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0ZWx5IChieSByZXBseWlu
+ZyB0byB0aGlzIGUtbWFpbCksIGRlbGV0ZSBhbnkgYW5kIGFsbCBjb3BpZXMgb2YgdGhpcyBlLW1h
+aWwgKGluY2x1ZGluZyBhbnkgYXR0YWNobWVudHMpIGZyb20geW91ciBzeXN0ZW0sIGFuZCBkbyBu
+b3QgZGlzY2xvc2UgdGhlIGNvbnRlbnQgb2YgdGhpcyBlLW1haWwgdG8gYW55IG90aGVyIHBlcnNv
+bi4gVGhhbmsgeW91IQ0K
