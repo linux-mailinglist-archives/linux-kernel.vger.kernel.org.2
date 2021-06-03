@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB9A399ABE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0C8399AD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhFCGey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:34:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54186 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFCGew (ORCPT
+        id S229809AbhFCGft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFCGfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:34:52 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B82921FD4D;
-        Thu,  3 Jun 2021 06:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622701987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d7iutrIVQKysvdt5z7MYC93Y1HKMzZlp9EFA0JQ3iwg=;
-        b=DJtTKATFP2x2ettob3iQALh8nf3OxNsq/Fnod8NLII/48jvlR4Q7j8TCfEzc1Z/6QIZ/2R
-        QLCWCJASmxEXfXPNYox8JeC6DY2QYcFKa8ca0zX9CB0A9hYENzQetBoaPmEA4yLJuFmab2
-        3tcX+v/uXLV+Iyo6DI9Por7IwMqnufw=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CE921A3B85;
-        Thu,  3 Jun 2021 06:33:06 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 08:33:06 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH next v1 1/2] dump_stack: move cpu lock to printk.c
-Message-ID: <YLh3oqUiHGTtWJIC@alley>
-References: <20210531162051.2325-1-john.ogness@linutronix.de>
- <20210531162051.2325-2-john.ogness@linutronix.de>
- <YLY9NR7C1IFuNI4A@alley>
- <874keh3bsv.fsf@jogness.linutronix.de>
+        Thu, 3 Jun 2021 02:35:47 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F81C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 23:34:02 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1logvP-0000mb-3h; Thu, 03 Jun 2021 08:33:51 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1logvO-0001Ce-NI; Thu, 03 Jun 2021 08:33:50 +0200
+Date:   Thu, 3 Jun 2021 08:33:50 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 3/6] media: allegro-dvt: avoid EN DASH char
+Message-ID: <20210603063350.GB12967@pengutronix.de>
+Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <cover.1622646256.git.mchehab+huawei@kernel.org>
+ <94f20b3817342ace2ac06057150b73996874c43f.1622646256.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <874keh3bsv.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <94f20b3817342ace2ac06057150b73996874c43f.1622646256.git.mchehab+huawei@kernel.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:28:53 up 105 days,  9:52, 96 users,  load average: 0.15, 0.15,
+ 0.17
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-06-01 16:21:52, John Ogness wrote:
-> On 2021-06-01, Petr Mladek <pmladek@suse.com> wrote:
-> >> +void printk_cpu_lock(unsigned int *cpu_store, unsigned long *flags)
-> >
-> > I think about calling this printk_cpu_lock_irqsave() to make it clear
-> > that it disables interrupts.
+On Wed, 02 Jun 2021 17:05:20 +0200, Mauro Carvalho Chehab wrote:
+> While there's nothing wrong with EN DASH on C code, this probably
+> came from some cut-and paste from an ITU-T table.
+> It sounds better to just an HYPHEN here.
 > 
-> Agreed.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/allegro-dvt/nal-h264.c | 2 +-
+>  drivers/media/platform/allegro-dvt/nal-hevc.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> > Strictly speaking, it should be enough to disable preemption. If it is
-> > safe when interrupted by NMI, it must be safe also when interrupted
-> > by a normal interrupt.
-> >
-> > I guess that the interrupts are disabled because it reduces the risk
-> > of nested (messed) backtraces.
-> 
-> If it was just about synchronizing output triggered by sysreq, then it
-> probably would be acceptable to leave interrupts active. But when atomic
-> consoles are involved, we are talking about a crashing machine that is
-> trying to get log messages out. Any interrupt is a risk that the machine
-> may not survive long enough to return from that interruption.
+> diff --git a/drivers/media/platform/allegro-dvt/nal-h264.c b/drivers/media/platform/allegro-dvt/nal-h264.c
+> index 94dd9266d850..a02095eb3fcf 100644
+> --- a/drivers/media/platform/allegro-dvt/nal-h264.c
+> +++ b/drivers/media/platform/allegro-dvt/nal-h264.c
+> @@ -25,7 +25,7 @@
+>  #include "nal-rbsp.h"
+>  
+>  /*
+> - * See Rec. ITU-T H.264 (04/2017) Table 7-1 – NAL unit type codes, syntax
+> + * See Rec. ITU-T H.264 (04/2017) Table 7-1 -- NAL unit type codes, syntax
 
-Fair enough. It might be good to mention this motivation in the commit
-message or in a code commentary. IMHO, it is always good to know
-whether these things a must to have or if there is another reason.
-Anyway, it was not obvious to me ;-)
+This should be a single instead of a double hyphen.
 
-Best Regards,
-Petr
+With that fixed
+
+Reviewed-by: Michael Tretter <m.tretter@pengutronix.de>
+
+Michael
+
+>   * element categories, and NAL unit type classes
+>   */
+>  enum nal_unit_type {
+> diff --git a/drivers/media/platform/allegro-dvt/nal-hevc.c b/drivers/media/platform/allegro-dvt/nal-hevc.c
+> index 5db540c69bfe..15a352e45831 100644
+> --- a/drivers/media/platform/allegro-dvt/nal-hevc.c
+> +++ b/drivers/media/platform/allegro-dvt/nal-hevc.c
+> @@ -25,7 +25,7 @@
+>  #include "nal-rbsp.h"
+>  
+>  /*
+> - * See Rec. ITU-T H.265 (02/2018) Table 7-1 – NAL unit type codes and NAL unit
+> + * See Rec. ITU-T H.265 (02/2018) Table 7-1 - NAL unit type codes and NAL unit
+>   * type classes
+>   */
+>  enum nal_unit_type {
+> -- 
+> 2.31.1
+> 
+> 
