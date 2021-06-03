@@ -2,407 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105C039A010
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9BF39A012
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhFCLsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhFCLsI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:48:08 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C37EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 04:46:13 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id h8so5499059wrz.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SLeIM/SwyN6AxbwQXqHz7v5anI9n9MkiDwfFgqGwUzs=;
-        b=zsbPKr2qBH0FBAszbR5luyM7zCBVmGWkMvC5rfeLaIDv+dmi3s1/TmH06ujk2wSCq8
-         HoG6KCogzfF0pSbfQUHVubUmxK3xDMpZQkVNJQDKjK2sRu3Fopm8sVGhp+iJDSLjDq2e
-         lKRbYOaaVcI6G9p7PuA5xG7QJ6VlBcyQAMLXHMaZeeQBv496Agp/pHc7R5y8OrnWi/xk
-         ohqGYKw8z0+v/JILNw7Ev7vGgu51NaY7ALOvLq2EHurd8wdJ6k8O8pSFyDr08J3nf+mL
-         Bmx/rbwF630cRmCjUdpxfxHy9Z3ZKxQ2M1a+MDO4GRxwwWk7CrHzgnLNK4KXYzx41Cf5
-         2pyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SLeIM/SwyN6AxbwQXqHz7v5anI9n9MkiDwfFgqGwUzs=;
-        b=eH+gC/mh1lcnFBqjmkhrhu+BAomsTJT7x+3sftxx43fAnli/4uM3C5jh3yYwaIYjmS
-         7OqrS5F7HKApM07BpcK9yq11JrjM6LE/Z52mHiacYRIcOilg0CnCiOexeWJ+Zw1x+l9W
-         /I5ypMD/ruaJHxrN0FE1L3r32TSg8iV6z7cPg055LAUBk+kHQ8StDi5yrAD2snUpi4BY
-         an/6dS5IFGAPQNRpjx7bSQyIR9niWAXMdkaDmEVvvlr+WYu98F9Et6I5UQOCBNJlN9dW
-         nCPGXBm8wTYDyeChYN8R77adPmNnUjQxpQg8Tux0iOBExoo/G6O6OwYriifX3hLCJ5xc
-         4X1A==
-X-Gm-Message-State: AOAM530qqGa4/QdJFklmNdDbXf1WdE/4tfPYVvA0yEwszAXv6T6SEucz
-        N9OQuHo4K1QuPbFKkn3BRFOYGatft+nXwCkJGEJRCg==
-X-Google-Smtp-Source: ABdhPJzf7HrgsJvhD4Eb9w/u0hfCQ6HdMeNw9dOo+78F17cr0Pyy5z2/s7LEEe2Rn9KACv0SsGLult001dX5L3A0oqs=
-X-Received: by 2002:a5d:540b:: with SMTP id g11mr11207959wrv.390.1622720769320;
- Thu, 03 Jun 2021 04:46:09 -0700 (PDT)
+        id S229922AbhFCLtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:49:16 -0400
+Received: from mail-dm3nam07on2058.outbound.protection.outlook.com ([40.107.95.58]:61409
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229697AbhFCLtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:49:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OnByn43VBKS2Qm7RgkKj3pV0WNjhcZdLqr9LQvYrw3h9Ttc5RW3ElrySabn+7gaS818Ez4MYgJhvZqGklWWeCuTf+wPDwNsEHOiptX/cxBJ83KcYGCPKNlp45bpS5BWgUZtss1sdOpfZwuY6Vgs4iPt6cBRJsQp7Hl+Yt2QvF2H6NEUwWwFGOol0XZk7cfN/dxQCxNl3QZLt8j8RfvO1nEhwSEQ3k40Qkjm5biIlo0nqyijBvhWlE3peiYTgEJVNUQBRnIy3XZKDqs4wqG2HVpt3uT4r6cJ6R4+OZyc3Hw0TBkbMoW+jtYNJyhnRK7cPzROLdraleHSVd9PRmGPrhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=52pJuDjQm6hY4EURZ4nhxcr3EPEKz7SMYyxD+/AzA4M=;
+ b=mbnwcTNmxPMcF1qs/6OrnFtRLtt2xGxUEUxLsnQQIXh8BYAr8Qk/Zl/DpqXd8JZEkja+7NzURtn5pWQmmOekf32uj7Xb4PlNCS4N3riAwxboEcv7Sr9mdRwhaTwak71LaN4NBxTYWRp+op4rUuh01btvR0j3VwuPaGNA77dtW3f+qeqzep2c/tv4CqAeoqr9oOvxGmy8ZEq/JSw49N/YpqBUY/H7Ovh2+uKrGLAOYF8nAlDG1CGrAcdqxySYlzE6mrf8/NjGJWAM9BmxiAMnSS0636q/AFa0Alpxczyp3UVgWaizycb9DFNEo9rM4yclr9WiHYTTJCvNHZ9VIuYwZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=52pJuDjQm6hY4EURZ4nhxcr3EPEKz7SMYyxD+/AzA4M=;
+ b=cXVUas+nqotNwB656qxq02Ab9JzQjF7OqHYz9pbJtm9lWDyTAXLatShZ6tcGiGFuxIXEKUnAuNi3NR6pdVuQwFDgRvnn55qoXV1SFL6yT+69UY5nSucbzZtGUlizSrNTdCQWt0zP2VBf5PDs/G9xBoCS6+D1586GiKKCTVYj1QxoJStvYObYQWgyvRX5F/UHTkr+HIGmxDgXK3g3V1ODTt29K0x1lV+flItCdoNRy0F3zeKSXDWPYgQzZQGyYmOng6QWbwpsEH55EvzEJkLye1sdoW1wlVgNBkeHOhvnvpVWZWWEhOqmswuBQXVBAnRYpHYYgloSG6HHMF7hQTKF9w==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5189.namprd12.prod.outlook.com (2603:10b6:208:308::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Thu, 3 Jun
+ 2021 11:47:29 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
+ 11:47:29 +0000
+Date:   Thu, 3 Jun 2021 08:47:28 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     David Gibson <david@gibson.dropbear.id.au>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210603114728.GP1002214@nvidia.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210528173538.GA3816344@nvidia.com>
+ <MWHPR11MB18866C362840EA2D45A402188C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210601174229.GP1002214@nvidia.com>
+ <MWHPR11MB1886283575628D7A2F4BFFAB8C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210602160914.GX1002214@nvidia.com>
+ <MWHPR11MB18861FA1636BFB66E5E563508C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <YLhj9mi9J/f+rqkP@yekko>
+ <MWHPR11MB1886E929BD1414817E9247898C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB1886E929BD1414817E9247898C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL0PR0102CA0061.prod.exchangelabs.com
+ (2603:10b6:208:25::38) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <20210603082749.1256129-1-alex@ghiti.fr> <20210603082749.1256129-4-alex@ghiti.fr>
-In-Reply-To: <20210603082749.1256129-4-alex@ghiti.fr>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 3 Jun 2021 17:15:57 +0530
-Message-ID: <CAAhSdy0mY+5Y_d1WxcC37agfZFex6Xa1L9Q8CBSU+3_KJpeRLg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] riscv: Map the kernel with correct permissions the
- first time
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR0102CA0061.prod.exchangelabs.com (2603:10b6:208:25::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend Transport; Thu, 3 Jun 2021 11:47:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lolou-0013zx-29; Thu, 03 Jun 2021 08:47:28 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8cc82f7e-d59d-4e7f-3bd3-08d926855d97
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5189:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB518975B45AFC7B51D88F36F8C23C9@BL1PR12MB5189.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C+qsBfeeoMqpPbBKOJGXhxnlXsE3Stldeix9qBTTb2iUMe6RpcmQGHXr1id3/S4MkQCuOIfmzk2IjFEZPhAz8DrzG6YBpiDqT6HUwsfYS2nEk+t9Ndo8av2yJHqseOH49/9Y4asNTFItwPXDh1DVR1kE0SZyif7neIBeHYu68wHF2Ymv7wbW2rR8Wu2/+VxmY0LCK84k+HdxMBlSPjBIW9A0r8FHz/ELt2FIaEYIGcAZdugkoQ1esgoKzp8r4SIl1Mx9QiJ+9/8zmF2yQIzTjX+b/at+Pr0LbsYh8dNxfHV0aq4B7ot4O5kqYfaCfllquayMoKFen0O7vQQEi2MyFFIKPbv1bLJCkyOPyjsFCCHE0fAqCbIuGFmGxCItimYLJw0oMeIiUe9PY0/9k35P4Jy3UYhzTqmsFraBqBKNGWrGApDJfnz6tEI0J+JhdT+1kS+2t+mfikHtdTDHaVAywo4edEZregJD4oakTB6eMwzRXuhTsdrV9F6g1yTSUZYMgMmhsCxuFPnOu14Z/cwT0ib1IE3gvOAvTHcBRiXsvtw6uYM3R80RLHMi4PJTv1SvS7yDEMySAQ31Z1OsNgz7V6dFiJv1OtHWFE/hXxt3s6A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(366004)(396003)(1076003)(8676002)(9786002)(8936002)(7416002)(426003)(4326008)(2616005)(38100700002)(9746002)(478600001)(2906002)(66946007)(66476007)(66556008)(36756003)(54906003)(6916009)(316002)(26005)(33656002)(186003)(83380400001)(5660300002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6pr9Tu8eLewtymqHFg62fG4IUzEX4phHN0P2IyNcO8+kqEijcN6Tw1TXSluC?=
+ =?us-ascii?Q?FBqlOOcYkwJK+uzkLD8xNy92QSPzDqYuayWXWB5I0BlKBZtevjx0WmKukkfu?=
+ =?us-ascii?Q?xF8txMM8GKv78Miix15SYUFmFVW1dTFH/RYtS17NKl476ijHzSd26dm1tnV3?=
+ =?us-ascii?Q?hfAz33m/zJ8HeB+4neAXHcej10/qJaNhBgSPV1aoP0Gwbbbn+1UbUbJPouLC?=
+ =?us-ascii?Q?rYf/39ZWZdrjZtogInAUFNTeh1a9pWk8NyqB0YJEBaBzJSKDdW7wTLo7Pooc?=
+ =?us-ascii?Q?Ks7iy+IOIHI1Qd/rfjri6Oh7F87lTQBrJ0z50V7S43p7g+xT/9johkOvK1YV?=
+ =?us-ascii?Q?O+YJe3HKFUSq2EB9d2NPYIwc3GHu/RBgpwLtKdVUqp2kua6ez0ExKd4CUeZy?=
+ =?us-ascii?Q?vWvAINitAJY6sZDFiUXPdL8LWAbsKg0468FrVg1MbkzrLU4re34LlA0gVx/3?=
+ =?us-ascii?Q?488F52r0d6JvUtPojlcbyb/s0l3kYjfYNqGIt9x8Yir8u1CrAuKyzLyhjl2S?=
+ =?us-ascii?Q?ZyDxR2BsDQLSWqBqROer5clUwN/v+9VicSq+YDeGTcICpDawUFRk9ORM2ttd?=
+ =?us-ascii?Q?4Hw4Qz6KQ0FaMqkbWQczsAv42HCg/nhKBWusDbsd4u4/Y2ESIvo8L8ahfzzO?=
+ =?us-ascii?Q?PPI7ZBlSoaIbOQ9h2p+rZlylxfM/5livnDaAZjKI8Wbc9AumdXe6pRIqr94D?=
+ =?us-ascii?Q?Dr1gdbjzGQF68QpVN0kEzNxM17gtdio8o/gDmQxZecem9nWvFhXKCu00CrDT?=
+ =?us-ascii?Q?2GSKjVXboiSc9uFeGkn7sVBdebQ6BIG3HAbv9Sk8kXwmTIpiVW/m+HKbFaO9?=
+ =?us-ascii?Q?CkK0BiMph14N1b/LWYBCkv2ulqhLaw8tr5STc/V3FgGGrBLeWwXzldJ6wSja?=
+ =?us-ascii?Q?P2HiVj4fgGTiBLUUbtcx1mDjUtvkT3jP6EV6R0PVx2PB3oVdgRT+1qJH4SRK?=
+ =?us-ascii?Q?FSfXeRcwMNWWXPhmVpgBl9JvCHsM+eo6SuRJ8CqKJa8o75uMZQ2emt+NCyk7?=
+ =?us-ascii?Q?jH6AMliCtdVFO8EYDI50yxaylovaYPXxXQgsaDWBj4pyB1u1q/e39K0HtS2X?=
+ =?us-ascii?Q?P0YektOEJH0469KIi3SXBz5mdcIZnv7szot5BKAG5W6VqGKdNJF96E5rBxBc?=
+ =?us-ascii?Q?8HfnCWA1UqD6OnKTAF5i3XWRvyXN/r/wM1hqMB1BS6TZ+kKiBLb0M+bvyNTl?=
+ =?us-ascii?Q?kgeatm2gpL4oYzgaJ8xJedvz0YimtNP1NJJ09KvdMe3y2vTX2QZTNB0BsUZG?=
+ =?us-ascii?Q?5k0wXgao9GeTEN6eRfcIfgKyenECDkjMRIeoOFCu5tkRMbRR4X8vEZTr1RTo?=
+ =?us-ascii?Q?w+08iAEveGxfu5eemiKZE4r6?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8cc82f7e-d59d-4e7f-3bd3-08d926855d97
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 11:47:29.3698
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CDcXRCtV5/PY3G+9hmAeZqiuQA0cXHO0xHn6E0ZFuRDf+7adE/nAGEJd8rycCTYF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5189
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 2:01 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->
-> For 64b kernels, we map all the kernel with write and execute permissions
-> and afterwards remove writability from text and executability from data.
->
-> For 32b kernels, the kernel mapping resides in the linear mapping, so we
-> map all the linear mapping as writable and executable and afterwards we
-> remove those properties for unused memory and kernel mapping as
-> described above.
->
-> Change this behavior to directly map the kernel with correct permissions
-> and avoid going through the whole mapping to fix the permissions.
->
-> At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
-> ("riscv: Move kernel mapping outside of linear mapping") as reported
-> here https://github.com/starfive-tech/linux/issues/17.
->
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+On Thu, Jun 03, 2021 at 06:49:20AM +0000, Tian, Kevin wrote:
+> > From: David Gibson
+> > Sent: Thursday, June 3, 2021 1:09 PM
+> [...]
+> > > > In this way the SW mode is the same as a HW mode with an infinite
+> > > > cache.
+> > > >
+> > > > The collaposed shadow page table is really just a cache.
+> > > >
+> > >
+> > > OK. One additional thing is that we may need a 'caching_mode"
+> > > thing reported by /dev/ioasid, indicating whether invalidation is
+> > > required when changing non-present to present. For hardware
+> > > nesting it's not reported as the hardware IOMMU will walk the
+> > > guest page table in cases of iotlb miss. For software nesting
+> > > caching_mode is reported so the user must issue invalidation
+> > > upon any change in guest page table so the kernel can update
+> > > the shadow page table timely.
+> > 
+> > For the fist cut, I'd have the API assume that invalidates are
+> > *always* required.  Some bypass to avoid them in cases where they're
+> > not needed can be an additional extension.
+> > 
+> 
+> Isn't a typical TLB semantics is that non-present entries are not
+> cached thus invalidation is not required when making non-present
+> to present? It's true to both CPU TLB and IOMMU TLB. In reality
+> I feel there are more usages built on hardware nesting than software
+> nesting thus making default following hardware TLB behavior makes
+> more sense...
 
-Looks good to me.
+From a modelling perspective it makes sense to have the most general
+be the default and if an implementation can elide certain steps then
+describing those as additional behaviors on the universal baseline is
+cleaner
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+I'm surprised to hear your remarks about the not-present though,
+how does the vIOMMU emulation work if there are not hypervisor
+invalidation traps for not-present/present transitions?
 
-Regards,
-Anup
-
-> ---
->  arch/riscv/include/asm/page.h       |  13 +++-
->  arch/riscv/include/asm/sections.h   |  17 +++++
->  arch/riscv/include/asm/set_memory.h |   8 ---
->  arch/riscv/kernel/setup.c           |  11 +--
->  arch/riscv/mm/init.c                | 102 ++++++++++++----------------
->  5 files changed, 75 insertions(+), 76 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 6e004d8fda4d..349e4f9874cc 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -95,6 +95,7 @@ extern unsigned long va_kernel_pa_offset;
->  #endif
->  extern unsigned long va_kernel_xip_pa_offset;
->  extern unsigned long pfn_base;
-> +extern uintptr_t load_sz;
->  #define ARCH_PFN_OFFSET                (pfn_base)
->  #else
->  #define va_pa_offset           0
-> @@ -108,6 +109,11 @@ extern unsigned long pfn_base;
->  extern unsigned long kernel_virt_addr;
->
->  #ifdef CONFIG_64BIT
-> +#define is_kernel_mapping(x)   \
-> +       ((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-> +#define is_linear_mapping(x)   \
-> +       ((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
-> +
->  #define linear_mapping_pa_to_va(x)     ((void *)((unsigned long)(x) + va_pa_offset))
->  #define kernel_mapping_pa_to_va(y)     ({                                              \
->         unsigned long _y = y;                                                           \
-> @@ -127,10 +133,15 @@ extern unsigned long kernel_virt_addr;
->
->  #define __va_to_pa_nodebug(x)  ({                                              \
->         unsigned long _x = x;                                                   \
-> -       (_x < kernel_virt_addr) ?                                               \
-> +       is_linear_mapping(_x) ?                                                 \
->                 linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);      \
->         })
->  #else
-> +#define is_kernel_mapping(x)   \
-> +       ((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-> +#define is_linear_mapping(x)   \
-> +       ((x) >= PAGE_OFFSET)
-> +
->  #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
->  #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
->  #endif /* CONFIG_64BIT */
-> diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-> index 8a303fb1ee3b..32336e8a17cb 100644
-> --- a/arch/riscv/include/asm/sections.h
-> +++ b/arch/riscv/include/asm/sections.h
-> @@ -6,6 +6,7 @@
->  #define __ASM_SECTIONS_H
->
->  #include <asm-generic/sections.h>
-> +#include <linux/mm.h>
->
->  extern char _start[];
->  extern char _start_kernel[];
-> @@ -13,4 +14,20 @@ extern char __init_data_begin[], __init_data_end[];
->  extern char __init_text_begin[], __init_text_end[];
->  extern char __alt_start[], __alt_end[];
->
-> +static inline bool is_va_kernel_text(uintptr_t va)
-> +{
-> +       uintptr_t start = (uintptr_t)_start;
-> +       uintptr_t end = (uintptr_t)__init_data_begin;
-> +
-> +       return va >= start && va < end;
-> +}
-> +
-> +static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
-> +{
-> +       uintptr_t start = (uintptr_t)lm_alias(_start);
-> +       uintptr_t end = (uintptr_t)lm_alias(__init_data_begin);
-> +
-> +       return va >= start && va < end;
-> +}
-> +
->  #endif /* __ASM_SECTIONS_H */
-> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-> index 7a411fed9e0e..c0b41ed218e1 100644
-> --- a/arch/riscv/include/asm/set_memory.h
-> +++ b/arch/riscv/include/asm/set_memory.h
-> @@ -17,13 +17,11 @@ int set_memory_x(unsigned long addr, int numpages);
->  int set_memory_nx(unsigned long addr, int numpages);
->  int set_memory_rw_nx(unsigned long addr, int numpages);
->  int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int));
-> -void protect_kernel_text_data(void);
->  #else
->  static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
->  static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
->  static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
->  static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
-> -static inline void protect_kernel_text_data(void) {}
->  static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
->  static inline int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int))
->  {
-> @@ -31,12 +29,6 @@ static inline int set_kernel_memory(char *start, char *end, int (*set_memory)(un
->  }
->  #endif
->
-> -#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
-> -void protect_kernel_linear_mapping_text_rodata(void);
-> -#else
-> -static inline void protect_kernel_linear_mapping_text_rodata(void) {}
-> -#endif
-> -
->  int set_direct_map_invalid_noflush(struct page *page);
->  int set_direct_map_default_noflush(struct page *page);
->  bool kernel_page_present(struct page *page);
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index 4db4d0b5911f..b3d0895ce5f7 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -290,11 +290,6 @@ void __init setup_arch(char **cmdline_p)
->         init_resources();
->         sbi_init();
->
-> -       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
-> -               protect_kernel_text_data();
-> -               protect_kernel_linear_mapping_text_rodata();
-> -       }
-> -
->  #ifdef CONFIG_SWIOTLB
->         swiotlb_init(1);
->  #endif
-> @@ -333,11 +328,9 @@ subsys_initcall(topology_init);
->
->  void free_initmem(void)
->  {
-> -       unsigned long init_begin = (unsigned long)__init_begin;
-> -       unsigned long init_end = (unsigned long)__init_end;
-> -
->         if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
-> -               set_memory_rw_nx(init_begin, (init_end - init_begin) >> PAGE_SHIFT);
-> +               set_kernel_memory(lm_alias(__init_begin), lm_alias(__init_end),
-> +                                 IS_ENABLED(CONFIG_64BIT) ? set_memory_rw : set_memory_rw_nx);
->
->         free_initmem_default(POISON_FREE_INITMEM);
->  }
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 2d80088f33d5..6b70c345cfc4 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -425,6 +425,42 @@ asmlinkage void __init __copy_data(void)
->  }
->  #endif
->
-> +#ifdef CONFIG_STRICT_KERNEL_RWX
-> +static __init pgprot_t pgprot_from_va(uintptr_t va)
-> +{
-> +       if (is_va_kernel_text(va))
-> +               return PAGE_KERNEL_READ_EXEC;
-> +
-> +       /*
-> +        * In 64b kernel, the kernel mapping is outside the linear mapping so we
-> +        * must protect its linear mapping alias from being executed and written.
-> +        * And rodata section is marked readonly in mark_rodata_ro.
-> +        */
-> +       if (IS_ENABLED(CONFIG_64BIT) && is_va_kernel_lm_alias_text(va))
-> +               return PAGE_KERNEL_READ;
-> +
-> +       return PAGE_KERNEL;
-> +}
-> +
-> +void mark_rodata_ro(void)
-> +{
-> +       set_kernel_memory(__start_rodata, _data, set_memory_ro);
-> +       if (IS_ENABLED(CONFIG_64BIT))
-> +               set_kernel_memory(lm_alias(__start_rodata), lm_alias(_data),
-> +                                 set_memory_ro);
-> +
-> +       debug_checkwx();
-> +}
-> +#else
-> +static __init pgprot_t pgprot_from_va(uintptr_t va)
-> +{
-> +       if (IS_ENABLED(CONFIG_64BIT) && !is_kernel_mapping(va))
-> +               return PAGE_KERNEL;
-> +
-> +       return PAGE_KERNEL_EXEC;
-> +}
-> +#endif /* CONFIG_STRICT_KERNEL_RWX */
-> +
->  /*
->   * setup_vm() is called from head.S with MMU-off.
->   *
-> @@ -454,7 +490,8 @@ uintptr_t xiprom, xiprom_sz;
->  #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
->  #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
->
-> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
-> +                                           __always_unused bool early)
->  {
->         uintptr_t va, end_va;
->
-> @@ -473,7 +510,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->                                    map_size, PAGE_KERNEL);
->  }
->  #else
-> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
->  {
->         uintptr_t va, end_va;
->
-> @@ -481,7 +518,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->         for (va = kernel_virt_addr; va < end_va; va += map_size)
->                 create_pgd_mapping(pgdir, va,
->                                    load_pa + (va - kernel_virt_addr),
-> -                                  map_size, PAGE_KERNEL_EXEC);
-> +                                  map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
->  }
->  #endif
->
-> @@ -558,7 +595,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->          * us to reach paging_init(). We map all memory banks later
->          * in setup_vm_final() below.
->          */
-> -       create_kernel_page_table(early_pg_dir, map_size);
-> +       create_kernel_page_table(early_pg_dir, map_size, true);
->
->  #ifndef __PAGETABLE_PMD_FOLDED
->         /* Setup early PMD for DTB */
-> @@ -634,22 +671,6 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  #endif
->  }
->
-> -#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
-> -void protect_kernel_linear_mapping_text_rodata(void)
-> -{
-> -       unsigned long text_start = (unsigned long)lm_alias(_start);
-> -       unsigned long init_text_start = (unsigned long)lm_alias(__init_text_begin);
-> -       unsigned long rodata_start = (unsigned long)lm_alias(__start_rodata);
-> -       unsigned long data_start = (unsigned long)lm_alias(_data);
-> -
-> -       set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
-> -       set_memory_nx(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
-> -
-> -       set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-> -       set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-> -}
-> -#endif
-> -
->  static void __init setup_vm_final(void)
->  {
->         uintptr_t va, map_size;
-> @@ -682,21 +703,15 @@ static void __init setup_vm_final(void)
->                 map_size = best_map_size(start, end - start);
->                 for (pa = start; pa < end; pa += map_size) {
->                         va = (uintptr_t)__va(pa);
-> -                       create_pgd_mapping(swapper_pg_dir, va, pa,
-> -                                          map_size,
-> -#ifdef CONFIG_64BIT
-> -                                          PAGE_KERNEL
-> -#else
-> -                                          PAGE_KERNEL_EXEC
-> -#endif
-> -                                       );
->
-> +                       create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
-> +                                          pgprot_from_va(va));
->                 }
->         }
->
->  #ifdef CONFIG_64BIT
->         /* Map the kernel */
-> -       create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
-> +       create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
->  #endif
->
->         /* Clear fixmap PTE and PMD mappings */
-> @@ -727,35 +742,6 @@ static inline void setup_vm_final(void)
->  }
->  #endif /* CONFIG_MMU */
->
-> -#ifdef CONFIG_STRICT_KERNEL_RWX
-> -void __init protect_kernel_text_data(void)
-> -{
-> -       unsigned long text_start = (unsigned long)_start;
-> -       unsigned long init_text_start = (unsigned long)__init_text_begin;
-> -       unsigned long init_data_start = (unsigned long)__init_data_begin;
-> -       unsigned long rodata_start = (unsigned long)__start_rodata;
-> -       unsigned long data_start = (unsigned long)_data;
-> -       unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
-> -
-> -       set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
-> -       set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
-> -       set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
-> -       /* rodata section is marked readonly in mark_rodata_ro */
-> -       set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-> -       set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
-> -}
-> -
-> -void mark_rodata_ro(void)
-> -{
-> -       unsigned long rodata_start = (unsigned long)__start_rodata;
-> -       unsigned long data_start = (unsigned long)_data;
-> -
-> -       set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-> -
-> -       debug_checkwx();
-> -}
-> -#endif
-> -
->  #ifdef CONFIG_KEXEC_CORE
->  /*
->   * reserve_crashkernel() - reserves memory for crash kernel
-> --
-> 2.30.2
->
+Jason
