@@ -2,203 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAE5399834
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA4739982C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhFCCvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:51:08 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:52191 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhFCCvH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:51:07 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1532ZNE6005439;
-        Thu, 3 Jun 2021 10:35:23 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
- 2021 10:48:51 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        "Andrew Jeffery" <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>
-CC:     <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>,
-        <troy_lee@aspeedtech.com>, <steven_lee@aspeedtech.com>
-Subject: [PATCH v3 1/1] dt-bindings: aspeed-i2c: Convert txt to yaml format
-Date:   Thu, 3 Jun 2021 10:48:19 +0800
-Message-ID: <20210603024839.27976-2-jamin_lin@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210603024839.27976-1-jamin_lin@aspeedtech.com>
-References: <20210603024839.27976-1-jamin_lin@aspeedtech.com>
+        id S229667AbhFCCui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:50:38 -0400
+Received: from ozlabs.org ([203.11.71.1]:46961 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229625AbhFCCuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 22:50:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FwVhd4X4Dz9sPf;
+        Thu,  3 Jun 2021 12:48:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622688531;
+        bh=xSLZDHrDrKxpk5ZtNpk55TJEoabwTu/1J5LjvK5s1ek=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ksDH373YnNicstrzjVrgIeWBbmUjlWLgPI5tdeSo7Hq2BAvpHHstFlahBkdh6hvYe
+         ydNO4G12THG7zcLA7SB1zXjHOtXEBIEiFzOpqpOrN+4J6c6HEwFUwo2XGpVClNryfY
+         4eoim1GFxtJdtFMzhdUh5uBX9vzPgs9rSPA9qUwthQ1oWqkNVDmkJ4IuL0m5O54p3c
+         b2A5XCFZLykewwOFO3VEgFLyckKEjDJTrySQQY8qnseDy2VNM3v6M5IgI34iqcEudK
+         FwjgJt1AnN5URfP84nkNIhLpfsTTh33vdLheUzhYQ6aNMnaCUYUB/YRNrc1nXbB4g1
+         QKexAv4j2lOtA==
+Date:   Thu, 3 Jun 2021 12:48:47 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nirmoy Das <nirmoy.das@amd.com>
+Subject: linux-next: manual merge of the amdgpu tree with the drm-misc tree
+Message-ID: <20210603124847.19a6dacf@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1532ZNE6005439
+Content-Type: multipart/signed; boundary="Sig_/CY2HkHUQ6d9_/Cn61X/ZYg8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert aspeed i2c to yaml.
+--Sig_/CY2HkHUQ6d9_/Cn61X/ZYg8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
----
- .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 75 +++++++++++++++++++
- .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 ------------
- 2 files changed, 75 insertions(+), 49 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
+Hi all,
 
-diff --git a/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-new file mode 100644
-index 000000000000..9a40605c3433
---- /dev/null
-+++ b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/i2c/aspeed,i2c.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ASPEED I2C on the AST24XX, AST25XX, and AST26XX SoCs Device Tree Bindings
-+
-+maintainers:
-+  - Rayn Chen <rayn_chen@aspeedtech.com>
-+
-+allOf:
-+  - $ref: /schemas/i2c/i2c-controller.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - aspeed,ast2400-i2c-bus
-+      - aspeed,ast2500-i2c-bus
-+      - aspeed,ast2600-i2c-bus
-+
-+  reg:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - description: address offset and range of bus
-+      - description: address offset and range of bus buffer
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+    description:
-+      root clock of bus, should reference the APB
-+      clock in the second cell
-+
-+  resets:
-+    maxItems: 1
-+
-+  bus-frequency:
-+    minimum: 500
-+    maximum: 4000000
-+    default: 100000
-+    description: frequency of the bus clock in Hz defaults to 100 kHz when not
-+      specified
-+
-+  multi-master:
-+    type: boolean
-+    description:
-+      states that there is another master active on this bus
-+
-+required:
-+  - reg
-+  - compatible
-+  - clocks
-+  - resets
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/aspeed-clock.h>
-+    i2c0: i2c-bus@40 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      #interrupt-cells = <1>;
-+      compatible = "aspeed,ast2500-i2c-bus";
-+      reg = <0x40 0x40>;
-+      clocks = <&syscon ASPEED_CLK_APB>;
-+      resets = <&syscon ASPEED_RESET_I2C>;
-+      bus-frequency = <100000>;
-+      interrupts = <0>;
-+      interrupt-parent = <&i2c_ic>;
-+    };
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-aspeed.txt b/Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-deleted file mode 100644
-index b47f6ccb196a..000000000000
---- a/Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--Device tree configuration for the I2C busses on the AST24XX, AST25XX, and AST26XX SoCs.
--
--Required Properties:
--- #address-cells	: should be 1
--- #size-cells		: should be 0
--- reg			: address offset and range of bus
--- compatible		: should be "aspeed,ast2400-i2c-bus"
--			  or "aspeed,ast2500-i2c-bus"
--			  or "aspeed,ast2600-i2c-bus"
--- clocks		: root clock of bus, should reference the APB
--			  clock in the second cell
--- resets		: phandle to reset controller with the reset number in
--			  the second cell
--- interrupts		: interrupt number
--
--Optional Properties:
--- bus-frequency	: frequency of the bus clock in Hz defaults to 100 kHz when not
--		  specified
--- multi-master	: states that there is another master active on this bus.
--
--Example:
--
--i2c {
--	compatible = "simple-bus";
--	#address-cells = <1>;
--	#size-cells = <1>;
--	ranges = <0 0x1e78a000 0x1000>;
--
--	i2c_ic: interrupt-controller@0 {
--		#interrupt-cells = <1>;
--		compatible = "aspeed,ast2400-i2c-ic";
--		reg = <0x0 0x40>;
--		interrupts = <12>;
--		interrupt-controller;
--	};
--
--	i2c0: i2c-bus@40 {
--		#address-cells = <1>;
--		#size-cells = <0>;
--		#interrupt-cells = <1>;
--		reg = <0x40 0x40>;
--		compatible = "aspeed,ast2400-i2c-bus";
--		clocks = <&syscon ASPEED_CLK_APB>;
--		resets = <&syscon ASPEED_RESET_I2C>;
--		bus-frequency = <100000>;
--		interrupts = <0>;
--		interrupt-parent = <&i2c_ic>;
--	};
--};
--- 
-2.17.1
+Today's linux-next merge of the amdgpu tree got conflicts in:
 
+  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+  drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+
+between commit:
+
+  d3116756a710 ("drm/ttm: rename bo->mem and make it a pointer")
+
+from the drm-misc tree and commits:
+
+  b453e42a6e8b ("drm/amdgpu: Add new placement for preemptible SG BOs")
+  2a675640bc2d ("drm/amdgpu: move shadow bo validation to VM code")
+  59276f056fb7 ("drm/amdgpu: switch to amdgpu_bo_vm for vm code")
+  19a1d9350be6 ("drm/amdgpu: flush gart changes after all BO recovery")
+
+from the amdgpu tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 663aa7d2e2ea,86259435803e..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@@ -459,10 -479,11 +461,11 @@@ static int amdgpu_bo_move(struct ttm_bu
+  {
+  	struct amdgpu_device *adev;
+  	struct amdgpu_bo *abo;
+ -	struct ttm_resource *old_mem =3D &bo->mem;
+ +	struct ttm_resource *old_mem =3D bo->resource;
+  	int r;
+ =20
+- 	if (new_mem->mem_type =3D=3D TTM_PL_TT) {
++ 	if (new_mem->mem_type =3D=3D TTM_PL_TT ||
++ 	    new_mem->mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+  		r =3D amdgpu_ttm_backend_bind(bo->bdev, bo->ttm, new_mem);
+  		if (r)
+  			return r;
+@@@ -989,8 -1012,9 +995,9 @@@ int amdgpu_ttm_alloc_gart(struct ttm_bu
+  			return r;
+  		}
+ =20
++ 		amdgpu_gart_invalidate_tlb(adev);
+ -		ttm_resource_free(bo, &bo->mem);
+ -		bo->mem =3D tmp;
+ +		ttm_resource_free(bo, bo->resource);
+ +		ttm_bo_assign_mem(bo, &tmp);
+  	}
+ =20
+  	return 0;
+@@@ -1348,7 -1373,16 +1356,16 @@@ static bool amdgpu_ttm_bo_eviction_valu
+  		}
+  	}
+ =20
+ -	switch (bo->mem.mem_type) {
+ +	switch (bo->resource->mem_type) {
++ 	case AMDGPU_PL_PREEMPT:
++ 		/* Preemptible BOs don't own system resources managed by the
++ 		 * driver (pages, VRAM, GART space). They point to resources
++ 		 * owned by someone else (e.g. pageable memory in user mode
++ 		 * or a DMABuf). They are used in a preemptible context so we
++ 		 * can guarantee no deadlocks and good QoS in case of MMU
++ 		 * notifiers or DMABuf move notifiers from the resource owner.
++ 		 */
++ 		return false;
+  	case TTM_PL_TT:
+  		if (amdgpu_bo_is_amdgpu_bo(bo) &&
+  		    amdgpu_bo_encrypted(ttm_to_amdgpu_bo(bo)))
+@@@ -1767,8 -1809,13 +1791,9 @@@ void amdgpu_ttm_fini(struct amdgpu_devi
+  	amdgpu_bo_free_kernel(&adev->mman.discovery_memory, NULL, NULL);
+  	amdgpu_ttm_fw_reserve_vram_fini(adev);
+ =20
+ -	if (adev->mman.aper_base_kaddr)
+ -		iounmap(adev->mman.aper_base_kaddr);
+ -	adev->mman.aper_base_kaddr =3D NULL;
+ -
+  	amdgpu_vram_mgr_fini(adev);
+  	amdgpu_gtt_mgr_fini(adev);
++ 	amdgpu_preempt_mgr_fini(adev);
+  	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_GDS);
+  	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_GWS);
+  	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_OA);
+@@@ -1919,7 -2010,12 +1944,12 @@@ int amdgpu_fill_buffer(struct amdgpu_b
+  		return -EINVAL;
+  	}
+ =20
+ -	if (bo->tbo.mem.mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+++	if (bo->tbo.resource->mem_type =3D=3D AMDGPU_PL_PREEMPT) {
++ 		DRM_ERROR("Trying to clear preemptible memory.\n");
++ 		return -EINVAL;
++ 	}
++=20
+ -	if (bo->tbo.mem.mem_type =3D=3D TTM_PL_TT) {
+ +	if (bo->tbo.resource->mem_type =3D=3D TTM_PL_TT) {
+  		r =3D amdgpu_ttm_alloc_gart(&bo->tbo);
+  		if (r)
+  			return r;
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index bcfd4a8d0288,1923f035713a..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@@ -657,11 -657,10 +658,11 @@@ void amdgpu_vm_move_to_lru_tail(struct=20
+  		if (!bo->parent)
+  			continue;
+ =20
+ -		ttm_bo_move_to_lru_tail(&bo->tbo, &bo->tbo.mem,
+ +		ttm_bo_move_to_lru_tail(&bo->tbo, bo->tbo.resource,
+  					&vm->lru_bulk_move);
+- 		if (bo->shadow)
+- 			ttm_bo_move_to_lru_tail(&bo->shadow->tbo,
++ 		if (shadow)
+ -			ttm_bo_move_to_lru_tail(&shadow->tbo, &shadow->tbo.mem,
+++			ttm_bo_move_to_lru_tail(&shadow->tbo,
+ +						bo->shadow->tbo.resource,
+  						&vm->lru_bulk_move);
+  	}
+  	spin_unlock(&adev->mman.bdev.lru_lock);
+@@@ -1818,11 -1853,12 +1859,12 @@@ int amdgpu_vm_bo_update(struct amdgpu_d
+  			struct drm_gem_object *gobj =3D dma_buf->priv;
+  			struct amdgpu_bo *abo =3D gem_to_amdgpu_bo(gobj);
+ =20
+ -			if (abo->tbo.mem.mem_type =3D=3D TTM_PL_VRAM)
+ +			if (abo->tbo.resource->mem_type =3D=3D TTM_PL_VRAM)
+  				bo =3D gem_to_amdgpu_bo(gobj);
+  		}
+ -		mem =3D &bo->tbo.mem;
+ +		mem =3D bo->tbo.resource;
+- 		if (mem->mem_type =3D=3D TTM_PL_TT)
++ 		if (mem->mem_type =3D=3D TTM_PL_TT ||
++ 		    mem->mem_type =3D=3D AMDGPU_PL_PREEMPT)
+  			pages_addr =3D bo->tbo.ttm->dma_address;
+  	}
+ =20
+
+--Sig_/CY2HkHUQ6d9_/Cn61X/ZYg8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC4Qw8ACgkQAVBC80lX
+0GxjJAf+K2Xk6Tf0FoqwHM8wrFCtjSGKeds+Kx4kxBOihlr4qZ+bUTKS/k6STTE2
+ecBUTgqmwaNUaEb8jf3VrnZ6DaVaD75gCy6w16O5JUSgkm8peoMUnm+3dhhrrgxH
+jZ4JxGEBarh+nwzLKB0jDY4p/2VYKQn36uq5PTX+B/tb7jA6qs/f7m6OS1ivhC/a
+EB9pUcujHgEFAKOI5GQxFM7Un61RLCyAoEvH8noaJ4GLAtcxTaIA1CZyITylk9rd
+zMvVEaAJYfN14QzyGNxPgq0SQWOjRryhR/Kgs71Qr9KG/Gw2ueTft+Vt0zwl/IYv
+nXEal76ylJ4i+REE901zE1uEfxWeEQ==
+=H2qR
+-----END PGP SIGNATURE-----
+
+--Sig_/CY2HkHUQ6d9_/Cn61X/ZYg8--
