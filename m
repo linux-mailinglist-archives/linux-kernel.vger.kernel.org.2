@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A4E399EFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA08399F01
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhFCKeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:34:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhFCKeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:34:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D65BC613B4;
-        Thu,  3 Jun 2021 10:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622716340;
-        bh=X5aLnubKAmnjv11r/M1yhgLc/kSlye6ydJVcueRcSJM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZFiJY4nZsZfw97zIHkBEr3VpNpMUKzlrhETGTbuErOKNsf/bLe+LuyXJXk5EACpKK
-         MZUE7KzGUgKgwe1GiaI40o1kN29hxhkKEknugf+NAqPxGx0S8+0A0QtDAfqTSXBhzZ
-         NVDQIJ2oxYkEBkpO4ZhWhSCNg8wsqUOTT3HRj9PLSbeS5jWRqRKQlVtSISMVZEPsZB
-         CRaspjduFgAQG0PguB9XyA+3cHreOeMFv9tpLn/bnY4YmfgWn/LS6ExOdkYlu4qguU
-         BxSMpkXsv1XZVLcRvR02mvIlfd8BTTGdNmP1ZPmeSV7m5fVMo3pe/F5W157wYxYtti
-         L6n25V+hCu22A==
-Date:   Thu, 3 Jun 2021 13:32:11 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org
-Subject: Re: [RFC/RFT PATCH 2/5] memblock: introduce generic
- memblock_setup_resources()
-Message-ID: <YLivq1QRcStvpsLr@kernel.org>
-References: <20210531122959.23499-1-rppt@kernel.org>
- <20210531122959.23499-3-rppt@kernel.org>
- <20210601135415.GZ30436@shell.armlinux.org.uk>
- <YLdCRoldZFYMZ0BG@linux.ibm.com>
- <20210602101521.GD30436@shell.armlinux.org.uk>
- <YLeNiUkIw+aFpMcz@linux.ibm.com>
- <20210602155141.GM30436@shell.armlinux.org.uk>
- <YLfRVGC+tq5L0TZ6@kernel.org>
- <20210602201502.GP30436@shell.armlinux.org.uk>
+        id S229813AbhFCKfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:35:13 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3530 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFCKfM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:35:12 -0400
+Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FwhxY0g7yzZcDb;
+        Thu,  3 Jun 2021 18:30:41 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.144) by dggeme759-chm.china.huawei.com
+ (10.3.19.105) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 18:33:26 +0800
+Subject: Re: [PATCH v3 1/3] lib: bitmap: introduce bitmap_print_to_buf
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tian Tao <tiantao6@hisilicon.com>
+CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <jonathan.cameron@huawei.com>, <song.bao.hua@hisilicon.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+References: <1622712162-7028-1-git-send-email-tiantao6@hisilicon.com>
+ <1622712162-7028-2-git-send-email-tiantao6@hisilicon.com>
+ <YLil8ZOpQSsAB5i0@smile.fi.intel.com>
+From:   "tiantao (H)" <tiantao6@huawei.com>
+Message-ID: <95f5e01d-79c1-28f3-f27b-bee4398308de@huawei.com>
+Date:   Thu, 3 Jun 2021 18:33:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602201502.GP30436@shell.armlinux.org.uk>
+In-Reply-To: <YLil8ZOpQSsAB5i0@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.188.144]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme759-chm.china.huawei.com (10.3.19.105)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 09:15:02PM +0100, Russell King (Oracle) wrote:
-> On Wed, Jun 02, 2021 at 09:43:32PM +0300, Mike Rapoport wrote:
-> > Back then when __ex_table was moved from .data section, _sdata and _edata
-> > were part of the .data section. Today they are not. So something like the
-> > patch below will ensure for instance that __ex_table would be a part of
-> > "Kernel data" in /proc/iomem without moving it to the .data section:
-> > 
-> This example has undesirable security implications. It moves the
-> exception table out of the read-only mappings into the read-write
-> mappings, thereby providing a way for an attacker to bypass the
-> read-only protection on the kernel and manipulate code pointers at
-> potentially known addresses for distro built kernels.
 
-My point was that __ex_table can be in "Kernel data" or "Kernel rodata"
-without loosing the ability to sort it.
- 
-> You seem to be missing the point I've tried to make. The areas in
-> memblock that are marked "reserved" are the areas of reserved memory
-> from the firmware _plus_ the areas that the kernel has made during
-> boot which are of no consequence to userspace.
+在 2021/6/3 17:50, Andy Shevchenko 写道:
+> On Thu, Jun 03, 2021 at 05:22:40PM +0800, Tian Tao wrote:
+>> New API bitmap_print_to_buf() with bin_attribute to avoid maskp
+>> exceeding PAGE_SIZE. bitmap_print_to_pagebuf() is a special case
+>> of bitmap_print_to_buf(), so in bitmap_print_to_pagebuf() call
+>> bitmap_print_to_buf().
+> ...
+>
+>>   /**
+>> + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
+>> + * @list: indicates whether the bitmap must be list
+>> + * @buf: the kernel space buffer to read to
+>> + * @maskp: pointer to bitmap to convert
+>> + * @nmaskbits: size of bitmap, in bits
+>> + * @off: offset in data buffer below
+>> + * @count: the maximum number of bytes to print
+>> + *
+>> + * The role of bitmap_print_to_buf() and bitmap_print_to_pagebuf() is
+>> + * the same, the difference is that buf of bitmap_print_to_buf()
+>> + * can be more than one pagesize.
+>> + */
+>> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+>> +			int nmaskbits, loff_t off, size_t count)
+>> +{
+>> +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
+>> +	ssize_t size;
+>> +	void *data;
+>> +
+>> +	if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
+>> +		return scnprintf(buf, count, fmt, nmaskbits, maskp);
+>> +
+>> +	data = kasprintf(GFP_KERNEL, fmt, nmaskbits, maskp);
+>> +	if (!data)
+>> +		return -ENOMEM;
+>> +
+>> +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
+> Are you sure you have put parameters in the correct order?
 
-I know what areas are marked "reserved" in memblock. 
-I never suggested to report "ficticious" reserved areas in /proc/iomem
-unless an architecture already reports them there, like arm64 for example.
+yes, I already test it.
 
-You are right I should have described better the overall objective, but
-sill I feel that we keep missing each other points.
+ssize_t memory_read_from_buffer(void *to, size_t count, loff_t *ppos,
+                                 const void *from, size_t available)
 
-I'll update the descriptions for the next repost, hopefully it'll help.
+>
+>> +	kfree(data);
+>> +
+>> +	return size;
+>> +}
+> I guess you have to provide the test case(s).
+>
 
--- 
-Sincerely yours,
-Mike.
