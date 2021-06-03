@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E8E3997A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675CB3997B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhFCBtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 21:49:08 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43183 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229758AbhFCBtG (ORCPT
+        id S229892AbhFCBuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 21:50:06 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7077 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhFCBuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 21:49:06 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1531l7DF011614
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Jun 2021 21:47:08 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9660A15C3CAF; Wed,  2 Jun 2021 21:47:07 -0400 (EDT)
-Date:   Wed, 2 Jun 2021 21:47:07 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     jack@suse.cz, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-Message-ID: <YLg0mx3fhQSPHYb1@mit.edu>
-References: <20210506141042.3298679-1-yebin10@huawei.com>
+        Wed, 2 Jun 2021 21:50:00 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FwTHX2xqhzYqG6;
+        Thu,  3 Jun 2021 09:45:28 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 09:48:13 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 09:48:13 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
+Date:   Thu, 3 Jun 2021 09:47:57 +0800
+Message-ID: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506141042.3298679-1-yebin10@huawei.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 10:10:42PM +0800, Ye Bin wrote:
-> We got follow bug_on when run fsstress with injecting IO fault:
-> [130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
-> [130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
-> ......
-> [130747.334329] Call trace:
-> [130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
-> [130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
-> [130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
-> [130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
-> [130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
-> [130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
-> [130747.336995]  ext4_readpage+0x54/0x100 [ext4]
-> [130747.337359]  generic_file_buffered_read+0x410/0xae8
-> [130747.337767]  generic_file_read_iter+0x114/0x190
-> [130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
-> [130747.338556]  __vfs_read+0x11c/0x188
-> [130747.338851]  vfs_read+0x94/0x150
-> [130747.339110]  ksys_read+0x74/0xf0
-> 
-> If call ext4_ext_insert_extent failed but new extent already inserted, we just
-> update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-> cause bug on when cache extent.
-> If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
-> Maybe there will lead to block leak, but it can be fixed by fsck later.
-> 
-> After we fixed above issue with v2 patch, but we got the same issue.
-> ext4_split_extent_at:
-> {
->         ......
->         err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
->         if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
->             ......
->             ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
->             err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
->             if (err)
->                 goto fix_extent_len;
->         ......
->         }
->         ......
-> fix_extent_len:
->         ex->ee_len = orig_ex.ee_len; ->step(3)
->         ......
-> }
-> If step(1) have been merged, but step(2) dirty extent failed, then go to
-> fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
-> old one, will cause overwritten. Then will trigger the same issue as previous.
-> If step(2) failed, just return error, don't fix ex->ee_len with old value.
-> 
-> This patch's modification is according to Jan Kara's suggestion in V3 patch:
-> ("https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/")
-> "I see. Now I understand your patch. Honestly, seeing how fragile is trying
-> to fix extent tree after split has failed in the middle, I would probably
-> go even further and make sure we fix the tree properly in case of ENOSPC
-> and EDQUOT (those are easily user triggerable).  Anything else indicates a
-> HW problem or fs corruption so I'd rather leave the extent tree as is and
-> don't try to fix it (which also means we will not create overlapping
-> extents)."
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+Patch 1: remove unnecessary seqcount operation.
+Patch 2: implement TCQ_F_CAN_BYPASS.
+Patch 3: remove qdisc->empty.
 
-Applied, thanks.
+Performance data for pktgen in queue_xmit mode + dummy netdev
+with pfifo_fast:
 
-					- Ted
+ threads    unpatched           patched             delta
+    1       2.60Mpps            3.21Mpps             +23%
+    2       3.84Mpps            5.56Mpps             +44%
+    4       5.52Mpps            5.58Mpps             +1%
+    8       2.77Mpps            2.76Mpps             -0.3%
+   16       2.24Mpps            2.23Mpps             +0.4%
+
+Performance for IP forward testing: 1.05Mpps increases to
+1.16Mpps, about 10% improvement.
+
+V2: Adjust the comment and commit log according to discussion
+    in V1.
+V1: Drop RFC tag, Add nolock_qdisc_is_empty() and do the qdisc
+    empty checking without the protection of qdisc->seqlock to
+    aviod doing unnecessary spin_trylock() for contention case.
+RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
+        qdisc, and add patch 1 and 3.
+
+Yunsheng Lin (3):
+  net: sched: avoid unnecessary seqcount operation for lockless qdisc
+  net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
+  net: sched: remove qdisc->empty for lockless qdisc
+
+ include/net/sch_generic.h | 31 ++++++++++++++++++-------------
+ net/core/dev.c            | 27 +++++++++++++++++++++++++--
+ net/sched/sch_generic.c   | 23 ++++++++++++++++-------
+ 3 files changed, 59 insertions(+), 22 deletions(-)
+
+-- 
+2.7.4
+
