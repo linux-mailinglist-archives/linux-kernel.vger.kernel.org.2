@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6C439A9DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2541D39A9ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhFCSSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:18:42 -0400
-Received: from mga04.intel.com ([192.55.52.120]:11462 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCSSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:18:41 -0400
-IronPort-SDR: nq+U15UXWPM6lMBVvzAr1toyl85P2Lu4L1uWLCz7i+/BrUHwwA6cbKHl1CCTn0pJKMFHUR4gX+
- 0ArvgLdU68Yg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="202256216"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="202256216"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 11:16:38 -0700
-IronPort-SDR: 9pBvENtfWuBMbET//Z1zc0S1vJhEpeu/skYlOjWVxtlNDyqkMly957fa7Ne228wAOY12hp6yte
- ueK+lCzlzh/A==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="417479645"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 11:16:37 -0700
-Date:   Thu, 3 Jun 2021 11:19:14 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210603111914.653c4f61@jacob-builder>
-In-Reply-To: <23a482f9-b88a-da98-3800-f3fd9ea85fbd@huawei.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <c9c066ae-2a25-0799-51a7-0ca47fff41a1@huawei.com>
-        <aa1624bf-e472-2b66-1d20-54ca23c19fd2@linux.intel.com>
-        <ed4f6e57-4847-3ed2-75de-cea80b2fbdb8@huawei.com>
-        <01fe5034-42c8-6923-32f1-e287cc36bccc@linux.intel.com>
-        <20210601173323.GN1002214@nvidia.com>
-        <23a482f9-b88a-da98-3800-f3fd9ea85fbd@huawei.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229871AbhFCSX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:23:28 -0400
+Received: from mail-ej1-f52.google.com ([209.85.218.52]:35555 "EHLO
+        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhFCSX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:23:26 -0400
+Received: by mail-ej1-f52.google.com with SMTP id h24so10665177ejy.2;
+        Thu, 03 Jun 2021 11:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ADVoquzaV0LEIwvO5Q6pqef0DTPmXc23DXJhuut77RA=;
+        b=D3lf5UiTa9SvEkPsI7imOnzwWcIjbYO0/a3Jg5VFaj5MCXTyhcZE8yWE3TahpqWTaL
+         BtMiAQBRWV/HT2ZqmwV7DKqnRaAV5z89xM8bYnRlgXqiu7qHGs7hCIHq+dNPV2h0ycmg
+         4Wtv2CqkZFuFOjJVuZCM30nlPpJpaaG7Loc+TycbjPboJkkVo4Tl3JcPO5kdIZRw8BBA
+         RVoQ6Nyh55iZXVVaADPdjkCwz09FJZwxSlbZ1AzWI6JdaymZWSKH7GVAdiJwluQthYRw
+         jRDjtjPiCB59t1wPaKFngQ9RNCNxLtF09VgWweFwVT+wnBpFOTI0+kiodG4m0gqCsg3b
+         P7IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ADVoquzaV0LEIwvO5Q6pqef0DTPmXc23DXJhuut77RA=;
+        b=MnVo3j+3Du0/JtHDFP0PJMlrpxi1hGMX5fA6yyDR6dOmJ/tGNrf6YCQ/MZPmgck5CN
+         HQbhPQvdqw/0o0SChUAgGTZGtrrN0jzQbNZSA98veOWertYCZ5u5ANRqZ057C5JFtG9h
+         h3plSLPM6GSPauDY+TVuDOSwIx0jQmMWOLNqXBGKPj+AZXeBvmtkaxxRfVAlNSeLvoCS
+         Pq/TsOxS5Fk0feBC3Geqz7nbEhcyGoEYz5BeOhdw1q6fXDfWbCMiM5VTa/b1bCFgnSc0
+         Klho4RnSkWHjTcI9swWd9/4GUM24joRBdH+zpECu259dXN608yocIHVjOfjPOxuJ04n/
+         3DhA==
+X-Gm-Message-State: AOAM532Ho9iCyljpu/lHGnieNk/qUBvynG72QIP+k/Q1IY0/iRjTY117
+        +g1+nfJH+YGwmNr2WDI+Vj80i4nhYhRCz+BdtitOiS6kt7A=
+X-Google-Smtp-Source: ABdhPJw2MzrYlh8vu+LAt1q2tmMgENbP3bjmsOtbZJwHu9NzmzZmm5ZNkJTKCubMB3ZXF/AlchDhFRYZtvDSHiIspiI=
+X-Received: by 2002:a17:907:2d8d:: with SMTP id gt13mr633877ejc.162.1622744440824;
+ Thu, 03 Jun 2021 11:20:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210601084830.260196-1-narmstrong@baylibre.com>
+In-Reply-To: <20210601084830.260196-1-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 3 Jun 2021 20:20:30 +0200
+Message-ID: <CAFBinCDeo=Mc=hjSuan_zE=SsZnz=vdjOwBY178PTnNcJBJK0g@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0 is disabled
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shenming,
-
-On Wed, 2 Jun 2021 12:50:26 +0800, Shenming Lu <lushenming@huawei.com>
-wrote:
-
-> On 2021/6/2 1:33, Jason Gunthorpe wrote:
-> > On Tue, Jun 01, 2021 at 08:30:35PM +0800, Lu Baolu wrote:
-> >   
-> >> The drivers register per page table fault handlers to /dev/ioasid which
-> >> will then register itself to iommu core to listen and route the per-
-> >> device I/O page faults.   
-> > 
-> > I'm still confused why drivers need fault handlers at all?  
-> 
-> Essentially it is the userspace that needs the fault handlers,
-> one case is to deliver the faults to the vIOMMU, and another
-> case is to enable IOPF on the GPA address space for on-demand
-> paging, it seems that both could be specified in/through the
-> IOASID_ALLOC ioctl?
-> 
-I would think IOASID_BIND_PGTABLE is where fault handler should be
-registered. There wouldn't be any IO page fault without the binding anyway.
-
-I also don't understand why device drivers should register the fault
-handler, the fault is detected by the pIOMMU and injected to the vIOMMU. So
-I think it should be the IOASID itself register the handler.
-
-> Thanks,
-> Shenming
-> 
-
-
-Thanks,
-
-Jacob
+On Tue, Jun 1, 2021 at 10:49 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> When only PHY1 is used (for example on Odroid-HC4), the regmap init code
+> uses the usb2 ports when doesn't initialize the PHY1 regmap entry.
+>
+> This fixes:
+> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+> ...
+> pc : regmap_update_bits_base+0x40/0xa0
+> lr : dwc3_meson_g12a_usb2_init_phy+0x4c/0xf8
+> ...
+> Call trace:
+> regmap_update_bits_base+0x40/0xa0
+> dwc3_meson_g12a_usb2_init_phy+0x4c/0xf8
+> dwc3_meson_g12a_usb2_init+0x7c/0xc8
+> dwc3_meson_g12a_usb_init+0x28/0x48
+> dwc3_meson_g12a_probe+0x298/0x540
+> platform_probe+0x70/0xe0
+> really_probe+0xf0/0x4d8
+> driver_probe_device+0xfc/0x168
+> ...
+>
+> Fixes: 013af227f58a97 ("usb: dwc3: meson-g12a: handle the phy and glue registers separately")
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
