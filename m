@@ -2,236 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081D639A9A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E61A39A9B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFCSDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:03:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47994 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhFCSDl (ORCPT
+        id S230294AbhFCSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:05:27 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:42518 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhFCSF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:03:41 -0400
-Date:   Thu, 03 Jun 2021 18:01:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622743306;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=reATOpn4TXZ939pAVyG79/jskmMCt9M+3Qq2ZyXo/TE=;
-        b=ow90GZDNX3XIqw/9+edPw+QabA8JdBc1+6AQt8jv75bhSRfvJhWllKi2fkckTYbLd9y/E5
-        31kVXWHaYt13VpYJq3biJ8wBlndCIDnpHj3HXUHqUUYygzFQ71TlXtRbGRnMYKXFMofc00
-        /xo6GTQMiyXxRkryrd60J71dOfCB5hg0A/K4nAxCYdCrsGPMNvAPagwO+jFGSXZnycq5na
-        H6TgKg19ZXPB7nSO93vEr4WX+OF7v5iQ+ZHGQCdnCBAW4LkeTN2kIH70TEBkRF1mvhYw0r
-        yS9ON90SxDaoZviHzjekhZRF5bFh27XJUvd6V4m2fXIj0C+D4awqSZcumO5KDg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622743306;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=reATOpn4TXZ939pAVyG79/jskmMCt9M+3Qq2ZyXo/TE=;
-        b=GeTR7GVjDTmmHW9u8vKXLQMc/5AhaavST1lW4cwQ2fhtFYFn2AWkv6VrRGZk0+m3CuhSct
-        GIHFy8mA6RFWvLBg==
-From:   "tip-bot2 for Mike Rapoport" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/setup: Always reserve the first 1M of RAM
-Cc:     Mike Rapoport <rppt@linux.ibm.com>, Borislav Petkov <bp@suse.de>,
-        Hugh Dickins <hughd@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210601075354.5149-2-rppt@kernel.org>
-References: <20210601075354.5149-2-rppt@kernel.org>
+        Thu, 3 Jun 2021 14:05:26 -0400
+Received: by mail-wm1-f46.google.com with SMTP id o2-20020a05600c4fc2b029019a0a8f959dso4216854wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iGiwzAqsyZVjuWog2CKsBWz7P5Is31TchRL5oaKcvSc=;
+        b=NRjOTti9YvPUq9yeF65sVUkWtlJ/hXgFgGtFjrov2e3mcCdEs2pmp4XG2GTgXzhS0I
+         Ozyc5euVTFtoU7zSlKHoWYA6dhsLHxAUaimYmUxt2HIMiosoIy+jhu5YhwBpJkv6gbiX
+         E7i44OG+V2UUzljqr4osrF+h9p+DUI8MW3lus=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iGiwzAqsyZVjuWog2CKsBWz7P5Is31TchRL5oaKcvSc=;
+        b=gatbB2uUQbKZPZjLNSl+Vdiu0W4uoVoZu0+4vf49VARbnMvarXhlak5/IeK8WQG7PK
+         q44CsvXG+obizUiJ9RFs/0qi+1+TOYqcbZT11UlEr5flWu6ed0JsqWEheYHQf1fYX6GY
+         PJLhsj1qF8yYPQ0xXwy+CamODPCoYjqnGnlOqoPlkwj6KFsanLncN/iAPL2iUwn6e2cR
+         Hypv8DquAKuQ4Z2NjmPIuajf78mE0gWQIWMGdQWY+b+1Bag+V0/DpKc73nmRAgZ791Db
+         cEnZm3Ejfeb1cvlE9iVG2L8rxNfScuRAXJEf3kZlFCgygZ79CV+VskuGl5YZy19SvL3y
+         O/eA==
+X-Gm-Message-State: AOAM532B3QxxDmnrT3AIqFtgdKbYLj/1sEPKRtDwCXHLyTTft9lynzeF
+        Jl5k5iZll8KJXgPM7RiVE4YDBpO60Yb2EQh9IqPCAw==
+X-Google-Smtp-Source: ABdhPJzg+UYBIV0v5Q6wCC+S44IFOhCyh2XPYVyTESOIfc2mGW9FACqvqMWcVDsN/SVQl1RguShM7Z2tsw1kAr7SWaE=
+X-Received: by 2002:a7b:c847:: with SMTP id c7mr305986wml.168.1622743360109;
+ Thu, 03 Jun 2021 11:02:40 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162274330352.29796.17521974349959809425.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210506153153.30454-1-pali@kernel.org> <20210603151605.GA18917@lpieralisi>
+In-Reply-To: <20210603151605.GA18917@lpieralisi>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Thu, 3 Jun 2021 12:02:28 -0600
+Message-ID: <CAPnjgZ38G2Xzz1pTp3kCdaTZrDe+hKoBbqsGLKHyLfjUM7wH7g@mail.gmail.com>
+Subject: Re: [PATCH 00/42] PCI: aardvark: Various driver fixes
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        lak <linux-arm-kernel@lists.infradead.org>,
+        lk <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi,
 
-Commit-ID:     f1d4d47c5851b348b7713007e152bc68b94d728b
-Gitweb:        https://git.kernel.org/tip/f1d4d47c5851b348b7713007e152bc68b94d728b
-Author:        Mike Rapoport <rppt@linux.ibm.com>
-AuthorDate:    Tue, 01 Jun 2021 10:53:52 +03:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 03 Jun 2021 19:57:55 +02:00
+On Thu, 3 Jun 2021 at 09:17, Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> On Thu, May 06, 2021 at 05:31:11PM +0200, Pali Roh=C3=A1r wrote:
+> > This patch series fixes various issues in pci-aardvark.c driver
+> > (PCIe controller on Marvell Armada 3700 SoC) used on Espressobin
+> > and Turris Mox.
+> >
+> > First patch fixes kernel panic (or TF-A panic depending on used
+> > firmware) during execution of PIO transfer and I would suggest to
+> > include this fix into v5.13 release to prevent future kernel panics.
+> >
+> > Other patches then fixes PIO issues, PCIe link training, initialization
+> > of PCIe controller, accessing PCIe Root Bridge/Port registers, handling
+> > of interrupts (including ERR and PME), setup of Multi-MSI interrupts,
+> > adding support for masking MSI interrupts, adding support for more than
+> > 32 MSI interrupts with MSI-X support, and adding support for AER.
+> >
+> > Note that there are still some unresolved issues with PCIe on A3720.
+> > I asked Marvell for PCIe documentation or explanations but I have not
+> > received anything (yet).
+> >
+> > Patch "Fix checking for PIO status" is taken from the Marvell github fo=
+rk
+> > and adapted for inclusion into mainline kernel:
+> > https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/84444=
+d22023c
+> >
+> > Whole patch series is available also in my git branch pci-aardvark:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=
+=3Dpci-aardvark
+> >
+> > If you have Espressobin, Turris Mox or other A3720 board with PCIe
+> > please test this patch series with your favourite PCIe card if
+> > everything is working fine.
+> >
+> > Evan Wang (1):
+> >   PCI: aardvark: Fix checking for PIO status
+> >
+> > Pali Roh=C3=A1r (39):
+> >   PCI: aardvark: Fix kernel panic during PIO transfer
+> >   PCI: aardvark: Fix checking for PIO Non-posted Request
+> >   PCI: aardvark: Increase polling delay to 1.5s while waiting for PIO
+> >     response
+> >   PCI: pci-bridge-emul: Add PCIe Root Capabilities Register
+> >   PCI: aardvark: Fix reporting CRS Software Visibility on emulated
+> >     bridge
+> >   PCI: aardvark: Fix link training
+> >   PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
+> >   PCI: aardvark: Fix PCIe Max Payload Size setting
+> >   PCI: aardvark: Implement workaround for the readback value of VEND_ID
+> >   PCI: aardvark: Do not touch status bits of masked interrupts in
+> >     interrupt handler
+> >   PCI: aardvark: Check for virq mapping when processing INTx IRQ
+> >   PCI: aardvark: Remove irq_mask_ack callback for INTx interrupts
+> >   PCI: aardvark: Don't mask irq when mapping
+> >   PCI: aardvark: Change name of INTx irq_chip to advk-INT
+> >   PCI: aardvark: Remove unneeded goto
+> >   PCI: aardvark: Fix support for MSI interrupts
+> >   PCI: aardvark: Correctly clear and unmask all MSI interrupts
+> >   PCI: aardvark: Fix setting MSI address
+> >   PCI: aardvark: Add support for more than 32 MSI interrupts
+> >   PCI: aardvark: Add support for masking MSI interrupts
+> >   PCI: aardvark: Enable MSI-X support
+> >   PCI: aardvark: Fix support for ERR interrupt on emulated bridge
+> >   PCI: aardvark: Fix support for PME on emulated bridge
+> >   PCI: aardvark: Fix support for PME requester on emulated bridge
+> >   PCI: aardvark: Fix support for bus mastering and PCI_COMMAND on
+> >     emulated bridge
+> >   PCI: aardvark: Disable bus mastering and mask all interrupts when
+> >     unbinding driver
+> >   PCI: aardvark: Free config space for emulated root bridge when
+> >     unbinding driver to fix memory leak
+> >   PCI: aardvark: Reset PCIe card and disable PHY when unbinding driver
+> >   PCI: aardvark: Rewrite irq code to chained irq handler
+> >   PCI: aardvark: Use separate INTA interrupt for emulated root bridge
+> >   PCI: pci-bridge-emul: Add description for class_revision field
+> >   PCI: pci-bridge-emul: Add definitions for missing capabilities
+> >     registers
+> >   PCI: aardvark: Add support for DEVCAP2, DEVCTL2, LNKCAP2 and LNKCTL2
+> >     registers on emulated bridge
+> >   PCI: aardvark: Add support for PCI_BRIDGE_CTL_BUS_RESET on emulated
+> >     bridge
+> >   PCI: aardvark: Replace custom PCIE_CORE_ERR_CAPCTL_* macros by
+> >     linux/pci_regs.h macros
+> >   PCI: aardvark: Replace custom PCIE_CORE_INT_* macros by linux
+> >     PCI_INTERRUPT_* values
+> >   PCI: aardvark: Cleanup some register macros
+> >   PCI: aardvark: Add comments for OB_WIN_ENABLE and ADDR_WIN_DISABLE
+> >   PCI: aardvark: Add support for Advanced Error Reporting registers on
+> >     emulated bridge
+> >
+> > Russell King (2):
+> >   PCI: pci-bridge-emul: re-arrange register tests
+> >   PCI: pci-bridge-emul: add support for PCIe extended capabilities
+> >
+> >  drivers/pci/controller/pci-aardvark.c | 980 +++++++++++++++++++-------
+> >  drivers/pci/pci-bridge-emul.c         | 149 ++--
+> >  drivers/pci/pci-bridge-emul.h         |  17 +-
+> >  include/uapi/linux/pci_regs.h         |   6 +
+> >  4 files changed, 850 insertions(+), 302 deletions(-)
+>
+> May I ask you please to split this series in smaller sets so that
+> it is easier to merge ?
+>
+> Let's start with the more urgent fixes that don't involve rework (or
+> you have not received change requests for since they are simple).
 
-x86/setup: Always reserve the first 1M of RAM
+Is this due to the difficulty / time for reviewing them?
 
-There are BIOSes that are known to corrupt the memory under 1M, or more
-precisely under 640K because the memory above 640K is anyway reserved
-for the EGA/VGA frame buffer and BIOS.
+I feel it is a bit tough to ask someone to split a series, when it is
+already nicely split into patches. Reordering to put the important
+things first seems reasonable. Otherwise perhaps people can just
+review what they can?
 
-To prevent usage of the memory that will be potentially clobbered by the
-kernel, the beginning of the memory is always reserved. The exact size
-of the reserved area is determined by CONFIG_X86_RESERVE_LOW build time
-and the "reservelow=" command line option. The reserved range may be
-from 4K to 640K with the default of 64K. There are also configurations
-that reserve the entire 1M range, like machines with SandyBridge graphic
-devices or systems that enable crash kernel.
-
-In addition to the potentially clobbered memory, EBDA of unknown size may
-be as low as 128K and the memory above that EBDA start is also reserved
-early.
-
-It would have been possible to reserve the entire range under 1M unless for
-the real mode trampoline that must reside in that area.
-
-To accommodate placement of the real mode trampoline and keep the memory
-safe from being clobbered by BIOS, reserve the first 64K of RAM before
-memory allocations are possible and then, after the real mode trampoline
-is allocated, reserve the entire range from 0 to 1M.
-
-Update trim_snb_memory() and reserve_real_mode() to avoid redundant
-reservations of the same memory range.
-
-Also make sure the memory under 1M is not getting freed by
-efi_free_boot_services().
-
- [ bp: Massage commit message and comments. ]
-
-Fixes: a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Hugh Dickins <hughd@google.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=213177
-Link: https://lkml.kernel.org/r/20210601075354.5149-2-rppt@kernel.org
----
- arch/x86/kernel/setup.c        | 35 +++++++++++++++++++--------------
- arch/x86/platform/efi/quirks.c | 12 +++++++++++-
- arch/x86/realmode/init.c       | 14 +++++++------
- 3 files changed, 41 insertions(+), 20 deletions(-)
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index ff653d6..1e72062 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -638,11 +638,11 @@ static void __init trim_snb_memory(void)
- 	 * them from accessing certain memory ranges, namely anything below
- 	 * 1M and in the pages listed in bad_pages[] above.
- 	 *
--	 * To avoid these pages being ever accessed by SNB gfx devices
--	 * reserve all memory below the 1 MB mark and bad_pages that have
--	 * not already been reserved at boot time.
-+	 * To avoid these pages being ever accessed by SNB gfx devices reserve
-+	 * bad_pages that have not already been reserved at boot time.
-+	 * All memory below the 1 MB mark is anyway reserved later during
-+	 * setup_arch(), so there is no need to reserve it here.
- 	 */
--	memblock_reserve(0, 1<<20);
- 
- 	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
- 		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
-@@ -734,14 +734,14 @@ static void __init early_reserve_memory(void)
- 	 * The first 4Kb of memory is a BIOS owned area, but generally it is
- 	 * not listed as such in the E820 table.
- 	 *
--	 * Reserve the first memory page and typically some additional
--	 * memory (64KiB by default) since some BIOSes are known to corrupt
--	 * low memory. See the Kconfig help text for X86_RESERVE_LOW.
-+	 * Reserve the first 64K of memory since some BIOSes are known to
-+	 * corrupt low memory. After the real mode trampoline is allocated the
-+	 * rest of the memory below 640k is reserved.
- 	 *
- 	 * In addition, make sure page 0 is always reserved because on
- 	 * systems with L1TF its contents can be leaked to user processes.
- 	 */
--	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
-+	memblock_reserve(0, SZ_64K);
- 
- 	early_reserve_initrd();
- 
-@@ -752,6 +752,7 @@ static void __init early_reserve_memory(void)
- 
- 	reserve_ibft_region();
- 	reserve_bios_regions();
-+	trim_snb_memory();
- }
- 
- /*
-@@ -1082,14 +1083,20 @@ void __init setup_arch(char **cmdline_p)
- 			(max_pfn_mapped<<PAGE_SHIFT) - 1);
- #endif
- 
--	reserve_real_mode();
--
- 	/*
--	 * Reserving memory causing GPU hangs on Sandy Bridge integrated
--	 * graphics devices should be done after we allocated memory under
--	 * 1M for the real mode trampoline.
-+	 * Find free memory for the real mode trampoline and place it
-+	 * there.
-+	 * If there is not enough free memory under 1M, on EFI-enabled
-+	 * systems there will be additional attempt to reclaim the memory
-+	 * for the real mode trampoline at efi_free_boot_services().
-+	 *
-+	 * Unconditionally reserve the entire first 1M of RAM because
-+	 * BIOSes are know to corrupt low memory and several
-+	 * hundred kilobytes are not worth complex detection what memory gets
-+	 * clobbered. Moreover, on machines with SandyBridge graphics or in
-+	 * setups that use crashkernel the entire 1M is reserved anyway.
- 	 */
--	trim_snb_memory();
-+	reserve_real_mode();
- 
- 	init_mem_mapping();
- 
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index 7850111..b15ebfe 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -450,6 +450,18 @@ void __init efi_free_boot_services(void)
- 			size -= rm_size;
- 		}
- 
-+		/*
-+		 * Don't free memory under 1M for two reasons:
-+		 * - BIOS might clobber it
-+		 * - Crash kernel needs it to be reserved
-+		 */
-+		if (start + size < SZ_1M)
-+			continue;
-+		if (start < SZ_1M) {
-+			size -= (SZ_1M - start);
-+			start = SZ_1M;
-+		}
-+
- 		memblock_free_late(start, size);
- 	}
- 
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 2e1c1be..6534c92 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -29,14 +29,16 @@ void __init reserve_real_mode(void)
- 
- 	/* Has to be under 1M so we can execute real-mode AP code. */
- 	mem = memblock_find_in_range(0, 1<<20, size, PAGE_SIZE);
--	if (!mem) {
-+	if (!mem)
- 		pr_info("No sub-1M memory is available for the trampoline\n");
--		return;
--	}
-+	else
-+		set_real_mode_mem(mem);
- 
--	memblock_reserve(mem, size);
--	set_real_mode_mem(mem);
--	crash_reserve_low_1M();
-+	/*
-+	 * Unconditionally reserve the entire fisrt 1M, see comment in
-+	 * setup_arch().
-+	 */
-+	memblock_reserve(0, SZ_1M);
- }
- 
- static void sme_sev_setup_real_mode(struct trampoline_header *th)
+Regards,
+Simon
