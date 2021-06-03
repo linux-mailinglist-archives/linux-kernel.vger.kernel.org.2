@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA307399A9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E142F399ABB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhFCG2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:28:53 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3396 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFCG2w (ORCPT
+        id S229969AbhFCGcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:32:19 -0400
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:41968 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229794AbhFCGcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:28:52 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FwbS91VT8z67mC;
-        Thu,  3 Jun 2021 14:23:21 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 14:27:06 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 3 Jun 2021
- 14:27:06 +0800
-Subject: Re: [PATCH 1/1] tpm_tis: Use DEFINE_RES_MEM() to simplify code
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210601064507.9989-1-thunder.leizhen@huawei.com>
- <20210601175728.gyi3yepdtvu4hald@kernel.org>
- <277d929b-0602-ffbb-5866-64731a19ff14@huawei.com>
- <20210603052954.ms7s4cmkejpxo2lc@kernel.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <427a9ec1-a841-e42a-0970-81f2a890db1f@huawei.com>
-Date:   Thu, 3 Jun 2021 14:27:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Thu, 3 Jun 2021 02:32:19 -0400
+Received: by mail-lf1-f54.google.com with SMTP id v8so7138252lft.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 23:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=dhD4QqKHpRWsIEdljQV9IJSaKCpTNr2FVYc85c6SZBo=;
+        b=g4pYiiKW8we+NyMnxSaAKuYiTsF9IbzI1z1cKVx4QXDX3B8qrALbM1q9yCvfj1+4dS
+         2dD/R3rpnbJt5yrrgNo4Qk2DIzeqUQ0O0MSWuw+8bM8j1sv+JLkkG4mvmbZBTMcA16F+
+         SX8o456Ul6vd0cXty2lMctl6C+VT47DlNwvFbxkdgPa8U3Gwe6WZZiPb20EBX7OAJ/fK
+         9BWsuqEn0hCx5oyO03uMrXNbH05zabNa/Q4hM4ldAAyS60+YB8imRu+PSIVmoECt32xq
+         0pFN6nY/pUJCCcJuxnWPwsvAD4pOZtvaydxH45jOAFJ2YEPWtAHZ34HsyUIwz1+YPTBi
+         5Pmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=dhD4QqKHpRWsIEdljQV9IJSaKCpTNr2FVYc85c6SZBo=;
+        b=nxdKDpGWt/8n6iiHmSFOAgizwb+dDcJD69Rxa3YxATToT5XdNOGAc6/7pESPWuZaw8
+         kDujhqi8tzEOwtjmLXd5qq7rziv1uttz238ZkQWTng0RF8FA0tktX2OPtfbbomMng5L9
+         9vX4+zi6mSa3ePGMK3Rdr9sNPgQdbLzDsxvvut2NmYEf23iPZ4BDkRmn+F2gqNfbp/Rn
+         KrYZtM4S2K3ww+HGP+PFJIlR0Qn/+OX8y+rlD+3Qu525qal1BuG5rEQSmCBEsKsoDPHO
+         zvmU3HenZwpTyHrPT7xRaKR/XEAqvRo3VUr2/mHgU/eE5LVWj5OBLoe/rDf05Qz6tafO
+         YQyg==
+X-Gm-Message-State: AOAM532YCnnDKCuyTKUvDVM36yg/2HkzrXkfolcO6p1+TZdcDGUSVwyS
+        4vs/hF1nRPWSvI7S/XeFG6CBLoqb5rtAVbo329Q=
+X-Google-Smtp-Source: ABdhPJzPL8yPi/ekft+2Rr3AKLc6MsfaE8dvEYv+jQQ/rnX/eSQEys6onwo7OB252vuUOxEhjzoMTWD64oRe8SWq8H8=
+X-Received: by 2002:a05:6512:3703:: with SMTP id z3mr16435300lfr.468.1622701774014;
+ Wed, 02 Jun 2021 23:29:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210603052954.ms7s4cmkejpxo2lc@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Received: by 2002:ac2:4188:0:0:0:0:0 with HTTP; Wed, 2 Jun 2021 23:29:33 -0700 (PDT)
+Reply-To: wstun.office123@gmail.com
+From:   WESTERN UNION AGENT <rev.tonyjohnson101@gmail.com>
+Date:   Thu, 3 Jun 2021 07:29:33 +0100
+Message-ID: <CAGEMD6fvcA77NXRkw4axfWokeejFqSrJAYzdzfWYv4j1JEuuOg@mail.gmail.com>
+Subject: Attention Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Dear Friend,
 
+I was looking for your contact since two months ago to tell you about
+the new development in which you will receive your outstanding fund
+easily without any problem because the federal government of this
+country has Release your fund to you by western union money transfer.
 
-On 2021/6/3 13:29, Jarkko Sakkinen wrote:
-> On Wed, Jun 02, 2021 at 09:11:47AM +0800, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2021/6/2 1:57, Jarkko Sakkinen wrote:
->>> On Tue, Jun 01, 2021 at 02:45:07PM +0800, Zhen Lei wrote:
->>>> No functional change.
->>>>
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>
->>> No change, no need to apply?
->>
->> But it can make the code look simpler, easier to read and maintain(The start
->> address does not need to appear twice). I think that's why these DEFINE_RES_*
->> macros are defined.
->>
->> By the way, would it be better to change the letters in 0xFED40000 to lowercase?
-> 
-> I mean "No functional change" does not really tell anything about anything.
-> 
-> Please just describe what the commit does.
+According to minister of finance you will be receiving the sum of
+$5000usd every day till you receive all your funds. So try as much as
+possible to get you funds transferred to you. This is your opportunity
+to have your funds transferred to you.
 
-I'm sorry to have misunderstood your intention. OK, I rewrite the commit message.
+Contact western union money transfer office for immediate for the
+transfer of your fund at the rate of $5000.00 us dollar everyday till
+you
+Receive all your total fund of $2.5million us dollar.
 
-> 
-> /Jarkko
-> 
->>
->>>
->>> /Jarkko
->>>
->>>> ---
->>>>  drivers/char/tpm/tpm_tis.c | 6 +-----
->>>>  1 file changed, 1 insertion(+), 5 deletions(-)
->>>>
->>>> diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
->>>> index 4ed6e660273a414..d3f2e5364c275f4 100644
->>>> --- a/drivers/char/tpm/tpm_tis.c
->>>> +++ b/drivers/char/tpm/tpm_tis.c
->>>> @@ -363,11 +363,7 @@ static int tpm_tis_force_device(void)
->>>>  {
->>>>  	struct platform_device *pdev;
->>>>  	static const struct resource x86_resources[] = {
->>>> -		{
->>>> -			.start = 0xFED40000,
->>>> -			.end = 0xFED40000 + TIS_MEM_LEN - 1,
->>>> -			.flags = IORESOURCE_MEM,
->>>> -		},
->>>> +		DEFINE_RES_MEM(0xFED40000, TIS_MEM_LEN)
->>>>  	};
->>>>  
->>>>  	if (!force)
->>>> -- 
->>>> 2.26.0.106.g9fadedd
->>>>
->>>>
->>>>
->>>
->>> .
->>>
->>
->>
-> 
-> .
-> 
+Bellow is your files number
 
+Contact western union department below and send to them your full
+information as listed below
+
+1. Your Full Names---------
+2. Postal Address----------
+3. Phone Numbers-----------
+5. Sex-------------
+6. Age-------------
+7. Occupation--------------
+8. Nationality-------------
+9 Your Attached Id card or ------
+10.Your whatsapp Number....
+
+Contact the REV.ERIC G.CHARLS, who is in position to release your
+payment now through this email address
+
+( wstun.office123@gmail.com ) forward to him the stated information
+immediately for the release
+
+of your first payment of $5000 today.
+
+Best Regards
+
+WESTERN UNION AGENT.
