@@ -2,199 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C303B39AB7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499F639AB82
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhFCUDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:03:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21610 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229617AbhFCUDy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:03:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622750528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F6+LhEY/maKDsGguwuWfmgtdd1oJK4V5TtjaYZTDv20=;
-        b=Y0F0KdvMnwGgWCrLfEyWC1IUUvHJXSdSH07C+VuIfMVmPSq7q7pO4CWRl+T2k9NXEGORvt
-        8UmCb3fZO0Y05uD6sZBn6FalNvJZItn1dqVgQRKNwSILYNrkcirnfo2ydqqZ7Usf3buhMY
-        YawVsJmSg7Hsn3b4YWirWaKV2Cvt/Z8=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-Di-CJ6oTNXOwm5HolbqYrg-1; Thu, 03 Jun 2021 16:01:49 -0400
-X-MC-Unique: Di-CJ6oTNXOwm5HolbqYrg-1
-Received: by mail-ot1-f70.google.com with SMTP id 59-20020a9d0dc10000b02902a57e382ca1so3811318ots.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:01:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=F6+LhEY/maKDsGguwuWfmgtdd1oJK4V5TtjaYZTDv20=;
-        b=asjKaoPLoGercp+ekFSUe43goa/5lUxR5G3wQywtU3nG7b4+N6T1dSoTAT5Y2E/PH3
-         oOn2XauIdMajbavDH0TPp2KaPt98AfYY2ItdTPcGccchqn+0Ezq8Is4PdOZkTg9QKYby
-         0nFNX6UYEQ1gAz4mxEOF/LLTwuG0L5lszV17Qns6U4gGeGplhOqfO0OgyEkLVX1mmU3G
-         I7Zm8KDe7KBeRzfQ5P5TA7pNn5/xpqO3FW+3gYWiggBpVVD2OETUwSDChSgORW6kC8Ba
-         Olb27S+HKO6goFxitfzLOh4oxKIYC2SRRRZz7l9Qs6Bj8rJz0dQkOlKOiglxwZ2PHDO+
-         R9wQ==
-X-Gm-Message-State: AOAM531tY7fxM+lSgfQ0qBNnj2pvX2sdILr/MZaGnCWfH+4fCh6iOUdZ
-        f5cy0QlkMWy5rr1fBFbJyap2Ls7SSUen7HgUF5AhEaVZYjL9xtZzMBZ+/3IBnD77ZqKXIZ8b1/e
-        5rM6zMCOVUWqEeGcr+8jXCMxa
-X-Received: by 2002:a05:6820:169:: with SMTP id k9mr788072ood.92.1622750508899;
-        Thu, 03 Jun 2021 13:01:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybJFE1PtzN0iAak9GBGh+YKYVXBvdZUdaTPamYD6BYxoi0dVe3UA/w7oY39pMfZVQl/8UgAw==
-X-Received: by 2002:a05:6820:169:: with SMTP id k9mr788045ood.92.1622750508679;
-        Thu, 03 Jun 2021 13:01:48 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id p9sm891275otl.64.2021.06.03.13.01.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 13:01:48 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 14:01:46 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210603140146.5ce4f08a.alex.williamson@redhat.com>
-In-Reply-To: <20210603123401.GT1002214@nvidia.com>
-References: <20210602160140.GV1002214@nvidia.com>
-        <20210602111117.026d4a26.alex.williamson@redhat.com>
-        <20210602173510.GE1002214@nvidia.com>
-        <20210602120111.5e5bcf93.alex.williamson@redhat.com>
-        <20210602180925.GH1002214@nvidia.com>
-        <20210602130053.615db578.alex.williamson@redhat.com>
-        <20210602195404.GI1002214@nvidia.com>
-        <20210602143734.72fb4fa4.alex.williamson@redhat.com>
-        <20210602224536.GJ1002214@nvidia.com>
-        <20210602205054.3505c9c3.alex.williamson@redhat.com>
-        <20210603123401.GT1002214@nvidia.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229839AbhFCUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFCUJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:09:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07BBD613D7;
+        Thu,  3 Jun 2021 20:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622750835;
+        bh=xWOfmDOvKdhrWNFeqpdIkMU9MPu5knIBzT/+q1yRejo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=WJiYXB/ORfPow8HKiWAVTSL711JV1C0dV4Hcxgt1448bqCv0OD9SVh3tdXMBqryqP
+         YAcN5gh9WCzHpncZn1knzx1D5Wi1Z94ToGRojheqnS4MDUOQAnYDFMqeurRfqmDJ60
+         VGr5zr34a6CzpluKhL9PMo8zB5zCJtu0j4H7xB4BfXAKdcDiwe9TIgQPS9bheGlzJ+
+         ykc9Zj+0LZKuqgPhYTb+suLwV8r27CAtFdSHdEeNql3C/4qzw6KwRF1jpumx5k7z6z
+         acC43r4s7b6TKbMcLJd9ZrE8YfFWOlqGfkQbgyH4oIxjvpZ0UdlwDmDpM40Meyz8ny
+         tb9L4E473Jctg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8b763492-b2b3-93d3-9801-2f2f0ec90241@lucaceresoli.net>
+References: <20210527211647.1520720-1-luca@lucaceresoli.net> <162262084596.4130789.198191855440093780@swboyd.mtv.corp.google.com> <8b763492-b2b3-93d3-9801-2f2f0ec90241@lucaceresoli.net>
+Subject: Re: [PATCH RESEND] clk: vc5: fix output disabling when enabling a FOD
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, Adam Ford <aford173@gmail.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-clk@vger.kernel.org
+Date:   Thu, 03 Jun 2021 13:07:13 -0700
+Message-ID: <162275083380.1835121.17366140869706759167@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 09:34:01 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+Quoting Luca Ceresoli (2021-06-03 01:44:57)
+> Hi Stephen,
+>=20
+> On 02/06/21 10:00, Stephen Boyd wrote:
+> > Quoting Luca Ceresoli (2021-05-27 14:16:47)
+> >> On 5P49V6965, when an output is enabled we enable the corresponding
+> >> FOD. When this happens for the first time, and specifically when writi=
+ng
+> >> register VC5_OUT_DIV_CONTROL in vc5_clk_out_prepare(), all other outpu=
+ts
+> >> are stopped for a short time and then restarted.
+> >>
+> >> According to Renesas support this is intended: "The reason for that is=
+ VC6E
+> >> has synced up all output function".
+> >>
+> >> This behaviour can be disabled at least on VersaClock 6E devices, of w=
+hich
+> >> only the 5P49V6965 is currently implemented by this driver. This requi=
+res
+> >> writing bit 7 (bypass_sync{1..4}) in register 0x20..0x50.  Those regis=
+ters
+> >> are named "Unused Factory Reserved Register", and the bits are documen=
+ted
+> >> as "Skip VDDO<N> verification", which does not clearly explain the rel=
+ation
+> >> to FOD sync. However according to Renesas support as well as my testing
+> >> setting this bit does prevent disabling of all clock outputs when enab=
+ling
+> >> a FOD.
+> >>
+> >> See "VersaClock =C2=AE 6E Family Register Descriptions and Programming=
+ Guide"
+> >> (August 30, 2018), Table 116 "Power Up VDD check", page 58:
+> >> https://www.renesas.com/us/en/document/mau/versaclock-6e-family-regist=
+er-descriptions-and-programming-guide
+> >>
+> >> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> >> Reviewed-by: Adam Ford <aford173@gmail.com>
+> >>
+> >> ---
+> >=20
+> > Any Fixes tag for this patch?
+>=20
+> I didn't add any as there is no commit that is clearly introducing the
+> problem. This patch fixes a behavior of the chip, which is there by
+> design by causes problems in some use cases.
+>=20
+> If a Fixes tag is required than I guess it should be the commit adding
+> support for the 5P49V6965, which is the only supported variant of VC[56]
+> having having the problematic behavior _and_ the reserved register bits
+> to prevent it. However I hardly could blame the author of that code for
+> such a "peculiar" chip behaviour. Do you still want me to add such a tag?
 
-> On Wed, Jun 02, 2021 at 08:50:54PM -0600, Alex Williamson wrote:
-> > On Wed, 2 Jun 2021 19:45:36 -0300
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >   
-> > > On Wed, Jun 02, 2021 at 02:37:34PM -0600, Alex Williamson wrote:
-> > >   
-> > > > Right.  I don't follow where you're jumping to relaying DMA_PTE_SNP
-> > > > from the guest page table... what page table?      
-> > > 
-> > > I see my confusion now, the phrasing in your earlier remark led me
-> > > think this was about allowing the no-snoop performance enhancement in
-> > > some restricted way.
-> > > 
-> > > It is really about blocking no-snoop 100% of the time and then
-> > > disabling the dangerous wbinvd when the block is successful.
-> > > 
-> > > Didn't closely read the kvm code :\
-> > > 
-> > > If it was about allowing the optimization then I'd expect the guest to
-> > > enable no-snoopable regions via it's vIOMMU and realize them to the
-> > > hypervisor and plumb the whole thing through. Hence my remark about
-> > > the guest page tables..
-> > > 
-> > > So really the test is just 'were we able to block it' ?  
-> > 
-> > Yup.  Do we really still consider that there's some performance benefit
-> > to be had by enabling a device to use no-snoop?  This seems largely a
-> > legacy thing.  
-> 
-> I've recently had some no-snoopy discussions lately.. The issue didn't
-> vanish, it is still expensive going through all that cache hardware.
-> 
-> > > But Ok, back the /dev/ioasid. This answers a few lingering questions I
-> > > had..
-> > > 
-> > > 1) Mixing IOMMU_CAP_CACHE_COHERENCY and !IOMMU_CAP_CACHE_COHERENCY
-> > >    domains.
-> > > 
-> > >    This doesn't actually matter. If you mix them together then kvm
-> > >    will turn on wbinvd anyhow, so we don't need to use the DMA_PTE_SNP
-> > >    anywhere in this VM.
-> > > 
-> > >    This if two IOMMU's are joined together into a single /dev/ioasid
-> > >    then we can just make them both pretend to be
-> > >    !IOMMU_CAP_CACHE_COHERENCY and both not set IOMMU_CACHE.  
-> > 
-> > Yes and no.  Yes, if any domain is !IOMMU_CAP_CACHE_COHERENCY then we
-> > need to emulate wbinvd, but no we'll use IOMMU_CACHE any time it's
-> > available based on the per domain support available.  That gives us the
-> > most consistent behavior, ie. we don't have VMs emulating wbinvd
-> > because they used to have a device attached where the domain required
-> > it and we can't atomically remap with new flags to perform the same as
-> > a VM that never had that device attached in the first place.  
-> 
-> I think we are saying the same thing..
-
-Hrm?  I think I'm saying the opposite of your "both not set
-IOMMU_CACHE".  IOMMU_CACHE is the mapping flag that enables
-DMA_PTE_SNP.  Maybe you're using IOMMU_CACHE as the state reported to
-KVM?
-
-> > > 2) How to fit this part of kvm in some new /dev/ioasid world
-> > > 
-> > >    What we want to do here is iterate over every ioasid associated
-> > >    with the group fd that is passed into kvm.  
-> > 
-> > Yeah, we need some better names, binding a device to an ioasid (fd) but
-> > then attaching a device to an allocated ioasid (non-fd)... I assume
-> > you're talking about the latter ioasid.  
-> 
-> Fingers crossed on RFCv2.. Here I mean the IOASID object inside the
-> /dev/iommu FD. The vfio_device would have some kref handle to the
-> in-kernel representation of it. So we can interact with it..
-> 
-> > >    Or perhaps more directly: an op attaching the vfio_device to the
-> > >    kvm and having some simple helper 
-> > >          '(un)register ioasid with kvm (kvm, ioasid)'
-> > >    that the vfio_device driver can call that just sorts this out.  
-> >
-> > We could almost eliminate the device notion altogether here, use an
-> > ioasidfd_for_each_ioasid() but we really want a way to trigger on each
-> > change to the composition of the device set for the ioasid, which is
-> > why we currently do it on addition or removal of a group, where the
-> > group has a consistent set of IOMMU properties.  
-> 
-> That is another quite good option, just forget about trying to be
-> highly specific and feed in the /dev/ioasid FD and have kvm ask "does
-> anything in here not enforce snoop?"
-> 
-> With something appropriate to track/block changing that answer.
-> 
-> It doesn't solve the problem to connect kvm to AP and kvmgt though
-
-It does not, we'll probably need a vfio ioctl to gratuitously announce
-the KVM fd to each device.  I think some devices might currently fail
-their open callback if that linkage isn't already available though, so
-it's not clear when that should happen, ie. it can't currently be a
-VFIO_DEVICE ioctl as getting the device fd requires an open, but this
-proposal requires some availability of the vfio device fd without any
-setup, so presumably that won't yet call the driver open callback.
-Maybe that's part of the attach phase now... I'm not sure, it's not
-clear when the vfio device uAPI starts being available in the process
-of setting up the ioasid.  Thanks,
-
-Alex
-
+I tend to liberally apply the Fixes tag if something is being fixed. It
+helps understand that the patch is not introducing a new feature and
+when the incorrect code was introduced. I can slap on a Fixes tag
+myself, just not sure what to do.
