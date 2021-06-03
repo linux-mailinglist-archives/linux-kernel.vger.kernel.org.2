@@ -2,68 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD64399E33
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9AD399E38
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhFCJ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:58:10 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:55276 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCJ6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:58:09 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lok5L-0004PQ-8Y; Thu, 03 Jun 2021 11:56:19 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, kishon@ti.com,
-        t.schramm@manjaro.org, linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
-        vkoul@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/5] convert grf.txt to YAML
-Date:   Thu,  3 Jun 2021 11:56:16 +0200
-Message-Id: <162271417225.3165003.9593649275522382168.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210601164800.7670-1-jbx6244@gmail.com>
-References: <20210601164800.7670-1-jbx6244@gmail.com>
+        id S229825AbhFCJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCJ7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:59:07 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4279EC06174A;
+        Thu,  3 Jun 2021 02:57:23 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id A1BEC81FB2;
+        Thu,  3 Jun 2021 11:57:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1622714241;
+        bh=SSZQam37MvjdV92UuVrQYX1iZ4LDAER928vqdf2wtvg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=mAm39BGWDCGZSGf7fMTpbX/lRe+3AidPstqZkPHZEY/AL926F0LBAOsifvFSxuhVo
+         EPfHsHPEF16sShwBP/b8U1Uspr7LfvJMbNArMTd1FAR/leDaL7F94ks48SfZHUDXL4
+         fd1B0+Xm8KM7CNoY0SyAThSmkCCA9GG1GYr2NLlG4LSuMjXG2RXyiE8+Td1YeObfQe
+         OpH1y7B4s19Ka+g6TLWgEJv3F/ezycGfk/i7Sv335lA3CrX6KXeU0unDWViSmV19WG
+         umkY2wmCvfIka0hPwOYVzd4FZzSVVnReTSz4F0MKCSXCcdKOYzED50e3lixFkCGydB
+         GsYM+T8Z3ZPIg==
+Subject: Re: [PATCH 02/10] i2c: xiic: Add standard mode support for > 255 byte
+ read transfers
+To:     Raviteja Narayanam <rna@xilinx.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        Michal Simek <michals@xilinx.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>
+References: <20210531131948.19477-1-raviteja.narayanam@xilinx.com>
+ <20210531131948.19477-3-raviteja.narayanam@xilinx.com>
+ <0f167c21-6bc7-0806-a536-55658a199a5b@denx.de>
+ <SN6PR02MB4093F1992FA306C027D01448CA3C9@SN6PR02MB4093.namprd02.prod.outlook.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <df5d8f33-1fe0-5760-b19d-300c1f99344e@denx.de>
+Date:   Thu, 3 Jun 2021 11:57:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <SN6PR02MB4093F1992FA306C027D01448CA3C9@SN6PR02MB4093.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 18:47:55 +0200, Johan Jonker wrote:
-> Changed V7:
->   rebase
->   add compatible for rk3308 USB grf
->     add "rockchip,rk3308-usb2phy-grf" to "usb2phy@[0-9a-f]+$"
->     patternProperties too
->   add USB support to rk3308.dtsi
->     restyle
->     limit grf reg size
->     change sub nodename
->   remove applied patches
+On 6/3/21 7:33 AM, Raviteja Narayanam wrote:
+[...]
+>>> +	if (i2c->dynamic) {
+>>> +		u8 bytes;
+>>> +		u16 val;
+>>> +
+>>> +		/* Clear and enable Rx full interrupt. */
+>>> +		xiic_irq_clr_en(i2c, XIIC_INTR_RX_FULL_MASK |
+>>> +				XIIC_INTR_TX_ERROR_MASK);
+>>> +
+>>> +		/*
+>>> +		 * We want to get all but last byte, because the TX_ERROR
+>> IRQ
+>>> +		 * is used to indicate error ACK on the address, and
+>>> +		 * negative ack on the last received byte, so to not mix
+>>> +		 * them receive all but last.
+>>> +		 * In the case where there is only one byte to receive
+>>> +		 * we can check if ERROR and RX full is set at the same time
+>>> +		 */
+>>> +		rx_watermark = msg->len;
+>>> +		bytes = min_t(u8, rx_watermark, IIC_RX_FIFO_DEPTH);
+>>> +		bytes--;
+>>> +
+>>> +		xiic_setreg8(i2c, XIIC_RFD_REG_OFFSET, bytes);
+>>> +
+>>> +		local_irq_save(flags);
+>>> +		if (!(msg->flags & I2C_M_NOSTART))
+>>> +			/* write the address */
+>>> +			xiic_setreg16(i2c, XIIC_DTR_REG_OFFSET,
+>>> +				      i2c_8bit_addr_from_msg(msg) |
+>>> +				      XIIC_TX_DYN_START_MASK);
+>>> +
+>>> +		xiic_irq_clr_en(i2c, XIIC_INTR_BNB_MASK);
+>>> +
+>>> +		/* If last message, include dynamic stop bit with length */
+>>> +		val = (i2c->nmsgs == 1) ? XIIC_TX_DYN_STOP_MASK : 0;
+>>> +		val |= msg->len;
+>>> +
+>>> +		xiic_setreg16(i2c, XIIC_DTR_REG_OFFSET, val);
+>>> +		local_irq_restore(flags);
+>>
+>> Is local_irq_save()/local_irq_restore() used here to prevent concurrent
+>> access to the XIIC ?
 > 
-> [...]
+> These were used to fix the timing constraint between two register writes to the IP.
+> As we have discussed last time, these are removed in " [PATCH 08/10] i2c: xiic: Remove interrupt enable/disable in Rx path".
+> Now they are no longer needed since our IP is fixed.
+> For legacy IP versions, driver is switching to 'AXI I2C standard mode' of operation in
+> " [PATCH 07/10] i2c: xiic: Switch to Xiic standard mode for i2c-read".
 
-Applied, thanks!
+I see, I would expect such fixes to be at the beginning of the series, 
+so they can be picked into linux-stable.
 
-[1/5] dt-bindings: phy: rename phy nodename in phy-rockchip-inno-usb2.yaml
-      commit: e71ccdff376b0bd1bf4d47642b7ec4d791293b96
-[2/5] dt-bindings: soc: rockchip: grf: add compatible for RK3308 USB grf
-      commit: da76290fa39dc647bf7a1bac6467e66c8e465e54
-[3/5] ARM: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
-      commit: 2fd2300a9c17ee1c48b1b7a7fabbb90fd12a64f1
-[4/5] arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
-      commit: 8c3d64251ac5c5a3d10364f6b07d3603ac1e7b4a
-[5/5] arm64: dts: rockchip: add USB support to rk3308.dtsi
-      commit: 9fcf74b274a1dc5bcda37c34470061ef1e1130dd
-
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+In fact, now that you mention the bugfixes which I posted a year ago, 
+they also fixed a multitude of locking issues on SMP in the xiic driver. 
+Has this series been tested on SMP Zynq or ZynqMP extensively ?
