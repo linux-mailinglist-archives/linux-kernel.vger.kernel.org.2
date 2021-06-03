@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1ED39AD2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FF039AD48
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhFCVug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:50:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45805 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230341AbhFCVuf (ORCPT
+        id S230252AbhFCV5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:57:55 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:44863 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhFCV5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:50:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622756930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UyrGmdBsIRNJXWAqlX5+7cTy9HYr4MDviQbOZ7GPJ4c=;
-        b=ElUYo3/h2KCc3gKIB2wzAnVwmHGmyQ9UI5G43llw9Q+XDM+AGQacUXaLwMcliVUHyGMXSZ
-        UoRHUPULdp1FF/vGifw7PzYQVWZMCellaRPSzZDA4CYQowlTHTEhWBZnwEPCvc8g1NsUCj
-        REJteAR7+KjG1EGzHmNmBmLPJ8RSlmQ=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581--rKPlF7_PnSxD1mL2aW-Gg-1; Thu, 03 Jun 2021 17:48:49 -0400
-X-MC-Unique: -rKPlF7_PnSxD1mL2aW-Gg-1
-Received: by mail-qv1-f71.google.com with SMTP id if5-20020a0562141c45b029021fee105740so1390033qvb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:48:49 -0700 (PDT)
+        Thu, 3 Jun 2021 17:57:52 -0400
+Received: by mail-ot1-f48.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so7190288otp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=O0AHKb8SzFFWyVM+WVdBKXLWI+pRbVoX23KoodBk3sU=;
+        b=C1mfTlItCazDj4zyHIyO33ijPj7JmggfgHu2V/Nvpv2qUNrwjWkFVbGnNVxrx1nhZ3
+         m1AMpkKgydBbcVS0JKfDnWOfq7oiWGitw4yiEsZjdylIsG4RZdrpUvltw7k7/P9WlIfD
+         kzrcqqbtk5mD2CmX13u4xWB6sg1iDm3Zg2ZLtdqrmBXpF7tLQ8VMHLNxXKlUQL/gxipI
+         TuM8glglk02b6tDmFv6GxfesZ0+otfLxcGrSKQzGA9JLw0RQPY/rxi56mzRL/YKoDBYW
+         CP3BzHMHSFsOdDrYHzSD/b0/i/U1p8L3ZBnmS9RQi0tobvoNx4sHi2hV4EVxXQEwmRXQ
+         EOnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UyrGmdBsIRNJXWAqlX5+7cTy9HYr4MDviQbOZ7GPJ4c=;
-        b=bArz5PieW4DfF8AhU6JquBNKEue4PlQvKfKisJz6PVLW+QKZtfljiMfy7l4hrSn65Y
-         Zvp55pwoNsyptpvEXpPeTAsqpfx+xTPALjk5Txy/ENEYX/t5MabIp/anUflGwAPi4Eua
-         lbZB0VRqXxG1vt9JpFRnwNG/4oJAWuUXbAMuXZwa9cXUnpFmPnM1jadTWbLvBcAkzpBT
-         vCaVr8uiYUsapu4Hv9PVFmceUrM5pjqkGvPTgDIHqvUBYMQLiUMscjG3d+4GhUB5w8ZV
-         M1AD69fAiqEo/D3C93MIMpZOsOvnTF3cUKwfHEY/eRkwq28WeZVZP74pb5THS9z2wzpw
-         xbHA==
-X-Gm-Message-State: AOAM531+lx7bcF5wt87YdZky/a41eZ2qnw+tRhuM+Js9gtexXN8nzYIV
-        IGxkSzn8TNpq0gTRFk1VxBl3FCkDEXuWfsiEsp9JvQVnpAnhNzHwME9gK+YrS8LLVVdL9g+HL/F
-        zJnRR8XfCxv77rnRssGxYOYfE
-X-Received: by 2002:ad4:53ab:: with SMTP id j11mr1734619qvv.38.1622756928994;
-        Thu, 03 Jun 2021 14:48:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2nEeRfVLrFlr58ZNXyzqKeM3FvzaMg2aryvMBLblQ/w4pTvaJSBbnRscU4sftEzFfHjgyPg==
-X-Received: by 2002:ad4:53ab:: with SMTP id j11mr1734600qvv.38.1622756928721;
-        Thu, 03 Jun 2021 14:48:48 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-61-184-147-118-108.dsl.bell.ca. [184.147.118.108])
-        by smtp.gmail.com with ESMTPSA id s5sm2378221qtn.33.2021.06.03.14.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 14:48:48 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 17:48:46 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] mm/thp: try_to_unmap() use TTU_SYNC for safe
- DEBUG_VM splitting
-Message-ID: <YLlOPoP/rIRMm2U5@t490s>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
- <alpine.LSU.2.11.2106011405510.2148@eggly.anvils>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O0AHKb8SzFFWyVM+WVdBKXLWI+pRbVoX23KoodBk3sU=;
+        b=LR2L+r4/CRX4Bcaw1UNFKdwJY2dxLMpXbQlUGktyal6wArfdObmRYtocYzUnf6wyug
+         o8011WVDEwIiZi/PzBmn29ENOnz3HtCZ9kcMBv+Fwfv5CZ7Le648l6hksMPxqplwPvr5
+         Brw5CafIiTAtU4Lu2X3UK5+NTKM3oUvIBQ0/Dw4kZeB/heGjtwGfrLTD3ART56AAfLif
+         dSCgAahXTt02mtv9P6ogl+FR1CJQmPA0mLNsxOeoFuWUjCog1UGok0wHCgxUhyRJse/Y
+         FxzqyZ6/Tjw385GJZUEImObgAcJRWIVEfVfOiBpO9/GCux8Bc14lIU4PAkNBvcAJs8kW
+         T5Rg==
+X-Gm-Message-State: AOAM532yHsDhE+XqqMz19kAzRzNM+xd6XioJMr/YJEAqhNDdyYfyCgZf
+        LjxB06Xj+kwfgTxfNgbXW/BiERvuFeCKjReA
+X-Google-Smtp-Source: ABdhPJxP6X/Ko1xj6k9t4gVYLe86TlzGsdTkR4Pt66q4EqQYMk8GaP890NfpcG5tndgN9xlkjBFN2w==
+X-Received: by 2002:a9d:7750:: with SMTP id t16mr1170972otl.135.1622757306927;
+        Thu, 03 Jun 2021 14:55:06 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id i4sm31997oth.38.2021.06.03.14.55.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 14:55:06 -0700 (PDT)
+Subject: Re: [greybus-dev] [PATCH] staging: greybus: fixed the coding style,
+ labels should not be indented.
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Manikishan Ghantasala' <manikishanghantasala@gmail.com>,
+        Alex Elder <elder@ieee.org>
+Cc:     Alex Elder <elder@kernel.org>,
+        "greybus-dev@lists.linaro.org" <greybus-dev@lists.linaro.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        Johan Hovold <johan@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
+ <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
+ <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
+ <792dd57c0ef8454497e5ae4c4534dea2@AcuMS.aculab.com>
+ <e1c36fb4-ab72-0cce-f6fe-3f04125dae28@linaro.org>
+ <e23879ae78404be2b707b550b3029e43@AcuMS.aculab.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <10ad30e2-c906-b210-bf0e-5e20b6de1993@linaro.org>
+Date:   Thu, 3 Jun 2021 16:55:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2106011405510.2148@eggly.anvils>
+In-Reply-To: <e23879ae78404be2b707b550b3029e43@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 02:07:53PM -0700, Hugh Dickins wrote:
-> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> index 2cf01d933f13..b45d22738b45 100644
-> --- a/mm/page_vma_mapped.c
-> +++ b/mm/page_vma_mapped.c
-> @@ -212,6 +212,14 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
->  			pvmw->ptl = NULL;
->  		}
->  	} else if (!pmd_present(pmde)) {
-> +		/*
-> +		 * If PVMW_SYNC, take and drop THP pmd lock so that we
-> +		 * cannot return prematurely, while zap_huge_pmd() has
-> +		 * cleared *pmd but not decremented compound_mapcount().
-> +		 */
-> +		if ((pvmw->flags & PVMW_SYNC) &&
-> +		    PageTransCompound(pvmw->page))
-> +			spin_unlock(pmd_lock(mm, pvmw->pmd));
->  		return false;
->  	}
->  	if (!map_pte(pvmw))
+On 6/3/21 4:48 PM, David Laight wrote:
+> From: Alex Elder
+>> Sent: 03 June 2021 22:46
+>>
+>> On 6/3/21 4:22 PM, David Laight wrote:
+> ...
+>>>>>> --- a/drivers/staging/greybus/gpio.c
+>>>>>> +++ b/drivers/staging/greybus/gpio.c
+>>>>>> @@ -20,9 +20,9 @@
+>>>>>>     struct gb_gpio_line {
+>>>>>>         /* The following has to be an array of line_max entries */
+>>>>>>         /* --> make them just a flags field */
+>>>>>> -     u8                      active:    1,
+>>>>>> -                             direction: 1,   /* 0 = output, 1 = input */
+>>>>>> -                             value:     1;   /* 0 = low, 1 = high */
+>>>>>> +     u8                      active:1,
+>>>>>> +                             direction:1,    /* 0 = output, 1 = input */
+>>>>>> +                             value:1;        /* 0 = low, 1 = high */
+>>>
+>>> Why are you even using bitfields at all?
+>>> If you cared about the structure size you'd not have a byte-size pad here.
+>>
+>> Apparently I committed this, and it was part of the very first
+>> Greybus drivers...
+>>
+>> These would be better defined as Booleans; there are others in
+>> the same structure after all.  That would have avoided the
+>> checkpatch problem in the first place.
+> 
+> Using 'u8' can be sensible.
+> Boolean will be 32bit.
 
-Sorry if I missed something important, but I'm totally confused on how this
-unlock is pairing with another lock()..
+Not necessarily, sizeof(bool) is implementation defined.
+And I thought you didn't think the size of the structure
+was very important...
 
-And.. isn't PVMW_SYNC only meaningful for pte-level only (as I didn't see a
-reference of it outside map_pte)?
+In any case, I'm open to changing the type of these fields,
+and my preference would be bool rather than u8, because it
+is completely clear what it represents.
 
--- 
-Peter Xu
+					-Alex
+
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
 
