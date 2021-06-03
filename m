@@ -2,252 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DCC399FF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59B9399FFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhFCLkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:40:52 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48086 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhFCLkv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:40:51 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id BDBAC1F42FE6
-Subject: Re: [PATCH v12 0/9] Add HANTRO G2/HEVC decoder support for IMX8MQ
-To:     Hans Verkuil <hverkuil@xs4all.nl>, ezequiel@collabora.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210526124516.2039434-1-benjamin.gaignard@collabora.com>
- <1627e9d3-7008-dda5-19d1-251c4715af9e@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <fd6b117b-f662-b448-76d6-66d5c958f1dd@collabora.com>
-Date:   Thu, 3 Jun 2021 13:39:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229941AbhFCLl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:41:27 -0400
+Received: from mail-mw2nam10on2070.outbound.protection.outlook.com ([40.107.94.70]:29153
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229736AbhFCLl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:41:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X5QYTg87ElbWpzxPOOzEeKeG/Hje/m3Plj9en1TVQ5gava1v/t1XeMVN0KmA1MIPv4/GbaLotEvOsJDQSMdUB1bo4R0qMgdIAAMsf9vEJvmEY374J7/Xr21lDUXkQY0hlBaIDP1NAastqHGTpLAjPS6H3+OqQUB6I8hOpgLUDS4FlEKdEdXZTSCheNGE2CAOmNCLBtjbQnPcNV2txVHFajp4UYdxV4Ops3ZZvg75Hl9wAnJkCzHkYP/03SfgQy52bLFC2uRTxGtVtj4YNXoye2HeL3kOQHVR2BqcxmIp2DNup4F4kk8dtSGjPKFukOWGgGSQdkwvINE3HWDV2hQ3Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9+nRT/IplMZnWnH1VX2m3EkwFBAgRY6eDoR5xRm/YeA=;
+ b=iFSu4pUL762OyOiSEqvY9MSsgc+jxr1bqh9pBb/kxFyzALh6UwbJE3kxBT8eeU8wCwT/y8FYnEMWdtPm5NfCvz6zahhs38wltbwfPG7xX2O2SJxevZgCm6XVYniRkksjhRKV+/y3BC19wjGKhp9bGwQVPM/Dz6pe/vM6ZYhcoQcIhWaopzPMPGgse2/3wbShTUzcKdOt4pqGo1xZfOPg/VZBFL5FE4Wa3Ds1SWN3HqEKbQ2LJgwEueEmnC2pEX1zV7yFYbopM0o9MmyPAr4mGmEY9SPKzaeHjE3NLK1G4DAaqHPoG2dJ0n8BqYMJatTSWNPCBi/jEhQhKJVe6+nmHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9+nRT/IplMZnWnH1VX2m3EkwFBAgRY6eDoR5xRm/YeA=;
+ b=eCvIPhUhJV5Ulv7Znv5x6twv4LvMgvvxL3dC9svdMZKkVQomqg7eNjsf+UKHNWvzc3zpWjfQW6tDBOHE0bB0tp/qaPydgwwAIDl5sIzIiqYG6NV71xLbo8jZJ3cYgbD91ouOhx5fWRESe6haYdH7GtMOxpfUXxlqVi7NWZhn+T+V6vXwC/sAW/ggkMx2aemYbr6rvd81rlyufy3tnCu82Zj83pP7jj7E4RW5h+3eUmGcnzZiatCeIcxCIs5bJKS1yDXnzqCHyeMYXlIRNlnONDO0ROdqc6AV+xzFw3eKTL8wWCe7Ad5Os7TVFDzUaexkaAzh1QhsbHrK7YYLkb2aag==
+Received: from DM5PR06CA0051.namprd06.prod.outlook.com (2603:10b6:3:37::13) by
+ DM5PR1201MB0154.namprd12.prod.outlook.com (2603:10b6:4:58::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.22; Thu, 3 Jun 2021 11:39:40 +0000
+Received: from DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:37:cafe::21) by DM5PR06CA0051.outlook.office365.com
+ (2603:10b6:3:37::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend
+ Transport; Thu, 3 Jun 2021 11:39:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT051.mail.protection.outlook.com (10.13.172.243) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Thu, 3 Jun 2021 11:39:38 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
+ 2021 11:39:35 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     Balbir Singh <bsingharora@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <rcampbell@nvidia.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <hch@infradead.org>,
+        <jglisse@redhat.com>, <willy@infradead.org>, <jgg@nvidia.com>,
+        <hughd@google.com>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v9 07/10] mm: Device exclusive memory access
+Date:   Thu, 3 Jun 2021 21:39:32 +1000
+Message-ID: <3853054.AI2YdRgKcH@nvdebian>
+In-Reply-To: <YLeXqp/U0DgylI/u@t490s>
+References: <20210524132725.12697-1-apopple@nvidia.com> <YLdGXSw0zdiovn4i@balbir-desktop> <YLeXqp/U0DgylI/u@t490s>
 MIME-Version: 1.0
-In-Reply-To: <1627e9d3-7008-dda5-19d1-251c4715af9e@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: da1a8c05-f034-472a-f7fa-08d926844524
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0154:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB015468AB4EEFD3462C125280DF3C9@DM5PR1201MB0154.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cu5nmTyoC00d68XOsqh1ADdwyt77dxqxpI42/gA5/B3/ASBG/rsAud0QVEkLap10LDrGld3JrJEoOUuXSA9goMPnws2u+HNyp1xvLuJ8PFxZbQc3qrD0MFyZtZKxTpeRAu1+vkjz2Am+VOGMSUNDiq6rJHvS0lst+wMhdWqPCSvM94KxePPcmqOpfh+TClvZosvcDd2aZDHC9hJYlalG9DnQQG3uat+IhmmsEfcz6Qa+YcjFS17404C+jAB+f2gtx9VdQTcXev+2O5jSBbkOqCjzJe9AeAVZo9OZpPdvyPePpjI8u466D1NhJs7L1qrx2BIAMs+d9RBfj7h8xe8X/05vVYD+sAMjT6W2cQ4xXWtMHFH+ECmF/oFeP+L+jrMpCFuwlnBHQfp/p/hFpKG7E+ux0fvykgPqmSTz97kB3oOsq4Kj+2so/+f491DxXHNfljP3UYedhKSc0Gk1vwv8J5/AcHu/uW3uZO3kFfczjEWfdSq9a0ILxv7Xgi6GaLERz6wG1942E5djhfqBou/VssvXeOQAh3WYTFkL7XLRWGg8/+nSVQhveNuV8Ju80iaq5ToxBOUXsopILunu5fHim87oHOSykbl+Ox3rThbmZ+IaVzC8ufwOfMhmB4TFtqRUJCEgUCBySc8SvU7LLAm6Qaj1J4tcJXEFapuNNmDOSIcXUpS6vcJwGjSm38KFWhcnJ9PEKZ6gWF9qqUuyYaiNdyJKu0qyiT4LSvcAopRSibZZm7tsgJniCWyjxm18FLfahliV/nyM2xtHlxioLlsHbOydu9//3hvAc4mJZ6p+mVY=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(396003)(376002)(46966006)(36840700001)(36860700001)(5660300002)(6666004)(83380400001)(36906005)(53546011)(9686003)(8676002)(426003)(336012)(8936002)(7416002)(9576002)(2906002)(82740400003)(4326008)(316002)(356005)(478600001)(86362001)(54906003)(6916009)(82310400003)(16526019)(26005)(33716001)(70206006)(966005)(7636003)(47076005)(186003)(70586007)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 11:39:38.6137
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: da1a8c05-f034-472a-f7fa-08d926844524
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0154
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thursday, 3 June 2021 12:37:30 AM AEST Peter Xu wrote:
+> External email: Use caution opening links or attachments
+> 
+> On Wed, Jun 02, 2021 at 06:50:37PM +1000, Balbir Singh wrote:
+> > On Wed, May 26, 2021 at 12:17:18AM -0700, John Hubbard wrote:
+> > > On 5/25/21 4:51 AM, Balbir Singh wrote:
+> > > ...
+> > > 
+> > > > > How beneficial is this code to nouveau users?  I see that it permits
+> > > > > a
+> > > > > part of OpenCL to be implemented, but how useful/important is this
+> > > > > in
+> > > > > the real world?
+> > > > 
+> > > > That is a very good question! I've not reviewed the code, but a sample
+> > > > program with the described use case would make things easy to parse.
+> > > > I suspect that is not easy to build at the moment?
+> > > 
+> > > The cover letter says this:
+> > > 
+> > > This has been tested with upstream Mesa 21.1.0 and a simple OpenCL
+> > > program
+> > > which checks that GPU atomic accesses to system memory are atomic.
+> > > Without
+> > > this series the test fails as there is no way of write-protecting the
+> > > page
+> > > mapping which results in the device clobbering CPU writes. For reference
+> > > the test is available at https://ozlabs.org/~apopple/opencl_svm_atomics/
+> > > 
+> > > Further testing has been performed by adding support for testing
+> > > exclusive
+> > > access to the hmm-tests kselftests.
+> > > 
+> > > ...so that seems to cover the "sample program" request, at least.
+> > 
+> > Thanks, I'll take a look
+> > 
+> > > > I wonder how we co-ordinate all the work the mm is doing, page
+> > > > migration,
+> > > > reclaim with device exclusive access? Do we have any numbers for the
+> > > > worst
+> > > > case page fault latency when something is marked away for exclusive
+> > > > access?
+> > > 
+> > > CPU page fault latency is approximately "terrible", if a page is
+> > > resident on the GPU. We have to spin up a DMA engine on the GPU and
+> > > have it copy the page over the PCIe bus, after all.
+> > > 
+> > > > I presume for now this is anonymous memory only? SWP_DEVICE_EXCLUSIVE
+> > > > would
+> > > 
+> > > Yes, for now.
+> > > 
+> > > > only impact the address space of programs using the GPU. Should the
+> > > > exclusively marked range live in the unreclaimable list and recycled
+> > > > back to active/in-active to account for the fact that
+> > > > 
+> > > > 1. It is not reclaimable and reclaim will only hurt via page faults?
+> > > > 2. It ages the page correctly or at-least allows for that possibility
+> > > > when the> > > 
+> > > >     page is used by the GPU.
+> > > 
+> > > I'm not sure that that is *necessarily* something we can conclude. It
+> > > depends upon access patterns of each program. For example, a
+> > > "reduction" parallel program sends over lots of data to the GPU, and
+> > > only a tiny bit of (reduced!) data comes back to the CPU. In that case,
+> > > freeing the physical page on the CPU is actually the best decision for
+> > > the OS to make (if the OS is sufficiently prescient).> 
+> > With a shared device or a device exclusive range, it would be good to get
+> > the device usage pattern and update the mm with that knowledge, so that
+> > the LRU can be better maintained. With your comment you seem to suggest
+> > that a page used by the GPU might be a good candidate for reclaim based
+> > on the CPU's understanding of the age of the page should not account for
+> > use by the device
+> > (are GPU workloads - access once and discard?)
+> 
+> Hmm, besides the aging info, this reminded me: do we need to isolate the
+> page from lru too when marking device exclusive access?
+> 
+> Afaict the current patch didn't do that so I think it's reclaimable.  If we
+> still have the rmap then we'll get a mmu notify CLEAR when unmapping that
+> special pte, so device driver should be able to drop the ownership.  However
+> we dropped the rmap when marking exclusive.  Now I don't know whether and
+> how it'll work if page reclaim runs with the page being exclusively owned
+> if without isolating the page..
 
-Le 03/06/2021 à 11:19, Hans Verkuil a écrit :
-> Hi Benjamin,
->
-> On 26/05/2021 14:45, Benjamin Gaignard wrote:
->> The IMX8MQ got two VPUs but until now only G1 has been enabled.
->> This series aim to add the second VPU (aka G2) and provide basic
->> HEVC decoding support.
->>
->> To be able to decode HEVC it is needed to add/update some of the
->> structures in the uapi. In addition of them one HANTRO dedicated
->> control is required to inform the driver of the number of bits to skip
->> at the beginning of the slice header.
->> The hardware require to allocate few auxiliary buffers to store the
->> references frame or tile size data.
->>
->> The driver has been tested with fluster test suite stream.
->> For example with this command: ./fluster.py run -ts JCT-VC-HEVC_V1 -d GStreamer-H.265-V4L2SL-Gst1.0
->>
->> version 12:
->>   - Change macro to avoid the final ';'
->>   - Made arrays static and const
->>   - Distinguish G2 generic fields (i.e these who could be reused for VP9)
->>     from HEVC dedicated fields.
-> I ran the latest checkpatch/smatch/sparse etc. over this series and got a lot
-> of issues.
->
-> The trickiest first:
->
-> I get many reports for the register definitions in hantro_g2_regs.h:
->
-> drivers/staging/media/hantro/hantro_g2_regs.h:16:33: warning: 'g2_strm_start_offset' defined but not used [-Wunused-const-variable=]
->
-> I think it is a bad idea to declare variables in a header, and that's really
-> what is causing this.
->
-> I think it should be possible to rework this to defines such as:
->
-> #define G2_DEC_REG(b, s, m) \
->          (const struct hantro_reg) { \
->                  .base = G2_SWREG(b), \
->                  .shift = s, \
->                  .mask = m, \
->          }
+Reclaim won't run on the page due to the extra references from the special 
+swap entries.
 
-checkpatch complains about the macro to be complex so I have to add parentheses
-but that will be in v12
+> --
+> Peter Xu
 
-> #define g2_strm_start_offset G2_DEC_REG(259, 0, 0xffffffff)
->
-> This allows you to do:
->
-> hantro_reg_write(vpu, &g2_strm_start_offset, 0);
->
-> without having to declare static variables in a header.
->
-> Other warnings:
->
->  From the compiler:
->
-> linux-git-arm-multi: WARNINGS
->
-> drivers/staging/media/hantro/hantro_g2_hevc_dec.c: In function 'hantro_write_addr':
-> drivers/staging/media/hantro/hantro_g2_hevc_dec.c:23:24: warning: right shift count >= width of type [-Wshift-count-overflow]
->     23 |  vdpu_write(vpu, (addr >> 32) & 0xffffffff, offset + 4);
->        |                        ^~
->
-> Note: this builds on a 32-bit arm!
->
->  From smatch:
->
-> drivers/staging/media/hantro/hantro_hevc.c:228 tile_buffer_reallocate() error: double free of 'hevc_dec->tile_sao.cpu'
-> drivers/staging/media/hantro/hantro_hevc.c:234 tile_buffer_reallocate() error: double free of 'hevc_dec->tile_bsd.cpu'
 
-That will be fixed in v12
 
->
->  From kerneldoc:
->
-> drivers/staging/media/hantro/hantro_hw.h:136: warning: Function parameter or member 'ref_bufs' not described in 'hantro_hevc_dec_hw_ctx'
-> drivers/staging/media/hantro/hantro_hw.h:136: warning: Function parameter or member 'ref_bufs_poc' not described in 'hantro_hevc_dec_hw_ctx'
-> drivers/staging/media/hantro/hantro_hw.h:136: warning: Function parameter or member 'ref_bufs_used' not described in 'hantro_hevc_dec_hw_ctx'
-> drivers/staging/media/hantro/hantro_hw.h:136: warning: Function parameter or member 'num_tile_cols_allocated' not described in
-> 'hantro_hevc_dec_hw_ctx'
 
-I fix this and also remove the description for not existing fields.
-
-Thanks for your review.
-Benjamin
-
->
-> Regards,
->
-> 	Hans
->
->> version 11:
->>   - Rebased on media_stage.
->>   - Fix minor typo/remarks.
->>
->> version 10:
->>   - Shorter version of the previous series without ctrl block patches
->>     and no DT modifications.
->>     The scope of this series is limited to HEVC support.
->>
->> version 9:
->>   - Corrections in commits messages.
->>   - Define the dedicated control in hevc-controls.h
->>   - Add note in documentation.
->>   - Change max value of the dedicated control.
->>   - Rebased on media_tree/master branch.
->>
->> version 8:
->>   - Add reviewed-by and ack-by tags
->>   - Fix the warnings reported by kernel test robot
->>   - Only patch 9 (adding dedicated control), patch 11 (HEVC support) and
->>     patch 13 (DT changes) are still missing of review/ack tag.
->>
->> version 7:
->>   - Remove 'q' from syscon phandle name to make usable for iMX8MM too.
->>     Update the bindings documentation.
->>   - Add review/ack tags.
->>   - Rebase on top of media_tree/master
->>   - Be more accurate when computing the size of the memory needed motion
->>     vectors.
->>   - Explain why the all clocks need to set in the both DT node.
->>
->> version 6:
->>   - fix the errors reported by kernel test robot
->>
->> version 5:
->>   - use syscon instead of VPU reset driver.
->>   - Do not break kernel/DT backward compatibility.
->>   - Add documentation for dedicated Hantro control.
->>   - Fix the remarks done by Ezequeil (typo, comments, unused function)
->>   - Run v4l2-compliance without errors (see below).
->>   - Do not add field to distinguish version, check postproc reg instead
->>
->> version 4:
->> - Split the changes in hevc controls in 2 commits to make them easier to
->>    review.
->> - Change hantro_codec_ops run() prototype to return errors
->> - Hantro v4l2 dedicated control is now only an integer
->> - rebase on top of VPU reset changes posted here:
->>    https://www.spinics.net/lists/arm-kernel/msg878440.html
->> - Various fix from previous remarks
->> - Limit the modifications in API to what the driver needs
->>
->> version 3:
->> - Fix typo in Hantro v4l2 dedicated control
->> - Add documentation for the new structures and fields
->> - Rebased on top of media_tree for-linus-5.12-rc1 tag
->>
->> version 2:
->> - remove all change related to scaling
->> - squash commits to a coherent split
->> - be more verbose about the added fields
->> - fix the comments done by Ezequiel about dma_alloc_coherent usage
->> - fix Dan's comments about control copy, reverse the test logic
->> in tile_buffer_reallocate, rework some goto and return cases.
->> - be more verbose about why I change the bindings
->> - remove all sign-off expect mime since it is confusing
->> - remove useless clocks in VPUs nodes
->>
->> Benjamin Gaignard (9):
->>    media: hevc: Add fields and flags for hevc PPS
->>    media: hevc: Add decode params control
->>    media: hantro: change hantro_codec_ops run prototype to return errors
->>    media: hantro: Define HEVC codec profiles and supported features
->>    media: hantro: Only use postproc when post processed formats are
->>      defined
->>    media: uapi: Add a control for HANTRO driver
->>    media: hantro: handle V4L2_PIX_FMT_HEVC_SLICE control
->>    media: hantro: Introduce G2/HEVC decoder
->>    media: hantro: IMX8M: add variant for G2/HEVC codec
->>
->>   .../userspace-api/media/drivers/hantro.rst    |  19 +
->>   .../userspace-api/media/drivers/index.rst     |   1 +
->>   .../media/v4l/ext-ctrls-codec.rst             | 108 +++-
->>   .../media/v4l/vidioc-queryctrl.rst            |   6 +
->>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  21 +-
->>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   4 +
->>   drivers/staging/media/hantro/Makefile         |   2 +
->>   drivers/staging/media/hantro/hantro.h         |  13 +-
->>   drivers/staging/media/hantro/hantro_drv.c     |  99 ++-
->>   .../staging/media/hantro/hantro_g1_h264_dec.c |  10 +-
->>   .../media/hantro/hantro_g1_mpeg2_dec.c        |   4 +-
->>   .../staging/media/hantro/hantro_g1_vp8_dec.c  |   6 +-
->>   .../staging/media/hantro/hantro_g2_hevc_dec.c | 587 ++++++++++++++++++
->>   drivers/staging/media/hantro/hantro_g2_regs.h | 206 ++++++
->>   .../staging/media/hantro/hantro_h1_jpeg_enc.c |   4 +-
->>   drivers/staging/media/hantro/hantro_hevc.c    | 327 ++++++++++
->>   drivers/staging/media/hantro/hantro_hw.h      |  69 +-
->>   .../staging/media/hantro/hantro_postproc.c    |  14 +
->>   drivers/staging/media/hantro/hantro_v4l2.c    |   5 +-
->>   drivers/staging/media/hantro/imx8m_vpu_hw.c   |  96 ++-
->>   .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |   4 +-
->>   .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |   4 +-
->>   .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |   6 +-
->>   drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +
->>   drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
->>   .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
->>   .../staging/media/sunxi/cedrus/cedrus_h265.c  |  12 +-
->>   include/media/hevc-ctrls.h                    |  46 +-
->>   28 files changed, 1613 insertions(+), 69 deletions(-)
->>   create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
->>   create mode 100644 drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->>   create mode 100644 drivers/staging/media/hantro/hantro_g2_regs.h
->>   create mode 100644 drivers/staging/media/hantro/hantro_hevc.c
->>
