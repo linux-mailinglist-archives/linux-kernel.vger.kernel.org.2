@@ -2,123 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86D8399F9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C383399F98
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFCLO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:14:58 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:15870 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhFCLO4 (ORCPT
+        id S229871AbhFCLOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:14:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35192 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhFCLOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:14:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622718781; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=GSIWIrf7ywppJJEjkvvgmI/loYH+nKK5DHzj6GSDzZq57+PvtWDDls/YivsbUswtXd
-    oAsyBWduYB/L8WPpVgEB1d8H5velnvnHVwZymvkPtQYFgL+DCDUcISzN7JpM3xAk2RS6
-    0A/4LgtOnGqdvLomLIzg4FTeLvNd5xWo/nqVYHop/lPKA1nhhNM206PtDzdnR++ElJCg
-    oGW3ywxfnU3/FfIYY15pbaHf0o8MqAdBbtKzBCPmXj1WLDlG0SA/IlgpZfN/WWM6E/OE
-    Vf5lIC5UyBa1CkAfSfPFv4nR9WJb5+IYx5BkmWyJpSnuAHHP+sapCcIW/51GskUElo91
-    4URw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622718781;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=ue0OX8ADzmc6O49R/68CxDuotQxVkzYCVDwMD9Zjyew=;
-    b=m571De8fYbcy6PGk8anztXMe9D1WXZvtyg+mpfYhlq408PplGM927k7LsZnUHITyUx
-    6Jirf/3SiU0U9d7HGKNcpWkIwlNW4jNCV0IEb1UWX35AKjrgNIKkQktLvlDzZHDQQKWB
-    MEaHVZR8poLVTQ+hnTgL5FweJYigRFOZi+TPionhS63QQiWeFMEFw0qsi7WVB+Sa4jVF
-    cpfTNLPMd4ViX0tlx5xmCLqeJ1r9Z6XLNEfAIr96/ejX1Tx55kWMo+5lmmp+8MJKScdz
-    86w46m16i2WISyqWOkkRwXBEW065zGylPsiNY2/xwyRrVl82LNaBo8381XhMXXUoXIXr
-    d+9g==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622718781;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=ue0OX8ADzmc6O49R/68CxDuotQxVkzYCVDwMD9Zjyew=;
-    b=QXJL6SKEzt4kO+MHcbuIQgzf3ZLGLJ0bH7rva7kaInFdkuQqZBV+WaeGLWcZjkvAZL
-    +9SXnNgZysGAs0ZuBtB6y9JydoSKFcQRGhuxPYdv8bqlYvvYuhRUWva9dmizURn1oTlU
-    vFE06Cde3nMPdHjhKGDxWpfNGekyUQp/b1ck5zUm7qhFhHVmAigBSMm2+ZMQWm75T25A
-    V2c0hGl1MIfps76jXfBtXDbXmH8VLCPgfYI9cDzPZzkMgrJen3453OVMZFHvgG2jkujt
-    ZfQedUU2FoT71ks4VwuX4wJP6NhYzcWIawgfb92DRXx17RUKgtT5ME3tk8z2NI8oDlFL
-    I2zw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IczEbIo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.27.2 DYNA|AUTH)
-    with ESMTPSA id y01375x53BD06ws
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 3 Jun 2021 13:13:00 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 13:12:55 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] PM: domains: Avoid boilerplate code for DVFS in
- subsystem/drivers
-Message-ID: <YLi5N06Qs+gYHgYg@gerhold.net>
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
+        Thu, 3 Jun 2021 07:14:54 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lolHh-0002uO-4N
+        for linux-kernel@vger.kernel.org; Thu, 03 Jun 2021 11:13:09 +0000
+Received: by mail-ed1-f69.google.com with SMTP id s18-20020a0564020372b029038febc2d475so3091344edw.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:13:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=D1eW48TF+kn97p/tCScb4CXIGoVstsbFd7+OIDFPx+g=;
+        b=dk0zICNZd9/ZL0EnYlt+S4D8sDhq72Q/rfga1us1WNZAipWKquiIHfvS1Yh5/w6PSi
+         L+IB7PG/pRUrnlDZQUGm8IWzbfGoJMfyoMOdRKMmEwLzbVAMRlsv5oKLeC8ncJSCU5rb
+         NlziscLujjOpntF5BR827liWnmIoEcAQuZgfaWtUoRDfR3sciHG5GfhiPF51Pe+gzy2Z
+         uJsJpthoM+tUMl+mZruiZN4DiZpotIblXJp8Rc6X+i8dPMd3LRkfMjGbMnKNpIZJnW6K
+         3tUdJ7+uR3eamrVfGYJpPyABFDeS1k33DH9h94edhZ3/0zXwvf/hSldDW55fFpHB+/2e
+         ApDA==
+X-Gm-Message-State: AOAM532PfN/lq3oFNK7X5rDqv3Bv+gKwMWHRYf0HnwSLCpZ5Mgk3vnb5
+        3RWz579lB7bhqCcNOEvsVB5WWAU2KY/y1q2+ipdxFAkb5wDj0DFMguxwOBI4hEFtVzgcFJ9bxw5
+        gScrKd3jkyLJtB0y2gG2+pz2aI1WlhD9RRTfy5VaikQ==
+X-Received: by 2002:a17:907:c06:: with SMTP id ga6mr38724706ejc.229.1622718788687;
+        Thu, 03 Jun 2021 04:13:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5mMb6gokmBb+/YueV0BJ21Ub6XLQA6El3LZxhSK4RrTFrIhcEHKyBFfAusAlL4X9wMEQMOg==
+X-Received: by 2002:a17:907:c06:: with SMTP id ga6mr38724701ejc.229.1622718788568;
+        Thu, 03 Jun 2021 04:13:08 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id n18sm1401133ejx.41.2021.06.03.04.13.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 04:13:08 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 1/2] memory: renesas-rpc-if: correct whitespace
+Date:   Thu,  3 Jun 2021 13:13:02 +0200
+Message-Id: <162271877396.29314.2661816128507717037.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210601160608.312446-1-krzysztof.kozlowski@canonical.com>
+References: <20210601160608.312446-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603093438.138705-1-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:34:34AM +0200, Ulf Hansson wrote:
-> Various discussions on LKML have pointed out that many subsystem/drivers for
-> devices that may be attached to a genpd and which manages DVFS/OPP though the
-> genpd performance states, would need very similar updates.
-> 
-> More precisely, they would likely have to call dev_pm_opp_set_rate|opp() to
-> drop and restore OPPs (which propagates upwards into performance states votes
-> in genpd), every time their devices should enter/exit a low power state, via
-> their device PM callbacks.
-> 
-> Rather than having to add the boilerplate code for these things into the
-> subsystems/drivers, this series implements the logic internally into genpd.
-> 
-> Concerns have been raised about this approach, mostly by myself, around that it
-> limits flexibility. On the other hand, it starts to look like more and more
-> people are requesting this to be manged internally in genpd, for good reasons.
-> So, I think it's worth to give this a try.
-> 
-> In the long run, if it turns out that the flexibility was indeed needed, we can
-> always deal with that as special cases on top.
-> 
+On Tue, 1 Jun 2021 18:06:07 +0200, Krzysztof Kozlowski wrote:
+> Use spaces instead of tabs as word separator.
 
-Do I understand your patch set correctly that you basically make the
-performance state votes conditional to the "power-on" vote of the device
-(which is automatically toggled during runtime/system PM)?
+Applied, thanks!
 
-If yes, I think that's a good thing. It was always really confusing to me
-that a device can make performance state votes if it doesn't actually
-want the power domain to be powered on.
+[1/2] memory: renesas-rpc-if: correct whitespace
+      commit: 8c84a7335e71de1f045247eb035d55712e13222a
+[2/2] MAINTAINERS: memory: cover also header file
+      commit: 717cd731de8983483f6f41611b0d60aa3c267ff9
 
-What happens if a driver calls dev_pm_genpd_set_performance_state(...)
-while the device is suspended? Will that mess up the performance state
-when the device resumes?
-
-I think this might also go into the direction of my problem with the OPP
-core for CPU DVFS [1] since the OPP core currently does not "power-on"
-the power domains, it just sets a performance state. I got kind of stuck
-with all the complexity of power domains in Linux so I think we never
-solved that.
-
-Stephan
-
-[1]: https://lore.kernel.org/linux-pm/20200826093328.88268-1-stephan@gerhold.net/
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
