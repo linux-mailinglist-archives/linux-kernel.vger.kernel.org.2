@@ -2,114 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D34399807
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A146A399809
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhFCC3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhFCC3J (ORCPT
+        id S229752AbhFCCbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:31:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21008 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229617AbhFCCbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:29:09 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80074C06174A;
-        Wed,  2 Jun 2021 19:27:10 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id a2so6448360lfc.9;
-        Wed, 02 Jun 2021 19:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BReYRbHXWvGepYMIo6MFKfcfxjtKBwb1nZu8ULNLHcc=;
-        b=orB6wH41AvxddfTraIb3sZd93u7R5rnd/DKRY2foZZWeKvLJUw+YowIlWCMxyynSwX
-         FohZVRdiKTZ92zW2P2Le/1762OCaepVZvnQ3QerOt4WlJhvKwZHEdnxMe3uw2WmRJnA+
-         cZYqGyfnp6sDVK6s/10il61CGquRMDVcHOHvvhldBzeC92nRphG5m5s2w9JPnklNGogQ
-         WDTFN7lHPm0+D7lPYA9NwEse1atxRxzqaU2aY7agpfbUKHaKlmzfGcenC+A1Bgo45Lqi
-         jOy7jUG9ktGWWPi3iFMyMQYgHzsqQeuaCzbdMq0VpyzvFpnjaP8/SiEhouxakvB2e2GY
-         BYQQ==
+        Wed, 2 Jun 2021 22:31:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622687360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z8pfT0MZqL2Z8bkqcby4E+RJ01PN1727vqn0BLJ23M4=;
+        b=YrsblBJxGFPGmWEp9uk++ymjnAe+NFQdCH6ZGidXLDczA9Ynferz1MIOXG0FXcoSsKyozG
+        mFX008wBHU5+3cnMKrDBGTGsM1N69tz9JVTFAnb5+tb75VMt/4gcDkrQmnkYlIK8hc0hxF
+        1JbHlRNrxueVa7Db4DjUlzug1zvWGg4=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-JhIIHIRvNh2bAmmkMmAurQ-1; Wed, 02 Jun 2021 22:29:19 -0400
+X-MC-Unique: JhIIHIRvNh2bAmmkMmAurQ-1
+Received: by mail-pf1-f197.google.com with SMTP id e20-20020a62ee140000b02902ea0a23d589so2648782pfi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:29:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BReYRbHXWvGepYMIo6MFKfcfxjtKBwb1nZu8ULNLHcc=;
-        b=spiNp/IHmfp6V6ZGxiShe5AYvYDLyvyy9kQDkgot5ZIdZ54G/3WU13uEpbmEK7K6CS
-         x6NY+YUg3gm18mghwRQZZ3gATnzx5bI/t7SlpM/fUALcC8F7zHW2nzpEGQKd5Q8ja01X
-         SynxH0Vqsu/sWvABXnilBUW+tFnNFARtQoPLZFTAa9jd1Q3Nq+psLcOWz5j3uoYYvDgV
-         yr+rT3GxSLo3qUelZf56j2pdmvVrMFM22XTf7V/8lYblJCuIFQ0yoLC0MqKqL7lSFcVN
-         mYPoLySfDrQMsPrZFtrWnnhJFL0op/8x+PqS6XAKvbfwDrlBLlFpUSYWsmtAvFMgaK4e
-         faiw==
-X-Gm-Message-State: AOAM531Id6YxqyOUZn4g/2zs/H9iVEm9Nq+Ky+B/A9WHz0mkdkb4sAtZ
-        /Hmmji1ZZc4e8HfQr0EiTz4Vxl3xR/DmS00C/AA=
-X-Google-Smtp-Source: ABdhPJz+/mol60y7157Ls3YUkrtb37+vDz19gkQP11F5X3o4NCubMvUCX1DjMJ1HKeF15VRC/9pzclNBkaetPxsOkns=
-X-Received: by 2002:a19:3f0a:: with SMTP id m10mr26429532lfa.477.1622687227206;
- Wed, 02 Jun 2021 19:27:07 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Z8pfT0MZqL2Z8bkqcby4E+RJ01PN1727vqn0BLJ23M4=;
+        b=nHcmAxrdYlnSUKhd/Kx4kTybQhkPISr5FyeneW7wOkDi6YrSJOzS/HoU85K3F3TD54
+         U+MF+f0ZtPeELjzTf8dhsoSazs653a/QnxowT3aXkiWVrsbQwmNmBtF9yOVZms5uzgie
+         uvLVNgjik9dxQK/y0Wv4kB4A/0pYBDbaeDFsedTxnut/MS3oqTF03Z76xXXwj+c5xGiF
+         DQZmmpmONBv2SRBUIo77cd8D1fC87AEFdATb6DhouC2g0Tn5CuqNTtt6St8fO4YeNMl7
+         O95ZcjhrkuhY9xsGwMBqTcgtjn1geusNb7/DJICvIoA2UgjT988G61WkV/Gj+UgJ9oJV
+         phHQ==
+X-Gm-Message-State: AOAM532wXMUyvwetNPYzJPXQhJN4Q441cZW0wgkKdC6brfu+WDryFPAH
+        cN//MfM/PZu4oZVnz+C/vuSzmaZSQNTB60R+GmkzZwqeDPOygAn+o3de/dkUDYSO/z0EzX38Vwj
+        2PK1+olmSZZEXt9/fZUN4wrvX3OXrweJZKm7mKRYpWk/4P6KId/OUoH8/U7EzZSPUFcgPYepZ3E
+        46
+X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr33995001pjq.228.1622687357850;
+        Wed, 02 Jun 2021 19:29:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcAOh1B5HwVx/1uLe5ueMMD2TZKV165kULJvA56z6ifNMCkU6WkR/FyKpm6p4cpf8KJgEpBw==
+X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr33994974pjq.228.1622687357476;
+        Wed, 02 Jun 2021 19:29:17 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id f2sm895145pgl.67.2021.06.02.19.29.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 19:29:17 -0700 (PDT)
+Subject: Re: [PATCH v1 3/8] virtio: Harden split buffer detachment
+To:     Andi Kleen <ak@linux.intel.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org, x86@kernel.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20210603004133.4079390-1-ak@linux.intel.com>
+ <20210603004133.4079390-4-ak@linux.intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <284ca65d-d8b4-a671-4dba-df478a3610f1@redhat.com>
+Date:   Thu, 3 Jun 2021 10:29:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <CADxym3baupJJ7Q9otxtoQ-DH5e-J2isg-LZj2CsOqRPo70AL4A@mail.gmail.com>
- <e91baaba-e00a-4b16-0787-e9460dacfbb9@redhat.com>
-In-Reply-To: <e91baaba-e00a-4b16-0787-e9460dacfbb9@redhat.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 3 Jun 2021 10:26:55 +0800
-Message-ID: <CADxym3ZdyqJ7b_PqdcjbNhKWP7_nsPRQ9Q0TtFC6Qzr75ekK+g@mail.gmail.com>
-Subject: Re: The value of FB_MTU eats two pages
-To:     Jon Maloy <jmaloy@redhat.com>
-Cc:     ying.xue@windriver.com, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        tipc-discussion@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210603004133.4079390-4-ak@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Maloy,
 
-On Thu, Jun 3, 2021 at 3:50 AM Jon Maloy <jmaloy@redhat.com> wrote:
-
-[...]
-> Hi Dong,
-> The value is based on empiric knowledge.
-> When I determined it I made a small loop in a kernel driver where I
-> allocated skbs (using tipc_buf_acquire) with an increasing size
-> (incremented with 1 each iteration), and then printed out the
-> corresponding truesize.
+在 2021/6/3 上午8:41, Andi Kleen 写道:
+> Harden the split buffer detachment path by adding boundary checking. Note
+> that when this fails we may fail to unmap some swiotlb mapping, which could
+> result in a leak and a DOS. But that's acceptable because an malicious host
+> can DOS us anyways.
 >
-> That gave the value we are using now.
+> Signed-off-by: Andi Kleen <ak@linux.intel.com>
+> ---
+>   drivers/virtio/virtio_ring.c | 25 +++++++++++++++++++++----
+>   1 file changed, 21 insertions(+), 4 deletions(-)
 >
-> Now, when re-running the test I get a different value, so something has
-> obviously changed since then.
->
-> [ 1622.158586] skb(513) =>> truesize 2304, prev skb(512) => prev
-> truesize 1280
-> [ 1622.162074] skb(1537) =>> truesize 4352, prev skb(1536) => prev
-> truesize 2304
-> [ 1622.165984] skb(3585) =>> truesize 8448, prev skb(3584) => prev
-> truesize 4352
->
-> As you can see, the optimal value now, for an x86_64 machine compiled
-> with gcc, is 3584 bytes, not 3744.
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index d37ff5a0ff58..1e9aa1e95e1b 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -651,12 +651,19 @@ static bool virtqueue_kick_prepare_split(struct virtqueue *_vq)
+>   	return needs_kick;
+>   }
+>   
+> -static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+> -			     void **ctx)
+> +static int detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+> +			    void **ctx)
+>   {
+>   	unsigned int i, j;
+>   	__virtio16 nextflag = cpu_to_virtio16(vq->vq.vdev, VRING_DESC_F_NEXT);
+>   
+> +	/* We'll leak DMA mappings when this happens, but nothing
+> +	 * can be done about that. In the worst case the host
+> +	 * could DOS us, but it can of course do that anyways.
+> +	 */
+> +	if (!inside_split_ring(vq, head))
+> +		return -EIO;
 
-I'm not sure if this is a perfect way to determine the value of FB_MTU.
-If 'struct skb_shared_info' changes, this value seems should change,
-too.
 
-How about we make it this:
+I think the caller have already did this for us with even more check on 
+the token (virtqueue_get_buf_ctx_split()):
 
-#define FB_MTU (PAGE_SIZE - \
-         SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) - \
-         SKB_DATA_ALIGN(BUF_HEADROOM + BUF_TAILROOM + 3 + \
-                 MAX_H_SIZ))
+         if (unlikely(i >= vq->split.vring.num)) {
+                 BAD_RING(vq, "id %u out of range\n", i);
+                 return NULL;
+         }
+         if (unlikely(!vq->split.desc_state[i].data)) {
+                 BAD_RING(vq, "id %u is not a head!\n", i);
+                 return NULL;
+         }
 
-The value 'BUF_HEADROOM + BUF_TAILROOM + 3' come from 'tipc_buf_acquire()':
 
-#ifdef CONFIG_TIPC_CRYPTO
-    unsigned int buf_size = (BUF_HEADROOM + size + BUF_TAILROOM + 3) & ~3u;
-#else
-    unsigned int buf_size = (BUF_HEADROOM + size + 3) & ~3u;
-#endif
+> +
+>   	/* Clear data ptr. */
+>   	vq->split.desc_state[head].data = NULL;
+>   
+> @@ -666,6 +673,8 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+>   	while (vq->split.vring.desc[i].flags & nextflag) {
+>   		vring_unmap_one_split(vq, &vq->split.vring.desc[i]);
+>   		i = virtio16_to_cpu(vq->vq.vdev, vq->split.vring.desc[i].next);
+> +		if (!inside_split_ring(vq, i))
+> +			return -EIO;
 
-Is it a good idea?
+
+Similarly, if we don't depend on the metadata stored in the descriptor, 
+we don't need this check.
+
+
+>   		vq->vq.num_free++;
+>   	}
+>   
+> @@ -684,7 +693,7 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+>   
+>   		/* Free the indirect table, if any, now that it's unmapped. */
+>   		if (!indir_desc)
+> -			return;
+> +			return 0;
+>   
+>   		len = virtio32_to_cpu(vq->vq.vdev,
+>   				vq->split.vring.desc[head].len);
+> @@ -701,6 +710,7 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+>   	} else if (ctx) {
+>   		*ctx = vq->split.desc_state[head].indir_desc;
+>   	}
+> +	return 0;
+>   }
+>   
+>   static inline bool more_used_split(const struct vring_virtqueue *vq)
+> @@ -717,6 +727,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>   	void *ret;
+>   	unsigned int i;
+>   	u16 last_used;
+> +	int err;
+>   
+>   	START_USE(vq);
+>   
+> @@ -751,7 +762,12 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>   
+>   	/* detach_buf_split clears data, so grab it now. */
+>   	ret = vq->split.desc_state[i].data;
+> -	detach_buf_split(vq, i, ctx);
+> +	err = detach_buf_split(vq, i, ctx);
+> +	if (err) {
+> +		END_USE(vq);
+
+
+This reminds me that we don't use END_USE() after BAD_RING() which 
+should be fixed.
 
 Thanks
-Menglong Dong
+
+
+> +		return NULL;
+> +	}
+> +
+>   	vq->last_used_idx++;
+>   	/* If we expect an interrupt for the next entry, tell host
+>   	 * by writing event index and flush out the write before
+> @@ -863,6 +879,7 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+>   		/* detach_buf_split clears data, so grab it now. */
+>   		buf = vq->split.desc_state[i].data;
+>   		detach_buf_split(vq, i, NULL);
+> +		/* Don't need to check for error because nothing is returned */
+>   		vq->split.avail_idx_shadow--;
+>   		vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+>   				vq->split.avail_idx_shadow);
+
