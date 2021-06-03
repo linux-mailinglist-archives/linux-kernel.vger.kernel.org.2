@@ -2,84 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF45739A583
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3037339A57B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhFCQP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:15:27 -0400
-Received: from mga07.intel.com ([134.134.136.100]:45479 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhFCQP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:15:26 -0400
-IronPort-SDR: FfdJkhhXZmAT9YRvN9EwJkg0zms8wSx0vhU9bYatiMPBQBZ/b9Zrl1W0PQ8/DYMBX0PHkrYZqj
- p+OfcKNqphxQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="267941303"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="267941303"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 09:09:11 -0700
-IronPort-SDR: dufkAAo4d/PWJ4wnRLvUbrImK7qsrPSdWH7tO8rcc6MB0N/oqz73Ol9DckJLHf3EMwgK/u9x1B
- 5dFui4o2xg/Q==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="480277494"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 09:09:09 -0700
-Date:   Thu, 3 Jun 2021 09:09:04 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        David.Laight@aculab.com, linux-fsdevel@vger.kernel.org,
-        akinobu.mita@gmail.com, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, prime.zeng@huawei.com
-Subject: Re: [PATCH v3] libfs: fix error cast of negative value in
- simple_attr_write()
-Message-ID: <20210603160904.GA983893@agluck-desk2.amr.corp.intel.com>
-References: <1605341356-11872-1-git-send-email-yangyicong@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605341356-11872-1-git-send-email-yangyicong@hisilicon.com>
+        id S229999AbhFCQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:13:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:31662 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhFCQNY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 12:13:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622736699; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=YPt57uRHkIKCAc3k7uJNjdS1IBPwSdXWYI60IXWNva4=; b=ZLbhcvQyOxUVnF4/Bdqn1bO6+ebbDt0IDZvh1iQVen450OVwhF9GDw9jEPRLIA2hJNB/BT95
+ KXJ5BOAjjaymW4cOoq9rKzJqysUuHj7YYnCIlgBOF7E3nbZ1HeOH6+JjEiTO7aRPpo2n95e/
+ 23Y2NZq9inYw5G1GqPwXP7Mp5Ek=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60b8feb7ed59bf69cca96c20 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 16:09:27
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 31783C43148; Thu,  3 Jun 2021 16:09:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F054AC4360C;
+        Thu,  3 Jun 2021 16:09:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F054AC4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
+Date:   Thu,  3 Jun 2021 09:09:15 -0700
+Message-Id: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 04:09:16PM +0800, Yicong Yang wrote:
-> The attr->set() receive a value of u64, but simple_strtoll() is used
-> for doing the conversion. It will lead to the error cast if user inputs
-> a negative value.
-> 
-> Use kstrtoull() instead of simple_strtoll() to convert a string got
-> from the user to an unsigned value. The former will return '-EINVAL' if
-> it gets a negetive value, but the latter can't handle the situation
-> correctly. Make 'val' unsigned long long as what kstrtoull() takes, this
-> will eliminate the compile warning on no 64-bit architectures.
-> 
-> Fixes: f7b88631a897 ("fs/libfs.c: fix simple_attr_write() on 32bit machines")
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> ---
-> Change since v1:
-> - address the compile warning for non-64 bit platform.
-> Change since v2:
-> Link: https://lore.kernel.org/linux-fsdevel/1605000324-7428-1-git-send-email-yangyicong@hisilicon.com/
-> - make 'val' unsigned long long and mentioned in the commit
-> Link: https://lore.kernel.org/linux-fsdevel/1605261369-551-1-git-send-email-yangyicong@hisilicon.com/
+Add DP device node on sc7180.
 
-Belated error report on this. Some validation team just moved to
-v5.10 and found their error injection scripts no longer work.
+Changes in v2:
+-- replace msm_dp with dp
+-- replace dp_opp_table with opp_table
 
-They have been using:
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  9 ++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi         | 78 ++++++++++++++++++++++++++++
+ 2 files changed, 87 insertions(+)
 
-# echo $((-1 << 12)) > /sys/kernel/debug/apei/einj/param2
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 24d293e..40367a2 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -786,6 +786,15 @@ hp_i2c: &i2c9 {
+ 	status = "okay";
+ };
+ 
++&dp {
++        status = "okay";
++        pinctrl-names = "default";
++        pinctrl-0 = <&dp_hot_plug_det>;
++        data-lanes = <0 1>;
++        vdda-1p2-supply = <&vdda_usb_ss_dp_1p2>;
++        vdda-0p9-supply = <&vdda_usb_ss_dp_core>;
++};
++
+ &pm6150_adc {
+ 	charger-thermistor@4f {
+ 		reg = <ADC5_AMUX_THM3_100K_PU>;
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6228ba2..05a4133 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -3032,6 +3032,13 @@
+ 							remote-endpoint = <&dsi0_in>;
+ 						};
+ 					};
++
++					port@2 {
++						reg = <2>;
++						dpu_intf0_out: endpoint {
++							remote-endpoint = <&dp_in>;
++						};
++					};
+ 				};
+ 
+ 				mdp_opp_table: mdp-opp-table {
+@@ -3148,6 +3155,77 @@
+ 
+ 				status = "disabled";
+ 			};
++
++			dp: displayport-controller@ae90000 {
++				compatible = "qcom,sc7180-dp";
++				status = "disabled";
++
++				reg = <0 0x0ae90000 0 0x1400>;
++
++				interrupt-parent = <&mdss>;
++				interrupts = <12>;
++
++				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
++				clock-names = "core_iface", "core_aux", "ctrl_link",
++					      "ctrl_link_iface", "stream_pixel";
++				#clock-cells = <1>;
++				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
++						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
++				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
++				phys = <&dp_phy>;
++				phy-names = "dp";
++
++				operating-points-v2 = <&opp_table>;
++				power-domains = <&rpmhpd SC7180_CX>;
++
++				#sound-dai-cells = <0>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						dp_in: endpoint {
++							remote-endpoint = <&dpu_intf0_out>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						dp_out: endpoint { };
++					};
++				};
++
++				opp_table: dp-opp-table {
++					compatible = "operating-points-v2";
++
++					opp-160000000 {
++						opp-hz = /bits/ 64 <160000000>;
++						required-opps = <&rpmhpd_opp_low_svs>;
++					};
++
++					opp-270000000 {
++						opp-hz = /bits/ 64 <270000000>;
++						required-opps = <&rpmhpd_opp_svs>;
++					};
++
++					opp-540000000 {
++						opp-hz = /bits/ 64 <540000000>;
++						required-opps = <&rpmhpd_opp_svs_l1>;
++					};
++
++					opp-810000000 {
++						opp-hz = /bits/ 64 <810000000>;
++						required-opps = <&rpmhpd_opp_nom>;
++					};
++				};
++			};
++
++
+ 		};
+ 
+ 		dispcc: clock-controller@af00000 {
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-to write the mask value 0xfffffffffffff000 for many years ... but
-now writing a negative value (-4096) to this file gives an EINVAL error.
-
-Maybe they've been taking advantage of a bug all this time? The
-comment for debugfs_create_x64() says it is for reading/writing
-an unsigned value. But when a bug fix breaks user code ... then
-we are supposed to ask whether that bug is actually a feature.
-
-If there was a debugfs_create_s64() I might just fix einj.c to
-use that ... but there isn't :-(
-
--Tony
