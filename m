@@ -2,179 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453C339A368
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5588E39A37E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhFCOhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:37:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231539AbhFCOhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:37:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C035613F1;
-        Thu,  3 Jun 2021 14:35:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622730953;
-        bh=pPTuoKWX4d7acsLmcXrA1+Gnm3Uox3TQwafM4ulr3Kc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=e9VHqGAnGRelCzpKXym98XkeVsTq/Wsf54M0iBoVdJ3DFy+gOyNOeiIUvQ++zgyvq
-         VpLR33KVJWeIbAzS2Jof5fGYNIyrFeQstCQOqhJEtkSzh8aP1XUBuap8jcEHcCzLPW
-         xgakhwoQYrUNj1N1cEVYsmvO1E8mBEieV5ZN3IjczHc/RW2V0f+ISZC0g7G8K5IY+v
-         58OZsMJY+xSxQETCdgKq2tZtdWc9AJWmQpR6+rL/sGvMEmUQe649MQxKX0oOEZA13U
-         R7SQxxILd/xg0WRfhxNPCLBQoFgZ9r17UTDbjzm1t/4g87bzyJFShzUtxPixY1sbqH
-         CD6kryvGJoICg==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
+        id S231783AbhFCOki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:40:38 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:41887 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhFCOkh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:40:37 -0400
+Received: by mail-lj1-f169.google.com with SMTP id p20so7420814ljj.8;
+        Thu, 03 Jun 2021 07:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hrCS3/M38iJScm6kFHBrw2Jktg25A1xuMFa4q3y6Sac=;
+        b=jMBL3lLFeaiOxd99Hkx2P6Gn6gOYK0Ac1gja4uhJaXYmTsepD8tnXvF8IMbCy21/L/
+         4nD7dc8O8WMlt1IJ7ssiViatyMluRFwInC3XlB9QDiMrC8af/gmygZDUet5qp1MC2Ru2
+         Y0MFM0MARyOb/songip04vB40i0ZjmabqcsWziJrCOx4eF4Pt2VIrNBBAajZCNDoqlJ/
+         3QBc5Srh/DNIAQFd3nDp/LkI1Z/VXbaLDULWNB8ILTAOw13JTC65q9hv6SzAk7u2dBWv
+         1Kf7Vus2uIQXb1GPPD+rCLqT9qKR1Yas/FOL8mp2Ug5JFISkmhDrK9ndPPDEVvp5enxN
+         4k6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hrCS3/M38iJScm6kFHBrw2Jktg25A1xuMFa4q3y6Sac=;
+        b=oSSI1PunkLXVJpgjBujnXAEeFpN+NQeYaQ72n++TAtM9J2rz05m4ISaCyHXFIRfR0J
+         6QJSmr9/Ovcus+Uw3C7NAGUQ4yY81FPT/fXxDJNo/8WtKbwQduy/Vrd6FZc9W/pYtZWp
+         XAb8ZDYW/prfPfplZ8yLMwtreAvW3UkPpb2mZb23dPyACgFQeFi4EGu/LwKWC+2feF7G
+         /XNaxqji7qpADlg0nih/KA9jfi0P5lxw04C/oqJyq2aTnrHmqxpXUl35hvNO9I6eFFP/
+         lqlF1R69cDMNp9SAzT7Wsw0I30WdySnOyq7Brs3XwQpXbJNV8WVDnB7zf9fFR7Ya/BnY
+         zP4A==
+X-Gm-Message-State: AOAM532iDHYAvptRrBiTcqpAukVB+/fGyz98Pry9Ql8TMLeAmKMQC2UP
+        koaFzEGsCSqKu5sMCgSYiJxufD9F6JA=
+X-Google-Smtp-Source: ABdhPJzaRC4PlHW+UGfS7nJgwd2RK7OPtpS/LL93OoL5pgA80gv/HTOu/SkGG+XgiSbQ9lOUCr46dg==
+X-Received: by 2002:a2e:b0c8:: with SMTP id g8mr10554174ljl.453.1622731055908;
+        Thu, 03 Jun 2021 07:37:35 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id t13sm385841lji.19.2021.06.03.07.37.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 07:37:35 -0700 (PDT)
+Subject: Re: linux-next: build warning after merge of the tegra tree
+To:     Thierry Reding <treding@nvidia.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Cross <ccross@android.com>,
+        Olof Johansson <olof@lixom.net>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        sanm@codeaurora.org
-Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
-In-Reply-To: <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
-References: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
- <87r1hjcvf6.fsf@kernel.org> <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
- <YLi/u9J5f+nQO4Cm@kroah.com>
- <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
-Date:   Thu, 03 Jun 2021 17:35:45 +0300
-Message-ID: <877djbc8xq.fsf@kernel.org>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210603103507.304b7626@canb.auug.org.au>
+ <8d8f947e-2ba4-f7b8-cb85-dcee940c96b4@gmail.com>
+ <YLjIqfeiaJqeJQtw@orome.fritz.box>
+ <8966e56c-4da4-b360-7ce6-19d0af114bb7@gmail.com>
+ <YLjomqomVuJ3QZNC@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a5ed712a-3fb8-57c8-8738-090bfc23e7be@gmail.com>
+Date:   Thu, 3 Jun 2021 17:37:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <YLjomqomVuJ3QZNC@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+03.06.2021 17:35, Thierry Reding пишет:
+> On Thu, Jun 03, 2021 at 05:03:38PM +0300, Dmitry Osipenko wrote:
+>> 03.06.2021 15:18, Thierry Reding пишет:
+>>> On Thu, Jun 03, 2021 at 05:01:48AM +0300, Dmitry Osipenko wrote:
+>>>> 03.06.2021 03:35, Stephen Rothwell пишет:
+>>>>> Hi all,
+>>>>>
+>>>>> After merging the tegra tree, today's linux-next build (x86_64
+>>>>> allmodconfig) produced this warning:
+>>>>>
+>>>>> WARNING: unmet direct dependencies detected for TEGRA210_EMC_TABLE
+>>>>>   Depends on [n]: MEMORY [=y] && TEGRA_MC [=y] && ARCH_TEGRA_210_SOC [=n]
+>>>>>   Selected by [m]:
+>>>>>   - TEGRA210_EMC [=m] && MEMORY [=y] && TEGRA_MC [=y] && (ARCH_TEGRA_210_SOC [=n] || COMPILE_TEST [=y])
+>>>>>
+>>>>> Probably introduced by commit
+>>>>>
+>>>>>   08decdd5b448 ("memory: tegra: Enable compile testing for all drivers")
+>>>>>
+>>>>
+>>>> Thank you. This is a new warning to me, apparently this case wasn't previously tested by kernel build bot.
+>>>>
+>>>> Perhaps this should fix it:
+>>>>
+>>>> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
+>>>> index 71bba2345bce..3f2fa7750118 100644
+>>>> --- a/drivers/memory/tegra/Kconfig
+>>>> +++ b/drivers/memory/tegra/Kconfig
+>>>> @@ -47,7 +47,6 @@ config TEGRA124_EMC
+>>>>  
+>>>>  config TEGRA210_EMC_TABLE
+>>>>  	bool
+>>>> -	depends on ARCH_TEGRA_210_SOC
+>>>
+>>> Why not just add a || COMPILE_TEST like we do for TEGRA210_EMC? Because
+>>> TEGRA210_EMC being pulled in under COMPILE_TEST (and then pulling in
+>>> TEGRA210_EMC_TABLE which is missing the alternative path) seems to be
+>>> the root cause for this.
+>>
+>> The anonymous Kconfig entry is unavailable by default, it can be only
+>> selected by other entry, IIUC. In our case the TEGRA210_EMC_TABLE is
+>> selected by TEGRA210_EMC, hence additional dependencies aren't needed
+>> for TEGRA210_EMC_TABLE.
+> 
+> The code guarded by TEGRA210_EMC_TABLE makes use of some symbols that
+> are only available if ARCH_TEGRA_210_SOC is also defined. If we don't
+> list the dependencies via Kconfig this could lead to a problem where
+> somebody selected TEGRA210_EMC_TABLE without having a dependency on
+> ARCH_TEGRA_210_SOC, which would then lead to a build error.
+> 
+> If we do represent the dependency in Kconfig, we'll get a warning like
+> the above during the configuration step and the offending Kconfig option
+> will end up disabled, and avoid the build failure.
+> 
+> Granted, this could be caught during patch review, and yes, there's not
+> technically a need to encode this using Kconfig dependencies, but at the
+> same time there's also no reason not to use the safeguards we have at
+> our disposal to avoid this in a more automated way.
+> 
+> I'd prefer to stick with the explicit dependency in Kconfig, so I've
+> updated the patch to match the dependencies to that of TEGRA210_EMC.
 
-DQpIaSwNCg0KQWxleGFuZHJ1IEVsaXNlaSA8YWxleGFuZHJ1LmVsaXNlaUBhcm0uY29tPiB3cml0
-ZXM6DQo+IE9uIDYvMy8yMSAxMjo0MCBQTSwgR3JlZyBLcm9haC1IYXJ0bWFuIHdyb3RlOg0KPj4g
-T24gVGh1LCBKdW4gMDMsIDIwMjEgYXQgMTE6NDE6NDVBTSArMDEwMCwgQWxleGFuZHJ1IEVsaXNl
-aSB3cm90ZToNCj4+PiBIZWxsbyBGZWxpcGUsDQo+Pj4NCj4+PiBUaGFuayB5b3UgZm9yIGhhdmlu
-ZyBhIGxvb2shDQo+Pj4NCj4+PiBPbiA2LzMvMjEgNzozMCBBTSwgRmVsaXBlIEJhbGJpIHdyb3Rl
-Og0KPj4+PiBIaSwNCj4+Pj4NCj4+Pj4gQWxleGFuZHJ1IEVsaXNlaSA8YWxleGFuZHJ1LmVsaXNl
-aUBhcm0uY29tPiB3cml0ZXM6DQo+Pj4+PiBJJ3ZlIGJlZW4gc2VlaW5nIHRoZSBmb2xsb3dpbmcg
-cGFuaWMgd2hlbiBzaHV0dGluZyBkb3duIG15IHJvY2twcm82NDoNCj4+Pj4+DQo+Pj4+PiBbw6/C
-v8K9w6/Cv8K9IDIxLjQ1OTA2NF0geGhjaS1oY2QgeGhjaS1oY2QuMC5hdXRvOiBVU0IgYnVzIDUg
-ZGVyZWdpc3RlcmVkDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4MzA3N10gVW5hYmxlIHRvIGhh
-bmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IHZpcnR1YWwgYWRkcmVzcw0K
-Pj4+Pj4gMDAwMDAwMDAwMDAwMDBhMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODM4NThdIE1l
-bSBhYm9ydCBpbmZvOg0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODQxMDRdw6/Cv8K9w6/Cv8K9
-IEVTUiA9IDB4OTYwMDAwMDQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg0Mzc1XcOvwr/CvcOv
-wr/CvSBFQyA9IDB4MjU6IERBQlQgKGN1cnJlbnQgRUwpLCBJTCA9IDMyIGJpdHMNCj4+Pj4+IFvD
-r8K/wr3Dr8K/wr0gMjEuNjg0ODQxXcOvwr/CvcOvwr/CvSBTRVQgPSAwLCBGblYgPSAwDQo+Pj4+
-PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4NTExMV3Dr8K/wr3Dr8K/wr0gRUEgPSAwLCBTMVBUVyA9IDAN
-Cj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg1Mzg5XSBEYXRhIGFib3J0IGluZm86DQo+Pj4+PiBb
-w6/Cv8K9w6/Cv8K9IDIxLjY4NTY0NF3Dr8K/wr3Dr8K/wr0gSVNWID0gMCwgSVNTID0gMHgwMDAw
-MDAwNA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODYwMjRdw6/Cv8K9w6/Cv8K9IENNID0gMCwg
-V25SID0gMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODYyODhdIHVzZXIgcGd0YWJsZTogNGsg
-cGFnZXMsIDQ4LWJpdCBWQXMsIHBnZHA9MDAwMDAwMDAwNzU3YTAwMA0KPj4+Pj4gW8Ovwr/CvcOv
-wr/CvSAyMS42ODY4NTNdIFswMDAwMDAwMDAwMDAwMGEwXSBwZ2Q9MDAwMDAwMDAwMDAwMDAwMCwg
-cDRkPTAwMDAwMDAwMDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg3NDUyXSBJbnRl
-cm5hbCBlcnJvcjogT29wczogOTYwMDAwMDRFRU1QVCBTTVANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0g
-MjEuNjg3OTQxXSBNb2R1bGVzIGxpbmtlZCBpbjoNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg4
-MjE0XSBDUFU6IDQgUElEOiAxIENvbW06IHNodXRkb3duIE5vdCB0YWludGVkDQo+Pj4+PiA1LjEy
-LjAtcmM3LTAwMjYyLWc1NjgyNjJiZjU0OTIgIzMzDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4
-ODkxNV0gSGFyZHdhcmUgbmFtZTogUGluZTY0IFJvY2tQcm82NCB2Mi4wIChEVCkNCj4+Pj4+IFvD
-r8K/wr3Dr8K/wr0gMjEuNjg5MzU3XSBwc3RhdGU6IDYwMDAwMDA1IChuWkN2IGRhaWYgLVBBTiAt
-VUFPIC1UQ08gQlRZUEU9LS0pDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4OTg4NF0gcGMgOiBk
-b3duX3JlYWRfaW50ZXJydXB0aWJsZSsweGVjLzB4MjAwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIx
-LjY5MDMyMV0gbHIgOiBzaW1wbGVfcmVjdXJzaXZlX3JlbW92YWwrMHg0OC8weDI4MA0KPj4+Pj4g
-W8Ovwr/CvcOvwr/CvSAyMS42OTA3NjFdIHNwIDogZmZmZjgwMDAxMWY0Yjk0MA0KPj4+Pj4gW8Ov
-wr/CvcOvwr/CvSAyMS42OTEwNTNdIHgyOTogZmZmZjgwMDAxMWY0Yjk0MCB4Mjg6IGZmZmYwMDAw
-MDA4MDliNDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjkxNTIyXSB4Mjc6IGZmZmYwMDAwMDA4
-MDliOTggeDI2OiBmZmZmODAwMDExNGY1MTcwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5MTk5
-MF0geDI1OiAwMDAwMDAwMDAwMDAwMGEwIHgyNDogZmZmZjgwMDAxMWU4NDAzMA0KPj4+Pj4gW8Ov
-wr/CvcOvwr/CvSAyMS42OTI0NTldIHgyMzogMDAwMDAwMDAwMDAwMDA4MCB4MjI6IDAwMDAwMDAw
-MDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjkyOTI3XSB4MjE6IGZmZmY4MDAwMTFl
-Y2FhNWMgeDIwOiBmZmZmODAwMDExZWNhYTYwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5MzM5
-NV0geDE5OiBmZmZmMDAwMDAwODA5YjQwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPj4+Pj4gW8Ov
-wr/CvcOvwr/CvSAyMS42OTM4NjNdIHgxNzogMDAwMDAwMDAwMDAwMDAwMCB4MTY6IDAwMDAwMDAw
-MDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk0MzMxXSB4MTU6IGZmZmY4MDAwOTFm
-NGJhNmQgeDE0OiAwMDAwMDAwMDAwMDAwMDA0DQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NDc5
-OV0geDEzOiAwMDAwMDAwMDAwMDAwMDAwIHgxMjogMDAwMDAwMDAwMDAwMDAyMA0KPj4+Pj4gW8Ov
-wr/CvcOvwr/CvSAyMS42OTUyNjddIHgxMTogMDEwMTAxMDEwMTAxMDEwMSB4MTA6IDdmN2Y3Zjdm
-N2Y3ZjdmN2YNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk1NzM1XSB4OSA6IDZmNmM3NDYzNjQ3
-MTZlNjIgeDggOiA3ZjdmN2Y3ZjdmN2Y3ZjdmDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NjIw
-M10geDcgOiBmZWZlZmVmZjYzNjQ2MjZkIHg2IDogMDAwMDAwMDAwMDAwMWJkOA0KPj4+Pj4gW8Ov
-wr/CvcOvwr/CvSAyMS42OTY2NzFdIHg1IDogMDAwMDAwMDAwMDAwMDAwMCB4NCA6IDAwMDAwMDAw
-MDAwMDAwMDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk3MTM4XSB4MyA6IDAwMDAwMDAwMDAw
-MDAwYTAgeDIgOiAwMDAwMDAwMDAwMDAwMDAxDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NzYw
-Nl0geDEgOiAwMDAwMDAwMDAwMDAwMDAwIHgwIDogMDAwMDAwMDAwMDAwMDBhMA0KPj4+Pj4gW8Ov
-wr/CvcOvwr/CvSAyMS42OTgwNzVdIENhbGwgdHJhY2U6DQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIx
-LjY5ODI5MV3Dr8K/wr0gZG93bl9yZWFkX2ludGVycnVwdGlibGUrMHhlYy8weDIwMA0KPj4+Pj4g
-W8Ovwr/CvcOvwr/CvSAyMS42OTg2OTBdw6/Cv8K9IGRlYnVnZnNfcmVtb3ZlKzB4NjAvMHg4NA0K
-Pj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTkwMTZdw6/Cv8K9IGR3YzNfZGVidWdmc19leGl0KzB4
-MWMvMHg2Yw0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTkzNjNdw6/Cv8K9IGR3YzNfcmVtb3Zl
-KzB4MzQvMHgxYTANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk5NjcyXcOvwr/CvSBwbGF0Zm9y
-bV9yZW1vdmUrMHgyOC8weDYwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMDAwNV3Dr8K/wr0g
-X19kZXZpY2VfcmVsZWFzZV9kcml2ZXIrMHgxODgvMHgyMzANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0g
-MjEuNzAwNDE0XcOvwr/CvSBkZXZpY2VfcmVsZWFzZV9kcml2ZXIrMHgyYy8weDQ0DQo+Pj4+PiBb
-w6/Cv8K9w6/Cv8K9IDIxLjcwMDc5MV3Dr8K/wr0gYnVzX3JlbW92ZV9kZXZpY2UrMHgxMjQvMHgx
-MzANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAxMTU0XcOvwr/CvSBkZXZpY2VfZGVsKzB4MTY4
-LzB4NDIwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMTQ2Ml3Dr8K/wr0gcGxhdGZvcm1fZGV2
-aWNlX2RlbC5wYXJ0LjArMHgxYy8weDkwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMTg3N13D
-r8K/wr0gcGxhdGZvcm1fZGV2aWNlX3VucmVnaXN0ZXIrMHgyOC8weDQ0DQo+Pj4+PiBbw6/Cv8K9
-w6/Cv8K9IDIxLjcwMjI5MV3Dr8K/wr0gb2ZfcGxhdGZvcm1fZGV2aWNlX2Rlc3Ryb3krMHhlOC8w
-eDEwMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDI3MTZdw6/Cv8K9IGRldmljZV9mb3JfZWFj
-aF9jaGlsZF9yZXZlcnNlKzB4NjQvMHhiNA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDMxNTNd
-w6/Cv8K9IG9mX3BsYXRmb3JtX2RlcG9wdWxhdGUrMHg0MC8weDg0DQo+Pj4+PiBbw6/Cv8K9w6/C
-v8K9IDIxLjcwMzUzOF3Dr8K/wr0gX19kd2MzX29mX3NpbXBsZV90ZWFyZG93bisweDIwLzB4ZDQN
-Cj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAzOTQ1XcOvwr/CvSBkd2MzX29mX3NpbXBsZV9zaHV0
-ZG93bisweDE0LzB4MjANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA0MzM3XcOvwr/CvSBwbGF0
-Zm9ybV9zaHV0ZG93bisweDI4LzB4NDANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA0NjgzXcOv
-wr/CvSBkZXZpY2Vfc2h1dGRvd24rMHgxNTgvMHgzMzANCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEu
-NzA1MDI5XcOvwr/CvSBrZXJuZWxfcG93ZXJfb2ZmKzB4MzgvMHg3Yw0KPj4+Pj4gW8Ovwr/CvcOv
-wr/CvSAyMS43MDUzNzJdw6/Cv8K9IF9fZG9fc3lzX3JlYm9vdCsweDE2Yy8weDJhMA0KPj4+Pj4g
-W8Ovwr/CvcOvwr/CvSAyMS43MDU3MTldw6/Cv8K9IF9fYXJtNjRfc3lzX3JlYm9vdCsweDI4LzB4
-MzQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA2MDc0XcOvwr/CvSBlbDBfc3ZjX2NvbW1vbi5j
-b25zdHByb3AuMCsweDYwLzB4MTIwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwNjQ5OV3Dr8K/
-wr0gZG9fZWwwX3N2YysweDI4LzB4OTQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA2Nzk0XcOv
-wr/CvSBlbDBfc3ZjKzB4MmMvMHg1NA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDcwNjddw6/C
-v8K9IGVsMF9zeW5jX2hhbmRsZXIrMHhhNC8weDEzMA0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43
-MDc0MTRdw6/Cv8K9IGVsMF9zeW5jKzB4MTcwLzB4MTgwDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIx
-LjcwNzcxMV0gQ29kZTogYzgwNDdjNjIgMzVmZmZmODQgMTdmZmZlNWYgZjk4MDAwNzEgKGM4NWZm
-YzYwKQ0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDgyNTBdIC0tLVsgZW5kIHRyYWNlIDVhZTA4
-MTQ3NTQyZWI0NjggXS0tLQ0KPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDg2NjddIEtlcm5lbCBw
-YW5pYyAtIG5vdCBzeW5jaW5nOiBBdHRlbXB0ZWQgdG8ga2lsbCBpbml0ISBleGl0Y29kZT0weDAw
-MDAwMDBiDQo+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwOTQ1Nl0gS2VybmVsIE9mZnNldDogZGlz
-YWJsZWQNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA5NzYyXSBDUFUgZmVhdHVyZXM6IDB4MDAy
-NDAwMjIsMjEwMDYwMGMNCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzEwMTQ2XSBNZW1vcnkgTGlt
-aXQ6IDIwNDggTUINCj4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzEwNDQzXSAtLS1bIGVuZCBLZXJu
-ZWwgcGFuaWMgLSBub3Qgc3luY2luZzogQXR0ZW1wdGVkIHRvIGtpbGwgaW5pdCENCj4+Pj4+IGV4
-aXRjb2RlPTB4MDAwMDAwMGIgXS0tLQ0KPj4+Pj4NCj4+Pj4+IEkndmUgYmVlbiBhYmxlIHRvIGJp
-c2VjdCB0aGUgcGFuaWMgYW5kIHRoZSBvZmZlbmRpbmcgY29tbWl0IGlzIDU2ODI2MmJmNTQ5MiAo
-InVzYjoNCj4+Pj4+IGR3YzM6IGNvcmU6IEFkZCBzaHV0ZG93biBjYWxsYmFjayBmb3IgZHdjMyIp
-LiBJIGNhbiBwcm92aWRlIG1vcmUgZGlhZ25vc3RpYw0KPj4+Pj4gaW5mb3JtYXRpb24gaWYgbmVl
-ZGVkIGFuZCBJIGNhbiBoZWxwIHRlc3QgdGhlIGZpeC4NCj4+Pj4gaWYgeW91IHNpbXBseSByZXZl
-cnQgdGhhdCBjb21taXQgaW4gSEVBRCwgZG9lcyB0aGUgcHJvYmxlbSByZWFsbHkgZ28NCj4+Pj4g
-YXdheT8NCj4+PiBLZXJuZWwgYnVpbHQgZnJvbSBjb21taXQgMzI0YzkyZTVlMGVlLCB3aGljaCBp
-cyB0aGUga2VybmVsIHRpcCB0b2RheSwgdGhlIHBhbmljIGlzDQo+Pj4gdGhlcmUuIFJldmVydGlu
-ZyB0aGUgb2ZmZW5kaW5nIGNvbW1pdCwgNTY4MjYyYmY1NDkyLCBtYWtlcyB0aGUgcGFuaWMgZGlz
-YXBwZWFyLg0KPj4gV2FudCB0byBzZW5kIGEgcmV2ZXJ0IHNvIEkgY2FuIHRha2UgaXQgbm93Pw0K
-Pg0KPiBJIGNhbiBzZW5kIGEgcmV2ZXJ0LCBidXQgRmVsaXBlIHdhcyBhc2tpbmcgU2FuZGVlcCAo
-dGhlIGNvbW1pdCBhdXRob3IpIGZvciBhIGZpeCwNCj4gc28gSSdsbCBsZWF2ZSBpdCB1cCB0byBG
-ZWxpcGUgdG8gZGVjaWRlIGhvdyB0byBwcm9jZWVkLg0KDQpJJ20gb2theSB3aXRoIGEgcmV2ZXJ0
-LiBGZWVsIGZyZWUgdG8gYWRkIG15IEFja2VkLWJ5OiBGZWxpcGUgQmFsYmkNCjxiYWxiaUBrZXJu
-ZWwub3JnPiBvciBpdC4NCg0KU2FuZGVlcCwgcGxlYXNlIHNlbmQgYSBuZXcgdmVyc2lvbiB0aGF0
-IGRvZXNuJ3QgZW5jb3VudGVyIHRoZSBzYW1lDQppc3N1ZS4gTWFrZSBzdXJlIHRvIHRlc3QgYnkg
-cmVsb2FkaW5nIHRoZSBkcml2ZXIgaW4gYSB0aWdodCBsb29wIGZvcg0Kc2V2ZXJhbCBpdGVyYXRp
-b25zLg0KDQotLSANCmJhbGJpDQo=
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC46MERHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUjYmQf+KFPnwL3j3fKDQ4Agu3Yc1wFDyMP4fkEt
-Gw13bagAVALtsDOHR5f37rIsMMcUTwQlW0mAm2qJCltdP3+ljH2gU77C0Riioc1M
-h040X4XggNihXEBbhQT8UdqDHQ/H06NqWm6yzgGS/1rhdj9R61O74ACTXmMbc4qD
-JrK8U1+iz1mvrs/O40Ni4jQR6BmDTBujqFA8YR7uDrQTyTP3MVxyMOF/ByLLxLNM
-MNMh2y3N2iOtrcLgnSeUbQZk+opHa5cSmTNJDoFpOilsbKZCK6V/YJPCyXFpvFt0
-TZWLWOEoc59nhsmjr54qJwwXGKRwsAgxkcvzZi5s0ePg1DI7KgKTqg==
-=H6RB
------END PGP SIGNATURE-----
---=-=-=--
+I don't mind if you prefer this explicit approach more. Thank you for
+the fix.
