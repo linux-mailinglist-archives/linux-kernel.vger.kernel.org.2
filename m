@@ -2,207 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4DA39A3F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E3039A40B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhFCPId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:08:33 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:41635 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhFCPIb (ORCPT
+        id S231814AbhFCPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:14:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50122 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231768AbhFCPOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:08:31 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1FC0CE0004;
-        Thu,  3 Jun 2021 15:06:39 +0000 (UTC)
-Subject: Re: [PATCH v3 1/3] riscv: Factorize xip and !xip kernel address
- conversion macros
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Anup Patel <anup@brainfault.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-References: <20210603082749.1256129-1-alex@ghiti.fr>
- <20210603082749.1256129-2-alex@ghiti.fr> <20210603202748.2775f739@xhacker>
- <64cdb4f9-06f0-59b9-acf9-6fc298db37d7@ghiti.fr>
- <CAAhSdy2kPPrBzFCA01NSvWptoftY27+PsMzLDWFzvOzNdUByhA@mail.gmail.com>
- <20210603215337.4da052e2@xhacker>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <e50b56f5-7405-2eef-f8e9-7d9fa4df7c77@ghiti.fr>
-Date:   Thu, 3 Jun 2021 17:06:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Thu, 3 Jun 2021 11:14:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622733141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aspJS5aAFAxTpv9L4o0wqmYtlBbE09BO7N3NtCpNCdo=;
+        b=Wa44iqhob5D1vGn09l79HtC/7n12wFHMd4WOlSO2lvcdinMGuIsC/+nxgvv1RBV7KmyGgW
+        /RlpbqrUG+2QyIQuxndcHVwz4VEnIU+nNqIjfdoewbqD0e27SdWP2D+w1Y/p6KMflXcsus
+        mWBM+rI9Mq+I/VtSfmfZe3My0D09zZo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-xmQ1entOM2udCAnwjIJrBA-1; Thu, 03 Jun 2021 11:12:18 -0400
+X-MC-Unique: xmQ1entOM2udCAnwjIJrBA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B9F6101371E;
+        Thu,  3 Jun 2021 15:12:17 +0000 (UTC)
+Received: from localhost (ovpn-114-228.ams2.redhat.com [10.36.114.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3ABFA5D743;
+        Thu,  3 Jun 2021 15:12:06 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 16:12:05 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, slp@redhat.com,
+        sgarzare@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
+Message-ID: <YLjxRcFN2G98mwH5@stefanha-x1.localdomain>
+References: <20210520141305.355961-1-stefanha@redhat.com>
+ <20210520141305.355961-4-stefanha@redhat.com>
+ <YK8Ho3mC117M8GXS@T590>
 MIME-Version: 1.0
-In-Reply-To: <20210603215337.4da052e2@xhacker>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kr/3Sj2ADIR3Iave"
+Content-Disposition: inline
+In-Reply-To: <YK8Ho3mC117M8GXS@T590>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 3/06/2021 à 15:53, Jisheng Zhang a écrit :
-> On Thu, 3 Jun 2021 18:46:47 +0530
-> Anup Patel <anup@brainfault.org> wrote:
-> 
->> On Thu, Jun 3, 2021 at 6:27 PM Alex Ghiti <alex@ghiti.fr> wrote:
->>>
->>> Hi Jisheng,
-> 
-> Hi,
-> 
->>>
->>> Le 3/06/2021 à 14:27, Jisheng Zhang a écrit :
->>>> On Thu,  3 Jun 2021 10:27:47 +0200
->>>> Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>>   
->>>>> To simplify the kernel address conversion code, make the same definition of
->>>>> kernel_mapping_pa_to_va and kernel_mapping_va_to_pa compatible for both xip
->>>>> and !xip kernel by defining XIP_OFFSET to 0 in !xip kernel.
->>>>>
->>>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->>>>> ---
->>>>>    arch/riscv/include/asm/page.h    | 14 +++-----------
->>>>>    arch/riscv/include/asm/pgtable.h |  2 ++
->>>>>    2 files changed, 5 insertions(+), 11 deletions(-)
->>>>>
->>>>> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
->>>>> index 6a7761c86ec2..6e004d8fda4d 100644
->>>>> --- a/arch/riscv/include/asm/page.h
->>>>> +++ b/arch/riscv/include/asm/page.h
->>>>> @@ -93,9 +93,7 @@ extern unsigned long va_pa_offset;
->>>>>    #ifdef CONFIG_64BIT
->>>>>    extern unsigned long va_kernel_pa_offset;
->>>>>    #endif
->>>>> -#ifdef CONFIG_XIP_KERNEL
->>>>>    extern unsigned long va_kernel_xip_pa_offset;
->>>>> -#endif
->>>>>    extern unsigned long pfn_base;
->>>>>    #define ARCH_PFN_OFFSET            (pfn_base)
->>>>>    #else
->>>>> @@ -103,6 +101,7 @@ extern unsigned long pfn_base;
->>>>>    #ifdef CONFIG_64BIT
->>>>>    #define va_kernel_pa_offset        0
->>>>>    #endif
->>>>> +#define va_kernel_xip_pa_offset 0
->>>>>    #define ARCH_PFN_OFFSET            (PAGE_OFFSET >> PAGE_SHIFT)
->>>>>    #endif /* CONFIG_MMU */
->>>>>
->>>>> @@ -110,29 +109,22 @@ extern unsigned long kernel_virt_addr;
->>>>>
->>>>>    #ifdef CONFIG_64BIT
->>>>>    #define linear_mapping_pa_to_va(x) ((void *)((unsigned long)(x) + va_pa_offset))
->>>>> -#ifdef CONFIG_XIP_KERNEL
->>>>>    #define kernel_mapping_pa_to_va(y) ({                                              \
->>>>>       unsigned long _y = y;                                                           \
->>>>>       (_y >= CONFIG_PHYS_RAM_BASE) ?
->>>>
->>>> This CONFIG_PHYS_RAM_BASE is only available for XIP, could result in a
->>>> compiler error for !XIP?
->>>
->>> You're right, I have this patch in my branch and forgot to squash it
->>>   
->>>>
->>>> I'm also concerned with the unecessary overhead of kernel_mapping_pa_to_va()
->>>> for !XIP case, there's a "if" condition branch, and extra symbol: va_kernel_xip_pa_offset
->>>
->>> I understand your concerns even if I don't find that the overhead is
->>> that important here, I prefer the readability improvement. I can always
-> 
-> For readability, we still can avoid introducing va_kernel_xip_pa_offset
-> symbol by simply define va_kernel_xip_pa_offset as 0 if XIP as you did
-> for XIP_OFFSET
-> 
-> PS: this may need a preparation patch:
-> http://lists.infradead.org/pipermail/linux-riscv/2021-June/006802.html
 
-IIUC, that won't improve readability, just avoid to allocate 
-va_kernel_xip_pa_offset in !XIP kernel right?
+--kr/3Sj2ADIR3Iave
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
->>> add unlikely/likely builtin to improve things or completely remove this
->>> patch if others agree with you.
->>
->> I would also prefer readable code for long-term maintainability. Currently,
->> the nested "#ifdefs" are increasing causing developers to easily break
->> untested combinations.
->>
->> Regards,
->> Anup
->>
->>>
->>> Thanks,
->>>
->>> Alex
->>>   
->>>>   
->>>>>               (void *)((unsigned long)(_y) + va_kernel_pa_offset + XIP_OFFSET) :      \
->>>>>               (void *)((unsigned long)(_y) + va_kernel_xip_pa_offset);                \
->>>>>       })
->>>>> -#else
->>>>> -#define kernel_mapping_pa_to_va(x)  ((void *)((unsigned long)(x) + va_kernel_pa_offset))
->>>>> -#endif
->>>>>    #define __pa_to_va_nodebug(x)              linear_mapping_pa_to_va(x)
->>>>>
->>>>>    #define linear_mapping_va_to_pa(x) ((unsigned long)(x) - va_pa_offset)
->>>>> -#ifdef CONFIG_XIP_KERNEL
->>>>>    #define kernel_mapping_va_to_pa(y) ({                                              \
->>>>>       unsigned long _y = y;                                                   \
->>>>>       (_y < kernel_virt_addr + XIP_OFFSET) ?                                  \
->>>>>               ((unsigned long)(_y) - va_kernel_xip_pa_offset) :               \
->>>>>               ((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFSET);       \
->>>>>       })
->>>>
->>>> Similar as kernel_mapping_pa_to_va(), an overhead of "if" condition branch
->>>> for !XIP and extra va_kernel_xip_pa_offset symbol.
->>>>   
->>>>> -#else
->>>>> -#define kernel_mapping_va_to_pa(x)  ((unsigned long)(x) - va_kernel_pa_offset)
->>>>> -#endif
->>>>> +
->>>>>    #define __va_to_pa_nodebug(x)      ({                                              \
->>>>>       unsigned long _x = x;                                                   \
->>>>>       (_x < kernel_virt_addr) ?                                               \
->>>>> @@ -141,7 +133,7 @@ extern unsigned long kernel_virt_addr;
->>>>>    #else
->>>>>    #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
->>>>>    #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
->>>>> -#endif
->>>>> +#endif /* CONFIG_64BIT */
->>>>>
->>>>>    #ifdef CONFIG_DEBUG_VIRTUAL
->>>>>    extern phys_addr_t __virt_to_phys(unsigned long x);
->>>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
->>>>> index bde8ce3bfe7c..d98e931a31e5 100644
->>>>> --- a/arch/riscv/include/asm/pgtable.h
->>>>> +++ b/arch/riscv/include/asm/pgtable.h
->>>>> @@ -77,6 +77,8 @@
->>>>>
->>>>>    #ifdef CONFIG_XIP_KERNEL
->>>>>    #define XIP_OFFSET         SZ_8M
->>>>> +#else
->>>>> +#define XIP_OFFSET          0
->>>>>    #endif
->>>>>
->>>>>    #ifndef __ASSEMBLY__
->>>>
->>>>
->>>>
->>>> _______________________________________________
->>>> linux-riscv mailing list
->>>> linux-riscv@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>>   
-> 
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+On Thu, May 27, 2021 at 10:44:51AM +0800, Ming Lei wrote:
+> On Thu, May 20, 2021 at 03:13:05PM +0100, Stefan Hajnoczi wrote:
+> > Request completion latency can be reduced by using polling instead of
+> > irqs. Even Posted Interrupts or similar hardware support doesn't beat
+> > polling. The reason is that disabling virtqueue notifications saves
+> > critical-path CPU cycles on the host by skipping irq injection and in
+> > the guest by skipping the irq handler. So let's add blk_mq_ops->poll()
+> > support to virtio_blk.
+> >=20
+> > The approach taken by this patch differs from the NVMe driver's
+> > approach. NVMe dedicates hardware queues to polling and submits
+> > REQ_HIPRI requests only on those queues. This patch does not require
+> > exclusive polling queues for virtio_blk. Instead, it switches between
+> > irqs and polling when one or more REQ_HIPRI requests are in flight on a
+> > virtqueue.
+> >=20
+> > This is possible because toggling virtqueue notifications is cheap even
+> > while the virtqueue is running. NVMe cqs can't do this because irqs are
+> > only enabled/disabled at queue creation time.
+> >=20
+> > This toggling approach requires no configuration. There is no need to
+> > dedicate queues ahead of time or to teach users and orchestration tools
+> > how to set up polling queues.
+>=20
+> This approach looks good, and very neat thanks per-vq lock.
+>=20
+> BTW, is there any virt-exit saved by disabling vq interrupt? I understand
+> there isn't since virt-exit may only be involved in remote completion
+> via sending IPI.
+
+This patch doesn't eliminate vmexits. QEMU already has virtqueue polling
+code that disables the vq notification (the virtio-pci hardware register
+write that causes a vmexit).
+
+However, when both the guest
+driver and the emulated device are polling then there are no vmexits or
+interrupt injections with this patch.
+
+> >=20
+> > Possible drawbacks of this approach:
+> >=20
+> > - Hardware virtio_blk implementations may find virtqueue_disable_cb()
+> >   expensive since it requires DMA. If such devices become popular then
+>=20
+> You mean the hardware need to consider order between DMA completion and
+> interrupt notify? But it is disabling notify, guest just calls
+> virtqueue_get_buf() to see if there is buffer available, if not, it will =
+be
+> polled again.
+
+Software devices have cheap access to guest RAM for looking at the
+virtqueue_disable_cb() state before injecting an irq. Hardware devices
+need to perform a DMA transaction to read that state. They have to do
+this every time they want to raise an irq because the guest driver may
+have changed the value.
+
+I'm not sure if the DMA overhead is acceptable. This problem is not
+introduced by this patch, it's a VIRTIO spec design issue.
+
+I was trying to express that dedicated polling queues would avoid the
+DMA since the device knows that irqs are never needed for this virtqueue.
+
+>=20
+> >   the virtio_blk driver could use a similar approach to NVMe when
+> >   VIRTIO_F_ACCESS_PLATFORM is detected in the future.
+> >=20
+> > - If a blk_poll() thread is descheduled it not only hurts polling
+> >   performance but also delays completion of non-REQ_HIPRI requests on
+> >   that virtqueue since vq notifications are disabled.
+> >=20
+> > Performance:
+> >=20
+> > - Benchmark: fio ioengine=3Dpvsync2 numjobs=3D4 direct=3D1
+> > - Guest: 4 vCPUs with one virtio-blk device (4 virtqueues)
+>=20
+> 4 jobs can consume up all 4 vCPUs. Just run a quick fio test with
+> 'ioengine=3Dio_uring --numjobs=3D1' on single vq, and IOPS can be improved
+> by ~20%(hipri=3D1 vs hipri=3D0) with the 3 patches, and the virtio-blk is
+> still backed on NVMe SSD.
+
+Nice, thank you for sharing the data!
+
+Stefan
+
+--kr/3Sj2ADIR3Iave
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmC48UUACgkQnKSrs4Gr
+c8jDcgf/SCLpDI/0kZeWjUgSOeCyvc3c097zlWxfUqfprecYQPSpuCQxFSTubjSG
+ursFNJ8GRKer5KhjBfLh4Kb/b8cacI8tsya4mr01zBNzKynkb5/bAyVuxAcy8pTs
+nZdb9b9CW/KVaR/0+Qb2xueVvu8C01tZM3zbeVvG/XWfnizumhByygPmhKt9DqOn
+Z+NzjHAeN3yOBr/75Pn8P3qidJJftZjr2Wsc/X7j7pQEIzfchMbyGw82rmSp5tve
+C6JGzkoB/9DCQkSGdNNZ3sd0W+eEbW3jsmCWCfnshZsxkNP4jFmR7wXfCbdqztYO
+AGz+6MxiBIgOZtYvYgrulV8LC0WSJg==
+=IbZ3
+-----END PGP SIGNATURE-----
+
+--kr/3Sj2ADIR3Iave--
+
