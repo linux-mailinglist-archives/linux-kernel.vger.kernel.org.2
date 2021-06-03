@@ -2,188 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CE439A3C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B4339A3CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhFCO6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:58:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38404 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231784AbhFCO6Q (ORCPT
+        id S231873AbhFCPAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:00:11 -0400
+Received: from mail-qk1-f169.google.com ([209.85.222.169]:36435 "EHLO
+        mail-qk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231328AbhFCPAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:58:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622732191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=goc0S/3BnSXgINaDm4Ycz9KOeQAXHuNP6jsSEIzAQsg=;
-        b=VuI2UnpciToZjwiw9QLX14fQ8WDoTnhgKu3aFB4jD5fw2Cgz9SuYpAbkRF5HsZRF+wR5U/
-        Xdg3Lpu3irfQWUlMag8ObI6zg1CH3DcWzP+/NoHLwqsU8ohp0WzO2o0459isggAkCORGT/
-        ywCO4QgyDxKt1z6ScD0HTqIwDKqMSZk=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-w8umWSIdMya0zNJ9E0v5Bg-1; Thu, 03 Jun 2021 10:56:29 -0400
-X-MC-Unique: w8umWSIdMya0zNJ9E0v5Bg-1
-Received: by mail-ej1-f69.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso2026545ejt.20
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 07:56:29 -0700 (PDT)
+        Thu, 3 Jun 2021 11:00:10 -0400
+Received: by mail-qk1-f169.google.com with SMTP id i68so2610714qke.3;
+        Thu, 03 Jun 2021 07:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rlJ05cns3Kw02wHzy/fk7shZWnWXqFlVRCeogh0cQHs=;
+        b=QwulaL5sAsbuU3RVIk5owgrkT1UhnwT/VbRG1Xs3XZImPch+XRmXTfjyN78iC274iy
+         Izp0D6p8IEw4k37j3ujrwZeTvwWerC+BCYatRHtIRGlSzuD4rUhXoFRh5zrhzv2Qg6GI
+         YoSb3jNprRJHK8Aaeuj8tDirOvpyF2ACPDo3G+6y2eFtT88DCa5VP+Qo5pIA05dp7Aif
+         w9KDnDBKZyobpCl+SU1T+6CVxzU1KEmCepAREiIyK4oulr/fznqMaIT41w5JZz8ROkEa
+         DEc3B0oRBTzxYWTR8bxizx6hs8tfyZ7mqnUSmMeo3Z8NYaYyDWuawMYMXlpWaZxJw9Im
+         bYuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=goc0S/3BnSXgINaDm4Ycz9KOeQAXHuNP6jsSEIzAQsg=;
-        b=Fr/ULozmwfkCoRQcP+APDF/444yMZyHEpRCT80oRaJnVv+PZYb5tKAEuUZ62MJ1Kbe
-         lqWwdOHxwAs3auuR0JNLFYSkXe55BBj2GVVsvRw9CAPKvEn/Q2AZy1i3IAknvL7AHdNi
-         BXUT+lr6pz4MU1fQNCc14hd26vq8bkdZcIBQa5T+SaT+/AuLc6XkaRDPiiYZCLFIYUpc
-         K4/g3YKFYuWlbAh0rMX+Jy2kUd6EMv7VNros/oYd0NSpzWCqf3qGQBBu68G4GzafEXOe
-         AVe5rWC1q/IOx9s08zrOvsta23QeMAbzFQll4/HJ+mLDnhieSnaBAN2lXcRAOoVge1i1
-         GVCw==
-X-Gm-Message-State: AOAM533bRW79knjZir0g/j/baZq0ifxUmIo3AMqHQgA+eMAgJPD7l7J/
-        Sb471rYVEWE8AzFsz/wEt+bBjvTksmSVsq4+mzecZpD+vu3vbnS8aIryNNY9asw6BLKf4SM7ldd
-        mAYIiMD7vC6rgRcQLdqXj2gNS
-X-Received: by 2002:aa7:c594:: with SMTP id g20mr171118edq.193.1622732188105;
-        Thu, 03 Jun 2021 07:56:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNs8fBb3HJWsNPx4vbS0w6t0xdKecgcrrzazaCK6WjM8HGlFblxyZ501bs6But06wi3tedQQ==
-X-Received: by 2002:aa7:c594:: with SMTP id g20mr171099edq.193.1622732187957;
-        Thu, 03 Jun 2021 07:56:27 -0700 (PDT)
-Received: from steredhat ([5.170.129.82])
-        by smtp.gmail.com with ESMTPSA id h2sm1391024edr.50.2021.06.03.07.56.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rlJ05cns3Kw02wHzy/fk7shZWnWXqFlVRCeogh0cQHs=;
+        b=imVgtLnuy2T8i6pSlgiuzErCuX0X7396+nYY8hr28aH9rN34nb7aCM6cmFnOqCPNXk
+         kF1SDYHLVsoIO39sNB2lm6Q733y7W4dp5U1TwvCqK1/Rh6AlMqbsOvPzbgIlmEPcwIZ1
+         PywJROQPs9pQonXyuRmcuqcr033HsJEsuQI+ovbkaL5nAVRUoIPTepP3YFxhYs75jB3J
+         QnfxTtsTxdwQ/lG1hivMKZnAvIPVJvOj9QHwe59cM3Pc920v2ACQgcW4WHDVB6xtJGVo
+         5ZCI3Lul8Ci7J6Eo+5onE8V39/X9GSYaPfE/qz79EeWTL3fiWnuW6rvXgFCJnpJjLwi/
+         Uf+Q==
+X-Gm-Message-State: AOAM5316Ee1mk9eYqPgPAMbilqUYTgcfFp6m6pfOvytfe36yj5+1Rzum
+        v7M20H9QVO4I3xOSeGz8fQuGkSkfMdo=
+X-Google-Smtp-Source: ABdhPJx0w507n2feT3WeLa9EFDutgCVqNm17jPyd7ic3GRRlfnlsM41RFs9FF4rQ/zgLCfePYtV7AA==
+X-Received: by 2002:a05:620a:44c4:: with SMTP id y4mr24724qkp.216.1622732244807;
+        Thu, 03 Jun 2021 07:57:24 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:8008])
+        by smtp.gmail.com with ESMTPSA id k124sm2011692qkc.132.2021.06.03.07.57.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 07:56:27 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 16:56:23 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
-Subject: Re: [PATCH v10 12/18] virtio/vsock: add SEQPACKET receive logic
-Message-ID: <20210603145623.cv7cmf2zfjsx4w2t@steredhat>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
- <20210520191824.1272172-1-arseny.krasnov@kaspersky.com>
+        Thu, 03 Jun 2021 07:57:24 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: [PATCH V13 0/3] Charge loop device i/o to issuing cgroup
+Date:   Thu,  3 Jun 2021 07:57:04 -0700
+Message-Id: <20210603145707.4031641-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210520191824.1272172-1-arseny.krasnov@kaspersky.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:18:21PM +0300, Arseny Krasnov wrote:
->Update current receive logic for SEQPACKET support: performs
->check for packet and socket types on receive(if mismatch, then
->reset connection).
+No significant changes, rebased on Linus's tree.
 
-We also copy the flags. Please check better your commit messages.
+Jens, this series was intended to go into the mm tree since it had
+some conflicts with mm changes. It never got picked up for 5.12 and
+the corresponding mm changes are now in linus's tree. This is mostly a
+loop change so it feels more appropriate to go through the block tree.
+Do you think that makes sense?
 
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v9 -> v10:
-> 1) Commit message updated.
-> 2) Comment updated.
-> 3) Updated way to to set 'last_pkt' flags.
->
-> net/vmw_vsock/virtio_transport_common.c | 30 ++++++++++++++++++++++---
-> 1 file changed, 27 insertions(+), 3 deletions(-)
->
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index 61349b2ea7fe..a6f8b0f39775 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -165,6 +165,14 @@ void virtio_transport_deliver_tap_pkt(struct virtio_vsock_pkt *pkt)
-> }
-> EXPORT_SYMBOL_GPL(virtio_transport_deliver_tap_pkt);
->
->+static u16 virtio_transport_get_type(struct sock *sk)
->+{
->+	if (sk->sk_type == SOCK_STREAM)
->+		return VIRTIO_VSOCK_TYPE_STREAM;
->+	else
->+		return VIRTIO_VSOCK_TYPE_SEQPACKET;
->+}
->+
-> /* This function can only be used on connecting/connected sockets,
->  * since a socket assigned to a transport is required.
->  *
->@@ -979,13 +987,17 @@ virtio_transport_recv_enqueue(struct vsock_sock *vsk,
-> 					   struct virtio_vsock_pkt, list);
->
-> 		/* If there is space in the last packet queued, we copy the
->-		 * new packet in its buffer.
->+		 * new packet in its buffer(except SEQPACKET case, when we
->+		 * also check that last packet is not last packet of previous
->+		 * record).
+Changes since V12:
 
-Is better to explain why we don't do this for SEQPACKET, something like this:
+* Small change to get_mem_cgroup_from_mm to avoid needing
+  get_active_memcg
 
-		/* If there is space in the last packet queued, we copy the
-		 * new packet in its buffer.
-		 * We avoid this if the last packet queued has
-		 * VIRTIO_VSOCK_SEQ_EOR set, because it is the delimiter
-		 * of SEQPACKET record, so `pkt` is the first packet
-		 * of a new record.
-		 */
+Changes since V11:
 
-> 		 */
->-		if (pkt->len <= last_pkt->buf_len - last_pkt->len) {
->+		if ((pkt->len <= last_pkt->buf_len - last_pkt->len) &&
->+		    !(le32_to_cpu(last_pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)) {
-> 			memcpy(last_pkt->buf + last_pkt->len, pkt->buf,
-> 			       pkt->len);
-> 			last_pkt->len += pkt->len;
-> 			free_pkt = true;
->+			last_pkt->hdr.flags |= pkt->hdr.flags;
-> 			goto out;
-> 		}
-> 	}
->@@ -1151,6 +1163,12 @@ virtio_transport_recv_listen(struct sock *sk, struct virtio_vsock_pkt *pkt,
-> 	return 0;
-> }
->
->+static bool virtio_transport_valid_type(u16 type)
->+{
->+	return (type == VIRTIO_VSOCK_TYPE_STREAM) ||
->+	       (type == VIRTIO_VSOCK_TYPE_SEQPACKET);
->+}
->+
-> /* We are under the virtio-vsock's vsock->rx_lock or vhost-vsock's vq->mutex
->  * lock.
->  */
->@@ -1176,7 +1194,7 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
-> 					le32_to_cpu(pkt->hdr.buf_alloc),
-> 					le32_to_cpu(pkt->hdr.fwd_cnt));
->
->-	if (le16_to_cpu(pkt->hdr.type) != VIRTIO_VSOCK_TYPE_STREAM) {
->+	if (!virtio_transport_valid_type(le16_to_cpu(pkt->hdr.type))) {
-> 		(void)virtio_transport_reset_no_sock(t, pkt);
-> 		goto free_pkt;
-> 	}
->@@ -1193,6 +1211,12 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
-> 		}
-> 	}
->
->+	if (virtio_transport_get_type(sk) != le16_to_cpu(pkt->hdr.type)) {
->+		(void)virtio_transport_reset_no_sock(t, pkt);
->+		sock_put(sk);
->+		goto free_pkt;
->+	}
->+
-> 	vsk = vsock_sk(sk);
->
-> 	lock_sock(sk);
->-- 
->2.25.1
->
+* Removed WQ_MEM_RECLAIM flag from loop workqueue. Technically, this
+  can be driven by writeback, but this was causing a warning in xfs
+  and likely other filesystems aren't equipped to be driven by reclaim
+  at the VFS layer.
+* Included a small fix from Colin Ian King.
+* reworked get_mem_cgroup_from_mm to institute the necessary charge
+  priority.
 
-The rest LGTM.
+Changes since V10:
 
-Stefano
+* Added page-cache charging to mm: Charge active memcg when no mm is set
+
+Changes since V9:
+
+* Rebased against linus's branch which now includes Roman Gushchin's
+  patch this series is based off of
+
+Changes since V8:
+
+* Rebased on top of Roman Gushchin's patch
+  (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+  support for setting active memcg. Dropped the patch from this series
+  that did the same thing.
+
+Changes since V7:
+
+* Rebased against linus's branch
+
+Changes since V6:
+
+* Added separate spinlock for worker synchronization
+* Minor style changes
+
+Changes since V5:
+
+* Fixed a missing css_put when failing to allocate a worker
+* Minor style changes
+
+Changes since V4:
+
+Only patches 1 and 2 have changed.
+
+* Fixed irq lock ordering bug
+* Simplified loop detach
+* Added support for nesting memalloc_use_memcg
+
+Changes since V3:
+
+* Fix race on loop device destruction and deferred worker cleanup
+* Ensure charge on shmem_swapin_page works just like getpage
+* Minor style changes
+
+Changes since V2:
+
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
+
+Changes since V1:
+
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
+
+* Add mem_css to struct loop_cmd to simplify logic
+
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
+
+A simple script to demonstrate this behavior on cgroupv2 machine:
+
+'''
+#!/bin/bash
+set -e
+
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
+
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 241 ++++++++++++++++++++++++++++++-------
+ drivers/block/loop.h       |  15 ++-
+ include/linux/memcontrol.h |   6 +
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/filemap.c               |   2 +-
+ mm/memcontrol.c            |  49 +++++---
+ mm/shmem.c                 |   4 +-
+ 7 files changed, 250 insertions(+), 68 deletions(-)
+
+-- 
+2.30.2
 
