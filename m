@@ -2,90 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F936399C7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6EA399C84
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhFCI1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:27:03 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:46936 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhFCI1C (ORCPT
+        id S229764AbhFCI2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:28:41 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:13934 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhFCI2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:27:02 -0400
-Received: by mail-wm1-f54.google.com with SMTP id h12-20020a05600c350cb029019fae7a26cdso3131801wmq.5;
-        Thu, 03 Jun 2021 01:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yQJDvB1JFxS3yFsv4pf320LfhcVG0zOssVYg3NzlqgA=;
-        b=I/x7z7LAYRzWcblM2yCrnLmR3zEnGlDFv1W+OyYKnbCyzq1wwJ+JsINK9dwzpDIdG9
-         rY0P/d8DPOoEHLehu14IFuISeVQO2VQNNM95+QCrmNkf1JkkSxqMWPiPj4bl7s5XEcvA
-         bvqNjEOdeTUDD2FMaioDngX4YJg0O11UojgRNj0RAxxNTg2yW/L/B8tsiO6dhhrSKI82
-         k+mYbVJb/MSNS0eOvvwdXxLrNhivMb2KsnzO5dH5Meaa/zqEriy/y8qekB5IY5exP+21
-         Vy7q4K0zZcG7kKTahI971Y3y6Y44CIbeyklmssqYr+bbGxFcHbBGcE//x1RjOs9D/kMx
-         e0vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yQJDvB1JFxS3yFsv4pf320LfhcVG0zOssVYg3NzlqgA=;
-        b=KgSsKbj3WIR6j8VX9/nQtO1vnR7g98oiehEGZKL4P2sJ1hcHyBrYCFRsXwbBqMyp5/
-         yiWH80xBOJGDMQkq8Du6hu5Nbw79j8LZSyyBj9YSO+b0yRF8qCFdOxQUX3148j/rW3VX
-         2V9DZT81lpT7xamdHL+4HJ0D1m49rLAOM5ug+hshI4mv2W2zAyGPMtsLORTSOtucYCcE
-         ZA3n+O2ZpmUca2sr3lyOTS5FtjF5LT+fltbvY+0frf41G1Ne4CzMXwWyijxBF1FAvo3J
-         mHCe3pkWkTsigdZkQRJsE74EvQy+R7ImCRSzoL9FePrM62yzztLojo3Pn48mRV6+MQ07
-         VX6g==
-X-Gm-Message-State: AOAM531i6Gt8WfNk2v5RFCri/1Q2ZzTufduy7whAr8HyFd/i+ek/KR+V
-        Sy+IaNCdVyYcgaifD2OrplktKnSpRj/Fz4uV
-X-Google-Smtp-Source: ABdhPJx+No2weO8B6eK3SX2zlMD4Lpms4aV5V7wmjUQ0F8hlpbg2PnkZwy5HQ68GvUnHmHX0G/0e5g==
-X-Received: by 2002:a05:600c:4a29:: with SMTP id c41mr22632772wmp.17.1622708646498;
-        Thu, 03 Jun 2021 01:24:06 -0700 (PDT)
-Received: from [192.168.178.196] ([171.33.179.232])
-        by smtp.gmail.com with ESMTPSA id 6sm2028921wmg.17.2021.06.03.01.24.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 01:24:06 -0700 (PDT)
-Subject: Re: Backporting fix for #199981 to 4.19.y?
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c75fcd12-e661-bc03-e077-077799ef1c44@gmail.com>
- <YLiNrCFFGEmltssD@kroah.com>
-From:   =?UTF-8?Q?Lauren=c8=9biu_P=c4=83ncescu?= <lpancescu@gmail.com>
-Message-ID: <5399984e-0860-170e-377e-1f4bf3ccb3a0@gmail.com>
-Date:   Thu, 3 Jun 2021 10:24:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <YLiNrCFFGEmltssD@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 3 Jun 2021 04:28:40 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id E6A66AC0217;
+        Thu,  3 Jun 2021 16:26:53 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Qiang Ma <maqianga@uniontech.com>,
+        Marco Cesati <marcocesati@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] staging: rtl8723bs: core: fix some incorrect type warnings
+Date:   Thu,  3 Jun 2021 16:24:59 +0800
+Message-Id: <1622708703-8561-1-git-send-email-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQx1DHlZNHh9OGkNOSktISENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6FAw5Cz8cQhQsLAIBARku
+        Q08KCy1VSlVKTUlJTEtDQ0pPTklMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJTktVSkxNVUlJQllXWQgBWUFOTUlPNwY+
+X-HM-Tid: 0a79d0fb817bb039kuuue6a66ac0217
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 10:07 AM, Greg KH wrote:
-> On Thu, Jun 03, 2021 at 09:53:46AM +0200, Laurențiu Păncescu wrote:
->> Hi there,
->>
->> I'm running Debian Buster on an old Asus EeePC and I see the battery always
->> at 100% when unplugged, with an estimated battery life of 4200 hours, no
->> matter how long I've been using it without AC power.
->>
->> I suspect this might be bug #201351, marked as duplicate of #199981 and
->> fixed in 5.0-rc1. Would you please consider backporting it to the 4.19 LTS
->> kernel?
-> 
-> What specific commit in Linus's tree is this so we know what to
-> backport?
+Fix some "incorrect type in assignment" in rtw_security.c.
 
-Hi Greg,
+The sparse warings:
+drivers/staging//rtl8723bs/core/rtw_security.c:72:50: warning: incorrect type in assignment
+drivers/staging//rtl8723bs/core/rtw_security.c:72:50:    expected restricted __le32 [usertype]
+drivers/staging//rtl8723bs/core/rtw_security.c:72:50:    got unsigned int
+drivers/staging//rtl8723bs/core/rtw_security.c:80:50: warning: incorrect type in assignment
+drivers/staging//rtl8723bs/core/rtw_security.c:80:50:    expected restricted __le32 [usertype]
+drivers/staging//rtl8723bs/core/rtw_security.c:80:50:    got unsigned int
+drivers/staging//rtl8723bs/core/rtw_security.c:124:33: warning: cast to restricted __le32
+drivers/staging//rtl8723bs/core/rtw_security.c:509:58: warning: incorrect type in assignment
+drivers/staging//rtl8723bs/core/rtw_security.c:509:58:    expected restricted __le32 [usertype]
+drivers/staging//rtl8723bs/core/rtw_security.c:509:58:    got unsigned int
+drivers/staging//rtl8723bs/core/rtw_security.c:517:58: warning: incorrect type in assignment
+drivers/staging//rtl8723bs/core/rtw_security.c:517:58:    expected restricted __le32 [usertype]
+drivers/staging//rtl8723bs/core/rtw_security.c:517:58:    got unsigned int
+drivers/staging//rtl8723bs/core/rtw_security.c:621:41: warning: cast to restricted __le32
 
-I think it's commit b1c0330823fe842dbb34641f1410f0afa51c29d3.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_security.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Many thanks,
-Laurențiu
+diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+index a99f439..4760999 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_security.c
++++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+@@ -36,7 +36,7 @@ const char *security_type_str(u8 value)
+ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ {																	/*  exclude ICV */
+ 
+-	unsigned char crc[4];
++	u8 crc[4];
+ 
+ 	signed int	curfragnum, length;
+ 	u32 keylength;
+@@ -69,7 +69,7 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 
+ 				length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
+ 
+-				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
++				*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
+ 
+ 				arc4_setkey(ctx, wepkey, 3 + keylength);
+ 				arc4_crypt(ctx, payload, payload, length);
+@@ -77,7 +77,7 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 
+ 			} else {
+ 				length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
+-				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
++				*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
+ 				arc4_setkey(ctx, wepkey, 3 + keylength);
+ 				arc4_crypt(ctx, payload, payload, length);
+ 				arc4_crypt(ctx, payload + length, crc, 4);
+@@ -121,7 +121,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
+ 		arc4_crypt(ctx, payload, payload,  length);
+ 
+ 		/* calculate icv and compare the icv */
+-		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
++		*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+ 
+ 	}
+ }
+@@ -506,7 +506,7 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 
+ 				if ((curfragnum+1) == pattrib->nr_frags) {	/* 4 the last fragment */
+ 					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
+-					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
++					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
+ 
+ 					arc4_setkey(ctx, rc4key, 16);
+ 					arc4_crypt(ctx, payload, payload, length);
+@@ -514,7 +514,7 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 
+ 				} else {
+ 					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
+-					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
++					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
+ 
+ 					arc4_setkey(ctx, rc4key, 16);
+ 					arc4_crypt(ctx, payload, payload, length);
+@@ -618,7 +618,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
+ 			arc4_setkey(ctx, rc4key, 16);
+ 			arc4_crypt(ctx, payload, payload, length);
+ 
+-			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
++			*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+ 
+ 			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
+ 			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
+-- 
+2.7.4
 
-
-https://github.com/torvalds/linux/commit/b1c0330823fe842dbb34641f1410f0afa51c29d3
