@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A87639A93D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4938E39A93B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhFCRdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhFCRdj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:33:39 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1DCC06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 10:31:41 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id t20so4946000qtx.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 10:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EmyX0XyWEIneeDYfbBG4ObIuDu7DXUhUCt5AQSkJlag=;
-        b=n6E+ChRbvpZMpLyiN6668dyKckxes03IVA8NNi42tJcaWWUDIlporID7j9wH8rN6P5
-         lDaXi4omE+fI8G5EYtzEAt70d6smtPw5lbRx9Q6URvNl+5Ic+PnFS8FEPwvDTKgb5Del
-         oQe/DMHD+DMUMjcpdVPk94WrJYfPc7jgMgjKUsSt2sBgtoJAmH0/7nEp1JUAFGXsNPeJ
-         /YSqrQFzDveb2iab77/pjlp2JLF3G/VJJxq8DKzVei+bsVIEuHLyrCirzq8gPNgmbANr
-         MLYNNig9nivfh8yqmVlzYav/hnP1LKy1WLQ2Q8qai5leMm5mZDQLqj5DO0xWvoif13ls
-         0lOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EmyX0XyWEIneeDYfbBG4ObIuDu7DXUhUCt5AQSkJlag=;
-        b=ilFOrJ+YP4vTWvC9V9KBEgB6wJkvLcQU3U9epxgFjxU16rAYYBJKCWY0aAlNO4qb51
-         S4s0DsLBT71wprSR/uBEMaF2fXY/QW9QQqZX6vh6eEAb84MvbwQZCJiq1WvX432RPTJb
-         aGV9H5XQpWmsU5Ush06Onq+3ns6+FqvBkWc8nUeeSPjKajlw0SV083u445XxMXTkqRGr
-         fiOetJO74CgjEQepsniWeV7VXRHz/ZHDwGO6cFEGTijORiJIDGgRowNXgECig80ztQaM
-         6RTLELN9yfIqUxwKLwIma0BH3Q6a3Dw2uNN1+Lary2RD2kpNQ4WAwyzorXDRGfBmLt04
-         E0lg==
-X-Gm-Message-State: AOAM530+74C0Y9SnxslZpRemoEKf3YyJMYVxHwXWljMI2xQozW/lqU+g
-        6PJyNbAvVu2ohusPQEU22hjRVDHfSYpDCMdFR6IQ/A==
-X-Google-Smtp-Source: ABdhPJwhyFKw222zE8Liy33p0ZBdfNsTgR33XIaWU83t4vfa9un3ZfpXlpcOzIVgPrw84BBsZEJOG27VJfUQk84EqWc=
-X-Received: by 2002:ac8:470b:: with SMTP id f11mr535777qtp.273.1622741499724;
- Thu, 03 Jun 2021 10:31:39 -0700 (PDT)
+        id S230383AbhFCRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:33:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229982AbhFCRdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:33:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14028600EF;
+        Thu,  3 Jun 2021 17:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622741497;
+        bh=CYn3EZTKJSh4MDX20btEjoQc2gajFSLKSEiCLpjOtyY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UAfQrL/7OJGOkvO3MmOhUAvtCeD/mHVyyYbGmRCp6YswxdYsZq38j7rp2gh0G4bhW
+         L98RJBLj9EVzi9azrc/Av2CuAvjOzYOtDhxzLz819aT/E3Wm/eBofItZHJb+he3jFe
+         gMhfZD35ABXCWbxTpPJMR4U3aAkVMD3MMzM9724UXggGSCuSLk95MHApGY0Vrnq435
+         /Ql2LfZn30+bGoyfvo7j9QMIrgh83CLd7NlfSlJQORtxTenr6qxgIoe3eK8FcA/f0f
+         WvyPBLVV1JHqbQ0MGwJOd3CStKpYjqJOFOiOhGphNIJ8I8AErF1fedToDDc5a7AOi3
+         wPMrxiTypLfQQ==
+Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
+ remove update_pasid()
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     "Yu, Fenghua" <fenghua.yu@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
+References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
+ <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
+ <87mtsd6gr9.ffs@nanos.tec.linutronix.de> <YLShmFEzddfm7WQs@zn.tnic>
+ <87y2bv438p.ffs@nanos.tec.linutronix.de>
+ <36866b38ec92425b879881a88acf547b@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <db552f51-76ee-b7f5-20f1-14f1c703d423@kernel.org>
+Date:   Thu, 3 Jun 2021 10:31:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210603141357.572347-1-yangyingliang@huawei.com> <20210603171253.GA25742@codeaurora.org>
-In-Reply-To: <20210603171253.GA25742@codeaurora.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 3 Jun 2021 20:31:28 +0300
-Message-ID: <CAA8EJprf+ipk45c-niM1PAHCwn5huBEyvBpQA=dgQMohN43E5g@mail.gmail.com>
-Subject: Re: [PATCH -next] mfd: pm8008: Fix return value check in pm8008_probe()
-To:     Guru Das Srinagesh <gurus@codeaurora.org>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <36866b38ec92425b879881a88acf547b@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 at 20:18, Guru Das Srinagesh <gurus@codeaurora.org> wrote:
->
-> On Thu, Jun 03, 2021 at 10:13:57PM +0800, Yang Yingliang wrote:
-> > In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
-> > and never returns NULL. The NULL test in the return value check
-> > should be replaced with IS_ERR().
-> >
-> > Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->
-> Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
+On 6/2/21 1:37 PM, Luck, Tony wrote:
+>>> ... so on a PASID system, your trivial reproducer would theoretically
+>>> fire the same way and corrupt FPU state just as well.
+>>
+>> This is worse and you can't selftest it because the IPI can just hit in
+>> the middle of _any_ FPU state operation and corrupt state.
+> 
+> That sounds like we should abandon the "IPI all the other threads
+> to force enable the PASID for them" approach. It would just be a
+> nightmare of papering over cracks when the IPI was delivered at
+> some inconvenient moment when the recipient was in the middle
+> of touching xsave state.
+> 
+> I've told Fenghua to dig out the previous iteration of this patch where
+> the plan was to lazily fix the PASID_MSR in other threads in the #GP
+> handler.
 
-Interestingly, the change does not correspond to the changelog
-message. And the code is correct as devm_kzalloc returns NULL if I
-remember correctly.
+Blech.  Also this won't work for other PASID-like features.
 
->
-> > ---
-> >  drivers/mfd/qcom-pm8008.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
-> > index c472d7f8103c..dfefa60d693b 100644
-> > --- a/drivers/mfd/qcom-pm8008.c
-> > +++ b/drivers/mfd/qcom-pm8008.c
-> > @@ -223,7 +223,7 @@ static int pm8008_probe(struct i2c_client *client)
-> >       struct pm8008_data *chip;
-> >
-> >       chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
-> > -     if (!chip)
-> > +     if (IS_ERR(chip))
-> >               return -ENOMEM;
-> >
-> >       chip->dev = &client->dev;
-> > --
-> > 2.25.1
-> >
+I have a half-written patch to fix this up for real.  Stay tuned.
 
+> Seems like a better direction than trying to fix the IPI method. The virtualization
+> folks will like this way more because IPI in guest causes a couple of VMEXIT
+> so is somewhat expensive.
 
+It happens at most once per PASID-using process.
 
--- 
-With best wishes
-Dmitry
