@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985D339A9C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A099D39A9C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhFCSJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:09:35 -0400
-Received: from mail-ua1-f49.google.com ([209.85.222.49]:45897 "EHLO
-        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhFCSJe (ORCPT
+        id S229726AbhFCSKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:10:51 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:39706 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhFCSKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:09:34 -0400
-Received: by mail-ua1-f49.google.com with SMTP id m23so3783278uao.12
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:07:49 -0700 (PDT)
+        Thu, 3 Jun 2021 14:10:51 -0400
+Received: by mail-ed1-f48.google.com with SMTP id dj8so8186156edb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
+        d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=llczrUowQbUDxoyW8Fe3w+wZDCFWjdjoD/4x2j+vVJg=;
-        b=Xrk/o1WlRoaP8m7dFFhXj1nHF3JRF2UNcgDTxbO5PUjM5F3VtmIuL+9y81MbbHRKs6
-         H8MEqgjIcYzrCEujCfLC0p3mJLbkDpBXgGbiPIPAFCjy3WwgO3PEdYvJf31nniA0Gei2
-         kOooV/K6xbQuBRB86za14gz/kpVbu4MU2jKjY=
+        bh=QYJURPxWBX0cR9mUpvvw71/w4E4zYIFQ+91/6hNUZl0=;
+        b=jqr+MDrbXS4YAJ9lmXLHLruxtUvtxXjJqfzkg0sr3GVESKkRp614MZ+RdtvBX491w1
+         qaIS+cqBFLKzdh/Fxx0eKeb7MnGps1YnL/a406/8CKBBMUuaQaA4qQcCMOiVEC6oPOV2
+         7V/akX8QfHzSoTjdo1/I83L9iLt6Pfmtt+oLopR5dwzOnEu9d40Oof90DBXBAkxzuGTb
+         h0GmBSHs79WLU29SvmSsPZUQgJxWzKYJtPPnW6HXl4aQTMHhNNUktaMaVPJLU9Yzwv+C
+         gbUUIUbE72RjBjhXDbgON2crJzmjTTxW1uMpLYGucvrd6P9WPVZHVQX4aqIsIbQqNKnV
+         P7Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=llczrUowQbUDxoyW8Fe3w+wZDCFWjdjoD/4x2j+vVJg=;
-        b=EKYpnVioImHuFNwkxSXCvRW+W1UOceax1M5mqW3f8JEzqPGsNUyNF4+9O5qoustb7l
-         4c4grf+U65bJpq2SB5ilAOrz1inYiejHCwC2OF1sqv6RUGM05JW9ECd0eHjb3m94s9NY
-         in36eWGQ01vuHUpFYS2/oHrrvNEf/FhEUG4MML9TEGEMfO+Z7cFAz4vFwyOS0ca3kqsC
-         JIdOP/2l7zZ9ADOFn2OV5KAk4nvEF4f5nr/6Y9ozXR0oi+1aTqrjk3glc2E2tAeh3FFc
-         MKf+hcrOVX+HTb5eE1Pf3q3R1Lj+jUBy/0z/GOfv035JKICZJWMQg0e0od49okdU1UZR
-         0oWQ==
-X-Gm-Message-State: AOAM531oHH5cKFzCaUeu1Cs9g2CxQYrL1HsgP0oQcrSIuc4YlBNEOr0u
-        p23XEEt9BP3QQHihtDatHj6Y6pPvqS+VWYoRUHmAYg==
-X-Google-Smtp-Source: ABdhPJwIEosM7UwGjOOqVwRg9ztnWaeH+lJ0LVEs2YTd3Sl9IOmB5t/Z7UPzry6FVBfO8CGl+ftVPdCL9jwH75USFps=
-X-Received: by 2002:a1f:32cf:: with SMTP id y198mr603626vky.23.1622743608931;
- Thu, 03 Jun 2021 11:06:48 -0700 (PDT)
+        bh=QYJURPxWBX0cR9mUpvvw71/w4E4zYIFQ+91/6hNUZl0=;
+        b=aC9PEX+WGP5dXzg3NZ/Ni+2JscdDpzXbBT9+Zd5Kj4vcesu/Lc+0UfNwy6O7vKqBjv
+         sqJlqLUme3x08u9NnDaIF6kltjWT8ZVjAdIVtniWoevzORukZ2m6oKczd8A2GgQVxLKg
+         RFryChiJDrT13KIY2xtO5Yq8jgF55sBl9rlf8EVEvkwSSOaYXc1Da91QsQwtOEW8QNgc
+         UEzscgo46/pJPnwUOTomE+hWx/oQA9DnpEz3xAx7WdCc8z/mzY59nFAgwSgqlkrzEda+
+         q4b9W8QfVBVryJW9SUucb0/xaPkvsBpPAN8BmoAVaaHaizm4S4qeFW//sxmdXZte3h4J
+         b13Q==
+X-Gm-Message-State: AOAM5308konavuLssslSfTJBaX0Pw8qHD82XRv+GHfknGSfsf4Txfnho
+        XccbAESdMgoYxPrcJ3vPHOUWJ7owkUs//MYse5Y=
+X-Google-Smtp-Source: ABdhPJy/BvQ0cnHa+Dxd3Zf1ycYh3D9JDrctNeFJ50qSmvb4IkIpefIcVam2VrRe8f/haAzfhOKl4cbVUc4JPNKhcpc=
+X-Received: by 2002:aa7:da8e:: with SMTP id q14mr729410eds.13.1622743673906;
+ Thu, 03 Jun 2021 11:07:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
- <162218364554.34379.636306635794792903.stgit@web.messagingengine.com> <87czt2q2pl.fsf@disp2133>
-In-Reply-To: <87czt2q2pl.fsf@disp2133>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 3 Jun 2021 20:06:38 +0200
-Message-ID: <CAJfpegsVxoL8WgQa7hFXAg4RBbA-suaeo5pZ5EE7HDpL0rT03A@mail.gmail.com>
-Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Ian Kent <raven@themaw.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210601090140.261768-1-narmstrong@baylibre.com> <20210601090140.261768-4-narmstrong@baylibre.com>
+In-Reply-To: <20210601090140.261768-4-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 3 Jun 2021 20:07:43 +0200
+Message-ID: <CAFBinCB+SyCmxrjJLcuy=mLsChPZ9i_1TsaWkL3kuhPO1wGwWw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] arm64: dts: meson-sm1-odroid-c4: fix hub_5v regulator gpio
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tobetter@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 at 19:26, Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Ian Kent <raven@themaw.net> writes:
->
-> > If there are many lookups for non-existent paths these negative lookups
-> > can lead to a lot of overhead during path walks.
-> >
-> > The VFS allows dentries to be created as negative and hashed, and caches
-> > them so they can be used to reduce the fairly high overhead alloc/free
-> > cycle that occurs during these lookups.
-> >
-> > Signed-off-by: Ian Kent <raven@themaw.net>
-> > ---
-> >  fs/kernfs/dir.c |   55 +++++++++++++++++++++++++++++++++----------------------
-> >  1 file changed, 33 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > index 4c69e2af82dac..5151c712f06f5 100644
-> > --- a/fs/kernfs/dir.c
-> > +++ b/fs/kernfs/dir.c
-> > @@ -1037,12 +1037,33 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
-> >       if (flags & LOOKUP_RCU)
-> >               return -ECHILD;
-> >
-> > -     /* Always perform fresh lookup for negatives */
-> > -     if (d_really_is_negative(dentry))
-> > -             goto out_bad_unlocked;
-> > +     mutex_lock(&kernfs_mutex);
-> >
-> >       kn = kernfs_dentry_node(dentry);
-> > -     mutex_lock(&kernfs_mutex);
->
-> Why bring kernfs_dentry_node inside the mutex?
->
-> The inode lock of the parent should protect negative to positive
-> transitions not the kernfs_mutex.  So moving the code inside
-> the mutex looks unnecessary and confusing.
+Hi Neil,
 
-Except that d_revalidate() may or may not be called with parent lock held.
+On Tue, Jun 1, 2021 at 11:01 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> As described in the Odroid-C4 schematics, the HUB_5V regulator is controlled
+> by GPIOH_8 and in Open Drain since this GPIO doesn't support Push-Pull.
+>
+> Fixes: 326e57518b0d ("arm64: dts: meson-sm1: add support for Hardkernel ODROID-C4")
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+my interpretation of page 32 of the schematics [0] is that GPIOH_8 manages VCC5V
+GPIOH_4 is connected as RST_N to the RESET# pad of the USB hub -> this
+seems to match the original regulator definition
 
-Thanks,
-Miklos
+
+[0] https://wiki.odroid.com/_media/odroid-c4/odroid-c4_rev1.0.pdf
