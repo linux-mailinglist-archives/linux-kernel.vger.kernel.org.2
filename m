@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF102399AB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C75C399A69
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFCGaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhFCGaK (ORCPT
+        id S229746AbhFCGFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:05:04 -0400
+Received: from mail-qk1-f176.google.com ([209.85.222.176]:43770 "EHLO
+        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFCGFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:30:10 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F39C06174A;
-        Wed,  2 Jun 2021 23:28:26 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FwbYy6bWlz9sX2; Thu,  3 Jun 2021 16:28:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1622701702;
-        bh=WIm/yDsJvGo2IyYCrLryCua0Hmg97K2CGLyxXv+Q9ns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MwVFV04b8Vkcxdo2x6dhk0tnzgJz3ut+csIP+RAw6g/HzBXI4c2Pt3c/MbTLsSJAc
-         gqqK4HNNn5sS+Zpr1zTxOVzVy5gCqutPE3Jrjj/24F2h5QffnQmiOB/NfMM91P/U7q
-         VvtjxMwKhU+oFadGopeloE87r1Xr3yO/qZXs+3oM=
-Date:   Thu, 3 Jun 2021 15:54:44 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <YLhupAfUWWiVMDVU@yekko>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528233649.GB3816344@nvidia.com>
- <786295f7-b154-cf28-3f4c-434426e897d3@linux.intel.com>
+        Thu, 3 Jun 2021 02:05:03 -0400
+Received: by mail-qk1-f176.google.com with SMTP id r17so4896034qkp.10;
+        Wed, 02 Jun 2021 23:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aVGBSqEMWvho2HHHhcn8tJYFWMPyQsDHrSqOC/pMDus=;
+        b=IBXfs6RvwlME9tLQ5hjQLVzuBZS2IzCpbKO/Cfg/gf54yiK7m47CiRdEiRFZDUfF6A
+         92ZwKKSGkNKvkBoeCWiT6svOo0AgSXvAXABfFUv/RKq4c8RqHKChpAn3UO5yRcFF0YJj
+         hDB/6kKVqUOAmfSzrHtqRTxSSfM++NCalWdg8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aVGBSqEMWvho2HHHhcn8tJYFWMPyQsDHrSqOC/pMDus=;
+        b=nXiZbDkukkROCe6JJrdANs1TOMkRIqHx7zQso9dNebmD6aXATR3+ZwrX6AqUUBDAqc
+         CveFa4agg2gQgf2bjtatcCZf2b1i0boHs7trONjOJlFtmY4m/kMTEhmwuE4uulE4206n
+         szntFQf1n/s8gkU5hSyA/CyZ6rjxYdyQTSoeyagflujn5pyPcE5Ufm6Y/2swxW/egErO
+         PB3xRG6QscuURMzdMJq8ULn8DhlMgKOd2Ql54aVdakZrYLJssv9ZfksHtAQ7VtR6ojiQ
+         o2iqni0itbSR+Du+3+SYud3+IHBdWhdwagtjT4Y+GcYdhBHaGAhEexjW38PB7v9tV32Y
+         NDZw==
+X-Gm-Message-State: AOAM533N29339e//ifz+djXBCaiPupx4TnGlDEFNJJalICPxAPNr/kqX
+        jU1ELG5A/ciOfzZsKFlFtZf5nOlg/IBB8T2V2kc=
+X-Google-Smtp-Source: ABdhPJw/OThWUwK486H/0pNkThCivzv84ZpWEH1P9Vep0jbnQKir8Pp/quWobR1asuUH1GRm/ZyXjQu1xXQ4lnMxOFE=
+X-Received: by 2002:a05:620a:704:: with SMTP id 4mr30648908qkc.66.1622700139228;
+ Wed, 02 Jun 2021 23:02:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="e+xYKskxbIIXJ+YF"
-Content-Disposition: inline
-In-Reply-To: <786295f7-b154-cf28-3f4c-434426e897d3@linux.intel.com>
+References: <20210316085932.2601-1-troy_lee@aspeedtech.com>
+ <CACPK8XeYtaLLWDMR8xZhERrQ_WCUJ2RM_JZmZNQ6oZSvgSDM_w@mail.gmail.com> <CAGm54UHgQSMh8WLzRf7Swhv9mmzNBuEK6eKf9eX0ASp95hjARw@mail.gmail.com>
+In-Reply-To: <CAGm54UHgQSMh8WLzRf7Swhv9mmzNBuEK6eKf9eX0ASp95hjARw@mail.gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 3 Jun 2021 06:02:07 +0000
+Message-ID: <CACPK8XdgLP7XSH0Zkej87ynnKTbEUW+RUBiSMgDH1H-LD5VXhg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v1] ARM: dts: Fix 64MiB OpenBMC flash
+ layout and aspeed-ast2600-evb.dts
+To:     Lei Yu <yulei.sh@bytedance.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Troy Lee <troy_lee@aspeedtech.com>,
+        John Wang <wangzhiqiang.bj@bytedance.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>, leetroy@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 16 Apr 2021 at 07:35, Lei Yu <yulei.sh@bytedance.com> wrote:
+>
+> On Fri, Apr 16, 2021 at 11:03 AM Joel Stanley <joel@jms.id.au> wrote:
+> >
+> > On Tue, 16 Mar 2021 at 08:59, Troy Lee <troy_lee@aspeedtech.com> wrote:
+> > >
+> > > Aspeed AST2600 u-boot requires 600KiB+ flash space. Sharing the same
+> > > openbmc-flash-layout-64.dtsi requires to resize the flash partition.
+> > >
+> > > The updated flash layout as follows:
+> > > - u-boot: 896 KiB
+> > > - u-boot-env: 128 KiB
+> > > - kernel: 9MiB
+> > > - rofs: 32 MiB
+> > > - rwfs: 22 MiB
+> >
+> > Changing the 64MB layout will break the systems that are already using
+> > this layout. I'll get the Bytedance people to chime in, as theirs is
+> > the only system using this layout so far.
+> >
+> > John, Lei?
+>
+> Because the kernel's offset is updated, several other changes are required:
+> 1. The related offsets, which is already sent to
+> https://gerrit.openbmc-project.xyz/c/openbmc/meta-phosphor/+/39343
+> 2. The u-boot patch to update the `bootm` address and make sure it
+> only applies to the 64MiB layout.
+>
+> Without the above two changes, I would suggest holding the merge.
 
---e+xYKskxbIIXJ+YF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-On Tue, Jun 01, 2021 at 07:09:21PM +0800, Lu Baolu wrote:
-> Hi Jason,
->=20
-> On 2021/5/29 7:36, Jason Gunthorpe wrote:
-> > > /*
-> > >    * Bind an user-managed I/O page table with the IOMMU
-> > >    *
-> > >    * Because user page table is untrusted, IOASID nesting must be ena=
-bled
-> > >    * for this ioasid so the kernel can enforce its DMA isolation poli=
-cy
-> > >    * through the parent ioasid.
-> > >    *
-> > >    * Pgtable binding protocol is different from DMA mapping. The latt=
-er
-> > >    * has the I/O page table constructed by the kernel and updated
-> > >    * according to user MAP/UNMAP commands. With pgtable binding the
-> > >    * whole page table is created and updated by userspace, thus diffe=
-rent
-> > >    * set of commands are required (bind, iotlb invalidation, page fau=
-lt, etc.).
-> > >    *
-> > >    * Because the page table is directly walked by the IOMMU, the user
-> > >    * must  use a format compatible to the underlying hardware. It can
-> > >    * check the format information through IOASID_GET_INFO.
-> > >    *
-> > >    * The page table is bound to the IOMMU according to the routing
-> > >    * information of each attached device under the specified IOASID. =
-The
-> > >    * routing information (RID and optional PASID) is registered when a
-> > >    * device is attached to this IOASID through VFIO uAPI.
-> > >    *
-> > >    * Input parameters:
-> > >    *	- child_ioasid;
-> > >    *	- address of the user page table;
-> > >    *	- formats (vendor, address_width, etc.);
-> > >    *
-> > >    * Return: 0 on success, -errno on failure.
-> > >    */
-> > > #define IOASID_BIND_PGTABLE		_IO(IOASID_TYPE, IOASID_BASE + 9)
-> > > #define IOASID_UNBIND_PGTABLE	_IO(IOASID_TYPE, IOASID_BASE + 10)
-> > Also feels backwards, why wouldn't we specify this, and the required
-> > page table format, during alloc time?
-> >=20
->=20
-> Thinking of the required page table format, perhaps we should shed more
-> light on the page table of an IOASID. So far, an IOASID might represent
-> one of the following page tables (might be more):
->=20
->  1) an IOMMU format page table (a.k.a. iommu_domain)
->  2) a user application CPU page table (SVA for example)
->  3) a KVM EPT (future option)
->  4) a VM guest managed page table (nesting mode)
->=20
-> This version only covers 1) and 4). Do you think we need to support 2),
+Just confirming that we are okay to go ahead with this change, as per
+the discussion on the openbmc list[1].
 
-Isn't (2) the equivalent of using the using the host-managed pagetable
-then doing a giant MAP of all your user address space into it?  But
-maybe we should identify that case explicitly in case the host can
-optimize it.
+[1] https://lore.kernel.org/openbmc/CACPK8XdVNXSfzDBPryjQh_4S0yU4Tp6VOOtju+L_DcfgHumPJw@mail.gmail.com/
 
-> 3) and beyond? If so, it seems that we need some in-kernel helpers and
-> uAPIs to support pre-installing a page table to IOASID. From this point
-> of view an IOASID is actually not just a variant of iommu_domain, but an
-> I/O page table representation in a broader sense.
->=20
-> Best regards,
-> baolu
->=20
+Cheers,
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---e+xYKskxbIIXJ+YF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmC4bqQACgkQbDjKyiDZ
-s5IZ/g/+KfrQ7u5dkP+nHBSnZErWCCHdUTJQSRRNkFuuMXpagfwmkjGvQCUuw1Vg
-lwgTWZHnvHUzMEGfyM2uwwk4qZFaUP6K5tjyS6TqF/AEOSL1FGejsdKCLRlWMhlG
-vSKE6P1y8UKMpV4deJBNthXeUVqYftrw1hTezsca0c5ZtlUfflP/0vhlM1+Q2FYM
-WDvlgdLS9rOlQ9FJvvfnWiu4nlFiok9dXKpC/mMDamUlr9VfWxalmfULAy0VqXSM
-pQTdGekWaX4Gn1WLCIBBAxHqIs9w7fZKDBqGw21kE4Q+fOOueoN0EqQLHsW2Gaw0
-AD1H7tsuqPqj8WAIaHE406NmlxtZ2yybW3p6LnOAFrewuTRyej3kiA9LWKr1Csik
-1lr3N+eNkuFYyUzk/LZHgBPiNSchFfNxLJBzvx/S2e2VC04psM0A8GIJ1Q4ja87Z
-3qihYVH6fMWaIpoxsEDEn3Lfkt7sfYpDa0MpHHTF3Dfhxr6Fi+GahrnLCMXsddkO
-5Os6wSzQA2saANfLgb4iTTOsQoAftn4r7bC4cZTM/V+U1EcQTmZrW0mAhhRtUiO1
-xMoE6Ac2rOh0B8bTrZWwAREXbGvZrepEa9qi5gysA76zOPNWnNJHW3Ox3n9XCafP
-XgwTUTjVmzBheuZ5wonf6JWBc+pnxmLekZwCBTzhB1B4k4LXwKA=
-=sS9E
------END PGP SIGNATURE-----
-
---e+xYKskxbIIXJ+YF--
+Joel
