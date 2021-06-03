@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FDD39A908
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB76539A90E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhFCRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233158AbhFCRRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:17:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E7CB600D3;
-        Thu,  3 Jun 2021 17:11:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622740294;
-        bh=LlFPovvGoLlrINgljP3dDSQqB1UiS3h0/RIhUuNscvQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nfnKtAYdGnlw8DdvkQyO2J0gpLT+BKr2ijTjz3eiSl8cBXnbruRX2KrNuEU3ain5k
-         pFyu6XC/YNttNwWVuerib7pxCBowASNYyHLH0TAQSfRh9iePzlGvPvUiog02Zv+npe
-         FsQXttM2MeQRsFuAyGA/sfceRq/V/uk3Ks0bZEt1Vpz/apwaCeZhOP4uM3euPTuWNv
-         slTKwdwIKNsKYCYy0Xe6Ydjsn65Qsk8N4C8DiJC4yQyN8xjMiIy/KeG9x1+O8fU8Cy
-         h0NcrbCRiQahblkygGIhGvqv9NMaRxRDUUBCRQzgUiK2noWeu6fdzpwuX26luyNiGM
-         E9si/ioLTDUuQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 4.4 15/15] powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P1010 i2c controllers
-Date:   Thu,  3 Jun 2021 13:11:14 -0400
-Message-Id: <20210603171114.3170086-15-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603171114.3170086-1-sashal@kernel.org>
-References: <20210603171114.3170086-1-sashal@kernel.org>
+        id S232261AbhFCRUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:20:40 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:64397 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232814AbhFCRTA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:19:00 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 03 Jun 2021 10:12:54 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.134.64.25])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 03 Jun 2021 10:12:54 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 1ECC9210E0; Thu,  3 Jun 2021 10:12:54 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 10:12:53 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        lee.jones@linaro.org, agross@kernel.org
+Subject: Re: [PATCH -next] mfd: pm8008: Fix return value check in
+ pm8008_probe()
+Message-ID: <20210603171253.GA25742@codeaurora.org>
+References: <20210603141357.572347-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603141357.572347-1-yangyingliang@huawei.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+On Thu, Jun 03, 2021 at 10:13:57PM +0800, Yang Yingliang wrote:
+> In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
+> and never returns NULL. The NULL test in the return value check
+> should be replaced with IS_ERR().
+> 
+> Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 19ae697a1e4edf1d755b413e3aa38da65e2db23b ]
+Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
 
-The i2c controllers on the P1010 have an erratum where the documented
-scheme for i2c bus recovery will not work (A-004447). A different
-mechanism is needed which is documented in the P1010 Chip Errata Rev L.
-
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/powerpc/boot/dts/fsl/p1010si-post.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-index af12ead88c5f..404f570ebe23 100644
---- a/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-+++ b/arch/powerpc/boot/dts/fsl/p1010si-post.dtsi
-@@ -122,7 +122,15 @@ memory-controller@2000 {
- 	};
- 
- /include/ "pq3-i2c-0.dtsi"
-+	i2c@3000 {
-+		fsl,i2c-erratum-a004447;
-+	};
-+
- /include/ "pq3-i2c-1.dtsi"
-+	i2c@3100 {
-+		fsl,i2c-erratum-a004447;
-+	};
-+
- /include/ "pq3-duart-0.dtsi"
- /include/ "pq3-espi-0.dtsi"
- 	spi0: spi@7000 {
--- 
-2.30.2
-
+> ---
+>  drivers/mfd/qcom-pm8008.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
+> index c472d7f8103c..dfefa60d693b 100644
+> --- a/drivers/mfd/qcom-pm8008.c
+> +++ b/drivers/mfd/qcom-pm8008.c
+> @@ -223,7 +223,7 @@ static int pm8008_probe(struct i2c_client *client)
+>  	struct pm8008_data *chip;
+>  
+>  	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+> -	if (!chip)
+> +	if (IS_ERR(chip))
+>  		return -ENOMEM;
+>  
+>  	chip->dev = &client->dev;
+> -- 
+> 2.25.1
+> 
