@@ -2,137 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5588E39A37E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F2A39A36E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhFCOki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:40:38 -0400
-Received: from mail-lj1-f169.google.com ([209.85.208.169]:41887 "EHLO
-        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhFCOkh (ORCPT
+        id S231811AbhFCOiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhFCOiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:40:37 -0400
-Received: by mail-lj1-f169.google.com with SMTP id p20so7420814ljj.8;
-        Thu, 03 Jun 2021 07:38:36 -0700 (PDT)
+        Thu, 3 Jun 2021 10:38:02 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E68C06174A;
+        Thu,  3 Jun 2021 07:36:04 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id jt22so9586479ejb.7;
+        Thu, 03 Jun 2021 07:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hrCS3/M38iJScm6kFHBrw2Jktg25A1xuMFa4q3y6Sac=;
-        b=jMBL3lLFeaiOxd99Hkx2P6Gn6gOYK0Ac1gja4uhJaXYmTsepD8tnXvF8IMbCy21/L/
-         4nD7dc8O8WMlt1IJ7ssiViatyMluRFwInC3XlB9QDiMrC8af/gmygZDUet5qp1MC2Ru2
-         Y0MFM0MARyOb/songip04vB40i0ZjmabqcsWziJrCOx4eF4Pt2VIrNBBAajZCNDoqlJ/
-         3QBc5Srh/DNIAQFd3nDp/LkI1Z/VXbaLDULWNB8ILTAOw13JTC65q9hv6SzAk7u2dBWv
-         1Kf7Vus2uIQXb1GPPD+rCLqT9qKR1Yas/FOL8mp2Ug5JFISkmhDrK9ndPPDEVvp5enxN
-         4k6A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wK9EVXAXq74ZBV/Us3NrtXVBYQSEq1AIEb2FO6jLjss=;
+        b=fOlFmjKgSlFY/7Lif5C2qicO0BDEQ3FvglhnbTImsBxldUE1H2maGyIFQV+MJHXeO1
+         foSjMEYTSoEfI2cehapelKQbNgXgXwMLMJPDMyC+rxWocCnKJY1fQTD/Iqm1zZDEHeGV
+         5Wxf3k9jqJakZ/+ijFkJHXzo57GiGUVoYG5Fkl/iCA+KZgpUX12k9k7LszZ1Otk4f2pu
+         BPaukvirQHcCqr7QvdAzcSj6uRPzyRDDHNY/JeAR4U5/6uuUENgLPqLOgA7VNtGtLqJ5
+         5J48ABwCm/cqlBC3hfifmb756oVH33HLvj7M/rhIUxqBOeBV21+BWuEyD6HsFZJNsLK4
+         e1cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hrCS3/M38iJScm6kFHBrw2Jktg25A1xuMFa4q3y6Sac=;
-        b=oSSI1PunkLXVJpgjBujnXAEeFpN+NQeYaQ72n++TAtM9J2rz05m4ISaCyHXFIRfR0J
-         6QJSmr9/Ovcus+Uw3C7NAGUQ4yY81FPT/fXxDJNo/8WtKbwQduy/Vrd6FZc9W/pYtZWp
-         XAb8ZDYW/prfPfplZ8yLMwtreAvW3UkPpb2mZb23dPyACgFQeFi4EGu/LwKWC+2feF7G
-         /XNaxqji7qpADlg0nih/KA9jfi0P5lxw04C/oqJyq2aTnrHmqxpXUl35hvNO9I6eFFP/
-         lqlF1R69cDMNp9SAzT7Wsw0I30WdySnOyq7Brs3XwQpXbJNV8WVDnB7zf9fFR7Ya/BnY
-         zP4A==
-X-Gm-Message-State: AOAM532iDHYAvptRrBiTcqpAukVB+/fGyz98Pry9Ql8TMLeAmKMQC2UP
-        koaFzEGsCSqKu5sMCgSYiJxufD9F6JA=
-X-Google-Smtp-Source: ABdhPJzaRC4PlHW+UGfS7nJgwd2RK7OPtpS/LL93OoL5pgA80gv/HTOu/SkGG+XgiSbQ9lOUCr46dg==
-X-Received: by 2002:a2e:b0c8:: with SMTP id g8mr10554174ljl.453.1622731055908;
-        Thu, 03 Jun 2021 07:37:35 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.googlemail.com with ESMTPSA id t13sm385841lji.19.2021.06.03.07.37.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 07:37:35 -0700 (PDT)
-Subject: Re: linux-next: build warning after merge of the tegra tree
-To:     Thierry Reding <treding@nvidia.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Cross <ccross@android.com>,
-        Olof Johansson <olof@lixom.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210603103507.304b7626@canb.auug.org.au>
- <8d8f947e-2ba4-f7b8-cb85-dcee940c96b4@gmail.com>
- <YLjIqfeiaJqeJQtw@orome.fritz.box>
- <8966e56c-4da4-b360-7ce6-19d0af114bb7@gmail.com>
- <YLjomqomVuJ3QZNC@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a5ed712a-3fb8-57c8-8738-090bfc23e7be@gmail.com>
-Date:   Thu, 3 Jun 2021 17:37:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=wK9EVXAXq74ZBV/Us3NrtXVBYQSEq1AIEb2FO6jLjss=;
+        b=XtBh6nidm+TEhwMO/o3c0n/Wj5jO8mh53fIhco/8/R66yn5YfBNBR2xkH7Lai+N1i0
+         hKdobC0E6zSxVU2oW+8NIZEalRIUxpXRiKy2/kLbqOyL6Ahxr7eVuiqwWgrj4vvzIWe1
+         LasX7Uf3wUsCtsXadfMXcJfwniLIEETtc5/3tD3nu71A5hdzCp39cwsYzXZojzq8OrJF
+         uG4gcWoAKAZHPRJ7/3Ckvj2BF67yjmB/XuxQ7EbWacvpPAjiRc3LGyPwhA0SXT9pHnaG
+         ob6KxJ24aRrI7W1PpMrm29P6U2mjKdQyHnZ3YujH1F4UZfONjbScXChGdb5yBhR/kcdv
+         xwBQ==
+X-Gm-Message-State: AOAM5305QSd8aA+tlFVRkUD4MQFoB/3qTEoB8ZTKenjRxOULxdVB/Eyy
+        aodFL1EV6nNOXfF1Nus33X4=
+X-Google-Smtp-Source: ABdhPJyccAJuE5nx9TQlaFSKTX6Lg9Gpxw4Fgv9EM2De08PWT9sgJrr5vmLoKKsbYJjupKRZaUAkdA==
+X-Received: by 2002:a17:906:c316:: with SMTP id s22mr12632780ejz.17.1622730963596;
+        Thu, 03 Jun 2021 07:36:03 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id p7sm1882133edw.43.2021.06.03.07.36.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 07:36:02 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PULL] memory: tegra: Changes for v5.14-rc1
+Date:   Thu,  3 Jun 2021 16:37:39 +0200
+Message-Id: <20210603143739.787957-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YLjomqomVuJ3QZNC@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.06.2021 17:35, Thierry Reding пишет:
-> On Thu, Jun 03, 2021 at 05:03:38PM +0300, Dmitry Osipenko wrote:
->> 03.06.2021 15:18, Thierry Reding пишет:
->>> On Thu, Jun 03, 2021 at 05:01:48AM +0300, Dmitry Osipenko wrote:
->>>> 03.06.2021 03:35, Stephen Rothwell пишет:
->>>>> Hi all,
->>>>>
->>>>> After merging the tegra tree, today's linux-next build (x86_64
->>>>> allmodconfig) produced this warning:
->>>>>
->>>>> WARNING: unmet direct dependencies detected for TEGRA210_EMC_TABLE
->>>>>   Depends on [n]: MEMORY [=y] && TEGRA_MC [=y] && ARCH_TEGRA_210_SOC [=n]
->>>>>   Selected by [m]:
->>>>>   - TEGRA210_EMC [=m] && MEMORY [=y] && TEGRA_MC [=y] && (ARCH_TEGRA_210_SOC [=n] || COMPILE_TEST [=y])
->>>>>
->>>>> Probably introduced by commit
->>>>>
->>>>>   08decdd5b448 ("memory: tegra: Enable compile testing for all drivers")
->>>>>
->>>>
->>>> Thank you. This is a new warning to me, apparently this case wasn't previously tested by kernel build bot.
->>>>
->>>> Perhaps this should fix it:
->>>>
->>>> diff --git a/drivers/memory/tegra/Kconfig b/drivers/memory/tegra/Kconfig
->>>> index 71bba2345bce..3f2fa7750118 100644
->>>> --- a/drivers/memory/tegra/Kconfig
->>>> +++ b/drivers/memory/tegra/Kconfig
->>>> @@ -47,7 +47,6 @@ config TEGRA124_EMC
->>>>  
->>>>  config TEGRA210_EMC_TABLE
->>>>  	bool
->>>> -	depends on ARCH_TEGRA_210_SOC
->>>
->>> Why not just add a || COMPILE_TEST like we do for TEGRA210_EMC? Because
->>> TEGRA210_EMC being pulled in under COMPILE_TEST (and then pulling in
->>> TEGRA210_EMC_TABLE which is missing the alternative path) seems to be
->>> the root cause for this.
->>
->> The anonymous Kconfig entry is unavailable by default, it can be only
->> selected by other entry, IIUC. In our case the TEGRA210_EMC_TABLE is
->> selected by TEGRA210_EMC, hence additional dependencies aren't needed
->> for TEGRA210_EMC_TABLE.
-> 
-> The code guarded by TEGRA210_EMC_TABLE makes use of some symbols that
-> are only available if ARCH_TEGRA_210_SOC is also defined. If we don't
-> list the dependencies via Kconfig this could lead to a problem where
-> somebody selected TEGRA210_EMC_TABLE without having a dependency on
-> ARCH_TEGRA_210_SOC, which would then lead to a build error.
-> 
-> If we do represent the dependency in Kconfig, we'll get a warning like
-> the above during the configuration step and the offending Kconfig option
-> will end up disabled, and avoid the build failure.
-> 
-> Granted, this could be caught during patch review, and yes, there's not
-> technically a need to encode this using Kconfig dependencies, but at the
-> same time there's also no reason not to use the safeguards we have at
-> our disposal to avoid this in a more automated way.
-> 
-> I'd prefer to stick with the explicit dependency in Kconfig, so I've
-> updated the patch to match the dependencies to that of TEGRA210_EMC.
+Hi Krzysztof,
 
-I don't mind if you prefer this explicit approach more. Thank you for
-the fix.
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git tags/tegra-for-5.14-memory
+
+for you to fetch changes up to b4f74b59b99fab61ab97fc0e506f349579d8fefc:
+
+  memory: tegra30-emc: Use devm_tegra_core_dev_init_opp_table() (2021-06-03 14:24:03 +0200)
+
+Thanks,
+Thierry
+
+----------------------------------------------------------------
+memory: tegra: Changes for v5.14-rc1
+
+This stable tag contains Dmitry's power domain work, including all the
+necessary dependencies from the regulator, clock and ARM SoC trees.
+
+----------------------------------------------------------------
+Dmitry Osipenko (18):
+      clk: tegra30: Use 300MHz for video decoder by default
+      clk: tegra: Fix refcounting of gate clocks
+      clk: tegra: Ensure that PLLU configuration is applied properly
+      clk: tegra: Halve SCLK rate on Tegra20
+      clk: tegra: Don't allow zero clock rate for PLLs
+      clk: tegra: cclk: Handle thermal DIV2 CPU frequency throttling
+      clk: tegra: Mark external clocks as not having reset control
+      clk: tegra: Don't deassert reset on enabling clocks
+      regulator: core: Add regulator_sync_voltage_rdev()
+      soc/tegra: regulators: Bump voltages on system reboot
+      soc/tegra: Add stub for soc_is_tegra()
+      soc/tegra: Add devm_tegra_core_dev_init_opp_table()
+      soc/tegra: fuse: Add stubs needed for compile-testing
+      clk: tegra: Add stubs needed for compile-testing
+      memory: tegra: Fix compilation warnings on 64bit platforms
+      memory: tegra: Enable compile testing for all drivers
+      memory: tegra20-emc: Use devm_tegra_core_dev_init_opp_table()
+      memory: tegra30-emc: Use devm_tegra_core_dev_init_opp_table()
+
+Thierry Reding (3):
+      Merge branch 'for-5.14/regulator' into for-5.14/soc
+      Merge branch 'for-5.14/clk' into for-5.14/memory
+      Merge branch 'for-5.14/soc' into for-5.14/memory
+
+ drivers/clk/tegra/clk-periph-gate.c      |  80 +++++++++++++++----------
+ drivers/clk/tegra/clk-periph.c           |  11 ++++
+ drivers/clk/tegra/clk-pll.c              |  12 ++--
+ drivers/clk/tegra/clk-tegra-periph.c     |   6 +-
+ drivers/clk/tegra/clk-tegra-super-cclk.c |  16 ++++-
+ drivers/clk/tegra/clk-tegra20.c          |   6 +-
+ drivers/clk/tegra/clk-tegra30.c          |   6 +-
+ drivers/clk/tegra/clk.h                  |   4 --
+ drivers/memory/tegra/Kconfig             |  18 +++---
+ drivers/memory/tegra/tegra124-emc.c      |   4 +-
+ drivers/memory/tegra/tegra20-emc.c       |  48 ++-------------
+ drivers/memory/tegra/tegra30-emc.c       |  52 ++--------------
+ drivers/regulator/core.c                 |  23 +++++++
+ drivers/soc/tegra/common.c               |  97 ++++++++++++++++++++++++++++++
+ drivers/soc/tegra/pmc.c                  |   5 --
+ drivers/soc/tegra/regulators-tegra20.c   |  75 ++++++++++++++++++++++-
+ drivers/soc/tegra/regulators-tegra30.c   |  75 ++++++++++++++++++++++-
+ include/linux/clk/tegra.h                | 100 ++++++++++++++++++++++++-------
+ include/linux/regulator/driver.h         |   1 +
+ include/soc/tegra/common.h               |  31 ++++++++++
+ include/soc/tegra/fuse.h                 |  20 ++++++-
+ 21 files changed, 507 insertions(+), 183 deletions(-)
