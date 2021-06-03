@@ -2,130 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FF7399FC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5E5399FB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhFCLb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhFCLb5 (ORCPT
+        id S229675AbhFCLXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:23:24 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3047 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFCLXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:31:57 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B37C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 04:30:13 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id gb17so8688924ejc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JQPG6yu+Jm/v1G300jVvmHhYJLJT/kgFqNxsmCD/SVU=;
-        b=UuqGhLwhKPL2UZnJsZIyrY79pLOgLOqaHSPoNPoeWc4N8hx4767TnTwEsF3LZNtla/
-         TPZGQVe+8BS7Rw28Rr950sI7gD11EViAabcSK9u58VHuMCAx2R8h+yL+P3NSDkYdJwy8
-         LXhaBkjbtGs8KE5u0+ntseLSRBv+usQy6/MIw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=JQPG6yu+Jm/v1G300jVvmHhYJLJT/kgFqNxsmCD/SVU=;
-        b=hxVoiL8zMxk1sxUU/yN9de4+Y8Y08ERLbw/AopdvazAeN40M69FP6jTn2OnuFIhbFz
-         Cad1fb2ULms8/OclhOhGQFPr11A4dHMrUPPi4wJMDA2XEQ263WmixaHeG6FkBTPJQ5Dv
-         /12ryYgWhaftupyw2lS01EQ6F2saZzFPmGLD99hdyD/vi4GQ7RImvHLTzaZAWpiFbRAF
-         lD5M5Ats+nO1C+gB0PxlE91CRuRVK0bDymmkWGPUco8l5IpwqT1cbM5B8CHQbwpfVWve
-         jozMZnyZtwhmewtiehidJbweH3/e9nd4KyQzoexd/skP0wnFaXTD0cwp+djkahnFgcwV
-         EhdQ==
-X-Gm-Message-State: AOAM530Z0VwsnjPiV6eyv1hGN/FgXcvjb86vmNOgTm9czpCWAQCNx+FX
-        oAuSCWTVop9EDsa1ucAk8E0yPw==
-X-Google-Smtp-Source: ABdhPJwMUYfrOxIGftaR7UridML3dSa22TrXpD7HPzzADNMlpuQKbmkVQuxyFkP0lSzr1wU3d3ESbQ==
-X-Received: by 2002:a17:907:72d2:: with SMTP id du18mr38469724ejc.438.1622719811673;
-        Thu, 03 Jun 2021 04:30:11 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c14sm1402302ejm.4.2021.06.03.04.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 04:30:10 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 13:30:08 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND 17/26] drm/xlnx/zynqmp_disp: Fix incorrectly named enum
- 'zynqmp_disp_layer_id'
-Message-ID: <YLi9QI76rFWva6ID@phenom.ffwll.local>
-Mail-Followup-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Hyun Kwon <hyun.kwon@xilinx.com>, David Airlie <airlied@linux.ie>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210602143300.2330146-1-lee.jones@linaro.org>
- <20210602143300.2330146-18-lee.jones@linaro.org>
- <YLev02lSORBOlqw+@pendragon.ideasonboard.com>
+        Thu, 3 Jun 2021 07:23:22 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fwjyr0GJtzWnyr;
+        Thu,  3 Jun 2021 19:16:52 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 19:21:36 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 19:21:35 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <yukuai3@huawei.com>, <alexander.deucher@amd.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] drm: fix doc warnings in drm_atomic.h
+Date:   Thu, 3 Jun 2021 19:30:51 +0800
+Message-ID: <20210603113051.2095866-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210603192238.0bbc6686@canb.auug.org.au>
+References: <20210603192238.0bbc6686@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLev02lSORBOlqw+@pendragon.ideasonboard.com>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 07:20:35PM +0300, Laurent Pinchart wrote:
-> Hi Lee,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Jun 02, 2021 at 03:32:51PM +0100, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/gpu/drm/xlnx/zynqmp_disp.c:101: warning: expecting prototype for enum zynqmp_disp_id. Prototype was for enum zynqmp_disp_layer_id instead
-> > 
-> > Cc: Hyun Kwon <hyun.kwon@xilinx.com>
-> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Michal Simek <michal.simek@xilinx.com>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Add description for parameters for
+for_each_new_plane_in_state_reverse to fix warnings:
 
-I'm assuming you'll merge these two for xlnx somehow?
--Daniel
+include/drm/drm_atomic.h:908: warning: Function parameter or member '__state' not described in 'for_each_new_plane_in_state_reverse'
+include/drm/drm_atomic.h:908: warning: Function parameter or member 'plane' not described in 'for_each_new_plane_in_state_reverse'
+include/drm/drm_atomic.h:908: warning: Function parameter or member 'new_plane_state' not described in 'for_each_new_plane_in_state_reverse'
+include/drm/drm_atomic.h:908: warning: Function parameter or member '__i' not described in 'for_each_new_plane_in_state_reverse'
 
-> 
-> > ---
-> >  drivers/gpu/drm/xlnx/zynqmp_disp.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> > index 109d627968ac0..ca1161ec9e16f 100644
-> > --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> > +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> > @@ -91,7 +91,7 @@ struct zynqmp_disp_format {
-> >  };
-> >  
-> >  /**
-> > - * enum zynqmp_disp_id - Layer identifier
-> > + * enum zynqmp_disp_layer_id - Layer identifier
-> >   * @ZYNQMP_DISP_LAYER_VID: Video layer
-> >   * @ZYNQMP_DISP_LAYER_GFX: Graphics layer
-> >   */
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+Fixes: a6c3c37b661d ("drm/amd/display: fix gcc set but not used warning of variable 'old_plane_state'")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ include/drm/drm_atomic.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/include/drm/drm_atomic.h b/include/drm/drm_atomic.h
+index 8f1350e599eb..1701c2128a5c 100644
+--- a/include/drm/drm_atomic.h
++++ b/include/drm/drm_atomic.h
+@@ -898,6 +898,10 @@ void drm_state_dump(struct drm_device *dev, struct drm_printer *p);
+ /**
+  * for_each_new_plane_in_state_reverse - other than only tracking new state,
+  * it's the same as for_each_oldnew_plane_in_state_reverse
++ * @__state: &struct drm_atomic_state pointer
++ * @plane: &struct drm_plane iteration cursor
++ * @new_plane_state: &struct drm_plane_state iteration cursor for the new state
++ * @__i: int iteration cursor, for macro-internal use
+  */
+ #define for_each_new_plane_in_state_reverse(__state, plane, new_plane_state, __i) \
+ 	for ((__i) = ((__state)->dev->mode_config.num_total_plane - 1);	\
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.31.1
+
