@@ -2,84 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18643399CC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595E4399D58
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFCIlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:41:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4292 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFCIlX (ORCPT
+        id S229814AbhFCJET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:04:19 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:45690 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhFCJES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:41:23 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FwfMw71MMz1BHZH;
-        Thu,  3 Jun 2021 16:34:52 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 16:39:36 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 3 Jun 2021
- 16:39:35 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next v2] ACPI: LPSS: Replaced simple_strtol() with kstrtol()
-Date:   Thu, 3 Jun 2021 17:12:04 +0800
-Message-ID: <20210603091204.355720-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+        Thu, 3 Jun 2021 05:04:18 -0400
+Received: by mail-pj1-f54.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso42255pjb.4;
+        Thu, 03 Jun 2021 02:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=QohK85Va24247n8VfPeSE1UKGpQDl0MtTdqghurawaw=;
+        b=NVSK7yX3uDBqhDx8NqEJEp2LOoOYME5zBCIVowkpm+fbGa0ImKZ+nc7eHiesLQlvp0
+         LXuBXshuvGkscJ7aY5VSSfu2EpQH6Tm6kR+a6hNH7bnd/7coMWyayehRn+4bKQbnSPD+
+         79Bd9GLCtJDVwTMw7NlygRYCb73tYi4oeOjYMvjDbCuBsrwlyrHEucrXc6zKvJFoCaFq
+         wkJJ9NS/xwj+m0uPT84+bYebhLD2eGWVXicsuej6UdtD0GW2GT9t2/xgxMFK2IVOpMjG
+         Mq+JkqqDlQYMdOcXNs5H9XgZxnaw0X+23b4xBqJwBI+8K86eu2XEl2ORf/cmj744kyJr
+         QQFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=QohK85Va24247n8VfPeSE1UKGpQDl0MtTdqghurawaw=;
+        b=LYycXM98S4EYgoBiLM34wJfd9kWrNVwtEd4oSUmQPX0aVo5w2crvHddntRPJhVJhe0
+         wUGcJx8UtVuLYYf6vo//r90OedsAq2A7jSj6pMEJMeA30YgtBfuJYbmipOQ3Zb8de6XZ
+         PflFYQJi5D0jhia3cM7KwEXVElTUmaH+VHus6V9PXsSItFvwwJbcO35CL6teadhK4pRt
+         VjD+y9CiBGnpx2Rwsx9oe283OT3ukgwFVilKDkugpidjdJvhnKBsJmBHUjsZm2nslYCt
+         Cw7WmvOsM1zwHk5CZNlT5d+9S4h/nruJ8w9Nsi8rXCHzuFlBFdIFZUz8MEkRApX1OdsP
+         ABZw==
+X-Gm-Message-State: AOAM530r0x98b1Xf3JtLf0wEMv67YfZpXmTx85PCmGEzpwYyAKW+Zm79
+        DJLm4B0UoXiHG98Iym/aPP1qeJ91rS0=
+X-Google-Smtp-Source: ABdhPJxScFnFbZkegYnkVZ67+YV9F3nzs/3ZXx2RjtTifFCpD3r3ui1fDgltSNsGA+0aDIQnefMPWA==
+X-Received: by 2002:a17:90a:5d8e:: with SMTP id t14mr34878104pji.85.1622710893638;
+        Thu, 03 Jun 2021 02:01:33 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.56])
+        by smtp.googlemail.com with ESMTPSA id gg22sm1625668pjb.17.2021.06.03.02.01.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Jun 2021 02:01:32 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH 1/2] KVM: LAPIC: write 0 to TMICT should also cancel vmx-preemption timer
+Date:   Thu,  3 Jun 2021 02:00:40 -0700
+Message-Id: <1622710841-76604-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The simple_strtol() function is deprecated in some situation since
-it does not check for the range overflow. Use kstrtol() instead.
+From: Wanpeng Li <wanpengli@tencent.com>
+ 
+According to the SDM 10.5.4.1:
 
-As the variables status and shared_host are valid only when the uid
-is not zero(default to zero). If uid_str is NULL or kstrtol() failed
-or uid is assigned to zero, related operations can be skipped.
+  A write of 0 to the initial-count register effectively stops the local
+  APIC timer, in both one-shot and periodic mode.
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+The lapic timer oneshot/periodic mode which is emulated by vmx-preemption 
+timer doesn't stop since vmx->hv_deadline_tsc is still set. This patch 
+fixes it by also cancel vmx-preemption timer when writing 0 to initial-count 
+register.
+
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 ---
-v1->v2: The previous description is inaccurate, so modified it.
+ arch/x86/kvm/lapic.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
- drivers/acpi/acpi_lpss.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-index ca742f16a507..1b46e00cad3a 100644
---- a/drivers/acpi/acpi_lpss.c
-+++ b/drivers/acpi/acpi_lpss.c
-@@ -186,13 +186,12 @@ static void byt_i2c_setup(struct lpss_private_data *pdata)
- 	long uid = 0;
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 8120e86..20dd2ae 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -1494,6 +1494,15 @@ static void limit_periodic_timer_frequency(struct kvm_lapic *apic)
  
- 	/* Expected to always be true, but better safe then sorry */
--	if (uid_str)
--		uid = simple_strtol(uid_str, NULL, 10);
--
--	/* Detect I2C bus shared with PUNIT and ignore its d3 status */
--	status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
--	if (ACPI_SUCCESS(status) && shared_host && uid)
--		pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
-+	if (uid_str && !kstrtol(uid_str, 10, &uid)) {
-+		/* Detect I2C bus shared with PUNIT and ignore its d3 status */
-+		status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
-+		if (ACPI_SUCCESS(status) && shared_host && uid)
-+			pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
-+	}
+ static void cancel_hv_timer(struct kvm_lapic *apic);
  
- 	lpss_deassert_reset(pdata);
++static void cancel_timer(struct kvm_lapic *apic)
++{
++	hrtimer_cancel(&apic->lapic_timer.timer);
++	preempt_disable();
++	if (apic->lapic_timer.hv_timer_in_use)
++		cancel_hv_timer(apic);
++	preempt_enable();
++}
++
+ static void apic_update_lvtt(struct kvm_lapic *apic)
+ {
+ 	u32 timer_mode = kvm_lapic_get_reg(apic, APIC_LVTT) &
+@@ -1502,11 +1511,7 @@ static void apic_update_lvtt(struct kvm_lapic *apic)
+ 	if (apic->lapic_timer.timer_mode != timer_mode) {
+ 		if (apic_lvtt_tscdeadline(apic) != (timer_mode ==
+ 				APIC_LVT_TIMER_TSCDEADLINE)) {
+-			hrtimer_cancel(&apic->lapic_timer.timer);
+-			preempt_disable();
+-			if (apic->lapic_timer.hv_timer_in_use)
+-				cancel_hv_timer(apic);
+-			preempt_enable();
++			cancel_timer(apic);
+ 			kvm_lapic_set_reg(apic, APIC_TMICT, 0);
+ 			apic->lapic_timer.period = 0;
+ 			apic->lapic_timer.tscdeadline = 0;
+@@ -2092,7 +2097,7 @@ int kvm_lapic_reg_write(struct kvm_lapic *apic, u32 reg, u32 val)
+ 		if (apic_lvtt_tscdeadline(apic))
+ 			break;
  
+-		hrtimer_cancel(&apic->lapic_timer.timer);
++		cancel_timer(apic);
+ 		kvm_lapic_set_reg(apic, APIC_TMICT, val);
+ 		start_apic_timer(apic);
+ 		break;
 -- 
-2.18.0.huawei.25
+2.7.4
 
