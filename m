@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FC739AAA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A270739AAA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhFCTF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:05:29 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:57431 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFCTF0 (ORCPT
+        id S229913AbhFCTGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:06:53 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:55701 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhFCTGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:05:26 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0EDDD5C01B2;
-        Thu,  3 Jun 2021 15:03:41 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 03 Jun 2021 15:03:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=i85yA63Hrpapc8XvmqBhkPew63p
-        noUlzHiEl9Tj5xH4=; b=R2VsRxEmcPP9SiXDiwUNTvFUz2CZlwdItv96yx+/YaL
-        l6ZMUhgpVpeYCmLaoR5JK8G94pa5KhIju75m/yWnKJfL+TIsOhGjIknGFfXEUzYZ
-        PudkgZ/ajaceIrg/d2okNNsnF2chVWwTMFRgFLLZ9JAM6EXZ/bxS1wW6y0CHbu2h
-        NxStF62/Yu3PAJ5gmylv1RksyBNzcwH9lCfszACCt5KXLB+dbMpHVZ2DK6Xo+P9/
-        ytGhdpoRDz/NjY63jh3tNCG2nOMLk71ePoZJ3JIvf8KNpXUc1kVZ+Arx15c+M99x
-        Bzu1Eb70NRFTKjD88TvoHWhIkwelzzO4rOgBqqeNduQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=i85yA6
-        3Hrpapc8XvmqBhkPew63pnoUlzHiEl9Tj5xH4=; b=S/gB/ekYPaxAWdhcDgbNCA
-        79YEGmeVhIfVtX0DVWrkFJCEtkynv2eRFByX9pIlfXJMTwCMLJ9o34K2oVG+aofE
-        1w7ngeS/gwzd5yVXkjI5AMeNyhn6pr/SRupmWsDqMC9psvBOkj8pV0W8WDHqPUyU
-        qP0pvIrDv+j17OUxd1+BRZJVhpYfGeRiwOj3xltvNddtI930jC7j2ysIxzzrHMzn
-        dQMxd7vSIVWR/4jJUZQJdjC+c31pYs049RjgOYopElLZqWYAIwordXVm/wss3myl
-        /O8xWL/s21TOpWrrklaw9qNWfxDr075vHqisFgID44AkNI05H3Y3xGzoSWgMGX9g
-        ==
-X-ME-Sender: <xms:jCe5YNFaf8DCymtlKS6doxUCxkyP-qSZfsK69AmiPm6BKBbGQnxOHg>
-    <xme:jCe5YCWNc6DweONlxyMXlMnsgltqyJ-Mequhb-Ipe9It7QWWTJUPtx7HpTBgHuW-O
-    5Rajr19zZ4RjLksNA>
-X-ME-Received: <xmr:jCe5YPKufk2LFFCg_RWtaFy3kjeGlF-IpulQ74nJV5gN7XTI8NLcIzSE1Pj4Ykjn5BE5phqw_DP1Xh4Xb74w8UIIisJIkRupCCZPvKccaHjpHM5uOZN-8W-VBTw3>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgudeftdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
-    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
-    grthhtvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeff
-    hfeuffdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:jCe5YDFVGThhiLHb65EDXfUWCv9W6XSwcykTaz06JtxTFbLvqQXpOA>
-    <xmx:jCe5YDUQw-gKUcpyQmw2BLH6S7ODhUzmDcgIvFHmuwVxY3yYeUq8CQ>
-    <xmx:jCe5YOMgYMMAa7xu9xqs21euUoeiFx2qv9A0Fb94FI9R8w5XrDa7Dw>
-    <xmx:jSe5YKGqnmt7mk3u_4pKgzQLRcuOWuvZ604vAhF3rlUbmx5ZmYUsmQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Jun 2021 15:03:39 -0400 (EDT)
-Date:   Thu, 3 Jun 2021 12:03:38 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 4/4] io_uring: implement futex wait
-Message-ID: <20210603190338.gfykgkc7ac2akvdt@alap3.anarazel.de>
-References: <cover.1622558659.git.asml.silence@gmail.com>
- <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
- <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
- <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
- <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
- <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com>
- <87sg211ccj.ffs@nanos.tec.linutronix.de>
+        Thu, 3 Jun 2021 15:06:52 -0400
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 03 Jun 2021 12:05:07 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.134.64.25])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 03 Jun 2021 12:05:06 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 4E79D20FC9; Thu,  3 Jun 2021 12:05:06 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 12:05:06 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH -next] mfd: pm8008: Fix return value check in
+ pm8008_probe()
+Message-ID: <20210603190506.GA24042@codeaurora.org>
+References: <20210603141357.572347-1-yangyingliang@huawei.com>
+ <20210603171253.GA25742@codeaurora.org>
+ <CAA8EJprf+ipk45c-niM1PAHCwn5huBEyvBpQA=dgQMohN43E5g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87sg211ccj.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <CAA8EJprf+ipk45c-niM1PAHCwn5huBEyvBpQA=dgQMohN43E5g@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-01 23:53:00 +0200, Thomas Gleixner wrote:
-> You surely made your point that this is well thought out.
+On Thu, Jun 03, 2021 at 08:31:28PM +0300, Dmitry Baryshkov wrote:
+> On Thu, 3 Jun 2021 at 20:18, Guru Das Srinagesh <gurus@codeaurora.org> wrote:
+> >
+> > On Thu, Jun 03, 2021 at 10:13:57PM +0800, Yang Yingliang wrote:
+> > > In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
+> > > and never returns NULL. The NULL test in the return value check
+> > > should be replaced with IS_ERR().
+> > >
+> > > Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
+> > > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> >
+> > Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> 
+> Interestingly, the change does not correspond to the changelog
+> message. And the code is correct as devm_kzalloc returns NULL if I
+> remember correctly.
 
-Really impressed with your effort to generously interpret the first
-version of a proof of concept patch that explicitly was aimed at getting
-feedback on the basic design and the different use cases.
+Thanks for pointing that out - I missed that. I would like to retract my
+Acked-by for this patch.
+
+> 
+> >
+> > > ---
+> > >  drivers/mfd/qcom-pm8008.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
+> > > index c472d7f8103c..dfefa60d693b 100644
+> > > --- a/drivers/mfd/qcom-pm8008.c
+> > > +++ b/drivers/mfd/qcom-pm8008.c
+> > > @@ -223,7 +223,7 @@ static int pm8008_probe(struct i2c_client *client)
+> > >       struct pm8008_data *chip;
+> > >
+> > >       chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+> > > -     if (!chip)
+> > > +     if (IS_ERR(chip))
+> > >               return -ENOMEM;
+> > >
+> > >       chip->dev = &client->dev;
+> > > --
+> > > 2.25.1
+> > >
+> 
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
