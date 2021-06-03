@@ -2,180 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D70399EFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC7F399EF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhFCKdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
+        id S229917AbhFCKdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhFCKdg (ORCPT
+        with ESMTP id S229625AbhFCKdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:33:36 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E489BC06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 03:31:38 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id 68so3016624uao.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 03:31:38 -0700 (PDT)
+        Thu, 3 Jun 2021 06:33:23 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FE2C06174A;
+        Thu,  3 Jun 2021 03:31:23 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id g18so4501583edq.8;
+        Thu, 03 Jun 2021 03:31:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A4YAiHW3sIm0xCyuBUI1jzK6d0sxHFO4wUbiV3VRZ4A=;
-        b=xK15/hQfEJKzTC2hthA8fgFyQnmC9wW5su8CzmaD/uHRBhOu4yI3vLRVB12uwwxPnU
-         bjcJkwSiEb+b6RSSBxKypll9G5qCFXaXlN4Mr+WBzoFFRha+4BEO7zQvsPDtrTSNuyn4
-         n5d6IIqaANq0z8Ofri6eTjZuTEO06aOudBaAO630ImOylAPqyaE3hmhEKyJD4jEwB/jB
-         /YoedgjKJCJdLOskRmITGHi6STVWSDWXameyVT4I5x4Wk6PfLv5xsdFhEFAEjUaSTa8i
-         GI6pVghBGYZK1r6ZvAW0M/Bqxc3JTGyG880JHhg5fC7TngvEpgXnMef2AOtL4E7Vkimm
-         8WSw==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TaY/KShKKe6WZ0j3eo7DrAFLRKXuUVMzTxqu38vt8I0=;
+        b=mDehyLCy6q3kRZsDFNaw+L45nU+MQwf96ZUS/F+BISvL+QXKYkKJV2AasQaCzEJ2j9
+         vfRXdrKZhVy+BGVrRXv0in/yr28dBwB284JQrktqdRaWx71Vgy/RxkPoGCf7HUmfDwYk
+         g5fBd8G2UoTgSCg8eHBUVpu4UODFyHIfyWsnyPY0w0jiG/UasURlNEt9rpiypUrpxf93
+         qSZuK6LzNDHi7Tz9S3dhhYrmGsY/cR2riVR1VvvSj6yD30a99UZ3EdXphADrhWgfx4wq
+         sTFsGptMiobOL9XWlXCY3RrFh8BIapCjGm6zl8rqvKqvutGxa0DCRxrW+R/zzcWOqBoH
+         lslg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A4YAiHW3sIm0xCyuBUI1jzK6d0sxHFO4wUbiV3VRZ4A=;
-        b=WCce3j0Qc395f+I5DPAi6UGz2ziHvyl/aahXBpT3u1dbSaFWUC6GxqbRqXAbr5aSxc
-         8E45v0jvF+IQ5JYvl0C7KdhMUGMJb2HS9dIqDQuPsoKQeEo9FFZT6iqjqRPhRrs4TMuG
-         4M+R79NQM6GPvQi4KAIMxp1v2Pf6vqoZR8XWkskb1gWKqSuA39AAgeWxzqY7B2UMvXui
-         0e/qmVdHmxNdpfsFeUwQrzpX6IEPq25vJbZnnd8GHkfgMi4TyQ5XUJMOe8EsqHb8CuYl
-         5A7AflSGjccHA4iSR8/WAMi7q8Jyyix41IuWWhYwiq8vxlw4IzdiB3oX1LCv+48hwlOe
-         gu7Q==
-X-Gm-Message-State: AOAM533TeZMkLCHoz0tctfY4coC9owi0ra72+BGr0XXBeQ0yOk0mCuIC
-        ZbgHkXvt94kWJOn6dvi+H2vWgg0uI7PovzHynLqCbQ==
-X-Google-Smtp-Source: ABdhPJxZEt+9slFbzsZTL70Z1t4U0DtUcpB3SGiSe7CGtPhWOnNHZQsy4Ru4msClyFlmOPH2cNbl4IUJo7VHm0ssxWw=
-X-Received: by 2002:a05:6122:2219:: with SMTP id bb25mr26212299vkb.6.1622716297975;
- Thu, 03 Jun 2021 03:31:37 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TaY/KShKKe6WZ0j3eo7DrAFLRKXuUVMzTxqu38vt8I0=;
+        b=g6dufRmyqCoYsqNOxtwmaEOg31SsT22ArLOJZV2+wq9VT8LcxqmE/drpZE51eSfL6a
+         H6IEd11AGwq4CyHGlt8tPYJsWjxi+3oksAbR7rECeLOVS6Iyxh6jzDoSLE2BBwWdFXd6
+         BjjVkE6/cK1MnW1CUSkC1Gg1TO2l9/k90MiKjrPvb3ai7r5sWsWFyGrzWgejKlmdsvG1
+         sNGY2SJ5vO5U42yJ+0+YiJcJ2pZc6afdmhaew3vC8EacPlbLntyKA1a7Hg1IAdwLxwGP
+         iToJ54DWyuYB+Vmuob1/UbN26lcEUd0DwyMb/Jvp8kuhGSNZ76cjpG/3JPjgywoc61Bu
+         gTzQ==
+X-Gm-Message-State: AOAM532VvslVI7nxHDaSU0lv80Qwj9HICq2SFJB5rLBWXiq3B7eTP1q6
+        Fre5xXkQTJWwLxedSN9nAymnQLkdAOzW0JFD
+X-Google-Smtp-Source: ABdhPJxLiUJCfbNOq6BI3F8rCKIg2VJOjp0niuiWyT5VTp+vjYmEeV++EItVTMZED+58GMbTQUTGpQ==
+X-Received: by 2002:a50:cb8a:: with SMTP id k10mr5026396edi.267.1622716281589;
+        Thu, 03 Jun 2021 03:31:21 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:310::2410? ([2620:10d:c093:600::2:6c45])
+        by smtp.gmail.com with ESMTPSA id m12sm1526880edc.40.2021.06.03.03.31.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 03:31:21 -0700 (PDT)
+To:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org
+Cc:     Andres Freund <andres@anarazel.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org
+References: <cover.1622558659.git.asml.silence@gmail.com>
+ <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
+ <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
+ <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
+ <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
+ <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com>
+ <87sg211ccj.ffs@nanos.tec.linutronix.de>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [RFC 4/4] io_uring: implement futex wait
+Message-ID: <30bdf12c-6287-4c13-920c-bb5cc6ac02bf@gmail.com>
+Date:   Thu, 3 Jun 2021 11:31:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-4-ulf.hansson@linaro.org> <20210603095538.b2t3cq25tq7v7kih@vireshk-i7>
-In-Reply-To: <20210603095538.b2t3cq25tq7v7kih@vireshk-i7>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 3 Jun 2021 12:31:02 +0200
-Message-ID: <CAPDyKFqNNeeMo6+gKgaPtPvgC_NuMxxYKkr+TzyP3vjYoHoDOw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes
- for devices at runtime PM
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87sg211ccj.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 at 11:55, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 03-06-21, 11:34, Ulf Hansson wrote:
-> > A subsystem/driver that need to manage OPPs for its device, should
-> > typically drop its vote for the OPP when the device becomes runtime
-> > suspended. In this way, the corresponding aggregation of the performance
-> > state votes that is managed in genpd for the attached PM domain, may find
-> > that the aggregated vote can be decreased. Hence, it may allow genpd to set
-> > the lower performance state for the PM domain, thus avoiding to waste
-> > energy.
-> >
-> > To accomplish this, typically a subsystem/driver would need to call
-> > dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
-> > callback, to drop the vote for the OPP. Accordingly, it needs another call
-> > to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
-> > ->runtime_resume() callback.
-> >
-> > To avoid boilerplate code in subsystems/driver to deal with these things,
-> > let's instead manage this internally in genpd.
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >
-> > Changes in v2:
-> >       - Rebased.
-> >       - A few minor cosmetic changes.
-> >       - Deal with the error path in genpd_runtime_resume().
-> >
-> > ---
-> >  drivers/base/power/domain.c | 27 +++++++++++++++++++++++++--
-> >  include/linux/pm_domain.h   |  1 +
-> >  2 files changed, 26 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > index ef25a5b18587..e5d97174c254 100644
-> > --- a/drivers/base/power/domain.c
-> > +++ b/drivers/base/power/domain.c
-> > @@ -400,6 +400,23 @@ static int genpd_set_performance_state(struct device *dev, unsigned int state)
-> >       return ret;
-> >  }
-> >
-> > +static int genpd_drop_performance_state(struct device *dev)
->
-> What about passing the state pointer here? that will simplify the
-> callers to just a call.
+On 6/1/21 10:53 PM, Thomas Gleixner wrote:
+> Pavel, Jens,
+> 
+> On Tue, Jun 01 2021 at 17:29, Pavel Begunkov wrote:
+>> On 6/1/21 5:01 PM, Jens Axboe wrote:
+>>>> Yes, that would be preferable, but looks futexes don't use
+>>>> waitqueues but some manual enqueuing into a plist_node, see
+>>>> futex_wait_queue_me() or mark_wake_futex().
+>>>> Did I miss it somewhere?
+>>>
+>>> Yes, we'd need to augment that with a callback. I do think that's going
+>>
+>> Yeah, that was the first idea, but it's also more intrusive for the
+>> futex codebase. Can be piled on top for next revision of patches.
+>>
+>> A question to futex maintainers, how much resistance to merging
+>> something like that I may expect?
+> 
+> Adding a waitqueue like callback or the proposed thing?
+> 
+> TBH. Neither one has a charm.
+> 
+> 1) The proposed solution: I can't figure out from the changelogs or the
+>    cover letter what kind of problems it solves and what the exact
+>    semantics are. If you ever consider to submit futex patches, may I
+>    recommend to study Documentation/process and get some inspiration
+>    from git-log?
 
-Not sure I get that. Can you elaborate a bit more?
+I'm sorry you're incapable of grasping ideas quick, but may we
+stop this stupid galling and switch to a more productive way of
+speaking?
 
->
-> > +{
-> > +     unsigned int prev_state = dev_gpd_data(dev)->performance_state;
-> > +
-> > +     if (!genpd_set_performance_state(dev, 0))
-> > +             return prev_state;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void genpd_restore_performance_state(struct device *dev,
-> > +                                         unsigned int state)
-> > +{
-> > +     if (state)
->
-> I will skip this check, as we are checking it in
-> genpd_set_performance_state() anyway ?
+>    What are the lifetime rules, what's the interaction with regular>    futexes, what's the interaction with robust list ....? Without
 
-I don't want us to override OPP votes made by the subsystem/driver
-level runtime PM callbacks. For example, if the drivers manage this
-thing themselves, that should be preserved.
+Robust lists are not supported, neither they are mentioned to be.
 
-That said, by the check above I want to avoid setting the state to
-zero internally by genpd, if the driver level ->runtime_resume()
-callback has already restored the state.
+>    interaction with regular futexes such a functionality does not make
+>    any sense at all.
 
->
-> > +             genpd_set_performance_state(dev, state);
-> > +}
-> > +
-> >  /**
-> >   * dev_pm_genpd_set_performance_state- Set performance state of device's power
-> >   * domain.
-> > @@ -842,7 +859,8 @@ static int genpd_runtime_suspend(struct device *dev)
-> >  {
-> >       struct generic_pm_domain *genpd;
-> >       bool (*suspend_ok)(struct device *__dev);
-> > -     struct gpd_timing_data *td = &dev_gpd_data(dev)->td;
-> > +     struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
-> > +     struct gpd_timing_data *td = &gpd_data->td;
-> >       bool runtime_pm = pm_runtime_enabled(dev);
-> >       ktime_t time_start;
-> >       s64 elapsed_ns;
-> > @@ -899,6 +917,7 @@ static int genpd_runtime_suspend(struct device *dev)
-> >               return 0;
-> >
-> >       genpd_lock(genpd);
-> > +     gpd_data->rpm_pstate = genpd_drop_performance_state(dev);
->
-> So this will become:
->
->         genpd_drop_performance_state(dev, &gpd_data->rpm_pstate);
->
-> and it can have return type of void.
+Would have not touched futex code if it was not interoperable.
 
-See more above, about the reason why it looks like this. Hopefully
-that explains it.
+ 
+>    Also once we'd open that can of worms where is this going to end and
+>    where can we draw the line? This is going to be a bottomless pit
+>    because I don't believe for a split second that this simple interface
+>    is going to be sufficient.
+> 
+>    Aside of that we are definitely _not_ going to expose any of the
+>    internal functions simply because they evade any sanity check which
+>    happens at the syscall wrappers and I have zero interest to deal with
+>    the fallout of unfiltered input which comes via io-uring interfaces
+>    or try to keep those up to date when the core filtering changes.
+> 
+> 2) Adding a waitqueue like callback is daft.
+> 
+>    a) Lifetime rules
+> 
+>       See mark_wake_futex().
+> 
+>    b) Locking
+> 
+>       The wakeup mechanism is designed to avoid hb->lock contention as much
+>       as possible. The dequeue/mark for wakeup happens under hb->lock
+>       and the actual wakeup happens after dropping hb->lock.
+> 
+>       This is not going to change. It's not even debatable.
+> 
+>       Aside of that this is optimized for minimal hb->lock hold time in
+>       general.
+> 
+>    So the only way to do that would be to invoke the callback from
+>    mark_wake_futex() _before_ invalidating futex_q and the callback plus
+>    the argument(s) would have to be stored in futex_q.
+> 
+>    Where does this information come from? Which context would invoke the
+>    wait with callback and callback arguments? User space, io-uring state
+>    machine or what?
+> 
+>    Aside of the extra storage (on stack) and yet more undefined life
+>    time rules and no semantics for error cases etc., that also would
+>    enforce that the callback is invoked with hb->lock held. IOW, it's
+>    making the hb->lock held time larger, which is exactly what the
+>    existing code tries to avoid by all means.
+> 
+> But what would that solve?
+> 
+> I can't tell because the provided information is absolutely useless
+> for anyone not familiar with your great idea:
+>    
+>   "Add futex wait requests, those always go through io-wq for
+>    simplicity."
+>       
+> What am I supposed to read out of this? Doing it elsewhere would be
+> more complex? Really useful information.
 
-Kind regards
-Uffe
+It's io_uring specific, I'd rather assume this information should
+be irrelevant for you, but you're welcome to look at io_uring/io-wq
+if of any interest.
+
+
+> And I can't tell either what Jens means here:
+> 
+>   "Not a huge fan of that, I think this should tap into the waitqueue
+>    instead and just rely on the wakeup callback to trigger the
+>    event. That would be a lot more efficient than punting to io-wq, both
+>    in terms of latency on trigger, but also for efficiency if the app is
+>    waiting on a lot of futexes."
+> 
+> and here:
+> 
+>   "Yes, we'd need to augment that with a callback. I do think that's
+>    going to be necessary, I don't see the io-wq solution working well
+>    outside of the most basic of use cases. And even for that, it won't
+>    be particularly efficient for single waits."
+> 
+> All of these quotes are useless word salad without context and worse
+
+Same, it's weird to assume that there won't be io_uring specific parts
+and discussions.
+
+> without the minimal understanding how futexes work.
+
+> So can you folks please sit down and write up a coherent description of:
+> 
+>  1) The problem you are trying to solve
+
+1. allowing to use futex from io_uring without extra context switches,
+which is the case if we would have a request doing futex operations.
+
+2. having async futexes in general, again handled by io_uring.
+And if I get if right, interaction b/w futexes and other primitives
+is limited. Is it? io_uring naturally allows to pass notify eventfd,
+via some other read/write mechanism and so on, as per this series.
+
+3. maybe .net would be interested in it as a half-baked solution
+for their wait many problem. However, I haven't heard long about it.
+
+4. To use futexes as a synchronisation for io_uring-bpf requests.
+Won't be called from a bpf program, but bpf may be responsible for
+doing memory modifications and then only a simple wake will be
+needed instead of an *op version. But that's orthogonal
+
+> 
+>  2) How this futex functionality should be integrated into io-uring
+>     including the contexts which invoke it.
+
+If we're not talking about the callback stuff, it's always invoked from
+a context of a user task or a worker task that looks almost exactly like
+a normal user thread.
+
+>  3) Interaction with regular sys_futex() operations.
+
+Think of it as passing a request to make a sys_futex() call. Any
+happens-before / acquire-release is propagated via io_uring submissions
+and completions.
+
+Is there some dependency on syscalling itself? E.g. in terms of
+synchronisation. I don't think so, but better to clear it up if
+you're concerned.
+
+>  4) Lifetime and locking rules.
+
+For the locking, there is only one extra io_uring specific mutex
+under which it may happen. Do you think it may be a problem?
+
+Lifetime of what exactly? In any case it may be trickier with
+callbacks, e.g. considering futex_exit_release() and so on, but
+currently it's just called by one of tasks that die as any other
+normal task.
+
+> Unless that materializes any futex related changes are not even going to
+> be reviewed.
+> 
+> I did not even try to review this stuff, I just tried to make sense out
+> of it, but while skimming it, it was inevitable to spot this gem:
+> 
+>  +int futex_wake_op_single(u32 __user *uaddr, int nr_wake, unsigned int op,
+>  +			 bool shared, bool try);
+> ...
+>  +		ret = futex_wake_op_single(f->uaddr, f->nr_wake, f->wake_op_arg,
+>  +					   !(f->flags & IORING_FUTEX_SHARED),
+>  +					   nonblock);
+> 
+> You surely made your point that this is well thought out.
+
+Specifically? I may tell what I don't like
+
+1) it being a rather internal helper. Other options I had are
+to go through do_futex(FUTEX_WAKE_OP), but I don't see why
+io_uring would need two addresses as a default operation,
+though open to suggestions and clue bats. Either to add a
+new futex opcode doing same thing as this function and
+again call do_futex().
+
+2) flags, but I didn't want to export internal futex flags,
+especially as it may be not the way to go in the first place.
+
+3) naming. Suggestions?
+
+However, that's exactly the reason why it's an RFC. Would
+be stupid rehearsing it if there are deeper problems
+
+-- 
+Pavel Begunkov
