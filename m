@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F064B39A982
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0263339A992
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhFCRsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:48:53 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:50931 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbhFCRsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:48:51 -0400
-Received: by mail-pj1-f50.google.com with SMTP id i22so4118914pju.0;
-        Thu, 03 Jun 2021 10:47:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PorLmBEDgCcEnMLX9QH3/eFp+6hUEaS76Y9d4Jw4RaA=;
-        b=lVHa1toMT5sPhRzcYWuFgHx1ojKXXQLCHhmsSrEfXdtZZEEJX6pbdXwBUDL2DrYbMA
-         +LqEyDV4K4php0RN2qENQCf1uldgZ0EXmUYK9Utu2dE4LFYQKra1WWou3YXwZA8IrLJQ
-         KQyb9TWuztUSCMRx+jfBO5F3o1wjpDxCaXaM7b5qOkAXhpQz/jvmY2sIUIukSJgPQgvk
-         1xNoxe2+Q26UHEBNakTvIB/UACgj4daLEqwC5Q/UF9/BPOdpzzKsfcBTyMpKmxKcT1cP
-         GflVgqkRQf/6QJHUjxgk8m4SiVXpxF3Av1nZzKadpBlKPnYfTuSM07BjwmPG+AIDaV7L
-         fvAQ==
-X-Gm-Message-State: AOAM532IIRxUWPrYU5EUbmrgMmD1ke0Wut8lm3FpkvAfYZIcJZSahcja
-        miOwqcubTLk2m6yDMqYwIRA=
-X-Google-Smtp-Source: ABdhPJzO9k/0hVi1AasdVZjfyTYDNMMZeJmd25fR+IH54mauv5B+1lruEw8K6LZa4AU/QltMM4rjDg==
-X-Received: by 2002:a17:902:e551:b029:103:c082:ba with SMTP id n17-20020a170902e551b0290103c08200bamr248352plf.3.1622742426585;
-        Thu, 03 Jun 2021 10:47:06 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k13sm2782215pfh.68.2021.06.03.10.47.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 10:47:05 -0700 (PDT)
-Subject: Re: [PATCH v35 0/4] scsi: ufs: Add Host Performance Booster Support
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Daejun Park <daejun7.park@samsung.com>
-Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        id S229958AbhFCRy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:54:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229791AbhFCRy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:54:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C66861361;
+        Thu,  3 Jun 2021 17:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622742793;
+        bh=/4+zqLM/v5L+l1gJvmrPkAnFdvQifn4m+n1bUWinqI8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=S7L2kPDWr+/Us0lQm787aWEhcQTWzAzDl+4Q6HaptAcIY6rTylqwm8p2b/9VRu5Q4
+         R4M4joTvINf9ts7vQqVSItcBFo3Li8HHGhQeoCvd0IKQz56xp76H7e4R+bhE3sNPBZ
+         DvpxN0JhR8/qZhXOgKcULS+qBNBUvEuIbd6xX4WaBzPHzFvGVAOWn0xqODFv+BRprI
+         2OGkbnLZbWIvPWslCIgQsz9g12OUn+gXpyu27nNhHlOcyu8q82uNgwD7PbXNIFR70d
+         gZwxFBBmFu9+hb+1RtLJu9Ah1YFY6zVikab/z/TRxi864AcQnDB6fSc83QvWcq1xIr
+         bTuZL/VrjDSPw==
+Date:   Thu, 3 Jun 2021 10:53:11 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     moyufeng <moyufeng@huawei.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Parav Pandit <parav@mellanox.com>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-References: <CGME20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p6>
- <20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p6>
- <YLkToPuEUa1waK6f@kroah.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <56e3d6b4-19bb-5d64-5b38-32036bdb23e7@acm.org>
-Date:   Thu, 3 Jun 2021 10:47:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "lipeng (Y)" <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>
+Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
+Message-ID: <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
+References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
+        <20190301120358.7970f0ad@cakuba.netronome.com>
+        <VI1PR0501MB227107F2EB29C7462DEE3637D1710@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+        <20190304174551.2300b7bc@cakuba.netronome.com>
+        <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+        <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
+        <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
+        <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
+        <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YLkToPuEUa1waK6f@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 10:38 AM, Greg KH wrote:
-> On Mon, May 24, 2021 at 05:43:45PM +0900, Daejun Park wrote:
->> Changelog:
->>
->> v34 -> v35
->> 1. Addressed Bart's comments (type casting)
->> 2. Rebase 5.14 scsi-queue
+On Thu, 3 Jun 2021 11:46:43 +0800 Yunsheng Lin wrote:
+> >> can devlink port be used to indicate different PF in the same ASIC,
+> >> which already has the bus identifiers in it? It seems we need a
+> >> extra identifier to indicate the ASIC?
+> >>
+> >> $ devlink port show
+> >> ...
+> >> pci/0000:03:00.0/61: type eth netdev sw1p1s0 split_group 0  
+> > 
+> > Ports can obviously be used, but which PCI device will you use to
+> > register the devlink instance? Perhaps using just one doesn't matter 
+> > if there is only one NIC in the system, but may be confusing with
+> > multiple NICs, no?  
 > 
-> This looks semi-sane.  What's preventing this from being merged?  It's a
-> ratified spec, and there is hardware out there that has it, so Linux
-> should support it, right?
+> Yes, it is confusing, how about using the controler_id to indicate
+> different NIC? we can make sure controler_id is unqiue in the same
+> host, a controler_id corresponds to a devlink instance, vendor info
+> or serial num for the devlink instance can further indicate more info
+> to the system user?
+> 
+> pci/controler_id/0000:03:00.0/61
 
-HPB has been standardized considerable time ago and multiple UFS vendors
-have implemented HPB support. This patch series has been changed
-considerably since its first version. To me this patch series looks
-ready for merging.
+What is a "controller id" in concrete terms? Another abstract ID which
+may change on every boot?
 
-Thanks,
+> >> Does it make sense if the PF first probed creates a auxiliary device,
+> >> and the auxiliary device driver creates the devlink instance? And
+> >> the PF probed later can connect/register to that devlink instance?  
+> > 
+> > I would say no, that just adds another layer of complication and
+> > doesn't link the functions in any way.  
+> 
+> How about:
+> The PF first probed creates the devlink instance? PF probed later can
+> connect/register to that devlink instance created by the PF first probed.
+> It seems some locking need to ensure the above happens as intended too.
+> 
+> About linking, the PF provide vendor info/serial number(or whatever is
+> unqiue between different vendor) of a controller it belong to, if the
+> controller does not exist yet, create one and connect/register to that
+> devlink instance, otherwise just do the connecting/registering.
 
-Bart.
+Sounds about right, but I don't understand why another ID is
+necessary. Why not allow devlink instances to have multiple names, 
+like we allow aliases for netdevs these days?
