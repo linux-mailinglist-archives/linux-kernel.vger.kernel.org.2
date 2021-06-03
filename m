@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB76539A90E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4400939A90D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhFCRUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:20:40 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:64397 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232814AbhFCRTA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:19:00 -0400
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 03 Jun 2021 10:12:54 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com ([10.134.64.25])
-  by ironmsg01-sd.qualcomm.com with ESMTP; 03 Jun 2021 10:12:54 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id 1ECC9210E0; Thu,  3 Jun 2021 10:12:54 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 10:12:53 -0700
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        lee.jones@linaro.org, agross@kernel.org
-Subject: Re: [PATCH -next] mfd: pm8008: Fix return value check in
- pm8008_probe()
-Message-ID: <20210603171253.GA25742@codeaurora.org>
-References: <20210603141357.572347-1-yangyingliang@huawei.com>
+        id S232006AbhFCRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:20:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233554AbhFCRRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:17:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95F3961420;
+        Thu,  3 Jun 2021 17:13:39 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 18:13:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v13 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
+Message-ID: <20210603171336.GH20338@arm.com>
+References: <20210524104513.13258-1-steven.price@arm.com>
+ <20210524104513.13258-8-steven.price@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603141357.572347-1-yangyingliang@huawei.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210524104513.13258-8-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 10:13:57PM +0800, Yang Yingliang wrote:
-> In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
-> and never returns NULL. The NULL test in the return value check
-> should be replaced with IS_ERR().
-> 
-> Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-
-Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
-
-> ---
->  drivers/mfd/qcom-pm8008.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
-> index c472d7f8103c..dfefa60d693b 100644
-> --- a/drivers/mfd/qcom-pm8008.c
-> +++ b/drivers/mfd/qcom-pm8008.c
-> @@ -223,7 +223,7 @@ static int pm8008_probe(struct i2c_client *client)
->  	struct pm8008_data *chip;
+On Mon, May 24, 2021 at 11:45:12AM +0100, Steven Price wrote:
+> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> index 24223adae150..b3edde68bc3e 100644
+> --- a/arch/arm64/include/uapi/asm/kvm.h
+> +++ b/arch/arm64/include/uapi/asm/kvm.h
+> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+>  	__u32 reserved[12];
+>  };
 >  
->  	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
-> -	if (!chip)
-> +	if (IS_ERR(chip))
->  		return -ENOMEM;
+> +struct kvm_arm_copy_mte_tags {
+> +	__u64 guest_ipa;
+> +	__u64 length;
+> +	void __user *addr;
+> +	__u64 flags;
+> +	__u64 reserved[2];
+> +};
+> +
+> +#define KVM_ARM_TAGS_TO_GUEST		0
+> +#define KVM_ARM_TAGS_FROM_GUEST		1
+> +
+>  /* If you need to interpret the index values, here is the key: */
+>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
+>  #define KVM_REG_ARM_COPROC_SHIFT	16
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index e89a5e275e25..baa33359e477 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1345,6 +1345,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
 >  
->  	chip->dev = &client->dev;
-> -- 
-> 2.25.1
-> 
+>  		return 0;
+>  	}
+> +	case KVM_ARM_MTE_COPY_TAGS: {
+> +		struct kvm_arm_copy_mte_tags copy_tags;
+> +
+> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+> +			return -EFAULT;
+> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+> +	}
+
+I wonder whether we need an update of the user structure following a
+fault, like how much was copied etc. In case of an error, some tags were
+copied and the VMM may want to skip the page before continuing. But here
+there's no such information provided.
+
+On the ptrace interface, we return 0 on the syscall if any bytes were
+copied and update iov_len to such number. Maybe you want to still return
+an error here but updating copy_tags.length would be nice (and, of
+course, a copy_to_user() back).
+
+-- 
+Catalin
