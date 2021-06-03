@@ -2,178 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F9539ADF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41A439AE02
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhFCW2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhFCW2w (ORCPT
+        id S230445AbhFCWbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:31:11 -0400
+Received: from mail-yb1-f176.google.com ([209.85.219.176]:35776 "EHLO
+        mail-yb1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhFCWbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:28:52 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8C7C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 15:27:02 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id x10so3647031plg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 15:27:02 -0700 (PDT)
+        Thu, 3 Jun 2021 18:31:10 -0400
+Received: by mail-yb1-f176.google.com with SMTP id i4so11021796ybe.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 15:29:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=s5yPesF7sEWozm6wfz/tvzm6wYfI1FnnfGsX6uavdk0=;
-        b=dddkEQ10ucFDB7ZZfF1p0ObMg4oGDxNtuqWzTKCZIIACiVojmFMGA6oEOmnvRIoBoz
-         JtSfACXMYK1p9dtfs7o1U7JoeD5VVwf3PDNlOr+p2qYinR11eXQAVlHIB8/SYdle3JzC
-         SUBIJdu67+swFWKvSoBNkCDgtpTW+XS8+GbAGEEI1oo7BXk2X/lRMZK61oD48/UWxNgn
-         khY1TNPFItlMeizHaRIr/OsVf2COCOKaZQiVTV8aFHEKkAr1IByCboNbSL21tXMgUGrI
-         uFZBo52ok4mwBMZsqcyPddZg2yoLn8alfwL+6aot1VnXVpKDdkVCjYug1e05USGmrxji
-         1sBw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wMJVJeaokta2g6i5H2O3v8TDV7BZxRAM2P3Xsz6MtKA=;
+        b=QvgMRSKFY447+AbwNLKbs5lBrX0Zxp9F40t/16dBGj3dcbCPdooBl0UKEyi1zJOeKE
+         f4sOkj7SD/Eu9kNQTGc5CXFuXtBHXRuNcPThlQ+ZIKFjayg+gy4jasmXttrW1imMeegs
+         Jgnmw/31vHSlhxO5Q//5+9PNTskXsTRyZ0eOrOLSBbuo4SAee7Wl1JQvL3gvxtUH01Rz
+         ZRBjoH2Iotw4tK/q9oHSWe1U9L/FHoIqbzi7tBtHDcvF7D9LXyS6xN6R0Aody5nZNJBo
+         kx6E1Zi3WAVrc8lUWUGp3PbAuQmQ0BHRWqdH/f4dSuOTVg0TrVS+H4XZINYVFwFYgvlL
+         69pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=s5yPesF7sEWozm6wfz/tvzm6wYfI1FnnfGsX6uavdk0=;
-        b=Z9bs3JJDUvvtZ98cxuTudCO7aUtLZvmmeKrXmxS0ThA2k1+w/6+FBeWKujr1kmuvdG
-         n+Y+gQyCR3GS9NTPDjh1KOHwiJ2WPxx3GIomfTJpUzC25Gd3gTbAz9BDWuY37M1GwW+S
-         CI5uJL+eRciFV38kESCHR7u641fXZsjcP6c7kUX4Gs93+U/j1yIZLDsc6mtkiVrHajdE
-         CNn56SrgwcCDzwmA0DqUiuL8IleXV8Bxe33k872lOVs4JJjxFoxa6lzeLD7Nqu3rIuHZ
-         tADpZ3ZY6Oj1YcK5dHhqkOe+blr5GcGsFzEMhks841IQirV/GRY8DAmRhA40tzz3SEd/
-         GVOA==
-X-Gm-Message-State: AOAM531DFd3Vd6EmKqAMkV+eZhIXt+vy93K/UJtu4hiCMySad7dbn5Jr
-        tQBjdKrZA5xhy9UF8Gv9VRrNRA==
-X-Google-Smtp-Source: ABdhPJzQYnppn92XbOXwHSN2nMLzPzyYW4Gc6+3gA+f7iIVTLQReK3q6DaTA91XMC2xklVJ4kL6KVw==
-X-Received: by 2002:a17:90a:d24a:: with SMTP id o10mr13626649pjw.19.1622759221524;
-        Thu, 03 Jun 2021 15:27:01 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id q191sm75708pfq.108.2021.06.03.15.26.59
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 03 Jun 2021 15:27:00 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 15:26:58 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6.1/7] mm: thp: replace DEBUG_VM BUG with VM_WARN when unmap
- fails for split
-In-Reply-To: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
-Message-ID: <alpine.LSU.2.11.2106031521480.11704@eggly.anvils>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wMJVJeaokta2g6i5H2O3v8TDV7BZxRAM2P3Xsz6MtKA=;
+        b=NTzBNsdKWtVu4oTqK/IjZZbbxNniDQ556LkABvjA1SWoWvu2unn2Ypgc+tBe8XdOyD
+         3MLb9WD9gFidM+ejEAgfGNX/2XRB/y1aiWUTSr2Og527clGwXZV+d0hcrlO27D9leu4U
+         Iepm6kRs2ldCC18iIipUEy4B9vzUYBgSowO+NeUPYYTRRxXkRKdultWpkHSFGEVbrqNZ
+         TPmkfQNqKj3NRIM2nmKNFFnFi3cwerpeL7aXzKa2UZrpte+0/JtUAwEdO5L+iI4ujngr
+         VGM38ZjSsjOCLFGi1nnqHNF2ooE5gYKf0oH9wb/faPdB+a53xxo1c56Es9NuN1aPYFMP
+         MhOw==
+X-Gm-Message-State: AOAM5328au1DxQ6vvI36D39KE/euFVKQkR89Pcys71DiwmCShas6L3pJ
+        Vt+bF95lrBE+wJAcL/DuhtkBYiCh8N+TTGXwacC5cTSWn1c=
+X-Google-Smtp-Source: ABdhPJxqqdNa+4k6LHwTnjgndHVEsh17CUcijA9p6q1lBmvzT0C0S1jBbtXArAuOlqR6cuo2jG9JKXwOdpB0K2rn298=
+X-Received: by 2002:a25:cbc9:: with SMTP id b192mr1100458ybg.96.1622759293161;
+ Thu, 03 Jun 2021 15:28:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210603202116.1841261-1-swboyd@chromium.org>
+In-Reply-To: <20210603202116.1841261-1-swboyd@chromium.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 3 Jun 2021 15:27:37 -0700
+Message-ID: <CAGETcx_G9iXgvRupZdeteHSwhAFZNYNn1ti4bGL8F0dQeDWhEg@mail.gmail.com>
+Subject: Re: [PATCH v2] driver core: Make cycle dev_info() message dev_dbg()
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Shi <shy828301@gmail.com>
+On Thu, Jun 3, 2021 at 1:21 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> This seems to mostly print debug information about device link stuff at
+> boot. It doesn't seem very useful outside of debugging so move it to
+> dev_dbg().
 
-When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
-fail, but the first VM_BUG_ON_PAGE() just checks page_mapcount() however
-it may miss the failure when head page is unmapped but other subpage is
-mapped.  Then the second DEBUG_VM BUG() that check total mapcount would
-catch it.  This may incur some confusion.  And this is not a fatal issue,
-so consolidate the two DEBUG_VM checks into one VM_WARN_ON_ONCE_PAGE().
+As before, Nak at least for now.
 
-[1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+This code path really shouldn't be exercised on most systems. I might
+be open to this once fw_delink bug reports stop coming in for at least
+1 full kernel minor version.
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
-Reviewed-by: Zi Yan <ziy@nvidia.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: <stable@vger.kernel.org>
----
-v5: Rediffed by Hugh to fit after 6/7 in his mm/thp series; Cc stable.
-v4: Updated the subject and commit log per Hugh.
-    Reordered the patches per Hugh.
-v3: Incorporated the comments from Hugh. Keep Zi Yan's reviewed-by tag
-    since there is no fundamental change against v2.
-v2: Removed dead code and updated the comment of try_to_unmap() per Zi
-    Yan.
+-Saravana
 
- mm/huge_memory.c | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
 
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2350,19 +2350,19 @@ static void unmap_page(struct page *page
- {
- 	enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
- 		TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
--	bool unmap_success;
- 
- 	VM_BUG_ON_PAGE(!PageHead(page), page);
- 
- 	if (PageAnon(page))
- 		ttu_flags |= TTU_SPLIT_FREEZE;
- 
--	/* Make sure that the BUGs will not bite */
-+	/* If warning below, prevent a race in the mapped accounting */
- 	if (IS_ENABLED(CONFIG_DEBUG_VM))
- 		ttu_flags |= TTU_SYNC;
- 
--	unmap_success = try_to_unmap(page, ttu_flags);
--	VM_BUG_ON_PAGE(!unmap_success, page);
-+	try_to_unmap(page, ttu_flags);
-+
-+	VM_WARN_ON_ONCE_PAGE(page_mapped(page), page);
- }
- 
- static void remap_page(struct page *page, unsigned int nr)
-@@ -2673,7 +2673,7 @@ int split_huge_page_to_list(struct page
- 	struct deferred_split *ds_queue = get_deferred_split_queue(head);
- 	struct anon_vma *anon_vma = NULL;
- 	struct address_space *mapping = NULL;
--	int count, mapcount, extra_pins, ret;
-+	int extra_pins, ret;
- 	pgoff_t end;
- 
- 	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
-@@ -2732,7 +2732,6 @@ int split_huge_page_to_list(struct page
- 	}
- 
- 	unmap_page(head);
--	VM_BUG_ON_PAGE(compound_mapcount(head), head);
- 
- 	/* block interrupt reentry in xa_lock and spinlock */
- 	local_irq_disable();
-@@ -2750,9 +2749,7 @@ int split_huge_page_to_list(struct page
- 
- 	/* Prevent deferred_split_scan() touching ->_refcount */
- 	spin_lock(&ds_queue->split_queue_lock);
--	count = page_count(head);
--	mapcount = total_mapcount(head);
--	if (!mapcount && page_ref_freeze(head, 1 + extra_pins)) {
-+	if (page_ref_freeze(head, 1 + extra_pins)) {
- 		if (!list_empty(page_deferred_list(head))) {
- 			ds_queue->split_queue_len--;
- 			list_del(page_deferred_list(head));
-@@ -2772,16 +2769,9 @@ int split_huge_page_to_list(struct page
- 		__split_huge_page(page, list, end);
- 		ret = 0;
- 	} else {
--		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
--			pr_alert("total_mapcount: %u, page_count(): %u\n",
--					mapcount, count);
--			if (PageTail(page))
--				dump_page(head, NULL);
--			dump_page(page, "total_mapcount(head) > 0");
--			BUG();
--		}
- 		spin_unlock(&ds_queue->split_queue_lock);
--fail:		if (mapping)
-+fail:
-+		if (mapping)
- 			xa_unlock(&mapping->i_pages);
- 		local_irq_enable();
- 		remap_page(head, thp_nr_pages(head));
+>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>
+> Changes from v1 (https://lore.kernel.org/r/20210603064849.1376107-1-swboyd@chromium.org)
+>  * Dropped second hunk and rebased to -rc4
+>
+>  drivers/base/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 54ba506e5a89..378bb894869a 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -1736,7 +1736,7 @@ static int fw_devlink_create_devlink(struct device *con,
+>                  */
+>                 if (!device_link_add(con, sup_dev, flags) &&
+>                     !(flags & DL_FLAG_SYNC_STATE_ONLY)) {
+> -                       dev_info(con, "Fixing up cyclic dependency with %s\n",
+> +                       dev_dbg(con, "Fixing up cyclic dependency with %s\n",
+>                                  dev_name(sup_dev));
+>                         device_links_write_lock();
+>                         fw_devlink_relax_cycle(con, sup_dev);
+>
+> base-commit: 8124c8a6b35386f73523d27eacb71b5364a68c4c
+> --
+> https://chromeos.dev
+>
