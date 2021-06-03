@@ -2,60 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5367639AAB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4595A39AABA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhFCTL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:11:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229697AbhFCTL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:11:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 917CB613E3;
-        Thu,  3 Jun 2021 19:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622747383;
-        bh=MSLGRUy0MFeclD+Y+OnG6WS2CmJ2jmNADhWwcdX5c4I=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=oaf1+ysMw4PLhQZNOlWI7NjasEz6B9cfawzNs2biuaAWTJRRTnE0t63OJ8FvzJtxT
-         ukC+FIdvzijnd8vQfyuw5EtZPjNJVaaJ9q7iXhQie57ha/E3HCApQWHYaV6JgczHmh
-         U9NXjjh2PtqIpyAbO6PxBG3iDfhPp4vmpIJgEfH2O/2kp8uEANCBVCcxgcP8B9j3mM
-         SgjYBshn2NcmAqVXiSCnWX3lYtkH/ChK1a3kRN4e0J5UcoDKXLQoLXcyktgIm7LsGw
-         FNMITmkKbf4sAtTcF3JhtjjAhxXhXXWIDhLKJEGwcpoisXs8y97la/gUYK5eYuXKDG
-         0Pyi3+GfsCx1g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8BAC860A5C;
-        Thu,  3 Jun 2021 19:09:43 +0000 (UTC)
-Subject: Re: [GIT PULL] VFIO fixes for v5.13-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210603112237.42b620c1.alex.williamson@redhat.com>
-References: <20210603112237.42b620c1.alex.williamson@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210603112237.42b620c1.alex.williamson@redhat.com>
-X-PR-Tracked-Remote: git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc5
-X-PR-Tracked-Commit-Id: dc51ff91cf2d1e9a2d941da483602f71d4a51472
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f88cd3fb9df228e5ce4e13ec3dbad671ddb2146e
-Message-Id: <162274738356.14300.3597193776411565556.pr-tracker-bot@kernel.org>
-Date:   Thu, 03 Jun 2021 19:09:43 +0000
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+        id S229718AbhFCTOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCTOe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:14:34 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9220CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 12:12:32 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id f30so10475734lfj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 12:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5EDxCagl07bOh/Nv8oABAKO17kN+L9A+RY/dcpJKFLM=;
+        b=UTljGEGQNYuxNXIn0v7XzxieUWCtnIsxzkRCecivfei0dzW5YoDgn0l5XlRffuAtRp
+         9lRSLYrp3aHu78VwRpo49Xzw5AfLWYiO+J5j4JygA2mmEuyDFb9pNuPPxy5EAwi8/b+z
+         1pN+oUWFghkmkRW6aHl9ejWgOUmra/8PfgAXw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5EDxCagl07bOh/Nv8oABAKO17kN+L9A+RY/dcpJKFLM=;
+        b=Z3iPbI4nnYv+SxgoVAUGqL/KpBmufu0wjA6nIJQdjFDsklytLk+3HDnbiOBw13PVYv
+         FHRmq+UC4DNKDqz/WH17G/qf2qTfKHhqPoWevYkQ5DqMgQQTA5T/w9CRq23axn2qV8VO
+         QNVEfHXjBmRPjSuqHuNWzaia3KSQ+FRw5GSrM5Kxx/2h6lNAoF3HSjYB+M+aX++qz8Si
+         ZiP/gxO/YnIcj1aPYsUUWu74pZqXrqcbeYRo5QnmMpbR/e+H/YVTSMHqW5/+0rpXVnAE
+         cri2JKfCRfbKJWlDn1ek5qlGGPX+dh9HOJqscbZ/iOk7sMnRiMrj+Mr/qnmFvxLP7jaK
+         VT6Q==
+X-Gm-Message-State: AOAM53254e0q1xE8QqlVBiZ0Qc+IKGZKCAhwyITNCGLI2AKoBUDIg2zI
+        54L9GsGlit9PGhH+fRKuuhXTyi5ky8/XYkTo
+X-Google-Smtp-Source: ABdhPJzUe6g9R9OXwZjo4+0Xgn3mvZn62GZVjbvRIBYMkIT/YhkbXEqYugoA/jrE8DwE/TqxpxhIAA==
+X-Received: by 2002:ac2:5631:: with SMTP id b17mr264397lff.515.1622747550747;
+        Thu, 03 Jun 2021 12:12:30 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id c7sm398492lfv.27.2021.06.03.12.12.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 12:12:30 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id i9so10392505lfe.13
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 12:12:30 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr260545lfc.201.1622747549926;
+ Thu, 03 Jun 2021 12:12:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <1622589753-9206-1-git-send-email-mlin@kernel.org>
+ <1622589753-9206-3-git-send-email-mlin@kernel.org> <alpine.LSU.2.11.2106011913590.3353@eggly.anvils>
+ <79a27014-5450-1345-9eea-12fc9ae25777@kernel.org> <alpine.LSU.2.11.2106021719500.8333@eggly.anvils>
+ <CAHk-=wiHJ2GF503wnhCC4jsaSWNyq5=NqOy7jpF_v_t82AY0UA@mail.gmail.com> <alpine.LSU.2.11.2106031142250.11088@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2106031142250.11088@eggly.anvils>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 3 Jun 2021 12:12:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiNT0RhwHkLa14ts0PGQtVtDZbJniOQJ66wxzXz4Co2mw@mail.gmail.com>
+Message-ID: <CAHk-=wiNT0RhwHkLa14ts0PGQtVtDZbJniOQJ66wxzXz4Co2mw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem read
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Ming Lin <mlin@kernel.org>, Simon Ser <contact@emersion.fr>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 3 Jun 2021 11:22:37 -0600:
+On Thu, Jun 3, 2021 at 12:07 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> But the point that we've arrived at, that I'm actually now fairly
+> happy with, is do *not* permit MAP_NOSIGBUS on MAP_SHARED mappings.
 
-> git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc5
+Yeah, if that's sufficient, then that original patch should just work as-is.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f88cd3fb9df228e5ce4e13ec3dbad671ddb2146e
+But there was some reason why people didn't like that patch
+originally, and I think it was literally about how it only worked on
+private mappings (the "we don't have a flag for it in the vm_flags"
+part was just a small detail.
 
-Thank you!
+I guess that objection ended up changing over time.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+            Linus
