@@ -2,353 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C85939A075
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E79839A079
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFCMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:01:42 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:59819 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229747AbhFCMBl (ORCPT
+        id S229980AbhFCMBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:01:45 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:32537 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhFCMBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:01:41 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id om0ulbl8qIpGyom0xlRZDb; Thu, 03 Jun 2021 13:59:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622721596; bh=AW2E+LndgntmgXR1pFLfiiExeEpYWPk/nwb66rMkL2w=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=WIkzMd76ZCu7G05O6iUW+7lIKWQUmSYjUmgfM5X9pf74qwVUrRmacHhk5yaHk3kHU
-         YeNYwWBJtd7iceMLSWQVcsNhpAY8Dz0GYJ9jG98hDfONAFo72KeOrP9Rf3a9N6/PIn
-         H5ZBGMwocuuEXQFdusrTPnPh0urYyIeooir3NY/r/jWSKLi+JbCoxa9OPllAhdU+2a
-         vmrTSzJJBRM2cnFOe5lfFxyofhhFaEKB3bmQf5I1smURgYa1iT0exP6QQ2hb175Ucp
-         1/HlNy0rQ42CNduDlB1ib7jpZCysqYleziqzf4NgLvtzB6IFTkv/H5kATSG57pA1zy
-         Jj16zC8/LeFWw==
-Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210427131344.139443-1-senozhatsky@chromium.org>
- <20210427131344.139443-9-senozhatsky@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
-Date:   Thu, 3 Jun 2021 13:59:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210427131344.139443-9-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=utf-8
+        Thu, 3 Jun 2021 08:01:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1622721598; x=1654257598;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=aA7MzJS89CXdR7S2zT+WDxaJrxsnLrxhQGqCFumOq0E=;
+  b=FwcsT4dm5CSBVv9EqO47X3dJOL/CpWmjpllv7gosM2GDiCQh22ij1+nA
+   tdC3r4YMCF+idI8l9O7M9fXjVbyOM7Gxd93nirXeORSxT/+1LjszVYd4C
+   XOQQMakbxHMw6S232UHNEvvXTwtG2K8WloxnJiFLAzK2aVwGH/cbIyn01
+   lQRh9kYSaehrCeZAdvcuk2P5LW7YfMuwZXzT/1IlS7sMgn3qfryjy5T/o
+   4NMCo3hGDqzb9njy/Weh1D7PYi0kdxTdX8fhZGvnNrbn9CcfeQUgrNXdO
+   pq1VKor0Ia/JC5itOFNKCiOYVNz6GUoWfK776xnv+QuDGYQWXazRaU9hn
+   w==;
+IronPort-SDR: iAWUoYi/cPNikzvVoxL6cy441Bq+jISv8D5DCAq3oIcRCwqKU4FFm95Bc6zmKTPl3Qfpa9pcuf
+ PKKAh3buVrG5pCoJHVXSYCWcBu/m7O26j04RTFmn1/I2FBrKPm7C/iKcG+EspghW4Ix1QkqSwB
+ +ds9axfC7N9BZsErKD1QupqX4Wr9H1C361djdq2D05lk5zisEKxCvFAI4jymarSmx7u8Boxy8Q
+ 3yUef1TpY0i22t8T4pN7BF4W6EdbwXq3FCE6JDDqfIu/TFESjsA6+D6NqWtBkxWojAzxZI3qZW
+ dKQ=
+X-IronPort-AV: E=Sophos;i="5.83,244,1616428800"; 
+   d="scan'208";a="175305256"
+Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Jun 2021 19:59:53 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CX/ZdiGaNbsN6HHcAdcZ7GbZXuq69BIMj+wKQiET6NCqtE+8td0ZmFoXI3zaGXwLs/rwzBB5RDeTDboRPzwcH3kELHOJ5cYilcaEQ0IH1SQstZrPSqZ5K8yQ1QUrNjqwtsj2lM58L93xwY1kT6giV1EKq8NMG5O2de+oFkpnCD5cElvFoQ9cQeXYm6ao3RCPOnZ4IWjzq3CHXDuK/VwrQmqElHFYnd9uiEHcDl8bvOMZmhFoRklHgNb1Bu2eCvWlpDOC+eOvnl9x9Yi6RQ7KcGDNRcOCMU2V7ZBoyyCofEkghHx7/oGMkzk7Ec5vDA1/daOMYr+TZECM9n9pQxkC6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aA7MzJS89CXdR7S2zT+WDxaJrxsnLrxhQGqCFumOq0E=;
+ b=ntjZcHrHH1Yl+lBslpnm4BJQDO+tn3fDVRX46zhBucep3XkQ1LHw2ag5VYjAdKg3sBjyjVhsO6dRCCUnFpnECqyCXMqrR8nkkA6wrhbi7ABYD9budkmfJNlTw8j5lswVhWLJN1AVjTPnIjfBa5L1GS+/ZpwIuSgOGbr0FooT8nbSGm0Oi6Rd+wkJMnQlebhmBzKMaj5M+npEme3pArEfmngTkqFsnOh7/Xq1PSLJvv9NBM396wDKycbVacTCN9PyxUR6+nbDkzNGls/3kb7Z0mxct8YR0fB1xQTC2p3u7/BSnJhwEULo2NtfyauKwYYzrdXLh1Pp4tAdh14Jmt0WNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aA7MzJS89CXdR7S2zT+WDxaJrxsnLrxhQGqCFumOq0E=;
+ b=AUgshT9g943y7V7hfitZlHNr1CZUCaWFFpfC7VX0EH8TOFn4AUVXylRjmFTQEHWO/JA6XL6OBHAClMxVrHvgQhL3HnHHDLXNYacekf3fyLN48HE+tE2POFHY0SZfLzeCKd2Op+n0VlI7MJcCnzE2Yt3oARJO55WE8aO/r4xUmPA=
+Received: from PH0PR04MB7158.namprd04.prod.outlook.com (2603:10b6:510:8::18)
+ by PH0PR04MB7733.namprd04.prod.outlook.com (2603:10b6:510:55::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.24; Thu, 3 Jun
+ 2021 11:59:53 +0000
+Received: from PH0PR04MB7158.namprd04.prod.outlook.com
+ ([fe80::45d7:388e:5cbb:ae1e]) by PH0PR04MB7158.namprd04.prod.outlook.com
+ ([fe80::45d7:388e:5cbb:ae1e%6]) with mapi id 15.20.4195.023; Thu, 3 Jun 2021
+ 11:59:53 +0000
+From:   Niklas Cassel <Niklas.Cassel@wdc.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+CC:     "dsterba@suse.cz" <dsterba@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] blk-zoned: allow BLKREPORTZONE without CAP_SYS_ADMIN
+Thread-Topic: [PATCH 2/2] blk-zoned: allow BLKREPORTZONE without CAP_SYS_ADMIN
+Thread-Index: AQHXViSH/N9K56jFnkyIxAVcrCvP9asCM6IA
+Date:   Thu, 3 Jun 2021 11:59:53 +0000
+Message-ID: <YLjEOMaxk8/8GOex@x1-carbon>
+References: <20210531135444.122018-1-Niklas.Cassel@wdc.com>
+ <20210531135444.122018-3-Niklas.Cassel@wdc.com>
+ <20210603095117.GU31483@twin.jikos.cz>
+ <DM6PR04MB7081B69E31BB7ADDF02E2D9BE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <20210603100436.GV31483@twin.jikos.cz>
+ <DM6PR04MB708127C72BDC03B446997DACE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
+In-Reply-To: <DM6PR04MB708127C72BDC03B446997DACE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfAYrHzvBcPfqG8u2vhz38wm5UNvY+T0Kh1qffrhWzjCXtfvMc7zIYnsspn4igYy6pjzKkNJcTVO3trQVqVIt7NCE0c7LBA3n3z03efIFQ7hoYb8X55U5
- 9c0eFcAwuESbmeHHwHmRSuyXiH5ujkA07a+sQRKBnZ+rUMPpBvure7nJSkDb4R3feqH/6rq+lZzB5blP4My99h8/DcaMSiOaFOOO7W5+AkmeGQS9vj+/Jylq
- jjx/l94x2WJLAMa5yleBqXUT9T6n1uebmN/Mfyu9+fiTg7PivdSeeJIlPDHK8tvHq2ZwY3qwXnwlUrI/wyDCexLb1GzllLgAeow7QwCJ/ZPSKVR55ie3ovuE
- 4B5/h453M6pO7ImfOMoKLQIhLCQgWYLG2Pus+w4pH5w7aOp+axQ=
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [85.226.244.4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a021abab-9796-4783-86bd-08d926871935
+x-ms-traffictypediagnostic: PH0PR04MB7733:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR04MB773394FBABDFB4510FCDA4BEF23C9@PH0PR04MB7733.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nsuoFKP9+t1liBdmP7/YuU2dOIG3fzr6uzXmlbgRjrE+7HZgnWG5THWQvbJ7ed0iwWD1ERLbjOsMIXhc2VZ7MfFevXJLMvbajcCnQjSqMc9sqMF2i0hZXj4ZY9nrOBpNIIq/sdiR3NTLrVTiDi8XcVd7fQrEnYVLDG0IGI0iveLWfGqQ+BwzVzp0FymxS4iQj4OIdtkBd9bIwkYAyqXSgL8Jc51YK3IMU883V6nv48vaj4zLERi0yTVbTzoF7BjNROMVvCSbPYsbrzsJRns4yDGNXkFeYC984wZavAI9VBCjGGi1EsqFLxSdM79gx4sdLF1PkiIXUtuWarHml/K3t9VcxNjymMhqR9+ou4HWLtO/YI5uQpv/8dpeatwmFxdCv3N/ogzeoCbLaC9qIJnX97Kbf+vC0Pk2aBeeb0qObqWuRcA2+MHtqOi2uVqeLq4mxaPx19EXCV70EBNp6Ry6Dc57RmgBFrJa1jFfUMpcJeHGKoC5U0BF8O3Hrb6BZb2y9HD+2NaWJ6dGZCzdfvkR5MGSneQ+SHooIEGDkcuMXCj7XfJ6qrohjd+uaiPjuemiodQZJ7WSI/8Y4xzvg9IFeawQ4EBtTGcEm2P1Ho/WzxM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7158.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(136003)(366004)(376002)(39860400002)(396003)(6486002)(33716001)(6512007)(8676002)(9686003)(2906002)(6862004)(478600001)(6636002)(186003)(54906003)(26005)(71200400001)(316002)(6506007)(66446008)(122000001)(4326008)(66946007)(64756008)(91956017)(66476007)(66556008)(76116006)(5660300002)(83380400001)(38100700002)(8936002)(53546011)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?BqiUEom2fLrG1XO+gjZuuK2KW1V98xOhYNhPET73AnSAuSXEqMaor7KYbnuN?=
+ =?us-ascii?Q?7ESwYaCOi3V2GSsvaMYwQwzdRXi1VK2DqQzlsQ7UJax9eQ8dFjA00e4bFkO6?=
+ =?us-ascii?Q?3Xq263ARdvtTedM9rYycDsRorOMqINQysXX6gRMBhFLVYQvX1qmJsprYOdKG?=
+ =?us-ascii?Q?Fh0bLzO6LtVgwdDts285ZVEnQxamjy8GNBk0uqy3EypGubPMcFJ1/NzR7XOm?=
+ =?us-ascii?Q?mOh4geCzV9K8avJv1q4ufR1oHiKbiYCb2o6HZcm9QJPhTAPPquRI8XvDvgUW?=
+ =?us-ascii?Q?NL3vKbCx64ds6hkMZrZYDO9NcfK6e4L0QsQVomqleC2uOnM/z3BStzMp8sCx?=
+ =?us-ascii?Q?LiOyKsr5r/3m/H0IiPiRaw3ytaZWgEiA/BmDliDHoGkHg087jBa/WT4a/7jk?=
+ =?us-ascii?Q?P/sSAApsANTPobrM3DoETc2jwnFuzNbQbIPOrnJyDZ4r2tQm9YVvYJNTD4ha?=
+ =?us-ascii?Q?m3vSuT+Cs1Qa3xYnx5JQBuqX30OCayhY1geBLAuv/nqEZRPa8S4fZpK8LWSA?=
+ =?us-ascii?Q?eyjGt6mAdFll2YRjaD9U7XocBf4W9SlgxPXjlAfe00Dxsiu5ax1aCbY5n+Vr?=
+ =?us-ascii?Q?VA9zsrP1zzgQa2EwpBq2Wvy3HF5kvU21Ijnln86uhsL45b/eKHg10ogHAeyN?=
+ =?us-ascii?Q?pscrVpzqtVNrykPC6D7ToRzZ52i30YwxJjy9Q/g+rg6HP0YujTZHdJKY0BBN?=
+ =?us-ascii?Q?0dUPEeg9lsR2plSx22NVmw7RIcybUD0pwrEaXKRbKvLjHkYRSi5oBayCDH+b?=
+ =?us-ascii?Q?TVJzozhCzzil4X1x+XFYz6qG1/8H6t4zlNuo1yaauYVTN3tRMiqwdcJhQTzz?=
+ =?us-ascii?Q?Nd8reX8ZqUqtIwDNP7n6PIasN+BW3jvWU/OJbbOKhT4tQTL5hrQmP/QJlR/Z?=
+ =?us-ascii?Q?Oq1zKWXv8OkDtbnur8ppijh0ZCOjt1zF6NBv952OoX36VUbe5YBwQfniTQbS?=
+ =?us-ascii?Q?S3jkAFfjeu6AZ2vYcZLgXDYjxhg8FYLgigvOilsTPKurmat6al50H2jJ19PM?=
+ =?us-ascii?Q?9arCeQHkcKqmDrF60FyAMVCXGpJxVr9Nz8BAy99at4z/d+KFy0Vbm037T7aF?=
+ =?us-ascii?Q?6P6rFMYd+0ARiMGgKdQCmDNux25BqrywOKcgrAOiVNvrwUZo8dN+Bjz38LI9?=
+ =?us-ascii?Q?WHaCpOQJJutFHKVRdzokzaPuOE0U3+WspfCMxXeCjCFb3501Ft3wHK7mHugs?=
+ =?us-ascii?Q?Av1D+D8ljj9spef2Xoa7Oc3MLHXZu4i2KknnJKOwEJGm57onmb2fGDYApVmV?=
+ =?us-ascii?Q?4H926REcP0Khbttkm0eXXJn9ihfyOQ8v76qwkOqDuz60SMuxs8jTTzWZay91?=
+ =?us-ascii?Q?Z6rRHy3dgY50YMpTNjdc/cmO?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <860A9E52A96BE54C8AA69B4BC30A70DE@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7158.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a021abab-9796-4783-86bd-08d926871935
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 11:59:53.3640
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h3+bAl47gS1bHuv5WyxNMY1jY13MOJ1bCX0yr9EjaIX7rQhRqcOGl1nXTHkB/hSz1hYkCGhlFlam4MW8C4wj+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7733
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/04/2021 15:13, Sergey Senozhatsky wrote:
-> This adds support for new noncontiguous DMA API, which
-> requires allocators to have two execution branches: one
-> for the current API, and one for the new one.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> [hch: untested conversion to the ne API]
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  .../common/videobuf2/videobuf2-dma-contig.c   | 140 +++++++++++++++---
->  1 file changed, 116 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> index 1e218bc440c6..40eaaef1565b 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> @@ -17,6 +17,7 @@
->  #include <linux/sched.h>
->  #include <linux/slab.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/highmem.h>
->  
->  #include <media/videobuf2-v4l2.h>
->  #include <media/videobuf2-dma-contig.h>
-> @@ -42,6 +43,7 @@ struct vb2_dc_buf {
->  	struct dma_buf_attachment	*db_attach;
->  
->  	struct vb2_buffer		*vb;
-> +	bool				coherent_mem;
->  };
->  
->  /*********************************************/
-> @@ -78,14 +80,22 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
->  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
->  {
->  	struct vb2_dc_buf *buf = buf_priv;
-> -	struct dma_buf_map map;
-> -	int ret;
->  
-> -	if (!buf->vaddr && buf->db_attach) {
-> -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
-> -		buf->vaddr = ret ? NULL : map.vaddr;
-> +	if (buf->vaddr)
-> +		return buf->vaddr;
-> +
-> +	if (buf->db_attach) {
-> +		struct dma_buf_map map;
-> +
-> +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-> +			buf->vaddr = map.vaddr;
-> +
-> +		return buf->vaddr;
->  	}
->  
-> +	/* Non-coherent memory */
-> +	buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size, buf->dma_sgt);
-> +
+On Thu, Jun 03, 2021 at 11:20:33AM +0000, Damien Le Moal wrote:
+> On 2021/06/03 19:07, David Sterba wrote:
+> > On Thu, Jun 03, 2021 at 10:00:08AM +0000, Damien Le Moal wrote:
+> >> On 2021/06/03 18:54, David Sterba wrote:
+> >>> On Mon, May 31, 2021 at 01:54:53PM +0000, Niklas Cassel wrote:
+> >>>> From: Niklas Cassel <niklas.cassel@wdc.com>
+> >>>>
+> >>>> Performing a BLKREPORTZONE operation should be allowed under the sam=
+e
+> >>>> permissions as read(). (read() does not require CAP_SYS_ADMIN).
+> >>>>
+> >>>> Remove the CAP_SYS_ADMIN requirement, and instead check that the fd =
+was
+> >>>> successfully opened with FMODE_READ. This way BLKREPORTZONE will mat=
+ch
+> >>>> the access control requirement of read().
+> >>>
+> >>> Does this mean that a process that does not have read nor write acces=
+s
+> >>> to the device itself (blocks) is capable of reading the zone
+> >>> information? Eg. some monitoring tool.
+> >>
+> >> With this change, to do a report zones, the process will only need to =
+have read
+> >> access to the device. And if it has read access, it also means that it=
+ can read
+> >> the zones content.
+> >=20
+> > Ok, so this is a bit restricting. The zone information is like block
+> > device metadata, comparing it to a file that has permissionx 0600 I can
+> > see the all the stat info (name, tiemstamps) but can't read the data.
+> >=20
+> > But as the ioctl work, it needs a file descriptor and there's probably
+> > no way to separate the permissions to read blocks and just the metadata=
+.
+> > For a monitoring/reporting tool this would be useful. Eg. for btrfs it
+> > could be part of filesystem status overview regarding full or near-full
+> > zones and emitting an early warning or poking some service to start the
+> > reclaim.
+>=20
+> You lost me... the change is less restrictive than before because the pro=
+cess
+> does not need SYS_CAP_ADMIN anymore. The block device file open is untouc=
+hed, no
+> change. So whatever process could open it before, will still be able to d=
+o so as
+> is. More processes will be able to do report zones with the change. That =
+is all
+> really that changes, so I do not see what potentially breaks, nor how thi=
+s may
+> prevent writing some monitoring tool. Whoever can open the block device f=
+ile has
+> FMODE_READ rights, no ? Am I missing something here ?
 
-This function can use some comments. What is happening AFAICS is that
-buf->vaddr is either set in vb2_dc_alloc_coherent (unless
-DMA_ATTR_NO_KERNEL_MAPPING was set), it is obtained through dma_buf_vmap()
-if the buffer was attached to a dma_buf, or it is allocated via
-dma_vmap_noncontiguous() for non-coherent memory.
+What David is saying is that for e.g. stat(), you can get metadata when you
+don't even have read permission for a device, since stat() takes a pathname=
+.
 
-But this leaves coherent memory with DMA_ATTR_NO_KERNEL_MAPPING set, what
-is vaddr in that case? I think it will call dma_vmap_noncontiguous()
-incorrectly in that case, shouldn't there be a check for !buf->coherent_mem
-before the call to dma_vmap_noncontiguous()?
+An ioctl requires you to first do an open(), which will will check permissi=
+ons,
+so implementing the same is not really possible for an ioctl like BLKREPORT=
+ZONE.
 
-It's quite confusing since vaddr can be set in different functions.
+However, I think the current ioctl is fine.
+The amount of data that is transferred from a zoned block device for the zo=
+ne
+report is more than the data that is transferred when someone does a stat()=
+,
+so in one way getting the zone report is more like a read.
 
->  	return buf->vaddr;
->  }
->  
-> @@ -101,13 +111,26 @@ static void vb2_dc_prepare(void *buf_priv)
->  	struct vb2_dc_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	/* This takes care of DMABUF and user-enforced cache sync hint */
->  	if (buf->vb->skip_cache_sync_on_prepare)
->  		return;
->  
-> +	/*
-> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-> +	 * and non-coherent MMAP buffers.
-> +	 */
-> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
-> +		return;
-> +
->  	if (!sgt)
->  		return;
->  
-> +	/* For both USERPTR and non-coherent MMAP */
->  	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
-> +
-> +	/* Non-coherent MMAP only */
-> +	if (!buf->coherent_mem && buf->vaddr)
-> +		flush_kernel_vmap_range(buf->vaddr, buf->size);
->  }
->  
->  static void vb2_dc_finish(void *buf_priv)
-> @@ -115,19 +138,46 @@ static void vb2_dc_finish(void *buf_priv)
->  	struct vb2_dc_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	/* This takes care of DMABUF and user-enforced cache sync hint */
->  	if (buf->vb->skip_cache_sync_on_finish)
->  		return;
->  
-> +	/*
-> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-> +	 * and non-coherent MMAP buffers.
-> +	 */
-> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && buf->coherent_mem)
-> +		return;
-> +
->  	if (!sgt)
->  		return;
->  
-> +	/* For both USERPTR and non-coherent MMAP */
->  	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
-> +
-> +	/* Non-coherent MMAP only */
-> +	if (!buf->coherent_mem && buf->vaddr)
-> +		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
->  }
->  
->  /*********************************************/
->  /*        callbacks for MMAP buffers         */
->  /*********************************************/
->  
-> +static void __vb2_dc_put(struct vb2_dc_buf *buf)
-> +{
-> +	if (buf->coherent_mem) {
-> +		dma_free_attrs(buf->dev, buf->size, buf->cookie,
-> +			       buf->dma_addr, buf->attrs);
-> +		return;
-> +	}
-> +
-> +	if (buf->vaddr)
-> +		dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
-> +	dma_free_noncontiguous(buf->dev, buf->size,
-> +			       buf->dma_sgt, buf->dma_addr);
-> +}
+Doing what David suggests would, as far as I can tell, require another solu=
+tion
+than the existing ioctl method, which this patch changes.
 
-Is there a reason for creating __vb2_dc_put()? I found it more
-a hindrance when reviewing than an advantage. I prefer to have
-it moved to vb2_dc_put, that way all the clean up happens in that
-single function.
+We can think about his suggestion, but it would need to be addressed is a
+separate patch series. (If his suggestion is something that we want to purs=
+ue.)
 
-> +
->  static void vb2_dc_put(void *buf_priv)
->  {
->  	struct vb2_dc_buf *buf = buf_priv;
-> @@ -139,17 +189,52 @@ static void vb2_dc_put(void *buf_priv)
->  		sg_free_table(buf->sgt_base);
->  		kfree(buf->sgt_base);
->  	}
-> -	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
-> -		       buf->attrs);
-> +	__vb2_dc_put(buf);
->  	put_device(buf->dev);
->  	kfree(buf);
->  }
->  
-> +static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
-> +{
-> +	struct vb2_queue *q = buf->vb->vb2_queue;
-> +
-> +	buf->cookie = dma_alloc_attrs(buf->dev,
-> +				      buf->size,
-> +				      &buf->dma_addr,
-> +				      GFP_KERNEL | q->gfp_flags,
-> +				      buf->attrs);
-> +	if (!buf->cookie)
-> +		return -ENOMEM;
-> +	if ((q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
-> +		buf->vaddr = buf->cookie;
-> +	return 0;
-> +}
-> +
-> +static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
-> +{
-> +	struct vb2_queue *q = buf->vb->vb2_queue;
-> +
-> +	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
-> +					       buf->size,
-> +					       buf->dma_dir,
-> +					       GFP_KERNEL | q->gfp_flags,
-> +					       buf->attrs);
-> +	if (!buf->dma_sgt)
-> +		return -ENOMEM;
-> +	/*
-> +	 * For requests that need kernel mapping (DMA_ATTR_NO_KERNEL_MAPPING
 
-I'm confused about this comment: DMA_ATTR_NO_KERNEL_MAPPING is only checked
-in vb2_dc_alloc_coherent(), so is this comment valid?
-
-> +	 * bit is cleared) we perform dma_vmap_noncontiguous() later, in
-> +	 * vb2_dc_vadd().
-
-Typo: vb2_dc_vadd -> vb2_dc_vaddr
-
-> +	 */
-
-So this leaves buf->vaddr to NULL.
-
-Is it possible that after allocating the buffer, the buffer is exported as a
-dma_buf and another device calls dma_buf_ops vb2_dc_dmabuf_ops_vmap, which
-in turn calls dma_buf_map_set_vaddr(map, buf->vaddr); with a NULL buf->vaddr?
-
-I may be barking up the wrong tree here, to really understand it I would have
-to spend more time.
-
-> +	return 0;
-> +}
-> +
->  static void *vb2_dc_alloc(struct vb2_buffer *vb,
->  			  struct device *dev,
->  			  unsigned long size)
->  {
->  	struct vb2_dc_buf *buf;
-> +	int ret;
->  
->  	if (WARN_ON(!dev))
->  		return ERR_PTR(-EINVAL);
-> @@ -159,27 +244,28 @@ static void *vb2_dc_alloc(struct vb2_buffer *vb,
->  		return ERR_PTR(-ENOMEM);
->  
->  	buf->attrs = vb->vb2_queue->dma_attrs;
-> -	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
-> -				      GFP_KERNEL | vb->vb2_queue->gfp_flags,
-> -				      buf->attrs);
-> -	if (!buf->cookie) {
-> -		dev_err(dev, "dma_alloc_coherent of size %ld failed\n", size);
-> -		kfree(buf);
-> -		return ERR_PTR(-ENOMEM);
-> -	}
-> -
-> -	if ((buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
-> -		buf->vaddr = buf->cookie;
-> +	buf->dma_dir = vb->vb2_queue->dma_dir;
-> +	buf->vb = vb;
-> +	buf->coherent_mem = vb->vb2_queue->coherent_mem;
->  
-> +	buf->size = size;
->  	/* Prevent the device from being released while the buffer is used */
->  	buf->dev = get_device(dev);
-> -	buf->size = size;
-> -	buf->dma_dir = vb->vb2_queue->dma_dir;
-> +
-> +	if (buf->coherent_mem)
-> +		ret = vb2_dc_alloc_coherent(buf);
-> +	else
-> +		ret = vb2_dc_alloc_non_coherent(buf);
-> +
-> +	if (ret) {
-> +		dev_err(dev, "dma alloc of size %ld failed\n", size);
-> +		kfree(buf);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
->  
->  	buf->handler.refcount = &buf->refcount;
->  	buf->handler.put = vb2_dc_put;
->  	buf->handler.arg = buf;
-> -	buf->vb = vb;
->  
->  	refcount_set(&buf->refcount, 1);
->  
-> @@ -196,9 +282,12 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
->  		return -EINVAL;
->  	}
->  
-> -	ret = dma_mmap_attrs(buf->dev, vma, buf->cookie,
-> -		buf->dma_addr, buf->size, buf->attrs);
-> -
-> +	if (buf->coherent_mem)
-> +		ret = dma_mmap_attrs(buf->dev, vma, buf->cookie, buf->dma_addr,
-> +				     buf->size, buf->attrs);
-> +	else
-> +		ret = dma_mmap_noncontiguous(buf->dev, vma, buf->size,
-> +					     buf->dma_sgt);
->  	if (ret) {
->  		pr_err("Remapping memory failed, error: %d\n", ret);
->  		return ret;
-> @@ -390,6 +479,9 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
->  	int ret;
->  	struct sg_table *sgt;
->  
-> +	if (!buf->coherent_mem)
-> +		return buf->dma_sgt;
-> +
->  	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
->  	if (!sgt) {
->  		dev_err(buf->dev, "failed to alloc sg table\n");
-> 
-
-Regards,
-
-	Hans
+Kind regards,
+Niklas
