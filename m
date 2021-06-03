@@ -2,156 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B133439A16D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A4839A1A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhFCMvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:51:13 -0400
-Received: from mail-co1nam11on2077.outbound.protection.outlook.com ([40.107.220.77]:50144
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229801AbhFCMvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:51:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n5HHb4edAGYN8hZT5iiIEbCzRtOoeRg4rBtLrOxqkAqgJiKNYSX/Xv4OOLfTH7GM23OZLJzUrBhSrhG6b+ZNxrRR5lABrEr8U+krbHDQCd0yA6WvTLsn5E7QUdftsvI1rU+3ELAPO0xJcQ0MF7rAKLQtsO3IktxJB7s/8NmsJBCR5fM7Tu7i7Is4Ts8+O+1YD0EWZH/PO/R1Vb1VEW+p9aqxEZz9ZP6wXBjopep3LVtB6wdoygB55qovJHon3fN/gkOYGHSi9mMtVH94d1/S6x+AVZnkNjqJ11f7d1ARAQpUfxjKFCJJSihq7ryNuDTw1YMD40yzNcALZUfkZ0IYcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zifp6LGBMcahPPa1/hfQc+nZIll8c0K6BEy0x3TQ0dg=;
- b=bg+EISICkZx4i6o6QC3b2YWdkzxFzHnEle9WvMSldNPq2/fBigaVuf5Ho4Unn6ly58nHB9eSANY+swa1v0akYadI1hNvjpn7zvCwHDU3A+cbbD4vkYri1bXAJGbvFddQXo4psqaYmfOQcKNCD6iKbhX2jjxMJvH6zPUEqX67KdgMXlBMmO25GAJmjy9hyMl6FphlzNoHvSdfei616jucnP6jKTE/iY9fvorhLdPet+q/onPICNHKzPPWMhq1AMzN58cRJdgzuqrHVxbbkzgXIDgWCvRBUSg2zJKMpSG3M6J45af8OyzEEIt8B9glGTn0+hboUyS9HI3sk/RfCy+F7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zifp6LGBMcahPPa1/hfQc+nZIll8c0K6BEy0x3TQ0dg=;
- b=eOfTLePvhwunsxPBiy1hspGckjWsVMCG0RJy+sT08SKoK24OZhTMWaBWk+lPwVc8YZZDRluy2OJBx2A0ZMahiY4bW0nI7Z6juhHlEkfY+WtJQlHNT/ip/zF8sBsR+sxyMe37cDuMGv3esk/dI2tBEPCpOsOIu/0slOJcD4qlnDSl9QBZcXI79Beg0UDAWdPy6SvVsr6BJ9Io3qL/cegl17QvdghVYu8QfHLt3Al9JMd9d6SvmHniMZGrA9PSg99nvB3bA1eKYCedQ9sxAFNxXH1iytgAvo1yzgENmozxd5Mayye3ySjHy0Q+MXI4gA/3Oxmadpldla0gJ7IO6kzIhA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5521.namprd12.prod.outlook.com (2603:10b6:208:1c7::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Thu, 3 Jun
- 2021 12:49:25 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
- 12:49:25 +0000
-Date:   Thu, 3 Jun 2021 09:49:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210603124923.GW1002214@nvidia.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <YLch6zbbYqV4PyVf@yekko>
- <MWHPR11MB1886081DE676B0130D3D19258C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886081DE676B0130D3D19258C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0045.namprd02.prod.outlook.com
- (2603:10b6:207:3d::22) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S230451AbhFCM5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhFCM5R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 08:57:17 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A616C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 05:55:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=7UdYMQLbOKNEyWdQdHae4yIpHvTN3Pwjb5
+        rxl1JhgOQ=; b=soHW2K4jKkidf2E8QwG4NHFhLLMff4etygn1VJ0+Ll0/9Iphny
+        5rqM4tNnY8S3enlcbI7p9PJpjvfNA2gjlZJR5UhmU+8O+5h3B5UVNSXcTp8pZkAY
+        mpVFNE5403IQDveE+Ye/ZL7fJ3MBK6PKUJvlpieJnMi/cUxvRbLUETf1k=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3gqAs0bhgtwmJAA--.45431S2;
+        Thu, 03 Jun 2021 20:55:08 +0800 (CST)
+Date:   Thu, 3 Jun 2021 20:49:42 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] riscv: Factorize xip and !xip kernel address
+ conversion macros
+Message-ID: <20210603204942.703c9cb4@xhacker>
+In-Reply-To: <20210603202748.2775f739@xhacker>
+References: <20210603082749.1256129-1-alex@ghiti.fr>
+        <20210603082749.1256129-2-alex@ghiti.fr>
+        <20210603202748.2775f739@xhacker>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0045.namprd02.prod.outlook.com (2603:10b6:207:3d::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Thu, 3 Jun 2021 12:49:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lommp-001534-Gv; Thu, 03 Jun 2021 09:49:23 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d936492c-efa5-43cc-6250-08d9268e0446
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5521:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5521BBB06271F5D85C5E973EC23C9@BL0PR12MB5521.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GJOFTSgxEN6R2cJdd4nFUL0LYbHVZPifvHI7A6foUYDtVwucT4g7+Tvlf5HV0MNxPd3fu/CSgBrz+RxPj3n2gm8WiUYvq0NCNXQTMo5L7YBQOKSPiYOcdam4l8JZU6gOyKP1Yap1sVCLGBcaodHzfxKQJ0WNXR7TTlJrHkVJFVf1UTQa9E4BdgUSLgrjTt6pGEd6VJyfauuJWyepiHmrDrnnUEaQQfaVK2OXazHkWUl6Cqm8QtPBPZTBDGClzkpqxe2HDIfkXHZ16VqTJL2QkuqwOFIViCzaZ6vWlIJe6y6br83I0wjhxy2rra8/AgRSWYsRw0Le5NKwdns2OSmV9ZX16/71/46eGqWeeVM3yCknv+lNUmtAgEpWLe65L3R6oPNOP1ECiBZ0Ipr9PZHws2YyrO9Tm8lsJNyCqzW0qxPQNNEawXQ3PSLMGywLvfwN1xe8nlIGObCiFNmOiLMCBEULOMwmV34tuQLFpYTiyfPWK9kMdkfDW9rAi6tAjYZO7cv03w+SQg60QZ91ZBS4cmy2AIZ2Vn3b5cebiyBTbtGSZ+Qmz1M0pGKEPkI4Qoe5USgtI6fqYmQfCnCTAyZmfDDc5b6qrGMOl+EXc+QTldY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(366004)(1076003)(54906003)(316002)(7416002)(9746002)(9786002)(6916009)(8936002)(2906002)(8676002)(86362001)(36756003)(5660300002)(26005)(426003)(2616005)(38100700002)(66476007)(66946007)(33656002)(478600001)(66556008)(186003)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NeXT+MO5lRSio/byZYGwc7jgC9OykFWmYgRPXBi2w5W74Fu2+unOwb05nIef?=
- =?us-ascii?Q?lYW6MwUDDB2p8Jp258PSluY0xIEk/r9/+xq1VLNxatkTWnkF5mF6t7Ol4Yvs?=
- =?us-ascii?Q?wcj/ysUnJdkYr9Mcx0wD6AjykNQeD7aZtCD7mcxU6eepzbiVZQzFMLdI1Igl?=
- =?us-ascii?Q?slL7FdSgVV0GTlkXzvoW68d2TXJ50NXhQkQ5vRt9pJ7VpEOBuHrt3R61DLRa?=
- =?us-ascii?Q?tSOjsoDGciBVKDwOtSjhW3BbKGZ0SO3NMNtL1DDXorAAYt7iNYXO+V9yF5ZA?=
- =?us-ascii?Q?mr7YpuJ+lDE6+owK7n/izt4MAnKzEbNECZMISFxdEKZpCglGbJfe7ExlLoG7?=
- =?us-ascii?Q?no7iG6IZ8LvbRG7mniU1SNR/zADfKMZkpbg0r4RhWIkfUer7sC61V+yBt9eM?=
- =?us-ascii?Q?OdAgusjZyf14M0xGlV2Dk2W3lH8L2YT66W+Bi4Ms2ZFNW4vWDG+uHbqB+lDv?=
- =?us-ascii?Q?bkLjNYEJKjs5t486p09UxrkPurQpbYsZWiRqylIL+Nki+uO8N0EcuiJh83mg?=
- =?us-ascii?Q?lvPhmD569O01yLjoT8MbHWL7KvvEdUnFWwuP1Alih0Q/Z/IMIjNXcDZlSt9u?=
- =?us-ascii?Q?HVBRdJGYpgQ8ZFi4/UKbFIfBgYBkjhFaxW9pQ9z95M2v4S4XQoWp9C4RlRxT?=
- =?us-ascii?Q?T+PpehIMzaG/F3wqJgSiZCk2pyxB5JpqCn/mMJxNVlywL5dpcayuRNde1nn3?=
- =?us-ascii?Q?c55C5t8oWGrXOzO9bLDDEQWGdUTpjFlvwnn5LjjAlQKIxlk1tucrCkwEh/to?=
- =?us-ascii?Q?waeM/cDLdJ4pHjHK/tiHTMaLvFcus5g603HjnyBDGAuFYmUCBx9T282Qb3Jv?=
- =?us-ascii?Q?YdwJbyRzPe2/zc4b+b6lCzMU4Y/vH7IPwO+J+fNIFcZ7zEr5lFrHp9xbTpl9?=
- =?us-ascii?Q?kOB8auFyTCN5iWULfXhbMYhAGfzSGOm3Y4groefzzt5NMxdTzmKOR9w1RF2r?=
- =?us-ascii?Q?LH/zP9d/GxbwvQ5bpwbS7gyLnj7oQKSjVzE6fT/e9MIs4m2oCfB3MZ8aZ6aY?=
- =?us-ascii?Q?B3jA8EZLGO3DZg6EBaZlrcy8heD3YxGr+PMMEbHj13rgpOsT1UJqhYalIiqG?=
- =?us-ascii?Q?vjqmpwrn1wmOPdFcV6UlCdpS7FnCVV3+0LdnjLNxqd+f0HsJw/gxHq85Cjlq?=
- =?us-ascii?Q?RttvY/nmim1yNtW1g5JNSV8bArRRGveev3mx1xBqgmnC3MBZrryC5BXBieTY?=
- =?us-ascii?Q?tYUSmja6xTxiL3M5StVFRQVkpd0nMGGOuI0asitGMn5bA8DBgnSF5KPdC4EA?=
- =?us-ascii?Q?wmHhhxztlkJLpW431eYGgrEwq2q22HVYFywWxRpUTC9ynjHtQzpdI9rwonRp?=
- =?us-ascii?Q?Av9m8CUMF3MWZeyBjeeHA+3K?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d936492c-efa5-43cc-6250-08d9268e0446
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 12:49:25.0351
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9eyye7yD39Q/gehwOZuTI1CvalSvseCzzA/B6dZk0y2q8nq3W1NkUbd1jBtITeuy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5521
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygD3gqAs0bhgtwmJAA--.45431S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr43WFyrXw1xuw4xKr13CFg_yoWrXF47pr
+        1kKrnrGFWSqrWY93yjv3Z09as8JwnxW343KrsrK3s5A3Z0yF4xWFyv9wnxuryjqFWjvFsa
+        vryfJr1a9w1jqwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkmb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2rcTDUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 07:17:23AM +0000, Tian, Kevin wrote:
-> > From: David Gibson <david@gibson.dropbear.id.au>
-> > Sent: Wednesday, June 2, 2021 2:15 PM
-> > 
-> [...] 
-> > > An I/O address space takes effect in the IOMMU only after it is attached
-> > > to a device. The device in the /dev/ioasid context always refers to a
-> > > physical one or 'pdev' (PF or VF).
-> > 
-> > What you mean by "physical" device here isn't really clear - VFs
-> > aren't really physical devices, and the PF/VF terminology also doesn't
-> > extent to non-PCI devices (which I think we want to consider for the
-> > API, even if we're not implemenenting it any time soon).
+On Thu, 3 Jun 2021 20:27:48 +0800
+Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+
+> On Thu,  3 Jun 2021 10:27:47 +0200
+> Alexandre Ghiti <alex@ghiti.fr> wrote:
 > 
-> Yes, it's not very clear, and more in PCI context to simplify the 
-> description. A "physical" one here means an PCI endpoint function
-> which has a unique RID. It's more to differentiate with later mdev/
-> subdevice which uses both RID+PASID. Naming is always a hard
-> exercise to me... Possibly I'll just use device vs. subdevice in future
-> versions.
+> > To simplify the kernel address conversion code, make the same definition of
+> > kernel_mapping_pa_to_va and kernel_mapping_va_to_pa compatible for both xip
+> > and !xip kernel by defining XIP_OFFSET to 0 in !xip kernel.
+> > 
+> > Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> > ---
+> >  arch/riscv/include/asm/page.h    | 14 +++-----------
+> >  arch/riscv/include/asm/pgtable.h |  2 ++
+> >  2 files changed, 5 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> > index 6a7761c86ec2..6e004d8fda4d 100644
+> > --- a/arch/riscv/include/asm/page.h
+> > +++ b/arch/riscv/include/asm/page.h
+> > @@ -93,9 +93,7 @@ extern unsigned long va_pa_offset;
+> >  #ifdef CONFIG_64BIT
+> >  extern unsigned long va_kernel_pa_offset;
+> >  #endif
+> > -#ifdef CONFIG_XIP_KERNEL
+> >  extern unsigned long va_kernel_xip_pa_offset;
+> > -#endif
+> >  extern unsigned long pfn_base;
+> >  #define ARCH_PFN_OFFSET		(pfn_base)
+> >  #else
+> > @@ -103,6 +101,7 @@ extern unsigned long pfn_base;
+> >  #ifdef CONFIG_64BIT
+> >  #define va_kernel_pa_offset	0
+> >  #endif
+> > +#define va_kernel_xip_pa_offset 0
+> >  #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
+> >  #endif /* CONFIG_MMU */
+> >  
+> > @@ -110,29 +109,22 @@ extern unsigned long kernel_virt_addr;
+> >  
+> >  #ifdef CONFIG_64BIT
+> >  #define linear_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_pa_offset))
+> > -#ifdef CONFIG_XIP_KERNEL
+> >  #define kernel_mapping_pa_to_va(y)	({						\
+> >  	unsigned long _y = y;								\
+> >  	(_y >= CONFIG_PHYS_RAM_BASE) ?	  
+> 
+> This CONFIG_PHYS_RAM_BASE is only available for XIP, could result in a
+> compiler error for !XIP?
+> 
+> I'm also concerned with the unecessary overhead of kernel_mapping_pa_to_va()
+> for !XIP case, there's a "if" condition branch, and extra symbol: va_kernel_xip_pa_offset
 
-Using PCI words:
+Err, I just found this symobl always exists no matter XIP is enabled or not.
+I will send out a patch for this clean up
 
-A "physical" device is RID matching.
+> 
+> >  		(void *)((unsigned long)(_y) + va_kernel_pa_offset + XIP_OFFSET) :	\
+> >  		(void *)((unsigned long)(_y) + va_kernel_xip_pa_offset);		\
+> >  	})
+> > -#else
+> > -#define kernel_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_kernel_pa_offset))
+> > -#endif
+> >  #define __pa_to_va_nodebug(x)		linear_mapping_pa_to_va(x)
+> >  
+> >  #define linear_mapping_va_to_pa(x)	((unsigned long)(x) - va_pa_offset)
+> > -#ifdef CONFIG_XIP_KERNEL
+> >  #define kernel_mapping_va_to_pa(y) ({						\
+> >  	unsigned long _y = y;							\
+> >  	(_y < kernel_virt_addr + XIP_OFFSET) ?					\
+> >  		((unsigned long)(_y) - va_kernel_xip_pa_offset) :		\
+> >  		((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFSET);	\
+> >  	})  
+> 
+> Similar as kernel_mapping_pa_to_va(), an overhead of "if" condition branch
+> for !XIP and extra va_kernel_xip_pa_offset symbol.
+> 
+> > -#else
+> > -#define kernel_mapping_va_to_pa(x)	((unsigned long)(x) - va_kernel_pa_offset)
+> > -#endif
+> > +
+> >  #define __va_to_pa_nodebug(x)	({						\
+> >  	unsigned long _x = x;							\
+> >  	(_x < kernel_virt_addr) ?						\
+> > @@ -141,7 +133,7 @@ extern unsigned long kernel_virt_addr;
+> >  #else
+> >  #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
+> >  #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+> > -#endif
+> > +#endif /* CONFIG_64BIT */
+> >  
+> >  #ifdef CONFIG_DEBUG_VIRTUAL
+> >  extern phys_addr_t __virt_to_phys(unsigned long x);
+> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> > index bde8ce3bfe7c..d98e931a31e5 100644
+> > --- a/arch/riscv/include/asm/pgtable.h
+> > +++ b/arch/riscv/include/asm/pgtable.h
+> > @@ -77,6 +77,8 @@
+> >  
+> >  #ifdef CONFIG_XIP_KERNEL
+> >  #define XIP_OFFSET		SZ_8M
+> > +#else
+> > +#define XIP_OFFSET		0
+> >  #endif
+> >  
+> >  #ifndef __ASSEMBLY__  
+> 
+> 
 
-A "subdevice" is (RID, PASID) matching.
 
-A "SW mdev" is performing DMA isolation in a device specific way - all
-DMA's from the device are routed to the hypervisor's IOMMU page
-tables.
-
-Jason
