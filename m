@@ -2,193 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7DF399EDF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E34399EE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhFCKYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:24:34 -0400
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:40822 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhFCKYc (ORCPT
+        id S229769AbhFCK1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:27:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50020 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhFCK13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:24:32 -0400
-Received: by mail-vs1-f54.google.com with SMTP id b1so963950vsh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 03:22:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HZj1YmDHRFHyGui3V46aHOAvyRG6PWn5p5QSq+t/Sxs=;
-        b=c3AseZS4j09a0iY+eIx2G1yCBM3n1YMIM2Su5OIsiSTN/0Hu9a25eSDguueFqMp+6n
-         sffvvezMqhSeESoF/q+i2yR2CykLWdfAxzEsrKupN0jm/5+GYUHXNhItE/PQ7vC5O7Nk
-         B6Nqk2MGk3zLt7omFEeNu1+n+cmBAK1aUYJ+gnuOz0ihKecx8GXTyMY9/s8LkGpXD9kr
-         mbp4YQEC1PJzfONt1ftc/tvAT4lDTaNt34sZu/rguamSDBNXctivBMIWEweUrbVBxRw/
-         yW1km3okWALCOWh9o3lWvR2A/fs1mEx+DKFJPThu0Yz6RdyzYSEfUUnxve9OJpfROCUU
-         wh6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HZj1YmDHRFHyGui3V46aHOAvyRG6PWn5p5QSq+t/Sxs=;
-        b=Fy5GlAKy7WpwdFbNwUMB1Qg5PcArzMC146iZFUOSJnLfx+/XH0BHcfmTdcbphk6BoG
-         Mo4FJbcRIHqjAoSFOtzTPlXNeZvGXBwV+rojaLA+PTzkjLCM22YwtIphDeugZ4GSd96R
-         ESqOx/U4WHIhcA8Sv30aiJy0LshgGn3J+pLg/l+82HuSrvvs6VGJjruLnTv01RInNhkR
-         I/Acyzuh3ASIIfzyOfvNLmmxVvYwFalTYYClVLI0r279ru/fOfofPCxbOsEsCHD+9LMQ
-         dlMeR7R6gJJjg8txkWa3G5bAXWfI9F/Y3ed69OVTHmWoeF2xwKmybmT+at6840yCt8z0
-         KiBA==
-X-Gm-Message-State: AOAM533RT5DL+n4tBEkGzq3hc0Xdmoe9gQNWbCQRQCkxXxD4NFMymm3L
-        Qmdqaa3WLo7WHR8dcXtvKXNhCXNeO3LemUOAaiJHSA==
-X-Google-Smtp-Source: ABdhPJydQXTBpcslYdtvzVJQ9UsvRObyMknbITcawugdhN5RTjLW/IJHgRmQSeLQmbwpOFwL8TJ2+ewYjVKMJ8wuLJI=
-X-Received: by 2002:a67:e359:: with SMTP id s25mr2076383vsm.55.1622715693804;
- Thu, 03 Jun 2021 03:21:33 -0700 (PDT)
+        Thu, 3 Jun 2021 06:27:29 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 26CC4219D7;
+        Thu,  3 Jun 2021 10:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622715944;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cZJBCRtT1ELw6dkTzAbcE6+F5s7IW/n8Eb6llqxk028=;
+        b=YTwAYVBjW50Aj5sXbmFNJwKRISGcXcsnTwGmQzxCX8Zb9VNGkffyLae+TFNSsyiWa6UL4/
+        x+RLoz/viKT5pLqqvaSOt4Z2VjPgXkscYiUX0/0aRxLMteR+Z30RKtmb6FNInd8QDfJk6c
+        JR88C57Tx8L92I3I7F4RgZWTTd0p/U8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622715944;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cZJBCRtT1ELw6dkTzAbcE6+F5s7IW/n8Eb6llqxk028=;
+        b=WLafq4mrilE0X6kdHPDQ9nakrEN9DI1cxjIYfKBLcx4OMFFzQGCOi7Xu0x+6awyHWcpRn2
+        XqHV8t+mRDDkM8Ag==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 18FA5A3B91;
+        Thu,  3 Jun 2021 10:25:44 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 408C6DA734; Thu,  3 Jun 2021 12:23:03 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 12:23:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     git@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: git feature request: git blame --ignore-cleanup/--ignore-trivial
+Message-ID: <20210603102303.GX31483@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        git@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-References: <20210603093438.138705-1-ulf.hansson@linaro.org> <20210603093438.138705-5-ulf.hansson@linaro.org>
-In-Reply-To: <20210603093438.138705-5-ulf.hansson@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 3 Jun 2021 12:20:57 +0200
-Message-ID: <CAPDyKFp2dKFQpLMgazXumCxf=FHQ9bdadXUkGsjiAwniF8p2dw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] PM: domains: Drop/restore performance state votes
- for devices at system PM
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Mark Brown, Dmitry Baryshkov
+On Wed, Jun 02, 2021 at 11:20:35AM -0400, Mathieu Desnoyers wrote:
+> Following a discussion with Peter Zijlstra about whether code cleanup
+> and functional changes done to the Linux kernel scheduler belong to separate
+> patches or should be folded together, the argument for folding cleanup
+> and function changes came to be mainly motivated by the current behavior
+> of git blame: code cleanup patches end up burying the important changes so
+> it becomes cumbersome to find them using git blame.
+> 
+> Considering the added value brought by splitting cleanups from functional changes
+> from a maintainer perspective (easier reverts) and from a reviewer perspective
+> (easier to focus on the functional changes), I think it would be good to improve
+> the git tooling to allow easily filtering out the noise from git blame.
+> 
+> Perhaps a new git blame "--ignore-trivial" and/or "--ignore-cleanup" could solve
+> this by filtering out "trivial" and "cleanup" patches from the history it considers.
+> 
+> Tagging patches as trivial and cleanup should be done in the patch commit message
+> (possibly in the title), and enforcing proper tagging of commits is already the
+> responsibility of the maintainer merging those cleanup/trivial commits into the
+> Linux kernel anyway.
+> 
+> Under the hood, I suspect it could use something similar to git log --grep=<pattern>
+> --invert-grep.
+> 
+> This should allow git blame users to easily filter out the noise and focus on the relevant
+> functional changes.
+> 
+> Any maybe the patterns associated to "cleanup" and "trivial" commits should be something
+> that can be configured through a git config file.
 
-On Thu, 3 Jun 2021 at 11:34, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> Recent changes in genpd drops and restore performance state votes for
-> devices during runtime PM.
->
-> For the similar reasons, but to avoid the same kind of boilerplate code in
-> device PM callbacks for system sleep in subsystems/drivers, let's drop and
-> restore performance states votes in genpd for the attached devices during
-> system sleep.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+As long as the subsystem policy is consistent, eg. always split cleanups
+from functional changes, and make the trivial cleanups really obvious
+either from code or mentioned in the changelog, I don't see a need for
+a tooling.
 
-After a second thought, it looks like we maybe should defer to apply
-this final patch of the series. At least until we figured out how to
-address the below issue:
-
-So, I noticed that we have things like "regulator-fixed-domain", that
-uses "required-opps" to enable/disable a regulator through the
-dev_pm_set_performance_state() interface. We likely don't want to drop
-the performance state internally in genpd when genpd_suspend_noirq()
-gets called, for the corresponding struct device for the regulator.
-
-I guess if genpd should drop performance states like $subject patch
-suggest, we need some kind of additional coordination, that allows a
-subsystem/driver to inform genpd when it should avoid it. Or something
-along those lines.
-
-Kind regards
-Uffe
-
-> ---
->
-> Changes in v2:
->         - Rebased.
->         - A few cosmetic changes.
->
-> ---
->  drivers/base/power/domain.c | 9 +++++++++
->  include/linux/pm_domain.h   | 1 +
->  2 files changed, 10 insertions(+)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index e5d97174c254..a33e5b341f3f 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -1171,6 +1171,7 @@ static int genpd_prepare(struct device *dev)
->   */
->  static int genpd_finish_suspend(struct device *dev, bool poweroff)
->  {
-> +       struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
->         struct generic_pm_domain *genpd;
->         int ret = 0;
->
-> @@ -1201,6 +1202,7 @@ static int genpd_finish_suspend(struct device *dev, bool poweroff)
->         }
->
->         genpd_lock(genpd);
-> +       gpd_data->pm_pstate = genpd_drop_performance_state(dev);
->         genpd->suspended_count++;
->         genpd_sync_power_off(genpd, true, 0);
->         genpd_unlock(genpd);
-> @@ -1245,6 +1247,7 @@ static int genpd_resume_noirq(struct device *dev)
->         genpd_lock(genpd);
->         genpd_sync_power_on(genpd, true, 0);
->         genpd->suspended_count--;
-> +       genpd_restore_performance_state(dev, dev_gpd_data(dev)->pm_pstate);
->         genpd_unlock(genpd);
->
->         if (genpd->dev_ops.stop && genpd->dev_ops.start &&
-> @@ -1364,6 +1367,7 @@ static int genpd_restore_noirq(struct device *dev)
->         }
->
->         genpd_sync_power_on(genpd, true, 0);
-> +       genpd_restore_performance_state(dev, dev_gpd_data(dev)->pm_pstate);
->         genpd_unlock(genpd);
->
->         if (genpd->dev_ops.stop && genpd->dev_ops.start &&
-> @@ -1409,23 +1413,28 @@ static void genpd_complete(struct device *dev)
->  static void genpd_switch_state(struct device *dev, bool suspend)
->  {
->         struct generic_pm_domain *genpd;
-> +       struct generic_pm_domain_data *gpd_data;
->         bool use_lock;
->
->         genpd = dev_to_genpd_safe(dev);
->         if (!genpd)
->                 return;
->
-> +       gpd_data = dev_gpd_data(dev);
-> +
->         use_lock = genpd_is_irq_safe(genpd);
->
->         if (use_lock)
->                 genpd_lock(genpd);
->
->         if (suspend) {
-> +               gpd_data->pm_pstate = genpd_drop_performance_state(dev);
->                 genpd->suspended_count++;
->                 genpd_sync_power_off(genpd, use_lock, 0);
->         } else {
->                 genpd_sync_power_on(genpd, use_lock, 0);
->                 genpd->suspended_count--;
-> +               genpd_restore_performance_state(dev, gpd_data->pm_pstate);
->         }
->
->         if (use_lock)
-> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index 21a0577305ef..f6e9dc28621c 100644
-> --- a/include/linux/pm_domain.h
-> +++ b/include/linux/pm_domain.h
-> @@ -199,6 +199,7 @@ struct generic_pm_domain_data {
->         int cpu;
->         unsigned int performance_state;
->         unsigned int rpm_pstate;
-> +       unsigned int pm_pstate;
->         ktime_t next_wakeup;
->         void *data;
->  };
-> --
-> 2.25.1
->
+Going through unrelated cleanups when digging in the git history is
+annoying and I think it's up to maintainers' and developers' decision
+what kind of cleanups are desired (because they make the code better,
+not just because they're trivial).  Mandating some sort of tagging is
+just another burden, if it's not applied consistently it won't be
+reliable so it won't help much.
