@@ -2,196 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4076039AD18
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6000939AD19
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhFCVsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:48:40 -0400
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:44843 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhFCVsk (ORCPT
+        id S230241AbhFCVss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:48:48 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:45018 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhFCVsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:48:40 -0400
-Received: by mail-ed1-f51.google.com with SMTP id u24so8757153edy.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:46:42 -0700 (PDT)
+        Thu, 3 Jun 2021 17:48:47 -0400
+Received: by mail-io1-f50.google.com with SMTP id v9so7882276ion.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GTck8/ilnhv5uosSgtyLA6WlrsI6tA0jlP/FNz1nlLE=;
-        b=RU4tsvAiCEG9n48XtIb1Gv/w3rPoj14le7poY7v9k9CD4M7LCahnANnGGZUanILPGp
-         STH/x0z5xbm4XgMmasA0Y6irr9xLPTagEzAmAYOmuk9wb2nTD5vCI9Q4E/+bMP3v+nIk
-         tfAH6hqwXYy5z22C8jdMKtC39LUFpHGQ9Vj4lN4L4+IOlzph0kWFt90FhqChvSkBgcol
-         X40T97ZOp5lvNgAJnvBWN9iV8HoZEam2iuJTsf0qnosfJcV2J6DL7REmv4UVSpsQBm3c
-         NHR4zDk0K4NE+9JEobJHaxmGKLv350gRSeyrBDTCnbVzkObVrKxhpaSzMZbNwbkG3+A1
-         3WfQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5hYN0m9fjMChEAS/wXbVHaeLqYj0w+avaFBB2KzbaKQ=;
+        b=tbingU8+EXeEyF9wZOnShTdITV3nEcTvbV9wPe5s2qmfZuZ56hVtJ7K6M3DOK8vu6r
+         eey89xG73gilLhDh4yCr3rP2+jFDtlvIEOpnGKFS2Vfo80iatsLcCCo0Wbak2gpCzTCH
+         ktH8ojegJJAbHZ/k9rOrDdqeNwCOHkpnm8NqulaCWygjMhBgAlX6rz6pFEwYzBh2lg9P
+         VRT7TiyvNJ8eJ2MdvDbaPfRe1cIFKszqMlMLWnE/SSdCLsXU7D4QXD/+xMjVfvKXmLiO
+         j9hCih4r/5JYv3i/EAIy80U50T/QAuQwupGY/EeddV7ePS3WbI59uItt3vi7Neu8fRx/
+         ODkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GTck8/ilnhv5uosSgtyLA6WlrsI6tA0jlP/FNz1nlLE=;
-        b=hz6KpToK/yw1TbFuolCJCwrEzNDe4BQKfHTa0Xk5OutR1WuYbyZQfYUf2b9fvItwK+
-         CKSGGelbQyAKEXfLatbuiQlqQdj5rBfbr4UKdaf2JdFlqt3Ns5G7wiDwuIesqK8c7cva
-         5NToFLL3vD4x5R4hZTkMtGVoh0EJT7TeWvFpnvEo9gUc1/+IAY8WL6oiGYWyXgU4JTHR
-         F2yUuC8CZRLf7ecw9sAWVfB35gFjYWsdA7aTqASIgv+CnaZ/HJ61eQk1JXjilrYWaRCR
-         qs6mQbh66RMpb/bmBSqDARAco8npIE5NbM73G0S+AjR8cxJOfHUtwySjziDZQTFB6CTQ
-         CazA==
-X-Gm-Message-State: AOAM530KKeXCCRLRXvFuxniewW4iLVZx0/vKPuRAeVZiRwZIUT77RuNv
-        WFKqTL25Ou70a4Uag4C3OjrGILsLIdlBZ/riBlA=
-X-Google-Smtp-Source: ABdhPJzQJL90TQNcgBQMcqpqPol3eYE9HPSoLZagYF3rowl7DsCWHiJc6mow3nzJZjntUGLujOSKxLXttVxIpWQRfPo=
-X-Received: by 2002:a05:6402:1052:: with SMTP id e18mr1437985edu.366.1622756741709;
- Thu, 03 Jun 2021 14:45:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5hYN0m9fjMChEAS/wXbVHaeLqYj0w+avaFBB2KzbaKQ=;
+        b=oPvLAD9kARLfxCnPfikQ5cGEdB6W4j7D7yzlZUXViH+e7CuFpjyN9d3El1r9MlAo9S
+         1PvXhwc5qvrC9dKWfSUUXPphptQnW3jTYltZjA60723LpBCYKwfa7UbR7ZQcpwOsOhe4
+         m1oIQ7IoPGDOdiVnoUD/fqUZzHW32+rSY4F1s9FuQj2GbSQWQy3igrQI13XWqrLyyfWA
+         F3kCQ1Ffeu+fMWr/PPHn9ZOWfoZH2TjEFwcuTP1AnBW1rUJrYDE3G5sJjnNAOweycyyE
+         NyS3dItYdnC7bBYy/eSPdRHV/8oAlbK8AbeqrdXKwEf/STYZO/YxP+kan8eoeuq66xqY
+         JEaQ==
+X-Gm-Message-State: AOAM5300GFzULI15eqzVlVGOY/4UM1pTG1/fdQYA21j115/OzucxEFt0
+        3qns0Db2TpE2y/2TQqgUEldf2QX4nDdeC/Ey
+X-Google-Smtp-Source: ABdhPJyPsE8yU5GjdLW7Mi8jJ56LaqeAkeazSQlhqSf6mCpOFgtsLuN/A9Wn7lCiX3b3qZssinMOLA==
+X-Received: by 2002:a6b:3b4c:: with SMTP id i73mr1079942ioa.149.1622756761477;
+        Thu, 03 Jun 2021 14:46:01 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id z8sm2234354ioi.38.2021.06.03.14.46.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 14:46:01 -0700 (PDT)
+Subject: Re: [greybus-dev] [PATCH] staging: greybus: fixed the coding style,
+ labels should not be indented.
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Manikishan Ghantasala' <manikishanghantasala@gmail.com>,
+        Alex Elder <elder@ieee.org>
+Cc:     Alex Elder <elder@kernel.org>,
+        "greybus-dev@lists.linaro.org" <greybus-dev@lists.linaro.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        Johan Hovold <johan@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
+ <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
+ <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
+ <792dd57c0ef8454497e5ae4c4534dea2@AcuMS.aculab.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <e1c36fb4-ab72-0cce-f6fe-3f04125dae28@linaro.org>
+Date:   Thu, 3 Jun 2021 16:45:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011405510.2148@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2106011405510.2148@eggly.anvils>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 3 Jun 2021 14:45:30 -0700
-Message-ID: <CAHbLzkrUcNhGDmPstSNHhwbdoo3z2B=v-zb7__M3RqHL-Ct-EA@mail.gmail.com>
-Subject: Re: [PATCH 2/7] mm/thp: try_to_unmap() use TTU_SYNC for safe DEBUG_VM splitting
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <792dd57c0ef8454497e5ae4c4534dea2@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 2:07 PM Hugh Dickins <hughd@google.com> wrote:
->
-> Stressing huge tmpfs often crashed on unmap_page()'s VM_BUG_ON_PAGE
-> (!unmap_success): with dump_page() showing mapcount:1, but then its
-> raw struct page output showing _mapcount ffffffff i.e. mapcount 0.
->
-> And even if that particular VM_BUG_ON_PAGE(!unmap_success) is removed,
-> it is immediately followed by a VM_BUG_ON_PAGE(compound_mapcount(head)),
-> and further down an IS_ENABLED(CONFIG_DEBUG_VM) total_mapcount BUG():
-> all indicative of some mapcount difficulty in development here perhaps.
-> But the !CONFIG_DEBUG_VM path handles the failures correctly and silently.
->
-> I believe the problem is that once a racing unmap has cleared pte or pmd,
-> try_to_unmap_one() may skip taking the page table lock, and emerge from
-> try_to_unmap() before the racing task has reached decrementing mapcount.
->
-> Instead of abandoning the unsafe VM_BUG_ON_PAGE(), and the ones that
-> follow, use PVMW_SYNC in try_to_unmap_one() in this case: adding TTU_SYNC
-> to the options, and passing that from unmap_page() when CONFIG_DEBUG_VM=y.
-> It could be passed in the non-debug case too, but that would sometimes add
-> a little overhead, whereas it's rare for this race to result in failure.
+On 6/3/21 4:22 PM, David Laight wrote:
+> From: Manikishan Ghantasala
+>> Sent: 02 June 2021 15:28
+>>
+>> I agree those are called bit-field member names rather than labels.
+>> But the reason I mentioned is because the ./scripts/checkpatch.pl
+>> gave out a warning saying "labels should not be indented".
+>>
+>> Sorry for the confusion in the name I referred to. So, I think this
+>> change is needed as I feel this is not following the coding-style by
+>> having indent before the width for bit field member. I went through
+>> other places in source code to make sure this is correct, and sent the
+>> patch after confirmation.
+>>
+>> Regards,
+>> Manikishan Ghantasala
+>>
+>> On Wed, 2 Jun 2021 at 19:13, Alex Elder <elder@ieee.org> wrote:
+>>>
+>>> On 6/2/21 8:36 AM, sh4nnu wrote:
+>>>> From: Manikishan Ghantasala <manikishanghantasala@gmail.com>
+>>>>
+>>>> staging: greybus: gpio.c: Clear coding-style problem
+>>>> "labels should not be indented" by removing indentation.
+>>>
+>>> These are not labels.
+>>>
+>>> I don't really understand what you're doing here.
+>>>
+>>> Can you please explain why you think this needs changing?
+>>>
+>>>                                          -Alex
+>>>
+>>>> Signed-off-by: Manikishan Ghantasala <manikishanghantasala@gmail.com>
+>>>> ---
+>>>>    drivers/staging/greybus/gpio.c | 6 +++---
+>>>>    1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/staging/greybus/gpio.c b/drivers/staging/greybus/gpio.c
+>>>> index 7e6347fe93f9..4661f4a251bd 100644
+>>>> --- a/drivers/staging/greybus/gpio.c
+>>>> +++ b/drivers/staging/greybus/gpio.c
+>>>> @@ -20,9 +20,9 @@
+>>>>    struct gb_gpio_line {
+>>>>        /* The following has to be an array of line_max entries */
+>>>>        /* --> make them just a flags field */
+>>>> -     u8                      active:    1,
+>>>> -                             direction: 1,   /* 0 = output, 1 = input */
+>>>> -                             value:     1;   /* 0 = low, 1 = high */
+>>>> +     u8                      active:1,
+>>>> +                             direction:1,    /* 0 = output, 1 = input */
+>>>> +                             value:1;        /* 0 = low, 1 = high */
+> 
+> Why are you even using bitfields at all?
+> If you cared about the structure size you'd not have a byte-size pad here.
 
-The above statement makes me feel this patch is just to relieve the
-VM_BUG_ON, but my patch already changed it to VM_WARN, the race sounds
-acceptable (at least not fatal) and the splitting code can handle the
-failure case as well. So I'm wondering if we still need this patch or
-not if it is just used to close the race when CONFIG_DEBUG_VM=y.
+Apparently I committed this, and it was part of the very first
+Greybus drivers...
 
->
-> mm/memory-failure.c:hwpoison_user_mappings() should probably use the new
-> TTU_SYNC option too, just in case this race coincides with its attempts to
-> unmap a failing page (THP or not); but this commit does not add that.
->
-> Fixes: fec89c109f3a ("thp: rewrite freeze_page()/unfreeze_page() with generic rmap walkers")
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  include/linux/rmap.h |  3 ++-
->  mm/huge_memory.c     |  4 ++++
->  mm/page_vma_mapped.c |  8 ++++++++
->  mm/rmap.c            | 17 ++++++++++++++++-
->  4 files changed, 30 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index def5c62c93b3..891599a4cb8d 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -97,7 +97,8 @@ enum ttu_flags {
->                                          * do a final flush if necessary */
->         TTU_RMAP_LOCKED         = 0x80, /* do not grab rmap lock:
->                                          * caller holds it */
-> -       TTU_SPLIT_FREEZE        = 0x100,                /* freeze pte under splitting thp */
-> +       TTU_SPLIT_FREEZE        = 0x100, /* freeze pte under splitting thp */
-> +       TTU_SYNC                = 0x200, /* avoid racy checks with PVMW_SYNC */
->  };
->
->  #ifdef CONFIG_MMU
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 9fb7b47da87e..305f709a7aca 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2357,6 +2357,10 @@ static void unmap_page(struct page *page)
->         if (PageAnon(page))
->                 ttu_flags |= TTU_SPLIT_FREEZE;
->
-> +       /* Make sure that the BUGs will not bite */
-> +       if (IS_ENABLED(CONFIG_DEBUG_VM))
-> +               ttu_flags |= TTU_SYNC;
-> +
->         unmap_success = try_to_unmap(page, ttu_flags);
->         VM_BUG_ON_PAGE(!unmap_success, page);
->  }
-> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> index 2cf01d933f13..b45d22738b45 100644
-> --- a/mm/page_vma_mapped.c
-> +++ b/mm/page_vma_mapped.c
-> @@ -212,6 +212,14 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
->                         pvmw->ptl = NULL;
->                 }
->         } else if (!pmd_present(pmde)) {
-> +               /*
-> +                * If PVMW_SYNC, take and drop THP pmd lock so that we
-> +                * cannot return prematurely, while zap_huge_pmd() has
-> +                * cleared *pmd but not decremented compound_mapcount().
-> +                */
-> +               if ((pvmw->flags & PVMW_SYNC) &&
-> +                   PageTransCompound(pvmw->page))
-> +                       spin_unlock(pmd_lock(mm, pvmw->pmd));
->                 return false;
->         }
->         if (!map_pte(pvmw))
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 693a610e181d..07811b4ae793 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1405,6 +1405,15 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
->         struct mmu_notifier_range range;
->         enum ttu_flags flags = (enum ttu_flags)(long)arg;
->
-> +       /*
-> +        * When racing against e.g. zap_pte_range() on another cpu,
-> +        * in between its ptep_get_and_clear_full() and page_remove_rmap(),
-> +        * try_to_unmap() may return false when it is about to become true,
-> +        * if page table locking is skipped: use TTU_SYNC to wait for that.
-> +        */
-> +       if (flags & TTU_SYNC)
-> +               pvmw.flags = PVMW_SYNC;
-> +
->         /* munlock has nothing to gain from examining un-locked vmas */
->         if ((flags & TTU_MUNLOCK) && !(vma->vm_flags & VM_LOCKED))
->                 return true;
-> @@ -1777,7 +1786,13 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
->         else
->                 rmap_walk(page, &rwc);
->
-> -       return !page_mapcount(page) ? true : false;
-> +       /*
-> +        * When racing against e.g. zap_pte_range() on another cpu,
-> +        * in between its ptep_get_and_clear_full() and page_remove_rmap(),
-> +        * try_to_unmap() may return false when it is about to become true,
-> +        * if page table locking is skipped: use TTU_SYNC to wait for that.
-> +        */
-> +       return !page_mapcount(page);
->  }
->
->  /**
-> --
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
->
+These would be better defined as Booleans; there are others in
+the same structure after all.  That would have avoided the
+checkpatch problem in the first place.
+
+I was probably thinking *a little* about structure size when
+defining it this way, but I agree with you, the bit-fields
+don't really add value.
+
+> Since I doubt many copies of this structure get allocated the
+> (typical) increase in code size for the bitfields will also
+> exceed any size saving.
+> 
+> Isn't the kernel style also to repeat the type for every field?
+
+I see that style in many places, but not all.  I personally
+like it this way--provided it's done in a way that makes
+it clear where the integral boundaries are.
+
+					-Alex
+
+> 	David
+> 
+> 
+>>>>        u16                     debounce_usec;
+>>>>
+>>>>        u8                      irq_type;
+>>>>
+>>>
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> _______________________________________________
+> greybus-dev mailing list
+> greybus-dev@lists.linaro.org
+> https://lists.linaro.org/mailman/listinfo/greybus-dev
+> 
+
