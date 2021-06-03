@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7088B399FF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF02F39A001
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhFCLkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:40:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229697AbhFCLkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:40:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AED63613AC;
-        Thu,  3 Jun 2021 11:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622720283;
-        bh=XYkSTdSwKrmOV+bXH1aSs5Xi0fdya8CkNHPLXC3OmxQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1urpEkwAZ7bfc2p7qpc/0yOaPN+wqVywQz30wgfYHIwSjUXFLOvBKHt+a/mukfeCn
-         pWOf9zj3ja+judDLFY6djQNBJdM6l8LNO4JecwQHt9NSy5FDRyFmRkh0AKuC72W+FM
-         oTPx7B6uEL7vP5Wcxkm73u6X2k+CAMRKRgB8N9HU=
-Date:   Thu, 3 Jun 2021 13:38:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "tiantao (H)" <tiantao6@huawei.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tian Tao <tiantao6@hisilicon.com>, rafael@kernel.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        jonathan.cameron@huawei.com, song.bao.hua@hisilicon.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
+        id S229850AbhFCLn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhFCLn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:43:57 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474F8C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 04:41:58 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id f11so8318316lfq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zoxuOrzcIzq8RN+/4nBQ/3k2NzacgB/FA90ZDc0iE2g=;
+        b=B0B/U0Te+oqbPP7glz7wROMs2i1Yf6OIFxaf66AT+lvKHMBwMbKBNs+49GdQYtgSL2
+         lmmuxPD4p/aXsOBVDMiuLF4JIeLWsLQFWUiYrxQCyY0/T/BL49JNN0hyHhqsYvY6g9I5
+         yKv9tF7FsCeDqKvgCgzBATkoTHw9N97uuXLP6s9IoKXB7iGTtOPqTXJ2ZTZWHgw/NnIK
+         5aSZvw9GsU3XDkKfdMIsDn7LlawJXxwFCDpNst9WieGgF/qv9zUj49JIRbcebbNVrJIQ
+         GMuNIJlee2UlF/jP9qzRgQGDoVYwqeh/VZJ0IKwEDqHhecSvKvQIdEUaoTIKUWVgB9pU
+         34ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zoxuOrzcIzq8RN+/4nBQ/3k2NzacgB/FA90ZDc0iE2g=;
+        b=tJ4iaHfvnNbP33tr6+Tn41rPhOdPf/ZwyFe+EFIjUJcr8nphOsh0Ea0uaxlCz2s3Gr
+         lcVrO7mUUmirXkiBORxmLW3N7e1F5hQ01hgz7jdxJf9sUtgZlMZA/HMYGvc2nxRBdRiO
+         wtsI7Y53iSyQgY9OpGHUDy/D2cpoxyPPayCmU5ENXW4gVAg5Y7R/YkYtlNi2DgymeteZ
+         TuF5sFTbz/LStEErd3BKsn1xFt6sSyF90G4krhOqxhmNbNmaydaqX1iHIx0kA0H2gPCs
+         K2Yjp2VOwwCsU6thEJpbs4PEu/j4xp6FlVFpuq1NYlJnSROVZbAmvCqdm1isCH0QG9Y0
+         pQSw==
+X-Gm-Message-State: AOAM530F1vSExLGT7gFfDO9PrInT9O9w2KXPT7QjKf6Av1Nn9jK2yNPQ
+        B9kxv3XrbwDY7B6LylFmDronXQ==
+X-Google-Smtp-Source: ABdhPJyz5OLV8CIcK4HPiGR3l5v2ioTxV7ylqEAakz11SE9zOgXl2uDMFOyJEw3duhJCRIVjKNwTRQ==
+X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr1028542lfv.114.1622720516606;
+        Thu, 03 Jun 2021 04:41:56 -0700 (PDT)
+Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
+        by smtp.gmail.com with ESMTPSA id u24sm295117lfc.162.2021.06.03.04.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 04:41:56 -0700 (PDT)
+From:   Odin Ugedal <odin@uged.al>
+To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v3 1/3] lib: bitmap: introduce bitmap_print_to_buf
-Message-ID: <YLi/GJ1WDmxS71ab@kroah.com>
-References: <1622712162-7028-1-git-send-email-tiantao6@hisilicon.com>
- <1622712162-7028-2-git-send-email-tiantao6@hisilicon.com>
- <YLil8ZOpQSsAB5i0@smile.fi.intel.com>
- <95f5e01d-79c1-28f3-f27b-bee4398308de@huawei.com>
- <YLizweXUvRgB1l9I@kroah.com>
- <0a43ca2a-7563-0bd6-fd1f-3fef208d71ef@huawei.com>
- <YLi+5dOGIa6bkJoF@kroah.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Odin Ugedal <odin@uged.al>
+Subject: [PATCH v2] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+Date:   Thu,  3 Jun 2021 13:38:47 +0200
+Message-Id: <20210603113847.163512-1-odin@uged.al>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YLi+5dOGIa6bkJoF@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 01:37:09PM +0200, Greg KH wrote:
-> On Thu, Jun 03, 2021 at 07:21:30PM +0800, tiantao (H) wrote:
-> > 
-> > 在 2021/6/3 18:49, Greg KH 写道:
-> > > On Thu, Jun 03, 2021 at 06:33:25PM +0800, tiantao (H) wrote:
-> > > > 在 2021/6/3 17:50, Andy Shevchenko 写道:
-> > > > > On Thu, Jun 03, 2021 at 05:22:40PM +0800, Tian Tao wrote:
-> > > > > > New API bitmap_print_to_buf() with bin_attribute to avoid maskp
-> > > > > > exceeding PAGE_SIZE. bitmap_print_to_pagebuf() is a special case
-> > > > > > of bitmap_print_to_buf(), so in bitmap_print_to_pagebuf() call
-> > > > > > bitmap_print_to_buf().
-> > > > > ...
-> > > > > 
-> > > > > >    /**
-> > > > > > + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
-> > > > > > + * @list: indicates whether the bitmap must be list
-> > > > > > + * @buf: the kernel space buffer to read to
-> > > > > > + * @maskp: pointer to bitmap to convert
-> > > > > > + * @nmaskbits: size of bitmap, in bits
-> > > > > > + * @off: offset in data buffer below
-> > > > > > + * @count: the maximum number of bytes to print
-> > > > > > + *
-> > > > > > + * The role of bitmap_print_to_buf() and bitmap_print_to_pagebuf() is
-> > > > > > + * the same, the difference is that buf of bitmap_print_to_buf()
-> > > > > > + * can be more than one pagesize.
-> > > > > > + */
-> > > > > > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> > > > > > +			int nmaskbits, loff_t off, size_t count)
-> > > > > > +{
-> > > > > > +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> > > > > > +	ssize_t size;
-> > > > > > +	void *data;
-> > > > > > +
-> > > > > > +	if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
-> > > > > > +		return scnprintf(buf, count, fmt, nmaskbits, maskp);
-> > > > > > +
-> > > > > > +	data = kasprintf(GFP_KERNEL, fmt, nmaskbits, maskp);
-> > > > > > +	if (!data)
-> > > > > > +		return -ENOMEM;
-> > > > > > +
-> > > > > > +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
-> > > > > Are you sure you have put parameters in the correct order?
-> > > > yes, I already test it.
-> > > Great, can you add the test to the patch series as well so that we can
-> > > make sure it does not break in the future?
-> > How do I do this?  Do I need to provide a kselftest ?
-> 
-> That would be wonderful, great idea!
+This fixes an issue where fairness is decreased since cfs_rq's can
+end up not being decayed properly. For two sibling control groups with
+the same priority, this can often lead to a load ratio of 99/1 (!!).
 
-Or, as this is an internal kernel api, using kunit might be easier.
+This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
+will be removed from the leaf list. When they initial cfs_rq is
+unthrottled, it will currently only re add descendant cfs_rq's if they
+have one or more entities enqueued. This is not a perfect heuristic.
 
-Obviously you tested this somehow, so just take advantage of the code
-you wrote for that.
+Insted, we insert all cfs_rq's that contain one or more enqueued
+entities, or contributes to the load of the task group.
 
-thanks,
+Can often lead to sutiations like this for equally weighted control
+groups:
 
-greg k-h
+$ ps u -C stress
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
+root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
+
+Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
+Signed-off-by: Odin Ugedal <odin@uged.al>
+---
+
+Original thread: https://lore.kernel.org/lkml/20210518125202.78658-3-odin@uged.al/
+Changes since v1:
+ - Replaced cfs_rq field with using tg_load_avg_contrib
+ - Went from 3 to 1 pathces; one is merged and one is replaced
+   by a new patchset.
+
+ kernel/sched/fair.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 794c2cb945f8..0f1b39ca5ca8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4719,8 +4719,11 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+ 		cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+ 					     cfs_rq->throttled_clock_task;
+ 
+-		/* Add cfs_rq with already running entity in the list */
+-		if (cfs_rq->nr_running >= 1)
++		/*
++		 * Add cfs_rq with tg load avg contribution or one or more
++		 * already running entities to the list
++		 */
++		if (cfs_rq->tg_load_avg_contrib || cfs_rq->nr_running)
+ 			list_add_leaf_cfs_rq(cfs_rq);
+ 	}
+ 
+-- 
+2.31.1
+
