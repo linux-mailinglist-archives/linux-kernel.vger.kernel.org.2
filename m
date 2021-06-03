@@ -2,526 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF5239A07C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A44039A080
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhFCMEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:04:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:53146 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFCMEs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:04:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622721783; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=LwWJKZ+cHn2LadVqKVHCnDNHRfWdj1f7DXFT7zSHzZc=; b=xKUvxa7kOBQ/b3l9yYu4lXYFrpftpCN9+1Izfj5UfK2D5K1H3DjDshMtRymxVux/bjLj1Knr
- Gf76SJhHL35hGzBvkdHEfU/L816B+8s2YssITEh8wC6DUzsep8r40QHyx4xPfrx27KWLQ4+0
- I6tpAruH0bl1VLmxqfuE+/0+IyY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60b8c1b3ed59bf69ccc4cf0a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 11:49:07
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5BA56C433F1; Thu,  3 Jun 2021 11:49:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93929C433F1;
-        Thu,  3 Jun 2021 11:49:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93929C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, greg@kroah.com,
-        glittao@gmail.com
-Cc:     vinmenon@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
-Subject: [PATCH v9] mm: slub: move sysfs slab alloc/free interfaces to debugfs
-Date:   Thu,  3 Jun 2021 17:18:52 +0530
-Message-Id: <1622720932-5579-1-git-send-email-faiyazm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229975AbhFCMGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:06:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:39602 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229747AbhFCMGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 08:06:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B0451063;
+        Thu,  3 Jun 2021 05:04:23 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 644973F774;
+        Thu,  3 Jun 2021 05:04:22 -0700 (PDT)
+Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Felipe Balbi <balbi@kernel.org>, p.zabel@pengutronix.de,
+        linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        sanm@codeaurora.org
+References: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
+ <87r1hjcvf6.fsf@kernel.org> <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
+ <YLi/u9J5f+nQO4Cm@kroah.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com>
+Date:   Thu, 3 Jun 2021 13:05:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
+MIME-Version: 1.0
+In-Reply-To: <YLi/u9J5f+nQO4Cm@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_calls and free_calls implementation in sysfs have two issues,
-one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-to "one value per file" rule.
+Hi Greg,
 
-To overcome this issues, move the alloc_calls and free_calls implemeation
-to debugfs.
+On 6/3/21 12:40 PM, Greg Kroah-Hartman wrote:
+> On Thu, Jun 03, 2021 at 11:41:45AM +0100, Alexandru Elisei wrote:
+>> Hello Felipe,
+>>
+>> Thank you for having a look!
+>>
+>> On 6/3/21 7:30 AM, Felipe Balbi wrote:
+>>> Hi,
+>>>
+>>> Alexandru Elisei <alexandru.elisei@arm.com> writes:
+>>>> I've been seeing the following panic when shutting down my rockpro64:
+>>>>
+>>>> [ï¿½ï¿½ 21.459064] xhci-hcd xhci-hcd.0.auto: USB bus 5 deregistered
+>>>> [ï¿½ï¿½ 21.683077] Unable to handle kernel NULL pointer dereference at virtual address
+>>>> 00000000000000a0
+>>>> [ï¿½ï¿½ 21.683858] Mem abort info:
+>>>> [ï¿½ï¿½ 21.684104]ï¿½ï¿½ ESR = 0x96000004
+>>>> [ï¿½ï¿½ 21.684375]ï¿½ï¿½ EC = 0x25: DABT (current EL), IL = 32 bits
+>>>> [ï¿½ï¿½ 21.684841]ï¿½ï¿½ SET = 0, FnV = 0
+>>>> [ï¿½ï¿½ 21.685111]ï¿½ï¿½ EA = 0, S1PTW = 0
+>>>> [ï¿½ï¿½ 21.685389] Data abort info:
+>>>> [ï¿½ï¿½ 21.685644]ï¿½ï¿½ ISV = 0, ISS = 0x00000004
+>>>> [ï¿½ï¿½ 21.686024]ï¿½ï¿½ CM = 0, WnR = 0
+>>>> [ï¿½ï¿½ 21.686288] user pgtable: 4k pages, 48-bit VAs, pgdp=000000000757a000
+>>>> [ï¿½ï¿½ 21.686853] [00000000000000a0] pgd=0000000000000000, p4d=0000000000000000
+>>>> [ï¿½ï¿½ 21.687452] Internal error: Oops: 96000004EEMPT SMP
+>>>> [ï¿½ï¿½ 21.687941] Modules linked in:
+>>>> [ï¿½ï¿½ 21.688214] CPU: 4 PID: 1 Comm: shutdown Not tainted
+>>>> 5.12.0-rc7-00262-g568262bf5492 #33
+>>>> [ï¿½ï¿½ 21.688915] Hardware name: Pine64 RockPro64 v2.0 (DT)
+>>>> [ï¿½ï¿½ 21.689357] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+>>>> [ï¿½ï¿½ 21.689884] pc : down_read_interruptible+0xec/0x200
+>>>> [ï¿½ï¿½ 21.690321] lr : simple_recursive_removal+0x48/0x280
+>>>> [ï¿½ï¿½ 21.690761] sp : ffff800011f4b940
+>>>> [ï¿½ï¿½ 21.691053] x29: ffff800011f4b940 x28: ffff000000809b40
+>>>> [ï¿½ï¿½ 21.691522] x27: ffff000000809b98 x26: ffff8000114f5170
+>>>> [ï¿½ï¿½ 21.691990] x25: 00000000000000a0 x24: ffff800011e84030
+>>>> [ï¿½ï¿½ 21.692459] x23: 0000000000000080 x22: 0000000000000000
+>>>> [ï¿½ï¿½ 21.692927] x21: ffff800011ecaa5c x20: ffff800011ecaa60
+>>>> [ï¿½ï¿½ 21.693395] x19: ffff000000809b40 x18: ffffffffffffffff
+>>>> [ï¿½ï¿½ 21.693863] x17: 0000000000000000 x16: 0000000000000000
+>>>> [ï¿½ï¿½ 21.694331] x15: ffff800091f4ba6d x14: 0000000000000004
+>>>> [ï¿½ï¿½ 21.694799] x13: 0000000000000000 x12: 0000000000000020
+>>>> [ï¿½ï¿½ 21.695267] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
+>>>> [ï¿½ï¿½ 21.695735] x9 : 6f6c746364716e62 x8 : 7f7f7f7f7f7f7f7f
+>>>> [ï¿½ï¿½ 21.696203] x7 : fefefeff6364626d x6 : 0000000000001bd8
+>>>> [ï¿½ï¿½ 21.696671] x5 : 0000000000000000 x4 : 0000000000000000
+>>>> [ï¿½ï¿½ 21.697138] x3 : 00000000000000a0 x2 : 0000000000000001
+>>>> [ï¿½ï¿½ 21.697606] x1 : 0000000000000000 x0 : 00000000000000a0
+>>>> [ï¿½ï¿½ 21.698075] Call trace:
+>>>> [ï¿½ï¿½ 21.698291]ï¿½ down_read_interruptible+0xec/0x200
+>>>> [ï¿½ï¿½ 21.698690]ï¿½ debugfs_remove+0x60/0x84
+>>>> [ï¿½ï¿½ 21.699016]ï¿½ dwc3_debugfs_exit+0x1c/0x6c
+>>>> [ï¿½ï¿½ 21.699363]ï¿½ dwc3_remove+0x34/0x1a0
+>>>> [ï¿½ï¿½ 21.699672]ï¿½ platform_remove+0x28/0x60
+>>>> [ï¿½ï¿½ 21.700005]ï¿½ __device_release_driver+0x188/0x230
+>>>> [ï¿½ï¿½ 21.700414]ï¿½ device_release_driver+0x2c/0x44
+>>>> [ï¿½ï¿½ 21.700791]ï¿½ bus_remove_device+0x124/0x130
+>>>> [ï¿½ï¿½ 21.701154]ï¿½ device_del+0x168/0x420
+>>>> [ï¿½ï¿½ 21.701462]ï¿½ platform_device_del.part.0+0x1c/0x90
+>>>> [ï¿½ï¿½ 21.701877]ï¿½ platform_device_unregister+0x28/0x44
+>>>> [ï¿½ï¿½ 21.702291]ï¿½ of_platform_device_destroy+0xe8/0x100
+>>>> [ï¿½ï¿½ 21.702716]ï¿½ device_for_each_child_reverse+0x64/0xb4
+>>>> [ï¿½ï¿½ 21.703153]ï¿½ of_platform_depopulate+0x40/0x84
+>>>> [ï¿½ï¿½ 21.703538]ï¿½ __dwc3_of_simple_teardown+0x20/0xd4
+>>>> [ï¿½ï¿½ 21.703945]ï¿½ dwc3_of_simple_shutdown+0x14/0x20
+>>>> [ï¿½ï¿½ 21.704337]ï¿½ platform_shutdown+0x28/0x40
+>>>> [ï¿½ï¿½ 21.704683]ï¿½ device_shutdown+0x158/0x330
+>>>> [ï¿½ï¿½ 21.705029]ï¿½ kernel_power_off+0x38/0x7c
+>>>> [ï¿½ï¿½ 21.705372]ï¿½ __do_sys_reboot+0x16c/0x2a0
+>>>> [ï¿½ï¿½ 21.705719]ï¿½ __arm64_sys_reboot+0x28/0x34
+>>>> [ï¿½ï¿½ 21.706074]ï¿½ el0_svc_common.constprop.0+0x60/0x120
+>>>> [ï¿½ï¿½ 21.706499]ï¿½ do_el0_svc+0x28/0x94
+>>>> [ï¿½ï¿½ 21.706794]ï¿½ el0_svc+0x2c/0x54
+>>>> [ï¿½ï¿½ 21.707067]ï¿½ el0_sync_handler+0xa4/0x130
+>>>> [ï¿½ï¿½ 21.707414]ï¿½ el0_sync+0x170/0x180
+>>>> [ï¿½ï¿½ 21.707711] Code: c8047c62 35ffff84 17fffe5f f9800071 (c85ffc60)
+>>>> [ï¿½ï¿½ 21.708250] ---[ end trace 5ae08147542eb468 ]---
+>>>> [ï¿½ï¿½ 21.708667] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+>>>> [ï¿½ï¿½ 21.709456] Kernel Offset: disabled
+>>>> [ï¿½ï¿½ 21.709762] CPU features: 0x00240022,2100600c
+>>>> [ï¿½ï¿½ 21.710146] Memory Limit: 2048 MB
+>>>> [ï¿½ï¿½ 21.710443] ---[ end Kernel panic - not syncing: Attempted to kill init!
+>>>> exitcode=0x0000000b ]---
+>>>>
+>>>> I've been able to bisect the panic and the offending commit is 568262bf5492 ("usb:
+>>>> dwc3: core: Add shutdown callback for dwc3"). I can provide more diagnostic
+>>>> information if needed and I can help test the fix.
+>>> if you simply revert that commit in HEAD, does the problem really go
+>>> away?
+>> Kernel built from commit 324c92e5e0ee, which is the kernel tip today, the panic is
+>> there. Reverting the offending commit, 568262bf5492, makes the panic disappear.
+> Want to send a revert so I can take it now?
 
-Debugfs cache will be created if SLAB_STORE_USER flag is set.
+I can send a revert, but Felipe was asking Sandeep (the commit author) for a fix,
+so I'll leave it up to Felipe to decide how to proceed.
 
-Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-to be inline with what it does.
+Thanks,
 
-Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
----
-changes in v9:
-	- Move the debugfs_slab_release to mm/slab.h.
-	- Remove the global loc_track variable and using seq_file private.
-
-changes in v8:
-	- https://lore.kernel.org/linux-mm/1622542057-14632-1-git-send-email-faiyazm@codeaurora.org/
-	
-changes in V7:
-	- https://lore.kernel.org/linux-mm/1621928285-751-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v6:
-	- https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v5:
-	- https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v4:
-	- https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v3:
-	- https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
-
-changes in v2:
-	- https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
-
-changes in v1
-	- https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
-
- mm/slab.h        |   8 ++
- mm/slab_common.c |   2 +
- mm/slub.c        | 312 ++++++++++++++++++++++++++++++++++++++-----------------
- 3 files changed, 229 insertions(+), 93 deletions(-)
-
-diff --git a/mm/slab.h b/mm/slab.h
-index 18c1927..3b60925 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -630,6 +630,14 @@ static inline bool slab_want_init_on_free(struct kmem_cache *c)
- 	return false;
- }
- 
-+#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
-+void debugfs_slab_release(struct kmem_cache *);
-+#else
-+static inline void debugfs_slab_release(struct kmem_cache *s)
-+{
-+}
-+#endif
-+
- #ifdef CONFIG_PRINTK
- #define KS_ADDRS_COUNT 16
- struct kmem_obj_info {
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index a4a5714..bca69b6 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -469,6 +469,7 @@ static int shutdown_cache(struct kmem_cache *s)
- 	list_del(&s->list);
- 
- 	if (s->flags & SLAB_TYPESAFE_BY_RCU) {
-+		debugfs_slab_release(s);
- #ifdef SLAB_SUPPORTS_SYSFS
- 		sysfs_slab_unlink(s);
- #endif
-@@ -476,6 +477,7 @@ static int shutdown_cache(struct kmem_cache *s)
- 		schedule_work(&slab_caches_to_rcu_destroy_work);
- 	} else {
- 		kfence_shutdown_cache(s);
-+		debugfs_slab_release(s);
- #ifdef SLAB_SUPPORTS_SYSFS
- 		sysfs_slab_unlink(s);
- 		sysfs_slab_release(s);
-diff --git a/mm/slub.c b/mm/slub.c
-index 3f96e09..c00c9d5 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -36,6 +36,7 @@
- #include <linux/memcontrol.h>
- #include <linux/random.h>
- 
-+#include <linux/debugfs.h>
- #include <trace/events/kmem.h>
- 
- #include "internal.h"
-@@ -225,6 +226,12 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
- 							{ return 0; }
- #endif
- 
-+#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
-+static void debugfs_slab_add(struct kmem_cache *);
-+#else
-+static inline void debugfs_slab_add(struct kmem_cache *s) { }
-+#endif
-+
- static inline void stat(const struct kmem_cache *s, enum stat_item si)
- {
- #ifdef CONFIG_SLUB_STATS
-@@ -4546,6 +4553,9 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
- 	if (err)
- 		__kmem_cache_release(s);
- 
-+	if (s->flags & SLAB_STORE_USER)
-+		debugfs_slab_add(s);
-+
- 	return err;
- }
- 
-@@ -4686,6 +4696,8 @@ static long validate_slab_cache(struct kmem_cache *s)
- 
- 	return count;
- }
-+
-+#ifdef CONFIG_DEBUG_FS
- /*
-  * Generate lists of code addresses where slabcache objects are allocated
-  * and freed.
-@@ -4709,6 +4721,8 @@ struct loc_track {
- 	struct location *loc;
- };
- 
-+static struct dentry *slab_debugfs_root;
-+
- static void free_loc_track(struct loc_track *t)
- {
- 	if (t->max)
-@@ -4825,82 +4839,7 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
- 			add_location(t, s, get_track(s, p, alloc));
- 	put_map(map);
- }
--
--static int list_locations(struct kmem_cache *s, char *buf,
--			  enum track_item alloc)
--{
--	int len = 0;
--	unsigned long i;
--	struct loc_track t = { 0, 0, NULL };
--	int node;
--	struct kmem_cache_node *n;
--
--	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
--			     GFP_KERNEL)) {
--		return sysfs_emit(buf, "Out of memory\n");
--	}
--	/* Push back cpu slabs */
--	flush_all(s);
--
--	for_each_kmem_cache_node(s, node, n) {
--		unsigned long flags;
--		struct page *page;
--
--		if (!atomic_long_read(&n->nr_slabs))
--			continue;
--
--		spin_lock_irqsave(&n->list_lock, flags);
--		list_for_each_entry(page, &n->partial, slab_list)
--			process_slab(&t, s, page, alloc);
--		list_for_each_entry(page, &n->full, slab_list)
--			process_slab(&t, s, page, alloc);
--		spin_unlock_irqrestore(&n->list_lock, flags);
--	}
--
--	for (i = 0; i < t.count; i++) {
--		struct location *l = &t.loc[i];
--
--		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
--
--		if (l->addr)
--			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
--		else
--			len += sysfs_emit_at(buf, len, "<not-available>");
--
--		if (l->sum_time != l->min_time)
--			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
--					     l->min_time,
--					     (long)div_u64(l->sum_time,
--							   l->count),
--					     l->max_time);
--		else
--			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
--
--		if (l->min_pid != l->max_pid)
--			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
--					     l->min_pid, l->max_pid);
--		else
--			len += sysfs_emit_at(buf, len, " pid=%ld",
--					     l->min_pid);
--
--		if (num_online_cpus() > 1 &&
--		    !cpumask_empty(to_cpumask(l->cpus)))
--			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
--					     cpumask_pr_args(to_cpumask(l->cpus)));
--
--		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
--			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
--					     nodemask_pr_args(&l->nodes));
--
--		len += sysfs_emit_at(buf, len, "\n");
--	}
--
--	free_loc_track(&t);
--	if (!t.count)
--		len += sysfs_emit_at(buf, len, "No data\n");
--
--	return len;
--}
-+#endif  /* CONFIG_DEBUG_FS   */
- #endif	/* CONFIG_SLUB_DEBUG */
- 
- #ifdef SLUB_RESILIENCY_TEST
-@@ -5350,21 +5289,6 @@ static ssize_t validate_store(struct kmem_cache *s,
- }
- SLAB_ATTR(validate);
- 
--static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
--{
--	if (!(s->flags & SLAB_STORE_USER))
--		return -ENOSYS;
--	return list_locations(s, buf, TRACK_ALLOC);
--}
--SLAB_ATTR_RO(alloc_calls);
--
--static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
--{
--	if (!(s->flags & SLAB_STORE_USER))
--		return -ENOSYS;
--	return list_locations(s, buf, TRACK_FREE);
--}
--SLAB_ATTR_RO(free_calls);
- #endif /* CONFIG_SLUB_DEBUG */
- 
- #ifdef CONFIG_FAILSLAB
-@@ -5528,8 +5452,6 @@ static struct attribute *slab_attrs[] = {
- 	&poison_attr.attr,
- 	&store_user_attr.attr,
- 	&validate_attr.attr,
--	&alloc_calls_attr.attr,
--	&free_calls_attr.attr,
- #endif
- #ifdef CONFIG_ZONE_DMA
- 	&cache_dma_attr.attr,
-@@ -5818,6 +5740,210 @@ static int __init slab_sysfs_init(void)
- __initcall(slab_sysfs_init);
- #endif /* CONFIG_SYSFS */
- 
-+#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
-+static int slab_debugfs_show(struct seq_file *seq, void *v)
-+{
-+
-+	struct location *l;
-+	unsigned int idx = *(unsigned int *)v;
-+	struct loc_track *t = seq->private;
-+
-+	if (idx < t->count) {
-+		l = &t->loc[idx];
-+
-+		seq_printf(seq, "%7ld ", l->count);
-+
-+		if (l->addr)
-+			seq_printf(seq, "%pS", (void *)l->addr);
-+		else
-+			seq_puts(seq, "<not-available>");
-+
-+		if (l->sum_time != l->min_time) {
-+			seq_printf(seq, " age=%ld/%ld/%ld",
-+				l->min_time,
-+				(long)div_u64(l->sum_time, l->count),
-+				l->max_time);
-+		} else
-+			seq_printf(seq, " age=%ld",
-+				l->min_time);
-+
-+		if (l->min_pid != l->max_pid)
-+			seq_printf(seq, " pid=%ld-%ld",
-+				l->min_pid, l->max_pid);
-+		else
-+			seq_printf(seq, " pid=%ld",
-+				l->min_pid);
-+
-+		if (num_online_cpus() > 1 &&
-+				!cpumask_empty(to_cpumask(l->cpus)))
-+			seq_printf(seq, " cpus=%*pbl",
-+				 cpumask_pr_args(to_cpumask(l->cpus)));
-+
-+		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
-+			seq_printf(seq, " nodes=%*pbl",
-+				 nodemask_pr_args(&l->nodes));
-+
-+		seq_puts(seq, "\n");
-+	}
-+
-+	if (!t->count)
-+		seq_puts(seq, "No data\n");
-+
-+	return 0;
-+}
-+
-+static void slab_debugfs_stop(struct seq_file *seq, void *v)
-+{
-+	if ((!v) &&
-+		((struct loc_track *)seq->private)->count == (seq->index - 1))
-+		free_loc_track((struct loc_track *)seq->private);
-+}
-+
-+static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
-+{
-+	loff_t *spos = v;
-+	struct loc_track *t = seq->private;
-+
-+	if (*ppos < t->count) {
-+		*spos = *spos + 1;
-+		*ppos = *spos;
-+		return spos;
-+	}
-+
-+	*spos = *spos + 1;
-+	*ppos = *spos;
-+	return NULL;
-+}
-+
-+static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
-+{
-+	struct kmem_cache_node *n;
-+	struct kmem_cache *s;
-+	enum track_item alloc;
-+	int node;
-+	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
-+
-+	s = seq->file->f_inode->i_private;
-+
-+	if (!spos)
-+		return NULL;
-+
-+	if (*ppos == 0) {
-+		if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_traces") == 0)
-+			alloc =  TRACK_ALLOC;
-+		else
-+			alloc =  TRACK_FREE;
-+
-+		seq->private = kmalloc(sizeof(struct loc_track), GFP_KERNEL);
-+		memset(seq->private, 0, sizeof(struct loc_track));
-+
-+		if (!alloc_loc_track((struct loc_track *)seq->private,
-+				PAGE_SIZE / sizeof(struct location), GFP_KERNEL)) {
-+			seq_puts(seq, "Out of memory\n");
-+			kfree(spos);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+		/* Push back cpu slabs */
-+		flush_all(s);
-+
-+		for_each_kmem_cache_node(s, node, n) {
-+			unsigned long flags;
-+			struct page *page;
-+
-+			if (!atomic_long_read(&n->nr_slabs))
-+				continue;
-+
-+			spin_lock_irqsave(&n->list_lock, flags);
-+			list_for_each_entry(page, &n->partial, slab_list)
-+				process_slab((struct loc_track *)seq->private, s, page, alloc);
-+			list_for_each_entry(page, &n->full, slab_list)
-+				process_slab((struct loc_track *)seq->private, s, page, alloc);
-+			spin_unlock_irqrestore(&n->list_lock, flags);
-+		}
-+	}
-+
-+	if (seq->private) {
-+		struct loc_track *t = seq->private;
-+
-+		if (*ppos < t->count) {
-+			*spos = *ppos;
-+			return spos;
-+		}
-+	}
-+
-+	kfree(spos);
-+	kfree(seq->private);
-+	return NULL;
-+}
-+
-+static const struct seq_operations slab_debugfs_sops = {
-+	.start  = slab_debugfs_start,
-+	.next   = slab_debugfs_next,
-+	.stop   = slab_debugfs_stop,
-+	.show   = slab_debugfs_show
-+};
-+DEFINE_SEQ_ATTRIBUTE(slab_debugfs);
-+
-+static void debugfs_slab_add(struct kmem_cache *s)
-+{
-+	const char *name;
-+	struct dentry *slab_cache_dir;
-+	int unmergeable = slab_unmergeable(s);
-+
-+	if (unlikely(!slab_debugfs_root))
-+		return;
-+
-+	if (!unmergeable && disable_higher_order_debug &&
-+			(slub_debug & DEBUG_METADATA_FLAGS))
-+		unmergeable = 1;
-+
-+	if (unmergeable) {
-+		/*
-+		 * Slabcache can never be merged so we can use the name proper.
-+		 * This is typically the case for debug situations. In that
-+		 * case we can catch duplicate names easily.
-+		 */
-+		slab_cache_dir = debugfs_lookup(s->name, slab_debugfs_root);
-+		debugfs_remove_recursive(slab_cache_dir);
-+		name = s->name;
-+	} else {
-+		/*
-+		 * Create a unique name for the slab as a target
-+		 * for the symlinks.
-+		 */
-+		name = create_unique_id(s);
-+	}
-+
-+	slab_cache_dir = debugfs_create_dir(name, slab_debugfs_root);
-+
-+	debugfs_create_file("alloc_traces", 0400,
-+		slab_cache_dir, s, &slab_debugfs_fops);
-+
-+	debugfs_create_file("free_traces", 0400,
-+		slab_cache_dir, s, &slab_debugfs_fops);
-+}
-+
-+void debugfs_slab_release(struct kmem_cache *s)
-+{
-+	debugfs_remove_recursive(debugfs_lookup(s->name,
-+					slab_debugfs_root));
-+}
-+
-+static int __init slab_debugfs_init(void)
-+{
-+	struct kmem_cache *s;
-+
-+	slab_debugfs_root = debugfs_create_dir("slab", NULL);
-+
-+	list_for_each_entry(s, &slab_caches, list)
-+		if (s->flags & SLAB_STORE_USER)
-+			debugfs_slab_add(s);
-+
-+	return 0;
-+
-+}
-+__initcall(slab_debugfs_init);
-+#endif
- /*
-  * The /proc/slabinfo ABI
-  */
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+Alex
 
