@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E240A39A9C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985D339A9C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhFCSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:08:01 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:48499 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229850AbhFCSIA (ORCPT
+        id S230100AbhFCSJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:09:35 -0400
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:45897 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhFCSJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:08:00 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 937CC5C0072;
-        Thu,  3 Jun 2021 14:06:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 03 Jun 2021 14:06:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=L7JL5l0QHtqSsOPix17Y5ib8Syw
-        C0opDRoDXdkot+QY=; b=fnJjmEBz2x+tbWb1S1R9JTR5zOjX6A02txQWKMzz7gL
-        kmdrh+hUUZKNMNExbJF5KlmSLzlUy3UhgUVkB7HaIZ2GsowHTUyE8dYF99CyUc0C
-        b0KeFg+HmDt7yq3ADcvYn+uzva+E2aW9YhUgklFjTLVVAklOo5duuT1xZu+0wjyW
-        EtnzOuUwyX9KzdbGZyPURi3pke2y5K9p8wmpvegCiymO26C78OQ/byzS+XD8uQkD
-        bnqguVTejqpF1gooU0Nj4FENRd0FStEWLp2MdU73qq/DWqiC5zcOlM2XGnnjRWGV
-        NZv/OHTeCB4QV6A9DrBjb6q47xiAzatkPCqTYCEW+kg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=L7JL5l
-        0QHtqSsOPix17Y5ib8SywC0opDRoDXdkot+QY=; b=HXkckYBehCeHod1L6gETOT
-        rNR82hjv9NHeB1BYmLpKA7CzP3Z6W8qqwD6fm51OLKFjiEavyd7Vdx43t59YZb+V
-        SY4uZmN4VVDTkLZ3oRiZsAuyMkqepa0/033eLcJ46Br/MbnKtkfCBweiJxxZsRVC
-        gOmNkcXykBHrOEP0DRd0A3SIAv6x/wupk8/pxNAk7kul3YYRQFcE2mXXi8Jgow75
-        Zoy8NK4a7EEnaSGEi3zaRHmRXD5nxW9wy1fUiVal+8tQz324onnEluPcQTSJkg++
-        e6FFo8idEKyWpd1mBa6YwtxT5shx/z7vKWty2vSJv/OHYU0/un4wE+Nwc2Ekp7fw
-        ==
-X-ME-Sender: <xms:Fhq5YNHuXLPzQ6bYXvS-3_Zw8PqDAOTgPGklvwxU1g5Gwh6hXa7lRA>
-    <xme:Fhq5YCWRw4vo7yfXTnNCBHsYqO0Y7BkD_pYnY9PpBCOxsb1C4H-1ZXo8CWxpzWAm6
-    O_JldZ0t9RyhlHyEg>
-X-ME-Received: <xmr:Fhq5YPJiKBL8DOEVoP_Wjhp65OcaMaqMYkbmCJ5Hw2BVKNOaGUDaBG47OcDQuBNWtoaUQlvinaM0sjnIPPw6RruRz7ZMbw9amQDMSmJHJxUou0oCMJu2iG8bmwWA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledguddukecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
-    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
-    grthhtvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeff
-    hfeuffdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:Fhq5YDH5ElxUR4veE4hNWbal5ZUjZi5vXSaP8AAKrpHmpI1o5-QVAw>
-    <xmx:Fhq5YDXkZbMVDaW8HN6ljMZZ4FnY3o28snWBbZ4f9rutZWE9O8ol5A>
-    <xmx:Fhq5YONkLMXMwX6gMfxe0CQLYY6456nbVhBSLVmNaVz_RF4PP_mKMA>
-    <xmx:Fhq5YAhjUwwMcC6_jbouEwP1SqlODGs-DNv03QWOqJzSj3B9TX3YWg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Jun 2021 14:06:13 -0400 (EDT)
-Date:   Thu, 3 Jun 2021 11:06:12 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Memory uninitialized after "io_uring: keep table of pointers to
- ubufs"
-Message-ID: <20210603180612.uchkn5qqa3j7rpgd@alap3.anarazel.de>
-References: <20210529003350.m3bqhb3rnug7yby7@alap3.anarazel.de>
- <d2c5b250-5a0f-5de5-061f-38257216389d@gmail.com>
+        Thu, 3 Jun 2021 14:09:34 -0400
+Received: by mail-ua1-f49.google.com with SMTP id m23so3783278uao.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:07:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=llczrUowQbUDxoyW8Fe3w+wZDCFWjdjoD/4x2j+vVJg=;
+        b=Xrk/o1WlRoaP8m7dFFhXj1nHF3JRF2UNcgDTxbO5PUjM5F3VtmIuL+9y81MbbHRKs6
+         H8MEqgjIcYzrCEujCfLC0p3mJLbkDpBXgGbiPIPAFCjy3WwgO3PEdYvJf31nniA0Gei2
+         kOooV/K6xbQuBRB86za14gz/kpVbu4MU2jKjY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=llczrUowQbUDxoyW8Fe3w+wZDCFWjdjoD/4x2j+vVJg=;
+        b=EKYpnVioImHuFNwkxSXCvRW+W1UOceax1M5mqW3f8JEzqPGsNUyNF4+9O5qoustb7l
+         4c4grf+U65bJpq2SB5ilAOrz1inYiejHCwC2OF1sqv6RUGM05JW9ECd0eHjb3m94s9NY
+         in36eWGQ01vuHUpFYS2/oHrrvNEf/FhEUG4MML9TEGEMfO+Z7cFAz4vFwyOS0ca3kqsC
+         JIdOP/2l7zZ9ADOFn2OV5KAk4nvEF4f5nr/6Y9ozXR0oi+1aTqrjk3glc2E2tAeh3FFc
+         MKf+hcrOVX+HTb5eE1Pf3q3R1Lj+jUBy/0z/GOfv035JKICZJWMQg0e0od49okdU1UZR
+         0oWQ==
+X-Gm-Message-State: AOAM531oHH5cKFzCaUeu1Cs9g2CxQYrL1HsgP0oQcrSIuc4YlBNEOr0u
+        p23XEEt9BP3QQHihtDatHj6Y6pPvqS+VWYoRUHmAYg==
+X-Google-Smtp-Source: ABdhPJwIEosM7UwGjOOqVwRg9ztnWaeH+lJ0LVEs2YTd3Sl9IOmB5t/Z7UPzry6FVBfO8CGl+ftVPdCL9jwH75USFps=
+X-Received: by 2002:a1f:32cf:: with SMTP id y198mr603626vky.23.1622743608931;
+ Thu, 03 Jun 2021 11:06:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d2c5b250-5a0f-5de5-061f-38257216389d@gmail.com>
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+ <162218364554.34379.636306635794792903.stgit@web.messagingengine.com> <87czt2q2pl.fsf@disp2133>
+In-Reply-To: <87czt2q2pl.fsf@disp2133>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 3 Jun 2021 20:06:38 +0200
+Message-ID: <CAJfpegsVxoL8WgQa7hFXAg4RBbA-suaeo5pZ5EE7HDpL0rT03A@mail.gmail.com>
+Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Ian Kent <raven@themaw.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 3 Jun 2021 at 19:26, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Ian Kent <raven@themaw.net> writes:
+>
+> > If there are many lookups for non-existent paths these negative lookups
+> > can lead to a lot of overhead during path walks.
+> >
+> > The VFS allows dentries to be created as negative and hashed, and caches
+> > them so they can be used to reduce the fairly high overhead alloc/free
+> > cycle that occurs during these lookups.
+> >
+> > Signed-off-by: Ian Kent <raven@themaw.net>
+> > ---
+> >  fs/kernfs/dir.c |   55 +++++++++++++++++++++++++++++++++----------------------
+> >  1 file changed, 33 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > index 4c69e2af82dac..5151c712f06f5 100644
+> > --- a/fs/kernfs/dir.c
+> > +++ b/fs/kernfs/dir.c
+> > @@ -1037,12 +1037,33 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
+> >       if (flags & LOOKUP_RCU)
+> >               return -ECHILD;
+> >
+> > -     /* Always perform fresh lookup for negatives */
+> > -     if (d_really_is_negative(dentry))
+> > -             goto out_bad_unlocked;
+> > +     mutex_lock(&kernfs_mutex);
+> >
+> >       kn = kernfs_dentry_node(dentry);
+> > -     mutex_lock(&kernfs_mutex);
+>
+> Why bring kernfs_dentry_node inside the mutex?
+>
+> The inode lock of the parent should protect negative to positive
+> transitions not the kernfs_mutex.  So moving the code inside
+> the mutex looks unnecessary and confusing.
 
-On 2021-05-29 12:03:12 +0100, Pavel Begunkov wrote:
-> On 5/29/21 1:33 AM, Andres Freund wrote:
-> > Hi,
-> > 
-> > I started to see buffer registration randomly failing with ENOMEM on
-> > 5.13. Registering buffer or two often succeeds, but more than that
-> > rarely. Running the same program as root succeeds - but the user has a high
-> > rlimit.
-> > 
-> > The issue is that io_sqe_buffer_register() doesn't initialize
-> > imu. io_buffer_account_pin() does imu->acct_pages++, before calling
-> > io_account_mem(ctx, imu->acct_pages);
-> > 
-> > Which means that a random amount of memory is being accounted for. On the first
-> > few allocations this sometimes fails to fail because the memory is zero, but
-> > after a bit of reuse...
-> 
-> Makes sense, thanks for digging in. I've just sent a patch, would
-> be great if you can test it or send your own.
+Except that d_revalidate() may or may not be called with parent lock held.
 
-Sorry for the slow response, I'm off this week. I did just get around to
-test and unsurprisingly: The patch does fix the issue.
-
-Greetings,
-
-Andres Freund
+Thanks,
+Miklos
