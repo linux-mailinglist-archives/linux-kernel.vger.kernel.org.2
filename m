@@ -2,294 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFE939A495
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F86939A497
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhFCPcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:32:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42784 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhFCPcE (ORCPT
+        id S229818AbhFCPcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:32:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30144 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229692AbhFCPcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:32:04 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <dimitri.ledkov@canonical.com>)
-        id 1lopIY-0002CM-SS
-        for linux-kernel@vger.kernel.org; Thu, 03 Jun 2021 15:30:18 +0000
-Received: by mail-io1-f71.google.com with SMTP id i15-20020a6bee0f0000b029043af67da217so4074839ioh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:30:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=boxzPNf6kICAudraEiy9pprXyKhNrnzmnyq1YE5b8oU=;
-        b=hRn1GT356aJWLoBY+oetksal6wo6XyiRWDHzsbPROR4uA6yUU221KcaReIrRsaZaOx
-         22rSOO5N3D0DpKspYYOMagKbalrhkTeVVFOevLRN/SjyLeApRJfeoitBqLNX4Wom0E+d
-         MMrnVQCGZwh5psnzTanbWk36UrKGP0BmHvgLeEHe1nAWbvoUDE9g11lRTKiDD93m7uFD
-         wLJfUmDB5MPz8D9NMg3gP5fALfqIVwzL17WsRP0sWyDpSCHK1cBw2jSi2W/aJRPgAs9g
-         OIRiMz9LxPsAE4O3rbQs8MGC8ZZCEEtlmfj0ry1/oZFMuP05ctEUpJtoqX+YEaK2gXkx
-         3RZw==
-X-Gm-Message-State: AOAM532F1Y5dN5FDjWU7eOwIAJ7N35QOKg1oiTAMAD3my1TaWG0SB0mq
-        M0qGn9aZSBeNvtuLey8w8E8+xplodK6G27nek1aPeyt2jY4PJUQpBiRVgU2dci/7zl2r/8jrT41
-        35B9hLZFxJIAZUbQijNGHIoNB2gBwhMsl964sF7LeQBDGhRArnHOxkGaBNQ==
-X-Received: by 2002:a05:6638:13cc:: with SMTP id i12mr325494jaj.20.1622734217365;
-        Thu, 03 Jun 2021 08:30:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwpAMTnnJtY/I/Aykd9ILXYyI1vh7/bSgcxZHw3VISAuOkiJqm3U/Hhu7xPndOU3lwZNAlC+wPMAgdD7cuaHKI=
-X-Received: by 2002:a05:6638:13cc:: with SMTP id i12mr325477jaj.20.1622734217051;
- Thu, 03 Jun 2021 08:30:17 -0700 (PDT)
+        Thu, 3 Jun 2021 11:32:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622734237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/S1XKe/GM4qQZl4GJJ8xfCrJIwaECIza2brwo279Qw4=;
+        b=RWOGJRy3gSpUVaDgRJHkTcqhlPMauyA2wT/xbQAzR+OYCdsvUxa9e28Wpyn+JmU9GBy0Qa
+        lXyesmzcTbYNkj7+6+tlqHMv3DqUrmXColwDKa/r2fh+OJrJOzsRB+E1fmOzIpsAuxGPoA
+        QrgwkeFJz4Jd+HPF/aQ28PHCDW+ETJQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-KdW-98JTOBmvLj354ZUpbg-1; Thu, 03 Jun 2021 11:30:36 -0400
+X-MC-Unique: KdW-98JTOBmvLj354ZUpbg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96FD780EDB3;
+        Thu,  3 Jun 2021 15:30:34 +0000 (UTC)
+Received: from localhost (ovpn-114-228.ams2.redhat.com [10.36.114.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AE1CE10016FC;
+        Thu,  3 Jun 2021 15:30:26 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 16:30:25 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, slp@redhat.com,
+        sgarzare@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 0/3] virtio_blk: blk-mq io_poll support
+Message-ID: <YLj1kUiTTlLm5HwU@stefanha-x1.localdomain>
+References: <20210520141305.355961-1-stefanha@redhat.com>
 MIME-Version: 1.0
-References: <20210512153100.285169-1-dimitri.ledkov@canonical.com> <20210518141942.GA1269@mail.hallyn.com>
-In-Reply-To: <20210518141942.GA1269@mail.hallyn.com>
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Date:   Thu, 3 Jun 2021 16:29:40 +0100
-Message-ID: <CADWks+bU2=n8dxuLyBq8kCHCKV6GOa_x42ydGwCzxZcKsHQ+LA@mail.gmail.com>
-Subject: Re: [PATCH] integrity: Load mokx certs from the EFI MOK config table
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="B/OddBweazIqrPeI"
+Content-Disposition: inline
+In-Reply-To: <20210520141305.355961-1-stefanha@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, May 18, 2021 at 3:19 PM Serge E. Hallyn <serge@hallyn.com> wrote:
->
-> On Wed, May 12, 2021 at 04:31:00PM +0100, Dimitri John Ledkov wrote:
-> > Refactor load_moklist_certs() to load either MokListRT into db, or
-> > MokListXRT into dbx. Call load_moklist_certs() twice - first to load
-> > mokx certs into dbx, then mok certs into db.
-> >
-> > This thus now attempts to load mokx certs via the EFI MOKvar config
-> > table first, and if that fails, via the EFI variable. Previously mokx
-> > certs were only loaded via the EFI variable. Which fails when
-> > MokListXRT is large. Instead of large MokListXRT variable, only
-> > MokListXRT{1,2,3} are available which are not loaded. This is the case
-> > with Ubuntu's 15.4 based shim. This patch is required to address
-> > CVE-2020-26541 when certificates are revoked via MokListXRT.
->
-> Hi Dimitri,
->
-> I don't see any problems with this technically, and based on
-> https://bugs.launchpad.net/bugs/1928679 it looks like it is in fact needed.
->
+--B/OddBweazIqrPeI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes it is.
+On Thu, May 20, 2021 at 03:13:02PM +0100, Stefan Hajnoczi wrote:
+> This patch series implements blk_mq_ops->poll() so REQ_HIPRI requests can=
+ be
+> polled. IOPS for 4k and 16k block sizes increases by 5-18% on a virtio-blk
+> device with 4 virtqueues backed by an NVMe drive.
+>=20
+> - Benchmark: fio ioengine=3Dpvsync2 numjobs=3D4 direct=3D1
+> - Guest: 4 vCPUs with one virtio-blk device (4 virtqueues)
+> - Disk: Intel Corporation NVMe Datacenter SSD [Optane] [8086:2701]
+> - CPU: Intel(R) Xeon(R) Silver 4214 CPU @ 2.20GHz
+>=20
+> rw          bs hipri=3D0 hipri=3D1
+> ------------------------------
+> randread    4k 149,426 170,763 +14%
+> randread   16k 118,939 134,269 +12%
+> randread   64k  34,886  34,906   0%
+> randread  128k  17,655  17,667   0%
+> randwrite   4k 138,578 163,600 +18%
+> randwrite  16k 102,089 120,950 +18%
+> randwrite  64k  32,364  32,561   0%
+> randwrite 128k  16,154  16,237   0%
+> read        4k 146,032 170,620 +16%
+> read       16k 117,097 130,437 +11%
+> read       64k  34,834  35,037   0%
+> read      128k  17,680  17,658   0%
+> write       4k 134,562 151,422 +12%
+> write      16k 101,796 107,606  +5%
+> write      64k  32,364  32,594   0%
+> write     128k  16,259  16,265   0%
+>=20
+> Larger block sizes do not benefit from polling as much but the
+> improvement is worthwhile for smaller block sizes.
+>=20
+> Stefan Hajnoczi (3):
+>   virtio: add virtioqueue_more_used()
+>   virtio_blk: avoid repeating vblk->vqs[qid]
+>   virtio_blk: implement blk_mq_ops->poll()
+>=20
+>  include/linux/virtio.h       |   2 +
+>  drivers/block/virtio_blk.c   | 126 +++++++++++++++++++++++++++++------
+>  drivers/virtio/virtio_ring.c |  17 +++++
+>  3 files changed, 123 insertions(+), 22 deletions(-)
 
-Also it has been pointed out to me now that debian is already applying
-a variation of this bugfix at
+Christoph and Jens: Any more thoughts on this irq toggling approach?
 
-https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/patches/features/all/db-mok-keyring/0002-MODSIGN-load-blacklist-from-MOKx.patch
+Stefan
 
-The path there is similar to mine, but passes the various static
-values as args without a struct. Which looks clean enough.
+--B/OddBweazIqrPeI
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I can do a variation of a rebased patch similar to what Ben is already
-applying in Debian. I reached out to them, and they are not interested
-in upstreaming this themselves right now.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmC49ZEACgkQnKSrs4Gr
+c8j34Af+OlGHrPFOu/uCty4kQUK2eoLVfirmODk3dZSTw9dI349E+luWFSE+dOyn
+UJL1cKCs3Cw8jgwiUkzjt/lSMlpmjvQiqGmJCxfC+0Z+mkinpthhhK5G7DlSFTQl
+BoQ+h64/9rU7rXXP4jJarxNV/LAu2jXPBL2pypG8UfGSB6wPFdcd/01ftiKLbkZE
+ja044LxlD84TUn3sgtGRtH5MupRE7k/izZMYmyBlWLE/vH4DySVhvA6kwGWeAD82
+dClnQ/TiFkvkf7GM4CvdX+PZ2f+sGpa4dPJ7LUJOz6RxpdUo+fW7loKm1zu5IyO9
+/qF7ys9OUNREOxR9hiWtpcE+2V/HBA==
+=/ihk
+-----END PGP SIGNATURE-----
 
-> I suggest a change below, but I'm not sure you should make the change
-> without confirmation from one of the maintainers that it matches what
-> they would want.
->
-> > Fixes: ebd9c2ae369a ("integrity: Load mokx variables into the blacklist keyring")
-> >
-> > Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-> > cc: keyrings@vger.kernel.org
-> > cc: Eric Snowberg <eric.snowberg@oracle.com>
-> > cc: Jarkko Sakkinen <jarkko@kernel.org>
-> > cc: David Woodhouse <dwmw2@infradead.org>
-> > cc: David Howells <dhowells@redhat.com>
->
-> Acked-by: Serge Hallyn <serge@hallyn.com>
->
-> > ---
-> >  security/integrity/platform_certs/load_uefi.c | 74 ++++++++++---------
-> >  1 file changed, 40 insertions(+), 34 deletions(-)
-> >
-> > diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
-> > index f290f78c3f30..f4b913ec76e4 100644
-> > --- a/security/integrity/platform_certs/load_uefi.c
-> > +++ b/security/integrity/platform_certs/load_uefi.c
-> > @@ -66,17 +66,18 @@ static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid,
-> >  }
-> >
-> >  /*
-> > - * load_moklist_certs() - Load MokList certs
-> > + * load_moklist_certs() - Load Mok(X)List certs
-> > + * @load_db: Load MokListRT into db when true; MokListXRT into dbx when false
-> >   *
-> > - * Load the certs contained in the UEFI MokListRT database into the
-> > - * platform trusted keyring.
-> > + * Load the certs contained in the UEFI MokList(X)RT database into the
-> > + * platform trusted/denied keyring.
-> >   *
-> >   * This routine checks the EFI MOK config table first. If and only if
-> > - * that fails, this routine uses the MokListRT ordinary UEFI variable.
-> > + * that fails, this routine uses the MokList(X)RT ordinary UEFI variable.
-> >   *
-> >   * Return:   Status
-> >   */
-> > -static int __init load_moklist_certs(void)
-> > +static int __init load_moklist_certs(const bool load_db)
->
-> Rather than passing in a bool here, I would suggest, above this function,
-> doing something like:
->
-> struct moklist_desc {
->         const char *mokvar_name;
->         efi_char16_t *efivar_name;
->         const char *parse_mokvar_name;
->         const char *parse_efivar_name;
->         efi_element_handler_t (*get_handler_for_guid)(const efi_guid_t *);
-> };
->
-> struct moklist_desc moklist_descriptor = {
->         .mokvar_name = "MokListRT",
->         .efivar_name = L"MokListRT",
->         .parse_mokvar_name =  "UEFI:MokListRT (MOKvar table)",
->         .parse_efivar_name = "UEFI:MokListRT",
->         .get_handler_for_guid = get_handler_for_db,
-> };
->
-> struct moklist_desc moxklist_descriptor = {
->         .mokvar_name = "MokListXRT",
->         .efivar_name = L"MokListXRT",
->         .parse_mokvar_name =  "UEFI:MokListXRT (MOKvar table)",
->         .parse_efivar_name = "UEFI:MokListXRT",
->         .get_handler_for_guid = get_handler_for_dbx,
-> };
->
-> And pass each of those into load_moklist_certs() once.
->
-> >  {
-> >       struct efi_mokvar_table_entry *mokvar_entry;
-> >       efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
-> > @@ -84,41 +85,55 @@ static int __init load_moklist_certs(void)
-> >       unsigned long moksize;
-> >       efi_status_t status;
-> >       int rc;
-> > +     const char *mokvar_name = "MokListRT";
-> > +     /* Should be const, but get_cert_list() doesn't have it as const yet */
-> > +     efi_char16_t *efivar_name = L"MokListRT";
-> > +     const char *parse_mokvar_name = "UEFI:MokListRT (MOKvar table)";
-> > +     const char *parse_efivar_name = "UEFI:MokListRT";
-> > +     efi_element_handler_t (*get_handler_for_guid)(const efi_guid_t *) = get_handler_for_db;
-> > +
-> > +     if (!load_db) {
-> > +             mokvar_name = "MokListXRT";
-> > +             efivar_name = L"MokListXRT";
-> > +             parse_mokvar_name = "UEFI:MokListXRT (MOKvar table)";
-> > +             parse_efivar_name = "UEFI:MokListXRT";
-> > +             get_handler_for_guid = get_handler_for_dbx;
-> > +     }
-> >
-> >       /* First try to load certs from the EFI MOKvar config table.
-> >        * It's not an error if the MOKvar config table doesn't exist
-> >        * or the MokListRT entry is not found in it.
-> >        */
-> > -     mokvar_entry = efi_mokvar_entry_find("MokListRT");
-> > +     mokvar_entry = efi_mokvar_entry_find(mokvar_name);
-> >       if (mokvar_entry) {
-> > -             rc = parse_efi_signature_list("UEFI:MokListRT (MOKvar table)",
-> > +             rc = parse_efi_signature_list(parse_mokvar_name,
-> >                                             mokvar_entry->data,
-> >                                             mokvar_entry->data_size,
-> > -                                           get_handler_for_db);
-> > +                                           get_handler_for_guid);
-> >               /* All done if that worked. */
-> >               if (!rc)
-> >                       return rc;
-> >
-> > -             pr_err("Couldn't parse MokListRT signatures from EFI MOKvar config table: %d\n",
-> > -                    rc);
-> > +             pr_err("Couldn't parse %s signatures from EFI MOKvar config table: %d\n",
-> > +                    mokvar_name, rc);
-> >       }
-> >
-> >       /* Get MokListRT. It might not exist, so it isn't an error
-> >        * if we can't get it.
-> >        */
-> > -     mok = get_cert_list(L"MokListRT", &mok_var, &moksize, &status);
-> > +     mok = get_cert_list(efivar_name, &mok_var, &moksize, &status);
-> >       if (mok) {
-> > -             rc = parse_efi_signature_list("UEFI:MokListRT",
-> > -                                           mok, moksize, get_handler_for_db);
-> > +             rc = parse_efi_signature_list(parse_efivar_name,
-> > +                                           mok, moksize, get_handler_for_guid);
-> >               kfree(mok);
-> >               if (rc)
-> > -                     pr_err("Couldn't parse MokListRT signatures: %d\n", rc);
-> > +                     pr_err("Couldn't parse %s signatures: %d\n", mokvar_name, rc);
-> >               return rc;
-> >       }
-> >       if (status == EFI_NOT_FOUND)
-> > -             pr_debug("MokListRT variable wasn't found\n");
-> > +             pr_debug("%s variable wasn't found\n", mokvar_name);
-> >       else
-> > -             pr_info("Couldn't get UEFI MokListRT\n");
-> > +             pr_info("Couldn't get UEFI %s\n", mokvar_name);
-> >       return 0;
-> >  }
-> >
-> > @@ -132,9 +147,8 @@ static int __init load_moklist_certs(void)
-> >  static int __init load_uefi_certs(void)
-> >  {
-> >       efi_guid_t secure_var = EFI_IMAGE_SECURITY_DATABASE_GUID;
-> > -     efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
-> > -     void *db = NULL, *dbx = NULL, *mokx = NULL;
-> > -     unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
-> > +     void *db = NULL, *dbx = NULL;
-> > +     unsigned long dbsize = 0, dbxsize = 0;
-> >       efi_status_t status;
-> >       int rc = 0;
-> >
-> > @@ -176,23 +190,15 @@ static int __init load_uefi_certs(void)
-> >               kfree(dbx);
-> >       }
-> >
-> > -     mokx = get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status);
-> > -     if (!mokx) {
-> > -             if (status == EFI_NOT_FOUND)
-> > -                     pr_debug("mokx variable wasn't found\n");
-> > -             else
-> > -                     pr_info("Couldn't get mokx list\n");
-> > -     } else {
-> > -             rc = parse_efi_signature_list("UEFI:MokListXRT",
-> > -                                           mokx, mokxsize,
-> > -                                           get_handler_for_dbx);
-> > -             if (rc)
-> > -                     pr_err("Couldn't parse mokx signatures %d\n", rc);
-> > -             kfree(mokx);
-> > -     }
-> > +     /* Load the MokListXRT certs */
-> > +     rc = load_moklist_certs(false);
-> > +     if (rc)
-> > +             pr_err("Couldn't parse mokx signatures: %d\n", rc);
-> >
-> >       /* Load the MokListRT certs */
-> > -     rc = load_moklist_certs();
-> > +     rc = load_moklist_certs(true);
-> > +     if (rc)
-> > +             pr_err("Couldn't parse mok signatures: %d\n", rc);
-> >
-> >       return rc;
-> >  }
-> > --
-> > 2.27.0
-> >
+--B/OddBweazIqrPeI--
 
-
-
--- 
-Regards,
-
-Dimitri.
