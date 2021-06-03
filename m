@@ -2,275 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8770D39A501
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8A739A510
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhFCPyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:54:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhFCPyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:54:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE4E2613DA;
-        Thu,  3 Jun 2021 15:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622735551;
-        bh=ALfngd/AzLPASHcVjomPrxMSCKAg7yfJ1wHcHYwvtBc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=TbgpQ8Qf5W45YxV+0l+irYqf6fVnbcO4dg/osTPpoqHf2M5AlW5/JJdNzFhuwZj2B
-         5WEKfQpq442LQy9sBf/x5BIhYKaPMjLi2Ftvo67BxOcpwZ6nqkDdRwa328Svt97RyY
-         ePcT6qqXawvVtt3i+q7gcsuxephEKc5vO56P9jRhQc2Ty2xYGEvo4V/24nIJs9DxB6
-         m4Dkb5IAXVoeuUyyN/vwto97IdWy1K+iUmjX7rp8BZS7RcN1iiuk+AmtcdLQPOircm
-         rrI2wi5vsFmCpfl2YrGnGtntCLdzdoEajlAV246dfr6xoZPTRGvA00whQO9JJ2v+Xx
-         asuOh3rAArwGA==
-Subject: Re: [f2fs-dev] [PATCH 2/2 v4] f2fs: support RO feature
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210521190217.2484099-1-jaegeuk@kernel.org>
- <20210521190217.2484099-2-jaegeuk@kernel.org> <YK5UOfzwdZni7c5W@google.com>
- <YK5edM0igwfd47LV@google.com> <YLfV4EPW5Yw6wP+v@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <900914f9-aedc-7379-e14d-1ddd5092d710@kernel.org>
-Date:   Thu, 3 Jun 2021 23:52:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229922AbhFCP4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhFCP40 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:56:26 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04C5C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 08:54:27 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id w15so7725682ljo.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:54:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KnUxfFc49U1kaTX0xn6lq4EXnbOa1XnWH3SflMbe0J0=;
+        b=QXKKkyGMMu+GZVJ73OGf9WXp6o4asES7jH+vvLnZsa7hB5TrvgK4gDk17Jos8H6BBJ
+         92lYztrSblt6SBQWB4xI4NqTHbG+H5UYzrTsoyNDe7upeAnw8t0CAZ4b54e7LUyC/d2U
+         yIbnNLkPi1cL96b9jSaaqXvOMatOPUTS0cc1dHgatknnWV+XHcDl/ALnH8gk4WCbhKVG
+         9kcsvVOqpoF0aeyMJWfI7Q2vOoyPCHgS0uw8etz7Yq4juAT5aQgv+/Ywu9IG0MiJK8Je
+         UuXgpmD91YtxhVTQsH/RwyCqrBbxv+Sut/hFCCnAp8tU1U7e/qf0Ke/wfG351VhKnAwR
+         DRzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KnUxfFc49U1kaTX0xn6lq4EXnbOa1XnWH3SflMbe0J0=;
+        b=QTQ8BYtdA5pMDRJ+CWo3cNoml4cwPWAWDghWmCAJFlUdxTq3ga9Gf0L8L8hP+Z30Df
+         jmvZq/eL/DKYoigjXmw5kC9Fg6vODcijWKhH+G78ADL8jrrQPctikWbe32I5dBQQ9mqF
+         L5oSGb0OJLEvvIA9cx1Q+kP7mFnyIhgw4eI2FuUA8uXXtOnQvsKI9Pzpc2W/BSU9WVYy
+         PG3RbDDS/BDxpdxuA/xi1h5SYjnjxhd13d3yZxCrIqqGYwMybcKNkpbMTFkrCk4lzlrg
+         Lt7N7Gbipbqk/gnzEzOGmBdOZh6IbziSQfa3KjYN+Ur4KbQ7G8jQe0/KjBpJVDdKaagS
+         rLww==
+X-Gm-Message-State: AOAM530POJLjdqp42F9KLEKYrG9Od/H2oJZDcRZhAnel8dx93rGxwTP7
+        1qEZWnZpBQnYrsnGFQ6Reoc=
+X-Google-Smtp-Source: ABdhPJw6ql5YqT4qqLEeeUQpckJoVIJmEGAZWi30Y5kgGMRh3n12ueFCjClKbkiML+hGidTojlzamA==
+X-Received: by 2002:a05:651c:50f:: with SMTP id o15mr57865ljp.452.1622735666031;
+        Thu, 03 Jun 2021 08:54:26 -0700 (PDT)
+Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4yb9bh06yk5jm2qt-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:3d09:bda0:2327:559b])
+        by smtp.gmail.com with ESMTPSA id a20sm401857ljn.94.2021.06.03.08.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 08:54:25 -0700 (PDT)
+From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
+To:     Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <wcw@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>, morbo@google.com
+Subject: [PATCH v2 1/1] pgo: Fix sleep in atomic section in prf_open()
+Date:   Thu,  3 Jun 2021 18:53:17 +0300
+Message-Id: <20210603155318.46346-1-jarmo.tiitto@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YLfV4EPW5Yw6wP+v@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/3 3:02, Jaegeuk Kim wrote:
-> Given RO feature in superblock, we don't need to check provisioning/reserve
-> spaces and SSA area.
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
-> 
-> Change log from v3:
->   - add feature sysfs entries
-> 
->   fs/f2fs/f2fs.h    |  3 +++
->   fs/f2fs/segment.c |  4 ++++
->   fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
->   fs/f2fs/sysfs.c   |  8 ++++++++
->   4 files changed, 46 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index eaf57b5f3c4b..8903c43091f8 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -168,6 +168,7 @@ struct f2fs_mount_info {
->   #define F2FS_FEATURE_SB_CHKSUM		0x0800
->   #define F2FS_FEATURE_CASEFOLD		0x1000
->   #define F2FS_FEATURE_COMPRESSION	0x2000
-> +#define F2FS_FEATURE_RO			0x4000
->   
->   #define __F2FS_HAS_FEATURE(raw_super, mask)				\
->   	((raw_super->feature & cpu_to_le32(mask)) != 0)
-> @@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
->   #define	NR_CURSEG_DATA_TYPE	(3)
->   #define NR_CURSEG_NODE_TYPE	(3)
->   #define NR_CURSEG_INMEM_TYPE	(2)
-> +#define NR_CURSEG_RO_TYPE	(2)
->   #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
->   #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
->   
-> @@ -4128,6 +4130,7 @@ F2FS_FEATURE_FUNCS(verity, VERITY);
->   F2FS_FEATURE_FUNCS(sb_chksum, SB_CHKSUM);
->   F2FS_FEATURE_FUNCS(casefold, CASEFOLD);
->   F2FS_FEATURE_FUNCS(compression, COMPRESSION);
-> +F2FS_FEATURE_FUNCS(readonly, RO);
+In prf_open() the required buffer size can be so large that
+vzalloc() may sleep thus triggering bug:
 
-If so, we'd better to use f2fs_sb_has_readonly() instead of F2FS_HAS_FEATURE()?
+======
+ BUG: sleeping function called from invalid context at include/linux/sched/mm.h:201
+ in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 337, name: cat
+ CPU: 1 PID: 337 Comm: cat Not tainted 5.13.0-rc2-24-hack+ #154
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+ Call Trace:
+  dump_stack+0xc7/0x134
+  ___might_sleep+0x177/0x190
+  __might_sleep+0x5a/0x90
+  kmem_cache_alloc_node_trace+0x6b/0x3a0
+  ? __get_vm_area_node+0xcd/0x1b0
+  ? dput+0x283/0x300
+  __get_vm_area_node+0xcd/0x1b0
+  __vmalloc_node_range+0x7b/0x420
+  ? prf_open+0x1da/0x580
+  ? prf_open+0x32/0x580
+  ? __llvm_profile_instrument_memop+0x36/0x50
+  vzalloc+0x54/0x60
+  ? prf_open+0x1da/0x580
+  prf_open+0x1da/0x580
+  full_proxy_open+0x211/0x370
+  ....
+======
 
-Thanks,
+Since we can't vzalloc while holding pgo_lock,
+split the code into steps:
+* First get buffer size via prf_buffer_size()
+  and release the lock.
+* Round up to the page size and allocate the buffer.
+* Finally re-acquire the pgo_lock and call prf_serialize().
+  prf_serialize() will now check if the buffer is large enough
+  and returns -EAGAIN if it is not.
 
->   
->   #ifdef CONFIG_BLK_DEV_ZONED
->   static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 380ef34e1a59..376c33ab71e2 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
->   		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
->   		unsigned int blkofs = curseg->next_blkoff;
->   
-> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-> +			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
-> +			continue;
-> +
->   		sanity_check_seg_type(sbi, curseg->seg_type);
->   
->   		if (f2fs_test_bit(blkofs, se->cur_valid_map))
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 2fa59c674cd9..fb490383c767 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   	int ret;
->   
->   	if (!options)
-> -		return 0;
-> +		goto default_check;
->   
->   	while ((p = strsep(&options, ",")) != NULL) {
->   		int token;
-> @@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   			return -EINVAL;
->   		}
->   	}
-> +default_check:
->   #ifdef CONFIG_QUOTA
->   	if (f2fs_check_quota_options(sbi))
->   		return -EINVAL;
-> @@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   	 */
->   	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
->   		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-> +
-> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
-> +		f2fs_err(sbi, "Allow to mount readonly mode only");
-> +		return -EROFS;
-> +	}
->   	return 0;
->   }
->   
-> @@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->   static void default_options(struct f2fs_sb_info *sbi)
->   {
->   	/* init some FS parameters */
-> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
-> +	else
-> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-> +
->   	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
->   	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
->   	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
-> @@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
->   		goto skip;
->   
-> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
-> +		err = -EROFS;
-> +		goto restore_opts;
-> +	}
-> +
->   #ifdef CONFIG_QUOTA
->   	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
->   		err = dquot_suspend(sb, -1);
-> @@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
->   	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
->   
-> -	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
-> +	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-> +			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
->   			ovp_segments == 0 || reserved_segments == 0)) {
->   		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
->   		return 1;
->   	}
-> -
->   	user_block_count = le64_to_cpu(ckpt->user_block_count);
-> -	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
-> +	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
-> +			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
->   	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
->   	if (!user_block_count || user_block_count >=
->   			segment_count_main << log_blocks_per_seg) {
-> @@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
->   			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
->   			return 1;
-> +
-> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> +			goto check_data;
-> +
->   		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
->   			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
->   				le32_to_cpu(ckpt->cur_node_segno[j])) {
-> @@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   			}
->   		}
->   	}
-> +check_data:
->   	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
->   		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
->   			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
->   			return 1;
-> +
-> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> +			goto skip_cross;
-> +
->   		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
->   			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
->   				le32_to_cpu(ckpt->cur_data_segno[j])) {
-> @@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   			}
->   		}
->   	}
-> -
-> +skip_cross:
->   	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
->   	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
->   
-> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> index 09e3f258eb52..62fbe4f20dd6 100644
-> --- a/fs/f2fs/sysfs.c
-> +++ b/fs/f2fs/sysfs.c
-> @@ -158,6 +158,9 @@ static ssize_t features_show(struct f2fs_attr *a,
->   	if (f2fs_sb_has_casefold(sbi))
->   		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
->   				len ? ", " : "", "casefold");
-> +	if (f2fs_sb_has_readonly(sbi))
-> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> +				len ? ", " : "", "readonly");
->   	if (f2fs_sb_has_compression(sbi))
->   		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
->   				len ? ", " : "", "compression");
-> @@ -578,6 +581,7 @@ enum feat_id {
->   	FEAT_SB_CHECKSUM,
->   	FEAT_CASEFOLD,
->   	FEAT_COMPRESSION,
-> +	FEAT_RO,
->   	FEAT_TEST_DUMMY_ENCRYPTION_V2,
->   };
->   
-> @@ -599,6 +603,7 @@ static ssize_t f2fs_feature_show(struct f2fs_attr *a,
->   	case FEAT_SB_CHECKSUM:
->   	case FEAT_CASEFOLD:
->   	case FEAT_COMPRESSION:
-> +	case FEAT_RO:
->   	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
->   		return sprintf(buf, "supported\n");
->   	}
-> @@ -723,12 +728,14 @@ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
->   #ifdef CONFIG_UNICODE
->   F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
->   #endif
-> +F2FS_FEATURE_RO_ATTR(readonly, FEAT_RO);
->   #ifdef CONFIG_F2FS_FS_COMPRESSION
->   F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
->   F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
->   F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
->   F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
->   #endif
-> +
->   /* For ATGC */
->   F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_ratio, candidate_ratio);
->   F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_count);
-> @@ -834,6 +841,7 @@ static struct attribute *f2fs_feat_attrs[] = {
->   #ifdef CONFIG_UNICODE
->   	ATTR_LIST(casefold),
->   #endif
-> +	ATTR_LIST(readonly),
->   #ifdef CONFIG_F2FS_FS_COMPRESSION
->   	ATTR_LIST(compression),
->   #endif
-> 
+New in this v2 patch:
+The -EAGAIN case was determined to be such rare event that
+running following in a loop:
+
+$cat /sys/kernel/debug/pgo/vmlinux.profraw > vmlinux.profdata;
+
+Didn't trigger it, and I don't know if it ever may occur at all.
+
+Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
+---
+ kernel/pgo/fs.c | 52 ++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 38 insertions(+), 14 deletions(-)
+
+diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
+index ef985159dad3..9afd6f001a1b 100644
+--- a/kernel/pgo/fs.c
++++ b/kernel/pgo/fs.c
+@@ -24,13 +24,14 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
++#include <linux/mm.h>
+ #include "pgo.h"
+ 
+ static struct dentry *directory;
+ 
+ struct prf_private_data {
+ 	void *buffer;
+-	unsigned long size;
++	size_t size;
+ };
+ 
+ /*
+@@ -213,6 +214,7 @@ static inline unsigned long prf_get_padding(unsigned long size)
+ 	return 7 & (sizeof(u64) - size % sizeof(u64));
+ }
+ 
++/* Note: caller *must* hold pgo_lock */
+ static unsigned long prf_buffer_size(void)
+ {
+ 	return sizeof(struct llvm_prf_header) +
+@@ -225,18 +227,21 @@ static unsigned long prf_buffer_size(void)
+ 
+ /*
+  * Serialize the profiling data into a format LLVM's tools can understand.
++ * Note: p->buffer must point into vzalloc()'d
++ * area of at least prf_buffer_size() in size.
+  * Note: caller *must* hold pgo_lock.
+  */
+-static int prf_serialize(struct prf_private_data *p)
++static int prf_serialize(struct prf_private_data *p, size_t buf_size)
+ {
+ 	int err = 0;
+ 	void *buffer;
+ 
++	/* get buffer size, again. */
+ 	p->size = prf_buffer_size();
+-	p->buffer = vzalloc(p->size);
+ 
+-	if (!p->buffer) {
+-		err = -ENOMEM;
++	/* check for unlikely overflow. */
++	if (p->size > buf_size) {
++		err = -EAGAIN;
+ 		goto out;
+ 	}
+ 
+@@ -259,27 +264,46 @@ static int prf_open(struct inode *inode, struct file *file)
+ {
+ 	struct prf_private_data *data;
+ 	unsigned long flags;
+-	int err;
++	size_t buf_size;
++	int err = 0;
+ 
+ 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 	if (!data) {
+ 		err = -ENOMEM;
+-		goto out;
++		goto out_free;
+ 	}
+ 
++	/* get buffer size */
+ 	flags = prf_lock();
++	buf_size = prf_buffer_size();
++	prf_unlock(flags);
+ 
+-	err = prf_serialize(data);
+-	if (unlikely(err)) {
+-		kfree(data);
+-		goto out_unlock;
++	/* allocate, round up to page size. */
++	buf_size = PAGE_ALIGN(buf_size);
++	data->buffer = vzalloc(buf_size);
++
++	if (!data->buffer) {
++		err = -ENOMEM;
++		goto out_free;
+ 	}
+ 
++	/* try serialize and get actual
++	 * data length in data->size
++	 */
++	flags = prf_lock();
++	err = prf_serialize(data, buf_size);
++	prf_unlock(flags);
++
++	if (err)
++		goto out_free;
++
+ 	file->private_data = data;
++	return 0;
+ 
+-out_unlock:
+-	prf_unlock(flags);
+-out:
++out_free:
++	if (data)
++		vfree(data->buffer);
++	kfree(data);
+ 	return err;
+ }
+ 
+
+base-commit: 5d0cda65918279ada060417c5fecb7e86ccb3def
+-- 
+2.31.1
+
