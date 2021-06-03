@@ -2,52 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D965D399C8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F936399C7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhFCI3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhFCI3w (ORCPT
+        id S229695AbhFCI1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:27:03 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:46936 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhFCI1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:29:52 -0400
-X-Greylist: delayed 414 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Jun 2021 01:28:08 PDT
-Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A399DC06174A;
-        Thu,  3 Jun 2021 01:28:08 -0700 (PDT)
-Received: from [IPv6:2003:e9:d722:28a1:9240:5b8a:f037:504] (p200300e9d72228a192405b8af0370504.dip0.t-ipconnect.de [IPv6:2003:e9:d722:28a1:9240:5b8a:f037:504])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: stefan@datenfreihafen.org)
-        by proxima.lasnet.de (Postfix) with ESMTPSA id 02BBFC02EE;
-        Thu,  3 Jun 2021 10:21:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
-        s=2021; t=1622708470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HyQTFQMfdHTiufBAcnI9P/Wr2W6Ljpu4A2px9nIQ4KU=;
-        b=DbMY5uxxDqgbj8Q0iGoJpkz8aKFIz58TxhEcSDJAxFbApN/BRtLXzST+cM1oM8AA5422AN
-        5PyMcHFkm2h92/QCxZX1TNT5p5x8AuTwA79VpaBtWvTgQ4EJJJgu2s7OQTA/uH7fa9x6ld
-        YD4bp2KWajjXV6ZqDSiCe/gaHrw9Pdn4owj+ef3k81FfbPAZ+4woRNR0X9JRUxvLdZdYVG
-        Zt63VQB34AVgMV+I0INTFu27HD9ELe6yOzX2EVmDikEJh4h97Jx0j9p7b3/CkkwFGiA8EH
-        8VrO7yCsBQ6V6jgWwdQjIFzFCjsicmMoyaf5JjuowfTHSVSpS3tqoBvgsoIhvQ==
-Subject: Re: [PATCH] net/ieee802154: drop unneeded assignment in
- llsec_iter_devkeys()
-To:     Yang Li <yang.lee@linux.alibaba.com>, alex.aring@gmail.com
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1619346299-40237-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Stefan Schmidt <stefan@datenfreihafen.org>
-Message-ID: <6bffca3c-6c85-b975-24d4-cdd1aa47380e@datenfreihafen.org>
-Date:   Thu, 3 Jun 2021 10:21:09 +0200
+        Thu, 3 Jun 2021 04:27:02 -0400
+Received: by mail-wm1-f54.google.com with SMTP id h12-20020a05600c350cb029019fae7a26cdso3131801wmq.5;
+        Thu, 03 Jun 2021 01:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yQJDvB1JFxS3yFsv4pf320LfhcVG0zOssVYg3NzlqgA=;
+        b=I/x7z7LAYRzWcblM2yCrnLmR3zEnGlDFv1W+OyYKnbCyzq1wwJ+JsINK9dwzpDIdG9
+         rY0P/d8DPOoEHLehu14IFuISeVQO2VQNNM95+QCrmNkf1JkkSxqMWPiPj4bl7s5XEcvA
+         bvqNjEOdeTUDD2FMaioDngX4YJg0O11UojgRNj0RAxxNTg2yW/L/B8tsiO6dhhrSKI82
+         k+mYbVJb/MSNS0eOvvwdXxLrNhivMb2KsnzO5dH5Meaa/zqEriy/y8qekB5IY5exP+21
+         Vy7q4K0zZcG7kKTahI971Y3y6Y44CIbeyklmssqYr+bbGxFcHbBGcE//x1RjOs9D/kMx
+         e0vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yQJDvB1JFxS3yFsv4pf320LfhcVG0zOssVYg3NzlqgA=;
+        b=KgSsKbj3WIR6j8VX9/nQtO1vnR7g98oiehEGZKL4P2sJ1hcHyBrYCFRsXwbBqMyp5/
+         yiWH80xBOJGDMQkq8Du6hu5Nbw79j8LZSyyBj9YSO+b0yRF8qCFdOxQUX3148j/rW3VX
+         2V9DZT81lpT7xamdHL+4HJ0D1m49rLAOM5ug+hshI4mv2W2zAyGPMtsLORTSOtucYCcE
+         ZA3n+O2ZpmUca2sr3lyOTS5FtjF5LT+fltbvY+0frf41G1Ne4CzMXwWyijxBF1FAvo3J
+         mHCe3pkWkTsigdZkQRJsE74EvQy+R7ImCRSzoL9FePrM62yzztLojo3Pn48mRV6+MQ07
+         VX6g==
+X-Gm-Message-State: AOAM531i6Gt8WfNk2v5RFCri/1Q2ZzTufduy7whAr8HyFd/i+ek/KR+V
+        Sy+IaNCdVyYcgaifD2OrplktKnSpRj/Fz4uV
+X-Google-Smtp-Source: ABdhPJx+No2weO8B6eK3SX2zlMD4Lpms4aV5V7wmjUQ0F8hlpbg2PnkZwy5HQ68GvUnHmHX0G/0e5g==
+X-Received: by 2002:a05:600c:4a29:: with SMTP id c41mr22632772wmp.17.1622708646498;
+        Thu, 03 Jun 2021 01:24:06 -0700 (PDT)
+Received: from [192.168.178.196] ([171.33.179.232])
+        by smtp.gmail.com with ESMTPSA id 6sm2028921wmg.17.2021.06.03.01.24.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 01:24:06 -0700 (PDT)
+Subject: Re: Backporting fix for #199981 to 4.19.y?
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c75fcd12-e661-bc03-e077-077799ef1c44@gmail.com>
+ <YLiNrCFFGEmltssD@kroah.com>
+From:   =?UTF-8?Q?Lauren=c8=9biu_P=c4=83ncescu?= <lpancescu@gmail.com>
+Message-ID: <5399984e-0860-170e-377e-1f4bf3ccb3a0@gmail.com>
+Date:   Thu, 3 Jun 2021 10:24:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <1619346299-40237-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <YLiNrCFFGEmltssD@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -55,60 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+On 6/3/21 10:07 AM, Greg KH wrote:
+> On Thu, Jun 03, 2021 at 09:53:46AM +0200, Laurențiu Păncescu wrote:
+>> Hi there,
+>>
+>> I'm running Debian Buster on an old Asus EeePC and I see the battery always
+>> at 100% when unplugged, with an estimated battery life of 4200 hours, no
+>> matter how long I've been using it without AC power.
+>>
+>> I suspect this might be bug #201351, marked as duplicate of #199981 and
+>> fixed in 5.0-rc1. Would you please consider backporting it to the 4.19 LTS
+>> kernel?
+> 
+> What specific commit in Linus's tree is this so we know what to
+> backport?
 
-On 25.04.21 12:24, Yang Li wrote:
-> In order to keep the code style consistency of the whole file,
-> redundant return value ‘rc’ and its assignments should be deleted
-> 
-> The clang_analyzer complains as follows:
-> net/ieee802154/nl-mac.c:1203:12: warning: Although the value stored to
-> 'rc' is used in the enclosing expression, the value is never actually
-> read from 'rc'
-> 
-> No functional change, only more efficient.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->   net/ieee802154/nl-mac.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/ieee802154/nl-mac.c b/net/ieee802154/nl-mac.c
-> index 0c1b077..a6a8cf6 100644
-> --- a/net/ieee802154/nl-mac.c
-> +++ b/net/ieee802154/nl-mac.c
-> @@ -1184,7 +1184,7 @@ static int llsec_iter_devkeys(struct llsec_dump_data *data)
->   {
->   	struct ieee802154_llsec_device *dpos;
->   	struct ieee802154_llsec_device_key *kpos;
-> -	int rc = 0, idx = 0, idx2;
-> +	int idx = 0, idx2;
->   
->   	list_for_each_entry(dpos, &data->table->devices, list) {
->   		if (idx++ < data->s_idx)
-> @@ -1200,7 +1200,7 @@ static int llsec_iter_devkeys(struct llsec_dump_data *data)
->   						      data->nlmsg_seq,
->   						      dpos->hwaddr, kpos,
->   						      data->dev)) {
-> -				return rc = -EMSGSIZE;
-> +				return -EMSGSIZE;
->   			}
->   
->   			data->s_idx2++;
-> @@ -1209,7 +1209,7 @@ static int llsec_iter_devkeys(struct llsec_dump_data *data)
->   		data->s_idx++;
->   	}
->   
-> -	return rc;
-> +	return 0;
->   }
->   
->   int ieee802154_llsec_dump_devkeys(struct sk_buff *skb,
-> 
+Hi Greg,
 
-This patch has been applied to the wpan tree and will be
-part of the next pull request to net. Thanks!
+I think it's commit b1c0330823fe842dbb34641f1410f0afa51c29d3.
 
-regards
-Stefan Schmidt
+Many thanks,
+Laurențiu
+
+
+https://github.com/torvalds/linux/commit/b1c0330823fe842dbb34641f1410f0afa51c29d3
