@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4938E39A93B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4612339A961
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhFCRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:33:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57112 "EHLO mail.kernel.org"
+        id S231300AbhFCRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:41:13 -0400
+Received: from mg.ssi.bg ([178.16.128.9]:52868 "EHLO mg.ssi.bg"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229982AbhFCRdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:33:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14028600EF;
-        Thu,  3 Jun 2021 17:31:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622741497;
-        bh=CYn3EZTKJSh4MDX20btEjoQc2gajFSLKSEiCLpjOtyY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UAfQrL/7OJGOkvO3MmOhUAvtCeD/mHVyyYbGmRCp6YswxdYsZq38j7rp2gh0G4bhW
-         L98RJBLj9EVzi9azrc/Av2CuAvjOzYOtDhxzLz819aT/E3Wm/eBofItZHJb+he3jFe
-         gMhfZD35ABXCWbxTpPJMR4U3aAkVMD3MMzM9724UXggGSCuSLk95MHApGY0Vrnq435
-         /Ql2LfZn30+bGoyfvo7j9QMIrgh83CLd7NlfSlJQORtxTenr6qxgIoe3eK8FcA/f0f
-         WvyPBLVV1JHqbQ0MGwJOd3CStKpYjqJOFOiOhGphNIJ8I8AErF1fedToDDc5a7AOi3
-         wPMrxiTypLfQQ==
-Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
- remove update_pasid()
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
- <87mtsd6gr9.ffs@nanos.tec.linutronix.de> <YLShmFEzddfm7WQs@zn.tnic>
- <87y2bv438p.ffs@nanos.tec.linutronix.de>
- <36866b38ec92425b879881a88acf547b@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <db552f51-76ee-b7f5-20f1-14f1c703d423@kernel.org>
-Date:   Thu, 3 Jun 2021 10:31:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231246AbhFCRlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:41:12 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Jun 2021 13:41:10 EDT
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id 4909531AD7;
+        Thu,  3 Jun 2021 20:32:17 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
+        by mg.ssi.bg (Proxmox) with ESMTP id 30E0031ACD;
+        Thu,  3 Jun 2021 20:32:16 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id 2B7ED3C0332;
+        Thu,  3 Jun 2021 20:32:13 +0300 (EEST)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 153HW882019762;
+        Thu, 3 Jun 2021 20:32:09 +0300
+Date:   Thu, 3 Jun 2021 20:32:08 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Xin Long <lucien.xin@gmail.com>
+cc:     syzbot <syzbot+e562383183e4b1766930@syzkaller.appspotmail.com>,
+        coreteam@netfilter.org, Simon Horman <horms@verge.net.au>,
+        LKML <linux-kernel@vger.kernel.org>, lvs-devel@vger.kernel.org,
+        network dev <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] memory leak in ip_vs_add_service
+In-Reply-To: <CADvbK_duDeZidW1mgSyNo+f1Hj4L0V6=L-Upfgp+5DEu5P-8Ag@mail.gmail.com>
+Message-ID: <b216d7a4-c3dd-3714-3897-3124769c88f2@ssi.bg>
+References: <000000000000c91e6f05c3144acc@google.com> <CADvbK_duDeZidW1mgSyNo+f1Hj4L0V6=L-Upfgp+5DEu5P-8Ag@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <36866b38ec92425b879881a88acf547b@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/21 1:37 PM, Luck, Tony wrote:
->>> ... so on a PASID system, your trivial reproducer would theoretically
->>> fire the same way and corrupt FPU state just as well.
->>
->> This is worse and you can't selftest it because the IPI can just hit in
->> the middle of _any_ FPU state operation and corrupt state.
+
+	Hello,
+
+On Wed, 2 Jun 2021, Xin Long wrote:
+
+> On Mon, May 24, 2021 at 10:33 AM syzbot
+> <syzbot+e562383183e4b1766930@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    c3d0e3fd Merge tag 'fs.idmapped.mount_setattr.v5.13-rc3' o..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=148d0bd7d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=ae7b129a135ab06b
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=e562383183e4b1766930
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15585a4bd00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13900753d00000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+e562383183e4b1766930@syzkaller.appspotmail.com
+> >
+> > BUG: memory leak
+> > unreferenced object 0xffff888115227800 (size 512):
+> >   comm "syz-executor263", pid 8658, jiffies 4294951882 (age 12.560s)
+> >   hex dump (first 32 bytes):
+> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >   backtrace:
+> >     [<ffffffff83977188>] kmalloc include/linux/slab.h:556 [inline]
+> >     [<ffffffff83977188>] kzalloc include/linux/slab.h:686 [inline]
+> >     [<ffffffff83977188>] ip_vs_add_service+0x598/0x7c0 net/netfilter/ipvs/ip_vs_ctl.c:1343
+> >     [<ffffffff8397d770>] do_ip_vs_set_ctl+0x810/0xa40 net/netfilter/ipvs/ip_vs_ctl.c:2570
+> >     [<ffffffff838449a8>] nf_setsockopt+0x68/0xa0 net/netfilter/nf_sockopt.c:101
+> >     [<ffffffff839ae4e9>] ip_setsockopt+0x259/0x1ff0 net/ipv4/ip_sockglue.c:1435
+> >     [<ffffffff839fa03c>] raw_setsockopt+0x18c/0x1b0 net/ipv4/raw.c:857
+> >     [<ffffffff83691f20>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2117
+> >     [<ffffffff836920f2>] __do_sys_setsockopt net/socket.c:2128 [inline]
+> >     [<ffffffff836920f2>] __se_sys_setsockopt net/socket.c:2125 [inline]
+> >     [<ffffffff836920f2>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2125
+> >     [<ffffffff84350efa>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+> >     [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> do_ip_vs_set_ctl() allows users to add svc with the flags field set.
+> when IP_VS_SVC_F_HASHED is used, and in ip_vs_svc_hash()
+> called ip_vs_add_service() will trigger the err msg:
 > 
-> That sounds like we should abandon the "IPI all the other threads
-> to force enable the PASID for them" approach. It would just be a
-> nightmare of papering over cracks when the IPI was delivered at
-> some inconvenient moment when the recipient was in the middle
-> of touching xsave state.
+> IPVS: ip_vs_svc_hash(): request for already hashed, called from
+> do_ip_vs_set_ctl+0x810/0xa40
 > 
-> I've told Fenghua to dig out the previous iteration of this patch where
-> the plan was to lazily fix the PASID_MSR in other threads in the #GP
-> handler.
+> and the svc allocated will leak.
+> 
+> so fix it by mask the flags with ~IP_VS_SVC_F_HASHED in
+> ip_vs_copy_usvc_compat(), while at it also remove the unnecessary
+> flag IP_VS_SVC_F_HASHED set in ip_vs_edit_service().
 
-Blech.  Also this won't work for other PASID-like features.
+	The net tree already contains fix for this problem.
 
-I have a half-written patch to fix this up for real.  Stay tuned.
+Regards
 
-> Seems like a better direction than trying to fix the IPI method. The virtualization
-> folks will like this way more because IPI in guest causes a couple of VMEXIT
-> so is somewhat expensive.
-
-It happens at most once per PASID-using process.
+--
+Julian Anastasov <ja@ssi.bg>
 
