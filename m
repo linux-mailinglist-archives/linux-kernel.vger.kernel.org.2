@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F64399DB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB4A399DB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhFCJ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:26:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:36356 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCJ0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:26:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31D5611FB;
-        Thu,  3 Jun 2021 02:24:22 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CB7A3F774;
-        Thu,  3 Jun 2021 02:24:19 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 10:24:11 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210603092411.GA4181@e120325.cambridge.arm.com>
-References: <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
- <20210526121546.GA13262@e120325.cambridge.arm.com>
- <20210526125133.GB13262@e120325.cambridge.arm.com>
- <d4dc6630-041f-bf61-898a-6f402b993fbc@arm.com>
- <20210526214004.GA1712@e120325.cambridge.arm.com>
- <14593ba7-eed9-f035-724c-5cadbb859adc@arm.com>
- <20210527170729.GA20994@e120325.cambridge.arm.com>
- <4f43a9a8-b64e-bb47-b3c1-f51165f40249@arm.com>
- <20210602194805.GA18136@e120325.cambridge.arm.com>
- <32ffee58-5ea9-1e01-c134-9fb90d1b1771@arm.com>
+        id S229734AbhFCJ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:28:19 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:37634 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhFCJ2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:28:18 -0400
+Received: by mail-pf1-f178.google.com with SMTP id y15so4446322pfl.4;
+        Thu, 03 Jun 2021 02:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l4/ZEJJ31ozJEyCs+kGbSZH2zkdT9cJBOBcyJ9YhVcY=;
+        b=Sk61fuP3Cd9J21TyhG6+KIXsm8Z6qdOrPdGOPCst9C9I6h6Gj3gjwAlGMMZjVUA16e
+         2n7Jtg7iz64CBTrsmV3RTAODRQ/T0ETaHc1oksoyJxm1YjkFJd++AW9bTqmpG1p5fTMX
+         er1lBxS7L/XSgLppQZOf172g0jqclN9pZS7ElDd1jf9cfYf80ycUQqPM/v/PRZzCRJaZ
+         xK5R9I1oSvn9/WnbXTikoGtNl8gAFVrsG3JwU89GmM6iHQnbrhH86eJDELmbdVSm4Bvx
+         UXqeGKriUVhDS2PYBs1eHL3r60fzl1oVMvy9ZfUAa+NXFiBA9uxOOPab3G7OWH9JMyAk
+         TSOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l4/ZEJJ31ozJEyCs+kGbSZH2zkdT9cJBOBcyJ9YhVcY=;
+        b=GtVbf6g5+tgBOe8G9I0buURH+BeBcEIN7JFqVIPP1Erv7SLWMDvs+rQ2bNc4WnK4/+
+         yBb1x3Kg2iPz+JmHXguLZfpan2ID6zT1GSYd8DEuu59Nswa4GNqP3bl3nKJ3poL7sBXo
+         PgBChoLEKCUdi2arZqTzEEwC4vP4lx6wJMHp7Kz463z4yo82V40Ya7drLGv20YJWxAPy
+         SaMlrqHPeeuk+otlIqizkOicGNk7VPBCAe8Q0Zy8beWyTGN5bOlXIjZGKb8va+518H+d
+         92aqjhuuO+jCQEeJaXskXWAOSyFVC1sFQiGow+qhtevkeu5BHqgL9U6K+wvZQf3znr6Y
+         TnjA==
+X-Gm-Message-State: AOAM530PmjIgywtgCp6QOWFmRlNILcSbdTg9jP2wKT78hNZAYWl+cMsk
+        I+XaMZQj6gimlIik/a4fMIZ5AuUDJLc0+8pBFRY=
+X-Google-Smtp-Source: ABdhPJwGSZgtC7JFTyVTCDfWsj60TMbykpRhGWXOq27OyhFLx4mZrQNZb8Mlm4q7Z6T0Wn30p0THOj6LWxEqC3feclU=
+X-Received: by 2002:a63:b507:: with SMTP id y7mr38636329pge.74.1622712318343;
+ Thu, 03 Jun 2021 02:25:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32ffee58-5ea9-1e01-c134-9fb90d1b1771@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210531132226.47081-1-andriy.shevchenko@linux.intel.com>
+ <5dd2a42d-b218-0b23-aa14-7e5681e0fb3a@datenfreihafen.org> <CAHp75VdcFut0Tks3O=HJPLncebgDdfEv7Robm9ujG6yL+PT3OQ@mail.gmail.com>
+ <bc7ad567-5dd4-3176-2b71-5dd36cc03875@datenfreihafen.org>
+In-Reply-To: <bc7ad567-5dd4-3176-2b71-5dd36cc03875@datenfreihafen.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Jun 2021 12:25:02 +0300
+Message-ID: <CAHp75Vd76Xz1QCReedO=Fh09B34MViAcnDv2SwRsatWAdmgXPg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mrf29j40: Drop unneeded of_match_ptr()
+To:     Stefan Schmidt <stefan@datenfreihafen.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-wpan@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alan Ott <alan@signal11.us>,
+        Alexander Aring <alex.aring@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:09:48AM +0200, Dietmar Eggemann wrote:
-> On 02/06/2021 21:48, Beata Michalska wrote:
-> > On Wed, Jun 02, 2021 at 07:17:12PM +0200, Dietmar Eggemann wrote:
-> >> On 27/05/2021 19:07, Beata Michalska wrote:
-> >>> On Thu, May 27, 2021 at 05:08:42PM +0200, Dietmar Eggemann wrote:
-> >>>> On 26/05/2021 23:40, Beata Michalska wrote:
-> >>>>> On Wed, May 26, 2021 at 08:17:41PM +0200, Dietmar Eggemann wrote:
-> >>>>>> On 26/05/2021 14:51, Beata Michalska wrote:
-> >>>>>>> On Wed, May 26, 2021 at 01:15:46PM +0100, Beata Michalska wrote:
-> >>>>>>>> On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
-> >>>>>>>>> On 25/05/2021 12:29, Beata Michalska wrote:
-> >>>>>>>>>> On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
-> >>>>>>>>>>> On 24/05/21 23:55, Beata Michalska wrote:
-> >>>>>>>>>>>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
-> >>>>>>>>>>>>> On 24/05/21 11:16, Beata Michalska wrote:
-> 
-> [...]
-> 
-> > So what I have done is :
-> > 
-> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > index 77e6f79235ad..ec4ae225687e 100644
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> > @@ -1324,6 +1324,7 @@ asym_cpu_capacity_classify(struct sched_domain *sd,
-> >         if (!asym_cap_miss)
-> >                 sd_asym_flags |= SD_ASYM_CPUCAPACITY_FULL;
-> >  
-> > +       WARN_ONCE(cpu_smt_flags() & sd->flags, "Detected CPU capacity asymmetry on SMT level");
-> >  leave:
-> >         return sd_asym_flags;
-> >  }
-> > 
-> > Comment can be adjusted.
-> > This would sit in the classify function to nicely wrap asymmetry bits in one
-> > place. What do you think ?
-> 
-> ... and you would need to pass in the sched domain pointer ;-)
-Yes, as that was for current version.
-> 
-> Still prefer to check it in sd_init() since there is where we set the flags.
-> 
-> But you can't do 'cpu_smt_flags() & sd->flags'. MC level would hit too,
-> since it has SD_SHARE_PKG_RESOURCES as well.
-Yeah, I would need to check:
-	cpu_smt_flags() & sd->flags == cpu_smt_flags()
-and if I am to move it to sd_init then additionally checking for 
-SD_ASYM_CPUCAPACITY ... and #ifdef for SMT .....
-so I guess I will go with your proposal using the SD_SHARE_CPUCAPACITY directly.
-Will update in the v7.
+On Thu, Jun 3, 2021 at 12:23 PM Stefan Schmidt
+<stefan@datenfreihafen.org> wrote:
+> On 03.06.21 11:19, Andy Shevchenko wrote:
+> > On Thu, Jun 3, 2021 at 11:35 AM Stefan Schmidt
+> > <stefan@datenfreihafen.org> wrote:
+> >> On 31.05.21 15:22, Andy Shevchenko wrote:
+> >>> Driver can be used in different environments and moreover, when compiled
+> >>> with !OF, the compiler may issue a warning due to unused mrf24j40_of_match
+> >>> variable. Hence drop unneeded of_match_ptr() call.
+> >>>
+> >>> While at it, update headers block to reflect above changes.
+> >
+> > ...
+> >
+> >> I took the freedom to fix the typo in the subject line and add a better
+> >> prefix:
+> >>
+> >> net: ieee802154: mrf24j40: Drop unneeded of_match_ptr()
+> >
+> > Right, thanks!
+> >
+> >> This patch has been applied to the wpan tree and will be
+> >> part of the next pull request to net. Thanks!
+> >
+> > Btw, which tree are you using for wpan development? I see one with 6
+> > weeks old commits, is that the correct one?
+>
+> I assume you mean this one:
+> https://git.kernel.org/pub/scm/linux/kernel/git/sschmidt/wpan.git/
 
----
-BR
-B.
+I think so.
+
+> Its the correct one. I was a bit busy lately, but luckily ieee802154
+> patches again net apply fine most of the time as well.
+>
+> I collected the piled up patches right now and will send a pull request
+> after some testing later today. Once that is merged I will update my
+> tree as well.
+
+I see. Thanks for explaining your workflow.
+
+-- 
+With Best Regards,
+Andy Shevchenko
