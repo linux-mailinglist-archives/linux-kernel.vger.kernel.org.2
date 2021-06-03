@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C75C399A69
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A54F399A74
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhFCGFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:05:04 -0400
-Received: from mail-qk1-f176.google.com ([209.85.222.176]:43770 "EHLO
-        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhFCGFD (ORCPT
+        id S229794AbhFCGFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:05:53 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:38480 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFCGFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:05:03 -0400
-Received: by mail-qk1-f176.google.com with SMTP id r17so4896034qkp.10;
-        Wed, 02 Jun 2021 23:03:19 -0700 (PDT)
+        Thu, 3 Jun 2021 02:05:52 -0400
+Received: by mail-oi1-f182.google.com with SMTP id z3so5224214oib.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 23:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aVGBSqEMWvho2HHHhcn8tJYFWMPyQsDHrSqOC/pMDus=;
-        b=IBXfs6RvwlME9tLQ5hjQLVzuBZS2IzCpbKO/Cfg/gf54yiK7m47CiRdEiRFZDUfF6A
-         92ZwKKSGkNKvkBoeCWiT6svOo0AgSXvAXABfFUv/RKq4c8RqHKChpAn3UO5yRcFF0YJj
-         hDB/6kKVqUOAmfSzrHtqRTxSSfM++NCalWdg8=
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=W4MRGvvlAsIvztCMODsejOnW9x+vcPEBs+GlUbnr7QU=;
+        b=kPUJ5NjxGkUGtAhRbO5ZjIIXgnTH7iqzJmf4glxC699yJkOagEj5NCwDVwwBa4Kcn5
+         UZaVpRJ+dogRyu9PWzJ+xA6ZJcmzaSWPbARjEQ6ZmY+VwM0+UH4dQTSjqrps7gu6iDPe
+         XmUjSru4mP+DCOXotRSPPv1R1WLyOW0IH/CI0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aVGBSqEMWvho2HHHhcn8tJYFWMPyQsDHrSqOC/pMDus=;
-        b=nXiZbDkukkROCe6JJrdANs1TOMkRIqHx7zQso9dNebmD6aXATR3+ZwrX6AqUUBDAqc
-         CveFa4agg2gQgf2bjtatcCZf2b1i0boHs7trONjOJlFtmY4m/kMTEhmwuE4uulE4206n
-         szntFQf1n/s8gkU5hSyA/CyZ6rjxYdyQTSoeyagflujn5pyPcE5Ufm6Y/2swxW/egErO
-         PB3xRG6QscuURMzdMJq8ULn8DhlMgKOd2Ql54aVdakZrYLJssv9ZfksHtAQ7VtR6ojiQ
-         o2iqni0itbSR+Du+3+SYud3+IHBdWhdwagtjT4Y+GcYdhBHaGAhEexjW38PB7v9tV32Y
-         NDZw==
-X-Gm-Message-State: AOAM533N29339e//ifz+djXBCaiPupx4TnGlDEFNJJalICPxAPNr/kqX
-        jU1ELG5A/ciOfzZsKFlFtZf5nOlg/IBB8T2V2kc=
-X-Google-Smtp-Source: ABdhPJw/OThWUwK486H/0pNkThCivzv84ZpWEH1P9Vep0jbnQKir8Pp/quWobR1asuUH1GRm/ZyXjQu1xXQ4lnMxOFE=
-X-Received: by 2002:a05:620a:704:: with SMTP id 4mr30648908qkc.66.1622700139228;
- Wed, 02 Jun 2021 23:02:19 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=W4MRGvvlAsIvztCMODsejOnW9x+vcPEBs+GlUbnr7QU=;
+        b=csrfPMLub8FhXKgDrNsk1aKgA+xu5IjVBXn6Sp7w+XJLo0HyG6ItUWzkK1itREe8pR
+         fjgclB471QixQ5ARaqN+d3h7xEOMStakH8jrKjzgQ4xgugwN/yvb5Gm5FwYOhL9MZ38U
+         NxjPIgwjHDPDdryfXuTtTZGr8+ZJvPMJUpbGgnLoZeHiorovD0Izegzd7pySQUj+PpNo
+         oiDDuGsPQdd0DyrwM7cWjpDakM/ueLwmo902PIuUIo3nB1dBQB345dDUd8x1mUnTiImm
+         nuK6PEOhosTf8byLvmz+JGJsgnJGPHcen8pzIro/FEQzLE8syZsvqSV8SzkDgijaeO/L
+         XWEw==
+X-Gm-Message-State: AOAM533DkAwPyiXdzUJS4m+IW219oc2WYNlroYYr9iqbQw4uqL+G1xsG
+        dwJt0Iedwqn3nK2vznOEMCoxN5IPVQJDIgeHWeO+gQ==
+X-Google-Smtp-Source: ABdhPJwbZadfDpzhFToZSrCDEjvue32gZ2YzP9LLNu6q7SP0cOQDP7qleH6aBFPvVofyULuDdYDDPf7Y1Yeb6ZUQdwE=
+X-Received: by 2002:aca:654d:: with SMTP id j13mr6376997oiw.125.1622700188427;
+ Wed, 02 Jun 2021 23:03:08 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 2 Jun 2021 23:03:07 -0700
 MIME-Version: 1.0
-References: <20210316085932.2601-1-troy_lee@aspeedtech.com>
- <CACPK8XeYtaLLWDMR8xZhERrQ_WCUJ2RM_JZmZNQ6oZSvgSDM_w@mail.gmail.com> <CAGm54UHgQSMh8WLzRf7Swhv9mmzNBuEK6eKf9eX0ASp95hjARw@mail.gmail.com>
-In-Reply-To: <CAGm54UHgQSMh8WLzRf7Swhv9mmzNBuEK6eKf9eX0ASp95hjARw@mail.gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 3 Jun 2021 06:02:07 +0000
-Message-ID: <CACPK8XdgLP7XSH0Zkej87ynnKTbEUW+RUBiSMgDH1H-LD5VXhg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v1] ARM: dts: Fix 64MiB OpenBMC flash
- layout and aspeed-ast2600-evb.dts
-To:     Lei Yu <yulei.sh@bytedance.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Troy Lee <troy_lee@aspeedtech.com>,
-        John Wang <wangzhiqiang.bj@bytedance.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>, leetroy@gmail.com
+In-Reply-To: <1622652185-7157-1-git-send-email-khsieh@codeaurora.org>
+References: <1622652185-7157-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 2 Jun 2021 23:03:07 -0700
+Message-ID: <CAE-0n516E_x+h2BFze0mozjdpwqa3_kb10cKWdcFURXkNj8k6w@mail.gmail.com>
+Subject: Re: [PATCH v4] drm/msm/dp: power off DP phy at suspend
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 at 07:35, Lei Yu <yulei.sh@bytedance.com> wrote:
+Quoting Kuogee Hsieh (2021-06-02 09:43:05)
+> Normal DP suspend operation contains two steps, display off followed
+> by dp suspend, to complete system wide suspending cycle if display is
+> up at that time. In this case, DP phy will be powered off at display
+> off. However there is an exception case that depending on the timing
+> of dongle plug in during system wide suspending, sometimes display off
+> procedure may be skipped and dp suspend was called directly. In this
+> case, dp phy is stay at powered on (phy->power_count = 1) so that at
+> next resume dp driver crash at main link clock enable due to phy is
+> not physically powered on. This patch will call dp_ctrl_off_link_stream()
+> to tear down main link and power off phy at dp_pm_suspend() if main link
+> had been brought up.
 >
-> On Fri, Apr 16, 2021 at 11:03 AM Joel Stanley <joel@jms.id.au> wrote:
-> >
-> > On Tue, 16 Mar 2021 at 08:59, Troy Lee <troy_lee@aspeedtech.com> wrote:
-> > >
-> > > Aspeed AST2600 u-boot requires 600KiB+ flash space. Sharing the same
-> > > openbmc-flash-layout-64.dtsi requires to resize the flash partition.
-> > >
-> > > The updated flash layout as follows:
-> > > - u-boot: 896 KiB
-> > > - u-boot-env: 128 KiB
-> > > - kernel: 9MiB
-> > > - rofs: 32 MiB
-> > > - rwfs: 22 MiB
-> >
-> > Changing the 64MB layout will break the systems that are already using
-> > this layout. I'll get the Bytedance people to chime in, as theirs is
-> > the only system using this layout so far.
-> >
-> > John, Lei?
+> Changes in V2:
+> -- stashed changes into dp_ctrl.c
+> -- add is_phy_on to monitor phy state
 >
-> Because the kernel's offset is updated, several other changes are required:
-> 1. The related offsets, which is already sent to
-> https://gerrit.openbmc-project.xyz/c/openbmc/meta-phosphor/+/39343
-> 2. The u-boot patch to update the `bootm` address and make sure it
-> only applies to the 64MiB layout.
+> Changes in V3:
+> -- delete is_phy_on
+> -- call dp_ctrl_off_link_stream() from dp_pm_suspend()
 >
-> Without the above two changes, I would suggest holding the merge.
+> Changes in V4:
+> -- delete changes made at dp_power.c
+> -- move main link status checking to dp_pm_suspend
+>
+> Fixes: 0114f31a2903 ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly)
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-Just confirming that we are okay to go ahead with this change, as per
-the discussion on the openbmc list[1].
-
-[1] https://lore.kernel.org/openbmc/CACPK8XdVNXSfzDBPryjQh_4S0yU4Tp6VOOtju+L_DcfgHumPJw@mail.gmail.com/
-
-Cheers,
-
-Joel
+This should be 8dbde399044b
