@@ -2,55 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A1F399A7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6903B399A7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhFCGN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:13:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhFCGNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:13:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C925261026;
-        Thu,  3 Jun 2021 06:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622700700;
-        bh=Q73hleFszlpPr7Oa7eVZiC4Dnz966gpJ5+K8H/8Os2o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ArxxWSnO+TdzZmqJcyZv1mF6rXgBUNVRd6lQry26UdFoVTjnfVhJbNS3J01UZPR1E
-         iYpROH+9QjrVVn4sw9LmgBE1YH1gmv8iq8BQaFcZiXd+9ST92XFt4qhAT8gpYyYu1A
-         pENYiOfHfrvrosOFt3SUc3KN2UmkgPEYYVS0V2a4WfLbNw4gTxmhMrKBmMBRqSf0Yw
-         6vUwS/A4wk64OvAkbUIo+ZlxTTC6ulUvNZAi8bwrIesqGB5hfZidbMxa7T4xK9qL8j
-         FFC3fuIbMoxATN1XtGBP98Q1bubMIgXj3A8xOgfAPKmgHFS8rgbeGcz1cXdNSdX92H
-         iGgAgUPTnTrjA==
-Date:   Thu, 3 Jun 2021 11:41:36 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Konstantin Porotchkin <kostap@marvell.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/12] MAINTAINERS: update
- marvell,armada-3700-utmi-phy.yaml reference
-Message-ID: <YLhymAdxSJrYfcnt@vkoul-mobl>
-References: <cover.1622648507.git.mchehab+huawei@kernel.org>
- <9342a88ed44726a1cc405470c834d746d4d0524c.1622648507.git.mchehab+huawei@kernel.org>
+        id S229765AbhFCGQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:16:32 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:39739 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhFCGQc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 02:16:32 -0400
+Received: by mail-oi1-f171.google.com with SMTP id m137so1359703oig.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 23:14:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=e3PDKrL5MVOFhdI4AdMvQfhjcpRkxau04Ply0138w7E=;
+        b=LAemQ8PV7z/sZ5epDYtMuLEXUGtStxQKEHRht7XgX/IxKUJiGCdh0Eplyp1k9ExmQo
+         bcurPq3MV8FHoiU9iybK/cgbxOzbSfVwIlWcrO47AuMn9lHDa8W4aPQgI9V2SmCZboCS
+         1IKUirWjiGGLdTW2Dy00FWB7sqnBp+gPaN2gM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=e3PDKrL5MVOFhdI4AdMvQfhjcpRkxau04Ply0138w7E=;
+        b=ZD5T/KsEI/+7RHOZm/Yf95fASz8VuwXm69j15Qo1982CEoqZ/lAQq4Rowh8wuaU1ow
+         jW5xJs95TAeFwj/1rL/ShXWloAtmUxPKjgRaYZHUOLDtiFhlA+5w8IlSOdb7fIaM0icI
+         ajNPMBKGMuhxc/K6bV1nUCbbZrtUCASpR/9bx47eXEX0vGXPbsEof8I5O7SwYJf9Xo70
+         kiPWutJtDjlh1JihM6Yvq/7WPFMNn13rkygFNnndSKnaL6wtXl/e/k7KX+SLraA1D7Wp
+         g7iZDoNTkG1u4gP17JT4p1xcwjgL1wGAlTPaTxPbfawq6/By9LKikmbm+nklEq78fnql
+         gaMw==
+X-Gm-Message-State: AOAM531P8jx8xCZO2Tu/r1WCjNNP4mDBxXzkBIw2hUDYmBCk1/k49oy8
+        i/2UJjY+A7zVgfm+qYYP88J04sMSHJZvWg6uS0FpdA==
+X-Google-Smtp-Source: ABdhPJxVRXGh0McY8Kq2QVZFEf5hHPhoESVxSZxB6o4pMi/aki7Vp94/9fv3Xkvv0PvK2plcOuy9w5nX9VR+IhhGzqQ=
+X-Received: by 2002:a54:4501:: with SMTP id l1mr24414113oil.19.1622700820736;
+ Wed, 02 Jun 2021 23:13:40 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 2 Jun 2021 23:13:40 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9342a88ed44726a1cc405470c834d746d4d0524c.1622648507.git.mchehab+huawei@kernel.org>
+In-Reply-To: <YLhbpYq8/+JUlP27@google.com>
+References: <20210510220012.2003285-1-swboyd@chromium.org> <YJnllh7GfuVlL3ze@google.com>
+ <CAE-0n539o_DWqHbPuarWozk4Rev_d++2Da=AvOYALwvB1j3dVA@mail.gmail.com>
+ <YLgt2ZJ6GZwUNL8T@google.com> <CAE-0n52S72vWZkzwva2_uqsMMdgdKbX7-MKtNE5PdaetyeqN2Q@mail.gmail.com>
+ <YLhbpYq8/+JUlP27@google.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 2 Jun 2021 23:13:40 -0700
+Message-ID: <CAE-0n50PZ+vUH_dSQnunViWrkEdQNHyLNHjKbrsbEbO-YL8DRA@mail.gmail.com>
+Subject: Re: [PATCH] Input: elan_i2c: Disable irq on shutdown
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        Jingle Wu <jingle.wu@emc.com.tw>, Wolfram Sang <wsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-06-21, 17:43, Mauro Carvalho Chehab wrote:
-> Changeset 6569d8386388 ("dt-bindings: phy: convert phy-mvebu-utmi to YAML schema")
-> renamed: Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt
-> to: Documentation/devicetree/bindings/phy/marvell,armada-3700-utmi-phy.yaml.
-> 
-> Update its cross-reference accordingly.
+Quoting Dmitry Torokhov (2021-06-02 21:33:41)
+> On Wed, Jun 02, 2021 at 06:33:49PM -0700, Stephen Boyd wrote:
+> > Quoting Dmitry Torokhov (2021-06-02 18:18:17)
+> > >
+> > > I do not think keeping counter balanced would be important here, as we
+> > > are shutting down, and upon reboot everything will be reinitialized from
+> > > scratch. Also, we are lucky in that there is just a handful of I2C
+> > > drivers defining shutdown() methods.
+> > >
+> > > > Please don't make me shave this yak.
+> > >
+> > > I'm afraid someone has to... I'm adding Wolfram to CC to get his take on
+> > > this.
+> > >
+> >
+> > I suppose another option would be to introduce some common function that
+> > i2c drivers can use for their shutdown op, like i2c_generic_shutdown()
+> > that would disable the irq? I would guess that it isn't a great idea to
+> > blanket disable the irq in case some i2c driver wants to do something
+> > that may require that irq to come in once more during shutdown to signal
+> > that things are off or something like that.
+> >
+> > Would having this common function that this driver opts into work for
+> > you?
+>
+> Opting in in this fashion will still require changes in the majority
+> of drivers (any I2C touchscreen or touchpad may be touched while system
+> is being shut down, so all of them will need to have interrupt freed or
+> disabled, or they may initiate I2C transfer). How about something like
+> this;
 
-Applied, thanks
+Yes, this approach should work. I assume a device that doesn't have a
+shutdown function will be happy to let the i2c core disable the irq for
+it so it looks low risk.
 
--- 
-~Vinod
+Will you send a proper patch to Wolfram or would you like me to wrap it
+up and resend?
+
+>
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 38107c0c318c..c835e7bb71de 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -603,9 +603,12 @@ static void i2c_device_shutdown(struct device *dev)
+>
+>         if (!client || !dev->driver)
+>                 return;
+> +
+>         driver = to_i2c_driver(dev->driver);
+>         if (driver->shutdown)
+>                 driver->shutdown(client);
+> +       else if (client->irq > 0)
+> +               disable_irq(client->irq);
+>  }
+>
+>  static void i2c_client_dev_release(struct device *dev)
+>
