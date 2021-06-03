@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64AD399846
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A834539984F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbhFCC4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:56:13 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54171 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229541AbhFCC4N (ORCPT
+        id S229881AbhFCC6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:58:07 -0400
+Received: from mail-qv1-f41.google.com ([209.85.219.41]:42861 "EHLO
+        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhFCC6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:56:13 -0400
-X-UUID: 05c7891aec4c4d7c963a539b75deee66-20210603
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=T1f3ciz9FJ4+c/XRklk7ljIC8zMrcEktrNSPUm0vuD8=;
-        b=PIDq4YzCmHMgZC8LQ2xeznDU81jF9iTSuYwjaUGtzWj3LKC+sEq717XiH92YKAcI5IxcRBiKAdEDMvya3DqmMeFC8IpEm1kV5dDGy5olQPGaYg3LDPt/xZacc23A5e/ZLSBER6+rwg6ACd6vVY1bblILovg7yOE5n9ZHp0dGyN8=;
-X-UUID: 05c7891aec4c4d7c963a539b75deee66-20210603
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 869516845; Thu, 03 Jun 2021 10:54:26 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 3 Jun 2021 10:54:25 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 3 Jun 2021 10:54:25 +0800
-Message-ID: <1622688865.7096.6.camel@mtkswgap22>
-Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer
- requests send/compl paths
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 3 Jun 2021 10:54:25 +0800
-In-Reply-To: <1621845419-14194-3-git-send-email-cang@codeaurora.org>
-References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
-         <1621845419-14194-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 2 Jun 2021 22:58:06 -0400
+Received: by mail-qv1-f41.google.com with SMTP id u33so2501272qvf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L3qETxpua5Szzx3IugrqwdN2RVBVS+htIlKHHGHgjcE=;
+        b=lAu355Dg9iol96NUognh3Z9XUcRdsebrjJDTLIdA0MB3bNopNWwQxCdRUYRX5sAb/Y
+         cGUf0l8eVRCedzkRA6AGkEjrkmrHlWSm7nvbhYMMLu9iMNPphZ5SZ/a+Bpa5bo1aiYEo
+         dIE2o8o3V3yvHP9fvL9p26aKPWF1n1rF1uiUk/ohboF9EEsQGAsVDBlQW58TXUp3RdAv
+         Fvk6VaayMCGK4kT7U63ylfbABmr93wlLZ8IEFKsunB8FgRlvW0igaOt4Ss15ZGYruu2R
+         oc0Y44YuKWQTykQrCrMj0huXHvbxsxHM3HDo28txiTevaaW241YRYpyfEsHTd6HFCrO+
+         puLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L3qETxpua5Szzx3IugrqwdN2RVBVS+htIlKHHGHgjcE=;
+        b=RG1M99QwY7MpAxLKmXMJThSD9eJ6feuU8J2jZ8wZvjAYgkqFl66rXnoyWbXEh6BwJW
+         MIn8oDKwLiKf+qf17AzcgQ4y7NzPlEvFD/P8vIOBstmtTQt87yKjZjjOc759Y11tFqAo
+         Rz8IWRxguhOMNimM3UkZUz966zSYlwond16gDiADQvCuVFynjv8M5RVVIWUeCwAG+GZb
+         FnfZK0a2xhVJhS9k8rwX5lgm67QTQ55+B+GwtDMc5zfiQzNZg6gwMS2vku8sFo0KF7pi
+         PLxjJqAp2hV+52LX/KYxe+iI7Ohjq//jjy9Rq6AGeFQ/DjqYOIQgS+0ThnUx108xKqHv
+         T6Wg==
+X-Gm-Message-State: AOAM531jVjjLkpjju80bghCBgJBweGciE23gxIVGtViH3TgmZTBvP0ny
+        /HSR9KkWa29KPtdEGYUYExUbCuoykhKmzugC98M=
+X-Google-Smtp-Source: ABdhPJxezezpVM5btuESQMr8sQAiEXZQElm22pIaMrpGjdBnAbnRFJ9jW78E4wHzQhgfJltscBSnDG0cUu3iIS9EoZk=
+X-Received: by 2002:a0c:dc92:: with SMTP id n18mr8866816qvk.8.1622688907466;
+ Wed, 02 Jun 2021 19:55:07 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com> <CAOMZO5An-v0mLAvjofiWLc4ufJiE4EzG1b4NDwToPSvgODrHjQ@mail.gmail.com>
+In-Reply-To: <CAOMZO5An-v0mLAvjofiWLc4ufJiE4EzG1b4NDwToPSvgODrHjQ@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 3 Jun 2021 10:54:56 +0800
+Message-ID: <CAA+D8AMYmy=NdQU+9gTwa_7j23kmxgU1Xj-pkzuHPCNX649iYQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: change dev_err to dev_dbg for defer probe
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBNb24sIDIwMjEtMDUtMjQgYXQgMDE6MzYgLTA3MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IEN1cnJlbnQgVUZTIElSUSBoYW5kbGVyIGlzIGNvbXBsZXRlbHkgd3JhcHBlZCBieSBo
-b3N0IGxvY2ssIGFuZCBiZWNhdXNlDQo+IHVmc2hjZF9zZW5kX2NvbW1hbmQoKSBpcyBhbHNvIHBy
-b3RlY3RlZCBieSBob3N0IGxvY2ssIHdoZW4gSVJRIGhhbmRsZXINCj4gZmlyZXMsIG5vdCBvbmx5
-IHRoZSBDUFUgcnVubmluZyB0aGUgSVJRIGhhbmRsZXIgY2Fubm90IHNlbmQgbmV3IHJlcXVlc3Rz
-LA0KPiB0aGUgcmVzdCBDUFVzIGNhbiBuZWl0aGVyLiBNb3ZlIHRoZSBob3N0IGxvY2sgd3JhcHBp
-bmcgdGhlIElSUSBoYW5kbGVyIGludG8NCj4gc3BlY2lmaWMgYnJhbmNoZXMsIGkuZS4sIHVmc2hj
-ZF91aWNfY21kX2NvbXBsKCksIHVmc2hjZF9jaGVja19lcnJvcnMoKSwNCj4gdWZzaGNkX3RtY19o
-YW5kbGVyKCkgYW5kIHVmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoKS4gTWVhbndoaWxlLCB0byBm
-dXJ0aGVyDQo+IHJlZHVjZSBvY2NwdWF0aW9uIG9mIGhvc3QgbG9jayBpbiB1ZnNoY2RfdHJhbnNm
-ZXJfcmVxX2NvbXBsKCksIGhvc3QgbG9jayBpcw0KPiBubyBsb25nZXIgcmVxdWlyZWQgdG8gY2Fs
-bCBfX3Vmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoKS4gQXMgcGVyIHRlc3QsIHRoZQ0KPiBvcHRp
-bWl6YXRpb24gY2FuIGJyaW5nIGNvbnNpZGVyYWJsZSBnYWluIHRvIHJhbmRvbSByZWFkL3dyaXRl
-IHBlcmZvcm1hbmNlLg0KPiANCj4gQ2M6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRl
-ay5jb20+DQo+IENvLWRldmVsb3BlZC1ieTogQXN1dG9zaCBEYXMgPGFzdXRvc2hkQGNvZGVhdXJv
-cmEub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBBc3V0b3NoIERhcyA8YXN1dG9zaGRAY29kZWF1cm9y
-YS5vcmc+DQo+IFNpZ25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQoN
-CkFjY29yZGluZyB0byBteSB0ZXN0LCB0aGUgcGVyZm9ybWFuY2UgaW5kZWVkIGhhcyBpbXByZXNz
-aXZlIGltcHJvdmVtZW50DQp3aXRoIHRoaXMgc2VyaWVzIQ0KDQpSZXZpZXdlZC1ieTogU3Rhbmxl
-eSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCg0KDQoNCg0KPiAgI2VuZGlmDQo+ICAN
-Cj4gIAlib29sIHJlcV9hYm9ydF9za2lwOw0KPiAtCWJvb2wgaW5fdXNlOw0KPiAgfTsNCj4gIA0K
-PiAgLyoqDQoNCg==
+On Wed, Jun 2, 2021 at 11:45 PM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> Hi Shengjiu,
+>
+> On Wed, Jun 2, 2021 at 3:59 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+> >
+> > Don't need to print error message for defer probe
+> ...
+> >         if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
+> > -               dev_err(&pdev->dev, "failed to find codec device\n");
+> > +               dev_dbg(&pdev->dev, "failed to find codec device\n");
+>
+> You may consider using dev_err_probe() here, which fits exactly this purpose.
 
+ok, let me update it.
+
+best regards
+wang shengjiu
