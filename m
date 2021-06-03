@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F86399EBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F69C399EBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhFCKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:18:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229685AbhFCKSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:18:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 696EA6139A;
-        Thu,  3 Jun 2021 10:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622715406;
-        bh=7HZciQxLsBuDoWMd4Kb6D5lue9+WuT5FUDqHbpuuJFQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qBn9EBCTr/3wcixKOMWXn/re9l7QnkKOGGYXUU7FMUKCbzdv6J01w7AQa7hlB8tDG
-         1+GPwyig2oF++DkVY1lBIYDte4/IP9mhnSf3o0RUYpmd/jscIrozXAOkY+VtvgxvW8
-         708BT7bDa6iZZqOYm0UqNQ1tCQHjLivlzV81NT4FxZKcOWrE7vj+xExLp3hxGChQNs
-         SWG2V6nXkz3Mn+qLTI+eqUqtNg+dcY0GLdCPRSkZtuht/OrzCWGf3bV4COqT7N95n+
-         wLoe7vzrAKNM1ykOKcuREzzqFDIbpnkcrzqgDvsBkYvkDyHwqRkDjokBleLInCkY9i
-         ZwQdoM98OQ3kQ==
-Date:   Thu, 3 Jun 2021 13:16:42 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Anand Khoje <anand.a.khoje@oracle.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-Subject: Re: [PATCH v2 3/3] IB/core: Obtain subnet_prefix from cache in IB
- devices
-Message-ID: <YLisCgBLu9pD1qSw@unreal>
-References: <20210603065024.1051-1-anand.a.khoje@oracle.com>
- <20210603065024.1051-4-anand.a.khoje@oracle.com>
- <YLib5BhTX6tEMTfe@unreal>
- <D188B984-4B47-4992-80E6-6927ADC3DA26@oracle.com>
+        id S229764AbhFCKUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:20:19 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:14527 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhFCKUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:20:19 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 153A4udU044855;
+        Thu, 3 Jun 2021 18:04:56 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from slee-VirtualBox.localdomain (192.168.100.253) by
+ TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 3 Jun 2021 18:18:23 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
+        <ryan_chen@aspeedtech.com>, <billy_tsai@aspeedtech.com>
+Subject: [PATCH v3 0/5] ASPEED sgpio driver enhancement.
+Date:   Thu, 3 Jun 2021 18:18:16 +0800
+Message-ID: <20210603101822.9645-1-steven_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D188B984-4B47-4992-80E6-6927ADC3DA26@oracle.com>
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 153A4udU044855
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 09:29:32AM +0000, Haakon Bugge wrote:
-> 
-> 
-> > On 3 Jun 2021, at 11:07, Leon Romanovsky <leon@kernel.org> wrote:
-> > 
-> > On Thu, Jun 03, 2021 at 12:20:24PM +0530, Anand Khoje wrote:
-> >> ib_query_port() calls device->ops.query_port() to get the port
-> >> attributes. The method of querying is device driver specific.
-> >> The same function calls device->ops.query_gid() to get the GID and
-> >> extract the subnet_prefix (gid_prefix).
-> >> 
-> >> The GID and subnet_prefix are stored in a cache. But they do not get
-> >> read from the cache if the device is an Infiniband device. The
-> >> following change takes advantage of the cached subnet_prefix.
-> >> Testing with RDBMS has shown a significant improvement in performance
-> >> with this change.
-> >> 
-> >> The function ib_cache_is_initialised() is introduced because
-> >> ib_query_port() gets called early in the stage when the cache is not
-> >> built while reading port immutable property.
-> >> 
-> >> In that case, the default GID still gets read from HCA for IB link-
-> >> layer devices.
-> >> 
-> >> Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
-> >> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> >> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> >> ---
-> >> drivers/infiniband/core/cache.c  | 7 ++++++-
-> >> drivers/infiniband/core/device.c | 9 +++++++++
-> >> include/rdma/ib_cache.h          | 6 ++++++
-> >> include/rdma/ib_verbs.h          | 6 ++++++
-> >> 4 files changed, 27 insertions(+), 1 deletion(-)
-> > 
-> > Can you please help me to understand how cache is updated?
-> > 
-> > There are a lot of calls to ib_query_port() and I wonder how callers can
-> > get new GID after it was changed in already initialized cache.
-> 
-> The cache is initialized when it is created, just before the bit IB_PORT_CACHE_INITIALIZED is set in flags.
-> 
-> After commit d58c23c92548 ("IB/core: Only update PKEY and GID caches on respective events"), the GID portion of the cache is updated when a IB_EVENT_GID_CHANGE event is received.
-> 
-> Before said commit, it was updated on any event.
+AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
+supports up to 80 pins.
+In the current driver design, the max number of sgpio pins is hardcoded
+in macro MAX_NR_HW_SGPIO and the value is 80.
 
-This part is clear to me, the missing piece is to understand what will
-happen if cache and GID are not in sync because of asynchronous nature of
-events.
+For supporting sgpio master interfaces of AST2600 SoC, the patch series
+contains the following enhancement:
+- Convert txt dt-bindings to yaml.
+- Update aspeed-g6 dtsi to support the enhanced sgpio.
+- Define max number of gpio pins in ast2600 platform data. Old chip
+  uses the original hardcoded value.
+- Support muiltiple SGPIO master interfaces.
+- Support up to 128 pins.
+- Support wdt reset tolerance.
+- Fix irq_chip issues which causes multiple sgpio devices use the same
+  irq_chip data.
 
-Thanks
+Changes from v2:
+* Remove maximum/minimum of ngpios from bindings.
+* Remove max-ngpios from bindings and dtsi.
+* Remove ast2400-sgpiom and ast2500-sgpiom compatibles from dts and
+  driver.
+* Add ast2600-sgpiom1 and ast2600-sgpiom2 compatibles as their max
+  number of available gpio pins are different.
+* Modify functions to pass aspeed_sgpio struct instead of passing
+  max_ngpios.
+* Split sgpio driver patch to 3 patches
 
-> 
-> 
-> Thxs, Håkon
-> 
+Changes from v1:
+* Fix yaml format issues.
+* Fix issues reported by kernel test robot.
+
+Please help to review.
+
+Thanks,
+Steven
+
+Steven Lee (5):
+  dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
+  ARM: dts: aspeed-g6: Add SGPIO node.
+  gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+  gpio: gpio-aspeed-sgpio: Add set_config function
+  gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
+
+ .../bindings/gpio/aspeed,sgpio.yaml           |  78 ++++++++
+ .../devicetree/bindings/gpio/sgpio-aspeed.txt |  46 -----
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  30 +++
+ drivers/gpio/gpio-aspeed-sgpio.c              | 182 +++++++++++++-----
+ 4 files changed, 243 insertions(+), 93 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+ delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+
+-- 
+2.17.1
+
