@@ -2,233 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C20139A181
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A01539A187
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFCMxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:53:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229876AbhFCMxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:53:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 875A66124B;
-        Thu,  3 Jun 2021 12:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622724719;
-        bh=JqMQdAAB3GjFC3iQ5t6tWDUGbDN4unlpZL9hD6Tf1UQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+MqJkWKTs8VX6JrddoSZ3cT/6ccvJt277l79SHPTzw2j49vyWxHQgpysh+LYKux6
-         MgbNHcXRWLjoZHLDHZ7hwFE1z2QP+2kcJt/aUmw1lcOzuUI/HAySE29y7HnWXFAFEd
-         Mzc6Y3Mst+WN0jq+Ph1fN8W9DYRA64DOVglmWL8I6Qo9wHTze4dRIm759wUhGxQsN/
-         bJSmz4zJMQ47ztENBGJyRypWEdCir8BF9sZqmlLdU27hBJfkmoUuqAsPnQKMFMr5T4
-         fBQxXPBfpw322rt/BfxjwuF3Cyuj3t8b1QkKLKmR7puNTNKZxJFQjB3M2kxxLq4EGW
-         FGq6toYLAPqyQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Lior Nahmanson <liorna@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Meir Lichtinger <meirl@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH rdma-next 2/3] RDMA/mlx5: Move DCI QP creation to separate function
-Date:   Thu,  3 Jun 2021 15:51:49 +0300
-Message-Id: <3bd27c634c8bdba836a4254ea4946a3fcc354109.1622723815.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1622723815.git.leonro@nvidia.com>
-References: <cover.1622723815.git.leonro@nvidia.com>
+        id S231140AbhFCMxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhFCMxs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 08:53:48 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62012C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 05:52:03 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id w33so8640746lfu.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 05:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KXSPFYUv+frq5B31P2+9676MnBddW3+j4BZ+XqvE/IU=;
+        b=mkYMalVHjpfomaWeFWDWX9glGkJHhsdYkZIp8eFDb0kxyUonE980Dq+4l3iVMucOKv
+         /EIKyQCKHFCEZXAQDj6hIR8Ot8arkMF1kblq7fAHcIzO+4g4wLM3PDocDRqhRHl1i4o4
+         Laj2syzgyAjKpRqxjAPRCDZ8NpA6G/G8D5H8ie7sgttBLI1fdVjZuX87mGAX+BQXBavf
+         lBCM2WVLrwLAC+pRRcQuAZ/tS0nAbzaUyaL7fKysEiKgSpXmeNuRqZniBgHzeaG7nSE1
+         tkyZocErWj3cgE18KuwIy6uNfE6LUmri061DG2AeTM1pS6luFQPo6Fwb84sGOLr6ctSW
+         nlUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KXSPFYUv+frq5B31P2+9676MnBddW3+j4BZ+XqvE/IU=;
+        b=saXffkTtjFcTNfR6tnA97RBcF/Ln60KnR5OZDwAUSLMm6Y4Lhixqdk1L2RY/4HhcXy
+         dAcpY3a37s6uGQO3rn7acfDkwxbfX5LR8NNl+X5dpg1nFMLeGJFg0ub9YkdmEhxODcmz
+         Qr3uAHgvhWUlDlHSgXzVWZAs4TSyAzs8XwCavAA9k9z4h18hhEYy83ZqkilAgHWDdV2J
+         EQ996FdmvadtNRBZNMIFBal4am4nnNcIiQEc0rDGPXZXbbbY2fUhxLaBH0Twe435/962
+         57LdouW1rh0kV4dA8xpSEs9fi3bmGdNTgsLNx7+UfG57SZ15THyfqU1NDiYbuZXMnXEP
+         UpmQ==
+X-Gm-Message-State: AOAM532Jn/8EXB1oXajyz2KvQ7mPkEYkpmxAY7AShEBME24mAgNdgBBJ
+        /unE7kZE7A2NHCnclcNzubGXeIcf2ZzR6r1rp64y0w==
+X-Google-Smtp-Source: ABdhPJzeE0g2LtPg9P10vFEg0O/PtJxa3icrm3fDoEs1X0A5mi9Y9C/b8U/rqC9xceoyXFnUDn0hLMXtzITAqfeurG0=
+X-Received: by 2002:a19:4810:: with SMTP id v16mr9307733lfa.254.1622724721651;
+ Thu, 03 Jun 2021 05:52:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210603113847.163512-1-odin@uged.al>
+In-Reply-To: <20210603113847.163512-1-odin@uged.al>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 3 Jun 2021 14:51:50 +0200
+Message-ID: <CAKfTPtAK3gEqChUmoUXo7KLqPAFo=shH4Yi=QLjrwpuu6Ow6-Q@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lior Nahmanson <liorna@nvidia.com>
+On Thu, 3 Jun 2021 at 13:41, Odin Ugedal <odin@uged.al> wrote:
+>
+> This fixes an issue where fairness is decreased since cfs_rq's can
+> end up not being decayed properly. For two sibling control groups with
+> the same priority, this can often lead to a load ratio of 99/1 (!!).
+>
+> This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
+> will be removed from the leaf list. When they initial cfs_rq is
+> unthrottled, it will currently only re add descendant cfs_rq's if they
+> have one or more entities enqueued. This is not a perfect heuristic.
+>
+> Insted, we insert all cfs_rq's that contain one or more enqueued
+> entities, or contributes to the load of the task group.
+>
+> Can often lead to sutiations like this for equally weighted control
+> groups:
+>
+> $ ps u -C stress
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
+> root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
+>
+> Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>
+> Original thread: https://lore.kernel.org/lkml/20210518125202.78658-3-odin@uged.al/
+> Changes since v1:
+>  - Replaced cfs_rq field with using tg_load_avg_contrib
+>  - Went from 3 to 1 pathces; one is merged and one is replaced
+>    by a new patchset.
+>
+>  kernel/sched/fair.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 794c2cb945f8..0f1b39ca5ca8 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4719,8 +4719,11 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+>                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+>                                              cfs_rq->throttled_clock_task;
+>
+> -               /* Add cfs_rq with already running entity in the list */
+> -               if (cfs_rq->nr_running >= 1)
+> +               /*
+> +                * Add cfs_rq with tg load avg contribution or one or more
+> +                * already running entities to the list
+> +                */
+> +               if (cfs_rq->tg_load_avg_contrib || cfs_rq->nr_running)
 
-This will ease the process when adding new features to DCI QP.
-the code was copied from create_user_qp() while taking only DCI
-relevant bits.
+Out of curiosity, why did you decide to use
+cfs_rq->tg_load_avg_contrib instead of !cfs_rq_is_decayed(cfs_rq)
+which is used to delete the cfs_rq from the list when updating blocked
+load ?
 
-Reviewed-by: Meir Lichtinger <meirl@nvidia.com>
-Signed-off-by: Lior Nahmanson <liorna@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/qp.c | 157 ++++++++++++++++++++++++++++++++
- 1 file changed, 157 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 7a5f1eba60e3..65a380543f5a 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -1974,6 +1974,160 @@ static int create_xrc_tgt_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 	return 0;
- }
- 
-+static int create_dci(struct mlx5_ib_dev *dev, struct ib_pd *pd,
-+		      struct mlx5_ib_qp *qp,
-+		      struct mlx5_create_qp_params *params)
-+{
-+	struct ib_qp_init_attr *init_attr = params->attr;
-+	struct mlx5_ib_create_qp *ucmd = params->ucmd;
-+	u32 out[MLX5_ST_SZ_DW(create_qp_out)] = {};
-+	struct ib_udata *udata = params->udata;
-+	u32 uidx = params->uidx;
-+	struct mlx5_ib_resources *devr = &dev->devr;
-+	int inlen = MLX5_ST_SZ_BYTES(create_qp_in);
-+	struct mlx5_core_dev *mdev = dev->mdev;
-+	struct mlx5_ib_cq *send_cq;
-+	struct mlx5_ib_cq *recv_cq;
-+	unsigned long flags;
-+	struct mlx5_ib_qp_base *base;
-+	int ts_format;
-+	int mlx5_st;
-+	void *qpc;
-+	u32 *in;
-+	int err;
-+
-+	spin_lock_init(&qp->sq.lock);
-+	spin_lock_init(&qp->rq.lock);
-+
-+	mlx5_st = to_mlx5_st(qp->type);
-+	if (mlx5_st < 0)
-+		return -EINVAL;
-+
-+	if (init_attr->sq_sig_type == IB_SIGNAL_ALL_WR)
-+		qp->sq_signal_bits = MLX5_WQE_CTRL_CQ_UPDATE;
-+
-+	base = &qp->trans_qp.base;
-+
-+	qp->has_rq = qp_has_rq(init_attr);
-+	err = set_rq_size(dev, &init_attr->cap, qp->has_rq, qp, ucmd);
-+	if (err) {
-+		mlx5_ib_dbg(dev, "err %d\n", err);
-+		return err;
-+	}
-+
-+	if (ucmd->rq_wqe_shift != qp->rq.wqe_shift ||
-+	    ucmd->rq_wqe_count != qp->rq.wqe_cnt)
-+		return -EINVAL;
-+
-+	if (ucmd->sq_wqe_count > (1 << MLX5_CAP_GEN(mdev, log_max_qp_sz)))
-+		return -EINVAL;
-+
-+	ts_format = get_qp_ts_format(dev, to_mcq(init_attr->send_cq),
-+				     to_mcq(init_attr->recv_cq));
-+
-+	if (ts_format < 0)
-+		return ts_format;
-+
-+	err = _create_user_qp(dev, pd, qp, udata, init_attr, &in, &params->resp,
-+			      &inlen, base, ucmd);
-+	if (err)
-+		return err;
-+
-+	if (MLX5_CAP_GEN(mdev, ece_support))
-+		MLX5_SET(create_qp_in, in, ece, ucmd->ece_options);
-+	qpc = MLX5_ADDR_OF(create_qp_in, in, qpc);
-+
-+	MLX5_SET(qpc, qpc, st, mlx5_st);
-+	MLX5_SET(qpc, qpc, pm_state, MLX5_QP_PM_MIGRATED);
-+	MLX5_SET(qpc, qpc, pd, to_mpd(pd)->pdn);
-+
-+	if (qp->flags_en & MLX5_QP_FLAG_SIGNATURE)
-+		MLX5_SET(qpc, qpc, wq_signature, 1);
-+
-+	if (qp->flags & IB_QP_CREATE_CROSS_CHANNEL)
-+		MLX5_SET(qpc, qpc, cd_master, 1);
-+	if (qp->flags & IB_QP_CREATE_MANAGED_SEND)
-+		MLX5_SET(qpc, qpc, cd_slave_send, 1);
-+	if (qp->flags_en & MLX5_QP_FLAG_SCATTER_CQE)
-+		configure_requester_scat_cqe(dev, qp, init_attr, qpc);
-+
-+	if (qp->rq.wqe_cnt) {
-+		MLX5_SET(qpc, qpc, log_rq_stride, qp->rq.wqe_shift - 4);
-+		MLX5_SET(qpc, qpc, log_rq_size, ilog2(qp->rq.wqe_cnt));
-+	}
-+
-+	MLX5_SET(qpc, qpc, ts_format, ts_format);
-+	MLX5_SET(qpc, qpc, rq_type, get_rx_type(qp, init_attr));
-+
-+	MLX5_SET(qpc, qpc, log_sq_size, ilog2(qp->sq.wqe_cnt));
-+
-+	/* Set default resources */
-+	if (init_attr->srq) {
-+		MLX5_SET(qpc, qpc, xrcd, devr->xrcdn0);
-+		MLX5_SET(qpc, qpc, srqn_rmpn_xrqn,
-+			 to_msrq(init_attr->srq)->msrq.srqn);
-+	} else {
-+		MLX5_SET(qpc, qpc, xrcd, devr->xrcdn1);
-+		MLX5_SET(qpc, qpc, srqn_rmpn_xrqn,
-+			 to_msrq(devr->s1)->msrq.srqn);
-+	}
-+
-+	if (init_attr->send_cq)
-+		MLX5_SET(qpc, qpc, cqn_snd,
-+			 to_mcq(init_attr->send_cq)->mcq.cqn);
-+
-+	if (init_attr->recv_cq)
-+		MLX5_SET(qpc, qpc, cqn_rcv,
-+			 to_mcq(init_attr->recv_cq)->mcq.cqn);
-+
-+	MLX5_SET64(qpc, qpc, dbr_addr, qp->db.dma);
-+
-+	/* 0xffffff means we ask to work with cqe version 0 */
-+	if (MLX5_CAP_GEN(mdev, cqe_version) == MLX5_CQE_VERSION_V1)
-+		MLX5_SET(qpc, qpc, user_index, uidx);
-+
-+	if (qp->flags & IB_QP_CREATE_PCI_WRITE_END_PADDING) {
-+		MLX5_SET(qpc, qpc, end_padding_mode,
-+			 MLX5_WQ_END_PAD_MODE_ALIGN);
-+		/* Special case to clean flag */
-+		qp->flags &= ~IB_QP_CREATE_PCI_WRITE_END_PADDING;
-+	}
-+
-+	err = mlx5_qpc_create_qp(dev, &base->mqp, in, inlen, out);
-+
-+	kvfree(in);
-+	if (err)
-+		goto err_create;
-+
-+	base->container_mibqp = qp;
-+	base->mqp.event = mlx5_ib_qp_event;
-+	if (MLX5_CAP_GEN(mdev, ece_support))
-+		params->resp.ece_options = MLX5_GET(create_qp_out, out, ece);
-+
-+	get_cqs(qp->type, init_attr->send_cq, init_attr->recv_cq,
-+		&send_cq, &recv_cq);
-+	spin_lock_irqsave(&dev->reset_flow_resource_lock, flags);
-+	mlx5_ib_lock_cqs(send_cq, recv_cq);
-+	/* Maintain device to QPs access, needed for further handling via reset
-+	 * flow
-+	 */
-+	list_add_tail(&qp->qps_list, &dev->qp_list);
-+	/* Maintain CQ to QPs access, needed for further handling via reset flow
-+	 */
-+	if (send_cq)
-+		list_add_tail(&qp->cq_send_list, &send_cq->list_send_qp);
-+	if (recv_cq)
-+		list_add_tail(&qp->cq_recv_list, &recv_cq->list_recv_qp);
-+	mlx5_ib_unlock_cqs(send_cq, recv_cq);
-+	spin_unlock_irqrestore(&dev->reset_flow_resource_lock, flags);
-+
-+	return 0;
-+
-+err_create:
-+	destroy_qp(dev, qp, base, udata);
-+	return err;
-+}
-+
- static int create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 			  struct mlx5_ib_qp *qp,
- 			  struct mlx5_create_qp_params *params)
-@@ -2840,6 +2994,9 @@ static int create_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	case MLX5_IB_QPT_DCT:
- 		err = create_dct(dev, pd, qp, params);
- 		break;
-+	case MLX5_IB_QPT_DCI:
-+		err = create_dci(dev, pd, qp, params);
-+		break;
- 	case IB_QPT_XRC_TGT:
- 		err = create_xrc_tgt_qp(dev, qp, params);
- 		break;
--- 
-2.31.1
-
+>                         list_add_leaf_cfs_rq(cfs_rq);
+>         }
+>
+> --
+> 2.31.1
+>
