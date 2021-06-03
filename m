@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF039AD48
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316E439AD49
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFCV5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:57:55 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:44863 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhFCV5w (ORCPT
+        id S230287AbhFCV6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhFCV6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:57:52 -0400
-Received: by mail-ot1-f48.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so7190288otp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:56:07 -0700 (PDT)
+        Thu, 3 Jun 2021 17:58:18 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CA3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 14:56:33 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id c13so3634166plz.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 14:56:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O0AHKb8SzFFWyVM+WVdBKXLWI+pRbVoX23KoodBk3sU=;
-        b=C1mfTlItCazDj4zyHIyO33ijPj7JmggfgHu2V/Nvpv2qUNrwjWkFVbGnNVxrx1nhZ3
-         m1AMpkKgydBbcVS0JKfDnWOfq7oiWGitw4yiEsZjdylIsG4RZdrpUvltw7k7/P9WlIfD
-         kzrcqqbtk5mD2CmX13u4xWB6sg1iDm3Zg2ZLtdqrmBXpF7tLQ8VMHLNxXKlUQL/gxipI
-         TuM8glglk02b6tDmFv6GxfesZ0+otfLxcGrSKQzGA9JLw0RQPY/rxi56mzRL/YKoDBYW
-         CP3BzHMHSFsOdDrYHzSD/b0/i/U1p8L3ZBnmS9RQi0tobvoNx4sHi2hV4EVxXQEwmRXQ
-         EOnQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hcR2WT3vvryIaxbYCFHgFPNRMu872lwm697WZRE1kh8=;
+        b=OJ1ffKBL2zTMCQ8FGoFYNEK/qKuYsaHaSFwj3Gi0UxE+Hu2kehZOW8OHbO6bSbfsx3
+         gY3bdb8N37tXlvSuJWR5rjzrdziyY5EMf8D5Q1IeQQvxH4n4xLAvy1/Us8AY20mDPv09
+         7LAH6KrYzOhMGVDh+4KeGEVveCicvz6ZvjTLSFz5eumGHGfsmDZpq5WbgVoyFdMRMdJS
+         Cwd3rF5kgbCzax+t70gJYwHOq8NtnD1BueaqiRgxjsNA5VFEugbrVG0iWv37sd/SaENB
+         RdNy3EEN1r+BfOPygMbxtCjMY7R1yDwLGKkuq9KBtGvm28a44ADIcMMMVYno/vIgQtkA
+         bayA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O0AHKb8SzFFWyVM+WVdBKXLWI+pRbVoX23KoodBk3sU=;
-        b=LR2L+r4/CRX4Bcaw1UNFKdwJY2dxLMpXbQlUGktyal6wArfdObmRYtocYzUnf6wyug
-         o8011WVDEwIiZi/PzBmn29ENOnz3HtCZ9kcMBv+Fwfv5CZ7Le648l6hksMPxqplwPvr5
-         Brw5CafIiTAtU4Lu2X3UK5+NTKM3oUvIBQ0/Dw4kZeB/heGjtwGfrLTD3ART56AAfLif
-         dSCgAahXTt02mtv9P6ogl+FR1CJQmPA0mLNsxOeoFuWUjCog1UGok0wHCgxUhyRJse/Y
-         FxzqyZ6/Tjw385GJZUEImObgAcJRWIVEfVfOiBpO9/GCux8Bc14lIU4PAkNBvcAJs8kW
-         T5Rg==
-X-Gm-Message-State: AOAM532yHsDhE+XqqMz19kAzRzNM+xd6XioJMr/YJEAqhNDdyYfyCgZf
-        LjxB06Xj+kwfgTxfNgbXW/BiERvuFeCKjReA
-X-Google-Smtp-Source: ABdhPJxP6X/Ko1xj6k9t4gVYLe86TlzGsdTkR4Pt66q4EqQYMk8GaP890NfpcG5tndgN9xlkjBFN2w==
-X-Received: by 2002:a9d:7750:: with SMTP id t16mr1170972otl.135.1622757306927;
-        Thu, 03 Jun 2021 14:55:06 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id i4sm31997oth.38.2021.06.03.14.55.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 14:55:06 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH] staging: greybus: fixed the coding style,
- labels should not be indented.
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Manikishan Ghantasala' <manikishanghantasala@gmail.com>,
-        Alex Elder <elder@ieee.org>
-Cc:     Alex Elder <elder@kernel.org>,
-        "greybus-dev@lists.linaro.org" <greybus-dev@lists.linaro.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        Johan Hovold <johan@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
- <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
- <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
- <792dd57c0ef8454497e5ae4c4534dea2@AcuMS.aculab.com>
- <e1c36fb4-ab72-0cce-f6fe-3f04125dae28@linaro.org>
- <e23879ae78404be2b707b550b3029e43@AcuMS.aculab.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <10ad30e2-c906-b210-bf0e-5e20b6de1993@linaro.org>
-Date:   Thu, 3 Jun 2021 16:55:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hcR2WT3vvryIaxbYCFHgFPNRMu872lwm697WZRE1kh8=;
+        b=GsnBQtaOHjD915sIfL+HyEiw23NFvS3sgf1qia413ol3ITPupfT93Me1WOY/fX+/4i
+         plvQi0S8lCNWP9dFK1enq3muzFIRtQOqzUsNafkr16mH+2ZDF8CLsBw0gncFFTzAI74l
+         rPLEF/6L9pg2WC89bYRdc8vMnfcs04JAYI99qxpxcSA9Enf9EJit0kduuQlJzAfFcUcp
+         vMks6gZd8L5q7uWjPIyLY7zzjVAU8wh9f0rtB2TU5R5zJLJMKXRWSE9DDemXhES6Kymx
+         A0VYB0aynuW0muUbQnn7eg5iyg3B7dIMSnDYt45DHzafmd1YVjxUfMhBb4re5kb4kdfy
+         AkOQ==
+X-Gm-Message-State: AOAM5319b4XJDWx0qpmx98qAiCp4UN7tzOUYkvADttQuuxi+r9anT3Eg
+        Keeiu67Y1Mu8p76EK2OEVRKc7w==
+X-Google-Smtp-Source: ABdhPJyVUWstFctTJ2cBSzd8UOkLP8piwEWGOeyh98T/MvRNyuOqD1X92kpZG8zfPPjYlXoXiXFMqg==
+X-Received: by 2002:a17:90a:7e92:: with SMTP id j18mr1384538pjl.231.1622757392443;
+        Thu, 03 Jun 2021 14:56:32 -0700 (PDT)
+Received: from google.com ([2401:fa00:9:211:6fff:8119:dab5:49cd])
+        by smtp.gmail.com with ESMTPSA id x13sm3519123pja.3.2021.06.03.14.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 14:56:31 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 07:56:18 +1000
+From:   Matthew Bobrowski <repnop@google.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kbuild test robot <lkp@intel.com>, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@linux.intel.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [fanotify] a8b98c808e: stress-ng.fanotify.ops_per_sec 32.2%
+ improvement
+Message-ID: <YLlQAqlUxEt4eTiR@google.com>
+References: <20210603015314.GA21290@xsang-OptiPlex-9020>
+ <CAOQ4uxjdtfriARxh_CiTxFi8=T6j065HtbJGnuAas7oyPNADKg@mail.gmail.com>
+ <20210603084324.GC23647@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <e23879ae78404be2b707b550b3029e43@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603084324.GC23647@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 4:48 PM, David Laight wrote:
-> From: Alex Elder
->> Sent: 03 June 2021 22:46
->>
->> On 6/3/21 4:22 PM, David Laight wrote:
-> ...
->>>>>> --- a/drivers/staging/greybus/gpio.c
->>>>>> +++ b/drivers/staging/greybus/gpio.c
->>>>>> @@ -20,9 +20,9 @@
->>>>>>     struct gb_gpio_line {
->>>>>>         /* The following has to be an array of line_max entries */
->>>>>>         /* --> make them just a flags field */
->>>>>> -     u8                      active:    1,
->>>>>> -                             direction: 1,   /* 0 = output, 1 = input */
->>>>>> -                             value:     1;   /* 0 = low, 1 = high */
->>>>>> +     u8                      active:1,
->>>>>> +                             direction:1,    /* 0 = output, 1 = input */
->>>>>> +                             value:1;        /* 0 = low, 1 = high */
->>>
->>> Why are you even using bitfields at all?
->>> If you cared about the structure size you'd not have a byte-size pad here.
->>
->> Apparently I committed this, and it was part of the very first
->> Greybus drivers...
->>
->> These would be better defined as Booleans; there are others in
->> the same structure after all.  That would have avoided the
->> checkpatch problem in the first place.
+On Thu, Jun 03, 2021 at 10:43:24AM +0200, Jan Kara wrote:
+> On Thu 03-06-21 09:57:15, Amir Goldstein wrote:
+> > On Thu, Jun 3, 2021 at 4:36 AM kernel test robot <oliver.sang@intel.com> wro
+> > > Greeting,
+> > >
+> > > FYI, we noticed a 32.2% improvement of stress-ng.fanotify.ops_per_sec due to commit:
+> > >
+> > >
+> > > commit: a8b98c808eab3ec8f1b5a64be967b0f4af4cae43 ("fanotify: fix permission model of unprivileged group")
+> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > >
+> > >
+> > 
+> > I guess now we know what caused the reported regression:
+> > https://lore.kernel.org/lkml/20210511124632.GL24154@quack2.suse.cz/
+> > 
+> > I didn't know that capable() is so significant.
 > 
-> Using 'u8' can be sensible.
-> Boolean will be 32bit.
+> Yeah, I wouldn't guess either. Interesting.
 
-Not necessarily, sizeof(bool) is implementation defined.
-And I thought you didn't think the size of the structure
-was very important...
+Indeed, interesting! :)
 
-In any case, I'm open to changing the type of these fields,
-and my preference would be bool rather than u8, because it
-is completely clear what it represents.
+While on the topic of stress-ng, it reminds me to set this up on my server
+so we can perform such regressions before merging fanotify changes into
+master.
 
-					-Alex
-
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-
+/M
