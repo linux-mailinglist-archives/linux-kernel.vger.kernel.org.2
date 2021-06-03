@@ -2,198 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1346399C96
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3727D399C9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhFCIbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:31:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:35264 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhFCIbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:31:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B382211FB;
-        Thu,  3 Jun 2021 01:29:31 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5EDF23F774;
-        Thu,  3 Jun 2021 01:29:30 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 09:29:25 +0100
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Xuewen Yan <xuewen.yan94@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched/fair: Fix util_est UTIL_AVG_UNCHANGED handling
-Message-ID: <20210603082923.GA423090@e120877-lin.cambridge.arm.com>
-References: <20210602145808.1562603-1-dietmar.eggemann@arm.com>
+        id S229718AbhFCIdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:33:00 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:39825 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhFCIdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 04:33:00 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 463401C001F;
+        Thu,  3 Jun 2021 08:31:09 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH v3 3/3] riscv: Map the kernel with correct permissions the first time
+Date:   Thu,  3 Jun 2021 10:27:49 +0200
+Message-Id: <20210603082749.1256129-4-alex@ghiti.fr>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210603082749.1256129-1-alex@ghiti.fr>
+References: <20210603082749.1256129-1-alex@ghiti.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602145808.1562603-1-dietmar.eggemann@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:58:08PM +0200, Dietmar Eggemann wrote:
-> The util_est internal UTIL_AVG_UNCHANGED flag which is used to prevent
-> unnecessary util_est updates uses the LSB of util_est.enqueued. It is
-> exposed via _task_util_est() (and task_util_est()).
-> 
-> Commit 92a801e5d5b7 ("sched/fair: Mask UTIL_AVG_UNCHANGED usages")
-> mentions that the LSB is lost for util_est resolution but
-> find_energy_efficient_cpu() checks if task_util_est() returns 0 to
-> return prev_cpu early.
-> 
-> _task_util_est() returns the max value of util_est.ewma and
-> util_est.enqueued or'ed w/ UTIL_AVG_UNCHANGED.
-> So task_util_est() returning the max of task_util() and
-> _task_util_est() will never return 0 under the default
-> SCHED_FEAT(UTIL_EST, true).
-> 
-> To fix this use the MSB of util_est.enqueued instead and keep the flag
-> util_est internal, i.e. don't export it via _task_util_est().
-> 
-> The maximal possible util_avg value for a task is 1024 so the MSB of
-> 'unsigned int util_est.enqueued' isn't used to store a util value.
-> 
-> As a caveat the code behind the util_est_se trace point has to filter
-> UTIL_AVG_UNCHANGED to see the real util_est.enqueued value which should
-> be easy to do.
-> 
-> This also fixes an issue report by Xuewen Yan that util_est_update()
-> only used UTIL_AVG_UNCHANGED for the subtrahend of the equation:
-> 
->   last_enqueued_diff = ue.enqueued - (task_util() | UTIL_AVG_UNCHANGED)
-> 
-> Fixes: b89997aa88f0b sched/pelt: Fix task util_est update filtering
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+For 64b kernels, we map all the kernel with write and execute permissions
+and afterwards remove writability from text and executability from data.
 
-Reviewed-by: Vincent Donnefort <vincent.donnefort@arm.com>
+For 32b kernels, the kernel mapping resides in the linear mapping, so we
+map all the linear mapping as writable and executable and afterwards we
+remove those properties for unused memory and kernel mapping as
+described above.
 
-> ---
-> 
-> v1->v2:
-> 
-> 1) Move UTIL_AVG_UNCHANGED definition into struct util_est.
-> 2) Hide UTIL_AVG_UNCHANGED in proc_sched_show_task().
-> 
->  include/linux/sched.h |  8 ++++++++
->  kernel/sched/debug.c  |  3 ++-
->  kernel/sched/fair.c   |  5 +++--
->  kernel/sched/pelt.h   | 11 +----------
->  4 files changed, 14 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index c7e7d50e2fdc..ac5a7d29fd4f 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -350,11 +350,19 @@ struct load_weight {
->   * Only for tasks we track a moving average of the past instantaneous
->   * estimated utilization. This allows to absorb sporadic drops in utilization
->   * of an otherwise almost periodic task.
-> + *
-> + * The UTIL_AVG_UNCHANGED flag is used to synchronize util_est with util_avg
-> + * updates. When a task is dequeued, its util_est should not be updated if its
-> + * util_avg has not been updated in the meantime.
-> + * This information is mapped into the MSB bit of util_est.enqueued at dequeue
-> + * time. Since max value of util_est.enqueued for a task is 1024 (PELT util_avg
-> + * for a task) it is safe to use MSB.
->   */
->  struct util_est {
->  	unsigned int			enqueued;
->  	unsigned int			ewma;
->  #define UTIL_EST_WEIGHT_SHIFT		2
-> +#define UTIL_AVG_UNCHANGED		0x80000000
->  } __attribute__((__aligned__(sizeof(u64))));
->  
->  /*
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 3bdee5fd7d29..0c5ec2776ddf 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -885,6 +885,7 @@ static const struct seq_operations sched_debug_sops = {
->  #define __PS(S, F) SEQ_printf(m, "%-45s:%21Ld\n", S, (long long)(F))
->  #define __P(F) __PS(#F, F)
->  #define   P(F) __PS(#F, p->F)
-> +#define   PM(F, M) __PS(#F, p->F & (M))
->  #define __PSN(S, F) SEQ_printf(m, "%-45s:%14Ld.%06ld\n", S, SPLIT_NS((long long)(F)))
->  #define __PN(F) __PSN(#F, F)
->  #define   PN(F) __PSN(#F, p->F)
-> @@ -1011,7 +1012,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->  	P(se.avg.util_avg);
->  	P(se.avg.last_update_time);
->  	P(se.avg.util_est.ewma);
-> -	P(se.avg.util_est.enqueued);
-> +	PM(se.avg.util_est.enqueued, ~UTIL_AVG_UNCHANGED);
->  #endif
->  #ifdef CONFIG_UCLAMP_TASK
->  	__PS("uclamp.min", p->uclamp_req[UCLAMP_MIN].value);
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a2c30e52de76..56747df3f796 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3856,7 +3856,7 @@ static inline unsigned long _task_util_est(struct task_struct *p)
->  {
->  	struct util_est ue = READ_ONCE(p->se.avg.util_est);
->  
-> -	return (max(ue.ewma, ue.enqueued) | UTIL_AVG_UNCHANGED);
-> +	return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
->  }
->  
->  static inline unsigned long task_util_est(struct task_struct *p)
-> @@ -3956,7 +3956,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
->  	 * Reset EWMA on utilization increases, the moving average is used only
->  	 * to smooth utilization decreases.
->  	 */
-> -	ue.enqueued = (task_util(p) | UTIL_AVG_UNCHANGED);
-> +	ue.enqueued = task_util(p);
->  	if (sched_feat(UTIL_EST_FASTUP)) {
->  		if (ue.ewma < ue.enqueued) {
->  			ue.ewma = ue.enqueued;
-> @@ -4005,6 +4005,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
->  	ue.ewma  += last_ewma_diff;
->  	ue.ewma >>= UTIL_EST_WEIGHT_SHIFT;
->  done:
-> +	ue.enqueued |= UTIL_AVG_UNCHANGED;
->  	WRITE_ONCE(p->se.avg.util_est, ue);
->  
->  	trace_sched_util_est_se_tp(&p->se);
-> diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
-> index 9ed6d8c414ad..e06071bf3472 100644
-> --- a/kernel/sched/pelt.h
-> +++ b/kernel/sched/pelt.h
-> @@ -42,15 +42,6 @@ static inline u32 get_pelt_divider(struct sched_avg *avg)
->  	return LOAD_AVG_MAX - 1024 + avg->period_contrib;
->  }
->  
-> -/*
-> - * When a task is dequeued, its estimated utilization should not be update if
-> - * its util_avg has not been updated at least once.
-> - * This flag is used to synchronize util_avg updates with util_est updates.
-> - * We map this information into the LSB bit of the utilization saved at
-> - * dequeue time (i.e. util_est.dequeued).
-> - */
-> -#define UTIL_AVG_UNCHANGED 0x1
-> -
->  static inline void cfs_se_util_change(struct sched_avg *avg)
->  {
->  	unsigned int enqueued;
-> @@ -58,7 +49,7 @@ static inline void cfs_se_util_change(struct sched_avg *avg)
->  	if (!sched_feat(UTIL_EST))
->  		return;
->  
-> -	/* Avoid store if the flag has been already set */
-> +	/* Avoid store if the flag has been already reset */
->  	enqueued = avg->util_est.enqueued;
->  	if (!(enqueued & UTIL_AVG_UNCHANGED))
->  		return;
-> -- 
-> 2.25.1
-> 
+Change this behavior to directly map the kernel with correct permissions
+and avoid going through the whole mapping to fix the permissions.
+
+At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
+("riscv: Move kernel mapping outside of linear mapping") as reported
+here https://github.com/starfive-tech/linux/issues/17.
+
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/include/asm/page.h       |  13 +++-
+ arch/riscv/include/asm/sections.h   |  17 +++++
+ arch/riscv/include/asm/set_memory.h |   8 ---
+ arch/riscv/kernel/setup.c           |  11 +--
+ arch/riscv/mm/init.c                | 102 ++++++++++++----------------
+ 5 files changed, 75 insertions(+), 76 deletions(-)
+
+diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+index 6e004d8fda4d..349e4f9874cc 100644
+--- a/arch/riscv/include/asm/page.h
++++ b/arch/riscv/include/asm/page.h
+@@ -95,6 +95,7 @@ extern unsigned long va_kernel_pa_offset;
+ #endif
+ extern unsigned long va_kernel_xip_pa_offset;
+ extern unsigned long pfn_base;
++extern uintptr_t load_sz;
+ #define ARCH_PFN_OFFSET		(pfn_base)
+ #else
+ #define va_pa_offset		0
+@@ -108,6 +109,11 @@ extern unsigned long pfn_base;
+ extern unsigned long kernel_virt_addr;
+ 
+ #ifdef CONFIG_64BIT
++#define is_kernel_mapping(x)	\
++	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
++#define is_linear_mapping(x)	\
++	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
++
+ #define linear_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_pa_offset))
+ #define kernel_mapping_pa_to_va(y)	({						\
+ 	unsigned long _y = y;								\
+@@ -127,10 +133,15 @@ extern unsigned long kernel_virt_addr;
+ 
+ #define __va_to_pa_nodebug(x)	({						\
+ 	unsigned long _x = x;							\
+-	(_x < kernel_virt_addr) ?						\
++	is_linear_mapping(_x) ?							\
+ 		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
+ 	})
+ #else
++#define is_kernel_mapping(x)	\
++	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
++#define is_linear_mapping(x)	\
++	((x) >= PAGE_OFFSET)
++
+ #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
+ #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+ #endif /* CONFIG_64BIT */
+diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
+index 8a303fb1ee3b..32336e8a17cb 100644
+--- a/arch/riscv/include/asm/sections.h
++++ b/arch/riscv/include/asm/sections.h
+@@ -6,6 +6,7 @@
+ #define __ASM_SECTIONS_H
+ 
+ #include <asm-generic/sections.h>
++#include <linux/mm.h>
+ 
+ extern char _start[];
+ extern char _start_kernel[];
+@@ -13,4 +14,20 @@ extern char __init_data_begin[], __init_data_end[];
+ extern char __init_text_begin[], __init_text_end[];
+ extern char __alt_start[], __alt_end[];
+ 
++static inline bool is_va_kernel_text(uintptr_t va)
++{
++	uintptr_t start = (uintptr_t)_start;
++	uintptr_t end = (uintptr_t)__init_data_begin;
++
++	return va >= start && va < end;
++}
++
++static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
++{
++	uintptr_t start = (uintptr_t)lm_alias(_start);
++	uintptr_t end = (uintptr_t)lm_alias(__init_data_begin);
++
++	return va >= start && va < end;
++}
++
+ #endif /* __ASM_SECTIONS_H */
+diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+index 7a411fed9e0e..c0b41ed218e1 100644
+--- a/arch/riscv/include/asm/set_memory.h
++++ b/arch/riscv/include/asm/set_memory.h
+@@ -17,13 +17,11 @@ int set_memory_x(unsigned long addr, int numpages);
+ int set_memory_nx(unsigned long addr, int numpages);
+ int set_memory_rw_nx(unsigned long addr, int numpages);
+ int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int));
+-void protect_kernel_text_data(void);
+ #else
+ static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
+-static inline void protect_kernel_text_data(void) {}
+ static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
+ static inline int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int))
+ {
+@@ -31,12 +29,6 @@ static inline int set_kernel_memory(char *start, char *end, int (*set_memory)(un
+ }
+ #endif
+ 
+-#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+-void protect_kernel_linear_mapping_text_rodata(void);
+-#else
+-static inline void protect_kernel_linear_mapping_text_rodata(void) {}
+-#endif
+-
+ int set_direct_map_invalid_noflush(struct page *page);
+ int set_direct_map_default_noflush(struct page *page);
+ bool kernel_page_present(struct page *page);
+diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+index 4db4d0b5911f..b3d0895ce5f7 100644
+--- a/arch/riscv/kernel/setup.c
++++ b/arch/riscv/kernel/setup.c
+@@ -290,11 +290,6 @@ void __init setup_arch(char **cmdline_p)
+ 	init_resources();
+ 	sbi_init();
+ 
+-	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
+-		protect_kernel_text_data();
+-		protect_kernel_linear_mapping_text_rodata();
+-	}
+-
+ #ifdef CONFIG_SWIOTLB
+ 	swiotlb_init(1);
+ #endif
+@@ -333,11 +328,9 @@ subsys_initcall(topology_init);
+ 
+ void free_initmem(void)
+ {
+-	unsigned long init_begin = (unsigned long)__init_begin;
+-	unsigned long init_end = (unsigned long)__init_end;
+-
+ 	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
+-		set_memory_rw_nx(init_begin, (init_end - init_begin) >> PAGE_SHIFT);
++		set_kernel_memory(lm_alias(__init_begin), lm_alias(__init_end),
++				  IS_ENABLED(CONFIG_64BIT) ? set_memory_rw : set_memory_rw_nx);
+ 
+ 	free_initmem_default(POISON_FREE_INITMEM);
+ }
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 2d80088f33d5..6b70c345cfc4 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -425,6 +425,42 @@ asmlinkage void __init __copy_data(void)
+ }
+ #endif
+ 
++#ifdef CONFIG_STRICT_KERNEL_RWX
++static __init pgprot_t pgprot_from_va(uintptr_t va)
++{
++	if (is_va_kernel_text(va))
++		return PAGE_KERNEL_READ_EXEC;
++
++	/*
++	 * In 64b kernel, the kernel mapping is outside the linear mapping so we
++	 * must protect its linear mapping alias from being executed and written.
++	 * And rodata section is marked readonly in mark_rodata_ro.
++	 */
++	if (IS_ENABLED(CONFIG_64BIT) && is_va_kernel_lm_alias_text(va))
++		return PAGE_KERNEL_READ;
++
++	return PAGE_KERNEL;
++}
++
++void mark_rodata_ro(void)
++{
++	set_kernel_memory(__start_rodata, _data, set_memory_ro);
++	if (IS_ENABLED(CONFIG_64BIT))
++		set_kernel_memory(lm_alias(__start_rodata), lm_alias(_data),
++				  set_memory_ro);
++
++	debug_checkwx();
++}
++#else
++static __init pgprot_t pgprot_from_va(uintptr_t va)
++{
++	if (IS_ENABLED(CONFIG_64BIT) && !is_kernel_mapping(va))
++		return PAGE_KERNEL;
++
++	return PAGE_KERNEL_EXEC;
++}
++#endif /* CONFIG_STRICT_KERNEL_RWX */
++
+ /*
+  * setup_vm() is called from head.S with MMU-off.
+  *
+@@ -454,7 +490,8 @@ uintptr_t xiprom, xiprom_sz;
+ #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
+ #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
+ 
+-static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
++static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
++					    __always_unused bool early)
+ {
+ 	uintptr_t va, end_va;
+ 
+@@ -473,7 +510,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+ 				   map_size, PAGE_KERNEL);
+ }
+ #else
+-static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
++static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
+ {
+ 	uintptr_t va, end_va;
+ 
+@@ -481,7 +518,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+ 	for (va = kernel_virt_addr; va < end_va; va += map_size)
+ 		create_pgd_mapping(pgdir, va,
+ 				   load_pa + (va - kernel_virt_addr),
+-				   map_size, PAGE_KERNEL_EXEC);
++				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
+ }
+ #endif
+ 
+@@ -558,7 +595,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ 	 * us to reach paging_init(). We map all memory banks later
+ 	 * in setup_vm_final() below.
+ 	 */
+-	create_kernel_page_table(early_pg_dir, map_size);
++	create_kernel_page_table(early_pg_dir, map_size, true);
+ 
+ #ifndef __PAGETABLE_PMD_FOLDED
+ 	/* Setup early PMD for DTB */
+@@ -634,22 +671,6 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ #endif
+ }
+ 
+-#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+-void protect_kernel_linear_mapping_text_rodata(void)
+-{
+-	unsigned long text_start = (unsigned long)lm_alias(_start);
+-	unsigned long init_text_start = (unsigned long)lm_alias(__init_text_begin);
+-	unsigned long rodata_start = (unsigned long)lm_alias(__start_rodata);
+-	unsigned long data_start = (unsigned long)lm_alias(_data);
+-
+-	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
+-	set_memory_nx(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
+-
+-	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+-	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+-}
+-#endif
+-
+ static void __init setup_vm_final(void)
+ {
+ 	uintptr_t va, map_size;
+@@ -682,21 +703,15 @@ static void __init setup_vm_final(void)
+ 		map_size = best_map_size(start, end - start);
+ 		for (pa = start; pa < end; pa += map_size) {
+ 			va = (uintptr_t)__va(pa);
+-			create_pgd_mapping(swapper_pg_dir, va, pa,
+-					   map_size,
+-#ifdef CONFIG_64BIT
+-					   PAGE_KERNEL
+-#else
+-					   PAGE_KERNEL_EXEC
+-#endif
+-					);
+ 
++			create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
++					   pgprot_from_va(va));
+ 		}
+ 	}
+ 
+ #ifdef CONFIG_64BIT
+ 	/* Map the kernel */
+-	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
++	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
+ #endif
+ 
+ 	/* Clear fixmap PTE and PMD mappings */
+@@ -727,35 +742,6 @@ static inline void setup_vm_final(void)
+ }
+ #endif /* CONFIG_MMU */
+ 
+-#ifdef CONFIG_STRICT_KERNEL_RWX
+-void __init protect_kernel_text_data(void)
+-{
+-	unsigned long text_start = (unsigned long)_start;
+-	unsigned long init_text_start = (unsigned long)__init_text_begin;
+-	unsigned long init_data_start = (unsigned long)__init_data_begin;
+-	unsigned long rodata_start = (unsigned long)__start_rodata;
+-	unsigned long data_start = (unsigned long)_data;
+-	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
+-
+-	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
+-	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
+-	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
+-	/* rodata section is marked readonly in mark_rodata_ro */
+-	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+-	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
+-}
+-
+-void mark_rodata_ro(void)
+-{
+-	unsigned long rodata_start = (unsigned long)__start_rodata;
+-	unsigned long data_start = (unsigned long)_data;
+-
+-	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+-
+-	debug_checkwx();
+-}
+-#endif
+-
+ #ifdef CONFIG_KEXEC_CORE
+ /*
+  * reserve_crashkernel() - reserves memory for crash kernel
+-- 
+2.30.2
+
