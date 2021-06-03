@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA5139A227
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09C139A22B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhFCNZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:25:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33907 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231319AbhFCNZk (ORCPT
+        id S231222AbhFCN3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:29:16 -0400
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:33705 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhFCN3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:25:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622726635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I2nBspPjF20/3Fz9Ced5rD4OQmXVJBuSYoh/YGtujCs=;
-        b=QBsI4a6rpbVwFPj25x2EEv9dtL5N6/NVflB9pKgE07YNJTCcceerpqt7b60s75YyNhropZ
-        Wnwra66Ng0nN69GuYoqpIMkbhMnfDJ8/pPzzz9MpRZ06v/6xuJRmAR5B6HXIQZdXnWc/mN
-        XCWLmMdkOj3V9IYl0B3Gy9XzSbdJIUI=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-136-F5GXTBXrNNW7SANZC3t2NA-1; Thu, 03 Jun 2021 09:23:53 -0400
-X-MC-Unique: F5GXTBXrNNW7SANZC3t2NA-1
-Received: by mail-ot1-f70.google.com with SMTP id w25-20020a0568301459b02903cf61c3b88fso853248otp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:23:53 -0700 (PDT)
+        Thu, 3 Jun 2021 09:29:15 -0400
+Received: by mail-ua1-f44.google.com with SMTP id l12so3323080uai.0;
+        Thu, 03 Jun 2021 06:27:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=I2nBspPjF20/3Fz9Ced5rD4OQmXVJBuSYoh/YGtujCs=;
-        b=VpX8Z5Ip59r73a4LAqez3WXegu8710TFdaswilUyLBc/L1TttzjrKGsKaadM+Yay9b
-         x+JOW8YjGdxVE4p0Kty4/LKYFPITO/cLt/D1g3pdwHFpkcNnlpjlbvI8BS1jMZhQd9hQ
-         0yQfr3M/4Ch98ivBos17m5yFEiEA2KYh9P5qf2l1qd9mMsGtJWGSg+GjEXyZQUghvh7C
-         xcBZjzXU3qfV6T2OZyv1Lx65oGvo8T4Ppf/01yZwOyjxkBWD1GqxH8sV2o7KJbiOQMPF
-         YYAb3DiVSnRVlw/cICSdQgrvjtQtkfsG77DmOsVrrH6K9J+O7glKpXhbwmfQCt2L9A3o
-         9vxw==
-X-Gm-Message-State: AOAM533KVXYEw9SGPk9HoWuY1qClwA2N3+laQAredCVr2IwSMiadUZ6D
-        1N5k7Z4Oe1Usu6cndizvqy3AWcjMlner1afXjBp/6qSymivCPykwy62PId2BMN+mWlA8OoQM92Y
-        psfXA11wr538vcD7k3kJnrlBW
-X-Received: by 2002:a05:6830:4006:: with SMTP id h6mr5586605ots.348.1622726632442;
-        Thu, 03 Jun 2021 06:23:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+9F/VkBceYlmAJQlazH/NI64dO2xB52KTX53ZpD0nVzlCS2Qb1fhML4o9/H0tm/a7+EM6Lw==
-X-Received: by 2002:a05:6830:4006:: with SMTP id h6mr5586593ots.348.1622726632243;
-        Thu, 03 Jun 2021 06:23:52 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q26sm655035otn.0.2021.06.03.06.23.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 06:23:51 -0700 (PDT)
-Subject: Re: [PATCH] powerpc: Remove CONFIG_PPC_MMU_NOHASH_32
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <bf1e074f6fb213a1c4cc4964370bdce4b648d647.1622706812.git.christophe.leroy@csgroup.eu>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <d201a021-fe6f-4240-8ba6-095e1d9badde@redhat.com>
-Date:   Thu, 3 Jun 2021 06:23:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nrfOmrylxXowFyXcIKu7oqcvEz+vDkg+DdiDg40cfGc=;
+        b=AS4ICXWXZE3ty7hLGWqZz/W943S2ri93o7/VDp5IWCHjl7E6Q0XOSf14tJClOGnFJk
+         m+uk1sFrROeODzsimhCXXCTK7etk61Thk9O4YA7lUvFw67mk2rdyBiAtG0FAoHxIap3l
+         0hicYNvRu9p3kbTJLygT1GT7Ix8Zj/WHR4GKrLxKjLJeDD4f9hco5JPZFRtoIreT9W58
+         ziKhPAtTYtjjR4hRqrF6SPWrsSqqGYj4q9w9OC+8+xO2tOW8jST+Hwc32bhAaM+zfmzZ
+         fPRAEEdZoinpEOrnbu4PejEvgn1EVqwD07H9VexXyK7M2+0N/n3USjqbrTimzRnrwYZa
+         xwSQ==
+X-Gm-Message-State: AOAM533AIOLZaZpt2qqGukGHrA2dnhr9dQiO7zAIwR/C5LhoT/SRok9I
+        SD4KtKXuQaNCY83ZeqqanxP814P9MkIurNm/GCw=
+X-Google-Smtp-Source: ABdhPJzf1KgvXV1hDDtLEC4jgKk1VyATYHPm9VWeUjdDzdNaT4jlc3PuCBnlYC2EIiX9YGZ/TB4JEyYjY/YD+N5YJnE=
+X-Received: by 2002:ab0:100f:: with SMTP id f15mr25846649uab.100.1622726835599;
+ Thu, 03 Jun 2021 06:27:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bf1e074f6fb213a1c4cc4964370bdce4b648d647.1622706812.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210603125841.27436-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210603125841.27436-1-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 3 Jun 2021 15:27:04 +0200
+Message-ID: <CAMuHMdVLzzK-hsaEO4mEkOeCnzKuXgORanB+GGnHZjonwQAD9w@mail.gmail.com>
+Subject: Re: [PATCH] docs: fault-injection: fix non-working usage of negative values
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Wolfram,
 
-On 6/3/21 12:53 AM, Christophe Leroy wrote:
-> Since commit Fixes: 555904d07eef ("powerpc/8xx: MM_SLICE is not needed anymore"),
-> CONFIG_PPC_MMU_NOHASH_32 has not been used.
+On Thu, Jun 3, 2021 at 2:59 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Fault injection uses debugfs in a way that the provided values via sysfs
+> are interpreted as u64. Providing negative numbers results in an error:
 >
-> Remove it.
->
-> Reported-by: Tom Rix <trix@redhat.com>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> /sys/kernel/debug/fail_function# echo -1 > times
+> sh: write error: Invalid argument
 
-Thanks, one less for me to do.
+Interesting...
 
-There are about ~100 similar tree wide, I'll be posting these soon.
+> Update the docs and examples to use "printf %#x <val>" in these cases.
+> For "retval", reword the paragraph a little and fix a typo.
 
-Tom
+Presumably this is something that used to work, but was broken (not
+so) recently.  Perhaps the code should be fixed instead?
 
-> ---
->   arch/powerpc/platforms/Kconfig.cputype | 4 ----
->   1 file changed, 4 deletions(-)
->
-> diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-> index 885140055b7a..dc7c46f92302 100644
-> --- a/arch/powerpc/platforms/Kconfig.cputype
-> +++ b/arch/powerpc/platforms/Kconfig.cputype
-> @@ -424,10 +424,6 @@ config PPC_MMU_NOHASH
->   	def_bool y
->   	depends on !PPC_BOOK3S
->   
-> -config PPC_MMU_NOHASH_32
-> -	def_bool y
-> -	depends on PPC_MMU_NOHASH && PPC32
-> -
->   config PPC_BOOK3E_MMU
->   	def_bool y
->   	depends on FSL_BOOKE || PPC_BOOK3E
+The code uses debugfs_create_atomic_t(), and atomic_t is signed, so
+I'd expect negative numbers to work.
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
