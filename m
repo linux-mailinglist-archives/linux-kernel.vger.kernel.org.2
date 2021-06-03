@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D087B39A59D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECE039A5C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhFCQUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:20:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhFCQU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:20:29 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44611613D2;
-        Thu,  3 Jun 2021 16:18:41 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 17:20:25 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Meng.Li@windriver.com
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, pmeerw@pmeerw.net,
-        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH] driver: adc: ltc2497: return directly after reading the
- adc conversion value
-Message-ID: <20210603172025.314b5ced@jic23-huawei>
-In-Reply-To: <20210601092805.18385-1-Meng.Li@windriver.com>
-References: <20210601092805.18385-1-Meng.Li@windriver.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229941AbhFCQcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:32:45 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:37412 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhFCQco (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 12:32:44 -0400
+Received: by mail-wr1-f48.google.com with SMTP id i94so1447402wri.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 09:30:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K+QHPJyxgFtSkUCGSgJqOFgm6FpUIz56+9nBPBUsUEg=;
+        b=jrxb2FlwDG/i8AKw6RpFmaEfeOx9YUTwfUFSiQ4iWtld/eleR/4kNImnbY6u4az9eN
+         w4S2jedBZmVtCZZUS/H8UI3FKIlp03DaIKsrUCHezoPZ+R2L+DF5N4BSnZ5bTCSaUjHm
+         vHdjoKo8Vqb7j+9des44Xc7Fk6gQyuE+6tWpaSdzzGLFxX8Kmd4BA+gSbxEfKCe7ZXbl
+         YIxUgU1f/s+scWtXGq78MTvVn85+vbmgGhdNsMr5tWFR6QAAYE1wB8S77Z0kzWM06QY9
+         Z3JnZquMxLDM5EPxTUTSqWds9+8u4fyL3O51kUtchfBijn+DQHibXLcCI3PTl7gy3IDj
+         6l3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=K+QHPJyxgFtSkUCGSgJqOFgm6FpUIz56+9nBPBUsUEg=;
+        b=ErU3iGuAuNXh9LinpH5bmy6Mrgo6LBJw9mDBLTA7VyQIWjLvj+06tuj9HMrYnTthae
+         PNKr0HhC181RddfkhyMtmS1O6xMpqsGPfvy2lrIFiuOJEhwb6pehbms1igwtuaWxY0gi
+         83+Q18GbNwouSoGjVZ5mgtV9YUQLbZffYGwu0vjQfj+8gwMYIvDftSKkN1rgAea951Ds
+         lm5IcF+RLwdAbJoipeGyMh3nk3UfhNPw80PXsuP4S81z8B+nKVZAZYR3DdnM4I1bzuZh
+         HOdlDeiSb3fWdiePRotZ62q55slRBFrTm7G9SeqnubhZX64buToqBm56Pq4sy0m55bK0
+         4+1g==
+X-Gm-Message-State: AOAM530meOO6mnjgBYC7auSZC1glN6VzgXWAdl02Ms7VEr38MvxdRItk
+        oIdU2lYCC5O9eUr5c7q2MLwfOuYwE4yYsA==
+X-Google-Smtp-Source: ABdhPJykYa2Y4bt1Toern5/jC3uH/816oweS2/xMvzt6oR95Dnctt5ePG2a5RtHx9YrjGceak28Vmg==
+X-Received: by 2002:a5d:5049:: with SMTP id h9mr764620wrt.221.1622737782147;
+        Thu, 03 Jun 2021 09:29:42 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:410:bb00:104d:bd76:408:a323? ([2a01:e0a:410:bb00:104d:bd76:408:a323])
+        by smtp.gmail.com with ESMTPSA id n9sm4512223wrt.81.2021.06.03.09.29.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 09:29:41 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH] ipv6: parameter p.name is empty
+To:     David Ahern <dsahern@gmail.com>, zhang kai <zhangkaiheb@126.com>,
+        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210603095030.2920-1-zhangkaiheb@126.com>
+ <d1085905-215f-fb78-4d68-324bd6e48fdd@6wind.com>
+ <dd5b5a62-841c-5a21-7571-78d75e2f2482@gmail.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <3c9bcc89-0ec7-0588-719e-d63b36bef132@6wind.com>
+Date:   Thu, 3 Jun 2021 18:29:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <dd5b5a62-841c-5a21-7571-78d75e2f2482@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  1 Jun 2021 17:28:05 +0800
-Meng.Li@windriver.com wrote:
-
-> From: Meng Li <Meng.Li@windriver.com>
+Le 03/06/2021 à 17:15, David Ahern a écrit :
+> On 6/3/21 7:33 AM, Nicolas Dichtel wrote:
+>> Le 03/06/2021 à 11:50, zhang kai a écrit :
+>>> so do not check it.
+>>>
+>>> Signed-off-by: zhang kai <zhangkaiheb@126.com>
+>>> ---
+>>>  net/ipv6/addrconf.c | 3 ---
+>>>  1 file changed, 3 deletions(-)
+>>>
+>>> diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+>>> index b0ef65eb9..4c6b3fc7e 100644
+>>> --- a/net/ipv6/addrconf.c
+>>> +++ b/net/ipv6/addrconf.c
+>>> @@ -2833,9 +2833,6 @@ static int addrconf_set_sit_dstaddr(struct net *net, struct net_device *dev,
+>>>  	if (err)
+>>>  		return err;
+>>>  
+>>> -	dev = __dev_get_by_name(net, p.name);
+>>> -	if (!dev)
+>>> -		return -ENOBUFS;
+>>>  	return dev_open(dev, NULL);
+>>>  }
+>>>  
+>>>
+>> This bug seems to exist since the beginning of the SIT driver (24 years!):
+>> https://git.kernel.org/pub/scm/linux/kernel/git/davem/netdev-vger-cvs.git/commit/?id=e5afd356a411a
+>> Search addrconf_set_dstaddr()
+>>
+>> Acked-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+>>
 > 
-> When read adc conversion value with below command:
-> cat /sys/.../iio:device0/in_voltage0-voltage1_raw
-> There is an error reported as below:
-> ltc2497 0-0014: i2c transfer failed: -EREMOTEIO
-> This i2c transfer issue is introduced by commit 69548b7c2c4f ("iio:
-> adc: ltc2497: split protocol independent part in a separate module").
-> When extract the common code into ltc2497-core.c, it change the
-> code logic of function ltc2497core_read(). With wrong reading
-> sequence, the action of enable adc channel is sent to chip again
-> during adc channel is in conversion status. In this way, there is
-> no ack from chip, and then cause i2c transfer failed.
-> In order to keep the code logic is the same with original ideal,
-> it is need to return direct after reading the adc conversion value.
+> A patch was sent yesterday, "sit: set name of device back to struct
+> parms", to set the name field in params.
 > 
-> v2:
-> According to ltc2497 datasheet, the max value of conversion time is
-> 149.9 ms. So, add 20% to the 150msecs so that there is enough time
-> for data conversion.
-
-Version change logs go below the --- as we don't want to preserve them
-forever in the git history.
-
-I may have lost track of the discussion, but I thought the idea was that perhaps
-the longer time period would remove the need for the early return?
-
-Thanks,
-
-Jonathan
-> 
-> Fixes: 69548b7c2c4f ("iio: adc: ltc2497: split protocol independent part in a separate module ")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
-> ---
->  drivers/iio/adc/ltc2497.c | 2 ++
->  drivers/iio/adc/ltc2497.h | 2 +-
->  2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/adc/ltc2497.c b/drivers/iio/adc/ltc2497.c
-> index 1adddf5a88a9..fd5a66860a47 100644
-> --- a/drivers/iio/adc/ltc2497.c
-> +++ b/drivers/iio/adc/ltc2497.c
-> @@ -41,6 +41,8 @@ static int ltc2497_result_and_measure(struct ltc2497core_driverdata *ddata,
->  		}
->  
->  		*val = (be32_to_cpu(st->buf) >> 14) - (1 << 17);
-> +
-> +		return ret;
->  	}
->  
->  	ret = i2c_smbus_write_byte(st->client,
-> diff --git a/drivers/iio/adc/ltc2497.h b/drivers/iio/adc/ltc2497.h
-> index d0b42dd6b8ad..e451930837d8 100644
-> --- a/drivers/iio/adc/ltc2497.h
-> +++ b/drivers/iio/adc/ltc2497.h
-> @@ -2,7 +2,7 @@
->  
->  #define LTC2497_ENABLE			0xA0
->  #define LTC2497_CONFIG_DEFAULT		LTC2497_ENABLE
-> -#define LTC2497_CONVERSION_TIME_MS	150ULL
-> +#define LTC2497_CONVERSION_TIME_MS	180ULL
->  
->  struct ltc2497core_driverdata {
->  	struct regulator *ref;
-
+Oh yes, it was in my spam folder ...
