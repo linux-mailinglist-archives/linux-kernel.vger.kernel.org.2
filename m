@@ -2,100 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D622399F8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECB1399F85
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhFCLKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:10:38 -0400
-Received: from mail-pl1-f176.google.com ([209.85.214.176]:43597 "EHLO
-        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhFCLKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:10:37 -0400
-Received: by mail-pl1-f176.google.com with SMTP id v12so2679463plo.10;
-        Thu, 03 Jun 2021 04:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wDo2z8iTAiJqBqvWvLB96Okm4phCuyBKqAvyvxyTJXs=;
-        b=P78APJKcMH6oqL0fsJYDyeLXqod4sHzF3NXsn6tkC3NkBYbPumu8oRRPGT/fPb1HtZ
-         UmaBhblYD4nltFb4LfHSbYjyeyRq1q+Xng3DOD5LCgR6V+7j7JfVMVnTO18hvNonTGAh
-         nCB/Zk0yrCgyJlh9b6R39j8OT0/a53Lhanzzmvg5zyfHTnDax/5ap2oyt7s8WZ2Fdtsx
-         vy6+WrmcmYqO+6/fcHjFDZsykRNKYqfV+dcheF40g7wGoRKkln9VKOvRpJV+xDXDJPOC
-         QtohdoP4CivTDGn77Ix3q/Mdf1NSq+U0Q98iUBwG7EYtzwONK52ax/CLcWtkR7gWBfSg
-         dTPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wDo2z8iTAiJqBqvWvLB96Okm4phCuyBKqAvyvxyTJXs=;
-        b=eV9FzO7C/LiXgmjqjoSW9qro4T36Y0qYfAwUOFZc+SePCOxsyvRXStGPuXQDAbE8J3
-         Na84+fwju9daLvw2SViPUnTMD48XawuiyxUaENiKK5lrcdRRfjNz7uKifh4iUMiP0eLS
-         2HlA5hWCyyTcsymWVK6m0mfUeJl9/J8Jr/sZgF65t4FQ7s0fp2M3lAkZ7285hHb4IZOQ
-         qa0KqedqvBnS3Xw6qprrg69NGzXI2DhN7ylv4nGWcJn3AYdF9hgrk1ShEytjMrl49Krk
-         Ft74vvbwYe41L/n15zGzAeaCVxJZ4/UTopK4KCUCMiX80YCw0xzp3hGUDqyrlKU3EcFG
-         HvMw==
-X-Gm-Message-State: AOAM533n9kZclDO7z4bAM3j8/JDqSL5kqmnP1UOJpDIhcYzYGf10T19/
-        1fb2RURXcUYj6JJ+Ki+S/bb5GtIesWX38be73qk=
-X-Google-Smtp-Source: ABdhPJyCs+wp9GQAeR/SyNmg8FNfUVK6o5CEsq9kbEkhUdzsvyuzZtCKxNpGLiUoC4lv9/PO9J5wxEFTLOwFP4TIkL0=
-X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr36016810pjq.228.1622718464302;
- Thu, 03 Jun 2021 04:07:44 -0700 (PDT)
+        id S229936AbhFCLJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:09:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229629AbhFCLJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:09:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DC09613D7;
+        Thu,  3 Jun 2021 11:07:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622718477;
+        bh=f4K5JWhbtxnt2GNMNdWE8aEyOnpUw3O1MWjxYMBbEFM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K8TVXqawAQgHdbdZw+m67cZ6I5igyM+svwdaRgkzGO9Afs7/5Nkk1XHtm/0bFlMKY
+         MqIZtIskyIpXA1wf8UAh/qBEjBKMYwJrF6Nsr9gIxsLtWP9B2AZLrcYKH81LBnDaRv
+         /i+i0B3qIecGs46LUrju5XEFKv3Rjzjwf0PXQFeEc95WLWF8mO3mYY9rzVZrv3Ruhf
+         AC/MuAJpOekC9FwDMn4CypOLosf8cmwmrNYzAKAWZe4Xjucdgn5aWCx0fZNWq+QYId
+         5X43Ew/txa80+VhzsSUb7M/oWzjRN8VQBzaEl/SoM/ygfRQrOd9Eow/O0rgYQHrQOj
+         9KdjkH3Jh07Tg==
+Date:   Thu, 3 Jun 2021 16:37:53 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
+        wsa+renesas@sang-engineering.com,
+        laurent.pinchart@ideasonboard.com, robin.murphy@arm.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] dmaengine: rcar-dmac: Fix PM reference leak in
+ rcar_dmac_probe()
+Message-ID: <YLi4CUhjpnAGrZ+A@vkoul-mobl>
+References: <1622442963-54095-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-References: <20210603101822.9645-1-steven_lee@aspeedtech.com> <20210603101822.9645-5-steven_lee@aspeedtech.com>
-In-Reply-To: <20210603101822.9645-5-steven_lee@aspeedtech.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Jun 2021 14:07:28 +0300
-Message-ID: <CAHp75VcPdUeK49w9qg9RuJY7ASMyFMEEi=cX1gnp=wM_QHDZ+w@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] gpio: gpio-aspeed-sgpio: Add set_config function
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>, Hongweiz@ami.com,
-        ryan_chen@aspeedtech.com, Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622442963-54095-1-git-send-email-zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 1:20 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> AST SoC supports *retain pin state* function when wdt reset.
-> The patch adds set_config function for handling sgpio reset tolerance
-> register.
+On 31-05-21, 14:36, Zou Wei wrote:
+> pm_runtime_get_sync will increment pm usage counter even it failed.
+> Forgetting to putting operation will result in reference leak here.
+> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> counter balanced.
 
-...
-
-> +static int aspeed_sgpio_set_config(struct gpio_chip *chip, unsigned int offset,
-> +                                  unsigned long config)
-> +{
-> +       unsigned long param = pinconf_to_config_param(config);
-> +       u32 arg = pinconf_to_config_argument(config);
-> +
-> +       if (param == PIN_CONFIG_PERSIST_STATE)
-> +               return aspeed_sgpio_reset_tolerance(chip, offset, arg);
-
-> +       else
-
-Redundant.
-
-> +               return -EOPNOTSUPP;
-
-IIRC we are using ENOTSUPP internally in the kernel. YEs, checkpatch
-warning may be ignored.
-
-> +}
+Applied, thanks
 
 -- 
-With Best Regards,
-Andy Shevchenko
+~Vinod
