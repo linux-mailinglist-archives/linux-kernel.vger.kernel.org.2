@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CAE399D66
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A58399D6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhFCJHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:07:39 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3529 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhFCJHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:07:37 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fwg0V4pX6zZcS9;
-        Thu,  3 Jun 2021 17:03:06 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 17:05:51 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 17:05:51 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] EISA: use DEVICE_ATTR_RO() helper macro
-Date:   Thu, 3 Jun 2021 17:05:06 +0800
-Message-ID: <20210603090506.11771-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S229718AbhFCJJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:09:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhFCJJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:09:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBF80613AD;
+        Thu,  3 Jun 2021 09:07:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622711272;
+        bh=tyTxLmRzGcLrgS5s1ZrV5gXEzztjA30ML1iCEHzJ9Ys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t/rqjzqj4JsVvW4HTGMme6CBwV0/ZE4SynU6ck6KdisYT5/MNBHA2UjAfyxV6ceij
+         FSnjsE66z2H0mzgwqGfxn6pI6kjUvd9NXANos5c0mrcQuoEN7yt09/12nTyorr5d7z
+         jY2bVMlAXhsgoHya2sbDUmeDCmX2FIs2+mJVlHWmWOfufGwfUnwbHYLRNzifgwi+dS
+         OdvukMKMRXhtBCsJxoEUhMTd8NonP5CeE+YZUCkQqTHuWRarmoaPS+9Z2Jy0JPWRZA
+         GlRbFZqocJGyaAtGJWKgJlqxWo9/GCsyC2faCyXaz9icR9gaoadu1ucwkYLYGnSlnn
+         4RgCVPHJ1Cy6A==
+Date:   Thu, 3 Jun 2021 12:07:48 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Anand Khoje <anand.a.khoje@oracle.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
+Subject: Re: [PATCH v2 3/3] IB/core: Obtain subnet_prefix from cache in IB
+ devices
+Message-ID: <YLib5BhTX6tEMTfe@unreal>
+References: <20210603065024.1051-1-anand.a.khoje@oracle.com>
+ <20210603065024.1051-4-anand.a.khoje@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603065024.1051-4-anand.a.khoje@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_RO() helper macro instead of DEVICE_ATTR(), which makes
-the code a bit shorter and easier to read.
+On Thu, Jun 03, 2021 at 12:20:24PM +0530, Anand Khoje wrote:
+> ib_query_port() calls device->ops.query_port() to get the port
+> attributes. The method of querying is device driver specific.
+> The same function calls device->ops.query_gid() to get the GID and
+> extract the subnet_prefix (gid_prefix).
+> 
+> The GID and subnet_prefix are stored in a cache. But they do not get
+> read from the cache if the device is an Infiniband device. The
+> following change takes advantage of the cached subnet_prefix.
+> Testing with RDBMS has shown a significant improvement in performance
+> with this change.
+> 
+> The function ib_cache_is_initialised() is introduced because
+> ib_query_port() gets called early in the stage when the cache is not
+> built while reading port immutable property.
+> 
+> In that case, the default GID still gets read from HCA for IB link-
+> layer devices.
+> 
+> Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
+> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
+> ---
+>  drivers/infiniband/core/cache.c  | 7 ++++++-
+>  drivers/infiniband/core/device.c | 9 +++++++++
+>  include/rdma/ib_cache.h          | 6 ++++++
+>  include/rdma/ib_verbs.h          | 6 ++++++
+>  4 files changed, 27 insertions(+), 1 deletion(-)
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/eisa/eisa-bus.c | 23 +++++++++--------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+Can you please help me to understand how cache is updated?
 
-diff --git a/drivers/eisa/eisa-bus.c b/drivers/eisa/eisa-bus.c
-index d9a16ba2ccc2899..65bffde137e3f70 100644
---- a/drivers/eisa/eisa-bus.c
-+++ b/drivers/eisa/eisa-bus.c
-@@ -155,34 +155,29 @@ void eisa_driver_unregister(struct eisa_driver *edrv)
- }
- EXPORT_SYMBOL(eisa_driver_unregister);
- 
--static ssize_t eisa_show_sig(struct device *dev, struct device_attribute *attr,
--			     char *buf)
-+static ssize_t signature_show(struct device *dev,
-+			      struct device_attribute *attr, char *buf)
- {
- 	struct eisa_device *edev = to_eisa_device(dev);
- 	return sprintf(buf, "%s\n", edev->id.sig);
- }
-+static DEVICE_ATTR_RO(signature);
- 
--static DEVICE_ATTR(signature, S_IRUGO, eisa_show_sig, NULL);
--
--static ssize_t eisa_show_state(struct device *dev,
--			       struct device_attribute *attr,
--			       char *buf)
-+static ssize_t enabled_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
- {
- 	struct eisa_device *edev = to_eisa_device(dev);
- 	return sprintf(buf, "%d\n", edev->state & EISA_CONFIG_ENABLED);
- }
-+static DEVICE_ATTR_RO(enabled);
- 
--static DEVICE_ATTR(enabled, S_IRUGO, eisa_show_state, NULL);
--
--static ssize_t eisa_show_modalias(struct device *dev,
--				  struct device_attribute *attr,
--				  char *buf)
-+static ssize_t modalias_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
- {
- 	struct eisa_device *edev = to_eisa_device(dev);
- 	return sprintf(buf, EISA_DEVICE_MODALIAS_FMT "\n", edev->id.sig);
- }
--
--static DEVICE_ATTR(modalias, S_IRUGO, eisa_show_modalias, NULL);
-+static DEVICE_ATTR_RO(modalias);
- 
- static int __init eisa_init_device(struct eisa_root_device *root,
- 				   struct eisa_device *edev,
--- 
-2.26.0.106.g9fadedd
+There are a lot of calls to ib_query_port() and I wonder how callers can
+get new GID after it was changed in already initialized cache.
 
-
+Thanks
