@@ -2,211 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A5639A27E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD9B39A283
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFCNvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:51:36 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:14948 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230099AbhFCNve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:51:34 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 153DiBiv018769;
-        Thu, 3 Jun 2021 13:49:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=O7mwBXpW/qchQHopHE2q5tb5KtnRT0zlc6Hq8U4lG/w=;
- b=ZFPBQmlH9QfXupsgMWvn+3ALd9LC06FsBiX0PM6LCM5AcR3n/Ixja69XXP8PbG3V9q4A
- XsywZdr54Sl/nR3cdVzE3vAZc/lRbhl7gAGdALarkck+Rjt1+bjxdMvu0TKnYtLNUrNB
- ErbL/AMs1GFYiM3XhCabadP5Zke3vtyhAZcgs9uMqw3HkjUFwmgp28zeZMVRaz+Liond
- jptOXCNx0yNjqKBphFpUiroFaKkNnVdRunpyVbpJOPfQwso7TZYQO1vqt3KDquPsEBjl
- xGQuSLuuDlBM7Mnp0NAQR+GdWwfxUR6CrhByO7AsPct25MZnRUt2KRqf0JpA9Xk9fHZR fg== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38wu57rse3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Jun 2021 13:49:10 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 153Dn9IO177944;
-        Thu, 3 Jun 2021 13:49:09 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
-        by userp3020.oracle.com with ESMTP id 38x1bdwb1b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Jun 2021 13:49:09 +0000
+        id S231163AbhFCNvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:51:51 -0400
+Received: from mga17.intel.com ([192.55.52.151]:12093 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230507AbhFCNvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 09:51:49 -0400
+IronPort-SDR: Mv5hu8sMuEWEcJeaitfLuGrnKGcERJEJPim22xm7eOG2S2+ehq4WAne+a/v/OGEYVBQLBfHEd/
+ lMIvGzP4HG7g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184421283"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="184421283"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 06:50:03 -0700
+IronPort-SDR: XIEmuJD8E1NuLNOvLTjgR7Bj9+otrY9PoEUs+WqR6mQGjTZ7Tj1gKVfoLQN4MQTH1NRtzkB1YO
+ lkGZpiPyO/oQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="467964709"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Jun 2021 06:50:03 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 3 Jun 2021 06:50:02 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 3 Jun 2021 06:50:02 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Thu, 3 Jun 2021 06:50:02 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Thu, 3 Jun 2021 06:49:21 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P/bHl9BW5nmiQ70z6HBx2HsmtlnLH8UZUi3ILimJpTZM7IrzuJ+69cWKsLPNNSAxuHOf6+ILALUd2UfMryqVD0HqZvUcJSX3ga4+1220k0maxOPgInMk6BSnz4Kw+eCliN/H5O8pMjLGtrxhGB7yQxM0TV5SJoQUfNU7fl5Uv2HMM0xG38t1/rfgk7+MqFzYMF47TretvkePBvfSlmMsmU7KkD00n+//l3cf9cjhegMKrVZqP0sI++FM66nGfSdslklnhn6kxydYo2buTUHdiHb7m6kCam+UzHl6c4HzQ+C2Nk42KzajTPBR5SMnmWCi+K7fL+V+M8XBtjxKrHoGRQ==
+ b=Objw2GF0bGDcc3NivlpigYovqz1yW/NjNmOpmmCedgbvCJ5ld+g/7SPrIkIlT7CpEUNMGi7Qb3yOQKdlbPCDTFMwt4eyfokxzkbcnjOsqEtM+TxsNhE14QGoihUL5PMNiQZDBTduUrUBHW8Y1LX1QMUnpl6zF1FstDedBzHpOUHXlUqGr1SqJYoVSRGm2iyzJpTnYus6DVZBKtg4cloNzsbyY8UhRFyMBp0boFjFtcaw1wyvl7me9z3+4QKKeS34clnCCe6lcWwTnzc0NY72Pazh9rRDXkzoQCjmRvBLC5jM0bit/GPc3qsTIYv8tKBX2TpxN+shfNxKq6I3aFrKAw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O7mwBXpW/qchQHopHE2q5tb5KtnRT0zlc6Hq8U4lG/w=;
- b=F25dDoQpAwAdRl8oW2BqYocNSiqKFKVMuadA7LANsRLsfKFG8Kav3+fdjZvB/z6DaPHptkTW2qUBnaUKRCybvHkre7NmpzG7HnHZ69dQxuKnx/ERFeldc7Ab4idj8PixikPL6LWp5DMnH1pmMvxhPJfgmc8MqT1Twvz17gjJSWO5+Zlmayz6MLxsC/sH0C7D2Mpb9DuZwzT/I7KVkKv+++TPsRChgPBWD62fQtoYjIDCPvSlHRx2UM/h0c0ub9OnKlJ4dTEYoe+HJJIFdq8ZlKAR3kZVnwJxadsU2ua87gJZC7+R81TEZ0Ny8z2SyT6feFmBVk+v6ioA6Ubpy+Tljw==
+ bh=2rGH9GEbRvBl1ME3FcmrBf3qyR1tOTdqMW066lyDh7Y=;
+ b=Z7493TEPH5r0/B+440PVqEu7cPIWLcFU9y5UBVBSGs1nZ4AHOwbYZu0gLWwJSGkuT5wvfdD2ts8uuWI/cu8Rdvxbx6pEkhY9piwGPtPONL25UEn85J8Y+4vWH7XS3skGKYlS8qzYvYxfuWNmS3KzmkKXRmB8Grr4Ytt1NgbbqpUJUTxLvTtgAL/ZZ8kyvFrdeLIh4lm7hCuZtW4E7Xl3LOTxT2dkgIP2yfk1Kz04Tcf7b3rKK17TTUyU0/7dkXvI5k+K0v6L6RqONZDPbWD/Tuv0f1TJeJ7XCUJzg+zJcUd8UoheyJDYUQdkALJnGmjnVGIfZEwFKfTVd5QBpIxzIg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O7mwBXpW/qchQHopHE2q5tb5KtnRT0zlc6Hq8U4lG/w=;
- b=V3woexmICbTowoq7entjGGOX3xbEoo0FcytC2BPRzqHB4GJzC37TU3YHVvFzf4vrfA/zDqf7vLAyN0Kq1JGirQTQibNB1xAg44Q0uK6kUhAFEX0T57sjg4GHoaiKBLvXHFq83CFrebN6mRMRUKI0FUiws8J8zCAbPoHWxaKix0k=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by BLAPR10MB5170.namprd10.prod.outlook.com (2603:10b6:208:321::18) with
+ bh=2rGH9GEbRvBl1ME3FcmrBf3qyR1tOTdqMW066lyDh7Y=;
+ b=Zt21katDrMcRISQ5UjblBQVHnEaEerlBtMJl8qKPPzB+W+w0yRIqujzgbpThi75+zmMiDe9PZ7YK95YkASO1ru9h8EkZ4wgn//Fy6vlJTlY99IK1py3u9LqvwjrqCnF/KWM9qAhzB3Ibwwc33siwgdZF2WI2JYq0aSlZSGmNXkc=
+Received: from SA2PR11MB5051.namprd11.prod.outlook.com (2603:10b6:806:11f::9)
+ by SA2PR11MB5178.namprd11.prod.outlook.com (2603:10b6:806:fa::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Thu, 3 Jun
- 2021 13:49:07 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::78a3:67d:a8ca:93cf]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::78a3:67d:a8ca:93cf%7]) with mapi id 15.20.4195.023; Thu, 3 Jun 2021
- 13:49:07 +0000
-Subject: Re: [PATCH 2/6] ARM: xen: Register with kernel restart handler
-To:     Lee Jones <lee.jones@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, arm@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Stefan Agner <stefan@agner.ch>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20191015145147.1106247-1-thierry.reding@gmail.com>
- <20191015145147.1106247-3-thierry.reding@gmail.com>
- <CAF2Aj3hbW7+pNp+_jnMVL8zeSxAvSbV1ZFZ_4PAUj6J0TxMk7g@mail.gmail.com>
- <20210603131124.GA1040254@roeck-us.net> <20210603133840.GB2435141@dell>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <7a1cf301-ba99-1e01-c43e-53b53f4d3e04@oracle.com>
-Date:   Thu, 3 Jun 2021 09:48:59 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
-In-Reply-To: <20210603133840.GB2435141@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Thu, 3 Jun
+ 2021 13:49:21 +0000
+Received: from SA2PR11MB5051.namprd11.prod.outlook.com
+ ([fe80::c9d1:585:b56b:b3ce]) by SA2PR11MB5051.namprd11.prod.outlook.com
+ ([fe80::c9d1:585:b56b:b3ce%3]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
+ 13:49:20 +0000
+From:   "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     "Jose.Abreu@synopsys.com" <Jose.Abreu@synopsys.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "Voon, Weifeng" <weifeng.voon@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Tan, Tee Min" <tee.min.tan@intel.com>,
+        "vee.khee.wong@linux.intel.com" <vee.khee.wong@linux.intel.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RESEND PATCH net-next v4 1/3] net: stmmac: split xPCS setup from
+ mdio register
+Thread-Topic: [RESEND PATCH net-next v4 1/3] net: stmmac: split xPCS setup
+ from mdio register
+Thread-Index: AQHXWG9Vf0H4HqJeQ0WhvEJpntXirqsCRbMAgAAGNvA=
+Date:   Thu, 3 Jun 2021 13:49:20 +0000
+Message-ID: <SA2PR11MB50513D751429D3D456A5A9409D3C9@SA2PR11MB5051.namprd11.prod.outlook.com>
+References: <20210603115032.2470-1-michael.wei.hong.sit@intel.com>
+ <20210603115032.2470-2-michael.wei.hong.sit@intel.com>
+ <20210603132056.zklgtbsslbkgqtsn@skbuf>
+In-Reply-To: <20210603132056.zklgtbsslbkgqtsn@skbuf>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [160.34.88.237]
-X-ClientProxiedBy: SJ0PR05CA0115.namprd05.prod.outlook.com
- (2603:10b6:a03:334::30) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [58.71.211.99]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f4b25cc3-3796-44b6-7898-08d9269663a9
+x-ms-traffictypediagnostic: SA2PR11MB5178:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR11MB517864BE7BC3333DCC74B78D9D3C9@SA2PR11MB5178.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AfU4i8tVM1reNHpYzUbf2abcB0XPmc2WibJlcA8ZJnXTiXklZYDYE927xJg79id3roldfNtWhSI5aQJxW0lLrwrDkvxYCdo7y00yv9L3Y9t2CkVYlJmECC5BYf6m+D6wIcQBf7es7DVPJSk+LT+qJoQqgCeh/84Hki234pXGlBZQtlYog8MMzcIbDBG5WpFzyZTuvu9wHlQCZzwLjQ0z9MnXCZF9AB0RNPkfXDe94TEQO9qmSVEvIU8xrVo6ylUQXBtolpqLBzcSAwckYVtQUflQV82fMTLduu9aHjO4jzz8TiKA1nQrH66v/FDEFTOVTwLG/AjT1SWQSlQOLEDHwLkpThHKTvoHjouk3KOf39nDyUTb0RNoSUer4B29ZrDtfm/NN4Ax5yAfcMcYM1wWoudkH4/nEPcXL5syWdkkS8nfnEWkPiG36ibZ4GRc7AUQwA2wESv80z5gxTWVlWOVtHrYvqu3pX6c30+T0gFiFIC8FUhSwzitT2Pt8rEHCkFWh/CsjlgeV6z6lkEl2R7RsPV6aonR7oouzDAZsyqbvoEGMebR7ReoQc0kO7+UqW00m+/pH69GwZkZPUTnr+0LIv+yEvyuUlbGRD2oGu27ZVo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB5051.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(396003)(39860400002)(366004)(478600001)(33656002)(76116006)(8936002)(66476007)(186003)(7416002)(66556008)(4326008)(66946007)(7696005)(86362001)(66446008)(83380400001)(52536014)(6916009)(53546011)(9686003)(55016002)(316002)(8676002)(122000001)(71200400001)(38100700002)(54906003)(6506007)(2906002)(64756008)(5660300002)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?zxI2g/bR6vVYzkNk9diGTSb3eOQhC86qKrbBa3DHo96K1YSqcTb5w0A4uap5?=
+ =?us-ascii?Q?gQGQ8tdZSMMlrJCQfoCf/E+0/k46QeAn7hZt+8eihIaovnCQatGyrwOj32Az?=
+ =?us-ascii?Q?FUleV34nTrfx+WAWZMxjWc1kUFHOgVzsu2BGHdPzo6u4yqRJigd63aU1NOfX?=
+ =?us-ascii?Q?OukAfgmzTrbbZu5nxjaYUMksfDw7s+DvNQfM5ROX0b78yfteuvI8bVQCK7Rn?=
+ =?us-ascii?Q?gASkSAxb3MO2akstS9f2AscOfDvbYKauYW0XbQmiDIB24TFeBYYroefyeRae?=
+ =?us-ascii?Q?W9NJTPV8Ck/zlmifPTAJSNuyEFXIm9n8NMwJLgWXUJqNHskEIjMC8Xogkfyq?=
+ =?us-ascii?Q?qR4u9yT4au4o0H+uX0izZFxhpkk6r7NKAwx5ioR68Tj/rk6AYTeowAsEpruo?=
+ =?us-ascii?Q?7zw5k8Wu8RFDrs1FyEu2gsVQichOZOZaMNKvwlJTpoqiE3D9gAyujwxmPICX?=
+ =?us-ascii?Q?WSAciCU2q8PY+lY2nSa7yFamkT5t4h08YRPsG101kOVyqqqjZyrd21Gb5CIo?=
+ =?us-ascii?Q?xHgBymAve2h3W1p12vRXz/fTR6+QC1AkRCWC+UBNNFVAtp2n4H5sNJ20uOOD?=
+ =?us-ascii?Q?OCLAsHCdggLZldUO0tyBJjV7+E+TFnlKfP4J3b1VHOLVoiaad4zcjvia0eIi?=
+ =?us-ascii?Q?z3Ip1rq1W6DfnBEBPzLk31uDs4KIhjU+m25rxjnjqQ+sqtSp5KBQkHrGegB8?=
+ =?us-ascii?Q?x+KFhUIq9JPLQYnWWzzA7c5K6MnzE3pJ7P0/lJwdnof4aWp/Uf850D5abfDH?=
+ =?us-ascii?Q?/1FbZtLWdy5HCJvf054dC6SjIsHWmZJYn0/dYYwG9af/nZncUNf3Pp16u8KF?=
+ =?us-ascii?Q?fm0sdpumAXNqWgC3SH6xyNkahRlQrht58A6skLrbr0prgbZdlSQj5QsDywpw?=
+ =?us-ascii?Q?BFUGjxxwoxWmmQv6C/Y14GFsNP8q6ER/ZqZ1Npv/4PqhkVgoeRQOLUWCamWT?=
+ =?us-ascii?Q?mLBa5ii+gria2fFuBweaHcZQGUZviVlhmP+q6UlQwYGD26ubFkVnWWu+5uKU?=
+ =?us-ascii?Q?HbBDlvxjUTkve83Mtq4VbiRtipPKNSi1AlHVkKMW1wIFMRSu06GBcedQ/Wuz?=
+ =?us-ascii?Q?AAFqM6mpZKUl3MO4BsMQRoEkExwz/mR504cqjiuI6qPir7f0ER0UL2RjNVcF?=
+ =?us-ascii?Q?ciCNZfUR9ZdP3oIACXunI2ifDvLWR4VO+V3xSxVhQ3gQQ3cVJHYivY4mROS2?=
+ =?us-ascii?Q?dTOU8qbYfEwIyHUgcfkQr5wk5T9p2H3qLSwzsfzZ5BF7biIAEoqKs30Ah/b5?=
+ =?us-ascii?Q?odgfdDwMo3apq1g/ar4+bKeW9E0JaV5sojhrbVWhsWS4G6GPd7dA9UWolby9?=
+ =?us-ascii?Q?ZzM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.96.237] (160.34.88.237) by SJ0PR05CA0115.namprd05.prod.outlook.com (2603:10b6:a03:334::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Thu, 3 Jun 2021 13:49:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 655ac849-8134-4ecf-d1c1-08d926965b53
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5170:
-X-Microsoft-Antispam-PRVS: <BLAPR10MB51701E482B811905CDD4639C8A3C9@BLAPR10MB5170.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fcy+0KjsnIhIORYy1KRMCVKDoyvQ842cg+vqijlmARWOt4fDfaKlcLqMRlcx+wXs3/zrGJtYSV1LAAgO1LJwV/y30dNL+IrqDBxSAYTRubdlGKVt1fxgca1pKwj7OcXOLSIyeaJgb1JBoeYZ3v2bLvPh2bA/hfFdnCU105vT+9ojZagANG861QYXpUVCrOMJlB4q/QiLz7k6jMXD9PbgMqCDh0kA88GZrOgPKSZSUMgMNqgBsLU1wSdK/oqJzMJsgG+PRDy9PUb/Gn4oVHnIpC89TjW5e8J4IF+dwVnI90hJXu/k5RSCwTAPoXdFKreMBbdcyLK14sDY5Jqcif8WEjHKJF0B0NA9wjxbrYy2Nxq0ETSRGXmytwa6R0sPmZHqwlKaCQewrFRnOEa/1PU2kYqrUiY8FnK3ml9YDMwvD9lLLcysxu2/4qeCzNsk2l4Qkm1wCOLlofls8LiORcJIGtskjKgeaMUWqFZ6nvoqf37zhl57W7p2IDevn95BBEka7lalxyL8D5bNSOpSIkVXnRt/UfaKpatRgz+YREhWc0l0p5TodjgYp8X7GhEt/a/F1bfSk0ZTqAdpsK4ndk1+kbSv0IIwJgEiQ4d+dyAgnB/wj/eQnA2Y1Hy0KFMpc4NdmaLFxTCzYHrhfbuCIz/INJdK2HssQoOTp3bl1kK4eGA76VRw8/PK8iDxik/NKeFd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(366004)(39860400002)(396003)(6486002)(66476007)(66556008)(66946007)(5660300002)(2616005)(7416002)(31696002)(110136005)(478600001)(36756003)(16576012)(316002)(83380400001)(53546011)(26005)(956004)(38100700002)(2906002)(6666004)(44832011)(186003)(8676002)(16526019)(86362001)(4326008)(31686004)(8936002)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VlNNY1YwK2xlWlQvSHI5eW8yNitiQktRaEdPbVY5dFJSNmt4VnY2cmNoS09s?=
- =?utf-8?B?aC9SOHZkYURaY3NkaUpWNU1BcEpYdnlwcURqNDZFait2d2NGT3lUZUpaQWpS?=
- =?utf-8?B?bUZuTFozeDJIYi84Ti9NYWgxeGE1V0ordkRYUWVqdEp4bEVzc05TNkhKeDhR?=
- =?utf-8?B?R0NpM2MwK1JPeCt4YjN4bGRmeXdDRS9QbHBaYnZjQ25Pa0V1dVR5ZzBlZnhs?=
- =?utf-8?B?djhIa1Fmbm5aZWxqcGFjcUdNRTgxdFlObHdURmdtOFpPM3FxWmU5dlNOdVho?=
- =?utf-8?B?NExEemQ1a3FJbHJRUUllK0w3Y0lrQktBN2hHNFBOVWhHeGw5djI1WDRiZ3Q4?=
- =?utf-8?B?bTdKRE5CSU8vcTlIWThkd0NTc1lBYVZTZUJOQUZ3SFNGWXMrRmFxSWpoSHhC?=
- =?utf-8?B?Z1ZpWDlrZ1RaRGdqRktUZDJpQ25DZGFYZExBeXdRU0JTeDNjdlNuKzNQSis2?=
- =?utf-8?B?L0tNQnh0YjBVMVFZU0s5NmFOZmxzVHU4RmVmd241dkNDZDdmd1YveXBudjRk?=
- =?utf-8?B?dHlzQjhLcnJhNzBMWFcwdDQ1RWlCK244NjFkR1RBTzFkQTdJcGxBVi9lcFdy?=
- =?utf-8?B?d2t3WFcvRnB4anpvMmRCV0ZiU3VmRjlIeW44d3FVQzgyY21yZTRxdnpkMkww?=
- =?utf-8?B?NTU2d1R3bWp0cFF0NHFtU29qSStHOGVpZFNMNXcvMmhVMkVEYzRId2dTbGZo?=
- =?utf-8?B?UjJaelNlbDVYT0RKdk1UbnFUbzlENEFzaDQ3OEM4VERFNG01QmZoeUV1ckNz?=
- =?utf-8?B?WUgxMU9LRHB3MHZlV1JJcFd0bHZMUnRUOHVUcXBLYXNHWC8zenhMaGpDT1lz?=
- =?utf-8?B?MDlDSkY0c21qZTF2ZkNKa2grYjJFWTBldzM0ZEtuVVpVRnZvRGRWQ1lQVzNI?=
- =?utf-8?B?NkwvSEg5dXR4UStLSjV1WTZXbkdzK1VCY3ZCWElKRkhuSkpGT2lMNG9kR0Jl?=
- =?utf-8?B?MDY3bi94TFZLcmt2ODViWGpzbFpEREVWZVBCZi9qSHVNL3c1UjF6djNGVXoy?=
- =?utf-8?B?bWxUUnpFdC9uQ2pmTU9vZGxPMUh1eENHNUhKTUczaVF4TlF0bi9ieW81Q2dN?=
- =?utf-8?B?c1ovZXFCd0orRHdsUzQrVWgvU21Uc1RDMGRuMXJlR01MSlE1akhsQjJuRlhx?=
- =?utf-8?B?dXNONWNJR1BadCtWcncrenBaVDlzbFNWVzl0NHI1U2xpb2Q5bVNYWktWTEpK?=
- =?utf-8?B?bFVxVmlwTEE0OGZoUmJPUlpudUxIV3Y3ZmtHcDhuNFhnZ3Jlemlrbld2bStR?=
- =?utf-8?B?eWplT2NNSno1S2IxM0Fad2FoeEtHRW1rTlFjNlZCYU1lM2FubktnT1BlbHZh?=
- =?utf-8?B?U1JCd0djakVlb2wxdWxDRFlFNHNHcExLMy9abU1DUDNpcFNuQ0RoYjFWa0FR?=
- =?utf-8?B?Q0JxSkdxNGJkWis2SVlVeUppVzlvR3pYYVVuN2wxZUVORi9idUUydlFvL3NY?=
- =?utf-8?B?Qm1icWVSUWROS3RCdUlsaTFPY0xsZjNZaE4xOStheHJCUVQwUTlMTTlQVUdX?=
- =?utf-8?B?bDZCaTdtblZQWnBoNXdCQjd0S29wS0RZc3ZlT3FXUkk5eUlrU2VOd2txQ0tH?=
- =?utf-8?B?cFZOQnFSNitrWk5UWWdHK0dGaUtHcndVYXgxMXJQM05qVFp2Wkw2bGxla0VC?=
- =?utf-8?B?bzBiNzRZblZyandNekRXV1VaSVZkcjRpTDFwekRWQjRUN1J2ZkFqQlRoYnBp?=
- =?utf-8?B?Nk1ZbDBFYnhzTVhiQlM1MUlpY2ZCNHE3bWtzU1VUS0lScmtvRUNMa1kwYS9y?=
- =?utf-8?Q?O7VFv0E+4WI2rTGJy26FMK3khzzCSXAooYVKqXB?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 655ac849-8134-4ecf-d1c1-08d926965b53
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 13:49:07.0906
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB5051.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4b25cc3-3796-44b6-7898-08d9269663a9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 13:49:20.6296
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zm01geiGf5qDkQYP3u3jAWFL9Mr9D/sT6nTUQhOhBrTZr2rBJAC9Ddq3wEXZUYxIhgdfwgSBVqkt0r9ejtZQMtXfDX8P0T5ywyJfwB0SuFM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5170
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106030094
-X-Proofpoint-GUID: 7g5lAECkPdUHHMt33Jja8J8szDs3oj5j
-X-Proofpoint-ORIG-GUID: 7g5lAECkPdUHHMt33Jja8J8szDs3oj5j
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +/H3y9DIF7dKY727/ZJF21ZI8CvjH/JDFJfV/ccKSc0GR+IiZfXlQ2b7CX6WXYDFP4rlHbSnl47QMZh88ujNVy02GPxSfwU910NRg5F/tes=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5178
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vladimir,
 
-On 6/3/21 9:38 AM, Lee Jones wrote:
-> On Thu, 03 Jun 2021, Guenter Roeck wrote:
->
->> On Thu, Jun 03, 2021 at 01:43:36PM +0100, Lee Jones wrote:
->>> On Tue, 15 Oct 2019 at 15:52, Thierry Reding <thierry.reding@gmail.com>
->>> wrote:
->>>
->>>> From: Guenter Roeck <linux@roeck-us.net>
->>>>
->>>> Register with kernel restart handler instead of setting arm_pm_restart
->>>> directly.
->>>>
->>>> Select a high priority of 192 to ensure that default restart handlers
->>>> are replaced if Xen is running.
->>>>
->>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
->>>> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->>>> Reviewed-by: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
->>>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->>>> Signed-off-by: Thierry Reding <treding@nvidia.com>
->>>> ---
->>>>  arch/arm/xen/enlighten.c | 12 ++++++++++--
->>>>  1 file changed, 10 insertions(+), 2 deletions(-)
->>>>
->>> This patch does appear to be useful.
->>>
->>> Is this just being solved in downstream trees at the moment?
->>>
->>> It would be nice if we could relinquish people of this burden and get it
->>> into Mainline finally.
->>>
->> There must have been half a dozen attempts to send this patch series
->> upstream. I have tried, and others have tried. Each attempt failed with
->> someone else objecting for non-technical reasons (such as "we need more
->> reviews") or no reaction at all, and maintainers just don't pick it up.
-> Looking at the *-by tag list above, I think we have enough quality
-> reviews to take this forward.
->
->> So, yes, this patch series can only be found in downstream trees,
->> and it seems pointless to submit it yet again.
-> IMHO, it's unfair to burden multiple downstream trees with this purely
-> due to poor or nervy maintainership.  Functionality as broadly useful
-> as this should be merged and maintained in Mainline.
->
-> OOI, who is blocking?  As I see it, we have 2 of the key maintainers
-> in the *-by list.  With those on-board, it's difficult to envisage
-> what the problem is.
+> -----Original Message-----
+> From: Vladimir Oltean <olteanv@gmail.com>
+> Sent: Thursday, June 3, 2021 9:21 PM
+> To: Sit, Michael Wei Hong <michael.wei.hong.sit@intel.com>
+> Cc: Jose.Abreu@synopsys.com; andrew@lunn.ch;
+> hkallweit1@gmail.com; linux@armlinux.org.uk; kuba@kernel.org;
+> netdev@vger.kernel.org; peppe.cavallaro@st.com;
+> alexandre.torgue@foss.st.com; davem@davemloft.net;
+> mcoquelin.stm32@gmail.com; Voon, Weifeng
+> <weifeng.voon@intel.com>; Ong, Boon Leong
+> <boon.leong.ong@intel.com>; Tan, Tee Min
+> <tee.min.tan@intel.com>; vee.khee.wong@linux.intel.com;
+> Wong, Vee Khee <vee.khee.wong@intel.com>; linux-stm32@st-
+> md-mailman.stormreply.com; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+> Subject: Re: [RESEND PATCH net-next v4 1/3] net: stmmac: split
+> xPCS setup from mdio register
+>=20
+> Hi Michael,
+>=20
+> On Thu, Jun 03, 2021 at 07:50:30PM +0800, Michael Sit Wei Hong
+> wrote:
+> > From: Voon Weifeng <weifeng.voon@intel.com>
+> >
+> > This patch is a preparation patch for the enabling of Intel mGbE
+> > 2.5Gbps link speed. The Intel mGbR link speed configuration
+> (1G/2.5G)
+> > is depends on a mdio ADHOC register which can be configured
+> in the bios menu.
+> > As PHY interface might be different for 1G and 2.5G, the mdio
+> bus need
+> > be ready to check the link speed and select the PHY interface
+> before
+> > probing the xPCS.
+> >
+> > Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+> > Signed-off-by: Michael Sit Wei Hong
+> <michael.wei.hong.sit@intel.com>
+> > ---
+> >  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  1 +
+> > .../net/ethernet/stmicro/stmmac/stmmac_main.c |  7 ++
+> > .../net/ethernet/stmicro/stmmac/stmmac_mdio.c | 73
+> ++++++++++---------
+> >  3 files changed, 46 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > index b6cd43eda7ac..fd7212afc543 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > @@ -311,6 +311,7 @@ enum stmmac_state {  int
+> > stmmac_mdio_unregister(struct net_device *ndev);  int
+> > stmmac_mdio_register(struct net_device *ndev);  int
+> > stmmac_mdio_reset(struct mii_bus *mii);
+> > +int stmmac_xpcs_setup(struct mii_bus *mii);
+> >  void stmmac_set_ethtool_ops(struct net_device *netdev);
+> >
+> >  void stmmac_ptp_register(struct stmmac_priv *priv); diff --git
+> > a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > index 13720bf6f6ff..eb81baeb13b0 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > @@ -7002,6 +7002,12 @@ int stmmac_dvr_probe(struct device
+> *device,
+> >  		}
+> >  	}
+> >
+> > +	if (priv->plat->mdio_bus_data->has_xpcs) {
+> > +		ret =3D stmmac_xpcs_setup(priv->mii);
+> > +		if (ret)
+> > +			goto error_xpcs_setup;
+> > +	}
+> > +
+>=20
+> I don't understand why this change is necessary?
+>=20
+> The XPCS probing code was at the end of
+> stmmac_mdio_register().
+> You moved the code right _after_ stmmac_mdio_register().
+> So the code flow is exactly the same.
+>=20
+Yes, the code flow may look the same, but for intel platforms,
+we need to read the mdio ADHOC register to determine the link speed
+that is set in the BIOS, after reading the mdio ADHOC register value,
+we can determine the link speed and set the appropriate phy_interface
+for 1G/2.5G, where 2.5G uses the PHY_INTERFACE_MODE_2500BASEX
+and 1G uses the PHY_INTERFACE_MODE_SGMII.
 
+The register reading function is added in between the mdio_register and
+xpcs_setup in patch 3 of the series
 
-Stefano (who is ARM Xen maintainer) left Citrix a while ago. He is at sstabellini@kernel.org (which I added to the CC line).
-
-
--boris
-
+> >  	ret =3D stmmac_phy_setup(priv);
+> >  	if (ret) {
+> >  		netdev_err(ndev, "failed to setup phy (%d)\n",
+> ret); @@ -7038,6
+> > +7044,7 @@ int stmmac_dvr_probe(struct device *device,
+> >  	unregister_netdev(ndev);
+> >  error_netdev_register:
+> >  	phylink_destroy(priv->phylink);
+> > +error_xpcs_setup:
+> >  error_phy_setup:
+> >  	if (priv->hw->pcs !=3D STMMAC_PCS_TBI &&
+> >  	    priv->hw->pcs !=3D STMMAC_PCS_RTBI) diff --git
+> > a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> > b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> > index e293bf1ce9f3..3bb0a787f136 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> > @@ -397,6 +397,44 @@ int stmmac_mdio_reset(struct mii_bus
+> *bus)
+> >  	return 0;
+> >  }
+> >
+> > +int stmmac_xpcs_setup(struct mii_bus *bus) {
+> > +	int mode, max_addr, addr, found, ret;
+> > +	struct net_device *ndev =3D bus->priv;
+> > +	struct mdio_xpcs_args *xpcs;
+> > +	struct stmmac_priv *priv;
+> > +
+> > +	priv =3D netdev_priv(ndev);
+> > +	xpcs =3D &priv->hw->xpcs_args;
+> > +	mode =3D priv->plat->phy_interface;
+> > +	max_addr =3D PHY_MAX_ADDR;
+> > +
+> > +	priv->hw->xpcs =3D mdio_xpcs_get_ops();
+> > +	if (!priv->hw->xpcs)
+> > +		return -ENODEV;
+> > +
+> > +	/* Try to probe the XPCS by scanning all addresses. */
+> > +	xpcs->bus =3D bus;
+> > +	found =3D 0;
+> > +
+> > +	for (addr =3D 0; addr < max_addr; addr++) {
+> > +		xpcs->addr =3D addr;
+> > +
+> > +		ret =3D stmmac_xpcs_probe(priv, xpcs, mode);
+> > +		if (!ret) {
+> > +			found =3D 1;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	if (!found) {
+> > +		dev_warn(priv->device, "No xPCS found\n");
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  /**
+> >   * stmmac_mdio_register
+> >   * @ndev: net device structure
+> > @@ -444,14 +482,6 @@ int stmmac_mdio_register(struct
+> net_device *ndev)
+> >  		max_addr =3D PHY_MAX_ADDR;
+> >  	}
+> >
+> > -	if (mdio_bus_data->has_xpcs) {
+> > -		priv->hw->xpcs =3D mdio_xpcs_get_ops();
+> > -		if (!priv->hw->xpcs) {
+> > -			err =3D -ENODEV;
+> > -			goto bus_register_fail;
+> > -		}
+> > -	}
+> > -
+> >  	if (mdio_bus_data->needs_reset)
+> >  		new_bus->reset =3D &stmmac_mdio_reset;
+> >
+> > @@ -509,38 +539,11 @@ int stmmac_mdio_register(struct
+> net_device *ndev)
+> >  		goto no_phy_found;
+> >  	}
+> >
+> > -	/* Try to probe the XPCS by scanning all addresses. */
+> > -	if (priv->hw->xpcs) {
+> > -		struct mdio_xpcs_args *xpcs =3D &priv->hw-
+> >xpcs_args;
+> > -		int ret, mode =3D priv->plat->phy_interface;
+> > -		max_addr =3D PHY_MAX_ADDR;
+> > -
+> > -		xpcs->bus =3D new_bus;
+> > -
+> > -		found =3D 0;
+> > -		for (addr =3D 0; addr < max_addr; addr++) {
+> > -			xpcs->addr =3D addr;
+> > -
+> > -			ret =3D stmmac_xpcs_probe(priv, xpcs,
+> mode);
+> > -			if (!ret) {
+> > -				found =3D 1;
+> > -				break;
+> > -			}
+> > -		}
+> > -
+> > -		if (!found && !mdio_node) {
+> > -			dev_warn(dev, "No XPCS found\n");
+> > -			err =3D -ENODEV;
+> > -			goto no_xpcs_found;
+> > -		}
+> > -	}
+> > -
+> >  bus_register_done:
+> >  	priv->mii =3D new_bus;
+> >
+> >  	return 0;
+> >
+> > -no_xpcs_found:
+> >  no_phy_found:
+> >  	mdiobus_unregister(new_bus);
+> >  bus_register_fail:
+> > --
+> > 2.17.1
+> >
