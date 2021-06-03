@@ -2,86 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8470939ABC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070D939ABD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhFCU3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:29:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCU3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:29:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5702610A8;
-        Thu,  3 Jun 2021 20:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622752066;
-        bh=uzIHSYZZh+2ti4Lyjcok+mHiOfMoe3mD9iwI5XtKAuo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aF8ob6aVb4RfLvM1ko4AVvdAdTmg6jHgW4VEynmsDDU028yaTTmG44fpYFa90EOqk
-         LxKz2fFeVBdoKoK7JXJFqqlNKgakt6CaLkX9rHnOMWCjnUAR4cWF167SMb8qKdkmop
-         gdduU7JMAnpSlzhC45X4V7kIqCT9ZUnYpohwlOXW2G60k+xtOkDfwUTCsF/PZNsSNe
-         muEDIUYSRAxYPfu2AC5EJZo41v4FZscqn3Nr1EyinYKEQOkPucLrs4J8r1+hVHO107
-         lGvjcGDxeVBWpuAbyzbdMzo3ASU6lUMQHeTMuvoFmyPnCmCWXp1GHrTI0bLBzjbW2t
-         27rvw55/W2rtA==
-Date:   Thu, 3 Jun 2021 22:27:43 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Anders Berg <anders.berg@lsi.com>, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 05/16] i2c: busses: i2c-axxia: Fix formatting issue in
- struct and demote unworthy kernel-doc headers
-Message-ID: <YLk7P3+vcR1hNpBO@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Anders Berg <anders.berg@lsi.com>, linux-i2c@vger.kernel.org
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
- <20210520190105.3772683-6-lee.jones@linaro.org>
+        id S230078AbhFCUcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:32:12 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:35619 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229801AbhFCUcL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:32:11 -0400
+Received: by mail-ot1-f51.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so7029035otg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=xX3VYyjxzdpIjPz97c6PlVOdKP115o6p3Ui5EeqQcH8=;
+        b=ih5nYpGzowbPdJfl92eNjSiXeyjEU8mqtDMi6euxHBeilZo65ZqleTe1Pm4RddVC4c
+         B6r57+8YHVolT9AF5qMAGOdIsftI5Q9ik+rlE9alUQvw0PzTC6OwyETotdcYfF0LmBAX
+         Mt53RFDUjlIO50L5YY2Ogw6GD8v/kIWSbrUGc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=xX3VYyjxzdpIjPz97c6PlVOdKP115o6p3Ui5EeqQcH8=;
+        b=mcAmt5w40Sr3Io5k3vfIy43UbqmqID1PV52r/qhAYaZH+pb8PoATmDnOYDAzWgsTwe
+         EjOE1H6m/LCv6rEAkgrgF4588YFS3/+pWFKnNF7SJBO2/FZ1tyXh+8iKlcS9kUflC53V
+         EcJjtmW0SqzJdfMUbJDkOaZEzWclA3QvloyL4U9tCO9fq94fi1/k6FhVCN208ZFRTlWL
+         slEpV9YUtjYBEzr09OQDM9OXFstqs4mXi3nVaj3cfLIWSwQOkRZgeI2/JaMBCfDo7KCb
+         PZPzysCUkbDg3o4XxLMdLdjQeH8+LUi62PjSxAyquT/FV5Yo/kcg/zsJLL9dxpVje3W+
+         I2TQ==
+X-Gm-Message-State: AOAM530IGkY8DGIDCZEde163uwW8BLPU6quag0IIcxToe7ZPgHSpItg2
+        VyOoy0ugb4cBqOJLCh6+yzksCTxYvKVLHRcZaAbazQ==
+X-Google-Smtp-Source: ABdhPJzEi43bs9A+1vKefCz1MnfpsKOuD1JXyyzfdyZKIKc9+GkL0Ty/1xFukAjWe+ur6BBOKH+NbAOBWyYfWF7fh9I=
+X-Received: by 2002:a9d:18e:: with SMTP id e14mr933504ote.34.1622752156132;
+ Thu, 03 Jun 2021 13:29:16 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 3 Jun 2021 20:29:15 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4MRf3DTOTLiqoFO5"
-Content-Disposition: inline
-In-Reply-To: <20210520190105.3772683-6-lee.jones@linaro.org>
+In-Reply-To: <1622738250-1469-1-git-send-email-khsieh@codeaurora.org>
+References: <1622738250-1469-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 3 Jun 2021 20:29:15 +0000
+Message-ID: <CAE-0n53t0fjZYTrsV3fwbPajswLXpgcm6crTAD6sYzTn7xNe8g@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: dts: qcom: sc7180: Add DisplayPort node
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Kuogee Hsieh (2021-06-03 09:37:30)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index 24d293e..40367a2 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -786,6 +786,15 @@ hp_i2c: &i2c9 {
+>         status = "okay";
+>  };
+>
+> +&dp {
 
---4MRf3DTOTLiqoFO5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is in the wrong place now. Bjorn's suggestion for mdss_dp sounds
+good to me, and then putting the node in alphabetical order.
 
+> +        status = "okay";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&dp_hot_plug_det>;
+> +        data-lanes = <0 1>;
+> +        vdda-1p2-supply = <&vdda_usb_ss_dp_1p2>;
+> +        vdda-0p9-supply = <&vdda_usb_ss_dp_core>;
+> +};
+> +
+>  &pm6150_adc {
+>         charger-thermistor@4f {
+>                 reg = <ADC5_AMUX_THM3_100K_PU>;
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index 6228ba2..05a4133 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -3148,6 +3155,77 @@
+>
+>                                 status = "disabled";
+>                         };
+> +
+> +                       dp: displayport-controller@ae90000 {
+> +                               compatible = "qcom,sc7180-dp";
+> +                               status = "disabled";
+> +
+> +                               reg = <0 0x0ae90000 0 0x1400>;
+> +
+> +                               interrupt-parent = <&mdss>;
+> +                               interrupts = <12>;
+> +
+> +                               clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
+> +                                        <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
+> +                               clock-names = "core_iface", "core_aux", "ctrl_link",
+> +                                             "ctrl_link_iface", "stream_pixel";
+> +                               #clock-cells = <1>;
+> +                               assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
+> +                                                 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
+> +                               assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
+> +                               phys = <&dp_phy>;
+> +                               phy-names = "dp";
+> +
+> +                               operating-points-v2 = <&opp_table>;
+> +                               power-domains = <&rpmhpd SC7180_CX>;
 
-> -/**
-> - * axxia_i2c_dev - I2C device context
-> +/*
-> + * struct axxia_i2c_dev - I2C device context
->   * @base: pointer to register struct
->   * @msg: pointer to current message
->   * @msg_r: pointer to current read message (sequence transfer)
+I'm also curious about the power domain for DP. My guess is that both
+DSI and DP nodes should be a child of mdss if they're in the display
+subsystem and powered down/inaccessible when the mdss_gdsc is disabled.
 
-Shouldn't we keep the kernel-doc header here?
+> +
+> +                               #sound-dai-cells = <0>;
+> +
+> +                               ports {
+> +                                       #address-cells = <1>;
+> +                                       #size-cells = <0>;
+> +                                       port@0 {
+> +                                               reg = <0>;
+> +                                               dp_in: endpoint {
+> +                                                       remote-endpoint = <&dpu_intf0_out>;
+> +                                               };
+> +                                       };
+> +
+> +                                       port@1 {
+> +                                               reg = <1>;
+> +                                               dp_out: endpoint { };
+> +                                       };
+> +                               };
+> +
+> +                               opp_table: dp-opp-table {
 
+I meant
 
---4MRf3DTOTLiqoFO5
-Content-Type: application/pgp-signature; name="signature.asc"
+	dp_opp_table: opp-table {
+		...
+	};
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmC5OzsACgkQFA3kzBSg
-KbZl/RAAna55CJmrpcyYIHFZcE8iZzRlpr/W422av7PS0D4R03ijhO/w+cTbUNIc
-igm/rei31Oe/+GwmwNEaXjLEDVUPiykzdfnahOTE/ZZX44N9nTPJzaXRNcn4vLJG
-zp0TtE68rXaFzf6CLPuAfMGe1dcYdSrwOZOjHqbmqV683QdgzMcl2Q2lsAWN3ik3
-JcZUeJIhMFJOqA9kMORUUbIjuVDrCZpo9KA0llbBymZjmiLl8iIryLoNaLget1Uv
-QzEuDmmzebFwQtEwj++WoS07J2gmtldIdRivx8wNPRbpUkYC8Xi5q6+dEMe3c29I
-iyrm/qt0ExqybFT5ir2eEJ4pzpPyneh9YmNWe0QJKWNjxcKKku3IST6LJW0b2Eaa
-DbQFFDyMUTgVPJURyZHFPvTkRkLgI7NDXkU/Y8kxFVwh+JficwMUN6wN/AyBRf5a
-oX+MgrV/Kuq04Uviwirh9Uw6K3etKGGusWxxhYsclB9foYwZ+Ti81uwtm3Xtg/ZT
-YQbJczfP2TSI9xUnENhRXugEsb/bRdyZhdlFj8zaDaFPpVEPVKzD2+4iAWzdPIpJ
-2O8GG3cFKuHIGHoIDOPp8IYwMTn/gNiQ3pYFD12GtPLK/CNV/N9PzOpJ0GR7W0fB
-w5BTSMDa/N2Z5jlBoDLrNeyG8PnX3yU9BRSCua4u8fGzS8knluM=
-=5uji
------END PGP SIGNATURE-----
-
---4MRf3DTOTLiqoFO5--
+> +                                       compatible = "operating-points-v2";
+> +
+> +                                       opp-160000000 {
+> +                                               opp-hz = /bits/ 64 <160000000>;
+> +                                               required-opps = <&rpmhpd_opp_low_svs>;
+> +                                       };
+> +
+> +                                       opp-270000000 {
+> +                                               opp-hz = /bits/ 64 <270000000>;
+> +                                               required-opps = <&rpmhpd_opp_svs>;
