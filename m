@@ -2,173 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0968F39A473
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB46E39A477
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhFCPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:23:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24535 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231623AbhFCPXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:23:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622733730;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tk288Zz+uIifCmQruWzx1HX+KXbfFOTwP0kxM+VMUEc=;
-        b=U8LwQwctwhWDGUPTzbAdEPnOu+DroSh7QMht5ehK558ivZu1syxHd+HELRIWnTeV+atK2x
-        2+8R8m9EIcaPLA5zHQ5CcxMvyjrUD759HOdDZRTTHW7cuS7obrO9B1UST53p/qzOYVaijv
-        cWgsyfgi8Q/LNNiX+O/6xA7GwADSO+o=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-R8yDZk8vPUuwLjPj8zIMzg-1; Thu, 03 Jun 2021 11:22:08 -0400
-X-MC-Unique: R8yDZk8vPUuwLjPj8zIMzg-1
-Received: by mail-ej1-f69.google.com with SMTP id gv42-20020a1709072beab02903eab8e33118so2064017ejc.19
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:22:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tk288Zz+uIifCmQruWzx1HX+KXbfFOTwP0kxM+VMUEc=;
-        b=cJVckda1fHp8cfia29FuS+/mPqgf9gOOcaxwj42Fu0EScafckFCEDkytav8XFGyRPq
-         8NdLs6rqeiJPg2uBohBtCSKphbE/ET5unuIUpsbGjYwwGSfaxGl1L/L0MQSbgtKtTvOe
-         eTSSEVdHBv0C8akxRNuljgdRzNokzlnzzUgcN/Z7fH1KI/bTxmoIV9S3OLmwGms0w5kV
-         YBXAa+vXO92RGkMlabSeKmzKduOxnAlPPZZSG/1PFUBrCM+lO9txLVX6YNV0k0wElz3b
-         DEn+5JwgAcIdjryrp/FdzQLJ5v010B5jw+kZKUg1CzoKnmgi0//UDnd0OLk8FKhKN4jA
-         LS0w==
-X-Gm-Message-State: AOAM5323JWpVy/wE/uQAI7iLiDp838mKNDI6EGlYsbwv5cqK4TTzErDK
-        XhuexfJ6a/YGF9/6FcudYJpVukJnqeQ20jAQ4aZi+WWITBlNH4DM4byvRGIZoFk7XC2ah/bJRLX
-        eszTDjQyUQbg0l0vWdsts3myW
-X-Received: by 2002:a17:906:6c88:: with SMTP id s8mr125416ejr.129.1622733727731;
-        Thu, 03 Jun 2021 08:22:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxoln++JLRLzRUvRIPFKCkhnzbJCumWsfqvvpdAzdKrFm/EKznU/MHMYhIJo8u5lC88unTUOw==
-X-Received: by 2002:a17:906:6c88:: with SMTP id s8mr125391ejr.129.1622733727545;
-        Thu, 03 Jun 2021 08:22:07 -0700 (PDT)
-Received: from steredhat ([5.170.129.82])
-        by smtp.gmail.com with ESMTPSA id z22sm1197140ejm.71.2021.06.03.08.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 08:22:07 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 17:22:03 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
-Subject: Re: [PATCH v10 14/18] virtio/vsock: enable SEQPACKET for transport
-Message-ID: <20210603152203.gezrjp2xiv53eqpm@steredhat>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
- <20210520191901.1272423-1-arseny.krasnov@kaspersky.com>
+        id S232105AbhFCPX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:23:59 -0400
+Received: from mail-bn8nam08on2042.outbound.protection.outlook.com ([40.107.100.42]:16609
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232057AbhFCPX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:23:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R9x067cfQ8zEq3gFIfm8158s9HJ0c//iUBz00Mpc5JQbastqxI10lt+vXfRf1dG/U+3aGFC17dlDY0HTc39vrVPJRVWiFpIkweVJcVYhEdaQ/3dvdRr+FVslUzZWsKqxwJbp1TlOtyjU6OiSC1b45CwHR4BDvlk4CoHHgxt6OrLRczxkMkgIaXZkjtVwp3XyXeFikwb+2fDosddqU9r8pCYCdmbWibCGae0rXu0FlzNLPpm/ESBDTFcKWn/3xqX36kVyAlzJJnhHSDIqHfXoeQbh7hdEeoJImjbVRU/fvuvi7Em67UJHhp8RA1LWDFra63Mhagtw6FaIJPaWTwQM4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a9r7AcPB8Y1pANFcNIKl49YnnC7r9+LWitrcxTRYz/g=;
+ b=WsLmWjVJ8Q/Mi6bhumWeeze3sAuxV5oomlbiCOSN+KZJV7cW76mHZQ5ygvfXzuxtXy/DsEcc7XZJJaMrQBV9pbrEqr8uH/ag/WNk/Z2MepzpiOKlKz4j8aL2PxcoNAEnm/Rb1GTn+4AvEhh9Kcww/2SinCo95jA/zoAgj2oP8MZNrN+EXaTQoUosRULeiDqbQTychTassYpyXAYCn8nD4l8gQgpTt+L2A/ZIiFhYadnfzul7FkCi8b9MhltVGVoUofzM5efkjHxuHiWHDJQt0luSPuV4QSu/o9hQCoyo1HWr/1pZuu7j9WxUeI0ArGucSYFTlLeQRXlai6giPBn5xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a9r7AcPB8Y1pANFcNIKl49YnnC7r9+LWitrcxTRYz/g=;
+ b=1PLpAK2YTa4pz3BuTv2mA3saU8SXdUtc+WwzbusGU2coYBGc52EFy257V4Rp/FgcUpP1kTzqryw9tk3t6e7JV76nWsWHlDiJvaY8rr7KhQdHzGZ/p65PCKArUod3biI8IdiuCL+ZmRWe1jOlhEp6KAWgzPQqzQJNISeSQJ9cVfI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
+ by BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Thu, 3 Jun
+ 2021 15:22:10 +0000
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
+ 15:22:10 +0000
+Subject: Re: [PATCH] drm/amdgpu: remove redundant assignment of variable k
+To:     Colin King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210603123440.83936-1-colin.king@canonical.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <1b714f14-723c-5e66-dd1c-b720f4b120fd@amd.com>
+Date:   Thu, 3 Jun 2021 11:22:08 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210603123440.83936-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [142.116.203.225]
+X-ClientProxiedBy: YT1PR01CA0010.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::23)
+ To BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210520191901.1272423-1-arseny.krasnov@kaspersky.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.116.203.225) by YT1PR01CA0010.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.26 via Frontend Transport; Thu, 3 Jun 2021 15:22:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a63c1ab5-7456-442e-c2a2-08d926a35b23
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN9PR12MB5179005B8D0FA9D7C8D7F10E923C9@BN9PR12MB5179.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /C1bd8XCJ/8nBIlhM0H8ypJqxN0FTJrt2H3XmM5ykjj7uQnfjVD+kp9vWd/FrPnMuYt9/a71VVE/Os9tw+VEuxQBT6USB0tPLX9Knv8oBYd05BRamHIuO0KFdzNKzpCK3h+HWIrXbKwtrgY4TiSFaOYBX4NKoXIaV3g0vtJSFupCTJrKtmoyaVM2+af6NiphtQjBbeHe0yYEKYnCz22qH58/Liani6w1VZUgpT81raunqkn4S7Oh7SG/WTmJmx1/OeIccGJdEUVsMIldD2lKsqikUIYrAErvXLQc0l0jVtCmB3yxZAAWDVM3yVXgTTzT7y0vrLlWLMR1xs3HL/e5W4IAPRusUlXuy890t/98OPpExKJqRjumO+mfyi2gyQK2LvxkI0DqYhnHdq5H9ukoxR+nJNdtM1H4OI8+bgkIFg2Zy0mz+fq/qASoD4suEItDHh7QpLi590iC6IaFyrzEB9jQzylwEjuBz3bSJjzKehPLiSXP9MEqpsWSrDuZMH+XCz7B0Tk8vfbnMakbQUgiQ++RpwzuOw3OvSRyFS5objbLzzH9dB7rw9QTKP2r1ebl1efLdq1BUTCBhDu3z4cgIFXvsn14l8cCgAJccV11X3UsiFZAioRIWZELxoL7L1/fhNo6RHYj3/3gC9Wyxbx8YxpZCQ3ze5DeV1i6qWSbTMorStgQYwIqm539GL5o0KGgoGpY5CUeqhVnDFN4GT1LXg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39840400004)(396003)(346002)(83380400001)(6486002)(86362001)(38100700002)(316002)(110136005)(16576012)(2616005)(2906002)(956004)(26005)(8936002)(66556008)(5660300002)(8676002)(66946007)(31696002)(478600001)(66476007)(36756003)(31686004)(4326008)(16526019)(44832011)(186003)(129723003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cTYwVmRnS2JpVHY2aUE1V2JVWUQzczdkckl1UHJkTkxBZ2J6ampDUThrT25n?=
+ =?utf-8?B?bTBycEV3NkJhVW9LdHcrVjNGNzlkQWNKRTE2aStjMW02OU1Mbm5pM3oyb1lt?=
+ =?utf-8?B?dEJocWlOS0p6QkNGR2dFVzRSeEpPdm9WTTBYSWZackxlbDBmUmEwVEN2ckZW?=
+ =?utf-8?B?ZUQ1NklYKzRVTzZwbDNmVThFWXpoY1NPbThRRW02R2Y4bnBRM21veWdEdVhj?=
+ =?utf-8?B?Ym9CajkrWDdsa0phM2tWTjYvK250dWMrWno4MThIdmRYWGRpenJZVTR5STZJ?=
+ =?utf-8?B?ZHZaZkVjVUg1b080a2w3Rzk3cmxCUnhUOWd5V2c2Y0NOVlBOZ1hIckx6WjJK?=
+ =?utf-8?B?a0JTblRaMFBNMU5iN2gzbittZkhiTURESnp4bXZmbmpMbmZzeFVsbE5KZmpq?=
+ =?utf-8?B?eXFQdTdJbzBEUHpkMkZ2ZkhPOUFIcW9EUmZQNWUvYnpvN0dTQk1OT1B4WTNy?=
+ =?utf-8?B?ZHpyRHhSTnZmQkt3MWxGMTZJTTdOeElUOHBjRXc1Q2lmelZuT3pNQWRBU3cv?=
+ =?utf-8?B?R09MRnpMY2I2b2V6RllKTUJldkxXQzJNSklQeHJQVHMvUVRkUjNVblQwODR5?=
+ =?utf-8?B?WjZFVWdvZUlRTzl2YlZ5c0NxVFdFTW4venhIdy9scm5XVzVMTU5jemF1RWR0?=
+ =?utf-8?B?Q2J1SjZsQ1RKcTkrS2FaOFhiYWpTekEwSnRSRGs3V0xHSW52V0s1MXpLaHVt?=
+ =?utf-8?B?U09JY3haWGJpNmtGUHdqbkt5ZTh5U2pwY3JXdkdXNjJWTS9Ta0FzdS9yMngz?=
+ =?utf-8?B?MXBKMFRyYmozekliNWdZYVpnbHExQmVvQ0UveTFQeVR3ZUxmQ1NzQysvWGRC?=
+ =?utf-8?B?S2RMS0tJMklBVjhLZktmUStiYzVMcXNYbnJKRVdrejZyeXA2MGpNKzhIbHhn?=
+ =?utf-8?B?RXFaSHR5WWpnYTN5Sjc2QTIwNXV3bVhJYWF1eklueFcvTCt2RHRkMk1KMnFm?=
+ =?utf-8?B?WWg3RzBpL1YvMTF3MmZsbUxydldwYlNUdW9JTG1sSjR1b0dSUWk0Smk3Zm4v?=
+ =?utf-8?B?cDUvRFdMZ0xmdi81WThld0VDUStCdkNKSDNDazhZOHhPRThidnJIUGo5ZFd6?=
+ =?utf-8?B?Zng4R3luVWQ4aytLSzNTdGIxKzlXUHh3YkdnK2lBZ09icmoxbGVDVG9jT3RY?=
+ =?utf-8?B?WmdSQmdaRXJiZzlGaGVOMjErYkhwV3RRemIxeUt3UDZ5UTRLZlRPOVMra3Y5?=
+ =?utf-8?B?dFNIU0gzTG5yY0htR2w4S0NGWHFtTW05MCtFVU40SU5HSk5Ld0I3bnU3T1Iz?=
+ =?utf-8?B?ZWdwSHFSR0k5Z0lWRlBaaDNIOTFXQjhiS3FvUkI1UW5HYjVZMERHSndjNk93?=
+ =?utf-8?B?OWpZNmZGSEZ1MENxM3ZyVWVmMGR1a0tWcG0xQ1pQRFhJNGh4am5pMnovbW9E?=
+ =?utf-8?B?bmZiRTlhSTR3a0J6ZFFtYUVmaGYyMEdoQXZQUWlCVWNydmhURXN1Vk5QcFph?=
+ =?utf-8?B?ZTM3YXdVYmhybFU2Nk04d2t6WW1BdENNWFVHeENnSTA2WnQvb1l4V2MyOTRT?=
+ =?utf-8?B?blJGQ2NraXRIVWdacU9PMk03NGRQUXNyQjdBVWdDWWRlMUZwRTNaVFV2NFJZ?=
+ =?utf-8?B?OEtOeVJsc1Y1blNGQWQzME1pNGZMV1I1VXlsQVZUQkY4bkxwZVpVSFNXQXRo?=
+ =?utf-8?B?bjVidW11NlhiMWFaenhhSW9RZHAxZmVuY1Q1ZFhMeDd4QlBra1cyM05VcDF3?=
+ =?utf-8?B?b3hNQk81V2hHZlRwQU4rV0N1M0NWMGZpZzRCUGEvcmVyY2dhdkpuRy9Hdmtr?=
+ =?utf-8?B?RXpjUzV0eFh3bjBqbnNscHI1d2NLZkxFMzN0Tk1POWFKNjdSK0JHdzJkYmFH?=
+ =?utf-8?B?dVJYVXlmMzIxNUQ3RDRMZz09?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a63c1ab5-7456-442e-c2a2-08d926a35b23
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 15:22:10.6782
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: orB7aBuk7sLkQ8AX3Utt/QgB9yzGTZA8GGN8YKiV46tp5b0PsDpZDp/1+ZFlMOOLx6Ckyh5w9cj2jp3sMcjykQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:18:57PM +0300, Arseny Krasnov wrote:
->To make transport work with SOCK_SEQPACKET two updates were
->added:
+Am 2021-06-03 um 8:34 a.m. schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable k is being assigned a value that is never read, the
+> assignment is redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Present is better, and you can also mention that we enable it only if 
-the feature is negotiated with the device.
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 
->1) SOCK_SEQPACKET ops for virtio transport and 'seqpacket_allow()'
->   callback.
->2) Handling of SEQPACKET bit: guest tries to negotiate it with vhost.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v9 -> v10:
-> 1) Use 'virtio_has_feature()' to check feature bit.
-> 2) Move assignment to 'seqpacket_allow' before 'rcu_assign_pointer()'.
->
-> net/vmw_vsock/virtio_transport.c | 24 ++++++++++++++++++++++++
-> 1 file changed, 24 insertions(+)
->
->diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->index 2700a63ab095..bc5ee8df723a 100644
->--- a/net/vmw_vsock/virtio_transport.c
->+++ b/net/vmw_vsock/virtio_transport.c
->@@ -62,6 +62,7 @@ struct virtio_vsock {
-> 	struct virtio_vsock_event event_list[8];
->
-> 	u32 guest_cid;
->+	bool seqpacket_allow;
-> };
->
-> static u32 virtio_transport_get_local_cid(void)
->@@ -443,6 +444,8 @@ static void virtio_vsock_rx_done(struct virtqueue 
->*vq)
-> 	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
-> }
->
->+static bool virtio_transport_seqpacket_allow(u32 remote_cid);
->+
-> static struct virtio_transport virtio_transport = {
-> 	.transport = {
-> 		.module                   = THIS_MODULE,
->@@ -469,6 +472,10 @@ static struct virtio_transport virtio_transport = {
-> 		.stream_is_active         = virtio_transport_stream_is_active,
-> 		.stream_allow             = virtio_transport_stream_allow,
->
->+		.seqpacket_dequeue        = 
->virtio_transport_seqpacket_dequeue,
->+		.seqpacket_enqueue        = virtio_transport_seqpacket_enqueue,
->+		.seqpacket_allow          = virtio_transport_seqpacket_allow,
->+
-> 		.notify_poll_in           = virtio_transport_notify_poll_in,
-> 		.notify_poll_out          = virtio_transport_notify_poll_out,
-> 		.notify_recv_init         = virtio_transport_notify_recv_init,
->@@ -485,6 +492,19 @@ static struct virtio_transport virtio_transport = {
-> 	.send_pkt = virtio_transport_send_pkt,
-> };
->
->+static bool virtio_transport_seqpacket_allow(u32 remote_cid)
->+{
->+	struct virtio_vsock *vsock;
->+	bool seqpacket_allow;
->+
->+	rcu_read_lock();
->+	vsock = rcu_dereference(the_virtio_vsock);
->+	seqpacket_allow = vsock->seqpacket_allow;
->+	rcu_read_unlock();
->+
->+	return seqpacket_allow;
->+}
->+
-> static void virtio_transport_rx_work(struct work_struct *work)
-> {
-> 	struct virtio_vsock *vsock =
->@@ -608,6 +628,9 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
-> 	vsock->event_run = true;
-> 	mutex_unlock(&vsock->event_lock);
->
->+	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_SEQPACKET))
->+		vsock->seqpacket_allow = true;
->+
-> 	vdev->priv = vsock;
-> 	rcu_assign_pointer(the_virtio_vsock, vsock);
->
->@@ -695,6 +718,7 @@ static struct virtio_device_id id_table[] = {
-> };
->
-> static unsigned int features[] = {
->+	VIRTIO_VSOCK_F_SEQPACKET
-> };
->
-> static struct virtio_driver virtio_vsock_driver = {
->-- 
->2.25.1
->
+I'm applying the patch to amd-staging-drm-next.
 
+Thanks,
+  Felix
+
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+> index 2a7bed66d50b..f545dc1248b8 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+> @@ -278,7 +278,7 @@ static int amdgpu_amdkfd_remove_eviction_fence(struct amdgpu_bo *bo,
+>  	write_seqcount_end(&resv->seq);
+>  
+>  	/* Drop the references to the removed fences or move them to ef_list */
+> -	for (i = j, k = 0; i < old->shared_count; ++i) {
+> +	for (i = j; i < old->shared_count; ++i) {
+>  		struct dma_fence *f;
+>  
+>  		f = rcu_dereference_protected(new->shared[i],
