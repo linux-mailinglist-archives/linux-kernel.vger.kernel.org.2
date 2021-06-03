@@ -2,101 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7510A39AAF0
+	by mail.lfdr.de (Postfix) with ESMTP id 27AC339AAEF
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhFCTau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhFCTas (ORCPT
+        id S229892AbhFCTar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:30:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24925 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229719AbhFCTar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:30:48 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DECDC06174A;
-        Thu,  3 Jun 2021 12:29:03 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f13850043af4c4d530a3258.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:43af:4c4d:530a:3258])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A959D1EC0246;
-        Thu,  3 Jun 2021 21:29:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622748541;
+        Thu, 3 Jun 2021 15:30:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622748541;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6paDKQJHEjIdx6NGu5KmRam+YlvwZVZiDbV6ggOOvIc=;
-        b=d8k6qjUhDgO7FqHQANt/hqbfXBXWj0sQ/K8HMPLp6zfg/ou9wrZESr2pctZcVbB5w2ruFd
-        mwCXnAL0kR7Z7+rqToEaabhuzT+D8HoOP0ZLQRJtlzsEEnNOe/EYlRaau5EEwD7PXMT2Zr
-        uj3pipgy3Z3Cy1VeK8uKPcW6dnItmuw=
-Date:   Thu, 3 Jun 2021 21:28:56 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>, stable@vger.kernel.org
-Subject: Re: [patch 3/8] x86/fpu: Invalidate FPU state after a failed XRSTOR
- from a user buffer
-Message-ID: <YLkteEfyD3mqcCnO@zn.tnic>
-References: <20210602095543.149814064@linutronix.de>
- <20210602101618.627715436@linutronix.de>
- <YLeedfdsnsKqcbGx@zn.tnic>
- <6220f2da-1d5b-843c-fa82-58a28fbcdd6b@kernel.org>
+         in-reply-to:in-reply-to:references:references;
+        bh=x/gj4fleOURiB06FpwTyo6dG+WTMtW3dGT0Tg+4lxHw=;
+        b=YsfmKUIlAXnOw6T6ZLhaOcBIXC/jDg1udoDn0MekjBLM0eSyjxEpaj/eNrsMdn8ywE9jyS
+        mJ7ZxZMzRIsN0ewCoiZrMNioYKZ+t3gvUSB3ip28l9vVkzm/xymIUOiNXUvaoOVpdtJ90o
+        cuH/JnSqpuJxmpynS2qYcaYF9LEoUfY=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-irPYQu-qOx6q_FOLSXIUow-1; Thu, 03 Jun 2021 15:29:00 -0400
+X-MC-Unique: irPYQu-qOx6q_FOLSXIUow-1
+Received: by mail-qv1-f72.google.com with SMTP id v7-20020a0ccd870000b0290219d3e21c4eso5217549qvm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 12:29:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x/gj4fleOURiB06FpwTyo6dG+WTMtW3dGT0Tg+4lxHw=;
+        b=aw6CY5jMJzBP5aIKhb0l6dk/ht+N+xEsM0aGnAvj3F+Dox6Mj74MJ+b5c52S6uzi/y
+         lK1fz52KPEZeKfrUIMbmn3a04fOQPIiG9pykGWQSr9Cx3hucPHwukaKmRpnwMAFIw5y3
+         f0ERVWF4aivZDygbueIBPIst1TEnG/7eTFbGnkiq9NR3SiwswPrMu04I7dipIi2EpD3C
+         hmQrN431MDJiyNulHk9liE1HpAT7JC3Z7ZhmKvG23lgdva0g3KFLP3KsLiWeTVxvkoV4
+         hKKvnDO2/yzz2g7nH5pZ3NecKmz8/Ilu1M3vjHlF4kndvBK70LG13tO3ypxU1o4J5bkH
+         fw+g==
+X-Gm-Message-State: AOAM531HYEXRoazomJ00s17jNs4wh39/U/2c71EbgKEXmprQK6Z87lL7
+        tlV+Q72g2VeLcI0E94eDfba+CQ20rrg0jZ7LbT4xp2r4ne8sAxsqat52+6Gt5cNM8yK6yyXp1Ek
+        8UNI+prOxJBegL6cj9u0NCTy6
+X-Received: by 2002:a05:620a:448c:: with SMTP id x12mr839815qkp.52.1622748539795;
+        Thu, 03 Jun 2021 12:28:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLUjjqgS6V5SzDAJv1efAuEwlyGvFi855kq2nrnnQnLUOJ5tlxqeQcaZvh3Y3jB/o7M29QhQ==
+X-Received: by 2002:a05:620a:448c:: with SMTP id x12mr839796qkp.52.1622748539589;
+        Thu, 03 Jun 2021 12:28:59 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-61-184-147-118-108.dsl.bell.ca. [184.147.118.108])
+        by smtp.gmail.com with ESMTPSA id p12sm2476522qkm.23.2021.06.03.12.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 12:28:59 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 15:28:57 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] ioctl_userfaultfd.2, userfaultfd.2: add minor fault mode
+Message-ID: <YLkteUqSmXFxSJNt@t490s>
+References: <20210603183216.939169-1-axelrasmussen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6220f2da-1d5b-843c-fa82-58a28fbcdd6b@kernel.org>
+In-Reply-To: <20210603183216.939169-1-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 10:30:05AM -0700, Andy Lutomirski wrote:
-> Think "complex microarchitectural conditions".
+On Thu, Jun 03, 2021 at 11:32:16AM -0700, Axel Rasmussen wrote:
 
-Ah, the magic phrase.
+[...]
 
-> How about:
-> 
-> As far as I can tell, both Intel and AMD consider it to be
-> architecturally valid for XRSTOR to fail with #PF but nonetheless change
-> user state.  The actual conditions under which this might occur are
-> unclear [1], but it seems plausible that this might be triggered if one
-> sibling thread unmaps a page and invalidates the shared TLB while
-> another sibling thread is executing XRSTOR on the page in question.
-> 
-> __fpu__restore_sig() can execute XRSTOR while the hardware registers are
-> preserved on behalf of a different victim task (using the
-> fpu_fpregs_owner_ctx mechanism), and, in theory, XRSTOR could fail but
-> modify the registers.  If this happens, then there is a window in which
-> __fpu__restore_sig() could schedule out and the victim task could
-> schedule back in without reloading its own FPU registers.  This would
-> result in part of the FPU state that __fpu__restore_sig() was attempting
-> to load leaking into the victim task's user-visible state.
-> 
-> Invalidate preserved FPU registers on XRSTOR failure to prevent this
-> situation from corrupting any state.
-> 
-> [1] Frequent readers of the errata lists might imagine "complex
-> microarchitectural conditions".
+Not a native speaker, feel free to take anything I said with a grain of salt..
 
-Yap, very nice, thanks!
+> @@ -278,14 +287,8 @@ by the current kernel version.
+>  (Since Linux 4.3.)
+>  Register a memory address range with the userfaultfd object.
+>  The pages in the range must be "compatible".
+> -.PP
+> -Up to Linux kernel 4.11,
+> -only private anonymous ranges are compatible for registering with
+> -.BR UFFDIO_REGISTER .
+> -.PP
+> -Since Linux 4.11,
+> -hugetlbfs and shared memory ranges are also compatible with
+> -.BR UFFDIO_REGISTER .
+> +What constitutes "compatible" depends on the mode(s) being used, as described
+> +below.
 
-> > I'm wondering if that comment can simply be above the TIF_NEED_FPU_LOAD
-> > testing, standalone, instead of having it in an empty else? And then get
-> > rid of that else.
-> 
-> I'm fine either way.
+Would below be slightly better?
 
-Ok, then let's aim for common, no-surprise-there patterns as we're in a
-mine field here anyway.
+  Please refer to the list of register modes below for the compatible memory
+  backends for each mode.
 
-Thx.
+[...]
+
+> @@ -735,6 +745,109 @@ or not registered with userfaultfd write-protect mode.
+>  .TP
+>  .B EFAULT
+>  Encountered a generic fault during processing.
+> +.\"
+> +.SS UFFDIO_CONTINUE
+> +(Since Linux 5.13.)
+> +Used for resolving minor faults specifically.
+> +Take the existing page(s) in the range registered with
+> +.B UFFDIO_REGISTER_MODE_MINOR
+> +and install page table entries for them.
+
+"Take the existing page" reads a bit weird to me.  How about something like:
+"Resolving minor-mode trapped page faults by installing page table entries with
+pages in the page cache"?
+
+[...]
+
+> +.TP
+> +.B EINVAL
+> +An invalid bit was specified in the
+> +.IR mode
+> +field.
+> +.TP
+> +.B EEXIST
+> +One or more pages were already mapped in the given range.
+
+I'd think this sentence is good enough; slightly prefer dropping the latter one
+"In other words..." below, as "mapped" should mean the same to me (and the
+wording "fully mapped" is a bit confusing too..).
+
+> +In other words, not only did pages exist in the page cache, but page table
+> +entries already existed for those pages and they were fully mapped.
+
+[...]
+
+Thanks,
 
 -- 
-Regards/Gruss,
-    Boris.
+Peter Xu
 
-https://people.kernel.org/tglx/notes-about-netiquette
