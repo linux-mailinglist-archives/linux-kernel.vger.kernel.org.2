@@ -2,167 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B396A399A0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 07:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA3C399A15
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 07:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhFCFf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 01:35:29 -0400
-Received: from mail-dm6nam12on2070.outbound.protection.outlook.com ([40.107.243.70]:19072
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229640AbhFCFf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 01:35:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UaibmFE1xjKEAz2aZKn4sBFWTy91eZMc2eTtVnvAQ5x6bbDcCtybjH6ojjcI+jixYALrypEmNEHf/jRukWUafoA+fn25vFVCAvAluTvcNVuvCIkBaNTM311RGNtFWyYuGnkAj54bFXFZMH7ATveDaOhCFNxAKQIkUhy/GffTfS91yVIuEK1v/LnYjUrkwsQSKNxW2Mzy8qnUTr1QFCIivqaLWFynku78VMy4Mehua3KxEE9HX8ftirNm7PfjjhV15n/SQoHMcEApH1Ruu0GE0QscADVnmveDMG5fYts9Ob1Zeuwqhscf+zrZODMsIpC9otkgFkg2LAAIDGPtgQcuFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QatqzGpP/0WK4t9+tORcrBK8sBdWRyQOH833mZVC4j4=;
- b=hzywsjVteYPacMeNcZi2Qs8XiIrniSv0p6igzxypCn0rZsa1mFo9bQ93eSccZSdKD7wxyG+bmaHgCmzuEODpPenwkIlrzjvt56hV8mt7Luba3WQ2OLk9wZ/BXQ9YgZ5fecKud+5yYnrWNU2QV1nkg+4Uu/y23A5w1fW5xw+P/QGV1VylxS8snDLQC72iEOkn0Aq9EMkM2l4QHRzk8RaXcTxYEqHxP4bQWDkY5RI6edh6MP7F7sV1NCoV8Lk3tXNJg5LxwwVyzHnLrGCc5puOT7FT1BO8piZs9d09svRoQeTSx/s8U1oxCjhav+201N+kwr4ExJdaoisbYGmjBuBoPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QatqzGpP/0WK4t9+tORcrBK8sBdWRyQOH833mZVC4j4=;
- b=pN3lKMkPTI+klYx6h0HPPSAwGPp0oNFKQG+vf3HWWl7KIfybuKhwgzbOD2DuxreM12CZfz2uvDmZS2+UldLiMnfuCyqd/BWZwwu6EEmaMy9HVbbmcaf0bpWt7TaJiBmdQr0JDb+vyICRywDBR71oC3k6T6CIpIhlU78T12i+pzU=
-Received: from SN6PR02MB4093.namprd02.prod.outlook.com (2603:10b6:805:31::31)
- by SA2PR02MB7738.namprd02.prod.outlook.com (2603:10b6:806:146::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Thu, 3 Jun
- 2021 05:33:38 +0000
-Received: from SN6PR02MB4093.namprd02.prod.outlook.com
- ([fe80::e020:cfc6:6016:386e]) by SN6PR02MB4093.namprd02.prod.outlook.com
- ([fe80::e020:cfc6:6016:386e%6]) with mapi id 15.20.4173.030; Thu, 3 Jun 2021
- 05:33:38 +0000
-From:   Raviteja Narayanam <rna@xilinx.com>
-To:     Marek Vasut <marex@denx.de>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        Michal Simek <michals@xilinx.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
+        id S229803AbhFCFmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 01:42:01 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:35414 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhFCFmA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 01:42:00 -0400
+Received: by mail-lf1-f43.google.com with SMTP id i10so7033929lfj.2;
+        Wed, 02 Jun 2021 22:40:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=kAmYDA9B8u4qXmIFEnv8TZqko/i/6FI+mhj+YOHtFuY=;
+        b=etABsJ1nXqV5x0B3hDqbsqokGKs9nibwtmyy7ntcUhQ9epA1VTCaeULppGxr3ISLi0
+         b9elsA+gooSIJMKEhfhxg1C7D2mCuqOwHNOPC2W8LRAlEFSNeD661n7+AQE27sbjv4S2
+         lhQ6qczFll5uLIk/9OfDyOa8SoSTt5UENIm1lHfuLvet8pcNTyhrhrMWfNLoaCZ5XeZE
+         VdpZpQ7Etas7YXtCb9Oj34aJq7E1vwi2L4tVEF2lHTlSjprweEsEDuBG2fHNC644odlg
+         zuolmIp0FKTrv5cAlktvD4rmxm3XnL9CGgHSvZZC3JerEJmrxwnGmbFn91rCiYwOnUBy
+         M3Pg==
+X-Gm-Message-State: AOAM531oHEgvNOEk6tFA0kZd5qlYmb5wJzCqI0jCNGYuoIwhBpl6YVY5
+        2QnbqerHty5E8o4lKhekJDNRj6lwtFQ=
+X-Google-Smtp-Source: ABdhPJwQA6WrayRbpewqWYwVujVgqYbwqwhJ5kVcLBaERrtC2E5bbWGIUPW337S8wPpwcFroA7Ze7g==
+X-Received: by 2002:a05:6512:ba7:: with SMTP id b39mr2539006lfv.424.1622698814865;
+        Wed, 02 Jun 2021 22:40:14 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id w21sm237292ljo.41.2021.06.02.22.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 22:40:14 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 08:40:07 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>
-Subject: RE: [PATCH 02/10] i2c: xiic: Add standard mode support for > 255 byte
- read transfers
-Thread-Topic: [PATCH 02/10] i2c: xiic: Add standard mode support for > 255
- byte read transfers
-Thread-Index: AQHXVh/IQ0c+81unIUeYIazvYohSbKsAlWkAgAEtGiA=
-Date:   Thu, 3 Jun 2021 05:33:38 +0000
-Message-ID: <SN6PR02MB4093F1992FA306C027D01448CA3C9@SN6PR02MB4093.namprd02.prod.outlook.com>
-References: <20210531131948.19477-1-raviteja.narayanam@xilinx.com>
- <20210531131948.19477-3-raviteja.narayanam@xilinx.com>
- <0f167c21-6bc7-0806-a536-55658a199a5b@denx.de>
-In-Reply-To: <0f167c21-6bc7-0806-a536-55658a199a5b@denx.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: denx.de; dkim=none (message not signed)
- header.d=none;denx.de; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [103.106.181.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2cfd681e-5e75-4d1a-5bb2-08d9265123fe
-x-ms-traffictypediagnostic: SA2PR02MB7738:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR02MB773868EAD29BFDF98AA8D727CA3C9@SA2PR02MB7738.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c6d5MUeBihIOz80h3/ck6d0bOocSvt/DCMPZPJkM0T4jAtT+QURRDk9TBfQQnIXqJxo4b+sm/0I0QttuuT0oYuwtWictTBNy93tWSQaVcvhOpGEke9wK15nVkB+RrJUdYvXNhFn7jY4tr7sEbXLFL6HRksfc/BAiOmySxnNiNApC9NFVkun97fGU3J0fl/LLmnggqgRJeiS2Tqhv/Dra60xjyNIVJWrE1bRjRgpdmUH4jw041ZqZiLkmNz3f3ZYcC/b2zWbqQcXh52PRGAeKYBr4QahFlrKYrhB+iLdX3f5HUQhBsmY9sbuUqvQ4bLq2Okh9WThF4/FHGU8HpOOr22p0JoGlRdfA8POxbQjLzAgDvHoUpmMD2lyOiY39tDnV4wsvu0OJx/MnRdVhZ6ByNOVcvabmw/5VsPLEnFchZOFmY5DN8x3nH7QELOX692yeIF2fxiKg+GKQ2qD6KlU58WgtGF1+CwFotAq58iyRuNc7yu87H+vauRBv8WKoeBKxzuwwTaYjHudOMHV9UHX4zyn3ixWHw2K6qZaObhnhwyU9EGx1mcntmYe8z8+3/+jNrvsgHuzeOH7X8xhMAOsHQki8Wui8Y5+ucuM7aztBLm0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4093.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39850400004)(366004)(376002)(122000001)(66446008)(66556008)(38100700002)(6636002)(55016002)(2906002)(64756008)(66476007)(52536014)(9686003)(186003)(86362001)(71200400001)(110136005)(107886003)(54906003)(4326008)(8676002)(5660300002)(8936002)(33656002)(76116006)(7696005)(66946007)(83380400001)(478600001)(316002)(26005)(6506007)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UHRaQnJrR3pZeFdpdDlpaHo3OWw3VFlZcmNNWklkcmNONjVpZ1prdHlNR003?=
- =?utf-8?B?RXRMeFNNMjhTYXNyd0RtTlZHRGVnUVVSUkcveFN3MEcxL1N3YnFSQ1pFcnlp?=
- =?utf-8?B?QThGN3BzeFpnbjFTRFQxdll3UjErV3VsQ1d0cE1GbmJtTE5qVGRFUThrNlhO?=
- =?utf-8?B?UUJwdHNwWGdpbE1sakpQVUY1OE9OUG0vYUlkOUdISXNheGJ0SXJkcVBKOU5x?=
- =?utf-8?B?N3hRVjJBd01COFBXdCtlcFo5Vk82VWNRTFVqMGc2SWJQNjZ2TGZucWhjK3hV?=
- =?utf-8?B?WkZnSlhnUC9MdmREdk9ER21tOXpqdE1vbDJEN2k2K2lLVlBrbnlrVmtuL1Rm?=
- =?utf-8?B?VEtuSmpVVjJwMEpFRGxzR3k2eWVSLzkzNHRhZkdHVGt2N1pWTjFBNm5ORDZV?=
- =?utf-8?B?RXViSHhaVmFqVDUzSzdkdGJsS3dXMnpZK2dBUnJrNHA4dnhHNUZ4S1pESGNI?=
- =?utf-8?B?ZmROd2pxUzFpQ2NEMlJjRFJOM0o2RlVTMEFlT2I1d3Zrc0twR2FxSXVjSXRh?=
- =?utf-8?B?R3BjQWtjdGorSHF0YVkrRlRlRVh6K1dnQm1XcUhTK3RLcGFSZ1dqMyszWHdx?=
- =?utf-8?B?YUNscVRtYUJtYklOK05vMjNOdGM0VGE5WDZtZ1A0OG0rUS9KYng1SlYvOXFW?=
- =?utf-8?B?dnN4WUZoOS9CWG53aWFJK3FVc0dETUROR1QvTFJmaENmWjl0NW91NHF4eER1?=
- =?utf-8?B?Z3hzb3JTSGlTNjB6ZDdoTk5aUTlwMHgrR1NYbUczOGVWdVRQZ24rMEFVd2c5?=
- =?utf-8?B?RVR5aHVORnhONXc2Snc2QlY0QVk3dTNQVzkxMExFQUdCY3FHYXBZS1EybU1V?=
- =?utf-8?B?VktwUDBRQ1dDaUhZMk93V2FvK1c3bWhLdzBHNmFtV2prWXd4amYzRjViV0RS?=
- =?utf-8?B?S0djTkVnbzBvOWRGaHc4eVBVV2NuL3pKMzBZYjNpbHMxUlNWanl2QzMySnFT?=
- =?utf-8?B?SVZId0dMRnZUZ0M3akV5NG9KSGxGZ2xkSlhFcm9NZXl3V3JpNU1nYXdvUmoz?=
- =?utf-8?B?RXgwemdBY2hEa1V1KzIzZ3lkdGtyRWNSM2ZCZ1hRUjBZenp1SUZPajZBa0U4?=
- =?utf-8?B?d0llY3NhK2IrdDNGWHFwWkk0QllxWUZOVTZDdzhpUE5kRFJ6OU12MEdYc25C?=
- =?utf-8?B?cEVqSVdzcEdHOHJzTm1PRGU3OFdDL0J2TGxvTTJPeFduQ252QmRQRmdQWTVE?=
- =?utf-8?B?bGFKZE16KzA4RTRDUVNoMHNQZmkxeDZBS2h3Y0hkT3RpZWJGdVRYbmlGWlBi?=
- =?utf-8?B?NlEybnpwN2JIMlVXUDV1ZFZJWVVSaUh6OS9id3dPY2xUOVdJb1htOVZidk5Z?=
- =?utf-8?B?SmxsN1VSa1dGak55Zzc2UjZzcnBrRDg3cjlaeXJNdlFad2xTSTFvRTRlWHYz?=
- =?utf-8?B?TFFlUUp5K0VQbitkenZtYnlteHlQR1BjTE9JS2JMRS9ibHJsdUR4WlEzNXNX?=
- =?utf-8?B?b0JMS3g0N0t5Nkp0Qyt0UUJOUkVIREZGL3NZM1dNNC9LeG9yZzAvVUh4bVVu?=
- =?utf-8?B?bXJweHZDcXMyOGcrNGh4Sm9MamorVVlOd3llOTh2VisreW9CMEVrRVkzeWQx?=
- =?utf-8?B?SksxL0RuVkQzc1kzaThLYmJiRXNKanFUVWptZU1keGhPT1BQMUtSYzJ5aUlq?=
- =?utf-8?B?d3luT2VvdndLNmtrLy9jMTNXVGx3V2pPa0ZHTVEvQ3M0TjJXblBaeXB3cG9h?=
- =?utf-8?B?Z0Rta3E4cmxzZ25nRnlrOFFjRlR6bjBwdVJ6WEg4VHowNGd3cFVObC9GUFRL?=
- =?utf-8?Q?oNd23oW1Dz+v2Ufj0g=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pm@vger.kernel.org
+Subject: [PATCH RESEND v10 00/11] Extend regulator notification support
+Message-ID: <cover.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4093.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cfd681e-5e75-4d1a-5bb2-08d9265123fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 05:33:38.6555
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xl95QpTzuY1AvkGQ3pyOAulzt4zm2WU/eXN04VCIsRuRG3RodWMswY29jwQHdu1b
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7738
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyZWssDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyZWsg
-VmFzdXQgPG1hcmV4QGRlbnguZGU+DQo+IFNlbnQ6IFdlZG5lc2RheSwgSnVuZSAyLCAyMDIxIDQ6
-NDcgUE0NCj4gVG86IFJhdml0ZWphIE5hcmF5YW5hbSA8cm5hQHhpbGlueC5jb20+OyBsaW51eC1p
-MmNAdmdlci5rZXJuZWwub3JnOyBNaWNoYWwNCj4gU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT4N
-Cj4gQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZzsgZ2l0DQo+IDxnaXRAeGlsaW54LmNvbT4NCj4gU3ViamVjdDogUmU6
-IFtQQVRDSCAwMi8xMF0gaTJjOiB4aWljOiBBZGQgc3RhbmRhcmQgbW9kZSBzdXBwb3J0IGZvciA+
-IDI1NQ0KPiBieXRlIHJlYWQgdHJhbnNmZXJzDQo+IA0KPiBPbiA1LzMxLzIxIDM6MTkgUE0sIFJh
-dml0ZWphIE5hcmF5YW5hbSB3cm90ZToNCj4gDQo+IFsuLi5dDQo+IA0KPiA+ICsJaWYgKGkyYy0+
-ZHluYW1pYykgew0KPiA+ICsJCXU4IGJ5dGVzOw0KPiA+ICsJCXUxNiB2YWw7DQo+ID4gKw0KPiA+
-ICsJCS8qIENsZWFyIGFuZCBlbmFibGUgUnggZnVsbCBpbnRlcnJ1cHQuICovDQo+ID4gKwkJeGlp
-Y19pcnFfY2xyX2VuKGkyYywgWElJQ19JTlRSX1JYX0ZVTExfTUFTSyB8DQo+ID4gKwkJCQlYSUlD
-X0lOVFJfVFhfRVJST1JfTUFTSyk7DQo+ID4gKw0KPiA+ICsJCS8qDQo+ID4gKwkJICogV2Ugd2Fu
-dCB0byBnZXQgYWxsIGJ1dCBsYXN0IGJ5dGUsIGJlY2F1c2UgdGhlIFRYX0VSUk9SDQo+IElSUQ0K
-PiA+ICsJCSAqIGlzIHVzZWQgdG8gaW5kaWNhdGUgZXJyb3IgQUNLIG9uIHRoZSBhZGRyZXNzLCBh
-bmQNCj4gPiArCQkgKiBuZWdhdGl2ZSBhY2sgb24gdGhlIGxhc3QgcmVjZWl2ZWQgYnl0ZSwgc28g
-dG8gbm90IG1peA0KPiA+ICsJCSAqIHRoZW0gcmVjZWl2ZSBhbGwgYnV0IGxhc3QuDQo+ID4gKwkJ
-ICogSW4gdGhlIGNhc2Ugd2hlcmUgdGhlcmUgaXMgb25seSBvbmUgYnl0ZSB0byByZWNlaXZlDQo+
-ID4gKwkJICogd2UgY2FuIGNoZWNrIGlmIEVSUk9SIGFuZCBSWCBmdWxsIGlzIHNldCBhdCB0aGUg
-c2FtZSB0aW1lDQo+ID4gKwkJICovDQo+ID4gKwkJcnhfd2F0ZXJtYXJrID0gbXNnLT5sZW47DQo+
-ID4gKwkJYnl0ZXMgPSBtaW5fdCh1OCwgcnhfd2F0ZXJtYXJrLCBJSUNfUlhfRklGT19ERVBUSCk7
-DQo+ID4gKwkJYnl0ZXMtLTsNCj4gPiArDQo+ID4gKwkJeGlpY19zZXRyZWc4KGkyYywgWElJQ19S
-RkRfUkVHX09GRlNFVCwgYnl0ZXMpOw0KPiA+ICsNCj4gPiArCQlsb2NhbF9pcnFfc2F2ZShmbGFn
-cyk7DQo+ID4gKwkJaWYgKCEobXNnLT5mbGFncyAmIEkyQ19NX05PU1RBUlQpKQ0KPiA+ICsJCQkv
-KiB3cml0ZSB0aGUgYWRkcmVzcyAqLw0KPiA+ICsJCQl4aWljX3NldHJlZzE2KGkyYywgWElJQ19E
-VFJfUkVHX09GRlNFVCwNCj4gPiArCQkJCSAgICAgIGkyY184Yml0X2FkZHJfZnJvbV9tc2cobXNn
-KSB8DQo+ID4gKwkJCQkgICAgICBYSUlDX1RYX0RZTl9TVEFSVF9NQVNLKTsNCj4gPiArDQo+ID4g
-KwkJeGlpY19pcnFfY2xyX2VuKGkyYywgWElJQ19JTlRSX0JOQl9NQVNLKTsNCj4gPiArDQo+ID4g
-KwkJLyogSWYgbGFzdCBtZXNzYWdlLCBpbmNsdWRlIGR5bmFtaWMgc3RvcCBiaXQgd2l0aCBsZW5n
-dGggKi8NCj4gPiArCQl2YWwgPSAoaTJjLT5ubXNncyA9PSAxKSA/IFhJSUNfVFhfRFlOX1NUT1Bf
-TUFTSyA6IDA7DQo+ID4gKwkJdmFsIHw9IG1zZy0+bGVuOw0KPiA+ICsNCj4gPiArCQl4aWljX3Nl
-dHJlZzE2KGkyYywgWElJQ19EVFJfUkVHX09GRlNFVCwgdmFsKTsNCj4gPiArCQlsb2NhbF9pcnFf
-cmVzdG9yZShmbGFncyk7DQo+IA0KPiBJcyBsb2NhbF9pcnFfc2F2ZSgpL2xvY2FsX2lycV9yZXN0
-b3JlKCkgdXNlZCBoZXJlIHRvIHByZXZlbnQgY29uY3VycmVudA0KPiBhY2Nlc3MgdG8gdGhlIFhJ
-SUMgPw0KDQpUaGVzZSB3ZXJlIHVzZWQgdG8gZml4IHRoZSB0aW1pbmcgY29uc3RyYWludCBiZXR3
-ZWVuIHR3byByZWdpc3RlciB3cml0ZXMgdG8gdGhlIElQLg0KQXMgd2UgaGF2ZSBkaXNjdXNzZWQg
-bGFzdCB0aW1lLCB0aGVzZSBhcmUgcmVtb3ZlZCBpbiAiIFtQQVRDSCAwOC8xMF0gaTJjOiB4aWlj
-OiBSZW1vdmUgaW50ZXJydXB0IGVuYWJsZS9kaXNhYmxlIGluIFJ4IHBhdGgiLg0KTm93IHRoZXkg
-YXJlIG5vIGxvbmdlciBuZWVkZWQgc2luY2Ugb3VyIElQIGlzIGZpeGVkLiANCkZvciBsZWdhY3kg
-SVAgdmVyc2lvbnMsIGRyaXZlciBpcyBzd2l0Y2hpbmcgdG8gJ0FYSSBJMkMgc3RhbmRhcmQgbW9k
-ZScgb2Ygb3BlcmF0aW9uIGluIA0KIiBbUEFUQ0ggMDcvMTBdIGkyYzogeGlpYzogU3dpdGNoIHRv
-IFhpaWMgc3RhbmRhcmQgbW9kZSBmb3IgaTJjLXJlYWQiLg0KDQpSZWdhcmRzLA0KUmF2aXRlamEg
-Tg0K
+
+--PNTmBPCT7hxwcZjr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Extend regulator notification support
+
+This series extends the regulator notification and error flag support.
+Initial discussion on the topic can be found here:
+https://lore.kernel.org/lkml/6046836e22b8252983f08d5621c35ececb97820d.camel=
+@fi.rohmeurope.com/
+
+In a nutshell - the series adds:
+
+1. WARNING level events/error flags. (Patch 3)
+  Current regulator 'ERROR' event notifications for over/under
+  voltage, over current and over temperature are used to indicate
+  condition where monitored entity is so badly "off" that it actually
+  indicates a hardware error which can not be recovered. The most
+  typical hanling for that is believed to be a (graceful)
+  system-shutdown. Here we add set of 'WARNING' level flags to allow
+  sending notifications to consumers before things are 'that badly off'
+  so that consumer drivers can implement recovery-actions.
+2. Device-tree properties for specifying limit values. (Patches 1, 5)
+  Add limits for above mentioned 'ERROR' and 'WARNING' levels (which
+  send notifications to consumers) and also for a 'PROTECTION' level
+  (which will be used to immediately shut-down the regulator(s) W/O
+  informing consumer drivers. Typically implemented by hardware).
+  Property parsing is implemented in regulator core which then calls
+  callback operations for limit setting from the IC drivers. A
+  warning is emitted if protection is requested by device tree but the
+  underlying IC does not support configuring requested protection.
+3. Helpers which can be registered by IC. (Patch 4)
+  Target is to avoid implementing IRQ handling and IRQ storm protection
+  in each IC driver. (Many of the ICs implementin these IRQs do not allow
+  masking or acking the IRQ but keep the IRQ asserted for the whole
+  duration of problem keeping the processor in IRQ handling loop).
+4. Emergency poweroff function (refactored out of the thermal_core to
+  kernel/reboot.c) which is called if IC fires error IRQs but IC reading
+  fails and given retry-count is exceeded. (Patches 2, 4)
+  Please note that the mutex in the emergency shutdown was replaced by a
+  simple atomic in order to allow call from any context.
+
+The helper was attempted to be done so it could be used to implement
+roughly same logic as is used in qcom-labibb regulator. This means
+amongst other things a safety shut-down if IC registers are not readable.
+Using these shut-down retry counters are optional. The idea is that the
+helper could be also used by simpler ICs which do not provide status
+register(s) which can be used to check if error is still active.
+
+ICs which do not have such status register can simply omit the 'renable'
+callback (and retry-counts etc) - and helper assumes the situation is Ok
+and re-enables IRQ after given time period. If problem persists the
+handler is ran again and another notification is sent - but at least the
+delay allows processor to avoid IRQ loop.
+
+Patch 7 takes this notification support in use at BD9576MUF.
+Patch 8 is related to MFD change which is not really related to the RFC
+here. It was added to this series in order to avoid potential conflicts.
+Patch 9 adds a maintainers entry.
+
+Changelog v10-RESEND:
+   - rebased on v5.13-rc4
+Changelog v10:
+   - rebased on v5.13-rc2
+   - Move rdev_*() print macros to the internal.h and use rdev_dbg()
+     from irq_helpers.c
+   - Export rdev_get_name() and move it from coupler.h to driver.h for
+     others to use. (It was already in coupler.h but not exported -
+     usage was limited and coupler.h does not sound like optimal place
+     as rdev_name is not only used by coupled regulators)
+   - Send all regulator notifications from irq_helpers.c at one OR'd
+     event for the sake of simplicity. For BD9576 this does not matter
+     as it has own IRQ for each event case. Header defining events says
+     they may be OR'd.
+   - Change WARN() at protection shutdown to pr_emerg as suggested by
+     Petr.
+Changelog v9:
+   - rebases on v5.13-rc1
+   - Update thermal documentation
+   - Fix regulator notification event number
+Changelog v8:
+   - split shutdown API adding and thermal core taking it in use to
+     own patches.
+   - replace the spinlock with atomic when ensuring the emergency
+     shutdown is only called once.
+Changelog v7:
+  general:
+   - rebased on v5.12-rc7
+   - new patch for refactoring the hw-failure reboot logic out of
+     thermal_core.c for others to use.
+  notification helpers:
+   - fix regulator error_flags query
+   - grammar/typos
+   - do not BUG() but attempt to shut-down the system
+   - use BITS_PER_TYPE()
+
+Changelog v6:
+  Add MAINTAINERS entry
+  Changes to IRQ notifiers
+   - move devm functions to drivers/regulator/devres.c
+   - drop irq validity check
+   - use devm_add_action_or_reset()
+   - fix styling issues
+   - fix kerneldocs
+
+Changelog v5:
+   - Fix the badly formatted pr_emerg() call.
+
+Changelog v4:
+   - rebased on v5.12-rc6
+   - dropped RFC
+   - fix external FET DT-binding.
+   - improve prints for cases when expecting HW failure.
+   - styling and typos
+
+Changelog v3:
+  Regulator core:
+   - Fix dangling pointer access at regulator_irq_helper()
+  stpmic1_regulator:
+   - fix function prototype (compile error)
+  bd9576-regulator:
+   - Update over current limits to what was given in new data-sheet
+     (REV00K)
+   - Allow over-current monitoring without external FET. Set limits to
+     values given in data-sheet (REV00K).
+
+Changelog v2:
+  Generic:
+  - rebase on v5.12-rc2 + BD9576 series
+  - Split devm variant of delayed wq to own series
+  Regulator framework:
+  - Provide non devm variant of IRQ notification helpers
+  - shorten dt-property names as suggested by Rob
+  - unconditionally call map_event in IRQ handling and require it to be
+    populated
+  BD9576 regulators:
+  - change the FET resistance property to micro-ohms
+  - fix voltage computation in OC limit setting
+
+--
+
+
+Matti Vaittinen (11):
+  dt_bindings: Add protection limit properties
+  reboot: Add hardware protection power-off
+  thermal: Use generic HW-protection shutdown API
+  regulator: add warning flags
+  regulator: move rdev_print helpers to internal.h
+  regulator: IRQ based event/error notification helpers
+  regulator: add property parsing and callbacks to set protection limits
+  dt-bindings: regulator: bd9576 add FET ON-resistance for OCW
+  regulator: bd9576: Support error reporting
+  regulator: bd9576: Fix the driver name in id table
+  MAINTAINERS: Add reviewer for regulator irq_helpers
+
+ .../bindings/regulator/regulator.yaml         |   82 ++
+ .../regulator/rohm,bd9576-regulator.yaml      |    6 +
+ .../driver-api/thermal/sysfs-api.rst          |   24 +-
+ MAINTAINERS                                   |    4 +
+ drivers/regulator/Makefile                    |    2 +-
+ drivers/regulator/bd9576-regulator.c          | 1054 +++++++++++++++--
+ drivers/regulator/core.c                      |  163 ++-
+ drivers/regulator/devres.c                    |   52 +
+ drivers/regulator/internal.h                  |   11 +
+ drivers/regulator/irq_helpers.c               |  397 +++++++
+ drivers/regulator/of_regulator.c              |   58 +
+ drivers/regulator/qcom-labibb-regulator.c     |   10 +-
+ drivers/regulator/qcom_spmi-regulator.c       |    6 +-
+ drivers/regulator/stpmic1_regulator.c         |   20 +-
+ drivers/thermal/thermal_core.c                |   63 +-
+ include/linux/reboot.h                        |    1 +
+ include/linux/regulator/consumer.h            |   14 +
+ include/linux/regulator/coupler.h             |    5 -
+ include/linux/regulator/driver.h              |  186 ++-
+ include/linux/regulator/machine.h             |   26 +
+ kernel/reboot.c                               |   79 ++
+ 21 files changed, 2030 insertions(+), 233 deletions(-)
+ create mode 100644 drivers/regulator/irq_helpers.c
+
+
+base-commit: 8124c8a6b35386f73523d27eacb71b5364a68c4c
+--=20
+2.25.4
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--PNTmBPCT7hxwcZjr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmC4ay0ACgkQeFA3/03a
+ocXytQgAnZt7tJPjcieQAqsZD2bmAYFW+i1585kA000I7CT4opj93BNKVYTGnFKB
+U6kofFHwY/sXcbbiyyivy7L3YMM6NCfCWehxnVDoUWaOIvmEPvKnt5p6oNyramFE
+PUVvtentZEC4dhWVMH32C6JbrREtGemWzvcOxKgyavNbmMfZ2pXa6ENGX30tWWhg
+162zXC3G782e8NEep2ErXT31aJ9zbprnDdmLljoaV15lmF8BEhsyglG1ORK2YdXq
+wQ+/p5syL8nY841CuCFjHARxWkRHk6kKDZyKdma6GwK5R1GrtjIKcB0m3QG85cHt
+CuEaDt3KdcbrUGRvb1lbfmo3ZnPPJg==
+=g2sS
+-----END PGP SIGNATURE-----
+
+--PNTmBPCT7hxwcZjr--
