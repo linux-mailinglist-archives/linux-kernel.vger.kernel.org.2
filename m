@@ -2,110 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730BF39AC41
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA8239AC5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhFCVIS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Jun 2021 17:08:18 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:40334 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFCVIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:08:17 -0400
-Received: from [77.244.183.192] (port=63440 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1louXu-0000XU-OT; Thu, 03 Jun 2021 23:06:30 +0200
-Subject: Re: [PATCH RESEND] clk: vc5: fix output disabling when enabling a FOD
-To:     Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, Adam Ford <aford173@gmail.com>
-References: <20210527211647.1520720-1-luca@lucaceresoli.net>
- <162262084596.4130789.198191855440093780@swboyd.mtv.corp.google.com>
- <8b763492-b2b3-93d3-9801-2f2f0ec90241@lucaceresoli.net>
- <162275083380.1835121.17366140869706759167@swboyd.mtv.corp.google.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <ee4ff8b3-ee57-3b45-7e9c-46fb67cd0305@lucaceresoli.net>
-Date:   Thu, 3 Jun 2021 23:06:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230048AbhFCVLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:11:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229973AbhFCVLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 17:11:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B1DCC613EC;
+        Thu,  3 Jun 2021 21:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622754605;
+        bh=ySfnL1foLcg2ia2ArhyHfNX+pq6VlTqFrNXmFUOGEvc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Sh184MY4TICWK4JzVBZ+Y9EAv+ZKWMq/kz9aVSEEgdYEERiMxhReZ0NfHqQbuvfCi
+         cfnU39TjzACWhpm9ck0pluEfuF+wxrqCtZLT3WMEtRXVKlBkbSx1E4GATE3iyYrbQ3
+         XwesFq3rMKWS55qeTFOc5X2lZdel0P1AtR62BMw/EYi3jBxriZUh8JCK5fu3/JsvAH
+         z4ZtE2dYJs3vdDTVIHbTYsjGK4hwzv2B8O3bJbbtRWHWDAulv7WXHT+vSW8v3iXfaG
+         Mc/+0PbiHlwu/B2+2RWBxMlXVDjH7YL95sPElrT4j4wsBHVdvgAZhXr5pX8viZqjEO
+         Qou6ypaGrB9ZA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A161C60ACA;
+        Thu,  3 Jun 2021 21:10:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <162275083380.1835121.17366140869706759167@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 1/2] nfc: mrvl: remove useless "continue" at end of loop
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162275460565.4513.18351247670919056182.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Jun 2021 21:10:05 +0000
+References: <20210602112011.44473-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210602112011.44473-1-krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     davem@davemloft.net, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joe@perches.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-On 03/06/21 22:07, Stephen Boyd wrote:
-> Quoting Luca Ceresoli (2021-06-03 01:44:57)
->> Hi Stephen,
->>
->> On 02/06/21 10:00, Stephen Boyd wrote:
->>> Quoting Luca Ceresoli (2021-05-27 14:16:47)
->>>> On 5P49V6965, when an output is enabled we enable the corresponding
->>>> FOD. When this happens for the first time, and specifically when writing
->>>> register VC5_OUT_DIV_CONTROL in vc5_clk_out_prepare(), all other outputs
->>>> are stopped for a short time and then restarted.
->>>>
->>>> According to Renesas support this is intended: "The reason for that is VC6E
->>>> has synced up all output function".
->>>>
->>>> This behaviour can be disabled at least on VersaClock 6E devices, of which
->>>> only the 5P49V6965 is currently implemented by this driver. This requires
->>>> writing bit 7 (bypass_sync{1..4}) in register 0x20..0x50.  Those registers
->>>> are named "Unused Factory Reserved Register", and the bits are documented
->>>> as "Skip VDDO<N> verification", which does not clearly explain the relation
->>>> to FOD sync. However according to Renesas support as well as my testing
->>>> setting this bit does prevent disabling of all clock outputs when enabling
->>>> a FOD.
->>>>
->>>> See "VersaClock ® 6E Family Register Descriptions and Programming Guide"
->>>> (August 30, 2018), Table 116 "Power Up VDD check", page 58:
->>>> https://www.renesas.com/us/en/document/mau/versaclock-6e-family-register-descriptions-and-programming-guide
->>>>
->>>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->>>> Reviewed-by: Adam Ford <aford173@gmail.com>
->>>>
->>>> ---
->>>
->>> Any Fixes tag for this patch?
->>
->> I didn't add any as there is no commit that is clearly introducing the
->> problem. This patch fixes a behavior of the chip, which is there by
->> design by causes problems in some use cases.
->>
->> If a Fixes tag is required than I guess it should be the commit adding
->> support for the 5P49V6965, which is the only supported variant of VC[56]
->> having having the problematic behavior _and_ the reserved register bits
->> to prevent it. However I hardly could blame the author of that code for
->> such a "peculiar" chip behaviour. Do you still want me to add such a tag?
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Wed,  2 Jun 2021 13:20:10 +0200 you wrote:
+> The "continue" statement at the end of a for loop does not have an
+> effect.  Entire loop contents can be slightly simplified to increase
+> code readability.  No functional change.
 > 
-> I tend to liberally apply the Fixes tag if something is being fixed. It
-> helps understand that the patch is not introducing a new feature and
-> when the incorrect code was introduced. I can slap on a Fixes tag
-> myself, just not sure what to do.
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > 
+> [...]
 
-If you're OK in adding it while applying, here it is:
+Here is the summary with links:
+  - [v2,1/2] nfc: mrvl: remove useless "continue" at end of loop
+    https://git.kernel.org/netdev/net-next/c/a58224040f2d
+  - [v2,2/2] nfc: mrvl: reduce the scope of local variables
+    https://git.kernel.org/netdev/net-next/c/2c95e6c7e558
 
-Fixes: 2bda748e6ad8 ("clk: vc5: Add support for IDT VersaClock 5P49V6965")
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks.
--- 
-Luca
 
