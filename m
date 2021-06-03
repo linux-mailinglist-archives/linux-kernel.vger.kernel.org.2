@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92B4399D96
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31509399D9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhFCJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:21:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhFCJVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:21:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AD27613B1;
-        Thu,  3 Jun 2021 09:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622711961;
-        bh=hNMchlf9O444bO7mxFnY6LjWcVswdmGJYNW5Cvcqp6Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KBZnItNEhuIP6RjnuWWg2l7dErC4umNFQ3a0YEvAwBsL2QiCq2bLF7NDoxt4SGsCH
-         nCWwzbOc4ProgyI+4Aqw6rpwMykrjVR8BeEpjnEvKONqr/r4AGn4snvzfW/K9kfgFD
-         XMsfwSBKaJ0AB5VWCfLNwPzzAeNw1vLf2QQrzmv8=
-Date:   Thu, 3 Jun 2021 11:19:19 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?Q?Lauren=C8=9Biu_P=C4=83ncescu?= <lpancescu@gmail.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Backporting fix for #199981 to 4.19.y?
-Message-ID: <YLiel5ZEcq+mlshL@kroah.com>
-References: <c75fcd12-e661-bc03-e077-077799ef1c44@gmail.com>
- <YLiNrCFFGEmltssD@kroah.com>
- <5399984e-0860-170e-377e-1f4bf3ccb3a0@gmail.com>
+        id S229790AbhFCJWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCJWJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 05:22:09 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06597C06174A;
+        Thu,  3 Jun 2021 02:20:12 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v13so2555766ple.9;
+        Thu, 03 Jun 2021 02:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BogpqCOUCey2alE1P/oF0fJr06ZHXOEm/gnc1w6+dGw=;
+        b=oRq4uPqpjKfqi00/x+r3zKPWwxr092s9U9SMGSFhRN3tMhU6VpwA/k3BuOLdjBOYth
+         nUdmcWhsL3mehyfF2ui2DjNB/mI4VaYkg78liLYLRHGhiBHKGXf0EhJXgMxT9Ynm7/s3
+         h/itEZXAnWtKKKh1H7nrNNZtC4WDuXqcI3RxEYdWIXUanM6LnmHK8JudsQNNOyIH7l/L
+         znjlrL4YISkmzjFKK3+B2NJekfTQzwlUFk1OTvcucs6RJ9BGS4+WCtU3Qt8tWr/iIz8Q
+         J059fNeGhbAJplkqFoCYvapfHPII7AhJZkBZSHTDy+mZU7wRHHu0ivnA+fl25N3h2CH+
+         ms0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BogpqCOUCey2alE1P/oF0fJr06ZHXOEm/gnc1w6+dGw=;
+        b=D+RQm2iYTUI6BwxLuybOdYyRzbX3Yfo8cGDp746AsdMp8WtggX31k8KHRN8Vv9XawL
+         KbPYpmy6YGUOMezmtzY8tp4gEcDWL6tP0cT2kIW00qEHhTk2KYbG+9sCqjGWn+i9IBAy
+         slYlICHeYqjKRaYZRZgm0Ph7f5hwUk6ZibVxkFDEci3sseW9UCXznuh8+BQWMV86EnaI
+         6h4o9vHd6qzzIS+0TEMJfqJCjEtSc7y01/o4GvM3cI6sMQd5Gs71IsZTaM6sCdqqjtLo
+         DtW0UbdFxTZUEIgNfteobe6bKetKp9sj3FynSNDsd0XndEvqyjSyRLm+rZYHTshc+1qA
+         /bRw==
+X-Gm-Message-State: AOAM530do4dGstzZBpu0MF32blUGbF0lDtXgwM7rh4tY9Mk+beTns6Lr
+        xO0Tmbx+btp2j4LCd3whZeCTMafB9EzoFUATXfsmMpM7ZCE=
+X-Google-Smtp-Source: ABdhPJws9BMrj0ZBR0gjYZu9DoW0oS7QU5smzz6VfwvJ++cAaP6R3RpbO0mPZRKjcg0epixcuBLPxnoX2SUeUjiElKM=
+X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr35557628pjq.228.1622712011449;
+ Thu, 03 Jun 2021 02:20:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5399984e-0860-170e-377e-1f4bf3ccb3a0@gmail.com>
+References: <20210531132226.47081-1-andriy.shevchenko@linux.intel.com> <5dd2a42d-b218-0b23-aa14-7e5681e0fb3a@datenfreihafen.org>
+In-Reply-To: <5dd2a42d-b218-0b23-aa14-7e5681e0fb3a@datenfreihafen.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Jun 2021 12:19:55 +0300
+Message-ID: <CAHp75VdcFut0Tks3O=HJPLncebgDdfEv7Robm9ujG6yL+PT3OQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mrf29j40: Drop unneeded of_match_ptr()
+To:     Stefan Schmidt <stefan@datenfreihafen.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-wpan@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alan Ott <alan@signal11.us>,
+        Alexander Aring <alex.aring@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 10:24:04AM +0200, Laurențiu Păncescu wrote:
-> On 6/3/21 10:07 AM, Greg KH wrote:
-> > On Thu, Jun 03, 2021 at 09:53:46AM +0200, Laurențiu Păncescu wrote:
-> > > Hi there,
-> > > 
-> > > I'm running Debian Buster on an old Asus EeePC and I see the battery always
-> > > at 100% when unplugged, with an estimated battery life of 4200 hours, no
-> > > matter how long I've been using it without AC power.
-> > > 
-> > > I suspect this might be bug #201351, marked as duplicate of #199981 and
-> > > fixed in 5.0-rc1. Would you please consider backporting it to the 4.19 LTS
-> > > kernel?
-> > 
-> > What specific commit in Linus's tree is this so we know what to
-> > backport?
-> 
-> Hi Greg,
-> 
-> I think it's commit b1c0330823fe842dbb34641f1410f0afa51c29d3.
-> 
-> Many thanks,
-> Laurențiu
+On Thu, Jun 3, 2021 at 11:35 AM Stefan Schmidt
+<stefan@datenfreihafen.org> wrote:
+> On 31.05.21 15:22, Andy Shevchenko wrote:
+> > Driver can be used in different environments and moreover, when compiled
+> > with !OF, the compiler may issue a warning due to unused mrf24j40_of_match
+> > variable. Hence drop unneeded of_match_ptr() call.
+> >
+> > While at it, update headers block to reflect above changes.
 
-That commit does not apply cleanly and I need a backported version.  Can
-you do that and test it to verify it works and then send it to us to be
-applied?
+...
 
-thanks,
+> I took the freedom to fix the typo in the subject line and add a better
+> prefix:
+>
+> net: ieee802154: mrf24j40: Drop unneeded of_match_ptr()
 
-greg k-h
+Right, thanks!
+
+> This patch has been applied to the wpan tree and will be
+> part of the next pull request to net. Thanks!
+
+Btw, which tree are you using for wpan development? I see one with 6
+weeks old commits, is that the correct one?
+
+-- 
+With Best Regards,
+Andy Shevchenko
