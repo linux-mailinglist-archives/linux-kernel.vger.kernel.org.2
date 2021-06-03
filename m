@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B066A39A1B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878F139A19A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhFCNA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhFCNA2 (ORCPT
+        id S231238AbhFCMzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:55:51 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:44787 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhFCMzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:00:28 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B52EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 05:58:42 -0700 (PDT)
+        Thu, 3 Jun 2021 08:55:50 -0400
+Received: by mail-pg1-f171.google.com with SMTP id 29so5025859pgu.11;
+        Thu, 03 Jun 2021 05:53:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=DvvJuLb2rfdoEExLBPoteERVYd+uKTyTBxcJHZYUkzg=; b=QAFOrWpn+LUXr
-        4jjeqK5uRws6anp5tIw6RCB/qto1iT7b5QgOmOjBGh2P24JXb/mwq7AcJsTnbWiJ
-        0xlwpGqmIx08GNDlnGFQbMqJJuLeqWI3tDiJEwFTL2YO9qEJXXVm4tEJY5u4bOGN
-        ZFvKpJ4R0HjAVSi8+rc2HBK1QZXSpk=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3+YHa0bhg8g2JAA--.32624S2;
-        Thu, 03 Jun 2021 20:58:03 +0800 (CST)
-Date:   Thu, 3 Jun 2021 20:52:37 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Alexandre Ghiti <alex@ghiti.fr>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: mm: Remove va_kernel_xip_pa_offset symbol from !XIP
- case
-Message-ID: <20210603205237.645607ca@xhacker>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygD3+YHa0bhg8g2JAA--.32624S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JFWxAr1fWFyxCF1DKw45Jrb_yoWfWrg_G3
-        4kJr1fWFyaqrs293W3JrWfWrWjy3s5XFykC3Z7W34Yy3sIyr1fJrWaka4rXw1UurWfCFWr
-        ZFyUAF9ayw1YvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbrAYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6F
-        yj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4U
-        JbIYCTnIWIevJa73UjIFyTuYvjxUznmRUUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=P9XdF4IQa4HICLHDrIl6ecj193EbDBWLk7oFGC3LTNE=;
+        b=pMLaMz4C7sgoxAN7CQFAJ5+pEG2Z5L9VuYYCsiIMFZ1PhBdpB0a5srLkrthUfo5aZB
+         XNhdhN79/SH80c0R5npENFUDJ++PmRzITiVPRV7XI7xDPg3tUlo6OsIWwXdRoxb9CPKM
+         V9c2iz4oTeloF1bNjm9wi8D1zq+GW4MNeItOmvyb4zNFXIPKw56gXvZnUNUnydgOFCll
+         2h22Q/g6+Ne4zm1n3p87ngsPYXcaePA4F4zZkLFuSe3ERfT/0wv2QIzLOG8TlTb2X4Rh
+         r0aqXaY8WJY/HU6aJikDnhNyRrxBDchQxSkQxdfmhtlT+MqXcckoJXQ3VowXpiVt0pIZ
+         gzWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=P9XdF4IQa4HICLHDrIl6ecj193EbDBWLk7oFGC3LTNE=;
+        b=nDGEoXwiSTHB7vzCkIr9jPDtN3NwMDR3lfMICVvL9aWXNkTZHSd1nDE6OUIpa7i1cv
+         ThKZdeJA1mnJnxy0rhLfYj56yKa8ZDSfK1vGcouzxgxTt7E972SQIYiXcTg7nqI0l6By
+         hKM+sHq4KNJaEjMPp5NR2JjU5nCtqRyHHTJzfLftgxNEvwj0/SQs1hFUDmpR+ST2Sdyx
+         PYvVml+PyaqQxO/VKzTcZ5ypH/GU4dPHcDi7t9q20TO3IsbiKchevLW6Ph6iS7BbYQ8z
+         qsNYkzpb3sFwxEOvO69uDYj2E0eeQzQzZ3ZRGZYtSYXdoKcpvh2QFfzizzD7vUTb3cS1
+         ckdw==
+X-Gm-Message-State: AOAM533cDzfOE9IfuieI+HTl+RnL9wiRiHJQqIHC3shUoWELyOCY3IG/
+        GczBfrIBzLVd+ytuKBicHWjrpRrXYKTxNt6l
+X-Google-Smtp-Source: ABdhPJxx20lQ+jQGl9QqaPoW7vZEl7Z6gK7J8BE5VLB5oDyEbR56TL6tocuucFNeHeepYfODfM4ofA==
+X-Received: by 2002:a63:4706:: with SMTP id u6mr38960272pga.152.1622724770644;
+        Thu, 03 Jun 2021 05:52:50 -0700 (PDT)
+Received: from mi-HP-ProDesk-600-G5-PCI-MT.mioffice.cn ([209.9.72.213])
+        by smtp.gmail.com with ESMTPSA id y14sm2253754pjr.51.2021.06.03.05.52.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 05:52:50 -0700 (PDT)
+From:   chenguanyou <chenguanyou9338@gmail.com>
+X-Google-Original-From: chenguanyou <chenguanyou@xiaomi.com>
+To:     miklos@szeredi.hu
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chenguanyou <chenguanyou@xiaomi.com>
+Subject: [PATCH] [fuse] alloc_page nofs avoid deadlock
+Date:   Thu,  3 Jun 2021 20:52:42 +0800
+Message-Id: <20210603125242.31699-1-chenguanyou@xiaomi.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The va_kernel_xip_pa_offset is only accessed for XIP case, so make it
-only available for XIP.
+ABA deadlock
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+PID: 17172 TASK: ffffffc0c162c000 CPU: 6 COMMAND: "Thread-21"
+0 [ffffff802d16b400] __switch_to at ffffff8008086a4c
+1 [ffffff802d16b470] __schedule at ffffff80091ffe58
+2 [ffffff802d16b4d0] schedule at ffffff8009200348
+3 [ffffff802d16b4f0] bit_wait at ffffff8009201098
+4 [ffffff802d16b510] __wait_on_bit at ffffff8009200a34
+5 [ffffff802d16b5b0] inode_wait_for_writeback at ffffff800830e1e8
+6 [ffffff802d16b5e0] evict at ffffff80082fb15c
+7 [ffffff802d16b620] iput at ffffff80082f9270
+8 [ffffff802d16b680] dentry_unlink_inode at ffffff80082f4c90
+9 [ffffff802d16b6a0] __dentry_kill at ffffff80082f1710
+10 [ffffff802d16b6d0] shrink_dentry_list at ffffff80082f1c34
+11 [ffffff802d16b750] prune_dcache_sb at ffffff80082f18a8
+12 [ffffff802d16b770] super_cache_scan at ffffff80082d55ac
+13 [ffffff802d16b860] shrink_slab at ffffff8008266170
+14 [ffffff802d16b900] shrink_node at ffffff800826b420
+15 [ffffff802d16b980] do_try_to_free_pages at ffffff8008268460
+16 [ffffff802d16ba60] try_to_free_pages at ffffff80082680d0
+17 [ffffff802d16bbe0] __alloc_pages_nodemask at ffffff8008256514
+18 [ffffff802d16bc60] fuse_copy_fill at ffffff8008438268
+19 [ffffff802d16bd00] fuse_dev_do_read at ffffff8008437654
+20 [ffffff802d16bdc0] fuse_dev_splice_read at ffffff8008436f40
+21 [ffffff802d16be60] sys_splice at ffffff8008315d18
+22 [ffffff802d16bff0] __sys_trace at ffffff8008084014
+
+PID: 9652 TASK: ffffffc0c9ce0000 CPU: 4 COMMAND: "kworker/u16:8"
+0 [ffffff802e793650] __switch_to at ffffff8008086a4c
+1 [ffffff802e7936c0] __schedule at ffffff80091ffe58
+2 [ffffff802e793720] schedule at ffffff8009200348
+3 [ffffff802e793770] __fuse_request_send at ffffff8008435760
+4 [ffffff802e7937b0] fuse_simple_request at ffffff8008435b14
+5 [ffffff802e793930] fuse_flush_times at ffffff800843a7a0
+6 [ffffff802e793950] fuse_write_inode at ffffff800843e4dc
+7 [ffffff802e793980] __writeback_single_inode at ffffff8008312740
+8 [ffffff802e793aa0] writeback_sb_inodes at ffffff80083117e4
+9 [ffffff802e793b00] __writeback_inodes_wb at ffffff8008311d98
+10 [ffffff802e793c00] wb_writeback at ffffff8008310cfc
+11 [ffffff802e793d00] wb_workfn at ffffff800830e4a8
+12 [ffffff802e793d90] process_one_work at ffffff80080e4fac
+13 [ffffff802e793e00] worker_thread at ffffff80080e5670
+14 [ffffff802e793e60] kthread at ffffff80080eb650
+
+Signed-off-by: chenguanyou <chenguanyou@xiaomi.com>
 ---
- arch/riscv/mm/init.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/fuse/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index ae32f78207f0..ca2826778989 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -194,10 +194,8 @@ EXPORT_SYMBOL(va_kernel_pa_offset);
- #endif
- #ifdef CONFIG_XIP_KERNEL
- #define va_kernel_pa_offset    (*((unsigned long *)XIP_FIXUP(&va_kernel_pa_offset)))
--#endif
- unsigned long va_kernel_xip_pa_offset __ro_after_init;
- EXPORT_SYMBOL(va_kernel_xip_pa_offset);
--#ifdef CONFIG_XIP_KERNEL
- #define va_kernel_xip_pa_offset        (*((unsigned long *)XIP_FIXUP(&va_kernel_xip_pa_offset)))
- #endif
- unsigned long pfn_base __ro_after_init;
+diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+index c0fee830a34e..d36125ff0405 100644
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -721,7 +721,7 @@ static int fuse_copy_fill(struct fuse_copy_state *cs)
+ 			if (cs->nr_segs >= cs->pipe->max_usage)
+ 				return -EIO;
+ 
+-			page = alloc_page(GFP_HIGHUSER);
++			page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
+ 			if (!page)
+ 				return -ENOMEM;
+ 
 -- 
-2.31.0
-
+2.17.1
 
