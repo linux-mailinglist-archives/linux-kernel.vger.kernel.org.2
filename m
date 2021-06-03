@@ -2,189 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B3439AAE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3EFE39AAED
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhFCTZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:25:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33126 "EHLO mail.kernel.org"
+        id S229835AbhFCTaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:30:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCTZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:25:50 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF6B461263;
-        Thu,  3 Jun 2021 19:24:02 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 20:25:46 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-iio@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: General kernel misuse of vsnprintf SPECIAL %#<foo> (was: Re:
- [PATCH v2 0/4] iio: Drop use of %hhx and %hx format strings)
-Message-ID: <20210603202546.0d12e7ad@jic23-huawei>
-In-Reply-To: <9499203f1e993872b384aabdec59ac223a8ab931.camel@perches.com>
-References: <20210603180612.3635250-1-jic23@kernel.org>
-        <9499203f1e993872b384aabdec59ac223a8ab931.camel@perches.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229617AbhFCTaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:30:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10FE26124B;
+        Thu,  3 Jun 2021 19:28:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622748515;
+        bh=L1bDZ0alG/5e7gBpSxuoaamS+QVgRnLecZ9WFAr+uTY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=euxD5jCS9J8wMyg0ayyPfIjoTa1VlOWovui5tcMFLxFSbEdsSz68IdFzFlkN3/cXJ
+         ZKL2ubCuBh+rjFPC2UPe5fyiMIObcYMoWTtu8lDSGj5YplbIHKw93UpTBw3ybi6VjC
+         BmDQdoBu+KxZr3R2r3wXa6Lx5tIg7tbLRdhJWmApEqR9QUX3P7XyK/ZV1JIVP1rt7/
+         YZKnaLYwYz3RpEDRDBxphzjPW+ceBe5aj2Wj79Pg0xm84rCEoUpeu6rRbMlZAZKw+t
+         5K6kll9JKhqCtkSS6xUCWLXAyAZA3zJL/d1fB8VBwtescCmBNvB2xBCLNE+G1yoUOq
+         CfiJyj8JJPzHQ==
+Message-ID: <d7d38bb6686df957df2f962451e24800535024e8.camel@kernel.org>
+Subject: Re: [PATCH] net/mlx5e: Fix an error code in
+ mlx5e_arfs_create_tables()
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Mark Zhang <markzhang@nvidia.com>,
+        Yang Li <yang.lee@linux.alibaba.com>
+Cc:     leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 03 Jun 2021 12:28:34 -0700
+In-Reply-To: <7b14006a-4528-bdd9-dd12-0785d8409a5d@nvidia.com>
+References: <1622628553-89257-1-git-send-email-yang.lee@linux.alibaba.com>
+         <7b14006a-4528-bdd9-dd12-0785d8409a5d@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021 11:58:15 -0700
-Joe Perches <joe@perches.com> wrote:
-
-> On Thu, 2021-06-03 at 19:06 +0100, Jonathan Cameron wrote:
-> > From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On Wed, 2021-06-02 at 19:49 +0800, Mark Zhang wrote:
+> On 6/2/2021 6:09 PM, Yang Li wrote:
+> > When the code execute 'if (!priv->fs.arfs->wq)', the value of err
+> > is 0.
+> > So, we use -ENOMEM to indicate that the function
+> > create_singlethread_workqueue() return NULL.
 > > 
-> > A wrong use of one of these in
-> > https://lore.kernel.org/linux-iio/20210514135927.2926482-1-arnd@kernel.org/
-> > included a reference from Nathan to a patch discouraging the use of
-> > these strings in general:
-> > https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
+> > Clean up smatch warning:
+> > drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c:373
+> > mlx5e_arfs_create_tables() warn: missing error code 'err'.
 > > 
-> > I did a quick grep and established we only have a few instances of these in
-> > IIO anyway, so in the interests of avoiding those existing cases getting
-> > cut and paste into new drivers, let's just clear them out now.
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Fixes: 'commit f6755b80d693 ("net/mlx5e: Dynamic alloc arfs table
+> > for netdev when needed")'
+
+This is not the right format.
+
+Please use the following command to generate the fixes tag:
+git log -1 --abbrev=12 --format='Fixes: %h ("%s")' f6755b80d693
+
+> > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> > ---
+> >   drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
 > > 
-> > Note that patch from Arnd is now also part of this series, due to the
-> > length specifier related issue Joe raised.
-> > 
-> > I have chosen to go with 0x%02x rather than %#04x as I find it more readable.
-> > 
-> > V2:
-> > Use 0x%02x (Joe Perches)
-> > Include Arnd's original patch, modified for the above.  
-> 
-> Hello again.
-> 
-> It looks to me as though %#<foo> is relatively commonly misused in the kernel.
-> 
-> Pehaps for the decimal portion of the format, checkpatch could have some
-> test for use of non-standard lengths.
-> 
-> Given the use is generally meant for a u8, u16, u32, or u64, perhaps
-> checkpatch should emit a warning whenever the length is not 4, 6, 10, or 18.
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+> > b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+> > index 5cd466e..2949437 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+> > @@ -369,8 +369,10 @@ int mlx5e_arfs_create_tables(struct mlx5e_priv
+> > *priv)
+> >         spin_lock_init(&priv->fs.arfs->arfs_lock);
+> >         INIT_LIST_HEAD(&priv->fs.arfs->rules);
+> >         priv->fs.arfs->wq =
+> > create_singlethread_workqueue("mlx5e_arfs");
+> > -       if (!priv->fs.arfs->wq)
+> > +       if (!priv->fs.arfs->wq) {
+> > +               err = -ENOMEM;
+> >                 goto err;
+> > +       }
+> >   
 
-Would have saved me some trouble, so I'm definitely in favour of checkpatch
-catching this.
+you can just initialize err to -ENOMEM; on declaration. 
 
-I wonder if a better option is to match on 1, 2, 4, 8, 16 as likely to be
-caused by people getting the usage wrong rather than a deliberate attempt
-to pretty print something a little unusual?
+> >         for (i = 0; i < ARFS_NUM_TYPES; i++) {
+> >                 err = arfs_create_table(priv, i);
+> 
+> Maybe also need to "destroy_workqueue(priv->fs.arfs->wq);" in
+> err_des.
 
-Thanks.
+yes, it can be in the same patch.
 
-Jonathan
+Thanks a lot.  
 
-> 
-> (possible checkpatch patch below)
-> 
-> $ git grep -P -h -o '%#\d+\w+' | sort | uniq -c | sort -rn
->     392 %#08x
->     238 %#04x
->     144 %#02x
->     114 %#06x
->      92 %#010x
->      58 %#010Lx
->      55 %#018llx
->      47 %#010llx
->      45 %#010lx
->      38 %#016llx
->      27 %#0x
->      23 %#2x
->      18 %#016lx
->      17 %#3lx
->      17 %#08lx
->      17 %#018Lx
->      15 %#3x
->      14 %#03x
->      10 %#06hx
->       9 %#08zx
->       8 %#10x
->       7 %#16llx
->       6 %#8x
->       6 %#04X
->       6 %#04llx
->       6 %#012llx
->       5 %#16
->       4 %#08llx
->       4 %#06llx
->       4 %#05x
->       4 %#02X
->       4 %#016Lx
->       3 %#04hx
->       3 %#01x
->       2 %#6x
->       2 %#4x
->       2 %#10
->       2 %#09x
->       2 %#05lx
->       1 %#8lx
->       1 %#5x
->       1 %#5lx
->       1 %#2Lx
->       1 %#2llx
->       1 %#16x
->       1 %#16lx
->       1 %#12x
->       1 %#0x10000
->       1 %#0lx
->       1 %#08
->       1 %#05llx
->       1 %#04o
->       1 %#04lx
->       1 %#03X
->       1 %#018lx
->       1 %#010zx
-> 
-> ---
->  scripts/checkpatch.pl | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index d65334588eb4c..5840f3f2aee6f 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -6695,6 +6695,31 @@ sub process {
->  				my $fmt = get_quoted_string($lines[$count - 1], raw_line($count, 0));
->  				$fmt =~ s/%%//g;
->  
-> +				while ($fmt =~ /\%#([\d]+)/g) {
-> +					my $length = $1;
-> +					my $pref_len;
-> +					if ($length < 4) {
-> +						$pref_len = '04';
-> +					} elsif ($length == 5) {
-> +						$pref_len = '06';
-> +					} elsif ($length > 6 && $length < 10) {
-> +						$pref_len = '010';
-> +					} elsif ($length > 10 && $length < 18) {
-> +						$pref_len = '018';
-> +					} elsif ($length > 18) {
-> +						$pref_len = '<something else>';
-> +					}
-> +					if (defined($pref_len)) {
-> +						if (!defined($stat_real)) {
-> +							$stat_real = get_stat_real($linenr, $lc);
-> +						}
-> +						WARN("VSPRINTF_SPECIAL_LENGTH",
-> +						     "Unusual special length '%#$length' in 0x prefixed output, length is usually 2 more than the desired width - perhaps use '%#${pref_len}'\n" . "$here\n$stat_real");
-> +					}
-> +				}
-> +
-> +				pos($fmt) = 0;
-> +
->  				while ($fmt =~ /(\%[\*\d\.]*p(\w)(\w*))/g) {
->  					$specifier = $1;
->  					$extension = $2;
-> 
+
 
