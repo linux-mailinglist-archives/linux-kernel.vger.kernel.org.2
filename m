@@ -2,152 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB46E39A477
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1992839A485
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhFCPX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:23:59 -0400
-Received: from mail-bn8nam08on2042.outbound.protection.outlook.com ([40.107.100.42]:16609
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232057AbhFCPX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:23:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R9x067cfQ8zEq3gFIfm8158s9HJ0c//iUBz00Mpc5JQbastqxI10lt+vXfRf1dG/U+3aGFC17dlDY0HTc39vrVPJRVWiFpIkweVJcVYhEdaQ/3dvdRr+FVslUzZWsKqxwJbp1TlOtyjU6OiSC1b45CwHR4BDvlk4CoHHgxt6OrLRczxkMkgIaXZkjtVwp3XyXeFikwb+2fDosddqU9r8pCYCdmbWibCGae0rXu0FlzNLPpm/ESBDTFcKWn/3xqX36kVyAlzJJnhHSDIqHfXoeQbh7hdEeoJImjbVRU/fvuvi7Em67UJHhp8RA1LWDFra63Mhagtw6FaIJPaWTwQM4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a9r7AcPB8Y1pANFcNIKl49YnnC7r9+LWitrcxTRYz/g=;
- b=WsLmWjVJ8Q/Mi6bhumWeeze3sAuxV5oomlbiCOSN+KZJV7cW76mHZQ5ygvfXzuxtXy/DsEcc7XZJJaMrQBV9pbrEqr8uH/ag/WNk/Z2MepzpiOKlKz4j8aL2PxcoNAEnm/Rb1GTn+4AvEhh9Kcww/2SinCo95jA/zoAgj2oP8MZNrN+EXaTQoUosRULeiDqbQTychTassYpyXAYCn8nD4l8gQgpTt+L2A/ZIiFhYadnfzul7FkCi8b9MhltVGVoUofzM5efkjHxuHiWHDJQt0luSPuV4QSu/o9hQCoyo1HWr/1pZuu7j9WxUeI0ArGucSYFTlLeQRXlai6giPBn5xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a9r7AcPB8Y1pANFcNIKl49YnnC7r9+LWitrcxTRYz/g=;
- b=1PLpAK2YTa4pz3BuTv2mA3saU8SXdUtc+WwzbusGU2coYBGc52EFy257V4Rp/FgcUpP1kTzqryw9tk3t6e7JV76nWsWHlDiJvaY8rr7KhQdHzGZ/p65PCKArUod3biI8IdiuCL+ZmRWe1jOlhEp6KAWgzPQqzQJNISeSQJ9cVfI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
- by BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Thu, 3 Jun
- 2021 15:22:10 +0000
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
- 15:22:10 +0000
-Subject: Re: [PATCH] drm/amdgpu: remove redundant assignment of variable k
-To:     Colin King <colin.king@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210603123440.83936-1-colin.king@canonical.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Message-ID: <1b714f14-723c-5e66-dd1c-b720f4b120fd@amd.com>
-Date:   Thu, 3 Jun 2021 11:22:08 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210603123440.83936-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [142.116.203.225]
-X-ClientProxiedBy: YT1PR01CA0010.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::23)
- To BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
+        id S230019AbhFCP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:26:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38032 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229823AbhFCP0L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:26:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622733866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2dgSfYYpXwBodnxak+oieIso4PBe+1C5Rbth+oHRhQs=;
+        b=Hc1dMyUNUIhGzZFoPZVLHBnU3Xgmisok4pQRNEu8a4UmRzutgXR+a7YcTKRoLlTjPsiCdI
+        recXx5/J95Xr+0GVlpeOfCBidIyVj72giAqy3S4iHhGGxC96oqA83KOhnMNzphm0+n42dl
+        +xQ/y9J6tcNDIBUHacBNm3bVg9RkOVk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-u4Hqj26qNXKSNwFSaCxFJQ-1; Thu, 03 Jun 2021 11:24:25 -0400
+X-MC-Unique: u4Hqj26qNXKSNwFSaCxFJQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1149801817;
+        Thu,  3 Jun 2021 15:24:23 +0000 (UTC)
+Received: from localhost (ovpn-114-228.ams2.redhat.com [10.36.114.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 86BDD60C17;
+        Thu,  3 Jun 2021 15:24:17 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 16:24:16 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, slp@redhat.com,
+        sgarzare@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
+Message-ID: <YLj0IN6rFuBMjzQQ@stefanha-x1.localdomain>
+References: <20210520141305.355961-1-stefanha@redhat.com>
+ <20210520141305.355961-4-stefanha@redhat.com>
+ <eefac014-0361-b554-ffdc-2ce920810fa5@redhat.com>
+ <YKy8Znh/MqHWSmON@stefanha-x1.localdomain>
+ <c51191b8-d741-2abc-0446-8a139e2ea401@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.100] (142.116.203.225) by YT1PR01CA0010.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.26 via Frontend Transport; Thu, 3 Jun 2021 15:22:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a63c1ab5-7456-442e-c2a2-08d926a35b23
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN9PR12MB5179005B8D0FA9D7C8D7F10E923C9@BN9PR12MB5179.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /C1bd8XCJ/8nBIlhM0H8ypJqxN0FTJrt2H3XmM5ykjj7uQnfjVD+kp9vWd/FrPnMuYt9/a71VVE/Os9tw+VEuxQBT6USB0tPLX9Knv8oBYd05BRamHIuO0KFdzNKzpCK3h+HWIrXbKwtrgY4TiSFaOYBX4NKoXIaV3g0vtJSFupCTJrKtmoyaVM2+af6NiphtQjBbeHe0yYEKYnCz22qH58/Liani6w1VZUgpT81raunqkn4S7Oh7SG/WTmJmx1/OeIccGJdEUVsMIldD2lKsqikUIYrAErvXLQc0l0jVtCmB3yxZAAWDVM3yVXgTTzT7y0vrLlWLMR1xs3HL/e5W4IAPRusUlXuy890t/98OPpExKJqRjumO+mfyi2gyQK2LvxkI0DqYhnHdq5H9ukoxR+nJNdtM1H4OI8+bgkIFg2Zy0mz+fq/qASoD4suEItDHh7QpLi590iC6IaFyrzEB9jQzylwEjuBz3bSJjzKehPLiSXP9MEqpsWSrDuZMH+XCz7B0Tk8vfbnMakbQUgiQ++RpwzuOw3OvSRyFS5objbLzzH9dB7rw9QTKP2r1ebl1efLdq1BUTCBhDu3z4cgIFXvsn14l8cCgAJccV11X3UsiFZAioRIWZELxoL7L1/fhNo6RHYj3/3gC9Wyxbx8YxpZCQ3ze5DeV1i6qWSbTMorStgQYwIqm539GL5o0KGgoGpY5CUeqhVnDFN4GT1LXg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39840400004)(396003)(346002)(83380400001)(6486002)(86362001)(38100700002)(316002)(110136005)(16576012)(2616005)(2906002)(956004)(26005)(8936002)(66556008)(5660300002)(8676002)(66946007)(31696002)(478600001)(66476007)(36756003)(31686004)(4326008)(16526019)(44832011)(186003)(129723003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cTYwVmRnS2JpVHY2aUE1V2JVWUQzczdkckl1UHJkTkxBZ2J6ampDUThrT25n?=
- =?utf-8?B?bTBycEV3NkJhVW9LdHcrVjNGNzlkQWNKRTE2aStjMW02OU1Mbm5pM3oyb1lt?=
- =?utf-8?B?dEJocWlOS0p6QkNGR2dFVzRSeEpPdm9WTTBYSWZackxlbDBmUmEwVEN2ckZW?=
- =?utf-8?B?ZUQ1NklYKzRVTzZwbDNmVThFWXpoY1NPbThRRW02R2Y4bnBRM21veWdEdVhj?=
- =?utf-8?B?Ym9CajkrWDdsa0phM2tWTjYvK250dWMrWno4MThIdmRYWGRpenJZVTR5STZJ?=
- =?utf-8?B?ZHZaZkVjVUg1b080a2w3Rzk3cmxCUnhUOWd5V2c2Y0NOVlBOZ1hIckx6WjJK?=
- =?utf-8?B?a0JTblRaMFBNMU5iN2gzbittZkhiTURESnp4bXZmbmpMbmZzeFVsbE5KZmpq?=
- =?utf-8?B?eXFQdTdJbzBEUHpkMkZ2ZkhPOUFIcW9EUmZQNWUvYnpvN0dTQk1OT1B4WTNy?=
- =?utf-8?B?ZHpyRHhSTnZmQkt3MWxGMTZJTTdOeElUOHBjRXc1Q2lmelZuT3pNQWRBU3cv?=
- =?utf-8?B?R09MRnpMY2I2b2V6RllKTUJldkxXQzJNSklQeHJQVHMvUVRkUjNVblQwODR5?=
- =?utf-8?B?WjZFVWdvZUlRTzl2YlZ5c0NxVFdFTW4venhIdy9scm5XVzVMTU5jemF1RWR0?=
- =?utf-8?B?Q2J1SjZsQ1RKcTkrS2FaOFhiYWpTekEwSnRSRGs3V0xHSW52V0s1MXpLaHVt?=
- =?utf-8?B?U09JY3haWGJpNmtGUHdqbkt5ZTh5U2pwY3JXdkdXNjJWTS9Ta0FzdS9yMngz?=
- =?utf-8?B?MXBKMFRyYmozekliNWdZYVpnbHExQmVvQ0UveTFQeVR3ZUxmQ1NzQysvWGRC?=
- =?utf-8?B?S2RMS0tJMklBVjhLZktmUStiYzVMcXNYbnJKRVdrejZyeXA2MGpNKzhIbHhn?=
- =?utf-8?B?RXFaSHR5WWpnYTN5Sjc2QTIwNXV3bVhJYWF1eklueFcvTCt2RHRkMk1KMnFm?=
- =?utf-8?B?WWg3RzBpL1YvMTF3MmZsbUxydldwYlNUdW9JTG1sSjR1b0dSUWk0Smk3Zm4v?=
- =?utf-8?B?cDUvRFdMZ0xmdi81WThld0VDUStCdkNKSDNDazhZOHhPRThidnJIUGo5ZFd6?=
- =?utf-8?B?Zng4R3luVWQ4aytLSzNTdGIxKzlXUHh3YkdnK2lBZ09icmoxbGVDVG9jT3RY?=
- =?utf-8?B?WmdSQmdaRXJiZzlGaGVOMjErYkhwV3RRemIxeUt3UDZ5UTRLZlRPOVMra3Y5?=
- =?utf-8?B?dFNIU0gzTG5yY0htR2w4S0NGWHFtTW05MCtFVU40SU5HSk5Ld0I3bnU3T1Iz?=
- =?utf-8?B?ZWdwSHFSR0k5Z0lWRlBaaDNIOTFXQjhiS3FvUkI1UW5HYjVZMERHSndjNk93?=
- =?utf-8?B?OWpZNmZGSEZ1MENxM3ZyVWVmMGR1a0tWcG0xQ1pQRFhJNGh4am5pMnovbW9E?=
- =?utf-8?B?bmZiRTlhSTR3a0J6ZFFtYUVmaGYyMEdoQXZQUWlCVWNydmhURXN1Vk5QcFph?=
- =?utf-8?B?ZTM3YXdVYmhybFU2Nk04d2t6WW1BdENNWFVHeENnSTA2WnQvb1l4V2MyOTRT?=
- =?utf-8?B?blJGQ2NraXRIVWdacU9PMk03NGRQUXNyQjdBVWdDWWRlMUZwRTNaVFV2NFJZ?=
- =?utf-8?B?OEtOeVJsc1Y1blNGQWQzME1pNGZMV1I1VXlsQVZUQkY4bkxwZVpVSFNXQXRo?=
- =?utf-8?B?bjVidW11NlhiMWFaenhhSW9RZHAxZmVuY1Q1ZFhMeDd4QlBra1cyM05VcDF3?=
- =?utf-8?B?b3hNQk81V2hHZlRwQU4rV0N1M0NWMGZpZzRCUGEvcmVyY2dhdkpuRy9Hdmtr?=
- =?utf-8?B?RXpjUzV0eFh3bjBqbnNscHI1d2NLZkxFMzN0Tk1POWFKNjdSK0JHdzJkYmFH?=
- =?utf-8?B?dVJYVXlmMzIxNUQ3RDRMZz09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a63c1ab5-7456-442e-c2a2-08d926a35b23
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 15:22:10.6782
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: orB7aBuk7sLkQ8AX3Utt/QgB9yzGTZA8GGN8YKiV46tp5b0PsDpZDp/1+ZFlMOOLx6Ckyh5w9cj2jp3sMcjykQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5179
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vxiBSKnm2AIk6CUa"
+Content-Disposition: inline
+In-Reply-To: <c51191b8-d741-2abc-0446-8a139e2ea401@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-06-03 um 8:34 a.m. schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable k is being assigned a value that is never read, the
-> assignment is redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+--vxiBSKnm2AIk6CUa
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm applying the patch to amd-staging-drm-next.
+On Thu, May 27, 2021 at 01:48:36PM +0800, Jason Wang wrote:
+>=20
+> =E5=9C=A8 2021/5/25 =E4=B8=8B=E5=8D=884:59, Stefan Hajnoczi =E5=86=99=E9=
+=81=93:
+> > On Tue, May 25, 2021 at 11:21:41AM +0800, Jason Wang wrote:
+> > > =E5=9C=A8 2021/5/20 =E4=B8=8B=E5=8D=8810:13, Stefan Hajnoczi =E5=86=
+=99=E9=81=93:
+> > > > Request completion latency can be reduced by using polling instead =
+of
+> > > > irqs. Even Posted Interrupts or similar hardware support doesn't be=
+at
+> > > > polling. The reason is that disabling virtqueue notifications saves
+> > > > critical-path CPU cycles on the host by skipping irq injection and =
+in
+> > > > the guest by skipping the irq handler. So let's add blk_mq_ops->pol=
+l()
+> > > > support to virtio_blk.
+> > > >=20
+> > > > The approach taken by this patch differs from the NVMe driver's
+> > > > approach. NVMe dedicates hardware queues to polling and submits
+> > > > REQ_HIPRI requests only on those queues. This patch does not require
+> > > > exclusive polling queues for virtio_blk. Instead, it switches betwe=
+en
+> > > > irqs and polling when one or more REQ_HIPRI requests are in flight =
+on a
+> > > > virtqueue.
+> > > >=20
+> > > > This is possible because toggling virtqueue notifications is cheap =
+even
+> > > > while the virtqueue is running. NVMe cqs can't do this because irqs=
+ are
+> > > > only enabled/disabled at queue creation time.
+> > > >=20
+> > > > This toggling approach requires no configuration. There is no need =
+to
+> > > > dedicate queues ahead of time or to teach users and orchestration t=
+ools
+> > > > how to set up polling queues.
+> > > >=20
+> > > > Possible drawbacks of this approach:
+> > > >=20
+> > > > - Hardware virtio_blk implementations may find virtqueue_disable_cb=
+()
+> > > >     expensive since it requires DMA.
+> > >=20
+> > > Note that it's probably not related to the behavior of the driver but=
+ the
+> > > design of the event suppression mechanism.
+> > >=20
+> > > Device can choose to ignore the suppression flag and keep sending
+> > > interrupts.
+> > Yes, it's the design of the event suppression mechanism.
+> >=20
+> > If we use dedicated polling virtqueues then the hardware doesn't need to
+> > check whether interrupts are enabled for each notification. However,
+> > there's no mechanism to tell the device that virtqueue interrupts are
+> > permanently disabled. This means that as of today, even dedicated
+> > virtqueues cannot suppress interrupts without the device checking for
+> > each notification.
+>=20
+>=20
+> This can be detected via a transport specific way.
+>=20
+> E.g in the case of MSI, VIRTIO_MSI_NO_VECTOR could be a hint.
 
-Thanks,
-  Felix
+Nice idea :). Then there would be no need for changes to the hardware
+interface. IRQ-less virtqueues is could still be mentioned explicitly in
+the VIRTIO spec so that driver/device authors are aware of the
+VIRTIO_MSI_NO_VECTOR trick.
 
+> > > > +static int virtblk_poll(struct blk_mq_hw_ctx *hctx)
+> > > > +{
+> > > > +	struct virtio_blk *vblk =3D hctx->queue->queuedata;
+> > > > +	struct virtqueue *vq =3D vblk->vqs[hctx->queue_num].vq;
+> > > > +
+> > > > +	if (!virtqueue_more_used(vq))
+> > >=20
+> > > I'm not familiar with block polling but what happens if a buffer is m=
+ade
+> > > available after virtqueue_more_used() returns false here?
+> > Can you explain the scenario, I'm not sure I understand? "buffer is made
+> > available" -> are you thinking about additional requests being submitted
+> > by the driver or an in-flight request being marked used by the device?
+>=20
+>=20
+> Something like that:
+>=20
+> 1) requests are submitted
+> 2) poll but virtqueue_more_used() return false
+> 3) device make buffer used
+>=20
+> In this case, will poll() be triggered again by somebody else? (I think
+> interrupt is disabled here).
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-> index 2a7bed66d50b..f545dc1248b8 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-> @@ -278,7 +278,7 @@ static int amdgpu_amdkfd_remove_eviction_fence(struct amdgpu_bo *bo,
->  	write_seqcount_end(&resv->seq);
->  
->  	/* Drop the references to the removed fences or move them to ef_list */
-> -	for (i = j, k = 0; i < old->shared_count; ++i) {
-> +	for (i = j; i < old->shared_count; ++i) {
->  		struct dma_fence *f;
->  
->  		f = rcu_dereference_protected(new->shared[i],
+Yes. An example blk_poll() user is
+fs/block_dev.c:__blkdev_direct_IO_simple():
+
+  qc =3D submit_bio(&bio);
+  for (;;) {
+      set_current_state(TASK_UNINTERRUPTIBLE);
+      if (!READ_ONCE(bio.bi_private))
+          break;
+      if (!(iocb->ki_flags & IOCB_HIPRI) ||
+          !blk_poll(bdev_get_queue(bdev), qc, true))
+          blk_io_schedule();
+  }
+
+That's the infinite loop. The block layer implements the generic portion
+of blk_poll(). blk_poll() calls mq_ops->poll() (virtblk_poll()).
+
+So in general the polling loop will keep iterating, but there are
+exceptions:
+1. need_resched() causes blk_poll() to return 0 and blk_io_schedule()
+   will be called.
+2. blk-mq has a fancier io_poll algorithm that estimates I/O time and
+   sleeps until the expected completion time to save CPU cycles. I
+   haven't looked into detail at this one.
+
+Both these cases affect existing mq_ops->poll() implementations (e.g.
+NVMe). What's new in this patch series is that virtio-blk could have
+non-polling requests on the virtqueue which now has irqs disabled. So we
+could wait for them.
+
+I think there's an easy solution for this: don't disable virtqueue irqs
+when there are non-REQ_HIPRI requests in flight. The disadvantage is
+that we'll keep irqs disable in more situations so the performance
+improvement may not apply in some configurations.
+
+Stefan
+
+--vxiBSKnm2AIk6CUa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmC49CAACgkQnKSrs4Gr
+c8g9SggApFtVeNv8a9846y9j4yHxsw8MKkrLJR8eFajwxJYH9o4S5y1rW1nKURxn
+0QI9IlDe3z/jkcaeidvP1JaiEPpDweEOuJ5R/TTRfixSMCjR5kY9+A2AOh8gHOx6
+sIejzjF0BeUcD8hZzTT/tWDXRojxCcZM+NMrf4nefzOjNkOh3tCXPTm0Ov6wX34I
+TlAI/I1DFtGx92j3tqcgJmQpie48arGTLPX6qSrWABM7IG5bcJK8tnbwkp2AKAZX
+xJcNTADB0vygduI+33Ttv35gDy11zOoe9RaKdBmpJzhNTm77glSlXWMupe2b5uo+
+/iPZIP3AZMMrehTbSpFricIMzMBSPQ==
+=reHh
+-----END PGP SIGNATURE-----
+
+--vxiBSKnm2AIk6CUa--
+
