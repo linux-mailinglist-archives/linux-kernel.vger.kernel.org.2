@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BF539ABC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8470939ABC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhFCU3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:29:09 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:32912 "EHLO mail.skyhub.de"
+        id S230046AbhFCU3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCU3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:29:08 -0400
-Received: from zn.tnic (p200300ec2f138500c7e12fc0802db454.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:c7e1:2fc0:802d:b454])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0C77C1EC0246;
-        Thu,  3 Jun 2021 22:27:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622752042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OdHEZyA0Yz82G9giMJIrJ6sLC/3gLs0Aj9USNqocCdM=;
-        b=n/qUCf7CAevYLO1ua7Xqqjpw/2DKzujCT+H1jn+x5ugKmQ4H2WI5rxAl9X5LimeJKHbs2M
-        kOUvyxeDDa1NQg8mJHgE84zLB/p8lkOiGljmxRGNZS3q9J3rhUJ5BPqkeW+gwtYIwq7KLo
-        9nn344GKcSr0hzTiGpQkueO8Paj9s3Q=
-Date:   Thu, 3 Jun 2021 22:27:19 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chester Lin <clin@suse.com>, Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v2 0/2] allow simple{fb,drm} drivers to be used on
- non-x86 EFI platforms
-Message-ID: <YLk7HjX2OnLhMt4V@zn.tnic>
-References: <20210601145912.774054-1-javierm@redhat.com>
+        id S229576AbhFCU3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:29:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5702610A8;
+        Thu,  3 Jun 2021 20:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622752066;
+        bh=uzIHSYZZh+2ti4Lyjcok+mHiOfMoe3mD9iwI5XtKAuo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aF8ob6aVb4RfLvM1ko4AVvdAdTmg6jHgW4VEynmsDDU028yaTTmG44fpYFa90EOqk
+         LxKz2fFeVBdoKoK7JXJFqqlNKgakt6CaLkX9rHnOMWCjnUAR4cWF167SMb8qKdkmop
+         gdduU7JMAnpSlzhC45X4V7kIqCT9ZUnYpohwlOXW2G60k+xtOkDfwUTCsF/PZNsSNe
+         muEDIUYSRAxYPfu2AC5EJZo41v4FZscqn3Nr1EyinYKEQOkPucLrs4J8r1+hVHO107
+         lGvjcGDxeVBWpuAbyzbdMzo3ASU6lUMQHeTMuvoFmyPnCmCWXp1GHrTI0bLBzjbW2t
+         27rvw55/W2rtA==
+Date:   Thu, 3 Jun 2021 22:27:43 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Anders Berg <anders.berg@lsi.com>, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 05/16] i2c: busses: i2c-axxia: Fix formatting issue in
+ struct and demote unworthy kernel-doc headers
+Message-ID: <YLk7P3+vcR1hNpBO@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Anders Berg <anders.berg@lsi.com>, linux-i2c@vger.kernel.org
+References: <20210520190105.3772683-1-lee.jones@linaro.org>
+ <20210520190105.3772683-6-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4MRf3DTOTLiqoFO5"
 Content-Disposition: inline
-In-Reply-To: <20210601145912.774054-1-javierm@redhat.com>
+In-Reply-To: <20210520190105.3772683-6-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 04:59:10PM +0200, Javier Martinez Canillas wrote:
-> The series touches different subystems and will need coordination between
-> maintainers. Ard Biesheuvel said that can be merged through the EFI tree.
 
-I'm always happy when code from arch/x86/ moves away so
+--4MRf3DTOTLiqoFO5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Borislav Petkov <bp@suse.de>
 
-Btw, for the future, please CC everyone on the whole patchset - I had to
-go look at your 2/2 on lore to see what it does because I had only 1/2
-in my mbox.
+> -/**
+> - * axxia_i2c_dev - I2C device context
+> +/*
+> + * struct axxia_i2c_dev - I2C device context
+>   * @base: pointer to register struct
+>   * @msg: pointer to current message
+>   * @msg_r: pointer to current read message (sequence transfer)
 
-Thx.
+Shouldn't we keep the kernel-doc header here?
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--4MRf3DTOTLiqoFO5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmC5OzsACgkQFA3kzBSg
+KbZl/RAAna55CJmrpcyYIHFZcE8iZzRlpr/W422av7PS0D4R03ijhO/w+cTbUNIc
+igm/rei31Oe/+GwmwNEaXjLEDVUPiykzdfnahOTE/ZZX44N9nTPJzaXRNcn4vLJG
+zp0TtE68rXaFzf6CLPuAfMGe1dcYdSrwOZOjHqbmqV683QdgzMcl2Q2lsAWN3ik3
+JcZUeJIhMFJOqA9kMORUUbIjuVDrCZpo9KA0llbBymZjmiLl8iIryLoNaLget1Uv
+QzEuDmmzebFwQtEwj++WoS07J2gmtldIdRivx8wNPRbpUkYC8Xi5q6+dEMe3c29I
+iyrm/qt0ExqybFT5ir2eEJ4pzpPyneh9YmNWe0QJKWNjxcKKku3IST6LJW0b2Eaa
+DbQFFDyMUTgVPJURyZHFPvTkRkLgI7NDXkU/Y8kxFVwh+JficwMUN6wN/AyBRf5a
+oX+MgrV/Kuq04Uviwirh9Uw6K3etKGGusWxxhYsclB9foYwZ+Ti81uwtm3Xtg/ZT
+YQbJczfP2TSI9xUnENhRXugEsb/bRdyZhdlFj8zaDaFPpVEPVKzD2+4iAWzdPIpJ
+2O8GG3cFKuHIGHoIDOPp8IYwMTn/gNiQ3pYFD12GtPLK/CNV/N9PzOpJ0GR7W0fB
+w5BTSMDa/N2Z5jlBoDLrNeyG8PnX3yU9BRSCua4u8fGzS8knluM=
+=5uji
+-----END PGP SIGNATURE-----
+
+--4MRf3DTOTLiqoFO5--
