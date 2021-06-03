@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DB5399C67
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D965D399C8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhFCIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 04:20:34 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:48743 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229685AbhFCIUd (ORCPT
+        id S229823AbhFCI3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhFCI3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:20:33 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5D547580D7B;
-        Thu,  3 Jun 2021 04:18:48 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 03 Jun 2021 04:18:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=TwuV2ha2tJsTpTc91CLj3/nFVE9
-        pHYO8daaw5cAu/GA=; b=bmc529wQ/ycDZT1mFhRMsS5hx2i+7bVsoVSMBpt1R2E
-        /XTVA58cdE+uhOYWpksVNPd6m2RigwpliF/zpb4KwAVsV/0ewE5nfsDAOp0vu5PP
-        4agDFkGE/RmBRlz8D7J2lOj1yU5InJLXG/kzts+EJgpsY+UK0+saKXPkWFZwuD0J
-        HaQQIREDCXqP6EG7zFbfFQ2/EAVuXmzz6KfZ/GcGyXSJTo6MQMFDNJiqwPhJwEtT
-        WzeKeGwTmgKiuvt2UV51IgFwlTZxcpHFrGJYXnw2UnHRiskKj8iU+X8unZ1fBQ37
-        t7qSxgVha2kDQc9iPKBEs0zJ96GNo50B9bS9LkvG+7Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=TwuV2h
-        a2tJsTpTc91CLj3/nFVE9pHYO8daaw5cAu/GA=; b=cXN7HapewSBA26vXGphUOj
-        KTO3JU8zvSB+2zoOxEuo8VBWwGQPUOdmbvonVDLpAbwMo9hbFEkyRm5JcH0xT2TT
-        CeOkvNNeg4e0K1WYGbYVBJ+0eeA6rUYGBW7pGIFVgf2T38n+VzdOccwvvfjOTU/m
-        rWe3y47+JtQyQx6V27xYJL+LrPsM4alHivsuLrJoZXnndw33kwiIEZ+6OpFvw9Fm
-        rxtfnApe9yP1jDQbR3l3KdUwMNZu5qFKbKpMwuEmC4CI0PNsBtFSj/pZBYuM9Sr0
-        23gm05asHBlVddMdtjxj8aA4MrehKYtzJV/aVdSs2zTCbJq/TyQKUe8lYNqgH3zg
-        ==
-X-ME-Sender: <xms:ZpC4YAyP1DoSpNjxBM9snafm74YZe9v1HNc20eO9Lu0ZpChEgaYCJw>
-    <xme:ZpC4YETMC5Tn8Ks6QwW1BQjwdTtMTW8sNG6YCfBHwmvE3nvFMBxvfdtWAfZHmwwhS
-    oes8lrqzOtyJHo897w>
-X-ME-Received: <xmr:ZpC4YCVpm-Dd8yskZiENlD6BG5M3hh7pi8ZqgcyVT8WsvIwi2h7f_N7va8471NLYl_deMvJhSjNb7xouQBBHC0aQwhScHy6fIF5X>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ZpC4YOhuoovgCtB9ahz98RraRepUfHrwGs1oRpbSzOH5fq3sorGrLQ>
-    <xmx:ZpC4YCBt8Q3HGL-b_3WDuaSh_8z_-KgwfBQSZTqr1hupYrULkTMfIw>
-    <xmx:ZpC4YPLSPLKbhiFwrgrp5aVHUC87bgIZEkvt4MA1oF5WZLU-xEtgHw>
-    <xmx:aJC4YDwuoE0lyEmcAHKW0O8fMxzaGEbBYXAF9H32z6jEnNSWstq_wQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Jun 2021 04:18:46 -0400 (EDT)
-Date:   Thu, 3 Jun 2021 10:18:43 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-rpi-kernel@lists.infradead.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 05/12] ASoC: hdmi-codec: Add a prepare hook
-Message-ID: <20210603081843.nwjlcoik7aubct2p@gilmour>
-References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-6-maxime@cerno.tech>
- <YK4lWaB6Lx+SPjpF@sirena.org.uk>
- <20210531094213.kuuunk7ytu3q6sq6@gilmour>
- <s5hzgwb17ji.wl-tiwai@suse.de>
- <20210601123600.GA4089@sirena.org.uk>
+        Thu, 3 Jun 2021 04:29:52 -0400
+X-Greylist: delayed 414 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Jun 2021 01:28:08 PDT
+Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A399DC06174A;
+        Thu,  3 Jun 2021 01:28:08 -0700 (PDT)
+Received: from [IPv6:2003:e9:d722:28a1:9240:5b8a:f037:504] (p200300e9d72228a192405b8af0370504.dip0.t-ipconnect.de [IPv6:2003:e9:d722:28a1:9240:5b8a:f037:504])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: stefan@datenfreihafen.org)
+        by proxima.lasnet.de (Postfix) with ESMTPSA id 02BBFC02EE;
+        Thu,  3 Jun 2021 10:21:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
+        s=2021; t=1622708470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HyQTFQMfdHTiufBAcnI9P/Wr2W6Ljpu4A2px9nIQ4KU=;
+        b=DbMY5uxxDqgbj8Q0iGoJpkz8aKFIz58TxhEcSDJAxFbApN/BRtLXzST+cM1oM8AA5422AN
+        5PyMcHFkm2h92/QCxZX1TNT5p5x8AuTwA79VpaBtWvTgQ4EJJJgu2s7OQTA/uH7fa9x6ld
+        YD4bp2KWajjXV6ZqDSiCe/gaHrw9Pdn4owj+ef3k81FfbPAZ+4woRNR0X9JRUxvLdZdYVG
+        Zt63VQB34AVgMV+I0INTFu27HD9ELe6yOzX2EVmDikEJh4h97Jx0j9p7b3/CkkwFGiA8EH
+        8VrO7yCsBQ6V6jgWwdQjIFzFCjsicmMoyaf5JjuowfTHSVSpS3tqoBvgsoIhvQ==
+Subject: Re: [PATCH] net/ieee802154: drop unneeded assignment in
+ llsec_iter_devkeys()
+To:     Yang Li <yang.lee@linux.alibaba.com>, alex.aring@gmail.com
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1619346299-40237-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Stefan Schmidt <stefan@datenfreihafen.org>
+Message-ID: <6bffca3c-6c85-b975-24d4-cdd1aa47380e@datenfreihafen.org>
+Date:   Thu, 3 Jun 2021 10:21:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rkj45skaaxwizccg"
-Content-Disposition: inline
-In-Reply-To: <20210601123600.GA4089@sirena.org.uk>
+In-Reply-To: <1619346299-40237-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello.
 
---rkj45skaaxwizccg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 25.04.21 12:24, Yang Li wrote:
+> In order to keep the code style consistency of the whole file,
+> redundant return value ‘rc’ and its assignments should be deleted
+> 
+> The clang_analyzer complains as follows:
+> net/ieee802154/nl-mac.c:1203:12: warning: Although the value stored to
+> 'rc' is used in the enclosing expression, the value is never actually
+> read from 'rc'
+> 
+> No functional change, only more efficient.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>   net/ieee802154/nl-mac.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/ieee802154/nl-mac.c b/net/ieee802154/nl-mac.c
+> index 0c1b077..a6a8cf6 100644
+> --- a/net/ieee802154/nl-mac.c
+> +++ b/net/ieee802154/nl-mac.c
+> @@ -1184,7 +1184,7 @@ static int llsec_iter_devkeys(struct llsec_dump_data *data)
+>   {
+>   	struct ieee802154_llsec_device *dpos;
+>   	struct ieee802154_llsec_device_key *kpos;
+> -	int rc = 0, idx = 0, idx2;
+> +	int idx = 0, idx2;
+>   
+>   	list_for_each_entry(dpos, &data->table->devices, list) {
+>   		if (idx++ < data->s_idx)
+> @@ -1200,7 +1200,7 @@ static int llsec_iter_devkeys(struct llsec_dump_data *data)
+>   						      data->nlmsg_seq,
+>   						      dpos->hwaddr, kpos,
+>   						      data->dev)) {
+> -				return rc = -EMSGSIZE;
+> +				return -EMSGSIZE;
+>   			}
+>   
+>   			data->s_idx2++;
+> @@ -1209,7 +1209,7 @@ static int llsec_iter_devkeys(struct llsec_dump_data *data)
+>   		data->s_idx++;
+>   	}
+>   
+> -	return rc;
+> +	return 0;
+>   }
+>   
+>   int ieee802154_llsec_dump_devkeys(struct sk_buff *skb,
+> 
 
-Hi,
+This patch has been applied to the wpan tree and will be
+part of the next pull request to net. Thanks!
 
-On Tue, Jun 01, 2021 at 01:36:24PM +0100, Mark Brown wrote:
-> On Mon, May 31, 2021 at 01:12:17PM +0200, Takashi Iwai wrote:
-> > Maxime Ripard wrote:
->=20
-> > > There's a build dependency between the DRM bits and the new hook
-> > > introduced in hdmi-codec, would you be ok with merging it through the
-> > > drm tree?
->=20
-> > Speaking of ALSA core changes, I'm fine with that.
->=20
-> Yeah, a pull request for the shared bits would be handy in case there's
-> some collision with other work.
-
-I guess the easiest then would be for you to merge the patches and send
-a PR? Assuming you don't want to pull half of DRM of course :)
-
-Maxime
-
-
---rkj45skaaxwizccg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYLiQYwAKCRDj7w1vZxhR
-xY3tAQCNDRo7aulJ5VeVRzqdd+tlvfHDwEv8T2XuJbx+a2+uQwD9GYltrs50+UPd
-23Wv2j7Qynv07biPvFD4miTXZeE54gw=
-=G3gn
------END PGP SIGNATURE-----
-
---rkj45skaaxwizccg--
+regards
+Stefan Schmidt
