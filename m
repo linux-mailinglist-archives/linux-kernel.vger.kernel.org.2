@@ -2,168 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDAD399841
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB2D399844
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhFCCys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:54:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38553 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229541AbhFCCyr (ORCPT
+        id S229792AbhFCC4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:56:04 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49582 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFCC4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:54:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622688783;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rml3snF+8HtrCauMNf32U0cEH6eDUnFGeUKsyp+NXXo=;
-        b=bGwpNjlDxNRsJUOPjoTby150mO/5w0rk/KbTtYlXTsLTsro9gfRtW/hMylBM0ldwDH0UOs
-        +EBwO235rrIPZnLtCO0V3OXJu02HLXn0gGzAbfhBIggvOboR4OFdAGV6L8naYQAsAnbN5g
-        JILGuV7Eb/moSDjmbatBHZYldQ1esl4=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-3YrQ5GM0OJqLaN2vp64PZw-1; Wed, 02 Jun 2021 22:53:01 -0400
-X-MC-Unique: 3YrQ5GM0OJqLaN2vp64PZw-1
-Received: by mail-pl1-f200.google.com with SMTP id k6-20020a1709027606b0290104f319bb01so1978523pll.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:53:01 -0700 (PDT)
+        Wed, 2 Jun 2021 22:56:03 -0400
+Received: from mail-pl1-f197.google.com ([209.85.214.197])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1lodUw-0004Up-Dk
+        for linux-kernel@vger.kernel.org; Thu, 03 Jun 2021 02:54:18 +0000
+Received: by mail-pl1-f197.google.com with SMTP id 37-20020a1709020328b02900f916f1d504so1987488pld.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 19:54:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rml3snF+8HtrCauMNf32U0cEH6eDUnFGeUKsyp+NXXo=;
-        b=Pw8GEQVbkPetqOGjGbKOe6IKxGVqW/0OmJZWEhyqNM3Y2wiqslKMIERRKgxcWzqELV
-         LtjVxW0DsxW3O/hQ5Pu2QP2kWrqTIU3YnStBG/RksgRdDC5Bz7l8aWyE/+RmArc1YqbM
-         s0h5UzNeaRyxm/DC0hq1y9KJRo1EN47JQbnde9BERpUiZ08v9d/Pz2xg9sfMq9y+jcCY
-         zeGYr5M78nGrron7dzWsJKB9t8TyiiuqdcCI6ZUOD0oewIhrFeu33/6jS2K0K//4YO1B
-         sDnn/ByfvOAClP+CqzqZGgpJ7uL2zWDfCEMyyDdjSW6J/exy72SBw27hrCDsYRQJ+rHk
-         +u3A==
-X-Gm-Message-State: AOAM533xCLRVkCtT17mP+azVlZkCQzT6tWGajt2nJFuNKSG3q1rWezxR
-        Gc0hORD14Y0rwXh4VI64tIKh0Y2zZr22QI8zjqmGy+25zgK9ehT+sHEy6zxZe9MV9SbVJ66wlLC
-        ZMlQpqEv2C0JElephOomqwxPT
-X-Received: by 2002:a17:902:e74d:b029:10d:9cd0:2c69 with SMTP id p13-20020a170902e74db029010d9cd02c69mr2020520plf.82.1622688780895;
-        Wed, 02 Jun 2021 19:53:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGUUgfYG9dvW5sJE4TeEfDd6nGvhT7VXFCR8OU+oXimuG2T2IbG4AbopH90YZ4ENmXiBET0w==
-X-Received: by 2002:a17:902:e74d:b029:10d:9cd0:2c69 with SMTP id p13-20020a170902e74db029010d9cd02c69mr2020503plf.82.1622688780610;
-        Wed, 02 Jun 2021 19:53:00 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id ls13sm609152pjb.23.2021.06.02.19.52.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jun 2021 19:53:00 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <20210528200311.GP1002214@nvidia.com>
- <MWHPR11MB188685D57653827B566BF9B38C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210601162225.259923bc.alex.williamson@redhat.com>
- <MWHPR11MB1886E8454A58661DC2CDBA678C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210602160140.GV1002214@nvidia.com>
- <20210602111117.026d4a26.alex.williamson@redhat.com>
- <20210602173510.GE1002214@nvidia.com>
- <20210602120111.5e5bcf93.alex.williamson@redhat.com>
- <20210602180925.GH1002214@nvidia.com>
- <20210602130053.615db578.alex.williamson@redhat.com>
- <20210602195404.GI1002214@nvidia.com>
- <20210602143734.72fb4fa4.alex.williamson@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
-Date:   Thu, 3 Jun 2021 10:52:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mw+siqoTUjrd2Ed54WevdVgzIPvaVKMKX23ULyv1JWs=;
+        b=iOE0mAcj9KtRMUK6xx15VayvsZFNjfhyNsveFNKf7ExmrOgckf/nqs/cZdRWzg1HFT
+         thic+RbKaADcMnzDB53Xrx3YO2zx+WcvYjtCo4r7kCTU/dZ5xqMQMUYdH9vQxgGHLKRG
+         FjHgq0zH8v7bsyVpgPcGIQXRranbW2P6rSrRkFKEvh7vBz+RFR9GYE2s47WrlJOBXyxA
+         inMI5ezQJw9ZWHBOb/m2znzgTmfl5t14FY46hE2IX6tcKdPxR4sodERSYJozkzrQ5k/X
+         7/Jjz7WvV5dzrAAAHFTwXAyROIwhQs5NwoGo5fRHbNpsoNSMzbZ8K4BYSgtlICnCPUpp
+         ye+Q==
+X-Gm-Message-State: AOAM532bX7C77AOlzZz1TVZKcUQ5vOIAbTKlVrRZyNfQVnK/WpbKNCat
+        a/7qd4UhFA99CT3BDOLm/2pU69+uZAtpviQOfPfoWPU3Mi8nzCBuAfJGcMxgB/rZJHbkAdqIcpc
+        gTh5pH95OM4+EyP+NJSgpOAOxPJVdrgYBbF64L2YQDA==
+X-Received: by 2002:a17:90b:3587:: with SMTP id mm7mr32577906pjb.71.1622688856955;
+        Wed, 02 Jun 2021 19:54:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNx3bzFrgiDyC9RROwaF6Ib2BOfmglttAokA/csgymay2MwlGh+eY8SgBNf9we4FSp+GR9pw==
+X-Received: by 2002:a17:90b:3587:: with SMTP id mm7mr32577880pjb.71.1622688856593;
+        Wed, 02 Jun 2021 19:54:16 -0700 (PDT)
+Received: from canonical.com (61-220-137-34.HINET-IP.hinet.net. [61.220.137.34])
+        by smtp.gmail.com with ESMTPSA id o24sm942570pgl.55.2021.06.02.19.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 19:54:16 -0700 (PDT)
+From:   Koba Ko <koba.ko@canonical.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] r8169: introduce polling method for link change
+Date:   Thu,  3 Jun 2021 10:54:14 +0800
+Message-Id: <20210603025414.226526-1-koba.ko@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210602143734.72fb4fa4.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For RTL8106E, it's a Fast-ethernet chip.
+If ASPM is enabled, the link chang interrupt wouldn't be triggered
+immediately and must wait a very long time to get link change interrupt.
+Even the link change interrupt isn't triggered, the phy link is already
+established.
 
-在 2021/6/3 上午4:37, Alex Williamson 写道:
-> On Wed, 2 Jun 2021 16:54:04 -0300
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
->
->> On Wed, Jun 02, 2021 at 01:00:53PM -0600, Alex Williamson wrote:
->>> Right, the device can generate the no-snoop transactions, but it's the
->>> IOMMU that essentially determines whether those transactions are
->>> actually still cache coherent, AIUI.
->> Wow, this is really confusing stuff in the code.
->>
->> At the PCI level there is a TLP bit called no-snoop that is platform
->> specific. The general intention is to allow devices to selectively
->> bypass the CPU caching for DMAs. GPUs like to use this feature for
->> performance.
-> Yes
->
->> I assume there is some exciting security issues here. Looks like
->> allowing cache bypass does something bad inside VMs? Looks like
->> allowing the VM to use the cache clear instruction that is mandatory
->> with cache bypass DMA causes some QOS issues? OK.
-> IIRC, largely a DoS issue if userspace gets to choose when to emulate
-> wbinvd rather than it being demanded for correct operation.
->
->> So how does it work?
->>
->> What I see in the intel/iommu.c is that some domains support "snoop
->> control" or not, based on some HW flag. This indicates if the
->> DMA_PTE_SNP bit is supported on a page by page basis or not.
->>
->> Since x86 always leans toward "DMA cache coherent" I'm reading some
->> tea leaves here:
->>
->> 	IOMMU_CAP_CACHE_COHERENCY,	/* IOMMU can enforce cache coherent DMA
->> 					   transactions */
->>
->> And guessing that IOMMUs that implement DMA_PTE_SNP will ignore the
->> snoop bit in TLPs for IOVA's that have DMA_PTE_SNP set?
-> That's my understanding as well.
->
->> Further, I guess IOMMUs that don't support PTE_SNP, or have
->> DMA_PTE_SNP clear will always honour the snoop bit. (backwards compat
->> and all)
-> Yes.
->
->> So, IOMMU_CAP_CACHE_COHERENCY does not mean the IOMMU is DMA
->> incoherent with the CPU caches, it just means that that snoop bit in
->> the TLP cannot be enforced. ie the device *could* do no-shoop DMA
->> if it wants. Devices that never do no-snoop remain DMA coherent on
->> x86, as they always have been.
-> Yes, IOMMU_CAP_CACHE_COHERENCY=false means we cannot force the device
-> DMA to be coherent via the IOMMU.
->
->> IOMMU_CACHE does not mean the IOMMU is DMA cache coherent, it means
->> the PCI device is blocked from using no-snoop in its TLPs.
->>
->> I wonder if ARM implemented this consistently? I see VDPA is
->> confused..
+Introduce a polling method to watch the status of phy link and disable
+the link change interrupt.
+Also add a quirk for those realtek devices have the same issue.
 
+Signed-off-by: Koba Ko <koba.ko@canonical.com>
+---
+ drivers/net/ethernet/realtek/r8169.h      |   2 +
+ drivers/net/ethernet/realtek/r8169_main.c | 112 ++++++++++++++++++----
+ 2 files changed, 98 insertions(+), 16 deletions(-)
 
-Basically, we don't want to bother with pseudo KVM device like what VFIO 
-did. So for simplicity, we rules out the IOMMU that can't enforce 
-coherency in vhost-vDPA if the parent purely depends on the platform IOMMU:
-
-
-         if (!iommu_capable(bus, IOMMU_CAP_CACHE_COHERENCY))
-                 return -ENOTSUPP;
-
-For the parents that use its own translations logic, an implicit 
-assumption is that the hardware will always perform cache coherent DMA.
-
-Thanks
-
+diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
+index 2728df46ec41..a8c71adb1b57 100644
+--- a/drivers/net/ethernet/realtek/r8169.h
++++ b/drivers/net/ethernet/realtek/r8169.h
+@@ -11,6 +11,8 @@
+ #include <linux/types.h>
+ #include <linux/phy.h>
+ 
++#define RTL8169_LINK_TIMEOUT (1 * HZ)
++
+ enum mac_version {
+ 	/* support for ancient RTL_GIGA_MAC_VER_01 has been removed */
+ 	RTL_GIGA_MAC_VER_02,
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 2c89cde7da1e..70aacc83d641 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -178,6 +178,11 @@ static const struct pci_device_id rtl8169_pci_tbl[] = {
+ 
+ MODULE_DEVICE_TABLE(pci, rtl8169_pci_tbl);
+ 
++static const struct pci_device_id rtl8169_linkChg_polling_enabled[] = {
++	{ PCI_VDEVICE(REALTEK, 0x8136), RTL_CFG_NO_GBIT },
++	{ 0 }
++};
++
+ enum rtl_registers {
+ 	MAC0		= 0,	/* Ethernet hardware address. */
+ 	MAC4		= 4,
+@@ -618,6 +623,7 @@ struct rtl8169_private {
+ 	u16 cp_cmd;
+ 	u32 irq_mask;
+ 	struct clk *clk;
++	struct timer_list link_timer;
+ 
+ 	struct {
+ 		DECLARE_BITMAP(flags, RTL_FLAG_MAX);
+@@ -1179,6 +1185,16 @@ static void rtl8168ep_stop_cmac(struct rtl8169_private *tp)
+ 	RTL_W8(tp, IBCR0, RTL_R8(tp, IBCR0) & ~0x01);
+ }
+ 
++static int rtl_link_chng_polling_quirk(struct rtl8169_private *tp)
++{
++	struct pci_dev *pdev = tp->pci_dev;
++
++	if (pdev->vendor == 0x10ec && pdev->device == 0x8136 && !tp->supports_gmii)
++		return 1;
++
++	return 0;
++}
++
+ static void rtl8168dp_driver_start(struct rtl8169_private *tp)
+ {
+ 	r8168dp_oob_notify(tp, OOB_CMD_DRIVER_START);
+@@ -4608,6 +4624,75 @@ static void rtl_task(struct work_struct *work)
+ 	rtnl_unlock();
+ }
+ 
++static void r8169_phylink_handler(struct net_device *ndev)
++{
++	struct rtl8169_private *tp = netdev_priv(ndev);
++
++	if (netif_carrier_ok(ndev)) {
++		rtl_link_chg_patch(tp);
++		pm_request_resume(&tp->pci_dev->dev);
++	} else {
++		pm_runtime_idle(&tp->pci_dev->dev);
++	}
++
++	if (net_ratelimit())
++		phy_print_status(tp->phydev);
++}
++
++static unsigned int
++rtl8169_xmii_link_ok(struct net_device *dev)
++{
++	struct rtl8169_private *tp = netdev_priv(dev);
++	unsigned int retval;
++
++	retval = (RTL_R8(tp, PHYstatus) & LinkStatus) ? 1 : 0;
++
++	return retval;
++}
++
++static void
++rtl8169_check_link_status(struct net_device *dev)
++{
++	struct rtl8169_private *tp = netdev_priv(dev);
++	int link_status_on;
++
++	link_status_on = rtl8169_xmii_link_ok(dev);
++
++	if (netif_carrier_ok(dev) == link_status_on)
++		return;
++
++	phy_mac_interrupt(tp->phydev);
++
++	r8169_phylink_handler (dev);
++}
++
++static void rtl8169_link_timer(struct timer_list *t)
++{
++	struct rtl8169_private *tp = from_timer(tp, t, link_timer);
++	struct net_device *dev = tp->dev;
++	struct timer_list *timer = t;
++	unsigned long flags;
++
++	rtl8169_check_link_status(dev);
++
++	if (timer_pending(&tp->link_timer))
++		return;
++
++	mod_timer(timer, jiffies + RTL8169_LINK_TIMEOUT);
++}
++
++static inline void rtl8169_delete_link_timer(struct net_device *dev, struct timer_list *timer)
++{
++	del_timer_sync(timer);
++}
++
++static inline void rtl8169_request_link_timer(struct net_device *dev)
++{
++	struct rtl8169_private *tp = netdev_priv(dev);
++
++	timer_setup(&tp->link_timer, rtl8169_link_timer, TIMER_INIT_FLAGS);
++}
++
+ static int rtl8169_poll(struct napi_struct *napi, int budget)
+ {
+ 	struct rtl8169_private *tp = container_of(napi, struct rtl8169_private, napi);
+@@ -4624,21 +4709,6 @@ static int rtl8169_poll(struct napi_struct *napi, int budget)
+ 	return work_done;
+ }
+ 
+-static void r8169_phylink_handler(struct net_device *ndev)
+-{
+-	struct rtl8169_private *tp = netdev_priv(ndev);
+-
+-	if (netif_carrier_ok(ndev)) {
+-		rtl_link_chg_patch(tp);
+-		pm_request_resume(&tp->pci_dev->dev);
+-	} else {
+-		pm_runtime_idle(&tp->pci_dev->dev);
+-	}
+-
+-	if (net_ratelimit())
+-		phy_print_status(tp->phydev);
+-}
+-
+ static int r8169_phy_connect(struct rtl8169_private *tp)
+ {
+ 	struct phy_device *phydev = tp->phydev;
+@@ -4769,6 +4839,10 @@ static int rtl_open(struct net_device *dev)
+ 		goto err_free_irq;
+ 
+ 	rtl8169_up(tp);
++
++	if (rtl_link_chng_polling_quirk(tp))
++		mod_timer(&tp->link_timer, jiffies + RTL8169_LINK_TIMEOUT);
++
+ 	rtl8169_init_counter_offsets(tp);
+ 	netif_start_queue(dev);
+ out:
+@@ -4991,7 +5065,10 @@ static const struct net_device_ops rtl_netdev_ops = {
+ 
+ static void rtl_set_irq_mask(struct rtl8169_private *tp)
+ {
+-	tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
++	tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
++
++	if (!rtl_link_chng_polling_quirk(tp))
++		tp->irq_mask |= LinkChg;
+ 
+ 	if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
+ 		tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
+@@ -5436,6 +5513,9 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (pci_dev_run_wake(pdev))
+ 		pm_runtime_put_sync(&pdev->dev);
+ 
++	if (rtl_link_chng_polling_quirk(tp))
++		rtl8169_request_link_timer(dev);
++
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
