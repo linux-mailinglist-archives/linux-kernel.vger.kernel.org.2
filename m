@@ -2,69 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6D839A2E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CAE39A2EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhFCOSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:18:55 -0400
-Received: from mail-il1-f173.google.com ([209.85.166.173]:36618 "EHLO
-        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbhFCOSy (ORCPT
+        id S231202AbhFCOUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:20:11 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43152 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhFCOUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:18:54 -0400
-Received: by mail-il1-f173.google.com with SMTP id e7so5684577ils.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 07:16:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CKEmsEK9QKEcJksXdElwk/YbjKL3k6kwCGWsFQD0D5g=;
-        b=uOMCAlcKg22Bd/d76ANb4hI7au2j1R50ZLvLmbmKLDeVUMabRSXPJh7ZHv4htXZ/II
-         4kJQynf+IaLjl8qrT0fTZjk6+RIYCsLDgZPg2LxxX9O2Z9Aw7eJXL6fzZPB+iUjQVX+k
-         5vm37ChbsgZJvZXjlWcYPpBQXn8T/pLZWafjEhBgWN0muS1d4y7Umm0O3Kz5E3RvL29b
-         YRjP5gAKT7n7Pu7U8rcmaX/0e/dT9Ci2yvc50PA2GSLcBXXkyUwfE/RWXH46UPevf2KW
-         v3zsj3YA/AiaFp1JqwAz/TqIUB7z2d4f6Q6NkGogu6eDW6T0/Y4QF/Pai7iKhs2Ngj9N
-         av3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CKEmsEK9QKEcJksXdElwk/YbjKL3k6kwCGWsFQD0D5g=;
-        b=noQx1s36QKCduj8NXlXI0/DUK/WyU/Hbqg0u1uteVuBcfJT/2OIxjvwd9rbkZ8Gzl/
-         Sgdo9YUDDPkLcordgJY+CgLEZ2LbwT4wRCIG+QEafCQvdRcrir9NwS3oJyKwKwietJRk
-         0zNnWq07LJKuPpGTHAFiwrxVX5WAzQobzAaazfmpGVo4ztADzwW3LRZdlz3eHOWExOnc
-         UJsiaLNFmGwPSednPuMnJ1z0GoHIxtlbW5cMb0bmaz0w2QoF3T13mQMpxtUVTQMuPVYE
-         Wtp+CDKkXGsoyeo12V+kc3Z/Fbp6gZ/K29xiFuSqLbOR0PoEPin7jzY8uVv+CqomMb2H
-         Ux3A==
-X-Gm-Message-State: AOAM532SoKdSmFAD64+0zvtljM9zjZ67Y7tk75Dqgfv/VylGphgS0HaV
-        R0Ot2FC3qQa9m1B8VkYGOiBNnukBMnhvSpymapvkFCGaB3ziTQ==
-X-Google-Smtp-Source: ABdhPJyBKCL5DJLmp8Em3ezXEYGgE0LA9WKDDAQ98hxL8KGMqUugiTswIzzEJtD3bUwkhKrvMyra1gzMk8XOIH2suuE=
-X-Received: by 2002:a05:6e02:11a8:: with SMTP id 8mr122966ilj.212.1622729754900;
- Thu, 03 Jun 2021 07:15:54 -0700 (PDT)
+        Thu, 3 Jun 2021 10:20:08 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153EIGjt008940;
+        Thu, 3 Jun 2021 09:18:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622729896;
+        bh=ij5t3iomRX42uD/qcjWKu9Nr7FU30eNoiO6l8qKL690=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=bc5QX5n+/jlNmf3rTR0R9/MyrjlQt+IT1QYYZcy2yoKOxII5l8Qz0C3hhohKq/MmA
+         c5D2hCSVcXv9hDQ55JKOlrXEfk3ZqPp9cYJjiJFTtaZm32k2GDwDCtOv0yTyPd6W+O
+         drYb/IR6bk01qN6i2s++utKuipOHeNA+Oz0cEHCY=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153EIG3x044695
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Jun 2021 09:18:16 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 09:18:16 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 3 Jun 2021 09:18:16 -0500
+Received: from [10.250.235.48] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153EIBE6072498;
+        Thu, 3 Jun 2021 09:18:13 -0500
+Subject: Re: [PATCH v3 2/5] arm64: dts: ti: k3-am64-main: Add PCIe DT node
+To:     Nishanth Menon <nm@ti.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+References: <20210526142921.12127-1-kishon@ti.com>
+ <20210526142921.12127-3-kishon@ti.com>
+ <20210526185133.sm2iqqpequz3mmvq@crafty>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <ab908779-804f-75c3-d9cc-98a3a558e686@ti.com>
+Date:   Thu, 3 Jun 2021 19:48:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210603140700.3045298-1-yukuai3@huawei.com>
-In-Reply-To: <20210603140700.3045298-1-yukuai3@huawei.com>
-From:   Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Date:   Thu, 3 Jun 2021 17:16:32 +0300
-Message-ID: <CAPAsAGziPKBpKJ7HGGHwEXuTuUXwQnscNQX_LNfCdM3ZcDrW+w@mail.gmail.com>
-Subject: Re: [PATCH] kasan: fix doc warning in init.c
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210526185133.sm2iqqpequz3mmvq@crafty>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 4:57 PM Yu Kuai <yukuai3@huawei.com> wrote:
->
-> Fix gcc W=1 warning:
->
-> mm/kasan/init.c:228: warning: Function parameter or member 'shadow_start' not described in 'kasan_populate_early_shadow'
-> mm/kasan/init.c:228: warning: Function parameter or member 'shadow_end' not described in 'kasan_populate_early_shadow'
->
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Hi Nishanth,
 
-Acked-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+On 27/05/21 12:21 am, Nishanth Menon wrote:
+> On 19:59-20210526, Kishon Vijay Abraham I wrote:
+>> AM64 has one PCIe instance which can be configured in either
+>> host mode (RC) or device mode (EP). Add PCIe DT node for host
+>> mode and device mode here.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 46 ++++++++++++++++++++++++
+>>  1 file changed, 46 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> index a67f10406a8e..9c77f7da5d28 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+>> @@ -728,4 +728,50 @@
+>>  			#clock-cells = <1>;
+>>  		};
+>>  	};
+>> +
+>> +	pcie0_rc: pcie@f102000 {
+>> +		compatible = "ti,am64-pcie-host", "ti,j721e-pcie-host";
+>> +		reg = <0x00 0x0f102000 0x00 0x1000>,
+>> +		      <0x00 0x0f100000 0x00 0x400>,
+>> +		      <0x00 0x0d000000 0x00 0x00800000>,
+>> +		      <0x00 0x68000000 0x00 0x00001000>;
+>> +		reg-names = "intd_cfg", "user_cfg", "reg", "cfg";
+> [...]
+>> +
+>> +	pcie0_ep: pcie-ep@f102000 {
+> Hmm... 
+> Warning (unique_unit_address): /bus@f4000/pcie@f102000: duplicate unit-address (also used in node /bus@f4000/pcie-ep@f102000)
+> we could pick reg for pcie-ep for node address, instead of intd_cfg address?
+> 
+> OR, does that mess something else up?
+
+yeah, that actually require changes in the binding to fix it properly,
+since only the first entry in reg should be given for unit address.
+
+Thanks
+Kishon
+
+> 
+>> +		compatible = "ti,am64-pcie-ep", "ti,j721e-pcie-ep";
+>> +		reg = <0x00 0x0f102000 0x00 0x1000>,
+>> +		      <0x00 0x0f100000 0x00 0x400>,
+>> +		      <0x00 0x0d000000 0x00 0x00800000>,
+>> +		      <0x00 0x68000000 0x00 0x08000000>;
+> 
+> [...]
+> 
