@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D8139A2F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB92639A2F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhFCOXb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Jun 2021 10:23:31 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:50503 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhFCOXa (ORCPT
+        id S231530AbhFCOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:24:17 -0400
+Received: from outbound-smtp50.blacknight.com ([46.22.136.234]:33135 "EHLO
+        outbound-smtp50.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230044AbhFCOYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:23:30 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 795B4CED1F;
-        Thu,  3 Jun 2021 16:29:41 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH v3 00/12] Bluetooth: correct the use of print format
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1622706065-45409-1-git-send-email-yekai13@huawei.com>
-Date:   Thu, 3 Jun 2021 16:21:43 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <BD2539CA-5475-4FD3-AB79-B4D5FA764AD9@holtmann.org>
-References: <1622706065-45409-1-git-send-email-yekai13@huawei.com>
-To:     Kai Ye <yekai13@huawei.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Thu, 3 Jun 2021 10:24:17 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp50.blacknight.com (Postfix) with ESMTPS id 77F82FAAA2
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 15:22:31 +0100 (IST)
+Received: (qmail 27887 invoked from network); 3 Jun 2021 14:22:30 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPA; 3 Jun 2021 14:22:30 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/2] Allow high order pages to be stored on PCP v2
+Date:   Thu,  3 Jun 2021 15:22:18 +0100
+Message-Id: <20210603142220.10851-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kai,
+Changelog since v1
+o Better comments and macros					(vbabka)
+o Fix pindex_to_order						(vbabka)
 
-> According to Documentation/core-api/printk-formats.rst,
-> Use the correct print format. 
-> 1. Printing an unsigned int value should use %u instead of %d.
-> 2. Printing an unsigned long value should use %lu instead of %ld.
-> Otherwise printk() might end up displaying negative numbers.
-> 
-> changes v1 -> v2:
-> 	fix some style problems
-> changes v2 -> v3
-> 	fix some commit message style
-> 
-> Kai Ye (12):
->  Bluetooth: bnep: Use the correct print format
->  Bluetooth: cmtp: Use the correct print format
->  Bluetooth: hidp: Use the correct print format
->  Bluetooth: rfcomm: Use the correct print format
->  Bluetooth: 6lowpan: Use the correct print format
->  Bluetooth: a2mp: Use the correct print format
->  Bluetooth: amp: Use the correct print format
->  Bluetooth: hci: Use the correct print format
->  Bluetooth: mgmt: Use the correct print format
->  Bluetooth: msft: Use the correct print format
->  Bluetooth: sco: Use the correct print format
->  Bluetooth: smp: Use the correct print format
-> 
-> net/bluetooth/6lowpan.c     | 16 +++++------
-> net/bluetooth/a2mp.c        | 24 ++++++++--------
-> net/bluetooth/amp.c         |  6 ++--
-> net/bluetooth/bnep/core.c   |  8 +++---
-> net/bluetooth/cmtp/capi.c   | 22 +++++++--------
-> net/bluetooth/hci_conn.c    |  8 +++---
-> net/bluetooth/hci_core.c    | 48 ++++++++++++++++----------------
-> net/bluetooth/hci_event.c   | 24 ++++++++--------
-> net/bluetooth/hci_request.c |  8 +++---
-> net/bluetooth/hci_sock.c    |  6 ++--
-> net/bluetooth/hci_sysfs.c   |  2 +-
-> net/bluetooth/hidp/core.c   |  6 ++--
-> net/bluetooth/mgmt.c        | 16 +++++------
-> net/bluetooth/mgmt_config.c |  4 +--
-> net/bluetooth/msft.c        |  2 +-
-> net/bluetooth/rfcomm/core.c | 68 ++++++++++++++++++++++-----------------------
-> net/bluetooth/rfcomm/sock.c |  8 +++---
-> net/bluetooth/rfcomm/tty.c  | 10 +++----
-> net/bluetooth/sco.c         |  8 +++---
-> net/bluetooth/smp.c         |  6 ++--
-> 20 files changed, 150 insertions(+), 150 deletions(-)
+The per-cpu page allocator (PCP) only handles order-0 pages. With the
+series "Use local_lock for pcp protection and reduce stat overhead"
+and "Calculate pcp->high based on zone sizes and active CPUs", it's now
+feasible to store high-order pages on PCP lists.
 
-I applied all patches except 04/12 and 08/12 since they no longer apply cleanly against bluetooth-next tree.
+This small series allows PCP to store "cheap" orders where cheap is
+determined by PAGE_ALLOC_COSTLY_ORDER and THP-sized allocations. For
+convenience, the series with the prerequisites are at
 
-Regards
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-pcphighorder-v2r1
 
-Marcel
+The baseline is 5.13-rc2 because that is what I tested with but the
+patches rebase cleanly to mmots.
+
+ include/linux/mmzone.h |  20 ++++-
+ mm/internal.h          |   2 +-
+ mm/page_alloc.c        | 171 +++++++++++++++++++++++++++++------------
+ mm/swap.c              |   2 +-
+ 4 files changed, 141 insertions(+), 54 deletions(-)
+
+-- 
+2.26.2
 
