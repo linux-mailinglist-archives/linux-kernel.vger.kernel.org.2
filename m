@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE94399BA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70C4399BA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFCHgN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Jun 2021 03:36:13 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:40247 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229567AbhFCHgM (ORCPT
+        id S229925AbhFCHg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 03:36:29 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:28472 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229567AbhFCHg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 03:36:12 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-J2cflW4UN0yhwxpUH8_qPg-1; Thu, 03 Jun 2021 03:34:25 -0400
-X-MC-Unique: J2cflW4UN0yhwxpUH8_qPg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7794B180FD7A;
-        Thu,  3 Jun 2021 07:34:24 +0000 (UTC)
-Received: from bahia.lan (ovpn-114-128.ams2.redhat.com [10.36.114.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 33E80620DE;
-        Thu,  3 Jun 2021 07:34:19 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 09:34:17 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Max Reitz <mreitz@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [Virtio-fs] [PATCH 3/4] fuse: Call vfs_get_tree() for submounts
-Message-ID: <20210603093333.154c23ac@bahia.lan>
-In-Reply-To: <7b4a3379-3004-98f2-841c-386ce62c888a@redhat.com>
-References: <20210525150230.157586-1-groug@kaod.org>
-        <20210525150230.157586-4-groug@kaod.org>
-        <7b4a3379-3004-98f2-841c-386ce62c888a@redhat.com>
+        Thu, 3 Jun 2021 03:36:28 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1537ROxn019474;
+        Thu, 3 Jun 2021 09:34:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=M8auMruCTancpOkSvfb5Dqc6xkUzb7oAmg9WAVNNKKw=;
+ b=sE/6zk8pEdJUvam5nVDtSSp5T4mk7u6Cwgioe0iSaLimTF99/PSM0708+HCHb+y7FpT2
+ hM0PvzsspYHy6edpPJkOSELH9Hvjnda3M9fJKJarUeNczCXns5C4EVDu/yN0vGmNAyPm
+ wnBCPtAW+k5ZvTsyUGNazCws18wv+8jZOwbb2birdTXk5uj4mNoVB4AjlK+jedxaUBBR
+ lwTGYdpHMeHVJIFoHXGSyMpRWRZVeQuUROF8/WoMhe6n2nbk4pJ8L5trLefCSZwd0OcX
+ vyUTchffh6BMjYgdj0I3IFvowL99j7+XPEJZn9I0ACDs68KjRQY4Vfn9f9ZVypoplY05 qQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38x3gv33cx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Jun 2021 09:34:31 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CF02010002A;
+        Thu,  3 Jun 2021 09:34:30 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3FD1B2138CF;
+        Thu,  3 Jun 2021 09:34:30 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun 2021 09:34:29
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>,
+        <patrice.chotard@foss.st.com>
+Subject: spi: stm32-qspi: Always wait BUSY bit to be cleared in stm32_qspi_wait_cmd()
+Date:   Thu, 3 Jun 2021 09:34:21 +0200
+Message-ID: <20210603073421.8441-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-03_04:2021-06-02,2021-06-03 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 15:24:40 +0200
-Max Reitz <mreitz@redhat.com> wrote:
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-> On 25.05.21 17:02, Greg Kurz wrote:
-> > We recently fixed an infinite loop by setting the SB_BORN flag on
-> > submounts along with the write barrier needed by super_cache_count().
-> > This is the job of vfs_get_tree() and FUSE shouldn't have to care
-> > about the barrier at all.
-> > 
-> > Split out some code from fuse_dentry_automount() to a new dedicated
-> > fuse_get_tree_submount() handler for submounts and call vfs_get_tree().
-> > 
-> > The fs_private field of the filesystem context isn't used with
-> > submounts : hijack it to pass the FUSE inode of the mount point
-> > down to fuse_get_tree_submount().
-> 
-> What exactly do you mean by “isn’t used”?  virtio_fs_init_fs_context() 
-> still sets it (it is non-NULL in fuse_dentry_automount() after 
-> fs_context_for_submount()).  It does appear like it is never read, but 
-> one thing that definitely would need to be done is for it to be freed 
-> before putting mp_fi there.
-> 
+In U-boot side, an issue has been encountered when QSPI source clock is
+running at low frequency (24 MHz for example), waiting for TCF bit to be
+set didn't ensure that all data has been send out the FIFO, we should also
+wait that BUSY bit is cleared.
 
-Oops... yes it should. Thanks for the catch !
+To prevent similar issue in kernel driver, we implement similar behavior
+by always waiting BUSY bit to be cleared.
 
-> So I think it may technically be fine to use this field, but then 
-> virtio_fs_init_fs_context() shouldn’t set it for submounts (should be 
-> discernible with fsc->purpose), and perhaps that should be a separate patch.
-> 
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+---
+ drivers/spi/spi-stm32-qspi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Yes, I'll do just that.
-
-> (Apart from that, this patch looks good to me, though.)
-> 
-> Max
-> 
-> > Finally, adapt virtiofs to use this.
-> > 
-> > Signed-off-by: Greg Kurz <groug@kaod.org>
-> > ---
-> >   fs/fuse/dir.c       | 58 +++++++--------------------------------------
-> >   fs/fuse/fuse_i.h    |  6 +++++
-> >   fs/fuse/inode.c     | 44 ++++++++++++++++++++++++++++++++++
-> >   fs/fuse/virtio_fs.c |  3 +++
-> >   4 files changed, 62 insertions(+), 49 deletions(-)
-> 
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index 7e640ccc7e77..594f64136208 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -294,7 +294,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
+ 	int err = 0;
+ 
+ 	if (!op->data.nbytes)
+-		return stm32_qspi_wait_nobusy(qspi);
++		goto wait_nobusy;
+ 
+ 	if (readl_relaxed(qspi->io_base + QSPI_SR) & SR_TCF)
+ 		goto out;
+@@ -315,6 +315,9 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
+ out:
+ 	/* clear flags */
+ 	writel_relaxed(FCR_CTCF | FCR_CTEF, qspi->io_base + QSPI_FCR);
++wait_nobusy:
++	if (!err)
++		err = stm32_qspi_wait_nobusy(qspi);
+ 
+ 	return err;
+ }
+-- 
+2.17.1
 
