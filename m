@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175B4399848
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6924339984D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 04:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFCC4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 22:56:47 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54469 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229812AbhFCC4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:56:46 -0400
-X-UUID: 144e700ae6a044128ab6d0af69907f6c-20210603
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pihTp1DwQK+HeV7mk+RNkiNU9/T3ejwlYv/tON4uSVU=;
-        b=K8dISz8A3sCqVuZ7Dv3NqYr+YwmqdYVXSrdlzyJPC8LGmlZH7DX2UQZ7lvnBnFIMu95rYcjVPBJDyOIYrmi1DRO3y4xCR5HY+WujmZcYbExluZLTc5CDFr0I+uvGrYi4X/NQNgvm662hGVzuCB4AfSCGMF1g/BMAs1YQVeVxSco=;
-X-UUID: 144e700ae6a044128ab6d0af69907f6c-20210603
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1431275690; Thu, 03 Jun 2021 10:55:00 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
- 2021 10:54:59 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 3 Jun 2021 10:54:59 +0800
-Message-ID: <1622688899.7096.7.camel@mtkswgap22>
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Utilize Transfer Request List
- Completion Notification Register
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Caleb Connolly <caleb@connolly.tech>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 3 Jun 2021 10:54:59 +0800
-In-Reply-To: <1621845419-14194-4-git-send-email-cang@codeaurora.org>
-References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
-         <1621845419-14194-4-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S229825AbhFCC5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 22:57:46 -0400
+Received: from ozlabs.org ([203.11.71.1]:41971 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhFCC5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 22:57:45 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FwVrw1BbJz9sPf;
+        Thu,  3 Jun 2021 12:56:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622688960;
+        bh=kNZO8cNXHwdVHyYMhGdZ3l4ogt+C54D3rxbZU9S2DYE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jMh2YX7eMP5zdPLXK1/wyy4AXLdYFnFwI7MUXgkqGIKpJ6B/kqQfYxSwEGAKYJfjj
+         +M14Ccvh8OsqLcCFWczBQCrhXslfjCfB5zAAzVCLBQ1fLjGRdr/BU97YEQAoCTHy0b
+         Pqg91v8eBGG1AK40FaT81XkVehxhj0r1hX2wrT88xslzloCrdyMxS7tls0LG2UGn8c
+         jNYZJSgAU12eUjwMvACpdj+FTll/qT+0FZvj21Lh8knM2SMimcybKxTDDQG256093s
+         1Dn8KyD1qssYD0xXo9ycC4+agMxKfAgjMmUEmJ3j4SKwwnSbB1F79v/Nvej9fOkXUZ
+         21afMIsnYX2lg==
+Date:   Thu, 3 Jun 2021 12:55:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nirmoy Das <nirmoy.das@amd.com>
+Subject: Re: linux-next: manual merge of the amdgpu tree with the drm-misc
+ tree
+Message-ID: <20210603125559.37d1dee6@canb.auug.org.au>
+In-Reply-To: <20210603124847.19a6dacf@canb.auug.org.au>
+References: <20210603124847.19a6dacf@canb.auug.org.au>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/biCzpGQcJqdY=0PNQKJAJAU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBNb24sIDIwMjEtMDUtMjQgYXQgMDE6MzYgLTA3MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IEJ5IHJlYWRpbmcgdGhlIFVUUCBUcmFuc2ZlciBSZXF1ZXN0IExpc3QgQ29tcGxldGlv
-biBOb3RpZmljYXRpb24gUmVnaXN0ZXIsDQo+IHdoaWNoIGlzIGFkZGVkIGluIFVGU0hDSSBWZXIg
-My4wLCBTVyBjYW4gZWFzaWx5IGdldCB0aGUgY29tcGVsZXRlZCB0cmFuc2Zlcg0KPiByZXF1ZXN0
-cy4gVGh1cywgU1cgY2FuIGdldCByaWQgb2YgaG9zdCBsb2NrLCB3aGljaCBpcyB1c2VkIHRvIHN5
-bmNocm9uaXplDQo+IHRoZSB0cl9kb29yYmVsbCBhbmQgb3V0c3RhbmRpbmdfcmVxcywgb24gdHJh
-bnNmZXIgcmVxdWVzdHMgZGlzcGF0Y2ggYW5kDQo+IGNvbXBsZXRpb24gcGF0aHMuIFRoaXMgY2Fu
-IGZ1cnRoZXIgYmVuZWZpdCByYW5kb20gcmVhZC93cml0ZSBwZXJmb3JtYW5jZS4NCj4gDQo+IENj
-OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KPiBDby1kZXZlbG9wZWQt
-Ynk6IEFzdXRvc2ggRGFzIDxhc3V0b3NoZEBjb2RlYXVyb3JhLm9yZz4NCj4gU2lnbmVkLW9mZi1i
-eTogQXN1dG9zaCBEYXMgPGFzdXRvc2hkQGNvZGVhdXJvcmEub3JnPg0KPiBTaWduZWQtb2ZmLWJ5
-OiBDYW4gR3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KDQpSZXZpZXdlZC1ieTogU3RhbmxleSBD
-aHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCg0KDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91
-ZnMvdWZzaGNpLmgNCj4gQEAgLTM5LDYgKzM5LDcgQEAgZW51bSB7DQo+ICAJUkVHX1VUUF9UUkFO
-U0ZFUl9SRVFfRE9PUl9CRUxMCQk9IDB4NTgsDQo+ICAJUkVHX1VUUF9UUkFOU0ZFUl9SRVFfTElT
-VF9DTEVBUgkJPSAweDVDLA0KPiAgCVJFR19VVFBfVFJBTlNGRVJfUkVRX0xJU1RfUlVOX1NUT1AJ
-PSAweDYwLA0KPiArCVJFR19VVFBfVFJBTlNGRVJfUkVRX0xJU1RfQ09NUEwJCT0gMHg2NCwNCj4g
-IAlSRUdfVVRQX1RBU0tfUkVRX0xJU1RfQkFTRV9MCQk9IDB4NzAsDQo+ICAJUkVHX1VUUF9UQVNL
-X1JFUV9MSVNUX0JBU0VfSAkJPSAweDc0LA0KPiAgCVJFR19VVFBfVEFTS19SRVFfRE9PUl9CRUxM
-CQk9IDB4NzgsDQoNCg==
+--Sig_/biCzpGQcJqdY=0PNQKJAJAU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+On Thu, 3 Jun 2021 12:48:47 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> index bcfd4a8d0288,1923f035713a..000000000000
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> @@@ -657,11 -657,10 +658,11 @@@ void amdgpu_vm_move_to_lru_tail(struct=20
+>   		if (!bo->parent)
+>   			continue;
+>  =20
+>  -		ttm_bo_move_to_lru_tail(&bo->tbo, &bo->tbo.mem,
+>  +		ttm_bo_move_to_lru_tail(&bo->tbo, bo->tbo.resource,
+>   					&vm->lru_bulk_move);
+> - 		if (bo->shadow)
+> - 			ttm_bo_move_to_lru_tail(&bo->shadow->tbo,
+> + 		if (shadow)
+>  -			ttm_bo_move_to_lru_tail(&shadow->tbo, &shadow->tbo.mem,
+> ++			ttm_bo_move_to_lru_tail(&shadow->tbo,
+>  +						bo->shadow->tbo.resource,
+
+that line should have been
+						shadow->tbo.resource,
+
+I have fixed it up in my resolution.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/biCzpGQcJqdY=0PNQKJAJAU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC4RL8ACgkQAVBC80lX
+0GzwXQf7Bb7whZWkGGCiLC+YJ0D2/P5gl5muwbKrN1PUW8Fku84HGBKd6fyi5HZI
++/E0B9EdHcCOpQRPQrPBSYokCGyOjDQ6k8ffauGTuyvr3wgKmWFfxYgDgadded6u
+10oThEErY49Fr4VqDYlTerLY0nL4QefhwtjQ5Ain2g8v1jh8nV2cWKPzsccdPQY3
+gDEN2Wenu5A7mvT3Z+SLOALhXNIh22nfVOkTY88aw29Pn3jbMq2F3Ta75P5jC3oj
+hmyfDMxjiXL/yVydW/aA5ZLlbueihUsA7STFUeDpkUXZnCUBrdtxnuTP06jEF1Mi
+VvXVBKsOOUACWakFNrA+2iD2pHfxBg==
+=lQmq
+-----END PGP SIGNATURE-----
+
+--Sig_/biCzpGQcJqdY=0PNQKJAJAU--
