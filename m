@@ -2,144 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC74A39A957
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D995E39A959
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhFCRiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:38:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:47234 "EHLO foss.arm.com"
+        id S230258AbhFCRkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229845AbhFCRit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:38:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2F0512FC;
-        Thu,  3 Jun 2021 10:37:04 -0700 (PDT)
-Received: from e123427-lin.cambridge.arm.com (unknown [10.57.39.253])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0D853F73D;
-        Thu,  3 Jun 2021 10:37:02 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 18:36:56 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     longli@linuxonhyperv.com
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Long Li <longli@microsoft.com>
-Subject: Re: [Patch v3 1/2] PCI: hv: Fix a race condition when removing the
- device
-Message-ID: <20210603173656.GA25081@e123427-lin.cambridge.arm.com>
-References: <1620806800-30983-1-git-send-email-longli@linuxonhyperv.com>
+        id S229710AbhFCRkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:40:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CF2961359;
+        Thu,  3 Jun 2021 17:38:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622741914;
+        bh=mbA/RbQu9W1QdRb3EfA6YF6E9+vaRvVXQpsVRjvSbG8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=LsjAGp3wAJiRQCvZRhbwnJPpwoP9mtl7zm2JsxIy0VL9C3KOH87jHO2b4NgIdo0wW
+         ElxNf8QYQ5k+7x/jd9isS3g/NZXxdo1Qn0JOG9JwVfE1cfrcVWbNgC+l1HJtannDd3
+         V6vFoPlpqobZJMWHRSyYmTwGQM2SEfVC2mRW8uBGk7XyNshi/crcEyBREz+MDtMqgY
+         L9/YNT4zBcoi0n3TFNjHBhvFtFwO5E3sR+EBu+1duQ+UCmrGpJp7CvkRIiHsVsxRB5
+         aN8gLnhAIpK4+FeCLEnNvc85njGsvViMb98t9bAv/bE2jnLB3FykZdeWEgG0ECf0k4
+         Ye0p4MBA0d7Aw==
+Subject: Re: [RFC PATCH 4/4] x86/entry/nmi: unmask NMIs on userspace NMI when
+ entry debugging
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20210601065217.23540-1-jiangshanlai@gmail.com>
+ <20210601065217.23540-5-jiangshanlai@gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <d487b2db-7179-285a-01d5-2f47c3a5bc47@kernel.org>
+Date:   Thu, 3 Jun 2021 10:38:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620806800-30983-1-git-send-email-longli@linuxonhyperv.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210601065217.23540-5-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 01:06:40AM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
+On 5/31/21 11:52 PM, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+
+Why?
+
 > 
-> On removing the device, any work item (hv_pci_devices_present() or
-> hv_pci_eject_device()) scheduled on workqueue hbus->wq may still be running
-> and race with hv_pci_remove().
-> 
-> This can happen because the host may send PCI_EJECT or PCI_BUS_RELATIONS(2)
-> and decide to rescind the channel immediately after that.
-> 
-> Fix this by flushing/destroying the workqueue of hbus before doing hbus remove.
-> 
-> Signed-off-by: Long Li <longli@microsoft.com>
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 > ---
-> Change in v2: Remove unused bus state hv_pcibus_removed
-> Change in v3: Change hv_pci_bus_exit() to not use workqueue to remove PCI devices
+>  arch/x86/entry/entry_64.S | 36 ++++++++++++++++++++----------------
+>  1 file changed, 20 insertions(+), 16 deletions(-)
 > 
->  drivers/pci/controller/pci-hyperv.c | 30 ++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
-
-Applied series to pci/hv, thanks.
-
-Lorenzo
-
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index 27a17a1e4a7c..c6122a1b0c46 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -444,7 +444,6 @@ enum hv_pcibus_state {
->  	hv_pcibus_probed,
->  	hv_pcibus_installed,
->  	hv_pcibus_removing,
-> -	hv_pcibus_removed,
->  	hv_pcibus_maximum
->  };
+> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+> index f54e06139d4b..309e63f4f391 100644
+> --- a/arch/x86/entry/entry_64.S
+> +++ b/arch/x86/entry/entry_64.S
+> @@ -1055,6 +1055,24 @@ SYM_CODE_START_LOCAL(error_return)
+>  	jmp	swapgs_restore_regs_and_return_to_usermode
+>  SYM_CODE_END(error_return)
 >  
-> @@ -3247,8 +3246,9 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
->  		struct pci_packet teardown_packet;
->  		u8 buffer[sizeof(struct pci_message)];
->  	} pkt;
-> -	struct hv_dr_state *dr;
->  	struct hv_pci_compl comp_pkt;
-> +	struct hv_pci_dev *hpdev, *tmp;
-> +	unsigned long flags;
->  	int ret;
->  
->  	/*
-> @@ -3260,9 +3260,16 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
->  
->  	if (!keep_devs) {
->  		/* Delete any children which might still exist. */
-> -		dr = kzalloc(sizeof(*dr), GFP_KERNEL);
-> -		if (dr && hv_pci_start_relations_work(hbus, dr))
-> -			kfree(dr);
-> +		spin_lock_irqsave(&hbus->device_list_lock, flags);
-> +		list_for_each_entry_safe(hpdev, tmp, &hbus->children, list_entry) {
-> +			list_del(&hpdev->list_entry);
-> +			if (hpdev->pci_slot)
-> +				pci_destroy_slot(hpdev->pci_slot);
-> +			/* For the two refs got in new_pcichild_device() */
-> +			put_pcichild(hpdev);
-> +			put_pcichild(hpdev);
-> +		}
-> +		spin_unlock_irqrestore(&hbus->device_list_lock, flags);
->  	}
->  
->  	ret = hv_send_resources_released(hdev);
-> @@ -3305,13 +3312,23 @@ static int hv_pci_remove(struct hv_device *hdev)
->  
->  	hbus = hv_get_drvdata(hdev);
->  	if (hbus->state == hv_pcibus_installed) {
-> +		tasklet_disable(&hdev->channel->callback_event);
-> +		hbus->state = hv_pcibus_removing;
-> +		tasklet_enable(&hdev->channel->callback_event);
-> +		destroy_workqueue(hbus->wq);
-> +		hbus->wq = NULL;
-> +		/*
-> +		 * At this point, no work is running or can be scheduled
-> +		 * on hbus-wq. We can't race with hv_pci_devices_present()
-> +		 * or hv_pci_eject_device(), it's safe to proceed.
-> +		 */
+> +.macro debug_entry_unmask_NMIs
+> +#ifdef CONFIG_DEBUG_ENTRY
+> +	/*
+> +	 * For ease of testing, unmask NMIs right away.  Disabled by
+> +	 * default because IRET is very expensive.
+> +	 */
+> +	pushq	$0		/* SS */
+> +	pushq	%rsp		/* RSP (minus 8 because of the previous push) */
+> +	addq	$8, (%rsp)	/* Fix up RSP */
+> +	pushfq			/* RFLAGS */
+> +	pushq	$__KERNEL_CS	/* CS */
+> +	pushq	$1f		/* RIP */
+> +	iretq			/* continues with NMI unmasked */
+> +	UNWIND_HINT_IRET_REGS
+> +1:
+> +#endif
+> +.endm
 > +
->  		/* Remove the bus from PCI's point of view. */
->  		pci_lock_rescan_remove();
->  		pci_stop_root_bus(hbus->pci_bus);
->  		hv_pci_remove_slots(hbus);
->  		pci_remove_root_bus(hbus->pci_bus);
->  		pci_unlock_rescan_remove();
-> -		hbus->state = hv_pcibus_removed;
->  	}
+>  /*
+>   * Runs on exception stack.  Xen PV does not go through this path at all,
+>   * so we can use real assembly here.
+> @@ -1145,6 +1163,7 @@ SYM_CODE_START(asm_exc_nmi)
+>  	 * At this point we no longer need to worry about stack damage
+>  	 * due to nesting -- we're done with the NMI stack.
+>  	 */
+> +	debug_entry_unmask_NMIs
+>  	pushq	$-1		/* pt_regs->orig_ax */
+>  	idtentry_body exc_nmi has_error_code=0
 >  
->  	ret = hv_pci_bus_exit(hdev, false);
-> @@ -3326,7 +3343,6 @@ static int hv_pci_remove(struct hv_device *hdev)
->  	irq_domain_free_fwnode(hbus->sysdata.fwnode);
->  	put_hvpcibus(hbus);
->  	wait_for_completion(&hbus->remove_event);
-> -	destroy_workqueue(hbus->wq);
+> @@ -1286,22 +1305,7 @@ first_nmi:
+>  	UNWIND_HINT_IRET_REGS
 >  
->  	hv_put_dom_num(hbus->sysdata.domain);
+>  	/* Everything up to here is safe from nested NMIs */
+> -
+> -#ifdef CONFIG_DEBUG_ENTRY
+> -	/*
+> -	 * For ease of testing, unmask NMIs right away.  Disabled by
+> -	 * default because IRET is very expensive.
+> -	 */
+> -	pushq	$0		/* SS */
+> -	pushq	%rsp		/* RSP (minus 8 because of the previous push) */
+> -	addq	$8, (%rsp)	/* Fix up RSP */
+> -	pushfq			/* RFLAGS */
+> -	pushq	$__KERNEL_CS	/* CS */
+> -	pushq	$1f		/* RIP */
+> -	iretq			/* continues at repeat_nmi below */
+> -	UNWIND_HINT_IRET_REGS
+> -1:
+> -#endif
+> +	debug_entry_unmask_NMIs
 >  
-> -- 
-> 2.27.0
+>  repeat_nmi:
+>  	/*
 > 
+
