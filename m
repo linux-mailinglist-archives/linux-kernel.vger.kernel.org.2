@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1A839AA33
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA3C39AA36
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhFCSn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:43:27 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45860 "EHLO mail.skyhub.de"
+        id S229864AbhFCSoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhFCSn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:43:26 -0400
-Received: from zn.tnic (p200300ec2f13850043af4c4d530a3258.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:43af:4c4d:530a:3258])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CD6D71EC04A6;
-        Thu,  3 Jun 2021 20:41:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622745700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=psd+ZC8Co6XkZKgFq1VAPYa0k/9qp4aEkZyphaqsnvk=;
-        b=PquDu7gfhoilzg0av43yBAR9Bl/foF8OonwQEIidmP7ibOdlCb8NsTAgDoJXfaA36xJ9jv
-        O/+8gvcM88eeQwaUGnomw1XPrwQqOeCA933ygZGNnLLOCt003HqEvVTiuIfKpJ3hk5XYc9
-        gIKLKqqQC2gNq5nBg8a2Ubc/2csR7XM=
-Date:   Thu, 3 Jun 2021 20:41:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
- abstraction
-Message-ID: <YLkiZFzkSfED3BFB@zn.tnic>
-References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YLkcIuL2qvo0hviU@zn.tnic>
- <d062aedf-29d9-a83f-a727-109aaf766bf9@linux.intel.com>
+        id S229576AbhFCSoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:44:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07DA5613EE;
+        Thu,  3 Jun 2021 18:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622745736;
+        bh=WQrPHRQ4Uy6mv7zGw5EJ9wsQksZq35+9fQzYLsvFDgg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=e1XTFevauO+76U45l2+gkVxOyE8b+lA2ZEG8V1VwuxLFozPpkdsltBw1qcnFjAa1e
+         wQCDGKOq7A4slp3QfctGw+BtbnHJQ8Zt/OQtLNvLTMBUKf+D5VcSdmgo+uj3nqUKFu
+         mtiKfwRoDljhf1UoAIZN0F0cA4ehR2K4VvAXd7PJXP3l3ETy9+SYIfd2Em2DCtIHU5
+         bfEsyYei9fe7c8ckUkMZQSXsFg+XukcLIFyj1K74uBQXdwUtvkp2tEgs/nFtNEQGTc
+         68oIJq2uFpnlgjM4/x80vHZMoDxsDGchA4javhUp0yRGrHyXrohc0lrLEpvy2h8IrV
+         C+VC2hnmQi7Aw==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-spi@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        patrice.chotard@foss.st.com,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-mtd@lists.infradead.org
+Cc:     Mark Brown <broonie@kernel.org>, christophe.kerello@foss.st.com
+Subject: Re: [PATCH v5 0/3] MTD: spinand: Add spi_mem_poll_status() support
+Date:   Thu,  3 Jun 2021 19:41:44 +0100
+Message-Id: <162274571326.15050.6494166618231849468.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210518162754.15940-1-patrice.chotard@foss.st.com>
+References: <20210518162754.15940-1-patrice.chotard@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d062aedf-29d9-a83f-a727-109aaf766bf9@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sathya,
+On Tue, 18 May 2021 18:27:51 +0200, patrice.chotard@foss.st.com wrote:
+> This series adds support for the spi_mem_poll_status() spinand
+> interface.
+> Some QSPI controllers allows to poll automatically memory
+> status during operations (erase, read or write). This allows to
+> offload the CPU for this task.
+> STM32 QSPI is supporting this feature, driver update are also
+> part of this series.
+> 
+> [...]
 
-please trim your mails when you reply, like I've done in this reply.
+Applied to
 
-Thx.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-On Thu, Jun 03, 2021 at 11:33:53AM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> I assume this file will get compiled for both SEV and SME cases.
+Thanks!
 
-Yap.
+[1/3] spi: spi-mem: add automatic poll status functions
+      commit: c955a0cc8a286e5da1ebb88c19201e9bab8c2422
+[2/3] mtd: spinand: use the spi-mem poll status APIs
+      commit: 8941cd8d295e40f8ea1c0a5045d6d068b8e33eec
+[3/3] spi: stm32-qspi: add automatic poll status feature
+      commit: 86d1c6bbae32122c5f703b2d8acccf5d4258f2bb
 
-> Since you are checking for AMD vendor ID, why not use amd_protected_guest_has()?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Because, as Sean already told you, we should either stick to the
-technologies: TDX or SEV or to the vendors: Intel or AMD - but not
-either or.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
--- 
-Regards/Gruss,
-    Boris.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
