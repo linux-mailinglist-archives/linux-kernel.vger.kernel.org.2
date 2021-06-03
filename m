@@ -2,287 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A8939AEEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0259339AEF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhFCX7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:59:41 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:49251 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFCX7j (ORCPT
+        id S229751AbhFDACv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 20:02:51 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:42585 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDACu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:59:39 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 994A3E14;
-        Thu,  3 Jun 2021 19:57:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 03 Jun 2021 19:57:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        dmiAczoWlOvQnmmC04pzx+Xz0r8ekAJSbv8Td3zeOlg=; b=OcozWK6buUWWRUVP
-        GmtfIcDT0rFj6FHJBmkR1k2sCTfORlynbfT0E6n9N7p4yKjkJZPFM9NG6JGeWIyh
-        foXbIIIaAP8Wqh/xRCrB13UdYqH15uyY6b6Dbmlbw+8bR/nmZOQR6S+IjkcaJHPz
-        UIkCKUI0NSYpEmDjCkxMoGlAJgguUNAIGRGGtpK0DgvkoARpr+AjJzdEbdFTJKkD
-        XoGEKkvR7LTom7Ms/4bJRsWypppN15MVeNFMYnEqBO5tmNIanVY5V+KUrpInKZ4i
-        kBecRagA4r1euS4XZ3W+K3nxeJPoeesrGFK61+Pv9orWx7ZVaAkkp2zIpa+m8pB7
-        iBs5+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=dmiAczoWlOvQnmmC04pzx+Xz0r8ekAJSbv8Td3zeO
-        lg=; b=Y+p8e1mxu3USMyihm3MvVe9Pt120bFTx5XtCPAC6MqANAU2ZhVhonjv4r
-        UgAyvIPaTs/I20JvsLwXDtdm5mDy81utiS7DxmkOYQcykAFagMTZ+pJDkhNE+vgd
-        kdFr3TnYdojhFgIZrbYfI1aYSf8t+w0qdti3F9uSW1wsLeX8Ulz1RfItmnN+hJ0g
-        72vO+U1W4yqj0A+A7L6gJSLvPHwltPJCtzD/sh5/3KtWJ9+FQMMkAfNNtsWaOD9p
-        HzZNUC44fG4+bEilGOPbXcGCeiBEPUIQB0KZ5jlkkfIv+zVe8yYIkOnZqLuHCXnj
-        oGfa2R5e/QKO8P0Ke0A+EU3kT5MjQ==
-X-ME-Sender: <xms:gGy5YM5F6D1jmWFDEKs8Xe94UqWieL6ZSbHNJIJxjSUhlyR0KIrQZQ>
-    <xme:gGy5YN7oelA8aAbTXEkhp6MSQeFtGuhM5r42QP-_H2P8P5MDR1I27ZKtqc0lc56K7
-    ShZ2JBfx6-Y>
-X-ME-Received: <xmr:gGy5YLfylNkJAR3c5e5XhGCuqCwRakHxSLHJ1ukcelhCbSc0LK55i9h8g9sEHQsnWP_bo_0G6vBKTq6K7EWBMxSifOxFovy9q3fkUSMuT_ZArWVSHNmEHQp2iFM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddgvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:gGy5YBIuEy4iByeelGuc3pKiOxt_lsjLBPZeOpEi4z6uX7KcKwuvew>
-    <xmx:gGy5YAKOaip2temNzSPFpbHMlu17J4gbzZxsrlEqpNPjKX9qyUP59Q>
-    <xmx:gGy5YCzfsvGCmyzBPseWPgNAFJ5LJAggxBvQPuSaJX6SArsmHKIahQ>
-    <xmx:gWy5YFX3d5a9-zFRYjNo_pyz4-3Io3an58iPzxK_oRddwjyXjA7HOyC6wI4>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Jun 2021 19:57:47 -0400 (EDT)
-Message-ID: <d4554297b41148c7cc5eba1c9c16c5aa4a93d7e3.camel@themaw.net>
-Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
-From:   Ian Kent <raven@themaw.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 04 Jun 2021 07:57:43 +0800
-In-Reply-To: <32069e28a520c29773ebc24e248823d45ebb50b3.camel@themaw.net>
-References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
-         <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
-         <CAJfpeguUj5WKtKZsn_tZZNpiL17ggAPcPBXdpA03aAnjaexWug@mail.gmail.com>
-         <972701826ebb1b3b3e00b12cde821b85eebc9749.camel@themaw.net>
-         <CAJfpegsLqowjMPCAgsFe6eQK_CeixrevUPyA04V2hdYvc0HpLQ@mail.gmail.com>
-         <08388e183b17e70a3383eb38af469125f8643a07.camel@themaw.net>
-         <32069e28a520c29773ebc24e248823d45ebb50b3.camel@themaw.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 3 Jun 2021 20:02:50 -0400
+Received: by mail-pf1-f169.google.com with SMTP id s14so5250457pfd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 17:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UHnNo1smfeUySO4st5sVZAJBVhR19g+rQqU7Ptar33E=;
+        b=vUfaBevAYRkpOGN76Jj/B1JZMCBjQStLu0n+j+863Bv6fAgswahQUUK+SEbvTQ/zxb
+         ADdC5Dt+9aMvGrEijg8HST0baTJmrrFx+//Kxzpl9gh3zvDQmiF5Qmav6GOpll5MB9Jn
+         POvsmfOsijZZCLtacSKGtwC59Yf8CEaRfYUwVj7snTyTFplf0PK/8rR17zYv+kZ9oyRk
+         QiEY6pGh8FNfXlMot8PkX9x47NGSiuZfjK8Wpw/gBg5NArqinjIVnHy+q5fkqMIrl9RS
+         0kyJRS/E8UK1s2GEkgFRILZQlMbLtbWTxjE5X7Nzdt7yFIjlNXgZH2yB5lLSvvZ10jcN
+         3wkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UHnNo1smfeUySO4st5sVZAJBVhR19g+rQqU7Ptar33E=;
+        b=tOryBmuuo0zxmUopga2ZJ22wbX8XqTZhmVC73DvSvZKbxeCqsp/qWTNF+fR9SKqpVJ
+         kANSE303dGbsBoIM9YeNVCfYvnCA/hPSZN5noE/Bi6KRgCpUjdKJHIcUxjgIN0U5WnkM
+         lTRabbV8YHt1O041+XNUTnt7/U8Wa8abuNKDU7IsLeHbWoT6mDxrnygocYCbkMYPE9cP
+         eOugkC9YJFkYb6kFASXccK9BymAPfQTe8B01JqA1YvB4MEC5DCZRZQBb+b4s7cCDwP1a
+         O37S+SevFSGbMv74d6uh1OhiZdT1P0gn7fMqYHJ9A7LqXFD857Wv4R/uqd0pbtFWvUe7
+         K26Q==
+X-Gm-Message-State: AOAM531bFeTnoJgZK3lSoS8UkzhMw9EZRX3u/FzG6Vp1NUIxoKmDKOrl
+        jXfZ7lZ97YULNY0n0uMokzntSPsjyEm/3OMyBpIsXQ==
+X-Google-Smtp-Source: ABdhPJwUoL6MdcFoSHMzKQOM0cf1fSq+AiBoPrcdZJZHqVEEyhhpXqM74BM4O+J0ur6YiSsZ2dzCd6k3I6uJx68jGrI=
+X-Received: by 2002:a05:6a00:c86:b029:2e9:3041:162f with SMTP id
+ a6-20020a056a000c86b02902e93041162fmr1795869pfv.78.1622764788760; Thu, 03 Jun
+ 2021 16:59:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210602234954.122199-1-mike.kravetz@oracle.com>
+In-Reply-To: <20210602234954.122199-1-mike.kravetz@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Thu, 3 Jun 2021 16:59:37 -0700
+Message-ID: <CAHS8izM-GU8_v2A9p0-ez+QNU=J9nh2zM6ZAkAMsNK7ubnsK3A@mail.gmail.com>
+Subject: Re: [PATCH] mm/hugetlb: expand restore_reserve_on_error functionality
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Linux-MM <linux-mm@kvack.org>, lkml <linux-kernel@vger.kernel.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-03 at 10:15 +0800, Ian Kent wrote:
-> On Wed, 2021-06-02 at 18:57 +0800, Ian Kent wrote:
-> > On Wed, 2021-06-02 at 10:58 +0200, Miklos Szeredi wrote:
-> > > On Wed, 2 Jun 2021 at 05:44, Ian Kent <raven@themaw.net> wrote:
-> > > > 
-> > > > On Tue, 2021-06-01 at 14:41 +0200, Miklos Szeredi wrote:
-> > > > > On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net>
-> > > > > wrote:
-> > > > > > 
-> > > > > > If there are many lookups for non-existent paths these
-> > > > > > negative
-> > > > > > lookups
-> > > > > > can lead to a lot of overhead during path walks.
-> > > > > > 
-> > > > > > The VFS allows dentries to be created as negative and
-> > > > > > hashed,
-> > > > > > and
-> > > > > > caches
-> > > > > > them so they can be used to reduce the fairly high overhead
-> > > > > > alloc/free
-> > > > > > cycle that occurs during these lookups.
-> > > > > 
-> > > > > Obviously there's a cost associated with negative caching
-> > > > > too. 
-> > > > > For
-> > > > > normal filesystems it's trivially worth that cost, but in
-> > > > > case
-> > > > > of
-> > > > > kernfs, not sure...
-> > > > > 
-> > > > > Can "fairly high" be somewhat substantiated with a
-> > > > > microbenchmark
-> > > > > for
-> > > > > negative lookups?
-> > > > 
-> > > > Well, maybe, but anything we do for a benchmark would be
-> > > > totally
-> > > > artificial.
-> > > > 
-> > > > The reason I added this is because I saw appreciable contention
-> > > > on the dentry alloc path in one case I saw.
-> > > 
-> > > If multiple tasks are trying to look up the same negative dentry
-> > > in
-> > > parallel, then there will be contention on the parent inode lock.
-> > > Was this the issue?   This could easily be reproduced with an
-> > > artificial benchmark.
-> > 
-> > Not that I remember, I'll need to dig up the sysrq dumps to have a
-> > look and get back to you.
-> 
-> After doing that though I could grab Fox Chen's reproducer and give
-> it varying sysfs paths as well as some percentage of non-existent
-> sysfs paths and see what I get ...
-> 
-> That should give it a more realistic usage profile and, if I can
-> get the percentage of non-existent paths right, demonstrate that
-> case as well ... but nothing is easy, so we'll have to wait and
-> see, ;)
+On Wed, Jun 2, 2021 at 4:50 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> The routine restore_reserve_on_error is called to restore reservation
+> information when an error occurs after page allocation.  The routine
+> alloc_huge_page modifies the mapping reserve map and potentially the
+> reserve count during allocation.  If code calling alloc_huge_page
+> encounters an error after allocation and needs to free the page, the
+> reservation information needs to be adjusted.
+>
+> Currently, restore_reserve_on_error only takes action on pages for which
+> the reserve count was adjusted(HPageRestoreReserve flag).  There is
+> nothing wrong with these adjustments.  However, alloc_huge_page ALWAYS
+> modifies the reserve map during allocation even if the reserve count is
+> not adjusted.  This can cause issues as observed during development of
+> this patch [1].
+>
+> One specific series of operations causing an issue is:
+> - Create a shared hugetlb mapping
+>   Reservations for all pages created by default
+> - Fault in a page in the mapping
+>   Reservation exists so reservation count is decremented
+> - Punch a hole in the file/mapping at index previously faulted
+>   Reservation and any associated pages will be removed
+> - Allocate a page to fill the hole
+>   No reservation entry, so reserve count unmodified
+>   Reservation entry added to map by alloc_huge_page
+> - Error after allocation and before instantiating the page
+>   Reservation entry remains in map
+> - Allocate a page to fill the hole
+>   Reservation entry exists, so decrement reservation count
+> This will cause a reservation count underflow as the reservation count
+> was decremented twice for the same index.
+>
+> A user would observe a very large number for HugePages_Rsvd in
+> /proc/meminfo.  This would also likely cause subsequent allocations of
+> hugetlb pages to fail as it would 'appear' that all pages are reserved.
+>
+> This sequence of operations is unlikely to happen, however they were
+> easily reproduced and observed using hacked up code as described in [1].
+>
+> Address the issue by having the routine restore_reserve_on_error take
+> action on pages where HPageRestoreReserve is not set.  In this case, we
+> need to remove any reserve map entry created by alloc_huge_page.  A new
+> helper routine vma_del_reservation assists with this operation.
+>
+> There are three callers of alloc_huge_page which do not currently call
+> restore_reserve_on error before freeing a page on error paths.  Add
+> those missing calls.
+>
+> [1] https://lore.kernel.org/linux-mm/20210528005029.88088-1-almasrymina@google.com/
+> Fixes: 96b96a96ddee ("mm/hugetlb: fix huge page reservation leak in private mapping error paths"
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Cc: <stable@vger.kernel.org>
 
-Ok, so I grabbed Fox's benckmark repo. and used a non-existent path
-to check the negative dentry contention.
+Yep, works perfectly. Thanks!
 
-I've taken the baseline readings and the contention is see is the
-same as I originally saw. It's with d_alloc_parallel() on lockref.
+> ---
+>  fs/hugetlbfs/inode.c    |   1 +
+>  include/linux/hugetlb.h |   2 +
+>  mm/hugetlb.c            | 120 ++++++++++++++++++++++++++++++++--------
+>  3 files changed, 100 insertions(+), 23 deletions(-)
+>
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index 21f7a5c92e8a..926eeb9bf4eb 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -735,6 +735,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+>                 __SetPageUptodate(page);
+>                 error = huge_add_to_page_cache(page, mapping, index);
+>                 if (unlikely(error)) {
+> +                       restore_reserve_on_error(h, &pseudo_vma, addr, page);
+>                         put_page(page);
+>                         mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+>                         goto out;
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 44721df20e89..b375b31f60c4 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -627,6 +627,8 @@ struct page *alloc_huge_page_vma(struct hstate *h, struct vm_area_struct *vma,
+>                                 unsigned long address);
+>  int huge_add_to_page_cache(struct page *page, struct address_space *mapping,
+>                         pgoff_t idx);
+> +void restore_reserve_on_error(struct hstate *h, struct vm_area_struct *vma,
+> +                               unsigned long address, struct page *page);
+>
+>  /* arch callback */
+>  int __init __alloc_bootmem_huge_page(struct hstate *h);
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 9a616b7a8563..36b691c3eabf 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2259,12 +2259,18 @@ static void return_unused_surplus_pages(struct hstate *h,
+>   * be restored when a newly allocated huge page must be freed.  It is
+>   * to be called after calling vma_needs_reservation to determine if a
+>   * reservation exists.
+> + *
+> + * vma_del_reservation is used in error paths where an entry in the reserve
+> + * map was created during huge page allocation and must be removed.  It is to
+> + * be called after calling vma_needs_reservation to determine if a reservation
+> + * exists.
+>   */
+>  enum vma_resv_mode {
+>         VMA_NEEDS_RESV,
+>         VMA_COMMIT_RESV,
+>         VMA_END_RESV,
+>         VMA_ADD_RESV,
+> +       VMA_DEL_RESV,
+>  };
+>  static long __vma_reservation_common(struct hstate *h,
+>                                 struct vm_area_struct *vma, unsigned long addr,
+> @@ -2308,11 +2314,21 @@ static long __vma_reservation_common(struct hstate *h,
+>                         ret = region_del(resv, idx, idx + 1);
+>                 }
+>                 break;
+> +       case VMA_DEL_RESV:
+> +               if (vma->vm_flags & VM_MAYSHARE) {
+> +                       region_abort(resv, idx, idx + 1, 1);
+> +                       ret = region_del(resv, idx, idx + 1);
+> +               } else {
+> +                       ret = region_add(resv, idx, idx + 1, 1, NULL, NULL);
+> +                       /* region_add calls of range 1 should never fail. */
+> +                       VM_BUG_ON(ret < 0);
+> +               }
+> +               break;
+>         default:
+>                 BUG();
+>         }
+>
+> -       if (vma->vm_flags & VM_MAYSHARE)
+> +       if (vma->vm_flags & VM_MAYSHARE || mode == VMA_DEL_RESV)
+>                 return ret;
+>         /*
+>          * We know private mapping must have HPAGE_RESV_OWNER set.
+> @@ -2360,25 +2376,39 @@ static long vma_add_reservation(struct hstate *h,
+>         return __vma_reservation_common(h, vma, addr, VMA_ADD_RESV);
+>  }
+>
+> +static long vma_del_reservation(struct hstate *h,
+> +                       struct vm_area_struct *vma, unsigned long addr)
+> +{
+> +       return __vma_reservation_common(h, vma, addr, VMA_DEL_RESV);
+> +}
+> +
+>  /*
+> - * This routine is called to restore a reservation on error paths.  In the
+> - * specific error paths, a huge page was allocated (via alloc_huge_page)
+> - * and is about to be freed.  If a reservation for the page existed,
+> - * alloc_huge_page would have consumed the reservation and set
+> - * HPageRestoreReserve in the newly allocated page.  When the page is freed
+> - * via free_huge_page, the global reservation count will be incremented if
+> - * HPageRestoreReserve is set.  However, free_huge_page can not adjust the
+> - * reserve map.  Adjust the reserve map here to be consistent with global
+> - * reserve count adjustments to be made by free_huge_page.
+> + * This routine is called to restore reservation information on error paths.
+> + * It should ONLY be called for pages allocated via alloc_huge_page(), and
+> + * the hugetlb mutex should remain held when calling this routine.
+> + *
+> + * It handles two specific cases:
+> + * 1) A reservation was in place and page consumed the reservation.
+> + *    HPageRestoreRsvCnt is set in the page.
 
-While I haven't run the patched check I'm pretty sure that using
-dget_parent() and taking a snapshot will move the contention to
-that. So if I do retain the negative dentry caching change I would
-need to use the dentry seq lock for it to be useful.
+HPageRestoreReserve, not HPageRestoreRsvCnt.
 
-Thoughts Miklos, anyone?
+> + * 2) No reservation was in place for the page, so HPageRestoreRsvCnt is
 
-> 
-> > 
-> > > 
-> > > > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > > > > > index 4c69e2af82dac..5151c712f06f5 100644
-> > > > > > --- a/fs/kernfs/dir.c
-> > > > > > +++ b/fs/kernfs/dir.c
-> > > > > > @@ -1037,12 +1037,33 @@ static int
-> > > > > > kernfs_dop_revalidate(struct
-> > > > > > dentry *dentry, unsigned int flags)
-> > > > > >         if (flags & LOOKUP_RCU)
-> > > > > >                 return -ECHILD;
-> > > > > > 
-> > > > > > -       /* Always perform fresh lookup for negatives */
-> > > > > > -       if (d_really_is_negative(dentry))
-> > > > > > -               goto out_bad_unlocked;
-> > > > > > +       mutex_lock(&kernfs_mutex);
-> > > > > > 
-> > > > > >         kn = kernfs_dentry_node(dentry);
-> > > > > > -       mutex_lock(&kernfs_mutex);
-> > > > > > +
-> > > > > > +       /* Negative hashed dentry? */
-> > > > > > +       if (!kn) {
-> > > > > > +               struct kernfs_node *parent;
-> > > > > > +
-> > > > > > +               /* If the kernfs node can be found this is
-> > > > > > a
-> > > > > > stale
-> > > > > > negative
-> > > > > > +                * hashed dentry so it must be discarded
-> > > > > > and
-> > > > > > the
-> > > > > > lookup redone.
-> > > > > > +                */
-> > > > > > +               parent = kernfs_dentry_node(dentry-
-> > > > > > > d_parent);
-> > > > > 
-> > > > > This doesn't look safe WRT a racing sys_rename().  In this
-> > > > > case
-> > > > > d_move() is called only with parent inode locked, but not
-> > > > > with
-> > > > > kernfs_mutex while ->d_revalidate() may not have parent inode
-> > > > > locked.
-> > > > > After d_move() the old parent dentry can be freed, resulting
-> > > > > in
-> > > > > use
-> > > > > after free.  Easily fixed by dget_parent().
-> > > > 
-> > > > Umm ... I'll need some more explanation here ...
-> > > > 
-> > > > We are in ref-walk mode so the parent dentry isn't going away.
-> > > 
-> > > The parent that was used to lookup the dentry in __d_lookup()
-> > > isn't
-> > > going away.  But it's not necessarily equal to dentry->d_parent
-> > > anymore.
-> > > 
-> > > > And this is a negative dentry so rename is going to bail out
-> > > > with ENOENT way early.
-> > > 
-> > > You are right.  But note that negative dentry in question could
-> > > be
-> > > the
-> > > target of a rename.  Current implementation doesn't switch the
-> > > target's parent or name, but this wasn't always the case (commit
-> > > 076515fc9267 ("make non-exchanging __d_move() copy ->d_parent
-> > > rather
-> > > than swap them")), so a backport of this patch could become
-> > > incorrect
-> > > on old enough kernels.
-> > 
-> > Right, that __lookup_hash() will find the negative target.
-> > 
-> > > 
-> > > So I still think using dget_parent() is the correct way to do
-> > > this.
-> > 
-> > The rename code does my head in, ;)
-> > 
-> > The dget_parent() would ensure we had an up to date parent so
-> > yes, that would be the right thing to do regardless.
-> > 
-> > But now I'm not sure that will be sufficient for kernfs. I'm still
-> > thinking about it.
-> > 
-> > I'm wondering if there's a missing check in there to account for
-> > what happens with revalidate after ->rename() but before move.
-> > There's already a kernfs node check in there so it's probably ok
-> > ...
-> >  
-> > > 
-> > > > > 
-> > > > > > +               if (parent) {
-> > > > > > +                       const void *ns = NULL;
-> > > > > > +
-> > > > > > +                       if (kernfs_ns_enabled(parent))
-> > > > > > +                               ns = kernfs_info(dentry-
-> > > > > > > d_sb)-
-> > > > > > > ns;
-> > > > > > +                       kn = kernfs_find_ns(parent, dentry-
-> > > > > > > d_name.name, ns);
-> > > > > 
-> > > > > Same thing with d_name.  There's
-> > > > > take_dentry_name_snapshot()/release_dentry_name_snapshot() to
-> > > > > properly
-> > > > > take care of that.
-> > > > 
-> > > > I don't see that problem either, due to the dentry being
-> > > > negative,
-> > > > but please explain what your seeing here.
-> > > 
-> > > Yeah.  Negative dentries' names weren't always stable, but that
-> > > was
-> > > a
-> > > long time ago (commit 8d85b4845a66 ("Allow sharing external names
-> > > after __d_move()")).
-> > 
-> > Right, I'll make that change too.
-> > 
-> > > 
-> > > Thanks,
-> > > Miklos
-> > 
-> 
+Same.
 
+Otherwise it looks good to me. Thanks!
 
+Reviewed-by: Mina Almasry <almasrymina@google.com>
+
+> + *    not set.  However, alloc_huge_page always updates the reserve map.
+> + *
+> + * In case 1, free_huge_page will increment the global reserve count.  But,
+> + * free_huge_page does not have enough context to adjust the reservation map.
+> + * This case deals primarily with private mappings.  Adjust the reserve map
+> + * here to be consistent with global reserve count adjustments to be made
+> + * by free_huge_page.  Make sure the reserve map indicates there is a
+> + * reservation present.
+> + *
+> + * In case 2, simply undo reserve map modifications done by alloc_huge_page.
+>   */
+> -static void restore_reserve_on_error(struct hstate *h,
+> -                       struct vm_area_struct *vma, unsigned long address,
+> -                       struct page *page)
+> +void restore_reserve_on_error(struct hstate *h, struct vm_area_struct *vma,
+> +                       unsigned long address, struct page *page)
+>  {
+> -       if (unlikely(HPageRestoreReserve(page))) {
+> -               long rc = vma_needs_reservation(h, vma, address);
+> +       long rc = vma_needs_reservation(h, vma, address);
+>
+> -               if (unlikely(rc < 0)) {
+> +       if (HPageRestoreReserve(page)) {
+> +               if (unlikely(rc < 0))
+>                         /*
+>                          * Rare out of memory condition in reserve map
+>                          * manipulation.  Clear HPageRestoreReserve so that
+> @@ -2391,16 +2421,57 @@ static void restore_reserve_on_error(struct hstate *h,
+>                          * accounting of reserve counts.
+>                          */
+>                         ClearHPageRestoreReserve(page);
+> -               } else if (rc) {
+> -                       rc = vma_add_reservation(h, vma, address);
+> -                       if (unlikely(rc < 0))
+> +               else if (rc)
+> +                       (void)vma_add_reservation(h, vma, address);
+> +               else
+> +                       vma_end_reservation(h, vma, address);
+> +       } else {
+> +               if (!rc) {
+> +                       /*
+> +                        * This indicates there is an entry in the reserve map
+> +                        * added by alloc_huge_page.  We know it was added
+> +                        * before the alloc_huge_page call, otherwise
+> +                        * HPageRestoreReserve would be set on the page.
+> +                        * Remove the entry so that a subsequent allocation
+> +                        * does not consume a reservation.
+> +                        */
+> +                       rc = vma_del_reservation(h, vma, address);
+> +                       if (rc < 0)
+>                                 /*
+> -                                * See above comment about rare out of
+> -                                * memory condition.
+> +                                * VERY rare out of memory condition.  Since
+> +                                * we can not delete the entry, set
+> +                                * HPageRestoreReserve so that the reserve
+> +                                * count will be incremented when the page
+> +                                * is freed.  This reserve will be consumed
+> +                                * on a subsequent allocation.
+>                                  */
+> -                               ClearHPageRestoreReserve(page);
+> +                               SetHPageRestoreReserve(page);
+> +               } else if (rc < 0) {
+> +                       /*
+> +                        * Rare out of memory condition from
+> +                        * vma_needs_reservation call.  Memory allocation is
+> +                        * only attempted if a new entry is needed.  Therefore,
+> +                        * this implies there is not an entry in the
+> +                        * reserve map.
+> +                        *
+> +                        * For shared mappings, no entry in the map indicates
+> +                        * no reservation.  We are done.
+> +                        */
+> +                       if (!(vma->vm_flags & VM_MAYSHARE))
+> +                               /*
+> +                                * For private mappings, no entry indicates
+> +                                * a reservation is present.  Since we can
+> +                                * not add an entry, set SetHPageRestoreReserve
+> +                                * on the page so reserve count will be
+> +                                * incremented when freed.  This reserve will
+> +                                * be consumed on a subsequent allocation.
+> +                                */
+> +                               SetHPageRestoreReserve(page);
+>                 } else
+> -                       vma_end_reservation(h, vma, address);
+> +                       /*
+> +                        * No reservation present, do nothing
+> +                        */
+> +                        vma_end_reservation(h, vma, address);
+>         }
+>  }
+>
+> @@ -4176,6 +4247,8 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+>                                 spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+>                                 entry = huge_ptep_get(src_pte);
+>                                 if (!pte_same(src_pte_old, entry)) {
+> +                                       restore_reserve_on_error(h, vma, addr,
+> +                                                               new);
+>                                         put_page(new);
+>                                         /* dst_entry won't change as in child */
+>                                         goto again;
+> @@ -5174,6 +5247,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+>         if (vm_shared || is_continue)
+>                 unlock_page(page);
+>  out_release_nounlock:
+> +       restore_reserve_on_error(h, dst_vma, dst_addr, page);
+>         put_page(page);
+>         goto out;
+>  }
+> --
+> 2.31.1
+>
