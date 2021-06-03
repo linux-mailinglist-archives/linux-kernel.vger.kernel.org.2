@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D1139AA55
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0499F39AA60
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhFCSoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:44:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230062AbhFCSow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA4F6140A;
-        Thu,  3 Jun 2021 18:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622745787;
-        bh=USxB1GUo0FH2y+jIZNXtT5R5mYI6uflcFyqqOHML5LI=;
+        id S229921AbhFCSrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:47:41 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44720 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFCSrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:47:40 -0400
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B32AA20B8008;
+        Thu,  3 Jun 2021 11:45:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B32AA20B8008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1622745955;
+        bh=lf8obqIyS2qhtxjR7Mi9MkEGyvvpajHXjSrq3w7AQBw=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cOUOi6kVZyTQziNZP4IOA20rGx+v2VMq0RxjXpPuazkQBCgQ63+LXcgP1SItpKEzH
-         sIKQ2ZRjE6FkBhCIhxeC0Y8oWIodIwylK0bRtW+ncSd+PjwI7e/yGpmg2NwP2mRQ+G
-         VQF9bJC12Z0T3Z/75N2RowBLZoJSOwzDjWVkFCKgsGr6YeufoLfbO64NdoeeimXliU
-         XfYnz8jTtppv3qObkH3elzuoSf7/q6kFL58cZuJTVrTbGoIuj7vfl/tzTGBPPVjRzy
-         7YWAB7tm2DIF7ofUjbFRAlOvCidc8o3ZrSjRI6DLtZdUXTSmBUnHtWWnve9tZaMvn/
-         wn/86//qBivbQ==
-Received: by mail-ed1-f42.google.com with SMTP id cb9so8317656edb.1;
-        Thu, 03 Jun 2021 11:43:07 -0700 (PDT)
-X-Gm-Message-State: AOAM531CRUZht7DUf+soS7Va7MxN/uuW/CZe5YO9iSroKg7+xqUFibpa
-        PKKJFyUu/XOp8pNvl9HBinXdf+TDUmRUVZGNPQ==
-X-Google-Smtp-Source: ABdhPJwi939S5IBhvU2azqo7VfjLNGUzwzJRRoDtktVigBtogK8CpoEwyyszR1U6mwciX2x8gNbXDoaVANKFA/s+SOo=
-X-Received: by 2002:aa7:cd83:: with SMTP id x3mr791218edv.373.1622745786232;
- Thu, 03 Jun 2021 11:43:06 -0700 (PDT)
+        b=IqHYoY2eF51K4B1BRfEAgTvALDlLvh9m8WiqDYT7VaLO9gh/L/YLsH1C8E69nqCKD
+         SXIdkxTZ11PHMWxStuJVNllURVLpim1rPcwpjR0Alv9K8BrGhygXgcccEG6/4CjREM
+         /0dKw3pPaAMwpE5rQO6cgIgoojsVFwCfzI82Smds=
+Received: by mail-pl1-f173.google.com with SMTP id u9so3288044plr.1;
+        Thu, 03 Jun 2021 11:45:55 -0700 (PDT)
+X-Gm-Message-State: AOAM5308j+KEEJGQ/VfkAM5GiUWH2oNGP/3MmPyl36sdXpYtg3T6U4x6
+        io7E1NfugESON7BBot7pgNCAdAqfQ0a4sF8S8I0=
+X-Google-Smtp-Source: ABdhPJyNuPz1nMtiXXYpEZb8kLY8qBLhgAqPuG4EN+LJF+UkcLXA3R73bIhWeQhXNcV1yibM3RwAOyya9JHIqmypciY=
+X-Received: by 2002:a17:90a:7892:: with SMTP id x18mr643257pjk.39.1622745955243;
+ Thu, 03 Jun 2021 11:45:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210602215252.695994-1-keescook@chromium.org> <20210602215252.695994-4-keescook@chromium.org>
-In-Reply-To: <20210602215252.695994-4-keescook@chromium.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 3 Jun 2021 13:42:54 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLO_YbT3VU0+uHH2t6ONs_dWfBhqds9okYD0254ZiBf=A@mail.gmail.com>
-Message-ID: <CAL_JsqLO_YbT3VU0+uHH2t6ONs_dWfBhqds9okYD0254ZiBf=A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] drm/pl111: depend on CONFIG_VEXPRESS_CONFIG
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dave Airlie <airlied@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Arnd Bergmann <arnd@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org
+References: <20210521161527.34607-1-mcroce@linux.microsoft.com> <20210521161527.34607-4-mcroce@linux.microsoft.com>
+In-Reply-To: <20210521161527.34607-4-mcroce@linux.microsoft.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Thu, 3 Jun 2021 20:45:19 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2Qbq53rT17eZD97tm3o5OFJeHEDAyaW8VhVcy4u+KeNQ@mail.gmail.com>
+Message-ID: <CAFnufp2Qbq53rT17eZD97tm3o5OFJeHEDAyaW8VhVcy4u+KeNQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 3/5] page_pool: Allow drivers to hint on SKB recycling
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 4:53 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Avoid randconfig build failures by requiring VEXPRESS_CONFIG:
->
-> aarch64-linux-gnu-ld: drivers/gpu/drm/pl111/pl111_versatile.o: in function `pl111_vexpress_clcd_init':
-> pl111_versatile.c:(.text+0x220): undefined reference to `devm_regmap_init_vexpress_config'
+On Fri, May 21, 2021 at 6:16 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> +bool page_pool_return_skb_page(void *data)
+> +{
+> +       struct page_pool *pp;
+> +       struct page *page;
+> +
+> +       page = virt_to_head_page(data);
+> +       if (unlikely(page->pp_magic != PP_SIGNATURE))
+> +               return false;
+> +
+> +       pp = (struct page_pool *)page->pp;
+> +
+> +       /* Driver set this to memory recycling info. Reset it on recycle.
+> +        * This will *not* work for NIC using a split-page memory model.
+> +        * The page will be returned to the pool here regardless of the
+> +        * 'flipped' fragment being in use or not.
+> +        */
+> +       page->pp = NULL;
+> +       page_pool_put_full_page(pp, virt_to_head_page(data), false);
 
-pl111_vexpress_clcd_init() starts with:
+Here I could just use the cached "page" instead of calling
+virt_to_head_page() once again.
 
-if (!IS_ENABLED(CONFIG_VEXPRESS_CONFIG))
-                return -ENODEV;
-
-Isn't that supposed to be enough to avoid an undefined reference?
-
-Making the whole file depend on VEXPRESS_CONFIG is not right either.
-Not all platforms need it.
-
->
-> Fixes: 826fc86b5903 ("drm: pl111: Move VExpress setup into versatile init")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/gpu/drm/pl111/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/pl111/Kconfig b/drivers/gpu/drm/pl111/Kconfig
-> index 80f6748055e3..c5210a5bef1b 100644
-> --- a/drivers/gpu/drm/pl111/Kconfig
-> +++ b/drivers/gpu/drm/pl111/Kconfig
-> @@ -2,7 +2,7 @@
->  config DRM_PL111
->         tristate "DRM Support for PL111 CLCD Controller"
->         depends on DRM
-> -       depends on ARM || ARM64 || COMPILE_TEST
-> +       depends on VEXPRESS_CONFIG
->         depends on COMMON_CLK
->         select DRM_KMS_HELPER
->         select DRM_KMS_CMA_HELPER
-> --
-> 2.25.1
->
+-- 
+per aspera ad upstream
