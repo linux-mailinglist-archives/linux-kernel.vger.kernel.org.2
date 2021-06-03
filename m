@@ -2,186 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A987039AB0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5D939AB0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhFCTuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:50:00 -0400
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:42498 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCTt7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:49:59 -0400
-Received: by mail-pf1-f172.google.com with SMTP id s14so4819329pfd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 12:47:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rTqsvMxg8iY/62t/zYCdvRt2W1Pb7CHUIdhxBbw8tpE=;
-        b=FW7Eb4p831muffnjSdriN3BohwIcDXxCGHVl/h5kYVtxHSY5vsuqUHE4fX1jjyDOGK
-         TZDiqbncT+fDnNI2lMf033NjCx+bvmM6y/FvIdzaayiVRO3Re1rYJcQ0+OnXCCOGIN6K
-         hNxXj7bYwEqcyxmjmB47B6fdBPTVfw9nIz+aR9mErx+kp9AyZ/C6/vUmhbDUpAMxqhZn
-         esfYNyTGurZmxsuKGIYucGp6VjYx75UEDu2lqCTBU4ChcaZTFCSp+zM7vFzFEA7FVvLF
-         s25T9WYbIi6bIzd2vB19QyjydBcYu09c0+lWNt+XHDZVFDkUy54HYH6eLxi+MADTGjJQ
-         lUHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rTqsvMxg8iY/62t/zYCdvRt2W1Pb7CHUIdhxBbw8tpE=;
-        b=hx5F7thWhg7hQ/PkMlBptrwEvao7frjARCKe9Se9PrIV+OtX8KnlQl3QpaKrtcWAqz
-         ho+TbRN7GQGQY989GhKxe2AWOtoso+l28LAjLAUMSNnj0T8iiDKKLpq2CJ+xrUOzDhy8
-         8LvPsgWlQB9NHGOJVh6iIbJDYZ9ccSrQPGdzxA6wrMsFB5eesHnQCUoOvTyLfjZv+FS4
-         I9rZCUeoB+5WNsXwoEHeBmZpIz7Q6LAc5m+amToo747Z/Dr1KLjqVJe36Qh1A63yq32T
-         hQQKPXPNwPEP4R2LmIT4Na5CJ1gfmEh2tlQ/x9xOelstC+AumVYZHgFKt71nn6a+JkVe
-         GzRw==
-X-Gm-Message-State: AOAM5329sG1VpDhqJbzI97g/Gi2p4rbXMyG94xjuv7/RgG0F1HoFRQFq
-        KO/YQ0BmvOEQqKWc4ZCpGBPS/A==
-X-Google-Smtp-Source: ABdhPJxhF64YHsCWOyX97tbDq6G+PxckYe9jHKy8bbjgWnu7z7A7snBRu3yLRamBxVQRKXgZ0AmwpQ==
-X-Received: by 2002:a65:528d:: with SMTP id y13mr1107082pgp.276.1622749617624;
-        Thu, 03 Jun 2021 12:46:57 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id m134sm3035801pfd.148.2021.06.03.12.46.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 12:46:56 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 19:46:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
+        id S229880AbhFCTup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFCTum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:50:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 701E961361;
+        Thu,  3 Jun 2021 19:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622749737;
+        bh=VnDzWQzG7TYNgACf0mkYi5azW9YcI6L4zi7Vryt/j4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IvSRxJ+LXm7Z43EaLZ8Ex9/npfUbIf1WU0Kcb+girUiHtEeV6v5EL4c189TN63AY9
+         Y6vxdqgl8S4ipeJ6/joRnhLdt4L7F2mQ065mA+WrPaSwQQZ4PRwuBKP0hI7p0hGCQJ
+         HsJHGr7mU9KPFSQp1aPXqMsASCoIdgJJc4xIZmEsKb4d2gkh1p0+sUar+3XlwWIcpD
+         t+G9TWEHruf06uFdeQCQLKFqite2Cfm7SaPzIuLyBIMVzGQRlXS7pvgihKGi668UUw
+         XV7joZBm9hIUILhZQ7ufVAEj2tmyMmDBZkg/33lSO9JKLe+qQ09MymHcMi1X+2nxDa
+         oxtZKb9HPFo4A==
+Received: by pali.im (Postfix)
+        id 0866E1229; Thu,  3 Jun 2021 21:48:53 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 21:48:53 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Igal Liberman <Igal.Liberman@freescale.com>,
+        Shruti Kanetkar <Shruti@freescale.com>,
+        Emil Medve <Emilian.Medve@freescale.com>,
+        Scott Wood <oss@buserror.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
-Message-ID: <YLkxrMQ2a5aWD5zt@google.com>
-References: <YH3HWeOXFiCTZN4y@google.com>
- <20210419185354.v3rgandtrel7bzjj@box>
- <YH3jaf5ThzLZdY4K@google.com>
- <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
- <YH8L0ihIzL6UB6qD@google.com>
- <20210521123148.a3t4uh4iezm6ax47@box>
- <YK6lrHeaeUZvHMJC@google.com>
- <20210531200712.qjxghakcaj4s6ara@box.shutemov.name>
- <YLfFBgPeWZ91TfH7@google.com>
- <20210602233353.gxq35yxluhas5knp@box>
+Subject: Re: Unsupported phy-connection-type sgmii-2500 in
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts
+Message-ID: <20210603194853.ngz4jdso3kfncnj4@pali>
+References: <20210603143453.if7hgifupx5k433b@pali>
+ <YLjxX/XPDoRRIvYf@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210602233353.gxq35yxluhas5knp@box>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YLjxX/XPDoRRIvYf@lunn.ch>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021, Kirill A. Shutemov wrote:
-> On Wed, Jun 02, 2021 at 05:51:02PM +0000, Sean Christopherson wrote:
-> > > Omitting FOLL_GUEST for shared memory doesn't look like a right approach.
-> > > IIUC, it would require the kernel to track what memory is share and what
-> > > private, which defeat the purpose of the rework. I would rather enforce
-> > > !PageGuest() when share SEPT is populated in addition to enforcing
-> > > PageGuest() fro private SEPT.
+On Thursday 03 June 2021 17:12:31 Andrew Lunn wrote:
+> On Thu, Jun 03, 2021 at 04:34:53PM +0200, Pali Rohár wrote:
+> > Hello!
 > > 
-> > Isn't that what omitting FOLL_GUEST would accomplish?  For shared memory,
-> > including mapping memory into the shared EPT, KVM will omit FOLL_GUEST and thus
-> > require the memory to be readable/writable according to the guest access type.
-> 
-> Ah. I guess I see what you're saying: we can pipe down the shared bit from
-> GPA from direct_page_fault() (or whatever handles the fault) down to
-> hva_to_pfn_slow() and omit FOLL_GUEST if the shared bit is set. Right?
-
-Yep.
-
-> I guest it's doable, but codeshuffling going to be ugly.
-
-It shouldn't be too horrific.  If it is horrific, I'd be more than happy to
-refactor the flow before hand to collect the hva_to_pfn() params into a struct
-so that adding a "private" flag is less painful.  There is already TDX-related
-work to do similar cleanup in the x86-specific code.
-
-https://lkml.kernel.org/r/cover.1618914692.git.isaku.yamahata@intel.com
-
-> > By definition, that excludes PageGuest() because PageGuest() pages must always
-> > be unmapped, e.g. PROTNONE.  And for private EPT, because PageGuest() is always
-> > PROTNONE or whatever, it will require FOLL_GUEST to retrieve the PTE/PMD/Pxx.
+> > In commit 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to
+> > the board device tree(s)") was added following DT property into DT node:
+> > arch/powerpc/boot/dts/fsl/t1023rdb.dts fm1mac3: ethernet@e4000
 > > 
-> > On a semi-related topic, I don't think can_follow_write_pte() is the correct
-> > place to hook PageGuest().  TDX's S-EPT has a quirk where all private guest
-> > memory must be mapped writable, but that quirk doesn't hold true for non-TDX
-> > guests.  It should be legal to map private guest memory as read-only.
-> 
-> Hm. The point of the change in can_follow_write_pte() is to only allow to
-> write to a PageGuest() page if FOLL_GUEST is used and the mapping is
-> writable. Without the change gup(FOLL_GUEST|FOLL_WRITE) would fail.
-> 
-> It doesn't prevent using read-only guest mappings as read-only. But if you
-> want to write to it it has to writable (in addtion to FOLL_GUEST). 
-
-100% agree that the page needs to be host-writable to be mapped as writable.
-What I was pointing out is that if FOLL_WRITE is not set, gup() will never check
-the PageGuest() exemption (moot point until the protnone check is fixed), and
-more importantly that the FOLL_GUEST check is orthogonal to the FOLL_WRITE check.
-
-In other words, I would expect the code to look something ike:
-
-	if (PageGuest()) {
-		if (!(flags & FOLL_GUEST)) {
-			pte_unmap_unlock(ptep, ptl);
-			return NULL;
-		}
-	} else if ((flags & FOLL_NUMA) && pte_protnone(pte)) {
-		goto no_page;
-	}
-
-> > And I believe the below snippet in follow_page_pte() will be problematic
-> > too, since FOLL_NUMA is added unless FOLL_FORCE is set.  I suspect the
-> > correct approach is to handle FOLL_GUEST as an exception to
-> > pte_protnone(), though that might require adjusting pte_protnone() to be
-> > meaningful even when CONFIG_NUMA_BALANCING=n.
+> >     phy-connection-type = "sgmii-2500";
 > > 
-> > 	if ((flags & FOLL_NUMA) && pte_protnone(pte))
-> > 		goto no_page;
-> > 	if ((flags & FOLL_WRITE) && !can_follow_write_pte(pte, flags)) {
-> > 		pte_unmap_unlock(ptep, ptl);
-> > 		return NULL;
-> > 	}
-> 
-> Good catch. I'll look into how to untangle NUMA balancing and PageGuest().
-> It shouldn't be hard. PageGuest() pages should be subject for balancing.
-> 
-> > > Do you see any problems with this?
-> > > 
-> > > > Oh, and the other nicety is that I think it would avoid having to explicitly
-> > > > handle PageGuest() memory that is being accessed from kernel/KVM, i.e. if all
-> > > > memory exposed to KVM must be !PageGuest(), then it is also eligible for
-> > > > copy_{to,from}_user().
-> > > 
-> > > copy_{to,from}_user() enforce by setting PTE entries to PROT_NONE.
+> > But currently kernel does not recognize this "sgmii-2500" phy mode. See
+> > file include/linux/phy.h. In my opinion it should be "2500base-x" as
+> > this is mode which operates at 2.5 Gbps.
 > > 
-> > But KVM does _not_ want those PTEs PROT_NONE.  If KVM is accessing memory that
-> > is also accessible by the the guest, then it must be shared.  And if it's shared,
-> > it must also be accessible to host userspace, i.e. something other than PROT_NONE,
-> > otherwise the memory isn't actually shared with anything.
-> > 
-> > As above, any guest-accessible memory that is accessed by the host must be
-> > shared, and so must be mapped with the required permissions.
+> > I do not think that sgmii-2500 mode exist at all (correct me if I'm
+> > wrong).
 > 
-> I don't see contradiction here: copy_{to,from}_user() would fail with
-> -EFAULT on PROT_NONE PTE.
-> 
-> By saying in initial posting that inserting PageGuest() into shared is
-> fine, I didn't mean it's usefule, just allowed.
+> Kind of exist, unofficially. Some vendors run SGMII over clocked at
+> 2500. But there is no standard for it, and it is unclear how inband
+> signalling should work. Whenever i see code saying 2.5G SGMII, i
+> always ask, are you sure, is it really 2500BaseX? Mostly it gets
+> changed to 2500BaseX after review.
 
-Yeah, and I'm saying we should explicitly disallow mapping PageGuest() into
-shared memory, and then the KVM code that manually kmaps() PageGuest() memory
-to avoid copy_{to,from}_user() failure goes aways.
+So this is question for authors of that commit 84e0f1c13806. But it
+looks like I cannot send them emails because of following error:
+
+<Minghuan.Lian@freescale.com>: connect to freescale.com[192.88.156.33]:25: Connection timed out
+
+Do you have other way how to contact maintainers of that DTS file?
+arch/powerpc/boot/dts/fsl/t1023rdb.dts
+
+> PHY mode sgmii-2500 does not exist in mainline.
+
+Yes, this is reason why I sent this email. In DTS is specified this mode
+which does not exist.
+
+> 	Andrew
+> 
