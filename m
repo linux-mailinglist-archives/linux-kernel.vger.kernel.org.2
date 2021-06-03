@@ -2,119 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3009139A39B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9444D39A39D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhFCOsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:48:32 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42712 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbhFCOsb (ORCPT
+        id S231629AbhFCOtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:49:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43816 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230365AbhFCOtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:48:31 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 02727219FC;
-        Thu,  3 Jun 2021 14:46:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622731606;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 3 Jun 2021 10:49:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622731636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HgJ2ib9SlRW99rJ08mr0EJy7gSx81gKwPKfjTb2hPhQ=;
-        b=BeI9uQMoAQJ2Oo+faRxnKrpj63a/Qq3LOgVprk3i29JiqUFtC6XVuwCVaFVe0V0zc6yX6o
-        4+XKEI/3CO40oOfR85is+dOFgsLJPoPda5gzXqellCjMSOWqKHVs3/HccmPgokh33phQz4
-        cUfGNlq3BDS6GdxIt2OMs4xdmoCvwS4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622731606;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HgJ2ib9SlRW99rJ08mr0EJy7gSx81gKwPKfjTb2hPhQ=;
-        b=bJi/FNkqlqga25F9rCjFWk8n6JT0ea9sXlXQzqsHDerhtoMMTnFS24FCIlJYEwuhX7DfQn
-        ukrYDosuB75RyXAQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id C38A6A3B81;
-        Thu,  3 Jun 2021 14:46:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C535CDA89C; Thu,  3 Jun 2021 16:44:04 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 16:44:04 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Niklas Cassel <Niklas.Cassel@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] blk-zoned: allow BLKREPORTZONE without CAP_SYS_ADMIN
-Message-ID: <20210603144404.GY31483@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>, Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210531135444.122018-1-Niklas.Cassel@wdc.com>
- <20210531135444.122018-3-Niklas.Cassel@wdc.com>
- <20210603095117.GU31483@twin.jikos.cz>
- <DM6PR04MB7081B69E31BB7ADDF02E2D9BE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <20210603100436.GV31483@twin.jikos.cz>
- <DM6PR04MB708127C72BDC03B446997DACE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
+        bh=YABTD2STAWQQlm5tg1g6NJ074ZuyxPbxn7absUYPnjc=;
+        b=jHRBfpUvNo+E3Y5xu/TSBGt0QZ316LH+IjL6FxHfnVO8CwBFWHz4f34eZUZ1B34RXIR4cD
+        UdZriE/PN2N6KKFU6KMlZ8LDys74ifxDCSQXEjw6S4yzR5qtyVB0YeVz1nXGlAq5r3Nmi2
+        n2NqZT5LyYNFbfDvtr85ltIpdOI0UYg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-Bb-68XtBPs-0UVu6tSlY9Q-1; Thu, 03 Jun 2021 10:45:20 -0400
+X-MC-Unique: Bb-68XtBPs-0UVu6tSlY9Q-1
+Received: by mail-ed1-f71.google.com with SMTP id s20-20020a0564025214b029038752a2d8f3so3390273edd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 07:45:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YABTD2STAWQQlm5tg1g6NJ074ZuyxPbxn7absUYPnjc=;
+        b=Ff85a/xBRpP1b6nHGpik0UUwML1FHS3b5F4mSE5YWHgBQepgpaqlFCiFflMBm5QwXn
+         luYWYzwvIs1K3D5fyDETYsChu5kpOXUXhnKJoLPX5Kr4VfF7hadwkK+DRY/ToRh1U49B
+         pxERxaBoXu2Eb8xAcGOeFd2kE2OSbsrFS2/Z1XM46J7NK4hnrTVOd2e7XoyXii/+PTjM
+         6sRd5h8Qrut5jG0FhHA2guihLxpl9hyOducFUAY76PUSnHppOqWBxKqQrLA6ZCBfOCB7
+         qMHrYGD4oEgyfjhAU28CfRkFJlmR98tBCtQPqJxc7KKOgdSqG1kq7zDWJ6GCuOdPye11
+         Fhfw==
+X-Gm-Message-State: AOAM533wXSy/NXK358Y59tX9wpZFgC9eUuKxcj5+A996pE8IpZV1wl99
+        3l43aHxYGi5NTpyubEUQCzi82qyqd6QsFD8d6k4kY6w57aFS6vBCwZrIDLwWKkWbO8oAW1C05Us
+        8pVOAtdgp2yYaqXbMY8i62Rt3
+X-Received: by 2002:a50:afe4:: with SMTP id h91mr203597edd.28.1622731518863;
+        Thu, 03 Jun 2021 07:45:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJXKlXoitE1mjpn8GN6FD+0N7T0+mjhG0D3VTzD5XyuA6+OeMMiJZX3H1kZB9DlLneqf+VlA==
+X-Received: by 2002:a50:afe4:: with SMTP id h91mr203573edd.28.1622731518678;
+        Thu, 03 Jun 2021 07:45:18 -0700 (PDT)
+Received: from steredhat ([5.170.129.82])
+        by smtp.gmail.com with ESMTPSA id bh3sm1622721ejb.19.2021.06.03.07.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 07:45:17 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 16:45:13 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
+Subject: Re: [PATCH v10 11/18] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210603144513.ryjzauq7abnjogu3@steredhat>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+ <20210520191801.1272027-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <DM6PR04MB708127C72BDC03B446997DACE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210520191801.1272027-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:20:33AM +0000, Damien Le Moal wrote:
-> On 2021/06/03 19:07, David Sterba wrote:
-> > On Thu, Jun 03, 2021 at 10:00:08AM +0000, Damien Le Moal wrote:
-> >> On 2021/06/03 18:54, David Sterba wrote:
-> >>> On Mon, May 31, 2021 at 01:54:53PM +0000, Niklas Cassel wrote:
-> >>>> From: Niklas Cassel <niklas.cassel@wdc.com>
-> >>>>
-> >>>> Performing a BLKREPORTZONE operation should be allowed under the same
-> >>>> permissions as read(). (read() does not require CAP_SYS_ADMIN).
-> >>>>
-> >>>> Remove the CAP_SYS_ADMIN requirement, and instead check that the fd was
-> >>>> successfully opened with FMODE_READ. This way BLKREPORTZONE will match
-> >>>> the access control requirement of read().
-> >>>
-> >>> Does this mean that a process that does not have read nor write access
-> >>> to the device itself (blocks) is capable of reading the zone
-> >>> information? Eg. some monitoring tool.
-> >>
-> >> With this change, to do a report zones, the process will only need to have read
-> >> access to the device. And if it has read access, it also means that it can read
-> >> the zones content.
-> > 
-> > Ok, so this is a bit restricting. The zone information is like block
-> > device metadata, comparing it to a file that has permissionx 0600 I can
-> > see the all the stat info (name, tiemstamps) but can't read the data.
-> > 
-> > But as the ioctl work, it needs a file descriptor and there's probably
-> > no way to separate the permissions to read blocks and just the metadata.
-> > For a monitoring/reporting tool this would be useful. Eg. for btrfs it
-> > could be part of filesystem status overview regarding full or near-full
-> > zones and emitting an early warning or poking some service to start the
-> > reclaim.
-> 
-> You lost me... the change is less restrictive than before because the process
-> does not need SYS_CAP_ADMIN anymore. The block device file open is untouched, no
-> change. So whatever process could open it before, will still be able to do so as
-> is. More processes will be able to do report zones with the change. That is all
-> really that changes, so I do not see what potentially breaks, nor how this may
-> prevent writing some monitoring tool. Whoever can open the block device file has
-> FMODE_READ rights, no ? Am I missing something here ?
+On Thu, May 20, 2021 at 10:17:58PM +0300, Arseny Krasnov wrote:
+>Callback fetches RW packets from rx queue of socket until whole record
+>is copied(if user's buffer is full, user is not woken up). This is done
+>to not stall sender, because if we wake up user and it leaves syscall,
+>nobody will send credit update for rest of record, and sender will wait
+>for next enter of read syscall at receiver's side. So if user buffer is
+>full, we just send credit update and drop data.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> v9 -> v10:
+> 1) Number of dequeued bytes incremented even in case when
+>    user's buffer is full.
+> 2) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
+> 3) Rename variable 'err' to 'dequeued_len', in case of error
+>    it has negative value.
+>
+> include/linux/virtio_vsock.h            |  5 ++
+> net/vmw_vsock/virtio_transport_common.c | 65 +++++++++++++++++++++++++
+> 2 files changed, 70 insertions(+)
+>
+>diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>index dc636b727179..02acf6e9ae04 100644
+>--- a/include/linux/virtio_vsock.h
+>+++ b/include/linux/virtio_vsock.h
+>@@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+> 			       struct msghdr *msg,
+> 			       size_t len, int flags);
+>
+>+ssize_t
+>+virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>+				   struct msghdr *msg,
+>+				   int flags,
+>+				   bool *msg_ready);
+> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index ad0d34d41444..61349b2ea7fe 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -393,6 +393,59 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+> 	return err;
+> }
+>
+>+static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>+						 struct msghdr *msg,
+>+						 int flags,
+>+						 bool *msg_ready)
+>+{
+>+	struct virtio_vsock_sock *vvs = vsk->trans;
+>+	struct virtio_vsock_pkt *pkt;
+>+	int dequeued_len = 0;
+>+	size_t user_buf_len = msg_data_left(msg);
+>+
+>+	*msg_ready = false;
+>+	spin_lock_bh(&vvs->rx_lock);
+>+
+>+	while (!*msg_ready && !list_empty(&vvs->rx_queue) && dequeued_len >= 0) {
 
-I'm not saying the patch is wrong or not doing what it says. What caught
-my attention was the fact that the admin capabilities is not that
-different from requiring the read permissions. Which for a block device
-is not easy to get. Normally block devices have 0660 and group is
-'disk', so yeah I can add a monitoring daemon to the group. But that
-still would allow it to read all block devices.
+I'
 
-So yeah, the patch is making it easier but from my POV it's not that
-practical. A more fine grained access control would be needed, or
-another way how to read just the zone info. Reading the information from
-eg. sysfs has it's own issues.
+>+		size_t bytes_to_copy;
+>+		size_t pkt_len;
+>+
+>+		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>+		pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+>+		bytes_to_copy = min(user_buf_len, pkt_len);
+>+
+>+		if (bytes_to_copy) {
+>+			/* sk_lock is held by caller so no one else can dequeue.
+>+			 * Unlock rx_lock since memcpy_to_msg() may sleep.
+>+			 */
+>+			spin_unlock_bh(&vvs->rx_lock);
+>+
+>+			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy))
+>+				dequeued_len = -EINVAL;
+
+I think here is better to return the error returned by memcpy_to_msg(), 
+as we do in the other place where we use memcpy_to_msg().
+
+I mean something like this:
+			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
+			if (err)
+				dequeued_len = err;
+
+>+			else
+>+				user_buf_len -= bytes_to_copy;
+>+
+>+			spin_lock_bh(&vvs->rx_lock);
+>+		}
+>+
+
+Maybe here we can simply break the cycle if we have an error:
+		if (dequeued_len < 0)
+			break;
+
+Or we can refactor a bit, simplifying the while() condition and also the 
+code in this way (not tested):
+
+	while (!*msg_ready && !list_empty(&vvs->rx_queue)) {
+		...
+
+		if (bytes_to_copy) {
+			int err;
+
+			/* ...
+			*/
+			spin_unlock_bh(&vvs->rx_lock);
+			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
+			if (err) {
+				dequeued_len = err;
+				goto out;
+			}
+			spin_lock_bh(&vvs->rx_lock);
+
+			user_buf_len -= bytes_to_copy;
+		}
+
+		dequeued_len += pkt_len;
+
+		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
+			*msg_ready = true;
+
+		virtio_transport_dec_rx_pkt(vvs, pkt);
+		list_del(&pkt->list);
+		virtio_transport_free_pkt(pkt);
+	}
+
+out:
+	spin_unlock_bh(&vvs->rx_lock);
+
+	virtio_transport_send_credit_update(vsk);
+
+	return dequeued_len;
+}
+
