@@ -2,174 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFEF39A040
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D67B39A04A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhFCLyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhFCLyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:54:23 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC845C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 04:52:38 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id h3so3217759wmq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Nxij94IMFMsp61zYWJS5XKMycKfWOvntSLUdgR9Luec=;
-        b=PP1Vx2P7z4p7uzC7frRq63E4x3I08msTGMShcvAdEGFQwbgoSQLam6TY7qFtZnfrip
-         sZ2vdZz58OMVJtBV+LV7UtfH3hRj1TGjasngZ2KltASWY+0UFk1GkCFvbmMy1zh8VBMP
-         dPoAp8/Papp6e6Y9syxE5WTIn3EkF63IUFXhjOyvBnTk1EZXXSJ1zWN+ZFpLmyfRRgmV
-         zaZeW5clEklapwp4mQNAksAoChe6wCnp4zD6/sK7bIoELjiqOV1BWj7Fd7qq0A12wR59
-         YBj4xTZnnoKIwJpwtS8WL69eLi0TYKCyPQcOnDWAOzYthTaMGxq+z6P1knTVhENqAX1n
-         l+Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Nxij94IMFMsp61zYWJS5XKMycKfWOvntSLUdgR9Luec=;
-        b=L/VrDnJG/o2XyxbM1GRoN1pMRhZoHIU2psXOYVL6Jx1k4iwHv7O4jCY0cfSfIMbEuJ
-         9htsqU1BInc1taIBk/WFPhb7ciEU9cbmB8czGUs0iaDJSKXj4NAYz1hctrs5qNx3L/P9
-         HSa7fZ97oQHZ9EUTGuUFnEgoMipXrRi/xdtiaAz2DiSbm0kJsHVEQY/q9Y2DXtI0iylj
-         6uRUjAAq9wnWcGNzoX1CiFPMa+4Es3PYwbPSPcxc8s0utRuJ6qomAMp+gB0kg/cPQiMF
-         ueUHH1c0Yq5h9WdBiRmuQ8jZB65dP6SRmvlyJF7VieTAXgaM5UTLcR8b53dZmGm2BjvW
-         ZKCw==
-X-Gm-Message-State: AOAM532yb/uFCqFfNmCrNLUSGJ9C0XvQu4QQlZZWHCDAu1fCX9E9gCwo
-        q/RyKwFzIGb8hTpEvbjPKNp8R+tuHvfvHw==
-X-Google-Smtp-Source: ABdhPJy5Njm66nMjE/L6HCMm1K6dzFQlD8FyCcfSndwd7kIwe0+i4mO9AXShjFboYjDIKB2XcsUlUA==
-X-Received: by 2002:a05:600c:4e8b:: with SMTP id f11mr4461550wmq.40.1622721157306;
-        Thu, 03 Jun 2021 04:52:37 -0700 (PDT)
-Received: from dell ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id h9sm2479488wmb.35.2021.06.03.04.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 04:52:36 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 12:52:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org, Adam Jackson <ajax@redhat.com>,
-        Ajay Kumar <ajaykumar.rs@samsung.com>,
-        Akshu Agarwal <akshua@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        amd-gfx@lists.freedesktop.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Ben Widawsky <ben@bwidawsk.net>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
-        Fabien Dessenne <fabien.dessenne@st.com>,
-        freedreno@lists.freedesktop.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        nouveau@lists.freedesktop.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Clark <robdclark@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Vincent Abriou <vincent.abriou@st.com>
-Subject: Re: [RESEND 00/26] Rid W=1 warnings from GPU
-Message-ID: <20210603115234.GA2435141@dell>
-References: <20210602143300.2330146-1-lee.jones@linaro.org>
- <YLi+KJrLjKbdXLxH@phenom.ffwll.local>
+        id S229885AbhFCLzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:55:38 -0400
+Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:45017
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229804AbhFCLzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:55:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A17yWOHGybCQ3iW+Hd9dYTgS/JX26W8SlwlRaA/o/0sEHFkl0oMmqr25MU/GMD++xtV4FOh3D8hjUWzjNzuEf2V1hWd9G1EEYqgq91IxMpNBNCR5ANYr16QN0KgO451AH5v4eE04w1Q/awVdjfXgsoDEnNz7jOnYgI31CnnBMfKVqChCvQXcQD6FtjIAI4RZG+Tf0LESKLb6tq9C6leig1+yp7VeYW/t64+8lPACSv1iPtwagbud7cW+wya/DpPFpUN524LQsiE9jiFdpUfSiR+OGzdc84iOW6aSd35rYWUdF4U9q9lOmGlEkA8yLxq1qhMa7RUyAp4DCPh78MtHgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K4WUDyJj7gTOYbYEemLtapHbT97B1ctIxxNNdqaJGr4=;
+ b=hXyCd5ShIao1M8gTadT9aVanfRnaHAiaqrHNRuVSzIGzNiCQkOeYWBD2omZN6lMsmxgiEeiDn67JD1cQL6VTU9uA1GjCBK0xy7t7VwDkuyshOWOYiuP5NQjBgKnyOh/epXxgJPoRQDYZeMEpaTuZduopxKJ0taUn26X5hhqRRyZZz12U3h+WLiXfmf9BAtKjjdsJWP24VBzV3c8jvUztmDnSHmAuMpNzkhLJuO43ExkmVZo3YxVC7GCbP7okWMWcjAFJ77Qb8VuYt+yKJ7965SlK2QI3fz5TyKiCG4evHtDJmtGRgYWnTyxP3GcLWMJnbGEORfm8w7Or0aduxC6DyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K4WUDyJj7gTOYbYEemLtapHbT97B1ctIxxNNdqaJGr4=;
+ b=g19UjXyYLkZCeBlR7Oio7HcYQUS8kNMi4H2/o9coTzI7MxygtLe4RNdAZqqwV0CduGdXRQIlHEl7VKCT1i0yr+ZaL/ValTmKeSH/XDTWXu6Ov87AZU9GArOxoOOxKVNaLVcMvEmqxfff6m+atlcpOCay16yM4r8qdDDLnohJJQihflKx2fLKIJQkgGj/eg7zpsR4rx6wxIyjrD0YZmCpTfk0JFy1FN8rQzGUelZgi9ESefHrUD6ZUu3UGDdGpN89p1WXXcIeal1kNbMUnKcedsQhzlzXCX3Jbf5NHan4FEZN6WU8DX+FwDkOOV2xugzGJjxPeisNPzCZekgHKwJksA==
+Received: from DM5PR2001CA0008.namprd20.prod.outlook.com (2603:10b6:4:16::18)
+ by BN8PR12MB2996.namprd12.prod.outlook.com (2603:10b6:408:48::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Thu, 3 Jun
+ 2021 11:53:51 +0000
+Received: from DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:16:cafe::34) by DM5PR2001CA0008.outlook.office365.com
+ (2603:10b6:4:16::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend
+ Transport; Thu, 3 Jun 2021 11:53:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT025.mail.protection.outlook.com (10.13.172.197) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Thu, 3 Jun 2021 11:53:50 +0000
+Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
+ 2021 11:53:47 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3 04/27] mm/userfaultfd: Introduce special pte for unmapped file-backed mem
+Date:   Thu, 3 Jun 2021 21:53:45 +1000
+Message-ID: <4688876.HeLTNyGTSD@nvdebian>
+In-Reply-To: <YLDoYusJ9wAeahdZ@t490s>
+References: <20210527201927.29586-1-peterx@redhat.com> <4422901.rTkcW5k3cD@nvdebian> <YLDoYusJ9wAeahdZ@t490s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YLi+KJrLjKbdXLxH@phenom.ffwll.local>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fc3faefa-9572-4f11-f897-08d926864111
+X-MS-TrafficTypeDiagnostic: BN8PR12MB2996:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB299651DCD2BB5792EA0FD8C1DF3C9@BN8PR12MB2996.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2YeMRRErlO8GK95ZIsdoODn012hjE2xK5Cyy6RNpuAX7SJTlRgJUDkvNTEMyFf3UZm48ZRpjJk2wLiPa38FoXat2tVCfxA7aUswpRb88LhqSX2/iWGeQl1UecAcHXRffiiPyfTeaKCTn9ue+/qMF6rRqQMNPZyWM+fzBrqiAn3B94Y8l9QwRMPU/MOExvaict7/YdXbIs2yhZ2MxnCG/2bZGdOUjWV+5lx0PMSWF6eZUciOZVC8ob82zKG9t/ke6LvYpFFHNyJaDNqX/XbFx3fsRhsHeb1a2IIzY5HVPVAV2SwYB2mvN1XJRc5j0wP6wOU2aovJScRgCSPXiw++Gj63+NM59OUDe35lgJ8dYKVa8ZxHIZXBVLPjw5+SEZ6IP9TzAMdgdxq22I/zIH6AQeb431Yrw8zQ8O0+HA/6GpFz1xaaUs0fD1JaUgwFamwwLtwKpsilhPHydG/ocJPihjCk2OB9xFB17DcvuZRKQVy3QpVNU2u46VW10rY1KsjMC+4ZjpSMDjINqusXI+AfZlPRBEK9Ulnouyj1hM/m2aeuWlT0Jwx0dzGexzL/AIcbj6EZgQ96wl6q0drbWr2+t7UFLUlzfI9or6r5MVE5tlHqs7Ssixa8KzlbZJ6i6tbMhhoUFUmGvIv0B0ZGs1YhFBPRAKfJIQtmNPTTTis9n7qw=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(36840700001)(46966006)(86362001)(478600001)(9576002)(70206006)(54906003)(82310400003)(82740400003)(426003)(6916009)(316002)(83380400001)(26005)(7636003)(356005)(4326008)(70586007)(2906002)(7416002)(16526019)(47076005)(186003)(36860700001)(336012)(8936002)(5660300002)(9686003)(36906005)(33716001)(8676002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 11:53:50.7737
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc3faefa-9572-4f11-f897-08d926864111
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2996
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021, Daniel Vetter wrote:
-
-> On Wed, Jun 02, 2021 at 03:32:34PM +0100, Lee Jones wrote:
-> > Some off these patches have been knocking around for a while.
+On Friday, 28 May 2021 10:56:02 PM AEST Peter Xu wrote:
+> On Fri, May 28, 2021 at 06:32:52PM +1000, Alistair Popple wrote:
+> > On Friday, 28 May 2021 6:19:04 AM AEST Peter Xu wrote:
+> > > This patch introduces a very special swap-like pte for file-backed
+> > > memories.
+> > > 
+> > > Currently it's only defined for x86_64 only, but as long as any arch
+> > > that
+> > > can properly define the UFFD_WP_SWP_PTE_SPECIAL value as requested, it
+> > > should conceptually work too.
+> > > 
+> > > We will use this special pte to arm the ptes that got either unmapped or
+> > > swapped out for a file-backed region that was previously wr-protected. 
+> > > This special pte could trigger a page fault just like swap entries, and
+> > > as long as the page fault will satisfy pte_none()==false &&
+> > > pte_present()==false.
+> > > 
+> > > Then we can revive the special pte into a normal pte backed by the page
+> > > cache.
+> > > 
+> > > This idea is greatly inspired by Hugh and Andrea in the discussion,
+> > > which is referenced in the links below.
+> > > 
+> > > The other idea (from Hugh) is that we use swp_type==1 and swp_offset=0
+> > > as
+> > > the special pte.  The current solution (as pointed out by Andrea) is
+> > > slightly preferred in that we don't even need swp_entry_t knowledge at
+> > > all
+> > > in trapping these accesses.  Meanwhile, we also reuse _PAGE_SWP_UFFD_WP
+> > > from the anonymous swp entries.
 > > 
-> > Who will hoover them up please?
-> > 
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> > 
-> > Lee Jones (26):
-> >   drm/mediatek/mtk_disp_color: Strip incorrect doc and demote header
-> >   drm/mediatek/mtk_disp_gamma: Strip and demote non-conformant
-> >     kernel-doc header
-> >   drm/mediatek/mtk_disp_ovl: Strip and demote non-conformant header
-> >   drm/mediatek/mtk_disp_rdma: Strip and demote non-conformant kernel-doc
-> >     header
-> >   drm/sti/sti_hdmi_tx3g4c28phy: Provide function names for kernel-doc
-> >     headers
-> >   drm/sti/sti_hda: Provide missing function names
-> >   drm/sti/sti_tvout: Provide a bunch of missing function names
-> >   drm/sti/sti_hqvdp: Fix incorrectly named function 'sti_hqvdp_vtg_cb()'
-> >   drm/msm/disp/dpu1/dpu_encoder_phys_cmd: Remove unused variable
-> >     'cmd_enc'
-> >   drm/msm/disp/dpu1/dpu_hw_interrupts: Demote a bunch of kernel-doc
-> >     abuses
-> >   drm/msm/disp/dpu1/dpu_plane: Fix a couple of naming issues
-> >   drm/msm/msm_gem: Demote kernel-doc abuses
-> >   drm/msm/dp/dp_catalog: Correctly document param 'dp_catalog'
-> >   drm/msm/dp/dp_link: Fix some potential doc-rot
-> >   drm/nouveau/nvkm/subdev/mc/tu102: Make functions called by reference
-> >     static
-> >   drm/amd/display/dc/dce/dce_transform: Remove superfluous
-> >     re-initialisation of DCFE_MEM_LIGHT_SLEEP_CNTL,
-> >   drm/xlnx/zynqmp_disp: Fix incorrectly named enum
-> >     'zynqmp_disp_layer_id'
-> >   drm/xlnx/zynqmp_dp: Fix incorrectly name function 'zynqmp_dp_train()'
-> >   drm/ttm/ttm_tt: Demote non-conformant kernel-doc header
-> >   drm/panel/panel-raspberrypi-touchscreen: Demote kernel-doc abuse
-> >   drm/panel/panel-sitronix-st7701: Demote kernel-doc abuse
-> >   drm/vgem/vgem_drv: Standard comment blocks should not use kernel-doc
-> >     format
-> >   drm/exynos/exynos7_drm_decon: Fix incorrect naming of
-> >     'decon_shadow_protect_win()'
-> >   drm/exynos/exynos_drm_ipp: Fix documentation for
-> >     'exynos_drm_ipp_get_{caps,res}_ioctl()'
-> >   drm/vboxvideo/hgsmi_base: Place function names into headers
-> >   drm/vboxvideo/modesetting: Provide function names for prototype
-> >     headers
+> > So to confirm my understanding the reason you use this special swap pte
+> > instead of a new swp_type is that you only need the fault and have no
+> > extra
+> > information that needs storing in the pte?
 > 
-> Except for msm (Rob Clark promised on irc he'll pick them up for 5.14
-> soon) and amd (Alex is on top of things I think) I picked them all up and
-> merged into drm-misc-next.
+> Yes.
+> 
+> > Personally I think it might be better to define a new swp_type for this
+> > rather than introducing a new arch-specific concept.
+> 
+> The concept should not be arch-specific, it's the pte that's arch-specific.
 
-Superstar!  Thanks Daniel.
+Right, agree this is a minor detail.
+ 
+> > swp_type entries are portable so wouldn't need extra arch-specific bits
+> > defined. And as I understand things not all architectures (eg. ARM) have
+> > spare bits in their swap entry encoding anyway so would have to reserve a
+> > bit specifically for this which would be less efficient than using a
+> > swp_type.
+> It looks a trade-off to me: I think it's fine to use swap type in my series,
+> as you said it's portable, but it will also waste the swap address space
+> for the arch when the arch enables it.
+> 
+> The format of the special pte to trigger the fault in this series should be
+> only a small portion of the code change.  The main logic should still be the
+> same - we just replace this pte with that one.  IMHO it also means the
+> format can be changed in the future, it's just that I don't know whether
+> it's wise to take over a new swap type from start.
+>
+> > Anyway it seems I missed the initial discussion so don't have a strong
+> > opinion here, mainly just wanted to check my understanding of what's
+> > required and how these special entries work.
+> 
+> Thanks for mentioning this and join the discussion. I don't know ARM enough
+> so good to know we may have issue on finding the bits.  Actually before
+> finding this bit for file-backed uffd-wp specifically, we need to firstly
+> find a bit in the normal pte for ARM too anyways (see _PAGE_UFFD_WP).  If
+> there's no strong reason to switch to a new swap type, I'd tend to leave
+> all these to the future when we enable them on ARM.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Yeah, makes sense to me. As you say it should be easy to change and other 
+architectures need to find another bit anyway. Not sure how useful it will be 
+but I'll try and take a look over the rest of the series as well.
+
+> --
+> Peter Xu
+
+
+
+
