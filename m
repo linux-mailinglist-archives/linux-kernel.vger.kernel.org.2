@@ -2,111 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECFC399FE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA81399FE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhFCLhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:37:00 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:53843 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhFCLg7 (ORCPT
+        id S229963AbhFCLgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:36:50 -0400
+Received: from mail-ej1-f53.google.com ([209.85.218.53]:44957 "EHLO
+        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhFCLgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:36:59 -0400
-Received: by mail-wm1-f42.google.com with SMTP id h3so3184319wmq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:34:59 -0700 (PDT)
+        Thu, 3 Jun 2021 07:36:49 -0400
+Received: by mail-ej1-f53.google.com with SMTP id c10so8668144eja.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dDlsfUVoPz4mflmjcY/17kiGQZC/D+4tAfNsl24/syY=;
-        b=I33Sa5PdYGfNQKY6cAOIwcMXmeroW1m4Oz5alOZxht7s147JhQGghyjwGeESW8gRo6
-         SuP7K1TW+jJxffBQf2GxFw1F6/UzK1CV4s4VSF8AE9U4cL9xDRHxoG/oa6eHYczCRMj+
-         ahTYmh0FeW4SmS7S7hRi1WnWRh6Ci+cqtf3UA=
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6HvIM789SubGuMYbkNpXgOUOzv2hDzoCVUlTW74s4fU=;
+        b=Icz+hjCozpAbugnKTylUiZbczne6xNvCGiJZU4Ly+Y0sTLpTodbh9k4gjcGfRsjGg/
+         no7FFQmnsdBfKr9sK4hrwdOb1O14S9safSd/B9yMITPwQlvWCp+FhIUkoUgp/bmsqz9c
+         88sMh5y11ExAwXNyPJkPGgqwn4tfntMA/Y84s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dDlsfUVoPz4mflmjcY/17kiGQZC/D+4tAfNsl24/syY=;
-        b=QANP4H/Arrqc+rdpPiUUhNKw1RLofWT+Tk82X+2TsOemhVoezcgLFxScnQ/DKMp5iw
-         DXD//DTFakbwQos11VqZLFXoMFs4KTDr9FNcUuuBaa4f8qodVDswsB5T7VXHgBwi4Zki
-         mNGDedmlbhF8mb8Xxi0rC1nZ4p2y+Tl4QXp6w7pH2O0MBW4jjF9rrorjlMcqSf3TxllZ
-         XX7GF5h1S4xKIgjg2PMrzb27AvOuUgJP5FSN6kdLjhHd50Kf//8iA4x0MKv9+gQVN0xB
-         p6CJuBHiphe8dIFjhE8gZOXVyGa9y1nR7UdSichlosN0ZFKi4IDEkun5U6n/h9X1uACW
-         ZI5w==
-X-Gm-Message-State: AOAM533KpA9kPeiYCpRV0QOZkOt5219j7DITQlhObWMR2/3WQXPo+TwM
-        /v7ZAVpthgtpTy630bBv1M/UyXygbUHUvrVmZsc=
-X-Google-Smtp-Source: ABdhPJzxGp42YLePRB+COjvEZscGLJ1f57oLKFzG258csqxuu/Y26xpaJN44MSJysb/GFA/LgvlFLA==
-X-Received: by 2002:a1c:7402:: with SMTP id p2mr9615488wmc.88.1622720039043;
-        Thu, 03 Jun 2021 04:33:59 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:6726])
-        by smtp.gmail.com with ESMTPSA id l16sm5710461wmj.47.2021.06.03.04.33.58
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=6HvIM789SubGuMYbkNpXgOUOzv2hDzoCVUlTW74s4fU=;
+        b=q/g5cvuT+bClx/OwZEvpNNKxG/ZNeU7cYib2M1+8+3CeBCMP7z1tarkjEc+6W1GeJo
+         cIU+CBxKn73X6aGtCche21n64sZ/bP2Khaqa8lSolGctwlHe/Yx7jz63IFTlw2O0n/0y
+         sVqRcQahxtPsT6z1O8d5oB4JOsJ6W/9zY77RQtM2yxmMyXKXGToPnvCubh+GCQVx3Cwq
+         MUSzzILcUCHYiyaoOZpVBo1HtvC01Um9cva3kUEL+6GJFVsN1mDBNLnTNMtuRiEx6rYE
+         pItLmJi4ipAkQDGkbsf27MJcPQDrA9K8wtN6hgWRi/vRMpNRbBkipyXFYSGxLZ7UrelQ
+         DXtw==
+X-Gm-Message-State: AOAM532q2h7yaVB0vAJDLJSYel5YtqFqtaRk/TGaJuddjYzFFjur8Kmf
+        dMcdHLfYbuBDMfNETxQiEFQ2Qw==
+X-Google-Smtp-Source: ABdhPJyCwjLRS9cmLZJ0uTIlfsEVYF9kSAF6LM5y2zAtZNY0+nXGguY0rzWF/YLHqYcWC2qrUHt3Fw==
+X-Received: by 2002:a17:906:51d8:: with SMTP id v24mr23819138ejk.264.1622720043762;
+        Thu, 03 Jun 2021 04:34:03 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id p7sm1638842edw.43.2021.06.03.04.34.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 04:33:58 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 12:33:58 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     legion@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-Message-ID: <YLi+JoBwfLtqVGiP@chrisdown.name>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
+        Thu, 03 Jun 2021 04:34:03 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 13:34:00 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Adam Jackson <ajax@redhat.com>,
+        Ajay Kumar <ajaykumar.rs@samsung.com>,
+        Akshu Agarwal <akshua@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        amd-gfx@lists.freedesktop.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Ben Widawsky <ben@bwidawsk.net>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
+        Fabien Dessenne <fabien.dessenne@st.com>,
+        freedreno@lists.freedesktop.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        nouveau@lists.freedesktop.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Vincent Abriou <vincent.abriou@st.com>
+Subject: Re: [RESEND 00/26] Rid W=1 warnings from GPU
+Message-ID: <YLi+KJrLjKbdXLxH@phenom.ffwll.local>
+Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org, Adam Jackson <ajax@redhat.com>,
+        Ajay Kumar <ajaykumar.rs@samsung.com>,
+        Akshu Agarwal <akshua@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Alistair Popple <apopple@nvidia.com>, amd-gfx@lists.freedesktop.org,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Ben Skeggs <bskeggs@redhat.com>, Ben Widawsky <ben@bwidawsk.net>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        Eric Anholt <eric@anholt.net>,
+        Fabien Dessenne <fabien.dessenne@st.com>,
+        freedreno@lists.freedesktop.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Hyun Kwon <hyun.kwon@xilinx.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        nouveau@lists.freedesktop.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <robdclark@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+        Sean Paul <sean@poorly.run>, Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Vincent Abriou <vincent.abriou@st.com>
+References: <20210602143300.2330146-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
-User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210602143300.2330146-1-lee.jones@linaro.org>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexey,
+On Wed, Jun 02, 2021 at 03:32:34PM +0100, Lee Jones wrote:
+> Some off these patches have been knocking around for a while.
+> 
+> Who will hoover them up please?
+> 
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> Lee Jones (26):
+>   drm/mediatek/mtk_disp_color: Strip incorrect doc and demote header
+>   drm/mediatek/mtk_disp_gamma: Strip and demote non-conformant
+>     kernel-doc header
+>   drm/mediatek/mtk_disp_ovl: Strip and demote non-conformant header
+>   drm/mediatek/mtk_disp_rdma: Strip and demote non-conformant kernel-doc
+>     header
+>   drm/sti/sti_hdmi_tx3g4c28phy: Provide function names for kernel-doc
+>     headers
+>   drm/sti/sti_hda: Provide missing function names
+>   drm/sti/sti_tvout: Provide a bunch of missing function names
+>   drm/sti/sti_hqvdp: Fix incorrectly named function 'sti_hqvdp_vtg_cb()'
+>   drm/msm/disp/dpu1/dpu_encoder_phys_cmd: Remove unused variable
+>     'cmd_enc'
+>   drm/msm/disp/dpu1/dpu_hw_interrupts: Demote a bunch of kernel-doc
+>     abuses
+>   drm/msm/disp/dpu1/dpu_plane: Fix a couple of naming issues
+>   drm/msm/msm_gem: Demote kernel-doc abuses
+>   drm/msm/dp/dp_catalog: Correctly document param 'dp_catalog'
+>   drm/msm/dp/dp_link: Fix some potential doc-rot
+>   drm/nouveau/nvkm/subdev/mc/tu102: Make functions called by reference
+>     static
+>   drm/amd/display/dc/dce/dce_transform: Remove superfluous
+>     re-initialisation of DCFE_MEM_LIGHT_SLEEP_CNTL,
+>   drm/xlnx/zynqmp_disp: Fix incorrectly named enum
+>     'zynqmp_disp_layer_id'
+>   drm/xlnx/zynqmp_dp: Fix incorrectly name function 'zynqmp_dp_train()'
+>   drm/ttm/ttm_tt: Demote non-conformant kernel-doc header
+>   drm/panel/panel-raspberrypi-touchscreen: Demote kernel-doc abuse
+>   drm/panel/panel-sitronix-st7701: Demote kernel-doc abuse
+>   drm/vgem/vgem_drv: Standard comment blocks should not use kernel-doc
+>     format
+>   drm/exynos/exynos7_drm_decon: Fix incorrect naming of
+>     'decon_shadow_protect_win()'
+>   drm/exynos/exynos_drm_ipp: Fix documentation for
+>     'exynos_drm_ipp_get_{caps,res}_ioctl()'
+>   drm/vboxvideo/hgsmi_base: Place function names into headers
+>   drm/vboxvideo/modesetting: Provide function names for prototype
+>     headers
 
-legion@kernel.org writes:
->From: Alexey Gladkov <legion@kernel.org>
->The /proc/meminfo contains information regardless of the cgroups
->restrictions. This file is still widely used [1]. This means that all
->these programs will not work correctly inside container [2][3][4]. Some
->programs try to respect the cgroups limits, but not all of them
->implement support for all cgroup versions [5].
->
->Correct information can be obtained from cgroups, but this requires the
->cgroups to be available inside container and the correct version of
->cgroups to be supported.
+Except for msm (Rob Clark promised on irc he'll pick them up for 5.14
+soon) and amd (Alex is on top of things I think) I picked them all up and
+merged into drm-misc-next.
 
-Then they should add support for it. We already export these metrics as part of 
-cgroups and plenty of applications like Docker, podman, containerd, systemd, 
-runc, etc already support it.
+Thanks, Daniel
 
-Putting stuff in /proc to get around the problem of "some other metric I need 
-might not be exported to a container" is not a very compelling argument. If 
-they want it, then export it to the container...
+> 
+>  .../drm/amd/display/dc/dce/dce_transform.h    |  3 +-
+>  drivers/gpu/drm/exynos/exynos7_drm_decon.c    |  2 +-
+>  drivers/gpu/drm/exynos/exynos_drm_ipp.c       |  4 +--
+>  drivers/gpu/drm/mediatek/mtk_disp_color.c     |  3 +-
+>  drivers/gpu/drm/mediatek/mtk_disp_gamma.c     |  4 +--
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  3 +-
+>  drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |  4 +--
+>  .../drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c  |  4 ---
+>  .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 32 +++++++++----------
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c     |  4 +--
+>  drivers/gpu/drm/msm/dp/dp_catalog.c           |  2 +-
+>  drivers/gpu/drm/msm/dp/dp_link.c              |  6 ++--
+>  drivers/gpu/drm/msm/msm_gem.c                 |  4 +--
+>  .../gpu/drm/nouveau/nvkm/subdev/mc/tu102.c    |  6 ++--
+>  .../drm/panel/panel-raspberrypi-touchscreen.c |  2 +-
+>  drivers/gpu/drm/panel/panel-sitronix-st7701.c |  2 +-
+>  drivers/gpu/drm/sti/sti_hda.c                 |  6 ++--
+>  drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c    |  4 +--
+>  drivers/gpu/drm/sti/sti_hqvdp.c               |  2 +-
+>  drivers/gpu/drm/sti/sti_tvout.c               | 18 +++++------
+>  drivers/gpu/drm/ttm/ttm_tt.c                  |  2 +-
+>  drivers/gpu/drm/vboxvideo/hgsmi_base.c        | 19 +++++++----
+>  drivers/gpu/drm/vboxvideo/modesetting.c       | 20 +++++++-----
+>  drivers/gpu/drm/vgem/vgem_drv.c               |  2 +-
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c            |  2 +-
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c              |  2 +-
+>  26 files changed, 80 insertions(+), 82 deletions(-)
+> 
+> Cc: Adam Jackson <ajax@redhat.com>
+> Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
+> Cc: Akshu Agarwal <akshua@gmail.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: Alistair Popple <apopple@nvidia.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: Ben Widawsky <ben@bwidawsk.net>
+> Cc: Chandan Uddaraju <chandanu@codeaurora.org>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Eric Anholt <eric@anholt.net>
+> Cc: Fabien Dessenne <fabien.dessenne@st.com>
+> Cc: freedreno@lists.freedesktop.org
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Huang Rui <ray.huang@amd.com>
+> Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+> Cc: Inki Dae <inki.dae@samsung.com>
+> Cc: Jagan Teki <jagan@amarulasolutions.com>
+> Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+> Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Mauro Rossi <issor.oruam@gmail.com>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: nouveau@lists.freedesktop.org
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Vincent Abriou <vincent.abriou@st.com>
+> -- 
+> 2.31.1
+> 
 
-Ultimately, if they're going to have to add support for a new 
-/proc/self/meminfo file anyway, these use cases should just do it properly 
-through the already supported APIs.
-
->+	for_each_online_node(nid)
->+		mem_cgroup_nr_pages(memcg, nid, mi->pages);
->+
->+	mi->slab_reclaimable = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B);
->+	mi->slab_unreclaimable = memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
->+	mi->cached = memcg_page_state(memcg, NR_FILE_PAGES);
->+	mi->swapcached = memcg_page_state(memcg, NR_SWAPCACHE);
->+	mi->anon_pages = memcg_page_state(memcg, NR_ANON_MAPPED);
->+	mi->mapped = memcg_page_state(memcg, NR_FILE_MAPPED);
->+	mi->nr_pagetable = memcg_page_state(memcg, NR_PAGETABLE);
->+	mi->dirty_pages = memcg_page_state(memcg, NR_FILE_DIRTY);
->+	mi->writeback_pages = memcg_page_state(memcg, NR_WRITEBACK);
->+}
-
-This presents an extraordinarily confusing API. A cgroup can contain more than 
-one process, so it's not right to present this information as "meminfo" in 
-/proc/self when these statistics may not have any relation to the current task 
-under question.
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
