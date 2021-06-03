@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAC039A9F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A53539A9F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhFCSYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:24:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:6082 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229888AbhFCSYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:24:43 -0400
-IronPort-SDR: aOcLcuL9OYIw11QK0I8CT7L6vbX0EzEPzJrgTtWTyFiTDXyZK/vBdmJK+eOj+d8u7TCqBzyWCO
- 7/st+1mK75CQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="191222693"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="191222693"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 11:22:58 -0700
-IronPort-SDR: D+avzjsf6I/iFZiMJ35B0jk7tlOXafIUv+nJ6XVxw3UrSMKNG5PqDekxYZ9JyFZYSGRNTfOpzm
- 0+k8jS4ZCyzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="636326876"
-Received: from coresw01.iind.intel.com ([10.223.252.64])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Jun 2021 11:22:54 -0700
-From:   rashmi.a@intel.com
-To:     linux-drivers-review-request@eclists.intel.com,
-        michal.simek@xilinx.com, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org,
-        andriy.shevchenko@linux.intel.com, linux-phy@lists.infradead.org
-Cc:     mgross@linux.intel.com, kris.pan@linux.intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        adrian.hunter@intel.com, mahesh.r.vaidya@intel.com,
-        nandhini.srikandan@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com, rashmi.a@intel.com
-Subject: =?utf-8?q?=5B=E2=80=9CPATCH=E2=80=9D=202/2=5D=20phy=3A=20intel=3A=20Fix=20for=20warnings=20due=20to=20EMMC=20clock=20175Mhz=20change=20in=20FIP?=
-Date:   Thu,  3 Jun 2021 23:52:42 +0530
-Message-Id: <20210603182242.25733-3-rashmi.a@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210603182242.25733-1-rashmi.a@intel.com>
-References: <20210603182242.25733-1-rashmi.a@intel.com>
+        id S229772AbhFCS1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:27:04 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:42880 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhFCS1C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:27:02 -0400
+Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafb:ee01:eb34:edf2:c0ff:9e88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 1BFE92082E0;
+        Thu,  3 Jun 2021 20:25:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1622744716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UpmB9rFom+ld5ngaOj8d4z5WZvrPxb9ZTPOARgw0Too=;
+        b=ITmLZqT7r31YIY9Hx6HWQwIcaVXwQ3BAU+KizVciLzEQ+u7iuVYct83ZF3Z3IpcZX6Xs9P
+        5qs/XkRMqDPmhoOYfWQEZBCXiDVetM3v09qbgMuuNhdhdNmFoRIx9qeXWJDCjGgcSxmYYO
+        8zIV+kqO8VoUoxwSGjRjGU4FMKGnj00phBrOuYcJIXZRiXyvvsV30ytgEenP6XHLaBLSQi
+        qE5VLGGOox2eLYpkvNxx2x2eJHub/94iJTlxiD56aQhPOdJFYY88RO6Qbeanjk/KzsFiID
+        ZSMOeK2HbBjeOl22bzXO4GwirjqdC11NBTkD/0p5j4X0ZPDQBCCQTVejCpLQCA==
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Mark Brown <broonie@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>
+Subject: [RFC PATCH 0/2] Clause-22/Clause-45 MDIO regmap support
+Date:   Thu,  3 Jun 2021 20:25:08 +0200
+Message-Id: <cover.1622743333.git.sander@svanheule.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rashmi A <rashmi.a@intel.com>
+The initial MDIO regmap implementation only supported (or claimed to
+only support) clause-22 register access, with 5 bit register addresses.
+However, this was not enforced sufficiently, and regnum values were
+passed verbatim to the mdio bus subsystem.
 
-Since the EMMC clock was changed from 200Mhz to 175Mhz in FIP,
-there were some warnings introduced, as the frequency values
-being checked was still wrt 200Mhz in code. Hence, the frequency
-checks are now updated based on the current 175Mhz EMMC clock changed
-in FIP.
+These patches aim to enforce the register address width, and also add
+clause-45 support for extended address spaces. A clause-45 address is
+defined here as the composite of the device type (see MDIO_MMD_* in
+include/uapi/linux/mdio.h) and the register number, for a total width of
+21 bit.
 
-Spamming kernel log msg:
-"phy phy-20290000.mmc_phy.2: Unsupported rate: 43750000"
+I have zero experience with clause-45 devices, and no such devices
+available for testing. As such, clause-45 code in the second patch is
+entirely untested, although it isn't very complex.
 
-Signed-off-by: Rashmi A <rashmi.a@intel.com>
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/phy/intel/phy-intel-keembay-emmc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Although these patches should eventually make it into regmap-mdio, I
+would like to resolve some questions first.
 
-diff --git a/drivers/phy/intel/phy-intel-keembay-emmc.c b/drivers/phy/intel/phy-intel-keembay-emmc.c
-index eb7c635ed89a..0eb11ac7c2e2 100644
---- a/drivers/phy/intel/phy-intel-keembay-emmc.c
-+++ b/drivers/phy/intel/phy-intel-keembay-emmc.c
-@@ -95,7 +95,8 @@ static int keembay_emmc_phy_power(struct phy *phy, bool on_off)
- 	else
- 		freqsel = 0x0;
- 
--	if (mhz < 50 || mhz > 200)
-+	/* Check for EMMC clock rate*/
-+	if (mhz > 175)
- 		dev_warn(&phy->dev, "Unsupported rate: %d MHz\n", mhz);
- 
- 	/*
+1. I've opted to just ignore any bits that lie beyond the allowed address
+   width. Would it be cleaner to raise an error instead?
+
+2. Packing of the clause-45 register addresses (16 bit) and adressed device
+   type (5 bit) is the same as in the mdio subsystem, resulting in a 21 bit
+   address. Is this an appropriate way to pack this information into one
+   address for the regmap interface?
+
+The reasoning behind (1) is to allow the regmap user to use extra bits
+as a way to virtually extend the address space. Note that this actually
+results in aliasing. This can be useful if the data read from to a
+register doesn't have the same meaning as the data written to it
+(e.g. GPIO pin input and output data). An alternative solution to this
+would be some concept of "aliased registers" in regmap -- like volatile or
+precious registers.
+
+Sander Vanheule (2):
+  regmap: mdio: Clean up invalid clause-22 addresses
+  regmap: mdio: Add clause-45 support
+
+ drivers/base/regmap/regmap-mdio.c | 73 +++++++++++++++++++++++++------
+ 1 file changed, 59 insertions(+), 14 deletions(-)
+
 -- 
-2.17.1
+2.31.1
 
