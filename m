@@ -2,403 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018E239AA08
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7038939AA0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhFCSb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhFCSbz (ORCPT
+        id S229610AbhFCSfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:35:07 -0400
+Received: from mail-qv1-f74.google.com ([209.85.219.74]:40589 "EHLO
+        mail-qv1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhFCSfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:31:55 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0163CC06174A;
-        Thu,  3 Jun 2021 11:30:11 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so4398537pjq.3;
-        Thu, 03 Jun 2021 11:30:10 -0700 (PDT)
+        Thu, 3 Jun 2021 14:35:05 -0400
+Received: by mail-qv1-f74.google.com with SMTP id k6-20020a0cd6860000b029021936c6e8ffso5076979qvi.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:33:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=E71V1Qw+CpfCyVc9M0pYK4Yc0sj2qZplV0S0OjBbfFQ=;
-        b=dVz4SCvRYK2UEw/s8LyTbMyGy2MiqxlfKnW2kl28NnpOGLq3c1l8nYidNx1A7G+HJ8
-         F3gG2GQNR5pgi6MhYJUfZUGwgrBzMvYORcpK1HOsCY0O2M7SenQSQvYqGfgTMTmDypjK
-         /0ziuDxLzhTualXCf62nGNFyvLh7FpsPXP+HGrMlhAkQNDk0Ths+MK9gRw9LOf5TDGS7
-         cBuwOfH+xokXYKph+DfHSoKMD21CvbiWxTO5XHxa9rAEeMhHMnMKWVg9OpSR9OdhleLS
-         JAU2Z6Gf31iAUZcPrQzhDDH/k4CKGmSTILJ1kvyYqBibDTvra5P4i6blH5tvs7KUQHda
-         j4Wg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4PQMCxY9VZoCPKrMMqixmHLUOsEAJoUmXBoh17GhgWU=;
+        b=OqTeCDLtqJYjjc6YAHAcR5yxO7/yVoA590JOswvab1ZYr+9Bh7V1e5y79CVCeO9kdp
+         FLEUFiE9VvGRhP89sFzHqQMrdi09dtw56Gqk45S6RCMP4otxsOhIyHXGIhZb0LDFBz80
+         0XB6kaFoqHfaDbiFKsqpG3YXtV748UD28rdQOuRGeL/4v/qv8J2nJ6RFbp8zqu1w07Iz
+         yeiVT8ULBcM3b4QbHdX7A15zXZTzfSC31luuz4qqJeQSE3dCqO2/6/1l9Q4DFeI+gOKK
+         lWN1rPqEG8IOdBLAVzrdz/nHLjt4HCnyLWnXP3/3QMMtKjMbByGKG6ySlI1XejrxET0w
+         wfXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=E71V1Qw+CpfCyVc9M0pYK4Yc0sj2qZplV0S0OjBbfFQ=;
-        b=QRrrlBpKhGxdi/dfnLzIIPY/dgPkNqW+SS+5S+wMB+TUlrGW5SWAIYUftdVMeIbmf2
-         4Ok3GtxMsY4vFr6Es5O24yg4yztQYOY2FamRkZhpnuwZEric/QXTDXiHiRhU6AKpK6Jc
-         qV3J1lhN7ttX7SxAvBKiLyrGz/P+ctcNptotdt6taBezfs3bUHfCRq1IZdYBfy+8bfVV
-         nqXc/PuQhLW7F1VqhbLITTWenrCWeSY32fVsFslhHBV9GXEp68XJQl9UsE3Tbn9AEtpX
-         EB0/Z3c+0pTnLlZ7/BDJHAJH8PPgaxtkly381fhtAzWYRulMz1EPtbFNzayLdpPFVVnR
-         npxA==
-X-Gm-Message-State: AOAM533tyTfkE3ZKgOpx1VRgQMgRrj9gaO0DKFZJduCWLjiaAULjwkDy
-        yHIl+m4BdHhhxeTuHQPqivc=
-X-Google-Smtp-Source: ABdhPJz1CspluYwZmEUY2zrALPFEJghAS97EIMbUYVG+tsVAtNNSSDlBWW7zmKanWvbzordWA0RTsQ==
-X-Received: by 2002:a17:90a:4a89:: with SMTP id f9mr12725019pjh.50.1622745010413;
-        Thu, 03 Jun 2021 11:30:10 -0700 (PDT)
-Received: from [192.168.1.41] (096-040-190-174.res.spectrum.com. [96.40.190.174])
-        by smtp.gmail.com with ESMTPSA id 4sm3219694pgn.31.2021.06.03.11.30.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 11:30:09 -0700 (PDT)
-Subject: Re: KASAN: use-after-free Read in hci_chan_del
-From:   SyzScope <syzscope@gmail.com>
-To:     syzbot <syzbot+305a91e025a73e4fd6ce@syzkaller.appspotmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, gregkh@linuxfoundation.org
-References: <000000000000adea7f05abeb19cf@google.com>
- <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com>
-Message-ID: <c40de1fa-c152-4c94-041a-7e014085c66e@gmail.com>
-Date:   Thu, 3 Jun 2021 11:30:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4PQMCxY9VZoCPKrMMqixmHLUOsEAJoUmXBoh17GhgWU=;
+        b=cy81b204q5K+jI0hCs2Y9diA8eNZewXJosL5TAVF7yFz0YkXXzOMJNKwTA8DPZGYKf
+         8teoUU6Hi/uFZOopi+LuRwCFRv9bs0mL4oZjX/bun437pQphROFvCn1zyVUHwjHcUJSC
+         xlaQHYN7UyXEO2BE2c7WJqrKhKaNinugPn7L01ArXF/tgYJJkTuUnZISQURkiG4OR9jT
+         a8fgrgVuqAfiwjHNYDS1toSudoNC1VlHvJK2oyxj8N3XZG8A3NPF1mYfSu2ygGzY3WTk
+         HMz8S800jo9kp7lkYn04jLv+7ikCIcdlMPTXOaBFPNJ+1p4ky/+TTiF38c0QEzLgEiFl
+         SaeQ==
+X-Gm-Message-State: AOAM531DX+ZenJD+pm3dYy9HN6k/O/T7bKlOMxrbqPZKGEZSgVBZTn8v
+        3+cnKGKkLOwk6HVij+EvCu5UbwQL6/30rbKFhsiy
+X-Google-Smtp-Source: ABdhPJyBQtTGgrMLS1ij4j6klC5VYHluJ2fynmgZZdZ/anwt+BswzR1xO+t92yBCzcm32gwgcLJaKphBSdSoAJTDMqG+
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:79cd:a91c:f1ad:1ead])
+ (user=axelrasmussen job=sendgmr) by 2002:a05:6214:2467:: with SMTP id
+ im7mr849265qvb.59.1622745140406; Thu, 03 Jun 2021 11:32:20 -0700 (PDT)
+Date:   Thu,  3 Jun 2021 11:32:16 -0700
+Message-Id: <20210603183216.939169-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH] ioctl_userfaultfd.2, userfaultfd.2: add minor fault mode
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi developers,
+Userfaultfd minor fault mode is supported starting from Linux 5.13.
 
-Besides the control flow hijacking primitive we sent before, we managed 
-to discover an additional double free primitive in this bug, making this 
-bug even more dangerous.
+This commit adds a description of the new mode, as well as the new ioctl
+used to resolve such faults. The two go hand-in-hand: one can't resolve
+a minor fault without continue, and continue can't be used to resolve
+any other kind of fault.
 
-We created a web page with detailed descriptions: 
-https://sites.google.com/view/syzscope/kasan-use-after-free-read-in-hci_chan_del
+This patch covers just the hugetlbfs implementation (in 5.13). Support
+for shmem is forthcoming, but as it has not yet made it into a kernel
+release candidate, it will be added in a future commit.
 
-We understand that creating a patch can be time-consuming and there is 
-probably a long list of bugs pending fixes. We hope that our security 
-analysis can enable an informed decision on which bugs to fix first 
-(prioritization).
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ man2/ioctl_userfaultfd.2 | 129 ++++++++++++++++++++++++++++++++++++---
+ man2/userfaultfd.2       |  79 +++++++++++++++++++-----
+ 2 files changed, 186 insertions(+), 22 deletions(-)
 
-Since the bug has been on syzbot for over ten months (first found on 
-08-03-2020 and still can be triggered on 05-08-2021), it is best to have 
-the bug fixed early enough to avoid it being weaponized.
+diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+index 504f61d4b..9d4fc3a40 100644
+--- a/man2/ioctl_userfaultfd.2
++++ b/man2/ioctl_userfaultfd.2
+@@ -214,6 +214,10 @@ memory accesses to the regions registered with userfaultfd.
+ If this feature bit is set,
+ .I uffd_msg.pagefault.feat.ptid
+ will be set to the faulted thread ID for each page-fault message.
++.TP
++.BR UFFD_FEATURE_MINOR_HUGETLBFS " (since Linux 5.13)"
++If this feature bit is set, the kernel supports registering userfaultfd ranges
++in minor mode on hugetlbfs-backed memory areas.
+ .PP
+ The returned
+ .I ioctls
+@@ -240,6 +244,11 @@ operation is supported.
+ The
+ .B UFFDIO_WRITEPROTECT
+ operation is supported.
++.TP
++.B 1 << _UFFDIO_CONTINUE
++The
++.B UFFDIO_CONTINUE
++operation is supported.
+ .PP
+ This
+ .BR ioctl (2)
+@@ -278,14 +287,8 @@ by the current kernel version.
+ (Since Linux 4.3.)
+ Register a memory address range with the userfaultfd object.
+ The pages in the range must be "compatible".
+-.PP
+-Up to Linux kernel 4.11,
+-only private anonymous ranges are compatible for registering with
+-.BR UFFDIO_REGISTER .
+-.PP
+-Since Linux 4.11,
+-hugetlbfs and shared memory ranges are also compatible with
+-.BR UFFDIO_REGISTER .
++What constitutes "compatible" depends on the mode(s) being used, as described
++below.
+ .PP
+ The
+ .I argp
+@@ -324,9 +327,16 @@ the specified range:
+ .TP
+ .B UFFDIO_REGISTER_MODE_MISSING
+ Track page faults on missing pages.
++Since Linux 4.3, only private anonymous ranges are compatible.
++Since Linux 4.11, hugetlbfs and shared memory ranges are also compatible.
+ .TP
+ .B UFFDIO_REGISTER_MODE_WP
+ Track page faults on write-protected pages.
++Since Linux 5.7, only private anonymous ranges are compatible.
++.TP
++.B UFFDIO_REGISTER_MODE_MINOR
++Track minor page faults.
++Since Linux 5.13, only hugetlbfs ranges are compatible.
+ .PP
+ If the operation is successful, the kernel modifies the
+ .I ioctls
+@@ -735,6 +745,109 @@ or not registered with userfaultfd write-protect mode.
+ .TP
+ .B EFAULT
+ Encountered a generic fault during processing.
++.\"
++.SS UFFDIO_CONTINUE
++(Since Linux 5.13.)
++Used for resolving minor faults specifically.
++Take the existing page(s) in the range registered with
++.B UFFDIO_REGISTER_MODE_MINOR
++and install page table entries for them.
++.PP
++The
++.I argp
++argument is a pointer to a
++.I uffdio_continue
++structure as shown below:
++.PP
++.in +4n
++.EX
++struct uffdio_continue {
++    struct uffdio_range range; /* Range to install PTEs for and continue */
++    __u64 mode;                /* Flags controlling the behavior of continue */
++    __s64 mapped;              /* Number of bytes mapped, or negated error */
++};
++.EE
++.in
++.PP
++The following value may be bitwise ORed in
++.IR mode
++to change the behavior of the
++.B UFFDIO_CONTINUE
++operation:
++.TP
++.B UFFDIO_CONTINUE_MODE_DONTWAKE
++Do not wake up the thread that waits for page-fault resolution.
++.PP
++The
++.I mapped
++field is used by the kernel to return the number of bytes
++that were actually mapped, or an error in the same manner as
++.BR UFFDIO_COPY .
++If the value returned in the
++.I mapped
++field doesn't match the value that was specified in
++.IR range.len ,
++the operation fails with the error
++.BR EAGAIN .
++The
++.I mapped
++field is output-only;
++it is not read by the
++.B UFFDIO_CONTINUE
++operation.
++.PP
++This
++.BR ioctl (2)
++operation returns 0 on success.
++In this case, the entire area was mapped.
++On error, \-1 is returned and
++.I errno
++is set to indicate the error.
++Possible errors include:
++.TP
++.B EAGAIN
++The number of bytes mapped (i.e., the value returned in the
++.I mapped
++field) does not equal the value that was specified in the
++.I range.len
++field.
++.TP
++.B EINVAL
++Either
++.I range.start
++or
++.I range.len
++was not a multiple of the system page size; or
++.I range.len
++was zero; or the range specified was invalid.
++.TP
++.B EINVAL
++An invalid bit was specified in the
++.IR mode
++field.
++.TP
++.B EEXIST
++One or more pages were already mapped in the given range.
++In other words, not only did pages exist in the page cache, but page table
++entries already existed for those pages and they were fully mapped.
++.TP
++.B ENOENT
++The faulting process has changed its virtual memory layout simultaneously with
++an outstanding
++.B UFFDIO_CONTINUE
++operation.
++.TP
++.B ENOMEM
++Allocating memory needed to setup the page table mappings failed.
++.TP
++.B EFAULT
++No existing page could be found in the page cache for the given range.
++.TP
++.BR ESRCH
++The faulting process has exited at the time of a
++.B UFFDIO_CONTINUE
++operation.
++.\"
+ .SH RETURN VALUE
+ See descriptions of the individual operations, above.
+ .SH ERRORS
+diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+index 593c189d8..07f53c6ff 100644
+--- a/man2/userfaultfd.2
++++ b/man2/userfaultfd.2
+@@ -78,7 +78,7 @@ all memory ranges that were registered with the object are unregistered
+ and unread events are flushed.
+ .\"
+ .PP
+-Userfaultfd supports two modes of registration:
++Userfaultfd supports three modes of registration:
+ .TP
+ .BR UFFDIO_REGISTER_MODE_MISSING " (since 4.10)"
+ When registered with
+@@ -92,6 +92,18 @@ or an
+ .B UFFDIO_ZEROPAGE
+ ioctl.
+ .TP
++.BR UFFDIO_REGISTER_MODE_MINOR " (since 5.13)"
++When registered with
++.B UFFDIO_REGISTER_MODE_MINOR
++mode, user-space will receive a page-fault notification
++when a minor page fault occurs.
++That is, when a backing page is in the page cache, but
++page table entries don't yet exist.
++The faulted thread will be stopped from execution until the page fault is
++resolved from user-space by an
++.B UFFDIO_CONTINUE
++ioctl.
++.TP
+ .BR UFFDIO_REGISTER_MODE_WP " (since 5.7)"
+ When registered with
+ .B UFFDIO_REGISTER_MODE_WP
+@@ -212,9 +224,10 @@ a page fault occurring in the requested memory range, and satisfying
+ the mode defined at the registration time, will be forwarded by the kernel to
+ the user-space application.
+ The application can then use the
+-.B UFFDIO_COPY
++.B UFFDIO_COPY ,
++.B UFFDIO_ZEROPAGE ,
+ or
+-.B UFFDIO_ZEROPAGE
++.B UFFDIO_CONTINUE
+ .BR ioctl (2)
+ operations to resolve the page fault.
+ .PP
+@@ -318,6 +331,43 @@ should have the flag
+ cleared upon the faulted page or range.
+ .PP
+ Write-protect mode supports only private anonymous memory.
++.\"
++.SS Userfaultfd minor fault mode (since 5.13)
++Since Linux 5.13, userfaultfd supports minor fault mode.
++In this mode, fault messages are produced not for major faults (where the
++page was missing), but rather for minor faults, where a page exists in the page
++cache, but the page table entries are not yet present.
++The user needs to first check availability of this feature using
++.B UFFDIO_API
++ioctl against the feature bit
++.B UFFD_FEATURE_MINOR_HUGETLBFS
++before using this feature.
++.PP
++To register with userfaultfd minor fault mode, the user needs to initiate the
++.B UFFDIO_REGISTER
++ioctl with mode
++.B UFFD_REGISTER_MODE_MINOR
++set.
++.PP
++When a minor fault occurs, user-space will receive a page-fault notification
++whose
++.I uffd_msg.pagefault.flags
++will have the
++.B UFFD_PAGEFAULT_FLAG_MINOR
++flag set.
++.PP
++To resolve a minor page fault, the handler should decide whether or not the
++existing page contents need to be modified first.
++If so, this should be done in-place via a second, non-userfaultfd-registered
++mapping to the same backing page (e.g., by mapping the hugetlbfs file twice).
++Once the page is considered "up to date", the fault can be resolved by
++initiating an
++.B UFFDIO_CONTINUE
++ioctl, which installs the page table entries and (by default) wakes up the
++faulting thread(s).
++.PP
++Minor fault mode supports only hugetlbfs-backed memory.
++.\"
+ .SS Reading from the userfaultfd structure
+ Each
+ .BR read (2)
+@@ -456,19 +506,20 @@ For
+ the following flag may appear:
+ .RS
+ .TP
+-.B UFFD_PAGEFAULT_FLAG_WRITE
+-If the address is in a range that was registered with the
+-.B UFFDIO_REGISTER_MODE_MISSING
+-flag (see
+-.BR ioctl_userfaultfd (2))
+-and this flag is set, this a write fault;
+-otherwise it is a read fault.
++.B UFFD_PAGEFAULT_FLAG_WP
++If this flag is set, then the fault was a write-protect fault.
+ .TP
++.B UFFD_PAGEFAULT_FLAG_MINOR
++If this flag is set, then the fault was a minor fault.
++.TP
++.B UFFD_PAGEFAULT_FLAG_WRITE
++If this flag is set, then the fault was a write fault.
++.HP
++If neither
+ .B UFFD_PAGEFAULT_FLAG_WP
+-If the address is in a range that was registered with the
+-.B UFFDIO_REGISTER_MODE_WP
+-flag, when this bit is set, it means it is a write-protect fault.
+-Otherwise it is a page-missing fault.
++nor
++.B UFFD_PAGEFAULT_FLAG_MINOR
++are set, then the fault was a missing fault.
+ .RE
+ .TP
+ .I pagefault.feat.pid
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
 
-
-On 5/28/2021 2:12 PM, SyzScope wrote:
-> Sorry for the confusion on our last email. We did a little more 
-> analysis after then and hope to help developers fix this bug.
->
-> The bug was reported by syzbot first in Aug 2020. Since it remains 
-> unpatched to this date, we have conducted some analysis to determine 
-> its security impact and root causes, which hopefully can help with the 
-> patching decisions.
-> Specifically, we find that even though it is labeled as "UAF read" by 
-> syzbot, it can in fact lead to double free and control flow hijacking 
-> as well. Here is our analysis below (on this kernel version: 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=af5043c89a8ef6b6949a245fff355a552eaed240)
->
-> ----------------------------- Root cause analysis: 
-> --------------------------
-> The use-after-free bug happened because the object has two different 
-> references. But when it was freed, only one reference was removed, 
-> allowing the other reference to be used incorrectly.
->
-> Specifically, the object of type "struct hci_chan" can be referenced 
-> in two places from an object called hcon(or conn in hci_chan_create)of 
-> type struct hci_conn : "hcon->chan_list" and 
-> "hcon->l2cap_data->hchan". But only one of them (conn->chan_list) was 
-> deleted when freeing "struct hci_chan" from 
-> "hci_disconn_loglink_complete_evt()".
->
-> The function "hci_chan_create" shows how the first reference is created.
->
-> struct hci_chan *hci_chan_create(struct hci_conn *conn)
-> {
->     struct hci_dev *hdev = conn->hdev;
->     struct hci_chan *chan;
->
->     ...
->     chan = kzalloc(sizeof(*chan), GFP_KERNEL);
->     ...
->     list_add_rcu(&chan->list, &conn->chan_list); // Assign chan to 
-> hcon->chan_list. This is the first reference created.
->
->     return chan;
-> }
->
-> "l2cap_conn_add" is the caller of the previous function which shows 
-> how the second reference is created.
->
-> static struct l2cap_conn *l2cap_conn_add(struct hci_conn *hcon)
-> {
->     struct l2cap_conn *conn = hcon->l2cap_data;
->     struct hci_chan *hchan;
->
->     ...
->
->     hchan = hci_chan_create(hcon); //"hchan" was created in 
-> hci_chan_create
->     if (!hchan)
->         return NULL;
->
->     conn = kzalloc(sizeof(*conn), GFP_KERNEL);
->     ...
->     kref_init(&conn->ref);
->     hcon->l2cap_data = conn;
->     conn->hcon = hci_conn_get(hcon);
->     conn->hchan = hchan; // "chan" was assigned to 
-> "hcon->l2cap_data->hchan". This is the second reference.
->     ...
-> }
->
-> When the chan was freed in "hci_disconn_loglink_complete_evt" 
-> (hci_disconn_loglink_complete_evt()->amp_destroy_logical_link()->hci_chan_del()), 
-> we only deleted the reference of "((struct hci_conn 
-> *)hcon)->chan_list" (effectively removing the entry from the list), 
-> but the reference of "((struct hci_conn *)hcon)->l2cap_data->hchan" is 
-> still valid.
->
-> The function below shows exactly how the free of the object occurs and 
-> how its first reference is removed.
->
-> void hci_chan_del(struct hci_chan *chan)
-> {
->
->     struct hci_conn *conn = chan->conn;
->     struct hci_dev *hdev = conn->hdev;
->
->     BT_DBG("%s hcon %p chan %p", hdev->name, conn, chan);
->     list_del_rcu(&chan->list); // removed "chan" from the list (the 
-> first reference). The second reference((struct hci_conn 
-> *)hcon->l2cap_data->hchan) remains however.
->     synchronize_rcu();
->     set_bit(HCI_CONN_DROP, &conn->flags);
->     hci_conn_put(conn);
->
->     skb_queue_purge(&chan->data_q);
->
->     kfree(chan); // free "chan"
-> }
->
-> ----------------------------- Potential fix: --------------------------
-> Based on the analysis, it appears that in hci_chan_del(), we should 
-> remove the second reference of (struct hci_conn 
-> *)hcon->l2cap_data->hchan,e.g., setting it to NULL
->
-> -------------------------- Control flow hijacking Primitve: 
-> -----------------------------
->
-> This function is where the bug impact was originally reported on syzbot
->
-> void hci_chan_del(struct hci_chan *chan) //"chan" was freed
-> {
->
->     struct hci_conn *conn = chan->conn; // Syzbot reported the UAF read
->     struct hci_dev *hdev = conn->hdev;
->
->     ...
->
->     skb_queue_purge(&chan->data_q); // "data_q" comes from the freed 
-> object "chan" therefore it can point to an arbitrary memory address
->     kfree(chan);
-> }
->
->
-> The skb was dequeued from the list, however the list is controllable 
-> by an attacker and it can point to an arbitrary memory address.
->
-> void skb_queue_purge(struct sk_buff_head *list)
-> {
->     struct sk_buff *skb;
->
->     while ((skb = skb_dequeue(list)) != NULL) // skb is also controllable
->         kfree_skb(skb); // dangerous use of skb further down
-> }
->
-> After going through a long call chain: 
-> skb_queue_purge->kfree_skb->__kfree_skb->skb_release_all->skb_release_data, 
-> skb enters "skb_zcopy_clear".
->
-> static void skb_release_data(struct sk_buff *skb)
-> {
->     ...
->     skb_zcopy_clear(skb, true); // skb entered skb_zcopy_clear() and 
-> will dereference a function pointer inside.
->     skb_free_head(skb);
-> }
->
->
->
-> static inline void skb_zcopy_clear(struct sk_buff *skb, bool zerocopy)
-> {
->     struct ubuf_info *uarg = skb_zcopy(skb); // uarg comes from skb, 
-> therefore it also controllable by attacker
->
->     if (uarg) {
->         if (skb_zcopy_is_nouarg(skb)) {
->             /* no notification callback */
->         } else if (uarg->callback == sock_zerocopy_callback) {
->             uarg->zerocopy = uarg->zerocopy && zerocopy;
->             sock_zerocopy_put(uarg); // uarg enters sock_zerocopy_put()
->         }
-> ...
->     }
-> }
->
-> Inside the function below, uarg's function pointer will be 
-> dereferenced. This makes a control flow hijacking possible because 
-> uarg is totally controllable by attackers.
->
-> void sock_zerocopy_put(struct ubuf_info *uarg)
->
-> {
->     if (uarg && refcount_dec_and_test(&uarg->refcnt)) {
->         if (uarg->callback)
->             uarg->callback(uarg, uarg->zerocopy); // uarg dereferences 
-> a function pointer, and thus we grant a control flow hijacking primitive
->         ...
->     }
->
-> }
->
->
-> SyzScope Team.
->
-> On 8/2/2020 1:45 PM, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    ac3a0c84 Merge 
->> git://git.kernel.org/pub/scm/linux/kernel/g..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=11b8d570900000
->> kernel config: 
->> https://syzkaller.appspot.com/x/.config?x=e59ee776d5aa8d55
->> dashboard link: 
->> https://syzkaller.appspot.com/bug?extid=305a91e025a73e4fd6ce
->> compiler:       clang version 10.0.0 
->> (https://github.com/llvm/llvm-project/ 
->> c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
->> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=11f7ceea900000
->> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=17e5de04900000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the 
->> commit:
->> Reported-by: syzbot+305a91e025a73e4fd6ce@syzkaller.appspotmail.com
->>
->> IPVS: ftp: loaded support on port[0] = 21
->> ==================================================================
->> BUG: KASAN: use-after-free in hci_chan_del+0x33/0x130 
->> net/bluetooth/hci_conn.c:1707
->> Read of size 8 at addr ffff8880a9591f18 by task syz-executor081/6793
->>
->> CPU: 0 PID: 6793 Comm: syz-executor081 Not tainted 
->> 5.8.0-rc7-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, 
->> BIOS Google 01/01/2011
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:77 [inline]
->>   dump_stack+0x1f0/0x31e lib/dump_stack.c:118
->>   print_address_description+0x66/0x5a0 mm/kasan/report.c:383
->>   __kasan_report mm/kasan/report.c:513 [inline]
->>   kasan_report+0x132/0x1d0 mm/kasan/report.c:530
->>   hci_chan_del+0x33/0x130 net/bluetooth/hci_conn.c:1707
->>   l2cap_conn_del+0x4c2/0x650 net/bluetooth/l2cap_core.c:1900
->>   hci_disconn_cfm include/net/bluetooth/hci_core.h:1355 [inline]
->>   hci_conn_hash_flush+0x127/0x200 net/bluetooth/hci_conn.c:1536
->>   hci_dev_do_close+0xb7b/0x1040 net/bluetooth/hci_core.c:1761
->>   hci_unregister_dev+0x16d/0x1590 net/bluetooth/hci_core.c:3606
->>   vhci_release+0x73/0xc0 drivers/bluetooth/hci_vhci.c:340
->>   __fput+0x2f0/0x750 fs/file_table.c:281
->>   task_work_run+0x137/0x1c0 kernel/task_work.c:135
->>   exit_task_work include/linux/task_work.h:25 [inline]
->>   do_exit+0x601/0x1f80 kernel/exit.c:805
->>   do_group_exit+0x161/0x2d0 kernel/exit.c:903
->>   __do_sys_exit_group+0x13/0x20 kernel/exit.c:914
->>   __se_sys_exit_group+0x10/0x10 kernel/exit.c:912
->>   __x64_sys_exit_group+0x37/0x40 kernel/exit.c:912
->>   do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> RIP: 0033:0x444fe8
->> Code: Bad RIP value.
->> RSP: 002b:00007ffe96e46e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
->> RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000444fe8
->> RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
->> RBP: 00000000004ccdd0 R08: 00000000000000e7 R09: ffffffffffffffd0
->> R10: 00007f5ee25cd700 R11: 0000000000000246 R12: 0000000000000001
->> R13: 00000000006e0200 R14: 0000000000000000 R15: 0000000000000000
->>
->> Allocated by task 6821:
->>   save_stack mm/kasan/common.c:48 [inline]
->>   set_track mm/kasan/common.c:56 [inline]
->>   __kasan_kmalloc+0x103/0x140 mm/kasan/common.c:494
->>   kmem_cache_alloc_trace+0x234/0x300 mm/slab.c:3551
->>   kmalloc include/linux/slab.h:555 [inline]
->>   kzalloc include/linux/slab.h:669 [inline]
->>   hci_chan_create+0x9a/0x270 net/bluetooth/hci_conn.c:1692
->>   l2cap_conn_add+0x66/0xb00 net/bluetooth/l2cap_core.c:7699
->>   l2cap_connect_cfm+0xdb/0x12b0 net/bluetooth/l2cap_core.c:8097
->>   hci_connect_cfm include/net/bluetooth/hci_core.h:1340 [inline]
->>   hci_remote_features_evt net/bluetooth/hci_event.c:3210 [inline]
->>   hci_event_packet+0x1164c/0x18260 net/bluetooth/hci_event.c:6061
->>   hci_rx_work+0x236/0x9c0 net/bluetooth/hci_core.c:4705
->>   process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
->>   worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
->>   kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
->>
->> Freed by task 1530:
->>   save_stack mm/kasan/common.c:48 [inline]
->>   set_track mm/kasan/common.c:56 [inline]
->>   kasan_set_free_info mm/kasan/common.c:316 [inline]
->>   __kasan_slab_free+0x114/0x170 mm/kasan/common.c:455
->>   __cache_free mm/slab.c:3426 [inline]
->>   kfree+0x10a/0x220 mm/slab.c:3757
->>   hci_disconn_loglink_complete_evt net/bluetooth/hci_event.c:4999 
->> [inline]
->>   hci_event_packet+0x304e/0x18260 net/bluetooth/hci_event.c:6188
->>   hci_rx_work+0x236/0x9c0 net/bluetooth/hci_core.c:4705
->>   process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
->>   worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
->>   kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
->>
->> The buggy address belongs to the object at ffff8880a9591f00
->>   which belongs to the cache kmalloc-128 of size 128
->> The buggy address is located 24 bytes inside of
->>   128-byte region [ffff8880a9591f00, ffff8880a9591f80)
->> The buggy address belongs to the page:
->> page:ffffea0002a56440 refcount:1 mapcount:0 mapping:0000000000000000 
->> index:0xffff8880a9591800
->> flags: 0xfffe0000000200(slab)
->> raw: 00fffe0000000200 ffffea0002a5a648 ffffea00028a4a08 ffff8880aa400700
->> raw: ffff8880a9591800 ffff8880a9591000 000000010000000a 0000000000000000
->> page dumped because: kasan: bad access detected
->>
->> Memory state around the buggy address:
->>   ffff8880a9591e00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>   ffff8880a9591e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->>> ffff8880a9591f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>                              ^
->>   ffff8880a9591f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->>   ffff8880a9592000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->> ==================================================================
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->> syzbot can test patches for this issue, for details see:
->> https://goo.gl/tpsmEJ#testing-patches
->>
