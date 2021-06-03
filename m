@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2708E39A350
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B76B39A353
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhFCOfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230446AbhFCOfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:35:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EF69613D6;
-        Thu,  3 Jun 2021 14:34:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622730842;
-        bh=ePguWSm6IUi7J34haJRKbL48baqv/od3GKakWa5lKjo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Pg6QMJVd+uqWPoQ5YTL67bi/qfHAdh47SYlgExCc7uwCMxNx9BxkcVbJNW4lFTAkh
-         hKZU11Frz4QU2/94opn3MUTlz/5iTNcgjHSgqo6JKWHJTnlp9CijdvOLj+NzlFv+QB
-         DgbS656upfoLPxf46E7n9v7NXphrCrfJ4pUd4+WJ9JNtyo28uJZJ/VKlHcFUFoonMC
-         6xzhKTRtVN2bbTvKLIqrKysQKUU1ZbheQISm3u6RN5K0wXoGhCt2xGYxfsMjsySceO
-         GZ1yfS3/9DQV1Upqn64Bg88SrwL7p1u0FfH3JMFaY0bM+GAbGcWmD7mWGBRCjfFUB5
-         8ZSCFEVgk/P6Q==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 1/1] usb: phy: isp1301: Deduplicate
- of_find_i2c_device_by_node()
-In-Reply-To: <20210521145243.87911-1-andriy.shevchenko@linux.intel.com>
-References: <20210521145243.87911-1-andriy.shevchenko@linux.intel.com>
-Date:   Thu, 03 Jun 2021 17:33:54 +0300
-Message-ID: <87a6o7c90t.fsf@kernel.org>
+        id S231652AbhFCOgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:36:24 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47326 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231630AbhFCOgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:36:23 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153EYWa5016247;
+        Thu, 3 Jun 2021 09:34:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622730872;
+        bh=d25adAQTHIhK8xu231K6wCqeHrpmx4tmRcUXIbpfpDI=;
+        h=From:To:CC:Subject:Date;
+        b=PRmk8x1244nP/+6Sm9gFVHvb1CIo7UPEMRzXR3aLX0VV5PsVzHD09WVpfVaMSLW3z
+         juCANTfWNXFfC/pIUbtKnpQdOR7AIsQFyalNSHUn+vP5ObvS66p5da0VgjV0TWnG4w
+         wclSL9U8HBCb40/4aUB5cpAkI1OnMDqdh0BzIzKo=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153EYWMo096967
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Jun 2021 09:34:32 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 09:34:31 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 3 Jun 2021 09:34:32 -0500
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153EYRDI011740;
+        Thu, 3 Jun 2021 09:34:28 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH v2 0/4] J721E: Use external clock in EVM for SERDES
+Date:   Thu, 3 Jun 2021 20:04:23 +0530
+Message-ID: <20210603143427.28735-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+J721E EVM has clock generator that feeds both to the SERDES and to the
+PCIe slot present in the EVM. In order to use common reference clock on
+either side of the link, configure SERDES to use external reference
+clock.
 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+Previously SERDES used internal reference clock and the attached device
+used clock from clock generator in the EVM.
 
-> The driver is using open-coded variant of of_find_i2c_device_by_node().
-> Replace it by the actual call to the above mentioned API.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Changes from v1:
+1) Fixed clock names as suggested by Nishanth
+2) Limit to < 100 lines
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+v1: http://lore.kernell.org/r/20210512151209.27560-1-kishon@ti.com
 
-=2D-=20
-balbi
+Kishon Vijay Abraham I (4):
+  arm64: dts: ti: k3-j721e-main: Fix external refclk input to SERDES
+  arm64: dts: ti: k3-j721e-main: Add #clock-cells property to serdes DT
+    node
+  arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for
+    SERDES
+  arm64: dts: ti: k3-j721e-common-proc-board: Re-name "link" name as
+    "phy"
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 52 ++++++++++-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 86 +++++++++++--------
+ 2 files changed, 98 insertions(+), 40 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.17.1
 
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC46FIRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUjI6Af/dcHPqnojZ4vC7RuGGLl4Y12R5LYRqnO4
-71jGMI14lASrV3cp4DK2D4QkiKVxXj7VlIX2XHqoHDel5EXH4gvEG0m9k/Gjh/9K
-hvYf0H4+VhvgQFpBQPHIOklQwMsow9stfH2GDwknZ+sfVMJcm/f3xqcRTZ0ZVeWO
-2rVFcTJsezQsrN3z95mWp00YTaNHgebpiFLcyavF0JNEqtsq3gBehMCamXgTl7wk
-qnD2W1v85dM3WF+8LbLOnPowGmtEQ+ZNh34z2Wa4i/+55bCZQWB3wsnMB/9vWrU4
-s2ZL9hv4JVCIQdi9nRclc0KaAlGm/xoUbb2WU5Huz9Rk5Chxt10QIA==
-=LFRq
------END PGP SIGNATURE-----
---=-=-=--
