@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5695F39A641
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C1639A64C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhFCQxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        id S230036AbhFCQzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhFCQxv (ORCPT
+        with ESMTP id S229576AbhFCQzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:53:51 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE88C06174A;
-        Thu,  3 Jun 2021 09:52:06 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 45A3D1F417BA
-Received: by earth.universe (Postfix, from userid 1000)
-        id 272DC3C0C95; Thu,  3 Jun 2021 18:52:03 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 18:52:03 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: ab8500: Drop unnecessary NULL check after
- container_of
-Message-ID: <20210603165203.qxueroi77sb4xwsx@earth.universe>
-References: <20210511203711.1673001-1-linux@roeck-us.net>
+        Thu, 3 Jun 2021 12:55:31 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10CBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 09:53:29 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id f12so8019043ljp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 09:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t0rBINIjyYVjiWlKA6CZdf8Cu1m85/b95NW0HipMWEw=;
+        b=RT6DDw3hX0Vd0D9y8P1+wlBANWRsJKcOTL5XNuqjuoqdcO+eVWb3h5lPuPBdWbpXRP
+         qS7RpEK9U4hewHkB9ReHFH0CpGE6xxnLud53HxAhqun48esVrJ2Tsyp+XW2wrFLkrwHK
+         lH/KFiL4LHRVHxBi+EJaxQ1OcbONA/XKS1BDaSuddZH/u57dzNoDmqyVp/ACKK8Zo9xA
+         GYN86bl7bcGB1HAkjN9u3Li/fE5sVQbAL/zx25EkFYVTSn2KJIenbUvhjj/7OSdYsqOj
+         aF8pnMaxmokmARnSb/3P9IcKdc1ySVi+6IVr0FK6l431NPIU5pv9T8uTmzgRjZmKVxX7
+         SuIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t0rBINIjyYVjiWlKA6CZdf8Cu1m85/b95NW0HipMWEw=;
+        b=hO0tmClOSx0ZQf8DXxFaChcx0OrHgQHHgkRPcCmoEt1prZVND9R34+gpuR7XZIKAmz
+         Zue2VzQZSrOVUQnG+NcAFV8D47HpqRRE6X33boqg1E7yIRoBRfhGsqXX+BdH2pyTaA7i
+         9ER1JYzg4fL16wL8+KUIjikgNQeIAGsF1k3qZ0M3q9f0yuivgr5CV5w1D0+3KxTicqXT
+         yvrB1jac5GRAQmeTrBKpGLIVFei0ZJ9ObYvFmP+qdaDfV/wQzUT5/0dTl2fyoRNpIiQs
+         I9aqsH/WDoPiEYakOmlm0trRDCua6DTZvsGmeOBW2gGyxY/MX3bsPmuiMPEhsoO3Mx+X
+         DsHA==
+X-Gm-Message-State: AOAM532zjM4gbtt/QmF5ZFE7H01I35rML4PRdajjg/CGRuHojpkcTyO3
+        AOBN+n5eAz3dFLUOJU2awd1J4xu/umwMq6UlgqFJHg==
+X-Google-Smtp-Source: ABdhPJzeDeSBqXYAQ4z4rfvcdsvKYnRBUfk/V02cbzoITVb8r8bIa3oFG903QpB57v+azcbplWWae+BaY+2ulj+HrVI=
+X-Received: by 2002:a05:651c:210f:: with SMTP id a15mr235460ljq.160.1622739208042;
+ Thu, 03 Jun 2021 09:53:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="c4hmboxfmrz4g6am"
-Content-Disposition: inline
-In-Reply-To: <20210511203711.1673001-1-linux@roeck-us.net>
+References: <20210603145707.4031641-1-schatzberg.dan@gmail.com> <20210603145707.4031641-3-schatzberg.dan@gmail.com>
+In-Reply-To: <20210603145707.4031641-3-schatzberg.dan@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 3 Jun 2021 09:53:16 -0700
+Message-ID: <CALvZod5=-Q_xFP3-8hUe4dzJ5_U+omi2R7Leen2s_sqn2+5VbA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: Charge active memcg when no mm is set
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, Chris Down <chris@chrisdown.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 3, 2021 at 7:57 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+>
+> set_active_memcg() worked for kernel allocations but was silently
+> ignored for user pages.
+>
+> This patch establishes a precedence order for who gets charged:
+>
+> 1. If there is a memcg associated with the page already, that memcg is
+>    charged. This happens during swapin.
+>
+> 2. If an explicit mm is passed, mm->memcg is charged. This happens
+>    during page faults, which can be triggered in remote VMs (eg gup).
+>
+> 3. Otherwise consult the current process context. If there is an
+>    active_memcg, use that. Otherwise, current->mm->memcg.
+>
+> Previously, if a NULL mm was passed to mem_cgroup_charge (case 3) it
+> would always charge the root cgroup. Now it looks up the active_memcg
+> first (falling back to charging the root cgroup if not set).
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> Acked-by: Chris Down <chris@chrisdown.name>
+> Acked-by: Jens Axboe <axboe@kernel.dk>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
---c4hmboxfmrz4g6am
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, May 11, 2021 at 01:37:11PM -0700, Guenter Roeck wrote:
-> The result of container_of() operations is never NULL unless the element
-> is the first element of the embedded structure, which is not the case her=
-e.
-> The NULL check is therefore unnecessary and misleading. Remove it.
->=20
-> This change was made automatically with the following Coccinelle script.
->=20
-> @@
-> type t;
-> identifier v;
-> statement s;
-> @@
->=20
-> <+...
-> (
->   t v =3D container_of(...);
-> |
->   v =3D container_of(...);
-> )
->   ...
->   when !=3D v
-> - if (\( !v \| v =3D=3D NULL \) ) s
-> ...+>
->=20
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-
-Thanks, queued.
-
--- Sebastian
-
->  drivers/power/supply/ab8500_charger.c | 3 ---
->  1 file changed, 3 deletions(-)
->=20
-> diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply=
-/ab8500_charger.c
-> index a9be10eb2c22..f407cec49aa3 100644
-> --- a/drivers/power/supply/ab8500_charger.c
-> +++ b/drivers/power/supply/ab8500_charger.c
-> @@ -3171,9 +3171,6 @@ static int ab8500_charger_usb_notifier_call(struct =
-notifier_block *nb,
->  	enum ab8500_usb_state bm_usb_state;
->  	unsigned mA =3D *((unsigned *)power);
-> =20
-> -	if (!di)
-> -		return NOTIFY_DONE;
-> -
->  	if (event !=3D USB_EVENT_VBUS) {
->  		dev_dbg(di->dev, "not a standard host, returning\n");
->  		return NOTIFY_DONE;
-> --=20
-> 2.25.1
->=20
-
---c4hmboxfmrz4g6am
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC5CLMACgkQ2O7X88g7
-+podVQ//ZlOKk8I8xZGuRAT8gKtTnB0d2jIrG9J0rH2iQwTJDJP7lqjZY6dCTfx9
-G/HQPSDUNt5Swz4dtJwQJ2cb4KFDdVqoJvHfqKZbLE80iSRUOAd7gpLnKSU9TrW2
-Lovjm3++qrQ6BksvMhR4JcF1U9mZ+3JIatd9zCIY1KGyXO6vtj6tqjZEi6NEdUlE
-gHt8lmlBWFDfYEawecs/djKCIoTCEpXkklSX0IAwX6U5gOvnGHNX4MRrjtYA8B1R
-odibul9OSJ3cK+1aBHH4sjvtUmVzpDdRcaGhZMewr0UxJBFJJ4N9ALxoC2RhBlbF
-0J7P7WttjSvxc/FG/LG90ZFtM8Rd6L5LM1vr6x1aDuk9QxkRfySS+9oFs7KQxTGJ
-N4nU4zl8sPCCrPc4oYvOIM00kgKgWLt6TC6s7BLWjBpTQRG1OqXIOmE7zgTabZGm
-J9lKdbeV+3POZFCqGUrIaaz6zuUGwDNJgSB968cVai/v3VH3VWZm6bKtQFxN3qFC
-FmuZnTQobTFAPQD03ZwKZYxKvLWOkDk70adbN6P9HYEJDq7zpJIsee5ACQAjX3WG
-/vazolvNy0Xyaj0z9XT7hLIHxshIFN6FeEREKG0ZEj8stFR52xJunn8zTVLMdLkl
-o1279P1oJxE91w7MUO0kVVKpItj/1/jaEqJOyodNuF4rfeC7I0M=
-=K2AW
------END PGP SIGNATURE-----
-
---c4hmboxfmrz4g6am--
+Can you please rebase over the latest mm tree? Specifically over
+Muchun's patch "mm: memcontrol: bail out early when !mm in
+get_mem_cgroup_from_mm".
