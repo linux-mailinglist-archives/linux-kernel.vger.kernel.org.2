@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9192539AA44
+	by mail.lfdr.de (Postfix) with ESMTP id DEE2239AA45
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhFCSoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53354 "EHLO mail.kernel.org"
+        id S230197AbhFCSo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:44:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230129AbhFCSoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:44:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05366613E3;
-        Thu,  3 Jun 2021 18:42:34 +0000 (UTC)
+        id S230149AbhFCSoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:44:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AFAF613BA;
+        Thu,  3 Jun 2021 18:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622745755;
-        bh=/2lVcoMomY359dN1VAbK/0PvRcfNCHXPjJD7BjmQ4QY=;
+        s=k20201202; t=1622745758;
+        bh=jQYaV2cfvoXc16qoljiYIKMi2Mx7T5eMyKFOL62d+tM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iqUlVxV2F3jEqObyb4qDwolSRUT3TZdHKrNMLnXlMPiJaDYR1tSPrytUJE8YdKUI5
-         oBZi3Cvm+FWkK0FFNAqe8rKQqxkaD7nYEM6CGeEwbTQsQv3dmUkdioj6mZAwBb7ljY
-         IKHu+v93rQwjCG6HiqvmFl3RvULnrB04/bR3SHVhRF5JBL1Ar7qLucXdbjZzBnc1kX
-         PkoxGGeIF4yT6K1uAmITX/vR2QYExKmY6xcuB9B4V/Lw8dPJxMOgW5ahfrssShuMSw
-         eD1lAnxVerF/ZLe7Pq4SQadxHcnHzI6go7pZluTbSW/b/gqfYLMPXmdiqRh/UmDgIY
-         yZqt5q3XpN6/g==
+        b=FjUAK/Lvl8kKjR7kZC2ty+tq4HX6I3/8MMrKJVUs+0Ks926INH8+pIkCJs9A4rGno
+         QDJwNSL1vk6HsEV78ZMQToLk1Pk4DsrtnL2JZFPKF8yxqlzCYsbsqVRUmNWwO96Bk5
+         4M6DW7QhvbHBwStsypMp0CzwE7jAJvq/dua3x3QApUdn4ZfKgpKMXMDS4bhJ9WW8NU
+         RpUjSyfjR0c2zDg+D5QkaklbJZMS03yyVojat+IXR76WI+vu0M4qGkOhfq1SZCoijK
+         UvSIwUZslwRHdYry55rMeA7lQRs0I+cAz6GNhiSTnggY27m5T08y2yxVXcWKE38RB5
+         dnNb5fkDr2dHA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL
-Date:   Thu,  3 Jun 2021 19:41:51 +0100
-Message-Id: <162274566701.14958.10688450781965712146.b4-ty@kernel.org>
+To:     cy_huang <u0084500@gmail.com>, robh+dt@kernel.org,
+        lgirdwood@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, cy_huang@richtek.com
+Subject: Re: [PATCH v6 1/2] regulator: rt6160: Add DT binding document for Richtek RT6160
+Date:   Thu,  3 Jun 2021 19:41:52 +0100
+Message-Id: <162274566700.14958.5478994918465215118.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210603094944.1114156-1-axel.lin@ingics.com>
-References: <20210603094944.1114156-1-axel.lin@ingics.com>
+In-Reply-To: <1622558352-19750-1-git-send-email-u0084500@gmail.com>
+References: <1622558352-19750-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,8 +41,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 17:49:44 +0800, Axel Lin wrote:
-> devm_gpiod_get_array_optional may return NULL if no GPIO was assigned.
+On Tue, 1 Jun 2021 22:39:11 +0800, cy_huang wrote:
+> Add DT binding document for Richtek RT6160 voltage regulator.
 
 Applied to
 
@@ -51,8 +50,10 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: rt4801: Fix NULL pointer dereference if priv->enable_gpios is NULL
-      commit: cb2381cbecb81a8893b2d1e1af29bc2e5531df27
+[1/2] regulator: rt6160: Add DT binding document for Richtek RT6160
+      commit: bce18e52c866ff6ded13ac8ac37e9271f786c005
+[2/2] regulator: rt6160: Add support for Richtek RT6160
+      commit: de20b747c5836ffc6768914b95d7617139fac4f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
